@@ -22,7 +22,7 @@
 	ThreadsManager* _manager;
 	NSButton* _cancelButton;
 	NSThread* _thread;
-    id _retainedThreadDictionary;
+//    id _retainedThreadDictionary;
 	NSTableView* _view;
 
     CGFloat _lastDisplayedProgress;
