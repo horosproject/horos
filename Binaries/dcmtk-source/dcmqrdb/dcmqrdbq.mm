@@ -1160,7 +1160,7 @@ DcmQueryRetrieveOsiriXDatabaseHandle::DcmQueryRetrieveOsiriXDatabaseHandle(
 , debugLevel(0)
 {
 	
-    handle = (DB_OsiriX_Handle *) malloc ( sizeof(DB_OsiriX_Handle));
+    handle = (DB_OsiriX_Handle *) calloc ( sizeof(DB_OsiriX_Handle),1);
 	
 #ifdef DEBUG
    // dbdebug(1, "DB_createHandle () : Handle created for %s\n",storageArea);
