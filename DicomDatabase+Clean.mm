@@ -382,23 +382,26 @@ static BOOL _cleanForFreeSpaceLimitSoonReachedDisplayed = NO;
 
 - (void) _cleanForFreeSpaceLimitSoonReachedWarning
 {
-    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"hideCleanForFreeSpaceLimitSoonReachedWarning"] == NO)
-	{
-		NSAlert* alert = [[NSAlert new] autorelease];
-        [alert setMessageText: NSLocalizedString(@"Warning - Free Space", nil)];
-        [alert setInformativeText: NSLocalizedString( @"Free space limit will be soon reached for your hard disk storing the database. Some studies will be deleted according to the rules specified in Preferences Database window (Database Auto-Cleaning).", nil)];
-        [alert setShowsSuppressionButton:YES ];
-        [alert addButtonWithTitle: NSLocalizedString( @"OK", nil)];
-        [alert addButtonWithTitle: NSLocalizedString( @"Preferences", nil)];
-        
-        if( [alert runModal] == NSAlertSecondButtonReturn)
+    if([[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO)
+    {
+        if ([[NSUserDefaults standardUserDefaults] boolForKey: @"hideCleanForFreeSpaceLimitSoonReachedWarning"] == NO)
         {
-            [[PreferencesWindowController sharedPreferencesWindowController] showWindow: self];
-            [[PreferencesWindowController sharedPreferencesWindowController] setCurrentContextWithResourceName: @"OSIDatabasePreferencePanePref"];
+            NSAlert* alert = [[NSAlert new] autorelease];
+            [alert setMessageText: NSLocalizedString(@"Warning - Free Space", nil)];
+            [alert setInformativeText: NSLocalizedString( @"Free space limit will be soon reached for your hard disk storing the database. Some studies will be deleted according to the rules specified in Preferences Database window (Database Auto-Cleaning).", nil)];
+            [alert setShowsSuppressionButton:YES ];
+            [alert addButtonWithTitle: NSLocalizedString( @"OK", nil)];
+            [alert addButtonWithTitle: NSLocalizedString( @"Preferences", nil)];
+            
+            if( [alert runModal] == NSAlertSecondButtonReturn)
+            {
+                [[PreferencesWindowController sharedPreferencesWindowController] showWindow: self];
+                [[PreferencesWindowController sharedPreferencesWindowController] setCurrentContextWithResourceName: @"OSIDatabasePreferencePanePref"];
+            }
+            
+            if ([[alert suppressionButton] state] == NSOnState)
+                [[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"hideCleanForFreeSpaceLimitSoonReachedWarning"];
         }
-        
-        if ([[alert suppressionButton] state] == NSOnState)
-            [[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"hideCleanForFreeSpaceLimitSoonReachedWarning"];
     }
 }
 
