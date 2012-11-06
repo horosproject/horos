@@ -89,8 +89,11 @@
 	}
 	
 	[_thread release];
+//	[_retainedThreadDictionary release]; _retainedThreadDictionary = nil;
+    
 	_thread = [thread retain];
-	
+//	_retainedThreadDictionary = [thread.threadDictionary retain];
+    
 	[self.thread addObserver:self forKeyPath:NSThreadIsCancelledKey options:NSKeyValueObservingOptionInitial context:NULL];
 	[self.thread addObserver:self forKeyPath:NSThreadStatusKey options:NSKeyValueObservingOptionInitial context:NULL];
 	[self.thread addObserver:self forKeyPath:NSThreadProgressKey options:NSKeyValueObservingOptionInitial context:NULL];
