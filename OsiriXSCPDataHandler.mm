@@ -1562,7 +1562,7 @@ extern BOOL forkedProcess;
 	
 	if( logFiles) free( logFiles);
 	
-	logFiles = (logStruct*) malloc( sizeof( logStruct));
+	logFiles = (logStruct*) calloc( sizeof( logStruct), 1);
 	
 	if ( currentDestinationMoveAET == nil || strcmp( currentDestinationMoveAET, [callingAET UTF8String]) == 0 || strlen( currentDestinationMoveAET) == 0)
 	{
@@ -1579,6 +1579,21 @@ extern BOOL forkedProcess;
 	{
 		if( [[object valueForKey:@"type"] isEqualToString: @"Series"])
 		{
+            strcpy( logFiles->logPatientName, [[object valueForKeyPath:@"study.name"] UTF8String]);
+            strcpy( logFiles->logStudyDescription, [[object valueForKeyPath:@"study.studyName"] UTF8String]);
+            strcpy( logFiles->logCallingAET, fromTo);
+            logFiles->logStartTime = time (NULL);
+            strcpy( logFiles->logMessage, "In Progress");
+            logFiles->logNumberReceived = 0;
+            logFiles->logNumberTotal = [[object valueForKey: @"rawNoFiles"] intValue];
+            logFiles->logEndTime = time (NULL);
+            strcpy( logFiles->logType, "Move");
+            strcpy( logFiles->logEncoding, "UTF-8");
+            
+            unsigned int random = (unsigned int)time(NULL);
+            unsigned int random2 = rand();
+            sprintf( logFiles->logUID, "%d%d%s", random, random2, logFiles->logPatientName);
+            
             if( forkedProcess)
             {
                 FILE * pFile;
@@ -1588,21 +1603,6 @@ extern BOOL forkedProcess;
                 pFile = fopen (dir,"w+");
                 if( pFile)
                 {
-                    strcpy( logFiles->logPatientName, [[object valueForKeyPath:@"study.name"] UTF8String]);
-                    strcpy( logFiles->logStudyDescription, [[object valueForKeyPath:@"study.studyName"] UTF8String]);
-                    strcpy( logFiles->logCallingAET, fromTo);
-                    logFiles->logStartTime = time (NULL);
-                    strcpy( logFiles->logMessage, "In Progress");
-                    logFiles->logNumberReceived = 0;
-                    logFiles->logNumberTotal = [[object valueForKey: @"rawNoFiles"] intValue];
-                    logFiles->logEndTime = time (NULL);
-                    strcpy( logFiles->logType, "Move");
-                    strcpy( logFiles->logEncoding, "UTF-8");
-                    
-                    unsigned int random = (unsigned int)time(NULL);
-                    unsigned int random2 = rand();
-                    sprintf( logFiles->logUID, "%d%d%s", random, random2, logFiles->logPatientName);
-
                     fprintf (pFile, "%s\r%s\r%s\r%ld\r%s\r%s\r%ld\r%ld\r%s\r%s\r\%ld\r", logFiles->logPatientName, logFiles->logStudyDescription, logFiles->logCallingAET, logFiles->logStartTime, logFiles->logMessage, logFiles->logUID, logFiles->logNumberReceived, logFiles->logEndTime, logFiles->logType, logFiles->logEncoding, logFiles->logNumberTotal);
                     
                     fclose (pFile);
@@ -1626,7 +1626,7 @@ extern BOOL forkedProcess;
                 }
                 
                 [[LogManager currentLogManager] addLogLine: [NSDictionary dictionaryWithObjectsAndKeys: [NSString stringWithUTF8String: logFiles->logMessage], @"logMessage",
-                                                             [NSString stringWithUTF8String: "Receive"], @"logType",
+                                                             [NSString stringWithUTF8String: logFiles->logType], @"logType",
                                                              [NSString stringWithUTF8String: logFiles->logCallingAET], @"logCallingAET",
                                                              [NSString stringWithUTF8String: logFiles->logUID], @"logUID",
                                                              [NSString stringWithFormat: @"%ld", logFiles->logStartTime], @"logStartTime",
@@ -1640,6 +1640,21 @@ extern BOOL forkedProcess;
 		}
 		else if( [[object valueForKey:@"type"] isEqualToString: @"Study"])
 		{
+            strcpy( logFiles->logPatientName, [[object valueForKeyPath:@"name"] UTF8String]);
+            strcpy( logFiles->logStudyDescription, [[object valueForKeyPath:@"studyName"] UTF8String]);
+            strcpy( logFiles->logCallingAET, fromTo);
+            logFiles->logStartTime = time (NULL);
+            strcpy( logFiles->logMessage, "In Progress");
+            logFiles->logNumberReceived = 0;
+            logFiles->logNumberTotal = [[object valueForKey: @"rawNoFiles"] intValue];
+            logFiles->logEndTime = time (NULL);
+            strcpy( logFiles->logType, "Move");
+            strcpy( logFiles->logEncoding, "UTF-8");
+            
+            unsigned int random = (unsigned int)time(NULL);
+            unsigned int random2 = rand();
+            sprintf( logFiles->logUID, "%d%d%s", random, random2, logFiles->logPatientName);
+            
             if( forkedProcess)
             {
                 FILE * pFile;
@@ -1649,21 +1664,6 @@ extern BOOL forkedProcess;
                 pFile = fopen (dir,"w+");
                 if( pFile)
                 {
-                    strcpy( logFiles->logPatientName, [[object valueForKeyPath:@"name"] UTF8String]);
-                    strcpy( logFiles->logStudyDescription, [[object valueForKeyPath:@"studyName"] UTF8String]);
-                    strcpy( logFiles->logCallingAET, fromTo);
-                    logFiles->logStartTime = time (NULL);
-                    strcpy( logFiles->logMessage, "In Progress");
-                    logFiles->logNumberReceived = 0;
-                    logFiles->logNumberTotal = [[object valueForKey: @"rawNoFiles"] intValue];
-                    logFiles->logEndTime = time (NULL);
-                    strcpy( logFiles->logType, "Move");
-                    strcpy( logFiles->logEncoding, "UTF-8");
-                    
-                    unsigned int random = (unsigned int)time(NULL);
-                    unsigned int random2 = rand();
-                    sprintf( logFiles->logUID, "%d%d%s", random, random2, logFiles->logPatientName);
-                    
                     fprintf (pFile, "%s\r%s\r%s\r%ld\r%s\r%s\r%ld\r%ld\r%s\r%s\r\%ld\r", logFiles->logPatientName, logFiles->logStudyDescription, logFiles->logCallingAET, logFiles->logStartTime, logFiles->logMessage, logFiles->logUID, logFiles->logNumberReceived, logFiles->logEndTime, logFiles->logType, logFiles->logEncoding, logFiles->logNumberTotal);
                     
                     fclose (pFile);
@@ -1687,7 +1687,7 @@ extern BOOL forkedProcess;
                 }
                 
                 [[LogManager currentLogManager] addLogLine: [NSDictionary dictionaryWithObjectsAndKeys: [NSString stringWithUTF8String: logFiles->logMessage], @"logMessage",
-                                                             [NSString stringWithUTF8String: "Receive"], @"logType",
+                                                             [NSString stringWithUTF8String: logFiles->logType], @"logType",
                                                              [NSString stringWithUTF8String: logFiles->logCallingAET], @"logCallingAET",
                                                              [NSString stringWithUTF8String: logFiles->logUID], @"logUID",
                                                              [NSString stringWithFormat: @"%ld", logFiles->logStartTime], @"logStartTime",
@@ -1994,7 +1994,7 @@ extern BOOL forkedProcess;
             }
             
             [[LogManager currentLogManager] addLogLine: [NSDictionary dictionaryWithObjectsAndKeys: [NSString stringWithUTF8String: logFiles->logMessage], @"logMessage",
-                                                         [NSString stringWithUTF8String: "Receive"], @"logType",
+                                                         [NSString stringWithUTF8String: logFiles->logType], @"logType",
                                                          [NSString stringWithUTF8String: logFiles->logCallingAET], @"logCallingAET",
                                                          [NSString stringWithUTF8String: logFiles->logUID], @"logUID",
                                                          [NSString stringWithFormat: @"%ld", logFiles->logStartTime], @"logStartTime",
