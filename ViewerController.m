@@ -4218,7 +4218,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 			if( [previewMatrix numberOfRows] != i+[studiesArray count])
 			{
 				[previewMatrix renewRows: i+[studiesArray count] columns: 1];
-				[previewMatrix sizeToCells];
                 
 //                NSLog( @"renewRows: %d", i+[studiesArray count]);
 			}
@@ -4466,6 +4465,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 			}
 		}
 		
+        [previewMatrix sizeToCells];
+        
 		if( showSelected)
 		{
 			NSInteger index = [[[previewMatrix cells] valueForKey:@"representedObject"] indexOfObject: [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"]];
