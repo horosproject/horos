@@ -16,15 +16,23 @@
 #import "ViewerController.h"
 #import "OrthogonalMPRController.h"
 #import "OrthogonalMPRView.h"
+#import "OrthogonalMPRController.h"
 #import "Window3DController.h"
 
+#import "KBPopUpToolbarItem.h"
+
 @class DICOMExport;
+@class KBPopUpToolbarItem;
 
 /** \brief  Window Controller for Orthogonal MPR */
 
+typedef enum {SyncSeriesStateOff=0,SyncSeriesStateDisable=1,SyncSeriesStateEnable=2} SyncSeriesState;
+typedef enum {SyncSeriesScopeAllSeries=1,SyncSeriesScopeSamePatient=2,SyncSeriesScopeSameStudy=3} SyncSeriesScope;
+typedef enum {SyncSeriesBehaviorAbsolutePosWithSameStudy,SyncSeriesBehaviorRelativePos,SyncSeriesBehaviorAbsolutePos} SyncSeriesBehavior;
+
 @interface OrthogonalMPRViewer : Window3DController <NSWindowDelegate, NSSplitViewDelegate, NSToolbarDelegate>
 {
-	ViewerController					*viewer;
+    ViewerController					*viewer;
 
 	IBOutlet OrthogonalMPRController	*controller;
 	IBOutlet NSSplitView				*splitView;
@@ -33,8 +41,13 @@
     IBOutlet NSView						*toolsView, *ThickSlabView;
 	IBOutlet NSMatrix					*toolsMatrix;
 	BOOL								isFullWindow;
-	long								displayResliceAxes;
+    long								displayResliceAxes;
 
+    KBPopUpToolbarItem                  *syncSeriesToolbarItem;
+    SyncSeriesState                     syncSeriesState ;
+    SyncSeriesBehavior                  syncSeriesBehavior;
+    SyncSeriesScope                     syncSeriesScope;
+    
 	IBOutlet NSTextField				*thickSlabTextField;
 	IBOutlet NSSlider					*thickSlabSlider;
 	IBOutlet NSButton					*thickSlabActivated;
@@ -76,6 +89,35 @@
 - (void)applyWLWWForString:(NSString *)menuString;
 - (void) flipVolume;
 - (DCMView*) keyView;
+
+// SyncSeries between MPR viewers
+- (void) setSyncSeriesBehavior:(SyncSeriesBehavior) newBehavior withNotification:(bool)doNotify;
+- (void) setSyncSeriesScope:(SyncSeriesScope) newScope  withNotification:(bool)doNotify;
+- (void) setSyncSeriesState:(SyncSeriesState) newState withNotification:(bool)doNotify;
+- (void) syncSeriesNotification:(NSNotification*)notification   ;
+
+- (void) moveToRelativePositionFromNSArray:(NSArray*) relativeLocation;
+- (void) moveToRelativePosition:(float*) dcmCoord;
+- (void) moveToAbsolutePositionFromNSArray:(NSArray*) newLocation;
+- (void) moveToAbsolutePosition:(float*) dcmCoord;
+
+- (void) updateSyncSeriesUI;
+
++ (NSDictionary*) evaluateSyncSeriesProperties:(id)currentViewer ;
+
++ (void) validateMPRViewersSyncSeriesState ;
++ (void) evaluteSyncSeriesToolbarItemsActivationWhenInit;
++ (void) evaluteSyncSeriesToolbarItemsActivationBeforeClose;
++ (BOOL) getSyncSeriesToolbarItemsActivation;
+
++ (NSMutableArray*) sortedOrthoMPRViewerApps;
++ (unsigned int)  orthoMPRViewerNumber;
++ (NSMutableArray*) orthoMPRViewerApps;
++ (NSMutableArray*) orthoMPRViewerApps:(BOOL)syncEnabledOnly;
+
+@property (nonatomic,readwrite) SyncSeriesState syncSeriesState;
+@property (nonatomic,readonly) SyncSeriesBehavior syncSeriesBehavior;
+@property (nonatomic,readonly) SyncSeriesScope syncSeriesScope;
 
 // Thick Slab
 -(IBAction) setThickSlabMode : (id) sender;

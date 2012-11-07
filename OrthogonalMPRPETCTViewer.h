@@ -16,6 +16,9 @@
 #import "OrthogonalMPRPETCTController.h"
 #import "KFSplitView.h"
 #import "Window3DController.h"
+#import "OrthogonalMPRViewer.h"
+
+@class KBPopUpToolbarItem;
 
 /** \brief Window Controller for PET-CT fusion display */
 
@@ -40,6 +43,11 @@
 	BOOL									isFullWindow;
 	long									displayResliceAxes;
 	
+    KBPopUpToolbarItem                      *syncSeriesToolbarItem;
+    SyncSeriesState                         syncSeriesState ;
+    SyncSeriesBehavior                      syncSeriesBehavior;
+    SyncSeriesScope                         syncSeriesScope;
+    
 	NSArray									*filesList;
 	NSMutableArray							*pixList;
 	
@@ -88,6 +96,24 @@
 - (OrthogonalMPRPETCTController*) CTController;
 - (OrthogonalMPRPETCTController*) PETCTController;
 - (OrthogonalMPRPETCTController*) PETController;
+
+// SyncSeries between MPR viewers
+- (void) setSyncSeriesBehavior:(SyncSeriesBehavior) newBehavior withNotification:(bool)doNotify;
+- (void) setSyncSeriesScope:(SyncSeriesScope) newScope  withNotification:(bool)doNotify;
+- (void) setSyncSeriesState:(SyncSeriesState) newState withNotification:(bool)doNotify;
+- (void) syncSeriesNotification:(NSNotification*)notification   ;
+
+- (void) moveToRelativePositionFromNSArray:(NSArray*) relativeLocation;
+- (void) moveToRelativePosition:(float*) dcmCoord;
+- (void) moveToAbsolutePositionFromNSArray:(NSArray*) newLocation;
+- (void) moveToAbsolutePosition:(float*) dcmCoord;
+- (void) moveToAbsolutePosition:(float*) dcmCoord :(OrthogonalMPRPETCTController*) controller;
+
+- (void) updateSyncSeriesUI;
+
+@property (nonatomic,readwrite) SyncSeriesState syncSeriesState;
+@property (nonatomic,readonly)  SyncSeriesBehavior syncSeriesBehavior;
+@property (nonatomic,readonly) SyncSeriesScope syncSeriesScope;
 
 // Tools
 - (IBAction) changeTool:(id) sender;

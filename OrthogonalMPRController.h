@@ -27,6 +27,8 @@
 	float						originalCrossPositionX, originalCrossPositionY, xReslicedCrossPositionX, xReslicedCrossPositionY, yReslicedCrossPositionX, yReslicedCrossPositionY;
 	long						orientationVector;
 	
+    float                       syncPositionOrigin[3];
+    
 	IBOutlet OrthogonalMPRView	*originalView, *xReslicedView, *yReslicedView;
 
 	id							viewer;
@@ -74,6 +76,11 @@
 - (void) setBlendingFactor:(float) f;
 - (id) viewer;
 - (float) sign;
+
+- (void) send3DPositionChange;
+- (float*) getSyncPositionOrigin;
+- (void) resetSyncPositionOrigin;
+- (NSArray*) getViewerDICOMCoords ;
 
 // Tools Selection
 - (void) setCurrentTool:(short) newTool;

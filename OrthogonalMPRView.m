@@ -293,18 +293,46 @@ extern int ANNOTATIONS;
 	return controller;
 }
 
+- (void) convertPixX: (float) x pixY: (float) y toDICOMCoords: (float*) location 
+{
+    if( curDCM.stack > 1) {
+        long stackImageIndex;
+        
+        if(flippedData) stackImageIndex = curImage-(curDCM.stack-1)/2;
+        else stackImageIndex = curImage+(curDCM.stack-1)/2;
+        
+        if( stackImageIndex < 0) stackImageIndex = 0;
+        if( stackImageIndex >= [dcmPixList count]) stackImageIndex = [dcmPixList count]-1;
+        
+        [[dcmPixList objectAtIndex: stackImageIndex] convertPixX: x pixY: y toDICOMCoords: location pixelCenter: YES];
+    }
+    else {
+        [curDCM convertPixX: x pixY: y toDICOMCoords: location pixelCenter: YES];
+    }
+}
+
+- (void) getCrossPositionDICOMCoords: (float*) location 
+{   
+    [self convertPixX:crossPositionX pixY:crossPositionY toDICOMCoords:location];
+}
+
+- (void) setCrossPosition: (float) x: (float) y : (BOOL) doNotifychange
+{
+        
+	[self setCrossPositionX: x];
+	[self setCrossPositionY: y];
+	[controller reslice: x:  y: self];		
+    
+    if(doNotifychange)
+    {
+        [controller send3DPositionChange];
+    }
+}
+
+
 - (void) setCrossPosition: (float) x: (float) y
 {
-//	cx = (x<0)? 0 : x;
-//	x = (x>=[[self curDCM] pwidth])? [[self curDCM] pwidth]-1 : x;
-//	crossPositionX = x;
-	[self setCrossPositionX: x];
-//	y = (y<0)? 0 : y;
-//	y = (y>=[[self curDCM] pheight])? [[self curDCM] pheight]-1 : y;
-//	crossPositionY = y;
-	[self setCrossPositionY: y];
-	
-	[controller reslice: x:  y: self];
+    [self setCrossPosition:x :y:TRUE];
 }
 
 - (void) setCrossPositionX: (float) x
@@ -1025,7 +1053,7 @@ extern int ANNOTATIONS;
 	{
 		float WWAdapter = startWW / 100.0;
 		
-		if( WWAdapter < 0.001 * curDCM.slope) WWAdapter = 0.001 * curDCM.slope;
+		if( WWAdapter < 0.001) WWAdapter = 0.001;
 		
 		if( [self is2DViewer] == YES)
 		{

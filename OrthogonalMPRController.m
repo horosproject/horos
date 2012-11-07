@@ -646,6 +646,56 @@
 	[yReslicedView setCrossPosition: yReslicedCrossPositionX : yReslicedCrossPositionY];
 }
 
+- (void) getViewerDICOMCoords: (float*) location
+{
+    [xReslicedView getCrossPositionDICOMCoords:location];
+}
+
+- (NSArray*) getViewerDICOMCoords
+{
+    float currentLocation[3] ;
+    [self getViewerDICOMCoords:currentLocation];
+    
+    return[NSArray arrayWithObjects:
+           [NSNumber numberWithFloat:currentLocation[0]],
+           [NSNumber numberWithFloat:currentLocation[1]],
+           [NSNumber numberWithFloat:currentLocation[2]],nil];
+}
+
+
+- (void) send3DPositionChange
+{
+    if([viewer syncSeriesState] != SyncSeriesStateEnable)
+        return;
+    
+    float currentLocation[3] ;
+    [self getViewerDICOMCoords:currentLocation];
+
+    float relativePositionChange[3];
+    for(int i =0 ;i<3 ;i++)
+        relativePositionChange[i]= currentLocation[i]-syncPositionOrigin[i];
+    
+    NSArray* positionChange = [NSArray arrayWithObjects: 
+                               [NSNumber numberWithFloat:relativePositionChange[0]],
+                               [NSNumber numberWithFloat:relativePositionChange[1]],
+                               [NSNumber numberWithFloat:relativePositionChange[2]],nil];
+    
+    NSDictionary *userInfo = [NSDictionary dictionaryWithObject:positionChange forKey:@"positionChange"];
+   
+    [[NSNotificationCenter defaultCenter] postNotificationName: OsirixOrthoMPRPosChangeNotification object:viewer  userInfo: userInfo]; 
+}
+
+- (float*) getSyncPositionOrigin
+{
+    return syncPositionOrigin;
+}
+
+- (void) resetSyncPositionOrigin
+{
+    [self getViewerDICOMCoords:syncPositionOrigin];
+}
+
+
 - (void) toggleDisplayResliceAxes: (id) sender
 {
 	if([sender isEqualTo:viewer])

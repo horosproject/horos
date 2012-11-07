@@ -22,4 +22,6 @@
 - (void) superSetBlendingFactor:(float) f;
 - (void) superFlipVertical:(id) sender;
 - (void) superFlipHorizontal:(id) sender;
+- (void) setCrossPosition: (float) x: (float) y : (BOOL) doNotifychange;
+
 @end

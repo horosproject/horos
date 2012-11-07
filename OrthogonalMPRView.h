@@ -43,6 +43,9 @@
 - (void) setController: (OrthogonalMPRController*) newController;
 - (OrthogonalMPRController*) controller;
 
+- (void) convertPixX: (float) x pixY: (float) y toDICOMCoords: (float*) location ;
+- (void) getCrossPositionDICOMCoords: (float*) location ;
+- (void) setCrossPosition: (float) x: (float) y : (BOOL) doNotifychange;
 - (void) setCrossPosition: (float) x: (float) y;
 - (void) setCrossPositionX: (float) x;
 - (void) setCrossPositionY: (float) y;
