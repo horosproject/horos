@@ -760,86 +760,88 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 }
 
 -(NSUInteger)computeDataFileIndex {
-	DLog(@"In -[DicomDatabase computeDataFileIndex] for %@ initially %d", self.sqlFilePath, (int)_dataFileIndex.unsignedIntegerValue);
-	
-	BOOL hereBecauseZero = (_dataFileIndex.unsignedIntegerValue == 0);
-	@synchronized(_dataFileIndex) {
-		if (hereBecauseZero && _dataFileIndex.unsignedIntegerValue != 0)
-			return _dataFileIndex.unsignedIntegerValue += 1;
-		@try {
-			NSString* path = self.dataDirPath;
-//			NSLog(@"Path is %@", path);
+	@synchronized (_dataFileIndex) {
+        DLog(@"In -[DicomDatabase computeDataFileIndex] for %@ initially %d", self.sqlFilePath, (int)_dataFileIndex.unsignedIntegerValue);
+        
+        BOOL hereBecauseZero = (_dataFileIndex.unsignedIntegerValue == 0);
+        @synchronized(_dataFileIndex) {
+            if (hereBecauseZero && _dataFileIndex.unsignedIntegerValue != 0)
+                return _dataFileIndex.unsignedIntegerValue += 1;
+            @try {
+                NSString* path = self.dataDirPath;
+    //			NSLog(@"Path is %@", path);
 
-			// delete empty dirs and scan for files with number names
-			NSArray* fs = [[NSFileManager.defaultManager enumeratorAtPath:path filesOnly:NO recursive:NO] allObjects]; // [NSFileManager.defaultManager contentsOfDirectoryAtPath:path error:nil];
-//			NSLog(@"Scanning %d dirs", fs.count);
-			for (NSString* f in fs) {
-//				NSLog(@"Scanning dir %@", f);
-				NSString* fpath = [path stringByAppendingPathComponent:f];
-				//NSDictionary* fattr = [NSFileManager.defaultManager fileAttributesAtPath:fpath traverseLink:YES];
-				//NSLog(@"Has %d attrs", fattr.count);
-				
-				// check if this folder is empty, and delete it if necessary
-				BOOL isDir;
-				if ([NSFileManager.defaultManager fileExistsAtPath:fpath isDirectory:&isDir] && isDir) {
-					NSAutoreleasePool* pool = [NSAutoreleasePool new];
-					@try {
-						BOOL hasValidFiles = NO;
-						
-//						NSLog(@"Content of %@", f);
-						N2DirectoryEnumerator* n2de = [NSFileManager.defaultManager enumeratorAtPath:fpath filesOnly:NO recursive:NO];
-						NSString* s;
-						while (s = [n2de nextObject]) // [NSFileManager.defaultManager contentsOfDirectoryAtPath:fpath error:nil])
-							if ([[s stringByDeletingPathExtension] integerValue] > 0) {
-								hasValidFiles = YES;
-								break;
-							}
-						
-						if (!hasValidFiles)
-							[NSFileManager.defaultManager removeItemAtPath:fpath error:nil];
-						else {
-							NSUInteger fi = [f integerValue];
-							if (fi > _dataFileIndex.unsignedIntegerValue)
-								_dataFileIndex.unsignedIntegerValue = fi;
-						}
-					} @catch (NSException* e) {
-						N2LogExceptionWithStackTrace(e);
-					} @finally {
-						[pool release];
-					}
-				}
-			}
-			
-			// scan directories
-			
-			if (_dataFileIndex.unsignedIntegerValue > 0) {
-//				NSLog(@"datafileindex is %d", _dataFileIndex.unsignedIntegerValue);
-				
-				NSInteger t = _dataFileIndex.unsignedIntegerValue;
-				t -= [BrowserController DefaultFolderSizeForDB];
-				if (t < 0) t = 0;
-				
-				NSArray* paths = [[NSFileManager.defaultManager enumeratorAtPath:[path stringByAppendingPathComponent:[NSString stringWithFormat:@"%d", (int) _dataFileIndex.unsignedIntegerValue]] filesOnly:NO recursive:NO] allObjects]; // [NSFileManager.defaultManager contentsOfDirectoryAtPath:[path stringByAppendingPathComponent:[NSString stringWithFormat:@"%d", _dataFileIndex.unsignedIntegerValue]] error:nil];
-//				NSLog(@"contains %d files", paths.count);
-				for (NSString* s in paths) {
-					long si = [[s stringByDeletingPathExtension] integerValue];
-					if (si > t)
-						t = si;
-				}
-				
-				_dataFileIndex.unsignedIntegerValue = t;
-			}
-			
-			if (!_dataFileIndex.unsignedIntegerValue)
-				_dataFileIndex.unsignedIntegerValue = 1;
-			
-			DLog(@"   -[DicomDatabase computeDataFileIndex] for %@ computed %d", self.sqlFilePath, (int)_dataFileIndex.unsignedIntegerValue);
-		} @catch (NSException* e) {
-			N2LogExceptionWithStackTrace(e);
-		}
-	}
-	
-	return _dataFileIndex.unsignedIntegerValue;
+                // delete empty dirs and scan for files with number names
+                NSArray* fs = [[NSFileManager.defaultManager enumeratorAtPath:path filesOnly:NO recursive:NO] allObjects]; // [NSFileManager.defaultManager contentsOfDirectoryAtPath:path error:nil];
+    //			NSLog(@"Scanning %d dirs", fs.count);
+                for (NSString* f in fs) {
+    //				NSLog(@"Scanning dir %@", f);
+                    NSString* fpath = [path stringByAppendingPathComponent:f];
+                    //NSDictionary* fattr = [NSFileManager.defaultManager fileAttributesAtPath:fpath traverseLink:YES];
+                    //NSLog(@"Has %d attrs", fattr.count);
+                    
+                    // check if this folder is empty, and delete it if necessary
+                    BOOL isDir;
+                    if ([NSFileManager.defaultManager fileExistsAtPath:fpath isDirectory:&isDir] && isDir) {
+                        NSAutoreleasePool* pool = [NSAutoreleasePool new];
+                        @try {
+                            BOOL hasValidFiles = NO;
+                            
+    //						NSLog(@"Content of %@", f);
+                            N2DirectoryEnumerator* n2de = [NSFileManager.defaultManager enumeratorAtPath:fpath filesOnly:NO recursive:NO];
+                            NSString* s;
+                            while (s = [n2de nextObject]) // [NSFileManager.defaultManager contentsOfDirectoryAtPath:fpath error:nil])
+                                if ([[s stringByDeletingPathExtension] integerValue] > 0) {
+                                    hasValidFiles = YES;
+                                    break;
+                                }
+                            
+                            if (!hasValidFiles)
+                                [NSFileManager.defaultManager removeItemAtPath:fpath error:nil];
+                            else {
+                                NSUInteger fi = [f integerValue];
+                                if (fi > _dataFileIndex.unsignedIntegerValue)
+                                    _dataFileIndex.unsignedIntegerValue = fi;
+                            }
+                        } @catch (NSException* e) {
+                            N2LogExceptionWithStackTrace(e);
+                        } @finally {
+                            [pool release];
+                        }
+                    }
+                }
+                
+                // scan directories
+                
+                if (_dataFileIndex.unsignedIntegerValue > 0) {
+    //				NSLog(@"datafileindex is %d", _dataFileIndex.unsignedIntegerValue);
+                    
+                    NSInteger t = _dataFileIndex.unsignedIntegerValue;
+                    t -= [BrowserController DefaultFolderSizeForDB];
+                    if (t < 0) t = 0;
+                    
+                    NSArray* paths = [[NSFileManager.defaultManager enumeratorAtPath:[path stringByAppendingPathComponent:[NSString stringWithFormat:@"%d", (int) _dataFileIndex.unsignedIntegerValue]] filesOnly:NO recursive:NO] allObjects]; // [NSFileManager.defaultManager contentsOfDirectoryAtPath:[path stringByAppendingPathComponent:[NSString stringWithFormat:@"%d", _dataFileIndex.unsignedIntegerValue]] error:nil];
+    //				NSLog(@"contains %d files", paths.count);
+                    for (NSString* s in paths) {
+                        long si = [[s stringByDeletingPathExtension] integerValue];
+                        if (si > t)
+                            t = si;
+                    }
+                    
+                    _dataFileIndex.unsignedIntegerValue = t;
+                }
+                
+                if (!_dataFileIndex.unsignedIntegerValue)
+                    _dataFileIndex.unsignedIntegerValue = 1;
+                
+                DLog(@"   -[DicomDatabase computeDataFileIndex] for %@ computed %d", self.sqlFilePath, (int)_dataFileIndex.unsignedIntegerValue);
+            } @catch (NSException* e) {
+                N2LogExceptionWithStackTrace(e);
+            }
+        }
+        
+        return _dataFileIndex.unsignedIntegerValue;
+    }
 }
 
 -(NSString*)uniquePathForNewDataFileWithExtension:(NSString*)ext {
@@ -855,14 +857,19 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		NSString* dataDirPath = self.dataDirPath;
 		[NSFileManager.defaultManager confirmNoIndexDirectoryAtPath:dataDirPath]; // old impl only did this every 3 secs..
 		
-		if (!_dataFileIndex.unsignedIntegerValue)
-			[self computeDataFileIndex];
-		[_dataFileIndex increment];
+        NSUInteger index = 0;
+        @synchronized(_dataFileIndex) {
+            if (!_dataFileIndex.unsignedIntegerValue)
+                [self computeDataFileIndex];
+            [_dataFileIndex increment];
+            index = _dataFileIndex.unsignedIntegerValue;
+        }
+        
 		long long defaultFolderSizeForDB = [BrowserController DefaultFolderSizeForDB];
 		
 		BOOL fileExists = NO, firstExists = YES;
 		do {
-			long long subFolderInt = defaultFolderSizeForDB*(_dataFileIndex.unsignedIntegerValue/defaultFolderSizeForDB+1);
+			long long subFolderInt = defaultFolderSizeForDB*(index/defaultFolderSizeForDB+1);
 			NSString* subFolderPath = [dataDirPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%lld", subFolderInt]];
 			[NSFileManager.defaultManager confirmDirectoryAtPath:subFolderPath];
 			
@@ -874,9 +881,16 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 				if (firstExists)
                 {
 					firstExists = NO;
-					[self computeDataFileIndex];
+                    @synchronized(_dataFileIndex) {
+                        [self computeDataFileIndex];
+                        index = _dataFileIndex.unsignedIntegerValue;
+                    }
 				}
-                else [_dataFileIndex increment];
+                else
+                    @synchronized (_dataFileIndex) {
+                        [_dataFileIndex increment];
+                        index = _dataFileIndex.unsignedIntegerValue;
+                    }
             }
 		} while (fileExists);
 	}
