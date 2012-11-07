@@ -842,6 +842,8 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
         
         return _dataFileIndex.unsignedIntegerValue;
     }
+    
+    return 0;
 }
 
 -(NSString*)uniquePathForNewDataFileWithExtension:(NSString*)ext {
