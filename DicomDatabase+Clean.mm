@@ -487,7 +487,7 @@ static BOOL _cleanForFreeSpaceLimitSoonReachedDisplayed = NO;
         }
         
         // sort studiesDates by date
-        [studiesDates sortUsingComparator: ^(id a, id b) {
+        [studiesDates sortUsingComparator: ^NSComparisonResult(id a, id b) {
             return [[a objectAtIndex:1] compare:[b objectAtIndex:1]];
         }];
         

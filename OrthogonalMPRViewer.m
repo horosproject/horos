@@ -2450,7 +2450,7 @@ return YES;
 {
     NSMutableArray* orthoMPRViewers = [OrthogonalMPRViewer orthoMPRViewerApps ];
     
-    [orthoMPRViewers sortUsingComparator: ^(id obj1, id obj2) {
+    [orthoMPRViewers sortUsingComparator: ^NSComparisonResult(id obj1, id obj2) {
         if([obj1 syncSeriesState] > [obj2 syncSeriesState] )
             return NSOrderedAscending;
         else if([obj1 syncSeriesState] < [obj2 syncSeriesState] )
