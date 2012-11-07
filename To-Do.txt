@@ -9,7 +9,7 @@
 - DICOM ECG (Ginkgo CADx) (OSIRIX-113)
 - WebPortal: LDAP/OpenDAP support
 - WebPortal: Groups of users (for sharing)
-- WebPortal: Edit report (OSIRIX-4)
+- WebPortal: Edit/Upload report (OSIRIX-4)
 - WebPortal: Burn option if the CD/DVD is installed (OSIRIX-6)
 - WebPortal: create/delete albums and add/remove studies to static albums (admin)
 - WebPortal: for admin, consult network logs
