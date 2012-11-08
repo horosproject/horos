@@ -4364,8 +4364,6 @@ static volatile int numberOfThreadsForRelisce = 0;
                             
                             [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d %@", name, [[NSUserDefaults dateTimeFormatter] stringFromDate: [curSeries valueForKey:@"date"]], count, type]];
                             
-                            [previewMatrix setToolTip:[NSString stringWithFormat: NSLocalizedString(@"Series ID:%@\rRight mouse button to\ropen in new window", nil), [curSeries valueForKey:@"id"]] forCell:cell];
-                            
                             if( [viewerSeries containsObject: curSeries]) // Red
                             {
                                 [cell setBackgroundColor: [NSColor colorWithCalibratedRed:252/255. green:177/255. blue:141/255. alpha:1.0]];
