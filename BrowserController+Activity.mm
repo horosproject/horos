@@ -166,7 +166,9 @@ static NSString* const BrowserActivityHelperContext = @"BrowserActivityHelperCon
                 ThreadCell* cell = (ThreadCell*)[self cellForThread:thread];
                 if (cell) {
                     [cell cleanup];
+                    [cell retain];
                     [_cells removeObject:cell];
+                    [cell autorelease];
                 }
             }
             

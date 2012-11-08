@@ -78,24 +78,28 @@
 }
 
 -(void)setThread:(NSThread*)thread {
-	@try {
-		[self.thread removeObserver:self forKeyPath:NSThreadSupportsCancelKey];
-		[self.thread removeObserver:self forKeyPath:NSThreadProgressKey];
-		[self.thread removeObserver:self forKeyPath:NSThreadStatusKey];
-		[self.thread removeObserver:self forKeyPath:NSThreadIsCancelledKey];
-	} @catch (...) {
-	}
-	
-	[_thread release];
-    [_retainedThreadDictionary release]; _retainedThreadDictionary = nil;
     
-	_thread = [thread retain];
-    _retainedThreadDictionary = [_thread.threadDictionary retain];
-    
-	[self.thread addObserver:self forKeyPath:NSThreadIsCancelledKey options:NSKeyValueObservingOptionInitial context:NULL];
-	[self.thread addObserver:self forKeyPath:NSThreadStatusKey options:NSKeyValueObservingOptionInitial context:NULL];
-	[self.thread addObserver:self forKeyPath:NSThreadProgressKey options:NSKeyValueObservingOptionInitial context:NULL];
-	[self.thread addObserver:self forKeyPath:NSThreadSupportsCancelKey options:NSKeyValueObservingOptionInitial context:NULL];
+    @synchronized( _retainedThreadDictionary)
+    {
+        @try {
+            [self.thread removeObserver:self forKeyPath:NSThreadSupportsCancelKey];
+            [self.thread removeObserver:self forKeyPath:NSThreadProgressKey];
+            [self.thread removeObserver:self forKeyPath:NSThreadStatusKey];
+            [self.thread removeObserver:self forKeyPath:NSThreadIsCancelledKey];
+        } @catch (...) {
+        }
+        
+        [_thread autorelease]; _thread = nil;
+        [_retainedThreadDictionary autorelease]; _retainedThreadDictionary = nil;
+        
+        _thread = [thread retain];
+        _retainedThreadDictionary = [_thread.threadDictionary retain];
+        
+        [self.thread addObserver:self forKeyPath:NSThreadIsCancelledKey options:NSKeyValueObservingOptionInitial context:NULL];
+        [self.thread addObserver:self forKeyPath:NSThreadStatusKey options:NSKeyValueObservingOptionInitial context:NULL];
+        [self.thread addObserver:self forKeyPath:NSThreadProgressKey options:NSKeyValueObservingOptionInitial context:NULL];
+        [self.thread addObserver:self forKeyPath:NSThreadSupportsCancelKey options:NSKeyValueObservingOptionInitial context:NULL];
+    }
 }
 
 -(void)_observeValueForKeyPathOfObjectChangeContext:(NSArray*)args {
@@ -103,30 +107,35 @@
 }
 
 -(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(NSThread*)obj change:(NSDictionary*)change context:(void*)context {
-	if (obj == self.thread) {
-		if (![NSThread isMainThread]) {
-			[self performSelectorOnMainThread:@selector(_observeValueForKeyPathOfObjectChangeContext:) withObject:[NSArray arrayWithObjects: keyPath, obj, change, [NSValue valueWithPointer:context], NULL] waitUntilDone:NO];
-			return;
-		}
-		
-		if ([keyPath isEqual:NSThreadStatusKey]) {
-			[self.view setNeedsDisplayInRect: [self.view rectOfRow:[self.manager.threads indexOfObject:self.thread]]];
-			return;
-		} else if ([keyPath isEqual:NSThreadProgressKey]) {
-			[self.progressIndicator setDoubleValue:self.thread.subthreadsAwareProgress];
-			[self.progressIndicator setIndeterminate: self.thread.progress < 0];
-			if (self.thread.progress < 0) [self.progressIndicator startAnimation:self];
-            if (fabs(_lastDisplayedProgress-obj.progress) > 1.0/self.progressIndicator.frame.size.width) {
-                _lastDisplayedProgress = obj.progress;
-                /*if ([obj isMainThread])*/ [self.progressIndicator display];
+    
+    @synchronized( _retainedThreadDictionary)
+    {
+        if (obj == self.thread)
+        {
+            if (![NSThread isMainThread]) {
+                [self performSelectorOnMainThread:@selector(_observeValueForKeyPathOfObjectChangeContext:) withObject:[NSArray arrayWithObjects: keyPath, obj, change, [NSValue valueWithPointer:context], NULL] waitUntilDone:NO];
+                return;
             }
-			return;
-		} else if ([keyPath isEqual:NSThreadSupportsCancelKey] || [keyPath isEqual:NSThreadIsCancelledKey]) {
-			[self.cancelButton setHidden:(!self.thread.supportsCancel)||self.thread.isCancelled];
-			[self.cancelButton setEnabled:self.thread.supportsCancel];
-			return;
-		}
-	}
+            
+            if ([keyPath isEqual:NSThreadStatusKey]) {
+                [self.view setNeedsDisplayInRect: [self.view rectOfRow:[self.manager.threads indexOfObject:self.thread]]];
+                return;
+            } else if ([keyPath isEqual:NSThreadProgressKey]) {
+                [self.progressIndicator setDoubleValue:self.thread.subthreadsAwareProgress];
+                [self.progressIndicator setIndeterminate: self.thread.progress < 0];
+                if (self.thread.progress < 0) [self.progressIndicator startAnimation:self];
+                if (fabs(_lastDisplayedProgress-obj.progress) > 1.0/self.progressIndicator.frame.size.width) {
+                    _lastDisplayedProgress = obj.progress;
+                    /*if ([obj isMainThread])*/ [self.progressIndicator display];
+                }
+                return;
+            } else if ([keyPath isEqual:NSThreadSupportsCancelKey] || [keyPath isEqual:NSThreadIsCancelledKey]) {
+                [self.cancelButton setHidden:(!self.thread.supportsCancel)||self.thread.isCancelled];
+                [self.cancelButton setEnabled:self.thread.supportsCancel];
+                return;
+            }
+        }
+    }
 	
 	[super observeValueForKeyPath:keyPath ofObject:obj change:change context:context];
 }
