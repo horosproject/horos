@@ -4106,8 +4106,13 @@ static volatile int numberOfThreadsForRelisce = 0;
     {
         [curStudy setHidden: ![curStudy isHidden]];
         
-        for( id loopItem in [ViewerController getDisplayed2DViewers])
-            [loopItem buildMatrixPreview: YES];
+        for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+        {
+            if( [v.studyInstanceUID isEqualToString: self.studyInstanceUID])
+                [v buildMatrixPreview: NO];
+            else
+                [v buildMatrixPreview: YES];
+        }
     }
     #ifndef OSIRIX_LIGHT
     else if( [curStudy isKindOfClass: [DCMTKStudyQueryNode class]]) //Distant Study
@@ -4424,6 +4429,33 @@ static volatile int numberOfThreadsForRelisce = 0;
                             }
                             
                             index++;
+                        }
+                    }
+                    else // series are hidden : color the study cell if series are selected
+                    {
+                        [cell setBordered: YES];
+                        for( i = 0; i < [series count]; i++)
+                        {
+                            DicomSeries* curSeries = [series objectAtIndex:i];
+                            
+                            if( [viewerSeries containsObject: curSeries]) // Red
+                            {
+                                [cell setBackgroundColor: [NSColor colorWithCalibratedRed:252/255. green:177/255. blue:141/255. alpha:1.0]];
+                                [cell setBordered: NO];
+                                break;
+                            }
+                            else if( [[self blendingController] currentSeries] == curSeries) // Green
+                            {
+                                [cell setBackgroundColor: [NSColor colorWithCalibratedRed: (195.)/(255.) green: (249.)/(255.) blue: (145.)/(255.) alpha:1.0]];
+                                [cell setBordered: NO];
+                                break;
+                            }
+                            else if( [displayedSeries containsObject: curSeries]) // Yellow
+                            {
+                                [cell setBackgroundColor: [NSColor colorWithCalibratedRed:249./255. green:240./255. blue:140./255. alpha:1.0]];
+                                [cell setBordered: NO];
+                                break;
+                            }
                         }
                     }
                 }
