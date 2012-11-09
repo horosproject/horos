@@ -408,8 +408,9 @@ extern int delayedTileWindows;
 
 	[xmlDocument release];
     [dcmDocument release];
-	dcmDocument = [[DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO] retain];
-	xmlDocument = [[dcmDocument xmlDocument] retain];
+    
+    dcmDocument = [[DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO] retain];
+    xmlDocument = [[dcmDocument xmlDocument] retain];
 	
 	int selectedRow = [table selectedRow];
 	
@@ -511,9 +512,30 @@ extern int delayedTileWindows;
 	
 	if([DicomFile isDICOMFile:srcFile])
 	{
-		dcmDocument = [[DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO] retain];
-		xmlDocument = [[dcmDocument xmlDocument] retain];
-		
+//        NSTask *theTask = [[[NSTask alloc] init] autorelease];
+//        
+//        NSPipe *thePipe = [NSPipe pipe];
+//        
+//        [theTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dcm2xml"]];
+//        [theTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
+//        [theTask setArguments: [NSMutableArray arrayWithObject: srcFile]];
+//        [theTask setStandardOutput: thePipe];
+//        [theTask launch];
+//        
+//        NSData *resData = [[thePipe fileHandleForReading] readDataToEndOfFile];
+//        
+//        while( [theTask isRunning])
+//            [NSThread sleepForTimeInterval: 0.1];
+//        
+//        NSString *resString = [[[NSString alloc] initWithData:resData encoding: NSUTF8StringEncoding] autorelease];
+//        
+//        NSLog( @"%@", resString);
+//
+//        xmlDocument = [[NSXMLDocument alloc] initWithData:resData  options: 0 error: nil];
+        
+        dcmDocument = [[DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO] retain];
+        xmlDocument = [[dcmDocument xmlDocument] retain];
+        
 		isDICOM = YES;
 	}
 	#ifndef OSIRIX_LIGHT

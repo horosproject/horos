@@ -309,7 +309,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 {
 	if( str == nil) return nil;
     
-	int	fromLength = strlen( str);
+    int fromLength = strlen( str);
+    
 	NSMutableString	*result = [NSMutableString string];
     BOOL checkPNDelimiters = YES;
     NSStringEncoding currentEncoding = encodings[ 0];

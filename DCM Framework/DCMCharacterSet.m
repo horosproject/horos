@@ -63,7 +63,16 @@ char* DCMreplaceInvalidCharacter( char* str ) {
 {
 	if( str == nil) return nil;
     
-	int	fromLength = strlen( str);
+    int	fromLength;
+    
+    if( length > 0)
+        fromLength = length;
+	else
+    {
+        NSLog( @"***** warning DCMCharacterSet stringWithBytes, length == 0, use C String length");
+        fromLength = strlen( str);
+    }
+    
 	NSMutableString	*result = [NSMutableString string];
     BOOL checkPNDelimiters = YES;
     NSStringEncoding currentEncoding = encodings[ 0];

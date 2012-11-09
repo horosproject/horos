@@ -428,11 +428,11 @@ void signal_EXC(int sig_num)
 		if (stringEncoding == 0)
 			stringEncoding = NSISOLatin1StringEncoding;
 			
-		NSString *string;
-		string = [[[NSString alloc] initWithBytes:(_ptr + position) length:(unsigned)length encoding:stringEncoding] autorelease];
+		NSString *string = [[[NSString alloc] initWithBytes:(_ptr + position) length:(unsigned)length encoding:stringEncoding] autorelease];
 		NSString *trimmedString = [string stringByTrimmingCharactersInSet:[NSCharacterSet controlCharacterSet]];
 		position += length;
-		return [trimmedString  stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];;
+        
+		return [trimmedString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 		
 	}
 	else 
@@ -445,10 +445,11 @@ void signal_EXC(int sig_num)
 	NSException *exception = [self testForLength:length];
 	if (!exception)
 	{
-		NSString *string;
-		string = [DCMCharacterSet stringWithBytes: (char*) (_ptr + position) length:(unsigned)length encodings:encodings];
+		NSString *string = [DCMCharacterSet stringWithBytes: (char*) (_ptr + position) length:(unsigned)length encodings:encodings];
+        
 		NSString *trimmedString = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 		position += length;
+        
 		return [trimmedString stringByTrimmingCharactersInSet:[NSCharacterSet controlCharacterSet]];
 	}
 	else 

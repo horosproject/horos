@@ -34,7 +34,7 @@
 
 
 
-#define DCMDEBUG NO
+#define DCMDEBUG 0
 #define DCMFramework_compile YES
 
 
