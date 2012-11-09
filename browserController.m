@@ -3551,6 +3551,41 @@ static NSConditionLock *threadLock = nil;
 	}
 }
 
+- (NSArray*) comparativeServers
+{
+    NSMutableArray* servers = [NSMutableArray array];
+    NSArray* sources = [DCMNetServiceDelegate DICOMServersList];
+    NSMutableArray* comparativeNodesDescription = [NSMutableArray array];
+    NSMutableArray* comparativeNodesAddress = [NSMutableArray array];
+    for( NSDictionary *si in [[NSUserDefaults standardUserDefaults] arrayForKey: @"comparativeSearchDICOMNodes"])
+    {
+        if( [[si valueForKey: @"server"] valueForKey: @"Description"])
+            [comparativeNodesDescription addObject: [[si valueForKey: @"server"] valueForKey: @"Description"]];
+        
+        if( [[si valueForKey: @"server"] valueForKey: @"Address"])
+            [comparativeNodesAddress addObject: [[si valueForKey: @"server"] valueForKey: @"Address"]];
+    }
+    
+    if( comparativeNodesDescription.count != comparativeNodesAddress.count)
+        NSLog( @"**** comparativeNodesDescription.count != comparativeNodesAddress.count");
+    else
+    {
+        for( int x = 0; x < comparativeNodesDescription.count; x++)
+        {
+            NSString *description = [comparativeNodesDescription objectAtIndex: x];
+            NSString *address = [comparativeNodesAddress objectAtIndex: x];
+            
+            for (NSDictionary* si in sources)
+            {
+                if( [description isEqualToString: [si objectForKey:@"Description"]] && [address isEqualToString: [si objectForKey:@"Address"]])
+                    [servers addObject: si];
+            }
+        }
+    }
+    
+    return servers;
+}
+
 - (NSArray*) distantStudiesForSearchString: (NSString*) curSearchString type:(int) curSearchType
 {
     #ifndef OSIRIX_LIGHT
@@ -3561,25 +3596,7 @@ static NSConditionLock *threadLock = nil;
     
     @try
     {
-        // Servers
-        NSMutableArray* servers = [NSMutableArray array];
-        NSArray* sources = [DCMNetServiceDelegate DICOMServersList];
-        NSMutableArray* comparativeNodesDescription = [NSMutableArray array];
-        NSMutableArray* comparativeNodesAddress = [NSMutableArray array];
-        for( NSDictionary *si in [[NSUserDefaults standardUserDefaults] arrayForKey: @"comparativeSearchDICOMNodes"])
-        {
-            if( [[si valueForKey: @"server"] valueForKey: @"Description"])
-                [comparativeNodesDescription addObject: [[si valueForKey: @"server"] valueForKey: @"Description"]];
-            
-            if( [[si valueForKey: @"server"] valueForKey: @"Address"])
-                [comparativeNodesAddress addObject: [[si valueForKey: @"server"] valueForKey: @"Address"]];
-        }
-        
-        for (NSDictionary* si in sources)
-        {
-            if( [comparativeNodesDescription containsObject: [si objectForKey:@"Description"]] && [comparativeNodesAddress containsObject: [si objectForKey:@"Address"]])
-                [servers addObject: si];
-        }
+        NSArray *servers = [self comparativeServers];
         
         // Distant studies
         NSMutableDictionary *d = [NSMutableDictionary dictionary];
@@ -3723,25 +3740,7 @@ static NSConditionLock *threadLock = nil;
     
     @try
     {
-        // Servers
-        NSMutableArray* servers = [NSMutableArray array];
-        NSArray* sources = [DCMNetServiceDelegate DICOMServersList];
-        NSMutableArray* comparativeNodesDescription = [NSMutableArray array];
-        NSMutableArray* comparativeNodesAddress = [NSMutableArray array];
-        for( NSDictionary *si in [[NSUserDefaults standardUserDefaults] arrayForKey: @"comparativeSearchDICOMNodes"])
-        {
-            if( [[si valueForKey: @"server"] valueForKey: @"Description"])
-                [comparativeNodesDescription addObject: [[si valueForKey: @"server"] valueForKey: @"Description"]];
-            
-            if( [[si valueForKey: @"server"] valueForKey: @"Address"])
-                [comparativeNodesAddress addObject: [[si valueForKey: @"server"] valueForKey: @"Address"]];
-        }
-        
-        for (NSDictionary* si in sources)
-        {
-            if( [comparativeNodesDescription containsObject: [si objectForKey:@"Description"]] && [comparativeNodesAddress containsObject: [si objectForKey:@"Address"]])
-                [servers addObject: si];
-        }
+        NSArray *servers = [self comparativeServers];
         
         // Distant studies
         NSMutableDictionary *d = [NSMutableDictionary dictionary];
@@ -3865,25 +3864,7 @@ static NSConditionLock *threadLock = nil;
     
     @try
     {
-        // Servers
-        NSMutableArray* servers = [NSMutableArray array];
-        NSArray* sources = [DCMNetServiceDelegate DICOMServersList];
-        NSMutableArray* comparativeNodesDescription = [NSMutableArray array];
-        NSMutableArray* comparativeNodesAddress = [NSMutableArray array];
-        for( NSDictionary *si in [[NSUserDefaults standardUserDefaults] arrayForKey: @"comparativeSearchDICOMNodes"])
-        {
-            if( [[si valueForKey: @"server"] valueForKey: @"Description"])
-                [comparativeNodesDescription addObject: [[si valueForKey: @"server"] valueForKey: @"Description"]];
-            
-            if( [[si valueForKey: @"server"] valueForKey: @"Address"])
-                [comparativeNodesAddress addObject: [[si valueForKey: @"server"] valueForKey: @"Address"]];
-        }
-        
-        for (NSDictionary* si in sources)
-        {
-            if( [comparativeNodesDescription containsObject: [si objectForKey:@"Description"]] && [comparativeNodesAddress containsObject: [si objectForKey:@"Address"]])
-                [servers addObject: si];
-        }
+        NSArray *servers = [self comparativeServers];
         
         // Distant studies
         // In current versions, two filters exist: modality & date
@@ -4082,24 +4063,7 @@ static NSConditionLock *threadLock = nil;
                             BOOL usePatientName = [[NSUserDefaults standardUserDefaults] boolForKey: @"usePatientNameForComparativeSearch"];
                             
                             // Servers
-                            NSMutableArray* servers = [NSMutableArray array];
-                            NSArray* sources = [DCMNetServiceDelegate DICOMServersList];
-                            NSMutableArray* comparativeNodesDescription = [NSMutableArray array];
-                            NSMutableArray* comparativeNodesAddress = [NSMutableArray array];
-                            for( NSDictionary *si in [[NSUserDefaults standardUserDefaults] arrayForKey: @"comparativeSearchDICOMNodes"])
-                            {
-                                if( [[si valueForKey: @"server"] valueForKey: @"Description"])
-                                    [comparativeNodesDescription addObject: [[si valueForKey: @"server"] valueForKey: @"Description"]];
-                                
-                                if( [[si valueForKey: @"server"] valueForKey: @"Address"])
-                                    [comparativeNodesAddress addObject: [[si valueForKey: @"server"] valueForKey: @"Address"]];
-                            }
-                            
-                            for (NSDictionary* si in sources)
-                            {
-                                if( [comparativeNodesDescription containsObject: [si objectForKey:@"Description"]] && [comparativeNodesAddress containsObject: [si objectForKey:@"Address"]])
-                                    [servers addObject: si];
-                            }
+                            NSArray *servers = [self comparativeServers];
                             
                             if( servers.count)
                             {

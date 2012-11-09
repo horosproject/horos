@@ -2768,7 +2768,7 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 
 - (NSString*) description
 {
-    return [NSString stringWithFormat: @"QueryNode: %@ %@ %@", _name, _accessionNumber, _modality];
+    return [NSString stringWithFormat: @"QueryNode: %@ %@ %@ %@", _name, _accessionNumber, _modality, _calledAET];
 }
 
 #pragma mark Max simultaneous auto-retrieve requests
