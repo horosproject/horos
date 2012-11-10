@@ -56,7 +56,7 @@
 - (id) initWithVolume:(float*)data WidthDimension:(int*)dim Spacing:(float*)spacing ResampleVoxelSize:(float)vsize
 {
 	self = [super init];
-	input=data;
+	input = data;
 	inputWidth = dim[0];
 	inputHeight = dim[1];
 	inputDepth = dim[2];
@@ -558,12 +558,16 @@
 	if (!isDistanceTransformFinished) {
         //		return ERROR_DISTTRANSNOTFINISH;
         float pixVal = 0;
-        int pos = (int)pt.z*inputWidth*inputHeight+(int)pt.y*inputWidth+(int)pt.x;
+        long maxData = inputWidth*inputHeight*inputDepth;
+        long pos = (int)pt.z*inputWidth*inputHeight+(int)pt.y*inputWidth+(int)pt.x;
+        
         for (int i = -1; i < 2; ++i) {
             for (int j = -1; j < 2; ++j) {
                 for (int k = -1; k < 2; ++k) {
                     pos += (k * inputWidth * inputHeight + j * inputWidth + i);
-                    pixVal += input[pos];
+                    
+                    if( pos >= 0 && pos < maxData)
+                        pixVal += input[pos];
                 }
             }
         }
