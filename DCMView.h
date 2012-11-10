@@ -121,11 +121,9 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	float			syncRelativeDiff;
 	long			syncSeriesIndex;
 	
-	float			mprVector[ 3], mprPoint[ 3];
+	float			mprVector[ 3], mprPoint[ 3], timeIntervalForDrag;
 	
 	short			thickSlabMode, thickSlabStacks;
-	
-    NSImage         *myImage;
 	
 	NSMutableArray	*rectArray;
 	
@@ -166,8 +164,6 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
     NSMatrix        *matrix;
     
     long            count;
-	
-    BOOL            QuartzExtreme;
 	
     BOOL            xFlipped, yFlipped;
 
@@ -333,6 +329,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 @property BOOL eraserFlag;
 @property BOOL drawing;
 @property BOOL volumicSeries;
+@property float timeIntervalForDrag;
 @property(readonly) BOOL isKeyView, mouseDragging;
 
 + (BOOL) noPropagateSettingsInSeriesForModality: (NSString*) m;
@@ -466,9 +463,10 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (void) setStartWLWW;
 - (void) stopROIEditing;
 - (void) computeMagnifyLens:(NSPoint) p;
-- (void)makeTextureFromImage:(NSImage*)image forTexture:(GLuint*)texName buffer:(GLubyte*)buffer textureUnit:(GLuint)textureUnit;
+- (void) makeTextureFromImage:(NSImage*)image forTexture:(GLuint*)texName buffer:(GLubyte*)buffer textureUnit:(GLuint)textureUnit;
 - (void) stopROIEditingForce:(BOOL) force;
-- (void)subDrawRect: (NSRect)aRect;  // Subclassable, default does nothing.
+- (void) subDrawRect: (NSRect)aRect;     // Subclassable, default does nothing.
+- (void) drawRectAnyway:(NSRect)aRect;   // Subclassable, default does nothing.
 - (void) updateImage;
 - (BOOL) shouldPropagate;
 //- (NSPoint) convertFromView2iChat: (NSPoint) a;

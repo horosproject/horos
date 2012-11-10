@@ -467,7 +467,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 @synthesize showDescriptionInLarge, curRoiList;
 @synthesize drawingFrameRect, dontEnterReshape;
 @synthesize rectArray, studyColorR, studyColorG, studyColorB;
-@synthesize flippedData, whiteBackground;
+@synthesize flippedData, whiteBackground, timeIntervalForDrag;
 @synthesize dcmPixList;
 @synthesize dcmFilesList;
 @synthesize dcmRoiList;
@@ -3903,7 +3903,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		[self deleteMouseDownTimer];
 	
 	if ([event type] == NSLeftMouseDown)
-		_mouseDownTimer = [[NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(startDrag:) userInfo: event  repeats:NO] retain];
+		_mouseDownTimer = [[NSTimer scheduledTimerWithTimeInterval: self.timeIntervalForDrag target:self selector:@selector(startDrag:) userInfo: event  repeats:NO] retain];
 	
     if( dcmPixList)
 	{
@@ -9357,11 +9357,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	//		glDisable(GL_POLYGON_SMOOTH);
 	//		glDisable(GL_POINT_SMOOTH);
 			
-			
-			
 			glDisable(GL_BLEND);
 		}
 		#endif
+        
+        [self drawRectAnyway:aRect];
 	}
 	@catch (NSException * e) 
 	{
@@ -11930,6 +11930,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		_imageRows = rows;
 		_imageColumns = columns;
 		isKeyView = NO;
+        timeIntervalForDrag = 1.0;
+        
 		[self setAutoresizingMask:NSViewMinXMargin];
 		
 		noScale = NO;
@@ -12590,8 +12592,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 }
 
-- (void)subDrawRect: (NSRect)aRect {  // Subclassable, default does nothing.
+- (void)subDrawRect: (NSRect)aRect   // Subclassable, default does nothing.
+{
 	return;
+}
+
+- (void)drawRectAnyway:(NSRect)aRect // Subclassable, default does nothing.
+{
+    return;
 }
 
 #pragma mark-  PET  Tables
@@ -12658,15 +12666,18 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	if ([self dicomImage])
 	{
-		[pbTypes addObject:pasteBoardOsiriX];
-		[pboard declareTypes:pbTypes  owner:self];
-		[pboard setData:nil forType:pasteBoardOsiriX]; 
+		[pbTypes addObject: pasteBoardOsiriX];
+		[pboard declareTypes:pbTypes owner:self];
+		[pboard setData:nil forType:pasteBoardOsiriX];
 	}
 	else
 		[pboard declareTypes:pbTypes  owner:self];
 
+    NSData *pDataDCMView = [NSData dataWithBytes:&self length:sizeof(DCMView*)];
+    [pboard setData:pDataDCMView forType:pasteBoardOsiriX];
 		
-	if ([event modifierFlags] & NSAlternateKeyMask) {
+	if ([event modifierFlags] & NSAlternateKeyMask)
+    {
 		NSRect imageLocation;
 		local_point = [self convertPoint:event_location fromView:nil];
 		imageLocation.origin =  local_point;
@@ -12677,11 +12688,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			[destinationImage release];
 		destinationImage = [image copy];
 		
-		[self dragPromisedFilesOfTypes:[NSArray arrayWithObject:@"jpg"]
-            fromRect:imageLocation
-            source:self
-            slideBack:YES
-            event:event];
+		[self dragPromisedFilesOfTypes:[NSArray arrayWithObject:@"jpg"] fromRect:imageLocation source:self slideBack:YES event:event];
 	} 
 	else
 	{
