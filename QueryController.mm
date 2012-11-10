@@ -1817,6 +1817,8 @@ extern "C"
 
 - (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
 {
+    [item retain];
+    
 	@try
 	{
 		if( [[tableColumn identifier] isEqualToString: @"stateText"])
@@ -1884,6 +1886,10 @@ extern "C"
 	{
 		N2LogExceptionWithStackTrace(e);
 	}
+    @finally
+    {
+        [item release];
+    }
 	
 	return nil;
 }
@@ -3696,16 +3702,10 @@ extern "C"
 - (void) checkAndView:(id) item
 {
 	if( [[self window] isVisible] == NO)
-	{
-		[item release];
 		return;
-	}
 	
 	if( checkAndViewTry < 0)
-	{
-		[item release];
 		return;
-	}
 	
     [[BrowserController currentBrowser] setDatabase: [DicomDatabase activeLocalDatabase]];
 	[[BrowserController currentBrowser] checkIncoming: self];
@@ -3786,9 +3786,6 @@ extern "C"
 			else
 				success = YES;
 		}
-		
-		if( success)
-			[item release];
 				
 	}
 	@catch (NSException * e)
@@ -3805,7 +3802,8 @@ extern "C"
 	
 	{
 		checkAndViewTry = 20;
-		if( item) [self checkAndView: [item retain]];
+		if( item)
+            [self checkAndView: item];
 	}
 }
 
