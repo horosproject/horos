@@ -15,4 +15,15 @@
 	
 	return nil;
 }
+
+- (void)drawBezelWithFrame:(NSRect)frame inView:(NSView *)controlView {
+    [super drawBezelWithFrame:frame inView:controlView];
+    if (self.backgroundColor) {
+        [NSGraphicsContext saveGraphicsState];
+        [[self.backgroundColor colorWithAlphaComponent:0.75] setFill];
+        [NSBezierPath fillRect:NSInsetRect(frame, 1, 1)];
+        [NSGraphicsContext restoreGraphicsState];
+    }
+}
+
 @end

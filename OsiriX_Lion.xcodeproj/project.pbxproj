@@ -472,6 +472,8 @@
 		71AA5A3A1611F1EB006A6A5F /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 71AA5A2D1611F1EB006A6A5F /* SBJsonWriter.m */; };
 		71CE3C19157F489C00AC0112 /* List.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 71CE3C18157F489C00AC0112 /* List.pdf */; };
 		71CE3C1A157F489C00AC0112 /* List.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 71CE3C18157F489C00AC0112 /* List.pdf */; };
+		71CF9BAE1652AD4500E3A276 /* DownArrowWhiteRev.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 71CF9BAD1652AD4500E3A276 /* DownArrowWhiteRev.pdf */; };
+		71CF9BAF1652AD4500E3A276 /* DownArrowWhiteRev.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 71CF9BAD1652AD4500E3A276 /* DownArrowWhiteRev.pdf */; };
 		7E0B3A4A0675273500908593 /* DCM Framework_Prefix.pch in Resources */ = {isa = PBXBuildFile; fileRef = 7E0B3A12067526A600908593 /* DCM Framework_Prefix.pch */; };
 		7E0B3A4D0675273500908593 /* DCM.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A13067526A600908593 /* DCM.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7E0B3A530675273600908593 /* DCMAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A14067526A600908593 /* DCMAttribute.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -8671,6 +8673,7 @@
 		71AA5A2C1611F1EB006A6A5F /* SBJsonWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonWriter.h; sourceTree = "<group>"; };
 		71AA5A2D1611F1EB006A6A5F /* SBJsonWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonWriter.m; sourceTree = "<group>"; };
 		71CE3C18157F489C00AC0112 /* List.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = List.pdf; path = Binaries/Icons/List.pdf; sourceTree = SOURCE_ROOT; };
+		71CF9BAD1652AD4500E3A276 /* DownArrowWhiteRev.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = DownArrowWhiteRev.pdf; sourceTree = "<group>"; };
 		7E0339E607415C4F0025DDB4 /* BurnerWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BurnerWindowController.h; sourceTree = "<group>"; };
 		7E0339E707415C4F0025DDB4 /* BurnerWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BurnerWindowController.m; sourceTree = "<group>"; };
 		7E0B3A12067526A600908593 /* DCM Framework_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "DCM Framework_Prefix.pch"; sourceTree = "<group>"; };
@@ -15932,6 +15935,7 @@
 		ABBB647A063587B200D9531F /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				71CF9BAD1652AD4500E3A276 /* DownArrowWhiteRev.pdf */,
 				ABBB647B063587B200D9531F /* 2DBlending.tif */,
 				ABB7ADC4148CDDF2007D3C3F /* 2DMPRhorizontalPosition.tif */,
 				ABB7ADC5148CDDF2007D3C3F /* 2DMPRnormalPosition.tif */,
@@ -26751,6 +26755,7 @@
 				A9B23D6D15D018B6000E47C3 /* normalPosition.pdf in Resources */,
 				A9B23D7015D018C5000E47C3 /* verticalPosition.pdf in Resources */,
 				848327AB15ED08F4003BAEEB /* CustomIntervalPanel.xib in Resources */,
+				71CF9BAE1652AD4500E3A276 /* DownArrowWhiteRev.pdf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -27112,6 +27117,7 @@
 				A9B23D6E15D018B6000E47C3 /* normalPosition.pdf in Resources */,
 				A9B23D7115D018C5000E47C3 /* verticalPosition.pdf in Resources */,
 				848327AC15ED08F4003BAEEB /* CustomIntervalPanel.xib in Resources */,
+				71CF9BAF1652AD4500E3A276 /* DownArrowWhiteRev.pdf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

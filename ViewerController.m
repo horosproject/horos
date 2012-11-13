@@ -77,6 +77,7 @@
 #import "CalciumScoringWindowController.h"
 #import "EndoscopySegmentationController.h"
 #import "HornRegistration.h"
+#import "N2Stuff.h"
 #import "BonjourBrowser.h"
 #import "PluginManager.h"
 //#import <InstantMessage/IMService.h>
@@ -3673,17 +3674,18 @@ static volatile int numberOfThreadsForRelisce = 0;
 	NSManagedObject		*series = [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"];
 	NSInteger			index = [[[previewMatrix cells] valueForKey:@"representedObject"] indexOfObject: series];
 	
+    NSArray* cells = [previewMatrix cells];
+    for (id loopItem1 in cells)
+        [loopItem1 setBackgroundColor:nil];
+    
 	if( index != NSNotFound)
 	{
 		NSButtonCell *cell = [previewMatrix cellAtRow:index column: 0];
 			
 		if( [cell isBordered])
 		{
-			NSArray	*cells = [previewMatrix cells];
-			for( id loopItem1 in cells) [loopItem1 setBordered: YES];
-			
-			[cell setBackgroundColor: [NSColor selectedControlColor]];
-			[cell setBordered: NO];
+			[cell setBackgroundColor: [[self class] _selectedItemColor]];
+			//[cell setBordered: NO];
 			
 //			[previewMatrix selectCellAtRow:index column:0];
 			[previewMatrix scrollCellToVisibleAtRow: index column:0];
@@ -3691,8 +3693,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	}
 	else
 	{
-		NSArray	*cells = [previewMatrix cells];
-		for( id loopItem in cells) [loopItem setBordered: YES];
+//		for( id loopItem in cells) [loopItem setBordered: YES];
 //			
 //		[previewMatrix selectCellAtRow:-1 column:-1];
 	}
@@ -4133,6 +4134,18 @@ static volatile int numberOfThreadsForRelisce = 0;
 	}
 }
 
++ (NSColor*)_selectedItemColor { // red
+    return [NSColor colorWithCalibratedRed:252./255 green:177./255 blue:141./255 alpha:1];
+}
+
++ (NSColor*)_fusionedItemColor { // green
+    return [NSColor colorWithCalibratedRed:195./255 green:249/255 blue:145./255 alpha:1];
+}
+
++ (NSColor*)_openItemColor { // yellow
+    return [NSColor colorWithCalibratedRed:249./255 green:240./255 blue:140./255 alpha:1];
+}
+
 - (void) buildMatrixPreview: (BOOL) showSelected
 {
 	if( [[self window] isVisible] == NO) return;	//we will do it in checkBuiltMatrixPreview : faster opening !
@@ -4238,11 +4251,13 @@ static volatile int numberOfThreadsForRelisce = 0;
                 [cell setEnabled:YES];
                 [cell setImage: nil];
                 [cell setRepresentedObject: curStudy];
-                [cell setAction: @selector( matrixPreviewSwitchHidden:)];
+                [cell setAction: @selector(matrixPreviewSwitchHidden:)];
                 [cell setTarget: self];
                 [cell setBordered: YES];
                 [cell setLineBreakMode: NSLineBreakByWordWrapping];
-                
+                [cell setBackgroundColor:nil];
+                [cell setImageScaling:NSImageScaleNone];
+
                 NSUInteger curStudyIndex = [studiesArray indexOfObject: curStudy];
                 
 #ifndef OSIRIX_LIGHT
@@ -4274,9 +4289,9 @@ static volatile int numberOfThreadsForRelisce = 0;
                     
                     NSString *action;
                     if( [curStudy isHidden])
-                        action = NSLocalizedString( @"Show Series", nil);
+                        action = NSLocalizedString(@"Show Series", nil);
                     else
-                        action = NSLocalizedString( @"Hide Series", nil);
+                        action = NSLocalizedString(@"Hide Series", nil);
                     
                     NSString *patName = @"";
                     
@@ -4289,12 +4304,17 @@ static volatile int numberOfThreadsForRelisce = 0;
                     if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] != annotFull)
                         patName = @"";
                     
-                    if( [stateText length] == 0 && [comment length] == 0)
-                        [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%@\r%@ : %d %@\r\r%@", patName, name, [[NSUserDefaults dateTimeFormatter] stringFromDate: [curStudy valueForKey:@"date"]], modality, (int) [series count], NSLocalizedString( @"series", nil), action]];
-                    else 
-                        [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%@\r%@ : %d %@\r%@\r%@\r%@", patName, name, [[NSUserDefaults dateTimeFormatter] stringFromDate: [curStudy valueForKey:@"date"]], modality, (int) [series count], NSLocalizedString( @"series", nil), stateText, comment, action]];
+                    NSMutableArray* components = [NSMutableArray array];
+                    if (patName.length) [components addObject:patName];
+                    if (name.length) [components addObject:name];
+                    if ([curStudy date]) [components addObject:[[NSUserDefaults dateTimeFormatter] stringFromDate:[curStudy date]]];
+                    [components addObject:[NSString stringWithFormat:NSLocalizedString(@"%@: %@", @"semicolon separator for spacing"), modality, N2SingularPluralCount([series count], NSLocalizedString(@"series", @"one series, singular"), NSLocalizedString(@"series", @"zero or 2 or more series, plural"))]];
+                    if (stateText.length) [components addObject:stateText];
+                    if (comment.length) [components addObject:comment];
+                    if (action.length) [components addObject:[NSString stringWithFormat:@"\r%@", action]];
+                    [cell setTitle:[components componentsJoinedByString:@"\r"]];
                     
-                    [cell setBackgroundColor: [NSColor whiteColor]];
+                   // [cell setBackgroundColor: [NSColor whiteColor]];
                     
                     index++;
                     
@@ -4371,21 +4391,25 @@ static volatile int numberOfThreadsForRelisce = 0;
                             
                             if( [viewerSeries containsObject: curSeries]) // Red
                             {
-                                [cell setBackgroundColor: [NSColor colorWithCalibratedRed:252/255. green:177/255. blue:141/255. alpha:1.0]];
+                                [cell setBackgroundColor:[[self class] _selectedItemColor]];
                                 
-                                [cell setBordered: NO];
+                                //[cell setBordered: NO];
                             }
                             else if( [[self blendingController] currentSeries] == curSeries) // Green
                             {
-                                [cell setBackgroundColor: [NSColor colorWithCalibratedRed: (195.)/(255.) green: (249.)/(255.) blue: (145.)/(255.) alpha:1.0]];
-                                [cell setBordered: NO];
+                                [cell setBackgroundColor: [[self class] _fusionedItemColor]];
+                                //[cell setBordered: NO];
                             }
                             else if( [displayedSeries containsObject: curSeries]) // Yellow
                             {
-                                [cell setBackgroundColor: [NSColor colorWithCalibratedRed:249./255. green:240./255. blue:140./255. alpha:1.0]];
-                                [cell setBordered: NO];
+                                [cell setBackgroundColor: [[self class] _openItemColor]];
+                                //[cell setBordered: NO];
                             }
-                            else [cell setBordered: YES];
+                            else
+                            {
+                                [cell setBackgroundColor:nil];
+                               // [cell setBordered: YES];
+                            }
                             
                             if( visible)
                             {
@@ -4433,27 +4457,27 @@ static volatile int numberOfThreadsForRelisce = 0;
                     }
                     else // series are hidden : color the study cell if series are selected
                     {
-                        [cell setBordered: YES];
+                     //   [cell setBordered: YES];
                         for( i = 0; i < [series count]; i++)
                         {
                             DicomSeries* curSeries = [series objectAtIndex:i];
                             
                             if( [viewerSeries containsObject: curSeries]) // Red
                             {
-                                [cell setBackgroundColor: [NSColor colorWithCalibratedRed:252/255. green:177/255. blue:141/255. alpha:1.0]];
-                                [cell setBordered: NO];
+                                [cell setBackgroundColor:[[self class] _selectedItemColor]];
+                                //[cell setBordered: NO];
                                 break;
                             }
                             else if( [[self blendingController] currentSeries] == curSeries) // Green
                             {
-                                [cell setBackgroundColor: [NSColor colorWithCalibratedRed: (195.)/(255.) green: (249.)/(255.) blue: (145.)/(255.) alpha:1.0]];
-                                [cell setBordered: NO];
+                                [cell setBackgroundColor: [[self class] _fusionedItemColor]];
+                                //[cell setBordered: NO];
                                 break;
                             }
                             else if( [displayedSeries containsObject: curSeries]) // Yellow
                             {
-                                [cell setBackgroundColor: [NSColor colorWithCalibratedRed:249./255. green:240./255. blue:140./255. alpha:1.0]];
-                                [cell setBordered: NO];
+                                [cell setBackgroundColor: [[self class] _openItemColor]];
+                                //[cell setBordered: NO];
                                 break;
                             }
                         }
@@ -4469,25 +4493,35 @@ static volatile int numberOfThreadsForRelisce = 0;
                     NSString *comment = @"";
                     NSString *modality = [curStudy valueForKey:@"modality"];
                     if( modality == nil)
-                        modality = @"OT:";
-                    
-                    NSString *action = NSLocalizedString( @"Retrieve...", nil);
+                        modality = @"OT";
                     
                     NSString *patName = @"";
                     
                     if( [curStudy valueForKey:@"name"] && [curStudy valueForKey:@"dateOfBirth"])
                         patName = [NSString stringWithFormat: @"%@\r%@", [curStudy valueForKey:@"name"], [NSUserDefaults formatDate:[curStudy valueForKey:@"dateOfBirth"]]];
                     
-                    if( [[curStudy valueForKey:@"name"] isEqualToString: study.name])
+                    if( [[curStudy name] isEqualToString:study.name])
                         patName = @"";
-                    
                     if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] != annotFull)
                         patName = @"";
                     
-                    if( [stateText length] == 0 && [comment length] == 0)
-                        [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%@\r%@\r\r%@", patName, name, [[NSUserDefaults dateTimeFormatter] stringFromDate: [curStudy valueForKey:@"date"]], modality, action]];
+                    if ([stateText length] == 0 && [comment length] == 0) {
+                        NSMutableArray* components = [NSMutableArray array];
+                        if (patName.length) [components addObject:patName];
+                        if (name.length) [components addObject:name];
+                        if ([curStudy date]) [components addObject:[[NSUserDefaults dateTimeFormatter] stringFromDate:[curStudy date]]];
+                        if (modality.length) [components addObject:modality];
+                        [cell setTitle:[components componentsJoinedByString:@"\r"]];
+                    }
                     
-                    [cell setBackgroundColor: [NSColor whiteColor]];
+                    static NSImage* image = nil;
+                    if (!image)
+                        image = [[NSImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DownArrowWhiteRev" ofType:@"pdf"]];
+                    [cell setImage:image];
+                    [cell setImagePosition:NSImageOverlaps];
+                    [cell setImageScaling:NSImageScaleProportionallyUpOrDown];
+                    
+                   // [cell setBackgroundColor: [NSColor whiteColor]];
                     
                     index++;
                 }
