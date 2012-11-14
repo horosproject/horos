@@ -490,6 +490,16 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
     }
 }
 
+- (void) setSeries:(DicomSeries *)series
+{
+    [self willChangeValueForKey:@"series"];
+    [self setPrimitiveValue: series forKey: @"series"];
+    [self didChangeValueForKey:@"series"];
+    
+    [self.series.study setNumberOfImages: nil];
+    [self.series setNumberOfImages: nil];
+}
+
 #pragma mark-
 
 //- (NSNumber*) mountedVolume

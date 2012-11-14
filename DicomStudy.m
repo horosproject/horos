@@ -1602,6 +1602,8 @@ static NSRecursiveLock *dbModifyLock = nil;
 			{
                 N2LogExceptionWithStackTrace(e);
 			}
+            
+            [self setNumberOfImages: nil];
 		}
 		
 		if( [[[newArray lastObject] valueForKey: @"images"] count] > 1)
@@ -1687,6 +1689,8 @@ static NSRecursiveLock *dbModifyLock = nil;
 					}
 				}
 
+                [self setNumberOfImages: nil];
+                
                 DicomDatabase* database = [DicomDatabase databaseForContext:self.managedObjectContext];
 				[database save:nil];
 
@@ -1744,7 +1748,9 @@ static NSRecursiveLock *dbModifyLock = nil;
 						[[self managedObjectContext] deleteObject: i];
 					}
 				}
-
+                
+                [self setNumberOfImages: nil];
+                
                 DicomDatabase* database = [DicomDatabase databaseForContext:self.managedObjectContext];
 				[database save:nil];
 

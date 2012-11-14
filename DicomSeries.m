@@ -526,6 +526,15 @@
 		return [self noFiles];
 }
 
+- (void) setStudy:(DicomStudy *)study
+{
+    [self willChangeValueForKey:@"study"];
+    [self setPrimitiveValue: study forKey: @"study"];
+    [self didChangeValueForKey:@"study"];
+    
+    [self.study setNumberOfImages: nil];
+}
+
 - (NSSet *)paths
 {
     [self.managedObjectContext lock];
