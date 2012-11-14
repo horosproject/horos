@@ -134,6 +134,7 @@
 - (void)sizeToCells {
     NSRect r = [self cellFrameAtRow:self.cells.count-1 column:0];
     [self setFrame:NSMakeRect(0, 0, r.origin.x+r.size.width, r.origin.y+r.size.height)];
+   // [self.superview setNeedsDisplay:YES];
 }
 
 - (void)drawRect:(NSRect)dirtyRect {

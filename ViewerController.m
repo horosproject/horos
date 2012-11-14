@@ -4254,6 +4254,8 @@ static volatile int numberOfThreadsForRelisce = 0;
                 [cell setImage: nil];
                 [cell setImageScaling:NSImageScaleNone];
                 [cell setImagePosition: NSImageBelow];
+                [cell setTitle:@""];
+                [cell setRepresentedObject:nil];
             }
 			
 			for( id curStudy in studiesArray)
