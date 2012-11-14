@@ -4236,27 +4236,30 @@ static volatile int numberOfThreadsForRelisce = 0;
 			if( [previewMatrix numberOfRows] != i+[studiesArray count])
 			{
 				[previewMatrix renewRows: i+[studiesArray count] columns: 1];
-                
 //                NSLog( @"renewRows: %d", i+[studiesArray count]);
 			}
-			
-			for( id curStudy in studiesArray)
-			{
-                NSButtonCell *cell = [previewMatrix cellAtRow: index column:0];
-                
+            
+            for (NSButtonCell* cell in previewMatrix.cells) {
                 [cell setTransparent: NO];
                 [cell setBezelStyle: NSShadowlessSquareBezelStyle];
                 [cell setFont:[NSFont boldSystemFontOfSize:8.5]];
                 [cell setButtonType:NSMomentaryPushInButton];
                 [cell setEnabled:YES];
-                [cell setImage: nil];
-                [cell setRepresentedObject: curStudy];
-                [cell setAction: @selector(matrixPreviewSwitchHidden:)];
                 [cell setTarget: self];
                 [cell setBordered: YES];
                 [cell setLineBreakMode: NSLineBreakByWordWrapping];
                 [cell setBackgroundColor:nil];
+                [cell setImage: nil];
                 [cell setImageScaling:NSImageScaleNone];
+                [cell setImagePosition: NSImageBelow];
+            }
+			
+			for( id curStudy in studiesArray)
+			{
+                NSButtonCell* cell = [previewMatrix cellAtRow: index column:0];
+                
+                [cell setRepresentedObject: curStudy];
+                [cell setAction: @selector(matrixPreviewSwitchHidden:)];
 
                 NSUInteger curStudyIndex = [studiesArray indexOfObject: curStudy];
                 
@@ -4326,15 +4329,15 @@ static volatile int numberOfThreadsForRelisce = 0;
                             
                             NSButtonCell *cell = [previewMatrix cellAtRow: index column:0];
                             
-                            [cell setTransparent: NO];
-                            [cell setBezelStyle: NSShadowlessSquareBezelStyle];
+//                            [cell setTransparent: NO];
+//                            [cell setBezelStyle: NSShadowlessSquareBezelStyle];
                             [cell setRepresentedObject: curSeries];
                             [cell setFont:[NSFont systemFontOfSize:8.5]];
-                            [cell setImagePosition: NSImageBelow];
+//                            [cell setImagePosition: NSImageBelow];
                             [cell setAction: @selector(matrixPreviewPressed:)];
-                            [cell setTarget: self];
-                            [cell setButtonType:NSMomentaryPushInButton];
-                            [cell setEnabled:YES];
+//                            [cell setTarget: self];
+//                            [cell setButtonType:NSMomentaryPushInButton];
+//                            [cell setEnabled:YES];
                             [cell setLineBreakMode: NSLineBreakByCharWrapping];
                             
                             NSString *name = [curSeries valueForKey:@"name"];
@@ -4407,7 +4410,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                             }
                             else
                             {
-                                [cell setBackgroundColor:nil];
+//                                [cell setBackgroundColor:nil];
                                // [cell setBordered: YES];
                             }
                             
