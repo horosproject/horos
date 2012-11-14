@@ -257,7 +257,9 @@ enum
 @interface ViewerController ()
 
 -(void)observeScrollerStyleDidChangeNotification:(NSNotification*)n;
-
++ (NSColor*)_selectedItemColor;
++ (NSColor*)_fusionedItemColor;
++ (NSColor*)_openItemColor;
 @end
 
 @implementation ViewerController

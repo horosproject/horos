@@ -2063,8 +2063,6 @@ static BOOL protectionAgainstReentry = NO;
 								
 								// Relations
 								[image setValue:seriesTable forKey:@"series"];
-                                [seriesTable setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
-								[study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
                                 
 								if (DICOMSR == NO)
 								{
