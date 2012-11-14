@@ -2939,6 +2939,12 @@ static NSConditionLock *threadLock = nil;
             
             NSTimeInterval lastTime = [NSDate timeIntervalSinceReferenceDate];
             
+            
+            BOOL recomputeDistantStudies = NO;
+            
+            if( [NSDate timeIntervalSinceReferenceDate] - lastComputeAlbumsForDistantStudies > 120)
+                recomputeDistantStudies = YES;
+            
             for (NSManagedObjectID* albumObjectID in albumObjectIDs)
             {
                 if( currentDatabase != _database) // We switched the main database...
@@ -2981,7 +2987,7 @@ static NSConditionLock *threadLock = nil;
                                 distantStudies = [_distantAlbumNoOfStudiesCache objectForKey: ialbum.name];
                             }
                             
-                            if( [NSDate timeIntervalSinceReferenceDate] - lastComputeAlbumsForDistantStudies > 120 || distantStudies == nil)
+                            if( recomputeDistantStudies || distantStudies == nil)
                             {
                                 distantStudies = [self distantStudiesForSmartAlbum: ialbum.name];
                                 
