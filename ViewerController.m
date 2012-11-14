@@ -4139,7 +4139,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 }
 
 + (NSColor*)_fusionedItemColor { // green
-    return [NSColor colorWithCalibratedRed:195./255 green:249/255 blue:145./255 alpha:1];
+    return [NSColor colorWithCalibratedRed:195./255 green:249./255 blue:145./255 alpha:1];
 }
 
 + (NSColor*)_openItemColor { // yellow
