@@ -4521,7 +4521,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                     
                     static NSImage* image = nil;
                     if (!image)
-                        image = [[NSImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DownArrowWhiteRev" ofType:@"pdf"]];
+                        image = [[NSImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DownArrowGreyRev" ofType:@"pdf"]];
                     [cell setImage:image];
                     [cell setImagePosition:NSImageOverlaps];
                     [cell setImageScaling:NSImageScaleProportionallyUpOrDown];
