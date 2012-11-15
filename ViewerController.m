@@ -98,6 +98,7 @@
 #import "NSString+N2.h"
 #import "WindowLayoutManager.h"
 #import "DCMTKStudyQueryNode.h"
+#import "O2Matrix.h"
 
 int delayedTileWindows = NO;
 
@@ -3674,7 +3675,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 - (void) matrixPreviewSelectCurrentSeries
 {
 	NSManagedObject		*series = [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"];
-	NSInteger			index = [[[previewMatrix cells] valueForKey:@"representedObject"] indexOfObject: series];
+	NSInteger			index = [[[previewMatrix cells] valueForKeyPath:@"representedObject.object"] indexOfObject: series];
 	
     NSArray* cells = [previewMatrix cells];
     for (id loopItem1 in cells)
@@ -3717,9 +3718,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 	if( ([c rightClick] || ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSCommandKeyMask)) && FullScreenOn == NO) 
 	{
-        if( ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSShiftKeyMask) || [[BrowserController currentBrowser] isUsingExternalViewer: [[sender selectedCell] representedObject]] == NO)
+        if( ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSShiftKeyMask) || [[BrowserController currentBrowser] isUsingExternalViewer: [[[sender selectedCell] representedObject] object]] == NO)
         {
-            ViewerController *newViewer = [[BrowserController currentBrowser] loadSeries :[[sender selectedCell] representedObject] :nil :YES keyImagesOnly: displayOnlyKeyImages];
+            ViewerController *newViewer = [[BrowserController currentBrowser] loadSeries :[[[sender selectedCell] representedObject] object] :nil :YES keyImagesOnly: displayOnlyKeyImages];
             [newViewer setHighLighted: 1.0];
             lastHighLightedRow = [sender selectedRow];
             
@@ -3742,7 +3743,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	}
 	else
 	{
-		if( [viewerSeries containsObject: [[sender selectedCell] representedObject]] == NO)
+		if( [viewerSeries containsObject: [[[sender selectedCell] representedObject] object]] == NO)
 		{
 			BOOL found = NO;
 		
@@ -3756,7 +3757,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 				
 				for( ViewerController *v in [ViewerController getDisplayed2DViewers])
 				{
-					if( [[v imageView] seriesObj] == [[sender selectedCell] representedObject] && v != self)
+					if( [[v imageView] seriesObj] == [[[sender selectedCell] representedObject] object] && v != self)
 					{
 						[[v window] makeKeyAndOrderFront: self];
 						[v setHighLighted: 1.0];
@@ -3773,9 +3774,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 				
 				[[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"AUTOHIDEMATRIX"];
 				
-                if( ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSShiftKeyMask) || [[BrowserController currentBrowser] isUsingExternalViewer: [[sender selectedCell] representedObject]] == NO)
+                if( ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSShiftKeyMask) || [[BrowserController currentBrowser] isUsingExternalViewer: [[[sender selectedCell] representedObject] object]] == NO)
                 {
-                    ViewerController *newViewer = [[BrowserController currentBrowser] loadSeries :[[sender selectedCell] representedObject] :self :YES keyImagesOnly: displayOnlyKeyImages];
+                    ViewerController *newViewer = [[BrowserController currentBrowser] loadSeries :[[[sender selectedCell] representedObject] object] :self :YES keyImagesOnly: displayOnlyKeyImages];
                     
                     [self matrixPreviewSelectCurrentSeries];
                     [self updateNavigator];
@@ -3784,9 +3785,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 				[[NSUserDefaults standardUserDefaults] setBool: savedAUTOHIDEMATRIX forKey:@"AUTOHIDEMATRIX"];
 			}
 		}
-        else if( [[sender selectedCell] representedObject] != [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"]) // Select it in 4D !
+        else if( [[[sender selectedCell] representedObject] object] != [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"]) // Select it in 4D !
         {
-            NSUInteger idx = [viewerSeries indexOfObject: [[sender selectedCell] representedObject]];
+            NSUInteger idx = [viewerSeries indexOfObject: [[[sender selectedCell] representedObject] object]];
             
             if( idx != NSNotFound)
             {
@@ -4103,7 +4104,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) matrixPreviewSwitchHidden:(id) sender
 {
-	id curStudy = [[sender selectedCell] representedObject];
+	id curStudy = [[[sender selectedCell] representedObject] object];
 	
     if( [curStudy isKindOfClass: [DicomStudy class]]) //Local study
     {
@@ -4261,12 +4262,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 			for( id curStudy in studiesArray)
 			{
                 NSButtonCell* cell = [previewMatrix cellAtRow: index column:0];
-                
-                [cell setRepresentedObject: curStudy];
-                [cell setAction: @selector(matrixPreviewSwitchHidden:)];
 
                 NSUInteger curStudyIndex = [studiesArray indexOfObject: curStudy];
-                
+
+                [cell setRepresentedObject:[O2MatrixRepresentedObject object:curStudy children:[seriesArray objectAtIndex:curStudyIndex]]];
+                [cell setAction: @selector(matrixPreviewSwitchHidden:)];
+
 #ifndef OSIRIX_LIGHT
                 if( [curStudy isKindOfClass: [DCMTKStudyQueryNode class]] && [[curStudy valueForKey: @"studyInstanceUID"] isEqualToString: study.studyInstanceUID]) // For the current study, always take the local images
                     curStudy = study;
@@ -4335,7 +4336,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                             
 //                            [cell setTransparent: NO];
 //                            [cell setBezelStyle: NSShadowlessSquareBezelStyle];
-                            [cell setRepresentedObject: curSeries];
+                            [cell setRepresentedObject: [O2MatrixRepresentedObject object:curSeries]];
                             [cell setFont:[NSFont systemFontOfSize:8.5]];
 //                            [cell setImagePosition: NSImageBelow];
                             [cell setAction: @selector(matrixPreviewPressed:)];
@@ -4491,7 +4492,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                     }
                 }
                 #ifndef OSIRIX_LIGHT
-                else if( [curStudy isKindOfClass: [DCMTKStudyQueryNode class]]) //Distant Study DCMTKQueryStudyNode
+                else if ([curStudy isKindOfClass: [DCMTKQueryNode class]]) //Distant Study DCMTKQueryStudyNode
                 {
                     NSString *name = [[curStudy valueForKey:@"studyName"] stringByTruncatingToLength: 34];
                     if( name == nil)
@@ -4540,7 +4541,7 @@ static volatile int numberOfThreadsForRelisce = 0;
         
 		if( showSelected)
 		{
-			NSInteger index = [[[previewMatrix cells] valueForKey:@"representedObject"] indexOfObject: [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"]];
+			NSInteger index = [[[previewMatrix cells] valueForKeyPath:@"representedObject.object"] indexOfObject: [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"]];
 			
 			if( index != NSNotFound)
 				[previewMatrix scrollCellToVisibleAtRow: index column:0];
@@ -4562,7 +4563,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) showCurrentThumbnail:(id) sender;
 {
-	NSInteger index = [[[previewMatrix cells] valueForKey:@"representedObject"] indexOfObject: [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"]];
+	NSInteger index = [[[previewMatrix cells] valueForKeyPath:@"representedObject.object"] indexOfObject: [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"]];
 		
 	if( index != NSNotFound)
 		[previewMatrix scrollCellToVisibleAtRow: index column:0];
@@ -5040,7 +5041,7 @@ static ViewerController *draggedController = nil;
 //				{
 //					for( ViewerController *v in displayedViewers)
 //					{
-//						if( [[v imageView] seriesObj] == [[previewMatrix cellAtRow: row column: column] representedObject] && v != self)
+//						if( [[v imageView] seriesObj] == [[previewMatrix cellAtRow: row column: column] representedObject] object] && v != self)
 //						{
 //							found = YES;
 //							
@@ -20057,7 +20058,7 @@ int i,j,l;
 	{
 		[[sender selectedItem] setImage:nil];
 		
-		[[BrowserController currentBrowser] loadSeries :[[sender selectedItem] representedObject] :self :YES keyImagesOnly: displayOnlyKeyImages];
+		[[BrowserController currentBrowser] loadSeries :[[[sender selectedItem] representedObject] object] :self :YES keyImagesOnly: displayOnlyKeyImages];
 	}
 	else
 	{

@@ -11,12 +11,32 @@
 
 @implementation O2Matrix // we overload NSMatrix, but this class isn't as capable as NSMatrix: we only support 1-column-wide matrixes! so, actually, this isn't a matrix, it's a list, but we still use NSMAtrix so we don't have to modify ViewerController
 
-/*- (void)computeCellRects:(NSRect[])rects maxIndex:(NSInteger)maxIndex {
- 
- }*/
-
 - (CGFloat)podCellHeight {
-    return self.cellSize.height/2; // this probably will be changed
+    return self.cellSize.height/2; // this probably will self.numberOfRowsbe changed
+}
+
+- (NSRect*)computeCellRectsForCells:(NSArray*)cells maxIndex:(NSInteger)maxIndex {
+    NSSize cellSize = self.cellSize;
+    CGFloat podCellHeight = self.podCellHeight;
+    
+    NSMutableData* rectsmd = [NSMutableData dataWithLength:sizeof(NSRect)*(maxIndex+1)];
+    NSRect* rects = (NSRect*)rectsmd.mutableBytes;
+    
+    NSRect rect = NSMakeRect(0, 0, cellSize.width, 0);
+    for (NSInteger i = 0; i <= maxIndex; ++i) {
+        NSCell* cell = [cells objectAtIndex:i];
+        O2MatrixRepresentedObject* oro = [cell representedObject];
+        if ([oro.object isKindOfClass:[NSManagedObject class]] || oro.children.count) {
+            rect.size.height = cellSize.height;
+        } else rect.size.height = podCellHeight;
+        
+        rects[i] = rect;
+        
+        rect.origin.y += rect.size.height;
+        rect.origin.y += self.intercellSpacing.height;
+    }
+    
+    return rects;
 }
 
 - (void)mouseDown:(NSEvent*)event {
@@ -75,53 +95,27 @@
 
 - (NSRect)cellFrameAtRow:(NSInteger)row column:(NSInteger)col {
     NSArray* cells = self.cells;
-    NSInteger cellsCount = cells.count;
-    NSSize cellSize = self.cellSize;
-    CGFloat podCellHeight = self.podCellHeight;
     
-    NSRect rect = NSMakeRect(0, 0, cellSize.width, 0);
-    for (NSInteger i = 0; i < cellsCount; ++i) {
-        NSCell* cell = [cells objectAtIndex:i];
-        id o = [cell representedObject];
-        if ([o isKindOfClass:[NSManagedObject class]]) {
-            rect.size.height = cellSize.height;
-        } else rect.size.height = podCellHeight;
-        
-        if (i == row)
-            return rect;
-        
-        rect.origin.y += rect.size.height;
-        rect.origin.y += self.intercellSpacing.height;
-    }
-
-    return NSZeroRect;
+    if (row < 0 || row > self.numberOfRows-1)
+        return NSZeroRect;
+    
+    NSRect* rects = [self computeCellRectsForCells:cells maxIndex:row];
+    
+    return rects[row];
 }
 
 - (BOOL)getRow:(NSInteger*)row column:(NSInteger*)col forPoint:(NSPoint)aPoint {
     *col = 0;
     
     NSArray* cells = self.cells;
-    NSInteger cellsCount = cells.count;
-    NSSize cellSize = self.cellSize;
-    CGFloat podCellHeight = self.podCellHeight;
+    NSRect* rects = [self computeCellRectsForCells:cells maxIndex:self.numberOfRows-1];
     
-    NSRect rect = NSMakeRect(0, 0, cellSize.width, 0);
-    for (NSInteger i = 0; i < cellsCount; ++i) {
-        NSCell* cell = [cells objectAtIndex:i];
-        id o = [cell representedObject];
-        if ([o isKindOfClass:[NSManagedObject class]]) {
-            rect.size.height = cellSize.height;
-        } else rect.size.height = podCellHeight;
-        
-        if (NSPointInRect(aPoint, rect)) {
+    for (NSInteger i = 0; i < self.numberOfRows; ++i)
+        if (NSPointInRect(aPoint, rects[i])) {
             *row = i;
             return YES;
         }
-        
-        rect.origin.y += rect.size.height;
-        rect.origin.y += self.intercellSpacing.height;
-    }
-
+    
     return NO;
 }
 
@@ -132,36 +126,45 @@
 //}
 
 - (void)sizeToCells {
-    NSRect r = [self cellFrameAtRow:self.cells.count-1 column:0];
+    NSRect r = [self cellFrameAtRow:self.numberOfRows-1 column:0];
     [self setFrame:NSMakeRect(0, 0, r.origin.x+r.size.width, r.origin.y+r.size.height)];
    // [self.superview setNeedsDisplay:YES];
 }
 
 - (void)drawRect:(NSRect)dirtyRect {
     NSArray* cells = self.cells;
-    NSInteger cellsCount = cells.count;
-    NSSize cellSize = self.cellSize;
-    CGFloat podCellHeight = self.podCellHeight;
+    NSRect* rects = [self computeCellRectsForCells:cells maxIndex:self.numberOfRows-1];
     
-    NSRect rect = NSMakeRect(0, 0, cellSize.width, 0);
-    for (NSInteger i = 0; i < cellsCount; ++i) {
+    for (NSInteger i = 0; i < self.numberOfRows; ++i) {
         NSCell* cell = [cells objectAtIndex:i];
-        id o = [cell representedObject];
-        if ([o isKindOfClass:[NSManagedObject class]]) {
-            rect.size.height = cellSize.height;
-        } else rect.size.height = podCellHeight;
-        
-        [[cells objectAtIndex:i] drawWithFrame:rect inView:self];
-//        if (_highlightedRow == i) {
-//            [NSGraphicsContext saveGraphicsState];
-//            [[[NSColor blackColor] colorWithAlphaComponent:0.5] setFill];
-//            [NSBezierPath fillRect:rect];
-//            [NSGraphicsContext restoreGraphicsState];
-//        }
-        
-        rect.origin.y += rect.size.height;
-        rect.origin.y += self.intercellSpacing.height;
+        [cell drawWithFrame:rects[i] inView:self];
     }
 }
 
 @end
+
+@implementation O2MatrixRepresentedObject
+
+@synthesize object = _object;
+@synthesize children = _children;
+
++ (id)object:(id)object {
+    return [self object:object children:nil];
+}
+
++ (id)object:(id)object children:(NSArray*)children {
+    O2MatrixRepresentedObject* oro = [[[[self class] alloc] init] autorelease];
+    oro.object = object;
+    oro.children = [[children copy] autorelease];
+    return oro;
+}
+
+- (void)dealloc {
+    self.object = nil;
+    self.children = nil;
+    [super dealloc];
+}
+
+@end
+
+

@@ -12,3 +12,16 @@
 }
 
 @end
+
+@interface O2MatrixRepresentedObject : NSObject {
+    id _object;
+    NSArray* _children;
+}
+
+@property(retain) id object;
+@property(retain) NSArray* children;
+
++ (id)object:(id)object;
++ (id)object:(id)object children:(NSArray*)children;
+
+@end
