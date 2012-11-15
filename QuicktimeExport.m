@@ -222,6 +222,8 @@
                                                       nil], AVVideoCompressionPropertiesKey,
                                                      [NSNumber numberWithInt: im.size.width], AVVideoWidthKey,
                                                      [NSNumber numberWithInt: im.size.height], AVVideoHeightKey, nil];
+                                    else
+                                        N2LogStackTrace( @"********** bitsPerSecond == 0");
                                 }
                                 else if( [c isEqualToString: AVVideoCodecJPEG])
                                 {

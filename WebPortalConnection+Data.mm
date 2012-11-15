@@ -646,6 +646,8 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                             }
                             [writerInput markAsFinished];
                         }
+                        else
+                            N2LogStackTrace( @"********** bitsPerSecond == 0");
                         
                         [writer finishWriting];
                     }

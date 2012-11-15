@@ -14036,6 +14036,9 @@ static volatile int numberOfThreadsForJPEG = 0;
                 }
                 [writerInput markAsFinished];
             }
+            else
+                N2LogStackTrace( @"********** bitsPerSecond == 0");
+            
             [writer finishWriting];
         }
 	}
