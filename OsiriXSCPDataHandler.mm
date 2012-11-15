@@ -1956,6 +1956,12 @@ extern BOOL forkedProcess;
 	
 	if( logFiles)
 	{
+        if( moveArrayEnumerator >= moveArraySize)
+            strcpy( logFiles->logMessage, "Complete");
+        
+        logFiles->logNumberReceived++;
+        logFiles->logEndTime = time (NULL);
+        
         if( forkedProcess)
         {
             FILE * pFile;
@@ -1965,12 +1971,6 @@ extern BOOL forkedProcess;
             pFile = fopen (dir,"w+");
             if( pFile)
             {
-                if( moveArrayEnumerator >= moveArraySize)
-                    strcpy( logFiles->logMessage, "Complete");
-                
-                logFiles->logNumberReceived++;
-                logFiles->logEndTime = time (NULL);
-                
                 fprintf (pFile, "%s\r%s\r%s\r%ld\r%s\r%s\r%ld\r%ld\r%s\r%s\r\%ld\r", logFiles->logPatientName, logFiles->logStudyDescription, logFiles->logCallingAET, logFiles->logStartTime, logFiles->logMessage, logFiles->logUID, logFiles->logNumberReceived, logFiles->logEndTime, logFiles->logType, logFiles->logEncoding, logFiles->logNumberTotal);
                 
                 fclose (pFile);
