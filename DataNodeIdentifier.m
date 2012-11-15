@@ -175,20 +175,29 @@
 
 @implementation RemoteDataNodeIdentifier
 
-+(NSString*)location:(NSString*)location toAddress:(NSString**)address port:(NSInteger*)port defaultPort:(NSInteger)defaultPort {
++(NSString*)location:(NSString*)location toAddress:(NSString**)address port:(NSInteger*)port defaultPort:(NSInteger)defaultPort
+{
 	NSArray* parts = [location componentsSeparatedByString:@":"];
 	
     NSString* localAddress = nil;
     if (!address) address = &localAddress;
     
-    if (address && parts.count > 0) *address = [parts objectAtIndex:0];
+    if (address)
+    {
+        if( parts.count > 0)
+            *address = [parts objectAtIndex:0];
+        else
+            *address = nil;
+    }
     
 	if (port)
     {
         if (parts.count > 1)
 			*port = [[parts objectAtIndex:1] integerValue];
-		else *port = defaultPort;
+		else
+            *port = defaultPort;
     }
+    
 	return *address;
 }
 

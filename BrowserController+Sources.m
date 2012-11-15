@@ -303,8 +303,11 @@ enum {
             if ([dni isKindOfClass:[LocalDatabaseNodeIdentifier class]])
                 [self initiateSetDatabaseAtPath:dni.location name:dni.description];
             else if ([dni isKindOfClass:[RemoteDatabaseNodeIdentifier class]]) {
-                NSString* host; NSInteger port; [RemoteDatabaseNodeIdentifier location:dni.location toAddress:&host port:&port];
-                [self initiateSetRemoteDatabaseWithAddress:host port:port name:dni.description];
+                NSString* host = nil; NSInteger port = -1;
+                [RemoteDatabaseNodeIdentifier location:dni.location toAddress:&host port:&port];
+                
+                if( host && port != -1)
+                    [self initiateSetRemoteDatabaseWithAddress:host port:port name:dni.description];
             } else {
                 [UnavaliableDataNodeException raise:NSGenericException format:@"%@", NSLocalizedString(@"This is a DICOM destination node: you cannot browse its content. You can only drag & drop studies on them.", nil)];
             }
