@@ -12272,10 +12272,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         if( [NSThread isMainThread] == NO)
             NSLog( @"******************* warning this object should be used only on the main thread. Create your own Context !");
 #endif
-        if( curImage >= 0) return [dcmFilesList objectAtIndex: curImage];
-        else if( [dcmPixList indexOfObject: curDCM] != NSNotFound)
+        if( curImage >= 0 && curImage < dcmFilesList.count)
+            return [dcmFilesList objectAtIndex: curImage];
+        
+        else if( [dcmPixList indexOfObject: curDCM] != NSNotFound && dcmFilesList.count == dcmPixList.count)
             return [dcmFilesList objectAtIndex: [dcmPixList indexOfObject: curDCM]];
-        else return [curDCM imageObj];
+        
+        else
+            return [curDCM imageObj];
 	}
     
     return nil;
