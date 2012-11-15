@@ -113,9 +113,14 @@
 
 - (NSString*) createMovieQTKit:(BOOL) openIt :(BOOL) produceFiles :(NSString*) name :(NSInteger)fps
 {
+    if (fps <= 0)
+        fps = [[NSUserDefaults standardUserDefaults] integerForKey: @"quicktimeExportRateValue"];
+    if (fps <= 0)
+        fps = 10;
+    
     if (fps > 0)
         [[NSUserDefaults standardUserDefaults] setInteger:fps forKey:@"quicktimeExportRateValue"];
-
+    
 	NSString *fileName;
 	long result;
 
