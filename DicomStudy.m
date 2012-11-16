@@ -807,7 +807,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 - (void) dealloc
 {
 	[dicomTime release];
-	[cachedRawNoFiles release];
+//	[cachedRawNoFiles release];
 	[cachedModalites release];
 	
 	[super dealloc];
@@ -1236,8 +1236,8 @@ static NSRecursiveLock *dbModifyLock = nil;
 - (void) setNumberOfImages:(NSNumber *) n
 {
     @synchronized (self) {
-        [cachedRawNoFiles release];
-        cachedRawNoFiles = nil;
+//        [cachedRawNoFiles release];
+//        cachedRawNoFiles = nil;
         
         [cachedModalites release];
         cachedModalites = nil;
@@ -1250,20 +1250,21 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (NSNumber *) rawNoFiles
 {
+    int sum = 0;
+    
     [self.managedObjectContext lock];
-    @try  {
-        int sum = 0;
-        
-        if (cachedRawNoFiles && _numberOfImagesWhenCachedRawNoFiles == self.numberOfImages.integerValue)
-            return cachedRawNoFiles;
-        
-        [cachedRawNoFiles release]; cachedRawNoFiles = nil;
+    @try
+    {
+//        if (cachedRawNoFiles && _numberOfImagesWhenCachedRawNoFiles == self.numberOfImages.integerValue)
+//            return cachedRawNoFiles;
+//        
+//        [cachedRawNoFiles release]; cachedRawNoFiles = nil;
         
         for( DicomSeries *s in [[self valueForKey:@"series"] allObjects])
             sum += [[s valueForKey: @"rawNoFiles"] intValue];
-        _numberOfImagesWhenCachedRawNoFiles = self.numberOfImages.integerValue;
+//        _numberOfImagesWhenCachedRawNoFiles = self.numberOfImages.integerValue;
         
-        cachedRawNoFiles = [[NSNumber numberWithInt:sum] retain];
+//        cachedRawNoFiles = [[NSNumber numberWithInt:sum] retain];
     }
     @catch (NSException * e)
     {
@@ -1273,7 +1274,7 @@ static NSRecursiveLock *dbModifyLock = nil;
         [self.managedObjectContext unlock];
     }
 
-    return cachedRawNoFiles;
+    return [NSNumber numberWithInt:sum];
 }
 
 - (NSNumber *) noFilesExcludingMultiFrames

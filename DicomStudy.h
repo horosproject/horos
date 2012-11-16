@@ -22,8 +22,7 @@
 {
 	BOOL isHidden;
 	NSNumber *dicomTime;
-    NSUInteger _numberOfImagesWhenCachedRawNoFiles, _numberOfImagesWhenCachedModalities;
-	NSNumber *cachedRawNoFiles;
+    NSUInteger _numberOfImagesWhenCachedModalities;
 	NSString *cachedModalites;
 }
 
