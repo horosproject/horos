@@ -14,11 +14,17 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class DicomDatabase;
+
 /** \brief Managed network logging */
 @interface LogManager : NSObject
 {
 	NSTimer *_timer;
 	NSMutableDictionary *_currentLogs;
+    NSTimeInterval lastSave;
+    
+    DicomDatabase *currentDatabase;
+    NSManagedObjectContext *independentContext;
 }
 
 + (id) currentLogManager;

@@ -45,6 +45,15 @@ static LogManager *currentLogManager = nil;
 
 - (void) resetLogs
 {
+    @synchronized( independentContext)
+    {
+        [independentContext save: nil];
+        [independentContext release];
+        independentContext = nil;
+        
+        currentDatabase = nil;
+    }
+    
 	DicomDatabase* db = [[BrowserController currentBrowser] database];
 	[db lock];
 	
@@ -85,58 +94,81 @@ static LogManager *currentLogManager = nil;
 {
     if( [[BrowserController currentBrowser] isNetworkLogsActive] && [[[BrowserController currentBrowser] database] isLocal])
 	{
-		NSManagedObjectContext *context = [[[BrowserController currentBrowser] database] independentContext];
+        if( currentDatabase == nil || currentDatabase != [[BrowserController currentBrowser] database])
+        {
+            currentDatabase = [[BrowserController currentBrowser] database];
+            
+            @synchronized( independentContext)
+            {
+                [independentContext save: nil];
+                [independentContext release];
+                independentContext = nil;
+            }
+        }
         
-		if( context == nil)
+        if( independentContext == nil)
+            independentContext = [[[[BrowserController currentBrowser] database] independentContext] retain];
+        
+		if( independentContext == nil)
 			return;
 		
-        if( [[dict valueForKey: @"logMessage"] isEqualToString:@"In Progress"] || [[dict valueForKey: @"logMessage"] isEqualToString:@"Complete"])
+        @synchronized( independentContext)
         {
-            NSString *uid = [dict valueForKey: @"logUID"];
-            
-            NSManagedObject *logEntry = nil;
-            
-            if( [_currentLogs objectForKey:uid])
-                logEntry = [context objectWithID: [_currentLogs objectForKey:uid]];
-            
-            if (logEntry == nil)
+            if( [[dict valueForKey: @"logMessage"] isEqualToString:@"In Progress"] || [[dict valueForKey: @"logMessage"] isEqualToString:@"Complete"])
             {
-                logEntry = [NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:context];
+                NSString *uid = [dict valueForKey: @"logUID"];
                 
-                [logEntry setValue:[NSDate dateWithTimeIntervalSince1970: [[dict valueForKey: @"logStartTime"] intValue]]  forKey:@"startTime"];
-                [logEntry setValue:[dict valueForKey: @"logType"] forKey:@"type"];
-                [logEntry setValue:[dict valueForKey: @"logCallingAET"] forKey:@"originName"];
-                [logEntry setValue:[dict valueForKey: @"logCalledAET"] forKey:@"destinationName"];
-                [logEntry setValue:[dict valueForKey: @"logPatientName"] forKey:@"patientName"];
-                [logEntry setValue:[dict valueForKey: @"logStudyDescription"] forKey:@"studyName"];
+                NSManagedObject *logEntry = nil;
                 
-                [context save: nil]; // To have a valid objectID
+                if( [_currentLogs objectForKey:uid])
+                    logEntry = [independentContext objectWithID: [_currentLogs objectForKey:uid]];
                 
-                [_currentLogs setObject: logEntry.objectID forKey:uid];
-            }
-            
-            if( logEntry != nil && [logEntry isDeleted] == NO)
-            {
-                [logEntry setValue:[dict valueForKey: @"logMessage"] forKey:@"message"];
-                [logEntry setValue:[NSNumber numberWithInt: [[dict valueForKey: @"logNumberTotal"] intValue]] forKey:@"numberImages"];
-                [logEntry setValue:[NSNumber numberWithInt: [[dict valueForKey: @"logNumberReceived"] intValue]] forKey:@"numberSent"];
-                [logEntry setValue:[NSNumber numberWithInt: [[dict valueForKey: @"logNumberError"] intValue]] forKey:@"numberError"];
-                
-                NSTimeInterval logEndTime = [[dict valueForKey: @"logEndTime"] doubleValue];
-                
-                if( [[dict valueForKey: @"logMessage"] isEqualToString:@"Complete"])
+                if (logEntry == nil)
                 {
-                    if( logEndTime == 0)
-                        logEndTime = [[NSDate date] timeIntervalSince1970];
+                    logEntry = [NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext: independentContext];
                     
-                    [_currentLogs removeObjectForKey: uid];
+                    [logEntry setValue:[NSDate dateWithTimeIntervalSince1970: [[dict valueForKey: @"logStartTime"] intValue]]  forKey:@"startTime"];
+                    [logEntry setValue:[dict valueForKey: @"logType"] forKey:@"type"];
+                    [logEntry setValue:[dict valueForKey: @"logCallingAET"] forKey:@"originName"];
+                    [logEntry setValue:[dict valueForKey: @"logCalledAET"] forKey:@"destinationName"];
+                    [logEntry setValue:[dict valueForKey: @"logPatientName"] forKey:@"patientName"];
+                    [logEntry setValue:[dict valueForKey: @"logStudyDescription"] forKey:@"studyName"];
+                    
+                    @synchronized( independentContext)
+                    {
+                        [independentContext save: nil]; // To have a valid objectID
+                    }
+                    
+                    [_currentLogs setObject: logEntry.objectID forKey:uid];
                 }
                 
-                if( logEndTime != 0)
-                    [logEntry setValue:[NSDate dateWithTimeIntervalSince1970: logEndTime] forKey:@"endTime"];
+                if( logEntry != nil && [logEntry isDeleted] == NO)
+                {
+                    [logEntry setValue:[dict valueForKey: @"logMessage"] forKey:@"message"];
+                    [logEntry setValue:[NSNumber numberWithInt: [[dict valueForKey: @"logNumberTotal"] intValue]] forKey:@"numberImages"];
+                    [logEntry setValue:[NSNumber numberWithInt: [[dict valueForKey: @"logNumberReceived"] intValue]] forKey:@"numberSent"];
+                    [logEntry setValue:[NSNumber numberWithInt: [[dict valueForKey: @"logNumberError"] intValue]] forKey:@"numberError"];
+                    
+                    NSTimeInterval logEndTime = [[dict valueForKey: @"logEndTime"] doubleValue];
+                    
+                    if( [[dict valueForKey: @"logMessage"] isEqualToString:@"Complete"])
+                    {
+                        if( logEndTime == 0)
+                            logEndTime = [[NSDate date] timeIntervalSince1970];
+                        
+                        [_currentLogs removeObjectForKey: uid];
+                    }
+                    
+                    if( logEndTime != 0)
+                        [logEntry setValue:[NSDate dateWithTimeIntervalSince1970: logEndTime] forKey:@"endTime"];
+                }
+                
+                if( [NSDate timeIntervalSinceReferenceDate] - lastSave > 30 || [[dict valueForKey: @"logMessage"] isEqualToString:@"Complete"])
+                {
+                    [independentContext save: nil];
+                    lastSave = [NSDate timeIntervalSinceReferenceDate];
+                }
             }
-            
-            [context save: nil];
         }
     }
 }
