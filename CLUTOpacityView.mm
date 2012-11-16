@@ -84,7 +84,7 @@
     
 	[[self window] setAcceptsMouseMovedEvents: NO];
 	
-	[NSObject cancelPreviousPerformRequestsWithTarget: self selector: @selector( setCLUTtoVRViewHighRes:) object: nil];
+	[NSObject cancelPreviousPerformRequestsWithTarget: self selector: @selector(setCLUTtoVRViewHighRes:) object: nil];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	
 	[curves release];
@@ -2218,10 +2218,10 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	
 	if( lowRes)
 	{
-		[NSObject cancelPreviousPerformRequestsWithTarget: self selector: @selector( setCLUTtoVRViewHighRes) object: nil];
-		[self performSelector: @selector( setCLUTtoVRViewHighRes) withObject:nil afterDelay: 0.5];
+		[NSObject cancelPreviousPerformRequestsWithTarget: self selector: @selector(setCLUTtoVRViewHighRes) object: nil];
+		[self performSelector: @selector(setCLUTtoVRViewHighRes) withObject:nil afterDelay: 0.5];
 	}
-	else [NSObject cancelPreviousPerformRequestsWithTarget: self selector: @selector( setCLUTtoVRViewHighRes:) object: nil];
+	else [NSObject cancelPreviousPerformRequestsWithTarget: self selector: @selector(setCLUTtoVRViewHighRes:) object: nil];
 }
 
 - (void)setWL:(float)wl ww:(float)ww;

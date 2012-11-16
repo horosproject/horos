@@ -420,7 +420,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 								compressedSopInstanceUIDArray = [allImages filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"compressedSopInstanceUID != NIL"]];
 							}
 							
-							NSPredicate	*predicate = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: [image valueForKey: @"sopInstanceUID"]]] customSelector: @selector( isEqualToSopInstanceUID:)];
+							NSPredicate	*predicate = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: [image valueForKey: @"sopInstanceUID"]]] customSelector: @selector(isEqualToSopInstanceUID:)];
 							NSArray	*found = [compressedSopInstanceUIDArray filteredArrayUsingPredicate: predicate];
 					
 							// -------------------------
@@ -893,7 +893,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 			{
 				NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: [[self paths] allObjects], @"files", @"(0032,4000)", @"field", c, @"value", nil];
 				
-				NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( dcmodifyThread:) object: dict] autorelease];
+				NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector(dcmodifyThread:) object: dict] autorelease];
 				t.name = NSLocalizedString( @"Updating DICOM files...", nil);
 				t.status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [[dict objectForKey: @"files"] count]];
 				[[ThreadsManager defaultManager] addThreadAndStart: t];
@@ -974,7 +974,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 			{
 				NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: [[self paths] allObjects], @"files", @"(4008,0212)", @"field", [c stringValue], @"value", nil];
 				
-				NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( dcmodifyThread:) object: dict] autorelease];
+				NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector(dcmodifyThread:) object: dict] autorelease];
 				t.name = NSLocalizedString( @"Updating DICOM files...", nil);
 				t.status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [[dict objectForKey: @"files"] count]];
 				[[ThreadsManager defaultManager] addThreadAndStart: t];

@@ -513,7 +513,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
         if( [sortValue length])
 		{
 			if( [sortValue rangeOfString: @"date"].location == NSNotFound)
-				studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: sortValue ascending: YES selector: @selector( caseInsensitiveCompare:)]]];
+				studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: sortValue ascending: YES selector: @selector(caseInsensitiveCompare:)]]];
 			else
 				studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: sortValue ascending: NO]]];
 		}
@@ -630,7 +630,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
             studiesArray = [dicomDBContext objectsWithIDs: [[studiesForUserCache objectForKey: userID] objectForKey: @"array"]];
             
             if ([sortValue length] && [sortValue isEqualToString: @"date"] == NO)
-                studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: sortValue ascending: YES selector: @selector( caseInsensitiveCompare:)] autorelease]]];
+                studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: sortValue ascending: YES selector: @selector(caseInsensitiveCompare:)] autorelease]]];
             else
                 studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending:NO] autorelease]]];
         }
@@ -693,7 +693,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
             else studiesArray = originalAlbum;
             
             if ([sortValue length] && [sortValue isEqualToString: @"date"] == NO)
-                studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: sortValue ascending: YES selector: @selector( caseInsensitiveCompare:)] autorelease]]];
+                studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: sortValue ascending: YES selector: @selector(caseInsensitiveCompare:)] autorelease]]];
             else
                 studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending:NO] autorelease]]];
         }

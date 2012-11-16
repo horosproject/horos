@@ -440,8 +440,8 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
         {
             NSObject *filter = [preProcessPlugins objectAtIndex: i];
             
-            if( [filter respondsToSelector: @selector( willUnload)])
-                [filter performSelector: @selector( willUnload)];
+            if( [filter respondsToSelector: @selector(willUnload)])
+                [filter performSelector: @selector(willUnload)];
             
             [preProcessPlugins removeObjectAtIndex: i];
             i--;
@@ -454,8 +454,8 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
         {
             NSObject *filter = [plugins valueForKey: key];
             
-            if( [filter respondsToSelector: @selector( willUnload)])
-                [filter performSelector: @selector( willUnload)];
+            if( [filter respondsToSelector: @selector(willUnload)])
+                [filter performSelector: @selector(willUnload)];
             
             [plugins removeObjectForKey: key];
         }

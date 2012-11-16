@@ -597,7 +597,7 @@ static BOOL activateMPRSyncSeriesToolbarItems = FALSE;
 {
     N2OpenGLViewWithSplitsWindow *window = (N2OpenGLViewWithSplitsWindow*)self.window;
 	
-	if( [window respondsToSelector:@selector( disableUpdatesUntilFlush)])
+	if( [window respondsToSelector:@selector(disableUpdatesUntilFlush)])
 		[window disableUpdatesUntilFlush];
 }
 
@@ -828,34 +828,34 @@ return YES;
 
 	BOOL valid = NO;
 		
-	if( [item action] == @selector( changeTool:))
+	if( [item action] == @selector(changeTool:))
 	{
 		valid = YES;
 		if( [item tag] == [controller currentTool]) [item setState: NSOnState];
 		else [item setState: NSOffState];
 	}
-	else if( [item action] == @selector( ApplyCLUT:))
+	else if( [item action] == @selector(ApplyCLUT:))
 	{
 		valid = YES;
 		
 		if( [[item title] isEqualToString: curCLUTMenu]) [item setState:NSOnState];
 		else [item setState:NSOffState];
 	}
-//	else if( [item action] == @selector( ApplyConv:))
+//	else if( [item action] == @selector(ApplyConv:))
 //	{
 //		valid = YES;
 //		
 //		if( [[item title] isEqualToString: curConvMenu]) [item setState:NSOnState];
 //		else [item setState:NSOffState];
 //	}
-	else if( [item action] == @selector( ApplyOpacity:))
+	else if( [item action] == @selector(ApplyOpacity:))
 	{
 		valid = YES;
 		
 		if( [[item title] isEqualToString: curOpacityMenu]) [item setState:NSOnState];
 		else [item setState:NSOffState];
 	}
-	else if( [item action] == @selector( ApplyWLWW:))
+	else if( [item action] == @selector(ApplyWLWW:))
 	{
 		valid = YES;
 		
@@ -871,15 +871,15 @@ return YES;
 		if( [str isEqualToString: curWLWWMenu] || [[item title] isEqualToString: curWLWWMenu]) [item setState:NSOnState];
 		else [item setState:NSOffState];
 	}
-    else if( [item action] == @selector( syncSeriesScopeAction:))    {
+    else if( [item action] == @selector(syncSeriesScopeAction:))    {
         valid = YES;
         [item setState: (syncSeriesScope == [item tag] ? NSOnState : NSOffState)];
     }
-    else if( [item action] == @selector( syncSeriesBehaviorAction:))   {
+    else if( [item action] == @selector(syncSeriesBehaviorAction:))   {
         valid = YES;
         [item setState: (syncSeriesBehavior == [item tag] ? NSOnState : NSOffState)];
     }
-    else if( [item action] == @selector( syncSeriesStateAction:))   {
+    else if( [item action] == @selector(syncSeriesStateAction:))   {
         valid = YES;
         [item setState: (syncSeriesState == [item tag] ? NSOnState : NSOffState)];
     }
@@ -945,9 +945,9 @@ return YES;
 			{
 				@try
 				{
-					if( [item respondsToSelector:@selector( setRecursiveEnabled:)])
+					if( [item respondsToSelector:@selector(setRecursiveEnabled:)])
 						[item setRecursiveEnabled: YES];
-					else if( [[item view] respondsToSelector:@selector( setRecursiveEnabled:)])
+					else if( [[item view] respondsToSelector:@selector(setRecursiveEnabled:)])
 						[[item view] setRecursiveEnabled: YES];
 					else if( item)
 						NSLog( @"%@", item);

@@ -183,8 +183,8 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     
 	if( NSEqualRects( frameRect, [self frame]) == NO)
 	{
-		[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( updateViewsAccordingToFrame:) object: nil];
-		[windowController performSelector: @selector( updateViewsAccordingToFrame:) withObject: nil afterDelay: 0.1];
+		[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector(updateViewsAccordingToFrame:) object: nil];
+		[windowController performSelector: @selector(updateViewsAccordingToFrame:) withObject: nil afterDelay: 0.1];
 	}
 	
 	if( blendingView)
@@ -1428,8 +1428,8 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	
 	[windowController delayedFullLODRendering: self];
 	
-//	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: self];	
-//	[windowController performSelector: @selector( delayedFullLODRendering:) withObject: self afterDelay: 0.2];
+//	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector(delayedFullLODRendering:) object: self];	
+//	[windowController performSelector: @selector(delayedFullLODRendering:) withObject: self afterDelay: 0.2];
 }
 
 - (void)rightMouseDown:(NSEvent *)theEvent
@@ -1467,15 +1467,15 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	
 	[self updateMousePosition: theEvent];
 	
-	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: nil];
-	[windowController performSelector: @selector( delayedFullLODRendering:) withObject: nil afterDelay: 0.4];
+	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector(delayedFullLODRendering:) object: nil];
+	[windowController performSelector: @selector(delayedFullLODRendering:) withObject: nil afterDelay: 0.4];
 }
 
 - (void)rightMouseUp:(NSEvent *)theEvent
 {
 	[self flagsChanged: theEvent];
 	
-	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: nil];
+	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector(delayedFullLODRendering:) object: nil];
 	
 	windowController.lowLOD = NO;
 	
@@ -1813,7 +1813,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	viewPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 	[self checkCursor];
 	
-	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: nil];
+	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector(delayedFullLODRendering:) object: nil];
 	
 	windowController.lowLOD = NO;
 		
@@ -1987,8 +1987,8 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		
 		[self updateViewMPR];
 		
-		[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: nil];
-		[windowController performSelector: @selector( delayedFullLODRendering:) withObject: nil afterDelay: 0.4];
+		[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector(delayedFullLODRendering:) object: nil];
+		[windowController performSelector: @selector(delayedFullLODRendering:) withObject: nil afterDelay: 0.4];
 	}
 	else if( moveCenter)
 	{
@@ -2006,8 +2006,8 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
         
 		[self updateViewMPR];
 		
-		[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: nil];
-		[windowController performSelector: @selector( delayedFullLODRendering:) withObject: nil afterDelay: 0.4];
+		[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector(delayedFullLODRendering:) object: nil];
+		[windowController performSelector: @selector(delayedFullLODRendering:) withObject: nil afterDelay: 0.4];
 	}
 	else
 	{
@@ -2060,8 +2060,8 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 			else if( [vrView _tool] == tZoom) [self updateViewMPR: NO];
 			else [self updateViewMPR];
 			
-			[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: nil];
-			[windowController performSelector: @selector( delayedFullLODRendering:) withObject: nil afterDelay: 0.4];
+			[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector(delayedFullLODRendering:) object: nil];
+			[windowController performSelector: @selector(delayedFullLODRendering:) withObject: nil afterDelay: 0.4];
 		}
 	}
 	

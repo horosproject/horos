@@ -151,8 +151,8 @@ extern unsigned int minimumStep;
     
 	if( NSEqualRects( frameRect, [self frame]) == NO)
 	{
-		[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( updateViewsAccordingToFrame:) object: nil];
-		[windowController performSelector: @selector( updateViewsAccordingToFrame:) withObject: nil afterDelay: 0.1];
+		[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector(updateViewsAccordingToFrame:) object: nil];
+		[windowController performSelector: @selector(updateViewsAccordingToFrame:) withObject: nil afterDelay: 0.1];
 	}
 	
 	if( blendingView)
@@ -310,7 +310,7 @@ extern unsigned int minimumStep;
 
 - (BOOL)validateMenuItem:(NSMenuItem *)item
 {
-    if( [item action] == @selector( scaleToFit:))
+    if( [item action] == @selector(scaleToFit:))
     {
         return NO;
     }
@@ -1372,8 +1372,8 @@ extern unsigned int minimumStep;
 	[self updateViewMPR: NO];
 	[self updateMousePosition: theEvent];
 	
-	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: self];	
-	[windowController performSelector: @selector( delayedFullLODRendering:) withObject: self afterDelay: 0.2];
+	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector(delayedFullLODRendering:) object: self];	
+	[windowController performSelector: @selector(delayedFullLODRendering:) withObject: self afterDelay: 0.2];
 }
 
 - (void)rightMouseDown:(NSEvent *)theEvent
@@ -1411,15 +1411,15 @@ extern unsigned int minimumStep;
 	
 	[self updateMousePosition: theEvent];
 	
-	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: nil];
-	[windowController performSelector: @selector( delayedFullLODRendering:) withObject: nil afterDelay: 0.4];
+	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector(delayedFullLODRendering:) object: nil];
+	[windowController performSelector: @selector(delayedFullLODRendering:) withObject: nil afterDelay: 0.4];
 }
 
 - (void)rightMouseUp:(NSEvent *)theEvent
 {
 	[self flagsChanged: theEvent];
 	
-	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: nil];
+	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector(delayedFullLODRendering:) object: nil];
 	
 	windowController.lowLOD = NO;
 	
@@ -1625,7 +1625,7 @@ extern unsigned int minimumStep;
 {
 	[self checkCursor];
 	
-	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: nil];
+	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector(delayedFullLODRendering:) object: nil];
 	
 	windowController.lowLOD = NO;
 		
@@ -1769,8 +1769,8 @@ extern unsigned int minimumStep;
 		
 		[self updateViewMPR];
 		
-		[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: nil];
-		[windowController performSelector: @selector( delayedFullLODRendering:) withObject: nil afterDelay: 0.4];
+		[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector(delayedFullLODRendering:) object: nil];
+		[windowController performSelector: @selector(delayedFullLODRendering:) withObject: nil afterDelay: 0.4];
 	}
 	else if( moveCenter)
 	{
@@ -1790,8 +1790,8 @@ extern unsigned int minimumStep;
 		
         [self updateViewMPR];
 		
-		[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: nil];
-		[windowController performSelector: @selector( delayedFullLODRendering:) withObject: nil afterDelay: 0.4];
+		[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector(delayedFullLODRendering:) object: nil];
+		[windowController performSelector: @selector(delayedFullLODRendering:) withObject: nil afterDelay: 0.4];
 	}
 	else
 	{
@@ -1821,8 +1821,8 @@ extern unsigned int minimumStep;
 			else if( [vrView _tool] == tZoom) [self updateViewMPR: NO];
 			else [self updateViewMPR];
 			
-			[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: nil];
-			[windowController performSelector: @selector( delayedFullLODRendering:) withObject: nil afterDelay: 0.4];
+			[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector(delayedFullLODRendering:) object: nil];
+			[windowController performSelector: @selector(delayedFullLODRendering:) withObject: nil afterDelay: 0.4];
 		}
 	}
 	

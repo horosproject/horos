@@ -168,7 +168,7 @@
 				{
 					NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: [[self paths] allObjects], @"files", @"(0020,4000)", @"field", c, @"value", nil];
 					
-					NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( dcmodifyThread:) object: dict] autorelease];
+					NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector(dcmodifyThread:) object: dict] autorelease];
 					t.name = NSLocalizedString( @"Updating DICOM files...", nil);
 					t.status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [[dict objectForKey: @"files"] count]];
 					[[ThreadsManager defaultManager] addThreadAndStart: t];

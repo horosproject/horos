@@ -197,7 +197,7 @@ void DcmQueryRetrieveStoreContext::writeToFile(
 //		
 //		NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys: [NSValue valueWithPointer: ff->clone()], @"ff", [NSString stringWithUTF8String: fname], @"fname", [NSNumber numberWithInt: xfer], @"xfer", [NSValue valueWithPointer: &options_], @"options", nil];
 //	
-//		[NSThread detachNewThreadSelector: @selector( writeFile:) toTarget: [writeClass class] withObject: params];
+//		[NSThread detachNewThreadSelector: @selector(writeFile:) toTarget: [writeClass class] withObject: params];
 //		
 //		[pool release];
 //	}

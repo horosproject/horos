@@ -546,7 +546,7 @@
 	numberOfThreadsForCompute = [[NSProcessInfo processInfo] processorCount];
 	for( i = 0; i < [[NSProcessInfo processInfo] processorCount]-1; i++)
 	{
-		[NSThread detachNewThreadSelector: @selector( subReslice:) toTarget:self withObject: [NSNumber numberWithInt: i]];
+		[NSThread detachNewThreadSelector: @selector(subReslice:) toTarget:self withObject: [NSNumber numberWithInt: i]];
 	}
 	
 	[self subReslice: [NSNumber numberWithInt: i]];

@@ -2015,7 +2015,7 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 				
 				globalCondition = EC_Normal;
                 
-                [NSThread detachNewThreadSelector: @selector( requestAssociationThread:) toTarget: self withObject: dict];
+                [NSThread detachNewThreadSelector: @selector(requestAssociationThread:) toTarget: self withObject: dict];
 				[NSThread sleepForTimeInterval: 0.1];
 				
 				while( [wait aborted] == NO && _abortAssociation == NO && [NSThread currentThread].isCancelled == NO && [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"] == NO)
@@ -2281,7 +2281,7 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
         if( releaseNetworkVariablesDictionaries == nil)
         {
             releaseNetworkVariablesDictionaries = [[NSMutableArray array] retain];
-            [NSThread detachNewThreadSelector: @selector( releaseNetworkVariables) toTarget: [DCMTKQueryNode class] withObject: nil];
+            [NSThread detachNewThreadSelector: @selector(releaseNetworkVariables) toTarget: [DCMTKQueryNode class] withObject: nil];
         }
         
         @synchronized( releaseNetworkVariablesDictionaries)

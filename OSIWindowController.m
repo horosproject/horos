@@ -528,7 +528,7 @@ static BOOL protectedReentryWindowDidResize = NO;
 {
 	if (self = [super initWithWindowNibName:(NSString *)windowNibName])
 	{
-        [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector( windowWillCloseNotification:) name: NSWindowWillCloseNotification object: nil];
+        [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(windowWillCloseNotification:) name: NSWindowWillCloseNotification object: nil];
 	}
 	return self;
 }

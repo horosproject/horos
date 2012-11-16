@@ -188,7 +188,7 @@ static int numberOfActiveAssociations = 0;
 		[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/error_message" handler: nil];
 		
 		if( str && [str length] > 0)
-			[[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: str waitUntilDone: NO];
+			[[AppController sharedAppController] performSelectorOnMainThread: @selector(displayListenerError:) withObject: str waitUntilDone: NO];
 	}
     
     // And finally release memory on the father side, after the death of the process
@@ -431,7 +431,7 @@ void DcmQueryRetrieveSCP::writeErrorMessage( const char *str)
     if( options_.singleProcess_)
     {
         if( str)
-            [[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: [NSString stringWithUTF8String: str] waitUntilDone: NO];
+            [[AppController sharedAppController] performSelectorOnMainThread: @selector(displayListenerError:) withObject: [NSString stringWithUTF8String: str] waitUntilDone: NO];
     }
     else
     {
@@ -1654,7 +1654,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 //				NSString *str = getErrorMessage();
 //				
 //				if( str)
-//					[[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: str waitUntilDone: NO];
+//					[[AppController sharedAppController] performSelectorOnMainThread: @selector(displayListenerError:) withObject: str waitUntilDone: NO];
 //			}
 //            // TEST FOR MULTI-THREAD
 //            else
@@ -1668,7 +1668,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
                         
                     @try
                     {
-                        NSThread *t = [[[NSThread alloc] initWithTarget: [ContextCleaner class] selector:@selector( handleAssociation:) object: [NSDictionary dictionaryWithObjectsAndKeys: [NSValue valueWithPointer: assoc], @"assoc", [NSValue valueWithPointer: this], @"DcmQueryRetrieveSCP", nil]] autorelease];
+                        NSThread *t = [[[NSThread alloc] initWithTarget: [ContextCleaner class] selector:@selector(handleAssociation:) object: [NSDictionary dictionaryWithObjectsAndKeys: [NSValue valueWithPointer: assoc], @"assoc", [NSValue valueWithPointer: this], @"DcmQueryRetrieveSCP", nil]] autorelease];
                         t.name = NSLocalizedString( @"DICOM Services...", nil);
                         if( assoc && assoc->params && assoc->params->DULparams.callingPresentationAddress)
                             t.status = [NSString stringWithFormat: NSLocalizedString( @"%s", nil), assoc->params->DULparams.callingPresentationAddress];
@@ -1721,7 +1721,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
                             [dbStoreCoordinator unlock];
                             
                             // Display a thread in the ThreadsManager for this pid
-                            NSThread *t = [[[NSThread alloc] initWithTarget: [AppController sharedAppController] selector:@selector( waitForPID:) object: [NSNumber numberWithInt: pid]] autorelease];
+                            NSThread *t = [[[NSThread alloc] initWithTarget: [AppController sharedAppController] selector:@selector(waitForPID:) object: [NSNumber numberWithInt: pid]] autorelease];
                             t.name = NSLocalizedString( @"DICOM Services...", nil);
                             if( assoc && assoc->params && assoc->params->DULparams.callingPresentationAddress)
                                 t.status = [NSString stringWithFormat: NSLocalizedString( @"%s", nil), assoc->params->DULparams.callingPresentationAddress];

@@ -530,11 +530,11 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
 	
 	// send printjob
 	
-	NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( _sendPrintjob:) object: xmlPath] autorelease];
+	NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector(_sendPrintjob:) object: xmlPath] autorelease];
 	t.name = NSLocalizedString( @"DICOM Printing...", nil);
 	[[ThreadsManager defaultManager] addThreadAndStart: t];
 	
-//	[NSThread detachNewThreadSelector:@selector( _sendPrintjob:) toTarget:self withObject: xmlPath];
+//	[NSThread detachNewThreadSelector:@selector(_sendPrintjob:) toTarget:self withObject: xmlPath];
 //	[self _sendPrintjob: xmlPath];	
 		
 	[pool release];

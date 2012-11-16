@@ -216,7 +216,7 @@
 	[[NSNotificationCenter defaultCenter] addObserver:self selector: @selector(removeROI:) name: OsirixRemoveROINotification object: nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector: @selector(CloseViewerNotification:) name: OsirixCloseViewerNotification object: nil];
 	
-	getName = [[NSTimer scheduledTimerWithTimeInterval: 0.1 target:self selector:@selector( getName:) userInfo:0 repeats: YES] retain];
+	getName = [[NSTimer scheduledTimerWithTimeInterval: 0.1 target:self selector:@selector(getName:) userInfo:0 repeats: YES] retain];
 	
 	roiNames = nil;
 	

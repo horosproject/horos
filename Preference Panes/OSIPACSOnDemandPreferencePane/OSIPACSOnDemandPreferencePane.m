@@ -336,7 +336,7 @@ static NSMatrix *gDateMatrix = nil;
     [[DicomDatabase activeLocalDatabase] unlock];
     [self didChangeValueForKey: @"smartAlbumsArray"];
     
-    [smartAlbumsTable setDoubleAction: @selector( editSmartAlbumFilter:)];
+    [smartAlbumsTable setDoubleAction: @selector(editSmartAlbumFilter:)];
     [smartAlbumsTable setTarget: self];
     
     // History
@@ -344,7 +344,7 @@ static NSMatrix *gDateMatrix = nil;
     sourcesArray = [[[NSUserDefaults standardUserDefaults] objectForKey: @"comparativeSearchDICOMNodes"] mutableCopy];
     if( sourcesArray == nil) sourcesArray = [[NSMutableArray array] retain];
     
-    [sourcesTable setDoubleAction: @selector( selectUniqueSource:)];
+    [sourcesTable setDoubleAction: @selector(selectUniqueSource:)];
     
     [self refreshSources];
 	

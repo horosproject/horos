@@ -364,7 +364,7 @@
                     }
                 }
                 
-                NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( performBurn:) object: nil] autorelease];
+                NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector(performBurn:) object: nil] autorelease];
                 t.name = NSLocalizedString( @"Burning...", nil);
                 [[ThreadsManager defaultManager] addThreadAndStart: t];
             }
@@ -423,7 +423,7 @@
                     break;
                     
                     case CDDVD:
-                        [self performSelectorOnMainThread:@selector( burnCD:) withObject:nil waitUntilDone:NO];
+                        [self performSelectorOnMainThread:@selector(burnCD:) withObject:nil waitUntilDone:NO];
                         return;
                     break;
                         
@@ -443,7 +443,7 @@
             // Finished ! Close the window....
             
             [[NSSound soundNamed: @"Glass.aiff"] play];
-            [self.window performSelectorOnMainThread: @selector( performClose:) withObject: self waitUntilDone: NO];
+            [self.window performSelectorOnMainThread: @selector(performClose:) withObject: self waitUntilDone: NO];
         }
     }
     @catch (NSException *exception)
@@ -665,7 +665,7 @@
     burning = NO;
     
     if( succeed)
-        [[self window] performSelector: @selector( performClose:) withObject: nil afterDelay: 1];
+        [[self window] performSelector: @selector(performClose:) withObject: nil afterDelay: 1];
 	
 	return YES;
 }
@@ -759,12 +759,12 @@
 	[self performSelectorOnMainThread:@selector(estimateFolderSize:) withObject:nil waitUntilDone:YES];
 	isExtracting = NO;
     
-    irisAnimationTimer = [[NSTimer timerWithTimeInterval: 0.07  target: self selector: @selector( irisAnimation:) userInfo: NO repeats: YES] retain];
+    irisAnimationTimer = [[NSTimer timerWithTimeInterval: 0.07  target: self selector: @selector(irisAnimation:) userInfo: NO repeats: YES] retain];
     [[NSRunLoop currentRunLoop] addTimer: irisAnimationTimer forMode: NSModalPanelRunLoopMode];
     [[NSRunLoop currentRunLoop] addTimer: irisAnimationTimer forMode: NSDefaultRunLoopMode];
     
     
-    burnAnimationTimer = [[NSTimer timerWithTimeInterval: 0.07  target: self selector: @selector( burnAnimation:) userInfo: NO repeats: YES] retain];
+    burnAnimationTimer = [[NSTimer timerWithTimeInterval: 0.07  target: self selector: @selector(burnAnimation:) userInfo: NO repeats: YES] retain];
     
     [[NSRunLoop currentRunLoop] addTimer: burnAnimationTimer forMode: NSModalPanelRunLoopMode];
     [[NSRunLoop currentRunLoop] addTimer: burnAnimationTimer forMode: NSDefaultRunLoopMode];

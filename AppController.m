@@ -740,7 +740,7 @@ static NSDate *lastWarningDate = nil;
 
 + (void) pause
 {
-	[[AppController sharedAppController] performSelectorOnMainThread: @selector( pause) withObject: nil waitUntilDone: NO];
+	[[AppController sharedAppController] performSelectorOnMainThread: @selector(pause) withObject: nil waitUntilDone: NO];
 }
 
 -(void)applicationDidChangeScreenParameters:(NSNotification*)aNotification
@@ -1910,7 +1910,7 @@ static NSDate *lastWarningDate = nil;
 	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"publishDICOMBonjour"])
 	{
 		//Start DICOM Bonjour 
-		[NSTimer scheduledTimerWithTimeInterval: 5 target: self selector: @selector( startDICOMBonjour:) userInfo: nil repeats: NO];
+		[NSTimer scheduledTimerWithTimeInterval: 5 target: self selector: @selector(startDICOMBonjour:) userInfo: nil repeats: NO];
 	}
 }
 
@@ -2251,7 +2251,7 @@ static NSDate *lastWarningDate = nil;
 							
 							@try
 							{
-								NSPredicate	*request = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: sopinstanceuid]] customSelector: @selector( isEqualToSopInstanceUID:)];
+								NSPredicate	*request = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: sopinstanceuid]] customSelector: @selector(isEqualToSopInstanceUID:)];
 								
 								NSArray *imagesArray = [allImages filteredArrayUsingPredicate: request];
 								
@@ -2606,7 +2606,7 @@ static BOOL initialized = NO;
 						
 			if( [[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundlePackageType"] isEqualToString: @"APPL"])
 			{
-				[NSThread detachNewThreadSelector: @selector( DNSResolve:) toTarget: self withObject: nil];
+				[NSThread detachNewThreadSelector: @selector(DNSResolve:) toTarget: self withObject: nil];
 				
 				[AppController cleanOsiriXSubProcesses];
 								
@@ -3438,7 +3438,7 @@ static BOOL initialized = NO;
 	[self initDCMTK];
 	[self restartSTORESCP];
 	
-	[NSTimer scheduledTimerWithTimeInterval: 2 target: self selector: @selector( checkForRestartStoreSCPOrder:) userInfo: nil repeats: YES];
+	[NSTimer scheduledTimerWithTimeInterval: 2 target: self selector: @selector(checkForRestartStoreSCPOrder:) userInfo: nil repeats: YES];
 	
 	[DicomDatabase initializeDicomDatabaseClass];
 	[BrowserController initializeBrowserControllerClass];
@@ -3464,7 +3464,7 @@ static BOOL initialized = NO;
 	[checkSN64Browser searchForServicesOfType:@"_snosirix._tcp." inDomain:@""];
 	
     #ifndef OSIRIX_LIGHT
-	[NSTimer scheduledTimerWithTimeInterval: 5 target: self selector: @selector( checkSN64:) userInfo: nil repeats: NO];
+	[NSTimer scheduledTimerWithTimeInterval: 5 target: self selector: @selector(checkSN64:) userInfo: nil repeats: NO];
 	#endif
     #endif
 	
@@ -3950,7 +3950,7 @@ static BOOL initialized = NO;
 	
 	for( id loopItem in winList)
 	{
-		if( [[loopItem windowController] respondsToSelector:@selector( pixList)])
+		if( [[loopItem windowController] respondsToSelector:@selector(pixList)])
 		{
 			if( [[loopItem windowController] pixList] == pixList)
 			{
@@ -4262,13 +4262,13 @@ static BOOL initialized = NO;
 	for( NSMenuItem *item in [windowsTilingMenuRows itemArray])
 	{
 		[item setTarget: self];
-		[item setAction: @selector( setFixedTilingRows:)];
+		[item setAction: @selector(setFixedTilingRows:)];
 	}
 	
 	for( NSMenuItem *item in [windowsTilingMenuColumns itemArray])
 	{
 		[item setTarget: self];
-		[item setAction: @selector( setFixedTilingColumns:)];
+		[item setAction: @selector(setFixedTilingColumns:)];
 	}
 }
 

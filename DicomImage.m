@@ -654,7 +654,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
                         
                         NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: [NSArray arrayWithObject: [self valueForKey:@"completePath"]], @"files", @"(0028,6022)", @"field", c, @"value", nil]; // c can be nil : it's important to have it at the end
                         
-                        NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( dcmodifyThread:) object: dict] autorelease];
+                        NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector(dcmodifyThread:) object: dict] autorelease];
                         t.name = NSLocalizedString( @"Updating DICOM files...", nil);
                         [[ThreadsManager defaultManager] addThreadAndStart: t];
                     }
@@ -672,7 +672,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
                         
                     NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: [NSArray arrayWithObject: [self valueForKey:@"completePath"]], @"files", @"(0028,6022)", @"field", c, @"value", nil]; // c can be nil : it's important to have it at the end
 
-                    NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( dcmodifyThread:) object: dict] autorelease];
+                    NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector(dcmodifyThread:) object: dict] autorelease];
                     t.name = NSLocalizedString( @"Updating DICOM files...", nil);
                     [[ThreadsManager defaultManager] addThreadAndStart: t];
                 }

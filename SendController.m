@@ -105,12 +105,12 @@ static volatile int sendControllerObjects = 0;
 		_lock = [[NSRecursiveLock alloc] init];
 		
 		[[NSNotificationCenter defaultCenter] addObserver: self
-												selector: @selector( updateDestinationPopup:)
+												selector: @selector(updateDestinationPopup:)
 												name: OsirixServerArrayChangedNotification
 												object: nil];
 		
 		[[NSNotificationCenter defaultCenter] addObserver: self
-												selector: @selector( updateDestinationPopup:)
+												selector: @selector(updateDestinationPopup:)
 												name: @"DCMNetServicesDidChange"
 												object: nil];
 	}
@@ -159,7 +159,7 @@ static volatile int sendControllerObjects = 0;
 	[_lock lock];
 	[_lock unlock];
     
-	[self performSelectorOnMainThread: @selector( autorelease) withObject: nil waitUntilDone: NO];
+	[self performSelectorOnMainThread: @selector(autorelease) withObject: nil waitUntilDone: NO];
     
     [pool release];
 }
@@ -374,7 +374,7 @@ static volatile int sendControllerObjects = 0;
     {
         NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: arraysOfFiles, @"arraysOfFiles", arrayOfPatientNames, @"arrayOfPatientNames", nil];
         
-        NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( sendDICOMFilesOffis:) object: dict] autorelease];
+        NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector(sendDICOMFilesOffis:) object: dict] autorelease];
         t.name = NSLocalizedString( @"Sending...", nil);
         t.supportsCancel = YES;
         t.progress = 0;
@@ -452,7 +452,7 @@ static volatile int sendControllerObjects = 0;
 	}
     
 	//need to unlock to allow release of self after send complete
-	[_lock performSelectorOnMainThread:@selector( unlock) withObject:nil waitUntilDone: NO];
+	[_lock performSelectorOnMainThread:@selector(unlock) withObject:nil waitUntilDone: NO];
     
     [pool release];
 }

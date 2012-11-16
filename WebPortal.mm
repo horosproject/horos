@@ -265,7 +265,7 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 	self.cache = [NSMutableDictionary dictionary];
 	self.locks = [NSMutableDictionary dictionary];
 	
-    temporaryUsersTimer = [[NSTimer scheduledTimerWithTimeInterval: 60 target:self selector:@selector( deleteTemporaryUsers:) userInfo:NULL repeats:YES] retain];
+    temporaryUsersTimer = [[NSTimer scheduledTimerWithTimeInterval: 60 target:self selector:@selector(deleteTemporaryUsers:) userInfo:NULL repeats:YES] retain];
 	
 	preferredLocalizations = [[[NSBundle mainBundle] preferredLocalizations] copy];
     
@@ -430,7 +430,7 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 			if( serverThread)
 				[serverThread release];
 				
-			serverThread = [[NSThread alloc] initWithTarget: self selector: @selector( startServerThread) object: nil];
+			serverThread = [[NSThread alloc] initWithTarget: self selector: @selector(startServerThread) object: nil];
 			
 			[serverThread start];
 			

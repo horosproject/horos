@@ -1266,50 +1266,50 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	BOOL valid = NO;
 	
-    if ([item action] == @selector( roiSaveSelected:) || [item action] == @selector( increaseThickness:) || [item action] == @selector( decreaseThickness:))
+    if ([item action] == @selector(roiSaveSelected:) || [item action] == @selector(increaseThickness:) || [item action] == @selector(decreaseThickness:))
 	{
 		for( id loopItem in curRoiList)
 		{
 			if( [loopItem ROImode] == ROI_selected) valid = YES;
 		}
     }
-    else if( [item action] == @selector( copy:) && [item tag] == 1) // copy all viewers
+    else if( [item action] == @selector(copy:) && [item tag] == 1) // copy all viewers
     {
 		if( [ViewerController numberOf2DViewer] > 1)
             valid = YES;
 	}
-	else if( [item action] == @selector( switchCopySettingsInSeries:))
+	else if( [item action] == @selector(switchCopySettingsInSeries:))
 	{
 		valid = YES;
 		[item setState: COPYSETTINGSINSERIES];
 	}
-	else if( [item action] == @selector( flipHorizontal:))
+	else if( [item action] == @selector(flipHorizontal:))
 	{
 		valid = YES;
 		[item setState: xFlipped];
 	}
-	else if( [item action] == @selector( flipVertical:))
+	else if( [item action] == @selector(flipVertical:))
 	{
 		valid = YES;
 		[item setState: yFlipped];
 	}
-	else if( [item action] == @selector( syncronize:))
+	else if( [item action] == @selector(syncronize:))
 	{
 		valid = YES;
 		if( [item tag] == syncro) [item setState: NSOnState];
 		else [item setState: NSOffState];
 	}
-	else if( [item action] == @selector( mergeFusedImages:))
+	else if( [item action] == @selector(mergeFusedImages:))
 	{
 		if( blendingView) valid = YES;
 	}
-	else if( [item action] == @selector( annotMenu:))
+	else if( [item action] == @selector(annotMenu:))
 	{
 		valid = YES;
 		if( [item tag] == [[NSUserDefaults standardUserDefaults] integerForKey:@"ANNOTATIONS"]) [item setState: NSOnState];
 		else [item setState: NSOffState];
 	}
-	else if( [item action] == @selector( barMenu:))
+	else if( [item action] == @selector(barMenu:))
 	{
 		valid = YES;
 		if( [item tag] == [[NSUserDefaults standardUserDefaults] integerForKey:@"CLUTBARS"]) [item setState: NSOnState];
@@ -1527,7 +1527,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	
 	id winCtrl = self.windowController;
-	if ([winCtrl respondsToSelector:@selector( paste:)])
+	if ([winCtrl respondsToSelector:@selector(paste:)])
 		[winCtrl paste: sender];
 }
 #endif
@@ -4668,8 +4668,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					{
 						if( index > 0)
 						{
-							[NSObject cancelPreviousPerformRequestsWithTarget: [self windowController] selector: @selector( loadSeriesDown) object: nil];
-							[[self windowController] performSelector: @selector( loadSeriesDown) withObject: nil afterDelay: 0.01];
+							[NSObject cancelPreviousPerformRequestsWithTarget: [self windowController] selector: @selector(loadSeriesDown) object: nil];
+							[[self windowController] performSelector: @selector(loadSeriesDown) withObject: nil afterDelay: 0.01];
 						}
 					}
 				}
@@ -4682,8 +4682,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					{
 						if( index + 1 < [seriesArray count])
 						{
-							[NSObject cancelPreviousPerformRequestsWithTarget: [self windowController] selector: @selector( loadSeriesUp) object: nil];
-							[[self windowController] performSelector: @selector( loadSeriesUp) withObject: nil afterDelay: 0.01];
+							[NSObject cancelPreviousPerformRequestsWithTarget: [self windowController] selector: @selector(loadSeriesUp) object: nil];
+							[[self windowController] performSelector: @selector(loadSeriesUp) withObject: nil afterDelay: 0.01];
 						}
 					}
 				}
@@ -10621,8 +10621,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			{
 				NSArray	*vs = [[self windowController] imageViews];
 				
-				[vs makeObjectsPerformSelector: @selector( setStringID:) withObject: @"copy"];
-				[vs makeObjectsPerformSelector: @selector( display)];
+				[vs makeObjectsPerformSelector: @selector(setStringID:) withObject: @"copy"];
+				[vs makeObjectsPerformSelector: @selector(display)];
 			}
 			else
 			{
@@ -10722,8 +10722,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		{
 			NSArray	*vs = [[self windowController] imageViews];
 			
-			[vs makeObjectsPerformSelector: @selector( setStringID:) withObject: nil];
-			[vs makeObjectsPerformSelector: @selector( display)];
+			[vs makeObjectsPerformSelector: @selector(setStringID:) withObject: nil];
+			[vs makeObjectsPerformSelector: @selector(display)];
 		}
 		else
 		{

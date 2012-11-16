@@ -347,7 +347,7 @@ void errmsg(const char* msg, ...)
 		tLayer = new DcmTLSTransportLayer(DICOM_APPLICATION_ACCEPTOR, [TLS_SEED_FILE cStringUsingEncoding:NSUTF8StringEncoding]); // joris DICOM_APPLICATION_ACCEPTOR for server!!
 		if (tLayer == NULL)
 		{
-			[[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: @"unable to create TLS transport layer" waitUntilDone: NO];
+			[[AppController sharedAppController] performSelectorOnMainThread: @selector(displayListenerError:) withObject: @"unable to create TLS transport layer" waitUntilDone: NO];
 			return;
 		}
 		
@@ -364,7 +364,7 @@ void errmsg(const char* msg, ...)
 				if (TCS_ok != tLayer->addTrustedCertificateFile([[trustedCertificatesDir stringByAppendingPathComponent:cert] cStringUsingEncoding:NSUTF8StringEncoding], SSL_FILETYPE_PEM))
 				{
 					NSString *errMessage = [NSString stringWithFormat: @"DICOM Network Failure (storescp TLS) : Unable to load certificate file %@", [trustedCertificatesDir stringByAppendingPathComponent:cert]];
-					[[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: errMessage waitUntilDone: NO];
+					[[AppController sharedAppController] performSelectorOnMainThread: @selector(displayListenerError:) withObject: errMessage waitUntilDone: NO];
 					return;
 				}
 			}
@@ -404,21 +404,21 @@ void errmsg(const char* msg, ...)
 			if (TCS_ok != tLayer->setPrivateKeyFile([_privateKeyFile cStringUsingEncoding:NSUTF8StringEncoding], SSL_FILETYPE_PEM))
 			{
 				NSString *errMessage = [NSString stringWithFormat: @"DICOM Network Failure (storescp TLS) : Unable to load private TLS key from %@", _privateKeyFile];
-				[[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: errMessage waitUntilDone: NO];
+				[[AppController sharedAppController] performSelectorOnMainThread: @selector(displayListenerError:) withObject: errMessage waitUntilDone: NO];
 				return;
 			}
 			
 			if (TCS_ok != tLayer->setCertificateFile([_certificateFile cStringUsingEncoding:NSUTF8StringEncoding], SSL_FILETYPE_PEM))
 			{
 				NSString *errMessage = [NSString stringWithFormat: @"DICOM Network Failure (storescp TLS) : Unable to load certificate from %@", _certificateFile];
-				[[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: errMessage waitUntilDone: NO];
+				[[AppController sharedAppController] performSelectorOnMainThread: @selector(displayListenerError:) withObject: errMessage waitUntilDone: NO];
 				return;
 			}
 			
 			if (!tLayer->checkPrivateKeyMatchesCertificate())
 			{
 				NSString *errMessage = [NSString stringWithFormat: @"DICOM Network Failure (storescp TLS) : Unable to load certificate from private key '%@' and certificate '%@' do not match", _privateKeyFile, _certificateFile];
-				[[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: errMessage waitUntilDone: NO];
+				[[AppController sharedAppController] performSelectorOnMainThread: @selector(displayListenerError:) withObject: errMessage waitUntilDone: NO];
 				return;
 			}
 		}
@@ -458,7 +458,7 @@ void errmsg(const char* msg, ...)
 					}
 					
 					NSString *errMessage = [NSString stringWithFormat: @"DICOM Network Failure (storescp TLS) : Ciphersuite '%s' is unknown.", current];
-					[[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: errMessage waitUntilDone: NO];
+					[[AppController sharedAppController] performSelectorOnMainThread: @selector(displayListenerError:) withObject: errMessage waitUntilDone: NO];
 					return;
 				}
 				else
@@ -472,7 +472,7 @@ void errmsg(const char* msg, ...)
 			if (TCS_ok != tLayer->setCipherSuites(opt_ciphersuites.c_str()))
 			{
 				NSString *errMessage = [NSString stringWithFormat: @"DICOM Network Failure (storescp TLS) : Unable to set selected cipher suites."];
-				[[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: errMessage waitUntilDone: NO];
+				[[AppController sharedAppController] performSelectorOnMainThread: @selector(displayListenerError:) withObject: errMessage waitUntilDone: NO];
 				return;
 			}
 		}
@@ -493,7 +493,7 @@ void errmsg(const char* msg, ...)
 		{
 			DimseCondition::dump(cond);
 			NSString *errMessage = [NSString stringWithFormat: @"DICOM Network Failure (storescp TLS) : ASC_setTransportLayer - %04x:%04x %s", cond.module(), cond.code(), cond.text()];
-			[[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: errMessage waitUntilDone: NO];
+			[[AppController sharedAppController] performSelectorOnMainThread: @selector(displayListenerError:) withObject: errMessage waitUntilDone: NO];
 			return;
 		}
 	}

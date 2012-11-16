@@ -1068,7 +1068,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                         NSDictionary *messageHeaders = [NSDictionary dictionaryWithObjectsAndKeys: u.email, @"To", fromEmailAddress, @"Sender", emailSubject, @"Subject", nil];
                         
                         // NSAttributedString initWithHTML is NOT thread-safe
-                        [self performSelectorOnMainThread: @selector( sendEmailOnMainThread:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: emailMessage, @"template", messageHeaders, @"headers", nil] waitUntilDone: NO];
+                        [self performSelectorOnMainThread: @selector(sendEmailOnMainThread:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: emailMessage, @"template", messageHeaders, @"headers", nil] waitUntilDone: NO];
                         
 						[response.tokens addMessage:NSLocalizedString(@"You will shortly receive an email with your new password.", nil)];
 						
@@ -1673,7 +1673,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                     [self.wadoSOPInstanceUIDCache setObject: image.completePath forKey: image.sopInstanceUID];
 			}
             
-			NSPredicate* predicate = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: objectUID]] customSelector: @selector( isEqualToSopInstanceUID:)];
+			NSPredicate* predicate = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: objectUID]] customSelector: @selector(isEqualToSopInstanceUID:)];
 			NSPredicate *N2NonNullStringPredicate = [NSPredicate predicateWithFormat:@"compressedSopInstanceUID != NIL"];
 			
 			images = [[allImages filteredArrayUsingPredicate: N2NonNullStringPredicate] filteredArrayUsingPredicate: predicate];

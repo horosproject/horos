@@ -918,7 +918,7 @@ extern const char *GetPrivateIP();
 						
 						NSDictionary *todo = [NSDictionary dictionaryWithObjectsAndKeys: Address, @"Address", TransferSyntax, @"TransferSyntax", Port, @"Port", AETitle, @"AETitle", localPaths, @"Files", nil];
 						
-						[NSThread detachNewThreadSelector:@selector( sendDICOMFilesToOsiriXNode:) toTarget:self withObject: todo];
+						[NSThread detachNewThreadSelector:@selector(sendDICOMFilesToOsiriXNode:) toTarget:self withObject: todo];
 					}
 					else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DICOM" length: 6]])
 					{
@@ -1056,12 +1056,12 @@ extern const char *GetPrivateIP();
 	[incomingConnection closeFile];
 	[incomingConnection release];
 	
-	if( refreshDB) [interfaceOsiriX performSelectorOnMainThread:@selector( refreshDatabase:) withObject:nil waitUntilDone: NO];		// This has to be performed on the main thread
+	if( refreshDB) [interfaceOsiriX performSelectorOnMainThread:@selector(refreshDatabase:) withObject:nil waitUntilDone: NO];		// This has to be performed on the main thread
 	
     // remark: there was this saveDB flag that was set when changes were made to the database, but it was always just after a [contact save:err] call... 
     // ...so a saveDatabase would just cause a 2nd [database save]...
     // ...another possible reason for this 2nd [database save] could be that the DB_VERSION file was originally written in the saveDatabase function..  since DicomDatabase, [database save] does that too.
-//    if( saveDB) [interfaceOsiriX performSelectorOnMainThread:@selector( saveDatabase:) withObject:nil waitUntilDone: NO];			// This has to be performed on the main thread
+//    if( saveDB) [interfaceOsiriX performSelectorOnMainThread:@selector(saveDatabase:) withObject:nil waitUntilDone: NO];			// This has to be performed on the main thread
 	
 	[mPool release];
 }

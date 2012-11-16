@@ -984,9 +984,9 @@ static NSString*	SyncLockSeriesImageName                     = @"SyncLock.pdf";
 			{
 				@try
 				{
-					if( [item respondsToSelector:@selector( setRecursiveEnabled:)])
+					if( [item respondsToSelector:@selector(setRecursiveEnabled:)])
 						[item setRecursiveEnabled: YES];
-					else if( [[item view] respondsToSelector:@selector( setRecursiveEnabled:)])
+					else if( [[item view] respondsToSelector:@selector(setRecursiveEnabled:)])
 						[[item view] setRecursiveEnabled: YES];
 					else if( item)
 						NSLog( @"%@", item);
@@ -1838,7 +1838,7 @@ return YES;
 {
 	N2OpenGLViewWithSplitsWindow *window = (N2OpenGLViewWithSplitsWindow*)self.window;
 	
-	if( [window respondsToSelector:@selector( disableUpdatesUntilFlush)])
+	if( [window respondsToSelector:@selector(disableUpdatesUntilFlush)])
 		[window disableUpdatesUntilFlush];
 }
 
@@ -2138,13 +2138,13 @@ return YES;
     
 	BOOL valid = YES;
     
-    if( [item action] == @selector( syncSeriesScopeAction:))    {
+    if( [item action] == @selector(syncSeriesScopeAction:))    {
         [item setState: (syncSeriesScope == [item tag] ? NSOnState : NSOffState)];
     }
-    else if( [item action] == @selector( syncSeriesBehaviorAction:))   {
+    else if( [item action] == @selector(syncSeriesBehaviorAction:))   {
         [item setState: (syncSeriesBehavior == [item tag] ? NSOnState : NSOffState)];
     }
-    else if( [item action] == @selector( syncSeriesStateAction:))   {
+    else if( [item action] == @selector(syncSeriesStateAction:))   {
         [item setState: (syncSeriesState == [item tag] ? NSOnState : NSOffState)];
     }
     else valid = NO;

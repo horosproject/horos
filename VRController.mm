@@ -1170,7 +1170,7 @@ return YES;
 
 	BOOL valid = NO;
 	
-	if( [item action] == @selector( setDefaultTool:))
+	if( [item action] == @selector(setDefaultTool:))
 	{
 		valid = YES;
 		
@@ -1622,9 +1622,9 @@ return YES;
 			{
 				@try
 				{
-					if( [item respondsToSelector:@selector( setRecursiveEnabled:)])
+					if( [item respondsToSelector:@selector(setRecursiveEnabled:)])
 						[item setRecursiveEnabled: YES];
-					else if( [[item view] respondsToSelector:@selector( setRecursiveEnabled:)])
+					else if( [[item view] respondsToSelector:@selector(setRecursiveEnabled:)])
 						[[item view] setRecursiveEnabled: YES];
 					else if( item)
 						NSLog( @"%@", item);

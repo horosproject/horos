@@ -368,7 +368,7 @@ static float deg2rad = M_PI/180.0;
 {
     N2OpenGLViewWithSplitsWindow *window = (N2OpenGLViewWithSplitsWindow*)self.window;
 	
-	if( [window respondsToSelector:@selector( disableUpdatesUntilFlush)])
+	if( [window respondsToSelector:@selector(disableUpdatesUntilFlush)])
 		[window disableUpdatesUntilFlush];
 }
 
@@ -2605,8 +2605,8 @@ static float deg2rad = M_PI/180.0;
 		
 		[[NSUserDefaults standardUserDefaults] setBool: self.displayMousePosition forKey: @"MPRDisplayMousePosition"];
 	
-		[NSObject cancelPreviousPerformRequestsWithTarget: self selector:@selector( updateViewsAccordingToFrame:) object: nil];
-		[NSObject cancelPreviousPerformRequestsWithTarget: self selector:@selector( delayedFullLODRendering:) object: nil];
+		[NSObject cancelPreviousPerformRequestsWithTarget: self selector:@selector(updateViewsAccordingToFrame:) object: nil];
+		[NSObject cancelPreviousPerformRequestsWithTarget: self selector:@selector(delayedFullLODRendering:) object: nil];
 		
 		[[NSNotificationCenter defaultCenter] removeObserver: self];
 		
@@ -2736,9 +2736,9 @@ static float deg2rad = M_PI/180.0;
 			{
 				@try
 				{
-					if( [item respondsToSelector:@selector( setRecursiveEnabled:)])
+					if( [item respondsToSelector:@selector(setRecursiveEnabled:)])
 						[item setRecursiveEnabled: YES];
-					else if( [[item view] respondsToSelector:@selector( setRecursiveEnabled:)])
+					else if( [[item view] respondsToSelector:@selector(setRecursiveEnabled:)])
 						[[item view] setRecursiveEnabled: YES];
 					else if( item)
 						NSLog( @"%@", item);
@@ -2790,7 +2790,7 @@ static float deg2rad = M_PI/180.0;
 		[toolbarItem setPaletteLabel:NSLocalizedString(@"Reset",nil)];
 		[toolbarItem setImage: [NSImage imageNamed: @"Reset.pdf"]];
 		[toolbarItem setTarget: self];
-		[toolbarItem setAction: @selector( showWindow:)];
+		[toolbarItem setAction: @selector(showWindow:)];
     }
 	else if ([itemIdent isEqualToString: @"Export.icns"])
 	{
@@ -2799,7 +2799,7 @@ static float deg2rad = M_PI/180.0;
 		[toolbarItem setToolTip:NSLocalizedString(@"Export this image in a DICOM file",nil)];
 		[toolbarItem setImage: [NSImage imageNamed: @"Export.icns"]];
 		[toolbarItem setTarget: self];
-		[toolbarItem setAction: @selector( exportDICOMFile:)];
+		[toolbarItem setAction: @selector(exportDICOMFile:)];
     }
 	else if ([itemIdent isEqualToString: @"BestRendering.pdf"])
 	{
@@ -2807,7 +2807,7 @@ static float deg2rad = M_PI/180.0;
 		[toolbarItem setPaletteLabel:NSLocalizedString(@"Best",nil)];
 		[toolbarItem setImage: [NSImage imageNamed: @"BestRendering.pdf"]];
 		[toolbarItem setTarget: self];
-		[toolbarItem setAction: @selector( bestRendering:)];
+		[toolbarItem setAction: @selector(bestRendering:)];
     }
 	else if ([itemIdent isEqualToString: @"QTExport.pdf"])
 	{
@@ -2815,7 +2815,7 @@ static float deg2rad = M_PI/180.0;
 		[toolbarItem setPaletteLabel:NSLocalizedString(@"Movie Export",nil)];
 		[toolbarItem setImage: [NSImage imageNamed: @"QTExport.pdf"]];
 		[toolbarItem setTarget: self];
-		[toolbarItem setAction: @selector( exportQuicktime:)];
+		[toolbarItem setAction: @selector(exportQuicktime:)];
     }
 	else if ([itemIdent isEqualToString: @"tbBlending"])
 	{
@@ -3157,7 +3157,7 @@ static float deg2rad = M_PI/180.0;
     }
     else
     {
-        movieTimer = [[NSTimer scheduledTimerWithTimeInterval:0 target:self selector:@selector( performMovieAnimation:) userInfo:nil repeats:YES] retain];
+        movieTimer = [[NSTimer scheduledTimerWithTimeInterval:0 target:self selector:@selector(performMovieAnimation:) userInfo:nil repeats:YES] retain];
         [[NSRunLoop currentRunLoop] addTimer:movieTimer forMode:NSModalPanelRunLoopMode];
         [[NSRunLoop currentRunLoop] addTimer:movieTimer forMode:NSEventTrackingRunLoopMode];
     

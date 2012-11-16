@@ -456,7 +456,7 @@ static NSConditionLock *threadLock = nil;
 		[d setObject: [NSNumber numberWithInt: from] forKey: @"from"];
 		[d setObject: [NSNumber numberWithInt: to] forKey: @"to"];
 		
-		[NSThread detachNewThreadSelector: @selector( vImageThread:) toTarget: browserWindow withObject: d];
+		[NSThread detachNewThreadSelector: @selector(vImageThread:) toTarget: browserWindow withObject: d];
 	}
 	
 	[threadLock lockWhenCondition: 0];
@@ -679,7 +679,7 @@ static NSConditionLock *threadLock = nil;
 										{
 											if( [[itemPath pathExtension] isEqualToString: @"dcmURLs"])
 											{
-												NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( asyncWADODownload:) object: filename] autorelease];
+												NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector(asyncWADODownload:) object: filename] autorelease];
 												t.name = NSLocalizedString( @"WADO Retrieve...", nil);
 												t.supportsCancel = YES;
 												t.status = [itemPath lastPathComponent];
@@ -720,7 +720,7 @@ static NSConditionLock *threadLock = nil;
 					{
 						if( [[filename pathExtension] isEqualToString: @"dcmURLs"])
 						{
-							NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( asyncWADODownload:) object: filename] autorelease];
+							NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector(asyncWADODownload:) object: filename] autorelease];
 							t.name = NSLocalizedString( @"WADO Retrieve...", nil);
 							t.supportsCancel = YES;
 							t.status = [filename lastPathComponent];
@@ -1933,7 +1933,7 @@ static NSConditionLock *threadLock = nil;
 		NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: filesInput, @"filesInput", [NSNumber numberWithBool: NO], @"copyFiles", nil];
 		[dict addEntriesFromDictionary: options];
 		
-		NSThread *t = [[[NSThread alloc] initWithTarget:_database selector:@selector( copyFilesThread:) object: dict] autorelease];
+		NSThread *t = [[[NSThread alloc] initWithTarget:_database selector:@selector(copyFilesThread:) object: dict] autorelease];
 		
 		if( [[options objectForKey: @"mountedVolume"] boolValue]) t.name = NSLocalizedString( @"Indexing files from CD/DVD...", nil);
 		else t.name = NSLocalizedString( @"Indexing files...", nil);
@@ -2212,7 +2212,7 @@ static NSConditionLock *threadLock = nil;
         }
         
         if( albumTable.selectedRow == 0)
-            [NSThread detachNewThreadSelector: @selector( searchForSearchField:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: searchType], @"searchType", _searchString, @"searchString", nil]];
+            [NSThread detachNewThreadSelector: @selector(searchForSearchField:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: searchType], @"searchType", _searchString, @"searchString", nil]];
     }
     else if( timeIntervalStart || timeIntervalEnd)
     {
@@ -2224,7 +2224,7 @@ static NSConditionLock *threadLock = nil;
         }
         
         if( albumTable.selectedRow == 0)
-            [NSThread detachNewThreadSelector: @selector( searchForTimeIntervalFromTo:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: timeIntervalStart, @"from", timeIntervalEnd, @"to", nil]];
+            [NSThread detachNewThreadSelector: @selector(searchForTimeIntervalFromTo:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: timeIntervalStart, @"from", timeIntervalEnd, @"to", nil]];
     }
     else
     {
@@ -2322,7 +2322,7 @@ static NSConditionLock *threadLock = nil;
             }
             
             if( albumTable.selectedRow == 0)
-                [NSThread detachNewThreadSelector: @selector( searchForTimeIntervalFromTo:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: timeIntervalStart, @"from", timeIntervalEnd, @"to", nil]];
+                [NSThread detachNewThreadSelector: @selector(searchForTimeIntervalFromTo:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: timeIntervalStart, @"from", timeIntervalEnd, @"to", nil]];
         }
     }
     else if( _searchString.length > 2 || (_searchString.length >= 2 && searchType == 5))
@@ -3015,7 +3015,7 @@ static NSConditionLock *threadLock = nil;
                             
                             if( autoretrievingPACSOnDemandSmartAlbum == NO && studyToAutoretrieve.count)
                             {
-                                NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( autoretrievePACSOnDemandSmartAlbum:) object: studyToAutoretrieve] autorelease];
+                                NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector(autoretrievePACSOnDemandSmartAlbum:) object: studyToAutoretrieve] autorelease];
                                 t.name = NSLocalizedString( @"Auto-Retrieving Album...", nil);
                                 t.supportsCancel = YES;
                                 [[ThreadsManager defaultManager] addThreadAndStart: t];
@@ -3715,7 +3715,7 @@ static NSConditionLock *threadLock = nil;
                         self.distantSearchType = curSearchType;
                         
                         if( curSearchType == searchType && [curSearchString isEqualToString: _searchString]) // There was maybe other locks in the queue...
-                            [self performSelectorOnMainThread: @selector( _refreshDatabaseDisplay) withObject: nil waitUntilDone: NO];
+                            [self performSelectorOnMainThread: @selector(_refreshDatabaseDisplay) withObject: nil waitUntilDone: NO];
                     }
                     @catch (NSException* e)
                     {
@@ -3836,7 +3836,7 @@ static NSConditionLock *threadLock = nil;
                         self.distantTimeIntervalEnd = to;
                         
                         if( [from isEqualToDate: timeIntervalStart] && (to == nil || [to isEqualToDate: timeIntervalEnd])) // There was maybe other locks in the queue...
-                            [self performSelectorOnMainThread: @selector( _refreshDatabaseDisplay) withObject: nil waitUntilDone: NO];
+                            [self performSelectorOnMainThread: @selector(_refreshDatabaseDisplay) withObject: nil waitUntilDone: NO];
                     }
                     @catch (NSException* e)
                     {
@@ -3956,7 +3956,7 @@ static NSConditionLock *threadLock = nil;
                         self.smartAlbumDistantName = albumName;
                         
                         if( [albumName isEqualToString: self.selectedAlbumName])
-                            [self performSelectorOnMainThread: @selector( _refreshDatabaseDisplay) withObject: nil waitUntilDone: NO];
+                            [self performSelectorOnMainThread: @selector(_refreshDatabaseDisplay) withObject: nil waitUntilDone: NO];
                     }
                     @catch (NSException* e)
                     {
@@ -4022,7 +4022,7 @@ static NSConditionLock *threadLock = nil;
                 [mergedStudies sortUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: NO]]];
                 
                 if( [self.comparativePatientUID compare: studySelected.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
-                    [self performSelectorOnMainThread: @selector( refreshComparativeStudies:) withObject: mergedStudies waitUntilDone: NO]; // Already display the local studies, we will display the merged studies later
+                    [self performSelectorOnMainThread: @selector(refreshComparativeStudies:) withObject: mergedStudies waitUntilDone: NO]; // Already display the local studies, we will display the merged studies later
             }
             @catch (NSException* e)
             {
@@ -4112,7 +4112,7 @@ static NSConditionLock *threadLock = nil;
                             [mergedStudies sortUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: NO]]];
                             
                             if( [self.comparativePatientUID compare: studySelected.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
-                                [self performSelectorOnMainThread: @selector( refreshComparativeStudies:) withObject: mergedStudies waitUntilDone: NO];
+                                [self performSelectorOnMainThread: @selector(refreshComparativeStudies:) withObject: mergedStudies waitUntilDone: NO];
                         }
                         @catch (NSException* e)
                         {
@@ -4224,7 +4224,7 @@ static NSConditionLock *threadLock = nil;
             object = studySelected; // DCMTKStudyQueryNode
         
         if( object)
-            [NSThread detachNewThreadSelector: @selector( searchForComparativeStudies:) toTarget:self withObject: object];
+            [NSThread detachNewThreadSelector: @selector(searchForComparativeStudies:) toTarget:self withObject: object];
         
         [self computeTimeInterval];
     }
@@ -4240,7 +4240,7 @@ static NSConditionLock *threadLock = nil;
             if( [[album valueForKey:@"smartAlbum"] boolValue] == YES)
             {
                 if( [NSDate timeIntervalSinceReferenceDate] - lastRefreshSmartAlbumDistantStudies > 3 * 60) // 3 min
-                    [NSThread detachNewThreadSelector: @selector( searchForSmartAlbumDistantStudies:) toTarget:self withObject: album.name];
+                    [NSThread detachNewThreadSelector: @selector(searchForSmartAlbumDistantStudies:) toTarget:self withObject: album.name];
             }
         }
     }
@@ -4561,7 +4561,7 @@ static NSConditionLock *threadLock = nil;
                     else 
                         object = studySelected; // DCMTKStudyQueryNode
                     
-                    [NSThread detachNewThreadSelector: @selector( searchForComparativeStudies:) toTarget:self withObject: object];
+                    [NSThread detachNewThreadSelector: @selector(searchForComparativeStudies:) toTarget:self withObject: object];
                 }
                 else
                 {
@@ -5047,7 +5047,7 @@ static NSConditionLock *threadLock = nil;
         else
             object = studySelected;
         
-        [NSThread detachNewThreadSelector: @selector( searchForComparativeStudies:) toTarget:self withObject: object];
+        [NSThread detachNewThreadSelector: @selector(searchForComparativeStudies:) toTarget:self withObject: object];
     }
 }
 
@@ -6018,7 +6018,7 @@ static NSConditionLock *threadLock = nil;
 				
 				NSMutableDictionary *d = [NSMutableDictionary dictionaryWithObjectsAndKeys: [dropDestination path], @"location", filesToExport, @"filesToExport", dicomFiles2Export, @"dicomFiles2Export", nil];
 		
-				NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( exportDICOMFileInt: ) object: d] autorelease];
+				NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector(exportDICOMFileInt: ) object: d] autorelease];
 				t.name = NSLocalizedString( @"Exporting...", nil);
 				t.supportsCancel = YES;
 				t.status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [filesToExport count]];
@@ -8720,7 +8720,7 @@ static BOOL withReset = NO;
     
 	N2OpenGLViewWithSplitsWindow *window = (N2OpenGLViewWithSplitsWindow*)self.window;
 	
-	if( [window respondsToSelector:@selector( disableUpdatesUntilFlush)])
+	if( [window respondsToSelector:@selector(disableUpdatesUntilFlush)])
 		[window disableUpdatesUntilFlush];
 }
 
@@ -10017,7 +10017,7 @@ static BOOL needToRezoom;
                     
                     if( [[album valueForKey:@"smartAlbum"] boolValue] == YES)
                     {
-                        [NSThread detachNewThreadSelector: @selector( searchForSmartAlbumDistantStudies:) toTarget:self withObject: album.name];
+                        [NSThread detachNewThreadSelector: @selector(searchForSmartAlbumDistantStudies:) toTarget:self withObject: album.name];
                     }
                 }
             }
@@ -10933,12 +10933,12 @@ static BOOL needToRezoom;
 					[subOpenMatrix3D renewRows: 1 columns: [splittedSeries count]];
 					[subOpenMatrix3D sizeToCells];
 					[subOpenMatrix3D setTarget:self];
-					[subOpenMatrix3D setAction: @selector( selectSubSeriesAndOpen:)];
+					[subOpenMatrix3D setAction: @selector(selectSubSeriesAndOpen:)];
 					
 					[subOpenMatrix4D renewRows: 1 columns: [[splittedSeries objectAtIndex: 0] count]];
 					[subOpenMatrix4D sizeToCells];
 					[subOpenMatrix4D setTarget:self];
-					[subOpenMatrix4D setAction: @selector( selectSubSeriesAndOpen:)];
+					[subOpenMatrix4D setAction: @selector(selectSubSeriesAndOpen:)];
 					
 					[[supOpenButtons cellWithTag: 3] setEnabled: YES];
 					
@@ -12088,17 +12088,17 @@ static NSArray*	openSubSeriesArray = nil;
                 }
             }
             
-            item = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Save Albums", nil) action:@selector( saveAlbums:) keyEquivalent:@""] autorelease];
+            item = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Save Albums", nil) action:@selector(saveAlbums:) keyEquivalent:@""] autorelease];
             [item setTarget: self]; // required because the drawner is the first responder
             [menu addItem:item];
             
-            item = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Import Albums", nil) action:@selector( addAlbums:) keyEquivalent:@""] autorelease];
+            item = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Import Albums", nil) action:@selector(addAlbums:) keyEquivalent:@""] autorelease];
             [item setTarget: self]; // required because the drawner is the first responder
             [menu addItem:item];
             
             [menu addItem: [NSMenuItem separatorItem]];
             
-            item = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Create Default Albums", nil) action:@selector( defaultAlbums:) keyEquivalent:@""] autorelease];
+            item = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Create Default Albums", nil) action:@selector(defaultAlbums:) keyEquivalent:@""] autorelease];
             [item setTarget: self]; // required because the drawner is the first responder
             [menu addItem:item];
         }
@@ -12129,8 +12129,8 @@ static NSArray*	openSubSeriesArray = nil;
 	
     if (isWritable) {
         [menu addItem: [NSMenuItem separatorItem]];
-        [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Add selected study(s) to user(s)", nil)  action:@selector( addStudiesToUser:) keyEquivalent:@""] autorelease]];
-        [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Send an email notification to user(s)", nil)  action:@selector( sendEmailNotification:) keyEquivalent:@""] autorelease]];
+        [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Add selected study(s) to user(s)", nil)  action:@selector(addStudiesToUser:) keyEquivalent:@""] autorelease]];
+        [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Send an email notification to user(s)", nil)  action:@selector(sendEmailNotification:) keyEquivalent:@""] autorelease]];
     }
 	
     if (isWritable) {
@@ -12185,7 +12185,7 @@ static NSArray*	openSubSeriesArray = nil;
 		{
 			submenu = [[[NSMenu alloc] initWithTitle: NSLocalizedString(@"Apply this Routing Rule to Selection", nil)] autorelease];
 			
-			NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"All routing rules", nil)  action:@selector( applyRoutingRule:) keyEquivalent:@""] autorelease];
+			NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"All routing rules", nil)  action:@selector(applyRoutingRule:) keyEquivalent:@""] autorelease];
 			[submenu addItem: item];
 			[submenu addItem: [NSMenuItem separatorItem]];
 			
@@ -12194,9 +12194,9 @@ static NSArray*	openSubSeriesArray = nil;
 				NSString *s = [routingRule valueForKey: @"description"];
 				
 				if( [s length] > 0)
-					item = [[[NSMenuItem alloc] initWithTitle: [NSString stringWithFormat: @"%@ - %@", [routingRule valueForKey: @"name"], s] action: @selector( applyRoutingRule:) keyEquivalent:@""] autorelease];
+					item = [[[NSMenuItem alloc] initWithTitle: [NSString stringWithFormat: @"%@ - %@", [routingRule valueForKey: @"name"], s] action: @selector(applyRoutingRule:) keyEquivalent:@""] autorelease];
 				else
-					item = [[[NSMenuItem alloc] initWithTitle: [routingRule valueForKey: @"name"] action: @selector( applyRoutingRule:) keyEquivalent:@""] autorelease];
+					item = [[[NSMenuItem alloc] initWithTitle: [routingRule valueForKey: @"name"] action: @selector(applyRoutingRule:) keyEquivalent:@""] autorelease];
 				
 				[item setRepresentedObject: routingRule];
 				
@@ -12414,7 +12414,7 @@ static NSArray*	openSubSeriesArray = nil;
             [[albumTable tableColumnWithIdentifier:@"Source"] setDataCell: [[[PrettyCell alloc] init] autorelease]];
             
             [[comparativeTable tableColumnWithIdentifier:@"Cell"] setDataCell: [[[ComparativeCell alloc] init] autorelease]];
-            [comparativeTable setDoubleAction: @selector( doubleClickComparativeStudy:)];
+            [comparativeTable setDoubleAction: @selector(doubleClickComparativeStudy:)];
             
             [self initContextualMenus];
             
@@ -12478,7 +12478,7 @@ static NSArray*	openSubSeriesArray = nil;
         
         #ifdef __LP64__
         #else
-        [NSThread detachNewThreadSelector: @selector( checkForBanner:) toTarget: self withObject: nil];
+        [NSThread detachNewThreadSelector: @selector(checkForBanner:) toTarget: self withObject: nil];
         #endif
         
         
@@ -12542,7 +12542,7 @@ static NSArray*	openSubSeriesArray = nil;
         NSImage *bannerImage = [[[NSImage alloc] initWithData: imageData] autorelease];
     
         if( bannerImage)
-            [self performSelectorOnMainThread: @selector( installBanner:) withObject: bannerImage waitUntilDone: NO];
+            [self performSelectorOnMainThread: @selector(installBanner:) withObject: bannerImage waitUntilDone: NO];
     }
     
     [pool release];
@@ -12751,7 +12751,7 @@ static NSArray*	openSubSeriesArray = nil;
 									   otherButton: NULL
 						 informativeTextWithFormat: NSLocalizedString( @"Background threads are currently running. Are you sure you want to quit now? These threads will be cancelled.", NULL)];
 		
-		NSTimer *t = [NSTimer timerWithTimeInterval: 0.3 target:self selector:@selector( shouldTerminateCallback:) userInfo: w repeats:YES];
+		NSTimer *t = [NSTimer timerWithTimeInterval: 0.3 target:self selector:@selector(shouldTerminateCallback:) userInfo: w repeats:YES];
 		
 		[[NSRunLoop currentRunLoop] addTimer: t forMode:NSModalPanelRunLoopMode];
 		
@@ -12893,66 +12893,66 @@ static NSArray*	openSubSeriesArray = nil;
     
 	if( [[databaseOutline selectedRowIndexes] count] < 1 || containsDistantStudy == YES) // No Database Selection or Distant Study
 	{
-        if( containsDistantStudy == YES && [menuItem action] == @selector( querySelectedStudy:))
+        if( containsDistantStudy == YES && [menuItem action] == @selector(querySelectedStudy:))
             return YES;
         
-		if(	[menuItem action] == @selector( rebuildThumbnails:) ||
-			[menuItem action] == @selector( searchForCurrentPatient:) || 
-			[menuItem action] == @selector( viewerDICOM:) || 
-			[menuItem action] == @selector( MovieViewerDICOM:) || 
-			[menuItem action] == @selector( viewerDICOMMergeSelection:) || 
-			[menuItem action] == @selector( revealInFinder:) || 
-			[menuItem action] == @selector( export2PACS:) || 
-			[menuItem action] == @selector( exportQuicktime:) || 
-			[menuItem action] == @selector( exportJPEG:) || 
-			[menuItem action] == @selector( exportTIFF:) || 
-			[menuItem action] == @selector( exportDICOMFile:) || 
-			[menuItem action] == @selector( sendMail:) || 
-			[menuItem action] == @selector( addStudiesToUser:) || 
-			[menuItem action] == @selector( sendEmailNotification:) || 
-			[menuItem action] == @selector( compressSelectedFiles:) || 
-			[menuItem action] == @selector( decompressSelectedFiles:) || 
-			[menuItem action] == @selector( generateReport:) || 
-			[menuItem action] == @selector( deleteReport:) || 
-            [menuItem action] == @selector( convertReportToPDF:) ||
-            [menuItem action] == @selector( convertReportToDICOMSR:) ||
-			[menuItem action] == @selector( delItem:) || 
-			[menuItem action] == @selector( querySelectedStudy:) || 
-			[menuItem action] == @selector( burnDICOM:) || 
-			[menuItem action] == @selector( anonymizeDICOM:) || 
-			[menuItem action] == @selector( viewXML:) || 
-			[menuItem action] == @selector( applyRoutingRule:) ||
-            [menuItem action] == @selector( regenerateAutoComments:) ||
-            [menuItem action] == @selector( unifyStudies:) ||
-            [menuItem action] == @selector( viewerSubSeriesDICOM:) ||
-            [menuItem action] == @selector( viewerReparsedSeries:)
+		if(	[menuItem action] == @selector(rebuildThumbnails:) ||
+			[menuItem action] == @selector(searchForCurrentPatient:) || 
+			[menuItem action] == @selector(viewerDICOM:) || 
+			[menuItem action] == @selector(MovieViewerDICOM:) || 
+			[menuItem action] == @selector(viewerDICOMMergeSelection:) || 
+			[menuItem action] == @selector(revealInFinder:) || 
+			[menuItem action] == @selector(export2PACS:) || 
+			[menuItem action] == @selector(exportQuicktime:) || 
+			[menuItem action] == @selector(exportJPEG:) || 
+			[menuItem action] == @selector(exportTIFF:) || 
+			[menuItem action] == @selector(exportDICOMFile:) || 
+			[menuItem action] == @selector(sendMail:) || 
+			[menuItem action] == @selector(addStudiesToUser:) || 
+			[menuItem action] == @selector(sendEmailNotification:) || 
+			[menuItem action] == @selector(compressSelectedFiles:) || 
+			[menuItem action] == @selector(decompressSelectedFiles:) || 
+			[menuItem action] == @selector(generateReport:) || 
+			[menuItem action] == @selector(deleteReport:) || 
+            [menuItem action] == @selector(convertReportToPDF:) ||
+            [menuItem action] == @selector(convertReportToDICOMSR:) ||
+			[menuItem action] == @selector(delItem:) || 
+			[menuItem action] == @selector(querySelectedStudy:) || 
+			[menuItem action] == @selector(burnDICOM:) || 
+			[menuItem action] == @selector(anonymizeDICOM:) || 
+			[menuItem action] == @selector(viewXML:) || 
+			[menuItem action] == @selector(applyRoutingRule:) ||
+            [menuItem action] == @selector(regenerateAutoComments:) ||
+            [menuItem action] == @selector(unifyStudies:) ||
+            [menuItem action] == @selector(viewerSubSeriesDICOM:) ||
+            [menuItem action] == @selector(viewerReparsedSeries:)
 			)
 		return NO;
 	}
     
     if ([_database isLocal] == NO)
     {
-        if( [menuItem action] == @selector( deleteAlbum:) ||
-            [menuItem action] == @selector( addAlbum:) ||
-           [menuItem action] == @selector( addSmartAlbum:) ||
-           [menuItem action] == @selector( addAlbums:) ||
-           [menuItem action] == @selector( defaultAlbums:))
+        if( [menuItem action] == @selector(deleteAlbum:) ||
+            [menuItem action] == @selector(addAlbum:) ||
+           [menuItem action] == @selector(addSmartAlbum:) ||
+           [menuItem action] == @selector(addAlbums:) ||
+           [menuItem action] == @selector(defaultAlbums:))
             return NO;
         
-        if( [menuItem action] == @selector( selectFilesAndFoldersToAdd:) ||
-           [menuItem action] == @selector( addURLToDatabase:) ||
-           [menuItem action] == @selector( importRawData:))
+        if( [menuItem action] == @selector(selectFilesAndFoldersToAdd:) ||
+           [menuItem action] == @selector(addURLToDatabase:) ||
+           [menuItem action] == @selector(importRawData:))
             return NO;
         
-        if( [menuItem action] == @selector( anonymizeDICOM:))
+        if( [menuItem action] == @selector(anonymizeDICOM:))
             return NO;
         
-        if( [menuItem action] == @selector( compressSelectedFiles:) ||
-           [menuItem action] == @selector( decompressSelectedFiles:))
+        if( [menuItem action] == @selector(compressSelectedFiles:) ||
+           [menuItem action] == @selector(decompressSelectedFiles:))
             return NO;
     }
     
-    if( [menuItem action] == @selector( convertReportToPDF:) || [menuItem action] == @selector( convertReportToDICOMSR:))
+    if( [menuItem action] == @selector(convertReportToPDF:) || [menuItem action] == @selector(convertReportToDICOMSR:))
     {
         id item = [databaseOutline itemAtRow: [[databaseOutline selectedRowIndexes] firstIndex]];
         
@@ -12973,7 +12973,7 @@ static NSArray*	openSubSeriesArray = nil;
 	{
 		return [[[NSApp mainWindow] windowController] isKindOfClass:[ViewerController class]];
 	}
-	else if( [menuItem action] == @selector( unifyStudies:))
+	else if( [menuItem action] == @selector(unifyStudies:))
 	{
 		if (![_database isLocal]) return NO;
 		
@@ -12981,12 +12981,12 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		return YES;
 	}
-    else if( [menuItem action] == @selector( regenerateAutoComments:))
+    else if( [menuItem action] == @selector(regenerateAutoComments:))
     {
         if( [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILL"]) return YES;
         else return NO;
     }
-	else if( [menuItem action] == @selector( viewerDICOMROIsImages:))
+	else if( [menuItem action] == @selector(viewerDICOMROIsImages:))
 	{
         if( containsDistantStudy)
             return NO;
@@ -12997,7 +12997,7 @@ static NSArray*	openSubSeriesArray = nil;
 		}
 		else return YES;
 	}
-	else if( [menuItem action] == @selector( viewerKeyImagesAndROIsImages:))
+	else if( [menuItem action] == @selector(viewerKeyImagesAndROIsImages:))
 	{
         if( containsDistantStudy)
             return NO;
@@ -13008,7 +13008,7 @@ static NSArray*	openSubSeriesArray = nil;
 		}
 		else return YES;
 	}
-	else if( [menuItem action] == @selector( viewerDICOMKeyImages:))
+	else if( [menuItem action] == @selector(viewerDICOMKeyImages:))
 	{
         if( containsDistantStudy)
             return NO;
@@ -13019,7 +13019,7 @@ static NSArray*	openSubSeriesArray = nil;
 		}
 		else return YES;
 	}
-	else if( [menuItem action] == @selector( createROIsFromRTSTRUCT:))
+	else if( [menuItem action] == @selector(createROIsFromRTSTRUCT:))
 	{
         if( containsDistantStudy)
             return NO;
@@ -13027,17 +13027,17 @@ static NSArray*	openSubSeriesArray = nil;
 		if (![_database isLocal])
             return NO;
 	}
-	else if( [menuItem action] == @selector( compressSelectedFiles:))
+	else if( [menuItem action] == @selector(compressSelectedFiles:))
 	{
         if( containsDistantStudy)
             return NO;
 	}
-	else if( [menuItem action] == @selector( decompressSelectedFiles:))
+	else if( [menuItem action] == @selector(decompressSelectedFiles:))
 	{
         if( containsDistantStudy)
             return NO;
 	}
-	else if( [menuItem action] == @selector( copyToDBFolder:))
+	else if( [menuItem action] == @selector(copyToDBFolder:))
 	{
         if( containsDistantStudy)
             return NO;
@@ -13071,7 +13071,7 @@ static NSArray*	openSubSeriesArray = nil;
 		}
 		else return YES;
 	}
-	else if( [menuItem action] == @selector( lockStudies:))
+	else if( [menuItem action] == @selector(lockStudies:))
 	{
         if( containsDistantStudy)
             return NO;
@@ -13091,7 +13091,7 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		return NO;
 	}
-	else if( [menuItem action] == @selector( unlockStudies:))
+	else if( [menuItem action] == @selector(unlockStudies:))
 	{
         if( containsDistantStudy)
             return NO;
@@ -13111,7 +13111,7 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		return NO;
 	}
-	else if( [menuItem action] == @selector( delItem:))
+	else if( [menuItem action] == @selector(delItem:))
 	{
         if( containsDistantStudy)
             return NO;
@@ -13131,7 +13131,7 @@ static NSArray*	openSubSeriesArray = nil;
 		else
 			[menuItem setTitle: NSLocalizedString( @"Delete Selected Lines", nil)];
 	}
-	else if( [menuItem action] == @selector( mergeStudies:))
+	else if( [menuItem action] == @selector(mergeStudies:))
 	{
         if( containsDistantStudy)
             return NO;
@@ -13156,7 +13156,7 @@ static NSArray*	openSubSeriesArray = nil;
 		if( [selectedRows count] > 1) return YES;
 		else return NO;
 	}
-	else if( [menuItem action] == @selector( mergeSeries:))
+	else if( [menuItem action] == @selector(mergeSeries:))
 	{
         if( containsDistantStudy)
             return NO;
@@ -13166,7 +13166,7 @@ static NSArray*	openSubSeriesArray = nil;
 		if( [[oMatrix selectedCells] count] > 1) return YES;
 		else return NO;
 	}
-	else if( [menuItem action] == @selector( annotMenu:))
+	else if( [menuItem action] == @selector(annotMenu:))
 	{
 		if( [menuItem tag] == [[NSUserDefaults standardUserDefaults] integerForKey:@"ANNOTATIONS"]) [menuItem setState: NSOnState];
 		else [menuItem setState: NSOffState];
@@ -13427,7 +13427,7 @@ static NSArray*	openSubSeriesArray = nil;
         {
             [deleteInProgress unlock];
             
-            NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( emptyDeleteQueueThread) object:  nil] autorelease];
+            NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector(emptyDeleteQueueThread) object:  nil] autorelease];
             t.name = NSLocalizedString( @"Deleting files...", nil);
             t.status = N2LocalizedSingularPluralCount(deleteQueueArray.count, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil));
             t.progress = 0;
@@ -15190,7 +15190,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 																												NSLocalizedString(@"Merge", nil), @"button3",
 																												nil];
 						
-						[self performSelectorOnMainThread: @selector( runInformationAlertPanel:) withObject: options waitUntilDone: YES]; // YES : because we are waiting the result
+						[self performSelectorOnMainThread: @selector(runInformationAlertPanel:) withObject: options waitUntilDone: YES]; // YES : because we are waiting the result
 						
 						int a;
 						if( [options objectForKey: @"result"])
@@ -15765,7 +15765,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		NSMutableDictionary *d = [NSMutableDictionary dictionaryWithObjectsAndKeys: [[sPanel filenames] objectAtIndex:0], @"location", filesToExport, @"filesToExport", dicomFiles2Export, @"dicomFiles2Export", nil];
 		
-		NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( exportDICOMFileInt: ) object: d] autorelease];
+		NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector(exportDICOMFileInt: ) object: d] autorelease];
 		t.name = NSLocalizedString( @"Exporting...", nil);
 		t.supportsCancel = YES;
 		t.status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [filesToExport count]];
@@ -16375,7 +16375,7 @@ static volatile int numberOfThreadsForJPEG = 0;
     }
     
 //    [checkBonjourUpToDateThreadLock unlock]; // TODO: merge
-    [self performSelector: @selector( updateReportToolbarIcon:) withObject: nil afterDelay: 0.1];
+    [self performSelector: @selector(updateReportToolbarIcon:) withObject: nil afterDelay: 0.1];
 }
 
 
@@ -16416,7 +16416,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 		
 //		[checkBonjourUpToDateThreadLock unlock]; // TODO: merge
-		[self performSelector: @selector( updateReportToolbarIcon:) withObject: nil afterDelay: 0.1];
+		[self performSelector: @selector(updateReportToolbarIcon:) withObject: nil afterDelay: 0.1];
 	}
 }
 
@@ -16487,7 +16487,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 		
 //		[checkBonjourUpToDateThreadLock unlock];
-		[self performSelector: @selector( updateReportToolbarIcon:) withObject: nil afterDelay: 0.1];
+		[self performSelector: @selector(updateReportToolbarIcon:) withObject: nil afterDelay: 0.1];
 	}
 }
 
@@ -16937,9 +16937,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 			{
 				@try
 				{
-					if( [item respondsToSelector:@selector( setRecursiveEnabled:)])
+					if( [item respondsToSelector:@selector(setRecursiveEnabled:)])
 						[item setRecursiveEnabled: YES];
-					else if( [[item view] respondsToSelector:@selector( setRecursiveEnabled:)])
+					else if( [[item view] respondsToSelector:@selector(setRecursiveEnabled:)])
 						[[item view] setRecursiveEnabled: YES];
 					else if( item)
 						NSLog( @"%@", item);
@@ -16989,7 +16989,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Movie Export", nil)];
 		[toolbarItem setImage: [NSImage imageNamed: QTSaveToolbarItemIdentifier]];
 		[toolbarItem setTarget: self];
-		[toolbarItem setAction: @selector( exportQuicktime:)];
+		[toolbarItem setAction: @selector(exportQuicktime:)];
     }
 	else if ([itemIdent isEqualToString: WebServerSingleNotification])
 	{
@@ -16997,7 +16997,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Notification", nil)];
 		[toolbarItem setImage: [NSImage imageNamed: WebServerSingleNotification]];
 		[toolbarItem setTarget: self];
-		[toolbarItem setAction: @selector( sendEmailNotification:)];
+		[toolbarItem setAction: @selector(sendEmailNotification:)];
 	}
 	else if ([itemIdent isEqualToString: AddStudiesToUserItemIdentifier])
 	{
@@ -17005,7 +17005,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Add Studies", nil)];
 		[toolbarItem setImage: [NSImage imageNamed: AddStudiesToUserItemIdentifier]];
 		[toolbarItem setTarget: self];
-		[toolbarItem setAction: @selector( addStudiesToUser:)];
+		[toolbarItem setAction: @selector(addStudiesToUser:)];
 	}
 	else if ([itemIdent isEqualToString: MailToolbarItemIdentifier])
 	{
@@ -17013,7 +17013,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Email", nil)];
 		[toolbarItem setImage: [NSImage imageNamed: MailToolbarItemIdentifier]];
 		[toolbarItem setTarget: self];
-		[toolbarItem setAction: @selector( sendMail:)];
+		[toolbarItem setAction: @selector(sendMail:)];
 	}
     else if ([itemIdent isEqualToString: ExportToolbarItemIdentifier])
 	{
@@ -17648,39 +17648,39 @@ static volatile int numberOfThreadsForJPEG = 0;
     
 	if( [[databaseOutline selectedRowIndexes] count] < 1 || containsDistantStudy) // No Database Selection
 	{
-        if( containsDistantStudy == YES && [toolbarItem action] == @selector( querySelectedStudy:))
+        if( containsDistantStudy == YES && [toolbarItem action] == @selector(querySelectedStudy:))
             return YES;
         
-		if(	[toolbarItem action] == @selector( rebuildThumbnails:) ||
-			[toolbarItem action] == @selector( searchForCurrentPatient:) || 
-			[toolbarItem action] == @selector( viewerDICOM:) || 
-		    [toolbarItem action] == @selector( viewerSubSeriesDICOM:) || 
-            [toolbarItem action] == @selector( viewerReparsedSeries:) ||
-			[toolbarItem action] == @selector( MovieViewerDICOM:) || 
-			[toolbarItem action] == @selector( viewerDICOMMergeSelection:) || 
-			[toolbarItem action] == @selector( revealInFinder:) || 
-			[toolbarItem action] == @selector( export2PACS:) || 
-			[toolbarItem action] == @selector( exportQuicktime:) || 
-			[toolbarItem action] == @selector( exportJPEG:) || 
-			[toolbarItem action] == @selector( exportTIFF:) || 
-			[toolbarItem action] == @selector( exportDICOMFile:) || 
-			[toolbarItem action] == @selector( sendMail:) || 
-			[toolbarItem action] == @selector( addStudiesToUser:) || 
-			[toolbarItem action] == @selector( sendEmailNotification:) || 
-			[toolbarItem action] == @selector( compressSelectedFiles:) || 
-			[toolbarItem action] == @selector( decompressSelectedFiles:) || 
-			[toolbarItem action] == @selector( generateReport:) || 
-			[toolbarItem action] == @selector( deleteReport:) || 
-            [toolbarItem action] == @selector( convertReportToPDF:) ||
-            [toolbarItem action] == @selector( convertReportToDICOMSR:) ||
-			[toolbarItem action] == @selector( delItem:) || 
-			[toolbarItem action] == @selector( querySelectedStudy:) || 
-			[toolbarItem action] == @selector( burnDICOM:) || 
-			[toolbarItem action] == @selector( viewXML:) || 
-			[toolbarItem action] == @selector( anonymizeDICOM:) || 
-			[toolbarItem action] == @selector( applyRoutingRule:) ||
-            [toolbarItem action] == @selector( viewerSubSeriesDICOM:) ||
-            [toolbarItem action] == @selector( viewerReparsedSeries:)
+		if(	[toolbarItem action] == @selector(rebuildThumbnails:) ||
+			[toolbarItem action] == @selector(searchForCurrentPatient:) || 
+			[toolbarItem action] == @selector(viewerDICOM:) || 
+		    [toolbarItem action] == @selector(viewerSubSeriesDICOM:) || 
+            [toolbarItem action] == @selector(viewerReparsedSeries:) ||
+			[toolbarItem action] == @selector(MovieViewerDICOM:) || 
+			[toolbarItem action] == @selector(viewerDICOMMergeSelection:) || 
+			[toolbarItem action] == @selector(revealInFinder:) || 
+			[toolbarItem action] == @selector(export2PACS:) || 
+			[toolbarItem action] == @selector(exportQuicktime:) || 
+			[toolbarItem action] == @selector(exportJPEG:) || 
+			[toolbarItem action] == @selector(exportTIFF:) || 
+			[toolbarItem action] == @selector(exportDICOMFile:) || 
+			[toolbarItem action] == @selector(sendMail:) || 
+			[toolbarItem action] == @selector(addStudiesToUser:) || 
+			[toolbarItem action] == @selector(sendEmailNotification:) || 
+			[toolbarItem action] == @selector(compressSelectedFiles:) || 
+			[toolbarItem action] == @selector(decompressSelectedFiles:) || 
+			[toolbarItem action] == @selector(generateReport:) || 
+			[toolbarItem action] == @selector(deleteReport:) || 
+            [toolbarItem action] == @selector(convertReportToPDF:) ||
+            [toolbarItem action] == @selector(convertReportToDICOMSR:) ||
+			[toolbarItem action] == @selector(delItem:) || 
+			[toolbarItem action] == @selector(querySelectedStudy:) || 
+			[toolbarItem action] == @selector(burnDICOM:) || 
+			[toolbarItem action] == @selector(viewXML:) || 
+			[toolbarItem action] == @selector(anonymizeDICOM:) || 
+			[toolbarItem action] == @selector(applyRoutingRule:) ||
+            [toolbarItem action] == @selector(viewerSubSeriesDICOM:) ||
+            [toolbarItem action] == @selector(viewerReparsedSeries:)
 			)
 		return NO;
 	}
@@ -18146,7 +18146,7 @@ static volatile int numberOfThreadsForJPEG = 0;
         }
         
         if( albumTable.selectedRow == 0)
-            [NSThread detachNewThreadSelector: @selector( searchForSearchField:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: searchType], @"searchType", _searchString, @"searchString", nil]];
+            [NSThread detachNewThreadSelector: @selector(searchForSearchField:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: searchType], @"searchType", _searchString, @"searchString", nil]];
     }
     else if( timeIntervalStart || timeIntervalEnd)
     {
@@ -18158,7 +18158,7 @@ static volatile int numberOfThreadsForJPEG = 0;
         }
         
         if( albumTable.selectedRow == 0)
-            [NSThread detachNewThreadSelector: @selector( searchForTimeIntervalFromTo:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: timeIntervalStart, @"from", timeIntervalEnd, @"to", nil]];
+            [NSThread detachNewThreadSelector: @selector(searchForTimeIntervalFromTo:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: timeIntervalStart, @"from", timeIntervalEnd, @"to", nil]];
     }
     else
     {

@@ -55,7 +55,7 @@
 		[self setMainView: [mainWindow contentView]];
 		[self mainViewDidLoad];
         
-        [[NSNotificationCenter defaultCenter] addObserver: self selector:@selector( usernameChanged:) name: @"WebPortalUsernameChanged" object: nil];
+        [[NSNotificationCenter defaultCenter] addObserver: self selector:@selector(usernameChanged:) name: @"WebPortalUsernameChanged" object: nil];
 	}
 	
 	return self;

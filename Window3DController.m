@@ -67,28 +67,28 @@
 {
 	BOOL valid = NO;
 	
-	if( [item action] == @selector( ApplyCLUT:))
+	if( [item action] == @selector(ApplyCLUT:))
 	{
 		valid = YES;
 		
 		if( [[item title] isEqualToString: curCLUTMenu]) [item setState:NSOnState];
 		else [item setState:NSOffState];
 	}
-//	else if( [item action] == @selector( ApplyConv:))
+//	else if( [item action] == @selector(ApplyConv:))
 //	{
 //		valid = YES;
 //		
 //		if( [[item title] isEqualToString: curConvMenu]) [item setState:NSOnState];
 //		else [item setState:NSOffState];
 //	}
-	else if( [item action] == @selector( ApplyOpacity:))
+	else if( [item action] == @selector(ApplyOpacity:))
 	{
 		valid = YES;
 		
 		if( [[item title] isEqualToString: curOpacityMenu]) [item setState:NSOnState];
 		else [item setState:NSOffState];
 	}
-	else if( [item action] == @selector( ApplyWLWW:))
+	else if( [item action] == @selector(ApplyWLWW:))
 	{
 		valid = YES;
 		

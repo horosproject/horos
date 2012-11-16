@@ -51,7 +51,7 @@
 	[albumNameField setStringValue:NSLocalizedString(@"Smart Album", nil)];
 	[super windowDidLoad];
 	
-	sqlQueryTimer = [[NSTimer timerWithTimeInterval: 0.5 target: self selector: @selector( updateSqlString:) userInfo: nil repeats: YES] retain];
+	sqlQueryTimer = [[NSTimer timerWithTimeInterval: 0.5 target: self selector: @selector(updateSqlString:) userInfo: nil repeats: YES] retain];
 	
 	[[NSRunLoop currentRunLoop] addTimer: sqlQueryTimer forMode:NSDefaultRunLoopMode];
 	[[NSRunLoop currentRunLoop] addTimer: sqlQueryTimer forMode:NSModalPanelRunLoopMode];

@@ -852,9 +852,9 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 			{
 				@try
 				{
-					if( [item respondsToSelector:@selector( setRecursiveEnabled:)])
+					if( [item respondsToSelector:@selector(setRecursiveEnabled:)])
 						[item setRecursiveEnabled: YES];
-					else if( [[item view] respondsToSelector:@selector( setRecursiveEnabled:)])
+					else if( [[item view] respondsToSelector:@selector(setRecursiveEnabled:)])
 						[[item view] setRecursiveEnabled: YES];
 					else if( item)
 						NSLog( @"%@", item);
@@ -1007,7 +1007,7 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 //		
 //		[toolbarItem setImage: [NSImage imageNamed: CenterlineToolbarItemIdentifier]];
 //		[toolbarItem setTarget: self];
-//		[toolbarItem setAction: @selector( centerline:)];	
+//		[toolbarItem setAction: @selector(centerline:)];	
 //    }
 	else if([itemIdent isEqualToString: LODToolbarItemIdentifier])
 	{

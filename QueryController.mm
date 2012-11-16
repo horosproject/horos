@@ -1224,7 +1224,7 @@ extern "C"
 	
 	NSDictionary *savedPresets = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"QRPresets"];
 	
-	[menu addItemWithTitle: NSLocalizedString( @"Empty Preset", nil) action:@selector( emptyPreset:) keyEquivalent:@""];
+	[menu addItemWithTitle: NSLocalizedString( @"Empty Preset", nil) action:@selector(emptyPreset:) keyEquivalent:@""];
 	[menu addItem: [NSMenuItem separatorItem]];
 	
 	if( [savedPresets count] == 0)
@@ -1233,21 +1233,21 @@ extern "C"
 	}
 	else
 	{
-		for( NSString *key in [[savedPresets allKeys] sortedArrayUsingSelector: @selector( compare:)])
+		for( NSString *key in [[savedPresets allKeys] sortedArrayUsingSelector: @selector(compare:)])
 		{
-			[menu addItemWithTitle: key action:@selector( applyPreset:) keyEquivalent: @""];
+			[menu addItemWithTitle: key action:@selector(applyPreset:) keyEquivalent: @""];
 		}
 	}
 	
 	[menu addItem: [NSMenuItem separatorItem]];
-	[menu addItemWithTitle: NSLocalizedString( @"Add current settings as a new Preset", nil) action:@selector( addPreset:) keyEquivalent:@""];
+	[menu addItemWithTitle: NSLocalizedString( @"Add current settings as a new Preset", nil) action:@selector(addPreset:) keyEquivalent:@""];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)item
 {
 	BOOL valid = NO;
 	
-    if ([item action] == @selector( deleteSelection:))
+    if ([item action] == @selector(deleteSelection:))
 	{
 		[[BrowserController currentBrowser] setDatabase:[DicomDatabase activeLocalDatabase]];
         [[BrowserController currentBrowser] showEntireDatabase];
@@ -1390,7 +1390,7 @@ extern "C"
 	{
 		afterDelayRefresh = YES;
 		
-		[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector( executeRefresh:) object:nil];
+		[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(executeRefresh:) object:nil];
 		
 		int delay;
 		
@@ -2124,7 +2124,7 @@ extern "C"
                 if( [NSThread isMainThread])
                     [self refreshList: temporaryCFindResultArray];
                 else
-                    [self performSelectorOnMainThread:@selector( refreshList:) withObject: temporaryCFindResultArray waitUntilDone: NO];
+                    [self performSelectorOnMainThread:@selector(refreshList:) withObject: temporaryCFindResultArray waitUntilDone: NO];
             }
             
             lastTemporaryCFindResultUpdate = [[NSDate date] timeIntervalSinceReferenceDate];
@@ -2627,7 +2627,7 @@ extern "C"
         if( [NSThread isMainThread])
             [self refreshList: tempResultArray];
         else
-            [self performSelectorOnMainThread:@selector( refreshList:) withObject: tempResultArray waitUntilDone: NO];
+            [self performSelectorOnMainThread:@selector(refreshList:) withObject: tempResultArray waitUntilDone: NO];
 	}
     else
     {
@@ -2640,7 +2640,7 @@ extern "C"
                     if( [NSThread isMainThread])
                         [self refreshList: tempResultArray];
                     else
-                        [self performSelectorOnMainThread:@selector( refreshList:) withObject: tempResultArray waitUntilDone: NO];
+                        [self performSelectorOnMainThread:@selector(refreshList:) withObject: tempResultArray waitUntilDone: NO];
                 }
                 if( index < [autoQRInstances count])
                 {
@@ -2801,14 +2801,14 @@ extern "C"
             performingCFind = YES;
             
             if( [NSThread isMainThread] == NO)
-                [progressIndicator performSelectorOnMainThread: @selector( startAnimation:) withObject:nil waitUntilDone: NO];
+                [progressIndicator performSelectorOnMainThread: @selector(startAnimation:) withObject:nil waitUntilDone: NO];
             else
                 [progressIndicator startAnimation:nil];
             
             [queryManager performQuery: [showErrors boolValue]];
             
             if( [NSThread isMainThread] == NO)
-                [progressIndicator performSelectorOnMainThread: @selector( stopAnimation:) withObject:nil waitUntilDone: NO];
+                [progressIndicator performSelectorOnMainThread: @selector(stopAnimation:) withObject:nil waitUntilDone: NO];
             else
                 [progressIndicator stopAnimation:nil];
             
@@ -3011,7 +3011,7 @@ extern "C"
 			for( id item in selectedItems)
 				[item setShowErrorMessage: NO];
 			
-			NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( performRetrieve:) object: selectedItems] autorelease];
+			NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector(performRetrieve:) object: selectedItems] autorelease];
             t.name = NSLocalizedString( @"Retrieving images...", nil);
             t.status = N2LocalizedSingularPluralCount(selectedItems.count, NSLocalizedString( @"study", nil), NSLocalizedString( @"studies", nil));
             if ([selectedItems count] > 1)
@@ -3051,7 +3051,7 @@ extern "C"
 {
 	if( [[instance objectForKey: @"autoRetrieving"] boolValue] && autoQuery == YES)
 	{
-		NSThread *t = [[[NSThread alloc] initWithTarget: self selector:@selector( autoRetrieveThread:) object: instance] autorelease];
+		NSThread *t = [[[NSThread alloc] initWithTarget: self selector:@selector(autoRetrieveThread:) object: instance] autorelease];
 		t.name = NSLocalizedString( @"Retrieving images...", nil);
 		[[ThreadsManager defaultManager] addThreadAndStart: t];
 	}
@@ -3117,7 +3117,7 @@ extern "C"
                                 
                                 [[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Query", nil) description: NSLocalizedString( @"Refreshing...", nil) name: @"autoquery"];
                                 
-                                NSThread *t = [[[NSThread alloc] initWithTarget:self selector: @selector( autoQueryThread: ) object: [NSDictionary dictionaryWithObjectsAndKeys: [[QRInstance mutableCopy] autorelease], @"instance", [NSNumber numberWithInt: i], @"index", nil]] autorelease];
+                                NSThread *t = [[[NSThread alloc] initWithTarget:self selector: @selector(autoQueryThread: ) object: [NSDictionary dictionaryWithObjectsAndKeys: [[QRInstance mutableCopy] autorelease], @"instance", [NSNumber numberWithInt: i], @"index", nil]] autorelease];
                                 
                                 if( [[QRInstance objectForKey: @"instanceName"] length] && autoQRInstances.count > 1)
                                     t.name = [NSString stringWithFormat: NSLocalizedString( @"Auto-Querying images (%@)...", nil), [QRInstance objectForKey: @"instanceName"]];
@@ -3150,7 +3150,7 @@ extern "C"
                         
                         [self saveSettings];
                         
-                        NSThread *t = [[[NSThread alloc] initWithTarget:self selector: @selector( autoQueryThread: ) object: nil] autorelease];
+                        NSThread *t = [[[NSThread alloc] initWithTarget:self selector: @selector(autoQueryThread: ) object: nil] autorelease];
                         t.name = NSLocalizedString( @"Auto-Querying images...", nil);
                         t.supportsCancel = YES;
                         [[ThreadsManager defaultManager] addThreadAndStart: t];
@@ -3197,7 +3197,7 @@ extern "C"
     
     [self saveSettings];
     
-    QueryTimer = [[NSTimer scheduledTimerWithTimeInterval: 1 target:self selector:@selector( autoQueryTimerFunction:) userInfo:nil repeats:YES] retain];
+    QueryTimer = [[NSTimer scheduledTimerWithTimeInterval: 1 target:self selector:@selector(autoQueryTimerFunction:) userInfo:nil repeats:YES] retain];
 }
 
 - (void)clearQuery:(id)sender
@@ -3372,7 +3372,7 @@ extern "C"
 				
 				checkAndViewTry = -1;
 				
-				NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( performRetrieve:) object: selectedItems] autorelease];
+				NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector(performRetrieve:) object: selectedItems] autorelease];
 				t.name = NSLocalizedString( @"Retrieving images...", nil);
                 t.status = N2LocalizedSingularPluralCount(selectedItems.count, NSLocalizedString(@"study", nil), NSLocalizedString(@"studies", nil));
                 if ([selectedItems count] > 1)
@@ -3381,7 +3381,7 @@ extern "C"
 				t.supportsCancel = YES;
 				[[ThreadsManager defaultManager] addThreadAndStart: t];
 				
-//				[NSThread detachNewThreadSelector:@selector( performRetrieve:) toTarget:self withObject: selectedItems];
+//				[NSThread detachNewThreadSelector:@selector(performRetrieve:) toTarget:self withObject: selectedItems];
 				
 				if( showGUI)
 				{
@@ -3782,7 +3782,7 @@ extern "C"
 			[[BrowserController currentBrowser] checkIncoming: self];
 			
 			if( checkAndViewTry-- > 0 && [sendToPopup indexOfSelectedItem] == 0)
-				[self performSelector:@selector( checkAndView:) withObject:item afterDelay:1.0];
+				[self performSelector:@selector(checkAndView:) withObject:item afterDelay:1.0];
 			else
 				success = YES;
 		}
@@ -4145,7 +4145,7 @@ extern "C"
 	[[[outlineView tableColumnWithIdentifier: @"birthdate"] dataCell] setFormatter:[NSUserDefaults dateFormatter]];
 	[[[outlineView tableColumnWithIdentifier: @"date"] dataCell] setFormatter:[NSUserDefaults dateFormatter]];
 	
-	[sourcesTable setDoubleAction: @selector( selectUniqueSource:)];
+	[sourcesTable setDoubleAction: @selector(selectUniqueSource:)];
 	
 	[self refreshSources];
 	
@@ -4597,7 +4597,7 @@ extern "C"
 
 	NSLog( @"dealloc QueryController");
 	
-	[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector( executeRefresh:) object:nil];
+	[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(executeRefresh:) object:nil];
 	[NSObject cancelPreviousPerformRequestsWithTarget: pressedKeys];
 	
 	[autoQueryLock lock];
@@ -4684,18 +4684,18 @@ extern "C"
 	NSMenu *menu = [[[NSMenu alloc] initWithTitle:@"Tools"] autorelease];
 	NSMenuItem *item;
 	
-	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Retrieve the images", nil) action: @selector( retrieve:) keyEquivalent:@""] autorelease];
+	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Retrieve the images", nil) action: @selector(retrieve:) keyEquivalent:@""] autorelease];
 	[item setTarget: self];		[menu addItem: item];
 
-	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Retrieve and display the images", nil) action: @selector( retrieveAndView:) keyEquivalent:@""] autorelease];
+	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Retrieve and display the images", nil) action: @selector(retrieveAndView:) keyEquivalent:@""] autorelease];
 	[item setTarget: self];		[menu addItem: item];
 	
-	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Query all studies of this patient", nil) action: @selector( querySelectedStudy:) keyEquivalent:@""] autorelease];
+	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Query all studies of this patient", nil) action: @selector(querySelectedStudy:) keyEquivalent:@""] autorelease];
 	[item setTarget: self];		[menu addItem: item];
 	
 	[menu addItem: [NSMenuItem separatorItem]];
 	
-	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Delete the local images", nil) action: @selector( deleteSelection:) keyEquivalent:@""] autorelease];
+	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Delete the local images", nil) action: @selector(deleteSelection:) keyEquivalent:@""] autorelease];
 	[item setTarget: self];		[menu addItem: item];
 	
 	[outlineView setMenu: menu];
@@ -4711,8 +4711,8 @@ extern "C"
 //	else
 //        modalityQueryFilter = [[QueryFilter queryFilterWithObject:nil ofSearchType:searchExactMatch forKey:@"Modality"] retain];
     
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector( updateServers:) name:@"DCMNetServicesDidChange"  object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector( realtimeCFindResults:) name:@"realtimeCFindResults"  object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateServers:) name:@"DCMNetServicesDidChange"  object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(realtimeCFindResults:) name:@"realtimeCFindResults"  object:nil];
     
 	NSTableColumn *tableColumn = [outlineView tableColumnWithIdentifier:@"Button"];
 	NSButtonCell *buttonCell = [[[NSButtonCell alloc] init] autorelease];

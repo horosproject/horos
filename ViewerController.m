@@ -434,12 +434,12 @@ return YES;
     
 	if( [[fileList[ 0] lastObject] isKindOfClass:[NSManagedObject class]] == NO)
 		return NO;
-	if( [item action] == @selector( showHideMatrix:))
+	if( [item action] == @selector(showHideMatrix:))
 	{
 		[item setState: [self matrixIsVisible]? NSOnState : NSOffState ];
 		valid = YES;
 	}
-	else if( [item action] == @selector( resetWindowsState:))
+	else if( [item action] == @selector(resetWindowsState:))
 	{
 		NSArray				*studiesArray = [ViewerController getDisplayedStudies];
 		for( id loopItem in studiesArray)
@@ -447,7 +447,7 @@ return YES;
 			if( [loopItem valueForKey:@"windowsState"]) valid = YES;
 		}
 	}
-	else if( [item action] == @selector( setAllKeyImages:))
+	else if( [item action] == @selector(setAllKeyImages:))
 	{
 		if( postprocessed == NO)
 		{
@@ -464,7 +464,7 @@ return YES;
 			}
 		}
 	}
-	else if( [item action] == @selector( setAllNonKeyImages:))
+	else if( [item action] == @selector(setAllNonKeyImages:))
 	{
 		if( postprocessed == NO)
 		{
@@ -481,7 +481,7 @@ return YES;
 			}
 		}
 	}
-	else if( [item action] == @selector( findNextPreviousKeyImage:))
+	else if( [item action] == @selector(findNextPreviousKeyImage:))
 	{
 		if( postprocessed == NO)
 		{
@@ -491,35 +491,35 @@ return YES;
 				valid = YES;
 		}
 	}
-	else if( [item action] == @selector( loadWindowsState:))
+	else if( [item action] == @selector(loadWindowsState:))
 	{
 		if( [[[imageView seriesObj] valueForKey:@"study"] valueForKey:@"windowsState"]) valid = YES;
 	}
-	else if( [item action] == @selector( roiDeleteAllROIsWithSameName:))
+	else if( [item action] == @selector(roiDeleteAllROIsWithSameName:))
 	{
 		if( [self selectedROI]) valid = YES;
 	}
-	else if( [item action] == @selector( blendWindows:))
+	else if( [item action] == @selector(blendWindows:))
 	{
 		if( numberOf2DViewer > 1) valid = YES;
 	}
-	else if( [item action] == @selector( roiGetInfo:))
+	else if( [item action] == @selector(roiGetInfo:))
 	{
 		if( [self selectedROI]) valid = YES;
 	}
-	else if( [item action] == @selector( roiHistogram:))
+	else if( [item action] == @selector(roiHistogram:))
 	{
 		if( [self selectedROI]) valid = YES;
 	}
-	else if( [item action] == @selector( roiVolume:))
+	else if( [item action] == @selector(roiVolume:))
 	{
 		if( [self selectedROI]) valid = YES;
 	}
-	else if( [item action] == @selector( roiVolumeEraseRestore:))
+	else if( [item action] == @selector(roiVolumeEraseRestore:))
 	{
 		if( [self selectedROI]) valid = YES;
 	}
-	else if( [item action] == @selector( createLayerROIFromSelectedROI:))
+	else if( [item action] == @selector(createLayerROIFromSelectedROI:))
 	{
 		if( [self selectedROI])
 		{
@@ -533,15 +533,15 @@ return YES;
 			if( r.type == tArrow) valid = NO;
 		}
 	}
-	else if( [item action] == @selector( groupSelectedROIs:))
+	else if( [item action] == @selector(groupSelectedROIs:))
 	{
 		if( [self selectedROI]) valid = YES;
 	}
-	else if( [item action] == @selector( ungroupSelectedROIs:))
+	else if( [item action] == @selector(ungroupSelectedROIs:))
 	{
 		if( [self selectedROI]) valid = YES;
 	}
-	else if( [item action] == @selector( lockSelectedROIs:))
+	else if( [item action] == @selector(lockSelectedROIs:))
 	{
 		for( ROI *r in [roiList[ curMovieIndex] objectAtIndex: [imageView curImage]])
 		{
@@ -552,7 +552,7 @@ return YES;
 			}
 		}
 	}
-	else if( [item action] == @selector( unlockSelectedROIs:))
+	else if( [item action] == @selector(unlockSelectedROIs:))
 	{
 		for( ROI *r in [roiList[ curMovieIndex] objectAtIndex: [imageView curImage]])
 		{
@@ -563,11 +563,11 @@ return YES;
 			}
 		}
 	}
-	else if( [item action] == @selector( makeSelectedROIsUnselectable:))
+	else if( [item action] == @selector(makeSelectedROIsUnselectable:))
 	{
 		if( [self selectedROI]) valid = YES;
 	}
-	else if( [item action] == @selector( makeAllROIsSelectable:))
+	else if( [item action] == @selector(makeAllROIsSelectable:))
 	{
 		for( ROI *r in [roiList[ curMovieIndex] objectAtIndex: [imageView curImage]])
 		{
@@ -578,15 +578,15 @@ return YES;
 			}
 		}
 	}
-	else if( [item action] == @selector( morphoSelectedBrushROI:))
+	else if( [item action] == @selector(morphoSelectedBrushROI:))
 	{
 		if( [self selectedROI]) valid = YES;
 	}
-	else if( [item action] == @selector( convertBrushPolygon:))
+	else if( [item action] == @selector(convertBrushPolygon:))
 	{
 		if( [self selectedROI]) valid = YES;
 	}
-	else if( [item action] == @selector( mergeBrushROI:))
+	else if( [item action] == @selector(mergeBrushROI:))
 	{
 		if( [[self selectedROIs] count] > 0)
 		{
@@ -599,11 +599,11 @@ return YES;
 			}
 		}
 	}
-	else if( [item action] == @selector( roiPropagateSetup:))
+	else if( [item action] == @selector(roiPropagateSetup:))
 	{
 		if( [self selectedROI]) valid = YES;
 	}
-	else if( [item action] == @selector( roiDeleteGeneratedROIs:))
+	else if( [item action] == @selector(roiDeleteGeneratedROIs:))
 	{
 		for( int y = 0; y < maxMovieIndex; y++)
 		{
@@ -622,7 +622,7 @@ return YES;
 			}
 		}
 	}
-	else if( [item action] == @selector( roiSaveSeries:) || [item action] == @selector( roiSelectDeselectAll:) || [item action] == @selector( roiDeleteAll:) || [item action] == @selector( roiRename:) || [item action] == @selector( setROIsImagesKeyImages:))
+	else if( [item action] == @selector(roiSaveSeries:) || [item action] == @selector(roiSelectDeselectAll:) || [item action] == @selector(roiDeleteAll:) || [item action] == @selector(roiRename:) || [item action] == @selector(setROIsImagesKeyImages:))
 	{
 		for( int y = 0; y < maxMovieIndex; y++)
 		{
@@ -636,23 +636,23 @@ return YES;
 			}
 		}
 	}
-	else if( [item action] == @selector( roiPropagateSlab:))
+	else if( [item action] == @selector(roiPropagateSlab:))
 	{
 		if( [self selectedROI]) valid = YES;
 	}
-	else if( [item action] == @selector( applyConvolutionOnSource:))
+	else if( [item action] == @selector(applyConvolutionOnSource:))
 	{
 		if( [curConvMenu isEqualToString:NSLocalizedString(@"No Filter", nil)] == NO) valid = YES;
 	}
-	else if( [item action] == @selector( ConvertToBWMenu:))
+	else if( [item action] == @selector(ConvertToBWMenu:))
 	{
 		if( [[pixList[ curMovieIndex] objectAtIndex: 0] isRGB] == YES) valid = YES;
 	}
-	else if( [item action] == @selector( ConvertToRGBMenu:))
+	else if( [item action] == @selector(ConvertToRGBMenu:))
 	{
 		if( [[pixList[ curMovieIndex] objectAtIndex: 0] isRGB] == NO) valid = YES;
 	}
-	else if( [item action] == @selector( setImageTiling:))
+	else if( [item action] == @selector(setImageTiling:))
 	{
 		valid = YES;
 		
@@ -663,17 +663,17 @@ return YES;
 		if( [item tag] == tag) [item setState:NSOnState];
 		else [item setState:NSOffState];
 	}
-	else if( [item action] == @selector( SyncSeries:))
+	else if( [item action] == @selector(SyncSeries:))
 	{
 		valid = YES;
 		[item setState: SYNCSERIES];
 	}
-	else if( [item action] == @selector( setKeyImage:))
+	else if( [item action] == @selector(setKeyImage:))
 	{
 		valid = YES;
 		[item setState: [keyImageCheck state]];
 	}
-	else if( [item action] == @selector( setROITool:) || [item action] == @selector( setDefaultTool:) || [item action] == @selector( setDefaultToolMenu:))
+	else if( [item action] == @selector(setROITool:) || [item action] == @selector(setDefaultTool:) || [item action] == @selector(setDefaultToolMenu:))
 	{
 		valid = YES;
 		
@@ -703,28 +703,28 @@ return YES;
 			[[item image] setSize:ToolsMenuIconSize];
 		}
 	}
-	else if( [item action] == @selector( ApplyCLUT:))
+	else if( [item action] == @selector(ApplyCLUT:))
 	{
 		valid = YES;
 		
 		if( [[item title] isEqualToString: curCLUTMenu]) [item setState:NSOnState];
 		else [item setState:NSOffState];
 	}
-	else if( [item action] == @selector( ApplyConv:))
+	else if( [item action] == @selector(ApplyConv:))
 	{
 		valid = YES;
 		
 		if( [[item title] isEqualToString: curConvMenu]) [item setState:NSOnState];
 		else [item setState:NSOffState];
 	}
-	else if( [item action] == @selector( ApplyOpacity:))
+	else if( [item action] == @selector(ApplyOpacity:))
 	{
 		valid = YES;
 		
 		if( [[item title] isEqualToString: curOpacityMenu]) [item setState:NSOnState];
 		else [item setState:NSOffState];
 	}
-	else if( [item action] == @selector( ApplyWLWW:))
+	else if( [item action] == @selector(ApplyWLWW:))
 	{
 		valid = YES;
 		
@@ -1395,7 +1395,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 					
 					[self waitForAProcessor];
 					
-					[NSThread detachNewThreadSelector: @selector( resliceThread:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: i], @"i", [NSNumber numberWithInt: sign], @"sign", [NSNumber numberWithInt: newX], @"newX",[NSNumber numberWithInt: rowBytes], @"rowBytes", curPix, @"curPix", [NSNumber numberWithInt: j], @"curMovieIndex", nil]];
+					[NSThread detachNewThreadSelector: @selector(resliceThread:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: i], @"i", [NSNumber numberWithInt: sign], @"sign", [NSNumber numberWithInt: newX], @"newX",[NSNumber numberWithInt: rowBytes], @"rowBytes", curPix, @"curPix", [NSNumber numberWithInt: j], @"curMovieIndex", nil]];
 					
 	//				for(x = 0; x < [pixList[ curMovieIndex] count]; x++)
 	//				{
@@ -2681,8 +2681,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 	if( [[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSShiftKeyMask)
 	{
-		[NSObject cancelPreviousPerformRequestsWithTarget: [AppController sharedAppController] selector:@selector( closeAllViewers:) object:nil];
-		[[AppController sharedAppController] performSelector: @selector( closeAllViewers:) withObject:nil afterDelay: 0.1];
+		[NSObject cancelPreviousPerformRequestsWithTarget: [AppController sharedAppController] selector:@selector(closeAllViewers:) object:nil];
+		[[AppController sharedAppController] performSelector: @selector(closeAllViewers:) withObject:nil afterDelay: 0.1];
 		
 		return NO;
 	}
@@ -3999,7 +3999,7 @@ static volatile int numberOfThreadsForRelisce = 0;
     
 	OSIWindow *window = (OSIWindow*)self.window;
 	
-	if( [window respondsToSelector:@selector( disableUpdatesUntilFlush)])
+	if( [window respondsToSelector:@selector(disableUpdatesUntilFlush)])
 		[window disableUpdatesUntilFlush];
 }
 
@@ -5004,7 +5004,7 @@ static ViewerController *draggedController = nil;
 			[highLightedTimer invalidate];
 			[highLightedTimer release];
 			
-			highLightedTimer = [[NSTimer scheduledTimerWithTimeInterval:0.02 target:self selector:@selector( highLightTimerFunction:) userInfo:0 repeats: YES] retain];
+			highLightedTimer = [[NSTimer scheduledTimerWithTimeInterval:0.02 target:self selector:@selector(highLightTimerFunction:) userInfo:0 repeats: YES] retain];
 			[[NSRunLoop currentRunLoop] addTimer: highLightedTimer forMode:NSModalPanelRunLoopMode];
 			[[NSRunLoop currentRunLoop] addTimer: highLightedTimer forMode:NSEventTrackingRunLoopMode];
 		}
@@ -5196,7 +5196,7 @@ static ViewerController *draggedController = nil;
         [toolbarItem setToolTip: NSLocalizedString(@"Email this image", nil)];
 		[toolbarItem setImage: [NSImage imageNamed: MailToolbarItemIdentifier]];
 		[toolbarItem setTarget: self];
-		[toolbarItem setAction: @selector( sendMail:)];
+		[toolbarItem setAction: @selector(sendMail:)];
 	}
 //	else if ([itemIdent isEqual: BrushToolsToolbarItemIdentifier])
 //	{        
@@ -5205,7 +5205,7 @@ static ViewerController *draggedController = nil;
 //        [toolbarItem setToolTip: @"Brush Palette for plain ROI"];
 //		[toolbarItem setImage: [NSImage imageNamed: BrushToolsToolbarItemIdentifier]];
 //		[toolbarItem setTarget: self];
-//		[toolbarItem setAction: @selector( brushTool:)];
+//		[toolbarItem setAction: @selector(brushTool:)];
 //    }	
 	else if ([itemIdent isEqualToString: ExportToolbarItemIdentifier]) {
         
@@ -5617,7 +5617,7 @@ static ViewerController *draggedController = nil;
 	[toolbarItem setToolTip: NSLocalizedString(@"Set Pixels Values to...", nil)];
 	[toolbarItem setImage: [NSImage imageNamed: SetPixelValueItemIdentifier]];
 	[toolbarItem setTarget: nil];
-	[toolbarItem setAction: @selector( roiSetPixelsSetup:)];
+	[toolbarItem setAction: @selector(roiSetPixelsSetup:)];
 	}
 	else if ([itemIdent isEqualToString: GrowingRegionItemIdentifier]) {
 	
@@ -5626,7 +5626,7 @@ static ViewerController *draggedController = nil;
 	[toolbarItem setToolTip: NSLocalizedString(@"Growing Region", nil)];
 	[toolbarItem setImage: [NSImage imageNamed: GrowingRegionItemIdentifier]];
 	[toolbarItem setTarget: nil];
-	[toolbarItem setAction: @selector( segmentationTest:)];
+	[toolbarItem setAction: @selector(segmentationTest:)];
 	}
    	else if ([itemIdent isEqualToString: VRPanelToolbarItemIdentifier]) {
 
@@ -5663,7 +5663,7 @@ static ViewerController *draggedController = nil;
 		[toolbarItem setToolTip:NSLocalizedString(@"Cobb's Angle", nil)];
 		[toolbarItem setImage:[NSImage imageNamed:@"CobbAngle.tif"]];
 		[toolbarItem setTarget: nil];
-		[toolbarItem setAction:@selector( switchCobbAngle:)];
+		[toolbarItem setAction:@selector(switchCobbAngle:)];
     }
 	else if([itemIdent isEqualToString:ThreeDPositionToolbarItemIdentifier])
 	{
@@ -6265,9 +6265,9 @@ return YES;
 			{
 				@try
 				{
-					if( [item respondsToSelector:@selector( setRecursiveEnabled:)])
+					if( [item respondsToSelector:@selector(setRecursiveEnabled:)])
 						[item setRecursiveEnabled: YES];
-					else if( [[item view] respondsToSelector:@selector( setRecursiveEnabled:)])
+					else if( [[item view] respondsToSelector:@selector(setRecursiveEnabled:)])
 						[[item view] setRecursiveEnabled: YES];
 					else if( item)
 						NSLog( @"%@", item);
@@ -7937,7 +7937,7 @@ return YES;
 	}
 
     if( [[NSThread currentThread] isCancelled] == NO)
-        [viewer performSelectorOnMainThread: @selector( finishLoadImageData:) withObject: dict waitUntilDone: NO];
+        [viewer performSelectorOnMainThread: @selector(finishLoadImageData:) withObject: dict waitUntilDone: NO];
 	
     [pool release];
 }
@@ -8999,7 +8999,7 @@ return YES;
 			[d setObject: [NSNumber numberWithInt: from] forKey: @"start"];
 			[d setObject: [NSNumber numberWithInt: to] forKey: @"end"];
 			
-			[NSThread detachNewThreadSelector: @selector( flipDataThread:) toTarget: self withObject: d];
+			[NSThread detachNewThreadSelector: @selector(flipDataThread:) toTarget: self withObject: d];
 		}
 		
 		[flipDataThread lockWhenCondition: 0];
@@ -9914,7 +9914,7 @@ static float oldsetww, oldsetwl;
 			[d setObject: [NSNumber numberWithInt: from] forKey: @"from"];
 			[d setObject: [NSNumber numberWithInt: to] forKey: @"to"];
 			
-			[NSThread detachNewThreadSelector: @selector( applyConvolutionXYThread:) toTarget: self withObject: d];
+			[NSThread detachNewThreadSelector: @selector(applyConvolutionXYThread:) toTarget: self withObject: d];
 		}
 		
 		[flipDataThread lockWhenCondition: 0];
@@ -9955,7 +9955,7 @@ static float oldsetww, oldsetwl;
 						[d setObject: [NSNumber numberWithInt: from] forKey: @"from"];
 						[d setObject: [NSNumber numberWithInt: to] forKey: @"to"];
 						
-						[NSThread detachNewThreadSelector: @selector( applyConvolutionZThread:) toTarget: self withObject: d];
+						[NSThread detachNewThreadSelector: @selector(applyConvolutionZThread:) toTarget: self withObject: d];
 					}
 				}
 				else
@@ -14951,7 +14951,7 @@ int i,j,l;
 
 - (void)useVOILUT: (id)sender
 {
-	[self performSelector:@selector( applyLUT:) withObject: self afterDelay:0.2];
+	[self performSelector:@selector(applyLUT:) withObject: self afterDelay:0.2];
 }
 
 
@@ -20730,7 +20730,7 @@ int i,j,l;
 - (IBAction)deleteReport:(id)sender;
 {
 	[[BrowserController currentBrowser] deleteReport:sender];
-	[self performSelector: @selector( updateReportToolbarIcon:) withObject: nil afterDelay: 0.1];
+	[self performSelector: @selector(updateReportToolbarIcon:) withObject: nil afterDelay: 0.1];
 }
 
 #ifndef OSIRIX_LIGHT

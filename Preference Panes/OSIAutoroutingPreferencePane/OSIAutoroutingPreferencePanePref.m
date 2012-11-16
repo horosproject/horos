@@ -57,7 +57,7 @@
 	[routesTable reloadData];
 	
 	[routesTable setDelegate:self];
-	[routesTable setDoubleAction:@selector( editRoute:)];
+	[routesTable setDoubleAction:@selector(editRoute:)];
 	[routesTable setTarget: self];
 	
 	[autoroutingActivated setState: [defaults boolForKey:@"AUTOROUTINGACTIVATED"]];

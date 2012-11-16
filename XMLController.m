@@ -1492,7 +1492,7 @@ extern int delayedTileWindows;
 		[toolbarItem setToolTip: NSLocalizedString(@"Sort Series Images by selected element", nil)];
 		[toolbarItem setImage: [NSImage imageNamed: @"Revert.tif"]];
 		[toolbarItem setTarget: self];
-		[toolbarItem setAction: @selector( sortSeries:)];
+		[toolbarItem setAction: @selector(sortSeries:)];
     }
 	else if ([itemIdent isEqual: VerifyToolbarItemIdentifier])
 	{
@@ -1501,7 +1501,7 @@ extern int delayedTileWindows;
 		[toolbarItem setToolTip: NSLocalizedString(@"Validate the DICOM format", nil)];
 		[toolbarItem setImage: [NSImage imageNamed: @"NSInfo"]];
 		[toolbarItem setTarget: self];	
-		[toolbarItem setAction: @selector( verify:)];
+		[toolbarItem setAction: @selector(verify:)];
     }
     else 
 	{

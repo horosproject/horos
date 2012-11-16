@@ -12207,7 +12207,7 @@ END_CREATE_ROIS:
 				{
 					[minmaxThreads addObject: [[NSMutableDictionary dictionaryWithObjectsAndKeys: [[NSConditionLock alloc] initWithCondition: 0], @"threadLock", nil] retain]];
 					
-					[NSThread detachNewThreadSelector: @selector( computeMaxThread:) toTarget: [[PixThread alloc] init] withObject: [minmaxThreads lastObject]];
+					[NSThread detachNewThreadSelector: @selector(computeMaxThread:) toTarget: [[PixThread alloc] init] withObject: [minmaxThreads lastObject]];
 				}
 				
 				[NSThread sleepForTimeInterval: 0.2];
@@ -12373,7 +12373,7 @@ END_CREATE_ROIS:
 							for( int i = 0; i <[[NSProcessInfo processInfo] processorCount]; i++)
 							{
 								[nonLinearWLWWThreads addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys: [[[NSConditionLock alloc] initWithCondition: 0] autorelease], @"threadLock", nil]];
-								[NSThread detachNewThreadSelector: @selector( applyNonLinearWLWWThread:) toTarget:[[PixThread alloc] init] withObject: [nonLinearWLWWThreads lastObject]];
+								[NSThread detachNewThreadSelector: @selector(applyNonLinearWLWWThread:) toTarget:[[PixThread alloc] init] withObject: [nonLinearWLWWThreads lastObject]];
 							}
 						} 
 						

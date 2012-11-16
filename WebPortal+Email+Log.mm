@@ -76,7 +76,7 @@
 		[messageHeaders setObject:emailSubject forKey:@"Subject"];
 		
 		// NSAttributedString initWithHTML is NOT thread-safe
-		[self performSelectorOnMainThread: @selector( sendEmailOnMainThread:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: ts, @"template", messageHeaders, @"headers", nil] waitUntilDone: NO];
+		[self performSelectorOnMainThread: @selector(sendEmailOnMainThread:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: ts, @"template", messageHeaders, @"headers", nil] waitUntilDone: NO];
 		
 		for (NSManagedObject* s in filteredStudies)
 			[self updateLogEntryForStudy:s withMessage: @"notification email" forUser:user.name ip:nil];
@@ -287,7 +287,7 @@
         [messageHeaders setObject:emailSubject forKey:@"Subject"];
         
         // NSAttributedString initWithHTML is NOT thread-safe
-        [self performSelectorOnMainThread: @selector( sendEmailOnMainThread:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: ts, @"template", messageHeaders, @"headers", nil] waitUntilDone: NO];
+        [self performSelectorOnMainThread: @selector(sendEmailOnMainThread:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: ts, @"template", messageHeaders, @"headers", nil] waitUntilDone: NO];
     }
 	
 	return user;

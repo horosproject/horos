@@ -86,8 +86,8 @@ static NSDate *CachedPluginsListDate = nil;
 	// deactivate the back/forward options in the webView's contextual menu
 	[[webView backForwardList] setCapacity:0];
 	
-    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector( WebViewProgressStartedNotification:) name: WebViewProgressStartedNotification object: webView];
-    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector( WebViewProgressFinishedNotification:) name: WebViewProgressFinishedNotification object: webView];
+    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(WebViewProgressStartedNotification:) name: WebViewProgressStartedNotification object: webView];
+    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(WebViewProgressFinishedNotification:) name: WebViewProgressFinishedNotification object: webView];
     
 	return self;
 }
@@ -433,7 +433,7 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
             
             [downloadingPlugins setObject: download forKey: downloadedFilePath];
             
-            NSThread *t = [[[NSThread alloc] initWithTarget:self selector: @selector( fakeThread:) object: downloadedFilePath] autorelease];
+            NSThread *t = [[[NSThread alloc] initWithTarget:self selector: @selector(fakeThread:) object: downloadedFilePath] autorelease];
             t.name = NSLocalizedString( @"Plugin download...", nil);
             t.status = downloadURL;
             [[ThreadsManager defaultManager] addThreadAndStart: t];
