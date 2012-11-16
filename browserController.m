@@ -6957,14 +6957,14 @@ static NSConditionLock *threadLock = nil;
         [NSObject cancelPreviousPerformRequestsWithTarget:[AppController sharedAppController] selector:@selector(tileWindows:) object:nil];
     }
     
-	NSManagedObject *study = [curImage valueForKeyPath:@"series.study"];
+	DicomStudy* study = [curImage valueForKeyPath:@"series.study"];
 	
 	NSInteger index = [outlineViewArray indexOfObject: study];
 	
 	if( index != NSNotFound)
 	{
 		BOOL				found = NO;
-		NSManagedObject		*nextStudy = nil;
+		DicomStudy* nextStudy = nil;
 		do
 		{
 			index += direction;
@@ -6972,7 +6972,8 @@ static NSConditionLock *threadLock = nil;
 			{
 				nextStudy = [outlineViewArray objectAtIndex: index];
 				
-				if( [[nextStudy valueForKey:@"patientUID"] compare:[study valueForKey:@"patientUID"]options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] != NSOrderedSame)
+				if( [nextStudy.patientUID compare:study.patientUID options:NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch|NSWidthInsensitiveSearch] != NSOrderedSame
+                   && nextStudy.images.count) // skip empty studies
 				{
 					found = YES;
 				}
