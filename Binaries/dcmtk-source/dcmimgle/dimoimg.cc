@@ -1680,7 +1680,7 @@ unsigned int DiMonoImage::createDIB(void *&data,
                     }
                 } else {                                    // data already aligned and correctly oriented
                     data = OutputData->getDataPtr();
-                    OutputData = NULL;                      // remove reference to internal memory
+                    OutputData->removeDataReference();        // remove reference to internal memory
                     bytes = count;
                 }
             }
