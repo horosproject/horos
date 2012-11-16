@@ -1944,6 +1944,9 @@ extern BOOL forkedProcess;
 	if( moveArrayEnumerator >= moveArraySize)
 		return EC_IllegalParameter;
 	
+    if( moveArray == nil)
+        return EC_IllegalParameter;
+    
 	if( moveArray[ moveArrayEnumerator])
 		strcpy(imageFileName, moveArray[ moveArrayEnumerator]);
 	else
