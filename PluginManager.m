@@ -23,6 +23,7 @@
 #import "NSFileManager+N2.h"
 #import "NSMutableDictionary+N2.h"
 #import "PreferencesWindowController.h"
+#import "N2Debug.h"
 
 static NSMutableDictionary		*plugins = nil, *pluginsDict = nil, *fileFormatPlugins = nil;
 static NSMutableDictionary		*reportPlugins = nil, *pluginsBundleDictionnary = nil;
@@ -658,7 +659,7 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 		if ([[NSFileManager defaultManager] fileExistsAtPath:sysPath] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:sysPath attributes:nil];
 		#endif
 		
-		NSArray* paths = [NSArray arrayWithObjects:appPath, userPath, userAppStorePath, sysPath, [NSNull null], nil]; // [NSNull null] is a placeholder for launch parameters load commands
+		NSArray* paths = [NSArray arrayWithObjects: [NSNull null], appPath, userPath, userAppStorePath, sysPath, nil]; // [NSNull null] is a placeholder for launch parameters load commands
 		
         for( NSBundle *bundle in [pluginsBundleDictionnary allValues])
             [PluginManager unloadPlugin: bundle];
@@ -708,14 +709,14 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
         }
         
         for (id path in paths)
-		{
+		@try {
             NSArray* donotloadnames = nil;
             if (![path isKindOfClass:[NSNull class]]) {
                 donotloadnames = [[NSString stringWithContentsOfFile:[path stringByAppendingPathComponent:@"DoNotLoad.txt"]] componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
                 if ([donotloadnames containsObject:@"*"])
                     break;
             }
-            
+
             NSEnumerator* e = nil;
             if ([path isKindOfClass:[NSString class]])
                 e = [[[NSFileManager defaultManager] directoryContentsAtPath:path] objectEnumerator];
@@ -738,13 +739,15 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
                 if( [donotloadnames containsObject: [name stringByDeletingPathExtension]] == NO)
                     [PluginManager loadPluginAtPath: [path stringByAppendingPathComponent: name]];
 			}
-		}
+		} @catch (NSException* e) {
+            N2LogExceptionWithStackTrace(e);
+        }
 		#endif
 		NSLog( @"|||||||||||||||||| Plugins loading END ||||||||||||||||||");
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"******** discoverPlugins exception pluginmanager: %@", e);
+        N2LogExceptionWithStackTrace(e);
 	}
 }
 

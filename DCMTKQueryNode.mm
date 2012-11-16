@@ -2273,11 +2273,11 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 			succeed = NO;
             
             [NSThread sleepForTimeInterval: 0.1];
-		}
-		
-		[wait end];
-		[wait autorelease];
-		wait = nil;
+		} @finally {
+            [wait end];
+            [wait autorelease];
+            wait = nil;
+        }
 		
 		//We want to give time for other threads that are maybe using assoc or net variables
         @synchronized( releaseNetworkVariablesSync)
