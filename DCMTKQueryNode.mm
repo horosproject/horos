@@ -1641,6 +1641,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 }
 
 static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
+static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 
 + (void) releaseNetworkVariables
 {
@@ -2260,11 +2261,13 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 			NSString *response = [NSString stringWithFormat: @"%@  /  %@:%d\r\r%@\r%@", _calledAET, _hostname, _port, [e name], [e description]];
 			
             if (_abortAssociation == NO)
+            {
                 if( showErrorMessage == YES)
                     [DCMTKQueryNode performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Query Failed (1)", nil), response, NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
                 else
                     [[AppController sharedAppController] growlTitle: NSLocalizedString(@"Query Failed (1)", nil) description: response name: @"autoquery"];
-			
+			}
+            
             NSLog(@"---- DCMTKQueryNode failed: %@", e);
             
 			succeed = NO;
@@ -2277,11 +2280,13 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 		wait = nil;
 		
 		//We want to give time for other threads that are maybe using assoc or net variables
-        
-        if( releaseNetworkVariablesDictionaries == nil)
+        @synchronized( releaseNetworkVariablesSync)
         {
-            releaseNetworkVariablesDictionaries = [[NSMutableArray array] retain];
-            [NSThread detachNewThreadSelector: @selector(releaseNetworkVariables) toTarget: [DCMTKQueryNode class] withObject: nil];
+            if( releaseNetworkVariablesDictionaries == nil)
+            {
+                releaseNetworkVariablesDictionaries = [[NSMutableArray array] retain];
+                [NSThread detachNewThreadSelector: @selector(releaseNetworkVariables) toTarget: [DCMTKQueryNode class] withObject: nil];
+            }
         }
         
         @synchronized( releaseNetworkVariablesDictionaries)
