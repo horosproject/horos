@@ -112,6 +112,17 @@
 	return self;
 }
 
+- (void) dealloc
+{
+    [WADODownloadDictionary release];
+    WADODownloadDictionary = nil;
+    
+    [logEntry release];
+    logEntry = nil;
+    
+    [super dealloc];
+}
+
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
 	if( connection)
@@ -211,7 +222,7 @@
 		if( showErrorMessage == NO)
 			firstWadoErrorDisplayed = YES; // dont show errors
 		
-		WADODownloadDictionary = [NSMutableDictionary dictionary];
+		WADODownloadDictionary = [[NSMutableDictionary dictionary] retain];
 		
 		int WADOMaximumConcurrentDownloads = [[NSUserDefaults standardUserDefaults] integerForKey: @"WADOMaximumConcurrentDownloads"];
 		if( WADOMaximumConcurrentDownloads < 1)
@@ -291,7 +302,7 @@
             [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
 		}
 		
-        if( aborted) [logEntry setValue:@"Cancelled" forKey:@"logMessage"];
+        if( aborted) [logEntry setValue:@"Incomplete" forKey:@"logMessage"];
         else [logEntry setValue:@"Complete" forKey:@"logMessage"];
         
         [[LogManager currentLogManager] addLogLine: logEntry];
@@ -302,8 +313,8 @@
 				[connection cancel];
 		}
 		
-		[WADODownloadDictionary removeAllObjects];
-		WADODownloadDictionary = nil;
+		[WADODownloadDictionary release];
+        WADODownloadDictionary = nil;
 		
         [logEntry release];
         logEntry = nil;

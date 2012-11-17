@@ -1628,7 +1628,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 			}
             
             if ([[NSThread currentThread] isCancelled])
-                [userInfo setObject:@"Cancelled" forKey:@"Message"];
+                [userInfo setObject:@"Incomplete" forKey:@"Message"];
 			
 			[self updateLogEntry: userInfo];
 			
