@@ -222,6 +222,7 @@
 		if( showErrorMessage == NO)
 			firstWadoErrorDisplayed = YES; // dont show errors
 		
+        [WADODownloadDictionary release];
 		WADODownloadDictionary = [[NSMutableDictionary dictionary] retain];
 		
 		int WADOMaximumConcurrentDownloads = [[NSUserDefaults standardUserDefaults] integerForKey: @"WADOMaximumConcurrentDownloads"];
