@@ -12,20 +12,20 @@
      PURPOSE.
 =========================================================================*/
 
-typedef struct
-{
-	char logPatientName[ 1024];
-	char logStudyDescription[ 1024];
-	char logCallingAET[ 1024];
-	time_t logStartTime;
-	char logMessage[ 1024];
-	char logUID[ 1024];
-	long logNumberReceived;
-	long logNumberTotal;
-	time_t logEndTime;
-	char logType[ 1024];
-	char logEncoding[ 1024];
-} logStruct;
+//typedef struct
+//{
+//	char logPatientName[ 1024];
+//	char logStudyDescription[ 1024];
+//	char logCallingAET[ 1024];
+//	time_t logStartTime;
+//	char logMessage[ 1024];
+//	char logUID[ 1024];
+//	long logNumberReceived;
+//	long logNumberTotal;
+//	time_t logEndTime;
+//	char logType[ 1024];
+//	char logEncoding[ 1024];
+//} logStruct;
 
 #import <Cocoa/Cocoa.h>
 #import <OsiriX/DCM.h>
@@ -60,8 +60,7 @@ typedef struct
 	int moveArrayEnumerator;
 	int moveArraySize;
 	char **moveArray;
-	logStruct *logFiles;
-	
+	NSMutableDictionary *logDictionary;
 	NSMutableDictionary *findTemplate;
 }
 

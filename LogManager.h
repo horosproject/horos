@@ -19,7 +19,7 @@
 /** \brief Managed network logging */
 @interface LogManager : NSObject
 {
-	NSTimer *_timer;
+//	NSTimer *_timer;
 	NSMutableDictionary *_currentLogs;
     NSTimeInterval lastSave;
     
@@ -28,7 +28,7 @@
 }
 
 + (id) currentLogManager;
-- (void) checkLogs:(NSTimer *)timer;
+//- (void) checkLogs:(NSTimer *)timer;
 - (NSString *) logFolder;
 - (void) resetLogs;
 - (void) addLogLine: (NSDictionary*) dict;

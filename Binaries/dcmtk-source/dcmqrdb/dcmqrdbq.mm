@@ -380,69 +380,39 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(DcmDataset *dat
 	}
 	else strcpy( seriesUID, patientName);
 	
-	if( handle->logCreated == NO)
+	if( handle->logDictionary == nil)
 	{
-		handle->logCreated = YES;
+		handle->logDictionary = [NSMutableDictionary new];
 		
-		strcpy( handle->logSpecificCharacterSet, specificCharacterSet);
-		strcpy( handle->logPatientName, patientName);
-		strcpy( handle->logStudyDescription, studyDescription);
-		strcpy( handle->logCallingAET, handle->callingAET);
-		
-		handle->logStartTime = time (NULL);
-		
-		strcpy( handle->logMessage, "In Progress");
-		unsigned int random = (unsigned int)time(NULL);
-		unsigned int random2 = rand();
-		sprintf( handle->logUID, "%d%d%s%s", random, random2, handle->logPatientName, seriesUID);
-		str_toupper( handle->logUID);
-	}
-	
-	handle->logNumberReceived = ++(handle->imageCount);
-	handle->logEndTime = 0L;
-	
-    if( forkedProcess)
-    {
-        FILE * pFile;
-        char dir[ 1024], newdir[1024];
-        sprintf( dir, "%s/%s%s", [[BrowserController currentBrowser] cfixedTempNoIndexDirectory], "store_log_", handle->logUID);
-        pFile = fopen (dir,"w+");
-        if( pFile)
-        {
-            fprintf (pFile, "%s\r%s\r%s\r%ld\r%s\r%s\r%ld\r%ld\r%s\r%s\r\%ld\r", handle->logPatientName, handle->logStudyDescription, handle->logCallingAET, handle->logStartTime, handle->logMessage, handle->logUID, handle->logNumberReceived, handle->logEndTime, "Receive", handle->logSpecificCharacterSet, handle->logNumberReceived);
-            fclose (pFile);
-            strcpy( newdir, dir);
-            strcat( newdir, ".log");
-            unlink( newdir);
-            rename( dir, newdir);
-        }
-    }
-    else
-    {
         // Encoding
         NSStringEncoding encoding[ 10];
         for( int i = 0; i < 10; i++) encoding[ i] = 0;
         encoding[ 0] = NSISOLatin1StringEncoding;
         
-        NSArray	*c = [[NSString stringWithCString: handle->logSpecificCharacterSet] componentsSeparatedByString:@"\\"];
+        NSArray	*c = [[NSString stringWithCString: specificCharacterSet] componentsSeparatedByString:@"\\"];
         
         if( [c count] < 10)
         {
             for( int i = 0; i < [c count]; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
         }
         
-        [[LogManager currentLogManager] addLogLine: [NSDictionary dictionaryWithObjectsAndKeys: [NSString stringWithUTF8String: handle->logMessage], @"logMessage",
-                           [NSString stringWithUTF8String: "Receive"], @"logType",
-                           [NSString stringWithUTF8String: handle->logCallingAET], @"logCallingAET",
-                           [NSString stringWithUTF8String: handle->logUID], @"logUID",
-                           [NSString stringWithFormat: @"%ld", handle->logStartTime], @"logStartTime",
-                           [DicomFile stringWithBytes: handle->logPatientName encodings: encoding], @"logPatientName",
-                           [DicomFile stringWithBytes: handle->logStudyDescription encodings: encoding], @"logStudyDescription",
-                           [NSString stringWithFormat: @"%ld", handle->logNumberReceived], @"logNumberTotal",
-                           [NSString stringWithFormat: @"%ld", handle->logNumberReceived], @"logNumberReceived",
-                           [NSString stringWithFormat: @"%ld", handle->logEndTime], @"logEndTime",
-                           nil]];
+        [handle->logDictionary setObject: [DicomFile stringWithBytes: patientName encodings: encoding] forKey: @"logPatientName"];
+        [handle->logDictionary setObject: [DicomFile stringWithBytes: studyDescription encodings: encoding] forKey: @"logStudyDescription"];
+        [handle->logDictionary setObject: handle->callingAET forKey: @"logCallingAET"];
+        [handle->logDictionary setObject: [NSDate date] forKey: @"logStartTime"];
+		[handle->logDictionary setObject: @"In Progress" forKey: @"logMessage"];
+        [handle->logDictionary setObject: @"Receive" forKey: @"logType"];
+        
+		unsigned int random = (unsigned int)time(NULL);
+		unsigned int random2 = rand();
+		[handle->logDictionary setObject: [NSString stringWithFormat: @"%d%d%@%s", random, random2, [handle->logDictionary objectForKey: @"logPatientName"], seriesUID] forKey: @"logUID"];
 	}
+	
+	[handle->logDictionary setObject: [NSNumber numberWithInt: ++(handle->imageCount)] forKey: @"logNumberReceived"];
+    [handle->logDictionary setObject: [handle->logDictionary objectForKey: @"logNumberReceived"] forKey: @"logNumberTotal"];
+	[handle->logDictionary setObject: [NSDate date] forKey: @"logEndTime"];
+	
+    [[LogManager currentLogManager] addLogLine: handle->logDictionary];
     
 	return EC_Normal;
 }
@@ -1102,7 +1072,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startMoveRequest(
 	if( handle -> dataHandler == 0L)
 		handle -> dataHandler = [OsiriXSCPDataHandler allocRequestDataHandler];
 	
-	handle -> dataHandler.callingAET = [NSString stringWithUTF8String: handle -> callingAET];
+	handle -> dataHandler.callingAET = [NSString stringWithString: handle -> callingAET];
 	
 	cond = [handle->dataHandler prepareMoveForDataSet:moveRequestIdentifiers];
 	handle->NumberRemainOperations = [handle->dataHandler moveMatchFound];
@@ -1171,13 +1141,12 @@ DcmQueryRetrieveOsiriXDatabaseHandle::DcmQueryRetrieveOsiriXDatabaseHandle(
     if (handle)
 	{
 		bzero( handle, sizeof(DB_OsiriX_Handle));
-		strcpy((char *)(handle -> callingAET), callingAET);
+        handle -> callingAET = [NSString stringWithUTF8String: callingAET];
 		handle -> findRequestList = NULL;
 		handle -> findResponseList = NULL;
 		handle -> uidList = NULL;
 		result = EC_Normal;
 		handle -> dataHandler = NULL;
-		handle -> logEntry = NULL;
 		handle -> imageCount = 0;
 		handle -> logCreated = NO;
 	}
@@ -1197,53 +1166,15 @@ DcmQueryRetrieveOsiriXDatabaseHandle::~DcmQueryRetrieveOsiriXDatabaseHandle()
 	if (handle)
 	{
 		// set logEntry to complete
-	   if ( handle->logCreated)
+	   if ( handle->logDictionary)
 	   {
-			strcpy( handle->logMessage, "Complete");
-			handle->logEndTime = time (NULL);
-			
-            if( forkedProcess)
-            {
-                FILE * pFile;
-                char dir[ 1024], newdir[1024];
-                sprintf( dir, "%s/%s%s", [[BrowserController currentBrowser] cfixedTempNoIndexDirectory], "store_log_", handle->logUID);
-                pFile = fopen (dir,"w+");
-                if( pFile)
-                {
-                    fprintf (pFile, "%s\r%s\r%s\r%ld\r%s\r%s\r%ld\r%ld\r%s\r%s\r\%ld\r", handle->logPatientName, handle->logStudyDescription, handle->logCallingAET, handle->logStartTime, handle->logMessage, handle->logUID, handle->logNumberReceived, handle->logEndTime, "Receive", handle->logSpecificCharacterSet, handle->logNumberReceived);
-                    fclose (pFile);
-                    strcpy( newdir, dir);
-                    strcat( newdir, ".log");
-                    unlink( newdir);
-                    rename( dir, newdir);
-                }
-            }
-           else
-           {
-               // Encoding
-               NSStringEncoding encoding[ 10];
-               for( int i = 0; i < 10; i++) encoding[ i] = 0;
-               encoding[ 0] = NSISOLatin1StringEncoding;
-               
-               NSArray	*c = [[NSString stringWithCString: handle->logSpecificCharacterSet] componentsSeparatedByString:@"\\"];
-               
-               if( [c count] < 10)
-               {
-                   for( int i = 0; i < [c count]; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
-               }
-               
-               [[LogManager currentLogManager] addLogLine: [NSDictionary dictionaryWithObjectsAndKeys: [NSString stringWithUTF8String: handle->logMessage], @"logMessage",
-                                                            [NSString stringWithUTF8String: "Receive"], @"logType",
-                                                            [NSString stringWithUTF8String: handle->logCallingAET], @"logCallingAET",
-                                                            [NSString stringWithUTF8String: handle->logUID], @"logUID",
-                                                            [NSString stringWithFormat: @"%ld", handle->logStartTime], @"logStartTime",
-                                                            [DicomFile stringWithBytes: handle->logPatientName encodings: encoding], @"logPatientName",
-                                                            [DicomFile stringWithBytes: handle->logStudyDescription encodings: encoding], @"logStudyDescription",
-                                                            [NSString stringWithFormat: @"%ld", handle->logNumberReceived], @"logNumberTotal",
-                                                            [NSString stringWithFormat: @"%ld", handle->logNumberReceived], @"logNumberReceived",
-                                                            [NSString stringWithFormat: @"%ld", handle->logEndTime], @"logEndTime",
-                                                            nil]];
-           }
+           [handle->logDictionary setObject: @"Complete" forKey: @"logMessage"];
+           [handle->logDictionary setObject: [NSDate date] forKey: @"logEndTime"];
+           
+           [[LogManager currentLogManager] addLogLine: handle->logDictionary];
+           
+           [handle->logDictionary release];
+           handle->logDictionary = nil;
 		}
 
 		/* Free lists */

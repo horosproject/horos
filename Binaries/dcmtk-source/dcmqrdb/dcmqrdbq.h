@@ -50,20 +50,11 @@ struct DB_OsiriX_Handle
     DB_QUERY_CLASS rootLevel ;
     DB_UidList *uidList ;
 	OsiriXSCPDataHandler *dataHandler;
-	NSMutableDictionary *logEntry;
-	const char callingAET[1024];
+	NSString *callingAET;
 	int imageCount;
 	
 	BOOL logCreated;
-	char logPatientName[1024];
-	char logStudyDescription[1024];
-	char logCallingAET[1024];
-	long logStartTime;
-	char logMessage[1024];
-	char logUID[1024];
-	char logSpecificCharacterSet[1024];
-	long logNumberReceived;
-	long logEndTime;
+	NSMutableDictionary *logDictionary;
 };
 
 /** This class maintains database handles based on OsiriX core Data .

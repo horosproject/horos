@@ -1870,7 +1870,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 			_logEntry = [[NSMutableDictionary dictionary] retain];
             
             [_logEntry setValue: [NSString stringWithFormat: @"%lf", [[NSDate date] timeIntervalSince1970]] forKey:@"logUID"];
-			[_logEntry setValue: [NSString stringWithFormat: @"%lf", [[NSDate date] timeIntervalSince1970]] forKey:@"logStartTime"];
+			[_logEntry setValue: [NSDate date] forKey:@"logStartTime"];
 			[_logEntry setValue:@"Send" forKey:@"logType"];
 			[_logEntry setValue:_calledAET forKey:@"logCalledAET"];
 			[_logEntry setValue:_callingAET forKey:@"logCallingAET"];
@@ -1882,10 +1882,10 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 				[_logEntry setValue:_studyDescription forKey:@"logStudyDescription"];
 		}
 		
-		[_logEntry setValue:[NSString stringWithFormat: @"%d",_numberOfFiles] forKey:@"logNumberTotal"];
-		[_logEntry setValue:[NSString stringWithFormat: @"%d",_numberSent] forKey:@"logNumberReceived"];
-		[_logEntry setValue:[NSString stringWithFormat: @"%d", _numberErrors] forKey:@"logNumberError"];
-		[_logEntry setValue:[NSString stringWithFormat: @"%lf", [[NSDate date] timeIntervalSince1970]] forKey:@"logEndTime"];
+		[_logEntry setValue:[NSNumber numberWithInt: _numberOfFiles] forKey:@"logNumberTotal"];
+		[_logEntry setValue:[NSNumber numberWithInt: _numberSent] forKey:@"logNumberReceived"];
+		[_logEntry setValue:[NSNumber numberWithInt: _numberErrors] forKey:@"logNumberError"];
+		[_logEntry setValue:[NSDate date] forKey:@"logEndTime"];
 		[_logEntry setValue:[userInfo valueForKey:@"Message"] forKey:@"logMessage"];
         
         [[LogManager currentLogManager] addLogLine: _logEntry];

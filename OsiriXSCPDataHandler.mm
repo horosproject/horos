@@ -45,6 +45,14 @@ extern BOOL forkedProcess;
 
 - (void)dealloc
 {
+    if( logDictionary)
+    {
+        if( moveArrayEnumerator < moveArraySize)
+            [logDictionary setObject: @"Incomplete" forKey: @"logMessage"];
+        [logDictionary setObject: [NSDate date] forKey: @"logEndTime"];
+        [[LogManager currentLogManager] addLogLine: logDictionary];
+    }
+    
 	[context release];
 	context = nil;
     
@@ -53,8 +61,8 @@ extern BOOL forkedProcess;
 	moveArray = nil;
 	moveArraySize = 0;
 	
-	if( logFiles) free( logFiles);
-	logFiles = nil;
+	[logDictionary release];
+    logDictionary = nil;
 	
 	[findArray release];
 	findArray = nil;
@@ -1558,148 +1566,53 @@ extern BOOL forkedProcess;
 	if( [[BrowserController currentBrowser] isNetworkLogsActive] == NO) return;
 	if( [mArray count] == 0) return;
 	
-	char fromTo[ 200] = "";
+	[logDictionary removeAllObjects];
 	
-	if( logFiles) free( logFiles);
-	
-	logFiles = (logStruct*) calloc( sizeof( logStruct), 1);
-	
+    if( logDictionary == nil)
+        logDictionary = [NSMutableDictionary new];
+    
+    NSString *fromTo = nil;
 	if ( currentDestinationMoveAET == nil || strcmp( currentDestinationMoveAET, [callingAET UTF8String]) == 0 || strlen( currentDestinationMoveAET) == 0)
-	{
-		strcpy( fromTo, [callingAET UTF8String]);
-	}
+		fromTo = [NSString stringWithFormat: @"%@", callingAET];
 	else
-	{
-		strcpy( fromTo, [callingAET UTF8String]);
-		strcat( fromTo, " / ");
-		strcat( fromTo, currentDestinationMoveAET);
-	}
+        fromTo = [NSString stringWithFormat: @"%@ / %s", callingAET, currentDestinationMoveAET];
 	
-	for( NSManagedObject *object in mArray)
-	{
-		if( [[object valueForKey:@"type"] isEqualToString: @"Series"])
-		{
-            strcpy( logFiles->logPatientName, [[object valueForKeyPath:@"study.name"] UTF8String]);
-            strcpy( logFiles->logStudyDescription, [[object valueForKeyPath:@"study.studyName"] UTF8String]);
-            strcpy( logFiles->logCallingAET, fromTo);
-            logFiles->logStartTime = time (NULL);
-            strcpy( logFiles->logMessage, "In Progress");
-            logFiles->logNumberReceived = 0;
-            logFiles->logNumberTotal = [[object valueForKey: @"rawNoFiles"] intValue];
-            logFiles->logEndTime = time (NULL);
-            strcpy( logFiles->logType, "Move");
-            strcpy( logFiles->logEncoding, "UTF-8");
-            
-            unsigned int random = (unsigned int)time(NULL);
-            unsigned int random2 = rand();
-            sprintf( logFiles->logUID, "%d%d%s", random, random2, logFiles->logPatientName);
-            
-            if( forkedProcess)
-            {
-                FILE * pFile;
-                char dir[ 1024], newdir[1024];
-                unsigned int random = (unsigned int)time(NULL);
-                sprintf( dir, "%s/%s%d", [[BrowserController currentBrowser] cfixedTempNoIndexDirectory], "move_log_", random);
-                pFile = fopen (dir,"w+");
-                if( pFile)
-                {
-                    fprintf (pFile, "%s\r%s\r%s\r%ld\r%s\r%s\r%ld\r%ld\r%s\r%s\r\%ld\r", logFiles->logPatientName, logFiles->logStudyDescription, logFiles->logCallingAET, logFiles->logStartTime, logFiles->logMessage, logFiles->logUID, logFiles->logNumberReceived, logFiles->logEndTime, logFiles->logType, logFiles->logEncoding, logFiles->logNumberTotal);
-                    
-                    fclose (pFile);
-                    strcpy( newdir, dir);
-                    strcat( newdir, ".log");
-                    rename( dir, newdir);
-                }
-            }
-            else
-            {
-                // Encoding
-                NSStringEncoding enc[ 10];
-                for( int i = 0; i < 10; i++) enc[ i] = 0;
-                enc[ 0] = NSISOLatin1StringEncoding;
-                
-                NSArray	*c = [[NSString stringWithCString: logFiles->logEncoding] componentsSeparatedByString:@"\\"];
-                
-                if( [c count] < 10)
-                {
-                    for( int i = 0; i < [c count]; i++) enc[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
-                }
-                
-                [[LogManager currentLogManager] addLogLine: [NSDictionary dictionaryWithObjectsAndKeys: [NSString stringWithUTF8String: logFiles->logMessage], @"logMessage",
-                                                             [NSString stringWithUTF8String: logFiles->logType], @"logType",
-                                                             [NSString stringWithUTF8String: logFiles->logCallingAET], @"logCallingAET",
-                                                             [NSString stringWithUTF8String: logFiles->logUID], @"logUID",
-                                                             [NSString stringWithFormat: @"%ld", logFiles->logStartTime], @"logStartTime",
-                                                             [DicomFile stringWithBytes: logFiles->logPatientName encodings: enc], @"logPatientName",
-                                                             [DicomFile stringWithBytes: logFiles->logStudyDescription encodings: enc], @"logStudyDescription",
-                                                             [NSString stringWithFormat: @"%ld", logFiles->logNumberReceived], @"logNumberTotal",
-                                                             [NSString stringWithFormat: @"%ld", logFiles->logNumberReceived], @"logNumberReceived",
-                                                             [NSString stringWithFormat: @"%ld", logFiles->logEndTime], @"logEndTime",
-                                                             nil]];
-            }
-		}
-		else if( [[object valueForKey:@"type"] isEqualToString: @"Study"])
-		{
-            strcpy( logFiles->logPatientName, [[object valueForKeyPath:@"name"] UTF8String]);
-            strcpy( logFiles->logStudyDescription, [[object valueForKeyPath:@"studyName"] UTF8String]);
-            strcpy( logFiles->logCallingAET, fromTo);
-            logFiles->logStartTime = time (NULL);
-            strcpy( logFiles->logMessage, "In Progress");
-            logFiles->logNumberReceived = 0;
-            logFiles->logNumberTotal = [[object valueForKey: @"rawNoFiles"] intValue];
-            logFiles->logEndTime = time (NULL);
-            strcpy( logFiles->logType, "Move");
-            strcpy( logFiles->logEncoding, "UTF-8");
-            
-            unsigned int random = (unsigned int)time(NULL);
-            unsigned int random2 = rand();
-            sprintf( logFiles->logUID, "%d%d%s", random, random2, logFiles->logPatientName);
-            
-            if( forkedProcess)
-            {
-                FILE * pFile;
-                char dir[ 1024], newdir[1024];
-                unsigned int random = (unsigned int)time(NULL);
-                sprintf( dir, "%s/%s%d", [[BrowserController currentBrowser] cfixedTempNoIndexDirectory], "move_log_", random);
-                pFile = fopen (dir,"w+");
-                if( pFile)
-                {
-                    fprintf (pFile, "%s\r%s\r%s\r%ld\r%s\r%s\r%ld\r%ld\r%s\r%s\r\%ld\r", logFiles->logPatientName, logFiles->logStudyDescription, logFiles->logCallingAET, logFiles->logStartTime, logFiles->logMessage, logFiles->logUID, logFiles->logNumberReceived, logFiles->logEndTime, logFiles->logType, logFiles->logEncoding, logFiles->logNumberTotal);
-                    
-                    fclose (pFile);
-                    strcpy( newdir, dir);
-                    strcat( newdir, ".log");
-                    rename( dir, newdir);
-                }
-            }
-            else
-            {
-                // Encoding
-                NSStringEncoding enc[ 10];
-                for( int i = 0; i < 10; i++) enc[ i] = 0;
-                enc[ 0] = NSISOLatin1StringEncoding;
-                
-                NSArray	*c = [[NSString stringWithCString: logFiles->logEncoding] componentsSeparatedByString:@"\\"];
-                
-                if( [c count] < 10)
-                {
-                    for( int i = 0; i < [c count]; i++) enc[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
-                }
-                
-                [[LogManager currentLogManager] addLogLine: [NSDictionary dictionaryWithObjectsAndKeys: [NSString stringWithUTF8String: logFiles->logMessage], @"logMessage",
-                                                             [NSString stringWithUTF8String: logFiles->logType], @"logType",
-                                                             [NSString stringWithUTF8String: logFiles->logCallingAET], @"logCallingAET",
-                                                             [NSString stringWithUTF8String: logFiles->logUID], @"logUID",
-                                                             [NSString stringWithFormat: @"%ld", logFiles->logStartTime], @"logStartTime",
-                                                             [DicomFile stringWithBytes: logFiles->logPatientName encodings: enc], @"logPatientName",
-                                                             [DicomFile stringWithBytes: logFiles->logStudyDescription encodings: enc], @"logStudyDescription",
-                                                             [NSString stringWithFormat: @"%ld", logFiles->logNumberReceived], @"logNumberTotal",
-                                                             [NSString stringWithFormat: @"%ld", logFiles->logNumberReceived], @"logNumberReceived",
-                                                             [NSString stringWithFormat: @"%ld", logFiles->logEndTime], @"logEndTime",
-                                                             nil]];
-            }
-		}
-	}
+	
+    NSManagedObject *object = [mArray objectAtIndex: 0];
+    
+    [logDictionary setObject: fromTo forKey: @"logCallingAET"];
+    [logDictionary setObject: [NSDate date] forKey: @"logStartTime"];
+    [logDictionary setObject: [NSDate date] forKey: @"logEndTime"];
+    [logDictionary setObject: @"In Progress" forKey: @"logMessage"];
+    [logDictionary setObject: [NSNumber numberWithInt: 0] forKey: @"logNumberReceived"];
+    [logDictionary setObject: @"Move" forKey: @"logType"];
+    [logDictionary setObject: @"UTF-8" forKey: @"logEncoding"];
+    
+    unsigned int random = (unsigned int)time(NULL);
+    unsigned int random2 = rand();
+    
+    [logDictionary setObject: [NSString stringWithFormat: @"%d%d%@", random, random2, [logDictionary objectForKey: @"logPatientName"]] forKey: @"logUID"];
+    
+    if( [[object valueForKey:@"type"] isEqualToString: @"Series"])
+    {
+        [logDictionary setObject: [object valueForKeyPath:@"study.name"] forKey: @"logPatientName"];
+        [logDictionary setObject: [object valueForKeyPath:@"study.studyName"] forKey: @"logStudyDescription"];
+        [logDictionary setObject: [NSNumber numberWithInt: [[object valueForKey: @"rawNoFiles"] intValue]] forKey: @"logNumberTotal"];
+    }
+    else if( [[object valueForKey:@"type"] isEqualToString: @"Study"])
+    {
+        [logDictionary setObject: [object valueForKeyPath:@"name"] forKey: @"logPatientName"];
+        [logDictionary setObject: [object valueForKeyPath:@"studyName"] forKey: @"logStudyDescription"];
+        [logDictionary setObject: [NSNumber numberWithInt: [[object valueForKey: @"rawNoFiles"] intValue]] forKey: @"logNumberTotal"];
+    }
+    else if( [[object valueForKey:@"type"] isEqualToString: @"Image"])
+    {
+        [logDictionary setObject: [object valueForKeyPath:@"series.study.name"] forKey: @"logPatientName"];
+        [logDictionary setObject: [object valueForKeyPath:@"series.study.studyName"] forKey: @"logStudyDescription"];
+        [logDictionary setObject: [NSNumber numberWithInt: mArray.count] forKey: @"logNumberTotal"];
+    }
+    
+    [[LogManager currentLogManager] addLogLine: logDictionary];
 }
 
 - (OFCondition)prepareMoveForDataSet:( DcmDataset *)dataset
@@ -1951,71 +1864,27 @@ extern BOOL forkedProcess;
 		strcpy(imageFileName, moveArray[ moveArrayEnumerator]);
 	else
 	{
-		NSLog(@"No path");
+		N2LogStackTrace(@"No path");
 		ret = EC_IllegalParameter;
 	}
 	
 	moveArrayEnumerator++;
 	
-	if( logFiles)
+	if( logDictionary)
 	{
         if( moveArrayEnumerator >= moveArraySize)
-            strcpy( logFiles->logMessage, "Complete");
+            [logDictionary setObject: @"Complete" forKey: @"logMessage"];
         
-        logFiles->logNumberReceived++;
-        logFiles->logEndTime = time (NULL);
+        [logDictionary setObject: [NSNumber numberWithInt: [[logDictionary objectForKey: @"logNumberReceived"] intValue] + 1] forKey: @"logNumberReceived"];
+        [logDictionary setObject: [NSDate date] forKey: @"logEndTime"];
         
-        if( forkedProcess)
-        {
-            FILE * pFile;
-            char dir[ 1024], newdir[1024];
-            unsigned int random = (unsigned int)time(NULL);
-            sprintf( dir, "%s/%s%d", [[BrowserController currentBrowser] cfixedTempNoIndexDirectory], "move_log_", random);
-            pFile = fopen (dir,"w+");
-            if( pFile)
-            {
-                fprintf (pFile, "%s\r%s\r%s\r%ld\r%s\r%s\r%ld\r%ld\r%s\r%s\r\%ld\r", logFiles->logPatientName, logFiles->logStudyDescription, logFiles->logCallingAET, logFiles->logStartTime, logFiles->logMessage, logFiles->logUID, logFiles->logNumberReceived, logFiles->logEndTime, logFiles->logType, logFiles->logEncoding, logFiles->logNumberTotal);
-                
-                fclose (pFile);
-                strcpy( newdir, dir);
-                strcat( newdir, ".log");
-                rename( dir, newdir);
-            }
-        }
-        else
-        {
-            // Encoding
-            NSStringEncoding enc[ 10];
-            for( int i = 0; i < 10; i++) enc[ i] = 0;
-            enc[ 0] = NSISOLatin1StringEncoding;
-            
-            NSArray	*c = [[NSString stringWithCString: logFiles->logEncoding] componentsSeparatedByString:@"\\"];
-            
-            if( [c count] < 10)
-            {
-                for( int i = 0; i < [c count]; i++) enc[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
-            }
-            
-            [[LogManager currentLogManager] addLogLine: [NSDictionary dictionaryWithObjectsAndKeys: [NSString stringWithUTF8String: logFiles->logMessage], @"logMessage",
-                                                         [NSString stringWithUTF8String: logFiles->logType], @"logType",
-                                                         [NSString stringWithUTF8String: logFiles->logCallingAET], @"logCallingAET",
-                                                         [NSString stringWithUTF8String: logFiles->logUID], @"logUID",
-                                                         [NSString stringWithFormat: @"%ld", logFiles->logStartTime], @"logStartTime",
-                                                         [DicomFile stringWithBytes: logFiles->logPatientName encodings: enc], @"logPatientName",
-                                                         [DicomFile stringWithBytes: logFiles->logStudyDescription encodings: enc], @"logStudyDescription",
-                                                         [NSString stringWithFormat: @"%ld", logFiles->logNumberReceived], @"logNumberTotal",
-                                                         [NSString stringWithFormat: @"%ld", logFiles->logNumberReceived], @"logNumberReceived",
-                                                         [NSString stringWithFormat: @"%ld", logFiles->logEndTime], @"logEndTime",
-                                                         nil]];
-        }
+        [[LogManager currentLogManager] addLogLine: logDictionary];
 	}
     
 	if( moveArrayEnumerator >= moveArraySize)
 	{
-		if( logFiles)
-			free( logFiles);
-		
-		logFiles = nil;
+		[logDictionary release];
+        logDictionary = nil;
 	}
 
 	return ret;

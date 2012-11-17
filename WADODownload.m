@@ -93,7 +93,7 @@
         
         int error = [[logEntry valueForKey: @"logNumberError"] intValue];
         error++;
-        [logEntry setValue:[NSString stringWithFormat: @"%d", error] forKey:@"logNumberError"];
+        [logEntry setValue:[NSNumber numberWithInt: error] forKey:@"logNumberError"];
 	}
 }
 
@@ -150,7 +150,7 @@
                             logEntry = [[NSMutableDictionary dictionary] retain];
                             
                             [logEntry setValue: [NSString stringWithFormat: @"%lf", [[NSDate date] timeIntervalSince1970]] forKey:@"logUID"];
-                            [logEntry setValue: [NSString stringWithFormat: @"%lf", [[NSDate date] timeIntervalSince1970]] forKey:@"logStartTime"];
+                            [logEntry setValue: [NSDate date] forKey:@"logStartTime"];
                             [logEntry setValue: @"Receive" forKey:@"logType"];
                             [logEntry setValue: [[[WADODownloadDictionary objectForKey: key] objectForKey: @"url"] host] forKey:@"logCallingAET"];
                             
@@ -160,7 +160,7 @@
                             if ([dcmFile elementForKey: @"studyDescription"])
                                 [logEntry setValue:[dcmFile elementForKey: @"studyDescription"] forKey:@"logStudyDescription"];
                             
-                            [logEntry setValue:[NSString stringWithFormat: @"%d",WADOTotal] forKey:@"logNumberTotal"];
+                            [logEntry setValue:[NSNumber numberWithInt: WADOTotal] forKey:@"logNumberTotal"];
                         }
                         @catch (NSException *e) {
                             N2LogException( e);
@@ -173,9 +173,9 @@
                 }
             }
             
-            [logEntry setValue:[NSString stringWithFormat: @"%d", 1 + WADOTotal - WADOThreads] forKey:@"logNumberReceived"];
+            [logEntry setValue:[NSNumber numberWithInt: 1 + WADOTotal - WADOThreads] forKey:@"logNumberReceived"];
             
-            [logEntry setValue:[NSString stringWithFormat: @"%lf", [[NSDate date] timeIntervalSince1970]] forKey:@"logEndTime"];
+            [logEntry setValue:[NSDate date] forKey:@"logEndTime"];
             [logEntry setValue:@"In Progress" forKey:@"logMessage"];
             
             [[LogManager currentLogManager] addLogLine: logEntry];
@@ -305,6 +305,9 @@
 		[WADODownloadDictionary removeAllObjects];
 		WADODownloadDictionary = nil;
 		
+        [logEntry release];
+        logEntry = nil;
+        
 		[pool release];
 		
 		if( aborted)

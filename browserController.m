@@ -1328,7 +1328,6 @@ static NSConditionLock *threadLock = nil;
                 _cachedAlbumsContext = nil;
             }
             
-			[[LogManager currentLogManager] checkLogs: nil];
 			[self resetLogWindowController];
 			
 			[[AppController sharedAppController] closeAllViewers: self];
