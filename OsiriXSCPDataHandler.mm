@@ -1840,6 +1840,8 @@ extern BOOL forkedProcess;
     if( moveArray == nil)
         return EC_IllegalParameter;
     
+    strcpy(imageFileName, [[moveArray objectAtIndex: moveArrayEnumerator] UTF8String]);
+    
 	moveArrayEnumerator++;
 	
 	if( logDictionary)
