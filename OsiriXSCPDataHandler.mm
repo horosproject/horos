@@ -47,7 +47,7 @@ extern BOOL forkedProcess;
 {
     if( logDictionary)
     {
-        if( moveArrayEnumerator < moveArraySize)
+        if( moveArrayEnumerator < moveArray.count)
             [logDictionary setObject: @"Incomplete" forKey: @"logMessage"];
         [logDictionary setObject: [NSDate date] forKey: @"logEndTime"];
         [[LogManager currentLogManager] addLogLine: logDictionary];
@@ -56,10 +56,8 @@ extern BOOL forkedProcess;
 	[context release];
 	context = nil;
     
-	for( int i = 0 ; i < moveArraySize; i++) free( moveArray[ i]);
-	free( moveArray);
-	moveArray = nil;
-	moveArraySize = 0;
+	[moveArray release];
+    moveArray = nil;
 	
 	[logDictionary release];
     logDictionary = nil;
@@ -1718,10 +1716,8 @@ extern BOOL forkedProcess;
 			
 			if (error)
 			{
-				for( int i = 0 ; i < moveArraySize; i++) free( moveArray[ i]);
-				free( moveArray);
-				moveArray = nil;
-				moveArraySize = 0;
+				[moveArray release];
+                moveArray = nil;
 				
 				cond = EC_IllegalParameter;
 			}
@@ -1736,24 +1732,8 @@ extern BOOL forkedProcess;
 				while (moveEntity = [enumerator nextObject])
 					[moveSet unionSet:[moveEntity valueForKey:@"pathsForForkedProcess"]];
 				
-				NSArray *tempMoveArray = [moveSet allObjects];
-				
-				tempMoveArray = [tempMoveArray sortedArrayUsingSelector:@selector(compare:)];
-				
-				for( int i = 0 ; i < moveArraySize; i++) free( moveArray[ i]);
-				free( moveArray);
-				moveArray = nil;
-				moveArraySize = 0;
-				
-				moveArraySize = [tempMoveArray count];
-				moveArray = (char**) malloc( sizeof( char*) * moveArraySize);
-				for( int i = 0 ; i < moveArraySize; i++)
-				{
-					const char *str = [[tempMoveArray objectAtIndex: i] UTF8String];
-					
-					moveArray[ i] = (char*) malloc( strlen( str) + 1);
-					strcpy( moveArray[ i], str);
-				}
+                [moveArray release];
+                moveArray = [[NSArray arrayWithArray: [[moveSet allObjects] sortedArrayUsingSelector: @selector(compare:)]] retain];
 				
 				cond = EC_Normal;
 			}
@@ -1802,7 +1782,7 @@ extern BOOL forkedProcess;
 
 - (int)moveMatchFound
 {
-	return moveArraySize;
+	return moveArray.count;
 }
 
 - (OFCondition) nextFindObject:(DcmDataset *)dataset isComplete:(BOOL *)isComplete
@@ -1854,25 +1834,17 @@ extern BOOL forkedProcess;
     if( [NSThread currentThread].isCancelled)
         return EC_IllegalParameter;
     
-	if( moveArrayEnumerator >= moveArraySize)
+	if( moveArrayEnumerator >= moveArray.count)
 		return EC_IllegalParameter;
 	
     if( moveArray == nil)
         return EC_IllegalParameter;
     
-	if( moveArray[ moveArrayEnumerator])
-		strcpy(imageFileName, moveArray[ moveArrayEnumerator]);
-	else
-	{
-		N2LogStackTrace(@"No path");
-		ret = EC_IllegalParameter;
-	}
-	
 	moveArrayEnumerator++;
 	
 	if( logDictionary)
 	{
-        if( moveArrayEnumerator >= moveArraySize)
+        if( moveArrayEnumerator >= moveArray.count)
             [logDictionary setObject: @"Complete" forKey: @"logMessage"];
         
         [logDictionary setObject: [NSNumber numberWithInt: [[logDictionary objectForKey: @"logNumberReceived"] intValue] + 1] forKey: @"logNumberReceived"];
@@ -1881,7 +1853,7 @@ extern BOOL forkedProcess;
         [[LogManager currentLogManager] addLogLine: logDictionary];
 	}
     
-	if( moveArrayEnumerator >= moveArraySize)
+	if( moveArrayEnumerator >= moveArray.count)
 	{
 		[logDictionary release];
         logDictionary = nil;
