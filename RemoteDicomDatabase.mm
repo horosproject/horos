@@ -638,9 +638,8 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 	NSMutableArray* localPaths = [NSMutableArray array];
 	NSMutableArray* remotePaths = [NSMutableArray array];
 	
-    [self lock];
 	NSArray* images = [image.series.images.allObjects sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES] autorelease]]]; // TODO: sort after preferences
-	[self unlock];
+    
     NSInteger size = 0, i = [images indexOfObject:image];
 	
 //	NSMutableArray* currentFetchXIDs = [NSMutableArray array];

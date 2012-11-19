@@ -168,6 +168,7 @@ static NSString* const BrowserActivityHelperContext = @"BrowserActivityHelperCon
                     [cell cleanup];
                     [cell retain];
                     [_cells removeObject:cell];
+                    [_browser._activityTableView reloadData];
                     [cell autorelease];
                 }
             }
@@ -200,29 +201,33 @@ static NSString* const BrowserActivityHelperContext = @"BrowserActivityHelperCon
 	if (tableColumn) frame = [tableView frameOfCellAtColumn:[tableView.tableColumns indexOfObject:tableColumn] row:row];
 	else frame = [tableView rectOfRow:row];
 	
-	// cancel
-	
-	if (![cell.cancelButton superview])
-		[tableView addSubview:cell.cancelButton];
+    @synchronized (ThreadsManager.defaultManager.threadsController)
+    {
+        if( [_cells containsObject: cell])
+        {
+            // cancel
+            if (![cell.cancelButton superview])
+                [tableView addSubview:cell.cancelButton];
 
-	NSRect cancelFrame = NSMakeRect(frame.origin.x+frame.size.width-15-5, frame.origin.y+5, 15, 15);
-	if (!NSEqualRects(cell.cancelButton.frame, cancelFrame))
-		[cell.cancelButton setFrame:cancelFrame];	
-	
-	// progress
-	
-	if (![cell.progressIndicator superview]) {
-		[tableView addSubview:cell.progressIndicator];
-//		[self.progressIndicator startAnimation:self];
-	}
-	
-    NSRect progressFrame;
-    if ([AppController hasMacOSXLion])
-        progressFrame = NSMakeRect(frame.origin.x+3, frame.origin.y+27, frame.size.width-6, frame.size.height-32);
-    else progressFrame = NSMakeRect(frame.origin.x+1, frame.origin.y+26, frame.size.width-2, frame.size.height-28);
-        
-	if (!NSEqualRects(cell.progressIndicator.frame, progressFrame))
-		[cell.progressIndicator setFrame:progressFrame];
+            NSRect cancelFrame = NSMakeRect(frame.origin.x+frame.size.width-15-5, frame.origin.y+5, 15, 15);
+            if (!NSEqualRects(cell.cancelButton.frame, cancelFrame))
+                [cell.cancelButton setFrame:cancelFrame];	
+            
+            // progress
+            if (![cell.progressIndicator superview]) {
+                [tableView addSubview:cell.progressIndicator];
+        //		[self.progressIndicator startAnimation:self];
+            }
+            
+            NSRect progressFrame;
+            if ([AppController hasMacOSXLion])
+                progressFrame = NSMakeRect(frame.origin.x+3, frame.origin.y+27, frame.size.width-6, frame.size.height-32);
+            else progressFrame = NSMakeRect(frame.origin.x+1, frame.origin.y+26, frame.size.width-2, frame.size.height-28);
+                
+            if (!NSEqualRects(cell.progressIndicator.frame, progressFrame))
+                [cell.progressIndicator setFrame:progressFrame];
+        }
+    }
 }
 
 @end

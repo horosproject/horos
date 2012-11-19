@@ -31,9 +31,11 @@
 {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	NSThread* thread = [NSThread currentThread];
-	NSArray* dicomImages = [io objectAtIndex:0];
-	DataNodeIdentifier* destination = [io objectAtIndex:1];
 	
+	DataNodeIdentifier* destination = [io objectAtIndex:1];
+	DicomDatabase *srcDatabase = [io objectAtIndex:2];
+    NSArray* dicomImages = [srcDatabase.independentDatabase objectsWithIDs: [io objectAtIndex: 0]];
+    
 	NSMutableArray* imagePaths = [NSMutableArray array];
 	for (DicomImage* image in dicomImages)
 		if (![imagePaths containsObject:image.completePath])
@@ -101,9 +103,11 @@
 {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	NSThread* thread = [NSThread currentThread];
-	NSArray* dicomImages = [io objectAtIndex:0];
+    
 	DataNodeIdentifier* destination = [io objectAtIndex:1];
-	
+	DicomDatabase *srcDatabase = [io objectAtIndex:2];
+    NSArray* dicomImages = [srcDatabase.independentDatabase objectsWithIDs: [io objectAtIndex: 0]];
+    
 	NSMutableArray* imagePaths = [NSMutableArray array];
 	NSMutableArray* imagePathsObjs = [NSMutableArray array];
 	for (DicomImage* image in dicomImages)
@@ -137,14 +141,16 @@
 {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	NSThread* thread = [NSThread currentThread];
-	NSMutableArray* dicomImages = [[[io objectAtIndex:0] mutableCopy] autorelease];
-	DataNodeIdentifier* destination = [io objectAtIndex:1];
+    
+    DataNodeIdentifier* destination = [io objectAtIndex:1];
 	RemoteDicomDatabase* srcDatabase = [io objectAtIndex:2];
-	
+    NSMutableArray* dicomImages = [[[srcDatabase.independentDatabase objectsWithIDs: [io objectAtIndex: 0]] mutableCopy] autorelease];
+    
 	NSMutableArray* imagePaths = [[[dicomImages valueForKey:@"completePath"] mutableCopy] autorelease];
 	[imagePaths removeDuplicatedStringsInSyncWithThisArray:dicomImages];
 	
 	thread.status = NSLocalizedString(@"Opening database...", nil);
+    
 	DicomDatabase* idatabase = [[DicomDatabase databaseAtPath:destination.location name:destination.description] independentDatabase];
 	
 	thread.status = [NSString stringWithFormat:NSLocalizedString(@"Fetching %d %@...", nil), dicomImages.count, (dicomImages.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil)) ];
@@ -186,9 +192,10 @@
 {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	NSThread* thread = [NSThread currentThread];
-	NSMutableArray* dicomImages = [[[io objectAtIndex:0] mutableCopy] autorelease];
+    
 	DataNodeIdentifier* destination = [io objectAtIndex:1];
-	RemoteDicomDatabase* srcDatabase = [io objectAtIndex:2];
+    RemoteDicomDatabase* srcDatabase = [io objectAtIndex:2];
+    NSMutableArray* dicomImages = [[[srcDatabase.independentDatabase objectsWithIDs: [io objectAtIndex: 0]] mutableCopy] autorelease];
 	
 	NSMutableArray* imagePaths = [[[dicomImages valueForKey:@"completePath"] mutableCopy] autorelease];
 	[imagePaths removeDuplicatedStringsInSyncWithThisArray:dicomImages];
@@ -238,14 +245,14 @@
 	if (_database.isLocal)
     {
 		if ([destination isKindOfClass:[LocalDatabaseNodeIdentifier class]]) { // local OsiriX to local OsiriX
-				NSThread* thread = [[[NSThread alloc] initWithTarget:self selector:@selector(copyImagesToLocalBrowserSourceThread:) object:[NSArray arrayWithObjects: dicomImages, destination, _database, NULL]] autorelease];
+				NSThread* thread = [[[NSThread alloc] initWithTarget:self selector:@selector(copyImagesToLocalBrowserSourceThread:) object:[NSArray arrayWithObjects: [dicomImages valueForKey:@"objectID"], destination, _database, NULL]] autorelease];
 				thread.name = NSLocalizedString(@"Copying images...", nil);
                 thread.supportsCancel = YES;
 				[[ThreadsManager defaultManager] addThreadAndStart:thread];
 				return YES;
         } else
         if ([destination isKindOfClass:[RemoteDatabaseNodeIdentifier class]]) { // local OsiriX to remote OsiriX
-				NSThread* thread = [[[NSThread alloc] initWithTarget:self selector:@selector(copyImagesToRemoteBrowserSourceThread:) object:[NSArray arrayWithObjects: dicomImages, destination, _database, NULL]] autorelease];
+				NSThread* thread = [[[NSThread alloc] initWithTarget:self selector:@selector(copyImagesToRemoteBrowserSourceThread:) object:[NSArray arrayWithObjects: [dicomImages valueForKey:@"objectID"], destination, _database, NULL]] autorelease];
                 thread.supportsCancel = YES;
 				thread.name = NSLocalizedString(@"Sending images...", nil);
 				[[ThreadsManager defaultManager] addThreadAndStart:thread];
@@ -264,14 +271,14 @@
     else
     {
 		if ([destination isKindOfClass:[LocalDatabaseNodeIdentifier class]]) { // remote OsiriX to local OsiriX
-				NSThread* thread = [[[NSThread alloc] initWithTarget:self selector:@selector(copyRemoteImagesToLocalBrowserSourceThread:) object:[NSArray arrayWithObjects: dicomImages, destination, _database, NULL]] autorelease];
+				NSThread* thread = [[[NSThread alloc] initWithTarget:self selector:@selector(copyRemoteImagesToLocalBrowserSourceThread:) object:[NSArray arrayWithObjects: [dicomImages valueForKey:@"objectID"], destination, _database, NULL]] autorelease];
 				thread.name = NSLocalizedString(@"Copying images...", nil);
                 thread.supportsCancel = YES;
 				[[ThreadsManager defaultManager] addThreadAndStart:thread];
 				return YES;
 		} else
         if ([destination isKindOfClass:[RemoteDatabaseNodeIdentifier class]] || [destination isKindOfClass:[DicomNodeIdentifier class]]) { // remote OsiriX to remote OsiriX // remote OsiriX to remote DICOM
-				NSThread* thread = [[[NSThread alloc] initWithTarget:self selector:@selector(copyRemoteImagesToRemoteBrowserSourceThread:) object:[NSArray arrayWithObjects: dicomImages, destination, _database, NULL]] autorelease];
+				NSThread* thread = [[[NSThread alloc] initWithTarget:self selector:@selector(copyRemoteImagesToRemoteBrowserSourceThread:) object:[NSArray arrayWithObjects: [dicomImages valueForKey:@"objectID"], destination, _database, NULL]] autorelease];
 				thread.name = NSLocalizedString(@"Initiating image transfer...", nil);
 				[[ThreadsManager defaultManager] addThreadAndStart:thread];
 				return YES;
