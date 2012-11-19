@@ -121,7 +121,9 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	float			syncRelativeDiff;
 	long			syncSeriesIndex;
 	
-	float			mprVector[ 3], mprPoint[ 3], timeIntervalForDrag;
+	float			mprVector[ 3], mprPoint[ 3];
+    
+    NSTimeInterval  timeIntervalForDrag;
 	
 	short			thickSlabMode, thickSlabStacks;
 	
@@ -329,7 +331,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 @property BOOL eraserFlag;
 @property BOOL drawing;
 @property BOOL volumicSeries;
-@property float timeIntervalForDrag;
+@property (nonatomic) NSTimeInterval timeIntervalForDrag;
 @property(readonly) BOOL isKeyView, mouseDragging;
 
 + (BOOL) noPropagateSettingsInSeriesForModality: (NSString*) m;
