@@ -641,7 +641,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 					z = location[ 2 ];
 
 					// add the 3D Point to the SR view
-					[[self view] add3DPoint:  x : y : z : curROI.thickness :curROI.rgbcolor.red :curROI.rgbcolor.green :curROI.rgbcolor.blue];
+					[[self view] add3DPoint:  x : y : z : curROI.thickness :curROI.rgbcolor.red/65535. :curROI.rgbcolor.green/65535. :curROI.rgbcolor.blue/65535.];
 					// add the 2D Point to our list
 					[roi2DPointsArray addObject:curROI];
 					[sliceNumber2DPointsArray addObject:[NSNumber numberWithLong:i]];
@@ -2395,7 +2395,7 @@ return YES;
 					z = location[ 2];
 					
 					// add the 3D Point to the view
-					[[self view] add3DPoint:  x : y : z : r.thickness :r.rgbcolor.red :r.rgbcolor.green :r.rgbcolor.blue];
+					[[self view] add3DPoint:  x : y : z : r.thickness :r.rgbcolor.red/65535. :r.rgbcolor.green/65535. :r.rgbcolor.blue/65535.];
 					[[self view] setNeedsDisplay:YES];
 					
 					// add the 2D Point to our list
@@ -2437,7 +2437,7 @@ return YES;
 		z = location[ 2];
 		
 		// add the 3D Point to the view
-		[[self view] add3DPoint:  x : y : z : addedROI.thickness :addedROI.rgbcolor.red :addedROI.rgbcolor.green :addedROI.rgbcolor.blue];
+		[[self view] add3DPoint:  x : y : z : addedROI.thickness :addedROI.rgbcolor.red/65535. :addedROI.rgbcolor.green/65535. :addedROI.rgbcolor.blue/65535.];
 		[[self view] setNeedsDisplay:YES];
 		
 		// add the 2D Point to our list
