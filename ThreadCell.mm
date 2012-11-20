@@ -115,6 +115,9 @@
     {
         if (obj == self.thread)
         {
+            if( _retainedThreadDictionary != self.thread.threadDictionary)
+                return;
+                
             if (![NSThread isMainThread]) {
                 [self performSelectorOnMainThread:@selector(_observeValueForKeyPathOfObjectChangeContext:) withObject:[NSArray arrayWithObjects: keyPath, obj, change, [NSValue valueWithPointer:context], NULL] waitUntilDone:NO];
                 return;
