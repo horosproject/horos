@@ -89,16 +89,19 @@
         } @catch (...) {
         }
         
-        [_thread autorelease]; _thread = nil;
-        [_retainedThreadDictionary autorelease]; _retainedThreadDictionary = nil;
+        [_thread autorelease];
+        [_retainedThreadDictionary autorelease];
         
         _thread = [thread retain];
         _retainedThreadDictionary = [_thread.threadDictionary retain];
         
-        [self.thread addObserver:self forKeyPath:NSThreadIsCancelledKey options:NSKeyValueObservingOptionInitial context:NULL];
-        [self.thread addObserver:self forKeyPath:NSThreadStatusKey options:NSKeyValueObservingOptionInitial context:NULL];
-        [self.thread addObserver:self forKeyPath:NSThreadProgressKey options:NSKeyValueObservingOptionInitial context:NULL];
-        [self.thread addObserver:self forKeyPath:NSThreadSupportsCancelKey options:NSKeyValueObservingOptionInitial context:NULL];
+        @synchronized( _retainedThreadDictionary)
+        {
+            [self.thread addObserver:self forKeyPath:NSThreadIsCancelledKey options:NSKeyValueObservingOptionInitial context:NULL];
+            [self.thread addObserver:self forKeyPath:NSThreadStatusKey options:NSKeyValueObservingOptionInitial context:NULL];
+            [self.thread addObserver:self forKeyPath:NSThreadProgressKey options:NSKeyValueObservingOptionInitial context:NULL];
+            [self.thread addObserver:self forKeyPath:NSThreadSupportsCancelKey options:NSKeyValueObservingOptionInitial context:NULL];
+        }
     }
 }
 
