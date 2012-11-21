@@ -3682,28 +3682,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 	NSManagedObject		*series = [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"];
 	NSInteger			index = [[[previewMatrix cells] valueForKeyPath:@"representedObject.object"] indexOfObject: series];
 	
-    NSArray* cells = [previewMatrix cells];
-    for (id loopItem1 in cells)
-        [loopItem1 setBackgroundColor:nil];
-    
 	if( index != NSNotFound)
 	{
 		NSButtonCell *cell = [previewMatrix cellAtRow:index column: 0];
-			
-		if( [cell isBordered])
-		{
-			[cell setBackgroundColor: [[self class] _selectedItemColor]];
-			//[cell setBordered: NO];
-			
-//			[previewMatrix selectCellAtRow:index column:0];
-			[previewMatrix scrollCellToVisibleAtRow: index column:0];
-		}
-	}
-	else
-	{
-//		for( id loopItem in cells) [loopItem setBordered: YES];
-//			
-//		[previewMatrix selectCellAtRow:-1 column:-1];
+        [previewMatrix scrollCellToVisibleAtRow: index column:0];
 	}
 }
 
