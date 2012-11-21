@@ -414,20 +414,20 @@
 		59FB654F12312D8900EBA136 /* weasis in Resources */ = {isa = PBXBuildFile; fileRef = 59FB652912312D8900EBA136 /* weasis */; };
 		711849771590A377006AB447 /* SMTPClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 711849751590A377006AB447 /* SMTPClient.h */; };
 		711849781590A377006AB447 /* SMTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 711849761590A377006AB447 /* SMTPClient.m */; };
-		7128FD771487D54A00AB54A1 /* BrowserBottomSplitView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7128FD751487D54A00AB54A1 /* BrowserBottomSplitView.h */; };
-		7128FD781487D54A00AB54A1 /* BrowserBottomSplitView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7128FD751487D54A00AB54A1 /* BrowserBottomSplitView.h */; };
-		7128FD791487D54A00AB54A1 /* BrowserBottomSplitView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7128FD761487D54A00AB54A1 /* BrowserBottomSplitView.m */; };
-		7128FD7A1487D54A00AB54A1 /* BrowserBottomSplitView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7128FD761487D54A00AB54A1 /* BrowserBottomSplitView.m */; };
+		7128FD771487D54A00AB54A1 /* N2UnclickableSplitView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7128FD751487D54A00AB54A1 /* N2UnclickableSplitView.h */; };
+		7128FD781487D54A00AB54A1 /* N2UnclickableSplitView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7128FD751487D54A00AB54A1 /* N2UnclickableSplitView.h */; };
+		7128FD791487D54A00AB54A1 /* N2UnclickableSplitView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7128FD761487D54A00AB54A1 /* N2UnclickableSplitView.m */; };
+		7128FD7A1487D54A00AB54A1 /* N2UnclickableSplitView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7128FD761487D54A00AB54A1 /* N2UnclickableSplitView.m */; };
 		71353C511469260B00359CAB /* NSDate+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 71353C4F1469260B00359CAB /* NSDate+N2.h */; };
 		71353C521469260B00359CAB /* NSDate+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 71353C4F1469260B00359CAB /* NSDate+N2.h */; };
 		71353C531469260B00359CAB /* NSDate+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 71353C501469260B00359CAB /* NSDate+N2.mm */; };
 		71353C541469260B00359CAB /* NSDate+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 71353C501469260B00359CAB /* NSDate+N2.mm */; };
 		713A00391467E2DC00194120 /* DicomDir.h in Headers */ = {isa = PBXBuildFile; fileRef = 713A00371467E2DC00194120 /* DicomDir.h */; };
 		713A003A1467E2DC00194120 /* DicomDir.mm in Sources */ = {isa = PBXBuildFile; fileRef = 713A00381467E2DC00194120 /* DicomDir.mm */; };
-		7147C1881644160800A9D095 /* O2Matrix.h in Headers */ = {isa = PBXBuildFile; fileRef = 7147C1861644160800A9D095 /* O2Matrix.h */; };
-		7147C1891644160800A9D095 /* O2Matrix.h in Headers */ = {isa = PBXBuildFile; fileRef = 7147C1861644160800A9D095 /* O2Matrix.h */; };
-		7147C18A1644160800A9D095 /* O2Matrix.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7147C1871644160800A9D095 /* O2Matrix.mm */; };
-		7147C18B1644160800A9D095 /* O2Matrix.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7147C1871644160800A9D095 /* O2Matrix.mm */; };
+		7147C1881644160800A9D095 /* O2ViewerThumbnailsMatrix.h in Headers */ = {isa = PBXBuildFile; fileRef = 7147C1861644160800A9D095 /* O2ViewerThumbnailsMatrix.h */; };
+		7147C1891644160800A9D095 /* O2ViewerThumbnailsMatrix.h in Headers */ = {isa = PBXBuildFile; fileRef = 7147C1861644160800A9D095 /* O2ViewerThumbnailsMatrix.h */; };
+		7147C18A1644160800A9D095 /* O2ViewerThumbnailsMatrix.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7147C1871644160800A9D095 /* O2ViewerThumbnailsMatrix.mm */; };
+		7147C18B1644160800A9D095 /* O2ViewerThumbnailsMatrix.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7147C1871644160800A9D095 /* O2ViewerThumbnailsMatrix.mm */; };
 		714943D214D3008B008BCC08 /* NSHost+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 714943D014D3008B008BCC08 /* NSHost+N2.h */; };
 		714943D314D3008B008BCC08 /* NSHost+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 714943D014D3008B008BCC08 /* NSHost+N2.h */; };
 		714943D414D3008B008BCC08 /* NSHost+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 714943D114D3008B008BCC08 /* NSHost+N2.mm */; };
@@ -472,6 +472,10 @@
 		71AA5A381611F1EB006A6A5F /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 71AA5A2B1611F1EB006A6A5F /* SBJsonParser.m */; };
 		71AA5A391611F1EB006A6A5F /* SBJsonWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 71AA5A2C1611F1EB006A6A5F /* SBJsonWriter.h */; };
 		71AA5A3A1611F1EB006A6A5F /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 71AA5A2D1611F1EB006A6A5F /* SBJsonWriter.m */; };
+		71B7D4B7165BE68E005E3281 /* O2ViewerComparativesButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 71B7D4B5165BE68E005E3281 /* O2ViewerComparativesButtonCell.h */; };
+		71B7D4B8165BE68E005E3281 /* O2ViewerComparativesButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 71B7D4B5165BE68E005E3281 /* O2ViewerComparativesButtonCell.h */; };
+		71B7D4B9165BE68E005E3281 /* O2ViewerComparativesButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 71B7D4B6165BE68E005E3281 /* O2ViewerComparativesButtonCell.m */; };
+		71B7D4BA165BE68E005E3281 /* O2ViewerComparativesButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 71B7D4B6165BE68E005E3281 /* O2ViewerComparativesButtonCell.m */; };
 		71CE3C19157F489C00AC0112 /* List.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 71CE3C18157F489C00AC0112 /* List.pdf */; };
 		71CE3C1A157F489C00AC0112 /* List.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 71CE3C18157F489C00AC0112 /* List.pdf */; };
 		7E0B3A4A0675273500908593 /* DCM Framework_Prefix.pch in Resources */ = {isa = PBXBuildFile; fileRef = 7E0B3A12067526A600908593 /* DCM Framework_Prefix.pch */; };
@@ -8636,14 +8640,14 @@
 		59FB652912312D8900EBA136 /* weasis */ = {isa = PBXFileReference; lastKnownFileType = folder; name = weasis; path = Binaries/weasis; sourceTree = "<group>"; };
 		711849751590A377006AB447 /* SMTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SMTPClient.h; path = nitrogen/Sources/SMTPClient.h; sourceTree = "<group>"; };
 		711849761590A377006AB447 /* SMTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SMTPClient.m; path = nitrogen/Sources/SMTPClient.m; sourceTree = "<group>"; };
-		7128FD751487D54A00AB54A1 /* BrowserBottomSplitView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BrowserBottomSplitView.h; sourceTree = "<group>"; };
-		7128FD761487D54A00AB54A1 /* BrowserBottomSplitView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BrowserBottomSplitView.m; sourceTree = "<group>"; };
+		7128FD751487D54A00AB54A1 /* N2UnclickableSplitView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2UnclickableSplitView.h; path = nitrogen/Sources/N2UnclickableSplitView.h; sourceTree = "<group>"; };
+		7128FD761487D54A00AB54A1 /* N2UnclickableSplitView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = N2UnclickableSplitView.m; path = nitrogen/Sources/N2UnclickableSplitView.m; sourceTree = "<group>"; };
 		71353C4F1469260B00359CAB /* NSDate+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSDate+N2.h"; path = "nitrogen/Sources/NSDate+N2.h"; sourceTree = "<group>"; };
 		71353C501469260B00359CAB /* NSDate+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "NSDate+N2.mm"; path = "nitrogen/Sources/NSDate+N2.mm"; sourceTree = "<group>"; };
 		713A00371467E2DC00194120 /* DicomDir.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DicomDir.h; sourceTree = "<group>"; };
 		713A00381467E2DC00194120 /* DicomDir.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DicomDir.mm; sourceTree = "<group>"; };
-		7147C1861644160800A9D095 /* O2Matrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = O2Matrix.h; sourceTree = "<group>"; };
-		7147C1871644160800A9D095 /* O2Matrix.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = O2Matrix.mm; sourceTree = "<group>"; };
+		7147C1861644160800A9D095 /* O2ViewerThumbnailsMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = O2ViewerThumbnailsMatrix.h; sourceTree = "<group>"; };
+		7147C1871644160800A9D095 /* O2ViewerThumbnailsMatrix.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = O2ViewerThumbnailsMatrix.mm; sourceTree = "<group>"; };
 		714943D014D3008B008BCC08 /* NSHost+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSHost+N2.h"; path = "nitrogen/Sources/NSHost+N2.h"; sourceTree = "<group>"; };
 		714943D114D3008B008BCC08 /* NSHost+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "NSHost+N2.mm"; path = "nitrogen/Sources/NSHost+N2.mm"; sourceTree = "<group>"; };
 		714D3BAF152AE40C003EB087 /* O2ScreensPrefsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = O2ScreensPrefsView.h; path = "Preference Panes/OSIViewerPreferencePane/O2ScreensPrefsView.h"; sourceTree = "<group>"; };
@@ -8673,6 +8677,8 @@
 		71AA5A2B1611F1EB006A6A5F /* SBJsonParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonParser.m; sourceTree = "<group>"; };
 		71AA5A2C1611F1EB006A6A5F /* SBJsonWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonWriter.h; sourceTree = "<group>"; };
 		71AA5A2D1611F1EB006A6A5F /* SBJsonWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonWriter.m; sourceTree = "<group>"; };
+		71B7D4B5165BE68E005E3281 /* O2ViewerComparativesButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = O2ViewerComparativesButtonCell.h; sourceTree = "<group>"; };
+		71B7D4B6165BE68E005E3281 /* O2ViewerComparativesButtonCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = O2ViewerComparativesButtonCell.m; sourceTree = "<group>"; };
 		71CE3C18157F489C00AC0112 /* List.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = List.pdf; path = Binaries/Icons/List.pdf; sourceTree = SOURCE_ROOT; };
 		7E0339E607415C4F0025DDB4 /* BurnerWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BurnerWindowController.h; sourceTree = "<group>"; };
 		7E0339E707415C4F0025DDB4 /* BurnerWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BurnerWindowController.m; sourceTree = "<group>"; };
@@ -15390,6 +15396,8 @@
 		AB10FAC91129338A009EB238 /* Controls */ = {
 			isa = PBXGroup;
 			children = (
+				7128FD751487D54A00AB54A1 /* N2UnclickableSplitView.h */,
+				7128FD761487D54A00AB54A1 /* N2UnclickableSplitView.m */,
 				5997899411B7B4A0002DB107 /* N2AdaptiveBox.h */,
 				5997899511B7B4A0002DB107 /* N2AdaptiveBox.mm */,
 				59A31D4F11BF9371001D4844 /* N2TextField.h */,
@@ -16184,8 +16192,6 @@
 				59C447C114516F1000D71580 /* DataNodeIdentifier.m */,
 				ABC47B570C031397001CEA21 /* BrowserMatrix.h */,
 				ABC47B580C031397001CEA21 /* BrowserMatrix.m */,
-				7128FD751487D54A00AB54A1 /* BrowserBottomSplitView.h */,
-				7128FD761487D54A00AB54A1 /* BrowserBottomSplitView.m */,
 				CE39BF9F06BC5DAE006D6824 /* Scripting_Additions.h */,
 				CE39BFA006BC5DAE006D6824 /* Scripting_Additions.m */,
 				840C2D5B1588CE4600C4FE09 /* CustomIntervalPanel.h */,
@@ -16344,8 +16350,10 @@
 				CE40ED520D86D54D007C6D49 /* ThreeDPositionController.m */,
 				ABE17661056D2659009C93B5 /* ViewerController.h */,
 				ABE17662056D2659009C93B5 /* ViewerController.m */,
-				7147C1861644160800A9D095 /* O2Matrix.h */,
-				7147C1871644160800A9D095 /* O2Matrix.mm */,
+				7147C1861644160800A9D095 /* O2ViewerThumbnailsMatrix.h */,
+				7147C1871644160800A9D095 /* O2ViewerThumbnailsMatrix.mm */,
+				71B7D4B5165BE68E005E3281 /* O2ViewerComparativesButtonCell.h */,
+				71B7D4B6165BE68E005E3281 /* O2ViewerComparativesButtonCell.m */,
 			);
 			name = "Single Window";
 			sourceTree = "<group>";
@@ -22108,7 +22116,7 @@
 				59C447E81451710F00D71580 /* NSScreen+N2.h in Headers */,
 				713A00391467E2DC00194120 /* DicomDir.h in Headers */,
 				71353C511469260B00359CAB /* NSDate+N2.h in Headers */,
-				7128FD771487D54A00AB54A1 /* BrowserBottomSplitView.h in Headers */,
+				7128FD771487D54A00AB54A1 /* N2UnclickableSplitView.h in Headers */,
 				AB451815149F464B006674BF /* scan.h in Headers */,
 				AB451817149F464B006674BF /* util.h in Headers */,
 				AB451819149F464B006674BF /* colortransform.h in Headers */,
@@ -25458,7 +25466,8 @@
 				4FCBBD81162C685A00C9CBE3 /* OSIROIMaskRunStack.h in Headers */,
 				7188E85616301A61006105BE /* KBPopUpToolbarItem.h in Headers */,
 				71A28B771637F0D200489F2A /* DCMWaveform.h in Headers */,
-				7147C1881644160800A9D095 /* O2Matrix.h in Headers */,
+				7147C1881644160800A9D095 /* O2ViewerThumbnailsMatrix.h in Headers */,
+				71B7D4B7165BE68E005E3281 /* O2ViewerComparativesButtonCell.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26061,7 +26070,7 @@
 				59C447DD14516FF500D71580 /* DicomDatabase+Scan.h in Headers */,
 				59C447E91451710F00D71580 /* NSScreen+N2.h in Headers */,
 				71353C521469260B00359CAB /* NSDate+N2.h in Headers */,
-				7128FD781487D54A00AB54A1 /* BrowserBottomSplitView.h in Headers */,
+				7128FD781487D54A00AB54A1 /* N2UnclickableSplitView.h in Headers */,
 				AB451816149F464B006674BF /* scan.h in Headers */,
 				AB451818149F464B006674BF /* util.h in Headers */,
 				AB45181A149F464B006674BF /* colortransform.h in Headers */,
@@ -26088,7 +26097,8 @@
 				CEC0BFA115A597DB0012D879 /* ComparativeCell.h in Headers */,
 				7188E85716301A61006105BE /* KBPopUpToolbarItem.h in Headers */,
 				71A28B781637F0D200489F2A /* DCMWaveform.h in Headers */,
-				7147C1891644160800A9D095 /* O2Matrix.h in Headers */,
+				7147C1891644160800A9D095 /* O2ViewerThumbnailsMatrix.h in Headers */,
+				71B7D4B8165BE68E005E3281 /* O2ViewerComparativesButtonCell.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -28472,7 +28482,7 @@
 				713A003A1467E2DC00194120 /* DicomDir.mm in Sources */,
 				A0344496143DE4AA003E1AFA /* DCMUSRegion.m in Sources */,
 				71353C531469260B00359CAB /* NSDate+N2.mm in Sources */,
-				7128FD791487D54A00AB54A1 /* BrowserBottomSplitView.m in Sources */,
+				7128FD791487D54A00AB54A1 /* N2UnclickableSplitView.m in Sources */,
 				AB451845149F47C0006674BF /* djcodecd.cc in Sources */,
 				AB451847149F47C0006674BF /* djcodece.cc in Sources */,
 				AB451849149F47C0006674BF /* djcparam.cc in Sources */,
@@ -28506,7 +28516,8 @@
 				4FCBBD82162C685A00C9CBE3 /* OSIROIMaskRunStack.m in Sources */,
 				7188E85816301A61006105BE /* KBPopUpToolbarItem.m in Sources */,
 				71A28B791637F0D200489F2A /* DCMWaveform.m in Sources */,
-				7147C18A1644160800A9D095 /* O2Matrix.mm in Sources */,
+				7147C18A1644160800A9D095 /* O2ViewerThumbnailsMatrix.mm in Sources */,
+				71B7D4B9165BE68E005E3281 /* O2ViewerComparativesButtonCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -29746,7 +29757,7 @@
 				59C447EB1451710F00D71580 /* NSArray+N2.mm in Sources */,
 				A0344498143DE4AB003E1AFA /* DCMUSRegion.m in Sources */,
 				71353C541469260B00359CAB /* NSDate+N2.mm in Sources */,
-				7128FD7A1487D54A00AB54A1 /* BrowserBottomSplitView.m in Sources */,
+				7128FD7A1487D54A00AB54A1 /* N2UnclickableSplitView.m in Sources */,
 				714943D514D3008B008BCC08 /* NSHost+N2.mm in Sources */,
 				71512EA11523552A00B87012 /* DiscMountedAskTheUserDialogController.m in Sources */,
 				714D3BB4152AE40C003EB087 /* O2ScreensPrefsView.m in Sources */,
@@ -29757,7 +29768,8 @@
 				CEC0BFA315A597DB0012D879 /* ComparativeCell.mm in Sources */,
 				7188E85916301A61006105BE /* KBPopUpToolbarItem.m in Sources */,
 				71A28B7A1637F0D200489F2A /* DCMWaveform.m in Sources */,
-				7147C18B1644160800A9D095 /* O2Matrix.mm in Sources */,
+				7147C18B1644160800A9D095 /* O2ViewerThumbnailsMatrix.mm in Sources */,
+				71B7D4BA165BE68E005E3281 /* O2ViewerComparativesButtonCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

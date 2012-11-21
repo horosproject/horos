@@ -1010,6 +1010,7 @@ static NSHost *currentHost = nil;
     [defaultValues setObject:@"1" forKey:@"WebServerUseMailAppForEmails"];
     [defaultValues setObject:@"1" forKey:@"DICOMQueryAllowFutureQuery"];
     [defaultValues setObject:@"1" forKey:@"SeriesListVisible"];
+    [defaultValues setObject:[NSNumber numberWithBool:YES] forKey:@"listPODComparativesIn2DViewer"];
     
     [defaultValues setObject:@"1" forKey:@"allow_qr_name"];
     [defaultValues setObject:@"1" forKey:@"allow_qr_id"];

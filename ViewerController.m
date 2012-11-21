@@ -97,8 +97,9 @@
 #import "OSIEnvironment+Private.h"
 #import "NSString+N2.h"
 #import "WindowLayoutManager.h"
+#import "DCMTKQueryNode.h"
 #import "DCMTKStudyQueryNode.h"
-#import "O2Matrix.h"
+#import "O2ViewerThumbnailsMatrix.h"
 
 int delayedTileWindows = NO;
 
@@ -268,6 +269,7 @@ enum
 @synthesize currentOrientationTool, speedSlider;
 @synthesize timer, keyImageCheck, injectionDateTime, blendedWindow;
 @synthesize blendingTypeWindow, blendingTypeMultiply, blendingTypeSubtract, blendingTypeRGB, blendingPlugins, blendingResample;
+@synthesize flagListPODComparatives;
 
 #define UNDOQUEUESIZE 40
 
@@ -3999,11 +4001,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
     if( windowWillClose)
         return;
-    
-	OSIWindow *window = (OSIWindow*)self.window;
-	
-	if( [window respondsToSelector:@selector(disableUpdatesUntilFlush)])
-		[window disableUpdatesUntilFlush];
+
+    if (notification.object == splitView) {
+        OSIWindow* window = (OSIWindow*)self.window;
+        if( [window respondsToSelector:@selector(disableUpdatesUntilFlush)])
+            [window disableUpdatesUntilFlush];
+    }
 }
 
 - (BOOL)splitView: (NSSplitView *)sender canCollapseSubview: (NSView *)subview
@@ -4011,6 +4014,12 @@ static volatile int numberOfThreadsForRelisce = 0;
     if( sender == splitView)
     {
         if( subview == [[sender subviews] objectAtIndex:1]) // Main view
+            return NO;
+    }
+    
+    if (sender == leftSplitView)
+    {
+        if (subview == [[sender subviews] objectAtIndex:1])
             return NO;
     }
     
@@ -4067,6 +4076,14 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
         return proposedPosition;
     }
+    
+    if (sender == leftSplitView)
+    {
+        if (offset == 0)
+            if ([sender isSubviewCollapsed:[sender.subviews objectAtIndex:0]])//[sender.subviews count] == 2)
+                return 0;
+            else return 15;
+    }
 	
 	return proposedPosition;
 }
@@ -4082,7 +4099,7 @@ static volatile int numberOfThreadsForRelisce = 0;
     if( windowWillClose)
         return;
     
-    if( sender)
+    if( sender == splitView)
     {
         CGFloat dividerPosition = [self matrixIsVisible]? previewMatrix.cellSize.width : 0;
         dividerPosition = [self splitView:sender constrainSplitPosition:dividerPosition ofSubviewAt:0];
@@ -4097,6 +4114,16 @@ static volatile int numberOfThreadsForRelisce = 0;
         
         [[[sender subviews] objectAtIndex:0] setFrame:NSMakeRect(0, 0, dividerPosition, splitFrame.size.height)];
         [[[sender subviews] objectAtIndex:1] setFrame:NSMakeRect(dividerPosition+sender.dividerThickness, 0, splitFrame.size.width-dividerPosition-sender.dividerThickness, splitFrame.size.height)];
+    }
+    
+    if (sender == leftSplitView)
+    {
+        {
+            CGFloat ch = [sender isSubviewCollapsed:[sender.subviews objectAtIndex:0]]? 0 : 15;
+            [[sender.subviews objectAtIndex:0] setFrame:NSMakeRect(1, 0, sender.frame.size.width-2, ch)];
+            if (ch > 0) ch += sender.dividerThickness;
+            [[sender.subviews objectAtIndex:1] setFrame:NSMakeRect(0, ch, sender.frame.size.width, sender.frame.size.height-ch)];
+        }
     }
 }
 
@@ -4157,47 +4184,49 @@ static volatile int numberOfThreadsForRelisce = 0;
 	if( [[self window] isVisible] == NO) return;	//we will do it in checkBuiltMatrixPreview : faster opening !
 	if( windowWillClose) return;
     
-	DicomDatabase *db = [[BrowserController currentBrowser] database];
-	NSPredicate				*predicate;
-	NSFetchRequest			*dbRequest;
-	NSError					*error = nil;
-	long					i, index = 0;
-	NSManagedObject			*curImage = [fileList[0] objectAtIndex:0];
-	NSPoint					origin = [[previewMatrix superview] bounds].origin;
-	
-	BOOL visible = [self checkFrameSize];
-	
-	if( visible == NO) matrixPreviewBuilt = NO; 
-	else matrixPreviewBuilt = YES;
-	
-	[previewMatrixScrollView setPostsBoundsChangedNotifications:YES];
-	
-	DicomStudy *study = [curImage valueForKeyPath:@"series.study"];
-	if( study == nil)
-	{
-		[previewMatrix renewRows: 0 columns: 0];
-		[previewMatrix sizeToCells];
-        matrixPreviewBuilt = NO;
-		return;
-	}
-
-    NSMutableArray *viewerSeries = [NSMutableArray array];
+    BOOL hasComparatives = NO, hasComparativesNewerThanMostRecentLoaded = NO;
     
-    for( int i = 0 ; i < maxMovieIndex; i++)
-        [viewerSeries addObject: [[fileList[ i] objectAtIndex:0] valueForKey:@"series"]];
-    
-	// FIND ALL STUDIES of this patient
-	NSString *searchString = [study valueForKey:@"patientUID"];
-	
-	if( [searchString length] == 0 || [searchString isEqualToString:@"0"])
-	{
-		searchString = [study valueForKey:@"name"];
-		predicate = [NSPredicate predicateWithFormat: @"(name == %@)", searchString];
-	}
-	else predicate = [NSPredicate predicateWithFormat: @"(patientUID BEGINSWITH[cd] %@)", searchString];
-		
 	@try
 	{
+        DicomDatabase *db = [[BrowserController currentBrowser] database];
+        NSPredicate				*predicate;
+        NSFetchRequest			*dbRequest;
+        NSError					*error = nil;
+        long					i, index = 0;
+        NSManagedObject			*curImage = [fileList[0] objectAtIndex:0];
+        NSPoint					origin = [[previewMatrix superview] bounds].origin;
+        
+        BOOL visible = [self checkFrameSize];
+        
+        if( visible == NO) matrixPreviewBuilt = NO; 
+        else matrixPreviewBuilt = YES;
+        
+        [previewMatrixScrollView setPostsBoundsChangedNotifications:YES];
+        
+        DicomStudy *study = [curImage valueForKeyPath:@"series.study"];
+        if( study == nil)
+        {
+            [previewMatrix renewRows: 0 columns: 0];
+            [previewMatrix sizeToCells];
+            matrixPreviewBuilt = NO;
+            return;
+        }
+
+        NSMutableArray *viewerSeries = [NSMutableArray array];
+        
+        for( int i = 0 ; i < maxMovieIndex; i++)
+            [viewerSeries addObject: [[fileList[ i] objectAtIndex:0] valueForKey:@"series"]];
+        
+        // FIND ALL STUDIES of this patient
+        NSString *searchString = [study valueForKey:@"patientUID"];
+        
+        if( [searchString length] == 0 || [searchString isEqualToString:@"0"])
+        {
+            searchString = [study valueForKey:@"name"];
+            predicate = [NSPredicate predicateWithFormat: @"(name == %@)", searchString];
+        }
+        else predicate = [NSPredicate predicateWithFormat: @"(patientUID BEGINSWITH[cd] %@)", searchString];
+		
         NSArray *studiesArray = nil;
         // Use the 'history' array of the browser controller, if available (with the distant studies)
         
@@ -4209,6 +4238,23 @@ static volatile int numberOfThreadsForRelisce = 0;
             studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: @"date" ascending: NO]]];
 		}
         
+#ifndef OSIRIX_LIGHT
+        NSMutableArray* tsarray = [NSMutableArray array];
+        BOOL iteratedFirstLoaded = NO;
+        for (id s in studiesArray) {
+            BOOL isNonLoadedComp = [s isKindOfClass:[DCMTKQueryNode class]];
+            if (!isNonLoadedComp || self.flagListPODComparatives.boolValue)
+                [tsarray addObject:s];
+            if (isNonLoadedComp) {
+                hasComparatives = YES;
+                if (!iteratedFirstLoaded)
+                    hasComparativesNewerThanMostRecentLoaded = YES;
+            } else
+                iteratedFirstLoaded = YES;
+        }
+        studiesArray = tsarray;
+#endif
+            
 		if ([studiesArray count])
 		{
             studiesArray = [NSArray arrayWithArray: studiesArray];
@@ -4268,9 +4314,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 
                 NSUInteger curStudyIndex = [studiesArray indexOfObject: curStudy];
 
-                [cell setRepresentedObject:[O2MatrixRepresentedObject object:curStudy children:[seriesArray objectAtIndex:curStudyIndex]]];
+                [cell setRepresentedObject:[O2ViewerThumbnailsMatrixRepresentedObject object:curStudy children:[seriesArray objectAtIndex:curStudyIndex]]];
                 [cell setAction: @selector(matrixPreviewSwitchHidden:)];
-
+                
 #ifndef OSIRIX_LIGHT
                 if( [curStudy isKindOfClass: [DCMTKStudyQueryNode class]] && [[curStudy valueForKey: @"studyInstanceUID"] isEqualToString: study.studyInstanceUID]) // For the current study, always take the local images
                     curStudy = study;
@@ -4339,7 +4385,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                             
 //                            [cell setTransparent: NO];
 //                            [cell setBezelStyle: NSShadowlessSquareBezelStyle];
-                            [cell setRepresentedObject: [O2MatrixRepresentedObject object:curSeries]];
+                            [cell setRepresentedObject: [O2ViewerThumbnailsMatrixRepresentedObject object:curSeries]];
                             [cell setFont:[NSFont systemFontOfSize:8.5]];
 //                            [cell setImagePosition: NSImageBelow];
                             [cell setAction: @selector(matrixPreviewPressed:)];
@@ -4557,11 +4603,46 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 		[previewMatrix setNeedsDisplay:YES];
 	}
-	
-	@catch ( NSException *e)
+	@catch (NSException *e)
 	{
-		NSLog( @"***** buildMatrixPreview exception: %@", e);
+		N2LogExceptionWithStackTrace(e);
 	}
+    @finally {
+        [comparativesButton setEnabled:hasComparatives];
+        
+        NSColor* color = [NSColor whiteColor];
+        NSString* tip = NSLocalizedString(@"There are no additional comparatives", nil);
+        
+        if (hasComparatives) {
+            color = [[self class] _openItemColor]; // yellow
+            tip = NSLocalizedString(@"There are POD comparatives", nil);
+        }
+        
+        if (hasComparativesNewerThanMostRecentLoaded) {
+            color = [[self class] _selectedItemColor]; // red
+            tip = NSLocalizedString(@"There are more recent POD comparatives", nil);
+        }
+        
+        if (hasComparatives)
+            if (self.flagListPODComparatives.boolValue)
+                tip = [tip stringByAppendingFormat:@", %@", NSLocalizedString(@"click here to hide them", @"There are [more recent] POD comparatives, _____")];
+            else tip = [tip stringByAppendingFormat:@", %@", NSLocalizedString(@"click here to show them", @"There are [more recent] POD comparatives, _____")];
+       
+        NSMutableDictionary* attributes = [[[comparativesButton.attributedTitle attributesAtIndex:0 effectiveRange:NULL] mutableCopy] autorelease];
+        [attributes setObject:color forKey:NSForegroundColorAttributeName];
+        [comparativesButton setAttributedTitle:[[[NSAttributedString alloc] initWithString:comparativesButton.title attributes:attributes] autorelease]];
+        [comparativesButton setToolTip:tip];
+        
+        BOOL showComparativesButton = NO;
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"searchForComparativeStudiesOnDICOMNodes"]) {
+            NSArray* servers = [[BrowserController currentBrowser] performSelector:@selector(comparativeServers)];
+            if (servers.count)
+                showComparativesButton = YES;
+        }
+        
+        [[leftSplitView.subviews objectAtIndex:0] setHidden:!showComparativesButton];
+        [self splitView:leftSplitView resizeSubviewsWithOldSize:leftSplitView.bounds.size];
+    }
 }
 
 - (void) showCurrentThumbnail:(id) sender;
@@ -6744,6 +6825,9 @@ return YES;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(observeScrollerStyleDidChangeNotification:) name:@"NSPreferredScrollerStyleDidChangeNotification" object:nil];
     [self observeScrollerStyleDidChangeNotification:nil];
+    
+    flagListPODComparatives = [[NSNumber alloc] initWithBool:YES];
+	[self bind:@"flagListPODComparatives" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.listPODComparativesIn2DViewer" options:nil];
 }
 
 -(void)comparativeRefresh:(NSString*) patientUID
@@ -6946,6 +7030,9 @@ return YES;
 	[toolbar release]; toolbar = nil;
 	[injectionDateTime release]; injectionDateTime = nil;
 	
+    [self unbind:@"flagListPODComparatives"];
+    self.flagListPODComparatives = nil;
+    
 //	[[AppController sharedAppController] tileWindows: nil];	<- We cannot do this, because:
 //	This is very important, or if we have a queue of closing windows, it will crash....
 	
@@ -21073,4 +21160,14 @@ int i,j,l;
 	[[[NavigatorWindowController navigatorWindowController] window] setFrame:navigatorFrame display:YES];
 }
 
+#pragma mark Comparatives GUI
+
+- (IBAction)toggleComparativesVisibility:(id)sender {
+//    self.flagListPODComparatives = [NSNumber numberWithBool:!self.flagListPODComparatives.boolValue];
+    [[NSUserDefaults standardUserDefaults] setBool:![[NSUserDefaults standardUserDefaults] boolForKey:@"listPODComparativesIn2DViewer"] forKey:@"listPODComparativesIn2DViewer"];
+    [self buildMatrixPreview];
+}
+
+
 @end
+

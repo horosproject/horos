@@ -12,28 +12,22 @@
  PURPOSE.
  =========================================================================*/
 
-#import "BrowserBottomSplitView.h"
+#import <Cocoa/Cocoa.h>
 
-@implementation BrowserBottomSplitView
-
-//@synthesize otherSplitView = _otherSplitView;
-
-- (void)mouseDown:(NSEvent *)theEvent {
+@interface O2ViewerThumbnailsMatrix : NSMatrix {
 }
 
-- (void)mouseMoved:(NSEvent *)theEvent {
+@end
+
+@interface O2ViewerThumbnailsMatrixRepresentedObject : NSObject {
+    id _object;
+    NSArray* _children;
 }
 
-- (void)mouseUp:(NSEvent *)theEvent {
-}
+@property(retain) id object;
+@property(retain) NSArray* children;
 
-- (void)mouseEntered:(NSEvent *)theEvent {
-}
-
-- (void)mouseExited:(NSEvent *)theEvent {
-}
-
-- (void)addCursorRect:(NSRect)aRect cursor:(NSCursor *)aCursor {
-}
++ (id)object:(id)object;
++ (id)object:(id)object children:(NSArray*)children;
 
 @end

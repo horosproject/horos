@@ -1,15 +1,21 @@
-//
-//  O2Matrix.m
-//  OsiriX_Lion
-//
-//  Created by Alessandro Volz on 02.11.12.
-//  Copyright (c) 2012 OsiriX Team. All rights reserved.
-//
+/*=========================================================================
+ Program:   OsiriX
+ 
+ Copyright (c) OsiriX Team
+ All rights reserved.
+ Distributed under GNU - LGPL
+ 
+ See http://www.osirix-viewer.com/copyright.html for details.
+ 
+ This software is distributed WITHOUT ANY WARRANTY; without even
+ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ PURPOSE.
+ =========================================================================*/
 
-#import "O2Matrix.h"
+#import "O2ViewerThumbnailsMatrix.h"
 #import "DicomStudy.h"
 
-@implementation O2Matrix // we overload NSMatrix, but this class isn't as capable as NSMatrix: we only support 1-column-wide matrixes! so, actually, this isn't a matrix, it's a list, but we still use NSMAtrix so we don't have to modify ViewerController
+@implementation O2ViewerThumbnailsMatrix // we overload NSMatrix, but this class isn't as capable as NSMatrix: we only support 1-column-wide matrixes! so, actually, this isn't a matrix, it's a list, but we still use NSMAtrix so we don't have to modify ViewerController
 
 - (CGFloat)podCellHeight {
     return self.cellSize.height/2; // this probably will self.numberOfRowsbe changed
@@ -25,7 +31,7 @@
     NSRect rect = NSMakeRect(0, 0, cellSize.width, 0);
     for (NSInteger i = 0; i <= maxIndex; ++i) {
         NSCell* cell = [cells objectAtIndex:i];
-        O2MatrixRepresentedObject* oro = [cell representedObject];
+        O2ViewerThumbnailsMatrixRepresentedObject* oro = [cell representedObject];
         if ([oro.object isKindOfClass:[NSManagedObject class]] || oro.children.count) {
             rect.size.height = cellSize.height;
         } else rect.size.height = podCellHeight;
@@ -143,7 +149,7 @@
 
 @end
 
-@implementation O2MatrixRepresentedObject
+@implementation O2ViewerThumbnailsMatrixRepresentedObject
 
 @synthesize object = _object;
 @synthesize children = _children;
@@ -153,7 +159,7 @@
 }
 
 + (id)object:(id)object children:(NSArray*)children {
-    O2MatrixRepresentedObject* oro = [[[[self class] alloc] init] autorelease];
+    O2ViewerThumbnailsMatrixRepresentedObject* oro = [[[[self class] alloc] init] autorelease];
     oro.object = object;
     oro.children = [[children copy] autorelease];
     return oro;

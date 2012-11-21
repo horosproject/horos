@@ -3982,6 +3982,8 @@ static NSConditionLock *threadLock = nil;
     
     @try
     {
+        //[NSNotificationCenter.defaultCenter postNotificationOnMainThreadName:O2SearchForComparativeStudiesStartedNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys: studySelectedID, @"study", nil]];
+        
         DicomDatabase *idatabase = [self.database independentDatabase];
         DicomStudy *studySelected = nil;
         

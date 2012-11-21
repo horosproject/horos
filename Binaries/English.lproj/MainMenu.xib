@@ -2,7 +2,7 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1070</int>
-		<string key="IBDocument.SystemVersion">12C54</string>
+		<string key="IBDocument.SystemVersion">12C60</string>
 		<string key="IBDocument.InterfaceBuilderVersion">2843</string>
 		<string key="IBDocument.AppKitVersion">1187.34</string>
 		<string key="IBDocument.HIToolboxVersion">625.00</string>
@@ -4041,6 +4041,7 @@
 											<string key="NSFrame">{{420, 2}, {40, 20}}</string>
 											<reference key="NSSuperview" ref="267655156"/>
 											<reference key="NSWindow"/>
+											<reference key="NSNextKeyView"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSButtonCell" key="NSCell" id="637871640">
 												<int key="NSCellFlags">-2080374784</int>
@@ -22800,7 +22801,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<string key="14347.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="14348.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="14350.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="14352.CustomClassName">BrowserBottomSplitView</string>
+				<string key="14352.CustomClassName">N2UnclickableSplitView</string>
 				<string key="14352.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="14353.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="14354.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -23171,14 +23172,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">./Classes/AppController.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">BrowserBottomSplitView</string>
-					<string key="superclassName">NSSplitView</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/BrowserBottomSplitView.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -25111,6 +25104,14 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">./Classes/N2OpenGLViewWithSplitsWindow.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">N2UnclickableSplitView</string>
+					<string key="superclassName">NSSplitView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/N2UnclickableSplitView.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -27797,6 +27798,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="keyImageCheck">NSButton</string>
 						<string key="keyImagePopUpButton">NSPopUpButton</string>
 						<string key="keyImages">NSView</string>
+						<string key="leftSplitView">NSSplitView</string>
 						<string key="loopButton">NSButton</string>
 						<string key="matrixName">NSTextField</string>
 						<string key="matrixNorm">NSTextField</string>
@@ -28201,6 +28203,10 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<object class="IBToOneOutletInfo" key="keyImages">
 							<string key="name">keyImages</string>
 							<string key="candidateClassName">NSView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="leftSplitView">
+							<string key="name">leftSplitView</string>
+							<string key="candidateClassName">NSSplitView</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="loopButton">
 							<string key="name">loopButton</string>

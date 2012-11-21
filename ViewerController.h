@@ -72,6 +72,7 @@ enum
 			SeriesView		*seriesView;
 
 	IBOutlet NSSplitView	*splitView;
+    IBOutlet NSSplitView*   leftSplitView;
 	IBOutlet NSMatrix		*previewMatrix;
 	IBOutlet NSScrollView	*previewMatrixScrollView;
 	BOOL					matrixPreviewBuilt;
@@ -247,6 +248,10 @@ enum
 	IBOutlet NSPopUpButton  *popFusion, *popupRoi, *ReconstructionRoi;
 	
 	IBOutlet NSMatrix		*buttonToolMatrix;
+    
+    // Compatatives GUI
+    IBOutlet NSButton*      comparativesButton;
+    NSNumber* flagListPODComparatives;
 	
 	NSMutableArray			*fileList[ MAX4D];
     NSMutableArray          *pixList[ MAX4D], *roiList[ MAX4D], *copyRoiList[ MAX4D];
@@ -352,6 +357,8 @@ enum
 
 /** Return the 'dragged' window, the destination window is contained in the 'viewerController' object of the 'PluginFilter' object */
 @property(nonatomic, retain) ViewerController *blendedWindow;
+
+@property(retain) NSNumber* flagListPODComparatives;
 
 /** Array of all 2D Viewers */
 + (NSMutableArray*) getDisplayed2DViewers;
@@ -1080,5 +1087,10 @@ enum
 - (void)updateNavigator;
 
 - (IBAction)threeDPanel:(id)sender;
+
+#pragma mark-
+
+- (IBAction)toggleComparativesVisibility:(id)sender;
+
 
 @end

@@ -12,14 +12,11 @@
  PURPOSE.
  =========================================================================*/
 
-#import <AppKit/AppKit.h>
+#import "O2ViewerComparativesButtonCell.h"
 
-@interface BrowserBottomSplitView : NSSplitView {
-//    NSSplitView* _otherSplitView;
-}
+@implementation O2ViewerComparativesButtonCell
 
-//@property(readonly) IBOutlet NSSplitView* otherSplitView;
-
-
+/*- (void)drawBezelWithFrame:(NSRect)frame inView:(NSView*)controlView {
+}*/
 
 @end
