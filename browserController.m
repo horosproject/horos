@@ -6638,11 +6638,7 @@ static NSConditionLock *threadLock = nil;
 				[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: study]] byExtendingSelection: extendingSelection];
 				[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 			}
-		}
-		
-		// Now... try to find the series in the matrix
-		if( [databaseOutline isItemExpanded: study] == NO)
-		{
+            
             if( [[oMatrix selectedCell] representedObject] == [curImage.series objectID])
                 return YES;
             
@@ -6677,7 +6673,6 @@ static NSConditionLock *threadLock = nil;
 				return YES;
 			}
 		}
-		else return YES;
 	}
 	
 	return NO;
