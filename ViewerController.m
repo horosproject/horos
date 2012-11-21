@@ -21163,9 +21163,9 @@ int i,j,l;
 #pragma mark Comparatives GUI
 
 - (IBAction)toggleComparativesVisibility:(id)sender {
-//    self.flagListPODComparatives = [NSNumber numberWithBool:!self.flagListPODComparatives.boolValue];
     [[NSUserDefaults standardUserDefaults] setBool:![[NSUserDefaults standardUserDefaults] boolForKey:@"listPODComparativesIn2DViewer"] forKey:@"listPODComparativesIn2DViewer"];
-    [self buildMatrixPreview];
+    for (ViewerController* vc in [ViewerController get2DViewers])
+        [vc buildMatrixPreview:YES];
 }
 
 
