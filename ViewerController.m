@@ -4615,12 +4615,12 @@ static volatile int numberOfThreadsForRelisce = 0;
         
         if (hasComparatives) {
             color = [[self class] _openItemColor]; // yellow
-            tip = NSLocalizedString(@"There are POD comparatives", nil);
+            tip = NSLocalizedString(@"There are PACS On-Demand comparatives", nil);
         }
         
         if (hasComparativesNewerThanMostRecentLoaded) {
             color = [[self class] _selectedItemColor]; // red
-            tip = NSLocalizedString(@"There are more recent POD comparatives", nil);
+            tip = NSLocalizedString(@"There are more recent PACS On-Demand comparatives", nil);
         }
         
         if (hasComparatives)
