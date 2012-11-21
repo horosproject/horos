@@ -6071,7 +6071,7 @@ static NSConditionLock *threadLock = nil;
 	
 	[object setValue:[NSNumber numberWithBool: NO] forKey:@"expanded"];
 	
-	NSManagedObject	*image = nil;
+	DicomImage	*image = nil;
 	
 	if( [matrixViewArray count] > 0)
 	{
@@ -6521,12 +6521,12 @@ static NSConditionLock *threadLock = nil;
 	}
 }
 
--(BOOL) findAndSelectFile: (NSString*) path image: (NSManagedObject*) curImage shouldExpand: (BOOL) expand
+-(BOOL) findAndSelectFile: (NSString*) path image: (DicomImage*) curImage shouldExpand: (BOOL) expand
 {
-	return [self findAndSelectFile: (NSString*) path image: (NSManagedObject*) curImage shouldExpand: (BOOL) expand extendingSelection: NO];
+	return [self findAndSelectFile: (NSString*) path image: (DicomImage*) curImage shouldExpand: (BOOL) expand extendingSelection: NO];
 }
 
--(BOOL) findAndSelectFile: (NSString*) path image: (NSManagedObject*) curImage shouldExpand: (BOOL) expand extendingSelection: (BOOL) extendingSelection
+-(BOOL) findAndSelectFile: (NSString*) path image: (DicomImage*) curImage shouldExpand: (BOOL) expand extendingSelection: (BOOL) extendingSelection
 {
 	if( curImage == nil)
 	{
@@ -6534,15 +6534,14 @@ static NSConditionLock *threadLock = nil;
 		
 		if([[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory])     // A directory
 		{
-			DicomFile			*curFile = nil;
+			DicomFile *curFile = nil;
 			
 			@try
 			{
 				if( isDirectory == YES)
 				{
-					BOOL		go = YES;
-					NSString    *pathname;
-					NSString    *aPath = path;
+					BOOL go = YES;
+					NSString *pathname, *aPath = path;
 					NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
 					
 					while( (pathname = [enumer nextObject]) && go == YES)
@@ -6570,8 +6569,8 @@ static NSConditionLock *threadLock = nil;
 			
 			//We have first to find the image object from the path
 			
-			NSError				*error = nil;
-			long				index;
+			NSError *error = nil;
+			NSUInteger index;
 			
 			if( curFile)
 			{
@@ -6616,7 +6615,7 @@ static NSConditionLock *threadLock = nil;
 		}
 	}
 	
-	NSManagedObject	*study = [curImage valueForKeyPath:@"series.study"];
+	NSManagedObject	*study = curImage.series.study;
 	
 	NSInteger index = [outlineViewArray indexOfObject: study];
 	
@@ -6644,6 +6643,19 @@ static NSConditionLock *threadLock = nil;
 		// Now... try to find the series in the matrix
 		if( [databaseOutline isItemExpanded: study] == NO)
 		{
+            if( [[oMatrix selectedCell] representedObject] == [curImage.series objectID])
+                return YES;
+            
+            for( NSCell *cell in oMatrix.cells)
+            {
+                if( [cell representedObject] == [curImage.series objectID])
+                {
+                    [oMatrix selectCell: cell];
+					[self matrixPressed: oMatrix];
+                    return YES;
+                }
+            }
+            
 			NSArray	*seriesArray = [self childrenArray: study];
 			
 			[self outlineViewSelectionDidChange: nil];
@@ -6731,7 +6743,7 @@ static NSConditionLock *threadLock = nil;
 				}
 				else if( [[element valueForKey: @"type"] isEqualToString: @"Image"])
 				{
-					[self findAndSelectFile:nil image: element shouldExpand:NO];
+					[self findAndSelectFile:nil image: (DicomImage*) element shouldExpand:NO];
 					[self databaseOpenStudy: [element valueForKey: @"series"]];
 					
 					// Is a viewer containing this image opened? -> select it

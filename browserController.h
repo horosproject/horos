@@ -19,7 +19,7 @@
 @class DicomDatabase;
 
 @class MPR2DController,NSCFDate, DicomStudy;
-@class ViewerController;
+@class ViewerController, DicomImage;
 @class BonjourPublisher,BonjourBrowser;
 @class AnonymizerWindowController,QueryController;
 @class LogWindowController,PreviewView;
@@ -366,8 +366,8 @@ extern NSString* O2AlbumDragType;
 - (void) addURLToDatabaseEnd:(id) sender;
 - (void) addURLToDatabase:(id) sender;
 - (NSArray*) addURLToDatabaseFiles:(NSArray*) URLs;
-- (BOOL) findAndSelectFile: (NSString*) path image: (NSManagedObject*) curImage shouldExpand: (BOOL) expand;
-- (BOOL) findAndSelectFile: (NSString*) path image: (NSManagedObject*) curImage shouldExpand: (BOOL) expand extendingSelection: (BOOL) extendingSelection;
+- (BOOL) findAndSelectFile: (NSString*) path image: (DicomImage*) curImage shouldExpand: (BOOL) expand;
+- (BOOL) findAndSelectFile: (NSString*) path image: (DicomImage*) curImage shouldExpand: (BOOL) expand extendingSelection: (BOOL) extendingSelection;
 - (void) selectServer: (NSArray*) files;
 - (long) saveDatabase __deprecated;
 - (long) saveDatabase:(NSString*) path __deprecated;
