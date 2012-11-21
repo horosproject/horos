@@ -2040,14 +2040,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			[self scaleToFit];
 		}
 		
-		if( [self is2DViewer] == YES)
-		{
-			if( curDCM.sourceFile )
-			{
-				if( [self is2DViewer] == YES) [[self window] setRepresentedFilename: curDCM.sourceFile];
-			}
-		}
-		
 		[self loadTextures];
 		[self setNeedsDisplay:YES];
 		

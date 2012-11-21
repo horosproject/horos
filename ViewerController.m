@@ -2411,6 +2411,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 			windowTitle = [windowTitle stringByAppendingString: loading];
 			
 			[[self window] setTitle: windowTitle];
+            
+            if( loadingThread.isExecuting == NO || [[loadingThread.threadDictionary objectForKey: @"loadingPercentage"] floatValue] >= 1)
+                [[self window] setRepresentedFilename: [[imageView curDCM] sourceFile]];
 		}
 	}
 	else [[self window] setTitle: @"Viewer"];
