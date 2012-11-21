@@ -472,10 +472,6 @@
 		71AA5A381611F1EB006A6A5F /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 71AA5A2B1611F1EB006A6A5F /* SBJsonParser.m */; };
 		71AA5A391611F1EB006A6A5F /* SBJsonWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 71AA5A2C1611F1EB006A6A5F /* SBJsonWriter.h */; };
 		71AA5A3A1611F1EB006A6A5F /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 71AA5A2D1611F1EB006A6A5F /* SBJsonWriter.m */; };
-		71B7D4B7165BE68E005E3281 /* O2ViewerComparativesButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 71B7D4B5165BE68E005E3281 /* O2ViewerComparativesButtonCell.h */; };
-		71B7D4B8165BE68E005E3281 /* O2ViewerComparativesButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 71B7D4B5165BE68E005E3281 /* O2ViewerComparativesButtonCell.h */; };
-		71B7D4B9165BE68E005E3281 /* O2ViewerComparativesButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 71B7D4B6165BE68E005E3281 /* O2ViewerComparativesButtonCell.m */; };
-		71B7D4BA165BE68E005E3281 /* O2ViewerComparativesButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 71B7D4B6165BE68E005E3281 /* O2ViewerComparativesButtonCell.m */; };
 		71CE3C19157F489C00AC0112 /* List.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 71CE3C18157F489C00AC0112 /* List.pdf */; };
 		71CE3C1A157F489C00AC0112 /* List.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 71CE3C18157F489C00AC0112 /* List.pdf */; };
 		7E0B3A4A0675273500908593 /* DCM Framework_Prefix.pch in Resources */ = {isa = PBXBuildFile; fileRef = 7E0B3A12067526A600908593 /* DCM Framework_Prefix.pch */; };
@@ -8677,8 +8673,6 @@
 		71AA5A2B1611F1EB006A6A5F /* SBJsonParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonParser.m; sourceTree = "<group>"; };
 		71AA5A2C1611F1EB006A6A5F /* SBJsonWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonWriter.h; sourceTree = "<group>"; };
 		71AA5A2D1611F1EB006A6A5F /* SBJsonWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonWriter.m; sourceTree = "<group>"; };
-		71B7D4B5165BE68E005E3281 /* O2ViewerComparativesButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = O2ViewerComparativesButtonCell.h; sourceTree = "<group>"; };
-		71B7D4B6165BE68E005E3281 /* O2ViewerComparativesButtonCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = O2ViewerComparativesButtonCell.m; sourceTree = "<group>"; };
 		71CE3C18157F489C00AC0112 /* List.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = List.pdf; path = Binaries/Icons/List.pdf; sourceTree = SOURCE_ROOT; };
 		7E0339E607415C4F0025DDB4 /* BurnerWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BurnerWindowController.h; sourceTree = "<group>"; };
 		7E0339E707415C4F0025DDB4 /* BurnerWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BurnerWindowController.m; sourceTree = "<group>"; };
@@ -16352,8 +16346,6 @@
 				ABE17662056D2659009C93B5 /* ViewerController.m */,
 				7147C1861644160800A9D095 /* O2ViewerThumbnailsMatrix.h */,
 				7147C1871644160800A9D095 /* O2ViewerThumbnailsMatrix.mm */,
-				71B7D4B5165BE68E005E3281 /* O2ViewerComparativesButtonCell.h */,
-				71B7D4B6165BE68E005E3281 /* O2ViewerComparativesButtonCell.m */,
 			);
 			name = "Single Window";
 			sourceTree = "<group>";
@@ -25467,7 +25459,6 @@
 				7188E85616301A61006105BE /* KBPopUpToolbarItem.h in Headers */,
 				71A28B771637F0D200489F2A /* DCMWaveform.h in Headers */,
 				7147C1881644160800A9D095 /* O2ViewerThumbnailsMatrix.h in Headers */,
-				71B7D4B7165BE68E005E3281 /* O2ViewerComparativesButtonCell.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26098,7 +26089,6 @@
 				7188E85716301A61006105BE /* KBPopUpToolbarItem.h in Headers */,
 				71A28B781637F0D200489F2A /* DCMWaveform.h in Headers */,
 				7147C1891644160800A9D095 /* O2ViewerThumbnailsMatrix.h in Headers */,
-				71B7D4B8165BE68E005E3281 /* O2ViewerComparativesButtonCell.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -28517,7 +28507,6 @@
 				7188E85816301A61006105BE /* KBPopUpToolbarItem.m in Sources */,
 				71A28B791637F0D200489F2A /* DCMWaveform.m in Sources */,
 				7147C18A1644160800A9D095 /* O2ViewerThumbnailsMatrix.mm in Sources */,
-				71B7D4B9165BE68E005E3281 /* O2ViewerComparativesButtonCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -29769,7 +29758,6 @@
 				7188E85916301A61006105BE /* KBPopUpToolbarItem.m in Sources */,
 				71A28B7A1637F0D200489F2A /* DCMWaveform.m in Sources */,
 				7147C18B1644160800A9D095 /* O2ViewerThumbnailsMatrix.mm in Sources */,
-				71B7D4BA165BE68E005E3281 /* O2ViewerComparativesButtonCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
