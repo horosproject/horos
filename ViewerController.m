@@ -9054,7 +9054,9 @@ return YES;
 {
 	float		vectors[ 9];
 	
-	[[pixList[ curMovieIndex] objectAtIndex:0] orientation: vectors];
+    NSArray* localPixList = [[DCMView class] cleanedOutDcmPixArray:pixList[curMovieIndex]];
+    
+	[[localPixList objectAtIndex:0] orientation: vectors];
 	
 	if( fabs( vectors[6]) > fabs(vectors[7]) && fabs( vectors[6]) > fabs(vectors[8]))
 	{

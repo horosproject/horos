@@ -536,4 +536,6 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 //- (void)displayLoupeWithCenter:(NSPoint)center;
 //- (void)hideLoupe;
 
++ (NSArray*)cleanedOutDcmPixArray:(NSArray*)input; // filters the input array of DCMPix by returning only the pix with the most common ImageType in the input array
+
 @end
