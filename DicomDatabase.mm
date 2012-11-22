@@ -537,6 +537,8 @@ static DicomDatabase* activeLocalDatabase = nil;
 	[super dealloc];
     
     [databasesDictionaryLock lock]; //We will be unlocked from -(oneway void) release
+    
+    return;
 }
 
 -(void)observeIndependentDatabaseNotification:(NSNotification*)notification {
@@ -580,6 +582,8 @@ static DicomDatabase* activeLocalDatabase = nil;
 -(NSManagedObjectContext*)contextAtPath:(NSString*)sqlFilePath {
 	// custom migration
 	
+    NSManagedObjectContext* context = nil;
+    
     BOOL rebuildPatientUIDs = NO;
     BOOL independentContext = YES;
     
@@ -599,7 +603,7 @@ static DicomDatabase* activeLocalDatabase = nil;
 	
 	// super + spec
 	
-	NSManagedObjectContext* context = [super contextAtPath:sqlFilePath];
+	context = [super contextAtPath:sqlFilePath];
 	[context setMergePolicy:NSMergeByPropertyObjectTrumpMergePolicy];
 	[context setUndoManager: nil];
     

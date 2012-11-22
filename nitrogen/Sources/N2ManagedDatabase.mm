@@ -187,7 +187,7 @@
     //        if (self.managedObjectContext.hasChanges)
     //            [self save];
             
-            if ([sqlFilePath isEqualToString:self.sqlFilePath])
+            if ([sqlFilePath isEqualToString:self.sqlFilePath] && [NSFileManager.defaultManager fileExistsAtPath:sqlFilePath])
                 moc.persistentStoreCoordinator = self.managedObjectContext.persistentStoreCoordinator;
             
             if (!moc.persistentStoreCoordinator) {
