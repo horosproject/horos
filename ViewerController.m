@@ -4104,7 +4104,7 @@ static volatile int numberOfThreadsForRelisce = 0;
     {
         {
             CGFloat ch = [sender isSubviewCollapsed:[sender.subviews objectAtIndex:0]]? 0 : 15;
-            [[sender.subviews objectAtIndex:0] setFrame:NSMakeRect(1, 0, sender.frame.size.width-2, ch)];
+            [[sender.subviews objectAtIndex:0] setFrame:NSMakeRect(0, 0, sender.frame.size.width, ch)];
             if (ch > 0) ch += sender.dividerThickness;
             [[sender.subviews objectAtIndex:1] setFrame:NSMakeRect(0, ch, sender.frame.size.width, sender.frame.size.height-ch)];
         }
@@ -6810,6 +6810,11 @@ return YES;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(observeScrollerStyleDidChangeNotification:) name:@"NSPreferredScrollerStyleDidChangeNotification" object:nil];
     [self observeScrollerStyleDidChangeNotification:nil];
+    
+    NSRect frame = [comparativesButton frame];
+    frame.origin.y += frame.size.height-15;
+    frame.size.height = 15;
+    [comparativesButton setFrame:frame];
     
     flagListPODComparatives = [[NSNumber alloc] initWithBool:YES];
 	[self bind:@"flagListPODComparatives" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.listPODComparativesIn2DViewer" options:nil];
