@@ -132,7 +132,7 @@
                 if (self.thread.progress < 0) [self.progressIndicator startAnimation:self];
                 if (fabs(_lastDisplayedProgress-obj.progress) > 1.0/self.progressIndicator.frame.size.width) {
                     _lastDisplayedProgress = obj.progress;
-                    /*if ([obj isMainThread])*/ [self.progressIndicator display];
+                    /*if ([obj isMainThread])*/ [self.progressIndicator setNeedsDisplay: YES];
                 }
                 return;
             } else if ([keyPath isEqual:NSThreadSupportsCancelKey] || [keyPath isEqual:NSThreadIsCancelledKey]) {
