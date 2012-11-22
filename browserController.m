@@ -10098,11 +10098,16 @@ static BOOL needToRezoom;
 			}
 			else
 			{
+                NSTimeInterval lastTime = [NSDate timeIntervalSinceReferenceDate];
                 [thread enterOperation];
                 thread.status = NSLocalizedString(@"Evaluating amount of memory needed...", nil);
                 for (NSUInteger i = 0; i < loadList.count; ++i)
 				{
-                    thread.progress = 1.0*i/loadList.count;
+                    if( [NSDate timeIntervalSinceReferenceDate] - lastTime > 1)
+                    {
+                        thread.progress = 1.0*i/loadList.count;
+                        lastTime = [NSDate timeIntervalSinceReferenceDate];
+                    }
                     curFile = [loadList objectAtIndex:i];
 					mem += ([[curFile valueForKey:@"width"] intValue] +1) * ([[curFile valueForKey:@"height"] intValue] +1);
 					memBlock += ([[curFile valueForKey:@"width"] intValue]) * ([[curFile valueForKey:@"height"] intValue]);
@@ -10174,6 +10179,7 @@ static BOOL needToRezoom;
     [[NSThread currentThread] enterOperation];
     if ([self.database hasPotentiallySlowDataAccess]) {
         NSThread.currentThread.name = NSLocalizedString(@"Loading series data...", nil);
+        NSThread.currentThread.status = NSLocalizedString(@"Evaluating amount of memory needed...", nil);
         wait = [[ThreadModalForWindowController alloc] initWithThread:[NSThread currentThread] window:nil];
     }
     
