@@ -4062,9 +4062,11 @@ static volatile int numberOfThreadsForRelisce = 0;
     if (sender == leftSplitView)
     {
         if (offset == 0)
+        {
             if ([sender isSubviewCollapsed:[sender.subviews objectAtIndex:0]])//[sender.subviews count] == 2)
                 return 0;
             else return 15;
+        }
     }
 	
 	return proposedPosition;
@@ -4606,10 +4608,11 @@ static volatile int numberOfThreadsForRelisce = 0;
         }
         
         if (hasComparatives)
+        {
             if (self.flagListPODComparatives.boolValue)
                 tip = [tip stringByAppendingFormat:@", %@", NSLocalizedString(@"click here to hide them", @"There are [more recent] POD comparatives, _____")];
             else tip = [tip stringByAppendingFormat:@", %@", NSLocalizedString(@"click here to show them", @"There are [more recent] POD comparatives, _____")];
-       
+        }
         NSMutableDictionary* attributes = [[[comparativesButton.attributedTitle attributesAtIndex:0 effectiveRange:NULL] mutableCopy] autorelease];
         [attributes setObject:color forKey:NSForegroundColorAttributeName];
         [comparativesButton setAttributedTitle:[[[NSAttributedString alloc] initWithString:comparativesButton.title attributes:attributes] autorelease]];
