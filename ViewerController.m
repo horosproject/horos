@@ -4222,23 +4222,6 @@ static volatile int numberOfThreadsForRelisce = 0;
             studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: @"date" ascending: NO]]];
 		}
         
-#ifndef OSIRIX_LIGHT
-        NSMutableArray* tsarray = [NSMutableArray array];
-        BOOL iteratedFirstLoaded = NO;
-        for (id s in studiesArray) {
-            BOOL isNonLoadedComp = [s isKindOfClass:[DCMTKQueryNode class]];
-            if (!isNonLoadedComp || self.flagListPODComparatives.boolValue)
-                [tsarray addObject:s];
-            if (isNonLoadedComp) {
-                hasComparatives = YES;
-                if (!iteratedFirstLoaded)
-                    hasComparativesNewerThanMostRecentLoaded = YES;
-            } else
-                iteratedFirstLoaded = YES;
-        }
-        studiesArray = tsarray;
-#endif
-            
 		if ([studiesArray count])
 		{
             studiesArray = [NSArray arrayWithArray: studiesArray];
@@ -4268,6 +4251,32 @@ static volatile int numberOfThreadsForRelisce = 0;
                 }
                 #endif
 			}
+            
+#ifndef OSIRIX_LIGHT
+            NSMutableArray* tstudiesArray = [NSMutableArray array];
+            NSMutableArray* tseriesArray = [NSMutableArray array];
+            BOOL iteratedFirstLoaded = NO;
+            for (int i = 0; i < studiesArray.count; ++i) {
+                id s = [studiesArray objectAtIndex:i];
+                NSArray* series = [seriesArray objectAtIndex:i];
+                
+                BOOL isNonLoadedComp = [s isKindOfClass:[DCMTKQueryNode class]];
+                if (!isNonLoadedComp || series.count || self.flagListPODComparatives.boolValue) {
+                    [tstudiesArray addObject:s];
+                    [tseriesArray addObject:series];
+                }
+                
+                if (isNonLoadedComp) {
+                    hasComparatives = YES;
+                    if (!iteratedFirstLoaded)
+                        hasComparativesNewerThanMostRecentLoaded = YES;
+                } else
+                    iteratedFirstLoaded = YES;
+            }
+            studiesArray = tstudiesArray;
+            seriesArray = tseriesArray;
+#endif
+
 			
 			if( [previewMatrix numberOfRows] != i+[studiesArray count])
 			{
