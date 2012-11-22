@@ -6735,6 +6735,8 @@ return YES;
 
 - (id) initWithPix:(NSMutableArray*)f withFiles:(NSMutableArray*)d withVolume:(NSData*) v
 {
+    [AppController displayImportantNotice: self];
+    
 //	*(long*)0 = 0xDEADBEEF; // ILCrashReporter test -- DO NOT ACTIVATE THIS LINE 
 	
 	DicomImage* dicomImage = [d objectAtIndex:0];
@@ -6743,8 +6745,6 @@ return YES;
 	[self setMagnetic: YES];
 	
 	if( [d count] == 0) d = nil;
-	
-	[AppController displayImportantNotice: self];
 	
     [[NSUserDefaults standardUserDefaults] setObject: [NSString stringWithFormat: @"%d%d", 1, 1] forKey: @"LastWindowsTilingRowsColumns"];
     

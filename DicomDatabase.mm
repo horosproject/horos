@@ -166,6 +166,7 @@ static DicomDatabase* defaultDatabase = nil;
 }
 
 static NSMutableDictionary *databasesDictionary = [[NSMutableDictionary alloc] init];
+static NSMutableDictionary *databasesContextsDictionary = [[NSMutableDictionary alloc] init];
 static NSRecursiveLock *databasesDictionaryLock = [[NSRecursiveLock alloc] init];
 
 +(NSArray*)allDatabases
@@ -194,13 +195,19 @@ static NSRecursiveLock *databasesDictionaryLock = [[NSRecursiveLock alloc] init]
 		[databasesDictionaryLock lock];
         
         if (![[databasesDictionary allValues] containsObject: [NSValue valueWithPointer: db]] && ![databasesDictionary objectForKey:db.baseDirPath])
+        {
             [databasesDictionary setObject: [NSValue valueWithPointer: db] forKey:db.baseDirPath];
+            [databasesContextsDictionary setObject: db.managedObjectContext forKey:db.baseDirPath];
+        }
         else
         {
             NSDate* k = [NSDate date];
             
             if (![databasesDictionary objectForKey:k])
+            {
                 [databasesDictionary setObject: [NSValue valueWithPointer: db] forKey:k];
+                [databasesContextsDictionary setObject: db.managedObjectContext forKey:k];
+            }
         }
         
 		[databasesDictionaryLock unlock];
@@ -384,9 +391,9 @@ static DicomDatabase* activeLocalDatabase = nil;
         
         BOOL isNewDb = ![NSFileManager.defaultManager fileExistsAtPath:[self dataDirPath]];
         
-        [DicomDatabase knowAbout:self]; // retains self
-        
         self = [super initWithPath:sqlFilePath context:c mainDatabase:mainDbReference];
+        
+        [DicomDatabase knowAbout:self]; // retains self
         
         // post-init
         
@@ -497,12 +504,19 @@ static DicomDatabase* activeLocalDatabase = nil;
         return;
     _deallocating = YES;
     
+    BOOL found = NO;
     for(id key in [NSDictionary dictionaryWithDictionary: databasesDictionary])
     {
         if ( [[databasesDictionary objectForKey: key] pointerValue] == (void*) self)
+        {
+            [databasesContextsDictionary removeObjectForKey: key];
             [databasesDictionary removeObjectForKey: key];
+            
+            found = YES;
+        }
     }
-    
+    if( found == NO)
+        N2LogStackTrace( @"WTF");
     
     [databasesDictionaryLock unlock]; //We are locked from -(oneway void) release
     
