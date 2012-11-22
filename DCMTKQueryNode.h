@@ -40,11 +40,13 @@
 	NSManagedObject *_logEntry;
 	BOOL showErrorMessage, firstWadoErrorDisplayed, _dontCatchExceptions, _isAutoRetrieve, _noSmartMode;
 	OFCondition globalCondition;
+    NSUInteger _countOfSuboperations, _countOfSuccessfulSuboperations;
 }
 
 @property BOOL dontCatchExceptions;
 @property BOOL isAutoRetrieve;
 @property BOOL noSmartMode;
+@property NSUInteger countOfSuboperations, countOfSuccessfulSuboperations;
 
 + (id)queryNodeWithDataset:(DcmDataset *)dataset
 			callingAET:(NSString *)myAET  

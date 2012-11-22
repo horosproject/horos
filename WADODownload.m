@@ -28,7 +28,7 @@
 
 @implementation WADODownload
 
-@synthesize _abortAssociation, showErrorMessage;
+@synthesize _abortAssociation, showErrorMessage, countOfSuccesses;
 
 + (void) errorMessage:(NSArray*) msg
 {
@@ -139,6 +139,8 @@
 		
 		if( [d length] > 2)
 		{
+            countOfSuccesses++;
+            
 			if( [[NSString stringWithCString: [d bytes] length: 2] isEqualToString: @"PK"])
 				extension = @"osirixzip";
             

@@ -351,6 +351,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 @synthesize isAutoRetrieve = _isAutoRetrieve;
 @synthesize noSmartMode = _noSmartMode;
 
+@synthesize countOfSuboperations = _countOfSuboperations, countOfSuccessfulSuboperations = _countOfSuccessfulSuboperations;
+
 + (id)queryNodeWithDataset:(DcmDataset *)dataset
 			callingAET:(NSString *)myAET
 			calledAET:(NSString *)theirAET  
@@ -1022,6 +1024,9 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	
 	[downloader WADODownload: urlToDownload];
 	
+    self.countOfSuboperations = urlToDownload.count;
+    self.countOfSuccessfulSuboperations = downloader.countOfSuccesses;
+    
 	[downloader release];
 }
 
@@ -2600,6 +2605,9 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 			net, subOpCallback, NULL,
 			&rsp, &statusDetail, &rspIds , OFTrue);
 		
+        self.countOfSuboperations = rsp.NumberOfCompletedSubOperations+rsp.NumberOfFailedSubOperations+rsp.NumberOfWarningSubOperations+rsp.NumberOfRemainingSubOperations;
+        self.countOfSuccessfulSuboperations = rsp.NumberOfCompletedSubOperations;
+        
 		if (cond == EC_Normal)
 		{
 			if( DICOM_WARNING_STATUS(rsp.DimseStatus))
@@ -2636,16 +2644,6 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
                 DimseCondition::dump(cond);
             }
 		}
-		
-		if (statusDetail != NULL) {
-			printf("  Status Detail:\n");
-			statusDetail->print(COUT);
-			delete statusDetail;
-		}
-		
-		if (rspIds != NULL) delete rspIds;
-		
-		[[MoveManager sharedManager] removeMove:self];
 	}
 	@catch (NSException* e)
 	{
@@ -2654,6 +2652,18 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 		if (![NSThread.currentThread isCancelled])
             N2LogExceptionWithStackTrace(e);
 	}
+    @finally
+    {
+        if (statusDetail != NULL) {
+            printf("  Status Detail:\n");
+            statusDetail->print(COUT);
+            delete statusDetail;
+        }
+        
+        if (rspIds != NULL) delete rspIds;
+        
+        [[MoveManager sharedManager] removeMove:self];
+    }
 	
     return cond;
 }
@@ -2708,6 +2718,9 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 	
 	cond = DIMSE_getUser(assoc, presId, &req, dataset, getCallback, &callbackData, _blockMode, _dimse_timeout, net, subOpCallback, NULL, &rsp, &statusDetail, &rspIds);
 	
+    self.countOfSuboperations = rsp.NumberOfCompletedSubOperations+rsp.NumberOfFailedSubOperations+rsp.NumberOfWarningSubOperations+rsp.NumberOfRemainingSubOperations;
+    self.countOfSuccessfulSuboperations = rsp.NumberOfCompletedSubOperations;
+    
     if (cond == EC_Normal)
 	{
 		if( DICOM_WARNING_STATUS(rsp.DimseStatus))
