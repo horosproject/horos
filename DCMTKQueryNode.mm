@@ -530,7 +530,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 {
     @synchronized( _children)
     {
-        [_children release];
+        [_children autorelease];
         _children = [c copy];
     }
 }
@@ -538,7 +538,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 {
     @synchronized( _children)
     {
-        [_children release];
+        [_children autorelease];
         _children = nil;
     }
 }

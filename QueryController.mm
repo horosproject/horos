@@ -1422,25 +1422,28 @@ extern "C"
 {
 	@try
 	{
-		if( item == nil)
-		{
-			if( [resultArray count] > index)
-				return [resultArray objectAtIndex:index];
-			else
-				return nil;
-		}
-		else
-		{
-            NSArray *children = [item children];
-            
-            if( children.count > 0 && [[children lastObject] isKindOfClass: [DCMTKStudyQueryNode class]] == NO && [[children lastObject] isKindOfClass: [DCMTKSeriesQueryNode class]] == NO)
+        @synchronized( self)
+        {
+            if( item == nil)
             {
-                [item purgeChildren];
-                children = [item children];
+                if( [resultArray count] > index)
+                    return [resultArray objectAtIndex:index];
+                else
+                    return nil;
             }
-            
-			return [children objectAtIndex: index];
-		}
+            else
+            {
+                NSArray *children = [item children];
+                
+                if( children.count > 0 && [[children lastObject] isKindOfClass: [DCMTKStudyQueryNode class]] == NO && [[children lastObject] isKindOfClass: [DCMTKSeriesQueryNode class]] == NO)
+                {
+                    [item purgeChildren];
+                    children = [item children];
+                }
+                
+                return [children objectAtIndex: index];
+            }
+        }
 	}
 	@catch (NSException * e)
 	{
@@ -1475,23 +1478,26 @@ extern "C"
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item
 {
-	@try
-	{
-		if (item == nil)
-			return [resultArray count];
-		else
-		{
-			if ( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES || [item isMemberOfClass:[DCMTKRootQueryNode class]] == YES)
-				return YES;
-			else 
-				return NO;
-		}
+    @synchronized( self)
+    {
+        @try
+        {
+            if (item == nil)
+                return [resultArray count];
+            else
+            {
+                if ( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES || [item isMemberOfClass:[DCMTKRootQueryNode class]] == YES)
+                    return YES;
+                else 
+                    return NO;
+            }
+        }
+        @catch (NSException * e)
+        {
+            N2LogExceptionWithStackTrace(e);
+        }
 	}
-	@catch (NSException * e)
-	{
-		N2LogExceptionWithStackTrace(e);
-	}
-	
+    
 	return NO;
 }
 
@@ -1499,17 +1505,17 @@ extern "C"
 {
 	@try
 	{
-		if( item)
-		{
-            NSArray *children = [item children];
-            
-            if( children.count > 0 && [[children lastObject] isKindOfClass: [DCMTKStudyQueryNode class]] == NO && [[children lastObject] isKindOfClass: [DCMTKSeriesQueryNode class]] == NO)
-                [item purgeChildren];
-            
-			if (![item children])
-			{
-				@synchronized( self)
-				{
+        @synchronized( self)
+        {
+            if( item)
+            {
+                NSArray *children = [item children];
+                
+                if( children.count > 0 && [[children lastObject] isKindOfClass: [DCMTKStudyQueryNode class]] == NO && [[children lastObject] isKindOfClass: [DCMTKSeriesQueryNode class]] == NO)
+                    [item purgeChildren];
+                
+                if (![item children])
+                {
 					if( performingCFind == NO)
 					{
 						performingCFind = YES; // to avoid re-entries during WaitRendering window, and separate thread for cFind
@@ -1522,10 +1528,10 @@ extern "C"
                         if( [item children] == nil) // It failed... put an empty children...
                             [item setChildren: [NSMutableArray array]];
 					}
-				}
-			}
-		}
-		return  (item == nil) ? [resultArray count] : [[item children] count];
+                }
+            }
+            return  (item == nil) ? [resultArray count] : [[item children] count];
+        }
 	}
 	@catch (NSException * e)
 	{
