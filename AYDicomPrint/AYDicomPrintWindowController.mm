@@ -619,27 +619,32 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
-	[m_VerifyConnectionButton setEnabled: NO];
+    @try
+    {
+        [m_VerifyConnectionButton setEnabled: NO];
 
-	// if object == nil, only verify currently selected printer
-	// (used by (IBAction) verifyConnection:)
-	NSArray *printers;
-	if (!object)
-		printers = [m_PrinterController selectedObjects];
-	else
-		printers = [m_PrinterController arrangedObjects];
+        // if object == nil, only verify currently selected printer
+        // (used by (IBAction) verifyConnection:)
+        NSArray *printers;
+        if (!object)
+            printers = [m_PrinterController selectedObjects];
+        else
+            printers = [m_PrinterController arrangedObjects];
 
-	NSMutableDictionary *printer;
-	int i;
-	for (i = 0; i < [printers count]; i++)
-	{
-		printer = [printers objectAtIndex: i];
-		if ([self _verifyConnection: printer])
-			[printer setValue: m_PrinterOnImage forKey: @"state"];
-		else
-			[printer setValue: m_PrinterOffImage forKey: @"state"];
-	}
-
+        NSMutableDictionary *printer;
+        int i;
+        for (i = 0; i < [printers count]; i++)
+        {
+            printer = [printers objectAtIndex: i];
+            if ([self _verifyConnection: printer])
+                [printer setValue: m_PrinterOnImage forKey: @"state"];
+            else
+                [printer setValue: m_PrinterOffImage forKey: @"state"];
+        }
+    }
+    @catch (NSException *exception) {
+        N2LogException( exception);
+    }
 	[m_VerifyConnectionButton setEnabled: YES];
 	[m_VerifyConnectionButton setNeedsDisplay: YES];
 

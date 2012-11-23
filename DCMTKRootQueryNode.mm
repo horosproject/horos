@@ -72,9 +72,12 @@
 
 - (void)addChild:(DcmDataset *)dataset
 {
-	if (!_children)
-		_children = [[NSMutableArray alloc] init];
-	
+    @synchronized( _children)
+	{
+        if (!_children)
+            _children = [[NSMutableArray alloc] init];
+	}
+    
 	if( dataset == nil)
 		return;
 	

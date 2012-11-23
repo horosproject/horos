@@ -398,15 +398,20 @@
     return nil;
 }
 
-- (NSMutableArray*)children // instead of sorting after every addChild, we sort when the array is requested
+- (NSArray*)children // instead of sorting after every addChild, we sort when the array is requested
 {
-    if (_sortChildren)
-        @synchronized( _children) {
+    @synchronized( _children)
+    {
+        if (_sortChildren)
+        {
             _sortChildren = NO;
             [_children sortUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"time" ascending:YES]]];
         }
-
-    return [super children];
+        
+        return [super children];
+    }
+    
+    return nil;
 }
 
 - (void)addChild:(DcmDataset *)dataset
@@ -414,9 +419,12 @@
 	if( dataset == nil)
 		return;
     
-	if (!_children)
-		_children = [[NSMutableArray alloc] init];
-	
+    @synchronized( _children)
+    {
+        if (!_children)
+            _children = [[NSMutableArray alloc] init];
+	}
+    
 	if( [_extraParameters valueForKey: @"StudyInstanceUID"] == nil && _uid != nil && _extraParameters != nil)
 	{
 		NSMutableDictionary *newDict = [NSMutableDictionary dictionaryWithDictionary: _extraParameters];

@@ -517,21 +517,26 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 - (NSNumber *)numberImages{
 	return _numberImages;
 }
-- (NSMutableArray *)children
+- (NSArray *)children
 {
-    return _children;
+    @synchronized( _children)
+    {
+        return [[_children copy] autorelease];
+    }
+    
+    return nil;
 }
 - (void) setChildren: (NSMutableArray *) c
 {
-    @synchronized( self)
+    @synchronized( _children)
     {
         [_children release];
-        _children = [c retain];
+        _children = [c copy];
     }
 }
 - (void)purgeChildren
 {
-    @synchronized( self)
+    @synchronized( _children)
     {
         [_children release];
         _children = nil;
@@ -949,7 +954,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
         NSArray *childrenArray = nil;
         @synchronized( self)
         {
-            childrenArray = [[[self children] copy] autorelease];
+            childrenArray = [self children];
         }
         
         @try
@@ -989,8 +994,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
             // search the images
             if( childrenArray == nil)
                 [self queryWithValues: nil];
-		
-            childrenArray = [[[self children] copy] autorelease];
+            
+            childrenArray = [self children];
         }
         
         @try
@@ -1107,7 +1112,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                     NSArray *childrenArray = nil;
                     @synchronized( self)
                     {
-                        childrenArray = [[[self children] copy] autorelease];
+                        childrenArray = [self children];
                     }
                     
                     @try
@@ -1158,7 +1163,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                         if( childrenArray == nil)
                             [self queryWithValues: nil];
                         
-                        childrenArray = [[[self children] copy] autorelease];
+                        childrenArray = [self children];
                     }
                     
                     @try
