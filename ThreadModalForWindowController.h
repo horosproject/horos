@@ -30,6 +30,8 @@
 
     CGFloat _lastDisplayedProgress;
     NSString* _lastPositionedStatus;
+    
+    NSTimeInterval lastGUIUpdate;
 }
 
 @property(retain, readonly) NSThread* thread;

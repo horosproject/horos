@@ -211,32 +211,33 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
                         [self.progressIndicator setIndeterminate: self.thread.progress < 0];	
                         if (self.thread.progress < 0) [self.progressIndicator startAnimation:self];
                         // display
-                        if (fabs(_lastDisplayedProgress-obj.progress) > 1.0/self.progressIndicator.frame.size.width) {
+                        if( [NSDate timeIntervalSinceReferenceDate] - lastGUIUpdate > 1 && fabs(_lastDisplayedProgress-obj.progress) > 1.0/self.progressIndicator.frame.size.width) {
                             _lastDisplayedProgress = obj.progress;
-                            /* if ([obj isMainThread]) */ [self.progressIndicator setNeedsDisplay: YES];
+                            [self.progressIndicator displayIfNeeded];
+                            lastGUIUpdate = [NSDate timeIntervalSinceReferenceDate];
                         }
                     }
                     
                     if ([keyPath isEqual:NSThreadNameKey]) {
                         self.window.title = obj.name? obj.name : NSLocalizedString(@"Task Progress", nil);
                         self.titleField.stringValue = obj.name? obj.name : @"";
-                        /* if ([obj isMainThread]) */ [self.titleField setNeedsDisplay: YES];
+                        /* if ([obj isMainThread]) */ [self.titleField displayIfNeeded];
                     }
                     if ([keyPath isEqual:NSThreadStatusKey]) {
                         self.statusField.string = obj.status? obj.status : @"";
-                        /* if ([obj isMainThread]) */ [self.statusField setNeedsDisplay: YES];
+                        /* if ([obj isMainThread]) */ [self.statusField displayIfNeeded];
                     }
                     if ([keyPath isEqual:NSThreadProgressDetailsKey]) {
                         self.progressDetailsField.stringValue = obj.progressDetails? obj.progressDetails : @"";
-                        /* if ([obj isMainThread]) */ [self.progressDetailsField setNeedsDisplay: YES];
+                        /* if ([obj isMainThread]) */ [self.progressDetailsField displayIfNeeded];
                     }
                     if ([keyPath isEqual:NSThreadSupportsCancelKey] || [keyPath isEqual:NSThreadIsCancelledKey]) {
                         [self.cancelButton setHidden: !obj.supportsCancel && !obj.isCancelled];
-                       /* if ([obj isMainThread]) */ [self.cancelButton setNeedsDisplay: YES];
+                       /* if ([obj isMainThread]) */ [self.cancelButton displayIfNeeded];
                     }
                     if ([keyPath isEqual:NSThreadSupportsBackgroundingKey]) {
                         [self.backgroundButton setHidden: !obj.supportsBackgrounding];
-                        /* if ([obj isMainThread]) */ [self.backgroundButton setNeedsDisplay: YES];
+                        /* if ([obj isMainThread]) */ [self.backgroundButton displayIfNeeded];
                     }
                 }
             }
