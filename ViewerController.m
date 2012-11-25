@@ -12804,12 +12804,15 @@ int i,j,l;
 	
 	NSLog(@"Slice Interval : %f", interval);
 	
-	if( interval == 0)
-	{
-		NSRunCriticalAlertPanel(NSLocalizedString(@"ROIs Volume Error", nil), NSLocalizedString(@"Slice Locations not available to compute a volume.", nil) , NSLocalizedString(@"OK", nil), nil, nil);
-		return;
+    if( [sender tag] == 0) // Compute Volume
+    {
+        if( interval == 0)
+        {
+            NSRunCriticalAlertPanel(NSLocalizedString(@"ROIs Volume Error", nil), NSLocalizedString(@"Slice Locations not available to compute a volume.", nil) , NSLocalizedString(@"OK", nil), nil, nil);
+            return;
+        }
 	}
-	
+    
 	NSString	*error;
 	int			numberOfGeneratedROI = [[self roisWithComment: @"morphing generated"] count];
 		
