@@ -635,8 +635,8 @@ extern const char *GetPrivateIP();
 							NSArray *studies = [d objectForKey:@"albumStudies"];
 							NSString *albumUID = [d objectForKey:@"albumUID"];
 							
-                            DicomDatabase* database = [DicomDatabase defaultDatabase];
-							[database lock];
+                            DicomDatabase* database = [[DicomDatabase defaultDatabase] independentDatabase];
+                            
                             @try
 							{
 								DicomAlbum* album = [database objectWithID:albumUID]; // [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: albumUID]]];
@@ -659,7 +659,6 @@ extern const char *GetPrivateIP();
 								NSLog(@"Exception in BonjourPublisher ADDAL");
 							}
 							@finally {
-                                [database unlock];
                             }
 						}
 						
@@ -686,8 +685,8 @@ extern const char *GetPrivateIP();
 							NSArray *studies = [d objectForKey:@"albumStudies"];
 							NSString *albumUID = [d objectForKey:@"albumUID"];
 							
-                            DicomDatabase* database = [DicomDatabase defaultDatabase];
-							[database lock];
+                            DicomDatabase* database = [[DicomDatabase defaultDatabase] independentDatabase];
+                            
 							@try
 							{
 								DicomAlbum* album = [database objectWithID:albumUID]; // [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: albumUID]]];
@@ -710,7 +709,6 @@ extern const char *GetPrivateIP();
 								NSLog(@"Exception in BonjourPublisher REMAL");
 							}
 							@finally {
-                                [database unlock];
                             }
 						}
 						
@@ -758,8 +756,8 @@ extern const char *GetPrivateIP();
 						NSString *key = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
 						pos += stringSize;
 						
-                        DicomDatabase* database = [DicomDatabase defaultDatabase];
-                        [database lock];
+                        DicomDatabase* database = [[DicomDatabase defaultDatabase] independentDatabase];
+                        
 						@try
 						{					
 							NSManagedObject* item = [database objectWithID:objectId]; // [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: object]]];
@@ -794,7 +792,6 @@ extern const char *GetPrivateIP();
 							NSLog(@"***** BonjourPublisher Exception: %@", e);
 						}
 						@finally {
-                            [database unlock];
                         }
                         
 						refreshDB = YES;
