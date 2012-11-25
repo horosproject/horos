@@ -246,7 +246,16 @@ static NSString* _dcmElementKey(DcmElement* element) {
         [item conditionallySetObject:[DicomFile patientUID: item] forKey:@"patientUID"];
         
 		[item conditionallySetObject:[NSNumber numberWithInteger:1] forKey:@"numberOfSeries"];
-		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0020,0x000E)] stringValue] forKey:@"seriesID"]; // SeriesInstanceUID
+        
+        [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0028,0x0008)] integerNumberValue] forKey:@"numberOfFrames"];
+        if( [[item objectForKey:@"numberOfFrames"] integerValue] > 1) // SERIES ID MUST BE UNIQUE!!!!!
+		{
+			NSString *newSerieID = [NSString stringWithFormat:@"%@-%@", [[elements objectForKeyRemove:_dcmElementKey(0x0020,0x000E)] stringValue], [item objectForKey: @"SOPUID"]];
+			[item conditionallySetObject:newSerieID forKey:@"seriesID"]; // SeriesInstanceUID
+		}
+        else
+            [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0020,0x000E)] stringValue] forKey:@"seriesID"]; // SeriesInstanceUID
+        
 		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x103E)] stringValueWithEncodings: encodings] forKey:@"seriesDescription"];
 		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0020,0x0011)] integerNumberValue] forKey:@"seriesNumber"];
 		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0020,0x0013)] integerNumberValue] forKey:@"imageID"];
@@ -254,7 +263,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
 		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0080)] stringValueWithEncodings: encodings] forKey:@"institutionName"];
 		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0090)] stringValueWithEncodings: encodings] forKey:@"referringPhysiciansName"];
 		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x1050)] stringValueWithEncodings: encodings] forKey:@"performingPhysiciansName"];
-		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0028,0x0008)] integerNumberValue] forKey:@"numberOfFrames"];
+		
 		tempi = [[elements objectForKeyRemove:_dcmElementKey(0x0028,0x0010)] integerValue];
 		[item conditionallySetObject:[NSNumber numberWithInteger:tempi? tempi : OsirixDicomImageSizeUnknown] forKey:@"height"];
 		tempi = [[elements objectForKeyRemove:_dcmElementKey(0x0028,0x0011)] integerValue];
