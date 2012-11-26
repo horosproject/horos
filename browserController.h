@@ -147,6 +147,10 @@ extern NSString* O2AlbumDragType;
     int								timeIntervalType;
     NSDate							*timeIntervalStart, *timeIntervalEnd;
     IBOutlet NSView					*timeIntervalView;
+
+    NSString						*modalityFilter;
+    IBOutlet NSPopUpButton          *modalityFilterMenu;
+    IBOutlet NSView					*modalityFilterView;
     
 	IBOutlet NSView					*searchView;
 	IBOutlet NSSearchField			*searchField;
@@ -279,6 +283,7 @@ extern NSString* O2AlbumDragType;
 @property(readonly) NSString *filterPredicateDescription;
 @property(retain) NSDate *distantTimeIntervalStart, *distantTimeIntervalEnd;
 
+@property(nonatomic, retain) NSString *modalityFilter;
 @property(nonatomic) int timeIntervalType;
 @property BOOL rtstructProgressBar;
 @property float rtstructProgressPercent;

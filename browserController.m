@@ -240,6 +240,7 @@ static NSString*	BurnerToolbarItemIdentifier			= @"Burner.icns";
 static NSString*	ToggleDrawerToolbarItemIdentifier   = @"StartupDisk.tif";
 static NSString*	SearchToolbarItemIdentifier			= @"Search";
 static NSString*	TimeIntervalToolbarItemIdentifier	= @"TimeInterval";
+static NSString*    ModalityFilterToolbarItemIdentifier = @"ModalityFilter";
 static NSString*	XMLToolbarItemIdentifier			= @"XML.icns";
 static NSString*	MailToolbarItemIdentifier			= @"Mail.icns";
 static NSString*	OpenKeyImagesAndROIsToolbarItemIdentifier	= @"ROIsAndKeys.tif";
@@ -277,7 +278,7 @@ static volatile BOOL waitForRunningProcess = NO;
 @synthesize bonjourBrowser, pathToEncryptedFile, comparativeStudies, distantTimeIntervalStart, distantTimeIntervalEnd;
 @synthesize searchString = _searchString, fetchPredicate = _fetchPredicate, distantSearchType, distantSearchString;
 @synthesize filterPredicate = _filterPredicate, filterPredicateDescription = _filterPredicateDescription;
-@synthesize rtstructProgressBar, rtstructProgressPercent, pluginManagerController;
+@synthesize rtstructProgressBar, rtstructProgressPercent, pluginManagerController, modalityFilter;
 
 + (BOOL) tryLock:(id) c during:(NSTimeInterval) sec
 {
@@ -2339,12 +2340,23 @@ static NSConditionLock *threadLock = nil;
 
 - (void) setTimeIntervalType: (int) t
 {
+    [self willChangeValueForKey: @"timeIntervalType"];
 	timeIntervalType = t;
+    [self didChangeValueForKey: @"timeIntervalType"];
 	
 	if( t == 100)
         [[[CustomIntervalPanel sharedCustomIntervalPanel] window] makeKeyAndOrderFront: self];
 	
     [self computeTimeInterval];
+    [self outlineViewRefresh];
+}
+
+- (void) setModalityFilter:(NSString *) m
+{
+    [self willChangeValueForKey: @"modalityFilter"];
+    modalityFilter = m;
+    [self didChangeValueForKey: @"modalityFilter"];
+    
     [self outlineViewRefresh];
 }
 
@@ -2528,6 +2540,20 @@ static NSConditionLock *threadLock = nil;
 			
 			description = [description stringByAppendingFormat:NSLocalizedString(@" / Time Interval: since: %@", nil), [[NSUserDefaults dateTimeFormatter] stringFromDate: timeIntervalStart]];
 		}
+		predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: subPredicate, predicate, nil]];
+		filtered = YES;
+	}
+    
+    // ********************
+	// MODALITY FILTER
+	// ********************
+    
+	if( [modalityFilterMenu indexOfSelectedItem] > 0 && self.modalityFilter.length)
+	{
+        subPredicate = [NSPredicate predicateWithFormat: @"modality == %@", self.modalityFilter];
+			
+        description = [description stringByAppendingFormat: NSLocalizedString(@" / Modality: %@", nil), self.modalityFilter];
+		
 		predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: subPredicate, predicate, nil]];
 		filtered = YES;
 	}
@@ -12378,6 +12404,8 @@ static NSArray*	openSubSeriesArray = nil;
             [databaseOutline scrollRowToVisible: 0];
             [self buildColumnsMenu];
             
+            self.modalityFilter = [[modalityFilterMenu itemAtIndex: 0] title];
+            
             [animationCheck setState: [[NSUserDefaults standardUserDefaults] boolForKey: @"AutoPlayAnimation"]];
             
             activeSends = [[NSMutableDictionary dictionary] retain];
@@ -17181,7 +17209,18 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[toolbarItem setView: timeIntervalView];
 		[toolbarItem setMinSize:NSMakeSize(NSWidth([timeIntervalView frame]), NSHeight([timeIntervalView frame]))];
 		[toolbarItem setMaxSize:NSMakeSize(NSWidth([timeIntervalView frame]), NSHeight([timeIntervalView frame]))];
-    } 
+    }
+    else if ([itemIdent isEqualToString: ModalityFilterToolbarItemIdentifier])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"Modality", nil)];
+		[toolbarItem setPaletteLabel: NSLocalizedString(@"Modality", nil)];
+		[toolbarItem setToolTip: NSLocalizedString(@"Modality", nil)];
+		
+		// Use a custom view, a text field, for the search item
+		[toolbarItem setView: modalityFilterView];
+		[toolbarItem setMinSize:NSMakeSize(NSWidth([modalityFilterView frame]), NSHeight([modalityFilterView frame]))];
+		[toolbarItem setMaxSize:NSMakeSize(NSWidth([modalityFilterView frame]), NSHeight([modalityFilterView frame]))];
+    }
 	else
 	{
 		// Is it a plugin menu item?
@@ -17241,6 +17280,7 @@ static volatile int numberOfThreadsForJPEG = 0;
             ReportToolbarItemIdentifier,
 			NSToolbarFlexibleSpaceItemIdentifier,
             TimeIntervalToolbarItemIdentifier,
+            ModalityFilterToolbarItemIdentifier,
 			SearchToolbarItemIdentifier,
 			nil];
 }
@@ -17253,6 +17293,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			 ViewersToolbarItemIdentifier,
 			 SearchToolbarItemIdentifier,
 			 TimeIntervalToolbarItemIdentifier,
+             ModalityFilterToolbarItemIdentifier,
 			 NSToolbarCustomizeToolbarItemIdentifier,
 			 NSToolbarFlexibleSpaceItemIdentifier,
 			 NSToolbarSpaceItemIdentifier,
