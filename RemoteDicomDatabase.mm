@@ -210,7 +210,7 @@
     if (filesToSend.count)
         [self performSelectorInBackground:@selector(_uploadFilesAtPathsGeneratedByOsiriX:) withObject:[NSArray arrayWithObjects:filesToSend, filesToSendObjectIDs, [NSNumber numberWithBool:generatedByOsiriX], nil]];
     
-    return r;
+    return objectIDs;
 }
 
 -(void)_uploadFilesAtPathsGeneratedByOsiriX:(NSArray*)io {
