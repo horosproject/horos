@@ -558,28 +558,37 @@ static DicomDatabase* activeLocalDatabase = nil;
 -(void)observeIndependentDatabaseNotification:(NSNotification*)notification {
     if (![NSThread isMainThread])
         [self performSelectorOnMainThread:@selector(observeIndependentDatabaseNotification:) withObject:notification waitUntilDone:NO];
-    else {
-        
-        [self lock];
-        
+    else
+    {
         NSMutableDictionary* userInfo = [NSMutableDictionary dictionary];
         
-        NSArray* independentObjects = [notification.userInfo objectForKey:OsirixAddToDBNotificationImagesArray];
-        if (independentObjects) {
-            NSArray* selfObjects = [self objectsWithIDs:independentObjects];
-            if (selfObjects.count != independentObjects.count)
-                NSLog(@"Warning: independent database is notifying about %d new images, but the main database can only find %d.", (int)independentObjects.count, (int)selfObjects.count);
-            [userInfo setObject:selfObjects forKey:OsirixAddToDBNotificationImagesArray];
+        [self lock];
+        @try
+        {
+            
+            
+            NSArray* independentObjects = [notification.userInfo objectForKey:OsirixAddToDBNotificationImagesArray];
+            if (independentObjects) {
+                NSArray* selfObjects = [self objectsWithIDs:independentObjects];
+                if (selfObjects.count != independentObjects.count)
+                    NSLog(@"Warning: independent database is notifying about %d new images, but the main database can only find %d.", (int)independentObjects.count, (int)selfObjects.count);
+                [userInfo setObject:selfObjects forKey:OsirixAddToDBNotificationImagesArray];
+            }
+            
+            NSDictionary* independentDictionary = [notification.userInfo objectForKey:OsirixAddToDBNotificationImagesPerAETDictionary];
+            if (independentDictionary) {
+                NSMutableDictionary* selfDictionary = [NSMutableDictionary dictionary];
+                for (NSString* key in independentDictionary)
+                    [selfDictionary setObject:[self objectsWithIDs:[independentDictionary objectForKey:key]] forKey:key];
+                [userInfo setObject:selfDictionary forKey:OsirixAddToDBNotificationImagesPerAETDictionary];
+            }
         }
-        
-        NSDictionary* independentDictionary = [notification.userInfo objectForKey:OsirixAddToDBNotificationImagesPerAETDictionary];
-        if (independentDictionary) {
-            NSMutableDictionary* selfDictionary = [NSMutableDictionary dictionary];
-            for (NSString* key in independentDictionary)
-                [selfDictionary setObject:[self objectsWithIDs:[independentDictionary objectForKey:key]] forKey:key];
-            [userInfo setObject:selfDictionary forKey:OsirixAddToDBNotificationImagesPerAETDictionary];
+        @catch (NSException *exception) {
+            N2LogException( exception);
         }
-        [self unlock];
+        @finally {
+            [self unlock];
+        }
         
         [NSNotificationCenter.defaultCenter postNotificationName:notification.name object:self userInfo:userInfo];
     }
