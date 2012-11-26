@@ -2357,6 +2357,9 @@ static NSConditionLock *threadLock = nil;
     modalityFilter = m;
     [self didChangeValueForKey: @"modalityFilter"];
     
+    self.distantTimeIntervalStart = nil;
+    self.distantTimeIntervalEnd = nil;
+    [self computeTimeInterval]; // Yes, this is normal : modality filter is only available if a time interval is selected for PACS On-Demand
     [self outlineViewRefresh];
 }
 
@@ -2550,7 +2553,7 @@ static NSConditionLock *threadLock = nil;
     
 	if( [modalityFilterMenu indexOfSelectedItem] > 0 && self.modalityFilter.length)
 	{
-        subPredicate = [NSPredicate predicateWithFormat: @"modality == %@", self.modalityFilter];
+        subPredicate = [NSPredicate predicateWithFormat: @"modality CONTAINS %@", self.modalityFilter];
 			
         description = [description stringByAppendingFormat: NSLocalizedString(@" / Modality: %@", nil), self.modalityFilter];
 		
@@ -3664,6 +3667,10 @@ static NSConditionLock *threadLock = nil;
                 break;
 		}
         
+        // Modality Filter?
+        if( [modalityFilterMenu indexOfSelectedItem] > 0 && self.modalityFilter.length)
+            [d setObject: [NSArray arrayWithObject: self.modalityFilter] forKey: @"modality"];
+        
         return [QueryController queryStudiesForFilters: d servers: servers showErrors: NO];
     }
     @catch (NSException* e)
@@ -3785,6 +3792,10 @@ static NSConditionLock *threadLock = nil;
         
         if( to)
             [d setObject: to forKey: @"toDate"];
+        
+        // Modality Filter?
+        if( [modalityFilterMenu indexOfSelectedItem] > 0 && self.modalityFilter.length)
+            [d setObject: [NSArray arrayWithObject: self.modalityFilter] forKey: @"modality"];
         
         return [QueryController queryStudiesForFilters: d servers: servers showErrors: NO];
     }
