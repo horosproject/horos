@@ -4710,350 +4710,348 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	
 	DCMObject *dcmObject = [dict objectForKey: @"dcmObject"];
 	
-	// Get all referenced images up front.
-	// This is better than running a Fetch Request for EVERY ROI since
-	// executeFetchRequest is expensive.
-	
-	DCMSequenceAttribute *refFrameSequence = (DCMSequenceAttribute *)[dcmObject attributeWithName:@"ReferencedFrameofReferenceSequence"];
-	
-	if ( refFrameSequence == nil)
-	{
-		NSLog( @"ReferencedFrameofReferenceSequence not found");
-		goto END_CREATE_ROIS;
-	}
-	
-	NSMutableArray *refSeriesUIDPredicates = [NSMutableArray array];
-	
-	NSDictionary *noteDict = [NSDictionary dictionaryWithObjectsAndKeys: 
-							  [NSNumber numberWithBool: YES], @"RTSTRUCTProgressBar",
-							  [NSNumber numberWithFloat: 1.0f], @"RTSTRUCTProgressPercent",
-							  nil];
-	
-	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-	[nc postNotificationName:OsirixRTStructNotification object:nil userInfo: noteDict];
-	
-	
-	for ( DCMObject *refFrameSeqItem in [refFrameSequence sequence])
-	{
-		DCMSequenceAttribute *refStudySeq = (DCMSequenceAttribute *)[refFrameSeqItem attributeWithName: @"RTReferencedStudySequence"];
-		
-		for ( DCMObject *refStudySeqItem in refStudySeq.sequence)
-		{
-			DCMSequenceAttribute *refSeriesSeq = (DCMSequenceAttribute *)[refStudySeqItem attributeWithName: @"RTReferencedSeriesSequence"];
-			
-			for ( DCMObject *refSeriesSeqItem in refSeriesSeq.sequence)
-			{
-				
-				NSString *refSeriesUID = [refSeriesSeqItem attributeValueWithName: @"SeriesInstanceUID"];
-				NSPredicate *pred = [NSPredicate predicateWithFormat: @"series.seriesDICOMUID == %@", refSeriesUID];
-				[refSeriesUIDPredicates addObject: pred];
-				
-				/*
-				 DCMSequenceAttribute *contourImgSeq = (DCMSequenceAttribute *)[refSeriesSeqItem attributeWithName: @"ContourImageSequence"];
-				 NSEnumerator *contourImgSeqEnum = [[contourImgSeq sequence] objectEnumerator];
-				 DCMObject *contourImgSeqItem;
-				 
-				 while ( contourImgSeqItem = [contourImgSeqEnum nextObject]) {
-				 NSString *refImgUID = [contourImgSeqItem attributeValueWithName: @"ReferencedSOPInstanceUID"];
-				 NSPredicate *pred = [NSPredicate predicateWithFormat: @"sopInstanceUID like %@", refImgUID];
-				 [refImgUIDPredicates addObject: pred];
-				 }
-				 */
-			}
-		}
-	}
-	
-	noteDict = [NSDictionary dictionaryWithObjectsAndKeys: 
-				[NSNumber numberWithBool: YES], @"RTSTRUCTProgressBar",
-				[NSNumber numberWithFloat: 10.0f], @"RTSTRUCTProgressPercent",
-				nil];
-	
-	[nc postNotificationName:OsirixRTStructNotification object:nil userInfo: noteDict];
-	
-	if ( refSeriesUIDPredicates.count == 0)
-	{
-		NSLog( @"No reference series found.");
-		goto END_CREATE_ROIS;
-	}
-	
-	NSManagedObjectContext *moc = [[[BrowserController currentBrowser] database] independentContext];
-	NSError *error = nil;
-	NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-	request.entity = [NSEntityDescription entityForName: @"Image" inManagedObjectContext: moc];	
-	request.predicate = [NSCompoundPredicate orPredicateWithSubpredicates: refSeriesUIDPredicates];
-	
-	[moc lock];
-	NSArray *imgObjects = nil;
-	@try 
-	{
-		imgObjects = [moc executeFetchRequest: request error: &error];
-	}
-	@catch (NSException * e) 
-	{
-		N2LogExceptionWithStackTrace(e);
-	}
-	[moc unlock];
-	
-	if ( imgObjects.count == 0)
-	{
-		NSLog( @"No images in Series");
-		goto END_CREATE_ROIS;
-	}
-	
-	// Put all images in a dictionary for quick lookup based on SOP Instance UID
-	
-	NSMutableDictionary *imgDict = [NSMutableDictionary dictionaryWithCapacity: imgObjects.count];
-	NSMutableArray *dcmImgObjects = [NSMutableArray arrayWithCapacity: imgObjects.count];
-	
-	for ( DicomImage *imgObj in imgObjects)
-	{
-		[imgDict setObject: imgObj forKey: [imgObj valueForKey: @"sopInstanceUID"]];
-		[dcmImgObjects addObject: [DCMObject objectWithContentsOfFile: [imgObj completePath] decodingPixelData: NO]];
-	}
-	
-	DCMSequenceAttribute *roiSequence = (DCMSequenceAttribute *)[dcmObject attributeWithName:@"StructureSetROISequence"];
-	
-	if ( roiSequence == nil)
-	{
-		NSLog( @"StructureSetROISequence not found");
-		goto END_CREATE_ROIS;
-	}
-	
-	NSMutableDictionary *roiNames = [NSMutableDictionary dictionary];
-	
-	for ( DCMObject *sequenceItem in [roiSequence sequence])
-	{
-		[roiNames setValue: [sequenceItem attributeValueWithName: @"ROIName"]
-					forKey: [sequenceItem attributeValueWithName: @"ROINumber"]];
-	}
-	
-	DCMSequenceAttribute *roiContourSequence = (DCMSequenceAttribute *)[dcmObject attributeWithName:@"ROIContourSequence"];
-	
-	if ( roiContourSequence == nil)
-	{
-		NSLog( @"ROIContourSequence not found");
-		goto END_CREATE_ROIS;
-	}
-	
-{
-	int numStructs = roiContourSequence.sequence.count;
-	unsigned int iStruct = 0;
-	
-	NSMutableArray *roiArray[ imgObjects.count ];  // Array of ROIs for each defined 'image' referenced by the RTSTRUCT
-	
-	for ( unsigned int i = 0; i < imgObjects.count; i++) roiArray[ i ] = [NSMutableArray array];
-	
-	for ( DCMObject *sequenceItem in [roiContourSequence sequence])
-	{
-		
-		float
-		pixSpacingX,
-		pixSpacingY;
-		
-		NSArray *rgbArray = [sequenceItem attributeArrayWithName: @"ROIDisplayColor"];
-		
-		RGBColor color =
-		{
-			[[rgbArray objectAtIndex: 0] floatValue] * 65535 / 256.0,
-			[[rgbArray objectAtIndex: 1] floatValue] * 65535 / 256.0,
-		[[rgbArray objectAtIndex: 2] floatValue] * 65535 / 256.0 };
-		
-		NSString *roiName = [roiNames valueForKey: [sequenceItem attributeValueWithName: @"ReferencedROINumber"]];
-		
-		NSLog( @"roiName = %@", roiName);
-		DCMSequenceAttribute *contourSequence = (DCMSequenceAttribute *)[sequenceItem attributeWithName:@"ContourSequence"];
-		if ( roiContourSequence == nil)
-		{
-			NSLog( @"contourSequence not found");
-			goto END_CREATE_ROIS;
-		}
-		
-		for ( DCMObject *contourItem in [contourSequence sequence])
-		{
-			
-			//				DCMSequenceAttribute *contourImageSequence = (DCMSequenceAttribute*)[contourItem attributeWithName: @"ContourImageSequence"];
-			//				if ( contourImageSequence == nil) {
-			//					NSLog( @"contourImageSequence not found");
-			//					goto END_CREATE_ROIS;
-			//				}
-			
-			NSString *contourType = [contourItem attributeValueWithName: @"ContourGeometricType"];
-			
-			if ( [contourType isEqualToString: @"CLOSED_PLANAR"] == NO && [contourType isEqualToString: @"INTERPOLATED_PLANAR"] == NO)
-			{
-				NSLog( @"Contour type %@ is not supported at this time.", contourType);
-				continue;
-			}
-			
-			int type = tCPolygon;
-			
-			NSArray *dcmPoints = [contourItem attributeArrayWithName: @"ContourData"];
-			
-			// Loop over all slices to determine if slice "contains" the ROI based on distance criterion of FIRST point
-			// This of course assumes that ALL the points in the contour are in the same slice.
-			// Not considering at this time the possibility that the contour intersects multiple slices.
-			
-			for ( unsigned int imgIndex = 0; imgIndex < imgObjects.count; imgIndex++)
-			{  
-				DicomImage *img = [imgObjects objectAtIndex: imgIndex];
-				
-				DCMObject *imgObject = [dcmImgObjects objectAtIndex: imgIndex];
-				
-				if ( imgObject == nil)
-				{
-					NSLog( @"Error opening referenced image file");
-					goto END_CREATE_ROIS;
-				}
-				
-				NSArray *pixSpacings = [imgObject attributeArrayWithName: @"PixelSpacing"];
-				NSArray *position = [imgObject attributeArrayWithName: @"ImagePositionPatient"];
-				
-				float posX = [[position objectAtIndex: 0] floatValue];
-				float posY = [[position objectAtIndex: 1] floatValue];
-				float posZ = [[position objectAtIndex: 2] floatValue];
-				
-				pixSpacingX = [[pixSpacings objectAtIndex: 0] floatValue];
-				pixSpacingY = [[pixSpacings objectAtIndex: 1] floatValue];
-				
-				if ( pixSpacingX == 0.0f || pixSpacingY == 0.0f) continue;  // Bad slice?
-				
-				float pixSpacingXrecip = 1.0f / pixSpacingX;
-				float pixSpacingYrecip = 1.0f / pixSpacingY;
-				
-				// Convert ROI points from DICOM space to ROI space
-				
-				NSArray *imageOrientation = [imgObject attributeArrayWithName: @"ImageOrientationPatient"];
-				
-				float orients[ 9 ];
-				
-				for ( unsigned int i = 0; i < 6; i++)
-				{
-					orients[ i ] = [[imageOrientation objectAtIndex: i] floatValue];
-				}
-				
-				// Normal vector
-				orients[6] = orients[1]*orients[5] - orients[2]*orients[4];
-				orients[7] = orients[2]*orients[3] - orients[0]*orients[5];
-				orients[8] = orients[0]*orients[4] - orients[1]*orients[3];
-				
-				float temp[ 3 ];
-				
-				temp[ 0 ] = [[dcmPoints objectAtIndex: 0] floatValue] - posX;
-				temp[ 1 ] = [[dcmPoints objectAtIndex: 1] floatValue] - posY;
-				temp[ 2 ] = [[dcmPoints objectAtIndex: 2] floatValue] - posZ;
-				
-				float distToSlice = fabs( temp[ 0 ] * orients[ 6 ] + temp[ 1 ] * orients[ 7 ] + temp[ 2 ] * orients[ 8 ]);
-				float distCriterion = [[imgObject attributeValueWithName: @"SliceThickness"] floatValue] * 0.4;
-				if ( distCriterion <= 0.0f) distCriterion = 0.1f;  // mm
-				
-				if ( distToSlice < distCriterion)
-				{
-					float sliceCoords[ 2 ];
-					
-					sliceCoords[ 0 ] = temp[ 0 ] * orients[ 0 ] + temp[ 1 ] * orients[ 1 ] + temp[ 2 ] * orients[ 2 ];
-					sliceCoords[ 1 ] = temp[ 0 ] * orients[ 3 ] + temp[ 1 ] * orients[ 4 ] + temp[ 2 ] * orients[ 5 ];
-					sliceCoords[ 0 ] *= pixSpacingXrecip;
-					sliceCoords[ 1 ] *= pixSpacingYrecip;
-					
-					int numPoints = [[contourItem attributeValueWithName: @"NumberofContourPoints"] intValue];
-					NSMutableArray *pointsArray = [NSMutableArray arrayWithCapacity: numPoints];
-					
-					[pointsArray addObject: [MyPoint point:NSMakePoint( sliceCoords[ 0 ], sliceCoords[ 1 ])]];
-					
-					// Convert rest of points in contour to sliceCoord space
-					
-					for ( unsigned int pointIndex = 1; pointIndex < numPoints; pointIndex++)
-					{
-						temp[ 0 ] = [[dcmPoints objectAtIndex: 3 * pointIndex] floatValue] - posX;
-						temp[ 1 ] = [[dcmPoints objectAtIndex: 3 * pointIndex + 1] floatValue] - posY;
-						temp[ 2 ] = [[dcmPoints objectAtIndex: 3 * pointIndex + 2] floatValue] - posZ;
-						
-						sliceCoords[ 0 ] = temp[ 0 ] * orients[ 0 ] + temp[ 1 ] * orients[ 1 ] + temp[ 2 ] * orients[ 2 ];
-						sliceCoords[ 1 ] = temp[ 0 ] * orients[ 3 ] + temp[ 1 ] * orients[ 4 ] + temp[ 2 ] * orients[ 5 ];
-						sliceCoords[ 0 ] *= pixSpacingXrecip;
-						sliceCoords[ 1 ] *= pixSpacingYrecip;
-						[pointsArray addObject: [MyPoint point:NSMakePoint( sliceCoords[ 0 ], sliceCoords[ 1 ])]];
-					}
-					
-					ROI *roi = [[[ROI alloc] initWithType: type
-														 : pixSpacingX
-														 : pixSpacingY
-														 : NSMakePoint( posX, posY)] autorelease];
-					
-					roi.name = roiName;
-					roi.rgbcolor = color;
-					roi.points = pointsArray;
-                    roi.opacity = 1.0;
-                    roi.thickness = 1.0;
-					
-					[roiArray[ [imgObjects indexOfObject: img] ] addObject: roi];
-					
-				}
-				
-			} // End loop over images in series (looking for containing slices)
-			
-		} // Loop over ContourSequence
-		
-		iStruct++;
-		
-		float percentComplete = ( iStruct / (float)numStructs) * 90.0f + 10.0f;
-		
-		noteDict = [NSDictionary dictionaryWithObjectsAndKeys: 
-					[NSNumber numberWithBool: YES], @"RTSTRUCTProgressBar",
-					[NSNumber numberWithFloat: percentComplete], @"RTSTRUCTProgressPercent",
-					nil];
-		
-		[nc postNotificationName:OsirixRTStructNotification object:nil userInfo: noteDict];
-		
-	}  // Loop over ROIContourSequence
-	
-	// Write ROIs to disk and update DB
-	
-	NSMutableArray	*newDICOMSR = [NSMutableArray array];
-	
-	for ( unsigned int i = 0; i < imgObjects.count; i++)
-	{
-		if ( roiArray[ i ].count == 0) continue;  // Nothing to see, move on.
-		
-		DicomImage *img = [imgObjects objectAtIndex: i];
-		
-		NSString *str = [img SRPathForFrame: 0];  // Assume only one frame for now.   Worry about multi-frame later (if that is even defined in RTSTRUCT).
-		
-		// Get any pre-existing ROIs and add them to the roiArray
-		
-		NSData *data = [SRAnnotation roiFromDICOM: str];
-		
-		if ( data)
-		{
-			NSMutableArray *array = [NSUnarchiver unarchiveObjectWithData: data];
-			if ( array)
-				[roiArray[ i ] addObjectsFromArray: array];
-		}
-		
-		// Write out the concatenated roiArray
-		
-		[SRAnnotation archiveROIsAsDICOM: roiArray[ i ] toPath: str forImage: img];
-		[newDICOMSR addObject: str];
-	}
-	
-	if( newDICOMSR.count)
-		[BrowserController addFiles: newDICOMSR
-							  toContext: [[BrowserController currentBrowser] managedObjectContext]
-							 toDatabase: [BrowserController currentBrowser]
-							  onlyDICOM: YES 
-					   notifyAddedFiles: YES
-					parseExistingObject: YES
-							   dbFolder: [[BrowserController currentBrowser] fixedDocumentsDirectory]
-					  generatedByOsiriX: YES];
-	
-	[[BrowserController currentBrowser] saveDatabase: nil];
-	
-}
-	
-END_CREATE_ROIS:
-	
-	noteDict = [NSDictionary dictionaryWithObject: [NSNumber numberWithBool: NO] forKey: @"RTSTRUCTProgressBar"];
-	[nc postNotificationName:OsirixRTStructNotification object:nil userInfo: noteDict];
+    @try
+    {
+            
+        // Get all referenced images up front.
+        // This is better than running a Fetch Request for EVERY ROI since
+        // executeFetchRequest is expensive.
+        
+        DCMSequenceAttribute *refFrameSequence = (DCMSequenceAttribute *)[dcmObject attributeWithName:@"ReferencedFrameofReferenceSequence"];
+        
+        if ( refFrameSequence == nil)
+        {
+            NSLog( @"ReferencedFrameofReferenceSequence not found");
+            goto END_CREATE_ROIS;
+        }
+        
+        NSMutableArray *refSeriesUIDPredicates = [NSMutableArray array];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:OsirixRTStructNotification object:nil userInfo: [NSDictionary dictionaryWithObjectsAndKeys:
+                                                                                                                    [NSNumber numberWithBool: YES], @"RTSTRUCTProgressBar",
+                                                                                                                    [NSNumber numberWithFloat: 1.0f], @"RTSTRUCTProgressPercent",
+                                                                                                                    nil]];
+        
+        
+        for ( DCMObject *refFrameSeqItem in [refFrameSequence sequence])
+        {
+            DCMSequenceAttribute *refStudySeq = (DCMSequenceAttribute *)[refFrameSeqItem attributeWithName: @"RTReferencedStudySequence"];
+            
+            for ( DCMObject *refStudySeqItem in refStudySeq.sequence)
+            {
+                DCMSequenceAttribute *refSeriesSeq = (DCMSequenceAttribute *)[refStudySeqItem attributeWithName: @"RTReferencedSeriesSequence"];
+                
+                for ( DCMObject *refSeriesSeqItem in refSeriesSeq.sequence)
+                {
+                    
+                    NSString *refSeriesUID = [refSeriesSeqItem attributeValueWithName: @"SeriesInstanceUID"];
+                    NSPredicate *pred = [NSPredicate predicateWithFormat: @"series.seriesDICOMUID == %@", refSeriesUID];
+                    [refSeriesUIDPredicates addObject: pred];
+                    
+                    /*
+                     DCMSequenceAttribute *contourImgSeq = (DCMSequenceAttribute *)[refSeriesSeqItem attributeWithName: @"ContourImageSequence"];
+                     NSEnumerator *contourImgSeqEnum = [[contourImgSeq sequence] objectEnumerator];
+                     DCMObject *contourImgSeqItem;
+                     
+                     while ( contourImgSeqItem = [contourImgSeqEnum nextObject]) {
+                     NSString *refImgUID = [contourImgSeqItem attributeValueWithName: @"ReferencedSOPInstanceUID"];
+                     NSPredicate *pred = [NSPredicate predicateWithFormat: @"sopInstanceUID like %@", refImgUID];
+                     [refImgUIDPredicates addObject: pred];
+                     }
+                     */
+                }
+            }
+        }
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:OsirixRTStructNotification object:nil userInfo: [NSDictionary dictionaryWithObjectsAndKeys:
+                                                                                                                    [NSNumber numberWithBool: YES], @"RTSTRUCTProgressBar",
+                                                                                                                    [NSNumber numberWithFloat: 10.0f], @"RTSTRUCTProgressPercent",
+                                                                                                                    nil]];
+        
+        if ( refSeriesUIDPredicates.count == 0)
+        {
+            NSLog( @"No reference series found.");
+            goto END_CREATE_ROIS;
+        }
+        
+        NSManagedObjectContext *moc = [[[BrowserController currentBrowser] database] independentContext];
+        NSError *error = nil;
+        NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+        request.entity = [NSEntityDescription entityForName: @"Image" inManagedObjectContext: moc];	
+        request.predicate = [NSCompoundPredicate orPredicateWithSubpredicates: refSeriesUIDPredicates];
+        
+        [moc lock];
+        NSArray *imgObjects = nil;
+        @try 
+        {
+            imgObjects = [moc executeFetchRequest: request error: &error];
+        }
+        @catch (NSException * e) 
+        {
+            N2LogExceptionWithStackTrace(e);
+        }
+        [moc unlock];
+        
+        if ( imgObjects.count == 0)
+        {
+            NSLog( @"No images in Series");
+            goto END_CREATE_ROIS;
+        }
+        
+        // Put all images in a dictionary for quick lookup based on SOP Instance UID
+        
+        NSMutableDictionary *imgDict = [NSMutableDictionary dictionaryWithCapacity: imgObjects.count];
+        NSMutableArray *dcmImgObjects = [NSMutableArray arrayWithCapacity: imgObjects.count];
+        
+        for ( DicomImage *imgObj in imgObjects)
+        {
+            [imgDict setObject: imgObj forKey: [imgObj valueForKey: @"sopInstanceUID"]];
+            [dcmImgObjects addObject: [DCMObject objectWithContentsOfFile: [imgObj completePath] decodingPixelData: NO]];
+        }
+        
+        DCMSequenceAttribute *roiSequence = (DCMSequenceAttribute *)[dcmObject attributeWithName:@"StructureSetROISequence"];
+        
+        if ( roiSequence == nil)
+        {
+            NSLog( @"StructureSetROISequence not found");
+            goto END_CREATE_ROIS;
+        }
+        
+        NSMutableDictionary *roiNames = [NSMutableDictionary dictionary];
+        
+        for ( DCMObject *sequenceItem in [roiSequence sequence])
+        {
+            [roiNames setValue: [sequenceItem attributeValueWithName: @"ROIName"]
+                        forKey: [sequenceItem attributeValueWithName: @"ROINumber"]];
+        }
+        
+        DCMSequenceAttribute *roiContourSequence = (DCMSequenceAttribute *)[dcmObject attributeWithName:@"ROIContourSequence"];
+        
+        if ( roiContourSequence == nil)
+        {
+            NSLog( @"ROIContourSequence not found");
+            goto END_CREATE_ROIS;
+        }
+        
+        {
+            int numStructs = roiContourSequence.sequence.count;
+            unsigned int iStruct = 0;
+            
+            NSMutableArray *roiArray[ imgObjects.count ];  // Array of ROIs for each defined 'image' referenced by the RTSTRUCT
+            
+            for ( unsigned int i = 0; i < imgObjects.count; i++) roiArray[ i ] = [NSMutableArray array];
+            
+            for ( DCMObject *sequenceItem in [roiContourSequence sequence])
+            {
+                
+                float
+                pixSpacingX,
+                pixSpacingY;
+                
+                NSArray *rgbArray = [sequenceItem attributeArrayWithName: @"ROIDisplayColor"];
+                
+                RGBColor color =
+                {
+                    [[rgbArray objectAtIndex: 0] floatValue] * 65535 / 256.0,
+                    [[rgbArray objectAtIndex: 1] floatValue] * 65535 / 256.0,
+                [[rgbArray objectAtIndex: 2] floatValue] * 65535 / 256.0 };
+                
+                NSString *roiName = [roiNames valueForKey: [sequenceItem attributeValueWithName: @"ReferencedROINumber"]];
+                
+                NSLog( @"roiName = %@", roiName);
+                DCMSequenceAttribute *contourSequence = (DCMSequenceAttribute *)[sequenceItem attributeWithName:@"ContourSequence"];
+                if ( roiContourSequence == nil)
+                {
+                    NSLog( @"contourSequence not found");
+                    goto END_CREATE_ROIS;
+                }
+                
+                for ( DCMObject *contourItem in [contourSequence sequence])
+                {
+                    
+                    //				DCMSequenceAttribute *contourImageSequence = (DCMSequenceAttribute*)[contourItem attributeWithName: @"ContourImageSequence"];
+                    //				if ( contourImageSequence == nil) {
+                    //					NSLog( @"contourImageSequence not found");
+                    //					goto END_CREATE_ROIS;
+                    //				}
+                    
+                    NSString *contourType = [contourItem attributeValueWithName: @"ContourGeometricType"];
+                    
+                    if ( [contourType isEqualToString: @"CLOSED_PLANAR"] == NO && [contourType isEqualToString: @"INTERPOLATED_PLANAR"] == NO)
+                    {
+                        NSLog( @"Contour type %@ is not supported at this time.", contourType);
+                        continue;
+                    }
+                    
+                    int type = tCPolygon;
+                    
+                    NSArray *dcmPoints = [contourItem attributeArrayWithName: @"ContourData"];
+                    
+                    // Loop over all slices to determine if slice "contains" the ROI based on distance criterion of FIRST point
+                    // This of course assumes that ALL the points in the contour are in the same slice.
+                    // Not considering at this time the possibility that the contour intersects multiple slices.
+                    
+                    for ( unsigned int imgIndex = 0; imgIndex < imgObjects.count; imgIndex++)
+                    {  
+                        DicomImage *img = [imgObjects objectAtIndex: imgIndex];
+                        
+                        DCMObject *imgObject = [dcmImgObjects objectAtIndex: imgIndex];
+                        
+                        if ( imgObject == nil)
+                        {
+                            NSLog( @"Error opening referenced image file");
+                            goto END_CREATE_ROIS;
+                        }
+                        
+                        NSArray *pixSpacings = [imgObject attributeArrayWithName: @"PixelSpacing"];
+                        NSArray *position = [imgObject attributeArrayWithName: @"ImagePositionPatient"];
+                        
+                        float posX = [[position objectAtIndex: 0] floatValue];
+                        float posY = [[position objectAtIndex: 1] floatValue];
+                        float posZ = [[position objectAtIndex: 2] floatValue];
+                        
+                        pixSpacingX = [[pixSpacings objectAtIndex: 0] floatValue];
+                        pixSpacingY = [[pixSpacings objectAtIndex: 1] floatValue];
+                        
+                        if ( pixSpacingX == 0.0f || pixSpacingY == 0.0f) continue;  // Bad slice?
+                        
+                        float pixSpacingXrecip = 1.0f / pixSpacingX;
+                        float pixSpacingYrecip = 1.0f / pixSpacingY;
+                        
+                        // Convert ROI points from DICOM space to ROI space
+                        
+                        NSArray *imageOrientation = [imgObject attributeArrayWithName: @"ImageOrientationPatient"];
+                        
+                        float orients[ 9 ];
+                        
+                        for ( unsigned int i = 0; i < 6; i++)
+                        {
+                            orients[ i ] = [[imageOrientation objectAtIndex: i] floatValue];
+                        }
+                        
+                        // Normal vector
+                        orients[6] = orients[1]*orients[5] - orients[2]*orients[4];
+                        orients[7] = orients[2]*orients[3] - orients[0]*orients[5];
+                        orients[8] = orients[0]*orients[4] - orients[1]*orients[3];
+                        
+                        float temp[ 3 ];
+                        
+                        temp[ 0 ] = [[dcmPoints objectAtIndex: 0] floatValue] - posX;
+                        temp[ 1 ] = [[dcmPoints objectAtIndex: 1] floatValue] - posY;
+                        temp[ 2 ] = [[dcmPoints objectAtIndex: 2] floatValue] - posZ;
+                        
+                        float distToSlice = fabs( temp[ 0 ] * orients[ 6 ] + temp[ 1 ] * orients[ 7 ] + temp[ 2 ] * orients[ 8 ]);
+                        float distCriterion = [[imgObject attributeValueWithName: @"SliceThickness"] floatValue] * 0.4;
+                        if ( distCriterion <= 0.0f) distCriterion = 0.1f;  // mm
+                        
+                        if ( distToSlice < distCriterion)
+                        {
+                            float sliceCoords[ 2 ];
+                            
+                            sliceCoords[ 0 ] = temp[ 0 ] * orients[ 0 ] + temp[ 1 ] * orients[ 1 ] + temp[ 2 ] * orients[ 2 ];
+                            sliceCoords[ 1 ] = temp[ 0 ] * orients[ 3 ] + temp[ 1 ] * orients[ 4 ] + temp[ 2 ] * orients[ 5 ];
+                            sliceCoords[ 0 ] *= pixSpacingXrecip;
+                            sliceCoords[ 1 ] *= pixSpacingYrecip;
+                            
+                            int numPoints = [[contourItem attributeValueWithName: @"NumberofContourPoints"] intValue];
+                            NSMutableArray *pointsArray = [NSMutableArray arrayWithCapacity: numPoints];
+                            
+                            [pointsArray addObject: [MyPoint point:NSMakePoint( sliceCoords[ 0 ], sliceCoords[ 1 ])]];
+                            
+                            // Convert rest of points in contour to sliceCoord space
+                            
+                            for ( unsigned int pointIndex = 1; pointIndex < numPoints; pointIndex++)
+                            {
+                                temp[ 0 ] = [[dcmPoints objectAtIndex: 3 * pointIndex] floatValue] - posX;
+                                temp[ 1 ] = [[dcmPoints objectAtIndex: 3 * pointIndex + 1] floatValue] - posY;
+                                temp[ 2 ] = [[dcmPoints objectAtIndex: 3 * pointIndex + 2] floatValue] - posZ;
+                                
+                                sliceCoords[ 0 ] = temp[ 0 ] * orients[ 0 ] + temp[ 1 ] * orients[ 1 ] + temp[ 2 ] * orients[ 2 ];
+                                sliceCoords[ 1 ] = temp[ 0 ] * orients[ 3 ] + temp[ 1 ] * orients[ 4 ] + temp[ 2 ] * orients[ 5 ];
+                                sliceCoords[ 0 ] *= pixSpacingXrecip;
+                                sliceCoords[ 1 ] *= pixSpacingYrecip;
+                                [pointsArray addObject: [MyPoint point:NSMakePoint( sliceCoords[ 0 ], sliceCoords[ 1 ])]];
+                            }
+                            
+                            ROI *roi = [[[ROI alloc] initWithType: type
+                                                                 : pixSpacingX
+                                                                 : pixSpacingY
+                                                                 : NSMakePoint( posX, posY)] autorelease];
+                            
+                            roi.name = roiName;
+                            roi.rgbcolor = color;
+                            roi.points = pointsArray;
+                            roi.opacity = 1.0;
+                            roi.thickness = 1.0;
+                            
+                            [roiArray[ [imgObjects indexOfObject: img] ] addObject: roi];
+                            
+                        }
+                        
+                    } // End loop over images in series (looking for containing slices)
+                    
+                } // Loop over ContourSequence
+                
+                iStruct++;
+                
+                float percentComplete = ( iStruct / (float)numStructs) * 90.0f + 10.0f;
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:OsirixRTStructNotification object:nil userInfo: [NSDictionary dictionaryWithObjectsAndKeys:
+                                                                                                                            [NSNumber numberWithBool: YES], @"RTSTRUCTProgressBar",
+                                                                                                                            [NSNumber numberWithFloat: percentComplete], @"RTSTRUCTProgressPercent",
+                                                                                                                            nil]];
+                
+            }  // Loop over ROIContourSequence
+            
+            // Write ROIs to disk and update DB
+            
+            NSMutableArray	*newDICOMSR = [NSMutableArray array];
+            
+            for ( unsigned int i = 0; i < imgObjects.count; i++)
+            {
+                if ( roiArray[ i ].count == 0) continue;  // Nothing to see, move on.
+                
+                DicomImage *img = [imgObjects objectAtIndex: i];
+                
+                NSString *str = [img SRPathForFrame: 0];  // Assume only one frame for now.   Worry about multi-frame later (if that is even defined in RTSTRUCT).
+                
+                // Get any pre-existing ROIs and add them to the roiArray
+                
+                NSData *data = [SRAnnotation roiFromDICOM: str];
+                
+                if ( data)
+                {
+                    NSMutableArray *array = [NSUnarchiver unarchiveObjectWithData: data];
+                    if ( array)
+                        [roiArray[ i ] addObjectsFromArray: array];
+                }
+                
+                // Write out the concatenated roiArray
+                
+                [SRAnnotation archiveROIsAsDICOM: roiArray[ i ] toPath: str forImage: img];
+                [newDICOMSR addObject: str];
+            }
+            
+            if( newDICOMSR.count)
+                [BrowserController addFiles: newDICOMSR
+                                  toContext: [[DicomDatabase activeLocalDatabase] independentContext: YES]
+                                     toDatabase: [BrowserController currentBrowser]
+                                      onlyDICOM: YES 
+                               notifyAddedFiles: YES
+                            parseExistingObject: YES
+                                       dbFolder: [[BrowserController currentBrowser] fixedDocumentsDirectory]
+                              generatedByOsiriX: YES];
+        }
+        
+        END_CREATE_ROIS:
+        NSLog( @"end");
+            
+    }
+    @catch (NSException *exception) {
+        N2LogException( exception);
+    }
+        
+	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixRTStructNotification object:nil userInfo: [NSDictionary dictionaryWithObject: [NSNumber numberWithBool: NO] forKey: @"RTSTRUCTProgressBar"]];
 	
 	[pool release];
 #endif
