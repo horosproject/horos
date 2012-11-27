@@ -43,11 +43,6 @@
 	BOOL									isFullWindow;
 	long									displayResliceAxes;
 	
-    KBPopUpToolbarItem                      *syncSeriesToolbarItem;
-    SyncSeriesState                         syncSeriesState ;
-    SyncSeriesBehavior                      syncSeriesBehavior;
-    SyncSeriesScope                         syncSeriesScope;
-    
 	NSArray									*filesList;
 	NSMutableArray							*pixList;
 	
@@ -74,6 +69,13 @@
 	short								curMovieIndex, maxMovieIndex;
 	NSTimeInterval						lastTime, lastMovieTime;
 	NSTimer								*movieTimer;
+    
+    // SyncSeries
+    KBPopUpToolbarItem                  *syncSeriesToolbarItem;
+    SyncSeriesState                     syncSeriesState ;
+    SyncSeriesBehavior                  syncSeriesBehavior;
+    
+    float                               syncOriginPosition[3];
 }
 
 - (id) initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) vC:(ViewerController*) bC;
@@ -97,23 +99,21 @@
 - (OrthogonalMPRPETCTController*) PETCTController;
 - (OrthogonalMPRPETCTController*) PETController;
 
+- (OrthogonalMPRController*) controller;
+
 // SyncSeries between MPR viewers
-- (void) setSyncSeriesBehavior:(SyncSeriesBehavior) newBehavior withNotification:(bool)doNotify;
-- (void) setSyncSeriesScope:(SyncSeriesScope) newScope  withNotification:(bool)doNotify;
-- (void) setSyncSeriesState:(SyncSeriesState) newState withNotification:(bool)doNotify;
-- (void) syncSeriesNotification:(NSNotification*)notification   ;
+- (void) syncSeriesScopeAction:(id) sender;
+- (void) syncSeriesBehaviorAction:(id) sender;
+- (void) syncSeriesStateAction:(id) sender;
+- (void) syncSeriesAction:(id) sender;
 
-- (void) moveToRelativePositionFromNSArray:(NSArray*) relativeLocation;
-- (void) moveToRelativePosition:(float*) dcmCoord;
-- (void) moveToAbsolutePositionFromNSArray:(NSArray*) newLocation;
-- (void) moveToAbsolutePosition:(float*) dcmCoord;
-- (void) moveToAbsolutePosition:(float*) dcmCoord :(OrthogonalMPRPETCTController*) controller;
+@property (nonatomic,retain) KBPopUpToolbarItem *syncSeriesToolbarItem;
+@property (nonatomic,assign) SyncSeriesState syncSeriesState;
+@property (nonatomic,assign) SyncSeriesBehavior syncSeriesBehavior;
 
-- (void) updateSyncSeriesUI;
-
-@property (nonatomic,readwrite) SyncSeriesState syncSeriesState;
-@property (nonatomic,readonly)  SyncSeriesBehavior syncSeriesBehavior;
-@property (nonatomic,readonly) SyncSeriesScope syncSeriesScope;
+- (float*) syncOriginPosition;
+- (void) syncSeriesNotification:(NSNotification*)notification;
+- (void) posChangeNotification:(NSNotification*)notification;
 
 // Tools
 - (IBAction) changeTool:(id) sender;

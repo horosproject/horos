@@ -8,10 +8,31 @@
 
 #import "KBPopUpToolbarItem.h"
 
-@interface KBDelayedPopUpButtonCell : NSButtonCell
+static float backgroundInset = 1.5;
+
+@interface KBDelayedPopUpButtonCell : NSButtonCell{
+    NSBezierPath *arrowPath;
+}
+@property (nonatomic,retain) NSBezierPath *arrowPath;
 @end
 
 @implementation KBDelayedPopUpButtonCell
+
+@synthesize arrowPath;
+
+-(id)init
+{
+    if (self = [super init])
+        arrowPath =nil;
+
+    return self;
+}
+
+-(void)dealloc
+{
+    [arrowPath release];
+    [super dealloc];
+}
 
 - (NSPoint)menuPositionForFrame:(NSRect)cellFrame inView:(NSView *)controlView
 {
@@ -19,6 +40,36 @@
 	result.x += 1.0;
 	result.y -= cellFrame.size.height + 5.5;
 	return result;
+}
+
+- (void)drawInteriorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView
+{
+    [super drawInteriorWithFrame:cellFrame inView:controlView];
+    
+    if([self menu] && [self isEnabled]){
+        
+        if(arrowPath == nil){
+            NSSize frameSize = cellFrame.size;
+            
+            NSBezierPath *path = [NSBezierPath bezierPath];
+     
+            float arrowWidth = [NSFont systemFontSizeForControlSize:[self controlSize]]*0.6;
+            float arrowHeight = [NSFont systemFontSizeForControlSize:[self controlSize]]*0.5;
+            
+            float x=frameSize.width-backgroundInset-arrowWidth;
+            float y=frameSize.height-backgroundInset-arrowHeight;
+            
+            [path moveToPoint:NSMakePoint(x, y)];
+            [path lineToPoint:NSMakePoint(x+arrowWidth, y)];
+            [path lineToPoint:NSMakePoint(x+arrowWidth/2.0, y+arrowHeight)];
+            [path closePath];
+            
+            [self setArrowPath:path];
+        }
+
+        [[NSColor colorWithCalibratedWhite:0.1 alpha:0.8]set];
+        [[self arrowPath] fill];
+    }
 }
 
 - (void)showMenuForEvent:(NSEvent *)theEvent controlView:(NSView *)controlView cellFrame:(NSRect)cellFrame
@@ -46,6 +97,26 @@
 	NSDate *endDate;
 	NSPoint currentPoint = [theEvent locationInWindow];
 	BOOL done = NO;
+
+    if ([self menu]) {
+        
+        NSSize frameSize = cellFrame.size;
+        
+		// check if mouse is over menu arrow
+		NSPoint localPoint = [controlView convertPoint:currentPoint fromView:nil];
+
+        float arrowWidth = [NSFont systemFontSizeForControlSize:[self controlSize]]*0.6;
+        float arrowHeight = [NSFont systemFontSizeForControlSize:[self controlSize]]*0.5;
+        
+        float x=frameSize.width-backgroundInset-arrowWidth;
+        float y=frameSize.height-backgroundInset-arrowHeight;
+
+		if (localPoint.x >=x && localPoint.y>= y){
+			[self showMenuForEvent:theEvent controlView:controlView cellFrame:cellFrame];
+            return YES;
+        }
+	}
+    
 	BOOL trackContinously = [self startTrackingAt:currentPoint inView:controlView];
 	
 	// Catch next mouse-dragged or mouse-up event until timeout
@@ -57,7 +128,7 @@
 		
 		// Set up timer for pop-up menu if we have one
 		if ([self menu])
-			endDate = [NSDate dateWithTimeIntervalSinceNow:0.5];
+			endDate = [NSDate dateWithTimeIntervalSinceNow:0.4];
 		else
 			endDate = [NSDate distantFuture];
 		
@@ -144,13 +215,17 @@
 {
 	if (self = [super initWithItemIdentifier:ident])
 	{
-		button = [[KBDelayedPopUpButton alloc] initWithFrame:NSMakeRect(0,0,32,32)];
+        button = [[KBDelayedPopUpButton alloc] initWithFrame:NSMakeRect(0,0,42,32)];
 		[button setButtonType:NSMomentaryChangeButton];
 		[button setBordered:NO];
+
+        [button setImagePosition: NSImageLeft];
+        [button setTitle:@""];
 		[self setView:button];
-		[self setMinSize:NSMakeSize(32,32)];
-		[self setMaxSize:NSMakeSize(32,32)];
-	}
+		[self setMinSize:NSMakeSize(42,32)];
+		[self setMaxSize:NSMakeSize(42,32)];
+        
+    }
 	return self;
 }
 
@@ -173,8 +248,8 @@
 {
 	[[self popupCell] setMenu:menu];
 	
-	// Also set menu form representation - this is used in the toolbar overflow menu but also, more importantly, to display
-	// a menu in text-only mode.
+	// Also set menu form representation -
+    // This is used in the toolbar overflow menu but also, more importantly, to display a menu in text-only mode.
 	NSMenuItem *menuFormRep = [[NSMenuItem alloc] initWithTitle:[self label] action:nil keyEquivalent:@""];
 	[menuFormRep setSubmenu:menu];
 	[self setMenuFormRepresentation:menuFormRep];
@@ -212,12 +287,14 @@
 	[smallImage autorelease];
 	
 	regularImage = [anImage retain];
-	smallImage = [anImage copy];
-	[smallImage setScalesWhenResized:YES];
+    [regularImage setSize:NSMakeSize(32,32)];
+    
+	smallImage = [[anImage copy] retain];
 	[smallImage setSize:NSMakeSize(24,24)];
 
-	if ([[self toolbar] sizeMode] == NSToolbarSizeModeSmall) anImage = smallImage;
-	
+	if ([[self toolbar] sizeMode] == NSToolbarSizeModeSmall)
+        anImage = smallImage;
+
 	[[self popupCell] setImage:anImage];
 }
 
@@ -242,11 +319,11 @@
 	NSToolbarSizeMode sizeMode = [[self toolbar] sizeMode];
 	float imgWidth = [[self image] size].width;
 	
-	if (sizeMode == NSToolbarSizeModeSmall && imgWidth != 24)
+	if (sizeMode == NSToolbarSizeModeSmall)
 	{
 		[[self popupCell] setImage:smallImage];
 	}
-	else if (sizeMode == NSToolbarSizeModeRegular && imgWidth == 24)
+	else if (sizeMode == NSToolbarSizeModeRegular)
 	{
 		[[self popupCell] setImage:regularImage];
 	}

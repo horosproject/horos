@@ -45,29 +45,23 @@ static NSString*	MailToolbarItemIdentifier				= @"Mail.icns";
 static NSString*	ResetToolbarItemIdentifier				= @"Reset.pdf";
 static NSString*	FlipVolumeToolbarItemIdentifier			= @"FlipData.tif";
 static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
-
 static NSString*	SyncSeriesImageName                     = @"Sync.pdf";
 static NSString*	SyncLockSeriesImageName                 = @"SyncLock.pdf";
 
-static BOOL activateMPRSyncSeriesToolbarItems = FALSE;
-
-@interface OrthogonalMPRViewer (privateSyncSeries)
-- (void) syncSeriesAction:(id) sender;
-- (void) syncSeriesScopeAction:(id) sender;
-- (void) syncSeriesBehaviorAction:(id) sender;
-- (void) syncSeriesStateAction:(id) sender;
-
-- (void) setSyncSeriesState:(SyncSeriesState) newState withNotification:(bool)doNotify;
-- (void) setSyncSeriesScope:(SyncSeriesScope) newScope withNotification:(bool)doNotify;
-- (void) setSyncSeriesBehavior:(SyncSeriesBehavior) newBehavior withNotification:(bool)doNotify ;
-- (void) updateSyncSeriesProperties:(SyncSeriesState) syncState :(SyncSeriesScope) syncScope :(SyncSeriesBehavior) syncBehavior withNotification:(bool) doNotifiy;
-@end
+static BOOL activateSyncSeriesToolbarItem ;
+static SyncSeriesScope globalSyncSeriesScope;
 
 @implementation OrthogonalMPRViewer
 
+@synthesize syncSeriesToolbarItem;
 @synthesize syncSeriesState;
 @synthesize syncSeriesBehavior;
-@synthesize syncSeriesScope;
+
++ (void) initialize{
+    activateSyncSeriesToolbarItem = FALSE;
+    globalSyncSeriesScope = SyncSeriesScopeSamePatient;
+//    globalSyncSeriesScope = [[NSUserDefaults standardUserDefaults] integerForKey:@"globalMPRSyncSeriesScope"] ;
+}
 
 - (void) blendingPropagateOriginal:(OrthogonalMPRView*) sender
 {
@@ -201,20 +195,11 @@ static BOOL activateMPRSyncSeriesToolbarItems = FALSE;
     [nc addObserver:self selector:@selector(syncSeriesNotification:) name:OsirixOrthoMPRSyncSeriesNotification object:nil];
     [nc addObserver:self selector:@selector(posChangeNotification:) name:OsirixOrthoMPRPosChangeNotification object:nil];
 
-    NSDictionary* syncSeriesProperties = [OrthogonalMPRViewer evaluateSyncSeriesProperties:self];
+    [OrthogonalMPRViewer initSyncSeriesProperties:self];
+    [OrthogonalMPRViewer evaluteSyncSeriesToolbarItemActivationWhenInit:self];
     
-    syncSeriesState = ([[syncSeriesProperties valueForKey:@"syncEnable"]boolValue] ? SyncSeriesStateEnable :SyncSeriesStateDisable);
-    syncSeriesScope = [[syncSeriesProperties valueForKey:@"syncScope"]intValue];
-    syncSeriesBehavior = [[syncSeriesProperties valueForKey:@"syncBehavior"]intValue];
-    
-    if(syncSeriesState== SyncSeriesStateEnable){
-        [self moveToAbsolutePositionFromNSArray:[syncSeriesProperties valueForKey:@"dicomCoords"]];
-        [controller resetSyncPositionOrigin];
-    }
-    
-    [OrthogonalMPRViewer evaluteSyncSeriesToolbarItemsActivationWhenInit];
-    
-    //
+	[self addObserver: self forKeyPath:@"syncSeriesState" options:0 context: NULL];
+
 	[self setupToolbar];
 
 	return self;
@@ -225,12 +210,15 @@ static BOOL activateMPRSyncSeriesToolbarItems = FALSE;
 	NSLog(@"OrthogonalMPRViewer dealloc");
 	
 	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver: self forKeyPath: @"values.exportDCMIncludeAllViews"];
-	
 	[[NSUserDefaults standardUserDefaults] setInteger:[thickSlabSlider intValue] forKey: @"stackThicknessOrthoMPR"];
-	
+
+    [self removeObserver:self forKeyPath:@"syncSeriesState" ];
+
 	[viewer release];
 	[toolbar release];
 	[exportDCM release];
+    [syncSeriesToolbarItem release];
+    
 	[super dealloc];
 }
 
@@ -558,8 +546,10 @@ static BOOL activateMPRSyncSeriesToolbarItems = FALSE;
 {
 	[controller showViews:sender];
 	[super showWindow:sender];
-	
+    
 	[controller scaleToFit];
+    
+    [OrthogonalMPRViewer synchronizeViewer:self];
 }
 
 - (void) windowWillClose:(NSNotification *)notification
@@ -578,7 +568,9 @@ static BOOL activateMPRSyncSeriesToolbarItems = FALSE;
 	[splitView setDelegate: nil];
     [[self window] setDelegate:nil];
     
-    [OrthogonalMPRViewer evaluteSyncSeriesToolbarItemsActivationBeforeClose];
+    [self setSyncSeriesState: SyncSeriesStateDisable];
+    [OrthogonalMPRViewer validateViewersSyncSeriesState];
+    [OrthogonalMPRViewer evaluteSyncSeriesToolbarItemActivationBeforeClose:self];
     
     [self autorelease];
 }
@@ -873,7 +865,7 @@ return YES;
 	}
     else if( [item action] == @selector(syncSeriesScopeAction:))    {
         valid = YES;
-        [item setState: (syncSeriesScope == [item tag] ? NSOnState : NSOffState)];
+        [item setState: (globalSyncSeriesScope == [item tag] ? NSOnState : NSOffState)];
     }
     else if( [item action] == @selector(syncSeriesBehaviorAction:))   {
         valid = YES;
@@ -985,8 +977,7 @@ return YES;
 {
     // Required delegate method:  Given an item identifier, this method returns an item 
     // The toolbar will use this method to obtain toolbar items that can be displayed in the customization sheet, or in the toolbar itself 
-    // NSToolbarItem *toolbarItem = [[NSToolbarItem alloc] initWithItemIdentifier: itemIdent];
-    
+     
     NSToolbarItem *toolbarItem =nil;
     
     if ([itemIdent isEqualToString: SyncSeriesToolbarItemIdentifier]) {
@@ -1017,7 +1008,7 @@ return YES;
 //	[toolbarItem setMinSize:NSMakeSize(NSWidth([iPhotoView frame]), NSHeight([iPhotoView frame]))];
 //	[toolbarItem setMaxSize:NSMakeSize(NSWidth([iPhotoView frame]), NSHeight([iPhotoView frame]))];
 //    }
-	if ([itemIdent isEqual: MailToolbarItemIdentifier]) {
+    if ([itemIdent isEqual: MailToolbarItemIdentifier]) {
         
 	[toolbarItem setLabel: NSLocalizedString(@"Email",nil)];
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Email",nil)];
@@ -1167,55 +1158,9 @@ return YES;
 	[toolbarItem setMinSize:NSMakeSize(NSWidth([movieView frame]), NSHeight([movieView frame]))];
 	[toolbarItem setMaxSize:NSMakeSize(NSWidth([movieView frame]),NSHeight([movieView frame]))];
     }
-    else if ([itemIdent isEqualToString: SyncSeriesToolbarItemIdentifier]) 
+    else if ([itemIdent isEqualToString: SyncSeriesToolbarItemIdentifier])
     {
-        [toolbarItem setTarget: self];
-        [toolbarItem setAction: @selector(syncSeriesAction:)];
-        [toolbarItem setToolTip: NSLocalizedString(@"Synchronize 3D position", nil)];
-        
-        [toolbarItem setLabel: NSLocalizedString(@"Sync", nil)];
-        [toolbarItem setPaletteLabel: NSLocalizedString(@"Sync", nil)];
-        
-        if( syncSeriesState == SyncSeriesStateEnable)
-            [toolbarItem setImage: [NSImage imageNamed: SyncLockSeriesImageName]];
-        else
-            [toolbarItem setImage: [NSImage imageNamed: SyncSeriesImageName]];
-
-        [[toolbarItem image]setSize:NSMakeSize(33,33)]; // workaround - delete this !!!
-
-        // Shouldn't be implemented in IB ??
-        KBPopUpToolbarItem* popupToolbarItem = (KBPopUpToolbarItem*)toolbarItem;
-
-        popupToolbarItem.menu = [[[NSMenu alloc] initWithTitle:@""] autorelease];
-        NSMenuItem* menuItem;
-        
-        menuItem = [popupToolbarItem.menu addItemWithTitle:NSLocalizedString(@"All", nil) action:@selector(syncSeriesScopeAction:) keyEquivalent:@""];
-        menuItem.target = self;
-        menuItem.tag=SyncSeriesScopeAllSeries;
-        menuItem = [popupToolbarItem.menu addItemWithTitle:NSLocalizedString(@"Same Patient", nil) action:@selector(syncSeriesScopeAction:) keyEquivalent:@""];
-        menuItem.target = self;
-        menuItem.tag=SyncSeriesScopeSamePatient;
-        menuItem = [popupToolbarItem.menu addItemWithTitle:NSLocalizedString(@"Same Study", nil) action:@selector(syncSeriesScopeAction:) keyEquivalent:@""];
-        menuItem.target = self;
-        menuItem.tag=SyncSeriesScopeSameStudy;
-        
-        [[popupToolbarItem menu] addItem:[NSMenuItem separatorItem]];
-        
-        menuItem = [popupToolbarItem.menu addItemWithTitle:NSLocalizedString(@"Force absolute positioning", nil) action:@selector(syncSeriesBehaviorAction:) keyEquivalent:@""];
-        menuItem.target = self;
-        menuItem.tag=SyncSeriesBehaviorAbsolutePos;
-        menuItem = [popupToolbarItem.menu addItemWithTitle:NSLocalizedString(@"Force relative positioning", nil) action:@selector(syncSeriesBehaviorAction:) keyEquivalent:@""];
-        menuItem.target = self;
-        menuItem.tag=SyncSeriesBehaviorRelativePos;
-        menuItem = [popupToolbarItem.menu addItemWithTitle:NSLocalizedString(@"Absolute positioning for same study", nil) action:@selector(syncSeriesBehaviorAction:) keyEquivalent:@""];
-        menuItem.target = self;
-        menuItem.tag=SyncSeriesBehaviorAbsolutePosWithSameStudy;
-        
-        [[popupToolbarItem menu] addItem:[NSMenuItem separatorItem]];
-        
-        menuItem = [[popupToolbarItem menu] addItemWithTitle:NSLocalizedString(@"No synchronization for this window", nil) action:@selector(syncSeriesStateAction:) keyEquivalent:@""];
-        menuItem.target = self;
-        menuItem.tag=SyncSeriesStateOff;
+        [OrthogonalMPRViewer initSyncSeriesToolbarItem:self : toolbarItem];
     }
     else
     {
@@ -1296,11 +1241,7 @@ return YES;
 //	}
 //	else
     
-    if ([[item itemIdentifier] isEqual:SyncSeriesToolbarItemIdentifier])
-    {
-        syncSeriesToolbarItem = (KBPopUpToolbarItem*) item;
-    }
-	else if ([[item itemIdentifier] isEqualToString:AdjustSplitViewToolbarItemIdentifier])
+	if ([[item itemIdentifier] isEqualToString:AdjustSplitViewToolbarItemIdentifier])
 	{
 		if ([splitView isVertical])
 		{
@@ -1345,9 +1286,9 @@ return YES;
         if([fileList count] == 1) enable = NO;
     }*/
     if ([[toolbarItem itemIdentifier] isEqualToString: SyncSeriesToolbarItemIdentifier])
-    {
-        if(![OrthogonalMPRViewer getSyncSeriesToolbarItemsActivation]) enable = NO;
-    }
+        if(![OrthogonalMPRViewer getSyncSeriesToolbarItemActivation])
+            enable = NO;
+    
     return enable;             
 }
 
@@ -1484,6 +1425,8 @@ return YES;
 {
 	if( [keyPath isEqualToString: @"values.exportDCMIncludeAllViews"])
 		[dcmFormat selectCellWithTag: 1]; // Screen capture
+    else if([keyPath isEqualToString: @"syncSeriesState"])
+        [OrthogonalMPRViewer updateSyncSeriesToolbarItemUI:self];
 }
 
 #ifndef OSIRIX_LIGHT
@@ -1972,485 +1915,318 @@ return YES;
 #pragma mark Multi MPR viewport synchronization
 
 // Actions linked to popupToolbarMenuItems linked to SyncSeriesToolbarItemIdentifier
-
-- (void) syncSeriesScopeAction:(id) sender{
-    
-    if([sender isKindOfClass: [NSMenuItem class]]  )
-        [self setSyncSeriesScope:[sender tag] withNotification:true] ;
+- (void) syncSeriesScopeAction:(id) sender
+{
+    [OrthogonalMPRViewer syncSeriesScopeAction:sender :self] ;
 }
 
-- (void) syncSeriesBehaviorAction:(id) sender{
-    
-    if([sender isKindOfClass: [NSMenuItem class]]  )
-        [self setSyncSeriesBehavior:[sender tag] withNotification:true] ;
+- (void) syncSeriesBehaviorAction:(id) sender
+{
+    [OrthogonalMPRViewer syncSeriesBehaviorAction:sender :self] ;
 }
 
-- (void) syncSeriesStateAction:(id) sender{
-
-    if([sender isKindOfClass: [NSMenuItem class]]  ){
-        if([sender tag]== SyncSeriesStateOff){
-    
-            if(syncSeriesState == SyncSeriesStateOff){
-                
-                NSDictionary* syncSeriesProperties = [OrthogonalMPRViewer evaluateSyncSeriesProperties:self];
-                
-                syncSeriesState = ([[syncSeriesProperties valueForKey:@"syncEnable"]boolValue] ? SyncSeriesStateEnable :SyncSeriesStateDisable);
-                
-                if(syncSeriesState == SyncSeriesStateEnable){
-                    syncSeriesScope = [[syncSeriesProperties valueForKey:@"syncScope"]intValue];
-
-                    [self moveToAbsolutePositionFromNSArray:[syncSeriesProperties valueForKey:@"dicomCoords"]];
-                    [controller resetSyncPositionOrigin];
-                }
-                 [self updateSyncSeriesUI];
-            }else{
-                [self setSyncSeriesState:[sender tag] withNotification:true] ;
-            }
-        }
-    }
+- (void) syncSeriesStateAction:(id) sender
+{
+    [OrthogonalMPRViewer syncSeriesStateAction:sender :self] ;
 }
 
 // Action linked to SyncSeriesToolbarItemIdentifier
+- (void) syncSeriesAction:(id) sender
+{
+    [OrthogonalMPRViewer syncSeriesAction:sender :self] ;
+}
 
-- (void) syncSeriesAction:(id) sender {
+#pragma mark-
+
+
+- (float*) syncOriginPosition
+{
+    return syncOriginPosition;
+}
+
+- (void) syncSeriesNotification:(NSNotification*)notification   // Observe OsirixOrthoMPRSyncSeriesNotification
+{
+    [OrthogonalMPRViewer syncSeriesNotification:self :notification ];
+}
+
+- (void) posChangeNotification:(NSNotification*)notification // Observe OsirixOrthoMPRPosChangeNotification
+{
+    [OrthogonalMPRViewer posChangeNotification:self :notification];
+}
+
+#pragma mark-
+
++ (SyncSeriesScope) syncSeriesScope{
+    return globalSyncSeriesScope;
+}
+
++ (void) getDICOMCoords:(id)viewer :(float*) location
+{
+    [[[viewer controller]xReslicedView] getCrossPositionDICOMCoords:location];
+}
+
++ (void) resetSyncOriginPosition:(id)viewer
+{
+    [OrthogonalMPRViewer getDICOMCoords:viewer :[viewer syncOriginPosition]];
+}
+
++ (void) initSyncSeriesProperties:(id)viewer
+{
+    // Set default values for syncSeries mechanism
+    [viewer setSyncSeriesState: SyncSeriesStateDisable] ;
+    [viewer setSyncSeriesBehavior: SyncSeriesBehaviorAbsolutePosWithSameStudy];
+}
+
+#pragma mark-
+
++ (void) syncSeriesScopeAction:(id) sender :(id)viewer
+{
+    if([sender isKindOfClass: [NSMenuItem class]]  )
+        [OrthogonalMPRViewer updateSyncSeriesScope:viewer :[sender tag]] ;
+}
+
++ (void) syncSeriesBehaviorAction:(id) sender :(id) viewer
+{
+    if([sender isKindOfClass: [NSMenuItem class]]  ){
+        [OrthogonalMPRViewer updateSyncSeriesBehavior:viewer :[sender tag] ] ;
+    }
+}
+
++ (void) syncSeriesStateAction:(id) sender :(id) viewer
+{
+    if([sender isKindOfClass: [NSMenuItem class]] )
+        [OrthogonalMPRViewer updateSyncSeriesState:viewer :[sender tag] ] ;
+}
+
++ (void) syncSeriesAction:(id) sender :(id)viewer
+{
+    // Invert syncSeriesState or turn on Enable when viewer was SyncSeriesStateOff
+    SyncSeriesState newState = ([viewer syncSeriesState] == SyncSeriesStateEnable)? SyncSeriesStateDisable : SyncSeriesStateEnable ;
     
-    if(syncSeriesState == SyncSeriesStateOff)
-        return; // Do nothing if sync state is turned off
- 
-    SyncSeriesState newState = (syncSeriesState == SyncSeriesStateEnable)? SyncSeriesStateDisable : SyncSeriesStateEnable ; // Invert sync series state
-
-    SyncSeriesBehavior newBehavior = syncSeriesBehavior;  // this parameter is used either to force absolute re-positioning or only to reset origin to a relative position
-
     // Overrides current behavior when using modifier Keys during action
+    SyncSeriesBehavior newBehavior = [viewer syncSeriesBehavior];
     NSUInteger modifierFlags = [[[NSApplication sharedApplication] currentEvent] modifierFlags] ;
     
     if( modifierFlags & NSAlternateKeyMask)
         newBehavior = SyncSeriesBehaviorAbsolutePos;
     else if( modifierFlags & NSShiftKeyMask)
         newBehavior = SyncSeriesBehaviorRelativePos;
-
-    [self updateSyncSeriesProperties:newState:syncSeriesScope :newBehavior withNotification:true];
+    
+    [OrthogonalMPRViewer updateSyncSeriesProperties:viewer :newState :globalSyncSeriesScope :newBehavior ];
 }
 
-- (void) setSyncSeriesState:(SyncSeriesState) newState withNotification:(bool)doNotify
+#pragma mark-
+
++ (void) updateSyncSeriesState:(id)viewer :(SyncSeriesState) newState
 {
-    if(syncSeriesState != newState)
-        [self updateSyncSeriesProperties:newState :syncSeriesScope :syncSeriesBehavior withNotification:doNotify];
+    if([viewer syncSeriesState] != newState)
+        [OrthogonalMPRViewer updateSyncSeriesProperties:viewer :newState :globalSyncSeriesScope :[viewer syncSeriesBehavior] ];
 }
 
-- (void) setSyncSeriesScope:(SyncSeriesScope) newScope withNotification:(bool)doNotify{
++ (void) updateSyncSeriesScope:(id)viewer :(SyncSeriesScope) newScope {
     
-    if(syncSeriesScope != newScope)
-        [self updateSyncSeriesProperties:syncSeriesState :newScope :syncSeriesBehavior withNotification:doNotify];
+    if(globalSyncSeriesScope != newScope)
+        [OrthogonalMPRViewer updateSyncSeriesProperties:viewer :[viewer syncSeriesState] :newScope :[viewer syncSeriesBehavior] ];
 }
 
-- (void) setSyncSeriesBehavior:(SyncSeriesBehavior) newBehavior withNotification:(bool)doNotify {
-
-    if(syncSeriesBehavior != newBehavior)
-        [self updateSyncSeriesProperties:syncSeriesState :syncSeriesScope :newBehavior withNotification:doNotify];
++ (void) updateSyncSeriesBehavior:(id)viewer :(SyncSeriesBehavior) newBehavior
+{
+    if([viewer syncSeriesBehavior] != newBehavior)
+        [OrthogonalMPRViewer updateSyncSeriesProperties:viewer :[viewer syncSeriesState] :globalSyncSeriesScope :newBehavior ];
 }
 
-- (void) updateSyncSeriesProperties:(SyncSeriesState) newState :(SyncSeriesScope) newScope :(SyncSeriesBehavior) newBehavior withNotification:(bool) doNotifiy {
++ (void) updateSyncSeriesProperties:(id)viewer :(SyncSeriesState) newState :(SyncSeriesScope) newScope :(SyncSeriesBehavior) newBehavior  {
     
-    if(syncSeriesState == newState && syncSeriesScope == newScope && syncSeriesBehavior == newBehavior)
+    if([viewer syncSeriesState] == newState && [viewer syncSeriesBehavior] == newBehavior && globalSyncSeriesScope == newScope )
         return;
     
     NSNotification *syncSeriesNotification =nil;
+
+    DicomStudy *currentStudy = [viewer currentStudy];
     
-    if(doNotifiy){
-        DicomStudy *currentStudy = self.currentStudy;
-        
-        // Populate required info associated with this change
-        NSDictionary *userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                  [NSNumber numberWithInt:syncSeriesScope],@"syncScope",
-                                  [NSNumber numberWithBool:(newState == SyncSeriesStateEnable ? TRUE : FALSE)],@"syncEnable",
-                                  nil ];
-        
-        if(newScope != SyncSeriesScopeAllSeries){     // Scope is at least same patient
-            [userInfo setValue: [currentStudy valueForKey:@"patientID"] forKey:@"patientID"];       //  NSString
-            [userInfo setValue: [currentStudy valueForKey:@"dateOfBirth"] forKey:@"dateOfBirth"];   //  NSDate
-        }
-        
-        if (newScope == SyncSeriesScopeSameStudy || newBehavior == SyncSeriesBehaviorAbsolutePosWithSameStudy) {
-            [userInfo setValue: [currentStudy valueForKey:@"studyInstanceUID"] forKey:@"studyInstanceUID"]; //  NSString
-        }
-        
-        if(newState == SyncSeriesStateEnable){
-            [userInfo setValue: [NSNumber numberWithInt:newBehavior] forKey:@"syncBehavior"];
-            [userInfo setValue: [controller getViewerDICOMCoords] forKey:@"dicomCoords"];   //  NSArray*
-        }
-        
-        syncSeriesNotification = [NSNotification notificationWithName:OsirixOrthoMPRSyncSeriesNotification object:self userInfo:userInfo];
+    // Populate required info associated with this change
+    NSDictionary *userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                              [NSNumber numberWithInt:newState],@"syncState",
+                              [NSNumber numberWithInt:newBehavior],@"syncBehavior",
+                              nil ];
+    
+    if(newScope != SyncSeriesScopeAllSeries){     // Scope is at least same patient
+        [userInfo setValue: [currentStudy valueForKey:@"patientID"] forKey:@"patientID"];       //  NSString
+        [userInfo setValue: [currentStudy valueForKey:@"dateOfBirth"] forKey:@"dateOfBirth"];   //  NSDate
     }
     
-    dispatch_block_t syncSeriesBlockOnMainThread = ^{
-        syncSeriesState = newState;
-        syncSeriesScope = newScope;
-        syncSeriesBehavior = newBehavior;
+    if (newScope == SyncSeriesScopeSameStudy || newBehavior == SyncSeriesBehaviorAbsolutePosWithSameStudy)
+        [userInfo setValue: [currentStudy valueForKey:@"studyInstanceUID"] forKey:@"studyInstanceUID"]; //  NSString
+    
+    if(newState == SyncSeriesStateEnable){
+        float currentDicomLocation[3] ;
+        [OrthogonalMPRViewer getDICOMCoords:viewer :currentDicomLocation];
         
-        if(doNotifiy){
-            [[NSNotificationCenter defaultCenter] postNotification: syncSeriesNotification];
-            [OrthogonalMPRViewer validateMPRViewersSyncSeriesState];    // need to be excuted sequentialy with the postnotification in order to keep in sync
-        }
-        [self updateSyncSeriesUI];
+        NSArray* dicomCoords = [NSArray arrayWithObjects:
+                                [NSNumber numberWithFloat:currentDicomLocation[0]],
+                                [NSNumber numberWithFloat:currentDicomLocation[1]],
+                                [NSNumber numberWithFloat:currentDicomLocation[2]],nil];
+        
+        [userInfo setValue: dicomCoords forKey:@"dicomCoords"];   //  NSArray*
+    }
+
+    syncSeriesNotification = [NSNotification notificationWithName:OsirixOrthoMPRSyncSeriesNotification object:viewer userInfo:userInfo];
+    
+    dispatch_block_t syncSeriesBlockOnMainThread = ^{
+        globalSyncSeriesScope = newScope;
+        [viewer setSyncSeriesState: newState];
+        [viewer setSyncSeriesBehavior:  newBehavior];
+
+        //        [[NSUserDefaults standardUserDefaults] setInteger:globalSyncSeriesScope forKey:@"globalMPRSyncSeriesScope"];
+        
+        [[NSNotificationCenter defaultCenter] postNotification: syncSeriesNotification];
+        
+        // Following messages need to be excuted sequentialy with postNotification in the main thread in order to keep in sync and propagate appropriate state values
+        [OrthogonalMPRViewer validateViewersSyncSeriesState];
+        [OrthogonalMPRViewer synchronizeViewersPosition:nil];
+
     };
     
     // Fire this event change on the MainThread
-    if (dispatch_get_current_queue() == dispatch_get_main_queue()) { // avoid deadlocks when using dispatch_sync - same as  => if(![NSThread isMainThread])
+    if (dispatch_get_current_queue() == dispatch_get_main_queue()) { // avoid deadlocks when using dispatch_sync, same as => if(![NSThread isMainThread])
         syncSeriesBlockOnMainThread();
     } else {
         dispatch_async(dispatch_get_main_queue(), syncSeriesBlockOnMainThread);
     }
 }
 
-- (void) syncSeriesNotification:(NSNotification*)notification   // Observe OsirixOrthoMPRSyncSeriesNotification
-{
-    if (![NSThread isMainThread])
-        dispatch_async(dispatch_get_main_queue(),^{ [self syncSeriesNotification: notification]; });
-    else {
-        
-        NSDictionary *userInfo = [notification userInfo];
-        if(userInfo ==nil)
-            return;
-        
-        BOOL syncEnableNotification = [[userInfo valueForKey:@"syncEnable"]boolValue];
-        
-        // Reset actual position as origin anytime a syncSeries is enabled anywhere  
-        if( syncEnableNotification)
-            [controller resetSyncPositionOrigin];
-        
-        if([self isNotEqualTo:[notification object]] && syncSeriesState != SyncSeriesStateOff ){
-            
-            DicomStudy *currentStudy = self.currentStudy;
-            NSString *senderStudyInstanceUID = [userInfo valueForKey:@"studyInstanceUID"];
-            NSString *currentStudyInstanceUID = [currentStudy valueForKey:@"studyInstanceUID"];
-            
-            SyncSeriesScope syncScopeNotification = [[userInfo valueForKey:@"syncScope"]intValue];
-
-            // Test if the sync change notification is within the current scope 
-            
-            if(syncScopeNotification != SyncSeriesScopeAllSeries){
-                
-                NSString *senderPatientID = [userInfo valueForKey:@"patientID"];
-                NSDate *senderDateOfBirth = [userInfo valueForKey:@"dateOfBirth"];
-
-                NSString *currentPatientID = [currentStudy valueForKey:@"patientID"];
-                NSDate *currentDateOfBirth = [currentStudy valueForKey:@"dateOfBirth"];
-
-                if([senderPatientID isNotEqualTo: currentPatientID] || [senderDateOfBirth isNotEqualTo: currentDateOfBirth] ) // Same patient ??
-                    return;
-                
-                if((syncScopeNotification == SyncSeriesScopeSameStudy) && [senderStudyInstanceUID isNotEqualTo:currentStudyInstanceUID] ) // Same Study ??
-                    return;
-            }
-            
-            if( syncEnableNotification) {
-                
-                // Move to a new location and/or reset orgin position according to syncBehavior  
-                
-                SyncSeriesBehavior syncBehaviorNotification=[[userInfo valueForKey:@"syncBehavior"]intValue];
-                
-                if((syncBehaviorNotification == SyncSeriesBehaviorAbsolutePos) ||
-                   ((syncBehaviorNotification == SyncSeriesBehaviorAbsolutePosWithSameStudy) && [senderStudyInstanceUID isEqualTo:currentStudyInstanceUID ])){
-                    
-                    [self moveToAbsolutePositionFromNSArray:[userInfo valueForKey:@"dicomCoords"]];
-                    [controller resetSyncPositionOrigin];
-                }
-            }
-            syncSeriesState = (syncEnableNotification == TRUE)? SyncSeriesStateEnable : SyncSeriesStateDisable;
-            [self updateSyncSeriesUI];
-        }
-    }
-}
-
-- (void) updateSyncSeriesUI{
-
-    if (![NSThread isMainThread])
-        dispatch_async(dispatch_get_main_queue(),^{ [self updateSyncSeriesUI]; });
-    else {
-        if( syncSeriesState == SyncSeriesStateEnable)
-            [syncSeriesToolbarItem setImage: [NSImage imageNamed: SyncLockSeriesImageName]];
-        else
-            [syncSeriesToolbarItem setImage: [NSImage imageNamed: SyncSeriesImageName]];
-
-        [[syncSeriesToolbarItem image]setSize:NSMakeSize(33,33)];
-    }
-}
-
-- (void) posChangeNotification:(NSNotification*)notification
-{
-    if([self isEqual:[notification object]]  )
-    {
-        NSLog(@"Should never be there !!!");
++ (void) positionChange:(id) viewer :(NSArray*) relativePositionChange{
+    if([viewer syncSeriesState] != SyncSeriesStateEnable)
         return;
+
+    NSNotification *posChangeNotification =nil;
+    
+    DicomStudy *currentStudy = [viewer currentStudy];
+    
+    NSDictionary *userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                              relativePositionChange,@"positionChange",
+                               nil ];
+    
+    if(globalSyncSeriesScope != SyncSeriesScopeAllSeries){     // Scope is at least same patient
+        [userInfo setValue: [currentStudy valueForKey:@"patientID"] forKey:@"patientID"];       //  NSString
+        [userInfo setValue: [currentStudy valueForKey:@"dateOfBirth"] forKey:@"dateOfBirth"];   //  NSDate
     }
     
-    if(syncSeriesState != SyncSeriesStateEnable)
-        return;
+    if (globalSyncSeriesScope == SyncSeriesScopeSameStudy || [viewer syncSeriesBehavior] == SyncSeriesBehaviorAbsolutePosWithSameStudy)
+        [userInfo setValue: [currentStudy valueForKey:@"studyInstanceUID"] forKey:@"studyInstanceUID"]; //  NSString
     
-    [self moveToRelativePositionFromNSArray:(NSArray*)[[notification userInfo] valueForKey:@"positionChange"]];
-}
-
-- (void) moveToRelativePositionFromNSArray:(NSArray*) relativeLocation{
-    if(relativeLocation != nil && [relativeLocation count]==3 ){
-        float dcmCoord[3];
-        
-        dcmCoord[0] =  [[relativeLocation objectAtIndex:0]floatValue];
-        dcmCoord[1] =  [[relativeLocation objectAtIndex:1]floatValue];
-        dcmCoord[2] =  [[relativeLocation objectAtIndex:2]floatValue];
-        
-        [self moveToRelativePosition:dcmCoord];
-    }
-}
-
-- (void) moveToRelativePosition:(float*) dcmCoord
-{
-    float* syncPositionOrigin;
-   
-    syncPositionOrigin = [controller getSyncPositionOrigin];
-    
-    for(int i =0 ;i<3 ;i++)
-        dcmCoord[i] += syncPositionOrigin[i];
-    
-    [self moveToAbsolutePosition:dcmCoord];
-}
-
-- (void) moveToAbsolutePositionFromNSArray:(NSArray*) newLocation{
-    
-    if(newLocation != nil && [newLocation count]==3 ){
-        float dcmCoord[3];
-        
-        dcmCoord[0] =  [[newLocation objectAtIndex:0]floatValue];
-        dcmCoord[1] =  [[newLocation objectAtIndex:1]floatValue];
-        dcmCoord[2] =  [[newLocation objectAtIndex:2]floatValue];
-        
-        [self moveToAbsolutePosition:dcmCoord];
-    }
-}
-
-- (void) moveToAbsolutePosition:(float*) dcmCoord
-{
-    float  sliceCoord[3];
-    
-    [[[controller originalView] curDCM] convertDICOMCoords:dcmCoord toSliceCoords:sliceCoord pixelCenter:YES];
-    sliceCoord[ 0] /= [[[controller originalView] curDCM] pixelSpacingX];
-    sliceCoord[ 1] /= [[[controller originalView] curDCM] pixelSpacingY];
-    sliceCoord[ 2] /= [[[controller originalView] curDCM] sliceInterval];
-    //    NSLog(@"moveToAbsolutePosition - sliceCoord : %f %f index : %f", sliceCoord[0], sliceCoord[1], sliceCoord[2]);
-    
-    [[controller originalView] setCrossPosition: sliceCoord[0] : sliceCoord[1]: FALSE];
-    
-    [[[controller xReslicedView] curDCM] convertDICOMCoords:dcmCoord toSliceCoords:sliceCoord pixelCenter:YES];
-    sliceCoord[ 0] /= [[[controller xReslicedView] curDCM] pixelSpacingX];
-    sliceCoord[ 1] /= [[[controller xReslicedView] curDCM] pixelSpacingY];
-    sliceCoord[ 2] /= [[[controller xReslicedView] curDCM] sliceInterval];
-    //    NSLog(@"moveToAbsolutePosition - sliceCoord : %f %f index : %f", sliceCoord[0], sliceCoord[1], sliceCoord[2]);
-    
-    [[controller xReslicedView] setCrossPosition: sliceCoord[0] : sliceCoord[1] : FALSE];
-}
-
-+ (NSDictionary*) evaluateSyncSeriesProperties:(id)currentViewer {
-    
-    // Evaluate all MPRviewers and return current syncSeries Properties according to them :
-    
-    // syncState will be set to :
-    //  - SyncSeriesStateEnable if it's within the scope of any other enabled syncState MPRviewer
-    //  - SyncSeriesStateDisable if above condition is not met
-    
-    // syncSeriesScope will be set to a value matching the one for which another MPRviewer has this viewer within its scope
-    //  - if none is found default value is SyncSeriesScopeSamePatient
-    //  - priority order is the following sequence (Highest...Lowest) : {SyncSeriesScopeAllSeries=1,SyncSeriesScopeSamePatient=2,SyncSeriesScopeSameStudy=3}}
-    //  - viewers with enabled syncState will be first considered.
-    
-    // syncSeriesBehavior will be set to the same value as the one of the previously selected MPRViewer
-    //  - if none is found default value is SyncSeriesBehaviorAbsolutePosWithSameStudy
-    
-    
-    if(!([currentViewer isKindOfClass:[OrthogonalMPRViewer class]]
-#ifndef OSIRIX_LIGHT
-         || [currentViewer isKindOfClass:[OrthogonalMPRPETCTViewer class]]
-#endif
-         ))
-        return nil;
-   
-    // Set default values for syncSeries mechanism
-    SyncSeriesState newState = SyncSeriesStateDisable;
-    SyncSeriesScope newScope = SyncSeriesScopeSamePatient;
-    SyncSeriesBehavior newBehavior = SyncSeriesBehaviorAbsolutePosWithSameStudy;
-
-    NSArray *newLocation = nil;
-    
-    NSMutableArray* sortedOrthoMPRViewers = [OrthogonalMPRViewer orthoMPRViewerApps:YES];
-    [sortedOrthoMPRViewers removeObject:currentViewer];
-    
-    if([sortedOrthoMPRViewers count] > 0){
-    
-        DicomStudy *currentStudy = ((OrthogonalMPRViewer*)currentViewer).currentStudy;
-        
-        NSString *currentPatientID = [currentStudy valueForKey:@"patientID"];
-        NSDate *currentDateOfBirth = [currentStudy valueForKey:@"dateOfBirth"];
-        NSString *currentStudyInstanceUID = [currentStudy valueForKey:@"studyInstanceUID"];
-        
-        id viewerInScope = nil;
-        
-        for(id orthoMPRViewer in sortedOrthoMPRViewers) {  // sort is syncSeriesState == SyncSeriesStateEnable first
-            
-            if([orthoMPRViewer syncSeriesState] == SyncSeriesStateOff)
-                continue;
-            
-            // Test if it's within the scope of any orthoMPRviewer
-            
-            if([orthoMPRViewer syncSeriesScope] != SyncSeriesScopeAllSeries){
-                
-                DicomStudy *anotherStudy = [orthoMPRViewer currentStudy];
-                
-                // Same patient ??
-                if([currentPatientID isNotEqualTo: [anotherStudy valueForKey:@"patientID"]] ||
-                   [currentDateOfBirth isNotEqualTo: [anotherStudy valueForKey:@"dateOfBirth"]]  )
-                    continue;
-                
-                // Same Study ??
-                if(([orthoMPRViewer syncSeriesScope] == SyncSeriesScopeSameStudy) && [currentStudyInstanceUID isNotEqualTo:[anotherStudy valueForKey:@"studyInstanceUID"]] )
-                    continue;
-            }
-            
-            // OK - within the scope of some orthoMPRViewer
-            
-            if([orthoMPRViewer syncSeriesState] == SyncSeriesStateDisable && newState == SyncSeriesStateEnable)
-                break; // no need to iterate more since Enabled syncSeriesState viewer is found
-            
-            if( viewerInScope == nil || [orthoMPRViewer syncSeriesScope] > newScope ){
-                
-                // Override default values to those of the first viewer that meets scope requirement
-                // or when a viewer with higher scope priority is met
-                
-                newScope = [orthoMPRViewer syncSeriesScope];
-                newState = [orthoMPRViewer syncSeriesState];
-                newBehavior = [orthoMPRViewer syncSeriesBehavior];
-                
-                viewerInScope = orthoMPRViewer;
-            }
-            
-            if(newScope == SyncSeriesScopeSameStudy)
-                break; // no need to iterate more since highest priority is met
-        }
-        
-        if(newState== SyncSeriesStateEnable ){
-
-            if((newBehavior == SyncSeriesBehaviorAbsolutePos) ||
-               ((newBehavior == SyncSeriesBehaviorAbsolutePosWithSameStudy) && [ currentStudyInstanceUID isEqualTo:[[viewerInScope currentStudy] valueForKey:@"studyInstanceUID"] ])){
-                
-                newLocation = [[viewerInScope controller] getViewerDICOMCoords];
-            }
-        }
-    }
-    
-    return [NSMutableDictionary dictionaryWithObjectsAndKeys:
-            [NSNumber numberWithBool:(newState == SyncSeriesStateEnable ? TRUE : FALSE)],@"syncEnable",
-            [NSNumber numberWithInt:newScope],@"syncScope",
-            [NSNumber numberWithInt:newBehavior], @"syncBehavior",
-            newLocation,@"dicomCoords", nil];
-}
-
-+ (void) validateMPRViewersSyncSeriesState
-{
-    // Validates the enable syncState of all MPRviewers, that is force to disable the viewer's syncState if :
-    // - it's alone
-    //   OR
-    // - it hasn't any enabled syncState MPRviewer within its scope
-    //   AND
-    // - it's not within the scope of any other enabled syncState MPRviewer
-    
-    if (![NSThread isMainThread])
-        dispatch_sync(dispatch_get_main_queue(),^{ [OrthogonalMPRViewer validateMPRViewersSyncSeriesState]; });
-    else {
-        NSArray* syncEnableViewers = [OrthogonalMPRViewer orthoMPRViewerApps:TRUE];
-        
-        for(id currentViewer in syncEnableViewers) {
-            
-            bool currentViewerEnableStateIsValid = false;
-            
-            DicomStudy *currentStudy = [currentViewer currentStudy];
-            NSString *currentPatientID = [currentStudy valueForKey:@"patientID"];
-            NSDate *currentDateOfBirth = [currentStudy valueForKey:@"dateOfBirth"];
-            NSString *currentStudyInstanceUID = [currentStudy valueForKey:@"studyInstanceUID"];
-            SyncSeriesScope currentSyncScope = [currentViewer syncSeriesScope];
-            
-            // Test if another enabled syncState MPRviewer is within current SyncScope
-
-            for(id anotherViewer in syncEnableViewers) {
-                
-                if([currentViewer isEqualTo:anotherViewer] )
-                    continue;
-                
-                DicomStudy *anotherStudy = [anotherViewer currentStudy];
-                
-                if(currentSyncScope == SyncSeriesScopeAllSeries){
-                    currentViewerEnableStateIsValid =true;
-                }else {
-                    
-                    // same patient or same study ?? 
-                    if([currentPatientID isEqualTo: [anotherStudy valueForKey:@"patientID"]] &&
-                       [currentDateOfBirth isEqualTo: [anotherStudy valueForKey:@"dateOfBirth"]]  )
-                        currentViewerEnableStateIsValid = true;
-                    
-                    // same study ??
-                    if((currentSyncScope == SyncSeriesScopeSameStudy) && [currentStudyInstanceUID isNotEqualTo:[anotherStudy valueForKey:@"studyInstanceUID"]] )
-                        currentViewerEnableStateIsValid = false;
-                }
-                
-                if( currentViewerEnableStateIsValid == false){
-                    
-                    // Test if it's not within the scope of another enabled syncState MPRviewer 
-                    
-                    if([anotherViewer syncSeriesScope] != SyncSeriesScopeAllSeries){
-                        // Same patient ??
-                        if([currentPatientID isNotEqualTo: [anotherStudy valueForKey:@"patientID"]] ||
-                           [currentDateOfBirth isNotEqualTo: [anotherStudy valueForKey:@"dateOfBirth"]]  ) 
-                            continue;
-                        
-                        // Same Study ??
-                        if(([anotherViewer syncSeriesScope] == SyncSeriesScopeSameStudy) && [currentStudyInstanceUID isNotEqualTo:[anotherStudy valueForKey:@"studyInstanceUID"]] )
-                            continue;
-                    }
-                    
-                    currentViewerEnableStateIsValid = true;
-                }
-                
-                // Current viewer enable syncState is valid till it's within the syncScope of another enabled syncState MPRviewer 
-                break;
-            }
-            
-            if(currentViewerEnableStateIsValid == false){
-                [currentViewer setSyncSeriesState:SyncSeriesStateDisable withNotification:false];
-                // no need to send notification since there is abviously no observer
-            }
-        }
-    }
-}
-
-+ (void) evaluteSyncSeriesToolbarItemsActivationWhenInit
-{
-     activateMPRSyncSeriesToolbarItems = [OrthogonalMPRViewer orthoMPRViewerNumber ] >1 ;
-}
-
-+ (void) evaluteSyncSeriesToolbarItemsActivationBeforeClose
-{
-    activateMPRSyncSeriesToolbarItems = [OrthogonalMPRViewer orthoMPRViewerNumber ] >=3 ;
-}
-
-+ (BOOL) getSyncSeriesToolbarItemsActivation
-{
-    return activateMPRSyncSeriesToolbarItems;
+    [[NSNotificationCenter defaultCenter] postNotificationName: OsirixOrthoMPRPosChangeNotification object:viewer  userInfo: userInfo];
 }
 
 #pragma mark-
 
-+ (NSMutableArray*) sortedOrthoMPRViewerApps
++ (void) syncSeriesNotification:(id)viewer :(NSNotification*)notification
 {
-    NSMutableArray* orthoMPRViewers = [OrthogonalMPRViewer orthoMPRViewerApps ];
+    NSDictionary *userInfo = [notification userInfo];
     
-    [orthoMPRViewers sortUsingComparator: ^NSComparisonResult(id obj1, id obj2) {
+    [OrthogonalMPRViewer resetSyncOriginPosition:viewer];     // Reset actual position as origin anytime a syncSeries change notification is send anywhere
+    
+    if([viewer isEqualTo:[notification object]]  )
+        return;
+    
+    DicomStudy *currentStudy = [viewer currentStudy];
+
+    NSString *senderStudyInstanceUID = [userInfo valueForKey:@"studyInstanceUID"];
+    NSString *currentStudyInstanceUID = [currentStudy valueForKey:@"studyInstanceUID"];
+
+    // Test if the sync change notification is within the current scope
+    if(globalSyncSeriesScope != SyncSeriesScopeAllSeries){
+        
+        NSString *senderPatientID = [userInfo valueForKey:@"patientID"];
+        NSString *currentPatientID = [currentStudy valueForKey:@"patientID"];
+        
+        NSDate *senderDateOfBirth = [userInfo valueForKey:@"dateOfBirth"];
+        NSDate *currentDateOfBirth = [currentStudy valueForKey:@"dateOfBirth"];
+        
+        if([senderPatientID isNotEqualTo: currentPatientID] || [senderDateOfBirth isNotEqualTo: currentDateOfBirth] ) // Not Same patient ??
+            return;
+        
+        if((globalSyncSeriesScope == SyncSeriesScopeSameStudy) && [senderStudyInstanceUID isNotEqualTo:currentStudyInstanceUID] ) // Not Same Study ??
+            return;
+    }
+    
+    // Propagate syncProperties (syncSeriesState and syncSeriesBehavior) and optionnaly move to a new location according to syncBehavior 
+    
+    [viewer setSyncSeriesBehavior :[[userInfo valueForKey:@"syncBehavior"]intValue]];
+    
+    if([viewer syncSeriesState] != SyncSeriesStateOff){ // state is not updated when current is off
+        
+        SyncSeriesState newState = [[userInfo valueForKey:@"syncState"]intValue];
+        
+        if(newState != SyncSeriesStateOff){ // syncOff value state is not propagated
+            [viewer setSyncSeriesState: newState];
+            
+            if( [viewer syncSeriesState] == SyncSeriesStateEnable) {
+                
+                if(([viewer syncSeriesBehavior] == SyncSeriesBehaviorAbsolutePos) ||
+                   (([viewer syncSeriesBehavior] == SyncSeriesBehaviorAbsolutePosWithSameStudy) && [senderStudyInstanceUID isEqualTo:currentStudyInstanceUID ])){
+                    
+                    NSArray* dicomCoords = [userInfo valueForKey:@"dicomCoords"];
+                    [[viewer controller]  moveToAbsolutePosition:dicomCoords];
+                    [OrthogonalMPRViewer resetSyncOriginPosition:viewer];
+                }
+            }
+        }
+    }
+}
+
++ (void) posChangeNotification:(id)viewer :(NSNotification*)notification
+{
+    if([viewer isEqual:[notification object]] || [viewer syncSeriesState] != SyncSeriesStateEnable )
+        return;
+    
+     NSDictionary *userInfo = [notification userInfo];
+    
+    // Test if the pos change notification is within the current scope
+    if(globalSyncSeriesScope != SyncSeriesScopeAllSeries){
+    
+        DicomStudy *currentStudy = [viewer currentStudy];
+        
+        NSString *senderPatientID = [userInfo valueForKey:@"patientID"];
+        NSString *currentPatientID = [currentStudy valueForKey:@"patientID"];
+        
+        NSDate *senderDateOfBirth = [userInfo valueForKey:@"dateOfBirth"];
+        NSDate *currentDateOfBirth = [currentStudy valueForKey:@"dateOfBirth"];
+        
+        if([senderPatientID isNotEqualTo: currentPatientID] || [senderDateOfBirth isNotEqualTo: currentDateOfBirth] ) // Not Same patient ??
+            return;
+
+        NSString *senderStudyInstanceUID = [userInfo valueForKey:@"studyInstanceUID"];
+        NSString *currentStudyInstanceUID = [currentStudy valueForKey:@"studyInstanceUID"];
+        
+        if((globalSyncSeriesScope == SyncSeriesScopeSameStudy) && [senderStudyInstanceUID isNotEqualTo:currentStudyInstanceUID] ) // 2 Same Study ??
+            return;
+    }
+
+    [[viewer controller] moveToRelativePosition:[userInfo valueForKey:@"positionChange"]];
+}
+
+#pragma mark-
+
++ (void) synchronizeViewer:(id)currentViewer {
+    
+    // Evaluate all opened MPRviewers and update currentViewer's syncSeries Properties according to them
+    // It will be updated to values matching thoses for which another MPRviewer has the currentViewer within its scope
+    
+    // Note that currentViewer's position may be changed in order to be in sync with other enabled viewers within the same scope when position change is in absolute mode
+    
+    // This message should be called just after the first image is displayed and positioned
+    
+    if (![NSThread isMainThread]){
+        dispatch_sync(dispatch_get_main_queue(),^{ [OrthogonalMPRViewer synchronizeViewer:currentViewer]; });
+        return;
+    }
+
+    [OrthogonalMPRViewer resetSyncOriginPosition:currentViewer]; // reset sync origin position, generally done the first time a viewer is loaded
+
+    NSMutableArray* sortedViewers = [OrthogonalMPRViewer MPRViewersWithout:currentViewer];
+    
+    [sortedViewers sortUsingComparator: ^NSComparisonResult(id obj1, id obj2) { // sort is syncSeriesState == SyncSeriesStateEnable first
         if([obj1 syncSeriesState] > [obj2 syncSeriesState] )
             return NSOrderedAscending;
         else if([obj1 syncSeriesState] < [obj2 syncSeriesState] )
@@ -2458,22 +2234,264 @@ return YES;
         return NSOrderedSame;
     }];
     
-    return orthoMPRViewers;
+    if([sortedViewers count] > 0){
+        
+        DicomStudy *currentStudy = [currentViewer currentStudy];
+        NSString *currentPatientID = [currentStudy valueForKey:@"patientID"];
+        NSDate *currentDateOfBirth = [currentStudy valueForKey:@"dateOfBirth"];
+        NSString *currentStudyInstanceUID = [currentStudy valueForKey:@"studyInstanceUID"];
+
+        BOOL isViewerSynchronized = NO;
+        
+        // Test if it's within the scope of any other viewer
+        for(id anotherViewer in sortedViewers) {
+            
+            if(!isViewerSynchronized){
+
+                if(globalSyncSeriesScope != SyncSeriesScopeAllSeries){
+                    DicomStudy *anotherStudy = [anotherViewer currentStudy];
+                    
+                    // Same patient ??
+                    if([currentPatientID isNotEqualTo: [anotherStudy valueForKey:@"patientID"]] ||
+                       [currentDateOfBirth isNotEqualTo: [anotherStudy valueForKey:@"dateOfBirth"]]  )
+                        continue;
+                    
+                    // Same Study ??
+                    if((globalSyncSeriesScope == SyncSeriesScopeSameStudy) && [currentStudyInstanceUID isNotEqualTo:[anotherStudy valueForKey:@"studyInstanceUID"]] )
+                        continue;
+                }
+                
+                // Override default values to those of this first viewer that meets scope requirement
+                SyncSeriesState newState = ([anotherViewer syncSeriesState] != SyncSeriesStateOff)?[anotherViewer syncSeriesState]:SyncSeriesStateDisable;
+                SyncSeriesBehavior newBehavior = [anotherViewer syncSeriesBehavior];
+                
+                [currentViewer setSyncSeriesState: newState] ;
+                [currentViewer setSyncSeriesBehavior: newBehavior];
+                
+                if(newState == SyncSeriesStateEnable)
+                    [OrthogonalMPRViewer synchronizeViewersPosition:currentViewer];
+                
+                isViewerSynchronized = YES; // OK - within the scope of some viewer, no neeed to iterate more
+            }
+
+            [OrthogonalMPRViewer resetSyncOriginPosition:anotherViewer];     // Reset actual position as origin anytime a new viewer is synchronized anywhere
+        }
+    }
+ }
+
++ (void) synchronizeViewersPosition:(id) onlyViewerToBeSynchronized{
+    
+    // Validate that absolute position of all enabled viewers are identical when it's required :
+    // - for viewers with same study when behavior is set to SyncSeriesBehaviorAbsolutePosWithSameStudy
+    // - for all viewers when behavior is set to SyncSeriesBehaviorAbsolutePos
+    
+    // Note if onlyViewerToBeSynchronized is not null (optionnal parameter), only this viewer's position will be re-synchronized with others
+    
+    if (![NSThread isMainThread]){
+        dispatch_sync(dispatch_get_main_queue(),^{ [OrthogonalMPRViewer synchronizeViewersPosition:onlyViewerToBeSynchronized]; });
+        return;
+    }
+    
+    NSArray* syncEnabledViewers = [OrthogonalMPRViewer MPRViewersWithout:nil andSyncEnabled:TRUE];
+    
+    for(id currentViewer in syncEnabledViewers) {
+        
+        if([onlyViewerToBeSynchronized isEqualTo:currentViewer])
+            continue;
+        
+        if([currentViewer syncSeriesBehavior] == SyncSeriesBehaviorRelativePos )
+            continue;
+        
+        DicomStudy *currentStudy = [currentViewer currentStudy];
+        NSString *currentPatientID = [currentStudy valueForKey:@"patientID"];
+        NSDate *currentDateOfBirth = [currentStudy valueForKey:@"dateOfBirth"];
+        NSString *currentStudyInstanceUID = [currentStudy valueForKey:@"studyInstanceUID"];
+        
+        // Test if another enabled syncState viewer is within current viewer's scope and behavior is somehow absolute related
+        for(id anotherViewer in syncEnabledViewers) {
+            
+            if([currentViewer isEqualTo:anotherViewer] || (onlyViewerToBeSynchronized != nil && [onlyViewerToBeSynchronized isNotEqualTo:anotherViewer]))
+                continue;
+            
+            if([anotherViewer syncSeriesBehavior]== SyncSeriesBehaviorRelativePos)
+                continue;
+            
+            DicomStudy *anotherStudy = [anotherViewer currentStudy];
+            
+            if(globalSyncSeriesScope != SyncSeriesScopeAllSeries){
+                // Same patient ??
+                if([currentPatientID isNotEqualTo: [anotherStudy valueForKey:@"patientID"]] ||
+                   [currentDateOfBirth isNotEqualTo: [anotherStudy valueForKey:@"dateOfBirth"]]  )
+                    continue;
+                
+                // Same Study ??
+                if((globalSyncSeriesScope == SyncSeriesScopeSameStudy) && [currentStudyInstanceUID isNotEqualTo:[anotherStudy valueForKey:@"studyInstanceUID"]] )
+                    continue;
+            }
+            
+            // Note that behavior is supposed to be the same for two viewers within the same scope
+            if([anotherViewer syncSeriesBehavior]== SyncSeriesBehaviorAbsolutePosWithSameStudy && [currentStudyInstanceUID isNotEqualTo:[anotherStudy valueForKey:@"studyInstanceUID"]])
+                continue;
+            
+            // Beeing there involves that the two viewers should have the same absolute position
+            float anotherDicomLocation[3] ;
+            [OrthogonalMPRViewer getDICOMCoords:anotherViewer :anotherDicomLocation];
+          
+            float currentDicomLocation[3] ;	
+            [OrthogonalMPRViewer getDICOMCoords:currentViewer :currentDicomLocation];
+            
+            if( (currentDicomLocation[0]!=anotherDicomLocation[0]) || (currentDicomLocation[1]!=anotherDicomLocation[1]) || (currentDicomLocation[2]!=anotherDicomLocation[2])){
+
+                NSArray* dicomCoords = [NSArray arrayWithObjects:
+                                        [NSNumber numberWithFloat:currentDicomLocation[0]],
+                                        [NSNumber numberWithFloat:currentDicomLocation[1]],
+                                        [NSNumber numberWithFloat:currentDicomLocation[2]],nil];
+
+                [[anotherViewer controller] moveToAbsolutePosition:dicomCoords];
+                [OrthogonalMPRViewer resetSyncOriginPosition:anotherViewer];
+            }
+            
+            if([onlyViewerToBeSynchronized isEqualTo:anotherViewer])
+                return;
+        }
+    }
 }
 
-+ (unsigned int)  orthoMPRViewerNumber
++ (void) validateViewersSyncSeriesState
 {
-    unsigned int orthoMPRViewerNumber= [[OrthogonalMPRViewer orthoMPRViewerApps] count];
-    NSLog(@"orthoMPRViewerNumber : %d",orthoMPRViewerNumber);
-    return orthoMPRViewerNumber;
+    // Validate the enable syncState of all MPRviewers and force to disable if it's not within the scope of any other enabled syncState MPRviewer
+    
+    if (![NSThread isMainThread]){
+        dispatch_sync(dispatch_get_main_queue(),^{ [OrthogonalMPRViewer validateViewersSyncSeriesState]; });
+        return;
+    }
+    
+    NSArray* syncEnabledViewers = [OrthogonalMPRViewer MPRViewersWithout:nil andSyncEnabled:TRUE];
+    
+    for(id currentViewer in syncEnabledViewers) {
+        
+        bool currentViewerEnableStateIsValid = false;
+        
+        DicomStudy *currentStudy = [currentViewer currentStudy];
+        NSString *currentPatientID = [currentStudy valueForKey:@"patientID"];
+        NSDate *currentDateOfBirth = [currentStudy valueForKey:@"dateOfBirth"];
+        NSString *currentStudyInstanceUID = [currentStudy valueForKey:@"studyInstanceUID"];
+        
+        // Test if another enabled syncState MPRviewer is within current SyncScope
+        for(id anotherViewer in syncEnabledViewers) {
+            
+            if([currentViewer isEqualTo:anotherViewer] )
+                continue;
+            
+            DicomStudy *anotherStudy = [anotherViewer currentStudy];
+            
+            if(globalSyncSeriesScope != SyncSeriesScopeAllSeries){
+                // Same patient ??
+                if([currentPatientID isNotEqualTo: [anotherStudy valueForKey:@"patientID"]] ||
+                   [currentDateOfBirth isNotEqualTo: [anotherStudy valueForKey:@"dateOfBirth"]]  )
+                    continue;
+                
+                // Same Study ??
+                if((globalSyncSeriesScope == SyncSeriesScopeSameStudy) && [currentStudyInstanceUID isNotEqualTo:[anotherStudy valueForKey:@"studyInstanceUID"]] )
+                    continue;
+            }
+            
+            currentViewerEnableStateIsValid = true;
+            break;
+        }
+        
+        if(currentViewerEnableStateIsValid == false){
+            [currentViewer setSyncSeriesState:SyncSeriesStateDisable];    // no need to send notification since there is abviously no observer
+        }
+    }
 }
 
-+ (NSMutableArray*) orthoMPRViewerApps
+#pragma mark-
+
++ (void) initSyncSeriesToolbarItem:(id)viewer :(NSToolbarItem*) toolbarItem
 {
-    return [OrthogonalMPRViewer orthoMPRViewerApps:FALSE];
+    if(![toolbarItem  isMemberOfClass:[KBPopUpToolbarItem class]]){
+        NSLog(@"WARN - initSyncSeriesToolbarItem cannot be initialized");
+        return;
+    }
+    
+    [viewer setSyncSeriesToolbarItem:(KBPopUpToolbarItem*) toolbarItem];
+
+    [toolbarItem setTarget: viewer];
+    [toolbarItem setAction: @selector(syncSeriesAction:)];
+    [toolbarItem setToolTip: NSLocalizedString(@"Synchronize 3D position", nil)];
+    
+    [toolbarItem setLabel: NSLocalizedString(@"Sync", nil)];
+    [toolbarItem setPaletteLabel: NSLocalizedString(@"Sync", nil)];
+    
+    KBPopUpToolbarItem* popupToolbarItem = (KBPopUpToolbarItem*)toolbarItem;
+    
+    popupToolbarItem.menu = [[[NSMenu alloc] initWithTitle:@""] autorelease];
+    NSMenuItem* menuItem;
+
+    menuItem = [popupToolbarItem.menu addItemWithTitle:NSLocalizedString(@"All", nil) action:@selector(syncSeriesScopeAction:) keyEquivalent:@""];
+    menuItem.target = viewer;
+    menuItem.tag=SyncSeriesScopeAllSeries;
+    menuItem = [popupToolbarItem.menu addItemWithTitle:NSLocalizedString(@"Same Patient", nil) action:@selector(syncSeriesScopeAction:) keyEquivalent:@""];
+    menuItem.target = viewer;
+    menuItem.tag=SyncSeriesScopeSamePatient;
+    menuItem = [popupToolbarItem.menu addItemWithTitle:NSLocalizedString(@"Same Study", nil) action:@selector(syncSeriesScopeAction:) keyEquivalent:@"" ];
+    menuItem.target = viewer;
+    menuItem.tag=SyncSeriesScopeSameStudy;
+    
+    [[popupToolbarItem menu] addItem:[NSMenuItem separatorItem]];
+    
+    menuItem = [popupToolbarItem.menu addItemWithTitle:NSLocalizedString(@"Force absolute positioning", nil) action:@selector(syncSeriesBehaviorAction:) keyEquivalent:@""];
+    menuItem.target = viewer;
+    menuItem.tag=SyncSeriesBehaviorAbsolutePos;
+    menuItem = [popupToolbarItem.menu addItemWithTitle:NSLocalizedString(@"Force relative positioning", nil) action:@selector(syncSeriesBehaviorAction:) keyEquivalent:@""];
+    menuItem.target = viewer;
+    menuItem.tag=SyncSeriesBehaviorRelativePos;
+    menuItem = [popupToolbarItem.menu addItemWithTitle:NSLocalizedString(@"Absolute positioning for same study", nil) action:@selector(syncSeriesBehaviorAction:) keyEquivalent:@""];
+    menuItem.target = viewer;
+    menuItem.tag=SyncSeriesBehaviorAbsolutePosWithSameStudy;
+    
+    [[popupToolbarItem menu] addItem:[NSMenuItem separatorItem]];
+    
+    menuItem = [[popupToolbarItem menu] addItemWithTitle:NSLocalizedString(@"No synchronization for this window", nil) action:@selector(syncSeriesStateAction:) keyEquivalent:@""];
+    menuItem.target = viewer;
+    menuItem.tag=SyncSeriesStateOff;
+    
+    [OrthogonalMPRViewer updateSyncSeriesToolbarItemUI:viewer];
 }
 
-+ (NSMutableArray*) orthoMPRViewerApps:(BOOL)syncEnabledOnly
++ (void) updateSyncSeriesToolbarItemUI:(id) viewer{
+
+    if (![NSThread isMainThread]){
+        dispatch_sync(dispatch_get_main_queue(),^{ [OrthogonalMPRViewer updateSyncSeriesToolbarItemUI:viewer]; });
+        return;
+    }
+    [[viewer syncSeriesToolbarItem] setImage: ([viewer syncSeriesState] == SyncSeriesStateEnable)?[NSImage imageNamed: SyncLockSeriesImageName]:[NSImage imageNamed: SyncSeriesImageName]];
+}
+
++ (void) evaluteSyncSeriesToolbarItemActivationWhenInit:(id)currentViewer;
+{
+    activateSyncSeriesToolbarItem =  [[OrthogonalMPRViewer MPRViewersWithout:currentViewer] count] > 0 ;
+}
+
++ (void) evaluteSyncSeriesToolbarItemActivationBeforeClose:(id)currentViewer;
+{
+    activateSyncSeriesToolbarItem =  [[OrthogonalMPRViewer MPRViewersWithout:currentViewer] count] > 1 ;
+}
+
++ (BOOL) getSyncSeriesToolbarItemActivation
+{
+    return activateSyncSeriesToolbarItem;
+}
+
+#pragma mark-
+
++ (NSMutableArray*) MPRViewersWithout:(id) currentViewer
+{
+    return [OrthogonalMPRViewer MPRViewersWithout:currentViewer andSyncEnabled:FALSE];
+}
+
++ (NSMutableArray*) MPRViewersWithout:(id)currentViewer andSyncEnabled:(BOOL)syncEnabledOnly
 {
     NSArray *windowsApps = [NSApp windows];
     NSMutableArray *viewerApps = [NSMutableArray array];
@@ -2481,24 +2499,25 @@ return YES;
     for(id windowItem in windowsApps) {
         id windowController = [windowItem windowController];
         
-        if( [windowController isKindOfClass:[OrthogonalMPRViewer class]] ){
-            if (syncEnabledOnly && [((OrthogonalMPRViewer*)windowController) syncSeriesState] != SyncSeriesStateEnable )
-                continue;
-            [viewerApps addObject:windowController];
-        }
-#ifndef OSIRIX_LIGHT
-        else if( [windowController isKindOfClass:[OrthogonalMPRPETCTViewer class]]){
-            
-            if (syncEnabledOnly && [((OrthogonalMPRPETCTViewer*)windowController) syncSeriesState] != SyncSeriesStateEnable )
-                continue;
-            [viewerApps addObject:windowController];
-            
-        }
-#endif
-        
+        if(![OrthogonalMPRViewer isMPRViewer:windowController] ||
+           (currentViewer !=nil && [currentViewer isEqualTo:windowController]) ||
+           (syncEnabledOnly && [windowController syncSeriesState] != SyncSeriesStateEnable ))
+            continue;
+
+        [viewerApps addObject:windowController];
     }
     return viewerApps;
 }
+
++ (bool) isMPRViewer:(id) viewer{
+    
+    return [viewer isKindOfClass:[OrthogonalMPRViewer class]]
+#ifndef OSIRIX_LIGHT
+    || [viewer isKindOfClass:[OrthogonalMPRPETCTViewer class]]
+#endif
+    ;
+}
+
 
 #pragma mark-
 #pragma mark ROIs

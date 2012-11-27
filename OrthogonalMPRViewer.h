@@ -26,9 +26,9 @@
 
 /** \brief  Window Controller for Orthogonal MPR */
 
-typedef enum {SyncSeriesStateOff=0,SyncSeriesStateDisable=1,SyncSeriesStateEnable=2} SyncSeriesState;
-typedef enum {SyncSeriesScopeAllSeries=1,SyncSeriesScopeSamePatient=2,SyncSeriesScopeSameStudy=3} SyncSeriesScope;
-typedef enum {SyncSeriesBehaviorAbsolutePosWithSameStudy,SyncSeriesBehaviorRelativePos,SyncSeriesBehaviorAbsolutePos} SyncSeriesBehavior;
+typedef enum {SyncSeriesStateOff=0, SyncSeriesStateDisable=1, SyncSeriesStateEnable=2} SyncSeriesState;
+typedef enum {SyncSeriesScopeAllSeries, SyncSeriesScopeSamePatient, SyncSeriesScopeSameStudy} SyncSeriesScope;
+typedef enum {SyncSeriesBehaviorAbsolutePosWithSameStudy, SyncSeriesBehaviorRelativePos, SyncSeriesBehaviorAbsolutePos} SyncSeriesBehavior;
 
 @interface OrthogonalMPRViewer : Window3DController <NSWindowDelegate, NSSplitViewDelegate, NSToolbarDelegate>
 {
@@ -42,11 +42,6 @@ typedef enum {SyncSeriesBehaviorAbsolutePosWithSameStudy,SyncSeriesBehaviorRelat
 	IBOutlet NSMatrix					*toolsMatrix;
 	BOOL								isFullWindow;
     long								displayResliceAxes;
-
-    KBPopUpToolbarItem                  *syncSeriesToolbarItem;
-    SyncSeriesState                     syncSeriesState ;
-    SyncSeriesBehavior                  syncSeriesBehavior;
-    SyncSeriesScope                     syncSeriesScope;
     
 	IBOutlet NSTextField				*thickSlabTextField;
 	IBOutlet NSSlider					*thickSlabSlider;
@@ -72,6 +67,13 @@ typedef enum {SyncSeriesBehaviorAbsolutePosWithSameStudy,SyncSeriesBehaviorRelat
 	short								curMovieIndex, maxMovieIndex;
 	NSTimeInterval						lastTime, lastMovieTime;
 	NSTimer								*movieTimer;
+    
+    // SyncSeries
+    KBPopUpToolbarItem                  *syncSeriesToolbarItem;
+    SyncSeriesState                     syncSeriesState ;
+    SyncSeriesBehavior                  syncSeriesBehavior;
+  
+    float                               syncOriginPosition[3];
 }
 
 - (id) initWithPixList: (NSMutableArray*) pixList :(NSArray*) filesList :(NSData*) vData :(ViewerController*) vC :(ViewerController*) bC;
@@ -91,33 +93,51 @@ typedef enum {SyncSeriesBehaviorAbsolutePosWithSameStudy,SyncSeriesBehaviorRelat
 - (DCMView*) keyView;
 
 // SyncSeries between MPR viewers
-- (void) setSyncSeriesBehavior:(SyncSeriesBehavior) newBehavior withNotification:(bool)doNotify;
-- (void) setSyncSeriesScope:(SyncSeriesScope) newScope  withNotification:(bool)doNotify;
-- (void) setSyncSeriesState:(SyncSeriesState) newState withNotification:(bool)doNotify;
-- (void) syncSeriesNotification:(NSNotification*)notification   ;
+- (void) syncSeriesScopeAction:(id) sender;
+- (void) syncSeriesBehaviorAction:(id) sender;
+- (void) syncSeriesStateAction:(id) sender;
+- (void) syncSeriesAction:(id) sender;
 
-- (void) moveToRelativePositionFromNSArray:(NSArray*) relativeLocation;
-- (void) moveToRelativePosition:(float*) dcmCoord;
-- (void) moveToAbsolutePositionFromNSArray:(NSArray*) newLocation;
-- (void) moveToAbsolutePosition:(float*) dcmCoord;
+@property (nonatomic,retain) KBPopUpToolbarItem *syncSeriesToolbarItem;
+@property (nonatomic,assign) SyncSeriesState syncSeriesState;
+@property (nonatomic,assign) SyncSeriesBehavior syncSeriesBehavior;
 
-- (void) updateSyncSeriesUI;
+- (float*) syncOriginPosition;
+- (void) syncSeriesNotification:(NSNotification*)notification;
+- (void) posChangeNotification:(NSNotification*)notification;
 
-+ (NSDictionary*) evaluateSyncSeriesProperties:(id)currentViewer ;
++ (SyncSeriesScope) syncSeriesScope;
++ (void) getDICOMCoords:(id)viewer :(float*) location;
++ (void) resetSyncOriginPosition:(id)viewer;
++ (void) initSyncSeriesProperties:(id)viewer;
 
-+ (void) validateMPRViewersSyncSeriesState ;
-+ (void) evaluteSyncSeriesToolbarItemsActivationWhenInit;
-+ (void) evaluteSyncSeriesToolbarItemsActivationBeforeClose;
-+ (BOOL) getSyncSeriesToolbarItemsActivation;
++ (void) syncSeriesScopeAction:(id) sender :(id)viewer;
++ (void) syncSeriesBehaviorAction:(id) sender :(id) viewer;
++ (void) syncSeriesStateAction:(id) sender :(id) viewer;
++ (void) syncSeriesAction:(id) sender :(id)viewer;
 
-+ (NSMutableArray*) sortedOrthoMPRViewerApps;
-+ (unsigned int)  orthoMPRViewerNumber;
-+ (NSMutableArray*) orthoMPRViewerApps;
-+ (NSMutableArray*) orthoMPRViewerApps:(BOOL)syncEnabledOnly;
++ (void) updateSyncSeriesState:(id)viewer :(SyncSeriesState) newState;
++ (void) updateSyncSeriesScope:(id)viewer :(SyncSeriesScope) newScope ;
++ (void) updateSyncSeriesBehavior:(id)viewer :(SyncSeriesBehavior) newBehavior;
++ (void) updateSyncSeriesProperties:(id)viewer :(SyncSeriesState) syncState :(SyncSeriesScope) syncScope :(SyncSeriesBehavior) syncBehavior;
++ (void) positionChange:(id) viewer :(NSArray*) relativePositionChange;
 
-@property (nonatomic,readwrite) SyncSeriesState syncSeriesState;
-@property (nonatomic,readonly) SyncSeriesBehavior syncSeriesBehavior;
-@property (nonatomic,readonly) SyncSeriesScope syncSeriesScope;
++ (void) syncSeriesNotification:(id)viewer :(NSNotification*)notification;
++ (void) posChangeNotification:(id)viewer :(NSNotification*)notification;
+
++ (void) synchronizeViewer:(id)currentViewer;
++ (void) synchronizeViewersPosition:(id) onlyViewerToBeSynchronized;
++ (void) validateViewersSyncSeriesState;
+
++ (void) initSyncSeriesToolbarItem:(id)viewer :(NSToolbarItem*) toolbarItem;
++ (void) updateSyncSeriesToolbarItemUI:(id)viewer;
++ (void) evaluteSyncSeriesToolbarItemActivationWhenInit:(id)currentViewer;
++ (void) evaluteSyncSeriesToolbarItemActivationBeforeClose:(id)currentViewer;
++ (BOOL) getSyncSeriesToolbarItemActivation;
+
++ (NSMutableArray*) MPRViewersWithout:(id) currentViewer;
++ (NSMutableArray*) MPRViewersWithout:(id)currentViewer andSyncEnabled:(BOOL)syncEnabledOnly;
++ (bool) isMPRViewer:(id) viewer;
 
 // Thick Slab
 -(IBAction) setThickSlabMode : (id) sender;

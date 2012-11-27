@@ -40,26 +40,6 @@
 	return self;
 }
 
-- (void) setCrossPosition: (float) x: (float) y
-{
-    [self setCrossPosition:x :y:TRUE];
-}
-
-- (void) setCrossPosition: (float) x: (float) y : (BOOL) doNotifychange
-{
-    if(crossPositionX == x && crossPositionY == y)
-		return;
-	crossPositionX = x;
-	crossPositionY = y;
-	[(OrthogonalMPRPETCTController*)controller setCrossPosition: x: y: self];
-
-    if(doNotifychange)
-    {
-        [controller send3DPositionChange];
-    }
-}
-
-
 -(void) setBlendingFactor:(float) f
 {
 	[controller setBlendingFactor:f];

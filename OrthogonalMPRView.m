@@ -316,29 +316,28 @@ extern int ANNOTATIONS;
     [self convertPixX:crossPositionX pixY:crossPositionY toDICOMCoords:location];
 }
 
-- (void) setCrossPosition: (float) x: (float) y : (BOOL) doNotifychange
-{
-        
-	[self setCrossPositionX: x];
-	[self setCrossPositionY: y];
-	[controller reslice: x:  y: self];		
-    
-    if(doNotifychange)
-    {
-        [controller send3DPositionChange];
-    }
-}
-
-
 - (void) setCrossPosition: (float) x: (float) y
 {
-    [self setCrossPosition:x :y:TRUE];
+    [self setCrossPosition:x :y withNotification:TRUE];
+}
+
+- (void) setCrossPosition: (float) x: (float) y withNotification:(BOOL) doNotifychange
+{
+    if(crossPositionX == x && crossPositionY == y)
+		return;
+    
+	[self setCrossPositionX: x];
+	[self setCrossPositionY: y];
+    [controller setCrossPosition: x:  y: self];
+    
+    if(doNotifychange)
+        [controller notifyPositionChange];
 }
 
 - (void) setCrossPositionX: (float) x
 {
 	if(crossPositionX == x)
-		return;
+		return ;
 	x = (x<0)? 0 : x;
 	x = (x>=[[self curDCM] pwidth])? [[self curDCM] pwidth]-1 : x;
 	crossPositionX = x;

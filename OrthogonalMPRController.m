@@ -28,6 +28,7 @@
 
 - (void) setCrossPosition: (float) x: (float) y: (id) sender
 {
+    [self reslice: x:  y: sender];
 }
 
 -(void) setBlendingFactor:(float) f
@@ -637,7 +638,7 @@
 	xReslicedCrossPositionY = [xReslicedView crossPositionY];
 	yReslicedCrossPositionX = [yReslicedView crossPositionX];
 	yReslicedCrossPositionY = [yReslicedView crossPositionY];
-}
+}	
 
 - (void) restoreCrossPositions
 {
@@ -646,55 +647,62 @@
 	[yReslicedView setCrossPosition: yReslicedCrossPositionX : yReslicedCrossPositionY];
 }
 
-- (void) getViewerDICOMCoords: (float*) location
-{
-    [xReslicedView getCrossPositionDICOMCoords:location];
-}
+#pragma mark-
 
-- (NSArray*) getViewerDICOMCoords
+- (void) notifyPositionChange
 {
-    float currentLocation[3] ;
-    [self getViewerDICOMCoords:currentLocation];
-    
-    return[NSArray arrayWithObjects:
-           [NSNumber numberWithFloat:currentLocation[0]],
-           [NSNumber numberWithFloat:currentLocation[1]],
-           [NSNumber numberWithFloat:currentLocation[2]],nil];
-}
-
-
-- (void) send3DPositionChange
-{
-    if([viewer syncSeriesState] != SyncSeriesStateEnable)
-        return;
+    float* originPos = [viewer syncOriginPosition];
     
     float currentLocation[3] ;
-    [self getViewerDICOMCoords:currentLocation];
+    [OrthogonalMPRViewer getDICOMCoords:viewer :currentLocation];
 
-    float relativePositionChange[3];
+    NSMutableArray* newPosition =[NSMutableArray arrayWithCapacity:3];
+    
     for(int i =0 ;i<3 ;i++)
-        relativePositionChange[i]= currentLocation[i]-syncPositionOrigin[i];
+        [newPosition addObject:[NSNumber numberWithFloat:currentLocation[i]-originPos[i]]];
     
-    NSArray* positionChange = [NSArray arrayWithObjects: 
-                               [NSNumber numberWithFloat:relativePositionChange[0]],
-                               [NSNumber numberWithFloat:relativePositionChange[1]],
-                               [NSNumber numberWithFloat:relativePositionChange[2]],nil];
+    [OrthogonalMPRViewer positionChange:viewer :newPosition];
+}
+
+- (void) moveToRelativePosition:(NSArray*) relativeDicomLocation
+{
+    float* originPos = [viewer syncOriginPosition];
+
+    NSMutableArray* newLocation =[NSMutableArray arrayWithCapacity:3];
     
-    NSDictionary *userInfo = [NSDictionary dictionaryWithObject:positionChange forKey:@"positionChange"];
-   
-    [[NSNotificationCenter defaultCenter] postNotificationName: OsirixOrthoMPRPosChangeNotification object:viewer  userInfo: userInfo]; 
+    [relativeDicomLocation enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
+        [newLocation insertObject:[NSNumber numberWithFloat:[obj floatValue] + originPos[idx]] atIndex:idx ];
+    }];
+    
+    [self moveToAbsolutePosition:newLocation];
 }
 
-- (float*) getSyncPositionOrigin
+- (void) moveToAbsolutePosition:(NSArray*) newDicomLocation
 {
-    return syncPositionOrigin;
+    float dcmCoord[3];
+    float sliceCoord[3];
+    
+    for(int i=0 ; i<3;i++)
+        dcmCoord[i] =  [[newDicomLocation objectAtIndex:i]floatValue];
+    
+    [[originalView curDCM] convertDICOMCoords:dcmCoord toSliceCoords:sliceCoord pixelCenter:YES];
+    sliceCoord[ 0] /= [[originalView curDCM] pixelSpacingX];
+    sliceCoord[ 1] /= [[originalView curDCM] pixelSpacingY];
+    sliceCoord[ 2] /= [[originalView curDCM] sliceInterval];
+    //    NSLog(@"moveToAbsolutePosition - sliceCoord : %f %f index : %f", sliceCoord[0], sliceCoord[1], sliceCoord[2]);
+    
+    [originalView setCrossPosition:sliceCoord[0] :sliceCoord[1] withNotification:FALSE];
+    
+    [[xReslicedView curDCM] convertDICOMCoords:dcmCoord toSliceCoords:sliceCoord pixelCenter:YES];
+    sliceCoord[ 0] /= [[xReslicedView curDCM] pixelSpacingX];
+    sliceCoord[ 1] /= [[xReslicedView curDCM] pixelSpacingY];
+    sliceCoord[ 2] /= [[xReslicedView curDCM] sliceInterval];
+    //    NSLog(@"moveToAbsolutePosition - sliceCoord : %f %f index : %f", sliceCoord[0], sliceCoord[1], sliceCoord[2]);
+    
+    [xReslicedView setCrossPosition:sliceCoord[0] :sliceCoord[1] withNotification:FALSE];
 }
 
-- (void) resetSyncPositionOrigin
-{
-    [self getViewerDICOMCoords:syncPositionOrigin];
-}
-
+#pragma mark-
 
 - (void) toggleDisplayResliceAxes: (id) sender
 {
