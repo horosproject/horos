@@ -3398,23 +3398,19 @@ static BOOL initialized = NO;
             
             NSUserDefaults *d = [NSUserDefaults standardUserDefaults];
             
-            if( [d valueForKey: @"crashReporterSMTPServer"])
+            if( [d valueForKey: @"crashReporterSMTPServer"]) {
                 reporter.SMTPServer = [d valueForKey: @"crashReporterSMTPServer"];
-            
-            if( [d valueForKey: @"crashReporterSMTPUsername"])
+                int port = [d integerForKey: @"crashReporterSMTPPort"];
+                reporter.SMTPPort = port? port : 25;
+                // if these are empty, set them to empty
                 reporter.SMTPUsername = [d valueForKey: @"crashReporterSMTPUsername"];
-            
-            if( [d valueForKey: @"crashReporterSMTPPassword"])
                 reporter.SMTPPassword = [d valueForKey: @"crashReporterSMTPPassword"];
-            
-            if( [d valueForKey: @"crashReporterSMTPPort"])
-                reporter.SMTPPort = [d integerForKey: @"crashReporterSMTPPort"];
+            }
             
             if( [d valueForKey: @"crashReporterFromAddress"])
                 reporter.fromAddress = [d valueForKey: @"crashReporterFromAddress"];
             
             NSString *reportAddr = @"crash@osirix-viewer.com";
-            
             if( [d valueForKey: @"crashReporterToAddress"])
                 reportAddr = [d valueForKey: @"crashReporterToAddress"];
             
