@@ -1025,7 +1025,6 @@ OAA</bytes>
 							<string key="NSFrame">{{106, 20}, {374, 68}}</string>
 							<reference key="NSSuperview" ref="235520153"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<string key="NSAntiCompressionPriority">{250, 750}</string>
 							<bool key="NSEnabled">YES</bool>
@@ -1525,7 +1524,7 @@ OAA</bytes>
 							<object class="NSTextFieldCell" key="NSCell" id="813637665">
 								<int key="NSCellFlags">68157504</int>
 								<int key="NSCellFlags2">272630784</int>
-								<string key="NSContents">DICOM Nodes for POD matching and retrieving:</string>
+								<string key="NSContents">DICOM Nodes for PACS On Demand matching and retrieving:</string>
 								<reference key="NSSupport" ref="455650177"/>
 								<string key="NSCellIdentifier">_NS:1535</string>
 								<reference key="NSControlView" ref="1057683160"/>
@@ -1573,7 +1572,7 @@ OAA</bytes>
 											<string key="NSFrameSize">{558, 96}</string>
 											<reference key="NSSuperview" ref="893615243"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView" ref="260778054"/>
+											<reference key="NSNextKeyView" ref="435994100"/>
 											<bool key="NSEnabled">YES</bool>
 											<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 											<bool key="NSControlAllowsExpansionToolTips">YES</bool>
@@ -1810,7 +1809,7 @@ OAA</bytes>
 							<string key="NSFrame">{{20, 64}, {560, 114}}</string>
 							<reference key="NSSuperview" ref="827468134"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="435994100"/>
+							<reference key="NSNextKeyView" ref="893615243"/>
 							<int key="NSsFlags">133682</int>
 							<reference key="NSVScroller" ref="260778054"/>
 							<reference key="NSHScroller" ref="945275861"/>
@@ -1908,7 +1907,6 @@ OAA</bytes>
 							<string key="NSFrame">{{537, 17}, {19, 27}}</string>
 							<reference key="NSSuperview" ref="827468134"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView"/>
 							<string key="NSReuseIdentifierKey">_NS:1099</string>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSStepperCell" key="NSCell" id="156868768">
