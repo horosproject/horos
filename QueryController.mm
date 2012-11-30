@@ -2800,6 +2800,8 @@ extern "C"
     
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
+    BOOL performQuery = NO;
+    
     @synchronized( self)
     {
         if( performingCFind == NO)
@@ -2811,8 +2813,16 @@ extern "C"
             else
                 [progressIndicator startAnimation:nil];
             
-            [queryManager performQuery: [showErrors boolValue]];
-            
+            performQuery = YES;
+        }
+    }
+    
+    if( performQuery)
+    {
+        [queryManager performQuery: [showErrors boolValue]];
+        
+        @synchronized( self)
+        {
             if( [NSThread isMainThread] == NO)
                 [progressIndicator performSelectorOnMainThread: @selector(stopAnimation:) withObject:nil waitUntilDone: NO];
             else

@@ -87,8 +87,14 @@
         [filters setObject:filter forKey:description];
 }
 
-- (NSArray *)queries{
-	return queries;
+- (NSArray *)queries
+{
+    @synchronized( self)
+    {
+        return queries;
+    }
+    
+    return nil;
 }
 
 - (void)sortArray:(NSArray *)sortDesc
