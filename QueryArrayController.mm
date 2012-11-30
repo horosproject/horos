@@ -170,8 +170,11 @@
                 
         //		NSLog( @"Query values: %@", filterArray);
                 
-                [queries release];
-                queries = [[rootNode children] retain];
+                if( [[NSThread currentThread] isCancelled] == NO)
+                {
+                    [queries release];
+                    queries = [[rootNode children] retain];
+                }
                 
                 if( queries == nil && rootNode != nil)
                     queries = [[NSMutableArray array] retain];

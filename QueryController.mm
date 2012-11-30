@@ -2158,6 +2158,12 @@ extern "C"
     if( [NSThread isMainThread])
         temporaryCFindResultArray = [[NSMutableArray array] retain];
     
+    @synchronized( self)
+    {
+        for( NSThread *t in performingQueryThreads)
+            [t setIsCancelled: YES];
+    }
+    
 	[autoQueryLock lock];
 	
 	[[NSUserDefaults standardUserDefaults] setObject:sourcesArray forKey: queryArrayPrefs];
@@ -2804,6 +2810,9 @@ extern "C"
     
     @synchronized( self)
     {
+        for( NSThread *t in performingQueryThreads)
+            [t setIsCancelled: YES];
+        
         if( performingCFind == NO)
         {
             performingCFind = YES;
@@ -2814,6 +2823,8 @@ extern "C"
                 [progressIndicator startAnimation:nil];
             
             performQuery = YES;
+            
+            [performingQueryThreads addObject: [NSThread currentThread]];
         }
     }
     
@@ -2829,6 +2840,8 @@ extern "C"
                 [progressIndicator stopAnimation:nil];
             
             performingCFind = NO;
+            
+            [performingQueryThreads removeObject: [NSThread currentThread]];
         }
     }
     
@@ -4507,6 +4520,7 @@ extern "C"
 		queryFilters = [[NSMutableArray array] retain];
 		resultArray = [[NSMutableArray array] retain];
 		autoQueryLock = [[NSRecursiveLock alloc] init];
+        performingQueryThreads = [[NSMutableSet alloc] init];
 		
 		if( autoQuery == NO)
 			queryArrayPrefs = @"SavedQueryArray";
@@ -4628,6 +4642,7 @@ extern "C"
 	[resultArray release];
 	[QueryTimer invalidate];
 	[QueryTimer release];
+    [performingQueryThreads release];
 	
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	

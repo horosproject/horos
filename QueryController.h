@@ -115,6 +115,8 @@ enum
     
     IBOutlet SFAuthorizationView            *authView;
     IBOutlet NSButton                       *authButton;
+    
+    NSMutableSet                            *performingQueryThreads;
 }
 
 @property (readonly) NSRecursiveLock *autoQueryLock;
