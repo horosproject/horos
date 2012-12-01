@@ -2997,7 +2997,6 @@
 		CE40ED530D86D54D007C6D49 /* ThreeDPositionController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE40ED510D86D54D007C6D49 /* ThreeDPositionController.h */; };
 		CE40ED540D86D54D007C6D49 /* ThreeDPositionController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE40ED520D86D54D007C6D49 /* ThreeDPositionController.m */; };
 		CE40ED590D86D634007C6D49 /* 3DPosition.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE40ED570D86D634007C6D49 /* 3DPosition.xib */; };
-		CE438F420CB621DF006AAFD9 /* DotMacKit.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = CEFE60580979B1DB00891EA9 /* DotMacKit.framework */; };
 		CE443F371165D1B60034BF18 /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C1409B6828200545F5E /* jaricom.c */; };
 		CE443F381165D1B60034BF18 /* jcapimin.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C1509B6828200545F5E /* jcapimin.c */; };
 		CE443F391165D1B60034BF18 /* jcapistd.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C1609B6828200545F5E /* jcapistd.c */; };
@@ -8250,7 +8249,6 @@
 		CEFA967610A760E700F9512D /* DCMCalendarDate.m in Sources */ = {isa = PBXBuildFile; fileRef = BF61E58D06A5BB9E001C0B29 /* DCMCalendarDate.m */; };
 		CEFA967710A760E800F9512D /* DCMCalendarDate.h in Headers */ = {isa = PBXBuildFile; fileRef = BF61E58C06A5BB9E001C0B29 /* DCMCalendarDate.h */; };
 		CEFB8A9910C19902000DCCB0 /* ReportTemplate.odt in Resources */ = {isa = PBXBuildFile; fileRef = CEFB8A9810C19902000DCCB0 /* ReportTemplate.odt */; };
-		CEFE605A0979B1DB00891EA9 /* DotMacKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEFE60580979B1DB00891EA9 /* DotMacKit.framework */; };
 		CEFF00FE1286F7A700D69BB8 /* djenc2k.cc in Sources */ = {isa = PBXBuildFile; fileRef = CEFF00FC1286F7A700D69BB8 /* djenc2k.cc */; };
 		CEFF00FF1286F7A700D69BB8 /* djenc2k.h in Headers */ = {isa = PBXBuildFile; fileRef = CEFF00FD1286F7A700D69BB8 /* djenc2k.h */; };
 		CEFF01001286F7A700D69BB8 /* djenc2k.cc in Sources */ = {isa = PBXBuildFile; fileRef = CEFF00FC1286F7A700D69BB8 /* djenc2k.cc */; };
@@ -8354,7 +8352,6 @@
 				59F1A515104BA8AE009E3215 /* OsiriXAPI.framework in Copy Frameworks */,
 				CE04B81B15289AF400EF6E52 /* Growl.framework in Copy Frameworks */,
 				CE81E2A50FDA9F00000D3D96 /* OsiriX.framework in Copy Frameworks */,
-				CE438F420CB621DF006AAFD9 /* DotMacKit.framework in Copy Frameworks */,
 				CE9A04440C7DBC060007809F /* libxerces-c.27.dylib in Copy Frameworks */,
 				84F453570FC3DF5400D29666 /* ILCrashReporter.framework in Copy Frameworks */,
 				CE9A04450C7DBC060007809F /* libdcmprintscu.dylib in Copy Frameworks */,
@@ -14121,7 +14118,6 @@
 		CEF9E7DE0811B69B00412C8A /* StaticScheduler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StaticScheduler.h; sourceTree = "<group>"; };
 		CEF9E7E60811B6AD00412C8A /* StaticScheduler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StaticScheduler.m; sourceTree = "<group>"; };
 		CEFB8A9810C19902000DCCB0 /* ReportTemplate.odt */ = {isa = PBXFileReference; lastKnownFileType = file; name = ReportTemplate.odt; path = Binaries/ReportTemplate.odt; sourceTree = "<group>"; };
-		CEFE60580979B1DB00891EA9 /* DotMacKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = DotMacKit.framework; sourceTree = "<group>"; };
 		CEFF00FC1286F7A700D69BB8 /* djenc2k.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = djenc2k.cc; sourceTree = "<group>"; };
 		CEFF00FD1286F7A700D69BB8 /* djenc2k.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = djenc2k.h; sourceTree = "<group>"; };
 		CEFF01431286FB2000D69BB8 /* djeijg2k.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = djeijg2k.h; sourceTree = "<group>"; };
@@ -14180,7 +14176,6 @@
 				7E3E38660715FFDC0049E72E /* PreferencePanes.framework in Frameworks */,
 				7E54303D07A05E7100500ABB /* DiscRecording.framework in Frameworks */,
 				7E54303E07A05E7100500ABB /* DiscRecordingUI.framework in Frameworks */,
-				CEFE605A0979B1DB00891EA9 /* DotMacKit.framework in Frameworks */,
 				CE2C82EC0C708B380093C162 /* CoreVideo.framework in Frameworks */,
 				A97E19EF0CDF55E50065EE29 /* 3DconnexionClient.framework in Frameworks */,
 				CE6693C70AF551210073D923 /* libxerces-c.27.dylib in Frameworks */,
@@ -14487,7 +14482,6 @@
 			isa = PBXGroup;
 			children = (
 				A97E19EE0CDF55E50065EE29 /* 3DconnexionClient.framework */,
-				CEFE60580979B1DB00891EA9 /* DotMacKit.framework */,
 				ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */,
 				CE2BE05D1524344D00AE6156 /* Growl.framework */,
 				CE586CC30C74B75D00DB7D5A /* libdcmprintscu.dylib */,
