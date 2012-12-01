@@ -39,9 +39,12 @@
 	IBOutlet NSPopUpButton	*olderThanProduced, *olderThanOpened;
 	
 	IBOutlet NSWindow *mainWindow;
+    
+    BOOL newUsePatientIDForUID, newUsePatientBirthDateForUID, newUsePatientNameForUID;
 }
 
 @property (nonatomic) int currentCommentsAutoFill;
+@property BOOL newUsePatientIDForUID, newUsePatientBirthDateForUID, newUsePatientNameForUID;
 
 - (void) mainViewDidLoad;
 - (IBAction)setLocation:(id)sender;

@@ -639,11 +639,13 @@ static DicomDatabase* activeLocalDatabase = nil;
             
 #define PATIENTUIDVERSION @"2.0"
             
-            if( [metaData objectForKey: @"patientUIDVersion"] == nil || [[metaData objectForKey: @"patientUIDVersion"] isEqualToString: PATIENTUIDVERSION] == NO)
+            NSString *PatientUIDVersion = [NSString stringWithFormat: @"%@ - %d - %d - %d", PATIENTUIDVERSION, [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientBirthDateForUID"], [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientIDForUID"], [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientNameForUID"]];
+            
+            if( [metaData objectForKey: @"patientUIDVersion"] == nil || [[metaData objectForKey: @"patientUIDVersion"] isEqualToString: PatientUIDVersion] == NO)
             {
                 rebuildPatientUIDs = YES; //recompute patient UIDs
                 NSMutableDictionary *newMetaData = [NSMutableDictionary dictionaryWithDictionary: metaData];
-                [newMetaData setObject: PATIENTUIDVERSION forKey: @"patientUIDVersion"];
+                [newMetaData setObject: PatientUIDVersion forKey: @"patientUIDVersion"];
                 [context.persistentStoreCoordinator setMetadata: newMetaData forPersistentStore: [context.persistentStoreCoordinator.persistentStores lastObject]];
             }
         }

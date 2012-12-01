@@ -65,6 +65,7 @@ static int combineProjectionSeriesMode = NO;
 //static int CHECKFORLAVIM = -1;
 static int COMMENTSGROUP = NO, COMMENTSGROUP2 = NO, COMMENTSGROUP3 = NO, COMMENTSGROUP4 = NO;
 static int COMMENTSELEMENT = NO, COMMENTSELEMENT2 = NO, COMMENTSELEMENT3 = NO, COMMENTSELEMENT4 = NO;
+static BOOL gUsePatientIDForUID = YES, gUsePatientBirthDateForUID = YES, gUsePatientNameForUID = YES;
 static BOOL SEPARATECARDIAC4D = NO;
 //static BOOL SeparateCardiacMR = NO;
 //static int SeparateCardiacMRMode = 0;
@@ -535,11 +536,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			combineProjectionSeries = [sd boolForKey: @"combineProjectionSeries"];
 			combineProjectionSeriesMode = [sd boolForKey: @"combineProjectionSeriesMode"];
 			
-//			if( CHECKFORLAVIM == -1)
-//			{
-//				if( [DefaultsOsiriX isLAVIM]) CHECKFORLAVIM = YES;	// HUG SPECIFIC, Thanks... Antoine Rosset
-//				else CHECKFORLAVIM = NO;
-//			}
+            gUsePatientBirthDateForUID = [sd boolForKey: @"UsePatientBirthDateForUID"];
+            gUsePatientIDForUID = [sd boolForKey: @"UsePatientIDForUID"];
+            gUsePatientNameForUID = [sd boolForKey: @"UsePatientNameForUID"];
 		}
 		else	// FOR THE SAFEDBREBUILD ! Shell tool
 		{
@@ -576,6 +575,10 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			oneFileOnSeriesForUS = [[dict objectForKey: @"oneFileOnSeriesForUS"] intValue];
 			combineProjectionSeriesMode = [[dict objectForKey: @"combineProjectionSeriesMode"] intValue];
 			
+            gUsePatientBirthDateForUID = [[dict objectForKey: @"UsePatientBirthDateForUID"] intValue];
+            gUsePatientIDForUID = [[dict objectForKey: @"UsePatientIDForUID"] intValue];
+            gUsePatientNameForUID = [[dict objectForKey: @"UsePatientNameForUID"] intValue];
+            
 //			CHECKFORLAVIM = NO;
 		}
 	}
@@ -795,7 +798,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			study = [[NSString alloc] initWithString:name];
 			serie = [[NSString alloc] initWithString:name];
 			Modality = [[NSString alloc] initWithString:@"FV300"];
-			fileType = [[NSString stringWithString:@"FVTiff"] retain];
+			fileType = [@"FVTiff" retain];
 			
 			// set the comments and date fields
 			NSXMLElement* rootElement = [xmlDocument rootElement];
@@ -4220,14 +4223,30 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 
 + (NSString*) patientUID: (id) src
 {
-    NSString *patientName = [[src valueForKey:@"patientName"] stringByReplacingOccurrencesOfString: @"-" withString: @" "];
+    NSString *patientName = @"";
+    NSString *patientID = @"";
+    NSString *patientBirthDate = @"";
     
-    NSString *firstRepresentation = [[patientName componentsSeparatedByString: @"="] objectAtIndex: 0];
+    if( gUsePatientBirthDateForUID == NO && gUsePatientIDForUID == NO && gUsePatientNameForUID == NO)
+        N2LogStackTrace( @"PatientUID requires at least one parameter.");
     
-    if( firstRepresentation.length)
-        patientName = firstRepresentation;
+    if( gUsePatientNameForUID)
+    {
+        patientName = [[src valueForKey:@"patientName"] stringByReplacingOccurrencesOfString: @"-" withString: @" "];
+        
+        NSString *firstRepresentation = [[patientName componentsSeparatedByString: @"="] objectAtIndex: 0];
+        
+        if( firstRepresentation.length)
+            patientName = firstRepresentation;
+    }
     
-	NSString *string = [NSString stringWithFormat:@"%@-%@-%@", patientName, [src valueForKey:@"patientID"], [[NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[src valueForKey:@"patientBirthDate"] timeIntervalSinceReferenceDate]] descriptionWithCalendarFormat:@"%Y%m%d"]];
+    if( gUsePatientBirthDateForUID)
+        patientBirthDate = [[NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[src valueForKey:@"patientBirthDate"] timeIntervalSinceReferenceDate]] descriptionWithCalendarFormat:@"%Y%m%d"];
+    
+    if( gUsePatientIDForUID)
+        patientID = [src valueForKey:@"patientID"];
+    
+	NSString *string = [NSString stringWithFormat:@"%@-%@-%@", patientName, patientID, patientBirthDate];
 	
 	return [[DicomFile NSreplaceBadCharacter: string] uppercaseString];
 }

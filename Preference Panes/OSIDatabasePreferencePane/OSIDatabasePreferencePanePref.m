@@ -18,10 +18,13 @@
 #import <OsiriXAPI/PreferencesWindowController+DCMTK.h>
 #import <OsiriX/DCMAbstractSyntaxUID.h>
 #import <OsiriXAPI/BrowserControllerDCMTKCategory.h>
+#import "DicomDatabase.h"
+#import "WaitRendering.h"
 
 @implementation OSIDatabasePreferencePanePref
 
 @synthesize currentCommentsAutoFill;
+@synthesize newUsePatientIDForUID, newUsePatientBirthDateForUID, newUsePatientNameForUID;
 
 - (id) initWithBundle:(NSBundle *)bundle
 {
@@ -97,6 +100,46 @@
 
 -(void) willUnselect
 {
+    BOOL recompute = NO;
+    
+    if( self.newUsePatientBirthDateForUID == NO && self.newUsePatientNameForUID == NO && self.newUsePatientIDForUID == NO)
+    {
+        NSRunCriticalAlertPanel( NSLocalizedString( @"Patient UID", nil), NSLocalizedString( @"At least one parameter has to be selected to generate a valid Patient UID. Patient ID will be used.", nil), NSLocalizedString( @"OK", nil), nil, nil);
+        
+        self.newUsePatientIDForUID = YES;
+    }
+    
+    if( self.newUsePatientBirthDateForUID != [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientBirthDateForUID"])
+        recompute = YES;
+    
+    if( self.newUsePatientNameForUID != [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientNameForUID"])
+        recompute = YES;
+    
+    if( self.newUsePatientIDForUID != [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientIDForUID"])
+        recompute = YES;
+    
+    if( recompute)
+    {
+        [[NSUserDefaults standardUserDefaults] setBool: self.newUsePatientBirthDateForUID forKey: @"UsePatientBirthDateForUID"];
+        [[NSUserDefaults standardUserDefaults] setBool: self.newUsePatientNameForUID forKey: @"UsePatientNameForUID"];
+        [[NSUserDefaults standardUserDefaults] setBool: self.newUsePatientIDForUID forKey: @"UsePatientIDForUID"];
+        
+        WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString( @"Recomputing Patient UIDs...", nil)];
+        [wait showWindow: self];
+        [wait start];
+        
+        for( DicomDatabase *d in [DicomDatabase allDatabases])
+        {
+            [DicomDatabase recomputePatientUIDsInContext: d.managedObjectContext];
+        }
+        
+        [[BrowserController currentBrowser] refreshDatabase: self];
+        
+        [wait end];
+        [wait close];
+        [wait autorelease];
+    }
+    
 	[[[self mainView] window] makeFirstResponder: nil];
 }
 
@@ -161,6 +204,11 @@
 //	[[freeSpaceType cellWithTag:0] setState:[defaults boolForKey:@"AUTOCLEANINGSPACEPRODUCED"]];
 //	[[freeSpaceType cellWithTag:1] setState:[defaults boolForKey:@"AUTOCLEANINGSPACEOPENED"]];
 //	[freeSpaceSize selectItemWithTag:[[defaults stringForKey:@"AUTOCLEANINGSPACESIZE"] intValue]];
+    
+    
+    self.newUsePatientBirthDateForUID = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientBirthDateForUID"];
+    self.newUsePatientNameForUID = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientNameForUID"];
+    self.newUsePatientIDForUID = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientIDForUID"];
 }
 
 - (void)didSelect

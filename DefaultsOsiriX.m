@@ -1028,6 +1028,10 @@ static NSHost *currentHost = nil;
     [defaultValues setObject:@"2" forKey:@"MaxConcurrentPODRetrieves"];
 	[defaultValues setObject:@"1" forKey:@"QRRemoveDuplicateEntries"];
     
+	[defaultValues setObject:@"1" forKey:@"UsePatientBirthDateForUID"];
+    [defaultValues setObject:@"1" forKey:@"UsePatientIDForUID"];
+	[defaultValues setObject:@"1" forKey:@"UsePatientNameForUID"];
+    
 	#ifdef MACAPPSTORE
 	[defaultValues setObject:@"1" forKey:@"MACAPPSTORE"];
 	#else

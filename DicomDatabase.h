@@ -47,6 +47,7 @@ extern NSString* const OsirixDataDirName;
 }
 
 +(void)initializeDicomDatabaseClass;
++(void)recomputePatientUIDsInContext:(NSManagedObjectContext*)context;
 
 +(NSString*)defaultBaseDirPath;
 +(NSString*)baseDirPathForPath:(NSString*)path;
