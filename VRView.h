@@ -44,7 +44,6 @@
 #include "vtkImageMapToColors.h"
 #include "vtkImageActor.h"
 #include "vtkLight.h"
-
 #include "vtkPlane.h"
 #include "vtkPlanes.h"
 #include "vtkPlaneSource.h"
