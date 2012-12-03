@@ -19,6 +19,7 @@
 #import <OsiriX/DCMAbstractSyntaxUID.h>
 #import <OsiriXAPI/BrowserControllerDCMTKCategory.h>
 #import "DicomDatabase.h"
+#import "dicomFile.h"
 #import "WaitRendering.h"
 
 @implementation OSIDatabasePreferencePanePref
@@ -127,6 +128,8 @@
         WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString( @"Recomputing Patient UIDs...", nil)];
         [wait showWindow: self];
         [wait start];
+        
+        [DicomFile setDefaults];
         
         for( DicomDatabase *d in [DicomDatabase allDatabases])
         {
