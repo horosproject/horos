@@ -1024,7 +1024,6 @@ static NSHost *currentHost = nil;
     [defaultValues setObject:@"1" forKey:@"allow_qr_modality"];
     [defaultValues setObject:@"1" forKey:@"allow_qr_blank_query"];
     [defaultValues setObject:@"1" forKey:@"allow_qr_custom_dicom_field"];
-    [defaultValues setObject:@"1" forKey: @"usePatientIDForComparativeSearch"];
     [defaultValues setObject:@"2" forKey:@"MaxConcurrentPODRetrieves"];
 	[defaultValues setObject:@"1" forKey:@"QRRemoveDuplicateEntries"];
     

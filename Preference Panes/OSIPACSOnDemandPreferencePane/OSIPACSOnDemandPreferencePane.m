@@ -154,37 +154,9 @@ static NSMatrix *gDateMatrix = nil;
         gDateMatrix = dateMatrix;
         
 		[self mainViewDidLoad];
-        
-        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath: @"values.usePatientIDForComparativeSearch" options:NSKeyValueObservingOptionNew context:NULL];
-        
-        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath: @"values.usePatientBirthDateForComparativeSearch" options:NSKeyValueObservingOptionNew context:NULL];
-        
-        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath: @"values.usePatientNameForComparativeSearch" options:NSKeyValueObservingOptionNew context:NULL];
 	}
 	
 	return self;
-}
-
--(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context
-{
-	if (object == [NSUserDefaultsController sharedUserDefaultsController])
-    {
-		if ([keyPath isEqual: @"values.usePatientIDForComparativeSearch"] || [keyPath isEqual: @"values.usePatientBirthDateForComparativeSearch"] || [keyPath isEqual: @"values.usePatientNameForComparativeSearch"])
-        {
-            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"usePatientIDForComparativeSearch"] == NO && [[NSUserDefaults standardUserDefaults] boolForKey: @"usePatientBirthDateForComparativeSearch"] == NO && [[NSUserDefaults standardUserDefaults] boolForKey: @"usePatientNameForComparativeSearch"] == NO)
-            {
-                NSRunAlertPanel( NSLocalizedString( @"Comparative Studies", nil), NSLocalizedString( @"One criteria has to be selected for Patient matching.", nil), NSLocalizedString( @"OK", nil), nil, nil);
-            }
-            else if( [[NSUserDefaults standardUserDefaults] boolForKey: @"usePatientIDForComparativeSearch"] == NO && [[NSUserDefaults standardUserDefaults] boolForKey: @"usePatientBirthDateForComparativeSearch"] == NO && [[NSUserDefaults standardUserDefaults] boolForKey: @"usePatientNameForComparativeSearch"] == YES)
-            {
-                NSRunAlertPanel( NSLocalizedString( @"Comparative Studies", nil), NSLocalizedString( @"Patient matching based only on Patient's name is not possible. Select also Patient ID or Date Of Birth.", nil), NSLocalizedString( @"OK", nil), nil, nil);
-            }
-            else if( [[NSUserDefaults standardUserDefaults] boolForKey: @"usePatientIDForComparativeSearch"] == NO && [[NSUserDefaults standardUserDefaults] boolForKey: @"usePatientBirthDateForComparativeSearch"] != [[NSUserDefaults standardUserDefaults] boolForKey: @"usePatientNameForComparativeSearch"])
-            {
-                NSRunAlertPanel( NSLocalizedString( @"Comparative Studies", nil), NSLocalizedString( @"Patient matching based only on Patient's name or BirthDate is weak, and can results in incorrect results. You should select at least two criteria, or PatientID.", nil), NSLocalizedString( @"OK", nil), nil, nil);
-            }
-        }
-    }
 }
 
 - (IBAction) setActivated:(id) sender
@@ -221,9 +193,6 @@ static NSMatrix *gDateMatrix = nil;
     if( srcArray.count == 0)
         [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"searchForComparativeStudiesOnDICOMNodes"];
     
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"usePatientIDForComparativeSearch"] == NO && [[NSUserDefaults standardUserDefaults] boolForKey: @"usePatientBirthDateForComparativeSearch"] == NO && [[NSUserDefaults standardUserDefaults] boolForKey: @"usePatientNameForComparativeSearch"] == NO)
-        [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"searchForComparativeStudiesOnDICOMNodes"];
-    
     [[NSUserDefaults standardUserDefaults] setValue: srcArray forKey: @"comparativeSearchDICOMNodes"];
     
     // Save Smart Albums
@@ -239,10 +208,6 @@ static NSMatrix *gDateMatrix = nil;
 - (void) dealloc
 {
 	NSLog(@"dealloc OSIPACSOnDemandPreferencePane");
-	
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath: @"values.usePatientIDForComparativeSearch"];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath: @"values.usePatientBirthDateForComparativeSearch"];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath: @"values.usePatientNameForComparativeSearch"];
     
     [sourcesArray release];
     [smartAlbumsArray release];

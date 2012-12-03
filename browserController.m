@@ -4102,9 +4102,9 @@ static NSConditionLock *threadLock = nil;
                         {
                             NSArray *distantStudies = nil;
                             
-                            BOOL usePatientID = [[NSUserDefaults standardUserDefaults] boolForKey: @"usePatientIDForComparativeSearch"];
-                            BOOL usePatientBirthDate = [[NSUserDefaults standardUserDefaults] boolForKey: @"usePatientBirthDateForComparativeSearch"];
-                            BOOL usePatientName = [[NSUserDefaults standardUserDefaults] boolForKey: @"usePatientNameForComparativeSearch"];
+                            BOOL usePatientID = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientIDForUID"];
+                            BOOL usePatientBirthDate = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientNameForUID"];
+                            BOOL usePatientName = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientNameForUID"];
                             
                             // Servers
                             NSArray *servers = [self comparativeServers];
