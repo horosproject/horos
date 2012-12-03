@@ -1587,7 +1587,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
             OFCondition cond = ASC_requestAssociation(net, params, &assoc);
             globalCondition = cond;
             
-            if( cond == EC_Normal && _abortAssociation == NO)
+            if( cond == EC_Normal)
                 [dict setObject: [NSValue valueWithPointer: assoc] forKey: @"assoc"];
         }
         @catch (NSException* e) {
@@ -2047,17 +2047,12 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 					cond = DUL_NETWORKCLOSED;
 				}
 				else
-				{
 					cond = globalCondition;
-					
-					if( cond == EC_Normal)
-					{
-						if( [dict objectForKey: @"assoc"])
-							assoc = (T_ASC_Association *) [[dict objectForKey: @"assoc"] pointerValue];
-						else
-							cond = EC_IllegalParameter;
-					}
-				}
+                
+                if( [dict objectForKey: @"assoc"])
+                    assoc = (T_ASC_Association *) [[dict objectForKey: @"assoc"] pointerValue];
+                else
+                    cond = EC_IllegalParameter;
 				
 				if( cond != EC_Normal)
 				{
