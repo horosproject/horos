@@ -824,6 +824,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::nextFindResponse (
 	cond = [handle ->dataHandler nextFindObject:*findResponseIdentifiers  isComplete:&isComplete];
 	dbdebug(1, "nextFindResponse () : next response\n") ;
 	if (isComplete) {
+        delete *findResponseIdentifiers;
 		*findResponseIdentifiers = NULL ;
         status->setStatus(STATUS_Success);
 		dbdebug(1, "nextFindResponse () : STATUS_Success\n") ;
