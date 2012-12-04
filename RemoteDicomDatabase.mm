@@ -405,6 +405,43 @@
 	return [RemoteDicomDatabase fetchDicomDestinationInfoForAddress:self.address port:self.port];
 }
 
+-(void)updateOnMainThread: (NSString*) path
+{
+    [_updateLock lock];
+    
+    NSManagedObjectContext* context = [self contextAtPath:path];
+    
+    for (ViewerController* vc in [ViewerController getDisplayed2DViewers])
+        [vc.window orderOut:self];
+    
+    [_sqlFileName release];
+    _sqlFileName = [[path lastPathComponent] retain];
+    NSString* oldSqlFilePath = [_sqlFilePath autorelease];
+    _sqlFilePath = [path retain];
+    
+    NSManagedObjectContext* ocontext = self.managedObjectContext;
+    [ocontext lock];
+    [context lock];
+    self.managedObjectContext = context;
+    [context unlock];
+    [ocontext unlock];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:OsirixAddToDBNotification object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:_O2AddToDBAnywayNotification object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:OsirixDicomDatabaseDidChangeContextNotification object:self];
+    
+    // delete old index file
+    [NSFileManager.defaultManager removeItemAtPath:oldSqlFilePath error:NULL];
+    
+	if (!_updateTimer) {
+		_updateTimer = [NSTimer timerWithTimeInterval:[[NSUserDefaults standardUserDefaults] integerForKey:@"DatabaseRefreshInterval"] target:[RemoteDicomDatabase class] selector:@selector(_updateTimerCallbackClass:) userInfo:[NSValue valueWithPointer:self] repeats:YES];
+		[[NSRunLoop mainRunLoop] addTimer:_updateTimer forMode:NSModalPanelRunLoopMode];
+		[[NSRunLoop mainRunLoop] addTimer:_updateTimer forMode:NSDefaultRunLoopMode];
+	}
+    
+    [_updateLock unlock];
+}
+
 -(void)update {
 	NSThread* thread = [NSThread currentThread];
 	
@@ -418,44 +455,14 @@
 		
 		_timestamp = [self fetchDatabaseTimestamp];
 		
-		thread.status = NSLocalizedString(@"Opening index...", nil);
-		NSManagedObjectContext* context = [self contextAtPath:path];
+		[self performSelectorOnMainThread: @selector( updateOnMainThread:) withObject: path waitUntilDone: NO];
 		
-		// TODO: CHANGE!! we want to DIFF ;) or is it too slow?
-		
-		for (ViewerController* vc in [ViewerController getDisplayed2DViewers])
-			[vc.window orderOut:self];
-		
-		[_sqlFileName release];
-		_sqlFileName = [[path lastPathComponent] retain];
-        NSString* oldSqlFilePath = [_sqlFilePath autorelease];
-		_sqlFilePath = [path retain];
-        
-        NSManagedObjectContext* ocontext = self.managedObjectContext;
-        [ocontext lock];
-        [context lock];
-		self.managedObjectContext = context;
-		[context unlock];
-        [ocontext unlock];
-        
-		[[NSNotificationCenter defaultCenter] postNotificationName:OsirixAddToDBNotification object:self];
-		[[NSNotificationCenter defaultCenter] postNotificationName:_O2AddToDBAnywayNotification object:self];
-		[[NSNotificationCenter defaultCenter] postNotificationName:OsirixDicomDatabaseDidChangeContextNotification object:self];
-		
-        // delete old index file
-        [NSFileManager.defaultManager removeItemAtPath:oldSqlFilePath error:NULL];
 	} @catch (NSException* e) {
 		@throw;
 	} @finally {
 		[_updateLock unlock];
 		[thread exitOperation];
 	}
-	
-	if (!_updateTimer) {
-		_updateTimer = [NSTimer timerWithTimeInterval:[[NSUserDefaults standardUserDefaults] integerForKey:@"DatabaseRefreshInterval"] target:[RemoteDicomDatabase class] selector:@selector(_updateTimerCallbackClass:) userInfo:[NSValue valueWithPointer:self] repeats:YES];
-		[[NSRunLoop mainRunLoop] addTimer:_updateTimer forMode:NSModalPanelRunLoopMode];
-		[[NSRunLoop mainRunLoop] addTimer:_updateTimer forMode:NSDefaultRunLoopMode];
-	}	
 }
 
 -(void)updateThread:(id)obj {
