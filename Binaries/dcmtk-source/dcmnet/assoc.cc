@@ -1548,7 +1548,7 @@ ASC_destroyAssociation(T_ASC_Association ** association)
 
     if ((*association)->sendPDVBuffer != NULL)
         free((*association)->sendPDVBuffer);
-
+    
     free(*association);
     *association = NULL;
 

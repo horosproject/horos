@@ -813,7 +813,8 @@ DUL_DropAssociation(DUL_ASSOCIATIONKEY ** callerAssociation)
 
     association = (PRIVATE_ASSOCIATIONKEY **) callerAssociation;
     OFCondition cond = checkAssociation(association);
-    if (cond.bad()) return cond;
+    if (cond.bad())
+        return cond;
 
     if ((*association)->connection)
     {
@@ -821,6 +822,7 @@ DUL_DropAssociation(DUL_ASSOCIATIONKEY ** callerAssociation)
      delete (*association)->connection;
      (*association)->connection = NULL;
     }
+    
     destroyAssociationKey(association);
     return EC_Normal;
 }
@@ -2118,12 +2120,12 @@ createAssociationKey(PRIVATE_NETWORKKEY ** networkKey,
                      PRIVATE_ASSOCIATIONKEY ** associationKey)
 {
     PRIVATE_ASSOCIATIONKEY *key;
-
+    
     key = (PRIVATE_ASSOCIATIONKEY *) calloc(
         size_t(sizeof(PRIVATE_ASSOCIATIONKEY) + maxPDU + 100), 1);
     if (key == NULL) return EC_MemoryExhausted;
     key->receivePDUQueue = NULL;
-
+    
     (void) strcpy(key->keyType, KEY_ASSOCIATION);
     key->applicationFunction = (*networkKey)->applicationFunction;
 
@@ -2188,10 +2190,11 @@ destroyAssociationKey(PRIVATE_ASSOCIATIONKEY ** key)
 		return;
 		
     if (*key && (*key)->connection)
-	{
 		delete (*key)->connection;
-		free(*key);
-    }
+    
+    if (*key)
+        free(*key);
+    
 	*key = NULL;
 }
 
