@@ -1362,7 +1362,7 @@ static NSConditionLock *threadLock = nil;
 				[_albumNoOfStudiesCache removeAllObjects];
                 [_distantAlbumNoOfStudiesCache removeAllObjects];
 			}
-			
+            
 			[[_database managedObjectContext] lock];
 			@try
             {
@@ -3023,7 +3023,8 @@ static NSConditionLock *threadLock = nil;
                                 {
                                     @synchronized(_albumNoOfStudiesCache)
                                     {
-                                        [_distantAlbumNoOfStudiesCache setObject: distantStudies forKey: ialbum.name];
+                                        if( currentDatabase == _database) // Did we switch the main database...
+                                            [_distantAlbumNoOfStudiesCache setObject: distantStudies forKey: ialbum.name];
                                     }
                                 }
                                 
@@ -3687,6 +3688,9 @@ static NSConditionLock *threadLock = nil;
 
 - (void) searchForSearchField: (NSDictionary*) dict
 {
+    if( self.database.isReadOnly || !self.database.isLocal)
+        return;
+    
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForSmartAlbumStudiesOnDICOMNodes"] == NO)
         return;
     
@@ -3813,6 +3817,9 @@ static NSConditionLock *threadLock = nil;
 
 - (void) searchForTimeIntervalFromTo: (NSDictionary*) dict
 {
+    if( self.database.isReadOnly)
+        return;
+    
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForSmartAlbumStudiesOnDICOMNodes"] == NO)
         return;
     
@@ -3895,6 +3902,9 @@ static NSConditionLock *threadLock = nil;
 
 - (NSArray*) distantStudiesForSmartAlbum: (NSString*) albumName
 {
+    if( self.database.isReadOnly || !self.database.isLocal)
+        return [NSArray array];
+    
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"] == NO)
         return [NSArray array];
     
@@ -3932,6 +3942,9 @@ static NSConditionLock *threadLock = nil;
 
 - (void) searchForSmartAlbumDistantStudies: (NSString*) albumName
 {
+    if( self.database.isReadOnly || !self.database.isLocal)
+        return;
+    
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"] == NO)
         return;
     
@@ -4067,7 +4080,7 @@ static NSConditionLock *threadLock = nil;
                 N2LogExceptionWithStackTrace(e);
             }
             
-            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"])
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"] && !self.database.isReadOnly && self.database.isLocal)
             {
                 if( !searchForComparativeStudiesLock)
                     searchForComparativeStudiesLock = [NSRecursiveLock new];

@@ -4628,7 +4628,8 @@ static volatile int numberOfThreadsForRelisce = 0;
         [comparativesButton setToolTip:tip];
         
         BOOL showComparativesButton = NO;
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"searchForComparativeStudiesOnDICOMNodes"]) {
+        
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"searchForComparativeStudiesOnDICOMNodes"] && !self.database.isReadOnly && self.database.isLocal) {
             NSArray* servers = [[BrowserController currentBrowser] performSelector:@selector(comparativeServers)];
             if (servers.count)
                 showComparativesButton = YES;
