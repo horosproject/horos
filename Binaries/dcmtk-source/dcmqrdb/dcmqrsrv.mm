@@ -238,6 +238,17 @@ static int numberOfActiveAssociations = 0;
         DcmQueryRetrieveSCP *scp = (DcmQueryRetrieveSCP*) [[d valueForKey: @"DcmQueryRetrieveSCP"] pointerValue];
         
         OFCondition cond = scp->handleAssociation(assoc, YES);
+        
+        if( assoc)
+        {
+            cond = ASC_dropAssociation(assoc);
+            if (cond.bad())
+                DimseCondition::dump(cond);
+            
+            cond = ASC_destroyAssociation(&assoc);
+            if (cond.bad())
+                DimseCondition::dump(cond);
+        }
     }
     @catch (NSException *e) {
         N2LogException( e);
@@ -683,49 +694,35 @@ OFCondition DcmQueryRetrieveSCP::handleAssociation(T_ASC_Association * assoc, OF
  /* now do the real work */
     cond = dispatch(assoc, correctUIDPadding);
 	
-//    @synchronized( globalSync)
+    /* clean up on association termination */
+    if (cond == DUL_PEERREQUESTEDRELEASE)
     {
-        /* clean up on association termination */
-        if (cond == DUL_PEERREQUESTEDRELEASE)
+        if (options_.verbose_)
+            printf("Association Release\n");
+        
+        if( assoc)
         {
-            if (options_.verbose_)
-                printf("Association Release\n");
-            
-            if( assoc)
-            {
-                cond = ASC_acknowledgeRelease(assoc);
-                ASC_dropSCPAssociation(assoc);
-            }
+            cond = ASC_acknowledgeRelease(assoc);
+            ASC_dropSCPAssociation(assoc);
         }
-        else if (cond == DUL_PEERABORTEDASSOCIATION)
-        {
-            if (options_.verbose_)
-                printf("Association Aborted\n");
-        }
-        else
-        {
-            DcmQueryRetrieveOptions::errmsg("DIMSE Failure (aborting association):\n");
-            DimseCondition::dump(cond);
-            
-            if( cond == DIMSE_NODATAAVAILABLE)
-                NSLog( @"----- DIMSE_NODATAAVAILABLE no data available : %d (block mode: %d)", options_.dimse_timeout_, options_.blockMode_);
-            
-            AbortAssociationTimeOut = 2;
-            /* some kind of error so abort the association */
-            cond = ASC_abortAssociation(assoc);
-            AbortAssociationTimeOut = -1;
-        }
-
-        cond = ASC_dropAssociation(assoc);
-        if (cond.bad()) {
-            fprintf(stderr, "Cannot Drop Association:\n");
-            DimseCondition::dump(cond);
-        }
-        cond = ASC_destroyAssociation(&assoc);
-        if (cond.bad()) {
-            fprintf(stderr, "Cannot Destroy Association:\n");
-            DimseCondition::dump(cond);
-        }
+    }
+    else if (cond == DUL_PEERABORTEDASSOCIATION)
+    {
+        if (options_.verbose_)
+            printf("Association Aborted\n");
+    }
+    else
+    {
+        DcmQueryRetrieveOptions::errmsg("DIMSE Failure (aborting association):\n");
+        DimseCondition::dump(cond);
+        
+        if( cond == DIMSE_NODATAAVAILABLE)
+            NSLog( @"----- DIMSE_NODATAAVAILABLE no data available : %d (block mode: %d)", options_.dimse_timeout_, options_.blockMode_);
+        
+        AbortAssociationTimeOut = 2;
+        /* some kind of error so abort the association */
+        cond = ASC_abortAssociation(assoc);
+        AbortAssociationTimeOut = -1;
     }
     
     return cond;
