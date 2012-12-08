@@ -406,13 +406,13 @@ public:
 		a[4] -= origin[2];		a[5] -= origin[2];
 		
 		double temp;
-		if(fabs(a[0]) > fabs(a[1]))
+		if((a[0]) > (a[1]))
 		{temp = a[0]; a[0] = a[1]; a[1] = temp;}
 		
-		if(fabs(a[2]) > fabs(a[3]))
+		if((a[2]) > (a[3]))
 		{temp = a[2]; a[2] = a[3]; a[3] = temp;}
 		
-		if(fabs(a[4]) > fabs(a[5]))
+		if((a[4]) > (a[5]))
 		{temp = a[4]; a[4] = a[5]; a[5] = temp;}
 		
 		pd->Delete();
