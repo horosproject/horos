@@ -1983,9 +1983,12 @@ static float deg2rad = M_PI/180.0;
 		// CURRENT image only
 		if( dcmMode == 1)
 		{
-			if( self.dcmFormat) 
+			if( self.dcmFormat)
+            {
+                [curExportView updateViewMPR: NO];
 				[producedFiles addObject: [curExportView.vrView exportDCMCurrentImage]];
-			else
+			}
+            else
 				[producedFiles addObject: [curExportView exportDCMCurrentImage: curExportView.vrView.exportDCM size: resizeImage views: views viewsRect: viewsRect]];
 		}
 		// 4th dimension
@@ -2018,6 +2021,7 @@ static float deg2rad = M_PI/180.0;
 					if( self.dcmFormat)
 					{
 						[curExportView.vrView setViewSizeToMatrix3DExport];
+                        [curExportView updateViewMPR: NO];
 						[producedFiles addObject: [curExportView.vrView exportDCMCurrentImage]];
 					}
 					else
@@ -2157,20 +2161,18 @@ static float deg2rad = M_PI/180.0;
 					
 					[curExportView restoreCameraAndCheckForFrame: NO];
 					
+                    [curExportView updateViewMPR: NO];
+                    
 					if( quicktimeExportMode)
-					{
-						[curExportView updateViewMPR];
 						[qtFileArray addObject: [curExportView exportNSImageCurrentImageWithSize: resizeImage]];
-					}
+                    
 					else
 					{
 						if( self.dcmFormat)
 							[producedFiles addObject: [curExportView.vrView exportDCMCurrentImage]];
-						else
-						{
-							[curExportView updateViewMPR: NO];
+                        
+                        else
 							[producedFiles addObject: [curExportView exportDCMCurrentImage: curExportView.vrView.exportDCM size: resizeImage  views: views viewsRect: viewsRect]];
-						}
 					}
 					
 					[progress incrementBy: 1];
@@ -2214,20 +2216,16 @@ static float deg2rad = M_PI/180.0;
 				
 				for( int i = 0; i < self.dcmBatchNumberOfFrames; i++)
 				{
+                    [curExportView updateViewMPR: NO];
+                    
 					if( quicktimeExportMode)
-					{
-						[curExportView updateViewMPR: NO];
 						[qtFileArray addObject: [curExportView exportNSImageCurrentImageWithSize: resizeImage]];
-					}
 					else
 					{
 						if( self.dcmFormat)
 							[producedFiles addObject: [curExportView.vrView exportDCMCurrentImage]];
-						else
-						{
-							[curExportView updateViewMPR: NO];
+                        else
 							[producedFiles addObject: [curExportView exportDCMCurrentImage: curExportView.vrView.exportDCM size: resizeImage  views: views viewsRect: viewsRect]];
-						}
 					}
 					
 					if( dcmBatchReverse)
