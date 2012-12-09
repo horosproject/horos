@@ -19716,41 +19716,59 @@ int i,j,l;
 		
 	if (blendingController)
 	{
-		viewer = [[OrthogonalMPRPETCTViewer alloc] initWithPixList:pixList[0] :fileList[0] :volumeData[0] :self : blendingController];
-		[self place3DViewerWindow: viewer];
+        float orientA[9], orientB[9], result[3];
+        
+        [[[self imageView] curDCM] orientation:orientA];
+		[[[blendingController imageView] curDCM] orientation:orientB];
 		
-		NSString *c;
+		// normal vector of planes
 		
-		if( backCurCLUTMenu) c = backCurCLUTMenu;
-		else c = curCLUTMenu;
+		result[0] = fabs( orientB[ 6] - orientA[ 6]);
+		result[1] = fabs( orientB[ 7] - orientA[ 7]);
+		result[2] = fabs( orientB[ 8] - orientA[ 8]);
 		
-		[[viewer CTController] ApplyCLUTString: c];
-		[[viewer PETController] ApplyCLUTString: [blendingController curCLUTMenu]];
-		[[viewer PETCTController] ApplyCLUTString: c];
+		if( result[0] + result[1] + result[2] > 0.01)  // Planes are not paralel!
+		{
+            NSRunCriticalAlertPanel(NSLocalizedString(@"2D Planes",nil),NSLocalizedString(@"These 2D planes are not parallel, you cannot use the 2D Orthogonal MPR viewer. Instead, try the 3D MPR viewer.",nil), NSLocalizedString(@"OK",nil), nil, nil);
+        }
+        else
+        {
+            viewer = [[OrthogonalMPRPETCTViewer alloc] initWithPixList:pixList[0] :fileList[0] :volumeData[0] :self : blendingController];
+            [self place3DViewerWindow: viewer];
+            
+            NSString *c;
+            
+            if( backCurCLUTMenu) c = backCurCLUTMenu;
+            else c = curCLUTMenu;
+            
+            [[viewer CTController] ApplyCLUTString: c];
+            [[viewer PETController] ApplyCLUTString: [blendingController curCLUTMenu]];
+            [[viewer PETCTController] ApplyCLUTString: c];
 
-		[[viewer CTController] ApplyOpacityString: curOpacityMenu];
-		[[viewer PETController] ApplyOpacityString:[blendingController curOpacityMenu]];
-		[[viewer PETCTController] ApplyOpacityString: curOpacityMenu];
-		
-		[(OrthogonalMPRPETCTView*)[[viewer PETCTController] originalView] setCurCLUTMenu: [blendingController curCLUTMenu]];
-		[(OrthogonalMPRPETCTView*)[[viewer PETCTController] xReslicedView] setCurCLUTMenu: [blendingController curCLUTMenu]];
-		[(OrthogonalMPRPETCTView*)[[viewer PETCTController] yReslicedView] setCurCLUTMenu: [blendingController curCLUTMenu]];
+            [[viewer CTController] ApplyOpacityString: curOpacityMenu];
+            [[viewer PETController] ApplyOpacityString:[blendingController curOpacityMenu]];
+            [[viewer PETCTController] ApplyOpacityString: curOpacityMenu];
+            
+            [(OrthogonalMPRPETCTView*)[[viewer PETCTController] originalView] setCurCLUTMenu: [blendingController curCLUTMenu]];
+            [(OrthogonalMPRPETCTView*)[[viewer PETCTController] xReslicedView] setCurCLUTMenu: [blendingController curCLUTMenu]];
+            [(OrthogonalMPRPETCTView*)[[viewer PETCTController] yReslicedView] setCurCLUTMenu: [blendingController curCLUTMenu]];
 
-		[(OrthogonalMPRPETCTView*)[[viewer PETCTController] originalView] setCurOpacityMenu: [blendingController curOpacityMenu]];
-		[(OrthogonalMPRPETCTView*)[[viewer PETCTController] xReslicedView] setCurOpacityMenu: [blendingController curOpacityMenu]];
-		[(OrthogonalMPRPETCTView*)[[viewer PETCTController] yReslicedView] setCurOpacityMenu: [blendingController curOpacityMenu]];
-		
-		[viewer showWindow:self];
-		
-		float   iwl, iww;
-		[imageView getWLWW:&iwl :&iww];
-		[[viewer CTController] setWLWW:iwl :iww];
-		[[blendingController imageView] getWLWW:&iwl :&iww];
-		[[viewer PETController] setWLWW:iwl :iww];
-		
-		[viewer setBlendingMode: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTPETFUSION"]];
-		
-		return viewer;
+            [(OrthogonalMPRPETCTView*)[[viewer PETCTController] originalView] setCurOpacityMenu: [blendingController curOpacityMenu]];
+            [(OrthogonalMPRPETCTView*)[[viewer PETCTController] xReslicedView] setCurOpacityMenu: [blendingController curOpacityMenu]];
+            [(OrthogonalMPRPETCTView*)[[viewer PETCTController] yReslicedView] setCurOpacityMenu: [blendingController curOpacityMenu]];
+            
+            [viewer showWindow:self];
+            
+            float   iwl, iww;
+            [imageView getWLWW:&iwl :&iww];
+            [[viewer CTController] setWLWW:iwl :iww];
+            [[blendingController imageView] getWLWW:&iwl :&iww];
+            [[viewer PETController] setWLWW:iwl :iww];
+            
+            [viewer setBlendingMode: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTPETFUSION"]];
+            
+            return viewer;
+        }
 	}
 	return nil;	
 }
