@@ -1620,7 +1620,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	yFlipped = v;
 	
-	if( [[self.imageObj managedObjectContext] tryLock])
+	if( [self is2DViewer] && [[self windowController] isPostprocessed] == NO && [[self.imageObj managedObjectContext] tryLock])
 	{
         @try {
             // Series Level
@@ -1647,7 +1647,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	xFlipped = v;
 	
-	if( [[self.imageObj managedObjectContext] tryLock])
+	if( [self is2DViewer] && [[self windowController] isPostprocessed] == NO && [[self.imageObj managedObjectContext] tryLock])
     {
         @try {
             [[self seriesObj] setValue:[NSNumber numberWithBool:xFlipped] forKey:@"xFlipped"];
