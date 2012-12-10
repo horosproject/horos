@@ -272,7 +272,7 @@ enum
 @synthesize flagListPODComparatives;
 
 #define UNDOQUEUESIZE 40
-
+#define PARALLELPLANETOLERANCE 0.0001
 // WARNING: If you add or modify this list, check ViewerController.m, DCMView.h and HotKey Pref Pane
 
 static int hotKeyToolCrossTable[] =
@@ -11102,7 +11102,7 @@ short				matrix[25];
 							result[1] = fabs( orientB[ 7] - orientA[ 7]);
 							result[2] = fabs( orientB[ 8] - orientA[ 8]);
 							
-							if( result[0] + result[1] + result[2] < 0.01) 
+							if( result[0] + result[1] + result[2] < PARALLELPLANETOLERANCE)
 							{
 								[[a imageView] sendSyncMessage: 0];
 								[a ActivateBlending: b];
@@ -11167,7 +11167,7 @@ short				matrix[25];
 		result[1] = fabs( orientB[ 7] - orientA[ 7]);
 		result[2] = fabs( orientB[ 8] - orientA[ 8]);
 		
-		if( result[0] + result[1] + result[2] > 0.01)  // Planes are not paralel!
+		if( result[0] + result[1] + result[2] > PARALLELPLANETOLERANCE)  // Planes are not paralel!
 		{
 			// FROM SAME STUDY
 			
@@ -19727,7 +19727,7 @@ int i,j,l;
 		result[1] = fabs( orientB[ 7] - orientA[ 7]);
 		result[2] = fabs( orientB[ 8] - orientA[ 8]);
 		
-		if( result[0] + result[1] + result[2] > 0.01)  // Planes are not paralel!
+		if( result[0] + result[1] + result[2] > PARALLELPLANETOLERANCE)  // Planes are not paralel!
 		{
             NSRunCriticalAlertPanel(NSLocalizedString(@"2D Planes",nil),NSLocalizedString(@"These 2D planes are not parallel, you cannot use the 2D Orthogonal MPR viewer. Instead, try the 3D MPR viewer.",nil), NSLocalizedString(@"OK",nil), nil, nil);
         }

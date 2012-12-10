@@ -1937,6 +1937,10 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	
 	clickInTextBox = NO;
 	previousMode = mode;
+    
+    #define NEIGHBORHOODRADIUS 10.0
+    float neighborhoodRad = NEIGHBORHOODRADIUS * curView.window.backingScaleFactor;
+
 	
 	if( testDrawRect)
 	{
@@ -2009,14 +2013,12 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 					
 					// test if the clicked pixel is not transparent (otherwise the ROI won't be selected)
 					// define a neighborhood around the point					
-					#define NEIGHBORHOODRADIUS 10.0
-
 					float xi, yj;
 					BOOL found = NO;
 
-					for( int i=-NEIGHBORHOODRADIUS; i<=NEIGHBORHOODRADIUS && !found; i++ )
+					for( int i=-neighborhoodRad; i<=neighborhoodRad && !found; i++ )
 					{
-						for( int j=-NEIGHBORHOODRADIUS; j<=NEIGHBORHOODRADIUS && !found; j++ )
+						for( int j=-neighborhoodRad; j<=neighborhoodRad && !found; j++ )
 						{
 							xi = x+i;
 							yj = y+j;
@@ -2049,20 +2051,20 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 				}
 				break;
 			case tOval:
-				arect = NSMakeRect( rect.origin.x -rect.size.width -5./scale, rect.origin.y -rect.size.height -5./scale, 2*rect.size.width +10./scale, 2*rect.size.height +10./scale);
+				arect = NSMakeRect( rect.origin.x -rect.size.width -(neighborhoodRad/2)/scale, rect.origin.y -rect.size.height -(neighborhoodRad/2)/scale, 2*rect.size.width + neighborhoodRad/scale, 2*rect.size.height + neighborhoodRad/scale);
 				
 				if( NSPointInRect( pt, arect)) imode = ROI_selected;
 			break;
 			
 			
 			case tROI:
-				arect = NSMakeRect( rect.origin.x -5, rect.origin.y-5, rect.size.width+10, rect.size.height+10);
+				arect = NSMakeRect( rect.origin.x -(neighborhoodRad/2), rect.origin.y-(neighborhoodRad/2), rect.size.width+neighborhoodRad, rect.size.height+neighborhoodRad);
 				
 				if( NSPointInRect( pt, arect)) imode = ROI_selected;
 			break;
 			
 			case t2DPoint:
-				arect = NSMakeRect( rect.origin.x - 8/scale, rect.origin.y - 8/scale, 8*2/scale, 8*2/scale);
+				arect = NSMakeRect( rect.origin.x - neighborhoodRad/scale, rect.origin.y - neighborhoodRad/scale, neighborhoodRad*2/scale, neighborhoodRad*2/scale);
 				
 				if( NSPointInRect( pt, arect)) imode = ROI_selected;
 			break;
@@ -2081,7 +2083,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 				
 				[self DistancePointLine:pt :[[points objectAtIndex:0] point] : [[points objectAtIndex:1] point] :&distance];
 				
-				if( distance*scale < 5.0)
+				if( distance*scale < neighborhoodRad/2)
 				{
 					imode = ROI_selected;
 				}
@@ -2101,7 +2103,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 					{
 						[self DistancePointLine:pt :[[splinePoints objectAtIndex:i] point] : [[splinePoints objectAtIndex:(i+1)] point] :&distance];
 						
-						if( distance*scale < 5.0)
+						if( distance*scale < neighborhoodRad/2)
 						{
 							imode = ROI_selected;
 							break;
@@ -2125,7 +2127,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 					for( i = 0; i < ([splinePoints count] - 1); i++ )
 					{					
 						[self DistancePointLine:pt :[[splinePoints objectAtIndex:i] point] : [[splinePoints objectAtIndex:(i+1)] point] :&distance];
-						if( distance*scale < 5.0)
+						if( distance*scale < neighborhoodRad/2)
 						{
 							imode = ROI_selected;
 							break;
@@ -2133,7 +2135,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 					}
 					
 					[self DistancePointLine:pt :[[splinePoints objectAtIndex:i] point] : [[splinePoints objectAtIndex:0] point] :&distance];
-					if( distance*scale < 5.0f )	imode = ROI_selected;
+					if( distance*scale < neighborhoodRad/2 )	imode = ROI_selected;
 				}
 			}
 			break;
