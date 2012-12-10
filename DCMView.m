@@ -7443,11 +7443,41 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[self getOrientationText:string :vectors :NO];
 	[self DrawCStringGL: string : fontListGL :size.size.width - (2 + stringSize.width * strlen(string)) :2+size.size.height/2 rightAlignment: NO useStringTexture: YES];
 	
-	//Top 
+	//Top
+    float yPosition = stringSize.height + 3;
 	[self getOrientationText:string :vectors+3 :YES];
-	[self DrawCStringGL: string : fontListGL :size.size.width/2 :stringSize.height + 3 rightAlignment: NO useStringTexture: YES];
-	
-	if( curDCM.laterality ) [self DrawNSStringGL: curDCM.laterality : fontListGL :size.size.width/2 :stringSize.height + stringSize.height];
+
+    if( strlen(string))
+    {
+        [self DrawCStringGL: string : fontListGL :size.size.width/2 - (stringSize.width * strlen(string)/2) :yPosition rightAlignment: NO useStringTexture: YES];
+        yPosition += stringSize.height + 3;
+    }
+
+	if( curDCM.laterality)
+    {
+        [self DrawNSStringGL: curDCM.laterality : fontListGL :size.size.width/2 :yPosition align:DCMViewTextAlignCenter useStringTexture: YES];
+                yPosition += stringSize.height + 3;
+    }
+
+    if( [self is2DViewer] && (xFlipped || yFlipped))
+    {
+        NSString *flippedString = nil;
+        
+        if( xFlipped && yFlipped)
+            flippedString = NSLocalizedString( @"Horizontally & Vertically Flipped", nil);
+        
+        else if( xFlipped)
+            flippedString = NSLocalizedString( @"Horizontally Flipped", nil);
+        
+        else if( yFlipped)
+            flippedString = NSLocalizedString( @"Vertically Flipped", nil);
+        
+        if( flippedString)
+        {
+            [self DrawNSStringGL: flippedString : fontListGL :size.size.width/2 :yPosition align:DCMViewTextAlignCenter useStringTexture: YES];
+            yPosition += stringSize.height + 3;
+        }
+    }
 	
 	//Bottom
 	[self getOrientationText:string :vectors+3 :NO];
