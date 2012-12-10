@@ -861,6 +861,17 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
     [args addObject:destinationPath];
 
 	[[BLAuthentication sharedInstance] executeCommand:@"/bin/mv" withArgs:args];
+    
+    if( [[NSFileManager defaultManager] fileExistsAtPath: destinationPath] == NO)
+    {
+        NSMutableArray *args = [NSMutableArray array];
+        [args addObject:@"-f"];
+        [args addObject:@"-R"];
+        [args addObject:sourcePath];
+        [args addObject:destinationPath];
+        
+        [[BLAuthentication sharedInstance] executeCommand:@"/bin/cp" withArgs:args];
+    }
 }
 
 + (void)activatePluginWithName:(NSString*)pluginName;
