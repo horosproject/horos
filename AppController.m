@@ -693,7 +693,7 @@ static NSDate *lastWarningDate = nil;
 	err = Gestalt ( gestaltSystemVersion, &osVersion );       
 	if ( err == noErr)       
 	{
-		if ( osVersion < 0x1070UL )
+		if ( osVersion < 0x1075UL )
 		{
 			return NO;
 		}
@@ -3335,6 +3335,12 @@ static BOOL initialized = NO;
         CFRelease( code);
     }
 #endif
+    
+    if( [AppController hasMacOSXLion] == NO)
+    {
+        NSRunCriticalAlertPanel( NSLocalizedString( @"MacOS Version", nil), NSLocalizedString( @"OsiriX requires MacOS 10.7.5 or higher. Please update your OS: Apple Menu - Software Update...", nil), NSLocalizedString( @"Quit", nil) , nil, nil);
+        exit( 0);
+    }
 }
 
 - (void) checkForOsirixMimeType
