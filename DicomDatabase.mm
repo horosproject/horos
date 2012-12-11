@@ -1348,7 +1348,11 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	@try
     {
         [ThreadsManager.defaultManager addThreadAndStart:[NSThread currentThread]];
-		[self.independentDatabase processFilesAtPaths:[params objectForKey:@":"] intoDirAtPath:[params objectForKey:@"intoDirAtPath:"] mode:[[params objectForKey:@"mode:"] intValue]];
+        
+        if( self.isMainDatabase)
+            [self.independentDatabase processFilesAtPaths:[params objectForKey:@":"] intoDirAtPath:[params objectForKey:@"intoDirAtPath:"] mode:[[params objectForKey:@"mode:"] intValue]];
+        else
+            [self processFilesAtPaths:[params objectForKey:@":"] intoDirAtPath:[params objectForKey:@"intoDirAtPath:"] mode:[[params objectForKey:@"mode:"] intValue]];
 	}
     @catch (NSException* e)
     {
@@ -2865,11 +2869,15 @@ static BOOL protectionAgainstReentry = NO;
     {
 		if (listenerCompressionSettings == 1 || listenerCompressionSettings == 0) // decompress, listenerCompressionSettings == 0 for zip support!
         { 
-            [self performSelectorInBackground:@selector(_threadDecompressToIncoming:) withObject:compressedPathArray];
+//            [self performSelectorInBackground:@selector(_threadDecompressToIncoming:) withObject:compressedPathArray];
+            
+            [self initiateDecompressFilesAtPaths: compressedPathArray intoDirAtPath: self.incomingDirPath];
 		}
         else if (listenerCompressionSettings == 2) // compress
         { 
-            [self performSelectorInBackground:@selector(_threadCompressToIncoming:) withObject:compressedPathArray];
+//            [self performSelectorInBackground:@selector(_threadCompressToIncoming:) withObject:compressedPathArray];
+            
+            [self initiateCompressFilesAtPaths: compressedPathArray intoDirAtPath: self.incomingDirPath];
         }
 	}
 #endif
@@ -2877,35 +2885,35 @@ static BOOL protectionAgainstReentry = NO;
 	return addedFilesCount;
 }
 
--(void)_threadDecompressToIncoming:(NSArray*)compressedPathArray {
-    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-    @try {
-        NSThread* thread = [NSThread currentThread];
-        thread.name = NSLocalizedString(@"DICOM Decompression...", nil);
-        thread.status = [NSString stringWithFormat:NSLocalizedString(@"Decompressing %d %@", nil), compressedPathArray.count, compressedPathArray.count == 1? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil)];
-        [ThreadsManager.defaultManager addThreadAndStart:thread];
-        [self decompressFilesAtPaths:compressedPathArray intoDirAtPath:self.incomingDirPath];
-    } @catch (NSException* e) {
-        N2LogExceptionWithStackTrace(e);
-    } @finally {
-        [pool release];
-    }
-}
+//-(void)_threadDecompressToIncoming:(NSArray*)compressedPathArray {
+//    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+//    @try {
+//        NSThread* thread = [NSThread currentThread];
+//        thread.name = NSLocalizedString(@"DICOM Decompression...", nil);
+//        thread.status = [NSString stringWithFormat:NSLocalizedString(@"Decompressing %d %@", nil), compressedPathArray.count, compressedPathArray.count == 1? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil)];
+//        [ThreadsManager.defaultManager addThreadAndStart:thread];
+//        [self decompressFilesAtPaths:compressedPathArray intoDirAtPath:self.incomingDirPath];
+//    } @catch (NSException* e) {
+//        N2LogExceptionWithStackTrace(e);
+//    } @finally {
+//        [pool release];
+//    }
+//}
 
--(void)_threadCompressToIncoming:(NSArray*)compressedPathArray {
-    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-    @try {
-        NSThread* thread = [NSThread currentThread];
-        thread.name = NSLocalizedString(@"DICOM Compression...", nil);
-        thread.status = [NSString stringWithFormat:NSLocalizedString(@"Compressing %d %@", nil), compressedPathArray.count, compressedPathArray.count == 1? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil)];
-        [ThreadsManager.defaultManager addThreadAndStart:thread];
-        [self compressFilesAtPaths:compressedPathArray intoDirAtPath:self.incomingDirPath];
-    } @catch (NSException* e) {
-        N2LogExceptionWithStackTrace(e);
-    } @finally {
-        [pool release];
-    }
-}
+//-(void)_threadCompressToIncoming:(NSArray*)compressedPathArray {
+//    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+//    @try {
+//        NSThread* thread = [NSThread currentThread];
+//        thread.name = NSLocalizedString(@"DICOM Compression...", nil);
+//        thread.status = [NSString stringWithFormat:NSLocalizedString(@"Compressing %d %@", nil), compressedPathArray.count, compressedPathArray.count == 1? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil)];
+//        [ThreadsManager.defaultManager addThreadAndStart:thread];
+//        [self compressFilesAtPaths:compressedPathArray intoDirAtPath:self.incomingDirPath];
+//    } @catch (NSException* e) {
+//        N2LogExceptionWithStackTrace(e);
+//    } @finally {
+//        [pool release];
+//    }
+//}
 
 -(void)importFilesFromIncomingDirThread
 {
