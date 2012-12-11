@@ -5314,10 +5314,7 @@ static NSConditionLock *threadLock = nil;
     }
     
 	[animationCheck setState: NSOffState];
-	
-	[context retain];
-	[context lock];
-	
+		
 	NSArray *albumArray = self.albumArray;
 	
 	if( albumTable.selectedRow > 0 && matrixThumbnails == NO)
@@ -5335,7 +5332,10 @@ static NSConditionLock *threadLock = nil;
 	{
 		result = NSRunInformationalAlertPanel(NSLocalizedString(@"Delete images", nil), [NSString stringWithFormat: NSLocalizedString(@"Are you sure you want to delete the selected images? (%@)", nil), level], NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
 	}
-	
+    
+    [context retain];
+	[context lock];
+    
 	if( result == NSAlertOtherReturn)	// REMOVE FROM CURRENT ALBUMS, BUT DONT DELETE IT FROM THE DATABASE
 	{
 		NSIndexSet* selectedRows = [databaseOutline selectedRowIndexes];
@@ -5392,10 +5392,10 @@ static NSConditionLock *threadLock = nil;
 	}
 	else if (![_database isLocal])
 	{
-		NSRunAlertPanel( NSLocalizedString(@"Bonjour Database", nil),  NSLocalizedString(@"You cannot modify a Bonjour shared database.", nil), nil, nil, nil);
-		
-		[context release];
+        [context release];
 		[context unlock];
+        
+		NSRunAlertPanel( NSLocalizedString(@"Bonjour Database", nil),  NSLocalizedString(@"You cannot modify a Bonjour shared database.", nil), nil, nil, nil);
 		
 		[animationCheck setState: animState];
 		
