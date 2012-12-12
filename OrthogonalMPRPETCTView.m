@@ -79,4 +79,90 @@
 	return [super becomeFirstResponder];
 }
 
+- (void) exportDICOMFile:(id) sender
+{
+    [self.windowController exportDICOMFile: sender];
+}
+
+-(void) sendMail:(id) sender
+{
+    [self.windowController sendMail: sender];
+}
+
+- (void) exportJPEG:(id) sender
+{
+    [self.windowController exportJPEG: sender];
+}
+
+- (void) MoviePlayStop:(id) sender
+{
+    [self.windowController MoviePlayStop: sender];
+}
+
+- (void) ApplyWLWW:(id) sender
+{
+    [self.windowController ApplyWLWW: sender];
+}
+
+- (void) ApplyCLUT:(id) sender
+{
+    [self.windowController ApplyCLUT: sender];
+}
+
+- (void) ApplyOpacity: (id) sender
+{
+    [self.windowController ApplyOpacity: sender];
+}
+
+- (void) flipVerticalOriginal: (id) sender
+{
+    [self.windowController flipVerticalOriginal: sender];
+}
+
+- (void) flipVerticalX: (id) sender
+{
+    [self.windowController flipVerticalX: sender];
+}
+
+- (void) flipVerticalY: (id) sender
+{
+    [self.windowController flipVerticalY: sender];
+}
+
+- (void) flipHorizontalOriginal: (id) sender
+{
+    [self.windowController flipHorizontalOriginal: sender];
+}
+
+- (void) flipHorizontalX: (id) sender
+{
+    [self.windowController flipHorizontalX: sender];
+}
+
+- (void) flipHorizontalY: (id) sender
+{
+    [self.windowController flipHorizontalY: sender];
+}
+
+- (IBAction) changeTool:(id) sender
+{
+    [self.windowController changeTool: sender];
+}
+
+- (IBAction) changeBlendingFactor:(id) sender
+{
+    [self.windowController changeBlendingFactor: sender];
+}
+
+- (IBAction) blendingMode:(id) sender
+{
+    [self.windowController blendingMode: sender];
+}
+
+- (IBAction) resetImage:(id) sender
+{
+    [self.windowController resetImage: sender];
+}
+
+
 @end
