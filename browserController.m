@@ -13257,6 +13257,8 @@ static NSArray*	openSubSeriesArray = nil;
 	[helpMenu addItemWithTitle: NSLocalizedString(@"OsiriX Discussion Group", nil) action: @selector(openOsirixDiscussion:) keyEquivalent: @""];
 	[helpMenu addItem: [NSMenuItem separatorItem]];
 	[helpMenu addItemWithTitle: NSLocalizedString(@"OsiriX Help", nil) action: @selector(help:) keyEquivalent: @""];
+    [helpMenu addItemWithTitle: NSLocalizedString(@"User Manual", nil) action: @selector(userManual:) keyEquivalent: @""];
+    
 	[helpMenu release];
 }
 
