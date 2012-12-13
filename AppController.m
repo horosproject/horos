@@ -1128,12 +1128,12 @@ static NSDate *lastWarningDate = nil;
 
 -(IBAction)sendEmail:(id)sender
 {
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"mailto:rossetantoine@osirix-viewer.com"]]; 
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"mailto:pixmeo@pixmeo.com"]];
 }
 
 -(IBAction)openOsirixWebPage:(id)sender
 {
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com"]];
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.pixmeo.com"]];
 }
 
 -(IBAction)help:(id)sender
@@ -1150,7 +1150,6 @@ static NSDate *lastWarningDate = nil;
 {
 	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://pixmeo.pixmeo.com/products.html#OsiriXUserManual"]];
 }
-
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 #pragma mark-
 
