@@ -311,7 +311,7 @@ Note setter is different to not break existing usage. :-( */
 /** Database links */
 @property(retain) NSManagedObjectID *imageObjectID;
 @property(retain) NSString *srcFile, *SOPClassUID;
-@property(retain) NSMutableDictionary *annotationsDictionary;
+@property(retain) NSMutableDictionary *annotationsDictionary, *annotationsDBFields;
 
 // Properties (aka accessors) needed for SUV calculations
 @property(readonly) float philipsFactor;

@@ -1224,7 +1224,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 @synthesize serieNo, pixArray, pixPos, transferFunctionPtr;
 @synthesize stackMode, generated, generatedName, imageObjectID;
-@synthesize srcFile, annotationsDictionary;
+@synthesize srcFile, annotationsDictionary, annotationsDBFields;
 
 // US Regions
 @synthesize usRegions;
@@ -3494,7 +3494,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     copy->fileTypeHasPrefixDICOM = self->fileTypeHasPrefixDICOM;
     copy->yearOld = [self->yearOld retain];
     copy->yearOldAcquisition = [self->yearOldAcquisition retain];
-    copy->annotationsDBFields = [self->annotationsDBFields retain];
     copy->imID = self->imID;
     copy->imTot = self->imTot;
     copy->fExternalOwnedImage = self->fExternalOwnedImage;
@@ -3536,7 +3535,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	copy->repetitiontime = [self->repetitiontime retain];
 	copy->viewPosition = [self->viewPosition retain];
 	copy->patientPosition = [self->patientPosition retain];
-	copy->annotationsDictionary = [self->annotationsDictionary retain];
+	copy.annotationsDictionary = self.annotationsDictionary;
+    copy.annotationsDBFields = self.annotationsDBFields;
     copy->usRegions = [self->usRegions retain];
     copy->waveform = [self->waveform retain];
 	
@@ -13460,13 +13460,39 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	}
 }
 
+- (NSMutableDictionary*) annotationsDBFields
+{
+	NSMutableDictionary *d = nil;
+	
+	@synchronized( annotationsDBFields)
+	{
+		d = [[annotationsDBFields mutableCopy] autorelease];
+	}
+    
+	return d;
+}
+
+- (void) setAnnotationsDBFields: (NSMutableDictionary*) d
+{
+	if( d != annotationsDBFields)
+	{
+		@synchronized( annotationsDBFields)
+		{
+			[annotationsDBFields release];
+			annotationsDBFields = nil;
+		}
+		
+		annotationsDBFields = [d retain];
+	}
+}
+
 - (NSMutableDictionary*) annotationsDictionary
 {
 	NSMutableDictionary *d = nil;
 	
 	@synchronized( annotationsDictionary)
 	{
-		d = [[annotationsDictionary copy] autorelease];
+		d = [[annotationsDictionary mutableCopy] autorelease];
 	}
 
 	return d;

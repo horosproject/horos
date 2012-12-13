@@ -232,6 +232,9 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 			[curPix setSavedWW: [originalPix savedWW]];
 			[curPix changeWLWW: wl : ww];
 			
+            [curPix setAcquisitionDate: [originalPix acquisitionDate]];
+            [curPix setAcquisitionTime: [originalPix acquisitionTime]];
+            
 			// SUV
 			[curPix setDisplaySUVValue: [originalPix displaySUVValue]];
 			[curPix setSUVConverted: [originalPix SUVConverted]];
@@ -240,17 +243,21 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 			[curPix setPatientsWeight: [originalPix patientsWeight]];
 			[curPix setRadionuclideTotalDose: [originalPix radionuclideTotalDose]];
 			[curPix setRadionuclideTotalDoseCorrected: [originalPix radionuclideTotalDoseCorrected]];
-			[curPix setAcquisitionTime: [originalPix acquisitionTime]];
 			[curPix setDecayCorrection: [originalPix decayCorrection]];
 			[curPix setDecayFactor: [originalPix decayFactor]];
 			[curPix setUnits: [originalPix units]];
 			
 			[curPix setImageObjectID: [originalPix imageObjectID]];
-			
-			[curPix reloadAnnotations];
-			
+            [curPix setSrcFile: [originalPix srcFile]];
+			curPix.annotationsDictionary = originalPix.annotationsDictionary;
+            curPix.annotationsDBFields = originalPix.annotationsDBFields;
+            
+            DicomImage *dicomObject = [[originalViewer fileList] objectAtIndex:0];
+            
 			[newPixList addObject: curPix];
-			[newFileList addObject:[[originalViewer fileList] objectAtIndex:0]];
+			[newFileList addObject: dicomObject];
+            
+            [curPix reloadAnnotations];
 		}
 		
 		if( [[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
