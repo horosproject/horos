@@ -45,7 +45,8 @@ static LogManager *currentLogManager = nil;
 
 - (void) resetLogs
 {
-    @synchronized( independentContext)
+    [independentContext lock];
+    @try
     {
         [independentContext save: nil];
         [independentContext release];
@@ -53,6 +54,10 @@ static LogManager *currentLogManager = nil;
         
         currentDatabase = nil;
     }
+    @catch ( NSException *e) {
+        N2LogException( e);
+    }
+    [independentContext unlock];
     
 	DicomDatabase* db = [[BrowserController currentBrowser] database];
 	[db lock];
@@ -98,12 +103,17 @@ static LogManager *currentLogManager = nil;
         {
             currentDatabase = [[BrowserController currentBrowser] database];
             
-            @synchronized( independentContext)
+            [independentContext lock];
+            @try
             {
                 [independentContext save: nil];
                 [independentContext release];
                 independentContext = nil;
             }
+            @catch ( NSException *e) {
+                N2LogException( e);
+            }
+            [independentContext unlock];
         }
         
         if( independentContext == nil)
@@ -112,7 +122,8 @@ static LogManager *currentLogManager = nil;
 		if( independentContext == nil)
 			return;
 		
-        @synchronized( independentContext)
+        [independentContext lock];
+        @try
         {
             if( [[dict valueForKey: @"logMessage"] isEqualToString:@"In Progress"] || [[dict valueForKey: @"logMessage"] isEqualToString:@"Complete"] || [[dict valueForKey: @"logMessage"] isEqualToString:@"Incomplete"])
             {
@@ -134,10 +145,15 @@ static LogManager *currentLogManager = nil;
                     [logEntry setValue:[dict valueForKey: @"logPatientName"] forKey:@"patientName"];
                     [logEntry setValue:[dict valueForKey: @"logStudyDescription"] forKey:@"studyName"];
                     
-                    @synchronized( independentContext)
+                    [independentContext lock];
+                    @try
                     {
                         [independentContext save: nil]; // To have a valid objectID
                     }
+                    @catch ( NSException *e) {
+                        N2LogException( e);
+                    }
+                    [independentContext unlock];
                     
                     [_currentLogs setObject: logEntry.objectID forKey:uid];
                 }
@@ -170,6 +186,10 @@ static LogManager *currentLogManager = nil;
                 }
             }
         }
+        @catch ( NSException *e) {
+            N2LogException( e);
+        }
+        [independentContext unlock];
     }
 }
 
