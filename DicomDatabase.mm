@@ -1311,7 +1311,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		
 		size_t nTasks = 10;
 		size_t chunkSize = paths.count/nTasks;
-		if (chunkSize < 20) chunkSize = 20;
+		if (chunkSize < 100) chunkSize = 100;
 		
 		NSArray* chunks = [paths splitArrayIntoArraysOfMinSize:chunkSize maxArrays:nTasks];
 		
@@ -1345,23 +1345,29 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 -(void)threadBridgeForProcessFilesAtPaths:(NSDictionary*)params
 {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-	@try
+    
+    static NSString *singleThread = @"threadBridgeForProcessFilesAtPaths";
+    
+    @synchronized( singleThread)
     {
-        [ThreadsManager.defaultManager addThreadAndStart:[NSThread currentThread]];
-        
-        if( self.isMainDatabase)
-            [self.independentDatabase processFilesAtPaths:[params objectForKey:@":"] intoDirAtPath:[params objectForKey:@"intoDirAtPath:"] mode:[[params objectForKey:@"mode:"] intValue]];
-        else
-            [self processFilesAtPaths:[params objectForKey:@":"] intoDirAtPath:[params objectForKey:@"intoDirAtPath:"] mode:[[params objectForKey:@"mode:"] intValue]];
-	}
-    @catch (NSException* e)
-    {
-		N2LogExceptionWithStackTrace(e);
-	}
-    @finally
-    {
-		[pool release];
-	}
+        @try
+        {
+            [ThreadsManager.defaultManager addThreadAndStart:[NSThread currentThread]];
+            
+            if( self.isMainDatabase)
+                [self.independentDatabase processFilesAtPaths:[params objectForKey:@":"] intoDirAtPath:[params objectForKey:@"intoDirAtPath:"] mode:[[params objectForKey:@"mode:"] intValue]];
+            else
+                [self processFilesAtPaths:[params objectForKey:@":"] intoDirAtPath:[params objectForKey:@"intoDirAtPath:"] mode:[[params objectForKey:@"mode:"] intValue]];
+        }
+        @catch (NSException* e)
+        {
+            N2LogExceptionWithStackTrace(e);
+        }
+        @finally
+        {
+            [pool release];
+        }
+    }
 }
 
 -(void)initiateProcessFilesAtPaths:(NSArray*)paths intoDirAtPath:(NSString*)destDir mode:(int)mode
@@ -2351,7 +2357,8 @@ static BOOL protectionAgainstReentry = NO;
 					growlStringNewStudy = [NSString stringWithFormat:NSLocalizedString(@"%@\r%@", nil), [[addedImageObjects objectAtIndex:0] valueForKeyPath:@"series.study.name"], [[addedImageObjects objectAtIndex:0] valueForKeyPath:@"series.study.studyName"]];
 				}
 			}
-            if (self.isLocal && returnArray)
+            if (self.isLocal && returnArray && [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOROUTINGACTIVATED"])
+                
                 [self applyRoutingRules:nil toImages:addedImageObjects];
 		}
 		@catch( NSException *ne)

@@ -60,8 +60,6 @@
 	[routesTable setDoubleAction:@selector(editRoute:)];
 	[routesTable setTarget: self];
 	
-	[autoroutingActivated setState: [defaults boolForKey:@"AUTOROUTINGACTIVATED"]];
-	
 	[serversArray release];
 	serversArray = [[[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"] retain];
 	
@@ -86,11 +84,6 @@
 	[[[self mainView] window] makeFirstResponder: nil];
 
 	[[NSUserDefaults standardUserDefaults] setObject: routesArray forKey:@"AUTOROUTINGDICTIONARY"];
-	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOROUTINGACTIVATED"])
-	{
-		[[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey:@"INC"]+1  forKey:@"INC"];
-	}
 }
 
 - (void)dealloc
@@ -101,11 +94,6 @@
 	[serversArray release];
 	
 	[super dealloc];
-}
-
-- (IBAction)setActivated:(id)sender
-{
-	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey:@"AUTOROUTINGACTIVATED"];
 }
 
 - (IBAction) syntaxHelpButtons:(id) sender

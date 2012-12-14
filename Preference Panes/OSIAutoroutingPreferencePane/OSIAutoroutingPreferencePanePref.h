@@ -16,7 +16,6 @@
 
 @interface OSIAutoroutingPreferencePanePref : NSPreferencePane <NSTableViewDelegate>
 {
-	IBOutlet NSButton					*autoroutingActivated;
 	IBOutlet NSWindow					*newRoute;
 	IBOutlet NSTableView				*routesTable;
 	
@@ -40,7 +39,6 @@
 @property int filterType;
 
 - (void) mainViewDidLoad;
-- (IBAction) setActivated:(id)sender;
 - (IBAction) endNewRoute:(id) sender;
 - (IBAction) newRoute:(id) sender;
 - (IBAction) syntaxHelpButtons:(id) sender;

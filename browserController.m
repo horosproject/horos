@@ -836,27 +836,17 @@ static NSConditionLock *threadLock = nil;
 	
 	if( [sender representedObject]) // Only selected rule
 	{
-		[self executeAutorouting: objects rules: [NSArray arrayWithObject: [sender representedObject]] manually: YES];
+        [_database applyRoutingRules: [NSArray arrayWithObject: [sender representedObject]] toImages: objects];
 	}
 	else // All rules
 	{
-		[self executeAutorouting: objects rules: nil manually: YES];
+        [_database applyRoutingRules: nil toImages: objects];
 	}
 }
 
 - (void)addFiles:(NSArray*)images withRule:(NSDictionary*)routingRule // __deprecated
 {
 	[_database addImages:images toSendQueueForRoutingRule:routingRule];
-}
-
--(void)executeAutorouting:(NSArray*)newImages rules:(NSArray*)autoroutingRules manually:(BOOL)manually // __deprecated
-{
-	[self executeAutorouting: newImages rules: autoroutingRules manually: manually generatedByOsiriX: NO];
-}
-
--(void)executeAutorouting:(NSArray*)newImages rules:(NSArray*)autoroutingRules manually:(BOOL)manually generatedByOsiriX:(BOOL)generatedByOsiriX { // __deprecated // notice: the generatedByOsiriX is supposed to be specified in all DicomImage instances, so I decided to ignore it when trasitioning to DicomDatabase
-	if (manually || [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOROUTINGACTIVATED"])
-		[_database applyRoutingRules:autoroutingRules toImages:newImages];
 }
 
 #pragma mark-
