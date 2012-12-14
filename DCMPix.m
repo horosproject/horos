@@ -1225,6 +1225,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 @synthesize serieNo, pixArray, pixPos, transferFunctionPtr;
 @synthesize stackMode, generated, generatedName, imageObjectID;
 @synthesize srcFile, annotationsDictionary, annotationsDBFields;
+@synthesize yearOld, yearOldAcquisition;
 
 // US Regions
 @synthesize usRegions;
@@ -3432,10 +3433,10 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             numberOfFrames = [[iO valueForKey: @"numberOfFrames"] intValue];
             
             if( [iO valueForKeyPath: @"series.study.dateOfBirth"])
-                yearOld = [[iO valueForKeyPath: @"series.study.yearOld"] retain];
+                self.yearOld = [iO valueForKeyPath: @"series.study.yearOld"];
                 
             if( [iO valueForKeyPath: @"series.study.dateOfBirth"] && [iO valueForKeyPath: @"series.study.date"])
-                yearOldAcquisition = [[iO valueForKeyPath: @"series.study.yearOldAcquisition"] retain];
+                self.yearOldAcquisition = [iO valueForKeyPath: @"series.study.yearOldAcquisition"];
             
             #ifdef OSIRIX_VIEWER
             [self loadCustomImageAnnotationsDBFields: (DicomImage*) iO];

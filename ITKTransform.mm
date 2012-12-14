@@ -249,6 +249,10 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 			
 			[curPix setImageObjectID: [originalPix imageObjectID]];
             [curPix setSrcFile: [originalPix srcFile]];
+            
+            curPix.yearOld = originalPix.yearOld;
+            curPix.yearOldAcquisition = originalPix.yearOldAcquisition;
+            
 			curPix.annotationsDictionary = originalPix.annotationsDictionary;
             curPix.annotationsDBFields = originalPix.annotationsDBFields;
             
