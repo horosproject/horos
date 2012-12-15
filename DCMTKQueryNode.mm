@@ -2261,8 +2261,6 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 		}
 		@catch (NSException *e)
 		{
-            @throw e;
-            
 			NSString *response = [NSString stringWithFormat: @"%@  /  %@:%d\r\r%@\r%@", _calledAET, _hostname, _port, [e name], [e description]];
 			
             if (_abortAssociation == NO)
@@ -2278,7 +2276,8 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 			succeed = NO;
             
             [NSThread sleepForTimeInterval: 0.1];
-		} @finally {
+		}
+        @finally {
             [wait end];
             [wait autorelease];
             wait = nil;
