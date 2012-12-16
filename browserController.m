@@ -7384,6 +7384,8 @@ static BOOL withReset = NO;
     {
         return [previewPix objectAtIndex:i];
     }
+    
+    return nil;
 }
 
 - (void) initAnimationSlider
