@@ -4537,44 +4537,47 @@ static NSConditionLock *threadLock = nil;
                 [matrixLoadIconsThread release];
                 matrixLoadIconsThread = nil;
                 
-                NSDictionary* dict = [NSDictionary dictionaryWithObjectsAndKeys: _database, @"DicomDatabase", [files valueForKey:@"objectID"], @"objectIDs", [NSNumber numberWithBool: imageLevel], @"imageLevel", previewPix, @"Context", _database, @"DicomDatabase", nil];
-                if( separateThread)
+                @synchronized( previewPixThumbnails)
                 {
-                    matrixLoadIconsThread = [[NSThread alloc] initWithTarget: self selector: @selector(matrixLoadIcons:) object: dict];
-                    [matrixLoadIconsThread start];
-                    
-                    if( previousItem == item)
+                    NSDictionary* dict = [NSDictionary dictionaryWithObjectsAndKeys: _database, @"DicomDatabase", [files valueForKey:@"objectID"], @"objectIDs", [NSNumber numberWithBool: imageLevel], @"imageLevel", previewPix, @"Context", _database, @"DicomDatabase", nil];
+                    if( separateThread)
                     {
-                        for( NSCell *cell in [oMatrix cells])
-                        {
-                            [cell setState: NSOffState];
-                            [cell setHighlighted: NO];
-                        }
+                        matrixLoadIconsThread = [[NSThread alloc] initWithTarget: self selector: @selector(matrixLoadIcons:) object: dict];
+                        [matrixLoadIconsThread start];
                         
-                        for( NSDictionary *d in selectedRowColumns)
+                        if( previousItem == item)
                         {
-                            NSCell *cell = [oMatrix cellAtRow: [[d objectForKey: @"row"] intValue] column: [[d objectForKey: @"column"] intValue]];
-                            [cell setState: NSOnState];
-                            [cell setHighlighted: YES];
+                            for( NSCell *cell in [oMatrix cells])
+                            {
+                                [cell setState: NSOffState];
+                                [cell setHighlighted: NO];
+                            }
+                            
+                            for( NSDictionary *d in selectedRowColumns)
+                            {
+                                NSCell *cell = [oMatrix cellAtRow: [[d objectForKey: @"row"] intValue] column: [[d objectForKey: @"column"] intValue]];
+                                [cell setState: NSOnState];
+                                [cell setHighlighted: YES];
+                            }
                         }
                     }
-				}
-                else
-                {
-                    [self matrixLoadIcons: dict];
-                    if( previousItem == item)
+                    else
                     {
-                        for( NSCell *cell in [oMatrix cells])
+                        [self matrixLoadIcons: dict];
+                        if( previousItem == item)
                         {
-                            if( [selectedCellsIDs containsObject: [cell representedObject]])
+                            for( NSCell *cell in [oMatrix cells])
                             {
-                                [cell setHighlighted: YES];
-                                [cell setState: NSOnState];
-                            }
-                            else
-                            {
-                                [cell setHighlighted: NO];
-                                [cell setState: NSOffState];
+                                if( [selectedCellsIDs containsObject: [cell representedObject]])
+                                {
+                                    [cell setHighlighted: YES];
+                                    [cell setState: NSOnState];
+                                }
+                                else
+                                {
+                                    [cell setHighlighted: NO];
+                                    [cell setState: NSOffState];
+                                }
                             }
                         }
                     }
@@ -7377,7 +7380,10 @@ static BOOL withReset = NO;
 
 - (DCMPix *)previewPix:(int)i
 {
-	return [previewPix objectAtIndex:i];
+    @synchronized( previewPixThumbnails)
+    {
+        return [previewPix objectAtIndex:i];
+    }
 }
 
 - (void) initAnimationSlider
@@ -7589,8 +7595,11 @@ static BOOL withReset = NO;
 					
 					[imageView getWLWW:&wl :&ww];
 					
-					[previewPix replaceObjectAtIndex:[cell tag] withObject:(id) dcmPix];
-					
+                    @synchronized( previewPixThumbnails)
+                    {
+                        [previewPix replaceObjectAtIndex:[cell tag] withObject:(id) dcmPix];
+					}
+                    
 					[dcmPix release];
 					
 					[imageView setIndex:[cell tag]];
@@ -7637,28 +7646,32 @@ static BOOL withReset = NO;
 								
 								[imageView getWLWW:&wl :&ww];
 								
-								DCMPix *previousDcmPix = [[previewPix objectAtIndex: [cell tag]] retain];	// To allow the cached system in DCMPix to avoid reloading
-								
-								[previewPix replaceObjectAtIndex:[cell tag] withObject:(id) dcmPix];
-								[dcmPix release];
-								
-								if( withReset) [imageView setIndexWithReset:[cell tag] :YES];
-								else [imageView setIndex:[cell tag]];
-								
-								@try
-								{
-									for( DCMPix *p in previewPix)
-									{
-										if( p != dcmPix)
-										{
-											[p kill8bitsImage];
-											[p revert: NO];
-										}
-									}
-								}
-								@catch (NSException *e) {}
-								
-								[previousDcmPix release];
+                                @synchronized( previewPixThumbnails)
+                                {
+                                    DCMPix *previousDcmPix = [[previewPix objectAtIndex: [cell tag]] retain];	// To allow the cached system in DCMPix to avoid reloading
+                                    
+                                    [previewPix replaceObjectAtIndex:[cell tag] withObject:(id) dcmPix];
+                                    
+                                    [dcmPix release];
+                                    
+                                    if( withReset) [imageView setIndexWithReset:[cell tag] :YES];
+                                    else [imageView setIndex:[cell tag]];
+                                    
+                                    @try
+                                    {
+                                        for( DCMPix *p in previewPix)
+                                        {
+                                            if( p != dcmPix)
+                                            {
+                                                [p kill8bitsImage];
+                                                [p revert: NO];
+                                            }
+                                        }
+                                    }
+                                    @catch (NSException *e) {}
+                                    
+                                    [previousDcmPix release];
+                                }
 							}
 						}
 					}
@@ -7683,28 +7696,31 @@ static BOOL withReset = NO;
 								
 								[imageView getWLWW:&wl :&ww];
 								
-								DCMPix *previousDcmPix = [[previewPix objectAtIndex: [cell tag]] retain];	// To allow the cached system in DCMPix to avoid reloading
-								
-								[previewPix replaceObjectAtIndex:[cell tag] withObject:(id) dcmPix];
-								[dcmPix release];
-								
-								if( withReset) [imageView setIndexWithReset:[cell tag] :YES];
-								else [imageView setIndex:[cell tag]];
-								
-								@try
-								{
-									for( DCMPix *p in previewPix)
-									{
-										if( p != dcmPix)
-										{
-											[p kill8bitsImage];
-											[p revert: NO];
-										}
-									}
-								}
-								@catch (NSException *e) {}
-								
-								[previousDcmPix release];
+                                @synchronized( previewPixThumbnails)
+                                {
+                                    DCMPix *previousDcmPix = [[previewPix objectAtIndex: [cell tag]] retain];	// To allow the cached system in DCMPix to avoid reloading
+                                    
+                                    [previewPix replaceObjectAtIndex:[cell tag] withObject:(id) dcmPix];
+                                    [dcmPix release];
+                                    
+                                    if( withReset) [imageView setIndexWithReset:[cell tag] :YES];
+                                    else [imageView setIndex:[cell tag]];
+                                    
+                                    @try
+                                    {
+                                        for( DCMPix *p in previewPix)
+                                        {
+                                            if( p != dcmPix)
+                                            {
+                                                [p kill8bitsImage];
+                                                [p revert: NO];
+                                            }
+                                        }
+                                    }
+                                    @catch (NSException *e) {}
+                                    
+                                    [previousDcmPix release];
+                                }
 							}
 						}
 					}
@@ -8016,7 +8032,11 @@ static BOOL withReset = NO;
                     {
                         NSManagedObject* aFile = [databaseOutline itemAtRow:[index firstIndex]];
                         
-                        [imageView setPixels:previewPix files:[self imagesArray: aFile preferredObject: oAny] rois:nil firstImage:[[oMatrix selectedCell] tag] level:'i' reset:YES];
+                        @synchronized( previewPixThumbnails)
+                        {
+                            [imageView setPixels:previewPix files:[self imagesArray: aFile preferredObject: oAny] rois:nil firstImage:[[oMatrix selectedCell] tag] level:'i' reset:YES];
+                        }
+                        
                         [imageView setStringID:@"previewDatabase"];
                         setDCMDone = YES;
                     }
@@ -8111,39 +8131,42 @@ static BOOL withReset = NO;
     
 	@try
 	{
-        if ([previewPix count] && loadPreviewIndex < [previewPix count])
+        @synchronized( previewPixThumbnails)
         {
-            long i;
-            for( i = 0; i < [previewPix count]; i++)
+            if ([previewPix count] && loadPreviewIndex < [previewPix count])
             {
-                NSInteger rows, cols; [oMatrix getNumberOfRows:&rows columns:&cols];
-                NSButtonCell* cell = [oMatrix cellAtRow:i/cols column:i%cols];
-                
-                if( [cell isEnabled] == NO)
+                long i;
+                for( i = 0; i < [previewPix count]; i++)
                 {
-                    if( i < [previewPix count])
+                    NSInteger rows, cols; [oMatrix getNumberOfRows:&rows columns:&cols];
+                    NSButtonCell* cell = [oMatrix cellAtRow:i/cols column:i%cols];
+                    
+                    if( [cell isEnabled] == NO)
                     {
-                        if( [previewPix objectAtIndex: i] != nil)
+                        if( i < [previewPix count])
                         {
-                            if( i < [matrixViewArray count])
+                            if( [previewPix objectAtIndex: i] != nil)
                             {
-                                [self matrixNewIcon:i :[matrixViewArray objectAtIndex: i]];
+                                if( i < [matrixViewArray count])
+                                {
+                                    [self matrixNewIcon:i :[matrixViewArray objectAtIndex: i]];
+                                }
                             }
                         }
                     }
                 }
+                
+                if( [oMatrix selectedCell] == 0)
+                {
+                    if( [matrixViewArray count] > 0)
+                        [oMatrix selectCellWithTag: 0];
+                }
+                
+                if( loadPreviewIndex == 0)
+                    [self initAnimationSlider];
+                
+                loadPreviewIndex = i;
             }
-            
-            if( [oMatrix selectedCell] == 0)
-            {
-                if( [matrixViewArray count] > 0)
-                    [oMatrix selectCellWithTag: 0];
-            }
-            
-            if( loadPreviewIndex == 0)
-                [self initAnimationSlider];
-            
-            loadPreviewIndex = i;
         }
 	}
 	
@@ -8389,8 +8412,15 @@ static BOOL withReset = NO;
         idatabase = [idatabase independentDatabase]; // INDEPENDANT CONTEXT !
         
         NSArray* objs = [idatabase objectsWithIDs:objectIDs];
-        NSMutableArray *tempPreviewPixThumbnails = [[previewPixThumbnails mutableCopy] autorelease];
-        NSMutableArray *tempPreviewPix = [[previewPix mutableCopy] autorelease];
+        
+        NSMutableArray *tempPreviewPixThumbnails = nil;
+        NSMutableArray *tempPreviewPix = nil;
+        
+        @synchronized( previewPixThumbnails)
+        {
+            tempPreviewPixThumbnails = [[previewPixThumbnails mutableCopy] autorelease];
+            tempPreviewPix = [[previewPix mutableCopy] autorelease];
+        }
         
         for (int i = 0; i < objectIDs.count; i++)
         {
@@ -8656,11 +8686,14 @@ static BOOL withReset = NO;
     NSInteger vcells = MAX(1, (NSInteger)ceilf(1.0*matrixViewArray.count/hcells));
     [oMatrix renewRows:vcells columns:hcells];
     
-    for (int i = [previewPix count]; i < hcells*vcells; ++i)
+    @synchronized( previewPixThumbnails)
     {
-        NSButtonCell* cell = [oMatrix cellAtRow:i/hcells column:i%hcells];
-        [cell setTransparent:YES];
-        [cell setEnabled:NO];
+        for (int i = [previewPix count]; i < hcells*vcells; ++i)
+        {
+            NSButtonCell* cell = [oMatrix cellAtRow:i/hcells column:i%hcells];
+            [cell setTransparent:YES];
+            [cell setEnabled:NO];
+        }
     }
     
     [oMatrix sizeToCells];
@@ -10325,11 +10358,14 @@ static BOOL needToRezoom;
 						[DCMView purgeStringTextureCache];
 						@try
 						{
-							for( DCMPix *p in previewPix)
-							{
-								[p kill8bitsImage];
-								[p revert: NO];
-							}
+                            @synchronized( previewPixThumbnails)
+                            {
+                                for( DCMPix *p in previewPix)
+                                {
+                                    [p kill8bitsImage];
+                                    [p revert: NO];
+                                }
+                            }
 						}
 						@catch (NSException *e) {}
 						
@@ -16300,8 +16336,13 @@ static volatile int numberOfThreadsForJPEG = 0;
 		if ( [modality isEqualToString: @"RTSTRUCT"])
 		{
 			DCMObject *dcmObj = [DCMObject objectWithContentsOfFile: [filePaths objectAtIndex: i ] decodingPixelData: NO];
-			DCMPix *pix = [previewPix objectAtIndex: 0];  // Should only be one DCMPix associated w/ an RTSTRUCT
-			
+            
+            DCMPix *pix = nil;
+            @synchronized( previewPixThumbnails)
+            {
+                pix = [previewPix objectAtIndex: 0];  // Should only be one DCMPix associated w/ an RTSTRUCT
+			}
+            
 			[pix createROIsFromRTSTRUCT: dcmObj];
 		}
 	}
