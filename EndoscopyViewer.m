@@ -1150,6 +1150,8 @@ return YES;
 	
 	NSMutableArray *producedFiles = [NSMutableArray array];
 	
+    DICOMExport *exportDCM = [[[DICOMExport alloc] init] autorelease];
+    
 	if ([exportDCMViewsChoice selectedTag] == 0)
 	{
 		// export the 4 views
@@ -1157,7 +1159,7 @@ return YES;
 		unsigned char *dataPtr = [self getRawPixels:&width :&height :&spp :&bpp];
 				
 		// let's write the file on the disk
-		DICOMExport *exportDCM = [[[DICOMExport alloc] init] autorelease];
+		
 		float	o[9];
 
 		if(dataPtr)
@@ -1177,18 +1179,12 @@ return YES;
 	}
 	else
 	{
-		// export only current view
-		NSResponder *currentFocusedView = [[self window] firstResponder];
-		if ([currentFocusedView isEqualTo:[vrController view]])
-		{
-			// 3D view
-			[producedFiles addObject: [(VRView*)currentFocusedView exportDCMCurrentImageIn16bit: NO]];
-		}
-		else
-		{
-			// MPR view
-			[(OrthogonalMPRViewer*) currentFocusedView exportDICOMFile:self];
-		}
+        // 3D view
+        VRView *view = [vrController view];
+        
+        view.dcmSeriesString = [exportDCMSeriesName stringValue];
+        
+        [producedFiles addObject: [view exportDCMCurrentImageIn16bit: NO]];
 	}
 	
 	if( [producedFiles count])

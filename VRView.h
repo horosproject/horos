@@ -443,7 +443,7 @@ typedef char* VTKStereoVRView;
 - (IBAction)changeColorWith:(NSColor*) color;
 - (IBAction)changeColor:(id)sender;
 - (NSColor*)backgroundColor;
-- (void) exportDICOMFile:(id) sender;
+- (void) exportDICOM;
 -(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits;
 -(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits offset:(int*) offset isSigned:(BOOL*) isSigned;
 -(void) set3DStateDictionary:(NSDictionary*) dict;

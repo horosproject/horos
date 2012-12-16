@@ -1765,7 +1765,7 @@ return YES;
 	[toolbarItem setPaletteLabel:NSLocalizedString(@"DICOM",nil)];
         [toolbarItem setToolTip:NSLocalizedString(@"Export this image in a DICOM file",nil)];
 	[toolbarItem setImage: [NSImage imageNamed: ExportToolbarItemIdentifier]];
-	[toolbarItem setTarget: view];
+	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(exportDICOMFile:)];
     }
 //	else if ([itemIdent isEqualToString: SendToolbarItemIdentifier]) {
@@ -2192,6 +2192,11 @@ return YES;
 		NSWorkspace *ws = [NSWorkspace sharedWorkspace];
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"]) [ws openFile:[panel filename]];
 	}
+}
+
+- (void) exportDICOMFile:(id) sender
+{
+    [view exportDICOM];
 }
 
 // Fly Thru

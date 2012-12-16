@@ -1452,7 +1452,7 @@ public:
 	}
 }
 
-- (void) exportDICOMFile:(id) sender
+- (void) exportDICOM
 {
 	if( exportDCMWindow == nil)
 	{

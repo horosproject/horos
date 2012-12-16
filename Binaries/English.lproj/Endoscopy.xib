@@ -2,13 +2,13 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1070</int>
-		<string key="IBDocument.SystemVersion">12B19</string>
-		<string key="IBDocument.InterfaceBuilderVersion">2549</string>
-		<string key="IBDocument.AppKitVersion">1187</string>
-		<string key="IBDocument.HIToolboxVersion">624.00</string>
+		<string key="IBDocument.SystemVersion">12C3012</string>
+		<string key="IBDocument.InterfaceBuilderVersion">2844</string>
+		<string key="IBDocument.AppKitVersion">1187.34</string>
+		<string key="IBDocument.HIToolboxVersion">625.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">2549</string>
+			<string key="NS.object.0">2844</string>
 		</object>
 		<array key="IBDocument.IntegratedClassDependencies">
 			<string>NSArrayController</string>
@@ -124,7 +124,6 @@
 											<string key="NSFrame">{{309, 0}, {300, 300}}</string>
 											<reference key="NSSuperview" ref="120052299"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView"/>
 											<string key="NSClassName">EndoscopyVRView</string>
 											<string key="NSExtension">NSView</string>
 										</object>
@@ -1579,7 +1578,7 @@
 				<nil key="NSUserInterfaceItemIdentifier"/>
 				<string key="NSWindowContentMinSize">{131.131, 5}</string>
 				<object class="NSView" key="NSWindowView" id="311597594">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSButton" id="369415325">
@@ -1587,6 +1586,7 @@
 							<int key="NSvFlags">257</int>
 							<string key="NSFrame">{{247, 12}, {97, 32}}</string>
 							<reference key="NSSuperview" ref="311597594"/>
+							<reference key="NSWindow"/>
 							<int key="NSTag">1</int>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="490820452">
@@ -1611,6 +1611,7 @@
 							<int key="NSvFlags">257</int>
 							<string key="NSFrame">{{150, 12}, {97, 32}}</string>
 							<reference key="NSSuperview" ref="311597594"/>
+							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="369415325"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="77189660">
@@ -1634,6 +1635,7 @@
 							<int key="NSvFlags">256</int>
 							<string key="NSFrame">{{17, 142}, {324, 17}}</string>
 							<reference key="NSSuperview" ref="311597594"/>
+							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="182071576"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="439667907">
@@ -1652,6 +1654,7 @@
 							<int key="NSvFlags">256</int>
 							<string key="NSFrame">{{110, 60}, {228, 22}}</string>
 							<reference key="NSSuperview" ref="311597594"/>
+							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="496358540"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="622026687">
@@ -1684,6 +1687,7 @@
 							<int key="NSvFlags">256</int>
 							<string key="NSFrame">{{17, 62}, {114, 17}}</string>
 							<reference key="NSSuperview" ref="311597594"/>
+							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="1033742695"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="10525804">
@@ -1702,6 +1706,7 @@
 							<int key="NSvFlags">256</int>
 							<string key="NSFrame">{{20, 96}, {318, 38}}</string>
 							<reference key="NSSuperview" ref="311597594"/>
+							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="350023052"/>
 							<bool key="NSEnabled">YES</bool>
 							<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
@@ -1729,7 +1734,7 @@
 								<object class="NSButtonCell" id="411521619">
 									<int key="NSCellFlags">67108864</int>
 									<int key="NSCellFlags2">0</int>
-									<string key="NSContents">Focused view only</string>
+									<string key="NSContents">3D Endoscopy view</string>
 									<reference key="NSSupport" ref="236954416"/>
 									<reference key="NSControlView" ref="182071576"/>
 									<int key="NSTag">1</int>
@@ -1806,6 +1811,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 					</array>
 					<string key="NSFrameSize">{358, 170}</string>
+					<reference key="NSSuperview"/>
+					<reference key="NSWindow"/>
 					<reference key="NSNextKeyView" ref="1033572610"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
@@ -1919,7 +1926,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<string key="NSExtension">NSResponder</string>
 			</object>
 			<object class="NSCustomView" id="312827162">
-				<reference key="NSNextResponder"/>
+				<nil key="NSNextResponder"/>
 				<int key="NSvFlags">256</int>
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="NSCustomView" id="437710069">
@@ -1931,7 +1938,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 								<int key="NSvFlags">256</int>
 								<string key="NSFrame">{{-2, 16}, {69, 17}}</string>
 								<reference key="NSSuperview" ref="437710069"/>
-								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="674663486"/>
 								<bool key="NSEnabled">YES</bool>
 								<object class="NSTextFieldCell" key="NSCell" id="61325696">
@@ -1954,7 +1960,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 								<int key="NSvFlags">256</int>
 								<string key="NSFrame">{{0, 4}, {117, 16}}</string>
 								<reference key="NSSuperview" ref="437710069"/>
-								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="1027957901"/>
 								<bool key="NSEnabled">YES</bool>
 								<object class="NSSliderCell" key="NSCell" id="567557935">
@@ -1981,8 +1986,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 								<int key="NSvFlags">256</int>
 								<string key="NSFrame">{{50, 16}, {69, 17}}</string>
 								<reference key="NSSuperview" ref="437710069"/>
-								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView"/>
 								<bool key="NSEnabled">YES</bool>
 								<object class="NSTextFieldCell" key="NSCell" id="544387571">
 									<int key="NSCellFlags">67108864</int>
@@ -1998,7 +2001,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</array>
 						<string key="NSFrameSize">{117, 33}</string>
 						<reference key="NSSuperview" ref="312827162"/>
-						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="699610813"/>
 						<object class="NSMutableString" key="NSClassName">
 							<characters key="NS.bytes">NSView</characters>
@@ -2007,8 +2009,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 				</array>
 				<string key="NSFrameSize">{117, 33}</string>
-				<reference key="NSSuperview"/>
-				<reference key="NSWindow"/>
 				<reference key="NSNextKeyView" ref="437710069"/>
 				<string key="NSClassName">NSView</string>
 				<string key="NSExtension">NSResponder</string>
@@ -3727,7 +3727,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
 			<object class="NSCustomView" id="879131380">
-				<reference key="NSNextResponder"/>
+				<nil key="NSNextResponder"/>
 				<int key="NSvFlags">256</int>
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="NSMatrix" id="525277034">
@@ -3735,8 +3735,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{2, 2}, {57, 32}}</string>
 						<reference key="NSSuperview" ref="879131380"/>
-						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<bool key="NSEnabled">YES</bool>
 						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 						<int key="NSNumRows">2</int>
@@ -3796,8 +3794,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 				</array>
 				<string key="NSFrameSize">{59, 36}</string>
-				<reference key="NSSuperview"/>
-				<reference key="NSWindow"/>
 				<reference key="NSNextKeyView" ref="525277034"/>
 				<object class="NSMutableString" key="NSClassName">
 					<characters key="NS.bytes">NSView</characters>
@@ -7753,12 +7749,16 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="applyNewSettingForFlyAssistant:">id</string>
 						<string key="change2DTool:">id</string>
 						<string key="change3DTool:">id</string>
+						<string key="customizeViewerToolBar:">id</string>
 						<string key="endDCMExportSettings:">id</string>
+						<string key="flyThruControllerInit:">id</string>
 						<string key="lockCameraOrFocusOnPath:">id</string>
 						<string key="lookBackwards:">id</string>
 						<string key="pathAssistantBasicModeButtonAction:">id</string>
 						<string key="pathAssistantChangeMode:">id</string>
+						<string key="pathAssistantDeletePath:">id</string>
 						<string key="pathAssistantExportToFlyThru:">id</string>
+						<string key="pathAssistantLockPath:">id</string>
 						<string key="pathAssistantSetPointA:">id</string>
 						<string key="pathAssistantSetPointB:">id</string>
 						<string key="setExportAllViews:">id</string>
@@ -7779,8 +7779,16 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">change3DTool:</string>
 							<string key="candidateClassName">id</string>
 						</object>
+						<object class="IBActionInfo" key="customizeViewerToolBar:">
+							<string key="name">customizeViewerToolBar:</string>
+							<string key="candidateClassName">id</string>
+						</object>
 						<object class="IBActionInfo" key="endDCMExportSettings:">
 							<string key="name">endDCMExportSettings:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="flyThruControllerInit:">
+							<string key="name">flyThruControllerInit:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="lockCameraOrFocusOnPath:">
@@ -7799,8 +7807,16 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">pathAssistantChangeMode:</string>
 							<string key="candidateClassName">id</string>
 						</object>
+						<object class="IBActionInfo" key="pathAssistantDeletePath:">
+							<string key="name">pathAssistantDeletePath:</string>
+							<string key="candidateClassName">id</string>
+						</object>
 						<object class="IBActionInfo" key="pathAssistantExportToFlyThru:">
 							<string key="name">pathAssistantExportToFlyThru:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="pathAssistantLockPath:">
+							<string key="name">pathAssistantLockPath:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="pathAssistantSetPointA:">
@@ -8939,14 +8955,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
-					<string key="className">VTKView</string>
-					<string key="superclassName">vtkCocoaGLView</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/VTKView.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
 					<string key="className">Window3DController</string>
 					<string key="superclassName">OSIWindowController</string>
 					<dictionary class="NSMutableDictionary" key="actions">
@@ -9095,14 +9103,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">./Classes/Window3DController.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">vtkCocoaGLView</string>
-					<string key="superclassName">NSView</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/vtkCocoaGLView.h</string>
 					</object>
 				</object>
 			</array>
