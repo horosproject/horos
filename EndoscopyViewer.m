@@ -406,6 +406,11 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 	[[mprController yReslicedView] setNeedsDisplay:YES];
 }
 
+- (float*) syncOriginPosition
+{
+    return nil;
+}
+
 - (void) setCameraPosition:(OSIVoxel *)position  focalPoint:(OSIVoxel *)focalPoint
 {
 	Camera *curCamera = [[vrController view] cameraWithThumbnail: NO];

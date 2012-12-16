@@ -653,15 +653,18 @@
 {
     float* originPos = [viewer syncOriginPosition];
     
-    float currentLocation[3] ;
-    [OrthogonalMPRViewer getDICOMCoords:viewer :currentLocation];
+    if( originPos)
+    {
+        float currentLocation[3] ;
+        [OrthogonalMPRViewer getDICOMCoords:viewer :currentLocation];
 
-    NSMutableArray* newPosition =[NSMutableArray arrayWithCapacity:3];
-    
-    for(int i =0 ;i<3 ;i++)
-        [newPosition addObject:[NSNumber numberWithFloat:currentLocation[i]-originPos[i]]];
-    
-    [OrthogonalMPRViewer positionChange:viewer :newPosition];
+        NSMutableArray* newPosition =[NSMutableArray arrayWithCapacity:3];
+        
+        for(int i =0 ;i<3 ;i++)
+            [newPosition addObject:[NSNumber numberWithFloat:currentLocation[i]-originPos[i]]];
+        
+        [OrthogonalMPRViewer positionChange:viewer :newPosition];
+    }
 }
 
 - (void) moveToRelativePosition:(NSArray*) relativeDicomLocation

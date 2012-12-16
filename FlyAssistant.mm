@@ -1062,7 +1062,7 @@ typedef GreaterPathNodeOnF NodeCompare;
 }
 - (void) downSampleCenterlineWithLocalRadius:(NSMutableArray*)centerline //using the input scale
 {
-	if([centerline count] < 2)
+	if( centerline.count <= 2)
 		return;
 	unsigned int i;
 
@@ -1089,6 +1089,9 @@ typedef GreaterPathNodeOnF NodeCompare;
 }
 - (void) createSmoothedCenterlin:(NSMutableArray*)centerline withStepLength:(float)len
 {
+    if( centerline.count <= 2)
+        return;
+    
 	Spline3D* function = [[[Spline3D alloc] init] autorelease];
 	Point3D* pt = [Point3D point];
 	float delta_t= 1.0/(float)([centerline count]-1);
