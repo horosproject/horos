@@ -586,14 +586,27 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                         
                         if( bitsPerSecond > 0)
                         {
-                            NSDictionary *videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
-                                                AVVideoCodecH264, AVVideoCodecKey, 
-                                                [NSDictionary dictionaryWithObjectsAndKeys:
-                                                 [NSNumber numberWithDouble: bitsPerSecond], AVVideoAverageBitRateKey,
-                                                 [NSNumber numberWithInteger: 1], AVVideoMaxKeyFrameIntervalKey,
-                                                 nil], AVVideoCompressionPropertiesKey,
-                                                [NSNumber numberWithInt: width], AVVideoWidthKey, 
-                                                [NSNumber numberWithInt: height], AVVideoHeightKey, nil];
+                            NSDictionary *videoSettings = nil;
+                            
+                            if( self.requestIsIOS) // AVVideoCodecH264
+                            {
+                                videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                 AVVideoCodecH264, AVVideoCodecKey,
+                                                 [NSDictionary dictionaryWithObjectsAndKeys:
+                                                  [NSNumber numberWithDouble: bitsPerSecond], AVVideoAverageBitRateKey,
+                                                  [NSNumber numberWithInteger: 1], AVVideoMaxKeyFrameIntervalKey,
+                                                  nil], AVVideoCompressionPropertiesKey,
+                                                 [NSNumber numberWithInt: width], AVVideoWidthKey,
+                                                 [NSNumber numberWithInt: height], AVVideoHeightKey, nil];
+                            }
+                            else // AVVideoCodecJPEG
+                            {
+                                videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                 AVVideoCodecJPEG, AVVideoCodecKey,
+                                                 [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithFloat: 0.9], AVVideoQualityKey, nil] ,AVVideoCompressionPropertiesKey,
+                                                 [NSNumber numberWithInt: width], AVVideoWidthKey,
+                                                 [NSNumber numberWithInt: height], AVVideoHeightKey, nil];
+                            }
                             
                             // Instanciate the AVAssetWriterInput
                             AVAssetWriterInput *writerInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:videoSettings];
