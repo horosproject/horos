@@ -977,7 +977,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"0" forKey: @"anonymizedBeforeBurning"];
 	[defaultValues setObject:@"0" forKey: @"ZoomWithHorizonScroll"];
 	[defaultValues setObject:@"1" forKey: @"dcmExportFormat"];
-	[defaultValues setObject:[NSNumber numberWithInt: 2] forKey: @"preferredSyntaxForIncoming"]; // 2 = EXS_LittleEndianExplicit See dcmqrsrv.mm
+	[defaultValues setObject:@"2" forKey: @"preferredSyntaxForIncoming"]; // 2 = EXS_LittleEndianExplicit See dcmqrsrv.mm
 	[defaultValues setObject:@"ISO_IR 100" forKey: @"STRINGENCODING"];
 	[defaultValues setObject:@"1" forKey:@"syncPreviewList"];
 	[defaultValues setObject:@"1" forKey:@"openPDFwithPreview"];
@@ -1010,7 +1010,8 @@ static NSHost *currentHost = nil;
     [defaultValues setObject:@"1" forKey:@"WebServerUseMailAppForEmails"];
     [defaultValues setObject:@"1" forKey:@"DICOMQueryAllowFutureQuery"];
     [defaultValues setObject:@"1" forKey:@"SeriesListVisible"];
-    [defaultValues setObject:[NSNumber numberWithBool:YES] forKey:@"listPODComparativesIn2DViewer"];
+    [defaultValues setObject:@"1" forKey:@"RescaleDuring3DResampling"];
+    [defaultValues setObject:@"1" forKey:@"listPODComparativesIn2DViewer"];
     
     [defaultValues setObject:@"1" forKey:@"allow_qr_name"];
     [defaultValues setObject:@"1" forKey:@"allow_qr_id"];
