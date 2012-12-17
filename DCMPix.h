@@ -607,6 +607,9 @@ Note setter is different to not break existing usage. :-( */
 /** Sets the orientation.  9 values in length. 3 for each axis. */
 - (void) setOrientation:(float*) c;
 
+/** Compute slicelocation according to pixelSpacing values, slice origin and slice orientation: the location is the center of the slice */
+- (void) computeSliceLocation;
+
 /** Releases the current NSImage */
 - (void) kill8bitsImage;
 

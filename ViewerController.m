@@ -1377,15 +1377,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 					
 					[curPix setOriginDouble: origin];
 					
-					if( fabs( orientation[6]) > fabs(orientation[7]) && fabs( orientation[6]) > fabs(orientation[8]))
-						[(DCMPix*)[newPixList lastObject] setSliceLocation: origin[ 0]];
-					
-					if( fabs( orientation[7]) > fabs(orientation[6]) && fabs( orientation[7]) > fabs(orientation[8]))
-						[(DCMPix*)[newPixList lastObject] setSliceLocation: origin[ 1]];
-					
-					if( fabs( orientation[8]) > fabs(orientation[6]) && fabs( orientation[8]) > fabs(orientation[7]))
-						[(DCMPix*)[newPixList lastObject] setSliceLocation: origin[ 2]];
-					
+                    [curPix computeSliceLocation];
+                    
 					[[newPixList lastObject] setSliceThickness: [firstPix pixelSpacingY]];
 					[[newPixList lastObject] setSliceInterval: 0];
 					
@@ -1469,15 +1462,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 					
 					[lastPix convertPixDoubleX:i pixY:0 toDICOMCoords: origin pixelCenter: NO];
 					
-					if( fabs( orientation[6]) > fabs(orientation[7]) && fabs( orientation[6]) > fabs(orientation[8]))
-						[(DCMPix*)[newPixList lastObject] setSliceLocation: origin[ 0]];
-					
-					if( fabs( orientation[7]) > fabs(orientation[6]) && fabs( orientation[7]) > fabs(orientation[8]))
-						[(DCMPix*)[newPixList lastObject] setSliceLocation: origin[ 1]];
-					
-					if( fabs( orientation[8]) > fabs(orientation[6]) && fabs( orientation[8]) > fabs(orientation[7]))
-						[(DCMPix*)[newPixList lastObject] setSliceLocation: origin[ 2]];
-					
+                    [curPix computeSliceLocation];
+                    
 					[[newPixList lastObject] setSliceThickness: [firstPix pixelSpacingX]];
 					[[newPixList lastObject] setSliceInterval: 0];
 					
@@ -1622,7 +1608,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			
 			[dcm setOriginDouble: origin];
 			
-			[dcm setSliceLocation: origin[ [ViewerController orientation: o]]];
+            [dcm computeSliceLocation];
 		}
 	}
 	
@@ -1671,7 +1657,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 			
 			[dcm convertPixDoubleX: -[dcm pwidth]+1 pixY: 0 toDICOMCoords: origin pixelCenter: NO];
 			[dcm setOriginDouble: origin];
-			[dcm setSliceLocation: origin[ [ViewerController orientation: o]]];
+            
+			[dcm computeSliceLocation];
 		}
 	}
 	
@@ -1799,7 +1786,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			d[2] = originZ + yy*o[5]*[dcm pixelSpacingY] + xx*o[2]*[dcm pixelSpacingX];
 
 			[dcm setOriginDouble: d];
-			[dcm setSliceLocation: d[ [ViewerController orientation: o]]];
+            [dcm computeSliceLocation];
 		}
 	}
 	
@@ -8424,24 +8411,11 @@ return YES;
 			[copyPix setPixelRatio:  [curPix pixelRatio] / xFactor * yFactor];
 			
 			newOrigin[ 0] = origin[ 0];	newOrigin[ 1] = origin[ 1];	newOrigin[ 2] = origin[ 2];
-			switch( o)
-			{
-				case 0:
-					newOrigin[ 0] = origin[ 0] + (float) z * interval;
-					[copyPix setSliceLocation: newOrigin[ 0]];
-					break;
-					
-				case 1:
-					newOrigin[ 1] = origin[ 1] + (float) z * interval;
-					[copyPix setSliceLocation: newOrigin[ 1]];
-					break;
-					
-				case 2:
-					newOrigin[ 2] = origin[ 2] + (float) z * interval;
-					[copyPix setSliceLocation: newOrigin[ 2]];
-					break;
-			}
-			[copyPix setOrigin: newOrigin];
+            
+            [copyPix setOrigin: newOrigin];
+            
+			[copyPix computeSliceLocation];
+			
 			[copyPix setSliceInterval: 0];
 			
 			[copyPix release];	// It's added to the newPixList array
@@ -9663,12 +9637,13 @@ return YES;
 				if( fabs([customXSpacing floatValue]) != 0 && fabs([customYSpacing floatValue]) != 0) [pix setPixelRatio: fabs([customYSpacing floatValue]) / fabs([customXSpacing floatValue])];
 				[pix setOrientation: v];
 				[pix setOrigin: o];
-				
+				[pix computeSliceLocation];
+                
 				switch( dir)
 				{
-					case 0:	[pix setSliceLocation: o[ 0]];	o[ 0] += [customInterval floatValue];	break;
-					case 1:	[pix setSliceLocation: o[ 1]];	o[ 1] += [customInterval floatValue];	break;
-					case 2: [pix setSliceLocation: o[ 2]];	o[ 2] += [customInterval floatValue];	break;
+					case 0:	o[ 0] += [customInterval floatValue];	break;
+					case 1:	o[ 1] += [customInterval floatValue];	break;
+					case 2: o[ 2] += [customInterval floatValue];	break;
 				}
 			}
 		}
@@ -15235,7 +15210,7 @@ int i,j,l;
 					o[ 2] += zDiff;
 					
 					[curDCM setOrigin: o];
-					[curDCM setSliceLocation: o[ 2]];
+					[curDCM computeSliceLocation];
 				}
 			}
 			

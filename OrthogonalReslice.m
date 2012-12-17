@@ -493,10 +493,12 @@
 				origin[ 1] = [firstPix originY] + (i * [firstPix pixelSpacingY]) * orientation[ 7] * -sign;
 				origin[ 2] = [firstPix originZ] + (i * [firstPix pixelSpacingY]) * orientation[ 8] * -sign;
 			}
-			[curPix setSliceLocation: origin[ 1]];
+			
+            [curPix setOrigin: origin];
+            [curPix computeSliceLocation];
+            
 			[curPix setSliceThickness: [firstPix pixelSpacingY]];
 			[curPix setSliceInterval: [firstPix pixelSpacingY]];
-			[curPix setOrigin: origin];
 		}
 		else
 		{
@@ -520,12 +522,11 @@
 				origin[ 1] = [firstPix originY] + (i * [firstPix pixelSpacingX]) * orientation[ 7] * sign;
 				origin[ 2] = [firstPix originZ] + (i * [firstPix pixelSpacingX]) * orientation[ 8] * sign;
 			}
-			
-			[curPix setSliceLocation: origin[ 0]];
+			[curPix setOrigin: origin];
+			[curPix computeSliceLocation];
+            
 			[curPix setSliceThickness: [firstPix pixelSpacingX]];
 			[curPix setSliceInterval: [firstPix pixelSpacingY]];
-			
-			[curPix setOrigin: origin];
 		}
 	}
 	

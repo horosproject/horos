@@ -75,20 +75,9 @@ static ThreeDPositionController *nav = nil;
 			
 			[p setOrigin: o];
 			
-			[p setSliceInterval: 0];
+            [p setSliceInterval: 0];
 			
-			double orientation[ 9];
-			
-			[p orientationDouble: orientation];
-			
-			if( fabs( orientation[6]) > fabs(orientation[7]) && fabs( orientation[6]) > fabs(orientation[8]))
-				[p setSliceLocation: o[ 0]];
-			
-			if( fabs( orientation[7]) > fabs(orientation[6]) && fabs( orientation[7]) > fabs(orientation[8]))
-				[p setSliceLocation: o[ 1]];
-			
-			if( fabs( orientation[8]) > fabs(orientation[6]) && fabs( orientation[8]) > fabs(orientation[7]))
-				[p setSliceLocation: o[ 2]];
+            [p computeSliceLocation];
 		}
 	}
 	

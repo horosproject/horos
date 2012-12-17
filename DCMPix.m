@@ -3164,6 +3164,22 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 };
 - (double) sliceLocation{ [self CheckLoad]; return sliceLocation;}
 - (void) setSliceLocation: (double)l { [self CheckLoad]; sliceLocation = l;}
+- (void) computeSliceLocation
+{
+    [self CheckLoad];
+    
+    float centerPix[ 3];
+    [self convertPixX: self.pwidth/2 pixY: self.pheight/2 toDICOMCoords: centerPix];
+    
+    if( fabs( orientation[6]) > fabs(orientation[7]) && fabs( orientation[6]) > fabs(orientation[8]))
+        sliceLocation = centerPix[ 0];
+    
+    if( fabs( orientation[7]) > fabs(orientation[6]) && fabs( orientation[7]) > fabs(orientation[8]))
+        sliceLocation = centerPix[ 1];
+    
+    if( fabs( orientation[8]) > fabs(orientation[6]) && fabs( orientation[8]) > fabs(orientation[7]))
+        sliceLocation = centerPix[ 2];
+}
 - (double) sliceThickness { [self CheckLoad]; return sliceThickness;}
 - (void) setSliceThickness: (double)l
 {
@@ -6077,18 +6093,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		orientation[7] = orientation[2]*orientation[3] - orientation[0]*orientation[5];
 		orientation[8] = orientation[0]*orientation[4] - orientation[1]*orientation[3];
 		
-		float centerPix[ 3];
-		[self convertPixX: width/2 pixY: height/2 toDICOMCoords: centerPix];
-		
-		if( fabs( orientation[6]) > fabs(orientation[7]) && fabs( orientation[6]) > fabs(orientation[8]))
-			sliceLocation = centerPix[ 0];
-		
-		if( fabs( orientation[7]) > fabs(orientation[6]) && fabs( orientation[7]) > fabs(orientation[8]))
-			sliceLocation = centerPix[ 1];
-		
-		if( fabs( orientation[8]) > fabs(orientation[6]) && fabs( orientation[8]) > fabs(orientation[7]))
-			sliceLocation = centerPix[ 2];
-		
+		[self computeSliceLocation];
 		
 	#pragma mark READ PIXEL DATA		
         
@@ -6107,21 +6112,10 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			if ( [[dcmObject attributeValueWithName:@"Modality"] isEqualToString: @"RTDOSE"])
 			{  // Set Z value for each frame
 				NSArray *gridFrameOffsetArray = [dcmObject attributeArrayWithName: @"GridFrameOffsetVector"];  //List of Z values
+                
 				originZ += [[gridFrameOffsetArray objectAtIndex: imageNb] floatValue];
-				if( fabs( orientation[6]) > fabs(orientation[7]) && fabs( orientation[6]) > fabs(orientation[8]))
-				{
-					sliceLocation = originX;
-				}
 				
-				if( fabs( orientation[7]) > fabs(orientation[6]) && fabs( orientation[7]) > fabs(orientation[8]))
-				{
-					sliceLocation = originY;
-				}
-				
-				if( fabs( orientation[8]) > fabs(orientation[6]) && fabs( orientation[8]) > fabs(orientation[7]))
-				{
-					sliceLocation = originZ;
-				}	
+                [self computeSliceLocation];
 			}
 			
 			if( gUseShutter && imageNb != frameNo && maxFrame > 1)
@@ -8723,17 +8717,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				orientation[7] = orientation[2]*orientation[3] - orientation[0]*orientation[5];
 				orientation[8] = orientation[0]*orientation[4] - orientation[1]*orientation[3];
 				
-				float centerPix[ 3];
-				[self convertPixX: width/2 pixY: height/2 toDICOMCoords: centerPix];
-				
-				if( fabs( orientation[6]) > fabs(orientation[7]) && fabs( orientation[6]) > fabs(orientation[8]))
-					sliceLocation = centerPix[ 0];
-				
-				if( fabs( orientation[7]) > fabs(orientation[6]) && fabs( orientation[7]) > fabs(orientation[8]))
-					sliceLocation = centerPix[ 1];
-				
-				if( fabs( orientation[8]) > fabs(orientation[6]) && fabs( orientation[8]) > fabs(orientation[7]))
-					sliceLocation = centerPix[ 2];
+				[self computeSliceLocation];
 				
 		#pragma mark read pixel data
 				
