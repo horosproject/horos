@@ -51,6 +51,11 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 
 + (float*) resampleWithParameters: (double*)theParameters firstObject: (DCMPix*) firstObject firstObjectOriginal: (DCMPix*)  firstObjectOriginal noOfImages: (int) noOfImages length: (long*) length itkImage: (ITK*) itkImage
 {
+    return [ITKTransform resampleWithParameters: theParameters firstObject: firstObject firstObjectOriginal: firstObjectOriginal noOfImages: noOfImages length: length itkImage: itkImage rescale: YES];
+}
+
++ (float*) resampleWithParameters: (double*)theParameters firstObject: (DCMPix*) firstObject firstObjectOriginal: (DCMPix*)  firstObjectOriginal noOfImages: (int) noOfImages length: (long*) length itkImage: (ITK*) itkImage rescale: (BOOL) rescale
+{
 	double vectorReference[ 9], vectorOriginal[ 9];
     float *fVolumePtr = nil;
     
@@ -78,7 +83,7 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
             }
             
             transform->SetParameters(parameters);
-
+            
             double origin[ 3] = {0, 0, 0}, originConverted[ 3];
             
             origin[0] =  [firstObjectOriginal originX];
@@ -88,9 +93,9 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
             originConverted[ 0] = origin[ 0] * vectorOriginal[ 0] + origin[ 1] * vectorOriginal[ 1] + origin[ 2] * vectorOriginal[ 2];
             originConverted[ 1] = origin[ 0] * vectorOriginal[ 3] + origin[ 1] * vectorOriginal[ 4] + origin[ 2] * vectorOriginal[ 5];
             originConverted[ 2] = origin[ 0] * vectorOriginal[ 6] + origin[ 1] * vectorOriginal[ 7] + origin[ 2] * vectorOriginal[ 8];
-
+            
             [itkImage itkImporter]->SetOrigin( originConverted );
-
+            
             ResampleFilterType::Pointer resample = ResampleFilterType::New();
             
             resample->SetTransform(transform);
@@ -98,9 +103,19 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
             resample->SetDefaultPixelValue( [firstObjectOriginal minValueOfSeries]);
             
             double outputSpacing[3];
-            outputSpacing[0] = [firstObject pixelSpacingX];
-            outputSpacing[1] = [firstObject pixelSpacingY];
-            outputSpacing[2] = [firstObject sliceInterval];
+            
+            if( rescale)
+            {
+                outputSpacing[0] = [firstObject pixelSpacingX];
+                outputSpacing[1] = [firstObject pixelSpacingY];
+                outputSpacing[2] = [firstObject sliceInterval];
+            }
+            else
+            {
+                outputSpacing[0] = [firstObjectOriginal pixelSpacingX];
+                outputSpacing[1] = [firstObjectOriginal pixelSpacingY];
+                outputSpacing[2] = [firstObject sliceInterval];
+            }
             
             if( outputSpacing[2] == 0 || noOfImages == 1)
                 outputSpacing[2] = 1;
@@ -119,13 +134,24 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
             
             resample->SetOutputOrigin( outputOriginConverted);
             
-            ImageType::SizeType size;
-            size[0] = [firstObject pwidth];
-            size[1] = [firstObject pheight];
-            size[2] = noOfImages;
-            
-            resample->SetSize(size);
-            
+            if( rescale)
+            {
+                ImageType::SizeType size;
+                size[0] = [firstObject pwidth];
+                size[1] = [firstObject pheight];
+                size[2] = noOfImages;
+                
+                resample->SetSize(size);
+            }
+            else
+            {
+                ImageType::SizeType size;
+                size[0] = [firstObjectOriginal pwidth];
+                size[1] = [firstObjectOriginal pheight];
+                size[2] = noOfImages;
+                
+                resample->SetSize(size);
+            }
             if( noOfImages > 2)
                 splash = [[WaitRendering alloc] init:NSLocalizedString(@"Resampling...", nil)];
             [splash showWindow:self];
@@ -134,7 +160,11 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
             
             resultBuff = resample->GetOutput()->GetBufferPointer();
             
-            long mem = noOfImages * [firstObject pheight] * [firstObject pwidth] * sizeof(float);
+            long mem;
+            if( rescale)
+                mem = noOfImages * [firstObject pheight] * [firstObject pwidth] * sizeof(float);
+            else
+                mem = noOfImages * [firstObjectOriginal pheight] * [firstObjectOriginal pwidth] * sizeof(float);
             
             fVolumePtr = (float*) malloc( mem);
             if( fVolumePtr && resultBuff)
@@ -189,13 +219,21 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 	DCMPix *firstObjectOriginal = [[originalViewer pixList] objectAtIndex: 0];
 	int noOfImages = [[referenceViewer pixList] count];
 	long length;
+	BOOL rescale = [[NSUserDefaults standardUserDefaults] boolForKey: @"RescaleDuring3DResampling"];
+    
+	float *resultBuff = [ITKTransform resampleWithParameters: theParameters firstObject: firstObject firstObjectOriginal: firstObjectOriginal noOfImages: noOfImages length: &length itkImage: (ITK*) itkImage rescale: rescale];
 	
-	float *resultBuff = [ITKTransform resampleWithParameters: theParameters firstObject: firstObject firstObjectOriginal: firstObjectOriginal noOfImages: noOfImages length: &length itkImage: (ITK*) itkImage];
-	
-	return [self createNewViewerWithBuffer:resultBuff length: length resampleOnViewer:referenceViewer];
+	ViewerController *v = [self createNewViewerWithBuffer:resultBuff length: length resampleOnViewer:referenceViewer rescale: rescale];
+    
+    return v;
 }
 
 - (ViewerController*) createNewViewerWithBuffer:(float*)fVolumePtr length: (long) length resampleOnViewer:(ViewerController*)referenceViewer
+{
+    return [self createNewViewerWithBuffer: fVolumePtr length: length resampleOnViewer: referenceViewer rescale: YES];
+}
+
+- (ViewerController*) createNewViewerWithBuffer:(float*)fVolumePtr length: (long) length resampleOnViewer:(ViewerController*)referenceViewer rescale: (BOOL) rescale
 {
 	long				i;
 	ViewerController	*new2DViewer = nil;
@@ -222,7 +260,18 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 		for( i = 0; i < [pixList count]; i++)
 		{
 			curPix = [[[pixList objectAtIndex: i] copy] autorelease];
-			[curPix setfImage: (float*) (fVolumePtr + [curPix pheight] * [curPix pwidth] * i)];
+			
+            if( rescale)
+                [curPix setfImage: (float*) (fVolumePtr + [curPix pheight] * [curPix pwidth] * i)];
+			else
+            {
+                [curPix setfImage: (float*) (fVolumePtr + originalPix.pheight * originalPix.pwidth * i)];
+                [curPix setPwidth: originalPix.pwidth];
+				[curPix setPheight: originalPix.pheight];
+                [curPix setPixelSpacingX: originalPix.pixelSpacingX];
+                [curPix setPixelSpacingY: originalPix.pixelSpacingY];
+                [curPix kill8bitsImage];
+            }
 			
 			// to keep settings propagated for MRI we need the old values for echotime & repetitiontime
 			[curPix setEchotime: [originalPix echotime]];
