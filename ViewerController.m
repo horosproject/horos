@@ -1379,8 +1379,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 					
                     [curPix computeSliceLocation];
                     
-					[[newPixList lastObject] setSliceThickness: [firstPix pixelSpacingY]];
-					[[newPixList lastObject] setSliceInterval: 0];
+					[curPix setSliceThickness: [firstPix pixelSpacingY]];
+					[curPix setSliceInterval: 0];
 					
 				}
 				else											// Y - RESLICE
@@ -1462,12 +1462,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 					
 					[lastPix convertPixDoubleX:i pixY:0 toDICOMCoords: origin pixelCenter: NO];
 					
+                    [curPix setOriginDouble: origin];
+                    
                     [curPix computeSliceLocation];
                     
-					[[newPixList lastObject] setSliceThickness: [firstPix pixelSpacingX]];
-					[[newPixList lastObject] setSliceInterval: 0];
-					
-					[curPix setOriginDouble: origin];
+					[curPix setSliceThickness: [firstPix pixelSpacingX]];
+					[curPix setSliceInterval: 0];
 				}
 			}
 			
@@ -8411,6 +8411,21 @@ return YES;
 			[copyPix setPixelRatio:  [curPix pixelRatio] / xFactor * yFactor];
 			
 			newOrigin[ 0] = origin[ 0];	newOrigin[ 1] = origin[ 1];	newOrigin[ 2] = origin[ 2];
+            
+            switch( o)
+            {
+                case 0:
+                    newOrigin[ 0] = origin[ 0] + (float) z * interval;
+                break;
+                
+                case 1:
+                    newOrigin[ 1] = origin[ 1] + (float) z * interval;
+                break;
+                    
+                case 2:
+                    newOrigin[ 2] = origin[ 2] + (float) z * interval;
+                break;
+            }
             
             [copyPix setOrigin: newOrigin];
             
