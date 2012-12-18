@@ -3166,10 +3166,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 - (void) setSliceLocation: (double)l { [self CheckLoad]; sliceLocation = l;}
 - (void) computeSliceLocation
 {
-    [self CheckLoad];
-    
     float centerPix[ 3];
-    [self convertPixX: self.pwidth/2 pixY: self.pheight/2 toDICOMCoords: centerPix];
+    [self convertPixX: width/2 pixY: height/2 toDICOMCoords: centerPix];
     
     if( fabs( orientation[6]) > fabs(orientation[7]) && fabs( orientation[6]) > fabs(orientation[8]))
         sliceLocation = centerPix[ 0];
