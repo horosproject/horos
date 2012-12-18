@@ -879,6 +879,20 @@ static NSDate *lastWarningDate = nil;
 			}
         } 
     }
+    
+    Error = GetAllPIDsForProcessName( "CrashReporter", MyArray, kPIDArrayLength, &NumberOfMatches, NULL);
+	
+	if (Error == 0)
+    {
+        for (Counter = 0 ; Counter < NumberOfMatches ; Counter++)
+        {
+			if( MyArray[ Counter] != getpid())
+			{
+				NSLog( @"Child Process to kill (CrashReporter): %d (PID)", MyArray[ Counter]);
+				kill( MyArray[ Counter], 15);
+			}
+        }
+    }
 }
 
 +(NSString*)UID
