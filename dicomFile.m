@@ -331,7 +331,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
         {
             int convertLength = currentChar - firstChar - 1;
 			
-            if( convertLength - (escLength+1) > 0)
+            if( convertLength - (escLength+1) >= 0)
             {
                 NSString *s = nil;
                 
@@ -468,7 +468,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
         {
             int convertLength = currentChar - firstChar;
             
-            if( firstChar + convertLength <= str + fromLength && ( convertLength - (escLength+1) > 0))
+            if( firstChar + convertLength <= str + fromLength && ( convertLength - (escLength+1) >= 0))
             {
                 NSString *s = [[[NSString alloc] initWithBytes: firstChar length:convertLength encoding: currentEncoding] autorelease];
             
