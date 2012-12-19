@@ -10301,6 +10301,18 @@ static BOOL needToRezoom;
                 if (!toOpenArray) return nil;
 			}
 		}
+        
+        for( NSArray * r in toOpenArray)
+        {
+            if( r.count)
+            {
+                if( [r.lastObject isKindOfClass: [DicomImage class]] == NO)
+                {
+                    NSRunInformationalAlertPanel( NSLocalizedString( @"Loading", nil), NSLocalizedString(@"Failed to load the series.", nil), NSLocalizedString(@"All Images",nil), NSLocalizedString(@"OK",nil), nil);
+					return nil;
+                }
+            }
+        }
 		
 		//  (2) Compute Required Memory
 		
