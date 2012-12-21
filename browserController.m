@@ -614,11 +614,25 @@ static NSConditionLock *threadLock = nil;
 	
 	@try
 	{
-		for( NSString *url in [[NSString stringWithContentsOfFile: filename] componentsSeparatedByString: @"\r"])
-		{
-			if( url.length)
-				[urlToDownloads addObject: [NSURL URLWithString: url]];
-		}
+        NSArray *urlsR = [[NSString stringWithContentsOfFile: filename] componentsSeparatedByString: @"\r"];
+        NSArray *urlsN = [[NSString stringWithContentsOfFile: filename] componentsSeparatedByString: @"\n"];
+        
+        if( urlsR.count >= urlsN.count)
+        {
+            for( NSString *url in urlsR)
+            {
+                if( url.length)
+                    [urlToDownloads addObject: [NSURL URLWithString: url]];
+            }
+        }
+        else
+        {
+            for( NSString *url in urlsN)
+            {
+                if( url.length)
+                    [urlToDownloads addObject: [NSURL URLWithString: url]];
+            }
+        }
 	}
 	@catch ( NSException *e)
     {
