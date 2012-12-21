@@ -294,7 +294,7 @@ end_size_y:
 				
 				[scaleTransformFilter setDefaults];
 				[scaleTransformFilter setValue: bitmap forKey:@"inputImage"];
-				[scaleTransformFilter setValue:[NSNumber numberWithFloat: scaleFactor] forKey:@"inputScale"];
+				[scaleTransformFilter setValue:[NSNumber numberWithFloat: scaleFactor / [[NSScreen mainScreen] backingScaleFactor]] forKey:@"inputScale"];
 				
 				CIImage *outputCIImage = [scaleTransformFilter valueForKey:@"outputImage"];
 				

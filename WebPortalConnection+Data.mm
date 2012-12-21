@@ -2321,7 +2321,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	
 	DicomImage* dicomImage = images.count == 1 ? [images lastObject] : [images objectAtIndex:images.count/2];
 	
-	DCMPix* dcmPix = [[[DCMPix alloc] initWithPath:dicomImage.completePathResolved :0 :1 :nil :dicomImage.numberOfFrames.intValue/2 :dicomImage.series.id.intValue isBonjour:NO imageObj:dicomImage] autorelease];
+	DCMPix* dcmPix = [[[DCMPix alloc] initWithPath:dicomImage.completePathResolved :0 :1 :nil :dicomImage.frameID.intValue :dicomImage.series.id.intValue isBonjour:NO imageObj:dicomImage] autorelease];
 	
 	/*if (!dcmPix)
 	{
