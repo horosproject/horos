@@ -104,6 +104,8 @@
 #import "NSFullScreenWindow.h"
 #import "CustomIntervalPanel.h"
 #import "QuicktimeExport.h"
+#import "DICOMToNSString.h"
+#import "XMLControllerDCMTKCategory.h"
 
 #ifndef OSIRIX_LIGHT
 #import "Anonymization.h"
@@ -4773,11 +4775,18 @@ static NSConditionLock *threadLock = nil;
 	[self mergeSeriesExecute: seriesArray];
 }
 
+#ifndef OSIRIX_LIGHT
 - (IBAction) unifyStudies:(id) sender
 {
-	NSInteger result = NSRunInformationalAlertPanel(NSLocalizedString(@"Unify Patient Identity", nil), NSLocalizedString(@"Are you sure you want to unify the patient identity of the selected studies? It cannot be cancelled. (The DICOM files will not be modified, only the DB fields.)\r\rWARNING! The Patient Name and ID will be identical for all these studies to the last selected study.", nil), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
+    [ViewerController closeAllWindows];
+    
+    DicomStudy	*destStudy = [databaseOutline itemAtRow: [databaseOutline selectedRow]];
+    if( [[destStudy valueForKey:@"type"] isEqualToString: @"Study"] == NO) destStudy = [destStudy valueForKey:@"study"];
+    if( [[destStudy valueForKey:@"type"] isEqualToString: @"Study"] == NO) destStudy = [destStudy valueForKey:@"study"];
+    
+	NSInteger result = NSRunInformationalAlertPanel(NSLocalizedString(@"Unify Patient Identity", nil), [NSString stringWithFormat: NSLocalizedString(@"Are you sure you want to unify the patient identity of the selected studies? It cannot be cancelled. You can choose to modify the database fields only, or also change the DICOM files headers with the new values.\r\rWARNING! The Patient Name and ID will be identical for all these studies to the last selected study (%@ - %@).\r\rThe original Patient Name and Patient ID will be saved in the OtherPatientNames and OtherPatientIDs DICOM fields.", nil), [destStudy valueForKey:@"name"], [destStudy valueForKey:@"patientID"]], NSLocalizedString(@"Database & DICOM",nil), NSLocalizedString(@"Database only",nil), NSLocalizedString(@"Cancel",nil), nil);
 	
-	if( result == NSAlertDefaultReturn)
+	if( result == NSAlertDefaultReturn || result == NSAlertAlternateReturn)
 	{
 		NSManagedObjectContext	*context = self.managedObjectContext;
 		
@@ -4786,13 +4795,89 @@ static NSConditionLock *threadLock = nil;
 		
 		NSIndexSet *selectedRows = [databaseOutline selectedRowIndexes];
 		
-		NSManagedObject	*destStudy = [databaseOutline itemAtRow: [databaseOutline selectedRow]];
-		if( [[destStudy valueForKey:@"type"] isEqualToString: @"Study"] == NO) destStudy = [destStudy valueForKey:@"study"];
-		
-		if( [[destStudy valueForKey:@"type"] isEqualToString: @"Study"] == NO) destStudy = [destStudy valueForKey:@"study"];
-		
 		NSLog(@"UNIFY STUDIES: %@", destStudy);
 		
+        if( result == NSAlertDefaultReturn)
+        {
+            // Now modify the DICOM files
+            for( NSInteger x = 0; x < [selectedRows count] ; x++)
+            {
+                NSInteger row = ( x == 0) ? [selectedRows firstIndex] : [selectedRows indexGreaterThanIndex: row];
+                
+                DicomStudy *study = [databaseOutline itemAtRow: row];
+                
+                if( [[study valueForKey:@"type"] isEqualToString: @"Study"] == NO) study = [study valueForKey:@"study"];
+                
+                if( study != destStudy)
+                {
+                    if( [[study valueForKey:@"type"] isEqualToString: @"Study"])
+                    {
+                        NSInteger confirm = NSRunInformationalAlertPanel(NSLocalizedString(@"Unify Patient Identity", nil), [NSString stringWithFormat: NSLocalizedString(@"Do you confirm to DEFINITIVELY change this patient identitity: %@ %@ to this new identity: %@ %@ ?", nil), [study valueForKey:@"name"], [study valueForKey:@"patientID"], [destStudy valueForKey:@"name"], [destStudy valueForKey:@"patientID"]], NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
+                        
+                        if( confirm == NSAlertDefaultReturn)
+                        {
+                            NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--ignore-errors", nil];
+                            
+                            DCMObject *dcmObject = [DCMObject objectWithContentsOfFile: [[[destStudy paths] allObjects] objectAtIndex: 0] decodingPixelData: NO];
+                            
+                            NSString *originalPatientName = [dcmObject attributeValueWithName:@"PatientsName"];
+                            
+                            NSString *existingOtherPatientNames = [dcmObject attributeValueWithName:@"OtherPatientIDs"];
+                            NSString *existingOtherPatientIDs = [dcmObject attributeValueWithName:@"OtherPatientNames"];
+                            
+                            if( existingOtherPatientNames == nil)
+                                existingOtherPatientNames = @"";
+                            
+                            if( existingOtherPatientIDs == nil)
+                                existingOtherPatientIDs = @"";
+                            
+                            if( existingOtherPatientNames.length)
+                                existingOtherPatientNames = [existingOtherPatientNames stringByAppendingString: @" - "];
+                            
+                            if( existingOtherPatientIDs.length)
+                                existingOtherPatientIDs = [existingOtherPatientIDs stringByAppendingString: @" - "];
+                            
+                            existingOtherPatientNames = [existingOtherPatientNames stringByAppendingString: [study valueForKey:@"name"]];
+                            existingOtherPatientIDs = [existingOtherPatientIDs stringByAppendingString: [study valueForKey:@"patientID"]];
+                            
+                            if( originalPatientName)
+                            {
+                                NSString *logLine = [NSString stringWithFormat: @"---- Patient Unify: %@ %@ -> %@ %@", [study valueForKey:@"name"], [study valueForKey:@"patientID"], [destStudy valueForKey:@"name"], [destStudy valueForKey:@"patientID"], nil];
+                                
+                                [params addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", @"(0010,0020)", [destStudy valueForKey:@"patientID"]], @"-i", [NSString stringWithFormat: @"%@=%@", @"(0010,0010)", originalPatientName], nil]];
+                                [params addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", @"(0010,1000)", existingOtherPatientIDs], @"-i", [NSString stringWithFormat: @"%@=%@", @"(0010,1001)", existingOtherPatientNames], nil]];
+                                
+                                NSMutableArray *files = [NSMutableArray arrayWithArray: [[study paths] allObjects]];
+                                 
+                                 if( files)
+                                 {
+                                     [files removeDuplicatedStrings];
+                                     
+                                     [params addObjectsFromArray: files];
+                                     
+                                     @try
+                                     {
+                                         NSStringEncoding encoding = [NSString encodingForDICOMCharacterSet: [[DicomFile getEncodingArrayForFile: [files lastObject]] objectAtIndex: 0]];
+                                         
+                                         [XMLController modifyDicom: params encoding: encoding];
+                                         
+                                         for( id loopItem in files)
+                                             [[NSFileManager defaultManager] removeFileAtPath: [loopItem stringByAppendingString:@".bak"] handler:nil];
+                                     }
+                                     @catch (NSException * e)
+                                     {
+                                         NSLog(@"**** DicomStudy setComment: %@", e);
+                                     }
+                                }
+                            }
+                            else
+                                NSRunCriticalAlertPanel( NSLocalizedString(@"Unify Patient Identity", nil), NSLocalizedString( @"Failed to change the DICOM files", nil), NSLocalizedString(@"OK",nil), nil, nil);
+                        }
+                    }
+                }
+            }
+        }
+        
 		for( NSInteger x = 0; x < [selectedRows count] ; x++)
 		{
 			NSInteger row = ( x == 0) ? [selectedRows firstIndex] : [selectedRows indexGreaterThanIndex: row];
@@ -4804,15 +4889,25 @@ static NSConditionLock *threadLock = nil;
 			if( study != destStudy)
 			{
 				if( [[study valueForKey:@"type"] isEqualToString: @"Study"])
-				{
-					[study setValue: [destStudy valueForKey:@"patientID"] forKey: @"patientID"];
-					[study setValue: [destStudy valueForKey:@"patientUID"]  forKey: @"patientUID"];
-					[study setValue: [destStudy valueForKey:@"name"]  forKey: @"name"];
+				{                    
+                    NSInteger confirm = NSAlertDefaultReturn;
+                    
+                    if( result == NSAlertAlternateReturn)
+                        confirm = NSRunInformationalAlertPanel(NSLocalizedString(@"Unify Patient Identity", nil), [NSString stringWithFormat: NSLocalizedString(@"Do you confirm to DEFINITIVELY change this patient identitity: %@ %@ to this new identity: %@ %@ ?", nil), [study valueForKey:@"name"], [study valueForKey:@"patientID"], [destStudy valueForKey:@"name"], [destStudy valueForKey:@"patientID"]], NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
+                    
+                    if( confirm == NSAlertDefaultReturn)
+                    {
+                        [study setValue: [destStudy valueForKey:@"patientID"] forKey: @"patientID"];
+                        [study setValue: [destStudy valueForKey:@"patientUID"]  forKey: @"patientUID"];
+                        [study setValue: [destStudy valueForKey:@"name"]  forKey: @"name"];
+                        
+                        NSLog( @"---- Patient Unify: %@ %@ -> %@ %@", [study valueForKey:@"name"], [study valueForKey:@"patientID"], [destStudy valueForKey:@"name"], [destStudy valueForKey:@"patientID"]);
+                    }
 				}
 			}
 		}
 		
-		[_database save:NULL];
+		[_database save: nil];
 		
 		[self outlineViewRefresh];
 		
@@ -4825,9 +4920,12 @@ static NSConditionLock *threadLock = nil;
 		[context release];
 	}
 }
+#endif
 
 - (IBAction) mergeStudies:(id) sender
 {
+    [ViewerController closeAllWindows];
+    
 	// Is it only series??
 	NSIndexSet		*selectedRows = [databaseOutline selectedRowIndexes];
 	BOOL	onlySeries = YES;
@@ -4851,7 +4949,7 @@ static NSConditionLock *threadLock = nil;
 	NSString *nameAndStudy = [[databaseOutline itemAtRow: [databaseOutline selectedRow]] valueForKey: @"name"];
 	nameAndStudy = [nameAndStudy stringByAppendingFormat:@"-%@", [[databaseOutline itemAtRow: [databaseOutline selectedRow]] valueForKey: @"studyName"]];
 	
-	NSInteger result = NSRunInformationalAlertPanel(NSLocalizedString(@"Merge Studies", nil), [NSString stringWithFormat: NSLocalizedString(@"Are you sure you want to merge the selected studies to %@. It cannot be cancelled.\r\rWARNING! If you merge multiple different patients, the Patient Name and ID will be identical.", nil), nameAndStudy], NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
+	NSInteger result = NSRunInformationalAlertPanel(NSLocalizedString(@"Merge Studies", nil), [NSString stringWithFormat: NSLocalizedString(@"Are you sure you want to merge the selected studies to %@. It cannot be cancelled.\r\rWARNING! If you merge multiple different patients, the Patient Name, ID and Study Description will be identical. The DICOM files will NOT be modified.", nil), nameAndStudy], NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
 	
 	if( result == NSAlertDefaultReturn)
 	{
