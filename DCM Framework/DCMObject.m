@@ -701,11 +701,19 @@ PixelRepresentation
 	BOOL forImplicitUseOW = NO;
 	
 	BOOL pixelRepresentationIsSigned = NO;
-	
+	int previousByteOffset = -1;
+    
 	@try
 	{
 		while ((undefinedLength || *byteOffset < endByteOffset))
 		{
+            if( previousByteOffset != -1 && previousByteOffset ==  *byteOffset)
+            {
+                NSLog( @"***** DCMObject readDataSet previousByteOffset ==  *byteOffset");
+                break;
+            }
+            previousByteOffset = *byteOffset;
+            
 			NSAutoreleasePool *subPool = [[NSAutoreleasePool alloc] init];
             
             @try
@@ -913,8 +921,10 @@ PixelRepresentation
 
                 }
             }
-            @catch (NSException *e) {
-                NSLog( @"%@", e);
+            @catch (NSException *e)
+            {
+                NSLog( @"***** DCMObject readDataSet exception: %@", e);
+                break;
             }
             @finally {
                 [subPool release];
