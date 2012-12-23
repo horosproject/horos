@@ -413,6 +413,8 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
     if( [ext compare:@"js" options:NSCaseInsensitiveSearch|NSLiteralSearch] == NSOrderedSame)
         response.mimeType = @"application/javascript";
 	
+//    [response.httpHeaders setObject: @"no-cache" forKey: @"Cache-Control"];
+    
 	if ([requestedPath hasPrefix:@"/weasis/"])
 	{
 		#ifndef OSIRIX_LIGHT
@@ -964,6 +966,8 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 			NSDictionary* params = [WebPortalConnection ExtractParams:urlComponenents.lastObject];
 			NSString* username = [params objectForKey:@"username"];
 			NSString* token = [params objectForKey:@"token"];
+            NSString* sha1 = [params objectForKey:@"sha1"];
+            
 			if (username && token) // has token, user exists
             {
 				if( [url hasPrefix: @"/movie."])
@@ -971,6 +975,30 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
                 else
                     self.session = [self.portal sessionForUsername:username token:token];
             }
+//            else if( username && sha1 && token == nil) //username and password in http request : major security breach... no way to tell the web browser to not store the URL in the history -- http://stackoverflow.com/questions/3178715/
+//            {
+//                if (username.length && sha1.length)
+//                {
+//                    NSString *userInternalPassword = [self passwordForUser: username];
+//                    
+//                    [self.user convertPasswordToHashIfNeeded];
+//                    
+//                    NSString* sha1internal = self.user.passwordHash;
+//                    
+//                    if( [sha1internal length] > 0 && [sha1 compare:sha1internal options:NSLiteralSearch|NSCaseInsensitiveSearch] == NSOrderedSame)
+//                    {
+//                        [self.session setObject:username forKey:SessionUsernameKey];
+//                        [self.session deleteChallenge];
+//                        [self.portal updateLogEntryForStudy:NULL withMessage:[NSString stringWithFormat: @"Successful login for user name: %@", username] forUser:NULL ip:asyncSocket.connectedHost];
+//                    }
+//                    else
+//                    {
+//                        [NSThread sleepForTimeInterval: 2]; // To avoid brute-force attacks
+//                        
+//                        [self.portal updateLogEntryForStudy:NULL withMessage:[NSString stringWithFormat: @"Unsuccessful login attempt with invalid password for user name: %@", username] forUser:NULL ip:asyncSocket.connectedHost];
+//                    }
+//                }
+//            }
 		}
 	}
 	
