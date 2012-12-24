@@ -28,6 +28,34 @@
 	return [[[NSString alloc] initWithCString: cString  DICOMEncoding: encoding] autorelease];
 }
 
+//+ (NSArray *)allAvailableEncodings
+//{
+//	static NSArray *cachedArray = nil;
+//	NSMutableArray *array;
+//	const NSStringEncoding *encoding;
+//	
+//	if (cachedArray != nil)
+//		return cachedArray;
+//	
+//	array = [[NSMutableArray alloc] initWithCapacity:0x40];
+//	encoding = [NSString availableStringEncodings];
+//    
+//    while (*encoding) {
+//		NSMutableArray* row = [[NSMutableArray alloc] initWithCapacity:2];
+//		
+//        [row addObject:[NSString localizedNameOfStringEncoding:*encoding]];
+//        [row addObject:[NSNumber numberWithInt:*encoding]];
+//        encoding++;
+//        
+//        [array addObject:row];
+//        [row release];
+//    }
+//    
+//	cachedArray = [array copy];
+//	[array retain];
+//    return cachedArray;
+//}
+
 + (NSStringEncoding)encodingForDICOMCharacterSet:(NSString *)characterSet
 {
 	NSStringEncoding encoding = NSISOLatin1StringEncoding;
@@ -39,22 +67,23 @@
 	characterSet = [characterSet stringByReplacingOccurrencesOfString:@"_" withString:@" "];
 	
 	if	   ( [characterSet isEqualToString:@"ISO IR 100"]) encoding = NSISOLatin1StringEncoding;
-	else if( [characterSet isEqualToString:@"ISO 2022 IR 100"]) encoding = NSISOLatin1StringEncoding;
-	else if( [characterSet isEqualToString:@"ISO IR 127"]) encoding = -2147483130;	//[characterSet numberFromLocalizedStringEncodingName :@"Arabic (ISO 8859-6)"];
+	else if( [characterSet isEqualToString:@"ISO IR 127"]) encoding = CFStringConvertEncodingToNSStringEncoding( kCFStringEncodingISOLatinArabic);
 	else if( [characterSet isEqualToString:@"ISO IR 101"]) encoding = NSISOLatin2StringEncoding;
-	else if( [characterSet isEqualToString:@"ISO IR 109"]) encoding = -2147483133;	//[characterSet numberFromLocalizedStringEncodingName :@"Western (ISO Latin 3)"];
-	else if( [characterSet isEqualToString:@"ISO IR 110"]) encoding = -2147483132;	//[characterSet numberFromLocalizedStringEncodingName :@"Central European (ISO Latin 4)"];
-	else if( [characterSet isEqualToString:@"ISO IR 144"]) encoding = -2147483131;	//[characterSet numberFromLocalizedStringEncodingName :@"Cyrillic (ISO 8859-5)"];
-	else if( [characterSet isEqualToString:@"ISO IR 126"]) encoding = -2147483129;	//[characterSet numberFromLocalizedStringEncodingName :@"Greek (ISO 8859-7)"];
-	else if( [characterSet isEqualToString:@"ISO IR 138"]) encoding = -2147483128;	//[characterSet numberFromLocalizedStringEncodingName :@"Hebrew (ISO 8859-8)"];
-	else if( [characterSet isEqualToString:@"GB18030"]) encoding = -2147482062;	//[characterSet numberFromLocalizedStringEncodingName :@"Chinese (GB 18030)"];
+	else if( [characterSet isEqualToString:@"ISO IR 109"]) encoding = CFStringConvertEncodingToNSStringEncoding( kCFStringEncodingISOLatin3);
+	else if( [characterSet isEqualToString:@"ISO IR 110"]) encoding = CFStringConvertEncodingToNSStringEncoding( kCFStringEncodingISOLatin4);
+	else if( [characterSet isEqualToString:@"ISO IR 144"]) encoding = CFStringConvertEncodingToNSStringEncoding( kCFStringEncodingISOLatinCyrillic);
+	else if( [characterSet isEqualToString:@"ISO IR 126"]) encoding = CFStringConvertEncodingToNSStringEncoding( kCFStringEncodingISOLatinGreek);
+	else if( [characterSet isEqualToString:@"ISO IR 138"]) encoding = CFStringConvertEncodingToNSStringEncoding( kCFStringEncodingISOLatinHebrew);
+    else if( [characterSet isEqualToString:@"ISO IR 166"]) encoding = CFStringConvertEncodingToNSStringEncoding( kCFStringEncodingISOLatinThai);
+	else if( [characterSet isEqualToString:@"GB18030"]) encoding = CFStringConvertEncodingToNSStringEncoding( kCFStringEncodingGB_18030_2000);
 	else if( [characterSet isEqualToString:@"ISO IR 192"]) encoding = NSUTF8StringEncoding;
-	else if( [characterSet isEqualToString:@"ISO 2022 IR 149"]) encoding = -2147481280;	//-2147482590 -2147481536 -2147481280[characterSet numberFromLocalizedStringEncodingName :@"Korean (Mac OS)"];
-	else if( [characterSet isEqualToString:@"ISO 2022 IR 13"]) encoding = -2147483647;	//21 //[characterSet numberFromLocalizedStringEncodingName :@"Japanese (ISO 2022-JP)"];	//
-	else if( [characterSet isEqualToString:@"ISO IR 13"]) encoding = -2147483647;	//[characterSet numberFromLocalizedStringEncodingName :@"Japanese (Mac OS)"];
-	else if( [characterSet isEqualToString:@"ISO 2022 IR 87"]) encoding = NSISO2022JPStringEncoding;
-	else if( [characterSet isEqualToString:@"ISO IR 166"]) encoding = -2147483125;	//[characterSet numberFromLocalizedStringEncodingName :@"Thai (ISO 8859-11)"];
+	else if( [characterSet isEqualToString:@"ISO IR 13"]) encoding = CFStringConvertEncodingToNSStringEncoding( kCFStringEncodingMacJapanese);
 	else if( [characterSet isEqualToString:@"ISO 2022 IR 6"])	encoding = NSISOLatin1StringEncoding;
+    else if( [characterSet isEqualToString:@"ISO 2022 IR 13"]) encoding = CFStringConvertEncodingToNSStringEncoding( kCFStringEncodingMacJapanese);
+    else if( [characterSet isEqualToString:@"ISO 2022 IR 58"])	encoding = CFStringConvertEncodingToNSStringEncoding( kCFStringEncodingISO_2022_CN);
+    else if( [characterSet isEqualToString:@"ISO 2022 IR 87"]) encoding = NSISO2022JPStringEncoding;
+    else if( [characterSet isEqualToString:@"ISO 2022 IR 100"]) encoding = NSISOLatin1StringEncoding;
+    else if( [characterSet isEqualToString:@"ISO 2022 IR 149"]) encoding = CFStringConvertEncodingToNSStringEncoding( kCFStringEncodingEUC_KR);
     else if( [characterSet isEqualToString:@"ISO IR 6"])	encoding = NSISOLatin1StringEncoding;
 	else if( [characterSet isEqualToString:@"UTF 8"])	encoding = NSUTF8StringEncoding;
 	else

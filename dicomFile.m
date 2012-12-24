@@ -408,8 +408,10 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                     if (pos + escLength < fromLength)
                     {
                         c3 = *currentChar++;
-                        if (c3 == 0x43)
+                        if (c3 == 0x43)                 // Korean (multi-byte)
                             key = @"ISO 2022 IR 149";
+                        else if (c3 == 0x41)            // Simplified Chinese (multi-byte)
+                            key = @"ISO 2022 IR 58";
                     }
                 }
         
