@@ -27,6 +27,7 @@
 #import "NSManagedObject+N2.h"
 #import "N2Operators.h"
 #import "NSUserDefaults+OsiriX.h"
+#import "QueryController.h"
 
 static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
 
@@ -762,6 +763,43 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 		{
 			otherStudies = [[[WebPortalUser studiesForUser: wpc.user predicate: [NSPredicate predicateWithFormat: @"(patientID == %@)", study.patientID] sortBy: @"date"] mutableCopy] autorelease];
 			
+            // PACS On Demand
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ActivatePACSOnDemandForWebPortal"])
+            {
+                BOOL usePatientID = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientIDForUID"];
+                BOOL usePatientBirthDate = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientBirthDateForUID"];
+                BOOL usePatientName = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientNameForUID"];
+                
+                // Servers
+                NSArray *servers = [BrowserController comparativeServers];
+                
+                if( servers.count)
+                {
+                    // Distant studies
+#ifndef OSIRIX_LIGHT
+                    NSArray *distantStudies = [QueryController queryStudiesForPatient: study usePatientID: usePatientID usePatientName: usePatientName usePatientBirthDate: usePatientBirthDate servers: servers showErrors: NO];
+                    
+                    // Merge local and distant studies
+                    for( DCMTKStudyQueryNode *distantStudy in distantStudies)
+                    {
+                        if( [[otherStudies valueForKey: @"studyInstanceUID"] containsObject: [distantStudy studyInstanceUID]] == NO)
+                        {
+                            [otherStudies addObject: distantStudy];
+                        }
+                        else if( [[NSUserDefaults standardUserDefaults] boolForKey: @"preferStudyWithMoreImages"])
+                        {
+                            NSUInteger index = [[otherStudies valueForKey: @"studyInstanceUID"] indexOfObject: [distantStudy studyInstanceUID]];
+                            
+                            if( index != NSNotFound && [[[otherStudies objectAtIndex: index] rawNoFiles] intValue] < [[distantStudy noFiles] intValue])
+                            {
+                                [otherStudies replaceObjectAtIndex: index withObject: distantStudy];
+                            }
+                        }
+                    }
+#endif
+                }
+            }
+            
 			// Important> keep these two separates steps !
 			for( DicomStudy *s in otherStudies)
 			{

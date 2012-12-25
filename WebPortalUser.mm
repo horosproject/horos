@@ -22,6 +22,8 @@
 #import "NSError+OsiriX.h"
 #import "DDData.h"
 #import "NSData+N2.h"
+#import "browserController.h"
+#import "QueryController.h"
 #import "DicomStudy.h"
 
 static PSGenerator *generator = nil;
@@ -54,6 +56,8 @@ static NSMutableDictionary *studiesForUserCache = nil;
 @dynamic downloadReport;
 @dynamic uploadDICOMAddToSpecificStudies;
 @dynamic studies;
+
+#define TIMEOUT 5*60
 
 - (void) generatePassword
 {
@@ -318,7 +322,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
         
         @synchronized( studiesForUserCache)
         {
-            if( userID && [studiesForUserCache objectForKey: userID] && [[[studiesForUserCache objectForKey: userID] objectForKey: @"date"] timeIntervalSinceNow] > -60*60) // one hour
+            if( userID && [studiesForUserCache objectForKey: userID] && [[[studiesForUserCache objectForKey: userID] objectForKey: @"date"] timeIntervalSinceNow] > -TIMEOUT) // one hour
             {
                 DicomDatabase *dicomDBContext = [WebPortal.defaultWebPortal.dicomDatabase independentDatabase];
                 
@@ -332,7 +336,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
             
             @synchronized( studiesForUserCache)
             {
-                if( [studiesForUserCache objectForKey: @"all DB studies"] && [[[studiesForUserCache objectForKey: @"all DB studies"] objectForKey: @"date"] timeIntervalSinceNow] > -60*60)
+                if( [studiesForUserCache objectForKey: @"all DB studies"] && [[[studiesForUserCache objectForKey: @"all DB studies"] objectForKey: @"date"] timeIntervalSinceNow] > -TIMEOUT)
                 {
                     DicomDatabase *dicomDBContext = [WebPortal.defaultWebPortal.dicomDatabase independentDatabase];
                     
@@ -463,7 +467,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
             
             @synchronized( studiesForUserCache)
             {
-                if( user && [studiesForUserCache objectForKey: userID] && [[[studiesForUserCache objectForKey: userID] objectForKey: @"date"] timeIntervalSinceNow] > -60*60)
+                if( user && [studiesForUserCache objectForKey: userID] && [[[studiesForUserCache objectForKey: userID] objectForKey: @"date"] timeIntervalSinceNow] > -TIMEOUT)
                     studiesArray = [dicomDBContext objectsWithIDs: [[studiesForUserCache objectForKey: userID] objectForKey: @"array"]];
             }
             
@@ -610,7 +614,6 @@ static NSMutableDictionary *studiesForUserCache = nil;
 
 +(NSArray*)studiesForUser: (WebPortalUser*) user album:(NSString*)albumName sortBy:(NSString*)sortValue fetchLimit:(int) fetchLimit fetchOffset:(int) fetchOffset numberOfStudies:(int*) numberOfStudies
 {
-	
 	NSArray *studiesArray = nil, *albumArray = nil;
 	
     if( studiesForUserCache == nil && user)
@@ -623,11 +626,19 @@ static NSMutableDictionary *studiesForUserCache = nil;
     
     @synchronized( studiesForUserCache)
     {
-        if( user && [studiesForUserCache objectForKey: userID] && [[[studiesForUserCache objectForKey: userID] objectForKey: @"date"] timeIntervalSinceNow] > -60*60)
+        if( user && [studiesForUserCache objectForKey: userID] && [[[studiesForUserCache objectForKey: userID] objectForKey: @"date"] timeIntervalSinceNow] > -TIMEOUT)
         {
             DicomDatabase *dicomDBContext = [WebPortal.defaultWebPortal.dicomDatabase independentDatabase];
             
-            studiesArray = [dicomDBContext objectsWithIDs: [[studiesForUserCache objectForKey: userID] objectForKey: @"array"]];
+            NSMutableArray *cachedObjects = [NSMutableArray arrayWithArray: [[studiesForUserCache objectForKey: userID] objectForKey: @"array"]];
+            
+            for( int i = 0; i < cachedObjects.count; i++)
+            {
+                if( [[cachedObjects objectAtIndex: i] isKindOfClass: [NSManagedObjectID class]])
+                    [cachedObjects replaceObjectAtIndex: i withObject: [dicomDBContext objectWithID: [cachedObjects objectAtIndex: i]]];
+            }
+            
+            studiesArray = cachedObjects;
             
             if ([sortValue length] && [sortValue isEqualToString: @"date"] == NO)
                 studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: sortValue ascending: YES selector: @selector(caseInsensitiveCompare:)] autorelease]]];
@@ -661,6 +672,53 @@ static NSMutableDictionary *studiesForUserCache = nil;
         if ([[album valueForKey:@"smartAlbum"] intValue] == 1)
         {
             studiesArray = [WebPortalUser studiesForUser: user predicate:[DicomDatabase predicateForSmartAlbumFilter:[album valueForKey:@"predicateString"]] sortBy:sortValue];
+            
+            // PACS On Demand
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ActivatePACSOnDemandForWebPortal"])
+            {
+                BOOL usePatientID = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientIDForUID"];
+                BOOL usePatientBirthDate = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientBirthDateForUID"];
+                BOOL usePatientName = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientNameForUID"];
+                
+                // Servers
+                NSArray *servers = [BrowserController comparativeServers];
+                
+                if( servers.count)
+                {
+                    // Distant studies
+                    // In current versions, two filters exist: modality & date
+                    NSArray *distantStudies = nil;
+                    for( NSDictionary *d in [[NSUserDefaults standardUserDefaults] objectForKey: @"smartAlbumStudiesDICOMNodes"])
+                    {
+                        if( [[d valueForKey: @"activated"] boolValue] && [albumName isEqualToString: [d valueForKey: @"name"]])
+                            distantStudies = [QueryController queryStudiesForFilters: d servers: servers showErrors: NO];
+                    }
+                    
+                    if( distantStudies.count)
+                    {
+                        NSMutableArray *mutableStudiesArray = [NSMutableArray arrayWithArray: studiesArray];
+                        
+                        // Merge local and distant studies
+                        for( DCMTKStudyQueryNode *distantStudy in distantStudies)
+                        {
+                            if( [[mutableStudiesArray valueForKey: @"studyInstanceUID"] containsObject: [distantStudy studyInstanceUID]] == NO)
+                                [mutableStudiesArray addObject: distantStudy];
+                            
+                            else if( [[NSUserDefaults standardUserDefaults] boolForKey: @"preferStudyWithMoreImages"])
+                            {
+                                NSUInteger index = [[mutableStudiesArray valueForKey: @"studyInstanceUID"] indexOfObject: [distantStudy studyInstanceUID]];
+                                
+                                if( index != NSNotFound && [[[mutableStudiesArray objectAtIndex: index] rawNoFiles] intValue] < [[distantStudy noFiles] intValue])
+                                {
+                                    [mutableStudiesArray replaceObjectAtIndex: index withObject: distantStudy];
+                                }
+                            }
+                        }
+                        
+                        studiesArray = mutableStudiesArray;
+                    }
+                }
+            }
         }
         else
         {
@@ -701,7 +759,17 @@ static NSMutableDictionary *studiesForUserCache = nil;
         @synchronized( studiesForUserCache)
         {
             if( user && studiesArray)
-                [studiesForUserCache setObject: [NSDictionary dictionaryWithObjectsAndKeys: [studiesArray valueForKey: @"objectID"], @"array", [NSDate date], @"date", nil] forKey: userID];
+            {
+                NSMutableArray *cachedObjects = [NSMutableArray arrayWithArray: studiesArray];
+                
+                for( int i = 0; i < cachedObjects.count; i++)
+                {
+                    if( [[cachedObjects objectAtIndex: i] isKindOfClass: [DicomStudy class]])
+                        [cachedObjects replaceObjectAtIndex: i withObject: [[cachedObjects objectAtIndex: i] objectID]];
+                }
+                
+                [studiesForUserCache setObject: [NSDictionary dictionaryWithObjectsAndKeys: cachedObjects, @"array", [NSDate date], @"date", nil] forKey: userID];
+            }
         }
     }
         

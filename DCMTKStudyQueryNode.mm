@@ -504,4 +504,19 @@
     }
 }
 
+- (NSString*) XID
+{
+    NSMutableString *XID = [NSMutableString stringWithString: @"POD:"];
+    
+    [XID appendString: _hostname];
+    [XID appendString: @":"];
+    [XID appendFormat: @"%d", _port];
+    [XID appendString: @":"];
+    [XID appendString: @"STUDY"];
+    [XID appendString: @":"];
+    [XID appendString: self.studyInstanceUID];
+    
+    return XID;
+}
+
 @end

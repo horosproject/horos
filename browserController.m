@@ -3592,7 +3592,7 @@ static NSConditionLock *threadLock = nil;
 	}
 }
 
-- (NSArray*) comparativeServers
++ (NSArray*) comparativeServers
 {
     NSMutableArray* servers = [NSMutableArray array];
     NSArray* sources = [DCMNetServiceDelegate DICOMServersList];
@@ -3637,7 +3637,7 @@ static NSConditionLock *threadLock = nil;
     
     @try
     {
-        NSArray *servers = [self comparativeServers];
+        NSArray *servers = [BrowserController comparativeServers];
         
         // Distant studies
         NSMutableDictionary *d = [NSMutableDictionary dictionary];
@@ -3788,7 +3788,7 @@ static NSConditionLock *threadLock = nil;
     
     @try
     {
-        NSArray *servers = [self comparativeServers];
+        NSArray *servers = [BrowserController comparativeServers];
         
         // Distant studies
         NSMutableDictionary *d = [NSMutableDictionary dictionary];
@@ -3922,7 +3922,7 @@ static NSConditionLock *threadLock = nil;
     
     @try
     {
-        NSArray *servers = [self comparativeServers];
+        NSArray *servers = [BrowserController comparativeServers];
         
         // Distant studies
         // In current versions, two filters exist: modality & date
@@ -4126,7 +4126,7 @@ static NSConditionLock *threadLock = nil;
                             BOOL usePatientName = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientNameForUID"];
                             
                             // Servers
-                            NSArray *servers = [self comparativeServers];
+                            NSArray *servers = [BrowserController comparativeServers];
                             
                             if( servers.count)
                             {

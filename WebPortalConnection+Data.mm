@@ -50,6 +50,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import "QuicktimeExport.h"
 #import "dicomFile.h"
+#import "QueryController.h"
 
 #import "BrowserController.h" // TODO: remove when badness solved
 #import "BrowserControllerDCMTKCategory.h" // TODO: remove when badness solved
@@ -76,28 +77,105 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 	return [NSArray arrayWithObject:obj];
 }
 
-- (id)objectWithXID:(NSString*)xid ofClass:(Class)c {
-	NSArray* axid = [xid componentsSeparatedByString:@"/"];
-	if (axid.count != 3) {
-		NSLog(@"ERROR: unexpected CoreData ID format, please contact the author");
-		return nil;
-	}
-	
-	NSString* axidEntityName = [axid objectAtIndex:1];
+- (id)objectWithXID:(NSString*)xid ofClass:(Class)c
+{
+    NSManagedObject* o = nil;
     
-	N2ManagedDatabase* db = nil;
-	if ([axidEntityName isEqualToString:@"User"])
-		db = self.portal.database;
-    else db = self.independentDicomDatabase;
-	
-	NSManagedObject* o = [db objectWithID:[NSManagedObject UidForXid:xid]];
-	
-	// ensure that the user is allowed to access this object
-	if (user && ([o isKindOfClass: [DicomStudy class]] || [o isKindOfClass: [DicomSeries class]])) // Too slow to check for DicomImage
-	{
+    if( [xid hasPrefix: @"POD:"]) // PACS On Demand object
+    {
+         NSArray* axid = [xid componentsSeparatedByString:@":"];
+        
+        if (axid.count == 5)
+        {
+            // Example: POD:172.18.1.5:4096:STUDY:2.16.840.1.113669.632.20.121711.10000370559
+            
+            //Find the server, and retrieve the object(s)
+            
+            NSArray *serversArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
+            NSDictionary *s = nil;
+            
+            for( NSDictionary *aServer in serversArray)
+            {
+                if( [[aServer objectForKey:@"Address"] isEqualToString: [axid objectAtIndex: 1]] && [[aServer objectForKey:@"Port"] intValue] == [[axid objectAtIndex: 2] intValue])
+                {
+                    s = aServer;
+                    break;
+                }
+            }
+            
+            if( s)
+            {
+                if( [[axid objectAtIndex: 3] isEqualToString: @"STUDY"])
+                {
+                    // First try to find it locally
+                    {
+                        N2ManagedDatabase* db = self.independentDicomDatabase;
+                        NSFetchRequest *r = [NSFetchRequest fetchRequestWithEntityName: @"Study"];
+                        [r setPredicate: [NSPredicate predicateWithFormat: @"(studyInstanceUID == %@)", [axid objectAtIndex: 4]]];
+                        
+                        NSArray *studyArray = nil;
+                        @try
+                        {
+                            studyArray = [db.managedObjectContext executeFetchRequest: r error: nil];
+                        }
+                        @catch (NSException *e) { N2LogExceptionWithStackTrace(e);}
+                        
+                        if( [studyArray count] > 0)
+                            return [studyArray lastObject];
+                    }
+                    
+                    // Find it on the distant server
+                    
+                    NSArray *studies = [QueryController queryStudyInstanceUID: [axid objectAtIndex: 4] server: s showErrors: NO];
+                    [QueryController retrieveStudies: studies showErrors: NO checkForPreviousAutoRetrieve: YES];
+                    
+                    [NSThread sleepForTimeInterval: 0.2];
+                    [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
+                    [NSThread sleepForTimeInterval: 1];
+                    
+                    // And find the study locally
+                    N2ManagedDatabase* db = self.independentDicomDatabase;
+                    NSFetchRequest *r = [NSFetchRequest fetchRequestWithEntityName: @"Study"];
+                    [r setPredicate: [NSPredicate predicateWithFormat: @"(studyInstanceUID == %@)", [axid objectAtIndex: 4]]];
+                    
+                    NSArray *studyArray = nil;
+                    @try
+                    {
+                        studyArray = [db.managedObjectContext executeFetchRequest: r error: nil];
+                    }
+                    @catch (NSException *e) { N2LogExceptionWithStackTrace(e);}
+                    
+                    if( [studyArray count] > 0)
+                        return [studyArray lastObject];
+                }
+            }
+        }
+    }
+    else
+    {
+        NSArray* axid = [xid componentsSeparatedByString:@"/"];
+        
+        if (axid.count != 3) {
+            NSLog(@"ERROR: unexpected CoreData ID format, please contact dev team");
+            return nil;
+        }
+        
+        NSString* axidEntityName = [axid objectAtIndex:1];
+        
+        N2ManagedDatabase* db = nil;
+        if ([axidEntityName isEqualToString:@"User"])
+            db = self.portal.database;
+        else db = self.independentDicomDatabase;
+        
+        o = [db objectWithID:[NSManagedObject UidForXid:xid]];
+    }
+
+    // ensure that the user is allowed to access this object
+    if (user && ([o isKindOfClass: [DicomStudy class]] || [o isKindOfClass: [DicomSeries class]])) // Too slow to check for DicomImage
+    {
         DicomStudy *s = nil;
         
-		if ([o isKindOfClass: [DicomStudy class]])
+        if ([o isKindOfClass: [DicomStudy class]])
             s = (DicomStudy*) o;
         
         if ([o isKindOfClass: [DicomSeries class]])
@@ -119,7 +197,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
             NSLog( @"**** study not found for this user (%@) : %@", user, s);
             return nil;
         }
-	}
+    }
 	
 	return o;
 }
@@ -917,7 +995,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	
     
 	[response.tokens setObject:[WebPortalProxy createWithObject:study transformer:DicomStudyTransformer.create] forKey:@"Study"];
-	[response.tokens setObject:[NSString stringWithFormat:NSLocalizedString(@"%@ - %@", @"Web Portal, study, title format (1st %@ is study.name, 2nd is study.studyName)"), study.name, study.studyName] forKey:@"PageTitle"];
+	[response.tokens setObject:[NSString stringWithFormat:NSLocalizedString(@"%@ - %@ - %@", @"Web Portal, study, title format (1st %@ is study.name, 2nd is study.studyName, 3rd date)"), study.name, study.studyName, [NSUserDefaults.dateTimeFormatter stringFromDate:study.date]] forKey:@"PageTitle"];
 	
 	[self.portal updateLogEntryForStudy:study withMessage:@"Browsing Study" forUser:user.name ip:asyncSocket.connectedHost];
 	
