@@ -25,6 +25,7 @@
 #import "browserController.h"
 #import "QueryController.h"
 #import "DicomStudy.h"
+#import "DCMTKStudyQueryNode.h"
 
 static PSGenerator *generator = nil;
 static NSMutableDictionary *studiesForUserCache = nil;
@@ -59,6 +60,19 @@ static NSMutableDictionary *studiesForUserCache = nil;
 
 #define TIMEOUT 5*60
 
++ (NSArray*) cachedArrayForArray: (NSArray*) studiesArray
+{
+    NSMutableArray *cachedObjects = [NSMutableArray arrayWithArray: studiesArray];
+
+    for( int i = 0; i < cachedObjects.count; i++)
+    {
+        if( [[cachedObjects objectAtIndex: i] isKindOfClass: [DCMTKStudyQueryNode class]] == NO)
+            [cachedObjects replaceObjectAtIndex: i withObject: [[cachedObjects objectAtIndex: i] objectID]];
+    }
+    
+    return cachedObjects;
+}
+                                 
 - (void) generatePassword
 {
 	if( generator == nil)
@@ -326,7 +340,15 @@ static NSMutableDictionary *studiesForUserCache = nil;
             {
                 DicomDatabase *dicomDBContext = [WebPortal.defaultWebPortal.dicomDatabase independentDatabase];
                 
-                specificArray = [NSMutableArray arrayWithArray: [dicomDBContext objectsWithIDs: [[studiesForUserCache objectForKey: userID] objectForKey: @"array"]]];
+                NSMutableArray *cachedObjects = [NSMutableArray arrayWithArray: [[studiesForUserCache objectForKey: userID] objectForKey: @"array"]];
+                
+                for( int i = 0; i < cachedObjects.count; i++)
+                {
+                    if( [[cachedObjects objectAtIndex: i] isKindOfClass: [NSManagedObjectID class]])
+                        [cachedObjects replaceObjectAtIndex: i withObject: [dicomDBContext objectWithID: [cachedObjects objectAtIndex: i]]];
+                }
+                
+                specificArray = cachedObjects;
             }
         }
         
@@ -340,7 +362,15 @@ static NSMutableDictionary *studiesForUserCache = nil;
                 {
                     DicomDatabase *dicomDBContext = [WebPortal.defaultWebPortal.dicomDatabase independentDatabase];
                     
-                    studiesArray = [dicomDBContext objectsWithIDs:  [[studiesForUserCache objectForKey: @"all DB studies"] objectForKey: @"array"]];
+                    NSMutableArray *cachedObjects = [NSMutableArray arrayWithArray: [[studiesForUserCache objectForKey: @"all DB studies"] objectForKey: @"array"]];
+                    
+                    for( int i = 0; i < cachedObjects.count; i++)
+                    {
+                        if( [[cachedObjects objectAtIndex: i] isKindOfClass: [NSManagedObjectID class]])
+                            [cachedObjects replaceObjectAtIndex: i withObject: [dicomDBContext objectWithID: [cachedObjects objectAtIndex: i]]];
+                    }
+                    
+                    studiesArray = cachedObjects;
                 }
             }
             
@@ -359,7 +389,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
                 @synchronized( studiesForUserCache)
                 {
                     if( studiesArray)
-                        [studiesForUserCache setObject: [NSDictionary dictionaryWithObjectsAndKeys: [studiesArray valueForKey: @"objectID"], @"array", [NSDate date], @"date", nil] forKey: @"all DB studies"];
+                        [studiesForUserCache setObject: [NSDictionary dictionaryWithObjectsAndKeys: [WebPortalUser cachedArrayForArray: studiesArray], @"array", [NSDate date], @"date", nil] forKey: @"all DB studies"];
                 }
                 
                 [dicomDBContext unlock];
@@ -395,7 +425,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
             @synchronized( studiesForUserCache)
             {
                 if( userID)
-                    [studiesForUserCache setObject: [NSDictionary dictionaryWithObjectsAndKeys: [specificArray valueForKey: @"objectID"], @"array", [NSDate date], @"date", nil] forKey: userID];
+                    [studiesForUserCache setObject: [NSDictionary dictionaryWithObjectsAndKeys: [WebPortalUser cachedArrayForArray: specificArray], @"array", [NSDate date], @"date", nil] forKey: userID];
             }
         }
 	}
@@ -468,7 +498,17 @@ static NSMutableDictionary *studiesForUserCache = nil;
             @synchronized( studiesForUserCache)
             {
                 if( user && [studiesForUserCache objectForKey: userID] && [[[studiesForUserCache objectForKey: userID] objectForKey: @"date"] timeIntervalSinceNow] > -TIMEOUT)
-                    studiesArray = [dicomDBContext objectsWithIDs: [[studiesForUserCache objectForKey: userID] objectForKey: @"array"]];
+                {
+                    NSMutableArray *cachedObjects = [NSMutableArray arrayWithArray: [[studiesForUserCache objectForKey: userID] objectForKey: @"array"]];
+                    
+                    for( int i = 0; i < cachedObjects.count; i++)
+                    {
+                        if( [[cachedObjects objectAtIndex: i] isKindOfClass: [NSManagedObjectID class]])
+                            [cachedObjects replaceObjectAtIndex: i withObject: [dicomDBContext objectWithID: [cachedObjects objectAtIndex: i]]];
+                    }
+                    
+                    studiesArray = cachedObjects;
+                }
             }
             
             if( studiesArray == nil)
@@ -478,7 +518,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
                 @synchronized( studiesForUserCache)
                 {
                     if( user && studiesArray)
-                        [studiesForUserCache setObject: [NSDictionary dictionaryWithObjectsAndKeys: [studiesArray valueForKey: @"objectID"], @"array", [NSDate date], @"date", nil] forKey: userID];
+                        [studiesForUserCache setObject: [NSDictionary dictionaryWithObjectsAndKeys: [WebPortalUser cachedArrayForArray: studiesArray], @"array", [NSDate date], @"date", nil] forKey: userID];
                 }
             }
             
@@ -749,26 +789,18 @@ static NSMutableDictionary *studiesForUserCache = nil;
                 }
             }
             else studiesArray = originalAlbum;
-            
-            if ([sortValue length] && [sortValue isEqualToString: @"date"] == NO)
-                studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: sortValue ascending: YES selector: @selector(caseInsensitiveCompare:)] autorelease]]];
-            else
-                studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending:NO] autorelease]]];
         }
+        
+        if ([sortValue length] && [sortValue isEqualToString: @"date"] == NO)
+            studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: sortValue ascending: YES selector: @selector(caseInsensitiveCompare:)] autorelease]]];
+        else
+            studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending:NO] autorelease]]];
         
         @synchronized( studiesForUserCache)
         {
             if( user && studiesArray)
             {
-                NSMutableArray *cachedObjects = [NSMutableArray arrayWithArray: studiesArray];
-                
-                for( int i = 0; i < cachedObjects.count; i++)
-                {
-                    if( [[cachedObjects objectAtIndex: i] isKindOfClass: [DicomStudy class]])
-                        [cachedObjects replaceObjectAtIndex: i withObject: [[cachedObjects objectAtIndex: i] objectID]];
-                }
-                
-                [studiesForUserCache setObject: [NSDictionary dictionaryWithObjectsAndKeys: cachedObjects, @"array", [NSDate date], @"date", nil] forKey: userID];
+                [studiesForUserCache setObject: [NSDictionary dictionaryWithObjectsAndKeys: [WebPortalUser cachedArrayForArray: studiesArray], @"array", [NSDate date], @"date", nil] forKey: userID];
             }
         }
     }
