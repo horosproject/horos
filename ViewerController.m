@@ -4627,11 +4627,13 @@ static volatile int numberOfThreadsForRelisce = 0;
         
         BOOL showComparativesButton = NO;
         
+        #ifndef OSIRIX_LIGHT
         if ([[NSUserDefaults standardUserDefaults] boolForKey:@"searchForComparativeStudiesOnDICOMNodes"] && !self.database.isReadOnly && self.database.isLocal) {
             NSArray* servers = [BrowserController comparativeServers];
             if (servers.count)
                 showComparativesButton = YES;
         }
+        #endif
         
         [[leftSplitView.subviews objectAtIndex:0] setHidden:!showComparativesButton];
         [self splitView:leftSplitView resizeSubviewsWithOldSize:leftSplitView.bounds.size];
