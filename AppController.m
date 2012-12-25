@@ -4549,6 +4549,16 @@ static BOOL initialized = NO;
 	
 	BOOL landscape = (screenRect.size.width/screenRect.size.height > 1) ? YES : NO;
 	
+    float landscapeRatio = 1.5;
+    
+    if( screenRect.size.width/screenRect.size.height > 1.7) // 16/9 screen or more
+        landscapeRatio = 2.0;
+    
+    float portraitRatio = 1.0;
+    
+    if( screenRect.size.height/screenRect.size.width > 1.7) // 16/9 screen or more
+        portraitRatio = 0.49;
+    
 	int rows = [[[[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol] objectForKey:@"Rows"] intValue];
 	int columns = [[[[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol] objectForKey:@"Columns"] intValue];
 	
@@ -4591,8 +4601,8 @@ static BOOL initialized = NO;
 	{
 		float ratioValue;
 		
-		if( landscape) ratioValue = 1.5;
-		else ratioValue = 1.0;
+		if( landscape) ratioValue = landscapeRatio;
+		else ratioValue = portraitRatio;
 		
 		float viewerCountPerScreen = (float) viewerCount / (float) numberOfMonitors;
 		
