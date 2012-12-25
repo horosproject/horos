@@ -764,7 +764,7 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 			otherStudies = [[[WebPortalUser studiesForUser: wpc.user predicate: [NSPredicate predicateWithFormat: @"(patientID == %@)", study.patientID] sortBy: @"date"] mutableCopy] autorelease];
 			
             // PACS On Demand
-            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ActivatePACSOnDemandForWebPortal"])
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"ActivatePACSOnDemandForWebPortalOtherStudies"])
             {
                 BOOL usePatientID = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientIDForUID"];
                 BOOL usePatientBirthDate = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientBirthDateForUID"];

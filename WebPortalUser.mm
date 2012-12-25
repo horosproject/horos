@@ -714,7 +714,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
             studiesArray = [WebPortalUser studiesForUser: user predicate:[DicomDatabase predicateForSmartAlbumFilter:[album valueForKey:@"predicateString"]] sortBy:sortValue];
             
             // PACS On Demand
-            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ActivatePACSOnDemandForWebPortal"])
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"ActivatePACSOnDemandForWebPortalAlbums"])
             {
                 BOOL usePatientID = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientIDForUID"];
                 BOOL usePatientBirthDate = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientBirthDateForUID"];
