@@ -4592,23 +4592,33 @@ static volatile int numberOfThreadsForRelisce = 0;
         [comparativesButton setEnabled:hasComparatives];
         
         NSColor* color = [NSColor whiteColor];
-        NSString* tip = NSLocalizedString(@"There are no additional comparatives", nil);
+        NSString* tip = @"";
         
-        if (hasComparatives) {
-            color = [[self class] _openItemColor]; // yellow
-            tip = NSLocalizedString(@"There are PACS On-Demand comparatives", nil);
+        if( self.flagListPODComparatives.boolValue == NO)
+        {
+            comparativesButton.title = NSLocalizedString( @"Comparatives", nil);
+            if (hasComparatives) {
+                color = [[self class] _openItemColor]; // yellow
+                tip = NSLocalizedString(@"There are PACS On-Demand comparatives", nil);
+            }
+            
+            if (hasComparativesNewerThanMostRecentLoaded) {
+                color = [[self class] _selectedItemColor]; // red
+                tip = NSLocalizedString(@"There are more recent PACS On-Demand comparatives", nil);
+            }
         }
-        
-        if (hasComparativesNewerThanMostRecentLoaded) {
-            color = [[self class] _selectedItemColor]; // red
-            tip = NSLocalizedString(@"There are more recent PACS On-Demand comparatives", nil);
-        }
+        else
+            comparativesButton.title = NSLocalizedString( @"✓ Comparatives", nil);
         
         if (hasComparatives)
         {
+            if( tip.length)
+                tip = [tip stringByAppendingString:@", "];
+            
             if (self.flagListPODComparatives.boolValue)
-                tip = [tip stringByAppendingFormat:@", %@", NSLocalizedString(@"click here to hide them", @"There are [more recent] POD comparatives, _____")];
-            else tip = [tip stringByAppendingFormat:@", %@", NSLocalizedString(@"click here to show them", @"There are [more recent] POD comparatives, _____")];
+                tip = [tip stringByAppendingString: NSLocalizedString( @"Click here to hide them", @"There are [more recent] POD comparatives, _____")];
+            else
+                tip = [tip stringByAppendingString: NSLocalizedString( @"Click here to show them", @"There are [more recent] POD comparatives, _____")];
         }
         NSMutableDictionary* attributes = [[[comparativesButton.attributedTitle attributesAtIndex:0 effectiveRange:NULL] mutableCopy] autorelease];
         [attributes setObject:color forKey:NSForegroundColorAttributeName];
