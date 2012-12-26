@@ -337,41 +337,48 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
         result = [WebPortalUser studiesForUser: user predicate:browsePredicate sortBy: nil fetchLimit: 0 fetchOffset: 0 numberOfStudies: nil]; // Sort and FetchLimit is applied AFTER PACS On Demand
         
         // PACS On Demand
-        if( PODFilter.count >= 1 && [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"ActivatePACSOnDemandForWebPortalSearch"])
+        NSString *pred = [user.studyPredicate uppercaseString];
+        pred = [pred stringByReplacingOccurrencesOfString:@" " withString: @""];
+        pred = [pred stringByReplacingOccurrencesOfString:@"(" withString: @""];
+        pred = [pred stringByReplacingOccurrencesOfString:@")" withString: @""];
+        if( user == nil || pred.length == 0 || [pred isEqualToString: @"YES==YES"])
         {
-            BOOL usePatientID = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientIDForUID"];
-            BOOL usePatientBirthDate = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientBirthDateForUID"];
-            BOOL usePatientName = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientNameForUID"];
-            
-            // Servers
-            NSArray *servers = [BrowserController comparativeServers];
-            
-            if( servers.count)
+            if( PODFilter.count >= 1 && [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"ActivatePACSOnDemandForWebPortalSearch"])
             {
-                NSArray *distantStudies = [QueryController queryStudiesForFilters: PODFilter servers: servers showErrors: NO];
+                BOOL usePatientID = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientIDForUID"];
+                BOOL usePatientBirthDate = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientBirthDateForUID"];
+                BOOL usePatientName = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientNameForUID"];
                 
-                if( distantStudies.count)
+                // Servers
+                NSArray *servers = [BrowserController comparativeServers];
+                
+                if( servers.count)
                 {
-                    NSMutableArray *mutableStudiesArray = [NSMutableArray arrayWithArray: result];
+                    NSArray *distantStudies = [QueryController queryStudiesForFilters: PODFilter servers: servers showErrors: NO];
                     
-                    // Merge local and distant studies
-                    for( DCMTKStudyQueryNode *distantStudy in distantStudies)
+                    if( distantStudies.count)
                     {
-                        if( [[mutableStudiesArray valueForKey: @"studyInstanceUID"] containsObject: [distantStudy studyInstanceUID]] == NO)
-                            [mutableStudiesArray addObject: distantStudy];
+                        NSMutableArray *mutableStudiesArray = [NSMutableArray arrayWithArray: result];
                         
-                        else if( [[NSUserDefaults standardUserDefaults] boolForKey: @"preferStudyWithMoreImages"])
+                        // Merge local and distant studies
+                        for( DCMTKStudyQueryNode *distantStudy in distantStudies)
                         {
-                            NSUInteger index = [[mutableStudiesArray valueForKey: @"studyInstanceUID"] indexOfObject: [distantStudy studyInstanceUID]];
+                            if( [[mutableStudiesArray valueForKey: @"studyInstanceUID"] containsObject: [distantStudy studyInstanceUID]] == NO)
+                                [mutableStudiesArray addObject: distantStudy];
                             
-                            if( index != NSNotFound && [[[mutableStudiesArray objectAtIndex: index] rawNoFiles] intValue] < [[distantStudy noFiles] intValue])
+                            else if( [[NSUserDefaults standardUserDefaults] boolForKey: @"preferStudyWithMoreImages"])
                             {
-                                [mutableStudiesArray replaceObjectAtIndex: index withObject: distantStudy];
+                                NSUInteger index = [[mutableStudiesArray valueForKey: @"studyInstanceUID"] indexOfObject: [distantStudy studyInstanceUID]];
+                                
+                                if( index != NSNotFound && [[[mutableStudiesArray objectAtIndex: index] rawNoFiles] intValue] < [[distantStudy noFiles] intValue])
+                                {
+                                    [mutableStudiesArray replaceObjectAtIndex: index withObject: distantStudy];
+                                }
                             }
                         }
+                        
+                        result = mutableStudiesArray;
                     }
-                    
-                    result = mutableStudiesArray;
                 }
             }
         }

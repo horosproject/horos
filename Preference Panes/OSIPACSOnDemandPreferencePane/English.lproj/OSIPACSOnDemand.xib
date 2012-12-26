@@ -1025,6 +1025,7 @@ OAA</bytes>
 							<string key="NSFrame">{{106, 20}, {374, 68}}</string>
 							<reference key="NSSuperview" ref="235520153"/>
 							<reference key="NSWindow"/>
+							<reference key="NSNextKeyView"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<string key="NSAntiCompressionPriority">{250, 750}</string>
 							<bool key="NSEnabled">YES</bool>
@@ -1475,7 +1476,7 @@ OAA</bytes>
 											<string key="NSFrameSize">{559, 96}</string>
 											<reference key="NSSuperview" ref="893615243"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView" ref="435994100"/>
+											<reference key="NSNextKeyView" ref="260778054"/>
 											<bool key="NSEnabled">YES</bool>
 											<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 											<bool key="NSControlAllowsExpansionToolTips">YES</bool>
@@ -1712,7 +1713,7 @@ OAA</bytes>
 							<string key="NSFrame">{{20, 163}, {561, 114}}</string>
 							<reference key="NSSuperview" ref="827468134"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="893615243"/>
+							<reference key="NSNextKeyView" ref="435994100"/>
 							<int key="NSsFlags">133682</int>
 							<reference key="NSVScroller" ref="260778054"/>
 							<reference key="NSHScroller" ref="945275861"/>
@@ -1842,9 +1843,9 @@ OAA</bytes>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSButtonCell" key="NSCell" id="1037334522">
 												<int key="NSCellFlags">67108864</int>
-												<int key="NSCellFlags2">0</int>
+												<int key="NSCellFlags2">131072</int>
 												<string key="NSContents">Comparative Studies, displayed at Study level</string>
-												<reference key="NSSupport" ref="455650177"/>
+												<reference key="NSSupport" ref="26"/>
 												<reference key="NSControlView" ref="1020764003"/>
 												<int key="NSButtonFlags">1211912448</int>
 												<int key="NSButtonFlags2">2</int>
@@ -1867,9 +1868,9 @@ OAA</bytes>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSButtonCell" key="NSCell" id="333165317">
 												<int key="NSCellFlags">67108864</int>
-												<int key="NSCellFlags2">0</int>
-												<string key="NSContents">Search function (Patient's name, Patient ID and Accession Number)</string>
-												<reference key="NSSupport" ref="455650177"/>
+												<int key="NSCellFlags2">131072</int>
+												<string key="NSContents">Search function (requires access to entire database: empty Study Filter for Web User)</string>
+												<reference key="NSSupport" ref="26"/>
 												<reference key="NSControlView" ref="395923269"/>
 												<int key="NSButtonFlags">1211912448</int>
 												<int key="NSButtonFlags2">2</int>
@@ -1888,12 +1889,13 @@ OAA</bytes>
 											<string key="NSFrame">{{17, 12}, {518, 18}}</string>
 											<reference key="NSSuperview" ref="1034146958"/>
 											<reference key="NSWindow"/>
+											<reference key="NSNextKeyView"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSButtonCell" key="NSCell" id="967350323">
 												<int key="NSCellFlags">67108864</int>
-												<int key="NSCellFlags2">0</int>
-												<string key="NSContents">Albums</string>
-												<reference key="NSSupport" ref="455650177"/>
+												<int key="NSCellFlags2">131072</int>
+												<string key="NSContents">Albums (requires access to entire database: empty Study Filter for Web User)</string>
+												<reference key="NSSupport" ref="26"/>
 												<reference key="NSControlView" ref="70852018"/>
 												<int key="NSButtonFlags">1211912448</int>
 												<int key="NSButtonFlags2">2</int>
@@ -1910,7 +1912,7 @@ OAA</bytes>
 									<string key="NSFrame">{{1, 1}, {566, 78}}</string>
 									<reference key="NSSuperview" ref="44611990"/>
 									<reference key="NSWindow"/>
-									<reference key="NSNextKeyView"/>
+									<reference key="NSNextKeyView" ref="1020764003"/>
 									<string key="NSReuseIdentifierKey">_NS:11</string>
 								</object>
 							</array>

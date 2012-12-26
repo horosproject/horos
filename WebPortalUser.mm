@@ -714,48 +714,55 @@ static NSMutableDictionary *studiesForUserCache = nil;
             studiesArray = [WebPortalUser studiesForUser: user predicate:[DicomDatabase predicateForSmartAlbumFilter:[album valueForKey:@"predicateString"]] sortBy:sortValue];
             
             // PACS On Demand
-            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"ActivatePACSOnDemandForWebPortalAlbums"])
+            NSString *pred = [user.studyPredicate uppercaseString];
+            pred = [pred stringByReplacingOccurrencesOfString:@" " withString: @""];
+            pred = [pred stringByReplacingOccurrencesOfString:@"(" withString: @""];
+            pred = [pred stringByReplacingOccurrencesOfString:@")" withString: @""];
+            if( user == nil || pred.length == 0 || [pred isEqualToString: @"YES==YES"])
             {
-                BOOL usePatientID = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientIDForUID"];
-                BOOL usePatientBirthDate = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientBirthDateForUID"];
-                BOOL usePatientName = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientNameForUID"];
-                
-                // Servers
-                NSArray *servers = [BrowserController comparativeServers];
-                
-                if( servers.count)
+                if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"ActivatePACSOnDemandForWebPortalAlbums"])
                 {
-                    // Distant studies
-                    // In current versions, two filters exist: modality & date
-                    NSArray *distantStudies = nil;
-                    for( NSDictionary *d in [[NSUserDefaults standardUserDefaults] objectForKey: @"smartAlbumStudiesDICOMNodes"])
-                    {
-                        if( [[d valueForKey: @"activated"] boolValue] && [albumName isEqualToString: [d valueForKey: @"name"]])
-                            distantStudies = [QueryController queryStudiesForFilters: d servers: servers showErrors: NO];
-                    }
+                    BOOL usePatientID = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientIDForUID"];
+                    BOOL usePatientBirthDate = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientBirthDateForUID"];
+                    BOOL usePatientName = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientNameForUID"];
                     
-                    if( distantStudies.count)
+                    // Servers
+                    NSArray *servers = [BrowserController comparativeServers];
+                    
+                    if( servers.count)
                     {
-                        NSMutableArray *mutableStudiesArray = [NSMutableArray arrayWithArray: studiesArray];
-                        
-                        // Merge local and distant studies
-                        for( DCMTKStudyQueryNode *distantStudy in distantStudies)
+                        // Distant studies
+                        // In current versions, two filters exist: modality & date
+                        NSArray *distantStudies = nil;
+                        for( NSDictionary *d in [[NSUserDefaults standardUserDefaults] objectForKey: @"smartAlbumStudiesDICOMNodes"])
                         {
-                            if( [[mutableStudiesArray valueForKey: @"studyInstanceUID"] containsObject: [distantStudy studyInstanceUID]] == NO)
-                                [mutableStudiesArray addObject: distantStudy];
-                            
-                            else if( [[NSUserDefaults standardUserDefaults] boolForKey: @"preferStudyWithMoreImages"])
-                            {
-                                NSUInteger index = [[mutableStudiesArray valueForKey: @"studyInstanceUID"] indexOfObject: [distantStudy studyInstanceUID]];
-                                
-                                if( index != NSNotFound && [[[mutableStudiesArray objectAtIndex: index] rawNoFiles] intValue] < [[distantStudy noFiles] intValue])
-                                {
-                                    [mutableStudiesArray replaceObjectAtIndex: index withObject: distantStudy];
-                                }
-                            }
+                            if( [[d valueForKey: @"activated"] boolValue] && [albumName isEqualToString: [d valueForKey: @"name"]])
+                                distantStudies = [QueryController queryStudiesForFilters: d servers: servers showErrors: NO];
                         }
                         
-                        studiesArray = mutableStudiesArray;
+                        if( distantStudies.count)
+                        {
+                            NSMutableArray *mutableStudiesArray = [NSMutableArray arrayWithArray: studiesArray];
+                            
+                            // Merge local and distant studies
+                            for( DCMTKStudyQueryNode *distantStudy in distantStudies)
+                            {
+                                if( [[mutableStudiesArray valueForKey: @"studyInstanceUID"] containsObject: [distantStudy studyInstanceUID]] == NO)
+                                    [mutableStudiesArray addObject: distantStudy];
+                                
+                                else if( [[NSUserDefaults standardUserDefaults] boolForKey: @"preferStudyWithMoreImages"])
+                                {
+                                    NSUInteger index = [[mutableStudiesArray valueForKey: @"studyInstanceUID"] indexOfObject: [distantStudy studyInstanceUID]];
+                                    
+                                    if( index != NSNotFound && [[[mutableStudiesArray objectAtIndex: index] rawNoFiles] intValue] < [[distantStudy noFiles] intValue])
+                                    {
+                                        [mutableStudiesArray replaceObjectAtIndex: index withObject: distantStudy];
+                                    }
+                                }
+                            }
+                            
+                            studiesArray = mutableStudiesArray;
+                        }
                     }
                 }
             }
