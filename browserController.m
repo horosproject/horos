@@ -2745,11 +2745,11 @@ static NSConditionLock *threadLock = nil;
 	}
 	else sortDescriptors = [databaseOutline sortDescriptors];
 	
-	if( filtered == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesOfSamePatientTogether"] && outlineViewArray.count > 0)
+	if( filtered == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesOfSamePatientTogether"] && outlineViewArray.count > 0 && outlineViewArray.count < 500)
 	{
 		@try
 		{
-			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesOfSamePatientTogetherAndGrouped"] && outlineViewArray.count < 1000)
+			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesOfSamePatientTogetherAndGrouped"])
 			{
 				outlineViewArray = [outlineViewArray sortedArrayUsingDescriptors: sortDescriptors];
 				
