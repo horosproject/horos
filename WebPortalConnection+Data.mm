@@ -277,10 +277,11 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
             searchString = [searchString stringByReplacingOccurrencesOfString: @"\"" withString: @"\'"];
             searchString = [searchString stringByReplacingOccurrencesOfString: @"\'" withString: @"\\'"];
             
-            [search appendFormat:@"name CONTAINS[cd] '%@'", searchString]; // [c] is for 'case INsensitive' and [d] is to ignore accents (diacritic)
+            [search appendFormat:@"name BEGINSWITH[cd] '%@'", searchString]; // [c] is for 'case INsensitive' and [d] is to ignore accents (diacritic)
             browsePredicate = [NSPredicate predicateWithFormat: search];
             
-            [PODFilter setObject: [searchString stringByAppendingString:@"*"] forKey: @"PatientsName"];
+            if( searchString.length >= 2)
+                [PODFilter setObject: [searchString stringByAppendingString:@"*"] forKey: @"PatientsName"];
         }
         else if ([parameters objectForKey:@"searchID"])
         {
@@ -298,10 +299,11 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
             
             searchString = [newComponents componentsJoinedByString:@" "];
             
-            [search appendFormat:@"patientID CONTAINS[cd] '%@'", searchString]; // [c] is for 'case INsensitive' and [d] is to ignore accents (diacritic)
+            [search appendFormat:@"patientID BEGINSWITH[cd] '%@'", searchString]; // [c] is for 'case INsensitive' and [d] is to ignore accents (diacritic)
             browsePredicate = [NSPredicate predicateWithFormat:search];
             
-            [PODFilter setObject: searchString forKey: @"PatientID"];
+            if( searchString.length >= 2)
+                [PODFilter setObject: [searchString stringByAppendingString:@"*"] forKey: @"PatientID"];
         }
         else if ([parameters objectForKey:@"searchAccessionNumber"])
         {
@@ -319,10 +321,11 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
             
             searchString = [newComponents componentsJoinedByString:@" "];
             
-            [search appendFormat:@"accessionNumber CONTAINS[cd] '%@'", searchString]; // [c] is for 'case INsensitive' and [d] is to ignore accents (diacritic)
+            [search appendFormat:@"accessionNumber BEGINSWITH[cd] '%@'", searchString]; // [c] is for 'case INsensitive' and [d] is to ignore accents (diacritic)
             browsePredicate = [NSPredicate predicateWithFormat:search];
             
-            [PODFilter setObject: searchString forKey: @"AccessionNumber"];
+            if( searchString.length >= 2)
+                [PODFilter setObject: [searchString stringByAppendingString:@"*"] forKey: @"AccessionNumber"];
         }
         
         if (!browsePredicate)
@@ -334,7 +337,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
         result = [WebPortalUser studiesForUser: user predicate:browsePredicate sortBy: nil fetchLimit: 0 fetchOffset: 0 numberOfStudies: nil]; // Sort and FetchLimit is applied AFTER PACS On Demand
         
         // PACS On Demand
-        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"ActivatePACSOnDemandForWebPortalSearch"])
+        if( PODFilter.count >= 1 && [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"ActivatePACSOnDemandForWebPortalSearch"])
         {
             BOOL usePatientID = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientIDForUID"];
             BOOL usePatientBirthDate = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientBirthDateForUID"];
