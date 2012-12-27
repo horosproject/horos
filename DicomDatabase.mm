@@ -896,15 +896,15 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
             index = _dataFileIndex.unsignedIntegerValue;
         }
         
-		long long defaultFolderSizeForDB = [BrowserController DefaultFolderSizeForDB];
+		unsigned long long defaultFolderSizeForDB = [BrowserController DefaultFolderSizeForDB];
 		
 		BOOL fileExists = NO, firstExists = YES;
 		do {
-			long long subFolderInt = defaultFolderSizeForDB*(index/defaultFolderSizeForDB+1);
-			NSString* subFolderPath = [dataDirPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%lld", subFolderInt]];
+			unsigned long long subFolderInt = defaultFolderSizeForDB*(index/defaultFolderSizeForDB+1);
+			NSString* subFolderPath = [dataDirPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%llu", subFolderInt]];
 			[NSFileManager.defaultManager confirmDirectoryAtPath:subFolderPath];
 			
-			path = [subFolderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%lld.%@", (long long)_dataFileIndex.unsignedIntegerValue, ext]];
+			path = [subFolderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%llu.%@", (unsigned long long)_dataFileIndex.unsignedIntegerValue, ext]];
 			fileExists = [NSFileManager.defaultManager fileExistsAtPath:path];
 			
 			if (fileExists)
