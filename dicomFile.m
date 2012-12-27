@@ -139,6 +139,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 
 - (BOOL) containsLocalizerInString: (NSString*) str
 {
+    if( str.length == 0)
+        return NO;
+    
 	NSArray *stringsToFind = [[[NSUserDefaults standardUserDefaults] valueForKey: @"NOLOCALIZER_Strings"] componentsSeparatedByString:@","];
 	
 	for( NSString *localizerString in stringsToFind)
