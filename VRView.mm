@@ -7051,7 +7051,7 @@ public:
 					for( i = 0; i < [TIFFRep pixelsHigh]; i++)
 					{
 						unsigned char	*srcPtr = ([TIFFRep bitmapData] + i*[TIFFRep bytesPerRow]);
-						unsigned char	*dstPtr = (buf + (*height - [TIFFRep pixelsHigh] + i)*rowBytes + ((*width-10)*3 - [TIFFRep bytesPerRow]));
+						unsigned char	*dstPtr = (buf + (*height - [TIFFRep pixelsHigh] + i)*rowBytes + 2*3);
 						
 						long x = [TIFFRep bytesPerRow]/3;
 						while( x-->0)
