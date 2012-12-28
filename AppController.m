@@ -4630,7 +4630,13 @@ static BOOL initialized = NO;
 					columns ++;
 			}
 		}
+        
+        if( rows * columns > viewerCountPerScreen && rows*(columns-1) == viewerCountPerScreen)
+            columns --;
 		
+        if( rows * columns > viewerCountPerScreen && columns*(rows-1) == viewerCountPerScreen)
+            rows --;
+        
 		columns *= numberOfMonitors;
 	}
 	
