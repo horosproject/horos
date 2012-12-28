@@ -137,8 +137,11 @@
         
         if( sameAddress)
         {
-            NSAlert *alert = [NSAlert alertWithMessageText: NSLocalizedString( @"Query Error", nil) defaultButton:@"OK" alternateButton:nil otherButton:nil informativeTextWithFormat:@"%@", NSLocalizedString( @"OsiriX cannot generate a DICOM query on itself.", nil)];
-            [alert runModal];
+            if( [NSThread isMainThread] && showError)
+            {
+                NSAlert *alert = [NSAlert alertWithMessageText: NSLocalizedString( @"Query Error", nil) defaultButton:@"OK" alternateButton:nil otherButton:nil informativeTextWithFormat:@"%@", NSLocalizedString( @"OsiriX cannot generate a DICOM query on itself.", nil)];
+                [alert runModal];
+            }
         }
         else
         {
@@ -183,7 +186,7 @@
     }
     @catch (NSException * e)
     {	
-        if( showError)
+        if( [NSThread isMainThread] && showError)
         {
             NSAlert *alert = [NSAlert alertWithMessageText:@"Query Error" defaultButton:@"OK" alternateButton:nil otherButton:nil informativeTextWithFormat:@"%@", @"Query Failed"];
             NSLog(@"****** performQuery exception: %@", [e name]);
