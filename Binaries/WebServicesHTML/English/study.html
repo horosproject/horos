@@ -134,9 +134,8 @@ function shareDestinationChange(select) {
 				%[FOREACH:Study.otherStudiesForThisPatient:Study%
 					<td>%Study.date.DateTime.Spanned%:</td>
 					<td><a href="study?%Info.getParameters(xid=)%&xid=%Study.XID%">
-						<span class="bigger compressed">%X:ZWS:Study.name%</span> <span class="gray details">%X:Study.modality%%[IF:Study.imageSeries.count%, %X:Study.imageSeries.count% series%]IF:Study.imageSeries.count%%[IF:Study.patientID%, %X:Study.patientID%%]IF:Study.patientID%%[IF:Study.accessionNumber%, %X:Study.accessionNumber%%]IF:Study.accessionNumber%</span>
+						<span class="bigger compressed">%X:ZWS:Study.studyName%</span> <span class="gray details">, %X:Study.modality%%[IF:Study.imageSeries.count%, %X:Study.imageSeries.count% series%]IF:Study.imageSeries.count%%[IF:Study.patientID%, %X:Study.patientID%%]IF:Study.patientID%%[IF:Study.accessionNumber%, %X:Study.accessionNumber%%]IF:Study.accessionNumber%</span>
 						<div class="gray indent compressed">
-									%X:ZWS:Study.studyName%
 									%[IF:Study.comment%<div class="italic indent">%X:ZWS:Study.comment%</div>%]IF:Study.comment%
 						</div>
 					</a></td>
