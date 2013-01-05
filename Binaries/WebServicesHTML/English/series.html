@@ -13,7 +13,7 @@
 				%[IF:Series.images.count<2%
 					<img src="/image.jpg?xid=%Series.images.anyObject.XID%" class="maxwide" />
 				%ELSE:Series.images.count<2%
-					<a href="?%Info.getParameters(frames=)%">Show Movie</a><br/>
+					<a href="?%Info.getParameters(frames=)%">Show as Sequence</a><br/><br/>
 					%[FOREACH:Series.sortedImages:Image%
 					<img src="/image.jpg?xid=%Image.XID%" class="maxwide" />
 					%]FOREACH:Series.sortedImages:Image%
@@ -23,7 +23,7 @@
 					%[IF:Series.images.count<2%
 						<img src="/image.jpg?xid=%Series.images.anyObject.XID%" class="maxwide" />
 					%ELSE:Series.images.count<2%
-						<a href="?%Info.getParameters(frames=yes)%">Show All Frames</a><br/>
+						<a href="?%Info.getParameters(frames=yes)%">Show All Frames</a><br/><br/>
 						%[IF:Info.proposeFlash%
 							<object width="%X:Series.width%" height="%X:Series.height%">
 								<param name="movie" value="/movie.swf?xid=%Series.XID%" />

@@ -10,7 +10,11 @@
 	<div class="center">
 		<div class="noleftmargin smaller">
 			%[FOREACH:Study.roiAndKeyImages:Image%
-				<a id="index%X:Image_Index%"><img src="/imageAsScreenCapture.jpg?xid=%Image.XID%" class="maxwide" /></a>
+			%[IF:Series.noFiles>9%
+				<a href="series%Image.series.seriesExtension%?xid=%Image.series.XID%&%Info.getParameters(xid=,frames=)%" id="index%X:Image_Index%"><img src="/imageAsScreenCapture.jpg?xid=%Image.XID%" class="maxwide" /></a>
+			%ELSE:Series.noFiles>9%
+				<a href="series%Image.series.seriesExtension%?xid=%Image.series.XID%&%Info.getParameters(xid=,frames=)%&frames=yes" id="index%X:Image_Index%"><img src="/imageAsScreenCapture.jpg?xid=%Image.XID%" class="maxwide" /></a>
+			%]IF:Series.noFiles>9%
 			%]FOREACH:Study.roiAndKeyImages:Image%	
 		</div>
 	</div>

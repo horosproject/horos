@@ -1181,9 +1181,9 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
         if( study == nil)
             return;
         
-        [response.tokens setObject:[WebPortalProxy createWithObject:study transformer:[DicomStudyTransformer create]] forKey:@"Study"];
-        [response.tokens setObject:study.name forKey:@"PageTitle"];
-        [response.tokens setObject:[NSString stringWithFormat:@"%@ - %@", study.name, study.studyName] forKey:@"BackLinkLabel"];
+        [response.tokens setObject: [WebPortalProxy createWithObject:study transformer:[DicomStudyTransformer create]] forKey:@"Study"];
+        [response.tokens setObject: [NSString stringWithFormat: @"%@ - %@", study.name, NSLocalizedString( 	@"Key Images and ROI Images", nil)] forKey:@"PageTitle"];
+        [response.tokens setObject: [NSString stringWithFormat:@"%@ - %@", study.name, study.studyName] forKey:@"BackLinkLabel"];
     }
     
 	response.templateString = [self.portal stringForPath:@"keyroisimages.html"];
@@ -2526,7 +2526,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 {
     DicomImage *dicomImage = [self objectWithXID:[parameters objectForKey:@"xid"]];
     
-    [DCMView setCLUTBARS: CLUTBARS ANNOTATIONS: annotBase];
+    [DCMView setCLUTBARS: CLUTBARS ANNOTATIONS: annotGraphics];
     
     BOOL savedSmartCropping = [[NSUserDefaults standardUserDefaults] boolForKey: @"allowSmartCropping"];
     
