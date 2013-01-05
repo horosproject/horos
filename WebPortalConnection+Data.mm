@@ -2357,8 +2357,6 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 //	}
 }
 
-#define ThumbnailsCacheSize 20
-
 -(NSMutableDictionary*)thumbnailsCache {
     
     @synchronized( self)
@@ -2366,7 +2364,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
         const NSString* const ThumbsCacheKey = @"Thumbnails Cache";
         NSMutableDictionary* dict = [self.portal.cache objectForKey:ThumbsCacheKey];
         if (!dict || ![dict isKindOfClass:[NSMutableDictionary class]])
-            [self.portal.cache setObject: dict = [NSMutableDictionary dictionaryWithCapacity:ThumbnailsCacheSize] forKey:ThumbsCacheKey];
+            [self.portal.cache setObject: dict = [NSMutableDictionary dictionary] forKey:ThumbsCacheKey];
     
         return dict;
     }
@@ -2377,13 +2375,17 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 -(void)processThumbnail {
 	NSString* xid = [parameters objectForKey:@"xid"];
 	
-	// is cached?
-	NSData* data = [self.thumbnailsCache objectForKey:xid];
-	if (data) {
-		response.data = data;
-		return;
+    NSData* data = nil;
+    @synchronized( self)
+    {
+        // is cached?
+        data = [self.thumbnailsCache objectForKey:xid];
+        if (data) {
+            response.data = data;
+            return;
+        }
 	}
-	
+    
 	// create it
 	
 	id object = [self objectWithXID:xid];
@@ -2402,8 +2404,18 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	
 	response.mimeType = @"image/png";
 	
-	if (data)
-		[self.thumbnailsCache setObject:data forKey:xid];
+    @synchronized( self)
+    {
+        if (data)
+        {
+            #define MAX_ThumbnailsCacheSize 400
+            
+            if( [self.thumbnailsCache count] > MAX_ThumbnailsCacheSize)
+                [self.thumbnailsCache removeAllObjects];
+            
+            [self.thumbnailsCache setObject:data forKey:xid];
+        }
+    }
 }
 
 -(void)processSeriesPdf {
