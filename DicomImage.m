@@ -1203,8 +1203,6 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
         
         DCMView* view = [[DCMView alloc] initWithFrame:frame imageRows:self.height.intValue imageColumns:self.width.intValue];
         [view setPixels:[NSMutableArray arrayWithObject:pix] files:[NSMutableArray arrayWithObject:self] rois:(rois? [NSMutableArray arrayWithObject:rois] : nil) firstImage:0 level:'i' reset:YES];
-        [view setXFlipped:self.xFlipped.boolValue];
-        [view setYFlipped:self.yFlipped.boolValue];
         [win.contentView addSubview:view];
         [view drawRect:frame];
         
