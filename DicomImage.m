@@ -31,10 +31,12 @@
 
 #ifdef OSIRIX_VIEWER
 #import "DCMPix.h"
+#import "SRAnnotation.h"
 #import "VRController.h"
 #import "browserController.h"
 #import "BonjourBrowser.h"
 #import "ThreadsManager.h"
+#import "DCMView.h"
 #endif
 
 #define ROIDATABASE @"/ROIs/"
@@ -1157,6 +1159,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 #endif
     return nil;
 }
+
 - (NSImage *)thumbnail
 {
 #ifdef OSIRIX_VIEWER
@@ -1171,6 +1174,54 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
     }
 #endif
     return nil;
+}
+
+-(NSImage*) imageAsScreenCapture
+{
+
+    if( [NSThread isMainThread] == NO)
+    {
+        N2LogStackTrace( @"****** this function works only on MAIN thread");
+        return nil;
+    }
+    
+    NSImage *renderedImage = nil;
+    
+    #ifdef OSIRIX_VIEWER
+    @try
+    {
+        DCMPix* pix = [[DCMPix alloc] initWithPath: self.completePath :0 :0 :nil :0 :self.series.id.intValue isBonjour:NO imageObj: self];
+        
+        [pix CheckLoad];
+        
+        NSRect frame = NSMakeRect(0,0, [[NSUserDefaults standardUserDefaults] integerForKey: @"DicomImageScreenCaptureWidth"],[[NSUserDefaults standardUserDefaults] integerForKey: @"DicomImageScreenCaptureHeight"]);
+        
+        NSWindow* win = [[NSWindow alloc] initWithContentRect:frame styleMask:NSTitledWindowMask backing:NSBackingStoreBuffered defer:NO];
+        
+        DicomImage* roisImage = [self.series.study roiForImage:self inArray:nil];
+        NSArray* rois = roisImage? [NSUnarchiver unarchiveObjectWithData:[SRAnnotation roiFromDICOM:[roisImage completePath]]] : nil;
+        
+        DCMView* view = [[DCMView alloc] initWithFrame:frame imageRows:self.height.intValue imageColumns:self.width.intValue];
+        [view setPixels:[NSMutableArray arrayWithObject:pix] files:[NSMutableArray arrayWithObject:self] rois:(rois? [NSMutableArray arrayWithObject:rois] : nil) firstImage:0 level:'i' reset:YES];
+        [view setXFlipped:self.xFlipped.boolValue];
+        [view setYFlipped:self.yFlipped.boolValue];
+        [win.contentView addSubview:view];
+        [view drawRect:frame];
+        
+        renderedImage = [view nsimage];
+        
+        [view removeFromSuperview];
+        [view release];
+        [win release];
+        [pix release];
+    }
+    @catch (NSException* e)
+    {
+        N2LogExceptionWithStackTrace(e);
+    }
+    #endif
+    
+    return renderedImage;
 }
 
 -(NSImage*)thumbnailIfAlreadyAvailable {

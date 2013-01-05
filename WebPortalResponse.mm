@@ -405,6 +405,7 @@ static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
 					[dict setObject:[string substringWithRange:NSMakeRange(occ2.location+1, tokenCloserRange.location-(occ2.location+1))] forKey:blockKey];
 					occ2.location = tokenCloserRange.location+tokenCloserRange.length-1;
 				}
+                else NSLog( @"***** WebPortal: syntax error : no closing for: %@", tokenCloser);
 			}
 				
 			BOOL mustReevaluate = NO;
@@ -749,9 +750,21 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 	return [[[self alloc] init] autorelease];
 }
 
--(id)valueForKey:(NSString*)key object:(DicomStudy*)study context:(WebPortalConnection*)wpc {
-	
-	if ([key isEqual:@"reportIsLink"]) {
+-(id)valueForKey:(NSString*)key object:(DicomStudy*)study context:(WebPortalConnection*)wpc
+{
+    if ([key isEqual:@"hasKeyImagesOrROIImages"])
+	{
+        if( [[study keyImages] count])
+            return [NSNumber numberWithBool: YES];
+        
+        if( [[study roiImages] count])
+            return [NSNumber numberWithBool: YES];
+        
+        return [NSNumber numberWithBool: NO];
+    }
+    
+	if ([key isEqual:@"reportIsLink"])
+    {
 		return [NSNumber numberWithBool: [study.reportURL hasPrefix:@"http://"] || [study.reportURL hasPrefix:@"https://"] ];
 	}
 	

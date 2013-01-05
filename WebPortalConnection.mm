@@ -458,6 +458,9 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 			else
 			if ([requestedPath isEqual:@"/series"])
 				[self processSeriesHtml];
+            else
+            if ([requestedPath isEqual:@"/keyroisimages"])
+                [self processKeyROIsImagesHtml];
 			else
 			if ([requestedPath isEqual:@"/series.json"])
 				[self processSeriesJson];
@@ -470,6 +473,9 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 			else
 			if ([requestedPath hasPrefix:@"/image."])
 				[self processImage];
+            else
+            if ([requestedPath hasPrefix:@"/imageAsScreenCapture."])
+                [self processImageAsScreenCapture: YES];
 			else
 			if ([requestedPath isEqual:@"/movie.mov"] || [requestedPath isEqual:@"/movie.m4v"] || [requestedPath isEqual:@"/movie.mp4"] || [requestedPath isEqual:@"/movie.swf"])
 				[self processMovie];

@@ -13119,7 +13119,8 @@ static NSArray*	openSubSeriesArray = nil;
 			[menuItem action] == @selector(export2PACS:) || 
 			[menuItem action] == @selector(exportQuicktime:) || 
 			[menuItem action] == @selector(exportJPEG:) || 
-			[menuItem action] == @selector(exportTIFF:) || 
+			[menuItem action] == @selector(exportTIFF:) ||
+            [menuItem action] == @selector(exportROIsAndKeysAsImages:) ||
 			[menuItem action] == @selector(exportDICOMFile:) || 
 			[menuItem action] == @selector(sendMail:) || 
 			[menuItem action] == @selector(addStudiesToUser:) || 
@@ -13195,6 +13196,24 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		return YES;
 	}
+    else if( [menuItem action] == @selector(exportROIsAndKeysAsImages:))
+    {
+        if([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSAlternateKeyMask)
+        {
+            [menuItem setTitle: NSLocalizedString( @"Export Key Images to JPEG", nil)];
+        }
+        else if([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSShiftKeyMask)
+        {
+            [menuItem setTitle: NSLocalizedString( @"Export ROI Images to JPEG", nil)];
+        }
+        else
+        {
+            [menuItem setTitle: NSLocalizedString( @"Export Key Images and ROI Images to JPEG", nil)];
+        }
+        
+        if( ROIsAndKeyImagesButtonAvailable) return YES;
+        else return NO;
+    }
     else if( [menuItem action] == @selector(regenerateAutoComments:))
     {
         if( [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILL"]) return YES;

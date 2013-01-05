@@ -1032,6 +1032,9 @@ static NSHost *currentHost = nil;
     [defaultValues setObject:@"1" forKey:@"UsePatientIDForUID"];
 	[defaultValues setObject:@"1" forKey:@"UsePatientNameForUID"];
     
+    [defaultValues setObject:@"1024" forKey: @"DicomImageScreenCaptureWidth"];
+    [defaultValues setObject:@"1024" forKey: @"DicomImageScreenCaptureHeight"];
+    
 	#ifdef MACAPPSTORE
 	[defaultValues setObject:@"1" forKey:@"MACAPPSTORE"];
 	#else

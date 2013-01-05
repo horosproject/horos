@@ -10,15 +10,20 @@
 	<div class="center">
 		<div class="noleftmargin smaller">
 			%[IF:Request.frames%
-				%[FOREACH:Series.sortedImages:Image%
-				<img src="/image.jpg?xid=%Image.XID%" class="maxwide" /> 
-				%]FOREACH:Series.sortedImages:Image%
+				%[IF:Series.images.count<2%
+					<img src="/image.jpg?xid=%Series.images.anyObject.XID%" class="maxwide" />
+				%ELSE:Series.images.count<2%
+					<a href="?%Info.getParameters(frames=)%">Show Movie</a><br/>
+					%[FOREACH:Series.sortedImages:Image%
+					<img src="/image.jpg?xid=%Image.XID%" class="maxwide" /> 
+					%]FOREACH:Series.sortedImages:Image%
+				%]IF:Series.images.count<2%
 			%ELSE:Request.frames%
 				<div class="separated loading center">
 					%[IF:Series.images.count<2%
-						<img src="/image.jpg?xid=%Series.XID%" class="maxwide" />
+						<img src="/image.jpg?xid=%Series.images.anyObject.XID%" class="maxwide" />
 					%ELSE:Series.images.count<2%
-						<a href="?%Info.getParameters%&frames=yes">Show All Frames</a><br/>
+						<a href="?%Info.getParameters(frames=yes)%">Show All Frames</a><br/>
 						%[IF:Info.proposeFlash%
 							<object width="%X:Series.width%" height="%X:Series.height%">
 								<param name="movie" value="/movie.swf?xid=%Series.XID%" />
@@ -35,14 +40,12 @@
 						%ELSE:Info.proposeFlash%
 							<video 	src="/movie.m4v?xid=%Series.XID%&username=%User.name%&token=%Info.newToken%"
 									controls
-                                    autoplay
+									autoplay
 									height="%X:Series.height%"
 									width="%X:Series.width%"
 									poster="/image.jpg?xid=%Series.XID%"
 							>
 							</video>
-							
-										
 						%]IF:Info.proposeFlash%
 					%]IF:Series.images.count<2%
 				</div>

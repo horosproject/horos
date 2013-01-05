@@ -21,5 +21,5 @@
 +(NSURL*)UrlForXid:(NSString*)xid;
 
 -(NSString*)XID;
-
+-(NSString*)XIDFilename;
 @end

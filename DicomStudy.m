@@ -25,6 +25,7 @@
 #import "N2Debug.h"
 
 #ifdef OSIRIX_VIEWER
+#import "DCMView.h"
 #import "DCMPix.h"
 #import "VRController.h"
 #import "browserController.h"
@@ -317,25 +318,30 @@ static NSRecursiveLock *dbModifyLock = nil;
 	if( [self.hasDICOM boolValue] == YES)
 	{
 		[self.managedObjectContext lock];
-		@try
-		{
-			NSManagedObject *archivedAnnotations = [self annotationsSRImage];
-			NSString *dstPath = [archivedAnnotations valueForKey: @"completePath"];
-			
-			if( dstPath)
-			{
-				SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: dstPath] autorelease];
-				
-				NSDictionary *annotations = [r annotations];
-				if( annotations)
-					[self applyAnnotationsFromDictionary: annotations];
-			}
-		}
-		@catch (NSException* e) {
-            N2LogExceptionWithStackTrace(e);
-		}
-		@finally {
-            [self.managedObjectContext unlock];
+        if( reentry == NO)
+        {
+            reentry = YES;
+            @try
+            {
+                NSManagedObject *archivedAnnotations = [self annotationsSRImage];
+                NSString *dstPath = [archivedAnnotations valueForKey: @"completePath"];
+                
+                if( dstPath)
+                {
+                    SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: dstPath] autorelease];
+                    
+                    NSDictionary *annotations = [r annotations];
+                    if( annotations)
+                        [self applyAnnotationsFromDictionary: annotations];
+                }
+            }
+            @catch (NSException* e) {
+                N2LogExceptionWithStackTrace(e);
+            }
+            @finally {
+                [self.managedObjectContext unlock];
+                reentry = NO;
+            }
         }
 	}
 	#endif
@@ -1909,6 +1915,66 @@ static NSRecursiveLock *dbModifyLock = nil;
     }
 	
 	return nil;
+}
+
+-(NSArray*) roiImages
+{
+    NSMutableArray *roiImages = [NSMutableArray array];
+    
+    NSArray *allImages = [self.images allObjects];
+    
+    for (DicomImage *roi in [self.roiSRSeries images])
+    {
+        NSArray *robjs = [NSUnarchiver unarchiveObjectWithData:[SRAnnotation roiFromDICOM:[roi completePath]]];
+        if (!robjs.count) continue;
+        
+        NSInteger it = [roi.comment rangeOfString:@"-" options:NSLiteralSearch+NSBackwardsSearch].location;
+        NSString *uid = [roi.comment substringToIndex:it];
+        int fid = [[roi.comment substringFromIndex:it+1] intValue];
+        // find the image that uses these ROIs
+        NSPredicate *p;
+        if (fid)
+            p = [NSPredicate predicateWithFormat:@"sopInstanceUID = %@ and frameID = %@", uid, [NSNumber numberWithInt:fid]];
+        else
+            p = [NSPredicate predicateWithFormat:@"sopInstanceUID = %@", uid];
+        
+        NSArray *found = [allImages filteredArrayUsingPredicate:p];
+        if( found.count)
+            [roiImages addObject:[found objectAtIndex:0]];
+    }
+    
+    NSSortDescriptor * sortid = [NSSortDescriptor sortDescriptorWithKey:@"series.seriesInstanceUID" ascending: YES comparator: ^NSComparisonResult(id o1, id o2) {
+        return [o1 compare: o2 options:NSNumericSearch | NSCaseInsensitiveSearch];
+    }];
+    
+    [roiImages sortUsingDescriptors: [NSArray arrayWithObjects: sortid, [NSSortDescriptor sortDescriptorWithKey:@"date" ascending:NO], [NSSortDescriptor sortDescriptorWithKey:@"instanceNumber" ascending:YES], nil]];
+    
+    return roiImages;
+}
+
+- (NSArray*) roiAndKeyImages
+{
+    NSMutableArray *images = [NSMutableArray arrayWithArray: [[self roiImages] arrayByAddingObjectsFromArray: self.keyImages.allObjects]];
+    
+    // remove double entries: first sort, then remove subsequent doubles
+    [images sortUsingComparator:^NSComparisonResult(id obj1, id obj2)
+     {
+         if (obj1 < obj2) return NSOrderedAscending;
+         if (obj1 > obj2) return NSOrderedDescending;
+         return NSOrderedSame;
+     }];
+    
+    for (NSInteger i = images.count-2; i >= 0; --i)
+        if ([images objectAtIndex:i] == [images objectAtIndex:i+1])
+            [images removeObjectAtIndex:i+1];
+    
+    NSSortDescriptor * sortid = [NSSortDescriptor sortDescriptorWithKey:@"series.seriesInstanceUID" ascending: YES comparator: ^NSComparisonResult(id o1, id o2) {
+        return [o1 compare: o2 options:NSNumericSearch | NSCaseInsensitiveSearch];
+    }];
+    
+    [images sortUsingDescriptors: [NSArray arrayWithObjects: sortid, [NSSortDescriptor sortDescriptorWithKey:@"date" ascending:NO], [NSSortDescriptor sortDescriptorWithKey:@"instanceNumber" ascending:YES], nil]];
+    
+    return images;
 }
 
 #ifdef OSIRIX_VIEWER

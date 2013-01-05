@@ -31,4 +31,8 @@ static const NSString* const CoredataURLPrefix = @"x-coredata://";
 	return [[[[(NSManagedObject*)self objectID] URIRepresentation] absoluteString] substringFromIndex:CoredataURLPrefix.length];
 }
 
+-(NSString*)XIDFilename {
+	return [[self XID] stringByReplacingOccurrencesOfString: @"/" withString: @"-"];
+}
+
 @end

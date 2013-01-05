@@ -1,0 +1,19 @@
+%INCLUDE:header.pvt.html%
+<div id="subheader">
+	<a class="back" href="study?xid=%Study.XID%&%Info.getParameters(xid=,frames=)%">%X:ZWS:BackLinkLabel%</a>
+</div>
+
+<div id="content">
+	%INCLUDE:/errors.pvt.html%
+	%INCLUDE:/messages.pvt.html%
+
+	<div class="center">
+		<div class="noleftmargin smaller">
+			%[FOREACH:Study.roiAndKeyImages:Image%
+				<img src="/imageAsScreenCapture.jpg?xid=%Image.XID%" class="maxwide" /> 
+			%]FOREACH:Study.roiAndKeyImages:Image%	
+		</div>
+	</div>
+</div>
+
+%INCLUDE:footer.pvt.html%

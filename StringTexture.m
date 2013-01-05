@@ -169,7 +169,7 @@
 {
     if( backingScaleFactor != 1.0 && backingScaleFactor != 2.0)
     {
-        NSLog( @"******** genTextureWithBackingScaleFactor backingScaleFactor == %f", backingScaleFactor);
+//        NSLog( @"******** genTextureWithBackingScaleFactor backingScaleFactor == %f", backingScaleFactor);
         backingScaleFactor = [[NSScreen mainScreen] backingScaleFactor];
     }
     

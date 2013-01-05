@@ -24,6 +24,7 @@
 	NSNumber *dicomTime;
     NSUInteger _numberOfImagesWhenCachedModalities;
 	NSString *cachedModalites;
+    BOOL reentry;
 }
 
 @property(nonatomic, retain) NSString* accessionNumber;
@@ -90,7 +91,7 @@
 - (void) applyAnnotationsFromDictionary: (NSDictionary*) rootDict;
 - (void) reapplyAnnotationsFromDICOMSR;
 - (NSComparisonResult) compareName:(DicomStudy*)study;
-
+-(NSArray*) roiImages;
 @end
 
 @interface DicomStudy (CoreDataGeneratedAccessors)
@@ -104,6 +105,8 @@
 - (void)removeSeriesObject:(DicomSeries *)value;
 - (void)addSeries:(NSSet *)value;
 - (void)removeSeries:(NSSet *)value;
+
+- (NSArray*) imagesForKeyImages:(BOOL) keyImages andForROIs:(BOOL)alsoImagesWithROIs;
 
 + (NSString*) scrambleString: (NSString*) t;
 

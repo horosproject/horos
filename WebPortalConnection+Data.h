@@ -25,6 +25,7 @@
 -(void)processIndexHtml;
 -(void)processMainHtml;
 -(void)processStudyListHtml;
+-(void)processKeyROIsImagesHtml;
 -(void)processSeriesHtml;
 -(void)processStudyHtml;
 -(void)processPasswordForgottenHtml;
@@ -48,6 +49,7 @@
 -(void)processSeriesPdf;
 -(void)processZip;
 -(void)processImage;
+-(void)processImageAsScreenCapture: (BOOL) asDisplayed;
 -(void)processMovie;
 
 @end

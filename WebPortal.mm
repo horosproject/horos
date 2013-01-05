@@ -461,7 +461,7 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 		while (!NSThread.currentThread.isCancelled)
 		{
 			NSAutoreleasePool *runloopPool = [[NSAutoreleasePool alloc] init];
-			
+            
 			[NSRunLoop.currentRunLoop runMode: NSDefaultRunLoopMode beforeDate:NSDate.distantFuture];
 			
 			[runloopPool release];

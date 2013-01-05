@@ -51,9 +51,11 @@
 #import "QuicktimeExport.h"
 #import "dicomFile.h"
 #import "QueryController.h"
-
+#import "SRAnnotation.h"
 #import "BrowserController.h" // TODO: remove when badness solved
 #import "BrowserControllerDCMTKCategory.h" // TODO: remove when badness solved
+#import "DCMView.h"
+#import "DicomImage.h"
 
 // TODO: NSUserDefaults access for keys @"logWebServer", @"notificationsEmailsSender" and @"lastNotificationsDate" must be replaced with WebPortal properties
 
@@ -77,7 +79,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 	return [NSArray arrayWithObject:obj];
 }
 
-- (id)objectWithXID:(NSString*)xid ofClass:(Class)c
+- (id)objectWithXID:(NSString*)xid
 {
     NSManagedObject* o = nil;
     
@@ -165,7 +167,8 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
         N2ManagedDatabase* db = nil;
         if ([axidEntityName isEqualToString:@"User"])
             db = self.portal.database;
-        else db = self.independentDicomDatabase;
+        else
+            db = self.independentDicomDatabase;
         
         o = [db objectWithID:[NSManagedObject UidForXid:xid]];
     }
@@ -934,6 +937,8 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 //	if (!user || user.uploadDICOM.boolValue)
 //		[self resetPOST];
 	
+    [self.independentDicomDatabase.managedObjectContext reset]; //We want fresh data : from the persistentstore
+    
 	NSMutableArray* albums = [NSMutableArray array];
 	for (DicomAlbum* album in self.independentDicomDatabase.albums)
     {
@@ -959,15 +964,18 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	response.mimeType = @"text/html";
 }
 
--(void)processStudyHtml {
-	DicomStudy* study = [self objectWithXID:[parameters objectForKey:@"xid"] ofClass: [DicomStudy class]];
+-(void)processStudyHtml
+{
+    [self.independentDicomDatabase.managedObjectContext reset]; //We want fresh data : from the persistentstore
+    
+	DicomStudy* study = [self objectWithXID:[parameters objectForKey:@"xid"]];
 	
 	if (!study)
 		return;
 	
 	NSMutableArray* selectedSeries = [NSMutableArray array];
 	for (NSString* selectedXID in [WebPortalConnection MakeArray:[parameters objectForKey:@"selected"]])
-		[selectedSeries addObject:[self objectWithXID:selectedXID ofClass: [DicomSeries class]]];
+		[selectedSeries addObject:[self objectWithXID:selectedXID]];
 	
 	if ([[parameters objectForKey:@"dicomSend"] isEqual:@"dicomSend"] && study) {
 		NSArray* dicomDestinationArray = [[parameters objectForKey:@"dicomDestination"] componentsSeparatedByString:@":"];
@@ -1050,7 +1058,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                 else
                     [response.tokens addError: NSLocalizedString(@"Study share failed: not authorized.", @"Web Portal, study, share, error")];
             }
-            else destUser = [self objectWithXID:shareStudyDestination ofClass: [WebPortalUser class]];
+            else destUser = [self objectWithXID:shareStudyDestination];
             
             if ([destUser isKindOfClass: [WebPortalUser class]])
             {
@@ -1161,15 +1169,44 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	response.mimeType = @"text/html";
 }
 
--(void)processSeriesHtml {
-	DicomSeries* series = [self objectWithXID:[parameters objectForKey:@"xid"] ofClass: [DicomSeries class]];
-	if (!series) 
-		return;
-	
-	[response.tokens setObject:[WebPortalProxy createWithObject:series transformer:[DicomSeriesTransformer create]] forKey:@"Series"];
-	[response.tokens setObject:series.name forKey:@"PageTitle"];
-	[response.tokens setObject:[NSString stringWithFormat:@"%@ - %@", series.study.name, series.study.studyName] forKey:@"BackLinkLabel"];
-	
+-(void)processKeyROIsImagesHtml
+{
+    DicomStudy *study = nil;
+    
+    NSManagedObject* oxid = [self objectWithXID:[parameters objectForKey:@"xid"]];
+    if ([oxid isKindOfClass:[DicomStudy class]])
+    {
+        study = (DicomStudy*) oxid;
+        
+        if( study == nil)
+            return;
+        
+        [response.tokens setObject:[WebPortalProxy createWithObject:study transformer:[DicomStudyTransformer create]] forKey:@"Study"];
+        [response.tokens setObject:study.name forKey:@"PageTitle"];
+        [response.tokens setObject:[NSString stringWithFormat:@"%@ - %@", study.name, study.studyName] forKey:@"BackLinkLabel"];
+    }
+    
+	response.templateString = [self.portal stringForPath:@"keyroisimages.html"];
+	response.mimeType = @"text/html";
+}
+
+-(void)processSeriesHtml
+{
+    DicomSeries *series = nil;
+    
+    NSManagedObject* oxid = [self objectWithXID:[parameters objectForKey:@"xid"]];
+    if ([oxid isKindOfClass:[DicomSeries class]])
+    {
+        series = (DicomSeries*) oxid;
+        
+        if( series == nil)
+            return;
+        
+        [response.tokens setObject:[WebPortalProxy createWithObject:series transformer:[DicomSeriesTransformer create]] forKey:@"Series"];
+        [response.tokens setObject:series.name forKey:@"PageTitle"];
+        [response.tokens setObject:[NSString stringWithFormat:@"%@ - %@", series.study.name, series.study.studyName] forKey:@"BackLinkLabel"];
+    }
+    
 	response.templateString = [self.portal stringForPath:@"series.html"];
 	response.mimeType = @"text/html";
 }
@@ -1557,7 +1594,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 }
 
 -(void)processSeriesJson {
-	DicomSeries* series = [self objectWithXID:[parameters objectForKey:@"xid"] ofClass:[DicomSeries class]];
+	DicomSeries* series = [self objectWithXID:[parameters objectForKey:@"xid"]];
 	if (!series)
 		return;
 
@@ -1606,7 +1643,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 }
 
 -(void)processSeriesListJson {
-	DicomStudy* study = [self objectWithXID:[parameters objectForKey:@"xid"] ofClass: [DicomStudy class]];
+	DicomStudy* study = [self objectWithXID:[parameters objectForKey:@"xid"]];
 	if (!study)
 		return;
 	
@@ -2101,7 +2138,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	NSString* xid = [parameters objectForKey:@"xid"];
 	NSArray* selection = xid? [NSArray arrayWithObject:xid] : [WebPortalConnection MakeArray:[parameters objectForKey:@"selected"]];
 	for (xid in selection) {
-		NSManagedObject* oxid = [self objectWithXID:xid ofClass:NULL];
+		NSManagedObject* oxid = [self objectWithXID:xid];
 		if ([oxid isKindOfClass:[DicomStudy class]])
 			[requestedStudies addObject:oxid];
 		if ([oxid isKindOfClass:[DicomSeries class]])
@@ -2275,7 +2312,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 #pragma mark Other
 
 -(void)processReport {
-	DicomStudy* study = [self objectWithXID:[parameters objectForKey:@"xid"] ofClass:[DicomStudy class]];
+	DicomStudy* study = [self objectWithXID:[parameters objectForKey:@"xid"]];
 	if (!study)
 		return;
 	
@@ -2323,11 +2360,18 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 #define ThumbnailsCacheSize 20
 
 -(NSMutableDictionary*)thumbnailsCache {
-	const NSString* const ThumbsCacheKey = @"Thumbnails Cache";
-	NSMutableDictionary* dict = [self.portal.cache objectForKey:ThumbsCacheKey];
-	if (!dict || ![dict isKindOfClass:[NSMutableDictionary class]])
-		[self.portal.cache setObject: dict = [NSMutableDictionary dictionaryWithCapacity:ThumbnailsCacheSize] forKey:ThumbsCacheKey];
-	return dict;
+    
+    @synchronized( self)
+    {
+        const NSString* const ThumbsCacheKey = @"Thumbnails Cache";
+        NSMutableDictionary* dict = [self.portal.cache objectForKey:ThumbsCacheKey];
+        if (!dict || ![dict isKindOfClass:[NSMutableDictionary class]])
+            [self.portal.cache setObject: dict = [NSMutableDictionary dictionaryWithCapacity:ThumbnailsCacheSize] forKey:ThumbsCacheKey];
+    
+        return dict;
+    }
+    
+    return nil;
 }
 
 -(void)processThumbnail {
@@ -2342,7 +2386,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	
 	// create it
 	
-	id object = [self objectWithXID:xid ofClass:Nil];
+	id object = [self objectWithXID:xid];
 	if (!object)
 		return;
 	
@@ -2364,7 +2408,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 
 -(void)processSeriesPdf {
 	#ifndef OSIRIX_LIGHT
-	DicomSeries* series = [self objectWithXID:[parameters objectForKey:@"xid"] ofClass:[DicomSeries class]];
+	DicomSeries* series = [self objectWithXID:[parameters objectForKey:@"xid"]];
 	if (!series)
 		return;
 	
@@ -2413,7 +2457,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	NSMutableArray* images = [NSMutableArray array];
 	DicomStudy* study = nil;
 
-	NSManagedObject* o = [self objectWithXID:[parameters objectForKey:@"xid"] ofClass:nil];
+	NSManagedObject* o = [self objectWithXID:[parameters objectForKey:@"xid"]];
 	if ([o isKindOfClass:[DicomStudy class]]) {
 		study = (DicomStudy*)o;
 		for (DicomSeries* s in study.series)
@@ -2466,9 +2510,32 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	}
 }
 
--(void)processImage
+- (void) saveImageAsScreenCapture: (NSString*) XID
 {
-	id object = [self objectWithXID:[parameters objectForKey:@"xid"] ofClass:Nil];
+    DicomImage *dicomImage = [self objectWithXID:[parameters objectForKey:@"xid"]];
+    
+    [DCMView setCLUTBARS: CLUTBARS ANNOTATIONS: annotBase];
+    
+    BOOL savedSmartCropping = [[NSUserDefaults standardUserDefaults] boolForKey: @"allowSmartCropping"];
+    
+    [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"allowSmartCropping"];
+    
+    NSImage *image = [dicomImage imageAsScreenCapture];
+    
+    [DCMView setDefaults];
+    [[NSUserDefaults standardUserDefaults] setBool: savedSmartCropping forKey: @"allowSmartCropping"];
+    
+    NSArray *representations = [image representations];
+    NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+    
+    NSString* path = [[@"/tmp/osirixwebservices" stringByAppendingPathComponent: dicomImage.XIDFilename] stringByAppendingPathExtension: @"jpg"];
+    [[NSFileManager defaultManager] removeItemAtPath: path error: nil];
+    [bitmapData writeToFile: path atomically:YES];
+}
+
+-(void)processImageAsScreenCapture: (BOOL) asDisplayed
+{
+	id object = [self objectWithXID:[parameters objectForKey:@"xid"]];
 	if (!object)
 		return;
 	
@@ -2485,17 +2552,23 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	
 	DicomImage* dicomImage = images.count == 1 ? [images lastObject] : [images objectAtIndex:images.count/2];
 	
+    if( asDisplayed)
+    {
+        if ([requestedPath.pathExtension isEqualToString:@"jpg"])
+        {
+            // waitUntileDone is very risky... cross lock possible ?!
+            [self performSelectorOnMainThread: @selector( saveImageAsScreenCapture:) withObject: dicomImage.XID waitUntilDone: YES];
+            
+            NSString* path = [[@"/tmp/osirixwebservices" stringByAppendingPathComponent: dicomImage.XIDFilename] stringByAppendingPathExtension: @"jpg"];
+            response.data = [NSData dataWithContentsOfFile: path];
+            response.mimeType = @"image/jpeg";
+            return;
+        }
+        else
+            N2LogStackTrace( @"*** only JPEG are supported");
+    }
+    
 	DCMPix* dcmPix = [[[DCMPix alloc] initWithPath:dicomImage.completePathResolved :0 :1 :nil :dicomImage.frameID.intValue :dicomImage.series.id.intValue isBonjour:NO imageObj:dicomImage] autorelease];
-	
-	/*if (!dcmPix)
-	{
-		NSLog( @"****** dcmPix creation failed for file : %@", [im valueForKey:@"completePathResolved"]);
-		float *imPtr = (float*)malloc( [[im valueForKey: @"width"] intValue] * [[im valueForKey: @"height"] intValue] * sizeof(float));
-		for (int i = 0; i < dicomImage.width.intValue*dicomImage.height.intValue; i++)
-			imPtr[i] = i;
-		
-		dcmPix = [[[DCMPix alloc] initWithData: imPtr :32 :[[dicomImage valueForKey: @"width"] intValue] :[[dicomImage valueForKey: @"height"] intValue] :0 :0 :0 :0 :0] autorelease];
-	}*/
 	
 	if (!dcmPix)
 		return;
@@ -2514,7 +2587,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	else
         [dcmPix checkImageAvailble:dcmPix.savedWW :dcmPix.savedWL];
 	
-	NSImage* image = [dcmPix image];
+    NSImage* image = [dcmPix image];
 	
 	NSSize size = image.size;
 	[self getWidth:&size.width height:&size.height fromImagesArray:[NSArray arrayWithObject:dicomImage]];
@@ -2548,9 +2621,14 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
     // else NSLog( @"***** unknown path extension: %@", [fileURL pathExtension]);
 }
 
+-(void)processImage
+{
+    return [self processImageAsScreenCapture: NO];
+}
+
 -(void)processMovie
 {
-	DicomSeries* series = [self objectWithXID:[parameters objectForKey:@"xid"] ofClass:[DicomSeries class]];
+	DicomSeries* series = [self objectWithXID:[parameters objectForKey:@"xid"]];
 	if (!series)
 		return;
 	

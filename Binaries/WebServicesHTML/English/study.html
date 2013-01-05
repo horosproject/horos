@@ -145,15 +145,23 @@ function shareDestinationChange(select) {
 			</table>
 		</div>
 		
-		%[IF:Study.keyImages.count%
-		<div class="separated title">Key Images</div>
-		<div>
-			%[FOREACH:Study.keyImages:Image%
-			<a href="/image?xid=%Image.XID%" onclick="imageClick('%Image.XID%', '%Image.series.XID%'); return false;"><img src="/thumbnail?xid=%Image.XID%" /></a>
-			%]FOREACH:Study.keyImages:Image%
+		%[IF:Study.hasKeyImagesOrROIImages%
+		<div class="separated title">Key Images and ROI Images</div>
+		<div class="noleftmargin">
+			<table class="wide fat">
+				<tr>
+                    <td class="noleftmargin smaller">
+						%[FOREACH:Study.roiAndKeyImages:Image%
+						<a href="keyroisimages?xid=%Study.XID%&%Info.getParameters(xid=)%&frames=yes">
+							<img src="/thumbnail?xid=%Image.XID%" class="maxwide"/>
+						</a>
+						%]FOREACH:Study.roiAndKeyImages:Image%
+					</td>
+				</tr>
+			</table>
 		</div>
-		%]IF:Study.keyImages.count%
-
+		%]IF:Study.hasKeyImagesOrROIImages%
+		
 		<div class="separated title">Series</div>
 		<div class="noleftmargin">
 			<table class="wide fat">
