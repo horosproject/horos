@@ -152,7 +152,7 @@ function shareDestinationChange(select) {
 				<tr>
                     <td class="noleftmargin smaller">
 						%[FOREACH:Study.roiAndKeyImages:Image%
-						<a href="keyroisimages?xid=%Study.XID%&%Info.getParameters(xid=)%&frames=yes">
+						<a href="keyroisimages?xid=%Study.XID%&%Info.getParameters(xid=)%&frames=yes#index%X:Image_Index%">
 							<img src="/thumbnail?xid=%Image.XID%" class="maxwide"/>
 						</a>
 						%]FOREACH:Study.roiAndKeyImages:Image%

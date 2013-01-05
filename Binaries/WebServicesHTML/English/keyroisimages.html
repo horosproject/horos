@@ -10,7 +10,7 @@
 	<div class="center">
 		<div class="noleftmargin smaller">
 			%[FOREACH:Study.roiAndKeyImages:Image%
-				<img src="/imageAsScreenCapture.jpg?xid=%Image.XID%" class="maxwide" /> 
+				<a id="index%X:Image_Index%"><img src="/imageAsScreenCapture.jpg?xid=%Image.XID%" class="maxwide" /></a>
 			%]FOREACH:Study.roiAndKeyImages:Image%	
 		</div>
 	</div>

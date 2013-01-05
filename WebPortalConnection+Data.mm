@@ -2359,7 +2359,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 
 -(NSMutableDictionary*)thumbnailsCache {
     
-    @synchronized( self)
+    @synchronized( self.portal.cache)
     {
         const NSString* const ThumbsCacheKey = @"Thumbnails Cache";
         NSMutableDictionary* dict = [self.portal.cache objectForKey:ThumbsCacheKey];
@@ -2376,7 +2376,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	NSString* xid = [parameters objectForKey:@"xid"];
 	
     NSData* data = nil;
-    @synchronized( self)
+    @synchronized( self.portal.cache)
     {
         // is cached?
         data = [self.thumbnailsCache objectForKey:xid];
@@ -2404,7 +2404,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	
 	response.mimeType = @"image/png";
 	
-    @synchronized( self)
+    @synchronized( self.portal.cache)
     {
         if (data)
         {

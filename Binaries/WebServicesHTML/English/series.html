@@ -15,7 +15,7 @@
 				%ELSE:Series.images.count<2%
 					<a href="?%Info.getParameters(frames=)%">Show Movie</a><br/>
 					%[FOREACH:Series.sortedImages:Image%
-					<img src="/image.jpg?xid=%Image.XID%" class="maxwide" /> 
+					<img src="/image.jpg?xid=%Image.XID%" class="maxwide" />
 					%]FOREACH:Series.sortedImages:Image%
 				%]IF:Series.images.count<2%
 			%ELSE:Request.frames%
