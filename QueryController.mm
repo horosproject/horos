@@ -1762,12 +1762,35 @@ extern "C"
 	}
 }
 
-- (void)outlineView:(NSOutlineView *)outlineView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item
+- (void)outlineView:(NSOutlineView *)oV willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item
 {
 	@try
 	{
 		if( [[tableColumn identifier] isEqualToString: @"name"])	// Is this study already available in our local database?
 		{
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"displaySamePatientWithColorBackground"] && [[self window] firstResponder] == outlineView && [outlineView selectedRow] >= 0)
+            {
+                id study = nil;
+                
+                if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
+                    study = [outlineView parentForItem: item];
+                else
+                    study = item;
+                
+                id selStudy = [outlineView itemAtRow: [outlineView selectedRow]];
+                
+                NSString *curUid = [NSString stringWithFormat: @"%@ %@", [item valueForKey: @"patientID"], [item valueForKey: @"name"]];
+                NSString *selUid = [NSString stringWithFormat: @"%@ %@", [selStudy valueForKey: @"patientID"], [selStudy valueForKey: @"name"]];
+                
+                if( item != selStudy && [curUid length] > 0 && [curUid compare: selUid options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
+                {
+                    [cell setDrawsBackground: YES];
+                    [cell setBackgroundColor: [NSColor lightGrayColor]];
+                }
+                else
+                    [cell setDrawsBackground: NO];
+            }
+            
 			if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
 			{
 				NSArray	*studyArray = [self localStudy: item];
@@ -2008,6 +2031,9 @@ extern "C"
 		[selectedResultSource setStringValue: [NSString stringWithFormat:@"%@  /  %@:%d", [item valueForKey:@"calledAET"], [item valueForKey:@"hostname"], [[item valueForKey:@"port"] intValue]]];
 	}
 	else [selectedResultSource setStringValue:@""];
+    
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"displaySamePatientWithColorBackground"])
+        [outlineView setNeedsDisplay: YES];
 }
 
 - (IBAction) selectModality: (id) sender;

@@ -30,4 +30,20 @@
 	else
 		[[[self window] windowController] keyDown: event];
 }
+
+- (BOOL)becomeFirstResponder
+{
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"displaySamePatientWithColorBackground"])
+        [self setNeedsDisplay: YES];
+    
+    return YES;
+}
+
+- (BOOL)resignFirstResponder
+{
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"displaySamePatientWithColorBackground"])
+        [self setNeedsDisplay: YES];
+    
+    return YES;
+}
 @end
