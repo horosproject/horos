@@ -1854,25 +1854,46 @@ extern "C"
 			}
             else NSLog( @"***** unknown class in QueryController outlineView: %@", [item class]);
 		}
+        else if( [[tableColumn identifier] isEqualToString: @"serverStateText"])
+		{
+			if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
+			{
+                if( [[item stateText] intValue] == 0)
+                    return nil;
+                else
+                    return [item stateText];
+            }
+            
+			else if( [item isMemberOfClass:[DCMTKSeriesQueryNode class]])
+				return nil;
+            
+            else NSLog( @"***** unknown class in QueryController outlineView: %@", [item class]);
+		}
 		else if( [[tableColumn identifier] isEqualToString: @"comment"])
 		{
 			if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
 			{
 				NSArray *studyArray = [self localStudy: item];
 				
-				if( [studyArray count] > 0 && [[item valueForKey: @"comments"] length] == 0)
+				if( [studyArray count] > 0)
 					return [[studyArray objectAtIndex: 0] valueForKey: @"comment"];
-				else
-					return [item valueForKey: @"comments"];
 			}
 			else if( [item isMemberOfClass:[DCMTKSeriesQueryNode class]])
 			{
 				NSArray *seriesArray = [self localSeries: item];
-				if( [seriesArray count] > 0 && [[item valueForKey: @"comments"] length] == 0)
+				if( [seriesArray count] > 0)
 					return [[seriesArray objectAtIndex: 0] valueForKey: @"comment"];
-				else
-					return [item valueForKey: @"comments"];
 			}
+            else NSLog( @"***** unknown class in QueryController outlineView: %@", [item class]);
+		}
+        else if( [[tableColumn identifier] isEqualToString: @"serverComment"])
+		{
+			if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
+                return [item valueForKey: @"comments"];
+            
+			else if( [item isMemberOfClass:[DCMTKSeriesQueryNode class]])
+                return [item valueForKey: @"comments"];
+            
             else NSLog( @"***** unknown class in QueryController outlineView: %@", [item class]);
 		}
 		else if ( [[tableColumn identifier] isEqualToString: @"Button"] == NO && [tableColumn identifier] != nil)
@@ -1906,7 +1927,6 @@ extern "C"
 	
 	@try
 	{
-// NOT EDITABLE...
 //		if( [[tableColumn identifier] isEqualToString: @"comment"] || [[tableColumn identifier] isEqualToString: @"stateText"])
 //		{
 //			if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
@@ -4016,11 +4036,17 @@ extern "C"
 	
 	NSTableColumn *tableColumn = [outlineView tableColumnWithIdentifier: @"stateText"];
 	NSPopUpButtonCell *buttonCell = [[[NSPopUpButtonCell alloc] initTextCell: @"" pullsDown:NO] autorelease];
-	[buttonCell setEditable: YES];
+//	[buttonCell setEditable: YES];
 	[buttonCell setBordered: NO];
 	[buttonCell addItemsWithTitles: [BrowserController statesArray]];
 	[tableColumn setDataCell:buttonCell];
 	
+    tableColumn = [outlineView tableColumnWithIdentifier: @"serverStateText"];
+    buttonCell = [[[NSPopUpButtonCell alloc] initTextCell: @"" pullsDown:NO] autorelease];
+	[buttonCell setBordered: NO];
+	[buttonCell addItemsWithTitles: [BrowserController statesArray]];
+	[tableColumn setDataCell:buttonCell];
+    
 	{
 		NSMenu *cellMenu = [[[NSMenu alloc] initWithTitle:@"Search Menu"] autorelease];
 		NSMenuItem *item1, *item2, *item3;

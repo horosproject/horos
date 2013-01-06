@@ -2,13 +2,13 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1070</int>
-		<string key="IBDocument.SystemVersion">12C54</string>
-		<string key="IBDocument.InterfaceBuilderVersion">2840</string>
+		<string key="IBDocument.SystemVersion">12C3012</string>
+		<string key="IBDocument.InterfaceBuilderVersion">2844</string>
 		<string key="IBDocument.AppKitVersion">1187.34</string>
 		<string key="IBDocument.HIToolboxVersion">625.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">2840</string>
+			<string key="NS.object.0">2844</string>
 		</object>
 		<array key="IBDocument.IntegratedClassDependencies">
 			<string>NSArrayController</string>
@@ -3017,7 +3017,7 @@ VvgAAKwvAAAdA1hZWiAAAAAAAAAmIgAAEn8AALFwA</bytes>
 														<object class="NSTableView" id="289314417">
 															<reference key="NSNextResponder" ref="896535216"/>
 															<int key="NSvFlags">256</int>
-															<string key="NSFrameSize">{1378, 354}</string>
+															<string key="NSFrameSize">{1584, 354}</string>
 															<reference key="NSSuperview" ref="896535216"/>
 															<reference key="NSWindow"/>
 															<reference key="NSNextKeyView" ref="643837582"/>
@@ -3027,7 +3027,7 @@ VvgAAKwvAAAdA1hZWiAAAAAAAAAmIgAAEn8AALFwA</bytes>
 															<object class="NSTableHeaderView" key="NSHeaderView" id="209721991">
 																<reference key="NSNextResponder" ref="241117316"/>
 																<int key="NSvFlags">256</int>
-																<string key="NSFrameSize">{1378, 17}</string>
+																<string key="NSFrameSize">{1584, 17}</string>
 																<reference key="NSSuperview" ref="241117316"/>
 																<reference key="NSWindow"/>
 																<reference key="NSNextKeyView" ref="896535216"/>
@@ -3457,7 +3457,7 @@ VvgAAKwvAAAdA1hZWiAAAAAAAAAmIgAAEn8AALFwA</bytes>
 																	<object class="NSTableHeaderCell" key="NSHeaderCell">
 																		<int key="NSCellFlags">75497536</int>
 																		<int key="NSCellFlags2">2048</int>
-																		<string key="NSContents">Comments</string>
+																		<string key="NSContents">Local Comments</string>
 																		<reference key="NSSupport" ref="26"/>
 																		<reference key="NSBackgroundColor" ref="281104320"/>
 																		<reference key="NSTextColor" ref="601411500"/>
@@ -3488,7 +3488,7 @@ VvgAAKwvAAAdA1hZWiAAAAAAAAAmIgAAEn8AALFwA</bytes>
 																	<object class="NSTableHeaderCell" key="NSHeaderCell">
 																		<int key="NSCellFlags">75497536</int>
 																		<int key="NSCellFlags2">2048</int>
-																		<string key="NSContents">Status</string>
+																		<string key="NSContents">Local Status</string>
 																		<reference key="NSSupport" ref="26"/>
 																		<reference key="NSBackgroundColor" ref="281104320"/>
 																		<reference key="NSTextColor" ref="601411500"/>
@@ -3507,6 +3507,68 @@ VvgAAKwvAAAdA1hZWiAAAAAAAAAmIgAAEn8AALFwA</bytes>
 																	<reference key="NSTableView" ref="289314417"/>
 																	<object class="NSSortDescriptor" key="NSSortDescriptorPrototype">
 																		<string key="NSKey">stateText</string>
+																		<bool key="NSAscending">YES</bool>
+																		<string key="NSSelector">compare:</string>
+																	</object>
+																</object>
+																<object class="NSTableColumn" id="897238146">
+																	<string key="NSIdentifier">serverComment</string>
+																	<double key="NSWidth">100</double>
+																	<double key="NSMinWidth">100</double>
+																	<double key="NSMaxWidth">300</double>
+																	<object class="NSTableHeaderCell" key="NSHeaderCell">
+																		<int key="NSCellFlags">75497536</int>
+																		<int key="NSCellFlags2">2048</int>
+																		<string key="NSContents">Server Comments</string>
+																		<reference key="NSSupport" ref="26"/>
+																		<reference key="NSBackgroundColor" ref="281104320"/>
+																		<reference key="NSTextColor" ref="601411500"/>
+																	</object>
+																	<object class="NSTextFieldCell" key="NSDataCell" id="837527194">
+																		<int key="NSCellFlags">337641536</int>
+																		<int key="NSCellFlags2">2048</int>
+																		<string key="NSContents">Text Cell</string>
+																		<reference key="NSSupport" ref="878222079"/>
+																		<reference key="NSControlView" ref="289314417"/>
+																		<reference key="NSBackgroundColor" ref="574050674"/>
+																		<reference key="NSTextColor" ref="1043597042"/>
+																	</object>
+																	<int key="NSResizingMask">3</int>
+																	<bool key="NSIsResizeable">YES</bool>
+																	<reference key="NSTableView" ref="289314417"/>
+																	<object class="NSSortDescriptor" key="NSSortDescriptorPrototype">
+																		<string key="NSKey">serverComment</string>
+																		<bool key="NSAscending">YES</bool>
+																		<string key="NSSelector">compare:</string>
+																	</object>
+																</object>
+																<object class="NSTableColumn" id="846036240">
+																	<string key="NSIdentifier">serverStateText</string>
+																	<double key="NSWidth">100</double>
+																	<double key="NSMinWidth">100</double>
+																	<double key="NSMaxWidth">100</double>
+																	<object class="NSTableHeaderCell" key="NSHeaderCell">
+																		<int key="NSCellFlags">75497536</int>
+																		<int key="NSCellFlags2">2048</int>
+																		<string key="NSContents">Server Status</string>
+																		<reference key="NSSupport" ref="26"/>
+																		<reference key="NSBackgroundColor" ref="281104320"/>
+																		<reference key="NSTextColor" ref="601411500"/>
+																	</object>
+																	<object class="NSTextFieldCell" key="NSDataCell" id="534325817">
+																		<int key="NSCellFlags">337641536</int>
+																		<int key="NSCellFlags2">2048</int>
+																		<string key="NSContents">Text Cell</string>
+																		<reference key="NSSupport" ref="878222079"/>
+																		<reference key="NSControlView" ref="289314417"/>
+																		<reference key="NSBackgroundColor" ref="574050674"/>
+																		<reference key="NSTextColor" ref="1043597042"/>
+																	</object>
+																	<int key="NSResizingMask">3</int>
+																	<bool key="NSIsResizeable">YES</bool>
+																	<reference key="NSTableView" ref="289314417"/>
+																	<object class="NSSortDescriptor" key="NSSortDescriptorPrototype">
+																		<string key="NSKey">serverStateText</string>
 																		<bool key="NSAscending">YES</bool>
 																		<string key="NSSelector">compare:</string>
 																	</object>
@@ -3658,7 +3720,7 @@ VvgAAKwvAAAdA1hZWiAAAAAAAAAmIgAAEn8AALFwA</bytes>
 													<int key="NSsFlags">257</int>
 													<reference key="NSTarget" ref="225972883"/>
 													<string key="NSAction">_doScroller:</string>
-													<double key="NSPercent">0.6763425253991292</double>
+													<double key="NSPercent">0.58838383838383834</double>
 												</object>
 												<object class="NSClipView" id="241117316">
 													<reference key="NSNextResponder" ref="225972883"/>
@@ -7053,6 +7115,8 @@ ZWQgZHVyaW5nIG5leHQgJ3JlZnJlc2gnLg</string>
 							<reference ref="611002485"/>
 							<reference ref="939899663"/>
 							<reference ref="838259199"/>
+							<reference ref="897238146"/>
+							<reference ref="846036240"/>
 						</array>
 						<reference key="parent" ref="225972883"/>
 					</object>
@@ -7076,6 +7140,7 @@ ZWQgZHVyaW5nIG5leHQgJ3JlZnJlc2gnLg</string>
 							<reference ref="186299476"/>
 						</array>
 						<reference key="parent" ref="289314417"/>
+						<string key="objectName">Table Column - Local Status</string>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">900</int>
@@ -7089,6 +7154,7 @@ ZWQgZHVyaW5nIG5leHQgJ3JlZnJlc2gnLg</string>
 							<reference ref="22155371"/>
 						</array>
 						<reference key="parent" ref="289314417"/>
+						<string key="objectName">Table Column - Local Comments</string>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">898</int>
@@ -7867,6 +7933,34 @@ ZWQgZHVyaW5nIG5leHQgJ3JlZnJlc2gnLg</string>
 						<reference key="object" ref="311130522"/>
 						<reference key="parent" ref="53616495"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">1195</int>
+						<reference key="object" ref="897238146"/>
+						<array class="NSMutableArray" key="children">
+							<reference ref="837527194"/>
+						</array>
+						<reference key="parent" ref="289314417"/>
+						<string key="objectName">Table Column - Distant Comments</string>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">1196</int>
+						<reference key="object" ref="846036240"/>
+						<array class="NSMutableArray" key="children">
+							<reference ref="534325817"/>
+						</array>
+						<reference key="parent" ref="289314417"/>
+						<string key="objectName">Table Column - Distant Status</string>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">1197</int>
+						<reference key="object" ref="534325817"/>
+						<reference key="parent" ref="846036240"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">1198</int>
+						<reference key="object" ref="837527194"/>
+						<reference key="parent" ref="897238146"/>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -7961,6 +8055,10 @@ ZWQgZHVyaW5nIG5leHQgJ3JlZnJlc2gnLg</string>
 				<string key="1184.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="1185.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="1186.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="1195.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="1196.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="1197.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="1198.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<boolean value="YES" key="144.IBNSWindowAutoPositionCentersHorizontal"/>
 				<boolean value="YES" key="144.IBNSWindowAutoPositionCentersVertical"/>
 				<string key="144.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -8211,7 +8309,7 @@ ZWQgZHVyaW5nIG5leHQgJ3JlZnJlc2gnLg</string>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">1194</int>
+			<int key="maxID">1198</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -8241,13 +8339,21 @@ ZWQgZHVyaW5nIG5leHQgJ3JlZnJlc2gnLg</string>
 					<string key="className">QueryController</string>
 					<string key="superclassName">NSWindowController</string>
 					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="authAction:">id</string>
 						<string key="autoQueryTimer:">id</string>
 						<string key="cancel:">id</string>
+						<string key="changeAutoQRInstance:">NSSegmentedControl</string>
+						<string key="copy:">id</string>
+						<string key="createAutoQRInstance:">id</string>
+						<string key="deleteAutoQRInstance:">id</string>
 						<string key="endAddPreset:">id</string>
+						<string key="endCreateAutoQRInstance:">id</string>
+						<string key="lockAutoQRWindow:">id</string>
 						<string key="ok:">id</string>
 						<string key="pressButtons:">id</string>
 						<string key="retrieveAndView:">id</string>
 						<string key="retrieveAndViewClick:">id</string>
+						<string key="saveDBListAs:">id</string>
 						<string key="selectModality:">id</string>
 						<string key="selectUniqueSource:">id</string>
 						<string key="setBirthDate:">id</string>
@@ -8256,6 +8362,10 @@ ZWQgZHVyaW5nIG5leHQgJ3JlZnJlc2gnLg</string>
 						<string key="view:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="authAction:">
+							<string key="name">authAction:</string>
+							<string key="candidateClassName">id</string>
+						</object>
 						<object class="IBActionInfo" key="autoQueryTimer:">
 							<string key="name">autoQueryTimer:</string>
 							<string key="candidateClassName">id</string>
@@ -8264,8 +8374,32 @@ ZWQgZHVyaW5nIG5leHQgJ3JlZnJlc2gnLg</string>
 							<string key="name">cancel:</string>
 							<string key="candidateClassName">id</string>
 						</object>
+						<object class="IBActionInfo" key="changeAutoQRInstance:">
+							<string key="name">changeAutoQRInstance:</string>
+							<string key="candidateClassName">NSSegmentedControl</string>
+						</object>
+						<object class="IBActionInfo" key="copy:">
+							<string key="name">copy:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="createAutoQRInstance:">
+							<string key="name">createAutoQRInstance:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="deleteAutoQRInstance:">
+							<string key="name">deleteAutoQRInstance:</string>
+							<string key="candidateClassName">id</string>
+						</object>
 						<object class="IBActionInfo" key="endAddPreset:">
 							<string key="name">endAddPreset:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="endCreateAutoQRInstance:">
+							<string key="name">endCreateAutoQRInstance:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="lockAutoQRWindow:">
+							<string key="name">lockAutoQRWindow:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="ok:">
@@ -8282,6 +8416,10 @@ ZWQgZHVyaW5nIG5leHQgJ3JlZnJlc2gnLg</string>
 						</object>
 						<object class="IBActionInfo" key="retrieveAndViewClick:">
 							<string key="name">retrieveAndViewClick:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="saveDBListAs:">
+							<string key="name">saveDBListAs:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="selectModality:">
