@@ -884,47 +884,54 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		ext = @"dcm"; 
 	}
 
-	@synchronized(_dataFileIndex) {
-		NSString* dataDirPath = self.dataDirPath;
-		[NSFileManager.defaultManager confirmNoIndexDirectoryAtPath:dataDirPath]; // old impl only did this every 3 secs..
-		
-        NSUInteger index = 0;
-        @synchronized(_dataFileIndex) {
-            if (!_dataFileIndex.unsignedIntegerValue)
-                [self computeDataFileIndex];
-            [_dataFileIndex increment];
-            index = _dataFileIndex.unsignedIntegerValue;
-        }
-        
-		unsigned long long defaultFolderSizeForDB = [BrowserController DefaultFolderSizeForDB];
-		
-		BOOL fileExists = NO, firstExists = YES;
-		do {
-			unsigned long long subFolderInt = defaultFolderSizeForDB*(index/defaultFolderSizeForDB+1);
-			NSString* subFolderPath = [dataDirPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%llu", subFolderInt]];
-			[NSFileManager.defaultManager confirmDirectoryAtPath:subFolderPath];
-			
-			path = [subFolderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%llu.%@", (unsigned long long)_dataFileIndex.unsignedIntegerValue, ext]];
-			fileExists = [NSFileManager.defaultManager fileExistsAtPath:path];
-			
-			if (fileExists)
-            {
-				if (firstExists)
-                {
-					firstExists = NO;
-                    @synchronized(_dataFileIndex) {
-                        [self computeDataFileIndex];
-                        index = _dataFileIndex.unsignedIntegerValue;
-                    }
-				}
-                else
-                    @synchronized (_dataFileIndex) {
-                        [_dataFileIndex increment];
-                        index = _dataFileIndex.unsignedIntegerValue;
-                    }
+    @try
+    {
+        @synchronized(_dataFileIndex)
+        {
+            NSString* dataDirPath = self.dataDirPath;
+            [NSFileManager.defaultManager confirmNoIndexDirectoryAtPath:dataDirPath]; // old impl only did this every 3 secs..
+            
+            NSUInteger index = 0;
+            @synchronized(_dataFileIndex) {
+                if (!_dataFileIndex.unsignedIntegerValue)
+                    [self computeDataFileIndex];
+                [_dataFileIndex increment];
+                index = _dataFileIndex.unsignedIntegerValue;
             }
-		} while (fileExists);
-	}
+            
+            unsigned long long defaultFolderSizeForDB = [BrowserController DefaultFolderSizeForDB];
+            
+            BOOL fileExists = NO, firstExists = YES;
+            do {
+                unsigned long long subFolderInt = defaultFolderSizeForDB*(index/defaultFolderSizeForDB+1);
+                NSString* subFolderPath = [dataDirPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%llu", subFolderInt]];
+                [NSFileManager.defaultManager confirmDirectoryAtPath:subFolderPath];
+                
+                path = [subFolderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%llu.%@", (unsigned long long)_dataFileIndex.unsignedIntegerValue, ext]];
+                fileExists = [NSFileManager.defaultManager fileExistsAtPath:path];
+                
+                if (fileExists)
+                {
+                    if (firstExists)
+                    {
+                        firstExists = NO;
+                        @synchronized(_dataFileIndex) {
+                            [self computeDataFileIndex];
+                            index = _dataFileIndex.unsignedIntegerValue;
+                        }
+                    }
+                    else
+                        @synchronized (_dataFileIndex) {
+                            [_dataFileIndex increment];
+                            index = _dataFileIndex.unsignedIntegerValue;
+                        }
+                }
+            } while (fileExists);
+        }
+    }
+    @catch (NSException *exception) {
+        N2LogExceptionWithStackTrace( exception);
+    }
 
 	return path;
 }

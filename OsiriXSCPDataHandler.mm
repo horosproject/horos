@@ -877,13 +877,12 @@ extern BOOL forkedProcess;
                     }
                     else if (key ==  DCM_InterpretationStatusID)
                     {
-                        dataset->putAndInsertString( DCM_InterpretationStatusID, [self encodeString: [fetchedObject valueForKey:@"stateText"] image: image]);
+                        dataset->putAndInsertString( DCM_InterpretationStatusID, [self encodeString: [[fetchedObject valueForKey:@"stateText"] stringValue] image: image]);
                     }
                     else if( key == DCM_StudyComments && [fetchedObject valueForKey:@"comment"])
                     {
                         dataset->putAndInsertString( DCM_StudyComments, [self encodeString: [fetchedObject valueForKey:@"comment"] image: image]);
                     }
-                    
                     else if( key == DCM_PatientsBirthDate && [fetchedObject valueForKey:@"dateOfBirth"])
                     {
                         DCMCalendarDate *dicomDate = [DCMCalendarDate dicomDateWithDate:[fetchedObject valueForKey:@"dateOfBirth"]];
@@ -1072,7 +1071,6 @@ extern BOOL forkedProcess;
                     {
                         dataset->putAndInsertString( DCM_InterpretationStatusID, [self encodeString: [[fetchedObject valueForKeyPath:@"study.stateText"] stringValue] image: image]);
                     }
-                    
                     else if( key == DCM_StudyComments && [fetchedObject valueForKeyPath:@"study.comment"])
                     {
                         dataset->putAndInsertString( DCM_StudyComments, [self encodeString: [fetchedObject valueForKeyPath:@"study.comment"] image: image]);
@@ -1298,12 +1296,10 @@ extern BOOL forkedProcess;
                     {
                         dataset->putAndInsertString( DCM_InterpretationStatusID, [self encodeString: [[fetchedObject valueForKeyPath:@"series.study.stateText"] stringValue] image: image]);
                     }
-                    
                     else if( key == DCM_StudyComments && [fetchedObject valueForKeyPath:@"series.study.comment"])
                     {
                         dataset->putAndInsertString( DCM_ImageComments, [self encodeString: [fetchedObject valueForKeyPath:@"series.study.comment"] image: image]);
                     }
-                    
                     else if( key == DCM_PatientsBirthDate && [fetchedObject valueForKeyPath:@"series.study.dateOfBirth"])
                     {
                         DCMCalendarDate *dicomDate = [DCMCalendarDate dicomDateWithDate:[fetchedObject valueForKeyPath:@"series.study.dateOfBirth"]];
