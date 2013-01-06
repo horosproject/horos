@@ -3089,6 +3089,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void)mouseUp:(NSEvent *)event
 {
+    if( CGCursorIsVisible() == NO) return; //For Synergy compatibility
 	if ([self eventToPlugins:event]) return;
 	
 	mouseDragging = NO;
@@ -3481,6 +3482,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 -(void) mouseMoved: (NSEvent*) theEvent
 {
+    if( CGCursorIsVisible() == NO) return; //For Synergy compatibility
 	if( ![[self window] isVisible])
 	{
 		if( [self is2DViewer] && [[self windowController] FullScreenON])
@@ -3863,7 +3865,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 }
 
 - (void) mouseDown:(NSEvent *)event
-{	
+{
+    if( CGCursorIsVisible() == NO) return; //For Synergy compatibility
 	if ([self eventToPlugins:event]) return;
 	
 	currentMouseEventTool = -1;
@@ -4862,8 +4865,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 #pragma mark Mouse dragging methods	
 - (void)mouseDragged:(NSEvent *)event
 {
+    if( CGCursorIsVisible() == NO) return; //For Synergy compatibility
 	if ([self eventToPlugins:event]) return;
-
+        
 	[self deleteLens];
 	
 	mouseDragging = YES;
