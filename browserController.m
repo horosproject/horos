@@ -6642,10 +6642,12 @@ static NSConditionLock *threadLock = nil;
 		id item;
 		if ([databaseOutline clickedRow] != -1)
             item = [databaseOutline itemAtRow:[databaseOutline clickedRow]];
-		else item = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
+		else
+            item = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
 		
         if ([[item numberOfImages] intValue] != 0)
         {
+            #ifndef OSIRIX_LIGHT
             if( [item isDistant])
             {
                 id study = item;
@@ -6657,6 +6659,7 @@ static NSConditionLock *threadLock = nil;
                 [self retrieveComparativeStudy: item select: YES open: NO];
             }
             else
+            #endif
             {
                 [self databaseOpenStudy: item];
             }
