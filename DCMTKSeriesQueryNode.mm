@@ -190,4 +190,66 @@
 {
     return @"Series";
 }
+
+- (BOOL) isFault // Match DicomSeries
+{
+    return NO;
+}
+
+- (NSNumber*) noFiles // Match DicomSeries
+{
+    return _numberImages;
+}
+
+- (NSString*) seriesDescription // Match DicomSeries
+{
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
+        return [_theDescription capitalizedString];
+    
+    return _theDescription;
+}
+
+- (NSNumber*) stateText
+{
+    return [NSNumber numberWithInt: [_interpretationStatusID intValue]];
+}
+
+- (NSDate*) dateOpened // Match DicomSeries
+{
+    return nil;
+}
+
+- (NSDate*) dateAdded // Match DicomSeries
+{
+    return nil;
+}
+
+- (NSString*) id // Match DicomSeries
+{
+    return nil;
+}
+
+- (NSString*) localstring // Match DicomSeries
+{
+    return nil;
+}
+- (NSString*) albumsNames // Match DicomSeries
+{
+    return nil;
+}
+
+- (NSString*) comment2 // Match DicomSeries
+{
+    return @"";
+}
+
+- (NSString*) comment3 // Match DicomSeries
+{
+    return @"";
+}
+
+- (NSString*) comment4 // Match DicomSeries
+{
+    return @"";
+}
 @end

@@ -18,6 +18,7 @@
 #import "DicomDatabase+Routing.h"
 #import "DicomDatabase+DCMTK.h"
 #import "DCMTKStudyQueryNode.h"
+#import "DCMTKSeriesQueryNode.h"
 #import "DicomDatabase+Scan.h"
 #import "RemoteDicomDatabase.h"
 #import "SRAnnotation.h"
@@ -5665,7 +5666,12 @@ static NSConditionLock *threadLock = nil;
 		}
 		else
 		{
-			returnVal = [[self childrenArray: item] objectAtIndex: index];
+            #ifndef  OSIRIX_LIGHT
+            if( [item isKindOfClass: [DCMTKStudyQueryNode class]])
+                returnVal = [[item children]  objectAtIndex: index];
+            else
+            #endif
+                returnVal = [[self childrenArray: item] objectAtIndex: index];
 		}
 	}
 	@catch (NSException * e)
@@ -5685,7 +5691,14 @@ static NSConditionLock *threadLock = nil;
 //	[_database lock];
 	
     if( [item isDistant])
-        return NO;
+    {
+        #ifndef OSIRIX_LIGHT
+        if( [item isKindOfClass: [DCMTKStudyQueryNode class]])
+            return YES;
+        else
+            return NO;
+        #endif
+    }
     
     if ([item respondsToSelector:@selector(isFault:)] && [item isFault])
         returnVal = NO;
@@ -5714,7 +5727,33 @@ static NSConditionLock *threadLock = nil;
 	{
         #ifndef OSIRIX_LIGHT
         if( [item isDistant])
-            returnVal = 0;
+        {
+            @try
+            {
+                if( [item isKindOfClass: [DCMTKStudyQueryNode class]])
+                {
+                    NSArray *children = [item children];
+                    
+                    if( children.count > 0 && [[children lastObject] isKindOfClass: [DCMTKStudyQueryNode class]] == NO && [[children lastObject] isKindOfClass: [DCMTKSeriesQueryNode class]] == NO)
+                        [item purgeChildren];
+                    
+                    if (![item children])
+                    {
+                        [item queryWithValues:nil];
+                        
+                        if( [item children] == nil) // It failed... put an empty children...
+                            [item setChildren: [NSMutableArray array]];
+                    }
+                }
+                return  (item == nil) ? 0 : [[item children] count];
+            }
+            @catch (NSException * e)
+            {
+                N2LogExceptionWithStackTrace(e);
+            }
+            
+            return 0;
+        }
 		else
         #endif
         if ([item respondsToSelector:@selector(isFault:)] && [item isFault])
@@ -5842,7 +5881,10 @@ static NSConditionLock *threadLock = nil;
     
     if ([[item valueForKey:@"type"] isEqualToString:@"Series"] && [[tableColumn identifier] isEqualToString:@"studyName"])
     {
-        value = [item valueForKey:@"seriesDescription"];
+        if( [item isDistant])
+            value = [item valueForKey:@"seriesDescription"];
+        else
+            value = [item valueForKey:@"seriesDescription"];
         accessed = YES;
     }
     
@@ -6240,8 +6282,9 @@ static NSConditionLock *threadLock = nil;
 {
 	[_database lock];
 	
-	NSManagedObject	*object = [[notification userInfo] objectForKey:@"NSObject"];
-	[object setValue:[NSNumber numberWithBool:YES] forKey:@"expanded"];
+	id object = [[notification userInfo] objectForKey:@"NSObject"];
+    if( [object isKindOfClass: [NSManagedObject class]])
+        [object setValue:[NSNumber numberWithBool:YES] forKey:@"expanded"];
 	
 	[_database unlock];
 }
