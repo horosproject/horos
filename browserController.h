@@ -483,7 +483,6 @@ extern NSString* O2AlbumDragType;
 - (NSArray*) albumArray;
 - (void) refreshAlbums;
 - (void) waitForRunningProcesses;
-- (void) checkResponder;
 
 - (NSArray*) imagesPathArray: (NSManagedObject*) item;
 
