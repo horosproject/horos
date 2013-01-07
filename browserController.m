@@ -6656,7 +6656,7 @@ static NSConditionLock *threadLock = nil;
                     study = [item study];
                 
                 // Check to see if already in retrieving mode, if not download it
-                [self retrieveComparativeStudy: item select: YES open: NO];
+                [self retrieveComparativeStudy: study select: YES open: NO];
             }
             else
             #endif
