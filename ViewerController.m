@@ -5099,7 +5099,7 @@ static ViewerController *draggedController = nil;
 	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOHIDEMATRIX"])
 		[self autoHideMatrix];
-	
+    
 //	if( [self checkFrameSize])
 //	{
 //		NSPoint	mouse = [[self window] mouseLocationOutsideOfEventStream];

@@ -3480,6 +3480,211 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[bitmap release];
 }
 
+-(void) mouseMovedInView: (NSPoint) eventLocationInWindow
+{
+    NSUInteger modifierFlags = [[[NSApplication sharedApplication] currentEvent] modifierFlags];
+    NSPoint eventLocationInView = [self convertPoint: eventLocationInWindow fromView: nil];
+    
+    @try
+    {
+        [self deleteLens];
+        
+        [BrowserController updateActivity];
+        
+        float	cpixelMouseValueR = pixelMouseValueR;
+        float	cpixelMouseValueG = pixelMouseValueG;
+        float	cpixelMouseValueB = pixelMouseValueB;
+        float	cmouseXPos = mouseXPos;
+        float	cmouseYPos = mouseYPos;
+        float	cpixelMouseValue = pixelMouseValue;
+        
+        pixelMouseValueR = 0;
+        pixelMouseValueG = 0;
+        pixelMouseValueB = 0;
+        mouseXPos = 0;
+        mouseYPos = 0;
+        pixelMouseValue = 0;
+        
+        float	cblendingMouseXPos = blendingMouseXPos;
+        float	cblendingMouseYPos = blendingMouseYPos;
+        float	cblendingPixelMouseValue = blendingPixelMouseValue;
+        float	cblendingPixelMouseValueR = blendingPixelMouseValueR;
+        float	cblendingPixelMouseValueG = blendingPixelMouseValueG;
+        float	cblendingPixelMouseValueB = blendingPixelMouseValueB;
+        
+        blendingMouseXPos = 0;
+        blendingMouseYPos = 0;
+        blendingPixelMouseValue = 0;
+        blendingPixelMouseValueR = 0;
+        blendingPixelMouseValueG = 0;
+        blendingPixelMouseValueB = 0;
+        
+        BOOL needUpdate = NO;
+        
+        [drawLock lock];
+        
+        @try
+        {
+            [[self openGLContext] makeCurrentContext];	// Important for iChat compatibility
+            
+            BOOL mouseOnImage = NO;
+            
+            NSPoint imageLocation = [self ConvertFromNSView2GL: eventLocationInView];
+            
+            if( imageLocation.x >= 0 && imageLocation.x < curDCM.pwidth)	//&& NSPointInRect( eventLocation, size)) <- this doesn't work in MPR Ortho
+            {
+                if( imageLocation.y >= 0 && imageLocation.y < curDCM.pheight)
+                {
+                    mouseOnImage = YES;
+                    
+                    mouseXPos = imageLocation.x;
+                    mouseYPos = imageLocation.y;
+                    
+                    if( (modifierFlags & NSShiftKeyMask) && (modifierFlags & NSControlKeyMask) && mouseDragging == NO)
+                    {
+                        [self sync3DPosition];
+                    }
+                    else if( (modifierFlags & (NSShiftKeyMask|NSCommandKeyMask|NSControlKeyMask|NSAlternateKeyMask)) == NSShiftKeyMask && mouseDragging == NO)
+                    {
+                        if( [self roiTool: currentTool] == NO)
+                        {
+                            [self computeMagnifyLens: imageLocation];
+#ifdef new_loupe
+                            [self displayLoupeWithCenter:NSMakePoint([[self window] frame].origin.x+[theEvent locationInWindow].x, [[self window] frame].origin.y+[theEvent locationInWindow].y)];
+#endif
+                        }
+                    }
+                    
+                    int
+                    xPos = (int)mouseXPos,
+                    yPos = (int)mouseYPos;
+                    
+                    if( curDCM.isRGB )
+                    {
+                        pixelMouseValueR = ((unsigned char*) curDCM.fImage)[ 4 * (xPos + yPos * curDCM.pwidth) +1];
+                        pixelMouseValueG = ((unsigned char*) curDCM.fImage)[ 4 * (xPos + yPos * curDCM.pwidth) +2];
+                        pixelMouseValueB = ((unsigned char*) curDCM.fImage)[ 4 * (xPos + yPos * curDCM.pwidth) +3];
+                    }
+                    else pixelMouseValue = [curDCM getPixelValueX: xPos Y:yPos];
+                }
+            }
+            
+            // Blended view
+            if( blendingView)
+            {
+                NSPoint blendedLocation = [blendingView ConvertFromNSView2GL: eventLocationInView];
+                
+                if( blendedLocation.x >= 0 && blendedLocation.x < [[blendingView curDCM] pwidth])
+                {
+                    if( blendedLocation.y >= 0 && blendedLocation.y < [[blendingView curDCM] pheight])
+                    {
+                        blendingMouseXPos = blendedLocation.x;
+                        blendingMouseYPos = blendedLocation.y;
+                        
+                        int xPos = (int)blendingMouseXPos,
+                        yPos = (int)blendingMouseYPos;
+                        
+                        if( [[blendingView curDCM] isRGB])
+                        {
+                            blendingPixelMouseValueR = ((unsigned char*) [[blendingView curDCM] fImage])[ 4 * (xPos + yPos * [[blendingView curDCM] pwidth]) +1];
+                            blendingPixelMouseValueG = ((unsigned char*) [[blendingView curDCM] fImage])[ 4 * (xPos + yPos * [[blendingView curDCM] pwidth]) +2];
+                            blendingPixelMouseValueB = ((unsigned char*) [[blendingView curDCM] fImage])[ 4 * (xPos + yPos * [[blendingView curDCM] pwidth]) +3];
+                        }
+                        else blendingPixelMouseValue = [[blendingView curDCM] getPixelValueX: xPos Y:yPos];
+                    }
+                }
+            }
+            
+            // Are we near a ROI point?
+            if( [self roiTool: currentTool])
+            {
+                NSPoint pt = [self convertPoint: eventLocationInWindow fromView:nil];
+                pt = [self ConvertFromNSView2GL: pt];
+                
+                for( ROI *r in curRoiList)
+                    [r displayPointUnderMouse :pt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue];
+                
+                if( [[[NSApplication sharedApplication] currentEvent] type] == NSMouseMoved)
+                {
+                    // Should we change the mouse cursor?
+                    if( modifierFlags) [self flagsChanged: [[NSApplication sharedApplication] currentEvent]];
+                }
+            }
+            
+            if(!mouseOnImage)
+            {
+#ifdef new_loupe
+                [self hideLoupe];
+#endif
+            }
+        }
+        @catch (NSException * e)
+        {
+            N2LogExceptionWithStackTrace(e);
+        }
+        
+        [drawLock unlock];
+        
+        if(	cpixelMouseValueR != pixelMouseValueR)	needUpdate = YES;
+        if(	cpixelMouseValueG != pixelMouseValueG)	needUpdate = YES;
+        if(	cpixelMouseValueB != pixelMouseValueB)	needUpdate = YES;
+        if(	cmouseXPos != mouseXPos)	needUpdate = YES;
+        if(	cmouseYPos != mouseYPos)	needUpdate = YES;
+        if(	cpixelMouseValue != pixelMouseValue)	needUpdate = YES;
+        if( cblendingMouseXPos != blendingMouseXPos) needUpdate = YES;
+        if( cblendingMouseYPos != blendingMouseYPos) needUpdate = YES;
+        if( cblendingPixelMouseValue != blendingPixelMouseValue) needUpdate = YES;
+        if( cblendingPixelMouseValueR != blendingPixelMouseValueR) needUpdate = YES;
+        if( cblendingPixelMouseValueG != blendingPixelMouseValueG) needUpdate = YES;
+        if( cblendingPixelMouseValueB != blendingPixelMouseValueB) needUpdate = YES;
+        
+        if( needUpdate)
+        {
+            [self setNeedsDisplay: YES];
+            [[NSNotificationCenter defaultCenter] postNotificationName: @"DCMViewMouseMovedUpdated" object: self];
+        }
+    }
+    @catch (NSException * e)
+	{
+		N2LogExceptionWithStackTrace(e);
+	}
+}
+
+- (void) DCMViewMouseMovedUpdated: (NSNotification*) n
+{
+    if( n.object != self)
+    {
+        float	cpixelMouseValueR = pixelMouseValueR, cpixelMouseValueG = pixelMouseValueG, cpixelMouseValueB = pixelMouseValueB;
+        float	cmouseXPos = mouseXPos, cmouseYPos = mouseYPos;
+        float	cpixelMouseValue = pixelMouseValue;
+        
+        pixelMouseValueR =  pixelMouseValueG =  pixelMouseValueB =  mouseXPos =  mouseYPos =  pixelMouseValue = 0;
+        
+        float	cblendingMouseXPos = blendingMouseXPos, cblendingMouseYPos = blendingMouseYPos;
+        float	cblendingPixelMouseValue = blendingPixelMouseValue, cblendingPixelMouseValueR = blendingPixelMouseValueR, cblendingPixelMouseValueG = blendingPixelMouseValueG, cblendingPixelMouseValueB = blendingPixelMouseValueB;
+        
+        blendingMouseXPos =  blendingMouseYPos =  blendingPixelMouseValue =  blendingPixelMouseValueR =  blendingPixelMouseValueG =  blendingPixelMouseValueB = 0;
+        
+        BOOL needUpdate = NO;
+        
+        if(	cpixelMouseValueR != pixelMouseValueR) needUpdate = YES;
+        if(	cpixelMouseValueG != pixelMouseValueG) needUpdate = YES;
+        if(	cpixelMouseValueB != pixelMouseValueB) needUpdate = YES;
+        if(	cmouseXPos != mouseXPos) needUpdate = YES;
+        if(	cmouseYPos != mouseYPos) needUpdate = YES;
+        if(	cpixelMouseValue != pixelMouseValue) needUpdate = YES;
+        if( cblendingMouseXPos != blendingMouseXPos) needUpdate = YES;
+        if( cblendingMouseYPos != blendingMouseYPos) needUpdate = YES;
+        if( cblendingPixelMouseValue != blendingPixelMouseValue) needUpdate = YES;
+        if( cblendingPixelMouseValueR != blendingPixelMouseValueR) needUpdate = YES;
+        if( cblendingPixelMouseValueG != blendingPixelMouseValueG) needUpdate = YES;
+        if( cblendingPixelMouseValueB != blendingPixelMouseValueB) needUpdate = YES;
+        
+        if( needUpdate)
+            [self setNeedsDisplay: YES];
+    }
+}
+
 -(void) mouseMoved: (NSEvent*) theEvent
 {
     if( CGCursorIsVisible() == NO) return; //For Synergy compatibility
@@ -3511,177 +3716,17 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	avoidMouseMovedRecursive = YES;
 	
-	@try
-	{
-		[self deleteLens];
-		
-		[BrowserController updateActivity];
-		
-		NSPoint     eventLocation = [theEvent locationInWindow];
-		
-		float	cpixelMouseValueR = pixelMouseValueR;
-		float	cpixelMouseValueG = pixelMouseValueG;
-		float	cpixelMouseValueB = pixelMouseValueB;
-		float	cmouseXPos = mouseXPos;
-		float	cmouseYPos = mouseYPos;
-		float	cpixelMouseValue = pixelMouseValue;
-		
-		pixelMouseValueR = 0;
-		pixelMouseValueG = 0;
-		pixelMouseValueB = 0;
-		mouseXPos = 0;
-		mouseYPos = 0;
-		pixelMouseValue = 0;
-		
-		if( [[self window] isVisible] && [[self window] isKeyWindow])
-		{
-			[drawLock lock];
-			
-			@try 
-			{
-				[[self openGLContext] makeCurrentContext];	// Important for iChat compatibility
-				
-		//		[self checkCursor];
-				
-				BOOL	needUpdate = NO;
-
-				BOOL mouseOnImage = NO;
-				
-				eventLocation = [self convertPoint:eventLocation fromView:nil];
-				NSPoint imageLocation = [self ConvertFromNSView2GL:eventLocation];
-				
-				if( imageLocation.x >= 0 && imageLocation.x < curDCM.pwidth)	//&& NSPointInRect( eventLocation, size)) <- this doesn't work in MPR Ortho
-				{
-					if( imageLocation.y >= 0 && imageLocation.y < curDCM.pheight)
-					{
-						mouseOnImage = YES;
-						
-						mouseXPos = imageLocation.x;
-						mouseYPos = imageLocation.y;
-						
-						if( ([theEvent modifierFlags] & NSShiftKeyMask) && ([theEvent modifierFlags] & NSControlKeyMask) && mouseDragging == NO)
-						{
-							[self sync3DPosition];
-						}
-						else if( ([theEvent modifierFlags] & (NSShiftKeyMask|NSCommandKeyMask|NSControlKeyMask|NSAlternateKeyMask)) == NSShiftKeyMask && mouseDragging == NO)
-						{
-							if( [self roiTool: currentTool] == NO)
-							{
-								[self computeMagnifyLens: imageLocation];
-		#ifdef new_loupe
-								[self displayLoupeWithCenter:NSMakePoint([[self window] frame].origin.x+[theEvent locationInWindow].x, [[self window] frame].origin.y+[theEvent locationInWindow].y)];
-		#endif
-							}
-						}
-						
-						int
-							xPos = (int)mouseXPos,
-							yPos = (int)mouseYPos;
-						
-						if( curDCM.isRGB )
-						{
-							pixelMouseValueR = ((unsigned char*) curDCM.fImage)[ 4 * (xPos + yPos * curDCM.pwidth) +1];
-							pixelMouseValueG = ((unsigned char*) curDCM.fImage)[ 4 * (xPos + yPos * curDCM.pwidth) +2];
-							pixelMouseValueB = ((unsigned char*) curDCM.fImage)[ 4 * (xPos + yPos * curDCM.pwidth) +3];
-						}
-						else pixelMouseValue = [curDCM getPixelValueX: xPos Y:yPos];
-					}
-				}
-				
-				if(	cpixelMouseValueR != pixelMouseValueR)	needUpdate = YES;
-				if(	cpixelMouseValueG != pixelMouseValueG)	needUpdate = YES;
-				if(	cpixelMouseValueB != pixelMouseValueB)	needUpdate = YES;
-				if(	cmouseXPos != mouseXPos)	needUpdate = YES;
-				if(	cmouseYPos != mouseYPos)	needUpdate = YES;
-				if(	cpixelMouseValue != pixelMouseValue)	needUpdate = YES;
-				
-				float	cblendingMouseXPos = blendingMouseXPos;
-				float	cblendingMouseYPos = blendingMouseYPos;
-				float	cblendingPixelMouseValue = blendingPixelMouseValue;
-				float	cblendingPixelMouseValueR = blendingPixelMouseValueR;
-				float	cblendingPixelMouseValueG = blendingPixelMouseValueG;
-				float	cblendingPixelMouseValueB = blendingPixelMouseValueB;
-
-				blendingMouseXPos = 0;
-				blendingMouseYPos = 0;
-				blendingPixelMouseValue = 0;
-				blendingPixelMouseValueR = 0;
-				blendingPixelMouseValueG = 0;
-				blendingPixelMouseValueB = 0;
-				
-				// Blended view
-				if( blendingView)
-				{
-					NSPoint blendedLocation = [blendingView ConvertFromNSView2GL: eventLocation];
-					
-					if( blendedLocation.x >= 0 && blendedLocation.x < [[blendingView curDCM] pwidth])
-					{
-						if( blendedLocation.y >= 0 && blendedLocation.y < [[blendingView curDCM] pheight])
-						{
-							blendingMouseXPos = blendedLocation.x;
-							blendingMouseYPos = blendedLocation.y;
-							
-							int xPos = (int)blendingMouseXPos,
-								yPos = (int)blendingMouseYPos;
-							
-							if( [[blendingView curDCM] isRGB])
-							{
-								blendingPixelMouseValueR = ((unsigned char*) [[blendingView curDCM] fImage])[ 4 * (xPos + yPos * [[blendingView curDCM] pwidth]) +1];
-								blendingPixelMouseValueG = ((unsigned char*) [[blendingView curDCM] fImage])[ 4 * (xPos + yPos * [[blendingView curDCM] pwidth]) +2];
-								blendingPixelMouseValueB = ((unsigned char*) [[blendingView curDCM] fImage])[ 4 * (xPos + yPos * [[blendingView curDCM] pwidth]) +3];
-							}
-							else blendingPixelMouseValue = [[blendingView curDCM] getPixelValueX: xPos Y:yPos];
-						}
-					}
-				}
-				
-				if( cblendingMouseXPos != blendingMouseXPos) needUpdate = YES;
-				if( cblendingMouseYPos != blendingMouseYPos) needUpdate = YES;
-				if( cblendingPixelMouseValue != blendingPixelMouseValue) needUpdate = YES;
-				if( cblendingPixelMouseValueR != blendingPixelMouseValueR) needUpdate = YES;
-				if( cblendingPixelMouseValueG != blendingPixelMouseValueG) needUpdate = YES;
-				if( cblendingPixelMouseValueB != blendingPixelMouseValueB) needUpdate = YES;
-				
-				if( needUpdate) [self setNeedsDisplay: YES];
-				
-				// Are we near a ROI point?
-				if( [self roiTool: currentTool])
-				{
-					NSPoint pt = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-					pt = [self ConvertFromNSView2GL: pt];
-					
-					for( ROI *r in curRoiList)
-						[r displayPointUnderMouse :pt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue];
-					
-					if( [theEvent type] == NSMouseMoved)
-					{
-						// Should we change the mouse cursor?
-						if( [theEvent modifierFlags]) [self flagsChanged: theEvent];
-					}
-				}
-				
-				
-				if(!mouseOnImage)
-				{
-		#ifdef new_loupe
-					[self hideLoupe];
-		#endif
-				}
-			}
-			@catch (NSException * e) 
-			{
-                N2LogExceptionWithStackTrace(e);
-			}
-
-			[drawLock unlock];
-		}
-		
+    NSPoint eventLocation = [[self window] mouseLocationOutsideOfEventStream];
+    
+    if( [[self window] isVisible])
+    {
+        id view = [self.window.contentView hitTest: eventLocation];
+        
+        if( [view isKindOfClass: [DCMView class]])
+            [view mouseMovedInView: eventLocation];
+            
 		if ([self is2DViewer] == YES)
 			[[self windowController] mouseMoved: theEvent];
-	}
-	@catch (NSException * e)
-	{
-		N2LogExceptionWithStackTrace(e);
 	}
 	
 	avoidMouseMovedRecursive = NO;
@@ -6221,6 +6266,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				name: OsirixChangeWLWWNotification
 			object: nil];
 	
+    [nc addObserver: self selector: @selector( DCMViewMouseMovedUpdated:) name: @"DCMViewMouseMovedUpdated" object: nil];
+    
     colorTransfer = NO;
 	
 	for ( unsigned int i = 0; i < 256; i++ )
@@ -11970,6 +12017,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
            selector: @selector(updateCurrentImage:)
                name: OsirixDCMUpdateCurrentImageNotification
              object: nil];
+        
+        [self.window makeFirstResponder: self];
     }
     return self;
 
@@ -12137,8 +12186,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void)mouseExited:(NSEvent *)theEvent
 {
-	[self eventToPlugins:theEvent];
-
+	[self eventToPlugins: theEvent];
+    
+    [self mouseMoved: theEvent];
+    
 	[self deleteLens];
 #ifdef new_loupe
 	[self hideLoupe];
