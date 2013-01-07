@@ -6263,9 +6263,10 @@ static NSConditionLock *threadLock = nil;
 {
 	[_database lock];
 	
-	NSManagedObject	*object = [[notification userInfo] objectForKey:@"NSObject"];
+	id object = [[notification userInfo] objectForKey:@"NSObject"];
 	
-	[object setValue:[NSNumber numberWithBool: NO] forKey:@"expanded"];
+    if( [object isDistant] == NO)
+        [object setValue:[NSNumber numberWithBool: NO] forKey:@"expanded"];
 	
 	DicomImage	*image = nil;
 	
@@ -6283,7 +6284,8 @@ static NSConditionLock *threadLock = nil;
 	[_database lock];
 	
 	id object = [[notification userInfo] objectForKey:@"NSObject"];
-    if( [object isKindOfClass: [NSManagedObject class]])
+    
+    if( [object isDistant] == NO)
         [object setValue:[NSNumber numberWithBool:YES] forKey:@"expanded"];
 	
 	[_database unlock];
@@ -6646,6 +6648,11 @@ static NSConditionLock *threadLock = nil;
         {
             if( [item isDistant])
             {
+                id study = item;
+                
+                if( [item isKindOfClass: [DCMTKSeriesQueryNode class]])
+                    study = [item study];
+                
                 // Check to see if already in retrieving mode, if not download it
                 [self retrieveComparativeStudy: item select: YES open: NO];
             }

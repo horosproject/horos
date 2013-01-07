@@ -226,6 +226,11 @@
     return _theDescription;
 }
 
+- (NSNumber*) expanded // Match DicomStudy
+{
+    return [NSNumber numberWithBool: NO];
+}
+
 - (NSString*) name  // Match DicomStudy
 {
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
@@ -365,11 +370,6 @@
     return nil;
 }
 
-- (NSNumber*) expanded // Match DicomStudy
-{
-    return [NSNumber numberWithBool: NO];
-}
-
 - (NSString*) referringPhysician
 {
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
@@ -451,12 +451,12 @@
     {
         if( strcmp( queryLevel, "IMAGE") == 0)
         {
-            DCMTKImageQueryNode *newNode = [DCMTKImageQueryNode queryNodeWithDataset:dataset
-                                                                          callingAET:_callingAET
-                                                                           calledAET:_calledAET
-                                                                            hostname:_hostname
-                                                                                port:_port
-                                                                      transferSyntax:_transferSyntax
+            DCMTKImageQueryNode *newNode = [DCMTKImageQueryNode queryNodeWithDataset: dataset
+                                                                          callingAET: _callingAET
+                                                                           calledAET: _calledAET
+                                                                            hostname: _hostname
+                                                                                port: _port
+                                                                      transferSyntax: _transferSyntax
                                                                          compression: _compression
                                                                      extraParameters: _extraParameters];
             BOOL alreadyHere = NO;
@@ -475,14 +475,16 @@
         }
         else if( strcmp( queryLevel, "SERIES") == 0)
         {
-            DCMTKSeriesQueryNode *newNode = [DCMTKSeriesQueryNode queryNodeWithDataset:dataset
-                                                                           callingAET:_callingAET
-                                                                            calledAET:_calledAET
-                                                                             hostname:_hostname
-                                                                                 port:_port
-                                                                       transferSyntax:_transferSyntax
+            DCMTKSeriesQueryNode *newNode = [DCMTKSeriesQueryNode queryNodeWithDataset: dataset
+                                                                           callingAET: _callingAET
+                                                                            calledAET: _calledAET
+                                                                             hostname: _hostname
+                                                                                 port: _port
+                                                                       transferSyntax: _transferSyntax
                                                                           compression: _compression
                                                                       extraParameters: _extraParameters];
+            
+            newNode.study = self;
             
             BOOL alreadyHere = NO;
             if( [[NSUserDefaults standardUserDefaults] boolForKey: @"QRRemoveDuplicateEntries"])

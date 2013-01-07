@@ -23,6 +23,8 @@
 
 @implementation DCMTKSeriesQueryNode
 
+@synthesize study;
+
 + (id)queryNodeWithDataset:(DcmDataset *)dataset
 				callingAET:(NSString *)myAET  
 				calledAET:(NSString *)theirAET  
@@ -130,6 +132,7 @@
 
 - (void)dealloc
 {
+    self.study = nil;
 	[_studyInstanceUID release];
 	[super dealloc];
 }
@@ -233,6 +236,7 @@
 {
     return nil;
 }
+
 - (NSString*) albumsNames // Match DicomSeries
 {
     return nil;
@@ -251,5 +255,25 @@
 - (NSString*) comment4 // Match DicomSeries
 {
     return @"";
+}
+
+- (NSSet*) images // Match DicomSeries
+{
+    return nil;
+}
+
+- (DCMCalendarDate*) date // Match DicomSeries
+{
+    return [DCMCalendarDate dicomDateTimeWithDicomDate: _date dicomTime: _time];
+}
+
+- (NSNumber*) rawNoFiles // Match DicomSeries
+{
+    return _numberImages;
+}
+
+- (NSNumber*) numberOfImages // Match DicomSeries
+{
+    return _numberImages;
 }
 @end
