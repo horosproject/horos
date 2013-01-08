@@ -110,7 +110,9 @@
         return;
 	if (!self.isLocal) return;
 	if ([AppController.sharedAppController isSessionInactive]) return;
-//	if ([NSDate timeIntervalSinceReferenceDate] - gLastActivity < 60*10) return; // TODO: this
+    if( [[NSUserDefaults standardUserDefaults] integerForKey:@"LOGCLEANINGDAYS"] <= 1) return;
+    if( [[NSUserDefaults standardUserDefaults] integerForKey:@"AUTOCLEANINGDATEPRODUCEDDAYS"] <= 1) return;
+    if( [[NSUserDefaults standardUserDefaults] integerForKey:@"AUTOCLEANINGDATEOPENEDDAYS"] <= 1) return;
 	
 	[_cleanLock lock];
 	@try {
@@ -119,8 +121,8 @@
 		// Log cleaning
 		if ([self tryLock])
 			@try {
-				NSDate					*producedDate = [[NSDate date] addTimeInterval: -[defaults integerForKey:@"LOGCLEANINGDAYS"]*60*60*24];
-				NSPredicate				*predicate = [NSPredicate predicateWithFormat: @"startTime <= CAST(%lf, \"NSDate\")", [producedDate timeIntervalSinceReferenceDate]];
+				NSDate *producedDate = [[NSDate date] addTimeInterval: -[defaults integerForKey:@"LOGCLEANINGDAYS"]*60*60*24];
+				NSPredicate *predicate = [NSPredicate predicateWithFormat: @"startTime <= CAST(%lf, \"NSDate\")", [producedDate timeIntervalSinceReferenceDate]];
 				for (id log in [self objectsForEntity:self.logEntryEntity predicate:predicate])
 					[self.managedObjectContext deleteObject:log];
 			} @catch (NSException* e) {
@@ -135,13 +137,11 @@
 				@try {
 					NSError				*error = nil;
 					NSFetchRequest		*request = [[[NSFetchRequest alloc] init] autorelease];
-					//NSPredicate			*predicate = [NSPredicate predicateWithValue:YES];
 					NSArray				*studiesArray;
 					NSDate				*now = [NSDate date];
 					NSDate				*producedDate = [now addTimeInterval: -[[defaults stringForKey:@"AUTOCLEANINGDATEPRODUCEDDAYS"] intValue]*60*60*24];
 					NSDate				*openedDate = [now addTimeInterval: -[[defaults stringForKey:@"AUTOCLEANINGDATEOPENEDDAYS"] intValue]*60*60*24];
 					NSMutableArray		*toBeRemoved = [NSMutableArray array];
-//					NSManagedObjectContext *context = self.managedObjectContext;
 					BOOL				dontDeleteStudiesWithComments = [[NSUserDefaults standardUserDefaults] boolForKey: @"dontDeleteStudiesWithComments"];
 					
 					@try {
