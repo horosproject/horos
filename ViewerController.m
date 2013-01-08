@@ -2401,9 +2401,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 			
 			[[self window] setTitle: windowTitle];
             
-            if( loadingThread.isExecuting == NO || [[loadingThread.threadDictionary objectForKey: @"loadingPercentage"] floatValue] >= 1)
-                if( [[imageView curDCM] sourceFile])
-                    [[self window] setRepresentedFilename: [[imageView curDCM] sourceFile]];
+            @synchronized( loadingThread)
+            {
+                if( loadingThread.isExecuting == NO || [[loadingThread.threadDictionary objectForKey: @"loadingPercentage"] floatValue] >= 1)
+                    if( [[imageView curDCM] sourceFile])
+                        [[self window] setRepresentedFilename: [[imageView curDCM] sourceFile]];
+            }
 		}
 	}
 	else [[self window] setTitle: @"Viewer"];
@@ -2697,7 +2700,7 @@ static volatile int numberOfThreadsForRelisce = 0;
     @synchronized( loadingThread)
     {
         [loadingThread cancel];
-        [loadingThread release];
+        [loadingThread autorelease];
         loadingThread = nil;
     }
     
@@ -6909,7 +6912,7 @@ return YES;
     @synchronized( loadingThread)
     {
         [loadingThread cancel];
-        [loadingThread release];
+        [loadingThread autorelease];
         loadingThread = nil;
 	}
     
@@ -6979,7 +6982,7 @@ return YES;
     @synchronized( loadingThread)
     {
         [loadingThread cancel];
-        [loadingThread release];
+        [loadingThread autorelease];
         loadingThread = nil;
     }
     
@@ -7650,7 +7653,7 @@ return YES;
     @synchronized( loadingThread)
     {
         [loadingThread cancel];
-        [loadingThread release];
+        [loadingThread autorelease];
         loadingThread = nil;
     }
     
@@ -7830,7 +7833,7 @@ return YES;
     @synchronized( loadingThread)
     {
         [loadingThread cancel];
-        [loadingThread release];
+        [loadingThread autorelease];
         loadingThread = nil;
     }
     
