@@ -2532,7 +2532,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
     
     [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"allowSmartCropping"];
     
-    NSImage *image = [dicomImage imageAsScreenCapture];
+    NSImage *image = [dicomImage imageAsScreenCapture: NSMakeRect(0,0, [[NSUserDefaults standardUserDefaults] integerForKey: @"DicomImageScreenCaptureWidth"],[[NSUserDefaults standardUserDefaults] integerForKey: @"DicomImageScreenCaptureHeight"])];
     
     [DCMView setDefaults];
     [[NSUserDefaults standardUserDefaults] setBool: savedSmartCropping forKey: @"allowSmartCropping"];

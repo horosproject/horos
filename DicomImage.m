@@ -1176,9 +1176,8 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
     return nil;
 }
 
--(NSImage*) imageAsScreenCapture
+-(NSImage*) imageAsScreenCapture:(NSRect)frame
 {
-
     if( [NSThread isMainThread] == NO)
     {
         N2LogStackTrace( @"****** this function works only on MAIN thread");
@@ -1193,8 +1192,6 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
         DCMPix* pix = [[DCMPix alloc] initWithPath: self.completePath :0 :0 :nil :0 :self.series.id.intValue isBonjour:NO imageObj: self];
         
         [pix CheckLoad];
-        
-        NSRect frame = NSMakeRect(0,0, [[NSUserDefaults standardUserDefaults] integerForKey: @"DicomImageScreenCaptureWidth"],[[NSUserDefaults standardUserDefaults] integerForKey: @"DicomImageScreenCaptureHeight"]);
         
         NSWindow* win = [[NSWindow alloc] initWithContentRect:frame styleMask:NSTitledWindowMask backing:NSBackingStoreBuffered defer:NO];
         

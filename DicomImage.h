@@ -91,7 +91,7 @@ void* sopInstanceUIDEncode( NSString *sopuid);
 #endif
 - (NSImage *)image;
 - (NSImage *)thumbnail;
-- (NSImage *)imageAsScreenCapture;
+- (NSImage*) imageAsScreenCapture:(NSRect)frame;
 - (NSImage *)thumbnailIfAlreadyAvailable;
 - (void)setThumbnail:(NSImage*)image;
 - (NSString*) completePathWithDownload:(BOOL) download supportNonLocalDatabase: (BOOL) supportNonLocalDatabase;
