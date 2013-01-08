@@ -14859,7 +14859,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 			// Find the STUDY folder
 			if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
 			
-			NSMutableString *seriesStr = [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.name"]];
+			NSMutableString *seriesStr = [NSMutableString stringWithString: @"series"];
+            if( [curImage valueForKeyPath: @"series.name"])
+                seriesStr = [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.name"]];
 			[BrowserController replaceNotAdmitted:seriesStr];
 			tempPath = [tempPath stringByAppendingPathComponent: seriesStr ];
 			tempPath = [tempPath stringByAppendingFormat:@"_%@", [curImage valueForKeyPath: @"series.id"]];
