@@ -166,6 +166,28 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 
 #ifdef OSIRIX_VIEWER
 
++(void)sortMenu:(NSMenu*)menu
+{
+    // [CH] Get an array of all menu items.
+    NSArray* items = [menu itemArray];
+    [menu removeAllItems];
+    // [CH] Sort the array
+    items = [items sortedArrayUsingDescriptors:[NSArray arrayWithObjects:[NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)], nil]];
+    // [CH] ok, now set it back.
+    for(NSMenuItem* item in items)
+    {
+        [menu addItem:item];
+        /**
+         * [CH] The following code fixes NSPopUpButton's confusion that occurs when
+         * we sort this list. NSPopUpButton listens to the NSMenu's add notifications
+         * and hides the first item. Sorting this blows it up.
+         **/
+        if(item.isHidden){
+            [item setHidden: false];
+        }
+    }
+}
+
 + (void) setMenus:(NSMenu*) filtersMenu :(NSMenu*) roisMenu :(NSMenu*) othersMenu :(NSMenu*) dbMenu
 {
 	while([filtersMenu numberOfItems])[filtersMenu removeItemAtIndex:0];
@@ -363,6 +385,11 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 		[dbMenu insertItem:item atIndex:0];
 	}
 	
+    [PluginManager sortMenu: dbMenu];
+    [PluginManager sortMenu: roisMenu];
+    [PluginManager sortMenu: filtersMenu];
+    [PluginManager sortMenu: othersMenu];
+    
 	NSEnumerator *pluginEnum = [plugins objectEnumerator];
 	PluginFilter *pluginFilter;
 	
