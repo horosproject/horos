@@ -776,6 +776,11 @@ int main(int argc, const char *argv[])
 					
 					NSPrintInfo *printInfo = [[NSPrintInfo alloc] initWithDictionary: printInfoDict];
 					
+                    [printInfo setBottomMargin: 30];
+                    [printInfo setTopMargin: 30];
+                    [printInfo setLeftMargin: 24];
+                    [printInfo setRightMargin: 24];
+                    
 					[printInfo setHorizontalPagination: NSAutoPagination];
 					[printInfo setVerticalPagination: NSAutoPagination];
 					[printInfo setVerticallyCentered:NO];
