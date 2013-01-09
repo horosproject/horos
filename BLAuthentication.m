@@ -20,7 +20,9 @@ OSStatus AuthorizationExecuteWithPrivilegesStdErrAndPid (
                                                          FILE **errPipe,
                                                          pid_t* processid
                                                          )
-{  
+{
+    [[NSFileManager defaultManager] changeCurrentDirectoryPath: @"/tmp/"];
+    
     char stderrpath[] = "/tmp/AuthorizationExecuteWithPrivilegesStdErrXXXXXXX.err" ;
 	const char* commandtemplate = "echo $$; \"$@\" 2>%s" ;
     if (communicationsPipe == errPipe) {
