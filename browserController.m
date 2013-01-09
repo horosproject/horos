@@ -3210,6 +3210,8 @@ static NSConditionLock *threadLock = nil;
         if( [item isDeleted])
             NSLog( @"----- isDeleted - childrenArray : we have to refresh the outlineView...");
         
+        [self.database.managedObjectContext reset];
+        
 		return [NSArray array];
 	}
 	
