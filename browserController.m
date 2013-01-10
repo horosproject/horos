@@ -14450,7 +14450,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 			if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath])
 				[[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
 			
-			NSMutableString *seriesStr = [NSMutableString stringWithString:[curImage.series.name filenameString]];
+            NSString *seriesName = [curImage.series.name filenameString];
+            if( seriesName.length == 0)
+                seriesName = @"series";
+            
+			NSMutableString *seriesStr = [NSMutableString stringWithString: seriesName];
 			[BrowserController replaceNotAdmitted: seriesStr];
 			
 			tempPath = [tempPath stringByAppendingPathComponent: seriesStr ];
@@ -14864,6 +14868,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			NSMutableString *seriesStr = [NSMutableString stringWithString: @"series"];
             if( [curImage valueForKeyPath: @"series.name"])
                 seriesStr = [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.name"]];
+            
 			[BrowserController replaceNotAdmitted:seriesStr];
 			tempPath = [tempPath stringByAppendingPathComponent: seriesStr ];
 			tempPath = [tempPath stringByAppendingFormat:@"_%@", [curImage valueForKeyPath: @"series.id"]];
@@ -15539,8 +15544,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 					studyPath = tempPath;
 					
                     NSString *sname = [curImage valueForKeyPath: @"series.name"];
-                    if( sname == nil)
-                        sname = @"unnamed";
+                    if( sname.length == 0)
+                        sname = @"series";
                     
 					NSString *seriesName = [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: sname]];
 					
