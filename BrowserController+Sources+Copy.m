@@ -59,25 +59,26 @@
 		NSString* srcPath = [imagePaths objectAtIndex:i];
 		NSString* dstPath = [dstDatabase uniquePathForNewDataFileWithExtension: @"dcm"];
 		
-#define USECORESERVICESFORCOPY 1
-        
-#ifdef USECORESERVICESFORCOPY
-        char *targetPath = nil;
-        OptionBits options = kFSFileOperationSkipSourcePermissionErrors + kFSFileOperationSkipPreflight;
-        OSStatus err = FSPathCopyObjectSync( [srcPath UTF8String], [[dstPath stringByDeletingLastPathComponent] UTF8String], (CFStringRef) [dstPath lastPathComponent], &targetPath, options);
-        
-        if( err == 0)
-#else
-        NSError* err = nil;
-        if([[NSFileManager defaultManager] copyItemAtPath:srcPath toPath:dstPath error:nil])
-#endif
+        if( dstPath.length)
         {
-            if( [DicomFile isDICOMFile: dstPath] == NO)
-            {
-                [[NSFileManager defaultManager] moveItemAtPath: dstPath toPath: [[dstPath stringByDeletingPathExtension] stringByAppendingPathExtension: [srcPath pathExtension]] error: nil];
-            }
+            #define USECORESERVICESFORCOPY 1
             
-            [dstPaths addObject:dstPath];
+            #ifdef USECORESERVICESFORCOPY
+            char *targetPath = nil;
+            OptionBits options = kFSFileOperationSkipSourcePermissionErrors + kFSFileOperationSkipPreflight;
+            OSStatus err = FSPathCopyObjectSync( [srcPath UTF8String], [[dstPath stringByDeletingLastPathComponent] UTF8String], (CFStringRef) [dstPath lastPathComponent], &targetPath, options);
+            
+            if( err == 0)
+            #else
+            NSError* err = nil;
+            if([[NSFileManager defaultManager] copyItemAtPath:srcPath toPath:dstPath error:nil])
+            #endif
+            {
+                if( [DicomFile isDICOMFile: dstPath] == NO)
+                    [[NSFileManager defaultManager] moveItemAtPath: dstPath toPath: [[dstPath stringByDeletingPathExtension] stringByAppendingPathExtension: [srcPath pathExtension]] error: nil];
+                
+                [dstPaths addObject:dstPath];
+            }
         }
         
         if( fiveSeconds < [NSDate timeIntervalSinceReferenceDate])
@@ -167,8 +168,9 @@
                 NSString* ext = [DicomFile isDICOMFile:srcPath]? @"dcm" : srcPath.pathExtension;
                 NSString* dstPath = [idatabase uniquePathForNewDataFileWithExtension:ext];
                 
-                if ([[NSFileManager defaultManager] moveItemAtPath:srcPath toPath:dstPath error:NULL])
-                    [dstPaths addObject:dstPath];
+                if( dstPath.length)
+                    if ([[NSFileManager defaultManager] moveItemAtPath:srcPath toPath:dstPath error:NULL])
+                        [dstPaths addObject:dstPath];
             }
         }
         @catch (NSException *exception)
