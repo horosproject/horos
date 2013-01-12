@@ -14,6 +14,7 @@
 
 #import <DCMPix.h>
 #import "DicomImage.h"
+#import "DicomSeries.h"
 #import "Papyrus3/Papyrus3.h"
 #import <AVFoundation/AVFoundation.h>
 #import <OsiriX/DCM.h>
@@ -3411,8 +3412,14 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	return [self initWithData: im :pixelSize :xDim :yDim :xSpace :ySpace :oX :oY :oZ :NO];
 }
 
-- (id) initWithImageObj: (NSManagedObject *)entity{
-	return  [self initWithPath:[entity valueForKey:@"completePath"] :0 :1 :nil :0 :0 isBonjour:NO imageObj: entity];
++ (id) dcmPixWithImageObj: (DicomImage*) image
+{
+    return  [[[DCMPix alloc] initWithImageObj: image] autorelease];
+}
+
+- (id) initWithImageObj: (DicomImage *) image
+{
+	return  [self initWithPath: image.completePath :0 :1 :nil :[image.frameID intValue] :[image.series.id intValue] isBonjour:NO imageObj: image];
 }
 
  - (id)initWithContentsOfFile: (NSString *)file

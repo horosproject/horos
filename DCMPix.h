@@ -585,7 +585,9 @@ Note setter is different to not break existing usage. :-( */
 - (id) initwithdata :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ :(BOOL) volSize;
 - (id) initWithData :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ :(BOOL) volSize;
 
-- (id) initWithImageObj: (NSManagedObject *)entity;
++ (id) dcmPixWithImageObj: (DicomImage*) image;
+- (id) initWithImageObj: (DicomImage *) image;
+
 - (id) initWithContentsOfFile: (NSString *)file; 
 /** create an NSImage from the current pix
 * @param smallIcon  thumbnail size
