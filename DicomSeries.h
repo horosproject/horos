@@ -57,19 +57,21 @@
 @property(nonatomic, retain) NSSet* images;
 @property(nonatomic, retain) DicomStudy* study;
 
-- (NSSet *)paths;
-- (NSSet *)keyImages;
-- (NSArray *)sortedImages;
-- (NSComparisonResult)compareName:(DicomSeries*)series;
-- (NSNumber *) noFilesExcludingMultiFrames;
-- (NSNumber *) rawNoFiles;
+- (NSSet*) paths;
+- (NSSet*) keyImages;
+- (NSArray*) sortedImages;
+- (NSComparisonResult) compareName:(DicomSeries*)series;
+- (NSNumber*) noFilesExcludingMultiFrames;
+- (NSNumber*) rawNoFiles;
+- (DicomSeries*) previousSeries;
+- (DicomSeries*) nextSeries;
 @end
 
 @interface DicomSeries (CoreDataGeneratedAccessors)
 
-- (void)addImagesObject:(DicomImage *)value;
-- (void)removeImagesObject:(DicomImage *)value;
-- (void)addImages:(NSSet *)value;
-- (void)removeImages:(NSSet *)value;
+- (void) addImagesObject:(DicomImage *)value;
+- (void) removeImagesObject:(DicomImage *)value;
+- (void) addImages:(NSSet *)value;
+- (void) removeImages:(NSSet *)value;
 
 @end

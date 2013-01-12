@@ -526,6 +526,30 @@
 		return [self noFiles];
 }
 
+- (DicomSeries*) previousSeries
+{
+    NSArray *series = self.study.imageSeries;
+    
+    NSUInteger index = [series indexOfObject: self];
+    
+    if( index != NSNotFound && index > 0)
+        return [series objectAtIndex: index-1];
+    
+    return nil;
+}
+
+- (DicomSeries*) nextSeries
+{
+    NSArray *series = self.study.imageSeries;
+    
+    NSUInteger index = [series indexOfObject: self];
+    
+    if( index != NSNotFound && index < series.count-1)
+        return [series objectAtIndex: index+1];
+    
+    return nil;
+}
+
 - (void) setStudy:(DicomStudy *)study
 {
     [self willChangeValueForKey:@"study"];

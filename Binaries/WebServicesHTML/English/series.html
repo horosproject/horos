@@ -6,9 +6,26 @@
 <div id="content">
 	%INCLUDE:/errors.pvt.html%
 	%INCLUDE:/messages.pvt.html%
-
+	
 	<div class="center">
 		<div class="noleftmargin smaller">
+			
+			<table width="100%">
+			<tr>
+			<td align="right" width="45%">
+			%[IF:Series.previousSeries%
+			<a class="back" href="series?xid=%Series.previousSeries.XID%&%Info.getParameters(xid=,frames=)%">Previous Series</a>
+			%]IF:Series.previousSeries%
+			</td>
+			<td align="left" width="10%"></td>
+			<td align="left" width="45%">
+			%[IF:Series.nextSeries%
+			<a class="foreward" href="series?xid=%Series.nextSeries.XID%&%Info.getParameters(xid=,frames=)%">Next Series</a>
+			%]IF:Series.nextSeries%
+			</td>
+			</tr>
+			</table>
+			
 			%[IF:Request.frames%
 				%[IF:Series.images.count<2%
 					<img src="/image.jpg?xid=%Series.images.anyObject.XID%" class="maxwide" />

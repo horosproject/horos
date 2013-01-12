@@ -19,7 +19,7 @@
 
 -(NSComparisonResult)numericCompare:(NSString *)aString
 {
-        return [self compare:aString options:NSNumericSearch | NSCaseInsensitiveSearch];
+    return [self compare:aString options:NSNumericSearch | NSCaseInsensitiveSearch];
 }
 
 @end

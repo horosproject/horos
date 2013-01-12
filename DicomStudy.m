@@ -1459,12 +1459,33 @@ static NSRecursiveLock *dbModifyLock = nil;
 	return nil;
 }
 
++ (NSArray*) seriesSortDescriptors
+{
+    NSSortDescriptor * sortid = [NSSortDescriptor sortDescriptorWithKey:@"seriesInstanceUID" ascending:YES selector:@selector(numericCompare:)];
+    NSSortDescriptor * sortdate = [NSSortDescriptor sortDescriptorWithKey:@"date" ascending:YES];
+    NSArray * sortDescriptors = nil;
+    
+    if ([[NSUserDefaults standardUserDefaults] integerForKey: @"SERIESORDER"] == 0) sortDescriptors = [NSArray arrayWithObjects: sortid, sortdate, nil];
+    else if ([[NSUserDefaults standardUserDefaults] integerForKey: @"SERIESORDER"] == 1) sortDescriptors = [NSArray arrayWithObjects: sortdate, sortid, nil];
+    else sortDescriptors = [NSArray arrayWithObjects: sortid, sortdate, nil];
+    
+    return sortDescriptors;
+}
+
+- (NSArray*)allSeries
+{
+    return [[self primitiveValueForKey:@"series"] sortedArrayUsingDescriptors: [DicomStudy seriesSortDescriptors]];
+}
+
 - (NSArray*)imageSeries
 {
+    // Sort series with "id" & date
+    
+    
     [self.managedObjectContext lock];
 	@try {
         NSMutableArray* newArray = [NSMutableArray array];
-		for (DicomSeries* series in [self primitiveValueForKey:@"series"])
+		for (DicomSeries* series in [[self primitiveValueForKey:@"series"] sortedArrayUsingDescriptors: [DicomStudy seriesSortDescriptors]])
 			@try {
                 if ([DicomStudy displaySeriesWithSOPClassUID:series.seriesSOPClassUID andSeriesDescription:series.name])
                     [newArray addObject:series];

@@ -3243,20 +3243,11 @@ static NSConditionLock *threadLock = nil;
 		NSArray *sortedArray = nil;
 		@try
 		{
-			// Sort series with "id" & date
-			NSSortDescriptor * sortid = [[[NSSortDescriptor alloc] initWithKey:@"seriesInstanceUID" ascending:YES selector:@selector(numericCompare:)] autorelease];
-			NSSortDescriptor * sortdate = [[[NSSortDescriptor alloc] initWithKey:@"date" ascending:YES] autorelease];
-			NSArray * sortDescriptors = nil;
-			
-			if ([[NSUserDefaults standardUserDefaults] integerForKey: @"SERIESORDER"] == 0) sortDescriptors = [NSArray arrayWithObjects: sortid, sortdate, nil];
-			else if ([[NSUserDefaults standardUserDefaults] integerForKey: @"SERIESORDER"] == 1) sortDescriptors = [NSArray arrayWithObjects: sortdate, sortid, nil];
-			else sortDescriptors = [NSArray arrayWithObjects: sortid, sortdate, nil];
-			
-			if( onlyImages) sortedArray = [[item valueForKey:@"imageSeries"] sortedArrayUsingDescriptors: sortDescriptors];
-			else sortedArray = [[[item valueForKey:@"series"] allObjects] sortedArrayUsingDescriptors: sortDescriptors];
-			
-			if( onlyImages == NO)
+			if( onlyImages) sortedArray = [item valueForKey:@"imageSeries"];
+			else
 			{
+                sortedArray = [item valueForKey:@"allSeries"];
+                
 				// Put the ROI, Comments, Reports, ... at the end of the array
 				NSMutableArray *resortedArray = [NSMutableArray arrayWithArray: sortedArray];
 				NSMutableArray *SRArray = [NSMutableArray array];

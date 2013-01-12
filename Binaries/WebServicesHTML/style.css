@@ -224,6 +224,14 @@ a.back:before {
 	padding: 0;
 }
 
+a.foreward:after {
+	content: url(images/chevron_right.png);
+	vertical-align: -40%;
+	margin-right: 3px;
+	padding: 0;
+}
+
+
 /* Content */
 
 #content > div {
