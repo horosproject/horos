@@ -52,6 +52,7 @@
 #import "DicomAlbum.h"
 #import "N2Alignment.h"
 #import "AppController.h"
+#import "PluginManager.h"
 
 #import "JSON.h"
 
@@ -61,7 +62,6 @@
 #include <unistd.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-
 
 // TODO: NSUserDefaults access for keys @"logWebServer", @"notificationsEmailsSender" and @"lastNotificationsDate" must be replaced with WebPortal properties
 
@@ -1019,7 +1019,33 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
             NSString* username = [params objectForKey:@"username"];
             NSString* sha1 = [params objectForKey:@"sha1"];
             
-            if (username.length && sha1.length)
+            BOOL authenticatedByPlugin = NO;
+            
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AllowPluginAuthenticationForWebPortal"]) // Authentication through a plugin? For example, add an LDAP plugin...
+            {
+                for (id key in [PluginManager plugins])
+                {
+                    id plugin = [[PluginManager plugins] objectForKey:key];
+                    
+                    if ([plugin respondsToSelector:@selector(authenticateConnection: parameters:)])
+                    {
+                        WebPortalUser *u = [plugin performSelector: @selector(authenticateConnection: parameters:) withObject: self withObject: params];
+                        
+                        if( u)
+                        {
+                            authenticatedByPlugin = YES;
+                            
+                            self.user = u;
+                            
+                            [self.session setObject:username forKey:SessionUsernameKey];
+                            [self.session deleteChallenge];
+                            [self.portal updateLogEntryForStudy:NULL withMessage:[NSString stringWithFormat: @"Successful login (plugin) for user name: %@", username] forUser:NULL ip:asyncSocket.connectedHost];
+                        }
+                    }
+                }
+            }
+            
+            if( authenticatedByPlugin == NO && username.length && sha1.length)
             {                
                 NSString *userInternalPassword = [self passwordForUser: username];
                 
