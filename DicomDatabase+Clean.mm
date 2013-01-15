@@ -420,7 +420,7 @@ static BOOL _cleanForFreeSpaceLimitSoonReachedDisplayed = NO;
 			NSLog(@"Error: database cleaning mechanism couldn't obtain filesystem space information for %@", self.dataBaseDirPath);
 			return;
 		}
-		
+        
 		unsigned long long free = [[fsattrs objectForKey:NSFileSystemFreeSize] unsignedLongLongValue]/1024/1024; // megabytes
 
 /*		if (_lastFreeSpace != free && ([NSDate timeIntervalSinceReferenceDate] - _lastFreeSpaceLogTime) > 60*10) { // not more often than every ten minutes, log about the disk's free space
@@ -488,6 +488,7 @@ static BOOL _cleanForFreeSpaceLimitSoonReachedDisplayed = NO;
         
         // sort studiesDates by date
         [studiesDates sortUsingComparator: ^NSComparisonResult(id a, id b) {
+            if ([a count] < 2 || [b count] < 2) return NSOrderedSame;
             return [[a objectAtIndex:1] compare:[b objectAtIndex:1]];
         }];
         
