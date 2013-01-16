@@ -494,8 +494,12 @@ int main(int argc, const char *argv[])
             DcmDirectoryRecord& record = dcmdir.getRootRecord();
             
             for (unsigned int i = 0; i < record.card(); ++i)
+            {
                 DcmElement* element = record.getElement(i);
-            
+                
+                OFString ofstr;
+                element->getOFStringArray(ofstr).good();
+            }
 //            *(long*) 0x00 = 0xDEADBEEF;
         }
         
