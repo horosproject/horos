@@ -1209,7 +1209,7 @@ static NSConditionLock *threadLock = nil;
         return;
     
 	if (![NSThread isMainThread])
-		[self performSelectorOnMainThread:@selector(_observeDatabaseAddNotification:) withObject:notification waitUntilDone:NO];
+		[self performSelectorOnMainThread:@selector(_observeDatabaseAddNotification:) withObject:notification waitUntilDone:NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
 	else
     {
         [self outlineViewRefresh];
@@ -1265,7 +1265,7 @@ static NSConditionLock *threadLock = nil;
 -(void)_observeDatabaseDidChangeContextNotification:(NSNotification*)notification
 {
 	if (![NSThread isMainThread])
-		[self performSelectorOnMainThread:@selector(_observeDatabaseDidChangeContextNotification:) withObject:notification waitUntilDone:NO];
+		[self performSelectorOnMainThread:@selector(_observeDatabaseDidChangeContextNotification:) withObject:notification waitUntilDone:NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
 	else
     {
 		[self outlineViewRefresh];
@@ -1960,7 +1960,7 @@ static NSConditionLock *threadLock = nil;
 		DicomDatabase* database = [io objectAtIndex:0];
 		BOOL complete = [[io objectAtIndex:1] boolValue];
 		[database rebuild:complete];
-		[self performSelectorOnMainThread:@selector(setDatabase:) withObject:database waitUntilDone:NO];
+		[self performSelectorOnMainThread:@selector(setDatabase:) withObject:database waitUntilDone:NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
 	}
     @catch (NSException* e)
     {
@@ -2075,7 +2075,7 @@ static NSConditionLock *threadLock = nil;
 	@try
     {
 		[database rebuildSqlFile];
-		[self performSelectorOnMainThread:@selector(setDatabase:) withObject:database waitUntilDone:NO];
+		[self performSelectorOnMainThread:@selector(setDatabase:) withObject:database waitUntilDone:NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
 	}
     @catch (NSException* e)
     {
@@ -2927,7 +2927,7 @@ static NSConditionLock *threadLock = nil;
         
         if (_computingNumberOfStudiesForAlbums)
         {
-            [self performSelectorOnMainThread:@selector(delayedRefreshAlbums) withObject:nil waitUntilDone:NO];
+            [self performSelectorOnMainThread:@selector(delayedRefreshAlbums) withObject:nil waitUntilDone:NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
             return;
         }
         
@@ -2940,7 +2940,7 @@ static NSConditionLock *threadLock = nil;
         if (!idatabase)
         {
             _computingNumberOfStudiesForAlbums = NO;
-            [self performSelectorOnMainThread:@selector(delayedRefreshAlbums) withObject:nil waitUntilDone:NO];
+            [self performSelectorOnMainThread:@selector(delayedRefreshAlbums) withObject:nil waitUntilDone:NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
             return;
         }
         
@@ -2982,7 +2982,7 @@ static NSConditionLock *threadLock = nil;
             {
                 if( currentDatabase != _database) // We switched the main database...
                 {
-                    [self performSelectorOnMainThread:@selector(delayedRefreshAlbums) withObject:nil waitUntilDone:NO];
+                    [self performSelectorOnMainThread:@selector(delayedRefreshAlbums) withObject:nil waitUntilDone:NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
                     break;
                 }
                 
@@ -3077,23 +3077,22 @@ static NSConditionLock *threadLock = nil;
                         if( max > NoOfStudies.count)
                             max = NoOfStudies.count;
                         [_albumNoOfStudiesCache replaceObjectsInRange: NSMakeRange( 0, max) withObjectsFromArray: NoOfStudies];
-                        [albumTable performSelectorOnMainThread: @selector(reloadData) withObject: nil waitUntilDone: NO];
                     }
+                    [albumTable performSelectorOnMainThread: @selector(reloadData) withObject: nil waitUntilDone: NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
                 }
                 
                 if( [[NSThread currentThread] isCancelled])
                     break;
             }
             
-            @synchronized(_albumNoOfStudiesCache)
+            @synchronized (_albumNoOfStudiesCache)
             {
                 [_albumNoOfStudiesCache removeAllObjects];
-                
-                if( currentDatabase == _database) // Did we switch the main database...
+                if (currentDatabase == _database) // Did we switch the main database...
                     [_albumNoOfStudiesCache addObjectsFromArray:NoOfStudies];
-                
-                [albumTable performSelectorOnMainThread: @selector(reloadData) withObject: nil waitUntilDone: NO];
             }
+            
+            [albumTable performSelectorOnMainThread: @selector(reloadData) withObject: nil waitUntilDone: NO  modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
         }
         @catch (NSException * e)
         {
@@ -3749,7 +3748,7 @@ static NSConditionLock *threadLock = nil;
                         self.distantSearchType = curSearchType;
                         
                         if( curSearchType == searchType && [curSearchString isEqualToString: _searchString]) // There was maybe other locks in the queue...
-                            [self performSelectorOnMainThread: @selector(_refreshDatabaseDisplay) withObject: nil waitUntilDone: NO];
+                            [self performSelectorOnMainThread: @selector(_refreshDatabaseDisplay) withObject: nil waitUntilDone: NO  modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
                     }
                     @catch (NSException* e)
                     {
@@ -3877,7 +3876,7 @@ static NSConditionLock *threadLock = nil;
                         self.distantTimeIntervalEnd = to;
                         
                         if( [from isEqualToDate: timeIntervalStart] && (to == nil || [to isEqualToDate: timeIntervalEnd])) // There was maybe other locks in the queue...
-                            [self performSelectorOnMainThread: @selector(_refreshDatabaseDisplay) withObject: nil waitUntilDone: NO];
+                            [self performSelectorOnMainThread: @selector(_refreshDatabaseDisplay) withObject: nil waitUntilDone: NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
                     }
                     @catch (NSException* e)
                     {
@@ -4003,7 +4002,7 @@ static NSConditionLock *threadLock = nil;
                         self.smartAlbumDistantName = albumName;
                         
                         if( [albumName isEqualToString: self.selectedAlbumName])
-                            [self performSelectorOnMainThread: @selector(_refreshDatabaseDisplay) withObject: nil waitUntilDone: NO];
+                            [self performSelectorOnMainThread: @selector(_refreshDatabaseDisplay) withObject: nil waitUntilDone: NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
                     }
                     @catch (NSException* e)
                     {
@@ -4071,7 +4070,7 @@ static NSConditionLock *threadLock = nil;
                 [mergedStudies sortUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: NO]]];
                 
                 if( [self.comparativePatientUID compare: studySelected.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
-                    [self performSelectorOnMainThread: @selector(refreshComparativeStudies:) withObject: mergedStudies waitUntilDone: NO]; // Already display the local studies, we will display the merged studies later
+                    [self performSelectorOnMainThread: @selector(refreshComparativeStudies:) withObject: mergedStudies waitUntilDone: NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]]; // Already display the local studies, we will display the merged studies later
             }
             @catch (NSException* e)
             {
@@ -4161,7 +4160,7 @@ static NSConditionLock *threadLock = nil;
                             [mergedStudies sortUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: NO]]];
                             
                             if( [self.comparativePatientUID compare: studySelected.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
-                                [self performSelectorOnMainThread: @selector(refreshComparativeStudies:) withObject: mergedStudies waitUntilDone: NO];
+                                [self performSelectorOnMainThread: @selector(refreshComparativeStudies:) withObject: mergedStudies waitUntilDone: NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
                         }
                         @catch (NSException* e)
                         {
@@ -8605,7 +8604,7 @@ static BOOL withReset = NO;
                         }
                         
                         if( [NSThread isMainThread] == NO)
-                            [self performSelectorOnMainThread:@selector(matrixDisplayIcons:) withObject:nil waitUntilDone:NO];
+                            [self performSelectorOnMainThread:@selector(matrixDisplayIcons:) withObject:nil waitUntilDone:NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
                     }
                 }
                 
@@ -8677,7 +8676,7 @@ static BOOL withReset = NO;
         }
         
         if( [NSThread isMainThread] == NO)
-            [self performSelectorOnMainThread:@selector(matrixDisplayIcons:) withObject:nil waitUntilDone:NO];
+            [self performSelectorOnMainThread:@selector(matrixDisplayIcons:) withObject:nil waitUntilDone:NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
         else
             [self matrixDisplayIcons: nil];
     }
@@ -12798,7 +12797,7 @@ static NSArray*	openSubSeriesArray = nil;
         NSImage *bannerImage = [[[NSImage alloc] initWithData: imageData] autorelease];
     
         if( bannerImage)
-            [self performSelectorOnMainThread: @selector(installBanner:) withObject: bannerImage waitUntilDone: NO];
+            [self performSelectorOnMainThread: @selector(installBanner:) withObject: bannerImage waitUntilDone: NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
     }
     
     [pool release];
@@ -16538,7 +16537,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
     if( [NSThread isMainThread] == NO)
     {
-        [self performSelectorOnMainThread: @selector( rtstructNotification:)  withObject: note waitUntilDone: NO];
+        [self performSelectorOnMainThread: @selector( rtstructNotification:)  withObject: note waitUntilDone: NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
     }
     else
     {

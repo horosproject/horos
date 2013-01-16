@@ -239,10 +239,10 @@ enum {
 			db = [RemoteDicomDatabase databaseForLocation:ap name:name];
 		}
 		
-		[self performSelectorOnMainThread:@selector(setDatabase:) withObject:db waitUntilDone:NO];
+		[self performSelectorOnMainThread:@selector(setDatabase:) withObject:db waitUntilDone:NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
 	} @catch (NSException* e)
     {
-		[self performSelectorOnMainThread:@selector(selectCurrentDatabaseSource) withObject:nil waitUntilDone:NO];
+		[self performSelectorOnMainThread:@selector(selectCurrentDatabaseSource) withObject:nil waitUntilDone:NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
 		if (![e.description isEqualToString:@"Cancelled."])
         {
 			N2LogExceptionWithStackTrace(e);
@@ -431,7 +431,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 {
 	if (![NSThread isMainThread])
     {
-        [self performSelectorOnMainThread:@selector(_observeValueForKeyPathOfObjectChangeContext:) withObject:[NSArray arrayWithObjects: keyPath, object, change, [NSValue valueWithPointer:context], nil] waitUntilDone:NO];
+        [self performSelectorOnMainThread:@selector(_observeValueForKeyPathOfObjectChangeContext:) withObject:[NSArray arrayWithObjects: keyPath, object, change, [NSValue valueWithPointer:context], nil] waitUntilDone:NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
         return;
     }
     
@@ -1130,7 +1130,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
         self.detected = YES;
         
 		if ([[NSUserDefaults standardUserDefaults] boolForKey:@"autoSelectSourceCDDVD"] && [[NSFileManager defaultManager] fileExistsAtPath:self.devicePath] && autoselect)
-			[[BrowserController currentBrowser] performSelectorOnMainThread:@selector(setDatabaseFromSourceIdentifier:) withObject:self waitUntilDone:NO];
+			[[BrowserController currentBrowser] performSelectorOnMainThread:@selector(setDatabaseFromSourceIdentifier:) withObject:self waitUntilDone:NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
         else [[BrowserController currentBrowser] redrawSources];
 	} @catch (NSException* e)
     {
