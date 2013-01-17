@@ -2194,20 +2194,27 @@ typedef struct _xyzArray
 			size *= sizeof( float);
 			
 			dataFRGB = (float*) malloc( size);
-			
-			size /= 4;
-			
-			dstPtr = dataFRGB;
-			for( i = 0 ; i < size; i++)
-			{
-				srcPtr++;
-				val = *srcPtr++;
-				val += *srcPtr++;
-				val += *srcPtr++;
-				*dstPtr++ = val/3;
-			}
-			
-			data = dataFRGB;
+			if( dataFRGB)
+            {
+                size /= 4;
+                
+                dstPtr = dataFRGB;
+                for( i = 0 ; i < size; i++)
+                {
+                    srcPtr++;
+                    val = *srcPtr++;
+                    val += *srcPtr++;
+                    val += *srcPtr++;
+                    *dstPtr++ = val/3;
+                }
+                
+                data = dataFRGB;
+            }
+            else
+            {
+                NSLog( @"***** not enough memory error dataFRGB = nil");
+                return -1;
+            }
 		}
 		
 		reader = vtkImageImport::New();
