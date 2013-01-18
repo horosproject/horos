@@ -183,6 +183,7 @@
 	[[[self mainView] window] makeFirstResponder: nil];
 	
 	[WebPortal.defaultWebPortal.database save:NULL];
+    [WebPortal.defaultWebPortal.database.managedObjectContext reset];
 	
 	[BrowserController currentBrowser].testPredicate = nil;
 	[[BrowserController currentBrowser] outlineViewRefresh];
@@ -244,6 +245,7 @@
 	[sheet orderOut:NULL];
     
     [[self managedObjectContext] save: NULL];
+    [[self managedObjectContext] reset];
 }
 
 @end
