@@ -22,6 +22,10 @@
 	NSManagedObjectContext* _managedObjectContext;
     id _mainDatabase;
     volatile BOOL _isDeallocating;
+    
+#ifndef NDEBUG
+    NSThread *associatedThread;
+#endif
 }
 
 @property(readonly,retain) NSString* sqlFilePath;
@@ -36,6 +40,7 @@
 -(BOOL)lockBeforeDate:(NSDate*) date;
 -(BOOL)tryLock;
 -(void)unlock;
+-(void) checkForCorrectContextThread;
 // write locking uses writeLock member
 //-(void)writeLock;
 //-(BOOL)tryWriteLock;

@@ -1437,7 +1437,9 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
         [randomArray addObject:@"yahoo/google/osirix/microsoft"];
     paths = randomArray;
 #endif
-
+    
+    [self checkForCorrectContextThread];
+    
 	NSMutableArray* retArray = nil; // This array can be HUGE when rebuild a DB with millions of images
     
     if( returnArray)
@@ -1653,6 +1655,8 @@ static BOOL protectionAgainstReentry = NO;
 
 -(NSArray*)addFilesDescribedInDictionaries:(NSArray*)dicomFilesArray postNotifications:(BOOL)postNotifications rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX returnArray: (BOOL) returnArray
 {
+    [self checkForCorrectContextThread];
+    
 	NSThread* thread = [NSThread currentThread];
     thread.status = [NSString stringWithFormat:NSLocalizedString(@"Adding %@", nil), N2LocalizedSingularPluralCount(dicomFilesArray.count, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil))];
     
@@ -2529,7 +2533,7 @@ static BOOL protectionAgainstReentry = NO;
                 if( succeed)
                 {
                     thread.status = NSLocalizedString(@"Indexing the files...", nil);
-                    objects = [self addFilesAtPaths:copiedFiles postNotifications:YES dicomOnly:onlyDICOM rereadExistingItems:NO];
+                    objects = [[self.mainDatabase independentDatabase] addFilesAtPaths:copiedFiles postNotifications:YES dicomOnly:onlyDICOM rereadExistingItems:NO];
 //                    total += [copiedFiles count];
                 }
                 else if( copyFiles)

@@ -114,6 +114,16 @@
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize mainDatabase = _mainDatabase;
 
+-(void) checkForCorrectContextThread
+{
+#ifndef NDEBUG
+    if( associatedThread && associatedThread != [NSThread currentThread])
+    {
+        NSLog( @"--- warning : managedObjectContext was created in %@, and is now used in %@ (mainThread=%d)", associatedThread.name, [[NSThread currentThread] name], [NSThread isMainThread]);
+    }
+#endif
+}
+
 -(BOOL)isMainDatabase {
     return (_mainDatabase == nil);
 }
@@ -138,7 +148,12 @@
         
         [prevManagedObjectContext unlock];
         [prevManagedObjectContext release];
-
+        
+#ifndef NDEBUG
+        [associatedThread release];
+        associatedThread = [[NSThread currentThread] retain];
+#endif
+        
         [self didChangeValueForKey:@"managedObjectContext"];
     }
 }
@@ -345,7 +360,7 @@
     self.mainDatabase = mainDbReference;
 	
 	self.managedObjectContext = c? c : [self contextAtPath:p];
-	
+    
 	return self;
 }
 
@@ -354,6 +369,11 @@
     if (_isDeallocating)
         return;
     _isDeallocating = YES;
+    
+#ifndef NDEBUG
+    [associatedThread release];
+    associatedThread = nil;
+#endif
     
     [NSNotificationCenter.defaultCenter removeObserver:self];
     
@@ -383,6 +403,9 @@
 }
 
 -(id)objectWithID:(id)oid {
+    
+    [self checkForCorrectContextThread];
+    
     [self.managedObjectContext lock];
     @try {
         if ([oid isKindOfClass:[NSManagedObjectID class]]) {
@@ -405,6 +428,9 @@
 }
 
 -(NSArray*)objectsWithIDs:(NSArray*)objectIDs {
+    
+    [self checkForCorrectContextThread];
+    
     [self.managedObjectContext lock];
     @try {
         NSMutableArray* r = [NSMutableArray arrayWithCapacity:objectIDs.count];
@@ -426,6 +452,9 @@
 }
 
 -(NSEntityDescription*)entityForName:(NSString*)name {
+    
+    [self checkForCorrectContextThread];
+    
 	return [NSEntityDescription entityForName:name inManagedObjectContext:self.managedObjectContext];
 }
 
@@ -445,6 +474,8 @@
 
 -(NSArray*)objectsForEntity:(id)e predicate:(NSPredicate*)p error:(NSError**)err {
 	[self _entity:&e];
+    
+    [self checkForCorrectContextThread];
     
     NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
 	req.entity = e;
@@ -504,6 +535,8 @@
 	
 	BOOL b = NO;
 	
+    [self checkForCorrectContextThread];
+    
     [self.managedObjectContext lock];
     
     @try {
