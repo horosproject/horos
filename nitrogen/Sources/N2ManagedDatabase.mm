@@ -459,8 +459,9 @@
 
 -(id)objectWithID:(id)oid {
     
+#ifndef NDEBUG
     [self checkForCorrectContextThread];
-    
+#endif
     [self.managedObjectContext lock];
     @try {
         if ([oid isKindOfClass:[NSManagedObjectID class]]) {
@@ -484,7 +485,9 @@
 
 -(NSArray*)objectsWithIDs:(NSArray*)objectIDs {
     
+#ifndef NDEBUG
     [self checkForCorrectContextThread];
+#endif
     
     [self.managedObjectContext lock];
     @try {
@@ -508,7 +511,9 @@
 
 -(NSEntityDescription*)entityForName:(NSString*)name {
     
+#ifndef NDEBUG
     [self checkForCorrectContextThread];
+#endif
     
 	return [NSEntityDescription entityForName:name inManagedObjectContext:self.managedObjectContext];
 }
@@ -530,7 +535,9 @@
 -(NSArray*)objectsForEntity:(id)e predicate:(NSPredicate*)p error:(NSError**)err {
 	[self _entity:&e];
     
+#ifndef NDEBUG
     [self checkForCorrectContextThread];
+#endif
     
     NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
 	req.entity = e;
@@ -590,7 +597,9 @@
 	
 	BOOL b = NO;
 	
+#ifndef NDEBUG
     [self checkForCorrectContextThread];
+#endif
     
     [self.managedObjectContext lock];
     
