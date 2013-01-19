@@ -516,7 +516,7 @@ static DicomDatabase* activeLocalDatabase = nil;
         }
     }
     if( found == NO)
-        N2LogStackTrace( @"WTF");
+        N2LogStackTrace( @"*************** WTF");
     
     [databasesDictionaryLock unlock]; //We are locked from -(oneway void) release
     
@@ -565,11 +565,11 @@ static DicomDatabase* activeLocalDatabase = nil;
         [self lock];
         @try
         {
-            
+            DicomDatabase *idatabase = self.independentDatabase;
             
             NSArray* independentObjects = [notification.userInfo objectForKey:OsirixAddToDBNotificationImagesArray];
             if (independentObjects) {
-                NSArray* selfObjects = [self objectsWithIDs:independentObjects];
+                NSArray* selfObjects = [idatabase objectsWithIDs:independentObjects];
                 if (selfObjects.count != independentObjects.count)
                     NSLog(@"Warning: independent database is notifying about %d new images, but the main database can only find %d.", (int)independentObjects.count, (int)selfObjects.count);
                 [userInfo setObject:selfObjects forKey:OsirixAddToDBNotificationImagesArray];
@@ -579,7 +579,7 @@ static DicomDatabase* activeLocalDatabase = nil;
             if (independentDictionary) {
                 NSMutableDictionary* selfDictionary = [NSMutableDictionary dictionary];
                 for (NSString* key in independentDictionary)
-                    [selfDictionary setObject:[self objectsWithIDs:[independentDictionary objectForKey:key]] forKey:key];
+                    [selfDictionary setObject:[idatabase objectsWithIDs:[independentDictionary objectForKey:key]] forKey:key];
                 [userInfo setObject:selfDictionary forKey:OsirixAddToDBNotificationImagesPerAETDictionary];
             }
         }
@@ -1438,7 +1438,9 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
     paths = randomArray;
 #endif
     
+    #ifndef NDEBUG
     [self checkForCorrectContextThread];
+    #endif
     
 	NSMutableArray* retArray = nil; // This array can be HUGE when rebuild a DB with millions of images
     
@@ -1655,7 +1657,9 @@ static BOOL protectionAgainstReentry = NO;
 
 -(NSArray*)addFilesDescribedInDictionaries:(NSArray*)dicomFilesArray postNotifications:(BOOL)postNotifications rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX returnArray: (BOOL) returnArray
 {
+#ifndef NDEBUG
     [self checkForCorrectContextThread];
+#endif
     
 	NSThread* thread = [NSThread currentThread];
     thread.status = [NSString stringWithFormat:NSLocalizedString(@"Adding %@", nil), N2LocalizedSingularPluralCount(dicomFilesArray.count, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil))];

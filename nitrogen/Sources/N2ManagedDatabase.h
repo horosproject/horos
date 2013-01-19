@@ -28,6 +28,10 @@
 #endif
 }
 
+#ifndef NDEBUG
+@property(readonly) NSThread* associatedThread;
+#endif
+
 @property(readonly,retain) NSString* sqlFilePath;
 @property(readonly) NSManagedObjectModel* managedObjectModel;
 @property(readwrite,retain) NSManagedObjectContext* managedObjectContext; // only change this value if you know what you're doing
@@ -40,7 +44,10 @@
 -(BOOL)lockBeforeDate:(NSDate*) date;
 -(BOOL)tryLock;
 -(void)unlock;
+#ifndef NDEBUG
 -(void) checkForCorrectContextThread;
+-(void) checkForCorrectContextThread: (NSManagedObjectContext*) c;
+#endif
 // write locking uses writeLock member
 //-(void)writeLock;
 //-(BOOL)tryWriteLock;
@@ -56,6 +63,7 @@
 -(id)initWithPath:(NSString*)sqlFilePath context:(NSManagedObjectContext*)context;
 -(id)initWithPath:(NSString*)sqlFilePath context:(NSManagedObjectContext*)context mainDatabase:(N2ManagedDatabase*)mainDbReference;
 
+- (void) renewManagedObjectContext;
 -(NSManagedObjectContext*)independentContext:(BOOL)independent;
 -(NSManagedObjectContext*)independentContext;
 -(id)independentDatabase;

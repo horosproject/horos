@@ -250,7 +250,9 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 {
 	self.user = NULL;
 	
-	NSArray* users = [self.portal.database objectsForEntity:self.portal.database.userEntity predicate:[NSPredicate predicateWithFormat:@"name == %@", username]];
+    WebPortalDatabase *idatabase = [self.portal.database independentDatabase];
+    
+	NSArray* users = [idatabase objectsForEntity:idatabase.userEntity predicate:[NSPredicate predicateWithFormat:@"name == %@", username]];
 	if (users.count)
 		self.user = users.lastObject;
 	
@@ -1081,7 +1083,9 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	
 	if (session && [session objectForKey:SessionUsernameKey])
     {
-		self.user = [self.portal.database userWithName:[session objectForKey:SessionUsernameKey]];
+        WebPortalDatabase *idatabase = [self.portal.database independentDatabase];
+        
+		self.user = [idatabase userWithName:[session objectForKey:SessionUsernameKey]];
         
         if( [session objectForKey: SessionLastActivityDateKey])
         {

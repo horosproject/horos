@@ -41,6 +41,9 @@
 @synthesize database = _database;
 
 -(void)dealloc {
+#ifndef NDEBUG
+    [_database checkForCorrectContextThread: self];
+#endif
     [NSNotificationCenter.defaultCenter removeObserver:self];
 	self.database = nil;
 	[super dealloc];
@@ -48,6 +51,9 @@
 
 -(BOOL)save:(NSError**)error {
     [self lock];
+#ifndef NDEBUG
+    [_database checkForCorrectContextThread: self];
+#endif
     @try {
         return [super save:error];
         for (NSPersistentStore* ps in [[self persistentStoreCoordinator] persistentStores])
@@ -64,6 +70,9 @@
 
 -(NSManagedObject*)existingObjectWithID:(NSManagedObjectID*)objectID error:(NSError**)error {
     [self lock];
+#ifndef NDEBUG
+    [_database checkForCorrectContextThread: self];
+#endif
     @try {
         return [super existingObjectWithID:objectID error:error];
     } @catch (...) {
@@ -85,6 +94,10 @@
     [self retain];
 //    [self.persistentStoreCoordinator lock];
     [super lock];
+    
+#ifndef NDEBUG
+    [_database checkForCorrectContextThread: self];
+#endif
     // for debug
 /*    if (!lockhist)
         lockhist = [[NSMutableArray alloc] init];
@@ -105,24 +118,49 @@
     [self autorelease];
 }
 
+#ifndef NDEBUG
+- (NSArray *)executeFetchRequest:(NSFetchRequest *)request error:(NSError **)error
+{
+    [_database checkForCorrectContextThread: self];
+    
+	return [super executeFetchRequest: request error: error];
+}
+
+- (void)deleteObject:(NSManagedObject *)object
+{
+    [_database checkForCorrectContextThread: self];
+    
+	return [super deleteObject: object];
+}
+#endif
+
 @end
 
 
 @implementation N2ManagedDatabase
-
+#ifndef NDEBUG
+@synthesize associatedThread;
+#endif
 @synthesize sqlFilePath = _sqlFilePath;
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize mainDatabase = _mainDatabase;
 
+#ifndef NDEBUG
 -(void) checkForCorrectContextThread
 {
-#ifndef NDEBUG
-    if( associatedThread && associatedThread != [NSThread currentThread])
-    {
-        NSLog( @"--- warning : managedObjectContext was created in %@, and is now used in %@ (mainThread=%d)", associatedThread.name, [[NSThread currentThread] name], [NSThread isMainThread]);
-    }
-#endif
+    [self checkForCorrectContextThread: _managedObjectContext];
 }
+
+-(void) checkForCorrectContextThread: (NSManagedObjectContext*) c
+{
+
+    if( c == _managedObjectContext && associatedThread && associatedThread != [NSThread currentThread])
+    {
+        N2LogStackTrace( @"--- warning : managedObjectContext was created in (%@), and is now used in (%@) (mainThread=%d)", associatedThread.name, [[NSThread currentThread] name], [NSThread isMainThread]);
+        NSLog( @"--");
+    }
+}
+#endif
 
 -(BOOL)isMainDatabase {
     return (_mainDatabase == nil);
@@ -182,6 +220,11 @@
 
 -(BOOL)migratePersistentStoresAutomatically {
 	return YES;
+}
+
+- (void) renewManagedObjectContext
+{
+    self.managedObjectContext = [self contextAtPath: self.sqlFilePath];
 }
 
 -(NSManagedObjectContext*)contextAtPath:(NSString*)sqlFilePath {

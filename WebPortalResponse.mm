@@ -559,21 +559,24 @@ static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
 	
 	if ([key isEqual:@"proposeShare"])
     {
-		if (!wpc.user || wpc.user.shareStudyWithUser.boolValue) {
+		if (!wpc.user || wpc.user.shareStudyWithUser.boolValue)
+        {
+            WebPortalDatabase *idatabase = [wpc.portal.database independentDatabase];
+            
 			NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
-			req.entity = [wpc.portal.database entityForName:@"User"];
+			req.entity = [idatabase entityForName:@"User"];
 			req.predicate = [NSPredicate predicateWithValue:YES];
             
             NSNumber *result = [NSNumber numberWithBool:NO];
-            [wpc.portal.database.managedObjectContext lock];
+            [idatabase.managedObjectContext lock];
             @try {
-                result = [NSNumber numberWithBool: [wpc.portal.database.managedObjectContext countForFetchRequest:req error:NULL] > (wpc.user? 1 : 0) ];
+                result = [NSNumber numberWithBool: [idatabase.managedObjectContext countForFetchRequest:req error:NULL] > (wpc.user? 1 : 0) ];
             }
             @catch (NSException *e) {
                 NSLog(@"***** [WebPortalRosponse object:valueForKeyPath:context] %@", e);
             }
             @finally {
-                [wpc.portal.database.managedObjectContext unlock];
+                [idatabase.managedObjectContext unlock];
             }
 			return result;
 		} else

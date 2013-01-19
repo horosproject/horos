@@ -32,7 +32,7 @@
 // TODO: we're accessing the defaultWebPortal database, and this is bad
 -(DicomStudy*)study
 {
-    DicomDatabase* ddb = [[WebPortal defaultWebPortal] dicomDatabase];
+    DicomDatabase* ddb = [[[WebPortal defaultWebPortal] dicomDatabase] independentDatabase];
     
 	NSArray* studies = [ddb objectsForEntity:ddb.studyEntity predicate:[NSPredicate predicateWithFormat: @"patientUID BEGINSWITH[cd] %@ AND studyInstanceUID == %@", self.patientUID, self.studyInstanceUID]];
 	

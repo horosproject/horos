@@ -166,7 +166,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
         
         N2ManagedDatabase* db = nil;
         if ([axidEntityName isEqualToString:@"User"])
-            db = self.portal.database;
+            db = [self.portal.database independentDatabase];
         else
             db = self.independentDicomDatabase;
         
@@ -1051,12 +1051,12 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                 // add study to specific study list for this user
                 if (![[destUser.studies.allObjects valueForKey:@"studyInstanceUID"] containsObject:study.studyInstanceUID])
                 {
-                    WebPortalStudy* wpStudy = [NSEntityDescription insertNewObjectForEntityForName:@"Study" inManagedObjectContext:self.portal.database.managedObjectContext];
+                    WebPortalStudy* wpStudy = [NSEntityDescription insertNewObjectForEntityForName:@"Study" inManagedObjectContext: destUser.managedObjectContext];
                     wpStudy.user = destUser;
                     wpStudy.patientUID = study.patientUID;
                     wpStudy.studyInstanceUID = study.studyInstanceUID;
                     wpStudy.dateAdded = [NSDate dateWithTimeIntervalSinceReferenceDate:[[NSUserDefaults standardUserDefaults] doubleForKey:@"lastNotificationsDate"]];
-                    [self.portal.database save:NULL];
+                    [destUser.managedObjectContext save:NULL];
                     
                     [response.tokens addMessage:[NSString stringWithFormat:NSLocalizedString(@"This study is now shared with <b>%@</b>.", @"Web Portal, study, share, ok (%@ is destUser.name)"), destUser.name]];
                 }
@@ -1128,8 +1128,10 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		// Share
 		
 		NSMutableArray* shareDestinations = [NSMutableArray array];
-		if (!user || user.shareStudyWithUser.boolValue) {
-			NSArray* users = [[self.portal.database objectsForEntity:self.portal.database.userEntity] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"name" ascending: YES] autorelease]]];
+		if (!user || user.shareStudyWithUser.boolValue)
+        {
+            WebPortalDatabase *idatabase = [self.portal.database independentDatabase];
+			NSArray* users = [[idatabase objectsForEntity:idatabase.userEntity] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"name" ascending: YES] autorelease]]];
 			
 			for (WebPortalUser* u in users)
 				if (u != self.user)
@@ -1382,8 +1384,8 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	
 	[response.tokens setObject:NSLocalizedString(@"Administration", @"Web Portal, admin, index, title") forKey:@"PageTitle"];
     
-    // Ne faut-il pas un lock? Si. On switch to database objectsforentity et le lock est là.
-	[response.tokens setObject:[[self.portal.database objectsForEntity:self.portal.database.userEntity] sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES]]] forKey:@"Users"];
+    WebPortalDatabase *idatabase = [self.portal.database independentDatabase];
+	[response.tokens setObject:[[idatabase objectsForEntity:idatabase.userEntity] sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES]]] forKey:@"Users"];
 	
 	response.templateString = [self.portal stringForPath:@"admin/index.html"];
 	response.mimeType = @"text/html";
@@ -1401,21 +1403,24 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	NSString* action = [parameters objectForKey:@"action"];
 	NSString* originalName = NULL;
 	
-	if ([action isEqual:@"delete"]) {
+    WebPortalDatabase *idatabase = [self.portal.database independentDatabase];
+    
+	if ([action isEqual:@"delete"])
+    {
 		originalName = [parameters objectForKey:@"originalName"];
-		NSManagedObject* tempUser = [self.portal.database userWithName:originalName];
+		NSManagedObject* tempUser = [idatabase userWithName:originalName];
 		if (!tempUser)
 			[response.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"Couldn't delete user <b>%@</b> because he doesn't exist.", @"Web Portal, admin, user edition, delete error (%@ is user.name)"), originalName]];
 		else {
-			[self.portal.database.managedObjectContext deleteObject:tempUser];
-			[self.portal.database save:NULL];
+			[idatabase.managedObjectContext deleteObject:tempUser];
+			[idatabase save:NULL];
 			[response.tokens addMessage:[NSString stringWithFormat:NSLocalizedString(@"User <b>%@</b> successfully deleted.", @"Web Portal, admin, user edition, delete ok (%@ is user.name)"), originalName]];
 		}
 	}
 	
 	if ([action isEqual:@"save"]) {
 		originalName = [parameters objectForKey:@"originalName"];
-		WebPortalUser* webUser = [self.portal.database userWithName:originalName];
+		WebPortalUser* webUser = [idatabase userWithName:originalName];
 		if (!webUser) {
 			[response.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"Couldn't save changes for user <b>%@</b> because he doesn't exist.", @"Web Portal, admin, user edition, save error (%@ is user.name)"), originalName]];
 			userRecycleParams = YES;
@@ -1515,7 +1520,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 					if (![remainingStudies containsObject:iwpStudy])
 						[webUser removeStudiesObject:iwpStudy];
 				
-				[self.portal.database save:NULL];
+				[idatabase save:NULL];
 				
 				[response.tokens addMessage:[NSString stringWithFormat:NSLocalizedString(@"Changes for user <b>%@</b> successfully saved.", nil), webUser.name]];
 				luser = webUser;
@@ -1525,12 +1530,12 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	}
 	
 	if ([action isEqual:@"new"]) {
-		luser = [self.portal.database newUser];
+		luser = [idatabase newUser];
 	}
 	
 	if (!action) { // edit
 		originalName = [self.parameters objectForKey:@"name"];
-		luser = [self.portal.database userWithName:originalName];
+		luser = [idatabase userWithName:originalName];
 		if (!luser)
 			[response.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"Couldn't find user with name <b>%@</b>.", nil), originalName]];
 	}

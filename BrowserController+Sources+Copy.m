@@ -42,7 +42,7 @@
 			[imagePaths addObject:image.completePath];
 	
 	thread.status = NSLocalizedString(@"Opening database...", nil);
-	DicomDatabase* dstDatabase = [DicomDatabase databaseAtPath:destination.location];
+	DicomDatabase* dstDatabase = [[DicomDatabase databaseAtPath:destination.location] independentDatabase];
 	
     thread.status = [NSString stringWithFormat:NSLocalizedString(@"Copying %d %@...", nil), imagePaths.count, (imagePaths.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil)) ];
 	NSMutableArray* dstPaths = [NSMutableArray array];

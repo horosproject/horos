@@ -1348,6 +1348,8 @@ static NSConditionLock *threadLock = nil;
             }
 			
 			_database = [db retain];
+            [_database renewManagedObjectContext]; // We want to be sure to use our 'clean' managedobjectcontext (not used in any other threads)
+            
 			if ([NSUserDefaults canActivateAnyLocalDatabase] && [db isLocal] && ![db isReadOnly])
 				[DicomDatabase setActiveLocalDatabase:db];
 			if (db) [self selectCurrentDatabaseSource];
