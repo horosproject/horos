@@ -115,7 +115,7 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 		}
 		
         c.closeOnRemoteClose = YES;
-		c.maximumReadSizePerEvent = 1024*32;
+		c.maximumReadSizePerEvent = 1024*128;
 		if (request.length) [c writeData:request];
 		
         #define TIMEOUT 45
@@ -129,7 +129,7 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
             {
                 lastTimeInterval = [NSDate timeIntervalSinceReferenceDate] + 1;
                 
-                if( (int) ([NSDate timeIntervalSinceReferenceDate] - c.lastEventTimeInterval) > 1)
+                if( (int) ([NSDate timeIntervalSinceReferenceDate] - c.lastEventTimeInterval) > 1 && c.lastEventTimeInterval > 0)
                     NSLog( @"****** N2Connection stalled: %d", (int) ([NSDate timeIntervalSinceReferenceDate] - c.lastEventTimeInterval));
                 
                 if( [NSDate timeIntervalSinceReferenceDate] - c.lastEventTimeInterval > TIMEOUT)
@@ -175,8 +175,8 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
         _port = port;
         _tlsFlag = tlsFlag;
         
-        _inputBuffer = [[NSMutableData alloc] initWithCapacity:1024];
-        _outputBuffer = [[NSMutableData alloc] initWithCapacity:1024];
+        _inputBuffer = [[NSMutableData alloc] initWithCapacity:1024*128];
+        _outputBuffer = [[NSMutableData alloc] initWithCapacity:1024*128];
         
         if (is && os) {
             _status = N2ConnectionStatusConnecting;
@@ -359,8 +359,8 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
                         break;
                 } else {
                     if (length < 0) {
-                        NSLog(@"Warning: [NSInputStream read:maxLength:] returned %d", (int)length);
-                        [self performSelector:@selector(close) withObject:nil afterDelay:0];
+                        [NSException raise:NSGenericException format:@"%@", @"Warning: [NSInputStream read:maxLength:]"];
+//                        [self performSelector:@selector(close) withObject:nil afterDelay:0];
                     }
                 }
             } while (length > 0);

@@ -132,6 +132,18 @@
     
 	return [super deleteObject: object];
 }
+- (NSManagedObject *)objectWithID:(NSManagedObjectID *)objectID
+{
+    [_database checkForCorrectContextThread: self];
+    
+    return [super objectWithID: objectID];
+}
+- (NSUInteger)countForFetchRequest:(NSFetchRequest *)request error:(NSError **)error
+{
+    [_database checkForCorrectContextThread: self];
+    
+    return [super countForFetchRequest: request error: error];
+}
 #endif
 
 @end

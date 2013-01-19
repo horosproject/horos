@@ -104,7 +104,7 @@
 	self = [super initWithPath:path];
 	_baseBaseDirPath = [path retain];
 	_updateLock = [[NSRecursiveLock alloc] init];
-#define MAX_SIMULTANEOUS_NONURGENT_CONNECTIONS 5
+    #define MAX_SIMULTANEOUS_NONURGENT_CONNECTIONS 4
     _connectionsSemaphoreId = dispatch_semaphore_create(MAX_SIMULTANEOUS_NONURGENT_CONNECTIONS);
 
 	self.host = host;
@@ -250,7 +250,7 @@
                 return [N2Connection sendSynchronousRequest:request toAddress:self.host port:self.port dataHandlerTarget:target selector:sel context:context];
             } @catch (NSException* e) {
                 N2LogExceptionWithStackTrace(e);
-                [NSThread sleepForTimeInterval:0.005*retries*retries];
+                [NSThread sleepForTimeInterval:0.1*(retries+1)*(retries+1)];
             }
     } @catch (NSException* e) {
     } @finally {

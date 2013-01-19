@@ -2362,7 +2362,8 @@ static volatile int numberOfThreadsForRelisce = 0;
             if( [[loadingThread.threadDictionary objectForKey: @"loadingPercentage"] floatValue] != 1)
             {
                 loading = [NSString stringWithFormat:NSLocalizedString(@" - %2.f%%", nil), [[loadingThread.threadDictionary objectForKey: @"loadingPercentage"] floatValue] * 100.];
-                [NSTimer scheduledTimerWithTimeInterval:0.3 target:self selector:@selector(setWindowTitle:)  userInfo:nil repeats:NO];
+                [NSTimer cancelPreviousPerformRequestsWithTarget:self selector:@selector(setWindowTitle:) object:nil];
+                [NSTimer scheduledTimerWithTimeInterval:0.3 target:self selector:@selector(setWindowTitle:) userInfo:nil repeats:NO];
             }
         }
 	}
@@ -20226,12 +20227,23 @@ int i,j,l;
             do
             {
                 [NSThread sleepForTimeInterval: 0.1];
+                int percentage = 0, lastPercentage = 0;
                 
                 @synchronized( loadingThread)
                 {
                     isExecuting = loadingThread.isExecuting;
+                    percentage = [[loadingThread.threadDictionary objectForKey: @"loadingPercentage"] floatValue] * 100.;
                 }
                 
+                if( percentage != lastPercentage)
+                {
+                    lastPercentage = percentage;
+                    
+                    [self setWindowTitle: self];
+                    [[self window] display];
+                    
+                    [splash setString: [NSString stringWithFormat: NSLocalizedString(@"Data loading... %d%%", nil), percentage]];
+                }
             }
             while( isExecuting);
 		}
