@@ -6352,7 +6352,7 @@ static NSConditionLock *threadLock = nil;
 					NSTask *aTask = [[[NSTask alloc] init] autorelease];		
 					[aTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
 					[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/dsr2html"]];
-					[aTask setArguments: [NSArray arrayWithObjects: @"+X1", @"--unknown-relationship", @"--ignore-constraints", @"--ignore-item-errors", @"--skip-invalid-items", [im valueForKey: @"completePath"], htmlpath, nil]];		
+					[aTask setArguments: [NSArray arrayWithObjects: @"+X1", @"--unknown-relationship", @"--ignore-constraints", @"--ignore-item-errors", @"--skip-invalid-items", [im completePathResolved], htmlpath, nil]];
 					[aTask launch];
 					while( [aTask isRunning])
                         [NSThread sleepForTimeInterval: 0.1];

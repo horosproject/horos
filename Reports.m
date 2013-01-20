@@ -539,11 +539,7 @@ static id aedesc_to_id(AEDesc *desc)
     [[NSFileManager defaultManager] removeItemAtPath:destinationFile error: nil];
     
     NSString* inTemplateName = templateName;
-    
-    
-    
     NSString* sourceData = [self generateWordReportMergeDataForStudy:study];
-	
     NSString* templatePath = nil;
     
     NSString* templatesDirPath = [[self class] resolvedDatabaseWordTemplatesDirPath];
@@ -562,8 +558,10 @@ static id aedesc_to_id(AEDesc *desc)
     }
     
     if (![[NSFileManager defaultManager] fileExistsAtPath:templatePath])
+    {
+        NSRunCriticalAlertPanel( NSLocalizedString( @"Microsoft Word", nil),  NSLocalizedString(@"I cannot find the OsiriX Word Template doc file.", nil), NSLocalizedString(@"OK", nil), nil, nil);
         return NO;
-    
+    }
 	NSString* source =
     @"on run argv\n"
     @"  set dataSourceFileUnix to (item 1 of argv)\n"
@@ -587,8 +585,8 @@ static id aedesc_to_id(AEDesc *desc)
     
     @try {
         [[self class] _runAppleScript:source withArguments:[NSArray arrayWithObjects: sourceData, destinationFile, templatePath, nil]];
-    } @catch (NSException* e) {
-        NSLog(@"Exception: %@", e.reason);
+    } @catch( NSException* e) {
+        NSLog( @"Exception: %@", e.reason);
         return NO;
     }
     

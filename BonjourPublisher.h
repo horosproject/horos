@@ -28,7 +28,6 @@
 	int					OsiriXDBCurrentPort;
 	int					fdForListening;
 	int					numberOfConnectedUsers;
-	BrowserController	*interfaceOsiriX;
 	
 	NSLock				*connectionLock, *dicomSendLock;
 }

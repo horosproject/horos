@@ -66,7 +66,6 @@ extern const char *GetPrivateIP();
 	{
 		currentPublisher = self;
 //		self.serviceName = [NSUserDefaultsController defaultServiceName];
-		interfaceOsiriX = bC;
 		
 		fdForListening = 0;
 		listeningSocket = nil;
@@ -322,7 +321,7 @@ extern const char *GetPrivateIP();
 																filesToSend: [todo valueForKey: @"Files"]
 																transferSyntax: [[todo objectForKey:@"TransferSyntax"] intValue] 
 																compression: 1.0
-																extraParameters: [NSDictionary dictionaryWithObject:[DicomDatabase activeLocalDatabase] forKey:@"DicomDatabase"]]; // nil == TLS not supported !
+																extraParameters: [NSDictionary dictionaryWithObject:[DicomDatabase defaultDatabase] forKey:@"DicomDatabase"]]; // nil == TLS not supported !
 							
 	@try
 	{
@@ -368,14 +367,16 @@ extern const char *GetPrivateIP();
 				
 				if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DATAB" length: 6]])
 				{
-                    [[[interfaceOsiriX managedObjectContext] persistentStoreCoordinator] lock];
+                    DicomDatabase *database = [DicomDatabase defaultDatabase];
+                    
+                    [[[database managedObjectContext] persistentStoreCoordinator] lock];
                     
                     @try
                     {
-                        [interfaceOsiriX saveDatabase: nil];
+                        [database save];
                         
                         // we send the database SQL file
-                        NSString *databasePath = [interfaceOsiriX localDatabasePath];
+                        NSString *databasePath = [database sqlFilePath];
                         
                         #if __LP64__
                             representationToSend = [NSMutableData dataWithContentsOfMappedFile: databasePath];
@@ -417,7 +418,7 @@ extern const char *GetPrivateIP();
                         N2LogException( e);
                     }
                     @finally {
-                        [[[interfaceOsiriX managedObjectContext] persistentStoreCoordinator] unlock];
+                        [[[database managedObjectContext] persistentStoreCoordinator] unlock];
                     }
                     
                     
@@ -435,15 +436,17 @@ extern const char *GetPrivateIP();
 				{
 					if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DBSIZ" length: 6]])
 					{
-						[[[interfaceOsiriX managedObjectContext] persistentStoreCoordinator] lock];
+                        DicomDatabase *database = [DicomDatabase defaultDatabase];
+                        
+                        [[[database managedObjectContext] persistentStoreCoordinator] lock];
                         
                         int size, fileSize;
                         
                         @try
                         {
-                            [interfaceOsiriX saveDatabase: nil];
+                            [database save];
                             
-                            NSString *databasePath = [interfaceOsiriX localDatabasePath];
+                            NSString *databasePath = [database sqlFilePath];
                             
                             NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath: databasePath traverseLink: YES];
                             
@@ -453,7 +456,7 @@ extern const char *GetPrivateIP();
                             N2LogException( e);
                         }
                         @finally {
-                            [[[interfaceOsiriX managedObjectContext] persistentStoreCoordinator] unlock];
+                            [[[database managedObjectContext] persistentStoreCoordinator] unlock];
                         }
                         
 						representationToSend = [NSMutableData data];
@@ -471,20 +474,7 @@ extern const char *GetPrivateIP();
 					}
 					else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"VERSI" length: 6]])
 					{
-						//NSLog( @"[data bytes] = VERSI");
-						
-		//				// we send the modification date of the SQL file
-		//				NSString *databasePath = [interfaceOsiriX localDatabasePath];
-		//				
-		//				NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath:databasePath traverseLink:YES];
-		//				NSDate *moddate = [fattrs objectForKey:NSFileModificationDate];
-		//				NSTimeInterval val = 0;
-		//				if( moddate)
-		//				{
-		//					val = [moddate timeIntervalSinceReferenceDate];
-		//				}
-						
-						NSTimeInterval val = [interfaceOsiriX databaseLastModification];
+						NSTimeInterval val = [[DicomDatabase defaultDatabase] timeOfLastModification];
 						
 						NSSwappedDouble swappedValue = NSSwapHostDoubleToBig( val);
 						
@@ -576,15 +566,12 @@ extern const char *GetPrivateIP();
 						else
 							NSLog( @"******* unknown order: %@", order);
 							
-						NSArray *objects = [BrowserController addFiles: savedFiles
-															toContext: [[BrowserController currentBrowser] localManagedObjectContextIndependentContext:YES]
-															toDatabase: [BrowserController currentBrowser]
-															onlyDICOM: NO 
-														notifyAddedFiles: YES
-													parseExistingObject: YES
-														dbFolder: [[BrowserController currentBrowser] documentsDirectory]
-													generatedByOsiriX: generatedByOsiriX];
-						
+                        DicomDatabase *idatabase = [[DicomDatabase defaultDatabase] independentDatabase];
+                        
+                        NSArray *objects = [idatabase addFilesAtPaths: savedFiles postNotifications: YES dicomOnly: NO rereadExistingItems: YES generatedByOsiriX: generatedByOsiriX];
+                        
+                        objects = [idatabase objectsWithIDs: objects];
+                        
 						representationToSend = [NSMutableData data];
                         unsigned int temp = NSSwapHostIntToBig([objects count]);
                         [representationToSend appendBytes:&temp length:4];
@@ -635,23 +622,23 @@ extern const char *GetPrivateIP();
 							NSArray *studies = [d objectForKey:@"albumStudies"];
 							NSString *albumUID = [d objectForKey:@"albumUID"];
 							
-                            DicomDatabase* database = [[DicomDatabase defaultDatabase] independentDatabase];
+                            DicomDatabase *idatabase = [[DicomDatabase defaultDatabase] independentDatabase];
                             
                             @try
 							{
-								DicomAlbum* album = [database objectWithID:albumUID]; // [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: albumUID]]];
+								DicomAlbum* album = [idatabase objectWithID:albumUID]; // [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: albumUID]]];
 								NSMutableSet* albumStudies = [album mutableSetValueForKey:@"studies"];
 								
 								for (NSString* uri in studies)
 								{
-									DicomStudy* study = [database objectWithID:uri]; // (DicomStudy*) [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: uri]]];
+									DicomStudy* study = [idatabase objectWithID:uri]; // (DicomStudy*) [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: uri]]];
 									[albumStudies addObject:study];
 									[study archiveAnnotationsAsDICOMSR];
 								}
 								
 								refreshDB = YES;
                                 
-                                [database save:nil];
+                                [idatabase save:nil];
 							}
 							
 							@catch (NSException * e)
@@ -685,23 +672,23 @@ extern const char *GetPrivateIP();
 							NSArray *studies = [d objectForKey:@"albumStudies"];
 							NSString *albumUID = [d objectForKey:@"albumUID"];
 							
-                            DicomDatabase* database = [[DicomDatabase defaultDatabase] independentDatabase];
+                            DicomDatabase *idatabase = [[DicomDatabase defaultDatabase] independentDatabase];
                             
 							@try
 							{
-								DicomAlbum* album = [database objectWithID:albumUID]; // [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: albumUID]]];
+								DicomAlbum* album = [idatabase objectWithID:albumUID]; // [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: albumUID]]];
 								NSMutableSet* albumStudies = [album mutableSetValueForKey: @"studies"];
 								
 								for (NSString* uri in studies)
 								{
-									DicomStudy* study = [database objectWithID:uri]; // (DicomStudy*) [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: uri]]];
+									DicomStudy* study = [idatabase objectWithID:uri]; // (DicomStudy*) [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: uri]]];
 									[albumStudies removeObject:study];
 									[study archiveAnnotationsAsDICOMSR];
 								}
 								
 								refreshDB = YES;
                                 
-                                [database save:nil];
+                                [idatabase save:nil];
 							}
 							
 							@catch (NSException * e)
@@ -756,11 +743,11 @@ extern const char *GetPrivateIP();
 						NSString *key = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
 						pos += stringSize;
 						
-                        DicomDatabase* database = [[DicomDatabase defaultDatabase] independentDatabase];
+                        DicomDatabase *idatabase = [[DicomDatabase defaultDatabase] independentDatabase];
                         
 						@try
 						{					
-							NSManagedObject* item = [database objectWithID:objectId]; // [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: object]]];
+							NSManagedObject* item = [idatabase objectWithID:objectId]; // [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: object]]];
 							
 							//NSLog(@"URL:%@", object);
 							if( item)
@@ -776,7 +763,7 @@ extern const char *GetPrivateIP();
 										}
 										else if( [[key pathComponents] count] == 1)
 										{
-											value = [[[interfaceOsiriX documentsDirectory] stringByAppendingPathComponent: @"/REPORTS/"] stringByAppendingPathComponent: [value lastPathComponent]];
+											value = [[idatabase.baseDirPath stringByAppendingPathComponent: @"/REPORTS/"] stringByAppendingPathComponent: [value lastPathComponent]];
 										}
 									}
 									
@@ -784,7 +771,7 @@ extern const char *GetPrivateIP();
 								}
 							}
                             
-                            [database save:NULL];
+                            [idatabase save:NULL];
 						}
 						
 						@catch (NSException *e)
@@ -813,7 +800,7 @@ extern const char *GetPrivateIP();
 						if( [path length])
 						{
 							if( [path characterAtIndex: 0] != '/')
-								path = [[interfaceOsiriX fixedDocumentsDirectory] stringByAppendingPathComponent: path];
+								path = [[[DicomDatabase defaultDatabase] baseDirPath] stringByAppendingPathComponent: path];
 						}
 						
 						NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath:path traverseLink:YES];
@@ -885,10 +872,9 @@ extern const char *GetPrivateIP();
 							
 							if( [path UTF8String] [ 0] != '/')
 							{
-								
 								int val = [[path stringByDeletingPathExtension] intValue];
 								
-								NSString *dbLocation = [interfaceOsiriX localDatabasePath];
+								NSString *dbLocation = [[DicomDatabase defaultDatabase] sqlFilePath];
 								
 								val /= [BrowserController DefaultFolderSizeForDB];
 								val++;
@@ -949,7 +935,7 @@ extern const char *GetPrivateIP();
 								if( [[[path pathComponents] objectAtIndex: 0] isEqualToString:@"ROIs"])
 								{
 									//It's a ROI !
-									NSString	*local = [[interfaceOsiriX localDatabasePath] stringByDeletingLastPathComponent];
+									NSString	*local = [[[DicomDatabase defaultDatabase] sqlFilePath] stringByDeletingLastPathComponent];
 									
 									path = [[local stringByAppendingPathComponent:@"/ROIs/"] stringByAppendingPathComponent: [path lastPathComponent]];
 								}
@@ -962,7 +948,7 @@ extern const char *GetPrivateIP();
 									val++;
 									val *= [BrowserController DefaultFolderSizeForDB];
 									
-									NSString	*local = [[interfaceOsiriX localDatabasePath] stringByDeletingLastPathComponent];
+									NSString	*local = [[[DicomDatabase defaultDatabase] sqlFilePath] stringByDeletingLastPathComponent];
 									
 									path = [[[local stringByAppendingPathComponent:@"/DATABASE.noindex/"] stringByAppendingPathComponent: [NSString stringWithFormat:@"%d", val]] stringByAppendingPathComponent: path];
 								}
@@ -1053,12 +1039,12 @@ extern const char *GetPrivateIP();
 	[incomingConnection closeFile];
 	[incomingConnection release];
 	
-	if( refreshDB) [interfaceOsiriX performSelectorOnMainThread:@selector(refreshDatabase:) withObject:nil waitUntilDone: NO];		// This has to be performed on the main thread
+	if( refreshDB) [[BrowserController currentBrowser] performSelectorOnMainThread:@selector(refreshDatabase:) withObject:nil waitUntilDone: NO];		// This has to be performed on the main thread
 	
     // remark: there was this saveDB flag that was set when changes were made to the database, but it was always just after a [contact save:err] call... 
     // ...so a saveDatabase would just cause a 2nd [database save]...
     // ...another possible reason for this 2nd [database save] could be that the DB_VERSION file was originally written in the saveDatabase function..  since DicomDatabase, [database save] does that too.
-//    if( saveDB) [interfaceOsiriX performSelectorOnMainThread:@selector(saveDatabase:) withObject:nil waitUntilDone: NO];			// This has to be performed on the main thread
+//    if( saveDB) [[BrowserController currentBrowser] performSelectorOnMainThread:@selector(saveDatabase:) withObject:nil waitUntilDone: NO];			// This has to be performed on the main thread
 	
 	[mPool release];
 }
@@ -1087,7 +1073,6 @@ extern const char *GetPrivateIP();
 // work as a delegate of the NSNetService
 - (void)netServiceWillPublish:(NSNetService*)sender
 {
-//	[interfaceOsiriX bonjourWillPublish];
 }
 
 - (void)netService:(NSNetService*)sender didNotPublish:(NSDictionary*)errorDict
