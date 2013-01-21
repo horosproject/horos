@@ -1866,7 +1866,7 @@ static NSConditionLock *threadLock = nil;
 			NSThread *t = [[[NSThread alloc] initWithTarget:_database.independentDatabase selector:@selector(copyFilesThread:) object: dict] autorelease];
 			if( [[options objectForKey: @"mountedVolume"] boolValue]) t.name = NSLocalizedString( @"Copying and indexing files from CD/DVD...", nil);
 			else t.name = NSLocalizedString( @"Copying and indexing files...", nil);
-			t.status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [filesInput count]];
+			t.status = [NSString stringWithFormat: NSLocalizedString( @"%@ file(s)", nil), N2LocalizedDecimal( [filesInput count])];
 			t.supportsCancel = YES;
 			[[ThreadsManager defaultManager] addThreadAndStart: t];
 		}
@@ -1945,7 +1945,7 @@ static NSConditionLock *threadLock = nil;
 		
 		if( [[options objectForKey: @"mountedVolume"] boolValue]) t.name = NSLocalizedString( @"Indexing files from CD/DVD...", nil);
 		else t.name = NSLocalizedString( @"Indexing files...", nil);
-		t.status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [filesInput count]];
+		t.status = [NSString stringWithFormat: NSLocalizedString( @"%@ file(s)", nil), N2LocalizedDecimal( [filesInput count])];
 		t.supportsCancel = YES;
 		[[ThreadsManager defaultManager] addThreadAndStart: t];
 			
@@ -6215,7 +6215,7 @@ static NSConditionLock *threadLock = nil;
 				NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector(exportDICOMFileInt: ) object: d] autorelease];
 				t.name = NSLocalizedString( @"Exporting...", nil);
 				t.supportsCancel = YES;
-				t.status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [filesToExport count]];
+				t.status = [NSString stringWithFormat: NSLocalizedString( @"%@ file(s)", nil), N2LocalizedDecimal( [filesToExport count])];
 				
 				[[ThreadsManager defaultManager] addThreadAndStart: t];
 				
@@ -9932,7 +9932,7 @@ static BOOL needToRezoom;
 			break;
 			
 		[NSThread currentThread].progress = (float) ++t / (float) [[d objectForKey: @"packArray"] count];
-		[NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [[d objectForKey: @"packArray"] count]-t];
+		[NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%@ file(s)", nil), N2LocalizedDecimal( [[d objectForKey: @"packArray"] count]-t)];
 	}
 	
 	// Then we add the files to the sql file
@@ -13578,7 +13578,7 @@ static NSArray*	openSubSeriesArray = nil;
             f++;
 		}
         [NSThread currentThread].progress = (float) f / (float) [copyArray count];
-        [NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [copyArray count]-f];
+        [NSThread currentThread].status = N2LocalizedSingularPluralCount( [copyArray count]-f, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil));
         
         [lastFolder release];
 		
@@ -15651,7 +15651,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				[splash incrementBy:1];
 				
 				[NSThread currentThread].progress = (float) i / (float) [filesToExport count];
-				[NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [filesToExport count]-i];
+				[NSThread currentThread].status = N2LocalizedSingularPluralCount( [filesToExport count]-i, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil));
 				
 				if( [splash aborted] || [NSThread currentThread].isCancelled)
 				{
@@ -16052,7 +16052,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector(exportDICOMFileInt: ) object: d] autorelease];
 		t.name = NSLocalizedString( @"Exporting...", nil);
 		t.supportsCancel = YES;
-		t.status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [filesToExport count]];
+		t.status = N2LocalizedSingularPluralCount( [filesToExport count], NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil));
 		
 		[[ThreadsManager defaultManager] addThreadAndStart: t];
 		

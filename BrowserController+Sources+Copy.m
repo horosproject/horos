@@ -23,7 +23,7 @@
 #import "RemoteDicomDatabase.h"
 #import "NSThread+N2.h"
 #import "N2Debug.h"
-
+#import "N2Stuff.h"
 
 @implementation BrowserController (SourcesCopy)
 
@@ -44,7 +44,7 @@
 	thread.status = NSLocalizedString(@"Opening database...", nil);
 	DicomDatabase* dstDatabase = [[DicomDatabase databaseAtPath:destination.location] independentDatabase];
 	
-    thread.status = [NSString stringWithFormat:NSLocalizedString(@"Copying %d %@...", nil), imagePaths.count, (imagePaths.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil)) ];
+    thread.status = [NSString stringWithFormat:NSLocalizedString(@"Copying %@ %@...", nil), N2LocalizedDecimal( imagePaths.count), (imagePaths.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil)) ];
 	NSMutableArray* dstPaths = [NSMutableArray array];
     
     NSTimeInterval fiveSeconds = [NSDate timeIntervalSinceReferenceDate] + 5;
@@ -83,17 +83,17 @@
         
         if( fiveSeconds < [NSDate timeIntervalSinceReferenceDate])
         {
-            thread.status = [NSString stringWithFormat:NSLocalizedString(@"Indexing %d %@...", nil), dstPaths.count, (dstPaths.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil))];
+            thread.status = [NSString stringWithFormat:NSLocalizedString(@"Indexing %@ %@...", nil), N2LocalizedDecimal( dstPaths.count), (dstPaths.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil))];
             [dstDatabase addFilesAtPaths:dstPaths];
             [dstPaths removeAllObjects];
             
             fiveSeconds = [NSDate timeIntervalSinceReferenceDate] + 5;
         }
         
-        thread.status = [NSString stringWithFormat:NSLocalizedString(@"Copying %d %@...", nil), imagePaths.count-i, (imagePaths.count-i == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil)) ];
+        thread.status = [NSString stringWithFormat:NSLocalizedString(@"Copying %@ %@...", nil), N2LocalizedDecimal( imagePaths.count-i), (imagePaths.count-i == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil)) ];
 	}
 	
-    thread.status = [NSString stringWithFormat:NSLocalizedString(@"Indexing %d %@...", nil), dstPaths.count, (dstPaths.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil))];
+    thread.status = [NSString stringWithFormat:NSLocalizedString(@"Indexing %@ %@...", nil), N2LocalizedDecimal( dstPaths.count), (dstPaths.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil))];
 	thread.progress = -1;
 	[dstDatabase addFilesAtPaths:dstPaths];
 	
@@ -123,7 +123,7 @@
     {
         RemoteDicomDatabase* dstDatabase = [RemoteDicomDatabase databaseForLocation:destination.location name:destination.description update:NO];
         
-        thread.status = [NSString stringWithFormat:NSLocalizedString(@"Sending %d %@...", nil), imagePaths.count, (imagePaths.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil)) ];
+        thread.status = [NSString stringWithFormat:NSLocalizedString(@"Sending %@ %@...", nil), N2LocalizedDecimal( imagePaths.count), (imagePaths.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil)) ];
         
         
         [dstDatabase uploadFilesAtPaths:imagePaths imageObjects:nil];
@@ -154,7 +154,7 @@
     
 	DicomDatabase* idatabase = [[DicomDatabase databaseAtPath:destination.location name:destination.description] independentDatabase];
 	
-	thread.status = [NSString stringWithFormat:NSLocalizedString(@"Fetching %d %@...", nil), dicomImages.count, (dicomImages.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil)) ];
+	thread.status = [NSString stringWithFormat:NSLocalizedString(@"Fetching %@ %@...", nil), N2LocalizedDecimal( dicomImages.count), (dicomImages.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil)) ];
 	NSMutableArray* dstPaths = [NSMutableArray array];
 	for (NSInteger i = 0; i < dicomImages.count; ++i)
     {

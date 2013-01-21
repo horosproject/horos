@@ -27,6 +27,7 @@
 #import "ThreadsManager.h"
 #import "NSThread+N2.h"
 #import "NSUserDefaults+OsiriX.h"
+#import "N2Stuff.h"
 
 static volatile int sendControllerObjects = 0;
 
@@ -378,12 +379,12 @@ static volatile int sendControllerObjects = 0;
         t.name = NSLocalizedString( @"Sending...", nil);
         t.supportsCancel = YES;
         t.progress = 0;
-        t.status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [_files count]];
+        t.status = N2LocalizedSingularPluralCount( [_files count], NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil));
         [[ThreadsManager defaultManager] addThreadAndStart: t];
     }
 }
 
-#pragma mark Sending functions	
+#pragma mark Sending functions
 
 - (void) showErrorMessage:(NSException*) ne
 {

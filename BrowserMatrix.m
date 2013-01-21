@@ -17,6 +17,7 @@ PURPOSE.
 #import "DCMPix.h"
 #import "ThreadsManager.h"
 #import "NSThread+N2.h"
+#import "N2Stuff.h"
 
 static NSString *albumDragType = @"Osirix Album drag";
 
@@ -196,7 +197,7 @@ static NSString *albumDragType = @"Osirix Album drag";
 				NSThread* t = [[[NSThread alloc] initWithTarget:[BrowserController currentBrowser] selector:@selector(exportDICOMFileInt: ) object: d] autorelease];
 				t.name = NSLocalizedString( @"Exporting...", nil);
 				t.supportsCancel = YES;
-				t.status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [filesToExport count]];
+				t.status = N2LocalizedSingularPluralCount( [filesToExport count], NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil));
 				
 				[[ThreadsManager defaultManager] addThreadAndStart: t];
 				

@@ -22,6 +22,7 @@
 #import "BrowserController.h"
 #import "MutableArrayCategory.h"
 #import "N2Debug.h"
+#import "N2Stuff.h"
 
 #ifdef OSIRIX_VIEWER
 #import "DicomFileDCMTKCategory.h"
@@ -170,7 +171,7 @@
 					
 					NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector(dcmodifyThread:) object: dict] autorelease];
 					t.name = NSLocalizedString( @"Updating DICOM files...", nil);
-					t.status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [[dict objectForKey: @"files"] count]];
+					t.status = N2LocalizedSingularPluralCount( [[dict objectForKey: @"files"] count], NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil));
 					[[ThreadsManager defaultManager] addThreadAndStart: t];
 				}
 			}
