@@ -20218,16 +20218,16 @@ int i,j,l;
 	{
 		checkEverythingLoaded = YES;
 		
-		WaitRendering *splash = [[WaitRendering alloc] init:NSLocalizedString(@"Data loading...", nil)];
+		Wait *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Data loading...", nil)];
 		[splash showWindow:self];
 		
         {
             BOOL isExecuting;
+            int percentage = 0, lastPercentage = 0;
             
             do
             {
                 [NSThread sleepForTimeInterval: 0.1];
-                int percentage = 0, lastPercentage = 0;
                 
                 @synchronized( loadingThread)
                 {
@@ -20237,12 +20237,11 @@ int i,j,l;
                 
                 if( percentage != lastPercentage)
                 {
-                    lastPercentage = percentage;
-                    
                     [self setWindowTitle: self];
                     [[self window] display];
                     
-                    [splash setString: [NSString stringWithFormat: NSLocalizedString(@"Data loading... %d%%", nil), percentage]];
+                    [splash incrementBy: percentage - lastPercentage];
+                    lastPercentage = percentage;
                 }
             }
             while( isExecuting);
