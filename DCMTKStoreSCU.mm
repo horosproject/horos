@@ -22,6 +22,7 @@
 #import "NSThread+N2.h"
 #import "DicomDatabase.h"
 #import "N2Debug.h"
+#import "N2Stuff.h"
 #undef verify
 #include "osconfig.h" /* make sure OS specific configuration is included first */
 
@@ -1071,7 +1072,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	[[AppController sharedAppController] growlTitle: NSLocalizedString( @"DICOM Send", nil) description: [NSString stringWithFormat: NSLocalizedString(@"Sending %d file(s)...\rTo: %@ - %@", nil), [_filesToSend count], _calledAET, _hostname] name:@"send"];
+	[[AppController sharedAppController] growlTitle: NSLocalizedString( @"DICOM Send", nil) description: [NSString stringWithFormat: NSLocalizedString(@"Sending %@...\rTo: %@ - %@", nil), N2LocalizedSingularPluralCount( _filesToSend.count, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil)), _calledAET, _hostname] name:@"send"];
 	
 //	NSString *tempFolder = [NSString stringWithFormat:@"/tmp/DICOMSend_%@-%@", _callingAET, [[NSDate date] description]];
 	NSMutableArray *paths = [[NSMutableArray alloc] init];
@@ -1826,7 +1827,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 			
 			[userInfo setObject:[NSNumber numberWithInt:_numberErrors] forKey:@"ErrorCount"];
 			
-			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"DICOM Send", nil) description: [NSString stringWithFormat: NSLocalizedString(@"Errors ! %d of %d file(s) generated errors.", nil), _numberErrors, _numberOfFiles]  name:@"send"];
+			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"DICOM Send", nil) description: [NSString stringWithFormat: NSLocalizedString(@"Errors ! %@ of %@ generated errors.", nil), N2LocalizedDecimal( _numberErrors) , N2LocalizedSingularPluralCount( _numberOfFiles, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil))]  name:@"send"];
 		}
 		else
 			[userInfo setObject:@"Complete" forKey:@"Message"];
@@ -1839,7 +1840,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
             if( _secureConnection)
                 extraInfo = @" (TLS Activated)";
             
-			[NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)%@", nil), [[userInfo objectForKey: @"SendTotal"] intValue] - [[userInfo objectForKey: @"NumberSent"] intValue], extraInfo];
+			[NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%@%@", nil), N2LocalizedSingularPluralCount( [[userInfo objectForKey: @"SendTotal"] intValue] - [[userInfo objectForKey: @"NumberSent"] intValue], NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil)), extraInfo];
 			[NSThread currentThread].progress = [[userInfo objectForKey: @"NumberSent"] floatValue] / [[userInfo objectForKey: @"SendTotal"] floatValue];
 		}
 //		[self sendStatusNotification: userInfo];

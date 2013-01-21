@@ -1866,7 +1866,7 @@ static NSConditionLock *threadLock = nil;
 			NSThread *t = [[[NSThread alloc] initWithTarget:_database.independentDatabase selector:@selector(copyFilesThread:) object: dict] autorelease];
 			if( [[options objectForKey: @"mountedVolume"] boolValue]) t.name = NSLocalizedString( @"Copying and indexing files from CD/DVD...", nil);
 			else t.name = NSLocalizedString( @"Copying and indexing files...", nil);
-			t.status = [NSString stringWithFormat: NSLocalizedString( @"%@ file(s)", nil), N2LocalizedDecimal( [filesInput count])];
+			t.status = N2LocalizedSingularPluralCount( [filesInput count], NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil));
 			t.supportsCancel = YES;
 			[[ThreadsManager defaultManager] addThreadAndStart: t];
 		}
@@ -1945,7 +1945,7 @@ static NSConditionLock *threadLock = nil;
 		
 		if( [[options objectForKey: @"mountedVolume"] boolValue]) t.name = NSLocalizedString( @"Indexing files from CD/DVD...", nil);
 		else t.name = NSLocalizedString( @"Indexing files...", nil);
-		t.status = [NSString stringWithFormat: NSLocalizedString( @"%@ file(s)", nil), N2LocalizedDecimal( [filesInput count])];
+		t.status = N2LocalizedSingularPluralCount( [filesInput count], NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil));
 		t.supportsCancel = YES;
 		[[ThreadsManager defaultManager] addThreadAndStart: t];
 			
@@ -6215,7 +6215,7 @@ static NSConditionLock *threadLock = nil;
 				NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector(exportDICOMFileInt: ) object: d] autorelease];
 				t.name = NSLocalizedString( @"Exporting...", nil);
 				t.supportsCancel = YES;
-				t.status = [NSString stringWithFormat: NSLocalizedString( @"%@ file(s)", nil), N2LocalizedDecimal( [filesToExport count])];
+				t.status = N2LocalizedSingularPluralCount( [filesToExport count], NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil));
 				
 				[[ThreadsManager defaultManager] addThreadAndStart: t];
 				
@@ -9932,7 +9932,7 @@ static BOOL needToRezoom;
 			break;
 			
 		[NSThread currentThread].progress = (float) ++t / (float) [[d objectForKey: @"packArray"] count];
-		[NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%@ file(s)", nil), N2LocalizedDecimal( [[d objectForKey: @"packArray"] count]-t)];
+		[NSThread currentThread].status = N2LocalizedSingularPluralCount( [[d objectForKey: @"packArray"] count]-t, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil));
 	}
 	
 	// Then we add the files to the sql file
@@ -10784,7 +10784,7 @@ static BOOL needToRezoom;
 						if( [viewerPix[0] count] == 0)
 							NSRunCriticalAlertPanel( NSLocalizedString(@"Files not available (readable)", nil), NSLocalizedString(@"No files available (readable) in this series.", nil), NSLocalizedString(@"Continue",nil), nil, nil);
 						else
-							NSRunCriticalAlertPanel( NSLocalizedString(@"Not all files available (readable)", nil),  [NSString stringWithFormat: NSLocalizedString(@"Not all files are available (readable) in this series.\r%d file(s) are missing.", nil), [loadList count] - [viewerPix[0] count]], NSLocalizedString(@"Continue",nil), nil, nil);
+							NSRunCriticalAlertPanel( NSLocalizedString(@"Not all files available (readable)", nil),  [NSString stringWithFormat: NSLocalizedString(@"Not all files are available (readable) in this series.\r%@ are missing.", nil), N2LocalizedSingularPluralCount( [loadList count] - [viewerPix[0] count], NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil))], NSLocalizedString(@"Continue",nil), nil, nil);
 					}
 					//opening images refered to in viewerPix[0] in the adequate viewer
 					
