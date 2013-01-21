@@ -565,14 +565,14 @@ static DicomDatabase* activeLocalDatabase = nil;
         [self lock];
         @try
         {
-            DicomDatabase *idatabase = self.independentDatabase;
+            DicomDatabase *idatabase = self.isMainDatabase? self : self.mainDatabase; //We are on the mainthread : we can'safely' use the maindatabase
             
             NSArray* independentObjects = [notification.userInfo objectForKey:OsirixAddToDBNotificationImagesArray];
             if (independentObjects) {
                 NSArray* selfObjects = [idatabase objectsWithIDs:independentObjects];
                 if (selfObjects.count != independentObjects.count)
                     NSLog(@"Warning: independent database is notifying about %d new images, but the main database can only find %d.", (int)independentObjects.count, (int)selfObjects.count);
-                [userInfo setObject:selfObjects forKey:OsirixAddToDBNotificationImagesArray];
+                [userInfo setObject:selfObjects forKey:OsirixAddToDBNotificationImagesArray]; // We should NOT send a notification with objects, but objectsID instead...
             }
             
             NSDictionary* independentDictionary = [notification.userInfo objectForKey:OsirixAddToDBNotificationImagesPerAETDictionary];

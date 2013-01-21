@@ -1218,6 +1218,7 @@ static NSConditionLock *threadLock = nil;
         #ifndef OSIRIX_LIGHT
         //If PACS On-Demand is activated, check if a local study has more or same number of images of a distant study
         NSMutableArray *patientStudies = [NSMutableArray array];
+        
         for( DicomStudy *study in [[notification.userInfo valueForKey: OsirixAddToDBNotificationImagesArray] valueForKeyPath: @"series.study"])
         {
             if( study != (DicomStudy*) [NSNull null] && [patientStudies containsObject: study] == NO && self.comparativePatientUID && [self.comparativePatientUID compare: study.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
@@ -3213,7 +3214,11 @@ static NSConditionLock *threadLock = nil;
         
         [self.database.managedObjectContext reset];
         
-		return [NSArray array];
+        if( [item isFault])
+            item = [self.database objectWithID: [item objectID]];
+        
+        if( [item isFault] || [item isDeleted] || item == nil)
+            return [NSArray array];
 	}
 	
 	if ([[item valueForKey:@"type"] isEqualToString:@"Series"])
