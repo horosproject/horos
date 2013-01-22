@@ -27,5 +27,6 @@
 @property (assign) DCMTKStudyQueryNode *study;
 
 - (NSString*) studyInstanceUID;
+- (NSString*) seriesInstanceUID;
 
 @end

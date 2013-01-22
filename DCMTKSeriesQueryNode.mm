@@ -168,6 +168,11 @@
     return _studyInstanceUID;
 }
 
+- (NSString*) seriesInstanceUID
+{
+    return _uid;
+}
+
 - (void)addChild:(DcmDataset *)dataset
 {
     @synchronized( _children)
