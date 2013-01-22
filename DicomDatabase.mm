@@ -2537,7 +2537,10 @@ static BOOL protectionAgainstReentry = NO;
                 if( succeed)
                 {
                     thread.status = NSLocalizedString(@"Indexing the files...", nil);
-                    objects = [[self.mainDatabase independentDatabase] addFilesAtPaths:copiedFiles postNotifications:YES dicomOnly:onlyDICOM rereadExistingItems:NO];
+                    
+                    DicomDatabase *idatabase = self.isMainDatabase? self.independentDatabase : [self.mainDatabase independentDatabase];
+                    
+                    objects = [idatabase addFilesAtPaths:copiedFiles postNotifications:YES dicomOnly:onlyDICOM rereadExistingItems:NO];
 //                    total += [copiedFiles count];
                 }
                 else if( copyFiles)
