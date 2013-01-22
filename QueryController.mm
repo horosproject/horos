@@ -1697,14 +1697,14 @@ extern "C"
                 
                 if( index != NSNotFound)
                 {
-                    DicomDatabase *idatabase;
+                    NSManagedObjectContext *icontext;
                     
                     if( [NSThread isMainThread])
-                        idatabase = [[BrowserController currentBrowser] database];
+                        icontext = [[[BrowserController currentBrowser] database] managedObjectContext];
                     else
-                        idatabase = [[[BrowserController currentBrowser] database] independentDatabase];
+                        icontext = [[[BrowserController currentBrowser] database] independentContext];
                     
-                    DicomStudy *s = [idatabase objectWithID: [studyArrayID objectAtIndex: index]];
+                    DicomStudy *s = (DicomStudy*) [icontext existingObjectWithID:[studyArrayID objectAtIndex: index] error:NULL];
                     
                     if( s)
                         result = [NSArray arrayWithObject: s];
