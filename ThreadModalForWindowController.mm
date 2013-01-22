@@ -305,6 +305,7 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
     {
         return [self.threadDictionary objectForKey:NSThreadModalForWindowControllerKey];
     }
+    return nil;
 }
 
 @end

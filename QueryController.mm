@@ -611,9 +611,27 @@ extern "C"
 		
 		[theTask setArguments:args];
 		[theTask launch];
+        
+        WaitRendering *wait = nil;
+        
+        if( [NSThread isMainThread])
+            wait = [[[WaitRendering alloc] init: [NSString stringWithFormat: NSLocalizedString( @"DICOM Echo %@...", nil), [serverParameters objectForKey: @"Description"]]] autorelease];
+        
+        [wait setCancel: YES];
+        [wait showWindow:self];
+        [wait start];
+        
         while( [theTask isRunning])
+        {
             [NSThread sleepForTimeInterval: 0.1];
-		
+            
+            [wait run];
+            if( [wait aborted])
+                break;
+		}
+        
+        [wait end];
+        
 		if([[serverParameters objectForKey:@"TLSEnabled"] boolValue])
 		{
 			//[DDKeychain unlockTmpFiles];
@@ -622,6 +640,9 @@ extern "C"
 			[[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithFormat:@"%@%@", TLS_TRUSTED_CERTIFICATES_DIR, uniqueStringID] handler:nil];		
 		}
 		
+        if( [wait aborted])
+            return NO;
+        
 		if( [theTask terminationStatus] == 0) return YES;
 		else return NO;
 	}
