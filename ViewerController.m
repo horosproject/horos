@@ -8023,7 +8023,10 @@ return YES;
 			return;
 		}
 		
-		[[NSThread currentThread].threadDictionary setObject: [NSNumber numberWithFloat: 1.0] forKey: @"loadingPercentage"];
+        @synchronized( [NSThread currentThread])
+        {
+            [[NSThread currentThread].threadDictionary setObject: [NSNumber numberWithFloat: 1.0] forKey: @"loadingPercentage"];
+        }
 	}
 	@catch (NSException * e) 
 	{

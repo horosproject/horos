@@ -254,7 +254,11 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
 -(void)invalidate {
 	DLog(@"[ThreadModalForWindowController invalidate]");
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSThreadWillExitNotification object:_thread];
-	[self.thread.threadDictionary removeObjectForKey:NSThreadModalForWindowControllerKey];
+    
+    @synchronized( self.thread.threadDictionary)
+    {
+        [self.thread.threadDictionary removeObjectForKey:NSThreadModalForWindowControllerKey];
+    }
     
     _isValid = NO;
     
@@ -297,7 +301,10 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
 }
 
 -(ThreadModalForWindowController*)modalForWindowController {
-	return [self.threadDictionary objectForKey:NSThreadModalForWindowControllerKey];
+    @synchronized( self.threadDictionary)
+    {
+        return [self.threadDictionary objectForKey:NSThreadModalForWindowControllerKey];
+    }
 }
 
 @end
