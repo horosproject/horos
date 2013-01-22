@@ -30,6 +30,8 @@
 #import "DicomDatabase.h"
 #import "NSThread+N2.h"
 #import "LogManager.h"
+#import "MutableArrayCategory.h"
+#import "DCMAbstractSyntaxUID.h"
 
 #include "dctk.h"
 
@@ -898,9 +900,43 @@ extern BOOL forkedProcess;
                         DCMCalendarDate *dicomDate = [DCMCalendarDate dicomTimeWithDate:[fetchedObject valueForKey:@"date"]];
                         dataset->putAndInsertString(DCM_StudyTime, [[dicomDate timeString] cStringUsingEncoding:NSISOLatin1StringEncoding]);
                     }
+                    else if( key == DCM_ContentDate && [fetchedObject valueForKey:@"date"])
+                    {
+                        DCMCalendarDate *dicomDate = [DCMCalendarDate dicomDateWithDate:[fetchedObject valueForKey:@"date"]];
+                        dataset->putAndInsertString(DCM_ContentDate, [[dicomDate dateString] cStringUsingEncoding:NSISOLatin1StringEncoding]);
+                    }
+                    else if( key == DCM_ContentTime && [fetchedObject valueForKey:@"date"])
+                    {
+                        DCMCalendarDate *dicomDate = [DCMCalendarDate dicomTimeWithDate:[fetchedObject valueForKey:@"date"]];
+                        dataset->putAndInsertString(DCM_ContentTime, [[dicomDate timeString] cStringUsingEncoding:NSISOLatin1StringEncoding]);
+                    }
+                    else if( key == DCM_SeriesDate && [fetchedObject valueForKey:@"date"])
+                    {
+                        DCMCalendarDate *dicomDate = [DCMCalendarDate dicomDateWithDate:[fetchedObject valueForKey:@"date"]];
+                        dataset->putAndInsertString(DCM_SeriesDate, [[dicomDate dateString] cStringUsingEncoding:NSISOLatin1StringEncoding]);
+                    }
+                    else if( key == DCM_SeriesTime && [fetchedObject valueForKey:@"date"])
+                    {
+                        DCMCalendarDate *dicomDate = [DCMCalendarDate dicomTimeWithDate:[fetchedObject valueForKey:@"date"]];
+                        dataset->putAndInsertString(DCM_SeriesTime, [[dicomDate timeString] cStringUsingEncoding:NSISOLatin1StringEncoding]);
+                    }
+                    else if( key == DCM_AcquisitionDate && [fetchedObject valueForKey:@"date"])
+                    {
+                        DCMCalendarDate *dicomDate = [DCMCalendarDate dicomDateWithDate:[fetchedObject valueForKey:@"date"]];
+                        dataset->putAndInsertString(DCM_AcquisitionDate, [[dicomDate dateString] cStringUsingEncoding:NSISOLatin1StringEncoding]);
+                    }
+                    else if( key == DCM_AcquisitionTime && [fetchedObject valueForKey:@"date"])
+                    {
+                        DCMCalendarDate *dicomDate = [DCMCalendarDate dicomTimeWithDate:[fetchedObject valueForKey:@"date"]];
+                        dataset->putAndInsertString(DCM_AcquisitionTime, [[dicomDate timeString] cStringUsingEncoding:NSISOLatin1StringEncoding]);
+                    }
                     else if( key == DCM_StudyInstanceUID && [fetchedObject valueForKey:@"studyInstanceUID"])
                     {
                         dataset->putAndInsertString(DCM_StudyInstanceUID, [[fetchedObject valueForKey:@"studyInstanceUID"] cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
+                    }
+                    else if( key == DCM_SOPClassUID && [fetchedObject valueForKeyPath:@"series.seriesSOPClassUID"])
+                    {
+                        dataset->putAndInsertString(DCM_SOPClassUID, [[[[fetchedObject valueForKeyPath:@"series.seriesSOPClassUID"] allObjects] componentsJoinedByString:@"\\"] cStringUsingEncoding:NSISOLatin1StringEncoding]);
                     }
                     else if( key == DCM_StudyID && [fetchedObject valueForKey:@"id"])
                     {
@@ -1005,11 +1041,20 @@ extern BOOL forkedProcess;
                         DCMCalendarDate *dicomDate = [DCMCalendarDate dicomDateWithDate:[fetchedObject valueForKey:@"date"]];
                         dataset->putAndInsertString(DCM_SeriesDate, [[dicomDate dateString] cStringUsingEncoding:NSISOLatin1StringEncoding]);
                     }
-                    
                     else if( key == DCM_SeriesTime && [fetchedObject valueForKey:@"date"])
                     {
                         DCMCalendarDate *dicomDate = [DCMCalendarDate dicomTimeWithDate:[fetchedObject valueForKey:@"date"]];
                         dataset->putAndInsertString(DCM_SeriesTime, [[dicomDate timeString] cStringUsingEncoding:NSISOLatin1StringEncoding]);
+                    }
+                    else if( key == DCM_AcquisitionDate && [fetchedObject valueForKey:@"date"])
+                    {
+                        DCMCalendarDate *dicomDate = [DCMCalendarDate dicomDateWithDate:[fetchedObject valueForKey:@"date"]];
+                        dataset->putAndInsertString(DCM_AcquisitionDate, [[dicomDate dateString] cStringUsingEncoding:NSISOLatin1StringEncoding]);
+                    }
+                    else if( key == DCM_AcquisitionTime && [fetchedObject valueForKey:@"date"])
+                    {
+                        DCMCalendarDate *dicomDate = [DCMCalendarDate dicomTimeWithDate:[fetchedObject valueForKey:@"date"]];
+                        dataset->putAndInsertString(DCM_AcquisitionTime, [[dicomDate timeString] cStringUsingEncoding:NSISOLatin1StringEncoding]);
                     }
                     
                     else if( key == DCM_Modality && [fetchedObject valueForKey:@"modality"])
@@ -1094,6 +1139,10 @@ extern BOOL forkedProcess;
                     else if( key == DCM_StudyInstanceUID && [fetchedObject valueForKeyPath:@"study.studyInstanceUID"])
                     {
                         dataset->putAndInsertString(DCM_StudyInstanceUID, [[fetchedObject valueForKeyPath:@"study.studyInstanceUID"] cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
+                    }
+                    else if( key == DCM_SOPClassUID && [fetchedObject valueForKey:@"seriesSOPClassUID"])
+                    {
+                        dataset->putAndInsertString(DCM_SOPClassUID, [[fetchedObject valueForKey:@"seriesSOPClassUID"] cStringUsingEncoding:NSISOLatin1StringEncoding]);
                     }
                     else if( key == DCM_StudyID && [fetchedObject valueForKeyPath:@"study.id"])
                     {
@@ -1207,7 +1256,28 @@ extern BOOL forkedProcess;
                     }
                     else if( key == DCM_NumberOfFrames && [fetchedObject valueForKey: @"numberOfFrames"])
                     {
-                        dataset->putAndInsertString( key, [[[fetchedObject valueForKey:@"numberOfFrames"] stringValue] cStringUsingEncoding:NSISOLatin1StringEncoding]);
+                        if( [DCMAbstractSyntaxUID isImageStorage: [fetchedObject valueForKeyPath: @"series.seriesSOPClassUID"]])
+                            dataset->putAndInsertString( key, [[[fetchedObject valueForKey:@"numberOfFrames"] stringValue] cStringUsingEncoding:NSISOLatin1StringEncoding]);
+                    }
+                    else if( key == DCM_ContentDate && [fetchedObject valueForKey:@"date"])
+                    {
+                        DCMCalendarDate *dicomDate = [DCMCalendarDate dicomDateWithDate:[fetchedObject valueForKey:@"date"]];
+                        dataset->putAndInsertString(DCM_ContentDate, [[dicomDate dateString] cStringUsingEncoding:NSISOLatin1StringEncoding]);
+                    }
+                    else if( key == DCM_ContentTime && [fetchedObject valueForKey:@"date"])
+                    {
+                        DCMCalendarDate *dicomDate = [DCMCalendarDate dicomTimeWithDate:[fetchedObject valueForKey:@"date"]];
+                        dataset->putAndInsertString(DCM_ContentTime, [[dicomDate timeString] cStringUsingEncoding:NSISOLatin1StringEncoding]);
+                    }
+                    else if( key == DCM_AcquisitionDate && [fetchedObject valueForKey:@"date"])
+                    {
+                        DCMCalendarDate *dicomDate = [DCMCalendarDate dicomDateWithDate:[fetchedObject valueForKey:@"date"]];
+                        dataset->putAndInsertString(DCM_AcquisitionDate, [[dicomDate dateString] cStringUsingEncoding:NSISOLatin1StringEncoding]);
+                    }
+                    else if( key == DCM_AcquisitionTime && [fetchedObject valueForKey:@"date"])
+                    {
+                        DCMCalendarDate *dicomDate = [DCMCalendarDate dicomTimeWithDate:[fetchedObject valueForKey:@"date"]];
+                        dataset->putAndInsertString(DCM_AcquisitionTime, [[dicomDate timeString] cStringUsingEncoding:NSISOLatin1StringEncoding]);
                     }
                     
                     // ******************** SERIES
@@ -1235,7 +1305,6 @@ extern BOOL forkedProcess;
                         DCMCalendarDate *dicomDate = [DCMCalendarDate dicomDateWithDate:[fetchedObject valueForKeyPath:@"series.date"]];
                         dataset->putAndInsertString(DCM_SeriesDate, [[dicomDate dateString] cStringUsingEncoding:NSISOLatin1StringEncoding]);
                     }
-                    
                     else if( key == DCM_SeriesTime && [fetchedObject valueForKeyPath:@"series.date"])
                     {
                         DCMCalendarDate *dicomDate = [DCMCalendarDate dicomTimeWithDate:[fetchedObject valueForKeyPath:@"series.date"]];
@@ -1319,6 +1388,10 @@ extern BOOL forkedProcess;
                     {
                         dataset->putAndInsertString(DCM_StudyInstanceUID, [[fetchedObject valueForKeyPath:@"series.study.studyInstanceUID"] cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
                     }
+                    else if( key == DCM_SOPClassUID && [fetchedObject valueForKeyPath:@"series.seriesSOPClassUID"])
+                    {
+                        dataset->putAndInsertString(DCM_SOPClassUID, [[fetchedObject valueForKeyPath:@"series.seriesSOPClassUID"] cStringUsingEncoding:NSISOLatin1StringEncoding]);
+                    }
                     else if( key == DCM_StudyID && [fetchedObject valueForKeyPath:@"series.study.id"])
                     {
                         dataset->putAndInsertString(DCM_StudyID, [[fetchedObject valueForKeyPath:@"series.study.id"] cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
@@ -1388,7 +1461,6 @@ extern BOOL forkedProcess;
 		dataset->putAndInsertString(DCM_QueryRetrieveLevel, "IMAGE");
 		if( specificCharacterSet)
 			dataset->putAndInsertString(DCM_SpecificCharacterSet, [specificCharacterSet UTF8String]);
-//		dataset->print(COUT);
 	}
 	
 	@catch( NSException *e)
@@ -1418,7 +1490,6 @@ extern BOOL forkedProcess;
 	int elemCount = (int)(dataset->card());
     for (int elemIndex=0; elemIndex<elemCount; elemIndex++)
 	{
-		NSPredicate *predicate = nil;
 		DcmElement* dcelem = dataset->getElement(elemIndex);
 		DcmTagKey key = dcelem->getTag().getXTag();
 		
@@ -1520,6 +1591,15 @@ extern BOOL forkedProcess;
                     NSLog( @"----- C-Find maximumNumberOfCFindObjects reached: %d, %d", (int) tempFindArray.count, [[NSUserDefaults standardUserDefaults] integerForKey: @"maximumNumberOfCFindObjects"]);
                     tempFindArray = [tempFindArray subarrayWithRange: NSMakeRange( 0, [[NSUserDefaults standardUserDefaults] integerForKey: @"maximumNumberOfCFindObjects"])];
                 }
+            }
+            
+            if( strcmp(sType, "IMAGE") == 0) //Only ONE DICOM "instance" : multiple frames are stored in multiple instance in OsiriX DB
+            {
+                NSMutableArray *mutableTempFindArray = [NSMutableArray arrayWithArray: tempFindArray];
+                NSMutableArray *imagePaths = [NSMutableArray arrayWithArray: [tempFindArray valueForKey:@"completePath"]];
+                [imagePaths removeDuplicatedStringsInSyncWithThisArray: mutableTempFindArray];
+                
+                tempFindArray = mutableTempFindArray;
             }
             
 			findArray = [[NSArray alloc] initWithArray: tempFindArray];

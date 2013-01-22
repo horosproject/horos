@@ -2062,7 +2062,11 @@ static BOOL protectionAgainstReentry = NO;
 										imageInstance += f;
 										[image setValue: [NSNumber numberWithLong: imageInstance] forKey:@"instanceNumber"];
 									}
-									else [image setValue: [NSNumber numberWithInt: f] forKey:@"instanceNumber"];
+									else
+                                    {
+                                        int instanceNumber = [[curDict objectForKey: [@"imageID" stringByAppendingString: SeriesNum]] intValue];
+                                        [image setValue: [NSNumber numberWithInt: instanceNumber + f] forKey:@"instanceNumber"];
+                                    }
 								}
 								else
 									[image setValue: [curDict objectForKey: [@"imageID" stringByAppendingString: SeriesNum]] forKey:@"instanceNumber"];
