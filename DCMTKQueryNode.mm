@@ -1096,6 +1096,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                 NSMutableDictionary *seriesUIDsToRetrieve = [NSMutableDictionary dictionary];
                 NSMutableArray *imagesUIDsWithoutSeriesInstanceUID = [NSMutableArray array];
                 
+                NSArray *childrenArray = nil;
+
                 if( [self isKindOfClass:[DCMTKStudyQueryNode class]])
                 {
                     // We are at STUDY level, and we want to go direclty to IMAGE level
@@ -1109,7 +1111,6 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                     
                     [self queryWithValues: nil dataset: dataset];
                     
-                    NSArray *childrenArray = nil;
                     @synchronized( self)
                     {
                         childrenArray = [self children];
@@ -1154,7 +1155,6 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                 
                 if( [self isKindOfClass:[DCMTKSeriesQueryNode class]])
                 {
-                    NSArray *childrenArray = nil;
                     @synchronized( self)
                     {
                         childrenArray = [self children];
@@ -1293,8 +1293,10 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                 }
                 else
                 {
-                    NSLog( @"***** IMAGE Level retrieve failed... try STUDY/SERIES Level retrieve");
-                    localObjectUIDs = nil;
+                    if (!childrenArray.count) { // this message is misleaging without this condition: the IMAGE level DID work, but we already have all the images locally
+                        NSLog( @"***** IMAGE Level retrieve failed... try STUDY/SERIES Level retrieve");
+                        localObjectUIDs = nil;
+                    }
                 }
             }
             
