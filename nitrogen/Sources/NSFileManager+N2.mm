@@ -24,6 +24,11 @@
 	NSString *trashPath = [[@"~/.Trash/" stringByExpandingTildeInPath] stringByAppendingPathComponent:[path lastPathComponent]];
 	NSError *error = nil;
     [[NSFileManager defaultManager] removeItemAtPath: trashPath error: nil];
+    NSString *originalTrashPath = trashPath;
+    int i = 2;
+    while( [[NSFileManager defaultManager] fileExistsAtPath: trashPath])
+        trashPath = [originalTrashPath stringByAppendingFormat: @" %d", i++];
+        
 	BOOL success = [[NSFileManager defaultManager] moveItemAtPath:path toPath:trashPath error:&error];
 }
 
