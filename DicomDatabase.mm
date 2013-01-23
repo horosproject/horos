@@ -336,6 +336,10 @@ static DicomDatabase* activeLocalDatabase = nil;
 @synthesize importFilesFromIncomingDirLock = _importFilesFromIncomingDirLock;
 @synthesize hasPotentiallySlowDataAccess = _hasPotentiallySlowDataAccess;
 
+/*- (void)setIsReadOnly:(BOOL)isReadOnly {
+    _isReadOnly = isReadOnly;
+}*/
+
 -(DataNodeIdentifier*)dataNodeIdentifier {
     return [LocalDatabaseNodeIdentifier localDatabaseNodeIdentifierWithPath:self.baseDirPath];
 }
