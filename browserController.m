@@ -8374,7 +8374,7 @@ static BOOL withReset = NO;
 		
 		@try
 		{
-			studyObject = [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: uri]]];
+			studyObject = [context existingObjectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: uri]] error: nil];
 		}
 		
 		@catch( NSException *ne)

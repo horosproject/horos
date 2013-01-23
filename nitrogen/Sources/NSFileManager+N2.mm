@@ -19,6 +19,14 @@
 
 @implementation NSFileManager (N2)
 
+- (void)moveItemAtPathToTrash: (NSString*) path
+{
+	NSString *trashPath = [[@"~/.Trash/" stringByExpandingTildeInPath] stringByAppendingPathComponent:[path lastPathComponent]];
+	NSError *error = nil;
+    [[NSFileManager defaultManager] removeItemAtPath: trashPath error: nil];
+	BOOL success = [[NSFileManager defaultManager] moveItemAtPath:path toPath:trashPath error:&error];
+}
+
 -(NSString*)findSystemFolderOfType:(int)folderType forDomain:(int)domain {
     FSRef folder;
     NSString* result = NULL;

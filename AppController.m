@@ -2486,25 +2486,30 @@ static NSDate *lastWarningDate = nil;
 	// DELETE the content of TEMP.noindex directory...
 	NSString *tempDirectory = [[DicomDatabase activeLocalDatabase] tempDirPath];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory])
-		for (NSString* file in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:tempDirectory error:NULL])
-			[[NSFileManager defaultManager] removeItemAtPath:[tempDirectory stringByAppendingPathComponent:file] error:NULL];
-	tempDirectory = [tempDirectory stringByDeletingPathExtension];
-	if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory])
 		[[NSFileManager defaultManager] removeItemAtPath:tempDirectory error:NULL];
-	
+    if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory])
+        [[NSFileManager defaultManager] moveItemAtPathToTrash: tempDirectory];
+    if ([[NSFileManager defaultManager] fileExistsAtPath: tempDirectory])
+        NSLog( @"******** FAILED to clean the tempDirectory directory: %@", tempDirectory);
+    
 	// DELETE THE DUMP DIRECTORY...
 	NSString *dumpDirectory = [[DicomDatabase activeLocalDatabase] dumpDirPath];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:dumpDirectory])
 		[[NSFileManager defaultManager] removeItemAtPath:dumpDirectory error:NULL];
-	
+	if ([[NSFileManager defaultManager] fileExistsAtPath:dumpDirectory])
+        [[NSFileManager defaultManager] moveItemAtPathToTrash: dumpDirectory];
+    if ([[NSFileManager defaultManager] fileExistsAtPath: dumpDirectory])
+        NSLog( @"******** FAILED to clean the dumpDirectory directory: %@", dumpDirectory);
+    
 	// DELETE THE DECOMPRESSION.noindex DIRECTORY...
 	NSString *decompressionDirectory = [[DicomDatabase activeLocalDatabase] decompressionDirPath];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:decompressionDirectory])
 		[[NSFileManager defaultManager] removeItemAtPath:decompressionDirectory error:NULL];
-	decompressionDirectory = [decompressionDirectory stringByDeletingPathExtension];
-	if ([[NSFileManager defaultManager] fileExistsAtPath:decompressionDirectory])
-		[[NSFileManager defaultManager] removeItemAtPath:decompressionDirectory error:NULL];
-	
+    if ([[NSFileManager defaultManager] fileExistsAtPath:decompressionDirectory])
+        [[NSFileManager defaultManager] moveItemAtPathToTrash: decompressionDirectory];
+    if ([[NSFileManager defaultManager] fileExistsAtPath: decompressionDirectory])
+        NSLog( @"******** FAILED to clean the decompressionDirectory directory: %@", decompressionDirectory);
+    
 	// Delete all process_state files
 	for (NSString* s in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: @"/tmp" error:nil])
 		if ([s hasPrefix:@"process_state-"])
@@ -2512,9 +2517,33 @@ static NSDate *lastWarningDate = nil;
 	
 	[[NSFileManager defaultManager] removeItemAtPath:@"/tmp/zippedCD/" error:nil];
 
-    [[NSFileManager defaultManager] removeItemAtPath:[[NSFileManager defaultManager] tmpDirPath] error:NULL];
+    NSString *tmpDirPath = [[NSFileManager defaultManager] tmpDirPath];
+    if ([[NSFileManager defaultManager] fileExistsAtPath: tmpDirPath])
+        [[NSFileManager defaultManager] removeItemAtPath: tmpDirPath error:NULL];
+    if ([[NSFileManager defaultManager] fileExistsAtPath: tmpDirPath])
+        [[NSFileManager defaultManager] moveItemAtPathToTrash: tmpDirPath];
+    if ([[NSFileManager defaultManager] fileExistsAtPath: tmpDirPath])
+        NSLog( @"******** FAILED to clean the tmpDirPath directory: %@", tmpDirPath);
+    
+    // EMPTY THE INCOMING.noindex DIRECTORY...
+    NSString* incomingDirectoryPath = [[DicomDatabase activeLocalDatabase] incomingDirPath];
+    if ([[NSFileManager defaultManager] fileExistsAtPath: incomingDirectoryPath])
+    {
+		for (NSString* file in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: incomingDirectoryPath error: nil])
+			[[NSFileManager defaultManager] removeItemAtPath: [tempDirectory stringByAppendingPathComponent:file] error: nil];
+        
+        for (NSString* file in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: incomingDirectoryPath error: nil])
+			[[NSFileManager defaultManager] moveItemAtPathToTrash: [tempDirectory stringByAppendingPathComponent:file]];
+        
+        if( [[[NSFileManager defaultManager] contentsOfDirectoryAtPath: incomingDirectoryPath error: nil] count])
+            [[NSFileManager defaultManager] moveItemAtPathToTrash: incomingDirectoryPath];
+        
+        if ([[[NSFileManager defaultManager] contentsOfDirectoryAtPath: incomingDirectoryPath error: nil] count])
+            NSLog( @"******** FAILED to clean the INCOMING.noindex directory: %@", incomingDirectoryPath);
+        
+        [[NSFileManager defaultManager] confirmDirectoryAtPath: incomingDirectoryPath];
+    }
 }
-
 
 - (void) terminate :(id) sender
 {

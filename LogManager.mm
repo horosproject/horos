@@ -132,7 +132,7 @@ static LogManager *currentLogManager = nil;
                 NSManagedObject *logEntry = nil;
                 
                 if( [_currentLogs objectForKey:uid])
-                    logEntry = [independentContext objectWithID: [_currentLogs objectForKey:uid]];
+                    logEntry = [independentContext existingObjectWithID: [_currentLogs objectForKey:uid] error: nil];
                 
                 if (logEntry == nil)
                 {

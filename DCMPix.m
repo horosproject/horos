@@ -9650,7 +9650,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             if( [NSThread isMainThread])
                 srcFile = [[BrowserController currentBrowser] getLocalDCMPath: [[[BrowserController currentBrowser] database] objectWithID: imageObjectID] :0];
 			else
-                srcFile = [[BrowserController currentBrowser] getLocalDCMPath: [[[[BrowserController currentBrowser] database] independentContext] objectWithID: imageObjectID] :0];
+                srcFile = [[BrowserController currentBrowser] getLocalDCMPath: [[[[BrowserController currentBrowser] database] independentContext] existingObjectWithID: imageObjectID error: nil] :0];
 			[srcFile retain];
 			
 			if( srcFile == nil)

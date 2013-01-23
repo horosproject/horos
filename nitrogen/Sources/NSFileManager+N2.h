@@ -18,6 +18,7 @@
 
 @interface NSFileManager (N2)
 
+-(void) moveItemAtPathToTrash: (NSString*) path;
 -(NSString*)findSystemFolderOfType:(int)folderType forDomain:(int)domain;
 -(NSString*)userApplicationSupportFolderForApp;
 -(NSString*)tmpFilePathInDir:(NSString*)dirPath;
