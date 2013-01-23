@@ -26098,6 +26098,7 @@
 				59BDEC2A117C92B2007F1F2C /* Sources */,
 				59BDEC2B117C92B2007F1F2C /* Frameworks */,
 				59BDEC81117C9951007F1F2C /* Version */,
+				715E61E316B01E5D00872B90 /* MD5 */,
 			);
 			buildRules = (
 			);
@@ -26137,6 +26138,7 @@
 				AB0F3A3F1046BE51004129DD /* Copy Headers and Create OsiriX.h */,
 				595717A0131E342900367A22 /* SVN Revision Number */,
 				CED7488F158F07B500120143 /* Code Signing */,
+				715E61E216B013DF00872B90 /* MD5 */,
 			);
 			buildRules = (
 			);
@@ -26219,6 +26221,7 @@
 				CEC70A0D10A5C844008935EA /* CopyFiles */,
 				CEC70A1710A5C844008935EA /* SVN Revision number */,
 				CEC70A1810A5C844008935EA /* Clean frameworks */,
+				715E61E116B00D0300872B90 /* MD5 */,
 			);
 			buildRules = (
 			);
@@ -27172,7 +27175,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "dest=\"${UNLOCALIZED_RESOURCES_FOLDER_PATH}/OsiriX Lite.zip\"\ncd \"${BUILT_PRODUCTS_DIR}\"\nrm -f \"$dest\"\nzip -qr \"$dest\" \"OsiriX Lite.app\"\n";
+			shellScript = "cd \"${BUILT_PRODUCTS_DIR}\"\n\nproduct=\"OsiriX Lite.app\"\ndest=\"${UNLOCALIZED_RESOURCES_FOLDER_PATH}/OsiriX Lite.zip\"\nproduct_md5_file=\".OsiriXLite.md5\"\n\nlatest_zipped_product_md5_file=\".OsiriXLite.in.OsiriXLauncher.md5\"\n\nif [ ! \\( -a \"$dest\" \\) ] || ! cmp -s \"$product_md5_file\" \"$latest_zipped_product_md5_file\" ; then # if dest file does not exist, or if its latest md5 is different from current md5\n    rm -f \"$dest\"\n    zip -qr \"$dest\" \"$product\"\n    cp \"$product_md5_file\" \"$latest_zipped_product_md5_file\"\nfi\n";
 		};
 		59BDEE70117CB3A6007F1F2C /* Zip OsiriX Launcher into Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -27186,7 +27189,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "dest=\"${UNLOCALIZED_RESOURCES_FOLDER_PATH}/OsiriX Launcher.zip\"\ncd \"${BUILT_PRODUCTS_DIR}\"\nrm -f \"$dest\"\nzip -qr \"$dest\" \"OsiriX Launcher.app\"\n";
+			shellScript = "cd \"${BUILT_PRODUCTS_DIR}\"\n\nproduct=\"OsiriX Launcher.app\"\ndest=\"${UNLOCALIZED_RESOURCES_FOLDER_PATH}/OsiriX Launcher.zip\"\nproduct_md5_file=\".OsiriXLauncher.md5\"\n\nlatest_zipped_product_md5_file=\".OsiriXLauncher.in.OsiriX.md5\"\n\nif [ ! \\( -a \"$dest\" \\) ] || ! cmp -s \"$product_md5_file\" \"$latest_zipped_product_md5_file\" ; then # if dest file does not exist, or if its latest md5 is different from current md5\n    rm -f \"$dest\"\n    zip -qr \"$dest\" \"$product\"\n    cp \"$product_md5_file\" \"$latest_zipped_product_md5_file\"\nfi\n\n\n\n";
 		};
 		59F69A4E1056328D008585F5 /* Clean Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -27201,6 +27204,48 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "#set -x\n\nheaderspath=\"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/OsiriXAPI.framework/Versions/A/Headers\"\nrm -Rf \"$headerspath\"\nmkdir -p \"$headerspath\"\nrm -Rf \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/OsiriXAPI.framework/Versions/A/Frameworks/Nitrogen.framework\"\n\nif [ \"$DEBUGGING_SYMBOLS\" == \"YES\" ] ; then\n\trm -Rf \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/Nitrogen.framework/Versions/A/Nitrogen.framework.dSYM\"\nfi\n\nrm -Rf \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/OsiriX Headers.framework\"\n\ncd \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH\"\nln -sf \"OsiriXAPI.framework\" \"OsiriX Headers.framework\"\n\ncd \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/OsiriXAPI.framework\"\nln -sf \"OsiriXAPI\" \"OsiriX Headers\"\n\ncd \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/OsiriXAPI.framework/Versions/A\"\nln -sf \"OsiriXAPI\" \"OsiriX Headers\"\n";
+		};
+		715E61E116B00D0300872B90 /* MD5 */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = MD5;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd \"${BUILT_PRODUCTS_DIR}\"\nfind \"${WRAPPER_NAME}\" -type f -print0 | xargs -0 md5 | md5 > \".OsiriXLite.md5\"";
+		};
+		715E61E216B013DF00872B90 /* MD5 */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = MD5;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd \"${BUILT_PRODUCTS_DIR}\"\nfind \"${WRAPPER_NAME}\" -type f -print0 | xargs -0 md5 | md5 > \".${WRAPPER_NAME}.md5\"";
+		};
+		715E61E316B01E5D00872B90 /* MD5 */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = MD5;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd \"${BUILT_PRODUCTS_DIR}\"\nfind \"${WRAPPER_NAME}\" -type f -print0 | xargs -0 md5 | md5 > \".OsiriXLauncher.md5\"";
 		};
 		7183153F161065BE0098576F /* Replace Weasis ext-config.properties */ = {
 			isa = PBXShellScriptBuildPhase;
