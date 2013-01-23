@@ -307,7 +307,6 @@
                                                                       compression:0
                                                                   extraParameters:dn];
                 [qn setShowErrorMessage:NO];
-                [qn setDontCatchExceptions:YES];
                 
                 [qn setupNetworkWithSyntax:UID_FINDStudyRootQueryRetrieveInformationModel dataset:&slDataset destination:nil];
                 
@@ -414,7 +413,6 @@
                                                                           compression:0
                                                                       extraParameters:dn];
                 [qn setShowErrorMessage:NO];
-                [qn setDontCatchExceptions:YES];
                 
                 [qn setupNetworkWithSyntax:UID_FINDStudyRootQueryRetrieveInformationModel dataset:&slDataset destination:nil];
                 
