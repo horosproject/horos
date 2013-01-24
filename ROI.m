@@ -6141,11 +6141,12 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			float length = 0;
 			long i;
             NSMutableArray* ptsTemp = self.points;
-			for( i = 0; i < [ptsTemp count]-1; i++ )
-			{
+            if( self.points > 0)
+            {
+                for( i = 0; i < [ptsTemp count]-1; i++ )
 				length += [self Length:[[ptsTemp objectAtIndex:i] point] :[[ptsTemp objectAtIndex:i+1] point]];
 			}
-			
+            
 			if( type != tOPolygon && [ptsTemp count] > 0) length += [self Length:[[ptsTemp objectAtIndex:i] point] :[[ptsTemp objectAtIndex:0] point]];
 			
 			[array setObject: [NSNumber numberWithFloat:length] forKey:@"Length"];
