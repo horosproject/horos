@@ -15959,9 +15959,9 @@ static volatile int numberOfThreadsForJPEG = 0;
                 [t setCurrentDirectoryPath: [srcFolder stringByDeletingLastPathComponent]];
         
                 if( [password length] > 0)
-                    args = [NSArray arrayWithObjects: @"-q", @"-r", @"-e", @"-P", password, destFile, [srcFolder lastPathComponent], nil];
+                    args = [NSArray arrayWithObjects: @"-q", @"-r", @"-e", @"-P", password, destFile, srcFolder, nil];
                 else
-                    args = [NSArray arrayWithObjects: @"-q", @"-r", destFile, [srcFolder lastPathComponent], nil];
+                    args = [NSArray arrayWithObjects: @"-q", @"-r", destFile, srcFolder, nil];
                 
                 [t setArguments: args];
                 [t launch];
