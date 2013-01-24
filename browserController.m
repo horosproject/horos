@@ -1647,7 +1647,7 @@ static NSConditionLock *threadLock = nil;
     
     if( [study isKindOfClass: [DicomStudy class]])
     {
-        if ([study managedObjectContext] != self.database.managedObjectContext) // another database is selected, select the destination DB
+        if( study.managedObjectContext.persistentStoreCoordinator != self.database.managedObjectContext.persistentStoreCoordinator) // another database is selected, select the destination DB
             [self setDatabase:[DicomDatabase databaseForContext:[study managedObjectContext]]];
     }
     

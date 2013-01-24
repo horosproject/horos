@@ -236,7 +236,7 @@
 
 - (void) renewManagedObjectContext
 {
-    self.managedObjectContext = [self contextAtPath: self.sqlFilePath];
+    self.managedObjectContext = self.isMainDatabase? [self contextAtPath: self.sqlFilePath] : [self.mainDatabase contextAtPath: self.sqlFilePath];
 }
 
 -(NSManagedObjectContext*)contextAtPath:(NSString*)sqlFilePath {
