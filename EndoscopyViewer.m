@@ -27,6 +27,7 @@
 #import "DicomStudy.h"
 #import "DicomSeries.h"
 #import "DicomImage.h"
+#import "DicomDatabase.h"
 
 #define	NAVIGATORMODE_BASIC 1
 #define NAVIGATORMODE_2POINT 2
@@ -1190,7 +1191,7 @@ return YES;
 	if( [producedFiles count])
 	{
 		NSArray *objects = [BrowserController addFiles: [producedFiles valueForKey: @"file"]
-											 toContext: [[BrowserController currentBrowser] managedObjectContext]
+											 toContext: [BrowserController currentBrowser].database.managedObjectContext
 											toDatabase: [BrowserController currentBrowser]
 											 onlyDICOM: YES 
 									  notifyAddedFiles: YES

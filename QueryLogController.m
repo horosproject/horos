@@ -13,7 +13,7 @@
 =========================================================================*/
 
 
-
+#import "DicomDatabase.h"
 #import "QueryLogController.h"
 #import "browserController.h"
 
@@ -21,7 +21,7 @@
 
 - (void)awakeFromNib
 {
-	[self setManagedObjectContext: [[BrowserController currentBrowser] managedObjectContext]];
+	[self setManagedObjectContext: [BrowserController currentBrowser].database.managedObjectContext];
 	[self setAutomaticallyPreparesContent: YES];
 	
 	[self fetch: self];
@@ -35,11 +35,11 @@
 //	
 //	
 //	NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-//	[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"LogEntry"]];
+//	[dbRequest setEntity: [[[BrowserController currentBrowser].database.managedObjectModel entitiesByName] objectForKey:@"LogEntry"]];
 //	[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
 //	
 //	NSError *error = nil;
-//	NSArray *logArray = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest:dbRequest error: &error];
+//	NSArray *logArray = [[BrowserController currentBrowser].database.managedObjectContext executeFetchRequest:dbRequest error: &error];
 //	
 //	if( error)
 //		NSLog( @"%@", error);
@@ -49,7 +49,7 @@
 
 -(NSManagedObjectContext *)managedObjectContext
 {
-	return [[BrowserController currentBrowser] managedObjectContext];
+	return [BrowserController currentBrowser].database.managedObjectContext;
 }
 
 - (IBAction)nothing:(id)sender

@@ -32,7 +32,7 @@
 #import "BrowserController.h"
 #import "DICOMExport.h"
 #import "DefaultsOsiriX.h" // for HotKeys
-//#import "IChatTheatreDelegate.h"
+#import "DicomDatabase.h"
 #import "DicomImage.h"
 #import "Notifications.h"
 #import "NSUserDefaultsController+OsiriX.h"
@@ -1396,7 +1396,7 @@ public:
 		if( [producedFiles count])
 		{
 			NSArray *objects = [BrowserController addFiles: [producedFiles valueForKey: @"file"]
-												 toContext: [[BrowserController currentBrowser] managedObjectContext]
+												 toContext: [BrowserController currentBrowser].database.managedObjectContext
 												toDatabase: [BrowserController currentBrowser]
 												 onlyDICOM: YES 
 										  notifyAddedFiles: YES

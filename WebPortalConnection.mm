@@ -661,7 +661,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 			if ([studyInstanceUID isEqualToString: previousStudyInstanceUID] == NO || [patientUID compare: previousPatientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] != NSOrderedSame)
 			{
                 [BrowserController addFiles: filesAccumulator
-												 toContext: [[BrowserController currentBrowser] managedObjectContext]
+												 toContext: [BrowserController currentBrowser].database.managedObjectContext
 												toDatabase: [BrowserController currentBrowser]
 												 onlyDICOM: YES 
 										  notifyAddedFiles: YES
@@ -676,16 +676,16 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 				
 				if (studyInstanceUID && patientUID)
 				{
-					[[[BrowserController currentBrowser] managedObjectContext] lock];
+					[[BrowserController currentBrowser].database.managedObjectContext lock];
 					
 					@try
 					{
 						NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-						[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey: @"Study"]];
+						[dbRequest setEntity: [[[BrowserController currentBrowser].database.managedObjectModel entitiesByName] objectForKey: @"Study"]];
 						[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"(patientUID BEGINSWITH[cd] %@) AND (studyInstanceUID == %@)", patientUID, studyInstanceUID]];
 						
 						NSError *error = nil;
-						NSArray *studies = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest: dbRequest error:&error];
+						NSArray *studies = [[BrowserController currentBrowser].database.managedObjectContext executeFetchRequest: dbRequest error:&error];
 						
 						if ([studies count] == 0)
 							NSLog( @"****** [studies count == 0] cannot find the file{s} we just received... upload POST: %@ %@", patientUID, studyInstanceUID);
@@ -758,7 +758,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 					}
 					///
 					
-					[[[BrowserController currentBrowser] managedObjectContext] unlock];
+					[[BrowserController currentBrowser].database.managedObjectContext unlock];
 				}
 				else NSLog( @"****** studyInstanceUID && patientUID == nil upload POST");
 				
@@ -767,7 +767,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	}
 	
     [BrowserController addFiles: filesAccumulator
-												 toContext: [[BrowserController currentBrowser] managedObjectContext]
+												 toContext: [BrowserController currentBrowser].database.managedObjectContext
 												toDatabase: [BrowserController currentBrowser]
 												 onlyDICOM: YES 
 										  notifyAddedFiles: YES

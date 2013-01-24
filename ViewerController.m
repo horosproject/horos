@@ -4207,7 +4207,7 @@ static volatile int numberOfThreadsForRelisce = 0;
         // Use the 'history' array of the browser controller, if available (with the distant studies)
         
         if( [[[BrowserController currentBrowser] comparativePatientUID] compare: [study patientUID] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame && [[BrowserController currentBrowser] comparativeStudies] != nil)
-            studiesArray = BrowserController.currentBrowser.comparativeStudies;
+            studiesArray = [BrowserController currentBrowser].comparativeStudies;
         else
         {
             studiesArray = [db objectsForEntity:db.studyEntity predicate:predicate];
@@ -17555,7 +17555,7 @@ int i,j,l;
 	if( [producedFiles count])
 	{
 		NSArray *objects = [BrowserController addFiles: [producedFiles valueForKey: @"file"]
-											 toContext: [[BrowserController currentBrowser] managedObjectContext]
+											 toContext: [BrowserController currentBrowser].database.managedObjectContext
 											toDatabase: [BrowserController currentBrowser]
 											 onlyDICOM: YES 
 									  notifyAddedFiles: YES
@@ -17688,7 +17688,7 @@ int i,j,l;
 		if( [producedFiles count])
 		{
 			NSArray *objects = [BrowserController addFiles: [producedFiles valueForKey: @"file"]
-												 toContext: [[BrowserController currentBrowser] managedObjectContext]
+												 toContext: [BrowserController currentBrowser].database.managedObjectContext
 												toDatabase: [BrowserController currentBrowser]
 												 onlyDICOM: YES 
 										  notifyAddedFiles: YES

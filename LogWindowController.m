@@ -14,6 +14,7 @@
 
 #import "LogWindowController.h"
 #import "browserController.h"
+#import "DicomDatabase.h"
 
 @implementation LogWindowController
 
@@ -32,7 +33,7 @@
 	
 	NSMutableString *csv = [NSMutableString string];
 	
-	NSArray *logEntries = [[[[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"LogEntry"] attributesByName] allKeys];
+	NSArray *logEntries = [[[[[BrowserController currentBrowser].database.managedObjectModel entitiesByName] objectForKey:@"LogEntry"] attributesByName] allKeys];
 	
 	// HEADER
 	NSMutableString *line = [NSMutableString string];
@@ -97,7 +98,7 @@
 
 -(NSManagedObjectContext *)managedObjectContext
 {
-	return [[BrowserController currentBrowser] managedObjectContext];
+	return [BrowserController currentBrowser].database.managedObjectContext;
 }
 
 -(IBAction) showWindow:(id) sender

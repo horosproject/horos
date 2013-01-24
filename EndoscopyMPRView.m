@@ -21,6 +21,7 @@
 #import "BrowserController.h"
 #import "DCMCursor.h"
 #import "Notifications.h"
+#import "DicomDatabase.h"
 
 @implementation EndoscopyMPRView
 
@@ -573,7 +574,7 @@
 		if( [producedFiles count])
 		{
 			NSArray *objects = [BrowserController addFiles: [producedFiles valueForKey: @"file"]
-												 toContext: [[BrowserController currentBrowser] managedObjectContext]
+												 toContext: [BrowserController currentBrowser].database.managedObjectContext
 												toDatabase: [BrowserController currentBrowser]
 												 onlyDICOM: YES 
 										  notifyAddedFiles: YES

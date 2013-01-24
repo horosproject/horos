@@ -789,13 +789,13 @@ static NSConditionLock *threadLock = nil;
 	{
 		NSArray	*autoroutingRules = [[NSUserDefaults standardUserDefaults] arrayForKey: @"AUTOROUTINGDICTIONARY"];
 		
-        NSManagedObjectContext *context = self.managedObjectContext;
+        NSManagedObjectContext *context = self.database.managedObjectContext;
 		
 		[context lock];
         
         // Take a study for the test
 		NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-		[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Study"]];
+		[dbRequest setEntity: [[self.database.managedObjectModel entitiesByName] objectForKey:@"Study"]];
 		[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
 		[dbRequest setFetchLimit: 1];
         
@@ -882,7 +882,7 @@ static NSConditionLock *threadLock = nil;
 		
 		[splash setCancel: YES];
 		
-		NSManagedObjectContext *context = self.managedObjectContext;
+		NSManagedObjectContext *context = self.database.managedObjectContext;
 		
 		[context lock];
 		
@@ -893,7 +893,7 @@ static NSConditionLock *threadLock = nil;
         {
             // Find all studies
             NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-            [dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Study"]];
+            [dbRequest setEntity: [[self.database.managedObjectModel entitiesByName] objectForKey:@"Study"]];
             [dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
             
             NSError *error = nil;
@@ -933,7 +933,7 @@ static NSConditionLock *threadLock = nil;
         {
             // Find all series
             dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-            [dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Series"]];
+            [dbRequest setEntity: [[self.database.managedObjectModel entitiesByName] objectForKey:@"Series"]];
             [dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
 		
             NSError *error = nil;
@@ -1089,6 +1089,8 @@ static NSConditionLock *threadLock = nil;
     if ([path isEqualToString:_database.baseDirPath])
 		return [_database independentContext:independentContext];
 
+    N2LogStackTrace( @"******* __deprecated BrowserController managedObjectContextIndependentContext : unknown DicomDatabase");
+    
 	return [[DicomDatabase existingDatabaseAtPath:path] independentContext:independentContext];
 }
 
@@ -1584,13 +1586,13 @@ static NSConditionLock *threadLock = nil;
 // TODO: #pragma we know saveDatabase:context: is deprecated
 -(long)saveDatabase // __deprecated
 {
-	return [self saveDatabase:nil context:self.managedObjectContext];
+	return [self saveDatabase:nil context:self.database.managedObjectContext];
 }
 
 // TODO: #pragma we know saveDatabase:context: is deprecated
 -(long)saveDatabase:(NSString*)path // __deprecated
 {
-	return [self saveDatabase:path context:self.managedObjectContext];
+	return [self saveDatabase:path context:self.database.managedObjectContext];
 }
 
 - (void) addImagesToSelectedAlbum:(NSArray*) objectIDs
@@ -3449,7 +3451,7 @@ static NSConditionLock *threadLock = nil;
         return selectedFiles;
 	}
 	
-	NSManagedObjectContext	*context = self.managedObjectContext;
+	NSManagedObjectContext	*context = self.database.managedObjectContext;
 	
 	if( correspondingManagedObjects == nil) correspondingManagedObjects = [NSMutableArray array];
 	if( treeManagedObjects == nil) treeManagedObjects = [NSMutableSet set];
@@ -4324,19 +4326,17 @@ static NSConditionLock *threadLock = nil;
             [self checkIncoming: self];
             
             NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-            [request setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Study"]];
+            [request setEntity: [[self.database.managedObjectModel entitiesByName] objectForKey:@"Study"]];
             [request setPredicate: [NSPredicate predicateWithFormat: @"(studyInstanceUID == %@)", [comparativeStudyWaited studyInstanceUID]]];
             
             NSError *error = nil;
             NSArray *studyArray = nil;
-            [self.managedObjectContext lock];
             @try {
-                studyArray = [self.managedObjectContext executeFetchRequest:request error:&error];
+                studyArray = [self.database.managedObjectContext executeFetchRequest:request error:&error];
             }
             @catch (NSException *e) {
                 N2LogExceptionWithStackTrace(e);
             }
-            [self.managedObjectContext unlock];
             
             if( [studyArray count] > 0)
             {
@@ -4708,7 +4708,7 @@ static NSConditionLock *threadLock = nil;
 	
 	if( result == NSAlertDefaultReturn)
 	{
-		NSManagedObjectContext	*context = self.managedObjectContext;
+		NSManagedObjectContext	*context = self.database.managedObjectContext;
 
 		[context lock];
 		
@@ -4803,7 +4803,7 @@ static NSConditionLock *threadLock = nil;
 	
 	if( result == NSAlertDefaultReturn || result == NSAlertAlternateReturn)
 	{
-		NSManagedObjectContext	*context = self.managedObjectContext;
+		NSManagedObjectContext	*context = self.database.managedObjectContext;
 		
 		[context retain];
 		[context lock];
@@ -4968,7 +4968,7 @@ static NSConditionLock *threadLock = nil;
 	
 	if( result == NSAlertDefaultReturn)
 	{
-		NSManagedObjectContext	*context = self.managedObjectContext;
+		NSManagedObjectContext	*context = self.database.managedObjectContext;
 		
 		[context retain];
 		[context lock];
@@ -5231,7 +5231,7 @@ static NSConditionLock *threadLock = nil;
 {
 	int result;
 	NSMutableArray *studiesArray = [NSMutableArray array] , *seriesArray = [NSMutableArray array];
-	NSManagedObjectContext	*context = self.managedObjectContext;
+	NSManagedObjectContext	*context = self.database.managedObjectContext;
 
     [context lock];
     
@@ -5369,7 +5369,7 @@ static NSConditionLock *threadLock = nil;
         return;
     
     NSInteger				result;
-	NSManagedObjectContext	*context = self.managedObjectContext;
+	NSManagedObjectContext	*context = self.database.managedObjectContext;
 	BOOL					matrixThumbnails = YES;
 	int						animState = [animationCheck state];
 	
@@ -6068,7 +6068,7 @@ static NSConditionLock *threadLock = nil;
 		[(ImageAndTextCell*) cell setLastImage: nil];
 	}
 	
-	NSManagedObjectContext	*context = self.managedObjectContext;
+	NSManagedObjectContext	*context = self.database.managedObjectContext;
 	
 	[context lock];
 	
@@ -6464,7 +6464,7 @@ static NSConditionLock *threadLock = nil;
 				@try
 				{
 					NSError					*error = nil;
-					NSManagedObjectContext	*context = self.managedObjectContext;
+					NSManagedObjectContext	*context = self.database.managedObjectContext;
 					
 					[context lock];
 					
@@ -6475,7 +6475,7 @@ static NSConditionLock *threadLock = nil;
 						for( NSString *curSeriesUID in series4D)
 						{
 							NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-							[request setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Series"]];
+							[request setEntity: [[self.database.managedObjectModel entitiesByName] objectForKey:@"Series"]];
 							[request setPredicate: [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", studyUID, curSeriesUID]];
 							
 							NSArray	*seriesArray = [context executeFetchRequest:request error:&error];
@@ -6797,10 +6797,10 @@ static NSConditionLock *threadLock = nil;
 			if( curFile)
 			{
 				NSManagedObject	*study, *seriesTable;
-				NSManagedObjectContext *context = self.managedObjectContext;
+				NSManagedObjectContext *context = self.database.managedObjectContext;
 				
 				NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-				[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Study"]];
+				[dbRequest setEntity: [[self.database.managedObjectModel entitiesByName] objectForKey:@"Study"]];
 				[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
 				
 				[context lock];
@@ -7001,13 +7001,13 @@ static NSConditionLock *threadLock = nil;
 	
 	NSManagedObject			*element = nil;
 	NSArray					*array = nil;
-	NSManagedObjectContext	*context = self.managedObjectContext;
+	NSManagedObjectContext	*context = self.database.managedObjectContext;
 	
 	[self checkIncoming: self];
 	// We cannot call checkIncomingNow, because we currently have the lock for context, and IF a separate checkIncoming thread has started, he is currently waiting for the context lock, and we will wait for the checkIncomingLock...
 	
 	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-	[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey: table]];
+	[dbRequest setEntity: [[self.database.managedObjectModel entitiesByName] objectForKey: table]];
 	[dbRequest setPredicate: [NSPredicate predicateWithFormat: request]];
 	
 	[context retain];
@@ -7077,7 +7077,7 @@ static NSConditionLock *threadLock = nil;
 		{
 			NSMutableString *c = [NSMutableString stringWithString: @"<value><struct>"];
 			
-			NSArray *allKeys = [[[[self.managedObjectModel entitiesByName] objectForKey: table] attributesByName] allKeys];
+			NSArray *allKeys = [[[[self.database.managedObjectModel entitiesByName] objectForKey: table] attributesByName] allKeys];
 			
 			for (NSString *keyname in allKeys)
 			{
@@ -7236,8 +7236,8 @@ static NSConditionLock *threadLock = nil;
 
 -(void) loadNextSeries:(NSManagedObject *) curImage :(long) direction :(ViewerController*) viewer :(BOOL) firstViewer keyImagesOnly:(BOOL) keyImages
 {
-	NSManagedObjectModel	*model = self.managedObjectModel;
-	NSManagedObjectContext	*context = self.managedObjectContext;
+	NSManagedObjectModel	*model = self.database.managedObjectModel;
+	NSManagedObjectContext	*context = self.database.managedObjectContext;
 	NSArray					*winList = [NSApp windows];
 	NSMutableArray			*viewersList = [[NSMutableArray alloc] initWithCapacity:0];
 	BOOL					applyToAllViewers = [[NSUserDefaults standardUserDefaults] boolForKey:@"nextSeriesToAllViewers"];
@@ -8374,8 +8374,8 @@ static BOOL withReset = NO;
 	if( [DCMPix isRunOsiriXInProtectedModeActivated]) return;
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"StoreThumbnailsInDB"] == NO) return;
 	
-	NSManagedObjectContext *context = self.managedObjectContext;
-	NSManagedObjectModel *model = self.managedObjectModel;
+	NSManagedObjectContext *context = self.database.managedObjectContext;
+	NSManagedObjectModel *model = self.database.managedObjectModel;
 	
 	NSString *recoveryPath = [[self documentsDirectory] stringByAppendingPathComponent:@"/ThumbnailPath"];
 	if( [[NSFileManager defaultManager] fileExistsAtPath: recoveryPath])
@@ -8480,7 +8480,7 @@ static BOOL withReset = NO;
 - (IBAction) resetWindowsState:(id)sender
 {
 	NSInteger				x, row;
-	NSManagedObjectContext	*context = self.managedObjectContext;
+	NSManagedObjectContext	*context = self.database.managedObjectContext;
 	
 	[context lock];
 	
@@ -9132,7 +9132,7 @@ static BOOL withReset = NO;
 	
 	if( correspondingManagedObjects == nil) correspondingManagedObjects = [NSMutableArray array];
 	
-	NSManagedObjectContext	*context = self.managedObjectContext;
+	NSManagedObjectContext	*context = self.database.managedObjectContext;
 	
 	[context retain];
 	[context lock];
@@ -9368,9 +9368,9 @@ static BOOL withReset = NO;
 		NSString *name;
 		
 		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-		[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Album"]];
+		[dbRequest setEntity: [[self.database.managedObjectModel entitiesByName] objectForKey:@"Album"]];
 		[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-		NSManagedObjectContext *context = self.managedObjectContext;
+		NSManagedObjectContext *context = self.database.managedObjectContext;
 		
 		[context lock];
 		
@@ -9455,10 +9455,10 @@ static BOOL withReset = NO;
         int i = 2;
         
         NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-        [dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Album"]];
+        [dbRequest setEntity: [[self.database.managedObjectModel entitiesByName] objectForKey:@"Album"]];
         [dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
         
-        NSManagedObjectContext *context = self.managedObjectContext;
+        NSManagedObjectContext *context = self.database.managedObjectContext;
         
         [context lock];
         
@@ -9617,10 +9617,10 @@ static BOOL needToRezoom;
 				int i = 2;
 				
 				NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-				[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Album"]];
+				[dbRequest setEntity: [[self.database.managedObjectModel entitiesByName] objectForKey:@"Album"]];
 				[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
 				
-				NSManagedObjectContext *context = self.managedObjectContext;
+				NSManagedObjectContext *context = self.database.managedObjectContext;
 				
 				[context retain];
 				[context lock];
@@ -9688,9 +9688,9 @@ static BOOL needToRezoom;
 				if( [[newAlbumName stringValue] isEqualToString: [album valueForKey:@"name"]] == NO)
 				{
 					NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-					[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Album"]];
+					[dbRequest setEntity: [[self.database.managedObjectModel entitiesByName] objectForKey:@"Album"]];
 					[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-					NSManagedObjectContext *context = self.managedObjectContext;
+					NSManagedObjectContext *context = self.database.managedObjectContext;
 					
 					[context retain];
 					[context lock];
@@ -9850,10 +9850,10 @@ static BOOL needToRezoom;
 	NSArray						*studyArray = nil;
 	NSError						*error = nil;
 	NSFetchRequest				*request = [[[NSFetchRequest alloc] init] autorelease];
-	NSManagedObjectContext		*context = [[BrowserController currentBrowser] managedObjectContext];
+	NSManagedObjectContext		*context = [BrowserController currentBrowser].database.managedObjectContext;
 	NSPredicate					*predicate = [NSPredicate predicateWithFormat: @"(studyInstanceUID == %@)", uid];
 	
-	[request setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Study"]];
+	[request setEntity: [[self.database.managedObjectModel entitiesByName] objectForKey:@"Study"]];
 	[request setPredicate: predicate];
 	
 	[context retain];
@@ -9880,10 +9880,10 @@ static BOOL needToRezoom;
 	NSArray						*seriesArray = nil;
 	NSError						*error = nil;
 	NSFetchRequest				*request = [[[NSFetchRequest alloc] init] autorelease];
-	NSManagedObjectContext		*context = [[BrowserController currentBrowser] managedObjectContext];
+	NSManagedObjectContext		*context = [BrowserController currentBrowser].database.managedObjectContext;
 	NSPredicate					*predicate = [NSPredicate predicateWithFormat: @"(seriesDICOMUID == %@)", uid];
 	
-	[request setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Series"]];
+	[request setEntity: [[[BrowserController currentBrowser].database.managedObjectModel entitiesByName] objectForKey:@"Series"]];
 	[request setPredicate: predicate];
 	
 	[context retain];
@@ -12773,11 +12773,11 @@ static NSArray*	openSubSeriesArray = nil;
         [searchField setNextKeyView: databaseOutline];
         
     //	NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-    //	[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"LogEntry"]];
+    //	[dbRequest setEntity: [[self.database.managedObjectModel entitiesByName] objectForKey:@"LogEntry"]];
     //	[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
     //	
     //	NSError *error = nil;
-    //	NSArray *logArray = [self.managedObjectContext executeFetchRequest:dbRequest error: &error];
+    //	NSArray *logArray = [self.database.managedObjectContext executeFetchRequest:dbRequest error: &error];
     //	
     //	if( error)
     //		NSLog( @"%@", error);
@@ -12788,7 +12788,7 @@ static NSArray*	openSubSeriesArray = nil;
     //		NSLog( @"%@", [log valueForKey: @"type"]);
     //	}
     //	
-    //	for( id log in logArray) [self.managedObjectContext deleteObject: log];
+    //	for( id log in logArray) [self.database.managedObjectContext deleteObject: log];
     }
     @catch (NSException *e) {
         N2LogException( e);
@@ -15331,14 +15331,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	if( [[NSFileManager defaultManager] fileExistsAtPath: path])
 	{
-		NSManagedObjectContext *context = self.managedObjectContext;
+		NSManagedObjectContext *context = self.database.managedObjectContext;
 		
 		[context lock];
 		
 		@try
 		{
 			NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-			[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Study"]];
+			[dbRequest setEntity: [[self.database.managedObjectModel entitiesByName] objectForKey:@"Study"]];
 			[dbRequest setPredicate: [NSPredicate predicateWithFormat:  @"studyInstanceUID == %@", uid]];
 			
 			NSError *error = nil;
@@ -18666,8 +18666,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 // Finding Comparisons
 - (NSArray *)relatedStudiesForStudy: (id)study
 {
-	NSManagedObjectModel	*model = self.managedObjectModel;
-	NSManagedObjectContext	*context = self.managedObjectContext;
+	NSManagedObjectModel	*model = self.database.managedObjectModel;
+	NSManagedObjectContext	*context = self.database.managedObjectContext;
 	
 	// FIND ALL STUDIES of this patient
 	

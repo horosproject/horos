@@ -23,7 +23,7 @@
 #import "NSUserDefaultsController+OsiriX.h"
 #import "N2OpenGLViewWithSplitsWindow.h"
 #import "N2Debug.h"
-
+#import "DicomDatabase.h"
 
 static NSString* 	PETCTToolbarIdentifier						= @"PETCT Viewer Toolbar Identifier";
 static NSString*	SameHeightSplitViewToolbarItemIdentifier	= @"sameHeightSplitView";
@@ -2631,7 +2631,7 @@ return YES;
 		if( [producedFiles count])
 		{
 			NSArray *objects = [BrowserController addFiles: [producedFiles valueForKey: @"file"]
-												 toContext: [[BrowserController currentBrowser] managedObjectContext]
+												 toContext: [BrowserController currentBrowser].database.managedObjectContext
 												toDatabase: [BrowserController currentBrowser]
 												 onlyDICOM: YES 
 										  notifyAddedFiles: YES

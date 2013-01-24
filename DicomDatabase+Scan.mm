@@ -411,7 +411,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
 }
 
 -(void)_requestZipPassword:(NSArray*)args {
-	[BrowserController.currentBrowser askForZIPPassword:[args objectAtIndex:0] destination:[args objectAtIndex:1]];
+	[[BrowserController currentBrowser] askForZIPPassword:[args objectAtIndex:0] destination:[args objectAtIndex:1]];
 }
 
 -(void)_askUserDiscDataCopyOrBrowse:(NSArray*)a {

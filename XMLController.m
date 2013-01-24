@@ -35,6 +35,7 @@
 #import "OsiriX/DCMObject.h"
 #import "OsiriX/DCMAttribute.h"
 #import "OsiriX/DCMAttributeTag.h"
+#import "DicomDatabase.h"
 
 static NSString* 	XMLToolbarIdentifier					= @"XML Toolbar Identifier";
 static NSString*	ExportToolbarItemIdentifier				= @"Export.icns";
@@ -164,10 +165,10 @@ extern int delayedTileWindows;
 			
 			NSPredicate *predicate = [NSPredicate predicateWithFormat:  @"(patientID == %@)", [imObj valueForKeyPath:@"series.study.patientID"]];
 			NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-			[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Study"]];
+			[dbRequest setEntity: [[[BrowserController currentBrowser].database.managedObjectModel entitiesByName] objectForKey:@"Study"]];
 			[dbRequest setPredicate: predicate];
 			
-			[[[BrowserController currentBrowser] managedObjectContext] lock];
+			[[BrowserController currentBrowser].database.managedObjectContext lock];
 			
 			NSError	*error = nil;
 			NSMutableArray *result = [NSMutableArray array];
@@ -175,14 +176,14 @@ extern int delayedTileWindows;
 			
 			@try 
 			{
-				studiesArray = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest:dbRequest error:&error];
+				studiesArray = [[BrowserController currentBrowser].database.managedObjectContext executeFetchRequest:dbRequest error:&error];
 			}
 			@catch (NSException * e) 
 			{
                 N2LogExceptionWithStackTrace(e);
 			}
 			
-			[[[BrowserController currentBrowser] managedObjectContext] unlock];
+			[[BrowserController currentBrowser].database.managedObjectContext unlock];
 			
 			if ([studiesArray count] > 0)
 			{

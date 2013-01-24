@@ -25,7 +25,7 @@
 #import "NSUserDefaultsController+OsiriX.h"
 #import "N2Debug.h"
 #import "N2OpenGLViewWithSplitsWindow.h"
-
+#import "DicomDatabase.h"
 #import "DicomStudy.h"
 #import "DicomSeries.h"
 #import "DicomImage.h"
@@ -1699,7 +1699,7 @@ return YES;
 		if( [producedFiles count])
 		{
 			NSArray *objects = [BrowserController addFiles: [producedFiles valueForKey: @"file"]
-												 toContext: [[BrowserController currentBrowser] managedObjectContext]
+												 toContext: [BrowserController currentBrowser].database.managedObjectContext
 												toDatabase: [BrowserController currentBrowser]
 												 onlyDICOM: YES 
 										  notifyAddedFiles: YES

@@ -33,6 +33,7 @@
 #import "QuicktimeExport.h"
 #import "AppController.h"
 #import "browserController.h"
+#import "DicomDatabase.h"
 #include "vtkRIBExporter.h"
 #include "vtkIVExporter.h"
 #include "vtkOBJExporter.h"
@@ -673,7 +674,7 @@ typedef struct _xyzArray
 		if( [producedFiles count])
 		{
 			NSArray *objects = [BrowserController addFiles: [producedFiles valueForKey: @"file"]
-												 toContext: [[BrowserController currentBrowser] managedObjectContext]
+												 toContext: [BrowserController currentBrowser].database.managedObjectContext
 												toDatabase: [BrowserController currentBrowser]
 												 onlyDICOM: YES 
 										  notifyAddedFiles: YES

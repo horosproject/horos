@@ -401,13 +401,13 @@
 
 - (void)createHTMLfiles;
 {
-	[[[BrowserController currentBrowser] managedObjectContext] lock];
+	[[BrowserController currentBrowser].database.managedObjectContext lock];
 
 	[self createHTMLPatientsList];
 	[self createHTMLStudiesList];
 	[self createHTMLExtraDirectory];
 	
-	[[[BrowserController currentBrowser] managedObjectContext] unlock];
+	[[BrowserController currentBrowser].database.managedObjectContext unlock];
 }
 
 - (void)createHTMLPatientsList;

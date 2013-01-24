@@ -568,7 +568,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	{
 		[self.managedObjectContext lock];
 		@try {
-            BOOL isMainDB = [self managedObjectContext] == [[BrowserController currentBrowser] managedObjectContext];
+            BOOL isMainDB = [self managedObjectContext] == [BrowserController currentBrowser].database.managedObjectContext;
 
 			NSManagedObject *archivedAnnotations = [self annotationsSRImage];
 			NSString *dstPath = [archivedAnnotations valueForKey: @"completePath"];
@@ -626,7 +626,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 		[self.managedObjectContext lock];
 		@try
 		{
-            BOOL isMainDB = [self managedObjectContext] == [[BrowserController currentBrowser] managedObjectContext];
+            BOOL isMainDB = [self managedObjectContext] == [BrowserController currentBrowser].database.managedObjectContext;
 
 			// Report
 			NSString *zippedFile = @"/tmp/zippedReport.zip";
@@ -991,7 +991,7 @@ static NSRecursiveLock *dbModifyLock = nil;
                 // Save as DICOM PDF
                 if( [[NSUserDefaults standardUserDefaults] boolForKey:@"generateDICOMPDFWhenValidated"] && [c intValue] == 4)
                 {
-                    BOOL isMainDB = [self managedObjectContext] == [[BrowserController currentBrowser] managedObjectContext];
+                    BOOL isMainDB = [self managedObjectContext] == [BrowserController currentBrowser].database.managedObjectContext;
                     
                     NSString *filePath = isMainDB? [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"] : [[NSFileManager defaultManager] tmpFilePathInTmp];
                     

@@ -22,6 +22,7 @@
 #import "BrowserController.h"
 #import "VRControllerVPRO.h"
 #import "Notifications.h"
+#import "DicomDatabase.h"
 
 @implementation FlyThruController
 
@@ -464,7 +465,7 @@
 		if( [producedFiles count])
 		{
 			NSArray *objects = [BrowserController addFiles: [producedFiles valueForKey: @"file"]
-												 toContext: [[BrowserController currentBrowser] managedObjectContext]
+												 toContext: [BrowserController currentBrowser].database.managedObjectContext
 												toDatabase: [BrowserController currentBrowser]
 												 onlyDICOM: YES 
 										  notifyAddedFiles: YES

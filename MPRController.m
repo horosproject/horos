@@ -23,6 +23,7 @@
 #import "ROIWindow.h"
 #import "NSUserDefaultsController+OsiriX.h"
 #import "N2OpenGLViewWithSplitsWindow.h"
+#import "DicomDatabase.h"
 
 #define PRESETS_DIRECTORY @"/3DPRESETS/"
 #define CLUTDATABASE @"/CLUTs/"
@@ -2262,7 +2263,7 @@ static float deg2rad = M_PI/180.0;
 			if( [producedFiles count])
 			{
 				NSArray *objects = [BrowserController addFiles: [producedFiles valueForKey: @"file"]
-													 toContext: [[BrowserController currentBrowser] managedObjectContext]
+													 toContext: [BrowserController currentBrowser].database.managedObjectContext
 													toDatabase: [BrowserController currentBrowser]
 													 onlyDICOM: YES 
 											  notifyAddedFiles: YES
