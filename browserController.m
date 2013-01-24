@@ -1639,6 +1639,9 @@ static NSConditionLock *threadLock = nil;
     if( study == nil)
         return NO;
     
+    if( study.isFault)
+        return NO;
+    
     NSManagedObject *item = [databaseOutline itemAtRow: [[databaseOutline selectedRowIndexes] firstIndex]];
     DicomStudy *studySelected = [[item valueForKey: @"type"] isEqualToString: @"Study"] ? item : [item valueForKey: @"study"];
     
@@ -1647,8 +1650,22 @@ static NSConditionLock *threadLock = nil;
     
     if( [study isKindOfClass: [DicomStudy class]])
     {
-        if( study.managedObjectContext.persistentStoreCoordinator != self.database.managedObjectContext.persistentStoreCoordinator) // another database is selected, select the destination DB
-            [self setDatabase:[DicomDatabase databaseForContext:[study managedObjectContext]]];
+        NSPersistentStoreCoordinator *sps = study.managedObjectContext.persistentStoreCoordinator;
+        NSPersistentStoreCoordinator *dps = self.database.managedObjectContext.persistentStoreCoordinator;
+        
+        if( sps != nil)
+        {
+            if( sps != dps) // another database is selected, select the destination DB
+            {
+                DicomDatabase *db = [DicomDatabase databaseForContext: [study managedObjectContext]];
+                
+                if( db)
+                    [self setDatabase: db];
+                else
+                    return NO;
+            }
+        }
+        else return NO;
     }
     
     [self outlineViewRefresh];
