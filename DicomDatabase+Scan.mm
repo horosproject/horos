@@ -405,7 +405,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
         [parsed parseArray: files];
         [parsed release];
         
-        if( files.count > items.count / 2)
+        if( files.count > items.count * 2) //We found more than 50% more files... Let's use only the files discovered by the DicomDirParser
         {
             [items removeAllObjects];
             [pathsToScanAnyway addObjectsFromArray: files];
