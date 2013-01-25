@@ -3044,6 +3044,9 @@ static inline int int_ceildivpow2(int a, int b) {
   if (![theKind isEqualToString:@"YBR_FULL"] && isPlanar == 1)
     return nil;
   
+    if( ybrData == nil)
+        return nil;
+    
   // allocate room for the RGB image
   int length = ( _rows *  _columns * 3);
   rgbData = [NSMutableData dataWithLength:length];
@@ -3506,8 +3509,14 @@ static inline int int_ceildivpow2(int a, int b) {
             void *ptr = malloc( frameLength);
             if( ptr)
             {
-                memcpy( ptr, (unsigned char*) [[_values objectAtIndex:0] bytes] + range.location,  range.length);
-                subData = [NSMutableData dataWithBytesNoCopy: ptr length: frameLength freeWhenDone: YES];
+                if( [[_values objectAtIndex:0] length] < range.location + range.length)
+                    subData = nil;
+                else
+                {
+                    memcpy( ptr, (unsigned char*) [[_values objectAtIndex:0] bytes] + range.location,  range.length);
+                    subData = [NSMutableData dataWithBytesNoCopy: ptr length: frameLength freeWhenDone: YES];
+                }
+                
                 if( subData == nil)
                     free( ptr);
             }
@@ -3646,8 +3655,13 @@ static inline int int_ceildivpow2(int a, int b) {
                         void *ptr = malloc( range.length);
                         if( ptr)
                         {
-                            memcpy( ptr, (unsigned char*) [rawData bytes] + range.location, range.length);
-                            [self addFrame: [NSMutableData dataWithBytesNoCopy: ptr length: range.length freeWhenDone: YES]];
+                            if( [rawData length] < range.location + range.length)
+                                free( ptr);
+                            else
+                            {
+                                memcpy( ptr, (unsigned char*) [rawData bytes] + range.location, range.length);
+                                [self addFrame: [NSMutableData dataWithBytesNoCopy: ptr length: range.length freeWhenDone: YES]];
+                            }
                         }
                         else
                             NSLog( @"****** NOT ENOUGH MEMORY ! UPGRADE TO OSIRIX 64-BIT");
