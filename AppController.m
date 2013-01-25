@@ -2584,26 +2584,35 @@ static NSDate *lastWarningDate = nil;
 
 - (id)init
 {
-	self = [super init];
-	OsiriX = appController = self;
-	
-    [[NSFileManager defaultManager] removeItemAtPath:[[NSFileManager defaultManager] tmpDirPath] error:NULL];
-    
-	if ([[NSFileManager defaultManager] fileExistsAtPath:[[[[NSFileManager defaultManager] findSystemFolderOfType:kApplicationSupportFolderType forDomain:kLocalDomain] stringByAppendingPathComponent:[[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleNameKey]] stringByAppendingPathComponent:@"DLog.enable"]])
-		[N2Debug setActive:YES];
-	
-//  NSLog(@"%@ -> %d", [[[[NSFileManager defaultManager] findSystemFolderOfType:kApplicationSupportFolderType forDomain:kLocalDomain] stringByAppendingPathComponent:[[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleNameKey]] stringByAppendingPathComponent:@"DLog.enable"], [N2Debug isActive]);
-    
-	PapyrusLock = [[NSRecursiveLock alloc] init];
-	STORESCP = [[NSRecursiveLock alloc] init];
-	STORESCPTLS = [[NSRecursiveLock alloc] init];
-	
-	[[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(getUrl:withReplyEvent:) forEventClass:kInternetEventClass andEventID:kAEGetURL];
-    
-	#ifndef OSIRIX_LIGHT
-    [VRView testGraphicBoard];
-	#endif
-	
+    @try
+    {
+        self = [super init];
+        OsiriX = appController = self;
+        
+        [[NSFileManager defaultManager] removeItemAtPath:[[NSFileManager defaultManager] tmpDirPath] error:NULL];
+        
+        if ([[NSFileManager defaultManager] fileExistsAtPath:[[[[NSFileManager defaultManager] findSystemFolderOfType:kApplicationSupportFolderType forDomain:kLocalDomain] stringByAppendingPathComponent:[[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleNameKey]] stringByAppendingPathComponent:@"DLog.enable"]])
+            [N2Debug setActive:YES];
+        
+    //  NSLog(@"%@ -> %d", [[[[NSFileManager defaultManager] findSystemFolderOfType:kApplicationSupportFolderType forDomain:kLocalDomain] stringByAppendingPathComponent:[[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleNameKey]] stringByAppendingPathComponent:@"DLog.enable"], [N2Debug isActive]);
+        
+        PapyrusLock = [[NSRecursiveLock alloc] init];
+        STORESCP = [[NSRecursiveLock alloc] init];
+        STORESCPTLS = [[NSRecursiveLock alloc] init];
+        
+        [[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(getUrl:withReplyEvent:) forEventClass:kInternetEventClass andEventID:kAEGetURL];
+        
+        #ifndef OSIRIX_LIGHT
+        [VRView testGraphicBoard];
+        #endif
+    }
+    @catch (NSException * e)
+    {
+        NSRunCriticalAlertPanel(NSLocalizedString(@"Error", nil), e.reason, NSLocalizedString(@"OK", nil), nil, nil);
+        
+        N2LogExceptionWithStackTrace(e);
+    }
+        
 	return self;
 }
 
