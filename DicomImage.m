@@ -947,16 +947,18 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	NSPersistentStoreCoordinator *sc = [c persistentStoreCoordinator];
 	NSArray *stores = [sc persistentStores];
 	
-	if( [stores count] != 1)
+    if( stores == nil)
+        N2LogStackTrace( @"*** warning stores == nil");
+    
+	else if( [stores count] != 1)
 	{
-		NSLog( @"*** warning [stores count] != 1 : %@", stores);
+		N2LogStackTrace( @"*** warning [stores count] != 1 : %@", stores);
 		
 		for( id s in stores)
 			NSLog( @"%@", [[[sc URLForPersistentStore: s] path] stringByDeletingLastPathComponent]);
 	}	
 	return [[[sc URLForPersistentStore: [stores lastObject]] path] stringByDeletingLastPathComponent];
 }
-
 
 -(NSString*) completePathWithDownload:(BOOL) download supportNonLocalDatabase: (BOOL) supportNonLocalDatabase
 {

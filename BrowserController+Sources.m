@@ -297,8 +297,10 @@ enum {
     {
         DicomDatabase* db = [dni database];
         
-        if (db) 
-            [self setDatabase:db];
+        if (db)
+        {
+            [self performSelector: @selector(setDatabase:) withObject: db afterDelay: 0.01];
+        }
         else
             if ([dni isKindOfClass:[LocalDatabaseNodeIdentifier class]])
                 [self initiateSetDatabaseAtPath:dni.location name:dni.description];

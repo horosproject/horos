@@ -1217,6 +1217,12 @@ static NSConditionLock *threadLock = nil;
         [self outlineViewRefresh];
         [self refreshAlbums];
         
+//        for( id obj in matrixViewArray)
+//        {
+//            if( [obj isFault])
+//                NSLog( @"[obj isFault]");
+//        }
+        
         #ifndef OSIRIX_LIGHT
         //If PACS On-Demand is activated, check if a local study has more or same number of images of a distant study
         NSMutableArray *patientStudies = [NSMutableArray array];
@@ -1300,13 +1306,21 @@ static NSConditionLock *threadLock = nil;
 {
 	[[db retain] autorelease]; // avoid multithreaded release
 	
+    if( [NSThread isMainThread] == NO)
+        N2LogStackTrace( @"setDatabase MUST be performed on MAIN thread");
+    
 	if (_database != db)
     {
 		@try
         {
 			[self willChangeValueForKey:@"database"];
 			
-            [matrixLoadIconsThread cancel];
+            @synchronized( previewPixThumbnails)
+            {
+                [matrixLoadIconsThread cancel];
+                [matrixLoadIconsThread release];
+                matrixLoadIconsThread = nil;
+            }
             
             [self saveLoadAlbumsSortDescriptors];
             
@@ -3225,9 +3239,6 @@ static NSConditionLock *threadLock = nil;
     
 	if( [item isFault] || [item isDeleted])
 	{
-        if( [item isFault])
-            NSLog( @"----- isFault - childrenArray : we have to refresh the outlineView...");
-        
         if( [item isDeleted])
             NSLog( @"----- isDeleted - childrenArray : we have to refresh the outlineView...");
         
@@ -3235,6 +3246,9 @@ static NSConditionLock *threadLock = nil;
         
         if( [item isFault])
             item = [self.database objectWithID: [item objectID]];
+        
+        if( [item isFault])
+            NSLog( @"----- isFault - childrenArray : we have to refresh the outlineView...");
         
         if( [item isFault] || [item isDeleted] || item == nil)
             return [NSArray array];
@@ -4564,12 +4578,12 @@ static NSConditionLock *threadLock = nil;
                         separateThread = NO;
                 }
                 
-                [matrixLoadIconsThread cancel];
-                [matrixLoadIconsThread release];
-                matrixLoadIconsThread = nil;
-                
                 @synchronized( previewPixThumbnails)
                 {
+                    [matrixLoadIconsThread cancel];
+                    [matrixLoadIconsThread release];
+                    matrixLoadIconsThread = nil;
+                
                     NSDictionary* dict = [NSDictionary dictionaryWithObjectsAndKeys: _database, @"DicomDatabase", [files valueForKey:@"objectID"], @"objectIDs", [NSNumber numberWithBool: imageLevel], @"imageLevel", previewPix, @"Context", _database, @"DicomDatabase", nil];
                     if( separateThread)
                     {
@@ -7595,6 +7609,11 @@ static BOOL withReset = NO;
 		}
 		else if([[aFile valueForKey:@"type"] isEqualToString:@"Study"])
 		{
+            id item = [matrixViewArray objectAtIndex: [cell tag]];
+            
+            if( [item isFault])
+                item = [self.database objectWithID: [item objectID]];
+            
 			NSArray *images = matrixViewArray.count? [self imagesArray: [matrixViewArray objectAtIndex: [cell tag]]] : nil;
 			
 			if( [images count])
@@ -8020,7 +8039,6 @@ static BOOL withReset = NO;
 
 -(void) matrixInit:(long) noOfImages
 {	
-   
     @synchronized( previewPixThumbnails)
     {
         [previewPix release]; previewPix = nil;
@@ -8597,6 +8615,9 @@ static BOOL withReset = NO;
         
         @synchronized( previewPixThumbnails)
         {
+            if( [[NSThread currentThread] isCancelled])
+                return;
+            
             tempPreviewPixThumbnails = [[previewPixThumbnails mutableCopy] autorelease];
             tempPreviewPix = [[previewPix mutableCopy] autorelease];
         }
@@ -8617,17 +8638,20 @@ static BOOL withReset = NO;
                         _timeIntervalOfLastLoadIconsDisplayIcons = now;
                         @synchronized( previewPixThumbnails)
                         {
-                            if( previewPix == context)
+                            if( [[NSThread currentThread] isCancelled] == NO)
                             {
-                                [previewPixThumbnails removeAllObjects];
-                                [previewPixThumbnails addObjectsFromArray: tempPreviewPixThumbnails];
-                                
-                                [previewPix removeAllObjects];
-                                [previewPix addObjectsFromArray: tempPreviewPix];
+                                if( previewPix == context)
+                                {
+                                    [previewPixThumbnails removeAllObjects];
+                                    [previewPixThumbnails addObjectsFromArray: tempPreviewPixThumbnails];
+                                    
+                                    [previewPix removeAllObjects];
+                                    [previewPix addObjectsFromArray: tempPreviewPix];
+                                }
                             }
                         }
                         
-                        if( [NSThread isMainThread] == NO)
+                        if( [NSThread isMainThread] == NO && [[NSThread currentThread] isCancelled] == NO)
                             [self performSelectorOnMainThread:@selector(matrixDisplayIcons:) withObject:nil waitUntilDone:NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
                     }
                 }
@@ -8687,22 +8711,26 @@ static BOOL withReset = NO;
             [tempPreviewPix addObject: [[[DCMPix alloc] myinitEmpty] autorelease]];
         }
         
+        
         @synchronized( previewPixThumbnails)
         {
-            if( previewPix == context)
+            if( [[NSThread currentThread] isCancelled] == NO)
             {
-                [previewPixThumbnails removeAllObjects];
-                [previewPixThumbnails addObjectsFromArray: tempPreviewPixThumbnails];
-                
-                [previewPix removeAllObjects];
-                [previewPix addObjectsFromArray: tempPreviewPix];
+                if( previewPix == context)
+                {
+                    [previewPixThumbnails removeAllObjects];
+                    [previewPixThumbnails addObjectsFromArray: tempPreviewPixThumbnails];
+                    
+                    [previewPix removeAllObjects];
+                    [previewPix addObjectsFromArray: tempPreviewPix];
+                }
             }
+            
+            if( [NSThread isMainThread] == NO)
+                [self performSelectorOnMainThread:@selector(matrixDisplayIcons:) withObject:nil waitUntilDone:NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+            else
+                [self matrixDisplayIcons: nil];
         }
-        
-        if( [NSThread isMainThread] == NO)
-            [self performSelectorOnMainThread:@selector(matrixDisplayIcons:) withObject:nil waitUntilDone:NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
-        else
-            [self matrixDisplayIcons: nil];
     }
     @catch (NSException* e)
     {
