@@ -1848,7 +1848,12 @@ static BOOL protectionAgainstReentry = NO;
 									}
                                     
                                     if( study == nil)
+                                    {
                                         NSLog( @"-*-*-*-*-* same studyUID (%@), but not same patientUID (%@ versus %@)", [curDict objectForKey: @"studyID"], [curDict objectForKey: @"patientUID"], [[studiesArray objectAtIndex: index] valueForKey: @"patientUID"]);
+                                        
+                                        if( self.hasPotentiallySlowDataAccess) //It's a CD... be less restrictive !
+                                            study = tstudy;
+                                    }
 								}
 							}
 						}

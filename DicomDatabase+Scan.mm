@@ -234,7 +234,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
         
 		[item conditionallySetObject:[NSDate dateWithYYYYMMDD:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0020)] stringValue] HHMMss:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0030)] stringValue]] forKey:@"studyDate"];
 		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0060)] stringValue] forKey:@"modality"];
-		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0010,0x0020)] stringValue] forKey:@"patientID"]; // ???
+		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0010,0x0020)] stringValue] forKey:@"patientID"];
         
 		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0010,0x0010)] stringValueWithEncodings: encodings] forKey:@"patientName"];
 
@@ -252,10 +252,19 @@ static NSString* _dcmElementKey(DcmElement* element) {
         if( [[item objectForKey:@"numberOfFrames"] integerValue] > 1) // SERIES ID MUST BE UNIQUE!!!!!
 		{
 			NSString *newSerieID = [NSString stringWithFormat:@"%@-%@", [[elements objectForKeyRemove:_dcmElementKey(0x0020,0x000E)] stringValue], [item objectForKey: @"SOPUID"]];
-			[item conditionallySetObject:newSerieID forKey:@"seriesID"]; // SeriesInstanceUID
+			[item conditionallySetObject:newSerieID forKey:@"seriesDICOMUID"]; // SeriesInstanceUID
 		}
         else
-            [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0020,0x000E)] stringValue] forKey:@"seriesID"]; // SeriesInstanceUID
+            [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0020,0x000E)] stringValue] forKey:@"seriesDICOMUID"]; // SeriesInstanceUID
+        
+        NSString *seriesNumber = [[elements objectForKeyRemove:_dcmElementKey(0x0020,0x0011)] stringValue];
+        if( seriesNumber)
+        {
+            NSString *n = [NSString stringWithFormat:@"%8.8d %@", [seriesNumber intValue] , [item objectForKey: @"seriesDICOMUID"]];
+            [item conditionallySetObject: n forKey:@"seriesID"];
+        }
+        else
+            [item conditionallySetObject: [item objectForKey: @"seriesDICOMUID"] forKey:@"seriesID"];
         
 		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x103E)] stringValueWithEncodings: encodings] forKey:@"seriesDescription"];
 		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0020,0x0011)] integerNumberValue] forKey:@"seriesNumber"];
@@ -396,10 +405,18 @@ static NSString* _dcmElementKey(DcmElement* element) {
         [parsed parseArray: files];
         [parsed release];
         
-        for( NSDictionary *item in items)
-            [files removeObject: [item objectForKey:@"filePath"]];
-        
-        [pathsToScanAnyway addObjectsFromArray: files];
+        if( files.count > items.count / 2)
+        {
+            [items removeAllObjects];
+            [pathsToScanAnyway addObjectsFromArray: files];
+        }
+        else
+        {
+            for( NSDictionary *item in items)
+                [files removeObject: [item objectForKey:@"filePath"]];
+            
+            [pathsToScanAnyway addObjectsFromArray: files];
+        }
     }
     @catch (NSException *exception)
     {
@@ -455,7 +472,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
 	[thread enterOperation];
 	@try
     {
-        NSArray* dicomImages = [NSMutableArray array];
+        NSArray* dicomImages = [NSArray array];
 
         thread.status = NSLocalizedString(@"Scanning directories...", nil);
         NSMutableArray* allpaths = [[[path stringsByAppendingPaths:[[NSFileManager.defaultManager enumeratorAtPath:path filesOnly:YES] allObjects]] mutableCopy] autorelease];
@@ -571,7 +588,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
                 }
             }
             
-            dicomImages = [self objectsWithIDs:[self addFilesAtPaths:dicomFilePaths postNotifications:NO dicomOnly:NO rereadExistingItems:NO generatedByOsiriX:NO]];
+            dicomImages = [dicomImages arrayByAddingObjectsFromArray: [self objectsWithIDs:[self addFilesAtPaths:dicomFilePaths postNotifications:NO dicomOnly:NO rereadExistingItems:NO generatedByOsiriX:NO]]];
         }
         
         if (!dicomImages.count)
