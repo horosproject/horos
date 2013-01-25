@@ -29,6 +29,7 @@
 #import "DCMAbstractSyntaxUID.h"
 #import "N2Stuff.h"
 #import "DICOMToNSString.h"
+#import "DicomDirParser.h"
 
 @interface _DicomDatabaseScanDcmElement : NSObject {
 	DcmElement* _element;
@@ -386,7 +387,25 @@ static NSString* _dcmElementKey(DcmElement* element) {
         if ([thread isCancelled]) 
             break;
 	}
-	
+    
+    // DUMP the DICOMDIR... did we miss some files??
+    @try
+    {
+        NSMutableArray *files = [NSMutableArray array];
+        DicomDirParser *parsed = [[DicomDirParser alloc] init: path];
+        [parsed parseArray: files];
+        [parsed release];
+        
+        for( NSDictionary *item in items)
+            [files removeObject: [item objectForKey:@"filePath"]];
+        
+        [pathsToScanAnyway addObjectsFromArray: files];
+    }
+    @catch (NSException *exception)
+    {
+        N2LogStackTrace( @"%@", exception);
+    }
+    
     NSArray* objectIDs = nil;
     if (items.count) {
         thread.status = [NSString stringWithFormat:NSLocalizedString(@"Importing %@...", nil), N2LocalizedSingularPluralCount(items.count, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil))];
