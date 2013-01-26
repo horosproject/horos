@@ -119,7 +119,7 @@ enum {
     if (mbs)
     {
         if ([[self sourceIdentifierForDatabase:self.database] isEqualToDataNodeIdentifier:mbs])
-            [self setDatabase:DicomDatabase.defaultDatabase];
+            [self performSelector: @selector(setDatabase:) withObject: DicomDatabase.defaultDatabase afterDelay: 0.01]; //This will guarantee that this will not happen in middle of a drag & drop, for example
         [self.sources removeObject:mbs];
     }
 }
@@ -299,7 +299,7 @@ enum {
         
         if (db)
         {
-            [self performSelector: @selector(setDatabase:) withObject: db afterDelay: 0.01];
+            [self performSelector: @selector(setDatabase:) withObject: db afterDelay: 0.01]; //This will guarantee that this will not happen in middle of a drag & drop, for example
         }
         else
             if ([dni isKindOfClass:[LocalDatabaseNodeIdentifier class]])
@@ -787,8 +787,9 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	
         // if the disappearing node is active, select the default DB
         if ([[_browser sourceIdentifierForDatabase:_browser.database] isEqualToDataNodeIdentifier:dni])
-            [_browser setDatabase:DicomDatabase.defaultDatabase];
-	
+        {
+            [_browser performSelector: @selector(setDatabase:) withObject: DicomDatabase.defaultDatabase afterDelay: 0.01]; //This will guarantee that this will not happen in middle of a drag & drop, for example
+        }
         NSLog( @"Remove Service: %@", bsk);
         [_bonjourSources removeObjectAtIndex: [_bonjourServices indexOfObject: bsk]];
         [_bonjourServices removeObject: bsk];
@@ -922,7 +923,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
         if (mbs)
         {
             if ([[_browser sourceIdentifierForDatabase:_browser.database] isEqualToDataNodeIdentifier:mbs])
-                [_browser setDatabase:DicomDatabase.defaultDatabase];
+                [_browser performSelector: @selector(setDatabase:) withObject: DicomDatabase.defaultDatabase afterDelay: 0.01]; //This will guarantee that this will not happen in middle of a drag & drop, for example
             [_browser.sources removeObject:mbs];
         }
     }
@@ -956,7 +957,8 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
         DicomDatabase* db = [DicomDatabase activeLocalDatabase];
         if (db == _browser.database)
             db = [DicomDatabase defaultDatabase];
-        [_browser setDatabase:db];
+        
+        [_browser performSelector: @selector(setDatabase:) withObject: db afterDelay: 0.01]; //This will guarantee that this will not happen in middle of a drag & drop, for example
     }
 }
 

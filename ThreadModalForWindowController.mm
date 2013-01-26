@@ -59,7 +59,7 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
 -(void)awakeFromNib {
 	[self.progressIndicator setMinValue:0];
 	[self.progressIndicator setMaxValue:1];
-	[self.progressIndicator setUsesThreadedAnimation:NO];
+	[self.progressIndicator setUsesThreadedAnimation:YES];
     [self.progressIndicator setIndeterminate:YES];
 	[self.progressIndicator startAnimation:self];
 	
@@ -207,11 +207,12 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
                 {
                     if ([keyPath isEqual:NSThreadProgressKey])
                     {
-                        [self.progressIndicator setDoubleValue:self.thread.subthreadsAwareProgress];
-                        [self.progressIndicator setIndeterminate: self.thread.progress < 0];	
-                        if (self.thread.progress < 0) [self.progressIndicator startAnimation:self];
                         // display
-                        if( [NSDate timeIntervalSinceReferenceDate] - lastGUIUpdate > 1 && fabs(_lastDisplayedProgress-obj.progress) > 1.0/self.progressIndicator.frame.size.width) {
+                        if( [NSDate timeIntervalSinceReferenceDate] - lastGUIUpdate > 0.5)
+                        {
+                            [self.progressIndicator setDoubleValue:self.thread.subthreadsAwareProgress];
+                            [self.progressIndicator setIndeterminate: self.thread.progress < 0];
+                            if (self.thread.progress < 0) [self.progressIndicator startAnimation:self];
                             _lastDisplayedProgress = obj.progress;
                             [self.progressIndicator displayIfNeeded];
                             lastGUIUpdate = [NSDate timeIntervalSinceReferenceDate];

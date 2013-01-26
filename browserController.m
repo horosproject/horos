@@ -1356,12 +1356,11 @@ static NSConditionLock *threadLock = nil;
 			
 			[[AppController sharedAppController] closeAllViewers: self];
 			
-			[self outlineViewRefresh];
-			[self refreshMatrix:self];
-            
-            @try {
+            @try
+            {
                 [self showEntireDatabase];
-            } @catch (...) {
+            }
+            @catch (...) {
             }
 			
 			_database = [db retain];
@@ -1380,8 +1379,6 @@ static NSConditionLock *threadLock = nil;
 			[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection:NO];
             [self saveLoadAlbumsSortDescriptors];
             
-			NSString	*DBVersion;
-			
 			@synchronized(_albumNoOfStudiesCache)
             {
 				[_albumNoOfStudiesCache removeAllObjects];
@@ -1399,20 +1396,16 @@ static NSConditionLock *threadLock = nil;
 				[albumTable reloadData];
 				
 				[self setNetworkLogs];
-				
-				
 				[self outlineViewRefresh];
 				[self refreshMatrix: self];
 				[self refreshAlbums];
 				
-	#ifndef OSIRIX_LIGHT
+                #ifndef OSIRIX_LIGHT
 				if( [QueryController currentQueryController])
 					[[QueryController currentQueryController] refresh: self];
 				else if( [QueryController currentAutoQueryController])
 					[[QueryController currentAutoQueryController] refresh: self];
-	#endif
-				
-
+                #endif
 			}
             @catch (NSException* e)
             {
@@ -12914,18 +12907,6 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		[[NSFileManager defaultManager] createFileAtPath: @"/tmp/kill_all_storescu" contents: [NSData data] attributes: nil];
 		
-//		for( NSInteger x = 0, row; x < [[ThreadsManager defaultManager] threadsCount]; x++)  
-//			[[[ThreadsManager defaultManager] objectInThreadsAtIndex: x] cancel];
-		
-		NSTimeInterval ti = [NSDate timeIntervalSinceReferenceDate] + 240;
-//		while( ti - [NSDate timeIntervalSinceReferenceDate] > 0 && [[ThreadsManager defaultManager] threadsCount] > 0)
-//		{
-//			[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.1]];
-//			
-//			if( wait && [[wait window] isVisible] == NO)
-//				[wait showWindow:self];
-//		}
-		
 		unlink( "/tmp/kill_all_storescu");
 		[[NSUserDefaults standardUserDefaults] setBool: hideListenerError_copy forKey: @"hideListenerError"];
 		[[NSUserDefaults standardUserDefaults] removeObjectForKey: @"copyHideListenerError"];
@@ -12933,24 +12914,11 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		// ----------
         
-//		[BrowserController tryLock:checkIncomingLock during: 120];
-		[BrowserController tryLock:_database during: 120];
         [BrowserController tryLock:searchForComparativeStudiesLock during: 120];
-//		[BrowserController tryLock:checkBonjourUpToDateThreadLock during: 60];
-		
-	//	[BrowserController tryLock: decompressThreadRunning during: 120];
-	//	[BrowserController tryLock: autoroutingInProgress during: 120];
-		
+
         //Something in the delete queue? Write it to the disk
         [self saveDeleteQueue];
-        
-    //	[self emptyAutoroutingQueue:self];
-
-	//	[BrowserController tryLock: autoroutingInProgress during: 120];
-		
 		[self syncReportsIfNecessary];
-		
-		[BrowserController tryLock:_database during: 120];
 	}
 	@catch (NSException * e)
 	{
