@@ -48,7 +48,7 @@
 }
 
 +(RemoteDicomDatabase*)databaseForLocation:(NSString*)location name:(NSString*)name {
-	return [self databaseForLocation:location name:nil update:YES];
+	return [self databaseForLocation:location name:name update:YES];
 }
 
 +(RemoteDicomDatabase*)databaseForLocation:(NSString*)location name:(NSString*)name update:(BOOL)flagUpdate {
@@ -87,7 +87,7 @@
 }
 
 -(NSString*)name {
-	return _name? _name : [NSString stringWithFormat:NSLocalizedString(@"OsiriX database at %@", nil), (self.host.name? self.host.name : self.address)];
+	return [NSString stringWithFormat:NSLocalizedString(@"%@ database at %@", nil), _name? _name : @"OsiriX", (self.host.name? self.host.name : self.address)];
 }
 
 -(id)initWithLocation:(NSString*)location {

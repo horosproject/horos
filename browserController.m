@@ -1501,7 +1501,11 @@ static NSConditionLock *threadLock = nil;
 - (void)setDBWindowTitle
 {
 	[self.window setTitle: _database? [_database name] : @""];
-	[self.window setRepresentedFilename: _database? _database.baseDirPath : @""];
+    
+    if( [_database.baseDirPath hasPrefix: @"/tmp/"] || _database.isLocal == NO)
+        [self.window setRepresentedFilename: @""];
+	else
+        [self.window setRepresentedFilename: _database? _database.baseDirPath : @""];
 }
 
 - (NSString*)getDatabaseFolderFor: (NSString*)path // __deprecated
