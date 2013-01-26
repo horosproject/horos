@@ -495,7 +495,6 @@ extern NSString* O2AlbumDragType;
 //bonjour
 -(NSManagedObjectContext*)bonjourManagedObjectContext __deprecated;
 - (void) setBonjourDatabaseValue:(NSManagedObject*) obj value:(id) value forKey:(NSString*) key __deprecated;
-- (IBAction) bonjourServiceClicked:(id)sender;
 - (NSString*) getLocalDCMPath: (NSManagedObject*) obj :(long) no;
 - (void) displayBonjourServices;
 - (NSString*) askPassword;

@@ -185,19 +185,13 @@
 -(void)setManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
 	if (managedObjectContext != _managedObjectContext) {
         [self willChangeValueForKey:@"managedObjectContext"];
-
-        NSManagedObjectContext* prevManagedObjectContext = [_managedObjectContext retain];
-        [prevManagedObjectContext lock];
-
-        [_managedObjectContext release];
+        
+        [_managedObjectContext autorelease];
 		_managedObjectContext = [managedObjectContext retain];
 
         // the database's main managedObjectContext must not retain the database
 		if ([_managedObjectContext isKindOfClass:[N2ManagedObjectContext class]])
             ((N2ManagedObjectContext*)_managedObjectContext).database = nil;
-        
-        [prevManagedObjectContext unlock];
-        [prevManagedObjectContext release];
         
 #ifndef NDEBUG
         [associatedThread release];
@@ -414,6 +408,11 @@
 	self.sqlFilePath = p;
     self.mainDatabase = mainDbReference;
 	
+//#ifndef NDEBUG
+//    if( [NSThread isMainThread] == NO && mainDbReference == nil)
+//        NSLog( @"****** WARNING - Creating a MAIN database, NOT on the MAIN thread... Be aware that this managedObjectContext could be later used on the MAIN thread, unless you renewManagedObjectContext on the main thread.");
+//#endif
+    
 	self.managedObjectContext = c? c : [self contextAtPath:p];
     
 	return self;

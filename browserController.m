@@ -1501,8 +1501,6 @@ static NSConditionLock *threadLock = nil;
 - (void)setDBWindowTitle
 {
 	[self.window setTitle: _database? [_database name] : @""];
-//	if (![database isLocal]) [self.window setTitle: [NSString stringWithFormat: NSLocalizedString(@"Bonjour Database (%@)", nil), [currentDatabasePath lastPathComponent]]];
-//	else [self.window setTitle: [NSString stringWithFormat:NSLocalizedString(@"Local Database (%@)", nil), currentDatabaseDirPath]];
 	[self.window setRepresentedFilename: _database? _database.baseDirPath : @""];
 }
 
@@ -2513,23 +2511,13 @@ static NSConditionLock *threadLock = nil;
 //	if( displayEmptyDatabase)
 //		predicate = [NSPredicate predicateWithValue:NO];
 	
-	if (![_database isLocal] && [_sourcesTableView selectedRow] > 0)
+	if( [_sourcesTableView selectedRow] >= 0)
 	{
-		int rowIndex = [_sourcesTableView selectedRow];
-		
-        NSDictionary *dict = nil;
-        @try {
-            NSDictionary *dict = [[bonjourBrowser services] objectAtIndex: rowIndex-1];
-        }
-        @catch (NSException *e) {
-            N2LogException( e);
-        }
-		
-		if( [[dict valueForKey:@"type"] isEqualToString:@"bonjour"]) description = [description stringByAppendingFormat:NSLocalizedString(@"Bonjour Database: %@ / ", nil), [[dict valueForKey:@"service"] name]];
-		else description = [description stringByAppendingFormat:NSLocalizedString(@"Bonjour Database: %@ / ", nil), [dict valueForKey:@"Description"]];
-		
+        DataNodeIdentifier* bs = [self sourceIdentifierAtRow: [_sourcesTableView selectedRow]];
+        
+        if( bs)
+            description = [description stringByAppendingFormat:NSLocalizedString(@"%@: %@ / ", nil), [_database isLocal] ? NSLocalizedString( @"Local Database: ", nil) : NSLocalizedString( @"Distant Database: ", nil), [bs description]];
 	}
-	else description = [description stringByAppendingString:NSLocalizedString(@"Local Database / ", nil)];
 	
 	// ********************
 	// ALBUMS
@@ -5521,7 +5509,7 @@ static NSConditionLock *threadLock = nil;
         [context release];
 		[context unlock];
         
-		NSRunAlertPanel( NSLocalizedString(@"Bonjour Database", nil),  NSLocalizedString(@"You cannot modify a Bonjour shared database.", nil), nil, nil, nil);
+		NSRunAlertPanel( NSLocalizedString(@"Distant Database", nil),  NSLocalizedString(@"You cannot modify a Distant Database.", nil), nil, nil, nil);
 		
 		[animationCheck setState: animState];
 		
@@ -18118,150 +18106,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 	
 	[tmc invalidate];
-	
-	
-//	BOOL isDirectory;
-//
-//	if( DICOMDIRCDMODE)
-//	{
-//		NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX CD/DVD", nil), NSLocalizedString(@"OsiriX is running in read-only mode, from a CD/DVD.", nil), NSLocalizedString(@"OK",nil), nil, nil);
-//		return;
-//	}
-//
-//	if( [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory])
-//	{
-//		displayEmptyDatabase = YES;
-//		[self outlineViewRefresh];
-//		[self refreshMatrix: self];
-//		
-//		if( isDirectory)
-//		{
-//			[[NSUserDefaults standardUserDefaults] setInteger: 1 forKey:@"DATABASELOCATION"];
-//			[[NSUserDefaults standardUserDefaults] setObject: path forKey:@"DATABASELOCATIONURL"];
-//			
-//			[self openDatabaseIn: [[self documentsDirectory] stringByAppendingPathComponent:@"/Database.sql"] Bonjour: NO];
-//		}
-//		else
-//		{
-//			if( [currentDatabasePath isEqualToString: path] == NO)
-//			{
-//				[self openDatabaseIn: path Bonjour:NO];
-//			}
-//		}
-//		
-//		displayEmptyDatabase = NO;
-//	}
-//	else
-//	{
-//		NSRunAlertPanel( NSLocalizedString(@"OsiriX Database", nil), NSLocalizedString(@"OsiriX cannot read this file/folder.", nil), nil, nil, nil);
-//		[self resetToLocalDatabase];
-//	}
 }
 
-//-(NSInteger)indexOfDatabase:(DicomDatabase*)database
-//{
-//	for (NSDictionary* service in [bonjourBrowser services])
-//    {
-//		NSString* type = [service valueForKey:@"type"];
-//		
-//		if ([type isEqualToString:@"localPath"])
-//        {
-//			NSString* servicePath = [service valueForKey:@"Path"];
-//		}
-//        else
-//        {
-//			NSString* serviceAddress = [service valueForKey:@""];
-//		}
-//		
-//	}
-//	
-//	return -1;
-//}
-
-
-
-- (IBAction)bonjourServiceClickedProceed: (id)sender
-{
-	if( [_sourcesTableView selectedRow] == -1) return;
-	
-//	if( DICOMDIRCDMODE)
-//	{
-//		dontLoadSelectionSource = YES;
-//		[_sourcesTableView selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection: NO];
-//		dontLoadSelectionSource = NO;
-//		NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX CD/DVD", nil), NSLocalizedString(@"OsiriX is running in read-only mode, from a CD/DVD.", nil), NSLocalizedString(@"OK",nil), nil, nil);
-//		return;
-//	}
-	
-	
-//	[database save:NULL];
-	
-    int index = [_sourcesTableView selectedRow]-1;
-	
-	if( index >= 0)
-	{
-		NSDictionary *object = [[bonjourBrowser services] objectAtIndex: index];
-		
-		// DICOM DESTINATION
-		if( [[object valueForKey: @"type"] isEqualToString:@"dicomDestination"])
-		{
-			NSRunAlertPanel( NSLocalizedString(@"DICOM Destination", nil), NSLocalizedString(@"It is a DICOM destination node: you cannot browse its content. You can only drag & drop studies on them.", nil), nil, nil, nil);
-			
-			[_sourcesTableView selectRowIndexes: [NSIndexSet indexSetWithIndex: previousBonjourIndex+1] byExtendingSelection:NO];
-		}
-		// LOCAL PATH - DATABASE
-		/*else if( [[object valueForKey: @"type"] isEqualToString:@"localPath"])
-		{
-			[self initiateSetDatabaseAtPath:[object valueForKey:@"Path"] name:[object valueForKey:@"Description"]];
-			[self setDatabase:[DicomDatabase databaseAtPath:[object valueForKey:@"Path"] name:[object valueForKey:@"Description"]]];
-		}
-		else	// NETWORK - DATABASE - bonjour / fixedIP
-		{
-			int port = [[object valueForKey:@"OsiriXPort"] intValue];
-			if (!port) port = 8780;
-			
-			[self initiateSetRemoteDatabaseWithAddress:[object valueForKey:@"Address"] port:port name:[object valueForKey:@"Description"]];
-			
-//			displayEmptyDatabase = YES;
-//			[self outlineViewRefresh];
-//			[self refreshMatrix: self];
-//			
-//			NSString *path = [bonjourBrowser getDatabaseFile: index showWaitingWindow: YES];
-//						
-//			if( path == nil || [path isEqualToString: @"aborted"])
-//			{
-//				if( [path isEqualToString: @"aborted"]) NSLog( @"Transfer aborted");
-//				else NSRunAlertPanel( NSLocalizedString(@"OsiriX Database", nil), NSLocalizedString(@"OsiriX cannot connect to the database.", nil), nil, nil, nil);
-//				
-//				[self resetToLocalDatabase];
-//			}
-//			else
-//			{
-//				NSLog(@"Bonjour DB = %@", path);
-//				
-//				[segmentedAlbumButton setEnabled: NO];
-//				
-//				[self openDatabaseIn: path Bonjour: YES];
-//				displayEmptyDatabase = NO;
-//			}
-		}*/
-	}
-	else // LOCAL DEFAULT DATABASE
-	{
-		[[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] forKey: @"DATABASELOCATION"];
-		[[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"] forKey: @"DATABASELOCATIONURL"];
-		
-		[self setDatabase:[DicomDatabase defaultDatabase]];
-	}
-	
-	
-	previousBonjourIndex = [_sourcesTableView selectedRow]-1;
-	
-}
-
-- (IBAction)bonjourServiceClicked:(id)sender {	
-	[self performSelector:@selector(bonjourServiceClickedProceed:) withObject:sender afterDelay:0];
-}
 
 - (NSString*) localDatabasePath { // deprecated
 	return [[DicomDatabase activeLocalDatabase] sqlFilePath];

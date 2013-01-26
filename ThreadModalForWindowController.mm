@@ -208,7 +208,7 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
                     if ([keyPath isEqual:NSThreadProgressKey])
                     {
                         // display
-                        if( [NSDate timeIntervalSinceReferenceDate] - lastGUIUpdate > 0.5)
+                        if( [NSDate timeIntervalSinceReferenceDate] - lastGUIUpdate > 0.1)
                         {
                             [self.progressIndicator setDoubleValue:self.thread.subthreadsAwareProgress];
                             [self.progressIndicator setIndeterminate: self.thread.progress < 0];
@@ -255,6 +255,12 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
 -(void)invalidate {
 	DLog(@"[ThreadModalForWindowController invalidate]");
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSThreadWillExitNotification object:_thread];
+    
+    [self.progressIndicator setDoubleValue:self.thread.subthreadsAwareProgress];
+    [self.progressIndicator setIndeterminate: self.thread.progress < 0];
+    if (self.thread.progress < 0) [self.progressIndicator startAnimation:self];
+    [self.progressIndicator displayIfNeeded];
+    lastGUIUpdate = [NSDate timeIntervalSinceReferenceDate];
     
     @synchronized( self.thread.threadDictionary)
     {
