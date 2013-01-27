@@ -332,6 +332,7 @@ static DicomDatabase* activeLocalDatabase = nil;
 
 @synthesize baseDirPath = _baseDirPath, dataBaseDirPath = _dataBaseDirPath, dataFileIndex = _dataFileIndex, name = _name, timeOfLastModification = _timeOfLastModification;
 @synthesize isReadOnly = _isReadOnly;
+@synthesize sourcePath = _sourcePath;
 @synthesize processFilesLock = _processFilesLock;
 @synthesize importFilesFromIncomingDirLock = _importFilesFromIncomingDirLock;
 @synthesize hasPotentiallySlowDataAccess = _hasPotentiallySlowDataAccess;
@@ -551,6 +552,7 @@ static DicomDatabase* activeLocalDatabase = nil;
 	[_dataFileIndex release];
 	self.dataBaseDirPath = nil;
 	self.baseDirPath = nil;
+    self.sourcePath = nil;
 	
 	[super dealloc];
     

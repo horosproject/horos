@@ -1100,6 +1100,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
     
 	_database = [[DicomDatabase databaseAtPath:self.location] retain];
     _database.isReadOnly = YES;
+    _database.sourcePath = self.devicePath;
     _database.name = self.description;
     _database.hasPotentiallySlowDataAccess = YES;
 	for (NSManagedObject* obj in _database.albums)

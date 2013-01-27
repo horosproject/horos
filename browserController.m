@@ -1322,6 +1322,12 @@ static NSConditionLock *threadLock = nil;
                 matrixLoadIconsThread = nil;
             }
             
+            @synchronized( smartAlbumDistantArraySync)
+            {
+                [smartAlbumDistantArray release];
+                smartAlbumDistantArray = nil;
+            }
+            
             [self saveLoadAlbumsSortDescriptors];
             
 			[self waitForRunningProcesses];
@@ -1503,8 +1509,12 @@ static NSConditionLock *threadLock = nil;
 	[self.window setTitle: _database? [_database name] : @""];
     
     if( [_database.baseDirPath hasPrefix: @"/tmp/"] || _database.isLocal == NO)
-        [self.window setRepresentedFilename: @""];
-	else
+    {
+        if( _database.sourcePath.length)
+            [self.window setRepresentedFilename: _database.sourcePath];
+        else
+            [self.window setRepresentedFilename: @""];
+    }else
         [self.window setRepresentedFilename: _database? _database.baseDirPath : @""];
 }
 
@@ -12788,8 +12798,6 @@ static NSArray*	openSubSeriesArray = nil;
         [_sourcesTableView setNextKeyView: databaseOutline];
         [databaseOutline setNextKeyView: searchField];
         [searchField setNextKeyView: databaseOutline];
-        
-        NSLog( @"%@", [[searchField cell] searchMenuTemplate]);
         
         [self setSearchType: [[[searchField cell] searchMenuTemplate] itemWithTag: [[NSUserDefaults standardUserDefaults] integerForKey: @"searchType"]]];
         

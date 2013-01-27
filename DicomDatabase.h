@@ -29,6 +29,7 @@ extern NSString* const OsirixDataDirName;
 	N2MutableUInteger* _dataFileIndex;
 	NSString* _baseDirPath;
 	NSString* _dataBaseDirPath;
+    NSString* _sourcePath;
 	NSString* _name;
 	NSRecursiveLock* _processFilesLock;
 	NSRecursiveLock* _importFilesFromIncomingDirLock;
@@ -64,7 +65,7 @@ extern NSString* const OsirixDataDirName;
 
 @property(readonly,retain) NSString* baseDirPath; // OsiriX Data
 @property(readonly,retain) NSString* dataBaseDirPath; // depends on the content of the file at baseDirPath/DBFOLDER_LOCATION
-@property(readwrite,retain,nonatomic) NSString* name;
+@property(readwrite,retain,nonatomic) NSString* name, *sourcePath;
 @property(readwrite) NSTimeInterval timeOfLastModification;
 @property BOOL isReadOnly;
 @property BOOL hasPotentiallySlowDataAccess;
