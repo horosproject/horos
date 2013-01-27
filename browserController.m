@@ -2222,14 +2222,16 @@ static NSConditionLock *threadLock = nil;
 
 - (IBAction)setSearchType: (id)sender
 {
-
 	if( searchType == 0 && [[NSUserDefaults standardUserDefaults] boolForKey: @"HIDEPATIENTNAME"])
 		[searchField setTextColor: [NSColor whiteColor]];
 	else
 		[searchField setTextColor: [NSColor blackColor]];
 
-	for( long i = 0; i < [[sender menu] numberOfItems]; i++) [[[sender menu] itemAtIndex: i] setState: NSOffState];
+	for( long i = 0; i < [[sender menu] numberOfItems]; i++)
+        [[[sender menu] itemAtIndex: i] setState: NSOffState];
 	
+    [[searchField cell] setPlaceholderString: [[[sender menu] itemWithTag: [sender tag]] title]];
+    
 	[[[sender menu] itemWithTag: [sender tag]] setState: NSOnState];
 	[toolbarSearchItem setLabel: [NSString stringWithFormat: NSLocalizedString(@"Search by %@", nil), [sender title]]];
 	searchType = [sender tag];
@@ -2271,6 +2273,8 @@ static NSConditionLock *threadLock = nil;
             distantSearchThread = nil;
         }
     }
+    
+    [[NSUserDefaults standardUserDefaults] setInteger: [sender tag] forKey:@"SearchType"];
 }
 
 - (void) computeTimeInterval
@@ -2712,7 +2716,7 @@ static NSConditionLock *threadLock = nil;
                 
                 @synchronized (_albumNoOfStudiesCache)
                 {
-                    if( smartAlbumName)
+                    if( smartAlbumName && filtered == NO && [smartAlbumDistantName isEqualToString: smartAlbumName]) // filtered == NO, we want only if ALL studies are displayed (not limited by Search String or Time Interval, for example
                         [_distantAlbumNoOfStudiesCache setObject: distantStudies forKey: smartAlbumName];
                 }
                 
@@ -12785,6 +12789,10 @@ static NSArray*	openSubSeriesArray = nil;
         [databaseOutline setNextKeyView: searchField];
         [searchField setNextKeyView: databaseOutline];
         
+        NSLog( @"%@", [[searchField cell] searchMenuTemplate]);
+        
+        [self setSearchType: [[[searchField cell] searchMenuTemplate] itemWithTag: [[NSUserDefaults standardUserDefaults] integerForKey: @"searchType"]]];
+        
     //	NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
     //	[dbRequest setEntity: [[self.database.managedObjectModel entitiesByName] objectForKey:@"LogEntry"]];
     //	[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
@@ -18289,12 +18297,6 @@ static volatile int numberOfThreadsForJPEG = 0;
         _searchString = [searchString retain];
     }
     
-    @synchronized( smartAlbumDistantArraySync)
-    {
-        [smartAlbumDistantArray release];
-        smartAlbumDistantArray = nil;
-    }
-    
     self.distantSearchString = nil;
     self.distantSearchType = searchType;
     
@@ -18439,12 +18441,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 					predicate = [NSPredicate predicateWithFormat: @"(soundex CONTAINS[cd] %@) OR (name CONTAINS[cd] %@) OR (patientID CONTAINS[cd] %@) OR (id CONTAINS[cd] %@) OR (comment CONTAINS[cd] %@) OR (comment2 CONTAINS[cd] %@) OR (comment3 CONTAINS[cd] %@) OR (comment4 CONTAINS[cd] %@) OR (studyName CONTAINS[cd] %@) OR (modality CONTAINS[cd] %@) OR (accessionNumber CONTAINS[cd] %@) OR (performingPhysician CONTAINS[cd] %@) OR (referringPhysician CONTAINS[cd] %@) OR (institutionName CONTAINS[cd] %@)", [DicomStudy soundex: s], s, s, s, s, s, s, s, s, s, s, s, s, s];
 				else if( [s length] >= 3)
 					predicate = [NSPredicate predicateWithFormat: @"(name CONTAINS[cd] %@) OR (patientID CONTAINS[cd] %@) OR (id CONTAINS[cd] %@) OR (comment CONTAINS[cd] %@) OR (comment2 CONTAINS[cd] %@) OR (comment3 CONTAINS[cd] %@) OR (comment4 CONTAINS[cd] %@) OR (studyName CONTAINS[cd] %@) OR (modality CONTAINS[cd] %@) OR (accessionNumber CONTAINS[cd] %@) OR (performingPhysician CONTAINS[cd] %@) OR (referringPhysician CONTAINS[cd] %@) OR (institutionName CONTAINS[cd] %@)", s, s, s, s, s, s, s, s, s, s, s, s, s];
-                else if( [s length] >= 2)
-                    predicate = [NSPredicate predicateWithFormat: @"(patientID CONTAINS[cd] %@) OR (id CONTAINS[cd] %@) OR (modality CONTAINS[cd] %@) OR (accessionNumber CONTAINS[cd] %@)", s, s, s, s];
+                else if( [s length] >= 1)
+                    predicate = [NSPredicate predicateWithFormat: @"(name CONTAINS[cd] %@)", s];
 			break;
 			
 			case 0:			// Patient Name
-				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useSoundexForName"] && [_searchString length] >= 3)
+				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useSoundexForName"] && [_searchString length] >= 2)
 					predicate = [NSPredicate predicateWithFormat: @"(soundex CONTAINS[cd] %@) OR (name CONTAINS[cd] %@)", [DicomStudy soundex: _searchString], s];
 				else
 					predicate = [NSPredicate predicateWithFormat: @"name CONTAINS[cd] %@", _searchString];
