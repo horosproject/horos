@@ -5630,8 +5630,8 @@ static NSConditionLock *threadLock = nil;
   		}
 		
 		[[NSUserDefaults standardUserDefaults] setObject:dict forKey:@"COLUMNSDATABASE"];
-		
-		[[AppController sharedAppController] runPreferencesUpdateCheck: nil];
+        
+        [self refreshColumns];
 	}
 }
 
