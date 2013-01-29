@@ -24,6 +24,6 @@
 +(NSMenu*)tagsMenu;
 +(NSMenu*)tagsMenuWithTarget:(id)obj action:(SEL)action;
 
-@property(retain) DCMAttributeTag* selectedTag;
+@property(retain,nonatomic) DCMAttributeTag* selectedTag;
 
 @end

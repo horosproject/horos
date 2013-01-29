@@ -271,7 +271,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
             {
                 NSString *s = [[NSString alloc] initWithBytes: str+from length:i-from encoding: encoding[ index]];
                 
-                NSLog( @"%@ %d", s, encoding[ index]);
+                NSLog( @"%@ %d", s, (int) encoding[ index]);
                 
                 if( s)
                 {

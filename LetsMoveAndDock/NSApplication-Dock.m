@@ -68,7 +68,7 @@
 	NSTask* t = [NSTask launchedTaskWithLaunchPath:@"/usr/bin/defaults" arguments:args];
 	[t waitUntilExit];
 	if ( ![t isRunning] && [t terminationStatus] > 0 ) {
-		NSLog(@"%d - %d", [t terminationStatus], [t terminationReason]);
+		NSLog(@"%d - %d", [t terminationStatus], (int) [t terminationReason]);
 		success = NO;
 	}
 	
@@ -76,7 +76,7 @@
 	t = [NSTask launchedTaskWithLaunchPath:@"/usr/bin/killall" arguments:[NSArray arrayWithObjects:@"-HUP", @"Dock", nil]];
 	[t waitUntilExit];
 	if ( ![t isRunning] && [t terminationStatus] > 0 ) {
-		NSLog(@"%d - %d", [t terminationStatus], [t terminationReason]);
+		NSLog(@"%d - %d", [t terminationStatus], (int) [t terminationReason]);
 		success = NO;
 	}
 	

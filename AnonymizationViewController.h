@@ -31,7 +31,7 @@
 @property(readonly) NSPopUpButton* templatesPopup;
 @property(readonly) AnonymizationTagsView* tagsView;
 @property(readonly,retain) NSMutableArray* tags; // do not add elements directly! use addTag and removeTag
-@property(readonly) BOOL formatsAreOk;
+@property(readonly,nonatomic) BOOL formatsAreOk;
 
 -(id)initWithTags:(NSArray*)shownDcmTags values:(NSArray*)values;
 

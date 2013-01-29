@@ -52,7 +52,7 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectionOpened:) name:N2ConnectionListenerOpenedConnectionNotification object:_listener];
         
         if( _listener)
-            NSLog( @"--- XML-RPC interface activated on port: %d", port);
+            NSLog( @"--- XML-RPC interface activated on port: %d", (int) port);
     }
 	
 	return self;
@@ -140,7 +140,7 @@
 }
 
 +(NSError*)errorWithCode:(NSInteger)code {
-    NSString* xml = [NSString stringWithFormat:@"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%d</value></member></struct></value></param></params></methodResponse>", code];
+    NSString* xml = [NSString stringWithFormat:@"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%d</value></member></struct></value></param></params></methodResponse>", (int) code];
     return [NSError errorWithDomain:NSCocoaErrorDomain code:code userInfo:[NSDictionary dictionaryWithObject:xml forKey:NSLocalizedDescriptionKey]];
 }
 

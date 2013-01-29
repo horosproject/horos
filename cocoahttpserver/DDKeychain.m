@@ -713,7 +713,7 @@ SecPolicySearchCreate:
 				
 				if(status==0)
 				{
-					NSString *path = [directory stringByAppendingPathComponent:[NSString stringWithFormat:@"%d_%d.pem", i, dex]];
+					NSString *path = [directory stringByAppendingPathComponent:[NSString stringWithFormat:@"%d_%d.pem", i, (int) dex]];
 					if(![[NSFileManager defaultManager] fileExistsAtPath:path])
 						[(NSData*)certificateDataRef writeToFile:path atomically:YES];
 				}

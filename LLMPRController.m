@@ -27,7 +27,7 @@
 //	//[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resliceFromNotification:) name:OsirixLLMPRResliceNotification object:nil];
 //}
 
-- (void) reslice: (long) x: (long) y: (OrthogonalMPRView*) sender
+- (void) reslice: (long) x :(long) y :(OrthogonalMPRView*) sender
 {
 //NSLog(@"- (void) reslice: (long) x: (long) y: (OrthogonalMPRView*) sender;");
 //NSLog(@"super");

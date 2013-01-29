@@ -306,9 +306,9 @@
 	}
 }
 
-- (void) setCrossPosition: (float) x: (float) y
+- (void) setCrossPosition: (float) x :(float) y
 {
-	[super setCrossPosition: x: y];
+	[super setCrossPosition: x : y];
 	[self setFocalShiftX:[self focalShiftX]]; // will recompute focalPointX
 	[self setFocalShiftY:[self focalShiftY]]; // will recompute focalPointX
 	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixChangeFocalPointNotification object:self  userInfo: nil];

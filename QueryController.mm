@@ -3942,7 +3942,7 @@ extern "C"
 			NSInteger row, col;
 			
 			[modalityFilterMatrix getRow: &row column: &col ofCell:cell];
-			[cellsString appendString: [NSString stringWithFormat:@"%d %d ", row, col]];
+			[cellsString appendString: [NSString stringWithFormat:@"%d %d ", (int) row, (int) col]];
 		}
 	}
 }
@@ -5045,7 +5045,7 @@ extern "C"
 		while (doBind)
         {
 			++bki;
-			bk = [NSString stringWithFormat:@"enabled%@", bki==1? @"" : [NSString stringWithFormat:@"%d", bki]];
+			bk = [NSString stringWithFormat:@"enabled%@", bki==1? @"" : [NSString stringWithFormat:@"%d", (int) bki]];
             
 			NSDictionary* b = [view infoForBinding:bk];
 			if (!b) break;

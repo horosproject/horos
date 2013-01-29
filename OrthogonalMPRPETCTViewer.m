@@ -372,7 +372,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 	[self ApplyCLUTString:[sender title]];
 }
 
-- (void) setWLWW:(float) iwl :(float) iww:(id) sender
+- (void) setWLWW:(float) iwl :(float) iww :(id) sender
 {
 	if ([sender isEqual: CTController])
 	{
@@ -682,7 +682,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 #pragma mark-
 #pragma mark reslice
 
-- (void) resliceFromView: (SEL) view : (NSInvocation*) invoc : (float) x: (float) y: (id) sender
+- (void) resliceFromView: (SEL) view : (NSInvocation*) invoc : (float) x :(float) y :(id) sender
 {
 	x = x - (float)[[[sender performSelector:view] curDCM] pwidth]/2.0f;
 	y = y - (float)[[[sender performSelector:view] curDCM] pheight]/2.0f;
@@ -754,7 +754,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 	}
 }
 
-- (void) resliceFromOriginal: (float) x: (float) y: (id) sender
+- (void) resliceFromOriginal: (float) x :(float) y :(id) sender
 {
 	NSInvocation *invoc = [NSInvocation invocationWithMethodSignature: [CTController methodSignatureForSelector: @selector(resliceFromOriginal::)]];
 	[invoc setSelector:  @selector(resliceFromOriginal::)];
@@ -762,7 +762,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 	[self resliceFromView: @selector(originalView) : invoc : x: y: sender];
 }
 
-- (void) resliceFromX: (float) x: (float) y: (id) sender
+- (void) resliceFromX: (float) x :(float) y :(id) sender
 {
 	NSInvocation *invoc = [NSInvocation invocationWithMethodSignature: [CTController methodSignatureForSelector: @selector(resliceFromX::)]];
 	[invoc setSelector:  @selector(resliceFromX::)];
@@ -770,7 +770,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 	[self resliceFromView: @selector(xReslicedView) : invoc : x: y: sender];
 }
 
-- (void) resliceFromY: (float) x: (float) y: (id) sender
+- (void) resliceFromY: (float) x :(float) y :(id) sender
 {
 	NSInvocation *invoc = [NSInvocation invocationWithMethodSignature: [CTController methodSignatureForSelector: @selector(resliceFromY::)]];
 	[invoc setSelector:  @selector(resliceFromY::)];
@@ -1472,7 +1472,7 @@ return YES;
 	}
 }
 
-- (void) fullWindowPlan:(int)index:(id)sender
+- (void) fullWindowPlan:(int)index :(id)sender
 {
 	[self expandAllSplitViews];
 	if (isFullWindow)
@@ -1578,7 +1578,7 @@ return YES;
 	[modalitySplitView setNeedsDisplay:YES];
 }
 
-- (void) fullWindowModality:(int)index:(id)sender
+- (void) fullWindowModality:(int)index :(id)sender
 {
 	[self expandAllSplitViews];
 	if (isFullWindow)
@@ -1644,7 +1644,7 @@ return YES;
 	[yReslicedSplitView setNeedsDisplay:YES];
 }
 
-- (void) fullWindowView:(int)index:(id)sender
+- (void) fullWindowView:(int)index :(id)sender
 {
 	[self expandAllSplitViews];
 	if (isFullWindow)
@@ -2117,7 +2117,7 @@ return YES;
 {
     NSSavePanel     *panel = [NSSavePanel savePanel];
 	BOOL			all = YES;
-	long			i;
+	int			i;
 	NSWorkspace		*ws = [NSWorkspace sharedWorkspace];
 	
 	long deltaX, deltaY, x, y, oldX, oldY, max;

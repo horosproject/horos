@@ -577,11 +577,11 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 		 seconds:0
 		 sinceDate:dob] ;
 		 if (years > 0)
-			return [NSString stringWithFormat:@"%d Y", years];
+			return [NSString stringWithFormat:@"%d Y", (int) years];
 		else if (months > 0)
-			return [NSString stringWithFormat: @"%d M", months];
+			return [NSString stringWithFormat: @"%d M", (int) months];
 		else
-			return [NSString stringWithFormat: @"%d D", days];
+			return [NSString stringWithFormat: @"%d D", (int) days];
 	}
 	return nil;
 }

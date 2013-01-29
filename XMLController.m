@@ -98,7 +98,7 @@ extern int delayedTileWindows;
 			}
 			else
 			{
-				NSString *subString =  [NSString stringWithFormat:@"[%d]", [[[parent parent] children] indexOfObject: parent]];
+				NSString *subString =  [NSString stringWithFormat:@"[%d]", (int) [[[parent parent] children] indexOfObject: parent]];
 				
 				if( first == NO)
 					subString = [subString stringByAppendingString:@"."];

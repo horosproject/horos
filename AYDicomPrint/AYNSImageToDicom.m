@@ -119,7 +119,7 @@ extern BOOL FULL32BITPIPELINE;
 	[infoDict setObject: helpString forKey: @"windowCenter"];
 	helpString = [NSString stringWithFormat: @"%.0f", ww];
 	[infoDict setObject: helpString forKey: @"windowWidth"];
-	NSString *imageNumString = [NSString stringWithFormat: @"%d / %d", currentPos + 1, [filelist count]]; 	
+	NSString *imageNumString = [NSString stringWithFormat: @"%d / %d", currentPos + 1, (int) [filelist count]];
 	[infoDict setObject: imageNumString forKey: @"imageNumber"];
 	//NSMutableArray *pixlist = [viewController pixList];
 	//float thickness = [[pixlist objectAtIndex: currentPos] sliceThickness];

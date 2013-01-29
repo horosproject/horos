@@ -1164,7 +1164,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	NSData* bodyData = self.response.data;
 	// Status Code 401 - Unauthorized
 	CFHTTPMessageRef resp = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 401, NULL, kCFHTTPVersion1_1);
-	CFHTTPMessageSetHeaderFieldValue(resp, CFSTR("Content-Length"), (CFStringRef)[NSString stringWithFormat:@"%d", bodyData.length]);
+	CFHTTPMessageSetHeaderFieldValue(resp, CFSTR("Content-Length"), (CFStringRef)[NSString stringWithFormat:@"%d", (int) bodyData.length]);
 	for (NSString* key in response.httpHeaders)
 		CFHTTPMessageSetHeaderFieldValue(resp, (CFStringRef)key, (CFStringRef)[response.httpHeaders objectForKey:key]);
 	CFHTTPMessageSetBody(resp, (CFDataRef)bodyData);
@@ -1184,7 +1184,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	NSData* bodyData = response.data;
 	bodyData = [[NSString stringWithFormat:@"<html><head><title>%@</title></head><body><h1>%@</h1>%@</body></html>", title, title, bodyData? [[[NSString alloc] initWithData:bodyData encoding:NSUTF8StringEncoding] autorelease] : @""] dataUsingEncoding:NSUTF8StringEncoding];
 	
-	CFHTTPMessageSetHeaderFieldValue(resp, CFSTR("Content-Length"), (CFStringRef)[NSString stringWithFormat:@"%d", bodyData.length]);
+	CFHTTPMessageSetHeaderFieldValue(resp, CFSTR("Content-Length"), (CFStringRef)[NSString stringWithFormat:@"%d", (int) bodyData.length]);
 	CFHTTPMessageSetBody(resp, (CFDataRef)bodyData);
 	
 	NSData *responseData = [self preprocessErrorResponse:resp];

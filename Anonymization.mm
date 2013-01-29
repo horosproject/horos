@@ -338,7 +338,7 @@ static NSString *templateDicomFile = nil;
 			{
 				NSString* ext = [filePath pathExtension];
 				if (!ext.length) ext = @"dcm";
-				NSString* tempFileName = [NSString stringWithFormat:@"%d.%@", fileIndex, ext];
+				NSString* tempFileName = [NSString stringWithFormat:@"%d.%@", (int) fileIndex, ext];
 				NSString* tempFilePath = [tempDirPath stringByAppendingPathComponent:tempFileName];
 				
 				[[NSFileManager defaultManager] copyItemAtPath: filePath toPath: tempFilePath byReplacingExisting: YES error: nil];
@@ -400,7 +400,7 @@ static NSString *templateDicomFile = nil;
 			{
 				NSString* ext = [filePath pathExtension];
 				if (!ext.length) ext = @"dcm";
-				NSString* tempFileName = [NSString stringWithFormat:@"%d.%@", fileIndex, ext];
+				NSString* tempFileName = [NSString stringWithFormat:@"%d.%@", (int) fileIndex, ext];
 				NSString* tempFilePath = [tempDirPath stringByAppendingPathComponent:tempFileName];
 				[DCMObject anonymizeContentsOfFile:filePath tags:tags writingToFile:tempFilePath];
 				[filenameTranslation setObject:tempFilePath forKey:filePath];
@@ -459,8 +459,8 @@ static NSString *templateDicomFile = nil;
                 do
                 {
                     ++i;
-                    NSString* is = i ? [NSString stringWithFormat:@"-%4.4d", i] : @"";
-                    NSString* fileName = [NSString stringWithFormat:@"IM-%4.4d-%4.4d%@.%@", dicomSeries.count, [image.instanceNumber intValue], is, ext];
+                    NSString* is = i ? [NSString stringWithFormat:@"-%4.4d", (int) i] : @"";
+                    NSString* fileName = [NSString stringWithFormat:@"IM-%4.4d-%4.4d%@.%@", (int) dicomSeries.count, (int) [image.instanceNumber intValue], is, ext];
                     filePath = [fileDirPath stringByAppendingPathComponent:fileName];
                 } while ([[NSFileManager defaultManager] fileExistsAtPath:filePath]);
                 

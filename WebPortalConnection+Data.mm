@@ -856,7 +856,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	NSArray *dicomImageArray = [[series valueForKey:@"images"] allObjects];
     
 	NSString* name = [NSString stringWithFormat:@"%@", [parameters objectForKey:@"xid"]];
-	name = [name stringByAppendingFormat:@"-NBIM-%d", [dicomImageArray count]];
+	name = [name stringByAppendingFormat:@"-NBIM-%d", (int) [dicomImageArray count]];
 	
 	NSMutableString* fileName = [NSMutableString stringWithString:name];
 	[BrowserController replaceNotAdmitted:fileName];
@@ -1956,7 +1956,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 					[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
 					
 					NSString *name = [NSString stringWithFormat:@"%@",[parameters objectForKey:@"xid"]];
-					name = [name stringByAppendingFormat:@"-WADOMpeg-%d", [dicomImageArray count]];
+					name = [name stringByAppendingFormat:@"-WADOMpeg-%d", (int) [dicomImageArray count]];
 					
 					NSMutableString *fileName = [NSMutableString stringWithString: [path stringByAppendingPathComponent:name]];
 					

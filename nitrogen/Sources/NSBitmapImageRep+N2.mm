@@ -157,11 +157,11 @@ struct P {
 	assert(kernelSize%2 == 1 && [self bitsPerSample] == 8 && [self samplesPerPixel] == 4);
 	
 	NSSize selfSize = [self size];
-	vImage_Buffer selfBuff = {[self bitmapData], selfSize.width, selfSize.height, [self bytesPerRow]};
+	vImage_Buffer selfBuff = {[self bitmapData], (unsigned long)selfSize.width, (unsigned long)selfSize.height, [self bytesPerRow]};
 	
 	NSSize outputSize = selfSize;
 	NSBitmapImageRep* outputBitmap = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:NULL pixelsWide:outputSize.width pixelsHigh:outputSize.height bitsPerSample:8 samplesPerPixel:4 hasAlpha:YES isPlanar:NO colorSpaceName:NSCalibratedRGBColorSpace bytesPerRow:outputSize.width*4 bitsPerPixel:32];
-	vImage_Buffer outputBuff = {[outputBitmap bitmapData], outputSize.width, outputSize.height, [outputBitmap bytesPerRow]};
+	vImage_Buffer outputBuff = {[outputBitmap bitmapData], (unsigned long)outputSize.width, (unsigned long)outputSize.height, [outputBitmap bytesPerRow]};
 	
 	Pixel_8888 backgroundColor = {0,0,0,0};
 	vImageBoxConvolve_ARGB8888(&selfBuff, &outputBuff, NULL, 0, 0, kernelSize, kernelSize, backgroundColor, kvImageBackgroundColorFill);

@@ -340,7 +340,7 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
 		}
 		else
 		{
-			[currentPrinter setObject: [NSString stringWithFormat: @"%d", index-1]  forKey:@"imageDisplayFormatTag"];
+			[currentPrinter setObject: [NSString stringWithFormat: @"%d", (int) index-1]  forKey:@"imageDisplayFormatTag"];
 			ipp = imageDisplayFormatNumbers[[[dict valueForKey: @"imageDisplayFormatTag"] intValue]];
 		}
 	}

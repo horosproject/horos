@@ -171,10 +171,10 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 							{
 								*rPtrX = 0xFF;
 								
-								if( *(rPtrX+1) == 0) if(	*(srcPtrX+1) > from) {	*(rPtrX+1) = 0xFE;}	else *(rPtrX+1) = 2;
-								if( *(rPtrX-1) == 0) if(	*(srcPtrX-1) > from) {	*(rPtrX-1) = 0xFE;}	else *(rPtrX-1) = 2;
-								if( *(rPtrX+w) == 0) if(	*(srcPtrX+w) > from) {	*(rPtrX+w) = 0xFE;}	else *(rPtrX+w) = 2;
-								if( *(rPtrX-w) == 0) if(	*(srcPtrX-w) > from) {	*(rPtrX-w) = 0xFE;}	else *(rPtrX-w) = 2;
+								if( *(rPtrX+1) == 0) {if( *(srcPtrX+1) > from) {	*(rPtrX+1) = 0xFE;}	else *(rPtrX+1) = 2;}
+								if( *(rPtrX-1) == 0) {if( *(srcPtrX-1) > from) {	*(rPtrX-1) = 0xFE;}	else *(rPtrX-1) = 2;}
+								if( *(rPtrX+w) == 0) {if(*(srcPtrX+w) > from) {	*(rPtrX+w) = 0xFE;}	else *(rPtrX+w) = 2;}
+								if( *(rPtrX-w) == 0) {if(*(srcPtrX-w) > from) {	*(rPtrX-w) = 0xFE;}	else *(rPtrX-w) = 2;}
 								
 								foundPlane = YES;
 							}
@@ -271,8 +271,8 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 					{
 						if( *rPtrX == 0xFF)
 						{
-							if( *(rPtrX-s) == 0) if(	*(srcPtrX-s) > from) {	*(rPtrX-s) = 0xFE;}	else *(rPtrX-s) = 2;
-							if( *(rPtrX+s) == 0) if(	*(srcPtrX+s) > from) {	*(rPtrX+s) = 0xFE;}	else *(rPtrX+s) = 2;
+							if( *(rPtrX-s) == 0) {if(	*(srcPtrX-s) > from) {	*(rPtrX-s) = 0xFE;}	else *(rPtrX-s) = 2;}
+							if( *(rPtrX+s) == 0) {if(	*(srcPtrX+s) > from) {	*(rPtrX+s) = 0xFE;}	else *(rPtrX+s) = 2;}
 						}
 						rPtrX++;
 						srcPtrX++;

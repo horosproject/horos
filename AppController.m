@@ -3380,7 +3380,7 @@ static BOOL initialized = NO;
         
         if(status != noErr)
         {
-            NSLog( @"SecStaticCodeCheckValidity: %ld", status);
+            NSLog( @"SecStaticCodeCheckValidity: %d", (int) status);
             NSLog( @"%@", errors);
             
             NSRunCriticalAlertPanel( NSLocalizedString( @"Code signing and Certificate", nil), [NSString stringWithFormat: NSLocalizedString( @"Invalid code signing or certificate. Redownload OsiriX from the pixmeo web site.\r\r%@\r\r%@", nil), errors.localizedDescription, errors.userInfo], NSLocalizedString( @"Quit", nil) , nil, nil);

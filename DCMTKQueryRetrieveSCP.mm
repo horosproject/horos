@@ -245,7 +245,7 @@ void errmsg(const char* msg, ...)
     
     if( [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMConnectionTimeout"] > 0)
     {
-        NSLog( @"--- DICOMConnectionTimeout: %d", [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMConnectionTimeout"]);
+        NSLog( @"--- DICOMConnectionTimeout: %d", (int) [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMConnectionTimeout"]);
         dcmConnectionTimeout.set( (Sint32) [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMConnectionTimeout"]);
     }
     else

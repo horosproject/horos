@@ -28,7 +28,7 @@
 	return self;
 }
 
--(void) setImageData:(long) w :(long) h :(long) c:(float) sX :(float) sY :(float) t :(BOOL) flip
+-(void) setImageData:(long) w :(long) h :(long) c :(float) sX :(float) sY :(float) t :(BOOL) flip
 {
 	[view setImageData:w :h :c :sX :sY :t :flip];
 }

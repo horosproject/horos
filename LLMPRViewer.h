@@ -61,7 +61,7 @@
 	NSString					*convolutionName;
 }
 
-- (id)initWithPixList:(NSArray*)pix:(NSArray*)pixToSubstract:(NSArray*)files:(NSData*)vData:(ViewerController*)vC:(ViewerController*)bC:(LLScoutViewer*)sV;
+- (id)initWithPixList:(NSArray*)pix :(NSArray*)pixToSubstract :(NSArray*)files :(NSData*)vData :(ViewerController*)vC :(ViewerController*)bC :(LLScoutViewer*)sV;
 - (void)setPixListRange:(NSRange)range;
 - (void)resliceFromNotification: (NSNotification*)notification;
 - (void)changeWLWW:(NSNotification*)note;

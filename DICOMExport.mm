@@ -797,9 +797,9 @@ static float deg2rad = M_PI / 180.0f;
 					dataset->putAndInsertString( DCM_InstanceNumber, [[NSString stringWithFormat: @"%d", exportInstanceNumber++] UTF8String]);
 					dataset->putAndInsertString( DCM_AcquisitionNumber, "1");
 					
-					dataset->putAndInsertString( DCM_Rows, [[NSString stringWithFormat: @"%d", height] UTF8String]);
-					dataset->putAndInsertString( DCM_Columns, [[NSString stringWithFormat: @"%d", width] UTF8String]);
-					dataset->putAndInsertString( DCM_SamplesPerPixel, [[NSString stringWithFormat: @"%d", spp] UTF8String]);
+					dataset->putAndInsertString( DCM_Rows, [[NSString stringWithFormat: @"%d", (int) height] UTF8String]);
+					dataset->putAndInsertString( DCM_Columns, [[NSString stringWithFormat: @"%d", (int) width] UTF8String]);
+					dataset->putAndInsertString( DCM_SamplesPerPixel, [[NSString stringWithFormat: @"%d", (int) spp] UTF8String]);
 					dataset->putAndInsertString( DCM_PhotometricInterpretation, [photometricInterpretation UTF8String]);
 					dataset->putAndInsertString( DCM_PixelRepresentation, [[NSString stringWithFormat: @"%d", isSigned] UTF8String]);
 				
@@ -852,8 +852,8 @@ static float deg2rad = M_PI / 180.0f;
 						
 						if( ww != -1 && ww != -1)
 						{
-							dataset->putAndInsertString( DCM_WindowCenter, [[NSString stringWithFormat: @"%d", wl] UTF8String]);
-							dataset->putAndInsertString( DCM_WindowWidth, [[NSString stringWithFormat: @"%d", ww] UTF8String]);
+							dataset->putAndInsertString( DCM_WindowCenter, [[NSString stringWithFormat: @"%d", (int) wl] UTF8String]);
+							dataset->putAndInsertString( DCM_WindowWidth, [[NSString stringWithFormat: @"%d", (int) ww] UTF8String]);
 						}
 						
 						dataset->putAndInsertUint8Array(DCM_PixelData, OFstatic_cast(Uint8 *, OFconst_cast(void *, (void*) data)), height*width*4);
@@ -874,8 +874,8 @@ static float deg2rad = M_PI / 180.0f;
 						
 						if( ww != -1 && ww != -1)
 						{
-							dataset->putAndInsertString( DCM_WindowCenter, [[NSString stringWithFormat: @"%d", wl] UTF8String]);
-							dataset->putAndInsertString( DCM_WindowWidth, [[NSString stringWithFormat: @"%d", ww] UTF8String]);
+							dataset->putAndInsertString( DCM_WindowCenter, [[NSString stringWithFormat: @"%d", (int) wl] UTF8String]);
+							dataset->putAndInsertString( DCM_WindowWidth, [[NSString stringWithFormat: @"%d", (int) ww] UTF8String]);
 						}
 						
 						dataset->putAndInsertUint16Array(DCM_PixelData, OFstatic_cast(Uint16 *, OFconst_cast(void *, (void*) data)), height*width*spp);

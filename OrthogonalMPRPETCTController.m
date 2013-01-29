@@ -29,7 +29,7 @@
 	return self;
 }
 
-- (void) setCrossPosition: (float) x: (float) y: (id) sender
+- (void) setCrossPosition: (float) x :(float) y :(id) sender
 {
 	if ([sender isEqual: originalView])
 	{
@@ -45,7 +45,7 @@
 	}
 }
 
-- (void) doubleClick:(NSEvent *)event:(id) sender
+- (void) doubleClick:(NSEvent *)event :(id) sender
 {
 	if ([event modifierFlags] & NSAlternateKeyMask)
 	{
@@ -119,21 +119,21 @@
 	[super scaleToFit];
 }
 
-- (void) resliceFromOriginal: (float) x: (float) y
+- (void) resliceFromOriginal: (float) x :(float) y
 {
 	[originalView setCrossPositionX:x];
 	[originalView setCrossPositionY:y];
 	[self reslice:x:y:originalView];
 }
 
-- (void) resliceFromX: (float) x: (float) y
+- (void) resliceFromX: (float) x :(float) y
 {
 	[xReslicedView setCrossPositionX:x];
 	[xReslicedView setCrossPositionY:y];
 	[self reslice:x:y:xReslicedView];
 }
 
-- (void) resliceFromY: (float) x: (float) y
+- (void) resliceFromY: (float) x :(float) y
 {
 	[yReslicedView setCrossPositionX:x];
 	[yReslicedView setCrossPositionY:y];
@@ -147,7 +147,7 @@
 	[yReslicedView setBlending: nil];
 }
 
-- (void) reslice: (long) x: (long) y: (OrthogonalMPRView*) sender
+- (void) reslice: (long) x :(long) y :(OrthogonalMPRView*) sender
 {
 	float originalScaleValue, xScaleValue, yScaleValue, originalRotation, xRotation, yRotation, blendingFactor;
 
@@ -280,7 +280,7 @@
 	[yReslicedView setNeedsDisplay: YES];
 }
 
-- (void) flipVertical:(id) sender: (OrthogonalMPRPETCTView*) view
+- (void) flipVertical:(id) sender :(OrthogonalMPRPETCTView*) view
 {
 	if ([view isEqual: originalView])
 	{	
@@ -296,7 +296,7 @@
 	}
 }
 
-- (void) flipHorizontal:(id) sender: (OrthogonalMPRPETCTView*) view
+- (void) flipHorizontal:(id) sender :(OrthogonalMPRPETCTView*) view
 {
 	if ([view isEqual: originalView])
 	{	

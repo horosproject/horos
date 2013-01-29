@@ -598,7 +598,7 @@ static NSString* DefaultWebPortalDatabasePath = nil;
         if ([protocol isEqualToString: @"https://"] && self.portNumber == 443) isDefaultPort = YES;
         
         if (!isDefaultPort)
-            add = [add stringByAppendingFormat:@":%d", self.portNumber];
+            add = [add stringByAppendingFormat:@":%d", (int) self.portNumber];
     }
     else
     {

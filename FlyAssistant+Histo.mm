@@ -334,7 +334,7 @@
     }
 }
 
-- (void) mmOpening:(vImage_Buffer *) buffer:(vImagePixelCount) x : (vImagePixelCount) y
+- (void) mmOpening:(vImage_Buffer *) buffer :(vImagePixelCount) x :(vImagePixelCount) y
 {
     vImage_Buffer tmpResult, result;
     tmpResult.width     = buffer->width;
@@ -364,7 +364,7 @@
     free(tmpResult.data);
 }
 
-- (void) mmClosing:(vImage_Buffer *) buffer:(vImagePixelCount) x : (vImagePixelCount) y
+- (void) mmClosing:(vImage_Buffer *) buffer :(vImagePixelCount) x :(vImagePixelCount) y
 {
     vImage_Buffer tmpResult, result;
     tmpResult.width     = buffer->width;
@@ -393,7 +393,7 @@
     free(tmpResult.data);
 }
 
-- (void) mmErosion:(vImage_Buffer *) buffer:(vImagePixelCount) x : (vImagePixelCount) y
+- (void) mmErosion:(vImage_Buffer *) buffer :(vImagePixelCount) x :(vImagePixelCount) y
 {
     vImage_Buffer tmpResult;
     tmpResult.width     = buffer->width;
@@ -417,7 +417,7 @@
     free(tmpResult.data);
 }
 
-- (void) mmDilation:(vImage_Buffer *) buffer:(vImagePixelCount) x : (vImagePixelCount) y
+- (void) mmDilation:(vImage_Buffer *) buffer :(vImagePixelCount) x :(vImagePixelCount) y
 {
     vImage_Buffer tmpResult;
     tmpResult.width     = buffer->width;

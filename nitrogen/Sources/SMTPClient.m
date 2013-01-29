@@ -578,7 +578,7 @@ enum SMTPSubstatuses {
     //	NSLog(@"HANDLE: [Status %d] Handling %d with %@", context.status, code, message);
 	
 	if (code >= 500)
-		[NSException raise:NSGenericException format:@"Error %d: %@", code, message];
+		[NSException raise:NSGenericException format:@"Error %d: %@", (int) code, message];
 	
 	switch (self.smtpStatus) {
 		case InitialStatus: {
@@ -745,7 +745,7 @@ enum SMTPSubstatuses {
 		} break;
 	}
 	
-	[NSException raise:NSGenericException format:@"Don't know how to act with status %d, code %d", self.smtpStatus, code];
+	[NSException raise:NSGenericException format:@"Don't know how to act with status %d, code %d", (int) self.smtpStatus, (int) code];
 }
 
 -(void)handleLine:(NSString*)line {
