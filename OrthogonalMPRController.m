@@ -727,7 +727,7 @@
 	[yReslicedView displayResliceAxes:boo];
 }
 
-- (void) doubleClick:(NSEvent *)event:(id) sender
+- (void) doubleClick:(NSEvent *)event :(id) sender
 {
 	[self fullWindowView: sender];
 }
