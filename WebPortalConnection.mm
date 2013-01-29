@@ -376,6 +376,12 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	return params;
 }
 
+- (void) alive:(id) sender
+{
+    [self.portal.dicomDatabase.managedObjectContext lock]; // Can we obtain a lock on the main db?
+    [self.portal.dicomDatabase.managedObjectContext unlock];
+}
+
 - (NSObject<HTTPResponse>*)httpResponseForMethod:(NSString*)method URI:(NSString*)path
 {
 	NSString* url = [[(id)CFHTTPMessageCopyRequestURL(request) autorelease] relativeString];
@@ -519,6 +525,8 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
                     [self.portal.database.managedObjectContext lock];
                     [self.portal.database objectsForEntity:self.portal.database.userEntity predicate:[NSPredicate predicateWithFormat:@"name == %@", @"test"]];
                     [self.portal.database.managedObjectContext unlock];
+                    
+                    [self performSelectorOnMainThread: @selector( alive:) withObject: self waitUntilDone: YES];
                     
 //                    NSLog( @"WebPortal: test DB alive: lock/unlock for WebPortal DB managedObjectContext : succeeded");
                     
