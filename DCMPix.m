@@ -3522,7 +3522,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     copy->frameNo = self->frameNo;
     copy->serieNo = self->serieNo;
     copy->isBonjour = self->isBonjour;
-    copy->numberOfFrames = copy->numberOfFrames;
+    copy->numberOfFrames = self->numberOfFrames;
     
     [copy initParameters];
 	
@@ -6125,23 +6125,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			
 			if( gUseShutter && imageNb != frameNo && maxFrame > 1)
 			{
-				self->shutterRect_x = shutterRect_x;
-				self->shutterRect_y = shutterRect_y;
-				self->shutterRect_w = shutterRect_w;
-				self->shutterRect_h = shutterRect_h;
-				
-				self->shutterCircular_x = shutterCircular_x;
-				self->shutterCircular_y = shutterCircular_y;
-				self->shutterCircular_radius = shutterCircular_radius;
-				
 				if( shutterPolygonalSize)
 				{
-					self->shutterPolygonalSize = shutterPolygonalSize;
 					self->shutterPolygonal = malloc( shutterPolygonalSize * sizeof( NSPoint));
 					memcpy( self->shutterPolygonal, shutterPolygonal, shutterPolygonalSize * sizeof( NSPoint));
 				}
-				
-				self->DCMPixShutterOnOff = DCMPixShutterOnOff;
 			}
 			
 			//get PixelData
