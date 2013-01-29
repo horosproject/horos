@@ -26,7 +26,7 @@
 
 @synthesize orientationVector;
 
-- (void) setCrossPosition: (float) x: (float) y: (id) sender
+- (void) setCrossPosition: (float) x : (float) y : (id) sender
 {
     [self reslice: x:  y: sender];
 }
@@ -149,7 +149,7 @@
 #pragma mark Orthogonal reslice methods
 
 
-- (void) reslice: (long) x: (long) y: (OrthogonalMPRView*) sender
+- (void) reslice: (long) x : (long) y : (OrthogonalMPRView*) sender
 {
 	float originalScaleValue, xScaleValue, yScaleValue, originalRotation, xRotation, yRotation;
 
@@ -1152,7 +1152,7 @@
 	[yReslicedView setNeedsDisplay:YES];
 }
 
-- (void) loadROIonReslicedViews: (long) x: (long) y
+- (void) loadROIonReslicedViews: (long) x : (long) y
 {
 	[self loadROIonXReslicedView: y];
 	[self loadROIonYReslicedView: x];

@@ -44,7 +44,7 @@
 - (void) setOriginalDCMPixList: (NSMutableArray*) pixList;
 
 // processors
-- (void) reslice: (long) x: (long) y;
+- (void) reslice: (long) x : (long) y;
 - (void) xReslice: (long) x;
 - (void) yReslice: (long) y;
 

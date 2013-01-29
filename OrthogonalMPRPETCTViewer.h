@@ -78,18 +78,18 @@
     float                               syncOriginPosition[3];
 }
 
-- (id) initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) vC:(ViewerController*) bC;
+- (id) initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) vC :(ViewerController*) bC;
 
 - (DCMView*) keyView;
 - (BOOL) is2DViewer;
 - (void) ApplyCLUTString:(NSString*) str;
-- (void) setWLWW:(float) iwl :(float) iww:(id) sender;
+- (void) setWLWW:(float) iwl :(float) iww :(id) sender;
 - (IBAction) flipVolume;
 - (ViewerController*) viewerController;
 
-- (void) resliceFromOriginal: (float) x: (float) y: (id) sender;
-- (void) resliceFromX: (float) x: (float) y: (id) sender;
-- (void) resliceFromY: (float) x: (float) y: (id) sender;
+- (void) resliceFromOriginal: (float) x : (float) y : (id) sender;
+- (void) resliceFromX: (float) x : (float) y : (id) sender;
+- (void) resliceFromY: (float) x : (float) y : (id) sender;
 
 - (void) blendingPropagateOriginal:(OrthogonalMPRPETCTView*) sender;
 - (void) blendingPropagateX:(OrthogonalMPRPETCTView*) sender;
@@ -141,9 +141,9 @@
 //- (void) turnModalitySplitView;
 - (void) updateToolbarItems;
 
-- (void) fullWindowView:(int)index:(id)sender;
+- (void) fullWindowView:(int)index :(id)sender;
 
-- (void) fullWindowPlan:(int)index:(id)sender;
+- (void) fullWindowPlan:(int)index :(id)sender;
 
 - (void) flipVerticalOriginal: (id) sender;
 - (void) flipVerticalX: (id) sender;
@@ -153,7 +153,7 @@
 - (void) flipHorizontalX: (id) sender;
 - (void) flipHorizontalY: (id) sender;
 
-- (void) fullWindowModality:(int)index:(id)sender;
+- (void) fullWindowModality:(int)index :(id)sender;
 
 //export
 -(IBAction) endExportDICOMFileSettings:(id) sender;

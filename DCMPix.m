@@ -2027,7 +2027,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	return values;
 }
 
-- (BOOL)isInROI: (ROI*)roi: (NSPoint)pt
+- (BOOL)isInROI: (ROI*)roi : (NSPoint)pt
 {
 	BOOL			result = NO;
 	long			minx, maxx, miny, maxy;
@@ -11860,7 +11860,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 -(NSNumber*) positionerSecondaryAngle{return positionerSecondaryAngle;}
 
 
--(void) DCMPixShutterRect:(long)x:(long)y:(long)w:(long)h;
+-(void) DCMPixShutterRect:(long)x :(long)y :(long)w :(long)h;
 {
 	shutterRect_x = x;
 	shutterRect_y = y;

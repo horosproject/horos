@@ -31,9 +31,9 @@ extern NSString* const NSThreadIsCancelledKey;
 
 -(void)enterOperation;
 -(void)enterOperationIgnoringLowerLevels;
--(void)enterOperationWithRange:(CGFloat)rangeLoc:(CGFloat)rangeLen;
+-(void)enterOperationWithRange:(CGFloat)rangeLoc :(CGFloat)rangeLen;
 -(void)exitOperation;
--(void)enterSubthreadWithRange:(CGFloat)rangeLoc:(CGFloat)rangeLen __deprecated;
+-(void)enterSubthreadWithRange:(CGFloat)rangeLoc :(CGFloat)rangeLen __deprecated;
 -(void)exitSubthread __deprecated;
 
 extern NSString* const NSThreadSupportsCancelKey;

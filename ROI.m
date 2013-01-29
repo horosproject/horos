@@ -4857,7 +4857,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                                                 unitsY = [physicalUnitsXYDirection objectAtIndex:physicalUnitsYDirection];
                                             }
                                             
-                                            if ((unitsY == @"cm/sec") && (lengthY >= 100.0)) {
+                                            if (([unitsY isEqualToString: @"cm/sec"]) && (lengthY >= 100.0)) {
                                                 unitsY = @"m/sec";
                                                 lengthY = lengthY / 100.0;
                                             }

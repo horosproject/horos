@@ -328,7 +328,7 @@ extern NSString* O2AlbumDragType;
 - (void)drawerToggle: (id)sender;
 - (void) showEntireDatabase;
 - (void) subSelectFilesAndFoldersToAdd: (NSArray*) filenames;
-- (void)matrixNewIcon:(long) index: (NSManagedObject*)curFile;
+- (void)matrixNewIcon:(long) index : (NSManagedObject*)curFile;
 - (NSPredicate*) smartAlbumPredicate:(NSManagedObject*) album;
 - (NSPredicate*) smartAlbumPredicateString:(NSString*) string;
 - (void) emptyDeleteQueueThread;

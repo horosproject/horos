@@ -159,7 +159,7 @@
 	return colors;
 }
 
--(void) ConvertCLUT:(unsigned char*) red: (unsigned char*) green: (unsigned char*) blue
+-(void) ConvertCLUT:(unsigned char*) red : (unsigned char*) green : (unsigned char*) blue
 {
 	long		i, x, cur, last = 0;
 	NSColor		*curColor = nil, *prevColor = [NSColor colorWithCalibratedRed: 0 green: 0 blue: 0 alpha: 1.0];

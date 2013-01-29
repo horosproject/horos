@@ -29,6 +29,6 @@
 -(void) selectPicker:(id) sender;
 -(NSMutableArray*) getPoints;
 -(NSMutableArray*) getColors;
--(void) ConvertCLUT:(unsigned char*) red: (unsigned char*) green: (unsigned char*) blue;
+-(void) ConvertCLUT:(unsigned char*) red : (unsigned char*) green : (unsigned char*) blue;
 -(IBAction) renderButton:(id) sender;
 @end

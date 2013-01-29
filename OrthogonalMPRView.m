@@ -316,12 +316,12 @@ extern int ANNOTATIONS;
     [self convertPixX:crossPositionX pixY:crossPositionY toDICOMCoords:location];
 }
 
-- (void) setCrossPosition: (float) x: (float) y
+- (void) setCrossPosition: (float) x : (float) y
 {
     [self setCrossPosition:x :y withNotification:TRUE];
 }
 
-- (void) setCrossPosition: (float) x: (float) y withNotification:(BOOL) doNotifychange
+- (void) setCrossPosition: (float) x : (float) y withNotification:(BOOL) doNotifychange
 {
     if(crossPositionX == x && crossPositionY == y)
 		return;

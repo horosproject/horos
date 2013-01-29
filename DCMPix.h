@@ -511,7 +511,7 @@ Note setter is different to not break existing usage. :-( */
 + (NSPoint) originCorrectedAccordingToOrientation: (DCMPix*) pix1;
 - (void) setBlackIndex:(int) i;
 + (NSImage*) resizeIfNecessary:(NSImage*) currentImage dcmPix: (DCMPix*) dcmPix;
-- (void) DCMPixShutterRect:(long)x:(long)y:(long)w:(long)h;
+- (void) DCMPixShutterRect:(long)x :(long)y :(long)w :(long)h;
 - (BOOL) DCMPixShutterOnOff;
 - (void) DCMPixShutterOnOff:(BOOL)newDCMPixShutterOnOff;
 - (void) computeTotalDoseCorrected;

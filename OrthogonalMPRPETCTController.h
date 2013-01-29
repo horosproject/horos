@@ -26,9 +26,9 @@
 }
 - (id) initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) vC :(ViewerController*) bC :(id) newViewer;
 
-- (void) resliceFromOriginal: (float) x: (float) y;
-- (void) resliceFromX: (float) x: (float) y;
-- (void) resliceFromY: (float) x: (float) y;
+- (void) resliceFromOriginal: (float) x : (float) y;
+- (void) resliceFromX: (float) x : (float) y;
+- (void) resliceFromY: (float) x : (float) y;
 
 - (void) superSetWLWW:(float) iwl :(float) iww;
 
@@ -44,6 +44,6 @@
 
 -(void) ApplyOpacityString:(NSString*) str;
 
-- (void) flipVertical:(id) sender: (OrthogonalMPRPETCTView*) view;
-- (void) flipHorizontal:(id) sender: (OrthogonalMPRPETCTView*) view;
+- (void) flipVertical:(id) sender : (OrthogonalMPRPETCTView*) view;
+- (void) flipHorizontal:(id) sender : (OrthogonalMPRPETCTView*) view;
 @end

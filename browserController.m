@@ -8073,7 +8073,7 @@ static BOOL withReset = NO;
     }
 }
 
-- (void) matrixNewIcon:(long) index: (NSManagedObject*)curFile
+- (void) matrixNewIcon:(long) index :(NSManagedObject*)curFile
 {	
 //	if( shouldDie == NO)
 	{
@@ -10349,7 +10349,7 @@ static BOOL needToRezoom;
 #pragma mark-
 #pragma mark Open 2D/4D Viewer functions
 
-- (BOOL)computeEnoughMemory: (NSArray*)toOpenArray: (unsigned long*)requiredMem
+- (BOOL)computeEnoughMemory: (NSArray*)toOpenArray :(unsigned long*)requiredMem
 {
 	NSThread* thread = [NSThread currentThread];
     BOOL enoughMemory = YES;

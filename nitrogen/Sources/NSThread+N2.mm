@@ -148,7 +148,7 @@ static NSString* const SuperThreadNameKey = @"SuperThreadName";
     }
 }
 
--(void)enterOperationWithRange:(CGFloat)rangeLoc:(CGFloat)rangeLen
+-(void)enterOperationWithRange:(CGFloat)rangeLoc :(CGFloat)rangeLen
 {
 	@synchronized (self.threadDictionary) {
 		[self enterOperation];
@@ -176,7 +176,7 @@ static NSString* const SuperThreadNameKey = @"SuperThreadName";
 	}
 }
 
--(void)enterSubthreadWithRange:(CGFloat)rangeLoc:(CGFloat)rangeLen { // __deprecated
+-(void)enterSubthreadWithRange:(CGFloat)rangeLoc :(CGFloat)rangeLen { // __deprecated
 	@synchronized (self.threadDictionary) {
 		[self enterOperationWithRange:rangeLoc:rangeLen];
 	}

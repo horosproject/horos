@@ -40,11 +40,11 @@
 }
 
 @property long orientationVector;
-
-- (id) initWithPixList: (NSArray*) pixList :(NSArray*) filesList :(NSData*) vData :(ViewerController*) vC :(ViewerController*) bC:(id) newViewer;
+ 
+- (id) initWithPixList: (NSArray*) pixList :(NSArray*) filesList :(NSData*) vData :(ViewerController*) vC :(ViewerController*) bC :(id) newViewer;
 - (void) setPixList: (NSArray*)pix :(NSArray*)files :(ViewerController*)vC;
 
-- (void) reslice: (long) x: (long) y: (OrthogonalMPRView*) sender;
+- (void) reslice: (long) x : (long) y : (OrthogonalMPRView*) sender;
 - (void) flipVolume;
 
 - (void) ApplyCLUTString:(NSString*) str;
@@ -70,7 +70,7 @@
 - (OrthogonalMPRView*) xReslicedView;
 - (OrthogonalMPRView*) yReslicedView;
 - (NSMutableArray*) originalDCMFilesList;
-- (void) setCrossPosition: (float) x: (float) y: (id) sender;
+- (void) setCrossPosition: (float) x : (float) y : (id) sender;
 - (void) setBlendingFactor:(float) f;
 - (id) viewer;
 - (float) sign;
@@ -100,7 +100,7 @@
 - (void) saveCrossPositions;
 - (void) restoreCrossPositions;
 - (void) scrollTool: (long) from : (long) to : (id) sender;
-- (void) doubleClick:(NSEvent *)event:(id) sender;
+- (void) doubleClick:(NSEvent *)event :(id) sender;
 -(void) refreshViews;
 
 - (void) blendingPropagateOriginal:(OrthogonalMPRView*) sender;
@@ -110,7 +110,7 @@
 
 - (void) loadROIonXReslicedView: (long) y;
 - (void) loadROIonYReslicedView: (long) x;
-- (void) loadROIonReslicedViews: (long) x: (long) y;
+- (void) loadROIonReslicedViews: (long) x : (long) y;
 
 - (NSMutableArray*) pointsROIAtX: (long) x;
 - (NSMutableArray*) pointsROIAtY: (long) y;
