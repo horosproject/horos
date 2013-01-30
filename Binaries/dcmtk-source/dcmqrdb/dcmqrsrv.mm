@@ -37,6 +37,7 @@
 #import "NSThread+N2.h"
 #import "AppController.h"
 #import "N2Debug.h"
+#import "ContextCleaner.h"
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmqrsrv.h"
@@ -108,12 +109,6 @@ static int numberOfActiveAssociations = 0;
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-@interface ContextCleaner : NSObject
-{
-
-}
-@end
 
 @implementation ContextCleaner
 
@@ -224,6 +219,12 @@ static int numberOfActiveAssociations = 0;
     }
     
 	[pool release];
+}
+
++ (void) waitForHandledAssociations
+{
+    while( numberOfActiveAssociations > 0)
+        [NSThread sleepForTimeInterval: 0.1];
 }
 
 + (void) handleAssociation: (NSDictionary*) d

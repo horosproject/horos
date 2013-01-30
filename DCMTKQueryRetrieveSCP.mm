@@ -15,6 +15,7 @@
 #import "DCMTKQueryRetrieveSCP.h"
 #import "AppController.h"
 #import "DICOMTLS.h"
+#import "ContextCleaner.h"
 
 #undef verify
 
@@ -559,9 +560,13 @@ DcmQueryRetrieveConfig config;
 		}
 	}
 	
+    [NSThread sleepForTimeInterval: 1];
+    [ContextCleaner waitForHandledAssociations];
+    [NSThread sleepForTimeInterval: 1];
+    
 	if( _abort)
 		NSLog( @"---- store-SCP aborted");
-	
+    
 	if( localSCP)
 		delete localSCP;
 	

@@ -615,7 +615,14 @@ extern "C"
         WaitRendering *wait = nil;
         
         if( [NSThread isMainThread])
-            wait = [[[WaitRendering alloc] init: [NSString stringWithFormat: NSLocalizedString( @"DICOM Echo %@...", nil), [serverParameters objectForKey: @"Description"]]] autorelease];
+        {
+            NSString *description = [serverParameters objectForKey: @"Description"];
+            
+            if( description == nil)
+                description = @"";
+            
+            wait = [[[WaitRendering alloc] init: [NSString stringWithFormat: NSLocalizedString( @"DICOM Echo %@...", nil), description]] autorelease];
+        }
         
         [wait setCancel: YES];
         [wait showWindow:self];

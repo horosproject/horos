@@ -642,6 +642,8 @@
 		84B5EA4311A2BC0900193FDB /* dsr2html in Resources */ = {isa = PBXBuildFile; fileRef = 84B5EA4211A2BC0900193FDB /* dsr2html */; };
 		84C4510B10033B8100138F70 /* OSIWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 84C450F51003384000138F70 /* OSIWindow.m */; };
 		84C4510C10033B8200138F70 /* OSIWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 84C450F41003384000138F70 /* OSIWindow.h */; };
+		84C6329516B945CD00F0EA89 /* ContextCleaner.h in Headers */ = {isa = PBXBuildFile; fileRef = 84C6329416B945CD00F0EA89 /* ContextCleaner.h */; };
+		84C6329616B945CD00F0EA89 /* ContextCleaner.h in Headers */ = {isa = PBXBuildFile; fileRef = 84C6329416B945CD00F0EA89 /* ContextCleaner.h */; };
 		84CD250D11EC5564004669D6 /* OsiriXDB_Previous_DataModel2.4.mom in Resources */ = {isa = PBXBuildFile; fileRef = 84CD250C11EC5564004669D6 /* OsiriXDB_Previous_DataModel2.4.mom */; };
 		84CD254C11ECB49A004669D6 /* OsiriXDB_DataModel.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = CE51BAF711E2289C006D180E /* OsiriXDB_DataModel.xcdatamodel */; };
 		84CE7CA614D84F87008CA119 /* Tiling1x4.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 84CE7CA414D84F87008CA119 /* Tiling1x4.pdf */; };
@@ -8810,6 +8812,7 @@
 		84B5EA4211A2BC0900193FDB /* dsr2html */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = dsr2html; sourceTree = "<group>"; };
 		84C450F41003384000138F70 /* OSIWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIWindow.h; sourceTree = "<group>"; };
 		84C450F51003384000138F70 /* OSIWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIWindow.m; sourceTree = "<group>"; };
+		84C6329416B945CD00F0EA89 /* ContextCleaner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContextCleaner.h; sourceTree = SOURCE_ROOT; };
 		84CD250C11EC5564004669D6 /* OsiriXDB_Previous_DataModel2.4.mom */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = OsiriXDB_Previous_DataModel2.4.mom; sourceTree = "<group>"; };
 		84CE7CA414D84F87008CA119 /* Tiling1x4.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = Tiling1x4.pdf; path = Binaries/Icons/Tiling/Tiling1x4.pdf; sourceTree = "<group>"; };
 		84CE7CA514D84F87008CA119 /* Tiling2x4.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = Tiling2x4.pdf; path = Binaries/Icons/Tiling/Tiling2x4.pdf; sourceTree = "<group>"; };
@@ -17094,6 +17097,7 @@
 				BFBF3DA409B6828800545F5E /* dcmqropt.h */,
 				BFBF3DA509B6828800545F5E /* dcmqrptb.cc */,
 				BFBF3DA609B6828800545F5E /* dcmqrptb.h */,
+				84C6329416B945CD00F0EA89 /* ContextCleaner.h */,
 				BFBF3DA809B6828800545F5E /* dcmqrsrv.h */,
 				BF8B2A4909F470F400F1F759 /* dcmqrsrv.mm */,
 				BFBF3DA909B6828800545F5E /* dcmqrtis.cc */,
@@ -25453,6 +25457,7 @@
 				7188E85616301A61006105BE /* KBPopUpToolbarItem.h in Headers */,
 				71A28B771637F0D200489F2A /* DCMWaveform.h in Headers */,
 				7147C1881644160800A9D095 /* O2ViewerThumbnailsMatrix.h in Headers */,
+				84C6329516B945CD00F0EA89 /* ContextCleaner.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26083,6 +26088,7 @@
 				7188E85716301A61006105BE /* KBPopUpToolbarItem.h in Headers */,
 				71A28B781637F0D200489F2A /* DCMWaveform.h in Headers */,
 				7147C1891644160800A9D095 /* O2ViewerThumbnailsMatrix.h in Headers */,
+				84C6329616B945CD00F0EA89 /* ContextCleaner.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
