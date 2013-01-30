@@ -437,7 +437,6 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	}
 	else
 	{
-//		[self.portal.dicomDatabase.managedObjectContext lock];
 		@try
         {
 			if ([requestedPath isEqual:@"/"] || [requestedPath isEqual: @"/index"])
@@ -520,15 +519,17 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
                     [self.portal.dicomDatabase.managedObjectContext lock]; // Can we obtain a lock on the main db?
                     [self.portal.dicomDatabase.managedObjectContext unlock];
                     
-//                    NSLog( @"WebPortal: test DB alive: lock/unlock for DICOM DB managedObjectContext : succeeded");
+                    [self.portal.dicomDatabase.managedObjectContext.persistentStoreCoordinator lock]; // Can we obtain a lock on the main db?
+                    [self.portal.dicomDatabase.managedObjectContext.persistentStoreCoordinator unlock];
                     
                     [self.portal.database.managedObjectContext lock];
                     [self.portal.database objectsForEntity:self.portal.database.userEntity predicate:[NSPredicate predicateWithFormat:@"name == %@", @"test"]];
                     [self.portal.database.managedObjectContext unlock];
                     
-                    [self performSelectorOnMainThread: @selector( alive:) withObject: self waitUntilDone: YES];
+                    [self.portal.database.managedObjectContext.persistentStoreCoordinator lock];
+                    [self.portal.database.managedObjectContext.persistentStoreCoordinator unlock];
                     
-//                    NSLog( @"WebPortal: test DB alive: lock/unlock for WebPortal DB managedObjectContext : succeeded");
+                    [self performSelectorOnMainThread: @selector( alive:) withObject: self waitUntilDone: YES];
                     
                     [response setDataWithString: @"Test DB Alive succeeded"];
                     response.mimeType = @"text/html";
@@ -543,8 +544,6 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
         {
 			response.statusCode = 500;
 			NSLog(@"Error: [WebPortalConnection httpResponseForMethod:URI:] %@", e);
-		} @finally {
-//			[self.portal.dicomDatabase.managedObjectContext unlock];
 		}
 	}
 	
