@@ -144,7 +144,26 @@
     else
         if ([reportPath.pathExtension.lowercaseString isEqualToString:@"rtf"] || [reportPath.pathExtension.lowercaseString isEqualToString:@"rtfd"]) {
             int result = 0;
-            [N2Shell execute:@"/System/Library/Printers/Libraries/convert" arguments:[NSArray arrayWithObjects: @"-f", reportPath, @"-o", outPdfPath, nil] outStatus:&result];
+            
+            if( [[NSFileManager defaultManager] fileExistsAtPath: @"/System/Library/Printers/Libraries/convert"]) // Not available anymore in 10.8
+                [N2Shell execute:@"/System/Library/Printers/Libraries/convert" arguments:[NSArray arrayWithObjects: @"-f", reportPath, @"-o", outPdfPath, nil] outStatus:&result];
+            else if( [[NSFileManager defaultManager] fileExistsAtPath: @"/usr/sbin/cupsfilter"])
+            {
+                [NSFileManager.defaultManager removeItemAtPath: outPdfPath error:nil];
+                [NSFileManager.defaultManager createFileAtPath: outPdfPath contents:[NSData data] attributes:nil];
+                
+                NSTask* task = [[[NSTask alloc] init] autorelease];
+                [task setLaunchPath: @"/usr/sbin/cupsfilter"];
+                [task setArguments: [NSArray arrayWithObjects: reportPath, nil]];
+                [task setStandardOutput:[NSFileHandle fileHandleForWritingAtPath: outPdfPath]];
+                [task setStandardError:[NSPipe pipe]];
+                
+                [task launch];
+                while( [task isRunning])
+                    [NSThread sleepForTimeInterval: 0.1];
+            }
+            else
+                NSLog( @"************* no converter tool available");
         }
         else
             if ([reportPath.pathExtension.lowercaseString isEqualToString:@"pages"]) {
