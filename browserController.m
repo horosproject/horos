@@ -10202,7 +10202,7 @@ static BOOL needToRezoom;
     }
     
     #ifndef OSIRIX_LIGHT
-    [QueryController retrieveStudies: [NSArray arrayWithObject: study] showErrors: NO checkForPreviousAutoRetrieve: YES];
+    [QueryController retrieveStudies: [NSArray arrayWithObject: study] showErrors: NO checkForPreviousAutoRetrieve: NO];
     #endif
     
     [NSThread sleepForTimeInterval: 0.2];
