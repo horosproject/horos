@@ -29,12 +29,12 @@
 
 @synthesize selectedTag;
 
-NSInteger CompareDCMAttributeTagNames(DCMAttributeTag* lsp, DCMAttributeTag* rsp, void* context) {
-	return [lsp.name caseInsensitiveCompare:rsp.name];
+NSInteger CompareDCMAttributeTagNames(id lsp, id rsp, void* context) {
+	return [[lsp name] caseInsensitiveCompare: [rsp name]];
 }
 
-NSInteger CompareDCMAttributeTagStringValues(DCMAttributeTag* lsp, DCMAttributeTag* rsp, void* context) {
-	return [lsp.stringValue caseInsensitiveCompare:rsp.stringValue];
+NSInteger CompareDCMAttributeTagStringValues(id lsp, id rsp, void* context) {
+	return [[lsp stringValue] caseInsensitiveCompare:[rsp stringValue]];
 }
 
 +(NSMenu*)tagsMenu {
