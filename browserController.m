@@ -2473,6 +2473,11 @@ static NSConditionLock *threadLock = nil;
 	return predicate;
 }
 
+- (IBAction)selectNoAlbums:(id)sender
+{
+    [albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection:NO];
+}
+
 - (NSPredicate*)smartAlbumPredicate: (NSManagedObject*)album
 {
 	NSPredicate	*pred = nil;
@@ -2627,8 +2632,31 @@ static NSConditionLock *threadLock = nil;
         [_database lock];
         @try
         {
-            if( albumArrayContent) outlineViewArray = [albumArrayContent filteredArrayUsingPredicate:predicate];
-            else outlineViewArray = [[_database objectsForEntity:_database.studyEntity predicate:nil error:&error] filteredArrayUsingPredicate:predicate];
+            BOOL searchInEntireDBHidden = YES;
+            
+            if( albumArrayContent)
+            {
+                outlineViewArray = [albumArrayContent filteredArrayUsingPredicate:predicate];
+                
+                if( self.filterPredicate)
+                {
+                    NSFetchRequest *fetch = [NSFetchRequest fetchRequestWithEntityName: @"Study"];
+                    [fetch setPredicate: self.filterPredicate];
+                    
+                    NSUInteger globalCount = [_database.managedObjectContext countForFetchRequest: fetch error: nil];
+                    
+                    if( globalCount > outlineViewArray.count)
+                    {
+                        searchInEntireDBHidden = NO;
+                        [searchInEntireDBResult setTitle: N2LocalizedSingularPluralCount( globalCount, NSLocalizedString(@"result in entire DB", nil), NSLocalizedString(@"results in entire DB", nil))];
+                    }
+                }
+            }
+            else
+                outlineViewArray = [[_database objectsForEntity:_database.studyEntity predicate:nil error:&error] filteredArrayUsingPredicate:predicate];
+            
+            if( searchInEntireDBHidden != [searchInEntireDBResult isHidden])
+                [searchInEntireDBResult setHidden: searchInEntireDBHidden];
 		}
         @catch( NSException *ne)
         {

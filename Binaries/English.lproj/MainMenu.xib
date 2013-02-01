@@ -3,12 +3,12 @@
 	<data>
 		<int key="IBDocument.SystemTarget">1070</int>
 		<string key="IBDocument.SystemVersion">12C3012</string>
-		<string key="IBDocument.InterfaceBuilderVersion">2844</string>
+		<string key="IBDocument.InterfaceBuilderVersion">3084</string>
 		<string key="IBDocument.AppKitVersion">1187.34</string>
 		<string key="IBDocument.HIToolboxVersion">625.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">2844</string>
+			<string key="NS.object.0">3084</string>
 		</object>
 		<array key="IBDocument.IntegratedClassDependencies">
 			<string>NSArrayController</string>
@@ -3919,7 +3919,7 @@
 				<string key="NSWindowContentMaxSize">{9000, 9000}</string>
 				<string key="NSWindowContentMinSize">{600, 600}</string>
 				<object class="NSView" key="NSWindowView" id="1039447468">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSSplitView" id="166272297">
@@ -4106,7 +4106,7 @@
 																			<int key="NSvFlags">4352</int>
 																			<string key="NSFrameSize">{184, 170}</string>
 																			<reference key="NSSuperview" ref="784281801"/>
-																			<reference key="NSNextKeyView" ref="381726312"/>
+																			<reference key="NSNextKeyView" ref="591651258"/>
 																			<bool key="NSEnabled">YES</bool>
 																			<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 																			<bool key="NSControlAllowsExpansionToolTips">YES</bool>
@@ -4264,7 +4264,7 @@
 															</array>
 															<string key="NSFrame">{{-1, -1}, {186, 188}}</string>
 															<reference key="NSSuperview" ref="672832134"/>
-															<reference key="NSNextKeyView" ref="784281801"/>
+															<reference key="NSNextKeyView" ref="381726312"/>
 															<int key="NSsFlags">133650</int>
 															<reference key="NSVScroller" ref="381726312"/>
 															<reference key="NSHScroller" ref="746770325"/>
@@ -4332,7 +4332,7 @@
 																			<int key="NSvFlags">4370</int>
 																			<string key="NSFrameSize">{184, 350}</string>
 																			<reference key="NSSuperview" ref="1002041640"/>
-																			<reference key="NSNextKeyView" ref="903622272"/>
+																			<reference key="NSNextKeyView" ref="886004369"/>
 																			<bool key="NSEnabled">YES</bool>
 																			<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 																			<bool key="NSControlAllowsExpansionToolTips">YES</bool>
@@ -4450,7 +4450,7 @@
 															</array>
 															<string key="NSFrame">{{-1, -1}, {186, 368}}</string>
 															<reference key="NSSuperview" ref="997330803"/>
-															<reference key="NSNextKeyView" ref="1002041640"/>
+															<reference key="NSNextKeyView" ref="903622272"/>
 															<int key="NSsFlags">133650</int>
 															<reference key="NSVScroller" ref="151646305"/>
 															<reference key="NSHScroller" ref="903622272"/>
@@ -4509,7 +4509,7 @@
 																			<int key="NSvFlags">4352</int>
 																			<string key="NSFrameSize">{184, 83}</string>
 																			<reference key="NSSuperview" ref="161150111"/>
-																			<reference key="NSNextKeyView" ref="845908278"/>
+																			<reference key="NSNextKeyView" ref="1033899909"/>
 																			<bool key="NSEnabled">YES</bool>
 																			<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 																			<bool key="NSControlAllowsExpansionToolTips">YES</bool>
@@ -4639,7 +4639,7 @@
 															</array>
 															<string key="NSFrame">{{-1, -1}, {186, 101}}</string>
 															<reference key="NSSuperview" ref="141241350"/>
-															<reference key="NSNextKeyView" ref="161150111"/>
+															<reference key="NSNextKeyView" ref="845908278"/>
 															<int key="NSsFlags">133650</int>
 															<reference key="NSVScroller" ref="1033899909"/>
 															<reference key="NSHScroller" ref="845908278"/>
@@ -4709,7 +4709,7 @@
 																			<int key="NSvFlags">8448</int>
 																			<string key="NSFrameSize">{2587, 234}</string>
 																			<reference key="NSSuperview" ref="613998968"/>
-																			<reference key="NSNextKeyView" ref="903567248"/>
+																			<reference key="NSNextKeyView" ref="435897027"/>
 																			<bool key="NSEnabled">YES</bool>
 																			<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 																			<bool key="NSControlAllowsExpansionToolTips">YES</bool>
@@ -5587,7 +5587,7 @@
 															</array>
 															<string key="NSFrameSize">{431, 251}</string>
 															<reference key="NSSuperview" ref="584808016"/>
-															<reference key="NSNextKeyView" ref="613998968"/>
+															<reference key="NSNextKeyView" ref="903567248"/>
 															<int key="NSsFlags">133296</int>
 															<reference key="NSVScroller" ref="8580273"/>
 															<reference key="NSHScroller" ref="435897027"/>
@@ -5611,7 +5611,7 @@
 																			<int key="NSvFlags">4352</int>
 																			<string key="NSFrameSize">{428, 234}</string>
 																			<reference key="NSSuperview" ref="979877879"/>
-																			<reference key="NSNextKeyView" ref="1026708511"/>
+																			<reference key="NSNextKeyView" ref="766578884"/>
 																			<bool key="NSEnabled">YES</bool>
 																			<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 																			<bool key="NSControlAllowsExpansionToolTips">YES</bool>
@@ -5728,7 +5728,7 @@
 															</array>
 															<string key="NSFrame">{{432, 0}, {428, 251}}</string>
 															<reference key="NSSuperview" ref="584808016"/>
-															<reference key="NSNextKeyView" ref="979877879"/>
+															<reference key="NSNextKeyView" ref="1026708511"/>
 															<int key="NSsFlags">133648</int>
 															<reference key="NSVScroller" ref="1026708511"/>
 															<reference key="NSHScroller" ref="926541949"/>
@@ -5776,7 +5776,7 @@
 																									<int key="NSvFlags">258</int>
 																									<string key="NSFrameSize">{425, 452}</string>
 																									<reference key="NSSuperview" ref="150457028"/>
-																									<reference key="NSNextKeyView" ref="828164548"/>
+																									<reference key="NSNextKeyView" ref="361142642"/>
 																									<bool key="NSEnabled">YES</bool>
 																									<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 																									<int key="NSNumRows">4</int>
@@ -6044,8 +6044,7 @@
 																										<int key="NSPeriodicDelay">200</int>
 																										<int key="NSPeriodicInterval">25</int>
 																									</object>
-																									<int key="NSSelectedRow">-1</int>
-																									<int key="NSSelectedCol">-1</int>
+																									<reference key="NSSelectedCell" ref="595784327"/>
 																									<reference key="NSBackgroundColor" ref="999148946"/>
 																									<reference key="NSCellBackgroundColor" ref="762861948"/>
 																								</object>
@@ -6085,7 +6084,7 @@
 																					</array>
 																					<string key="NSFrame">{{2, 0}, {385, 371}}</string>
 																					<reference key="NSSuperview" ref="755369193"/>
-																					<reference key="NSNextKeyView" ref="150457028"/>
+																					<reference key="NSNextKeyView" ref="828164548"/>
 																					<int key="NSsFlags">133328</int>
 																					<reference key="NSVScroller" ref="361142642"/>
 																					<reference key="NSHScroller" ref="828164548"/>
@@ -6216,9 +6215,10 @@
 						</object>
 					</array>
 					<string key="NSFrameSize">{1043, 674}</string>
+					<reference key="NSSuperview"/>
 					<reference key="NSNextKeyView" ref="534658191"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
 				<string key="NSMinSize">{600, 622}</string>
 				<string key="NSMaxSize">{9000, 9022}</string>
 				<string key="NSFrameAutosaveName">DICOMDatabase</string>
@@ -6359,7 +6359,7 @@
 					<string key="NSFrameSize">{640, 99}</string>
 					<reference key="NSNextKeyView" ref="767583924"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
 				<string key="NSMinSize">{213, 42}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -7130,19 +7130,46 @@
 				<string key="NSExtension">NSResponder</string>
 			</object>
 			<object class="NSCustomView" id="845853407">
-				<nil key="NSNextResponder"/>
+				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">256</int>
 				<array class="NSMutableArray" key="NSSubviews">
+					<object class="NSButton" id="299226132">
+						<reference key="NSNextResponder" ref="845853407"/>
+						<int key="NSvFlags">268</int>
+						<string key="NSFrame">{{126, 2}, {140, 17}}</string>
+						<reference key="NSSuperview" ref="845853407"/>
+						<reference key="NSWindow"/>
+						<reference key="NSNextKeyView"/>
+						<string key="NSReuseIdentifierKey">_NS:9</string>
+						<bool key="NSEnabled">YES</bool>
+						<object class="NSButtonCell" key="NSCell" id="115387514">
+							<int key="NSCellFlags">-2080374784</int>
+							<int key="NSCellFlags2">134479872</int>
+							<string key="NSContents">45 results in entire DB</string>
+							<reference key="NSSupport" ref="22"/>
+							<string key="NSCellIdentifier">_NS:9</string>
+							<reference key="NSControlView" ref="299226132"/>
+							<int key="NSButtonFlags">-2038284288</int>
+							<int key="NSButtonFlags2">45</int>
+							<string key="NSAlternateContents"/>
+							<string key="NSKeyEquivalent"/>
+							<int key="NSPeriodicDelay">200</int>
+							<int key="NSPeriodicInterval">25</int>
+						</object>
+						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
+					</object>
 					<object class="NSButton" id="240363513">
 						<reference key="NSNextResponder" ref="845853407"/>
 						<int key="NSvFlags">268</int>
-						<string key="NSFrame">{{6, 0}, {206, 18}}</string>
+						<string key="NSFrame">{{6, 4}, {99, 18}}</string>
 						<reference key="NSSuperview" ref="845853407"/>
+						<reference key="NSWindow"/>
+						<reference key="NSNextKeyView"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSButtonCell" key="NSCell" id="1021484508">
 							<int key="NSCellFlags">-2080374784</int>
 							<int key="NSCellFlags2">262144</int>
-							<string key="NSContents">Use Soundex algorithm</string>
+							<string key="NSContents">Soundex</string>
 							<reference key="NSSupport" ref="22"/>
 							<reference key="NSControlView" ref="240363513"/>
 							<int key="NSButtonFlags">1211912448</int>
@@ -7162,8 +7189,9 @@
 					<object class="NSSearchField" id="910332117">
 						<reference key="NSNextResponder" ref="845853407"/>
 						<int key="NSvFlags">258</int>
-						<string key="NSFrame">{{5, 16}, {261, 22}}</string>
+						<string key="NSFrame">{{5, 20}, {261, 22}}</string>
 						<reference key="NSSuperview" ref="845853407"/>
+						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="240363513"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSearchFieldCell" key="NSCell" id="258229996">
@@ -7214,7 +7242,9 @@
 						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 				</array>
-				<string key="NSFrameSize">{272, 42}</string>
+				<string key="NSFrameSize">{272, 46}</string>
+				<reference key="NSSuperview"/>
+				<reference key="NSWindow"/>
 				<reference key="NSNextKeyView" ref="910332117"/>
 				<object class="NSMutableString" key="NSClassName">
 					<characters key="NS.bytes">NSView</characters>
@@ -7922,7 +7952,7 @@
 					<string key="NSFrameSize">{418, 107}</string>
 					<reference key="NSNextKeyView" ref="340407387"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
 				<string key="NSMinSize">{213, 129}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -8159,7 +8189,7 @@
 					<string key="NSFrameSize">{591, 303}</string>
 					<reference key="NSNextKeyView" ref="627443640"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
 				<string key="NSMinSize">{213, 129}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -8286,7 +8316,7 @@
 					<string key="NSFrameSize">{348, 124}</string>
 					<reference key="NSNextKeyView" ref="568133982"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
 				<string key="NSMinSize">{213, 129}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -9230,7 +9260,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string key="NSFrameSize">{537, 273}</string>
 					<reference key="NSNextKeyView" ref="168355090"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
@@ -9830,7 +9860,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string key="NSFrameSize">{727, 353}</string>
 					<reference key="NSNextKeyView" ref="752048640"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
 				<string key="NSMinSize">{213, 129}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -9886,7 +9916,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string key="NSFrameSize">{296, 113}</string>
 					<reference key="NSNextKeyView" ref="1022668451"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
 				<string key="NSMinSize">{213, 129}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -10031,7 +10061,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string key="NSFrameSize">{508, 149}</string>
 					<reference key="NSNextKeyView" ref="498067642"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
@@ -10172,7 +10202,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string key="NSFrameSize">{554, 127}</string>
 					<reference key="NSNextKeyView" ref="880642626"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
@@ -10665,7 +10695,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string key="NSFrameSize">{813, 462}</string>
 					<reference key="NSNextKeyView" ref="389538596"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
 				<string key="NSMinSize">{813, 394}</string>
 				<string key="NSMaxSize">{813, 1022}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -11086,7 +11116,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string key="NSFrameSize">{813, 372}</string>
 					<reference key="NSNextKeyView" ref="845472366"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
 				<string key="NSMinSize">{813, 394}</string>
 				<string key="NSMaxSize">{813, 1022}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -11491,7 +11521,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string key="NSFrameSize">{488, 333}</string>
 					<reference key="NSNextKeyView" ref="905111944"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
 				<string key="NSMinSize">{213, 129}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -14442,6 +14472,22 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<reference key="destination" ref="829783588"/>
 					</object>
 					<int key="connectionID">14815</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">searchInEntireDBResult</string>
+						<reference key="source" ref="772029037"/>
+						<reference key="destination" ref="299226132"/>
+					</object>
+					<int key="connectionID">14823</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">selectNoAlbums:</string>
+						<reference key="source" ref="772029037"/>
+						<reference key="destination" ref="299226132"/>
+					</object>
+					<int key="connectionID">14824</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -18071,6 +18117,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<array class="NSMutableArray" key="children">
 							<reference ref="910332117"/>
 							<reference ref="240363513"/>
+							<reference ref="299226132"/>
 						</array>
 						<reference key="parent" ref="0"/>
 						<string key="objectName">SearchView</string>
@@ -22360,6 +22407,19 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<reference key="object" ref="1009575755"/>
 						<reference key="parent" ref="827107722"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">14821</int>
+						<reference key="object" ref="299226132"/>
+						<array class="NSMutableArray" key="children">
+							<reference ref="115387514"/>
+						</array>
+						<reference key="parent" ref="845853407"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">14822</int>
+						<reference key="object" ref="115387514"/>
+						<reference key="parent" ref="299226132"/>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -23346,6 +23406,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<string key="14809.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="1481.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="1482.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="14821.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="14822.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="1483.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="1487.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="1488.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -23411,7 +23473,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">14818</int>
+			<int key="maxID">14828</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -23569,73 +23631,51 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="addAlbum:">id</string>
 						<string key="addAlbums:">id</string>
 						<string key="addSmartAlbum:">id</string>
-						<string key="addStudiesToUser:">id</string>
 						<string key="albumTableDoublePressed:">id</string>
 						<string key="anonymizeDICOM:">id</string>
-						<string key="bonjourServiceClicked:">id</string>
-						<string key="bonjourServiceClickedProceed:">id</string>
 						<string key="buildAllThumbnails:">id</string>
 						<string key="checkMemory:">id</string>
 						<string key="clickBanner:">id</string>
-						<string key="comparativeToggle:">id</string>
 						<string key="compressSelectedFiles:">id</string>
 						<string key="convertReportToDICOMSR:">id</string>
 						<string key="convertReportToPDF:">id</string>
-						<string key="copy:">id</string>
 						<string key="copyToDBFolder:">id</string>
 						<string key="createDatabaseFolder:">id</string>
 						<string key="customize:">id</string>
-						<string key="customizeViewerToolBar:">id</string>
 						<string key="databaseDoublePressed:">id</string>
-						<string key="databasePressed:">id</string>
 						<string key="decompressSelectedFiles:">id</string>
 						<string key="defaultAlbums:">id</string>
 						<string key="delItem:">id</string>
 						<string key="deleteAlbum:">id</string>
 						<string key="deleteReport:">id</string>
-						<string key="displayImagesOfSeries:">id</string>
 						<string key="drawerToggle:">id</string>
 						<string key="endReBuildDatabase:">id</string>
-						<string key="exportROIsAndKeysAsImages:">id</string>
 						<string key="generateReport:">id</string>
 						<string key="importRawData:">id</string>
-						<string key="lockStudies:">id</string>
 						<string key="matrixDoublePressed:">id</string>
 						<string key="matrixPressed:">id</string>
-						<string key="mergeSeries:">id</string>
 						<string key="mergeStudies:">id</string>
 						<string key="openDatabase:">id</string>
 						<string key="paste:">id</string>
 						<string key="pasteImageForSourceFile:">NSString</string>
 						<string key="querySelectedStudy:">id</string>
-						<string key="rebuildSQLFile:">id</string>
 						<string key="rebuildThumbnails:">id</string>
 						<string key="refreshPACSOnDemandResults:">id</string>
 						<string key="regenerateAutoComments:">id</string>
 						<string key="reparseIn3D:">id</string>
 						<string key="reparseIn4D:">id</string>
-						<string key="resetWindowsState:">id</string>
-						<string key="revealInFinder:">id</string>
 						<string key="saveAlbums:">id</string>
 						<string key="saveDBListAs:">id</string>
 						<string key="search:">id</string>
-						<string key="searchField:">id</string>
-						<string key="searchForCurrentPatient:">id</string>
 						<string key="selectAll3DSeries:">id</string>
 						<string key="selectAll4DSeries:">id</string>
 						<string key="selectFilesAndFoldersToAdd:">id</string>
-						<string key="selectSubSeriesAndOpen:">id</string>
-						<string key="sendEmailNotification:">id</string>
-						<string key="sendMail:">id</string>
+						<string key="selectNoAlbums:">id</string>
 						<string key="setSearchType:">id</string>
 						<string key="showLogWindow:">id</string>
 						<string key="showhide:">id</string>
 						<string key="smartAlbumHelpButton:">id</string>
 						<string key="switchSoundex:">id</string>
-						<string key="unifyStudies:">id</string>
-						<string key="unlockStudies:">id</string>
-						<string key="viewXML:">id</string>
-						<string key="viewerKeyImagesAndROIsImages:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
 						<object class="IBActionInfo" key="ReBuildDatabaseSheet:">
@@ -23654,24 +23694,12 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">addSmartAlbum:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="addStudiesToUser:">
-							<string key="name">addStudiesToUser:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="albumTableDoublePressed:">
 							<string key="name">albumTableDoublePressed:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="anonymizeDICOM:">
 							<string key="name">anonymizeDICOM:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="bonjourServiceClicked:">
-							<string key="name">bonjourServiceClicked:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="bonjourServiceClickedProceed:">
-							<string key="name">bonjourServiceClickedProceed:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="buildAllThumbnails:">
@@ -23686,10 +23714,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">clickBanner:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="comparativeToggle:">
-							<string key="name">comparativeToggle:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="compressSelectedFiles:">
 							<string key="name">compressSelectedFiles:</string>
 							<string key="candidateClassName">id</string>
@@ -23700,10 +23724,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 						<object class="IBActionInfo" key="convertReportToPDF:">
 							<string key="name">convertReportToPDF:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="copy:">
-							<string key="name">copy:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="copyToDBFolder:">
@@ -23718,16 +23738,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">customize:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="customizeViewerToolBar:">
-							<string key="name">customizeViewerToolBar:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="databaseDoublePressed:">
 							<string key="name">databaseDoublePressed:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="databasePressed:">
-							<string key="name">databasePressed:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="decompressSelectedFiles:">
@@ -23750,20 +23762,12 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">deleteReport:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="displayImagesOfSeries:">
-							<string key="name">displayImagesOfSeries:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="drawerToggle:">
 							<string key="name">drawerToggle:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="endReBuildDatabase:">
 							<string key="name">endReBuildDatabase:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="exportROIsAndKeysAsImages:">
-							<string key="name">exportROIsAndKeysAsImages:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="generateReport:">
@@ -23774,20 +23778,12 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">importRawData:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="lockStudies:">
-							<string key="name">lockStudies:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="matrixDoublePressed:">
 							<string key="name">matrixDoublePressed:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="matrixPressed:">
 							<string key="name">matrixPressed:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="mergeSeries:">
-							<string key="name">mergeSeries:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="mergeStudies:">
@@ -23810,10 +23806,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">querySelectedStudy:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="rebuildSQLFile:">
-							<string key="name">rebuildSQLFile:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="rebuildThumbnails:">
 							<string key="name">rebuildThumbnails:</string>
 							<string key="candidateClassName">id</string>
@@ -23834,14 +23826,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">reparseIn4D:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="resetWindowsState:">
-							<string key="name">resetWindowsState:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="revealInFinder:">
-							<string key="name">revealInFinder:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="saveAlbums:">
 							<string key="name">saveAlbums:</string>
 							<string key="candidateClassName">id</string>
@@ -23852,14 +23836,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 						<object class="IBActionInfo" key="search:">
 							<string key="name">search:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="searchField:">
-							<string key="name">searchField:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="searchForCurrentPatient:">
-							<string key="name">searchForCurrentPatient:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="selectAll3DSeries:">
@@ -23874,16 +23850,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">selectFilesAndFoldersToAdd:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="selectSubSeriesAndOpen:">
-							<string key="name">selectSubSeriesAndOpen:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="sendEmailNotification:">
-							<string key="name">sendEmailNotification:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="sendMail:">
-							<string key="name">sendMail:</string>
+						<object class="IBActionInfo" key="selectNoAlbums:">
+							<string key="name">selectNoAlbums:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="setSearchType:">
@@ -23904,22 +23872,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 						<object class="IBActionInfo" key="switchSoundex:">
 							<string key="name">switchSoundex:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="unifyStudies:">
-							<string key="name">unifyStudies:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="unlockStudies:">
-							<string key="name">unlockStudies:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="viewXML:">
-							<string key="name">viewXML:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="viewerKeyImagesAndROIsImages:">
-							<string key="name">viewerKeyImagesAndROIsImages:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 					</dictionary>
@@ -23977,6 +23929,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="reportTemplatesView">NSView</string>
 						<string key="rightIcon">NSImageView</string>
 						<string key="searchField">NSSearchField</string>
+						<string key="searchInEntireDBResult">NSButton</string>
 						<string key="searchView">NSView</string>
 						<string key="splitAlbums">NSSplitView</string>
 						<string key="splitComparative">NSSplitView</string>
@@ -24208,6 +24161,10 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<object class="IBToOneOutletInfo" key="searchField">
 							<string key="name">searchField</string>
 							<string key="candidateClassName">NSSearchField</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="searchInEntireDBResult">
+							<string key="name">searchInEntireDBResult</string>
+							<string key="candidateClassName">NSButton</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="searchView">
 							<string key="name">searchView</string>

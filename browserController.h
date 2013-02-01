@@ -154,6 +154,7 @@ extern NSString* O2AlbumDragType;
     
 	IBOutlet NSView					*searchView;
 	IBOutlet NSSearchField			*searchField;
+    IBOutlet NSButton               *searchInEntireDBResult;
 	NSToolbarItem					*toolbarSearchItem;
 	int								searchType;
 	
@@ -533,7 +534,7 @@ extern NSString* O2AlbumDragType;
 - (IBAction) convertReportToDICOMSR: (id)sender;
 
 - (IBAction) rebuildThumbnails:(id) sender;
-
+- (IBAction)selectNoAlbums:(id)sender;
 - (NSArray *)databaseSelection;
 
 - (void) refreshMatrix:(id) sender;
