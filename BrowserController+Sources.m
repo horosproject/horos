@@ -207,6 +207,11 @@ enum {
 		[_sourcesTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:i] byExtendingSelection:NO];
 }
 
+-(void)setDatabaseOnMainThread: (DicomDatabase*) db
+{
+    [self performSelector: @selector( setDatabase:) withObject: db afterDelay: 0.01]; //This will guarantee that this will not happen in middle of a drag & drop, for example
+}
+
 -(void)setDatabaseThread:(NSArray*)io
 {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
@@ -239,14 +244,17 @@ enum {
 			db = [RemoteDicomDatabase databaseForLocation:ap name:name];
 		}
 		
-		[self performSelectorOnMainThread:@selector(setDatabase:) withObject:db waitUntilDone:NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+		[self performSelectorOnMainThread:@selector( setDatabaseOnMainThread:) withObject:db waitUntilDone:NO modes:[NSArray arrayWithObject:NSDefaultRunLoopMode]];
+        
+        [NSThread sleepForTimeInterval: 1];
+        
 	} @catch (NSException* e)
     {
-		[self performSelectorOnMainThread:@selector(selectCurrentDatabaseSource) withObject:nil waitUntilDone:NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+		[self performSelectorOnMainThread:@selector(selectCurrentDatabaseSource) withObject:nil waitUntilDone:NO modes:[NSArray arrayWithObject:NSDefaultRunLoopMode]];
 		if (![e.description isEqualToString:@"Cancelled."])
         {
 			N2LogExceptionWithStackTrace(e);
-			[self performSelectorOnMainThread:@selector(_complain:) withObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat:0.1], NSLocalizedString(@"Error", nil), e.description, NULL] waitUntilDone:NO];
+			[self performSelectorOnMainThread:@selector(_complain:) withObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat:0.1], NSLocalizedString(@"Error", nil), e.description, NULL] waitUntilDone:NO modes:[NSArray arrayWithObject:NSDefaultRunLoopMode]];
 		}
 	} @finally
     {
@@ -288,6 +296,20 @@ enum {
 	return [thread autorelease];
 }
 
+- (void) setDatabaseWithModalWindow: (DicomDatabase*) db
+{
+    NSThread* thread = [NSThread currentThread];
+	thread.name = NSLocalizedString(@"Opening database...", nil);
+    thread.status = NSLocalizedString(@"Opening database...", nil);
+    thread.supportsCancel = YES;
+    
+	ThreadModalForWindowController* tmc = [thread startModalForWindow:self.window];
+    
+    [self setDatabase: db];
+    
+    [tmc invalidate];
+}
+
 -(void)setDatabaseFromSourceIdentifier:(DataNodeIdentifier*)dni
 {
 	if ([dni isEqualToDataNodeIdentifier:[self sourceIdentifierForDatabase:_database]])
@@ -298,21 +320,23 @@ enum {
         DicomDatabase* db = [dni database];
         
         if (db)
+            [self performSelector: @selector( setDatabaseWithModalWindow:) withObject: db afterDelay: 0.01]; //This will guarantee that this will not happen in middle of a drag & drop, for example
+        
+        else if ([dni isKindOfClass:[LocalDatabaseNodeIdentifier class]])
+            [self initiateSetDatabaseAtPath:dni.location name:dni.description];
+        
+        else if ([dni isKindOfClass:[RemoteDatabaseNodeIdentifier class]])
         {
-            [self performSelector: @selector(setDatabase:) withObject: db afterDelay: 0.01]; //This will guarantee that this will not happen in middle of a drag & drop, for example
+            NSString* host = nil; NSInteger port = -1;
+            [RemoteDatabaseNodeIdentifier location:dni.location toAddress:&host port:&port];
+            
+            if( host && port != -1)
+                [self initiateSetRemoteDatabaseWithAddress:host port:port name:dni.description];
         }
         else
-            if ([dni isKindOfClass:[LocalDatabaseNodeIdentifier class]])
-                [self initiateSetDatabaseAtPath:dni.location name:dni.description];
-            else if ([dni isKindOfClass:[RemoteDatabaseNodeIdentifier class]]) {
-                NSString* host = nil; NSInteger port = -1;
-                [RemoteDatabaseNodeIdentifier location:dni.location toAddress:&host port:&port];
-                
-                if( host && port != -1)
-                    [self initiateSetRemoteDatabaseWithAddress:host port:port name:dni.description];
-            } else {
-                [UnavaliableDataNodeException raise:NSGenericException format:@"%@", NSLocalizedString(@"This is a DICOM destination node: you cannot browse its content. You can only drag & drop studies on them.", nil)];
-            }
+        {
+            [UnavaliableDataNodeException raise:NSGenericException format:@"%@", NSLocalizedString(@"This is a DICOM destination node: you cannot browse its content. You can only drag & drop studies on them.", nil)];
+        }
     } @catch (UnavaliableDataNodeException* e)
     {
         NSBeginAlertSheet(NSLocalizedString(@"Sources", nil), nil, nil, nil, self.window, NSApp, @selector(endSheet:), nil, nil, [e reason]);
@@ -433,7 +457,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 {
 	if (![NSThread isMainThread])
     {
-        [self performSelectorOnMainThread:@selector(_observeValueForKeyPathOfObjectChangeContext:) withObject:[NSArray arrayWithObjects: keyPath, object, change, [NSValue valueWithPointer:context], nil] waitUntilDone:NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+        [self performSelectorOnMainThread:@selector(_observeValueForKeyPathOfObjectChangeContext:) withObject:[NSArray arrayWithObjects: keyPath, object, change, [NSValue valueWithPointer:context], nil] waitUntilDone:NO modes:[NSArray arrayWithObject:NSDefaultRunLoopMode]];
         return;
     }
     
@@ -1135,7 +1159,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
         self.detected = YES;
         
 		if ([[NSUserDefaults standardUserDefaults] boolForKey:@"autoSelectSourceCDDVD"] && [[NSFileManager defaultManager] fileExistsAtPath:self.devicePath] && autoselect)
-			[[BrowserController currentBrowser] performSelectorOnMainThread:@selector(setDatabaseFromSourceIdentifier:) withObject:self waitUntilDone:NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+			[[BrowserController currentBrowser] performSelectorOnMainThread:@selector(setDatabaseFromSourceIdentifier:) withObject:self waitUntilDone:NO modes:[NSArray arrayWithObject:NSDefaultRunLoopMode]];
         else [[BrowserController currentBrowser] redrawSources];
 	} @catch (NSException* e)
     {
