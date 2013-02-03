@@ -3133,7 +3133,7 @@ extern "C"
 			NSLog( @"Will auto-retrieve these items:");
 			for( id item in selectedItems)
 			{
-				NSLog( @"%@ %@ %@ %@", [item valueForKey:@"name"], [item valueForKey:@"patientID"], [item valueForKey:@"accessionNumber"], [item valueForKey:@"date"]);
+				NSLog( @"%@ %@ %@ %@", [item valueForKey:@"theDescription"], [item valueForKey:@"patientID"], [item valueForKey:@"accessionNumber"], [item valueForKey:@"date"]);
 			}
 			NSLog( @"______________________________________________");
 			
