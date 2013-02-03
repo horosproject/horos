@@ -5208,7 +5208,7 @@ static NSConditionLock *threadLock = nil;
                 
                 if( [study isDeleted] == NO && [study isFault] == NO && [[study valueForKey:@"imageSeries"] count] == 0)
                 {
-                    NSLog( @"Delete Study: %@ - %@", [study valueForKey:@"name"], [study valueForKey:@"patientID"]);
+                    NSLog( @"Delete Study: %@ - %@", study.patientID, study.studyInstanceUID);
                     
                     [database.managedObjectContext deleteObject:study];
                 }

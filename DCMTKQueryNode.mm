@@ -873,9 +873,9 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 - (void) WADORetrieve: (DCMTKStudyQueryNode*) study // requestService: WFIND?
 {
 	if( [self isKindOfClass:[DCMTKSeriesQueryNode class]])
-		NSLog( @"------ WADO download : starting... %@ %@", [study name], [study patientID]);
+		NSLog( @"------ WADO download : starting... %@ %@", study.theDescription, study.patientID);
 	else
-		NSLog( @"------ WADO download : starting... %@ %@", [self name], [self patientID]);
+		NSLog( @"------ WADO download : starting... %@ %@", self.theDescription, self.patientID);
 	
 	NSString *protocol = [[_extraParameters valueForKey: @"WADOhttps"] intValue] ? @"https" : @"http";
 	

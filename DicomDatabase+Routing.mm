@@ -122,7 +122,7 @@
 	if (!samePatientArray.count)
 		return;
 	
-	NSLog( @" Autorouting: %@ - %@", [[samePatientArray objectAtIndex: 0] valueForKeyPath:@"series.study.name"], N2SingularPluralCount(samePatientArray.count, @"object", @"objects"));
+	NSLog( @" Autorouting: %@ - %@", [[samePatientArray objectAtIndex: 0] valueForKeyPath:@"series.study.studyName"], N2SingularPluralCount(samePatientArray.count, @"object", @"objects"));
 	
     NSMutableDictionary* xp = [NSMutableDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:@"threadStatus"];
     [xp addEntriesFromDictionary:server];
