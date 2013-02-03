@@ -281,8 +281,8 @@ typedef char* VTKStereoVRView;
 	vtkMyCallbackVR				*cropcallback;
 	vtkOrientationMarkerWidget	*orientationWidget;
 	vtkBoxWidget				*croppingBox;
-	double						initialCroppingBoxBounds[6];
-	BOOL						dontUseAutoCropping;
+//	double						initialCroppingBoxBounds[6];
+//	BOOL						dontUseAutoCropping;
 	
 	
 	// MAPPERS
@@ -412,7 +412,7 @@ typedef char* VTKStereoVRView;
 //@property(readonly) short currentTool;
 #endif
 
-@property (nonatomic) BOOL dontUseAutoCropping, clipRangeActivated, keep3DRotateCentered, dontResetImage, bestRenderingMode;
+@property (nonatomic) BOOL clipRangeActivated, keep3DRotateCentered, dontResetImage, bestRenderingMode;
 @property (nonatomic) int projectionMode;
 @property (nonatomic) double clippingRangeThickness;
 @property (nonatomic) float lowResLODFactor, lodDisplayed;
@@ -423,11 +423,11 @@ typedef char* VTKStereoVRView;
 @property (retain) NSString *dcmSeriesString;
 
 + (void) testGraphicBoard;
-+ (BOOL) getCroppingBox:(double*) a :(vtkVolume *) volume :(vtkBoxWidget*) croppingBox;
-+ (void) setCroppingBox:(double*) a :(vtkVolume *) volume;
-- (void) setBlendingCroppingBox:(double*) a;
-- (void) setCroppingBox:(double*) a;
-- (BOOL) croppingBox:(double*) a;
+//+ (BOOL) getCroppingBox:(double*) a :(vtkVolume *) volume :(vtkBoxWidget*) croppingBox;
+//+ (void) setCroppingBox:(double*) a :(vtkVolume *) volume;
+//- (void) setBlendingCroppingBox:(double*) a;
+//- (void) setCroppingBox:(double*) a;
+//- (BOOL) croppingBox:(double*) a;
 - (void) showCropCube:(id) sender;
 - (void) restoreFullDepthCapture;
 - (void) prepareFullDepthCapture;
@@ -466,13 +466,13 @@ typedef char* VTKStereoVRView;
 //-(void) runRendering;
 //-(void) startRendering;
 //-(void) stopRendering;
-- (void) autoCroppingBox;
+//- (void) autoCroppingBox;
 - (float) LOD;
 -(void) setLOD:(float)f;
 -(void) setCurrentTool:(short) i;
 - (int) currentTool;
 - (int) _tool;
-- (void) resetCroppingBox;
+//- (void) resetCroppingBox;
 -(id)initWithFrame:(NSRect)frame;
 -(short)setPixSource:(NSMutableArray*)pix :(float*) volumeData;
 -(void)dealloc;

@@ -1200,8 +1200,8 @@ static void  updateRight(vtkObject*, unsigned long eid, void* clientdata, void *
 					else sprintf(WLWWString, "WL: %0.f WW: %0.f ", wl, ww);
 				}
 				
-				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontAutoCropScissors"] == NO)
-					[self autoCroppingBox];
+//				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontAutoCropScissors"] == NO)
+//					[self autoCroppingBox];
 				
 				textWLWW->SetInput( WLWWString);
 				[self setNeedsDisplay:YES];

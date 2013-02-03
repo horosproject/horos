@@ -123,7 +123,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	if([presetsPanel isVisible])
 		[self displayPresetsForSelectedGroup];
 	
-	[view resetCroppingBox];
+//	[view resetCroppingBox];
 }
 
 -(void) UpdateOpacityMenu: (NSNotification*) note
@@ -3354,9 +3354,9 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 			
 			[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setVtkCamera: [view vtkCamera]];
 			
-			double a[ 6];
-			if( [view croppingBox: a])
-				[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setCroppingBox: a];
+//			double a[ 6];
+//			if( [view croppingBox: a])
+//				[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setCroppingBox: a];
 			
 			[self load3DSettingsDictionary:[settingsList objectAtIndex:n] forPreview:[presetPreviewArray objectAtIndex:i]];
 			

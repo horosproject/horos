@@ -73,7 +73,7 @@
     {
 		[self connect2SpaceNavigator];
 		
-		dontUseAutoCropping = YES;
+//		dontUseAutoCropping = YES;
 		
 		superSampling = 4.0;
 	}

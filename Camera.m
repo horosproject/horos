@@ -21,7 +21,7 @@
 
 @synthesize index, position, focalPoint, viewUp, previewImage, is4D, viewAngle, eyeAngle, forceUpdate,
 			parallelScale, clippingRangeNear, clippingRangeFar, ww, wl, fusionPercentage, rollAngle, 
-			movieIndexIn4D, minCroppingPlanes, maxCroppingPlanes, windowCenterX, windowCenterY, LOD;
+			movieIndexIn4D, croppingPlanes, windowCenterX, windowCenterY, LOD;
 
 
 - (id) init
@@ -39,10 +39,12 @@
 	eyeAngle = 0;
 	wl = 0;
 	ww = 0;
-
-	minCroppingPlanes = [[Point3D alloc] init];
-	maxCroppingPlanes = [[Point3D alloc] init];
-	
+    
+    croppingPlanes = [[NSMutableArray alloc] init];
+    
+    for( int i = 0; i < 6; i++)
+        [croppingPlanes addObject: [NSValue valueWithN3Plane: N3PlaneInvalid]];
+    
 	fusionPercentage = 0.0;
 
 	is4D = NO;
@@ -67,10 +69,7 @@
 	self.parallelScale = c.parallelScale;
 	self.wl = c.wl;
 	self.ww = c.ww;
-	
-	self.minCroppingPlanes = c.minCroppingPlanes;
-	self.maxCroppingPlanes = c.maxCroppingPlanes;
-	
+    self.croppingPlanes = c.croppingPlanes;
 	self.fusionPercentage = c.fusionPercentage;
 	self.windowCenterX = c.windowCenterX;
 	self.windowCenterY = c.windowCenterY;
@@ -88,8 +87,8 @@
 	[viewUp release];
 	[focalPoint release];
 	[previewImage release];
-	[minCroppingPlanes release];
-	[maxCroppingPlanes release];
+    
+    [croppingPlanes release];
 	
 	[super dealloc];
 }
@@ -122,8 +121,6 @@
 	[desc appendString:[NSString stringWithFormat:@"parallelScale: %f\n",[self parallelScale]]];
 	[desc appendString:[NSString stringWithFormat:@"wl: %f\n",[self wl]]];
 	[desc appendString:[NSString stringWithFormat:@"ww: %f\n",[self ww]]];
-	[desc appendString:[NSString stringWithFormat:@"minCroppingPlanes: %@\n",[self minCroppingPlanes]]];
-	[desc appendString:[NSString stringWithFormat:@"maxCroppingPlanes: %@\n",[self maxCroppingPlanes]]];
 	[desc appendString:[NSString stringWithFormat:@"fusionPercentage: %f\n",[self fusionPercentage]]];
 	return desc;
 }
@@ -145,9 +142,10 @@
 	[xml setObject:[NSString stringWithFormat:@"%f",[self wl]] forKey:@"wl"];
 	[xml setObject:[NSString stringWithFormat:@"%f",[self ww]] forKey:@"ww"];
 	
-	[xml setObject: [minCroppingPlanes exportToXML] forKey:@"minCroppingPlanes"];
-	[xml setObject: [maxCroppingPlanes exportToXML] forKey:@"maxCroppingPlanes"];
-	
+    int i = 0;
+    for( NSValue *v in croppingPlanes)
+        [xml setObject: (id) N3PlaneCreateDictionaryRepresentation( [v N3PlaneValue]) forKey: [NSString stringWithFormat: @"croppingPlanes %d", i]];
+    
 	[xml setObject:[NSString stringWithFormat:@"%f",[self fusionPercentage]] forKey:@"fusionPercentage"];
 	
 	return [xml autorelease];
@@ -166,8 +164,13 @@
 	parallelScale = [[xml valueForKey:@"parallelScale"] floatValue];
 	wl = [[xml valueForKey:@"wl"] floatValue];
 	ww = [[xml valueForKey:@"ww"] floatValue];
-	minCroppingPlanes = [(Point3D*) [Point3D alloc] initWithDictionary: [xml valueForKey:@"minCroppingPlanes"]];
-	maxCroppingPlanes = [(Point3D*) [Point3D alloc] initWithDictionary: [xml valueForKey:@"maxCroppingPlanes"]];
+    
+    for( int i = 0; i < 6; i++)
+    {
+        N3Plane plane;
+        if( N3PlaneMakeWithDictionaryRepresentation( (CFDictionaryRef) [xml valueForKey: [NSString stringWithFormat: @"croppingPlanes %d", i]], &plane))
+           [croppingPlanes replaceObjectAtIndex: i withObject: [NSValue valueWithN3Plane: plane]];
+    }
 	fusionPercentage = [[xml valueForKey:@"fusionPercentage"] floatValue];
 	return self;
 }

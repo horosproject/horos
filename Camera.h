@@ -12,11 +12,9 @@
      PURPOSE.
 =========================================================================*/
 
-
-
-
 #import <Cocoa/Cocoa.h>
 #import "Point3D.h"
+#import "N3Geometry.h"
 
 /** \brief Describes a 3D view state
 *
@@ -25,7 +23,8 @@
 */
 
 @interface Camera : NSObject {
-	Point3D *position, *viewUp, *focalPoint, *minCroppingPlanes, *maxCroppingPlanes;
+	Point3D *position, *viewUp, *focalPoint;
+    NSMutableArray *croppingPlanes;
 	float clippingRangeNear, clippingRangeFar, viewAngle, eyeAngle, parallelScale, rollAngle;
 	NSImage *previewImage;
 	float wl, ww, fusionPercentage, windowCenterX, windowCenterY;
@@ -41,8 +40,7 @@
 @property (readwrite, copy) Point3D *position;
 @property (readwrite, copy) Point3D *focalPoint;
 @property (readwrite, copy) Point3D *viewUp;
-@property (readwrite, copy) Point3D *minCroppingPlanes;
-@property (readwrite, copy) Point3D *maxCroppingPlanes;
+@property (readwrite, copy) NSMutableArray *croppingPlanes;
 @property (readwrite, copy) NSImage *previewImage;
 @property BOOL is4D, forceUpdate;
 @property float viewAngle, rollAngle;

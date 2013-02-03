@@ -17,6 +17,7 @@
 #import "FlyThru.h"
 #import "Spline3D.h"
 #import "Piecewise3D.h"
+#import "N3Geometry.h"
 #import <math.h>
 
 @implementation FlyThru
@@ -93,7 +94,7 @@
 	long nbStep = [tempStepCameras count];
 
 	// instantiation
-	NSMutableArray *stepPosition, *stepViewUp, *stepFocalPoint, *stepClippingRangeNear, *stepClippingRangeFar, *stepViewAngle, *stepEyeAngle, *stepParallelScale, *stepWL, *stepWW, *stepMinCroppingPlanes, *stepMaxCroppingPlanes, *stepFusionPercentage, *stepMovieIndexIn4D;
+	NSMutableArray *stepPosition, *stepViewUp, *stepFocalPoint, *stepClippingRangeNear, *stepClippingRangeFar, *stepViewAngle, *stepEyeAngle, *stepParallelScale, *stepWL, *stepWW, *stepCroppingPlanes, *stepFusionPercentage, *stepMovieIndexIn4D;
 
 	stepPosition = [NSMutableArray arrayWithCapacity:nbStep];
 	stepViewUp = [NSMutableArray arrayWithCapacity:nbStep];
@@ -105,8 +106,7 @@
 	stepParallelScale = [NSMutableArray arrayWithCapacity:nbStep];
 	stepWL = [NSMutableArray arrayWithCapacity:nbStep];
 	stepWW = [NSMutableArray arrayWithCapacity:nbStep];
-	stepMinCroppingPlanes = [NSMutableArray arrayWithCapacity:nbStep];
-	stepMaxCroppingPlanes = [NSMutableArray arrayWithCapacity:nbStep];
+	stepCroppingPlanes = [NSMutableArray arrayWithCapacity:nbStep];
 	stepFusionPercentage = [NSMutableArray arrayWithCapacity:nbStep];
 	stepMovieIndexIn4D = [NSMutableArray arrayWithCapacity:nbStep];
 	
@@ -128,12 +128,11 @@
 		[stepFusionPercentage addObject: [[[Point3D alloc] initWithValues:[cam fusionPercentage]:0:0] autorelease] ];
 		[stepMovieIndexIn4D addObject: [[[Point3D alloc] initWithValues:[cam movieIndexIn4D]:0:0] autorelease]];
 		
-		[stepMinCroppingPlanes addObject:[cam minCroppingPlanes]];
-		[stepMaxCroppingPlanes addObject:[cam maxCroppingPlanes]];
+		[stepCroppingPlanes addObject:[cam croppingPlanes]];
 	}
 	
 	// interpolation
-	NSMutableArray *pathPosition, *pathViewUp, *pathFocalPoint, *pathClippingRangeNear, *pathClippingRangeFar, *pathViewAngle, *pathEyeAngle, *pathParallelScale, *pathWL, *pathWW, *pathMinCroppingPlanes, *pathMaxCroppingPlanes, *pathFusionPercentage, *pathMovieIndexIn4D;
+	NSMutableArray *pathPosition, *pathViewUp, *pathFocalPoint, *pathClippingRangeNear, *pathClippingRangeFar, *pathViewAngle, *pathEyeAngle, *pathParallelScale, *pathWL, *pathWW, *pathCroppingPlanes, *pathFusionPercentage, *pathMovieIndexIn4D;
 	
 	pathPosition = [NSMutableArray arrayWithCapacity:nbStep];
 	pathViewUp = [NSMutableArray arrayWithCapacity:nbStep];
@@ -145,8 +144,7 @@
 	pathParallelScale = [NSMutableArray arrayWithCapacity:nbStep];
 	pathWL = [NSMutableArray arrayWithCapacity:nbStep];
 	pathWW = [NSMutableArray arrayWithCapacity:nbStep];
-	pathMinCroppingPlanes = [NSMutableArray arrayWithCapacity:nbStep];
-	pathMaxCroppingPlanes = [NSMutableArray arrayWithCapacity:nbStep];
+	pathCroppingPlanes = [NSMutableArray arrayWithCapacity:nbStep];
 	pathFusionPercentage = [NSMutableArray arrayWithCapacity:nbStep];
 	pathMovieIndexIn4D = [NSMutableArray arrayWithCapacity:nbStep];
 	
@@ -163,9 +161,10 @@
 	pathParallelScale = [self path: stepParallelScale : interpolationMethod : NO];
 	pathWL = [self path: stepWL : interpolationMethod : NO];
 	pathWW = [self path: stepWW : interpolationMethod : NO];
-	pathMinCroppingPlanes = [self path: stepMinCroppingPlanes : interpolationMethod : NO];
-	pathMaxCroppingPlanes = [self path: stepMaxCroppingPlanes : interpolationMethod : NO];
-	pathFusionPercentage = [self path: stepFusionPercentage : interpolationMethod : NO];
+    
+    pathCroppingPlanes = [self pathCroppingPlanes: stepCroppingPlanes : interpolationMethod : NO];
+    
+    pathFusionPercentage = [self path: stepFusionPercentage : interpolationMethod : NO];
 	pathMovieIndexIn4D = [self path:stepMovieIndexIn4D :interpolationMethod :NO];
 	
 	// result
@@ -178,12 +177,11 @@
 	NSEnumerator *ePathParallelScale = [pathParallelScale objectEnumerator];
 	NSEnumerator *ePathWL = [pathWL objectEnumerator];
 	NSEnumerator *ePathWW = [pathWW objectEnumerator];
-	NSEnumerator *ePathMinCroppingPlanes = [pathMinCroppingPlanes objectEnumerator];
-	NSEnumerator *ePathMaxCroppingPlanes = [pathMaxCroppingPlanes objectEnumerator];
+	NSEnumerator *ePathCroppingPlanes = [pathCroppingPlanes objectEnumerator];
 	NSEnumerator *ePathFusionPercentage = [pathFusionPercentage objectEnumerator];
 	NSEnumerator *ePathMovieIndexIn4D = [pathMovieIndexIn4D objectEnumerator];
 	
-	id pos, vUp, foPt, near, far, view, eye, para, iwl, iww, minCropp, maxCropp, fusion, index4D;
+	id pos, vUp, foPt, near, far, view, eye, para, iwl, iww, cropp, fusion, index4D;
 	
 	[pathCameras removeAllObjects];
 	
@@ -198,8 +196,7 @@
 		para = [ePathParallelScale nextObject];
 		iwl = [ePathWL nextObject];
 		iww = [ePathWW nextObject];
-		minCropp = [ePathMinCroppingPlanes nextObject];
-		maxCropp = [ePathMaxCroppingPlanes nextObject];
+		cropp = [ePathCroppingPlanes nextObject];
 		fusion = [ePathFusionPercentage nextObject];
 		index4D = [ePathMovieIndexIn4D nextObject];
 		
@@ -212,8 +209,7 @@
 		[c setEyeAngle: [eye x]];
 		[c setParallelScale: [para x]];
 		[c setWLWW: (long)[iwl x] : (long)[iww x]];
-		[c setMinCroppingPlanes: minCropp];
-		[c setMaxCroppingPlanes: maxCropp];
+		[c setCroppingPlanes: cropp];
 		[c setFusionPercentage: [fusion x]];
 		[c setMovieIndexIn4D: (long)[index4D x]];
 		
@@ -222,12 +218,65 @@
 	}
 	
 	if(loop)
-	{
 		[pathCameras removeLastObject]; // otherwise this frame appears 2 times (it is the first AND last frame)
-	}
-	NSLog(@"pathCameras: %d", (int) [pathCameras count]);
+    
 	self.numberOfFrames =  [pathCameras count];
 
+}
+
+-(NSMutableArray*) pathCroppingPlanes: (NSMutableArray*) planesSteps : (int) interpolMeth : (BOOL) computeStepsPositions
+{
+    NSMutableArray *origins[ 6];
+    NSMutableArray *vectors[ 6];
+    
+    for( int i = 0; i < 6; i++)
+    {
+        origins[ i] = [NSMutableArray array];
+        vectors[ i] = [NSMutableArray array];
+    }
+    
+    for( NSMutableArray *planes in planesSteps)
+    {
+        int i = 0;
+        for( NSValue *v in planes)
+        {
+            N3Plane plane = [v N3PlaneValue];
+            
+            [origins[ i] addObject: [[[Point3D alloc] initWithValues: plane.point.x :plane.point.y :plane.point.z] autorelease]];
+            [vectors[ i] addObject: [[[Point3D alloc] initWithValues: plane.normal.x :plane.normal.y :plane.normal.z] autorelease]];
+            
+            i++;
+        }
+    }
+    
+    NSMutableArray *path = [[NSMutableArray alloc] initWithCapacity: [planesSteps count]];
+    
+    NSMutableArray *o = [NSMutableArray array];
+    NSMutableArray *n = [NSMutableArray array];
+    
+    for( int i = 0; i < 6; i++)
+    {
+        [o addObject: [self path: origins[ i]  :interpolMeth :computeStepsPositions]];
+        [n addObject: [self path: vectors[ i]  :interpolMeth :computeStepsPositions]];
+    }
+    
+    int steps = [[o lastObject] count];
+    
+    for( int x = 0; x < steps; x++)
+    {
+        NSMutableArray *croppingPlanes = [NSMutableArray array];
+        
+        for( int i = 0; i < 6; i++)
+        {
+            N3Plane plane = N3PlaneMake( [[[o objectAtIndex: i] objectAtIndex: x] N3VectorValue], N3VectorNormalize( [[[n objectAtIndex: i] objectAtIndex: x] N3VectorValue]));
+            
+            [croppingPlanes addObject: [NSValue valueWithN3Plane: plane]];
+        }
+        
+        [path addObject: croppingPlanes];
+    }
+    
+    return [path autorelease];
 }
 
 -(NSMutableArray*) path: (NSMutableArray*) pts : (int) interpolMeth : (BOOL) computeStepsPositions

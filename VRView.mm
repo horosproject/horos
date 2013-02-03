@@ -48,6 +48,7 @@
 #include "vtkSmartVolumeMapper.h"
 #include "vtkSphereSource.h"
 #include "vtkAssemblyPath.h"
+#include "vtkDoubleArray.h"
 
 #define id Id
 #include "itkImage.h"
@@ -180,15 +181,29 @@ public:
 		vtkBoxWidget *widget = reinterpret_cast<vtkBoxWidget*>(caller);
 		
 		vtkVolume *volume = (vtkVolume*) widget->GetProp3D();
+
+		vtkPlanes *planes = vtkPlanes::New();
+        widget->GetPlanes(planes);
+        
+        vtkVolumeMapper *mapper = (vtkVolumeMapper*) volume->GetMapper();
+        mapper->SetClippingPlanes(planes);
+    
+        if( blendingVolume)
+        {
+            mapper = (vtkVolumeMapper*) blendingVolume->GetMapper();
+            mapper->SetClippingPlanes(planes);
+        }
+        
+        planes->Delete();
+        
+//		[VRView getCroppingBox: a :volume :widget];
+//		[VRView setCroppingBox: a :volume];
+//		
+//		[VRView getCroppingBox: a :blendingVolume :widget];
+//		[VRView setCroppingBox: a :blendingVolume];
 		
-		[VRView getCroppingBox: a :volume :widget];
-		[VRView setCroppingBox: a :volume];
-		
-		[VRView getCroppingBox: a :blendingVolume :widget];
-		[VRView setCroppingBox: a :blendingVolume];
-		
-		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontAutoCropScissors"] == NO)
-			[snVRView autoCroppingBox];
+//		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontAutoCropScissors"] == NO)
+//			[snVRView autoCroppingBox];
 		
 		widget->SetHandleSize( 0.005);
     }
@@ -203,7 +218,7 @@ public:
 #endif
 
 @synthesize clipRangeActivated, projectionMode, clippingRangeThickness, keep3DRotateCentered, dontResetImage, renderingMode, currentOpacityArray, exportDCM, dcmSeriesString, bestRenderingMode;
-@synthesize lowResLODFactor, dontUseAutoCropping, engine, lodDisplayed;
+@synthesize lowResLODFactor, engine, lodDisplayed;
 
 
 - (BOOL) checkPointInVolume: (double*) position
@@ -358,95 +373,95 @@ public:
 	return linearOpacity;
 }
 	
-+ (BOOL) getCroppingBox:(double*) a :(vtkVolume *) volume :(vtkBoxWidget*) croppingBox
-{
-	if( volume == nil) return NO;
-	if( croppingBox == nil) return NO;
-	
-	vtkVolumeMapper *mapper = (vtkVolumeMapper*) volume->GetMapper();
-	if( mapper)
-	{
-		// cropping box
-		vtkPolyData *pd = vtkPolyData::New();
-		croppingBox->GetPolyData(pd);
-		
-		vtkTransform *Transform = vtkTransform::New();
-		Transform->SetMatrix(volume->GetUserMatrix());
-		Transform->Push();
-		Transform->Inverse();
-		
-		double min[3], max[3];
-		double pointA[3], pointB[3];
-			
-		pd->GetPoint(8, pointA);	pd->GetPoint(9, pointB);
-		min[0] = pointA[0];			max[0] = pointB[0];
+//+ (BOOL) getCroppingBox:(double*) a :(vtkVolume *) volume :(vtkBoxWidget*) croppingBox
+//{
+//	if( volume == nil) return NO;
+//	if( croppingBox == nil) return NO;
+//	
+//	vtkVolumeMapper *mapper = (vtkVolumeMapper*) volume->GetMapper();
+//	if( mapper)
+//	{
+//		// cropping box
+//		vtkPolyData *pd = vtkPolyData::New();
+//		croppingBox->GetPolyData(pd);
+//		
+//		vtkTransform *Transform = vtkTransform::New();
+//		Transform->SetMatrix(volume->GetUserMatrix());
+//		Transform->Push();
+//		Transform->Inverse();
+//		
+//		double min[3], max[3];
+//		double pointA[3], pointB[3];
+//			
+//		pd->GetPoint(8, pointA);	pd->GetPoint(9, pointB);
+//		min[0] = pointA[0];			max[0] = pointB[0];
+//
+//		pd->GetPoint(10, pointA);	pd->GetPoint(11, pointB);
+//		min[1] = pointA[1];			max[1] = pointB[1];
+//		
+//		pd->GetPoint(12, pointA);	pd->GetPoint(13, pointB);
+//		min[2] = pointA[2];			max[2] = pointB[2];
+//
+//		Transform->TransformPoint( min, min);
+//		Transform->TransformPoint (max, max);
+//		
+//		a[ 0] = min[ 0];
+//		a[ 2] = min[ 1];
+//		a[ 4] = min[ 2];
+//
+//		a[ 1] = max[ 0];
+//		a[ 3] = max[ 1];
+//		a[ 5] = max[ 2];
+//		
+//		double origin[3];
+//		volume->GetPosition(origin);	//GetOrigin
+//		
+//		a[0] -= origin[0];		a[1] -= origin[0];
+//		a[2] -= origin[1];		a[3] -= origin[1];
+//		a[4] -= origin[2];		a[5] -= origin[2];
+//		
+//		double temp;
+//		if((a[0]) > (a[1]))
+//		{temp = a[0]; a[0] = a[1]; a[1] = temp;}
+//		
+//		if((a[2]) > (a[3]))
+//		{temp = a[2]; a[2] = a[3]; a[3] = temp;}
+//		
+//		if((a[4]) > (a[5]))
+//		{temp = a[4]; a[4] = a[5]; a[5] = temp;}
+//		
+//		pd->Delete();
+//		Transform->Delete();
+//		
+//		return YES;
+//	}
+//	else return NO;
+//}
 
-		pd->GetPoint(10, pointA);	pd->GetPoint(11, pointB);
-		min[1] = pointA[1];			max[1] = pointB[1];
-		
-		pd->GetPoint(12, pointA);	pd->GetPoint(13, pointB);
-		min[2] = pointA[2];			max[2] = pointB[2];
-
-		Transform->TransformPoint( min, min);
-		Transform->TransformPoint (max, max);
-		
-		a[ 0] = min[ 0];
-		a[ 2] = min[ 1];
-		a[ 4] = min[ 2];
-
-		a[ 1] = max[ 0];
-		a[ 3] = max[ 1];
-		a[ 5] = max[ 2];
-		
-		double origin[3];
-		volume->GetPosition(origin);	//GetOrigin
-		
-		a[0] -= origin[0];		a[1] -= origin[0];
-		a[2] -= origin[1];		a[3] -= origin[1];
-		a[4] -= origin[2];		a[5] -= origin[2];
-		
-		double temp;
-		if((a[0]) > (a[1]))
-		{temp = a[0]; a[0] = a[1]; a[1] = temp;}
-		
-		if((a[2]) > (a[3]))
-		{temp = a[2]; a[2] = a[3]; a[3] = temp;}
-		
-		if((a[4]) > (a[5]))
-		{temp = a[4]; a[4] = a[5]; a[5] = temp;}
-		
-		pd->Delete();
-		Transform->Delete();
-		
-		return YES;
-	}
-	else return NO;
-}
-
-+ (void) setCroppingBox:(double*) a :(vtkVolume*) volume
-{
-	long	i;
-	
-	if( volume == nil) return;
-	
-	vtkVolumeMapper *mapper = (vtkVolumeMapper*) volume->GetMapper();
-	if( mapper)
-	{
-		mapper->SetCropping(true);
-
-		double min[3], max[3];
-		
-		min[ 0] = a[ 0];
-		min[ 1] = a[ 2];
-		min[ 2] = a[ 4];
-
-		max[ 0] = a[ 1];
-		max[ 1] = a[ 3];
-		max[ 2] = a[ 5];
-		
-		mapper->SetCroppingRegionPlanes( min[0], max[0], min[1], max[1], min[2], max[2]);
-	}
-}
+//+ (void) setCroppingBox:(double*) a :(vtkVolume*) volume
+//{
+//	long	i;
+//	
+//	if( volume == nil) return;
+//	
+//	vtkVolumeMapper *mapper = (vtkVolumeMapper*) volume->GetMapper();
+//	if( mapper)
+//	{
+//		mapper->SetCropping(true);
+//
+//		double min[3], max[3];
+//		
+//		min[ 0] = a[ 0];
+//		min[ 1] = a[ 2];
+//		min[ 2] = a[ 4];
+//
+//		max[ 0] = a[ 1];
+//		max[ 1] = a[ 3];
+//		max[ 2] = a[ 5];
+//		
+//		mapper->SetCroppingRegionPlanes( min[0], max[0], min[1], max[1], min[2], max[2]);
+//	}
+//}
 
 - (void) checkForMovedVolume: (NSNotification*) notification
 {
@@ -560,24 +575,24 @@ public:
 	[self setFrame: r rescaleLine: NO];
 }
 
-- (BOOL) croppingBox:(double*) a
-{
-	BOOL validBox = [VRView getCroppingBox: a :volume :croppingBox];
-	
-	return validBox;
-}
-
-- (void) setCroppingBox:(double*) a
-{
-	if( a && croppingBox)
-		[VRView setCroppingBox: a :volume];
-}
-
-- (void) setBlendingCroppingBox:(double*) a
-{
-	if( a && croppingBox)
-		[VRView setCroppingBox: a :blendingVolume];
-}
+//- (BOOL) croppingBox:(double*) a
+//{
+//	BOOL validBox = [VRView getCroppingBox: a :volume :croppingBox];
+//	
+//	return validBox;
+//}
+//
+//- (void) setCroppingBox:(double*) a
+//{
+//	if( a && croppingBox)
+//		[VRView setCroppingBox: a :volume];
+//}
+//
+//- (void) setBlendingCroppingBox:(double*) a
+//{
+//	if( a && croppingBox)
+//		[VRView setCroppingBox: a :blendingVolume];
+//}
 
 - (void) print:(id) sender
 {
@@ -780,9 +795,8 @@ public:
 {
     @try
 	{
-        double a[ 6];
-        
-		BOOL validBox = [VRView getCroppingBox: a :volume :croppingBox];
+//        double a[ 6];
+//		BOOL validBox = [VRView getCroppingBox: a :volume :croppingBox];
 		
 		switch( e)
 		{
@@ -812,12 +826,10 @@ public:
         [self setLOD: LOD];
 		[self setMode: renderingMode];	// VR or MIP ?
 		
-		if( validBox)
+		if( firstTime == NO)
 		{
-			[self setCroppingBox: a];
-			
-			[VRView getCroppingBox: a :blendingVolume :croppingBox];
-			[self setBlendingCroppingBox: a];
+            if( cropcallback)
+                cropcallback->Execute( croppingBox, 0, nil);
 		}
 		else
 		{
@@ -906,9 +918,8 @@ public:
 	if( showWait) www = [[WaitRendering alloc] init: NSLocalizedString( @"Preparing 3D data...", nil)];
 	[www start];
 	
-    double a[ 6];
-    
-	BOOL validBox = [VRView getCroppingBox: a :volume :croppingBox];
+//    double a[ 6];
+//	BOOL validBox = [VRView getCroppingBox: a :volume :croppingBox];
 	
 	switch( engineID)
 	{
@@ -944,21 +955,20 @@ public:
     
 	[self setBlendingMode: renderingMode];
 	
-	if( validBox)
-	{
-		[self setCroppingBox: a];
-		
-		[VRView getCroppingBox: a :blendingVolume :croppingBox];
-		
-		[self setBlendingCroppingBox: a];
-	}
-	else
-	{
-		[self resetImage: self];
-		
-		if( croppingBox)
-			croppingBox->PlaceWidget();
-	}
+    if( firstTime == NO)
+    {
+        if( cropcallback)
+            cropcallback->Execute( croppingBox, 0, nil);
+    }
+    else
+    {
+        if( [[controller style] isEqualToString: @"noNib"] == NO)
+        {
+            [self resetImage: self];
+            croppingBox->PlaceWidget();
+        }
+    }
+    
 	[self display];
 	
 	[www end];
@@ -2137,8 +2147,8 @@ public:
 					[BrowserController multiThreadedImageConvert: @"FTo16U" :&srcf :&dst8 :-OFFSET16 :1./valueFactor];
 				}
 				
-				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontAutoCropScissors"] == NO)
-					[self autoCroppingBox];
+//				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontAutoCropScissors"] == NO)
+//					[self autoCroppingBox];
 			}
 		}
 		
@@ -3239,8 +3249,8 @@ public:
 						else sprintf(WLWWString, "WL: %0.f WW: %0.f ", wl, ww);
 					}
 					
-					if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontAutoCropScissors"] == NO)
-						[self autoCroppingBox];
+//					if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontAutoCropScissors"] == NO)
+//						[self autoCroppingBox];
 					
 					textWLWW->SetInput( WLWWString);
 					[self setNeedsDisplay:YES];
@@ -4141,233 +4151,235 @@ public:
 	[drawLock unlock];
 }
 
-- (void) autoCroppingBox
-{
-	if( croppingBox && isRGB == NO && dontUseAutoCropping == NO)
-	{
-		double a[6], originalPositions[ 6];
-		int aa[6];
-		
-		[VRView getCroppingBox:a :volume :croppingBox];
-		
-		float b;
-		BOOL found;
-		int width = [firstObject pwidth], height = [firstObject pheight], depth = [pixList count], slice = width * height, x, y, z;
-		
-		for( x = 0 ; x < 6; x++)
-			originalPositions[ x] = a[ x];
-			
-		for( x = 0 ; x < 6; x++)
-			a[ x] /= superSampling;
-		
-		float sliceThickness = [firstObject sliceInterval];
-		
-		if( sliceThickness == 0)
-			sliceThickness = [firstObject sliceThickness];
-		
-		a[ 4] *= [firstObject pixelSpacingX];
-		a[ 4] /= sliceThickness;
-		a[ 5] *= [firstObject pixelSpacingX];
-		a[ 5] /= sliceThickness;
-		
-		a[ 2] *= [firstObject pixelSpacingX] / [firstObject pixelSpacingY];
-		a[ 3] *= [firstObject pixelSpacingX] / [firstObject pixelSpacingY];
-		
-		a[ 0] = a[ 0] >= width ? width-1 : a[ 0];		a[ 1] = a[ 1] >= width ? width-1 : a[ 1];
-		a[ 2] = a[ 2] >= height ? height-1 : a[ 2];		a[ 3] = a[ 3] >= height ? height-1 : a[ 3];
-		a[ 4] = a[ 4] >= depth ? depth-1 : a[ 4];		a[ 5] = a[ 5] >= depth ? depth-1 : a[ 5];
-		
-		for( x = 0 ; x < 6; x++)
-			aa[ x] = a[ x];
-		
-		aa[ 0] = aa[ 0] < 0 ? 0 : aa[ 0];		aa[ 1] = aa[ 1] < 0 ? 0 : aa[ 1];
-		aa[ 2] = aa[ 2] < 0 ? 0 : aa[ 2];		aa[ 3] = aa[ 3] < 0 ? 0 : aa[ 3];
-		aa[ 4] = aa[ 4] < 0 ? 0 : aa[ 4];		aa[ 5] = aa[ 5] < 0 ? 0 : aa[ 5];
-		
-        if(aa[ 1] - aa[ 0] > 0 &&
-           aa[ 3] - aa[ 2] > 0 &&
-           aa[ 5] - aa[ 4] > 0 )
-        {
-    //		NSLog( @"start autocropping");
-            
-            int opacityTableSize = (([controller maximumValue] - [controller minimumValue]) * valueFactor);
-            
-            opacityTableSize += 100;
-            
-            double *opacityTable = (double*) malloc( opacityTableSize * sizeof( double));
-            
-            if( opacityTable)
-            {
-                opacityTransferFunction->GetTable(	([controller minimumValue] + OFFSET16) * valueFactor,
-                                                    ([controller maximumValue] + OFFSET16) * valueFactor,
-                                                    opacityTableSize,
-                                                    opacityTable);
-                short *sdata = (short*) data8;
-                short v = ([controller minimumValue] + OFFSET16) * valueFactor;
-                
-                #define CHECKINTERVAL 3
-                
-                for( found = NO, x = aa[ 0]; x < width && x < aa[ 1]; x+=CHECKINTERVAL)
-                {
-                    for(  y = aa[ 2]; y < height && y < aa[ 3]; y+=CHECKINTERVAL)
-                    {
-                        for(  z = aa[ 4]; z < depth && z < aa[ 5]; z+=CHECKINTERVAL)
-                        {
-                            short p = *(sdata + x + y * width + z * slice);
-                            if( p != v && opacityTable[ p] > 0)
-                            {
-                                aa[ 0] = x;
-                                goto A2;
-                            }
-                        }
-                    }
-                }
-                aa[ 0] = a[ 1];
-                
-                A2:
-                for( found = NO, x = aa[ 1]; x >= 0 && x > aa[ 0]; x-=CHECKINTERVAL)
-                {
-                    for(  y = aa[ 2]; y < height && y < aa[ 3]; y+=CHECKINTERVAL)
-                    {
-                        for(  z = aa[ 4]; z < depth && z < aa[ 5]; z+=CHECKINTERVAL)
-                        {
-                            short p = *(sdata + x + y * width + z * slice);
-                            if( p != v && opacityTable[ p] > 0)
-                            {
-                                aa[ 1] = x;
-                                goto A3;
-                            }
-                        }
-                    }
-                }
-                aa[ 1] = aa[ 0];
-                
-                ////////////
-                A3:
-                for( found = NO, y = aa[ 2]; y < height && y < aa[ 3]; y+=CHECKINTERVAL)
-                {
-                    for(  x = aa[ 0]; x < width && x < aa[ 1]; x+=CHECKINTERVAL)
-                    {
-                        for(  z = aa[ 4]; z < depth && z < aa[ 5]; z+=CHECKINTERVAL)
-                        {
-                            short p = *(sdata + x + y * width + z * slice);
-                            if( p != v && opacityTable[ p] > 0)
-                            {
-                                aa[ 2] = y;
-                                goto A4;
-                            }
-                        }
-                    }
-                }
-                aa[ 2] = aa[ 3];
-                
-                A4:
-                for( found = NO, y = aa[ 3]; y >= 0 && y > aa[ 2]; y-=CHECKINTERVAL)
-                {
-                    for(  x = aa[ 0]; x < width && x < aa[ 1]; x+=CHECKINTERVAL)
-                    {
-                        for(  z = aa[ 4]; z < depth && z < aa[ 5]; z+=CHECKINTERVAL)
-                        {
-                            short p = *(sdata + x + y * width + z * slice);
-                            if( p != v && opacityTable[ p] > 0)
-                            {
-                                aa[ 3] = y;
-                                goto A5;
-                            }
-                        }
-                    }
-                }
-                aa[ 3] = aa[ 2];
-                
-                ////////////
-                A5:
-                for( found = NO, z = aa[ 4]; z < depth && z < aa[ 5]; z+=CHECKINTERVAL)
-                {
-                    for(  x = aa[ 0]; x < width && x < aa[ 1]; x+=CHECKINTERVAL)
-                    {
-                        for(  y = aa[ 2]; y < height && y < aa[ 3]; y+=CHECKINTERVAL)
-                        {
-                            short p = *(sdata + x + y * width + z * slice);
-                            if( p != v && opacityTable[ p] > 0)
-                            {
-                                aa[ 4] = z;
-                                goto A6;
-                            }
-                        }
-                    }
-                }
-                aa[ 4] = aa[ 5];
-                
-                A6:
-                for( found = NO, z = aa[ 5]; z >= 0 && z > aa[ 4]; z-=CHECKINTERVAL)
-                {
-                    for(  x = aa[ 0]; x < width && x < aa[ 1]; x+=CHECKINTERVAL)
-                    {
-                        for(  y = aa[ 2]; y < height && y < aa[ 3]; y+=CHECKINTERVAL)
-                        {
-                            short p = *(sdata + x + y * width + z * slice);
-                            if( p != v && opacityTable[ p] > 0)
-                            {
-                                aa[ 5] = z;
-                                goto A7;
-                            }
-                        }
-                    }
-                }
-                aa[ 5] = aa[ 4];
-                
-                A7:
-                
-                aa[ 1]+=CHECKINTERVAL;	aa[ 0]-=CHECKINTERVAL;
-                aa[ 3]+=CHECKINTERVAL;	aa[ 2]-=CHECKINTERVAL;
-                aa[ 5]+=CHECKINTERVAL;	aa[ 4]-=CHECKINTERVAL;
-                
-                aa[ 0] = aa[ 0] < 0 ? 0 : aa[ 0];		aa[ 1] = aa[ 1] < 0 ? 0 : aa[ 1];
-                aa[ 2] = aa[ 2] < 0 ? 0 : aa[ 2];		aa[ 3] = aa[ 3] < 0 ? 0 : aa[ 3];
-                aa[ 4] = aa[ 4] < 0 ? 0 : aa[ 4];		aa[ 5] = aa[ 5] < 0 ? 0 : aa[ 5];
-                
-                for( x = 0 ; x < 6; x++)
-                    a[ x] = aa[ x];
-                
-                a[ 0] = a[ 0] >= width ? width-1 : a[ 0];		a[ 1] = a[ 1] >= width ? width-1 : a[ 1];
-                a[ 2] = a[ 2] >= height ? height-1 : a[ 2];		a[ 3] = a[ 3] >= height ? height-1 : a[ 3];
-                a[ 4] = a[ 4] >= depth ? depth-1 : a[ 4];		a[ 5] = a[ 5] >= depth ? depth-1 : a[ 5];
-                
-                NSLog( @"x: %2.2f %%, y: %2.2f %%, z: %2.2f %%",  100 * (a[ 1] - a[ 0]) / (width), 100 * (a[ 3] - a[ 2]) / (height), 100 * (a[ 5] - a[ 4]) / (depth));
-                
-                
-                a[ 2] /= [firstObject pixelSpacingX] / [firstObject pixelSpacingY];
-                a[ 3] /= [firstObject pixelSpacingX] / [firstObject pixelSpacingY];
-                
-                a[ 4] /= [firstObject pixelSpacingX];
-                a[ 4] *= sliceThickness;
-                a[ 5] /= [firstObject pixelSpacingX];
-                a[ 5] *= sliceThickness;
-                
-                free( opacityTable);
-                
-                ////////////
-                
-                for( x = 0 ; x < 6; x++)
-                    a[ x] *= superSampling;
-                
-                for( x = 0 ; x < 6; x++)
-                {
-                    if( originalPositions[ 0] > a[ 0]) a[ 0] = originalPositions[ 0];
-                    if( originalPositions[ 1] < a[ 1]) a[ 1] = originalPositions[ 1];
-                    
-                    if( originalPositions[ 2] > a[ 2]) a[ 2] = originalPositions[ 2];
-                    if( originalPositions[ 3] < a[ 3]) a[ 3] = originalPositions[ 3];
-                    
-                    if( originalPositions[ 4] > a[ 4]) a[ 4] = originalPositions[ 4];
-                    if( originalPositions[ 5] < a[ 5]) a[ 5] = originalPositions[ 5];
-                }
-                
-                [VRView setCroppingBox: a :volume];
-            }
-        }
-	}
-}
+//- (void) autoCroppingBox
+//{
+//    return;
+//    
+//	if( croppingBox && isRGB == NO && dontUseAutoCropping == NO)
+//	{
+//		double a[6], originalPositions[ 6];
+//		int aa[6];
+//		
+//		[VRView getCroppingBox:a :volume :croppingBox];
+//		
+//		float b;
+//		BOOL found;
+//		int width = [firstObject pwidth], height = [firstObject pheight], depth = [pixList count], slice = width * height, x, y, z;
+//		
+//		for( x = 0 ; x < 6; x++)
+//			originalPositions[ x] = a[ x];
+//			
+//		for( x = 0 ; x < 6; x++)
+//			a[ x] /= superSampling;
+//		
+//		float sliceThickness = [firstObject sliceInterval];
+//		
+//		if( sliceThickness == 0)
+//			sliceThickness = [firstObject sliceThickness];
+//		
+//		a[ 4] *= [firstObject pixelSpacingX];
+//		a[ 4] /= sliceThickness;
+//		a[ 5] *= [firstObject pixelSpacingX];
+//		a[ 5] /= sliceThickness;
+//		
+//		a[ 2] *= [firstObject pixelSpacingX] / [firstObject pixelSpacingY];
+//		a[ 3] *= [firstObject pixelSpacingX] / [firstObject pixelSpacingY];
+//		
+//		a[ 0] = a[ 0] >= width ? width-1 : a[ 0];		a[ 1] = a[ 1] >= width ? width-1 : a[ 1];
+//		a[ 2] = a[ 2] >= height ? height-1 : a[ 2];		a[ 3] = a[ 3] >= height ? height-1 : a[ 3];
+//		a[ 4] = a[ 4] >= depth ? depth-1 : a[ 4];		a[ 5] = a[ 5] >= depth ? depth-1 : a[ 5];
+//		
+//		for( x = 0 ; x < 6; x++)
+//			aa[ x] = a[ x];
+//		
+//		aa[ 0] = aa[ 0] < 0 ? 0 : aa[ 0];		aa[ 1] = aa[ 1] < 0 ? 0 : aa[ 1];
+//		aa[ 2] = aa[ 2] < 0 ? 0 : aa[ 2];		aa[ 3] = aa[ 3] < 0 ? 0 : aa[ 3];
+//		aa[ 4] = aa[ 4] < 0 ? 0 : aa[ 4];		aa[ 5] = aa[ 5] < 0 ? 0 : aa[ 5];
+//		
+//        if(aa[ 1] - aa[ 0] > 0 &&
+//           aa[ 3] - aa[ 2] > 0 &&
+//           aa[ 5] - aa[ 4] > 0 )
+//        {
+//    //		NSLog( @"start autocropping");
+//            
+//            int opacityTableSize = (([controller maximumValue] - [controller minimumValue]) * valueFactor);
+//            
+//            opacityTableSize += 100;
+//            
+//            double *opacityTable = (double*) malloc( opacityTableSize * sizeof( double));
+//            
+//            if( opacityTable)
+//            {
+//                opacityTransferFunction->GetTable(	([controller minimumValue] + OFFSET16) * valueFactor,
+//                                                    ([controller maximumValue] + OFFSET16) * valueFactor,
+//                                                    opacityTableSize,
+//                                                    opacityTable);
+//                short *sdata = (short*) data8;
+//                short v = ([controller minimumValue] + OFFSET16) * valueFactor;
+//                
+//                #define CHECKINTERVAL 3
+//                
+//                for( found = NO, x = aa[ 0]; x < width && x < aa[ 1]; x+=CHECKINTERVAL)
+//                {
+//                    for(  y = aa[ 2]; y < height && y < aa[ 3]; y+=CHECKINTERVAL)
+//                    {
+//                        for(  z = aa[ 4]; z < depth && z < aa[ 5]; z+=CHECKINTERVAL)
+//                        {
+//                            short p = *(sdata + x + y * width + z * slice);
+//                            if( p != v && opacityTable[ p] > 0)
+//                            {
+//                                aa[ 0] = x;
+//                                goto A2;
+//                            }
+//                        }
+//                    }
+//                }
+//                aa[ 0] = a[ 1];
+//                
+//                A2:
+//                for( found = NO, x = aa[ 1]; x >= 0 && x > aa[ 0]; x-=CHECKINTERVAL)
+//                {
+//                    for(  y = aa[ 2]; y < height && y < aa[ 3]; y+=CHECKINTERVAL)
+//                    {
+//                        for(  z = aa[ 4]; z < depth && z < aa[ 5]; z+=CHECKINTERVAL)
+//                        {
+//                            short p = *(sdata + x + y * width + z * slice);
+//                            if( p != v && opacityTable[ p] > 0)
+//                            {
+//                                aa[ 1] = x;
+//                                goto A3;
+//                            }
+//                        }
+//                    }
+//                }
+//                aa[ 1] = aa[ 0];
+//                
+//                ////////////
+//                A3:
+//                for( found = NO, y = aa[ 2]; y < height && y < aa[ 3]; y+=CHECKINTERVAL)
+//                {
+//                    for(  x = aa[ 0]; x < width && x < aa[ 1]; x+=CHECKINTERVAL)
+//                    {
+//                        for(  z = aa[ 4]; z < depth && z < aa[ 5]; z+=CHECKINTERVAL)
+//                        {
+//                            short p = *(sdata + x + y * width + z * slice);
+//                            if( p != v && opacityTable[ p] > 0)
+//                            {
+//                                aa[ 2] = y;
+//                                goto A4;
+//                            }
+//                        }
+//                    }
+//                }
+//                aa[ 2] = aa[ 3];
+//                
+//                A4:
+//                for( found = NO, y = aa[ 3]; y >= 0 && y > aa[ 2]; y-=CHECKINTERVAL)
+//                {
+//                    for(  x = aa[ 0]; x < width && x < aa[ 1]; x+=CHECKINTERVAL)
+//                    {
+//                        for(  z = aa[ 4]; z < depth && z < aa[ 5]; z+=CHECKINTERVAL)
+//                        {
+//                            short p = *(sdata + x + y * width + z * slice);
+//                            if( p != v && opacityTable[ p] > 0)
+//                            {
+//                                aa[ 3] = y;
+//                                goto A5;
+//                            }
+//                        }
+//                    }
+//                }
+//                aa[ 3] = aa[ 2];
+//                
+//                ////////////
+//                A5:
+//                for( found = NO, z = aa[ 4]; z < depth && z < aa[ 5]; z+=CHECKINTERVAL)
+//                {
+//                    for(  x = aa[ 0]; x < width && x < aa[ 1]; x+=CHECKINTERVAL)
+//                    {
+//                        for(  y = aa[ 2]; y < height && y < aa[ 3]; y+=CHECKINTERVAL)
+//                        {
+//                            short p = *(sdata + x + y * width + z * slice);
+//                            if( p != v && opacityTable[ p] > 0)
+//                            {
+//                                aa[ 4] = z;
+//                                goto A6;
+//                            }
+//                        }
+//                    }
+//                }
+//                aa[ 4] = aa[ 5];
+//                
+//                A6:
+//                for( found = NO, z = aa[ 5]; z >= 0 && z > aa[ 4]; z-=CHECKINTERVAL)
+//                {
+//                    for(  x = aa[ 0]; x < width && x < aa[ 1]; x+=CHECKINTERVAL)
+//                    {
+//                        for(  y = aa[ 2]; y < height && y < aa[ 3]; y+=CHECKINTERVAL)
+//                        {
+//                            short p = *(sdata + x + y * width + z * slice);
+//                            if( p != v && opacityTable[ p] > 0)
+//                            {
+//                                aa[ 5] = z;
+//                                goto A7;
+//                            }
+//                        }
+//                    }
+//                }
+//                aa[ 5] = aa[ 4];
+//                
+//                A7:
+//                
+//                aa[ 1]+=CHECKINTERVAL;	aa[ 0]-=CHECKINTERVAL;
+//                aa[ 3]+=CHECKINTERVAL;	aa[ 2]-=CHECKINTERVAL;
+//                aa[ 5]+=CHECKINTERVAL;	aa[ 4]-=CHECKINTERVAL;
+//                
+//                aa[ 0] = aa[ 0] < 0 ? 0 : aa[ 0];		aa[ 1] = aa[ 1] < 0 ? 0 : aa[ 1];
+//                aa[ 2] = aa[ 2] < 0 ? 0 : aa[ 2];		aa[ 3] = aa[ 3] < 0 ? 0 : aa[ 3];
+//                aa[ 4] = aa[ 4] < 0 ? 0 : aa[ 4];		aa[ 5] = aa[ 5] < 0 ? 0 : aa[ 5];
+//                
+//                for( x = 0 ; x < 6; x++)
+//                    a[ x] = aa[ x];
+//                
+//                a[ 0] = a[ 0] >= width ? width-1 : a[ 0];		a[ 1] = a[ 1] >= width ? width-1 : a[ 1];
+//                a[ 2] = a[ 2] >= height ? height-1 : a[ 2];		a[ 3] = a[ 3] >= height ? height-1 : a[ 3];
+//                a[ 4] = a[ 4] >= depth ? depth-1 : a[ 4];		a[ 5] = a[ 5] >= depth ? depth-1 : a[ 5];
+//                
+//                NSLog( @"x: %2.2f %%, y: %2.2f %%, z: %2.2f %%",  100 * (a[ 1] - a[ 0]) / (width), 100 * (a[ 3] - a[ 2]) / (height), 100 * (a[ 5] - a[ 4]) / (depth));
+//                
+//                
+//                a[ 2] /= [firstObject pixelSpacingX] / [firstObject pixelSpacingY];
+//                a[ 3] /= [firstObject pixelSpacingX] / [firstObject pixelSpacingY];
+//                
+//                a[ 4] /= [firstObject pixelSpacingX];
+//                a[ 4] *= sliceThickness;
+//                a[ 5] /= [firstObject pixelSpacingX];
+//                a[ 5] *= sliceThickness;
+//                
+//                free( opacityTable);
+//                
+//                ////////////
+//                
+//                for( x = 0 ; x < 6; x++)
+//                    a[ x] *= superSampling;
+//                
+//                for( x = 0 ; x < 6; x++)
+//                {
+//                    if( originalPositions[ 0] > a[ 0]) a[ 0] = originalPositions[ 0];
+//                    if( originalPositions[ 1] < a[ 1]) a[ 1] = originalPositions[ 1];
+//                    
+//                    if( originalPositions[ 2] > a[ 2]) a[ 2] = originalPositions[ 2];
+//                    if( originalPositions[ 3] < a[ 3]) a[ 3] = originalPositions[ 3];
+//                    
+//                    if( originalPositions[ 4] > a[ 4]) a[ 4] = originalPositions[ 4];
+//                    if( originalPositions[ 5] < a[ 5]) a[ 5] = originalPositions[ 5];
+//                }
+//                
+//                [VRView setCroppingBox: a :volume];
+//            }
+//        }
+//	}
+//}
 
 - (void) deleteRegion:(int) c :(NSArray*) pxList :(BOOL) blendedSeries
 {
@@ -4944,27 +4956,27 @@ public:
 	
 }
 
-- (void) resetCroppingBox
-{
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontAutoCropScissors"] == NO)
-	{
-		if( croppingBox)
-		{
-			croppingBox->SetProp3D( volume);
-			croppingBox->PlaceWidget();
-			
-			double a[ 6];
-			
-			[VRView getCroppingBox: a :volume :croppingBox];
-			[VRView setCroppingBox: a :volume];
-			
-			[VRView getCroppingBox: a :blendingVolume :croppingBox];
-			[VRView setCroppingBox: a :blendingVolume];
-			
-			[self setNeedsDisplay: YES];
-		}
-	}	
-}
+//- (void) resetCroppingBox
+//{
+//	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontAutoCropScissors"] == NO)
+//	{
+//		if( croppingBox)
+//		{
+//			croppingBox->SetProp3D( volume);
+//			croppingBox->PlaceWidget();
+//			
+//			double a[ 6];
+//			
+//			[VRView getCroppingBox: a :volume :croppingBox];
+//			[VRView setCroppingBox: a :volume];
+//			
+//			[VRView getCroppingBox: a :blendingVolume :croppingBox];
+//			[VRView setCroppingBox: a :blendingVolume];
+//			
+//			[self setNeedsDisplay: YES];
+//		}
+//	}	
+//}
 
 -(void) schedulerDidFinishSchedule: (Scheduler *)scheduler
 {
@@ -4979,8 +4991,8 @@ public:
 	
 	if( textureMapper || gDataValuesChanged)
 	{
-		double a[ 6];
-		BOOL validBox = [VRView getCroppingBox: a :volume :croppingBox];
+//		double a[ 6];
+//		BOOL validBox = [VRView getCroppingBox: a :volume :croppingBox];
 	
 		[self computeValueFactor];
 		// Force min/max recomputing
@@ -4988,13 +5000,13 @@ public:
 		
 		gDataValuesChanged = NO;
 		
-		if( validBox)
-		{
-			[self setCroppingBox: a];
-			
-			[VRView getCroppingBox: a :blendingVolume :croppingBox];
-			[self setBlendingCroppingBox: a];
-		}
+//		if( validBox)
+//		{
+//			[self setCroppingBox: a];
+//			
+//			[VRView getCroppingBox: a :blendingVolume :croppingBox];
+//			[self setBlendingCroppingBox: a];
+//		}
 	}
 	else
 	{
@@ -5003,8 +5015,8 @@ public:
 			[BrowserController multiThreadedImageConvert: @"FTo16U" :&srcf :&dst8 :-OFFSET16 :1./valueFactor];
 	}
 	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontAutoCropScissors"] == NO)
-		[self autoCroppingBox];
+//	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontAutoCropScissors"] == NO)
+//		[self autoCroppingBox];
 	
 	[self setNeedsDisplay:YES];
 	
@@ -5427,8 +5439,8 @@ public:
 	}
 	textWLWW->SetInput( WLWWString);
 	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontAutoCropScissors"] == NO)
-		[self autoCroppingBox];
+//	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontAutoCropScissors"] == NO)
+//		[self autoCroppingBox];
 	
 	[self setNeedsDisplay:YES];
 }
@@ -6408,9 +6420,12 @@ public:
 			croppingBox->SetHandleSize( 0.005);
 			croppingBox->PlaceWidget();
 			croppingBox->SetInteractor( [self getInteractor]);
-			croppingBox->SetRotationEnabled( false);
+			croppingBox->SetRotationEnabled( true);
 			croppingBox->SetInsideOut( true);
 			croppingBox->OutlineCursorWiresOff();
+            
+            croppingBox->SetDefaultRenderer( aRenderer);
+            
 			
 			cropcallback = vtkMyCallbackVR::New();
 			cropcallback->setBlendingVolume( nil);
@@ -7336,13 +7351,36 @@ public:
 	// window level
 	[cam setWLWW: wl : ww];
 	
-	// cropping box
-	double a[ 6];
-	
-	[VRView getCroppingBox: a :volume :croppingBox];
-	
-	[cam setMinCroppingPlanes: [[[Point3D alloc] initWithValues:a[0] :a[2] :a[4]] autorelease]];
-	[cam setMaxCroppingPlanes: [[[Point3D alloc] initWithValues:a[1] :a[3] :a[5]] autorelease]];
+    if( croppingBox)
+    {
+        vtkPlanes *planes = vtkPlanes::New();
+        croppingBox->GetPlanes(planes);
+        
+        // cropping box
+        if( planes->GetNumberOfPlanes() != 6)
+            NSLog( @"****** planes->GetNumberOfPlanes() != 6");
+        
+        for( int i = 0; i < planes->GetNumberOfPlanes(); i++)
+        {
+            N3Vector p;
+            N3Vector n;
+            
+            vtkPlane *vtkPlane = planes->GetPlane( i);
+            
+            double *normal, *origin;
+            
+            origin = vtkPlane->GetOrigin();
+            normal = vtkPlane->GetNormal();
+            
+            p = N3VectorMake( origin[ 0], origin[ 1], origin[ 2]);
+            n = N3VectorMake( normal[ 0], normal[ 1], normal[ 2]);
+            
+            N3Plane plane = N3PlaneMake( p, n);
+            [[cam croppingPlanes] replaceObjectAtIndex: i withObject: [NSValue valueWithN3Plane: plane]];
+        }
+        
+        planes->Delete();
+    }
 	
 	// fusion percentage
 	[cam setFusionPercentage:blendingFactor];
@@ -7424,47 +7462,41 @@ public:
 	}
 	
 	// cropping box
-	double a[ 6];
-	a[0] = [[cam minCroppingPlanes] x];
-	a[2] = [[cam minCroppingPlanes] y];
-	a[4] = [[cam minCroppingPlanes] z];
-	a[1] = [[cam maxCroppingPlanes] x];
-	a[3] = [[cam maxCroppingPlanes] y];
-	a[5] = [[cam maxCroppingPlanes] z];
-	
-	[self setCroppingBox: a];
-	
-	double origin[3];
-	volume->GetPosition(origin);	//GetOrigin
-	
-	vtkTransform *Transform = vtkTransform::New();
-	Transform->SetMatrix(volume->GetUserMatrix());
-	Transform->Push();
-	
-	double min[3], max[3];
-		
-	min[ 0] = a[ 0];
-	min[ 1] = a[ 2];
-	min[ 2] = a[ 4];
-
-	max[ 0] = a[ 1];
-	max[ 1] = a[ 3];
-	max[ 2] = a[ 5];
-
-	min[0] += origin[0];		max[0] += origin[0];
-	min[1] += origin[1];		max[1] += origin[1];
-	min[2] += origin[2];		max[2] += origin[2];
-	
-	Transform->TransformPoint( min, min);
-	Transform->TransformPoint( max, max);
-	
-	Transform->Delete();
-	
-	if( croppingBox)
-		croppingBox->PlaceWidget(min[0], max[0], min[1], max[1], min[2], max[2]);
-	
-	[VRView getCroppingBox: a :blendingVolume :croppingBox];
-	[self setBlendingCroppingBox: a];
+    vtkPlanes *planes = vtkPlanes::New();
+    
+    vtkPoints *pts = vtkPoints::New(VTK_DOUBLE);
+    pts->SetNumberOfPoints(6);
+    
+    vtkDoubleArray *normals = vtkDoubleArray::New();
+    normals->SetNumberOfComponents(3);
+    normals->SetNumberOfTuples(6);
+    
+    // Set the normals and coordinate values
+    for (int i=0; i<6; i++)
+    {
+        N3Plane plane = [[[cam croppingPlanes] objectAtIndex: i] N3PlaneValue];
+        
+        pts->SetPoint(i, plane.point.x, plane.point.y, plane.point.z);
+        normals->SetTuple3(i, plane.normal.x, plane.normal.y, plane.normal.z);
+    }
+    
+    planes->SetPoints(pts);
+    planes->SetNormals(normals);
+    
+    pts->Delete();
+    normals->Delete();
+    
+    vtkVolumeMapper *mapper = (vtkVolumeMapper*) volume->GetMapper();
+    mapper->SetClippingPlanes( planes);
+    
+    if( blendingVolume)
+    {
+        mapper = (vtkVolumeMapper*) blendingVolume->GetMapper();
+        mapper->SetClippingPlanes( planes);
+    }
+    
+    planes->Delete();
+    
 
 	// fusion percentage
 	[self setBlendingFactor:[cam fusionPercentage]];

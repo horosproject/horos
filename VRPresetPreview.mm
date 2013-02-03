@@ -25,7 +25,7 @@
 		isEmpty = YES;
 		presetIndex = -1;
 		LOD = 1.0;
-		dontUseAutoCropping = YES;
+//		dontUseAutoCropping = YES;
 	}
     
     return self;
