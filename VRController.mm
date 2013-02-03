@@ -1852,8 +1852,8 @@ return YES;
     }
 	else if([itemIdent isEqualToString: BackgroundColorViewToolbarItemIdentifier]) {
 	// Set up the standard properties 
-	[toolbarItem setLabel: NSLocalizedString(@"Color", nil)];
-	[toolbarItem setPaletteLabel: NSLocalizedString(@"Color", nil)];
+	[toolbarItem setLabel: NSLocalizedString(@"Background", nil)];
+	[toolbarItem setPaletteLabel: NSLocalizedString(@"Background", nil)];
 	[toolbarItem setToolTip: NSLocalizedString(@"Background Color", nil)];
 	
 	[toolbarItem setView: BackgroundColorView];
