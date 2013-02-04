@@ -7466,9 +7466,6 @@ return YES;
 					displayOnlyKeyImages = onlyKeyImages; 
 					[keyImagePopUpButton selectItemAtIndex:displayOnlyKeyImages];
 					
-					if( [[self window] isVisible])
-						[imageView becomeMainWindow];	// This will send the image sync order !
-					
 					windowWillClose = NO;
 					
 					[self setPostprocessed: NO];
@@ -7476,6 +7473,9 @@ return YES;
 					[self SetSyncButtonBehavior: self];
 					[self turnOffSyncSeriesBetweenStudies: self];
 					
+                    if( [[self window] isVisible])
+						[imageView becomeMainWindow];	// This will send the image sync order !
+                    
 					[self setUpdateTilingViewsValue: NO];
 					
 					[self selectFirstTilingView];

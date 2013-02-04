@@ -6730,7 +6730,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 											// Manual sync
 											if( same3DReferenceWorld == NO || syncSeriesIndex != -1)
 											{						
-												if( [otherView syncSeriesIndex] != -1)
+												if( [otherView syncSeriesIndex] != -1 && [otherView syncSeriesIndex] < [[otherView dcmPixList] count] && syncSeriesIndex < dcmPixList.count)
 												{
 													slicePosition -= [(DCMPix*)[dcmPixList objectAtIndex: syncSeriesIndex] sliceLocation];
 													
