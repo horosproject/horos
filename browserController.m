@@ -2475,7 +2475,13 @@ static NSConditionLock *threadLock = nil;
 
 - (IBAction)selectNoAlbums:(id)sender
 {
+    BOOL copyClearSearchAndTimeIntervalWhenSelectingAlbum = [[NSUserDefaults standardUserDefaults] boolForKey: @"clearSearchAndTimeIntervalWhenSelectingAlbum"];
+    
+    [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"clearSearchAndTimeIntervalWhenSelectingAlbum"];
+    
     [albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection:NO];
+    
+    [[NSUserDefaults standardUserDefaults] setBool: copyClearSearchAndTimeIntervalWhenSelectingAlbum forKey: @"clearSearchAndTimeIntervalWhenSelectingAlbum"];
 }
 
 - (NSPredicate*)smartAlbumPredicate: (NSManagedObject*)album
