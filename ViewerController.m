@@ -7078,8 +7078,8 @@ return YES;
 		
 	NSString	*previousPatientUID = [[[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.patientUID"] retain];
 	NSString	*previousStudyInstanceUID = [[[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"] retain];
-	float		previousOrientation[ 9];
-	float		previousLocation = 0;
+	float		previousOrientation[ 9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+	float		previousLocation;
 	int			previousCurImage = [imageView curImage];
 	BOOL		wasFlipped = [imageView flippedData];
 	
@@ -7088,11 +7088,8 @@ return YES;
 		@try 
 		{
             BOOL wasSyncButtonBehaviorIsBetweenStudies = NO;
-            
-            if( SyncButtonBehaviorIsBetweenStudies && SYNCSERIES)
-                wasSyncButtonBehaviorIsBetweenStudies = YES;
-            
-            [self turnOffSyncSeriesBetweenStudies: self];
+            BOOL equalVector = YES;
+            BOOL nonZeroVector = NO;
             
 			nonVolumicDataWarningDisplayed = YES;
 			
@@ -7105,18 +7102,58 @@ return YES;
 			
 			[imageView mouseUp: [[NSApplication sharedApplication] currentEvent]];
 			
-			if( pixList)
+			if( [pixList[ 0] count] && d.count)
 			{
 				[self selectFirstTilingView];
 				[imageView updateTilingViews];
-			
-				[[pixList[ 0] objectAtIndex:0] orientation: previousOrientation];
-				previousLocation = [[imageView curDCM] sliceLocation];
-			}
-			else
-			{
-				for( int i = 0; i < 9 ; i++) previousOrientation[ i] = 0;
-				previousLocation = 0;
+                
+                [[pixList[ 0] objectAtIndex:0] orientation: previousOrientation];
+                
+                float newOrientation[ 9];
+                [[f objectAtIndex:0] orientation: newOrientation];
+                
+                for( i = 0; i < 9; i++)
+                {
+                    if( previousOrientation[ i] != newOrientation[ i])
+                        equalVector = NO;
+                    
+                    if( newOrientation[ i] != 0)
+                        nonZeroVector = YES;
+                }
+                
+                if( [previousStudyInstanceUID isEqualToString: [[d objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"]])
+                {
+                    if( SyncButtonBehaviorIsBetweenStudies && SYNCSERIES) // Move to overlapping area between old and new series
+                    {
+                        wasSyncButtonBehaviorIsBetweenStudies = YES;
+                        
+                        float previousLocations[ 3] = {0, 0, 0}; // Current, Start, End
+                        
+                        previousLocations[ 0] = [[imageView curDCM] sliceLocation];
+                        previousLocations[ 1] = [(DCMPix*)[pixList[ 0] objectAtIndex:0] sliceLocation];
+                        previousLocations[ 2] = [(DCMPix*)[pixList[ 0] lastObject] sliceLocation];
+                        
+                        float newStart = [[[f objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue];
+                        float newEnd = [[[f objectAtIndex: [f count]-1] valueForKey:@"sliceLocation"] floatValue];
+                        
+                        for( int u = 0; u < 3; u++)
+                        {
+                            if( previousLocations[ u] > newStart && previousLocations[ u] < newEnd)
+                            {
+                                switch( u)
+                                {
+                                    case 0: break;
+                                    case 1: [imageView setIndex: 0]; [imageView sendSyncMessage: 0];   break;
+                                    case 2: [imageView setIndex: [pixList[ 0] count]-1]; [imageView sendSyncMessage: 0]; break;
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                previousLocation = [[imageView curDCM] sliceLocation];
+                
+                [self turnOffSyncSeriesBetweenStudies: self];
 			}
 			// Check if another post-processing viewer is open : we CANNOT release the fVolumePtr -> OsiriX WILL crash
 			
@@ -7374,22 +7411,8 @@ return YES;
 					// If same study, same patient and same orientation, try to go the same position (mm) if available
 					if( [previousStudyInstanceUID isEqualToString: [[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"]])
 					{
-						float	currentOrientation[ 9];
-						BOOL	equalVector = YES;
-						BOOL	keepFusion = NO;
-                        BOOL    nonZeroVector = NO;
-						
-						[[pixList[ 0] objectAtIndex:0] orientation: currentOrientation];
-						
-						for( i = 0; i < 9; i++)
-						{
-							if( previousOrientation[ i] != currentOrientation[ i])
-                                equalVector = NO;
-                            
-                            if( currentOrientation[ i] != 0)
-                                nonZeroVector = YES;
-						}
-						
+                        BOOL keepFusion = NO;
+                        
 						if( equalVector && nonZeroVector)
 						{
 							float start = [[[fileList[ 0] objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue];
@@ -7411,38 +7434,38 @@ return YES;
 									start = temp;
 								}
 								
-								if( previousLocation > start && previousLocation < end)
-								{
-									long	index = 0, i;
-									float   smallestdiff = -1, fdiff;
-									
-									for( i = 0; i < [fileList[ 0] count]; i++)
-									{
-										float slicePosition = [[[fileList[ 0] objectAtIndex: i] valueForKey:@"sliceLocation"] floatValue];
-										
-										fdiff = fabs( slicePosition - previousLocation);
-										
-										if( fdiff < smallestdiff || smallestdiff == -1)
-										{
-											smallestdiff = fdiff;
-											index = i;
-										}
-									}
-									
-									if( index != 0)
-									{
-										if( wasFlipped)
-											index = [fileList[ 0] count] - index;
-										[imageView setIndex: index];
-										[self adjustSlider];
-										keepFusion = YES;
+                                if( previousLocation > start && previousLocation < end)
+                                {
+                                    long	index = 0;
+                                    float   smallestdiff = -1, fdiff;
+                                    
+                                    for( int i = 0; i < [fileList[ 0] count]; i++)
+                                    {
+                                        float slicePosition = [[[fileList[ 0] objectAtIndex: i] valueForKey:@"sliceLocation"] floatValue];
+                                        
+                                        fdiff = fabs( slicePosition - previousLocation);
+                                        
+                                        if( fdiff < smallestdiff || smallestdiff == -1)
+                                        {
+                                            smallestdiff = fdiff;
+                                            index = i;
+                                        }
+                                    }
+                                    
+                                    if( index != 0)
+                                    {
+                                        if( wasFlipped)
+                                            index = [fileList[ 0] count] - index;
+                                        [imageView setIndex: index];
+                                        [self adjustSlider];
+                                        keepFusion = YES;
                                         
                                         // Try to keep the same syncOffset if manual syncing between different studies
                                         
                                         if( wasSyncButtonBehaviorIsBetweenStudies)
                                             reactivateManualSyncing = YES;
-									}
-								}
+                                    }
+                                }
 							}
 						}
 						
@@ -15151,12 +15174,6 @@ int i,j,l;
 	{
 		SYNCSERIES = !SYNCSERIES;
 		
-		if( SYNCSERIES)
-		{
-			for( ViewerController *v in [ViewerController getDisplayed2DViewers])
-				[v checkEverythingLoaded];
-        }
-        
         float sliceLocation =  [(DCMPix*)[[imageView dcmPixList] objectAtIndex:[imageView  curImage]] sliceLocation];
         NSDictionary *userInfo = [NSDictionary dictionaryWithObject: [NSNumber numberWithFloat:sliceLocation] forKey:@"sliceLocation"];
         [[NSNotificationCenter defaultCenter] postNotificationName: OsirixSyncSeriesNotification object:nil userInfo: userInfo];
