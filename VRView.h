@@ -567,7 +567,6 @@ typedef char* VTKStereoVRView;
 - (IBAction) switchToSeriesRadio:(id) sender;
 - (float) offset;
 - (float) valueFactor;
-- (void) setViewportResizable: (BOOL) boo;
 - (void) squareView:(id) sender;
 - (void) computeValueFactor;
 - (void) setRotate: (BOOL) r;

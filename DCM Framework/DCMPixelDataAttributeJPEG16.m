@@ -284,7 +284,6 @@ jpeg16_nsdata_src (j_decompress_ptr cinfo, NSData *aData)
 	//short							theErr = 0;
 	unsigned long					 theLimit;
 	int								theRowStride;	 	/* physical row width in output buffer */
-	int								theLoop;
 	//unsigned char					*theWrkChP; 		/* ptr to the image */
 	//unsigned char					*theWrkCh8P; 		/* ptr to the image 8 bits */
 	unsigned short					*theWrkCh16P; 		/* ptr to the image 16 bits */

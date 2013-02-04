@@ -132,7 +132,6 @@
 - (IBAction)sendToBack:(id)sender;
 - (IBAction)setZoomFator:(id)sender;
 - (IBAction)scroll:(id)sender;
-- (void)setCursorLabelWithText:(NSString*)text;
 - (IBAction)removeAllCurves:(id)sender;
 - (void)addCurveIfNeeded;
 #pragma mark Custom GUI

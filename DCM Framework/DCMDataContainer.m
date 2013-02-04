@@ -596,7 +596,7 @@ void signal_EXC(int sig_num)
 	NSException *exception = [self testForLength:length];
 	//NSString *format;
 	NSMutableArray *times = [NSMutableArray array];
-	NSEnumerator *enumerator;
+    
 	if (!exception) {
 		NSString *string = [[[NSString alloc] initWithBytes:(_ptr + position) length:length encoding:NSUTF8StringEncoding] autorelease];
 		string = [string stringByTrimmingCharactersInSet:[NSCharacterSet controlCharacterSet]];

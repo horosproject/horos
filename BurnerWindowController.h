@@ -86,6 +86,5 @@ enum burnerDestination
 - (void)irisAnimation:(NSTimer*)object;
 - (NSNumber*)getSizeOfDirectory:(NSString*)path;
 - (NSString*) defaultTitle;
-- (IBAction) estimateFolderSize: (id) sender;
 - (void)saveOnVolume;
 @end

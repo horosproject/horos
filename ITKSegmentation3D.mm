@@ -529,7 +529,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 			loV = mouseValue - interval/2.0;
 			upV = mouseValue + interval/2.0;
 		}
-		else if (algorithmNumber==1)
+		else
 		{
 			loV = [[parameters objectAtIndex:0] floatValue];
 			upV = [[parameters objectAtIndex:1] floatValue];

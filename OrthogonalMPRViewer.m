@@ -1331,6 +1331,8 @@ return YES;
 	long deltaX, deltaY, x, y, oldX, oldY, max;
 	OrthogonalMPRView *view;
 	
+    deltaX = deltaY = x = y = oldX = oldY = max = 0;
+    
 	[panel setCanSelectHiddenExtension:YES];
 	[panel setRequiredFileType:@"jpg"];
 	
@@ -1721,8 +1723,9 @@ return YES;
 
 - (void) exportDICOMFile:(id) sender
 {
-	long max, curIndex;
-	OrthogonalMPRView *view;
+	long max = 0, curIndex = 0;
+	OrthogonalMPRView *view = nil;
+    
 	if ([[self keyView] isEqualTo:[controller originalView]])
 	{
 		view = [controller xReslicedView];

@@ -409,7 +409,6 @@ jpeg8_NSData_dest (j_compress_ptr cinfo, NSMutableData *aData)
 	struct jpeg_decompress_struct	theCInfo;
 	unsigned long				 theLimit;
 	int								theRowStride;	 	/* physical row width in output buffer */
-	int								theLoop;
 	unsigned char					*theWrkCh8P; 		/* ptr to the image 8 bits */
 	unsigned char					*theBuffer8P;
 	NSMutableData					*rawData = nil ;

@@ -1628,7 +1628,7 @@ PixelRepresentation
 	specificCharacterSet = [characterSet retain];
 	NSMutableArray *mutableKeys = [NSMutableArray arrayWithArray:[attributes allKeys]];
 	NSArray *sortedKeys = [mutableKeys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
-	NSString *key;
+    
 	for ( NSString *key in sortedKeys ) {
 		DCMAttribute *attr = [attributes objectForKey:key];
 		if (attr)

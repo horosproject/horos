@@ -1569,7 +1569,7 @@ N3MutableBezierCoreRef N3BezierCoreCreateMutableCopyByReversing(N3BezierCoreRef 
     N3MutableBezierCoreRef reversedBezier;
     bool needsClose;
     bool needsMove;
-    long i;
+    long i = 0;
     N3BezierCoreSegmentType segmentType;
     N3Vector control1;
     N3Vector control2;

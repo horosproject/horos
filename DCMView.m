@@ -4583,7 +4583,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
     if( dcmPixList )
 	{
-        short inc;
+        short inc = 0;
         
 		if( [stringID isEqualToString:@"previewDatabase"])
 		{

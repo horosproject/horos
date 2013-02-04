@@ -855,7 +855,7 @@ return YES;
     //	[[NSFileManager defaultManager] removeFileAtPath: tmp handler:nil];
     //	[state writeToFile: tmp atomically: YES];
         
-        NSData *windowsState = [NSPropertyListSerialization dataFromPropertyList: state  format: kCFPropertyListXMLFormat_v1_0 errorDescription: nil];
+        NSData *windowsState = [NSPropertyListSerialization dataFromPropertyList: state  format: NSPropertyListXMLFormat_v1_0 errorDescription: nil];
         
         NSMutableArray	*studiesArray = [NSMutableArray array];
         

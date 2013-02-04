@@ -192,7 +192,6 @@ enum {
 -(float) thickSlab;
 -(void) movieChangeSource:(float*) volumeData;
 -(void) movieBlendingChangeSource;
--(short) setPixSource:(NSMutableArray*)pix :(NSArray*)files :(float*) volumeData;
 -(void) axView:(id) sender;
 -(NSMutableDictionary*) get3DStateDictionary;
 -(void) set3DStateDictionary:(NSDictionary*) dict;

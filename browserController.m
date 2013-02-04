@@ -4987,9 +4987,10 @@ static NSConditionLock *threadLock = nil;
 	BOOL	onlySeries = YES;
 	NSMutableArray	*seriesArray = [NSMutableArray array];
 	
+    NSInteger row = 0;
 	for( NSInteger x = 0; x < [selectedRows count] ; x++)
 	{
-		NSInteger row = ( x == 0) ? [selectedRows firstIndex] : [selectedRows indexGreaterThanIndex: row];
+        row = ( x == 0) ? [selectedRows firstIndex] : [selectedRows indexGreaterThanIndex: row];
 		NSManagedObject	*series = [databaseOutline itemAtRow: row];
 		if( [[series valueForKey:@"type"] isEqualToString: @"Series"] == NO) onlySeries = NO;
 		
@@ -5021,9 +5022,10 @@ static NSConditionLock *threadLock = nil;
 		
 		if( [[[[[[destStudy valueForKey:@"series"] anyObject] valueForKey: @"images"] anyObject] valueForKey:@"extension"] isEqualToString:@"dcm"] == NO)
 		{
+            NSInteger row = 0;
 			for( NSInteger x = 0; x < [selectedRows count] ; x++)
 			{
-				NSInteger row = ( x == 0) ? [selectedRows firstIndex] : [selectedRows indexGreaterThanIndex: row];
+                row = ( x == 0) ? [selectedRows firstIndex] : [selectedRows indexGreaterThanIndex: row];
 				
 				NSManagedObject	*study = [databaseOutline itemAtRow: row];
 				
@@ -5041,9 +5043,10 @@ static NSConditionLock *threadLock = nil;
 		
 		NSLog(@"MERGING STUDIES: %@", destStudy);
 		
+        NSInteger row = 0;
 		for( NSInteger x = 0; x < [selectedRows count] ; x++)
 		{
-			NSInteger row = ( x == 0) ? [selectedRows firstIndex] : [selectedRows indexGreaterThanIndex: row];
+            row = ( x == 0) ? [selectedRows firstIndex] : [selectedRows indexGreaterThanIndex: row];
 			
 			NSManagedObject	*study = [databaseOutline itemAtRow: row];
 			
@@ -13471,9 +13474,10 @@ static NSArray*	openSubSeriesArray = nil;
 		NSIndexSet		*selectedRows = [databaseOutline selectedRowIndexes];
 		BOOL	onlySeries = YES;
 		
+        NSInteger row = 0;
 		for( NSInteger x = 0; x < [selectedRows count] ; x++)
 		{
-			NSInteger row = ( x == 0) ? [selectedRows firstIndex] : [selectedRows indexGreaterThanIndex: row];
+            row = ( x == 0) ? [selectedRows firstIndex] : [selectedRows indexGreaterThanIndex: row];
 			NSManagedObject	*series = [databaseOutline itemAtRow: row];
 			if( [[series valueForKey:@"type"] isEqualToString: @"Series"] == NO) onlySeries = NO;
 		}

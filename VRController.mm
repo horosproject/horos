@@ -2944,7 +2944,7 @@ return YES;
 		[settingsBackgroundColorTextField setStringValue:[NSString stringWithFormat:NSLocalizedString(@"Background: red:%.0f%%, green:%.0f%%, blue:%.0f%%", nil), 100*[[presetDictionary objectForKey:@"backgroundColorRedComponent"] floatValue], 100*[[presetDictionary objectForKey:@"backgroundColorGreenComponent"] floatValue], 100*[[presetDictionary objectForKey:@"backgroundColorBlueComponent"] floatValue]]];
 		
 		int proj = [[presetDictionary objectForKey:@"projection"] intValue];
-		NSString *projectionName;
+		NSString *projectionName = nil;
 		if(proj==0)
 			projectionName = NSLocalizedString(@"Perspective", nil);
 		else if(proj==1)
@@ -3714,7 +3714,7 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 //		[infoBackgroundColorView display];
 	
 	int proj = [[presetDictionary objectForKey:@"projection"] intValue];
-	NSString *projectionName;
+	NSString *projectionName = nil;
 	if(proj==0)
 		projectionName = NSLocalizedString(@"Perspective", nil);
 	else if(proj==1)

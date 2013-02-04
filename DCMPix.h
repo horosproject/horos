@@ -250,9 +250,6 @@ Note setter is different to not break existing usage. :-( */
 /**  pixel size */
 @property double pixelSpacingX, pixelSpacingY;
 
-/** Slice orientation */
-- (void) orientation:(float*) c;
-- (void) setOrientation:(float*) c;
 - (BOOL) identicalOrientationTo:(DCMPix*) c;
 
 - (void)orientationDouble:(double*) c;
@@ -516,7 +513,6 @@ Note setter is different to not break existing usage. :-( */
 - (void) DCMPixShutterOnOff:(BOOL)newDCMPixShutterOnOff;
 - (void) computeTotalDoseCorrected;
 //- (void) copyFromOther:(DCMPix *) fromDcm;
-- (void) imageArithmeticMultiplication:(DCMPix*) sub;
 - (void) setRGB : (BOOL) val;
 - (void) setConvolutionKernel:(short*)val :(short) size :(short) norm;
 - (void) applyConvolutionOnSourceImage;

@@ -59,7 +59,7 @@
 	if([[notification object] thickSlab]!=[self thickSlab] || [[notification object] thickSlabMode]!=[self thickSlabMode])
 		return;
 	
-	OrthogonalMPRView *sender;
+	OrthogonalMPRView *sender = nil;
 	if ([[[notification userInfo] objectForKey:@"view"] isEqualTo:@"originalView"])
 		sender = originalView;
 	else if ([[[notification userInfo] objectForKey:@"view"] isEqualTo:@"xReslicedView"])
@@ -85,14 +85,12 @@
 
 - (void)removeBonesAtX:(int)x y:(int)y fromView:(LLMPRView*)view;
 {
-	int xx, yy, zz;
-	float pixelMax, currentPixel;
-	float *buffer;
-	long res;
-	int i, s, minI, maxI;
-	DCMPix *curPix;
-	
-	//NSLog(@"pixListRange.location : %d .. pixListRange.length : %d", pixListRange.location, pixListRange.length);
+	int xx = 0, yy = 0, zz = 0;
+	float pixelMax = 0, currentPixel = 0;
+	float *buffer = nil;
+	long res = 0;
+	int i = 0, s = 0, minI = 0, maxI = 0;
+	DCMPix *curPix = nil;
 	
 	if ([view isEqualTo:originalView])
 	{

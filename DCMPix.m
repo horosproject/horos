@@ -4076,8 +4076,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 						dst[ i] = ((buf[ i] - min) * 16000.f) / diff;
 					}
 				}
+                _TIFFfree(buf);
 			}
-			_TIFFfree(buf);
 		}
 		
 		if( isRGB == NO)

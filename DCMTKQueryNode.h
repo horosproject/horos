@@ -88,7 +88,6 @@
 // values are a NSDictionary the key for the value is @"value" key for the name is @"name"  name is the tag descriptor from the tag dictionary
 - (void)queryWithValues:(NSArray *)values;
 - (void) queryWithValues:(NSArray *)values dataset:(DcmDataset*) dataset;
-- (void)move:(NSDictionary*) dict;
 - (NSManagedObject *)logEntry;
 - (void)setLogEntry:(NSManagedObject *)logEntry;
 - (void)setShowErrorMessage:(BOOL) m;

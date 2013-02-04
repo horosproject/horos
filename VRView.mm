@@ -965,7 +965,9 @@ public:
         if( [[controller style] isEqualToString: @"noNib"] == NO)
         {
             [self resetImage: self];
-            croppingBox->PlaceWidget();
+            
+            if( croppingBox)
+                croppingBox->PlaceWidget();
         }
     }
     
@@ -5605,6 +5607,7 @@ public:
 
 	if( croppingBox)
 		croppingBox->SetHandleSize( 0.005);
+    
 	[self setNeedsDisplay:YES];
 }
 
@@ -5638,6 +5641,7 @@ public:
 	
 	if( croppingBox)
 		croppingBox->SetHandleSize( 0.005);
+    
 	[self setNeedsDisplay:YES];
 }
 
@@ -5670,6 +5674,7 @@ public:
 	
 	if( croppingBox)
 		croppingBox->SetHandleSize( 0.005);
+    
 	[self setNeedsDisplay:YES];
 }
 
@@ -5701,6 +5706,7 @@ public:
 
 	if( croppingBox)
 		croppingBox->SetHandleSize( 0.005);
+    
 	[self setNeedsDisplay:YES];
 }
 
@@ -7497,7 +7503,9 @@ public:
     
     planes->Delete();
     
-
+    if( croppingBox->GetEnabled())
+        croppingBox->Off();
+    
 	// fusion percentage
 	[self setBlendingFactor:[cam fusionPercentage]];
 

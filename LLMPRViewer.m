@@ -1287,9 +1287,8 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 			free(resampledBuffer);
 		}
 		else
-		{
-			[self applyShiftX:xShift/4 y:yShift/4 toBuffer:resampledBuffer withWidth:curWidth height:curHeight];
-		}
+			[self applyShiftX:xShift/4 y:yShift/4 toBuffer:fVolumePtr withWidth:curWidth height:curHeight];
+        
 		//newAxialPix = [[DCMPix alloc] initWithData:fVolumePtr :32 :curWidth :curHeight :[curPix pixelSpacingX] :[curPix pixelSpacingY] :[curPix originX] :[curPix originY] :[curPix originZ] :YES];
 		
 		newAxialPix = [pix objectAtIndex: i];

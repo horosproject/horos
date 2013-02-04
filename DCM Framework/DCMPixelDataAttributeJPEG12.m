@@ -403,7 +403,6 @@ jpeg12_NSData_dest (j_compress_ptr cinfo, NSMutableData *aData)
 	struct jpeg_decompress_struct	theCInfo;
 	unsigned long				 theLimit;
 	int								theRowStride;	 	/* physical row width in output buffer */
-	int								theLoop;
 	unsigned short					*theWrkCh16P; 		/* ptr to the image 16 bits */
 	unsigned short					*theBuffer16P;
 	NSMutableData					*rawData = nil ;
