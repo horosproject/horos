@@ -504,7 +504,7 @@ static BOOL _cleanForFreeSpaceLimitSoonReachedDisplayed = NO;
             { CGFloat a = initialDelta, b = freeMemoryRequested, f = free; [NSThread currentThread].progress = (a-(b-f))/a; }
             
             DicomStudy* study = [sd objectAtIndex:0];
-            NSLog(@"Info: study [%@ - %@] is being deleted for space (added %@, last opened %@)", study.studyName, study.date, study.dateAdded, study.dateOpened);
+            NSLog(@"Info: study [%@ - %@ - %@] is being deleted for space (added %@, last opened %@)", study.studyName, study.patientID, study.date, study.dateAdded, study.dateOpened);
             
             // list images to be deleted
             NSMutableArray* imagesToDelete = [NSMutableArray array];
