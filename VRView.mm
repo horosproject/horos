@@ -1979,7 +1979,7 @@ public:
 			[self setShadingValues:[[tempArray objectAtIndex:0] floatValue] :[[tempArray objectAtIndex:1] floatValue] :[[tempArray objectAtIndex:2] floatValue] :[[tempArray objectAtIndex:3] floatValue]];
 		}
 		
-		if( renderingMode == 0)				// volume rendering
+		if( renderingMode == 0 && volumeProperty)
 			volumeProperty->SetShade( [[dict objectForKey:@"ShadingFlag"] longValue]);
 		
 		float savedSupersampling = [[dict objectForKey:@"superSampling"] floatValue];
