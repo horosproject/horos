@@ -2884,7 +2884,9 @@ return YES;
 		[presetDictionary setObject:curves forKey:@"16bitClutCurves"];
 		[presetDictionary setObject:colors forKey:@"16bitClutColors"];
 	}
-	[presetDictionary setObject:appliedConvolutionFilters forKey:@"convolutionFilters"];
+    if( appliedConvolutionFilters)
+        [presetDictionary setObject:appliedConvolutionFilters forKey:@"convolutionFilters"];
+    
 	[presetDictionary setObject:[NSNumber numberWithInt:projection] forKey:@"projection"];
 	[presetDictionary setObject:curOpacityMenu forKey:@"opacity"];
 	
@@ -2895,6 +2897,9 @@ return YES;
 {
     if( panelInstantiated == NO)
         [self showPresetsPanel];
+    
+    if( save3DSettingsWindow == nil)
+        return;
     
 	NSMutableDictionary *presetDictionary = [self getCurrent3DSettings];
 		

@@ -7173,6 +7173,8 @@ public:
 			
 			[self setCurrentTool: t3DRotate];
 			[[controller toolsMatrix] selectCellWithTag: t3DRotate];
+            
+            cropcallback->Execute(croppingBox, 0, nil);
 		}
 	}
 }
@@ -7503,7 +7505,7 @@ public:
     
     planes->Delete();
     
-    if( croppingBox->GetEnabled())
+    if( croppingBox && croppingBox->GetEnabled())
         croppingBox->Off();
     
 	// fusion percentage
