@@ -7070,6 +7070,7 @@ return YES;
 	if( curMovieIndex != 0)
 		[self setMovieIndex: 0];
 	
+    BOOL        reactivateManualSyncing = NO;
 	BOOL		sameSeries = NO;
 	long		i, imageIndex;
 	long		previousColumns = [imageView columns], previousRows = [imageView rows];
@@ -7086,6 +7087,13 @@ return YES;
 	{
 		@try 
 		{
+            BOOL wasSyncButtonBehaviorIsBetweenStudies = NO;
+            
+            if( SyncButtonBehaviorIsBetweenStudies && SYNCSERIES)
+                wasSyncButtonBehaviorIsBetweenStudies = YES;
+            
+            [self turnOffSyncSeriesBetweenStudies: self];
+            
 			nonVolumicDataWarningDisplayed = YES;
 			
 			if( previousColumns != 1 || previousRows != 1)
@@ -7428,6 +7436,11 @@ return YES;
 										[imageView setIndex: index];
 										[self adjustSlider];
 										keepFusion = YES;
+                                        
+                                        // Try to keep the same syncOffset if manual syncing between different studies
+                                        
+                                        if( wasSyncButtonBehaviorIsBetweenStudies)
+                                            reactivateManualSyncing = YES;
 									}
 								}
 							}
@@ -7471,7 +7484,6 @@ return YES;
 					[self setPostprocessed: NO];
 					
 					[self SetSyncButtonBehavior: self];
-					[self turnOffSyncSeriesBetweenStudies: self];
 					
                     if( [[self window] isVisible])
 						[imageView becomeMainWindow];	// This will send the image sync order !
@@ -7600,6 +7612,9 @@ return YES;
 		if( v != self)
 			[v propagateSettings];
 	}
+    
+    if( reactivateManualSyncing)
+        [self performSelector: @selector( SyncSeries:) withObject: self afterDelay: 0.1];
 }
 
 - (void) showWindowTransition
@@ -15140,11 +15155,11 @@ int i,j,l;
 		{
 			for( ViewerController *v in [ViewerController getDisplayed2DViewers])
 				[v checkEverythingLoaded];
-		}
-		
-		float sliceLocation =  [(DCMPix*)[[imageView dcmPixList] objectAtIndex:[imageView  curImage]] sliceLocation];
-		NSDictionary *userInfo = [NSDictionary dictionaryWithObject: [NSNumber numberWithFloat:sliceLocation] forKey:@"sliceLocation"];
-		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixSyncSeriesNotification object:nil userInfo: userInfo];
+        }
+        
+        float sliceLocation =  [(DCMPix*)[[imageView dcmPixList] objectAtIndex:[imageView  curImage]] sliceLocation];
+        NSDictionary *userInfo = [NSDictionary dictionaryWithObject: [NSNumber numberWithFloat:sliceLocation] forKey:@"sliceLocation"];
+        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixSyncSeriesNotification object:nil userInfo: userInfo];
 	}
 	else
 	{
