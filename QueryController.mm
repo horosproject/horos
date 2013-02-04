@@ -4052,7 +4052,7 @@ extern "C"
             }
 		*dateQueryFilter = [QueryFilter queryFilterWithObject: date ofSearchType: searchType forKey:@"StudyDate"];
 	}
-}
+} 
 
 - (void)setDateQuery:(id)sender
 {
