@@ -439,7 +439,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	{
 		@try
         {
-			if ([requestedPath isEqual:@"/"] || [requestedPath isEqual: @"/index"])
+			if ([requestedPath isEqual:@"/"] || [requestedPath hasPrefix: @"/index"])
 				[self processIndexHtml];
 			else
 			if ([requestedPath isEqual: @"/main"])
