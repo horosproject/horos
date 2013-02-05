@@ -11,7 +11,7 @@
 	<table class="centered form">
 		%[IF:Info.authenticationRequired%
 		<tr><td>Username:</td><td><input type="text" name="username" /></td></tr>
-		<tr><td>Password:</td><td><input type="password" name="password" /></td></tr>
+		<tr><td>Password:</td><td><input type="password" name="password" autocomplete="off"/></td></tr>
 		%]IF:Info.authenticationRequired%
 		<tr><td></td><td><input type="submit" name="login" value="Login" onclick="return loginAction(this.form)" /></td></tr>
 		%[IF:Info.authenticationRequired&&Info.passwordRestoreAllowed%
