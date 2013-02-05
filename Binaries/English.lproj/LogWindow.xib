@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
-		<int key="IBDocument.SystemTarget">1060</int>
-		<string key="IBDocument.SystemVersion">11E53</string>
-		<string key="IBDocument.InterfaceBuilderVersion">2182</string>
-		<string key="IBDocument.AppKitVersion">1138.47</string>
-		<string key="IBDocument.HIToolboxVersion">569.00</string>
+		<int key="IBDocument.SystemTarget">1070</int>
+		<string key="IBDocument.SystemVersion">12C60</string>
+		<string key="IBDocument.InterfaceBuilderVersion">3084</string>
+		<string key="IBDocument.AppKitVersion">1187.34</string>
+		<string key="IBDocument.HIToolboxVersion">625.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">2182</string>
+			<string key="NS.object.0">3084</string>
 		</object>
 		<array key="IBDocument.IntegratedClassDependencies">
-			<string>NSUserDefaultsController</string>
-			<string>NSScroller</string>
 			<string>NSArrayController</string>
-			<string>NSTableHeaderView</string>
 			<string>NSButton</string>
-			<string>NSScrollView</string>
-			<string>NSTextFieldCell</string>
-			<string>NSDateFormatter</string>
 			<string>NSButtonCell</string>
-			<string>NSTableView</string>
-			<string>NSTabView</string>
+			<string>NSCustomObject</string>
+			<string>NSDateFormatter</string>
+			<string>NSScrollView</string>
+			<string>NSScroller</string>
 			<string>NSSearchField</string>
 			<string>NSSearchFieldCell</string>
-			<string>NSCustomObject</string>
+			<string>NSTabView</string>
 			<string>NSTabViewItem</string>
+			<string>NSTableColumn</string>
+			<string>NSTableHeaderView</string>
+			<string>NSTableView</string>
+			<string>NSTextField</string>
+			<string>NSTextFieldCell</string>
+			<string>NSUserDefaultsController</string>
 			<string>NSView</string>
 			<string>NSWindowTemplate</string>
-			<string>NSTableColumn</string>
-			<string>NSTextField</string>
 		</array>
 		<array key="IBDocument.PluginDependencies">
 			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -71,7 +71,8 @@
 							<int key="NSvFlags">18</int>
 							<string key="NSFrame">{{-2, -4}, {1137, 499}}</string>
 							<reference key="NSSuperview" ref="951316499"/>
-							<reference key="NSNextKeyView" ref="45487594"/>
+							<reference key="NSWindow"/>
+							<reference key="NSNextKeyView" ref="274423729"/>
 							<array class="NSMutableArray" key="NSTabViewItems">
 								<object class="NSTabViewItem" id="531322208">
 									<string key="NSIdentifier">1</string>
@@ -92,19 +93,22 @@
 																<int key="NSvFlags">256</int>
 																<string key="NSFrameSize">{1105, 404}</string>
 																<reference key="NSSuperview" ref="495438469"/>
+																<reference key="NSNextKeyView" ref="424403962"/>
 																<bool key="NSEnabled">YES</bool>
+																<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
+																<bool key="NSControlAllowsExpansionToolTips">YES</bool>
 																<object class="NSTableHeaderView" key="NSHeaderView" id="569762685">
 																	<reference key="NSNextResponder" ref="598941592"/>
 																	<int key="NSvFlags">256</int>
 																	<string key="NSFrameSize">{1105, 17}</string>
 																	<reference key="NSSuperview" ref="598941592"/>
+																	<reference key="NSNextKeyView" ref="495438469"/>
 																	<reference key="NSTableView" ref="422116393"/>
 																</object>
-																<object class="_NSCornerView" key="NSCornerView" id="548155969">
-																	<reference key="NSNextResponder" ref="887817839"/>
+																<object class="_NSCornerView" key="NSCornerView">
+																	<nil key="NSNextResponder"/>
 																	<int key="NSvFlags">-2147483392</int>
 																	<string key="NSFrame">{{1067, 0}, {16, 17}}</string>
-																	<reference key="NSSuperview" ref="887817839"/>
 																</object>
 																<array class="NSMutableArray" key="NSTableColumns">
 																	<object class="NSTableColumn" id="874995309">
@@ -113,7 +117,7 @@
 																		<double key="NSMinWidth">100</double>
 																		<double key="NSMaxWidth">100</double>
 																		<object class="NSTableHeaderCell" key="NSHeaderCell">
-																			<int key="NSCellFlags">75628096</int>
+																			<int key="NSCellFlags">75497536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Type</string>
 																			<object class="NSFont" key="NSSupport" id="26">
@@ -136,7 +140,7 @@
 																			</object>
 																		</object>
 																		<object class="NSTextFieldCell" key="NSDataCell" id="952557750">
-																			<int key="NSCellFlags">337772096</int>
+																			<int key="NSCellFlags">337641536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Text Cell</string>
 																			<object class="NSFont" key="NSSupport" id="821765925">
@@ -171,7 +175,7 @@
 																		<double key="NSMinWidth">40</double>
 																		<double key="NSMaxWidth">300</double>
 																		<object class="NSTableHeaderCell" key="NSHeaderCell">
-																			<int key="NSCellFlags">75628096</int>
+																			<int key="NSCellFlags">75497536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Patient</string>
 																			<reference key="NSSupport" ref="26"/>
@@ -179,7 +183,7 @@
 																			<reference key="NSTextColor" ref="789719259"/>
 																		</object>
 																		<object class="NSTextFieldCell" key="NSDataCell" id="334307952">
-																			<int key="NSCellFlags">337772096</int>
+																			<int key="NSCellFlags">337641536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Text Cell</string>
 																			<reference key="NSSupport" ref="821765925"/>
@@ -197,7 +201,7 @@
 																		<double key="NSMinWidth">40</double>
 																		<double key="NSMaxWidth">500</double>
 																		<object class="NSTableHeaderCell" key="NSHeaderCell">
-																			<int key="NSCellFlags">75628096</int>
+																			<int key="NSCellFlags">75497536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Study</string>
 																			<reference key="NSSupport" ref="26"/>
@@ -213,7 +217,7 @@
 																			<reference key="NSTextColor" ref="789719259"/>
 																		</object>
 																		<object class="NSTextFieldCell" key="NSDataCell" id="866751039">
-																			<int key="NSCellFlags">337772096</int>
+																			<int key="NSCellFlags">337641536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Text Cell</string>
 																			<reference key="NSSupport" ref="821765925"/>
@@ -231,7 +235,7 @@
 																		<double key="NSMinWidth">40</double>
 																		<double key="NSMaxWidth">300</double>
 																		<object class="NSTableHeaderCell" key="NSHeaderCell">
-																			<int key="NSCellFlags">75628096</int>
+																			<int key="NSCellFlags">75497536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">From</string>
 																			<reference key="NSSupport" ref="26"/>
@@ -239,7 +243,7 @@
 																			<reference key="NSTextColor" ref="789719259"/>
 																		</object>
 																		<object class="NSTextFieldCell" key="NSDataCell" id="125038896">
-																			<int key="NSCellFlags">337772096</int>
+																			<int key="NSCellFlags">337641536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Text Cell</string>
 																			<reference key="NSSupport" ref="821765925"/>
@@ -257,7 +261,7 @@
 																		<double key="NSMinWidth">120</double>
 																		<double key="NSMaxWidth">120</double>
 																		<object class="NSTableHeaderCell" key="NSHeaderCell">
-																			<int key="NSCellFlags">75628096</int>
+																			<int key="NSCellFlags">75497536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Start</string>
 																			<reference key="NSSupport" ref="26"/>
@@ -265,7 +269,7 @@
 																			<reference key="NSTextColor" ref="789719259"/>
 																		</object>
 																		<object class="NSTextFieldCell" key="NSDataCell" id="175789886">
-																			<int key="NSCellFlags">337772096</int>
+																			<int key="NSCellFlags">337641536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<reference key="NSSupport" ref="821765925"/>
 																			<object class="NSDateFormatter" key="NSFormatter" id="444150343">
@@ -296,7 +300,7 @@
 																		<double key="NSMinWidth">120</double>
 																		<double key="NSMaxWidth">120</double>
 																		<object class="NSTableHeaderCell" key="NSHeaderCell">
-																			<int key="NSCellFlags">75628096</int>
+																			<int key="NSCellFlags">75497536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">End</string>
 																			<reference key="NSSupport" ref="26"/>
@@ -304,7 +308,7 @@
 																			<reference key="NSTextColor" ref="789719259"/>
 																		</object>
 																		<object class="NSTextFieldCell" key="NSDataCell" id="14317076">
-																			<int key="NSCellFlags">337772096</int>
+																			<int key="NSCellFlags">337641536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<reference key="NSSupport" ref="821765925"/>
 																			<object class="NSDateFormatter" key="NSFormatter" id="323544189">
@@ -335,7 +339,7 @@
 																		<double key="NSMinWidth">50</double>
 																		<double key="NSMaxWidth">50</double>
 																		<object class="NSTableHeaderCell" key="NSHeaderCell">
-																			<int key="NSCellFlags">75628096</int>
+																			<int key="NSCellFlags">75497536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Sent</string>
 																			<reference key="NSSupport" ref="26"/>
@@ -343,7 +347,7 @@
 																			<reference key="NSTextColor" ref="789719259"/>
 																		</object>
 																		<object class="NSTextFieldCell" key="NSDataCell" id="791913657">
-																			<int key="NSCellFlags">337772096</int>
+																			<int key="NSCellFlags">337641536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Text Cell</string>
 																			<reference key="NSSupport" ref="821765925"/>
@@ -361,7 +365,7 @@
 																		<double key="NSMinWidth">10</double>
 																		<double key="NSMaxWidth">50</double>
 																		<object class="NSTableHeaderCell" key="NSHeaderCell">
-																			<int key="NSCellFlags">75628096</int>
+																			<int key="NSCellFlags">75497536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Error</string>
 																			<reference key="NSSupport" ref="26"/>
@@ -369,7 +373,7 @@
 																			<reference key="NSTextColor" ref="789719259"/>
 																		</object>
 																		<object class="NSTextFieldCell" key="NSDataCell" id="529653742">
-																			<int key="NSCellFlags">337772096</int>
+																			<int key="NSCellFlags">337641536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Text Cell</string>
 																			<reference key="NSSupport" ref="821765925"/>
@@ -387,7 +391,7 @@
 																		<double key="NSMinWidth">50</double>
 																		<double key="NSMaxWidth">50</double>
 																		<object class="NSTableHeaderCell" key="NSHeaderCell">
-																			<int key="NSCellFlags">75628096</int>
+																			<int key="NSCellFlags">75497536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Total</string>
 																			<reference key="NSSupport" ref="26"/>
@@ -395,7 +399,7 @@
 																			<reference key="NSTextColor" ref="789719259"/>
 																		</object>
 																		<object class="NSTextFieldCell" key="NSDataCell" id="451810796">
-																			<int key="NSCellFlags">337772096</int>
+																			<int key="NSCellFlags">337641536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Text Cell</string>
 																			<reference key="NSSupport" ref="821765925"/>
@@ -413,7 +417,7 @@
 																		<double key="NSMinWidth">100</double>
 																		<double key="NSMaxWidth">100</double>
 																		<object class="NSTableHeaderCell" key="NSHeaderCell">
-																			<int key="NSCellFlags">75628096</int>
+																			<int key="NSCellFlags">75497536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Status</string>
 																			<reference key="NSSupport" ref="26"/>
@@ -421,7 +425,7 @@
 																			<reference key="NSTextColor" ref="789719259"/>
 																		</object>
 																		<object class="NSTextFieldCell" key="NSDataCell" id="59097073">
-																			<int key="NSCellFlags">337772096</int>
+																			<int key="NSCellFlags">337641536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Text Cell</string>
 																			<reference key="NSSupport" ref="821765925"/>
@@ -471,6 +475,8 @@
 														<int key="NSvFlags">-2147483392</int>
 														<string key="NSFrame">{{1067, 17}, {15, 377}}</string>
 														<reference key="NSSuperview" ref="887817839"/>
+														<reference key="NSNextKeyView" ref="508582674"/>
+														<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 														<reference key="NSTarget" ref="887817839"/>
 														<string key="NSAction">_doScroller:</string>
 														<double key="NSPercent">0.91052630000000001</double>
@@ -480,6 +486,8 @@
 														<int key="NSvFlags">-2147483392</int>
 														<string key="NSFrame">{{1, 394}, {1066, 15}}</string>
 														<reference key="NSSuperview" ref="887817839"/>
+														<reference key="NSNextKeyView"/>
+														<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 														<int key="NSsFlags">1</int>
 														<reference key="NSTarget" ref="887817839"/>
 														<string key="NSAction">_doScroller:</string>
@@ -498,26 +506,29 @@
 														<reference key="NSBGColor" ref="538763959"/>
 														<int key="NScvFlags">4</int>
 													</object>
-													<reference ref="548155969"/>
 												</array>
 												<string key="NSFrame">{{5, 5}, {1107, 422}}</string>
 												<reference key="NSSuperview" ref="351385457"/>
-												<reference key="NSNextKeyView" ref="495438469"/>
+												<reference key="NSNextKeyView" ref="598941592"/>
 												<int key="NSsFlags">133682</int>
 												<reference key="NSVScroller" ref="424403962"/>
 												<reference key="NSHScroller" ref="508582674"/>
 												<reference key="NSContentView" ref="495438469"/>
 												<reference key="NSHeaderClipView" ref="598941592"/>
 												<bytes key="NSScrollAmts">AAAAAAAAAABBgAAAQYAAAA</bytes>
+												<double key="NSMinMagnification">0.25</double>
+												<double key="NSMaxMagnification">4</double>
+												<double key="NSMagnification">1</double>
 											</object>
 											<object class="NSTextField" id="541630354">
 												<reference key="NSNextResponder" ref="351385457"/>
 												<int key="NSvFlags">264</int>
 												<string key="NSFrame">{{316, 435}, {142, 13}}</string>
 												<reference key="NSSuperview" ref="351385457"/>
+												<reference key="NSNextKeyView" ref="862429877"/>
 												<bool key="NSEnabled">YES</bool>
 												<object class="NSTextFieldCell" key="NSCell" id="585944544">
-													<int key="NSCellFlags">67239424</int>
+													<int key="NSCellFlags">67108864</int>
 													<int key="NSCellFlags2">0</int>
 													<string key="NSContents"># out of #</string>
 													<object class="NSFont" key="NSSupport" id="106901964">
@@ -534,15 +545,17 @@
 													</object>
 													<reference key="NSTextColor" ref="889729484"/>
 												</object>
+												<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 											</object>
 											<object class="NSSearchField" id="136782117">
 												<reference key="NSNextResponder" ref="351385457"/>
 												<int key="NSvFlags">264</int>
 												<string key="NSFrame">{{17, 433}, {294, 19}}</string>
 												<reference key="NSSuperview" ref="351385457"/>
+												<reference key="NSNextKeyView" ref="541630354"/>
 												<bool key="NSEnabled">YES</bool>
 												<object class="NSSearchFieldCell" key="NSCell" id="331606832">
-													<int key="NSCellFlags">341966400</int>
+													<int key="NSCellFlags">341835840</int>
 													<int key="NSCellFlags2">132096</int>
 													<reference key="NSSupport" ref="26"/>
 													<string key="NSPlaceholderString">All</string>
@@ -552,20 +565,20 @@
 													<reference key="NSBackgroundColor" ref="484982750"/>
 													<reference key="NSTextColor" ref="889729484"/>
 													<object class="NSButtonCell" key="NSSearchButtonCell">
-														<int key="NSCellFlags">130560</int>
+														<int key="NSCellFlags">0</int>
 														<int key="NSCellFlags2">0</int>
 														<string key="NSContents">search</string>
 														<reference key="NSControlView" ref="136782117"/>
 														<string key="NSAction">_searchFieldSearch:</string>
 														<reference key="NSTarget" ref="331606832"/>
-														<int key="NSButtonFlags">138690815</int>
+														<int key="NSButtonFlags">138690560</int>
 														<int key="NSButtonFlags2">0</int>
 														<string key="NSKeyEquivalent"/>
 														<int key="NSPeriodicDelay">400</int>
 														<int key="NSPeriodicInterval">75</int>
 													</object>
 													<object class="NSButtonCell" key="NSCancelButtonCell">
-														<int key="NSCellFlags">-2147353088</int>
+														<int key="NSCellFlags">-2147483648</int>
 														<int key="NSCellFlags2">0</int>
 														<string key="NSContents">clear</string>
 														<array class="NSMutableArray" key="NSAccessibilityOverriddenAttributes">
@@ -576,7 +589,7 @@
 														</array>
 														<string key="NSAction">_searchFieldCancel:</string>
 														<reference key="NSTarget" ref="331606832"/>
-														<int key="NSButtonFlags">138428671</int>
+														<int key="NSButtonFlags">138428416</int>
 														<int key="NSButtonFlags2">0</int>
 														<string key="NSKeyEquivalent"/>
 														<int key="NSPeriodicDelay">400</int>
@@ -584,30 +597,34 @@
 													</object>
 													<int key="NSMaximumRecents">255</int>
 												</object>
+												<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 											</object>
 											<object class="NSButton" id="862429877">
 												<reference key="NSNextResponder" ref="351385457"/>
 												<int key="NSvFlags">265</int>
 												<string key="NSFrame">{{1021, 431}, {96, 28}}</string>
 												<reference key="NSSuperview" ref="351385457"/>
+												<reference key="NSNextKeyView" ref="887817839"/>
 												<int key="NSTag">1</int>
 												<bool key="NSEnabled">YES</bool>
 												<object class="NSButtonCell" key="NSCell" id="465678785">
-													<int key="NSCellFlags">67239424</int>
+													<int key="NSCellFlags">67108864</int>
 													<int key="NSCellFlags2">134348800</int>
 													<string key="NSContents">Export</string>
 													<reference key="NSSupport" ref="26"/>
 													<reference key="NSControlView" ref="862429877"/>
-													<int key="NSButtonFlags">-2038284033</int>
+													<int key="NSButtonFlags">-2038284288</int>
 													<int key="NSButtonFlags2">129</int>
 													<string key="NSAlternateContents"/>
 													<string key="NSKeyEquivalent"/>
 													<int key="NSPeriodicDelay">200</int>
 													<int key="NSPeriodicInterval">25</int>
 												</object>
+												<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 											</object>
 										</array>
 										<string key="NSFrame">{{10, 25}, {1117, 461}}</string>
+										<reference key="NSNextKeyView" ref="136782117"/>
 									</object>
 									<string key="NSLabel">Receive</string>
 									<object class="NSColor" key="NSColor" id="1032299309">
@@ -637,19 +654,22 @@
 																<int key="NSvFlags">256</int>
 																<string key="NSFrameSize">{1105, 404}</string>
 																<reference key="NSSuperview" ref="108550234"/>
+																<reference key="NSNextKeyView" ref="386889235"/>
 																<bool key="NSEnabled">YES</bool>
+																<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
+																<bool key="NSControlAllowsExpansionToolTips">YES</bool>
 																<object class="NSTableHeaderView" key="NSHeaderView" id="347548308">
 																	<reference key="NSNextResponder" ref="156274553"/>
 																	<int key="NSvFlags">256</int>
 																	<string key="NSFrameSize">{1105, 17}</string>
 																	<reference key="NSSuperview" ref="156274553"/>
+																	<reference key="NSNextKeyView" ref="108550234"/>
 																	<reference key="NSTableView" ref="608042377"/>
 																</object>
-																<object class="_NSCornerView" key="NSCornerView" id="344637739">
-																	<reference key="NSNextResponder" ref="543181099"/>
+																<object class="_NSCornerView" key="NSCornerView">
+																	<nil key="NSNextResponder"/>
 																	<int key="NSvFlags">-2147483392</int>
 																	<string key="NSFrame">{{1067, 0}, {16, 17}}</string>
-																	<reference key="NSSuperview" ref="543181099"/>
 																</object>
 																<array class="NSMutableArray" key="NSTableColumns">
 																	<object class="NSTableColumn" id="912271013">
@@ -658,7 +678,7 @@
 																		<double key="NSMinWidth">100</double>
 																		<double key="NSMaxWidth">100</double>
 																		<object class="NSTableHeaderCell" key="NSHeaderCell">
-																			<int key="NSCellFlags">75628096</int>
+																			<int key="NSCellFlags">75497536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Type</string>
 																			<reference key="NSSupport" ref="26"/>
@@ -669,7 +689,7 @@
 																			<reference key="NSTextColor" ref="789719259"/>
 																		</object>
 																		<object class="NSTextFieldCell" key="NSDataCell" id="44377397">
-																			<int key="NSCellFlags">337772096</int>
+																			<int key="NSCellFlags">337641536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Text Cell</string>
 																			<reference key="NSSupport" ref="821765925"/>
@@ -692,7 +712,7 @@
 																		<double key="NSMinWidth">40</double>
 																		<double key="NSMaxWidth">300</double>
 																		<object class="NSTableHeaderCell" key="NSHeaderCell">
-																			<int key="NSCellFlags">75628096</int>
+																			<int key="NSCellFlags">75497536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Patient</string>
 																			<reference key="NSSupport" ref="26"/>
@@ -700,7 +720,7 @@
 																			<reference key="NSTextColor" ref="789719259"/>
 																		</object>
 																		<object class="NSTextFieldCell" key="NSDataCell" id="255900798">
-																			<int key="NSCellFlags">337772096</int>
+																			<int key="NSCellFlags">337641536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Text Cell</string>
 																			<reference key="NSSupport" ref="821765925"/>
@@ -723,7 +743,7 @@
 																		<double key="NSMinWidth">40</double>
 																		<double key="NSMaxWidth">500</double>
 																		<object class="NSTableHeaderCell" key="NSHeaderCell">
-																			<int key="NSCellFlags">75628096</int>
+																			<int key="NSCellFlags">75497536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Study</string>
 																			<reference key="NSSupport" ref="26"/>
@@ -731,7 +751,7 @@
 																			<reference key="NSTextColor" ref="789719259"/>
 																		</object>
 																		<object class="NSTextFieldCell" key="NSDataCell" id="109658813">
-																			<int key="NSCellFlags">337772096</int>
+																			<int key="NSCellFlags">337641536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Text Cell</string>
 																			<reference key="NSSupport" ref="821765925"/>
@@ -754,7 +774,7 @@
 																		<double key="NSMinWidth">40</double>
 																		<double key="NSMaxWidth">300</double>
 																		<object class="NSTableHeaderCell" key="NSHeaderCell">
-																			<int key="NSCellFlags">75628096</int>
+																			<int key="NSCellFlags">75497536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">To</string>
 																			<reference key="NSSupport" ref="26"/>
@@ -762,7 +782,7 @@
 																			<reference key="NSTextColor" ref="789719259"/>
 																		</object>
 																		<object class="NSTextFieldCell" key="NSDataCell" id="135721346">
-																			<int key="NSCellFlags">337772096</int>
+																			<int key="NSCellFlags">337641536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Text Cell</string>
 																			<reference key="NSSupport" ref="821765925"/>
@@ -785,7 +805,7 @@
 																		<double key="NSMinWidth">120</double>
 																		<double key="NSMaxWidth">120</double>
 																		<object class="NSTableHeaderCell" key="NSHeaderCell">
-																			<int key="NSCellFlags">75628096</int>
+																			<int key="NSCellFlags">75497536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Start</string>
 																			<reference key="NSSupport" ref="26"/>
@@ -793,7 +813,7 @@
 																			<reference key="NSTextColor" ref="789719259"/>
 																		</object>
 																		<object class="NSTextFieldCell" key="NSDataCell" id="161162775">
-																			<int key="NSCellFlags">337772096</int>
+																			<int key="NSCellFlags">337641536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<reference key="NSSupport" ref="821765925"/>
 																			<object class="NSDateFormatter" key="NSFormatter" id="279167791">
@@ -824,7 +844,7 @@
 																		<double key="NSMinWidth">120</double>
 																		<double key="NSMaxWidth">120</double>
 																		<object class="NSTableHeaderCell" key="NSHeaderCell">
-																			<int key="NSCellFlags">75628096</int>
+																			<int key="NSCellFlags">75497536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">End</string>
 																			<reference key="NSSupport" ref="26"/>
@@ -832,7 +852,7 @@
 																			<reference key="NSTextColor" ref="789719259"/>
 																		</object>
 																		<object class="NSTextFieldCell" key="NSDataCell" id="817032566">
-																			<int key="NSCellFlags">337772096</int>
+																			<int key="NSCellFlags">337641536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<reference key="NSSupport" ref="821765925"/>
 																			<object class="NSDateFormatter" key="NSFormatter" id="530733436">
@@ -863,7 +883,7 @@
 																		<double key="NSMinWidth">50</double>
 																		<double key="NSMaxWidth">50</double>
 																		<object class="NSTableHeaderCell" key="NSHeaderCell">
-																			<int key="NSCellFlags">75628096</int>
+																			<int key="NSCellFlags">75497536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Sent</string>
 																			<reference key="NSSupport" ref="26"/>
@@ -871,7 +891,7 @@
 																			<reference key="NSTextColor" ref="789719259"/>
 																		</object>
 																		<object class="NSTextFieldCell" key="NSDataCell" id="1010715655">
-																			<int key="NSCellFlags">337772096</int>
+																			<int key="NSCellFlags">337641536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Text Cell</string>
 																			<reference key="NSSupport" ref="821765925"/>
@@ -889,7 +909,7 @@
 																		<double key="NSMinWidth">50</double>
 																		<double key="NSMaxWidth">50</double>
 																		<object class="NSTableHeaderCell" key="NSHeaderCell">
-																			<int key="NSCellFlags">75628096</int>
+																			<int key="NSCellFlags">75497536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Error</string>
 																			<reference key="NSSupport" ref="26"/>
@@ -897,7 +917,7 @@
 																			<reference key="NSTextColor" ref="789719259"/>
 																		</object>
 																		<object class="NSTextFieldCell" key="NSDataCell" id="470260158">
-																			<int key="NSCellFlags">337772096</int>
+																			<int key="NSCellFlags">337641536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Text Cell</string>
 																			<reference key="NSSupport" ref="821765925"/>
@@ -915,7 +935,7 @@
 																		<double key="NSMinWidth">50</double>
 																		<double key="NSMaxWidth">1000</double>
 																		<object class="NSTableHeaderCell" key="NSHeaderCell">
-																			<int key="NSCellFlags">75628096</int>
+																			<int key="NSCellFlags">75497536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Total</string>
 																			<reference key="NSSupport" ref="26"/>
@@ -923,7 +943,7 @@
 																			<reference key="NSTextColor" ref="789719259"/>
 																		</object>
 																		<object class="NSTextFieldCell" key="NSDataCell" id="465917201">
-																			<int key="NSCellFlags">337772096</int>
+																			<int key="NSCellFlags">337641536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Text Cell</string>
 																			<reference key="NSSupport" ref="821765925"/>
@@ -941,7 +961,7 @@
 																		<double key="NSMinWidth">100</double>
 																		<double key="NSMaxWidth">100</double>
 																		<object class="NSTableHeaderCell" key="NSHeaderCell">
-																			<int key="NSCellFlags">75628096</int>
+																			<int key="NSCellFlags">75497536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Status</string>
 																			<reference key="NSSupport" ref="26"/>
@@ -949,7 +969,7 @@
 																			<reference key="NSTextColor" ref="789719259"/>
 																		</object>
 																		<object class="NSTextFieldCell" key="NSDataCell" id="129135970">
-																			<int key="NSCellFlags">337772096</int>
+																			<int key="NSCellFlags">337641536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Text Cell</string>
 																			<reference key="NSSupport" ref="821765925"/>
@@ -991,6 +1011,8 @@
 														<int key="NSvFlags">-2147483392</int>
 														<string key="NSFrame">{{1067, 17}, {15, 377}}</string>
 														<reference key="NSSuperview" ref="543181099"/>
+														<reference key="NSNextKeyView" ref="442668039"/>
+														<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 														<reference key="NSTarget" ref="543181099"/>
 														<string key="NSAction">_doScroller:</string>
 														<double key="NSPercent">0.80526319999999996</double>
@@ -1000,6 +1022,8 @@
 														<int key="NSvFlags">-2147483392</int>
 														<string key="NSFrame">{{1, 394}, {1066, 15}}</string>
 														<reference key="NSSuperview" ref="543181099"/>
+														<reference key="NSNextKeyView"/>
+														<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 														<int key="NSsFlags">1</int>
 														<reference key="NSTarget" ref="543181099"/>
 														<string key="NSAction">_doScroller:</string>
@@ -1018,26 +1042,29 @@
 														<reference key="NSBGColor" ref="538763959"/>
 														<int key="NScvFlags">4</int>
 													</object>
-													<reference ref="344637739"/>
 												</array>
 												<string key="NSFrame">{{5, 5}, {1107, 422}}</string>
 												<reference key="NSSuperview" ref="286225513"/>
-												<reference key="NSNextKeyView" ref="108550234"/>
+												<reference key="NSNextKeyView" ref="156274553"/>
 												<int key="NSsFlags">133682</int>
 												<reference key="NSVScroller" ref="386889235"/>
 												<reference key="NSHScroller" ref="442668039"/>
 												<reference key="NSContentView" ref="108550234"/>
 												<reference key="NSHeaderClipView" ref="156274553"/>
 												<bytes key="NSScrollAmts">AAAAAAAAAABBgAAAQYAAAA</bytes>
+												<double key="NSMinMagnification">0.25</double>
+												<double key="NSMaxMagnification">4</double>
+												<double key="NSMagnification">1</double>
 											</object>
 											<object class="NSTextField" id="416336177">
 												<reference key="NSNextResponder" ref="286225513"/>
 												<int key="NSvFlags">264</int>
 												<string key="NSFrame">{{316, 435}, {142, 13}}</string>
 												<reference key="NSSuperview" ref="286225513"/>
+												<reference key="NSNextKeyView" ref="573889830"/>
 												<bool key="NSEnabled">YES</bool>
 												<object class="NSTextFieldCell" key="NSCell" id="53192343">
-													<int key="NSCellFlags">67239424</int>
+													<int key="NSCellFlags">67108864</int>
 													<int key="NSCellFlags2">0</int>
 													<string key="NSContents"># out of #</string>
 													<reference key="NSSupport" ref="106901964"/>
@@ -1045,15 +1072,17 @@
 													<reference key="NSBackgroundColor" ref="484982750"/>
 													<reference key="NSTextColor" ref="889729484"/>
 												</object>
+												<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 											</object>
 											<object class="NSSearchField" id="584880189">
 												<reference key="NSNextResponder" ref="286225513"/>
 												<int key="NSvFlags">264</int>
 												<string key="NSFrame">{{17, 433}, {294, 19}}</string>
 												<reference key="NSSuperview" ref="286225513"/>
+												<reference key="NSNextKeyView" ref="416336177"/>
 												<bool key="NSEnabled">YES</bool>
 												<object class="NSSearchFieldCell" key="NSCell" id="787307844">
-													<int key="NSCellFlags">341966400</int>
+													<int key="NSCellFlags">341835840</int>
 													<int key="NSCellFlags2">132096</int>
 													<reference key="NSSupport" ref="26"/>
 													<string key="NSPlaceholderString">All</string>
@@ -1063,20 +1092,20 @@
 													<reference key="NSBackgroundColor" ref="484982750"/>
 													<reference key="NSTextColor" ref="889729484"/>
 													<object class="NSButtonCell" key="NSSearchButtonCell">
-														<int key="NSCellFlags">130560</int>
+														<int key="NSCellFlags">0</int>
 														<int key="NSCellFlags2">0</int>
 														<string key="NSContents">search</string>
 														<reference key="NSControlView" ref="584880189"/>
 														<string key="NSAction">_searchFieldSearch:</string>
 														<reference key="NSTarget" ref="787307844"/>
-														<int key="NSButtonFlags">138690815</int>
+														<int key="NSButtonFlags">138690560</int>
 														<int key="NSButtonFlags2">0</int>
 														<string key="NSKeyEquivalent"/>
 														<int key="NSPeriodicDelay">400</int>
 														<int key="NSPeriodicInterval">75</int>
 													</object>
 													<object class="NSButtonCell" key="NSCancelButtonCell">
-														<int key="NSCellFlags">-2147353088</int>
+														<int key="NSCellFlags">-2147483648</int>
 														<int key="NSCellFlags2">0</int>
 														<string key="NSContents">clear</string>
 														<array class="NSMutableArray" key="NSAccessibilityOverriddenAttributes">
@@ -1087,7 +1116,7 @@
 														</array>
 														<string key="NSAction">_searchFieldCancel:</string>
 														<reference key="NSTarget" ref="787307844"/>
-														<int key="NSButtonFlags">138428671</int>
+														<int key="NSButtonFlags">138428416</int>
 														<int key="NSButtonFlags2">0</int>
 														<string key="NSKeyEquivalent"/>
 														<int key="NSPeriodicDelay">400</int>
@@ -1095,30 +1124,34 @@
 													</object>
 													<int key="NSMaximumRecents">255</int>
 												</object>
+												<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 											</object>
 											<object class="NSButton" id="573889830">
 												<reference key="NSNextResponder" ref="286225513"/>
 												<int key="NSvFlags">265</int>
 												<string key="NSFrame">{{1021, 431}, {96, 28}}</string>
 												<reference key="NSSuperview" ref="286225513"/>
+												<reference key="NSNextKeyView" ref="543181099"/>
 												<int key="NSTag">2</int>
 												<bool key="NSEnabled">YES</bool>
 												<object class="NSButtonCell" key="NSCell" id="161521545">
-													<int key="NSCellFlags">67239424</int>
+													<int key="NSCellFlags">67108864</int>
 													<int key="NSCellFlags2">134348800</int>
 													<string key="NSContents">Export</string>
 													<reference key="NSSupport" ref="26"/>
 													<reference key="NSControlView" ref="573889830"/>
-													<int key="NSButtonFlags">-2038284033</int>
+													<int key="NSButtonFlags">-2038284288</int>
 													<int key="NSButtonFlags2">129</int>
 													<string key="NSAlternateContents"/>
 													<string key="NSKeyEquivalent"/>
 													<int key="NSPeriodicDelay">200</int>
 													<int key="NSPeriodicInterval">25</int>
 												</object>
+												<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 											</object>
 										</array>
 										<string key="NSFrame">{{10, 25}, {1117, 461}}</string>
+										<reference key="NSNextKeyView" ref="584880189"/>
 									</object>
 									<string key="NSLabel">Send</string>
 									<reference key="NSColor" ref="1032299309"/>
@@ -1127,7 +1160,7 @@
 								<object class="NSTabViewItem" id="625450977">
 									<string key="NSIdentifier">Item 2</string>
 									<object class="NSView" key="NSView" id="274423729">
-										<nil key="NSNextResponder"/>
+										<reference key="NSNextResponder" ref="883849166"/>
 										<int key="NSvFlags">256</int>
 										<array class="NSMutableArray" key="NSSubviews">
 											<object class="NSScrollView" id="554820010">
@@ -1143,19 +1176,24 @@
 																<int key="NSvFlags">256</int>
 																<string key="NSFrameSize">{1105, 404}</string>
 																<reference key="NSSuperview" ref="965514846"/>
+																<reference key="NSWindow"/>
+																<reference key="NSNextKeyView" ref="50482779"/>
 																<bool key="NSEnabled">YES</bool>
+																<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
+																<bool key="NSControlAllowsExpansionToolTips">YES</bool>
 																<object class="NSTableHeaderView" key="NSHeaderView" id="331041648">
 																	<reference key="NSNextResponder" ref="1017896235"/>
 																	<int key="NSvFlags">256</int>
 																	<string key="NSFrameSize">{1105, 17}</string>
 																	<reference key="NSSuperview" ref="1017896235"/>
+																	<reference key="NSWindow"/>
+																	<reference key="NSNextKeyView" ref="965514846"/>
 																	<reference key="NSTableView" ref="902365320"/>
 																</object>
-																<object class="_NSCornerView" key="NSCornerView" id="271289536">
-																	<reference key="NSNextResponder" ref="554820010"/>
+																<object class="_NSCornerView" key="NSCornerView">
+																	<nil key="NSNextResponder"/>
 																	<int key="NSvFlags">-2147483392</int>
 																	<string key="NSFrame">{{1067, 0}, {16, 17}}</string>
-																	<reference key="NSSuperview" ref="554820010"/>
 																</object>
 																<array class="NSMutableArray" key="NSTableColumns">
 																	<object class="NSTableColumn" id="746971923">
@@ -1164,7 +1202,7 @@
 																		<double key="NSMinWidth">100</double>
 																		<double key="NSMaxWidth">100</double>
 																		<object class="NSTableHeaderCell" key="NSHeaderCell">
-																			<int key="NSCellFlags">75628096</int>
+																			<int key="NSCellFlags">75497536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Type</string>
 																			<reference key="NSSupport" ref="26"/>
@@ -1175,7 +1213,7 @@
 																			<reference key="NSTextColor" ref="789719259"/>
 																		</object>
 																		<object class="NSTextFieldCell" key="NSDataCell" id="502972512">
-																			<int key="NSCellFlags">337772096</int>
+																			<int key="NSCellFlags">337641536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Text Cell</string>
 																			<reference key="NSSupport" ref="821765925"/>
@@ -1198,7 +1236,7 @@
 																		<double key="NSMinWidth">40</double>
 																		<double key="NSMaxWidth">300</double>
 																		<object class="NSTableHeaderCell" key="NSHeaderCell">
-																			<int key="NSCellFlags">75628096</int>
+																			<int key="NSCellFlags">75497536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Patient</string>
 																			<reference key="NSSupport" ref="26"/>
@@ -1206,7 +1244,7 @@
 																			<reference key="NSTextColor" ref="789719259"/>
 																		</object>
 																		<object class="NSTextFieldCell" key="NSDataCell" id="695775101">
-																			<int key="NSCellFlags">337772096</int>
+																			<int key="NSCellFlags">337641536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Text Cell</string>
 																			<reference key="NSSupport" ref="821765925"/>
@@ -1224,7 +1262,7 @@
 																		<double key="NSMinWidth">40</double>
 																		<double key="NSMaxWidth">500</double>
 																		<object class="NSTableHeaderCell" key="NSHeaderCell">
-																			<int key="NSCellFlags">75628096</int>
+																			<int key="NSCellFlags">75497536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Study</string>
 																			<reference key="NSSupport" ref="26"/>
@@ -1232,7 +1270,7 @@
 																			<reference key="NSTextColor" ref="789719259"/>
 																		</object>
 																		<object class="NSTextFieldCell" key="NSDataCell" id="628284589">
-																			<int key="NSCellFlags">337772096</int>
+																			<int key="NSCellFlags">337641536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Text Cell</string>
 																			<reference key="NSSupport" ref="821765925"/>
@@ -1250,7 +1288,7 @@
 																		<double key="NSMinWidth">40</double>
 																		<double key="NSMaxWidth">300</double>
 																		<object class="NSTableHeaderCell" key="NSHeaderCell">
-																			<int key="NSCellFlags">75628096</int>
+																			<int key="NSCellFlags">75497536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">To</string>
 																			<reference key="NSSupport" ref="26"/>
@@ -1258,7 +1296,7 @@
 																			<reference key="NSTextColor" ref="789719259"/>
 																		</object>
 																		<object class="NSTextFieldCell" key="NSDataCell" id="175539586">
-																			<int key="NSCellFlags">337772096</int>
+																			<int key="NSCellFlags">337641536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Text Cell</string>
 																			<reference key="NSSupport" ref="821765925"/>
@@ -1276,7 +1314,7 @@
 																		<double key="NSMinWidth">120</double>
 																		<double key="NSMaxWidth">120</double>
 																		<object class="NSTableHeaderCell" key="NSHeaderCell">
-																			<int key="NSCellFlags">75628096</int>
+																			<int key="NSCellFlags">75497536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Start</string>
 																			<reference key="NSSupport" ref="26"/>
@@ -1284,7 +1322,7 @@
 																			<reference key="NSTextColor" ref="789719259"/>
 																		</object>
 																		<object class="NSTextFieldCell" key="NSDataCell" id="937755896">
-																			<int key="NSCellFlags">337772096</int>
+																			<int key="NSCellFlags">337641536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<reference key="NSSupport" ref="821765925"/>
 																			<object class="NSDateFormatter" key="NSFormatter" id="786631236">
@@ -1315,7 +1353,7 @@
 																		<double key="NSMinWidth">120</double>
 																		<double key="NSMaxWidth">120</double>
 																		<object class="NSTableHeaderCell" key="NSHeaderCell">
-																			<int key="NSCellFlags">75628096</int>
+																			<int key="NSCellFlags">75497536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">End</string>
 																			<reference key="NSSupport" ref="26"/>
@@ -1323,7 +1361,7 @@
 																			<reference key="NSTextColor" ref="789719259"/>
 																		</object>
 																		<object class="NSTextFieldCell" key="NSDataCell" id="168645277">
-																			<int key="NSCellFlags">337772096</int>
+																			<int key="NSCellFlags">337641536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<reference key="NSSupport" ref="821765925"/>
 																			<object class="NSDateFormatter" key="NSFormatter" id="358730257">
@@ -1354,7 +1392,7 @@
 																		<double key="NSMinWidth">50</double>
 																		<double key="NSMaxWidth">50</double>
 																		<object class="NSTableHeaderCell" key="NSHeaderCell">
-																			<int key="NSCellFlags">75628096</int>
+																			<int key="NSCellFlags">75497536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Sent</string>
 																			<reference key="NSSupport" ref="26"/>
@@ -1362,7 +1400,7 @@
 																			<reference key="NSTextColor" ref="789719259"/>
 																		</object>
 																		<object class="NSTextFieldCell" key="NSDataCell" id="978881916">
-																			<int key="NSCellFlags">337772096</int>
+																			<int key="NSCellFlags">337641536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Text Cell</string>
 																			<reference key="NSSupport" ref="821765925"/>
@@ -1385,7 +1423,7 @@
 																		<double key="NSMinWidth">50</double>
 																		<double key="NSMaxWidth">50</double>
 																		<object class="NSTableHeaderCell" key="NSHeaderCell">
-																			<int key="NSCellFlags">75628096</int>
+																			<int key="NSCellFlags">75497536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Total</string>
 																			<reference key="NSSupport" ref="26"/>
@@ -1393,7 +1431,7 @@
 																			<reference key="NSTextColor" ref="789719259"/>
 																		</object>
 																		<object class="NSTextFieldCell" key="NSDataCell" id="549945517">
-																			<int key="NSCellFlags">337772096</int>
+																			<int key="NSCellFlags">337641536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Text Cell</string>
 																			<reference key="NSSupport" ref="821765925"/>
@@ -1416,7 +1454,7 @@
 																		<double key="NSMinWidth">100</double>
 																		<double key="NSMaxWidth">100</double>
 																		<object class="NSTableHeaderCell" key="NSHeaderCell">
-																			<int key="NSCellFlags">75628096</int>
+																			<int key="NSCellFlags">75497536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Status</string>
 																			<reference key="NSSupport" ref="26"/>
@@ -1424,7 +1462,7 @@
 																			<reference key="NSTextColor" ref="789719259"/>
 																		</object>
 																		<object class="NSTextFieldCell" key="NSDataCell" id="129137243">
-																			<int key="NSCellFlags">337772096</int>
+																			<int key="NSCellFlags">337641536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Text Cell</string>
 																			<reference key="NSSupport" ref="821765925"/>
@@ -1461,6 +1499,7 @@
 														</array>
 														<string key="NSFrame">{{1, 17}, {1105, 404}}</string>
 														<reference key="NSSuperview" ref="554820010"/>
+														<reference key="NSWindow"/>
 														<reference key="NSNextKeyView" ref="902365320"/>
 														<reference key="NSDocView" ref="902365320"/>
 														<reference key="NSBGColor" ref="538763959"/>
@@ -1471,6 +1510,9 @@
 														<int key="NSvFlags">-2147483392</int>
 														<string key="NSFrame">{{1067, 17}, {15, 377}}</string>
 														<reference key="NSSuperview" ref="554820010"/>
+														<reference key="NSWindow"/>
+														<reference key="NSNextKeyView" ref="826477119"/>
+														<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 														<reference key="NSTarget" ref="554820010"/>
 														<string key="NSAction">_doScroller:</string>
 														<double key="NSPercent">0.78947369999999994</double>
@@ -1480,6 +1522,9 @@
 														<int key="NSvFlags">-2147483392</int>
 														<string key="NSFrame">{{1, 394}, {1066, 15}}</string>
 														<reference key="NSSuperview" ref="554820010"/>
+														<reference key="NSWindow"/>
+														<reference key="NSNextKeyView"/>
+														<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 														<int key="NSsFlags">1</int>
 														<reference key="NSTarget" ref="554820010"/>
 														<string key="NSAction">_doScroller:</string>
@@ -1493,31 +1538,37 @@
 														</array>
 														<string key="NSFrame">{{1, 0}, {1105, 17}}</string>
 														<reference key="NSSuperview" ref="554820010"/>
+														<reference key="NSWindow"/>
 														<reference key="NSNextKeyView" ref="331041648"/>
 														<reference key="NSDocView" ref="331041648"/>
 														<reference key="NSBGColor" ref="538763959"/>
 														<int key="NScvFlags">4</int>
 													</object>
-													<reference ref="271289536"/>
 												</array>
 												<string key="NSFrame">{{5, 5}, {1107, 422}}</string>
 												<reference key="NSSuperview" ref="274423729"/>
-												<reference key="NSNextKeyView" ref="965514846"/>
+												<reference key="NSWindow"/>
+												<reference key="NSNextKeyView" ref="1017896235"/>
 												<int key="NSsFlags">133682</int>
 												<reference key="NSVScroller" ref="50482779"/>
 												<reference key="NSHScroller" ref="826477119"/>
 												<reference key="NSContentView" ref="965514846"/>
 												<reference key="NSHeaderClipView" ref="1017896235"/>
 												<bytes key="NSScrollAmts">AAAAAAAAAABBgAAAQYAAAA</bytes>
+												<double key="NSMinMagnification">0.25</double>
+												<double key="NSMaxMagnification">4</double>
+												<double key="NSMagnification">1</double>
 											</object>
 											<object class="NSTextField" id="56095562">
 												<reference key="NSNextResponder" ref="274423729"/>
 												<int key="NSvFlags">264</int>
 												<string key="NSFrame">{{316, 435}, {142, 13}}</string>
 												<reference key="NSSuperview" ref="274423729"/>
+												<reference key="NSWindow"/>
+												<reference key="NSNextKeyView" ref="571641266"/>
 												<bool key="NSEnabled">YES</bool>
 												<object class="NSTextFieldCell" key="NSCell" id="854642558">
-													<int key="NSCellFlags">67239424</int>
+													<int key="NSCellFlags">67108864</int>
 													<int key="NSCellFlags2">0</int>
 													<string key="NSContents"># out of #</string>
 													<reference key="NSSupport" ref="106901964"/>
@@ -1525,15 +1576,18 @@
 													<reference key="NSBackgroundColor" ref="484982750"/>
 													<reference key="NSTextColor" ref="889729484"/>
 												</object>
+												<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 											</object>
 											<object class="NSSearchField" id="511876294">
 												<reference key="NSNextResponder" ref="274423729"/>
 												<int key="NSvFlags">264</int>
 												<string key="NSFrame">{{17, 433}, {294, 19}}</string>
 												<reference key="NSSuperview" ref="274423729"/>
+												<reference key="NSWindow"/>
+												<reference key="NSNextKeyView" ref="56095562"/>
 												<bool key="NSEnabled">YES</bool>
 												<object class="NSSearchFieldCell" key="NSCell" id="841084910">
-													<int key="NSCellFlags">341966400</int>
+													<int key="NSCellFlags">341835840</int>
 													<int key="NSCellFlags2">132096</int>
 													<reference key="NSSupport" ref="26"/>
 													<string key="NSPlaceholderString">All</string>
@@ -1543,20 +1597,20 @@
 													<reference key="NSBackgroundColor" ref="484982750"/>
 													<reference key="NSTextColor" ref="889729484"/>
 													<object class="NSButtonCell" key="NSSearchButtonCell">
-														<int key="NSCellFlags">130560</int>
+														<int key="NSCellFlags">0</int>
 														<int key="NSCellFlags2">0</int>
 														<string key="NSContents">search</string>
 														<reference key="NSControlView" ref="511876294"/>
 														<string key="NSAction">_searchFieldSearch:</string>
 														<reference key="NSTarget" ref="841084910"/>
-														<int key="NSButtonFlags">138690815</int>
+														<int key="NSButtonFlags">138690560</int>
 														<int key="NSButtonFlags2">0</int>
 														<string key="NSKeyEquivalent"/>
 														<int key="NSPeriodicDelay">400</int>
 														<int key="NSPeriodicInterval">75</int>
 													</object>
 													<object class="NSButtonCell" key="NSCancelButtonCell">
-														<int key="NSCellFlags">-2147353088</int>
+														<int key="NSCellFlags">-2147483648</int>
 														<int key="NSCellFlags2">0</int>
 														<string key="NSContents">clear</string>
 														<array class="NSMutableArray" key="NSAccessibilityOverriddenAttributes">
@@ -1567,7 +1621,7 @@
 														</array>
 														<string key="NSAction">_searchFieldCancel:</string>
 														<reference key="NSTarget" ref="841084910"/>
-														<int key="NSButtonFlags">138428671</int>
+														<int key="NSButtonFlags">138428416</int>
 														<int key="NSButtonFlags2">0</int>
 														<string key="NSKeyEquivalent"/>
 														<int key="NSPeriodicDelay">400</int>
@@ -1575,30 +1629,37 @@
 													</object>
 													<int key="NSMaximumRecents">255</int>
 												</object>
+												<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 											</object>
 											<object class="NSButton" id="571641266">
 												<reference key="NSNextResponder" ref="274423729"/>
 												<int key="NSvFlags">265</int>
 												<string key="NSFrame">{{1021, 431}, {96, 28}}</string>
 												<reference key="NSSuperview" ref="274423729"/>
+												<reference key="NSWindow"/>
+												<reference key="NSNextKeyView" ref="554820010"/>
 												<int key="NSTag">3</int>
 												<bool key="NSEnabled">YES</bool>
 												<object class="NSButtonCell" key="NSCell" id="897843335">
-													<int key="NSCellFlags">67239424</int>
+													<int key="NSCellFlags">67108864</int>
 													<int key="NSCellFlags2">134348800</int>
 													<string key="NSContents">Export</string>
 													<reference key="NSSupport" ref="26"/>
 													<reference key="NSControlView" ref="571641266"/>
-													<int key="NSButtonFlags">-2038284033</int>
+													<int key="NSButtonFlags">-2038284288</int>
 													<int key="NSButtonFlags2">129</int>
 													<string key="NSAlternateContents"/>
 													<string key="NSKeyEquivalent"/>
 													<int key="NSPeriodicDelay">200</int>
 													<int key="NSPeriodicInterval">25</int>
 												</object>
+												<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 											</object>
 										</array>
 										<string key="NSFrame">{{10, 25}, {1117, 461}}</string>
+										<reference key="NSSuperview" ref="883849166"/>
+										<reference key="NSWindow"/>
+										<reference key="NSNextKeyView" ref="511876294"/>
 									</object>
 									<string key="NSLabel">Move</string>
 									<reference key="NSColor" ref="1032299309"/>
@@ -1607,7 +1668,7 @@
 								<object class="NSTabViewItem" id="757353650">
 									<string key="NSIdentifier">Item 3</string>
 									<object class="NSView" key="NSView" id="45487594">
-										<reference key="NSNextResponder" ref="883849166"/>
+										<nil key="NSNextResponder"/>
 										<int key="NSvFlags">256</int>
 										<array class="NSMutableArray" key="NSSubviews">
 											<object class="NSScrollView" id="705977824">
@@ -1625,19 +1686,20 @@
 																<reference key="NSSuperview" ref="658706394"/>
 																<reference key="NSNextKeyView" ref="9019520"/>
 																<bool key="NSEnabled">YES</bool>
+																<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
+																<bool key="NSControlAllowsExpansionToolTips">YES</bool>
 																<object class="NSTableHeaderView" key="NSHeaderView" id="509014957">
 																	<reference key="NSNextResponder" ref="953142047"/>
 																	<int key="NSvFlags">256</int>
 																	<string key="NSFrameSize">{1105, 17}</string>
 																	<reference key="NSSuperview" ref="953142047"/>
-																	<reference key="NSNextKeyView" ref="2029366"/>
+																	<reference key="NSNextKeyView" ref="658706394"/>
 																	<reference key="NSTableView" ref="324956626"/>
 																</object>
-																<object class="_NSCornerView" key="NSCornerView" id="2029366">
-																	<reference key="NSNextResponder" ref="705977824"/>
+																<object class="_NSCornerView" key="NSCornerView">
+																	<nil key="NSNextResponder"/>
 																	<int key="NSvFlags">-2147483392</int>
 																	<string key="NSFrame">{{1067, 0}, {16, 17}}</string>
-																	<reference key="NSSuperview" ref="705977824"/>
 																	<reference key="NSNextKeyView" ref="658706394"/>
 																</object>
 																<array class="NSMutableArray" key="NSTableColumns">
@@ -1647,7 +1709,7 @@
 																		<double key="NSMinWidth">100</double>
 																		<double key="NSMaxWidth">100</double>
 																		<object class="NSTableHeaderCell" key="NSHeaderCell">
-																			<int key="NSCellFlags">75628096</int>
+																			<int key="NSCellFlags">75497536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Type</string>
 																			<reference key="NSSupport" ref="26"/>
@@ -1658,7 +1720,7 @@
 																			<reference key="NSTextColor" ref="789719259"/>
 																		</object>
 																		<object class="NSTextFieldCell" key="NSDataCell" id="938090085">
-																			<int key="NSCellFlags">337772096</int>
+																			<int key="NSCellFlags">337641536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Text Cell</string>
 																			<reference key="NSSupport" ref="821765925"/>
@@ -1681,7 +1743,7 @@
 																		<double key="NSMinWidth">40</double>
 																		<double key="NSMaxWidth">300</double>
 																		<object class="NSTableHeaderCell" key="NSHeaderCell">
-																			<int key="NSCellFlags">75628096</int>
+																			<int key="NSCellFlags">75497536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Patient</string>
 																			<reference key="NSSupport" ref="26"/>
@@ -1689,7 +1751,7 @@
 																			<reference key="NSTextColor" ref="789719259"/>
 																		</object>
 																		<object class="NSTextFieldCell" key="NSDataCell" id="940997877">
-																			<int key="NSCellFlags">337772096</int>
+																			<int key="NSCellFlags">337641536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Text Cell</string>
 																			<reference key="NSSupport" ref="821765925"/>
@@ -1707,7 +1769,7 @@
 																		<double key="NSMinWidth">40</double>
 																		<double key="NSMaxWidth">500</double>
 																		<object class="NSTableHeaderCell" key="NSHeaderCell">
-																			<int key="NSCellFlags">75628096</int>
+																			<int key="NSCellFlags">75497536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Study</string>
 																			<reference key="NSSupport" ref="26"/>
@@ -1715,7 +1777,7 @@
 																			<reference key="NSTextColor" ref="789719259"/>
 																		</object>
 																		<object class="NSTextFieldCell" key="NSDataCell" id="554849266">
-																			<int key="NSCellFlags">337772096</int>
+																			<int key="NSCellFlags">337641536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Text Cell</string>
 																			<reference key="NSSupport" ref="821765925"/>
@@ -1733,7 +1795,7 @@
 																		<double key="NSMinWidth">40</double>
 																		<double key="NSMaxWidth">300</double>
 																		<object class="NSTableHeaderCell" key="NSHeaderCell">
-																			<int key="NSCellFlags">75628096</int>
+																			<int key="NSCellFlags">75497536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Hostname</string>
 																			<reference key="NSSupport" ref="26"/>
@@ -1741,7 +1803,7 @@
 																			<reference key="NSTextColor" ref="789719259"/>
 																		</object>
 																		<object class="NSTextFieldCell" key="NSDataCell" id="465697590">
-																			<int key="NSCellFlags">337772096</int>
+																			<int key="NSCellFlags">337641536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Text Cell</string>
 																			<reference key="NSSupport" ref="821765925"/>
@@ -1759,7 +1821,7 @@
 																		<double key="NSMinWidth">120</double>
 																		<double key="NSMaxWidth">120</double>
 																		<object class="NSTableHeaderCell" key="NSHeaderCell">
-																			<int key="NSCellFlags">75628096</int>
+																			<int key="NSCellFlags">75497536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">When</string>
 																			<reference key="NSSupport" ref="26"/>
@@ -1767,7 +1829,7 @@
 																			<reference key="NSTextColor" ref="789719259"/>
 																		</object>
 																		<object class="NSTextFieldCell" key="NSDataCell" id="488791633">
-																			<int key="NSCellFlags">337772096</int>
+																			<int key="NSCellFlags">337641536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<reference key="NSSupport" ref="821765925"/>
 																			<object class="NSDateFormatter" key="NSFormatter" id="188669188">
@@ -1798,7 +1860,7 @@
 																		<double key="NSMinWidth">100</double>
 																		<double key="NSMaxWidth">600</double>
 																		<object class="NSTableHeaderCell" key="NSHeaderCell">
-																			<int key="NSCellFlags">75628096</int>
+																			<int key="NSCellFlags">75497536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">What</string>
 																			<reference key="NSSupport" ref="26"/>
@@ -1806,7 +1868,7 @@
 																			<reference key="NSTextColor" ref="789719259"/>
 																		</object>
 																		<object class="NSTextFieldCell" key="NSDataCell" id="863160770">
-																			<int key="NSCellFlags">337772096</int>
+																			<int key="NSCellFlags">337641536</int>
 																			<int key="NSCellFlags2">2048</int>
 																			<string key="NSContents">Text Cell</string>
 																			<reference key="NSSupport" ref="821765925"/>
@@ -1854,6 +1916,7 @@
 														<string key="NSFrame">{{1067, 17}, {15, 377}}</string>
 														<reference key="NSSuperview" ref="705977824"/>
 														<reference key="NSNextKeyView" ref="373035459"/>
+														<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 														<reference key="NSTarget" ref="705977824"/>
 														<string key="NSAction">_doScroller:</string>
 														<double key="NSPercent">0.99735449735449733</double>
@@ -1863,6 +1926,8 @@
 														<int key="NSvFlags">-2147483392</int>
 														<string key="NSFrame">{{1, 394}, {1066, 15}}</string>
 														<reference key="NSSuperview" ref="705977824"/>
+														<reference key="NSNextKeyView"/>
+														<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 														<int key="NSsFlags">1</int>
 														<reference key="NSTarget" ref="705977824"/>
 														<string key="NSAction">_doScroller:</string>
@@ -1881,7 +1946,6 @@
 														<reference key="NSBGColor" ref="538763959"/>
 														<int key="NScvFlags">4</int>
 													</object>
-													<reference ref="2029366"/>
 												</array>
 												<string key="NSFrame">{{5, 5}, {1107, 422}}</string>
 												<reference key="NSSuperview" ref="45487594"/>
@@ -1891,8 +1955,10 @@
 												<reference key="NSHScroller" ref="373035459"/>
 												<reference key="NSContentView" ref="658706394"/>
 												<reference key="NSHeaderClipView" ref="953142047"/>
-												<reference key="NSCornerView" ref="2029366"/>
 												<bytes key="NSScrollAmts">AAAAAAAAAABBgAAAQYAAAA</bytes>
+												<double key="NSMinMagnification">0.25</double>
+												<double key="NSMaxMagnification">4</double>
+												<double key="NSMagnification">1</double>
 											</object>
 											<object class="NSTextField" id="48295861">
 												<reference key="NSNextResponder" ref="45487594"/>
@@ -1902,7 +1968,7 @@
 												<reference key="NSNextKeyView" ref="382497121"/>
 												<bool key="NSEnabled">YES</bool>
 												<object class="NSTextFieldCell" key="NSCell" id="298665293">
-													<int key="NSCellFlags">67239424</int>
+													<int key="NSCellFlags">67108864</int>
 													<int key="NSCellFlags2">0</int>
 													<string key="NSContents"># out of #</string>
 													<reference key="NSSupport" ref="106901964"/>
@@ -1910,6 +1976,7 @@
 													<reference key="NSBackgroundColor" ref="484982750"/>
 													<reference key="NSTextColor" ref="889729484"/>
 												</object>
+												<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 											</object>
 											<object class="NSSearchField" id="925606880">
 												<reference key="NSNextResponder" ref="45487594"/>
@@ -1919,7 +1986,7 @@
 												<reference key="NSNextKeyView" ref="48295861"/>
 												<bool key="NSEnabled">YES</bool>
 												<object class="NSSearchFieldCell" key="NSCell" id="377306553">
-													<int key="NSCellFlags">341966400</int>
+													<int key="NSCellFlags">341835840</int>
 													<int key="NSCellFlags2">132096</int>
 													<reference key="NSSupport" ref="26"/>
 													<string key="NSPlaceholderString">All</string>
@@ -1929,20 +1996,20 @@
 													<reference key="NSBackgroundColor" ref="484982750"/>
 													<reference key="NSTextColor" ref="889729484"/>
 													<object class="NSButtonCell" key="NSSearchButtonCell">
-														<int key="NSCellFlags">130560</int>
+														<int key="NSCellFlags">0</int>
 														<int key="NSCellFlags2">0</int>
 														<string key="NSContents">search</string>
 														<reference key="NSControlView" ref="925606880"/>
 														<string key="NSAction">_searchFieldSearch:</string>
 														<reference key="NSTarget" ref="377306553"/>
-														<int key="NSButtonFlags">138690815</int>
+														<int key="NSButtonFlags">138690560</int>
 														<int key="NSButtonFlags2">0</int>
 														<string key="NSKeyEquivalent"/>
 														<int key="NSPeriodicDelay">400</int>
 														<int key="NSPeriodicInterval">75</int>
 													</object>
 													<object class="NSButtonCell" key="NSCancelButtonCell">
-														<int key="NSCellFlags">-2147353088</int>
+														<int key="NSCellFlags">-2147483648</int>
 														<int key="NSCellFlags2">0</int>
 														<string key="NSContents">clear</string>
 														<array class="NSMutableArray" key="NSAccessibilityOverriddenAttributes">
@@ -1953,7 +2020,7 @@
 														</array>
 														<string key="NSAction">_searchFieldCancel:</string>
 														<reference key="NSTarget" ref="377306553"/>
-														<int key="NSButtonFlags">138428671</int>
+														<int key="NSButtonFlags">138428416</int>
 														<int key="NSButtonFlags2">0</int>
 														<string key="NSKeyEquivalent"/>
 														<int key="NSPeriodicDelay">400</int>
@@ -1961,6 +2028,7 @@
 													</object>
 													<int key="NSMaximumRecents">255</int>
 												</object>
+												<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 											</object>
 											<object class="NSButton" id="382497121">
 												<reference key="NSNextResponder" ref="45487594"/>
@@ -1971,22 +2039,22 @@
 												<int key="NSTag">4</int>
 												<bool key="NSEnabled">YES</bool>
 												<object class="NSButtonCell" key="NSCell" id="81389322">
-													<int key="NSCellFlags">67239424</int>
+													<int key="NSCellFlags">67108864</int>
 													<int key="NSCellFlags2">134348800</int>
 													<string key="NSContents">Export</string>
 													<reference key="NSSupport" ref="26"/>
 													<reference key="NSControlView" ref="382497121"/>
-													<int key="NSButtonFlags">-2038284033</int>
+													<int key="NSButtonFlags">-2038284288</int>
 													<int key="NSButtonFlags2">129</int>
 													<string key="NSAlternateContents"/>
 													<string key="NSKeyEquivalent"/>
 													<int key="NSPeriodicDelay">200</int>
 													<int key="NSPeriodicInterval">25</int>
 												</object>
+												<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 											</object>
 										</array>
 										<string key="NSFrame">{{10, 25}, {1117, 461}}</string>
-										<reference key="NSSuperview" ref="883849166"/>
 										<reference key="NSNextKeyView" ref="925606880"/>
 									</object>
 									<string key="NSLabel">Web Server</string>
@@ -1994,21 +2062,22 @@
 									<reference key="NSTabView" ref="883849166"/>
 								</object>
 							</array>
-							<reference key="NSSelectedTabViewItem" ref="757353650"/>
+							<reference key="NSSelectedTabViewItem" ref="625450977"/>
 							<reference key="NSFont" ref="26"/>
 							<int key="NSTvFlags">134217728</int>
 							<bool key="NSAllowTruncatedLabels">YES</bool>
 							<bool key="NSDrawsBackground">YES</bool>
 							<array class="NSMutableArray" key="NSSubviews">
-								<reference ref="45487594"/>
+								<reference ref="274423729"/>
 							</array>
 						</object>
 					</array>
 					<string key="NSFrameSize">{1135, 498}</string>
 					<reference key="NSSuperview"/>
+					<reference key="NSWindow"/>
 					<reference key="NSNextKeyView" ref="883849166"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1600, 978}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMinSize">{213, 129}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<string key="NSFrameAutosaveName">Network Logs Window</string>
@@ -2056,6 +2125,8 @@
 				<bool key="NSAvoidsEmptySelection">YES</bool>
 				<bool key="NSPreservesSelection">YES</bool>
 				<bool key="NSFilterRestrictsInsertion">YES</bool>
+				<bool key="NSClearsFilterPredicateOnInsertion">YES</bool>
+				<bool key="NSAutomaticallyRearrangesObjects">YES</bool>
 			</object>
 			<object class="NSArrayController" id="294517618">
 				<array class="NSMutableArray" key="NSDeclaredKeys">
@@ -2096,6 +2167,8 @@
 				<bool key="NSAvoidsEmptySelection">YES</bool>
 				<bool key="NSPreservesSelection">YES</bool>
 				<bool key="NSFilterRestrictsInsertion">YES</bool>
+				<bool key="NSClearsFilterPredicateOnInsertion">YES</bool>
+				<bool key="NSAutomaticallyRearrangesObjects">YES</bool>
 			</object>
 			<object class="NSArrayController" id="662580737">
 				<array class="NSMutableArray" key="NSDeclaredKeys">
@@ -2141,6 +2214,8 @@
 				<bool key="NSAvoidsEmptySelection">YES</bool>
 				<bool key="NSPreservesSelection">YES</bool>
 				<bool key="NSFilterRestrictsInsertion">YES</bool>
+				<bool key="NSClearsFilterPredicateOnInsertion">YES</bool>
+				<bool key="NSAutomaticallyRearrangesObjects">YES</bool>
 			</object>
 			<object class="NSArrayController" id="807504509">
 				<array class="NSMutableArray" key="NSDeclaredKeys">
@@ -2187,6 +2262,8 @@
 				<bool key="NSAvoidsEmptySelection">YES</bool>
 				<bool key="NSPreservesSelection">YES</bool>
 				<bool key="NSFilterRestrictsInsertion">YES</bool>
+				<bool key="NSClearsFilterPredicateOnInsertion">YES</bool>
+				<bool key="NSAutomaticallyRearrangesObjects">YES</bool>
 			</object>
 			<object class="NSUserDefaultsController" id="470810708">
 				<bool key="NSSharedInstance">YES</bool>
@@ -3087,7 +3164,7 @@
 						<string key="label">predicate: filterPredicate</string>
 						<reference key="source" ref="511876294"/>
 						<reference key="destination" ref="662580737"/>
-						<object class="NSNibBindingConnector" key="connector" id="1026860300">
+						<object class="NSNibBindingConnector" key="connector" id="607668172">
 							<reference key="NSSource" ref="511876294"/>
 							<reference key="NSDestination" ref="662580737"/>
 							<string key="NSLabel">predicate: filterPredicate</string>
@@ -3095,376 +3172,103 @@
 							<string key="NSKeyPath">filterPredicate</string>
 							<dictionary key="NSOptions">
 								<string key="NSDisplayName">All</string>
-								<string key="NSPredicateFormat">(destinationName contains[c] $value) or (originHostname contains[c] $value) or (originName contains[c] $value) or (destinationHostname contains[c] $value) or (message contains[c] $value) or (destinationPort contains[c] $value) or (type contains[c] $value) or (studyName contains[c] $value) or (numberPending.description contains[c] $value) or (patientName contains[c] $value) or (numberError.description contains[c] $value) or (endTime.description contains[c] $value) or (numberImages.description contains[c] $value) or (numberSent.description contains[c] $value) or (startTime.description contains[c] $value) or (originPort contains[c] $value) or (status contains[c] $value)</string>
+								<string key="NSPredicateFormat">(originName contains[c] $value) or (studyName contains[c] $value) or (patientName contains[c] $value) or (message contains[c] $value)</string>
 							</dictionary>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">457</int>
+					<int key="connectionID">1859</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">predicate2: filterPredicate</string>
 						<reference key="source" ref="511876294"/>
 						<reference key="destination" ref="662580737"/>
-						<object class="NSNibBindingConnector" key="connector" id="324159783">
+						<object class="NSNibBindingConnector" key="connector" id="856688600">
 							<reference key="NSSource" ref="511876294"/>
 							<reference key="NSDestination" ref="662580737"/>
 							<string key="NSLabel">predicate2: filterPredicate</string>
 							<string key="NSBinding">predicate2</string>
 							<string key="NSKeyPath">filterPredicate</string>
 							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Destination Name</string>
-								<string key="NSPredicateFormat">destinationName contains[c] $value</string>
+								<string key="NSDisplayName">To</string>
+								<string key="NSPredicateFormat">originName contains[c] $value</string>
 							</dictionary>
-							<reference key="NSPreviousConnector" ref="1026860300"/>
+							<reference key="NSPreviousConnector" ref="607668172"/>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">520</int>
+					<int key="connectionID">1860</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">predicate3: filterPredicate</string>
 						<reference key="source" ref="511876294"/>
 						<reference key="destination" ref="662580737"/>
-						<object class="NSNibBindingConnector" key="connector" id="408155656">
+						<object class="NSNibBindingConnector" key="connector" id="967955222">
 							<reference key="NSSource" ref="511876294"/>
 							<reference key="NSDestination" ref="662580737"/>
 							<string key="NSLabel">predicate3: filterPredicate</string>
 							<string key="NSBinding">predicate3</string>
 							<string key="NSKeyPath">filterPredicate</string>
 							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Origin Hostname</string>
-								<string key="NSPredicateFormat">originHostname contains[c] $value</string>
+								<string key="NSDisplayName">Status</string>
+								<string key="NSPredicateFormat">message contains[c] $value</string>
 							</dictionary>
-							<reference key="NSPreviousConnector" ref="324159783"/>
+							<reference key="NSPreviousConnector" ref="856688600"/>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">537</int>
+					<int key="connectionID">1861</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">predicate4: filterPredicate</string>
 						<reference key="source" ref="511876294"/>
 						<reference key="destination" ref="662580737"/>
-						<object class="NSNibBindingConnector" key="connector" id="304503932">
+						<object class="NSNibBindingConnector" key="connector" id="326347232">
 							<reference key="NSSource" ref="511876294"/>
 							<reference key="NSDestination" ref="662580737"/>
 							<string key="NSLabel">predicate4: filterPredicate</string>
 							<string key="NSBinding">predicate4</string>
 							<string key="NSKeyPath">filterPredicate</string>
 							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Origin Name</string>
-								<string key="NSPredicateFormat">originName contains[c] $value</string>
+								<string key="NSDisplayName">Study Name</string>
+								<string key="NSPredicateFormat">studyName contains[c] $value</string>
 							</dictionary>
-							<reference key="NSPreviousConnector" ref="408155656"/>
+							<reference key="NSPreviousConnector" ref="967955222"/>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">553</int>
+					<int key="connectionID">1862</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">predicate5: filterPredicate</string>
 						<reference key="source" ref="511876294"/>
 						<reference key="destination" ref="662580737"/>
-						<object class="NSNibBindingConnector" key="connector" id="328535046">
+						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="511876294"/>
 							<reference key="NSDestination" ref="662580737"/>
 							<string key="NSLabel">predicate5: filterPredicate</string>
 							<string key="NSBinding">predicate5</string>
 							<string key="NSKeyPath">filterPredicate</string>
 							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Destination Hostname</string>
-								<string key="NSPredicateFormat">destinationHostname contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="304503932"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">568</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate6: filterPredicate</string>
-						<reference key="source" ref="511876294"/>
-						<reference key="destination" ref="662580737"/>
-						<object class="NSNibBindingConnector" key="connector" id="452535073">
-							<reference key="NSSource" ref="511876294"/>
-							<reference key="NSDestination" ref="662580737"/>
-							<string key="NSLabel">predicate6: filterPredicate</string>
-							<string key="NSBinding">predicate6</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Message</string>
-								<string key="NSPredicateFormat">message contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="328535046"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">582</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate7: filterPredicate</string>
-						<reference key="source" ref="511876294"/>
-						<reference key="destination" ref="662580737"/>
-						<object class="NSNibBindingConnector" key="connector" id="837824698">
-							<reference key="NSSource" ref="511876294"/>
-							<reference key="NSDestination" ref="662580737"/>
-							<string key="NSLabel">predicate7: filterPredicate</string>
-							<string key="NSBinding">predicate7</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Destination Port</string>
-								<string key="NSPredicateFormat">destinationPort contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="452535073"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">606</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate8: filterPredicate</string>
-						<reference key="source" ref="511876294"/>
-						<reference key="destination" ref="662580737"/>
-						<object class="NSNibBindingConnector" key="connector" id="870164401">
-							<reference key="NSSource" ref="511876294"/>
-							<reference key="NSDestination" ref="662580737"/>
-							<string key="NSLabel">predicate8: filterPredicate</string>
-							<string key="NSBinding">predicate8</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Type</string>
-								<string key="NSPredicateFormat">type contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="837824698"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">607</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate9: filterPredicate</string>
-						<reference key="source" ref="511876294"/>
-						<reference key="destination" ref="662580737"/>
-						<object class="NSNibBindingConnector" key="connector" id="937516823">
-							<reference key="NSSource" ref="511876294"/>
-							<reference key="NSDestination" ref="662580737"/>
-							<string key="NSLabel">predicate9: filterPredicate</string>
-							<string key="NSBinding">predicate9</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Study Name</string>
-								<string key="NSPredicateFormat">studyName contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="870164401"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">618</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate10: filterPredicate</string>
-						<reference key="source" ref="511876294"/>
-						<reference key="destination" ref="662580737"/>
-						<object class="NSNibBindingConnector" key="connector" id="401888254">
-							<reference key="NSSource" ref="511876294"/>
-							<reference key="NSDestination" ref="662580737"/>
-							<string key="NSLabel">predicate10: filterPredicate</string>
-							<string key="NSBinding">predicate10</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Number Pending</string>
-								<string key="NSPredicateFormat">numberPending.description contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="937516823"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">619</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate11: filterPredicate</string>
-						<reference key="source" ref="511876294"/>
-						<reference key="destination" ref="662580737"/>
-						<object class="NSNibBindingConnector" key="connector" id="680271742">
-							<reference key="NSSource" ref="511876294"/>
-							<reference key="NSDestination" ref="662580737"/>
-							<string key="NSLabel">predicate11: filterPredicate</string>
-							<string key="NSBinding">predicate11</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
 								<string key="NSDisplayName">Patient Name</string>
 								<string key="NSPredicateFormat">patientName contains[c] $value</string>
 							</dictionary>
-							<reference key="NSPreviousConnector" ref="401888254"/>
+							<reference key="NSPreviousConnector" ref="326347232"/>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">620</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate12: filterPredicate</string>
-						<reference key="source" ref="511876294"/>
-						<reference key="destination" ref="662580737"/>
-						<object class="NSNibBindingConnector" key="connector" id="149998514">
-							<reference key="NSSource" ref="511876294"/>
-							<reference key="NSDestination" ref="662580737"/>
-							<string key="NSLabel">predicate12: filterPredicate</string>
-							<string key="NSBinding">predicate12</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Number Error</string>
-								<string key="NSPredicateFormat">numberError.description contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="680271742"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">621</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate13: filterPredicate</string>
-						<reference key="source" ref="511876294"/>
-						<reference key="destination" ref="662580737"/>
-						<object class="NSNibBindingConnector" key="connector" id="68028210">
-							<reference key="NSSource" ref="511876294"/>
-							<reference key="NSDestination" ref="662580737"/>
-							<string key="NSLabel">predicate13: filterPredicate</string>
-							<string key="NSBinding">predicate13</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">End Time</string>
-								<string key="NSPredicateFormat">endTime.description contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="149998514"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">622</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate14: filterPredicate</string>
-						<reference key="source" ref="511876294"/>
-						<reference key="destination" ref="662580737"/>
-						<object class="NSNibBindingConnector" key="connector" id="286922870">
-							<reference key="NSSource" ref="511876294"/>
-							<reference key="NSDestination" ref="662580737"/>
-							<string key="NSLabel">predicate14: filterPredicate</string>
-							<string key="NSBinding">predicate14</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Number Images</string>
-								<string key="NSPredicateFormat">numberImages.description contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="68028210"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">623</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate15: filterPredicate</string>
-						<reference key="source" ref="511876294"/>
-						<reference key="destination" ref="662580737"/>
-						<object class="NSNibBindingConnector" key="connector" id="256899478">
-							<reference key="NSSource" ref="511876294"/>
-							<reference key="NSDestination" ref="662580737"/>
-							<string key="NSLabel">predicate15: filterPredicate</string>
-							<string key="NSBinding">predicate15</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Number Sent</string>
-								<string key="NSPredicateFormat">numberSent.description contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="286922870"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">624</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate16: filterPredicate</string>
-						<reference key="source" ref="511876294"/>
-						<reference key="destination" ref="662580737"/>
-						<object class="NSNibBindingConnector" key="connector" id="484363387">
-							<reference key="NSSource" ref="511876294"/>
-							<reference key="NSDestination" ref="662580737"/>
-							<string key="NSLabel">predicate16: filterPredicate</string>
-							<string key="NSBinding">predicate16</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Start Time</string>
-								<string key="NSPredicateFormat">startTime.description contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="256899478"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">625</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate17: filterPredicate</string>
-						<reference key="source" ref="511876294"/>
-						<reference key="destination" ref="662580737"/>
-						<object class="NSNibBindingConnector" key="connector" id="245478356">
-							<reference key="NSSource" ref="511876294"/>
-							<reference key="NSDestination" ref="662580737"/>
-							<string key="NSLabel">predicate17: filterPredicate</string>
-							<string key="NSBinding">predicate17</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Origin Port</string>
-								<string key="NSPredicateFormat">originPort contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="484363387"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">626</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate18: filterPredicate</string>
-						<reference key="source" ref="511876294"/>
-						<reference key="destination" ref="662580737"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="511876294"/>
-							<reference key="NSDestination" ref="662580737"/>
-							<string key="NSLabel">predicate18: filterPredicate</string>
-							<string key="NSBinding">predicate18</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Status</string>
-								<string key="NSPredicateFormat">status contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="245478356"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">627</int>
+					<int key="connectionID">1863</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">predicate: filterPredicate</string>
 						<reference key="source" ref="136782117"/>
 						<reference key="destination" ref="690975501"/>
-						<object class="NSNibBindingConnector" key="connector" id="808607078">
+						<object class="NSNibBindingConnector" key="connector" id="158567769">
 							<reference key="NSSource" ref="136782117"/>
 							<reference key="NSDestination" ref="690975501"/>
 							<string key="NSLabel">predicate: filterPredicate</string>
@@ -3472,376 +3276,103 @@
 							<string key="NSKeyPath">filterPredicate</string>
 							<dictionary key="NSOptions">
 								<string key="NSDisplayName">All</string>
-								<string key="NSPredicateFormat">(destinationName contains[c] $value) or (originHostname contains[c] $value) or (originName contains[c] $value) or (destinationHostname contains[c] $value) or (message contains[c] $value) or (destinationPort contains[c] $value) or (type contains[c] $value) or (studyName contains[c] $value) or (numberPending.description contains[c] $value) or (patientName contains[c] $value) or (numberError.description contains[c] $value) or (endTime.description contains[c] $value) or (numberImages.description contains[c] $value) or (numberSent.description contains[c] $value) or (startTime.description contains[c] $value) or (originPort contains[c] $value) or (status contains[c] $value)</string>
+								<string key="NSPredicateFormat">(originName contains[c] $value) or (studyName contains[c] $value) or (patientName contains[c] $value) or (message contains[c] $value)</string>
 							</dictionary>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">648</int>
+					<int key="connectionID">1790</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">predicate2: filterPredicate</string>
 						<reference key="source" ref="136782117"/>
 						<reference key="destination" ref="690975501"/>
-						<object class="NSNibBindingConnector" key="connector" id="604495643">
+						<object class="NSNibBindingConnector" key="connector" id="799883021">
 							<reference key="NSSource" ref="136782117"/>
 							<reference key="NSDestination" ref="690975501"/>
 							<string key="NSLabel">predicate2: filterPredicate</string>
 							<string key="NSBinding">predicate2</string>
 							<string key="NSKeyPath">filterPredicate</string>
 							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Destination Name</string>
-								<string key="NSPredicateFormat">destinationName contains[c] $value</string>
+								<string key="NSDisplayName">From</string>
+								<string key="NSPredicateFormat">originName contains[c] $value</string>
 							</dictionary>
-							<reference key="NSPreviousConnector" ref="808607078"/>
+							<reference key="NSPreviousConnector" ref="158567769"/>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">711</int>
+					<int key="connectionID">1791</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">predicate3: filterPredicate</string>
 						<reference key="source" ref="136782117"/>
 						<reference key="destination" ref="690975501"/>
-						<object class="NSNibBindingConnector" key="connector" id="929497452">
+						<object class="NSNibBindingConnector" key="connector" id="758718477">
 							<reference key="NSSource" ref="136782117"/>
 							<reference key="NSDestination" ref="690975501"/>
 							<string key="NSLabel">predicate3: filterPredicate</string>
 							<string key="NSBinding">predicate3</string>
 							<string key="NSKeyPath">filterPredicate</string>
 							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Origin Hostname</string>
-								<string key="NSPredicateFormat">originHostname contains[c] $value</string>
+								<string key="NSDisplayName">Status</string>
+								<string key="NSPredicateFormat">message contains[c] $value</string>
 							</dictionary>
-							<reference key="NSPreviousConnector" ref="604495643"/>
+							<reference key="NSPreviousConnector" ref="799883021"/>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">728</int>
+					<int key="connectionID">1792</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">predicate4: filterPredicate</string>
 						<reference key="source" ref="136782117"/>
 						<reference key="destination" ref="690975501"/>
-						<object class="NSNibBindingConnector" key="connector" id="145788613">
+						<object class="NSNibBindingConnector" key="connector" id="822572603">
 							<reference key="NSSource" ref="136782117"/>
 							<reference key="NSDestination" ref="690975501"/>
 							<string key="NSLabel">predicate4: filterPredicate</string>
 							<string key="NSBinding">predicate4</string>
 							<string key="NSKeyPath">filterPredicate</string>
 							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Origin Name</string>
-								<string key="NSPredicateFormat">originName contains[c] $value</string>
+								<string key="NSDisplayName">Study Name</string>
+								<string key="NSPredicateFormat">studyName contains[c] $value</string>
 							</dictionary>
-							<reference key="NSPreviousConnector" ref="929497452"/>
+							<reference key="NSPreviousConnector" ref="758718477"/>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">744</int>
+					<int key="connectionID">1793</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">predicate5: filterPredicate</string>
 						<reference key="source" ref="136782117"/>
 						<reference key="destination" ref="690975501"/>
-						<object class="NSNibBindingConnector" key="connector" id="556278489">
+						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="136782117"/>
 							<reference key="NSDestination" ref="690975501"/>
 							<string key="NSLabel">predicate5: filterPredicate</string>
 							<string key="NSBinding">predicate5</string>
 							<string key="NSKeyPath">filterPredicate</string>
 							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Destination Hostname</string>
-								<string key="NSPredicateFormat">destinationHostname contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="145788613"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">759</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate6: filterPredicate</string>
-						<reference key="source" ref="136782117"/>
-						<reference key="destination" ref="690975501"/>
-						<object class="NSNibBindingConnector" key="connector" id="29884177">
-							<reference key="NSSource" ref="136782117"/>
-							<reference key="NSDestination" ref="690975501"/>
-							<string key="NSLabel">predicate6: filterPredicate</string>
-							<string key="NSBinding">predicate6</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Message</string>
-								<string key="NSPredicateFormat">message contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="556278489"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">773</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate7: filterPredicate</string>
-						<reference key="source" ref="136782117"/>
-						<reference key="destination" ref="690975501"/>
-						<object class="NSNibBindingConnector" key="connector" id="940174330">
-							<reference key="NSSource" ref="136782117"/>
-							<reference key="NSDestination" ref="690975501"/>
-							<string key="NSLabel">predicate7: filterPredicate</string>
-							<string key="NSBinding">predicate7</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Destination Port</string>
-								<string key="NSPredicateFormat">destinationPort contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="29884177"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">786</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate8: filterPredicate</string>
-						<reference key="source" ref="136782117"/>
-						<reference key="destination" ref="690975501"/>
-						<object class="NSNibBindingConnector" key="connector" id="276550895">
-							<reference key="NSSource" ref="136782117"/>
-							<reference key="NSDestination" ref="690975501"/>
-							<string key="NSLabel">predicate8: filterPredicate</string>
-							<string key="NSBinding">predicate8</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Type</string>
-								<string key="NSPredicateFormat">type contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="940174330"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">798</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate9: filterPredicate</string>
-						<reference key="source" ref="136782117"/>
-						<reference key="destination" ref="690975501"/>
-						<object class="NSNibBindingConnector" key="connector" id="135855004">
-							<reference key="NSSource" ref="136782117"/>
-							<reference key="NSDestination" ref="690975501"/>
-							<string key="NSLabel">predicate9: filterPredicate</string>
-							<string key="NSBinding">predicate9</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Study Name</string>
-								<string key="NSPredicateFormat">studyName contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="276550895"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">809</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate10: filterPredicate</string>
-						<reference key="source" ref="136782117"/>
-						<reference key="destination" ref="690975501"/>
-						<object class="NSNibBindingConnector" key="connector" id="1031407016">
-							<reference key="NSSource" ref="136782117"/>
-							<reference key="NSDestination" ref="690975501"/>
-							<string key="NSLabel">predicate10: filterPredicate</string>
-							<string key="NSBinding">predicate10</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Number Pending</string>
-								<string key="NSPredicateFormat">numberPending.description contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="135855004"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">810</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate11: filterPredicate</string>
-						<reference key="source" ref="136782117"/>
-						<reference key="destination" ref="690975501"/>
-						<object class="NSNibBindingConnector" key="connector" id="753628143">
-							<reference key="NSSource" ref="136782117"/>
-							<reference key="NSDestination" ref="690975501"/>
-							<string key="NSLabel">predicate11: filterPredicate</string>
-							<string key="NSBinding">predicate11</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
 								<string key="NSDisplayName">Patient Name</string>
 								<string key="NSPredicateFormat">patientName contains[c] $value</string>
 							</dictionary>
-							<reference key="NSPreviousConnector" ref="1031407016"/>
+							<reference key="NSPreviousConnector" ref="822572603"/>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">811</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate12: filterPredicate</string>
-						<reference key="source" ref="136782117"/>
-						<reference key="destination" ref="690975501"/>
-						<object class="NSNibBindingConnector" key="connector" id="353536579">
-							<reference key="NSSource" ref="136782117"/>
-							<reference key="NSDestination" ref="690975501"/>
-							<string key="NSLabel">predicate12: filterPredicate</string>
-							<string key="NSBinding">predicate12</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Number Error</string>
-								<string key="NSPredicateFormat">numberError.description contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="753628143"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">812</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate13: filterPredicate</string>
-						<reference key="source" ref="136782117"/>
-						<reference key="destination" ref="690975501"/>
-						<object class="NSNibBindingConnector" key="connector" id="951460666">
-							<reference key="NSSource" ref="136782117"/>
-							<reference key="NSDestination" ref="690975501"/>
-							<string key="NSLabel">predicate13: filterPredicate</string>
-							<string key="NSBinding">predicate13</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">End Time</string>
-								<string key="NSPredicateFormat">endTime.description contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="353536579"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">813</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate14: filterPredicate</string>
-						<reference key="source" ref="136782117"/>
-						<reference key="destination" ref="690975501"/>
-						<object class="NSNibBindingConnector" key="connector" id="472122803">
-							<reference key="NSSource" ref="136782117"/>
-							<reference key="NSDestination" ref="690975501"/>
-							<string key="NSLabel">predicate14: filterPredicate</string>
-							<string key="NSBinding">predicate14</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Number Images</string>
-								<string key="NSPredicateFormat">numberImages.description contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="951460666"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">814</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate15: filterPredicate</string>
-						<reference key="source" ref="136782117"/>
-						<reference key="destination" ref="690975501"/>
-						<object class="NSNibBindingConnector" key="connector" id="769990822">
-							<reference key="NSSource" ref="136782117"/>
-							<reference key="NSDestination" ref="690975501"/>
-							<string key="NSLabel">predicate15: filterPredicate</string>
-							<string key="NSBinding">predicate15</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Number Sent</string>
-								<string key="NSPredicateFormat">numberSent.description contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="472122803"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">815</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate16: filterPredicate</string>
-						<reference key="source" ref="136782117"/>
-						<reference key="destination" ref="690975501"/>
-						<object class="NSNibBindingConnector" key="connector" id="692881088">
-							<reference key="NSSource" ref="136782117"/>
-							<reference key="NSDestination" ref="690975501"/>
-							<string key="NSLabel">predicate16: filterPredicate</string>
-							<string key="NSBinding">predicate16</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Start Time</string>
-								<string key="NSPredicateFormat">startTime.description contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="769990822"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">816</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate17: filterPredicate</string>
-						<reference key="source" ref="136782117"/>
-						<reference key="destination" ref="690975501"/>
-						<object class="NSNibBindingConnector" key="connector" id="704079558">
-							<reference key="NSSource" ref="136782117"/>
-							<reference key="NSDestination" ref="690975501"/>
-							<string key="NSLabel">predicate17: filterPredicate</string>
-							<string key="NSBinding">predicate17</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Origin Port</string>
-								<string key="NSPredicateFormat">originPort contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="692881088"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">817</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate18: filterPredicate</string>
-						<reference key="source" ref="136782117"/>
-						<reference key="destination" ref="690975501"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="136782117"/>
-							<reference key="NSDestination" ref="690975501"/>
-							<string key="NSLabel">predicate18: filterPredicate</string>
-							<string key="NSBinding">predicate18</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Status</string>
-								<string key="NSPredicateFormat">status contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="704079558"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">818</int>
+					<int key="connectionID">1794</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">predicate: filterPredicate</string>
 						<reference key="source" ref="584880189"/>
 						<reference key="destination" ref="294517618"/>
-						<object class="NSNibBindingConnector" key="connector" id="817227451">
+						<object class="NSNibBindingConnector" key="connector" id="379615621">
 							<reference key="NSSource" ref="584880189"/>
 							<reference key="NSDestination" ref="294517618"/>
 							<string key="NSLabel">predicate: filterPredicate</string>
@@ -3849,376 +3380,103 @@
 							<string key="NSKeyPath">filterPredicate</string>
 							<dictionary key="NSOptions">
 								<string key="NSDisplayName">All</string>
-								<string key="NSPredicateFormat">(destinationName contains[c] $value) or (originHostname contains[c] $value) or (originName contains[c] $value) or (destinationHostname contains[c] $value) or (message contains[c] $value) or (destinationPort contains[c] $value) or (type contains[c] $value) or (studyName contains[c] $value) or (numberPending.description contains[c] $value) or (patientName contains[c] $value) or (numberError.description contains[c] $value) or (endTime.description contains[c] $value) or (numberImages.description contains[c] $value) or (numberSent.description contains[c] $value) or (startTime.description contains[c] $value) or (originPort contains[c] $value) or (status contains[c] $value)</string>
+								<string key="NSPredicateFormat">(destinationName contains[c] $value) or (studyName contains[c] $value) or (patientName contains[c] $value)</string>
 							</dictionary>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">1183</int>
+					<int key="connectionID">1823</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">predicate2: filterPredicate</string>
 						<reference key="source" ref="584880189"/>
 						<reference key="destination" ref="294517618"/>
-						<object class="NSNibBindingConnector" key="connector" id="656877233">
+						<object class="NSNibBindingConnector" key="connector" id="492318523">
 							<reference key="NSSource" ref="584880189"/>
 							<reference key="NSDestination" ref="294517618"/>
 							<string key="NSLabel">predicate2: filterPredicate</string>
 							<string key="NSBinding">predicate2</string>
 							<string key="NSKeyPath">filterPredicate</string>
 							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Destination Name</string>
+								<string key="NSDisplayName">To</string>
 								<string key="NSPredicateFormat">destinationName contains[c] $value</string>
 							</dictionary>
-							<reference key="NSPreviousConnector" ref="817227451"/>
+							<reference key="NSPreviousConnector" ref="379615621"/>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">1184</int>
+					<int key="connectionID">1824</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">predicate3: filterPredicate</string>
 						<reference key="source" ref="584880189"/>
 						<reference key="destination" ref="294517618"/>
-						<object class="NSNibBindingConnector" key="connector" id="207680972">
+						<object class="NSNibBindingConnector" key="connector" id="865083593">
 							<reference key="NSSource" ref="584880189"/>
 							<reference key="NSDestination" ref="294517618"/>
 							<string key="NSLabel">predicate3: filterPredicate</string>
 							<string key="NSBinding">predicate3</string>
 							<string key="NSKeyPath">filterPredicate</string>
 							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Origin Hostname</string>
-								<string key="NSPredicateFormat">originHostname contains[c] $value</string>
+								<string key="NSDisplayName">Status</string>
+								<string key="NSPredicateFormat">message contains[c] $value</string>
 							</dictionary>
-							<reference key="NSPreviousConnector" ref="656877233"/>
+							<reference key="NSPreviousConnector" ref="492318523"/>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">1185</int>
+					<int key="connectionID">1825</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">predicate4: filterPredicate</string>
 						<reference key="source" ref="584880189"/>
 						<reference key="destination" ref="294517618"/>
-						<object class="NSNibBindingConnector" key="connector" id="683657959">
+						<object class="NSNibBindingConnector" key="connector" id="287702633">
 							<reference key="NSSource" ref="584880189"/>
 							<reference key="NSDestination" ref="294517618"/>
 							<string key="NSLabel">predicate4: filterPredicate</string>
 							<string key="NSBinding">predicate4</string>
 							<string key="NSKeyPath">filterPredicate</string>
 							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Origin Name</string>
-								<string key="NSPredicateFormat">originName contains[c] $value</string>
+								<string key="NSDisplayName">Study Name</string>
+								<string key="NSPredicateFormat">studyName contains[c] $value</string>
 							</dictionary>
-							<reference key="NSPreviousConnector" ref="207680972"/>
+							<reference key="NSPreviousConnector" ref="865083593"/>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">1186</int>
+					<int key="connectionID">1826</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">predicate5: filterPredicate</string>
 						<reference key="source" ref="584880189"/>
 						<reference key="destination" ref="294517618"/>
-						<object class="NSNibBindingConnector" key="connector" id="933425130">
+						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="584880189"/>
 							<reference key="NSDestination" ref="294517618"/>
 							<string key="NSLabel">predicate5: filterPredicate</string>
 							<string key="NSBinding">predicate5</string>
 							<string key="NSKeyPath">filterPredicate</string>
 							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Destination Hostname</string>
-								<string key="NSPredicateFormat">destinationHostname contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="683657959"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">1187</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate6: filterPredicate</string>
-						<reference key="source" ref="584880189"/>
-						<reference key="destination" ref="294517618"/>
-						<object class="NSNibBindingConnector" key="connector" id="343534977">
-							<reference key="NSSource" ref="584880189"/>
-							<reference key="NSDestination" ref="294517618"/>
-							<string key="NSLabel">predicate6: filterPredicate</string>
-							<string key="NSBinding">predicate6</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Message</string>
-								<string key="NSPredicateFormat">message contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="933425130"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">1188</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate7: filterPredicate</string>
-						<reference key="source" ref="584880189"/>
-						<reference key="destination" ref="294517618"/>
-						<object class="NSNibBindingConnector" key="connector" id="641321152">
-							<reference key="NSSource" ref="584880189"/>
-							<reference key="NSDestination" ref="294517618"/>
-							<string key="NSLabel">predicate7: filterPredicate</string>
-							<string key="NSBinding">predicate7</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Destination Port</string>
-								<string key="NSPredicateFormat">destinationPort contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="343534977"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">1189</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate8: filterPredicate</string>
-						<reference key="source" ref="584880189"/>
-						<reference key="destination" ref="294517618"/>
-						<object class="NSNibBindingConnector" key="connector" id="613309451">
-							<reference key="NSSource" ref="584880189"/>
-							<reference key="NSDestination" ref="294517618"/>
-							<string key="NSLabel">predicate8: filterPredicate</string>
-							<string key="NSBinding">predicate8</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Type</string>
-								<string key="NSPredicateFormat">type contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="641321152"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">1190</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate9: filterPredicate</string>
-						<reference key="source" ref="584880189"/>
-						<reference key="destination" ref="294517618"/>
-						<object class="NSNibBindingConnector" key="connector" id="697068558">
-							<reference key="NSSource" ref="584880189"/>
-							<reference key="NSDestination" ref="294517618"/>
-							<string key="NSLabel">predicate9: filterPredicate</string>
-							<string key="NSBinding">predicate9</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Study Name</string>
-								<string key="NSPredicateFormat">studyName contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="613309451"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">1191</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate10: filterPredicate</string>
-						<reference key="source" ref="584880189"/>
-						<reference key="destination" ref="294517618"/>
-						<object class="NSNibBindingConnector" key="connector" id="519037995">
-							<reference key="NSSource" ref="584880189"/>
-							<reference key="NSDestination" ref="294517618"/>
-							<string key="NSLabel">predicate10: filterPredicate</string>
-							<string key="NSBinding">predicate10</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Number Pending</string>
-								<string key="NSPredicateFormat">numberPending.description contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="697068558"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">1192</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate11: filterPredicate</string>
-						<reference key="source" ref="584880189"/>
-						<reference key="destination" ref="294517618"/>
-						<object class="NSNibBindingConnector" key="connector" id="11688431">
-							<reference key="NSSource" ref="584880189"/>
-							<reference key="NSDestination" ref="294517618"/>
-							<string key="NSLabel">predicate11: filterPredicate</string>
-							<string key="NSBinding">predicate11</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
 								<string key="NSDisplayName">Patient Name</string>
 								<string key="NSPredicateFormat">patientName contains[c] $value</string>
 							</dictionary>
-							<reference key="NSPreviousConnector" ref="519037995"/>
+							<reference key="NSPreviousConnector" ref="287702633"/>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">1193</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate12: filterPredicate</string>
-						<reference key="source" ref="584880189"/>
-						<reference key="destination" ref="294517618"/>
-						<object class="NSNibBindingConnector" key="connector" id="393315557">
-							<reference key="NSSource" ref="584880189"/>
-							<reference key="NSDestination" ref="294517618"/>
-							<string key="NSLabel">predicate12: filterPredicate</string>
-							<string key="NSBinding">predicate12</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Number Error</string>
-								<string key="NSPredicateFormat">numberError.description contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="11688431"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">1194</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate13: filterPredicate</string>
-						<reference key="source" ref="584880189"/>
-						<reference key="destination" ref="294517618"/>
-						<object class="NSNibBindingConnector" key="connector" id="138177258">
-							<reference key="NSSource" ref="584880189"/>
-							<reference key="NSDestination" ref="294517618"/>
-							<string key="NSLabel">predicate13: filterPredicate</string>
-							<string key="NSBinding">predicate13</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">End Time</string>
-								<string key="NSPredicateFormat">endTime.description contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="393315557"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">1195</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate14: filterPredicate</string>
-						<reference key="source" ref="584880189"/>
-						<reference key="destination" ref="294517618"/>
-						<object class="NSNibBindingConnector" key="connector" id="715766990">
-							<reference key="NSSource" ref="584880189"/>
-							<reference key="NSDestination" ref="294517618"/>
-							<string key="NSLabel">predicate14: filterPredicate</string>
-							<string key="NSBinding">predicate14</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Number Images</string>
-								<string key="NSPredicateFormat">numberImages.description contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="138177258"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">1196</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate15: filterPredicate</string>
-						<reference key="source" ref="584880189"/>
-						<reference key="destination" ref="294517618"/>
-						<object class="NSNibBindingConnector" key="connector" id="361106613">
-							<reference key="NSSource" ref="584880189"/>
-							<reference key="NSDestination" ref="294517618"/>
-							<string key="NSLabel">predicate15: filterPredicate</string>
-							<string key="NSBinding">predicate15</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Number Sent</string>
-								<string key="NSPredicateFormat">numberSent.description contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="715766990"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">1197</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate16: filterPredicate</string>
-						<reference key="source" ref="584880189"/>
-						<reference key="destination" ref="294517618"/>
-						<object class="NSNibBindingConnector" key="connector" id="1057788309">
-							<reference key="NSSource" ref="584880189"/>
-							<reference key="NSDestination" ref="294517618"/>
-							<string key="NSLabel">predicate16: filterPredicate</string>
-							<string key="NSBinding">predicate16</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Start Time</string>
-								<string key="NSPredicateFormat">startTime.description contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="361106613"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">1198</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate17: filterPredicate</string>
-						<reference key="source" ref="584880189"/>
-						<reference key="destination" ref="294517618"/>
-						<object class="NSNibBindingConnector" key="connector" id="912462135">
-							<reference key="NSSource" ref="584880189"/>
-							<reference key="NSDestination" ref="294517618"/>
-							<string key="NSLabel">predicate17: filterPredicate</string>
-							<string key="NSBinding">predicate17</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Origin Port</string>
-								<string key="NSPredicateFormat">originPort contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="1057788309"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">1199</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate18: filterPredicate</string>
-						<reference key="source" ref="584880189"/>
-						<reference key="destination" ref="294517618"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="584880189"/>
-							<reference key="NSDestination" ref="294517618"/>
-							<string key="NSLabel">predicate18: filterPredicate</string>
-							<string key="NSBinding">predicate18</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Status</string>
-								<string key="NSPredicateFormat">status contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="912462135"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">1200</int>
+					<int key="connectionID">1827</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">predicate: filterPredicate</string>
 						<reference key="source" ref="925606880"/>
 						<reference key="destination" ref="807504509"/>
-						<object class="NSNibBindingConnector" key="connector" id="1041534878">
+						<object class="NSNibBindingConnector" key="connector" id="3343686">
 							<reference key="NSSource" ref="925606880"/>
 							<reference key="NSDestination" ref="807504509"/>
 							<string key="NSLabel">predicate: filterPredicate</string>
@@ -4226,369 +3484,96 @@
 							<string key="NSKeyPath">filterPredicate</string>
 							<dictionary key="NSOptions">
 								<string key="NSDisplayName">All</string>
-								<string key="NSPredicateFormat">(destinationName contains[c] $value) or (originHostname contains[c] $value) or (originName contains[c] $value) or (destinationHostname contains[c] $value) or (message contains[c] $value) or (destinationPort contains[c] $value) or (type contains[c] $value) or (studyName contains[c] $value) or (numberPending.description contains[c] $value) or (patientName contains[c] $value) or (numberError.description contains[c] $value) or (endTime.description contains[c] $value) or (numberImages.description contains[c] $value) or (numberSent.description contains[c] $value) or (startTime.description contains[c] $value) or (originPort contains[c] $value) or (status contains[c] $value)</string>
+								<string key="NSPredicateFormat">(originName contains[c] $value) or (studyName contains[c] $value) or (patientName contains[c] $value) or (message contains[c] $value)</string>
 							</dictionary>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">1012</int>
+					<int key="connectionID">1854</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">predicate2: filterPredicate</string>
 						<reference key="source" ref="925606880"/>
 						<reference key="destination" ref="807504509"/>
-						<object class="NSNibBindingConnector" key="connector" id="919614049">
+						<object class="NSNibBindingConnector" key="connector" id="808702842">
 							<reference key="NSSource" ref="925606880"/>
 							<reference key="NSDestination" ref="807504509"/>
 							<string key="NSLabel">predicate2: filterPredicate</string>
 							<string key="NSBinding">predicate2</string>
 							<string key="NSKeyPath">filterPredicate</string>
 							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Destination Name</string>
-								<string key="NSPredicateFormat">destinationName contains[c] $value</string>
+								<string key="NSDisplayName">Hostname</string>
+								<string key="NSPredicateFormat">originName contains[c] $value</string>
 							</dictionary>
-							<reference key="NSPreviousConnector" ref="1041534878"/>
+							<reference key="NSPreviousConnector" ref="3343686"/>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">1013</int>
+					<int key="connectionID">1855</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">predicate3: filterPredicate</string>
 						<reference key="source" ref="925606880"/>
 						<reference key="destination" ref="807504509"/>
-						<object class="NSNibBindingConnector" key="connector" id="196696145">
+						<object class="NSNibBindingConnector" key="connector" id="133166925">
 							<reference key="NSSource" ref="925606880"/>
 							<reference key="NSDestination" ref="807504509"/>
 							<string key="NSLabel">predicate3: filterPredicate</string>
 							<string key="NSBinding">predicate3</string>
 							<string key="NSKeyPath">filterPredicate</string>
 							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Origin Hostname</string>
-								<string key="NSPredicateFormat">originHostname contains[c] $value</string>
+								<string key="NSDisplayName">Study Name</string>
+								<string key="NSPredicateFormat">studyName contains[c] $value</string>
 							</dictionary>
-							<reference key="NSPreviousConnector" ref="919614049"/>
+							<reference key="NSPreviousConnector" ref="808702842"/>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">1014</int>
+					<int key="connectionID">1856</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">predicate4: filterPredicate</string>
 						<reference key="source" ref="925606880"/>
 						<reference key="destination" ref="807504509"/>
-						<object class="NSNibBindingConnector" key="connector" id="104573172">
+						<object class="NSNibBindingConnector" key="connector" id="969077256">
 							<reference key="NSSource" ref="925606880"/>
 							<reference key="NSDestination" ref="807504509"/>
 							<string key="NSLabel">predicate4: filterPredicate</string>
 							<string key="NSBinding">predicate4</string>
 							<string key="NSKeyPath">filterPredicate</string>
 							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Origin Name</string>
-								<string key="NSPredicateFormat">originName contains[c] $value</string>
+								<string key="NSDisplayName">Patient Name</string>
+								<string key="NSPredicateFormat">patientName contains[c] $value</string>
 							</dictionary>
-							<reference key="NSPreviousConnector" ref="196696145"/>
+							<reference key="NSPreviousConnector" ref="133166925"/>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">1015</int>
+					<int key="connectionID">1857</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">predicate5: filterPredicate</string>
 						<reference key="source" ref="925606880"/>
 						<reference key="destination" ref="807504509"/>
-						<object class="NSNibBindingConnector" key="connector" id="177477058">
+						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="925606880"/>
 							<reference key="NSDestination" ref="807504509"/>
 							<string key="NSLabel">predicate5: filterPredicate</string>
 							<string key="NSBinding">predicate5</string>
 							<string key="NSKeyPath">filterPredicate</string>
 							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Destination Hostname</string>
-								<string key="NSPredicateFormat">destinationHostname contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="104573172"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">1016</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate6: filterPredicate</string>
-						<reference key="source" ref="925606880"/>
-						<reference key="destination" ref="807504509"/>
-						<object class="NSNibBindingConnector" key="connector" id="1059125022">
-							<reference key="NSSource" ref="925606880"/>
-							<reference key="NSDestination" ref="807504509"/>
-							<string key="NSLabel">predicate6: filterPredicate</string>
-							<string key="NSBinding">predicate6</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Message</string>
+								<string key="NSDisplayName">What</string>
 								<string key="NSPredicateFormat">message contains[c] $value</string>
 							</dictionary>
-							<reference key="NSPreviousConnector" ref="177477058"/>
+							<reference key="NSPreviousConnector" ref="969077256"/>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">1017</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate7: filterPredicate</string>
-						<reference key="source" ref="925606880"/>
-						<reference key="destination" ref="807504509"/>
-						<object class="NSNibBindingConnector" key="connector" id="689452362">
-							<reference key="NSSource" ref="925606880"/>
-							<reference key="NSDestination" ref="807504509"/>
-							<string key="NSLabel">predicate7: filterPredicate</string>
-							<string key="NSBinding">predicate7</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Destination Port</string>
-								<string key="NSPredicateFormat">destinationPort contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="1059125022"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">1018</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate8: filterPredicate</string>
-						<reference key="source" ref="925606880"/>
-						<reference key="destination" ref="807504509"/>
-						<object class="NSNibBindingConnector" key="connector" id="964781904">
-							<reference key="NSSource" ref="925606880"/>
-							<reference key="NSDestination" ref="807504509"/>
-							<string key="NSLabel">predicate8: filterPredicate</string>
-							<string key="NSBinding">predicate8</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Type</string>
-								<string key="NSPredicateFormat">type contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="689452362"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">1019</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate9: filterPredicate</string>
-						<reference key="source" ref="925606880"/>
-						<reference key="destination" ref="807504509"/>
-						<object class="NSNibBindingConnector" key="connector" id="559271030">
-							<reference key="NSSource" ref="925606880"/>
-							<reference key="NSDestination" ref="807504509"/>
-							<string key="NSLabel">predicate9: filterPredicate</string>
-							<string key="NSBinding">predicate9</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Study Name</string>
-								<string key="NSPredicateFormat">studyName contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="964781904"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">1020</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate10: filterPredicate</string>
-						<reference key="source" ref="925606880"/>
-						<reference key="destination" ref="807504509"/>
-						<object class="NSNibBindingConnector" key="connector" id="187351803">
-							<reference key="NSSource" ref="925606880"/>
-							<reference key="NSDestination" ref="807504509"/>
-							<string key="NSLabel">predicate10: filterPredicate</string>
-							<string key="NSBinding">predicate10</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Number Pending</string>
-								<string key="NSPredicateFormat">numberPending.description contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="559271030"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">1021</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate11: filterPredicate</string>
-						<reference key="source" ref="925606880"/>
-						<reference key="destination" ref="807504509"/>
-						<object class="NSNibBindingConnector" key="connector" id="816646960">
-							<reference key="NSSource" ref="925606880"/>
-							<reference key="NSDestination" ref="807504509"/>
-							<string key="NSLabel">predicate11: filterPredicate</string>
-							<string key="NSBinding">predicate11</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Patient Name</string>
-								<string key="NSPredicateFormat">patientName contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="187351803"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">1022</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate12: filterPredicate</string>
-						<reference key="source" ref="925606880"/>
-						<reference key="destination" ref="807504509"/>
-						<object class="NSNibBindingConnector" key="connector" id="936576583">
-							<reference key="NSSource" ref="925606880"/>
-							<reference key="NSDestination" ref="807504509"/>
-							<string key="NSLabel">predicate12: filterPredicate</string>
-							<string key="NSBinding">predicate12</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Number Error</string>
-								<string key="NSPredicateFormat">numberError.description contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="816646960"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">1023</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate13: filterPredicate</string>
-						<reference key="source" ref="925606880"/>
-						<reference key="destination" ref="807504509"/>
-						<object class="NSNibBindingConnector" key="connector" id="569847924">
-							<reference key="NSSource" ref="925606880"/>
-							<reference key="NSDestination" ref="807504509"/>
-							<string key="NSLabel">predicate13: filterPredicate</string>
-							<string key="NSBinding">predicate13</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">End Time</string>
-								<string key="NSPredicateFormat">endTime.description contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="936576583"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">1024</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate14: filterPredicate</string>
-						<reference key="source" ref="925606880"/>
-						<reference key="destination" ref="807504509"/>
-						<object class="NSNibBindingConnector" key="connector" id="322044166">
-							<reference key="NSSource" ref="925606880"/>
-							<reference key="NSDestination" ref="807504509"/>
-							<string key="NSLabel">predicate14: filterPredicate</string>
-							<string key="NSBinding">predicate14</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Number Images</string>
-								<string key="NSPredicateFormat">numberImages.description contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="569847924"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">1025</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate15: filterPredicate</string>
-						<reference key="source" ref="925606880"/>
-						<reference key="destination" ref="807504509"/>
-						<object class="NSNibBindingConnector" key="connector" id="671441836">
-							<reference key="NSSource" ref="925606880"/>
-							<reference key="NSDestination" ref="807504509"/>
-							<string key="NSLabel">predicate15: filterPredicate</string>
-							<string key="NSBinding">predicate15</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Number Sent</string>
-								<string key="NSPredicateFormat">numberSent.description contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="322044166"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">1026</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate16: filterPredicate</string>
-						<reference key="source" ref="925606880"/>
-						<reference key="destination" ref="807504509"/>
-						<object class="NSNibBindingConnector" key="connector" id="100599744">
-							<reference key="NSSource" ref="925606880"/>
-							<reference key="NSDestination" ref="807504509"/>
-							<string key="NSLabel">predicate16: filterPredicate</string>
-							<string key="NSBinding">predicate16</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Start Time</string>
-								<string key="NSPredicateFormat">startTime.description contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="671441836"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">1027</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate17: filterPredicate</string>
-						<reference key="source" ref="925606880"/>
-						<reference key="destination" ref="807504509"/>
-						<object class="NSNibBindingConnector" key="connector" id="177797795">
-							<reference key="NSSource" ref="925606880"/>
-							<reference key="NSDestination" ref="807504509"/>
-							<string key="NSLabel">predicate17: filterPredicate</string>
-							<string key="NSBinding">predicate17</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Origin Port</string>
-								<string key="NSPredicateFormat">originPort contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="100599744"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">1028</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">predicate18: filterPredicate</string>
-						<reference key="source" ref="925606880"/>
-						<reference key="destination" ref="807504509"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="925606880"/>
-							<reference key="NSDestination" ref="807504509"/>
-							<string key="NSLabel">predicate18: filterPredicate</string>
-							<string key="NSBinding">predicate18</string>
-							<string key="NSKeyPath">filterPredicate</string>
-							<dictionary key="NSOptions">
-								<string key="NSDisplayName">Status</string>
-								<string key="NSPredicateFormat">status contains[c] $value</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="177797795"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">1029</int>
+					<int key="connectionID">1858</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -5789,14 +4774,87 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">1218</int>
+			<int key="maxID">1863</int>
 		</object>
-		<object class="IBClassDescriber" key="IBDocument.Classes"/>
+		<object class="IBClassDescriber" key="IBDocument.Classes">
+			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
+				<object class="IBPartialClassDescription">
+					<string key="className">LogTableView</string>
+					<string key="superclassName">NSTableView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/LogTableView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">LogWindowController</string>
+					<string key="superclassName">NSWindowController</string>
+					<object class="NSMutableDictionary" key="actions">
+						<string key="NS.key.0">export:</string>
+						<string key="NS.object.0">id</string>
+					</object>
+					<object class="NSMutableDictionary" key="actionInfosByName">
+						<string key="NS.key.0">export:</string>
+						<object class="IBActionInfo" key="NS.object.0">
+							<string key="name">export:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</object>
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="move">NSArrayController</string>
+						<string key="receive">NSArrayController</string>
+						<string key="send">NSArrayController</string>
+						<string key="web">NSArrayController</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="move">
+							<string key="name">move</string>
+							<string key="candidateClassName">NSArrayController</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="receive">
+							<string key="name">receive</string>
+							<string key="candidateClassName">NSArrayController</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="send">
+							<string key="name">send</string>
+							<string key="candidateClassName">NSArrayController</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="web">
+							<string key="name">web</string>
+							<string key="candidateClassName">NSArrayController</string>
+						</object>
+					</dictionary>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/LogWindowController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">QueryLogController</string>
+					<string key="superclassName">NSArrayController</string>
+					<object class="NSMutableDictionary" key="actions">
+						<string key="NS.key.0">nothing:</string>
+						<string key="NS.object.0">id</string>
+					</object>
+					<object class="NSMutableDictionary" key="actionInfosByName">
+						<string key="NS.key.0">nothing:</string>
+						<object class="IBActionInfo" key="NS.object.0">
+							<string key="name">nothing:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/QueryLogController.h</string>
+					</object>
+				</object>
+			</array>
+		</object>
 		<int key="IBDocument.localizationMode">0</int>
 		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaFramework</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencyDefaults">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
-			<real value="1060" key="NS.object.0"/>
+			<real value="1070" key="NS.object.0"/>
 		</object>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDevelopmentDependencies">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.InterfaceBuilder3</string>

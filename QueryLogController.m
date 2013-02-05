@@ -23,7 +23,7 @@
 {
 	[self setManagedObjectContext: [[BrowserController currentBrowser].database managedObjectContext]];
 	[self setAutomaticallyPreparesContent: YES];
-	
+    
 	[self fetch: self];
 	
 	[self setSortDescriptors:[NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:@"startTime" ascending:NO] autorelease]]];
