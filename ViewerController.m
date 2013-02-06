@@ -7867,6 +7867,16 @@ return YES;
 	[pool release];
 }
 
++ (BOOL) areLoadingViewers
+{
+    for( ViewerController *v in [ViewerController get2DViewers])
+    {
+        if( [v isEverythingLoaded] == NO)
+            return YES;
+    }
+    return NO;
+}
+
 - (void) finishLoadImageData: (NSDictionary*) dict
 {
     @synchronized( loadingThread)

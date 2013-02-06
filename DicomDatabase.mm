@@ -3018,14 +3018,18 @@ static BOOL protectionAgainstReentry = NO;
 	//if ([[AppController sharedAppController] isSessionInactive])
 	//	return;
 	
-	if ([_importFilesFromIncomingDirLock tryLock]) {
+    if( [ViewerController areLoadingViewers]) //Don't try to do everything at the same time... we are not in a hurry for checking the incoming dir, preserve the user experience !
+        return;
+    
+	if ([_importFilesFromIncomingDirLock tryLock])
+    {
 		if ([self isFileSystemFreeSizeLimitReached]) {
 			[NSFileManager.defaultManager removeItemAtPath:[self incomingDirPath] error:nil]; // Kill the incoming directory
 			[[AppController sharedAppController] growlTitle:NSLocalizedString(@"Warning", nil) description: NSLocalizedString(@"The database volume is full! Incoming files are ignored.", nil) name:@"newfiles"];
 		}
 		
 		@try {
-			[self performSelectorInBackground:@selector(importFilesFromIncomingDirThread) withObject:nil]; // TODO: NSOperationQueues pls
+			[self performSelectorInBackground:@selector(importFilesFromIncomingDirThread) withObject:nil];
 		} @catch (NSException* e) {
 			N2LogExceptionWithStackTrace(e);
 		} @finally {

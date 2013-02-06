@@ -690,6 +690,7 @@ enum
 - (BOOL)isPlaying4D;
 - (void) checkEverythingLoaded;
 - (BOOL) isEverythingLoaded;
++ (BOOL) areLoadingViewers;
 - (IBAction) roiSetPixelsCheckButton:(id) sender;
 - (IBAction) roiSetPixelsSetup:(id) sender;
 - (IBAction) roiSetPixels:(ROI*)aROI :(short)allRois :(BOOL)propagateIn4D :(BOOL)outside :(float)minValue :(float)maxValue :(float)newValue;
