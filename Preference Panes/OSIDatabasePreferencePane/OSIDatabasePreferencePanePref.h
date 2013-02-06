@@ -30,7 +30,7 @@
 	
 	IBOutlet NSTextField	*commentsGroup, *commentsElement;
     
-    int currentCommentsAutoFill;
+    int currentCommentsAutoFill, currentCommentsField;
 	
 	// Auto-Cleaning
 
@@ -43,7 +43,7 @@
     BOOL newUsePatientIDForUID, newUsePatientBirthDateForUID, newUsePatientNameForUID;
 }
 
-@property (nonatomic) int currentCommentsAutoFill;
+@property (nonatomic) int currentCommentsAutoFill, currentCommentsField;
 @property BOOL newUsePatientIDForUID, newUsePatientBirthDateForUID, newUsePatientNameForUID;
 
 - (void) mainViewDidLoad;

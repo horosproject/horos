@@ -365,13 +365,15 @@ static NSRecursiveLock *dbModifyLock = nil;
 		@try
 		{
 			// We are at root level
-			if( [rootDict valueForKey: @"comment"]) [self setPrimitiveValue: [rootDict valueForKey: @"comment"] forKey: @"comment"];
-			if( [rootDict valueForKey: @"comment2"]) [self setPrimitiveValue: [rootDict valueForKey: @"comment2"] forKey: @"comment2"];
-			if( [rootDict valueForKey: @"comment3"]) [self setPrimitiveValue: [rootDict valueForKey: @"comment3"] forKey: @"comment3"];
-			if( [rootDict valueForKey: @"comment4"]) [self setPrimitiveValue: [rootDict valueForKey: @"comment4"] forKey: @"comment4"];
+			if( [rootDict valueForKey: @"comment"]) {[self willChangeValueForKey: @"comment"];[self setPrimitiveValue: [rootDict valueForKey: @"comment"] forKey: @"comment"]; [self didChangeValueForKey: @"comment"];}
+            if( [rootDict valueForKey: @"comment2"]) {[self willChangeValueForKey: @"comment2"];[self setPrimitiveValue: [rootDict valueForKey: @"comment2"] forKey: @"comment2"]; [self didChangeValueForKey: @"comment2"];}
+            if( [rootDict valueForKey: @"comment3"]) {[self willChangeValueForKey: @"comment3"];[self setPrimitiveValue: [rootDict valueForKey: @"comment3"] forKey: @"comment3"]; [self didChangeValueForKey: @"comment3"];}
+            if( [rootDict valueForKey: @"comment4"]) {[self willChangeValueForKey: @"comment4"];[self setPrimitiveValue: [rootDict valueForKey: @"comment4"] forKey: @"comment4"]; [self didChangeValueForKey: @"comment4"];}
 			
+            [self willChangeValueForKey: @"stateText"];
 			[self setPrimitiveValue: [rootDict valueForKey: @"stateText"] forKey: @"stateText"];
-			
+			[self didChangeValueForKey: @"stateText"];
+            
 			NSArray *albums = [[DicomDatabase databaseForContext:[self managedObjectContext]] albums];
 			
 			for( NSString *name in [rootDict valueForKey: @"albums"])
@@ -673,7 +675,10 @@ static NSRecursiveLock *dbModifyLock = nil;
 				if( [self valueForKey: @"reportURL"] && [[NSFileManager defaultManager] fileExistsAtPath: [self valueForKey: @"reportURL"]])
 					[[NSFileManager defaultManager] removeItemAtPath: [self valueForKey: @"reportURL"] error: nil];
 				
+                
+                [self willChangeValueForKey: @"reportURL"];
 				[self setPrimitiveValue: nil forKey: @"reportURL"];
+                [self didChangeValueForKey: @"reportURL"];
 			}
 			
 			if( needToArchive)
@@ -1086,7 +1091,11 @@ static NSRecursiveLock *dbModifyLock = nil;
 				{	// Should we convert it to a local path?
 					NSString *commonPath = [[cB fixedDocumentsDirectory] commonPrefixWithString: url options: NSLiteralSearch];
 					if( [commonPath isEqualToString: [cB fixedDocumentsDirectory]])
+                    {
+                        [self willChangeValueForKey: @"reportURL"];
 						[self setPrimitiveValue: url forKey: @"reportURL"];
+                        [self didChangeValueForKey: @"reportURL"];
+                    }
 				}
 			}
 		}

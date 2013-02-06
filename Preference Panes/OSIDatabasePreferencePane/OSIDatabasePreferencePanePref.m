@@ -24,7 +24,7 @@
 
 @implementation OSIDatabasePreferencePanePref
 
-@synthesize currentCommentsAutoFill;
+@synthesize currentCommentsAutoFill, currentCommentsField;
 @synthesize newUsePatientIDForUID, newUsePatientBirthDateForUID, newUsePatientNameForUID;
 
 - (id) initWithBundle:(NSBundle *)bundle
@@ -178,6 +178,11 @@
 	
 	// COMMENTS
 	self.currentCommentsAutoFill = 0;
+    
+    if( [[[NSUserDefaults standardUserDefaults] stringForKey: @"commentFieldForAutoFill"] isEqualToString: @"comment"]) self.currentCommentsField = 1;
+    if( [[[NSUserDefaults standardUserDefaults] stringForKey: @"commentFieldForAutoFill"] isEqualToString: @"comment2"]) self.currentCommentsField = 2;
+    if( [[[NSUserDefaults standardUserDefaults] stringForKey: @"commentFieldForAutoFill"] isEqualToString: @"comment3"]) self.currentCommentsField = 3;
+    if( [[[NSUserDefaults standardUserDefaults] stringForKey: @"commentFieldForAutoFill"] isEqualToString: @"comment4"]) self.currentCommentsField = 4;
 	
 	// REPORTS
 	[self buildPluginsMenu];
@@ -276,6 +281,16 @@
 - (IBAction)regenerateAutoComments:(id) sender
 {
 	[[BrowserController currentBrowser] regenerateAutoComments: nil]; // nil == all studies
+}
+
+- (void) setCurrentCommentsField:(int) v
+{
+    currentCommentsField = v;
+    
+    if( currentCommentsField == 1) [[NSUserDefaults standardUserDefaults] setObject:@"comment" forKey:@"commentFieldForAutoFill"];
+    if( currentCommentsField == 2) [[NSUserDefaults standardUserDefaults] setObject:@"comment2" forKey:@"commentFieldForAutoFill"];
+    if( currentCommentsField == 3) [[NSUserDefaults standardUserDefaults] setObject:@"comment3" forKey:@"commentFieldForAutoFill"];
+    if( currentCommentsField == 4) [[NSUserDefaults standardUserDefaults] setObject:@"comment4" forKey:@"commentFieldForAutoFill"];
 }
 
 - (void) setCurrentCommentsAutoFill:(int) v

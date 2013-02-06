@@ -829,7 +829,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			date = [[NSDate dateWithNaturalLanguageString:datetime_string] retain];
 			if (date == nil)
 				date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
-			
+			if( date == nil) date = [[NSDate date] retain];
+            
 			[dicomElements setObject:studyID forKey:@"studyID"];
 			[dicomElements setObject:study forKey:@"studyDescription"];
 			
@@ -1083,6 +1084,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				study = [[NSString alloc] initWithString:[filePath lastPathComponent]];
 				Modality = [[NSString alloc] initWithString:extension];
 				date = [[[[NSFileManager defaultManager] attributesOfItemAtPath: filePath error: nil] fileCreationDate] retain];
+                if( date == nil) date = [[NSDate date] retain];
 				serie = [[NSString alloc] initWithString:[filePath lastPathComponent]];
 				fileType = [@"IMAGE" retain];
 				
@@ -1139,6 +1141,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
         study = [[NSString alloc] initWithString:[filePath lastPathComponent]];
         Modality = [[NSString alloc] initWithString:extension];
         date = [[[[NSFileManager defaultManager] attributesOfItemAtPath:filePath error: nil] fileCreationDate] retain];
+        if( date == nil) date = [[NSDate date] retain];
         serie = [[NSString alloc] initWithString:[filePath lastPathComponent]];
         fileType = [@"IMAGE" retain];
 
@@ -1277,7 +1280,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 //				fclose( fp);
 //				
 //				date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
-//				
+//				if( date == nil) date = [[NSDate date] retain];
+//
 //				[dicomElements setObject:studyID forKey:@"studyID"];
 //				[dicomElements setObject:study forKey:@"studyDescription"];
 //				[dicomElements setObject:date forKey:@"studyDate"];
@@ -1347,7 +1351,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			NoOfSeries = 1;
 			
 			date = [[[[NSFileManager defaultManager] attributesOfItemAtPath:filePath error: nil] fileCreationDate] retain];
-			
+			if( date == nil) date = [[NSDate date] retain];
+            
 			//NSLog(@"File has h x w x d %d x %d x %d",height,width,NoOfFrames);
 			int bytesPerPixel=1;
 			// if 8bit, byte_format==1 otherwise 16bit
@@ -1671,7 +1676,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 
 
 			date = [[[[NSFileManager defaultManager] attributesOfItemAtPath: filePath error: nil] fileCreationDate] retain];
-			
+			if( date == nil) date = [[NSDate date] retain];
+            
 			[dicomElements setObject:studyID forKey:@"studyID"];
 			[dicomElements setObject:study forKey:@"studyDescription"];
 			[dicomElements setObject:date forKey:@"studyDate"];
@@ -1740,7 +1746,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				
 				date = [[NSCalendarDate alloc] initWithString:[NSString stringWithCString: Analyze->hist.exp_date encoding: NSISOLatin1StringEncoding] calendarFormat:@"%Y%m%d"];
 				if(date == nil) date = [[[[NSFileManager defaultManager] attributesOfItemAtPath: filePath error: nil] fileCreationDate] retain];
-				
+				if( date == nil) date = [[NSDate date] retain];
+                
 				short endian = Analyze->dime.dim[ 0];		// dim[0] 
 				if ((endian < 0) || (endian > 15)) 
 				{
@@ -1803,9 +1810,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		
 		fileType = [@"NIfTI" retain];
 		
-		if( (NIfTI->magic[0] == 'n')                           &&
-			(NIfTI->magic[1] == 'i' || NIfTI->magic[1] == '+')   &&
-			(NIfTI->magic[2] == '1')                           &&
+		if( (NIfTI->magic[0] == 'n') &&
+			(NIfTI->magic[1] == 'i' || NIfTI->magic[1] == '+') &&
+			(NIfTI->magic[2] == '1') &&
 			(NIfTI->magic[3] == '\0'))
 		{
 			name = [[DicomFile NSreplaceBadCharacter: [filePath lastPathComponent]] retain];
@@ -1817,7 +1824,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			serie = [[NSString alloc] initWithString:[[filePath lastPathComponent] stringByDeletingPathExtension]];
 			Modality = [[NSString alloc] initWithString:@"NIfTI"];
 			date = [[[[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:NULL] fileCreationDate] retain];
-			
+			if( date == nil) date = [[NSDate date] retain];
+            
 			width = NIfTI->dim[ 1];
 
 			height = NIfTI->dim[ 2];
@@ -2524,6 +2532,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                     study = [[NSString alloc] initWithString:@"unnamed"];
                     Modality = [[NSString alloc] initWithString:@"OT"];
                     date = [[[[NSFileManager defaultManager] attributesOfItemAtPath: filePath error: nil] fileCreationDate] retain];
+                    if( date == nil) date = [[NSDate date] retain];
                     
                     [dicomElements setObject:date forKey:@"studyDate"];
                     [dicomElements setObject:Modality forKey:@"modality"];
@@ -4312,7 +4321,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			
 		Modality = [[NSString alloc] initWithString:extension];
 		date = [[[[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:NULL] fileCreationDate] retain];
-		
+		if( date == nil) date = [[NSDate date] retain];
+        
 		if ([decoder seriesDescription])
 			serie = [[decoder seriesDescription] retain];
 		else

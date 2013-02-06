@@ -125,7 +125,10 @@ static NSMutableDictionary *studiesForUserCache = nil;
 
 	// Create a unique name
 	unsigned long long uid = 100. * [NSDate timeIntervalSinceReferenceDate];
+    
+    [self willChangeValueForKey: @"name"];
 	[self setPrimitiveValue: [NSString stringWithFormat: @"user %llu", uid] forKey: @"name"];
+    [self didChangeValueForKey: @"name"];
 }
 
 
@@ -135,8 +138,9 @@ static NSMutableDictionary *studiesForUserCache = nil;
 	{
 		[self setValue: [NSDate dateWithTimeIntervalSinceReferenceDate: [NSDate timeIntervalSinceReferenceDate] + [[NSUserDefaults standardUserDefaults] integerForKey: @"temporaryUserDuration"] * 60L*60L*24L] forKey: @"deletionDate"];
 	}
-	
+	[self willChangeValueForKey: @"autoDelete"];
 	[self setPrimitiveValue: v forKey: @"autoDelete"];
+    [self didChangeValueForKey: @"autoDelete"];
 }
 
 - (void) setName: (NSString*) newName
@@ -171,8 +175,13 @@ static NSMutableDictionary *studiesForUserCache = nil;
         [self setPrimitiveValue: newPassword forKey: @"password"];
         [self didChangeValueForKey: @"password"];
         
+        [self willChangeValueForKey: @"passwordHash"];
         [self setPrimitiveValue: @"" forKey: @"passwordHash"];
+        [self didChangeValueForKey: @"passwordHash"];
+        
+        [self willChangeValueForKey: @"passwordCreationDate"];
         [self setPrimitiveValue: [NSDate date] forKey: @"passwordCreationDate"];
+        [self didChangeValueForKey: @"passwordCreationDate"];
     }
 }
 

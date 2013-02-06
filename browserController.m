@@ -924,9 +924,14 @@ static NSConditionLock *threadLock = nil;
             studiesArray = selectedStudies;
         }
         
+        NSString *commentField = [[NSUserDefaults standardUserDefaults] stringForKey: @"commentFieldForAutoFill"];
+        
 		for( DicomStudy *s in studiesArray)
-			[s setPrimitiveValue: 0L forKey: @"comment"];
-		
+        {
+            [s willChangeValueForKey: commentField];
+			[s setPrimitiveValue: 0L forKey: commentField];
+            [s didChangeValueForKey: commentField];
+		}
         NSArray *seriesArray = nil;
         
         if( sender == nil) // Apply to all studies
@@ -969,6 +974,8 @@ static NSConditionLock *threadLock = nil;
         
 		[[splash progress] setMaxValue: [seriesArray count]];
 		
+        
+        
 		for( NSManagedObject *series in seriesArray)
 		{
 			@try
@@ -983,19 +990,35 @@ static NSConditionLock *threadLock = nil;
 					{
 						if( [dcm elementForKey:@"commentsAutoFill"])
 						{
-							[series setPrimitiveValue: [dcm elementForKey: @"commentsAutoFill"] forKey:@"comment"];
-							
+                            [series willChangeValueForKey: commentField];
+							[series setPrimitiveValue: [dcm elementForKey: @"commentsAutoFill"] forKey: commentField];
+							[series didChangeValueForKey: commentField];
+                            
 							NSManagedObject *study = [series valueForKey: @"study"];
 							
-							if( [study valueForKey:@"comment"] == nil || [[study valueForKey:@"comment"] isEqualToString:@""])
-								[study setPrimitiveValue: [dcm elementForKey: @"commentsAutoFill"] forKey:@"comment"];
+							if( [study valueForKey: commentField] == nil || [[study valueForKey: commentField] isEqualToString:@""])
+                            {
+                                [study willChangeValueForKey: commentField];
+								[study setPrimitiveValue: [dcm elementForKey: @"commentsAutoFill"] forKey: commentField];
+                                [study didChangeValueForKey: commentField];
+                            }
 						}
-						else [series setPrimitiveValue: 0L forKey:@"comment"];
+						else
+                        {
+                            [series willChangeValueForKey: commentField];
+                            [series setPrimitiveValue: 0L forKey: commentField];
+                            [series didChangeValueForKey: commentField];
+                        }
 					}
 					
 					[dcm release];
 				}
-				else [series setPrimitiveValue: 0L forKey:@"comment"];
+				else
+                {
+                    [series willChangeValueForKey: commentField];
+                    [series setPrimitiveValue: 0L forKey: commentField];
+                    [series didChangeValueForKey: commentField];
+                }
 			}
 			@catch ( NSException *e)
 			{
@@ -1008,6 +1031,8 @@ static NSConditionLock *threadLock = nil;
                 break;
 		}
 		[context unlock];
+        
+        [self.database save];
 		
 		[self outlineViewRefresh];
 		

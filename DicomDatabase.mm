@@ -1715,7 +1715,8 @@ static BOOL protectionAgainstReentry = NO;
 		int combineProjectionSeries = [[NSUserDefaults standardUserDefaults] boolForKey:@"combineProjectionSeries"], combineProjectionSeriesMode = [[NSUserDefaults standardUserDefaults] boolForKey: @"combineProjectionSeriesMode"];
 		BOOL COMMENTSAUTOFILL = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILL"];
 		BOOL DELETEFILELISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"DELETEFILELISTENER"];
-
+        NSString *commentField = [[NSUserDefaults standardUserDefaults] stringForKey: @"commentFieldForAutoFill"];
+        
 		NSString* newFile = nil;
 		
 		// Add the new files
@@ -2139,20 +2140,38 @@ static BOOL protectionAgainstReentry = NO;
 									{
 										if([curDict objectForKey: @"commentsAutoFill"])
 										{
-											[seriesTable setPrimitiveValue: [curDict objectForKey: @"commentsAutoFill"] forKey: @"comment"];
-											[study setPrimitiveValue:[curDict objectForKey: @"commentsAutoFill"] forKey: @"comment"];
+                                            [seriesTable willChangeValueForKey: commentField];
+                                            [study willChangeValueForKey: commentField];
+                                            
+											[seriesTable setPrimitiveValue: [curDict objectForKey: @"commentsAutoFill"] forKey: commentField];
+											[study setPrimitiveValue:[curDict objectForKey: @"commentsAutoFill"] forKey: commentField];
+                                            
+                                            [seriesTable didChangeValueForKey: commentField];
+                                            [study didChangeValueForKey: commentField];
 										}
 									}
 									
 									if (generatedByOsiriX == NO && [(NSString*)[curDict objectForKey: @"seriesComments"] length] > 0)
+                                    {
+                                        [seriesTable willChangeValueForKey: @"comment"];
 										[seriesTable setPrimitiveValue: [curDict objectForKey: @"seriesComments"] forKey: @"comment"];
-									
+                                        [seriesTable didChangeValueForKey: @"comment"];
+									}
+                                    
 									if (generatedByOsiriX == NO && [(NSString*)[curDict objectForKey: @"studyComments"] length] > 0)
+                                    {
+                                        [study willChangeValueForKey: @"comment"];
 										[study setPrimitiveValue: [curDict objectForKey: @"studyComments"] forKey: @"comment"];
-									
+                                        [study didChangeValueForKey: @"comment"];
+									}
+                                    
 									if (generatedByOsiriX == NO && [[study valueForKey:@"stateText"] intValue] == 0 && [[curDict objectForKey: @"stateText"] intValue] != 0)
+                                    {
+                                        [study willChangeValueForKey: @"stateText"];
 										[study setPrimitiveValue: [curDict objectForKey: @"stateText"] forKey: @"stateText"];
-									
+                                        [study didChangeValueForKey: @"stateText"];
+									}
+                                    
 									if (generatedByOsiriX == NO && [curDict objectForKey: @"keyFrames"])
 									{
 										@try
@@ -2161,7 +2180,9 @@ static BOOL protectionAgainstReentry = NO;
 											{
 												if ([k intValue] == f) // corresponding frame
 												{
+                                                    [image willChangeValueForKey: @"storedIsKeyImage"];
 													[image setPrimitiveValue: [NSNumber numberWithBool: YES] forKey: @"storedIsKeyImage"];
+                                                    [image didChangeValueForKey: @"storedIsKeyImage"];
 													break;
 												}
 											}
@@ -2218,10 +2239,12 @@ static BOOL protectionAgainstReentry = NO;
 												NSLog( @"--- DICOM SR -> Report : %@", [curDict valueForKey: @"patientName"]);
 											}
 											
+                                            [study willChangeValueForKey: @"reportURL"];
 											if ([reportURL length] > 0)
 												[study setPrimitiveValue: reportURL forKey: @"reportURL"];
 											else
 												[study setPrimitiveValue: 0L forKey: @"reportURL"];
+                                            [study didChangeValueForKey: @"reportURL"];
 										}
 									}
 								}
@@ -3193,7 +3216,9 @@ static BOOL protectionAgainstReentry = NO;
 					   [name isEqualToString: @"reportURL"] ||
 					   [name isEqualToString: @"stateText"])
 					{
+                        [newStudyTable willChangeValueForKey: name];
 						[newStudyTable setPrimitiveValue: [oldStudy primitiveValueForKey: name] forKey: name];
+                        [newStudyTable didChangeValueForKey: name];
 					}
 					else [newStudyTable setValue: [oldStudy primitiveValueForKey: name] forKey: name];
 					
@@ -3233,7 +3258,9 @@ static BOOL protectionAgainstReentry = NO;
 									[name isEqualToString: @"reportURL"] ||
 									[name isEqualToString: @"stateText"])
 							{
+                                [newSeriesTable willChangeValueForKey: name];
 								[newSeriesTable setPrimitiveValue: [oldSeries primitiveValueForKey: name] forKey: name];
+                                [newSeriesTable didChangeValueForKey: name];
 							}
 							else [newSeriesTable setValue: [oldSeries primitiveValueForKey: name] forKey: name];
 						}
@@ -3268,7 +3295,9 @@ static BOOL protectionAgainstReentry = NO;
 											[name isEqualToString: @"reportURL"] ||
 											[name isEqualToString: @"stateText"])
 									{
+                                        [newImageTable willChangeValueForKey: name];
 										[newImageTable setPrimitiveValue: [oldImage primitiveValueForKey: name] forKey: name];
+                                        [newImageTable didChangeValueForKey: name];
 									}
 									else [newImageTable setValue: [oldImage primitiveValueForKey: name] forKey: name];
 								}

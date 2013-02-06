@@ -808,7 +808,7 @@ static NSHost *currentHost = nil;
     [defaultValues setObject:@"1" forKey:@"CapitalizedString"];
     [defaultValues setObject:@"1" forKey:@"hasFULL32BITPIPELINE"];
     [defaultValues setObject:@"1" forKey:@"FULL32BITPIPELINE"];
-    
+    [defaultValues setObject:@"comment" forKey:@"commentFieldForAutoFill"];
     [defaultValues setObject:[NSString stringWithFormat:@"%d", syncroRatio] forKey:@"DefaultModeForNonVolumicSeries"];
 	[defaultValues setObject:@"2" forKey:@"drawerState"]; // NSDrawerOpenState
 	if( [[NSProcessInfo processInfo] processorCount] >= 4)
