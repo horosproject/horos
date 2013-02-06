@@ -83,10 +83,8 @@
 
 - (void) roiChange :(NSNotification*) note
 {
-	if( [note object] == curROI)
-	{
+    if( [note.name isEqualToString: OsirixRecomputeROINotification] || [note object] == curROI)
 		[self refresh];
-	}
 }
 
 - (id) initWithROI: (ROI*) iroi
@@ -127,8 +125,12 @@
 		   selector: @selector(changeWLWW:)
 			   name: OsirixChangeWLWWNotification
 			 object: nil];
-
-	
+    
+    [nc addObserver: self
+		   selector: @selector(roiChange:)
+			   name: OsirixRecomputeROINotification
+			 object: nil];
+    
 	return self;
 }
 

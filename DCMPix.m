@@ -1853,21 +1853,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		{
 			if( yPoints[ i] >= 0 && yPoints[ i] < height && xPoints[ i] >= 0 && xPoints[ i] < width)
 			{
-				if( isRGB)
-				{
-					unsigned char*  rgbPtr = (unsigned char*) fImage;
-					long			pos;
-					
-					pos =  4*width*yPoints[ i];
-					pos += 4*xPoints[ i];
-					
-					values[ count] = (rgbPtr[ pos+1] + rgbPtr[ pos+2] + rgbPtr[ pos+3])/3;
-				}
-				else
-				{
-					values[ count] = fImage[ width*yPoints[ i] + xPoints[ i]];
-				}
-				
+                values[ count] = [self getPixelValueX: xPoints[ i] Y: yPoints[ i]];
 			}
 			else values[ count] = 0;
 			
@@ -11564,42 +11550,61 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	
 	if( (stackMode == 1 || stackMode == 2 || stackMode == 3) && stack >= 1)
 	{
-		if( isRGB == NO)
-		{
-			float   *fNext = nil;
-			long	countstack = 0;
-			
-			val = fImage[ x + (y * width)];
-			countstack++;
-			
-			for( long i = 1; i < stack; i++)
-			{
-				long next;
-				if( stackDirection) next = pixPos-i;
-				else next = pixPos+i;
-				
-				if( next < pixArray.count && next >= 0)
-				{
-					fNext = [[pixArray objectAtIndex: next] fImage];
-					if( fNext)
-					{
-						switch( stackMode)
-						{
-							case 1:		val += fNext[ x + (y * width)];										break;
-							case 2:		if( fNext[ x + (y * width)] > val) val = fNext[ x + (y * width)];	break;
-							case 3:		if( fNext[ x + (y * width)] < val) val = fNext[ x + (y * width)];	break;
-						}
-						countstack++;
-					}
-				}
-			}
-			
-			if( stackMode == 1) val /= countstack;
-		}
+        float   *fNext = nil;
+        long	countstack = 0;
+        
+        val = fImage[ x + (y * width)];
+        countstack++;
+        
+        for( long i = 1; i < stack; i++)
+        {
+            long next;
+            if( stackDirection) next = pixPos-i;
+            else next = pixPos+i;
+            
+            if( next < pixArray.count && next >= 0)
+            {
+                fNext = [[pixArray objectAtIndex: next] fImage];
+                if( fNext)
+                {
+                    if( isRGB == NO)
+                    {
+                        switch( stackMode)
+                        {
+                            case 1:		val += fNext[ x + (y * width)];										break;
+                            case 2:		if( fNext[ x + (y * width)] > val) val = fNext[ x + (y * width)];	break;
+                            case 3:		if( fNext[ x + (y * width)] < val) val = fNext[ x + (y * width)];	break;
+                        }
+                    }
+                    else
+                    {
+                        unsigned char *rgbPtr = (unsigned char*) (&fNext[ x + (y * width)]);
+                        
+                        float meanRGBValue = (rgbPtr[ 1] + rgbPtr[ 2] + rgbPtr[ 3])/3.;
+                        
+                        switch( stackMode)
+                        {
+                            case 1:		val += meanRGBValue;                        break;
+                            case 2:		if( meanRGBValue > val) val = meanRGBValue;	break;
+                            case 3:		if( meanRGBValue < val) val = meanRGBValue;	break;
+                        }
+                    }
+                    countstack++;
+                }
+            }
+        }
+        
+        if( stackMode == 1) val /= countstack;
 	}
 	else
 	{
-		val = fImage[ x + (y * width)];
+        if( isRGB == NO)
+            val = fImage[ x + (y * width)];
+        else
+        {
+            unsigned char *rgbPtr = (unsigned char*) (&fImage[ x + (y * width)]);
+            val = (rgbPtr[ 1] + rgbPtr[ 2] + rgbPtr[ 3])/3.;
+        }
 	}
 	
 	return val;

@@ -5997,6 +5997,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	resampledBaseAddrSize = 0;
 	[curDCM compute8bitRepresentation];
 	
+    [[NSNotificationCenter defaultCenter] postNotificationName: OsirixRecomputeROINotification object:self userInfo: nil];
+    
 	[self setIndex: curImage];
 }
 
