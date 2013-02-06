@@ -36,6 +36,7 @@
 #import "N2OpenGLViewWithSplitsWindow.h"
 #import "AppController.h"
 #import "DicomDatabase.h"
+#import <N2Debug.h>
 
 #define PRESETS_DIRECTORY @"/3DPRESETS/"
 #define CLUTDATABASE @"/CLUTs/"
@@ -1161,35 +1162,41 @@ static float deg2rad = M_PI / 180.0;
 {
 	CPRMPRDCMView *s = [[self selectedViewOnlyMPRView : NO] reformationView];
 	
-	for( ROI *r in [s curRoiList])
-	{
-		long mode = [r ROImode];
-		
-		if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
-		{
-			NSArray *winList = [NSApp windows];
-			BOOL	found = NO;
-			
-			for( id loopItem1 in winList)
-			{
-				if( [[[loopItem1 windowController] windowNibName] isEqualToString:@"ROI"])
-				{
-					if( [[loopItem1 windowController] curROI] == r)
-					{
-						found = YES;
-						[[[loopItem1 windowController] window] makeKeyAndOrderFront:self];
-					}
-				}
-			}
-			
-			if( found == NO)
-			{
-				ROIWindow* roiWin = [[ROIWindow alloc] initWithROI: r :viewer2D];
-				[roiWin showWindow:self];
-			}
-			break;
-		}
-	}
+    @try
+    {
+        for( ROI *r in [s curRoiList])
+        {
+            long mode = [r ROImode];
+            
+            if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
+            {
+                NSArray *winList = [NSApp windows];
+                BOOL	found = NO;
+                
+                for( id loopItem1 in winList)
+                {
+                    if( [[[loopItem1 windowController] windowNibName] isEqualToString:@"ROI"])
+                    {
+                        if( [[loopItem1 windowController] curROI] == r)
+                        {
+                            found = YES;
+                            [[[loopItem1 windowController] window] makeKeyAndOrderFront:self];
+                        }
+                    }
+                }
+                
+                if( found == NO)
+                {
+                    ROIWindow* roiWin = [[ROIWindow alloc] initWithROI: r :viewer2D];
+                    [roiWin showWindow:self];
+                }
+                break;
+            }
+        }
+    }
+    @catch (NSException *exception) {
+        N2LogExceptionWithStackTrace( exception);
+    }
 }
 
 - (void)bringToFrontROI:(ROI*) roi;

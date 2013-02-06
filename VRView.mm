@@ -2519,10 +2519,14 @@ public:
 		double yd = point2[ 1]- point1[ 1];
 		double zd = point2[ 2]- point1[ 2];
 		double length = sqrt(xd*xd + yd*yd + zd*zd);
-
+        
+        if( isnan( length) || length < 0.00001 || length > 1000)
+            NSLog( @"****** vrView getResolution");
+        
 		return (length/factor);
 	}
-	else return 0;
+	else
+        return 0;
 }
 
 - (void) computeLength

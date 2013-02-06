@@ -3304,6 +3304,13 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		width = xDim;
 		pixelSpacingX = xSpace;
 		pixelSpacingY = ySpace;
+        
+        if( isnan( pixelSpacingX) || pixelSpacingX < 0.00001 || pixelSpacingX > 1000)
+            NSLog( @"****** DCMPix initWithData");
+        
+        if( isnan( pixelSpacingY) || pixelSpacingY < 0.00001 || pixelSpacingY > 1000)
+            NSLog( @"****** DCMPix initWithData");
+        
 		if( pixelSpacingY != 0 && pixelSpacingX != 0) pixelRatio = pixelSpacingY / pixelSpacingX;
 		else pixelRatio = 1.0;
 		
