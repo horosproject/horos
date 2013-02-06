@@ -3,7 +3,6 @@
 	<script type="text/javascript">
 	function loginAction(form) {
 		form.sha1.value = hex_sha1(form.password.value+form.username.value);
-		form.password.value = '';
 		return true;
 	}
 	</script>
