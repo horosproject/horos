@@ -8865,6 +8865,12 @@ static BOOL withReset = NO;
         return [sender frame].size.height - (banner.image.size.height+3);
     }
 	
+    if ([sender isEqual: splitAlbums])
+    {
+        proposedPosition = MAX(proposedPosition, [sender minPossiblePositionOfDividerAtIndex:offset]);
+        proposedPosition = MIN(proposedPosition, [sender maxPossiblePositionOfDividerAtIndex:offset]);
+    }
+    
     return proposedPosition;
 }
 
@@ -9103,7 +9109,10 @@ static BOOL withReset = NO;
 
 - (BOOL)splitView: (NSSplitView *)sender canCollapseSubview: (NSView *)subview
 {
-	if (sender == splitViewVert)
+    if (sender == splitViewVert)
+        return NO;
+    
+	if (sender == splitAlbums)
         return NO;
 	
     if (sender == splitDrawer && subview == [[splitDrawer subviews] objectAtIndex:1])
@@ -9140,9 +9149,6 @@ static BOOL withReset = NO;
 
 - (CGFloat)splitView:(NSSplitView *)sender constrainMinCoordinate: (CGFloat)proposedMin ofSubviewAt: (NSInteger)offset
 {
-//    if( starting)
-//        return proposedMin;
-    
 	if (sender == splitViewHorz)
 		return oMatrix.cellSize.height;
 
@@ -9151,7 +9157,14 @@ static BOOL withReset = NO;
     
 	if (sender == splitDrawer)
         return 160;
-	
+    
+    if (sender == splitAlbums)
+    {
+        if( offset == 0) return 20;
+        else
+            return [[[sender subviews] objectAtIndex: offset - 1] frame].origin.y + [[[sender subviews] objectAtIndex: offset - 1] frame].size.height + 20;
+	}
+    
     if( sender == splitComparative)
         return [sender bounds].size.width-300;
     
@@ -9163,9 +9176,6 @@ static BOOL withReset = NO;
 
 - (CGFloat)splitView:(NSSplitView *)sender constrainMaxCoordinate: (CGFloat)proposedMax ofSubviewAt: (NSInteger)offset
 {
-//    if( starting)
-//        return proposedMax;
-    
 	if (sender == splitViewVert)
 		return [sender bounds].size.width-200;
     
@@ -9180,6 +9190,13 @@ static BOOL withReset = NO;
     
     if (sender == bannerSplit)
         return [sender frame].size.height - (banner.image.size.height+3);
+    
+    if (sender == splitAlbums)
+    {
+        if( offset == [[sender subviews] count]) return [sender bounds].size.width-20;
+        else
+            return [[[sender subviews] objectAtIndex: offset + 1] frame].origin.y + [[[sender subviews] objectAtIndex: offset + 1] frame].size.height - 20;
+	}
     
 	return proposedMax;
 }
