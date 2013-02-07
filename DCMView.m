@@ -2826,7 +2826,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             else [self setIndexWithReset:curImage :YES];
             
             if( matrix ) {
-                NSInteger rows, cols; [matrix getNumberOfRows:&rows columns:&cols];
+                NSInteger rows, cols; [matrix getNumberOfRows:&rows columns:&cols];  if( cols < 1) cols = 1;
                 [matrix selectCellAtRow:curImage/cols column:curImage%cols];
             }
             
@@ -3128,7 +3128,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 			if( curImage != startImage && (matrix && [BrowserController currentBrowser]))
 			{
-                NSInteger rows, cols; [matrix getNumberOfRows:&rows columns:&cols];
+                NSInteger rows, cols; [matrix getNumberOfRows:&rows columns:&cols];  if( cols < 1) cols = 1;
                 NSButtonCell *cell = [matrix cellAtRow:curImage/cols column:curImage%cols];
 				[cell performClick:nil];
 				[matrix selectCellAtRow :curImage/cols column:curImage%cols];
@@ -4746,7 +4746,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			else [self setIndexWithReset:curImage :YES];
 			
 			if( matrix ) {
-                NSInteger rows, cols; [matrix getNumberOfRows:&rows columns:&cols];
+                NSInteger rows, cols; [matrix getNumberOfRows:&rows columns:&cols];  if( cols < 1) cols = 1;
                 [matrix selectCellAtRow :curImage/cols column:curImage%cols];
 			}
             
@@ -5291,7 +5291,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			else [self setIndexWithReset:curImage :YES];
 			
 			if (matrix) {
-                NSInteger rows, cols; [matrix getNumberOfRows:&rows columns:&cols];
+                NSInteger rows, cols; [matrix getNumberOfRows:&rows columns:&cols];  if( cols < 1) cols = 1;
                 [matrix selectCellAtRow :curImage/cols column:curImage%cols];
 			}
             

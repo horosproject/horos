@@ -6962,7 +6962,7 @@ static NSConditionLock *threadLock = nil;
 				if( [[oMatrix selectedCell] tag] != seriesPosition)
 				{
 					// Select the right thumbnail matrix
-                    NSInteger rows, cols; [oMatrix getNumberOfRows:&rows columns:&cols];
+                    NSInteger rows, cols; [oMatrix getNumberOfRows:&rows columns:&cols];  if( cols < 1) cols = 1;
 					[oMatrix selectCellAtRow: seriesPosition/cols column: seriesPosition%cols];
 					[self matrixPressed: oMatrix];
 				}
@@ -8116,7 +8116,7 @@ static BOOL withReset = NO;
         [self previewMatrixScrollViewFrameDidChange: nil];
         
         NSInteger rows, columns;
-        [oMatrix getNumberOfRows:&rows columns:&columns];
+        [oMatrix getNumberOfRows:&rows columns:&columns];  if( columns < 1) columns = 1;
         
         for( long i=0; i < rows*columns; i++)
         {
@@ -8191,7 +8191,7 @@ static BOOL withReset = NO;
             
             if( img || [modality  hasPrefix: @"RT"])
             {
-                NSInteger rows, cols; [oMatrix getNumberOfRows:&rows columns:&cols];
+                NSInteger rows, cols; [oMatrix getNumberOfRows:&rows columns:&cols]; if( cols < 1) cols = 1;
                 NSButtonCell* cell = [oMatrix cellAtRow:i/cols column:i%cols];
                 [cell setTransparent:NO];
                 [cell setEnabled:YES];
@@ -8302,7 +8302,7 @@ static BOOL withReset = NO;
             }
             else
             {  // Show Error Button
-                NSInteger rows, cols; [oMatrix getNumberOfRows:&rows columns:&cols];
+                NSInteger rows, cols; [oMatrix getNumberOfRows:&rows columns:&cols];  if( cols < 1) cols = 1;
                 NSButtonCell* cell = [oMatrix cellAtRow:i/cols column:i%cols];
                 [cell setImage: nil];
                 [oMatrix setToolTip: NSLocalizedString(@"File not readable", nil) forCell:cell];
@@ -8396,7 +8396,7 @@ static BOOL withReset = NO;
                 long i;
                 for( i = 0; i < [previewPix count]; i++)
                 {
-                    NSInteger rows, cols; [oMatrix getNumberOfRows:&rows columns:&cols];
+                    NSInteger rows, cols; [oMatrix getNumberOfRows:&rows columns:&cols];  if( cols < 1) cols = 1;
                     NSButtonCell* cell = [oMatrix cellAtRow:i/cols column:i%cols];
                     
                     if( [cell isEnabled] == NO)
