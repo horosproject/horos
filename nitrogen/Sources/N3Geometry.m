@@ -766,15 +766,20 @@ bool N3VectorMakeWithDictionaryRepresentation(CFDictionaryRef dict, N3Vector *ve
 		return false;
 	}
 	
-	if (CFNumberGetValue(x, kCFNumberCGFloatType, &(tempVector.x)) == false) {
-		return false;
-	}
-	if (CFNumberGetValue(y, kCFNumberCGFloatType, &(tempVector.y)) == false) {
-		return false;
-	}
-	if (CFNumberGetValue(z, kCFNumberCGFloatType, &(tempVector.z)) == false) {
-		return false;
-	}
+    CFNumberGetValue(x, kCFNumberCGFloatType, &(tempVector.x));
+    CFNumberGetValue(y, kCFNumberCGFloatType, &(tempVector.y));
+    CFNumberGetValue(z, kCFNumberCGFloatType, &(tempVector.z));
+    
+//	if (CFNumberGetValue(x, kCFNumberCGFloatType, &(tempVector.x)) == false) {
+//		return false;    NO ! CFNumberGetValue can return false, if the value was saved in float 64 bit, and then converted to a lossy 32 bit : this situation happens if the path was created in an OsiriX 64-bit version, then loaded in OsiriX 32-bit
+// If the argument type differs from the return type, and the conversion is lossy or the return value is out of range, then this function passes back an approximate value in valuePtr and returns false.
+//	}
+//	if (CFNumberGetValue(y, kCFNumberCGFloatType, &(tempVector.y)) == false) {
+//		return false;
+//	}
+//	if (CFNumberGetValue(z, kCFNumberCGFloatType, &(tempVector.z)) == false) {
+//		return false;
+//	}
 	
 	if (vector) {
 		*vector = tempVector;

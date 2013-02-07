@@ -98,9 +98,10 @@ bool OSISlabMakeWithDictionaryRepresentation(CFDictionaryRef dict, OSISlab *slab
 		return false;
 	}
     
-	if (CFNumberGetValue(thicknessNumber, kCFNumberCGFloatType, &(tempSlab.thickness)) == false) {
-		return false;
-	}
+    CFNumberGetValue(thicknessNumber, kCFNumberCGFloatType, &(tempSlab.thickness));
+//	if (CFNumberGetValue(thicknessNumber, kCFNumberCGFloatType, &(tempSlab.thickness)) == false) {
+//		return false;
+//	}
     
 	if (slab) {
 		*slab = tempSlab;

@@ -70,7 +70,7 @@ long vramSize()
 	// Validate our data and make sure we're getting the right type
 	if(typeCode)
 	{
-		long vramStorage = 0;
+		SInt32 vramStorage = 0;
 		
 		if( CFGetTypeID(typeCode) == CFNumberGetTypeID())
 		{
