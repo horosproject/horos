@@ -8359,7 +8359,7 @@ return YES;
 
 + (BOOL)resampleDataFromPixArray:(NSArray *)originalPixlist fileArray:(NSArray*)originalFileList inPixArray:(NSMutableArray*)aPixList fileArray:(NSMutableArray*)aFileList data:(NSData**)aData withXFactor:(float)xFactor yFactor:(float)yFactor zFactor:(float)zFactor;
 {
-	NSLog(@"resampleDataFromPixArray - factor : %f", xFactor);
+	NSLog( @"resampleDataFromPixArray - factor : %f", xFactor);
 	
 	long				i, y, z;
 	unsigned long long	size, newX, newY, newZ, imageSize;
@@ -8371,8 +8371,12 @@ return YES;
 	int originZ = [originalPixlist count];
 	float sliceInterval = [[originalPixlist objectAtIndex:0] sliceInterval];
 	
-	if( sliceInterval == 0) zFactor = 1.0;
-	
+	if( sliceInterval == 0)
+    {
+        NSLog( @"NOT A VOLUMIC SERIES: sliceInterval == 0. Cannot resample in Z direction");
+        zFactor = 1.0;
+	}
+    
 	newX = (unsigned long long)((float)originWidth / xFactor + 0.5);
 	newY = (unsigned long long)((float)originHeight / yFactor + 0.5);
 	newZ = (unsigned long long)((float)originZ / zFactor + 0.5);
@@ -14845,6 +14849,11 @@ int i,j,l;
     [self setWindowTitle:self];
 }
 
+- (void) restoreConvertPETtoSUVautomaticallyValue: (NSNumber*) valueToRestore
+{
+    [[NSUserDefaults standardUserDefaults] setBool: valueToRestore.boolValue forKey:@"ConvertPETtoSUVautomatically"];
+}
+
 -(IBAction) endDisplaySUV:(id) sender
 {
 	long y, x;
@@ -14873,7 +14882,8 @@ int i,j,l;
 			}
 		}
 		
-		[[NSUserDefaults standardUserDefaults] setBool:savedDefault forKey:@"ConvertPETtoSUVautomatically"];
+        // Why this? Because SUV conversion happen on the main thread in the finishLoadImageData...
+        [self performSelector: @selector( restoreConvertPETtoSUVautomaticallyValue:) withObject: [NSNumber numberWithBool: savedDefault] afterDelay: 2];
 		
 		for( y = 0; y < maxMovieIndex; y++)
 		{
@@ -15594,8 +15604,17 @@ int i,j,l;
 
 - (ViewerController*) resampleSeries:(ViewerController*) movingViewer
 {
-	ViewerController	*newViewer = nil;
+	ViewerController *newViewer = nil;
 	
+    if( [self isDataVolumicIn4D: YES] == NO || [movingViewer isDataVolumicIn4D: YES] == NO || [self computeInterval] == 0 || [movingViewer computeInterval] == 0)
+    {
+        NSRunCriticalAlertPanel(NSLocalizedString(@"Resampling Error", nil),
+								NSLocalizedString(@"3D Resampling requires volumic data.", nil),
+								NSLocalizedString(@"OK", nil), nil, nil);
+        
+        return nil;
+    }
+        
 	if( [[self studyInstanceUID] isEqualToString: [movingViewer studyInstanceUID]])
 	{
 		float vectorModel[ 9], vectorSensor[ 9];
