@@ -371,6 +371,8 @@ extern const char *GetPrivateIP();
                     
                     [[[database managedObjectContext] persistentStoreCoordinator] lock];
                     
+                    BOOL dataSent = NO;
+                    
                     @try
                     {
                         [database save];
@@ -379,8 +381,7 @@ extern const char *GetPrivateIP();
                         NSString *databasePath = [database sqlFilePath];
                         
                         #if __LP64__
-                            representationToSend = [NSMutableData dataWithContentsOfMappedFile: databasePath];
-                            [incomingConnection writeData:representationToSend];
+                            representationToSend = [NSMutableData dataWithContentsOfFile: databasePath];
                         #else
                             NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath: databasePath traverseLink: YES];
                             long long fileSize = [[fattrs objectForKey:NSFileSize] longLongValue];
@@ -406,12 +407,10 @@ extern const char *GetPrivateIP();
                                     [arp release];
                                 }
                                 while( length > 0);
+                                dataSent = YES;
                             }
                             else
-                            {
-                                representationToSend = [NSMutableData dataWithContentsOfMappedFile: databasePath];
-                                [incomingConnection writeData:representationToSend];
-                            }
+                                representationToSend = [NSMutableData dataWithContentsOfFile: databasePath];
                         #endif
                     }
                     @catch (NSException *e) {
@@ -421,6 +420,8 @@ extern const char *GetPrivateIP();
                         [[[database managedObjectContext] persistentStoreCoordinator] unlock];
                     }
                     
+                    if( dataSent == NO && representationToSend)
+                        [incomingConnection writeData:representationToSend];
                     
 					struct sockaddr serverAddress;
 					socklen_t namelen = sizeof(serverAddress);
