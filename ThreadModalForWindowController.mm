@@ -201,7 +201,7 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
 		if (![NSThread isMainThread])
             [self performSelectorOnMainThread:@selector(_observeValueForKeyPathOfObjectChangeContext:) withObject:[NSArray arrayWithObjects: keyPath, obj, change, [NSValue valueWithPointer:context], nil] waitUntilDone:NO];
         else if( obj == self.thread) {
-            @synchronized (obj.threadDictionary) {
+            @synchronized (obj) {
                 
                 if( obj.threadDictionary == _retainedThreadDictionary)
                 {
@@ -262,7 +262,7 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
     [self.progressIndicator displayIfNeeded];
     lastGUIUpdate = [NSDate timeIntervalSinceReferenceDate];
     
-    @synchronized( self.thread.threadDictionary)
+    @synchronized( self.thread)
     {
         [self.thread.threadDictionary removeObjectForKey:NSThreadModalForWindowControllerKey];
     }
@@ -308,7 +308,7 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
 }
 
 -(ThreadModalForWindowController*)modalForWindowController {
-    @synchronized( self.threadDictionary)
+    @synchronized( self)
     {
         return [self.threadDictionary objectForKey:NSThreadModalForWindowControllerKey];
     }

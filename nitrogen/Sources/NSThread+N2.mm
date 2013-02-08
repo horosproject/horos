@@ -53,8 +53,8 @@ NSString* const NSThreadUniqueIdKey = @"uniqueId";
     
     NSString* uniqueId = nil;
 	
-	@synchronized (self.threadDictionary) {
-		uniqueId = [self.threadDictionary objectForKey:NSThreadUniqueIdKey];
+	@synchronized (self) {
+		uniqueId = [[[self.threadDictionary objectForKey:NSThreadUniqueIdKey] copy] autorelease];
 	}
 	
 	return uniqueId;
@@ -66,10 +66,10 @@ NSString* const NSThreadUniqueIdKey = @"uniqueId";
 //    if (self.isCancelled)
 //    	return nil;
 
-	if ([uniqueId isEqual:self.uniqueId])
+	if ([uniqueId isEqualToString:self.uniqueId])
 		return;
 	
-	@synchronized (self.threadDictionary) {
+	@synchronized (self) {
 		[self willChangeValueForKey:NSThreadUniqueIdKey];
 		[self.threadDictionary setObject:uniqueId forKey:NSThreadUniqueIdKey];
 		[self didChangeValueForKey:NSThreadUniqueIdKey];
@@ -86,7 +86,7 @@ NSString* const NSThreadIsCancelledKey = @"isCancelled";
 	
 	if (isCancelled == self.isCancelled) return;
 	
-	@synchronized (self.threadDictionary) {
+	@synchronized (self) {
 		[self willChangeValueForKey:NSThreadIsCancelledKey];
 		[self cancel];
 		[self didChangeValueForKey:NSThreadIsCancelledKey];
@@ -108,7 +108,7 @@ static NSString* const NSThreadStackArrayKey = @"NSThreadStackArrayKey";
     
 	NSMutableArray* a = nil;
 	
-	@synchronized (self.threadDictionary) {
+	@synchronized (self) {
 		a = [self.threadDictionary objectForKey:NSThreadStackArrayKey];
 		if (!a) {
 			a = [NSMutableArray array];
@@ -124,14 +124,17 @@ static NSString* const NSThreadStackArrayKey = @"NSThreadStackArrayKey";
 static NSString* const NSThreadSubRangeKey = @"subRange";
 
 -(NSMutableDictionary*)currentOperationDictionary {
-	return [self.stackArray lastObject];
+    
+    @synchronized (self) {
+        return [[[self.stackArray lastObject] retain] autorelease];
+    }
 }
 
 static NSString* const SuperThreadProgressKey = @"SuperThreadProgress";
 static NSString* const SuperThreadNameKey = @"SuperThreadName";
 
 -(void)enterOperation {
-	@synchronized (self.threadDictionary) {
+	@synchronized (self) {
         NSNumber* n = [NSNumber numberWithFloat:self.progress];
 		[self.stackArray addObject:[NSMutableDictionary dictionary]];
         [self.currentOperationDictionary setObject:n forKey:SuperThreadProgressKey];
@@ -141,7 +144,7 @@ static NSString* const SuperThreadNameKey = @"SuperThreadName";
 }
 
 -(void)enterOperationIgnoringLowerLevels {
-	@synchronized (self.threadDictionary) {
+	@synchronized (self) {
 		[self enterOperation];
 		[self.currentOperationDictionary setObject:[NSNull null] forKey:NSThreadSubRangeKey];
         self.progress = -1;
@@ -150,7 +153,7 @@ static NSString* const SuperThreadNameKey = @"SuperThreadName";
 
 -(void)enterOperationWithRange:(CGFloat)rangeLoc :(CGFloat)rangeLen
 {
-	@synchronized (self.threadDictionary) {
+	@synchronized (self) {
 		[self enterOperation];
 		[self.currentOperationDictionary setObject:[NSValue valueWithPoint:NSMakePoint(rangeLoc,rangeLen)] forKey:NSThreadSubRangeKey];
 		//	NSLog(@"entering level %d subthread", self.subthreadsArray.count);
@@ -159,7 +162,7 @@ static NSString* const SuperThreadNameKey = @"SuperThreadName";
 }
 
 -(void)exitOperation {
-	@synchronized (self.threadDictionary) {
+	@synchronized (self) {
 		if (self.stackArray.count > 1) {
             [self willChangeValueForKey:NSThreadStatusKey];
 			NSNumber* temp = [[[self.currentOperationDictionary objectForKey:SuperThreadProgressKey] retain] autorelease];
@@ -177,7 +180,7 @@ static NSString* const SuperThreadNameKey = @"SuperThreadName";
 }
 
 -(void)enterSubthreadWithRange:(CGFloat)rangeLoc :(CGFloat)rangeLen { // __deprecated
-	@synchronized (self.threadDictionary) {
+	@synchronized (self) {
 		[self enterOperationWithRange:rangeLoc:rangeLen];
 	}
 }
@@ -196,7 +199,7 @@ NSString* const NSThreadSupportsCancelKey = @"supportsCancel";
 	if (self.isCancelled)
 		return NO;
 	
-	@synchronized (self.threadDictionary) {
+	@synchronized (self) {
 		return [[self.currentOperationDictionary objectForKey:NSThreadSupportsCancelKey] boolValue];
 	}
 	
@@ -215,7 +218,7 @@ NSString* const NSThreadSupportsCancelKey = @"supportsCancel";
 	if (supportsCancel == self.supportsCancel)
 		return;
 	
-	@synchronized (self.threadDictionary) {
+	@synchronized (self) {
 		[self willChangeValueForKey:NSThreadSupportsCancelKey];
 		[self.currentOperationDictionary setObject:[NSNumber numberWithBool:supportsCancel] forKey:NSThreadSupportsCancelKey];
 		[self didChangeValueForKey:NSThreadSupportsCancelKey];
@@ -225,7 +228,7 @@ NSString* const NSThreadSupportsCancelKey = @"supportsCancel";
 NSString* const NSThreadSupportsBackgroundingKey = @"supportsBackgrounding";
 
 -(BOOL)supportsBackgrounding {
-	@synchronized (self.threadDictionary) {
+	@synchronized (self) {
 		return [[self.currentOperationDictionary objectForKey:NSThreadSupportsBackgroundingKey] boolValue];
 	}
 	
@@ -239,7 +242,7 @@ NSString* const NSThreadSupportsBackgroundingKey = @"supportsBackgrounding";
 	if (supportsBackgrounding == self.supportsBackgrounding)
 		return;
 	
-	@synchronized (self.threadDictionary) {
+	@synchronized (self) {
 		[self willChangeValueForKey:NSThreadSupportsBackgroundingKey];
 		[self.currentOperationDictionary setObject:[NSNumber numberWithBool:supportsBackgrounding] forKey:NSThreadSupportsBackgroundingKey];
 		[self didChangeValueForKey:NSThreadSupportsBackgroundingKey];
@@ -255,7 +258,7 @@ NSString* const NSThreadStatusKey = @"status";
 //    if (self.isCancelled)
 //    	return nil;
     
-	@synchronized (self.threadDictionary) {
+	@synchronized (self) {
 		for (int i = self.stackArray.count-1; i >= 0; --i) {
 			NSDictionary* d = [self.stackArray objectAtIndex:i];
 			NSString* status = [d objectForKey:NSThreadStatusKey];
@@ -275,7 +278,7 @@ NSString* const NSThreadStatusKey = @"status";
 //    if (self.isCancelled)
 //    	return nil;
     
-	@synchronized (self.threadDictionary) {
+	@synchronized (self) {
 		NSString* previousStatus = self.status;
 		if (previousStatus == status || [status isEqualToString:previousStatus])
 			return;
@@ -298,7 +301,7 @@ NSString* const NSThreadSubthreadsAwareProgressKey = @"subthreadsAwareProgress";
 //    if (self.isCancelled)
 //    	return nil;
     
-	@synchronized (self.threadDictionary) {
+	@synchronized (self) {
 		NSNumber* progress = [self.threadDictionary objectForKey:NSThreadProgressKey];
 		return progress? progress.floatValue : -1;
 	}
@@ -312,7 +315,7 @@ NSString* const NSThreadSubthreadsAwareProgressKey = @"subthreadsAwareProgress";
 //    if (self.isCancelled)
 //    	return nil;
     
-	@synchronized (self.threadDictionary) {
+	@synchronized (self) {
         if (self.progress == progress)
             return;
         
@@ -325,7 +328,7 @@ NSString* const NSThreadSubthreadsAwareProgressKey = @"subthreadsAwareProgress";
 }
 
 -(CGFloat)subthreadsAwareProgress {
-	@synchronized (self.threadDictionary) {
+	@synchronized (self) {
 		if (self.isFinished)
             return 1;
         CGFloat progress = self.progress;
@@ -357,7 +360,7 @@ NSString* const NSThreadProgressDetailsKey = @"progressDetails";
 //    if (self.isCancelled)
 //    	return nil;
     
-	@synchronized (self.threadDictionary) {
+	@synchronized (self) {
 		for (int i = self.stackArray.count-1; i >= 0; --i) {
 			NSDictionary* d = [self.stackArray objectAtIndex:i];
 			NSString* progressDetails = [d objectForKey:NSThreadProgressDetailsKey];
@@ -377,7 +380,7 @@ NSString* const NSThreadProgressDetailsKey = @"progressDetails";
 //    if (self.isCancelled)
 //    	return nil;
     
-	@synchronized (self.threadDictionary) {
+	@synchronized (self) {
 		NSString* previousProgressDetails = self.status;
 		if (previousProgressDetails == progressDetails || [progressDetails isEqualToString:previousProgressDetails])
 			return;
