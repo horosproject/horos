@@ -395,7 +395,7 @@ extern const char *GetPrivateIP();
                             {
                                 NSFileHandle *dbFileHandle = [NSFileHandle fileHandleForReadingAtPath: databasePath];
                                 NSLog( @"split DB file reading");
-                                int length = 0;
+                                NSUInteger length = 0;
                                 do
                                 {
                                     NSAutoreleasePool *arp = [[NSAutoreleasePool alloc] init];
