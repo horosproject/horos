@@ -1411,16 +1411,6 @@ static NSDate *lastWarningDate = nil;
 		}
 	}
 	
-	#ifndef OSIRIX_LIGHT
-	if( [defaults boolForKey: @"updateServers"])
-	{
-		[[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"updateServers"];
-		[[QueryController currentQueryController] refreshSources];
-		[[QueryController currentAutoQueryController] refreshSources];
-		[[NSNotificationCenter defaultCenter] postNotificationName:OsirixServerArrayChangedNotification object:nil];
-	}
-	#endif
-	
 	@try
 	{
 		{

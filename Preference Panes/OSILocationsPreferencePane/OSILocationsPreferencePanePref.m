@@ -326,8 +326,6 @@
 - (void) willUnselect
 {
 	[[[self mainView] window] makeFirstResponder: nil];
-	
-	[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
 }
 
 - (void)dealloc
@@ -366,7 +364,6 @@
 	[aServer setObject:[NSNumber numberWithBool:NO] forKey:@"TLSAuthenticated"];
 	
 	[dicomNodes addObject:aServer];
-	[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
 	
 	[[dicomNodes tableView] scrollRowToVisible: [[dicomNodes tableView] selectedRow]];
 	
@@ -380,7 +377,6 @@
     [aServer setObject:@"OsiriX PACS Server" forKey:@"Description"];
     
     [osiriXServers addObject: aServer];
-	[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
 	
 	[[osiriXServers tableView] scrollRowToVisible: [[osiriXServers tableView] selectedRow]];
 	
@@ -471,7 +467,6 @@
 		[aServer setObject:[NSNumber numberWithBool:NO] forKey:@"TLSEnabled"];
 		
 		[[NSUserDefaults standardUserDefaults] setObject: [dicomNodes arrangedObjects] forKey: @"SERVERS"];
-		[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
 	}
 }
 
@@ -512,8 +507,6 @@
 			{
 				[osiriXServers removeObjects: [osiriXServers arrangedObjects]];
 				[osiriXServers addObjects: r];
-				
-				[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
 			}
 			else NSRunInformationalAlertPanel(NSLocalizedString(@"URL Invalid", 0L), NSLocalizedString( @"Cannot download data from this URL.", 0L), NSLocalizedString( @"OK", nil), nil, nil);
 		}
@@ -565,8 +558,6 @@
 					}
 				}
 			}
-			
-			[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
 		}
 	}
 }
@@ -605,8 +596,6 @@
 			{
 				[dicomNodes removeObjects: [dicomNodes arrangedObjects]];
 				[dicomNodes addObjects: r];
-				
-				[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
 			}
 			else NSRunInformationalAlertPanel(NSLocalizedString(@"URL Invalid", 0L), NSLocalizedString(@"Cannot download data from this URL.", 0L), NSLocalizedString(@"OK", nil), nil, nil);
 		}
@@ -659,8 +648,6 @@
 					}
 				}
 			}
-			
-			[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
 		}
 	}
 	
@@ -776,8 +763,6 @@
 				[localPaths addObject: dict];
 			
 				[[localPaths tableView] scrollRowToVisible: [[localPaths tableView] selectedRow]];
-			
-				[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
 			}
 		}
 	}
@@ -843,7 +828,6 @@
 		}
 
 		[[NSUserDefaults standardUserDefaults] setObject:[dicomNodes arrangedObjects] forKey:@"SERVERS"];
-		[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"updateServers"];
 	}
 }
 

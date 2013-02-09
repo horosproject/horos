@@ -105,11 +105,8 @@ static volatile int sendControllerObjects = 0;
 		_readyForRelease = NO;
 		_lock = [[NSRecursiveLock alloc] init];
 		
-		[[NSNotificationCenter defaultCenter] addObserver: self
-												selector: @selector(updateDestinationPopup:)
-												name: OsirixServerArrayChangedNotification
-												object: nil];
-		
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:@"SERVERS" options:NSKeyValueObservingOptionInitial context:nil];
+        
 		[[NSNotificationCenter defaultCenter] addObserver: self
 												selector: @selector(updateDestinationPopup:)
 												name: @"DCMNetServicesDidChange"
@@ -117,6 +114,18 @@ static volatile int sendControllerObjects = 0;
 	}
 	return self;
 }
+
+-(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context
+{
+	if (object == [NSUserDefaultsController sharedUserDefaultsController])
+    {
+        if( [keyPath isEqualToString: @"values.SERVERS"])
+        {
+            [self updateDestinationPopup: nil];
+        }
+	}
+}
+
 
 - (void) windowDidLoad
 {
@@ -127,8 +136,7 @@ static volatile int sendControllerObjects = 0;
 		int count = [[DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO] count];
 		if (_serverIndex < count)
 			[newServerList selectItemAtIndex: _serverIndex];
-			
-//		[DICOMSendTool selectCellWithTag: _serverToolIndex];
+        
 		[keyImageMatrix selectCellWithTag: _keyImageIndex];
 		
 		[self selectServer: newServerList];
@@ -138,8 +146,10 @@ static volatile int sendControllerObjects = 0;
 
 - (void)dealloc
 {
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:@"SERVERS"];
 	
+    [[NSNotificationCenter defaultCenter] removeObserver: self];
+    
 	sendControllerObjects--;
 	
 	NSLog(@"SendController Released");

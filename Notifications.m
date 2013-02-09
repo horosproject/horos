@@ -39,7 +39,6 @@ NSString* const OsirixSyncSeriesNotification = @"notificationSyncSeries";
 NSString* const OsirixOrthoMPRSyncSeriesNotification = @"orthoMPRSyncSeriesNotification";
 NSString* const OsirixReportModeChangedNotification = @"reportModeChanged";
 NSString* const OsirixDeletedReportNotification = @"OsirixDeletedReport";
-NSString* const OsirixServerArrayChangedNotification = @"OsiriXServerArray has changed";
 NSString* const OsirixStudyAnnotationsChangedNotification = @"OsirixStudyAnnotationsChanged";
 NSString* const OsirixGLFontChangeNotification = @"changeGLFontNotification";
 NSString* const OsirixAddToDBNotification = @"OsirixAddToDBNotification";

@@ -63,11 +63,8 @@ static BonjourBrowser *currentBrowser = nil;
 		
 //		[browser scheduleInRunLoop: [NSRunLoop currentRunLoop] forMode: NSDefaultRunLoopMode];
 		
-		[[NSNotificationCenter defaultCenter] addObserver: self
-												 selector: @selector(updateFixedList:)
-													 name: OsirixServerArrayChangedNotification
-												   object: nil];
-		
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:@"SERVERS" options:NSKeyValueObservingOptionInitial context:nil];
+        
 		[[NSNotificationCenter defaultCenter] addObserver: self
 												 selector: @selector(updateFixedList:)
 													 name: @"DCMNetServicesDidChange"
@@ -77,8 +74,23 @@ static BonjourBrowser *currentBrowser = nil;
 	return self;
 }
 
+-(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context
+{
+    if (object == [NSUserDefaultsController sharedUserDefaultsController])
+    {
+        if( [keyPath isEqualToString: @"values.SERVERS"])
+        {
+            [self updateFixedList: nil];
+        }
+    }
+}
+
 - (void) dealloc
 {
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:@"SERVERS"];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver: self];
+    
 	[browser release];
 	[services release];
 	

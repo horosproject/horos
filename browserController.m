@@ -16342,7 +16342,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[self.window makeKeyAndOrderFront:sender];
 	
     if( [QueryController currentQueryController] == nil) [[QueryController alloc] initAutoQuery : NO];
-	else [[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
 	
     [[QueryController currentQueryController] showWindow:self];
 	
@@ -16379,7 +16378,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		if( [sender tag] == 0 && [QueryController currentQueryController] == nil) [[QueryController alloc] initAutoQuery: NO];
 		else if( [sender tag] == 1 && [QueryController currentAutoQueryController] == nil) [[QueryController alloc] initAutoQuery: YES];
-		else [[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
 		
 		if( [sender tag] == 0)
 			[[QueryController currentQueryController] showWindow:self];

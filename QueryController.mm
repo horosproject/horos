@@ -4585,6 +4585,11 @@ extern "C"
             else
                 [[self window] setLevel: NSNormalWindowLevel];
         }
+        
+        if( [keyPath isEqualToString: @"values.SERVERS"])
+        {
+            [self refreshSources];
+        }
 	}
 }
 
@@ -4640,6 +4645,8 @@ extern "C"
                 [[self window] setLevel: NSFloatingWindowLevel];
             
             [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:@"KeepQRWindowOnTop" options:NSKeyValueObservingOptionInitial context:NULL];
+            
+            [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:@"SERVERS" options:NSKeyValueObservingOptionInitial context:NULL];
 		}
 		else
 		{
@@ -4709,6 +4716,8 @@ extern "C"
 	
 	avoidQueryControllerDeallocReentry = YES;
 
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:@"SERVERS"];
+    
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver: self];
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:OsirixAddToDBNotification object:nil];
 
@@ -4829,7 +4838,8 @@ extern "C"
 //	else
 //        modalityQueryFilter = [[QueryFilter queryFilterWithObject:nil ofSearchType:searchExactMatch forKey:@"Modality"] retain];
     
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateServers:) name:@"DCMNetServicesDidChange"  object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshSources) name:@"DCMNetServicesDidChange"  object:nil];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(realtimeCFindResults:) name:@"realtimeCFindResults"  object:nil];
     
 	NSTableColumn *tableColumn = [outlineView tableColumnWithIdentifier:@"Button"];
@@ -4920,11 +4930,6 @@ extern "C"
 	status = [QueryController echoServer:aServer];
 	
 	return status;
-}
-
-- (void) updateServers:(NSNotification *)note
-{
-	[self refreshSources];
 }
 
 - (IBAction) verify:(id)sender
