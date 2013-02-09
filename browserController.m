@@ -1399,7 +1399,8 @@ static NSConditionLock *threadLock = nil;
             
 			if ([NSUserDefaults canActivateAnyLocalDatabase] && [db isLocal] && ![db isReadOnly])
 				[DicomDatabase setActiveLocalDatabase:db];
-			if (db) [self selectCurrentDatabaseSource];
+			if (db)
+                [self selectCurrentDatabaseSource];
 
 			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_observeDatabaseAddNotification:) name:_O2AddToDBAnywayNotification object:_database];
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_observeDatabaseDidChangeContextNotification:) name:OsirixDicomDatabaseDidChangeContextNotification object:_database];
@@ -1420,8 +1421,6 @@ static NSConditionLock *threadLock = nil;
 			@try
             {
 				[self setDBWindowTitle];
-				
-				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixServerArrayChangedNotification object:nil];
 				
 				[databaseOutline reloadData];
 				[albumTable reloadData];

@@ -55,6 +55,8 @@
 	NSNetServiceBrowser* _nsbOsirix;
 	NSNetServiceBrowser* _nsbDicom;
 	NSMutableArray* _bonjourSources, *_bonjourServices;
+    
+    BOOL dontListenToSourcesChanges;
 }
 
 -(id)initWithBrowser:(BrowserController*)browser;
@@ -201,6 +203,7 @@ enum {
     {
 		NSDictionary* source = [NSDictionary dictionaryWithObjectsAndKeys: [_database.baseDirPath stringByDeletingLastPathComponent], @"Path", [_database.baseDirPath.stringByDeletingLastPathComponent.lastPathComponent stringByAppendingString:@" DB"], @"Description", nil];
 		[[NSUserDefaults standardUserDefaults] setObject:[[[NSUserDefaults standardUserDefaults] objectForKey:@"localDatabasePaths"] arrayByAddingObject:source] forKey:@"localDatabasePaths"];
+        
 		i = [self rowForDatabase:_database];
 	}
     if (i != [_sourcesTableView selectedRow])
@@ -349,14 +352,6 @@ enum {
 	[_sourcesTableView setNeedsDisplay:YES];
 }
 
--(long)currentBonjourService { // __deprecated
-	return [_sourcesTableView selectedRow]-1;
-}
-
--(void)setCurrentBonjourService:(int)index { // __deprecated
-	[_sourcesTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:index+1] byExtendingSelection:NO];
-}
-
 -(int)findDBPath:(NSString*)path dbFolder:(NSString*)DBFolderLocation { // __deprecated
 	NSInteger i = [self rowForSourceIdentifier:[LocalDatabaseNodeIdentifier localDatabaseNodeIdentifierWithPath:path]];
 	if (i < 0) i = [self rowForSourceIdentifier:[LocalDatabaseNodeIdentifier localDatabaseNodeIdentifierWithPath:DBFolderLocation]];
@@ -463,172 +458,187 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
     
 //    NSKeyValueChange changeKind = [[change valueForKey:NSKeyValueChangeKindKey] unsignedIntegerValue];
 	
-	if (context == LocalBrowserSourcesContext)
+    dontListenToSourcesChanges = YES;
+    
+    id previousNode = [_browser sourceIdentifierForDatabase:_browser.database];
+    
+    @try
     {
-        NSArray* a = [[NSUserDefaults standardUserDefaults] objectForKey:@"localDatabasePaths"];
-        // remove old items
-		for (DataNodeIdentifier* dni in [[_browser.sources.content copy] autorelease])
+        if (context == LocalBrowserSourcesContext)
         {
-			if ([dni isKindOfClass:[LocalDatabaseNodeIdentifier class]] && dni.entered) // is a local database and is flagged as "entered"
-				if (![[a valueForKey:@"Path"] containsObject:dni.location]) {          // is no longer in the entered list
-					dni.entered = NO;                                                 // mark it as not entered
-                    if (!dni.detected)
-                        [_browser.sources removeObject:dni]; // not entered, not detected.. remove it
-                }
-		}
-		// add new items
-		for (NSDictionary* d in a)
-        {
-			NSString* dpath = [d valueForKey:@"Path"];
-			if ([[DicomDatabase baseDirPathForPath:dpath] isEqualToString:DicomDatabase.defaultDatabase.baseDirPath]) // is already listed as "default database"
-				continue;
-            DataNodeIdentifier* dni;
-			NSUInteger i = [[_browser.sources.content valueForKey:@"location"] indexOfObject:dpath];
-			if (i == NSNotFound) {
-                dni = [LocalDatabaseNodeIdentifier localDatabaseNodeIdentifierWithPath:dpath description:[d objectForKey:@"Description"] dictionary:d];
-                dni.entered = YES;
-				[_browser.sources addObject:dni];
-			} else {
-                dni = [_browser.sources.content objectAtIndex:i];
-                dni.entered = YES;
-				dni.description = [d objectForKey:@"Description"];
-				dni.dictionary = d;
-			}
-		}
-	}
-	
-	if (context == RemoteBrowserSourcesContext)
-    {
-        NSHost* currentHost = [DefaultsOsiriX currentHost];
-		NSArray* a = [[NSUserDefaults standardUserDefaults] objectForKey:@"OSIRIXSERVERS"];
-		// remove old items
-		for (DataNodeIdentifier* dni in [[_browser.sources.content copy] autorelease])
-        {
-			if ([dni isKindOfClass:[RemoteDatabaseNodeIdentifier class]] && dni.entered) // is a remote database and is flagged as "entered"
-				if (![[a valueForKey:@"Address"] containsObject:dni.location]) {        // is no longer in the entered list
-					dni.entered = NO;                                                  // mark it as not entered
-                    if (!dni.detected)
-                        [_browser.sources removeObject:dni]; // not entered, not detected.. remove it
-                }
-		}
-		// add new items
-//        NSOperationQueue* queue = [[[NSOperationQueue alloc] init] autorelease];
-		for (NSDictionary* d in a)
-        {
-            [NSThread performBlockInBackground:^{
-                // we're now in a background thread
-                NSString* dadd = [d valueForKey:@"Address"];
-                if ([[self class] host:[NSHost hostWithAddressOrName:dadd] isEqualToHost:currentHost]) // don't list self
-                    return;
-                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                    // we're now back in the main thread
-                    DataNodeIdentifier* dni;
-                    NSUInteger i = [[_browser.sources.content valueForKey:@"location"] indexOfObject:dadd];
-                    if (i == NSNotFound) {
-                        dni = [RemoteDatabaseNodeIdentifier remoteDatabaseNodeIdentifierWithLocation:dadd description:[d objectForKey:@"Description"] dictionary:d];
-                        dni.entered = YES;
-                        [_browser.sources addObject:dni];
-                    } else {
-                        dni = [_browser.sources.content objectAtIndex:i];
-                        dni.entered = YES;
-                        dni.description = [d objectForKey:@"Description"];
-                        dni.dictionary = d;
-                    }
-                }];
-            }];
-		}
-	}
-	
-	if (context == DicomBrowserSourcesContext)
-    {
-        NSHost* currentHost = [DefaultsOsiriX currentHost];
-		NSArray* a = [[NSUserDefaults standardUserDefaults] objectForKey:@"SERVERS"];
-		NSMutableDictionary* aa = [NSMutableDictionary dictionary];
-		for (NSDictionary* ai in a)
-        {
-            if( [[ai objectForKey: @"Send"] boolValue])
-                [aa setObject:ai forKey:[DicomNodeIdentifier locationWithAddress:[ai objectForKey:@"Address"] port:[[ai objectForKey:@"Port"] integerValue] aet:[ai objectForKey:@"AETitle"]]];
-		}
-        // remove old items
-		for (DataNodeIdentifier* dni in [[_browser.sources.content copy] autorelease])
-        {
-			if ([dni isKindOfClass:[DicomNodeIdentifier class]] && dni.entered) // is a dicom node and is flagged as "entered"
-				if (![[aa allKeys] containsObject:dni.location]) {             // is no longer in the entered list
-					dni.entered = NO;                                         // mark it as not entered
-                    if (!dni.detected)
-                        [_browser.sources removeObject:dni]; // not entered, not detected.. remove it
-                }
-		}
-		// add new items
-		for (NSString* aak in aa)
-        {
-            [NSThread performBlockInBackground:^{
-                // we're now in a background thread
-                NSString* aet = nil;
-                if ([[self class] host:[DicomNodeIdentifier location:aak toHost:NULL port:NULL aet:&aet] isEqualToHost:currentHost] && [aet isEqualToString:[[NSUserDefaults standardUserDefaults] stringForKey:@"AETITLE"]]) // don't list self
-                    return;
-                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                    // we're now back in the main thread
-                    DataNodeIdentifier* dni;
-                    NSUInteger i = [[_browser.sources.content valueForKey:@"location"] indexOfObject:aak];
-                    if (i == NSNotFound) {
-                        dni = [DicomNodeIdentifier dicomNodeIdentifierWithLocation:aak description:[[aa objectForKey:aak] objectForKey:@"Description"] dictionary:[aa objectForKey:aak]];
-                        dni.entered = YES;
-                        [_browser.sources addObject:dni];
-                    } else {
-                        dni = [_browser.sources.content objectAtIndex:i];
-                        dni.entered = YES;
-                        dni.dictionary = [aa objectForKey:aak];
-                        dni.description = [dni.dictionary objectForKey:@"Description"];
-                    }
-                }];
-            }];
-		}
-	}
-	
-	if (context == SearchBonjourNodesContext)
-		@synchronized (_bonjourSources) {
-            if ([[NSUserDefaults standardUserDefaults] boolForKey:@"DoNotSearchForBonjourServices"]) // add remote databases detected with bonjour
-            { // remove remote databases detected with bonjour
-                for (DataNodeIdentifier* dni in _bonjourSources)
-                    if ([dni isKindOfClass:[RemoteDatabaseNodeIdentifier class]] && dni.detected) {
-                        dni.detected = NO;
-                        if (!dni.entered && [_browser.sources.content containsObject:dni])
-                            [_browser.sources removeObject:dni];
-                    }
-            } else 
-            { // add remote databases detected with bonjour
-                for (DataNodeIdentifier* dni in _bonjourSources)
-                    if ([dni isKindOfClass:[RemoteDatabaseNodeIdentifier class]] && !dni.detected && dni.location) {
-                        dni.detected = YES;
-                        if (![_browser.sources.content containsObject:dni])
-                            [_browser.sources addObject:dni];
+            NSArray* a = [[NSUserDefaults standardUserDefaults] objectForKey:@"localDatabasePaths"];
+            // remove old items
+            for (DataNodeIdentifier* dni in [[_browser.sources.content copy] autorelease])
+            {
+                if ([dni isKindOfClass:[LocalDatabaseNodeIdentifier class]] && dni.entered) // is a local database and is flagged as "entered"
+                    if (![[a valueForKey:@"Path"] containsObject:dni.location]) {          // is no longer in the entered list
+                        dni.entered = NO;                                                 // mark it as not entered
+                        if (!dni.detected)
+                            [_browser.sources removeObject:dni]; // not entered, not detected.. remove it
                     }
             }
-        }
-	
-	if (context == SearchDicomNodesContext)
-		@synchronized (_bonjourSources) {
-            if (![[NSUserDefaults standardUserDefaults] boolForKey:@"searchDICOMBonjour"])
-            { // remove dicom nodes detected with bonjour
-                for (DataNodeIdentifier* dni in _bonjourSources)
-                    if ([dni isKindOfClass:[DicomNodeIdentifier class]] && dni.detected) {
-                        dni.detected = NO;
-                        if (!dni.entered && [_browser.sources.content containsObject:dni])
-                            [_browser.sources removeObject:dni];
-                    }
-            } else
-            { // add dicom nodes detected with bonjour
-                for (DataNodeIdentifier* dni in _bonjourSources)
-                    if ([dni isKindOfClass:[DicomNodeIdentifier class]] && !dni.detected && dni.location) {
-                        dni.detected = YES;
-                        if (![_browser.sources.content containsObject:dni])
-                            [_browser.sources addObject:dni];
-                    }
+            // add new items
+            for (NSDictionary* d in a)
+            {
+                NSString* dpath = [d valueForKey:@"Path"];
+                if ([[DicomDatabase baseDirPathForPath:dpath] isEqualToString:DicomDatabase.defaultDatabase.baseDirPath]) // is already listed as "default database"
+                    continue;
+                DataNodeIdentifier* dni;
+                NSUInteger i = [[_browser.sources.content valueForKey:@"location"] indexOfObject:dpath];
+                if (i == NSNotFound) {
+                    dni = [LocalDatabaseNodeIdentifier localDatabaseNodeIdentifierWithPath:dpath description:[d objectForKey:@"Description"] dictionary:d];
+                    dni.entered = YES;
+                    [_browser.sources addObject:dni];
+                } else {
+                    dni = [_browser.sources.content objectAtIndex:i];
+                    dni.entered = YES;
+                    dni.description = [d objectForKey:@"Description"];
+                    dni.dictionary = d;
+                }
             }
         }
-	
-	// showhide bonjour sources
+        
+        if (context == RemoteBrowserSourcesContext)
+        {
+            NSHost* currentHost = [DefaultsOsiriX currentHost];
+            NSArray* a = [[NSUserDefaults standardUserDefaults] objectForKey:@"OSIRIXSERVERS"];
+            // remove old items
+            for (DataNodeIdentifier* dni in [[_browser.sources.content copy] autorelease])
+            {
+                if ([dni isKindOfClass:[RemoteDatabaseNodeIdentifier class]] && dni.entered) // is a remote database and is flagged as "entered"
+                    if (![[a valueForKey:@"Address"] containsObject:dni.location]) {        // is no longer in the entered list
+                        dni.entered = NO;                                                  // mark it as not entered
+                        if (!dni.detected)
+                            [_browser.sources removeObject:dni]; // not entered, not detected.. remove it
+                    }
+            }
+            // add new items
+    //        NSOperationQueue* queue = [[[NSOperationQueue alloc] init] autorelease];
+            for (NSDictionary* d in a)
+            {
+                [NSThread performBlockInBackground:^{
+                    // we're now in a background thread
+                    NSString* dadd = [d valueForKey:@"Address"];
+                    if ([[self class] host:[NSHost hostWithAddressOrName:dadd] isEqualToHost:currentHost]) // don't list self
+                        return;
+                    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                        // we're now back in the main thread
+                        DataNodeIdentifier* dni;
+                        NSUInteger i = [[_browser.sources.content valueForKey:@"location"] indexOfObject:dadd];
+                        if (i == NSNotFound) {
+                            dni = [RemoteDatabaseNodeIdentifier remoteDatabaseNodeIdentifierWithLocation:dadd description:[d objectForKey:@"Description"] dictionary:d];
+                            dni.entered = YES;
+                            [_browser.sources addObject:dni];
+                        } else {
+                            dni = [_browser.sources.content objectAtIndex:i];
+                            dni.entered = YES;
+                            dni.description = [d objectForKey:@"Description"];
+                            dni.dictionary = d;
+                        }
+                    }];
+                }];
+            }
+        }
+        
+        if (context == DicomBrowserSourcesContext)
+        {
+            NSHost* currentHost = [DefaultsOsiriX currentHost];
+            NSArray* a = [[NSUserDefaults standardUserDefaults] objectForKey:@"SERVERS"];
+            NSMutableDictionary* aa = [NSMutableDictionary dictionary];
+            for (NSDictionary* ai in a)
+            {
+                if( [[ai objectForKey: @"Send"] boolValue])
+                    [aa setObject:ai forKey:[DicomNodeIdentifier locationWithAddress:[ai objectForKey:@"Address"] port:[[ai objectForKey:@"Port"] integerValue] aet:[ai objectForKey:@"AETitle"]]];
+            }
+            // remove old items
+            for (DataNodeIdentifier* dni in [[_browser.sources.content copy] autorelease])
+            {
+                if ([dni isKindOfClass:[DicomNodeIdentifier class]] && dni.entered) // is a dicom node and is flagged as "entered"
+                    if (![[aa allKeys] containsObject:dni.location]) {             // is no longer in the entered list
+                        dni.entered = NO;                                         // mark it as not entered
+                        if (!dni.detected)
+                            [_browser.sources removeObject:dni]; // not entered, not detected.. remove it
+                    }
+            }
+            // add new items
+            for (NSString* aak in aa)
+            {
+                [NSThread performBlockInBackground:^{
+                    // we're now in a background thread
+                    NSString* aet = nil;
+                    if ([[self class] host:[DicomNodeIdentifier location:aak toHost:NULL port:NULL aet:&aet] isEqualToHost:currentHost] && [aet isEqualToString:[[NSUserDefaults standardUserDefaults] stringForKey:@"AETITLE"]]) // don't list self
+                        return;
+                    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                        // we're now back in the main thread
+                        DataNodeIdentifier* dni;
+                        NSUInteger i = [[_browser.sources.content valueForKey:@"location"] indexOfObject:aak];
+                        if (i == NSNotFound) {
+                            dni = [DicomNodeIdentifier dicomNodeIdentifierWithLocation:aak description:[[aa objectForKey:aak] objectForKey:@"Description"] dictionary:[aa objectForKey:aak]];
+                            dni.entered = YES;
+                            [_browser.sources addObject:dni];
+                        } else {
+                            dni = [_browser.sources.content objectAtIndex:i];
+                            dni.entered = YES;
+                            dni.dictionary = [aa objectForKey:aak];
+                            dni.description = [dni.dictionary objectForKey:@"Description"];
+                        }
+                    }];
+                }];
+            }
+        }
+        
+        if (context == SearchBonjourNodesContext)
+            @synchronized (_bonjourSources) {
+                if ([[NSUserDefaults standardUserDefaults] boolForKey:@"DoNotSearchForBonjourServices"]) // add remote databases detected with bonjour
+                { // remove remote databases detected with bonjour
+                    for (DataNodeIdentifier* dni in _bonjourSources)
+                        if ([dni isKindOfClass:[RemoteDatabaseNodeIdentifier class]] && dni.detected) {
+                            dni.detected = NO;
+                            if (!dni.entered && [_browser.sources.content containsObject:dni])
+                                [_browser.sources removeObject:dni];
+                        }
+                } else 
+                { // add remote databases detected with bonjour
+                    for (DataNodeIdentifier* dni in _bonjourSources)
+                        if ([dni isKindOfClass:[RemoteDatabaseNodeIdentifier class]] && !dni.detected && dni.location) {
+                            dni.detected = YES;
+                            if (![_browser.sources.content containsObject:dni])
+                                [_browser.sources addObject:dni];
+                        }
+                }
+            }
+        
+        if (context == SearchDicomNodesContext)
+            @synchronized (_bonjourSources) {
+                if (![[NSUserDefaults standardUserDefaults] boolForKey:@"searchDICOMBonjour"])
+                { // remove dicom nodes detected with bonjour
+                    for (DataNodeIdentifier* dni in _bonjourSources)
+                        if ([dni isKindOfClass:[DicomNodeIdentifier class]] && dni.detected) {
+                            dni.detected = NO;
+                            if (!dni.entered && [_browser.sources.content containsObject:dni])
+                                [_browser.sources removeObject:dni];
+                        }
+                } else
+                { // add dicom nodes detected with bonjour
+                    for (DataNodeIdentifier* dni in _bonjourSources)
+                        if ([dni isKindOfClass:[DicomNodeIdentifier class]] && !dni.detected && dni.location) {
+                            dni.detected = YES;
+                            if (![_browser.sources.content containsObject:dni])
+                                [_browser.sources addObject:dni];
+                        }
+                }
+            }
+    }
+    @catch (NSException *exception) {
+        N2LogExceptionWithStackTrace( exception);
+    }
+    
+    dontListenToSourcesChanges = NO;
+    
+    if( [_browser rowForSourceIdentifier: previousNode] == -1)
+        [_browser performSelector: @selector(setDatabase:) withObject: DicomDatabase.defaultDatabase afterDelay: 0.01]; //This will guarantee that this will not happen in middle of a drag & drop, for example
+    else
+        [_browser selectSourceForDatabase: _browser.database];
 }
 
 -(void)netServiceDidResolveAddress:(NSNetService*)service
@@ -1049,9 +1059,12 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 -(void)tableViewSelectionDidChange:(NSNotification*)notification
 {
-	NSInteger row = [(NSTableView*)notification.object selectedRow];
-	DataNodeIdentifier* bs = [_browser sourceIdentifierAtRow:row];
-	[_browser setDatabaseFromSourceIdentifier:bs];
+    if( dontListenToSourcesChanges == NO)
+    {
+        NSInteger row = [(NSTableView*)notification.object selectedRow];
+        DataNodeIdentifier* bs = [_browser sourceIdentifierAtRow:row];
+        [_browser setDatabaseFromSourceIdentifier:bs];
+    }
 }
 
 @end

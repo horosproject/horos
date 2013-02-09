@@ -205,33 +205,11 @@ static BonjourBrowser *currentBrowser = nil;
 
 - (void) updateFixedList: (NSNotification*) note
 {
-	int i = [[BrowserController currentBrowser] currentBonjourService];
-	
-	NSDictionary *selectedDict = nil;
-	if( i >= 0 && i < services.count)
-		selectedDict = [[services objectAtIndex: i] retain];
-	
 	[self buildFixedIPList];
 	[self buildLocalPathsList];
 	//[[BrowserController currentBrowser] loadDICOMFromiPod];
 	[self buildDICOMDestinationsList];
 	[self arrangeServices];
-	
-	[interfaceOsiriX displayBonjourServices];
-	
-	if( selectedDict)
-	{
-		NSInteger index = [services indexOfObject: selectedDict];
-		
-		if( index == NSNotFound)
-			[[BrowserController currentBrowser] resetToLocalDatabase];
-		else
-			[[BrowserController currentBrowser] setCurrentBonjourService: index];
-		
-		[selectedDict release];
-	}
-	
-	[interfaceOsiriX displayBonjourServices];
 }
 
 - (void) arrangeServices
