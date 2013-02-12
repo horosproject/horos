@@ -1681,6 +1681,9 @@ static NSConditionLock *threadLock = nil;
 
 - (BOOL) selectThisStudy: (NSManagedObject*)study
 {
+    if( self.database == nil)
+        return NO;
+        
     if( study == nil)
         return NO;
     
@@ -2022,6 +2025,9 @@ static NSConditionLock *threadLock = nil;
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	@try
     {
+        if( self.database != nil)
+            NSLog( @"****** WARNING we should not be here if self.database != nil");
+        
 		DicomDatabase* database = [io objectAtIndex:0];
 		BOOL complete = [[io objectAtIndex:1] boolValue];
 		[database rebuild:complete];
@@ -3782,6 +3788,9 @@ static NSConditionLock *threadLock = nil;
 
 - (void) searchForSearchField: (NSDictionary*) dict
 {
+    if( self.database == nil)
+        return;
+    
     if( self.database.isReadOnly || !self.database.isLocal)
         return;
     
@@ -3911,6 +3920,9 @@ static NSConditionLock *threadLock = nil;
 
 - (void) searchForTimeIntervalFromTo: (NSDictionary*) dict
 {
+    if( self.database == nil)
+        return;
+    
     if( self.database.isReadOnly)
         return;
     
@@ -4036,6 +4048,9 @@ static NSConditionLock *threadLock = nil;
 
 - (void) searchForSmartAlbumDistantStudies: (NSString*) albumName
 {
+    if( self.database == nil)
+        return;
+    
     if( self.database.isReadOnly || !self.database.isLocal)
         return;
     
@@ -4122,6 +4137,9 @@ static NSConditionLock *threadLock = nil;
 
 - (void) searchForComparativeStudies: (id) studySelectedID
 {
+    if( self.database == nil)
+        return;
+    
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
     
     @try
