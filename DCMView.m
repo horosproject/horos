@@ -3828,7 +3828,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[instructions setObject: [NSNumber numberWithFloat: location[2]] forKey: @"point3DZ"];
 
 	if( thickDCM)
-	[instructions setObject: thickDCM forKey: @"DCMPix2"];
+        [instructions setObject: thickDCM forKey: @"DCMPix2"];
 
 	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixSyncNotification object: self userInfo: instructions];
 }
@@ -4022,10 +4022,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				if( [self is2DViewer] == YES)
 					[[self windowController] showCurrentThumbnail: self];
 					
-				if( roiHit == NO)
-				{
+				if( roiHit == NO && [self roiTool: currentTool] == NO)
 					[self sync3DPosition];
-				}
 			}
 			
 			crossMove = -1;
