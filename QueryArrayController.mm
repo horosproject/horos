@@ -22,6 +22,7 @@
 #import "DCMTKStudyQueryNode.h"
 #import "DCMTKSeriesQueryNode.h"
 #import "DCMTKImageQueryNode.h"
+#import "MutableArrayCategory.h"
 
 @implementation QueryArrayController
 
@@ -176,7 +177,19 @@
                 if( [[NSThread currentThread] isCancelled] == NO)
                 {
                     [queries release];
-                    queries = [[rootNode children] retain];
+                    queries = nil;
+                    
+                    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontFilterQueryStudiesForUniqueInstanceUID"] == NO)
+                    {
+                        NSMutableArray *tempResult = [NSMutableArray arrayWithArray: [rootNode children]];
+                        [[tempResult mutableArrayValueForKey:@"uid"] removeDuplicatedStringsInSyncWithThisArray: tempResult];
+                        
+                        if( [tempResult count])
+                            queries = [tempResult retain];
+                    }
+                    
+                    if( queries == nil)
+                        queries = [[rootNode children] retain];
                 }
                 
                 if( queries == nil && rootNode != nil)
