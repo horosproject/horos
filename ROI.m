@@ -1541,6 +1541,9 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 
 -(float) plainArea
 {
+    if( textureBuffer == nil)
+        return 0;
+    
 	long x = 0;
 	for( long i = 0; i < textureWidth*textureHeight ; i++ )
 	{
