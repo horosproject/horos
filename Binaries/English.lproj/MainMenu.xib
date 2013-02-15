@@ -4048,6 +4048,7 @@
 											<string key="NSFrame">{{420, 2}, {40, 20}}</string>
 											<reference key="NSSuperview" ref="267655156"/>
 											<reference key="NSWindow"/>
+											<reference key="NSNextKeyView"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSButtonCell" key="NSCell" id="637871640">
 												<int key="NSCellFlags">-2080374784</int>
@@ -4114,7 +4115,7 @@
 																			<string key="NSFrameSize">{184, 170}</string>
 																			<reference key="NSSuperview" ref="784281801"/>
 																			<reference key="NSWindow"/>
-																			<reference key="NSNextKeyView" ref="381726312"/>
+																			<reference key="NSNextKeyView" ref="591651258"/>
 																			<bool key="NSEnabled">YES</bool>
 																			<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 																			<bool key="NSControlAllowsExpansionToolTips">YES</bool>
@@ -4278,7 +4279,7 @@
 															<string key="NSFrame">{{-1, -1}, {186, 188}}</string>
 															<reference key="NSSuperview" ref="672832134"/>
 															<reference key="NSWindow"/>
-															<reference key="NSNextKeyView" ref="784281801"/>
+															<reference key="NSNextKeyView" ref="381726312"/>
 															<int key="NSsFlags">133650</int>
 															<reference key="NSVScroller" ref="381726312"/>
 															<reference key="NSHScroller" ref="746770325"/>
@@ -4349,7 +4350,7 @@
 																			<string key="NSFrameSize">{184, 350}</string>
 																			<reference key="NSSuperview" ref="1002041640"/>
 																			<reference key="NSWindow"/>
-																			<reference key="NSNextKeyView" ref="903622272"/>
+																			<reference key="NSNextKeyView" ref="886004369"/>
 																			<bool key="NSEnabled">YES</bool>
 																			<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 																			<bool key="NSControlAllowsExpansionToolTips">YES</bool>
@@ -4473,7 +4474,7 @@
 															<string key="NSFrame">{{-1, -1}, {186, 368}}</string>
 															<reference key="NSSuperview" ref="997330803"/>
 															<reference key="NSWindow"/>
-															<reference key="NSNextKeyView" ref="1002041640"/>
+															<reference key="NSNextKeyView" ref="903622272"/>
 															<int key="NSsFlags">133650</int>
 															<reference key="NSVScroller" ref="151646305"/>
 															<reference key="NSHScroller" ref="903622272"/>
@@ -4535,7 +4536,7 @@
 																			<string key="NSFrameSize">{184, 83}</string>
 																			<reference key="NSSuperview" ref="161150111"/>
 																			<reference key="NSWindow"/>
-																			<reference key="NSNextKeyView" ref="845908278"/>
+																			<reference key="NSNextKeyView" ref="1033899909"/>
 																			<bool key="NSEnabled">YES</bool>
 																			<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 																			<bool key="NSControlAllowsExpansionToolTips">YES</bool>
@@ -4671,7 +4672,7 @@
 															<string key="NSFrame">{{-1, -1}, {186, 101}}</string>
 															<reference key="NSSuperview" ref="141241350"/>
 															<reference key="NSWindow"/>
-															<reference key="NSNextKeyView" ref="161150111"/>
+															<reference key="NSNextKeyView" ref="845908278"/>
 															<int key="NSsFlags">133650</int>
 															<reference key="NSVScroller" ref="1033899909"/>
 															<reference key="NSHScroller" ref="845908278"/>
@@ -4745,7 +4746,7 @@
 																			<string key="NSFrameSize">{2587, 234}</string>
 																			<reference key="NSSuperview" ref="613998968"/>
 																			<reference key="NSWindow"/>
-																			<reference key="NSNextKeyView" ref="903567248"/>
+																			<reference key="NSNextKeyView" ref="435897027"/>
 																			<bool key="NSEnabled">YES</bool>
 																			<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 																			<bool key="NSControlAllowsExpansionToolTips">YES</bool>
@@ -5629,7 +5630,7 @@
 															<string key="NSFrameSize">{431, 251}</string>
 															<reference key="NSSuperview" ref="584808016"/>
 															<reference key="NSWindow"/>
-															<reference key="NSNextKeyView" ref="613998968"/>
+															<reference key="NSNextKeyView" ref="903567248"/>
 															<int key="NSsFlags">133296</int>
 															<reference key="NSVScroller" ref="8580273"/>
 															<reference key="NSHScroller" ref="435897027"/>
@@ -5654,7 +5655,7 @@
 																			<string key="NSFrameSize">{428, 234}</string>
 																			<reference key="NSSuperview" ref="979877879"/>
 																			<reference key="NSWindow"/>
-																			<reference key="NSNextKeyView" ref="1026708511"/>
+																			<reference key="NSNextKeyView" ref="766578884"/>
 																			<bool key="NSEnabled">YES</bool>
 																			<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 																			<bool key="NSControlAllowsExpansionToolTips">YES</bool>
@@ -5777,7 +5778,7 @@
 															<string key="NSFrame">{{432, 0}, {428, 251}}</string>
 															<reference key="NSSuperview" ref="584808016"/>
 															<reference key="NSWindow"/>
-															<reference key="NSNextKeyView" ref="979877879"/>
+															<reference key="NSNextKeyView" ref="1026708511"/>
 															<int key="NSsFlags">133648</int>
 															<reference key="NSVScroller" ref="1026708511"/>
 															<reference key="NSHScroller" ref="926541949"/>
@@ -5827,7 +5828,7 @@
 																									<string key="NSFrameSize">{425, 452}</string>
 																									<reference key="NSSuperview" ref="150457028"/>
 																									<reference key="NSWindow"/>
-																									<reference key="NSNextKeyView" ref="828164548"/>
+																									<reference key="NSNextKeyView" ref="361142642"/>
 																									<bool key="NSEnabled">YES</bool>
 																									<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 																									<int key="NSNumRows">4</int>
@@ -6139,7 +6140,7 @@
 																					<string key="NSFrame">{{2, 0}, {385, 371}}</string>
 																					<reference key="NSSuperview" ref="755369193"/>
 																					<reference key="NSWindow"/>
-																					<reference key="NSNextKeyView" ref="150457028"/>
+																					<reference key="NSNextKeyView" ref="828164548"/>
 																					<int key="NSsFlags">133328</int>
 																					<reference key="NSVScroller" ref="361142642"/>
 																					<reference key="NSHScroller" ref="828164548"/>
@@ -10777,6 +10778,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<bool key="NSSelectsInsertedObjects">YES</bool>
 				<bool key="NSFilterRestrictsInsertion">YES</bool>
 				<bool key="NSClearsFilterPredicateOnInsertion">YES</bool>
+				<bool key="NSAutomaticallyRearrangesObjects">YES</bool>
 			</object>
 			<object class="NSWindowTemplate" id="857039166">
 				<int key="NSWindowStyleMask">15</int>
@@ -23698,71 +23700,51 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="addAlbum:">id</string>
 						<string key="addAlbums:">id</string>
 						<string key="addSmartAlbum:">id</string>
-						<string key="addStudiesToUser:">id</string>
 						<string key="albumTableDoublePressed:">id</string>
 						<string key="anonymizeDICOM:">id</string>
 						<string key="buildAllThumbnails:">id</string>
 						<string key="checkMemory:">id</string>
 						<string key="clickBanner:">id</string>
-						<string key="comparativeToggle:">id</string>
 						<string key="compressSelectedFiles:">id</string>
 						<string key="convertReportToDICOMSR:">id</string>
 						<string key="convertReportToPDF:">id</string>
-						<string key="copy:">id</string>
 						<string key="copyToDBFolder:">id</string>
 						<string key="createDatabaseFolder:">id</string>
 						<string key="customize:">id</string>
-						<string key="customizeViewerToolBar:">id</string>
 						<string key="databaseDoublePressed:">id</string>
-						<string key="databasePressed:">id</string>
 						<string key="decompressSelectedFiles:">id</string>
 						<string key="defaultAlbums:">id</string>
 						<string key="delItem:">id</string>
 						<string key="deleteAlbum:">id</string>
 						<string key="deleteReport:">id</string>
-						<string key="displayImagesOfSeries:">id</string>
 						<string key="drawerToggle:">id</string>
 						<string key="endReBuildDatabase:">id</string>
 						<string key="generateReport:">id</string>
 						<string key="importRawData:">id</string>
-						<string key="lockStudies:">id</string>
 						<string key="matrixDoublePressed:">id</string>
 						<string key="matrixPressed:">id</string>
-						<string key="mergeSeries:">id</string>
 						<string key="mergeStudies:">id</string>
 						<string key="openDatabase:">id</string>
 						<string key="paste:">id</string>
 						<string key="pasteImageForSourceFile:">NSString</string>
 						<string key="querySelectedStudy:">id</string>
-						<string key="rebuildSQLFile:">id</string>
 						<string key="rebuildThumbnails:">id</string>
 						<string key="refreshPACSOnDemandResults:">id</string>
 						<string key="regenerateAutoComments:">id</string>
 						<string key="reparseIn3D:">id</string>
 						<string key="reparseIn4D:">id</string>
-						<string key="resetWindowsState:">id</string>
-						<string key="revealInFinder:">id</string>
 						<string key="saveAlbums:">id</string>
 						<string key="saveDBListAs:">id</string>
 						<string key="search:">id</string>
-						<string key="searchField:">id</string>
-						<string key="searchForCurrentPatient:">id</string>
 						<string key="selectAll3DSeries:">id</string>
 						<string key="selectAll4DSeries:">id</string>
 						<string key="selectFilesAndFoldersToAdd:">id</string>
 						<string key="selectNoAlbums:">id</string>
-						<string key="selectSubSeriesAndOpen:">id</string>
-						<string key="sendEmailNotification:">id</string>
-						<string key="sendMail:">id</string>
 						<string key="setSearchType:">id</string>
 						<string key="showLogWindow:">id</string>
 						<string key="showhide:">id</string>
 						<string key="smartAlbumHelpButton:">id</string>
 						<string key="switchSoundex:">id</string>
-						<string key="unifyStudies:">id</string>
-						<string key="unlockStudies:">id</string>
-						<string key="viewXML:">id</string>
-						<string key="viewerKeyImagesAndROIsImages:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
 						<object class="IBActionInfo" key="ReBuildDatabaseSheet:">
@@ -23779,10 +23761,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 						<object class="IBActionInfo" key="addSmartAlbum:">
 							<string key="name">addSmartAlbum:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="addStudiesToUser:">
-							<string key="name">addStudiesToUser:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="albumTableDoublePressed:">
@@ -23805,10 +23783,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">clickBanner:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="comparativeToggle:">
-							<string key="name">comparativeToggle:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="compressSelectedFiles:">
 							<string key="name">compressSelectedFiles:</string>
 							<string key="candidateClassName">id</string>
@@ -23819,10 +23793,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 						<object class="IBActionInfo" key="convertReportToPDF:">
 							<string key="name">convertReportToPDF:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="copy:">
-							<string key="name">copy:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="copyToDBFolder:">
@@ -23837,16 +23807,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">customize:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="customizeViewerToolBar:">
-							<string key="name">customizeViewerToolBar:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="databaseDoublePressed:">
 							<string key="name">databaseDoublePressed:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="databasePressed:">
-							<string key="name">databasePressed:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="decompressSelectedFiles:">
@@ -23869,10 +23831,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">deleteReport:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="displayImagesOfSeries:">
-							<string key="name">displayImagesOfSeries:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="drawerToggle:">
 							<string key="name">drawerToggle:</string>
 							<string key="candidateClassName">id</string>
@@ -23889,20 +23847,12 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">importRawData:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="lockStudies:">
-							<string key="name">lockStudies:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="matrixDoublePressed:">
 							<string key="name">matrixDoublePressed:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="matrixPressed:">
 							<string key="name">matrixPressed:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="mergeSeries:">
-							<string key="name">mergeSeries:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="mergeStudies:">
@@ -23925,10 +23875,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">querySelectedStudy:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="rebuildSQLFile:">
-							<string key="name">rebuildSQLFile:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="rebuildThumbnails:">
 							<string key="name">rebuildThumbnails:</string>
 							<string key="candidateClassName">id</string>
@@ -23949,14 +23895,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">reparseIn4D:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="resetWindowsState:">
-							<string key="name">resetWindowsState:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="revealInFinder:">
-							<string key="name">revealInFinder:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="saveAlbums:">
 							<string key="name">saveAlbums:</string>
 							<string key="candidateClassName">id</string>
@@ -23967,14 +23905,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 						<object class="IBActionInfo" key="search:">
 							<string key="name">search:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="searchField:">
-							<string key="name">searchField:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="searchForCurrentPatient:">
-							<string key="name">searchForCurrentPatient:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="selectAll3DSeries:">
@@ -23991,18 +23921,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 						<object class="IBActionInfo" key="selectNoAlbums:">
 							<string key="name">selectNoAlbums:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="selectSubSeriesAndOpen:">
-							<string key="name">selectSubSeriesAndOpen:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="sendEmailNotification:">
-							<string key="name">sendEmailNotification:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="sendMail:">
-							<string key="name">sendMail:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="setSearchType:">
@@ -24023,22 +23941,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 						<object class="IBActionInfo" key="switchSoundex:">
 							<string key="name">switchSoundex:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="unifyStudies:">
-							<string key="name">unifyStudies:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="unlockStudies:">
-							<string key="name">unlockStudies:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="viewXML:">
-							<string key="name">viewXML:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="viewerKeyImagesAndROIsImages:">
-							<string key="name">viewerKeyImagesAndROIsImages:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 					</dictionary>

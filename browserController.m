@@ -3305,8 +3305,6 @@ static NSConditionLock *threadLock = nil;
         if( [item isDeleted])
             NSLog( @"----- isDeleted - childrenArray : we have to refresh the outlineView...");
         
-        [self.database.managedObjectContext reset];
-        
         if( [item isFault])
             item = [self.database objectWithID: [item objectID]];
         
@@ -15093,8 +15091,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 		else
 		{
-			[self.userManagedObjectContext lock];
-			
 			// Add them to select users
 			
 			@try 
@@ -15112,7 +15108,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 						if( [studiesArrayStudyInstanceUID indexOfObject: [study valueForKey: @"studyInstanceUID"]] == NSNotFound || [studiesArrayPatientUID 
                                                                                                                                      indexOfObjectPassingTest:^(id obj, NSUInteger idx, BOOL *stop) { if( [obj compare: [study valueForKey: @"patientUID"] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame) return YES; else return NO;}] == NSNotFound)
 						{
-							NSManagedObject *studyLink = [NSEntityDescription insertNewObjectForEntityForName: @"Study" inManagedObjectContext: self.userManagedObjectContext];
+							NSManagedObject *studyLink = [NSEntityDescription insertNewObjectForEntityForName: @"Study" inManagedObjectContext: user.managedObjectContext];
 						
 							[studyLink setValue: [[[study valueForKey: @"studyInstanceUID"] copy] autorelease] forKey: @"studyInstanceUID"];
 							[studyLink setValue: [[[study valueForKey: @"patientUID"] copy] autorelease] forKey: @"patientUID"];
@@ -15140,7 +15136,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 			{
                 N2LogExceptionWithStackTrace(e);
 			}
-			[self.userManagedObjectContext unlock];
 		}
 	}
 	
@@ -15179,8 +15174,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 		else
 		{
-			[self.userManagedObjectContext lock];
-			
 			@try
 			{
 				NSArray *destinationUsers = [notificationEmailArrayController selectedObjects];
@@ -15229,7 +15222,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 								if( [studiesArrayStudyInstanceUID indexOfObject: [study valueForKey: @"studyInstanceUID"]] == NSNotFound || 
                                    [studiesArrayPatientUID indexOfObjectPassingTest:^(id obj, NSUInteger idx, BOOL *stop) { if( [obj compare: [study valueForKey: @"patientUID"] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame) return YES; else return NO;}] == NSNotFound)
 								{
-									NSManagedObject *studyLink = [NSEntityDescription insertNewObjectForEntityForName: @"Study" inManagedObjectContext: self.userManagedObjectContext];
+									NSManagedObject *studyLink = [NSEntityDescription insertNewObjectForEntityForName: @"Study" inManagedObjectContext: user.managedObjectContext];
 									
 									[studyLink setValue: [[[study valueForKey: @"studyInstanceUID"] copy] autorelease] forKey: @"studyInstanceUID"];
 									[studyLink setValue: [[[study valueForKey: @"patientUID"] copy] autorelease] forKey: @"patientUID"];
@@ -15266,8 +15259,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 			{
                 N2LogExceptionWithStackTrace(e);
 			}
-			
-			[self.userManagedObjectContext unlock];
 		}
 	}
 	
