@@ -283,7 +283,11 @@
         
         NSMutableDictionary* messageHeaders = [NSMutableDictionary dictionary];
         [messageHeaders setObject:user.email forKey:@"To"];
-        [messageHeaders setObject:[[NSUserDefaults standardUserDefaults] valueForKey: @"notificationsEmailsSender"] forKey:@"Sender"];
+        
+        if( [[NSUserDefaults standardUserDefaults] valueForKey: @"notificationsEmailsSender"])
+            [messageHeaders setObject:[[NSUserDefaults standardUserDefaults] valueForKey: @"notificationsEmailsSender"] forKey:@"Sender"];
+        else
+            [messageHeaders setObject: @"" forKey:@"Sender"];
         [messageHeaders setObject:emailSubject forKey:@"Subject"];
         
         // NSAttributedString initWithHTML is NOT thread-safe
