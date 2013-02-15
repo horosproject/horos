@@ -181,6 +181,7 @@
 		case tCPolygon:
 		case tOval:
 		case tROI:
+        case tPencil:
 			return [[[OSIPlanarPathROI alloc] initWithOsiriXROI:roi pixToDICOMTransfrom:pixToDICOMTransfrom homeFloatVolumeData:floatVolumeData] autorelease];
 			break;
         case tPlain:

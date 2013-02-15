@@ -67,7 +67,7 @@
 			}
             [_bezierPath applyAffineTransform:pixToDICOMTransfrom];
 			[nodes release];
-		} else if ([roi type] == tCPolygon || [roi type] == tOval) {
+		} else if ([roi type] == tCPolygon || [roi type] == tOval || [roi type] == tPencil) {
 			pointArray = [roi points];
             
             if ([roi type] == tOval && [pointArray count] >= 2 && [[pointArray objectAtIndex:0] isEqualToPoint:[[pointArray objectAtIndex:1] point]]) {
