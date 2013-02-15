@@ -24,6 +24,7 @@
 @synthesize pixelsHigh = _pixelsHigh;
 @synthesize slabWidth = _slabWidth;
 @synthesize slabSampleDistance = _slabSampleDistance;
+@synthesize interpolationMode = _interpolationMode;
 @synthesize context = _context;
 
 - (id)init
@@ -42,6 +43,7 @@
     copy.pixelsHigh = _pixelsHigh;
     copy.slabWidth = _slabWidth;
     copy.slabSampleDistance = _slabSampleDistance;
+    copy.interpolationMode = _interpolationMode;
     copy.context = _context;
     
     return copy;
@@ -56,6 +58,7 @@
             _pixelsHigh == generatorRequest.pixelsHigh &&
             _slabWidth == generatorRequest.slabWidth &&
             _slabSampleDistance == generatorRequest.slabSampleDistance &&
+            _interpolationMode == generatorRequest.interpolationMode &&
             _context == generatorRequest.context) {
             return YES;
         }
@@ -65,7 +68,7 @@
 
 - (NSUInteger)hash
 {
-    return _pixelsWide ^ _pixelsHigh ^ *((NSUInteger *)&_slabWidth) ^ *((NSUInteger *)&_slabSampleDistance) ^ ((NSUInteger)_context);
+    return _pixelsWide ^ _pixelsHigh ^ *((NSUInteger *)&_slabWidth) ^ *((NSUInteger *)&_slabSampleDistance) ^ *((NSUInteger *)&_interpolationMode) ^ ((NSUInteger)_context);
 }
 
 - (Class)operationClass
