@@ -19,6 +19,14 @@
 
 CF_EXTERN_C_BEGIN
 
+enum _CPRInterpolationMode {
+    CPRInterpolationModeLinear, // don't use this, it is not implemented
+    CPRInterpolationModeNearestNeighbor,
+	
+	CPRInterpolationModeNone = 0xFFFFFF,
+};
+typedef NSInteger CPRInterpolationMode;
+
 typedef struct { // build one of these on the stack and then use -[CPRVolumeData aquireInlineBuffer:] to initialize it. Then make sure to release it too!
     const float *floatBytes;
     
@@ -89,6 +97,7 @@ typedef struct { // build one of these on the stack and then use -[CPRVolumeData
 
 - (BOOL)getFloat:(float *)floatPtr atPixelCoordinateX:(NSUInteger)x y:(NSUInteger)y z:(NSUInteger)z; // returns YES if the float was sucessfully gotten
 - (BOOL)getLinearInterpolatedFloat:(float *)floatPtr atDicomVector:(N3Vector)vector; // these are slower, use the inline buffer if you care about speed
+- (BOOL)getNearestNeighborInterpolatedFloat:(float *)floatPtr atDicomVector:(N3Vector)vector; // these are slower, use the inline buffer if you care about speed
 
 - (BOOL)aquireInlineBuffer:(CPRVolumeDataInlineBuffer *)inlineBuffer; // make sure to pair this with a releaseInlineBuffer (even if it returns NO!), returns YES if the data is valid. The data will be locked and remain valid until releaseInlineBuffer: is called
 - (void)releaseInlineBuffer:(CPRVolumeDataInlineBuffer *)inlineBuffer; 
@@ -231,15 +240,35 @@ v   =  t0 + (z)*(t1-t0);
     return returnValue;
 }
 
+CF_INLINE float CPRVolumeDataNearestNeighborInterpolatedFloatAtVolumeCoordinate(CPRVolumeDataInlineBuffer *inlineBuffer, CGFloat x, CGFloat y, CGFloat z) // coordinate in the pixel space
+{
+    NSInteger roundX = (x + 0.5f);
+    NSInteger roundY = (y + 0.5f);
+    NSInteger roundZ = (z + 0.5f);
+        
+    return CPRVolumeDataGetFloatAtPixelCoordinate(inlineBuffer, roundX, roundY, roundZ);
+}
+
 CF_INLINE float CPRVolumeDataLinearInterpolatedFloatAtDicomVector(CPRVolumeDataInlineBuffer *inlineBuffer, N3Vector vector) // coordinate in mm dicom space
 {
     vector = N3VectorApplyTransform(vector, inlineBuffer->volumeTransform);
     return CPRVolumeDataLinearInterpolatedFloatAtVolumeCoordinate(inlineBuffer, vector.x, vector.y, vector.z);
 }
 
+CF_INLINE float CPRVolumeDataNearestNeighborInterpolatedFloatAtDicomVector(CPRVolumeDataInlineBuffer *inlineBuffer, N3Vector vector) // coordinate in mm dicom space
+{
+    vector = N3VectorApplyTransform(vector, inlineBuffer->volumeTransform);
+    return CPRVolumeDataNearestNeighborInterpolatedFloatAtVolumeCoordinate(inlineBuffer, vector.x, vector.y, vector.z);
+}
+
 CF_INLINE float CPRVolumeDataLinearInterpolatedFloatAtVolumeVector(CPRVolumeDataInlineBuffer *inlineBuffer, N3Vector vector)
 {
     return CPRVolumeDataLinearInterpolatedFloatAtVolumeCoordinate(inlineBuffer, vector.x, vector.y, vector.z);
+}
+
+CF_INLINE float CPRVolumeDataNearestNeighborInterpolatedFloatAtVolumeVector(CPRVolumeDataInlineBuffer *inlineBuffer, N3Vector vector)
+{
+    return CPRVolumeDataNearestNeighborInterpolatedFloatAtVolumeCoordinate(inlineBuffer, vector.x, vector.y, vector.z);
 }
 
 CF_EXTERN_C_END

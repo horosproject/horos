@@ -179,7 +179,7 @@ static NSOperationQueue *_obliqueSliceOperationFillQueue = nil;
                         fillVectors[i] = N3VectorAdd(N3VectorAdd(vectors[i], heightOffset), slabOffset);
                     }
                     
-                    horizontalFillOperation = [[CPRHorizontalFillOperation alloc] initWithVolumeData:_volumeData floatBytes:_floatBytes + (y*pixelsWide) + (z*pixelsWide*pixelsHigh) width:pixelsWide height:MIN(FILL_HEIGHT, pixelsHigh - y)
+                    horizontalFillOperation = [[CPRHorizontalFillOperation alloc] initWithVolumeData:_volumeData interpolationMode:self.request.interpolationMode floatBytes:_floatBytes + (y*pixelsWide) + (z*pixelsWide*pixelsHigh) width:pixelsWide height:MIN(FILL_HEIGHT, pixelsHigh - y)
                                                                                              vectors:fillVectors normals:downVectors];
                     [horizontalFillOperation setQueuePriority:[self queuePriority]];
 					[fillOperations addObject:horizontalFillOperation];

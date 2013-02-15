@@ -111,11 +111,12 @@
     request.sliceToDicomTransform = sliceToDicomTransform;
     request.pixelsWide = floatVolume.pixelsWide;
     request.pixelsHigh = floatVolume.pixelsHigh;
+    request.interpolationMode = CPRInterpolationModeNearestNeighbor;
     
     volume = [CPRGenerator synchronousRequestVolume:request volumeData:_brushMask];    
     roiMask = [OSIROIMask ROIMaskFromVolumeData:(OSIFloatVolumeData *)volume];
     
-    return [roiMask ROIMaskByTranslatingByX:0 Y:0 Z:planePixelPoint.z]; // BOGUS, rest the Z!!!!    
+    return [roiMask ROIMaskByTranslatingByX:0 Y:0 Z:planePixelPoint.z];   
 }
 
 - (void)drawSlab:(OSISlab)slab inCGLContext:(CGLContextObj)cgl_ctx pixelFormat:(CGLPixelFormatObj)pixelFormat dicomToPixTransform:(N3AffineTransform)dicomToPixTransform
