@@ -12,39 +12,173 @@
      PURPOSE.
 =========================================================================*/
 
-#import <Cocoa/Cocoa.h>
-#import "N3Geometry.h"
+#import "CPRHorizontalFillOperation.h"
 #import "CPRVolumeData.h"
+#import "N3Geometry.h"
 
-@class CPRVolumeData;
+@interface CPRHorizontalFillOperation ()
 
-// This operation will fill out floatBytes from the given data. FloatBytes is assumed to be tightly packed float image of width "width" and height "height"
-// float bytes will be filled in with values at vectors and each successive scan line will be filled with with values at vector+normal*scanlineNumber
-@interface CPRHorizontalFillOperation : NSOperation {
-    CPRVolumeData *_volumeData;
-    
-    float *_floatBytes;
-    NSUInteger _width;
-    NSUInteger _height;
-        
-    N3VectorArray _vectors;
-    N3VectorArray _normals;
-    
-    CPRInterpolationMode _interpolationMode;
+- (void)_nearestNeighborFill;
+- (void)_linearInterpolatingFill;
+- (void)_unknownInterpolatingFill;
+
+@end
+
+
+@implementation CPRHorizontalFillOperation
+
+@synthesize volumeData = _volumeData;
+@synthesize width = _width;
+@synthesize height = _height;
+@synthesize floatBytes = _floatBytes;
+@synthesize vectors = _vectors;
+@synthesize normals = _normals;
+@synthesize interpolationMode = _interpolationMode;
+
+- (id)initWithVolumeData:(CPRVolumeData *)volumeData interpolationMode:(CPRInterpolationMode)interpolationMode floatBytes:(float *)floatBytes width:(NSUInteger)width height:(NSUInteger)height vectors:(N3VectorArray)vectors normals:(N3VectorArray)normals
+{
+    if ( (self = [super init])) {
+        _volumeData = [volumeData retain];
+        _floatBytes = floatBytes;
+        _width = width;
+        _height = height;
+        _vectors = malloc(width * sizeof(N3Vector));
+        memcpy(_vectors, vectors, width * sizeof(N3Vector));
+        _normals = malloc(width * sizeof(N3Vector));  
+        memcpy(_normals, normals, width * sizeof(N3Vector));
+        _interpolationMode = interpolationMode;
+    }
+    return self;
 }
 
-// vectors and normals need to be arrays of length width
-- (id)initWithVolumeData:(CPRVolumeData *)volumeData interpolationMode:(CPRInterpolationMode)interpolationMode floatBytes:(float *)floatBytes width:(NSUInteger)width height:(NSUInteger)height vectors:(N3VectorArray)vectors normals:(N3VectorArray)normals;
+- (void)dealloc
+{
+    [_volumeData release];
+    _volumeData = nil;
+    free(_vectors);
+    _vectors = NULL;
+    free(_normals);
+    _normals = NULL;
+    [super dealloc];
+}
 
-@property (readonly, retain) CPRVolumeData *volumeData;
+- (void)main
+{
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    double threadPriority;
+    
+    @try {
+        if ([self isCancelled]) {
+            return;
+        }
+        
+        threadPriority = [NSThread threadPriority];
+        [NSThread setThreadPriority:threadPriority * .5];
+        
+        if (_interpolationMode == CPRInterpolationModeLinear) {
+            [self _linearInterpolatingFill];
+        } else if (_interpolationMode == CPRInterpolationModeNearestNeighbor) {
+            [self _nearestNeighborFill];
+        } else {
+            [self _unknownInterpolatingFill];
+        }
+        
+        [NSThread setThreadPriority:threadPriority];
+    }
+    @catch (...) {
+    }
+    @finally {
+        [pool release];
+    }
+}
 
-@property (readonly, assign) float *floatBytes;
-@property (readonly, assign) NSUInteger width;
-@property (readonly, assign) NSUInteger height;
+- (void)_linearInterpolatingFill
+{
+    NSUInteger x;
+    NSUInteger y;
+    N3AffineTransform vectorTransform;
+    N3VectorArray volumeVectors;
+    N3VectorArray volumeNormals;
+    CPRVolumeDataInlineBuffer inlineBuffer;
+    
+    volumeVectors = malloc(_width * sizeof(N3Vector));
+    memcpy(volumeVectors, _vectors, _width * sizeof(N3Vector));
+    N3VectorApplyTransformToVectors(_volumeData.volumeTransform, volumeVectors, _width);
+    
+    volumeNormals = malloc(_width * sizeof(N3Vector));
+    memcpy(volumeNormals, _normals, _width * sizeof(N3Vector));
+    vectorTransform = _volumeData.volumeTransform;
+    vectorTransform.m41 = vectorTransform.m42 = vectorTransform.m43 = 0.0;
+    N3VectorApplyTransformToVectors(vectorTransform, volumeNormals, _width);
+    
+    if ([_volumeData aquireInlineBuffer:&inlineBuffer]) {
+		for (y = 0; y < _height; y++) {
+			if ([self isCancelled]) {
+				break;
+			}
+			
+			for (x = 0; x < _width; x++) {
+				_floatBytes[y*_width + x] = CPRVolumeDataLinearInterpolatedFloatAtVolumeVector(&inlineBuffer, volumeVectors[x]);
+			}
+			
+			N3VectorAddVectors(volumeVectors, volumeNormals, _width);
+		}
+	} else {
+        memset(_floatBytes, 0, _height * _width * sizeof(float));
+    }
 
-@property (readonly, assign) N3VectorArray vectors;
-@property (readonly, assign) N3VectorArray normals;
+    [_volumeData releaseInlineBuffer:&inlineBuffer];
+    
+    free(volumeVectors);
+    free(volumeNormals);
+}
 
-@property (readonly, assign) CPRInterpolationMode interpolationMode; // YES by default
+- (void)_nearestNeighborFill
+{
+    NSUInteger x;
+    NSUInteger y;
+    N3AffineTransform vectorTransform;
+    N3VectorArray volumeVectors;
+    N3VectorArray volumeNormals;
+    CPRVolumeDataInlineBuffer inlineBuffer;
+    
+    volumeVectors = malloc(_width * sizeof(N3Vector));
+    memcpy(volumeVectors, _vectors, _width * sizeof(N3Vector));
+    N3VectorApplyTransformToVectors(_volumeData.volumeTransform, volumeVectors, _width);
+    
+    volumeNormals = malloc(_width * sizeof(N3Vector));
+    memcpy(volumeNormals, _normals, _width * sizeof(N3Vector));
+    vectorTransform = _volumeData.volumeTransform;
+    vectorTransform.m41 = vectorTransform.m42 = vectorTransform.m43 = 0.0;
+    N3VectorApplyTransformToVectors(vectorTransform, volumeNormals, _width);
+    
+    if ([_volumeData aquireInlineBuffer:&inlineBuffer]) {
+		for (y = 0; y < _height; y++) {
+			if ([self isCancelled]) {
+				break;
+			}
+			
+			for (x = 0; x < _width; x++) {
+				_floatBytes[y*_width + x] = CPRVolumeDataNearestNeighborInterpolatedFloatAtVolumeVector(&inlineBuffer, volumeVectors[x]);
+			}
+			
+			N3VectorAddVectors(volumeVectors, volumeNormals, _width);
+		}
+	} else {
+        memset(_floatBytes, 0, _height * _width * sizeof(float));
+    }
+    
+    [_volumeData releaseInlineBuffer:&inlineBuffer];
+    
+    free(volumeVectors);
+    free(volumeNormals);
+}
+
+- (void)_unknownInterpolatingFill
+{
+    NSLog(@"unknown interpolation mode");
+    memset(_floatBytes, 0, _height * _width);
+}
+
 
 @end
