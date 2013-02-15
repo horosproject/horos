@@ -1687,9 +1687,6 @@ static NSConditionLock *threadLock = nil;
     if( study == nil)
         return NO;
     
-    if( study.isFault)
-        return NO;
-    
     NSManagedObject *item = [databaseOutline itemAtRow: [[databaseOutline selectedRowIndexes] firstIndex]];
     DicomStudy *studySelected = [[item valueForKey: @"type"] isEqualToString: @"Study"] ? item : [item valueForKey: @"study"];
     
@@ -3300,18 +3297,12 @@ static NSConditionLock *threadLock = nil;
         return [NSArray array];
     #endif
     
-	if( [item isFault] || [item isDeleted])
+	if( [item isDeleted])
 	{
         if( [item isDeleted])
             NSLog( @"----- isDeleted - childrenArray : we have to refresh the outlineView...");
         
-        if( [item isFault])
-            item = [self.database objectWithID: [item objectID]];
-        
-        if( [item isFault])
-            NSLog( @"----- isFault - childrenArray : we have to refresh the outlineView...");
-        
-        if( [item isFault] || [item isDeleted] || item == nil)
+        if( [item isDeleted] || item == nil)
             return [NSArray array];
 	}
 	
@@ -5220,7 +5211,7 @@ static NSConditionLock *threadLock = nil;
 		{
 			@try
 			{
-				if ([series isDeleted] == NO && [series isFault] == NO)
+				if ([series isDeleted] == NO)
                 {
                     if ([series.images count] == 0)
                     {
@@ -5255,13 +5246,13 @@ static NSConditionLock *threadLock = nil;
                 if( [self.comparativePatientUID compare: study.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
                     refreshComparative = YES;
                 
-                if( [study isDeleted] == NO && [study isFault] == NO && [[study valueForKey:@"imageSeries"] count] == 0)
+                if( [study isDeleted] == NO && [[study valueForKey:@"imageSeries"] count] == 0)
                 {
                     NSLog( @"Delete Study: %@ - %@", study.patientID, study.studyInstanceUID);
                     
                     [database.managedObjectContext deleteObject:study];
                 }
-                else if( [study isDeleted] == NO && [study isFault] == NO)
+                else if( [study isDeleted] == NO)
                 {
                     [study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
                     [study setValue:[study valueForKey: @"modalities"] forKey:@"modality"];
@@ -5806,9 +5797,7 @@ static NSConditionLock *threadLock = nil;
         #endif
     }
     
-    if ([item respondsToSelector:@selector(isFault:)] && [item isFault])
-        returnVal = NO;
-	else if ([[item valueForKey:@"type"] isEqualToString:@"Series"])
+    if ([[item valueForKey:@"type"] isEqualToString:@"Series"])
         returnVal = NO;
 	else returnVal = YES;
 	
@@ -5862,9 +5851,7 @@ static NSConditionLock *threadLock = nil;
         }
 		else
         #endif
-        if ([item respondsToSelector:@selector(isFault:)] && [item isFault])
-            returnVal = 0;
-        else if ([[item valueForKey:@"type"] isEqualToString:@"Image"]) returnVal = 0;
+        if ([[item valueForKey:@"type"] isEqualToString:@"Image"]) returnVal = 0;
 		else if ([[item valueForKey:@"type"] isEqualToString:@"Series"]) returnVal = [[item valueForKey:@"noFiles"] intValue];
 		//else if ([[item valueForKey:@"type"] isEqualToString:@"Study"]) returnVal = [[item valueForKey:@"series"] count];
 		else if ([[item valueForKey:@"type"] isEqualToString:@"Study"]) returnVal = [[item valueForKey:@"imageSeries"] count];
@@ -5955,9 +5942,6 @@ static NSConditionLock *threadLock = nil;
 			if( [item isDistant])
                 return name;
             
-			if ([item isFault])
-				return nil;
-			
             return name; // [NSString stringWithFormat: NSLocalizedString( @"%@ (%d series)", nil), name, [[item valueForKey:@"imageSeries"] count]];
 		}
 	}
@@ -6015,8 +5999,7 @@ static NSConditionLock *threadLock = nil;
 	[item retain];
 	[_database lock];
 	@try {
-		if ([item isFault] == NO)
-			return [self intOutlineView:outlineView objectValueForTableColumn:tableColumn byItem:item];
+		return [self intOutlineView:outlineView objectValueForTableColumn:tableColumn byItem:item];
 	}
 	@catch (NSException* e)
 	{
@@ -6112,9 +6095,6 @@ static NSConditionLock *threadLock = nil;
 
 -(NSString*)outlineView:(NSOutlineView*)outlineView toolTipForCell:(NSCell*)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn*)tableColumn item:(id)item mouseLocation:(NSPoint)mouseLocation
 {
-	if ([item isFault])
-		return nil;
-	
     if ([item isDistant])
 		return NSLocalizedString( @"Double-Click to retrieve", nil);;
     
@@ -6146,10 +6126,6 @@ static NSConditionLock *threadLock = nil;
 
 - (void)outlineView: (NSOutlineView *)outlineView willDisplayCell: (id)cell forTableColumn: (NSTableColumn *)tableColumn item: (id)item
 {
-	if( [item isFault])
-		return;
-	
-    
 	[cell setHighlighted: NO];
 	
 	if( [cell isKindOfClass: [ImageAndTextCell class]])
@@ -7686,9 +7662,6 @@ static BOOL withReset = NO;
 		else if([[aFile valueForKey:@"type"] isEqualToString:@"Study"])
 		{
             id item = [matrixViewArray objectAtIndex: [cell tag]];
-            
-            if( [item isFault])
-                item = [self.database objectWithID: [item objectID]];
             
 			NSArray *images = matrixViewArray.count? [self imagesArray: [matrixViewArray objectAtIndex: [cell tag]]] : nil;
 			
@@ -16703,27 +16676,24 @@ static volatile int numberOfThreadsForJPEG = 0;
 		NSDate *previousDate = [d objectForKey: @"date"];
 		DicomStudy *study = [d objectForKey: @"study"];
 		
-		if( [study isFault] == NO)
-		{
-			NSString *file = [study valueForKey: @"reportURL"];
-			BOOL isDirectory;
-			
-			if( [[NSFileManager defaultManager] fileExistsAtPath: file isDirectory: &isDirectory])
-			{
-				NSDictionary *fattrs = [[NSFileManager defaultManager] attributesOfItemAtPath: file error: nil];
-				
-				if( [previousDate timeIntervalSinceDate: [fattrs objectForKey: NSFileModificationDate]] < 0)
-				{
-					NSLog( @"Report -> File Modified -> Sync %@ : \r %@ versus %@", key, [previousDate description], [[fattrs objectForKey:NSFileModificationDate] description]);
-					
-					[d setObject: [fattrs objectForKey: NSFileModificationDate] forKey: @"date"];
-					
-					[study archiveReportAsDICOMSR];
-					
-					NSLog( @"Report -> New Content Date: %@", [[study reportImage] valueForKey: @"date"]);
-				}
-			}
-		}
+        NSString *file = [study valueForKey: @"reportURL"];
+        BOOL isDirectory;
+        
+        if( [[NSFileManager defaultManager] fileExistsAtPath: file isDirectory: &isDirectory])
+        {
+            NSDictionary *fattrs = [[NSFileManager defaultManager] attributesOfItemAtPath: file error: nil];
+            
+            if( [previousDate timeIntervalSinceDate: [fattrs objectForKey: NSFileModificationDate]] < 0)
+            {
+                NSLog( @"Report -> File Modified -> Sync %@ : \r %@ versus %@", key, [previousDate description], [[fattrs objectForKey:NSFileModificationDate] description]);
+                
+                [d setObject: [fattrs objectForKey: NSFileModificationDate] forKey: @"date"];
+                
+                [study archiveReportAsDICOMSR];
+                
+                NSLog( @"Report -> New Content Date: %@", [[study reportImage] valueForKey: @"date"]);
+            }
+        }
 	}
 }
 
