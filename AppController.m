@@ -5117,7 +5117,6 @@ static BOOL initialized = NO;
     @try
     {
         #ifndef OSIRIX_LIGHT
-        NSLog( @"**** %@", [[[WebPortal defaultWebPortal] database] managedObjectContext]);
         return [[[WebPortal defaultWebPortal] database] managedObjectContext];
         #endif
     }
