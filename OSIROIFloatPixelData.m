@@ -231,6 +231,8 @@
     if (maximum) {
         *maximum = sorted[floatCount - 1];
     }
+    
+    free( sorted);
 }
 
 - (float)intensityInterQuartileRange

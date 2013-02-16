@@ -323,7 +323,7 @@ static float oldsetww, oldsetwl;
 
 - (IBAction) SetWLWW: (id) sender
 {
-	float iwl, iww;
+	float iwl = 2, iww = 2;
 	
     [self getWLWW:&iwl :&iww];
     

@@ -239,8 +239,7 @@
         
         coalescedROIMaskVolumeBytes = malloc(width * height * depth * sizeof(float));
         memset(coalescedROIMaskVolumeBytes, 0, width * height * depth * sizeof(float));
-        _coalescedROIMaskVolumeData = [[OSIFloatVolumeData alloc] initWithFloatBytesNoCopy:coalescedROIMaskVolumeBytes pixelsWide:width pixelsHigh:height pixelsDeep:depth
-                                                                       volumeTransform:coalescedROIMaskVolumeTransform outOfBoundsValue:0 freeWhenDone:YES];
+        _coalescedROIMaskVolumeData = [[OSIFloatVolumeData alloc] initWithFloatBytesNoCopy:coalescedROIMaskVolumeBytes pixelsWide:width pixelsHigh:height pixelsDeep:depth volumeTransform:coalescedROIMaskVolumeTransform outOfBoundsValue:0 freeWhenDone:YES];
         
         for (roi in _sourceROIs) {
             coalescedMask = [roi ROIMaskForFloatVolumeData:_coalescedROIMaskVolumeData];

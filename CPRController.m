@@ -1059,7 +1059,7 @@ static float deg2rad = M_PI / 180.0;
         N3AffineTransform patient2VolumeDataTransform = cprVolumeData.volumeTransform;
         N3AffineTransform volumeData2PatientTransform = N3AffineTransformInvert(patient2VolumeDataTransform);
         
-        CPRCurvedPath * newCP = [[CPRCurvedPath alloc] init];
+        CPRCurvedPath * newCP = [[[CPRCurvedPath alloc] init] autorelease];
         N3Vector node;
         OSIVoxel * pt;
 

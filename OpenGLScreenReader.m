@@ -123,7 +123,7 @@
     NSAssert( bitmap != NULL, @"CGBitmapContextCreate failure");
 
     // Get rid of color space
-    CFRelease(cSpace);
+//    CFRelease(cSpace);
 
     // Make an image out of our bitmap; does a cheap vm_copy of the  
     // bitmap
@@ -176,6 +176,8 @@
 		NSOpenGLPixelFormat *glPixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes:attributes];
 		if (!glPixelFormat)
 		{
+            [self autorelease];
+            
 			return nil;
 		}
 

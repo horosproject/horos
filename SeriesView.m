@@ -123,11 +123,11 @@
     return NO;
 }
 
-- (long)tag{
+- (NSInteger)tag{
 	return tag;
 }
 
-- (void)setTag:(long)theTag{
+- (void)setTag:(NSInteger)theTag{
 	tag = theTag;
 }
 

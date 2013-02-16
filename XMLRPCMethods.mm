@@ -154,6 +154,10 @@
  Method: KillOsiriX
  */
 -(void)KillOsiriX:(NSDictionary*)params error:(NSError**)error {
+    
+    if( error)
+        *error = nil;
+    
     [[AppController sharedAppController] performSelectorOnMainThread:@selector(terminate:) withObject:self waitUntilDone:NO];
 }
 

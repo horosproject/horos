@@ -995,7 +995,7 @@ return YES;
 		if (sliceNumber>=0 && sliceNumber<[[viewer2D pixList] count])
 		{
 			// Create the new 2D Point ROI
-			ROI *new2DPointROI = [[ROI alloc] initWithType: t2DPoint :[firstDCMPix pixelSpacingX] :[firstDCMPix pixelSpacingY] :[DCMPix originCorrectedAccordingToOrientation: firstDCMPix]];
+			ROI *new2DPointROI = [[[ROI alloc] initWithType: t2DPoint :[firstDCMPix pixelSpacingX] :[firstDCMPix pixelSpacingY] :[DCMPix originCorrectedAccordingToOrientation: firstDCMPix]] autorelease];
 			NSRect irect;
 			irect.origin.x = sc[0];
 			irect.origin.y = sc[1];

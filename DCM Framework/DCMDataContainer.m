@@ -110,6 +110,8 @@ void signal_EXC(int sig_num)
                         else
                             object = self;
                     }
+                    else
+                        free( ptr);
                 }
             }
             
@@ -117,6 +119,9 @@ void signal_EXC(int sig_num)
             signal( SIGFPE, SIG_DFL);
         }
 	}
+    
+    if( object == nil)
+        [self autorelease];
     
     return object;
 }

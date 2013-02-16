@@ -519,6 +519,7 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
 	{
 		[self performSelectorOnMainThread: @selector(_setProgressMessage:) withObject: NSLocalizedString( @"Can't write to temporary directory.", nil) waitUntilDone: NO];
 		[images release];
+        [dicomConverter release];
 		[pool release];
 		return;
 	}

@@ -144,7 +144,7 @@
 	
     int i = 0;
     for( NSValue *v in croppingPlanes)
-        [xml setObject: (id) N3PlaneCreateDictionaryRepresentation( [v N3PlaneValue]) forKey: [NSString stringWithFormat: @"croppingPlanes %d", i]];
+        [xml setObject: [(id) N3PlaneCreateDictionaryRepresentation( [v N3PlaneValue]) autorelease] forKey: [NSString stringWithFormat: @"croppingPlanes %d", i]];
     
 	[xml setObject:[NSString stringWithFormat:@"%f",[self fusionPercentage]] forKey:@"fusionPercentage"];
 	

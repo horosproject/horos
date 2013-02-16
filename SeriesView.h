@@ -43,8 +43,8 @@
 
 - (id)initWithFrame:(NSRect)frame seriesRows:(int)rows  seriesColumns:(int)columns;
 
-- (long)tag;
-- (void)setTag:(long)theTag;
+- (NSInteger)tag;
+- (void)setTag:(NSInteger)theTag;
 - (NSMutableArray *)imageViews;
 - (DCMView *)firstView;
 - (void)setImageViewMatrixForRows:(int)rows  columns:(int)columns;

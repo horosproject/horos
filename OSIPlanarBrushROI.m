@@ -55,8 +55,7 @@
                 }
             }
             volumeTransform = N3AffineTransformConcat(N3AffineTransformInvert(pixToDICOMTransfrom), N3AffineTransformMakeTranslation(-roi.textureUpLeftCornerX, -roi.textureUpLeftCornerY, 0));
-            _brushMask = [[OSIFloatVolumeData alloc] initWithFloatBytesNoCopy:mask pixelsWide:roi.textureWidth pixelsHigh:roi.textureHeight pixelsDeep:1
-                                                              volumeTransform:volumeTransform outOfBoundsValue:0 freeWhenDone:YES];
+            _brushMask = [[OSIFloatVolumeData alloc] initWithFloatBytesNoCopy:mask pixelsWide:roi.textureWidth pixelsHigh:roi.textureHeight pixelsDeep:1 volumeTransform:volumeTransform outOfBoundsValue:0 freeWhenDone:YES];
         } else {
 			[self release];
 			self = nil;
