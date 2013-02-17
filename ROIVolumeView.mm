@@ -324,11 +324,11 @@
 	
 	short   error = 0;
 	
-	try
-	{
-		@try
-		{
-			
+	
+    @try
+    {
+        try
+        {
 			long	i;
 			aRenderer = [self renderer];
 			
@@ -823,29 +823,30 @@
 			
 			[self coView: self];
 		}
-		@catch (NSException * e) 
-		{
-            N2LogExceptionWithStackTrace(e);
-			
-			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"UseDelaunayFor3DRoi"] == NO)
-			{
-				[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"UseDelaunayFor3DRoi"];
-				[self renderVolume];
-				[[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"UseDelaunayFor3DRoi"];
-			}
-		}
-	}
-	catch(...)
-	{
-		printf( "***** C++ exception in %s\r", __PRETTY_FUNCTION__);
-		
-		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"UseDelaunayFor3DRoi"] == NO)
-		{
-			[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"UseDelaunayFor3DRoi"];
-			[self renderVolume];
-			[[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"UseDelaunayFor3DRoi"];
-		}
-	}
+        catch(...)
+        {
+            printf( "***** C++ exception in %s\r", __PRETTY_FUNCTION__);
+            
+            if( [[NSUserDefaults standardUserDefaults] boolForKey:@"UseDelaunayFor3DRoi"] == NO)
+            {
+                [[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"UseDelaunayFor3DRoi"];
+                [self renderVolume];
+                [[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"UseDelaunayFor3DRoi"];
+            }
+        }
+    }
+    @catch (NSException * e)
+    {
+        N2LogExceptionWithStackTrace(e);
+        
+        if( [[NSUserDefaults standardUserDefaults] boolForKey:@"UseDelaunayFor3DRoi"] == NO)
+        {
+            [[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"UseDelaunayFor3DRoi"];
+            [self renderVolume];
+            [[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"UseDelaunayFor3DRoi"];
+        }
+    }
+    
 	[splash close];
 	[splash autorelease];
 
