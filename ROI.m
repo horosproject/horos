@@ -1417,9 +1417,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 			[stanStringAttrib setObject:font forKey:NSFontAttributeName];
 			[stanStringAttrib setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
 			
-			name = [[NSString alloc] initWithString:@"Double-Click to edit"];
-			
-			self.name = name;	// Recompute the texture
+			self.name = @"Double-Click to edit";	// Recompute the texture
 			
 			color.red = ROITextColorR;	//[[NSUserDefaults standardUserDefaults] floatForKey: @"ROITextColorR"];
 			color.green = ROITextColorG;	//[[NSUserDefaults standardUserDefaults] floatForKey: @"ROITextColorG"];

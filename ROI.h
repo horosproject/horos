@@ -156,7 +156,8 @@ enum
 @property(nonatomic) float opacity;
 @property int originalIndexForAlias;
 @property BOOL locked, selectable, isAliased, displayCMOrPixels;
-@property(nonatomic, retain) NSString *name, *comments;
+@property(nonatomic, copy) NSString *name;
+@property(retain) NSString *comments;
 @property long type;
 @property(nonatomic, setter=setROIMode:) long ROImode;
 @property(retain) NSMutableArray *points; // Return/set the points state of the ROI
