@@ -16007,8 +16007,11 @@ int i,j,l;
 			{
 				if( [v frameRate] == [[NSUserDefaults standardUserDefaults] floatForKey: @"defaultFrameRate"])
 				{
-					[v.speedSlider setFloatValue: [self frameRate]];
-					[v speedSliderAction: v.speedSlider];
+                    if( v.speedSlider.floatValue != self.frameRate)
+                    {
+                        v.speedSlider.floatValue = self.frameRate;
+                        [v speedSliderAction: v.speedSlider];
+                    }
 				}
 			}
 		}
