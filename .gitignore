@@ -1,5 +1,25 @@
+OsiriX_Lion.xcodeproj/xcuserdata/
+OsiriX_Lion.xcodeproj/project.xcworkspace/xcuserdata/
+__MACOSX/
+Binaries/__MACOSX/
 build/
 VTKHeaders/
 ITK180/
+AYDicomPrint/
+Binaries/VTKLibs/
+Binaries/weasis/
+Binaries/DCMTK/
+Binaries/dciodvfy
+Binaries/libPapyrusToolkit.a
+Binaries/Ming/
+Binaries/PAGES/
+Binaries/DB_Previous_Models/
+Binaries/OsiriX Report.template
+Binaries/3DconnexionClient.framework/
+Binaries/Growl.framework/
+Binaries/ILCrashReporter.framework/
+Binaries/KDU SDK/libkdu_v71R.a
+Binaries/LibTiff/
+Binaries/openjpeg/
 
 
