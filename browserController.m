@@ -8937,6 +8937,9 @@ static BOOL withReset = NO;
 
 -(void)previewMatrixScrollViewFrameDidChange:(NSNotification*)note
 {
+    if( matrixViewArray.count == 0)
+        return;
+    
     NSInteger selectedCellTag = [oMatrix.selectedCell tag];
     
     CGFloat rcs = oMatrix.cellSize.width+oMatrix.intercellSpacing.width;
@@ -8944,22 +8947,36 @@ static BOOL withReset = NO;
     NSSize size = thumbnailsScrollView.bounds.size;
     size.width += oMatrix.intercellSpacing.width;
     
-    NSInteger hcells = (NSInteger)roundf(size.width/rcs);
-    NSInteger vcells = MAX(1, (NSInteger)ceilf(1.0*matrixViewArray.count/hcells));
-    [oMatrix renewRows:vcells columns:hcells];
-    
-    @synchronized( previewPixThumbnails)
+    if( rcs > 0)
     {
-        for (int i = [previewPix count]; i < hcells*vcells; ++i)
+        NSInteger hcells = (NSInteger)roundf(size.width/rcs);
+        
+        if( hcells > 0)
         {
-            NSButtonCell* cell = [oMatrix cellAtRow:i/hcells column:i%hcells];
-            [cell setTransparent:YES];
-            [cell setEnabled:NO];
+            NSInteger vcells = ceilf(1.0*matrixViewArray.count/hcells); //MAX(1, (NSInteger)ceilf(1.0*matrixViewArray.count/hcells));
+            
+            if( vcells < 1)
+                vcells = 1;
+            
+            if( vcells > 0 && hcells > 0)
+            {
+                [oMatrix renewRows:vcells columns:hcells];
+                
+                @synchronized( previewPixThumbnails)
+                {
+                    for (int i = [previewPix count]; i < hcells*vcells; ++i)
+                    {
+                        NSButtonCell* cell = [oMatrix cellAtRow:i/hcells column:i%hcells];
+                        [cell setTransparent:YES];
+                        [cell setEnabled:NO];
+                    }
+                }
+                
+                [oMatrix sizeToCells];
+                [oMatrix selectCellWithTag:selectedCellTag];
+            }
         }
     }
-    
-    [oMatrix sizeToCells];
-    [oMatrix selectCellWithTag:selectedCellTag];
 }
 
 -(void)splitView:(NSSplitView*)sender resizeSubviewsWithOldSize:(NSSize)oldSize
