@@ -151,22 +151,26 @@ static NSMutableArray *cachedServersArray = nil;
 + (void) syncDICOMNodes
 {
     @autoreleasepool {
-    static NSString* OneSyncDICOMNodesAtATime = @"OneSyncDICOMNodesAtATime";
-    @synchronized (OneSyncDICOMNodesAtATime) {
-    @try {
-        NSURL *url = [NSURL URLWithString: [[NSUserDefaults standardUserDefaults] valueForKey:@"syncDICOMNodesURL"]];
+        static dispatch_semaphore_t sid = 0;
+        if (!sid)
+            sid = dispatch_semaphore_create(1); // only have one update thread at a time, if we want update while already updating then just return
         
-        if( url)
-        {
-            NSArray	*r = [NSArray arrayWithContentsOfURL: url];
-            
-            if( r)
-                [[NSUserDefaults standardUserDefaults] setObject: r forKey:@"SERVERS"];
-        }
-    } @catch (NSException* e) {
-        NSLog(@"syncDICOMNodes exception: %@", e);
-    }
-    }
+        long sr = dispatch_semaphore_wait(sid, DISPATCH_TIME_NOW);
+        if (sr == 0)
+            @try {
+                NSURL* url = [NSURL URLWithString: [[NSUserDefaults standardUserDefaults] valueForKey:@"syncDICOMNodesURL"]];
+                
+                if (url)
+                {
+                    NSArray* r = [NSArray arrayWithContentsOfURL: url];
+                    if (r)
+                        [[NSUserDefaults standardUserDefaults] setObject: r forKey:@"SERVERS"];
+                }
+            } @catch (NSException* e) {
+                NSLog(@"syncDICOMNodes exception: %@", e);
+            } @finally {
+                dispatch_semaphore_signal(sid);
+            }
     }
 }
 
