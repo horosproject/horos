@@ -223,8 +223,6 @@
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
-	<key>SVNRevision</key>
-	<string>$Rev$ $Date$</string>
 	<key>UTImportedTypeDeclarations</key>
 	<array>
 		<dict>

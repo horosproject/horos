@@ -247,7 +247,5 @@
 	<string>OsiriX.sdef</string>
 	<key>NSContactsUsageDescription</key>
 	<string>Your account will be used for the built-in iChat sharing service. If you don&apos;t allow access, you cannot use the iChat functions.</string>
-	<key>SVNRevision</key>
-	<string>$Rev: 10202 $ $Date: 2012-08-05 08:41:13 +0200 (Dim, 05 aoû 2012) $</string>
 </dict>
 </plist>
