@@ -3345,6 +3345,9 @@ extern "C"
 {
 	NSMutableArray	*selectedItems = [NSMutableArray array];
 	
+    if( [NSThread isMainThread] == NO)
+        showGUI = NO;
+    
 	if([items count])
 	{
 		for( id item in items)
