@@ -151,7 +151,8 @@ static NSMutableArray *cachedServersArray = nil;
 + (void) syncDICOMNodes
 {
     @autoreleasepool {
-    @synchronized (self) {
+    static NSString* OneSyncDICOMNodesAtATime = @"OneSyncDICOMNodesAtATime";
+    @synchronized (OneSyncDICOMNodesAtATime) {
     @try {
         NSURL *url = [NSURL URLWithString: [[NSUserDefaults standardUserDefaults] valueForKey:@"syncDICOMNodesURL"]];
         
