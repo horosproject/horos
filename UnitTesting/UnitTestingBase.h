@@ -16,8 +16,8 @@
 
 
 @interface UnitTestingBase : SenTestCase
-	{
+{
 
-	}
+}
 
 @end
