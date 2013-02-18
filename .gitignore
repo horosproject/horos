@@ -1,2 +1,5 @@
-build/VTKHeaders/ITK180/
+build/
+VTKHeaders/
+ITK180/
+
 
