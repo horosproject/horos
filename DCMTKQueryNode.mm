@@ -427,6 +427,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	[_patientID release];
 	[_accessionNumber release];
 	[_referringPhysician release];
+    
     [_performingPhysician release];
 	[_institutionName release];
 	[_comments release];

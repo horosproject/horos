@@ -448,7 +448,6 @@ static NSString* DefaultWebPortalDatabasePath = nil;
     
 	@try
     {
-		
 		@synchronized(runLoops)
 		{
 			[runLoops addObject:[NSRunLoop currentRunLoop]];

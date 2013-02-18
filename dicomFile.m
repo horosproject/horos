@@ -424,12 +424,12 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                 {
                     currentEncoding = [NSString encodingForDICOMCharacterSet: key];
                     
-                    BOOL found = NO;
-                    for( int x = 0; x < 10; x++)
-                    {
-                        if( currentEncoding == encodings[ x])
-                            found = YES;
-                    }
+//                    BOOL found = NO;
+//                    for( int x = 0; x < 10; x++)
+//                    {
+//                        if( currentEncoding == encodings[ x])
+//                            found = YES;
+//                    }
                     
 //                    if( found == NO)
 //                        NSLog( @"*** encoding not found in declared SpecificCharacterSet (0008,0005)");
