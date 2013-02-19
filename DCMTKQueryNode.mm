@@ -1071,7 +1071,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
             
             @try
             {
-                if(!_noSmartMode && studyInstanceUID.length > 0 && [[NSUserDefaults standardUserDefaults] boolForKey: @"TryIMAGELevelDICOMRetrieveIfLocalImages"])
+                if(!_noSmartMode && [[NSUserDefaults standardUserDefaults] boolForKey: @"TryIMAGELevelDICOMRetrieveIfLocalImages"] && studyInstanceUID.length > 0)
                 {
                     @try
                     {
