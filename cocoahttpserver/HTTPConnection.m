@@ -1594,7 +1594,7 @@ static NSMutableArray *recentNonces;
         
 		[self performSelector: @selector(startTLSThread) onThread: [[WebPortal defaultWebPortal] threadForRunLoopRef: [sock runLoopRef]]  withObject: nil waitUntilDone: YES];
         
-        [NSThread sleepForTimeInterval: 1];
+//        [NSThread sleepForTimeInterval: 1];
 	}
 	return YES;
 }
