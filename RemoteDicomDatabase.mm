@@ -62,7 +62,7 @@
 	NSArray* dbs = [DicomDatabase allDatabases];
 	for (RemoteDicomDatabase* db in dbs)
 		if ([db isKindOfClass:[RemoteDicomDatabase class]])
-			if ([[(RemoteDicomDatabase*)db host] isEqualToHost:host] && [(RemoteDicomDatabase*)db port] == port) {
+			if ([(RemoteDicomDatabase*)db port] == port && [[[(RemoteDicomDatabase*)db host] address] isEqualToString: [host address]]) {
 				if (flagUpdate)
 					[db update];
 				return db;

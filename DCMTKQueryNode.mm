@@ -1069,27 +1069,35 @@ subOpCallback(void * /*subOpCallbackData*/ ,
             
             // Local Study with images? -> try a C-Move/C-Get at IMAGE level to download only required images
             
-            if(!_noSmartMode && studyInstanceUID.length > 0 && [[NSUserDefaults standardUserDefaults] boolForKey: @"TryIMAGELevelDICOMRetrieveIfLocalImages"])
+            @try
             {
-                @try
+                if(!_noSmartMode && studyInstanceUID.length > 0 && [[NSUserDefaults standardUserDefaults] boolForKey: @"TryIMAGELevelDICOMRetrieveIfLocalImages"])
                 {
-                    NSError *error = nil;
-                    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName: @"Study"];
-                    
-                    [request setPredicate: [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", studyInstanceUID]];
-                    
-                    DicomStudy *localStudy = [[[[DicomDatabase activeLocalDatabase] independentContext] executeFetchRequest: request error: &error] lastObject];
-                    
-                    for( DicomSeries *s in [localStudy valueForKey: @"series"])
-                        [localObjectUIDs addObjectsFromArray: [[[s images] valueForKey: @"sopInstanceUID"] allObjects]];
+                    @try
+                    {
+                        NSError *error = nil;
+                        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName: @"Study"];
+                        
+                        [request setPredicate: [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", studyInstanceUID]];
+                        
+                        DicomStudy *localStudy = [[[[DicomDatabase activeLocalDatabase] independentContext] executeFetchRequest: request error: &error] lastObject];
+                        
+                        for( DicomSeries *s in [localStudy valueForKey: @"series"])
+                            [localObjectUIDs addObjectsFromArray: [[[s images] valueForKey: @"sopInstanceUID"] allObjects]];
+                    }
+                    @catch (NSException* e)
+                    {
+                        if (_dontCatchExceptions)
+                            @throw e;
+                        if (![NSThread.currentThread isCancelled])
+                            N2LogExceptionWithStackTrace(e);
+                    }
                 }
-                @catch (NSException* e)
-                {
-                    if (_dontCatchExceptions)
-                        @throw e;
-                    if (![NSThread.currentThread isCancelled])
-                        N2LogExceptionWithStackTrace(e);
-                }
+            }
+            @catch (NSException* e)
+            {
+                NSLog( @"%@", studyInstanceUID);
+                N2LogExceptionWithStackTrace(e);
             }
             
             if( localObjectUIDs.count && [[NSThread currentThread] isCancelled] == NO) // We have already local images !

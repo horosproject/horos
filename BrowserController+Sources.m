@@ -437,7 +437,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
                 return YES;
             if (h1.name && h2.name && [h1.name isEqualToString:h2.name])
                 return YES;
-            return [h1 isEqualToHost:h2];
+//            return [h1 isEqualToHost:h2];
         } @catch (...) {
             @throw;
         } @finally {

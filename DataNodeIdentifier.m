@@ -231,7 +231,7 @@
     NSHost* dniHost = nil; NSInteger dniPort;
     [[self class] location:dni.location toHost:&dniHost port:&dniPort];
     
-    if (selfPort == dniPort && [selfHost isEqualToHost:dniHost])
+    if (selfPort == dniPort && [[selfHost address] isEqualToString: [dniHost address]])
         return YES;
     
     return NO;
@@ -289,7 +289,7 @@
     NSHost* dniHost; NSInteger dniPort; NSString* dniAet;
     [[self class] location:dni.location toHost:&dniHost port:&dniPort aet:&dniAet];
     
-    if (selfPort == dniPort && [selfHost isEqualToHost:dniHost] && [selfAet isEqualToString:dniAet])
+    if (selfPort == dniPort && [selfAet isEqualToString:dniAet] && [[selfHost address] isEqualToString: [dniHost address]])
         return YES;
     
     return NO;
