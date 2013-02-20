@@ -4888,8 +4888,6 @@ static NSConditionLock *threadLock = nil;
 		
 		NSIndexSet *selectedRows = [databaseOutline selectedRowIndexes];
 		
-		NSLog(@"UNIFY STUDIES: %@", destStudy);
-		
         if( result == NSAlertDefaultReturn)
         {
             // Now modify the DICOM files
@@ -4994,7 +4992,7 @@ static NSConditionLock *threadLock = nil;
                         [study setValue: [destStudy valueForKey:@"patientUID"]  forKey: @"patientUID"];
                         [study setValue: [destStudy valueForKey:@"name"]  forKey: @"name"];
                         
-                        NSLog( @"---- Patient Unify: %@ %@ -> %@ %@", [study valueForKey:@"name"], [study valueForKey:@"patientID"], [destStudy valueForKey:@"name"], [destStudy valueForKey:@"patientID"]);
+                        NSLog( @"---- Patient Unify: %@ %@ -> %@ %@", [study valueForKey:@"accessionNumber"], [study valueForKey:@"patientID"], [destStudy valueForKey:@"accessionNumber"], [destStudy valueForKey:@"patientID"]);
                     }
 				}
 			}
