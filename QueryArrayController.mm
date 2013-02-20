@@ -202,9 +202,9 @@
         if( [NSThread isMainThread] && showError)
         {
             NSAlert *alert = [NSAlert alertWithMessageText:@"Query Error" defaultButton:@"OK" alternateButton:nil otherButton:nil informativeTextWithFormat:@"%@", @"Query Failed"];
-            NSLog(@"****** performQuery exception: %@", [e name]);
             [alert runModal];
         }
+        NSLog(@"****** performQuery exception: %@", [e name]);
 	}
 	
 	[queryLock unlock];
