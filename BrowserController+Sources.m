@@ -441,7 +441,6 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
         } @catch (...) {
             @throw;
         } @finally {
-            NSLog(@"");
             dispatch_semaphore_signal(sid);
         }
     
@@ -563,12 +562,12 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
             // add new items
             for (NSString* aak in aa)
             {
-                [NSThread performBlockInBackground:^{
-                    // we're now in a background thread
-                    NSString* aet = nil;
-                    if ([[self class] host:[DicomNodeIdentifier location:aak toHost:NULL port:NULL aet:&aet] isEqualToHost:currentHost] && [aet isEqualToString:[[NSUserDefaults standardUserDefaults] stringForKey:@"AETITLE"]]) // don't list self
-                        return;
-                    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+//                [NSThread performBlockInBackground:^{
+//                    // we're now in a background thread
+//                    NSString* aet = nil;
+//                    if ([[self class] host:[DicomNodeIdentifier location:aak toHost:NULL port:NULL aet:&aet] isEqualToHost:currentHost] && [aet isEqualToString:[[NSUserDefaults standardUserDefaults] stringForKey:@"AETITLE"]]) // don't list self
+//                        return;
+//                    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                         // we're now back in the main thread
                         DataNodeIdentifier* dni;
                         NSUInteger i = [[_browser.sources.content valueForKey:@"location"] indexOfObject:aak];
@@ -582,8 +581,8 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
                             dni.dictionary = [aa objectForKey:aak];
                             dni.description = [dni.dictionary objectForKey:@"Description"];
                         }
-                    }];
-                }];
+//                    }];
+//                }];
             }
         }
         
