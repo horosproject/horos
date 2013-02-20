@@ -1038,7 +1038,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 
 - (void) move:(NSDictionary*) dict retrieveMode: (int) retrieveMode
 {
-    NSMutableArray *childrenCopy = [self children];
+    NSArray *childrenCopy = [self children];
     
     dispatch_semaphore_t mpsid = nil;
     if (_isAutoRetrieve) {

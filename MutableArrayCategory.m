@@ -113,9 +113,12 @@ NSInteger sortByAddress(id roi1, id roi2, void *context)
 	{
 		if( [s isKindOfClass:[NSString class]] && [s isEqualToString: lastString])
 		{
-			int index = [self indexOfObject: s];
-			[self removeObjectAtIndex: index];
-			[otherArray removeObjectAtIndex: index];
+			NSUInteger index = [self indexOfObject: s];
+            if( index != NSNotFound)
+            {
+                [self removeObjectAtIndex: index];
+                [otherArray removeObjectAtIndex: index];
+            }
 		}
 		else lastString = s;
 	}

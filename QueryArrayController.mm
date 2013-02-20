@@ -23,6 +23,7 @@
 #import "DCMTKSeriesQueryNode.h"
 #import "DCMTKImageQueryNode.h"
 #import "MutableArrayCategory.h"
+#import "N2Debug.h"
 
 @implementation QueryArrayController
 
@@ -182,7 +183,7 @@
                     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontFilterQueryStudiesForUniqueInstanceUID"] == NO)
                     {
                         NSMutableArray *tempResult = [NSMutableArray arrayWithArray: [rootNode children]];
-                        [[tempResult mutableArrayValueForKey:@"uid"] removeDuplicatedStringsInSyncWithThisArray: tempResult];
+                        [[NSMutableArray arrayWithArray: [tempResult valueForKey:@"uid"]] removeDuplicatedStringsInSyncWithThisArray: tempResult];
                         
                         if( [tempResult count])
                             queries = [tempResult retain];
@@ -204,7 +205,7 @@
             NSAlert *alert = [NSAlert alertWithMessageText:@"Query Error" defaultButton:@"OK" alternateButton:nil otherButton:nil informativeTextWithFormat:@"%@", @"Query Failed"];
             [alert runModal];
         }
-        NSLog(@"****** performQuery exception: %@", [e name]);
+        N2LogExceptionWithStackTrace( e);
 	}
 	
 	[queryLock unlock];
