@@ -169,7 +169,8 @@ static NSString* const BrowserActivityHelperContext = @"BrowserActivityHelperCon
                     [cell retain];
                     [_cells removeObject:cell];
                     [_browser._activityTableView reloadData];
-                    [cell autorelease];
+                    
+                    [cell performSelector: @selector( release) withObject: nil afterDelay: 3]; //Yea... I know... not very nice, but avoid a zombie crash, if a thread is cancelled (GUI) AFTER released here...
                 }
             }
             

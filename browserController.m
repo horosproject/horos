@@ -7975,11 +7975,32 @@ static BOOL withReset = NO;
     }
 }
 
+//- (void) test:(id) s
+//{
+//    NSLog( @"--");
+//    
+//    [NSThread sleepForTimeInterval: 2];
+//}
+//
+//- (void) createThread
+//{
+//    NSAutoreleasePool *n = [NSAutoreleasePool new];
+//    
+//    NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( test:) object: nil] autorelease];
+//    t.name = NSLocalizedString( @"Test very small thread...", nil);
+//    t.supportsCancel = YES;
+//    [[ThreadsManager defaultManager] addThreadAndStart: t];
+//    
+//    [n release];
+//}
+
 - (void)previewPerformAnimation: (id)sender
 {
+    //[NSThread detachNewThreadSelector: @selector( createThread) toTarget: self withObject: nil];
+    
 	if( [[AppController sharedAppController] isSessionInactive] || waitForRunningProcess)
 		return;
-	
+    
     // Wait loading all images !!!
 	if( _database == nil) return;
 //	if( bonjourDownloading) return;
