@@ -6990,7 +6990,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     GLubyte strShortVersion [kShortVersionLength];
     short i = 0;
     while ((((strVersion[i] <= '9') && (strVersion[i] >= '0')) || (strVersion[i] == '.')) && (i < kShortVersionLength)) // get only basic version info (until first space)
-            strShortVersion [i] = strVersion[i++];
+    {
+        strShortVersion [i] = strVersion[i];
+        i++;
+    }
     strShortVersion [i] = 0; //truncate string
     
     // compare capabilities based on extension string and GL version
