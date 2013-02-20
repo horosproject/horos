@@ -522,17 +522,17 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 {
     @synchronized( _children)
     {
-        return [[_children copy] autorelease];
+        return [[_children mutableCopy] autorelease];
     }
     
     return nil;
 }
-- (void) setChildren: (NSMutableArray *) c
+- (void) setChildren: (NSArray *) c
 {
     @synchronized( _children)
     {
         [_children autorelease];
-        _children = [c copy];
+        _children = [c mutableCopy];
     }
 }
 - (void)purgeChildren
@@ -1038,7 +1038,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 
 - (void) move:(NSDictionary*) dict retrieveMode: (int) retrieveMode
 {
-    NSMutableArray *childrenCopy = [[[self children] mutableCopy] autorelease];
+    NSMutableArray *childrenCopy = [self children];
     
     dispatch_semaphore_t mpsid = nil;
     if (_isAutoRetrieve) {
