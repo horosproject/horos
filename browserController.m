@@ -13312,10 +13312,27 @@ static NSArray*	openSubSeriesArray = nil;
             [menuItem action] == @selector(regenerateAutoComments:) ||
             [menuItem action] == @selector(unifyStudies:) ||
             [menuItem action] == @selector(viewerSubSeriesDICOM:) ||
-            [menuItem action] == @selector(viewerReparsedSeries:)
+            [menuItem action] == @selector(viewerReparsedSeries:) ||
+            [menuItem action] == @selector(copyToDBFolder:)
 			)
 		return NO;
 	}
+    
+    if ([_database isReadOnly])
+    {
+        if([menuItem action] == @selector(compressSelectedFiles:) ||
+           [menuItem action] == @selector(decompressSelectedFiles:) ||
+           [menuItem action] == @selector(generateReport:) ||
+           [menuItem action] == @selector(deleteReport:) ||
+           [menuItem action] == @selector(convertReportToPDF:) ||
+           [menuItem action] == @selector(convertReportToDICOMSR:) ||
+           [menuItem action] == @selector(delItem:) ||
+           [menuItem action] == @selector(regenerateAutoComments:) ||
+           [menuItem action] == @selector(copyToDBFolder:) ||
+           [menuItem action] == @selector(querySelectedStudy:) || 
+           [menuItem action] == @selector(unifyStudies:))
+            return NO;
+    }
     
     if ([_database isLocal] == NO)
     {
