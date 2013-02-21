@@ -4237,6 +4237,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 
 + (NSString*) patientUID: (id) src
 {
+    [DicomFile setDefaults];
+    
     NSString *patientName = @"";
     NSString *patientID = @"";
     NSString *patientBirthDate = @"";
