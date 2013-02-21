@@ -598,24 +598,27 @@ static NSString* _dcmElementKey(DcmElement* element) {
         if (mode == -1 || [[NSApp currentEvent] modifierFlags]&NSCommandKeyMask)
             [self performSelectorOnMainThread:@selector(_askUserDiscDataCopyOrBrowse:) withObject:[NSArray arrayWithObjects: path, [NSNumber numberWithInteger:dicomImages.count], [NSValue valueWithPointer:&mode], nil] waitUntilDone:YES];
         
-        if (mode == 1) { // copy into database on mount
+        if (mode == 1)
+        {
+            // copy into database on mount
+            
+            NSMutableArray* paths = nil;
+            
+            @try {
+                paths = [[[dicomImages valueForKey:@"completePath"] mutableCopy] autorelease];
+            }
+            @catch (NSException *e) {
+                N2LogException( e);
+            }
+            
+            [paths removeDuplicatedStrings];
+            
             NSThread* copyFilesThread = [NSThread performBlockInBackground:^{
                 NSThread* cft = [NSThread currentThread];
                 cft.name = NSLocalizedString(@"Importing images from media...", nil);
                 cft.supportsCancel = YES;
                 [ThreadsManager.defaultManager removeThread:thread];
                 [ThreadsManager.defaultManager addThreadAndStart:cft];
-                
-                NSMutableArray* paths = nil;
-                
-                @try {
-                    paths = [[[dicomImages valueForKey:@"completePath"] mutableCopy] autorelease];
-                }
-                @catch (NSException *e) {
-                    N2LogException( e);
-                }
-                
-                [paths removeDuplicatedStrings];
                 
                 int progress = 0;
                 thread.progress = 0;
