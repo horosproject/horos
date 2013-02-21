@@ -206,7 +206,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>10765M</string>
+	<string>20130221</string>
 	<key>LSCanProvideIMVideoDataSource</key>
 	<string>Yes</string>
 	<key>NSAppleScriptEnabled</key>
