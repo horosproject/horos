@@ -1,0 +1,1527 @@
+//
+//  O2DicomPredicateEditorView.m
+//  Predicator
+//
+//  Created by Alessandro Volz on 03.01.13.
+//  Copyright (c) 2013 Alessandro Volz. All rights reserved.
+//
+
+#import "O2DicomPredicateEditorView.h"
+#import "O2DicomPredicateEditor.h"
+
+#import "O2DicomPredicateEditorCodeStrings.h"
+#import "O2DicomPredicateEditorDCMAttributeTag.h"
+
+#import "O2DicomPredicateEditorPopUpButton.h"
+#import "O2DicomPredicateEditorDatePicker.h"
+#import "O2DicomPredicateEditorFormatters.h"
+
+#import "N2Operators.h"
+#import "N2Debug.h"
+#import "N2CustomTitledPopUpButtonCell.h"
+#import "NS(Attributed)String+Geometrics.h"
+#import "NSString+N2.h"
+#import "DCMTagDictionary.h"
+#import "DCMAttribute.h"
+
+#import <objc/runtime.h>
+
+
+@implementation O2DicomPredicateEditorView
+
+@synthesize tags = _tags;
+@synthesize tagsSortKey = _tagsSortKey;
+
+@synthesize tag = _tag;
+@synthesize operator = _operator;
+@synthesize stringValue = _stringValue;
+@synthesize numberValue = _numberValue;
+@synthesize dateValue = _dateValue;
+@synthesize within = _within;
+@synthesize codeStringTag = _codeStringTag;
+
+static const NSInteger O2DicomPredicateEditorSortTagsByName = 0;
+static const NSInteger O2DicomPredicateEditorSortTagsByTag = 1;
+
+typedef NSInteger O2TimeTag;
+enum /*typedef NS_ENUM(NSInteger, O2TimeTag)*/ { // these values are runtime only, you can change them without consequences, keep them negative so you won't risk reusing NSPredicateOperatorType values
+    O2Today = -1,
+    O2Yesterday = -2,
+    O2Within = -3,
+    O21Hour = -4,
+    O26Hours = -5,
+    O212Hours = -6,
+    O21Day = O2Today,
+    O22Days = -7,
+    O21Week = -8,
+    O21Month = -9,
+    O22Months = -10,
+    O23Months = -11,
+    O21Year = 12
+};
+
+static NSString* const O2VarToday = @"NSDATE_TODAY";
+static NSString* const O2VarYesterday = @"NSDATE_YESTERDAY";
+static NSString* const O2Var1Hour = @"NSDATE_LASTHOUR";
+static NSString* const O2Var6Hours = @"NSDATE_LAST6HOURS";
+static NSString* const O2Var12Hours = @"NSDATE_LAST12HOURS";
+static NSString* const O2Var1Day = @"NSDATE_TODAY"; // O2VarToday
+static NSString* const O2Var2Days = @"NSDATE_2DAYS";
+static NSString* const O2Var1Week = @"NSDATE_WEEK";
+static NSString* const O2Var1Month = @"NSDATE_MONTH";
+static NSString* const O2Var2Months = @"NSDATE_2MONTHS";
+static NSString* const O2Var3Months = @"NSDATE_3MONTHS";
+static NSString* const O2Var1Year = @"NSDATE_YEAR";
+
++ (NSArray*)timeKeys {
+    NSArray* timeKeys = nil;
+    if (!timeKeys)
+        timeKeys = [[NSArray alloc] initWithObjects: O2Var1Hour, O2Var6Hours, O2Var12Hours, O2Var1Day, O2Var2Days, O2Var1Week, O2Var1Month, O2Var2Months, O2Var3Months, O2Var1Year, nil];
+    return timeKeys;
+}
+
++ (O2TimeTag)timeTagFromKey:(NSString*)key {
+    if ([key isEqualToString:O2Var1Day])
+        return O21Day;
+    if ([key isEqualToString:O2Var2Days])
+        return O22Days;
+    if ([key isEqualToString:O2Var1Week])
+        return O21Week;
+    if ([key isEqualToString:O2Var1Month])
+        return O21Month;
+    if ([key isEqualToString:O2Var2Months])
+        return O22Months;
+    if ([key isEqualToString:O2Var3Months])
+        return O23Months;
+    if ([key isEqualToString:O2Var1Year])
+        return O21Year;
+    if ([key isEqualToString:O2Var1Hour])
+        return O21Hour;
+    if ([key isEqualToString:O2Var6Hours])
+        return O26Hours;
+    if ([key isEqualToString:O2Var12Hours])
+        return O212Hours;
+    
+    return 0;
+}
+
++ (NSString*)timeKeyFromTag:(O2TimeTag)tk {
+    switch (tk) {
+        case O21Day:
+            return O2Var1Day; break;
+        case O22Days:
+            return O2Var2Days; break;
+        case O21Week:
+            return O2Var1Week; break;
+        case O21Month:
+            return O2Var1Month; break;
+        case O22Months:
+            return O2Var2Months; break;
+        case O23Months:
+            return O2Var3Months; break;
+        case O21Year:
+            return O2Var1Year; break;
+        case O21Hour:
+            return O2Var1Hour; break;
+        case O26Hours:
+            return O2Var6Hours; break;
+        case O212Hours:
+            return O2Var12Hours; break;
+        case O2Yesterday:
+            return O2VarYesterday;
+        case O2Within:
+            return nil;
+    }
+    
+    return nil;
+}
+
+#ifndef OF
+#define OF 0x4F46
+#endif
+
+typedef NSUInteger O2ValueRepresentation;
+enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
+    O2AE = AE,
+    O2AS = AS,
+//    O2AT = AT,
+    O2CS = CS,
+    O2DA = DA,
+    O2DS = DS,
+    O2DT = DT,
+    O2FL = FL,
+    O2FD = FD,
+    O2IS = IS,
+    O2LO = LO,
+    O2LT = LT,
+//    O2OB = OB,
+//    O2OF = OF,
+//    O2OW = OW,
+    O2PN = PN,
+    O2SH = SH,
+    O2SL = SL,
+//    O2SQ = SQ,
+    O2SS = SS,
+    O2ST = ST,
+    O2TM = TM,
+    O2UI = UI,
+    O2UL = UL,
+//    O2UN = UN,
+    O2US = US,
+    O2UT = UT
+};
+
++ (O2ValueRepresentation)valueRepresentationFromVR:(NSString*)vr {
+    if (!vr) return 0;
+    const char* cvr = vr.UTF8String;
+    if (!strcmp(cvr, "AE")) return AE;
+    if (!strcmp(cvr, "AS")) return AS;
+    if (!strcmp(cvr, "AT")) return AT;
+    if (!strcmp(cvr, "CS")) return CS;
+    if (!strcmp(cvr, "DA")) return DA;
+    if (!strcmp(cvr, "DS")) return DS;
+    if (!strcmp(cvr, "DT")) return DT;
+    if (!strcmp(cvr, "FL")) return FL;
+    if (!strcmp(cvr, "FD")) return FD;
+    if (!strcmp(cvr, "IS")) return IS;
+    if (!strcmp(cvr, "LO")) return LO;
+    if (!strcmp(cvr, "LT")) return LT;
+    if (!strcmp(cvr, "OB")) return OB;
+    if (!strcmp(cvr, "OF")) return OF;
+    if (!strcmp(cvr, "OW")) return OW;
+    if (!strcmp(cvr, "PN")) return PN;
+    if (!strcmp(cvr, "SH")) return SH;
+    if (!strcmp(cvr, "SL")) return SL;
+    if (!strcmp(cvr, "SQ")) return SQ;
+    if (!strcmp(cvr, "SS")) return SS;
+    if (!strcmp(cvr, "ST")) return ST;
+    if (!strcmp(cvr, "TM")) return TM;
+    if (!strcmp(cvr, "UI")) return UI;
+    if (!strcmp(cvr, "UL")) return UL;
+    if (!strcmp(cvr, "UN")) return UN;
+    if (!strcmp(cvr, "US")) return US;
+    if (!strcmp(cvr, "UT")) return UT;
+    return 0;
+}
+
+- (id)initWithFrame:(NSRect)frame {
+    if ((self = [super initWithFrame:frame])) {
+        NSMenuItem* mi;
+        NSMenu* menu;
+        
+        // tags pop-up
+        
+        _tagsPopUp = [[O2DicomPredicateEditorPopUpButton alloc] initWithFrame:NSZeroRect pullsDown:NO];
+        _tagsPopUp.bezelStyle = NSRoundRectBezelStyle;
+        [_tagsPopUp.cell setControlSize:NSSmallControlSize];
+        _tagsPopUp.font = [NSFont controlContentFontOfSize:[NSFont smallSystemFontSize]];
+        _tagsPopUp.autoenablesItems = NO;
+        _tagsPopUp.noSelectionLabel = NSLocalizedString(@"Select a Tag...", nil);
+        _tagsPopUp.n2mode = YES;
+        
+        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(_observePopUpButtonWillPopUpNotification:) name:NSPopUpButtonWillPopUpNotification object:_tagsPopUp];
+        
+        menu = _tagsPopUp.contextualMenu = [[[NSMenu alloc] initWithTitle:@""] autorelease];
+        menu.delegate = self;
+        mi = [menu addItemWithTitle:NSLocalizedString(@"Sort by Description", nil) action:@selector(_contextualMenuSortTags:) keyEquivalent:@""];
+        mi.tag = O2DicomPredicateEditorSortTagsByName;
+        mi.target = self;
+        mi = [menu addItemWithTitle:NSLocalizedString(@"Sort by Tag", nil) action:@selector(_contextualMenuSortTags:) keyEquivalent:@""];
+        mi.tag = O2DicomPredicateEditorSortTagsByTag;
+        mi.target = self;
+        
+        menu = _tagsPopUp.menu = [[[NSMenu alloc] initWithTitle:@""] autorelease];
+        menu.delegate = self;
+        menu.autoenablesItems = NO;
+        
+        _menuItems = [[NSMutableArray alloc] init];
+        for (DCMAttributeTag* tag in self.tags) {
+            NSString* title = nil;
+            if ([tag isKindOfClass:[O2DicomPredicateEditorDCMAttributeTag class]])
+                title = [tag description];
+            else title = [NSString stringWithFormat:@"(%04x,%04x) %@", tag.group, tag.element, [[self class] _transformTagName:tag.name]];
+            
+            NSMenuItem* mi = [menu addItemWithTitle:title action:nil keyEquivalent:@""]; // @selector(_setTag:)
+            
+            //            mi.target = self;
+            mi.representedObject = tag;
+            mi.tag = [[self class] tagForTag:tag];
+            
+            [_menuItems addObject:mi];
+        }
+        
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            for (DCMAttributeTag* tag in self.tags)
+                if ([tag.vr isEqualToString:@"CS"]) {
+                    NSDictionary* csd = [O2DicomPredicateEditorCodeStrings codeStringsForTag:tag];
+                    if (!csd.count && [[[self class] _transformTagName:tag.name] isEqualToString:tag.name])
+                        NSLog(@"Warning: no known values for %@", tag);
+                }
+        });
+
+        
+        //        NSLog(@"ascadfasf %@", [_tagsPopUp exposedBindings]);
+        [_tagsPopUp bind:@"selectedTag" toObject:self withKeyPath:@"selectedTag" options:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:NSValidatesImmediatelyBindingOption]];
+        
+        // operators pop-up
+        
+        _operatorsPopUp = [[O2DicomPredicateEditorPopUpButton alloc] initWithFrame:NSZeroRect pullsDown:NO];
+        _operatorsPopUp.bezelStyle = NSRoundRectBezelStyle;
+        [_operatorsPopUp.cell setControlSize:NSSmallControlSize];
+        _operatorsPopUp.font = [NSFont controlContentFontOfSize:[NSFont smallSystemFontSize]];
+        _operatorsPopUp.autoenablesItems = NO;
+        
+        menu = _operatorsPopUp.menu = [[[NSMenu alloc] initWithTitle:@""] autorelease];
+        
+        // for strings: NSContainsPredicateOperatorType, NSBeginsWithPredicateOperatorType, NSEndsWithPredicateOperatorType, NSEqualToPredicateOperatorType
+        mi = [menu addItemWithTitle:NSLocalizedString(@"contains", nil) action:nil keyEquivalent:@""];
+        mi.tag = NSContainsPredicateOperatorType;
+        mi = [menu addItemWithTitle:NSLocalizedString(@"begins with", nil) action:nil keyEquivalent:@""];
+        mi.tag = NSBeginsWithPredicateOperatorType;
+        mi = [menu addItemWithTitle:NSLocalizedString(@"ends with", nil) action:nil keyEquivalent:@""];
+        mi.tag = NSEndsWithPredicateOperatorType;
+        
+        // for dates: O2EqualsToToday, O2EqualsToYesterday, NSLessThanComparison, NSGreaterThanComparison, O2Within, NSEqualToPredicateOperatorType
+        mi = [menu addItemWithTitle:NSLocalizedString(@"is today", nil) action:nil keyEquivalent:@""];
+        mi.tag = O2Today;
+        mi = [menu addItemWithTitle:NSLocalizedString(@"is yesterday", nil) action:nil keyEquivalent:@""];
+        mi.tag = O2Yesterday;
+        mi = [menu addItemWithTitle:NSLocalizedString(@"is before", nil) action:nil keyEquivalent:@""];
+        mi.tag = NSLessThanOrEqualToPredicateOperatorType;
+        mi = [menu addItemWithTitle:NSLocalizedString(@"is after", nil) action:nil keyEquivalent:@""];
+        mi.tag = NSGreaterThanOrEqualToPredicateOperatorType;
+        mi = [menu addItemWithTitle:NSLocalizedString(@"is within", nil) action:nil keyEquivalent:@""];
+        mi.tag = O2Within;
+        
+        // multi-purpose
+        mi = [menu addItemWithTitle:NSLocalizedString(@"is", nil) action:nil keyEquivalent:@""];
+        mi.tag = NSEqualToPredicateOperatorType;
+        
+        [_operatorsPopUp bind:@"selectedTag" toObject:self withKeyPath:@"operator" options:nil];
+        
+        // string value field
+        
+        _stringValueTextField = [[NSTextField alloc] initWithFrame:NSZeroRect];
+        [_stringValueTextField.cell setControlSize:NSSmallControlSize];
+        _stringValueTextField.font = [NSFont controlContentFontOfSize:[NSFont smallSystemFontSize]];
+        
+        [_stringValueTextField bind:@"value" toObject:self withKeyPath:@"stringValue" options:nil];
+        
+        // number value field
+        
+        _numberValueTextField = [[NSTextField alloc] initWithFrame:NSZeroRect];
+        [_numberValueTextField.cell setControlSize:NSSmallControlSize];
+        _numberValueTextField.font = [NSFont controlContentFontOfSize:[NSFont smallSystemFontSize]];
+        
+        [_numberValueTextField bind:@"value" toObject:self withKeyPath:@"numberValue" options:nil];
+        
+        // date picker
+        
+        _datePicker = [[O2DicomPredicateEditorDatePicker alloc] initWithFrame:NSZeroRect];
+        [_datePicker.cell setControlSize:NSSmallControlSize];
+        _datePicker.font = [NSFont controlContentFontOfSize:[NSFont smallSystemFontSize]];
+        _datePicker.datePickerElements = NSYearMonthDayDatePickerElementFlag;
+        
+        [_datePicker bind:@"value" toObject:self withKeyPath:@"dateValue" options:nil];
+        
+        // time picker
+        
+        _timePicker = [[O2DicomPredicateEditorDatePicker alloc] initWithFrame:NSZeroRect];
+        [_timePicker.cell setControlSize:NSSmallControlSize];
+        _timePicker.font = [NSFont controlContentFontOfSize:[NSFont smallSystemFontSize]];
+        _timePicker.datePickerElements = NSHourMinuteDatePickerElementFlag;
+        
+        [_timePicker bind:@"value" toObject:self withKeyPath:@"dateValue" options:nil];
+        
+        // datetime picker
+        
+        _dateTimePicker = [[O2DicomPredicateEditorDatePicker alloc] initWithFrame:NSZeroRect];
+        [_dateTimePicker.cell setControlSize:NSSmallControlSize];
+        _dateTimePicker.font = [NSFont controlContentFontOfSize:[NSFont smallSystemFontSize]];
+        _dateTimePicker.datePickerElements = NSYearMonthDayDatePickerElementFlag|NSHourMinuteDatePickerElementFlag;
+        
+        [_dateTimePicker bind:@"value" toObject:self withKeyPath:@"dateValue" options:nil];
+        
+        // within pop-up
+        
+        _withinPopUp = [[O2DicomPredicateEditorPopUpButton alloc] initWithFrame:NSZeroRect pullsDown:NO];
+        _withinPopUp.bezelStyle = NSRoundRectBezelStyle;
+        [_withinPopUp.cell setControlSize:NSSmallControlSize];
+        _withinPopUp.font = [NSFont controlContentFontOfSize:[NSFont smallSystemFontSize]];
+        _withinPopUp.autoenablesItems = NO;
+        
+        menu = _withinPopUp.menu = [[[NSMenu alloc] initWithTitle:@""] autorelease];
+        
+        //        mi = [menu addItemWithTitle:NSLocalizedString(@"the last day", nil) action:nil keyEquivalent:@""]; // this choice ("is within" "the last day") is removed because it's already covered by the "is today" item
+        //        mi.tag = O21Day;
+        mi = [menu addItemWithTitle:NSLocalizedString(@"the last 2 days", nil) action:nil keyEquivalent:@""];
+        mi.tag = O22Days;
+        mi = [menu addItemWithTitle:NSLocalizedString(@"the last 7 days", nil) action:nil keyEquivalent:@""];
+        mi.tag = O21Week;
+        mi = [menu addItemWithTitle:NSLocalizedString(@"the last 31 days", nil) action:nil keyEquivalent:@""];
+        mi.tag = O21Month;
+        mi = [menu addItemWithTitle:NSLocalizedString(@"the last 2 months", nil) action:nil keyEquivalent:@""];
+        mi.tag = O22Months;
+        mi = [menu addItemWithTitle:NSLocalizedString(@"the last 3 months", nil) action:nil keyEquivalent:@""];
+        mi.tag = O23Months;
+        mi = [menu addItemWithTitle:NSLocalizedString(@"the last year", nil) action:nil keyEquivalent:@""];
+        mi.tag = O21Year;
+        [menu addItem:[NSMenuItem separatorItem]];
+        mi = [menu addItemWithTitle:NSLocalizedString(@"the last hour", nil) action:nil keyEquivalent:@""];
+        mi.tag = O21Hour;
+        mi = [menu addItemWithTitle:NSLocalizedString(@"the last 6 hours", nil) action:nil keyEquivalent:@""];
+        mi.tag = O26Hours;
+        mi = [menu addItemWithTitle:NSLocalizedString(@"the last 12 hours", nil) action:nil keyEquivalent:@""];
+        mi.tag = O212Hours;
+        
+        [_withinPopUp bind:@"selectedTag" toObject:self withKeyPath:@"within" options:nil];
+        
+        // code string (CS) pop-up
+        
+        _codeStringPopUp = [[O2DicomPredicateEditorPopUpButton alloc] initWithFrame:NSZeroRect pullsDown:NO];
+        _codeStringPopUp.bezelStyle = NSRoundRectBezelStyle;
+        [_codeStringPopUp.cell setControlSize:NSSmallControlSize];
+        _codeStringPopUp.font = [NSFont controlContentFontOfSize:[NSFont smallSystemFontSize]];
+        _codeStringPopUp.autoenablesItems = NO;
+        
+        menu = _codeStringPopUp.menu = [[[NSMenu alloc] initWithTitle:@""] autorelease];
+
+        [_codeStringPopUp bind:@"selectedTag" toObject:self withKeyPath:@"codeStringTag" options:nil];
+
+        // is
+        
+        _isLabel = [[NSTextField alloc] initWithFrame:NSZeroRect];
+        [_isLabel.cell setControlSize:NSSmallControlSize];
+        _isLabel.font = [NSFont controlContentFontOfSize:[NSFont smallSystemFontSize]];
+        _isLabel.stringValue = NSLocalizedString(@"is", nil);
+        _isLabel.bordered = NO;
+        _isLabel.bezeled = NO;
+        _isLabel.drawsBackground = NO;
+        _isLabel.editable = NO;
+        
+        // ...
+        
+        [self addObserver:self forKeyPath:@"tag" options:NSKeyValueObservingOptionInitial context:[self class]];
+        [self addObserver:self forKeyPath:@"operator" options:NSKeyValueObservingOptionInitial context:[self class]];
+        [self addObserver:self forKeyPath:@"stringValue" options:NSKeyValueObservingOptionInitial context:[self class]];
+        [self addObserver:self forKeyPath:@"numberValue" options:NSKeyValueObservingOptionInitial context:[self class]];
+        [self addObserver:self forKeyPath:@"dateValue" options:NSKeyValueObservingOptionInitial context:[self class]];
+        [self addObserver:self forKeyPath:@"within" options:NSKeyValueObservingOptionInitial context:[self class]];
+        [self addObserver:self forKeyPath:@"codeStringTag" options:NSKeyValueObservingOptionInitial context:[self class]];
+    }
+    
+    return self;
+}
+
+- (void)dealloc {
+    [NSNotificationCenter.defaultCenter removeObserver:self];
+    
+    [self removeObserver:self forKeyPath:@"codeStringTag"];
+    [self removeObserver:self forKeyPath:@"within"];
+    [self removeObserver:self forKeyPath:@"dateValue"];
+    [self removeObserver:self forKeyPath:@"numberValue"];
+    [self removeObserver:self forKeyPath:@"stringValue"];
+    [self removeObserver:self forKeyPath:@"operator"];
+    [self removeObserver:self forKeyPath:@"tag"];
+    
+    [_tagsPopUp release];
+    [_operatorsPopUp release];
+    [_stringValueTextField release];
+    [_numberValueTextField release];
+    [_datePicker release];
+    [_timePicker release];
+    [_dateTimePicker release];
+    [_withinPopUp release];
+    [_codeStringPopUp release];
+    [_isLabel release];
+    
+    [_menuItems release];
+    
+    self.tag = nil;
+    
+    self.tags = nil;
+    
+    // TODO: release stringValue, numberValue, dateValue, ...
+    
+    [super dealloc];
+}
+
+/*-(void)controlTextDidChange:(NSNotification*)notification {
+    CGFloat delay = 0.666;
+    
+    NSString* str = [notification.object stringValue];
+   
+    NSMutableString* mstr = [NSMutableString string];
+    for (NSUInteger i = 0; i < str.length; ++i)
+         [mstr appendFormat:@"%d, ", [str characterAtIndex:i]];
+    
+    NSLog(@".... %@ - %@", str, mstr);
+
+    unichar lastchar = [str characterAtIndex:str.length-1];
+    
+    if (lastchar == 8) { // delete
+        NSInteger from = str.length; from -= 2;
+        if (from < 0) from = 0;
+        str = [str substringToIndex:from];
+        [notification.object setStringValue:str];
+    }
+    else
+    if (lastchar == 13 || lastchar == 3) { // return or enter
+        NSInteger from = str.length; from -= 1;
+        if (from < 0) from = 0;
+        str = [str substringToIndex:from];
+        [notification.object setStringValue:str];
+        delay = 0;
+    }
+    else
+    if (lastchar < 0x20 || lastchar == 0x7F) { // control chars in ASCII (< 32) or DEL (= 127)
+        NSInteger from = str.length; from -= 1;
+        if (from < 0) from = 0;
+        str = [str substringToIndex:from];
+        [notification.object setStringValue:str];
+    }
+
+//    mstr = [NSMutableString string];
+//    for (NSUInteger i = 0; i < str.length; ++i)
+//        [mstr appendFormat:@"%d, ", [str characterAtIndex:i]];
+//    
+//    NSLog(@"  ..... %@ - %@", str, mstr);
+    
+    NSArray* words = [str componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    
+    NSLog(@"Words: %@", words);
+    
+    [[self class] cancelPreviousPerformRequestsWithTarget:self];
+    [self performSelector:@selector(filterItemsWithWords:) withObject:words afterDelay:delay inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]]; // TODO: get system key delay preference
+}*/
+
+/*- (void)filterItemsWithWords:(NSArray*)words {
+    [_tagsPopUpKeysCatcher setStringValue:@""];
+
+    if ([_currentWords isEqual:words])
+        return;
+    
+    [_currentWords release];
+    _currentWords = [words retain];
+    
+    @synchronized (self) {
+        NSLog(@"Filtering: %@", words);
+        
+        NSMutableArray* lcwords = [NSMutableArray array];
+        for (NSString* word in words)
+            [lcwords addObject:word.lowercaseString];
+
+        if (words) {
+            [_tagsPopUp.menu cancelTrackingWithoutAnimation];
+        }
+        
+        BOOL somethingIsAvailable = NO;
+        for (NSMenuItem* mi in [[_tagsPopUp.itemArray copy] autorelease]) {
+            if (mi.representedObject) {
+                if ([mi.representedObject isKindOfClass:[O2DicomPredicateEditorDCMAttributeTag class]] != [self.editor dbMode]) {
+                    mi.hidden = YES;
+                    continue;
+                }
+                
+                NSString* lctitle = mi.title.lowercaseString;
+                BOOL matchedAllWords = YES;
+                for (NSString* word in lcwords)
+                    if (word.length) {
+                        if (![lctitle contains:word])
+                            matchedAllWords = NO;
+                    }
+                mi.hidden = !matchedAllWords;
+                if (matchedAllWords)
+                    somethingIsAvailable = YES;
+            }
+        }
+        
+        if (words) {
+            NSMenuItem* mi = [_tagsPopUp.menu itemWithTag:-1];
+            if (!mi && !somethingIsAvailable) {
+                mi = [_tagsPopUp.menu addItemWithTitle:@"" action:nil keyEquivalent:@""];
+                mi.tag = -1;
+            }
+            mi.hidden = NO;
+            if (!somethingIsAvailable) {
+                mi.title = [NSString stringWithFormat:NSLocalizedString(@"No matches for: %@", nil), [words componentsJoinedByString:@" "]];
+                if (![_tagsPopUp.itemArray containsObject:mi]) [_tagsPopUp.menu addItem:mi];
+                mi.enabled = NO;
+            } else if (mi) [_tagsPopUp.menu removeItem:mi];
+            
+         //   [self sortTagsMenu];
+          
+            if (words.count) {
+                _dontResetMenu = YES;
+                [self performSelectorInBackground:@selector(_threadDidFilterNowLookForMenuWindow) withObject:nil]; // does _dontResetMenu = NO
+                [_tagsPopUp.menu popUpMenuPositioningItem:[_tagsPopUp selectedItem] atLocation:NSMakePoint(-14, self.frame.size.height/2+8) inView:self];
+            }
+        }
+    }
+}
+
+- (void)_threadDidFilterNowLookForMenuWindow { // find the menu window in a background thread
+    @autoreleasepool {
+        NSWindow* menuWindow = nil;
+        while (!menuWindow) {
+            NSWindow* window = [[NSApp windows] lastObject];
+            if ([[window className] isEqualToString:@"NSCarbonMenuWindow"]) {
+                menuWindow = window;
+                break;
+            }
+            
+            [NSThread sleepForTimeInterval:0.001];
+        }
+        
+        [self performSelectorOnMainThread:@selector(_mailThreadDidFilterFoundMenuWindowNowRefresh:) withObject:menuWindow waitUntilDone:NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+    }
+}
+
+- (void)_mailThreadDidFilterFoundMenuWindowNowRefresh:(NSWindow*)menuWindow {
+    _dontResetMenu = NO;
+    [menuWindow makeFirstResponder:nil];
+    [menuWindow.contentView setNeedsDisplay:YES];
+    [menuWindow makeFirstResponder:_tagsPopUpKeysCatcher];
+    [[menuWindow fieldEditor:YES forObject:_tagsPopUpKeysCatcher] setSelectedRange:NSMakeRange([[_tagsPopUpKeysCatcher stringValue] length], 0)];
+    
+    // this hack makes the menu redraw (in some situations it stayed all white) --- this only works if the mouse is on the menu
+    
+    NSRect mwframe = [menuWindow frame];
+    if (!NSPointInRect([NSEvent mouseLocation], mwframe)) { // if mouse is not on window
+        NSRect s0frame = [[NSScreen.screens objectAtIndex:0] frame];
+        CGPoint p = {mwframe.origin.x+mwframe.size.width/2, s0frame.size.height - (mwframe.origin.y+mwframe.size.height/2)}; // [self.window convertBaseToScreen:[self.window.contentView convertPoint:NSMakePoint(0, self.bounds.size.height/2) fromView:self]].y
+        CGEventRef cgEvent = CGEventCreateMouseEvent(NULL, kCGEventMouseMoved, p, kCGMouseButtonLeft); // move mouse to window
+        CGEventPost(kCGHIDEventTap, cgEvent);
+        CFRelease(cgEvent);
+    }
+    
+    CGEventRef cgEvent = CGEventCreateScrollWheelEvent(NULL, kCGScrollEventUnitLine, 1, -1); // scroll to redraw
+    CGEventPost(kCGHIDEventTap, cgEvent);
+    CFRelease(cgEvent);
+}*/
+
+/*- (void)setStringValue:(NSString*)stringValue {
+    NSLog(@"setStringValue:%@", stringValue);
+    if (stringValue != _stringValue) {
+        [self willChangeValueForKey:@"stringValue"];
+        [_stringValue release];
+        _stringValue = [_stringValue retain];
+        [self didChangeValueForKey:@"stringValue"];
+    }
+}*/
+
+- (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context {
+    if (context != [self class])
+        return [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    
+    NSLog(@"%X observeValueForKeyPath: %@ -> %@", (int)self, keyPath, [self valueForKeyPath:keyPath]);
+    
+    if (object == self)
+    {
+        if ([keyPath isEqualToString:@"tag"] || [keyPath isEqualToString:@"operator"] || [keyPath isEqualToString:@"codeStringTag"])
+            [self review];
+
+        if ([keyPath isEqualToString:@"tag"]) {
+            switch ([[self class] valueRepresentationFromVR:self.tag.vr]) {
+                case SH:
+                case LO:
+                case ST:
+                case LT:
+                case UT:
+                case AE:
+                case AS:
+                case PN:
+                case UI:
+                case IS:
+                case DS: {
+                    if (![self.stringValue isKindOfClass:[NSString class]])
+                        self.stringValue = [NSString string];
+                } break;
+                    
+                case CS: {
+                    self.codeStringTag = 1;
+                    self.stringValue = [NSString string];
+                } break;
+                    
+                case SS:
+                case SL:
+                case US:
+                case UL:
+                case FL:
+                case FD: {
+                    if (![self.numberValue isKindOfClass:[NSNumber class]])
+                        self.numberValue = [NSNumber numberWithInt:0];
+                } break;
+                    
+                case DA:
+                case TM:
+                case DT: {
+                    if (![self.dateValue isKindOfClass:[NSDate class]])
+                        self.dateValue = [NSDate date];
+                } break;
+            }
+            
+//            [self review];
+        }
+        
+        if ([keyPath isEqualToString:@"operator"])
+            if (self.operator == O2Within)
+                self.within = O26Hours;
+
+        [self resizeSubviewsWithOldSize:self.bounds.size];
+        
+        [self.editor reloadPredicate];
+    }
+}
+
+
+- (O2DicomPredicateEditor*)editor {
+    for (id view = self; view; view = [view superview])
+        if ([view isKindOfClass:[O2DicomPredicateEditor class]])
+            return view;
+    return nil;
+}
+
+//#pragma mark Tags
+
++ (NSString*)_transformTagName:(NSString*)name {
+    if ([name hasPrefix:@"RETIRED_"])
+        name = [[name substringFromIndex:8] stringByAppendingString:NSLocalizedString(@" (retired)", nil)];
+    if ([name hasPrefix:@"ACR_NEMA_"])
+        name = [name substringFromIndex:9];
+    if ([name hasPrefix:@"2C_"])
+        name = [name substringFromIndex:3];
+    return name;
+}
+
++ (NSInteger)tagForTag:(DCMAttributeTag*)tag {
+    return (tag.group<<16)|tag.element;
+}
+
+- (NSArray*)tags {
+    if (!_tags) {
+        NSMutableArray* tags = [[NSMutableArray alloc] init];
+        
+        // common DICOM tags
+        for (NSString* dcmTagsKey in [[DCMTagDictionary sharedTagDictionary] allKeys]) {
+            DCMAttributeTag* tag = [DCMAttributeTag tagWithTagString:dcmTagsKey];
+            O2ValueRepresentation vr = [[self class] valueRepresentationFromVR:tag.vr];
+            if (!tag.isPrivate && tag.group != 0x0000 && ((tag.group&0xfff0) != 0xfff0) && vr != SQ && vr != OW && vr != OF && vr != OB && vr != UN)
+                [tags addObject:tag];
+        }
+
+        int i = 0, g = 0x0001; // we use group 0x0001 which is private
+        [tags addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"PN" name:@"name" description:NSLocalizedString(@"Patient Name", nil)]];
+        [tags addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"LO" name:@"patientID" description:NSLocalizedString(@"Patient ID", nil)]];
+        [tags addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"CS" name:@"modality" description:NSLocalizedString(@"Modality", nil) cskey:@"Modality"]];
+        [tags addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"DT" name:@"date" description:NSLocalizedString(@"Study Date", nil)]];
+        [tags addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"SH" name:@"id" description:NSLocalizedString(@"Study ID", nil)]];
+        [tags addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"LO" name:@"studyName" description:NSLocalizedString(@"Study Description", nil)]];
+        [tags addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"PN" name:@"referringPhysician" description:NSLocalizedString(@"Referring Physician", nil)]];
+        [tags addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"PN" name:@"performingPhysician" description:NSLocalizedString(@"Performing Physician", nil)]];
+        [tags addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"LO" name:@"institutionName" description:NSLocalizedString(@"Institution", nil)]];
+        [tags addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"CS" name:@"stateText" description:NSLocalizedString(@"Study Status", nil) cskey:@"OsiriX StudyStatus"]];
+        [tags addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"DT" name:@"dateAdded" description:NSLocalizedString(@"Date Added", nil)]];
+        [tags addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"DT" name:@"dateOpened" description:NSLocalizedString(@"Date Opened", nil)]];
+        [tags addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"LT" name:@"comment" description:NSLocalizedString(@"Comments", nil)]];
+        [tags addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"LT" name:@"comment2" description:NSLocalizedString(@"Comments 2", nil)]];
+        [tags addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"LT" name:@"comment3" description:NSLocalizedString(@"Comments 3", nil)]];
+        [tags addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"LT" name:@"comment4" description:NSLocalizedString(@"Comments 4", nil)]];
+        
+        self.tags = tags;
+    }
+    
+    return _tags;
+}
+
+- (DCMAttributeTag*)tagWithGroup:(int)group element:(int)element {
+    for (DCMAttributeTag* tag in self.tags)
+        if (tag.group == group && tag.element == element)
+            return tag;
+    return nil;
+}
+
+- (DCMAttributeTag*)tagWithKeyPath:(NSString*)keyPath {
+    for (DCMAttributeTag* tag in self.tags)
+        if ([tag.name isEqualToString:keyPath])
+            return tag;
+    return nil;
+}
+
++ (NSSet*)keyPathsForValuesAffectingSelectedTag {
+    return [NSSet setWithObject:@"tag"];
+}
+
+- (void)setSelectedTag:(NSInteger)tag {
+    self.tag = [self tagWithGroup:tag>>16 element:tag&0xffff];
+}
+
+- (NSInteger)selectedTag {
+    return [[self class] tagForTag:self.tag];
+}
+
+- (void)_contextualMenuSortTags:(NSMenuItem*)sender {
+    _tagsSortKey = sender.tag;
+}
+
+- (void)sortTagsMenu {
+    NSMenu* menu = _tagsPopUp.menu;
+    
+    NSArray* mis = [menu.itemArray sortedArrayUsingComparator:^NSComparisonResult(NSMenuItem* mi1, NSMenuItem* mi2) {
+        if (mi1.isEnabled != mi2.isEnabled) {
+            if (!mi1.isEnabled)
+                return NSOrderedDescending;
+            else return NSOrderedAscending;
+        }
+        
+        DCMAttributeTag* obj1 = mi1.representedObject;
+        DCMAttributeTag* obj2 = mi2.representedObject;
+        
+        if (!obj1)
+            if (!obj2)
+                return NSOrderedSame;
+            else return NSOrderedAscending;
+            else if (!obj2)
+                return NSOrderedDescending;
+        
+        // by tag
+        if (_tagsSortKey == O2DicomPredicateEditorSortTagsByTag) {
+            long t1 = [[self class] tagForTag:obj1];
+            long t2 = [[self class] tagForTag:obj2];
+            if (t1 < t2)
+                return NSOrderedAscending;
+            if (t1 > t2)
+                return NSOrderedDescending;
+        }
+        
+        // by name
+        return [[[self class] _transformTagName:obj1.name] caseInsensitiveCompare:[[self class] _transformTagName:obj2.name]];
+    }];
+    
+    NSInteger stag = [_tagsPopUp selectedTag];
+    
+    for (NSUInteger i = 0; i < mis.count; ++i) {
+        NSMenuItem* mi = [mis objectAtIndex:i];
+        if ([menu itemAtIndex:i] != mi) {
+            [menu removeItem:mi];
+            [menu insertItem:mi atIndex:i];
+        }
+    }
+    
+    [_tagsPopUp selectItemWithTag:stag];
+}
+
+- (void)_observePopUpButtonWillPopUpNotification:(NSNotification*)notification {
+    NSInteger st = [_tagsPopUp selectedTag];
+    
+    [_tagsPopUp.menu removeAllItems];
+    for (NSMenuItem* mi in _menuItems)
+        if ([mi.representedObject isKindOfClass:[O2DicomPredicateEditorDCMAttributeTag class]] == [self.editor dbMode]) {
+            [_tagsPopUp.menu addItem:mi];
+    }
+    
+    [_tagsPopUp selectItemWithTag:st];
+
+    if ([self.editor dbMode])
+        _tagsSortKey = O2DicomPredicateEditorSortTagsByTag;
+    [self sortTagsMenu];
+}
+
+- (void)menuWillOpen:(NSMenu*)menu {
+    if (menu == _tagsPopUp.contextualMenu) {
+        for (NSMenuItem* mi in menu.itemArray) {
+            mi.enabled = (mi.tag != _tagsSortKey);
+            mi.state = (mi.tag == _tagsSortKey)? NSOnState : NSOffState;
+        }
+    }
+}
+
+/*- (void)menuNeedsUpdate:(NSMenu*)menu {
+    if (menu == _tagsPopUp.menu) {
+        BOOL somethingIsAvailable = NO;
+        for (NSMenuItem* mi in menu.itemArray)
+            if (!mi.isHidden) {
+                somethingIsAvailable = YES;
+                break;
+            }
+        if (!somethingIsAvailable) {
+            [_tagsPopUpKeysCatcher setStringValue:@""];
+            [self filterItemsWithWords:nil];
+        }
+        [self performSelector:@selector(_focusTagsPopUpFilterTextField:) withObject:menu afterDelay:0.01 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+    }
+}
+
+- (void)_focusTagsPopUpFilterTextField:(NSMenu*)menu {
+    NSWindow* menuWindow = [[NSApp windows] lastObject]; // this is the NSCalbonMenuWindow instance
+    if ([menuWindow.className isEqualToString:@"NSCarbonMenuWindow"]) {
+        // this is a hack - the NSTextField will never be drawn by the NSCarbonMenuWindow, but somehow it's still receiving keyboard events
+        [menuWindow.contentView addSubview:_tagsPopUpKeysCatcher];
+        [menuWindow makeFirstResponder:_tagsPopUpKeysCatcher];
+    }
+}*/
+
+//#pragma mark Operators
+
+- (void)setAvailableOperators:(NSInteger)first, ... NS_REQUIRES_NIL_TERMINATION {
+    NSMutableSet* oops = [NSMutableSet set];
+    
+    va_list args;
+    va_start(args, first);
+    for (NSInteger arg = first; arg; arg = va_arg(args, NSInteger))
+        [oops addObject:[NSNumber numberWithInteger:arg]];
+    va_end(args);
+    
+//    NSLog(@"Available Operators -> %@", oops);
+    
+    NSMenuItem* firstItem = nil;
+    for (NSMenuItem* mi in _operatorsPopUp.itemArray) {
+        mi.hidden = ![oops containsObject:[NSNumber numberWithInteger:mi.tag]];
+        if (!firstItem && !mi.isHidden)
+            firstItem = mi;
+    }
+    
+    if (_operatorsPopUp.selectedTag != self.operator && [oops containsObject:[NSNumber numberWithInteger:self.operator]]) // fix the selection
+        [_operatorsPopUp selectItemWithTag:self.operator];
+    if (![oops containsObject:[NSNumber numberWithInteger:_operatorsPopUp.selectedTag]]) // invalid selection... select a valid item
+        [_operatorsPopUp selectItem:firstItem];
+    if (self.operator != _operatorsPopUp.selectedTag) // fix the bound value
+        self.operator = _operatorsPopUp.selectedTag;
+}
+
+/*- (void)setOperator:(NSInteger)type {
+ [_operatorsPopUp selectItemWithTag:type];
+ 
+ [self resizeSubviewsWithOldSize:self.bounds.size];
+ }*/
+
+
+
+
+//#pragma mark -----
+
+//+ (NSDateFormatter*)dateFormatter {
+//    static NSDateFormatter* formatter = nil;
+//    if (!formatter) {
+//        formatter = [[NSDateFormatter alloc] init];
+//        formatter.timeStyle = NSDateFormatterNoStyle;
+//        formatter.dateStyle = NSDateFormatterShortStyle;
+//    }
+//    
+//    return formatter;
+//}
+
++ (NSFormatter*)integerFormatter {
+    static NSNumberFormatter* formatter = nil;
+    if (!formatter) {
+        formatter = [[NSNumberFormatter alloc] init];
+        formatter.numberStyle = NSNumberFormatterDecimalStyle;
+        formatter.maximumFractionDigits = 0;
+    }
+    
+    return formatter;
+}
+
++ (NSFormatter*)decimalFormatter {
+    static NSNumberFormatter* formatter = nil;
+    if (!formatter) {
+        formatter = [[NSNumberFormatter alloc] init];
+        formatter.numberStyle = NSNumberFormatterDecimalStyle;
+    }
+    
+    return formatter;
+}
+
++ (NSFormatter*)integersFormatter {
+    static O2DicomPredicateEditorMultiplicityFormatter* formatter = nil;
+    if (!formatter) {
+        formatter = [[O2DicomPredicateEditorMultiplicityFormatter alloc] init];
+        formatter.monoFormatter = [[self class] decimalFormatter];
+    }
+    
+    return formatter;
+}
+
++ (NSFormatter*)decimalsFormatter {
+    static O2DicomPredicateEditorMultiplicityFormatter* formatter = nil;
+    if (!formatter) {
+        formatter = [[O2DicomPredicateEditorMultiplicityFormatter alloc] init];
+        formatter.monoFormatter = [[self class] integerFormatter];
+    }
+    
+    return formatter;
+}
+
++ (NSFormatter*)ageFormatter {
+    static O2DicomPredicateEditorAgeStringFormatter* formatter = nil;
+    if (!formatter)
+        formatter = [[O2DicomPredicateEditorAgeStringFormatter alloc] init];
+    return formatter;
+}
+
+
+
+- (void)review {
+    if (_reviewing)
+        return;
+
+    _reviewing = YES;
+
+    NSMutableArray* views = [NSMutableArray arrayWithObject:_tagsPopUp];
+    
+    DCMAttributeTag* tag = self.tag;
+    O2ValueRepresentation vr = [[self class] valueRepresentationFromVR:tag.vr];
+    
+    @try {
+        switch (vr) {
+            case SH:
+            case LO:
+            case ST:
+            case LT:
+            case UT:
+            case AE: // TODO: should be more restrictive for AE
+            case PN:
+            case UI:  {
+                [views addObject:_operatorsPopUp];
+                [self setAvailableOperators: NSContainsPredicateOperatorType, NSBeginsWithPredicateOperatorType, NSEndsWithPredicateOperatorType, NSEqualToPredicateOperatorType, nil];
+                _stringValueTextField.formatter = nil;
+                [views addObject:_stringValueTextField];
+            } break;
+                
+            case IS: {
+                [views addObject:_isLabel];
+                [self setAvailableOperators: NSEqualToPredicateOperatorType, nil];
+                _stringValueTextField.formatter = [[self class] integersFormatter];
+                [views addObject:_stringValueTextField];
+            } break;
+                
+            case SS:
+            case SL:
+            case US:
+            case UL: {
+                [views addObject:_isLabel];
+                [self setAvailableOperators: NSEqualToPredicateOperatorType, nil];
+                _numberValueTextField.formatter = [[self class] integerFormatter];
+                [views addObject:_numberValueTextField];
+            } break;
+                
+            case DS: {
+                [views addObject:_isLabel];
+                [self setAvailableOperators: NSEqualToPredicateOperatorType, nil];
+                _stringValueTextField.formatter = [[self class] decimalsFormatter];
+                [views addObject:_stringValueTextField];
+            } break;
+                
+            case FL:
+            case FD: {
+                [views addObject:_isLabel];
+                [self setAvailableOperators: NSEqualToPredicateOperatorType, nil];
+                _numberValueTextField.formatter = [[self class] decimalFormatter];
+                [views addObject:_numberValueTextField];
+            } break;
+                
+            case AS: {
+                [views addObject:_isLabel];
+                [self setAvailableOperators: NSEqualToPredicateOperatorType, nil];
+                _stringValueTextField.formatter = [[self class] ageFormatter];
+                [views addObject:_stringValueTextField];
+            } break;
+                
+            case DA: {
+                [views addObject:_operatorsPopUp];
+                [self setAvailableOperators: O2Today, O2Yesterday, NSLessThanOrEqualToPredicateOperatorType, NSGreaterThanOrEqualToPredicateOperatorType, O2Within, NSEqualToPredicateOperatorType, nil]; // TODO: add 'is between'
+                switch (self.operator) {
+                    case NSLessThanOrEqualToPredicateOperatorType:
+                    case NSGreaterThanOrEqualToPredicateOperatorType:
+                    case NSEqualToPredicateOperatorType:
+                        [views addObject:_datePicker];
+                        break;
+                    case O2Within:
+                        [views addObject:_withinPopUp];
+                    default:
+                        break;
+                }
+            } break;
+                
+            case TM: {
+                [views addObject:_operatorsPopUp];
+                [self setAvailableOperators: NSLessThanOrEqualToPredicateOperatorType, NSGreaterThanOrEqualToPredicateOperatorType, NSEqualToPredicateOperatorType, nil]; // TODO: add 'is between'
+                switch (self.operator) {
+                    case NSLessThanOrEqualToPredicateOperatorType:
+                    case NSGreaterThanOrEqualToPredicateOperatorType:
+                    case NSEqualToPredicateOperatorType:
+                        [views addObject:_timePicker];
+                        break;
+                    default:
+                        break;
+                }
+            } break;
+                
+            case DT: {
+                [views addObject:_operatorsPopUp];
+                [self setAvailableOperators: O2Today, O2Yesterday, NSLessThanOrEqualToPredicateOperatorType, NSGreaterThanOrEqualToPredicateOperatorType, O2Within, NSEqualToPredicateOperatorType, nil]; // TODO: add 'is between'
+                switch (self.operator) {
+                    case NSLessThanOrEqualToPredicateOperatorType:
+                    case NSGreaterThanOrEqualToPredicateOperatorType:
+                    case NSEqualToPredicateOperatorType:
+                        [views addObject:_dateTimePicker];
+                        break;
+                    case O2Within:
+                        [views addObject:_withinPopUp];
+                    default:
+                        break;
+                }
+            } break;
+                
+            case CS: {
+                [views addObject:_isLabel];
+                // .. popup
+                [_codeStringPopUp.menu removeAllItems];
+                NSDictionary* dic = [O2DicomPredicateEditorCodeStrings codeStringsForTag:self.tag];
+                NSInteger i = 0;
+                for (NSString* k in dic) {
+                    NSString* t = nil;
+                    if ([k isKindOfClass:[NSString class]] && ![k isEqualToString:[dic objectForKey:k]] && [[dic objectForKey:k] length] < 80)
+                        t = [NSString stringWithFormat:NSLocalizedString(@"%@, %@", nil), k, [dic objectForKey:k]];
+                    else t = k;
+                    NSMenuItem* mi = [_codeStringPopUp.menu addItemWithTitle:t action:nil keyEquivalent:@""];
+                    mi.tag = ++i;
+                }
+                // if there are items, show the popup
+                if (i)
+                    [views addObject:_codeStringPopUp];
+                // add custom-value menu item
+//                [_codeStringPopUp.menu addItem:[NSMenuItem separatorItem]];
+                NSMenuItem* mi = [_codeStringPopUp.menu addItemWithTitle:NSLocalizedString(@"user-defined", nil) action:nil keyEquivalent:@""];
+                mi.tag = ++i;
+                mi.representedObject =_stringValueTextField;
+                
+                [_codeStringPopUp selectItemWithTag:_codeStringTag];
+                
+                if (_codeStringTag == i) {
+                    _stringValueTextField.formatter = nil;
+                    [views addObject:_stringValueTextField];
+                }
+            } break;
+        }
+    } @catch (NSException* e) {
+        N2LogExceptionWithStackTrace(e);
+    }
+    @finally {
+        _reviewing = NO;
+    }
+    
+    /*if ([_valueTextField.formatter isKindOfClass:[NSNumberFormatter class]]) {
+     if (![self.value isKindOfClass:[NSNumber class]])
+     self.value = [NSNumber numberWithInteger:0];*/
+    
+    // show/hide
+    
+    for (NSView* subview in [[self.subviews copy] autorelease])
+        [subview removeFromSuperview];
+    for (NSView* subview in views)
+        if (subview.superview != self)
+            [self addSubview:subview];
+    
+    /*NSView* pview = nil;
+    for (NSView* view in views) {
+        [pview setNextResponder:view];
+        pview = view;
+    }*/
+    
+    [self resizeSubviewsWithOldSize:self.bounds.size];
+}
+
+- (double)matchForPredicate:(id)predicate {
+    NSLog(@"matchForPredicate: %@", predicate);
+
+    if ([predicate isKindOfClass:[NSComparisonPredicate class]])
+        @try {
+            NSExpression* eleft = [predicate leftExpression];
+            NSExpression* eright = [predicate rightExpression];
+            NSPredicateOperatorType otype = [predicate predicateOperatorType];
+
+            NSString* kleft = [eleft keyPath];
+            DCMAttributeTag* tag = [self tagWithKeyPath:kleft];
+            O2ValueRepresentation vr = [[self class] valueRepresentationFromVR:tag.vr];
+            
+            if (!vr || vr == UN)
+                return 0; // we cannot handle tags of unknown type
+            
+            switch (vr) {
+                case SH:
+                case LO:
+                case ST:
+                case LT:
+                case UT:
+                case AE:
+                case PN:
+                case UI: /* TODO: should be more restrictive for AE */ {
+                    switch (otype) {
+                        case NSContainsPredicateOperatorType:
+                        case NSBeginsWithPredicateOperatorType:
+                        case NSEndsWithPredicateOperatorType:
+                        case NSEqualToPredicateOperatorType:
+                            return 1;
+                        default: break;
+                    }
+                } break;
+                    
+                case AS:
+                case IS:
+                case DS:
+                case SS:
+                case SL:
+                case US:
+                case UL:
+                case FL:
+                case FD: {
+                    if (otype == NSEqualToPredicateOperatorType)
+                        return 1;
+                } break;
+                    
+                case DA:
+                case DT: {
+                    if (otype == NSGreaterThanOrEqualToPredicateOperatorType && eright.expressionType == NSConstantValueExpressionType && [eright.constantValue isKindOfClass:[NSDate class]])
+                        return 1; // is after
+                    if (otype == NSGreaterThanOrEqualToPredicateOperatorType && eright.expressionType == NSVariableExpressionType && [[[self class] timeKeys] containsObject:eright.variable])
+                        return 1; // is today & is within
+                    if (otype == NSLessThanOrEqualToPredicateOperatorType && eright.expressionType == NSConstantValueExpressionType && [eright.constantValue isKindOfClass:[NSDate class]])
+                        return 1; // is before
+                    if (otype == NSBetweenPredicateOperatorType && eright.expressionType == NSAggregateExpressionType &&
+                        ([[eright.collection objectAtIndex:0] expressionType] == NSVariableExpressionType && [[[eright.collection objectAtIndex:0] variable] isEqualToString:O2VarYesterday]) &&
+                        ([[eright.collection objectAtIndex:1] expressionType] == NSVariableExpressionType && [[[eright.collection objectAtIndex:1] variable] isEqualToString:O2VarToday])) // match "KeyPath between {NSDATE_YESTERDAY, NSDATE_TODAY}" for Yesterday
+                        return 1; // is yesterday
+                    if (otype == NSEqualToPredicateOperatorType && eright.expressionType == NSConstantValueExpressionType && [eright.constantValue isKindOfClass:[NSDate class]])
+                        return 1; // is
+                } break;
+                    
+                case TM: {
+                    if (otype == NSLessThanOrEqualToPredicateOperatorType && eright.expressionType == NSConstantValueExpressionType && [eright.constantValue isKindOfClass:[NSDate class]])
+                        return 1; // is before
+                    if (otype == NSGreaterThanOrEqualToPredicateOperatorType && eright.expressionType == NSConstantValueExpressionType && [eright.constantValue isKindOfClass:[NSDate class]])
+                        return 1; // is after
+                    if (otype == NSEqualToPredicateOperatorType && eright.expressionType == NSConstantValueExpressionType && [eright.constantValue isKindOfClass:[NSDate class]]) // TODO: probably we need a BETWEEN (Date, Date+1min) here...
+                        return 1; // is
+                } break;
+                    
+                case CS: {
+                    if (otype == NSEqualToPredicateOperatorType && eright.expressionType == NSConstantValueExpressionType && [eright.constantValue isKindOfClass:[NSString class]])
+                        return 1; // is
+                } break;
+            }
+            
+        } @catch (...) {
+        }
+    
+    if ([predicate isKindOfClass:[NSCompoundPredicate class]] && [predicate compoundPredicateType] == NSAndPredicateType)
+        @try {
+            NSArray* subpredicates = [predicate subpredicates];
+
+            // subpredicates must be of same KeyPath
+            NSString* keyPath = nil;
+            for (id p in subpredicates)
+                if (keyPath && ![[[p leftExpression] keyPath] isEqualToString:keyPath]) { // subpredicates must have the same keyPath
+                    keyPath = nil; break;
+                } else keyPath = [[p leftExpression] keyPath];
+            
+            DCMAttributeTag* tag = [self tagWithKeyPath:keyPath];
+            O2ValueRepresentation vr = [[self class] valueRepresentationFromVR:tag.vr];
+
+            // match old "KeyPath >= $NSDATE_YESTERDAY AND KeyPath <= $NSDATE_TODAY" for "KeyPath between {NSDATE_YESTERDAY, NSDATE_TODAY}"
+            if (vr == DA && subpredicates.count == 2 &&
+                [[subpredicates objectAtIndex:0] predicateOperatorType] == NSGreaterThanOrEqualToPredicateOperatorType && [[[[subpredicates objectAtIndex:0] rightExpression] variable] isEqualToString:O2VarYesterday] &&
+                [[subpredicates objectAtIndex:1] predicateOperatorType] == NSLessThanOrEqualToPredicateOperatorType && [[[[subpredicates objectAtIndex:1] rightExpression] variable] isEqualToString:O2VarToday])
+                return 1;
+            
+        } @catch (...) {
+        }
+    
+    if ([predicate isKindOfClass:[NSPredicate class]] && [[predicate predicateFormat] isEqualToString:@"TRUEPREDICATE"])
+        return 0.5;
+    
+    return 0;
+}
+
+/*+ (NSSet*)keyPathsForValuesAffectingPredicate {
+    return [NSSet setWithObjects: @"tag", @"operator", @"value", @"within", nil];
+}*/
+
+- (void)setPredicate:(id)predicate {
+    NSLog(@"setPredicate: %@", predicate);
+    
+    if ([predicate isKindOfClass:[NSComparisonPredicate class]]) {
+        DCMAttributeTag* tag = [self tagWithKeyPath:[[predicate leftExpression] keyPath]];
+        O2ValueRepresentation vr = [[self class] valueRepresentationFromVR:tag.vr];
+
+        NSPredicateOperatorType otype = [predicate predicateOperatorType];
+        NSExpression* eright = [predicate rightExpression];
+        
+        [self setTag:tag];
+        
+        switch (vr) {
+            case SH:
+            case LO:
+            case ST:
+            case LT:
+            case UT:
+            case AE:
+            case PN:
+            case UI:
+            case AS: {
+                [self setOperator:[predicate predicateOperatorType]];
+                [self setStringValue:[[predicate rightExpression] constantValue]];
+            } break;
+                
+            case IS:
+            case DS: {
+                [self setOperator:[predicate predicateOperatorType]];
+                id value = [[predicate rightExpression] constantValue];
+                if ([value isKindOfClass:[NSNumber class]])
+                    [self setStringValue:[value stringValue]];
+                else if ([value isKindOfClass:[NSString class]])
+                    [self setStringValue:value];
+            } break;
+                
+            case SS:
+            case SL:
+            case US:
+            case UL:
+            case FL:
+            case FD: {
+                [self setOperator:[predicate predicateOperatorType]];
+                id value = [[predicate rightExpression] constantValue];
+                if ([value isKindOfClass:[NSNumber class]])
+                    [self setNumberValue:value];
+                else if ([value isKindOfClass:[NSString class]])
+                    [self setNumberValue:[NSNumber numberWithDouble:[value doubleValue]]];
+            } break;
+                
+            case DA:
+            case DT: {
+                if (eright.expressionType == NSVariableExpressionType && otype == NSGreaterThanOrEqualToPredicateOperatorType) {
+                    if ([eright.variable isEqualToString:O2VarToday])
+                        [self setOperator:O2Today];
+                    else if ([[self class] timeTagFromKey:eright.variable]) {
+                        [self setOperator:O2Within];
+                        [self setWithin:[[self class] timeTagFromKey:eright.variable]];
+                    }
+                } else if (otype == NSBetweenPredicateOperatorType && [[[eright.collection objectAtIndex:0] variable] isEqualToString:O2VarYesterday] && [[[eright.collection objectAtIndex:1] variable] isEqualToString:O2VarToday]) { // yesterday
+                    [self setOperator:O2Yesterday];
+                } else if (eright.expressionType == NSConstantValueExpressionType && [eright.constantValue isKindOfClass:[NSDate class]]) {
+                    [self setOperator:otype];
+                    [self setDateValue:eright.constantValue];
+                } else
+                    [NSException raise:NSGenericException format:@"Unexpected comparison for DA tag: %@", predicate];
+            } break;
+            
+            case TM: {
+                [self setOperator:[predicate predicateOperatorType]];
+                [self setDateValue:[[predicate rightExpression] constantValue]];
+            } break;
+                
+            case CS: {
+                [self setCodeStringTag:[self tagForCodeString:[[predicate rightExpression] constantValue]]];
+                if ([[[predicate rightExpression] constantValue] isKindOfClass:[NSString class]])
+                    [self setStringValue:[[predicate rightExpression] constantValue]];
+            } break;
+        }
+    }
+    
+    if ([predicate isKindOfClass:[NSCompoundPredicate class]] && [predicate compoundPredicateType] == NSAndPredicateType) {
+        NSArray* subpredicates = [predicate subpredicates];
+        DCMAttributeTag* tag = [self tagWithKeyPath:[[[subpredicates objectAtIndex:0] leftExpression] keyPath]];
+        O2ValueRepresentation vr = [[self class] valueRepresentationFromVR:tag.vr];
+        
+        [self setTag:tag];
+        
+        if (vr == DA && subpredicates.count == 2 &&
+            [[subpredicates objectAtIndex:0] predicateOperatorType] == NSGreaterThanOrEqualToPredicateOperatorType && [[[[subpredicates objectAtIndex:0] rightExpression] variable] isEqualToString:O2VarYesterday] &&
+            [[subpredicates objectAtIndex:1] predicateOperatorType] == NSLessThanOrEqualToPredicateOperatorType && [[[[subpredicates objectAtIndex:1] rightExpression] variable] isEqualToString:O2VarToday])
+            [self setOperator:O2Yesterday];
+    }
+    
+    if ([predicate isKindOfClass:[NSPredicate class]] && [[predicate predicateFormat] isEqualToString:@"TRUEPREDICATE"])
+        [self setTag:nil];
+
+}
+
++ (NSSet*)keyPathsForValuesAffectingPredicate {
+    return [NSSet setWithObjects: @"tag", @"operator", @"stringValue", @"numberValue", @"dateValue", @"within", @"codeStringTag", nil];
+}
+
+- (NSPredicate*)predicate {
+    DCMAttributeTag* tag = self.tag;
+    O2ValueRepresentation vr = [[self class] valueRepresentationFromVR:tag.vr];
+    
+    NSExpression* tagNameExpression = [NSExpression expressionForKeyPath:tag.name];
+    
+    switch (vr) {
+        case SH:
+        case LO:
+        case ST:
+        case LT:
+        case UT:
+        case AE:
+        case PN:
+        case UI:
+        case AS: {
+            return [NSComparisonPredicate predicateWithLeftExpression:tagNameExpression
+                                                      rightExpression:[NSExpression expressionForConstantValue:self.stringValue]
+                                                             modifier:NSDirectPredicateModifier
+                                                                 type:self.operator
+                                                              options:NSCaseInsensitivePredicateOption];
+        } break;
+            
+            
+        case DS:
+        case IS: {
+            return [NSComparisonPredicate predicateWithLeftExpression:tagNameExpression
+                                                      rightExpression:[NSExpression expressionForConstantValue:self.stringValue]
+                                                             modifier:NSDirectPredicateModifier
+                                                                 type:self.operator
+                                                              options:NSCaseInsensitivePredicateOption];
+        }
+            
+        case SS:
+        case SL:
+        case US:
+        case UL:
+        case FL:
+        case FD: {
+            return [NSComparisonPredicate predicateWithLeftExpression:tagNameExpression
+                                                      rightExpression:[NSExpression expressionForConstantValue:self.numberValue]
+                                                             modifier:NSDirectPredicateModifier
+                                                                 type:self.operator
+                                                              options:NSCaseInsensitivePredicateOption];
+        }
+    
+        case DA:
+        case DT: {
+            switch (self.operator) {
+                case O2Today:
+                    return [NSComparisonPredicate predicateWithLeftExpression:tagNameExpression
+                                                              rightExpression:[NSExpression expressionForVariable:O2VarToday]
+                                                                     modifier:NSDirectPredicateModifier
+                                                                         type:NSGreaterThanOrEqualToPredicateOperatorType
+                                                                      options:0];
+                case O2Yesterday:
+                    return [NSComparisonPredicate predicateWithLeftExpression:tagNameExpression
+                                                              rightExpression:[NSExpression expressionForAggregate:[NSArray arrayWithObjects: [NSExpression expressionForVariable:O2VarYesterday], [NSExpression expressionForVariable:O2VarToday], nil]] // TODO: is this coredata compatible?
+                                                                     modifier:NSDirectPredicateModifier
+                                                                         type:NSBetweenPredicateOperatorType
+                                                                      options:0];
+                case NSLessThanOrEqualToPredicateOperatorType:
+                case NSGreaterThanOrEqualToPredicateOperatorType:
+                    return [NSComparisonPredicate predicateWithLeftExpression:tagNameExpression
+                                                              rightExpression:[NSExpression expressionForConstantValue:self.dateValue]
+                                                                     modifier:NSDirectPredicateModifier
+                                                                         type:self.operator
+                                                                      options:0];
+                case O2Within: {
+                    return [NSComparisonPredicate predicateWithLeftExpression:tagNameExpression
+                                                              rightExpression:[NSExpression expressionForVariable:[[self class] timeKeyFromTag:self.within]]
+                                                                     modifier:NSDirectPredicateModifier
+                                                                         type:NSGreaterThanOrEqualToPredicateOperatorType
+                                                                      options:0];
+                } break;
+                case NSEqualToPredicateOperatorType: {
+                    NSDateComponents* dc = [NSCalendar.currentCalendar components:NSEraCalendarUnit|NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit fromDate:self.dateValue];
+                    NSDate* from = [NSCalendar.currentCalendar dateFromComponents:dc];
+                    dc = [[[NSDateComponents alloc] init] autorelease];
+                    dc.day = 1;
+                    NSDate* to = [NSCalendar.currentCalendar dateByAddingComponents:dc toDate:from options:NSWrapCalendarComponents];
+                    return [NSComparisonPredicate predicateWithLeftExpression:tagNameExpression
+                                                              rightExpression:[NSExpression expressionForAggregate:[NSArray arrayWithObjects: [NSExpression expressionForConstantValue:from], [NSExpression expressionForConstantValue:to], nil]] // TODO: is this coredata compatible?
+                                                                     modifier:NSDirectPredicateModifier
+                                                                         type:NSBetweenPredicateOperatorType
+                                                                      options:0];
+                } break;
+            } // switch DA operator
+        } break;
+            
+        case TM: {
+            switch (self.operator) {
+                case NSLessThanOrEqualToPredicateOperatorType:
+                case NSGreaterThanOrEqualToPredicateOperatorType:
+                case NSEqualToPredicateOperatorType:
+                    return [NSComparisonPredicate predicateWithLeftExpression:tagNameExpression
+                                                              rightExpression:[NSExpression expressionForConstantValue:self.dateValue]
+                                                                     modifier:NSDirectPredicateModifier
+                                                                         type:self.operator
+                                                                      options:0];
+            }
+        } break;
+            
+        case CS: {
+            return [NSComparisonPredicate predicateWithLeftExpression:tagNameExpression
+                                                      rightExpression:[NSExpression expressionForConstantValue:[self codeStringForTag:self.codeStringTag]]
+                                                             modifier:NSDirectPredicateModifier
+                                                                 type:NSEqualToPredicateOperatorType
+                                                              options:0];
+        } break;
+    }
+    
+    return [NSPredicate predicateWithValue:YES];
+}
+
+- (void)resizeSubviewsWithOldSize:(NSSize)oldBoundsSize {
+    NSRect bounds = self.bounds;
+    NSRect frame = NSZeroRect;
+    static const CGFloat kSeparatorWidth = 5;
+    
+    //    NSLog(@"sf");
+    for (id view in self.subviews) {
+        frame = NSMakeRect(frame.origin.x, 0, 0, 0);
+        if ([view isKindOfClass:[NSPopUpButton class]] || [view isKindOfClass:[NSDatePicker class]]) {
+            [view sizeToFit]; frame.size = NSMakeSize([view frame].size.width, bounds.size.height);
+        } else if ([view isKindOfClass:[NSTextField class]] && ![view isEditable]) {
+            frame.size = NSMakeSize([[view stringValue] sizeWithAttributes:[NSDictionary dictionaryWithObject:[view font] forKey:NSFontAttributeName]].width+4, bounds.size.height-3);
+            frame.origin.y += 0;
+        } else
+            frame.size = NSMakeSize(150, bounds.size.height);
+        
+        //        NSLog(@"%@ %@ frame: %@", [view className], [view respondsToSelector:@selector(title)]? [view title] : nil, NSStringFromRect(frame));
+        
+        //        if (subview == self.subviews.lastObject)
+        //            if (frame.origin.x+frame.wi)
+        
+        [view setFrame:frame];
+        
+        frame.origin.x += frame.size.width+kSeparatorWidth;
+    }
+}
+
+- (void)drawRect:(NSRect)rect {
+    [super drawRect:rect];
+    // [NSBezierPath strokeRect:self.bounds];
+}
+
+- (NSInteger)tagForCodeString:(NSString*)str {
+    NSDictionary* dic = [O2DicomPredicateEditorCodeStrings codeStringsForTag:self.tag];
+    if (!dic)
+        return 0;
+    
+    NSInteger i = [dic.allKeys indexOfObject:str];
+    
+    if (i == NSNotFound) return 0;
+    
+    return i+1;
+}
+
+- (NSString*)codeStringForTag:(NSInteger)cst {
+    NSDictionary* dic = [O2DicomPredicateEditorCodeStrings codeStringsForTag:self.tag];
+    
+    if (dic.count >= cst)
+        return [dic.allKeys objectAtIndex:cst-1];
+    
+    return [self stringValue];
+    
+    return nil;
+}
+
+
+@end
+
+
