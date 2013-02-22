@@ -2517,7 +2517,7 @@ static NSDate *lastWarningDate = nil;
     
     // EMPTY THE INCOMING.noindex DIRECTORY...
     NSString* incomingDirectoryPath = [[DicomDatabase activeLocalDatabase] incomingDirPath];
-    if ([[NSFileManager defaultManager] fileExistsAtPath: incomingDirectoryPath])
+    if ([[NSFileManager defaultManager] fileExistsAtPath: incomingDirectoryPath] && ![NSUserDefaults.standardUserDefaults boolForKey:@"DoNotEmptyIncomingDir"])
     {
 		for (NSString* file in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: incomingDirectoryPath error: nil])
 			[[NSFileManager defaultManager] removeItemAtPath: [tempDirectory stringByAppendingPathComponent:file] error: nil];
@@ -2530,9 +2530,9 @@ static NSDate *lastWarningDate = nil;
         
         if ([[[NSFileManager defaultManager] contentsOfDirectoryAtPath: incomingDirectoryPath error: nil] count])
             NSLog( @"******** FAILED to clean the INCOMING.noindex directory: %@", incomingDirectoryPath);
-        
-        [[NSFileManager defaultManager] confirmDirectoryAtPath: incomingDirectoryPath];
     }
+
+    [[NSFileManager defaultManager] confirmDirectoryAtPath: incomingDirectoryPath];
 }
 
 - (void) terminate :(id) sender
