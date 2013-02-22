@@ -1,5 +1,6 @@
 OsiriX_Lion.xcodeproj/xcuserdata/
 OsiriX_Lion.xcodeproj/project.xcworkspace/xcuserdata/
+*.DS_Store
 __MACOSX/
 Binaries/__MACOSX/
 build/
