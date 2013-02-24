@@ -130,12 +130,30 @@ extern NSString* const OSIROIManagerROIsDidUpdateNotification;
  */
 - (NSArray *)ROIsWithName:(NSString *)name;
 
-/** Returns `NSString` objects representing the names of all the ROIs managed by the receiver.
+/** Returns the first ROI with a given name that would be in the ROI array and is currently visible to the user.
   
  @see ROIsWithName:
  @see firstROIWithName:
+ @see firstVisibleROIWithNamePrefix:
  @return Returns all the ROIs managed by the receiver that have the given name.
  */
+- (OSIROI *)firstVisibleROIWithName:(NSString *)name;
+
+/** Returns the first ROI with a whose name starts wth `prefix` that would be in the ROI array and is currently visible to the user.
+ 
+ @see ROIsWithName:
+ @see firstROIWithName:
+ @see firstVisibleROIWithNamePrefix:
+ @return Returns all the ROIs managed by the receiver that have the given name.
+ */
+- (OSIROI *)firstVisibleROIWithNamePrefix:(NSString *)prefix;
+
+/** Returns `NSString` objects representing the names of all the ROIs managed by the receiver.
+
+@see ROIsWithName:
+@see firstROIWithName:
+@return Returns all the ROIs managed by the receiver that have the given name.
+*/
 - (NSArray *)ROINames; // returns all the unique ROI names
 
 /** Returns YES if all the ROIs in the volume have been loaded. Returns NO DCM objects are still loading and there not all ROIs are available yet.

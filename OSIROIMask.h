@@ -68,6 +68,11 @@ NSComparisonResult OSIROIMaskCompareRun(OSIROIMaskRun maskRun1, OSIROIMaskRun ma
  */
 BOOL OSIROIMaskRunsOverlap(OSIROIMaskRun maskRun1, OSIROIMaskRun maskRun2);
 
+/** Returns YES if the two mask runs abut, NO otherwise.
+ 
+ */
+BOOL OSIROIMaskRunsAbut(OSIROIMaskRun maskRun1, OSIROIMaskRun maskRun2);
+
 
 CF_EXTERN_C_END
 
@@ -173,7 +178,8 @@ CF_EXTERN_C_END
 /** Evaluates a given predicate against each pixel in the mask and returns a new mask containing the pixels for which the predicate returns true.
  
  The evaluated object used for the predicate responds to:
-    -(float)intensity The value of the pixel
+ -(float)intensity The value of the pixel
+ -(float)ROIMaskIntensity;
  -(NSUInteger)ROIMaskIndexX;
  -(NSUInteger)ROIMaskIndexY;
  -(NSUInteger)ROIMaskIndexZ;
@@ -192,6 +198,12 @@ CF_EXTERN_C_END
  @return The mask as an NSData that contains a C array of OSIROIMaskRun structs.
  */
 - (NSData *)maskRunsData;
+
+/** Returns the count of mask runs.
+ 
+ @return The count of mask runs.
+ */
+- (NSUInteger)maskRunCount;
 
 /** Returns the mask as a set OSIROIMaskIndex structs in NSValues.
  

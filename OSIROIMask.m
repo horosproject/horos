@@ -21,17 +21,20 @@ const OSIROIMaskRun OSIROIMaskRunZero = {{0.0, 0.0}, 0, 0, 1.0};
 @interface OSIMaskIndexPredicateStandIn : NSObject
 {
     float intensity;
+    float ROIMaskIntensity;
     NSUInteger ROIMaskIndexX;
     NSUInteger ROIMaskIndexY;
     NSUInteger ROIMaskIndexZ;
 }
 @property (nonatomic, readwrite, assign) float intensity;
+@property (nonatomic, readwrite, assign) float ROIMaskIntensity;
 @property (nonatomic, readwrite, assign) NSUInteger ROIMaskIndexX;
 @property (nonatomic, readwrite, assign) NSUInteger ROIMaskIndexY;
 @property (nonatomic, readwrite, assign) NSUInteger ROIMaskIndexZ;
 @end
 @implementation OSIMaskIndexPredicateStandIn
 @synthesize intensity;
+@synthesize ROIMaskIntensity;
 @synthesize ROIMaskIndexX;
 @synthesize ROIMaskIndexY;
 @synthesize ROIMaskIndexZ;
@@ -76,6 +79,17 @@ BOOL OSIROIMaskRunsOverlap(OSIROIMaskRun maskRun1, OSIROIMaskRun maskRun2)
         return NSIntersectionRange(maskRun1.widthRange, maskRun2.widthRange).length != 0;
     }
     
+    return NO;
+}
+
+BOOL OSIROIMaskRunsAbut(OSIROIMaskRun maskRun1, OSIROIMaskRun maskRun2)
+{
+    if (maskRun1.depthIndex == maskRun2.depthIndex && maskRun1.heightIndex == maskRun2.heightIndex) {
+        if (NSMaxRange(maskRun1.widthRange) == maskRun2.widthRange.location ||
+            NSMaxRange(maskRun2.widthRange) == maskRun1.widthRange.location) {
+            return YES;
+        }
+    }
     return NO;
 }
 
@@ -221,7 +235,58 @@ NSArray *OSIROIMaskIndexesInRun(OSIROIMaskRun maskRun)
 
 - (OSIROIMask *)ROIMaskByUnioningWithMask:(OSIROIMask *)otherMask
 {
-    return nil;
+    NSUInteger index1 = 0;
+    NSUInteger index2 = 0;
+    
+    OSIROIMaskRun run1;
+    OSIROIMaskRun run2;
+    
+    OSIROIMaskRun runToAdd = OSIROIMaskRunZero;
+    OSIROIMaskRun accumulatedRun = OSIROIMaskRunZero;
+    accumulatedRun.widthRange.length = 0;
+    
+    NSData *maskRun1Data = [self maskRunsData];
+    NSData *maskRun2Data = [otherMask maskRunsData];
+    const OSIROIMaskRun *maskRunArray1 = [maskRun1Data bytes];
+    const OSIROIMaskRun *maskRunArray2 = [maskRun2Data bytes];
+    
+    NSMutableArray *resultMaskRuns = [NSMutableArray array];
+    
+    
+    while (index1 < [self maskRunCount] || index2 < [otherMask maskRunCount]) {
+        if (index1 < [self maskRunCount] && index2 < [otherMask maskRunCount]) {
+            if (OSIROIMaskCompareRun(maskRunArray1[index1], maskRunArray2[index2]) == NSOrderedAscending) {
+                runToAdd = maskRunArray1[index1];
+                index1++;
+            } else {
+                runToAdd = maskRunArray2[index2];
+                index2++;
+            }
+        } else if (index1 < [self maskRunCount]) {
+            runToAdd = maskRunArray1[index1];
+            index1++;
+        } else {
+            runToAdd = maskRunArray2[index2];
+            index2++;
+        }
+        
+        if (accumulatedRun.widthRange.length == 0) {
+            accumulatedRun = runToAdd;
+        } else if (OSIROIMaskRunsOverlap(runToAdd, accumulatedRun) || OSIROIMaskRunsAbut(runToAdd, accumulatedRun)) {
+            if (NSMaxRange(runToAdd.widthRange) > NSMaxRange(accumulatedRun.widthRange)) {
+                accumulatedRun.widthRange.length = NSMaxRange(runToAdd.widthRange) - accumulatedRun.widthRange.location;
+            }
+        } else {
+            [resultMaskRuns addObject:[NSValue valueWithOSIROIMaskRun:accumulatedRun]];
+            accumulatedRun = runToAdd;
+        }
+    }
+    
+    if (accumulatedRun.widthRange.length != 0) {
+        [resultMaskRuns addObject:[NSValue valueWithOSIROIMaskRun:accumulatedRun]];
+    }
+    
+    return [[[OSIROIMask alloc] initWithMaskRuns:resultMaskRuns] autorelease];
 }
 
 
@@ -317,9 +382,9 @@ NSArray *OSIROIMaskIndexesInRun(OSIROIMaskRun maskRun)
         maskIndex.y = maskRun.heightIndex;
         maskIndex.z = maskRun.depthIndex;
 
+        standIn.ROIMaskIntensity = maskRun.intensity;
         standIn.ROIMaskIndexY = maskIndex.y;
         standIn.ROIMaskIndexZ = maskIndex.z;
-        
         
         for (maskIndex.x = maskRun.widthRange.location; maskIndex.x < NSMaxRange(maskRun.widthRange); maskIndex.x++) {
             [floatVolumeData getFloat:&intensity atPixelCoordinateX:maskIndex.x y:maskIndex.y z:maskIndex.z];
@@ -376,6 +441,11 @@ NSArray *OSIROIMaskIndexesInRun(OSIROIMaskRun maskRun)
     }
     
     return _maskRunsData;
+}
+
+- (NSUInteger)maskRunCount
+{
+    return [[self maskRuns] count];
 }
 
 - (NSArray *)maskIndexes
@@ -453,11 +523,17 @@ NSArray *OSIROIMaskIndexesInRun(OSIROIMaskRun maskRun)
             assert(OSIROIMaskCompareRun(maskRunArray[i], maskRunArray[i+1]) == NSOrderedAscending);
             assert(OSIROIMaskRunsOverlap(maskRunArray[i], maskRunArray[i+1]) == NO);
         }
+        for (i = 0; i < maskRunsDataCount; i++) {
+            assert(maskRunArray[i].widthRange.length > 0);
+        }
     }
     
     for (i = 0; i < ((NSInteger)[_maskRuns count]) - 1; i++) {
         assert(OSIROIMaskCompareRunValues([_maskRuns objectAtIndex:i], [_maskRuns objectAtIndex:i+1], NULL) == NSOrderedAscending);
         assert(OSIROIMaskRunsOverlap([[_maskRuns objectAtIndex:i] OSIROIMaskRunValue], [[_maskRuns objectAtIndex:i+1] OSIROIMaskRunValue]) == NO);
+    }
+    for (i = 0; i < [_maskRuns count]; i++) {
+        assert([[_maskRuns objectAtIndex:i] OSIROIMaskRunValue].widthRange.length > 0);
     }
 #endif
 }

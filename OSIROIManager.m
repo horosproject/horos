@@ -149,6 +149,41 @@ NSString* const OSIROIManagerROIsDidUpdateNotification = @"OSIROIManagerROIsDidU
 	return rois;
 }
 
+- (OSIROI *)firstVisibleROIWithName:(NSString *)name
+{
+    OSIVolumeWindow *volumeWindow = self->_volumeWindow;
+    ViewerController *viewerController = [volumeWindow viewerController];
+    DCMView *dcmView = [viewerController imageView];
+    NSSet *dcmROIs = [NSSet setWithArray:[dcmView curRoiList]];
+    
+    for (OSIROI *roi in [self ROIsWithName:name]) {
+        NSSet *osirixROIs = [roi osiriXROIs];
+        if ([osirixROIs count] == 0) {
+            return roi;
+        }
+        if ([osirixROIs intersectsSet:dcmROIs]) {
+            return roi;
+        }
+    }
+    return nil;
+}
+
+- (OSIROI *)firstVisibleROIWithNamePrefix:(NSString *)prefix
+{
+    OSIROI *roi = nil;
+    
+    for (NSString *roiName in [self ROINames]) {
+        if ([roiName hasPrefix:prefix]) {
+            roi = [self firstVisibleROIWithName:roiName];
+            if (roi) {
+                return roi;
+            }
+        }
+    }
+    return nil;
+}
+
+
 - (NSArray *)ROINames // returns all the unique ROI names
 {
 	OSIROI *roi;
