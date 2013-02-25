@@ -2266,11 +2266,18 @@ return YES;
 				[views removeObjectAtIndex: i];
 		}
 		
-		for( id v in views)
+		for( NSView *v in views)
 		{
 			NSRect bounds = [v bounds];
 			NSPoint or = [v convertPoint: bounds.origin toView: nil];
 			bounds.origin = [[self window] convertBaseToScreen: or];
+            
+            bounds.origin.x *= v.window.backingScaleFactor;
+            bounds.origin.y *= v.window.backingScaleFactor;
+            
+            bounds.size.width *= v.window.backingScaleFactor;
+            bounds.size.height *= v.window.backingScaleFactor;
+            
 			[viewsRect addObject: [NSValue valueWithRect: bounds]];
 		}
 		
