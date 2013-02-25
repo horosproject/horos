@@ -688,6 +688,13 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
                                                             imageOrigin: [DCMPix originCorrectedAccordingToOrientation: [[srcViewer imageView] curDCM]]];
                             
                             [[[srcViewer roiList] objectAtIndex:i] addObject:theNewROI];
+                            
+                            NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:theNewROI, @"ROI",
+                                                      [NSNumber numberWithInt:i], @"sliceNumber",
+                                                      nil];
+                            
+                            [[NSNotificationCenter defaultCenter] postNotificationName: OsirixAddROINotification object: self userInfo:userInfo];
+
                             [[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:theNewROI userInfo: nil];	
                             
                             if( [newname isEqualToString: NSLocalizedString( @"Segmentation Preview", nil)])
@@ -752,6 +759,11 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
                 [theNewROI setSliceThickness:[[[srcViewer imageView] curDCM] sliceThickness]];
                 [[[srcViewer roiList] objectAtIndex:slice] addObject:theNewROI];
                 [[srcViewer imageView] roiSet];
+                NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:theNewROI, @"ROI",
+                                          [NSNumber numberWithInt:slice], @"sliceNumber",
+                                          nil];
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName: OsirixAddROINotification object: self userInfo:userInfo];
                 [[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:theNewROI userInfo: nil];
                 
                 if( [newname isEqualToString: NSLocalizedString( @"Segmentation Preview", nil)])
