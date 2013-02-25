@@ -9602,13 +9602,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		unsigned char	*firstView = [[views objectAtIndex: 0] getRawPixelsViewWidth:width height:height spp:spp bpp:bpp screenCapture:screenCapture force8bits: force8bits removeGraphical:removeGraphical squarePixels:squarePixels allowSmartCropping:NO origin: imOrigin spacing: imSpacing offset: offset isSigned: isSigned];
 		unsigned char	*globalView = nil;
 		
-		long viewSize =  *bpp * *spp * *width * *height / 8;
+		long viewSize =  *bpp * *spp * (*width+4) * (*height+4) / 8;
 		int	globalWidth = *width * _imageColumns;
 		int globalHeight = *height * _imageRows;
 		
 		if( firstView)
 		{
-			globalView = malloc( viewSize * (_imageColumns+4) * (_imageRows+4));
+			globalView = malloc( viewSize * (_imageColumns) * (_imageRows));
 			
 			free( firstView);
 			
@@ -10767,23 +10767,29 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		NSMutableArray	*viewsRect = [NSMutableArray array];
 		
 		// Compute the enclosing rect
-		for( int i = 0; i < [viewers count]; i++)
+		for( ViewerController *v in viewers)
 		{
-			[[[viewers objectAtIndex: i] seriesView] selectFirstTilingView];
+			[[v seriesView] selectFirstTilingView];
 			
-			NSRect	bounds = [[[viewers objectAtIndex: i] imageView] bounds];
+			NSRect	bounds = [[v imageView] bounds];
 			
 			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"])
 			{
-				bounds.size.width *= [[[viewers objectAtIndex: i] seriesView] imageColumns];
-				bounds.size.height *= [[[viewers objectAtIndex: i] seriesView] imageRows];
+				bounds.size.width *= [[v seriesView] imageColumns];
+				bounds.size.height *= [[v seriesView] imageRows];
 			}
 			
-			NSPoint or = [[[viewers objectAtIndex: i] imageView] convertPoint: bounds.origin toView: nil];
-			bounds.origin = [[[viewers objectAtIndex: i] window] convertBaseToScreen: or];
+			NSPoint or = [[v imageView] convertPoint: bounds.origin toView: nil];
+			bounds.origin = [[v window] convertBaseToScreen: or];
 			
 			bounds = NSIntegralRect( bounds);
 			
+            bounds.origin.x *= v.window.backingScaleFactor;
+            bounds.origin.y *= v.window.backingScaleFactor;
+            
+            bounds.size.width *= v.window.backingScaleFactor;
+            bounds.size.height *= v.window.backingScaleFactor;
+            
 			[viewsRect addObject: [NSValue valueWithRect: bounds]];
 		}
 		

@@ -17461,14 +17461,20 @@ int i,j,l;
 		NSMutableArray	*viewsRect = [NSMutableArray array];
 		
 		// Compute the enclosing rect
-		for( i = 0; i < [viewers count]; i++)
+		for( ViewerController *v in viewers)
 		{
-			NSRect	bounds = [[[viewers objectAtIndex: i] imageView] bounds];
-			NSPoint origin = [[[viewers objectAtIndex: i] imageView] convertPoint: bounds.origin toView: nil];
-			bounds.origin = [[[viewers objectAtIndex: i] window] convertBaseToScreen: origin];
+			NSRect	bounds = [[v imageView] bounds];
+			NSPoint origin = [[v imageView] convertPoint: bounds.origin toView: nil];
+			bounds.origin = [[v window] convertBaseToScreen: origin];
 			
 			bounds = NSIntegralRect( bounds);
 			
+            bounds.origin.x *= v.window.backingScaleFactor;
+            bounds.origin.y *= v.window.backingScaleFactor;
+            
+            bounds.size.width *= v.window.backingScaleFactor;
+            bounds.size.height *= v.window.backingScaleFactor;
+            
 			[viewsRect addObject: [NSValue valueWithRect: bounds]];
 		}
 		
