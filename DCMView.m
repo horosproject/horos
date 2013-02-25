@@ -9608,7 +9608,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		if( firstView)
 		{
-			globalView = malloc( viewSize * _imageColumns * _imageRows);
+			globalView = malloc( viewSize * (_imageColumns+4) * (_imageRows+4));
 			
 			free( firstView);
 			
@@ -9737,6 +9737,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		*height = unionRect.size.height;
 		
 		unsigned char * data = nil;
+        long dataSize = 0;
 		
 		for( int i = 0; i < [views count]; i++)
 		{
@@ -9782,7 +9783,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                     if( offset) *offset = ioffset;
                     if( isSigned) *isSigned = iisSigned;
                     
-                    data = calloc( 1, (2+*width) * (2+*height) * *spp * *bpp/8);
+                    dataSize = (4+*width) * (4+*height) * *spp * *bpp/8;
+                    data = calloc( 1, dataSize);
                 }
                 else
                 {
@@ -9804,11 +9806,20 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                 
                 if( data)
                 {
-                    unsigned char	*o = data + (*bpp/8) * *spp * *width * (int) (*height - bounds.origin.y - iheight) + (int) bounds.origin.x * *spp * (*bpp/8);
-                     
-                    for( int y = 0 ; y < iheight; y++)
+                    unsigned char *o = data + (*bpp/8) * *spp * *width * (long) (*height - bounds.origin.y - iheight) + (long) bounds.origin.x * *spp * (*bpp/8);
+                    
+                    if( o >= data)
                     {
-                        memcpy( o + (*bpp/8) * y * *spp * *width, tempData + (*bpp/8) * y *ispp * iwidth, (*bpp/8) * ispp * iwidth);
+                        for( long y = 0 ; y < iheight; y++)
+                        {
+                            long size = (*bpp/8) * ispp * iwidth;
+                            long ooffset = (*bpp/8) * y * *spp * *width;
+                            
+                            if( o + ooffset + size < data + dataSize)
+                                memcpy( o + ooffset, tempData + (*bpp/8) * y *ispp * iwidth, size);
+                            else
+                                N2LogStackTrace( @"**** o + ooffset + size< data + dataSize");
+                        }
                     }
                 }
                 free( tempData);
