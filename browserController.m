@@ -10234,7 +10234,7 @@ static BOOL needToRezoom;
                     [column setWidth:[[col objectAtIndex:1] integerValue]];
                     [databaseOutline moveColumn:[databaseOutline columnWithIdentifier:column.identifier] toColumn:index++];
                 } else {
-                    NSLog(@"? %@", col);
+                    DLog(@"Warning: invalid column identifier %@", col);
                 }
             }
             for (NSTableColumn* column in unvisitedColumns)
