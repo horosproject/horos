@@ -649,6 +649,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	
 	[self fillSessionAndUserVariables];
 	
+    DicomDatabase *idatabase = self.independentDicomDatabase;
 	NSMutableArray *filesAccumulator = [NSMutableArray array];
 	// We want to find this file after db insert: get studyInstanceUID, patientUID and instanceSOPUID
 	for ( NSString *oFile in filesArray)
@@ -667,14 +668,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 				
 			if ([studyInstanceUID isEqualToString: previousStudyInstanceUID] == NO || [patientUID compare: previousPatientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] != NSOrderedSame)
 			{
-                [BrowserController addFiles: filesAccumulator
-												 toContext: [BrowserController currentBrowser].database.managedObjectContext
-												toDatabase: [BrowserController currentBrowser]
-												 onlyDICOM: YES 
-										  notifyAddedFiles: YES
-									   parseExistingObject: YES
-												  dbFolder: [[BrowserController currentBrowser] documentsDirectory]
-										 generatedByOsiriX: YES];
+                [idatabase addFilesAtPaths: filesAccumulator postNotifications:YES dicomOnly:YES rereadExistingItems:YES generatedByOsiriX:YES];
 				
 				[filesAccumulator removeAllObjects];
 				
@@ -683,16 +677,13 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 				
 				if (studyInstanceUID && patientUID)
 				{
-					[[BrowserController currentBrowser].database.managedObjectContext lock];
-					
 					@try
 					{
-						NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-						[dbRequest setEntity: [[[BrowserController currentBrowser].database.managedObjectModel entitiesByName] objectForKey: @"Study"]];
+						NSFetchRequest *dbRequest = [NSFetchRequest fetchRequestWithEntityName: @"Study"];
 						[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"(patientUID BEGINSWITH[cd] %@) AND (studyInstanceUID == %@)", patientUID, studyInstanceUID]];
 						
 						NSError *error = nil;
-						NSArray *studies = [[BrowserController currentBrowser].database.managedObjectContext executeFetchRequest: dbRequest error:&error];
+						NSArray *studies = [idatabase.managedObjectContext executeFetchRequest: dbRequest error:&error];
 						
 						if ([studies count] == 0)
 							NSLog( @"****** [studies count == 0] cannot find the file{s} we just received... upload POST: %@ %@", patientUID, studyInstanceUID);
@@ -700,7 +691,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 						// Add study to specific study list for this user
 						if (user.uploadDICOMAddToSpecificStudies.boolValue)
 						{
-							NSArray *studies = [self.independentDicomDatabase objectsForEntity:self.independentDicomDatabase.studyEntity predicate:[NSPredicate predicateWithFormat: @"(patientUID BEGINSWITH[cd] %@) AND (studyInstanceUID == %@)", patientUID, studyInstanceUID]];
+							NSArray *studies = [idatabase objectsForEntity:idatabase.studyEntity predicate:[NSPredicate predicateWithFormat: @"(patientUID BEGINSWITH[cd] %@) AND (studyInstanceUID == %@)", patientUID, studyInstanceUID]];
 							
 							if ([studies count] == 0)
 								NSLog( @"****** [studies count == 0] cannot find the file{s} we just received... upload POST: %@ %@", patientUID, studyInstanceUID);
@@ -710,7 +701,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 							NSArray *studiesArrayStudyInstanceUID = [user.studies.allObjects valueForKey:@"studyInstanceUID"];
 							NSArray *studiesArrayPatientUID = [user.studies.allObjects valueForKey: @"patientUID"];
 							
-							for ( NSManagedObject *study in studies)
+							for( NSManagedObject *study in studies)
 							{
 								if ([[study valueForKey: @"type"] isEqualToString:@"Series"])
 									study = [study valueForKey:@"study"];
@@ -718,7 +709,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
                                 if( [studiesArrayStudyInstanceUID indexOfObject: [study valueForKey: @"studyInstanceUID"]] == NSNotFound || 
                                    [studiesArrayPatientUID indexOfObjectPassingTest:^(id obj, NSUInteger idx, BOOL *stop) { if( [obj compare: [study valueForKey: @"patientUID"] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame) return YES; else return NO;}] == NSNotFound)
 								{
-									NSManagedObject *studyLink = [NSEntityDescription insertNewObjectForEntityForName:@"Study" inManagedObjectContext:self.portal.database.managedObjectContext];
+									NSManagedObject *studyLink = [NSEntityDescription insertNewObjectForEntityForName:@"Study" inManagedObjectContext: user.managedObjectContext];
 									
 									[studyLink setValue: [[[study valueForKey: @"studyInstanceUID"] copy] autorelease] forKey: @"studyInstanceUID"];
 									[studyLink setValue: [[[study valueForKey: @"patientUID"] copy] autorelease] forKey: @"patientUID"];
@@ -728,7 +719,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 									
 									@try
 									{
-										[self.portal.database save:NULL];
+										[user.managedObjectContext save:NULL];
 									}
 									@catch (NSException * e)
 									{
@@ -761,11 +752,9 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 					}
 					@catch( NSException *e)
 					{
-						NSLog( @"********* WebPortalConnection closeFileHandleAndClean exception : %@", e);
+						N2LogStackTrace( @"********* WebPortalConnection closeFileHandleAndClean exception : %@", e);
 					}
 					///
-					
-					[[BrowserController currentBrowser].database.managedObjectContext unlock];
 				}
 				else NSLog( @"****** studyInstanceUID && patientUID == nil upload POST");
 				
@@ -773,14 +762,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 		}
 	}
 	
-    [BrowserController addFiles: filesAccumulator
-												 toContext: [BrowserController currentBrowser].database.managedObjectContext
-												toDatabase: [BrowserController currentBrowser]
-												 onlyDICOM: YES 
-										  notifyAddedFiles: YES
-									   parseExistingObject: YES
-												  dbFolder: [[BrowserController currentBrowser] documentsDirectory]
-										 generatedByOsiriX: YES];
+    [idatabase addFilesAtPaths: filesAccumulator postNotifications:YES dicomOnly:YES rereadExistingItems:YES generatedByOsiriX:YES];
 	
 	[[NSFileManager defaultManager] removeItemAtPath: @"/tmp/osirixUnzippedFolder" error: nil];
 	
