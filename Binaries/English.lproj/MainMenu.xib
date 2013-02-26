@@ -2,7 +2,7 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1070</int>
-		<string key="IBDocument.SystemVersion">12C3012</string>
+		<string key="IBDocument.SystemVersion">12C60</string>
 		<string key="IBDocument.InterfaceBuilderVersion">3084</string>
 		<string key="IBDocument.AppKitVersion">1187.34</string>
 		<string key="IBDocument.HIToolboxVersion">625.00</string>
@@ -4048,7 +4048,6 @@
 											<string key="NSFrame">{{420, 2}, {40, 20}}</string>
 											<reference key="NSSuperview" ref="267655156"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSButtonCell" key="NSCell" id="637871640">
 												<int key="NSCellFlags">-2080374784</int>
@@ -4115,7 +4114,7 @@
 																			<string key="NSFrameSize">{184, 170}</string>
 																			<reference key="NSSuperview" ref="784281801"/>
 																			<reference key="NSWindow"/>
-																			<reference key="NSNextKeyView" ref="591651258"/>
+																			<reference key="NSNextKeyView" ref="381726312"/>
 																			<bool key="NSEnabled">YES</bool>
 																			<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 																			<bool key="NSControlAllowsExpansionToolTips">YES</bool>
@@ -4279,7 +4278,7 @@
 															<string key="NSFrame">{{-1, -1}, {186, 188}}</string>
 															<reference key="NSSuperview" ref="672832134"/>
 															<reference key="NSWindow"/>
-															<reference key="NSNextKeyView" ref="381726312"/>
+															<reference key="NSNextKeyView" ref="784281801"/>
 															<int key="NSsFlags">133650</int>
 															<reference key="NSVScroller" ref="381726312"/>
 															<reference key="NSHScroller" ref="746770325"/>
@@ -4350,7 +4349,7 @@
 																			<string key="NSFrameSize">{184, 350}</string>
 																			<reference key="NSSuperview" ref="1002041640"/>
 																			<reference key="NSWindow"/>
-																			<reference key="NSNextKeyView" ref="886004369"/>
+																			<reference key="NSNextKeyView" ref="903622272"/>
 																			<bool key="NSEnabled">YES</bool>
 																			<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 																			<bool key="NSControlAllowsExpansionToolTips">YES</bool>
@@ -4474,7 +4473,7 @@
 															<string key="NSFrame">{{-1, -1}, {186, 368}}</string>
 															<reference key="NSSuperview" ref="997330803"/>
 															<reference key="NSWindow"/>
-															<reference key="NSNextKeyView" ref="903622272"/>
+															<reference key="NSNextKeyView" ref="1002041640"/>
 															<int key="NSsFlags">133650</int>
 															<reference key="NSVScroller" ref="151646305"/>
 															<reference key="NSHScroller" ref="903622272"/>
@@ -4536,7 +4535,7 @@
 																			<string key="NSFrameSize">{184, 83}</string>
 																			<reference key="NSSuperview" ref="161150111"/>
 																			<reference key="NSWindow"/>
-																			<reference key="NSNextKeyView" ref="1033899909"/>
+																			<reference key="NSNextKeyView" ref="845908278"/>
 																			<bool key="NSEnabled">YES</bool>
 																			<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 																			<bool key="NSControlAllowsExpansionToolTips">YES</bool>
@@ -4672,7 +4671,7 @@
 															<string key="NSFrame">{{-1, -1}, {186, 101}}</string>
 															<reference key="NSSuperview" ref="141241350"/>
 															<reference key="NSWindow"/>
-															<reference key="NSNextKeyView" ref="845908278"/>
+															<reference key="NSNextKeyView" ref="161150111"/>
 															<int key="NSsFlags">133650</int>
 															<reference key="NSVScroller" ref="1033899909"/>
 															<reference key="NSHScroller" ref="845908278"/>
@@ -4746,7 +4745,7 @@
 																			<string key="NSFrameSize">{2587, 234}</string>
 																			<reference key="NSSuperview" ref="613998968"/>
 																			<reference key="NSWindow"/>
-																			<reference key="NSNextKeyView" ref="435897027"/>
+																			<reference key="NSNextKeyView" ref="903567248"/>
 																			<bool key="NSEnabled">YES</bool>
 																			<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 																			<bool key="NSControlAllowsExpansionToolTips">YES</bool>
@@ -5630,7 +5629,7 @@
 															<string key="NSFrameSize">{431, 251}</string>
 															<reference key="NSSuperview" ref="584808016"/>
 															<reference key="NSWindow"/>
-															<reference key="NSNextKeyView" ref="903567248"/>
+															<reference key="NSNextKeyView" ref="613998968"/>
 															<int key="NSsFlags">133296</int>
 															<reference key="NSVScroller" ref="8580273"/>
 															<reference key="NSHScroller" ref="435897027"/>
@@ -5655,7 +5654,7 @@
 																			<string key="NSFrameSize">{428, 234}</string>
 																			<reference key="NSSuperview" ref="979877879"/>
 																			<reference key="NSWindow"/>
-																			<reference key="NSNextKeyView" ref="766578884"/>
+																			<reference key="NSNextKeyView" ref="1026708511"/>
 																			<bool key="NSEnabled">YES</bool>
 																			<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 																			<bool key="NSControlAllowsExpansionToolTips">YES</bool>
@@ -5714,7 +5713,7 @@
 																			</object>
 																			<reference key="NSGridColor" ref="1037829291"/>
 																			<double key="NSRowHeight">29</double>
-																			<int key="NSTvFlags">1119879168</int>
+																			<int key="NSTvFlags">1111490560</int>
 																			<reference key="NSDelegate"/>
 																			<reference key="NSDataSource"/>
 																			<int key="NSColumnAutoresizingStyle">5</int>
@@ -5778,7 +5777,7 @@
 															<string key="NSFrame">{{432, 0}, {428, 251}}</string>
 															<reference key="NSSuperview" ref="584808016"/>
 															<reference key="NSWindow"/>
-															<reference key="NSNextKeyView" ref="1026708511"/>
+															<reference key="NSNextKeyView" ref="979877879"/>
 															<int key="NSsFlags">133648</int>
 															<reference key="NSVScroller" ref="1026708511"/>
 															<reference key="NSHScroller" ref="926541949"/>
@@ -5828,7 +5827,7 @@
 																									<string key="NSFrameSize">{425, 452}</string>
 																									<reference key="NSSuperview" ref="150457028"/>
 																									<reference key="NSWindow"/>
-																									<reference key="NSNextKeyView" ref="361142642"/>
+																									<reference key="NSNextKeyView" ref="828164548"/>
 																									<bool key="NSEnabled">YES</bool>
 																									<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 																									<int key="NSNumRows">4</int>
@@ -6140,7 +6139,7 @@
 																					<string key="NSFrame">{{2, 0}, {385, 371}}</string>
 																					<reference key="NSSuperview" ref="755369193"/>
 																					<reference key="NSWindow"/>
-																					<reference key="NSNextKeyView" ref="828164548"/>
+																					<reference key="NSNextKeyView" ref="150457028"/>
 																					<int key="NSsFlags">133328</int>
 																					<reference key="NSVScroller" ref="361142642"/>
 																					<reference key="NSHScroller" ref="828164548"/>

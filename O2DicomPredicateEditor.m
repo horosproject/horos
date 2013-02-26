@@ -74,6 +74,7 @@
 }
 
 - (void)setDbMode:(BOOL)dbMode {
+    _dbMode = dbMode;
     if (dbMode)
         self.nestingMode = NSRuleEditorNestingModeCompound;
     else self.nestingMode = NSRuleEditorNestingModeList;

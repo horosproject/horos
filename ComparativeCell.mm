@@ -73,7 +73,9 @@
 
 - (void)drawWithFrame:(NSRect)frame inView:(NSView *)controlView
 {
-    NSRect initialFrame = frame;
+    [[NSColor colorWithCalibratedWhite:0.666 alpha:0.333] setStroke];
+    [NSBezierPath setDefaultLineWidth:1];
+    [NSBezierPath strokeLineFromPoint:NSMakePoint(frame.origin.x, frame.origin.y+frame.size.height+1.5) toPoint:NSMakePoint(frame.origin.x+frame.size.width, frame.origin.y+frame.size.height+1.5)];
 
     [super drawWithFrame:frame inView:controlView];
 }

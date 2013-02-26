@@ -9472,16 +9472,15 @@ static BOOL withReset = NO;
 
 - (IBAction) addSmartAlbum: (id)sender
 {
-	SmartWindowController *smartWindowController = [[SmartWindowController alloc] init];
-	NSWindow *sheet = [smartWindowController window];
+	SmartWindowController* swc = [[SmartWindowController alloc] initWithDatabase:self.database];
 	
-    [NSApp beginSheet: sheet
-	   modalForWindow: self.window
-		modalDelegate: nil
-	   didEndSelector: nil
-		  contextInfo: nil];
+    [NSApp beginSheet:swc.window
+	   modalForWindow:self.window
+		modalDelegate:self
+	   didEndSelector:@selector(smartAlbumSheetDidEnd:returnCode:contextInfo:)
+		  contextInfo:nil];
 	
-	[smartWindowController addSubview: nil];
+	/*[smartWindowController addSubview: nil];
 	
     int result = [NSApp runModalForWindow:sheet];
 	[sheet makeFirstResponder: nil];
@@ -9561,7 +9560,22 @@ static BOOL withReset = NO;
 			[self albumTableDoublePressed: self];
 	}
 	
-	[smartWindowController release];
+	[smartWindowController release];*/
+}
+
+- (void)smartAlbumSheetDidEnd:(NSWindow*)sheet returnCode:(NSInteger)returnCode contextInfo:(void*)contextInfo {
+    [sheet orderOut:self];
+    
+    if (returnCode == NSRunStoppedResponse) {
+        DicomAlbum* album = nil;
+        if ([(id)contextInfo isKindOfClass:[DicomAlbum class]])
+            album = contextInfo;
+        
+        if (!album)
+            album = [self.database newObjectForEntity:self.database.albumEntity];
+    }
+    
+    [sheet.windowController release];
 }
 
 - (IBAction) addAlbum:(id)sender

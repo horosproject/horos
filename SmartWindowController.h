@@ -20,39 +20,30 @@
 
 #import <AppKit/AppKit.h>
 
+@class O2DicomPredicateEditor;
+@class DicomDatabase;
+
 @interface SmartWindowController : NSWindowController {
-	
-	IBOutlet	NSTextField		*albumNameField;
-	IBOutlet	NSBox			*filterBox;
-	NSMutableArray				*subviews;
-	NSMutableArray				*criteria;
-	BOOL						editSqlQuery;
-	BOOL						firstTime;
-	NSTimer						*sqlQueryTimer;
-	NSString					*previousSqlString;
-	float						startingWindowHeight;
-    NSMutableDictionary         *onDemandFilter;
+    NSString* _name;
+    NSPredicate* _predicate;
+    DicomDatabase* _database;
+    NSTextField* _nameField;
+    O2DicomPredicateEditor* _editor;
 }
 
-@property (retain) NSMutableDictionary *onDemandFilter;
+@property(retain) NSString* name;
+@property(retain) NSPredicate* predicate;
+@property(retain) DicomDatabase* database;
 
-- (IBAction)editSqlString:(id) sender;
-- (void)removeSubview:(id)sender; /**< Removes a subView representing a smart filter predicate. */
-- (void)addSubview:(id)sender; /**< Add a subview for creating a new subpredicate. */
-- (void)drawSubviews;  /**< Redraws the subviews */
+@property(readonly) BOOL nameIsValid;
+@property(readonly) BOOL predicateIsValid;
 
-- (void)updateRemoveButtons; /**< Disables the remove button if only one subview remains */
+@property(assign) IBOutlet NSTextField* nameField;
+@property(assign) IBOutlet O2DicomPredicateEditor* editor;
 
-- (void)createCriteria; /**< Create the smart album criteria */
-- (NSMutableArray *)criteria; /**< Array of subpredicates used to make the smart album predicate */
-- (NSString *)albumTitle;  /**< Smart album title */
-/** Return a date that corresponds to date earlier than today.
-*  Value can be: searchWithinToday, searchWithinLast2Days, searchWithinLastWeek, searchWithinLast2Weeks,
-*   searchWithinLastMonth, searchWithinLast2Months, searchWithinLast3Months, searchWithinLastYear
-*/
-- (NSCalendarDate *)dateBeforeNow:(int)value; 
-//- (BOOL)madeCriteria;  /**< Checks to see if the criteria has been made. */
-- (BOOL) editSqlQuery;
-- (NSString*) sqlQueryString;
+- (id)initWithDatabase:(DicomDatabase*)db;
+
+- (IBAction)cancelAction:(id)sender;
+- (IBAction)okAction:(id)sender;
 
 @end

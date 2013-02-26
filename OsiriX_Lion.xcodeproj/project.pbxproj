@@ -474,6 +474,24 @@
 		71AA5A3A1611F1EB006A6A5F /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 71AA5A2D1611F1EB006A6A5F /* SBJsonWriter.m */; };
 		71CE3C19157F489C00AC0112 /* List.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 71CE3C18157F489C00AC0112 /* List.pdf */; };
 		71CE3C1A157F489C00AC0112 /* List.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 71CE3C18157F489C00AC0112 /* List.pdf */; };
+		71EB83C016DCB7FF00D48646 /* O2DicomPredicateEditor.h in Headers */ = {isa = PBXBuildFile; fileRef = 71EB83B216DCB7FF00D48646 /* O2DicomPredicateEditor.h */; };
+		71EB83C116DCB7FF00D48646 /* O2DicomPredicateEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = 71EB83B316DCB7FF00D48646 /* O2DicomPredicateEditor.m */; };
+		71EB83C216DCB7FF00D48646 /* O2DicomPredicateEditorCodeStrings.h in Headers */ = {isa = PBXBuildFile; fileRef = 71EB83B416DCB7FF00D48646 /* O2DicomPredicateEditorCodeStrings.h */; };
+		71EB83C316DCB7FF00D48646 /* O2DicomPredicateEditorCodeStrings.m in Sources */ = {isa = PBXBuildFile; fileRef = 71EB83B516DCB7FF00D48646 /* O2DicomPredicateEditorCodeStrings.m */; };
+		71EB83C416DCB7FF00D48646 /* O2DicomPredicateEditorDatePicker.h in Headers */ = {isa = PBXBuildFile; fileRef = 71EB83B616DCB7FF00D48646 /* O2DicomPredicateEditorDatePicker.h */; };
+		71EB83C516DCB7FF00D48646 /* O2DicomPredicateEditorDatePicker.mm in Sources */ = {isa = PBXBuildFile; fileRef = 71EB83B716DCB7FF00D48646 /* O2DicomPredicateEditorDatePicker.mm */; };
+		71EB83C616DCB7FF00D48646 /* O2DicomPredicateEditorDCMAttributeTag.h in Headers */ = {isa = PBXBuildFile; fileRef = 71EB83B816DCB7FF00D48646 /* O2DicomPredicateEditorDCMAttributeTag.h */; };
+		71EB83C716DCB7FF00D48646 /* O2DicomPredicateEditorDCMAttributeTag.m in Sources */ = {isa = PBXBuildFile; fileRef = 71EB83B916DCB7FF00D48646 /* O2DicomPredicateEditorDCMAttributeTag.m */; };
+		71EB83C816DCB7FF00D48646 /* O2DicomPredicateEditorFormatters.h in Headers */ = {isa = PBXBuildFile; fileRef = 71EB83BA16DCB7FF00D48646 /* O2DicomPredicateEditorFormatters.h */; };
+		71EB83C916DCB7FF00D48646 /* O2DicomPredicateEditorFormatters.m in Sources */ = {isa = PBXBuildFile; fileRef = 71EB83BB16DCB7FF00D48646 /* O2DicomPredicateEditorFormatters.m */; };
+		71EB83CA16DCB7FF00D48646 /* O2DicomPredicateEditorPopUpButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 71EB83BC16DCB7FF00D48646 /* O2DicomPredicateEditorPopUpButton.h */; };
+		71EB83CB16DCB7FF00D48646 /* O2DicomPredicateEditorPopUpButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 71EB83BD16DCB7FF00D48646 /* O2DicomPredicateEditorPopUpButton.m */; };
+		71EB83CC16DCB7FF00D48646 /* O2DicomPredicateEditorView.h in Headers */ = {isa = PBXBuildFile; fileRef = 71EB83BE16DCB7FF00D48646 /* O2DicomPredicateEditorView.h */; };
+		71EB83CD16DCB7FF00D48646 /* O2DicomPredicateEditorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 71EB83BF16DCB7FF00D48646 /* O2DicomPredicateEditorView.m */; };
+		71EB83D016DCB9AE00D48646 /* N2PopUpMenu.h in Headers */ = {isa = PBXBuildFile; fileRef = 71EB83CE16DCB9AE00D48646 /* N2PopUpMenu.h */; };
+		71EB83D116DCB9AE00D48646 /* N2PopUpMenu.mm in Sources */ = {isa = PBXBuildFile; fileRef = 71EB83CF16DCB9AE00D48646 /* N2PopUpMenu.mm */; };
+		71EB83D416DD0F1800D48646 /* dicom3tools-libsrc-standard-strval-base.tpl in Resources */ = {isa = PBXBuildFile; fileRef = 71EB83D216DD0F1800D48646 /* dicom3tools-libsrc-standard-strval-base.tpl */; };
+		71EB83D516DD0F1800D48646 /* osirix-complementary.tpl in Resources */ = {isa = PBXBuildFile; fileRef = 71EB83D316DD0F1800D48646 /* osirix-complementary.tpl */; };
 		7E0B3A4A0675273500908593 /* DCM Framework_Prefix.pch in Resources */ = {isa = PBXBuildFile; fileRef = 7E0B3A12067526A600908593 /* DCM Framework_Prefix.pch */; };
 		7E0B3A4D0675273500908593 /* DCM.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A13067526A600908593 /* DCM.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7E0B3A530675273600908593 /* DCMAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A14067526A600908593 /* DCMAttribute.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -8673,6 +8691,24 @@
 		71AA5A2C1611F1EB006A6A5F /* SBJsonWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonWriter.h; sourceTree = "<group>"; };
 		71AA5A2D1611F1EB006A6A5F /* SBJsonWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonWriter.m; sourceTree = "<group>"; };
 		71CE3C18157F489C00AC0112 /* List.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = List.pdf; path = Binaries/Icons/List.pdf; sourceTree = SOURCE_ROOT; };
+		71EB83B216DCB7FF00D48646 /* O2DicomPredicateEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = O2DicomPredicateEditor.h; sourceTree = "<group>"; };
+		71EB83B316DCB7FF00D48646 /* O2DicomPredicateEditor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = O2DicomPredicateEditor.m; sourceTree = "<group>"; };
+		71EB83B416DCB7FF00D48646 /* O2DicomPredicateEditorCodeStrings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = O2DicomPredicateEditorCodeStrings.h; sourceTree = "<group>"; };
+		71EB83B516DCB7FF00D48646 /* O2DicomPredicateEditorCodeStrings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = O2DicomPredicateEditorCodeStrings.m; sourceTree = "<group>"; };
+		71EB83B616DCB7FF00D48646 /* O2DicomPredicateEditorDatePicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = O2DicomPredicateEditorDatePicker.h; sourceTree = "<group>"; };
+		71EB83B716DCB7FF00D48646 /* O2DicomPredicateEditorDatePicker.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = O2DicomPredicateEditorDatePicker.mm; sourceTree = "<group>"; };
+		71EB83B816DCB7FF00D48646 /* O2DicomPredicateEditorDCMAttributeTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = O2DicomPredicateEditorDCMAttributeTag.h; sourceTree = "<group>"; };
+		71EB83B916DCB7FF00D48646 /* O2DicomPredicateEditorDCMAttributeTag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = O2DicomPredicateEditorDCMAttributeTag.m; sourceTree = "<group>"; };
+		71EB83BA16DCB7FF00D48646 /* O2DicomPredicateEditorFormatters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = O2DicomPredicateEditorFormatters.h; sourceTree = "<group>"; };
+		71EB83BB16DCB7FF00D48646 /* O2DicomPredicateEditorFormatters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = O2DicomPredicateEditorFormatters.m; sourceTree = "<group>"; };
+		71EB83BC16DCB7FF00D48646 /* O2DicomPredicateEditorPopUpButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = O2DicomPredicateEditorPopUpButton.h; sourceTree = "<group>"; };
+		71EB83BD16DCB7FF00D48646 /* O2DicomPredicateEditorPopUpButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = O2DicomPredicateEditorPopUpButton.m; sourceTree = "<group>"; };
+		71EB83BE16DCB7FF00D48646 /* O2DicomPredicateEditorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = O2DicomPredicateEditorView.h; sourceTree = "<group>"; };
+		71EB83BF16DCB7FF00D48646 /* O2DicomPredicateEditorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = O2DicomPredicateEditorView.m; sourceTree = "<group>"; };
+		71EB83CE16DCB9AE00D48646 /* N2PopUpMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2PopUpMenu.h; path = nitrogen/Sources/N2PopUpMenu.h; sourceTree = "<group>"; };
+		71EB83CF16DCB9AE00D48646 /* N2PopUpMenu.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2PopUpMenu.mm; path = nitrogen/Sources/N2PopUpMenu.mm; sourceTree = "<group>"; };
+		71EB83D216DD0F1800D48646 /* dicom3tools-libsrc-standard-strval-base.tpl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "dicom3tools-libsrc-standard-strval-base.tpl"; path = "Binaries/dicom3tools-libsrc-standard-strval-base.tpl"; sourceTree = "<group>"; };
+		71EB83D316DD0F1800D48646 /* osirix-complementary.tpl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "osirix-complementary.tpl"; path = "Binaries/osirix-complementary.tpl"; sourceTree = "<group>"; };
 		7E0339E607415C4F0025DDB4 /* BurnerWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BurnerWindowController.h; sourceTree = "<group>"; };
 		7E0339E707415C4F0025DDB4 /* BurnerWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BurnerWindowController.m; sourceTree = "<group>"; };
 		7E0B3A12067526A600908593 /* DCM Framework_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "DCM Framework_Prefix.pch"; sourceTree = "<group>"; };
@@ -14578,6 +14614,8 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				71EB83D216DD0F1800D48646 /* dicom3tools-libsrc-standard-strval-base.tpl */,
+				71EB83D316DD0F1800D48646 /* osirix-complementary.tpl */,
 				59D9471C125333640095680D /* SWFInit.as */,
 				AB78245B0D3BACC700460DCE /* WebServicesHTML */,
 				CEC4B5A20C7DF2D600AF5A76 /* 3DPRESETS */,
@@ -15040,6 +15078,27 @@
 			path = nitrogen/Sources/JSON;
 			sourceTree = "<group>";
 		};
+		71EB83B116DCB7E700D48646 /* Dicom Predicate Editor */ = {
+			isa = PBXGroup;
+			children = (
+				71EB83B216DCB7FF00D48646 /* O2DicomPredicateEditor.h */,
+				71EB83B316DCB7FF00D48646 /* O2DicomPredicateEditor.m */,
+				71EB83BE16DCB7FF00D48646 /* O2DicomPredicateEditorView.h */,
+				71EB83BF16DCB7FF00D48646 /* O2DicomPredicateEditorView.m */,
+				71EB83B416DCB7FF00D48646 /* O2DicomPredicateEditorCodeStrings.h */,
+				71EB83B516DCB7FF00D48646 /* O2DicomPredicateEditorCodeStrings.m */,
+				71EB83B616DCB7FF00D48646 /* O2DicomPredicateEditorDatePicker.h */,
+				71EB83B716DCB7FF00D48646 /* O2DicomPredicateEditorDatePicker.mm */,
+				71EB83B816DCB7FF00D48646 /* O2DicomPredicateEditorDCMAttributeTag.h */,
+				71EB83B916DCB7FF00D48646 /* O2DicomPredicateEditorDCMAttributeTag.m */,
+				71EB83BA16DCB7FF00D48646 /* O2DicomPredicateEditorFormatters.h */,
+				71EB83BB16DCB7FF00D48646 /* O2DicomPredicateEditorFormatters.m */,
+				71EB83BC16DCB7FF00D48646 /* O2DicomPredicateEditorPopUpButton.h */,
+				71EB83BD16DCB7FF00D48646 /* O2DicomPredicateEditorPopUpButton.m */,
+			);
+			name = "Dicom Predicate Editor";
+			sourceTree = "<group>";
+		};
 		7E0339E307415C330025DDB4 /* Burning */ = {
 			isa = PBXGroup;
 			children = (
@@ -15411,6 +15470,8 @@
 				AB10FAD31129338A009EB238 /* N2ColorWell.mm */,
 				AB10FAD41129338A009EB238 /* N2PopUpButton.h */,
 				AB10FAD51129338A009EB238 /* N2PopUpButton.mm */,
+				71EB83CE16DCB9AE00D48646 /* N2PopUpMenu.h */,
+				71EB83CF16DCB9AE00D48646 /* N2PopUpMenu.mm */,
 				594830CB118B0AC100D7E606 /* N2ImageView.h */,
 				594830CC118B0AC100D7E606 /* N2ImageView.mm */,
 			);
@@ -16167,6 +16228,7 @@
 				CE9101AA0C86A6B800D8D273 /* XMLRPC Service */,
 				CE234014119E7B1500D83C19 /* File Reading */,
 				CE234016119E7B5500D83C19 /* SmartAlbums */,
+				71EB83B116DCB7E700D48646 /* Dicom Predicate Editor */,
 				AB142DFC05600D76008461A0 /* AppController.h */,
 				AB142DFD05600D76008461A0 /* AppController.m */,
 				BF18A85709E0BF00005DEFB6 /* AppControllerDCMTKCategory.h */,
@@ -25458,6 +25520,14 @@
 				71A28B771637F0D200489F2A /* DCMWaveform.h in Headers */,
 				7147C1881644160800A9D095 /* O2ViewerThumbnailsMatrix.h in Headers */,
 				84C6329516B945CD00F0EA89 /* ContextCleaner.h in Headers */,
+				71EB83C016DCB7FF00D48646 /* O2DicomPredicateEditor.h in Headers */,
+				71EB83C216DCB7FF00D48646 /* O2DicomPredicateEditorCodeStrings.h in Headers */,
+				71EB83C416DCB7FF00D48646 /* O2DicomPredicateEditorDatePicker.h in Headers */,
+				71EB83C616DCB7FF00D48646 /* O2DicomPredicateEditorDCMAttributeTag.h in Headers */,
+				71EB83C816DCB7FF00D48646 /* O2DicomPredicateEditorFormatters.h in Headers */,
+				71EB83CA16DCB7FF00D48646 /* O2DicomPredicateEditorPopUpButton.h in Headers */,
+				71EB83CC16DCB7FF00D48646 /* O2DicomPredicateEditorView.h in Headers */,
+				71EB83D016DCB9AE00D48646 /* N2PopUpMenu.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26758,6 +26828,8 @@
 				A9B23D7015D018C5000E47C3 /* verticalPosition.pdf in Resources */,
 				848327AB15ED08F4003BAEEB /* CustomIntervalPanel.xib in Resources */,
 				718416071654022400180467 /* DownArrowGreyRev.pdf in Resources */,
+				71EB83D416DD0F1800D48646 /* dicom3tools-libsrc-standard-strval-base.tpl in Resources */,
+				71EB83D516DD0F1800D48646 /* osirix-complementary.tpl in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -28537,6 +28609,14 @@
 				7188E85816301A61006105BE /* KBPopUpToolbarItem.m in Sources */,
 				71A28B791637F0D200489F2A /* DCMWaveform.m in Sources */,
 				7147C18A1644160800A9D095 /* O2ViewerThumbnailsMatrix.mm in Sources */,
+				71EB83C116DCB7FF00D48646 /* O2DicomPredicateEditor.m in Sources */,
+				71EB83C316DCB7FF00D48646 /* O2DicomPredicateEditorCodeStrings.m in Sources */,
+				71EB83C516DCB7FF00D48646 /* O2DicomPredicateEditorDatePicker.mm in Sources */,
+				71EB83C716DCB7FF00D48646 /* O2DicomPredicateEditorDCMAttributeTag.m in Sources */,
+				71EB83C916DCB7FF00D48646 /* O2DicomPredicateEditorFormatters.m in Sources */,
+				71EB83CB16DCB7FF00D48646 /* O2DicomPredicateEditorPopUpButton.m in Sources */,
+				71EB83CD16DCB7FF00D48646 /* O2DicomPredicateEditorView.m in Sources */,
+				71EB83D116DCB9AE00D48646 /* N2PopUpMenu.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

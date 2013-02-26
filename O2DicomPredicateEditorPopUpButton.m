@@ -57,7 +57,12 @@
 
 - (void)mouseDown:(NSEvent*)event {
     if (_n2mode) {
-        _menuWindow = [N2PopUpMenu popUpContextMenu:self.menu withEvent:event forView:self withFont:self.font];
+        NSMenu* menu = [[self.menu copy] autorelease];
+        for (NSMenuItem* mi in menu.itemArray)
+            if (!mi.title.length)
+                [menu removeItem:mi];
+        
+        _menuWindow = [N2PopUpMenu popUpContextMenu:menu withEvent:event forView:self withFont:self.font];
         [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(observeMenuWindowWillCloseNotification:) name:NSWindowWillCloseNotification object:_menuWindow];
     } else
         [super mouseDown:event];
@@ -78,6 +83,24 @@
         [_menuWindow sendEvent:[NSEvent mouseEventWithType:NSLeftMouseUp location:[_menuWindow convertScreenToBase:[event.window convertBaseToScreen:event.locationInWindow]] modifierFlags:event.modifierFlags timestamp:event.timestamp windowNumber:_menuWindow.windowNumber context:event.context eventNumber:event.eventNumber clickCount:event.clickCount pressure:event.pressure]];
     else [super mouseUp:event];
 }
+
+/*- (void)bind:(NSString *)binding toObject:(id)observable withKeyPath:(NSString *)keyPath options:(NSDictionary *)options {
+    [super bind:binding toObject:observable withKeyPath:keyPath options:options];
+
+    if ([binding isEqualToString:@"selectedTag"]) {
+        NSInteger i = [self indexOfSelectedItem];
+        if (i != -1) {
+            NSMenuItem* mi = [self.menu itemAtIndex:i];
+            if (!mi.title.length)
+                [self.menu removeItemAtIndex:i];
+        }
+    }
+}*/
+
+/*- (NSInteger)selectedTag {
+    NSInteger t = [super selectedTag];
+    return t;
+}*/
 
 @end
 

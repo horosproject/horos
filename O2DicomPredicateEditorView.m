@@ -248,6 +248,8 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
             mi.tag = [[self class] tagForTag:tag];
             
             [_menuItems addObject:mi];
+            
+//            NSLog(@"mis: %@", _menuItems);
         }
         
         static dispatch_once_t onceToken;
@@ -800,6 +802,8 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
     }];
     
     NSInteger stag = [_tagsPopUp selectedTag];
+    NSDictionary* binding = [_tagsPopUp infoForBinding:@"selectedTag"];
+    [_tagsPopUp unbind:@"selectedTag"];
     
     for (NSUInteger i = 0; i < mis.count; ++i) {
         NSMenuItem* mi = [mis objectAtIndex:i];
@@ -809,11 +813,16 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
         }
     }
     
-    [_tagsPopUp selectItemWithTag:stag];
+    if (binding)
+        [_tagsPopUp bind:@"selectedTag" toObject:[binding valueForKey:NSObservedObjectKey] withKeyPath:[binding valueForKey:NSObservedKeyPathKey] options:[binding objectForKey:NSOptionsKey]];
+    else if (stag != -1)
+        [_tagsPopUp selectItemWithTag:stag];
 }
 
 - (void)_observePopUpButtonWillPopUpNotification:(NSNotification*)notification {
-    NSInteger st = [_tagsPopUp selectedTag];
+    NSInteger stag = [_tagsPopUp selectedTag];
+    NSDictionary* binding = [_tagsPopUp infoForBinding:@"selectedTag"];
+    [_tagsPopUp unbind:@"selectedTag"];
     
     [_tagsPopUp.menu removeAllItems];
     for (NSMenuItem* mi in _menuItems)
@@ -821,11 +830,19 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
             [_tagsPopUp.menu addItem:mi];
     }
     
-    [_tagsPopUp selectItemWithTag:st];
+//    NSLog(@"menuuu: %@", _tagsPopUp.menu.itemArray);
+    
+    if (binding)
+        [_tagsPopUp bind:@"selectedTag" toObject:[binding valueForKey:NSObservedObjectKey] withKeyPath:[binding valueForKey:NSObservedKeyPathKey] options:[binding objectForKey:NSOptionsKey]];
+    else if (stag != -1)
+        [_tagsPopUp selectItemWithTag:stag];
 
+//    NSLog(@"menuuu: %@", _tagsPopUp.menu.itemArray);
     if ([self.editor dbMode])
         _tagsSortKey = O2DicomPredicateEditorSortTagsByTag;
     [self sortTagsMenu];
+
+//    NSLog(@"menuuuuuuu: %@", _tagsPopUp.menu.itemArray);
 }
 
 - (void)menuWillOpen:(NSMenu*)menu {
@@ -1120,9 +1137,16 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
     
     for (NSView* subview in [[self.subviews copy] autorelease])
         [subview removeFromSuperview];
-    for (NSView* subview in views)
+
+    NSView* p = nil;
+    for (NSView* subview in views) {
         if (subview.superview != self)
             [self addSubview:subview];
+        [p setNextKeyView:subview];
+        p = subview;
+    }
+    
+//    [p setNextKeyView:[self nextKeyView]];
     
     /*NSView* pview = nil;
     for (NSView* view in views) {
@@ -1470,6 +1494,8 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
     NSRect bounds = self.bounds;
     NSRect frame = NSZeroRect;
     static const CGFloat kSeparatorWidth = 5;
+    
+    frame.origin.x = kSeparatorWidth;
     
     //    NSLog(@"sf");
     for (id view in self.subviews) {

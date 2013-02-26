@@ -313,7 +313,9 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
     puvf.origin.y += PopUpWindowBorder.height/2; // not sure about this... but it works...
 
     if (center) {
-        if (_puView.highlightedCellRow != NSNotFound) {
+        if (_puView.highlightedCellRow >= 0 && _puView.highlightedCellRow < _puView.numberOfRows) {
+//            NSLog(@"piphpih %d, %@", _puView.numberOfRows, _puView.window.menu.itemArray);
+            
             NSRect r = [self.window convertRectToScreen:[_puView convertRect:[_puView cellFrameAtRow:_puView.highlightedCellRow column:0] toView:nil]];
             
             NSPoint p = _sView.contentView.bounds.origin;
@@ -670,6 +672,10 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
 
 @synthesize itemHeight = _itemHeight;
 @synthesize highlightedCellRow = _highlightedCellRow;
+
+- (void)setHighlightedCellRow:(NSInteger)highlightedCellRow {
+    _highlightedCellRow = highlightedCellRow;
+}
 
 - (id)initWithFrame:(NSRect)frameRect {
     if ((self = [super initWithFrame:frameRect])) {
