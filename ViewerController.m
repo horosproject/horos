@@ -15606,7 +15606,48 @@ int i,j,l;
 {
 	ViewerController *newViewer = nil;
 	
-    if( [self isDataVolumicIn4D: YES] == NO || [movingViewer isDataVolumicIn4D: YES] == NO || [self computeInterval] == 0 || [movingViewer computeInterval] == 0)
+    BOOL volumicSelf = YES;
+    BOOL volumicMoving = YES;
+    
+    if( self.pixList.count > 1)
+    {
+        if( [self isDataVolumicIn4D: YES] == NO)
+            volumicSelf = NO;
+        
+        if( [self computeInterval] == 0)
+            volumicSelf = NO;
+    }
+    else
+    {
+        DCMPix *p = self.pixList.lastObject;
+        
+        double orientation[ 9];
+        [p orientationDouble: orientation];
+        
+        if( orientation[ 6] == 0 && orientation[ 7] == 0 && orientation[ 8] == 0)
+            volumicSelf = NO;
+    }
+    
+    if( movingViewer.pixList.count > 1)
+    {
+        if( [movingViewer isDataVolumicIn4D: YES] == NO)
+            volumicMoving = NO;
+        
+        if( [movingViewer computeInterval] == 0)
+            volumicMoving = NO;
+    }
+    else
+    {
+        DCMPix *p = movingViewer.pixList.lastObject;
+        
+        double orientation[ 9];
+        [p orientationDouble: orientation];
+        
+        if( orientation[ 6] == 0 && orientation[ 7] == 0 && orientation[ 8] == 0)
+            volumicMoving = NO;
+    }
+    
+    if( volumicSelf == NO || volumicMoving == NO)
     {
         NSRunCriticalAlertPanel(NSLocalizedString(@"Resampling Error", nil),
 								NSLocalizedString(@"3D Resampling requires volumic data.", nil),
@@ -17461,14 +17502,20 @@ int i,j,l;
 		NSMutableArray	*viewsRect = [NSMutableArray array];
 		
 		// Compute the enclosing rect
-		for( i = 0; i < [viewers count]; i++)
+		for( ViewerController *v in viewers)
 		{
-			NSRect	bounds = [[[viewers objectAtIndex: i] imageView] bounds];
-			NSPoint origin = [[[viewers objectAtIndex: i] imageView] convertPoint: bounds.origin toView: nil];
-			bounds.origin = [[[viewers objectAtIndex: i] window] convertBaseToScreen: origin];
+			NSRect	bounds = [[v imageView] bounds];
+			NSPoint origin = [[v imageView] convertPoint: bounds.origin toView: nil];
+			bounds.origin = [[v window] convertBaseToScreen: origin];
 			
 			bounds = NSIntegralRect( bounds);
 			
+            bounds.origin.x *= v.window.backingScaleFactor;
+            bounds.origin.y *= v.window.backingScaleFactor;
+            
+            bounds.size.width *= v.window.backingScaleFactor;
+            bounds.size.height *= v.window.backingScaleFactor;
+            
 			[viewsRect addObject: [NSValue valueWithRect: bounds]];
 		}
 		

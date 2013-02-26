@@ -5119,6 +5119,9 @@ static NSConditionLock *threadLock = nil;
 
 - (void) proceedDeleteObjects: (NSArray*) objectsToDelete tree:(NSSet*)treeObjs
 {
+    if( [NSThread isMainThread] == NO)
+        N2LogStackTrace( @"************ This is a MAIN thread only function");
+    
 	DicomDatabase* database = [_database retain];
     BOOL refreshComparative = NO;
     
@@ -5126,12 +5129,8 @@ static NSConditionLock *threadLock = nil;
             
 	[reportFilesToCheck removeAllObjects];
 	
-//    [self setDatabase:nil];
 	[database lock];
 	
-    [self outlineViewRefresh];
-    [self refreshMatrix: self];
-    
 	@try
 	{
 		NSManagedObject	*study = nil, *series = nil;
@@ -5186,15 +5185,6 @@ static NSConditionLock *threadLock = nil;
 	{
         N2LogExceptionWithStackTrace(e);
 	}
-	
-	@try
-	{
-		[database save: nil];
-	}
-	@catch( NSException *e)
-	{	
-        N2LogExceptionWithStackTrace(e/*, @"context save"*/);
-    }
     
     for (NSManagedObject* o in treeObjs)
         if ([o isKindOfClass:[DicomSeries class]])
@@ -5211,11 +5201,11 @@ static NSConditionLock *threadLock = nil;
 			{
 				if ([series isDeleted] == NO)
                 {
-                    if ([series.images count] == 0)
+                    if ([series.images count] == 0 || [[series.images valueForKey: @"isDeleted"] containsObject: [NSNumber numberWithBool: NO]] == NO)
                     {
                         [database.managedObjectContext deleteObject:series];
                     }
-                    else 
+                    else
                     {
                         series.numberOfImages = [NSNumber numberWithInt:0];
                         series.thumbnail = nil;
@@ -5227,14 +5217,6 @@ static NSConditionLock *threadLock = nil;
                 N2LogExceptionWithStackTrace(e/*, @"context deleteObject: series"*/);
 			}
 		}
-		@try
-		{	
-			[database save:nil];
-		}
-		@catch( NSException *e)
-		{
-            N2LogExceptionWithStackTrace(e/*, @"context save: nil"*/);
-        }
         
 		// Remove studies without series !
 		for( DicomStudy *study in studiesSet)
@@ -5244,16 +5226,19 @@ static NSConditionLock *threadLock = nil;
                 if( [self.comparativePatientUID compare: study.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
                     refreshComparative = YES;
                 
-                if( [study isDeleted] == NO && [[study valueForKey:@"imageSeries"] count] == 0)
+                if( [study isDeleted] == NO)
                 {
-                    NSLog( @"Delete Study: %@ - %@", study.patientID, study.studyInstanceUID);
-                    
-                    [database.managedObjectContext deleteObject:study];
-                }
-                else if( [study isDeleted] == NO)
-                {
-                    [study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
-                    [study setValue:[study valueForKey: @"modalities"] forKey:@"modality"];
+                    if( [study.imageSeries count] == 0 || [[study.imageSeries valueForKey: @"isDeleted"] containsObject: [NSNumber numberWithBool: NO]] == NO)
+                    {
+                        NSLog( @"Delete Study: %@ - %@", study.patientID, study.studyInstanceUID);
+                        
+                        [database.managedObjectContext deleteObject:study];
+                    }
+                    else
+                    {
+                        [study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
+                        [study setValue:[study valueForKey: @"modalities"] forKey:@"modality"];
+                    }
                 }
             }
             @catch( NSException *e)
@@ -5261,30 +5246,22 @@ static NSConditionLock *threadLock = nil;
                 N2LogExceptionWithStackTrace(e/*, @"context deleteObject: study"*/);
             }
 		}
-		
-        @try
-		{	
-			[database save:nil];
-		}
-		@catch( NSException *e)
-		{
-            N2LogExceptionWithStackTrace(e/*, @"context save: nil"*/);
-        }
         
 		[previousItem release];
 		previousItem = nil;
 	}
-	
 	@catch( NSException *ne)
 	{
         N2LogExceptionWithStackTrace(ne);
 	}
 	
 	[database unlock];
+    [database release];
+    
+    [self saveDatabase];
     
     [self outlineViewRefresh];
     [self refreshAlbums];
-    [self saveDatabase];
     
     if( refreshComparative)
     {
