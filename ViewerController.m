@@ -15606,7 +15606,48 @@ int i,j,l;
 {
 	ViewerController *newViewer = nil;
 	
-    if( [self isDataVolumicIn4D: YES] == NO || [movingViewer isDataVolumicIn4D: YES] == NO || [self computeInterval] == 0 || [movingViewer computeInterval] == 0)
+    BOOL volumicSelf = YES;
+    BOOL volumicMoving = YES;
+    
+    if( self.pixList.count > 1)
+    {
+        if( [self isDataVolumicIn4D: YES] == NO)
+            volumicSelf = NO;
+        
+        if( [self computeInterval] == 0)
+            volumicSelf = NO;
+    }
+    else
+    {
+        DCMPix *p = self.pixList.lastObject;
+        
+        double orientation[ 9];
+        [p orientationDouble: orientation];
+        
+        if( orientation[ 6] == 0 && orientation[ 7] == 0 && orientation[ 8] == 0)
+            volumicSelf = NO;
+    }
+    
+    if( movingViewer.pixList.count > 1)
+    {
+        if( [movingViewer isDataVolumicIn4D: YES] == NO)
+            volumicMoving = NO;
+        
+        if( [movingViewer computeInterval] == 0)
+            volumicMoving = NO;
+    }
+    else
+    {
+        DCMPix *p = movingViewer.pixList.lastObject;
+        
+        double orientation[ 9];
+        [p orientationDouble: orientation];
+        
+        if( orientation[ 6] == 0 && orientation[ 7] == 0 && orientation[ 8] == 0)
+            volumicMoving = NO;
+    }
+    
+    if( volumicSelf == NO || volumicMoving == NO)
     {
         NSRunCriticalAlertPanel(NSLocalizedString(@"Resampling Error", nil),
 								NSLocalizedString(@"3D Resampling requires volumic data.", nil),
