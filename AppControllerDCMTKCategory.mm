@@ -25,6 +25,8 @@
 #include "Binaries/dcmtk-source/dcmjpls/djdecode.h" //JPEG-LS
 #include "Binaries/dcmtk-source/dcmjpls/djencode.h" //JPEG-LS
 
+extern int gPutSrcAETitleInSourceApplicationEntityTitle, gPutDstAETitleInPrivateInformationCreatorUID;
+
 @implementation AppController (AppControllerDCMTKCategory)
 
 - (void)initDCMTK
@@ -68,7 +70,10 @@
 
     // register RLE decompression codec
     DcmRLEDecoderRegistration::registerCodecs();
-	#endif
+    
+    gPutSrcAETitleInSourceApplicationEntityTitle = [[NSUserDefaults standardUserDefaults] boolForKey: @"putSrcAETitleInSourceApplicationEntityTitle"];
+    gPutDstAETitleInPrivateInformationCreatorUID = [[NSUserDefaults standardUserDefaults] boolForKey: @"putDstAETitleInPrivateInformationCreatorUID"];
+    #endif
 }
 - (void)destroyDCMTK
 {
