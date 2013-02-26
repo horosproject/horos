@@ -591,7 +591,7 @@
 											<string key="NSFrame">{{422, 116}, {150, 17}}</string>
 											<reference key="NSSuperview" ref="264898405"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView" ref="980905750"/>
+											<reference key="NSNextKeyView" ref="245203005"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSTextFieldCell" key="NSCell" id="306223153">
 												<int key="NSCellFlags">67108864</int>
@@ -873,7 +873,7 @@
 											</object>
 											<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 										</object>
-										<object class="NSButton" id="975742709">
+										<object class="NSButton" id="653317989">
 											<reference key="NSNextResponder" ref="264898405"/>
 											<int key="NSvFlags">268</int>
 											<string key="NSFrame">{{15, 76}, {556, 18}}</string>
@@ -882,13 +882,13 @@
 											<reference key="NSNextKeyView" ref="662286108"/>
 											<string key="NSReuseIdentifierKey">_NS:9</string>
 											<bool key="NSEnabled">YES</bool>
-											<object class="NSButtonCell" key="NSCell" id="94764357">
+											<object class="NSButtonCell" key="NSCell" id="560481914">
 												<int key="NSCellFlags">-2080374784</int>
 												<int key="NSCellFlags2">268566528</int>
 												<string key="NSContents">Store Source AETitle in SourceApplicationEntityTitle (0002,0016)</string>
 												<reference key="NSSupport" ref="26"/>
 												<string key="NSCellIdentifier">_NS:9</string>
-												<reference key="NSControlView" ref="975742709"/>
+												<reference key="NSControlView" ref="653317989"/>
 												<int key="NSButtonFlags">1211912448</int>
 												<int key="NSButtonFlags2">2</int>
 												<reference key="NSNormalImage" ref="275267391"/>
@@ -900,22 +900,22 @@
 											</object>
 											<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 										</object>
-										<object class="NSButton" id="980905750">
+										<object class="NSButton" id="245203005">
 											<reference key="NSNextResponder" ref="264898405"/>
 											<int key="NSvFlags">268</int>
 											<string key="NSFrame">{{15, 94}, {556, 18}}</string>
 											<reference key="NSSuperview" ref="264898405"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView" ref="975742709"/>
+											<reference key="NSNextKeyView" ref="653317989"/>
 											<string key="NSReuseIdentifierKey">_NS:9</string>
 											<bool key="NSEnabled">YES</bool>
-											<object class="NSButtonCell" key="NSCell" id="961930772">
+											<object class="NSButtonCell" key="NSCell" id="14741252">
 												<int key="NSCellFlags">-2080374784</int>
 												<int key="NSCellFlags2">268566528</int>
 												<string key="NSContents">Store Destination AETitle in PrivateInformationCreatorUID (0002,0100)</string>
 												<reference key="NSSupport" ref="26"/>
 												<string key="NSCellIdentifier">_NS:9</string>
-												<reference key="NSControlView" ref="980905750"/>
+												<reference key="NSControlView" ref="245203005"/>
 												<int key="NSButtonFlags">1211912448</int>
 												<int key="NSButtonFlags2">2</int>
 												<reference key="NSNormalImage" ref="275267391"/>
@@ -4109,10 +4109,10 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">value: values.putSrcAETitleInSourceApplicationEntityTitle</string>
-						<reference key="source" ref="975742709"/>
+						<reference key="source" ref="653317989"/>
 						<reference key="destination" ref="896066363"/>
 						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="975742709"/>
+							<reference key="NSSource" ref="653317989"/>
 							<reference key="NSDestination" ref="896066363"/>
 							<string key="NSLabel">value: values.putSrcAETitleInSourceApplicationEntityTitle</string>
 							<string key="NSBinding">value</string>
@@ -4124,19 +4124,19 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.putSrcAETitleInSourceApplicationEntityTitle</string>
-						<reference key="source" ref="980905750"/>
+						<string key="label">value: values.putDstAETitleInPrivateInformationCreatorUID</string>
+						<reference key="source" ref="245203005"/>
 						<reference key="destination" ref="896066363"/>
 						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="980905750"/>
+							<reference key="NSSource" ref="245203005"/>
 							<reference key="NSDestination" ref="896066363"/>
-							<string key="NSLabel">value: values.putSrcAETitleInSourceApplicationEntityTitle</string>
+							<string key="NSLabel">value: values.putDstAETitleInPrivateInformationCreatorUID</string>
 							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.putSrcAETitleInSourceApplicationEntityTitle</string>
+							<string key="NSKeyPath">values.putDstAETitleInPrivateInformationCreatorUID</string>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">1065</int>
+					<int key="connectionID">1066</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -4630,8 +4630,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<reference ref="545268170"/>
 							<reference ref="321811021"/>
 							<reference ref="825285579"/>
-							<reference ref="975742709"/>
-							<reference ref="980905750"/>
+							<reference ref="653317989"/>
+							<reference ref="245203005"/>
 						</array>
 						<reference key="parent" ref="738391672"/>
 					</object>
@@ -5559,29 +5559,29 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">1060</int>
-						<reference key="object" ref="975742709"/>
+						<reference key="object" ref="653317989"/>
 						<array class="NSMutableArray" key="children">
-							<reference ref="94764357"/>
+							<reference ref="560481914"/>
 						</array>
 						<reference key="parent" ref="72706771"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">1061</int>
-						<reference key="object" ref="94764357"/>
-						<reference key="parent" ref="975742709"/>
+						<reference key="object" ref="560481914"/>
+						<reference key="parent" ref="653317989"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">1063</int>
-						<reference key="object" ref="980905750"/>
+						<reference key="object" ref="245203005"/>
 						<array class="NSMutableArray" key="children">
-							<reference ref="961930772"/>
+							<reference ref="14741252"/>
 						</array>
 						<reference key="parent" ref="72706771"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">1064</int>
-						<reference key="object" ref="961930772"/>
-						<reference key="parent" ref="980905750"/>
+						<reference key="object" ref="14741252"/>
+						<reference key="parent" ref="245203005"/>
 					</object>
 				</array>
 			</object>
@@ -5859,7 +5859,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">1065</int>
+			<int key="maxID">1066</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -5947,7 +5947,9 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="editHostname:">id</string>
 						<string key="editTLS:">id</string>
 						<string key="ok:">id</string>
+						<string key="openKeyChainAccess:">id</string>
 						<string key="selectAllSuites:">id</string>
+						<string key="smartAlbumHelpButton:">id</string>
 						<string key="useSameAETitleForTLSListener:">id</string>
 						<string key="viewTLSCertificate:">id</string>
 					</dictionary>
@@ -5984,8 +5986,16 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">ok:</string>
 							<string key="candidateClassName">id</string>
 						</object>
+						<object class="IBActionInfo" key="openKeyChainAccess:">
+							<string key="name">openKeyChainAccess:</string>
+							<string key="candidateClassName">id</string>
+						</object>
 						<object class="IBActionInfo" key="selectAllSuites:">
 							<string key="name">selectAllSuites:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="smartAlbumHelpButton:">
+							<string key="name">smartAlbumHelpButton:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="useSameAETitleForTLSListener:">
