@@ -7101,12 +7101,12 @@ return YES;
 	
     BOOL        reactivateManualSyncing = NO;
 	BOOL		sameSeries = NO;
-	long		i, imageIndex;
-	long		previousColumns = [imageView columns], previousRows = [imageView rows];
+	long		i, previousColumns = [imageView columns], previousRows = [imageView rows];
 	int			previousFusion = [popFusion selectedTag], previousFusionActivated = [activatedFusion state];
 		
 	NSString	*previousPatientUID = [[[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.patientUID"] retain];
 	NSString	*previousStudyInstanceUID = [[[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"] retain];
+    DicomImage    *previousDicomImage = [imageView imageObj];
 	float		previousOrientation[ 9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 	float		previousLocation;
 	int			previousCurImage = [imageView curImage];
@@ -7228,6 +7228,9 @@ return YES;
 				
 				[orientationMatrix setEnabled: NO];
 
+                if( [d count] > 0 && [fileList[ 0] count] > 0 && [[[[fileList[ 0] objectAtIndex: 0] valueForKey: @"series"] objectID] isEqualTo: [[[d objectAtIndex: 0] valueForKey: @"series"] objectID]])
+                    sameSeries = YES;
+                
 				// Release previous data
 				[self finalizeSeriesViewing];
 				
@@ -7236,27 +7239,6 @@ return YES;
 				
 				@try
 				{
-					long index2compare;
-					
-					if( [imageView flippedData]) index2compare = [fileList[ 0] count]-1;
-					else index2compare = 0;
-					
-					if( index2compare >= 0 && [d count] > 0 && [fileList[ 0] count] > 0 && [fileList[ 0] objectAtIndex: index2compare] == [d objectAtIndex: 0])
-					{
-						NSLog( @"same series");
-						if( [d count] >= [fileList[ 0] count])
-						{
-							sameSeries = YES;
-							if( [imageView flippedData]) imageIndex = [fileList[ 0] count] -1 -[imageView curImage];
-							else imageIndex = [imageView curImage];
-						}
-						else imageIndex = 0;
-					}
-					else
-					{
-						imageIndex = 0;
-					}
-					
 					[orientationMatrix selectCellWithTag: 0];
 					
 					curCLUTMenu = [NSLocalizedString(@"No CLUT", nil) retain];
@@ -7300,24 +7282,16 @@ return YES;
 						}
 						[self loadROI:0];
 						
-						[imageView setPixels:pixList[0] files:fileList[0] rois:roiList[0] firstImage:imageIndex level:'i' reset:!sameSeries];
-						
-						if( sameSeries)
-						{
-							[imageView setIndex: imageIndex];
-					//		[imageView updatePresentationStateFromSeries];
-						}
-						else [imageView setIndexWithReset: imageIndex :YES];
+						[imageView setPixels:pixList[0] files:fileList[0] rois:roiList[0] firstImage: 0 level:'i' reset:!sameSeries];
+                        
+                        [imageView setIndexWithReset: 0 :YES];
 					}
 					@catch( NSException *e)
 					{
 						NSLog(@"Exception change image data: %@", e);
 					}
 					
-					if( imageIndex >= [pixList[0] count])
-						imageIndex = 0;
-					
-					DCMPix *curDCM = [pixList[0] objectAtIndex: imageIndex];
+					DCMPix *curDCM = [imageView curDCM];
 					
 					[self setWindowTitle:self];
 					
@@ -7353,7 +7327,7 @@ return YES;
 					[moviePlayStop setEnabled:NO];
 					[speedText setStringValue:[NSString stringWithFormat:NSLocalizedString(@"%0.1f im/s",  @"im/s = images per second"), (float) [self frameRate]*direction]];
 
-					[seriesView setPixels:pixList[0] files:fileList[0] rois:roiList[0] firstImage:imageIndex level:'i' reset:!sameSeries];
+					[seriesView setPixels:pixList[0] files:fileList[0] rois:roiList[0] firstImage: 0 level:'i' reset:!sameSeries];
 					
 					if( [[pixList[0] objectAtIndex: 0] isRGB] == NO)
 					{
@@ -7437,77 +7411,97 @@ return YES;
 						}
 					}
 					
-					// If same study, same patient and same orientation, try to go the same position (mm) if available
+					// If same study, same patient and same orientation (but NOT same series), try to go the same position (mm) if available
 					if( [previousStudyInstanceUID isEqualToString: [[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"]])
 					{
-                        BOOL keepFusion = NO;
-                        
-						if( equalVector && nonZeroVector)
-						{
-							float start = [[[fileList[ 0] objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue];
-							float end = [[[fileList[ 0] objectAtIndex: [fileList[ 0] count]-1] valueForKey:@"sliceLocation"] floatValue];
-							
-							if( start == end)
-							{
-								[imageView setIndex: previousCurImage];
-								[self adjustSlider];
-								keepFusion = YES;
-							}
-							else
-							{
-								if( start > end)
-								{
-									float temp = end;
-									
-									end = start;
-									start = temp;
-								}
-								
-                                if( previousLocation > start && previousLocation < end)
+                        if( sameSeries)
+                        {
+                            // Can we find the same DicomImage?
+                            
+                            NSUInteger index = NSNotFound;
+                            
+                            if( previousDicomImage)
+                                index = [fileList[0] indexOfObject: previousDicomImage];
+                            
+                            if( index != NSNotFound)
+                            {
+                                if( wasFlipped)
+                                    index = [fileList[ 0] count] -1 -index;
+                                
+                                [imageView setIndex: index];
+                            }
+                        }
+                        else
+                        {
+                            BOOL keepFusion = NO;
+                            
+                            if( equalVector && nonZeroVector)
+                            {
+                                float start = [[[fileList[ 0] objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue];
+                                float end = [[[fileList[ 0] lastObject] valueForKey:@"sliceLocation"] floatValue];
+                                
+                                if( start == end)
                                 {
-                                    long	index = 0;
-                                    float   smallestdiff = -1, fdiff;
-                                    
-                                    for( int i = 0; i < [fileList[ 0] count]; i++)
+                                    [imageView setIndex: previousCurImage];
+                                    [self adjustSlider];
+                                    keepFusion = YES;
+                                }
+                                else
+                                {
+                                    if( start > end)
                                     {
-                                        float slicePosition = [[[fileList[ 0] objectAtIndex: i] valueForKey:@"sliceLocation"] floatValue];
+                                        float temp = end;
                                         
-                                        fdiff = fabs( slicePosition - previousLocation);
+                                        end = start;
+                                        start = temp;
+                                    }
+                                    
+                                    if( previousLocation > start && previousLocation < end)
+                                    {
+                                        long	index = 0;
+                                        float   smallestdiff = -1, fdiff;
                                         
-                                        if( fdiff < smallestdiff || smallestdiff == -1)
+                                        for( int i = 0; i < [fileList[ 0] count]; i++)
                                         {
-                                            smallestdiff = fdiff;
-                                            index = i;
+                                            float slicePosition = [[[fileList[ 0] objectAtIndex: i] valueForKey:@"sliceLocation"] floatValue];
+                                            
+                                            fdiff = fabs( slicePosition - previousLocation);
+                                            
+                                            if( fdiff < smallestdiff || smallestdiff == -1)
+                                            {
+                                                smallestdiff = fdiff;
+                                                index = i;
+                                            }
+                                        }
+                                        
+                                        if( index != 0)
+                                        {
+                                            if( wasFlipped)
+                                                index = [fileList[ 0] count] -1 -index;
+                                            [imageView setIndex: index];
+                                            [self adjustSlider];
+                                            keepFusion = YES;
+                                            
+                                            // Try to keep the same syncOffset if manual syncing between different studies
+                                            
+                                            if( wasSyncButtonBehaviorIsBetweenStudies)
+                                                reactivateManualSyncing = YES;
                                         }
                                     }
-                                    
-                                    if( index != 0)
-                                    {
-                                        if( wasFlipped)
-                                            index = [fileList[ 0] count] - index;
-                                        [imageView setIndex: index];
-                                        [self adjustSlider];
-                                        keepFusion = YES;
-                                        
-                                        // Try to keep the same syncOffset if manual syncing between different studies
-                                        
-                                        if( wasSyncButtonBehaviorIsBetweenStudies)
-                                            reactivateManualSyncing = YES;
-                                    }
                                 }
-							}
-						}
-						
-						if( keepFusion)
-							if( [[self modality] isEqualToString:@"CT"] == NO) keepFusion = NO;
-						
-						if( keepFusion == NO)
-						{
-							if( blendingController) [self ActivateBlending: nil];
-						}
+                            }
+                            
+                            if( keepFusion)
+                                if( [[self modality] isEqualToString:@"CT"] == NO) keepFusion = NO;
+                            
+                            if( keepFusion == NO)
+                            {
+                                if( blendingController)
+                                    [self ActivateBlending: nil];
+                            }
+                        }
 					}
-					//If study ID changed, cancel the fusion, if existing
-					else
+					else //If study ID changed, cancel the fusion, if existing
 					{
 						if( blendingController) [self ActivateBlending: nil];
 					}
