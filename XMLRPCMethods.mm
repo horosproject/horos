@@ -254,6 +254,106 @@
 }
 
 
+- (void)_PACSOnDemandRetrieve:(NSDictionary*)keys open:(NSPredicate*)predicate {
+    
+    [NSThread performBlockInBackground:^{
+        NSMutableArray* dicomNodes = [NSMutableArray array];
+        NSArray* allDicomNodes = [DCMNetServiceDelegate DICOMServersList];
+        for (NSDictionary* si in [NSUserDefaults.standardUserDefaults arrayForKey:@"comparativeSearchDICOMNodes"])
+            for (NSDictionary* di in allDicomNodes)
+                if ([[si objectForKey:@"AETitle"] isEqualToString:[di objectForKey:@"AETitle"]] &&
+                    [[si objectForKey:@"name"] isEqualToString:[di objectForKey:@"Description"]] &&
+                    [[si objectForKey:@"AddressAndPort"] isEqualToString:[NSString stringWithFormat:@"%@:%@", [di valueForKey:@"Address"], [di valueForKey:@"Port"]]])
+                {
+                    [dicomNodes addObject:di];
+                }
+        
+        NSThread* thread = [NSThread currentThread];
+        thread.name = NSLocalizedString(@"Retrieving requested study...", nil);
+        thread.status = (dicomNodes.count == 1)? NSLocalizedString(@"Querying POD server...", nil) : NSLocalizedString(@"Querying POD servers...", nil);
+        [ThreadsManager.defaultManager addThreadAndStart:thread];
+        
+        DcmDataset slDataset;
+        slDataset.putAndInsertString(DCM_QueryRetrieveLevel, "STUDY");
+        slDataset.insertEmptyElement(DCM_StudyInstanceUID);
+        
+        NSString* table = @"Study";
+        
+#define e else
+        for (NSString* key in keys) {
+            NSString* value = [keys objectForKey:key];
+            if (![value isKindOfClass:[NSString class]])
+                value = [(id)value stringValue];
+            
+            NSString* k = [[key componentsSeparatedByString:@"."] lastObject];
+            
+            if ([k isEqualToString:@"QueryRetrieveLevel"]) {
+                slDataset.putAndInsertString(DCM_QueryRetrieveLevel, value.UTF8String);
+                if ([value isEqualToString:@"STUDY"])
+                    table = @"Study";
+                if ([value isEqualToString:@"SERIES"])
+                    table = @"Series";
+                if ([value isEqualToString:@"IMAGE"])
+                    table = @"Image";
+            }
+            e if ([k isEqualToString:@"studyInstanceUID"])
+                slDataset.putAndInsertString(DCM_StudyInstanceUID, value.UTF8String);
+            e if ([k isEqualToString:@"seriesInstanceUID"])
+                slDataset.putAndInsertString(DCM_SeriesInstanceUID, value.UTF8String);
+            e if ([k isEqualToString:@"patientID"])
+                slDataset.putAndInsertString(DCM_PatientID, value.UTF8String);
+            e if ([k isEqualToString:@"accessionNumber"])
+                slDataset.putAndInsertString(DCM_AccessionNumber, value.UTF8String);
+        }
+#undef e
+        
+        slDataset.print(std::cout);
+        
+        for (NSDictionary* dn in dicomNodes) {
+            DCMTKRootQueryNode* qn = [DCMTKRootQueryNode queryNodeWithDataset:&slDataset
+                                                                   callingAET:[NSUserDefaults.standardUserDefaults stringForKey:@"AETITLE"]
+                                                                    calledAET:[dn objectForKey:@"AETitle"]
+                                                                     hostname:[dn objectForKey:@"Address"]
+                                                                         port:[[dn objectForKey:@"Port"] intValue]
+                                                               transferSyntax:[[dn objectForKey:@"TransferSyntax"] intValue]
+                                                                  compression:0
+                                                              extraParameters:dn];
+            [qn setShowErrorMessage:NO];
+            
+            [qn setupNetworkWithSyntax:UID_FINDStudyRootQueryRetrieveInformationModel dataset:&slDataset destination:nil];
+            
+            if (qn.children.count) {
+                NSMutableDictionary* params = [[dn mutableCopy] autorelease];
+                [params setObject:[NSUserDefaults.standardUserDefaults stringForKey:@"AETITLE"] forKey:@"moveDestination"];
+                
+                [NSThread performBlockInBackground:^{
+                    NSDate* date = [NSDate date];
+                    const NSTimeInterval maxWaitSeconds = 60;
+                    DicomDatabase* idatabase = [self.database independentDatabase];
+                    while (-[date timeIntervalSinceNow] < maxWaitSeconds) {
+                        NSArray* iobjects = [idatabase objectsForEntity:table predicate:predicate error:NULL];
+                        if (iobjects.count) {
+                            [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjectsWithIDs:) withObject:[iobjects valueForKey:@"objectID"] waitUntilDone:NO];
+                            break;
+                        }
+                        
+                        [NSThread sleepForTimeInterval:0.1];
+                    }
+                    
+                }];
+                
+                thread.status = NSLocalizedString(@"Retrieving...", nil);
+                
+                for (DCMTKStudyQueryNode* sqn in qn.children)
+                    [sqn move:params retrieveMode:[[dn objectForKey:@"retrieveMode"] intValue]];
+            }
+        }
+    }];
+    
+    
+    
+}
+
 /**
  Method: DisplayStudy
 
@@ -264,7 +364,7 @@
  Example: {PatientID: "1100697", StudyID: "A10043712203"}
  Response: {error: "0", elements: array of elements corresponding to the request}
  */
--(NSDictionary*)DisplayStudy:(NSDictionary*)paramDict error:(NSError**)error {
+- (NSDictionary*)DisplayStudy:(NSDictionary*)paramDict error:(NSError**)error {
     NSMutableArray* subpredicates = [NSMutableArray array];
     
     NSString* patientID = [paramDict valueForKey:@"PatientID"];
@@ -275,77 +375,26 @@
     if (!subpredicates.count)
         ReturnWithCode(400); // Bad Request
     
-    if ([NSUserDefaults.standardUserDefaults boolForKey:@"XMLRPCWithPOD"] && [NSUserDefaults.standardUserDefaults boolForKey:@"searchForComparativeStudiesOnDICOMNodes"]) {
-        [NSThread performBlockInBackground:^{
-            NSMutableArray* dicomNodes = [NSMutableArray array];
-            NSArray* allDicomNodes = [DCMNetServiceDelegate DICOMServersList];
-            for (NSDictionary* si in [NSUserDefaults.standardUserDefaults arrayForKey:@"comparativeSearchDICOMNodes"])
-                for (NSDictionary* di in allDicomNodes)
-                    if ([[si objectForKey:@"AETitle"] isEqualToString:[di objectForKey:@"AETitle"]] &&
-                        [[si objectForKey:@"name"] isEqualToString:[di objectForKey:@"Description"]] &&
-                        [[si objectForKey:@"AddressAndPort"] isEqualToString:[NSString stringWithFormat:@"%@:%@", [di valueForKey:@"Address"], [di valueForKey:@"Port"]]])
-                    {
-                        [dicomNodes addObject:di];
-                    }
-            
-            NSThread* thread = [NSThread currentThread];
-            thread.name = NSLocalizedString(@"Retrieving requested study...", nil);
-            thread.status = (dicomNodes.count == 1)? NSLocalizedString(@"Querying POD server...", nil) : NSLocalizedString(@"Querying POD servers...", nil);
-            [ThreadsManager.defaultManager addThreadAndStart:thread];
-            
-            DcmDataset slDataset;
-            slDataset.putAndInsertString(DCM_QueryRetrieveLevel, "STUDY");
-            if (patientID.length)
-                slDataset.putAndInsertString(DCM_PatientID, patientID.UTF8String);
-            if (studyInstanceUID.length)
-                slDataset.putAndInsertString(DCM_StudyInstanceUID, studyInstanceUID.UTF8String);
-            else slDataset.insertEmptyElement(DCM_StudyInstanceUID);
-            
-            for (NSDictionary* dn in dicomNodes) {
-                DCMTKRootQueryNode* qn = [DCMTKRootQueryNode queryNodeWithDataset:&slDataset
-                                                                       callingAET:[NSUserDefaults.standardUserDefaults stringForKey:@"AETITLE"]
-                                                                        calledAET:[dn objectForKey:@"AETitle"]
-                                                                         hostname:[dn objectForKey:@"Address"]
-                                                                             port:[[dn objectForKey:@"Port"] intValue]
-                                                                   transferSyntax:[[dn objectForKey:@"TransferSyntax"] intValue]
-                                                                      compression:0
-                                                                  extraParameters:dn];
-                [qn setShowErrorMessage:NO];
-                
-                [qn setupNetworkWithSyntax:UID_FINDStudyRootQueryRetrieveInformationModel dataset:&slDataset destination:nil];
-                
-                if (qn.children.count) {
-                    NSMutableDictionary* params = [[dn mutableCopy] autorelease];
-                    [params setObject:[NSUserDefaults.standardUserDefaults stringForKey:@"AETITLE"] forKey:@"moveDestination"];
-                    
-                    [NSThread performBlockInBackground:^{
-                        NSDate* date = [NSDate date];
-                        const NSTimeInterval maxWaitSeconds = 60;
-                        DicomDatabase* idatabase = [self.database independentDatabase];
-                        while (-[date timeIntervalSinceNow] < maxWaitSeconds) {
-                            NSArray* iobjects = [idatabase objectsForEntity:@"Study" predicate:[NSCompoundPredicate andPredicateWithSubpredicates:subpredicates] error:error];
-                            if (iobjects.count) {
-                                [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjectsWithIDs:) withObject:[iobjects valueForKey:@"objectID"] waitUntilDone:NO];
-                                break;
-                            }
-                            
-                            [NSThread sleepForTimeInterval:0.1];
-                        }
-                        
-                    }];
-                    
-                    for (DCMTKStudyQueryNode* sqn in qn.children)
-                        [sqn move:params retrieveMode:[[dn objectForKey:@"retrieveMode"] intValue]];
-                }
-            }
-        }];
-    }
-    
     NSError* lerror = nil;
     if (!error)
         error = &lerror;
     
-    NSArray* iobjects = [[self.database independentDatabase] objectsForEntity:@"Study" predicate:[NSCompoundPredicate andPredicateWithSubpredicates:subpredicates] error:error];
+    NSPredicate* predicate = [NSCompoundPredicate andPredicateWithSubpredicates:subpredicates];
+    
+    NSArray* iobjects = [[self.database independentDatabase] objectsForEntity:@"Study" predicate:predicate error:error];
+    
+//  if (!iobjects.count) // do this anyway, to complete the study if something is amiss
+    if ([NSUserDefaults.standardUserDefaults boolForKey:@"XMLRPCWithPOD"] && [NSUserDefaults.standardUserDefaults boolForKey:@"searchForComparativeStudiesOnDICOMNodes"]) {
+        NSMutableDictionary* keys = [NSMutableDictionary dictionary];
+        
+        if (patientID.length)
+            [keys setObject:patientID forKey:@"patientID"];
+        if (studyInstanceUID.length)
+            [keys setObject:studyInstanceUID forKey:@"studyInstanceUID"];
+
+        if (keys.count)
+            [self _PACSOnDemandRetrieve:keys open:predicate];
+    }
     
     if (error && *error)
         ReturnWithErrorValue((*error).code);
@@ -370,7 +419,7 @@
  Example: {PatientID: "1100697", SeriesInstanceUID: "1.3.12.2.1107.5.1.4.54693.30000007120706534864000001110"}
  Response: {error: "0", elements: array of elements corresponding to the request}
  */
--(NSDictionary*)DisplaySeries:(NSDictionary*)paramDict error:(NSError**)error {
+- (NSDictionary*)DisplaySeries:(NSDictionary*)paramDict error:(NSError**)error {
     NSMutableArray* subpredicates = [NSMutableArray array];
     
     NSString* patientID = [paramDict valueForKey:@"PatientID"];
@@ -381,77 +430,28 @@
     if (!subpredicates.count)
         ReturnWithCode(400); // Bad Request
     
-    if ([NSUserDefaults.standardUserDefaults boolForKey:@"XMLRPCWithPOD"] && [NSUserDefaults.standardUserDefaults boolForKey:@"searchForComparativeStudiesOnDICOMNodes"]) {
-        [NSThread performBlockInBackground:^{
-            NSMutableArray* dicomNodes = [NSMutableArray array];
-            NSArray* allDicomNodes = [DCMNetServiceDelegate DICOMServersList];
-            for (NSDictionary* si in [NSUserDefaults.standardUserDefaults arrayForKey:@"comparativeSearchDICOMNodes"])
-                for (NSDictionary* di in allDicomNodes)
-                    if ([[si objectForKey:@"AETitle"] isEqualToString:[di objectForKey:@"AETitle"]] &&
-                        [[si objectForKey:@"name"] isEqualToString:[di objectForKey:@"Description"]] &&
-                        [[si objectForKey:@"AddressAndPort"] isEqualToString:[NSString stringWithFormat:@"%@:%@", [di valueForKey:@"Address"], [di valueForKey:@"Port"]]])
-                    {
-                        [dicomNodes addObject:di];
-                    }
-            
-            NSThread* thread = [NSThread currentThread];
-            thread.name = NSLocalizedString(@"Retrieving requested series...", nil);
-            thread.status = (dicomNodes.count == 1)? NSLocalizedString(@"Querying POD server...", nil) : NSLocalizedString(@"Querying POD servers...", nil);
-            [ThreadsManager.defaultManager addThreadAndStart:thread];
-            
-            DcmDataset slDataset;
-            slDataset.putAndInsertString(DCM_QueryRetrieveLevel, "SERIES");
-            if (patientID.length)
-                slDataset.putAndInsertString(DCM_PatientID, patientID.UTF8String);
-            if (seriesInstanceUID.length)
-                slDataset.putAndInsertString(DCM_SeriesInstanceUID, seriesInstanceUID.UTF8String);
-            else slDataset.insertEmptyElement(DCM_SeriesInstanceUID);
-            
-            for (NSDictionary* dn in dicomNodes) {
-                DCMTKSeriesQueryNode* qn = [DCMTKSeriesQueryNode queryNodeWithDataset:&slDataset
-                                                                           callingAET:[NSUserDefaults.standardUserDefaults stringForKey:@"AETITLE"]
-                                                                            calledAET:[dn objectForKey:@"AETitle"]
-                                                                             hostname:[dn objectForKey:@"Address"]
-                                                                                 port:[[dn objectForKey:@"Port"] intValue]
-                                                                       transferSyntax:[[dn objectForKey:@"TransferSyntax"] intValue]
-                                                                          compression:0
-                                                                      extraParameters:dn];
-                [qn setShowErrorMessage:NO];
-                
-                [qn setupNetworkWithSyntax:UID_FINDStudyRootQueryRetrieveInformationModel dataset:&slDataset destination:nil];
-                
-                if (qn.children.count) {
-                    NSMutableDictionary* params = [[dn mutableCopy] autorelease];
-                    [params setObject:[NSUserDefaults.standardUserDefaults stringForKey:@"AETITLE"] forKey:@"moveDestination"];
-                    
-                    [NSThread performBlockInBackground:^{
-                        NSDate* date = [NSDate date];
-                        const NSTimeInterval maxWaitSeconds = 60;
-                        DicomDatabase* idatabase = [self.database independentDatabase];
-                        while (-[date timeIntervalSinceNow] < maxWaitSeconds) {
-                            NSArray* iobjects = [idatabase objectsForEntity:@"Series" predicate:[NSCompoundPredicate andPredicateWithSubpredicates:subpredicates] error:error];
-                            if (iobjects.count) {
-                                [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjectsWithIDs:) withObject:[iobjects valueForKey:@"objectID"] waitUntilDone:NO];
-                                break;
-                            }
-                            
-                            [NSThread sleepForTimeInterval:0.1];
-                        }
-                        
-                    }];
-                    
-                    [qn move:params retrieveMode:[[dn objectForKey:@"retrieveMode"] intValue]];
-                    
-                }
-            }
-        }];
-    }
-    
     NSError* lerror = nil;
     if (!error)
         error = &lerror;
     
-    NSArray* iobjects = [[self.database independentDatabase] objectsForEntity:@"Series" predicate:[NSCompoundPredicate andPredicateWithSubpredicates:subpredicates] error:error];
+    NSPredicate* predicate = [NSCompoundPredicate andPredicateWithSubpredicates:subpredicates];
+    
+    NSArray* iobjects = [[self.database independentDatabase] objectsForEntity:@"Series" predicate:predicate error:error];
+    
+//  if (!iobjects.count) // do this anyway, to complete the study if something is amiss
+    if ([NSUserDefaults.standardUserDefaults boolForKey:@"XMLRPCWithPOD"] && [NSUserDefaults.standardUserDefaults boolForKey:@"searchForComparativeStudiesOnDICOMNodes"]) {
+        NSMutableDictionary* keys = [NSMutableDictionary dictionary];
+        
+        if (patientID.length)
+            [keys setObject:patientID forKey:@"study.patientID"];
+        if (seriesInstanceUID.length)
+            [keys setObject:seriesInstanceUID forKey:@"seriesInstanceUID"];
+        
+        if (keys.count) {
+            [keys setObject:@"SERIES" forKey:@"QueryRetrieveLevel"];
+            [self _PACSOnDemandRetrieve:keys open:predicate];
+        }
+    }
     
     if (error && *error)
         ReturnWithErrorValue((*error).code);
@@ -489,7 +489,7 @@
     if (!request.length || !entityName.length)
         ReturnWithCode(400); // Bad Request
     
-    if ([command isEqualToString:@"Open"] && [NSUserDefaults.standardUserDefaults boolForKey:@"XMLRPCWithPOD"] && [NSUserDefaults.standardUserDefaults boolForKey:@"searchForComparativeStudiesOnDICOMNodes"]) {
+  /*  if ([command isEqualToString:@"Open"] && [NSUserDefaults.standardUserDefaults boolForKey:@"XMLRPCWithPOD"] && [NSUserDefaults.standardUserDefaults boolForKey:@"searchForComparativeStudiesOnDICOMNodes"]) {
         [NSThread performBlockInBackground:^{
             // parse the request to see if we can treat it
             id predicate = [NSPredicate predicateWithFormat:request];
@@ -579,7 +579,7 @@
                 }
             }
         }];
-    }
+    }*/
     
     NSError* lerror = nil;
     if (!error)
@@ -587,9 +587,43 @@
     
     DicomDatabase* idatabase = [self.database independentDatabase];
     
-    NSArray* iobjects = [idatabase objectsForEntity:entityName predicate:[NSPredicate predicateWithFormat:request] error:error];
+    NSPredicate* predicate = [NSPredicate predicateWithFormat:request];
+    
+    NSArray* iobjects = [idatabase objectsForEntity:entityName predicate:predicate error:error];
     
 //  NSLog(@"FindObject %@ ||| %@ ||| %@ ||| %d", entityName, request, command, (int)iobjects.count);
+    
+//  if (!iobjects.count) // do this anyway, to complete the study if something is amiss
+    if ([command isEqualToString:@"Open"] && [NSUserDefaults.standardUserDefaults boolForKey:@"XMLRPCWithPOD"] && [NSUserDefaults.standardUserDefaults boolForKey:@"searchForComparativeStudiesOnDICOMNodes"]) {
+        NSMutableArray* predicates = [NSMutableArray array];
+        if ([predicate isKindOfClass:[NSComparisonPredicate class]])
+            [predicates addObject:predicate];
+        if ([predicate isKindOfClass:[NSCompoundPredicate class]] && [(id)predicate compoundPredicateType] == NSAndPredicateType)
+            for (id subpredicate in [(id)predicate subpredicates])
+                if ([subpredicate isKindOfClass:[NSComparisonPredicate class]])
+                    [predicates addObject:subpredicate];
+
+        NSMutableDictionary* keys = [NSMutableDictionary dictionary];
+        for (NSComparisonPredicate* p in predicates)
+            if (p.comparisonPredicateModifier == NSDirectPredicateModifier && p.predicateOperatorType == NSEqualToPredicateOperatorType) {
+                if (p.leftExpression.expressionType == NSKeyPathExpressionType && p.rightExpression.expressionType == NSConstantValueExpressionType)
+                    [keys setObject:p.rightExpression.constantValue forKey:p.leftExpression.keyPath];
+                else if (p.rightExpression.expressionType == NSKeyPathExpressionType && p.leftExpression.expressionType == NSConstantValueExpressionType)
+                    [keys setObject:p.leftExpression.constantValue forKey:p.rightExpression.keyPath];
+            }
+        
+        if (keys.count) {
+            if ([entityName isEqual:@"Study"])
+                [keys setObject:@"STUDY" forKey:@"QueryRetrieveLevel"];
+            if ([entityName isEqual:@"Series"])
+                [keys setObject:@"SERIES" forKey:@"QueryRetrieveLevel"];
+            if ([entityName isEqual:@"Image"])
+                [keys setObject:@"IMAGE" forKey:@"QueryRetrieveLevel"];
+
+            [self _PACSOnDemandRetrieve:keys open:predicate];
+        }
+    }
+
     
     if (error && *error)
         ReturnWithErrorValue((*error).code);
