@@ -57,6 +57,8 @@
 
 - (void)mouseDown:(NSEvent*)event {
     if (_n2mode) {
+        [NSNotificationCenter.defaultCenter postNotificationName:NSPopUpButtonWillPopUpNotification object:self];
+
         NSMenu* menu = [[self.menu copy] autorelease];
         for (NSMenuItem* mi in menu.itemArray)
             if (!mi.title.length)

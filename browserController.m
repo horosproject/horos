@@ -9550,6 +9550,42 @@ static BOOL withReset = NO;
         
         if (!album)
             album = [self.database newObjectForEntity:self.database.albumEntity];
+        
+        SmartWindowController* swc = sheet.windowController;
+        
+        album.name = swc.name;
+        album.smartAlbum = [NSNumber numberWithBool:YES];
+        album.predicateString = [swc.predicate predicateFormat];
+        [self.database save];
+        
+        /*
+         // Distant DICOM node filter
+         if( [[[smartWindowController onDemandFilter] allKeys] count] > 0)
+         {
+         NSMutableArray *savedSmartAlbums = [[[[NSUserDefaults standardUserDefaults] objectForKey: @"smartAlbumStudiesDICOMNodes"] mutableCopy] autorelease];
+         
+         NSUInteger idx = [[savedSmartAlbums valueForKey: @"name"] indexOfObject: name];
+         
+         if( idx != NSNotFound)
+         [savedSmartAlbums removeObjectAtIndex: idx];
+         
+         NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool: NO], @"activated", name, @"name", nil];
+         
+         [dict addEntriesFromDictionary: [smartWindowController onDemandFilter]];
+         
+         [savedSmartAlbums addObject: dict];
+         
+         [[NSUserDefaults standardUserDefaults] setObject: savedSmartAlbums forKey: @"smartAlbumStudiesDICOMNodes"];
+         }
+
+         */
+        
+        [self refreshAlbums];
+
+        NSInteger index = [self.albumArray indexOfObject:album];
+        if (index != NSNotFound)
+            [albumTable selectRowIndexes:[NSIndexSet indexSetWithIndex:index] byExtendingSelection:NO];
+
     }
     
     [sheet.windowController release];

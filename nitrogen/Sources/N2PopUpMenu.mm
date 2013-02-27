@@ -114,8 +114,6 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
 }
 
 - (void)startTrackingMenu:(NSMenu*)menu withEvent:(NSEvent*)event forView:(NSView*)view withFont:(NSFont*)font {
-    [NSNotificationCenter.defaultCenter postNotificationName:NSPopUpButtonWillPopUpNotification object:view];
-    
 //    NSLog(@"%@", menu.itemArray);
     
     _startTime = event.timestamp;
