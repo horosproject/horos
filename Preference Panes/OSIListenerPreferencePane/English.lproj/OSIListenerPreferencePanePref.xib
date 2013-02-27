@@ -5947,7 +5947,9 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="editHostname:">id</string>
 						<string key="editTLS:">id</string>
 						<string key="ok:">id</string>
+						<string key="openKeyChainAccess:">id</string>
 						<string key="selectAllSuites:">id</string>
+						<string key="smartAlbumHelpButton:">id</string>
 						<string key="useSameAETitleForTLSListener:">id</string>
 						<string key="viewTLSCertificate:">id</string>
 					</dictionary>
@@ -5984,8 +5986,16 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">ok:</string>
 							<string key="candidateClassName">id</string>
 						</object>
+						<object class="IBActionInfo" key="openKeyChainAccess:">
+							<string key="name">openKeyChainAccess:</string>
+							<string key="candidateClassName">id</string>
+						</object>
 						<object class="IBActionInfo" key="selectAllSuites:">
 							<string key="name">selectAllSuites:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="smartAlbumHelpButton:">
+							<string key="name">smartAlbumHelpButton:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="useSameAETitleForTLSListener:">
