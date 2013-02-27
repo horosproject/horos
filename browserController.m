@@ -9546,7 +9546,7 @@ static BOOL withReset = NO;
     if (returnCode == NSRunStoppedResponse) {
         DicomAlbum* album = nil;
         if ([(id)contextInfo isKindOfClass:[DicomAlbum class]])
-            album = contextInfo;
+            album = [(id)contextInfo autorelease];
         
         if (!album)
             album = [self.database newObjectForEntity:self.database.albumEntity];
@@ -9582,10 +9582,13 @@ static BOOL withReset = NO;
         
         [self refreshAlbums];
 
+        [albumTable selectRowIndexes:[NSIndexSet indexSetWithIndex:[self.albumArray indexOfObject:album]] byExtendingSelection:NO];
+
         NSInteger index = [self.albumArray indexOfObject:album];
         if (index != NSNotFound)
             [albumTable selectRowIndexes:[NSIndexSet indexSetWithIndex:index] byExtendingSelection:NO];
-
+        
+        [self outlineViewRefresh];
     }
     
     [sheet.windowController release];
@@ -9745,11 +9748,22 @@ static BOOL needToRezoom;
 {
 	if( albumTable.selectedRow > 0 && [_database isLocal])
 	{
-		NSManagedObject	*album = [self.albumArray objectAtIndex: albumTable.selectedRow];
+		DicomAlbum* album = [self.albumArray objectAtIndex:albumTable.selectedRow];
 		
-		if( [[album valueForKey:@"smartAlbum"] boolValue] == YES)
+		if ([[album valueForKey:@"smartAlbum"] boolValue] == YES)
 		{
-			[editSmartAlbumName setStringValue: [album valueForKey:@"name"]];
+			SmartWindowController* swc = [[SmartWindowController alloc] initWithDatabase:self.database];
+            swc.name = album.name;
+            swc.predicate = [NSPredicate predicateWithFormat:album.predicateString];
+            
+            [NSApp beginSheet:swc.window
+               modalForWindow:self.window
+                modalDelegate:self
+               didEndSelector:@selector(smartAlbumSheetDidEnd:returnCode:contextInfo:)
+                  contextInfo:[album retain]];
+
+            
+            /*[editSmartAlbumName setStringValue: [album valueForKey:@"name"]];
 			[editSmartAlbumQuery setStringValue: [album valueForKey:@"predicateString"]];
 			
 			[NSApp beginSheet: editSmartAlbum
@@ -9820,7 +9834,7 @@ static BOOL needToRezoom;
 				
 				[context unlock];
 				[context release];
-			}
+			}*/
 		}
 		else
 		{

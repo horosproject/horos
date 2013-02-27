@@ -86,8 +86,10 @@
     else [super mouseUp:event];
 }
 
-- (void)keyDown:(NSEvent *)theEvent {
-    NSLog(@"keyDown:%@", theEvent);
+- (void)keyDown:(NSEvent*)event {
+    if (event.keyCode == 48) // tab
+        return [super keyDown:event];
+    [self mouseDown:nil];
 }
 
 /*- (void)bind:(NSString *)binding toObject:(id)observable withKeyPath:(NSString *)keyPath options:(NSDictionary *)options {
