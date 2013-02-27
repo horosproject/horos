@@ -176,7 +176,10 @@ static NSString* const BrowserActivityHelperContext = @"BrowserActivityHelperCon
                 }
             }
             
+            if( cellsToRemove.count)
+            {
                 [_cells removeObjectsInArray: cellsToRemove];
+                [_browser._activityTableView reloadData];
             }
             return;
         }
