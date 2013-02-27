@@ -86,6 +86,10 @@
     else [super mouseUp:event];
 }
 
+- (void)keyDown:(NSEvent *)theEvent {
+    NSLog(@"keyDown:%@", theEvent);
+}
+
 /*- (void)bind:(NSString *)binding toObject:(id)observable withKeyPath:(NSString *)keyPath options:(NSDictionary *)options {
     [super bind:binding toObject:observable withKeyPath:keyPath options:options];
 

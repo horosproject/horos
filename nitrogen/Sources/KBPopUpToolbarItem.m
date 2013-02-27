@@ -10,12 +10,6 @@
 
 static float backgroundInset = 1.5;
 
-@interface KBDelayedPopUpButtonCell : NSButtonCell{
-    NSBezierPath *arrowPath;
-}
-@property (nonatomic,retain) NSBezierPath *arrowPath;
-@end
-
 @implementation KBDelayedPopUpButtonCell
 
 @synthesize arrowPath;
