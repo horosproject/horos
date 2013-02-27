@@ -56,8 +56,8 @@ static float backgroundInset = 1.5;
             float arrowWidth = [NSFont systemFontSizeForControlSize:[self controlSize]]*0.6;
             float arrowHeight = [NSFont systemFontSizeForControlSize:[self controlSize]]*0.5;
             
-            float x=frameSize.width-backgroundInset-arrowWidth;
-            float y=frameSize.height-backgroundInset-arrowHeight;
+            float x=frameSize.width-backgroundInset-arrowWidth+cellFrame.origin.x;
+            float y=frameSize.height-backgroundInset-arrowHeight+cellFrame.origin.y;
             
             [path moveToPoint:NSMakePoint(x, y)];
             [path lineToPoint:NSMakePoint(x+arrowWidth, y)];
