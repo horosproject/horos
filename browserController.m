@@ -9558,7 +9558,7 @@ static BOOL withReset = NO;
         album.predicateString = [swc.predicate predicateFormat];
         [self.database save];
         
-        /*
+        /* // TODO: voir avec Antoine, pourquoi faut-il faire a ?
          // Distant DICOM node filter
          if( [[[smartWindowController onDemandFilter] allKeys] count] > 0)
          {
@@ -9580,9 +9580,9 @@ static BOOL withReset = NO;
 
          */
         
-        [self refreshAlbums];
-
         [albumTable selectRowIndexes:[NSIndexSet indexSetWithIndex:[self.albumArray indexOfObject:album]] byExtendingSelection:NO];
+
+        [self refreshAlbums];
 
         NSInteger index = [self.albumArray indexOfObject:album];
         if (index != NSNotFound)
@@ -9711,7 +9711,7 @@ static BOOL withReset = NO;
 
 static BOOL needToRezoom;
 
-- (IBAction)smartAlbumHelpButton: (id)sender
+/*- (IBAction)smartAlbumHelpButton: (id)sender
 {
 	if( [sender tag] == 0)
 	{
@@ -9742,7 +9742,7 @@ static BOOL needToRezoom;
 			NSRunCriticalAlertPanel( NSLocalizedString(@"Error",nil), [NSString stringWithFormat: NSLocalizedString(@"This filter is NOT working: %@", nil), e], NSLocalizedString(@"OK",nil), nil, nil);
 		}
 	}
-}
+}*/
 
 - (IBAction) albumTableDoublePressed: (id)sender
 {

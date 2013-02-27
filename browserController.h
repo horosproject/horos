@@ -137,9 +137,6 @@ extern NSString* O2AlbumDragType;
 	IBOutlet NSWindow				*newAlbum;
 	IBOutlet NSTextField			*newAlbumName;
 	
-	IBOutlet NSWindow				*editSmartAlbum;
-	IBOutlet NSTextField			*editSmartAlbumName, *editSmartAlbumQuery;
-	
 	IBOutlet NSWindow				*rebuildWindow;
 	IBOutlet NSMatrix				*rebuildType;
 	IBOutlet NSTextField			*estimatedTime, *noOfFilesToRebuild, *warning;
