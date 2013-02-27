@@ -24,6 +24,7 @@
 #import <algorithm>
 #import "NSUserDefaultsController+OsiriX.h"
 #import "AppController.h"
+#import "N2Debug.h"
 
 @interface BrowserActivityHelper : NSObject {
 	BrowserController* _browser;
@@ -167,10 +168,16 @@ static NSString* const BrowserActivityHelperContext = @"BrowserActivityHelperCon
                 if (cell) {
                     [cell cleanup];
                     [cell retain];
-                    [_cells removeObject:cell];
-                    [_browser._activityTableView reloadData];
-                    
-                    [cell performSelector: @selector( release) withObject: nil afterDelay: 3]; //Yea... I know... not very nice, but avoid a zombie crash, if a thread is cancelled (GUI) AFTER released here...
+                    @try {
+                        [_cells removeObject:cell];
+                        [_browser._activityTableView reloadData];
+                    }
+                    @catch (NSException *exception) {
+                        N2LogException( exception);
+                    }
+                    @finally {
+                        [cell performSelector: @selector( release) withObject: nil afterDelay: 60]; //Yea... I know... not very nice, but avoid a zombie crash, if a thread is cancelled (GUI) AFTER released here...
+                    }
                 }
             }
             
