@@ -44,7 +44,10 @@
 #include "dcdict.h"
 #include "dcdeftag.h"
 
-#define CHUNK_SUBPROCESS 500
+#define CHUNK_SUBPROCESS 200
+#define TIMEOUT 600UL
+
+// Maximum of 200 files: no more than 10 min...
 
 @implementation DicomDatabase (DCMTK)
 
@@ -143,10 +146,21 @@
 				[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Decompress"]];
 				[theTask setArguments:[[NSArray arrayWithObjects: dest, @"compress", nil] arrayByAddingObjectsFromArray: subArray]];
 				[theTask launch];
-				while( [theTask isRunning])
-                    [NSThread sleepForTimeInterval: 0.1];
                 
-                //[theTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
+                NSTimeInterval taskStart = [NSDate timeIntervalSinceReferenceDate];
+				while( [theTask isRunning])
+                {
+                    [NSThread sleepForTimeInterval: 0.1];
+                    if( [NSDate timeIntervalSinceReferenceDate] - taskStart > TIMEOUT)
+                        break;
+                }
+                
+                if( [theTask isRunning])
+                {
+                    N2LogStackTrace( @"***** task timeout reached -> terminate the NSTask");
+                    NSLog( @"%@", paths);
+                    [theTask terminate];
+                }
 			} @catch (NSException *e) {
 				N2LogExceptionWithStackTrace(e);
 			}
@@ -299,10 +313,21 @@
 				[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Decompress"]];
 				[theTask setArguments:[[NSArray arrayWithObjects: dest, @"decompressList", nil] arrayByAddingObjectsFromArray: subArray]];
 				[theTask launch];
+				
+                NSTimeInterval taskStart = [NSDate timeIntervalSinceReferenceDate];
 				while( [theTask isRunning])
+                {
                     [NSThread sleepForTimeInterval: 0.1];
+                    if( [NSDate timeIntervalSinceReferenceDate] - taskStart > TIMEOUT)
+                        break;
+                }
                 
-                //[theTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
+                if( [theTask isRunning])
+                {
+                    N2LogStackTrace( @"***** task timeout reached -> terminate the NSTask");
+                    NSLog( @"%@", files);
+                    [theTask terminate];
+                }
 			}
             @catch (NSException *e)
             {
