@@ -1289,7 +1289,8 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
     if (!_detected)
         cell.textColor = [NSColor grayColor];
     
-    [cell.rightSubviews addObject:_unmountButton];
+    if( _unmountButton)
+        [cell.rightSubviews addObject:_unmountButton];
 }
 
 -(NSString*)toolTip
