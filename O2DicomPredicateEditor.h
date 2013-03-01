@@ -11,10 +11,12 @@
 
 @interface O2DicomPredicateEditor : NSPredicateEditor {
 @private
-    BOOL _inited, _inValidateEditing, _dbMode, _backbinding;
+    BOOL _inited, _inValidateEditing, _dbMode, _backbinding, _setting;
 }
 
 @property(nonatomic) BOOL dbMode;
+
+- (BOOL)matchForPredicate:(NSPredicate*)p;
 
 @end
 

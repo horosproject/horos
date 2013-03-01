@@ -22,12 +22,12 @@
 @implementation SmartWindowController
 
 @synthesize name = _name;
-@synthesize predicate = _predicate;
+@synthesize predicateFormat = _predicateFormat;
 @synthesize database = _database;
+@synthesize album = _album;
 @synthesize mode = _mode;
 @synthesize nameField = _nameField;
 @synthesize editor = _editor;
-@synthesize sqlText = _sqlText;
 
 - (id)initWithDatabase:(DicomDatabase*)database {
 	if (self = [super initWithWindowNibName:@"SmartAlbum"]) {
@@ -39,82 +39,52 @@
 
 - (void)awakeFromNib {
     [self.editor setDbMode:YES];
-    //[self.editor addObserver:self forKeyPath:@"value" options:0 context:[self class]];
-    [self addObserver:self forKeyPath:@"predicate" options:0 context:[self class]]; ///
 	[self.nameField.cell setPlaceholderString:NSLocalizedString(@"Smart Album", nil)];
+    if (![self.editor matchForPredicate:self.predicate])
+        self.mode = 1;
 }
 
 - (void)dealloc {
- //   [self.editor removeObserver:self forKeyPath:@"value"];
-    [self removeObserver:self forKeyPath:@"predicate"]; ///
-    
     self.name = nil;
     self.predicate = nil;
+    self.album = nil;
     self.database = nil;
 	
     [super dealloc];
 }
 
--(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context {
-    if (context != [self class])
-        return [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
++ (NSSet*)keyPathsForValuesAffectingPredicate {
+    return [NSSet setWithObject:@"predicateFormat"];
+}
+
+- (NSPredicate*)predicate {
+    @try {
+        return [NSPredicate predicateWithFormat:self.predicateFormat];
+    } @catch (...) {
+    }
     
-/*    NSPredicate* p = [self.editor predicate];
-    NSPredicate* mp = self.predicate;
-    if (![self.predicate isEqual:p])
-        self.predicate = p;*/
-    
-    if ([keyPath isEqual:@"value"])
-        NSLog(@"!!!!!!!!! %@ !!! %@ -> %@", object, keyPath, [object valueForKeyPath:@"predicate"]);
-    else NSLog(@"!!!!!!!!! %@ !!! %@ -> %@", object, keyPath, [object valueForKeyPath:keyPath]);
+    return nil;
 }
-
-- (void)windowWillClose:(NSNotification*)notification {
-}
-
-+ (NSSet*)keyPathsForValuesAffectingPredicateFormat {
-    return [NSSet setWithObject:@"predicate"];
-}
-
 
 - (void)setPredicate:(id)predicate {
-    @try {
-        if ([predicate isKindOfClass:[NSCompoundPredicate class]] && [predicate compoundPredicateType] == NSAndPredicateType && [[predicate subpredicates] count] > 1) { // somehow, we get AND(TRUEPREDICATE, XXX) instead of XXX
-            NSMutableArray* sps = [NSMutableArray array];
-            for (id sp in [predicate subpredicates])
-                if (![sp isEqual:[NSPredicate predicateWithValue:YES]])
-                    [sps addObject:sp];
-            if (sps.count == 1)
-                predicate = [sps objectAtIndex:0];
-        }
-        
-        if (predicate != _predicate) {
-            [_predicate release];
-            _predicate = [predicate retain];
-        }
-    } @catch (...) {
-        @throw;
-    } @finally {
-    }
+    NSLog(@"setp");
+    self.predicateFormat = [predicate predicateFormat];
 }
 
 - (NSString*)predicateFormat {
-    if (_predicate)
-        return [_predicate predicateFormat];
-    else return @"TRUEPREDICATE";
+    if (_predicateFormat.length)
+        return _predicateFormat;
+    else return nil;
 }
 
-- (void)setPredicateFormat:(NSString*)predicateFormat {
-    NSLog(@"setPredicateFormat: %@", predicateFormat);
-    if (!predicateFormat)
-        self.predicate = nil;
-    else
-        @try {
-            self.predicate = [NSPredicate predicateWithFormat:predicateFormat];
-        } @catch (...) {
-//            self.predicate = nil;
-        }
+- (void)setPredicateFormat:(NSString *)predicateFormat {
+    
+    if (predicateFormat != _predicateFormat) {NSLog(@"setpre");
+        [_predicateFormat release];
+        _predicateFormat = [predicateFormat retain];
+    }NSLog(@"donepre");
 }
+
 
 #pragma mark Actions
 
@@ -138,35 +108,49 @@
 
 - (IBAction)testAction:(id)sender {
     @try {
+        NSPredicate* p = [NSPredicate predicateWithFormat:self.predicateFormat];
+        
+        /*BOOL warning = NO;
+        if (![self.editor matchForPredicate:p])
+            warning = YES;*/
+
         BrowserController* bc = [BrowserController currentBrowser];
-    
-        bc.testPredicate = [bc smartAlbumPredicateString:self.predicateFormat];
-        if (!bc.testPredicate)
+        p = [bc smartAlbumPredicateString:self.predicateFormat];
+        if (!p)
             [NSException raise:NSGenericException format:NSLocalizedString(@"Invalid NSPredicate SQL syntax", nil)];
-            
-        NSString* exception = [bc outlineViewRefresh];
-        bc.testPredicate = nil;
         
-        if (exception)
-            @throw exception;
+        NSError* error = nil;
+        [self.database objectsForEntity:self.database.studyEntity predicate:p error:&error];
+        if (error)
+            [NSException raise:NSGenericException format:@"%@", error.localizedDescription];
         
-        NSRunInformationalAlertPanel( NSLocalizedString(@"It works!",nil), NSLocalizedString(@"This filter works: the result is now displayed in the Database Window.", nil), nil, nil, nil);
+        NSString* message = NSLocalizedString(@"This filter works: the result is now displayed in the Database Window.", nil);
+//        if (warning)
+//            message = NSLocalizedString(@"This filter works, however it contains bits that don't make any sense in the OsiriX database context.", nil);
+        
+        NSRunInformationalAlertPanel( NSLocalizedString(@"It works!",nil), message, nil, nil, nil);
     }
     @catch (NSException* e) {
-        N2LogExceptionWithStackTrace(e);
-        NSRunCriticalAlertPanel( NSLocalizedString(@"Error",nil), [NSString stringWithFormat: NSLocalizedString(@"This filter is NOT working: %@", nil), e], NSLocalizedString(@"OK", nil), nil, nil);
+//        N2LogExceptionWithStackTrace(e);
+        NSRunCriticalAlertPanel( NSLocalizedString(@"Error",nil), [NSString stringWithFormat: NSLocalizedString(@"This filter is NOT working: %@", nil), e], nil, nil, nil);
     }
 }
 
 #pragma mark -  
 
-+ (NSSet*)keyPathsForValuesAffectingPredicateIsValid {
-    return [NSSet setWithObject:@"predicate"];
++ (NSSet*)keyPathsForValuesAffectingPredicateFormatIsValid {
+    return [NSSet setWithObject:@"predicateFormat"];
 }
 
-- (BOOL)predicateIsValid {
-//    NSLog(@"is valid? %@ --- %d", self.predicate, [self.predicate isEqual:[NSPredicate predicateWithValue:YES]]);
-    return self.predicate && ![self.predicate isEqual:[NSPredicate predicateWithValue:YES]];
+- (BOOL)predicateFormatIsValid {
+    @try {
+        NSPredicate* p = [NSPredicate predicateWithFormat:self.predicateFormat];
+        if (p)
+            return YES;
+    } @catch (...) {
+    }
+    
+    return NO;
 }
 
 + (NSSet*)keyPathsForValuesAffectingNameIsValid {
@@ -174,7 +158,9 @@
 }
 
 - (BOOL)nameIsValid {
-    return self.name.length && ![[[self.database objectsForEntity:self.database.albumEntity] valueForKey:@"name"] containsObject:self.name];
+    NSMutableArray* albums = [[[self.database objectsForEntity:self.database.albumEntity] mutableCopy] autorelease];
+    if (self.album) [albums removeObject:self.album];
+    return self.name.length && ![[albums valueForKey:@"name"] containsObject:self.name];
 }
 
 + (NSSet*)keyPathsForValuesAffectingModeIsPredicate {
@@ -193,22 +179,14 @@
     return self.mode == 1;
 }
 
-+ (NSSet*)keyPathsForValuesAffectingSQLIsValid {
-    return [NSSet setWithObject:@"sqlText.value"];
++ (NSSet*)keyPathsForValuesAffectingOkButtonTitle {
+    return [NSSet setWithObject:@"album"];
 }
 
-- (BOOL)SQLIsValid {
-    @try {
-        NSString* s = [self.sqlText string];
-        NSPredicate* p = [NSPredicate predicateWithFormat:s];
-
-        if ([[self.editor.rowTemplates objectAtIndex:1] matchForPredicate:p])
-            return YES;
-
-    } @catch (...) {
-    }
-    
-    return NO;
+- (NSString*)okButtonTitle {
+    if (self.album)
+        return NSLocalizedString(@"Save", nil);
+    return NSLocalizedString(@"Create", nil);
 }
 
 @end

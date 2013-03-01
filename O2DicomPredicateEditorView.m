@@ -1379,7 +1379,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
     
     NSInteger i = [dic.allKeys indexOfObject:str];
     
-    if (i == NSNotFound) return 0;
+    if (i == NSNotFound) return dic.count+1;
     
     return i+1;
 }
@@ -1387,12 +1387,10 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
 - (NSString*)codeStringForTag:(NSInteger)cst {
     NSDictionary* dic = [O2DicomPredicateEditorCodeStrings codeStringsForTag:self.tag];
     
-    if (dic.count >= cst)
+    if (cst > 0 && dic.count >= cst)
         return [dic.allKeys objectAtIndex:cst-1];
     
     return [self stringValue];
-    
-    return nil;
 }
 
 

@@ -9727,6 +9727,7 @@ static BOOL needToRezoom;
 			SmartWindowController* swc = [[SmartWindowController alloc] initWithDatabase:self.database];
             swc.name = album.name;
             swc.predicate = [NSPredicate predicateWithFormat:album.predicateString];
+            swc.album = album;
             
             [NSApp beginSheet:swc.window
                modalForWindow:self.window

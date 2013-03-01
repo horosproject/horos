@@ -444,7 +444,7 @@ extern NSString* O2AlbumDragType;
 - (void) addFiles: (NSArray*) files withRule:(NSDictionary*) routingRule __deprecated;
 - (void) resetListenerTimer __deprecated;
 - (IBAction) albumTableDoublePressed: (id)sender;
-- (IBAction) smartAlbumHelpButton:(id) sender;
+//- (IBAction) smartAlbumHelpButton:(id) sender;
 - (IBAction) regenerateAutoComments:(id) sender;
 - (DCMPix *)previewPix:(int)i;
 - (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray __deprecated;

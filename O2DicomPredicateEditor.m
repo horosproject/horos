@@ -76,6 +76,9 @@
     if (context != [self class])
         return [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     
+    if (_setting)
+        return;
+    
     _backbinding = YES;
     @try {
         NSDictionary* binding = [[[self infoForBinding:@"value"] retain] autorelease];
@@ -95,7 +98,14 @@
 //    if (!value)
 //        value = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObject:[NSPredicate predicateWithValue:YES]]];
     
-    [super setObjectValue:value];
+    _setting = YES;
+    @try {
+        [super setObjectValue:value];
+    } @catch (...) {
+        @throw;
+    } @finally {
+        _setting = NO;
+    }
 }
 
 - (void)setDbMode:(BOOL)dbMode {
@@ -118,7 +128,25 @@
     }
 }
 
-
+- (BOOL)matchForPredicate:(id)p {
+    NSArray* s = nil;
+    if ([p isKindOfClass:[NSCompoundPredicate class]])
+        s = [p subpredicates];
+    else s = [NSArray arrayWithObject:p];
+    
+    for (NSPredicate* p in s) {
+        BOOL ok = NO;
+        for (NSPredicateEditorRowTemplate* rt in self.rowTemplates)
+            if ([rt matchForPredicate:p]) {
+                ok = YES;
+                break;
+            }
+        if (!ok)
+            return NO;
+    }
+    
+    return YES;
+}
 
 @end
 

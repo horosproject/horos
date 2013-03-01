@@ -16,6 +16,7 @@
 #import "NSMutableDictionary+N2.h"
 #import "N2Debug.h"
 #import "NSFileManager+N2.h"
+#import "NSException+N2.h"
 
 //#import "DicomDatabase.h" // for debug purposes, REMOVE
 
@@ -531,7 +532,7 @@
 	return [self objectsForEntity:e predicate:p error:NULL];
 }
 
--(NSArray*)objectsForEntity:(id)e predicate:(NSPredicate*)p error:(NSError**)err {
+-(NSArray*)objectsForEntity:(id)e predicate:(NSPredicate*)p error:(NSError**)error {
 	[self _entity:&e];
     
 #ifndef NDEBUG
@@ -544,9 +545,11 @@
     
     [self.managedObjectContext lock];
     @try {
-        return [self.managedObjectContext executeFetchRequest:req error:err];
+        return [self.managedObjectContext executeFetchRequest:req error:error];
     } @catch (NSException* e) {
-        N2LogException(e);
+        if (error && !*error)
+            *error = [NSError errorWithDomain:N2ErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObject:e.reason forKey:NSLocalizedDescriptionKey]];
+        else N2LogException(e);
     } @finally {
         [self.managedObjectContext unlock];
     }
@@ -562,7 +565,7 @@
 	return [self countObjectsForEntity:e predicate:p error:NULL];
 }
 
--(NSUInteger)countObjectsForEntity:(id)e predicate:(NSPredicate*)p error:(NSError**)err {
+-(NSUInteger)countObjectsForEntity:(id)e predicate:(NSPredicate*)p error:(NSError**)error {
 	[self _entity:&e];
 
 	NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
@@ -571,9 +574,11 @@
     
     [self.managedObjectContext lock];
     @try {
-        return [self.managedObjectContext countForFetchRequest:req error:err];
+        return [self.managedObjectContext countForFetchRequest:req error:error];
     } @catch (NSException* e) {
-        N2LogException(e);
+        if (error && !*error)
+            *error = [NSError errorWithDomain:N2ErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObject:e.reason forKey:NSLocalizedDescriptionKey]];
+        else N2LogException(e);
     } @finally {
         [self.managedObjectContext unlock];
     }
@@ -590,9 +595,9 @@
     return [self save:NULL];
 }
 
--(BOOL)save:(NSError**)err {
+-(BOOL)save:(NSError**)error {
 	NSError* perr = NULL;
-	if (!err) err = &perr;
+	if (!error) error = &perr;
 	
 	BOOL b = NO;
 	
@@ -603,10 +608,11 @@
     [self.managedObjectContext lock];
     
     @try {
-        b = [self.managedObjectContext save:err];
+        b = [self.managedObjectContext save:error];
     } @catch(NSException* e) {
-        if (!*err)
-            *err = [NSError errorWithDomain:@"Exception" code:-1 userInfo:[NSDictionary dictionaryWithObject:e forKey:@"Exception"]];
+        if (error && !*error)
+            *error = [NSError errorWithDomain:N2ErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObject:e.reason forKey:NSLocalizedDescriptionKey]];
+        else N2LogException(e);
     } @finally {
         [self.managedObjectContext unlock];
     }

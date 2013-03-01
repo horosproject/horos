@@ -1217,14 +1217,6 @@
 					<int key="connectionID">92</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">sqlText</string>
-						<reference key="source" ref="716164192"/>
-						<reference key="destination" ref="670055237"/>
-					</object>
-					<int key="connectionID">145</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
 						<string key="label">cancelAction:</string>
 						<reference key="source" ref="423730667"/>
@@ -1274,15 +1266,15 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled2: predicateIsValid</string>
+						<string key="label">enabled2: predicateFormatIsValid</string>
 						<reference key="source" ref="132087471"/>
 						<reference key="destination" ref="716164192"/>
 						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="132087471"/>
 							<reference key="NSDestination" ref="716164192"/>
-							<string key="NSLabel">enabled2: predicateIsValid</string>
+							<string key="NSLabel">enabled2: predicateFormatIsValid</string>
 							<string key="NSBinding">enabled2</string>
-							<string key="NSKeyPath">predicateIsValid</string>
+							<string key="NSKeyPath">predicateFormatIsValid</string>
 							<dictionary key="NSOptions">
 								<integer value="-1" key="NSMultipleValuesPlaceholder"/>
 								<integer value="-1" key="NSNoSelectionPlaceholder"/>
@@ -1293,7 +1285,23 @@
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">90</int>
+					<int key="connectionID">147</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">title: okButtonTitle</string>
+						<reference key="source" ref="132087471"/>
+						<reference key="destination" ref="716164192"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="132087471"/>
+							<reference key="NSDestination" ref="716164192"/>
+							<string key="NSLabel">title: okButtonTitle</string>
+							<string key="NSBinding">title</string>
+							<string key="NSKeyPath">okButtonTitle</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">149</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -1314,10 +1322,14 @@
 							<string key="NSLabel">value: name</string>
 							<string key="NSBinding">value</string>
 							<string key="NSKeyPath">name</string>
+							<object class="NSDictionary" key="NSOptions">
+								<string key="NS.key.0">NSContinuouslyUpdatesValue</string>
+								<boolean value="YES" key="NS.object.0"/>
+							</object>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">91</int>
+					<int key="connectionID">148</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -1373,22 +1385,6 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: SQLIsValid</string>
-						<reference key="source" ref="757910096"/>
-						<reference key="destination" ref="716164192"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="757910096"/>
-							<reference key="NSDestination" ref="716164192"/>
-							<string key="NSLabel">enabled: SQLIsValid</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">SQLIsValid</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">144</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
 						<string key="label">hidden: modeIsSQL</string>
 						<reference key="source" ref="866761775"/>
 						<reference key="destination" ref="716164192"/>
@@ -1418,14 +1414,14 @@
 							<string key="NSLabel">value: predicateFormat</string>
 							<string key="NSBinding">value</string>
 							<string key="NSKeyPath">predicateFormat</string>
-							<object class="NSDictionary" key="NSOptions">
-								<string key="NS.key.0">NSContinuouslyUpdatesValue</string>
-								<boolean value="YES" key="NS.object.0"/>
-							</object>
+							<dictionary key="NSOptions">
+								<boolean value="YES" key="NSContinuouslyUpdatesValue"/>
+								<string key="NSNullPlaceholder">TRUEPREDICATE</string>
+							</dictionary>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">129</int>
+					<int key="connectionID">146</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -1834,7 +1830,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">145</int>
+			<int key="maxID">149</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -1876,7 +1872,6 @@
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="editor">O2DicomPredicateEditor</string>
 						<string key="nameField">NSTextField</string>
-						<string key="sqlText">NSTextView</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
 						<object class="IBToOneOutletInfo" key="editor">
@@ -1886,10 +1881,6 @@
 						<object class="IBToOneOutletInfo" key="nameField">
 							<string key="name">nameField</string>
 							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="sqlText">
-							<string key="name">sqlText</string>
-							<string key="candidateClassName">NSTextView</string>
 						</object>
 					</dictionary>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
