@@ -11,7 +11,7 @@
 
 @interface O2DicomPredicateEditor : NSPredicateEditor {
 @private
-    BOOL _inited, _inValidateEditing, _dbMode;
+    BOOL _inited, _inValidateEditing, _dbMode, _backbinding;
 }
 
 @property(nonatomic) BOOL dbMode;

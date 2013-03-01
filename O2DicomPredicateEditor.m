@@ -47,18 +47,10 @@
     if (_inited)
         return;
     
-    self.nestingMode = NSRuleEditorNestingModeList;
-    
     self.rowTemplates = [NSArray arrayWithObjects:
                          [[NSPredicateEditorRowTemplate alloc] initWithCompoundTypes:[NSArray arrayWithObjects: [NSNumber numberWithUnsignedInteger:NSAndPredicateType], [NSNumber numberWithUnsignedInteger:NSOrPredicateType], nil]],
                          [[O2DicomPredicateEditorRowTemplate alloc] init],
                          nil];
-    
-    //   NSPredicateEditorRowTemplate* rt = [[NSPredicateEditorRowTemplate alloc] initWithLeftExpressions:@"" rightExpressionAttributeType:<#(NSAttributeType)#> modifier:<#(NSComparisonPredicateModifier)#> operators:<#(NSArray *)#> options:<#(NSUInteger)#>];
-    
-    //    self.rowTemplates = [NSArray arrayWithObjects:
-    //                         t1,
-    //                         nil];
     
     NSDictionary* binding = [[[self infoForBinding:@"value"] retain] autorelease];
     if (binding) {
@@ -70,7 +62,40 @@
         [self bind:@"value" toObject:[binding objectForKey:NSObservedObjectKey] withKeyPath:[binding objectForKey:NSObservedKeyPathKey] options:options];
     }
     
+    [self addObserver:self forKeyPath:@"value" options:0 context:[self class]];
+    
     _inited = YES;
+}
+
+- (void)dealloc {
+    [self removeObserver:self forKeyPath:@"value"];
+    [super dealloc];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if (context != [self class])
+        return [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    
+    _backbinding = YES;
+    @try {
+        NSDictionary* binding = [[[self infoForBinding:@"value"] retain] autorelease];
+        if (binding)
+            [[binding objectForKey:NSObservedObjectKey] setValue:self.predicate forKeyPath:[binding objectForKey:NSObservedKeyPathKey]];
+    } @catch (...) {
+        @throw;
+    } @finally {
+        _backbinding = NO;
+    }
+}
+
+- (void)setObjectValue:(id)value {
+    if (_backbinding)
+        return;
+    
+//    if (!value)
+//        value = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObject:[NSPredicate predicateWithValue:YES]]];
+    
+    [super setObjectValue:value];
 }
 
 - (void)setDbMode:(BOOL)dbMode {
@@ -81,16 +106,12 @@
 
 }
 
-/*- (void)resizeSubviewsWithOldSize:(NSSize)oldSize {
- [super resizeSubviewsWithOldSize:oldSize];
- }*/
-
 + (NSSet*)keyPathsForValuesAffectingValue {
     return [NSSet setWithObject:@"predicate"];
 }
 
-- (void)validateEditing {
-    if (!_inValidateEditing) { // to avoid an infinite recurse loop
+- (void)validateEditing { // to avoid an infinite recurse loop
+    if (!_inValidateEditing) {
         _inValidateEditing = YES;
         [super validateEditing];
         _inValidateEditing = NO;
@@ -99,14 +120,8 @@
 
 
 
-
-/*- (DcmDataset*)dictionary {
-    
-}*/
-
-
-
 @end
+
 
 
 @implementation O2DicomPredicateEditorRowTemplate
@@ -128,13 +143,6 @@
     
     return _view;
 }
-
-//- (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context {
-//    if (context != [O2DicomPredicateEditorRowTemplate class])
-//        return [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-//    
-//    NSLog(@"hey hooo i know preee ===[ %@ ]=== ===[ %@ ]=== ===[ %@ ]=== ", [object predicate], [[object editor] predicate], [[NSApp delegate] predicate]);
-//}
 
 - (double)matchForPredicate:(id)predicate {
     return [self.view matchForPredicate:predicate];

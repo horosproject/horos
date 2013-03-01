@@ -4214,6 +4214,14 @@ static volatile int numberOfThreadsForRelisce = 0;
             studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: @"date" ascending: NO]]];
 		}
         
+#ifndef OSIRIX_LIGHT
+        static NSImage* retrieveImage = nil;
+        if (!retrieveImage) {
+            retrieveImage = [[NSImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DownArrowGreyRev" ofType:@"pdf"]];
+            retrieveImage.size = NSMakeSize(50,50);
+        }
+#endif
+        
 		if ([studiesArray count])
 		{
             studiesArray = [NSArray arrayWithArray: studiesArray];
@@ -4340,12 +4348,9 @@ static volatile int numberOfThreadsForRelisce = 0;
                     NSString *action = nil;
 #ifndef OSIRIX_LIGHT
                     if ([[cell.representedObject object] isKindOfClass:[DCMTKStudyQueryNode class]]) { // this is an incomplete study
-                        static NSImage* image = nil;
-                        if (!image)
-                            image = [[NSImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DownArrowGreyRev" ofType:@"pdf"]];
-                        [cell setImage:image];
+                        [cell setImage:retrieveImage];
                         [cell setImagePosition:NSImageOverlaps];
-                        [cell setImageScaling:NSImageScaleProportionallyUpOrDown];
+                        [cell setImageScaling:NSImageScaleNone];
 
                     } else {
 #endif
@@ -4418,12 +4423,9 @@ static volatile int numberOfThreadsForRelisce = 0;
                         [cell setTitle:[components componentsJoinedByString:@"\r"]];
                     }
                     
-                    static NSImage* image = nil;
-                    if (!image)
-                        image = [[NSImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DownArrowGreyRev" ofType:@"pdf"]];
-                    [cell setImage:image];
+                    [cell setImage:retrieveImage];
                     [cell setImagePosition:NSImageOverlaps];
-                    [cell setImageScaling:NSImageScaleProportionallyUpOrDown];
+                    [cell setImageScaling:NSImageScaleNone];
                     
                    // [cell setBackgroundColor: [NSColor whiteColor]];
                     

@@ -258,7 +258,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
                 if ([tag.vr isEqualToString:@"CS"]) {
                     NSDictionary* csd = [O2DicomPredicateEditorCodeStrings codeStringsForTag:tag];
                     if (!csd.count && [[[self class] _transformTagName:tag.name] isEqualToString:tag.name])
-                        NSLog(@"Warning: no known values for %@", tag);
+                        DLog(@"Warning: no known values for %@", tag);
                 }
         });
 
@@ -308,7 +308,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
         [_stringValueTextField.cell setControlSize:NSSmallControlSize];
         _stringValueTextField.font = [NSFont controlContentFontOfSize:[NSFont smallSystemFontSize]];
         
-        [_stringValueTextField bind:@"value" toObject:self withKeyPath:@"stringValue" options:nil];
+        [_stringValueTextField bind:@"value" toObject:self withKeyPath:@"stringValue" options:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:NSContinuouslyUpdatesValueBindingOption]];
         
         // number value field
         
@@ -316,7 +316,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
         [_numberValueTextField.cell setControlSize:NSSmallControlSize];
         _numberValueTextField.font = [NSFont controlContentFontOfSize:[NSFont smallSystemFontSize]];
         
-        [_numberValueTextField bind:@"value" toObject:self withKeyPath:@"numberValue" options:nil];
+        [_numberValueTextField bind:@"value" toObject:self withKeyPath:@"numberValue" options:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:NSContinuouslyUpdatesValueBindingOption]];
         
         // date picker
         
@@ -404,6 +404,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
         
         // ...
         
+        [self addObserver:self forKeyPath:@"selectedTag" options:NSKeyValueObservingOptionInitial context:[self class]];
         [self addObserver:self forKeyPath:@"tag" options:NSKeyValueObservingOptionInitial context:[self class]];
         [self addObserver:self forKeyPath:@"operator" options:NSKeyValueObservingOptionInitial context:[self class]];
         [self addObserver:self forKeyPath:@"stringValue" options:NSKeyValueObservingOptionInitial context:[self class]];
@@ -426,6 +427,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
     [self removeObserver:self forKeyPath:@"stringValue"];
     [self removeObserver:self forKeyPath:@"operator"];
     [self removeObserver:self forKeyPath:@"tag"];
+    [self removeObserver:self forKeyPath:@"selectedTag"];
     
     [_tagsPopUp release];
     [_operatorsPopUp release];
@@ -449,175 +451,11 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
     [super dealloc];
 }
 
-/*-(void)controlTextDidChange:(NSNotification*)notification {
-    CGFloat delay = 0.666;
-    
-    NSString* str = [notification.object stringValue];
-   
-    NSMutableString* mstr = [NSMutableString string];
-    for (NSUInteger i = 0; i < str.length; ++i)
-         [mstr appendFormat:@"%d, ", [str characterAtIndex:i]];
-    
-    NSLog(@".... %@ - %@", str, mstr);
-
-    unichar lastchar = [str characterAtIndex:str.length-1];
-    
-    if (lastchar == 8) { // delete
-        NSInteger from = str.length; from -= 2;
-        if (from < 0) from = 0;
-        str = [str substringToIndex:from];
-        [notification.object setStringValue:str];
-    }
-    else
-    if (lastchar == 13 || lastchar == 3) { // return or enter
-        NSInteger from = str.length; from -= 1;
-        if (from < 0) from = 0;
-        str = [str substringToIndex:from];
-        [notification.object setStringValue:str];
-        delay = 0;
-    }
-    else
-    if (lastchar < 0x20 || lastchar == 0x7F) { // control chars in ASCII (< 32) or DEL (= 127)
-        NSInteger from = str.length; from -= 1;
-        if (from < 0) from = 0;
-        str = [str substringToIndex:from];
-        [notification.object setStringValue:str];
-    }
-
-//    mstr = [NSMutableString string];
-//    for (NSUInteger i = 0; i < str.length; ++i)
-//        [mstr appendFormat:@"%d, ", [str characterAtIndex:i]];
-//    
-//    NSLog(@"  ..... %@ - %@", str, mstr);
-    
-    NSArray* words = [str componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    
-    NSLog(@"Words: %@", words);
-    
-    [[self class] cancelPreviousPerformRequestsWithTarget:self];
-    [self performSelector:@selector(filterItemsWithWords:) withObject:words afterDelay:delay inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]]; // TODO: get system key delay preference
-}*/
-
-/*- (void)filterItemsWithWords:(NSArray*)words {
-    [_tagsPopUpKeysCatcher setStringValue:@""];
-
-    if ([_currentWords isEqual:words])
-        return;
-    
-    [_currentWords release];
-    _currentWords = [words retain];
-    
-    @synchronized (self) {
-        NSLog(@"Filtering: %@", words);
-        
-        NSMutableArray* lcwords = [NSMutableArray array];
-        for (NSString* word in words)
-            [lcwords addObject:word.lowercaseString];
-
-        if (words) {
-            [_tagsPopUp.menu cancelTrackingWithoutAnimation];
-        }
-        
-        BOOL somethingIsAvailable = NO;
-        for (NSMenuItem* mi in [[_tagsPopUp.itemArray copy] autorelease]) {
-            if (mi.representedObject) {
-                if ([mi.representedObject isKindOfClass:[O2DicomPredicateEditorDCMAttributeTag class]] != [self.editor dbMode]) {
-                    mi.hidden = YES;
-                    continue;
-                }
-                
-                NSString* lctitle = mi.title.lowercaseString;
-                BOOL matchedAllWords = YES;
-                for (NSString* word in lcwords)
-                    if (word.length) {
-                        if (![lctitle contains:word])
-                            matchedAllWords = NO;
-                    }
-                mi.hidden = !matchedAllWords;
-                if (matchedAllWords)
-                    somethingIsAvailable = YES;
-            }
-        }
-        
-        if (words) {
-            NSMenuItem* mi = [_tagsPopUp.menu itemWithTag:-1];
-            if (!mi && !somethingIsAvailable) {
-                mi = [_tagsPopUp.menu addItemWithTitle:@"" action:nil keyEquivalent:@""];
-                mi.tag = -1;
-            }
-            mi.hidden = NO;
-            if (!somethingIsAvailable) {
-                mi.title = [NSString stringWithFormat:NSLocalizedString(@"No matches for: %@", nil), [words componentsJoinedByString:@" "]];
-                if (![_tagsPopUp.itemArray containsObject:mi]) [_tagsPopUp.menu addItem:mi];
-                mi.enabled = NO;
-            } else if (mi) [_tagsPopUp.menu removeItem:mi];
-            
-         //   [self sortTagsMenu];
-          
-            if (words.count) {
-                _dontResetMenu = YES;
-                [self performSelectorInBackground:@selector(_threadDidFilterNowLookForMenuWindow) withObject:nil]; // does _dontResetMenu = NO
-                [_tagsPopUp.menu popUpMenuPositioningItem:[_tagsPopUp selectedItem] atLocation:NSMakePoint(-14, self.frame.size.height/2+8) inView:self];
-            }
-        }
-    }
-}
-
-- (void)_threadDidFilterNowLookForMenuWindow { // find the menu window in a background thread
-    @autoreleasepool {
-        NSWindow* menuWindow = nil;
-        while (!menuWindow) {
-            NSWindow* window = [[NSApp windows] lastObject];
-            if ([[window className] isEqualToString:@"NSCarbonMenuWindow"]) {
-                menuWindow = window;
-                break;
-            }
-            
-            [NSThread sleepForTimeInterval:0.001];
-        }
-        
-        [self performSelectorOnMainThread:@selector(_mailThreadDidFilterFoundMenuWindowNowRefresh:) withObject:menuWindow waitUntilDone:NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
-    }
-}
-
-- (void)_mailThreadDidFilterFoundMenuWindowNowRefresh:(NSWindow*)menuWindow {
-    _dontResetMenu = NO;
-    [menuWindow makeFirstResponder:nil];
-    [menuWindow.contentView setNeedsDisplay:YES];
-    [menuWindow makeFirstResponder:_tagsPopUpKeysCatcher];
-    [[menuWindow fieldEditor:YES forObject:_tagsPopUpKeysCatcher] setSelectedRange:NSMakeRange([[_tagsPopUpKeysCatcher stringValue] length], 0)];
-    
-    // this hack makes the menu redraw (in some situations it stayed all white) --- this only works if the mouse is on the menu
-    
-    NSRect mwframe = [menuWindow frame];
-    if (!NSPointInRect([NSEvent mouseLocation], mwframe)) { // if mouse is not on window
-        NSRect s0frame = [[NSScreen.screens objectAtIndex:0] frame];
-        CGPoint p = {mwframe.origin.x+mwframe.size.width/2, s0frame.size.height - (mwframe.origin.y+mwframe.size.height/2)}; // [self.window convertBaseToScreen:[self.window.contentView convertPoint:NSMakePoint(0, self.bounds.size.height/2) fromView:self]].y
-        CGEventRef cgEvent = CGEventCreateMouseEvent(NULL, kCGEventMouseMoved, p, kCGMouseButtonLeft); // move mouse to window
-        CGEventPost(kCGHIDEventTap, cgEvent);
-        CFRelease(cgEvent);
-    }
-    
-    CGEventRef cgEvent = CGEventCreateScrollWheelEvent(NULL, kCGScrollEventUnitLine, 1, -1); // scroll to redraw
-    CGEventPost(kCGHIDEventTap, cgEvent);
-    CFRelease(cgEvent);
-}*/
-
-/*- (void)setStringValue:(NSString*)stringValue {
-    NSLog(@"setStringValue:%@", stringValue);
-    if (stringValue != _stringValue) {
-        [self willChangeValueForKey:@"stringValue"];
-        [_stringValue release];
-        _stringValue = [_stringValue retain];
-        [self didChangeValueForKey:@"stringValue"];
-    }
-}*/
-
 - (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context {
     if (context != [self class])
         return [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     
-    NSLog(@"%X observeValueForKeyPath: %@ -> %@", (int)self, keyPath, [self valueForKeyPath:keyPath]);
+//    NSLog(@"%X observeValueForKeyPath: %@ -> %@", (int)self, keyPath, [self valueForKeyPath:keyPath]);
     
     if (object == self)
     {
@@ -1101,7 +939,9 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
                     NSString* t = nil;
                     if ([k isKindOfClass:[NSString class]] && ![k isEqualToString:[dic objectForKey:k]] && [[dic objectForKey:k] length] < 80)
                         t = [NSString stringWithFormat:NSLocalizedString(@"%@, %@", nil), k, [dic objectForKey:k]];
-                    else t = k;
+                    else t = [dic objectForKey:k];
+                    if (![t isKindOfClass:[NSString class]])
+                        t = [(id)t stringValue];
                     NSMenuItem* mi = [_codeStringPopUp.menu addItemWithTitle:t action:nil keyEquivalent:@""];
                     mi.tag = ++i;
                 }
@@ -1231,7 +1071,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
                 } break;
                     
                 case CS: {
-                    if (otype == NSEqualToPredicateOperatorType && eright.expressionType == NSConstantValueExpressionType && [eright.constantValue isKindOfClass:[NSString class]])
+                    if (otype == NSEqualToPredicateOperatorType && eright.expressionType == NSConstantValueExpressionType)
                         return 1; // is
                 } break;
             }
@@ -1246,9 +1086,13 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
             // subpredicates must be of same KeyPath
             NSString* keyPath = nil;
             for (id p in subpredicates)
-                if (keyPath && ![[[p leftExpression] keyPath] isEqualToString:keyPath]) { // subpredicates must have the same keyPath
+                if ([p isKindOfClass:[NSComparisonPredicate class]]) {
+                    if (keyPath && ![[[p leftExpression] keyPath] isEqualToString:keyPath]) { // subpredicates must have the same keyPath
+                        keyPath = nil; break;
+                    } else keyPath = [[p leftExpression] keyPath];
+                } else { // subpredicates must all be comparisons
                     keyPath = nil; break;
-                } else keyPath = [[p leftExpression] keyPath];
+                };
             
             DCMAttributeTag* tag = [self tagWithKeyPath:keyPath];
             O2ValueRepresentation vr = [[self class] valueRepresentationFromVR:tag.vr];
@@ -1347,8 +1191,12 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
                 
             case CS: {
                 [self setCodeStringTag:[self tagForCodeString:[[predicate rightExpression] constantValue]]];
-                if ([[[predicate rightExpression] constantValue] isKindOfClass:[NSString class]])
-                    [self setStringValue:[[predicate rightExpression] constantValue]];
+                if ([[[predicate rightExpression] constantValue] isKindOfClass:[NSString class]]) {
+                    id v = [[predicate rightExpression] constantValue];
+                    if (![v isKindOfClass:[NSString class]])
+                        v = [v stringValue];
+                    [self setStringValue:v];
+                }
             } break;
         }
     }

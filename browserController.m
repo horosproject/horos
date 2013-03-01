@@ -9582,13 +9582,18 @@ static BOOL withReset = NO;
         
         [albumTable selectRowIndexes:[NSIndexSet indexSetWithIndex:[self.albumArray indexOfObject:album]] byExtendingSelection:NO];
 
-        [self refreshAlbums];
-
+        
+        @synchronized (self) {
+            _cachedAlbumsContext = nil;
+        }
+        
         NSInteger index = [self.albumArray indexOfObject:album];
         if (index != NSNotFound)
             [albumTable selectRowIndexes:[NSIndexSet indexSetWithIndex:index] byExtendingSelection:NO];
         
         [self outlineViewRefresh];
+        
+        [self refreshAlbums];
     }
     
     [sheet.windowController release];
@@ -9711,39 +9716,6 @@ static BOOL withReset = NO;
 
 static BOOL needToRezoom;
 
-/*- (IBAction)smartAlbumHelpButton: (id)sender
-{
-	if( [sender tag] == 0)
-	{
-		[[NSWorkspace sharedWorkspace] openFile:[[NSBundle mainBundle] pathForResource:@"OsiriXTables" ofType:@"pdf"] withApplication: nil andDeactivate: YES];
-		[NSThread sleepForTimeInterval: 1];
-	}
-	
-	if( [sender tag] == 1)
-		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://developer.apple.com/documentation/Cocoa/Conceptual/Predicates/Articles/pSyntax.html#//apple_ref/doc/uid/TP40001795"]];
-
-	if( [sender tag] == 2)
-	{
-		[[self window] makeFirstResponder: nil];
-		
-		@try
-		{
-			self.testPredicate = [[BrowserController currentBrowser] smartAlbumPredicateString: [editSmartAlbumQuery stringValue]];
-			
-			NSString *exception = [self outlineViewRefresh];
-			self.testPredicate = nil;
-			
-			if( exception) NSRunCriticalAlertPanel( NSLocalizedString(@"Error",nil), [NSString stringWithFormat: NSLocalizedString(@"This filter is NOT working: %@", nil), exception], NSLocalizedString(@"OK",nil), nil, nil);
-			else NSRunInformationalAlertPanel( NSLocalizedString(@"It works !",nil), NSLocalizedString(@"This filter works: the result is now displayed in the Database Window.", nil), NSLocalizedString(@"OK",nil), nil, nil);
-		}
-		@catch (NSException * e)
-		{
-            N2LogExceptionWithStackTrace(e);
-			NSRunCriticalAlertPanel( NSLocalizedString(@"Error",nil), [NSString stringWithFormat: NSLocalizedString(@"This filter is NOT working: %@", nil), e], NSLocalizedString(@"OK",nil), nil, nil);
-		}
-	}
-}*/
-
 - (IBAction) albumTableDoublePressed: (id)sender
 {
 	if( albumTable.selectedRow > 0 && [_database isLocal])
@@ -9762,79 +9734,6 @@ static BOOL needToRezoom;
                didEndSelector:@selector(smartAlbumSheetDidEnd:returnCode:contextInfo:)
                   contextInfo:[album retain]];
 
-            
-            /*[editSmartAlbumName setStringValue: [album valueForKey:@"name"]];
-			[editSmartAlbumQuery setStringValue: [album valueForKey:@"predicateString"]];
-			
-			[NSApp beginSheet: editSmartAlbum
-			   modalForWindow: self.window
-				modalDelegate: nil
-			   didEndSelector: nil
-				  contextInfo: nil];
-			
-			int result = [NSApp runModalForWindow: editSmartAlbum];
-			[editSmartAlbum makeFirstResponder: nil];
-			
-			[NSApp endSheet: editSmartAlbum];
-			[editSmartAlbum orderOut: self];
-			
-			self.testPredicate = nil;
-			[self outlineViewRefresh];
-			
-			if( result == NSRunStoppedResponse)
-			{
-				NSError *error = nil;
-				NSString *name;
-				int i = 2;
-				
-				NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-				[dbRequest setEntity: [[self.database.managedObjectModel entitiesByName] objectForKey:@"Album"]];
-				[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-				
-				NSManagedObjectContext *context = self.database.managedObjectContext;
-				
-				[context retain];
-				[context lock];
-				error = nil;
-				
-				@try 
-				{
-					NSArray *albumsArray = [context executeFetchRequest:dbRequest error:&error];
-				
-					if( [[editSmartAlbumName stringValue] isEqualToString: [album valueForKey:@"name"]] == NO)
-					{
-						name = [editSmartAlbumName stringValue];
-						while( [[albumsArray valueForKey:@"name"] indexOfObject: name] != NSNotFound)
-						{
-							name = [NSString stringWithFormat:@"%@ #%d", [editSmartAlbumName stringValue], i++];
-						}
-						
-						[album setValue:name forKey:@"name"];
-					}
-					
-					[album setValue:[editSmartAlbumQuery stringValue] forKey:@"predicateString"];
-					
-                    @synchronized (self)
-                    {
-                        _cachedAlbumsContext = nil;
-                    }
-                    
-					[_database save:NULL];
-					
-					[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [self.albumArray indexOfObject:album]] byExtendingSelection: NO];
-					
-					[self outlineViewRefresh];
-					
-					[self refreshAlbums];
-				}
-				@catch (NSException * e) 
-				{
-                    N2LogExceptionWithStackTrace(e);
-				}
-				
-				[context unlock];
-				[context release];
-			}*/
 		}
 		else
 		{
