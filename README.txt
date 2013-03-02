@@ -82,7 +82,7 @@ with Thick Slab
 3D ROIs
 3D Image Registration
 Stereo Vision with Red/Blue glasses
-Export any 3D images to Quicktime, Quicktime VR, TIFF, JPEG
+Export any 3D images to Quicktime, TIFF, JPEG
 All 3D viewers support 'Image Fusion' for PET-CT exams and '4D mode' for Cardiac-CT.
 
 Optimization
