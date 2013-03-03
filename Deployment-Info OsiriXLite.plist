@@ -247,5 +247,7 @@
 	<string>OsiriX.sdef</string>
 	<key>NSContactsUsageDescription</key>
 	<string>Your account will be used for the built-in iChat sharing service. If you don&apos;t allow access, you cannot use the iChat functions.</string>
+	<key>GitHash</key>
+	<string>2f751490e561a5abab90f201d8b03ae9fbd98711</string>
 </dict>
 </plist>
