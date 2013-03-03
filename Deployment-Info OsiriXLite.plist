@@ -212,7 +212,7 @@
 	<key>NSAppleScriptEnabled</key>
 	<string>YES</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright 2003-2012, Pixmeo</string>
+	<string>Copyright 2003-2013, Pixmeo</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
@@ -248,6 +248,6 @@
 	<key>NSContactsUsageDescription</key>
 	<string>Your account will be used for the built-in iChat sharing service. If you don&apos;t allow access, you cannot use the iChat functions.</string>
 	<key>GitHash</key>
-	<string>2f751490e561a5abab90f201d8b03ae9fbd98711</string>
+	<string>5729b9817870ca7d35f77106af4c528ca43f59f0</string>
 </dict>
 </plist>
