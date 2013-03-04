@@ -63,7 +63,7 @@
 	return pix;
 }
 
-- (void)testExample
+- (void)testDCMPixBasic
 {
 	DCMPix *pix = [self dcmPixForFileNamed:@"MANIX-IM-0001-0021.dcm"];
 	STAssertTrue(pix.pwidth==512, @"Image width should be 512 pixels");
