@@ -9,12 +9,15 @@
 #import "Unit_Tests.h"
 #import "DCMPix.h"
 #import "dicomFile.h"
+#import "Papyrus3/Papyrus3.h"
 
 @implementation Unit_Tests
 
 - (void)setUp
 {
     [super setUp];
+    
+    Papy3Init();
     
     // Set-up code here.
 }
