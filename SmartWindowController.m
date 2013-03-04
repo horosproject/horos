@@ -40,17 +40,26 @@
 - (void)awakeFromNib {
     [self.editor setDbMode:YES];
 	[self.nameField.cell setPlaceholderString:NSLocalizedString(@"Smart Album", nil)];
-    if (![self.editor matchForPredicate:self.predicate])
-        self.mode = 1;
+    [self addObserver:self forKeyPath:@"predicate" options:NSKeyValueObservingOptionInitial context:[self class]];
 }
 
 - (void)dealloc {
+    [self removeObserver:self forKeyPath:@"predicate"];
     self.name = nil;
     self.predicate = nil;
     self.album = nil;
     self.database = nil;
 	
     [super dealloc];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if (context != [self class])
+        return [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    
+    if (object == self && [keyPath isEqualToString:@"predicate"])
+        if (self.predicate && ![self.editor matchForPredicate:self.predicate])
+            self.mode = 1;
 }
 
 + (NSSet*)keyPathsForValuesAffectingPredicate {
@@ -67,7 +76,6 @@
 }
 
 - (void)setPredicate:(id)predicate {
-    NSLog(@"setp");
     self.predicateFormat = [predicate predicateFormat];
 }
 
@@ -78,11 +86,10 @@
 }
 
 - (void)setPredicateFormat:(NSString *)predicateFormat {
-    
-    if (predicateFormat != _predicateFormat) {NSLog(@"setpre");
+    if (predicateFormat != _predicateFormat) {
         [_predicateFormat release];
         _predicateFormat = [predicateFormat retain];
-    }NSLog(@"donepre");
+    }
 }
 
 

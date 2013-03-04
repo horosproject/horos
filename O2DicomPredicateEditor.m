@@ -91,13 +91,47 @@
     }
 }
 
++ (id)regroupedPredicate:(id)p {
+    if ([p isKindOfClass:[NSCompoundPredicate class]]) {
+        NSMutableDictionary* d = [NSMutableDictionary dictionary];
+        NSMutableArray* a = [NSMutableArray array];
+        
+        for (id sp in [p subpredicates])
+            if ([sp isKindOfClass:[NSComparisonPredicate class]]) {
+                NSMutableArray* pka = [d objectForKey:[sp keyPath]];
+                if (!pka) {
+                    [d setObject:(pka = [NSMutableArray array]) forKey:[sp keyPath]];
+                    [a addObject:[sp keyPath]];
+                }
+                [pka addObject:sp];
+            } else
+                [a addObject:sp];
+
+        for (size_t i = 0; i < a.count; ++i)
+            if (![[a objectAtIndex:i] isKindOfClass:[NSPredicate class]]) {
+                NSArray* pka = [d objectForKey:[a objectAtIndex:i]];
+                id np;
+                if (pka.count == 1)
+                    np = [pka lastObject];
+                else np = [NSCompoundPredicate andPredicateWithSubpredicates:pka];
+                [a replaceObjectAtIndex:i withObject:np];
+            }
+        
+        p = [[[NSCompoundPredicate alloc] initWithType:[p compoundPredicateType] subpredicates:a] autorelease];
+    }
+    
+    return p;
+}
+
 - (void)setObjectValue:(id)value {
     if (_backbinding)
         return;
     
-//    if (!value)
-//        value = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObject:[NSPredicate predicateWithValue:YES]]];
+    [self initDicomPredicateEditor]; // weird, this is needed: bindings are assigned before initWithFrame: or awakeFromNib...
     
+    // try grouping conditions on the same keys in separate compounds
+    value = [[self class] regroupedPredicate:value];
+
     _setting = YES;
     @try {
         [super setObjectValue:value];
@@ -129,12 +163,12 @@
 }
 
 - (BOOL)matchForPredicate:(id)p {
-    NSArray* s = nil;
-    if ([p isKindOfClass:[NSCompoundPredicate class]])
-        s = [p subpredicates];
-    else s = [NSArray arrayWithObject:p];
-    
-    for (NSPredicate* p in s) {
+//    NSArray* s = nil;
+//    if ([p isKindOfClass:[NSCompoundPredicate class]])
+//        s = [p subpredicates];
+//    else s = [NSArray arrayWithObject:p];
+//    
+//    for (NSPredicate* p in s) {
         BOOL ok = NO;
         for (NSPredicateEditorRowTemplate* rt in self.rowTemplates)
             if ([rt matchForPredicate:p]) {
@@ -143,7 +177,7 @@
             }
         if (!ok)
             return NO;
-    }
+//    }
     
     return YES;
 }
