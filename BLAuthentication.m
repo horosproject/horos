@@ -55,7 +55,8 @@ OSStatus AuthorizationExecuteWithPrivilegesStdErrAndPid (
     }
     
 	/* Create command to be executed */
-	for (argcount = 0; arguments[argcount] != 0; ++argcount) {}	
+    if( arguments)
+        for (argcount = 0; arguments[argcount] != 0; ++argcount) {}	
 	args = (char**)malloc (sizeof(char*)*(argcount + 5));
 	args[0] = "-c";
 	snprintf (command, sizeof (command), commandtemplate, stderrpath);

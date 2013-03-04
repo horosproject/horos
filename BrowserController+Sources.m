@@ -122,7 +122,10 @@ enum {
     {
         if ([[self sourceIdentifierForDatabase:self.database] isEqualToDataNodeIdentifier:mbs])
             [self performSelector: @selector(setDatabase:) withObject: DicomDatabase.defaultDatabase afterDelay: 0.01]; //This will guarantee that this will not happen in middle of a drag & drop, for example
+        
+        [mbs retain];
         [self.sources removeObject:mbs];
+        [mbs performSelector: @selector( autorelease) withObject: nil afterDelay: 60];
     }
 }
 
@@ -473,7 +476,11 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
                     if (![[a valueForKey:@"Path"] containsObject:dni.location]) {          // is no longer in the entered list
                         dni.entered = NO;                                                 // mark it as not entered
                         if (!dni.detected)
+                        {
+                            [dni retain];
                             [_browser.sources removeObject:dni]; // not entered, not detected.. remove it
+                            [dni performSelector: @selector( autorelease) withObject: nil afterDelay: 60];
+                        }
                     }
             }
             // add new items
@@ -505,10 +512,15 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
             for (DataNodeIdentifier* dni in [[_browser.sources.content copy] autorelease])
             {
                 if ([dni isKindOfClass:[RemoteDatabaseNodeIdentifier class]] && dni.entered) // is a remote database and is flagged as "entered"
-                    if (![[a valueForKey:@"Address"] containsObject:dni.location]) {        // is no longer in the entered list
+                    if (![[a valueForKey:@"Address"] containsObject:dni.location])          // is no longer in the entered list
+                    {        
                         dni.entered = NO;                                                  // mark it as not entered
                         if (!dni.detected)
+                        {
+                            [dni retain];
                             [_browser.sources removeObject:dni]; // not entered, not detected.. remove it
+                            [dni performSelector: @selector( autorelease) withObject: nil afterDelay: 60];
+                        }
                     }
             }
             // add new items
@@ -556,7 +568,11 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
                     if (![[aa allKeys] containsObject:dni.location]) {             // is no longer in the entered list
                         dni.entered = NO;                                         // mark it as not entered
                         if (!dni.detected)
+                        {
+                            [dni retain];
                             [_browser.sources removeObject:dni]; // not entered, not detected.. remove it
+                            [dni performSelector: @selector( autorelease) withObject: nil afterDelay: 60];
+                        }
                     }
             }
             // add new items
@@ -594,7 +610,11 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
                         if ([dni isKindOfClass:[RemoteDatabaseNodeIdentifier class]] && dni.detected) {
                             dni.detected = NO;
                             if (!dni.entered && [_browser.sources.content containsObject:dni])
-                                [_browser.sources removeObject:dni];
+                            {
+                                [dni retain];
+                                [_browser.sources removeObject:dni]; // not entered, not detected.. remove it
+                                [dni performSelector: @selector( autorelease) withObject: nil afterDelay: 60];
+                            }
                         }
                 } else 
                 { // add remote databases detected with bonjour
@@ -615,7 +635,11 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
                         if ([dni isKindOfClass:[DicomNodeIdentifier class]] && dni.detected) {
                             dni.detected = NO;
                             if (!dni.entered && [_browser.sources.content containsObject:dni])
-                                [_browser.sources removeObject:dni];
+                            {
+                                [dni retain];
+                                [_browser.sources removeObject:dni]; // not entered, not detected.. remove it
+                                [dni performSelector: @selector( autorelease) withObject: nil afterDelay: 60];
+                            }
                         }
                 } else
                 { // add dicom nodes detected with bonjour
@@ -815,7 +839,11 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
         
             dni.detected = NO;
             if (!dni.entered && [_browser.sources.content containsObject:dni])
-                [_browser.sources removeObject:dni];
+            {
+                [dni retain];
+                [_browser.sources removeObject:dni]; // not entered, not detected.. remove it
+                [dni performSelector: @selector( autorelease) withObject: nil afterDelay: 60];
+            }
         }
 	
         // if the disappearing node is active, select the default DB
@@ -957,7 +985,9 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
         {
             if ([[_browser sourceIdentifierForDatabase:_browser.database] isEqualToDataNodeIdentifier:mbs])
                 [_browser performSelector: @selector(setDatabase:) withObject: DicomDatabase.defaultDatabase afterDelay: 0.01]; //This will guarantee that this will not happen in middle of a drag & drop, for example
+            [mbs retain];
             [_browser.sources removeObject:mbs];
+            [mbs performSelector: @selector( autorelease) withObject: nil afterDelay: 60];
         }
     }
     
@@ -1164,7 +1194,10 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
         
 		if (![[database objectsForEntity:database.imageEntity] count])
         {
+            [self retain];
 			[[[BrowserController currentBrowser] sources] removeObject:self];
+            [self performSelector: @selector( autorelease) withObject: nil afterDelay: 60];
+            
 			return;
 		}
 		
@@ -1256,7 +1289,8 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
     if (!_detected)
         cell.textColor = [NSColor grayColor];
     
-    [cell.rightSubviews addObject:_unmountButton];
+    if( _unmountButton)
+        [cell.rightSubviews addObject:_unmountButton];
 }
 
 -(NSString*)toolTip
@@ -1285,6 +1319,10 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
             [_scanThread cancel];
         
         [[BrowserController currentBrowser] redrawSources];
+        
+        [_unmountButton removeFromSuperview];
+        [_unmountButton autorelease];
+        _unmountButton = nil;
     }
 }
 

@@ -371,6 +371,7 @@ DcmQueryRetrieveSCP::DcmQueryRetrieveSCP(
 , options_(options)
 {
 	activateCGETSCP_ = [[NSUserDefaults standardUserDefaults] boolForKey: @"activateCGETSCP"];
+    activateCFINDSCP_ = [[NSUserDefaults standardUserDefaults] boolForKey: @"activateCFINDSCP"];
 	secureConnection_ = 0;
 }
 
@@ -574,8 +575,22 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
             /* did peer release, abort, or do we have a valid message ? */
             if (cond.good())
             {
+                T_DIMSE_Command ms = msg.CommandField;
+                
+                if( ms == DIMSE_C_GET_RQ && activateCGETSCP_ == false)
+                {
+                    DcmQueryRetrieveOptions::errmsg("CGET NOT ACTIVATED - Cannot handle command: 0x%x\n", (unsigned)msg.CommandField);
+                    ms = DIMSE_NOTHING;
+                }
+                
+                if( ms == DIMSE_C_FIND_RQ && activateCFINDSCP_ == false)
+                {
+                    DcmQueryRetrieveOptions::errmsg("CFIND NOT ACTIVATED - Cannot handle command: 0x%x\n", (unsigned)msg.CommandField);
+                    ms = DIMSE_NOTHING;
+                }
+                
                 /* process command */
-                switch (msg.CommandField)
+                switch ( ms)
 				{
                 case DIMSE_C_ECHO_RQ:
 					if( secureConnection_)
@@ -616,17 +631,8 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
                         writeStateProcess( "C-GET TLS SCP...", assoc);
                     else
                         writeStateProcess( "C-GET SCP...", assoc);
-					if( activateCGETSCP_)
                         //* unlockFile(); is done in DCMTKDataHandlerCategory.mm
 						cond = getSCP(assoc, &msg.msg.CGetRQ, presID, *dbHandle);
-                    else
-					{
-						cond = DIMSE_BADCOMMANDTYPE;
-						DcmQueryRetrieveOptions::errmsg("Cannot handle command: 0x%x\n", (unsigned)msg.CommandField);
-                        
-                        if( forkedProcess)
-                            unlockFile();
-					}
 					break;
                 case DIMSE_C_CANCEL_RQ:
                     //* This is a late cancel request, just ignore it 

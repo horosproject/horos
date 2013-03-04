@@ -181,7 +181,7 @@ OFCondition storeSCP(
   /// flag for database interface: debug mode
   OFBool dbDebug_;
   OFBool activateCGETSCP_;
-
+  OFBool activateCFINDSCP_;
 
   OFBool secureConnection_;
 	

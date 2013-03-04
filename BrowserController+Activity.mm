@@ -163,24 +163,24 @@ static NSString* const BrowserActivityHelperContext = @"BrowserActivityHelperCon
             NSMutableArray* threadsThatHaveCellsToRemove = [[[_cells valueForKey:@"thread"] mutableCopy] autorelease];
             [threadsThatHaveCellsToRemove removeObjectsInArray:object.arrangedObjects];
             
-            for (NSThread* thread in threadsThatHaveCellsToRemove) {
+            NSMutableArray *cellsToRemove = [NSMutableArray array];
+            for (NSThread* thread in threadsThatHaveCellsToRemove)
+            {
                 ThreadCell* cell = (ThreadCell*)[self cellForThread:thread];
-                if (cell) {
+                if (cell)
+                {
                     [cell cleanup];
                     [cell retain];
-                    @try {
-                        [_cells removeObject:cell];
-                        [_browser._activityTableView reloadData];
-                    }
-                    @catch (NSException *exception) {
-                        N2LogException( exception);
-                    }
-                    @finally {
-                        [cell performSelector: @selector( release) withObject: nil afterDelay: 60]; //Yea... I know... not very nice, but avoid a zombie crash, if a thread is cancelled (GUI) AFTER released here...
-                    }
+                    [cellsToRemove addObject:cell];
+                    [cell performSelector: @selector( autorelease) withObject: nil afterDelay: 60]; //Yea... I know... not very nice, but avoid a zombie crash, if a thread is cancelled (GUI) AFTER released here...
                 }
             }
             
+            if( cellsToRemove.count)
+            {
+                [_cells removeObjectsInArray: cellsToRemove];
+                [_browser._activityTableView reloadData];
+            }
             return;
         }
 	}

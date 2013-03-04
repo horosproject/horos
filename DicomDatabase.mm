@@ -1359,14 +1359,14 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
     
+    [ThreadsManager.defaultManager addThreadAndStart:[NSThread currentThread]];
+    
     static NSString *singleThread = @"threadBridgeForProcessFilesAtPaths";
     
     @synchronized( singleThread)
     {
         @try
         {
-            [ThreadsManager.defaultManager addThreadAndStart:[NSThread currentThread]];
-            
             if( self.isMainDatabase)
                 [self.independentDatabase processFilesAtPaths:[params objectForKey:@":"] intoDirAtPath:[params objectForKey:@"intoDirAtPath:"] mode:[[params objectForKey:@"mode:"] intValue]];
             else
