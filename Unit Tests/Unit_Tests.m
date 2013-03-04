@@ -9,7 +9,7 @@
 #import "Unit_Tests.h"
 #import "DCMPix.h"
 #import "dicomFile.h"
-#import "Papyrus3/Papyrus3.h"
+#import "Papyrus3.h"
 
 @implementation Unit_Tests
 
