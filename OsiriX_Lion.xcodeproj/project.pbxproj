@@ -666,6 +666,8 @@
 		A90202BF0B980CD60001A00B /* PluginManagerController.m in Sources */ = {isa = PBXBuildFile; fileRef = A90202BB0B980CD60001A00B /* PluginManagerController.m */; };
 		A90A04970BF09BA000D00273 /* VRPresetPreview.h in Headers */ = {isa = PBXBuildFile; fileRef = A90A04950BF09BA000D00273 /* VRPresetPreview.h */; };
 		A90A04980BF09BA000D00273 /* VRPresetPreview.mm in Sources */ = {isa = PBXBuildFile; fileRef = A90A04960BF09BA000D00273 /* VRPresetPreview.mm */; };
+		A90C722716E4F0B90060302F /* MANIX-IM-0001-0021.dcm in Resources */ = {isa = PBXBuildFile; fileRef = A90C722516E4F0B90060302F /* MANIX-IM-0001-0021.dcm */; };
+		A90C722816E4F0B90060302F /* PNEUMATIX-IM-0001-0010.dcm in Resources */ = {isa = PBXBuildFile; fileRef = A90C722616E4F0B90060302F /* PNEUMATIX-IM-0001-0010.dcm */; };
 		A910FB310D5767610095A956 /* NavigatorWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = A910FB2D0D5767610095A956 /* NavigatorWindowController.h */; };
 		A910FB320D5767610095A956 /* NavigatorWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = A910FB2E0D5767610095A956 /* NavigatorWindowController.m */; };
 		A910FB370D57728A0095A956 /* NavigatorView.h in Headers */ = {isa = PBXBuildFile; fileRef = A910FB330D57728A0095A956 /* NavigatorView.h */; };
@@ -10306,6 +10308,8 @@
 		A90202BB0B980CD60001A00B /* PluginManagerController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PluginManagerController.m; sourceTree = "<group>"; };
 		A90A04950BF09BA000D00273 /* VRPresetPreview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VRPresetPreview.h; sourceTree = "<group>"; };
 		A90A04960BF09BA000D00273 /* VRPresetPreview.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = VRPresetPreview.mm; sourceTree = "<group>"; };
+		A90C722516E4F0B90060302F /* MANIX-IM-0001-0021.dcm */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MANIX-IM-0001-0021.dcm"; sourceTree = "<group>"; };
+		A90C722616E4F0B90060302F /* PNEUMATIX-IM-0001-0010.dcm */ = {isa = PBXFileReference; lastKnownFileType = file; path = "PNEUMATIX-IM-0001-0010.dcm"; sourceTree = "<group>"; };
 		A910FB2D0D5767610095A956 /* NavigatorWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavigatorWindowController.h; sourceTree = "<group>"; };
 		A910FB2E0D5767610095A956 /* NavigatorWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavigatorWindowController.m; sourceTree = "<group>"; };
 		A910FB330D57728A0095A956 /* NavigatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavigatorView.h; sourceTree = "<group>"; };
@@ -16882,6 +16886,15 @@
 			name = StereoVision;
 			sourceTree = "<group>";
 		};
+		A90C722016E4D8AE0060302F /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				A90C722516E4F0B90060302F /* MANIX-IM-0001-0021.dcm */,
+				A90C722616E4F0B90060302F /* PNEUMATIX-IM-0001-0010.dcm */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
 		A90D665D094D7071000B425B /* Endoscopy */ = {
 			isa = PBXGroup;
 			children = (
@@ -16940,6 +16953,7 @@
 		A98795CA16DB9FD100926023 /* Unit Tests */ = {
 			isa = PBXGroup;
 			children = (
+				A90C722016E4D8AE0060302F /* Data */,
 				A98795DB16DBA51500926023 /* UnitTestingBase.h */,
 				A98795DC16DBA51500926023 /* UnitTestingBase.m */,
 				A98795D016DB9FD100926023 /* Unit_Tests.h */,
@@ -28384,6 +28398,8 @@
 				A9FBD37E16DBE3FD003A0E04 /* vtkImageStencilIterator.txx in Resources */,
 				A9FBD37F16DBE3FD003A0E04 /* vtkSparseArray.txx in Resources */,
 				A9FBD38016DBE3FD003A0E04 /* vtkTypedArray.txx in Resources */,
+				A90C722716E4F0B90060302F /* MANIX-IM-0001-0021.dcm in Resources */,
+				A90C722816E4F0B90060302F /* PNEUMATIX-IM-0001-0010.dcm in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
