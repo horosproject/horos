@@ -1893,6 +1893,10 @@
 		A99B7ECB0885A61F004328C0 /* BonjourPublisher.m in Sources */ = {isa = PBXBuildFile; fileRef = A99B7E5108858D31004328C0 /* BonjourPublisher.m */; };
 		A99B7ECD0885A621004328C0 /* BonjourBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = A99B7E5508858D4F004328C0 /* BonjourBrowser.m */; };
 		A99B7ECE0885A621004328C0 /* BonjourBrowser.h in Headers */ = {isa = PBXBuildFile; fileRef = A99B7E5408858D4F004328C0 /* BonjourBrowser.h */; };
+		A99F039A16E492AA008A3657 /* Growl.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE2BE05D1524344D00AE6156 /* Growl.framework */; };
+		A99F039D16E4934F008A3657 /* ILCrashReporter.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; };
+		A99F039E16E49359008A3657 /* libxerces-c.27.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE6693C60AF551210073D923 /* libxerces-c.27.dylib */; };
+		A99F039F16E4935C008A3657 /* libdcmprintscu.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE586CC30C74B75D00DB7D5A /* libdcmprintscu.dylib */; };
 		A9A80E3811F73E22009F54B9 /* Activity_Stop.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9A80E3611F73E22009F54B9 /* Activity_Stop.tif */; };
 		A9A80E3911F73E22009F54B9 /* Activity_StopPressed.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9A80E3711F73E22009F54B9 /* Activity_StopPressed.tif */; };
 		A9A80E4E11F744FB009F54B9 /* Activity_StopPressed.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9A80E3711F73E22009F54B9 /* Activity_StopPressed.tif */; };
@@ -9786,6 +9790,19 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		A99F039916E49274008A3657 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 12;
+			dstPath = "";
+			dstSubfolderSpec = 16;
+			files = (
+				A99F039E16E49359008A3657 /* libxerces-c.27.dylib in CopyFiles */,
+				A99F039A16E492AA008A3657 /* Growl.framework in CopyFiles */,
+				A99F039F16E4935C008A3657 /* libdcmprintscu.dylib in CopyFiles */,
+				A99F039D16E4934F008A3657 /* ILCrashReporter.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A9FBD38216DBE65D003A0E04 /* Copy Files */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 8;
@@ -27789,6 +27806,7 @@
 				A98795BF16DB9FD100926023 /* Resources */,
 				A98795C016DB9FD100926023 /* ShellScript */,
 				A9FBD38216DBE65D003A0E04 /* Copy Files */,
+				A99F039916E49274008A3657 /* CopyFiles */,
 			);
 			buildRules = (
 			);
