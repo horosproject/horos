@@ -4134,11 +4134,13 @@ Failed:
 	AsyncSpecialPacket *packet = [[AsyncSpecialPacket alloc] initWithTLSSettings:tlsSettings];
 	
 	[theReadQueue addObject:packet];
-	[self scheduleDequeueRead];
-	
+//	[self scheduleDequeueRead];
+	[self maybeDequeueRead];
+    
 	[theWriteQueue addObject:packet];
-	[self scheduleDequeueWrite];
-	
+//	[self scheduleDequeueWrite];
+	[self maybeDequeueWrite];
+    
 	[packet release];
 }
 

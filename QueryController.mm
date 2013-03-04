@@ -3345,6 +3345,9 @@ extern "C"
 {
 	NSMutableArray	*selectedItems = [NSMutableArray array];
 	
+    if( [NSThread isMainThread] == NO)
+        showGUI = NO;
+    
 	if([items count])
 	{
 		for( id item in items)
@@ -3491,8 +3494,6 @@ extern "C"
 				t.supportsCancel = YES;
 				[[ThreadsManager defaultManager] addThreadAndStart: t];
 				
-//				[NSThread detachNewThreadSelector:@selector(performRetrieve:) toTarget:self withObject: selectedItems];
-				
 				if( showGUI)
 				{
 					[NSThread sleepForTimeInterval: 0.2];
@@ -3627,7 +3628,7 @@ extern "C"
     }
     @catch (NSException *e)
     {
-        NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+        N2LogExceptionWithStackTrace( e);
     }
     
     for( DCMTKQueryNode *node in array)
@@ -3745,7 +3746,9 @@ extern "C"
 			}
 			@catch (NSException * e)
 			{
-				NSLog( @"performRetrieve move exception: %@", e);
+                NSLog( @"dictionary: %@", d);
+                NSLog( @"object: %@, %@", object, [object uid]);
+				N2LogExceptionWithStackTrace( e);
 			}
 			
 			@synchronized( previousAutoRetrieve)
@@ -3796,7 +3799,7 @@ extern "C"
 	}
 	@catch (NSException *e)
 	{
-		NSLog( @"performRetrieve exception: %@", e);
+		N2LogExceptionWithStackTrace( e);
 	}
 	
 	[array release];

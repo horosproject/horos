@@ -2252,9 +2252,9 @@ static float deg2rad = M_PI / 180.0;
             
             if (self.exportSliceIntervalSameAsVolumeSliceInterval)
 			{
-                sliceInterval = [cprView.volumeData minPixelSpacing];
+                sliceInterval = fabsf( [cprView.volumeData minPixelSpacing]);
             } else {
-                sliceInterval = exportSliceInterval;
+                sliceInterval = fabsf( exportSliceInterval);
             }
             
             return MAX(1, ceil(slabWidth / sliceInterval));
@@ -2347,7 +2347,7 @@ static float deg2rad = M_PI / 180.0;
         if (!isSame) {
             [self willChangeValueForKey:@"exportSequenceNumberOfFrames"];
         }
-        exportSliceInterval = newExportSliceInterval;
+        exportSliceInterval = fabsf( newExportSliceInterval);
         if (!isSame) {
             [self didChangeValueForKey:@"exportSequenceNumberOfFrames"];        
         }
@@ -2391,7 +2391,7 @@ static float deg2rad = M_PI / 180.0;
         [self willChangeValueForKey:@"exportSequenceNumberOfFrames"];
         exportSliceIntervalSameAsVolumeSliceInterval = newExportSliceIntervalSameAsVolumeSliceInterval;
         if (exportSliceIntervalSameAsVolumeSliceInterval) {
-            self.exportSliceInterval = [cprView.volumeData minPixelSpacing];
+            self.exportSliceInterval = fabsf( [cprView.volumeData minPixelSpacing]);
         }
 		
 		self.exportSeriesType = CPRSlabExportSeriesType;
@@ -2594,11 +2594,18 @@ static float deg2rad = M_PI / 180.0;
 					[views removeObjectAtIndex: i];
 			}
 			
-			for( id v in views)
+			for( NSView *v in views)
 			{
 				NSRect bounds = [v bounds];
 				NSPoint or = [v convertPoint: bounds.origin toView: nil];
 				bounds.origin = [[self window] convertBaseToScreen: or];
+                
+                bounds.origin.x *= v.window.backingScaleFactor;
+                bounds.origin.y *= v.window.backingScaleFactor;
+                
+                bounds.size.width *= v.window.backingScaleFactor;
+                bounds.size.height *= v.window.backingScaleFactor;
+                
 				[viewsRect addObject: [NSValue valueWithRect: bounds]];
 			}
 		}
@@ -3056,9 +3063,9 @@ static float deg2rad = M_PI / 180.0;
 	else
 		[NSApp beginSheet: dcmWindow modalForWindow: nil modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
 	
-    self.exportSlabThickness = [self getClippingRangeThicknessInMm];
-    self.exportSliceInterval = [cprView.volumeData minPixelSpacing];
-    self.exportTransverseSliceInterval = [curvedPath transverseSectionSpacing];
+    self.exportSlabThickness = fabs( [self getClippingRangeThicknessInMm]);
+    self.exportSliceInterval = fabs( [cprView.volumeData minPixelSpacing]);
+    self.exportTransverseSliceInterval = fabs( [curvedPath transverseSectionSpacing]);
 	self.exportNumberOfRotationFrames = 50;
 	
 	if( clippingRangeThickness <= 3)

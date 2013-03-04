@@ -51,8 +51,6 @@
     
     self.thread = thread;
     
-//	NSLog(@"cell created!");
-	
 	return self;
 }
 
@@ -66,11 +64,18 @@
 }
 
 -(void)dealloc {
-//	NSLog(@"cell destroyed!");
 	[self cleanup];
     
-	self.thread = nil;
-	
+    @synchronized( _thread)
+    {
+        [_thread removeObserver:self forKeyPath:NSThreadSupportsCancelKey];
+        [_thread removeObserver:self forKeyPath:NSThreadProgressKey];
+        [_thread removeObserver:self forKeyPath:NSThreadStatusKey];
+        [_thread removeObserver:self forKeyPath:NSThreadIsCancelledKey];
+        [_thread autorelease];
+        [_retainedThreadDictionary autorelease];
+	}
+    
 	[_view release];
 	[_manager release];
 	
@@ -93,10 +98,11 @@
         [_retainedThreadDictionary autorelease];
         
         _thread = [thread retain];
-        _retainedThreadDictionary = [_thread.threadDictionary retain];
         
         @synchronized( _thread)
         {
+            _retainedThreadDictionary = [_thread.threadDictionary retain];
+        
             [_thread addObserver:self forKeyPath:NSThreadIsCancelledKey options:NSKeyValueObservingOptionInitial context:NULL];
             [_thread addObserver:self forKeyPath:NSThreadStatusKey options:NSKeyValueObservingOptionInitial context:NULL];
             [_thread addObserver:self forKeyPath:NSThreadProgressKey options:NSKeyValueObservingOptionInitial context:NULL];
@@ -111,11 +117,11 @@
 
 -(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(NSThread*)obj change:(NSDictionary*)change context:(void*)context
 {
-    if (obj == self.thread)
+    if (obj == _thread)
     {
         @synchronized( _thread)
         {
-            if( _retainedThreadDictionary != self.thread.threadDictionary)
+            if( _retainedThreadDictionary != _thread.threadDictionary)
                 return;
         }
         
@@ -148,16 +154,25 @@
 
 -(void)cancelThreadAction:(id)source
 {
-	self.thread.status = NSLocalizedString( @"Cancelling...", nil);
-	[self.thread setIsCancelled:YES];
+    @synchronized( _thread)
+    {
+        if( [self.thread isFinished] == NO)
+        {
+            _thread.status = NSLocalizedString( @"Cancelling...", nil);
+            [_thread setIsCancelled:YES];
+        }
+    }
 }
 
 
 -(void)drawInteriorWithFrame:(NSRect)frame inView:(NSView*)view {
     
-	if ([self.thread isFinished])
-        return;
-	
+    @synchronized( _thread)
+    {
+        if ([_thread isFinished])
+            return;
+	}
+    
 	NSMutableParagraphStyle* paragraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
 	[paragraphStyle setLineBreakMode:NSLineBreakByTruncatingTail];
 	NSMutableDictionary* textAttributes = [NSMutableDictionary dictionaryWithObjectsAndKeys: [self textColor], NSForegroundColorAttributeName, [NSFont labelFontOfSize:[NSFont systemFontSizeForControlSize:NSSmallControlSize]], NSFontAttributeName, paragraphStyle, NSParagraphStyleAttributeName, NULL];
@@ -166,9 +181,9 @@
 	
     NSString* tempName;
     NSString* tempStatus;
-    @synchronized (self.thread) {
-        tempName = [[self.thread.name retain] autorelease];
-        tempStatus = [[self.thread.status retain] autorelease];
+    @synchronized (_thread) {
+        tempName = [[_thread.name retain] autorelease];
+        tempStatus = [[_thread.status retain] autorelease];
     }
     
 	NSRect nameFrame = NSMakeRect(frame.origin.x+3, frame.origin.y-1, frame.size.width-23, frame.size.height);
@@ -230,8 +245,8 @@
 }
 
 -(NSRect)statusFrame {
-	NSRect frame = [self.view rectOfRow:[self.manager.threads indexOfObject:self.thread]];
-	return NSMakeRect(frame.origin.x+3, frame.origin.y+13, frame.size.width-22, frame.size.height-13);
+    NSRect frame = [self.view rectOfRow:[self.manager.threads indexOfObject:self.thread]];
+    return NSMakeRect(frame.origin.x+3, frame.origin.y+13, frame.size.width-22, frame.size.height-13);
 }
 
 @end

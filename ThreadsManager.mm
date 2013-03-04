@@ -42,7 +42,7 @@
 	[_threadsController setObjectClass:[NSThread class]];
     
     // cleanup timer
-	_timer = [[NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(cleanupFinishedThreads:) userInfo:nil repeats:YES] retain];
+	_timer = [[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(cleanupFinishedThreads:) userInfo:nil repeats:YES] retain];
     
 	return self;
 }
@@ -57,8 +57,10 @@
 -(void)cleanupFinishedThreads:(NSTimer*)timer {
     @synchronized (_threadsController) {
         for (NSThread* thread in [[_threadsController.content copy] autorelease])
-            if (thread.isFinished) 
+        {
+            if (thread.isFinished)
                 [self subRemoveThread:thread];
+        }
     }
 }
 
@@ -131,14 +133,9 @@
 
 -(void)addThreadAndStart:(NSThread*)thread
 {
-	@synchronized (_threadsController) {
-	@synchronized (thread)
-	{
-		if (![NSThread isMainThread])
-			[self performSelectorOnMainThread:@selector(subAddThread:) withObject:thread waitUntilDone: NO];
-		else [self subAddThread:thread];
-	}
-	}
+    if (![NSThread isMainThread])
+        [self performSelectorOnMainThread:@selector(subAddThread:) withObject:thread waitUntilDone: NO];
+    else [self subAddThread:thread];
 }
 
 -(void) subRemoveThread:(NSThread*)thread
@@ -159,14 +156,9 @@
 
 -(void)removeThread:(NSThread*)thread
 {
-	@synchronized (_threadsController) {
-	@synchronized (thread)
-	{
-		if (![NSThread isMainThread])
-			[self performSelectorOnMainThread:@selector(subRemoveThread:) withObject:thread waitUntilDone:NO];
-		else [self subRemoveThread:thread];
-	}
-	}
+    if (![NSThread isMainThread])
+        [self performSelectorOnMainThread:@selector(subRemoveThread:) withObject:thread waitUntilDone:NO];
+    else [self subRemoveThread:thread];
 }
 
 -(void)threadWillExit:(NSNotification*)notification {

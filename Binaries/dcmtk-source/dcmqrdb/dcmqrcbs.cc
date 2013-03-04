@@ -99,6 +99,7 @@
 //
 //@end
 
+int gPutDstAETitleInPrivateInformationCreatorUID = 0, gPutSrcAETitleInSourceApplicationEntityTitle = 0;
 
 void DcmQueryRetrieveStoreContext::updateDisplay(T_DIMSE_StoreProgress * progress)
 {
@@ -264,11 +265,17 @@ void DcmQueryRetrieveStoreContext::callbackHandler(
                 DcmMetaInfo *metaInfo = dcmff->getMetaInfo();
                 if( metaInfo)
                 {
-                    if( sourceAETitle)
-                        metaInfo->putAndInsertString( DCM_SourceApplicationEntityTitle, sourceAETitle);
-                
-                    if( destinationAETitle)
-                        metaInfo->putAndInsertString( DCM_PrivateInformationCreatorUID, destinationAETitle);
+                    if( gPutSrcAETitleInSourceApplicationEntityTitle)
+                    {
+                        if( sourceAETitle)
+                            metaInfo->putAndInsertString( DCM_SourceApplicationEntityTitle, sourceAETitle);
+                    }
+                    
+                    if( gPutDstAETitleInPrivateInformationCreatorUID)
+                    {
+                        if( destinationAETitle)
+                            metaInfo->putAndInsertString( DCM_PrivateInformationCreatorUID, destinationAETitle);
+                    }
                 }
                 
 				writeToFile(dcmff, fileName, rsp);

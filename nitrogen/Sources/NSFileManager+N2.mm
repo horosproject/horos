@@ -70,12 +70,14 @@
 	return [self tmpFilePathInDir:[self tmpDirPath]];
 }
 
--(NSString*)confirmDirectoryAtPath:(NSString*)dirPath {
+-(NSString*)confirmDirectoryAtPath:(NSString*)dirPath subDirectory: (BOOL) subDirectory
+{
 	if( dirPath == nil) return nil;
 	NSString* parentDirPath = [dirPath stringByDeletingLastPathComponent];
+    
 	if (![dirPath isEqual:parentDirPath])
-		[self confirmDirectoryAtPath:parentDirPath];
-	
+		[self confirmDirectoryAtPath:parentDirPath subDirectory: YES];
+    
 	BOOL isDir, create = NO;
 	NSError* error = NULL;
 	
@@ -91,8 +93,16 @@
 		[self createDirectoryAtPath:dirPath withIntermediateDirectories:YES attributes:NULL error:&error];
 		if (error) [NSException raise:NSGenericException format:@"Couldn't create directory: %@", [error localizedDescription]];
 	}
-	
+    
+    if( subDirectory == NO && [self isWritableFileAtPath: dirPath] == NO)
+        NSLog( @"-------- confirmDirectoryAtPath %@ is writable == NO", dirPath);
+    
 	return dirPath;
+}
+
+-(NSString*)confirmDirectoryAtPath:(NSString*)dirPath
+{
+    return [self confirmDirectoryAtPath: dirPath subDirectory: NO];
 }
 
 -(NSString*)confirmNoIndexDirectoryAtPath:(NSString*)path {

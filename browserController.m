@@ -4888,8 +4888,6 @@ static NSConditionLock *threadLock = nil;
 		
 		NSIndexSet *selectedRows = [databaseOutline selectedRowIndexes];
 		
-		NSLog(@"UNIFY STUDIES: %@", destStudy);
-		
         if( result == NSAlertDefaultReturn)
         {
             // Now modify the DICOM files
@@ -4994,7 +4992,7 @@ static NSConditionLock *threadLock = nil;
                         [study setValue: [destStudy valueForKey:@"patientUID"]  forKey: @"patientUID"];
                         [study setValue: [destStudy valueForKey:@"name"]  forKey: @"name"];
                         
-                        NSLog( @"---- Patient Unify: %@ %@ -> %@ %@", [study valueForKey:@"name"], [study valueForKey:@"patientID"], [destStudy valueForKey:@"name"], [destStudy valueForKey:@"patientID"]);
+                        NSLog( @"---- Patient Unify: %@ %@ -> %@ %@", [study valueForKey:@"accessionNumber"], [study valueForKey:@"patientID"], [destStudy valueForKey:@"accessionNumber"], [destStudy valueForKey:@"patientID"]);
                     }
 				}
 			}
@@ -5121,6 +5119,9 @@ static NSConditionLock *threadLock = nil;
 
 - (void) proceedDeleteObjects: (NSArray*) objectsToDelete tree:(NSSet*)treeObjs
 {
+    if( [NSThread isMainThread] == NO)
+        N2LogStackTrace( @"************ This is a MAIN thread only function");
+    
 	DicomDatabase* database = [_database retain];
     BOOL refreshComparative = NO;
     
@@ -5128,12 +5129,8 @@ static NSConditionLock *threadLock = nil;
             
 	[reportFilesToCheck removeAllObjects];
 	
-//    [self setDatabase:nil];
 	[database lock];
 	
-    [self outlineViewRefresh];
-    [self refreshMatrix: self];
-    
 	@try
 	{
 		NSManagedObject	*study = nil, *series = nil;
@@ -5188,15 +5185,6 @@ static NSConditionLock *threadLock = nil;
 	{
         N2LogExceptionWithStackTrace(e);
 	}
-	
-	@try
-	{
-		[database save: nil];
-	}
-	@catch( NSException *e)
-	{	
-        N2LogExceptionWithStackTrace(e/*, @"context save"*/);
-    }
     
     for (NSManagedObject* o in treeObjs)
         if ([o isKindOfClass:[DicomSeries class]])
@@ -5213,11 +5201,11 @@ static NSConditionLock *threadLock = nil;
 			{
 				if ([series isDeleted] == NO)
                 {
-                    if ([series.images count] == 0)
+                    if ([series.images count] == 0 || [[series.images valueForKey: @"isDeleted"] containsObject: [NSNumber numberWithBool: NO]] == NO)
                     {
                         [database.managedObjectContext deleteObject:series];
                     }
-                    else 
+                    else
                     {
                         series.numberOfImages = [NSNumber numberWithInt:0];
                         series.thumbnail = nil;
@@ -5229,14 +5217,6 @@ static NSConditionLock *threadLock = nil;
                 N2LogExceptionWithStackTrace(e/*, @"context deleteObject: series"*/);
 			}
 		}
-		@try
-		{	
-			[database save:nil];
-		}
-		@catch( NSException *e)
-		{
-            N2LogExceptionWithStackTrace(e/*, @"context save: nil"*/);
-        }
         
 		// Remove studies without series !
 		for( DicomStudy *study in studiesSet)
@@ -5246,16 +5226,19 @@ static NSConditionLock *threadLock = nil;
                 if( [self.comparativePatientUID compare: study.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
                     refreshComparative = YES;
                 
-                if( [study isDeleted] == NO && [[study valueForKey:@"imageSeries"] count] == 0)
+                if( [study isDeleted] == NO)
                 {
-                    NSLog( @"Delete Study: %@ - %@", study.patientID, study.studyInstanceUID);
-                    
-                    [database.managedObjectContext deleteObject:study];
-                }
-                else if( [study isDeleted] == NO)
-                {
-                    [study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
-                    [study setValue:[study valueForKey: @"modalities"] forKey:@"modality"];
+                    if( [study.imageSeries count] == 0 || [[study.imageSeries valueForKey: @"isDeleted"] containsObject: [NSNumber numberWithBool: NO]] == NO)
+                    {
+                        NSLog( @"Delete Study: %@ - %@", study.patientID, study.studyInstanceUID);
+                        
+                        [database.managedObjectContext deleteObject:study];
+                    }
+                    else
+                    {
+                        [study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
+                        [study setValue:[study valueForKey: @"modalities"] forKey:@"modality"];
+                    }
                 }
             }
             @catch( NSException *e)
@@ -5263,30 +5246,22 @@ static NSConditionLock *threadLock = nil;
                 N2LogExceptionWithStackTrace(e/*, @"context deleteObject: study"*/);
             }
 		}
-		
-        @try
-		{	
-			[database save:nil];
-		}
-		@catch( NSException *e)
-		{
-            N2LogExceptionWithStackTrace(e/*, @"context save: nil"*/);
-        }
         
 		[previousItem release];
 		previousItem = nil;
 	}
-	
 	@catch( NSException *ne)
 	{
         N2LogExceptionWithStackTrace(ne);
 	}
 	
 	[database unlock];
+    [database release];
+    
+    [self saveDatabase];
     
     [self outlineViewRefresh];
     [self refreshAlbums];
-    [self saveDatabase];
     
     if( refreshComparative)
     {
@@ -7977,11 +7952,32 @@ static BOOL withReset = NO;
     }
 }
 
+//- (void) test:(id) s
+//{
+//    NSLog( @"--");
+//    
+//    [NSThread sleepForTimeInterval: 2];
+//}
+//
+//- (void) createThread
+//{
+//    NSAutoreleasePool *n = [NSAutoreleasePool new];
+//    
+//    NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( test:) object: nil] autorelease];
+//    t.name = NSLocalizedString( @"Test very small thread...", nil);
+//    t.supportsCancel = YES;
+//    [[ThreadsManager defaultManager] addThreadAndStart: t];
+//    
+//    [n release];
+//}
+
 - (void)previewPerformAnimation: (id)sender
 {
+    //[NSThread detachNewThreadSelector: @selector( createThread) toTarget: self withObject: nil];
+    
 	if( [[AppController sharedAppController] isSessionInactive] || waitForRunningProcess)
 		return;
-	
+    
     // Wait loading all images !!!
 	if( _database == nil) return;
 //	if( bonjourDownloading) return;
@@ -13293,10 +13289,27 @@ static NSArray*	openSubSeriesArray = nil;
             [menuItem action] == @selector(regenerateAutoComments:) ||
             [menuItem action] == @selector(unifyStudies:) ||
             [menuItem action] == @selector(viewerSubSeriesDICOM:) ||
-            [menuItem action] == @selector(viewerReparsedSeries:)
+            [menuItem action] == @selector(viewerReparsedSeries:) ||
+            [menuItem action] == @selector(copyToDBFolder:)
 			)
 		return NO;
 	}
+    
+    if ([_database isReadOnly])
+    {
+        if([menuItem action] == @selector(compressSelectedFiles:) ||
+           [menuItem action] == @selector(decompressSelectedFiles:) ||
+           [menuItem action] == @selector(generateReport:) ||
+           [menuItem action] == @selector(deleteReport:) ||
+           [menuItem action] == @selector(convertReportToPDF:) ||
+           [menuItem action] == @selector(convertReportToDICOMSR:) ||
+           [menuItem action] == @selector(delItem:) ||
+           [menuItem action] == @selector(regenerateAutoComments:) ||
+           [menuItem action] == @selector(copyToDBFolder:) ||
+           [menuItem action] == @selector(querySelectedStudy:) || 
+           [menuItem action] == @selector(unifyStudies:))
+            return NO;
+    }
     
     if ([_database isLocal] == NO)
     {

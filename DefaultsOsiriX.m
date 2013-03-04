@@ -987,6 +987,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"0" forKey:@"displayCobbAngle"];
 	[defaultValues setObject:@"0" forKey:@"onlyDisplayImagesOfSamePatient"];
 	[defaultValues setObject:@"1" forKey:@"activateCGETSCP"];
+    [defaultValues setObject:@"1" forKey:@"activateCFINDSCP"];
 	[defaultValues setObject:@"0" forKey:@"notificationsEmails"];
 	[defaultValues setObject:@"1" forKey:@"validateFilesBeforeImporting"];
 	[defaultValues setObject:@"10" forKey:@"defaultFrameRate"];
@@ -1032,7 +1033,8 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"1" forKey:@"UsePatientBirthDateForUID"];
     [defaultValues setObject:@"1" forKey:@"UsePatientIDForUID"];
 	[defaultValues setObject:@"1" forKey:@"UsePatientNameForUID"];
-    
+    [defaultValues setObject:@"1" forKey:@"putSrcAETitleInSourceApplicationEntityTitle"];
+    [defaultValues setObject:@"0" forKey:@"putDstAETitleInPrivateInformationCreatorUID"];
     [defaultValues setObject:@"1024" forKey: @"DicomImageScreenCaptureWidth"];
     [defaultValues setObject:@"1024" forKey: @"DicomImageScreenCaptureHeight"];
     

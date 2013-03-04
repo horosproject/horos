@@ -3089,7 +3089,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void)mouseUp:(NSEvent *)event
 {
-    if( CGCursorIsVisible() == NO) return; //For Synergy compatibility
+    if( CGCursorIsVisible() == NO && lensTexture == nil) return; //For Synergy compatibility
 	if ([self eventToPlugins:event]) return;
 	
 	mouseDragging = NO;
@@ -3294,9 +3294,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 -(void) computeMagnifyLens:(NSPoint) p
 {
-	if( p.x == 0 && p.y == 0) return;
+	if( p.x == 0 && p.y == 0)
+        return;
 	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"magnifyingLens"] == NO) return;
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"magnifyingLens"] == NO)
+        return;
 	
 	if( needToLoadTexture)
 		[self loadTexturesCompute];
@@ -3687,7 +3689,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 -(void) mouseMoved: (NSEvent*) theEvent
 {
-    if( CGCursorIsVisible() == NO) return; //For Synergy compatibility
+    if( CGCursorIsVisible() == NO && lensTexture == nil) return; //For Synergy compatibility
 	if( ![[self window] isVisible])
 	{
 		if( [self is2DViewer] && [[self windowController] FullScreenON])
@@ -3911,7 +3913,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void) mouseDown:(NSEvent *)event
 {
-    if( CGCursorIsVisible() == NO) return; //For Synergy compatibility
+    if( CGCursorIsVisible() == NO && lensTexture == nil) return; //For Synergy compatibility
 	if ([self eventToPlugins:event]) return;
 	
 	currentMouseEventTool = -1;
@@ -4908,7 +4910,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 #pragma mark Mouse dragging methods	
 - (void)mouseDragged:(NSEvent *)event
 {
-    if( CGCursorIsVisible() == NO) return; //For Synergy compatibility
+    if( CGCursorIsVisible() == NO && lensTexture == nil) return; //For Synergy compatibility
+    
 	if ([self eventToPlugins:event]) return;
         
 	[self deleteLens];
@@ -6990,7 +6993,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     GLubyte strShortVersion [kShortVersionLength];
     short i = 0;
     while ((((strVersion[i] <= '9') && (strVersion[i] >= '0')) || (strVersion[i] == '.')) && (i < kShortVersionLength)) // get only basic version info (until first space)
-            strShortVersion [i] = strVersion[i++];
+    {
+        strShortVersion [i] = strVersion[i];
+        i++;
+    }
     strShortVersion [i] = 0; //truncate string
     
     // compare capabilities based on extension string and GL version
@@ -9596,13 +9602,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		unsigned char	*firstView = [[views objectAtIndex: 0] getRawPixelsViewWidth:width height:height spp:spp bpp:bpp screenCapture:screenCapture force8bits: force8bits removeGraphical:removeGraphical squarePixels:squarePixels allowSmartCropping:NO origin: imOrigin spacing: imSpacing offset: offset isSigned: isSigned];
 		unsigned char	*globalView = nil;
 		
-		long viewSize =  *bpp * *spp * *width * *height / 8;
+		long viewSize =  *bpp * *spp * (*width+4) * (*height+4) / 8;
 		int	globalWidth = *width * _imageColumns;
 		int globalHeight = *height * _imageRows;
 		
 		if( firstView)
 		{
-			globalView = malloc( viewSize * _imageColumns * _imageRows);
+			globalView = malloc( viewSize * (_imageColumns) * (_imageRows));
 			
 			free( firstView);
 			
@@ -9731,6 +9737,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		*height = unionRect.size.height;
 		
 		unsigned char * data = nil;
+        long dataSize = 0;
 		
 		for( int i = 0; i < [views count]; i++)
 		{
@@ -9776,7 +9783,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                     if( offset) *offset = ioffset;
                     if( isSigned) *isSigned = iisSigned;
                     
-                    data = calloc( 1, (2+*width) * (2+*height) * *spp * *bpp/8);
+                    dataSize = (4+*width) * (4+*height) * *spp * *bpp/8;
+                    data = calloc( 1, dataSize);
                 }
                 else
                 {
@@ -9798,11 +9806,20 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                 
                 if( data)
                 {
-                    unsigned char	*o = data + (*bpp/8) * *spp * *width * (int) (*height - bounds.origin.y - iheight) + (int) bounds.origin.x * *spp * (*bpp/8);
-                     
-                    for( int y = 0 ; y < iheight; y++)
+                    unsigned char *o = data + (*bpp/8) * *spp * *width * (long) (*height - bounds.origin.y - iheight) + (long) bounds.origin.x * *spp * (*bpp/8);
+                    
+                    if( o >= data)
                     {
-                        memcpy( o + (*bpp/8) * y * *spp * *width, tempData + (*bpp/8) * y *ispp * iwidth, (*bpp/8) * ispp * iwidth);
+                        for( long y = 0 ; y < iheight; y++)
+                        {
+                            long size = (*bpp/8) * ispp * iwidth;
+                            long ooffset = (*bpp/8) * y * *spp * *width;
+                            
+                            if( o + ooffset + size < data + dataSize)
+                                memcpy( o + ooffset, tempData + (*bpp/8) * y *ispp * iwidth, size);
+                            else
+                                N2LogStackTrace( @"**** o + ooffset + size< data + dataSize");
+                        }
                     }
                 }
                 free( tempData);
@@ -10750,23 +10767,29 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		NSMutableArray	*viewsRect = [NSMutableArray array];
 		
 		// Compute the enclosing rect
-		for( int i = 0; i < [viewers count]; i++)
+		for( ViewerController *v in viewers)
 		{
-			[[[viewers objectAtIndex: i] seriesView] selectFirstTilingView];
+			[[v seriesView] selectFirstTilingView];
 			
-			NSRect	bounds = [[[viewers objectAtIndex: i] imageView] bounds];
+			NSRect	bounds = [[v imageView] bounds];
 			
 			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"])
 			{
-				bounds.size.width *= [[[viewers objectAtIndex: i] seriesView] imageColumns];
-				bounds.size.height *= [[[viewers objectAtIndex: i] seriesView] imageRows];
+				bounds.size.width *= [[v seriesView] imageColumns];
+				bounds.size.height *= [[v seriesView] imageRows];
 			}
 			
-			NSPoint or = [[[viewers objectAtIndex: i] imageView] convertPoint: bounds.origin toView: nil];
-			bounds.origin = [[[viewers objectAtIndex: i] window] convertBaseToScreen: or];
+			NSPoint or = [[v imageView] convertPoint: bounds.origin toView: nil];
+			bounds.origin = [[v window] convertBaseToScreen: or];
 			
 			bounds = NSIntegralRect( bounds);
 			
+            bounds.origin.x *= v.window.backingScaleFactor;
+            bounds.origin.y *= v.window.backingScaleFactor;
+            
+            bounds.size.width *= v.window.backingScaleFactor;
+            bounds.size.height *= v.window.backingScaleFactor;
+            
 			[viewsRect addObject: [NSValue valueWithRect: bounds]];
 		}
 		

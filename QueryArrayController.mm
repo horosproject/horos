@@ -23,6 +23,7 @@
 #import "DCMTKSeriesQueryNode.h"
 #import "DCMTKImageQueryNode.h"
 #import "MutableArrayCategory.h"
+#import "N2Debug.h"
 
 @implementation QueryArrayController
 
@@ -182,7 +183,34 @@
                     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontFilterQueryStudiesForUniqueInstanceUID"] == NO)
                     {
                         NSMutableArray *tempResult = [NSMutableArray arrayWithArray: [rootNode children]];
-                        [[tempResult mutableArrayValueForKey:@"uid"] removeDuplicatedStringsInSyncWithThisArray: tempResult];
+                        NSMutableArray *uidsArray = [NSMutableArray arrayWithArray: [tempResult valueForKey:@"uid"]];
+                        NSArray *sortedUidsArray = [uidsArray sortedArrayUsingSelector: @selector(compare:)];
+                        
+                        NSString *lastString = nil;
+                        
+                        for( NSString *s in sortedUidsArray)
+                        {
+                            if( [s isEqualToString: lastString])
+                            {
+                                NSUInteger index1 = [uidsArray indexOfObject: s];
+                                NSUInteger index2 = [uidsArray indexOfObject: lastString];
+                                
+                                if( index1 != NSNotFound && index2 != NSNotFound)
+                                {
+                                    if( [[[tempResult objectAtIndex: index1] numberImages] intValue] < [[[tempResult objectAtIndex: index2] numberImages] intValue])
+                                    {
+                                        [uidsArray removeObjectAtIndex: index1];
+                                        [tempResult removeObjectAtIndex: index1];
+                                    }
+                                    else
+                                    {
+                                        [uidsArray removeObjectAtIndex: index2];
+                                        [tempResult removeObjectAtIndex: index2];
+                                    }
+                                }
+                            }
+                            else lastString = s;
+                        }
                         
                         if( [tempResult count])
                             queries = [tempResult retain];
@@ -202,9 +230,9 @@
         if( [NSThread isMainThread] && showError)
         {
             NSAlert *alert = [NSAlert alertWithMessageText:@"Query Error" defaultButton:@"OK" alternateButton:nil otherButton:nil informativeTextWithFormat:@"%@", @"Query Failed"];
-            NSLog(@"****** performQuery exception: %@", [e name]);
             [alert runModal];
         }
+        N2LogExceptionWithStackTrace( e);
 	}
 	
 	[queryLock unlock];

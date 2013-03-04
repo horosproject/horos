@@ -1590,9 +1590,11 @@ static NSMutableArray *recentNonces;
 		// We are configured to be an HTTPS server.
 		// That is, we secure via SSL/TLS the connection prior to any communication.
 		
-        [self startTLSThread];
+//        [self startTLSThread];
         
-//		[self performSelector: @selector(startTLSThread) onThread: [[WebPortal defaultWebPortal] threadForRunLoopRef: [sock runLoopRef]]  withObject: nil waitUntilDone: YES];
+		[self performSelector: @selector(startTLSThread) onThread: [[WebPortal defaultWebPortal] threadForRunLoopRef: [sock runLoopRef]]  withObject: nil waitUntilDone: YES];
+        
+//        [NSThread sleepForTimeInterval: 1];
 	}
 	return YES;
 }

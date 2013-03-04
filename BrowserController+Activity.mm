@@ -24,6 +24,7 @@
 #import <algorithm>
 #import "NSUserDefaultsController+OsiriX.h"
 #import "AppController.h"
+#import "N2Debug.h"
 
 @interface BrowserActivityHelper : NSObject {
 	BrowserController* _browser;
@@ -162,17 +163,24 @@ static NSString* const BrowserActivityHelperContext = @"BrowserActivityHelperCon
             NSMutableArray* threadsThatHaveCellsToRemove = [[[_cells valueForKey:@"thread"] mutableCopy] autorelease];
             [threadsThatHaveCellsToRemove removeObjectsInArray:object.arrangedObjects];
             
-            for (NSThread* thread in threadsThatHaveCellsToRemove) {
+            NSMutableArray *cellsToRemove = [NSMutableArray array];
+            for (NSThread* thread in threadsThatHaveCellsToRemove)
+            {
                 ThreadCell* cell = (ThreadCell*)[self cellForThread:thread];
-                if (cell) {
+                if (cell)
+                {
                     [cell cleanup];
                     [cell retain];
-                    [_cells removeObject:cell];
-                    [_browser._activityTableView reloadData];
-                    [cell autorelease];
+                    [cellsToRemove addObject:cell];
+                    [cell performSelector: @selector( autorelease) withObject: nil afterDelay: 60]; //Yea... I know... not very nice, but avoid a zombie crash, if a thread is cancelled (GUI) AFTER released here...
                 }
             }
             
+            if( cellsToRemove.count)
+            {
+                [_cells removeObjectsInArray: cellsToRemove];
+                [_browser._activityTableView reloadData];
+            }
             return;
         }
 	}

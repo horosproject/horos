@@ -206,13 +206,13 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>10765M</string>
+	<string>20130221</string>
 	<key>LSCanProvideIMVideoDataSource</key>
 	<string>Yes</string>
 	<key>NSAppleScriptEnabled</key>
 	<string>YES</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright 2003-2012, Pixmeo</string>
+	<string>Copyright 2003-2013, Pixmeo</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
@@ -247,7 +247,7 @@
 	<string>OsiriX.sdef</string>
 	<key>NSContactsUsageDescription</key>
 	<string>Your account will be used for the built-in iChat sharing service. If you don&apos;t allow access, you cannot use the iChat functions.</string>
-	<key>SVNRevision</key>
-	<string>$Rev: 10202 $ $Date: 2012-08-05 08:41:13 +0200 (Dim, 05 aoû 2012) $</string>
+	<key>GitHash</key>
+	<string>5729b9817870ca7d35f77106af4c528ca43f59f0</string>
 </dict>
 </plist>
