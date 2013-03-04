@@ -282,24 +282,42 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
         deliveryAccounts = [[NSDictionary dictionaryWithContentsOfFile: LionPath] objectForKey: @"DeliveryAccounts"];
         mailAccounts = [[NSDictionary dictionaryWithContentsOfFile: LionPath] objectForKey: @"MailAccounts"];
     }
+    else
+        NSLog( @"***** File NOT found: %@", LionPath);
     
 	if (!deliveryAccounts)
         deliveryAccounts = [NSMakeCollectable(CFPreferencesCopyAppValue(CFSTR("DeliveryAccounts"), CFSTR("com.apple.Mail"))) autorelease];
+    
     if (!deliveryAccounts)
+    {
+        NSLog( @"***** No DeliveryAccounts found");
 		return viableAccount;
+    }
     
     if (!mailAccounts)
         mailAccounts = [NSMakeCollectable(CFPreferencesCopyAppValue(CFSTR("MailAccounts"), CFSTR("com.apple.Mail"))) autorelease];
+    
 	if (!mailAccounts)
+    {
+        NSLog( @"***** No MailAccounts found");
 		return viableAccount;
+    }
     
 	NSMutableDictionary *deliveryAccountsBySMTPIdentifier = [NSMutableDictionary dictionaryWithCapacity:[deliveryAccounts count]];
-	for (NSDictionary *account in deliveryAccounts) {
-		NSString *identifier = [NSString stringWithFormat:@"%@:%@", [account objectForKey:@"Hostname"], [account objectForKey:@"Username"]];
-		[deliveryAccountsBySMTPIdentifier setObject:account
-											 forKey:identifier];
+	for (NSDictionary *account in deliveryAccounts)
+    {
+		NSString *identifier = nil;
+        
+        if( [account objectForKey:@"Username"])
+            identifier = [NSString stringWithFormat:@"%@:%@", [account objectForKey:@"Hostname"], [account objectForKey:@"Username"]];
+        else
+            identifier = [NSString stringWithFormat:@"%@", [account objectForKey:@"Hostname"]];
+        
+		[deliveryAccountsBySMTPIdentifier setObject:account forKey:identifier];
 	}
-	for (NSDictionary *account in mailAccounts) {
+    
+	for (NSDictionary *account in mailAccounts)
+    {
 		NSString *identifier = [account objectForKey:@"SMTPIdentifier"];
 		if (!identifier)
 			continue;
@@ -327,27 +345,28 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
                 if( port == nil)
                     port = @"0";
                 
-                OSStatus err;
+                OSStatus err = noErr;
                 UInt32 passwordLength = 0U;
                 void *passwordBytes = NULL;
                 
-                @try
+                if( username.length) // Do we need to retrieve a password?
                 {
-                    err = SecKeychainFindInternetPassword(/*keychainOrArray*/ NULL,
-                                                      (UInt32)[hostname length], [hostname UTF8String],
-                                                      /*securityDomainLength*/ 0U, /*securityDomain*/ NULL,
-                                                      (UInt32)[username length], [username UTF8String],
-                                                      /*pathLength*/ 0U, /*path*/ NULL,
-                                                      (UInt16)[port integerValue],
-                                                      kSecProtocolTypeSMTP, kSecAuthenticationTypeAny,
-                                                      &passwordLength, &passwordBytes,
-                                                      /*itemRef*/ NULL);
-                }
-                @catch (NSException *e)
-                {
-                    NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-                    
-                    // tccutil reset AddressBook
+                    @try
+                    {
+                        err = SecKeychainFindInternetPassword(/*keychainOrArray*/ NULL,
+                                                          (UInt32)[hostname length], [hostname UTF8String],
+                                                          /*securityDomainLength*/ 0U, /*securityDomain*/ NULL,
+                                                          (UInt32)[username length], [username UTF8String],
+                                                          /*pathLength*/ 0U, /*path*/ NULL,
+                                                          (UInt16)[port integerValue],
+                                                          kSecProtocolTypeSMTP, kSecAuthenticationTypeAny,
+                                                          &passwordLength, &passwordBytes,
+                                                          /*itemRef*/ NULL);
+                    }
+                    @catch (NSException *e)
+                    {
+                        NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                    }
                 }
                 
                 if (err != noErr)
@@ -375,11 +394,15 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
                 if (err == noErr)
                 {
                     //…then let's proceed with sending the message.
-                    NSData *passwordData = [NSData dataWithBytesNoCopy:passwordBytes length:passwordLength freeWhenDone:NO];
+                    NSData *passwordData = nil;
                     
                     NSMutableDictionary *tempDictionary = [NSMutableDictionary dictionaryWithDictionary: viableAccount];
                     
-                    [tempDictionary setValue: [[[NSString alloc] initWithData: passwordData encoding: NSUTF8StringEncoding] autorelease] forKey: @"Password"];
+                    if( passwordBytes)
+                    {
+                        passwordData = [NSData dataWithBytesNoCopy:passwordBytes length:passwordLength freeWhenDone:NO];
+                        [tempDictionary setValue: [[[NSString alloc] initWithData: passwordData encoding: NSUTF8StringEncoding] autorelease] forKey: @"Password"];
+                    }
                     
                     selectedAccount = tempDictionary;
                     

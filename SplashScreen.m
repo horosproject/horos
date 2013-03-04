@@ -106,7 +106,7 @@ BOOL useQuartz() {
 - (void)windowDidLoad
 { 
 	[[self window] center];
-	versionType  = YES;
+	versionType  = 0;
 	[self switchVersion: self];
 		
 	[[self window] setDelegate:self];
@@ -119,23 +119,34 @@ BOOL useQuartz() {
 {
 	NSMutableString *currVersionNumber = nil;
 	
-	if( versionType)
-	{
-		currVersionNumber = [NSMutableString stringWithString:[[[NSBundle bundleForClass:[self class]] infoDictionary] objectForKey:@"CFBundleGetInfoString"]];
-		if( sizeof(long) == 8)
-			[currVersionNumber appendString:@" 64-bit"];
-		else
-			[currVersionNumber appendString:@" 32-bit"];
-	}
-	else
-	{
-		currVersionNumber = [NSMutableString stringWithString:[[[NSBundle bundleForClass:[self class]] infoDictionary] objectForKey:@"CFBundleVersion"]];
-		[currVersionNumber insertString:@"Revision " atIndex:0];
+	switch( versionType)
+    {
+        case 0:
+            currVersionNumber = [NSMutableString stringWithString:[[[NSBundle bundleForClass:[self class]] infoDictionary] objectForKey:@"CFBundleGetInfoString"]];
+            if( sizeof(long) == 8)
+                [currVersionNumber appendString:@" 64-bit"];
+            else
+                [currVersionNumber appendString:@" 32-bit"];
+        break;
+        
+        case 1:
+            currVersionNumber = [NSMutableString stringWithString:[[[NSBundle bundleForClass:[self class]] infoDictionary] objectForKey:@"CFBundleVersion"]];
+            [currVersionNumber insertString:@"Revision " atIndex:0];
+        break;
+        
+        case 2:
+            currVersionNumber = [NSMutableString stringWithString:[[[NSBundle bundleForClass:[self class]] infoDictionary] objectForKey:@"GitHash"]];
+            
+            [[NSPasteboard generalPasteboard] clearContents];
+            [[NSPasteboard generalPasteboard] writeObjects:[NSArray arrayWithObject: currVersionNumber]];
+        break;
 	}
 	
 	[version setTitle: currVersionNumber];
 
-	versionType = !versionType;
+    versionType++;
+    if( versionType >= 3)
+        versionType = 0;
 }
 
 - (IBAction)showWindow:(id)sender{

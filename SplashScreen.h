@@ -22,7 +22,7 @@
 	IBOutlet	NSButton *version;
 	NSTimer		*timerIn, *timerOut;
 	IBOutlet	id view;
-	BOOL		versionType;
+	int         versionType;
 }
 
 - (void) affiche;

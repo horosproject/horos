@@ -1307,6 +1307,8 @@ static NSDate *lastWarningDate = nil;
 		restartListener = YES;
 	if ([[previousDefaults valueForKey: @"activateCGETSCP"] intValue] != [defaults integerForKey: @"activateCGETSCP"])
 		restartListener = YES;
+    if ([[previousDefaults valueForKey: @"activateCFINDSCP"] intValue] != [defaults integerForKey: @"activateCFINDSCP"])
+            restartListener = YES;
 	
 	if( [[previousDefaults valueForKey: @"AETITLE"] isKindOfClass:[NSString class]])
 	{
