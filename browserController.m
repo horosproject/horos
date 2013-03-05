@@ -16059,6 +16059,8 @@ static volatile int numberOfThreadsForJPEG = 0;
             [wait showWindow:self];
         }
         
+        [NSThread currentThread].status = NSLocalizedString( @"Compressing the files...", nil);
+        
         @try
         {
             t = [[[NSTask alloc] init] autorelease];
@@ -16071,9 +16073,9 @@ static volatile int numberOfThreadsForJPEG = 0;
                 [t setCurrentDirectoryPath: [srcFolder stringByDeletingLastPathComponent]];
         
                 if( [password length] > 0)
-                    args = [NSArray arrayWithObjects: @"-q", @"-r", @"-e", @"-P", password, destFile, srcFolder, nil];
+                    args = [NSArray arrayWithObjects: @"-q", @"-r", @"-e", @"-P", password, destFile, [srcFolder lastPathComponent], nil];
                 else
-                    args = [NSArray arrayWithObjects: @"-q", @"-r", destFile, srcFolder, nil];
+                    args = [NSArray arrayWithObjects: @"-q", @"-r", destFile, [srcFolder lastPathComponent], nil];
                 
                 [t setArguments: args];
                 [t launch];
