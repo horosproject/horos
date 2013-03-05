@@ -612,11 +612,11 @@
 		84A220E80F25E41800C6C3EB /* ROIs.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84A220E60F25E41800C6C3EB /* ROIs.tif */; };
 		84A220E90F25E41800C6C3EB /* Keys.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84A220E70F25E41800C6C3EB /* Keys.tif */; };
 		84A6790E0EEED04000AE5C98 /* jpeg_memsrc.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A6790D0EEED04000AE5C98 /* jpeg_memsrc.h */; };
-		84A9D48C12F7F8EA00DA1F99 /* libkdu_v71R.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 84A9D48B12F7F8EA00DA1F99 /* libkdu_v71R.a */; };
-		84A9D48D12F7F8EB00DA1F99 /* libkdu_v71R.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 84A9D48B12F7F8EA00DA1F99 /* libkdu_v71R.a */; };
-		84A9D48E12F7F8EB00DA1F99 /* libkdu_v71R.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 84A9D48B12F7F8EA00DA1F99 /* libkdu_v71R.a */; };
-		84A9D48F12F7F8EB00DA1F99 /* libkdu_v71R.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 84A9D48B12F7F8EA00DA1F99 /* libkdu_v71R.a */; };
-		84A9D49012F7F8EB00DA1F99 /* libkdu_v71R.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 84A9D48B12F7F8EA00DA1F99 /* libkdu_v71R.a */; };
+		84A9D48C12F7F8EA00DA1F99 /* libkdu_v72R.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 84A9D48B12F7F8EA00DA1F99 /* libkdu_v72R.a */; };
+		84A9D48D12F7F8EB00DA1F99 /* libkdu_v72R.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 84A9D48B12F7F8EA00DA1F99 /* libkdu_v72R.a */; };
+		84A9D48E12F7F8EB00DA1F99 /* libkdu_v72R.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 84A9D48B12F7F8EA00DA1F99 /* libkdu_v72R.a */; };
+		84A9D48F12F7F8EB00DA1F99 /* libkdu_v72R.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 84A9D48B12F7F8EA00DA1F99 /* libkdu_v72R.a */; };
+		84A9D49012F7F8EB00DA1F99 /* libkdu_v72R.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 84A9D48B12F7F8EA00DA1F99 /* libkdu_v72R.a */; };
 		84A9D49612F7F90700DA1F99 /* kdu_OsiriXSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A9D49312F7F90700DA1F99 /* kdu_OsiriXSupport.h */; };
 		84A9D49912F7F90700DA1F99 /* kdu_OsiriXSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A9D49312F7F90700DA1F99 /* kdu_OsiriXSupport.h */; };
 		84A9D49C12F7F90700DA1F99 /* kdu_OsiriXSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A9D49312F7F90700DA1F99 /* kdu_OsiriXSupport.h */; };
@@ -1205,7 +1205,7 @@
 		A96F78B116DBBFC1000E877A /* mdfdsman.cc in Sources */ = {isa = PBXBuildFile; fileRef = CE96D1170BEE732900C4E397 /* mdfdsman.cc */; };
 		A96F78B216DBBFC1000E877A /* vtkPowerCrustSurfaceReconstruction.cxx in Sources */ = {isa = PBXBuildFile; fileRef = BF30B3A70C079D570003390C /* vtkPowerCrustSurfaceReconstruction.cxx */; };
 		A96F78BF16DBC540000E877A /* libCharLS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AB451802149F464B006674BF /* libCharLS.a */; };
-		A96F78C016DBC540000E877A /* libkdu_v71R.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 84A9D48B12F7F8EA00DA1F99 /* libkdu_v71R.a */; };
+		A96F78C016DBC540000E877A /* libkdu_v72R.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 84A9D48B12F7F8EA00DA1F99 /* libkdu_v72R.a */; };
 		A96F78C116DBC546000E877A /* libITKznz-4.1.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEB7E94A14F31455001C64EA /* libITKznz-4.1.a */; };
 		A96F78C216DBC546000E877A /* libitkzlib-4.1.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEB7E94B14F31455001C64EA /* libitkzlib-4.1.a */; };
 		A96F78C316DBC546000E877A /* libITKWatersheds-4.1.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEB7E94C14F31455001C64EA /* libITKWatersheds-4.1.a */; };
@@ -10271,7 +10271,7 @@
 		84A220E60F25E41800C6C3EB /* ROIs.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ROIs.tif; sourceTree = "<group>"; };
 		84A220E70F25E41800C6C3EB /* Keys.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Keys.tif; sourceTree = "<group>"; };
 		84A6790D0EEED04000AE5C98 /* jpeg_memsrc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jpeg_memsrc.h; path = Papyrus3/jpeg_memsrc.h; sourceTree = "<group>"; };
-		84A9D48B12F7F8EA00DA1F99 /* libkdu_v71R.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libkdu_v71R.a; path = "Binaries/KDU SDK/libkdu_v71R.a"; sourceTree = "<group>"; };
+		84A9D48B12F7F8EA00DA1F99 /* libkdu_v72R.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libkdu_v72R.a; path = "Binaries/KDU SDK/libkdu_v72R.a"; sourceTree = "<group>"; };
 		84A9D49312F7F90700DA1F99 /* kdu_OsiriXSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kdu_OsiriXSupport.h; path = "Binaries/KDU SDK/kdu_OsiriXSupport.h"; sourceTree = "<group>"; };
 		84ADF460115B622D00FE18B2 /* SRController+StereoVision.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SRController+StereoVision.h"; sourceTree = "<group>"; };
 		84ADF461115B622D00FE18B2 /* SRController+StereoVision.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "SRController+StereoVision.mm"; sourceTree = "<group>"; };
@@ -15643,7 +15643,7 @@
 				7E47658007428C80000C9A74 /* Accelerate.framework in Frameworks */,
 				AB61D9BE11BD32E5003BC1A4 /* IOKit.framework in Frameworks */,
 				CE66BDC812303EC700BE2799 /* libPapyrusToolkit.a in Frameworks */,
-				84A9D48E12F7F8EB00DA1F99 /* libkdu_v71R.a in Frameworks */,
+				84A9D48E12F7F8EB00DA1F99 /* libkdu_v72R.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15681,7 +15681,7 @@
 				A96F795C16DBC740000E877A /* QuartzCore.framework in Frameworks */,
 				A98795C416DB9FD100926023 /* SenTestingKit.framework in Frameworks */,
 				A96F78BF16DBC540000E877A /* libCharLS.a in Frameworks */,
-				A96F78C016DBC540000E877A /* libkdu_v71R.a in Frameworks */,
+				A96F78C016DBC540000E877A /* libkdu_v72R.a in Frameworks */,
 				A96F78C116DBC546000E877A /* libITKznz-4.1.a in Frameworks */,
 				A96F78C216DBC546000E877A /* libitkzlib-4.1.a in Frameworks */,
 				A96F78C316DBC546000E877A /* libITKWatersheds-4.1.a in Frameworks */,
@@ -15849,7 +15849,7 @@
 				A997B15710E0C412004C5BB1 /* SecurityInterface.framework in Frameworks */,
 				841524C5113D6BDB008250E6 /* QuartzCore.framework in Frameworks */,
 				CEED780C12303CB800258D00 /* libPapyrusToolkit.a in Frameworks */,
-				84A9D48C12F7F8EA00DA1F99 /* libkdu_v71R.a in Frameworks */,
+				84A9D48C12F7F8EA00DA1F99 /* libkdu_v72R.a in Frameworks */,
 				CEEA2D8613DB57C000F4CE1C /* libtiffOsiriX.a in Frameworks */,
 				AB451813149F464B006674BF /* libCharLS.a in Frameworks */,
 				CEBD79A914F1AD6B000DA1FE /* libvtkGraphics.a in Frameworks */,
@@ -15993,7 +15993,7 @@
 				59FB643A1230EE4100EBA136 /* libgifOsiriX.a in Frameworks */,
 				59FB643B1230EE4100EBA136 /* libmingOsiriX.a in Frameworks */,
 				59FB643C1230EE4100EBA136 /* libpng12OsiriX.a in Frameworks */,
-				84A9D49012F7F8EB00DA1F99 /* libkdu_v71R.a in Frameworks */,
+				84A9D49012F7F8EB00DA1F99 /* libkdu_v72R.a in Frameworks */,
 				84321F23147E9BDA00C86CC1 /* Quartz.framework in Frameworks */,
 				AB451871149F4B2C006674BF /* libCharLS.a in Frameworks */,
 				CEBD93A814F1AE96000DA1FE /* libvtkzlib.a in Frameworks */,
@@ -16006,7 +16006,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				84A9D48F12F7F8EB00DA1F99 /* libkdu_v71R.a in Frameworks */,
+				84A9D48F12F7F8EB00DA1F99 /* libkdu_v72R.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16038,7 +16038,7 @@
 				841524C6113D6BDB008250E6 /* QuartzCore.framework in Frameworks */,
 				597DA7B41188340500D3BBCF /* SecurityInterface.framework in Frameworks */,
 				CEED780D12303CC900258D00 /* libPapyrusToolkit.a in Frameworks */,
-				84A9D48D12F7F8EB00DA1F99 /* libkdu_v71R.a in Frameworks */,
+				84A9D48D12F7F8EB00DA1F99 /* libkdu_v72R.a in Frameworks */,
 				AB451814149F464B006674BF /* libCharLS.a in Frameworks */,
 				CEBD93A914F1AEDA000DA1FE /* libvtkzlib.a in Frameworks */,
 				8476BC301599D4B200451331 /* AVFoundation.framework in Frameworks */,
@@ -16841,7 +16841,7 @@
 			isa = PBXGroup;
 			children = (
 				84A9D49312F7F90700DA1F99 /* kdu_OsiriXSupport.h */,
-				84A9D48B12F7F8EA00DA1F99 /* libkdu_v71R.a */,
+				84A9D48B12F7F8EA00DA1F99 /* libkdu_v72R.a */,
 			);
 			name = "KDU SDK";
 			sourceTree = "<group>";

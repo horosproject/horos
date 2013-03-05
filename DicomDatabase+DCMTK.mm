@@ -157,8 +157,7 @@
                 
                 if( [theTask isRunning])
                 {
-                    N2LogStackTrace( @"***** task timeout reached -> terminate the NSTask");
-                    NSLog( @"%@", paths);
+                    N2LogStackTrace( @"***** task timeout reached -> terminate the NSTask : %@", paths);
                     [theTask terminate];
                 }
 			} @catch (NSException *e) {
@@ -324,8 +323,7 @@
                 
                 if( [theTask isRunning])
                 {
-                    N2LogStackTrace( @"***** task timeout reached -> terminate the NSTask");
-                    NSLog( @"%@", files);
+                    N2LogStackTrace( @"***** task timeout reached -> terminate the NSTask : %@", files);
                     [theTask terminate];
                 }
 			}

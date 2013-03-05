@@ -1359,7 +1359,10 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
     
-    [ThreadsManager.defaultManager addThreadAndStart:[NSThread currentThread]];
+    NSThread* thread = [NSThread currentThread];
+    thread.name = NSLocalizedString(@"Waiting for processing files...", nil);
+    
+    [ThreadsManager.defaultManager addThreadAndStart: thread];
     
     static NSString *singleThread = @"threadBridgeForProcessFilesAtPaths";
     
