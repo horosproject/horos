@@ -125,6 +125,7 @@ enum {
         
         [mbs retain];
         [self.sources removeObject:mbs];
+        [mbs willUnmount];
         [mbs performSelector: @selector( autorelease) withObject: nil afterDelay: 60];
     }
 }
@@ -987,6 +988,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
                 [_browser performSelector: @selector(setDatabase:) withObject: DicomDatabase.defaultDatabase afterDelay: 0.01]; //This will guarantee that this will not happen in middle of a drag & drop, for example
             [mbs retain];
             [_browser.sources removeObject:mbs];
+            [mbs willUnmount];
             [mbs performSelector: @selector( autorelease) withObject: nil afterDelay: 60];
         }
     }
@@ -1012,8 +1014,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 			break;
 		}
     
-	if (mbs)
-        [mbs willUnmount];
+    [mbs willUnmount];
     
     if (mbs && [[_browser sourceIdentifierForDatabase:_browser.database] isEqualToDataNodeIdentifier:mbs])
     {
@@ -1196,6 +1197,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
         {
             [self retain];
 			[[[BrowserController currentBrowser] sources] removeObject:self];
+            [self willUnmount];
             [self performSelector: @selector( autorelease) withObject: nil afterDelay: 60];
             
 			return;
