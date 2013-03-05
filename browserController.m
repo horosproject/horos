@@ -2662,7 +2662,6 @@ static NSConditionLock *threadLock = nil;
 	
 	@try
 	{
-        [_database lock];
         @try
         {
             BOOL searchInEntireDBHidden = YES;
@@ -2696,7 +2695,6 @@ static NSConditionLock *threadLock = nil;
             outlineViewArray = [NSArray array];
             N2LogExceptionWithStackTrace(ne);
         }
-        [_database unlock];
         
 		if( error)
 			NSLog( @"**** executeFetchRequest: %@", error);
