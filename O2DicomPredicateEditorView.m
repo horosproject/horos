@@ -1422,10 +1422,10 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
     }
 }
 
-- (void)drawRect:(NSRect)rect {
+/*- (void)drawRect:(NSRect)rect {
     [super drawRect:rect];
     // [NSBezierPath strokeRect:self.bounds];
-}
+}*/
 
 - (NSInteger)tagForCodeString:(NSString*)str {
     NSDictionary* dic = [O2DicomPredicateEditorCodeStrings codeStringsForTag:self.tag];
