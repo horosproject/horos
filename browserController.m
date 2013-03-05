@@ -7973,6 +7973,8 @@ static BOOL withReset = NO;
 {
     //[NSThread detachNewThreadSelector: @selector( createThread) toTarget: self withObject: nil];
     
+    //[self outlineViewRefresh];
+    
 	if( [[AppController sharedAppController] isSessionInactive] || waitForRunningProcess)
 		return;
     

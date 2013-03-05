@@ -3971,12 +3971,48 @@ static volatile int numberOfThreadsForRelisce = 0;
 	}
 }
 
+- (void)splitViewDidResizeSubviews:(NSNotification *) notification
+{
+    if( windowWillClose)
+        return;
+    
+    if (notification.object == splitView)
+    {    
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOHIDEMATRIX"] == NO)
+        {
+            // Apply show / hide matrix to all viewers
+            if( ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask) == NO)
+            {
+                static BOOL noreentry = NO;
+                
+                if( noreentry == NO)
+                {
+                    noreentry = YES;
+                    
+                    BOOL showMatrix = [self matrixIsVisible];
+                    
+                    for( ViewerController *v in [ViewerController get2DViewers])
+                    {
+                        if( v != self)
+                        {
+                            if (showMatrix != [v matrixIsVisible])
+                                [v setMatrixVisible: showMatrix];
+                        }
+                    }
+                }
+                noreentry = NO;
+            }
+        }
+    }
+}
+
 -(void)splitViewWillResizeSubviews:(NSNotification *)notification
 {
     if( windowWillClose)
         return;
 
-    if (notification.object == splitView) {
+    if (notification.object == splitView)
+    {
         OSIWindow* window = (OSIWindow*)self.window;
         if( [window respondsToSelector:@selector(disableUpdatesUntilFlush)])
             [window disableUpdatesUntilFlush];
@@ -4028,26 +4064,6 @@ static volatile int numberOfThreadsForRelisce = 0;
         if (proposedPosition)
             proposedPosition += (scrollbarWidth?scrollbarWidth+2:1);
         
-		if ([[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOHIDEMATRIX"] == NO)
-		{
-			// Apply show / hide matrix to all viewers
-			if( ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask) == NO)
-			{
-				NSArray *winList = [NSApp windows];
-				
-				for( id loopItem in winList)
-				{
-					if( [[loopItem windowController] isKindOfClass:[ViewerController class]] && [loopItem windowController] != self)
-					{
-						if (proposedPosition)
-                            [[loopItem windowController] setMatrixVisible: YES];
-						else
-                            [[loopItem windowController] setMatrixVisible: NO];
-					}
-				}
-			}
-		}
-		
         return proposedPosition;
     }
     
