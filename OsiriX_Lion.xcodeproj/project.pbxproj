@@ -33684,7 +33684,7 @@
 				);
 				OTHER_CFLAGS = "-fvisibility=default";
 				OTHER_CODE_SIGN_FLAGS = "";
-				SDKROOT = "";
+				SDKROOT = macosx10.7;
 			};
 			name = Development;
 		};
@@ -34092,7 +34092,7 @@
 				OTHER_CFLAGS = "-fvisibility=default";
 				OTHER_CODE_SIGN_FLAGS = "";
 				PROVISIONING_PROFILE = "";
-				SDKROOT = "";
+				SDKROOT = macosx10.7;
 			};
 			name = "Deployment 32-bit";
 		};
@@ -34386,7 +34386,7 @@
 				OTHER_CFLAGS = "-fvisibility=default";
 				OTHER_CODE_SIGN_FLAGS = "";
 				PROVISIONING_PROFILE = "";
-				SDKROOT = "";
+				SDKROOT = macosx10.7;
 			};
 			name = "Deployment 64-bit";
 		};
