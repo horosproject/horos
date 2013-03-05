@@ -41,16 +41,6 @@
 
 - (void)awakeFromNib {
     [self initDicomPredicateEditor];
-}
-
-- (void)initDicomPredicateEditor {
-    if (_inited)
-        return;
-    
-    self.rowTemplates = [NSArray arrayWithObjects:
-                         [[NSPredicateEditorRowTemplate alloc] initWithCompoundTypes:[NSArray arrayWithObjects: [NSNumber numberWithUnsignedInteger:NSAndPredicateType], [NSNumber numberWithUnsignedInteger:NSOrPredicateType], nil]],
-                         [[O2DicomPredicateEditorRowTemplate alloc] init],
-                         nil];
     
     NSDictionary* binding = [[[self infoForBinding:@"value"] retain] autorelease];
     if (binding) {
@@ -63,6 +53,16 @@
     }
     
     [self addObserver:self forKeyPath:@"value" options:0 context:[self class]];
+}
+
+- (void)initDicomPredicateEditor {
+    if (_inited)
+        return;
+    
+    self.rowTemplates = [NSArray arrayWithObjects:
+                         [[NSPredicateEditorRowTemplate alloc] initWithCompoundTypes:[NSArray arrayWithObjects: [NSNumber numberWithUnsignedInteger:NSAndPredicateType], [NSNumber numberWithUnsignedInteger:NSOrPredicateType], nil]],
+                         [[O2DicomPredicateEditorRowTemplate alloc] init],
+                         nil];
     
     _inited = YES;
 }

@@ -68,7 +68,8 @@
 
 - (NSPredicate*)predicate {
     @try {
-        return [NSPredicate predicateWithFormat:self.predicateFormat];
+        if (self.predicateFormat.length)
+            return [NSPredicate predicateWithFormat:self.predicateFormat];
     } @catch (...) {
     }
     
