@@ -61,7 +61,7 @@
     
     self.rowTemplates = [NSArray arrayWithObjects:
                          [[NSPredicateEditorRowTemplate alloc] initWithCompoundTypes:[NSArray arrayWithObjects: [NSNumber numberWithUnsignedInteger:NSAndPredicateType], [NSNumber numberWithUnsignedInteger:NSOrPredicateType], nil]],
-                         [[O2DicomPredicateEditorRowTemplate alloc] init],
+                         _dpert = [[[O2DicomPredicateEditorRowTemplate alloc] init] autorelease],
                          nil];
     
     _inited = YES;
@@ -126,6 +126,9 @@
 - (void)setObjectValue:(id)value {
     if (_backbinding)
         return;
+    
+    if ([_dpert matchForPredicate:value])
+        value = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObject:value]];
     
     [self initDicomPredicateEditor]; // weird, this is needed: bindings are assigned before initWithFrame: or awakeFromNib...
     
