@@ -201,7 +201,7 @@
 		{
 			uniqueSeriesID++;
 			
-			seriesName = [[NSMutableString stringWithString:[[series objectAtIndex:i] valueForKey: @"name"]] filenameString];
+			seriesName = [[NSMutableString stringWithString: [QTExportHTMLSummary nonNilString: [[series objectAtIndex:i] valueForKey: @"name"]]] filenameString];
 			fileName = [[NSMutableString stringWithFormat:@"%@ - %@", [[series objectAtIndex:i] valueForKeyPath:@"study.studyName"], [[series objectAtIndex:i] valueForKeyPath:@"study.id"]] filenameString];
 			NSString* iId = [[series objectAtIndex:i] valueForKey: @"id"];
 			[fileName appendFormat:@"/%@_%@", seriesName, iId];
@@ -352,7 +352,7 @@
 	[tempHTML replaceOccurrencesOfString:@"%series_id%" withString:[QTExportHTMLSummary nonNilString:[NSString stringWithFormat:@"%@",[series valueForKey: @"id"]]] options:NSLiteralSearch range:tempHTML.range];
 	[tempHTML replaceOccurrencesOfString:@"%series_images_count%" withString:[QTExportHTMLSummary nonNilString:[NSString stringWithFormat:@"%d", imagesCount]] options:NSLiteralSearch range:tempHTML.range];
 	
-	NSMutableString *seriesStr = [NSMutableString stringWithString: [series.name filenameString]];
+	NSMutableString *seriesStr = [NSMutableString stringWithString: [QTExportHTMLSummary nonNilString: [series.name filenameString]]];
 	[BrowserController replaceNotAdmitted: seriesStr];
 			
 	NSMutableString *fileName = [NSMutableString stringWithFormat:@"./%@_%@", seriesStr, [series valueForKey: @"id"]];
