@@ -9021,10 +9021,12 @@ static BOOL withReset = NO;
         leftFrame.size.width -= oldSize.width - splitFrame.size.width;
         rightFrame.size.width += oldSize.width - splitFrame.size.width;
         
+#define MINIMUMSIZEFORCOMPARATIVEDRAWER 180
+        
         if ([splitComparative isSubviewCollapsed: [[splitComparative subviews] objectAtIndex:1]] || [right isHidden])
             leftFrame.size.width = availableWidth;
-        else if( rightFrame.size.width == 0)
-            leftFrame.size.width = availableWidth - 160;
+        else if( rightFrame.size.width < MINIMUMSIZEFORCOMPARATIVEDRAWER || availableWidth - leftFrame.size.width < MINIMUMSIZEFORCOMPARATIVEDRAWER)
+            leftFrame.size.width = availableWidth - MINIMUMSIZEFORCOMPARATIVEDRAWER;
         
         if( leftFrame.size.width > availableWidth)
             leftFrame.size.width = availableWidth;
@@ -9157,7 +9159,7 @@ static BOOL withReset = NO;
 		return oMatrix.cellSize.width;
     
 	if (sender == splitDrawer)
-        return 160;
+        return MINIMUMSIZEFORCOMPARATIVEDRAWER;
     
     if (sender == splitAlbums)
     {
@@ -9187,7 +9189,7 @@ static BOOL withReset = NO;
 		return 300;
     
     if (sender == splitComparative)
-		return [sender bounds].size.width-160;
+		return [sender bounds].size.width-MINIMUMSIZEFORCOMPARATIVEDRAWER;
     
     if (sender == bannerSplit)
         return [sender frame].size.height - (banner.image.size.height+3);
