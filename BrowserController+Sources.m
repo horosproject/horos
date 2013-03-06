@@ -1205,7 +1205,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 		
         self.detected = YES;
         
-		if ([[NSUserDefaults standardUserDefaults] boolForKey:@"autoSelectSourceCDDVD"] && [[NSFileManager defaultManager] fileExistsAtPath:self.devicePath] && autoselect)
+		if (([[NSUserDefaults standardUserDefaults] boolForKey:@"autoSelectSourceCDDVD"] || autoselect) && [[NSFileManager defaultManager] fileExistsAtPath:self.devicePath])
 			[[BrowserController currentBrowser] performSelectorOnMainThread:@selector(setDatabaseFromSourceIdentifier:) withObject:self waitUntilDone:NO modes:[NSArray arrayWithObject:NSDefaultRunLoopMode]];
         else [[BrowserController currentBrowser] redrawSources];
 	} @catch (NSException* e)
