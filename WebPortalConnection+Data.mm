@@ -2090,7 +2090,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			}
 		}
 		else
-			NSLog( @"****** WADO Server : image uid not found !");
+			NSLog( @"****** WADO Server : image uid not found ! %"@", objectUID);
 		
 		if (!self.response.data)
 			self.response.data = [NSData data];
