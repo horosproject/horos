@@ -1730,6 +1730,12 @@ return YES;
 
 - (void) exportDICOMFile:(id) sender
 {
+    if( dcmExportWindow == nil)
+    {
+        NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString(@"DICOM Files Export not supported", nil), NSLocalizedString(@"OK", nil), nil, nil);
+        return;
+    }
+    
 	long max = 0, curIndex = 0;
 	OrthogonalMPRView *view = nil;
     
@@ -1768,7 +1774,8 @@ return YES;
 
 	int count = fabs( [dcmFromTextField intValue] - [dcmToTextField intValue]);
 	count++;
-	count /= [dcmIntervalTextField intValue];
+    if( [dcmIntervalTextField intValue])
+        count /= [dcmIntervalTextField intValue];
 	[dcmCountTextField setStringValue: [NSString stringWithFormat:@"%d images", count]];
 	
 	if( maxMovieIndex > 1)
