@@ -2581,8 +2581,7 @@ static BOOL protectionAgainstReentry = NO;
                     
                     DicomDatabase *idatabase = self.isMainDatabase? self.independentDatabase : [self.mainDatabase independentDatabase];
                     
-                    objects = [idatabase addFilesAtPaths:copiedFiles postNotifications:YES dicomOnly:onlyDICOM rereadExistingItems:NO];
-//                    total += [copiedFiles count];
+                    objects = [idatabase addFilesAtPaths:copiedFiles postNotifications:YES dicomOnly:onlyDICOM rereadExistingItems:YES];
                 }
                 else if( copyFiles)
                 {
