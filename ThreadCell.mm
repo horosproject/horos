@@ -17,6 +17,7 @@
 #import "BrowserController.h"
 #import "NSString+N2.h"
 #import "NSThread+N2.h"
+#import "N2Debug.h"
 #import "N2Operators.h"
 #import "AppController.h"
 
@@ -54,27 +55,39 @@
 	return self;
 }
 
--(void)cleanup {
-    [self.progressIndicator removeFromSuperview];
-	[_progressIndicator autorelease]; _progressIndicator = nil;
-	
-	[self.cancelButton removeFromSuperview];
-	[_cancelButton autorelease]; _cancelButton = nil;
-
-}
-
--(void)dealloc {
-	[self cleanup];
+-(void)cleanup
+{
+    if( _progressIndicator == nil && _cancelButton == nil && KVOObserving == NO)
+        return;
+    
+    if( [NSThread isMainThread] == NO)
+        N2LogStackTrace( @"We shoud be on MAIN thread");
     
     @synchronized( _thread)
     {
-        [_thread removeObserver:self forKeyPath:NSThreadSupportsCancelKey];
-        [_thread removeObserver:self forKeyPath:NSThreadProgressKey];
-        [_thread removeObserver:self forKeyPath:NSThreadStatusKey];
-        [_thread removeObserver:self forKeyPath:NSThreadIsCancelledKey];
-        [_thread autorelease];
-        [_retainedThreadDictionary autorelease];
-	}
+        [_progressIndicator removeFromSuperview];
+        [_progressIndicator autorelease]; _progressIndicator = nil;
+        
+        [_cancelButton removeFromSuperview];
+        [_cancelButton autorelease]; _cancelButton = nil;
+        
+        if( KVOObserving)
+        {
+            [_thread removeObserver:self forKeyPath:NSThreadSupportsCancelKey];
+            [_thread removeObserver:self forKeyPath:NSThreadProgressKey];
+            [_thread removeObserver:self forKeyPath:NSThreadStatusKey];
+            [_thread removeObserver:self forKeyPath:NSThreadIsCancelledKey];
+            KVOObserving = NO;
+        }
+    }
+}
+
+-(void)dealloc
+{
+	[self cleanup];
+    
+    [_thread autorelease];
+    [_retainedThreadDictionary autorelease];
     
 	[_view release];
 	[_manager release];
@@ -86,12 +99,20 @@
     
     @synchronized( _thread)
     {
-        @try {
-            [_thread removeObserver:self forKeyPath:NSThreadSupportsCancelKey];
-            [_thread removeObserver:self forKeyPath:NSThreadProgressKey];
-            [_thread removeObserver:self forKeyPath:NSThreadStatusKey];
-            [_thread removeObserver:self forKeyPath:NSThreadIsCancelledKey];
-        } @catch (...) {
+        @try
+        {
+            if( KVOObserving)
+            {
+                [_thread removeObserver:self forKeyPath:NSThreadSupportsCancelKey];
+                [_thread removeObserver:self forKeyPath:NSThreadProgressKey];
+                [_thread removeObserver:self forKeyPath:NSThreadStatusKey];
+                [_thread removeObserver:self forKeyPath:NSThreadIsCancelledKey];
+                KVOObserving = NO;
+            }
+        }
+        @catch ( NSException *e)
+        {
+            N2LogException( e);
         }
         
         [_thread autorelease];
@@ -102,11 +123,13 @@
         @synchronized( _thread)
         {
             _retainedThreadDictionary = [_thread.threadDictionary retain];
-        
+            
             [_thread addObserver:self forKeyPath:NSThreadIsCancelledKey options:NSKeyValueObservingOptionInitial context:NULL];
             [_thread addObserver:self forKeyPath:NSThreadStatusKey options:NSKeyValueObservingOptionInitial context:NULL];
             [_thread addObserver:self forKeyPath:NSThreadProgressKey options:NSKeyValueObservingOptionInitial context:NULL];
             [_thread addObserver:self forKeyPath:NSThreadSupportsCancelKey options:NSKeyValueObservingOptionInitial context:NULL];
+            
+            KVOObserving = YES;
         }
     }
 }
