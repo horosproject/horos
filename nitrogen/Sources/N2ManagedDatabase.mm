@@ -349,6 +349,7 @@
         [self.managedObjectContext lock];
         @try {
             [self.managedObjectContext mergeChangesFromContextDidSaveNotification:n];
+            [self.managedObjectContext save: nil];
         } @catch (NSException* e) {
             N2LogExceptionWithStackTrace(e);
         } @finally {
