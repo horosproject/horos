@@ -1094,7 +1094,7 @@ typedef GreaterPathNodeOnF NodeCompare;
     
 	Spline3D* function = [[[Spline3D alloc] init] autorelease];
 	Point3D* pt = [Point3D point];
-	float delta_t= 1.0/(float)([centerline count]-1);
+	float delta_t= 1.0/(float)((long)[centerline count]-1);
 	int i;
 	float prex,prey,prez, totallength=0;
 	OSIVoxel* pos = [centerline objectAtIndex:0];

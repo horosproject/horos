@@ -72,7 +72,7 @@ NSString* N2StepsNotificationStep = @"N2StepsNotificationStep";
 }
 
 -(BOOL)hasNextStep {
-	return [[self content] indexOfObject:_currentStep] < [[self content] count]-1;
+	return [[self content] indexOfObject:_currentStep] < (long)[[self content] count]-1;
 }
 
 -(BOOL)hasPreviousStep {

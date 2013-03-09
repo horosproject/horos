@@ -302,7 +302,7 @@ extern int ANNOTATIONS;
         else stackImageIndex = curImage+(curDCM.stack-1)/2;
         
         if( stackImageIndex < 0) stackImageIndex = 0;
-        if( stackImageIndex >= [dcmPixList count]) stackImageIndex = [dcmPixList count]-1;
+        if( stackImageIndex >= [dcmPixList count]) stackImageIndex = (long)[dcmPixList count]-1;
         
         [[dcmPixList objectAtIndex: stackImageIndex] convertPixX: x pixY: y toDICOMCoords: location pixelCenter: YES];
     }
@@ -752,10 +752,10 @@ extern int ANNOTATIONS;
 				[new2DPointROI setName:finalName];
 					
 				// add the 2D Point ROI to the ROI list
-				long slice = ([controller sign]>0)? [[[controller originalView] dcmPixList] count]-1 -[[[addedROI points] objectAtIndex:0] y] : [[[addedROI points] objectAtIndex:0] y];
+				long slice = ([controller sign]>0)? (long)[[[controller originalView] dcmPixList] count]-1 -[[[addedROI points] objectAtIndex:0] y] : [[[addedROI points] objectAtIndex:0] y];
 				
 				if( slice < 0) slice = 0;
-				if( slice >= [[[controller originalView] dcmRoiList] count]) slice = [[[controller originalView] dcmRoiList] count]-1;
+				if( slice >= [[[controller originalView] dcmRoiList] count]) slice = (long)[[[controller originalView] dcmRoiList] count]-1;
 				
 				[[[[controller originalView] dcmRoiList] objectAtIndex: slice] addObject: new2DPointROI];
 			}
@@ -825,10 +825,10 @@ extern int ANNOTATIONS;
 			[new2DPointROI setName:[roi name]];
 			
 			// add the 2D Point ROI to the ROI list
-			long slice = ([controller sign]>0)? [[[controller originalView] dcmPixList] count]-1 -[[[roi points] objectAtIndex:0] y] : [[[roi points] objectAtIndex:0] y];
+			long slice = ([controller sign]>0)? (long)[[[controller originalView] dcmPixList] count]-1 -[[[roi points] objectAtIndex:0] y] : [[[roi points] objectAtIndex:0] y];
 			
 			if( slice < 0) slice = 0;
-			if( slice >= [[[controller originalView] dcmRoiList] count]) slice = [[[controller originalView] dcmRoiList] count]-1;
+			if( slice >= [[[controller originalView] dcmRoiList] count]) slice = (long)[[[controller originalView] dcmRoiList] count]-1;
 			
 			NSLog(@"slice : %d", (int) slice);
 			

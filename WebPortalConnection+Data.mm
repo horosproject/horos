@@ -967,10 +967,10 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		NSArray* dicomDestinationArray = [[parameters objectForKey:@"dicomDestination"] componentsSeparatedByString:@":"];
 		if (dicomDestinationArray.count >= 4) {
 			NSMutableDictionary* dicomDestination = [NSMutableDictionary dictionary];
-			[dicomDestination setObject:[dicomDestinationArray objectAtIndex:dicomDestinationArray.count-4] forKey:@"Address"];
-			[dicomDestination setObject:[dicomDestinationArray objectAtIndex:dicomDestinationArray.count-3] forKey:@"Port"];
-			[dicomDestination setObject:[dicomDestinationArray objectAtIndex:dicomDestinationArray.count-2] forKey:@"AETitle"];
-			[dicomDestination setObject:[dicomDestinationArray objectAtIndex:dicomDestinationArray.count-1] forKey:@"TransferSyntax"];
+			[dicomDestination setObject:[dicomDestinationArray objectAtIndex:(long)dicomDestinationArray.count-4] forKey:@"Address"];
+			[dicomDestination setObject:[dicomDestinationArray objectAtIndex:(long)dicomDestinationArray.count-3] forKey:@"Port"];
+			[dicomDestination setObject:[dicomDestinationArray objectAtIndex:(long)dicomDestinationArray.count-2] forKey:@"AETitle"];
+			[dicomDestination setObject:[dicomDestinationArray objectAtIndex:(long)dicomDestinationArray.count-1] forKey:@"TransferSyntax"];
 			
 			NSMutableArray* selectedImages = [NSMutableArray array];
 			for (DicomSeries* s in selectedSeries)
@@ -2161,7 +2161,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
     {
         NSArray *authorizedStudies = [WebPortalUser studiesForUser: self.user predicate:nil sortBy:nil];
         
-        for( int i = studies.count-1; i >= 0; i--)
+        for( int i = (long)studies.count-1; i >= 0; i--)
         {
             BOOL authorized = NO;
             DicomStudy *currentStudy = [studies objectAtIndex: i];

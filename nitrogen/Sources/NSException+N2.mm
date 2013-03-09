@@ -28,7 +28,7 @@ NSString* const N2ErrorDomain = @"N2";
 		NSArray* addresses = [self callStackReturnAddresses];
 		if (addresses.count) {
 			void* backtrace_frames[addresses.count];
-			for (NSInteger i = addresses.count-1; i >= 0; --i)
+			for (NSInteger i = (long)addresses.count-1; i >= 0; --i)
 				backtrace_frames[i] = (void *)[[addresses objectAtIndex:i] unsignedLongValue];
 			
 			char** frameStrings = backtrace_symbols(backtrace_frames, (int)addresses.count);

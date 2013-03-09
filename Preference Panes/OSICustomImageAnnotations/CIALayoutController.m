@@ -365,7 +365,7 @@
 					index = 0;
 					
 				int j;
-				for (j=0; j<[[currentPlaceHolder annotationsArray] count]-1; j++)
+				for (j=0; j<(long) [[currentPlaceHolder annotationsArray] count]-1; j++)
 				{
 					annotation1 = [[currentPlaceHolder annotationsArray] objectAtIndex:j];
 					annotation2 = [[currentPlaceHolder annotationsArray] objectAtIndex:j+1];
@@ -658,7 +658,7 @@
 	{
 		// select added token
 		[[self window] makeFirstResponder:[prefPane contentTokenField]];
-		[[[prefPane contentTokenField] currentEditor] setSelectedRange:NSMakeRange([[selectedAnnotation content] count]-1, 1)];
+		[[[prefPane contentTokenField] currentEditor] setSelectedRange:NSMakeRange((long) [[selectedAnnotation content] count]-1, 1)];
 	}
 	
 	[[prefPane contentTokenField] setNeedsDisplay:YES];

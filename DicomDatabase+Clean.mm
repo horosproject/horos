@@ -156,7 +156,7 @@
 							
 							int to, from = i;
 							
-							while( i < [studiesArray count]-1 && [patientID compare: [[studiesArray objectAtIndex: i+1] valueForKey:@"patientUID"] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
+							while( i < (long)[studiesArray count]-1 && [patientID compare: [[studiesArray objectAtIndex: i+1] valueForKey:@"patientUID"] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
 							{
 								i++;
 								studyDate = [studyDate laterDate: [[studiesArray objectAtIndex: i] valueForKey:@"date"]];

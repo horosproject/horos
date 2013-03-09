@@ -956,10 +956,10 @@ void createSwfMovie(NSArray* inputFiles, NSString* path) {
 	// animation
 	
 	for (int i = 0; i < inputFiles.count; ++i) {
-		markDI->moveTo(ControllerNavigationRect.origin.x+ControllerNavigationRect.size.width/(inputFiles.count-1)*i, ControllerNavigationRect.origin.y+ControllerNavigationRect.size.height/2);
-		leftBarDI->scaleTo(ControllerNavigationRect.size.width/(inputFiles.count-1)*i, 1);
+		markDI->moveTo(ControllerNavigationRect.origin.x+ControllerNavigationRect.size.width/((long)inputFiles.count-1)*i, ControllerNavigationRect.origin.y+ControllerNavigationRect.size.height/2);
+		leftBarDI->scaleTo(ControllerNavigationRect.size.width/((long)inputFiles.count-1)*i, 1);
 		leftBarDI->moveTo(ControllerNavigationRect.origin.x, ControllerNavigationRect.origin.y);
-		rightBarDI->scaleTo(ControllerNavigationRect.size.width/(inputFiles.count-1)*(inputFiles.count-1-i),1);
+		rightBarDI->scaleTo(ControllerNavigationRect.size.width/((long)inputFiles.count-1)*((long)inputFiles.count-1-i),1);
 		rightBarDI->moveTo(ControllerNavigationRect.origin.x+ControllerNavigationRect.size.width, ControllerNavigationRect.origin.y);
 		
 		for (int d = MAX(0,i-1); d < MIN(inputFiles.count,i+1); ++d)

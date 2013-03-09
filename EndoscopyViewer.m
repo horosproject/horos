@@ -202,7 +202,7 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 	[mprController reslice: (long)(pos2D[0]+0.0):  (long)(pos2D[1]+0.0): [mprController originalView]];
 	long sliceIndex = (long)(pos2D[2]+0.5);
 	sliceIndex = (sliceIndex<0)? 0 :sliceIndex;
-	sliceIndex = (sliceIndex>=[[[mprController originalView] dcmPixList] count])? [[[mprController originalView] dcmPixList] count]-1 :sliceIndex;
+	sliceIndex = (sliceIndex>=[[[mprController originalView] dcmPixList] count])? (long)[[[mprController originalView] dcmPixList] count]-1 :sliceIndex;
 	[[mprController originalView] setIndex:sliceIndex];
 	[[mprController originalView] setCrossPositionX: (float)(pos2D[0])+0.5];
 	[[mprController originalView] setCrossPositionY: (float)(pos2D[1])+0.5];
@@ -1643,7 +1643,7 @@ return YES;
 {
 	if(flyAssistantMode == NAVIGATORMODE_2POINT || isFlyPathLocked)
 	{
-		if(flyAssistantPositionIndex < [centerline count]-1)
+		if(flyAssistantPositionIndex + 1 < [centerline count])
 		{
 			OSIVoxel* cpos = [centerline objectAtIndex:flyAssistantPositionIndex];
 			OSIVoxel * fpos = [centerline objectAtIndex:flyAssistantPositionIndex+1];
@@ -1705,7 +1705,7 @@ return YES;
 		OSIVoxel * cpos=[OSIVoxel pointWithPoint3D:pt];
 		float foclength=30;
 		if(dir.z>0)
-			foclength = ([pixList count] -1 - pt.z)/dir.z;
+			foclength = ((long)[pixList count] -1 - pt.z)/dir.z;
 		else if(dir.z<0){
 			foclength = (1 - pt.z)/dir.z;
 		}
@@ -1718,7 +1718,7 @@ return YES;
 		[self setCameraPosition:cpos focalPoint:fpos];
 		
 		[centerline addObject:cpos];
-		flyAssistantPositionIndex = [centerline count]-1;
+		flyAssistantPositionIndex = (long)[centerline count]-1;
 		
 		[self updateCenterlineInMPRViews];
 		
@@ -1733,10 +1733,10 @@ return YES;
 		if([centerline count]<2)
 			return;
 		OSIVoxel* cpos = [centerline objectAtIndex:[centerline count]-2];
-		OSIVoxel * fpos = [centerline objectAtIndex:[centerline count]-1];
+		OSIVoxel * fpos = [centerline objectAtIndex:(long)[centerline count]-1];
 		[self setCameraAtPosition:cpos TowardsPosition:fpos];
 		[centerline removeLastObject];
-		flyAssistantPositionIndex = [centerline count]-1;
+		flyAssistantPositionIndex = (long)[centerline count]-1;
 		[self updateCenterlineInMPRViews];
 	}
 	else if(flyAssistantMode == NAVIGATORMODE_2POINT || isFlyPathLocked){
@@ -1827,7 +1827,7 @@ return YES;
 	if(foclength<1.0)
 		foclength=1.0;
 	if(dir.z>0)
-		foclength = ([pixList count] -1 - cpos.z)/dir.z;
+		foclength = ((long)[pixList count] -1 - cpos.z)/dir.z;
 	else if(dir.z<0){
 		foclength = (1 - cpos.z)/dir.z;
 	}

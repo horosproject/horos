@@ -85,7 +85,7 @@ NSString* const OsirixDataDirName = @"OsiriX Data";
 +(NSString*)baseDirPathForPath:(NSString*)path {
 	// were we given a path inside a OsirixDataDirName dir?
 	NSArray* pathParts = path.pathComponents;
-	for (int i = pathParts.count-1; i >= 0; --i)
+	for (int i = (long)pathParts.count-1; i >= 0; --i)
 		if ([[pathParts objectAtIndex:i] isEqualToString:OsirixDataDirName]) {
 			path = [NSString pathWithComponents:[pathParts subarrayWithRange:NSMakeRange(0,i+1)]];
 			break;
@@ -2480,7 +2480,7 @@ static BOOL protectionAgainstReentry = NO;
 			{
 				if ([[NSThread currentThread] isCancelled]) break;
                 
-                [NSThread currentThread].status = N2LocalizedSingularPluralCount(filesInput.count-i, NSLocalizedString(@"file left", nil), NSLocalizedString(@"files left", nil));
+                [NSThread currentThread].status = N2LocalizedSingularPluralCount((long)filesInput.count-i, NSLocalizedString(@"file left", nil), NSLocalizedString(@"files left", nil));
                 [NSThread currentThread].progress = float(i)/filesInput.count;
 
                 NSString *srcPath = [filesInput objectAtIndex: i], *dstPath = nil;

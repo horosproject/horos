@@ -2588,7 +2588,7 @@ static float deg2rad = M_PI / 180.0;
 			[views addObject: middleTransverseView];
 			[views addObject: bottomTransverseView];
 			
-			for( int i = views.count-1; i >= 0; i--)
+			for( int i = (long)views.count-1; i >= 0; i--)
 			{
 				if( NSEqualRects( [[views objectAtIndex: i] visibleRect], NSZeroRect))
 					[views removeObjectAtIndex: i];

@@ -186,7 +186,7 @@
 	for(i=0; i<[series count]; i++)
 	{
 		imagesCount++;
-		if( i == [series count]-1)
+		if( i == (long)[series count]-1)
 			lastImageOfSeries = YES;
 		else if([[[series objectAtIndex:i] valueForKey: @"id"] intValue] != [[[series objectAtIndex:i+1] valueForKey: @"id"] intValue])
 			lastImageOfSeries = YES;
@@ -259,7 +259,7 @@
 			
 			imagesCount = 0;
 			
-			if(i==[series count]-1)
+			if(i==(long)[series count]-1)
 				lastImageOfStudy = YES;
 			else if([[[series objectAtIndex:i] valueForKeyPath: @"study.studyInstanceUID"] isEqualToString: [[series objectAtIndex:i+1] valueForKeyPath: @"study.studyInstanceUID"]] == NO)
 				lastImageOfStudy = YES;

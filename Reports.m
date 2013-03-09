@@ -545,7 +545,7 @@ static id aedesc_to_id(AEDesc *desc)
     NSString* templatesDirPath = [[self class] resolvedDatabaseWordTemplatesDirPath];
     if ([[NSFileManager defaultManager] fileExistsAtPath:templatesDirPath]) {
         NSMutableArray* templatesDirPathContents = [[[[NSFileManager defaultManager] contentsOfDirectoryAtPath:templatesDirPath error:NULL] mutableCopy] autorelease];
-        for (NSInteger i = templatesDirPathContents.count-1; i >= 0; --i)
+        for (NSInteger i = (long)templatesDirPathContents.count-1; i >= 0; --i)
             if (![[templatesDirPathContents objectAtIndex:i] hasPrefix:@"OsiriX "])
                 [templatesDirPathContents removeObjectAtIndex:i];
         if ([templatesDirPathContents count] == 1)

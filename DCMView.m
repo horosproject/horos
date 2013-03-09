@@ -1569,7 +1569,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		{
 			[r appendString: [[roiSelectedArray objectAtIndex: i] description]];
 			
-			if( i != [roiSelectedArray count]-1)
+			if( i != (long)[roiSelectedArray count]-1)
 				[r appendString:@"\r"];
 		}
 		
@@ -2001,7 +2001,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		curROI = nil;
 		
 		curImage = index; 
-		if( curImage >= [dcmPixList count]) curImage = [dcmPixList count] -1;
+		if( curImage >= [dcmPixList count]) curImage = (long)[dcmPixList count] -1;
 		if( curImage < 0) curImage = 0;
 		
 		[curDCM release];
@@ -2422,7 +2422,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			else noScale = NO;
 				
 			curImage = index;
-			if( curImage >= [dcmPixList count]) curImage = [dcmPixList count] -1;
+			if( curImage >= [dcmPixList count]) curImage = (long)[dcmPixList count] -1;
 			if( curImage < 0) curImage = 0;
 			
 			DCMPix *pix2beReleased = curDCM;
@@ -2659,14 +2659,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				{
 					inc = curDCM.stack;
 					curImage += inc;
-					if( curImage >= [dcmPixList count]) curImage = [dcmPixList count]-1;
+					if( curImage >= [dcmPixList count]) curImage = (long)[dcmPixList count]-1;
 				}
 				else
 				{
 					if( [event modifierFlags]  & NSAlternateKeyMask) [[self windowController] setKeyImage:self];
 					inc = _imageRows * _imageColumns;
 					curImage += _imageRows * _imageColumns;
-					if( curImage >= [dcmPixList count]) curImage = [dcmPixList count]-1;
+					if( curImage >= [dcmPixList count]) curImage = (long)[dcmPixList count]-1;
 				}
 			}
         }
@@ -2700,12 +2700,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		{
 			inc = _imageRows * _imageColumns;
 			curImage += _imageRows * _imageColumns;
-			if( curImage >= [dcmPixList count]) curImage = [dcmPixList count]-1;
+			if( curImage >= [dcmPixList count]) curImage = (long)[dcmPixList count]-1;
 		}
 		else if (c == NSHomeFunctionKey)
 			curImage = 0;
 		else if (c == NSEndFunctionKey)
-			curImage = [dcmPixList count]-1;
+			curImage = (long)[dcmPixList count]-1;
 		else if (c == 9)	// Tab key
 		{
 			int a = ANNOTATIONS + 1;
@@ -2802,7 +2802,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				{
 					inc = -1;
 					curImage--;
-					if( curImage < 0) curImage = [dcmPixList count]-1;
+					if( curImage < 0) curImage = (long)[dcmPixList count]-1;
 				}
 				else if(val> 0)
 				{
@@ -3801,13 +3801,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		long maxVal = curImage+(curDCM.stack-1);
 		if( maxVal < 0) maxVal = 0;
-		if( maxVal >= [dcmPixList count]) maxVal = [dcmPixList count]-1;
+		if( maxVal >= [dcmPixList count]) maxVal = (long)[dcmPixList count]-1;
 		
 		thickDCM = [dcmPixList objectAtIndex: maxVal];
 	}
 	else thickDCM = nil;
 
-	int pos = flippedData? [dcmPixList count] -1 -curImage : curImage;
+	int pos = flippedData? (long)[dcmPixList count] -1 -curImage : curImage;
 
 	NSMutableDictionary *instructions = [NSMutableDictionary dictionary];
 
@@ -4697,7 +4697,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				int imIndex = curImage;
 				
 				if( flippedData)
-					imIndex = [dcmPixList count]-1-imIndex;
+					imIndex = (long)[dcmPixList count]-1-imIndex;
 				
 				if( imIndex < 0)
 				{
@@ -4729,17 +4729,17 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				}
 				
 				if( curImage < 0) curImage = 0;
-				if( curImage >= [dcmPixList count]) curImage = [dcmPixList count]-1;
+				if( curImage >= [dcmPixList count]) curImage = (long)[dcmPixList count]-1;
 			}
 			else if( [dcmPixList count] > 3 && [[NSUserDefaults standardUserDefaults] boolForKey:@"loopScrollWheel"])
 			{
-				if( curImage < 0) curImage = [dcmPixList count]-1;
+				if( curImage < 0) curImage = (long)[dcmPixList count]-1;
 				if( curImage >= [dcmPixList count]) curImage = 0;
 			}
 			else
 			{
 				if( curImage < 0) curImage = 0;
-				if( curImage >= [dcmPixList count]) curImage = [dcmPixList count]-1;
+				if( curImage >= [dcmPixList count]) curImage = (long)[dcmPixList count]-1;
 			}
 			
 			if( listType == 'i') [self setIndex:curImage];
@@ -5284,7 +5284,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		}
 		
 		if( curImage < 0) curImage = 0;
-		if( curImage >= [dcmPixList count]) curImage = [dcmPixList count] -1;
+		if( curImage >= [dcmPixList count]) curImage = (long)[dcmPixList count] -1;
 		
 		if(previmage != curImage)
 		{
@@ -5534,7 +5534,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 							if([r type] == tCPolygon || [r type] == tPencil)
 							{
 								if(k==-1)
-									k = [points count]-1;
+									k = (long)[points count]-1;
 								else if(k==[points count])
 									k = 0;
 							}
@@ -5656,7 +5656,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                 if( points.count)
                 {
                     NSPoint p1, p2;
-                    for( int j=0; j<[points count]-1 && !intersected; j++ )
+                    for( int j=0; j<(long)[points count]-1 && !intersected; j++ )
                     {
                         p1 = [[points objectAtIndex:j] point];
                         p2 = [[points objectAtIndex:j+1] point];
@@ -5713,7 +5713,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                     if( points.count)
                     {
                         NSPoint p1, p2;
-                        for( int j=0; j<[points count]-1 && !intersected; j++)
+                        for( int j=0; j<(long)[points count]-1 && !intersected; j++)
                         {
                             p1 = [[points objectAtIndex:j] point];
                             p2 = [[points objectAtIndex:j+1] point];
@@ -6356,13 +6356,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		long maxVal = flippedData? curImage-(curDCM.stack-1) : curImage+curDCM.stack-1;
 		if( maxVal < 0) maxVal = 0;
-		if( maxVal >= [dcmPixList count]) maxVal = [dcmPixList count]-1;
+		if( maxVal >= [dcmPixList count]) maxVal = (long)[dcmPixList count]-1;
 		
 		thickDCM = [dcmPixList objectAtIndex: maxVal];
 	}
 	else thickDCM = nil;
 	
-	int pos = flippedData? [dcmPixList count] -1 -curImage : curImage;
+	int pos = flippedData? (long)[dcmPixList count] -1 -curImage : curImage;
 	
 	if( flippedData) inc = -inc;
 	
@@ -6669,7 +6669,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				// Absolute Vodka
 				if( syncro == syncroABS && point3D == NO && syncSeriesIndex == -1)
 				{
-					if( flippedData) curImage = [dcmPixList count] -1 -pos;
+					if( flippedData) curImage = (long)[dcmPixList count] -1 -pos;
 					else curImage = pos;
 					
 					if( curImage >= [dcmPixList count]) curImage = [dcmPixList count] - 1;
@@ -6683,7 +6683,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
                     int ratioPos = round( ratio * (float) [dcmPixList count]);
                     
-					if( flippedData) curImage = [dcmPixList count] -1 -ratioPos;
+					if( flippedData) curImage = (long)[dcmPixList count] -1 -ratioPos;
 					else curImage = ratioPos;
 					
 					if( curImage >= [dcmPixList count]) curImage = [dcmPixList count] - 1;
@@ -6780,7 +6780,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 										}
 									}
 									
-									if( curImage >= [dcmFilesList count]) curImage = [dcmFilesList count]-1;
+									if( curImage >= [dcmFilesList count]) curImage = (long)[dcmFilesList count]-1;
 									if( curImage < 0) curImage = 0;
 								}
 							}
@@ -6793,12 +6793,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                             float ratio = (float) pos / (float) [[otherView dcmPixList] count];
                             int ratioPos = round( ratio * (float) [dcmPixList count]);
                             
-                            if( flippedData) curImage = [dcmPixList count] -1 -ratioPos;
+                            if( flippedData) curImage = (long)[dcmPixList count] -1 -ratioPos;
                             else curImage = ratioPos;
                         }
                         else if( [[NSUserDefaults standardUserDefaults] integerForKey: @"DefaultModeForNonVolumicSeries"] == syncroABS)
                         {
-                            if( flippedData) curImage = [dcmPixList count] -1 -pos;
+                            if( flippedData) curImage = (long)[dcmPixList count] -1 -pos;
                             else curImage = pos;
                         }
                         
@@ -7936,7 +7936,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 										else maxVal = curImage+(curDCM.stack-1)/2;
 										
 										if( maxVal < 0) maxVal = 0;
-										if( maxVal >= [dcmPixList count]) maxVal = [dcmPixList count]-1;
+										if( maxVal >= [dcmPixList count]) maxVal = (long)[dcmPixList count]-1;
 										
 										[[dcmPixList objectAtIndex: maxVal] convertPixX: mouseXPos pixY: mouseYPos toDICOMCoords: location pixelCenter: YES];
 									}
@@ -8836,7 +8836,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					
 					rectArray = [[NSMutableArray alloc] initWithCapacity: [curRoiList count]];
 					
-					for( int i = [curRoiList count]-1; i >= 0; i--)
+					for( int i = (long)[curRoiList count]-1; i >= 0; i--)
 					{
 						ROI *r = [[curRoiList objectAtIndex:i] retain];	// If we are not in the main thread (iChat), we want to be sure to keep our ROIs
 						
@@ -8865,7 +8865,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						
 						if( drawingRoiMode == NO)
 						{
-							for( int i = [sortedROIs count]-1; i>=0; i--)
+							for( int i = (long)[sortedROIs count]-1; i>=0; i--)
 							{
 								ROI *r = [[sortedROIs objectAtIndex:i] retain];
 								
@@ -11793,7 +11793,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	long	x = curImage;//x = curImage before sliderAction
 
-	if( flippedData) curImage = [dcmPixList count] -1 -[sender intValue];
+	if( flippedData) curImage = (long)[dcmPixList count] -1 -[sender intValue];
     else curImage = [sender intValue];
 		
 	[self setIndex:curImage];
@@ -11976,8 +11976,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		if( flippedData)
 		{
-			if( listType == 'i') [self setIndex: [dcmPixList count] -1 ];
-			else [self setIndexWithReset:[dcmPixList count] -1  :YES];
+			if( listType == 'i') [self setIndex: (long)[dcmPixList count] -1 ];
+			else [self setIndexWithReset:(long)[dcmPixList count] -1  :YES];
 		}
 		else
 		{

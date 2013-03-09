@@ -16,7 +16,6 @@
 #import "NSFileManager+N2.h"
 #include <algorithm>
 
-
 @implementation DicomCompressor
 
 const NSUInteger MaxFilesPassedToDecompress = 200;
@@ -38,9 +37,10 @@ const NSUInteger MaxFilesPassedToDecompress = 200;
 	}
 	[args addObject:actionString];
 	
-	for (NSUInteger i = 0; i < filePaths.count; i += MaxFilesPassedToDecompress) {
+	for (NSUInteger i = 0; i < filePaths.count; i += MaxFilesPassedToDecompress)
+    {
 		NSMutableArray* iargs = [NSMutableArray arrayWithArray:args];
-		[iargs addObjectsFromArray:[filePaths subarrayWithRange:NSMakeRange(i, std::min(MaxFilesPassedToDecompress, filePaths.count-i))]];
+		[iargs addObjectsFromArray:[filePaths subarrayWithRange:NSMakeRange(i, std::min(MaxFilesPassedToDecompress, (int)filePaths.count-i))]];
 		
 		NSTask* task = [[NSTask alloc] init];
 		[task setArguments:iargs];

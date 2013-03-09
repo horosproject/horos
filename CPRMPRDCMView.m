@@ -453,7 +453,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 				
 				if( cameraMoved == YES)
 				{
-					for( int i = [curRoiList count] -1 ; i >= 0; i--)
+					for( int i = (long)[curRoiList count] -1 ; i >= 0; i--)
 					{
 						ROI *r = [curRoiList objectAtIndex: i];
 						if( [r type] != t2DPoint)
@@ -1135,7 +1135,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		
 		NSMutableDictionary *ROIsStateSaved = [NSMutableDictionary dictionary];
 		
-		for( int i = [curRoiList count] -1 ; i >= 0; i--)
+		for( int i = (long)[curRoiList count] -1 ; i >= 0; i--)
 		{
 			ROI *r = [curRoiList objectAtIndex: i];
 			if( [r type] == t2DPoint)

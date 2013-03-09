@@ -82,7 +82,7 @@
 }
 
 -(void)removeAllRows {
-	for (int i = [_rows count]-1; i >= 0; --i)
+	for (int i = (long)[_rows count]-1; i >= 0; --i)
 		[self removeRowAtIndex:i];
 }
 

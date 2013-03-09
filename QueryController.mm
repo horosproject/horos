@@ -475,7 +475,7 @@ extern "C"
     
     if( usePatientName)
     {
-        for( int x = [studies count]-1 ; x >= 0 ; x--)
+        for( int x = (long)[studies count]-1 ; x >= 0 ; x--)
         {
             DCMTKStudyQueryNode *s = [studies objectAtIndex: x];
             
@@ -803,7 +803,7 @@ extern "C"
             [preset setObject: [autoQRInstanceName stringValue] forKey: @"instanceName"];
             [autoQRInstances addObject: preset];
             
-            [self setCurrentAutoQR: [autoQRInstances count] -1];
+            [self setCurrentAutoQR: (long)[autoQRInstances count] -1];
             
             [self emptyPreset: self];
             
@@ -877,7 +877,7 @@ extern "C"
         }
         
         if( index < 0)
-            index = autoQRInstances.count -1;
+            index = (long)autoQRInstances.count -1;
         
         if( index >= autoQRInstances.count)
             index = 0;

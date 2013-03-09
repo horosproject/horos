@@ -977,7 +977,7 @@
 					ROI *new2DPointROI = [[[ROI alloc] initWithType: t2DPoint :[yReslicedView pixelSpacingX] :[yReslicedView pixelSpacingY] :NSMakePoint( [yReslicedView origin].x, [yReslicedView origin].y)] autorelease];
 					NSRect irect;
 					irect.origin.x = [[[aROI points] objectAtIndex:0] y];
-					long sliceIndex = (sign>0)? [[originalView dcmPixList] count]-1 -i : i; // i is slice number
+					long sliceIndex = (sign>0)? (long)[[originalView dcmPixList] count]-1 -i : i; // i is slice number
 					irect.origin.y = sliceIndex; // i is slice number
 					irect.size.width = irect.size.height = 0;
 					[new2DPointROI setROIRect:irect];
@@ -1019,7 +1019,7 @@
                     {
                         unsigned char* destPtr = [p textureBuffer];
                         unsigned char* srcPtr = [aROI textureBuffer];
-                        int sliceIndex = (sign>0)? [[originalView dcmPixList] count]-1 -i : i; // i is slice number
+                        int sliceIndex = (sign>0)? (long)[[originalView dcmPixList] count]-1 -i : i; // i is slice number
                         
                         destPtr += sliceIndex * imageWidth + aROI.textureUpLeftCornerY;
                         srcPtr += (x - aROI.textureUpLeftCornerX);
@@ -1070,7 +1070,7 @@
 					ROI *new2DPointROI = [[[ROI alloc] initWithType: t2DPoint :[xReslicedView pixelSpacingX] :[xReslicedView pixelSpacingY] :NSMakePoint( [xReslicedView origin].x, [xReslicedView origin].y)] autorelease];
 					NSRect irect;
 					irect.origin.x = [[[aROI points] objectAtIndex:0] x];
-					long sliceIndex = (sign>0)? [[originalView dcmPixList] count]-1 -i : i; // i is slice number
+					long sliceIndex = (sign>0)? (long)[[originalView dcmPixList] count]-1 -i : i; // i is slice number
 					irect.origin.y = sliceIndex;
 					irect.size.width = irect.size.height = 0;
 					[new2DPointROI setROIRect:irect];
@@ -1112,7 +1112,7 @@
                     {
                         unsigned char* destPtr = [p textureBuffer];
                         unsigned char* srcPtr = [aROI textureBuffer];
-                        int sliceIndex = (sign>0)? [[originalView dcmPixList] count]-1 -i : i; // i is slice number
+                        int sliceIndex = (sign>0)? (long)[[originalView dcmPixList] count]-1 -i : i; // i is slice number
                         
                         destPtr += sliceIndex*imageWidth + aROI.textureUpLeftCornerX;
                         srcPtr += (y - aROI.textureUpLeftCornerY)*aROI.textureWidth;

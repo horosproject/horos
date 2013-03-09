@@ -90,7 +90,7 @@ static SyncSeriesScope globalSyncSeriesScope;
 		
 		view = [controller xReslicedView];
 		
-		[view setCrossPosition: [view crossPositionX]+0.5 :[[controller originalDCMPixList] count] -1 - [[[note userInfo] valueForKey:@"z"] intValue]+0.5];
+		[view setCrossPosition: [view crossPositionX]+0.5 :(long)[[controller originalDCMPixList] count] -1 - [[[note userInfo] valueForKey:@"z"] intValue]+0.5];
 	}
 }
 
@@ -1460,7 +1460,7 @@ return YES;
 		[views addObject: [controller xReslicedView]];
 		[views addObject: [controller yReslicedView]];
 		
-		for( int i = views.count-1; i >= 0; i--)
+		for( int i = (long)views.count-1; i >= 0; i--)
 		{
 			if( NSEqualRects( [[views objectAtIndex: i] visibleRect], NSZeroRect))
 				[views removeObjectAtIndex: i];

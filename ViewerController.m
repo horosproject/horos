@@ -1290,8 +1290,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 				
 				[[newPixList lastObject] setfImage: (float*) (emptyData + imageSize * ([newPixList count] - 1))];
 				[[newPixList lastObject] setTot: newTotal];
-				[[newPixList lastObject] setFrameNo: [newPixList count]-1];
-				[[newPixList lastObject] setID: [newPixList count]-1];
+				[[newPixList lastObject] setFrameNo: (long)[newPixList count]-1];
+				[[newPixList lastObject] setID: (long)[newPixList count]-1];
 				
 				if( [fileList[ j] count])
 				{
@@ -2339,7 +2339,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	else //use the menuDictionary of the path
 	{
 		   NSArray *pathComponents = [[self contextualDictionaryPath] pathComponents];
-		   NSString *plistTitle = [[pathComponents objectAtIndex:([pathComponents count]-1)] stringByDeletingPathExtension];
+		   NSString *plistTitle = [[pathComponents objectAtIndex:((long)[pathComponents count]-1)] stringByDeletingPathExtension];
 		   contextualMenu = [[NSMenu alloc] initWithTitle:plistTitle
 											   withDictionary:[NSDictionary dictionaryWithContentsOfFile:[self contextualDictionaryPath]]
 										  forWindowController:self ];
@@ -6455,12 +6455,12 @@ return YES;
 						}
 					}
                     
-                    if( tryToCorrect && numberOfNonVolumicImages == 1 && (firstWrongImage == 0 || firstWrongImage == [pixList[ x] count]-1)) // First or last image with different matrix
+                    if( tryToCorrect && numberOfNonVolumicImages == 1 && (firstWrongImage == 0 || firstWrongImage == (long)[pixList[ x] count]-1)) // First or last image with different matrix
                     {
                         NSMutableArray *newFileList = [NSMutableArray array];
                         NSMutableArray *newPixList = [NSMutableArray array];
                         
-                        long newSize = pw * ph * ([pixList[ x] count]-1) * sizeof( float);
+                        long newSize = pw * ph * ((long)[pixList[ x] count]-1) * sizeof( float);
                         
                         float *newPtr = (float*) malloc( newSize);
                         if( newPtr)
@@ -6526,7 +6526,7 @@ return YES;
 									if( j == 0)
 										firstImage = YES;
                                     
-									if( j == [pixList[ x] count] -1)
+									if( j == (long)[pixList[ x] count] -1)
 										lastImage = YES;
 								}
 							}
@@ -7150,7 +7150,7 @@ return YES;
                         previousLocations[ 2] = [(DCMPix*)[pixList[ 0] lastObject] sliceLocation];
                         
                         float newStart = [[[f objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue];
-                        float newEnd = [[[f objectAtIndex: [f count]-1] valueForKey:@"sliceLocation"] floatValue];
+                        float newEnd = [[[f objectAtIndex: (long)[f count]-1] valueForKey:@"sliceLocation"] floatValue];
                         
                         for( int u = 0; u < 3; u++)
                         {
@@ -7160,7 +7160,7 @@ return YES;
                                 {
                                     case 0: break;
                                     case 1: [imageView setIndex: 0]; [imageView sendSyncMessage: 0];   break;
-                                    case 2: [imageView setIndex: [pixList[ 0] count]-1]; [imageView sendSyncMessage: 0]; break;
+                                    case 2: [imageView setIndex: (long)[pixList[ 0] count]-1]; [imageView sendSyncMessage: 0]; break;
                                 }
                             }
                         }
@@ -7282,7 +7282,7 @@ return YES;
 					
 					[self setWindowTitle:self];
 					
-					[slider setMaxValue:[pixList[0] count]-1];
+					[slider setMaxValue:(long)[pixList[0] count]-1];
 					[slider setNumberOfTickMarks:[pixList[0] count]];
 					[self adjustSlider];
 						
@@ -7413,7 +7413,7 @@ return YES;
                             if( index != NSNotFound)
                             {
                                 if( wasFlipped)
-                                    index = [fileList[ 0] count] -1 -index;
+                                    index = (long)[fileList[ 0] count] -1 -index;
                                 
                                 [imageView setIndex: index];
                             }
@@ -7464,7 +7464,7 @@ return YES;
                                         if( index != 0)
                                         {
                                             if( wasFlipped)
-                                                index = [fileList[ 0] count] -1 -index;
+                                                index = (long)[fileList[ 0] count] -1 -index;
                                             [imageView setIndex: index];
                                             [self adjustSlider];
                                             keepFusion = YES;
@@ -8336,7 +8336,7 @@ return YES;
 			{
 				int index = (x * [savedROIs[ j] count]) / [pixList[ j] count];
 				
-				if( index >= [savedROIs[ j] count]) index = [savedROIs[ j] count] -1;
+				if( index >= [savedROIs[ j] count]) index = (long)[savedROIs[ j] count] -1;
 				
 				NSData *r = [savedROIs[ j] objectAtIndex: index];
 				
@@ -9192,7 +9192,7 @@ return YES;
 	[seriesView setFlippedData: ![imageView flippedData]];
 	[self setFusionMode: 0];
 	
-	[imageView setIndex: [pixList[ 0] count] -1 -previousCurImage];
+	[imageView setIndex: (long)[pixList[ 0] count] -1 -previousCurImage];
 	
 	[self adjustSlider];
 	
@@ -9510,7 +9510,7 @@ return YES;
 							
 							for(  i = 0 ; i < [pixList[ x] count]; i++)
 							{
-								long offset = ([pixList[ x] count]-1-i)*[firstObject pheight] * [firstObject pwidth];
+								long offset = ((long)[pixList[ x] count]-1-i)*[firstObject pheight] * [firstObject pwidth];
 								
 								[[pixList[ x] objectAtIndex: i] setfImage: volumeDataPtr + offset];
 								[[pixList[ x] objectAtIndex: i] setSliceInterval: interval];
@@ -9617,7 +9617,7 @@ return YES;
 		double minInterval = 0, maxInterval = 0;
 		BOOL nonContinuous = NO;
 		
-		for( int i = 0 ; i < [pixList[ 0] count] -1; i++)
+		for( int i = 0 ; i < (long)[pixList[ 0] count] -1; i++)
 		{
 			double xd = [[pixList[ 0] objectAtIndex: i+1] originX] - [[pixList[ 0] objectAtIndex: i] originX];
 			double yd = [[pixList[ 0] objectAtIndex: i+1] originY] - [[pixList[ 0] objectAtIndex: i] originY];
@@ -13446,7 +13446,7 @@ int i,j,l;
 	{
 		for( x = 0; x < [pixList[y] count]; x++)
 		{
-			for( i = [[roiList[y] objectAtIndex: x] count]-1; i >= 0 ; i--)
+			for( i = (long)[[roiList[y] objectAtIndex: x] count]-1; i >= 0 ; i--)
 			{
 				ROI *curROI = [[roiList[y] objectAtIndex: x] objectAtIndex:i];
 				
@@ -13703,7 +13703,7 @@ int i,j,l;
 					
 					pos = [imageView curImage];
 					
-					if( [imageView flippedData]) to = [pixList[curMovieIndex] count] -1 - [roiPropaDest floatValue];
+					if( [imageView flippedData]) to = (long)[pixList[curMovieIndex] count] -1 - [roiPropaDest floatValue];
 					else to = [roiPropaDest floatValue];
 					
 					startImage = pos;
@@ -14257,7 +14257,7 @@ int i,j,l;
 				i--;
 			}
 		}
-		for(i=[group count]-1; i>=0; i--)
+		for(i=(long)[group count]-1; i>=0; i--)
 		{
 			[ROIs insertObject:[group objectAtIndex:i] atIndex:0];
 		}
@@ -14287,7 +14287,7 @@ int i,j,l;
 				i--;
 			}
 		}
-		for(i=[group count]-1; i>=0; i--)
+		for(i=(long)[group count]-1; i>=0; i--)
 		{
 			[ROIs insertObject:[group objectAtIndex:i] atIndex:[ROIs count]];
 		}
@@ -16104,7 +16104,7 @@ int i,j,l;
 	if( [imageView columns] > 1 || [imageView rows] > 1)
 	{
 		if( index == 0)
-			[imageView setIndex: [pixList[ curMovieIndex] count] -1];
+			[imageView setIndex: (long)[pixList[ curMovieIndex] count] -1];
 		else
 			[imageView setIndex: 0];
 	}
@@ -16236,7 +16236,7 @@ int i,j,l;
 		
 		if( [loopButton state] == NSOnState)
 		{
-			if( val < 0) val = [pixList[ curMovieIndex] count]-1;
+			if( val < 0) val = (long)[pixList[ curMovieIndex] count]-1;
 			if( val >= [pixList[ curMovieIndex] count]) val = 0;
 		}
 		else
@@ -16251,10 +16251,10 @@ int i,j,l;
 			
 			if( val >= [pixList[ curMovieIndex] count])
 			{
-				val = [pixList[ curMovieIndex] count]-1;
+				val = (long)[pixList[ curMovieIndex] count]-1;
 				direction = -direction;
 				val += direction;
-				if( val >= [pixList[ curMovieIndex] count]) val = [pixList[ curMovieIndex] count]-1;
+				if( val >= [pixList[ curMovieIndex] count]) val = (long)[pixList[ curMovieIndex] count]-1;
 			}
 		}
 		
@@ -16895,7 +16895,7 @@ int i,j,l;
 			{
 				NSManagedObject	*image;
 				
-				if( [imageView flippedData]) image = [[self fileList] objectAtIndex: [[self fileList] count] -1 -i];
+				if( [imageView flippedData]) image = [[self fileList] objectAtIndex: (long)[[self fileList] count] -1 -i];
 				else image = [[self fileList] objectAtIndex: i];
 				
 				if (![[image valueForKey: @"isKeyImage"] boolValue]) saveImage = NO;
@@ -17168,7 +17168,7 @@ int i,j,l;
 	{
 		NSManagedObject	*image;
 		
-		if( [imageView flippedData]) image = [[self fileList] objectAtIndex: [[self fileList] count] -1 -curSample];
+		if( [imageView flippedData]) image = [[self fileList] objectAtIndex: (long)[[self fileList] count] -1 -curSample];
 		else image = [[self fileList] objectAtIndex: curSample];
 		export = [[image valueForKey:@"isKeyImage"] boolValue];
 	}
@@ -17660,7 +17660,7 @@ int i,j,l;
 	{
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		
-		if( [imageView flippedData]) [imageView setIndex: [pixList[ curMovieIndex] count] -1 -i];
+		if( [imageView flippedData]) [imageView setIndex: (long)[pixList[ curMovieIndex] count] -1 -i];
 		else [imageView setIndex:i];
 		
 		[imageView sendSyncMessage: 0];
@@ -17764,7 +17764,7 @@ int i,j,l;
 				{
 					NSManagedObject	*image;
 					
-					if( [imageView flippedData]) image = [[self fileList] objectAtIndex: [[self fileList] count] -1 -i];
+					if( [imageView flippedData]) image = [[self fileList] objectAtIndex: (long)[[self fileList] count] -1 -i];
 					else image = [[self fileList] objectAtIndex: i];
 					
 					export = [[image valueForKey:@"isKeyImage"] boolValue];
@@ -17772,7 +17772,7 @@ int i,j,l;
 				
 				if( export)
 				{
-					if( [imageView flippedData]) [imageView setIndex: [pixList[ curMovieIndex] count] -1 -i];
+					if( [imageView flippedData]) [imageView setIndex: (long)[pixList[ curMovieIndex] count] -1 -i];
 					else [imageView setIndex:i];
 					
 					[imageView sendSyncMessage: 0];
@@ -19086,7 +19086,7 @@ int i,j,l;
 			DCMPix	*curDCM;
 			
 			if( fROIIndex > 0) fROIIndex--;
-			if( lROIIndex < [pixList[curMovieIndex] count]-1) lROIIndex++;
+			if( lROIIndex < (long)[pixList[curMovieIndex] count]-1) lROIIndex++;
 			
 			curDCM = [pixList[curMovieIndex] objectAtIndex: fROIIndex];
 			centroid = [fROI centroid];
@@ -20242,11 +20242,11 @@ int i,j,l;
 	if( dir == -1)
 	{
 		if( [imageView flippedData]) curImage = 0;
-		else curImage = [[imageView dcmPixList] count]-1;
+		else curImage = (long)[[imageView dcmPixList] count]-1;
 	}
 	else
 	{
-		if( [imageView flippedData]) curImage = [[imageView dcmPixList] count]-1;
+		if( [imageView flippedData]) curImage = (long)[[imageView dcmPixList] count]-1;
 		else curImage = 0;
 	}
 	[imageView setIndex: curImage];
@@ -20256,11 +20256,11 @@ int i,j,l;
 	if( dir == -1)
 	{
 		if( [imageView flippedData]) curImage = 0;
-		else curImage = [[imageView dcmPixList] count]-1;
+		else curImage = (long)[[imageView dcmPixList] count]-1;
 	}
 	else
 	{
-		if( [imageView flippedData]) curImage = [[imageView dcmPixList] count]-1;
+		if( [imageView flippedData]) curImage = (long)[[imageView dcmPixList] count]-1;
 		else curImage = 0;
 	}
 	
@@ -20526,7 +20526,7 @@ int i,j,l;
 					
 					if( [imageView flippedData])
 					{
-						for( int i = [fileList[ curMovieIndex] count]-1; i >= 0 ; i--)
+						for( int i = (long)[fileList[ curMovieIndex] count]-1; i >= 0 ; i--)
 						{
 							NSManagedObject *image = [fileList[ curMovieIndex] objectAtIndex: i];
 							
@@ -20582,7 +20582,7 @@ int i,j,l;
 					
 					if( [imageView flippedData] == NO)
 					{
-						for( int i = [fileList[ curMovieIndex] count]-1; i >= 0 ; i--)
+						for( int i = (long)[fileList[ curMovieIndex] count]-1; i >= 0 ; i--)
 						{
 							NSManagedObject *image = [fileList[ curMovieIndex] objectAtIndex: i];
 							

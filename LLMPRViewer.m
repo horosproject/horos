@@ -397,7 +397,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 		
 		minI = (minI<0)? 0: minI;
 		//maxI = (maxI>=[[[injectedMPRController originalView] curDCM] pheight])? [[[injectedMPRController originalView] curDCM] pheight]-1 : maxI;
-		maxI = (maxI>=[[[injectedMPRController originalView] dcmPixList] count])? [[[injectedMPRController originalView] dcmPixList] count]-1 : maxI;
+		maxI = (maxI>=[[[injectedMPRController originalView] dcmPixList] count])? (long)[[[injectedMPRController originalView] dcmPixList] count]-1 : maxI;
 	}
 	else
 	{

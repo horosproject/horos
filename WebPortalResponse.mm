@@ -146,7 +146,7 @@ static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
         
         /*if ([part0 isEqual:@"Defaults"]) {
             o = [NSUserDefaultsController sharedUserDefaultsController];
-            keyPath = [[parts subarrayWithRange:NSMakeRange(1,parts.count-1)] componentsJoinedByString:@"."];
+            keyPath = [[parts subarrayWithRange:NSMakeRange(1,(long)parts.count-1)] componentsJoinedByString:@"."];
         }*/
 
         if ([o isKindOfClass: [NSString class]])
@@ -184,7 +184,7 @@ static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
                 value = [o valueForKey:part0];
             }
             if (parts.count > 1)
-                return [self object:value valueForKeyPath:[[parts subarrayWithRange:NSMakeRange(1,parts.count-1)] componentsJoinedByString:@"."] context:context];
+                return [self object:value valueForKeyPath:[[parts subarrayWithRange:NSMakeRange(1,(long)parts.count-1)] componentsJoinedByString:@"."] context:context];
             return value;
         } @catch (NSException* e) {
             NSLog(@"***** [WebPortalRosponse object:valueForKeyPath:context] %@", e);
@@ -198,7 +198,7 @@ static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
 	// # separates the actual token from extra chars that can be used as comments or as marker for otherwise equal tokens
 	NSArray* tokenStrParts = [tokenStr componentsSeparatedByString:@"#"];
 	NSString* token = [tokenStrParts objectAtIndex:0];
-	NSString* tokenStrExtras = tokenStrParts.count>1? [NSString stringWithFormat:@"#%@", [[tokenStrParts subarrayWithRange:NSMakeRange(1,tokenStrParts.count-1)] componentsJoinedByString:@"#"]] : @"";
+	NSString* tokenStrExtras = tokenStrParts.count>1? [NSString stringWithFormat:@"#%@", [[tokenStrParts subarrayWithRange:NSMakeRange(1,(long)tokenStrParts.count-1)] componentsJoinedByString:@"#"]] : @"";
 	
 	NSArray* parts = [token componentsSeparatedByString:@":"];
 	NSString* part0 = [parts objectAtIndex:0];
@@ -327,7 +327,7 @@ static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
 	}
 	
 	if ([part0 isEqual:@"URLENC"] || [part0 isEqual:@"U"]) {
-		token = [[parts subarrayWithRange:NSMakeRange(1,parts.count-1)] componentsJoinedByString:@":"];
+		token = [[parts subarrayWithRange:NSMakeRange(1,(long)parts.count-1)] componentsJoinedByString:@":"];
 		NSString* str = [self evaluateToken:token withDictionary:dict context:context mustReevaluate:mustReevaluate];
 		return [(NSString*)CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)[[str mutableCopy] autorelease], NULL, CFSTR("￼=,!$&'()*+;@?\n\"<>#\t :/"), kCFStringEncodingUTF8) autorelease];
 	}
@@ -342,7 +342,7 @@ static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
 		if ([part1 isEqualToString:@"ZWS"])
 			++from;
 		
-		token = [[parts subarrayWithRange:NSMakeRange(from,parts.count-from)] componentsJoinedByString:@":"];
+		token = [[parts subarrayWithRange:NSMakeRange(from,(long)parts.count-from)] componentsJoinedByString:@":"];
 		NSString* evaldToken = [self evaluateToken:token withDictionary:dict context:context mustReevaluate:mustReevaluate];
 		
 		if ([part1 isEqualToString:@"ZWS"])
@@ -353,7 +353,7 @@ static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
     
     if ([part0 isEqual:@"LOCNUM"])
     {
-        token = [[parts subarrayWithRange:NSMakeRange(1,parts.count-1)] componentsJoinedByString:@":"];
+        token = [[parts subarrayWithRange:NSMakeRange(1,(long)parts.count-1)] componentsJoinedByString:@":"];
         NSObject* o = [self object:dict valueForKeyPath:token context:context];
         if (o)
         {

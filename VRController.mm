@@ -2931,13 +2931,13 @@ return YES;
 		
 		if([filters count]>0)
 		{
-			for(NSUInteger i=0; i<[filters count]-1; i++)
+			for(NSUInteger i=0; i<(long)[filters count]-1; i++)
 			{
 				[convolutionFiltersString appendString:[filters objectAtIndex:i]];
 				[convolutionFiltersString appendString:@", "];
 			}
 			
-			[convolutionFiltersString appendString:[filters objectAtIndex:[filters count]-1]];
+			[convolutionFiltersString appendString:[filters objectAtIndex:(long)[filters count]-1]];
 			[convolutionFiltersString appendString:@"."];
 		}
 		else
@@ -3139,7 +3139,7 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 		}
 	}
 	
-	presetPageMax = ([settingsList count]-1) / [presetPreviewArray count];
+	presetPageMax = ((long)[settingsList count]-1) / [presetPreviewArray count];
 	[self enablePresetPageButtons];
 	
 	return [settingsList sortedArrayUsingFunction:sort3DSettingsDict context:NULL];
@@ -3695,12 +3695,12 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 	
 	if([filters count]>0)
 	{
-		for(NSUInteger i=0; i<[filters count]-1; i++)
+		for(NSUInteger i=0; i<(long)[filters count]-1; i++)
 		{
 			[convolutionFiltersString appendString:[filters objectAtIndex:i]];
 			[convolutionFiltersString appendString:@", "];
 		}
-		[convolutionFiltersString appendString:[filters objectAtIndex:[filters count]-1]];
+		[convolutionFiltersString appendString:[filters objectAtIndex:(long)[filters count]-1]];
 		[convolutionFiltersString appendString:@"."];
 	}
 	else

@@ -2362,7 +2362,7 @@ static NSDate *lastWarningDate = nil;
     NSArray* args = [[NSProcessInfo processInfo] arguments];
     for (NSString* path in filenames) {
         BOOL isLoadPlugin = NO;
-        for (NSInteger i = 0; !isLoadPlugin && i < args.count-1; ++i)
+        for (NSInteger i = 0; !isLoadPlugin && i < (long)args.count-1; ++i)
             if ([[args objectAtIndex:i] isEqualToString:@"--LoadPlugin"])
                 if ([[args objectAtIndex:i+1] isEqualToString:path])
                     isLoadPlugin = YES;
@@ -4444,7 +4444,7 @@ static BOOL initialized = NO;
 	NSMutableArray	*cWindows = [NSMutableArray arrayWithArray: viewersList];
 	
 	// Only the visible windows
-	for( int i = [cWindows count]-1; i >= 0; i--)
+	for( int i = (long) [cWindows count]-1; i >= 0; i--)
 	{
 		if( [[[cWindows objectAtIndex: i] window] isVisible] == NO) [cWindows removeObjectAtIndex: i];
 	}
@@ -4677,12 +4677,12 @@ static BOOL initialized = NO;
 		{
 			if( lastColumns != columns)
 			{
-				if( lastCount == [viewersList count] -1)	// One window was added
+				if( lastCount == (long) [viewersList count] -1)	// One window was added
 				{
 					if( columns < [viewersList count])
 					{
 						[viewersList insertObject: [viewersList lastObject] atIndex: lastColumns];
-						[viewersList removeObjectAtIndex: [viewersList count]-1];
+						[viewersList removeObjectAtIndex: (long) [viewersList count]-1];
 					}
 						
 				}
@@ -4737,7 +4737,7 @@ static BOOL initialized = NO;
 			{
 				NSMutableArray	*viewersForThisScreen = [studyList objectAtIndex:i];
 				
-				if( i == numberOfMonitors -1 || i == [studyList count]-1)
+				if( i == numberOfMonitors -1 || i == (long) [studyList count]-1)
 				{
 					// Take all remaining studies
 					

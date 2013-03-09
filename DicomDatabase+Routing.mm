@@ -318,7 +318,7 @@
 				NSArray* orderFilePaths = [[self objectsWithIDs:orderObjectIDs] valueForKey:@"completePath"];
 				
 				// are the files already in queue for same filter?
-				for (NSInteger i = dicomImages.count-1; i >= 0; --i) {
+				for (NSInteger i = (long)dicomImages.count-1; i >= 0; --i) {
                     DicomImage* image = [dicomImages objectAtIndex:i];
 					if ([orderFilePaths containsObject:[image completePath]])
 						[dicomImages removeObject:image];
