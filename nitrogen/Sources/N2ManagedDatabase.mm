@@ -435,7 +435,16 @@
 	[super dealloc];
 }
 
--(NSManagedObjectContext*)independentContext:(BOOL)independent {
+-(NSManagedObjectContext*)independentContext:(BOOL)independent
+{
+    if( independent)
+    {
+#ifndef NDEBUG
+        if( [NSThread isMainThread])
+            N2LogStackTrace( @"independentContext not required on main thread.");
+#endif
+    }
+    
 	return independent? [self contextAtPath:self.sqlFilePath] : self.managedObjectContext;
 }
 
@@ -444,6 +453,12 @@
 }
 
 -(id)independentDatabase {
+    
+#ifndef NDEBUG
+    if( [NSThread isMainThread])
+        N2LogStackTrace( @"independentDatabase not required on main thread.");
+#endif
+    
 	return [[[[self class] alloc] initWithPath:self.sqlFilePath context:[self independentContext] mainDatabase:self] autorelease];
 }
 

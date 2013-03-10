@@ -8651,7 +8651,8 @@ static BOOL withReset = NO;
         DicomDatabase *idatabase = [dict valueForKey:@"DicomDatabase"];
         id context = [dict valueForKey:@"Context"];
         
-        idatabase = [idatabase independentDatabase]; // INDEPENDANT CONTEXT !
+        if( [NSThread isMainThread] == NO)
+            idatabase = [idatabase independentDatabase]; // INDEPENDANT CONTEXT !
         
         NSArray* objs = [idatabase objectsWithIDs:objectIDs];
         
