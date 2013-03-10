@@ -39,7 +39,7 @@ static float deg2rad = M_PI/180.0;
 @synthesize dcmSameIntervalAndThickness, clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD, dcmFrom;
 @synthesize dcmmN, dcmTo, dcmMode, dcmRotationDirection, dcmSeriesMode, dcmRotation, dcmNumberOfFrames, dcmQuality, dcmInterval, dcmSeriesName, dcmBatchNumberOfFrames;
 @synthesize colorAxis1, colorAxis2, colorAxis3, displayMousePosition, movieRate, blendingPercentage, horizontalSplit, verticalSplit, lowLOD;
-@synthesize mprView1, mprView2, mprView3, curMovieIndex, maxMovieIndex, blendingMode, dcmFormat, blendingModeAvailable, dcmBatchReverse;
+@synthesize mprView1, mprView2, mprView3, curMovieIndex, maxMovieIndex, blendingMode, dcmFormat, blendingModeAvailable, dcmBatchReverse, dcmIntervalMin, dcmIntervalMax;
 
 + (double) angleBetweenVector:(float*) a andPlane:(float*) orientation
 {
@@ -2337,6 +2337,12 @@ static float deg2rad = M_PI/180.0;
 	if( [self selectedView] != mprView2) mprView2.displayCrossLines = YES;
 	if( [self selectedView] != mprView3) mprView3.displayCrossLines = YES;
 	
+    self.dcmIntervalMin = [self getClippingRangeThicknessInMm] - 0.01;
+    if( self.dcmIntervalMin < 0.01)
+        self.dcmIntervalMin = 0.01;
+    
+    self.dcmIntervalMax = 100;
+    
 	if( clippingRangeThickness <= 3)
 	{
 		self.dcmInterval = [self getClippingRangeThicknessInMm] * 5.;
@@ -2475,7 +2481,7 @@ static float deg2rad = M_PI/180.0;
 - (void) setDcmInterval:(float) f
 {
 	dcmInterval = f;
-	
+    
 	if( previousDcmInterval)
 	{
 		self.dcmTo =  round(( (float) dcmTo * previousDcmInterval) /  dcmInterval);
