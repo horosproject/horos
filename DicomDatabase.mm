@@ -3020,6 +3020,12 @@ static BOOL protectionAgainstReentry = NO;
 	//if ([[AppController sharedAppController] isSessionInactive])
 	//	return;
 	
+    if( [NSThread isMainThread] == NO)
+    {
+        [self performSelectorOnMainThread: @selector( initiateImportFilesFromIncomingDirUnlessAlreadyImporting) withObject: nil waitUntilDone: NO];
+        return;
+    }
+    
     if( [ViewerController areLoadingViewers]) //Don't try to do everything at the same time... we are not in a hurry for checking the incoming dir, preserve the user experience !
         return;
     
