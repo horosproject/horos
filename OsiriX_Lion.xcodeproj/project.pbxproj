@@ -1441,6 +1441,7 @@
 		A9701AA115C9587C0019EE55 /* burn_anim10.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9701A8A15C9587C0019EE55 /* burn_anim10.tif */; };
 		A9701AA215C9587C0019EE55 /* burn_anim11.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9701A8B15C9587C0019EE55 /* burn_anim11.tif */; };
 		A9701AA315C9587C0019EE55 /* burn_anim11.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9701A8B15C9587C0019EE55 /* burn_anim11.tif */; };
+		A970651216EE2CA9009092D4 /* DICOMFiles.plist in Resources */ = {isa = PBXBuildFile; fileRef = A970651116EE2CA9009092D4 /* DICOMFiles.plist */; };
 		A97569581237D132003F00D3 /* PathAssistant.png in Resources */ = {isa = PBXBuildFile; fileRef = A97569571237D132003F00D3 /* PathAssistant.png */; };
 		A977ECAD0CD1F7E500C418D8 /* QRpartiallyInDatabase.tif in Resources */ = {isa = PBXBuildFile; fileRef = A977ECAB0CD1F7E500C418D8 /* QRpartiallyInDatabase.tif */; };
 		A977ECAE0CD1F7E500C418D8 /* QRalreadyInDatabase.tif in Resources */ = {isa = PBXBuildFile; fileRef = A977ECAC0CD1F7E500C418D8 /* QRalreadyInDatabase.tif */; };
@@ -10404,6 +10405,7 @@
 		A9701A8915C9587C0019EE55 /* burn_anim09.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = burn_anim09.tif; sourceTree = "<group>"; };
 		A9701A8A15C9587C0019EE55 /* burn_anim10.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = burn_anim10.tif; sourceTree = "<group>"; };
 		A9701A8B15C9587C0019EE55 /* burn_anim11.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = burn_anim11.tif; sourceTree = "<group>"; };
+		A970651116EE2CA9009092D4 /* DICOMFiles.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = DICOMFiles.plist; sourceTree = "<group>"; };
 		A97569571237D132003F00D3 /* PathAssistant.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PathAssistant.png; sourceTree = "<group>"; };
 		A977ECAB0CD1F7E500C418D8 /* QRpartiallyInDatabase.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = QRpartiallyInDatabase.tif; path = DatabaseStates/QRpartiallyInDatabase.tif; sourceTree = "<group>"; };
 		A977ECAC0CD1F7E500C418D8 /* QRalreadyInDatabase.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = QRalreadyInDatabase.tif; path = DatabaseStates/QRalreadyInDatabase.tif; sourceTree = "<group>"; };
@@ -16889,6 +16891,7 @@
 		A90C722016E4D8AE0060302F /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				A970651116EE2CA9009092D4 /* DICOMFiles.plist */,
 				A90C722516E4F0B90060302F /* MANIX-IM-0001-0021.dcm */,
 				A90C722616E4F0B90060302F /* PNEUMATIX-IM-0001-0010.dcm */,
 			);
@@ -28400,6 +28403,7 @@
 				A9FBD38016DBE3FD003A0E04 /* vtkTypedArray.txx in Resources */,
 				A90C722716E4F0B90060302F /* MANIX-IM-0001-0021.dcm in Resources */,
 				A90C722816E4F0B90060302F /* PNEUMATIX-IM-0001-0010.dcm in Resources */,
+				A970651216EE2CA9009092D4 /* DICOMFiles.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

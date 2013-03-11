@@ -10,6 +10,7 @@
 #import "DCMPix.h"
 #import "dicomFile.h"
 #import "Papyrus3.h"
+#import "DDData.h"
 
 @implementation Unit_Tests
 
@@ -63,15 +64,49 @@
 	return pix;
 }
 
+- (void)validatePix:(DCMPix*)pix expectations:(NSDictionary*)expectations
+{
+	if ([expectations objectForKey:@"pwidth"])
+	{
+		float pwidth = [[expectations objectForKey:@"pwidth"] floatValue];
+		STAssertTrue(pix.pwidth==pwidth, [NSString stringWithFormat:@"Image width should be %g pixels", pwidth]);
+	}
+	if ([expectations objectForKey:@"pheight"])
+	{
+		float pheight = [[expectations objectForKey:@"pheight"] floatValue];
+		STAssertTrue(pix.pheight==pheight, [NSString stringWithFormat:@"Image height should be %g pixels", pheight]);
+	}
+	
+	NSData *imageData = (NSData*)[NSData dataWithBytesNoCopy:(float*)pix.fImage length:pix.pwidth*pix.pheight*sizeof(float) freeWhenDone:NO];
+	if ([expectations objectForKey:@"md5"])
+	{
+		NSString *md5 = [[imageData md5Digest] hexStringValue];
+		NSString *expectedMD5 = [expectations objectForKey:@"md5"];
+		STAssertTrue([md5 isEqualToString:expectedMD5], [NSString stringWithFormat:@"Image md5 should be %@", expectedMD5]);
+	}
+	if ([expectations objectForKey:@"sha1"])
+	{
+		NSString *sha1 = [[imageData sha1Digest] hexStringValue];
+		NSString *expectedSHA1 = [expectations objectForKey:@"sha1"];
+		STAssertTrue([sha1 isEqualToString:expectedSHA1], [NSString stringWithFormat:@"Image sha1 should be %@", expectedSHA1]);
+	}
+}
+
 - (void)testDCMPixBasic
 {
-	DCMPix *pix = [self dcmPixForFileNamed:@"MANIX-IM-0001-0021.dcm"];
-	STAssertTrue(pix.pwidth==512, @"Image width should be 512 pixels");
-	STAssertTrue(pix.pheight==512, @"Image height should be 512 pixels");
+	DCMPix *pix;
+	NSDictionary *expectations;
 	
-	pix = [self dcmPixForFileNamed:@"PNEUMATIX-IM-0001-0010.dcm"];
-	STAssertTrue(pix.pwidth==224, @"Image width should be 224 pixels");
-	STAssertTrue(pix.pheight==256, @"Image height should be 256 pixels");
+	NSBundle *bundle = [NSBundle bundleForClass:[self class]];
+	NSString *filePath = [bundle pathForResource:@"DICOMFiles" ofType:@"plist"];
+	NSArray *files = [NSArray arrayWithContentsOfFile:filePath];
+	
+	for (NSDictionary *file in files)
+	{
+		NSString *filename = [file objectForKey:@"filename"];
+		NSDictionary *expectations = [file objectForKey:@"expectations"];
+		[self validatePix:[self dcmPixForFileNamed:filename] expectations:expectations];
+	}
 }
 
 @end
