@@ -1629,7 +1629,12 @@ extern "C"
     {
         @try
         {
-            NSManagedObjectContext *independentContext = [[[BrowserController currentBrowser] database] independentContext];
+            NSManagedObjectContext *independentContext = nil;
+            
+            if( [NSThread isMainThread])
+                independentContext = [[[BrowserController currentBrowser] database] managedObjectContext];
+            else
+                independentContext = [[[BrowserController currentBrowser] database] independentContext];
             
             if( independentContext)
             {
