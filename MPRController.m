@@ -332,6 +332,12 @@ static float deg2rad = M_PI/180.0;
 	[self setClippingRangeMode: 1]; // MIP
 	self.clippingRangeThickness = 0.5;
 	
+    self.dcmIntervalMin = [self getClippingRangeThicknessInMm] - 0.01;
+    if( self.dcmIntervalMin < 0.01)
+        self.dcmIntervalMin = 0.01;
+    
+    self.dcmIntervalMax = 100;
+    
 	[[self window] makeFirstResponder: mprView1];
 	[mprView1.vrView resetImage: self];
 	
@@ -1669,6 +1675,17 @@ static float deg2rad = M_PI/180.0;
 - (float) getClippingRangeThicknessInMm
 {
 	return [mprView1.vrView getClippingRangeThicknessInMm];
+}
+
+- (void) setClippingRangeThicknessInMm:(float) c
+{
+    NSLog( @"%f", c);
+    
+	[mprView1.vrView setClippingRangeThicknessInMm: c];
+    
+    self.clippingRangeThickness = [mprView1.vrView clippingRangeThickness];
+    
+    NSLog( @"%f", [mprView1.vrView getClippingRangeThicknessInMm]);
 }
 
 - (void) setClippingRangeThickness:(float) f

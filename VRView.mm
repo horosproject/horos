@@ -360,6 +360,15 @@ public:
 	return 0;
 }
 
+- (void) setClippingRangeThicknessInMm:(double) c
+{
+	if( volumeMapper)
+	{
+		if( clipRangeActivated)
+			[self setClippingRangeThickness: c * factor / (superSampling * superSampling)];
+	}
+}
+
 + (unsigned short*) linearOpacity
 {
 	if( linearOpacity == nil)

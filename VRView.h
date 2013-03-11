@@ -585,6 +585,7 @@ typedef char* VTKStereoVRView;
 - (void) setWindowCenter: (NSPoint) loc;
 - (NSPoint) windowCenter;
 - (double) getClippingRangeThicknessInMm;
+- (void) setClippingRangeThicknessInMm:(double) c;
 - (void) setLODLow:(BOOL) l;
 - (void) allocateGPUMapper;
 - (void) allocateCPUMapper;

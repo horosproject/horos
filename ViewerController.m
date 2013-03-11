@@ -3083,7 +3083,8 @@ static volatile int numberOfThreadsForRelisce = 0;
         {
             if( fileList[ curMovieIndex] && [[[[fileList[ curMovieIndex] objectAtIndex: 0] valueForKey:@"completePath"] lastPathComponent] isEqualToString:@"Empty.tif"] == NO)
             {
-                [[BrowserController currentBrowser] findAndSelectFile: nil image:[fileList[ curMovieIndex] objectAtIndex:[imageView curImage]] shouldExpand:NO];
+                if( [imageView curImage] >= 0)
+                    [[BrowserController currentBrowser] findAndSelectFile: nil image:[fileList[ curMovieIndex] objectAtIndex:[imageView curImage]] shouldExpand:NO];
             }
         }
         @catch (NSException *e)
