@@ -5683,6 +5683,17 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		[pool release];
 		return YES;
 	} // end encapsulatedPDF
+    else if ([SOPClassUID isEqualToString:[DCMAbstractSyntaxUID EncapsulatedCDAStorage]])
+	{
+#ifdef OSIRIX_VIEWER
+        [self loadCustomImageAnnotationsPapyLink:-1 DCMLink:dcmObject];
+#endif
+        
+        [purgeCacheLock lock];
+        [purgeCacheLock unlockWithCondition: [purgeCacheLock condition]-1];
+        [pool release];
+        return YES;
+    }
 	else if( [SOPClassUID hasPrefix: @"1.2.840.10008.5.1.4.1.1.88"]) // DICOM SR
 	{
 #ifdef OSIRIX_VIEWER
@@ -7847,7 +7858,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				[self papyLoadGroup0x0020: theGroupP];
 			
 			theGroupP = (SElement*) [self getPapyGroup: 0x0028];
-			if( theGroupP || [SOPClassUID hasPrefix: @"1.2.840.10008.5.1.4.1.1.104.1"] || [SOPClassUID hasPrefix: @"1.2.840.10008.5.1.4.1.1.88"] || [DCMAbstractSyntaxUID isNonImageStorage: SOPClassUID] || [DCMAbstractSyntaxUID isWaveform:SOPClassUID]) // This group is MANDATORY... or DICOM SR / PDF / Spectro / Waveform
+			if( theGroupP || [SOPClassUID hasPrefix: @"1.2.840.10008.5.1.4.1.1.104."] || [SOPClassUID hasPrefix: @"1.2.840.10008.5.1.4.1.1.88"] || [DCMAbstractSyntaxUID isNonImageStorage: SOPClassUID] || [DCMAbstractSyntaxUID isWaveform:SOPClassUID]) // This group is MANDATORY... or DICOM SR / PDF / Spectro / Waveform
 			{
 				if( theGroupP)
 				   [self papyLoadGroup0x0028: theGroupP];
@@ -8725,7 +8736,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				{
 					short *oImage = nil;
 					
-					if( SOPClassUID != nil && [SOPClassUID hasPrefix: @"1.2.840.10008.5.1.4.1.1.104.1"]) // EncapsulatedPDFStorage
+					if( SOPClassUID != nil && [SOPClassUID hasPrefix: [DCMAbstractSyntaxUID pdfStorageClassUID]]) // EncapsulatedPDFStorage
 					{
 						if (gIsPapyFile[ fileNb] == DICOM10)
 							err = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
@@ -8752,6 +8763,10 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 							}
 						}
 					}
+                    else if( SOPClassUID != nil && [SOPClassUID hasPrefix: [DCMAbstractSyntaxUID EncapsulatedCDAStorage]]) // EncapsulatedPDFStorage
+					{
+                        
+                    }
 					else if( SOPClassUID != nil && [SOPClassUID hasPrefix: @"1.2.840.10008.5.1.4.1.1.88"]) // DICOM SR
 					{
 #ifdef OSIRIX_VIEWER

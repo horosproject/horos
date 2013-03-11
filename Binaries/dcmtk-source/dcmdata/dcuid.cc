@@ -145,6 +145,7 @@ static const UIDNameMap uidNameMap[] = {
     { UID_DigitalXRayImageStorageForPresentation,              "DigitalXRayImageStorageForPresentation" },
     { UID_DigitalXRayImageStorageForProcessing,                "DigitalXRayImageStorageForProcessing" },
     { UID_EncapsulatedPDFStorage,                              "EncapsulatedPDFStorage" },
+    { UID_EncapsulatedCDAStorage,                              "EncapsulatedCDAStorage" },
     { UID_EnhancedCTImageStorage,                              "EnhancedCTImageStorage" },
 	{ UID_EnhancedPETImageStorage,                             "EnhancedPETImageStorage" },
     { UID_EnhancedMRImageStorage,                              "EnhancedMRImageStorage" },
@@ -424,6 +425,7 @@ const char* dcmAllStorageSOPClassUIDs[] =
     UID_DigitalXRayImageStorageForPresentation,
     UID_DigitalXRayImageStorageForProcessing,
     UID_EncapsulatedPDFStorage,
+    UID_EncapsulatedCDAStorage
     UID_EnhancedCTImageStorage,
 	UID_EnhancedPETImageStorage,
     UID_EnhancedMRImageStorage,
@@ -528,6 +530,7 @@ const char* dcmLongSCUStorageSOPClassUIDs[] =
     UID_DigitalXRayImageStorageForPresentation,
     UID_DigitalXRayImageStorageForProcessing,
     UID_EncapsulatedPDFStorage,
+    UID_EncapsulatedCDAStorage
     UID_EnhancedCTImageStorage,
 	UID_EnhancedPETImageStorage,
     UID_EnhancedMRImageStorage,
@@ -794,6 +797,7 @@ static const DcmModalityTable modalities[] = {
     { UID_DigitalXRayImageStorageForPresentation,              "DX",  2 * 2048 * 2048 },
     { UID_DigitalXRayImageStorageForProcessing,                "DP",  2 * 2048 * 2048 },
     { UID_EncapsulatedPDFStorage,                              "PDF", 1024 * 1024 },
+    { UID_EncapsulatedCDAStorage,                              "PDF", 1024 * 1024 },
     { UID_EnhancedCTImageStorage,                              "CTe", 256 * 512 * 512 },
 	{ UID_EnhancedPETImageStorage,                             "PTe", 256 * 512 * 512 },
     { UID_EnhancedMRImageStorage,                              "MRe", 256 * 512 * 512 },

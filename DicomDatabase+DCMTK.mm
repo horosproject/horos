@@ -75,7 +75,7 @@
 				SOPClassUID = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
 			
 			// See Decompress.mm for these exceptions
-			if( [DCMAbstractSyntaxUID isImageStorage: SOPClassUID] == YES && [SOPClassUID isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]] == NO && [DCMAbstractSyntaxUID isStructuredReport: SOPClassUID] == NO)
+			if( [DCMAbstractSyntaxUID isImageStorage: SOPClassUID] == YES && [SOPClassUID isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]] == NO && [SOPClassUID isEqualToString:[DCMAbstractSyntaxUID EncapsulatedCDAStorage]] == NO && [DCMAbstractSyntaxUID isStructuredReport: SOPClassUID] == NO)
 			{
 				int resolution = 0;
 				unsigned short rows = 0;
