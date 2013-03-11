@@ -1464,7 +1464,7 @@
 		A97D4C620CE3459D003FE2E6 /* PieChartImage.m in Sources */ = {isa = PBXBuildFile; fileRef = A97D4C600CE3459D003FE2E6 /* PieChartImage.m */; };
 		A97E19EF0CDF55E50065EE29 /* 3DconnexionClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97E19EE0CDF55E50065EE29 /* 3DconnexionClient.framework */; };
 		A98795C416DB9FD100926023 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A98795C316DB9FD100926023 /* SenTestingKit.framework */; };
-		A98795D216DB9FD100926023 /* Unit_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = A98795D116DB9FD100926023 /* Unit_Tests.m */; };
+		A98795D216DB9FD100926023 /* DICOMFilesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A98795D116DB9FD100926023 /* DICOMFilesTests.m */; };
 		A98795D816DBA0CF00926023 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		A98795DE16DBA57200926023 /* AppController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB142DFD05600D76008461A0 /* AppController.m */; };
 		A98795DF16DBA5DB00926023 /* N2Debug.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FAA011293378009EB238 /* N2Debug.mm */; };
@@ -10430,8 +10430,8 @@
 		A98795C216DB9FD100926023 /* Unit Tests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Unit Tests.octest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A98795C316DB9FD100926023 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		A98795CC16DB9FD100926023 /* Unit Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Unit Tests-Info.plist"; sourceTree = "<group>"; };
-		A98795D016DB9FD100926023 /* Unit_Tests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Unit_Tests.h; sourceTree = "<group>"; };
-		A98795D116DB9FD100926023 /* Unit_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Unit_Tests.m; sourceTree = "<group>"; };
+		A98795D016DB9FD100926023 /* DICOMFilesTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DICOMFilesTests.h; sourceTree = "<group>"; };
+		A98795D116DB9FD100926023 /* DICOMFilesTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DICOMFilesTests.m; sourceTree = "<group>"; };
 		A98795D316DB9FD100926023 /* Unit Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Unit Tests-Prefix.pch"; sourceTree = "<group>"; };
 		A98795DB16DBA51500926023 /* UnitTestingBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnitTestingBase.h; sourceTree = "<group>"; };
 		A98795DC16DBA51500926023 /* UnitTestingBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnitTestingBase.m; sourceTree = "<group>"; };
@@ -16959,8 +16959,8 @@
 				A90C722016E4D8AE0060302F /* Data */,
 				A98795DB16DBA51500926023 /* UnitTestingBase.h */,
 				A98795DC16DBA51500926023 /* UnitTestingBase.m */,
-				A98795D016DB9FD100926023 /* Unit_Tests.h */,
-				A98795D116DB9FD100926023 /* Unit_Tests.m */,
+				A98795D016DB9FD100926023 /* DICOMFilesTests.h */,
+				A98795D116DB9FD100926023 /* DICOMFilesTests.m */,
 				A98795CB16DB9FD100926023 /* Supporting Files */,
 			);
 			path = "Unit Tests";
@@ -29708,7 +29708,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A98795D216DB9FD100926023 /* Unit_Tests.m in Sources */,
+				A98795D216DB9FD100926023 /* DICOMFilesTests.m in Sources */,
 				A98795DE16DBA57200926023 /* AppController.m in Sources */,
 				A98795DF16DBA5DB00926023 /* N2Debug.mm in Sources */,
 				A98795E016DBA62400926023 /* N2Operators.mm in Sources */,

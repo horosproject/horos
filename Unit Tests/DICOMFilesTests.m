@@ -1,18 +1,24 @@
-//
-//  Unit_Tests.m
-//  Unit Tests
-//
-//  Created by Joris Heuberger on 25.02.13.
-//  Copyright (c) 2013 OsiriX Team. All rights reserved.
-//
+/*=========================================================================
+ Program:   OsiriX
+ 
+ Copyright (c) OsiriX Team
+ All rights reserved.
+ Distributed under GNU - LGPL
+ 
+ See http://www.osirix-viewer.com/copyright.html for details.
+ 
+ This software is distributed WITHOUT ANY WARRANTY; without even
+ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ PURPOSE.
+ =========================================================================*/
 
-#import "Unit_Tests.h"
+#import "DICOMFilesTests.h"
 #import "DCMPix.h"
 #import "dicomFile.h"
 #import "Papyrus3.h"
 #import "DDData.h"
 
-@implementation Unit_Tests
+@implementation DICOMFilesTests
 
 - (void)setUp
 {
