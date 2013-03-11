@@ -584,6 +584,7 @@ typedef char* VTKStereoVRView;
 - (void)zoomMouseUp:(NSEvent *)theEvent;
 - (void) setWindowCenter: (NSPoint) loc;
 - (NSPoint) windowCenter;
+- (double) getClippingRangeThickness;
 - (double) getClippingRangeThicknessInMm;
 - (void) setClippingRangeThicknessInMm:(double) c;
 - (void) setLODLow:(BOOL) l;

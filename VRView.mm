@@ -365,7 +365,7 @@ public:
 	if( volumeMapper)
 	{
 		if( clipRangeActivated)
-			[self setClippingRangeThickness: c * factor / (superSampling * superSampling)];
+			[self setClippingRangeThickness: c * factor / superSampling];
 	}
 }
 
