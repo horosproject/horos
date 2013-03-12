@@ -1369,24 +1369,9 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
     
     if( numberOfWaitingThreads < 50)
     {
-<<<<<<< HEAD
-        @try
-        {
-            if( self.isMainDatabase)
-                [self.independentDatabase processFilesAtPaths:[params objectForKey:@":"] intoDirAtPath:[params objectForKey:@"intoDirAtPath:"] mode:[[params objectForKey:@"mode:"] intValue]];
-            else
-                [self processFilesAtPaths:[params objectForKey:@":"] intoDirAtPath:[params objectForKey:@"intoDirAtPath:"] mode:[[params objectForKey:@"mode:"] intValue]];
-        }
-        @catch (NSException* e)
-        {
-            N2LogExceptionWithStackTrace(e);
-        }
-        @finally
-=======
         numberOfWaitingThreads++;
         
         @synchronized( singleThread)
->>>>>>> DicomDatabase threadBridgeForProcessFilesAtPaths : limit number of threads
         {
             @try
             {
