@@ -831,6 +831,8 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 			NSLog(@"***** [WebPortalRosponse object:valueForKeyPath:context] %@", e);
 		}
 		
+        [otherStudies sortUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: @"date" ascending: NO]]];
+        
 		return otherStudies;
 	}
 	
