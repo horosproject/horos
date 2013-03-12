@@ -1365,9 +1365,11 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
     [ThreadsManager.defaultManager addThreadAndStart: thread];
     
     static NSString *singleThread = @"threadBridgeForProcessFilesAtPaths";
+    static int numberOfWaitingThreads = 0;
     
-    @synchronized( singleThread)
+    if( numberOfWaitingThreads < 50)
     {
+<<<<<<< HEAD
         @try
         {
             if( self.isMainDatabase)
@@ -1380,9 +1382,30 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
             N2LogExceptionWithStackTrace(e);
         }
         @finally
+=======
+        numberOfWaitingThreads++;
+        
+        @synchronized( singleThread)
+>>>>>>> DicomDatabase threadBridgeForProcessFilesAtPaths : limit number of threads
         {
-            [pool release];
+            @try
+            {
+                if( self.isMainDatabase)
+                    [self.independentDatabase processFilesAtPaths:[params objectForKey:@":"] intoDirAtPath:[params objectForKey:@"intoDirAtPath:"] mode:[[params objectForKey:@"mode:"] intValue]];
+                else
+                    [self processFilesAtPaths:[params objectForKey:@":"] intoDirAtPath:[params objectForKey:@"intoDirAtPath:"] mode:[[params objectForKey:@"mode:"] intValue]];
+            }
+            @catch (NSException* e)
+            {
+                N2LogExceptionWithStackTrace(e);
+            }
+            @finally
+            {
+                [pool release];
+            }
         }
+        
+        numberOfWaitingThreads--;
     }
 }
 
