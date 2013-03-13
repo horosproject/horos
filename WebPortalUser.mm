@@ -278,7 +278,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
 		NSError* err = NULL;
 		NSFetchRequest* request = [[[NSFetchRequest alloc] init] autorelease];
 		request.entity = [NSEntityDescription entityForName:@"User" inManagedObjectContext:self.managedObjectContext];
-		request.predicate = [NSPredicate predicateWithFormat:@"name == %@", *value];
+		request.predicate = [NSPredicate predicateWithFormat:@"name LIKE[cd] %@", *value];
 		NSArray* users = [self.managedObjectContext executeFetchRequest:request error:&err];
 		if (err) [NSException exceptionWithName:NSGenericException reason:@"Database error." userInfo:[NSDictionary dictionaryWithObject:err forKey:NSUnderlyingErrorKey]];
 		

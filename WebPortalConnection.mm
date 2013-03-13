@@ -252,7 +252,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	
     WebPortalDatabase *idatabase = [self.portal.database independentDatabase];
     
-	NSArray* users = [idatabase objectsForEntity:idatabase.userEntity predicate:[NSPredicate predicateWithFormat:@"name == %@", username]];
+	NSArray* users = [idatabase objectsForEntity:idatabase.userEntity predicate:[NSPredicate predicateWithFormat:@"name LIKE[cd] %@", username]];
 	if (users.count)
 		self.user = users.lastObject;
 	
