@@ -104,7 +104,7 @@ NSString* N2NonNullString(NSString* s) {
     {
 		if (i > 0)
         {
-			if (i == rs.count-1) 
+			if (i == (long)rs.count-1) 
 				[s appendString:NSLocalizedString(@" and ", nil)];
 			else
                 [s appendString:@", "];

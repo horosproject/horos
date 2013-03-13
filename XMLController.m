@@ -721,7 +721,7 @@ extern int delayedTileWindows;
 		
 		if( [tree count] > 0)
 		{
-			for( int i = [tree count]-1; i >= 0; i--)
+			for( int i = (long)[tree count]-1; i >= 0; i--)
 				[table expandItem: [tree objectAtIndex: i]];
 		}
 		

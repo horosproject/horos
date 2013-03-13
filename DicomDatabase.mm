@@ -85,7 +85,7 @@ NSString* const OsirixDataDirName = @"OsiriX Data";
 +(NSString*)baseDirPathForPath:(NSString*)path {
 	// were we given a path inside a OsirixDataDirName dir?
 	NSArray* pathParts = path.pathComponents;
-	for (int i = pathParts.count-1; i >= 0; --i)
+	for (int i = (long)pathParts.count-1; i >= 0; --i)
 		if ([[pathParts objectAtIndex:i] isEqualToString:OsirixDataDirName]) {
 			path = [NSString pathWithComponents:[pathParts subarrayWithRange:NSMakeRange(0,i+1)]];
 			break;
@@ -1359,27 +1359,38 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
     
-    [ThreadsManager.defaultManager addThreadAndStart:[NSThread currentThread]];
+    NSThread* thread = [NSThread currentThread];
+    thread.name = NSLocalizedString(@"Waiting for processing files...", nil);
+    
+    [ThreadsManager.defaultManager addThreadAndStart: thread];
     
     static NSString *singleThread = @"threadBridgeForProcessFilesAtPaths";
+    static int numberOfWaitingThreads = 0;
     
-    @synchronized( singleThread)
+    if( numberOfWaitingThreads < 50)
     {
-        @try
+        numberOfWaitingThreads++;
+        
+        @synchronized( singleThread)
         {
-            if( self.isMainDatabase)
-                [self.independentDatabase processFilesAtPaths:[params objectForKey:@":"] intoDirAtPath:[params objectForKey:@"intoDirAtPath:"] mode:[[params objectForKey:@"mode:"] intValue]];
-            else
-                [self processFilesAtPaths:[params objectForKey:@":"] intoDirAtPath:[params objectForKey:@"intoDirAtPath:"] mode:[[params objectForKey:@"mode:"] intValue]];
+            @try
+            {
+                if( self.isMainDatabase)
+                    [self.independentDatabase processFilesAtPaths:[params objectForKey:@":"] intoDirAtPath:[params objectForKey:@"intoDirAtPath:"] mode:[[params objectForKey:@"mode:"] intValue]];
+                else
+                    [self processFilesAtPaths:[params objectForKey:@":"] intoDirAtPath:[params objectForKey:@"intoDirAtPath:"] mode:[[params objectForKey:@"mode:"] intValue]];
+            }
+            @catch (NSException* e)
+            {
+                N2LogExceptionWithStackTrace(e);
+            }
+            @finally
+            {
+                [pool release];
+            }
         }
-        @catch (NSException* e)
-        {
-            N2LogExceptionWithStackTrace(e);
-        }
-        @finally
-        {
-            [pool release];
-        }
+        
+        numberOfWaitingThreads--;
     }
 }
 
@@ -2477,7 +2488,7 @@ static BOOL protectionAgainstReentry = NO;
 			{
 				if ([[NSThread currentThread] isCancelled]) break;
                 
-                [NSThread currentThread].status = N2LocalizedSingularPluralCount(filesInput.count-i, NSLocalizedString(@"file left", nil), NSLocalizedString(@"files left", nil));
+                [NSThread currentThread].status = N2LocalizedSingularPluralCount((long)filesInput.count-i, NSLocalizedString(@"file left", nil), NSLocalizedString(@"files left", nil));
                 [NSThread currentThread].progress = float(i)/filesInput.count;
 
                 NSString *srcPath = [filesInput objectAtIndex: i], *dstPath = nil;
@@ -2578,8 +2589,7 @@ static BOOL protectionAgainstReentry = NO;
                     
                     DicomDatabase *idatabase = self.isMainDatabase? self.independentDatabase : [self.mainDatabase independentDatabase];
                     
-                    objects = [idatabase addFilesAtPaths:copiedFiles postNotifications:YES dicomOnly:onlyDICOM rereadExistingItems:NO];
-//                    total += [copiedFiles count];
+                    objects = [idatabase addFilesAtPaths:copiedFiles postNotifications:YES dicomOnly:onlyDICOM rereadExistingItems:YES];
                 }
                 else if( copyFiles)
                 {
@@ -3018,6 +3028,12 @@ static BOOL protectionAgainstReentry = NO;
 	//if ([[AppController sharedAppController] isSessionInactive])
 	//	return;
 	
+    if( [NSThread isMainThread] == NO)
+    {
+        [self performSelectorOnMainThread: @selector( initiateImportFilesFromIncomingDirUnlessAlreadyImporting) withObject: nil waitUntilDone: NO];
+        return;
+    }
+    
     if( [ViewerController areLoadingViewers]) //Don't try to do everything at the same time... we are not in a hurry for checking the incoming dir, preserve the user experience !
         return;
     

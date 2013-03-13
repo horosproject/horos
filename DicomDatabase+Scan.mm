@@ -96,7 +96,7 @@
 }*/
 
 /*-(_DicomDatabaseScanDcmElement*)_dcmElementForKey:(NSString*)key inContext:(NSArray*)context {
-	for (NSInteger i = context.count-1; i >= 0; --i) {
+	for (NSInteger i = (long)context.count-1; i >= 0; --i) {
 		NSDictionary* elements = [context objectAtIndex:i];
 		_DicomDatabaseScanDcmElement* ddsde = [elements objectForKey:key];
 		if (ddsde) return ddsde;
@@ -375,7 +375,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
 	NSMutableArray* items = [self _itemsInRecord:&record basePath:[path stringByDeletingLastPathComponent]];
 	
 	// file paths are sometimes wrong the DICOMDIR, see if these files exist
-	for (NSInteger i = items.count-1; i >= 0; --i) {
+	for (NSInteger i = (long)items.count-1; i >= 0; --i) {
         NSMutableDictionary* item = [items objectAtIndex:i];
         
 		NSString* filepath = [item objectForKey:@"filePath"];

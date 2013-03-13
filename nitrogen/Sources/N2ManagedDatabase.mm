@@ -335,17 +335,8 @@
     return moc;
 }
 
-+(NSManagedObjectContext*)_mocFromContextDidSaveNotification:(NSNotification*)n {
-    NSManagedObjectContext* moc = nil;
-    for (NSString* key in [NSArray arrayWithObjects: NSInsertedObjectsKey, NSUpdatedObjectsKey, NSDeletedObjectsKey, nil])
-        for (NSManagedObject* mo in [n.userInfo objectForKey:key])
-            if ((moc = mo.managedObjectContext))
-                return moc;
-    return nil;
-}
-
 -(void)mergeChangesFromContextDidSaveNotification:(NSNotification*)n {
-    NSManagedObjectContext* moc = [[self class] _mocFromContextDidSaveNotification:n];
+    NSManagedObjectContext* moc = [n object];
 
     if (self.managedObjectContext.persistentStoreCoordinator != moc.persistentStoreCoordinator)
         return;
@@ -354,16 +345,16 @@
         return;
     
     if (![NSThread isMainThread]) {
-        if (moc) {
-            NSMutableDictionary* userInfo = [NSMutableDictionary dictionaryWithDictionary:n.userInfo];
-            if (userInfo) [userInfo setObject:moc forKey:@"MOC"]; // we need to retain the moc or it may be released before the mainThread processes this // TODO: do we?
-            [self performSelectorOnMainThread:@selector(mergeChangesFromContextDidSaveNotification:) withObject:[NSNotification notificationWithName:n.name object:n.object userInfo:userInfo] waitUntilDone:NO];
-        }
+            [self performSelectorOnMainThread:@selector(mergeChangesFromContextDidSaveNotification:) withObject:n waitUntilDone:NO];
     } else {
         [self.managedObjectContext lock];
         @try {
             [self.managedObjectContext mergeChangesFromContextDidSaveNotification:n];
-//            [self.managedObjectContext save:NULL];
+            [self.managedObjectContext save: nil];
+//            for (NSString* key in [NSArray arrayWithObjects: NSInsertedObjectsKey, NSUpdatedObjectsKey, NSDeletedObjectsKey, nil])
+//                for (NSManagedObject* o in [n.userInfo objectForKey:key])
+//                    [self.managedObjectContext refreshObject: [self.managedObjectContext objectWithID: o.objectID] mergeChanges: NO];
+            
         } @catch (NSException* e) {
             N2LogExceptionWithStackTrace(e);
         } @finally {
@@ -445,7 +436,16 @@
 	[super dealloc];
 }
 
--(NSManagedObjectContext*)independentContext:(BOOL)independent {
+-(NSManagedObjectContext*)independentContext:(BOOL)independent
+{
+    if( independent)
+    {
+#ifndef NDEBUG
+        if( [NSThread isMainThread])
+            N2LogStackTrace( @"independentContext not required on main thread.");
+#endif
+    }
+    
 	return independent? [self contextAtPath:self.sqlFilePath] : self.managedObjectContext;
 }
 
@@ -454,6 +454,12 @@
 }
 
 -(id)independentDatabase {
+    
+#ifndef NDEBUG
+    if( [NSThread isMainThread])
+        N2LogStackTrace( @"independentDatabase not required on main thread.");
+#endif
+    
 	return [[[[self class] alloc] initWithPath:self.sqlFilePath context:[self independentContext] mainDatabase:self] autorelease];
 }
 

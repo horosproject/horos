@@ -28,8 +28,7 @@ enum burnerDestination
 @interface BurnerWindowController : NSWindowController <NSWindowDelegate>
 {
 	volatile BOOL burning;
-	NSMutableArray *nodeArray;
-	NSMutableArray *files, *anonymizedFiles, *dbObjects, *originalDbObjects;
+	NSMutableArray *files, *anonymizedFiles, *dbObjectsID, *originalDbObjectsID;
 	float burnSize;
 	IBOutlet NSTextField *nameField;
 	IBOutlet NSTextField *sizeField, *finalSizeField;
@@ -37,7 +36,6 @@ enum burnerDestination
 	IBOutlet NSButton *burnButton;
 	IBOutlet NSButton *anonymizedCheckButton;
 	NSString *cdName;
-	NSString *folderSize;
 	NSTimer *burnAnimationTimer;
 	volatile BOOL runBurnAnimation, isExtracting, isSettingUpBurn, isThrobbing, windowWillClose;
 	NSArray *filesToBurn;
@@ -56,8 +54,6 @@ enum burnerDestination
 	int burnAnimationIndex;
     int irisAnimationIndex;
     NSTimer *irisAnimationTimer;
-    
-    DicomDatabase* idatabase;
 }
 
 @property BOOL buttonsDisabled;
@@ -80,7 +76,7 @@ enum burnerDestination
 - (BOOL)dicomCheck:(NSString *)filename;
 - (void)importFiles:(NSArray *)fileNames;
 - (void)setup:(id)sender;
-- (void)prepareCDContent;
+- (void) prepareCDContent: (NSMutableArray*) dbObjects :(NSMutableArray*) originalDbObjects;
 - (IBAction)estimateFolderSize:(id)object;
 - (void)performBurn:(id)object;
 - (void)irisAnimation:(NSTimer*)object;

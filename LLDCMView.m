@@ -189,7 +189,7 @@
 		
 		origin.x = origin.y = 0;
 		curImage = index; 
-		if( curImage >= [dcmPixList count]) curImage = [dcmPixList count] -1;
+		if( curImage >= [dcmPixList count]) curImage = (long)[dcmPixList count] -1;
 		curDCM = [dcmPixList objectAtIndex: curImage];
 		
 		[curRoiList release];

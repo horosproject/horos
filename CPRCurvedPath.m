@@ -311,7 +311,7 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
     }
     
     if (insertIndex == [_nodes count]) {
-        insertIndex = [_nodes count]-1;
+        insertIndex = (long)[_nodes count]-1;
     }
     
     vectorAtRelativePosition = [_bezierPath vectorAtRelativePosition:relativePosition];
@@ -320,7 +320,7 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
         NSLog(@"Warning, CPRCurvedPath trying to insert a node too close the the previous node");
         return -1;
     }
-    if (insertIndex <= [_nodes count]-1 && N3VectorDistance([[_nodes objectAtIndex:insertIndex] N3VectorValue], vectorAtRelativePosition) < _CPRCurvedPathNodeSpacingThreshold) {
+    if (insertIndex <= (long)[_nodes count]-1 && N3VectorDistance([[_nodes objectAtIndex:insertIndex] N3VectorValue], vectorAtRelativePosition) < _CPRCurvedPathNodeSpacingThreshold) {
         NSLog(@"Warning, CPRCurvedPath trying to insert a node too close the the next node");
         return -1;
     }

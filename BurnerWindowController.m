@@ -88,21 +88,17 @@
 	{
 		[[NSFileManager defaultManager] removeFileAtPath:[self folderToBurn] handler:nil];
 		
-        idatabase = [[[DicomDatabase databaseForContext:[[managedObjects objectAtIndex:0] managedObjectContext]] independentDatabase] retain];
-        
 		files = [theFiles mutableCopy]; // file paths
-		dbObjects = [[idatabase objectsWithIDs:managedObjects] mutableCopy]; // managedObjects in idatabase
-		originalDbObjects = [dbObjects mutableCopy];
+		dbObjectsID = [managedObjects mutableCopy];
+		originalDbObjectsID = [dbObjectsID mutableCopy];
 		
-		[files removeDuplicatedStringsInSyncWithThisArray: dbObjects];
+		[files removeDuplicatedStringsInSyncWithThisArray: dbObjectsID];
 		
 		id managedObject;
 		id patient = nil;
 		_multiplePatients = NO;
 		
-		[idatabase lock];
-		
-		for (managedObject in dbObjects)
+		for (managedObject in [[[BrowserController currentBrowser] database] objectsWithIDs: dbObjectsID])
 		{
 			NSString *newPatient = [managedObject valueForKeyPath:@"series.study.patientUID"];
 			
@@ -115,8 +111,6 @@
 			}
 			patient = newPatient;
 		}
-		
-		[idatabase unlock];
 		
 		burning = NO;
 		
@@ -157,14 +151,14 @@
     
 	[anonymizedFiles release];
 	[filesToBurn release];
-	[dbObjects release];
-	[originalDbObjects release];
+	[dbObjectsID release];
+	[originalDbObjectsID release];
 	[cdName release];
 	[password release];
     [writeDMGPath release];
     [writeVolumePath release];
-    [idatabase release];
 	[anonymizationTags release];
+    [files release];
     
 	NSLog(@"Burner dealloc");	
 	[super dealloc];
@@ -389,6 +383,11 @@
 {	 
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
+    DicomDatabase *idatabase = [[[[BrowserController currentBrowser] database] independentDatabase] retain];
+    
+    NSMutableArray *dbObjects = [[[idatabase objectsWithIDs: dbObjectsID] mutableCopy] autorelease];
+    NSMutableArray *originalDbObjects = [[[idatabase objectsWithIDs: originalDbObjectsID] mutableCopy] autorelease];
+    
     @try
     {
         isSettingUpBurn = YES;
@@ -401,7 +400,7 @@
             anonymizedFiles = [[anonOut allValues] mutableCopy];
         }
         
-        [self prepareCDContent];
+        [self prepareCDContent: dbObjects :originalDbObjects];
         
         isSettingUpBurn = NO;
         
@@ -821,7 +820,7 @@
     [DicomDir createDicomDirAtDir:[self folderToBurn]];
 }
 
-- (void) produceHtml:(NSString*) burnFolder
+- (void) produceHtml:(NSString*) burnFolder dicomObjects: (NSMutableArray*) originalDbObjects
 {
 	//We want to create html only for the images, not for PR, and hidden DICOM SR
 	NSMutableArray *images = [NSMutableArray arrayWithCapacity: [originalDbObjects count]];
@@ -896,7 +895,7 @@
 	return s;	
 }
 
-- (void) prepareCDContent
+- (void) prepareCDContent: (NSMutableArray*) dbObjects :(NSMutableArray*) originalDbObjects
 {
     NSThread* thread = [NSThread currentThread];
     
@@ -1048,7 +1047,7 @@
             {
                 thread.name = NSLocalizedString( @"Burning...", nil);
                 thread.status = NSLocalizedString( @"Adding HTML pages...", nil);
-                [self produceHtml: burnFolder];
+                [self produceHtml: burnFolder dicomObjects: originalDbObjects];
             }
             
             if( [[NSUserDefaults standardUserDefaults] stringForKey: @"SupplementaryBurnPath"].length <= 1)
@@ -1084,8 +1083,6 @@
                 
                 NSMutableArray *studies = [NSMutableArray array];
                 
-                [idatabase lock];
-                
                 for( NSManagedObject *im in dbObjects)
                 {
                     if( [im valueForKeyPath:@"series.study.reportURL"])
@@ -1118,8 +1115,6 @@
                     if( cancelled)
                         break;
                 }
-                
-                [idatabase unlock];
             }
         }
         

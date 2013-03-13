@@ -225,7 +225,7 @@
 //	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSViewFrameDidChangeNotification object:self.view];
 	
 	while (tags.count)
-		[self removeTag:[tags objectAtIndex:tags.count-1]];	
+		[self removeTag:[tags objectAtIndex:(long)tags.count-1]];	
 	
 	self.tags = NULL;
 	[super dealloc];

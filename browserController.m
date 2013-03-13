@@ -2662,7 +2662,6 @@ static NSConditionLock *threadLock = nil;
 	
 	@try
 	{
-        [_database lock];
         @try
         {
             BOOL searchInEntireDBHidden = YES;
@@ -2696,7 +2695,6 @@ static NSConditionLock *threadLock = nil;
             outlineViewArray = [NSArray array];
             N2LogExceptionWithStackTrace(ne);
         }
-        [_database unlock];
         
 		if( error)
 			NSLog( @"**** executeFetchRequest: %@", error);
@@ -7975,6 +7973,8 @@ static BOOL withReset = NO;
 {
     //[NSThread detachNewThreadSelector: @selector( createThread) toTarget: self withObject: nil];
     
+    //[self outlineViewRefresh];
+    
 	if( [[AppController sharedAppController] isSessionInactive] || waitForRunningProcess)
 		return;
     
@@ -8651,7 +8651,8 @@ static BOOL withReset = NO;
         DicomDatabase *idatabase = [dict valueForKey:@"DicomDatabase"];
         id context = [dict valueForKey:@"Context"];
         
-        idatabase = [idatabase independentDatabase]; // INDEPENDANT CONTEXT !
+        if( [NSThread isMainThread] == NO)
+            idatabase = [idatabase independentDatabase]; // INDEPENDANT CONTEXT !
         
         NSArray* objs = [idatabase objectsWithIDs:objectIDs];
         
@@ -9021,10 +9022,12 @@ static BOOL withReset = NO;
         leftFrame.size.width -= oldSize.width - splitFrame.size.width;
         rightFrame.size.width += oldSize.width - splitFrame.size.width;
         
+#define MINIMUMSIZEFORCOMPARATIVEDRAWER 180
+        
         if ([splitComparative isSubviewCollapsed: [[splitComparative subviews] objectAtIndex:1]] || [right isHidden])
             leftFrame.size.width = availableWidth;
-        else if( rightFrame.size.width == 0)
-            leftFrame.size.width = availableWidth - 160;
+        else if( rightFrame.size.width < MINIMUMSIZEFORCOMPARATIVEDRAWER || availableWidth - leftFrame.size.width < MINIMUMSIZEFORCOMPARATIVEDRAWER)
+            leftFrame.size.width = availableWidth - MINIMUMSIZEFORCOMPARATIVEDRAWER;
         
         if( leftFrame.size.width > availableWidth)
             leftFrame.size.width = availableWidth;
@@ -9157,7 +9160,7 @@ static BOOL withReset = NO;
 		return oMatrix.cellSize.width;
     
 	if (sender == splitDrawer)
-        return 160;
+        return MINIMUMSIZEFORCOMPARATIVEDRAWER;
     
     if (sender == splitAlbums)
     {
@@ -9187,7 +9190,7 @@ static BOOL withReset = NO;
 		return 300;
     
     if (sender == splitComparative)
-		return [sender bounds].size.width-160;
+		return [sender bounds].size.width-MINIMUMSIZEFORCOMPARATIVEDRAWER;
     
     if (sender == bannerSplit)
         return [sender frame].size.height - (banner.image.size.height+3);
@@ -13653,7 +13656,7 @@ static NSArray*	openSubSeriesArray = nil;
             if( f%20 == 0)
             {
                 [NSThread currentThread].progress = (float)f / (float)[copyArray count];
-                [NSThread currentThread].status = N2LocalizedSingularPluralCount( copyArray.count-f, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil));
+                [NSThread currentThread].status = N2LocalizedSingularPluralCount( (long)copyArray.count-f, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil));
                 
                 if( [NSThread currentThread].isCancelled) //The queue is saved as a plist, we can continue later...
                     break;
@@ -16023,6 +16026,8 @@ static volatile int numberOfThreadsForJPEG = 0;
             [wait showWindow:self];
         }
         
+        [NSThread currentThread].status = NSLocalizedString( @"Compressing the files...", nil);
+        
         @try
         {
             t = [[[NSTask alloc] init] autorelease];
@@ -16035,9 +16040,9 @@ static volatile int numberOfThreadsForJPEG = 0;
                 [t setCurrentDirectoryPath: [srcFolder stringByDeletingLastPathComponent]];
         
                 if( [password length] > 0)
-                    args = [NSArray arrayWithObjects: @"-q", @"-r", @"-e", @"-P", password, destFile, srcFolder, nil];
+                    args = [NSArray arrayWithObjects: @"-q", @"-r", @"-e", @"-P", password, destFile, [srcFolder lastPathComponent], nil];
                 else
-                    args = [NSArray arrayWithObjects: @"-q", @"-r", destFile, srcFolder, nil];
+                    args = [NSArray arrayWithObjects: @"-q", @"-r", destFile, [srcFolder lastPathComponent], nil];
                 
                 [t setArguments: args];
                 [t launch];

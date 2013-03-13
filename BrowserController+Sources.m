@@ -125,6 +125,7 @@ enum {
         
         [mbs retain];
         [self.sources removeObject:mbs];
+        [mbs willUnmount];
         [mbs performSelector: @selector( autorelease) withObject: nil afterDelay: 60];
     }
 }
@@ -270,7 +271,7 @@ enum {
 
 -(void)_complain:(NSArray*)why { // if 1st obj in array is a number then execute this after the delay specified by that number, with the rest of the array
 	if ([[why objectAtIndex:0] isKindOfClass:[NSNumber class]])
-		[self performSelector:@selector(_complain:) withObject:[why subarrayWithRange:NSMakeRange(1, why.count-1)] afterDelay:[[why objectAtIndex:0] floatValue]];
+		[self performSelector:@selector(_complain:) withObject:[why subarrayWithRange:NSMakeRange(1, (long)why.count-1)] afterDelay:[[why objectAtIndex:0] floatValue]];
 	else NSBeginAlertSheet([why objectAtIndex:0], nil, nil, nil, self.window, NSApp, @selector(endSheet:), nil, nil, [why objectAtIndex:1]);
 }
 
@@ -987,6 +988,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
                 [_browser performSelector: @selector(setDatabase:) withObject: DicomDatabase.defaultDatabase afterDelay: 0.01]; //This will guarantee that this will not happen in middle of a drag & drop, for example
             [mbs retain];
             [_browser.sources removeObject:mbs];
+            [mbs willUnmount];
             [mbs performSelector: @selector( autorelease) withObject: nil afterDelay: 60];
         }
     }
@@ -1012,8 +1014,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 			break;
 		}
     
-	if (mbs)
-        [mbs willUnmount];
+    [mbs willUnmount];
     
     if (mbs && [[_browser sourceIdentifierForDatabase:_browser.database] isEqualToDataNodeIdentifier:mbs])
     {
@@ -1196,6 +1197,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
         {
             [self retain];
 			[[[BrowserController currentBrowser] sources] removeObject:self];
+            [self willUnmount];
             [self performSelector: @selector( autorelease) withObject: nil afterDelay: 60];
             
 			return;
@@ -1203,7 +1205,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 		
         self.detected = YES;
         
-		if ([[NSUserDefaults standardUserDefaults] boolForKey:@"autoSelectSourceCDDVD"] && [[NSFileManager defaultManager] fileExistsAtPath:self.devicePath] && autoselect)
+		if (([[NSUserDefaults standardUserDefaults] boolForKey:@"autoSelectSourceCDDVD"] || autoselect) && [[NSFileManager defaultManager] fileExistsAtPath:self.devicePath])
 			[[BrowserController currentBrowser] performSelectorOnMainThread:@selector(setDatabaseFromSourceIdentifier:) withObject:self waitUntilDone:NO modes:[NSArray arrayWithObject:NSDefaultRunLoopMode]];
         else [[BrowserController currentBrowser] redrawSources];
 	} @catch (NSException* e)

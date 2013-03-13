@@ -194,7 +194,7 @@
 	[self computeValueFactor];
 	
 	reader = vtkImageImport::New();
-	reader->SetWholeExtent(0, [firstObject pwidth]-1, 0, [firstObject pheight]-1, 0, [pixList count]-1);	//AVOID VTK BUG
+	reader->SetWholeExtent(0, [firstObject pwidth]-1, 0, [firstObject pheight]-1, 0, (long)[pixList count]-1);	//AVOID VTK BUG
 	reader->SetDataExtentToWholeExtent();
 	
 	if( isRGB)

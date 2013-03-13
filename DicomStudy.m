@@ -1997,7 +1997,7 @@ static NSRecursiveLock *dbModifyLock = nil;
          return NSOrderedSame;
      }];
     
-    for (NSInteger i = images.count-2; i >= 0; --i)
+    for (NSInteger i = (long)images.count-2; i >= 0; --i)
         if ([images objectAtIndex:i] == [images objectAtIndex:i+1])
             [images removeObjectAtIndex:i+1];
     

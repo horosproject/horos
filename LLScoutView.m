@@ -301,9 +301,9 @@ const float ArrowButtonBottomMargin = 7.0, ArrowButtonRightMargin = 6.0, ArrowBu
 			if(draggingTopLimit && top <= 20)
 				top = 20;
 		}
-		if(top >= [[controller originalDCMPixList] count]-10)
+		if(top >= (long)[[controller originalDCMPixList] count]-10)
 		{
-			top = [[controller originalDCMPixList] count]-10;
+			top = (long)[[controller originalDCMPixList] count]-10;
 			if(draggingBottomLimit && bottom >= [[controller originalDCMPixList] count]-20)
 				bottom = [[controller originalDCMPixList] count]-20;
 		}

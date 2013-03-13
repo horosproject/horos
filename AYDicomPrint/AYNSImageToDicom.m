@@ -148,7 +148,7 @@ extern BOOL FULL32BITPIPELINE;
 	{
 		int i;
 		
-		if( [[currentViewer imageView] flippedData]) i = [fileList count] -1 -[[currentViewer imageView] curImage];
+		if( [[currentViewer imageView] flippedData]) i = (long) [fileList count] -1 -[[currentViewer imageView] curImage];
 		else i = [[currentViewer imageView] curImage];
 		
 		[images addObject: [NSNumber numberWithInt: i]];
@@ -168,7 +168,7 @@ extern BOOL FULL32BITPIPELINE;
 		{
 			NSManagedObject *image;
 			
-			if( [[currentViewer imageView] flippedData]) image = [fileList objectAtIndex: [fileList count] -1 -i];
+			if( [[currentViewer imageView] flippedData]) image = [fileList objectAtIndex: (long)[fileList count] -1 -i];
 			else image = [fileList objectAtIndex: i];
 			
 			if (![[image valueForKey: @"isKeyImage"] boolValue])

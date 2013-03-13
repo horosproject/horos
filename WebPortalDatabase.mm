@@ -47,7 +47,7 @@ NSString* const WebPortalDatabaseStudyEntityName = @"Study";
 }
 
 -(WebPortalUser*)userWithName:(NSString*)name {
-	NSArray* res = [self usersWithPredicate:[NSPredicate predicateWithFormat:@"name == %@", name]];
+	NSArray* res = [self usersWithPredicate:[NSPredicate predicateWithFormat:@"name LIKE[cd] %@", name]];
 	if (res.count)
 		return [res objectAtIndex:0];
 	return NULL;

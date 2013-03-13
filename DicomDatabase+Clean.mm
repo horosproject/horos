@@ -156,7 +156,7 @@
 							
 							int to, from = i;
 							
-							while( i < [studiesArray count]-1 && [patientID compare: [[studiesArray objectAtIndex: i+1] valueForKey:@"patientUID"] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
+							while( i < (long)[studiesArray count]-1 && [patientID compare: [[studiesArray objectAtIndex: i+1] valueForKey:@"patientUID"] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
 							{
 								i++;
 								studyDate = [studyDate laterDate: [[studiesArray objectAtIndex: i] valueForKey:@"date"]];
@@ -256,7 +256,7 @@
 					
 					if( [toBeRemoved count] > 0)
 					{
-						NSLog(@"Will delete: %d studies", (int) [toBeRemoved count]);
+						NSLog(@"DicomDatabase Clean: will delete: %d studies", (int) [toBeRemoved count]);
 						
 //						Wait *wait = [[Wait alloc] initWithString: NSLocalizedString(@"Database Auto-Cleaning...", nil)];
 //						[wait showWindow:self];
@@ -282,10 +282,9 @@
 								}
 							}
 							
-							for (id obj in toBeRemoved) {
-								[self.managedObjectContext deleteObject:obj];
-//								[wait incrementBy:1];
-//								if( [wait aborted]) break;
+							for (DicomStudy *study in toBeRemoved) {
+                                NSLog( @"Delete Study: %@ - %@", study.patientID, study.studyInstanceUID);
+								[self.managedObjectContext deleteObject:study];
 							}
 							
 							[self save:NULL];

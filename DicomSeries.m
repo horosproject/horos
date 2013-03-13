@@ -545,7 +545,7 @@
     
     NSUInteger index = [series indexOfObject: self];
     
-    if( index != NSNotFound && index < series.count-1)
+    if( index != NSNotFound && index < (long)series.count-1)
         return [series objectAtIndex: index+1];
     
     return nil;

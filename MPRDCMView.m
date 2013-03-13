@@ -441,7 +441,7 @@ extern unsigned int minimumStep;
 				
 				if( cameraMoved == YES)
 				{
-					for( int i = [curRoiList count] -1 ; i >= 0; i--)
+					for( int i = (long)[curRoiList count] -1 ; i >= 0; i--)
 					{
 						ROI *r = [curRoiList objectAtIndex: i];
 						if( [r type] != t2DPoint)
@@ -1108,7 +1108,7 @@ extern unsigned int minimumStep;
 		
 		NSMutableDictionary *ROIsStateSaved = [NSMutableDictionary dictionary];
 		
-		for( int i = [curRoiList count] -1 ; i >= 0; i--)
+		for( int i = (long)[curRoiList count] -1 ; i >= 0; i--)
 		{
 			ROI *r = [curRoiList objectAtIndex: i];
 			if( [r type] == t2DPoint)

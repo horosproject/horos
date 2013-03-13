@@ -137,6 +137,7 @@ htt://www.pixelmed.com
 + (NSString *)studyRootQueryRetrieveInformationModelMove;
 
 + (NSString *)pdfStorageClassUID;
++ (NSString *)EncapsulatedCDAStorage;
 
 - (id)initWithUID:(NSString *)uid  name:(NSString *)name  type:(NSString *)type;
 - (NSString *)uid;

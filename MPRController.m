@@ -39,7 +39,7 @@ static float deg2rad = M_PI/180.0;
 @synthesize dcmSameIntervalAndThickness, clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD, dcmFrom;
 @synthesize dcmmN, dcmTo, dcmMode, dcmRotationDirection, dcmSeriesMode, dcmRotation, dcmNumberOfFrames, dcmQuality, dcmInterval, dcmSeriesName, dcmBatchNumberOfFrames;
 @synthesize colorAxis1, colorAxis2, colorAxis3, displayMousePosition, movieRate, blendingPercentage, horizontalSplit, verticalSplit, lowLOD;
-@synthesize mprView1, mprView2, mprView3, curMovieIndex, maxMovieIndex, blendingMode, dcmFormat, blendingModeAvailable, dcmBatchReverse;
+@synthesize mprView1, mprView2, mprView3, curMovieIndex, maxMovieIndex, blendingMode, dcmFormat, blendingModeAvailable, dcmBatchReverse, dcmIntervalMin, dcmIntervalMax;
 
 + (double) angleBetweenVector:(float*) a andPlane:(float*) orientation
 {
@@ -332,6 +332,14 @@ static float deg2rad = M_PI/180.0;
 	[self setClippingRangeMode: 1]; // MIP
 	self.clippingRangeThickness = 0.5;
 	
+    int min = [self getClippingRangeThicknessInMm] * 100.;
+    self.dcmIntervalMin = (float) min / 100.;
+    self.dcmIntervalMin -= 0.001;
+    if( self.dcmIntervalMin < 0.01)
+        self.dcmIntervalMin = 0.01;
+    
+    self.dcmIntervalMax = 100;
+    
 	[[self window] makeFirstResponder: mprView1];
 	[mprView1.vrView resetImage: self];
 	
@@ -1671,6 +1679,13 @@ static float deg2rad = M_PI/180.0;
 	return [mprView1.vrView getClippingRangeThicknessInMm];
 }
 
+- (void) setClippingRangeThicknessInMm:(float) c
+{
+	[mprView1.vrView setClippingRangeThicknessInMm: c];
+    
+    self.clippingRangeThickness = [mprView1.vrView getClippingRangeThickness];
+}
+
 - (void) setClippingRangeThickness:(float) f
 {
 	float previousThickness = clippingRangeThickness;
@@ -1966,7 +1981,7 @@ static float deg2rad = M_PI/180.0;
 			[views addObject: mprView2];
 			[views addObject: mprView3];
 			
-			for( int i = views.count-1; i >= 0; i--)
+			for( int i = (long)views.count-1; i >= 0; i--)
 			{
 				if( NSEqualRects( [[views objectAtIndex: i] visibleRect], NSZeroRect))
 					[views removeObjectAtIndex: i];
@@ -2475,7 +2490,7 @@ static float deg2rad = M_PI/180.0;
 - (void) setDcmInterval:(float) f
 {
 	dcmInterval = f;
-	
+    
 	if( previousDcmInterval)
 	{
 		self.dcmTo =  round(( (float) dcmTo * previousDcmInterval) /  dcmInterval);

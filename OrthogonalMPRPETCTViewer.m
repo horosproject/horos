@@ -77,7 +77,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 		
 		view = [PETController xReslicedView];
 		
-		[view setCrossPosition: [view crossPositionX] :[[PETController originalDCMPixList] count] -1 - ([[[note userInfo] valueForKey:@"z"] intValue] + fistPETSlice) +0.5];
+		[view setCrossPosition: [view crossPositionX] :(long)[[PETController originalDCMPixList] count] -1 - ([[[note userInfo] valueForKey:@"z"] intValue] + fistPETSlice) +0.5];
 	}
 	
 	if( [viewer pixList] == v)
@@ -88,7 +88,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 		
 		view = [CTController xReslicedView];
 		
-		[view setCrossPosition: [view crossPositionX] :[[CTController originalDCMPixList] count] -1 - ([[[note userInfo] valueForKey:@"z"] intValue] + fistCTSlice) +0.5];
+		[view setCrossPosition: [view crossPositionX] :(long)[[CTController originalDCMPixList] count] -1 - ([[[note userInfo] valueForKey:@"z"] intValue] + fistCTSlice) +0.5];
 	}
 }
 
@@ -2260,7 +2260,7 @@ return YES;
 		[views addObject: [[self PETCTController] yReslicedView]];
 		[views addObject: [[self PETController] yReslicedView]];
 		
-		for( int i = views.count-1; i >= 0; i--)
+		for( int i = (long)views.count-1; i >= 0; i--)
 		{
 			if( NSEqualRects( [[views objectAtIndex: i] visibleRect], NSZeroRect))
 				[views removeObjectAtIndex: i];

@@ -14,7 +14,7 @@ NSString *CopiedRowsType = @"COPIED_ROWS_TYPE";
 - (void)addObject:(id)object
 {
 	[super addObject: object];
-	[tableView selectRowIndexes: [NSIndexSet indexSetWithIndex: [[self arrangedObjects] count]-1] byExtendingSelection: NO];
+	[tableView selectRowIndexes: [NSIndexSet indexSetWithIndex: (long)[[self arrangedObjects] count]-1] byExtendingSelection: NO];
 }
 
 - (void) setAuthView:( SFAuthorizationView*) v;

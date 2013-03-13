@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>filename</key>
+		<string>MANIX-IM-0001-0021.dcm</string>
+		<key>expectations</key>
+		<dict>
+			<key>pwidth</key>
+			<integer>512</integer>
+			<key>pheight</key>
+			<integer>512</integer>
+			<key>md5</key>
+			<string>b6d81b360a5672d80c27430f39153e2c</string>
+			<key>sha1</key>
+			<string>3b71f43ff30f4b15b5cd85dd9e95ebc7e84eb5a3</string>
+		</dict>
+	</dict>
+	<dict>
+		<key>filename</key>
+		<string>PNEUMATIX-IM-0001-0010.dcm</string>
+		<key>expectations</key>
+		<dict>
+			<key>pwidth</key>
+			<integer>224</integer>
+			<key>pheight</key>
+			<integer>256</integer>
+			<key>md5</key>
+			<string>327cc23844cfadda1321bc4390d23f59</string>
+			<key>sha1</key>
+			<string>2ac5e10f4275c6b6956ad080c006ae91112c71f0</string>
+		</dict>
+	</dict>
+</array>
+</plist>

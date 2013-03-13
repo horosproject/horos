@@ -26,6 +26,7 @@
 	NSTableView* _view;
 
     CGFloat _lastDisplayedProgress;
+    BOOL KVOObserving;
 }
 
 @property(retain) NSProgressIndicator* progressIndicator;

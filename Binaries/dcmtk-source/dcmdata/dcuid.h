@@ -379,6 +379,7 @@ unsigned int dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_PseudoColorSoftcopyPresentationStateStorage            "1.2.840.10008.5.1.4.1.1.11.3"
 #define UID_BlendingSoftcopyPresentationStateStorage               "1.2.840.10008.5.1.4.1.1.11.4"
 #define UID_EncapsulatedPDFStorage                                 "1.2.840.10008.5.1.4.1.1.104.1"
+#define UID_EncapsulatedCDAStorage                                 "1.2.840.10008.5.1.4.1.1.104.2"
 #define UID_RealWorldValueMappingStorage                           "1.2.840.10008.5.1.4.1.1.67"
 #define UID_XRayRadiationDoseSR                                    "1.2.840.10008.5.1.4.1.1.88.67"
 

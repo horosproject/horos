@@ -489,7 +489,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	
 	if( distance == 0) return [[points objectAtIndex:0] point];
 	
-	while( position < distance && i < [points count] -1)
+	while( position < distance && i < (long)[points count] -1)
 	{
 		position += [ROI lengthBetween:[[points objectAtIndex:i] point] and:[[points objectAtIndex:i+1] point]];
 		i++;
@@ -521,7 +521,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	float length = 0.0f;
 	int i;
 	
-	for( i = 0; i < [points count]-1; i++ )
+	for( i = 0; i < (long)[points count]-1; i++ )
 	{
 		length += [ROI lengthBetween:[[points objectAtIndex:i] point] and:[[points objectAtIndex:i+1] point]];
 	}
@@ -588,7 +588,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 			
 			[orderedPts addObject: [newPts objectAtIndex: minxIndex]];
 			minxIndex--;
-			if( minxIndex < 0) minxIndex = [newPts count] -1;
+			if( minxIndex < 0) minxIndex = (long)[newPts count] -1;
 		}
 	}
 	
@@ -3483,7 +3483,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 			}
 			else [points removeLastObject];
 			
-			if( selectedModifyPoint >= [points count]) selectedModifyPoint = [points count]-1;
+			if( selectedModifyPoint >= [points count]) selectedModifyPoint = (long)[points count]-1;
 		break;
 		//JJCP
 		case tDynAngle:
@@ -3494,7 +3494,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 				if( mode == ROI_selectedModify)
 					[points removeObjectAtIndex: selectedModifyPoint];
 				else [points removeLastObject];			
-				if( selectedModifyPoint >= [points count]) selectedModifyPoint = [points count]-1;
+				if( selectedModifyPoint >= [points count]) selectedModifyPoint = (long)[points count]-1;
 			}
 		break;
 	}
@@ -5291,7 +5291,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						
 						length = 0;
 						long i;
-						for( i = 0; i < [points count]-1; i++ ) {
+						for( i = 0; i < (long)[points count]-1; i++ ) {
 							length += [self Length:[[points objectAtIndex:i] point] :[[points objectAtIndex:i+1] point]];
 						}
 						length += [self Length:[[points objectAtIndex:i] point] :[[points objectAtIndex:0] point]];
@@ -5567,7 +5567,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 							sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
 							
 							length = 0;
-							for( long i = 0; i < [points count]-1; i++ ) {
+							for( long i = 0; i < (long)[points count]-1; i++ ) {
 								length += [self Length:[[points objectAtIndex:i] point] :[[points objectAtIndex:i+1] point]];
 							}
 							
@@ -5634,7 +5634,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					if( type == tOPolygon)
 					{
 						float length = 0;
-						for( int i = 0; i < [splinePoints count]-1; i++)
+						for( int i = 0; i < (long)[splinePoints count]-1; i++)
 							length += [self Length:[[splinePoints objectAtIndex:i] point] :[[splinePoints objectAtIndex:i+1] point]];
 								
 						// The first and the last point are too far away : probably not a good idea to display the Area
@@ -5775,7 +5775,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 									else
 									{
 										int i = 0;
-										for( i = 0; i < [splinePoints count]-1; i++ )
+										for( i = 0; i < (long)[splinePoints count]-1; i++ )
 										{
 											length += [self Length:[[splinePoints objectAtIndex:i] point] :[[splinePoints objectAtIndex:i+1] point]];
 										}
@@ -5859,7 +5859,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 								
 								length = 0;
 								
-								for( int i = 0; i < [splinePoints count]-1; i++)
+								for( int i = 0; i < (long)[splinePoints count]-1; i++)
 									length += [self Length:[[splinePoints objectAtIndex:i] point] :[[splinePoints objectAtIndex:i+1] point]];
 								
 								// The first and the last point are too far away : probably not a good idea to display the Area
@@ -5936,7 +5936,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 												
 												// Compute 3D distance between each points
 												double distance3d = 0;
-												for( i = 1; i < [points count]-1; i++)
+												for( i = 1; i < (long)[points count]-1; i++)
 												{
 													double x[ 3];
 													double y[ 3];
@@ -6144,7 +6144,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
             NSMutableArray* ptsTemp = self.points;
             if( self.points > 0)
             {
-                for( i = 0; i < [ptsTemp count]-1; i++ )
+                for( i = 0; i < (long)[ptsTemp count]-1; i++ )
 				length += [self Length:[[ptsTemp objectAtIndex:i] point] :[[ptsTemp objectAtIndex:i+1] point]];
 			}
             

@@ -247,7 +247,7 @@ static const NSUInteger colWidth = 80, colSeparator = 1, rowHeight = 101, titleH
 	frame = NSMakeRect(frame.origin.x, frame.origin.y, padding[3]+(colWidth+colSeparator)*colsCount-colSeparator+padding[1], padding[2]+rowHeight*groups.count+padding[0]);
 	[self setFrame:frame];
 
-	for (NSInteger r = groups.count-1; r >= 0; --r) {
+	for (NSInteger r = (long)groups.count-1; r >= 0; --r) {
 		PreferencesViewGroup* group = [groups objectAtIndex:r];
 		NSRect rowRect = NSMakeRect(padding[3], frame.size.height-rowHeight*r-rowHeight-padding[0], frame.size.width-padding[3]-padding[1], rowHeight);
 		

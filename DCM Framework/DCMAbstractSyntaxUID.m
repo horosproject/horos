@@ -232,8 +232,8 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 	static NSString *StudyRootQueryRetrieveInformationModelMove = @"1.2.840.10008.5.1.4.1.2.2.2";
 	
 	// PDF storage
-	static NSString *PDFStorageClassUID = @"1.2.840.10008.5.1.4.1.1.104.1"; // EncapsulatedPDFStorage
-	
+	static NSString *PDFStorageClassUID = @"1.2.840.10008.5.1.4.1.1.104.1";
+	static NSString *EncapsulatedCDAStorage = @"1.2.840.10008.5.1.4.1.1.104.2";
 	
 	//Printing
 	static NSString *BasicGrayscalePrintManagementMetaSOPClassUID = @"1.2.840.10008.5.1.1.9";
@@ -571,6 +571,7 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 		    PETImageStorage ,
 		    RTImageStorage ,
 			PDFStorageClassUID ,
+            EncapsulatedCDAStorage,
 			OphthalmicPhotography8BitImageStorage,
 			OphthalmicPhotography16BitImageStorage,
 			OphthalmicTomographyImageStorage,
@@ -891,6 +892,10 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 
 + (NSString *)pdfStorageClassUID{
 	return PDFStorageClassUID;
+}
+
++ (NSString *)EncapsulatedCDAStorage{
+	return EncapsulatedCDAStorage;
 }
  
 + (BOOL)isPDF:(NSString *)sopClassUID{

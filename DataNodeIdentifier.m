@@ -307,7 +307,7 @@
     if (aet && parts.count > 0) *aet = [parts objectAtIndex:0];
     
     if (parts.count > 1)
-        return [[self class] location:[[parts subarrayWithRange:NSMakeRange(1,parts.count-1)] componentsJoinedByString:@"@"] toAddress:address port:port defaultPort:11112];
+        return [[self class] location:[[parts subarrayWithRange:NSMakeRange(1,(long)parts.count-1)] componentsJoinedByString:@"@"] toAddress:address port:port defaultPort:11112];
     
     return nil;
 }

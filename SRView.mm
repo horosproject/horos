@@ -1791,7 +1791,7 @@ typedef struct _xyzArray
 		[blendingFirstObject orientation:blendingcosines];
 				
 		blendingReader = vtkImageImport::New();
-		blendingReader->SetWholeExtent(0, [blendingFirstObject pwidth]-1, 0, [blendingFirstObject pheight]-1, 0, [blendingPixList count]-1);
+		blendingReader->SetWholeExtent(0, [blendingFirstObject pwidth]-1, 0, [blendingFirstObject pheight]-1, 0, (long)[blendingPixList count]-1);
 		blendingReader->SetDataExtentToWholeExtent();
 		blendingReader->SetDataScalarTypeToFloat();
 //		blendingReader->SetDataOrigin(  [blendingFirstObject originX],
@@ -2219,7 +2219,7 @@ typedef struct _xyzArray
 		}
 		
 		reader = vtkImageImport::New();
-		reader->SetWholeExtent(0, [firstObject pwidth]-1, 0, [firstObject pheight]-1, 0, [pixList count]-1);
+		reader->SetWholeExtent(0, [firstObject pwidth]-1, 0, [firstObject pheight]-1, 0, (long)[pixList count]-1);
 		reader->SetDataExtentToWholeExtent();
 		reader->SetDataScalarTypeToFloat();
 		reader->SetImportVoidPointer(data);
@@ -2802,7 +2802,7 @@ typedef struct _xyzArray
 //	strcat(bufferAnnotation, bufferName);
 //	strcat(bufferAnnotation, bufferPosition);
 //	
-	[self setAnnotation: "" for3DPointAtIndex:[point3DPositionsArray count]-1];
+	[self setAnnotation: "" for3DPointAtIndex:(long)[point3DPositionsArray count]-1];
 	
 //	aText->SetText(bufferAnnotation);
 //	

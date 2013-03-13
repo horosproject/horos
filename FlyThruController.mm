@@ -262,7 +262,7 @@
 	if ([[flyThru pathCameras] count]>0)
 	{
 		int index = [framesSlider intValue];
-		if (index > flyThru.pathCameras.count) index = flyThru.pathCameras.count - 1;
+		if (index > flyThru.pathCameras.count) index = (long)flyThru.pathCameras.count - 1;
 		[FTAdapter setCurrentViewToCamera:[flyThru.pathCameras objectAtIndex:index]];
 	}
 }

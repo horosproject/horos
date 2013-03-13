@@ -90,7 +90,7 @@ static SyncSeriesScope globalSyncSeriesScope;
 		
 		view = [controller xReslicedView];
 		
-		[view setCrossPosition: [view crossPositionX]+0.5 :[[controller originalDCMPixList] count] -1 - [[[note userInfo] valueForKey:@"z"] intValue]+0.5];
+		[view setCrossPosition: [view crossPositionX]+0.5 :(long)[[controller originalDCMPixList] count] -1 - [[[note userInfo] valueForKey:@"z"] intValue]+0.5];
 	}
 }
 
@@ -1460,7 +1460,7 @@ return YES;
 		[views addObject: [controller xReslicedView]];
 		[views addObject: [controller yReslicedView]];
 		
-		for( int i = views.count-1; i >= 0; i--)
+		for( int i = (long)views.count-1; i >= 0; i--)
 		{
 			if( NSEqualRects( [[views objectAtIndex: i] visibleRect], NSZeroRect))
 				[views removeObjectAtIndex: i];
@@ -1730,6 +1730,12 @@ return YES;
 
 - (void) exportDICOMFile:(id) sender
 {
+    if( dcmExportWindow == nil)
+    {
+        NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString(@"DICOM Files Export not supported", nil), NSLocalizedString(@"OK", nil), nil, nil);
+        return;
+    }
+    
 	long max = 0, curIndex = 0;
 	OrthogonalMPRView *view = nil;
     
@@ -1768,7 +1774,8 @@ return YES;
 
 	int count = fabs( [dcmFromTextField intValue] - [dcmToTextField intValue]);
 	count++;
-	count /= [dcmIntervalTextField intValue];
+    if( [dcmIntervalTextField intValue])
+        count /= [dcmIntervalTextField intValue];
 	[dcmCountTextField setStringValue: [NSString stringWithFormat:@"%d images", count]];
 	
 	if( maxMovieIndex > 1)

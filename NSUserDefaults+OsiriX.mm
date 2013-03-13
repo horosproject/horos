@@ -108,7 +108,7 @@ NSString* const O2NonViewerScreensDefaultsKey = @"NonViewerScreens";
     }
     
     NSMutableArray* screens = [[[NSScreen screens] mutableCopy] autorelease];
-    for (NSInteger i = screens.count-1; i >= 0; --i) {
+    for (NSInteger i = (long)screens.count-1; i >= 0; --i) {
         NSScreen* screen = [screens objectAtIndex:i];
         if (![nonIDs containsObject:[NSNumber numberWithUnsignedInteger:[screen screenNumber]]])
             [screens removeObjectAtIndex:i];

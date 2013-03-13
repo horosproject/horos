@@ -410,7 +410,7 @@
 {	
 	NSAffineTransform* transform = [self transform];
 	
-	for (int i=[curves count]-1; i>=0; i--)
+	for (int i=(long)[curves count]-1; i>=0; i--)
 	{
 		NSArray *aCurve = [curves objectAtIndex:i];
 
@@ -455,7 +455,7 @@
 		
 	NSAffineTransform* transform = [self transform];
 	
-	for (i=[curves count]-1; i>=0; i--)
+	for (i=(long)[curves count]-1; i>=0; i--)
 	{
 		NSArray *aCurve = [curves objectAtIndex:i];
 	
@@ -559,7 +559,7 @@
 				}
 			}
 			[self drawPointLabelAtPosition:[[aCurve objectAtIndex:0] pointValue]];
-			[self drawPointLabelAtPosition:[[aCurve objectAtIndex:[aCurve count]-1] pointValue]];
+			[self drawPointLabelAtPosition:[[aCurve objectAtIndex:(long)[aCurve count]-1] pointValue]];
 			if(minYIndex>0 && minY>0.0) [self drawPointLabelAtPosition:[[aCurve objectAtIndex:minYIndex] pointValue]];
 			if(maxYIndex>0) [self drawPointLabelAtPosition:[[aCurve objectAtIndex:maxYIndex] pointValue]];
 		}
@@ -607,11 +607,11 @@
 
 - (void)sendToBackCurveAtIndex:(int)i;
 {
-	if(i != [curves count]-1)
+	if(i != (long)[curves count]-1)
 	{
 		nothingChanged = NO;
 		clutChanged = NO;
-		[self moveCurveAtIndex:i toIndex:[curves count]-1];
+		[self moveCurveAtIndex:i toIndex:(long)[curves count]-1];
 	}
 }
 
@@ -841,7 +841,7 @@
 					
 	if(j>0)
 		if(point.x<=[[aCurve objectAtIndex:j-1] pointValue].x+10) point.x = [[aCurve objectAtIndex:j-1] pointValue].x+10;
-	if(j<[aCurve count]-1)
+	if(j<(long)[aCurve count]-1)
 		if(point.x>=[[aCurve objectAtIndex:j+1] pointValue].x-10) point.x = [[aCurve objectAtIndex:j+1] pointValue].x-10;
 			
 	return point;
@@ -902,7 +902,7 @@ NSRect rect = drawingRect;
 	{
 		[self deleteCurveAtIndex:ic];
 	}
-	else if(ip==0 || ip==[theCurve count]-1) return;
+	else if(ip==0 || ip==(long)[theCurve count]-1) return;
 	else
 	{
 		[[undoManager prepareWithInvocationTarget:self] addPoint:[[theCurve objectAtIndex:ip] pointValue] atIndex:ip inCurveAtIndex:ic withColor:[[pointColors objectAtIndex:ic] objectAtIndex:ip]];
@@ -930,8 +930,8 @@ NSRect rect = drawingRect;
 	
 	if([aCurve count]%2==1)
 	{
-		controlPoint.x = [[aCurve objectAtIndex:([aCurve count]-1)/2] pointValue].x;
-		controlPoint.y = [[aCurve objectAtIndex:([aCurve count]-1)/2] pointValue].y/2.0;
+		controlPoint.x = [[aCurve objectAtIndex:((long)[aCurve count]-1)/2] pointValue].x;
+		controlPoint.y = [[aCurve objectAtIndex:((long)[aCurve count]-1)/2] pointValue].y/2.0;
 	}
 	else
 	{
@@ -1280,7 +1280,7 @@ NSRect rect = drawingRect;
 						shiftY = 0;
 						
 						float alpha = 1.0;
-						if(j>0 && j<[aCurve count]-1)
+						if(j>0 && j<(long)[aCurve count]-1)
 							alpha = 2.0*fabsf(middlePointX - pt.x) / d;
 						if(pt.x<=controlPoint.x)
 							shiftedPoint = NSMakePoint(pt.x - alpha * shiftX, pt.y-shiftY);
