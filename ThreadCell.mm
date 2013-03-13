@@ -71,6 +71,9 @@
         [_cancelButton removeFromSuperview];
         [_cancelButton autorelease]; _cancelButton = nil;
         
+        [self.view reloadData];
+        [self.view setNeedsDisplay: YES];
+        
         if( KVOObserving)
         {
             [_thread removeObserver:self forKeyPath:NSThreadSupportsCancelKey];
