@@ -186,7 +186,16 @@ NSArray *OSIROIMaskIndexesInRun(OSIROIMaskRun maskRun)
 - (id)initWithMaskRuns:(NSArray *)maskRuns
 {
 	if ( (self = [super init]) ) {
-		_maskRuns = [[maskRuns sortedArrayUsingFunction:OSIROIMaskCompareRunValues context:NULL] copy];
+		_maskRuns = [[maskRuns sortedArrayUsingFunction:OSIROIMaskCompareRunValues context:NULL] retain];
+        [self checkdebug];
+	}
+	return self;
+}
+
+- (id)initWithSortedMaskRuns:(NSArray *)maskRuns
+{
+	if ( (self = [super init]) ) {
+		_maskRuns = [maskRuns retain];
         [self checkdebug];
 	}
 	return self;
@@ -225,7 +234,7 @@ NSArray *OSIROIMaskIndexesInRun(OSIROIMaskRun maskRun)
         [newMaskRuns addObject:[NSValue valueWithOSIROIMaskRun:maskRun]];
     }
     
-    return [[[[self class] alloc] initWithMaskRuns:newMaskRuns] autorelease];
+    return [[[[self class] alloc] initWithSortedMaskRuns:newMaskRuns] autorelease];
 }
 
 - (OSIROIMask *)ROIMaskByIntersectingWithMask:(OSIROIMask *)otherMask
@@ -286,7 +295,7 @@ NSArray *OSIROIMaskIndexesInRun(OSIROIMaskRun maskRun)
         [resultMaskRuns addObject:[NSValue valueWithOSIROIMaskRun:accumulatedRun]];
     }
     
-    return [[[OSIROIMask alloc] initWithMaskRuns:resultMaskRuns] autorelease];
+    return [[[OSIROIMask alloc] initWithSortedMaskRuns:resultMaskRuns] autorelease];
 }
 
 
@@ -364,7 +373,7 @@ NSArray *OSIROIMaskIndexesInRun(OSIROIMaskRun maskRun)
         [templateRunStack popMaskRun];
     }
 
-    return [[[OSIROIMask alloc] initWithMaskRuns:resultMaskRuns] autorelease];
+    return [[[OSIROIMask alloc] initWithSortedMaskRuns:resultMaskRuns] autorelease];
 }
 
 - (OSIROIMask *)filteredROIMaskUsingPredicate:(NSPredicate *)predicate floatVolumeData:(OSIFloatVolumeData *)floatVolumeData
@@ -415,7 +424,7 @@ NSArray *OSIROIMaskIndexesInRun(OSIROIMaskRun maskRun)
         }
     }
     
-    OSIROIMask *filteredMask = [[[OSIROIMask alloc] initWithMaskRuns:newMaskArray] autorelease];
+    OSIROIMask *filteredMask = [[[OSIROIMask alloc] initWithSortedMaskRuns:newMaskArray] autorelease];
     [filteredMask checkdebug];
     return filteredMask;
 }

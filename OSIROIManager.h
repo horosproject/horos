@@ -43,6 +43,10 @@ extern const NSString *OSILineROIType;
 
 extern NSString* const OSIROIManagerROIsDidUpdateNotification; 
 
+extern NSString* const OSIROIUpdatedROIKey;
+extern NSString* const OSIROIRemovedROIKey;
+extern NSString* const OSIROIAddedROIKey;
+
 @protocol OSIROIManagerDelegate;
 
 
