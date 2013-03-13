@@ -32,8 +32,8 @@
 -(id)initWithThread:(NSThread*)thread manager:(ThreadsManager*)manager view:(NSTableView*)view {
 	self = [super init];
     
-	_view = [view retain];
-	_manager = [manager retain];
+	_view = view;
+	_manager = manager;
 	
 	_progressIndicator = [[NSProgressIndicator alloc] initWithFrame:NSZeroRect];
 	[_progressIndicator setUsesThreadedAnimation:YES];
@@ -89,9 +89,6 @@
     [_thread autorelease];
     [_retainedThreadDictionary autorelease];
     
-	[_view release];
-	[_manager release];
-	
 	[super dealloc];
 }
 
