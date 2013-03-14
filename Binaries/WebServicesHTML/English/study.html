@@ -212,7 +212,7 @@ function shareDestinationChange(select) {
 						%[IF:Info.isMacOS||Info.isIOS%
 						%[IF:Info.proposeWADORetrieve%
 						<td class="narrow middle">
-							<a href="osirix://?methodName=DownloadURL&Display=YES&URL='%Info.WADOBaseURL%?requestType=WADO&studyUID=%U:Study.studyInstanceUID%&seriesUID=%U:Series.seriesDICOMUID%'"><img src="images/osirix.png"/></a>
+							<a href="osirix://?methodName=DownloadURL&Display=YES&URL='%Info.WADOBaseURL%?requestType=WADO&studyUID=%U:Study.studyInstanceUID%&seriesUID=%U:Series.seriesDICOMUID%&token=%Info.newToken%'"><img src="images/osirix.png"/></a>
 						</td>
 						%]IF:Info.proposeWADORetrieve%
 						%]IF:Info.isMacOS||Info.isIOS%
@@ -245,7 +245,7 @@ function shareDestinationChange(select) {
 					%[IF:Info.isMacOS%
 					%[IF:Info.proposeWADORetrieve%
 					<td class="narrow middle">
-						<a href="osirix://?methodName=DownloadURL&Display=YES&URL='%Info.WADOBaseURL%?requestType=WADO&studyUID=%U:Study.studyInstanceUID%'"><img src="images/osirix.png"/></a>
+						<a href="osirix://?methodName=DownloadURL&Display=YES&URL='%Info.WADOBaseURL%?requestType=WADO&studyUID=%U:Study.studyInstanceUID%&token=%Info.newToken%'"><img src="images/osirix.png"/></a>
 					</td>
 					%]IF:Info.proposeWADORetrieve%
 					%]IF:Info.isMacOS%

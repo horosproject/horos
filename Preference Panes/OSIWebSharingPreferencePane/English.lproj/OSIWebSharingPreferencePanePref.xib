@@ -378,10 +378,10 @@
 										<object class="NSButton" id="54190106">
 											<reference key="NSNextResponder" ref="1065012551"/>
 											<int key="NSvFlags">268</int>
-											<string key="NSFrame">{{15, 182}, {556, 18}}</string>
+											<string key="NSFrame">{{15, 182}, {268, 18}}</string>
 											<reference key="NSSuperview" ref="1065012551"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView" ref="499878150"/>
+											<reference key="NSNextKeyView" ref="40104423"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSButtonCell" key="NSCell" id="973953499">
 												<int key="NSCellFlags">-2080374784</int>
@@ -389,6 +389,31 @@
 												<string key="NSContents">Activate WADO Server at /wado</string>
 												<reference key="NSSupport" ref="26"/>
 												<reference key="NSControlView" ref="54190106"/>
+												<int key="NSButtonFlags">1211912448</int>
+												<int key="NSButtonFlags2">2</int>
+												<reference key="NSNormalImage" ref="759130581"/>
+												<reference key="NSAlternateImage" ref="385854006"/>
+												<string key="NSAlternateContents"/>
+												<string key="NSKeyEquivalent"/>
+												<int key="NSPeriodicDelay">200</int>
+												<int key="NSPeriodicInterval">25</int>
+											</object>
+											<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
+										</object>
+										<object class="NSButton" id="40104423">
+											<reference key="NSNextResponder" ref="1065012551"/>
+											<int key="NSvFlags">268</int>
+											<string key="NSFrame">{{272, 182}, {299, 18}}</string>
+											<reference key="NSSuperview" ref="1065012551"/>
+											<reference key="NSWindow"/>
+											<reference key="NSNextKeyView" ref="499878150"/>
+											<bool key="NSEnabled">YES</bool>
+											<object class="NSButtonCell" key="NSCell" id="736448899">
+												<int key="NSCellFlags">-2080374784</int>
+												<int key="NSCellFlags2">131072</int>
+												<string key="NSContents">Only accept WADO request from identified user</string>
+												<reference key="NSSupport" ref="26"/>
+												<reference key="NSControlView" ref="40104423"/>
 												<int key="NSButtonFlags">1211912448</int>
 												<int key="NSButtonFlags2">2</int>
 												<reference key="NSNormalImage" ref="759130581"/>
@@ -1161,7 +1186,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<reference key="NSWindow"/>
 					<reference key="NSNextKeyView" ref="362111600"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
@@ -2417,7 +2442,7 @@ ZW1wdHkgbGlzdC4</string>
 					<string key="NSFrameSize">{740, 601}</string>
 					<reference key="NSNextKeyView" ref="13842723"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
 				<string key="NSMinSize">{740, 322}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -4033,6 +4058,38 @@ ZW1wdHkgbGlzdC4</string>
 					</object>
 					<int key="connectionID">1218</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.wadoRequestRequireValidToken</string>
+						<reference key="source" ref="40104423"/>
+						<reference key="destination" ref="896066363"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="40104423"/>
+							<reference key="NSDestination" ref="896066363"/>
+							<string key="NSLabel">value: values.wadoRequestRequireValidToken</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.wadoRequestRequireValidToken</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">1222</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: values.wadoServer</string>
+						<reference key="source" ref="40104423"/>
+						<reference key="destination" ref="896066363"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="40104423"/>
+							<reference key="NSDestination" ref="896066363"/>
+							<string key="NSLabel">enabled: values.wadoServer</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">values.wadoServer</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">1224</int>
+				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<array key="orderedObjects">
@@ -4243,6 +4300,7 @@ ZW1wdHkgbGlzdC4</string>
 							<reference ref="484446749"/>
 							<reference ref="872906377"/>
 							<reference ref="190103739"/>
+							<reference ref="40104423"/>
 						</array>
 						<reference key="parent" ref="738391672"/>
 					</object>
@@ -5247,6 +5305,19 @@ ZW1wdHkgbGlzdC4</string>
 						<reference key="object" ref="618163162"/>
 						<reference key="parent" ref="946367040"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">1219</int>
+						<reference key="object" ref="40104423"/>
+						<array class="NSMutableArray" key="children">
+							<reference ref="736448899"/>
+						</array>
+						<reference key="parent" ref="777165394"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">1220</int>
+						<reference key="object" ref="736448899"/>
+						<reference key="parent" ref="40104423"/>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -5337,6 +5408,8 @@ ZW1wdHkgbGlzdC4</string>
 				<string key="1215.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="1216.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="1217.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="1219.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="1220.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="296.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="348.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="349.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -5458,7 +5531,7 @@ ZW1wdHkgbGlzdC4</string>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">1218</int>
+			<int key="maxID">1224</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">

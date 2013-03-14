@@ -117,6 +117,8 @@
 
 @implementation WebPortal
 
+@synthesize sessions;
+
 static NSString* DefaultWebPortalDatabasePath = nil;
 
 +(void)initialize

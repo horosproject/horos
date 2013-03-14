@@ -61,6 +61,7 @@
 @property(readonly, retain) DicomDatabase* dicomDatabase;
 @property(readonly, retain) NSMutableDictionary* cache;
 @property(readonly, retain) NSMutableDictionary* locks;
+@property(readonly, retain) NSMutableArray* sessions;
 
 @property(readonly) BOOL isAcceptingConnections;
 

@@ -1712,6 +1712,32 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		self.response.statusCode = 404;
 		return;
 	}
+    
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"wadoRequestRequireValidToken"])
+    {
+        NSString* token = [parameters objectForKey:@"token"];
+        
+        BOOL tokenFound = NO;
+        
+        for (WebPortalSession* isession in [self.portal sessions])
+        {
+            if( [isession containsToken:token])
+            {
+                tokenFound = YES;
+                break;
+            }
+        }
+        
+        if( tokenFound == NO)
+        {
+            if( [[parameters objectForKey:@"studyUID"] length] == 0 || [[parameters objectForKey:@"seriesUID"] length] == 0 || [[parameters objectForKey:@"objectUID"] length] == 0)
+            {
+                self.response.statusCode = 401;
+                [self.response setDataWithString:NSLocalizedString(@"Unauthorized WADO access.", NULL)];
+                return;
+            }
+        }
+    }
 	
 	NSString* studyUID = [parameters objectForKey:@"studyUID"];
 	NSString* seriesUID = [parameters objectForKey:@"seriesUID"];

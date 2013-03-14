@@ -1035,6 +1035,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"1" forKey:@"UsePatientNameForUID"];
     [defaultValues setObject:@"1" forKey:@"putSrcAETitleInSourceApplicationEntityTitle"];
     [defaultValues setObject:@"0" forKey:@"putDstAETitleInPrivateInformationCreatorUID"];
+    [defaultValues setObject:@"1" forKey:@"wadoRequestRequireValidToken"];
     [defaultValues setObject:@"1024" forKey: @"DicomImageScreenCaptureWidth"];
     [defaultValues setObject:@"1024" forKey: @"DicomImageScreenCaptureHeight"];
     
