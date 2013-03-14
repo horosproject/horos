@@ -132,6 +132,12 @@ CF_EXTERN_C_END
 /// @name Creating ROI Masks
 ///-----------------------------------
 
+/** Returns a newly created empty ROI Mask.
+ 
+ @return The newly crated and initialized ROI Mask object.
+ */
++ (id)ROIMask;
+
 /** Returns a newly created ROI Mask based on the intesities of the floatVolumeData.
  
  The returned mask  is a mask on the floatVolumeData with the intensities of the floatVolumeData.
@@ -140,6 +146,14 @@ CF_EXTERN_C_END
  @param floatVolumeData The OSIFloatVolumeData on which to build and base the mask.
  */
 + (id)ROIMaskFromVolumeData:(OSIFloatVolumeData *)floatVolumeData;
+
+/** Initializes and returns a newly created empty ROI Mask.
+ 
+ Creates an empty ROI Mask.
+ 
+ @return The initialized ROI Mask object.
+ */
+- (id)init;
 
 // create the thing, maybe we should really be working with C arrays.... or at least give the option
 /** Initializes and returns a newly created ROI Mask.
@@ -185,15 +199,26 @@ CF_EXTERN_C_END
  */
 - (OSIROIMask *)ROIMaskBySubtractingMask:(OSIROIMask *)otherMask;
 
+/** Returns YES if the two masks intersect.
+ 
+ */
+- (BOOL)intersectsMask:(OSIROIMask *)otherMask;
+
+/** Returns YES if the two masks are equal.
+ 
+ */
+- (BOOL)isEqualToMask:(OSIROIMask *)otherMask;
+
 /** Evaluates a given predicate against each pixel in the mask and returns a new mask containing the pixels for which the predicate returns true.
  
  The evaluated object used for the predicate responds to:
- -(float)intensity The value of the pixel
- -(float)ROIMaskIntensity;
+ -(float)intensity; The value of the pixel
+ -(float)ROIMaskIntensity; The value of the intesity stored in the mask
  -(NSUInteger)ROIMaskIndexX;
  -(NSUInteger)ROIMaskIndexY;
  -(NSUInteger)ROIMaskIndexZ;
  
+ @return The resulting mask after having applied the predicate to the receiver.
  */
 - (OSIROIMask *)filteredROIMaskUsingPredicate:(NSPredicate *)predicate floatVolumeData:(OSIFloatVolumeData *)floatVolumeData;
 

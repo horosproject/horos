@@ -128,6 +128,12 @@ NSArray *OSIROIMaskIndexesInRun(OSIROIMaskRun maskRun)
 
 @implementation OSIROIMask
 
++ (id)ROIMask
+{
+    return [[[[self class] alloc] init] autorelease];
+}
+
+
 + (id)ROIMaskFromVolumeData:(OSIFloatVolumeData *)floatVolumeData
 {
     NSInteger i;
@@ -181,6 +187,14 @@ NSArray *OSIROIMaskIndexesInRun(OSIROIMaskRun maskRun)
     [floatVolumeData releaseInlineBuffer:&inlineBuffer];
     
     return [[[[self class] alloc] initWithMaskRuns:maskRuns] autorelease];    
+}
+
+- (id)init
+{
+	if ( (self = [super init]) ) {
+		_maskRuns = [[NSArray alloc] init];
+	}
+	return self;
 }
 
 - (id)initWithMaskRuns:(NSArray *)maskRuns
@@ -375,6 +389,22 @@ NSArray *OSIROIMaskIndexesInRun(OSIROIMaskRun maskRun)
 
     return [[[OSIROIMask alloc] initWithSortedMaskRuns:resultMaskRuns] autorelease];
 }
+
+- (BOOL)intersectsMask:(OSIROIMask *)otherMask // probably could use a faster implementation...
+{
+    OSIROIMask *intersection = [self ROIMaskByIntersectingWithMask:otherMask];
+    return [intersection maskRunCount] > 0;
+}
+
+- (BOOL)isEqualToMask:(OSIROIMask *)otherMask // super lazy implementation FIXME!
+{
+    OSIROIMask *intersection = [self ROIMaskByIntersectingWithMask:otherMask];
+    OSIROIMask *subMask1 = [self ROIMaskBySubtractingMask:intersection];
+    OSIROIMask *subMask2 = [otherMask ROIMaskBySubtractingMask:intersection];
+    
+    return [subMask1 maskRunCount] == 0 && [subMask2 maskRunCount] == 0;
+}
+
 
 - (OSIROIMask *)filteredROIMaskUsingPredicate:(NSPredicate *)predicate floatVolumeData:(OSIFloatVolumeData *)floatVolumeData
 {
