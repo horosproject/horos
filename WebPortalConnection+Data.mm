@@ -1732,8 +1732,9 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
         {
             if( [[parameters objectForKey:@"studyUID"] length] == 0 || [[parameters objectForKey:@"seriesUID"] length] == 0 || [[parameters objectForKey:@"objectUID"] length] == 0)
             {
+                [NSThread sleepForTimeInterval: 1];
                 self.response.statusCode = 401;
-                [self.response setDataWithString:NSLocalizedString(@"Unauthorized WADO access.", NULL)];
+                [self.response setDataWithString:NSLocalizedString(@"Unauthorized WADO access - no valid token or incomplete request", NULL)];
                 return;
             }
         }
