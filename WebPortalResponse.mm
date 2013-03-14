@@ -798,7 +798,7 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
                     // Merge local and distant studies
                     for( DCMTKStudyQueryNode *distantStudy in distantStudies)
                     {
-                        if( [[otherStudies valueForKey: @"studyInstanceUID"] containsObject: [distantStudy studyInstanceUID]] == NO)
+                        if( [[otherStudies valueForKey: @"studyInstanceUID"] containsObject: [distantStudy studyInstanceUID]] == NO && [[distantStudy noFiles] integerValue] > 0)
                         {
                             [otherStudies addObject: distantStudy];
                         }
