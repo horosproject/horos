@@ -160,6 +160,17 @@
                     N2LogStackTrace( @"***** task timeout reached -> terminate the NSTask : %@", paths);
                     [theTask terminate];
                 }
+                else if( [theTask terminationReason] == NSTaskTerminationReasonUncaughtSignal)
+                {
+                    N2LogStackTrace( @"***** Decompress process crashed.");
+                    
+                    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"DELETEFILELISTENER"])
+                    {
+                        for( NSString *path in paths)
+                            [[NSFileManager defaultManager] moveItemAtPath: path toPath: [[[DicomDatabase defaultDatabase] errorsDirPath] stringByAppendingPathComponent: [path lastPathComponent]] error: nil];
+                    }
+                }
+                
 			} @catch (NSException *e) {
 				N2LogExceptionWithStackTrace(e);
 			}
