@@ -124,12 +124,15 @@
         {
             _retainedThreadDictionary = [_thread.threadDictionary retain];
             
-            [_thread addObserver:self forKeyPath:NSThreadIsCancelledKey options:NSKeyValueObservingOptionInitial context:NULL];
-            [_thread addObserver:self forKeyPath:NSThreadStatusKey options:NSKeyValueObservingOptionInitial context:NULL];
-            [_thread addObserver:self forKeyPath:NSThreadProgressKey options:NSKeyValueObservingOptionInitial context:NULL];
-            [_thread addObserver:self forKeyPath:NSThreadSupportsCancelKey options:NSKeyValueObservingOptionInitial context:NULL];
-            
-            KVOObserving = YES;
+            if( _retainedThreadDictionary)
+            {
+                [_thread addObserver:self forKeyPath:NSThreadIsCancelledKey options:NSKeyValueObservingOptionInitial context:NULL];
+                [_thread addObserver:self forKeyPath:NSThreadStatusKey options:NSKeyValueObservingOptionInitial context:NULL];
+                [_thread addObserver:self forKeyPath:NSThreadProgressKey options:NSKeyValueObservingOptionInitial context:NULL];
+                [_thread addObserver:self forKeyPath:NSThreadSupportsCancelKey options:NSKeyValueObservingOptionInitial context:NULL];
+                
+                KVOObserving = YES;
+            }
         }
     }
 }
@@ -144,6 +147,9 @@
     {
         @synchronized( _thread)
         {
+            if( _thread.isFinished)
+                return;
+            
             if( _retainedThreadDictionary != _thread.threadDictionary)
                 return;
         }
