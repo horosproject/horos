@@ -3415,8 +3415,132 @@ static BOOL initialized = NO;
 	[mutableDict writeToFile: [path stringByExpandingTildeInPath]  atomically: YES];
 }
 
+-(void)verifyHardwareInterpolation
+{
+	NSUInteger size = 32, size2 = size*size;
+	
+	NSWindow* win = [[NSWindow alloc] initWithContentRect:NSMakeRect(0,0,size,size) styleMask:NSTitledWindowMask backing:NSBackingStoreBuffered defer:NO];
+	
+	long annotCopy = [[NSUserDefaults standardUserDefaults] integerForKey:@"ANNOTATIONS"];
+	long clutBarsCopy = [[NSUserDefaults standardUserDefaults] integerForKey:@"CLUTBARS"];
+	BOOL noInterpolationCopy = [[NSUserDefaults standardUserDefaults] boolForKey:@"NOINTERPOLATION"];
+	BOOL highQInterpolationCopy = [[NSUserDefaults standardUserDefaults] boolForKey:@"SOFTWAREINTERPOLATION"];
+	
+	float pixData[] = {0,1,1,0};
+	DCMPix* dcmPix = [[DCMPix alloc] initWithData:pixData :32 :2 :2 :1 :1 :0 :0 :0];
+	
+	CGLContextObj cgl_ctx;
+	unsigned char temp_rgb[size2*3];
+	float iwl, iww;
+	DCMView* dcmView;
+    //	unsigned char* planes[1];
+	
+	[[NSUserDefaults standardUserDefaults] setInteger:annotNone forKey:@"ANNOTATIONS"];
+	[[NSUserDefaults standardUserDefaults] setInteger:barHide forKey:@"CLUTBARS"];
+	
+	// pix 1: no interpolation
+    
+	[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"NOINTERPOLATION"];
+	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"SOFTWAREINTERPOLATION"];
+	[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"FULL32BITPIPELINE"];
+	
+	dcmView = [[DCMView alloc] initWithFrame:NSMakeRect(0, 0, size,size)];
+	[dcmView setPixels:[NSArray arrayWithObject:dcmPix] files:NULL rois:NULL firstImage:0 level:'i' reset:YES];
+	[dcmView setScaleValueCentered:size];
+	[win.contentView addSubview:dcmView];
+	[dcmView drawRect:NSMakeRect(0,0,size,size)];
+    
+	cgl_ctx = (CGLContextObj)[[dcmView openGLContext] CGLContextObj];
+	glReadBuffer(GL_BACK);
+    
+	glReadPixels(0, 0, size, size, GL_RGB, GL_UNSIGNED_BYTE, temp_rgb);
+	unsigned char gray_1[size2];
+	for (int i = 0; i < size2; ++i)
+		gray_1[i] = (temp_rgb[i*3]+temp_rgb[i*3+1]+temp_rgb[i*3+2])/3;
+	
+    /*	planes[0] = gray_1;
+     NSBitmapImageRep* representation = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:planes
+     pixelsWide:size pixelsHigh:size bitsPerSample:8
+     samplesPerPixel:1 hasAlpha:NO isPlanar:NO
+     colorSpaceName:NSCalibratedBlackColorSpace bytesPerRow:size
+     bitsPerPixel:8];
+     [[representation TIFFRepresentation] writeToFile:@"/Users/pacs/aaaaa1.tif" atomically:YES];
+     [representation release];*/
+	
+	[dcmView removeFromSuperview];
+	[dcmView release];
+	
+	// pix 2: interpolation
+	
+	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"NOINTERPOLATION"];
+	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"SOFTWAREINTERPOLATION"];
+	[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"FULL32BITPIPELINE"];
+	dcmView = [[DCMView alloc] initWithFrame: NSMakeRect(0, 0, size,size)];
+	[dcmView setPixels:[NSArray arrayWithObject:dcmPix] files:NULL rois:NULL firstImage:0 level:'i' reset:YES];
+	[dcmView setScaleValueCentered:size];
+	[win.contentView addSubview:dcmView];
+	[dcmView drawRect:NSMakeRect(0,0,size,size)];
+	
+	cgl_ctx = (CGLContextObj)[[dcmView openGLContext] CGLContextObj];
+	glReadBuffer(GL_BACK);
+	
+	glReadPixels(0, 0, size, size, GL_RGB, GL_UNSIGNED_BYTE, temp_rgb);
+	unsigned char gray_2[size2];
+	for (int i = 0; i < size2; ++i)
+		gray_2[i] = (temp_rgb[i*3]+temp_rgb[i*3+1]+temp_rgb[i*3+2])/3;
+	
+	/*planes[0] = gray_2;
+     representation = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:planes
+     pixelsWide:size pixelsHigh:size bitsPerSample:8
+     samplesPerPixel:1 hasAlpha:NO isPlanar:NO
+     colorSpaceName:NSCalibratedBlackColorSpace bytesPerRow:size
+     bitsPerPixel:8];
+     [[representation TIFFRepresentation] writeToFile:@"/Users/pacs/aaaaa2.tif" atomically:YES];
+     [representation release];*/
+	
+	[dcmView removeFromSuperview];
+	[dcmView release];
+	
+	[win release];
+	[dcmPix release];
+	
+	
+	[[NSUserDefaults standardUserDefaults] setInteger: annotCopy forKey:@"ANNOTATIONS"];
+	[[NSUserDefaults standardUserDefaults] setInteger: clutBarsCopy forKey:@"CLUTBARS"];
+	[[NSUserDefaults standardUserDefaults] setBool: noInterpolationCopy forKey:@"NOINTERPOLATION"];
+	[[NSUserDefaults standardUserDefaults] setBool: highQInterpolationCopy forKey:@"SOFTWAREINTERPOLATION"];
+	
+	[DCMView setCLUTBARS:clutBarsCopy ANNOTATIONS:annotCopy];
+	
+	// eval results
+	
+	CGFloat delta = 0;
+	for (int i = 0; i < size2; ++i)
+		delta += fabsf((float)gray_1[i]-(float)gray_2[i]);
+	BOOL has32bitPipeline = delta > 1000; // we may want to raise this..
+	
+	if (has32bitPipeline)
+	{
+		NSLog( @"-- 32bit pipeline available");
+		[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"hasFULL32BITPIPELINE"];
+//		[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"FULL32BITPIPELINE"];
+	}
+	else
+	{
+		NSLog( @"-- 32bit pipeline inactivated");
+		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"hasFULL32BITPIPELINE"];
+		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"FULL32BITPIPELINE"];
+	}
+}
+
 - (void) applicationWillFinishLaunching: (NSNotification *) aNotification
 {
+    if( [NSDate timeIntervalSinceReferenceDate] - [[NSUserDefaults standardUserDefaults] doubleForKey: @"lastDate32bitPipelineCheck"] > 60L*60L*24L) // 1 days
+	{
+		[[NSUserDefaults standardUserDefaults] setDouble: [NSDate timeIntervalSinceReferenceDate] forKey: @"lastDate32bitPipelineCheck"];
+		[self verifyHardwareInterpolation];
+	}
+    
 	BOOL dialog = NO;
     
 	if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/"] == NO)
