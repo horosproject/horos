@@ -668,6 +668,22 @@ static NSDate *lastWarningDate = nil;
 
 @synthesize checkAllWindowsAreVisibleIsOff, filtersMenu, windowsTilingMenuRows, windowsTilingMenuColumns, isSessionInactive, dicomBonjourPublisher = BonjourDICOMService, XMLRPCServer;
 
++(BOOL) hasMacOSX1083orHigher
+{
+	OSErr err;
+	SInt32 osVersion;
+	
+	err = Gestalt ( gestaltSystemVersion, &osVersion );
+	if ( err == noErr)
+	{
+		if ( osVersion < 0x1083UL )
+		{
+			return NO;
+		}
+	}
+	return YES;
+}
+
 +(BOOL) hasMacOSXMountainLion
 {
 	OSErr err;
@@ -3415,8 +3431,75 @@ static BOOL initialized = NO;
 	[mutableDict writeToFile: [path stringByExpandingTildeInPath]  atomically: YES];
 }
 
+#define kIOPCIDevice                "IOPCIDevice"
+#define kIONameKey                  "IOName"
+#define kDisplayKey                 "display"
+#define kModelKey                   "model"
+#define kIntelGPUPrefix             @"Intel"
++ (NSArray *)getGPUNames
+{
+    NSMutableArray *GPUs = [NSMutableArray array];
+    
+    // The IOPCIDevice class includes display adapters/GPUs.
+    CFMutableDictionaryRef devices = IOServiceMatching(kIOPCIDevice);
+    io_iterator_t entryIterator;
+    
+    if (IOServiceGetMatchingServices(kIOMasterPortDefault, devices, &entryIterator) == kIOReturnSuccess) {
+        io_registry_entry_t device;
+        
+        while ((device = IOIteratorNext(entryIterator))) {
+            CFMutableDictionaryRef serviceDictionary;
+            
+            if (IORegistryEntryCreateCFProperties(device, &serviceDictionary, kCFAllocatorDefault, kNilOptions) != kIOReturnSuccess) {
+                // Couldn't get the properties for this service, so clean up and
+                // continue.
+                IOObjectRelease(device);
+                continue;
+            }
+            
+            const void *ioName = CFDictionaryGetValue(serviceDictionary, @kIONameKey);
+            
+            if (ioName) {
+                // If we have an IOName, and its value is "display", then we've
+                // got a "model" key, whose value is a CFDataRef that we can
+                // convert into a string.
+                if (CFGetTypeID(ioName) == CFStringGetTypeID() && CFStringCompare(ioName, CFSTR(kDisplayKey), kCFCompareCaseInsensitive) == kCFCompareEqualTo) {
+                    const void *model = CFDictionaryGetValue(serviceDictionary, @kModelKey);
+                    
+                    NSString *gpuName = [[[NSString alloc] initWithData:( NSData *)model
+                                                              encoding:NSASCIIStringEncoding] autorelease];
+                    
+                    [GPUs addObject:gpuName];
+                }
+            }
+            
+            CFRelease(serviceDictionary);
+        }
+    }
+    
+    return GPUs;
+}
+
 -(void)verifyHardwareInterpolation
 {
+    if( [AppController hasMacOSX1083orHigher]) // Intel 10.8.3 graphic bug
+    {
+        BOOL onlyIntelGraphicBoard = YES;
+        for( NSString *gpuName in [AppController getGPUNames])
+        {
+            if( [gpuName hasPrefix: kIntelGPUPrefix] == NO)
+                onlyIntelGraphicBoard = NO;
+        }
+        
+        if( onlyIntelGraphicBoard)
+        {
+            NSLog( @"**** 10.8.3 graphic board bug: only intel board discovered : No 32-bit pipeline available");
+            NSLog( @"%@", [AppController getGPUNames]);
+            
+            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"FULL32BITPIPELINE"];
+        }
+    }
+    
 	NSUInteger size = 32, size2 = size*size;
 	
 	NSWindow* win = [[NSWindow alloc] initWithContentRect:NSMakeRect(0,0,size,size) styleMask:NSTitledWindowMask backing:NSBackingStoreBuffered defer:NO];
@@ -3465,14 +3548,14 @@ static BOOL initialized = NO;
                 gray_1[i] = (data[i*3]+data[i*3+1]+data[i*3+2])/3;
             free( data);
             
-            //            planes[0] = gray_1;
-            //            NSBitmapImageRep* representation = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:planes
-            //                                                                                       pixelsWide:size pixelsHigh:size bitsPerSample:8
-            //                                                                                  samplesPerPixel:1 hasAlpha:NO isPlanar:NO
-            //                                                                                   colorSpaceName:NSCalibratedBlackColorSpace bytesPerRow:size
-            //                                                                                     bitsPerPixel:8];
-            //            [[representation TIFFRepresentation] writeToFile:@"/tmp/aaaaa1.tif" atomically:YES];
-            //            [representation release];
+//            planes[0] = gray_1;
+//            NSBitmapImageRep* representation = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:planes
+//                                                                                       pixelsWide:size pixelsHigh:size bitsPerSample:8
+//                                                                                  samplesPerPixel:1 hasAlpha:NO isPlanar:NO
+//                                                                                   colorSpaceName:NSCalibratedBlackColorSpace bytesPerRow:size
+//                                                                                     bitsPerPixel:8];
+//            [[representation TIFFRepresentation] writeToFile:@"/tmp/aaaaa1.tif" atomically:YES];
+//            [representation release];
         }
     }
     
@@ -3504,14 +3587,14 @@ static BOOL initialized = NO;
                 gray_1[i] = (data[i*3]+data[i*3+1]+data[i*3+2])/3;
             free( data);
             
-            //            planes[0] = gray_1;
-            //            NSBitmapImageRep* representation = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:planes
-            //                                                                                       pixelsWide:size pixelsHigh:size bitsPerSample:8
-            //                                                                                  samplesPerPixel:1 hasAlpha:NO isPlanar:NO
-            //                                                                                   colorSpaceName:NSCalibratedBlackColorSpace bytesPerRow:size
-            //                                                                                     bitsPerPixel:8];
-            //            [[representation TIFFRepresentation] writeToFile:@"/tmp/aaaaa2.tif" atomically:YES];
-            //            [representation release];
+//            planes[0] = gray_1;
+//            NSBitmapImageRep* representation = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:planes
+//                                                                                       pixelsWide:size pixelsHigh:size bitsPerSample:8
+//                                                                                  samplesPerPixel:1 hasAlpha:NO isPlanar:NO
+//                                                                                   colorSpaceName:NSCalibratedBlackColorSpace bytesPerRow:size
+//                                                                                     bitsPerPixel:8];
+//            [[representation TIFFRepresentation] writeToFile:@"/tmp/aaaaa2.tif" atomically:YES];
+//            [representation release];
         }
     }
 	[dcmView removeFromSuperview];
