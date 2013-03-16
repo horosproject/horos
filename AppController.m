@@ -3497,6 +3497,7 @@ static BOOL initialized = NO;
             NSLog( @"%@", [AppController getGPUNames]);
             
             [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"FULL32BITPIPELINE"];
+            return;
         }
     }
     
