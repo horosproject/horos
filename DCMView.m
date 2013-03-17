@@ -765,6 +765,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		{
 			if( [v currentStudy] && [v currentSeries])
 				[studiesArray addObject: [v currentStudy]];
+            
+            [v imageView].studyColorR = [v imageView].studyColorG = [v imageView].studyColorB = 0;
+            [v imageView].studyDateIndex = NSNotFound;
+            [[v imageView] setNeedsDisplay: YES];
 		}
 		
 		if( studiesArray.count > 1)
@@ -815,25 +819,19 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                 
             }
             
-			for( ViewerController *v in viewers)
-			{
-				NSColor *boxColor = [colorsStudy objectForKey: [v studyInstanceUID]];
-		
-				[v imageView].studyColorR = [boxColor redComponent];
-				[v imageView].studyColorG = [boxColor greenComponent];
-				[v imageView].studyColorB = [boxColor blueComponent];
-                [v imageView].studyDateIndex = [colors indexOfObject: boxColor];
-                [[v imageView] setNeedsDisplay: YES];
-			}
-		}
-		else
-		{
-			for( ViewerController *v in viewers)
-			{
-				[v imageView].studyColorR = [v imageView].studyColorG = [v imageView].studyColorB = 0;
-                [v imageView].studyDateIndex = NSNotFound;
-                [[v imageView] setNeedsDisplay: YES];
-			}
+            if( colorsStudy.count > 1)
+            {
+                for( ViewerController *v in viewers)
+                {
+                    NSColor *boxColor = [colorsStudy objectForKey: [v studyInstanceUID]];
+            
+                    [v imageView].studyColorR = [boxColor redComponent];
+                    [v imageView].studyColorG = [boxColor greenComponent];
+                    [v imageView].studyColorB = [boxColor blueComponent];
+                    [v imageView].studyDateIndex = [colors indexOfObject: boxColor];
+                    [[v imageView] setNeedsDisplay: YES];
+                }
+            }
 		}
 	}
 	
