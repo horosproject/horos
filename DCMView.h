@@ -82,7 +82,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 @class ROI;
 @class OrthogonalMPRController;
 @class DICOMExport;
-@class DicomImage, DicomSeries;
+@class DicomImage, DicomSeries, DicomStudy;
 @class DCMObject;
 
 @interface DCMExportPlugin: NSObject
@@ -295,7 +295,10 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	GLuint loupeMaskTextureID, loupeMaskTextureWidth, loupeMaskTextureHeight;
 	GLubyte *loupeMaskTextureBuffer;
 	float studyColorR, studyColorG, studyColorB;
+    NSUInteger studyDateIndex;
 //	LoupeController *loupeController;
+    
+    GLString *studyDateBox;
 }
 
 @property NSRect drawingFrameRect;
@@ -307,6 +310,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 @property long syncSeriesIndex;
 @property(nonatomic)float syncRelativeDiff, studyColorR, studyColorG, studyColorB;
 @property(nonatomic) long blendingMode;
+@property(nonatomic) NSUInteger studyDateIndex;
 @property(retain,setter=setBlending:) DCMView *blendingView;
 @property(readonly) float blendingFactor;
 @property(nonatomic) BOOL xFlipped, yFlipped;
@@ -452,6 +456,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (void) checkCursor;
 - (DicomImage *)imageObj;
 - (DicomSeries *)seriesObj;
+- (DicomStudy *)studyObj;
 - (void) updatePresentationStateFromSeries;
 - (void) updatePresentationStateFromSeriesOnlyImageLevel: (BOOL) onlyImage;
 - (void) setCursorForView: (long) tool;

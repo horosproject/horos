@@ -34,6 +34,7 @@
 #import "ROIWindow.h"
 #import "ToolbarPanel.h"
 #import "NSUserDefaultsController+OsiriX.h"
+#import "DicomStudy.h"
 #import "DicomSeries.h"
 #import "DicomImage.h"
 #include <OpenGL/CGLMacro.h>
@@ -48,6 +49,7 @@
 #import "OSIEnvironment.h"
 #import "OSIEnvironment+Private.h"
 #import "DCMWaveform.h"
+#import "DicomDatabase.h"
 
 // kvImageHighQualityResampling
 #define QUALITY kvImageNoFlags
@@ -466,7 +468,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 @synthesize showDescriptionInLarge, curRoiList;
 @synthesize drawingFrameRect, dontEnterReshape;
-@synthesize rectArray, studyColorR, studyColorG, studyColorB;
+@synthesize rectArray, studyColorR, studyColorG, studyColorB, studyDateIndex;
 @synthesize flippedData, whiteBackground, timeIntervalForDrag;
 @synthesize dcmPixList;
 @synthesize dcmFilesList;
@@ -750,7 +752,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		NSArray *viewers = [[ViewerController getDisplayed2DViewers] sortedArrayUsingFunction: studyCompare context: nil];
 		
 		NSMutableArray *studiesArray = [NSMutableArray array];
-		NSMutableArray *seriesArray = [NSMutableArray array];
 		NSMutableDictionary *colorsStudy = [NSMutableDictionary dictionary];
 		NSArray *colors = [NSArray arrayWithObjects:	[NSColor colorWithDeviceRed:0.4f green:0.4f blue:0.0f alpha:0.7f],
 						   [NSColor colorWithDeviceRed:0.4f green:0.0f blue:0.4f alpha:0.7f],
@@ -763,26 +764,57 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		for( ViewerController *v in viewers)
 		{
 			if( [v currentStudy] && [v currentSeries])
-			{
 				[studiesArray addObject: [v currentStudy]];
-				[seriesArray addObject: [v currentSeries]];
-			}
 		}
 		
-		// Give a different color for each study/patient
-		int color = 0, noColor = 0;
-		for( id study in studiesArray)
+		if( studiesArray.count > 1)
 		{
-			if( [colorsStudy objectForKey: [study valueForKey:@"studyInstanceUID"]] == nil)
-			{
-				[colorsStudy setObject: [colors objectAtIndex: color++] forKey: [study valueForKey:@"studyInstanceUID"]];
-				noColor++;
-			}	
-			if( color >= [colors count]) color = 0;
-		}
-		
-		if( noColor > 1)
-		{
+            DicomStudy *study = [self studyObj];
+            NSArray *allStudiesArray = nil;
+            
+            // Use the 'history' array of the browser controller, if available (with the distant studies)
+            if( [[[BrowserController currentBrowser] comparativePatientUID] compare: [study patientUID] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame && [[BrowserController currentBrowser] comparativeStudies] != nil)
+                allStudiesArray = [BrowserController currentBrowser].comparativeStudies;
+            else
+            {
+                DicomDatabase *db = [[BrowserController currentBrowser] database];
+                NSPredicate *predicate = nil;
+                
+                // FIND ALL STUDIES of this patient
+                NSString *searchString = [study valueForKey:@"patientUID"];
+                
+                if( [searchString length] == 0 || [searchString isEqualToString:@"0"])
+                {
+                    searchString = [study valueForKey:@"name"];
+                    predicate = [NSPredicate predicateWithFormat: @"(name == %@)", searchString];
+                }
+                else predicate = [NSPredicate predicateWithFormat: @"(patientUID BEGINSWITH[cd] %@)", searchString];
+                
+                allStudiesArray = [db objectsForEntity:db.studyEntity predicate:predicate];
+                allStudiesArray = [allStudiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: @"date" ascending: NO]]];
+            }
+            
+            allStudiesArray = [allStudiesArray valueForKey: @"studyInstanceUID"];
+            
+            // Give a different color for each study/patient
+            int noColor = 0;
+            for( id study in studiesArray)
+            {
+                NSString *studyUID = [study valueForKey:@"studyInstanceUID"];
+                
+                if( [colorsStudy objectForKey: studyUID] == nil)
+                {
+                    NSUInteger color = [allStudiesArray indexOfObject: studyUID];
+                    
+                    if( color != NSNotFound)
+                    {
+                        if( color >= [colors count]) color = 0;
+                        [colorsStudy setObject: [colors objectAtIndex: color++] forKey: studyUID];
+                    }
+                }	
+                
+            }
+            
 			for( ViewerController *v in viewers)
 			{
 				NSColor *boxColor = [colorsStudy objectForKey: [v studyInstanceUID]];
@@ -790,6 +822,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				[v imageView].studyColorR = [boxColor redComponent];
 				[v imageView].studyColorG = [boxColor greenComponent];
 				[v imageView].studyColorB = [boxColor blueComponent];
+                [v imageView].studyDateIndex = [colors indexOfObject: boxColor];
+                [[v imageView] setNeedsDisplay: YES];
 			}
 		}
 		else
@@ -797,6 +831,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			for( ViewerController *v in viewers)
 			{
 				[v imageView].studyColorR = [v imageView].studyColorG = [v imageView].studyColorB = 0;
+                [v imageView].studyDateIndex = NSNotFound;
+                [[v imageView] setNeedsDisplay: YES];
 			}
 		}
 	}
@@ -2280,6 +2316,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         
         [loupeMaskImage release];
         loupeMaskImage = nil;
+        
+        [studyDateBox release];
+        studyDateBox = nil;
     }
     @catch (NSException * e)
 	{
@@ -7583,6 +7622,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     return rotation;
 }
 
+- (void) setStudyDateIndex:(NSUInteger)s
+{
+    [studyDateBox release];
+    studyDateBox = nil;
+    
+    studyDateIndex = s;
+}
+
 - (void) drawTextualData:(NSRect) size annotationsLevel:(long) annotations fullText: (BOOL) fullText onlyOrientation: (BOOL) onlyOrientation
 {
     float sf = [self.window backingScaleFactor]; //retina
@@ -7654,13 +7701,21 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		if( colorBoxSize && stringID == nil && [self is2DViewer] == YES)
 		{
-			glColor4f( studyColorR, studyColorG, studyColorB, 1.0);
-			glBegin( GL_POLYGON);
-			glVertex2f( size.size.width-2 -colorBoxSize+1, size.size.height-2 -colorBoxSize+1);
-			glVertex2f( size.size.width-2 -colorBoxSize+1, size.size.height-2 -1);
-			glVertex2f( size.size.width-2 -1, size.size.height-2 -1);
-			glVertex2f( size.size.width-2 -1, size.size.height-2 -colorBoxSize +1);
-			glEnd();
+            if( studyDateBox == nil && studyDateIndex != NSNotFound)
+            {
+                NSColor *boxColor = [NSColor colorWithCalibratedRed: studyColorR green: studyColorG blue: studyColorB alpha: 1.0];
+                
+                NSMutableDictionary *stanStringAttrib = [NSMutableDictionary dictionary];
+                [stanStringAttrib setObject: [NSFont fontWithName:@"Helvetica" size: 20] forKey: NSFontAttributeName];
+                
+                studyDateBox = [[GLString alloc] initWithAttributedString: [[[NSAttributedString alloc] initWithString: [NSString stringWithFormat: @" %d ", studyDateIndex+1] attributes: stanStringAttrib] autorelease] withBoxColor: boxColor withBorderColor:boxColor];
+            }
+            
+            if( studyDateBox)
+            {
+                glColor4f( 1.0, 1.0, 1.0, 1.0);
+                [studyDateBox drawAtPoint: NSMakePoint( size.size.width-2 -colorBoxSize+1, size.size.height-2 -colorBoxSize+1) view: self];
+            }
 		}
 		else colorBoxSize = 0;
 		
@@ -12399,6 +12454,25 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         else if( [dcmPixList indexOfObject: curDCM] != NSNotFound)
             return [[dcmFilesList objectAtIndex: [dcmPixList indexOfObject: curDCM]] valueForKey: @"series"];
         else return [curDCM seriesObj];
+	}
+    
+    return nil;
+}
+
+- (DicomStudy *)studyObj
+{
+	if( stringID == nil || [stringID isEqualToString:@"previewDatabase"])
+	{
+#ifdef NDEBUG
+#else
+        if( [NSThread isMainThread] == NO)
+            NSLog( @"******************* warning this object should be used only on the main thread. Create your own Context !");
+#endif
+		if( curImage >= 0 && curImage < dcmFilesList.count)
+            return [[dcmFilesList objectAtIndex: curImage] valueForKeyPath: @"series.study"];
+        else if( [dcmPixList indexOfObject: curDCM] != NSNotFound)
+            return [[dcmFilesList objectAtIndex: [dcmPixList indexOfObject: curDCM]] valueForKeyPath: @"series.study"];
+        else return [curDCM studyObj];
 	}
     
     return nil;

@@ -37,6 +37,7 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 @class Point3D;
 @class DicomImage;
 @class DicomSeries;
+@class DicomStudy;
 @class DCMWaveform;
 
 /** \brief Represents an image for display */
@@ -462,6 +463,7 @@ Note setter is different to not break existing usage. :-( */
 
 - (DicomImage*) imageObj;
 - (DicomSeries*) seriesObj;
+- (DicomStudy*) studyObj;
 
 - (BOOL) thickSlabVRActivated; /**< Activate Thick Slab VR */
 

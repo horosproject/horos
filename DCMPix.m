@@ -1271,6 +1271,20 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 #endif
 }
 
+- (DicomStudy*) studyObj
+{
+#ifdef OSIRIX_VIEWER
+#ifdef NDEBUG
+#else
+    if( [NSThread isMainThread] == NO)
+        NSLog( @"******************* warning this object should be used only on the main thread. Create your own Context !");
+#endif
+    return [[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] valueForKeyPath: @"series.study"];
+#else
+    return nil;
+#endif
+}
+
 + (BOOL) IsPoint:(NSPoint) x inPolygon:(NSPoint*) pts size:(int) no
 {
 	if( pnpoly( pts, no, x.x, x.y))
