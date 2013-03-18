@@ -15,6 +15,7 @@
 #import "RemoteDicomDatabase.h"
 #import "N2Debug.h"
 #import "NSFileManager+N2.h"
+#import "N2ManagedDatabase.h"
 #import "N2Connection.h"
 #import "NSThread+N2.h"
 #import "ThreadsManager.h"
@@ -139,14 +140,17 @@
     self.password = nil;
 	self.address = nil;
 	self.host = nil;
-	
-    NSString* baseBaseDirPath = [_baseBaseDirPath autorelease];
-	
+	[_sqlFileName release];
+    
+    NSString* baseBaseDirPath = nil;
+    
+    if( self.isMainDatabase)
+        baseBaseDirPath = [_baseBaseDirPath autorelease];
+    
 	[super dealloc];
 	
-    if (baseBaseDirPath) {
+    if (baseBaseDirPath)
         [NSFileManager.defaultManager removeItemAtPath:baseBaseDirPath error:NULL];
-    }
 }
 
 -(BOOL)isLocal {
@@ -208,25 +212,36 @@
     }
     
     if (filesToSend.count)
-        [self performSelectorInBackground:@selector(_uploadFilesAtPathsGeneratedByOsiriX:) withObject:[NSArray arrayWithObjects:filesToSend, filesToSendObjectIDs, [NSNumber numberWithBool:generatedByOsiriX], nil]];
-    
+    {
+        [RemoteDicomDatabase performSelectorInBackground:@selector(_uploadFilesAtPathsGeneratedByOsiriX:) withObject:[NSArray arrayWithObjects:filesToSend, filesToSendObjectIDs, [NSNumber numberWithBool:generatedByOsiriX], self, nil]];
+    }
     return objectIDs;
 }
 
--(void)_uploadFilesAtPathsGeneratedByOsiriX:(NSArray*)io {
++(void)_uploadFilesAtPathsGeneratedByOsiriX:(NSArray*)io {
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
     @try {
         NSArray* paths = [io objectAtIndex:0];
         NSArray* objIDs = [io objectAtIndex:1];
         BOOL byOsiriX = [[io objectAtIndex:2] boolValue];
+        RemoteDicomDatabase *remoteDB = [io objectAtIndex:3];
+        NSManagedObjectContext *iContext = [remoteDB independentContext];
         
         NSThread* thread = [NSThread currentThread];
         thread.name = NSLocalizedString(@"Remote DICOM add...", @"name of thread that sends dicom files to the remote database after local addFiles");
         thread.status = NSLocalizedString(@"Sending data...", nil);
         [[ThreadsManager defaultManager] addThreadAndStart:thread];
         
-        NSArray* images = [self objectsWithIDs:objIDs];
-        [self uploadFilesAtPaths:paths imageObjects:images generatedByOsiriX:byOsiriX];
+        NSMutableArray* images = [NSMutableArray arrayWithCapacity: objIDs.count];
+        for (id oid in objIDs)
+            @try {
+                id o = [iContext objectWithID:oid];
+                if (o) [images addObject:o];
+            } @catch (NSException* e) {
+                // nothing, just look for other objects
+            }
+        
+        [remoteDB uploadFilesAtPaths:paths imageObjects:images generatedByOsiriX:byOsiriX];
         
     } @catch (NSException* e) {
         N2LogExceptionWithStackTrace(e);
@@ -633,7 +648,7 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
                 break;
 		}
         
-        if (images) [self save];
+        if (images) [[[images lastObject] managedObjectContext] save: nil];
 	} @catch (...) {
 		@throw;
 	} @finally {
