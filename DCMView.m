@@ -808,8 +808,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                     
                     if( color != NSNotFound)
                     {
-                        if( color >= [colors count]) color = 0;
-                        [colorsStudy setObject: [colors objectAtIndex: color++] forKey: studyUID];
+                        if( color >= colors.count) color = colors.count-1;
+                        [colorsStudy setObject: [colors objectAtIndex: color] forKey: studyUID];
                     }
                 }	
                 
@@ -826,7 +826,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                         view.studyColorR = [boxColor redComponent];
                         view.studyColorG = [boxColor greenComponent];
                         view.studyColorB = [boxColor blueComponent];
-                        view.studyDateIndex = [colors indexOfObject: boxColor];
+                        view.studyDateIndex = [allStudiesArray indexOfObject: [v studyInstanceUID]];
                         [view setNeedsDisplay: YES];
                     }
                 }
@@ -2992,7 +2992,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		NSAttributedString *text = [[[NSAttributedString alloc] initWithString: description attributes: stanStringAttrib] autorelease];
 		
-        NSColor *boxColor = [ViewerController.studyColors objectAtIndex: 0];
+        NSColor *boxColor = [ViewerController.studyColors lastObject];
         if( studyColorR != 0 || studyColorG != 0 || studyColorB != 0)
             boxColor = [NSColor colorWithCalibratedRed: studyColorR green: studyColorG blue: studyColorB alpha: 0.7];
 		NSColor *frameColor = [NSColor colorWithDeviceRed: [boxColor redComponent] green:[boxColor greenComponent] blue:[boxColor blueComponent] alpha:1];
@@ -7688,8 +7688,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                 
                 NSMutableDictionary *stanStringAttrib = [NSMutableDictionary dictionary];
                 [stanStringAttrib setObject: [NSFont fontWithName:@"Helvetica" size: 20] forKey: NSFontAttributeName];
-                
-                studyDateBox = [[GLString alloc] initWithAttributedString: [[[NSAttributedString alloc] initWithString: [NSString stringWithFormat: @" %d ", studyDateIndex+1] attributes: stanStringAttrib] autorelease] withBoxColor: boxColor withBorderColor:boxColor];
+                if( studyDateIndex+1 < 10)
+                    studyDateBox = [[GLString alloc] initWithAttributedString: [[[NSAttributedString alloc] initWithString: [NSString stringWithFormat: @" %d ", (int) studyDateIndex+1] attributes: stanStringAttrib] autorelease] withBoxColor: boxColor withBorderColor:boxColor];
+                else
+                    studyDateBox = [[GLString alloc] initWithAttributedString: [[[NSAttributedString alloc] initWithString: [NSString stringWithFormat: @"%d", (int) studyDateIndex+1] attributes: stanStringAttrib] autorelease] withBoxColor: boxColor withBorderColor:boxColor];
             }
             
             if( studyDateBox)

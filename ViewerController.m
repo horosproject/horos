@@ -4406,7 +4406,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                     NSArray *colors = ViewerController.studyColors;
                     NSColor *bkgColor = nil;
                     if( curStudyIndex >= colors.count)
-                        bkgColor = [colors objectAtIndex: 0];
+                        bkgColor = [colors lastObject];
                     else
                         bkgColor = [colors objectAtIndex: curStudyIndex];
                     
