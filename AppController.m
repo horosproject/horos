@@ -668,6 +668,22 @@ static NSDate *lastWarningDate = nil;
 
 @synthesize checkAllWindowsAreVisibleIsOff, filtersMenu, windowsTilingMenuRows, windowsTilingMenuColumns, isSessionInactive, dicomBonjourPublisher = BonjourDICOMService, XMLRPCServer;
 
++(BOOL) hasMacOSX1083orHigher
+{
+	OSErr err;
+	SInt32 osVersion;
+	
+	err = Gestalt ( gestaltSystemVersion, &osVersion );
+	if ( err == noErr)
+	{
+		if ( osVersion < 0x1083UL )
+		{
+			return NO;
+		}
+	}
+	return YES;
+}
+
 +(BOOL) hasMacOSXMountainLion
 {
 	OSErr err;
@@ -3415,8 +3431,216 @@ static BOOL initialized = NO;
 	[mutableDict writeToFile: [path stringByExpandingTildeInPath]  atomically: YES];
 }
 
+#define kIOPCIDevice                "IOPCIDevice"
+#define kIONameKey                  "IOName"
+#define kDisplayKey                 "display"
+#define kModelKey                   "model"
+#define kIntelGPUPrefix             @"Intel"
++ (NSArray *)getGPUNames
+{
+    NSMutableArray *GPUs = [NSMutableArray array];
+    
+    // The IOPCIDevice class includes display adapters/GPUs.
+    CFMutableDictionaryRef devices = IOServiceMatching(kIOPCIDevice);
+    io_iterator_t entryIterator;
+    
+    if (IOServiceGetMatchingServices(kIOMasterPortDefault, devices, &entryIterator) == kIOReturnSuccess) {
+        io_registry_entry_t device;
+        
+        while ((device = IOIteratorNext(entryIterator))) {
+            CFMutableDictionaryRef serviceDictionary;
+            
+            if (IORegistryEntryCreateCFProperties(device, &serviceDictionary, kCFAllocatorDefault, kNilOptions) != kIOReturnSuccess) {
+                // Couldn't get the properties for this service, so clean up and
+                // continue.
+                IOObjectRelease(device);
+                continue;
+            }
+            
+            const void *ioName = CFDictionaryGetValue(serviceDictionary, @kIONameKey);
+            
+            if (ioName) {
+                // If we have an IOName, and its value is "display", then we've
+                // got a "model" key, whose value is a CFDataRef that we can
+                // convert into a string.
+                if (CFGetTypeID(ioName) == CFStringGetTypeID() && CFStringCompare(ioName, CFSTR(kDisplayKey), kCFCompareCaseInsensitive) == kCFCompareEqualTo) {
+                    const void *model = CFDictionaryGetValue(serviceDictionary, @kModelKey);
+                    
+                    NSString *gpuName = [[[NSString alloc] initWithData:( NSData *)model
+                                                              encoding:NSASCIIStringEncoding] autorelease];
+                    
+                    [GPUs addObject:gpuName];
+                }
+            }
+            
+            CFRelease(serviceDictionary);
+        }
+    }
+    
+    return GPUs;
+}
+
+-(void)verifyHardwareInterpolation
+{
+    if( [AppController hasMacOSX1083orHigher]) // Intel 10.8.3 graphic bug
+    {
+        BOOL onlyIntelGraphicBoard = YES;
+        for( NSString *gpuName in [AppController getGPUNames])
+        {
+            if( [gpuName hasPrefix: kIntelGPUPrefix] == NO)
+                onlyIntelGraphicBoard = NO;
+        }
+        
+        if( onlyIntelGraphicBoard)
+        {
+            NSLog( @"**** 10.8.3 graphic board bug: only intel board discovered : No 32-bit pipeline available");
+            NSLog( @"%@", [AppController getGPUNames]);
+            
+            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"FULL32BITPIPELINE"];
+            return;
+        }
+    }
+    
+	NSUInteger size = 32, size2 = size*size;
+	
+	NSWindow* win = [[NSWindow alloc] initWithContentRect:NSMakeRect(0,0,size,size) styleMask:NSTitledWindowMask backing:NSBackingStoreBuffered defer:NO];
+	
+	long annotCopy = [[NSUserDefaults standardUserDefaults] integerForKey:@"ANNOTATIONS"];
+	long clutBarsCopy = [[NSUserDefaults standardUserDefaults] integerForKey:@"CLUTBARS"];
+	BOOL noInterpolationCopy = [[NSUserDefaults standardUserDefaults] boolForKey:@"NOINTERPOLATION"];
+	BOOL highQInterpolationCopy = [[NSUserDefaults standardUserDefaults] boolForKey:@"SOFTWAREINTERPOLATION"];
+	
+	float pixData[] = {0,1,1,0};
+	DCMPix* dcmPix = [[DCMPix alloc] initWithData:pixData :32 :2 :2 :1 :1 :0 :0 :0];
+	
+	CGLContextObj cgl_ctx;
+	float iwl, iww;
+	DCMView* dcmView;
+    unsigned char* planes[1];
+	unsigned char gray_2[size2];
+    unsigned char gray_1[size2];
+    
+	[[NSUserDefaults standardUserDefaults] setInteger:annotNone forKey:@"ANNOTATIONS"];
+	[[NSUserDefaults standardUserDefaults] setInteger:barHide forKey:@"CLUTBARS"];
+	
+	// pix 1: no interpolation
+    
+	[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"NOINTERPOLATION"];
+	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"SOFTWAREINTERPOLATION"];
+	[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"FULL32BITPIPELINE"];
+	
+	dcmView = [[DCMView alloc] initWithFrame:NSMakeRect(0, 0, size,size)];
+	[dcmView setPixels:[NSArray arrayWithObject:dcmPix] files:NULL rois:NULL firstImage:0 level:'i' reset:YES];
+	[dcmView setScaleValueCentered:size];
+	[win.contentView addSubview:dcmView];
+	[dcmView drawRect:NSMakeRect(0,0,size,size)];
+    
+    {
+        float o[ 9], imOrigin[ 3], imSpacing[ 2];
+        long width, height, spp, bpp;
+        
+        unsigned char *data = [dcmView getRawPixelsViewWidth: &width height: &height spp: &spp bpp: &bpp screenCapture: YES force8bits: YES removeGraphical: YES squarePixels: YES allowSmartCropping: NO origin: imOrigin spacing: imSpacing offset: nil isSigned: nil];
+        
+        assert( spp == 3);
+        
+        if( data)
+        {
+            for (int i = 0; i < size2; ++i)
+                gray_1[i] = (data[i*3]+data[i*3+1]+data[i*3+2])/3;
+            free( data);
+            
+//            planes[0] = gray_1;
+//            NSBitmapImageRep* representation = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:planes
+//                                                                                       pixelsWide:size pixelsHigh:size bitsPerSample:8
+//                                                                                  samplesPerPixel:1 hasAlpha:NO isPlanar:NO
+//                                                                                   colorSpaceName:NSCalibratedBlackColorSpace bytesPerRow:size
+//                                                                                     bitsPerPixel:8];
+//            [[representation TIFFRepresentation] writeToFile:@"/tmp/aaaaa1.tif" atomically:YES];
+//            [representation release];
+        }
+    }
+    
+	[dcmView removeFromSuperview];
+	[dcmView release];
+	
+	// pix 2: interpolation
+	
+	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"NOINTERPOLATION"];
+	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"SOFTWAREINTERPOLATION"];
+	[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"FULL32BITPIPELINE"];
+	dcmView = [[DCMView alloc] initWithFrame: NSMakeRect(0, 0, size,size)];
+	[dcmView setPixels:[NSArray arrayWithObject:dcmPix] files:NULL rois:NULL firstImage:0 level:'i' reset:YES];
+	[dcmView setScaleValueCentered:size];
+	[win.contentView addSubview:dcmView];
+	[dcmView drawRect:NSMakeRect(0,0,size,size)];
+	
+    {
+        float o[ 9], imOrigin[ 3], imSpacing[ 2];
+        long width, height, spp, bpp;
+        
+        unsigned char *data = [dcmView getRawPixelsViewWidth: &width height: &height spp: &spp bpp: &bpp screenCapture: YES force8bits: YES removeGraphical: YES squarePixels: YES allowSmartCropping: NO origin: imOrigin spacing: imSpacing offset: nil isSigned: nil];
+        
+        assert( spp == 3);
+        
+        if( data)
+        {
+            for (int i = 0; i < size2; ++i)
+                gray_1[i] = (data[i*3]+data[i*3+1]+data[i*3+2])/3;
+            free( data);
+            
+//            planes[0] = gray_1;
+//            NSBitmapImageRep* representation = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:planes
+//                                                                                       pixelsWide:size pixelsHigh:size bitsPerSample:8
+//                                                                                  samplesPerPixel:1 hasAlpha:NO isPlanar:NO
+//                                                                                   colorSpaceName:NSCalibratedBlackColorSpace bytesPerRow:size
+//                                                                                     bitsPerPixel:8];
+//            [[representation TIFFRepresentation] writeToFile:@"/tmp/aaaaa2.tif" atomically:YES];
+//            [representation release];
+        }
+    }
+	[dcmView removeFromSuperview];
+	[dcmView release];
+	
+	[win release];
+	[dcmPix release];
+	
+	
+	[[NSUserDefaults standardUserDefaults] setInteger: annotCopy forKey:@"ANNOTATIONS"];
+	[[NSUserDefaults standardUserDefaults] setInteger: clutBarsCopy forKey:@"CLUTBARS"];
+	[[NSUserDefaults standardUserDefaults] setBool: noInterpolationCopy forKey:@"NOINTERPOLATION"];
+	[[NSUserDefaults standardUserDefaults] setBool: highQInterpolationCopy forKey:@"SOFTWAREINTERPOLATION"];
+	
+	[DCMView setCLUTBARS:clutBarsCopy ANNOTATIONS:annotCopy];
+	
+	// eval results
+	
+	CGFloat delta = 0;
+	for (int i = 0; i < size2; ++i)
+		delta += fabsf((float)gray_1[i]-(float)gray_2[i]);
+	BOOL has32bitPipeline = delta > 1000; // we may want to raise this..
+	
+	if (has32bitPipeline)
+	{
+		NSLog( @"-- 32bit pipeline available : delta = %f", delta);
+		[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"hasFULL32BITPIPELINE"];
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"FULL32BITPIPELINE"];
+	}
+	else
+	{
+		NSLog( @"-- 32bit pipeline inactivated : delta = %f", delta);
+		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"hasFULL32BITPIPELINE"];
+		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"FULL32BITPIPELINE"];
+	}
+}
+
 - (void) applicationWillFinishLaunching: (NSNotification *) aNotification
 {
+    if( [NSDate timeIntervalSinceReferenceDate] - [[NSUserDefaults standardUserDefaults] doubleForKey: @"lastDate32bitPipelineCheck"] > 60L*60L*24L) // 1 days
+	{
+		[[NSUserDefaults standardUserDefaults] setDouble: [NSDate timeIntervalSinceReferenceDate] forKey: @"lastDate32bitPipelineCheck"];
+		[self verifyHardwareInterpolation];
+	}
+    
 	BOOL dialog = NO;
     
 	if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/"] == NO)

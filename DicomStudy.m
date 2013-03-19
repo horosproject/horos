@@ -992,26 +992,29 @@ static NSRecursiveLock *dbModifyLock = nil;
 				t.status = N2LocalizedSingularPluralCount( [[dict objectForKey: @"files"] count], NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil));
                 
 				[[ThreadsManager defaultManager] addThreadAndStart: t];
+            }
+        }
+        
+        if( [self.hasDICOM boolValue] == YES)
+        {
+            // Save as DICOM PDF
+            if( [[NSUserDefaults standardUserDefaults] boolForKey:@"generateDICOMPDFWhenValidated"] && [c intValue] == 4)
+            {
+                BOOL isMainDB = [self managedObjectContext] == [BrowserController currentBrowser].database.managedObjectContext;
                 
-                // Save as DICOM PDF
-                if( [[NSUserDefaults standardUserDefaults] boolForKey:@"generateDICOMPDFWhenValidated"] && [c intValue] == 4)
-                {
-                    BOOL isMainDB = [self managedObjectContext] == [BrowserController currentBrowser].database.managedObjectContext;
-                    
-                    NSString *filePath = isMainDB? [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"] : [[NSFileManager defaultManager] tmpFilePathInTmp];
-                    
-                    [self saveReportAsDicomAtPath: filePath];
-                    
-                    [BrowserController addFiles: [NSArray arrayWithObject: filePath]
-                                      toContext: [self managedObjectContext]
-                                     toDatabase: isMainDB? [BrowserController currentBrowser] : NULL
-                                      onlyDICOM: YES 
-                               notifyAddedFiles: YES
-                            parseExistingObject: YES
-                                       dbFolder: isMainDB? [[BrowserController currentBrowser] fixedDocumentsDirectory] : @"/tmp"
-                              generatedByOsiriX: YES];
-                }
-			}
+                NSString *filePath = isMainDB? [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"] : [[NSFileManager defaultManager] tmpFilePathInTmp];
+                
+                [self saveReportAsDicomAtPath: filePath];
+                
+                [BrowserController addFiles: [NSArray arrayWithObject: filePath]
+                                  toContext: [self managedObjectContext]
+                                 toDatabase: isMainDB? [BrowserController currentBrowser] : NULL
+                                  onlyDICOM: YES 
+                           notifyAddedFiles: YES
+                        parseExistingObject: YES
+                                   dbFolder: isMainDB? [[BrowserController currentBrowser] fixedDocumentsDirectory] : @"/tmp"
+                          generatedByOsiriX: YES];
+            }
 		}
 	}
 	@catch (NSException * e) 

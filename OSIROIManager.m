@@ -26,7 +26,11 @@
 #import "OSIVolumeWindow+Private.h"
 
 
-NSString* const OSIROIManagerROIsDidUpdateNotification = @"OSIROIManagerROIsDidUpdateNotification"; 
+NSString* const OSIROIManagerROIsDidUpdateNotification = @"OSIROIManagerROIsDidUpdateNotification";
+
+NSString* const OSIROIUpdatedROIKey = @"OSIROIUpdatedROIKey";
+NSString* const OSIROIRemovedROIKey = @"OSIROIRemovedROIKey";
+NSString* const OSIROIAddedROIKey = @"OSIROIAddedROIKey";
 
 @interface OSIROIManager ()
 
@@ -355,6 +359,8 @@ NSString* const OSIROIManagerROIsDidUpdateNotification = @"OSIROIManagerROIsDidU
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
 	_rebuildingROIs = YES;
+    
+    NSArray *oldOSIROIs = [NSArray arrayWithArray:_OSIROIs];
 	
 	[self willChangeValueForKey:@"ROIs"];
 	[_OSIROIs removeAllObjects];
@@ -368,7 +374,10 @@ NSString* const OSIROIManagerROIsDidUpdateNotification = @"OSIROIManagerROIsDidU
     
     [_watchedROIs addObjectsFromArray:watchedROIs];
     
-	[[NSNotificationCenter defaultCenter] postNotificationName:OSIROIManagerROIsDidUpdateNotification object:self];
+    NSDictionary *userInfoDict = [NSDictionary dictionaryWithObjectsAndKeys:oldOSIROIs, OSIROIRemovedROIKey,
+                                  _OSIROIs, OSIROIAddedROIKey, [NSArray array], OSIROIUpdatedROIKey, nil];
+    
+	[[NSNotificationCenter defaultCenter] postNotificationName:OSIROIManagerROIsDidUpdateNotification object:self userInfo:userInfoDict];
 	
 	_rebuildingROIs = NO;
 	[pool release];
@@ -484,7 +493,11 @@ NSString* const OSIROIManagerROIsDidUpdateNotification = @"OSIROIManagerROIsDidU
     [self willChangeValueForKey:@"ROIs"];
     [_addedOSIROIs addObject:roi];
 	[self didChangeValueForKey:@"ROIs"];
-	[[NSNotificationCenter defaultCenter] postNotificationName:OSIROIManagerROIsDidUpdateNotification object:self];
+    
+    NSDictionary *userInfoDict = [NSDictionary dictionaryWithObjectsAndKeys:[NSArray array], OSIROIRemovedROIKey,
+                                  [NSArray arrayWithObject:roi], OSIROIAddedROIKey, [NSArray array], OSIROIUpdatedROIKey, nil];
+    
+	[[NSNotificationCenter defaultCenter] postNotificationName:OSIROIManagerROIsDidUpdateNotification object:self userInfo:userInfoDict];
     [_volumeWindow setNeedsDisplay];
 }
 
@@ -493,6 +506,13 @@ NSString* const OSIROIManagerROIsDidUpdateNotification = @"OSIROIManagerROIsDidU
     [self willChangeValueForKey:@"ROIs"];
     [_addedOSIROIs removeObject:roi];
 	[self didChangeValueForKey:@"ROIs"];
+    
+    NSDictionary *userInfoDict = [NSDictionary dictionaryWithObjectsAndKeys:[NSArray arrayWithObject:roi], OSIROIRemovedROIKey,
+                                  [NSArray array], OSIROIAddedROIKey, [NSArray array], OSIROIUpdatedROIKey, nil];
+    
+	[[NSNotificationCenter defaultCenter] postNotificationName:OSIROIManagerROIsDidUpdateNotification object:self userInfo:userInfoDict];
+
+    
 	[[NSNotificationCenter defaultCenter] postNotificationName:OSIROIManagerROIsDidUpdateNotification object:self];
     [_volumeWindow setNeedsDisplay];
 }

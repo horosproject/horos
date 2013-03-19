@@ -368,6 +368,13 @@
 #pragma mark -
 #pragma mark Drawing
 
+- (void) drawAtPoint: (NSPoint) p view:(NSView*) view
+{
+    NSRect r = NSMakeRect( p.x, p.y, [view convertSizeToBacking: [self frameSize]].width, [view convertSizeToBacking: [self frameSize]].height);
+    
+    [self drawWithBounds: r];
+}
+
 - (void) drawWithBounds:(NSRect)bounds
 {
 	if (requiresUpdate)

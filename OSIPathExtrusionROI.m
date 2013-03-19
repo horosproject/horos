@@ -108,6 +108,8 @@
 	CGFloat minY;
 	CGFloat maxY;
 	CGFloat z;
+	CGFloat minZ;
+	CGFloat maxZ;
 	BOOL zSet;
 	NSValue *vectorValue;
 	NSNumber *number;
@@ -116,8 +118,10 @@
 	NSInteger runStart;
 	NSInteger runEnd;
 	
+    OSISlab transformedSlab = OSISlabApplyTransform(self.slab, floatVolume.volumeTransform);
+    
     // make sure floatVolume's z direction is perpendicular to the plane
-    assert(N3VectorLength(N3VectorCrossProduct(N3VectorApplyTransformToDirectionalVector(self.slab.plane.normal, floatVolume.volumeTransform), N3VectorMake(0, 0, 1))) < 0.01);
+    assert(N3VectorLength(N3VectorCrossProduct(transformedSlab.plane.normal, N3VectorMake(0, 0, 1))) < 0.01);
     
 	volumeBezierPath = [[self.path mutableCopy] autorelease];
     [volumeBezierPath applyAffineTransform:N3AffineTransformConcat(floatVolume.volumeTransform, N3AffineTransformMakeTranslation(0, -.5, 0))];
@@ -183,7 +187,15 @@
 			if (runEnd > runStart) {
 				maskRun.widthRange = NSMakeRange(runStart, runEnd - runStart);
                 OSIROIMaskRun maskRunCopy = maskRun;
-                for (z = 0; z < floatVolume.pixelsDeep; z++) {
+                // look extrude out to the slab
+#if CGFLOAT_IS_DOUBLE
+                minZ = MAX(round(transformedSlab.plane.point.z-transformedSlab.thickness/2.0), 0);
+                maxZ = MIN(round(transformedSlab.plane.point.z+transformedSlab.thickness/2.0), floatVolume.pixelsDeep - 1);
+#else
+                minZ = MAX(roundf(transformedSlab.plane.point.z-transformedSlab.thickness/2.0f), 0);
+                maxZ = MIN(roundf(transformedSlab.plane.point.z+transformedSlab.thickness/2.0f), floatVolume.pixelsDeep - 1);
+#endif
+                for (z = minZ; z <= maxZ; z++) {
                     maskRunCopy.depthIndex = z;
                     [ROIRuns addObject:[NSValue valueWithOSIROIMaskRun:maskRunCopy]];
                 }

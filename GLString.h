@@ -107,6 +107,7 @@
 
 - (void) genTexture; // generates the texture without drawing texture to current context
 - (void) drawWithBounds:(NSRect)bounds; // will update the texture if required due to change in settings (note context should be setup to be orthographic scaled to per pixel scale)
+- (void) drawAtPoint: (NSPoint) p view:(NSView*) view;
 
 - (void) setString:(NSAttributedString *)attributedString; // set string after initial creation
 - (void) setString:(NSString *)aString withAttributes:(NSDictionary *)attribs; // set string after initial creation

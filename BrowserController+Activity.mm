@@ -26,7 +26,7 @@
 #import "AppController.h"
 #import "N2Debug.h"
 
-@interface BrowserActivityHelper : NSObject {
+@interface BrowserActivityHelper : NSObject <NSTableViewDataSource> {
 	BrowserController* _browser;
 	NSMutableArray* _cells;
 }
@@ -38,61 +38,18 @@
 
 @implementation BrowserController (Activity)
 
--(void)awakeActivity {
-//	tableView = [BrowserController currentBrowser]._activityTableView;
-//	statusLabel = [BrowserController currentBrowser]._activityTableView;
-	
-	
+-(void)awakeActivity
+{
 	_activityHelper = [[BrowserActivityHelper alloc] initWithBrowser:self];
 	[_activityTableView setDelegate: _activityHelper];
+    [_activityTableView setDataSource: _activityHelper];
 	
-
-//	_manager = [manager retain];
-	
-//	AupdateStatsThread = [[NSThread alloc] initWithTarget:self selector:@selector(updateStatsThread:) object:NULL];
-//	[AupdateStatsThread start];
-
-	[_activityTableView bind:@"content" toObject:[ThreadsManager defaultManager].threadsController withKeyPath:@"arrangedObjects" options:NULL];
-	[[_activityTableView tableColumnWithIdentifier:@"all"] bind:@"value" toObject:[ThreadsManager defaultManager].threadsController withKeyPath:@"arrangedObjects" options:NULL];
-	
-	
-	
-	
-	//[NSThread detachNewThreadSelector:@selector(testThread_creator:) toTarget:self withObject:NULL];
+//	[_activityTableView bind:@"content" toObject:[ThreadsManager defaultManager].threadsController withKeyPath:@"arrangedObjects" options:NULL];
+//	[[_activityTableView tableColumnWithIdentifier:@"all"] bind:@"value" toObject:[ThreadsManager defaultManager].threadsController withKeyPath:@"arrangedObjects" options:NULL];
 }
 
-/*-(void)testThread_creator:(id)t {
-	NSAutoreleasePool* pool = [NSAutoreleasePool new];
-	
-	[[ThreadsManager defaultManager] addThreadAndStart:[NSThread currentThread]];
-	[NSThread currentThread].name = @"CreatorZ joinZyX";
-	[[NSThread currentThread] setSupportsCancel:YES];
-	int c = 0;
-	while (YES) { // ![[NSThread currentThread] isCancelled]
-		c++;
-		[NSThread detachNewThreadSelector:@selector(testThread_dummy:) toTarget:self withObject:NULL];
-		[[NSThread currentThread] setStatus:[NSString stringWithFormat:@"So far, I jungled %d threads..", c]];
-		[NSThread sleepForTimeInterval:CGFloat(random()%1000)/1000*2];
-	}
-	
-	[pool release];
-}
-
--(void)testThread_dummy:(id)obj {
-	NSAutoreleasePool* pool = [NSAutoreleasePool new];
-
-	[[ThreadsManager defaultManager] addThreadAndStart:[NSThread currentThread]];
-	[NSThread sleepForTimeInterval:0.5];
-	
-	[pool release];
-}*/
-
-
-
--(void)deallocActivity {
-//	[AupdateStatsThread cancel];
-//	[AupdateStatsThread release];
-	
+-(void)deallocActivity
+{
 	[[ThreadsManager defaultManager] removeObserver:_activityHelper forKeyPath:@"threads"];
 	[_activityHelper release];
 	
@@ -141,9 +98,12 @@ static NSString* const BrowserActivityHelperContext = @"BrowserActivityHelperCon
 }
 
 -(NSCell*)cellForThread:(NSThread*)thread {
-	for (ThreadCell* cell in _cells)
-		if (cell.thread == thread)
-			return cell;
+    
+    @synchronized (ThreadsManager.defaultManager.threadsController) {
+        for (ThreadCell* cell in _cells)
+            if (cell.thread == thread)
+                return cell;
+    }
 	return nil;
 }
 
@@ -172,15 +132,34 @@ static NSString* const BrowserActivityHelperContext = @"BrowserActivityHelperCon
                     [cell cleanup];
                     [cell retain];
                     [cellsToRemove addObject:cell];
+                    
+                    [NSObject cancelPreviousPerformRequestsWithTarget: cell selector: @selector( autorelease) object: nil];
                     [cell performSelector: @selector( autorelease) withObject: nil afterDelay: 60]; //Yea... I know... not very nice, but avoid a zombie crash, if a thread is cancelled (GUI) AFTER released here...
                 }
             }
             
+            BOOL needToReloadData = NO;
+            
             if( cellsToRemove.count)
             {
                 [_cells removeObjectsInArray: cellsToRemove];
-                [_browser._activityTableView reloadData];
+                needToReloadData = YES;
             }
+            
+            // Check for new added threads
+            for (NSThread *thread in object.arrangedObjects)
+            {
+                id cell = [self cellForThread: thread];
+                if (cell == nil)
+                {
+                    [_cells addObject: [[[ThreadCell alloc] initWithThread:thread manager:ThreadsManager.defaultManager view:_browser._activityTableView] autorelease]];
+                    needToReloadData = YES;
+                }
+            }
+            
+            if( needToReloadData)
+                [_browser._activityTableView reloadData];
+            
             return;
         }
 	}
@@ -189,19 +168,27 @@ static NSString* const BrowserActivityHelperContext = @"BrowserActivityHelperCon
 }
 
 -(NSCell*)tableView:(NSTableView*)tableView dataCellForTableColumn:(NSTableColumn*)tableColumn row:(NSInteger)row {
-	@try {
-        @synchronized (ThreadsManager.defaultManager.threadsController) {
-            id cell = [self cellForThread: [[ThreadsManager defaultManager] threadAtIndex:row]];
-            if (cell == nil) {
-                [_cells addObject: cell = [[[ThreadCell alloc] initWithThread:[[ThreadsManager defaultManager] threadAtIndex:row] manager:ThreadsManager.defaultManager view:_browser._activityTableView] autorelease]];
-            }
-            
-            return cell;
+	@try
+    {
+        @synchronized (ThreadsManager.defaultManager.threadsController)
+        {
+            id cell = [[_cells objectAtIndex: row] retain];
+            return [cell autorelease];
         }
-    } @catch (...) {
+    }
+    @catch (...) {
 	}
 	
 	return NULL;
+}
+
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView
+{
+    @synchronized (ThreadsManager.defaultManager.threadsController) {
+        return _cells.count;
+    }
+    
+    return 0;
 }
 
 -(void)tableView:(NSTableView*)tableView willDisplayCell:(ThreadCell*)cell forTableColumn:(NSTableColumn*)tableColumn row:(NSInteger)row {

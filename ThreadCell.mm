@@ -32,8 +32,8 @@
 -(id)initWithThread:(NSThread*)thread manager:(ThreadsManager*)manager view:(NSTableView*)view {
 	self = [super init];
     
-	_view = [view retain];
-	_manager = [manager retain];
+	_view = view;
+	_manager = manager;
 	
 	_progressIndicator = [[NSProgressIndicator alloc] initWithFrame:NSZeroRect];
 	[_progressIndicator setUsesThreadedAnimation:YES];
@@ -71,6 +71,9 @@
         [_cancelButton removeFromSuperview];
         [_cancelButton autorelease]; _cancelButton = nil;
         
+        [self.view reloadData];
+        [self.view setNeedsDisplay: YES];
+        
         if( KVOObserving)
         {
             [_thread removeObserver:self forKeyPath:NSThreadSupportsCancelKey];
@@ -89,9 +92,6 @@
     [_thread autorelease];
     [_retainedThreadDictionary autorelease];
     
-	[_view release];
-	[_manager release];
-	
 	[super dealloc];
 }
 
@@ -124,12 +124,15 @@
         {
             _retainedThreadDictionary = [_thread.threadDictionary retain];
             
-            [_thread addObserver:self forKeyPath:NSThreadIsCancelledKey options:NSKeyValueObservingOptionInitial context:NULL];
-            [_thread addObserver:self forKeyPath:NSThreadStatusKey options:NSKeyValueObservingOptionInitial context:NULL];
-            [_thread addObserver:self forKeyPath:NSThreadProgressKey options:NSKeyValueObservingOptionInitial context:NULL];
-            [_thread addObserver:self forKeyPath:NSThreadSupportsCancelKey options:NSKeyValueObservingOptionInitial context:NULL];
-            
-            KVOObserving = YES;
+            if( _retainedThreadDictionary)
+            {
+                [_thread addObserver:self forKeyPath:NSThreadIsCancelledKey options:NSKeyValueObservingOptionInitial context:NULL];
+                [_thread addObserver:self forKeyPath:NSThreadStatusKey options:NSKeyValueObservingOptionInitial context:NULL];
+                [_thread addObserver:self forKeyPath:NSThreadProgressKey options:NSKeyValueObservingOptionInitial context:NULL];
+                [_thread addObserver:self forKeyPath:NSThreadSupportsCancelKey options:NSKeyValueObservingOptionInitial context:NULL];
+                
+                KVOObserving = YES;
+            }
         }
     }
 }
@@ -144,6 +147,9 @@
     {
         @synchronized( _thread)
         {
+            if( _thread.isFinished)
+                return;
+            
             if( _retainedThreadDictionary != _thread.threadDictionary)
                 return;
         }

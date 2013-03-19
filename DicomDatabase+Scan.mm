@@ -613,46 +613,45 @@ static NSString* _dcmElementKey(DcmElement* element) {
             
             [paths removeDuplicatedStrings];
             
+            thread.supportsCancel = YES;
+            
             NSThread* copyFilesThread = [NSThread performBlockInBackground:^{
                 NSThread* cft = [NSThread currentThread];
                 cft.name = NSLocalizedString(@"Importing images from media...", nil);
-                cft.supportsCancel = YES;
-                [ThreadsManager.defaultManager removeThread:thread];
-                [ThreadsManager.defaultManager addThreadAndStart:cft];
-                
-                int progress = 0;
-                thread.progress = 0;
                 
                 [DicomDatabase.activeLocalDatabase.independentDatabase performSelector:@selector(copyFilesThread:)
                                                                             withObject:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                                                            paths, @"filesInput",
-                                                                                            [NSNumber numberWithBool:YES], @"mountedVolume",
-                                                                                            [NSNumber numberWithBool:YES], @"copyFiles",
-                                                                                            [NSNumber numberWithBool: YES], @"addToAlbum",
-                                                                                            [NSNumber numberWithBool: YES], @"selectStudy",
+                                                                                        paths, @"filesInput",
+                                                                                        [NSNumber numberWithBool:YES], @"mountedVolume",
+                                                                                        [NSNumber numberWithBool:YES], @"copyFiles",
+                                                                                        [NSNumber numberWithBool: YES], @"addToAlbum",
+                                                                                        [NSNumber numberWithBool: YES], @"selectStudy",
                                                                                         NULL]];
-                
-                [ThreadsManager.defaultManager removeThread:cft];
-                [ThreadsManager.defaultManager addThreadAndStart:thread];
             }];
             
-            while (copyFilesThread.isExecuting) {
+            while (copyFilesThread.isExecuting)
+            {
                 if (thread.isCancelled && !copyFilesThread.isCancelled)
                     [copyFilesThread cancel];
+                else
+                {
+                    if( [thread.status isEqualToString: copyFilesThread.status] == NO)
+                        thread.status = copyFilesThread.status;
+                    
+                    if( [thread.name isEqualToString: copyFilesThread.name] == NO)
+                        thread.name = copyFilesThread.name;
+                    
+                    if( thread.progress != copyFilesThread.progress)
+                        thread.progress = copyFilesThread.progress;
+                }
+                
                 [NSThread sleepForTimeInterval:0.1];
             }
             
-            /*for (NSString* frompath in paths) {
-                NSString* topath = nil;
-                int i = 0;
-                do {
-                    topath = [db.incomingDirPath stringByAppendingPathComponent:[frompath lastPathComponent]];
-                } while ([NSFileManager.defaultManager fileExistsAtPath:topath]);
-                
-                [NSFileManager.defaultManager copyItemAtPath:frompath toPath:topath error:NULL];
-
-                thread.progress = CGFloat(++progress)/paths.count;
-            }*/
+            thread.supportsCancel = NO;
+            
+            while (copyFilesThread.isExecuting)
+                [NSThread sleepForTimeInterval:0.1];
             
             if (isVolume && [NSUserDefaults.standardUserDefaults boolForKey:@"CDDVDEjectAfterAutoCopy"] && ![copyFilesThread isCancelled]) {
                 thread.status = NSLocalizedString(@"Ejecting...", nil);

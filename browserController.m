@@ -10336,7 +10336,8 @@ static BOOL needToRezoom;
                 [self setSearchString: nil];
                 
                 // Clear the time interval
-                [self setTimeIntervalType: 0];
+                if( [[[CustomIntervalPanel sharedCustomIntervalPanel] window] isVisible] == NO)
+                    [self setTimeIntervalType: 0];
             }
             else
                 [self setSearchString: self.searchString];

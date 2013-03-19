@@ -359,6 +359,12 @@ class DiInputPixelTemplate
         const Uint32 length_T1 = length_Bytes / sizeof(T1);
         Count = ((length_Bytes * 8) + bitsAllocated - 1) / bitsAllocated;
         register unsigned int i;
+        
+        /* need to split 'length' in order to avoid integer overflow for large pixel data */
+        const Uint32 length_B1 = length_Bytes / bitsAllocated;
+        const Uint32 length_B2 = length_Bytes % bitsAllocated;
+        Count = 8 * length_B1 + (8 * length_B2 + bitsAllocated - 1) / bitsAllocated;
+        
         Data = new T2[Count];
         if (Data != NULL)
         {

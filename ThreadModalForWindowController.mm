@@ -42,7 +42,8 @@ NSString* const NSThreadModalForWindowControllerKey = @"ThreadModalForWindowCont
 	_thread = [thread retain];
     _isValid = YES;
     _lastDisplayedProgress = -1;
-    [(_retainedThreadDictionary = thread.threadDictionary) retain];
+    _retainedThreadDictionary = [thread.threadDictionary retain];
+    
 	[thread.threadDictionary setObject:self forKey:NSThreadModalForWindowControllerKey];
     
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(threadWillExitNotification:) name:NSThreadWillExitNotification object:_thread];

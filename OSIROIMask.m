@@ -128,6 +128,12 @@ NSArray *OSIROIMaskIndexesInRun(OSIROIMaskRun maskRun)
 
 @implementation OSIROIMask
 
++ (id)ROIMask
+{
+    return [[[[self class] alloc] init] autorelease];
+}
+
+
 + (id)ROIMaskFromVolumeData:(OSIFloatVolumeData *)floatVolumeData
 {
     NSInteger i;
@@ -183,10 +189,27 @@ NSArray *OSIROIMaskIndexesInRun(OSIROIMaskRun maskRun)
     return [[[[self class] alloc] initWithMaskRuns:maskRuns] autorelease];    
 }
 
+- (id)init
+{
+	if ( (self = [super init]) ) {
+		_maskRuns = [[NSArray alloc] init];
+	}
+	return self;
+}
+
 - (id)initWithMaskRuns:(NSArray *)maskRuns
 {
 	if ( (self = [super init]) ) {
-		_maskRuns = [[maskRuns sortedArrayUsingFunction:OSIROIMaskCompareRunValues context:NULL] copy];
+		_maskRuns = [[maskRuns sortedArrayUsingFunction:OSIROIMaskCompareRunValues context:NULL] retain];
+        [self checkdebug];
+	}
+	return self;
+}
+
+- (id)initWithSortedMaskRuns:(NSArray *)maskRuns
+{
+	if ( (self = [super init]) ) {
+		_maskRuns = [maskRuns retain];
         [self checkdebug];
 	}
 	return self;
@@ -225,7 +248,7 @@ NSArray *OSIROIMaskIndexesInRun(OSIROIMaskRun maskRun)
         [newMaskRuns addObject:[NSValue valueWithOSIROIMaskRun:maskRun]];
     }
     
-    return [[[[self class] alloc] initWithMaskRuns:newMaskRuns] autorelease];
+    return [[[[self class] alloc] initWithSortedMaskRuns:newMaskRuns] autorelease];
 }
 
 - (OSIROIMask *)ROIMaskByIntersectingWithMask:(OSIROIMask *)otherMask
@@ -286,7 +309,7 @@ NSArray *OSIROIMaskIndexesInRun(OSIROIMaskRun maskRun)
         [resultMaskRuns addObject:[NSValue valueWithOSIROIMaskRun:accumulatedRun]];
     }
     
-    return [[[OSIROIMask alloc] initWithMaskRuns:resultMaskRuns] autorelease];
+    return [[[OSIROIMask alloc] initWithSortedMaskRuns:resultMaskRuns] autorelease];
 }
 
 
@@ -364,8 +387,24 @@ NSArray *OSIROIMaskIndexesInRun(OSIROIMaskRun maskRun)
         [templateRunStack popMaskRun];
     }
 
-    return [[[OSIROIMask alloc] initWithMaskRuns:resultMaskRuns] autorelease];
+    return [[[OSIROIMask alloc] initWithSortedMaskRuns:resultMaskRuns] autorelease];
 }
+
+- (BOOL)intersectsMask:(OSIROIMask *)otherMask // probably could use a faster implementation...
+{
+    OSIROIMask *intersection = [self ROIMaskByIntersectingWithMask:otherMask];
+    return [intersection maskRunCount] > 0;
+}
+
+- (BOOL)isEqualToMask:(OSIROIMask *)otherMask // super lazy implementation FIXME!
+{
+    OSIROIMask *intersection = [self ROIMaskByIntersectingWithMask:otherMask];
+    OSIROIMask *subMask1 = [self ROIMaskBySubtractingMask:intersection];
+    OSIROIMask *subMask2 = [otherMask ROIMaskBySubtractingMask:intersection];
+    
+    return [subMask1 maskRunCount] == 0 && [subMask2 maskRunCount] == 0;
+}
+
 
 - (OSIROIMask *)filteredROIMaskUsingPredicate:(NSPredicate *)predicate floatVolumeData:(OSIFloatVolumeData *)floatVolumeData
 {
@@ -415,7 +454,7 @@ NSArray *OSIROIMaskIndexesInRun(OSIROIMaskRun maskRun)
         }
     }
     
-    OSIROIMask *filteredMask = [[[OSIROIMask alloc] initWithMaskRuns:newMaskArray] autorelease];
+    OSIROIMask *filteredMask = [[[OSIROIMask alloc] initWithSortedMaskRuns:newMaskArray] autorelease];
     [filteredMask checkdebug];
     return filteredMask;
 }
