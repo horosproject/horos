@@ -19,6 +19,7 @@
 @property(nonatomic) BOOL dbMode;
 
 - (BOOL)matchForPredicate:(NSPredicate*)p;
+- (BOOL)reallyMatchForPredicate:(NSPredicate*)predicate;
 
 @end
 

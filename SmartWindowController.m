@@ -58,7 +58,7 @@
         return [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     
     if (object == self && [keyPath isEqualToString:@"predicate"])
-        if (self.predicate && ![self.editor matchForPredicate:self.predicate])
+        if (self.predicate && ![self.editor reallyMatchForPredicate:self.predicate])
             self.mode = 1;
 }
 

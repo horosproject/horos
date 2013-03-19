@@ -18,6 +18,14 @@
 
 @end
 
+@interface O2DicomPredicateEditorCompoundRowTemplate : NSPredicateEditorRowTemplate {
+    NSArray* _subtemplates;
+}
+
+- (id)initWithSubtemplates:(NSArray*)subtemplates;
+
+@end
+
 
 @interface O2DicomPredicateEditor ()
 
@@ -60,8 +68,8 @@
         return;
     
     self.rowTemplates = [NSArray arrayWithObjects:
-                         [[NSPredicateEditorRowTemplate alloc] initWithCompoundTypes:[NSArray arrayWithObjects: [NSNumber numberWithUnsignedInteger:NSAndPredicateType], [NSNumber numberWithUnsignedInteger:NSOrPredicateType], nil]],
                          _dpert = [[[O2DicomPredicateEditorRowTemplate alloc] init] autorelease],
+                         [[[O2DicomPredicateEditorCompoundRowTemplate alloc] initWithSubtemplates:[NSArray arrayWithObject:_dpert]] autorelease],
                          nil];
     
     _inited = YES;
@@ -91,7 +99,10 @@
     }
 }
 
-+ (id)regroupedPredicate:(id)p {
+- (id)regroupedPredicate:(id)p {\
+    if ([_dpert matchForPredicate:p])
+        p = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObject:p]];
+
     if ([p isKindOfClass:[NSCompoundPredicate class]]) {
         NSMutableDictionary* d = [NSMutableDictionary dictionary];
         NSMutableArray* a = [NSMutableArray array];
@@ -111,10 +122,15 @@
             if (![[a objectAtIndex:i] isKindOfClass:[NSPredicate class]]) {
                 NSArray* pka = [d objectForKey:[a objectAtIndex:i]];
                 id np;
-                if (pka.count == 1)
+                if (pka.count == 1) {
                     np = [pka lastObject];
-                else np = [NSCompoundPredicate andPredicateWithSubpredicates:pka];
-                [a replaceObjectAtIndex:i withObject:np];
+                    [a replaceObjectAtIndex:i withObject:np];
+                } else {
+                    np = [NSCompoundPredicate andPredicateWithSubpredicates:pka];
+                    if ([_dpert matchForPredicate:np])
+                        [a replaceObjectAtIndex:i withObject:np];
+                    else [a replaceObjectsInRange:NSMakeRange(i,1) withObjectsFromArray:pka];
+                }
             }
         
         p = [[[NSCompoundPredicate alloc] initWithType:[p compoundPredicateType] subpredicates:a] autorelease];
@@ -127,13 +143,10 @@
     if (_backbinding)
         return;
     
-    if ([_dpert matchForPredicate:value])
-        value = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObject:value]];
-    
     [self initDicomPredicateEditor]; // weird, this is needed: bindings are assigned before initWithFrame: or awakeFromNib...
     
     // try grouping conditions on the same keys in separate compounds
-    value = [[self class] regroupedPredicate:value];
+    value = [self regroupedPredicate:value];
 
     _setting = YES;
     @try {
@@ -166,23 +179,34 @@
 }
 
 - (BOOL)matchForPredicate:(id)p {
-//    NSArray* s = nil;
-//    if ([p isKindOfClass:[NSCompoundPredicate class]])
-//        s = [p subpredicates];
-//    else s = [NSArray arrayWithObject:p];
-//    
-//    for (NSPredicate* p in s) {
-        BOOL ok = NO;
-        for (NSPredicateEditorRowTemplate* rt in self.rowTemplates)
-            if ([rt matchForPredicate:p]) {
-                ok = YES;
-                break;
-            }
-        if (!ok)
-            return NO;
-//    }
+    p = [self regroupedPredicate:p];
     
-    return YES;
+    BOOL ok = NO;
+    for (NSPredicateEditorRowTemplate* rt in self.rowTemplates)
+        if ([rt matchForPredicate:p]) {
+            ok = YES;
+            break;
+        }
+    
+    return ok;
+}
+
+- (BOOL)reallyMatchForPredicate:(NSPredicate*)p {
+    p = [self regroupedPredicate:p];
+    
+    BOOL ok = NO;
+    for (id rt in self.rowTemplates) {
+        if ([rt respondsToSelector:@selector(reallyMatchForPredicate:)])
+            if ([rt reallyMatchForPredicate:p])
+                ok = YES;
+        
+        if ((rmfp && [rt reallyMatchForPredicate:p]) || (!rmfp && [(NSPredicateEditorRowTemplate*)rt matchForPredicate:p])) {
+            ok = YES;
+            break;
+        }
+    }
+    
+    return ok;
 }
 
 @end
@@ -226,3 +250,45 @@
 }
 
 @end
+
+
+
+
+@implementation O2DicomPredicateEditorCompoundRowTemplate
+
+- (id)initWithSubtemplates:(NSArray*)subtemplates {
+    if ((self = [super initWithCompoundTypes:[NSArray arrayWithObjects: [NSNumber numberWithUnsignedInteger:NSAndPredicateType], [NSNumber numberWithUnsignedInteger:NSOrPredicateType], nil]])) {
+        _subtemplates = [subtemplates retain];
+    }
+    
+    return self;
+}
+
+- (void)dealloc {
+    [_subtemplates release];
+    [super dealloc];
+}
+
+- (double)reallyMatchForPredicate:(id)predicate {
+    double r = [super matchForPredicate:predicate];
+    
+    if (r) { // super says we can show this, but can we ?
+        for (id subpredicate in [predicate subpredicates]) {
+            BOOL ok = NO;
+            for (NSPredicateEditorRowTemplate* rt in _subtemplates)
+                if ([rt matchForPredicate:subpredicate]) {
+                    ok = YES;
+                    break;
+                }
+            if (!ok)
+                return 0;
+        }
+    }
+    
+    return r;
+}
+
+
+@end
+
+
