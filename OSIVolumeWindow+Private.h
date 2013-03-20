@@ -22,6 +22,9 @@
 
 - (id)initWithViewerController:(ViewerController *)viewerController;
 - (void)viewerControllerDidClose;
+- (void)viewerControllerWillChangeData;
+- (void)viewerControllerDidChangeData;
+
 - (void)drawInDCMView:(DCMView *)dcmView;
 - (void)setNeedsDisplay;
 

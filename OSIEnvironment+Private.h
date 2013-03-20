@@ -23,6 +23,9 @@
 - (void)addViewerController:(ViewerController *)viewerController;
 - (void)removeViewerController:(ViewerController *)viewerController;
 
+- (void)viewerControllerWillChangeData:(ViewerController *)viewerController;
+- (void)viewerControllerDidChangeData:(ViewerController *)viewerController;
+
 - (void)drawDCMView:(DCMView *)dcmView;
 
 @end

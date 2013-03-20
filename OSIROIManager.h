@@ -76,6 +76,11 @@ extern NSString* const OSIROIAddedROIKey;
  */
 @property (nonatomic, readwrite, assign) id <OSIROIManagerDelegate> delegate;
 
+/** The OSIVolumeWindow to which this ROIManager is attached.
+  
+ */
+@property (nonatomic, readonly, retain) OSIVolumeWindow* volumeWindow;
+
 ///-----------------------------------
 /// @name Creating ROI Managers
 ///-----------------------------------
