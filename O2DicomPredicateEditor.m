@@ -23,6 +23,7 @@
 }
 
 - (id)initWithSubtemplates:(NSArray*)subtemplates;
+- (double)reallyMatchForPredicate:(id)predicate;
 
 @end
 
@@ -194,19 +195,16 @@
 - (BOOL)reallyMatchForPredicate:(NSPredicate*)p {
     p = [self regroupedPredicate:p];
     
-    BOOL ok = NO;
     for (id rt in self.rowTemplates) {
+        double rtok = 0;
         if ([rt respondsToSelector:@selector(reallyMatchForPredicate:)])
-            if ([rt reallyMatchForPredicate:p])
-                ok = YES;
-        
-        if ((rmfp && [rt reallyMatchForPredicate:p]) || (!rmfp && [(NSPredicateEditorRowTemplate*)rt matchForPredicate:p])) {
-            ok = YES;
-            break;
-        }
+            rtok = [(O2DicomPredicateEditorCompoundRowTemplate*)rt reallyMatchForPredicate:p];
+        else rtok = [(NSPredicateEditorRowTemplate*)rt matchForPredicate:p];
+        if (rtok > 0)
+            return YES;
     }
     
-    return ok;
+    return NO;
 }
 
 @end
