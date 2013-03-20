@@ -80,74 +80,74 @@ extern "C"
 
 @synthesize autoQuery, autoQueryLock, outlineView, DatabaseIsEdited, currentAutoQR, authView;
 
-//+ (void) queryTest: (NSDictionary*) aServer
-//{
-//    NSMutableDictionary *months = [NSMutableDictionary dictionary];
-//    
-//    for( int i = 0 ; i < 12; i++)
-//        [months setObject: [NSMutableDictionary dictionary] forKey: [NSString stringWithFormat: @"%d", i+1]];
-//    
-//    QueryArrayController *qm = nil;
-//	NSArray *array = nil;
-//	
-//    NSCalendarDate *date = [NSCalendarDate dateWithYear: 2011 month: 1 day: 1 hour: 0 minute: 0 second: 1 timeZone: nil];
-//    
-//    for( int i = 0; i < 365; i++)
-//    {
-//        [NSThread sleepForTimeInterval: 0.1];
-//        
-//        BOOL succeed = NO;
-//        while( succeed == NO)
-//        {
-//            @try
-//            {
-//                qm = [[[QueryArrayController alloc] initWithCallingAET:[NSUserDefaults defaultAETitle] distantServer:aServer] autorelease];
-//                
-//                NSCalendarDate *endDate = [date dateByAddingYears: 0 months: 0 days: 1 hours: 0 minutes: 0 seconds: 0];
-//                
-//                NSString *timeString = [[DCMCalendarDate dicomDateWithDate: date] dateString];
-//                
-//                [qm addFilter: @"CT\\US" forDescription: @"ModalitiesinStudy"];
-//                [qm addFilter: [NSString stringWithFormat: @"%@-%@", [[DCMCalendarDate dicomDateWithDate: date] dateString], [[DCMCalendarDate dicomDateWithDate: endDate] dateString]] forDescription:@"StudyDate"];
-//                [qm addFilter: [NSString stringWithString: @"230000.000-070000.000"] forDescription:@"StudyTime"];
-//                //[qm addFilter: [NSString stringWithFormat: @"%@-%@", [[DCMCalendarDate dicomDateWithDate: date] dateString], [[DCMCalendarDate dicomDateWithDate: date] dateString]] forDescription:@"StudyDate"];
-//                //[qm addFilter: [NSString stringWithString: @"190000.000-230000.000"] forDescription:@"StudyTime"];
-//                
-//                [qm performQuery: NO];
-//                
-//                array = [qm queries];
-//                
-//                NSString *month = [NSString stringWithFormat: @"%d", [date monthOfYear]];
-//                NSMutableDictionary *dict = [months objectForKey: month];
-//                
-//                for( id a in array)
-//                {
-//                    if( [[a valueForKey: @"modality"] isEqualToString: @"US"])
-//                        [dict setObject: [NSNumber numberWithInt: [[dict objectForKey: @"US"] intValue] + 1] forKey: @"US"];
-//                    
-//                    if( [[a valueForKey: @"modality"] isEqualToString: @"CT"])
-//                        [dict setObject: [NSNumber numberWithInt: [[dict objectForKey: @"CT"] intValue] + 1] forKey: @"CT"];
-//                }
-//                
-//                succeed = YES;
-//            }
-//            @catch (NSException * e)
-//            {
-//                NSLog( @"%@",  [e description]);
-//            }
-//        }
-//        
-//        date = [date dateByAddingYears: 0 months: 0 days: 1 hours: 0 minutes: 0 seconds: 0];
-//        
-//        NSLog( @"%@", date);
-//    }
-//    
-//    for( int i = 1 ; i <= 12; i++)
-//    {
-//        NSLog( @"%d", i);
-//        NSLog( @"%@", [months objectForKey: [NSString stringWithFormat: @"%d", i]]);
-//    }
-//}
++ (void) queryTest: (NSDictionary*) aServer
+{
+    NSAutoreleasePool *pool = [NSAutoreleasePool new];
+    
+    QueryArrayController *qm = nil;
+	NSArray *array = nil;
+	
+    NSCalendarDate *date = [NSCalendarDate dateWithYear: 2013 month: 1 day: 17 hour: 0 minute: 0 second: 1 timeZone: nil];
+    
+    for( int i = 0; i < 90; i++)
+    {
+        [NSThread sleepForTimeInterval: 0.1];
+        
+        BOOL succeed = NO;
+        while( succeed == NO)
+        {
+            for( int h = 8; h < 15; h+=3)
+            {
+                @try
+                {
+                    qm = [[[QueryArrayController alloc] initWithCallingAET:[NSUserDefaults defaultAETitle] distantServer:aServer] autorelease];
+                    
+                    NSCalendarDate *endDate = [date dateByAddingYears: 0 months: 0 days: 0 hours: 0 minutes: 0 seconds: 0];
+                    
+                    NSString *timeString = [[DCMCalendarDate dicomDateWithDate: date] dateString];
+                    
+                    [qm addFilter: [NSString stringWithFormat: @"%@-%@", [[DCMCalendarDate dicomDateWithDate: date] dateString], [[DCMCalendarDate dicomDateWithDate: endDate] dateString]] forDescription:@"StudyDate"];
+                    
+                    NSString *studyTime = [NSString stringWithFormat: @"%02d0000.000-%02d0000.000", h, h+3];
+                    [qm addFilter: studyTime forDescription:@"StudyTime"];
+                    
+                    [qm performQuery: NO];
+                    
+                    array = [qm queries];
+                    
+                    NSLog( @"date: %@ time: %@ count: %d", date, studyTime, array.count);
+                    
+                    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary: [qm parameters]];
+                    
+                    for( DCMTKStudyQueryNode *object in array)
+                    {
+                        [object setShowErrorMessage: NO];
+                        
+                        [dictionary setObject: [object valueForKey:@"calledAET"] forKey:@"calledAET"];
+                        [dictionary setObject: [object valueForKey:@"hostname"] forKey:@"hostname"];
+                        [dictionary setObject: [object valueForKey:@"port"] forKey:@"port"];
+                        [dictionary setObject: [object valueForKey:@"transferSyntax"] forKey:@"transferSyntax"];
+                        
+                        if( [[object theDescription] hasPrefix: @"Mg"] == NO && [[object theDescription] hasPrefix: @"Us"] == NO && [[object theDescription] hasPrefix: @"Ct"] == NO && [[object theDescription] hasPrefix: @"Mr"] == NO)
+                            [object move: dictionary];
+                    }
+                    
+                    succeed = YES;
+                }
+                @catch (NSException * e)
+                {
+                    NSLog( @"%@",  [e description]);
+                }
+            }
+        }
+        
+        date = [date dateByAddingYears: 0 months: 0 days: 1 hours: 0 minutes: 0 seconds: 0];
+        
+        NSLog( @"%@", date);
+    }
+    
+    [pool release];
+}
 
 + (NSArray*) queryStudyInstanceUID:(NSString*) an server: (NSDictionary*) aServer
 {
@@ -4942,10 +4942,15 @@ extern "C"
 
 - (IBAction) verify:(id)sender
 {
+//	int selectedRow = [sourcesTable selectedRow];
+//    
+//    [NSThread detachNewThreadSelector: @selector( queryTest:) toTarget: [QueryController class] withObject: [[sourcesArray objectAtIndex: selectedRow] valueForKey:@"server"]];
+//    
+    
 	int status, selectedRow = [sourcesTable selectedRow];
-	
+
 	[progressIndicator startAnimation:nil];
-	
+
 	[self willChangeValueForKey:@"sourcesArray"];
 	
 	for( NSUInteger i = 0 ; i < [sourcesArray count]; i++)
