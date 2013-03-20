@@ -56,6 +56,7 @@ NSString* const OSIROIAddedROIKey = @"OSIROIAddedROIKey";
 @implementation OSIROIManager
 
 @synthesize delegate = _delegate;
+@synthesize volumeWindow = _volumeWindow;
 
 + (BOOL)automaticallyNotifiesObserversForKey:(NSString *)key
 {
@@ -296,12 +297,7 @@ NSString* const OSIROIAddedROIKey = @"OSIROIAddedROIKey";
     
     viewerController = (ViewerController *)self.delegate;
     dcmView = (DCMView *)[notification object];
-    
-//    if ([dcmView windowController] != viewerController) { // only draw the ROIs in the DCM view that belongs to the ViewerController that is owned by the VolumeWindow
-//        return; 
-//    }
-    
-    
+        
     N3AffineTransformGetOpenGLMatrixd([dcmView pixToSubDrawRectTransform], pixToSubdrawRectOpenGLTransform);
     pixelFormatObj = (CGLPixelFormatObj)[[dcmView pixelFormat] CGLPixelFormatObj];
 	pixToDicomTransform = [[dcmView curDCM] pixToDicomTransform];

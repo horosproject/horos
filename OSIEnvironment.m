@@ -156,6 +156,36 @@ static OSIEnvironment *sharedEnvironment = nil;
 	[[NSNotificationCenter defaultCenter] postNotificationName:OSIEnvironmentOpenVolumeWindowsDidUpdateNotification object:nil];
 }
 
+
+
+- (void)viewerControllerWillChangeData:(ViewerController *)viewerController
+{
+    OSIVolumeWindow *volumeWindow;
+	
+    // only do this if the volume window is already properly attached, this assumes that the first time the viewerController is initialized it will not have been added,
+    // and therefore we will not send this notification for the original init
+    if ([_volumeWindows objectForKey:[NSValue valueWithPointer:viewerController]]) {
+        volumeWindow = [_volumeWindows objectForKey:[NSValue valueWithPointer:viewerController]];
+        assert([volumeWindow isKindOfClass:[OSIVolumeWindow class]]);
+
+        [volumeWindow viewerControllerWillChangeData];
+    }
+}
+
+- (void)viewerControllerDidChangeData:(ViewerController *)viewerController
+{
+    OSIVolumeWindow *volumeWindow;
+	
+    // only do this if the volume window is already properly attached, this assumes that the first time the viewerController is initialized it will not have been added,
+    // and therefore we will not send this notification for the original init
+    if ([_volumeWindows objectForKey:[NSValue valueWithPointer:viewerController]]) {
+        volumeWindow = [_volumeWindows objectForKey:[NSValue valueWithPointer:viewerController]];
+        assert([volumeWindow isKindOfClass:[OSIVolumeWindow class]]);
+        
+        [volumeWindow viewerControllerDidChangeData];
+    }
+}
+
 - (void)drawDCMView:(DCMView *)dcmView
 {
     ViewerController *viewerController =  (ViewerController *)[dcmView windowController];

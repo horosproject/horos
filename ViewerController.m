@@ -7124,6 +7124,10 @@ return YES;
 -(void) changeImageData:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v :(BOOL) newViewerWindow
 {
 	if( windowWillClose) return;
+    
+#ifndef OSIRIX_LIGHT
+	[[OSIEnvironment sharedEnvironment] viewerControllerWillChangeData:self];
+#endif
 	
 	if( delayedTileWindows)
 	{
@@ -7697,6 +7701,10 @@ return YES;
     
     if( reactivateManualSyncing)
         [self performSelector: @selector( SyncSeries:) withObject: self afterDelay: 0.1];
+    
+#ifndef OSIRIX_LIGHT
+	[[OSIEnvironment sharedEnvironment] viewerControllerDidChangeData:self];
+#endif
 }
 
 - (void) showWindowTransition

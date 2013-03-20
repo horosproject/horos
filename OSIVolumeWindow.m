@@ -23,6 +23,9 @@
 
 NSString* const OSIVolumeWindowDidCloseNotification = @"OSIVolumeWindowDidCloseNotification";
 
+NSString* const OSIVolumeWindowWillChangeDataNotification = @"OSIVolumeWindowWillChangeDataNotification";
+NSString* const OSIVolumeWindowDidChangeDataNotification = @"OSIVolumeWindowDidChangeDataNotification";
+
 @interface OSIVolumeWindow ()
 - (void)_viewerControllerDidLoadImagesNotification:(NSNotification *)notification;
 - (void)_viewerControllerWillFreeVolumeDataNotification:(NSNotification *)notification;
@@ -285,6 +288,17 @@ NSString* const OSIVolumeWindowDidCloseNotification = @"OSIVolumeWindowDidCloseN
 	[self didChangeValueForKey:@"open"];
 	[[NSNotificationCenter defaultCenter] postNotificationName:OSIVolumeWindowDidCloseNotification object:self];
 }
+
+- (void)viewerControllerWillChangeData
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:OSIVolumeWindowWillChangeDataNotification object:self];
+}
+
+- (void)viewerControllerDidChangeData
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:OSIVolumeWindowDidChangeDataNotification object:self];
+}
+
 
 - (void)drawInDCMView:(DCMView *)dcmView
 {

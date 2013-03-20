@@ -26,6 +26,10 @@
 
 extern NSString* const OSIVolumeWindowDidCloseNotification; 
 
+
+extern NSString* const OSIVolumeWindowWillChangeDataNotification;
+extern NSString* const OSIVolumeWindowDidChangeDataNotification;
+
 // This is a peer of the ViewerController. It provides an abstract and cleaner interface to the ViewerController
 // for now 
 
