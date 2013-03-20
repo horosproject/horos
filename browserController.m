@@ -9452,16 +9452,15 @@ static BOOL withReset = NO;
 
 - (IBAction) addSmartAlbum: (id)sender
 {
-	SmartWindowController *smartWindowController = [[SmartWindowController alloc] init];
-	NSWindow *sheet = [smartWindowController window];
+	SmartWindowController* swc = [[SmartWindowController alloc] initWithDatabase:self.database];
 	
-    [NSApp beginSheet: sheet
-	   modalForWindow: self.window
-		modalDelegate: nil
-	   didEndSelector: nil
-		  contextInfo: nil];
+    [NSApp beginSheet:swc.window
+	   modalForWindow:self.window
+		modalDelegate:self
+	   didEndSelector:@selector(smartAlbumSheetDidEnd:returnCode:contextInfo:)
+		  contextInfo:nil];
 	
-	[smartWindowController addSubview: nil];
+	/*[smartWindowController addSubview: nil];
 	
     int result = [NSApp runModalForWindow:sheet];
 	[sheet makeFirstResponder: nil];
@@ -9541,7 +9540,66 @@ static BOOL withReset = NO;
 			[self albumTableDoublePressed: self];
 	}
 	
-	[smartWindowController release];
+	[smartWindowController release];*/
+}
+
+- (void)smartAlbumSheetDidEnd:(NSWindow*)sheet returnCode:(NSInteger)returnCode contextInfo:(void*)contextInfo {
+    [sheet orderOut:self];
+    
+    if (returnCode == NSRunStoppedResponse) {
+        DicomAlbum* album = nil;
+        if ([(id)contextInfo isKindOfClass:[DicomAlbum class]])
+            album = [(id)contextInfo autorelease];
+        
+        if (!album)
+            album = [self.database newObjectForEntity:self.database.albumEntity];
+        
+        SmartWindowController* swc = sheet.windowController;
+        
+        album.name = swc.name;
+        album.smartAlbum = [NSNumber numberWithBool:YES];
+        album.predicateString = [swc.predicate predicateFormat];
+        [self.database save];
+        
+        /* // TODO: voir avec Antoine, pourquoi faut-il faire a ?
+         // Distant DICOM node filter
+         if( [[[smartWindowController onDemandFilter] allKeys] count] > 0)
+         {
+         NSMutableArray *savedSmartAlbums = [[[[NSUserDefaults standardUserDefaults] objectForKey: @"smartAlbumStudiesDICOMNodes"] mutableCopy] autorelease];
+         
+         NSUInteger idx = [[savedSmartAlbums valueForKey: @"name"] indexOfObject: name];
+         
+         if( idx != NSNotFound)
+         [savedSmartAlbums removeObjectAtIndex: idx];
+         
+         NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool: NO], @"activated", name, @"name", nil];
+         
+         [dict addEntriesFromDictionary: [smartWindowController onDemandFilter]];
+         
+         [savedSmartAlbums addObject: dict];
+         
+         [[NSUserDefaults standardUserDefaults] setObject: savedSmartAlbums forKey: @"smartAlbumStudiesDICOMNodes"];
+         }
+
+         */
+        
+        [albumTable selectRowIndexes:[NSIndexSet indexSetWithIndex:[self.albumArray indexOfObject:album]] byExtendingSelection:NO];
+
+        
+        @synchronized (self) {
+            _cachedAlbumsContext = nil;
+        }
+        
+        NSInteger index = [self.albumArray indexOfObject:album];
+        if (index != NSNotFound)
+            [albumTable selectRowIndexes:[NSIndexSet indexSetWithIndex:index] byExtendingSelection:NO];
+        
+        [self outlineViewRefresh];
+        
+        [self refreshAlbums];
+    }
+    
+    [sheet.windowController release];
 }
 
 - (IBAction) addAlbum:(id)sender
@@ -9661,119 +9719,25 @@ static BOOL withReset = NO;
 
 static BOOL needToRezoom;
 
-- (IBAction)smartAlbumHelpButton: (id)sender
-{
-	if( [sender tag] == 0)
-	{
-		[[NSWorkspace sharedWorkspace] openFile:[[NSBundle mainBundle] pathForResource:@"OsiriXTables" ofType:@"pdf"] withApplication: nil andDeactivate: YES];
-		[NSThread sleepForTimeInterval: 1];
-	}
-	
-	if( [sender tag] == 1)
-		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://developer.apple.com/documentation/Cocoa/Conceptual/Predicates/Articles/pSyntax.html#//apple_ref/doc/uid/TP40001795"]];
-
-	if( [sender tag] == 2)
-	{
-		[[self window] makeFirstResponder: nil];
-		
-		@try
-		{
-			self.testPredicate = [[BrowserController currentBrowser] smartAlbumPredicateString: [editSmartAlbumQuery stringValue]];
-			
-			NSString *exception = [self outlineViewRefresh];
-			self.testPredicate = nil;
-			
-			if( exception) NSRunCriticalAlertPanel( NSLocalizedString(@"Error",nil), [NSString stringWithFormat: NSLocalizedString(@"This filter is NOT working: %@", nil), exception], NSLocalizedString(@"OK",nil), nil, nil);
-			else NSRunInformationalAlertPanel( NSLocalizedString(@"It works !",nil), NSLocalizedString(@"This filter works: the result is now displayed in the Database Window.", nil), NSLocalizedString(@"OK",nil), nil, nil);
-		}
-		@catch (NSException * e)
-		{
-            N2LogExceptionWithStackTrace(e);
-			NSRunCriticalAlertPanel( NSLocalizedString(@"Error",nil), [NSString stringWithFormat: NSLocalizedString(@"This filter is NOT working: %@", nil), e], NSLocalizedString(@"OK",nil), nil, nil);
-		}
-	}
-}
-
 - (IBAction) albumTableDoublePressed: (id)sender
 {
 	if( albumTable.selectedRow > 0 && [_database isLocal])
 	{
-		NSManagedObject	*album = [self.albumArray objectAtIndex: albumTable.selectedRow];
+		DicomAlbum* album = [self.albumArray objectAtIndex:albumTable.selectedRow];
 		
-		if( [[album valueForKey:@"smartAlbum"] boolValue] == YES)
+		if ([[album valueForKey:@"smartAlbum"] boolValue] == YES)
 		{
-			[editSmartAlbumName setStringValue: [album valueForKey:@"name"]];
-			[editSmartAlbumQuery setStringValue: [album valueForKey:@"predicateString"]];
-			
-			[NSApp beginSheet: editSmartAlbum
-			   modalForWindow: self.window
-				modalDelegate: nil
-			   didEndSelector: nil
-				  contextInfo: nil];
-			
-			int result = [NSApp runModalForWindow: editSmartAlbum];
-			[editSmartAlbum makeFirstResponder: nil];
-			
-			[NSApp endSheet: editSmartAlbum];
-			[editSmartAlbum orderOut: self];
-			
-			self.testPredicate = nil;
-			[self outlineViewRefresh];
-			
-			if( result == NSRunStoppedResponse)
-			{
-				NSError *error = nil;
-				NSString *name;
-				int i = 2;
-				
-				NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-				[dbRequest setEntity: [[self.database.managedObjectModel entitiesByName] objectForKey:@"Album"]];
-				[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-				
-				NSManagedObjectContext *context = self.database.managedObjectContext;
-				
-				[context retain];
-				[context lock];
-				error = nil;
-				
-				@try 
-				{
-					NSArray *albumsArray = [context executeFetchRequest:dbRequest error:&error];
-				
-					if( [[editSmartAlbumName stringValue] isEqualToString: [album valueForKey:@"name"]] == NO)
-					{
-						name = [editSmartAlbumName stringValue];
-						while( [[albumsArray valueForKey:@"name"] indexOfObject: name] != NSNotFound)
-						{
-							name = [NSString stringWithFormat:@"%@ #%d", [editSmartAlbumName stringValue], i++];
-						}
-						
-						[album setValue:name forKey:@"name"];
-					}
-					
-					[album setValue:[editSmartAlbumQuery stringValue] forKey:@"predicateString"];
-					
-                    @synchronized (self)
-                    {
-                        _cachedAlbumsContext = nil;
-                    }
-                    
-					[_database save:NULL];
-					
-					[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [self.albumArray indexOfObject:album]] byExtendingSelection: NO];
-					
-					[self outlineViewRefresh];
-					
-					[self refreshAlbums];
-				}
-				@catch (NSException * e) 
-				{
-                    N2LogExceptionWithStackTrace(e);
-				}
-				
-				[context unlock];
-				[context release];
-			}
+			SmartWindowController* swc = [[SmartWindowController alloc] initWithDatabase:self.database];
+            swc.name = album.name;
+            swc.predicate = [NSPredicate predicateWithFormat:album.predicateString];
+            swc.album = album;
+            
+            [NSApp beginSheet:swc.window
+               modalForWindow:self.window
+                modalDelegate:self
+               didEndSelector:@selector(smartAlbumSheetDidEnd:returnCode:contextInfo:)
+                  contextInfo:[album retain]];
+
 		}
 		else
 		{
@@ -10214,7 +10178,7 @@ static BOOL needToRezoom;
                     [column setWidth:[[col objectAtIndex:1] integerValue]];
                     [databaseOutline moveColumn:[databaseOutline columnWithIdentifier:column.identifier] toColumn:index++];
                 } else {
-                    NSLog(@"? %@", col);
+                    DLog(@"Warning: invalid column identifier %@", col);
                 }
             }
             for (NSTableColumn* column in unvisitedColumns)

@@ -20,39 +20,43 @@
 
 #import <AppKit/AppKit.h>
 
+@class O2DicomPredicateEditor;
+@class DicomDatabase;
+@class DicomAlbum;
+
 @interface SmartWindowController : NSWindowController {
-	
-	IBOutlet	NSTextField		*albumNameField;
-	IBOutlet	NSBox			*filterBox;
-	NSMutableArray				*subviews;
-	NSMutableArray				*criteria;
-	BOOL						editSqlQuery;
-	BOOL						firstTime;
-	NSTimer						*sqlQueryTimer;
-	NSString					*previousSqlString;
-	float						startingWindowHeight;
-    NSMutableDictionary         *onDemandFilter;
+    DicomDatabase* _database;
+    NSString* _name;
+    DicomAlbum* _album;
+    NSString* _predicateFormat;
+    NSTextField* _nameField;
+    O2DicomPredicateEditor* _editor;
+    NSInteger _mode;
 }
 
-@property (retain) NSMutableDictionary *onDemandFilter;
+@property(retain) DicomDatabase* database;
+@property(retain) DicomAlbum* album;
 
-- (IBAction)editSqlString:(id) sender;
-- (void)removeSubview:(id)sender; /**< Removes a subView representing a smart filter predicate. */
-- (void)addSubview:(id)sender; /**< Add a subview for creating a new subpredicate. */
-- (void)drawSubviews;  /**< Redraws the subviews */
+@property(retain) NSString* name;
+@property(assign) NSPredicate* predicate;
+@property(retain,nonatomic) NSString* predicateFormat;
 
-- (void)updateRemoveButtons; /**< Disables the remove button if only one subview remains */
+@property NSInteger mode;
 
-- (void)createCriteria; /**< Create the smart album criteria */
-- (NSMutableArray *)criteria; /**< Array of subpredicates used to make the smart album predicate */
-- (NSString *)albumTitle;  /**< Smart album title */
-/** Return a date that corresponds to date earlier than today.
-*  Value can be: searchWithinToday, searchWithinLast2Days, searchWithinLastWeek, searchWithinLast2Weeks,
-*   searchWithinLastMonth, searchWithinLast2Months, searchWithinLast3Months, searchWithinLastYear
-*/
-- (NSCalendarDate *)dateBeforeNow:(int)value; 
-//- (BOOL)madeCriteria;  /**< Checks to see if the criteria has been made. */
-- (BOOL) editSqlQuery;
-- (NSString*) sqlQueryString;
+@property(readonly) BOOL nameIsValid;
+@property(readonly) BOOL predicateFormatIsValid;
+
+@property(readonly) BOOL modeIsPredicate;
+@property(readonly) BOOL modeIsSQL;
+
+@property(assign) IBOutlet NSTextField* nameField;
+@property(assign) IBOutlet O2DicomPredicateEditor* editor;
+
+- (id)initWithDatabase:(DicomDatabase*)db;
+
+- (IBAction)cancelAction:(id)sender;
+- (IBAction)okAction:(id)sender;
+- (IBAction)helpAction:(id)sender;
+- (IBAction)testAction:(id)sender;
 
 @end

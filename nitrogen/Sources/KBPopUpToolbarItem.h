@@ -19,6 +19,16 @@
 	NSImage *smallImage;
 	NSImage *regularImage;
 }
+
 - (void)setMenu:(NSMenu *)menu;
 - (NSMenu *)menu;
+
+@end
+
+@interface KBDelayedPopUpButtonCell : NSButtonCell {
+    NSBezierPath* arrowPath;
+}
+
+@property (nonatomic,retain) NSBezierPath* arrowPath;
+
 @end
