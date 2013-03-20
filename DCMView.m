@@ -7676,7 +7676,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		int colorBoxSize = 0;
 		
 		if( studyColorR != 0 || studyColorG != 0 || studyColorB != 0)
-			colorBoxSize = 30;
+			colorBoxSize = 30*sf;
 		
 		if( colorBoxSize && stringID == nil && [self is2DViewer] == YES)
 		{
@@ -7708,7 +7708,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		[xRasterInit setObject:[NSNumber numberWithInt:6*sf] forKey:@"LowerLeft"];
 		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width-2*sf] forKey:@"TopRight"];
 		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width-2*sf] forKey:@"MiddleRight"];
-		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width-2*sf - colorBoxSize*sf] forKey:@"LowerRight"];
+		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width-2*sf - colorBoxSize] forKey:@"LowerRight"];
 		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width/2] forKey:@"TopMiddle"];
 		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width/2] forKey:@"LowerMiddle"];
 
