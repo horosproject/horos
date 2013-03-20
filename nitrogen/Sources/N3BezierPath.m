@@ -171,6 +171,34 @@
     return [[[[self class] alloc] initWithN3BezierCore:bezierCore] autorelease];
 }
 
++ (id)bezierPathCircleWithCenter:(N3Vector)center radius:(CGFloat)radius normal:(N3Vector)normal
+{
+    N3Vector planeVector = N3VectorANormalVector(normal);
+    N3Vector planeVector2 = N3VectorCrossProduct(normal, planeVector);
+    N3MutableBezierPath *bezierPath = [N3MutableBezierPath bezierPath];
+    
+    N3Vector corner1 = N3VectorAdd(center, N3VectorScalarMultiply(planeVector, radius));
+    N3Vector corner2 = N3VectorAdd(center, N3VectorScalarMultiply(planeVector2, radius));
+    N3Vector corner3 = N3VectorAdd(center, N3VectorScalarMultiply(planeVector, -radius));
+    N3Vector corner4 = N3VectorAdd(center, N3VectorScalarMultiply(planeVector2, -radius));
+    
+    [bezierPath moveToVector:corner1];
+    [bezierPath curveToVector:corner2
+               controlVector1:N3VectorAdd(corner1, N3VectorScalarMultiply(planeVector2, radius*0.551784))
+               controlVector2:N3VectorAdd(corner2, N3VectorScalarMultiply(planeVector, radius*0.551784))];
+    [bezierPath curveToVector:corner3
+               controlVector1:N3VectorAdd(corner2, N3VectorScalarMultiply(planeVector, radius*-0.551784))
+               controlVector2:N3VectorAdd(corner3, N3VectorScalarMultiply(planeVector2, radius*0.551784))];
+    [bezierPath curveToVector:corner4
+               controlVector1:N3VectorAdd(corner3, N3VectorScalarMultiply(planeVector2, radius*-0.551784))
+               controlVector2:N3VectorAdd(corner4, N3VectorScalarMultiply(planeVector, radius*-0.551784))];
+    [bezierPath curveToVector:corner1
+               controlVector1:N3VectorAdd(corner4, N3VectorScalarMultiply(planeVector, radius*0.551784))
+               controlVector2:N3VectorAdd(corner1, N3VectorScalarMultiply(planeVector2, radius*-0.551784))];
+    [bezierPath close];
+    return bezierPath;
+}
+
 - (void)dealloc
 {
     N3BezierCoreRelease(_bezierCore);
