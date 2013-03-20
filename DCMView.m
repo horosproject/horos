@@ -6795,8 +6795,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 												syncOnLocationImpossible = YES;
 												[otherView setSyncOnLocationImpossible: YES];
 											}
-											
-											curImage = prevImage;	// We have no overlapping slice, do nothing....
 										}
 									}
 									
