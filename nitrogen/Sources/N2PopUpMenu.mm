@@ -648,16 +648,27 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
 - (void)drawWithFrame:(NSRect)cellFrame inView:(N2PopUpMatrix*)controlView {
     [NSGraphicsContext.currentContext saveGraphicsState];
     
+    NSDictionary* attributes = nil;
     if (self.isHighlighted) {
         [[[NSColor selectedMenuItemColor] colorWithAlphaComponent:1] setFill];
         [NSBezierPath fillRect:NSInsetRect(cellFrame, -1, 0)];
-        [self setAttributedStringValue:[[NSAttributedString alloc] initWithString:self.title attributes:[NSDictionary dictionaryWithObjectsAndKeys: [NSColor selectedMenuItemTextColor], NSForegroundColorAttributeName, controlView.font, NSFontAttributeName, nil]]];
+        attributes = [NSDictionary dictionaryWithObjectsAndKeys: [NSColor selectedMenuItemTextColor], NSForegroundColorAttributeName, controlView.font, NSFontAttributeName, nil];
     } else {
-        [self setAttributedStringValue:[[NSAttributedString alloc] initWithString:self.title attributes:[NSDictionary dictionaryWithObjectsAndKeys: [NSColor controlTextColor], NSForegroundColorAttributeName, controlView.font, NSFontAttributeName, nil]]];
+        attributes = [NSDictionary dictionaryWithObjectsAndKeys: [NSColor controlTextColor], NSForegroundColorAttributeName, controlView.font, NSFontAttributeName, nil];
     }
 
+    [self setAttributedStringValue:[[NSAttributedString alloc] initWithString:self.title attributes:attributes]];
+
     cellFrame.origin.y += 1;
-    cellFrame.size.width += PopUpWindowBorder.width; // sometimes titles won't fit
+
+    if (self.state) {
+        NSRect cmrect = cellFrame; cmrect.origin.x += 5;
+        [[[NSAttributedString alloc] initWithString:@"✓" attributes:attributes] drawInRect:cmrect];
+    }
+    
+    cellFrame.origin.x += 9;
+
+    cellFrame.size.width += PopUpWindowBorder.width; // see insetrect in next line...
     [super drawWithFrame:NSInsetRect(cellFrame, PopUpWindowBorder.width, 0) inView:controlView];
     
     [NSGraphicsContext.currentContext restoreGraphicsState];
@@ -707,11 +718,12 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
         [cell setTitle:mi.title];
         [cell setRepresentedObject:mi.representedObject];
         [cell setTag:mi.tag];
+        [cell setState:mi.state];
         
         maxw = MAX(maxw, [mi.title sizeWithAttributes:attributes].width);
     }
     
-    self.cellSize = NSMakeSize(maxw+PopUpWindowBorder.width*2, _itemHeight);
+    self.cellSize = NSMakeSize(maxw+PopUpWindowBorder.width*2+9, _itemHeight); // 9 for the checkmarks
     
     [super sizeToCells];
 }
