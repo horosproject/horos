@@ -115,7 +115,12 @@
     volume = [CPRGenerator synchronousRequestVolume:request volumeData:_brushMask];    
     roiMask = [OSIROIMask ROIMaskFromVolumeData:(OSIFloatVolumeData *)volume];
     
-    return [roiMask ROIMaskByTranslatingByX:0 Y:0 Z:planePixelPoint.z];   
+#if CGFLOAT_IS_DOUBLE
+    return [roiMask ROIMaskByTranslatingByX:0 Y:0 Z:round(planePixelPoint.z)];
+#else
+    return [roiMask ROIMaskByTranslatingByX:0 Y:0 Z:roundf(planePixelPoint.z)];
+#endif
+
 }
 
 - (void)drawSlab:(OSISlab)slab inCGLContext:(CGLContextObj)cgl_ctx pixelFormat:(CGLPixelFormatObj)pixelFormat dicomToPixTransform:(N3AffineTransform)dicomToPixTransform
