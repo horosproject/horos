@@ -1013,7 +1013,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
 }
 
 - (double)matchForPredicate:(id)predicate {
-    NSLog(@"matchForPredicate: %@", predicate);
+//    NSLog(@"matchForPredicate: %@", predicate);
 
     if ([predicate isKindOfClass:[NSComparisonPredicate class]])
         @try {
@@ -1144,7 +1144,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
 }*/
 
 - (void)setPredicate:(id)predicate {
-    NSLog(@"setPredicate: %@", predicate);
+//    NSLog(@"setPredicate: %@", predicate);
     
     if ([predicate isKindOfClass:[NSComparisonPredicate class]]) {
         DCMAttributeTag* tag = [self tagWithKeyPath:[predicate keyPath]];
