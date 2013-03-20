@@ -13,7 +13,7 @@
 {
     OSIROIMask *_mask;
     NSString *_name;
-    NSColor *_color;
+    NSColor *_fillColor;
     
     OSISlab _cachedSlab;
     N3AffineTransform _cachedDicomToPixTransform;

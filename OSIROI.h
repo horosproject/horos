@@ -62,20 +62,48 @@
  */
 - (NSString *)name;
 
-/** Returns the color of the receiver.
+/** Returns the fill color of the receiver.
  
- This value is equal to nil if the ROI should not be drawn, or if This OSI ROI is backed by multiple osirix ROIs with different colors.
+ This value is equal to nil if the ROI should not be drawn, or if this OSI ROI is backed by multiple osirix ROIs with different colors.
  
- @return The color of the receiver
+ @return The fill color of the receiver
  */
-- (NSColor *)color;
+- (NSColor *)fillColor;
 
-/** Set the color of the receiver.
+/** Set the fill color of the receiver.
  
  Set this value to nil if the ROI should not be drawn.
  
  */
-- (void)setColor:(NSColor *)color;
+- (void)setFillColor:(NSColor *)color;
+
+/** Returns the stroke color of the receiver.
+ 
+ This value is equal to nil if the outline of the ROI should not be drawn, or if this OSI ROI is backed by multiple osirix ROIs with different colors.
+ 
+ @return The stroke color of the receiver
+ */
+- (NSColor *)strokeColor;
+
+/** Set the stroke color of the receiver.
+ 
+ Set this value to nil if the ROI should not draw it's outline drawn.
+ 
+ */
+- (void)setStrokeColor:(NSColor *)strokeColor;
+
+/** Returns the stroke thickness of the receiver.
+ 
+ This value is 0 if this OSI ROI is backed by multiple osirix ROIs with stroke thicknesses.
+ 
+ @return The stroke color of the receiver
+ */
+- (CGFloat)strokeThickness;
+
+/** Set the stroke thickness of the receiver.
+  
+ */
+- (void)setStrokeThickness:(CGFloat)strokeThickness;
 
 /** Returns a reasonable label to print for the receiver.
  

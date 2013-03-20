@@ -38,14 +38,16 @@
 	return nil;
 }
 
-- (NSColor *)color
+- (NSColor *)fillColor
 {
     NSSet *osiriXROIs = [self osiriXROIs];
     NSColor *color = nil;
     
     for (ROI *roi in osiriXROIs) {
         if (color == nil) {
-            color = [roi NSColor];
+            if ([roi type] == tPlain) {
+                color = [[roi NSColor] colorWithAlphaComponent:[roi opacity]];
+            }
         } else if ([color isEqual:[roi NSColor]] == NO) {
             return nil;
         }
@@ -54,12 +56,71 @@
     return color;
 }
 
-- (void)setColor:(NSColor *)color
+
+- (void)setFillColor:(NSColor *)color
 {
     NSSet *osiriXROIs = [self osiriXROIs];
     
     for (ROI *roi in osiriXROIs) {
-        [roi setNSColor:color];
+        if ([roi type] == tPlain) {
+            [roi setNSColor:[color colorWithAlphaComponent:1]];
+            [roi setOpacity:[color alphaComponent]];
+        }
+    }
+}
+
+- (NSColor *)strokeColor
+{
+    NSSet *osiriXROIs = [self osiriXROIs];
+    NSColor *color = nil;
+    
+    for (ROI *roi in osiriXROIs) {
+        if (color == nil) {
+            if ([roi type] != tPlain) {
+                color = [[roi NSColor] colorWithAlphaComponent:[roi opacity]];
+            }
+        } else if ([color isEqual:[roi NSColor]] == NO) {
+            return nil;
+        }
+    }
+    
+    return color;
+}
+
+- (void)setStrokeColor:(NSColor *)color
+{
+    NSSet *osiriXROIs = [self osiriXROIs];
+    
+    for (ROI *roi in osiriXROIs) {
+        if ([roi type] != tPlain) {
+            [roi setNSColor:[color colorWithAlphaComponent:1]];
+            [roi setOpacity:[color alphaComponent]];
+        }
+    }
+}
+
+- (CGFloat)strokeThickness
+{
+    NSSet *osiriXROIs = [self osiriXROIs];
+    CGFloat thickness = 0;
+    
+    for (ROI *roi in osiriXROIs) {
+        if (thickness == 0) {
+            thickness = [roi thickness];
+        } else if (thickness != [roi thickness]) {
+            return 0;
+        }
+    }
+    
+    return thickness;
+}
+
+- (void)setStrokeThickness:(CGFloat)strokeThickness
+{
+    NSSet *osiriXROIs = [self osiriXROIs];
+    
+    for (ROI *roi in osiriXROIs) {
+        [roi setThickness:strokeThickness];
     }
 }
 

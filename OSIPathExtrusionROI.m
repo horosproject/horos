@@ -9,11 +9,16 @@
 #import "OSIPathExtrusionROI.h"
 #import "OSIFloatVolumeData.h"
 #import "OSIROIMask.h"
+#include <OpenGL/CGLMacro.h>
 
 @interface OSIPathExtrusionROI ()
 @property (nonatomic, readwrite, retain) N3BezierPath *path;
 @property (nonatomic, readwrite, assign) OSISlab slab;
 @property (nonatomic, readwrite, retain) NSString *name;
+@property (nonatomic, readwrite, retain) NSColor *fillColor;
+@property (nonatomic, readwrite, retain) NSColor *strokeColor;
+@property (nonatomic, readwrite, assign) CGFloat strokeThickness;
+
 //- (NSData *)_maskRunsDataForSlab:(OSISlab)slab dicomToPixTransform:(N3AffineTransform)dicomToPixTransform minCorner:(N3VectorPointer)minCornerPtr;
 @end
 
@@ -24,6 +29,10 @@
 @synthesize slab = _slab;
 @synthesize name = _name;
 
+@synthesize fillColor = _fillColor;
+@synthesize strokeColor = _strokeColor;
+@synthesize strokeThickness = _strokeThickness;
+
 - (id)initWith:(N3BezierPath *)path slab:(OSISlab)slab homeFloatVolumeData:(OSIFloatVolumeData *)floatVolumeData name:(NSString *)name
 {
 	if ( (self = [super init]) ) {
@@ -31,12 +40,15 @@
         self.path = path;
         self.slab = slab;
         self.name = name;
+        self.strokeThickness = 1;
 	}
 	return self;
 }
 
 - (void)dealloc
 {
+    self.fillColor = nil;
+    self.strokeColor = nil;
     self.path = nil;
     self.name = nil;
     [_cachedMaskRunsData release];
@@ -205,5 +217,53 @@
 	
     return [[[OSIROIMask alloc] initWithMaskRuns:ROIRuns] autorelease];
 }
+
+- (void)drawSlab:(OSISlab)slab inCGLContext:(CGLContextObj)cgl_ctx pixelFormat:(CGLPixelFormatObj)pixelFormat dicomToPixTransform:(N3AffineTransform)dicomToPixTransform
+{
+	double dicomToPixGLTransform[16];
+	NSInteger i;
+    NSValue *endpointValue;
+	N3Vector endpoint;
+    N3BezierPath *flattenedPath;
+    NSColor *deviceStrokeColor = [self.strokeColor colorUsingColorSpaceName:NSDeviceRGBColorSpace];
+    
+    if (self.strokeThickness != 0 && self.strokeColor != nil) {
+        N3AffineTransformGetOpenGLMatrixd(dicomToPixTransform, dicomToPixGLTransform);
+        
+        glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+        glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+        glEnable(GL_LINE_SMOOTH);
+        glEnable(GL_POLYGON_SMOOTH);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        
+        glLineWidth(self.strokeThickness);
+        glColor4f((float)[deviceStrokeColor redComponent], (float)[deviceStrokeColor greenComponent], (float)[deviceStrokeColor blueComponent], (float)[deviceStrokeColor alphaComponent]);
+
+        N3AffineTransformGetOpenGLMatrixd(dicomToPixTransform, dicomToPixGLTransform);
+        
+        glMatrixMode(GL_MODELVIEW);
+        glPushMatrix();
+        glMultMatrixd(dicomToPixGLTransform);
+        
+        glBegin(GL_LINE_STRIP);
+        
+        flattenedPath = [_path bezierPathByFlattening:N3BezierDefaultFlatness/5.0];
+        for (i = 0; i < [flattenedPath elementCount]; i++) {
+            [flattenedPath elementAtIndex:i control1:NULL control2:NULL endpoint:&endpoint];
+            glVertex3d(endpoint.x, endpoint.y, endpoint.z);
+        }
+        
+        glEnd();
+        
+        glPopMatrix();
+        
+        glDisable(GL_LINE_SMOOTH);
+        glDisable(GL_POLYGON_SMOOTH);
+        glDisable(GL_POINT_SMOOTH);
+        glDisable(GL_BLEND);
+    }
+}
+
 
 @end
