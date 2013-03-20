@@ -238,10 +238,10 @@ static int numberOfActiveAssociations = 0;
         T_ASC_Association * assoc = (T_ASC_Association*) [[d valueForKey: @"assoc"] pointerValue];
         DcmQueryRetrieveSCP *scp = (DcmQueryRetrieveSCP*) [[d valueForKey: @"DcmQueryRetrieveSCP"] pointerValue];
         
-        OFCondition cond = scp->handleAssociation(assoc, YES);
-        
-        if( assoc)
+        if( assoc && scp)
         {
+            OFCondition cond = scp->handleAssociation(assoc, YES);
+            
             cond = ASC_dropAssociation(assoc);
             if (cond.bad())
                 DimseCondition::dump(cond);

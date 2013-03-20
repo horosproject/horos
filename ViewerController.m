@@ -419,6 +419,29 @@ static int hotKeyToolCrossTable[] =
 	return seriesArray;
 }
 
++ (NSArray*) studyColors
+{
+    static NSArray *gStudyColors = nil;
+    
+    if( gStudyColors == nil)
+        gStudyColors = [[NSArray alloc] initWithObjects:
+                        [NSColor colorWithDeviceRed:0.4f green:0.4f blue:0.0f alpha:1.0f],
+                        [NSColor colorWithDeviceRed:0.4f green:0.0f blue:0.4f alpha:1.0f],
+                        [NSColor colorWithDeviceRed:0.0f green:0.4f blue:0.4f alpha:1.0f],
+                        [NSColor colorWithDeviceRed:0.4f green:0.0f blue:0.0f alpha:1.0f],
+                        [NSColor colorWithDeviceRed:0.0f green:0.4f blue:0.0f alpha:1.0f],
+                        [NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.4f alpha:1.0f],
+                        [NSColor colorWithDeviceRed:0.3f green:0.5f blue:0.0f alpha:1.0f],
+                        [NSColor colorWithDeviceRed:0.3f green:0.0f blue:0.6f alpha:1.0f],
+                        [NSColor colorWithDeviceRed:0.0f green:0.5f blue:0.6f alpha:1.0f],
+                        [NSColor colorWithDeviceRed:0.3f green:0.0f blue:0.0f alpha:1.0f],
+                        [NSColor colorWithDeviceRed:0.0f green:0.5f blue:0.0f alpha:1.0f],
+                        [NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.6 alpha:1.0f],
+                        nil];
+    
+    return gStudyColors;
+}
+
 - (long) indexForPix: (long) pixIndex	// for backward compatibility
 {
 	return pixIndex;
@@ -4391,6 +4414,8 @@ static volatile int numberOfThreadsForRelisce = 0;
                         patName = @"";
                     
                     NSMutableArray* components = [NSMutableArray array];
+                    [components addObject: [NSString stringWithFormat: @" %d ", (int) curStudyIndex+1]];
+                    [components addObject: @""];
                     if (patName.length) [components addObject:patName];
                     if (name.length) [components addObject:name];
                     if ([curStudy date]) [components addObject:[[NSUserDefaults dateTimeFormatter] stringFromDate:[curStudy date]]];
@@ -4398,9 +4423,29 @@ static volatile int numberOfThreadsForRelisce = 0;
                     if (stateText.length) [components addObject:stateText];
                     if (comment.length) [components addObject:comment];
                     if (action.length) [components addObject:[NSString stringWithFormat:@"\r%@", action]];
-                    [cell setTitle:[components componentsJoinedByString:@"\r"]];
                     
-                   // [cell setBackgroundColor: [NSColor whiteColor]];
+                    
+                    NSMutableAttributedString *finalString = [[[NSMutableAttributedString alloc] initWithString: [components componentsJoinedByString:@"\r"]] autorelease];
+                    
+                    NSMutableDictionary *attribs = [NSMutableDictionary dictionary];
+                    [attribs setObject: [NSFont boldSystemFontOfSize: 12] forKey: NSFontAttributeName];
+                    
+                    NSArray *colors = ViewerController.studyColors;
+                    NSColor *bkgColor = nil;
+                    if( curStudyIndex >= colors.count)
+                        bkgColor = [colors lastObject];
+                    else
+                        bkgColor = [colors objectAtIndex: curStudyIndex];
+                    
+                    [attribs setObject: bkgColor forKey: NSBackgroundColorAttributeName];
+                    [finalString setAttributes: attribs range: NSMakeRange( 0, [[components objectAtIndex: 0] length])];
+                    
+                    [attribs setObject: [NSFont boldSystemFontOfSize:8.5] forKey: NSFontAttributeName];
+                    [attribs removeObjectForKey: NSBackgroundColorAttributeName];
+                    [finalString setAttributes: attribs range: NSMakeRange( [[components objectAtIndex: 0] length], finalString.length - [[components objectAtIndex: 0] length])];
+                    
+                    [finalString setAlignment:NSCenterTextAlignment range: NSMakeRange( 0, finalString.length)];
+                    [cell setAttributedTitle: finalString];
                     
                     index++;
                 }
@@ -4690,6 +4735,9 @@ static volatile int numberOfThreadsForRelisce = 0;
         [[leftSplitView.subviews objectAtIndex:0] setHidden:!showComparativesButton];
         [self splitView:leftSplitView resizeSubviewsWithOldSize:leftSplitView.bounds.size];
     }
+    
+    for( DCMView *v in self.imageViews)
+        [v computeColor];
 }
 
 - (void) showCurrentThumbnail:(id) sender;

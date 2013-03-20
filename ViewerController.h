@@ -367,6 +367,7 @@ enum
 + (BOOL) isFrontMost2DViewer: (NSWindow*) ww;
 + (ViewerController*) frontMostDisplayed2DViewer;
 + (void) closeAllWindows;
++ (NSArray*) studyColors;
 
 /**  Create a new 2D Viewer
 * @param pixList Array of DCMPix objects

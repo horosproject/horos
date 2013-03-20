@@ -140,9 +140,8 @@
                 self.toDate = date;
         }
         
-        [BrowserController currentBrowser].timeIntervalType = 100;
-        [[BrowserController currentBrowser] computeTimeInterval];
-        [[BrowserController currentBrowser] outlineViewRefresh];
+        if( [[self window] isVisible])
+            [BrowserController currentBrowser].timeIntervalType = 100;
     }
 }
 
@@ -168,9 +167,8 @@
             toDate = [[[NSCalendar currentCalendar] dateFromComponents: components] retain];
         }
         
-        [BrowserController currentBrowser].timeIntervalType = 100;
-        [[BrowserController currentBrowser] computeTimeInterval];
-        [[BrowserController currentBrowser] outlineViewRefresh];
+        if( [[self window] isVisible])
+            [BrowserController currentBrowser].timeIntervalType = 100;
     }
 }
 - (IBAction) nowFrom:(id)sender;

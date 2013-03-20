@@ -753,25 +753,21 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		NSMutableArray *studiesArray = [NSMutableArray array];
 		NSMutableDictionary *colorsStudy = [NSMutableDictionary dictionary];
-		NSArray *colors = [NSArray arrayWithObjects:	[NSColor colorWithDeviceRed:0.4f green:0.4f blue:0.0f alpha:0.7f],
-						   [NSColor colorWithDeviceRed:0.4f green:0.0f blue:0.4f alpha:0.7f],
-						   [NSColor colorWithDeviceRed:0.0f green:0.4f blue:0.4f alpha:0.7f],
-						   [NSColor colorWithDeviceRed:0.4f green:0.0f blue:0.0f alpha:0.7f],
-						   [NSColor colorWithDeviceRed:0.0f green:0.4f blue:0.0f alpha:0.7f],
-						   [NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.4f alpha:0.7f],
-						   nil];
 		
 		for( ViewerController *v in viewers)
 		{
 			if( [v currentStudy] && [v currentSeries])
 				[studiesArray addObject: [v currentStudy]];
             
-            [v imageView].studyColorR = [v imageView].studyColorG = [v imageView].studyColorB = 0;
-            [v imageView].studyDateIndex = NSNotFound;
-            [[v imageView] setNeedsDisplay: YES];
+            for( DCMView *view in v.imageViews)
+            {
+                view.studyColorR = view.studyColorG = view.studyColorB = 0;
+                view.studyDateIndex = NSNotFound;
+                [view setNeedsDisplay: YES];
+            }
 		}
 		
-		if( studiesArray.count > 1)
+		if( studiesArray.count)
 		{
             DicomStudy *study = [self studyObj];
             NSArray *allStudiesArray = nil;
@@ -799,7 +795,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             }
             
             allStudiesArray = [allStudiesArray valueForKey: @"studyInstanceUID"];
-            
+            NSArray *colors = ViewerController.studyColors;
             // Give a different color for each study/patient
             int noColor = 0;
             for( id study in studiesArray)
@@ -812,24 +808,27 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                     
                     if( color != NSNotFound)
                     {
-                        if( color >= [colors count]) color = 0;
-                        [colorsStudy setObject: [colors objectAtIndex: color++] forKey: studyUID];
+                        if( color >= colors.count) color = colors.count-1;
+                        [colorsStudy setObject: [colors objectAtIndex: color] forKey: studyUID];
                     }
                 }	
                 
             }
             
-            if( colorsStudy.count > 1)
+            if( allStudiesArray.count > 1)
             {
                 for( ViewerController *v in viewers)
                 {
                     NSColor *boxColor = [colorsStudy objectForKey: [v studyInstanceUID]];
-            
-                    [v imageView].studyColorR = [boxColor redComponent];
-                    [v imageView].studyColorG = [boxColor greenComponent];
-                    [v imageView].studyColorB = [boxColor blueComponent];
-                    [v imageView].studyDateIndex = [colors indexOfObject: boxColor];
-                    [[v imageView] setNeedsDisplay: YES];
+                    
+                    for( DCMView *view in v.imageViews)
+                    {
+                        view.studyColorR = [boxColor redComponent];
+                        view.studyColorG = [boxColor greenComponent];
+                        view.studyColorB = [boxColor blueComponent];
+                        view.studyDateIndex = [allStudiesArray indexOfObject: [v studyInstanceUID]];
+                        [view setNeedsDisplay: YES];
+                    }
                 }
             }
 		}
@@ -2942,13 +2941,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		NSMutableArray *studiesArray = [NSMutableArray array];
 		NSMutableArray *seriesArray = [NSMutableArray array];
 		NSMutableDictionary *colorsStudy = [NSMutableDictionary dictionary];
-		NSArray *colors = [NSArray arrayWithObjects:	[NSColor colorWithDeviceRed:0.4f green:0.4f blue:0.0f alpha:0.7f],
-														[NSColor colorWithDeviceRed:0.4f green:0.0f blue:0.4f alpha:0.7f],
-														[NSColor colorWithDeviceRed:0.0f green:0.4f blue:0.4f alpha:0.7f],
-														[NSColor colorWithDeviceRed:0.4f green:0.0f blue:0.0f alpha:0.7f],
-														[NSColor colorWithDeviceRed:0.0f green:0.4f blue:0.0f alpha:0.7f],
-														[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.4f alpha:0.7f],
-														nil];
 		
 		for( ViewerController *v in viewers)
 		{
@@ -2957,17 +2949,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				[studiesArray addObject: [v currentStudy]];
 				[seriesArray addObject: [v currentSeries]];
 			}
-		}
-		
-		// Give a different color for each study/patient
-		int color = 0;
-		for( id study in studiesArray)
-		{
-			if( [colorsStudy objectForKey: [study valueForKey:@"studyInstanceUID"]] == nil)
-			{
-				[colorsStudy setObject: [colors objectAtIndex: color++] forKey: [study valueForKey:@"studyInstanceUID"]];
-			}	
-			if( color >= [colors count]) color = 0;
 		}
 		
 		NSMutableString *description = [NSMutableString stringWithString:@""];
@@ -3011,7 +2992,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		NSAttributedString *text = [[[NSAttributedString alloc] initWithString: description attributes: stanStringAttrib] autorelease];
 		
-		NSColor *boxColor = [colorsStudy objectForKey: [curStudy valueForKey:@"studyInstanceUID"]];
+        NSColor *boxColor = [ViewerController.studyColors lastObject];
+        if( studyColorR != 0 || studyColorG != 0 || studyColorB != 0)
+            boxColor = [NSColor colorWithCalibratedRed: studyColorR green: studyColorG blue: studyColorB alpha: 0.7];
 		NSColor *frameColor = [NSColor colorWithDeviceRed: [boxColor redComponent] green:[boxColor greenComponent] blue:[boxColor blueComponent] alpha:1];
 		
 		if( showDescriptionInLargeText == nil)
@@ -6812,8 +6795,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 												syncOnLocationImpossible = YES;
 												[otherView setSyncOnLocationImpossible: YES];
 											}
-											
-											curImage = prevImage;	// We have no overlapping slice, do nothing....
 										}
 									}
 									
@@ -7705,8 +7686,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                 
                 NSMutableDictionary *stanStringAttrib = [NSMutableDictionary dictionary];
                 [stanStringAttrib setObject: [NSFont fontWithName:@"Helvetica" size: 20] forKey: NSFontAttributeName];
-                
-                studyDateBox = [[GLString alloc] initWithAttributedString: [[[NSAttributedString alloc] initWithString: [NSString stringWithFormat: @" %d ", studyDateIndex+1] attributes: stanStringAttrib] autorelease] withBoxColor: boxColor withBorderColor:boxColor];
+                if( studyDateIndex+1 < 10)
+                    studyDateBox = [[GLString alloc] initWithAttributedString: [[[NSAttributedString alloc] initWithString: [NSString stringWithFormat: @" %d ", (int) studyDateIndex+1] attributes: stanStringAttrib] autorelease] withBoxColor: boxColor withBorderColor:boxColor];
+                else
+                    studyDateBox = [[GLString alloc] initWithAttributedString: [[[NSAttributedString alloc] initWithString: [NSString stringWithFormat: @"%d", (int) studyDateIndex+1] attributes: stanStringAttrib] autorelease] withBoxColor: boxColor withBorderColor:boxColor];
             }
             
             if( studyDateBox)
