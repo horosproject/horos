@@ -182,7 +182,7 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
     
     NSInteger highlight = NSNotFound;
     if ([view isKindOfClass:[NSPopUpButton class]])
-        highlight = [[menu.itemArray filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"isHidden = NO"]] indexOfObject:[(NSPopUpButton*)view selectedItem]];
+        highlight = [[[menu.itemArray filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"isHidden = NO"]] valueForKeyPath:@"representedObject"] indexOfObject:[[(NSPopUpButton*)view selectedItem] representedObject]];
     [_puView highlightItemAtRow:highlight scroll:YES];
 
     [self filter:YES];
