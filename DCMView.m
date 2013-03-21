@@ -497,6 +497,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 @synthesize drawing;
 @synthesize volumicSeries;
 @synthesize isKeyView, mouseDragging;
+@synthesize annotationType;
 
 - (BOOL) eventToPlugins: (NSEvent*) event
 {
@@ -2768,6 +2769,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			[[NSUserDefaults standardUserDefaults] setInteger: a forKey: @"ANNOTATIONS"];
 			[DCMView setDefaults];
+            annotationType = a;
 	
 			NSNotificationCenter *nc;
 			nc = [NSNotificationCenter defaultCenter];
@@ -6205,6 +6207,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	thickSlabStacks = 0;
 	COPYSETTINGSINSERIES = YES;
 	suppress_labels = NO;
+    
+    annotationType = [[NSUserDefaults standardUserDefaults] integerForKey:@"ANNOTATIONS"];
 	
 //	NSOpenGLPixelFormatAttribute attrs[] =
 //    {
@@ -8083,7 +8087,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						}
 						else if( [[annot objectAtIndex:j] isEqualToString: @"PatientName"])
 						{
-							if( annotFull == ANNOTATIONS && [[dcmFilesList objectAtIndex: 0] valueForKeyPath:@"series.study.name"])
+							if( annotFull == annotationType && [[dcmFilesList objectAtIndex: 0] valueForKeyPath:@"series.study.name"])
 								[tempString appendString: [[dcmFilesList objectAtIndex: 0] valueForKeyPath:@"series.study.name"]];
 						}
 						else if( fullText)
@@ -8454,7 +8458,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (void) drawRect:(NSRect)aRect withContext:(NSOpenGLContext *)ctx
 {
 	NSRect savedDrawingFrameRect;
-	long clutBars = CLUTBARS, annotations = ANNOTATIONS;
+	long clutBars = CLUTBARS, annotations = annotationType;
 	BOOL frontMost = NO, is2DViewer = [self is2DViewer];
 	float sf = self.window.backingScaleFactor;
     
