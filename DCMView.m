@@ -6116,12 +6116,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 }
 
-- (void) setSyncRelativeDiff: (float) v
-{
-	syncRelativeDiff = v;
-	NSLog(@"sync relative: %2.2f", syncRelativeDiff);
-}
-
 + (void) computePETBlendingCLUT
 {
 	if( PETredTable != nil) free( PETredTable);
@@ -6751,13 +6745,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 										if( registeredViewer == NO)
 										{
 											// Manual sync
-											if( same3DReferenceWorld == NO || syncSeriesIndex != -1)
+											if( same3DReferenceWorld == NO)
 											{						
-												if( [otherView syncSeriesIndex] != -1 && [otherView syncSeriesIndex] < [[otherView dcmPixList] count] && syncSeriesIndex < dcmPixList.count)
+												if( [otherView syncSeriesIndex] != -1 && syncSeriesIndex != -1)
 												{
-													slicePosition -= [(DCMPix*)[dcmPixList objectAtIndex: syncSeriesIndex] sliceLocation];
+													slicePosition -= (syncRelativeDiff - otherView.syncRelativeDiff);
 													
-													fdiff = slicePosition - (loc - [(DCMPix*)[[otherView dcmPixList] objectAtIndex: [otherView syncSeriesIndex]] sliceLocation]);
+													fdiff = slicePosition - loc;
 												}
 												else if( [[NSUserDefaults standardUserDefaults] boolForKey:@"SAMESTUDY"]) noSlicePosition = YES;
 											}

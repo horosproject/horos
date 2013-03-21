@@ -7223,37 +7223,14 @@ return YES;
                 
                 if( [previousStudyInstanceUID isEqualToString: [[d objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"]])
                 {
-                    if( SyncButtonBehaviorIsBetweenStudies && SYNCSERIES) // Move to overlapping area between old and new series
-                    {
+                    if( SyncButtonBehaviorIsBetweenStudies && SYNCSERIES)
                         wasSyncButtonBehaviorIsBetweenStudies = YES;
-                        
-                        float previousLocations[ 3] = {0, 0, 0}; // Current, Start, End
-                        
-                        previousLocations[ 0] = [[imageView curDCM] sliceLocation];
-                        previousLocations[ 1] = [(DCMPix*)[pixList[ 0] objectAtIndex:0] sliceLocation];
-                        previousLocations[ 2] = [(DCMPix*)[pixList[ 0] lastObject] sliceLocation];
-                        
-                        float newStart = [[[f objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue];
-                        float newEnd = [[[f objectAtIndex: (long)[f count]-1] valueForKey:@"sliceLocation"] floatValue];
-                        
-                        for( int u = 0; u < 3; u++)
-                        {
-                            if( previousLocations[ u] > newStart && previousLocations[ u] < newEnd)
-                            {
-                                switch( u)
-                                {
-                                    case 0: break;
-                                    case 1: [imageView setIndex: 0]; [imageView sendSyncMessage: 0];   break;
-                                    case 2: [imageView setIndex: (long)[pixList[ 0] count]-1]; [imageView sendSyncMessage: 0]; break;
-                                }
-                            }
-                        }
-                    }
                 }
                 
-                previousLocation = [[imageView curDCM] sliceLocation];
+                if( wasSyncButtonBehaviorIsBetweenStudies == NO)
+                    [self turnOffSyncSeriesBetweenStudies: self];
                 
-                [self turnOffSyncSeriesBetweenStudies: self];
+                previousLocation = [[imageView curDCM] sliceLocation];
 			}
 			// Check if another post-processing viewer is open : we CANNOT release the fVolumePtr -> OsiriX WILL crash
 			
@@ -7552,11 +7529,6 @@ return YES;
                                             [imageView setIndex: index];
                                             [self adjustSlider];
                                             keepFusion = YES;
-                                            
-                                            // Try to keep the same syncOffset if manual syncing between different studies
-                                            
-                                            if( wasSyncButtonBehaviorIsBetweenStudies)
-                                                reactivateManualSyncing = YES;
                                         }
                                     }
                                 }
@@ -7729,9 +7701,6 @@ return YES;
 		if( v != self)
 			[v propagateSettings];
 	}
-    
-    if( reactivateManualSyncing)
-        [self performSelector: @selector( SyncSeries:) withObject: self afterDelay: 0.1];
     
 #ifndef OSIRIX_LIGHT
 	[[OSIEnvironment sharedEnvironment] viewerControllerDidChangeData:self];
@@ -15251,10 +15220,11 @@ int i,j,l;
 		{
 			NSNumber *sliceLocation = [[note userInfo] objectForKey:@"sliceLocation"];
 			float offset = [(DCMPix*)[[imageView dcmPixList] objectAtIndex:[imageView  curImage]] sliceLocation] - [sliceLocation floatValue];
+            
 			[imageView setSyncRelativeDiff:offset];
 			[[self findSyncSeriesButton] setImage: [NSImage imageNamed: @"SyncLock.pdf"]];
 			
-			[imageView setSyncSeriesIndex: [imageView curImage]];
+			[imageView setSyncSeriesIndex: 0];
 		}
 		else
 		{
@@ -15294,7 +15264,8 @@ int i,j,l;
 		
         float sliceLocation =  [(DCMPix*)[[imageView dcmPixList] objectAtIndex:[imageView  curImage]] sliceLocation];
         NSDictionary *userInfo = [NSDictionary dictionaryWithObject: [NSNumber numberWithFloat:sliceLocation] forKey:@"sliceLocation"];
-        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixSyncSeriesNotification object:nil userInfo: userInfo];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixSyncSeriesNotification object: self userInfo: userInfo];
 	}
 	else
 	{
