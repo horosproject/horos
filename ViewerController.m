@@ -4437,7 +4437,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                     NSMutableAttributedString *finalString = [[[NSMutableAttributedString alloc] initWithString: [components componentsJoinedByString:@"\r"]] autorelease];
                     
                     NSMutableDictionary *attribs = [NSMutableDictionary dictionary];
-                    [attribs setObject: [NSFont boldSystemFontOfSize: 12] forKey: NSFontAttributeName];
+                    [attribs setObject: [NSFont boldSystemFontOfSize: 15] forKey: NSFontAttributeName];
                     
                     NSArray *colors = ViewerController.studyColors;
                     NSColor *bkgColor = nil;
