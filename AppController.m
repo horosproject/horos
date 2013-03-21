@@ -5153,6 +5153,8 @@ static BOOL initialized = NO;
 	
 	if( [viewersList count] > 0 && keyWindow >= 0)
 	{
+        [DCMView setDontListenToSyncMessage: YES];
+        
 		[[[viewersList objectAtIndex: keyWindow] window] makeKeyAndOrderFront:self];
 		[[viewersList objectAtIndex: keyWindow] propagateSettings];
 		
@@ -5184,6 +5186,8 @@ static BOOL initialized = NO;
 			[[viewersList objectAtIndex: keyWindow] syncThumbnails];
         
 		NSEnableScreenUpdates();
+        
+        [DCMView setDontListenToSyncMessage: NO];
 	}
 }
 

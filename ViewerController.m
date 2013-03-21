@@ -7187,7 +7187,6 @@ return YES;
 	{
 		@try 
 		{
-            BOOL wasSyncButtonBehaviorIsBetweenStudies = NO;
             BOOL equalVector = YES;
             BOOL nonZeroVector = NO;
             
@@ -7221,6 +7220,8 @@ return YES;
                         nonZeroVector = YES;
                 }
                 
+                BOOL wasSyncButtonBehaviorIsBetweenStudies = NO;
+                
                 if( [previousStudyInstanceUID isEqualToString: [[d objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"]])
                 {
                     if( SyncButtonBehaviorIsBetweenStudies && SYNCSERIES)
@@ -7230,7 +7231,7 @@ return YES;
                 if( wasSyncButtonBehaviorIsBetweenStudies == NO)
                     [self turnOffSyncSeriesBetweenStudies: self];
                 
-                previousLocation = [[imageView curDCM] sliceLocation];
+                previousLocation = [[[imageView imageObj] sliceLocation] floatValue];
 			}
 			// Check if another post-processing viewer is open : we CANNOT release the fVolumePtr -> OsiriX WILL crash
 			
@@ -7504,7 +7505,7 @@ return YES;
                                         start = temp;
                                     }
                                     
-                                    if( previousLocation > start && previousLocation < end)
+                                    if( previousLocation >= start && previousLocation <= end)
                                     {
                                         long	index = 0;
                                         float   smallestdiff = -1, fdiff;

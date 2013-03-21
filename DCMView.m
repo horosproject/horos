@@ -61,7 +61,7 @@
 static		float						deg2rad = M_PI / 180.0; 
 static		unsigned char				*PETredTable = nil, *PETgreenTable = nil, *PETblueTable = nil;
 static		BOOL						NOINTERPOLATION = NO, SOFTWAREINTERPOLATION = NO, IndependentCRWLWW, pluginOverridesMouse = NO;  // Allows plugins to override mouse click actions.
-			BOOL						FULL32BITPIPELINE = NO;
+			BOOL						FULL32BITPIPELINE = NO, gDontListenToSyncMessage = NO;
 			int							CLUTBARS, ANNOTATIONS = -999, SOFTWAREINTERPOLATION_MAX, DISPLAYCROSSREFERENCELINES = YES;
 static		BOOL						gClickCountSet = NO, avoidSetWLWWRentry = NO;
 static		NSDictionary				*_hotKeyDictionary = nil, *_hotKeyModifiersDictionary = nil;
@@ -510,6 +510,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	
 	return used;
+}
+
++ (void) setDontListenToSyncMessage: (BOOL) v
+{
+    gDontListenToSyncMessage = v;
 }
 
 + (BOOL) intersectionBetweenTwoLinesA1:(NSPoint) a1 A2:(NSPoint) a2 B1:(NSPoint) b1 B2:(NSPoint) b2 result:(NSPoint*) r
@@ -6576,6 +6581,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 -(void) sync:(NSNotification*)note
 {
+    if( gDontListenToSyncMessage)
+        return;
+    
 	if (![[[note object] superview] isEqual:[self superview]] && [self is2DViewer])
 	{
 		int prevImage = curImage;
@@ -6976,7 +6984,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (void)setSyncro:(short) s
 {
 	syncro = s;
-	
 	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixSyncSeriesNotification object:nil userInfo: nil];
 }
 

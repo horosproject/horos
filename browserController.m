@@ -10880,8 +10880,8 @@ static BOOL needToRezoom;
 					}
 					//opening images refered to in viewerPix[0] in the adequate viewer
 					
-					int copySyncro = [DCMView syncro];
-					[DCMView setSyncro: syncroOFF];
+                    [DCMView setDontListenToSyncMessage: YES];
+                    
 					BOOL copyCOPYSETTINGS = [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGS"];
 					[[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"COPYSETTINGS"];
 					
@@ -10956,7 +10956,7 @@ static BOOL needToRezoom;
 					}
 					else [[NSUserDefaults standardUserDefaults] setBool: copyCOPYSETTINGS forKey:@"COPYSETTINGS"];
 					
-					[DCMView setSyncro: copySyncro];
+					[DCMView setDontListenToSyncMessage: NO];
 					
 					[viewerPix[0] release];
 					[correspondingObjects release];
