@@ -2188,6 +2188,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (void) dealloc
 {
 	NSLog(@"DCMView released");
+    [[NSUserDefaults standardUserDefaults] removeObserver:self forKeyPath:@"ANNOTATIONS"];
     
 	[self prepareToRelease];
 	
@@ -6209,6 +6210,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	suppress_labels = NO;
     
     annotationType = [[NSUserDefaults standardUserDefaults] integerForKey:@"ANNOTATIONS"];
+    [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"ANNOTATIONS" options:NSKeyValueObservingOptionNew context:nil];
 	
 //	NSOpenGLPixelFormatAttribute attrs[] =
 //    {
@@ -6944,6 +6946,19 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	if( ww)
 		[self setWLWW: wl :ww];
+}
+
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"ANNOTATIONS"])
+    {
+        int newValue = [[change objectForKey:NSKeyValueChangeNewKey] intValue];
+        if (newValue != annotationType)
+        {
+            self.annotationType = newValue;
+            [self setNeedsDisplay:YES];
+        }
+    }
 }
 
 -(void) barMenu:(id) sender
@@ -12067,6 +12082,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		_imageColumns = columns;
 		isKeyView = NO;
         timeIntervalForDrag = 1.0;
+        annotationType = [[NSUserDefaults standardUserDefaults] integerForKey:@"ANNOTATIONS"];
         
 		[self setAutoresizingMask:NSViewMinXMargin];
 		
