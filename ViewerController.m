@@ -4195,6 +4195,10 @@ static volatile int numberOfThreadsForRelisce = 0;
     return [NSColor colorWithCalibratedRed:249./255 green:240./255 blue:140./255 alpha:1];
 }
 
++ (NSColor*)_differentStudyColor { // gray
+    return [NSColor colorWithCalibratedRed:0.55 green:0.55 blue:0.55 alpha:1];
+}
+
 - (void) buildMatrixPreview: (BOOL) showSelected
 {
 	if( [[self window] isVisible] == NO) return;	//we will do it in checkBuiltMatrixPreview : faster opening !
@@ -4360,9 +4364,14 @@ static volatile int numberOfThreadsForRelisce = 0;
                     curStudy = study;
 #endif
                 
+                if( [[curStudy valueForKey: @"studyInstanceUID"] isEqualToString: study.studyInstanceUID])
+                    [cell setBackgroundColor: nil];
+                else
+                    [cell setBackgroundColor: [[self class] _differentStudyColor]];
+                
                 NSArray *series = [seriesArray objectAtIndex: curStudyIndex];
                 NSArray *images = nil;
-
+                
                 if( [curStudy isKindOfClass: [DicomStudy class]])
                 {
                     images = [[BrowserController currentBrowser] imagesArray: curStudy preferredObject: oAny];
@@ -4489,8 +4498,6 @@ static volatile int numberOfThreadsForRelisce = 0;
                     [cell setImagePosition:NSImageOverlaps];
                     [cell setImageScaling:NSImageScaleNone];
                     
-                   // [cell setBackgroundColor: [NSColor whiteColor]];
-                    
                     index++;
                 }
                 #endif
@@ -4503,15 +4510,14 @@ static volatile int numberOfThreadsForRelisce = 0;
                         
                         NSButtonCell *cell = [previewMatrix cellAtRow: index column:0];
                         
-                        //                            [cell setTransparent: NO];
-                        //                            [cell setBezelStyle: NSShadowlessSquareBezelStyle];
+                        if( [[curStudy valueForKey: @"studyInstanceUID"] isEqualToString: study.studyInstanceUID])
+                            [cell setBackgroundColor: nil];
+                        else
+                            [cell setBackgroundColor: [[self class] _differentStudyColor]];
+                        
                         [cell setRepresentedObject: [O2ViewerThumbnailsMatrixRepresentedObject object:curSeries]];
                         [cell setFont:[NSFont systemFontOfSize:8.5]];
-                        //                            [cell setImagePosition: NSImageBelow];
                         [cell setAction: @selector(matrixPreviewPressed:)];
-                        //                            [cell setTarget: self];
-                        //                            [cell setButtonType:NSMomentaryPushInButton];
-                        //                            [cell setEnabled:YES];
                         [cell setLineBreakMode: NSLineBreakByCharWrapping];
                         
                         NSString *name = [curSeries valueForKey:@"name"];
@@ -4569,23 +4575,14 @@ static volatile int numberOfThreadsForRelisce = 0;
                         if( [viewerSeries containsObject: curSeries]) // Red
                         {
                             [cell setBackgroundColor:[[self class] _selectedItemColor]];
-                            
-                            //[cell setBordered: NO];
                         }
                         else if( [[self blendingController] currentSeries] == curSeries) // Green
                         {
                             [cell setBackgroundColor: [[self class] _fusionedItemColor]];
-                            //[cell setBordered: NO];
                         }
                         else if( [displayedSeries containsObject: curSeries]) // Yellow
                         {
                             [cell setBackgroundColor: [[self class] _openItemColor]];
-                            //[cell setBordered: NO];
-                        }
-                        else
-                        {
-                            //                                [cell setBackgroundColor:nil];
-                            // [cell setBordered: YES];
                         }
                         
                         if( visible)
