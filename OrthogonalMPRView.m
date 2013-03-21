@@ -23,7 +23,7 @@
 #import "Notifications.h"
 #import "NSUserDefaultsController+OsiriX.h"
 
-extern int ANNOTATIONS;
+//extern int ANNOTATIONS;
 
 @implementation OrthogonalMPRView
 
@@ -524,7 +524,7 @@ extern int ANNOTATIONS;
 		glDisable(GL_BLEND);
 	}
 	
-	if (ANNOTATIONS != annotNone && stringID == nil)
+	if (annotationType != annotNone && stringID == nil)
 	{
 		glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
 		glScalef (2.0f /(xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width), -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height), 1.0f); // scale to port per pixel scale

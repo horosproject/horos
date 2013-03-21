@@ -62,7 +62,7 @@ static		float						deg2rad = M_PI / 180.0;
 static		unsigned char				*PETredTable = nil, *PETgreenTable = nil, *PETblueTable = nil;
 static		BOOL						NOINTERPOLATION = NO, SOFTWAREINTERPOLATION = NO, IndependentCRWLWW, pluginOverridesMouse = NO;  // Allows plugins to override mouse click actions.
 			BOOL						FULL32BITPIPELINE = NO;
-			int							CLUTBARS, ANNOTATIONS = -999, SOFTWAREINTERPOLATION_MAX, DISPLAYCROSSREFERENCELINES = YES;
+			int							CLUTBARS, /*ANNOTATIONS = -999,*/ SOFTWAREINTERPOLATION_MAX, DISPLAYCROSSREFERENCELINES = YES;
 static		BOOL						gClickCountSet = NO, avoidSetWLWWRentry = NO;
 static		NSDictionary				*_hotKeyDictionary = nil, *_hotKeyModifiersDictionary = nil;
 static		NSRecursiveLock				*drawLock = nil;
@@ -644,37 +644,36 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	IndependentCRWLWW = [[NSUserDefaults standardUserDefaults] boolForKey:@"IndependentCRWLWW"];
 	CLUTBARS = [[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
 	
-	int previousANNOTATIONS = ANNOTATIONS;
-	ANNOTATIONS = [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
-	
-	BOOL reload = NO;
-	
-	if( previousANNOTATIONS != ANNOTATIONS)
-	{
-		for( ViewerController *v in [ViewerController getDisplayed2DViewers])
-		{
-			[v refresh];
-			
-			NSArray	*relatedViewers = [[AppController sharedAppController] FindRelatedViewers: [v pixList]];
-			for( NSWindowController *r in relatedViewers)
-				[[r window] display];
-		}
-		
-		if( reload) [[BrowserController currentBrowser] refreshMatrix: self];		// This will refresh the DCMView of the BrowserController
-	}
-	else
-	{
-		for( ViewerController *v in [ViewerController getDisplayed2DViewers])
-		{
-			[[[v window] contentView] setNeedsDisplay: YES];
-		}
-	}
+//	int previousANNOTATIONS = ANNOTATIONS;
+//	ANNOTATIONS = [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
+//	
+//	BOOL reload = NO;
+//	
+//	if( previousANNOTATIONS != ANNOTATIONS)
+//	{
+//		for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+//		{
+//			[v refresh];
+//			
+//			NSArray	*relatedViewers = [[AppController sharedAppController] FindRelatedViewers: [v pixList]];
+//			for( NSWindowController *r in relatedViewers)
+//				[[r window] display];
+//		}
+//		
+//		if( reload) [[BrowserController currentBrowser] refreshMatrix: self];		// This will refresh the DCMView of the BrowserController
+//	}
+//	else
+//	{
+//		for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+//		{
+//			[[[v window] contentView] setNeedsDisplay: YES];
+//		}
+//	}
 }
 
 +(void) setCLUTBARS:(int) c ANNOTATIONS:(int) a
 {
 	CLUTBARS = c;
-	ANNOTATIONS = a;
 	
 	BOOL reload = NO;
 	
@@ -2746,7 +2745,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			curImage = (long)[dcmPixList count]-1;
 		else if (c == 9)	// Tab key
 		{
-			int a = ANNOTATIONS + 1;
+			int a = annotationType + 1;
 			if( a > annotFull) a = 0;
 			
 			switch( a)
@@ -2771,6 +2770,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			[[NSUserDefaults standardUserDefaults] setInteger: a forKey: @"ANNOTATIONS"];
 			[DCMView setDefaults];
             annotationType = a;
+//            ANNOTATIONS = a;
 	
 			NSNotificationCenter *nc;
 			nc = [NSNotificationCenter defaultCenter];
