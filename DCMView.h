@@ -299,6 +299,8 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 //	LoupeController *loupeController;
     
     GLString *studyDateBox;
+    
+    int annotationType;
 }
 
 @property NSRect drawingFrameRect;
@@ -338,6 +340,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 @property BOOL volumicSeries;
 @property (nonatomic) NSTimeInterval timeIntervalForDrag;
 @property(readonly) BOOL isKeyView, mouseDragging;
+@property int annotationType;
 
 + (BOOL) noPropagateSettingsInSeriesForModality: (NSString*) m;
 + (void) purgeStringTextureCache;
