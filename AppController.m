@@ -4747,6 +4747,17 @@ static BOOL initialized = NO;
 	
 	BOOL identical = YES;
 	
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"tileWindowsOrderByStudyDate"])
+    {
+        [viewersList sortUsingComparator: ^NSComparisonResult(id obj1, id obj2)
+        {
+            NSDate *date1 = [[obj1 currentStudy] date];
+            NSDate *date2 = [[obj2 currentStudy] date];
+            
+            return [date2 compare: date1];
+        }];
+    }
+    
 	if( keepSameStudyOnSameScreen)
 	{
 		// Are there different studies
