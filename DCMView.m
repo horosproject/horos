@@ -515,6 +515,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 + (void) setDontListenToSyncMessage: (BOOL) v
 {
     gDontListenToSyncMessage = v;
+    
+    if( gDontListenToSyncMessage)
+        [[[ViewerController frontMostDisplayed2DViewer] imageView] sendSyncMessage: 0];
 }
 
 + (BOOL) intersectionBetweenTwoLinesA1:(NSPoint) a1 A2:(NSPoint) a2 B1:(NSPoint) b1 B2:(NSPoint) b2 result:(NSPoint*) r
@@ -7696,7 +7699,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             if( studyDateBox)
             {
                 glColor4f( 1.0, 1.0, 1.0, 1.0);
-                [studyDateBox drawAtPoint: NSMakePoint( size.size.width-2 -colorBoxSize+1, size.size.height-2 -colorBoxSize+1) view: self];
+                [studyDateBox drawAtPoint: NSMakePoint( 5*sf, 4*sf) view: self];
             }
 		}
 		else colorBoxSize = 0;
@@ -7709,7 +7712,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		[xRasterInit setObject:[NSNumber numberWithInt:6*sf] forKey:@"LowerLeft"];
 		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width-2*sf] forKey:@"TopRight"];
 		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width-2*sf] forKey:@"MiddleRight"];
-		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width-2*sf - colorBoxSize] forKey:@"LowerRight"];
+		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width-2*sf] forKey:@"LowerRight"];
 		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width/2] forKey:@"TopMiddle"];
 		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width/2] forKey:@"LowerMiddle"];
 
@@ -8100,23 +8103,39 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					[tempString4 setString:[tempString4 stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]];
 
 					if(![tempString isEqualToString:@""])
-					{	
-						[self DrawNSStringGL:tempString :fontList :xRaster :yRaster align:[[align objectForKey:key] intValue] useStringTexture:useStringTexture];
+					{
+                        long xAdd = 0;
+                        if( [key isEqualToString: @"TopLeft"] && yRaster-increment < colorBoxSize+2*sf)
+                            xAdd = colorBoxSize;
+                        
+						[self DrawNSStringGL:tempString :fontList :xRaster+xAdd :yRaster align:[[align objectForKey:key] intValue] useStringTexture:useStringTexture];
 						yRaster += increment;
 					}
 					if(![tempString2 isEqualToString:@""])
 					{
-						[self DrawNSStringGL:tempString2 :fontList :xRaster :yRaster align:[[align objectForKey:key] intValue] useStringTexture:useStringTexture];
+                        long xAdd = 0;
+                        if( [key isEqualToString: @"TopLeft"] && yRaster-increment < colorBoxSize+2*sf)
+                            xAdd = colorBoxSize;
+                        
+						[self DrawNSStringGL:tempString2 :fontList :xRaster+xAdd :yRaster align:[[align objectForKey:key] intValue] useStringTexture:useStringTexture];
 						yRaster += increment;
 					}
 					if(![tempString3 isEqualToString:@""])
 					{
-						[self DrawNSStringGL:tempString3 :fontList :xRaster :yRaster align:[[align objectForKey:key] intValue] useStringTexture:useStringTexture];
+                        long xAdd = 0;
+                        if( [key isEqualToString: @"TopLeft"] && yRaster-increment < colorBoxSize+2*sf)
+                            xAdd = colorBoxSize;
+                        
+						[self DrawNSStringGL:tempString3 :fontList :xRaster+xAdd :yRaster align:[[align objectForKey:key] intValue] useStringTexture:useStringTexture];
 						yRaster += increment;
 					}
 					if(![tempString4 isEqualToString:@""])
 					{
-						[self DrawNSStringGL:tempString4 :fontList :xRaster :yRaster align:[[align objectForKey:key] intValue] useStringTexture:useStringTexture];
+                        long xAdd = 0;
+                        if( [key isEqualToString: @"TopLeft"] && yRaster-increment < colorBoxSize+2*sf)
+                            xAdd = colorBoxSize;
+                        
+						[self DrawNSStringGL:tempString4 :fontList :xRaster+xAdd :yRaster align:[[align objectForKey:key] intValue] useStringTexture:useStringTexture];
 						yRaster += increment;
 					}
 				}
@@ -8135,7 +8154,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		} // for k
 		
 		yRaster = size.size.height-2;
-		xRaster = size.size.width-2 -colorBoxSize;
+		xRaster = size.size.width-2;
 		if( fullText)
 			[self DrawNSStringGL: @"Made In OsiriX" :fontList :xRaster :yRaster rightAlignment:YES useStringTexture:YES];
      }

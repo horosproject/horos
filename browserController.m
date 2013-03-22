@@ -10957,7 +10957,7 @@ static BOOL needToRezoom;
 					else [[NSUserDefaults standardUserDefaults] setBool: copyCOPYSETTINGS forKey:@"COPYSETTINGS"];
 					
 					[DCMView setDontListenToSyncMessage: NO];
-					
+                    
 					[viewerPix[0] release];
 					[correspondingObjects release];
 				}
