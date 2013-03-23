@@ -950,9 +950,22 @@ void createSwfMovie(NSArray* inputFiles, NSString* path) {
 	SWFDisplayItem* controllerBarDisplayItem = swf->add(controllerBar);
 	controllerBarDisplayItem->moveTo(ControllerBarRect.origin.x, ControllerBarRect.origin.y);
 	controllerBarDisplayItem->scaleTo(ControllerBarRect.size.width, ControllerBarRect.size.height);	
-	
-	// TODO: play/pause
-	
+
+    // Click in image to play/stop
+    SWFShape* button = new SWFShape();
+    button->setRightFillStyle(SWFFillStyle::SolidFillStyle(0,50,0,0));
+    button->drawLine(swfSize.width,0);
+    button->drawLine(0,swfSize.height-ControllerHeight);
+    button->drawLine(-swfSize.width,0);
+    button->drawLine(0,-swfSize.height-ControllerHeight);
+    
+    SWFButton* playStop = new SWFButton();
+	playStop->addShape( button, SWFBUTTON_HIT|SWFBUTTON_UP|SWFBUTTON_DOWN|SWFBUTTON_OVER);
+	playStop->addAction(new SWFAction("if( playing == 1) playing = 0; else playing = 1; if( playing) play(); else stop();"), SWFBUTTON_MOUSEDOWN);
+    SWFDisplayItem* playItemDI = swf->add(playStop);
+    playItemDI->setName("playItemDI");
+    playItemDI->moveTo(0, 0);
+    
 	// animation
 	
 	for (int i = 0; i < inputFiles.count; ++i) {
