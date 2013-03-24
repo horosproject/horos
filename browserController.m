@@ -4271,8 +4271,7 @@ static NSConditionLock *threadLock = nil;
                             
                             if( [self.comparativePatientUID compare: studySelected.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
                             {
-                                [self performSelectorOnMainThread: @selector(refreshComparativeStudies:) withObject: mergedStudies waitUntilDone: NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
-                                [self performSelectorOnMainThread: @selector( checkIfLocalStudyHasMoreOrSameNumberOfImagesOfADistantStudy:) withObject: nil waitUntilDone: NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+                                [self performSelectorOnMainThread: @selector(refreshComparativeStudiesAndCheck:) withObject: mergedStudies waitUntilDone: NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
                             }
                         }
                         @catch (NSException* e)
@@ -4317,6 +4316,12 @@ static NSConditionLock *threadLock = nil;
     
     [[NSNotificationCenter defaultCenter] postNotificationName: NSTableViewSelectionDidChangeNotification object:albumTable userInfo: nil];
     [[NSNotificationCenter defaultCenter] postNotificationName: NSOutlineViewSelectionDidChangeNotification object:databaseOutline userInfo: nil];
+}
+
+- (void) refreshComparativeStudiesAndCheck:(NSArray *)newStudies
+{
+    [self refreshComparativeStudies: newStudies];
+    [self checkIfLocalStudyHasMoreOrSameNumberOfImagesOfADistantStudy: nil];
 }
 
 - (void) refreshComparativeStudies: (NSArray*) newStudies
