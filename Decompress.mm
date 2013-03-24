@@ -95,7 +95,7 @@ int compressionForModality( NSArray *array, NSArray *arrayLow, int limit, NSStri
 	return [[[s objectAtIndex: 0] valueForKey: @"compression"] intValue];
 }
 
-void createSwfMovie(NSArray* inputFiles, NSString* path);
+void createSwfMovie(NSArray* inputFiles, NSString* path, float frameRate);
 
 int main(int argc, const char *argv[])
 {
@@ -722,7 +722,13 @@ int main(int argc, const char *argv[])
 			{ // SWF!!
 				NSString* inputDir = [NSString stringWithUTF8String:argv[fileListFirstItemIndex++]];
 				NSArray* inputFiles = [inputDir stringsByAppendingPaths:[[NSFileManager defaultManager] contentsOfDirectoryAtPath:inputDir error:NULL]];
-				createSwfMovie(inputFiles, path);
+                
+                float frameRate = 0;
+                
+                if( fileListFirstItemIndex < argc)
+                    frameRate = [[NSString stringWithUTF8String: argv[ fileListFirstItemIndex]] floatValue];
+                
+				createSwfMovie(inputFiles, path, frameRate);
                 
                 [[NSFileManager defaultManager] removeItemAtPath: inputDir error: nil];
 			}
@@ -833,7 +839,7 @@ int main(int argc, const char *argv[])
 	return 0;
 }
 
-void createSwfMovie(NSArray* inputFiles, NSString* path) {
+void createSwfMovie(NSArray* inputFiles, NSString* path, float frameRate) {
 	if (path)
 		[[NSFileManager defaultManager] removeItemAtPath:path error:NULL];
 	
@@ -841,7 +847,10 @@ void createSwfMovie(NSArray* inputFiles, NSString* path) {
 	Ming_setSWFCompression(9); // 9 = maximum compression
 	SWFMovie* swf = new SWFMovie(7);
 	swf->setBackground(0x88, 0x88, 0x88);
-	swf->setRate(10);
+    
+    if( frameRate < 1)
+        frameRate = 10;
+	swf->setRate(frameRate);
 	
 	BOOL sizeSet = NO;
 	NSSize swfSize;
