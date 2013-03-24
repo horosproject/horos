@@ -923,7 +923,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 //	if (!user || user.uploadDICOM.boolValue)
 //		[self resetPOST];
 	
-    [self.independentDicomDatabase.managedObjectContext reset]; //We want fresh data : from the persistentstore
+//    [self.independentDicomDatabase.managedObjectContext reset]; //We want fresh data : from the persistentstore
     
 	NSMutableArray* albums = [NSMutableArray array];
 	for (DicomAlbum* album in self.independentDicomDatabase.albums)
@@ -952,7 +952,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 
 -(void)processStudyHtml
 {
-    [self.independentDicomDatabase.managedObjectContext reset]; //We want fresh data : from the persistentstore
+//    [self.independentDicomDatabase.managedObjectContext reset]; //We want fresh data : from the persistentstore
     
 	DicomStudy* study = [self objectWithXID:[parameters objectForKey:@"xid"]];
 	
