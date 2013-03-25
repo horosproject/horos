@@ -260,6 +260,12 @@ CF_EXTERN_C_END
  */
 - (NSArray *)convexHull; // N3Vectors stored in NSValue objects. The mask is inside of these points
 
+/** Returns the center of mass of the mask.
+ 
+ @return The center of mass of the mask.
+ */
+- (N3Vector)centerOfMass;
+
 
 @end
 

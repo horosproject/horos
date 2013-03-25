@@ -226,8 +226,16 @@
     return nil;
 }
 
+- (N3Vector)centerOfMass
+{
+    OSIROIMask *roiMask;
+    roiMask = [self ROIMaskForFloatVolumeData:[self homeFloatVolumeData]];
+    return [roiMask centerOfMass];
+}
+
 - (void)drawSlab:(OSISlab)slab inCGLContext:(CGLContextObj)glContext pixelFormat:(CGLPixelFormatObj)pixelFormat dicomToPixTransform:(N3AffineTransform)dicomToPixTransform;
 {
+    
 }
 
 @end
