@@ -369,9 +369,11 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
         @throw e;
     } @finally {
         if (_mode == DONE)
+        {
             if (self.writeBufferSize)
                 self.closeWhenDoneSending = YES;
             else [self close];
+        }
     }
 }
 
