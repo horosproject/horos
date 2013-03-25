@@ -115,7 +115,7 @@ extern "C"
                     
                     array = [qm queries];
                     
-                    NSLog( @"date: %@ time: %@ count: %d", date, studyTime, array.count);
+//                    NSLog( @"date: %@ time: %@ count: %d", date, studyTime, array.count);
                     
                     NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary: [qm parameters]];
                     
