@@ -31,9 +31,10 @@
 
 - (id)collection;
 - (id)constantValue;
-- (NSString *)function;
-- (NSString *)keyPath;
-- (NSString *)variable;
+- (NSString*)function;
+- (NSString*)keyPath;
+- (NSString*)variable;
+- (NSArray*)arguments;
 
 @end
 
@@ -82,12 +83,25 @@ static NSString* const O2Var1Month = @"NSDATE_MONTH";
 static NSString* const O2Var2Months = @"NSDATE_2MONTHS";
 static NSString* const O2Var3Months = @"NSDATE_3MONTHS";
 static NSString* const O2Var1Year = @"NSDATE_YEAR";
+#define LegacyTimeKey(str) [str substringFromIndex:7]
+#define UnLegacyTimeKey(str) [@"NSDATE_" stringByAppendingString:str]
 
 + (NSArray*)timeKeys {
     NSArray* timeKeys = nil;
     if (!timeKeys)
         timeKeys = [[NSArray alloc] initWithObjects: O2Var1Hour, O2Var6Hours, O2Var12Hours, O2Var1Day, O2Var2Days, O2Var1Week, O2Var1Month, O2Var2Months, O2Var3Months, O2Var1Year, nil];
     return timeKeys;
+}
+
++ (NSArray*)legacyTimeKeys {
+    NSMutableArray* legacyTimeKeys = nil;
+    if (!legacyTimeKeys) {
+        legacyTimeKeys = [[NSMutableArray alloc] init];
+        for (NSString* key in [self timeKeys])
+            [legacyTimeKeys addObject:LegacyTimeKey(key)];
+    }
+    
+    return legacyTimeKeys;
 }
 
 + (O2TimeTag)timeTagFromKey:(NSString*)key {
@@ -1063,14 +1077,14 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
                 case DA:
                 case DT: {
                     if (otype == NSGreaterThanOrEqualToPredicateOperatorType && [[predicate constantValue] isKindOfClass:[NSDate class]])
-                        return 1; // is after
-                    if (otype == NSGreaterThanOrEqualToPredicateOperatorType && [[[self class] timeKeys] containsObject:[predicate variable]])
+                        return 1; // is after DATE
+                    if (otype == NSGreaterThanOrEqualToPredicateOperatorType && ([[[self class] timeKeys] containsObject:[predicate variable]] || ([[predicate function] isEqualToString:@"castObject:toType:"] && [[[[predicate arguments] objectAtIndex:1] constantValue] isEqual:@"NSDate"] && [[[self class] legacyTimeKeys] containsObject:[[[predicate arguments] objectAtIndex:0] variable]])))
                         return 1; // is today & is within
                     if (otype == NSLessThanOrEqualToPredicateOperatorType && [[predicate constantValue] isKindOfClass:[NSDate class]])
                         return 1; // is before
                     if (otype == NSBetweenPredicateOperatorType && 
-                        ([[[predicate collection] objectAtIndex:0] expressionType] == NSVariableExpressionType && [[[[predicate collection] objectAtIndex:0] variable] isEqualToString:O2VarYesterday]) &&
-                        ([[[predicate collection] objectAtIndex:1] expressionType] == NSVariableExpressionType && [[[[predicate collection] objectAtIndex:1] variable] isEqualToString:O2VarToday])) // match "KeyPath between {NSDATE_YESTERDAY, NSDATE_TODAY}" for Yesterday
+                        ([[[[predicate collection] objectAtIndex:0] variable] isEqualToString:O2VarYesterday]) &&
+                        ([[[[predicate collection] objectAtIndex:1] variable] isEqualToString:O2VarToday])) // match "KeyPath between {NSDATE_YESTERDAY, NSDATE_TODAY}" for Yesterday
                         return 1; // is yesterday
                     if (otype == NSEqualToPredicateOperatorType && [[predicate constantValue] isKindOfClass:[NSDate class]])
                         return 1; // is
@@ -1195,12 +1209,14 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
                 
             case DA:
             case DT: {
-                if ([predicate variable] && otype == NSGreaterThanOrEqualToPredicateOperatorType) {
-                    if ([[predicate variable] isEqualToString:O2VarToday])
+                if (otype == NSGreaterThanOrEqualToPredicateOperatorType && ([predicate variable] || [predicate function])) {
+                    if ([[predicate variable] isEqualToString:O2VarToday] || [[[[predicate arguments] objectAtIndex:0] variable] isEqualToString:LegacyTimeKey(O2VarToday)])
                         [self setOperator:O2Today];
-                    else if ([[self class] timeTagFromKey:[predicate variable]]) {
+                    else {
                         [self setOperator:O2Within];
-                        [self setWithin:[[self class] timeTagFromKey:[predicate variable]]];
+                        O2TimeTag tt = [[self class] timeTagFromKey:[predicate variable]];
+                        if (!tt) tt = [[self class] timeTagFromKey:UnLegacyTimeKey([[[predicate arguments] objectAtIndex:0] variable])];
+                        [self setWithin:tt];
                     }
                 } else if (otype == NSBetweenPredicateOperatorType && [[[[predicate collection] objectAtIndex:0] variable] isEqualToString:O2VarYesterday] && [[[[predicate collection] objectAtIndex:1] variable] isEqualToString:O2VarToday]) { // yesterday
                     [self setOperator:O2Yesterday];
@@ -1481,6 +1497,12 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
 - (NSString *)variable {
     if (self.leftExpression.expressionType == NSVariableExpressionType) return self.leftExpression.variable;
     if (self.rightExpression.expressionType == NSVariableExpressionType) return self.rightExpression.variable;
+    return nil;
+}
+
+- (NSArray*)arguments {
+    if (self.leftExpression.expressionType == NSFunctionExpressionType) return self.leftExpression.arguments;
+    if (self.rightExpression.expressionType == NSFunctionExpressionType) return self.rightExpression.arguments;
     return nil;
 }
 
