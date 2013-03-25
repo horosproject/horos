@@ -23,7 +23,9 @@
 {
     N2ConnectionListener* _listener;
 	
-	NSLock				*dicomSendLock;
+    NSNetService* _bonjour;
+    
+	NSLock* dicomSendLock;
 }
 
 //@property(retain) NSString* serviceName;
@@ -39,7 +41,7 @@
 //- (void)netService:(NSNetService *)sender didNotPublish:(NSDictionary *)errorDict;
 //- (void)netServiceDidStop:(NSNetService *)sender;
 
-//- (NSNetService*) netService;
+- (NSNetService*)netService __deprecated;
 
 //- (void)setServiceName:(NSString *) newName;
 //- (NSString *) serviceName;

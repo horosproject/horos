@@ -80,6 +80,8 @@ extern const char *GetPrivateIP();
 
 	[dicomSendLock release];
 //	self.serviceName = NULL;
+    
+    [_bonjour release];
 	
 	[super dealloc];
 }
@@ -127,10 +129,53 @@ extern const char *GetPrivateIP();
             [_listener release];
             _listener = nil;
         }
+        
+        [self updateBonjour];
     } @catch (NSException* e) {
         N2LogExceptionWithStackTrace(e);
     }
 }
+
+- (void)updateBonjour {
+    if (!_bonjour) {
+        // lazily instantiate the NSNetService object that will advertise on our behalf.  Passing in "" for the domain causes the service
+        // to be registered in the default registration domain, which will currently always be "local"
+        _bonjour = [[NSNetService alloc] initWithDomain:@"" type:@"_osirixdb._tcp." name:[NSUserDefaults bonjourSharingName] port:[_listener port]];
+        _bonjour.delegate = self;
+    }
+    
+    NSMutableDictionary* txtrec = [NSMutableDictionary dictionary];
+#define EitherOr(a, b) (a? a : b)
+    [txtrec setObject: EitherOr([[NSUserDefaults standardUserDefaults] stringForKey:@"AETITLE"], @"OSIRIX") forKey:@"AETitle"];
+    [txtrec setObject: EitherOr([[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"], @"11112") forKey:@"port"];
+#undef EitherOr
+    if ([AppController UID])
+        [txtrec setObject:[AppController UID] forKey:@"UID"];
+    
+    if( [_bonjour setTXTRecordData:[NSNetService dataFromTXTRecordDictionary:txtrec]] == NO)
+        NSLog(@"Warning: OsiriX Bonjour net service setTXTRecordData FAILED");
+
+    if (_listener)
+        [_bonjour publish];
+    else [_bonjour stop];
+}
+
+- (NSNetService*)netService { // __deprecated
+    return _bonjour;
+}
+
+- (void)netService:(NSNetService*)sender didNotPublish:(NSDictionary*)errorDict
+{
+	NSLog(@"Warning: OsiriX Bonjour net service did not publish, %@", errorDict);
+    [_bonjour release];
+    _bonjour = nil;
+}
+
+- (void) netServiceDidStop:(NSNetService *)sender
+{
+    NSLog(@"OsiriX Bonjour net service did stop");
+}
+
 
 //- (void)connectionOpened:(NSNotification*)notification {
 //	N2Connection* connection = [[notification userInfo] objectForKey:N2ConnectionListenerOpenedConnection];
