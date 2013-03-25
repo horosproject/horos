@@ -47,6 +47,7 @@
 #import <objc/runtime.h>
 #import "NSPanel+N2.h"
 #ifndef OSIRIX_LIGHT
+#import "BonjourPublisher.h"
 #ifndef MACAPPSTORE
 #import "Reports.h"
 #import <ILCrashReporter/ILCrashReporter.h>
@@ -667,6 +668,7 @@ static NSDate *lastWarningDate = nil;
 @implementation AppController
 
 @synthesize checkAllWindowsAreVisibleIsOff, filtersMenu, windowsTilingMenuRows, windowsTilingMenuColumns, isSessionInactive, dicomBonjourPublisher = BonjourDICOMService, XMLRPCServer;
+@synthesize bonjourPublisher = _bonjourPublisher;
 
 +(BOOL) hasMacOSX1083orHigher
 {
@@ -3718,6 +3720,7 @@ static BOOL initialized = NO;
 	[BrowserController initializeBrowserControllerClass];
 	#ifndef OSIRIX_LIGHT
 	[WebPortal initializeWebPortalClass];
+    _bonjourPublisher = [[BonjourPublisher alloc] init];
 	#endif
 	
 	#ifndef OSIRIX_LIGHT

@@ -424,6 +424,9 @@
 		71353C541469260B00359CAB /* NSDate+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 71353C501469260B00359CAB /* NSDate+N2.mm */; };
 		713A00391467E2DC00194120 /* DicomDir.h in Headers */ = {isa = PBXBuildFile; fileRef = 713A00371467E2DC00194120 /* DicomDir.h */; };
 		713A003A1467E2DC00194120 /* DicomDir.mm in Sources */ = {isa = PBXBuildFile; fileRef = 713A00381467E2DC00194120 /* DicomDir.mm */; };
+		713A26F617003DF900878CAB /* N2Locker.h in Headers */ = {isa = PBXBuildFile; fileRef = 713A26F417003DF900878CAB /* N2Locker.h */; };
+		713A26F717003DF900878CAB /* N2Locker.m in Sources */ = {isa = PBXBuildFile; fileRef = 713A26F517003DF900878CAB /* N2Locker.m */; };
+		713A26F817003F3B00878CAB /* N2Locker.m in Sources */ = {isa = PBXBuildFile; fileRef = 713A26F517003DF900878CAB /* N2Locker.m */; };
 		7147C1881644160800A9D095 /* O2ViewerThumbnailsMatrix.h in Headers */ = {isa = PBXBuildFile; fileRef = 7147C1861644160800A9D095 /* O2ViewerThumbnailsMatrix.h */; };
 		7147C1891644160800A9D095 /* O2ViewerThumbnailsMatrix.h in Headers */ = {isa = PBXBuildFile; fileRef = 7147C1861644160800A9D095 /* O2ViewerThumbnailsMatrix.h */; };
 		7147C18A1644160800A9D095 /* O2ViewerThumbnailsMatrix.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7147C1871644160800A9D095 /* O2ViewerThumbnailsMatrix.mm */; };
@@ -448,6 +451,7 @@
 		71512EA11523552A00B87012 /* DiscMountedAskTheUserDialogController.m in Sources */ = {isa = PBXBuildFile; fileRef = 71512E9C15234F6B00B87012 /* DiscMountedAskTheUserDialogController.m */; };
 		7154B80F14ED5402000EF7E4 /* N2Stuff.h in Headers */ = {isa = PBXBuildFile; fileRef = 7154B80E14ED5402000EF7E4 /* N2Stuff.h */; };
 		7154B81014ED5402000EF7E4 /* N2Stuff.h in Headers */ = {isa = PBXBuildFile; fileRef = 7154B80E14ED5402000EF7E4 /* N2Stuff.h */; };
+		717621E016FB195700803FFD /* BonjourPublisher.m in Sources */ = {isa = PBXBuildFile; fileRef = A99B7E5108858D31004328C0 /* BonjourPublisher.m */; };
 		718416071654022400180467 /* DownArrowGreyRev.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 718416061654022400180467 /* DownArrowGreyRev.pdf */; };
 		718416081654022400180467 /* DownArrowGreyRev.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 718416061654022400180467 /* DownArrowGreyRev.pdf */; };
 		7188E85616301A61006105BE /* KBPopUpToolbarItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7188E85416301A61006105BE /* KBPopUpToolbarItem.h */; };
@@ -9019,7 +9023,6 @@
 		CEC7075110A5C844008935EA /* DicomImage.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE1922C08636FA100DED1F0 /* DicomImage.m */; };
 		CEC7075210A5C844008935EA /* DicomStudy.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9DD280086B35050058DD2A /* DicomStudy.m */; };
 		CEC7075310A5C844008935EA /* DicomSeries.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9DD283086B35050058DD2A /* DicomSeries.m */; };
-		CEC7075410A5C844008935EA /* BonjourPublisher.m in Sources */ = {isa = PBXBuildFile; fileRef = A99B7E5108858D31004328C0 /* BonjourPublisher.m */; };
 		CEC7075510A5C844008935EA /* BonjourBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = A99B7E5508858D4F004328C0 /* BonjourBrowser.m */; };
 		CEC7075610A5C844008935EA /* LogTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = BF17E990088768CA00ECF621 /* LogTableView.m */; };
 		CEC7075910A5C844008935EA /* QueryLogController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE416C808B2612600D4C9CC /* QueryLogController.m */; };
@@ -10142,6 +10145,8 @@
 		71353C501469260B00359CAB /* NSDate+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "NSDate+N2.mm"; path = "nitrogen/Sources/NSDate+N2.mm"; sourceTree = "<group>"; };
 		713A00371467E2DC00194120 /* DicomDir.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DicomDir.h; sourceTree = "<group>"; };
 		713A00381467E2DC00194120 /* DicomDir.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DicomDir.mm; sourceTree = "<group>"; };
+		713A26F417003DF900878CAB /* N2Locker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2Locker.h; path = nitrogen/Sources/N2Locker.h; sourceTree = "<group>"; };
+		713A26F517003DF900878CAB /* N2Locker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = N2Locker.m; path = nitrogen/Sources/N2Locker.m; sourceTree = "<group>"; };
 		7147C1861644160800A9D095 /* O2ViewerThumbnailsMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = O2ViewerThumbnailsMatrix.h; sourceTree = "<group>"; };
 		7147C1871644160800A9D095 /* O2ViewerThumbnailsMatrix.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = O2ViewerThumbnailsMatrix.mm; sourceTree = "<group>"; };
 		714943D014D3008B008BCC08 /* NSHost+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSHost+N2.h"; path = "nitrogen/Sources/NSHost+N2.h"; sourceTree = "<group>"; };
@@ -17109,6 +17114,8 @@
 				59E8352612F9ABAC006B930A /* N2ManagedDatabase.mm */,
 				59DB270214507ADF00E78E03 /* N2MutableUInteger.h */,
 				59DB270314507ADF00E78E03 /* N2MutableUInteger.mm */,
+				713A26F417003DF900878CAB /* N2Locker.h */,
+				713A26F517003DF900878CAB /* N2Locker.m */,
 				4F8A1A791302C6E100A022D9 /* 3DGeometry */,
 				AB10FB1C1129338A009EB238 /* 3rd Party */,
 				AB10FAFD1129338A009EB238 /* Extras */,
@@ -27208,6 +27215,7 @@
 				71EB83CA16DCB7FF00D48646 /* O2DicomPredicateEditorPopUpButton.h in Headers */,
 				71EB83CC16DCB7FF00D48646 /* O2DicomPredicateEditorView.h in Headers */,
 				71EB83D016DCB9AE00D48646 /* N2PopUpMenu.h in Headers */,
+				713A26F617003DF900878CAB /* N2Locker.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -31637,6 +31645,7 @@
 				71EB83CB16DCB7FF00D48646 /* O2DicomPredicateEditorPopUpButton.m in Sources */,
 				71EB83CD16DCB7FF00D48646 /* O2DicomPredicateEditorView.m in Sources */,
 				71EB83D116DCB9AE00D48646 /* N2PopUpMenu.mm in Sources */,
+				713A26F717003DF900878CAB /* N2Locker.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -32301,7 +32310,6 @@
 				CEC7075110A5C844008935EA /* DicomImage.m in Sources */,
 				CEC7075210A5C844008935EA /* DicomStudy.m in Sources */,
 				CEC7075310A5C844008935EA /* DicomSeries.m in Sources */,
-				CEC7075410A5C844008935EA /* BonjourPublisher.m in Sources */,
 				CEC7075510A5C844008935EA /* BonjourBrowser.m in Sources */,
 				CEC7075610A5C844008935EA /* LogTableView.m in Sources */,
 				CEC7075910A5C844008935EA /* QueryLogController.m in Sources */,
@@ -32888,6 +32896,8 @@
 				7188E85916301A61006105BE /* KBPopUpToolbarItem.m in Sources */,
 				71A28B7A1637F0D200489F2A /* DCMWaveform.m in Sources */,
 				7147C18B1644160800A9D095 /* O2ViewerThumbnailsMatrix.mm in Sources */,
+				717621E016FB195700803FFD /* BonjourPublisher.m in Sources */,
+				713A26F817003F3B00878CAB /* N2Locker.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

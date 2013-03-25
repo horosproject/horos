@@ -37,7 +37,7 @@ static BonjourBrowser *currentBrowser = nil;
 	return currentBrowser;
 }
 
--(id)initWithBrowserController:(BrowserController*)bC bonjourPublisher:(BonjourPublisher*)bPub {
+-(id)initWithBrowserController:(BrowserController*)bC {
 	if ((self = [super init])) {
 		OSErr err;       
 		SInt32 osVersion;
@@ -54,7 +54,6 @@ static BonjourBrowser *currentBrowser = nil;
 		[self arrangeServices];
 		
 		interfaceOsiriX = bC;
-		publisher = bPub;
 		
 		//[browser setDelegate:self];
 		

@@ -30,7 +30,9 @@ extern NSString* N2ConnectionListenerOpenedConnection;
 
 @property BOOL threadPerConnection;
 
--(id)initWithPort:(NSInteger)port connectionClass:(Class)classs;
--(id)initWithPath:(NSString*)path connectionClass:(Class)classs;
+- (id)initWithPort:(NSInteger)port connectionClass:(Class)classs;
+- (id)initWithPath:(NSString*)path connectionClass:(Class)classs;
+
+- (in_port_t)port;
 
 @end

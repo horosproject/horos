@@ -93,7 +93,7 @@ extern "C"
 @end
 #endif
 
-@class AppController, ToolbarPanelController;
+@class AppController, ToolbarPanelController, BonjourPublisher;
 
 extern AppController* OsiriX;
 
@@ -130,12 +130,15 @@ extern AppController* OsiriX;
 	
 	int								lastColumns, lastRows, lastCount;
 //	NSMutableArray					*viewersAddresses;
+    
+    BonjourPublisher* _bonjourPublisher;
 }
 
 @property BOOL checkAllWindowsAreVisibleIsOff, isSessionInactive;
 @property (readonly) NSMenu *filtersMenu, *windowsTilingMenuRows, *windowsTilingMenuColumns;
 @property(readonly) NSNetService* dicomBonjourPublisher;
 @property (readonly) XMLRPCInterface *XMLRPCServer;
+@property(readonly) BonjourPublisher* bonjourPublisher;
 
 + (BOOL) isFDACleared;
 + (BOOL) willExecutePlugin;

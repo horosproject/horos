@@ -53,6 +53,7 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 @synthesize closeWhenDoneSending = _closeWhenDoneSending;
 @synthesize closeOnNextSpaceAvailable = _closeOnNextSpaceAvailable;
 @synthesize lastEventTimeInterval;
+@synthesize readBuffer = _inputBuffer;
 
 +(NSData*)sendSynchronousRequest:(NSData*)request toAddress:(NSString*)address port:(NSInteger)port {
 	return [self sendSynchronousRequest:request toAddress:address port:port tls:NO];
@@ -349,10 +350,15 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 //                  std::cerr << std::endl;
 //                  readSizeForThisEvent += length;
                     [_inputBuffer appendBytes:buffer length:length];
-                    @try {
-                        [self handleData:_inputBuffer];
-                    } @catch (NSException* e) {
-                        N2LogExceptionWithStackTrace(e);
+                    if (!_handlingData) {
+                        _handlingData = YES;
+                        @try {
+                            [self handleData:_inputBuffer];
+                        } @catch (NSException* e) {
+                            N2LogExceptionWithStackTrace(e);
+                        } @finally {
+                            _handlingData = NO;
+                        }
                     }
                     
                     if (length < maxLength)
@@ -400,6 +406,10 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 	if (self.status == N2ConnectionStatusOk)	
 		[self trySendingDataNow];
    // NSLog(@"after send attempt the data is %d bytes", _outputBuffer.length);
+}
+
+-(NSInteger)writeBufferSize {
+    return [_outputBuffer length];
 }
 
 -(NSInteger)availableSize {

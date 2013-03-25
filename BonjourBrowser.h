@@ -14,7 +14,6 @@
 
 #import <Cocoa/Cocoa.h>
 #import "BrowserController.h"
-#import "BonjourPublisher.h"
 #import "WaitRendering.h"
 
 /** \brief  Searches and retrieves Bonjour shared databases */
@@ -24,12 +23,11 @@
     NSNetServiceBrowser* browser;
 	NSMutableArray* services;
 	BrowserController* interfaceOsiriX;
-	BonjourPublisher* publisher;
 }
 
 + (BonjourBrowser*) currentBrowser;
 
-- (id) initWithBrowserController: (BrowserController*) bC bonjourPublisher:(BonjourPublisher*) bPub;
+- (id) initWithBrowserController: (BrowserController*) bC;
 
 - (NSMutableArray*) services;
 

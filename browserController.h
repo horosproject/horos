@@ -20,7 +20,7 @@
 
 @class MPR2DController,NSCFDate, DicomStudy;
 @class ViewerController, DicomImage;
-@class BonjourPublisher,BonjourBrowser;
+@class BonjourBrowser;
 @class AnonymizerWindowController,QueryController;
 @class LogWindowController,PreviewView;
 @class MyOutlineView,DCMView,DCMPix;
@@ -111,7 +111,6 @@ extern NSString* O2AlbumDragType;
 	IBOutlet NSArrayController*		_sourcesArrayController;
 	IBOutlet NSTableView*			_sourcesTableView;
 	id								_sourcesHelper;
-	BonjourPublisher				*bonjourPublisher;
 	BonjourBrowser					*bonjourBrowser;
 	
 	IBOutlet NSSlider				*animationSlider;
