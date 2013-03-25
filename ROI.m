@@ -6215,8 +6215,11 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		case tPlain:
 		{
 			float area=0.0;;
-			for( long i = 0; i < textureWidth*textureHeight;i++)
-				if (textureBuffer[i]!=0) area++;
+            if( textureBuffer)
+            {
+                for( long i = 0; i < textureWidth*textureHeight;i++)
+                    if (textureBuffer[i]!=0) area++;
+            }
 			return (area*pixelSpacingX*pixelSpacingY)/100.;
 		}
 		break;

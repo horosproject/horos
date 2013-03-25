@@ -16,6 +16,10 @@
     OSISlab _slab;
     NSString *_name;
     
+    NSColor *_fillColor;
+    NSColor *_strokeColor;
+    CGFloat _strokeThickness;
+    
     OSISlab _cachedSlab;
     N3AffineTransform _cachedDicomToPixTransform;
     N3Vector _cachedMinCorner;

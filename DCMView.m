@@ -61,7 +61,7 @@
 static		float						deg2rad = M_PI / 180.0; 
 static		unsigned char				*PETredTable = nil, *PETgreenTable = nil, *PETblueTable = nil;
 static		BOOL						NOINTERPOLATION = NO, SOFTWAREINTERPOLATION = NO, IndependentCRWLWW, pluginOverridesMouse = NO;  // Allows plugins to override mouse click actions.
-			BOOL						FULL32BITPIPELINE = NO;
+			BOOL						FULL32BITPIPELINE = NO, gDontListenToSyncMessage = NO;
 			int							CLUTBARS, ANNOTATIONS = -999, SOFTWAREINTERPOLATION_MAX, DISPLAYCROSSREFERENCELINES = YES;
 static		BOOL						gClickCountSet = NO, avoidSetWLWWRentry = NO;
 static		NSDictionary				*_hotKeyDictionary = nil, *_hotKeyModifiersDictionary = nil;
@@ -510,6 +510,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	
 	return used;
+}
+
++ (void) setDontListenToSyncMessage: (BOOL) v
+{
+    gDontListenToSyncMessage = v;
+    
+    if( gDontListenToSyncMessage)
+        [[[ViewerController frontMostDisplayed2DViewer] imageView] sendSyncMessage: 0];
 }
 
 + (BOOL) intersectionBetweenTwoLinesA1:(NSPoint) a1 A2:(NSPoint) a2 B1:(NSPoint) b1 B2:(NSPoint) b2 result:(NSPoint*) r
@@ -6116,12 +6124,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 }
 
-- (void) setSyncRelativeDiff: (float) v
-{
-	syncRelativeDiff = v;
-	NSLog(@"sync relative: %2.2f", syncRelativeDiff);
-}
-
 + (void) computePETBlendingCLUT
 {
 	if( PETredTable != nil) free( PETredTable);
@@ -6582,6 +6584,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 -(void) sync:(NSNotification*)note
 {
+    if( gDontListenToSyncMessage)
+        return;
+    
 	if (![[[note object] superview] isEqual:[self superview]] && [self is2DViewer])
 	{
 		int prevImage = curImage;
@@ -6751,13 +6756,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 										if( registeredViewer == NO)
 										{
 											// Manual sync
-											if( same3DReferenceWorld == NO || syncSeriesIndex != -1)
+											if( same3DReferenceWorld == NO)
 											{						
-												if( [otherView syncSeriesIndex] != -1 && [otherView syncSeriesIndex] < [[otherView dcmPixList] count] && syncSeriesIndex < dcmPixList.count)
+												if( [otherView syncSeriesIndex] != -1 && syncSeriesIndex != -1)
 												{
-													slicePosition -= [(DCMPix*)[dcmPixList objectAtIndex: syncSeriesIndex] sliceLocation];
+													slicePosition -= (syncRelativeDiff - otherView.syncRelativeDiff);
 													
-													fdiff = slicePosition - (loc - [(DCMPix*)[[otherView dcmPixList] objectAtIndex: [otherView syncSeriesIndex]] sliceLocation]);
+													fdiff = slicePosition - loc;
 												}
 												else if( [[NSUserDefaults standardUserDefaults] boolForKey:@"SAMESTUDY"]) noSlicePosition = YES;
 											}
@@ -6982,7 +6987,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (void)setSyncro:(short) s
 {
 	syncro = s;
-	
 	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixSyncSeriesNotification object:nil userInfo: nil];
 }
 
@@ -7676,7 +7680,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		int colorBoxSize = 0;
 		
 		if( studyColorR != 0 || studyColorG != 0 || studyColorB != 0)
-			colorBoxSize = 30;
+			colorBoxSize = 30*sf;
 		
 		if( colorBoxSize && stringID == nil && [self is2DViewer] == YES)
 		{
@@ -7695,7 +7699,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             if( studyDateBox)
             {
                 glColor4f( 1.0, 1.0, 1.0, 1.0);
-                [studyDateBox drawAtPoint: NSMakePoint( size.size.width-2 -colorBoxSize+1, size.size.height-2 -colorBoxSize+1) view: self];
+                [studyDateBox drawAtPoint: NSMakePoint( 5*sf, 4*sf) view: self];
             }
 		}
 		else colorBoxSize = 0;
@@ -7708,7 +7712,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		[xRasterInit setObject:[NSNumber numberWithInt:6*sf] forKey:@"LowerLeft"];
 		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width-2*sf] forKey:@"TopRight"];
 		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width-2*sf] forKey:@"MiddleRight"];
-		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width-2*sf - colorBoxSize*sf] forKey:@"LowerRight"];
+		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width-2*sf] forKey:@"LowerRight"];
 		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width/2] forKey:@"TopMiddle"];
 		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width/2] forKey:@"LowerMiddle"];
 
@@ -8099,23 +8103,39 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					[tempString4 setString:[tempString4 stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]];
 
 					if(![tempString isEqualToString:@""])
-					{	
-						[self DrawNSStringGL:tempString :fontList :xRaster :yRaster align:[[align objectForKey:key] intValue] useStringTexture:useStringTexture];
+					{
+                        long xAdd = 0;
+                        if( [key isEqualToString: @"TopLeft"] && yRaster-increment < colorBoxSize+2*sf)
+                            xAdd = colorBoxSize;
+                        
+						[self DrawNSStringGL:tempString :fontList :xRaster+xAdd :yRaster align:[[align objectForKey:key] intValue] useStringTexture:useStringTexture];
 						yRaster += increment;
 					}
 					if(![tempString2 isEqualToString:@""])
 					{
-						[self DrawNSStringGL:tempString2 :fontList :xRaster :yRaster align:[[align objectForKey:key] intValue] useStringTexture:useStringTexture];
+                        long xAdd = 0;
+                        if( [key isEqualToString: @"TopLeft"] && yRaster-increment < colorBoxSize+2*sf)
+                            xAdd = colorBoxSize;
+                        
+						[self DrawNSStringGL:tempString2 :fontList :xRaster+xAdd :yRaster align:[[align objectForKey:key] intValue] useStringTexture:useStringTexture];
 						yRaster += increment;
 					}
 					if(![tempString3 isEqualToString:@""])
 					{
-						[self DrawNSStringGL:tempString3 :fontList :xRaster :yRaster align:[[align objectForKey:key] intValue] useStringTexture:useStringTexture];
+                        long xAdd = 0;
+                        if( [key isEqualToString: @"TopLeft"] && yRaster-increment < colorBoxSize+2*sf)
+                            xAdd = colorBoxSize;
+                        
+						[self DrawNSStringGL:tempString3 :fontList :xRaster+xAdd :yRaster align:[[align objectForKey:key] intValue] useStringTexture:useStringTexture];
 						yRaster += increment;
 					}
 					if(![tempString4 isEqualToString:@""])
 					{
-						[self DrawNSStringGL:tempString4 :fontList :xRaster :yRaster align:[[align objectForKey:key] intValue] useStringTexture:useStringTexture];
+                        long xAdd = 0;
+                        if( [key isEqualToString: @"TopLeft"] && yRaster-increment < colorBoxSize+2*sf)
+                            xAdd = colorBoxSize;
+                        
+						[self DrawNSStringGL:tempString4 :fontList :xRaster+xAdd :yRaster align:[[align objectForKey:key] intValue] useStringTexture:useStringTexture];
 						yRaster += increment;
 					}
 				}
@@ -8134,7 +8154,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		} // for k
 		
 		yRaster = size.size.height-2;
-		xRaster = size.size.width-2 -colorBoxSize;
+		xRaster = size.size.width-2;
 		if( fullText)
 			[self DrawNSStringGL: @"Made In OsiriX" :fontList :xRaster :yRaster rightAlignment:YES useStringTexture:YES];
      }

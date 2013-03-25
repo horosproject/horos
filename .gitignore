@@ -19,8 +19,7 @@ Binaries/OsiriX Report.template
 Binaries/3DconnexionClient.framework/
 Binaries/Growl.framework/
 Binaries/ILCrashReporter.framework/
-Binaries/KDU SDK/libkdu_v71R.a
-Binaries/KDU SDK/libkdu_v72R.a
+Binaries/KDU SDK/libkdu_v*
 Binaries/LibTiff/
 Binaries/openjpeg/
 Binaries/._OsiriX Report.template

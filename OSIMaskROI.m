@@ -15,7 +15,7 @@
 @interface OSIMaskROI ()
 @property (nonatomic, readwrite, retain) OSIROIMask *mask;
 @property (nonatomic, readwrite, retain) NSString *name;
-@property (nonatomic, readwrite, retain) NSColor *color;
+@property (nonatomic, readwrite, retain) NSColor *fillColor;
 //- (NSData *)_maskRunsDataForSlab:(OSISlab)slab dicomToPixTransform:(N3AffineTransform)dicomToPixTransform minCorner:(N3VectorPointer)minCornerPtr;
 @end
 
@@ -23,7 +23,7 @@
 
 @synthesize mask = _mask;
 @synthesize name = _name;
-@synthesize color = _color;
+@synthesize fillColor = _fillColor;
 
 - (id)initWithROIMask:(OSIROIMask *)mask homeFloatVolumeData:(OSIFloatVolumeData *)floatVolumeData name:(NSString *)name
 {
@@ -59,11 +59,11 @@
 
 - (void)drawSlab:(OSISlab)slab inCGLContext:(CGLContextObj)cgl_ctx pixelFormat:(CGLPixelFormatObj)pixelFormat dicomToPixTransform:(N3AffineTransform)dicomToPixTransform
 {
-    if (self.color == nil) {
+    if (self.fillColor == nil) {
         return;
     }
     
-    NSColor *deviceColor = [self.color colorUsingColorSpaceName:NSDeviceRGBColorSpace];
+    NSColor *deviceColor = [self.fillColor colorUsingColorSpaceName:NSDeviceRGBColorSpace];
     
     double dicomToPixGLTransform[16];
 	    

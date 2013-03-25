@@ -45,6 +45,7 @@ typedef NSInteger N3BezierPathElement;
 + (id)bezierPath;
 + (id)bezierPathWithBezierPath:(N3BezierPath *)bezierPath;
 + (id)bezierPathN3BezierCore:(N3BezierCoreRef)bezierCore;
++ (id)bezierPathCircleWithCenter:(N3Vector)center radius:(CGFloat)radius normal:(N3Vector)normal;
 
 - (BOOL)isEqualToBezierPath:(N3BezierPath *)bezierPath;
 
