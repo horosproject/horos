@@ -61,8 +61,8 @@
 static		float						deg2rad = M_PI / 180.0; 
 static		unsigned char				*PETredTable = nil, *PETgreenTable = nil, *PETblueTable = nil;
 static		BOOL						NOINTERPOLATION = NO, SOFTWAREINTERPOLATION = NO, IndependentCRWLWW, pluginOverridesMouse = NO;  // Allows plugins to override mouse click actions.
-			BOOL						FULL32BITPIPELINE = NO, gDontListenToSyncMessage = NO;
-			int							CLUTBARS, ANNOTATIONS = -999, SOFTWAREINTERPOLATION_MAX, DISPLAYCROSSREFERENCELINES = YES;
+            BOOL						FULL32BITPIPELINE = NO, gDontListenToSyncMessage = NO;
+			int							CLUTBARS, /*ANNOTATIONS = -999,*/ SOFTWAREINTERPOLATION_MAX, DISPLAYCROSSREFERENCELINES = YES;
 static		BOOL						gClickCountSet = NO, avoidSetWLWWRentry = NO;
 static		NSDictionary				*_hotKeyDictionary = nil, *_hotKeyModifiersDictionary = nil;
 static		NSRecursiveLock				*drawLock = nil;
@@ -497,6 +497,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 @synthesize drawing;
 @synthesize volumicSeries;
 @synthesize isKeyView, mouseDragging;
+@synthesize annotationType;
 
 - (BOOL) eventToPlugins: (NSEvent*) event
 {
@@ -651,37 +652,36 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	IndependentCRWLWW = [[NSUserDefaults standardUserDefaults] boolForKey:@"IndependentCRWLWW"];
 	CLUTBARS = [[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
 	
-	int previousANNOTATIONS = ANNOTATIONS;
-	ANNOTATIONS = [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
-	
-	BOOL reload = NO;
-	
-	if( previousANNOTATIONS != ANNOTATIONS)
-	{
-		for( ViewerController *v in [ViewerController getDisplayed2DViewers])
-		{
-			[v refresh];
-			
-			NSArray	*relatedViewers = [[AppController sharedAppController] FindRelatedViewers: [v pixList]];
-			for( NSWindowController *r in relatedViewers)
-				[[r window] display];
-		}
-		
-		if( reload) [[BrowserController currentBrowser] refreshMatrix: self];		// This will refresh the DCMView of the BrowserController
-	}
-	else
-	{
-		for( ViewerController *v in [ViewerController getDisplayed2DViewers])
-		{
-			[[[v window] contentView] setNeedsDisplay: YES];
-		}
-	}
+//	int previousANNOTATIONS = ANNOTATIONS;
+//	ANNOTATIONS = [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
+//	
+//	BOOL reload = NO;
+//	
+//	if( previousANNOTATIONS != ANNOTATIONS)
+//	{
+//		for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+//		{
+//			[v refresh];
+//			
+//			NSArray	*relatedViewers = [[AppController sharedAppController] FindRelatedViewers: [v pixList]];
+//			for( NSWindowController *r in relatedViewers)
+//				[[r window] display];
+//		}
+//		
+//		if( reload) [[BrowserController currentBrowser] refreshMatrix: self];		// This will refresh the DCMView of the BrowserController
+//	}
+//	else
+//	{
+//		for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+//		{
+//			[[[v window] contentView] setNeedsDisplay: YES];
+//		}
+//	}
 }
 
 +(void) setCLUTBARS:(int) c ANNOTATIONS:(int) a
 {
 	CLUTBARS = c;
-	ANNOTATIONS = a;
 	
 	BOOL reload = NO;
 	
@@ -2195,6 +2195,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (void) dealloc
 {
 	NSLog(@"DCMView released");
+    [[NSUserDefaults standardUserDefaults] removeObserver:self forKeyPath:@"ANNOTATIONS"];
     
 	[self prepareToRelease];
 	
@@ -2752,7 +2753,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			curImage = (long)[dcmPixList count]-1;
 		else if (c == 9)	// Tab key
 		{
-			int a = ANNOTATIONS + 1;
+			int a = annotationType + 1;
 			if( a > annotFull) a = 0;
 			
 			switch( a)
@@ -2776,6 +2777,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			[[NSUserDefaults standardUserDefaults] setInteger: a forKey: @"ANNOTATIONS"];
 			[DCMView setDefaults];
+            annotationType = a;
+//            ANNOTATIONS = a;
 	
 			NSNotificationCenter *nc;
 			nc = [NSNotificationCenter defaultCenter];
@@ -6207,6 +6210,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	thickSlabStacks = 0;
 	COPYSETTINGSINSERIES = YES;
 	suppress_labels = NO;
+    
+    annotationType = [[NSUserDefaults standardUserDefaults] integerForKey:@"ANNOTATIONS"];
+    [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"ANNOTATIONS" options:NSKeyValueObservingOptionNew context:nil];
 	
 //	NSOpenGLPixelFormatAttribute attrs[] =
 //    {
@@ -6945,6 +6951,19 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	if( ww)
 		[self setWLWW: wl :ww];
+}
+
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"ANNOTATIONS"])
+    {
+        int newValue = [[change objectForKey:NSKeyValueChangeNewKey] intValue];
+        if (newValue != annotationType)
+        {
+            self.annotationType = newValue;
+            [self setNeedsDisplay:YES];
+        }
+    }
 }
 
 -(void) barMenu:(id) sender
@@ -8087,7 +8106,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						}
 						else if( [[annot objectAtIndex:j] isEqualToString: @"PatientName"])
 						{
-							if( annotFull == ANNOTATIONS && [[dcmFilesList objectAtIndex: 0] valueForKeyPath:@"series.study.name"])
+							if( annotFull == annotationType && [[dcmFilesList objectAtIndex: 0] valueForKeyPath:@"series.study.name"])
 								[tempString appendString: [[dcmFilesList objectAtIndex: 0] valueForKeyPath:@"series.study.name"]];
 						}
 						else if( fullText)
@@ -8474,7 +8493,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (void) drawRect:(NSRect)aRect withContext:(NSOpenGLContext *)ctx
 {
 	NSRect savedDrawingFrameRect;
-	long clutBars = CLUTBARS, annotations = ANNOTATIONS;
+	long clutBars = CLUTBARS, annotations = annotationType;
 	BOOL frontMost = NO, is2DViewer = [self is2DViewer];
 	float sf = self.window.backingScaleFactor;
     
@@ -12083,6 +12102,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		_imageColumns = columns;
 		isKeyView = NO;
         timeIntervalForDrag = 1.0;
+        annotationType = [[NSUserDefaults standardUserDefaults] integerForKey:@"ANNOTATIONS"];
         
 		[self setAutoresizingMask:NSViewMinXMargin];
 		

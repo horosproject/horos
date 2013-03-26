@@ -826,6 +826,7 @@ enum
 - (void) clear8bitRepresentations;
 -(void) ApplyConvString:(NSString*) str;
 - (void)checkView:(NSView *)aView :(BOOL) OnOff;
+- (void)executeFilterFromString:(NSString*) name;
 - (IBAction) applyConvolutionOnSource:(id) sender;
 - (float) factorPET2SUV;
 - (IBAction) flipDataSeries: (id) sender;
