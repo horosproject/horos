@@ -2726,27 +2726,27 @@ static BOOL protectionAgainstReentry = NO;
 		if (maxNumberOfFiles > 30000) maxNumberOfFiles = 30000;
 		
 		NSString *pathname;
-		NSDirectoryEnumerator *enumer = [NSFileManager.defaultManager enumeratorAtPath:self.incomingDirPath limitTo:-1]; // For next release...
+		N2DirectoryEnumerator *enumer = [NSFileManager.defaultManager enumeratorAtPath:self.incomingDirPath limitTo:-1]; // For next release...
 		// NSDirectoryEnumerator *enumer = [NSFileManager.defaultManager enumeratorAtPath:self.incomingDirPath];
 		
         NSTimeInterval startTime = [NSDate timeIntervalSinceReferenceDate];
         
 		while((pathname = [enumer nextObject]) && [filesArray count] < maxNumberOfFiles && ([NSDate timeIntervalSinceReferenceDate]-startTime < ([[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"]*3)) ) // don't let them wait more than (incomingdelay*3) seconds
 		{
-			if (thread.isCancelled)
+            if (thread.isCancelled)
                 return 0;
             
             NSString *srcPath = [self.incomingDirPath stringByAppendingPathComponent:pathname];
 			NSString *originalPath = srcPath;
 			NSString *lastPathComponent = [srcPath lastPathComponent];
 			
-			if ([[lastPathComponent uppercaseString] hasSuffix:@".DS_STORE"])
+			if ([[lastPathComponent uppercaseString] isEqualToString:@".DS_STORE"])
 			{
 				[[NSFileManager defaultManager] removeItemAtPath: srcPath error: nil];
 				continue;
 			}
 			
-			if ([[lastPathComponent uppercaseString] hasSuffix:@"__MACOSX"])
+			if ([[lastPathComponent uppercaseString] isEqualToString:@"__MACOSX"])
 			{
 				[[NSFileManager defaultManager] removeItemAtPath: srcPath error: nil];
 				continue;
@@ -2758,22 +2758,24 @@ static BOOL protectionAgainstReentry = NO;
 //				continue;
 //			}
 			
-			if ( [lastPathComponent length] > 0 && [lastPathComponent characterAtIndex: 0] == '.')
+			if ([lastPathComponent length] > 0 && [lastPathComponent characterAtIndex: 0] == '.')
 			{
-				NSDictionary *atr = [enumer fileAttributes];// [[NSFileManager defaultManager] attributesOfItemAtPath: srcPath error: nil];
-				if ([atr fileModificationDate] && [[atr fileModificationDate] timeIntervalSinceNow] < -60*60*24)
+                // delete old files starting with '.'
+                struct stat st;
+                NSDate* date = nil;
+				if ([enumer stat:&st] || [(date = [NSDate dateWithTimeIntervalSince1970:st.st_mtime]) timeIntervalSinceNow] < -60*60*24)
 				{
-					[NSThread sleepForTimeInterval: 0.1]; //We want to be 100% sure...
-					
-					atr = [[NSFileManager defaultManager] attributesOfItemAtPath: srcPath error: nil];
-					if ([atr fileModificationDate] && [[atr fileModificationDate] timeIntervalSinceNow] < -60*60*24)
+					[NSThread sleepForTimeInterval: 0.1]; // we want to be 100% sure...
+                    
+					if ([enumer stat:&st] || [(date = [NSDate dateWithTimeIntervalSince1970:st.st_mtime]) timeIntervalSinceNow] < -60*60*24)
 					{
-						NSLog( @"old files with '.' -> delete it : %@", srcPath);
+						NSLog(@"deleting old incoming file %@ (date modified: %@)", srcPath, date);
 						if (srcPath)
 							[[NSFileManager defaultManager] removeItemAtPath: srcPath error: nil];
-					}
-				}
-				continue;
+                    }
+                }
+                
+                continue; // don't handle this file, it's probably a busy file
 			}
             
 			BOOL isAlias = NO;
@@ -2789,26 +2791,25 @@ static BOOL protectionAgainstReentry = NO;
 			//					if ([[NSFileManager defaultManager] isWritableFileAtPath:srcPath] == YES)	<- Problems with CD : read-only files, but valid files
 			{
 				NSDictionary *fattrs = [enumer fileAttributes];	//[[NSFileManager defaultManager] fileAttributesAtPath:srcPath traverseLink: YES];
-				
-				//						// http://www.noodlesoft.com/blog/2007/03/07/mystery-bug-heisenbergs-uncertainty-principle/
-				//						[fattrs allKeys];
-				
-				//						NSLog( @"%@", [fattrs objectForKey:NSFileBusy]);
+                
+                if ([[fattrs objectForKey:NSFileBusy] boolValue])
+                    continue;
 				
 				if ([[fattrs objectForKey:NSFileType] isEqualToString: NSFileTypeDirectory] == YES)
 				{
-					NSArray		*dirContent = [[NSFileManager defaultManager] directoryContentsAtPath: srcPath];
-					
-					//Is this directory empty?? If yes, delete it!
-					//if alias assume nested folders should stay
-					if ([dirContent count] == 0 && !isAlias) [[NSFileManager defaultManager] removeFileAtPath:srcPath handler:nil];
-					if ([dirContent count] == 1)
-					{
-						if ([[[dirContent objectAtIndex: 0] uppercaseString] hasSuffix:@".DS_STORE"])
-							[[NSFileManager defaultManager] removeFileAtPath:srcPath handler:nil];
-					}
+					// if alias assume nested folders should stay
+					if (!isAlias) { // Is this directory empty?? If yes, delete it!
+                        BOOL dirContainsStuff = NO;
+                        for (NSString* f in [[NSFileManager defaultManager] enumeratorAtPath:srcPath filesOnly:NO]) {
+                            dirContainsStuff = YES;
+                            break;
+                        }
+                        
+                        if (!dirContainsStuff)
+                            [[NSFileManager defaultManager] removeFileAtPath:srcPath handler:nil];
+                    }
 				}
-				else if (fattrs != nil && [[fattrs objectForKey:NSFileBusy] boolValue] == NO && [[fattrs objectForKey:NSFileSize] longLongValue] > 0)
+				else if ([[fattrs objectForKey:NSFileSize] longLongValue] > 0)
 				{
 					if ([[srcPath pathExtension] isEqualToString: @"zip"] || [[srcPath pathExtension] isEqualToString: @"osirixzip"])
 					{
@@ -2839,11 +2840,8 @@ static BOOL protectionAgainstReentry = NO;
 								))
                                 {
 									NSString *compressedPath = [self.decompressionDirPath stringByAppendingPathComponent: lastPathComponent];
-									
 									[[NSFileManager defaultManager] movePath:srcPath toPath:compressedPath handler:nil];
-									
 									[compressedPathArray addObject: compressedPath];
-									
 									continue;
 								}
 								

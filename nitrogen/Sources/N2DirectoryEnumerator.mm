@@ -120,11 +120,19 @@
 #pragma mark NSDirectoryEnumerator API
 
 -(NSDictionary*)fileAttributes {
-	return [NSFileManager.defaultManager attributesOfItemAtPath:[basepath stringByAppendingPathComponent:currpath] error:NULL];
+	NSDictionary* d = [NSFileManager.defaultManager attributesOfItemAtPath:[basepath stringByAppendingPathComponent:currpath] error:NULL];
+    [d allKeys]; // http://www.noodlesoft.com/blog/2007/03/07/mystery-bug-heisenbergs-uncertainty-principle/
+    return d;
 }
 
 -(NSDictionary*)directoryAttributes {
-	return [NSFileManager.defaultManager attributesOfItemAtPath:[basepath stringByAppendingPathComponent:currpath] error:NULL];
+	NSDictionary* d = [NSFileManager.defaultManager attributesOfItemAtPath:[basepath stringByAppendingPathComponent:currpath] error:NULL];
+    [d allKeys]; // http://www.noodlesoft.com/blog/2007/03/07/mystery-bug-heisenbergs-uncertainty-principle/
+    return d;
+}
+
+- (int)stat:(struct stat*)s {
+    return stat([[basepath stringByAppendingPathComponent:currpath] fileSystemRepresentation], s);
 }
 
 -(void)skipDescendants {

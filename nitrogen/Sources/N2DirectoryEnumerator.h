@@ -13,6 +13,7 @@
  =========================================================================*/
 
 #import <Cocoa/Cocoa.h>
+#include <sys/stat.h>
 
 
 @interface N2DirectoryEnumerator : NSDirectoryEnumerator {
@@ -29,5 +30,7 @@
 @property BOOL recursive;
 
 -(id)initWithPath:(NSString*)path maxNumberOfFiles:(NSInteger)n;
+
+- (int)stat:(struct stat*)s;
 
 @end
