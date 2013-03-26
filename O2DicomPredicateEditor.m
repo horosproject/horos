@@ -100,7 +100,10 @@
     }
 }
 
-- (id)regroupedPredicate:(id)p {\
+- (id)regroupedPredicate:(id)p {
+    if ([[p predicateFormat] isEqualToString:@"TRUEPREDICATE"])
+        return p;
+    
     if ([_dpert matchForPredicate:p])
         p = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObject:p]];
 

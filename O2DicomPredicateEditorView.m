@@ -1112,43 +1112,44 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
     if ([predicate isKindOfClass:[NSCompoundPredicate class]] && [predicate compoundPredicateType] == NSAndPredicateType)
         @try {
             NSArray* subpredicates = [predicate subpredicates];
-
-            // subpredicates must be of same KeyPath
-            NSString* keyPath = nil;
-            for (id p in subpredicates)
-                if ([p isKindOfClass:[NSComparisonPredicate class]]) {
-                    if (keyPath && ![[p keyPath] isEqualToString:keyPath]) { // subpredicates must have the same keyPath
+//            if (subpredicates.count > 1) {
+                // subpredicates must be of same KeyPath
+                NSString* keyPath = nil;
+                for (id p in subpredicates)
+                    if ([p isKindOfClass:[NSComparisonPredicate class]]) {
+                        if (keyPath && ![[p keyPath] isEqualToString:keyPath]) { // subpredicates must have the same keyPath
+                            keyPath = nil; break;
+                        } else keyPath = [p keyPath];
+                    } else { // subpredicates must all be comparisons
                         keyPath = nil; break;
-                    } else keyPath = [p keyPath];
-                } else { // subpredicates must all be comparisons
-                    keyPath = nil; break;
-                };
-            
-            DCMAttributeTag* tag = [self tagWithKeyPath:keyPath];
-            O2ValueRepresentation vr = [[self class] valueRepresentationFromVR:tag.vr];
+                    };
+                
+                DCMAttributeTag* tag = [self tagWithKeyPath:keyPath];
+                O2ValueRepresentation vr = [[self class] valueRepresentationFromVR:tag.vr];
 
-            NSComparisonPredicate* sp0 = [subpredicates objectAtIndex:0];
-            NSComparisonPredicate* sp1 = [subpredicates objectAtIndex:1];
-            
-            // match old "DA_KeyPath >= $NSDATE_YESTERDAY AND DA_KeyPath <= $NSDATE_TODAY" for "KeyPath between {NSDATE_YESTERDAY, NSDATE_TODAY}"
-            if ((vr == DA || vr == DT) &&
-                subpredicates.count == 2 &&
-                sp0.predicateOperatorType == NSGreaterThanOrEqualToPredicateOperatorType && [sp0.variable isEqualToString:O2VarYesterday] &&
-                sp1.predicateOperatorType == NSLessThanOrEqualToPredicateOperatorType && [sp1.variable isEqualToString:O2VarToday])
-                return 1;
-            
-            // match "LT_KeyPath != '' AND LT_KeyPath != nil"
-            if ((vr == SH || vr == LO || vr == ST || vr == LT || vr == UT || vr == AE || vr == PN || vr == UI) &&
-                subpredicates.count == 2 &&
-                sp0.predicateOperatorType == NSNotEqualToPredicateOperatorType && sp1.predicateOperatorType == NSNotEqualToPredicateOperatorType &&
-                [sp0.constantValue isEqualToString:@""] && sp1.constantValue == nil)
-                return 1;
-            
+                NSComparisonPredicate* sp0 = [subpredicates objectAtIndex:0];
+                NSComparisonPredicate* sp1 = [subpredicates objectAtIndex:1];
+                
+                // match old "DA_KeyPath >= $NSDATE_YESTERDAY AND DA_KeyPath <= $NSDATE_TODAY" for "KeyPath between {NSDATE_YESTERDAY, NSDATE_TODAY}"
+                if ((vr == DA || vr == DT) &&
+                    subpredicates.count == 2 &&
+                    sp0.predicateOperatorType == NSGreaterThanOrEqualToPredicateOperatorType && [sp0.variable isEqualToString:O2VarYesterday] &&
+                    sp1.predicateOperatorType == NSLessThanOrEqualToPredicateOperatorType && [sp1.variable isEqualToString:O2VarToday])
+                    return 1;
+                
+                // match "LT_KeyPath != '' AND LT_KeyPath != nil"
+                if ((vr == SH || vr == LO || vr == ST || vr == LT || vr == UT || vr == AE || vr == PN || vr == UI) &&
+                    subpredicates.count == 2 &&
+                    sp0.predicateOperatorType == NSNotEqualToPredicateOperatorType && sp1.predicateOperatorType == NSNotEqualToPredicateOperatorType &&
+                    [sp0.constantValue isEqualToString:@""] && sp1.constantValue == nil)
+                    return 1;
+//            } else
+//                return 0.1;
         } @catch (...) {
         }
     
     if ([predicate isKindOfClass:[NSPredicate class]] && [[predicate predicateFormat] isEqualToString:@"TRUEPREDICATE"])
-        return 0.5;
+        return 0.6;
     
     return 0;
 }
@@ -1159,6 +1160,11 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
 
 - (void)setPredicate:(id)predicate {
 //    NSLog(@"setPredicate: %@", predicate);
+    
+    if ([predicate isKindOfClass:[NSPredicate class]] && [[predicate predicateFormat] isEqualToString:@"TRUEPREDICATE"]) {
+        [self setTag:nil];
+        return;
+    }
     
     if ([predicate isKindOfClass:[NSComparisonPredicate class]]) {
         DCMAttributeTag* tag = [self tagWithKeyPath:[predicate keyPath]];
@@ -1270,10 +1276,6 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
         }
 
     }
-    
-    if ([predicate isKindOfClass:[NSPredicate class]] && [[predicate predicateFormat] isEqualToString:@"TRUEPREDICATE"])
-        [self setTag:nil];
-
 }
 
 + (NSSet*)keyPathsForValuesAffectingPredicate {
