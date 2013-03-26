@@ -578,7 +578,7 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
     if (_puView.highlightedCellRow != NSNotFound) {
         NSInteger tag = [[_puView.cells objectAtIndex:_puView.highlightedCellRow] tag];
         
-        NSLog(@"selectHighlighted -> tag is %08x", tag);
+//        NSLog(@"selectHighlighted -> tag is %08x", tag);
         
         if ([_view isKindOfClass:[NSPopUpButton class]]) {
             [_view willChangeValueForKey:@"selectedTag"];
