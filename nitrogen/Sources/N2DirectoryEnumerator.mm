@@ -25,6 +25,14 @@
 @end
 
 
+@interface N2DirectoryEnumeratorReleaser : NSThread {
+    DIR* _dir;
+}
+
++ (void)releaseDIR:(DIR*)dir;
+
+@end
+
 
 @implementation N2DirectoryEnumerator
 
@@ -51,9 +59,11 @@
 -(void)dealloc
 {
 	[currpath release];
+    
 	while (DIRs.count)
 		[self popDIR];
 	[DIRs release];
+    
 	[basepath release];
 	[super dealloc];
 }
@@ -83,6 +93,9 @@
 	
 	NSFileManager* fm = NSFileManager.defaultManager;
 	
+    if (currpath && ![fm fileExistsAtPath:[basepath stringByAppendingPathComponent:currpath]])
+        rewinddir(self.DIR);
+    
 	NSString* subpath;
 	DIR* dir;
 	while((dir = [self DIRAndSubpath:&subpath]))
@@ -175,8 +188,31 @@
 	if (DIRs.count) {
 		DIR* dir = self.DIR;
 		[DIRs removeLastObject];
-		closedir(dir);
+		[N2DirectoryEnumeratorReleaser releaseDIR:dir];
 	}
 }
 
 @end
+
+@implementation N2DirectoryEnumeratorReleaser
+
++ (void)releaseDIR:(DIR*)dir {
+    [[[[self alloc] initWithDIR:dir] autorelease] start];
+}
+
+- (id)initWithDIR:(DIR*)dir {
+    if ((self = [super init])) {
+        _dir = dir;
+    }
+    
+    return self;
+}
+
+- (void)main {
+    @autoreleasepool {
+        closedir(_dir);
+    }
+}
+
+@end
+

@@ -807,9 +807,8 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
     //			NSLog(@"Path is %@", path);
 
                 // delete empty dirs and scan for files with number names
-                NSArray* fs = [[NSFileManager.defaultManager enumeratorAtPath:path filesOnly:NO recursive:NO] allObjects]; // [NSFileManager.defaultManager contentsOfDirectoryAtPath:path error:nil];
     //			NSLog(@"Scanning %d dirs", fs.count);
-                for (NSString* f in fs) {
+                for (NSString* f in [NSFileManager.defaultManager enumeratorAtPath:path filesOnly:NO recursive:NO]) {
     //				NSLog(@"Scanning dir %@", f);
                     NSString* fpath = [path stringByAppendingPathComponent:f];
                     //NSDictionary* fattr = [NSFileManager.defaultManager fileAttributesAtPath:fpath traverseLink:YES];
