@@ -30,7 +30,7 @@
 #import "CPRGenerator.h"
 #import "CPRDisplayInfo.h"
 
-extern int CLUTBARS, ANNOTATIONS;
+extern int CLUTBARS;//, ANNOTATIONS;
 extern BOOL frameZoomed;
 extern int splitPosition[ 3];
 
@@ -428,12 +428,12 @@ extern int splitPosition[ 3];
 
 - (void) drawRect:(NSRect)aRect withContext:(NSOpenGLContext *)ctx
 {
-	long clutBars = CLUTBARS, annotations = ANNOTATIONS;
+	long clutBars = CLUTBARS, annotations = annotationType;
 	
 	CLUTBARS = barHide;
 	
-	if( ANNOTATIONS > annotGraphics)
-		ANNOTATIONS = annotGraphics;
+	if( annotationType > annotGraphics)
+		annotationType = annotGraphics;
 	
 	for( int i = 0; i < curRoiList.count; i++ )
 	{
@@ -452,7 +452,7 @@ extern int splitPosition[ 3];
 	[super drawRect: aRect withContext: ctx];
 	
 	CLUTBARS = clutBars;
-	ANNOTATIONS = annotations;
+	annotationType = annotations;
 }
 
 - (void)subDrawRect:(NSRect)rect
@@ -564,7 +564,7 @@ extern int splitPosition[ 3];
 	glColor4f (0, 0, 0, 1);	[stringTex drawAtPoint:NSMakePoint( anchor.x+1, anchor.y+1) ratio: 1];
 	glColor4f (1, 1, 0, 1);	[stringTex drawAtPoint:NSMakePoint( anchor.x, anchor.y) ratio: 1];
 	
-	if( ANNOTATIONS != annotNone)
+	if( annotationType != annotNone)
 	{
 		glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
 		glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f); // scale to port per pixel scale
