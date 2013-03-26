@@ -1544,7 +1544,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 							{
 								NSLog(@"**** This file in the DATABASE folder: move it to the unreadable folder");
 								
-								if ([[NSFileManager defaultManager] movePath: newFile toPath:[errorsDirPath stringByAppendingPathComponent: [newFile lastPathComponent]]  handler:nil] == NO)
+								if ([[NSFileManager defaultManager] moveItemAtPath:newFile toPath:[errorsDirPath stringByAppendingPathComponent:[newFile lastPathComponent]] error:NULL] == NO)
 									[[NSFileManager defaultManager] removeFileAtPath: newFile handler:nil];
 							}
 						}
@@ -2335,7 +2335,7 @@ static BOOL protectionAgainstReentry = NO;
 						}
 						else
 						{
-							if ([[NSFileManager defaultManager] movePath: newFile toPath:[errorsDirPath stringByAppendingPathComponent: [newFile lastPathComponent]]  handler:nil] == NO)
+							if ([[NSFileManager defaultManager] moveItemAtPath: newFile toPath:[errorsDirPath stringByAppendingPathComponent: [newFile lastPathComponent]]  error:NULL] == NO)
 								[[NSFileManager defaultManager] removeFileAtPath: newFile handler:nil];
 						}
 					}
@@ -2813,7 +2813,7 @@ static BOOL protectionAgainstReentry = NO;
 					if ([[srcPath pathExtension] isEqualToString: @"zip"] || [[srcPath pathExtension] isEqualToString: @"osirixzip"])
 					{
 						NSString *compressedPath = [self.decompressionDirPath stringByAppendingPathComponent: lastPathComponent];
-						[[NSFileManager defaultManager] movePath:srcPath toPath:compressedPath handler:nil];
+						[[NSFileManager defaultManager] moveItemAtPath:srcPath toPath:compressedPath error:NULL];
 						[compressedPathArray addObject: compressedPath];
 					}
 					else
@@ -2839,7 +2839,7 @@ static BOOL protectionAgainstReentry = NO;
 								))
                                 {
 									NSString *compressedPath = [self.decompressionDirPath stringByAppendingPathComponent: lastPathComponent];
-									[[NSFileManager defaultManager] movePath:srcPath toPath:compressedPath handler:nil];
+									[[NSFileManager defaultManager] moveItemAtPath:srcPath toPath:compressedPath error:NULL];
 									[compressedPathArray addObject: compressedPath];
 									continue;
 								}
@@ -2857,7 +2857,7 @@ static BOOL protectionAgainstReentry = NO;
 							}
 							else
 							{
-									result = [[NSFileManager defaultManager] movePath:srcPath toPath: dstPath handler:nil];
+									result = [[NSFileManager defaultManager] moveItemAtPath:srcPath toPath: dstPath error:NULL];
 							}
 							
 							if (result == YES)
@@ -2930,7 +2930,7 @@ static BOOL protectionAgainstReentry = NO;
 					}
 					while( [[NSFileManager defaultManager] fileExistsAtPath:dstPath] == YES);
 					
-					[[NSFileManager defaultManager] movePath: file toPath: dstPath handler: nil];
+					[[NSFileManager defaultManager] moveItemAtPath: file toPath: dstPath error: NULL];
 				}
 			}
 		}
@@ -3605,7 +3605,7 @@ static BOOL protectionAgainstReentry = NO;
 			id fileType = [[[NSFileManager defaultManager] fileAttributesAtPath: itemPath traverseLink: YES] objectForKey:NSFileType];
 			if ([fileType isEqual:NSFileTypeRegular])
 			{
-				[[NSFileManager defaultManager] movePath:itemPath toPath:[incomingPath stringByAppendingPathComponent: [itemPath lastPathComponent]] handler: nil];
+				[[NSFileManager defaultManager] moveItemAtPath:itemPath toPath:[incomingPath stringByAppendingPathComponent: [itemPath lastPathComponent]] error:NULL];
 			}
 			else totalFiles += [[[[NSFileManager defaultManager] fileAttributesAtPath: itemPath traverseLink: YES] objectForKey: NSFileReferenceCount] intValue];
 		}

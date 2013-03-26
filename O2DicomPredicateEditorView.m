@@ -748,13 +748,13 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
 
 //#pragma mark Operators
 
-- (void)setAvailableOperators:(NSInteger)first, ... NS_REQUIRES_NIL_TERMINATION {
+- (void)setAvailableOperators:(NSNumber*)first, ... NS_REQUIRES_NIL_TERMINATION {
     NSMutableSet* oops = [NSMutableSet set];
     
     va_list args;
     va_start(args, first);
-    for (NSInteger arg = first; arg; arg = va_arg(args, NSInteger))
-        [oops addObject:[NSNumber numberWithInteger:arg]];
+    for (NSNumber* arg = first; arg; arg = va_arg(args, NSNumber*))
+        [oops addObject:arg];
     va_end(args);
     
 //    NSLog(@"Available Operators -> %@", oops);
@@ -857,6 +857,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
     DCMAttributeTag* tag = self.tag;
     O2ValueRepresentation vr = [[self class] valueRepresentationFromVR:tag.vr];
     
+#define N(x) [NSNumber numberWithInteger:x]
     @try {
         switch (vr) {
             case SH:
@@ -868,14 +869,14 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
             case PN:
             case UI:  {
                 [views addObject:_operatorsPopUp];
-                [self setAvailableOperators: NSContainsPredicateOperatorType, NSBeginsWithPredicateOperatorType, NSEndsWithPredicateOperatorType, NSEqualToPredicateOperatorType, NSNotEqualToPredicateOperatorType, nil];
+                [self setAvailableOperators: N(NSContainsPredicateOperatorType), N(NSBeginsWithPredicateOperatorType), N(NSEndsWithPredicateOperatorType), N(NSEqualToPredicateOperatorType), N(NSNotEqualToPredicateOperatorType), nil];
                 _stringValueTextField.formatter = nil;
                 [views addObject:_stringValueTextField];
             } break;
                 
             case IS: {
                 [views addObject:_isLabel];
-                [self setAvailableOperators: NSEqualToPredicateOperatorType, nil];
+                [self setAvailableOperators: N(NSEqualToPredicateOperatorType), nil];
                 _stringValueTextField.formatter = [[self class] integersFormatter];
                 [views addObject:_stringValueTextField];
             } break;
@@ -885,14 +886,14 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
             case US:
             case UL: {
                 [views addObject:_isLabel];
-                [self setAvailableOperators: NSEqualToPredicateOperatorType, nil];
+                [self setAvailableOperators: N(NSEqualToPredicateOperatorType), nil];
                 _numberValueTextField.formatter = [[self class] integerFormatter];
                 [views addObject:_numberValueTextField];
             } break;
                 
             case DS: {
                 [views addObject:_isLabel];
-                [self setAvailableOperators: NSEqualToPredicateOperatorType, nil];
+                [self setAvailableOperators: N(NSEqualToPredicateOperatorType), nil];
                 _stringValueTextField.formatter = [[self class] decimalsFormatter];
                 [views addObject:_stringValueTextField];
             } break;
@@ -900,21 +901,21 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
             case FL:
             case FD: {
                 [views addObject:_isLabel];
-                [self setAvailableOperators: NSEqualToPredicateOperatorType, nil];
+                [self setAvailableOperators: N(NSEqualToPredicateOperatorType), nil];
                 _numberValueTextField.formatter = [[self class] decimalFormatter];
                 [views addObject:_numberValueTextField];
             } break;
                 
             case AS: {
                 [views addObject:_isLabel];
-                [self setAvailableOperators: NSEqualToPredicateOperatorType, nil];
+                [self setAvailableOperators: N(NSEqualToPredicateOperatorType), nil];
                 _stringValueTextField.formatter = [[self class] ageFormatter];
                 [views addObject:_stringValueTextField];
             } break;
                 
             case DA: {
                 [views addObject:_operatorsPopUp];
-                [self setAvailableOperators: O2Today, O2Yesterday, NSLessThanOrEqualToPredicateOperatorType, NSGreaterThanOrEqualToPredicateOperatorType, O2Within, NSEqualToPredicateOperatorType, nil]; // TODO: add 'is between'
+                [self setAvailableOperators: N(O2Today), N(O2Yesterday), N(NSLessThanOrEqualToPredicateOperatorType), N(NSGreaterThanOrEqualToPredicateOperatorType), N(O2Within), N(NSEqualToPredicateOperatorType), nil]; // TODO: add 'is between'
                 switch (self.operator) {
                     case NSLessThanOrEqualToPredicateOperatorType:
                     case NSGreaterThanOrEqualToPredicateOperatorType:
@@ -930,7 +931,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
                 
             case TM: {
                 [views addObject:_operatorsPopUp];
-                [self setAvailableOperators: NSLessThanOrEqualToPredicateOperatorType, NSGreaterThanOrEqualToPredicateOperatorType, NSEqualToPredicateOperatorType, nil]; // TODO: add 'is between'
+                [self setAvailableOperators: N(NSLessThanOrEqualToPredicateOperatorType), N(NSGreaterThanOrEqualToPredicateOperatorType), N(NSEqualToPredicateOperatorType), nil]; // TODO: add 'is between'
                 switch (self.operator) {
                     case NSLessThanOrEqualToPredicateOperatorType:
                     case NSGreaterThanOrEqualToPredicateOperatorType:
@@ -944,7 +945,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
                 
             case DT: {
                 [views addObject:_operatorsPopUp];
-                [self setAvailableOperators: O2Today, O2Yesterday, NSLessThanOrEqualToPredicateOperatorType, NSGreaterThanOrEqualToPredicateOperatorType, O2Within, NSEqualToPredicateOperatorType, nil]; // TODO: add 'is between'
+                [self setAvailableOperators: N(O2Today), N(O2Yesterday), N(NSLessThanOrEqualToPredicateOperatorType), N(NSGreaterThanOrEqualToPredicateOperatorType), N(O2Within), N(NSEqualToPredicateOperatorType), nil]; // TODO: add 'is between'
                 switch (self.operator) {
                     case NSLessThanOrEqualToPredicateOperatorType:
                     case NSGreaterThanOrEqualToPredicateOperatorType:
@@ -997,6 +998,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
     @finally {
         _reviewing = NO;
     }
+#undef N
     
     /*if ([_valueTextField.formatter isKindOfClass:[NSNumberFormatter class]]) {
      if (![self.value isKindOfClass:[NSNumber class]])
