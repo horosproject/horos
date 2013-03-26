@@ -40,11 +40,15 @@
 - (void)awakeFromNib {
     [self.editor setDbMode:YES];
 	[self.nameField.cell setPlaceholderString:NSLocalizedString(@"Smart Album", nil)];
-    [self addObserver:self forKeyPath:@"predicate" options:NSKeyValueObservingOptionInitial context:[self class]];
+    
+//    [self addObserver:self forKeyPath:@"predicate" options:NSKeyValueObservingOptionInitial context:[self class]];
+    
+    if (self.predicate && ![self.editor reallyMatchForPredicate:self.predicate])
+        self.mode = 1;
 }
 
 - (void)dealloc {
-    [self removeObserver:self forKeyPath:@"predicate"];
+//    [self removeObserver:self forKeyPath:@"predicate"];
     self.name = nil;
     self.predicate = nil;
     self.album = nil;
@@ -53,14 +57,12 @@
     [super dealloc];
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (context != [self class])
-        return [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-    
-    if (object == self && [keyPath isEqualToString:@"predicate"])
-        if (self.predicate && ![self.editor reallyMatchForPredicate:self.predicate])
-            self.mode = 1;
-}
+//- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+//    if (context != [self class])
+//        return [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+//    
+//    // useless ?
+//}
 
 + (NSSet*)keyPathsForValuesAffectingPredicate {
     return [NSSet setWithObject:@"predicateFormat"];

@@ -47,6 +47,7 @@
 #import <objc/runtime.h>
 #import "NSPanel+N2.h"
 #ifndef OSIRIX_LIGHT
+#import "BonjourPublisher.h"
 #ifndef MACAPPSTORE
 #import "Reports.h"
 #import <ILCrashReporter/ILCrashReporter.h>
@@ -667,6 +668,7 @@ static NSDate *lastWarningDate = nil;
 @implementation AppController
 
 @synthesize checkAllWindowsAreVisibleIsOff, filtersMenu, windowsTilingMenuRows, windowsTilingMenuColumns, isSessionInactive, dicomBonjourPublisher = BonjourDICOMService, XMLRPCServer;
+@synthesize bonjourPublisher = _bonjourPublisher;
 
 +(BOOL) hasMacOSX1083orHigher
 {
@@ -3718,6 +3720,7 @@ static BOOL initialized = NO;
 	[BrowserController initializeBrowserControllerClass];
 	#ifndef OSIRIX_LIGHT
 	[WebPortal initializeWebPortalClass];
+    _bonjourPublisher = [[BonjourPublisher alloc] init];
 	#endif
 	
 	#ifndef OSIRIX_LIGHT
@@ -4747,6 +4750,17 @@ static BOOL initialized = NO;
 	
 	BOOL identical = YES;
 	
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"tileWindowsOrderByStudyDate"])
+    {
+        [viewersList sortUsingComparator: ^NSComparisonResult(id obj1, id obj2)
+        {
+            NSDate *date1 = [[obj1 currentStudy] date];
+            NSDate *date2 = [[obj2 currentStudy] date];
+            
+            return [date2 compare: date1];
+        }];
+    }
+    
 	if( keepSameStudyOnSameScreen)
 	{
 		// Are there different studies
@@ -5153,6 +5167,8 @@ static BOOL initialized = NO;
 	
 	if( [viewersList count] > 0 && keyWindow >= 0)
 	{
+        [DCMView setDontListenToSyncMessage: YES];
+        
 		[[[viewersList objectAtIndex: keyWindow] window] makeKeyAndOrderFront:self];
 		[[viewersList objectAtIndex: keyWindow] propagateSettings];
 		
@@ -5184,6 +5200,8 @@ static BOOL initialized = NO;
 			[[viewersList objectAtIndex: keyWindow] syncThumbnails];
         
 		NSEnableScreenUpdates();
+        
+        [DCMView setDontListenToSyncMessage: NO];
 	}
 }
 

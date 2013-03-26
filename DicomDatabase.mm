@@ -2512,26 +2512,40 @@ static BOOL protectionAgainstReentry = NO;
 //#define USECORESERVICESFORCOPY 1
 //
 //#ifdef USECORESERVICESFORCOPY
-                    char *targetPath = nil;
-                    OptionBits options = kFSFileOperationSkipSourcePermissionErrors + kFSFileOperationSkipPreflight;
-                    OSStatus err = FSPathCopyObjectSync([srcPath fileSystemRepresentation], [[tempDstPath stringByDeletingLastPathComponent] fileSystemRepresentation], (CFStringRef)[tempDstPath lastPathComponent], &targetPath, options);
-                    [[NSFileManager defaultManager] moveItemAtPath: tempDstPath toPath: dstPath error: nil];
-                    
-                    if( err != 0)
-                        NSLog( @"***** copyItemAtPath %@ failed : %d", srcPath, (int) err);
-                    else
+                    try
                     {
-						if( [extension isEqualToString: @"dcm"] == NO)
-						{
-							if([DicomFile isDICOMFile:dstPath])
-							{
-								NSString *newPathExtension = [[dstPath stringByDeletingPathExtension] stringByAppendingPathExtension: @"dcm"];
-								[[NSFileManager defaultManager] moveItemAtPath: dstPath toPath: newPathExtension error: nil];
-								dstPath = newPathExtension;
-							}
-						}
-						
-						[copiedFiles addObject: dstPath];
+                        @try
+                        {
+                            char *targetPath = nil;
+                            OptionBits options = kFSFileOperationSkipSourcePermissionErrors + kFSFileOperationSkipPreflight;
+                            OSStatus err = FSPathCopyObjectSync([srcPath fileSystemRepresentation], [[tempDstPath stringByDeletingLastPathComponent] fileSystemRepresentation], (CFStringRef)[tempDstPath lastPathComponent], &targetPath, options);
+                            [[NSFileManager defaultManager] moveItemAtPath: tempDstPath toPath: dstPath error: nil];
+                            
+                            if( err != 0)
+                                NSLog( @"***** copyItemAtPath %@ failed : %d", srcPath, (int) err);
+                            else
+                            {
+                                if( [extension isEqualToString: @"dcm"] == NO)
+                                {
+                                    if([DicomFile isDICOMFile:dstPath])
+                                    {
+                                        NSString *newPathExtension = [[dstPath stringByDeletingPathExtension] stringByAppendingPathExtension: @"dcm"];
+                                        [[NSFileManager defaultManager] moveItemAtPath: dstPath toPath: newPathExtension error: nil];
+                                        dstPath = newPathExtension;
+                                    }
+                                }
+                                
+                                [copiedFiles addObject: dstPath];
+                            }
+                        }
+                        @catch (NSException *exception)
+                        {
+                            N2LogException( exception);
+                        }
+                    }
+                    catch (...)
+                    {
+                        N2LogStackTrace( @"C++ exception");
                     }
 				}
 				else

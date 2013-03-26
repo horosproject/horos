@@ -95,7 +95,7 @@ int compressionForModality( NSArray *array, NSArray *arrayLow, int limit, NSStri
 	return [[[s objectAtIndex: 0] valueForKey: @"compression"] intValue];
 }
 
-void createSwfMovie(NSArray* inputFiles, NSString* path);
+void createSwfMovie(NSArray* inputFiles, NSString* path, float frameRate);
 
 int main(int argc, const char *argv[])
 {
@@ -722,7 +722,13 @@ int main(int argc, const char *argv[])
 			{ // SWF!!
 				NSString* inputDir = [NSString stringWithUTF8String:argv[fileListFirstItemIndex++]];
 				NSArray* inputFiles = [inputDir stringsByAppendingPaths:[[NSFileManager defaultManager] contentsOfDirectoryAtPath:inputDir error:NULL]];
-				createSwfMovie(inputFiles, path);
+                
+                float frameRate = 0;
+                
+                if( fileListFirstItemIndex < argc)
+                    frameRate = [[NSString stringWithUTF8String: argv[ fileListFirstItemIndex]] floatValue];
+                
+				createSwfMovie(inputFiles, path, frameRate);
                 
                 [[NSFileManager defaultManager] removeItemAtPath: inputDir error: nil];
 			}
@@ -833,7 +839,7 @@ int main(int argc, const char *argv[])
 	return 0;
 }
 
-void createSwfMovie(NSArray* inputFiles, NSString* path) {
+void createSwfMovie(NSArray* inputFiles, NSString* path, float frameRate) {
 	if (path)
 		[[NSFileManager defaultManager] removeItemAtPath:path error:NULL];
 	
@@ -841,7 +847,10 @@ void createSwfMovie(NSArray* inputFiles, NSString* path) {
 	Ming_setSWFCompression(9); // 9 = maximum compression
 	SWFMovie* swf = new SWFMovie(7);
 	swf->setBackground(0x88, 0x88, 0x88);
-	swf->setRate(10);
+    
+    if( frameRate < 1)
+        frameRate = 10;
+	swf->setRate(frameRate);
 	
 	BOOL sizeSet = NO;
 	NSSize swfSize;
@@ -950,9 +959,22 @@ void createSwfMovie(NSArray* inputFiles, NSString* path) {
 	SWFDisplayItem* controllerBarDisplayItem = swf->add(controllerBar);
 	controllerBarDisplayItem->moveTo(ControllerBarRect.origin.x, ControllerBarRect.origin.y);
 	controllerBarDisplayItem->scaleTo(ControllerBarRect.size.width, ControllerBarRect.size.height);	
-	
-	// TODO: play/pause
-	
+
+    // Click in image to play/stop
+    SWFShape* button = new SWFShape();
+    button->setRightFillStyle(SWFFillStyle::SolidFillStyle(0,50,0,0));
+    button->drawLine(swfSize.width,0);
+    button->drawLine(0,swfSize.height-ControllerHeight);
+    button->drawLine(-swfSize.width,0);
+    button->drawLine(0,-swfSize.height-ControllerHeight);
+    
+    SWFButton* playStop = new SWFButton();
+	playStop->addShape( button, SWFBUTTON_HIT|SWFBUTTON_UP|SWFBUTTON_DOWN|SWFBUTTON_OVER);
+	playStop->addAction(new SWFAction("if( playing == 1) playing = 0; else playing = 1; if( playing) play(); else stop();"), SWFBUTTON_MOUSEDOWN);
+    SWFDisplayItem* playItemDI = swf->add(playStop);
+    playItemDI->setName("playItemDI");
+    playItemDI->moveTo(0, 0);
+    
 	// animation
 	
 	for (int i = 0; i < inputFiles.count; ++i) {

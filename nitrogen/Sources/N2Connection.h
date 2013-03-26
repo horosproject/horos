@@ -34,10 +34,10 @@ enum N2ConnectionStatus {
 	NSOutputStream* _outputStream;
 	NSMutableData *_inputBuffer, *_outputBuffer;
 	//BOOL _hasBytesAvailable, _hasSpaceAvailable, _handleConnectionClose;
-	NSUInteger _handleOpenCompleted, _maximumReadSizePerEvent, _handleHasSpaceAvailable;
+	NSUInteger _handleOpenCompleted, _maximumReadSizePerEvent, _handleHasSpaceAvailable, _outputBufferIndex;
 	NSInteger _status;
 	BOOL _tlsFlag;
-    BOOL _closeOnRemoteClose, _closeWhenDoneSending, _closeOnNextSpaceAvailable;
+    BOOL _closeOnRemoteClose, _closeWhenDoneSending, _closeOnNextSpaceAvailable, _handlingData;
     NSError* _error;
     NSTimeInterval lastEventTimeInterval;
 }
@@ -74,12 +74,17 @@ enum N2ConnectionStatus {
 -(void)reconnectToAddress:(id)address port:(NSInteger)port;
 
 -(void)writeData:(NSData*)data;
+-(NSInteger)writeBufferSize;
 -(void)handleData:(NSMutableData*)data; // overload on subclasses
 -(NSInteger)availableSize;
 -(NSData*)readData:(NSInteger)size;
 -(NSInteger)readData:(NSInteger)size toBuffer:(void*)buffer;
 
+- (NSData*)readBuffer;
+
 -(void)connectionFinishedSendingData; // overload on subclasses
+
+-(void)trySendingDataNow; //...
 
 //+(BOOL)host:(NSString*)host1 isEqualToHost:(NSString*)host2;
 

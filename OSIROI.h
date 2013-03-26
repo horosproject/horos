@@ -262,6 +262,12 @@
  */
 - (N3BezierPath *)bezierPath;
 
+/** Returns the center of mass of the ROI.
+ 
+ @return The center of mass of the ROI.
+ */
+- (N3Vector)centerOfMass;
+
 ///-----------------------------------
 /// @name Drawing
 ///-----------------------------------

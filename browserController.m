@@ -1230,6 +1230,58 @@ static NSConditionLock *threadLock = nil;
 	}
 }
 
+- (void) checkIfLocalStudyHasMoreOrSameNumberOfImagesOfADistantStudy: (NSArray*) studiesToCheck
+{
+    if( studiesToCheck == nil) // Take current selected study
+    {
+        NSManagedObject *item = [databaseOutline itemAtRow: [[databaseOutline selectedRowIndexes] firstIndex]];
+        DicomStudy *studySelected = [[item valueForKey: @"type"] isEqualToString: @"Study"] ? item : [item valueForKey: @"study"];
+        
+        if( studySelected)
+            studiesToCheck = [NSArray arrayWithObject: studySelected];
+    }
+    
+    #ifndef OSIRIX_LIGHT
+    //If PACS On-Demand is activated, check if a local study has more or same number of images of a distant study
+    NSMutableArray *patientStudies = [NSMutableArray array];
+    
+    for( DicomStudy *study in studiesToCheck)
+    {
+        if( study != (DicomStudy*) [NSNull null] && [patientStudies containsObject: study] == NO && self.comparativePatientUID && [self.comparativePatientUID compare: study.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
+            [patientStudies addObject: study];
+    }
+    
+    if( patientStudies.count && self.comparativeStudies.count)
+    {
+        NSMutableArray *copyComparativeStudies = [NSMutableArray arrayWithArray: self.comparativeStudies];
+        BOOL modifications = NO;
+        
+        for( id distantStudy in [NSArray arrayWithArray: copyComparativeStudies])
+        {
+            if( [distantStudy isKindOfClass: [DCMTKStudyQueryNode class]])
+            {
+                DicomStudy *localStudy = nil;
+                
+                for( DicomStudy *localAddedStudy in patientStudies)
+                {
+                    if( [localAddedStudy.studyInstanceUID isEqualToString: [distantStudy valueForKey: @"studyInstanceUID"]])
+                        localStudy = localAddedStudy;
+                }
+                
+                if( localStudy && [[localStudy rawNoFiles] intValue] >= [[distantStudy noFiles] intValue])
+                {
+                    modifications = YES;
+                    [copyComparativeStudies replaceObjectAtIndex: [copyComparativeStudies indexOfObject: distantStudy] withObject: localStudy];
+                }
+            }
+        }
+        
+        if( modifications)
+            [self refreshComparativeStudies: copyComparativeStudies];
+    }
+    #endif
+}
+
 -(void)_observeDatabaseAddNotification:(NSNotification*)notification
 {
     if( self.database == nil)
@@ -1242,51 +1294,7 @@ static NSConditionLock *threadLock = nil;
         [self outlineViewRefresh];
         [self refreshAlbums];
         
-//        for( id obj in matrixViewArray)
-//        {
-//            if( [obj isFault])
-//                NSLog( @"[obj isFault]");
-//        }
-        
-        #ifndef OSIRIX_LIGHT
-        //If PACS On-Demand is activated, check if a local study has more or same number of images of a distant study
-        NSMutableArray *patientStudies = [NSMutableArray array];
-        
-        for( DicomStudy *study in [[notification.userInfo valueForKey: OsirixAddToDBNotificationImagesArray] valueForKeyPath: @"series.study"])
-        {
-            if( study != (DicomStudy*) [NSNull null] && [patientStudies containsObject: study] == NO && self.comparativePatientUID && [self.comparativePatientUID compare: study.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
-                [patientStudies addObject: study];
-        }
-        
-        if( patientStudies.count && self.comparativeStudies.count)
-        {
-            NSMutableArray *copyComparativeStudies = [NSMutableArray arrayWithArray: self.comparativeStudies];
-            BOOL modifications = NO;
-            
-            for( id distantStudy in [NSArray arrayWithArray: copyComparativeStudies])
-            {
-                if( [distantStudy isKindOfClass: [DCMTKStudyQueryNode class]])
-                {
-                    DicomStudy *localStudy = nil;
-                    
-                    for( DicomStudy *localAddedStudy in patientStudies)
-                    {
-                        if( [localAddedStudy.studyInstanceUID isEqualToString: [distantStudy valueForKey: @"studyInstanceUID"]])
-                            localStudy = localAddedStudy;
-                    }
-                    
-                    if( localStudy && [[localStudy rawNoFiles] intValue] >= [[distantStudy noFiles] intValue])
-                    {
-                        modifications = YES;
-                        [copyComparativeStudies replaceObjectAtIndex: [copyComparativeStudies indexOfObject: distantStudy] withObject: localStudy];
-                    }
-                }
-            }
-            
-            if( modifications)
-                [self refreshComparativeStudies: copyComparativeStudies];
-        }
-        #endif
+        [self checkIfLocalStudyHasMoreOrSameNumberOfImagesOfADistantStudy: [[notification.userInfo valueForKey: OsirixAddToDBNotificationImagesArray] valueForKeyPath: @"series.study"]];
     }
 }
 
@@ -4262,7 +4270,9 @@ static NSConditionLock *threadLock = nil;
                             [mergedStudies sortUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: NO]]];
                             
                             if( [self.comparativePatientUID compare: studySelected.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
-                                [self performSelectorOnMainThread: @selector(refreshComparativeStudies:) withObject: mergedStudies waitUntilDone: NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+                            {
+                                [self performSelectorOnMainThread: @selector(refreshComparativeStudiesAndCheck:) withObject: mergedStudies waitUntilDone: NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+                            }
                         }
                         @catch (NSException* e)
                         {
@@ -4306,6 +4316,12 @@ static NSConditionLock *threadLock = nil;
     
     [[NSNotificationCenter defaultCenter] postNotificationName: NSTableViewSelectionDidChangeNotification object:albumTable userInfo: nil];
     [[NSNotificationCenter defaultCenter] postNotificationName: NSOutlineViewSelectionDidChangeNotification object:databaseOutline userInfo: nil];
+}
+
+- (void) refreshComparativeStudiesAndCheck:(NSArray *)newStudies
+{
+    [self refreshComparativeStudies: newStudies];
+    [self checkIfLocalStudyHasMoreOrSameNumberOfImagesOfADistantStudy: nil];
 }
 
 - (void) refreshComparativeStudies: (NSArray*) newStudies
@@ -6481,6 +6497,8 @@ static NSConditionLock *threadLock = nil;
 	}
 	else	// STUDY - Hanging Protocols - Windows State
 	{
+        [self checkIfLocalStudyHasMoreOrSameNumberOfImagesOfADistantStudy: [NSArray arrayWithObject: item]];
+        
 		BOOL windowsStateApplied = NO;
 		
 		if( [item valueForKey:@"windowsState"] && [[NSUserDefaults standardUserDefaults] boolForKey:@"automaticWorkspaceLoad"])
@@ -10299,6 +10317,8 @@ static BOOL needToRezoom;
 
 - (void) doubleClickComparativeStudy: (id) sender
 {
+    [self checkIfLocalStudyHasMoreOrSameNumberOfImagesOfADistantStudy: nil];
+    
     id study = [comparativeStudies objectAtIndex: comparativeTable.selectedRow];
     
     if( study)
@@ -10880,8 +10900,8 @@ static BOOL needToRezoom;
 					}
 					//opening images refered to in viewerPix[0] in the adequate viewer
 					
-					int copySyncro = [DCMView syncro];
-					[DCMView setSyncro: syncroOFF];
+                    [DCMView setDontListenToSyncMessage: YES];
+                    
 					BOOL copyCOPYSETTINGS = [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGS"];
 					[[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"COPYSETTINGS"];
 					
@@ -10956,8 +10976,8 @@ static BOOL needToRezoom;
 					}
 					else [[NSUserDefaults standardUserDefaults] setBool: copyCOPYSETTINGS forKey:@"COPYSETTINGS"];
 					
-					[DCMView setSyncro: copySyncro];
-					
+					[DCMView setDontListenToSyncMessage: NO];
+                    
 					[viewerPix[0] release];
 					[correspondingObjects release];
 				}
@@ -10991,6 +11011,9 @@ static BOOL needToRezoom;
 	if( movieController) createdViewer = movieController;
 	
     [self.database save]; //To save 'dateOpened' field, and allow independentContext to see it
+    
+    if( viewer && [[NSUserDefaults standardUserDefaults] boolForKey: @"tileWindowsOrderByStudyDate"])
+        [[AppController sharedAppController] tileWindows: self];
     
 	return createdViewer;
 }
@@ -11662,8 +11685,11 @@ static BOOL needToRezoom;
 			
 			for( NSCell* c in cells)
 			{
-				NSManagedObject*  curImage = [curList objectAtIndex: [c tag]];
-				[selectedFilesList addObject: curImage];
+                if( [c tag] < curList.count)
+                {
+                    NSManagedObject*  curImage = [curList objectAtIndex: [c tag]];
+                    [selectedFilesList addObject: curImage];
+                }
 			}
 			
 			[self openViewerFromImages :[NSArray arrayWithObject: selectedFilesList] movie: movieViewer viewer :viewer keyImagesOnly:NO];
@@ -12727,11 +12753,10 @@ static NSArray*	openSubSeriesArray = nil;
             //	[NSThread detachNewThreadSelector:@selector(runSendQueue:) toTarget:self withObject:nil];
             
             // bonjour
-            bonjourPublisher = [[BonjourPublisher alloc] initWithBrowserController:self];
-            bonjourBrowser = [[BonjourBrowser alloc] initWithBrowserController:self bonjourPublisher:bonjourPublisher];
+            bonjourBrowser = [[BonjourBrowser alloc] initWithBrowserController:self];
             [self displayBonjourServices];
             
-            [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:OsirixBonjourSharingActiveFlagDefaultsKey options:NSKeyValueObservingOptionInitial context:bonjourPublisher];
+            [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:OsirixBonjourSharingActiveFlagDefaultsKey options:NSKeyValueObservingOptionInitial context:bonjourBrowser];
             
             [splitDrawer restoreDefault: @"SplitDrawer"];
             [splitAlbums restoreDefault: @"SplitAlbums"];

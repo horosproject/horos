@@ -158,10 +158,8 @@ static void accept(CFSocketRef socket, CFSocketCallBackType type, CFDataRef addr
 	if (0 == port) {
 		// now that the binding was successful, we get the port number 
 		// -- we will need it for the v6 endpoint and for the NSNetService
-		NSData *addr = [(NSData *)CFSocketCopyAddress(ipv4socket) autorelease];
-		memcpy(&addr4, [addr bytes], [addr length]);
-		port = ntohs(addr4.sin_port);
-		NSLog(@"Warning: listening on port %d", (int) port);
+        port = [self port];
+		NSLog(@"Warning: listening on port %d", (int)port);
 	}
 	
 	// set up the IPv6 endpoint
@@ -273,6 +271,13 @@ static void accept(CFSocketRef socket, CFSocketCallBackType type, CFDataRef addr
 	[_clients release];
 	
 	[super dealloc];
+}
+
+- (in_port_t)port {
+    NSData* addr = [(NSData *)CFSocketCopyAddress(ipv4socket) autorelease];
+    struct sockaddr_in addr4;
+    memcpy(&addr4, [addr bytes], [addr length]);
+    return ntohs(addr4.sin_port);
 }
 
 @end

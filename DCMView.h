@@ -342,6 +342,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 @property(readonly) BOOL isKeyView, mouseDragging;
 @property int annotationType;
 
++ (void) setDontListenToSyncMessage: (BOOL) v;
 + (BOOL) noPropagateSettingsInSeriesForModality: (NSString*) m;
 + (void) purgeStringTextureCache;
 + (void) setDefaults;

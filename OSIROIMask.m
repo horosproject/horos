@@ -549,6 +549,28 @@ NSArray *OSIROIMaskIndexesInRun(OSIROIMaskRun maskRun)
     return hull;
 }
 
+- (N3Vector)centerOfMass
+{
+    NSData *maskData = [self maskRunsData];
+    NSInteger runCount = [maskData length]/sizeof(OSIROIMaskRun);
+    const OSIROIMaskRun *runArray = [maskData bytes];
+    NSUInteger i;
+    CGFloat floatCount = 0;
+    N3Vector centerOfMass = N3VectorZero;
+    
+    for (i = 0; i < runCount; i++) {
+        centerOfMass.x += ((CGFloat)runArray[i].widthRange.location/(CGFloat)runArray[i].widthRange.length) + 0.5;
+        centerOfMass.y += (CGFloat)runArray[i].heightIndex/(CGFloat)runArray[i].widthRange.length;
+        centerOfMass.z += (CGFloat)runArray[i].depthIndex/(CGFloat)runArray[i].widthRange.length;
+        floatCount += runArray[i].widthRange.length;
+    }
+    
+    centerOfMass.x *= floatCount;
+    centerOfMass.y *= floatCount;
+    centerOfMass.z *= floatCount;
+    
+    return centerOfMass;
+}
 
 - (void)checkdebug
 {

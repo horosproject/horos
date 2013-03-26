@@ -4195,6 +4195,10 @@ static volatile int numberOfThreadsForRelisce = 0;
     return [NSColor colorWithCalibratedRed:249./255 green:240./255 blue:140./255 alpha:1];
 }
 
++ (NSColor*)_differentStudyColor { // gray
+    return [NSColor colorWithCalibratedRed:0.55 green:0.55 blue:0.55 alpha:1];
+}
+
 - (void) buildMatrixPreview: (BOOL) showSelected
 {
 	if( [[self window] isVisible] == NO) return;	//we will do it in checkBuiltMatrixPreview : faster opening !
@@ -4360,9 +4364,14 @@ static volatile int numberOfThreadsForRelisce = 0;
                     curStudy = study;
 #endif
                 
+                if( [[curStudy valueForKey: @"studyInstanceUID"] isEqualToString: study.studyInstanceUID])
+                    [cell setBackgroundColor: nil];
+                else
+                    [cell setBackgroundColor: [[self class] _differentStudyColor]];
+                
                 NSArray *series = [seriesArray objectAtIndex: curStudyIndex];
                 NSArray *images = nil;
-
+                
                 if( [curStudy isKindOfClass: [DicomStudy class]])
                 {
                     images = [[BrowserController currentBrowser] imagesArray: curStudy preferredObject: oAny];
@@ -4428,7 +4437,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                     NSMutableAttributedString *finalString = [[[NSMutableAttributedString alloc] initWithString: [components componentsJoinedByString:@"\r"]] autorelease];
                     
                     NSMutableDictionary *attribs = [NSMutableDictionary dictionary];
-                    [attribs setObject: [NSFont boldSystemFontOfSize: 12] forKey: NSFontAttributeName];
+                    [attribs setObject: [NSFont boldSystemFontOfSize: 15] forKey: NSFontAttributeName];
                     
                     NSArray *colors = ViewerController.studyColors;
                     NSColor *bkgColor = nil;
@@ -4489,8 +4498,6 @@ static volatile int numberOfThreadsForRelisce = 0;
                     [cell setImagePosition:NSImageOverlaps];
                     [cell setImageScaling:NSImageScaleNone];
                     
-                   // [cell setBackgroundColor: [NSColor whiteColor]];
-                    
                     index++;
                 }
                 #endif
@@ -4503,15 +4510,14 @@ static volatile int numberOfThreadsForRelisce = 0;
                         
                         NSButtonCell *cell = [previewMatrix cellAtRow: index column:0];
                         
-                        //                            [cell setTransparent: NO];
-                        //                            [cell setBezelStyle: NSShadowlessSquareBezelStyle];
+                        if( [[curStudy valueForKey: @"studyInstanceUID"] isEqualToString: study.studyInstanceUID])
+                            [cell setBackgroundColor: nil];
+                        else
+                            [cell setBackgroundColor: [[self class] _differentStudyColor]];
+                        
                         [cell setRepresentedObject: [O2ViewerThumbnailsMatrixRepresentedObject object:curSeries]];
                         [cell setFont:[NSFont systemFontOfSize:8.5]];
-                        //                            [cell setImagePosition: NSImageBelow];
                         [cell setAction: @selector(matrixPreviewPressed:)];
-                        //                            [cell setTarget: self];
-                        //                            [cell setButtonType:NSMomentaryPushInButton];
-                        //                            [cell setEnabled:YES];
                         [cell setLineBreakMode: NSLineBreakByCharWrapping];
                         
                         NSString *name = [curSeries valueForKey:@"name"];
@@ -4569,23 +4575,14 @@ static volatile int numberOfThreadsForRelisce = 0;
                         if( [viewerSeries containsObject: curSeries]) // Red
                         {
                             [cell setBackgroundColor:[[self class] _selectedItemColor]];
-                            
-                            //[cell setBordered: NO];
                         }
                         else if( [[self blendingController] currentSeries] == curSeries) // Green
                         {
                             [cell setBackgroundColor: [[self class] _fusionedItemColor]];
-                            //[cell setBordered: NO];
                         }
                         else if( [displayedSeries containsObject: curSeries]) // Yellow
                         {
                             [cell setBackgroundColor: [[self class] _openItemColor]];
-                            //[cell setBordered: NO];
-                        }
-                        else
-                        {
-                            //                                [cell setBackgroundColor:nil];
-                            // [cell setBordered: YES];
                         }
                         
                         if( visible)
@@ -7187,7 +7184,6 @@ return YES;
 	{
 		@try 
 		{
-            BOOL wasSyncButtonBehaviorIsBetweenStudies = NO;
             BOOL equalVector = YES;
             BOOL nonZeroVector = NO;
             
@@ -7221,39 +7217,18 @@ return YES;
                         nonZeroVector = YES;
                 }
                 
+                BOOL wasSyncButtonBehaviorIsBetweenStudies = NO;
+                
                 if( [previousStudyInstanceUID isEqualToString: [[d objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"]])
                 {
-                    if( SyncButtonBehaviorIsBetweenStudies && SYNCSERIES) // Move to overlapping area between old and new series
-                    {
+                    if( SyncButtonBehaviorIsBetweenStudies && SYNCSERIES)
                         wasSyncButtonBehaviorIsBetweenStudies = YES;
-                        
-                        float previousLocations[ 3] = {0, 0, 0}; // Current, Start, End
-                        
-                        previousLocations[ 0] = [[imageView curDCM] sliceLocation];
-                        previousLocations[ 1] = [(DCMPix*)[pixList[ 0] objectAtIndex:0] sliceLocation];
-                        previousLocations[ 2] = [(DCMPix*)[pixList[ 0] lastObject] sliceLocation];
-                        
-                        float newStart = [[[f objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue];
-                        float newEnd = [[[f objectAtIndex: (long)[f count]-1] valueForKey:@"sliceLocation"] floatValue];
-                        
-                        for( int u = 0; u < 3; u++)
-                        {
-                            if( previousLocations[ u] > newStart && previousLocations[ u] < newEnd)
-                            {
-                                switch( u)
-                                {
-                                    case 0: break;
-                                    case 1: [imageView setIndex: 0]; [imageView sendSyncMessage: 0];   break;
-                                    case 2: [imageView setIndex: (long)[pixList[ 0] count]-1]; [imageView sendSyncMessage: 0]; break;
-                                }
-                            }
-                        }
-                    }
                 }
                 
-                previousLocation = [[imageView curDCM] sliceLocation];
+                if( wasSyncButtonBehaviorIsBetweenStudies == NO)
+                    [self turnOffSyncSeriesBetweenStudies: self];
                 
-                [self turnOffSyncSeriesBetweenStudies: self];
+                previousLocation = [[[imageView imageObj] sliceLocation] floatValue];
 			}
 			// Check if another post-processing viewer is open : we CANNOT release the fVolumePtr -> OsiriX WILL crash
 			
@@ -7527,7 +7502,7 @@ return YES;
                                         start = temp;
                                     }
                                     
-                                    if( previousLocation > start && previousLocation < end)
+                                    if( previousLocation >= start && previousLocation <= end)
                                     {
                                         long	index = 0;
                                         float   smallestdiff = -1, fdiff;
@@ -7552,11 +7527,6 @@ return YES;
                                             [imageView setIndex: index];
                                             [self adjustSlider];
                                             keepFusion = YES;
-                                            
-                                            // Try to keep the same syncOffset if manual syncing between different studies
-                                            
-                                            if( wasSyncButtonBehaviorIsBetweenStudies)
-                                                reactivateManualSyncing = YES;
                                         }
                                     }
                                 }
@@ -7729,9 +7699,6 @@ return YES;
 		if( v != self)
 			[v propagateSettings];
 	}
-    
-    if( reactivateManualSyncing)
-        [self performSelector: @selector( SyncSeries:) withObject: self afterDelay: 0.1];
     
 #ifndef OSIRIX_LIGHT
 	[[OSIEnvironment sharedEnvironment] viewerControllerDidChangeData:self];
@@ -15251,10 +15218,11 @@ int i,j,l;
 		{
 			NSNumber *sliceLocation = [[note userInfo] objectForKey:@"sliceLocation"];
 			float offset = [(DCMPix*)[[imageView dcmPixList] objectAtIndex:[imageView  curImage]] sliceLocation] - [sliceLocation floatValue];
+            
 			[imageView setSyncRelativeDiff:offset];
 			[[self findSyncSeriesButton] setImage: [NSImage imageNamed: @"SyncLock.pdf"]];
 			
-			[imageView setSyncSeriesIndex: [imageView curImage]];
+			[imageView setSyncSeriesIndex: 0];
 		}
 		else
 		{
@@ -15294,7 +15262,8 @@ int i,j,l;
 		
         float sliceLocation =  [(DCMPix*)[[imageView dcmPixList] objectAtIndex:[imageView  curImage]] sliceLocation];
         NSDictionary *userInfo = [NSDictionary dictionaryWithObject: [NSNumber numberWithFloat:sliceLocation] forKey:@"sliceLocation"];
-        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixSyncSeriesNotification object:nil userInfo: userInfo];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixSyncSeriesNotification object: self userInfo: userInfo];
 	}
 	else
 	{

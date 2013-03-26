@@ -217,6 +217,7 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 	
 	[_inputBuffer setLength:0];
 	[_outputBuffer setLength:0];
+    _outputBufferIndex = 0;
 	
     NSHost* host = [_address isKindOfClass:[NSHost class]]? _address : [NSHost hostWithAddressOrName:_address];
     
@@ -298,16 +299,19 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 }
 
 -(void)trySendingDataNow {
-	NSUInteger length = [_outputBuffer length];
+	NSUInteger length = [_outputBuffer length] - _outputBufferIndex;
 	if (length && _handleHasSpaceAvailable && _outputStream.streamStatus == NSStreamStatusOpen) {
-		NSUInteger sentLength = [_outputStream write:(uint8_t*)[_outputBuffer bytes] maxLength:length];
+		NSUInteger sentLength = [_outputStream write:(uint8_t*)[_outputBuffer bytes]+_outputBufferIndex maxLength:length];
 		if (sentLength != -1) {
 			if (sentLength < length)
                 --_handleHasSpaceAvailable;
 //          DLog(@"%@ Sent %d bytes (of %d)", self, (int)sentLength, (%d)length);
-			[_outputBuffer replaceBytesInRange:NSMakeRange(0,sentLength) withBytes:nil length:0];
-			if (!_outputBuffer.length) {
-				//				NSLog(@"All data sent");
+            //[_outputBuffer replaceBytesInRange:NSMakeRange(0,sentLength) withBytes:nil length:0];
+            _outputBufferIndex += sentLength;
+			if (_outputBufferIndex == [_outputBuffer length]) { // output buffer is empty
+                [_outputBuffer setLength:0];
+                _outputBufferIndex = 0;
+                //				NSLog(@"All data sent");
                 if (self.closeWhenDoneSending)
                     self.closeOnNextSpaceAvailable = YES;
 				[self connectionFinishedSendingData];
@@ -349,10 +353,15 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 //                  std::cerr << std::endl;
 //                  readSizeForThisEvent += length;
                     [_inputBuffer appendBytes:buffer length:length];
-                    @try {
-                        [self handleData:_inputBuffer];
-                    } @catch (NSException* e) {
-                        N2LogExceptionWithStackTrace(e);
+                    if (!_handlingData) {
+                        _handlingData = YES;
+                        @try {
+                            [self handleData:_inputBuffer];
+                        } @catch (NSException* e) {
+                            N2LogExceptionWithStackTrace(e);
+                        } @finally {
+                            _handlingData = NO;
+                        }
                     }
                     
                     if (length < maxLength)
@@ -371,7 +380,7 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
             if (self.closeOnNextSpaceAvailable)
                 [self performSelector:@selector(close) withObject:nil afterDelay:0];
             else {
-                if ([_outputBuffer length])
+                if ([_outputBuffer length] > _outputBufferIndex)
                     [self performSelector:@selector(trySendingDataNow) withObject:nil afterDelay:0];
             }
         } break;
@@ -396,10 +405,23 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 
 -(void)writeData:(NSData*)data {
   //  NSLog(@"writeData: appending %d bytes to %d bytes | status %d", data.length, _outputBuffer.length, self.status);
+    if (_outputBufferIndex == _outputBuffer.length) { // all data was sent, reset the send buffer
+        [_outputBuffer setLength:0];
+        _outputBufferIndex = 0;
+    } else if (_outputBufferIndex > 1024*1024) { // more than 1 MB of data was sent, reduce the buffer
+        [_outputBuffer replaceBytesInRange:NSMakeRange(0, _outputBufferIndex) withBytes:nil length:0];
+        _outputBufferIndex = 0;
+    }
+    
 	[_outputBuffer appendData:data];
-	if (self.status == N2ConnectionStatusOk)	
+	
+    if (self.status == N2ConnectionStatusOk)
 		[self trySendingDataNow];
    // NSLog(@"after send attempt the data is %d bytes", _outputBuffer.length);
+}
+
+-(NSInteger)writeBufferSize {
+    return [_outputBuffer length] - _outputBufferIndex;
 }
 
 -(NSInteger)availableSize {
@@ -424,6 +446,10 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 	[_inputBuffer replaceBytesInRange:range withBytes:nil length:0];
 	
 	return range.length;
+}
+
+- (NSData*)readBuffer {
+    return _inputBuffer;
 }
 
 @end

@@ -24,6 +24,10 @@
 #import "DicomDatabase.h"
 #import "DicomImage.h"
 #import "AppController.h"
+#import "N2ConnectionListener.h"
+#import "N2Connection.h"
+#import "NSFileManager+N2.h"
+#import "N2Locker.h"
 
 // imports required for socket initialization
 #import <sys/socket.h>
@@ -37,42 +41,28 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-static BonjourPublisher *currentPublisher = nil;
-
 extern const char *GetPrivateIP();
 
 
-@interface BonjourPublisher ()
-
-@property(retain, readwrite) NSNetService* netService;
+@interface O2DatabaseConnection : N2Connection {
+    int _mode, _hdi;
+    NSMutableArray* _stack;
+}
 
 @end
 
 
 @implementation BonjourPublisher
 
-//@synthesize serviceName;
-@synthesize netService;
-
-+ (BonjourPublisher*) currentPublisher
++ (BonjourPublisher*) currentPublisher // __deprecated
 {
-	return currentPublisher;
+	return [[AppController sharedAppController] bonjourPublisher];
 }
 
-- (id) initWithBrowserController: (BrowserController*) bC
+- (id)init
 {
-	self = [super init];
-	if (self != nil)
+	if ((self = [super init]))
 	{
-		currentPublisher = self;
-//		self.serviceName = [NSUserDefaultsController defaultServiceName];
-		
-		fdForListening = 0;
-		listeningSocket = nil;
-		self.netService = nil;
-		
-		connectionLock = [[NSLock alloc] init];
-		
 		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:OsirixBonjourSharingActiveFlagDefaultsKey options:NSKeyValueObservingOptionInitial context:NULL];
 		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:OsirixBonjourSharingNameDefaultsKey options:NSKeyValueObservingOptionInitial context:NULL];
 		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:OsirixBonjourSharingPasswordFlagDefaultsKey options:NSKeyValueObservingOptionInitial context:NULL];
@@ -90,7 +80,8 @@ extern const char *GetPrivateIP();
 
 	[dicomSendLock release];
 //	self.serviceName = NULL;
-	[connectionLock release];
+    
+    [_bonjour release];
 	
 	[super dealloc];
 }
@@ -117,146 +108,79 @@ extern const char *GetPrivateIP();
 	[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
 
-- (int) OsiriXDBCurrentPort
+- (int) OsiriXDBCurrentPort // __deprecated
 {
-	return OsiriXDBCurrentPort;
+	return [_listener port];
 }
 
-- (void) toggleSharing:(BOOL) activated
+- (void)toggleSharing:(BOOL)activate
 {
-    @try
-    {
-        uint16_t chosenPort = 0;
-        if( !listeningSocket)
-        {
-            // Here, create the socket from traditional BSD socket calls, and then set up an NSFileHandle with
-            //that to listen for incoming connections.
-            
-            if( fdForListening)
-                close( fdForListening);
-            fdForListening = 0;
+    @try {
+        if (activate && !_listener) {
+            _listener = [[N2ConnectionListener alloc] initWithPort:8780 connectionClass:[O2DatabaseConnection class]];
+//            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectionOpened:) name:N2ConnectionListenerOpenedConnectionNotification object:_listener];
+            [_listener setThreadPerConnection:YES];
+            if (_listener)
+                NSLog(@"OsiriX database shared on port %d", [_listener port]);
+            else NSLog(@"Warning: unable to share OsiriX database");
+        }
         
-            struct sockaddr_in serverAddress;
-            socklen_t namelen = sizeof(serverAddress);
-            
-            // In order to use NSFileHandle's acceptConnectionInBackgroundAndNotify method, we need to create a
-            // file descriptor that is itself a socket, bind that socket, and then set it up for listening. At this
-            // point, it's ready to be handed off to acceptConnectionInBackgroundAndNotify.
-            if((fdForListening = socket(AF_INET, SOCK_STREAM, 0)) > 0)
-            {
-    //			int sock_buf_size = 10000;
-    //	
-    //			setsockopt( fdForListening, SOL_SOCKET, SO_SNDBUF, (char *)&sock_buf_size, sizeof(sock_buf_size) );
-    //			setsockopt( fdForListening, SOL_SOCKET, SO_RCVBUF, (char *)&sock_buf_size, sizeof(sock_buf_size) );
-
-                memset(&serverAddress, 0, sizeof(serverAddress));
-                serverAddress.sin_family = AF_INET;
-                serverAddress.sin_addr.s_addr = htonl(INADDR_ANY);
-                serverAddress.sin_port = htons(8780); //make it endian independent
-                
-                // Allow the kernel to choose a random port number by passing in 0 for the port.
-                if (bind(fdForListening, (struct sockaddr *)&serverAddress, namelen) < 0)
-                {
-                    NSLog(@"bind failed... select another port than 8780");
-                    
-                    serverAddress.sin_port = htons(0);
-                    if (bind(fdForListening, (struct sockaddr *)&serverAddress, namelen) < 0)
-                    {
-                        close (fdForListening);
-                        fdForListening = 0;
-                        return;
-                    }
-                }
-                
-                // Find out what port number was chosen.
-                if (getsockname(fdForListening, (struct sockaddr *)&serverAddress, &namelen) < 0)
-                {
-                    close(fdForListening);
-                    fdForListening = 0;
-                    return;
-                }
-                
-                chosenPort = ntohs(serverAddress.sin_port);
-                
-                if( chosenPort != 8780)
-                {
-                    NSString *exampleAlertSuppress = @"Bonjour Port";
-                    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-                    if ([defaults boolForKey:exampleAlertSuppress])
-                    {
-                    }
-                    else
-                    {
-                        NSAlert* alert = [[NSAlert new] autorelease];
-                        [alert setMessageText: NSLocalizedString(@"Bonjour Port", nil)];
-                        [alert setInformativeText : NSLocalizedString(@"Cannot use port 8780 for Bonjour sharing. It is already used, another port will be selected.", nil)];
-                        [alert setShowsSuppressionButton:YES];
-                        [alert runModal];
-                        if ([[alert suppressionButton] state] == NSOnState)
-                        {
-                            [defaults setBool:YES forKey:exampleAlertSuppress];
-                        }
-                    }
-                }
-                
-                NSLog(@"Chosen port for DB sharing: %d", chosenPort);
-                
-                OsiriXDBCurrentPort = chosenPort;
-
-                // Once we're here, we know bind must have returned, so we can start the listen
-                if(listen(fdForListening, 1) == 0)
-                {
-                    listeningSocket = [[NSFileHandle alloc] initWithFileDescriptor:fdForListening closeOnDealloc: NO];
-                    
-                    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectionReceived:) name:NSFileHandleConnectionAcceptedNotification object:listeningSocket];
-                    [listeningSocket acceptConnectionInBackgroundAndNotify];
-                }
-            }
+        if (!activate && _listener) {
+            [_listener release];
+            _listener = nil;
         }
-
-        if (!netService)
-        {
-            // lazily instantiate the NSNetService object that will advertise on our behalf.  Passing in "" for the domain causes the service
-            // to be registered in the default registration domain, which will currently always be "local"
-            netService = [[NSNetService alloc] initWithDomain:@"" type:@"_osirixdb._tcp." name:[NSUserDefaultsController BonjourSharingName] port:chosenPort];
-            [netService setDelegate:self];
-            
-            NSMutableDictionary *params = [NSMutableDictionary dictionary];
-            
-            if( [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"].length == 0)
-                [[NSUserDefaults standardUserDefaults] setObject: @"OSIRIX" forKey: @"AETITLE"];
-            
-            if( [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"].length == 0)
-                [[NSUserDefaults standardUserDefaults] setObject: @"11112" forKey: @"AEPORT"];
-            
-            if( [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"])
-                [params setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] forKey: @"AETitle"];
-            
-            if( [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"])
-                [params setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"]  forKey: @"port"];
-            
-            if( [AppController UID])
-                [params setObject: [AppController UID] forKey: @"UID"];
-            
-            if( [netService setTXTRecordData: [NSNetService dataFromTXTRecordDictionary: params]] == NO)
-            {
-                NSLog( @"ERROR - NSNetService setTXTRecordData FAILED");
-            }
-        }
-
-        if (netService && listeningSocket)
-        {
-            if( activated)
-                [netService publish];
-            else
-                [netService stop];
-        }
+        
+        [self updateBonjour];
+    } @catch (NSException* e) {
+        N2LogExceptionWithStackTrace(e);
     }
-    @catch (NSException *e) {
-        N2LogException( e);
-    }
-	dbPublished = activated;
 }
+
+- (void)updateBonjour {
+    if (!_bonjour) {
+        // lazily instantiate the NSNetService object that will advertise on our behalf.  Passing in "" for the domain causes the service
+        // to be registered in the default registration domain, which will currently always be "local"
+        _bonjour = [[NSNetService alloc] initWithDomain:@"" type:@"_osirixdb._tcp." name:[NSUserDefaults bonjourSharingName] port:[_listener port]];
+        _bonjour.delegate = self;
+    }
+    
+    NSMutableDictionary* txtrec = [NSMutableDictionary dictionary];
+#define EitherOr(a, b) (a? a : b)
+    [txtrec setObject: EitherOr([[NSUserDefaults standardUserDefaults] stringForKey:@"AETITLE"], @"OSIRIX") forKey:@"AETitle"];
+    [txtrec setObject: EitherOr([[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"], @"11112") forKey:@"port"];
+#undef EitherOr
+    if ([AppController UID])
+        [txtrec setObject:[AppController UID] forKey:@"UID"];
+    
+    if( [_bonjour setTXTRecordData:[NSNetService dataFromTXTRecordDictionary:txtrec]] == NO)
+        NSLog(@"Warning: OsiriX Bonjour net service setTXTRecordData FAILED");
+
+    if (_listener)
+        [_bonjour publish];
+    else [_bonjour stop];
+}
+
+- (NSNetService*)netService { // __deprecated
+    return _bonjour;
+}
+
+- (void)netService:(NSNetService*)sender didNotPublish:(NSDictionary*)errorDict
+{
+	NSLog(@"Warning: OsiriX Bonjour net service did not publish, %@", errorDict);
+    [_bonjour release];
+    _bonjour = nil;
+}
+
+- (void) netServiceDidStop:(NSNetService *)sender
+{
+    NSLog(@"OsiriX Bonjour net service did stop");
+}
+
+
+//- (void)connectionOpened:(NSNotification*)notification {
+//	N2Connection* connection = [[notification userInfo] objectForKey:N2ConnectionListenerOpenedConnection];
+//	[connection setDelegate:self];
+//}
 
 +(NSDictionary*)dictionaryFromXTRecordData:(NSData*)data {
 	NSMutableDictionary* d = [NSMutableDictionary dictionary];
@@ -276,825 +200,783 @@ extern const char *GetPrivateIP();
 	return d;
 }
 
-//- (NSData *)dataByZippingLocalPath:(NSString *)_path
-//{
-//  NSFileHandle  *nullHandle  = nil;
-//  NSFileHandle  *zipHandle   = nil;
-//  NSPipe        *zipPipe     = nil;
-//  NSTask        *zipTask     = nil;
-//  NSData        *result      = nil;
-//  NSString      *compression = nil;
-//
-//  int _level = 6;
-//
-//  // man zip writes, 6 is the default value
-//  compression = [NSString stringWithFormat: @"-%d", (_level < 0 || _level > 9) ? 6 : _level];
-//
-//  zipPipe    = [NSPipe pipe];
-//  zipHandle  = [zipPipe fileHandleForReading];
-//  nullHandle = [NSFileHandle fileHandleForWritingAtPath:@"/dev/null"];
-//  zipTask    = [[NSTask alloc] init];
-//  [zipTask setLaunchPath:@"/usr/bin/zip"];
-//  [zipTask setCurrentDirectoryPath: [_path stringByDeletingLastPathComponent]];
-//  [zipTask setArguments: [NSArray arrayWithObjects:@"-qr", compression, @"-", [_path lastPathComponent], nil]];
-//  [zipTask setStandardOutput:zipPipe];
-//  [zipTask setStandardError:nullHandle];
-//  [zipTask launch];
-//
-//  result     = [zipHandle readDataToEndOfFile];
-//
-//  [zipTask release];
-//  return result;
-//}
-
 - (void) sendDICOMFilesToOsiriXNode:(NSDictionary*) todo
 {
-	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
-	
-	if( dicomSendLock == nil) dicomSendLock = [[NSLock alloc] init];
-	[dicomSendLock lock];
-	
-	DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc]	initWithCallingAET: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
-																calledAET: [todo objectForKey:@"AETitle"] 
-																hostname: [todo objectForKey:@"Address"] 
-																port: [[todo objectForKey:@"Port"] intValue] 
-																filesToSend: [todo valueForKey: @"Files"]
-																transferSyntax: [[todo objectForKey:@"TransferSyntax"] intValue] 
-																compression: 1.0
-																extraParameters: [NSDictionary dictionaryWithObject:[DicomDatabase defaultDatabase] forKey:@"DicomDatabase"]]; // nil == TLS not supported !
-							
-	@try
-	{
-		[storeSCU run:self];
-	}
-	
-	@catch (NSException *ne)
-	{
-		NSLog( @"Bonjour DICOM Send FAILED");
-		NSLog( @"%@", [ne name]);
-		NSLog( @"%@", [ne reason]);
-	}
-	
-	[storeSCU release];
-	storeSCU = nil;
-	
-	[dicomSendLock unlock];
-	
-	[pool release];
+	@autoreleasepool
+    {
+        if (dicomSendLock == nil)
+            dicomSendLock = [[NSLock alloc] init];
+        
+        [dicomSendLock lock];
+        @try {
+            DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc]	initWithCallingAET: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"]
+                                                                        calledAET: [todo objectForKey:@"AETitle"] 
+                                                                        hostname: [todo objectForKey:@"Address"] 
+                                                                        port: [[todo objectForKey:@"Port"] intValue] 
+                                                                        filesToSend: [todo valueForKey: @"Files"]
+                                                                        transferSyntax: [[todo objectForKey:@"TransferSyntax"] intValue] 
+                                                                        compression: 1.0
+                                                                        extraParameters: [NSDictionary dictionaryWithObject:[DicomDatabase defaultDatabase] forKey:@"DicomDatabase"]]; // nil == TLS not supported !
+                                    
+            @try
+            {
+                [storeSCU run:self];
+            }
+            
+            @catch (NSException *ne)
+            {
+                NSLog( @"Bonjour DICOM Send FAILED");
+                NSLog( @"%@", [ne name]);
+                NSLog( @"%@", [ne reason]);
+            }
+            
+            [storeSCU release];
+            storeSCU = nil;
+        } @catch (NSException* e) {
+            N2LogExceptionWithStackTrace(e);
+        } @finally {
+            [dicomSendLock unlock];
+        }
+    }
 }
 
-- (void) subConnectionReceived:(NSFileHandle *)incomingConnection
-{
-	NSAutoreleasePool	*mPool = [[NSAutoreleasePool alloc] init];
+@end
 
-//	BOOL saveDB = NO;
-	BOOL refreshDB = NO;
+@implementation O2DatabaseConnection
 
-	[incomingConnection retain];
-	
-	if( dbPublished)
-	{
-		@try
-		{
-			NSData				*readData;
-			NSMutableData		*data = [NSMutableData dataWithCapacity: 512*512*2*2];
-			NSMutableData		*representationToSend = nil;
-			
-			if( incomingConnection)
-			{
-				// Waiting for incomming message (6 first bytes)
-				while ( [data length] < 6 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				
-				if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DATAB" length: 6]])
-				{
-                    DicomDatabase *database = [DicomDatabase defaultDatabase];
-                    
-                    [[[database managedObjectContext] persistentStoreCoordinator] lock];
-                    
-                    BOOL dataSent = NO;
-                    
-                    @try
-                    {
-                        [database save];
-                        
-                        // we send the database SQL file
-                        NSString *databasePath = [database sqlFilePath];
-                        
-                        #if __LP64__
-                            representationToSend = [NSMutableData dataWithContentsOfFile: databasePath];
-                        #else
-                            NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath: databasePath traverseLink: YES];
-                            long long fileSize = [[fattrs objectForKey:NSFileSize] longLongValue];
-                        
-                            fileSize /= 1024;	// Kb
-                            fileSize /= 1024;	// Mb
-                            
-                            #define DATA_READ_SIZE 200L
-                            
-                            if( fileSize > DATA_READ_SIZE)
-                            {
-                                NSFileHandle *dbFileHandle = [NSFileHandle fileHandleForReadingAtPath: databasePath];
-                                NSLog( @"split DB file reading");
-                                NSUInteger length = 0;
-                                do
-                                {
-                                    NSAutoreleasePool *arp = [[NSAutoreleasePool alloc] init];
-                                    
-                                    NSData *chunk = [dbFileHandle readDataOfLength: DATA_READ_SIZE * 1024L*1024L];
-                                    [incomingConnection writeData: chunk];
-                                    length = [chunk length];
-                                    
-                                    [arp release];
-                                }
-                                while( length > 0);
-                                dataSent = YES;
-                            }
-                            else
-                                representationToSend = [NSMutableData dataWithContentsOfFile: databasePath];
-                        #endif
-                    }
-                    @catch (NSException *e) {
-                        N2LogException( e);
-                    }
-                    @finally {
-                        [[[database managedObjectContext] persistentStoreCoordinator] unlock];
-                    }
-                    
-                    if( dataSent == NO && representationToSend)
-                        [incomingConnection writeData:representationToSend];
-                    
-					struct sockaddr serverAddress;
-					socklen_t namelen = sizeof(serverAddress);
-					
-					if (getsockname( [incomingConnection fileDescriptor], (struct sockaddr *)&serverAddress, &namelen) >= 0)
-					{
-						char client_ip_address[20];
-						sprintf(client_ip_address, "%-d.%-d.%-d.%-d", ((int) serverAddress.sa_data[2]) & 0xff, ((int) serverAddress.sa_data[3]) & 0xff, ((int) serverAddress.sa_data[4]) & 0xff, ((int) serverAddress.sa_data[5]) & 0xff);
-						NSLog( @"Bonjour Connection Received from: %s", client_ip_address);
-					}
-				}
-				else
-				{
-					if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DBSIZ" length: 6]])
-					{
-                        DicomDatabase *database = [DicomDatabase defaultDatabase];
-                        
-                        [[[database managedObjectContext] persistentStoreCoordinator] lock];
-                        
-                        int size, fileSize;
-                        
-                        @try
-                        {
-                            [database save];
-                            
-                            NSString *databasePath = [database sqlFilePath];
-                            
-                            NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath: databasePath traverseLink: YES];
-                            
-                            fileSize = [[fattrs objectForKey:NSFileSize] longLongValue];
-						}
-                        @catch (NSException *e) {
-                            N2LogException( e);
-                        }
-                        @finally {
-                            [[[database managedObjectContext] persistentStoreCoordinator] unlock];
-                        }
-                        
-						representationToSend = [NSMutableData data];
-						
-						NSLog( @"DB fileSize = %d", fileSize);
-						
-						size = NSSwapHostIntToBig( fileSize);
-						[representationToSend appendBytes: &size length: 4];
-					}
-					else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"GETDI" length: 6]])
-					{
-						NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], @"AETitle", [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"], @"Port", [NSString stringWithFormat: @"%d", [DCMTKStoreSCU sendSyntaxForListenerSyntax: [[NSUserDefaults standardUserDefaults] integerForKey: @"preferredSyntaxForIncoming"]]], @"TransferSyntax", nil];
-						
-						representationToSend = [NSMutableData dataWithData: [NSArchiver archivedDataWithRootObject: dictionary]];
-					}
-					else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"VERSI" length: 6]])
-					{
-						NSTimeInterval val = [[DicomDatabase defaultDatabase] timeOfLastModification];
-						
-						NSSwappedDouble swappedValue = NSSwapHostDoubleToBig( val);
-						
-						if( sizeof( swappedValue.v) != 8) NSLog(@"********** warning sizeof( swappedValue) != 8");
-						
-						representationToSend = [NSMutableData dataWithBytes: &swappedValue.v length:sizeof(NSTimeInterval)];
-					}
-					else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DBVER" length: 6]])
-					{
-						NSString	*versString = [[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASEVERSION"];
-						
-						representationToSend = [NSMutableData dataWithData: [versString dataUsingEncoding: NSASCIIStringEncoding]];
-					}
-					else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"ISPWD" length: 6]])
-					{
-						// is this database protected by a password
-						NSString* pswd = [NSUserDefaultsController BonjourSharingPassword];
-						
-						int val = 0;
-						
-						if (pswd) val = NSSwapHostIntToBig(1);
-						else val = 0;
-						
-						representationToSend = [NSMutableData dataWithBytes: &val length:sizeof(int)];
-					}
-					else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"PASWD" length: 6]])
-					{
-						int pos = 6, stringSize;
-						
-						// We read 4 bytes that contain the string size
-						while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-						[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
-						pos += 4;
-						
-						// We read the string
-						while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-						NSString *incomingPswd = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
-						pos += stringSize;
-						
-						int val = 0;
-						
-						if (![NSUserDefaultsController BonjourSharingPassword] || [incomingPswd isEqualToString: [NSUserDefaultsController BonjourSharingPassword]])
-						{
-							val = NSSwapHostIntToBig(1);
-						}
-						
-						representationToSend = [NSMutableData dataWithBytes: &val length:sizeof(int)];
-					}
-					else if ([[data subdataWithRange: NSMakeRange(0,4)] isEqualToData: [NSData dataWithBytes:"SEND" length: 4]]) // SENDD & SENDG
-					{
-						int pos = 6, i;
-						
-						NSString *order = [NSString stringWithCString: [[data subdataWithRange: NSMakeRange(0,6)] bytes]];
-						
-						// We read 4 bytes that contain the no of file
-						while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-						int fileNo;
-						[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &fileNo];
-						fileNo = NSSwapBigIntToHost( fileNo);
-						pos += 4;
-						
-						NSMutableArray *savedFiles = [NSMutableArray array];
-						
-						for( i = 0 ; i < fileNo; i++)
-						{			
-							// We read 4 bytes that contain the file size
-							while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-							
-							int fileSize;
-							[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &fileSize];
-							fileSize = NSSwapBigIntToHost( fileSize);
-							pos += 4;
-							
-							while ( [data length] < pos + fileSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-							
-							NSString *dstPath = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
-                            
-                            NSData *dcmData = [NSData dataWithBytesNoCopy: (char*)[data bytes] + pos  length: fileSize freeWhenDone: NO];
-							[dcmData writeToFile: dstPath atomically: YES];
-							
-							[savedFiles addObject: dstPath];
-							
-							pos += fileSize;
-						}
-						
-						BOOL generatedByOsiriX = NO;
-						if( [order isEqualToString: @"SENDD"]) generatedByOsiriX = NO;
-						else if( [order isEqualToString: @"SENDG"]) generatedByOsiriX = YES;
-						else
-							NSLog( @"******* unknown order: %@", order);
-							
-                        DicomDatabase *idatabase = [[DicomDatabase defaultDatabase] independentDatabase];
-                        
-                        NSArray *objects = [idatabase addFilesAtPaths: savedFiles postNotifications: YES dicomOnly: NO rereadExistingItems: YES generatedByOsiriX: generatedByOsiriX];
-                        
-                        objects = [idatabase objectsWithIDs: objects];
-                        
-						representationToSend = [NSMutableData data];
-                        unsigned int temp = NSSwapHostIntToBig([objects count]);
-                        [representationToSend appendBytes:&temp length:4];
-                        for (DicomImage* image in objects) {
-                            unsigned int temp = NSSwapHostIntToBig(image.pathNumber.intValue);
-                            [representationToSend appendBytes:&temp length:4];
-                        }
-					}
-					else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"NEWMS" length: 6]]) // New Messaging System
-					{
-						int pos = 6, stringSize;
-						
-						// We read 4 bytes that contain the data size
-						while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-						[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
-						pos += 4;
-						
-						// We read the data
-						while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-						NSDictionary *d = [NSPropertyListSerialization propertyListFromData: [data subdataWithRange: NSMakeRange(pos,stringSize)] mutabilityOption: NSPropertyListImmutable format: nil errorDescription: nil];
-						pos += stringSize;
-						
-						if( d)
-						{
-							NSString *message = [d objectForKey:@"message"];
-						}
-						
-						representationToSend = nil;
-					}
-					else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"ADDAL" length: 6]])
-					{
-						int pos = 6, stringSize;
-						
-						// We read 4 bytes that contain the string size
-						while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-						[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
-						pos += 4;
-						
-						// We read the string
-						while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-						NSString *object = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
-						pos += stringSize;
-						
-						if( [object writeToFile:@"/tmp/ADDAL" atomically: YES])
-						{
-							NSDictionary *d = [NSDictionary dictionaryWithContentsOfFile: @"/tmp/ADDAL"];
-							
-							NSArray *studies = [d objectForKey:@"albumStudies"];
-							NSString *albumUID = [d objectForKey:@"albumUID"];
-							
-                            DicomDatabase *idatabase = [[DicomDatabase defaultDatabase] independentDatabase];
-                            
-                            @try
-							{
-								DicomAlbum* album = [idatabase objectWithID:albumUID]; // [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: albumUID]]];
-								NSMutableSet* albumStudies = [album mutableSetValueForKey:@"studies"];
-								
-								for (NSString* uri in studies)
-								{
-									DicomStudy* study = [idatabase objectWithID:uri]; // (DicomStudy*) [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: uri]]];
-									[albumStudies addObject:study];
-									[study archiveAnnotationsAsDICOMSR];
-								}
-								
-								refreshDB = YES;
-                                
-                                [idatabase save:nil];
-							}
-							
-							@catch (NSException * e)
-							{
-								NSLog(@"Exception in BonjourPublisher ADDAL");
-							}
-							@finally {
-                            }
-						}
-						
-						representationToSend = nil;
-					}
-					else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"REMAL" length: 6]])
-					{
-						int pos = 6, stringSize;
-						
-						// We read 4 bytes that contain the string size
-						while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-						[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
-						pos += 4;
-						
-						// We read the string
-						while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-						NSString *object = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
-						pos += stringSize;
-						
-						if( [object writeToFile:@"/tmp/REMAL" atomically: YES])
-						{
-							NSDictionary *d = [NSDictionary dictionaryWithContentsOfFile: @"/tmp/REMAL"];
-							
-							NSArray *studies = [d objectForKey:@"albumStudies"];
-							NSString *albumUID = [d objectForKey:@"albumUID"];
-							
-                            DicomDatabase *idatabase = [[DicomDatabase defaultDatabase] independentDatabase];
-                            
-							@try
-							{
-								DicomAlbum* album = [idatabase objectWithID:albumUID]; // [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: albumUID]]];
-								NSMutableSet* albumStudies = [album mutableSetValueForKey: @"studies"];
-								
-								for (NSString* uri in studies)
-								{
-									DicomStudy* study = [idatabase objectWithID:uri]; // (DicomStudy*) [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: uri]]];
-									[albumStudies removeObject:study];
-									[study archiveAnnotationsAsDICOMSR];
-								}
-								
-								refreshDB = YES;
-                                
-                                [idatabase save:nil];
-							}
-							
-							@catch (NSException * e)
-							{
-								NSLog(@"Exception in BonjourPublisher REMAL");
-							}
-							@finally {
-                            }
-						}
-						
-						representationToSend = nil;
-					}
-					else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"SETVA" length: 6]])
-					{
-						int pos = 6, stringSize;
-						
-						// We read 4 bytes that contain the string size
-						while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-						[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
-						pos += 4;
-						
-						// We read the string
-						while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-						NSString *objectId = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
-						pos += stringSize;
-						
-						// We read 4 bytes that contain the string size
-						while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-						[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
-						pos += 4;
-						
-						// We read the string
-						NSString *value;
-						if( stringSize == 0)
-						{
-							value = nil;
-						}
-						else
-						{
-							while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-							value = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
-							pos += stringSize;
-						}
-						
-						// We read 4 bytes that contain the string size
-						while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-						[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
-						pos += 4;
-						
-						// We read the string
-						while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-						NSString *key = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
-						pos += stringSize;
-						
-                        DicomDatabase *idatabase = [[DicomDatabase defaultDatabase] independentDatabase];
-                        
-						@try
-						{					
-							NSManagedObject* item = [idatabase objectWithID:objectId]; // [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: object]]];
-							
-							//NSLog(@"URL:%@", object);
-							if( item)
-							{
-								if( [[item valueForKeyPath: key] isKindOfClass: [NSNumber class]]) [item setValue: [NSNumber numberWithInt: [value intValue]] forKeyPath: key];
-								else
-								{
-									if( [key isEqualToString: @"reportURL"] == YES)
-									{
-										if( value == nil)
-										{
-											[[NSFileManager defaultManager] removeFileAtPath:[item valueForKeyPath: key] handler:nil];
-										}
-										else if( [[key pathComponents] count] == 1)
-										{
-											value = [[idatabase.baseDirPath stringByAppendingPathComponent: @"/REPORTS/"] stringByAppendingPathComponent: [value lastPathComponent]];
-										}
-									}
-									
-									[item setValue: value forKeyPath: key];
-								}
-							}
-                            
-                            [idatabase save:NULL];
-						}
-						
-						@catch (NSException *e)
-						{
-							NSLog(@"***** BonjourPublisher Exception: %@", e);
-						}
-						@finally {
-                        }
-                        
-						refreshDB = YES;
-					}
-					else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"MFILE" length: 6]])
-					{
-						int pos = 6, stringSize;
-						
-						// We read 4 bytes that contain the string size
-						while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-						[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
-						pos += 4;
-						
-						// We read the string
-						while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-						NSString *path = [[[NSString alloc] initWithData: [data subdataWithRange: NSMakeRange(pos,stringSize)] encoding: NSUnicodeStringEncoding] autorelease];
-						pos += stringSize;
-						
-						if( [path length])
-						{
-							if( [path characterAtIndex: 0] != '/')
-								path = [[[DicomDatabase defaultDatabase] baseDirPath] stringByAppendingPathComponent: path];
-						}
-						
-						NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath:path traverseLink:YES];
-						
-						NSData	*content = [[[fattrs objectForKey:NSFileModificationDate] description] dataUsingEncoding: NSUnicodeStringEncoding];
-						
-						representationToSend = [NSMutableData dataWithData: content];
-					}
-					else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DCMSE" length: 6]])
-					{
-						NSMutableArray	*localPaths = [NSMutableArray array];
-						
-						int pos = 6, noOfFiles = 0, stringSize, i;
-						
-						// We read 4 bytes that contain the string size
-						while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-						[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
-						pos += 4;
-						// We read the string
-						while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-						NSString *AETitle = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
-						pos += stringSize;
-						
-						// We read 4 bytes that contain the string size
-						while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-						[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
-						pos += 4;
-						// We read the string
-						while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-						NSString *Address = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
-						pos += stringSize;
-						
-						// We read 4 bytes that contain the string size
-						while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-						[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
-						pos += 4;
-						// We read the string
-						while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-						NSString *Port = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
-						pos += stringSize;
-						
-						// We read 4 bytes that contain the string size
-						while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-						[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
-						pos += 4;
-						// We read the string
-						while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-						NSString *TransferSyntax = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
-						pos += stringSize;
-						
-						while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-						
-						[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &noOfFiles];	noOfFiles = NSSwapBigIntToHost( noOfFiles);
-						pos += 4;
-						
-						representationToSend = [NSMutableData dataWithCapacity: 0];
-						
-						for( i = 0; i < noOfFiles; i++)
-						{
-							// We read 4 bytes that contain the string size
-							while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-							[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
-							pos += 4;
-							
-							// We read the string
-							while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-							NSString *path = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
-							pos += stringSize;
-							
-							if( [path UTF8String] [ 0] != '/')
-							{
-								int val = [[path stringByDeletingPathExtension] intValue];
-								
-								NSString *dbLocation = [[DicomDatabase defaultDatabase] sqlFilePath];
-								
-								val /= [BrowserController DefaultFolderSizeForDB];
-								val++;
-								val *= [BrowserController DefaultFolderSizeForDB];
-								
-								path = [[dbLocation stringByDeletingLastPathComponent] stringByAppendingFormat:@"/DATABASE.noindex/%d/%@", val, path];
-							}
-							
-							[localPaths addObject: path];
-						}
-						
-						if( [Address isEqualToString: @"127.0.0.1"])
-						{
-							struct sockaddr serverAddress;
-							socklen_t namelen = sizeof( serverAddress);
-							
-							if (getsockname( [incomingConnection fileDescriptor], (struct sockaddr *)&serverAddress, &namelen) >= 0)
-							{
-								char client_ip_address[ 64];
-								sprintf( client_ip_address, "%-d.%-d.%-d.%-d", ((int) serverAddress.sa_data[2]) & 0xff, ((int) serverAddress.sa_data[3]) & 0xff, ((int) serverAddress.sa_data[4]) & 0xff, ((int) serverAddress.sa_data[5]) & 0xff);
-								Address = [NSString stringWithCString: client_ip_address encoding: NSUTF8StringEncoding];
-							}
-						}
-						
-						NSDictionary *todo = [NSDictionary dictionaryWithObjectsAndKeys: Address, @"Address", TransferSyntax, @"TransferSyntax", Port, @"Port", AETitle, @"AETitle", localPaths, @"Files", nil];
-						
-						[NSThread detachNewThreadSelector:@selector(sendDICOMFilesToOsiriXNode:) toTarget:self withObject: todo];
-					}
-					else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DICOM" length: 6]])
-					{
-						NSMutableArray	*localPaths = [NSMutableArray array];
-						NSMutableArray	*dstPaths = [NSMutableArray array];
-						
-						// We read now the path for the DICOM file(s)
-						int pos = 6, size, noOfFiles = 0, stringSize, i;
-						
-						while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-						
-						[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &noOfFiles];	noOfFiles = NSSwapBigIntToHost( noOfFiles);
-						pos += 4;
-						
-						representationToSend = [NSMutableData dataWithCapacity: 512*512*2*(noOfFiles+1)];
-						
-						for( i = 0; i < noOfFiles; i++)
-						{
-							// We read 4 bytes that contain the string size
-							while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-							[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
-							pos += 4;
-							
-							// We read the string
-							while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-							NSString *path = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
-							pos += stringSize;
-							
-							if( [path UTF8String] [ 0] != '/')
-							{
-								if( [[[path pathComponents] objectAtIndex: 0] isEqualToString:@"ROIs"])
-								{
-									//It's a ROI !
-									NSString	*local = [[[DicomDatabase defaultDatabase] sqlFilePath] stringByDeletingLastPathComponent];
-									
-									path = [[local stringByAppendingPathComponent:@"/ROIs/"] stringByAppendingPathComponent: [path lastPathComponent]];
-								}
-								else
-								{
-									
-									int val = [[path stringByDeletingPathExtension] intValue];
-									
-									val /= [BrowserController DefaultFolderSizeForDB];
-									val++;
-									val *= [BrowserController DefaultFolderSizeForDB];
-									
-									NSString	*local = [[[DicomDatabase defaultDatabase] sqlFilePath] stringByDeletingLastPathComponent];
-									
-									path = [[[local stringByAppendingPathComponent:@"/DATABASE.noindex/"] stringByAppendingPathComponent: [NSString stringWithFormat:@"%d", val]] stringByAppendingPathComponent: path];
-								}
-							}
-							
-							[localPaths addObject: path];
-							
-			//				if([[path pathExtension] isEqualToString:@"zip"])
-			//				{
-			//					// it is a ZIP
-			//					NSLog(@"BONJOUR ZIP");
-			//					NSString *xmlPath = [[path stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"];
-			//					NSLog(@"xmlPath : %@", xmlPath);
-			//					if([[NSFileManager defaultManager] fileExistsAtPath:xmlPath])
-			//					{
-			//						// it has an XML descriptor with it
-			//						NSLog(@"BONJOUR XML");
-			//						[localPaths addObject:xmlPath];
-			//					}
-			//				}
-						}
-						
-						for( i = 0; i < noOfFiles; i++)
-						{
-							// We read 4 bytes that contain the string size
-							while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-							[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
-							pos += 4;
-							
-							// We read the string
-							while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-							NSString *path = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
-							pos += stringSize;
-							
-							[dstPaths addObject: path];
-							
-			//				if([[path pathExtension] isEqualToString:@"zip"])
-			//				{
-			//					// it is a ZIP
-			//					NSLog(@"BONJOUR ZIP");
-			//					NSString *xmlPath = [[path stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"];
-			//					NSLog(@"xmlPath : %@", xmlPath);
-			//					if([[NSFileManager defaultManager] fileExistsAtPath:xmlPath])
-			//					{
-			//						// it has an XML descriptor with it
-			//						NSLog(@"BONJOUR XML");
-			//						[dstPaths addObject:xmlPath];
-			//					}
-			//				}
-						}
-						
-						int temp = NSSwapHostIntToBig( noOfFiles);
-						[representationToSend appendBytes: &temp length: 4];	
-						for( i = 0; i < noOfFiles; i++)
-						{
-							NSString	*path = [localPaths objectAtIndex: i];
-							
-	//						if ([[NSFileManager defaultManager] fileExistsAtPath: path] == NO)
-	//							NSLog( @"Bonjour Publisher - File doesn't exist at path: %@", path);
-							
-							NSData	*content = [NSData dataWithContentsOfMappedFile: path];
-							
-							size = NSSwapHostIntToBig( [content length]);
-							[representationToSend appendBytes: &size length: 4];
-							[representationToSend appendData: content];
-							
-							const char* string = [[dstPaths objectAtIndex: i] UTF8String];
-							int stringSize = NSSwapHostIntToBig( strlen( string)+1);	// +1 to include the last 0 !
-							
-							[representationToSend appendBytes:&stringSize length: 4];
-							[representationToSend appendBytes:string length: strlen( string)+1];
-							
-							[incomingConnection writeData: representationToSend];
-							[representationToSend setLength: 0];
-						}
-					}
-					
-					[incomingConnection writeData: representationToSend];
-				}
-			}
-		}
-		@catch( NSException *ne)
-		{
-			NSLog( @"Exception in ConnectionReceived - Communication Interrupted : %@", ne);
-		}
+- (id)initWithAddress:(NSString*)address port:(NSInteger)port tls:(BOOL)tlsFlag is:(NSInputStream*)is os:(NSOutputStream*)os {
+	if ((self = [super initWithAddress:address port:port tls:tlsFlag is:is os:os])) {
+//		[self setCloseOnRemoteClose:YES];
+        _stack = [[NSMutableArray alloc] init];
 	}
 	
-	[incomingConnection closeFile];
-	[incomingConnection release];
-	
-	if( refreshDB) [[BrowserController currentBrowser] performSelectorOnMainThread:@selector(refreshDatabase:) withObject:nil waitUntilDone: NO];		// This has to be performed on the main thread
-	
-    // remark: there was this saveDB flag that was set when changes were made to the database, but it was always just after a [contact save:err] call... 
-    // ...so a saveDatabase would just cause a 2nd [database save]...
-    // ...another possible reason for this 2nd [database save] could be that the DB_VERSION file was originally written in the saveDatabase function..  since DicomDatabase, [database save] does that too.
-//    if( saveDB) [[BrowserController currentBrowser] performSelectorOnMainThread:@selector(saveDatabase:) withObject:nil waitUntilDone: NO];			// This has to be performed on the main thread
-	
-	[mPool release];
+	return self;
 }
 
-- (void) connectionReceived:(NSNotification *) aNotification
-{
-	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];		// <- Keep this line, very important to avoid memory crash - Antoine
+- (void)dealloc {
+    [_stack release];
+    [super dealloc];
+}
+
+enum Modes {
+    NONE = 0, DONE,
+    DATAB,
+    DBSIZ,
+    GETDI,
+    VERSI,
+    DBVER,
+    ISPWD,
+    PASWD,
+    SENDD,
+    SENDG,
+    NEWMS,
+    ADDAL,
+    REMAL,
+    SETVA,
+    MFILE,
+    DCMSE,
+    DICOM
+};
+
+static NSString* const O2NotEnoughData = @"O2NotEnoughData";
+
+- (void)handleData:(NSMutableData*)data {
+    _hdi = 0;
     
-	[connectionLock lock];
-	
-	@try 
-	{
-		[[aNotification object] acceptConnectionInBackgroundAndNotify];
-		[NSThread detachNewThreadSelector: @selector (subConnectionReceived:) toTarget: self withObject: [[aNotification userInfo] objectForKey:NSFileHandleNotificationFileHandleItem]];
-	}
-	@catch (NSException * e) 
-	{
-		N2LogExceptionWithStackTrace(e);
-	}
-	
-	[connectionLock unlock];
-	
-	[pool release];
+    @try {
+        if (_mode == NONE) {
+            if (self.availableSize < 6)
+                return;
+            char command[6];
+            [self readData:6 toBuffer:command];
+            
+    #define el else
+            if (strcmp(command, "DATAB") == 0)
+                _mode = DATAB;
+            el if (strcmp(command, "DBSIZ") == 0)
+                _mode = DBSIZ;
+            el if (strcmp(command, "GETDI") == 0)
+                _mode = GETDI;
+            el if (strcmp(command, "VERSI") == 0)
+                _mode = VERSI;
+            el if (strcmp(command, "DBVER") == 0)
+                _mode = DBVER;
+            el if (strcmp(command, "ISPWD") == 0)
+                _mode = ISPWD;
+            el if (strcmp(command, "PASWD") == 0)
+                _mode = PASWD;
+            el if (strcmp(command, "SENDD") == 0)
+                _mode = SENDD;
+            el if (strcmp(command, "SENDG") == 0)
+                _mode = SENDG;
+            el if (strcmp(command, "NEWMS") == 0)
+                _mode = NEWMS;
+            el if (strcmp(command, "ADDAL") == 0)
+                _mode = ADDAL;
+            el if (strcmp(command, "REMAL") == 0)
+                _mode = REMAL;
+            el if (strcmp(command, "SETVA") == 0)
+                _mode = SETVA;
+            el if (strcmp(command, "MFILE") == 0)
+                _mode = MFILE;
+            el if (strcmp(command, "DCMSE") == 0)
+                _mode = DCMSE;
+            el if (strcmp(command, "DICOM") == 0)
+                _mode = DICOM;
+    #undef el
+
+            if (_mode == NONE)
+                [self close];
+        }
+
+        switch (_mode) {
+            case DATAB:
+                return [self DATAB];
+            case DBSIZ:
+                return [self DBSIZ];
+            case GETDI:
+                return [self GETDI];
+            case VERSI:
+                return [self VERSI];
+            case DBVER:
+                return [self DBVER];
+            case ISPWD:
+                return [self ISPWD];
+            case PASWD:
+                return [self PASWD];
+            case SENDD:
+                return [self SEND];
+            case SENDG:
+                return [self SEND];
+            case NEWMS:
+                return [self NEWMS];
+            case ADDAL:
+                return [self ADDAL];
+            case REMAL:
+                return [self REMAL];
+            case SETVA:
+                return [self SETVA];
+            case MFILE:
+                return [self MFILE];
+            case DCMSE:
+                return [self DCMSE];
+            case DICOM:
+                return [self DICOM];
+        }
+    } @catch (NSException* e) {
+        if ([e.name isEqualToString:O2NotEnoughData])
+            return;
+        @throw e;
+    } @finally {
+        if (_mode == DONE)
+        {
+            if (self.writeBufferSize)
+                self.closeWhenDoneSending = YES;
+            else [self close];
+        }
+    }
 }
 
-// work as a delegate of the NSNetService
-- (void)netServiceWillPublish:(NSNetService*)sender
-{
+- (void)connectionFinishedSendingData {
+    [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(handleData:) object:nil];
+    [self performSelector:@selector(handleData:) withObject:nil afterDelay:0]; // fill send buffer, maybe...
 }
 
-- (void)netService:(NSNetService*)sender didNotPublish:(NSDictionary*)errorDict
-{
-	// we should send an error message
-	// here ...
-	
-	NSLog(@"******* did not publish... why? %@", errorDict);
-    [netService release];
-    netService = nil;
+- (void)_stackObject:(id)o {
+    [_stack addObject:o];
+    ++_hdi;
 }
 
-- (void) netServiceDidStop:(NSNetService *)sender
-{
-//	[bonjourServiceName setEnabled:YES];
-	
-	if ([NSUserDefaultsController IsBonjourSharingActive])
-	{
-		NSLog(@"**** Bonjour did stop ! Restarting it!");
-		[self toggleSharing:YES];
-	}
+- (id)_stackedObject {
+    if (_stack.count <= _hdi)
+        return nil;
+    return [_stack objectAtIndex:_hdi++];
 }
+
+- (void)_unstack {
+    [_stack removeObjectAtIndex:--_hdi];
+}
+
+- (void)_requireDataSize:(int)size {
+    if (self.availableSize < size)
+        [NSException raise:O2NotEnoughData format:nil];
+}
+
+- (int)_readInt {
+    [self _requireDataSize:4];
+    
+    int value;
+    [self readData:4 toBuffer:&value];
+    value = NSSwapBigIntToHost(value);
+    
+    return value;
+}
+
+- (int)_stackReadInt {
+    if (_stack.count > _hdi)
+        return [[self _stackedObject] intValue];
+    
+    int value = [self _readInt];
+    
+    [self _stackObject:[NSNumber numberWithInt:value]];
+    
+    return value;
+}
+
+- (NSString*)_readString {
+    [self _requireDataSize:4];
+    
+    int length;
+    [self.readBuffer getBytes:&length length:4];
+    length = NSSwapBigIntToHost(length);
+
+    [self _requireDataSize:length+4];
+    
+    [self readData:4];
+    
+    NSData* data = [self readData:length];
+    
+    return [NSString stringWithUTF8String:data.bytes];
+}
+
+- (NSString*)_stackReadString {
+    if (_stack.count > _hdi)
+        return [self _stackedObject];
+    
+    NSString* value = [self _readString];
+    
+    [self _stackObject:value];
+    
+    return value;
+}
+
+- (DicomDatabase*)_stackIndependentDatabase {
+    if (_stack.count > _hdi)
+        return [self _stackedObject];
+    
+    DicomDatabase* database = [[DicomDatabase defaultDatabase] independentDatabase];
+    
+    [self _stackObject:database];
+    
+    return database;
+}
+
+- (void)DATAB {
+    DicomDatabase* idatabase = [self _stackIndependentDatabase];
+    
+    NSMutableData* representationToSend = nil;
+    
+    N2Locker* lock = [self _stackedObject];
+    if (!lock) {
+        [self _stackObject:[N2Locker lock:[[idatabase managedObjectContext] persistentStoreCoordinator]]]; // this object unlocks the persistentStoreCoordinator when released
+        [idatabase save];
+    }
+    
+    BOOL done = NO;
+    
+    @try
+    {
+        // we send the database SQL file
+        NSString* databasePath = [idatabase sqlFilePath];
+        
+#if __LP64__
+        representationToSend = [NSMutableData dataWithContentsOfFile: databasePath];
+        done = YES;
+#else
+        NSNumber* fileSize = [self _stackedObject];
+        if (!fileSize) {
+            NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath: databasePath traverseLink: YES];
+            long long ll = [[fattrs objectForKey:NSFileSize] longLongValue];
+            [self _stackObject:(fileSize = [NSNumber numberWithLongLong:ll])];
+        }
+        
+        // read 200 MB per cycle
+#define DATA_READ_SIZE 200L
+        
+        if (fileSize.longLongValue/1024/1024 > DATA_READ_SIZE)
+        {
+            NSFileHandle* dbFileHandle = [self _stackedObject];
+            if (!dbFileHandle) {
+                dbFileHandle = [NSFileHandle fileHandleForReadingAtPath: databasePath];
+                [self _stackObject:dbFileHandle];
+            }
+                
+            if (self.writeBufferSize > 0) // to optimize memory usage, don't queue additional data until the send buffer is empty
+                return;
+            
+            NSData* chunk = [dbFileHandle readDataOfLength: DATA_READ_SIZE * 1024L*1024L];
+            if ([chunk length]) {
+                [self writeData: chunk];
+                return;
+            } else
+                done = YES;
+            
+            [self _unstack];
+        }
+        else
+            representationToSend = [NSMutableData dataWithContentsOfFile: databasePath];
+        
+        [self _unstack];
+#endif
+    }
+    @catch (NSException *e) {
+        N2LogExceptionWithStackTrace(e);
+    }
+    @finally {
+        if (done) {
+            [self _unstack]; // -> release N2Locker, unlocks the persistentStoreCoordinator (this line may not be called, so the persistentStoreCoordinator will be unlocked when this connection object is released -- when the stack is released)
+        }
+    }
+    
+    if (representationToSend)
+        [self writeData:representationToSend];
+    
+    NSLog(@"Bonjour connection received from %@", _address);
+
+    _mode = DONE;
+}
+
+- (void)DBSIZ {
+    DicomDatabase* idatabase = [self _stackIndependentDatabase];
+    
+    int fileSize;
+    
+    [[[idatabase managedObjectContext] persistentStoreCoordinator] lock];
+    @try
+    {
+        [idatabase save];
+        
+        NSString *databasePath = [idatabase sqlFilePath];
+        
+        NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath: databasePath traverseLink: YES];
+        
+        fileSize = [[fattrs objectForKey:NSFileSize] longLongValue];
+    }
+    @catch (NSException* e) {
+        N2LogExceptionWithStackTrace(e);
+    }
+    @finally {
+        [[[idatabase managedObjectContext] persistentStoreCoordinator] unlock];
+    }
+    
+    int size = NSSwapHostIntToBig(fileSize);
+    [self writeData:[NSData dataWithBytes:&size length:sizeof(int)]];
+    
+    _mode = DONE;
+}
+
+- (void)GETDI {
+    NSDictionary* dictionary = [NSDictionary dictionaryWithObjectsAndKeys: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], @"AETitle", [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"], @"Port", [NSString stringWithFormat: @"%d", [DCMTKStoreSCU sendSyntaxForListenerSyntax: [[NSUserDefaults standardUserDefaults] integerForKey: @"preferredSyntaxForIncoming"]]], @"TransferSyntax", nil];
+    
+    [self writeData:[NSMutableData dataWithData: [NSArchiver archivedDataWithRootObject: dictionary]]];
+    
+    _mode = DONE;
+}
+
+- (void)VERSI {
+    DicomDatabase* idatabase = [self _stackIndependentDatabase];
+
+    NSTimeInterval val = [idatabase timeOfLastModification];
+    
+    NSSwappedDouble swappedValue = NSSwapHostDoubleToBig( val);
+    
+    if( sizeof( swappedValue.v) != 8) NSLog(@"********** warning sizeof( swappedValue) != 8");
+    
+    [self writeData:[NSMutableData dataWithBytes: &swappedValue.v length:sizeof(NSTimeInterval)]];
+    
+    _mode = DONE;
+}
+
+- (void)DBVER {
+    NSString	*versString = [[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASEVERSION"];
+    
+    [self writeData:[NSMutableData dataWithData: [versString dataUsingEncoding: NSASCIIStringEncoding]]];
+    
+    _mode = DONE;
+}
+
+- (void)ISPWD {
+    // is this database protected by a password
+    NSString* pswd = [NSUserDefaultsController BonjourSharingPassword];
+    
+    int val = 0;
+    if (pswd)
+        val = NSSwapHostIntToBig(1);
+    
+    [self writeData:[NSMutableData dataWithBytes:&val length:sizeof(int)]];
+    
+    _mode = DONE;
+}
+
+- (void)PASWD {
+    NSString* incomingPswd = [self _stackReadString];
+    
+    // We read the string
+    int val = 0;
+    
+    if (![NSUserDefaultsController BonjourSharingPassword] || [incomingPswd isEqualToString: [NSUserDefaultsController BonjourSharingPassword]])
+    {
+        val = NSSwapHostIntToBig(1);
+    }
+    
+    [self writeData:[NSMutableData dataWithBytes:&val length:sizeof(int)]];
+    
+    _mode = DONE;
+}
+
+- (void)SEND {
+    int fileNo = [self _stackReadInt];
+    
+    NSMutableArray* savedFiles = [self _stackedObject];
+    if (!savedFiles) [self _stackObject:(savedFiles = [NSMutableArray array])];
+    
+    while (savedFiles.count < fileNo)
+    {
+        int fileSize = [self _stackReadInt];
+        [self _requireDataSize:fileSize];
+        
+        NSString* dstPath = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
+        
+        [[self readData:fileSize] writeToFile:dstPath atomically:YES];
+        
+        [savedFiles addObject: dstPath];
+        
+        [self _unstack];
+    }
+    
+    DicomDatabase* idatabase = [self _stackIndependentDatabase];
+    
+    NSArray *objects = [idatabase addFilesAtPaths: savedFiles postNotifications: YES dicomOnly: NO rereadExistingItems: YES generatedByOsiriX:(_mode == SENDG)];
+    
+    objects = [idatabase objectsWithIDs: objects];
+    
+    NSMutableData* representationToSend = [NSMutableData data];
+    unsigned int temp = NSSwapHostIntToBig([objects count]);
+    [representationToSend appendBytes:&temp length:4];
+    for (DicomImage* image in objects) {
+        unsigned int temp = NSSwapHostIntToBig(image.pathNumber.intValue);
+        [representationToSend appendBytes:&temp length:4];
+    }
+    
+    [self writeData:representationToSend];
+
+    _mode = DONE;
+}
+
+- (void)NEWMS { // is this used ? nah
+    int size = [self _stackReadInt];
+    
+    [self _requireDataSize:size];
+    NSData* da = [self readData:size];
+    
+    NSDictionary* d = [NSPropertyListSerialization propertyListFromData:da mutabilityOption: NSPropertyListImmutable format: nil errorDescription: nil];
+    
+    if (d)
+    {
+        NSString *message = [d objectForKey:@"message"];
+    }
+    
+    _mode = DONE;
+}
+
+- (void)ADDAL {
+    NSString* object = [self _stackReadString];
+    
+    NSDictionary* d = (NSDictionary*)[NSPropertyListSerialization
+                                      propertyListFromData:[NSData dataWithBytesNoCopy:(void*)object.UTF8String length:strlen(object.UTF8String) freeWhenDone:NO]
+                                      mutabilityOption:NSPropertyListImmutable
+                                      format:NULL
+                                      errorDescription:NULL];
+    
+    if (!d) [NSException raise:NSGenericException format:@"can't parse parameters"];
+    
+    NSArray *studies = [d objectForKey:@"albumStudies"];
+    NSString *albumUID = [d objectForKey:@"albumUID"];
+    
+    DicomDatabase* idatabase = [self _stackIndependentDatabase];
+    
+    @try
+    {
+        DicomAlbum* album = [idatabase objectWithID:albumUID]; // [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: albumUID]]];
+        NSMutableSet* albumStudies = [album mutableSetValueForKey:@"studies"];
+        
+        for (NSString* uri in studies)
+        {
+            DicomStudy* study = [idatabase objectWithID:uri]; // (DicomStudy*) [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: uri]]];
+            [albumStudies addObject:study];
+            [study archiveAnnotationsAsDICOMSR];
+        }
+        
+        [idatabase save:nil];
+        
+        [[BrowserController currentBrowser] performSelectorOnMainThread:@selector(refreshDatabase:) withObject:self waitUntilDone:NO];
+    }
+    
+    @catch (NSException * e)
+    {
+        N2LogExceptionWithStackTrace(e);
+    }
+    
+    _mode = DONE;
+}
+
+- (void)REMAL {
+    NSString* object = [self _stackReadString];
+    
+    NSDictionary* d = (NSDictionary*)[NSPropertyListSerialization
+                                      propertyListFromData:[NSData dataWithBytesNoCopy:(void*)object.UTF8String length:strlen(object.UTF8String) freeWhenDone:NO]
+                                      mutabilityOption:NSPropertyListImmutable
+                                      format:NULL
+                                      errorDescription:NULL];
+    
+    if (!d) [NSException raise:NSGenericException format:@"can't parse parameters"];
+
+    NSArray *studies = [d objectForKey:@"albumStudies"];
+    NSString *albumUID = [d objectForKey:@"albumUID"];
+    
+    DicomDatabase* idatabase = [self _stackIndependentDatabase];
+    
+    @try
+    {
+        DicomAlbum* album = [idatabase objectWithID:albumUID]; // [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: albumUID]]];
+        NSMutableSet* albumStudies = [album mutableSetValueForKey: @"studies"];
+        
+        for (NSString* uri in studies)
+        {
+            DicomStudy* study = [idatabase objectWithID:uri]; // (DicomStudy*) [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: uri]]];
+            [albumStudies removeObject:study];
+            [study archiveAnnotationsAsDICOMSR];
+        }
+        
+        [idatabase save:nil];
+
+        [[BrowserController currentBrowser] performSelectorOnMainThread:@selector(refreshDatabase:) withObject:self waitUntilDone:NO];
+    }
+    
+    @catch (NSException * e)
+    {
+        N2LogExceptionWithStackTrace(e);
+    }
+    @finally {
+    }
+
+    _mode = DONE;
+
+}
+
+- (void)SETVA {
+    NSString* objectId = [self _stackReadString];
+    NSString* value = [self _stackReadString];
+    NSString* key = [self _stackReadString];
+    
+    DicomDatabase* idatabase = [self _stackIndependentDatabase];
+    
+    @try
+    {
+        NSManagedObject* item = [idatabase objectWithID:objectId]; // [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: object]]];
+        
+        //NSLog(@"URL:%@", object);
+        if( item)
+        {
+            if( [[item valueForKeyPath: key] isKindOfClass: [NSNumber class]]) [item setValue: [NSNumber numberWithInt: [value intValue]] forKeyPath: key];
+            else
+            {
+                if( [key isEqualToString: @"reportURL"] == YES)
+                {
+                    if( value == nil)
+                    {
+                        [[NSFileManager defaultManager] removeFileAtPath:[item valueForKeyPath: key] handler:nil];
+                    }
+                    else if( [[key pathComponents] count] == 1)
+                    {
+                        value = [[idatabase.baseDirPath stringByAppendingPathComponent: @"/REPORTS/"] stringByAppendingPathComponent: [value lastPathComponent]];
+                    }
+                }
+                
+                [item setValue: value forKeyPath: key];
+            }
+        }
+        
+        [idatabase save:NULL];
+    }
+    
+    @catch (NSException *e)
+    {
+        N2LogExceptionWithStackTrace(e);
+    }
+    @finally {
+    }
+    
+    [[BrowserController currentBrowser] performSelectorOnMainThread:@selector(refreshDatabase:) withObject:self waitUntilDone:NO];
+    
+    _mode = DONE;
+}
+
+- (void)MFILE {
+    NSString* path = [self _stackReadString];
+    
+    if( [path length])
+    {
+        if( [path characterAtIndex: 0] != '/')
+            path = [[[DicomDatabase defaultDatabase] baseDirPath] stringByAppendingPathComponent: path];
+    }
+    
+    NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath:path traverseLink:YES];
+    
+    NSData	*content = [[[fattrs objectForKey:NSFileModificationDate] description] dataUsingEncoding: NSUnicodeStringEncoding];
+    
+    [self writeData:content];
+    
+    _mode = DONE;
+}
+
+- (void)DCMSE {
+    NSString* AETitle = [self _stackReadString];
+    NSString* Address = [self _stackReadString];
+    NSString* Port = [self _stackReadString];
+    NSString* TransferSyntax = [self _stackReadString];
+    
+    int noOfFiles = [self _stackReadInt];
+
+    NSMutableArray* localPaths = [self _stackedObject];
+    if (!localPaths) [self _stackObject:(localPaths = [NSMutableArray array])];
+
+    while (localPaths.count < noOfFiles)
+    {
+        NSString* path = [self _stackReadString];
+        
+        if( [path UTF8String] [0] != '/')
+        {
+            int val = [[path stringByDeletingPathExtension] intValue];
+            
+            NSString *dbLocation = [[DicomDatabase defaultDatabase] sqlFilePath];
+            
+            val /= [BrowserController DefaultFolderSizeForDB];
+            val++;
+            val *= [BrowserController DefaultFolderSizeForDB];
+            
+            path = [[dbLocation stringByDeletingLastPathComponent] stringByAppendingFormat:@"/DATABASE.noindex/%d/%@", val, path];
+        }
+        
+        [localPaths addObject: path];
+        
+        [self _unstack]; // the string
+    }
+    
+    if( [Address isEqualToString: @"127.0.0.1"])
+    {
+        Address = _address;
+    }
+    
+    NSDictionary *todo = [NSDictionary dictionaryWithObjectsAndKeys: Address, @"Address", TransferSyntax, @"TransferSyntax", Port, @"Port", AETitle, @"AETitle", localPaths, @"Files", nil];
+    
+    [NSThread detachNewThreadSelector:@selector(sendDICOMFilesToOsiriXNode:) toTarget:[BonjourPublisher currentPublisher] withObject: todo];
+
+    _mode = DONE;
+}
+
+- (void)DICOM {
+    int noOfFiles = [self _stackReadInt];
+    
+    NSMutableArray* localPaths = [self _stackedObject];
+    if (!localPaths) [self _stackObject:(localPaths = [NSMutableArray array])];
+    NSMutableArray* dstPaths = [self _stackedObject];
+    if (!dstPaths) [self _stackObject:(dstPaths = [NSMutableArray array])];
+    
+    while (localPaths.count < noOfFiles)
+    {
+        NSString* path = [self _stackReadString];
+        
+        if( [path UTF8String] [ 0] != '/')
+        {
+            if( [[[path pathComponents] objectAtIndex: 0] isEqualToString:@"ROIs"])
+            {
+                //It's a ROI !
+                NSString	*local = [[[DicomDatabase defaultDatabase] sqlFilePath] stringByDeletingLastPathComponent];
+                
+                path = [[local stringByAppendingPathComponent:@"/ROIs/"] stringByAppendingPathComponent: [path lastPathComponent]];
+            }
+            else
+            {
+                
+                int val = [[path stringByDeletingPathExtension] intValue];
+                
+                val /= [BrowserController DefaultFolderSizeForDB];
+                val++;
+                val *= [BrowserController DefaultFolderSizeForDB];
+                
+                NSString	*local = [[[DicomDatabase defaultDatabase] sqlFilePath] stringByDeletingLastPathComponent];
+                
+                path = [[[local stringByAppendingPathComponent:@"/DATABASE.noindex/"] stringByAppendingPathComponent: [NSString stringWithFormat:@"%d", val]] stringByAppendingPathComponent: path];
+            }
+        }
+        
+        [localPaths addObject: path];
+        
+        //				if([[path pathExtension] isEqualToString:@"zip"])
+        //				{
+        //					// it is a ZIP
+        //					NSLog(@"BONJOUR ZIP");
+        //					NSString *xmlPath = [[path stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"];
+        //					NSLog(@"xmlPath : %@", xmlPath);
+        //					if([[NSFileManager defaultManager] fileExistsAtPath:xmlPath])
+        //					{
+        //						// it has an XML descriptor with it
+        //						NSLog(@"BONJOUR XML");
+        //						[localPaths addObject:xmlPath];
+        //					}
+        //				}
+
+        [self _unstack]; // the string
+    }
+    
+    while (dstPaths.count < noOfFiles)
+    {
+        NSString* path = [self _stackReadString];
+        
+        [dstPaths addObject: path];
+        
+        //				if([[path pathExtension] isEqualToString:@"zip"])
+        //				{
+        //					// it is a ZIP
+        //					NSLog(@"BONJOUR ZIP");
+        //					NSString *xmlPath = [[path stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"];
+        //					NSLog(@"xmlPath : %@", xmlPath);
+        //					if([[NSFileManager defaultManager] fileExistsAtPath:xmlPath])
+        //					{
+        //						// it has an XML descriptor with it
+        //						NSLog(@"BONJOUR XML");
+        //						[dstPaths addObject:xmlPath];
+        //					}
+        //				}
+    }
+    
+    int temp = NSSwapHostIntToBig(noOfFiles);
+    [self writeData:[NSData dataWithBytesNoCopy:&temp length:4 freeWhenDone:NO]];
+    for (int i = 0; i < noOfFiles; i++)
+    {
+        NSString* path = [localPaths objectAtIndex: i];
+        
+        //						if ([[NSFileManager defaultManager] fileExistsAtPath: path] == NO)
+        //							NSLog( @"Bonjour Publisher - File doesn't exist at path: %@", path);
+        
+        NSData* content = [NSData dataWithContentsOfMappedFile:path];
+        int size = NSSwapHostIntToBig([content length]);
+        [self writeData:[NSData dataWithBytesNoCopy:&size length:4 freeWhenDone:NO]];
+        [self writeData:content];
+        
+        const char* string = [[dstPaths objectAtIndex:i] UTF8String];
+        int stringSize = NSSwapHostIntToBig( strlen( string)+1);	// +1 to include the last 0 !
+        [self writeData:[NSData dataWithBytesNoCopy:&stringSize length:4 freeWhenDone:NO]];
+        [self writeData:[NSData dataWithBytesNoCopy:(void*)string length:strlen(string)+1 freeWhenDone:NO]];
+    }
+    
+    _mode = DONE;
+}
+
+
+
+
+
 
 @end
