@@ -377,8 +377,7 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
     }
 }
 
--(void)trySendingDataNow {
-    [super trySendingDataNow];
+- (void)connectionFinishedSendingData {
     [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(handleData:) object:nil];
     [self performSelector:@selector(handleData:) withObject:nil afterDelay:0]; // fill send buffer, maybe...
 }
@@ -502,7 +501,7 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
                 [self _stackObject:dbFileHandle];
             }
                 
-            if (self.writeBufferSize > DATA_READ_SIZE/2 * 1024L*1024L)
+            if (self.writeBufferSize > 0) // to optimize memory usage, don't queue additional data until the send buffer is empty
                 return;
             
             NSData* chunk = [dbFileHandle readDataOfLength: DATA_READ_SIZE * 1024L*1024L];
