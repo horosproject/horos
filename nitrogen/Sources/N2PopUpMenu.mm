@@ -21,7 +21,7 @@
 }
 
 @property CGFloat itemHeight;
-@property NSInteger highlightedCellRow;
+@property (nonatomic) NSInteger highlightedCellRow;
 
 - (void)mouseMovedToWindowLocation:(NSPoint)windowLocation;
 - (void)highlightItemAtRow:(NSInteger)row scroll:(BOOL)scroll;

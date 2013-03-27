@@ -582,6 +582,35 @@ static inline void DrawRuns(	struct edge *active,
 					else curPix += w;
 				}
 			}
+            else
+            {
+                while( x-- >= 0)
+				{
+                    unsigned char* curPixRGB = (unsigned char*) curPix;
+                    
+					val = (curPixRGB[ 1] + curPixRGB[ 2] + curPixRGB[ 3]) / 3.;
+					
+					if( imax)
+					{
+						if( val > *imax) *imax = val;
+						if( val < *imin) *imin = val;
+						
+						*itotal += val;
+						
+						(*count)++;
+					}
+					
+					if( idev)
+					{
+						temp = imean - val;
+						temp *= temp;
+						*idev += temp;
+					}
+					
+					if( orientation) curPix ++;
+					else curPix += w;
+				}
+            }
 		}
 		
 		// ** DRAW
@@ -644,10 +673,10 @@ static inline void DrawRuns(	struct edge *active,
 				{
 					switch( orientation)
 					{
-					case 1:		curPix = &pix[ (curY * ims) + start + stackNo *w];		break;
-					case 0:		curPix = &pix[ (curY * ims) + (start * w) + stackNo];		break;
-					case 2:		curPix = &pix[ (curY * w) + start];							break;
-				}
+                        case 1:		curPix = &pix[ (curY * ims) + start + stackNo *w];		break;
+                        case 0:		curPix = &pix[ (curY * ims) + (start * w) + stackNo];		break;
+                        case 2:		curPix = &pix[ (curY * w) + start];							break;
+                    }
 					
 					long x = end - start;
 					
