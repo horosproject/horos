@@ -118,6 +118,9 @@ static NSMatrix *gDateMatrix = nil;
 	
 	for( NSUInteger i = 0; i < [savedArray count]; i++)
 	{
+        if (![[savedArray objectAtIndex:i] isKindOfClass:[NSDictionary class]])
+            continue;
+
 		NSDictionary *server = [self findCorrespondingServer: [savedArray objectAtIndex:i] inServers: serversArray];
 		
 		//if( server && ([[server valueForKey:@"QR"] boolValue] == YES || [server valueForKey:@"QR"] == nil ))
