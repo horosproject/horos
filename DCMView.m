@@ -517,7 +517,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
     gDontListenToSyncMessage = v;
     
-    if( gDontListenToSyncMessage)
+    if( gDontListenToSyncMessage == NO)
         [[[ViewerController frontMostDisplayed2DViewer] imageView] sendSyncMessage: 0];
 }
 
