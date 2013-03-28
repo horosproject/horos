@@ -9579,30 +9579,10 @@ static BOOL withReset = NO;
         album.predicateString = [swc.predicate predicateFormat];
         [self.database save];
         
-        /* // TODO: voir avec Antoine, pourquoi faut-il faire a ?
-         // Distant DICOM node filter
-         if( [[[smartWindowController onDemandFilter] allKeys] count] > 0)
-         {
-         NSMutableArray *savedSmartAlbums = [[[[NSUserDefaults standardUserDefaults] objectForKey: @"smartAlbumStudiesDICOMNodes"] mutableCopy] autorelease];
-         
-         NSUInteger idx = [[savedSmartAlbums valueForKey: @"name"] indexOfObject: name];
-         
-         if( idx != NSNotFound)
-         [savedSmartAlbums removeObjectAtIndex: idx];
-         
-         NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool: NO], @"activated", name, @"name", nil];
-         
-         [dict addEntriesFromDictionary: [smartWindowController onDemandFilter]];
-         
-         [savedSmartAlbums addObject: dict];
-         
-         [[NSUserDefaults standardUserDefaults] setObject: savedSmartAlbums forKey: @"smartAlbumStudiesDICOMNodes"];
-         }
-
-         */
+        [albumTable reloadData];
         
-        [albumTable selectRowIndexes:[NSIndexSet indexSetWithIndex:[self.albumArray indexOfObject:album]] byExtendingSelection:NO];
-
+        if( [self.albumArray indexOfObject:album] != NSNotFound)
+            [albumTable selectRowIndexes:[NSIndexSet indexSetWithIndex:[self.albumArray indexOfObject:album]] byExtendingSelection:NO];
         
         @synchronized (self) {
             _cachedAlbumsContext = nil;
