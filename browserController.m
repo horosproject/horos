@@ -662,6 +662,8 @@ static NSConditionLock *threadLock = nil;
 	
 	for( NSString *filename in filenames)
 	{
+        NSAutoreleasePool *pool = [NSAutoreleasePool new];
+        
 		@try
 		{
 			if( [[filename lastPathComponent] characterAtIndex: 0] != '.')
@@ -676,6 +678,8 @@ static NSConditionLock *threadLock = nil;
 						
 						while (pathname = [enumer nextObject])
 						{
+                            NSAutoreleasePool *p = [NSAutoreleasePool new];
+                            
 							@try
 							{
 								NSString * itemPath = [filename stringByAppendingPathComponent: pathname];
@@ -732,6 +736,8 @@ static NSConditionLock *threadLock = nil;
 							{
                                 N2LogExceptionWithStackTrace(e/*, @"addFilesAndFolderToDatabase 2"*/);
 							}
+                            
+                            [p release];
 						}
 					}
 					else    // A file
@@ -771,6 +777,8 @@ static NSConditionLock *threadLock = nil;
 		{
 			N2LogExceptionWithStackTrace(e);
 		}
+        
+        [pool release];
 	}
 	
 	[self copyFilesIntoDatabaseIfNeeded: filesArray options: [NSDictionary dictionaryWithObjectsAndKeys: [[NSUserDefaults standardUserDefaults] objectForKey: @"onlyDICOM"], @"onlyDICOM", [NSNumber numberWithBool: YES], @"async", [NSNumber numberWithBool: YES], @"addToAlbum",  [NSNumber numberWithBool: YES], @"selectStudy", nil]];
@@ -1859,11 +1867,13 @@ static NSConditionLock *threadLock = nil;
 	NSMutableArray *newFilesToCopyList = [NSMutableArray arrayWithCapacity: [filesInput count]];
 	NSString *INpath = [_database dataDirPath];
 	
+    NSAutoreleasePool *pool = [NSAutoreleasePool new];
 	for( NSString *file in filesInput)
 	{
 		if( [[file commonPrefixWithString: INpath options: NSLiteralSearch] isEqualToString:INpath] == NO)
 			[newFilesToCopyList addObject: file];
 	}
+    [pool release];
 	
 	BOOL copyFiles = NO;
 	
