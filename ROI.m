@@ -821,7 +821,6 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 		
 		previousPoint.x = previousPoint.y = -1000;
 		
-		fontListGL = -1;
 		stringTex = nil;
 		rmean = rmax = rmin = rdev = rtotal = -1;
 		Brmean = Brmax = Brmin = Brdev = Brtotal = -1;
@@ -839,6 +838,9 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 		}
 		
 		[self reduceTextureIfPossible];
+        
+        [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"LabelFONTNAME" options:NSKeyValueObservingOptionNew context:nil];
+        [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"LabelFONTSIZE" options:NSKeyValueObservingOptionNew context:nil];
     }
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:self userInfo: nil];
@@ -940,7 +942,6 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	
 	c->previousPoint.x = c->previousPoint.y = -1000;
 	
-	c->fontListGL = -1;
 	c->stringTex = nil;
 	c->rmean = c->rmax = c->rmin = c->rdev = c->rtotal = -1;
 	c->Brmean = c->Brmax = c->Brmin = c->Brdev = c->Brtotal = -1;
@@ -960,6 +961,9 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	c->_hasIsSpline = _hasIsSpline;
 	c->_isSpline = _isSpline;
 	
+    [[NSUserDefaults standardUserDefaults] addObserver:c forKeyPath:@"LabelFONTNAME" options:NSKeyValueObservingOptionNew context:nil];
+    [[NSUserDefaults standardUserDefaults] addObserver:c forKeyPath:@"LabelFONTSIZE" options:NSKeyValueObservingOptionNew context:nil];
+    
 	return c;
 }
 
@@ -1079,6 +1083,8 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 {
 	self.parentROI = nil;
 	
+    [[NSUserDefaults standardUserDefaults] removeObserver:self forKeyPath:@"LabelFONTNAME"];
+    [[NSUserDefaults standardUserDefaults] removeObserver:self forKeyPath:@"LabelFONTSIZE"];
 	
 	// This autorelease pool is required : postNotificationName seems to keep the self object with an autorelease, creating a conflict with the 'hard' [super dealloc] at the end of this function.
 	// We have to drain the pool before !
@@ -1121,7 +1127,8 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	
 	[parentROI release];
 	[pix release];
-	
+    [stringTextureCache release];
+    
 	[super dealloc];
 }
 
@@ -1323,7 +1330,6 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 		points = [[NSMutableArray array] retain];
 		zPositions = [[NSMutableArray array] retain];
 		comments = [[NSString alloc] initWithString:@""];
-		fontListGL = -1;
 		stringTex = nil;
 		rmean = rmax = rmin = rdev = rtotal = -1;
 		Brmean = Brmax = Brmin = Brdev = Brtotal = -1;
@@ -1351,6 +1357,9 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 		opacity = ROIRegionOpacity;		//;
 	}
 	
+    [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"LabelFONTNAME" options:NSKeyValueObservingOptionNew context:nil];
+    [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"LabelFONTSIZE" options:NSKeyValueObservingOptionNew context:nil];
+    
 	if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotNone)
 	{
 		[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
@@ -1404,7 +1413,6 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 		
 		comments = [[NSString alloc] initWithString:@""];
 		
-		fontListGL = -1;
 		stringTex = nil;
 		rmean = rmax = rmin = rdev = rtotal = -1;
 		Brmean = Brmax = Brmin = Brdev = Brtotal = -1;
@@ -1475,6 +1483,9 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 		
 		displayTextualData = YES;
 		
+        [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"LabelFONTNAME" options:NSKeyValueObservingOptionNew context:nil];
+        [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"LabelFONTSIZE" options:NSKeyValueObservingOptionNew context:nil];
+        
 		if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotNone)
 		{
 			[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
@@ -1485,51 +1496,86 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
     return self;
 }
 
-- (long) maxStringWidth:( char *) cstr max:(long) max
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-	if( cstr[ 0] == 0) return max;
+    if( [keyPath isEqualToString:@"LabelFONTNAME"] || [keyPath isEqualToString:@"LabelFONTSIZE"])
+    {
+        [stringTextureCache removeAllObjects];
+        [curView setNeedsDisplay: YES];
+    }
+}
+
+- (StringTexture*) stringTextureForString: (NSString*) str
+{
+#define STRCAPACITY 20
 	
-	long i = 0, temp = 0;
-	
-	while( cstr[ i] != 0)
-	{
-		temp += fontSize[ cstr[ i]];
-		i++;
-	}
-	
-	if( temp > max) max = temp;
+    if( stringTextureCache == nil)
+        stringTextureCache = [[NSMutableDictionary alloc] initWithCapacity: STRCAPACITY];
+    
+    StringTexture *sT = [stringTextureCache objectForKey: str];
+    if( sT == nil)
+    {
+        if( [stringTextureCache count] > STRCAPACITY)
+            [stringTextureCache removeAllObjects];
+        
+        NSMutableDictionary *attrib = [NSMutableDictionary dictionary];
+        
+        NSFont *fontGL = [NSFont fontWithName: [[NSUserDefaults standardUserDefaults] stringForKey:@"LabelFONTNAME"] size: [[NSUserDefaults standardUserDefaults] floatForKey: @"LabelFONTSIZE"]];
+        
+        [attrib setObject: fontGL forKey:NSFontAttributeName];
+        [attrib setObject: [NSColor whiteColor] forKey:NSForegroundColorAttributeName];
+        
+        sT = [[[StringTexture alloc] initWithString: str withAttributes: attrib] autorelease];
+        [sT setAntiAliasing: YES];
+        [sT genTextureWithBackingScaleFactor: curView.window.backingScaleFactor];
+        
+        [stringTextureCache setObject: sT forKey: str];
+    }
+    
+    return sT;
+}
+
+- (long) maxStringWidth: (NSString*) str max:(long) max
+{
+	if( str.length == 0)
+        return max;
+    
+	long temp = [[self stringTextureForString: str] texSize].width;
+    
+	if( temp > max)
+        max = temp;
 	
 	return max;
 }
 
-- (void) glStr: (unsigned char *) cstrOut :(float) x :(float) y :(float) line
+- (void) glStr: (NSString*) str :(float) x :(float) y :(float) line
 {
-	if( cstrOut[ 0] == 0) return;
+	if( str.length == 0) return;
 
 	float xx, yy;
 	
 	line *= fontHeight*curView.window.backingScaleFactor;
 	
-	xx = x + 1.0f;
-	yy = y + (line + 1.0);
-	
-	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-    glColor3f (0.0, 0.0, 0.0);
-	
-    glRasterPos3d( 0, 0, 0);
-	glBitmap (0, 0, 0, 0, xx, -yy, NULL);
-	
-    GLint i = 0;
-    while (cstrOut [i]) glCallList (fontListGL + cstrOut[i++] - ' ');
-
 	xx = x;
 	yy = y + line;
 	
-    glColor3f (1.0f, 1.0f, 1.0f);
-    glRasterPos3d( 0, 0, 0);
-	glBitmap (0, 0, 0, 0, xx, -yy, NULL);
-    i = 0;
-    while (cstrOut [i]) glCallList (fontListGL + cstrOut[i++] - ' ');
+    StringTexture *sT= [self stringTextureForString: str];
+    
+    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    
+    glEnable (GL_TEXTURE_RECTANGLE_EXT);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+    
+    long xc, yc;
+    xc = xx - 2*curView.window.backingScaleFactor;
+    yc = yy-[sT texSize].height;
+    
+    glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
+    [sT drawWithBounds: NSMakeRect( xc, yc, [sT texSize].width, [sT texSize].height)];
+    
+    glDisable(GL_BLEND);
+    glDisable (GL_TEXTURE_RECTANGLE_EXT);
 }
 
 -(float) EllipseArea
@@ -3330,10 +3376,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 		if (type != tText && [a length] > 256)
 			a = [a substringToIndex: 256];
 		
-		if( type == tText)
-			name = [a copy];
-		else
-			name = [[NSString alloc] initWithData: [a dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES] encoding: NSASCIIStringEncoding];
+        name = [a copy];
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:self userInfo: nil];
 	}
@@ -3719,7 +3762,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 {
 	BOOL moved;
 	
-	if( line1[0] == 0 && line2[0] == 0  && line3[0] == 0  && line4[0] == 0  && line5[0] == 0  && line6[0] == 0 )
+	if( textualBoxLine1.length == 0 && textualBoxLine2.length == 0  && textualBoxLine3.length == 0  && textualBoxLine4.length == 0  && textualBoxLine5.length == 0  && textualBoxLine6.length == 0 )
 	{
 		drawRect = NSMakeRect(0, 0, 0, 0);
 		return;
@@ -3808,12 +3851,12 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			
 			long line = 0;
 			
-			[self glStr: (unsigned char*)line1 : tPt.x : tPt.y : line];	if( line1[0]) line++;
-			[self glStr: (unsigned char*)line2 : tPt.x : tPt.y : line];	if( line2[0]) line++;
-			[self glStr: (unsigned char*)line3 : tPt.x : tPt.y : line];	if( line3[0]) line++;
-			[self glStr: (unsigned char*)line4 : tPt.x : tPt.y : line];	if( line4[0]) line++;
-			[self glStr: (unsigned char*)line5 : tPt.x : tPt.y : line];	if( line5[0]) line++;
-			[self glStr: (unsigned char*)line6 : tPt.x : tPt.y : line];	if( line6[0]) line++;
+			[self glStr: textualBoxLine1 : tPt.x : tPt.y : line];	if( textualBoxLine1.length) line++;
+			[self glStr: textualBoxLine2 : tPt.x : tPt.y : line];	if( textualBoxLine2.length) line++;
+			[self glStr: textualBoxLine3 : tPt.x : tPt.y : line];	if( textualBoxLine3.length) line++;
+			[self glStr: textualBoxLine4 : tPt.x : tPt.y : line];	if( textualBoxLine4.length) line++;
+			[self glStr: textualBoxLine5 : tPt.x : tPt.y : line];	if( textualBoxLine5.length) line++;
+			[self glStr: textualBoxLine6 : tPt.x : tPt.y : line];	if( textualBoxLine6.length) line++;
 			
 			//glDisable(GL_POLYGON_SMOOTH);
 			glDisable(GL_BLEND);
@@ -3827,7 +3870,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	}
 }
 
-- (void) prepareTextualData:( char*) l1 :( char*) l2 :( char*) l3 :( char*) l4 :( char*) l5 :( char*) l6 location:(NSPoint) tPt
+- (void) prepareTextualData:(NSPoint) tPt
 {
 	long		maxWidth = 0, line;
 	NSPoint		ctPt = tPt;
@@ -3842,12 +3885,12 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	drawRect.origin = tPt;
 	
 	line = 0;
-	maxWidth = [self maxStringWidth:l1 max: maxWidth];	if( l1[0]) line++;
-	maxWidth = [self maxStringWidth:l2 max: maxWidth];	if( l2[0]) line++;
-	maxWidth = [self maxStringWidth:l3 max: maxWidth];	if( l3[0]) line++;
-	maxWidth = [self maxStringWidth:l4 max: maxWidth];	if( l4[0]) line++;
-	maxWidth = [self maxStringWidth:l5 max: maxWidth];	if( l5[0]) line++;
-	maxWidth = [self maxStringWidth:l5 max: maxWidth];	if( l6[0]) line++;
+	maxWidth = [self maxStringWidth:textualBoxLine1 max: maxWidth];	if( textualBoxLine1.length) line++;
+	maxWidth = [self maxStringWidth:textualBoxLine2 max: maxWidth];	if( textualBoxLine2.length) line++;
+	maxWidth = [self maxStringWidth:textualBoxLine3 max: maxWidth];	if( textualBoxLine3.length) line++;
+	maxWidth = [self maxStringWidth:textualBoxLine4 max: maxWidth];	if( textualBoxLine4.length) line++;
+	maxWidth = [self maxStringWidth:textualBoxLine5 max: maxWidth];	if( textualBoxLine5.length) line++;
+	maxWidth = [self maxStringWidth:textualBoxLine6 max: maxWidth];	if( textualBoxLine6.length) line++;
 	
 	drawRect.size.height = line * fontHeight*curView.window.backingScaleFactor + 4;
 	drawRect.size.width = maxWidth + 8;
@@ -3914,7 +3957,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 {
 	if( roiLock == nil) roiLock = [[NSLock alloc] init];
 	
-	if( fontListGL == -1 && prepareTextualData == YES) {NSLog(@"fontListGL == -1! We will not draw this ROI..."); return;}
 	if( curView == nil && prepareTextualData == YES) {NSLog(@"curView == nil! We will not draw this ROI..."); return;}
 	
     float backingScaleFactor = curView.window.backingScaleFactor;
@@ -4043,18 +4085,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					if( self.isTextualDataDisplayed && prepareTextualData)
 					{
 						// TEXT
-						line1[0] = 0; line2[0] = 0; line3[0] = 0; line4[0] = 0; line5[0] = 0; line6[0] = 0;
 						NSPoint tPt = self.lowerRightPoint;
-					
-						if(![name isEqualToString:@"Unnamed"]) strcpy(line1, [name UTF8String]);
-						if(textualBoxLine1 && ![textualBoxLine1 isEqualToString:@""]) strcpy(line1, [textualBoxLine1 UTF8String]);
-						if(textualBoxLine2 && ![textualBoxLine2 isEqualToString:@""]) strcpy(line2, [textualBoxLine2 UTF8String]);
-						if(textualBoxLine3 && ![textualBoxLine3 isEqualToString:@""]) strcpy(line3, [textualBoxLine3 UTF8String]);
-						if(textualBoxLine4 && ![textualBoxLine4 isEqualToString:@""]) strcpy(line4, [textualBoxLine4 UTF8String]);
-						if(textualBoxLine5 && ![textualBoxLine5 isEqualToString:@""]) strcpy(line5, [textualBoxLine5 UTF8String]);
-						if(textualBoxLine6 && ![textualBoxLine6 isEqualToString:@""]) strcpy(line6, [textualBoxLine5 UTF8String]);
-						
-						[self prepareTextualData:line1 :line2 :line3 :line4 :line5 :line6 location:tPt];
+                        
+						[self prepareTextualData:tPt];
 					}
 					[pool release];
 				}
@@ -4154,12 +4187,12 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				glColor3f (1.0f, 1.0f, 1.0f);
 				
 				// TEXT
-				line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0; line6[0] = 0;
 				if( self.isTextualDataDisplayed && prepareTextualData)
 				{
 					NSPoint tPt = [self lowerRightPoint];
 					
-					if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name UTF8String]);
+					if( [name isEqualToString:@"Unnamed"] == NO) self.textualBoxLine1 = name;
+                    else self.textualBoxLine1 = nil;
 					
 					if ( ROITEXTNAMEONLY == NO )
 					{
@@ -4205,26 +4238,26 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                             // <--- US Regions (Brush)
                             {
                                 if( area*pixelSpacingX*pixelSpacingY < 1.)
-                                    sprintf (line2, "Area: %0.1f %cm2", area*pixelSpacingX*pixelSpacingY* 1000000.0, 0xB5);
+                                    self.textualBoxLine2 = [NSString stringWithFormat: @"Area: %0.1f %cm2", area*pixelSpacingX*pixelSpacingY* 1000000.0, 0xB5];
                                 else
-                                    sprintf (line2, "Area: %0.3f cm2", area*pixelSpacingX*pixelSpacingY/100.);
+                                    self.textualBoxLine2 = [NSString stringWithFormat: @"Area: %0.3f cm2", area*pixelSpacingX*pixelSpacingY/100.];
                             }
                             else
-                                sprintf (line2, "Area: %0.3f pix2", area);
+                                self.textualBoxLine2 = [NSString stringWithFormat: @"Area: %0.3f pix2", area];
 							
                             char *pixelUnit = "";
                             
                             if( [self pix].SUVConverted)
                                 pixelUnit = " SUV ";
                             
-							sprintf (line3, "Mean: %0.3f%s SDev: %0.3f%s Sum: %0.0f%s", rmean, pixelUnit, rdev, pixelUnit, rtotal, pixelUnit);
-							sprintf (line4, "Min: %0.3f%s Max: %0.3f%s", rmin, pixelUnit, rmax, pixelUnit);
+							self.textualBoxLine3 = [NSString stringWithFormat: @"Mean: %0.3f%s SDev: %0.3f%s Sum: %0.0f%s", rmean, pixelUnit, rdev, pixelUnit, rtotal, pixelUnit];
+							self.textualBoxLine4 = [NSString stringWithFormat: @"Min: %0.3f%s Max: %0.3f%s", rmin, pixelUnit, rmax, pixelUnit];
 						}
 						else
 						{
-							sprintf (line2, "Calcium Score: %0.1f", [self calciumScore]);
-							sprintf (line3, "Calcium Volume: %0.1f", [self calciumVolume]);
-							sprintf (line4, "Calcium Mass: %0.1f", [self calciumMass]);
+							self.textualBoxLine2 = [NSString stringWithFormat: @"Calcium Score: %0.1f", [self calciumScore]];
+							self.textualBoxLine3 = [NSString stringWithFormat: @"Calcium Volume: %0.1f", [self calciumVolume]];
+							self.textualBoxLine4 = [NSString stringWithFormat: @"Calcium Mass: %0.1f", [self calciumMass]];
 						}
 						
 						if( [curView blendingView])
@@ -4242,12 +4275,12 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                             if( blendedPix.SUVConverted)
                                 pixelUnit = " SUV ";
                             
-							sprintf (line5, "Fused Image Mean: %0.3f%s SDev: %0.3f%s Sum: %0.0f%s", Brmean, pixelUnit, Brdev, pixelUnit, Brtotal, pixelUnit);
-							sprintf (line6, "Fused Image Min: %0.3f%s Max: %0.3f%s", Brmin, pixelUnit, Brmax, pixelUnit);
+							self.textualBoxLine5 = [NSString stringWithFormat: @"Fused Image Mean: %0.3f%s SDev: %0.3f%s Sum: %0.0f%s", Brmean, pixelUnit, Brdev, pixelUnit, Brtotal, pixelUnit];
+							self.textualBoxLine6 = [NSString stringWithFormat: @"Fused Image Min: %0.3f%s Max: %0.3f%s", Brmin, pixelUnit, Brmax, pixelUnit];
 						}
 					}
 					//if (!_displayCalciumScoring)
-					[self prepareTextualData:line1 :line2 :line3 :line4 :line5 :line6 location:tPt];
+					[self prepareTextualData:tPt];
 				}
 			}
 			break;
@@ -4283,12 +4316,12 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				glColor3f (1.0f, 1.0f, 1.0f);
 				
 				// TEXT
-				line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0; line6[0] = 0;
 				if( self.isTextualDataDisplayed && prepareTextualData)
 				{
 					NSPoint tPt = self.lowerRightPoint;
 					
-					if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name UTF8String]);
+					if( [name isEqualToString:@"Unnamed"] == NO) self.textualBoxLine1 = name;
+                    else self.textualBoxLine1 = nil;
 					
 					if( ROITEXTNAMEONLY == NO )
 					{
@@ -4361,7 +4394,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                         if( [self pix].SUVConverted)
                             pixelUnit = " SUV ";
                         
-                        sprintf (line2, "Value: %0.3f%s", rmean, pixelUnit);
+                        self.textualBoxLine2 = [NSString stringWithFormat: @"Value: %0.3f%s", rmean, pixelUnit];
                         
 						if( Brtotal != -1)
                         {
@@ -4372,7 +4405,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                             if( blendedPix.SUVConverted)
                                 pixelUnit = " SUV ";
                             
-                            sprintf (line3, "Fused Image Value: %0.3f%s", Brmean, pixelUnit);
+                            self.textualBoxLine3 = [NSString stringWithFormat: @"Fused Image Value: %0.3f%s", Brmean, pixelUnit];
                         }
 						
                         // US Regions (Point) --->
@@ -4392,27 +4425,27 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                             }
                             
                             if ((!isReferencePixelX0Present) && (isReferencePixelY0Present)) {
-                                sprintf (line4, "2D Pos: X:n/a %s Y:%0.3f %s", [unitsX UTF8String], roiPosYValue, [unitsY UTF8String]);
+                                self.textualBoxLine4 = [NSString stringWithFormat: @"2D Pos: X:n/a %s Y:%0.3f %s", [unitsX UTF8String], roiPosYValue, [unitsY UTF8String]];
                             } else if ((isReferencePixelX0Present) && (!isReferencePixelY0Present)) {
-                                sprintf (line4, "2D Pos: X:%0.3f %s Y:n/a %s", roiPosXValue, [unitsX UTF8String], [unitsY UTF8String]);
+                                self.textualBoxLine4 = [NSString stringWithFormat: @"2D Pos: X:%0.3f %s Y:n/a %s", roiPosXValue, [unitsX UTF8String], [unitsY UTF8String]];
                             } else if ((!isReferencePixelX0Present) && (!isReferencePixelY0Present)) {
-                                sprintf (line4, "2D Pos: X:n/a %s Y:n/a %s", [unitsX UTF8String], [unitsY UTF8String]);
+                                self.textualBoxLine4 = [NSString stringWithFormat: @"2D Pos: X:n/a %s Y:n/a %s", [unitsX UTF8String], [unitsY UTF8String]];
                             } else
-                                sprintf (line4, "2D Pos: X:%0.3f %s Y:%0.3f %s", roiPosXValue, [unitsX UTF8String], roiPosYValue, [unitsY UTF8String]);
+                                self.textualBoxLine4 = [NSString stringWithFormat: @"2D Pos: X:%0.3f %s Y:%0.3f %s", roiPosXValue, [unitsX UTF8String], roiPosYValue, [unitsY UTF8String]];
                             
                         } else {
                         // <--- US Regions (Point)
-                            sprintf (line4, "2D Pos: X:%0.3f px Y:%0.3f px", rect.origin.x, rect.origin.y);
+                            self.textualBoxLine4 = [NSString stringWithFormat: @"2D Pos: X:%0.3f px Y:%0.3f px", rect.origin.x, rect.origin.y];
                         } // US Regions (Point)
 						
 						float location[ 3 ];
 						[[curView curDCM] convertPixX: rect.origin.x pixY: rect.origin.y toDICOMCoords: location pixelCenter: YES];
 						if(fabs(location[0]) < 1.0 && location[0] != 0.0)
-							sprintf (line5, "3D Pos: X:%0.1f %cm Y:%0.1f %cm Z:%0.1f %cm", location[0] * 1000.0, 0xB5, location[1] * 1000.0, 0xB5, location[2] * 1000.0, 0xB5);
+							self.textualBoxLine5 = [NSString stringWithFormat: @"3D Pos: X:%0.1f %cm Y:%0.1f %cm Z:%0.1f %cm", location[0] * 1000.0, 0xB5, location[1] * 1000.0, 0xB5, location[2] * 1000.0, 0xB5];
 						else
-							sprintf (line5, "3D Pos: X:%0.3f mm Y:%0.3f mm Z:%0.3f mm", location[0], location[1], location[2]);
+							self.textualBoxLine5 = [NSString stringWithFormat: @"3D Pos: X:%0.3f mm Y:%0.3f mm Z:%0.3f mm", location[0], location[1], location[2]];
 					}
-					[self prepareTextualData:line1 :line2 :line3 :line4 :line5 :line6 location:tPt];
+					[self prepareTextualData:tPt];
 				}
 			}
 			break;
@@ -4755,7 +4788,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					glColor3f (1.0f, 0.0f, 0.0f);
 					glPointSize( (1 * backingScaleFactor + sqrt( thick))*3.5 * backingScaleFactor);
 					glBegin( GL_POINTS);
-						glVertex2f( (pt.x - offsetx) * scaleValue , (pt.y - offsety) * scaleValue );
+						glVertex2f( (pt.x - offsetx) * scaleValue , (pt.y - offsety) * scaleValue);
 					glEnd();
 				}
 				
@@ -4763,12 +4796,13 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				glColor3f (1.0f, 1.0f, 1.0f);
 				
 				// TEXT
-				line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0; line6[0] = 0;
 				if( self.isTextualDataDisplayed && prepareTextualData)
 				{
 					NSPoint tPt = self.lowerRightPoint;
 					
-					if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name UTF8String]);
+					if( [name isEqualToString:@"Unnamed"] == NO) self.textualBoxLine1 = name;
+                    else self.textualBoxLine1 = nil;
+                    
 					if( type == tMesure && ROITEXTNAMEONLY == NO)
 					{
                         // US Regions (Length) --->
@@ -4782,9 +4816,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 							if( displayCMOrPixels)   // CPR
 							{
 								if ( lMm < .1)
-									sprintf (line2, "%0.1f %cm", lMm * 10000.0, 0xb5);
+									self.textualBoxLine2 = [NSString stringWithFormat: @"%0.1f %cm", lMm * 10000.0, 0xb5];
 								else
-									sprintf (line2, "%0.2f cm", lMm);
+									self.textualBoxLine2 = [NSString stringWithFormat: @"%0.2f cm", lMm];
 							}
 							else
 							{
@@ -4836,9 +4870,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                                         if ((regionSpatialFormat == 1) && (physicalUnitsXDirection == 3) && (physicalUnitsYDirection == 3)) {
                                             // RSF=2D, PUXD=cm, PUYD=cm
                                             if (lMm < .1)
-                                                sprintf (line2, "Length: %0.1f %cm", lMm * 10000.0, 0xb5);
+                                                self.textualBoxLine2 = [NSString stringWithFormat: @"Length: %0.1f %cm", lMm * 10000.0, 0xb5];
                                             else
-                                                sprintf (line2, "Length: %0.3f cm", lMm);
+                                                self.textualBoxLine2 = [NSString stringWithFormat: @"Length: %0.3f cm", lMm];
                                         } else {
                                             // Other formats
                                             double lengthX = fabs(roiPoint2.x - roiPoint1.x) * fabs(physicalDeltaX);
@@ -4863,19 +4897,19 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                                                 lengthY = lengthY / 100.0;
                                             }
                                             
-                                            sprintf(line2, "Length: X=%0.3f %s, Y=%0.3f %s", lengthX, [unitsX UTF8String], lengthY, [unitsY UTF8String]);
+                                            self.textualBoxLine2 = [NSString stringWithFormat: @"Length: X=%0.3f %s, Y=%0.3f %s", lengthX, [unitsX UTF8String], lengthY, [unitsY UTF8String]];
                                         }
                                     } else
-                                        sprintf(line2, "Length: %0.3f pix", lPix);
+                                        self.textualBoxLine2 = [NSString stringWithFormat: @"Length: %0.3f pix", lPix];
                                 } else   // <--- US Regions (Length)
                                     if (lMm < .1)
-                                        sprintf (line2, "Length: %0.1f %cm (%0.3f pix)", lMm * 10000.0, 0xb5, lPix);
+                                        self.textualBoxLine2 = [NSString stringWithFormat: @"Length: %0.1f %cm (%0.3f pix)", lMm * 10000.0, 0xb5, lPix];
                                     else
-                                        sprintf (line2, "Length: %0.3f cm (%0.3f pix)", lMm, lPix);
+                                        self.textualBoxLine2 = [NSString stringWithFormat: @"Length: %0.3f cm (%0.3f pix)", lMm, lPix];
 							}
 						}
 						else
-							sprintf (line2, "Length: %0.3f pix", [self Length:[[points objectAtIndex:0] point] :[[points objectAtIndex:1] point]]);
+							self.textualBoxLine2 = [NSString stringWithFormat: @"Length: %0.3f pix", [self Length:[[points objectAtIndex:0] point] :[[points objectAtIndex:1] point]]];
 						
 						// If there is another line, compute cobb's angle
 						if( curView && displayCobbAngle && displayCMOrPixels == NO)
@@ -4945,9 +4979,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 													rName = nil;
 												
 												if( rName)
-													sprintf (line3, "Cobb's Angle: %0.3f with: %s", angle, [rName UTF8String]);
+													self.textualBoxLine3 = [NSString stringWithFormat: @"Cobb's Angle: %0.3f with: %s", angle, [rName UTF8String]];
 												else
-													sprintf (line3, "Cobb's Angle: %0.3f", angle);
+													self.textualBoxLine3 = [NSString stringWithFormat: @"Cobb's Angle: %0.3f", angle];
 												
 												break;
 											}
@@ -4957,7 +4991,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 							}
 						}
 					}
-					[self prepareTextualData:line1 :line2 :line3 :line4 :line5 :line6 location:tPt];
+					[self prepareTextualData:tPt];
 				}
 			}
 			break;
@@ -4998,12 +5032,12 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				
 				// TEXT
 				{
-					line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0; line6[0] = 0;
-					if( self.isTextualDataDisplayed && prepareTextualData) {
+					if( self.isTextualDataDisplayed && prepareTextualData)
+                    {
 						NSPoint			tPt = self.lowerRightPoint;
 						
-						if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name UTF8String]);
-						else line1[ 0] = 0;
+						if( [name isEqualToString:@"Unnamed"] == NO) self.textualBoxLine1 = name;
+						else self.textualBoxLine1 = nil;
 						
 						if( ROITEXTNAMEONLY == NO )
 						{
@@ -5044,20 +5078,20 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                             if (roiInside2DUSRegion || (pixelSpacingX != 0 && pixelSpacingY != 0 && ![[self pix] hasUSRegions])) {
                             // <--- US Regions (Rectangle)
                                 if ( fabs( NSWidth(rect)*pixelSpacingX*NSHeight(rect)*pixelSpacingY) < 1.)
-                                    sprintf (line2, "Area: %0.1f %cm2", fabs( NSWidth(rect)*pixelSpacingX*NSHeight(rect)*pixelSpacingY * 1000000.0), 0xB5);
+                                    self.textualBoxLine2 = [NSString stringWithFormat: @"Area: %0.1f %cm2", fabs( NSWidth(rect)*pixelSpacingX*NSHeight(rect)*pixelSpacingY * 1000000.0), 0xB5];
                                 else
-                                    sprintf (line2, "Area: %0.3f cm2 (W:%0.1fmm H:%0.1fmm)", fabs( NSWidth(rect)*pixelSpacingX*NSHeight(rect)*pixelSpacingY/100.), fabs(NSWidth(rect)*pixelSpacingX), fabs(NSHeight(rect)*pixelSpacingY));
+                                    self.textualBoxLine2 = [NSString stringWithFormat: @"Area: %0.3f cm2 (W:%0.1fmm H:%0.1fmm)", fabs( NSWidth(rect)*pixelSpacingX*NSHeight(rect)*pixelSpacingY/100.), fabs(NSWidth(rect)*pixelSpacingX), fabs(NSHeight(rect)*pixelSpacingY)];
                             }
                             else
-                                sprintf (line2, "Area: %0.3f pix2", fabs( NSWidth(rect)*NSHeight(rect)));
+                                self.textualBoxLine2 = [NSString stringWithFormat: @"Area: %0.3f pix2", fabs( NSWidth(rect)*NSHeight(rect))];
                             
                             char *pixelUnit = "";
                             
                             if( [self pix].SUVConverted)
                                 pixelUnit = " SUV ";
                             
-							sprintf (line3, "Mean: %0.3f%s SDev: %0.3f%s Sum: %0.0f%s", rmean, pixelUnit, rdev, pixelUnit, rtotal, pixelUnit);
-							sprintf (line4, "Min: %0.3f%s Max: %0.3f%s", rmin, pixelUnit, rmax, pixelUnit);
+							self.textualBoxLine3 = [NSString stringWithFormat: @"Mean: %0.3f%s SDev: %0.3f%s Sum: %0.0f%s", rmean, pixelUnit, rdev, pixelUnit, rtotal, pixelUnit];
+							self.textualBoxLine4 = [NSString stringWithFormat: @"Min: %0.3f%s Max: %0.3f%s", rmin, pixelUnit, rmax, pixelUnit];
 							
 							if( [curView blendingView])
 							{
@@ -5084,12 +5118,12 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                                 if( blendedPix.SUVConverted)
                                     pixelUnit = " SUV ";
                                 
-								sprintf (line5, "Fused Image Mean: %0.3f%s SDev: %0.3f%s Sum: %0.0f%s", Brmean, pixelUnit, Brdev, pixelUnit, Brtotal, pixelUnit);
-								sprintf (line6, "Fused Image Min: %0.3f%s Max: %0.3f%s", Brmin, pixelUnit, Brmax, pixelUnit);
+								self.textualBoxLine5 = [NSString stringWithFormat: @"Fused Image Mean: %0.3f%s SDev: %0.3f%s Sum: %0.0f%s", Brmean, pixelUnit, Brdev, pixelUnit, Brtotal, pixelUnit];
+								self.textualBoxLine6 = [NSString stringWithFormat: @"Fused Image Min: %0.3f%s Max: %0.3f%s", Brmin, pixelUnit, Brmax, pixelUnit];
 							}
 						}
 						
-						[self prepareTextualData:line1 :line2 :line3 :line4 :line5 :line6 location:tPt];
+						[self prepareTextualData:tPt];
 					}
 				}
 			}
@@ -5151,13 +5185,13 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				
 				// TEXT
 				
-				line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;	line6[ 0] = 0;
 				if( self.isTextualDataDisplayed && prepareTextualData)
 				{
 					NSPoint tPt = self.lowerRightPoint;
 					
-					if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name UTF8String]);
-					
+					if( [name isEqualToString:@"Unnamed"] == NO) self.textualBoxLine1 = name;
+                    else self.textualBoxLine1 = nil;
+                    
 					if( ROITEXTNAMEONLY == NO )
 					{
 						if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
@@ -5196,20 +5230,20 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                         // <--- US Regions (Oval)
                         {
                             if( [self EllipseArea]*pixelSpacingX*pixelSpacingY < 1.)
-                                sprintf (line2, "Area: %0.1f %cm2", [self EllipseArea]*pixelSpacingX*pixelSpacingY* 1000000.0, 0xB5);
+                                self.textualBoxLine2 = [NSString stringWithFormat: @"Area: %0.1f %cm2", [self EllipseArea]*pixelSpacingX*pixelSpacingY* 1000000.0, 0xB5];
                             else
-                                sprintf (line2, "Area: %0.3f cm2", [self EllipseArea]*pixelSpacingX*pixelSpacingY/100.);
+                                self.textualBoxLine2 = [NSString stringWithFormat: @"Area: %0.3f cm2", [self EllipseArea]*pixelSpacingX*pixelSpacingY/100.];
                         }
                         else
-                            sprintf (line2, "Area: %0.3f pix2", [self EllipseArea]);
+                            self.textualBoxLine2 = [NSString stringWithFormat: @"Area: %0.3f pix2", [self EllipseArea]];
                         
                         char *pixelUnit = "";
                         
                         if( [self pix].SUVConverted)
                             pixelUnit = " SUV ";
                         
-						sprintf (line3, "Mean: %0.3f%s SDev: %0.3f%s Sum: %0.0f%s", rmean, pixelUnit, rdev, pixelUnit, rtotal, pixelUnit);
-						sprintf (line4, "Min: %0.3f%s Max: %0.3f%s", rmin, pixelUnit, rmax, pixelUnit);
+						self.textualBoxLine3 = [NSString stringWithFormat: @"Mean: %0.3f%s SDev: %0.3f%s Sum: %0.0f%s", rmean, pixelUnit, rdev, pixelUnit, rtotal, pixelUnit];
+						self.textualBoxLine4 = [NSString stringWithFormat: @"Min: %0.3f%s Max: %0.3f%s", rmin, pixelUnit, rmax, pixelUnit];
 						
 						if( [curView blendingView])
 						{
@@ -5230,12 +5264,12 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                             if( blendedPix.SUVConverted)
                                 pixelUnit = " SUV ";
                             
-							sprintf (line5, "Fused Image Mean: %0.3f%s SDev: %0.3f%s Sum: %0.0f%s", Brmean, pixelUnit, Brdev, pixelUnit, Brtotal, pixelUnit);
-							sprintf (line6, "Fused Image Min: %0.3f%s Max: %0.3f%s", Brmin, pixelUnit, Brmax, pixelUnit);
+							self.textualBoxLine5 = [NSString stringWithFormat: @"Fused Image Mean: %0.3f%s SDev: %0.3f%s Sum: %0.0f%s", Brmean, pixelUnit, Brdev, pixelUnit, Brtotal, pixelUnit];
+							self.textualBoxLine6 = [NSString stringWithFormat: @"Fused Image Min: %0.3f%s Max: %0.3f%s", Brmin, pixelUnit, Brmax, pixelUnit];
 						}
 					}
 					
-					[self prepareTextualData:line1 :line2 :line3 :line4 :line5 :line6 location:tPt];
+					[self prepareTextualData:tPt];
 				}
 			}
 			break;
@@ -5266,28 +5300,28 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				{
 					for( long i=4;i<[points count];i++ ) [points removeObjectAtIndex: i];
 				}
-				//TEXTO
-				line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0; line6[0] = 0;
+				//TEXT
 				if( self.isTextualDataDisplayed && prepareTextualData)
 				{
 					NSPoint tPt = self.lowerRightPoint;
 					float   length;
 					
-					if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name UTF8String]);
-					
+					if( [name isEqualToString:@"Unnamed"] == NO) self.textualBoxLine1 = name;
+                    else self.textualBoxLine1 = nil;
+                    
 					if( ROITEXTNAMEONLY == NO ) {
 						if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
 						
 						if( pixelSpacingX != 0 && pixelSpacingY != 0 ) {
 							if([self Area] *pixelSpacingX*pixelSpacingY < 1.)
-								sprintf (line2, "Area: %0.1f %cm2", [self Area] *pixelSpacingX*pixelSpacingY * 1000000.0, 0xB5);
+								self.textualBoxLine2 = [NSString stringWithFormat: @"Area: %0.1f %cm2", [self Area] *pixelSpacingX*pixelSpacingY * 1000000.0, 0xB5];
 							else
-								sprintf (line2, "Area: %0.3f cm2", [self Area] *pixelSpacingX*pixelSpacingY / 100.);
+								self.textualBoxLine2 = [NSString stringWithFormat: @"Area: %0.3f cm2", [self Area] *pixelSpacingX*pixelSpacingY / 100.];
 						}
 						else
-							sprintf (line2, "Area: %0.3f pix2", [self Area]);
-						sprintf (line3, "Mean: %0.3f SDev: %0.3f Sum: %0.0f", rmean, rdev, rtotal);
-						sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
+							self.textualBoxLine2 = [NSString stringWithFormat: @"Area: %0.3f pix2", [self Area]];
+						self.textualBoxLine3 = [NSString stringWithFormat: @"Mean: %0.3f SDev: %0.3f Sum: %0.0f", rmean, rdev, rtotal];
+						self.textualBoxLine4 = [NSString stringWithFormat: @"Min: %0.3f Max: %0.3f", rmin, rmax];
 						
 						length = 0;
 						long i;
@@ -5297,12 +5331,12 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						length += [self Length:[[points objectAtIndex:i] point] :[[points objectAtIndex:0] point]];
 						
 						if (length < .1)
-							sprintf (line5, "Length: %0.1f %cm", length * 10000.0, 0xB5);
+							self.textualBoxLine5 = [NSString stringWithFormat: @"Length: %0.1f %cm", length * 10000.0, 0xB5];
 						else
-							sprintf (line5, "Length: %0.3f cm", length);
+							self.textualBoxLine5 = [NSString stringWithFormat: @"Length: %0.3f cm", length];
 					}
 					
-					[self prepareTextualData:line1 :line2 :line3 :line4 :line5 :line6 location:tPt];
+					[self prepareTextualData:tPt];
 				}
 					if((mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing) && highlightIfSelected)
 					{
@@ -5541,46 +5575,48 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					//Angle given by b,c,d points
 					angle = [self AngleUncorrected:b :c :d];
 				}
-				//TEXTO
-				line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0; line6[0] = 0;
+				//TEXT
 				if( self.isTextualDataDisplayed && prepareTextualData)
 				{
 						NSPoint tPt = self.lowerRightPoint;
 						float   length;
 						
-						if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name UTF8String]);
-						
-						if( ROITEXTNAMEONLY == NO ) {
-							
+                    if( [name isEqualToString:@"Unnamed"] == NO) self.textualBoxLine1 = name;
+                    else self.textualBoxLine1 = nil;
+                    
+						if( ROITEXTNAMEONLY == NO)
+                        {
 							if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
 							
-							if( pixelSpacingX != 0 && pixelSpacingY != 0 ) {
+							if( pixelSpacingX != 0 && pixelSpacingY != 0 )
+                            {
 								if ([self Area] *pixelSpacingX*pixelSpacingY < 1.)
-									sprintf (line2, "Area: %0.1f %cm2", [self Area] *pixelSpacingX*pixelSpacingY * 1000000.0, 0xB5);
+									self.textualBoxLine2 = [NSString stringWithFormat: @"Area: %0.1f %cm2", [self Area] *pixelSpacingX*pixelSpacingY * 1000000.0, 0xB5];
 								else
-									sprintf (line2, "Area: %0.3f cm2", [self Area] *pixelSpacingX*pixelSpacingY / 100.);
+									self.textualBoxLine2 = [NSString stringWithFormat: @"Area: %0.3f cm2", [self Area] *pixelSpacingX*pixelSpacingY / 100.];
 							}
 							else
-								sprintf (line2, "Area: %0.3f pix2", [self Area]);
+								self.textualBoxLine2 = [NSString stringWithFormat: @"Area: %0.3f pix2", [self Area]];
 							
-							sprintf (line3, "Mean: %0.3f SDev: %0.3f Sum: %0.0f", rmean, rdev, rtotal);
-							sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
+							self.textualBoxLine3 = [NSString stringWithFormat: @"Mean: %0.3f SDev: %0.3f Sum: %0.0f", rmean, rdev, rtotal];
+							self.textualBoxLine4 = [NSString stringWithFormat: @"Min: %0.3f Max: %0.3f", rmin, rmax];
 							
 							length = 0;
-							for( long i = 0; i < (long)[points count]-1; i++ ) {
+							for( long i = 0; i < (long)[points count]-1; i++ )
+                            {
 								length += [self Length:[[points objectAtIndex:i] point] :[[points objectAtIndex:i+1] point]];
 							}
 							
 							if (length < .1)
-								sprintf (line5, "Length: %0.1f %cm", length * 10000.0, 0xB5);
+								self.textualBoxLine5 = [NSString stringWithFormat: @"Length: %0.1f %cm", length * 10000.0, 0xB5];
 							else
-								sprintf (line5, "Length: %0.3f cm", length);
+								self.textualBoxLine5 = [NSString stringWithFormat: @"Length: %0.3f cm", length];
 						}
-						sprintf (line2, "Angle: %0.2f", angle);
-						sprintf (line3, "Angle 2: %0.2f",360 - angle);
-						line4[ 0] = 0;
-						//sprintf (line5,"");
-						[self prepareTextualData:line1 :line2 :line3 :line4 :line5 :line6 location:tPt];
+						self.textualBoxLine2 = [NSString stringWithFormat: @"Angle: %0.2f", angle];
+						self.textualBoxLine3 = [NSString stringWithFormat: @"Angle 2: %0.2f",360 - angle];
+                        self.textualBoxLine4 = nil;
+                    
+						[self prepareTextualData:tPt];
 				}
 				//ROI MODE
 				if((mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing) && highlightIfSelected)
@@ -5662,14 +5698,14 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					// TEXT
 					if( type == tCPolygon || type == tPencil)
 					{
-						line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0; line6[0] = 0;
 						if( self.isTextualDataDisplayed && prepareTextualData)
 						{
 							NSPoint tPt = self.lowerRightPoint;
 							float   length;
 							
-							if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name UTF8String]);
-							
+							if( [name isEqualToString:@"Unnamed"] == NO) self.textualBoxLine1 = name;
+                            else self.textualBoxLine1 = nil;
+                            
 							if( ROITEXTNAMEONLY == NO )
 							{
 								if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
@@ -5727,26 +5763,26 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                                 // <--- US Regions (Pencil or Closed Polygon)
                                 {
                                     if([self Area] *pixelSpacingX*pixelSpacingY < 1.)
-                                        sprintf (line2, "Area: %0.1f %cm2", [self Area] *pixelSpacingX*pixelSpacingY * 1000000.0, 0xB5);
+                                        self.textualBoxLine2 = [NSString stringWithFormat: @"Area: %0.1f %cm2", [self Area] *pixelSpacingX*pixelSpacingY * 1000000.0, 0xB5];
                                     else
-                                        sprintf (line2, "Area: %0.3f cm2", [self Area] *pixelSpacingX*pixelSpacingY / 100.);
+                                        self.textualBoxLine2 = [NSString stringWithFormat: @"Area: %0.3f cm2", [self Area] *pixelSpacingX*pixelSpacingY / 100.];
                                 }
                                 else
-                                    sprintf (line2, "Area: %0.3f pix2", [self Area]);								
+                                    self.textualBoxLine2 = [NSString stringWithFormat: @"Area: %0.3f pix2", [self Area]];
                                 
                                 char *pixelUnit = "";
                                 
                                 if( [self pix].SUVConverted)
                                     pixelUnit = " SUV ";
                                 
-                                sprintf (line3, "Mean: %0.3f%s SDev: %0.3f%s Sum: %0.0f%s", rmean, pixelUnit, rdev, pixelUnit, rtotal, pixelUnit);
-								sprintf (line4, "Min: %0.3f%s Max: %0.3f%s", rmin, pixelUnit, rmax, pixelUnit);
+                                self.textualBoxLine3 = [NSString stringWithFormat: @"Mean: %0.3f%s SDev: %0.3f%s Sum: %0.0f%s", rmean, pixelUnit, rdev, pixelUnit, rtotal, pixelUnit];
+								self.textualBoxLine4 = [NSString stringWithFormat: @"Min: %0.3f%s Max: %0.3f%s", rmin, pixelUnit, rmax, pixelUnit];
 								
 								length = 0;
 								
 								if( [splinePoints count] < 2)
 								{
-									sprintf (line5, "Length: %0.3f cm", length);
+									self.textualBoxLine5 = [NSString stringWithFormat: @"Length: %0.3f cm", length];
 								}
 								else
 								{
@@ -5769,8 +5805,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                                         if( blendedPix.SUVConverted)
                                             pixelUnit = " SUV ";
                                         
-										sprintf (line5, "Fused Image Mean: %0.3f%s SDev: %0.3f%s Sum: %0.0f%s", Brmean, pixelUnit, Brdev, pixelUnit, Brtotal, pixelUnit);
-										sprintf (line6, "Fused Image Min: %0.3f%s Max: %0.3f%s", Brmin, pixelUnit, Brmax, pixelUnit);
+										self.textualBoxLine5 = [NSString stringWithFormat: @"Fused Image Mean: %0.3f%s SDev: %0.3f%s Sum: %0.0f%s", Brmean, pixelUnit, Brdev, pixelUnit, Brtotal, pixelUnit];
+										self.textualBoxLine6 = [NSString stringWithFormat: @"Fused Image Min: %0.3f%s Max: %0.3f%s", Brmin, pixelUnit, Brmax, pixelUnit];
 									}
 									else
 									{
@@ -5782,26 +5818,26 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 										length += [self Length:[[splinePoints objectAtIndex:i] point] :[[splinePoints objectAtIndex:0] point]];
 										
 										if (length < .1)
-											sprintf (line5, "Length: %0.1f %cm", length * 10000.0, 0xB5);
+											self.textualBoxLine5 = [NSString stringWithFormat: @"Length: %0.1f %cm", length * 10000.0, 0xB5];
 										else
-											sprintf (line5, "Length: %0.3f cm", length);
+											self.textualBoxLine5 = [NSString stringWithFormat: @"Length: %0.3f cm", length];
 									}
 								}
 							}
 							
-							[self prepareTextualData:line1 :line2 :line3 :line4 :line5 :line6 location:tPt];
+							[self prepareTextualData:tPt];
 						}
 					}
 					else if( type == tOPolygon)
 					{
-						line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0; line6[0] = 0;
 						if( self.isTextualDataDisplayed && prepareTextualData)
 						{
 							NSPoint tPt = self.lowerRightPoint;
 							float   length;
 							
-							if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name UTF8String]);
-							
+							if( [name isEqualToString:@"Unnamed"] == NO) self.textualBoxLine1 = name;
+                            else self.textualBoxLine1 = nil;
+                            
 							if( ROITEXTNAMEONLY == NO )
 							{
 								if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
@@ -5873,20 +5909,20 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 									// <--- US Regions (Opened Polygon)
 									{
 										if ([self Area] *pixelSpacingX*pixelSpacingY < 1.)
-											sprintf (line2, "Area: %0.1f %cm2", [self Area] *pixelSpacingX*pixelSpacingY * 1000000.0, 0xB5);
+											self.textualBoxLine2 = [NSString stringWithFormat: @"Area: %0.1f %cm2", [self Area] *pixelSpacingX*pixelSpacingY * 1000000.0, 0xB5];
 										else
-											sprintf (line2, "Area: %0.3f cm2", [self Area] *pixelSpacingX*pixelSpacingY / 100.);
+											self.textualBoxLine2 = [NSString stringWithFormat: @"Area: %0.3f cm2", [self Area] *pixelSpacingX*pixelSpacingY / 100.];
 									}
 									else
-										sprintf (line2, "Area: %0.3f pix2", [self Area]);
+										self.textualBoxLine2 = [NSString stringWithFormat: @"Area: %0.3f pix2", [self Area]];
                                     
                                     char *pixelUnit = "";
                                     
                                     if( [self pix].SUVConverted)
                                         pixelUnit = " SUV ";
                                     
-									sprintf (line3, "Mean: %0.3f%s SDev: %0.3f%s Sum: %0.0f%s", rmean, pixelUnit, rdev, pixelUnit, rtotal, pixelUnit);
-									sprintf (line4, "Min: %0.3f%s Max: %0.3f%s", rmin, pixelUnit, rmax, pixelUnit);
+									self.textualBoxLine3 = [NSString stringWithFormat: @"Mean: %0.3f%s SDev: %0.3f%s Sum: %0.0f%s", rmean, pixelUnit, rdev, pixelUnit, rtotal, pixelUnit];
+									self.textualBoxLine4 = [NSString stringWithFormat: @"Min: %0.3f%s Max: %0.3f%s", rmin, pixelUnit, rmax, pixelUnit];
 								}
 								
 								if( [curView blendingView])
@@ -5908,14 +5944,14 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                                     if( blendedPix.SUVConverted)
                                         pixelUnit = " SUV ";
                                     
-									sprintf (line5, "Fused Image Mean: %0.3f%s SDev: %0.3f%s Sum: %0.0f%s", Brmean, pixelUnit, Brdev, pixelUnit, Brtotal, pixelUnit);
-									sprintf (line6, "Fused Image Min: %0.3f%s Max: %0.3f%s", Brmin, pixelUnit, Brmax, pixelUnit);
+									self.textualBoxLine5 = [NSString stringWithFormat: @"Fused Image Mean: %0.3f%s SDev: %0.3f%s Sum: %0.0f%s", Brmean, pixelUnit, Brdev, pixelUnit, Brtotal, pixelUnit];
+									self.textualBoxLine6 = [NSString stringWithFormat: @"Fused Image Min: %0.3f%s Max: %0.3f%s", Brmin, pixelUnit, Brmax, pixelUnit];
 								}
 								
 								if( length > 0.0 && length < .1)
-									sprintf (line5, "Length: %0.1f %cm", length * 10000.0, 0xB5);
+									self.textualBoxLine5 = [NSString stringWithFormat: @"Length: %0.1f %cm", length * 10000.0, 0xB5];
 								else
-									sprintf (line5, "Length: %0.3f cm", length);
+									self.textualBoxLine5 = [NSString stringWithFormat: @"Length: %0.3f cm", length];
 								
 								// 3D Length
 								if( curView && pixelSpacingX != 0 && pixelSpacingY != 0)
@@ -5954,9 +5990,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 												}
 												
 												if (length < .1)
-													sprintf (line6, "3D Length: %0.1f %cm", distance3d * 10000.0, 0xB5);
+													self.textualBoxLine6 = [NSString stringWithFormat: @"3D Length: %0.1f %cm", distance3d * 10000.0, 0xB5];
 												else
-													sprintf (line6, "3D Length: %0.3f cm", distance3d / 10.);
+													self.textualBoxLine6 = [NSString stringWithFormat: @"3D Length: %0.3f cm", distance3d / 10.];
 												break;
 											}
 										}
@@ -5964,7 +6000,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 								}
 							}
 							
-							[self prepareTextualData:line1 :line2 :line3 :line4 :line5 :line6 location:tPt];
+							[self prepareTextualData:tPt];
 						}
 					}
 					else if( type == tAngle)
@@ -5972,19 +6008,20 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						if( [points count] == 3)
 						{
 							displayTextualData = YES;
-							line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0; line6[0] = 0;
+                            
 							if( self.isTextualDataDisplayed && prepareTextualData)
 							{
 								NSPoint tPt = self.lowerRightPoint;
 								float   angle;
 								
-								if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name UTF8String]);
-								
+								if( [name isEqualToString:@"Unnamed"] == NO) self.textualBoxLine1 = name;
+                                else self.textualBoxLine1 = nil;
+                                
 								angle = [self Angle:[[points objectAtIndex: 0] point] :[[points objectAtIndex: 1] point] : [[points objectAtIndex: 2] point]];
 								
-								sprintf (line2, "Angle: %0.3f / %0.3f", angle, 360 - angle);
+								self.textualBoxLine2 = [NSString stringWithFormat: @"Angle: %0.3f / %0.3f", angle, 360 - angle];
 								
-								[self prepareTextualData:line1 :line2 :line3 :line4 :line5 :line6 location:tPt];
+								[self prepareTextualData:tPt];
 							}
 						}
 						else displayTextualData = NO;
@@ -6182,11 +6219,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	return NO;
 }
 
-- (void) setRoiFont: (long) f :(long*) s :(DCMView*) v
+- (void) setRoiView:(DCMView*) v
 {
-	fontListGL = f;
 	curView = v;
-	fontSize = s;
 }
 
 - (float) roiArea

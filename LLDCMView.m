@@ -202,7 +202,7 @@
 		
 		for( id loopItem in curRoiList)
 		{
-			[loopItem setRoiFont: labelFontListGL :labelFontListGLSize :self];
+			[loopItem setRoiView :self];
 			[loopItem recompute];
 			// Unselect previous ROIs
 			[loopItem setROIMode : ROI_sleep];

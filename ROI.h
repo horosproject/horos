@@ -102,7 +102,6 @@ enum
 	int				PointUnderMouse;
 	long			selectedModifyPoint;
 	NSPoint			clickPoint, previousPoint, originAnchor;
-	long			fontListGL, *fontSize;
 	
 	DCMView			*curView;
 	DCMPix			*pix;
@@ -114,14 +113,14 @@ enum
 	
 	StringTexture	*stringTex;
 	NSMutableDictionary	*stanStringAttrib;
-	
+	NSMutableDictionary	*stringTextureCache;
+    
 	ROI*			parentROI;
 	
 	NSRect			drawRect;
 	
 	float			offsetTextBox_x, offsetTextBox_y;
 	
-	char			line1[ 1024], line2[ 1024], line3[ 1024], line4[ 1024], line5[ 1024], line6[ 1024];
 	NSString		*textualBoxLine1, *textualBoxLine2, *textualBoxLine3, *textualBoxLine4, *textualBoxLine5, *textualBoxLine6;
 	
 	BOOL			_displayCalciumScoring;
@@ -320,11 +319,11 @@ enum
 /** The info displayed in the text box */
 - (NSMutableDictionary*) dataString;
 
-/** Set the font */
-- (void) setRoiFont: (long) f :(long*) s :(DCMView*) v;
+/** Set the associated view */
+- (void) setRoiView:(DCMView*) v;
 
-/** Returns an OpenGL string */
-- (void) glStr: (unsigned char *) cstrOut :(float) x :(float) y :(float) line;
+/** Draw a NSString in OpenGL */
+- (void) glStr: (NSString*) str :(float) x :(float) y :(float) line;
 
 /** Recompute */
 - (void) recompute;
