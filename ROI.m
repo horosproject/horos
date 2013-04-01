@@ -1244,7 +1244,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 				NSArray *pts = [self points];
 				for( MyPoint* pt in pts)
 				{
-					if( NSPointInRect( NSMakePoint( pt.x, pt.y), imRect))
+					if( NSPointInRect( NSMakePoint( pt.x * (pixelSpacingX/ipixelSpacingx), pt.y * (pixelSpacingX/ipixelSpacingx)), imRect))
 					{
 						inImage = YES;
 						break;
