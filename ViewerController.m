@@ -1013,7 +1013,8 @@ return YES;
 
 - (void) addToUndoQueue:(NSString*) string
 {
-	[undoQueue addObject: [self prepareObjectForUndo: string]];
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"DontUseUndoQueueForROIs"] == NO)
+        [undoQueue addObject: [self prepareObjectForUndo: string]];
 	
 	if( [undoQueue count] > UNDOQUEUESIZE)
 	{

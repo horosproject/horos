@@ -12943,21 +12943,27 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 {
 	hasSUV = NO;
 	
-	if ( ![self.units isEqualToString: @"BQML"] && ![self.units isEqualToString: @"CNTS"]) return;  // Must be BQ/cc
+	if( ![self.units isEqualToString: @"BQML"] && ![self.units isEqualToString: @"CNTS"]) return;  // Must be BQ/cc
 	
 	if( [self.units isEqualToString: @"CNTS"] && philipsFactor == 0.0) return;
 	
-	if ( self.decayCorrection == nil) return;
+	if( self.decayCorrection == nil) return;
 	
-	if( decayFactor == 0.0f) return;
-	
-	if ( [self.decayCorrection isEqualToString: @"START"] == NO) return;
-	
-	if ( self.radionuclideTotalDose <= 0.0) return;	
-	
-	if ( halflife <= 0.0f) return;
-	
-	if ( acquisitionTime == nil || radiopharmaceuticalStartTime == nil) return;
+    if( [self.decayCorrection isEqualToString: @"START"] == NO && [self.decayCorrection isEqualToString: @"NONE"] == NO && [self.decayCorrection isEqualToString: @"ADMIN"] == NO) return;
+    
+    if( [self.decayCorrection isEqualToString: @"NONE"] || [self.decayCorrection isEqualToString: @"ADMIN"])
+    {
+        decayFactor = 1.0;
+        radionuclideTotalDoseCorrected = radionuclideTotalDose;
+    }
+    else
+    {
+        if( decayFactor == 0.0f) return;
+        if( halflife <= 0.0f) return;
+        if( acquisitionTime == nil || radiopharmaceuticalStartTime == nil) return;
+	}
+    
+	if( self.radionuclideTotalDose <= 0.0) return;	
 	
 	if( isRGB) return;
 	

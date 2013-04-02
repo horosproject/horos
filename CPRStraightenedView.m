@@ -1212,7 +1212,7 @@ extern int splitPosition[ 3];
 		{
 			r.pix = curDCM;
 			[r setOriginAndSpacing :curDCM.pixelSpacingX : curDCM.pixelSpacingY :NSMakePoint( curDCM.originX, curDCM.originY) :NO :NO];
-			[r setRoiFont: labelFontListGL :labelFontListGLSize :self];
+			[r setRoiView :self];
 		}
 		
 		[[self curRoiList] addObjectsFromArray: roiArray];
