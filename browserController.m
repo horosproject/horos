@@ -1943,7 +1943,12 @@ static NSConditionLock *threadLock = nil;
 			NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: filesInput, @"filesInput", [NSNumber numberWithBool: YES], @"copyFiles", nil];
 			[dict addEntriesFromDictionary: options];
 			
-			NSThread *t = [[[NSThread alloc] initWithTarget:_database.independentDatabase selector:@selector(copyFilesThread:) object: dict] autorelease];
+            NSThread *t = nil;
+            if( [NSThread isMainThread] == NO)
+                t = [[[NSThread alloc] initWithTarget:_database.independentDatabase selector:@selector(copyFilesThread:) object: dict] autorelease];
+            else
+                t = [[[NSThread alloc] initWithTarget:_database selector:@selector(copyFilesThread:) object: dict] autorelease];
+            
 			if( [[options objectForKey: @"mountedVolume"] boolValue]) t.name = NSLocalizedString( @"Copying and indexing files from CD/DVD...", nil);
 			else t.name = NSLocalizedString( @"Copying and indexing files...", nil);
 			t.status = N2LocalizedSingularPluralCount( [filesInput count], NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil));
@@ -4587,7 +4592,7 @@ static NSConditionLock *threadLock = nil;
 			BOOL refreshMatrix = YES;
 			long nowFiles = [[item valueForKey:@"noFiles"] intValue];
 			
-			if( previousItem == item)
+			if( [[previousItem objectID] isEqualTo: [item objectID]])
 			{
 				if( nowFiles == previousNoOfFiles)
 					refreshMatrix = NO;
