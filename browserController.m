@@ -5284,10 +5284,11 @@ static NSConditionLock *threadLock = nil;
         N2LogExceptionWithStackTrace(ne);
 	}
 	
+    for( DicomStudy *study in studiesSet)
+        [study noFiles];
+    [database save];
 	[database unlock];
     [database release];
-    
-    [self saveDatabase];
     
     [self outlineViewRefresh];
     [self refreshAlbums];
@@ -7884,7 +7885,7 @@ static BOOL withReset = NO;
 						
 						NSManagedObject *imageObj = [images objectAtIndex: [animationSlider intValue]];
 						
-						if( [[[imageView curDCM] sourceFile] isEqualToString: [[images objectAtIndex: [animationSlider intValue]] valueForKey:@"completePath"]] == NO || [[imageObj valueForKey: @"frameID"] intValue] != [[[imageView imageObj] valueForKey: @"frameID"] intValue])
+//						if( [[[imageView curDCM] sourceFile] isEqualToString: [[images objectAtIndex: [animationSlider intValue]] valueForKey:@"completePath"]] == NO || [[imageObj valueForKey: @"frameID"] intValue] != [[[imageView imageObj] valueForKey: @"frameID"] intValue])
 						{
 							DCMPix *dcmPix = nil;
 							

@@ -2012,10 +2012,10 @@ static BOOL protectionAgainstReentry = NO;
 						int numberOfFrames = [[curDict objectForKey: @"numberOfFrames"] intValue];
 						if (numberOfFrames == 0) numberOfFrames = 1;
 						
+                        NSInteger index = imagesArray.count? [imagesArraySopInstanceUID indexOfObject:[curDict objectForKey: [@"SOPUID" stringByAppendingString: SeriesNum]]] : NSNotFound;
+                        
 						for( int f = 0 ; f < numberOfFrames; f++)
 						{
-							NSInteger index = imagesArray.count? [imagesArraySopInstanceUID indexOfObject:[curDict objectForKey: [@"SOPUID" stringByAppendingString: SeriesNum]]] : NSNotFound;
-							
 							if (index != NSNotFound)
 							{
 								image = [imagesArray objectAtIndex: index];

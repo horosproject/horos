@@ -57,9 +57,9 @@
 #endif
     @try {
         return [super save:error];
-        for (NSPersistentStore* ps in [[self persistentStoreCoordinator] persistentStores])
-            if (ps.URL.isFileURL)
-                [NSFileManager.defaultManager applyFileModeOfParentToItemAtPath:ps.URL.path];
+//        for (NSPersistentStore* ps in [[self persistentStoreCoordinator] persistentStores])
+//            if (ps.URL.isFileURL)
+//                [NSFileManager.defaultManager applyFileModeOfParentToItemAtPath:ps.URL.path];
     } @catch (...) {
         @throw;
     } @finally {
@@ -352,12 +352,12 @@
     {
         [self.managedObjectContext lock];
         @try {
-//            [self.managedObjectContext mergeChangesFromContextDidSaveNotification:n];
+            [self.managedObjectContext mergeChangesFromContextDidSaveNotification:n];
 //            [self.managedObjectContext save: nil];
             
-            for (NSString* key in [NSArray arrayWithObjects: NSInsertedObjectsKey, NSUpdatedObjectsKey, NSDeletedObjectsKey, nil])
-                for (NSManagedObject* o in [n.userInfo objectForKey:key])
-                    [self.managedObjectContext refreshObject: [self.managedObjectContext objectWithID: o.objectID] mergeChanges: NO];
+//            for (NSString* key in [NSArray arrayWithObjects: NSInsertedObjectsKey, NSUpdatedObjectsKey, NSDeletedObjectsKey, nil])
+//                for (NSManagedObject* o in [n.userInfo objectForKey:key])
+//                    [self.managedObjectContext refreshObject: [self.managedObjectContext objectWithID: o.objectID] mergeChanges: NO];
             
         } @catch (NSException* e) {
             N2LogExceptionWithStackTrace(e);

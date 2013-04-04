@@ -1276,16 +1276,11 @@ static NSRecursiveLock *dbModifyLock = nil;
     [self.managedObjectContext lock];
     @try
     {
-//        if (cachedRawNoFiles && _numberOfImagesWhenCachedRawNoFiles == self.numberOfImages.integerValue)
-//            return cachedRawNoFiles;
-//        
-//        [cachedRawNoFiles release]; cachedRawNoFiles = nil;
-        
         for( DicomSeries *s in [[self valueForKey:@"series"] allObjects])
-            sum += [[s valueForKey: @"rawNoFiles"] intValue];
-//        _numberOfImagesWhenCachedRawNoFiles = self.numberOfImages.integerValue;
-        
-//        cachedRawNoFiles = [[NSNumber numberWithInt:sum] retain];
+        {
+            if( s.isDeleted == NO)
+                sum += [[s valueForKey: @"rawNoFiles"] intValue];
+        }
     }
     @catch (NSException * e)
     {
@@ -1306,7 +1301,10 @@ static NSRecursiveLock *dbModifyLock = nil;
 		@try {
             int sum = 0;
 			for (DicomSeries* s in [[self valueForKey:@"series"] allObjects])
-				sum += [[s valueForKey:@"noFilesExcludingMultiFrames"] intValue];
+            {
+                if( s.isDeleted == NO)
+                    sum += [[s valueForKey:@"noFilesExcludingMultiFrames"] intValue];
+            }
             return [NSNumber numberWithInt:sum];
 		}
 		@catch (NSException* e) {
@@ -1338,15 +1336,18 @@ static NSRecursiveLock *dbModifyLock = nil;
 			
 			for( DicomSeries *s in [[self valueForKey:@"series"] allObjects])
 			{
-				if( [DCMAbstractSyntaxUID isStructuredReport: [s valueForKey: @"seriesSOPClassUID"]] == NO &&
-					[DCMAbstractSyntaxUID isSupportedPrivateClasses: [s valueForKey: @"seriesSOPClassUID"]] == NO &&
-					[DCMAbstractSyntaxUID isPresentationState: [s valueForKey: @"seriesSOPClassUID"]] == NO)
-				{
-					sum += [[s valueForKey:@"noFiles"] intValue];
-					
-					if( [[s primitiveValueForKey:@"numberOfImages"] intValue] < 0) // There are frames !
-						framesInSeries = YES;
-				}
+                if( s.isDeleted == NO)
+                {
+                    if( [DCMAbstractSyntaxUID isStructuredReport: [s valueForKey: @"seriesSOPClassUID"]] == NO &&
+                        [DCMAbstractSyntaxUID isSupportedPrivateClasses: [s valueForKey: @"seriesSOPClassUID"]] == NO &&
+                        [DCMAbstractSyntaxUID isPresentationState: [s valueForKey: @"seriesSOPClassUID"]] == NO)
+                    {
+                        sum += [[s valueForKey:@"noFiles"] intValue];
+                        
+                        if( [[s primitiveValueForKey:@"numberOfImages"] intValue] < 0) // There are frames !
+                            framesInSeries = YES;
+                    }
+                }
 			}
 			
 			if( framesInSeries)
