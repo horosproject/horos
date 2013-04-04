@@ -5230,7 +5230,7 @@ static NSConditionLock *threadLock = nil;
 			{
 				if ([series isDeleted] == NO)
                 {
-                    if ([series.images count] == 0 || [[series.images valueForKey: @"isDeleted"] containsObject: [NSNumber numberWithBool: NO]] == NO)
+                    if ([series.images count] == 0)
                     {
                         [database.managedObjectContext deleteObject:series];
                     }
@@ -5257,7 +5257,7 @@ static NSConditionLock *threadLock = nil;
                 
                 if( [study isDeleted] == NO)
                 {
-                    if( [study.imageSeries count] == 0 || [[study.imageSeries valueForKey: @"isDeleted"] containsObject: [NSNumber numberWithBool: NO]] == NO)
+                    if( [study.imageSeries count] == 0)
                     {
                         NSLog( @"Delete Study: %@ - %@", study.patientID, study.studyInstanceUID);
                         
@@ -7883,9 +7883,9 @@ static BOOL withReset = NO;
 						
 						if( [animationSlider intValue] >= [images count]) return;
 						
-						NSManagedObject *imageObj = [images objectAtIndex: [animationSlider intValue]];
+						DicomImage *imageObj = [images objectAtIndex: [animationSlider intValue]];
 						
-//						if( [[[imageView curDCM] sourceFile] isEqualToString: [[images objectAtIndex: [animationSlider intValue]] valueForKey:@"completePath"]] == NO || [[imageObj valueForKey: @"frameID"] intValue] != [[[imageView imageObj] valueForKey: @"frameID"] intValue])
+						if( [[[imageView curDCM] sourceFile] isEqualToString: [[images objectAtIndex: [animationSlider intValue]] valueForKey:@"completePath"]] == NO || [[imageObj valueForKey: @"frameID"] intValue] != [[imageView curDCM] frameNo])
 						{
 							DCMPix *dcmPix = nil;
 							

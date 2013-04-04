@@ -9537,18 +9537,20 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                     if( savedHeightInDB != OsirixDicomImageSizeUnknown)
                         NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height. New: %d / DB: %d", (int)height, (int)savedHeightInDB);
                     [[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] setValue: [NSNumber numberWithInt: height] forKey: @"height"];
-                    if( height > savedHeightInDB && fExternalOwnedImage)
-                        height = savedHeightInDB;
                 }
+                
+                if( height > savedHeightInDB && fExternalOwnedImage)
+                    height = savedHeightInDB;
                 
                 if( savedWidthInDB != 0 && savedWidthInDB != width)
                 {
                     if( savedWidthInDB != OsirixDicomImageSizeUnknown)
                         NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width. New: %d / DB: %d", (int)width, (int)savedWidthInDB);
                     [[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] setValue: [NSNumber numberWithInt: width] forKey: @"width"];
-                    if( width > savedWidthInDB && fExternalOwnedImage)
-                        width = savedWidthInDB;
                 }
+                
+                if( width > savedWidthInDB && fExternalOwnedImage)
+                    width = savedWidthInDB;
 #endif
                 unsigned char *srcImage = [TIFFRep bitmapData];
                 

@@ -2008,18 +2008,23 @@ static BOOL protectionAgainstReentry = NO;
 							local = YES;
 						
 						NSArray	*imagesArray = [[seriesTable valueForKey:@"images"] allObjects];
-                        NSArray *imagesArraySopInstanceUID = [imagesArray valueForKey:@"sopInstanceUID"];
 						int numberOfFrames = [[curDict objectForKey: @"numberOfFrames"] intValue];
-						if (numberOfFrames == 0) numberOfFrames = 1;
+						if (numberOfFrames == 0)
+                            numberOfFrames = 1;
 						
-                        NSInteger index = imagesArray.count? [imagesArraySopInstanceUID indexOfObject:[curDict objectForKey: [@"SOPUID" stringByAppendingString: SeriesNum]]] : NSNotFound;
-                        
 						for( int f = 0 ; f < numberOfFrames; f++)
 						{
-							if (index != NSNotFound)
+                            image = nil;
+                            
+                            NSString *SOPUID = [curDict objectForKey: [@"SOPUID" stringByAppendingString: SeriesNum]];
+                            for( DicomImage *ii in imagesArray)
+                            {
+                                if( [ii.sopInstanceUID isEqualToString: SOPUID] && [ii.frameID intValue] == f)
+                                    image = ii;
+                            }
+                            
+							if( image)
 							{
-								image = [imagesArray objectAtIndex: index];
-								
 								// Does this image contain a valid image path? If not replace it, with the new one
 								if ([[NSFileManager defaultManager] fileExistsAtPath: [DicomImage completePathForLocalPath: [image valueForKey:@"path"] directory:self.dataBaseDirPath]] == YES && inParseExistingObject == NO)
 								{
@@ -2100,7 +2105,7 @@ static BOOL protectionAgainstReentry = NO;
 								
 								[image setValue:[curDict objectForKey: @"studyDate"]  forKey:@"date"];
 								
-								[image setValue:[curDict objectForKey: [@"SOPUID" stringByAppendingString: SeriesNum]] forKey:@"sopInstanceUID"];
+								[image setValue:SOPUID forKey:@"sopInstanceUID"];
 								
                                 if( [[curDict objectForKey: @"sliceLocationArray"] count] > f)
 									[image setValue: [[curDict objectForKey: @"sliceLocationArray"] objectAtIndex: f] forKey:@"sliceLocation"];

@@ -218,7 +218,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 
 - (NSString*) SRPath
 {
-	NSString *roiPath = [self SRPathForFrame: [[self valueForKey: @"frameID"] intValue]];
+	NSString *roiPath = [self SRPathForFrame: [self.frameID intValue]];
 	
 	if( [[NSFileManager defaultManager] fileExistsAtPath: roiPath])
 		return roiPath;
@@ -620,7 +620,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
                 {
                     [[DicomStudy dbModifyLock] lock];
                     @try {
-                        DCMObject *dcmObject = [[DCMObjectPixelDataImport alloc] initWithContentsOfFile: [self valueForKey:@"completePath"] decodingPixelData: NO];
+                        DCMObject *dcmObject = [[DCMObjectPixelDataImport alloc] initWithContentsOfFile: self.completePath decodingPixelData: NO];
                         
                         if( [dcmObject.attributes objectForKey: @"0028,6022"]) // DCM_FramesOfInterestDescription
                         {
@@ -654,7 +654,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
                         
                         [dcmObject release];
                         
-                        NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: [NSArray arrayWithObject: [self valueForKey:@"completePath"]], @"files", @"(0028,6022)", @"field", c, @"value", nil]; // c can be nil : it's important to have it at the end
+                        NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: [NSArray arrayWithObject: self.completePath], @"files", @"(0028,6022)", @"field", c, @"value", nil]; // c can be nil : it's important to have it at the end
                         
                         NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector(dcmodifyThread:) object: dict] autorelease];
                         t.name = NSLocalizedString( @"Updating DICOM files...", nil);
@@ -672,7 +672,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
                     if( [f boolValue])
                         c = @"0"; // frame 0 is key image 
                         
-                    NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: [NSArray arrayWithObject: [self valueForKey:@"completePath"]], @"files", @"(0028,6022)", @"field", c, @"value", nil]; // c can be nil : it's important to have it at the end
+                    NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: [NSArray arrayWithObject: self.completePath], @"files", @"(0028,6022)", @"field", c, @"value", nil]; // c can be nil : it's important to have it at the end
 
                     NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector(dcmodifyThread:) object: dict] autorelease];
                     t.name = NSLocalizedString( @"Updating DICOM files...", nil);
@@ -843,7 +843,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
     @synchronized (self) {
         if( dicomTime) return dicomTime;
         
-        dicomTime = [[[DCMCalendarDate dicomTimeWithDate:[self valueForKey: @"date"]] timeAsNumber] retain];
+        dicomTime = [[[DCMCalendarDate dicomTimeWithDate:self.date] timeAsNumber] retain];
         
         return dicomTime;
     }
@@ -880,7 +880,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 
 -(NSString*) uniqueFilename	// Return a 'unique' filename that identify this image...
 {
-	return [NSString stringWithFormat:@"%@ %@",[self valueForKey:@"sopInstanceUID"], [self valueForKey:@"instanceNumber"]];
+	return [NSString stringWithFormat:@"%@ %@",self.sopInstanceUID, self.instanceNumber];
 }
 
 - (void) clearCompletePathCache
@@ -986,9 +986,9 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
         }
         
         #ifdef OSIRIX_VIEWER
-        if( [[self valueForKey:@"inDatabaseFolder"] boolValue] == YES)
+        if( [self.inDatabaseFolder boolValue] == YES)
         {
-            NSString *path = [self valueForKey:@"path"];
+            NSString *path = self.path;
             
             if( !isLocal)
             {
@@ -1017,7 +1017,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
         }
         #endif
         
-        return [self valueForKey:@"path"];
+        return self.path;
     }
     @catch (NSException *e) {
         N2LogExceptionWithStackTrace(e);
@@ -1058,14 +1058,14 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
         if (delete)
         {
             #ifdef OSIRIX_VIEWER
-            if( [[self valueForKey:@"inDatabaseFolder"] boolValue] == YES)
+            if( [self.inDatabaseFolder boolValue] == YES)
             {
-                [[BrowserController currentBrowser] addFileToDeleteQueue: [self valueForKey:@"completePath"]];
+                [[BrowserController currentBrowser] addFileToDeleteQueue: self.completePath];
                 
-                NSString *pathExtension = [[self valueForKey:@"path"] pathExtension];
+                NSString *pathExtension = [self.path pathExtension];
                 
                 if( [pathExtension isEqualToString:@"hdr"])		// ANALYZE -> DELETE IMG
-                    [[BrowserController currentBrowser] addFileToDeleteQueue: [[[self valueForKey:@"completePath"] stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"]];
+                    [[BrowserController currentBrowser] addFileToDeleteQueue: [[self.completePath stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"]];
                 
                 [self setValue:[NSNumber numberWithBool:NO] forKey:@"inDatabaseFolder"];
             }
@@ -1151,7 +1151,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 {
 #ifdef OSIRIX_VIEWER
     @synchronized (self) {
-        DCMPix *pix = [[DCMPix alloc] initWithPath:[self valueForKey:@"completePath"] :0 :0 :nil :0 :[[self valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:self];
+        DCMPix *pix = [[DCMPix alloc] initWithPath:self.completePath :0 :0 :nil :0 :[[self valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:self];
         NSData	*data = [[pix image] TIFFRepresentation];
         NSImage *thumbnail = [[[NSImage alloc] initWithData: data] autorelease];
 
@@ -1168,7 +1168,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
     @synchronized (self) {
         if (_thumbnail)
             return _thumbnail;
-        DCMPix *pix = [[DCMPix alloc] initWithPath:[self valueForKey:@"completePath"] :0 :0 :nil :0 :[[self valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:self];
+        DCMPix *pix = [[DCMPix alloc] initWithPath:self.completePath :0 :0 :nil :0 :[[self valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:self];
         NSData	*data = [[pix generateThumbnailImageWithWW:0 WL:0] TIFFRepresentation];
         NSImage *thumbnail = [[[NSImage alloc] initWithData: data] autorelease];
         [pix release];
