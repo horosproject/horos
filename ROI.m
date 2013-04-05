@@ -3585,8 +3585,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
     
     rad *= factor;
     
-    if( fabs( miny-maxy) < rad * 2.)
-        rad = fabs( miny-maxy) / 2.;
+    if( fabs( miny-maxy) < rad * 3.)
+        rad = fabs( miny-maxy) / 3.;
     
     for( int a=0; a<7; a++)
     {
@@ -3827,7 +3827,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
             
             if( mode == ROI_sleep) glColor4f(0.0f, 0.0f, 0.0f, 0.4f);
 			else glColor4f(0.3f, 0.0f, 0.0f, 0.8f);
-			gl_round_box(GL_POLYGON, drawRect.origin.x, drawRect.origin.y-1, drawRect.origin.x+drawRect.size.width, drawRect.origin.y+drawRect.size.height, 20, sf);
+			gl_round_box(GL_POLYGON, drawRect.origin.x, drawRect.origin.y-1, drawRect.origin.x+drawRect.size.width, drawRect.origin.y+drawRect.size.height, 15, sf);
 			
 			NSPoint tPt;
 			
