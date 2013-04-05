@@ -633,7 +633,7 @@ static DicomDatabase* activeLocalDatabase = nil;
 	// super + spec
 	
 	context = [super contextAtPath:sqlFilePath];
-	[context setMergePolicy:NSMergeByPropertyObjectTrumpMergePolicy];
+	[context setMergePolicy:NSMergeByPropertyStoreTrumpMergePolicy];
 	[context setUndoManager: nil];
     
     if( independentContext == NO)
