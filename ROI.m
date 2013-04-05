@@ -3585,8 +3585,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
     
     rad *= factor;
     
-    if( fabs( miny-maxy) < rad * 3.)
-        rad = fabs( miny-maxy) / 3.;
+    if( fabs( miny-maxy) < rad * 5.)
+        rad = fabs( miny-maxy) / 5.;
     
     for( int a=0; a<7; a++)
     {
