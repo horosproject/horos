@@ -3572,75 +3572,51 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, float rad, float factor)
 {
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-	
+    
 	glLineWidth( 5 * factor);
-	glBegin(GL_POLYGON);
-		glVertex2f(  minx, miny);
-		glVertex2f(  minx, maxy);
-		glVertex2f(  maxx, maxy);
-		glVertex2f(  maxx, miny);
-	glEnd();
-	
-//	glPointSize( 5);
-//	glBegin( GL_POINTS);
+//	glBegin(GL_POLYGON);
 //		glVertex2f(  minx, miny);
 //		glVertex2f(  minx, maxy);
 //		glVertex2f(  maxx, maxy);
 //		glVertex2f(  maxx, miny);
 //	glEnd();
 
-//	 float vec[7][2]= {{0.195, 0.02}, {0.383, 0.067}, {0.55, 0.169}, {0.707, 0.293},
-//					   {0.831, 0.45}, {0.924, 0.617}, {0.98, 0.805}};
-//
-//	 /* mult */
-//	 for( int a=0; a<7; a++) {
-//			 vec[a][0]*= rad; vec[a][1]*= rad;
-//	 }
-//
-//	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-//	 glBegin(mode);
-//
-//	 /* start with corner right-bottom */
-//	 if(roundboxtype & 4) {
-//			 glVertex2f( maxx-rad, miny);
-//			 for( int a=0; a<7; a++ ) {
-//					 glVertex2f( maxx-rad+vec[a][0], miny+vec[a][1]);
-//			 }
-//			 glVertex2f( maxx, miny+rad);
-//	 }
-//	 else glVertex2f( maxx, miny);
-//	 
-//	 /* corner right-top */
-//	 if(roundboxtype & 2) {
-//			 glVertex2f( maxx, maxy-rad);
-//			 for( int a=0; a<7; a++ ) {
-//					 glVertex2f( maxx-vec[a][1], maxy-rad+vec[a][0]);
-//			 }
-//			 glVertex2f( maxx-rad, maxy);
-//	 }
-//	 else glVertex2f( maxx, maxy);
-//	 
-//	 /* corner left-top */
-//	 if(roundboxtype & 1) {
-//			 glVertex2f( minx+rad, maxy);
-//			 for( int a=0; a<7; a++ ) {
-//					 glVertex2f( minx+rad-vec[a][0], maxy-vec[a][1]);
-//			 }
-//			 glVertex2f( minx, maxy-rad);
-//	 }
-//	 else glVertex2f( minx, maxy);
-//	 
-//	 /* corner left-bottom */
-//	 if(roundboxtype & 8) {
-//			 glVertex2f( minx, miny+rad);
-//			 for( int a=0; a<7; a++ ) {
-//					 glVertex2f( minx+vec[a][1], miny+rad-vec[a][0]);
-//			 }
-//			 glVertex2f( minx+rad, miny);
-//	 }
-//	 else glVertex2f( minx, miny);
-//	 
-//	 glEnd();
+    float vec[7][2]= {{0.195, 0.02}, {0.383, 0.067}, {0.55, 0.169}, {0.707, 0.293}, {0.831, 0.45}, {0.924, 0.617}, {0.98, 0.805}};
+    
+    rad *= factor;
+    
+    if( fabs( miny-maxy) < rad * 2.)
+        rad = fabs( miny-maxy) / 2.;
+    
+    for( int a=0; a<7; a++)
+    {
+        vec[a][0]*= rad;
+        vec[a][1]*= rad;
+    }
+    
+    glBegin(mode);
+    
+    glVertex2f( maxx-rad, miny);
+    for( int a=0; a<7; a++)
+        glVertex2f( maxx-rad+vec[a][0], miny+vec[a][1]);
+    glVertex2f( maxx, miny+rad);
+    
+    glVertex2f( maxx, maxy-rad);
+    for( int a=0; a<7; a++)
+        glVertex2f( maxx-vec[a][1], maxy-rad+vec[a][0]);
+    glVertex2f( maxx-rad, maxy);
+    
+    glVertex2f( minx+rad, maxy);
+    for( int a=0; a<7; a++)
+        glVertex2f( minx+rad-vec[a][0], maxy-vec[a][1]);
+    glVertex2f( minx, maxy-rad);
+    
+    glVertex2f( minx, miny+rad);
+    for( int a=0; a<7; a++)
+        glVertex2f( minx+vec[a][1], miny+rad-vec[a][0]);
+    glVertex2f( minx+rad, miny);
+	 
+    glEnd();
 }
 
 - (NSRect) findAnEmptySpaceForMyRect:(NSRect) dRect :(BOOL*) moved
@@ -3833,8 +3809,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 			glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
 			
-			if( mode == ROI_sleep) glColor4f(0.0f, 0.0f, 0.0f, 0.4f);
-			else glColor4f(0.3f, 0.0f, 0.0f, 0.8f);
+			
 			
 			glLoadIdentity();
 			
@@ -3842,7 +3817,17 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
             
 			glScalef( 2.0f /([curView drawingFrameRect].size.width), -2.0f / ([curView drawingFrameRect].size.height), 1.0f);
 			
-			gl_round_box(GL_POLYGON, drawRect.origin.x, drawRect.origin.y-1, drawRect.origin.x+drawRect.size.width, drawRect.origin.y+drawRect.size.height, 3, sf);
+            
+            glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+            glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+            glEnable(GL_POINT_SMOOTH);
+            glEnable(GL_LINE_SMOOTH);
+            glEnable(GL_POLYGON_SMOOTH);
+
+            
+            if( mode == ROI_sleep) glColor4f(0.0f, 0.0f, 0.0f, 0.4f);
+			else glColor4f(0.3f, 0.0f, 0.0f, 0.8f);
+			gl_round_box(GL_POLYGON, drawRect.origin.x, drawRect.origin.y-1, drawRect.origin.x+drawRect.size.width, drawRect.origin.y+drawRect.size.height, 20, sf);
 			
 			NSPoint tPt;
 			
