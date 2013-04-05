@@ -460,7 +460,7 @@
 
 - (NSSet*) images
 {
-    return [[self primitiveValueForKey: @"images"] objectsPassingTest:^BOOL(DicomImage *obj, BOOL *stop)
+    return [[self primitiveValueForKey: @"images"] objectsWithOptions: NSEnumerationConcurrent passingTest:^BOOL(DicomImage *obj, BOOL *stop)
             {
                 if( obj.isDeleted)
                     return NO;
