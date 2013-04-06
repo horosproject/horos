@@ -3827,7 +3827,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
             
             if( mode == ROI_sleep) glColor4f(0.0f, 0.0f, 0.0f, 0.4f);
 			else glColor4f(0.3f, 0.0f, 0.0f, 0.8f);
-			gl_round_box(GL_POLYGON, drawRect.origin.x, drawRect.origin.y-1, drawRect.origin.x+drawRect.size.width, drawRect.origin.y+drawRect.size.height, 15, sf);
+			gl_round_box(GL_POLYGON, drawRect.origin.x, drawRect.origin.y-1, drawRect.origin.x+drawRect.size.width, drawRect.origin.y+drawRect.size.height, fontHeight*sf/5., sf);
 			
 			NSPoint tPt;
 			
@@ -4532,14 +4532,14 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					}
 					#define ARROWSIZEConstant 25.0
 					
-					float ARROWSIZE = ARROWSIZEConstant * (thick / 3.0);
+					float ARROWSIZE = ARROWSIZEConstant * (thick * backingScaleFactor / 3.0);
 					
 					// LINE
 					glLineWidth( thick*2*backingScaleFactor);
 					
 					angle = 90 - atan( slide)/deg2rad;
-					adj = (ARROWSIZE + thick * 13)  * cos( angle*deg2rad);
-					op = (ARROWSIZE + thick * 13) * sin( angle*deg2rad);
+					adj = (ARROWSIZE + thick * backingScaleFactor * 13)  * cos( angle*deg2rad);
+					op = (ARROWSIZE + thick * backingScaleFactor * 13) * sin( angle*deg2rad);
 					
 					glBegin(GL_LINE_STRIP);
 						if(b.y-a.y > 0)
@@ -4586,9 +4586,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					{
 						angle = atan( slide)/deg2rad;
 						
-						angle = 80 - angle - thick;
-						adj = (ARROWSIZE + thick * 15)  * cos( angle*deg2rad);
-						op = (ARROWSIZE + thick * 15) * sin( angle*deg2rad);
+						angle = 80 - angle - thick * backingScaleFactor;
+						adj = (ARROWSIZE + thick * backingScaleFactor * 15)  * cos( angle*deg2rad);
+						op = (ARROWSIZE + thick * backingScaleFactor * 15) * sin( angle*deg2rad);
 						
 						if( pixelSpacingX != 0 && pixelSpacingY != 0 )
 							aa1 = NSMakePoint( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
@@ -4596,9 +4596,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 							aa1 = NSMakePoint( a.x + adj, a.y + (op));
 							
 						angle = atan( slide)/deg2rad;
-						angle = 100 - angle + thick;
-						adj = (ARROWSIZE + thick * 15) * cos( angle*deg2rad);
-						op = (ARROWSIZE + thick * 15) * sin( angle*deg2rad);
+						angle = 100 - angle + thick * backingScaleFactor;
+						adj = (ARROWSIZE + thick * backingScaleFactor * 15) * cos( angle*deg2rad);
+						op = (ARROWSIZE + thick * backingScaleFactor * 15) * sin( angle*deg2rad);
 						
 						if( pixelSpacingX != 0 && pixelSpacingY != 0 )
 							aa2 = NSMakePoint( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
@@ -4609,9 +4609,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					{
 						angle = atan( slide)/deg2rad;
 						
-						angle = 180 + 80 - angle - thick;
-						adj = (ARROWSIZE + thick * 15) * cos( angle*deg2rad);
-						op = (ARROWSIZE + thick * 15) * sin( angle*deg2rad);
+						angle = 180 + 80 - angle - thick * backingScaleFactor;
+						adj = (ARROWSIZE + thick * backingScaleFactor * 15) * cos( angle*deg2rad);
+						op = (ARROWSIZE + thick * backingScaleFactor * 15) * sin( angle*deg2rad);
 						
 						if( pixelSpacingX != 0 && pixelSpacingY != 0 )
 							aa1 = NSMakePoint( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
@@ -4619,9 +4619,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 							aa1 = NSMakePoint( a.x + adj, a.y + (op));
 							
 						angle = atan( slide)/deg2rad;
-						angle = 180 + 100 - angle + thick;
-						adj = (ARROWSIZE + thick * 15) * cos( angle*deg2rad);
-						op = (ARROWSIZE + thick * 15) * sin( angle*deg2rad);
+						angle = 180 + 100 - angle + thick * backingScaleFactor;
+						adj = (ARROWSIZE + thick * backingScaleFactor * 15) * cos( angle*deg2rad);
+						op = (ARROWSIZE + thick * backingScaleFactor * 15) * sin( angle*deg2rad);
 						
 						if( pixelSpacingX != 0 && pixelSpacingY != 0 )
 							aa2 = NSMakePoint( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
