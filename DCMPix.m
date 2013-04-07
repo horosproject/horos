@@ -869,6 +869,9 @@ void ras_FillPolygon(	NSPointInt *p,
 //	if( test != FLT_MAX)
 //		NSLog( @"******* test != FLT_MAX");
 	
+    if( edgeTable == nil)
+        return;
+    
     FillEdges(p, no, edgeTable);
 	
     for ( curY = 0; edgeTable[ curY] == NULL; curY++)
@@ -12113,6 +12116,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	long			next;
 	float			min, max, iwl, iww;
 	
+    if( fResult == nil)
+        return nil;
+    
 	if( fixed8bitsWLWW)	{
 		iww = 256;
 		iwl = 127;
