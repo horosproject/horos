@@ -259,7 +259,10 @@ extern "C"
     for( DCMTKQueryNode	*object in studies)
     {
         [NSThread currentThread].progress = (float) i++ / (float) studies.count;
-        [NSThread currentThread].status = [NSString stringWithFormat: @"%@ - %@", object.name, object.theDescription];
+        if( object.theDescription)
+            [NSThread currentThread].status = [NSString stringWithFormat: @"%@ - %@", object.name, object.theDescription];
+        else
+            [NSThread currentThread].status = [NSString stringWithFormat: @"%@", object.name];
         if( [NSThread currentThread].isCancelled)
             break;
         
