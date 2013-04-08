@@ -2766,16 +2766,23 @@ static BOOL protectionAgainstReentry = NO;
 			{
                 // delete old files starting with '.'
                 struct stat st;
-                NSDate* date = nil;
-				if ([enumer stat:&st] || [(date = [NSDate dateWithTimeIntervalSince1970:st.st_mtime]) timeIntervalSinceNow] < -60*60*24)
+				if ([enumer stat:&st] == 0)
 				{
-					[NSThread sleepForTimeInterval: 0.1]; // we want to be 100% sure...
-                    
-					if ([enumer stat:&st] || [(date = [NSDate dateWithTimeIntervalSince1970:st.st_mtime]) timeIntervalSinceNow] < -60*60*24)
-					{
-						NSLog(@"deleting old incoming file %@ (date modified: %@)", srcPath, date);
-						if (srcPath)
-							[[NSFileManager defaultManager] removeItemAtPath: srcPath error: nil];
+                    NSDate* date = [NSDate dateWithTimeIntervalSince1970:st.st_mtime];
+                    if( date && [date timeIntervalSinceNow] < -60*60*24)
+                    {
+                        [NSThread sleepForTimeInterval: 0.1]; // we want to be 100% sure...
+                        
+                        if ([enumer stat:&st] == 0)
+                        {
+                            NSDate* date = [NSDate dateWithTimeIntervalSince1970:st.st_mtime];
+                            if( date && [date timeIntervalSinceNow] < -60*60*24)
+                            {
+                                NSLog(@"deleting old incoming file %@ (date modified: %@)", srcPath, date);
+                                if (srcPath)
+                                    [[NSFileManager defaultManager] removeItemAtPath: srcPath error: nil];
+                            }
+                        }
                     }
                 }
                 
