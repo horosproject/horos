@@ -1013,7 +1013,8 @@ return YES;
 
 - (void) addToUndoQueue:(NSString*) string
 {
-	[undoQueue addObject: [self prepareObjectForUndo: string]];
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"DontUseUndoQueueForROIs"] == NO)
+        [undoQueue addObject: [self prepareObjectForUndo: string]];
 	
 	if( [undoQueue count] > UNDOQUEUESIZE)
 	{
@@ -1872,11 +1873,11 @@ static volatile int numberOfThreadsForRelisce = 0;
 			return;
 		}
 		
-		if( [[pixList[ curMovieIndex] objectAtIndex: 0] isRGB])
-		{
-			NSRunAlertPanel(NSLocalizedString(@"Data Error", nil), NSLocalizedString(@"This tool works only with B/W data series.", nil), nil, nil, nil);
-			return;
-		}
+//		if( [[pixList[ curMovieIndex] objectAtIndex: 0] isRGB])
+//		{
+//			NSRunAlertPanel(NSLocalizedString(@"Data Error", nil), NSLocalizedString(@"This tool works only with B/W data series.", nil), nil, nil, nil);
+//			return;
+//		}
 		
 		// To stop any attempt to reload the data...
 		postprocessed = YES;

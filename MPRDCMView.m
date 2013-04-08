@@ -1319,7 +1319,7 @@ extern unsigned int minimumStep;
 		mouseLocation.x *= curDCM.pixelSpacingX;
 		mouseLocation.y *= curDCM.pixelSpacingY;
 		
-		float f = curDCM.pixelSpacingX / LOD; //scaleValue * 
+		float f = curDCM.pixelSpacingX / LOD * self.window.backingScaleFactor;
 		
 		if( mouseLocation.x > r.x - BS * f && mouseLocation.x < r.x + BS* f && mouseLocation.y > r.y - BS* f && mouseLocation.y < r.y + BS* f)
 		{
@@ -1346,7 +1346,7 @@ extern unsigned int minimumStep;
                 distance2 /= curDCM.pixelSpacingX;
 			}
             
-			if( distance1 * scaleValue < 10 || distance2 * scaleValue < 10)
+			if( distance1 * scaleValue < 10*self.window.backingScaleFactor || distance2 * scaleValue < 10*self.window.backingScaleFactor)
 			{
 				return 1;
 			}

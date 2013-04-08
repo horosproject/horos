@@ -869,6 +869,9 @@ void ras_FillPolygon(	NSPointInt *p,
 //	if( test != FLT_MAX)
 //		NSLog( @"******* test != FLT_MAX");
 	
+    if( edgeTable == nil)
+        return;
+    
     FillEdges(p, no, edgeTable);
 	
     for ( curY = 0; edgeTable[ curY] == NULL; curY++)
@@ -3656,7 +3659,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             if( savedWidthInDB != OsirixDicomImageSizeUnknown)
                 NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", (int)savedWidthInDB, (int) width);
 			[[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] setValue: [NSNumber numberWithInt: width] forKey: @"width"];
-			if( width > savedWidthInDB)
+			if( width > savedWidthInDB && fExternalOwnedImage)
 				width = savedWidthInDB;
 		}
 		
@@ -3665,7 +3668,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             if( savedHeightInDB != OsirixDicomImageSizeUnknown)
                 NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int)savedHeightInDB, (int)height);
 			[[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] setValue: [NSNumber numberWithInt: height] forKey: @"height"];
-			if( height > savedHeightInDB)
+			if( height > savedHeightInDB && fExternalOwnedImage)
 				height = savedHeightInDB;
 		}
         #endif
@@ -3878,7 +3881,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             if( savedHeightInDB != OsirixDicomImageSizeUnknown)
                 NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int)savedHeightInDB, (int)height);
 			[[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] setValue: [NSNumber numberWithInt: height] forKey: @"height"];
-			if( height > savedHeightInDB)
+			if( height > savedHeightInDB && fExternalOwnedImage)
 				height = savedHeightInDB;
 		}
 		
@@ -3887,7 +3890,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             if( savedWidthInDB != OsirixDicomImageSizeUnknown)
                 NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", (int)savedWidthInDB, (int)width);
 			[[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] setValue: [NSNumber numberWithInt: width] forKey: @"width"];
-			if( width > savedWidthInDB)
+			if( width > savedWidthInDB && fExternalOwnedImage)
 				width = savedWidthInDB;
 		}
         #endif
@@ -4466,7 +4469,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                         if( savedWidthInDB != OsirixDicomImageSizeUnknown)
                             NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", (int)savedWidthInDB, (int)width);
 						[[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] setValue: [NSNumber numberWithInt: width] forKey: @"width"];
-						if( width > savedWidthInDB)
+						if( width > savedWidthInDB && fExternalOwnedImage)
 							width = savedWidthInDB;
 					}
                     #endif
@@ -4480,7 +4483,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                         if( savedHeightInDB != OsirixDicomImageSizeUnknown)
                             NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int)savedHeightInDB, (int)height);
 						[[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] setValue: [NSNumber numberWithInt: height] forKey: @"height"];
-						if( height > savedHeightInDB)
+						if( height > savedHeightInDB && fExternalOwnedImage)
 							height = savedHeightInDB;
 					}
                     #endif
@@ -5428,7 +5431,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         if( savedHeightInDB != OsirixDicomImageSizeUnknown)
             NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int)savedHeightInDB, (int)height);
 		[[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] setValue: [NSNumber numberWithInt: height] forKey: @"height"];
-		if( height > savedHeightInDB)
+		if( height > savedHeightInDB && fExternalOwnedImage)
 			height = savedHeightInDB;
 	}
 	
@@ -5437,7 +5440,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         if( savedWidthInDB != OsirixDicomImageSizeUnknown)
             NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", (int)savedWidthInDB, (int)width);
 		[[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] setValue: [NSNumber numberWithInt: width] forKey: @"width"];
-		if( width > savedWidthInDB)
+		if( width > savedWidthInDB && fExternalOwnedImage)
 			width = savedWidthInDB;
 	}
     #endif
@@ -7179,7 +7182,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             if( savedHeightInDB != OsirixDicomImageSizeUnknown)
                 NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int)savedHeightInDB, (int)height);
 			[[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] setValue: [NSNumber numberWithInt: height] forKey: @"height"];
-			if( height > savedHeightInDB)
+			if( height > savedHeightInDB && fExternalOwnedImage)
 				height = savedHeightInDB;
 		}
 #endif
@@ -7196,7 +7199,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             if( savedWidthInDB != OsirixDicomImageSizeUnknown)
                 NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", (int)savedWidthInDB, (int)width);
 			[[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] setValue: [NSNumber numberWithInt: width] forKey: @"width"];
-			if( width > savedWidthInDB)
+			if( width > savedWidthInDB && fExternalOwnedImage)
 				width = savedWidthInDB;
 		}
 #endif
@@ -9537,18 +9540,20 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                     if( savedHeightInDB != OsirixDicomImageSizeUnknown)
                         NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height. New: %d / DB: %d", (int)height, (int)savedHeightInDB);
                     [[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] setValue: [NSNumber numberWithInt: height] forKey: @"height"];
-                    if( height > savedHeightInDB)
-                        height = savedHeightInDB;
                 }
+                
+                if( height > savedHeightInDB && fExternalOwnedImage)
+                    height = savedHeightInDB;
                 
                 if( savedWidthInDB != 0 && savedWidthInDB != width)
                 {
                     if( savedWidthInDB != OsirixDicomImageSizeUnknown)
                         NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width. New: %d / DB: %d", (int)width, (int)savedWidthInDB);
                     [[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] setValue: [NSNumber numberWithInt: width] forKey: @"width"];
-                    if( width > savedWidthInDB)
-                        width = savedWidthInDB;
                 }
+                
+                if( width > savedWidthInDB && fExternalOwnedImage)
+                    width = savedWidthInDB;
 #endif
                 unsigned char *srcImage = [TIFFRep bitmapData];
                 
@@ -12111,6 +12116,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	long			next;
 	float			min, max, iwl, iww;
 	
+    if( fResult == nil)
+        return nil;
+    
 	if( fixed8bitsWLWW)	{
 		iww = 256;
 		iwl = 127;
@@ -12943,21 +12951,27 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 {
 	hasSUV = NO;
 	
-	if ( ![self.units isEqualToString: @"BQML"] && ![self.units isEqualToString: @"CNTS"]) return;  // Must be BQ/cc
+	if( ![self.units isEqualToString: @"BQML"] && ![self.units isEqualToString: @"CNTS"]) return;  // Must be BQ/cc
 	
 	if( [self.units isEqualToString: @"CNTS"] && philipsFactor == 0.0) return;
 	
-	if ( self.decayCorrection == nil) return;
+	if( self.decayCorrection == nil) return;
 	
-	if( decayFactor == 0.0f) return;
-	
-	if ( [self.decayCorrection isEqualToString: @"START"] == NO) return;
-	
-	if ( self.radionuclideTotalDose <= 0.0) return;	
-	
-	if ( halflife <= 0.0f) return;
-	
-	if ( acquisitionTime == nil || radiopharmaceuticalStartTime == nil) return;
+    if( [self.decayCorrection isEqualToString: @"START"] == NO && [self.decayCorrection isEqualToString: @"NONE"] == NO && [self.decayCorrection isEqualToString: @"ADMIN"] == NO) return;
+    
+    if( [self.decayCorrection isEqualToString: @"NONE"] || [self.decayCorrection isEqualToString: @"ADMIN"])
+    {
+        decayFactor = 1.0;
+        radionuclideTotalDoseCorrected = radionuclideTotalDose;
+    }
+    else
+    {
+        if( decayFactor == 0.0f) return;
+        if( halflife <= 0.0f) return;
+        if( acquisitionTime == nil || radiopharmaceuticalStartTime == nil) return;
+	}
+    
+	if( self.radionuclideTotalDose <= 0.0) return;	
 	
 	if( isRGB) return;
 	

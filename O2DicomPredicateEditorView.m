@@ -68,7 +68,8 @@ enum /*typedef NS_ENUM(NSInteger, O2TimeTag)*/ { // these values are runtime onl
     O21Month = -9,
     O22Months = -10,
     O23Months = -11,
-    O21Year = 12
+    O21Year = 12,
+    O2DayBeforeYesterday = -13,
 };
 
 static NSString* const O2VarToday = @"NSDATE_TODAY";
@@ -153,6 +154,8 @@ static NSString* const O2Var1Year = @"NSDATE_YEAR";
             return O2Var12Hours; break;
         case O2Yesterday:
             return O2VarYesterday;
+        case O2DayBeforeYesterday:
+            return O2Var2Days;
         case O2Within:
             return nil;
     }
@@ -313,6 +316,8 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
         mi.tag = O2Today;
         mi = [menu addItemWithTitle:NSLocalizedString(@"is yesterday", nil) action:nil keyEquivalent:@""];
         mi.tag = O2Yesterday;
+        mi = [menu addItemWithTitle:NSLocalizedString(@"is day before yesterday", nil) action:nil keyEquivalent:@""];
+        mi.tag = O2DayBeforeYesterday;
         mi = [menu addItemWithTitle:NSLocalizedString(@"is before", nil) action:nil keyEquivalent:@""];
         mi.tag = NSLessThanOrEqualToPredicateOperatorType;
         mi = [menu addItemWithTitle:NSLocalizedString(@"is after", nil) action:nil keyEquivalent:@""];
@@ -915,7 +920,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
                 
             case DA: {
                 [views addObject:_operatorsPopUp];
-                [self setAvailableOperators: N(O2Today), N(O2Yesterday), N(NSLessThanOrEqualToPredicateOperatorType), N(NSGreaterThanOrEqualToPredicateOperatorType), N(O2Within), N(NSEqualToPredicateOperatorType), nil];
+                [self setAvailableOperators: N(O2Today), N(O2Yesterday), N(O2DayBeforeYesterday), N(NSLessThanOrEqualToPredicateOperatorType), N(NSGreaterThanOrEqualToPredicateOperatorType), N(O2Within), N(NSEqualToPredicateOperatorType), nil]; // TODO: add 'is between'
                 switch (self.operator) {
                     case NSLessThanOrEqualToPredicateOperatorType:
                     case NSGreaterThanOrEqualToPredicateOperatorType:
@@ -945,7 +950,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
                 
             case DT: {
                 [views addObject:_operatorsPopUp];
-                [self setAvailableOperators: N(O2Today), N(O2Yesterday), N(NSLessThanOrEqualToPredicateOperatorType), N(NSGreaterThanOrEqualToPredicateOperatorType), N(O2Within), N(NSEqualToPredicateOperatorType), nil];
+                [self setAvailableOperators: N(O2Today), N(O2Yesterday), N(O2DayBeforeYesterday), N(NSLessThanOrEqualToPredicateOperatorType), N(NSGreaterThanOrEqualToPredicateOperatorType), N(O2Within), N(NSEqualToPredicateOperatorType), nil]; // TODO: add 'is between'
                 switch (self.operator) {
                     case NSLessThanOrEqualToPredicateOperatorType:
                     case NSGreaterThanOrEqualToPredicateOperatorType:
@@ -1088,6 +1093,10 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
                         [[[[predicate collection] objectAtIndex:0] variable] isEqualToString:O2VarYesterday] &&
                         [[[[predicate collection] objectAtIndex:1] variable] isEqualToString:O2VarToday]) // match "KeyPath between {NSDATE_YESTERDAY, NSDATE_TODAY}" for Yesterday
                         return 1; // is yesterday
+                    if (otype == NSBetweenPredicateOperatorType &&
+                        ([[[[predicate collection] objectAtIndex:0] variable] isEqualToString:O2Var2Days]) &&
+                        ([[[[predicate collection] objectAtIndex:1] variable] isEqualToString:O2VarYesterday])) // match "KeyPath between {NSDATE_2DAYS, NSDATE_YESTERDAY}" for Yesterday
+                        return 1; // is day before yesterday
                     if (otype == NSEqualToPredicateOperatorType && [[predicate constantValue] isKindOfClass:[NSDate class]])
                         return 1; // is
                 } break;
@@ -1138,7 +1147,14 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
                     sp0.predicateOperatorType == NSGreaterThanOrEqualToPredicateOperatorType && [sp0.variable isEqualToString:O2VarYesterday] &&
                     sp1.predicateOperatorType == NSLessThanOrEqualToPredicateOperatorType && [sp1.variable isEqualToString:O2VarToday])
                     return 1;
-                
+            
+                // match old "DA_KeyPath >= $NSDATE_2DAYS AND DA_KeyPath <= $NSDATE_YESTERDAY" for "KeyPath between {NSDATE_YESTERDAY, NSDATE_TODAY}"
+                if ((vr == DA || vr == DT) &&
+                subpredicates.count == 2 &&
+                sp0.predicateOperatorType == NSGreaterThanOrEqualToPredicateOperatorType && [sp0.variable isEqualToString:O2Var2Days] &&
+                sp1.predicateOperatorType == NSLessThanOrEqualToPredicateOperatorType && [sp1.variable isEqualToString:O2VarYesterday])
+                return 1;
+            
                 // match "LT_KeyPath != '' AND LT_KeyPath != nil"
                 if ((vr == SH || vr == LO || vr == ST || vr == LT || vr == UT || vr == AE || vr == PN || vr == UI) &&
                     subpredicates.count == 2 &&
@@ -1228,6 +1244,8 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
                     }
                 } else if (otype == NSBetweenPredicateOperatorType && [[[[predicate collection] objectAtIndex:0] variable] isEqualToString:O2VarYesterday] && [[[[predicate collection] objectAtIndex:1] variable] isEqualToString:O2VarToday]) { // yesterday
                     [self setOperator:O2Yesterday];
+                } else if (otype == NSBetweenPredicateOperatorType && [[[[predicate collection] objectAtIndex:0] variable] isEqualToString:O2Var2Days] && [[[[predicate collection] objectAtIndex:1] variable] isEqualToString:O2VarYesterday]) { // day before yesterday
+                    [self setOperator:O2DayBeforeYesterday];
                 } else if ([[predicate constantValue] isKindOfClass:[NSDate class]]) {
                     [self setOperator:otype];
                     [self setDateValue:[predicate constantValue]];
@@ -1268,6 +1286,12 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
             sp0.predicateOperatorType == NSGreaterThanOrEqualToPredicateOperatorType && [[sp0 variable] isEqualToString:O2VarYesterday] &&
             sp1.predicateOperatorType == NSLessThanOrEqualToPredicateOperatorType && [[sp1 variable] isEqualToString:O2VarToday])
             [self setOperator:O2Yesterday];
+        
+        if ((vr == DA || vr == DT) &&
+            subpredicates.count == 2 &&
+            sp0.predicateOperatorType == NSGreaterThanOrEqualToPredicateOperatorType && [[sp0 variable] isEqualToString:O2Var2Days] &&
+            sp1.predicateOperatorType == NSLessThanOrEqualToPredicateOperatorType && [[sp1 variable] isEqualToString:O2VarYesterday])
+            [self setOperator:O2DayBeforeYesterday];
         
         // match "LT_KeyPath != '' AND LT_KeyPath != nil"
         if ((vr == SH || vr == LO || vr == ST || vr == LT || vr == UT || vr == AE || vr == PN || vr == UI) &&
@@ -1356,6 +1380,12 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
                 case O2Yesterday:
                     return [NSComparisonPredicate predicateWithLeftExpression:tagNameExpression
                                                               rightExpression:[NSExpression expressionForAggregate:[NSArray arrayWithObjects: [NSExpression expressionForVariable:O2VarYesterday], [NSExpression expressionForVariable:O2VarToday], nil]] // TODO: is this coredata compatible?
+                                                                     modifier:NSDirectPredicateModifier
+                                                                         type:NSBetweenPredicateOperatorType
+                                                                      options:0];
+                case O2DayBeforeYesterday:
+                    return [NSComparisonPredicate predicateWithLeftExpression:tagNameExpression
+                                                              rightExpression:[NSExpression expressionForAggregate:[NSArray arrayWithObjects: [NSExpression expressionForVariable:O2Var2Days], [NSExpression expressionForVariable:O2VarYesterday], nil]] // TODO: is this coredata compatible?
                                                                      modifier:NSDirectPredicateModifier
                                                                          type:NSBetweenPredicateOperatorType
                                                                       options:0];

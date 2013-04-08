@@ -662,6 +662,8 @@ static NSConditionLock *threadLock = nil;
 	
 	for( NSString *filename in filenames)
 	{
+        NSAutoreleasePool *pool = [NSAutoreleasePool new];
+        
 		@try
 		{
 			if( [[filename lastPathComponent] characterAtIndex: 0] != '.')
@@ -676,6 +678,8 @@ static NSConditionLock *threadLock = nil;
 						
 						while (pathname = [enumer nextObject])
 						{
+                            NSAutoreleasePool *p = [NSAutoreleasePool new];
+                            
 							@try
 							{
 								NSString * itemPath = [filename stringByAppendingPathComponent: pathname];
@@ -732,6 +736,8 @@ static NSConditionLock *threadLock = nil;
 							{
                                 N2LogExceptionWithStackTrace(e/*, @"addFilesAndFolderToDatabase 2"*/);
 							}
+                            
+                            [p release];
 						}
 					}
 					else    // A file
@@ -771,6 +777,8 @@ static NSConditionLock *threadLock = nil;
 		{
 			N2LogExceptionWithStackTrace(e);
 		}
+        
+        [pool release];
 	}
 	
 	[self copyFilesIntoDatabaseIfNeeded: filesArray options: [NSDictionary dictionaryWithObjectsAndKeys: [[NSUserDefaults standardUserDefaults] objectForKey: @"onlyDICOM"], @"onlyDICOM", [NSNumber numberWithBool: YES], @"async", [NSNumber numberWithBool: YES], @"addToAlbum",  [NSNumber numberWithBool: YES], @"selectStudy", nil]];
@@ -1859,11 +1867,13 @@ static NSConditionLock *threadLock = nil;
 	NSMutableArray *newFilesToCopyList = [NSMutableArray arrayWithCapacity: [filesInput count]];
 	NSString *INpath = [_database dataDirPath];
 	
+    NSAutoreleasePool *pool = [NSAutoreleasePool new];
 	for( NSString *file in filesInput)
 	{
 		if( [[file commonPrefixWithString: INpath options: NSLiteralSearch] isEqualToString:INpath] == NO)
 			[newFilesToCopyList addObject: file];
 	}
+    [pool release];
 	
 	BOOL copyFiles = NO;
 	
@@ -1933,7 +1943,12 @@ static NSConditionLock *threadLock = nil;
 			NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: filesInput, @"filesInput", [NSNumber numberWithBool: YES], @"copyFiles", nil];
 			[dict addEntriesFromDictionary: options];
 			
-			NSThread *t = [[[NSThread alloc] initWithTarget:_database.independentDatabase selector:@selector(copyFilesThread:) object: dict] autorelease];
+            NSThread *t = nil;
+            if( [NSThread isMainThread] == NO)
+                t = [[[NSThread alloc] initWithTarget:_database.independentDatabase selector:@selector(copyFilesThread:) object: dict] autorelease];
+            else
+                t = [[[NSThread alloc] initWithTarget:_database selector:@selector(copyFilesThread:) object: dict] autorelease];
+            
 			if( [[options objectForKey: @"mountedVolume"] boolValue]) t.name = NSLocalizedString( @"Copying and indexing files from CD/DVD...", nil);
 			else t.name = NSLocalizedString( @"Copying and indexing files...", nil);
 			t.status = N2LocalizedSingularPluralCount( [filesInput count], NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil));
@@ -4577,7 +4592,7 @@ static NSConditionLock *threadLock = nil;
 			BOOL refreshMatrix = YES;
 			long nowFiles = [[item valueForKey:@"noFiles"] intValue];
 			
-			if( previousItem == item)
+			if( [[previousItem objectID] isEqualTo: [item objectID]])
 			{
 				if( nowFiles == previousNoOfFiles)
 					refreshMatrix = NO;
@@ -5215,7 +5230,7 @@ static NSConditionLock *threadLock = nil;
 			{
 				if ([series isDeleted] == NO)
                 {
-                    if ([series.images count] == 0 || [[series.images valueForKey: @"isDeleted"] containsObject: [NSNumber numberWithBool: NO]] == NO)
+                    if ([series.images count] == 0)
                     {
                         [database.managedObjectContext deleteObject:series];
                     }
@@ -5242,7 +5257,7 @@ static NSConditionLock *threadLock = nil;
                 
                 if( [study isDeleted] == NO)
                 {
-                    if( [study.imageSeries count] == 0 || [[study.imageSeries valueForKey: @"isDeleted"] containsObject: [NSNumber numberWithBool: NO]] == NO)
+                    if( [study.imageSeries count] == 0)
                     {
                         NSLog( @"Delete Study: %@ - %@", study.patientID, study.studyInstanceUID);
                         
@@ -5269,10 +5284,11 @@ static NSConditionLock *threadLock = nil;
         N2LogExceptionWithStackTrace(ne);
 	}
 	
+    for( DicomStudy *study in studiesSet)
+        [study noFiles];
+    [database save];
 	[database unlock];
     [database release];
-    
-    [self saveDatabase];
     
     [self outlineViewRefresh];
     [self refreshAlbums];
@@ -7867,9 +7883,9 @@ static BOOL withReset = NO;
 						
 						if( [animationSlider intValue] >= [images count]) return;
 						
-						NSManagedObject *imageObj = [images objectAtIndex: [animationSlider intValue]];
+						DicomImage *imageObj = [images objectAtIndex: [animationSlider intValue]];
 						
-						if( [[[imageView curDCM] sourceFile] isEqualToString: [[images objectAtIndex: [animationSlider intValue]] valueForKey:@"completePath"]] == NO || [[imageObj valueForKey: @"frameID"] intValue] != [[[imageView imageObj] valueForKey: @"frameID"] intValue])
+						if( [[[imageView curDCM] sourceFile] isEqualToString: [[images objectAtIndex: [animationSlider intValue]] valueForKey:@"completePath"]] == NO || [[imageObj valueForKey: @"frameID"] intValue] != [[imageView curDCM] frameNo])
 						{
 							DCMPix *dcmPix = nil;
 							
@@ -9579,30 +9595,10 @@ static BOOL withReset = NO;
         album.predicateString = [swc.predicate predicateFormat];
         [self.database save];
         
-        /* // TODO: voir avec Antoine, pourquoi faut-il faire a ?
-         // Distant DICOM node filter
-         if( [[[smartWindowController onDemandFilter] allKeys] count] > 0)
-         {
-         NSMutableArray *savedSmartAlbums = [[[[NSUserDefaults standardUserDefaults] objectForKey: @"smartAlbumStudiesDICOMNodes"] mutableCopy] autorelease];
-         
-         NSUInteger idx = [[savedSmartAlbums valueForKey: @"name"] indexOfObject: name];
-         
-         if( idx != NSNotFound)
-         [savedSmartAlbums removeObjectAtIndex: idx];
-         
-         NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool: NO], @"activated", name, @"name", nil];
-         
-         [dict addEntriesFromDictionary: [smartWindowController onDemandFilter]];
-         
-         [savedSmartAlbums addObject: dict];
-         
-         [[NSUserDefaults standardUserDefaults] setObject: savedSmartAlbums forKey: @"smartAlbumStudiesDICOMNodes"];
-         }
-
-         */
+        [albumTable reloadData];
         
-        [albumTable selectRowIndexes:[NSIndexSet indexSetWithIndex:[self.albumArray indexOfObject:album]] byExtendingSelection:NO];
-
+        if( [self.albumArray indexOfObject:album] != NSNotFound)
+            [albumTable selectRowIndexes:[NSIndexSet indexSetWithIndex:[self.albumArray indexOfObject:album]] byExtendingSelection:NO];
         
         @synchronized (self) {
             _cachedAlbumsContext = nil;

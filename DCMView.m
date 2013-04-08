@@ -517,7 +517,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
     gDontListenToSyncMessage = v;
     
-    if( gDontListenToSyncMessage)
+    if( gDontListenToSyncMessage == NO)
         [[[ViewerController frontMostDisplayed2DViewer] imageView] sendSyncMessage: 0];
 }
 
@@ -1286,7 +1286,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		{
 			[loopItem1 setOriginAndSpacing:curDCM.pixelSpacingX :curDCM.pixelSpacingY :[DCMPix originCorrectedAccordingToOrientation: curDCM]];
 			[loopItem1 setROIMode: ROI_selected];
-			[loopItem1 setRoiFont: labelFontListGL :labelFontListGLSize :self];
+			[loopItem1 setRoiView :self];
 			
 			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROISelectedNotification object: loopItem1 userInfo: nil];
 		}
@@ -1443,7 +1443,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				}
 				
 				roi.points =pointsArray;
-				[roi setRoiFont: labelFontListGL :labelFontListGLSize :self];
+				[roi setRoiView :self];
 				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"markROIImageAsKeyImage"])
 				{
 					if( [self is2DViewer] == YES && [self isKeyImage] == NO && [[self windowController] isPostprocessed] == NO)
@@ -1488,7 +1488,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				
 				roi.points = pointsArray;
 				roi.ROImode = ROI_selected;
-				[roi setRoiFont: labelFontListGL :labelFontListGLSize :self];
+				[roi setRoiView :self];
 				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"markROIImageAsKeyImage"])
 				{
 					if( [self is2DViewer] == YES && [self isKeyImage] == NO && [[self windowController] isPostprocessed] == NO)
@@ -1540,7 +1540,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			[r setOriginAndSpacing :curDCM.pixelSpacingX : curDCM.pixelSpacingY :[DCMPix originCorrectedAccordingToOrientation: curDCM]];
 			
 			[r setROIMode: ROI_selected];
-			[r setRoiFont: labelFontListGL :labelFontListGLSize :self];
+			[r setRoiView :self];
 		}
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"markROIImageAsKeyImage"])
@@ -2055,7 +2055,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		for( int i = 0; i < [curRoiList count]; i++ )
 		{
-			[[curRoiList objectAtIndex:i ] setRoiFont: labelFontListGL :labelFontListGLSize :self];
+			[[curRoiList objectAtIndex:i ] setRoiView :self];
 			[[curRoiList objectAtIndex:i ] recompute];
 			// Unselect previous ROIs
 			[[curRoiList objectAtIndex: i] setROIMode : ROI_sleep];
@@ -2486,7 +2486,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			keepIt = NO;
 			for( int i = 0; i < [curRoiList count]; i++ )
 			{
-				[[curRoiList objectAtIndex:i ] setRoiFont: labelFontListGL :labelFontListGLSize :self];
+				[[curRoiList objectAtIndex:i ] setRoiView :self];
 				[[curRoiList objectAtIndex:i ] recompute];
 				if( curROI == [curRoiList objectAtIndex:i ]) keepIt = YES;
 			}
@@ -3003,7 +3003,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		NSAttributedString *text = [[[NSAttributedString alloc] initWithString: description attributes: stanStringAttrib] autorelease];
 		
-        NSColor *boxColor = [ViewerController.studyColors lastObject];
+        [self computeColor];
+        
+        NSColor *boxColor = [ViewerController.studyColors objectAtIndex: 0];
         if( studyColorR != 0 || studyColorG != 0 || studyColorB != 0)
             boxColor = [NSColor colorWithCalibratedRed: studyColorR green: studyColorG blue: studyColorB alpha: 0.7];
 		NSColor *frameColor = [NSColor colorWithDeviceRed: [boxColor redComponent] green:[boxColor greenComponent] blue:[boxColor blueComponent] alpha:1];
@@ -3260,13 +3262,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 -(void) roiSet:(ROI*) aRoi
 {
-	[aRoi setRoiFont: labelFontListGL :labelFontListGLSize :self];
+	[aRoi setRoiView :self];
 }
 
 -(void) roiSet
 {
 	for( ROI *c in curRoiList)
-		[c setRoiFont: labelFontListGL :labelFontListGLSize :self];
+		[c setRoiView :self];
 }
 
 // checks to see if tool is a valid ID for ROIs
@@ -4474,7 +4476,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 								}
 								else [curRoiList addObject: aNewROI];
 								
-								[aNewROI setRoiFont: labelFontListGL :labelFontListGLSize :self];
+								[aNewROI setRoiView :self];
 								
 								if( [[NSUserDefaults standardUserDefaults] boolForKey: @"markROIImageAsKeyImage"])
 								{
@@ -8261,7 +8263,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             [[NSNotificationCenter defaultCenter] postNotificationName: OsirixGLFontChangeNotification object: self];
             
             for( ROI *r in curRoiList)
-                [r setRoiFont: labelFontListGL :labelFontListGLSize :self];
+                [r setRoiView :self];
         }
         
 		[self drawRect: backingBounds withContext: [self openGLContext]];
@@ -8916,7 +8918,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						ROI *r = [[curRoiList objectAtIndex:i] retain];	// If we are not in the main thread (iChat), we want to be sure to keep our ROIs
 						
 						if( resetData) [r recompute];
-						[r setRoiFont: labelFontListGL :labelFontListGLSize :self];
+						[r setRoiView :self];
 						[r drawROI: scaleValue : curDCM.pwidth / 2. : curDCM.pheight / 2. : curDCM.pixelSpacingX : curDCM.pixelSpacingY];
 						
 						[r release];
