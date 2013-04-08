@@ -588,7 +588,6 @@ Note setter is different to not break existing usage. :-( */
 
 - (id) initWithContentsOfFile: (NSString *)file; 
 /** create an NSImage from the current pix
-* @param smallIcon  thumbnail size
 * @param newWW  window width to use
 * @param newWL window level to use;
 */
@@ -686,7 +685,6 @@ Note setter is different to not break existing usage. :-( */
 
 /** Returns a pointer the the papyrus group
 * @param group group
-* @param fileNb papyrus file
 */
 - (void *) getPapyGroup: (int)group;
 
