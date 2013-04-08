@@ -326,7 +326,9 @@ static BOOL _showingCleanForFreeSpaceWarning = NO;
 -(void)_cleanForFreeSpaceWarning {
     if (!_showingCleanForFreeSpaceWarning) {
         _showingCleanForFreeSpaceWarning = YES;
-        NSBeginAlertSheet(NSLocalizedString(@"Warning", nil), nil, nil, nil, nil, [self retain], @selector(_cleanForFreeSpaceWarningDidEnd:returnCode:contextInfo:), nil, nil, NSLocalizedString(@"Your hard disk is FULL! Major risks of failure! Clean your database!!", nil));
+        
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO) // Server mode
+            NSBeginAlertSheet(NSLocalizedString(@"Warning", nil), nil, nil, nil, nil, [self retain], @selector(_cleanForFreeSpaceWarningDidEnd:returnCode:contextInfo:), nil, nil, NSLocalizedString(@"Your hard disk is FULL! Major risks of failure! Clean your database!!", nil));
     }
 }
 
