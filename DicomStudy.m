@@ -1143,7 +1143,8 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (void) setDate:(NSDate*) date
 {
-    @synchronized (self) {
+    @synchronized (self)
+    {
         [dicomTime release];
         dicomTime = nil;
         
@@ -1433,7 +1434,7 @@ static NSRecursiveLock *dbModifyLock = nil;
     [self.managedObjectContext lock];
 	@try {
         NSMutableSet* set = [NSMutableSet set];
-		for (id object in [self primitiveValueForKey:@"series"])
+		for (id object in self.series)
 			[set unionSet:[object keyImages]];
         return set;
 	}
@@ -1497,18 +1498,15 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (NSArray*)allSeries
 {
-    return [[self primitiveValueForKey:@"series"] sortedArrayUsingDescriptors: [DicomStudy seriesSortDescriptors]];
+    return [self.series sortedArrayUsingDescriptors: [DicomStudy seriesSortDescriptors]];
 }
 
 - (NSArray*)imageSeries
 {
-    // Sort series with "id" & date
-    
-    
-    [self.managedObjectContext lock];
-	@try {
+	[self.managedObjectContext lock];
+    @try {
         NSMutableArray* newArray = [NSMutableArray array];
-		for (DicomSeries* series in [[self primitiveValueForKey:@"series"] sortedArrayUsingDescriptors: [DicomStudy seriesSortDescriptors]])
+		for (DicomSeries* series in [self.series sortedArrayUsingDescriptors: [DicomStudy seriesSortDescriptors]])
 			@try {
                 if ([DicomStudy displaySeriesWithSOPClassUID:series.seriesSOPClassUID andSeriesDescription:series.name])
                     [newArray addObject:series];
@@ -1531,7 +1529,7 @@ static NSRecursiveLock *dbModifyLock = nil;
     [self.managedObjectContext lock];
 	@try {
         NSMutableArray *newArray = [NSMutableArray array];
-		for (DicomSeries *series in [self primitiveValueForKey: @"series"])
+		for (DicomSeries *series in self.series)
 			if ( [[DCMAbstractSyntaxUID keyObjectSelectionDocumentStorage] isEqualToString:[series valueForKey:@"seriesSOPClassUID"]])
 				[newArray addObject:series];
         return newArray;
@@ -1551,8 +1549,8 @@ static NSRecursiveLock *dbModifyLock = nil;
     [self.managedObjectContext lock];
 	@try {
         NSMutableSet *set = [NSMutableSet set];
-		for (id series in [self keyObjectSeries])
-			[set unionSet:[series primitiveValueForKey:@"images"]];
+		for (DicomSeries *series in [self keyObjectSeries])
+			[set unionSet: series.images];
         return [set allObjects];
 	}
 	@catch (NSException* e) {
@@ -1570,7 +1568,7 @@ static NSRecursiveLock *dbModifyLock = nil;
     [self.managedObjectContext lock];
 	@try {
         NSMutableArray *newArray = [NSMutableArray array];
-		for (DicomSeries *series in [self primitiveValueForKey: @"series"])
+		for (DicomSeries *series in self.series)
 			if ([DCMAbstractSyntaxUID isPresentationState:[series valueForKey:@"seriesSOPClassUID"]])
 				[newArray addObject:series];
         return newArray;
@@ -1590,7 +1588,7 @@ static NSRecursiveLock *dbModifyLock = nil;
     [self.managedObjectContext lock];
 	@try {
         NSMutableArray *newArray = [NSMutableArray array];
-		for (DicomSeries *series in [self primitiveValueForKey: @"series"])
+		for (DicomSeries *series in self.series)
 			if ([DCMAbstractSyntaxUID isWaveform:[series valueForKey:@"seriesSOPClassUID"]])
 				[newArray addObject:series];
         return newArray;
@@ -1608,7 +1606,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (NSManagedObject *) annotationsSRImage // Comments, Status, Key Images, ...
 {
-	NSArray* array = [self primitiveValueForKey:@"series"];
+	NSSet* array = self.series;
 	if (array.count < 1) return nil;
 	
 	[self.managedObjectContext lock];
@@ -1706,7 +1704,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (NSManagedObject *) reportSRSeries
 {
-	NSArray* array = [self primitiveValueForKey:@"series"];
+	NSSet* array = self.series;
 	if (array.count < 1) return nil;
 	
 	[self.managedObjectContext lock];
@@ -1767,7 +1765,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (NSManagedObject *)roiSRSeries
 {
-	NSArray* array = [self primitiveValueForKey:@"series"];
+	NSSet* array = self.series;
 	if (array.count < 1) return nil;
 	
 	[self.managedObjectContext lock];

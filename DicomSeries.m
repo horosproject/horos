@@ -256,7 +256,8 @@
 
 - (void) setDate:(NSDate*) date
 {
-    @synchronized (self) {
+    @synchronized (self)
+    {
         [dicomTime release];
         dicomTime = NULL;
         
@@ -608,7 +609,7 @@
 {
 	[self.managedObjectContext lock];
 	@try {
-		NSArray *imageArray = [[self primitiveValueForKey:@"images"] allObjects];
+		NSArray *imageArray = [self.images allObjects];
 		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isKeyImage == YES"]; 
 		return [NSSet setWithArray:[imageArray filteredArrayUsingPredicate:predicate]];
 	}
@@ -626,7 +627,7 @@
 {
 	[self.managedObjectContext lock];
 	@try {
-		NSArray* imageArray = [[self primitiveValueForKey:@"images"] allObjects];
+		NSArray* imageArray = [self.images allObjects];
 		NSArray* sortDescriptors = [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES] autorelease]];
         return [imageArray sortedArrayUsingDescriptors:sortDescriptors];
 	}
