@@ -3033,6 +3033,16 @@ extern "C"
                     {
                         if( [[d valueForKey: @"date"] timeIntervalSinceNow] > -60*60) // 1 hour - dont redownload it !
                         {
+                            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"QR_DontDownloadMGDescription"])
+                            {
+                                if( [[[item valueForKey: @"theDescription"] lowercaseString] hasPrefix: @"mg "])
+                                {
+                                    addItem = NO;
+                                    
+                                    NSLog( @"--- QR_DontDownloadMGDescription: %@", item);
+                                }
+                            }
+                            
                             if( [[d valueForKey: @"accessionNumber"] isEqualToString: [item valueForKey: @"accessionNumber"]] && [[d valueForKey: @"numberImages"] intValue] == [[item valueForKey: @"numberImages"] intValue])
                             {
                                 addItem = NO;
