@@ -3038,16 +3038,12 @@ extern "C"
                                 if( [[[item valueForKey: @"theDescription"] lowercaseString] hasPrefix: @"mg "] || [[[item valueForKey: @"theDescription"] lowercaseString] hasPrefix: @"us seins"])
                                 {
                                     addItem = NO;
-                                    
-                                    NSLog( @"--- QR_DontDownloadMGDescription: %@", item);
                                 }
                             }
                             
                             if( [[d valueForKey: @"accessionNumber"] isEqualToString: [item valueForKey: @"accessionNumber"]] && [[d valueForKey: @"numberImages"] intValue] == [[item valueForKey: @"numberImages"] intValue])
                             {
                                 addItem = NO;
-                            
-                                NSLog( @"--- Already downloaded during last hour: %@ - %d images", item, [[item valueForKey: @"numberImages"] intValue]);
                             }
                         }
                         else [downloadedStudies removeObject: d];
