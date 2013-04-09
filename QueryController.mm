@@ -3035,7 +3035,7 @@ extern "C"
                         {
                             if( [[NSUserDefaults standardUserDefaults] boolForKey: @"QR_DontDownloadMGDescription"])
                             {
-                                if( [[[item valueForKey: @"theDescription"] lowercaseString] hasPrefix: @"mg "])
+                                if( [[[item valueForKey: @"theDescription"] lowercaseString] hasPrefix: @"mg "] || [[[item valueForKey: @"theDescription"] lowercaseString] hasPrefix: @"us seins"])
                                 {
                                     addItem = NO;
                                     
