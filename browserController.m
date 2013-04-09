@@ -4592,7 +4592,7 @@ static NSConditionLock *threadLock = nil;
 			BOOL refreshMatrix = YES;
 			long nowFiles = [[item valueForKey:@"noFiles"] intValue];
 			
-			if( [[previousItem objectID] isEqualTo: [item objectID]])
+			if( previousItem == item)
 			{
 				if( nowFiles == previousNoOfFiles)
 					refreshMatrix = NO;
