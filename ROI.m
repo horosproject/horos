@@ -3948,6 +3948,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
     
 	[roiLock lock];
 	
+    self.textualBoxLine1 = self.textualBoxLine2 = self.textualBoxLine3 = self.textualBoxLine4 = self.textualBoxLine5 = self.textualBoxLine6 = nil;
+    
 	@try
 	{
 		if( selectable == NO)
