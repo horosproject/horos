@@ -1205,10 +1205,24 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 		
         self.detected = YES;
         
-		if (([[NSUserDefaults standardUserDefaults] boolForKey:@"autoSelectSourceCDDVD"] || autoselect) && [[NSFileManager defaultManager] fileExistsAtPath:self.devicePath])
+        BOOL selectSource = NO;
+        
+        NSInteger mode = [NSUserDefaults.standardUserDefaults integerForKey:@"MOUNT"];
+        if (mode == -1 || [[NSApp currentEvent] modifierFlags]&NSCommandKeyMask) //The user clicked on the dialog box
+            {
+                if( autoselect)
+                    selectSource = YES;
+            }
+		else if (([[NSUserDefaults standardUserDefaults] boolForKey:@"autoSelectSourceCDDVD"] || autoselect) && [[NSFileManager defaultManager] fileExistsAtPath:self.devicePath])
+                selectSource = YES;
+        
+        if( selectSource)
 			[[BrowserController currentBrowser] performSelectorOnMainThread:@selector(setDatabaseFromSourceIdentifier:) withObject:self waitUntilDone:NO modes:[NSArray arrayWithObject:NSDefaultRunLoopMode]];
-        else [[BrowserController currentBrowser] redrawSources];
-	} @catch (NSException* e)
+        else
+            [[BrowserController currentBrowser] redrawSources];
+        
+	}
+    @catch (NSException* e)
     {
 		N2LogExceptionWithStackTrace(e);
 	} @finally
