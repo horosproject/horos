@@ -6227,7 +6227,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	
 	// Get pixel format from OpenGL
-	NSOpenGLPixelFormatAttribute attrs[] = { NSOpenGLPFADoubleBuffer, NSOpenGLPFADepthSize, (NSOpenGLPixelFormatAttribute)32, 0};
+//	NSOpenGLPixelFormatAttribute attrs[] = { NSOpenGLPFADoubleBuffer, NSOpenGLPFADepthSize, (NSOpenGLPixelFormatAttribute)32, NSOpenGLPFASampleBuffers, 1, NSOpenGLPFASamples, 4, NSOpenGLPFANoRecovery, 0};
+    
+    NSOpenGLPixelFormatAttribute attrs[] = { NSOpenGLPFADoubleBuffer, NSOpenGLPFADepthSize, (NSOpenGLPixelFormatAttribute)32, NSOpenGLPFANoRecovery, 0};
+    
     NSOpenGLPixelFormat* pixFmt = [[[NSOpenGLPixelFormat alloc] initWithAttributes:attrs] autorelease];
     if ( !pixFmt )
 	{
