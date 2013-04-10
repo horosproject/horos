@@ -93,25 +93,35 @@ static int validFilePathDepth = 0;
                                 {
                                     NSAutoreleasePool *pool3 = [[NSAutoreleasePool alloc] init];
                                     
-                                    @try {
+                                    @try
+                                    {
                                         BOOL found = NO;
                                         
-                                        for( NSString *s in dicomdirFileList)
+                                        if( [dicomdirFileList containsObject: cutFilePath] || [dicomdirFileList containsObject: filePath])
                                         {
-                                            if ([cutFilePath isEqualToString: s] || [[cutFilePath stringByDeletingPathExtension] isEqualToString: s] || [filePath isEqualToString: s])
-                                            {
-                                                [files addObject: filePath];
-                                                found = YES;
-                                                break;
-                                            }
+                                            [files addObject: filePath];
+                                        }
+                                        else
+                                        {
+                                            NSString *cutFilePathWithoutPathExtension = [cutFilePath stringByDeletingPathExtension];
                                             
-                                            if( [[s pathExtension] isEqualToString: @""])	/// for this case: 738495.		// GE Scanner
+                                            for( NSString *s in dicomdirFileList)
                                             {
-                                                if( [[cutFilePath stringByDeletingPathExtension] isEqualToString: [s stringByDeletingPathExtension]])
+                                                if( [cutFilePathWithoutPathExtension isEqualToString: s])
                                                 {
                                                     [files addObject: filePath];
                                                     found = YES;
                                                     break;
+                                                }
+                                                
+                                                if( [[s pathExtension] isEqualToString: @""])	/// for this case: 738495.		// GE Scanner
+                                                {
+                                                    if( [[cutFilePath stringByDeletingPathExtension] isEqualToString: [s stringByDeletingPathExtension]])
+                                                    {
+                                                        [files addObject: filePath];
+                                                        found = YES;
+                                                        break;
+                                                    }
                                                 }
                                             }
                                         }
