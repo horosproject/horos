@@ -92,7 +92,7 @@
 - (id) initWithString:(NSString *)aString withAttributes:(NSDictionary *)attribs
 {
 	if( aString == nil) aString = @"";
-	return [self initWithAttributedString:[[[NSAttributedString alloc] initWithString:aString attributes:attribs] autorelease] withTextColor:[NSColor colorWithDeviceRed:1.0f green:1.0f blue:1.0f alpha:1.0f] withBoxColor:[NSColor colorWithDeviceRed:1.0f green:1.0f blue:1.0f alpha:0.0f] withBorderColor:[NSColor colorWithDeviceRed:1.0f green:1.0f blue:1.0f alpha:0.0f]];
+	return [self initWithAttributedString:[[[NSAttributedString alloc] initWithString:aString attributes:attribs] autorelease] withTextColor:[NSColor colorWithDeviceRed:1.0f green:1.0f blue:1.0f alpha:1.0f] withBoxColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f] withBorderColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]];
 }
 
 - (void) dealloc
@@ -192,6 +192,9 @@
 		frameSize = [string size]; // current string size
 		frameSize.width += marginSize.width * 2.0f; // add padding
 		frameSize.height += marginSize.height * 2.0f;
+        
+        frameSize.width = (int) frameSize.width;
+        frameSize.height = (int) frameSize.height;
 	}
 	
 	GLuint texName = 0;
@@ -240,7 +243,7 @@
 		[ctxArray addObject: currentContext];
 		[textArray addObject: [NSNumber numberWithInt: texName]];
 	}
-	
+//    [[image TIFFRepresentation] writeToFile: @"/tmp/string.tiff" atomically: YES];
 	[image release];
 	
 	return texName;

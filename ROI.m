@@ -1525,6 +1525,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
         [attrib setObject: fontGL forKey:NSFontAttributeName];
         [attrib setObject: [NSColor whiteColor] forKey:NSForegroundColorAttributeName];
         
+        
         sT = [[[StringTexture alloc] initWithString: str withAttributes: attrib] autorelease];
         [sT setAntiAliasing: YES];
         [sT genTextureWithBackingScaleFactor: curView.window.backingScaleFactor];
@@ -1564,17 +1565,20 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     
     glEnable (GL_TEXTURE_RECTANGLE_EXT);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+//    glEnable(GL_BLEND);
+//    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     
     long xc, yc;
     xc = xx - 2*curView.window.backingScaleFactor;
     yc = yy-[sT texSize].height;
     
-    glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
-    [sT drawWithBounds: NSMakeRect( xc, yc, [sT texSize].width, [sT texSize].height)];
+    glColor4f (0, 0, 0, 1.0f);
+    [sT drawAtPoint: NSMakePoint( xc+1, yc+1)];
     
-    glDisable(GL_BLEND);
+    glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
+    [sT drawAtPoint: NSMakePoint( xc, yc)];
+    
+//    glDisable(GL_BLEND);
     glDisable (GL_TEXTURE_RECTANGLE_EXT);
 }
 
@@ -3803,27 +3807,19 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	{
 		if( type != tText)
 		{
-			//glEnable(GL_POLYGON_SMOOTH);
+			
 			CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+            
+            glLoadIdentity();
+            
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 			glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-			
-			
-			
-			glLoadIdentity();
-			
+			glEnable(GL_POLYGON_SMOOTH);
+            
             float sf = curView.window.backingScaleFactor;
             
 			glScalef( 2.0f /([curView drawingFrameRect].size.width), -2.0f / ([curView drawingFrameRect].size.height), 1.0f);
-			
-            
-            glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-            glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-            glEnable(GL_POINT_SMOOTH);
-            glEnable(GL_LINE_SMOOTH);
-            glEnable(GL_POLYGON_SMOOTH);
-
             
             if( mode == ROI_sleep) glColor4f(0.0f, 0.0f, 0.0f, 0.4f);
 			else glColor4f(0.3f, 0.0f, 0.0f, 0.8f);
@@ -3843,7 +3839,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			[self glStr: textualBoxLine5 : tPt.x : tPt.y : line];	if( textualBoxLine5.length) line++;
 			[self glStr: textualBoxLine6 : tPt.x : tPt.y : line];	if( textualBoxLine6.length) line++;
 			
-			//glDisable(GL_POLYGON_SMOOTH);
+			glDisable(GL_POLYGON_SMOOTH);
 			glDisable(GL_BLEND);
 			
 			[curView applyImageTransformation];
@@ -4485,8 +4481,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				glEnable (GL_TEXTURE_RECTANGLE_EXT);
 				
 				glEnable(GL_BLEND);
-				if( opacity == 1.0) glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-				else glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 				
 				if( stringTex == nil ) self.name = name;
 				
