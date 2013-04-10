@@ -4510,6 +4510,11 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				
 				if( type == tArrow)
 				{
+                    thick *= 0.5;
+                    
+                    if( thick > 5)
+                        thick = 5;
+                    
 					NSPoint a, b;
 					float   slide, adj, op, angle;
 					
