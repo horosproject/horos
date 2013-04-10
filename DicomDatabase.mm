@@ -2771,18 +2771,9 @@ static BOOL protectionAgainstReentry = NO;
                     NSDate* date = [NSDate dateWithTimeIntervalSince1970:st.st_mtime];
                     if( date && [date timeIntervalSinceNow] < -60*60*24)
                     {
-                        [NSThread sleepForTimeInterval: 0.1]; // we want to be 100% sure...
-                        
-                        if ([enumer stat:&st] == 0)
-                        {
-                            NSDate* date = [NSDate dateWithTimeIntervalSince1970:st.st_mtime];
-                            if( date && [date timeIntervalSinceNow] < -60*60*24)
-                            {
-                                NSLog(@"deleting old incoming file %@ (date modified: %@)", srcPath, date);
-                                if (srcPath)
-                                    [[NSFileManager defaultManager] removeItemAtPath: srcPath error: nil];
-                            }
-                        }
+                        NSLog(@"deleting old incoming file %@ (date modified: %@)", srcPath, date);
+                        if (srcPath)
+                            [[NSFileManager defaultManager] removeItemAtPath: srcPath error: nil];
                     }
                 }
                 

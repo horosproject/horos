@@ -114,6 +114,8 @@ OFCondition DJDecompressJP2k::decode(
             int result = sysctl(mib, 2, &processors, &dataLen, NULL, 0);
             if (result == -1)
                 processors = 1;
+            if( processors > 8)
+                processors = 8;
         }
 		
 		long decompressedBufferSize = 0;

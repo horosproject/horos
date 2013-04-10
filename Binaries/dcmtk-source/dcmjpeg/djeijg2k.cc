@@ -462,6 +462,8 @@ OFCondition DJCompressJP2K::encode(
             int result = sysctl(mib, 2, &processors, &dataLen, NULL, 0);
             if (result == -1)
                 processors = 1;
+            if( processors > 8)
+                processors = 8;
         }
 		
 		void *outBuffer = kdu_compressJPEG2K( (void*) image_buffer, samplesPerPixel, rows, columns, bitsstored, false, rate, &compressedLength, processors);
