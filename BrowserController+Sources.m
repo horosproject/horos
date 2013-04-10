@@ -1213,7 +1213,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
                 if( autoselect)
                     selectSource = YES;
             }
-		else if (([[NSUserDefaults standardUserDefaults] boolForKey:@"autoSelectSourceCDDVD"] || autoselect) && [[NSFileManager defaultManager] fileExistsAtPath:self.devicePath])
+		else if ([[NSUserDefaults standardUserDefaults] boolForKey:@"autoSelectSourceCDDVD"] && [[NSFileManager defaultManager] fileExistsAtPath:self.devicePath])
                 selectSource = YES;
         
         if( selectSource)
