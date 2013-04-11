@@ -28,6 +28,7 @@
 #import "N2Operators.h"
 #import "NSUserDefaults+OsiriX.h"
 #import "QueryController.h"
+#import "AsyncSocket.h"
 
 static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
 
@@ -530,6 +531,17 @@ static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
 		return [NSNumber numberWithBool: wpc.portal.passwordRestoreAllowed];
 	if ([key isEqual:@"baseUrl"])
 		return wpc.portalURL;
+    if ([key isEqual:@"clientAddress"])
+		return wpc.asyncSocket.connectedHost;
+    if ([key isEqual:@"isLAN"])
+	{
+        if( [wpc.asyncSocket.connectedHost hasPrefix: @"10."]) return [NSNumber numberWithBool: YES];
+        if( [wpc.asyncSocket.connectedHost hasPrefix: @"172."]) return [NSNumber numberWithBool: YES];
+        if( [wpc.asyncSocket.connectedHost hasPrefix: @"192."]) return [NSNumber numberWithBool: YES];
+        if( [wpc.asyncSocket.connectedHost hasPrefix: @"127.0.0.1"]) return [NSNumber numberWithBool: YES];
+        
+        return [NSNumber numberWithBool: NO];
+    }
 	if ([key isEqual:@"dicomCStorePort"])
 		return wpc.dicomCStorePortString;
 	if ([key isEqual:@"newChallenge"])
