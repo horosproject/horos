@@ -75,6 +75,7 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 	/***/
 	static NSString *XRay3DAngiographicImageStorage = @"1.2.840.10008.5.1.4.1.1.13.1.1";
 	static NSString *XRay3DCraniofacialImageStorage = @"1.2.840.10008.5.1.4.1.1.13.1.2";
+    static NSString *BreastTomosynthesisImageStorage = @"1.2.840.10008.5.1.4.1.1.13.1.3";
     /***/
 	static NSString *GE3DModelStorage = @"1.2.840.113619.4.26";
 	static NSString *GECollageStorage = @"1.2.528.1.1001.5.1.1.1";
@@ -495,6 +496,7 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
         || [sopClassUID isEqualToString:XRay3DAngiographicImageStorage]
         || [sopClassUID isEqualToString:XRay3DCraniofacialImageStorage]
         || [sopClassUID isEqualToString:EnhancedPETImageStorage]
+        || [sopClassUID isEqualToString:BreastTomosynthesisImageStorage]
         || [sopClassUID isEqualToString:UltrasoundMultiframeImageStorageRetired];
 }
 
@@ -587,6 +589,7 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
             PhilipsMRColorImageStorage,
             PhilipsMRSyntheticImageStorage,
             PhilipsPerfusionImageStorage,
+            BreastTomosynthesisImageStorage,
 			nil];
 		
 		@try 

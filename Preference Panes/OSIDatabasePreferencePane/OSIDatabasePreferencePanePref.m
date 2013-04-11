@@ -45,7 +45,7 @@
 {
 	NSMutableArray *l = [NSMutableArray array];
 	
-    [l addObject: @"Displayed SOP Class UIDs"];
+    [l addObject: NSLocalizedString( @"Displayed SOP Class UIDs", nil)];
     
 	for( NSString *s in [[DCMAbstractSyntaxUID imageSyntaxes] sortedArrayUsingSelector: @selector(compare:)])
 		[l addObject: [NSString stringWithFormat: @"%@ - %@", s, [BrowserController compressionString: s]]];
@@ -57,7 +57,7 @@
 {
 	NSMutableArray *l = [NSMutableArray array];
 	
-    [l addObject: @"Stored SOP Class UIDs"];
+    [l addObject: NSLocalizedString( @"Stored SOP Class UIDs", nil)];
     
 	for( NSString *s in [[DCMAbstractSyntaxUID allSupportedSyntaxes] sortedArrayUsingSelector: @selector(compare:)])
 		[l addObject: [NSString stringWithFormat: @"%@ - %@", s, [BrowserController compressionString: s]]];
