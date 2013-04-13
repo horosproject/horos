@@ -25,6 +25,7 @@
 -(void)processIndexHtml;
 -(void)processMainHtml;
 -(void)processStudyListHtml;
+-(void)processLogsListHtml;
 -(void)processKeyROIsImagesHtml;
 -(void)processSeriesHtml;
 -(void)processStudyHtml;

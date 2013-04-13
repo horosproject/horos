@@ -1209,6 +1209,25 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	response.mimeType = @"text/html";
 }
 
+-(void)processLogsListHtml
+{
+    if (!user.isAdmin.boolValue)
+    {
+        response.statusCode = 401;
+        [self.portal updateLogEntryForStudy:NULL withMessage:@"Attempt to see logs without being an admin" forUser:user.name ip:asyncSocket.connectedHost];
+        return;
+    }
+    
+    NSArray *logsArray = [self.independentDicomDatabase objectsForEntity: @"LogEntry" predicate: [NSPredicate predicateWithFormat: @"type == %@", @"Web"]];
+    
+    logsArray = [logsArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: @"startTime" ascending: NO]]];
+    
+	[response.tokens setObject: logsArray forKey:@"Logs"];
+    [response.tokens setObject: NSLocalizedString( @"Logs", nil) forKey:@"PageTitle"];
+	response.templateString = [self.portal stringForPath:@"admin/logs.html"];
+	response.mimeType = @"text/html";
+}
+
 -(void)processStudyListHtml
 {
     if( [parameters objectForKey:@"delete"])
