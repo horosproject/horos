@@ -566,9 +566,13 @@ static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
 		
 		return baseURL; 
 	}
+    
 	if ([key isEqual:@"proposeZipDownload"])
 		return [NSNumber numberWithBool: (!wpc.user || wpc.user.downloadZIP.boolValue) && !wpc.requestIsIOS];
 	
+    if ([key isEqual:@"proposeDelete"])
+		return [NSNumber numberWithBool: ([[NSUserDefaults standardUserDefaults] boolForKey:@"webPortalAdminCanDeleteStudies"] && wpc.user.isAdmin.boolValue)];
+    
 	if ([key isEqual:@"proposeShare"])
     {
 		if (!wpc.user || wpc.user.shareStudyWithUser.boolValue)

@@ -21,8 +21,18 @@
 		if (currentPage < numberOfPages-1)
 			document.write("<a href=\"?"+parameters+"&page="+(numberOfPages-1)+"\">⇥</a>");
 	}
+    
+    function onSubmitForm(form) {
+        if (document.submitting == 'Weasis')
+		form.action ="weasis.jnlp";
+        else form.action = document.location;
+        if (form.message.value == form.message.defaultValue)
+		form.message.value = '';
+        return true;
+    }
 </script>
 
+<form id="form" method="post" onsubmit="return onSubmitForm(this);">
 <div id="content">
 	%INCLUDE:/errors.pvt.html%
 	%INCLUDE:/messages.pvt.html%
@@ -67,6 +77,14 @@
 							%]IF:Study.stateText%
 						</td>
 						
+                        %[IF:Info.proposeDelete%
+                        <td class="narrow middle"></td>
+						<td class="narrow middle">
+                            <input type="image" name="delete" value="%Study.XID%" src="images/delete.png" alt="Delete images" onclick="if(confirm('Are you sure you want to definitively delete these images?')) document.submitting='Delete'"/>
+						</td>
+                        <td class="narrow middle"></td>
+						%]IF:Info.proposeDelete%
+                        
 						%[IF:Info.isMacOS%
 						%[IF:Info.proposeWADORetrieve%
 						<td class="narrow middle">
@@ -101,5 +119,6 @@
 	</div>
 
 </div>
+</form>
 
 %INCLUDE:footer.pvt.html%
