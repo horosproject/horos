@@ -63,7 +63,6 @@ function shareDestinationChange(select) {
 
 </script>
 
-<form id="form" method="post" onsubmit="return onSubmitForm(this);">
 <div id="content">
 	%INCLUDE:/errors.pvt.html%
 	%INCLUDE:/messages.pvt.html%
@@ -212,7 +211,9 @@ function shareDestinationChange(select) {
 						
                         %[IF:Info.proposeDelete%
 						<td class="narrow middle">
-							<input type="image" name="delete" value="%Series.XID%" src="images/delete.png" alt="Delete images" onclick="if(confirm('Are you sure you want to definitively delete these images?')) document.submitting='Delete'"/>
+                            <form id="form" method="post">
+							<input type="image" name="delete" value="%Series.XID%" src="images/delete.png" alt="Delete images" onclick="if( !confirm('Are you sure you want to definitively delete these images?')) return false;"/>
+                            </form>
 						</td>
                         <td class="narrow middle"></td>
                         <td class="narrow middle"></td>
@@ -343,7 +344,6 @@ function shareDestinationChange(select) {
 	</div>
 	%]IF:Study%
 </div>
-</form>
 
 <script type="text/javascript" language="javascript">
 	checkboxChanged(document.getElementById('form'));
