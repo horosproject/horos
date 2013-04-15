@@ -193,7 +193,7 @@
 	if( [previousValue length] != 0 || [c length] != 0)
 	{
 		if( [c isEqualToString: previousValue] == NO)
-			[[self valueForKey: @"study"] archiveAnnotationsAsDICOMSR];
+			[self.study archiveAnnotationsAsDICOMSR];
 	}
 }
 
@@ -208,7 +208,7 @@
 	if( [previousValue length] != 0 || [c length] != 0)
 	{
 		if( [c isEqualToString: previousValue] == NO)
-			[[self valueForKey: @"study"] archiveAnnotationsAsDICOMSR];
+			[self.study archiveAnnotationsAsDICOMSR];
 	}
 }
 
@@ -223,7 +223,7 @@
 	if( [previousValue length] != 0 || [c length] != 0)
 	{
 		if( [c isEqualToString: previousValue] == NO)
-			[[self valueForKey: @"study"] archiveAnnotationsAsDICOMSR];
+			[self.study archiveAnnotationsAsDICOMSR];
 	}
 }
 
@@ -238,7 +238,7 @@
 	if( [previousValue length] != 0 || [c length] != 0)
 	{
 		if( [c isEqualToString: previousValue] == NO)
-			[[self valueForKey: @"study"] archiveAnnotationsAsDICOMSR];
+			[self.study archiveAnnotationsAsDICOMSR];
 	}
 }
 
@@ -251,12 +251,13 @@
 	[self didChangeValueForKey: @"stateText"];
 	
 	if( [c intValue] != [previousState intValue])
-		[[self valueForKey: @"study"] archiveAnnotationsAsDICOMSR];
+		[self.study archiveAnnotationsAsDICOMSR];
 }
 
 - (void) setDate:(NSDate*) date
 {
-    @synchronized (self) {
+    @synchronized (self)
+    {
         [dicomTime release];
         dicomTime = NULL;
         
@@ -320,10 +321,10 @@
                         
                         NSString *recoveryPath = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"/ThumbnailPath"];
                         [[NSFileManager defaultManager] removeFileAtPath: recoveryPath handler: nil];
-                        [[[[[self valueForKey:@"study"] objectID] URIRepresentation] absoluteString] writeToFile: recoveryPath atomically: YES encoding: NSASCIIStringEncoding  error: nil];
+                        [[[[self.study objectID] URIRepresentation] absoluteString] writeToFile: recoveryPath atomically: YES encoding: NSASCIIStringEncoding  error: nil];
                         
                         NSImage *thumbnail = nil;
-                        NSString *seriesSOPClassUID = [self valueForKey: @"seriesSOPClassUID"];
+                        NSString *seriesSOPClassUID = self.seriesSOPClassUID;
                         
                         if( [DCMAbstractSyntaxUID isSpectroscopy: seriesSOPClassUID])
                         {
@@ -404,7 +405,7 @@
 
 - (NSString*) modalities
 {
-	return [self valueForKey: @"modality"];
+	return self.modality;
 }
 
 - (NSString*) type
@@ -419,7 +420,7 @@
 	
 	[self.managedObjectContext lock];
 	@try {
-		NSManagedObject	*obj = [[self valueForKey:@"images"] anyObject];
+		NSManagedObject	*obj = [self.images anyObject];
 		local = [[obj valueForKey:@"inDatabaseFolder"] boolValue];
 	}
 	@catch (NSException* e) {
@@ -441,12 +442,12 @@
 	[self.managedObjectContext lock];
 	@try 
 	{
-		int v = [[[[self valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
+		int v = [[[self.images anyObject] valueForKey:@"numberOfFrames"] intValue];
 		
 		if( v > 1)
-			no = [NSNumber numberWithInt: [[self valueForKey:@"images"] count] - v + 1];
+			no = [NSNumber numberWithInt: [self.images count] - v + 1];
 		else
-			no = [NSNumber numberWithInt: [[self valueForKey:@"images"] count]];
+			no = [NSNumber numberWithInt: [self.images count]];
 	}
 	@catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
@@ -456,6 +457,17 @@
     }
 	
 	return no;
+}
+
+- (NSSet*) images
+{
+    return [[self primitiveValueForKey: @"images"] objectsWithOptions: NSEnumerationConcurrent passingTest:^BOOL(DicomImage *obj, BOOL *stop)
+            {
+                if( obj.isDeleted)
+                    return NO;
+                
+                return YES;
+            }];
 }
 
 - (NSNumber *) noFiles
@@ -468,13 +480,13 @@
 		
         [self.managedObjectContext lock];
 		@try {
-			NSString *sopClassUID = [self valueForKey: @"seriesSOPClassUID"];
+			NSString *sopClassUID = self.seriesSOPClassUID;
 		
 			if( [DCMAbstractSyntaxUID isStructuredReport: sopClassUID] == NO && [DCMAbstractSyntaxUID isPresentationState: sopClassUID] == NO && [DCMAbstractSyntaxUID isSupportedPrivateClasses: sopClassUID] == NO)
 			{
-				int v = [[[[self valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
+				int v = [[[self.images anyObject] valueForKey:@"numberOfFrames"] intValue];
 				
-				int count = [[self valueForKey:@"images"] count];
+				int count = [self.images count];
 				
 				if( v > 1) // There are frames !
 					no = [NSNumber numberWithInt: -count];
@@ -512,12 +524,12 @@
 {
 	if( [[self primitiveValueForKey:@"numberOfImages"] intValue] <= 0) // There are frames !
 	{
-		int v = [[[[self valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
+		int v = [[[self.images anyObject] valueForKey:@"numberOfFrames"] intValue];
 		
 		NSNumber *no;
 		
 		if( v > 1)
-			no = [NSNumber numberWithInt: [[self valueForKey:@"images"] count] - v + 1];
+			no = [NSNumber numberWithInt: [self.images count] - v + 1];
 		else
 			no = [self noFiles];
 		
@@ -597,7 +609,7 @@
 {
 	[self.managedObjectContext lock];
 	@try {
-		NSArray *imageArray = [[self primitiveValueForKey:@"images"] allObjects];
+		NSArray *imageArray = [self.images allObjects];
 		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isKeyImage == YES"]; 
 		return [NSSet setWithArray:[imageArray filteredArrayUsingPredicate:predicate]];
 	}
@@ -615,7 +627,7 @@
 {
 	[self.managedObjectContext lock];
 	@try {
-		NSArray* imageArray = [[self primitiveValueForKey:@"images"] allObjects];
+		NSArray* imageArray = [self.images allObjects];
 		NSArray* sortDescriptors = [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES] autorelease]];
         return [imageArray sortedArrayUsingDescriptors:sortDescriptors];
 	}
@@ -631,12 +643,12 @@
 
 - (NSComparisonResult)compareName:(DicomSeries*)series;
 {
-	return [[self valueForKey:@"name"] caseInsensitiveCompare:[series valueForKey:@"name"]];
+	return [self.name caseInsensitiveCompare:[series valueForKey:@"name"]];
 }
 
 - (NSString*) albumsNames
 {
-	return [[self valueForKey: @"study"] valueForKey: @"albumsNames"];
+	return [self.study valueForKey: @"albumsNames"];
 }
 
 @end

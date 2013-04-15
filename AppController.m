@@ -70,6 +70,7 @@
 #import "Security/Security.h"
 #import "Security/SecRequirement.h"
 #import "Security/SecCode.h"
+#import "PFMoveApplication.h"
 
 #include <OpenGL/OpenGL.h>
 
@@ -3371,7 +3372,6 @@ static BOOL initialized = NO;
     [ROI loadDefaultSettings];
     
 #ifndef OSIRIX_LIGHT
-    #import "PFMoveApplication.h"
     PFMoveToApplicationsFolderIfNecessary();
 
     if( [AppController isFDACleared])

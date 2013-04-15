@@ -869,6 +869,9 @@ void ras_FillPolygon(	NSPointInt *p,
 //	if( test != FLT_MAX)
 //		NSLog( @"******* test != FLT_MAX");
 	
+    if( edgeTable == nil)
+        return;
+    
     FillEdges(p, no, edgeTable);
 	
     for ( curY = 0; edgeTable[ curY] == NULL; curY++)
@@ -3651,12 +3654,19 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		width = NSSwapLittleShortToHost(header.nx);
 		
         #ifdef OSIRIX_VIEWER
+        NSManagedObjectContext *iContext = nil;
+        
 		if( savedWidthInDB != 0 && savedWidthInDB != width)
 		{
             if( savedWidthInDB != OsirixDicomImageSizeUnknown)
                 NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", (int)savedWidthInDB, (int) width);
-			[[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] setValue: [NSNumber numberWithInt: width] forKey: @"width"];
-			if( width > savedWidthInDB)
+			
+            if( iContext == nil)
+                iContext = ([[NSThread currentThread] isMainThread] ? [[[BrowserController currentBrowser] database] managedObjectContext] : [[[BrowserController currentBrowser] database] independentContext]);
+            
+            [[iContext existingObjectWithID: imageObjectID error: nil]setValue: [NSNumber numberWithInt: width] forKey: @"width"];
+            
+			if( width > savedWidthInDB && fExternalOwnedImage)
 				width = savedWidthInDB;
 		}
 		
@@ -3664,10 +3674,16 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		{
             if( savedHeightInDB != OsirixDicomImageSizeUnknown)
                 NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int)savedHeightInDB, (int)height);
-			[[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] setValue: [NSNumber numberWithInt: height] forKey: @"height"];
-			if( height > savedHeightInDB)
+			
+            if( iContext == nil)
+                iContext = ([[NSThread currentThread] isMainThread] ? [[[BrowserController currentBrowser] database] managedObjectContext] : [[[BrowserController currentBrowser] database] independentContext]);
+            
+            [[iContext existingObjectWithID: imageObjectID error: nil] setValue: [NSNumber numberWithInt: height] forKey: @"height"];
+            
+			if( height > savedHeightInDB && fExternalOwnedImage)
 				height = savedHeightInDB;
 		}
+        [iContext save: nil];
         #endif
 		
 		maxImage = NSSwapLittleShortToHost(header.npic);
@@ -3873,12 +3889,19 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		width = w;
 		
         #ifdef OSIRIX_VIEWER
+        NSManagedObjectContext *iContext = nil;
+        
 		if( savedHeightInDB != 0 && savedHeightInDB != height)
 		{
             if( savedHeightInDB != OsirixDicomImageSizeUnknown)
                 NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int)savedHeightInDB, (int)height);
-			[[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] setValue: [NSNumber numberWithInt: height] forKey: @"height"];
-			if( height > savedHeightInDB)
+			
+            if( iContext == nil)
+                iContext = ([[NSThread currentThread] isMainThread] ? [[[BrowserController currentBrowser] database] managedObjectContext] : [[[BrowserController currentBrowser] database] independentContext]);
+            
+            [[iContext existingObjectWithID: imageObjectID error: nil] setValue: [NSNumber numberWithInt: height] forKey: @"height"];
+            
+			if( height > savedHeightInDB && fExternalOwnedImage)
 				height = savedHeightInDB;
 		}
 		
@@ -3886,10 +3909,16 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		{
             if( savedWidthInDB != OsirixDicomImageSizeUnknown)
                 NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", (int)savedWidthInDB, (int)width);
-			[[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] setValue: [NSNumber numberWithInt: width] forKey: @"width"];
-			if( width > savedWidthInDB)
+            
+			if( iContext == nil)
+                iContext = ([[NSThread currentThread] isMainThread] ? [[[BrowserController currentBrowser] database] managedObjectContext] : [[[BrowserController currentBrowser] database] independentContext]);
+            
+            [[iContext existingObjectWithID: imageObjectID error: nil] setValue: [NSNumber numberWithInt: width] forKey: @"width"];
+            
+			if( width > savedWidthInDB && fExternalOwnedImage)
 				width = savedWidthInDB;
 		}
+        [iContext save: nil];
         #endif
         
 		totSize = (height+1) * (width+1);
@@ -4426,6 +4455,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	fread(&shortval, 2, 1, fp);
 	iterator1 = EndianU16_LtoN( shortval);
 	//NSLog(@"iterator1 = %d",iterator1);
+    
+    NSManagedObjectContext *iContext = nil;
+    
 	// Analyses each tag found 
 	for ( k=0 ; k<iterator1 ; k++)
 	{
@@ -4465,8 +4497,13 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					{
                         if( savedWidthInDB != OsirixDicomImageSizeUnknown)
                             NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", (int)savedWidthInDB, (int)width);
-						[[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] setValue: [NSNumber numberWithInt: width] forKey: @"width"];
-						if( width > savedWidthInDB)
+						
+                        if( iContext == nil)
+                            iContext = ([[NSThread currentThread] isMainThread] ? [[[BrowserController currentBrowser] database] managedObjectContext] : [[[BrowserController currentBrowser] database] independentContext]);
+                        
+                        [[iContext existingObjectWithID: imageObjectID error: nil] setValue: [NSNumber numberWithInt: width] forKey: @"width"];
+                        
+						if( width > savedWidthInDB && fExternalOwnedImage)
 							width = savedWidthInDB;
 					}
                     #endif
@@ -4479,8 +4516,13 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					{
                         if( savedHeightInDB != OsirixDicomImageSizeUnknown)
                             NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int)savedHeightInDB, (int)height);
-						[[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] setValue: [NSNumber numberWithInt: height] forKey: @"height"];
-						if( height > savedHeightInDB)
+						
+                        if( iContext == nil)
+                            iContext = ([[NSThread currentThread] isMainThread] ? [[[BrowserController currentBrowser] database] managedObjectContext] : [[[BrowserController currentBrowser] database] independentContext]);
+                        
+                        [[iContext existingObjectWithID: imageObjectID error: nil] setValue: [NSNumber numberWithInt: height] forKey: @"height"];
+                        
+						if( height > savedHeightInDB && fExternalOwnedImage)
 							height = savedHeightInDB;
 					}
                     #endif
@@ -4526,6 +4568,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		}
 	} // end for loop parsing info of first frame
 	
+    [iContext save: nil];
+    
 	if( TIF_CZ_LSMINFO)
 	{
 		fseek(fp, TIF_CZ_LSMINFO + 8, SEEK_SET);
@@ -5423,12 +5467,19 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	}
 	
     #ifdef OSIRIX_VIEWER
+    NSManagedObjectContext *iContext = nil;
+    
 	if( savedHeightInDB != 0 && savedHeightInDB != height)
 	{
         if( savedHeightInDB != OsirixDicomImageSizeUnknown)
             NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int)savedHeightInDB, (int)height);
-		[[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] setValue: [NSNumber numberWithInt: height] forKey: @"height"];
-		if( height > savedHeightInDB)
+		
+        if( iContext == nil)
+            iContext = ([[NSThread currentThread] isMainThread] ? [[[BrowserController currentBrowser] database] managedObjectContext] : [[[BrowserController currentBrowser] database] independentContext]);
+        
+        [[iContext existingObjectWithID: imageObjectID error: nil] setValue: [NSNumber numberWithInt: height] forKey: @"height"];
+        
+		if( height > savedHeightInDB && fExternalOwnedImage)
 			height = savedHeightInDB;
 	}
 	
@@ -5436,10 +5487,16 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	{
         if( savedWidthInDB != OsirixDicomImageSizeUnknown)
             NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", (int)savedWidthInDB, (int)width);
-		[[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] setValue: [NSNumber numberWithInt: width] forKey: @"width"];
-		if( width > savedWidthInDB)
+		
+        if( iContext == nil)
+            iContext = ([[NSThread currentThread] isMainThread] ? [[[BrowserController currentBrowser] database] managedObjectContext] : [[[BrowserController currentBrowser] database] independentContext]);
+        
+        [[iContext existingObjectWithID: imageObjectID error: nil] setValue: [NSNumber numberWithInt: width] forKey: @"width"];
+        
+		if( width > savedWidthInDB && fExternalOwnedImage)
 			width = savedWidthInDB;
 	}
+    [iContext save: nil];
     #endif
 	
 	if( shutterRect_w == 0) shutterRect_w = width;
@@ -7168,6 +7225,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	if( val)
 		bitsStored = (int) val->us;
 	
+    NSManagedObjectContext *iContext = nil;
+    
 	// ROWS
 	val = Papy3GetElement (theGroupP, papRowsGr, &nbVal, &elemType);
 	if ( val)
@@ -7178,8 +7237,13 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		{
             if( savedHeightInDB != OsirixDicomImageSizeUnknown)
                 NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int)savedHeightInDB, (int)height);
-			[[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] setValue: [NSNumber numberWithInt: height] forKey: @"height"];
-			if( height > savedHeightInDB)
+            
+            if( iContext == nil)
+                iContext = ([[NSThread currentThread] isMainThread] ? [[[BrowserController currentBrowser] database] managedObjectContext] : [[[BrowserController currentBrowser] database] independentContext]);
+            
+			[[iContext existingObjectWithID: imageObjectID error: nil] setValue: [NSNumber numberWithInt: height] forKey: @"height"];
+            
+			if( height > savedHeightInDB && fExternalOwnedImage)
 				height = savedHeightInDB;
 		}
 #endif
@@ -7195,12 +7259,19 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		{
             if( savedWidthInDB != OsirixDicomImageSizeUnknown)
                 NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", (int)savedWidthInDB, (int)width);
-			[[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] setValue: [NSNumber numberWithInt: width] forKey: @"width"];
-			if( width > savedWidthInDB)
+			
+            if( iContext == nil)
+                iContext = ([[NSThread currentThread] isMainThread] ? [[[BrowserController currentBrowser] database] managedObjectContext] : [[[BrowserController currentBrowser] database] independentContext]);
+            
+            [[iContext existingObjectWithID: imageObjectID error: nil] setValue: [NSNumber numberWithInt: width] forKey: @"width"];
+            
+			if( width > savedWidthInDB && fExternalOwnedImage)
 				width = savedWidthInDB;
 		}
 #endif
 	}
+    
+    [iContext save: nil];
 	
 	if( shutterRect_w == 0) shutterRect_w = width;
 	if( shutterRect_h == 0) shutterRect_h = height;
@@ -9532,23 +9603,37 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                 width = [r size].width;
                 
 #ifdef OSIRIX_VIEWER
+                NSManagedObjectContext *iContext = nil;
+                
                 if( savedHeightInDB != 0 && savedHeightInDB != height)
                 {
                     if( savedHeightInDB != OsirixDicomImageSizeUnknown)
                         NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height. New: %d / DB: %d", (int)height, (int)savedHeightInDB);
-                    [[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] setValue: [NSNumber numberWithInt: height] forKey: @"height"];
-                    if( height > savedHeightInDB)
-                        height = savedHeightInDB;
+                    
+                    if( iContext == nil)
+                        iContext = ([[NSThread currentThread] isMainThread] ? [[[BrowserController currentBrowser] database] managedObjectContext] : [[[BrowserController currentBrowser] database] independentContext]);
+                    
+                    [[iContext existingObjectWithID: imageObjectID error: nil] setValue: [NSNumber numberWithInt: height] forKey: @"height"];
                 }
+                
+                if( height > savedHeightInDB && fExternalOwnedImage)
+                    height = savedHeightInDB;
                 
                 if( savedWidthInDB != 0 && savedWidthInDB != width)
                 {
                     if( savedWidthInDB != OsirixDicomImageSizeUnknown)
                         NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width. New: %d / DB: %d", (int)width, (int)savedWidthInDB);
-                    [[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] setValue: [NSNumber numberWithInt: width] forKey: @"width"];
-                    if( width > savedWidthInDB)
-                        width = savedWidthInDB;
+                    
+                    if( iContext == nil)
+                        iContext = ([[NSThread currentThread] isMainThread] ? [[[BrowserController currentBrowser] database] managedObjectContext] : [[[BrowserController currentBrowser] database] independentContext]);
+                    
+                    [[iContext existingObjectWithID: imageObjectID error: nil] setValue: [NSNumber numberWithInt: width] forKey: @"width"];
                 }
+                
+                if( width > savedWidthInDB && fExternalOwnedImage)
+                    width = savedWidthInDB;
+                
+                [iContext save: nil];
 #endif
                 unsigned char *srcImage = [TIFFRep bitmapData];
                 
@@ -12111,6 +12196,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	long			next;
 	float			min, max, iwl, iww;
 	
+    if( fResult == nil)
+        return nil;
+    
 	if( fixed8bitsWLWW)	{
 		iww = 256;
 		iwl = 127;

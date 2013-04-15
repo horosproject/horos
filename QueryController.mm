@@ -259,7 +259,10 @@ extern "C"
     for( DCMTKQueryNode	*object in studies)
     {
         [NSThread currentThread].progress = (float) i++ / (float) studies.count;
-        [NSThread currentThread].status = [NSString stringWithFormat: @"%@ - %@", object.name, object.theDescription];
+        if( object.theDescription)
+            [NSThread currentThread].status = [NSString stringWithFormat: @"%@ - %@", object.name, object.theDescription];
+        else
+            [NSThread currentThread].status = [NSString stringWithFormat: @"%@", object.name];
         if( [NSThread currentThread].isCancelled)
             break;
         
@@ -3030,11 +3033,17 @@ extern "C"
                     {
                         if( [[d valueForKey: @"date"] timeIntervalSinceNow] > -60*60) // 1 hour - dont redownload it !
                         {
+                            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"QR_DontDownloadMGDescription"])
+                            {
+                                if( [[[item valueForKey: @"theDescription"] lowercaseString] hasPrefix: @"mg "] || [[[item valueForKey: @"theDescription"] lowercaseString] hasPrefix: @"us seins"])
+                                {
+                                    addItem = NO;
+                                }
+                            }
+                            
                             if( [[d valueForKey: @"accessionNumber"] isEqualToString: [item valueForKey: @"accessionNumber"]] && [[d valueForKey: @"numberImages"] intValue] == [[item valueForKey: @"numberImages"] intValue])
                             {
                                 addItem = NO;
-                            
-                                NSLog( @"--- Already downloaded during last hour: %@ - %d images", item, [[item valueForKey: @"numberImages"] intValue]);
                             }
                         }
                         else [downloadedStudies removeObject: d];

@@ -1525,6 +1525,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
         [attrib setObject: fontGL forKey:NSFontAttributeName];
         [attrib setObject: [NSColor whiteColor] forKey:NSForegroundColorAttributeName];
         
+        
         sT = [[[StringTexture alloc] initWithString: str withAttributes: attrib] autorelease];
         [sT setAntiAliasing: YES];
         [sT genTextureWithBackingScaleFactor: curView.window.backingScaleFactor];
@@ -1564,17 +1565,20 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     
     glEnable (GL_TEXTURE_RECTANGLE_EXT);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+//    glEnable(GL_BLEND);
+//    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     
     long xc, yc;
     xc = xx - 2*curView.window.backingScaleFactor;
     yc = yy-[sT texSize].height;
     
-    glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
-    [sT drawWithBounds: NSMakeRect( xc, yc, [sT texSize].width, [sT texSize].height)];
+    glColor4f (0, 0, 0, 1.0f);
+    [sT drawAtPoint: NSMakePoint( xc+1, yc+1)];
     
-    glDisable(GL_BLEND);
+    glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
+    [sT drawAtPoint: NSMakePoint( xc, yc)];
+    
+//    glDisable(GL_BLEND);
     glDisable (GL_TEXTURE_RECTANGLE_EXT);
 }
 
@@ -3572,75 +3576,51 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, float rad, float factor)
 {
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-	
+    
 	glLineWidth( 5 * factor);
-	glBegin(GL_POLYGON);
-		glVertex2f(  minx, miny);
-		glVertex2f(  minx, maxy);
-		glVertex2f(  maxx, maxy);
-		glVertex2f(  maxx, miny);
-	glEnd();
-	
-//	glPointSize( 5);
-//	glBegin( GL_POINTS);
+//	glBegin(GL_POLYGON);
 //		glVertex2f(  minx, miny);
 //		glVertex2f(  minx, maxy);
 //		glVertex2f(  maxx, maxy);
 //		glVertex2f(  maxx, miny);
 //	glEnd();
 
-//	 float vec[7][2]= {{0.195, 0.02}, {0.383, 0.067}, {0.55, 0.169}, {0.707, 0.293},
-//					   {0.831, 0.45}, {0.924, 0.617}, {0.98, 0.805}};
-//
-//	 /* mult */
-//	 for( int a=0; a<7; a++) {
-//			 vec[a][0]*= rad; vec[a][1]*= rad;
-//	 }
-//
-//	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-//	 glBegin(mode);
-//
-//	 /* start with corner right-bottom */
-//	 if(roundboxtype & 4) {
-//			 glVertex2f( maxx-rad, miny);
-//			 for( int a=0; a<7; a++ ) {
-//					 glVertex2f( maxx-rad+vec[a][0], miny+vec[a][1]);
-//			 }
-//			 glVertex2f( maxx, miny+rad);
-//	 }
-//	 else glVertex2f( maxx, miny);
-//	 
-//	 /* corner right-top */
-//	 if(roundboxtype & 2) {
-//			 glVertex2f( maxx, maxy-rad);
-//			 for( int a=0; a<7; a++ ) {
-//					 glVertex2f( maxx-vec[a][1], maxy-rad+vec[a][0]);
-//			 }
-//			 glVertex2f( maxx-rad, maxy);
-//	 }
-//	 else glVertex2f( maxx, maxy);
-//	 
-//	 /* corner left-top */
-//	 if(roundboxtype & 1) {
-//			 glVertex2f( minx+rad, maxy);
-//			 for( int a=0; a<7; a++ ) {
-//					 glVertex2f( minx+rad-vec[a][0], maxy-vec[a][1]);
-//			 }
-//			 glVertex2f( minx, maxy-rad);
-//	 }
-//	 else glVertex2f( minx, maxy);
-//	 
-//	 /* corner left-bottom */
-//	 if(roundboxtype & 8) {
-//			 glVertex2f( minx, miny+rad);
-//			 for( int a=0; a<7; a++ ) {
-//					 glVertex2f( minx+vec[a][1], miny+rad-vec[a][0]);
-//			 }
-//			 glVertex2f( minx+rad, miny);
-//	 }
-//	 else glVertex2f( minx, miny);
-//	 
-//	 glEnd();
+    float vec[7][2]= {{0.195, 0.02}, {0.383, 0.067}, {0.55, 0.169}, {0.707, 0.293}, {0.831, 0.45}, {0.924, 0.617}, {0.98, 0.805}};
+    
+    rad *= factor;
+    
+    if( fabs( miny-maxy) < rad * 5.)
+        rad = fabs( miny-maxy) / 5.;
+    
+    for( int a=0; a<7; a++)
+    {
+        vec[a][0]*= rad;
+        vec[a][1]*= rad;
+    }
+    
+    glBegin(mode);
+    
+    glVertex2f( maxx-rad, miny);
+    for( int a=0; a<7; a++)
+        glVertex2f( maxx-rad+vec[a][0], miny+vec[a][1]);
+    glVertex2f( maxx, miny+rad);
+    
+    glVertex2f( maxx, maxy-rad);
+    for( int a=0; a<7; a++)
+        glVertex2f( maxx-vec[a][1], maxy-rad+vec[a][0]);
+    glVertex2f( maxx-rad, maxy);
+    
+    glVertex2f( minx+rad, maxy);
+    for( int a=0; a<7; a++)
+        glVertex2f( minx+rad-vec[a][0], maxy-vec[a][1]);
+    glVertex2f( minx, maxy-rad);
+    
+    glVertex2f( minx, miny+rad);
+    for( int a=0; a<7; a++)
+        glVertex2f( minx+vec[a][1], miny+rad-vec[a][0]);
+    glVertex2f( minx+rad, miny);
+	 
+    glEnd();
 }
 
 - (NSRect) findAnEmptySpaceForMyRect:(NSRect) dRect :(BOOL*) moved
@@ -3827,22 +3807,23 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	{
 		if( type != tText)
 		{
-			//glEnable(GL_POLYGON_SMOOTH);
+			
 			CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+            
+            glLoadIdentity();
+            
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 			glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-			
-			if( mode == ROI_sleep) glColor4f(0.0f, 0.0f, 0.0f, 0.4f);
-			else glColor4f(0.3f, 0.0f, 0.0f, 0.8f);
-			
-			glLoadIdentity();
-			
+			glEnable(GL_POLYGON_SMOOTH);
+            
             float sf = curView.window.backingScaleFactor;
             
 			glScalef( 2.0f /([curView drawingFrameRect].size.width), -2.0f / ([curView drawingFrameRect].size.height), 1.0f);
-			
-			gl_round_box(GL_POLYGON, drawRect.origin.x, drawRect.origin.y-1, drawRect.origin.x+drawRect.size.width, drawRect.origin.y+drawRect.size.height, 3, sf);
+            
+            if( mode == ROI_sleep) glColor4f(0.0f, 0.0f, 0.0f, 0.4f);
+			else glColor4f(0.3f, 0.0f, 0.0f, 0.8f);
+			gl_round_box(GL_POLYGON, drawRect.origin.x, drawRect.origin.y-1, drawRect.origin.x+drawRect.size.width, drawRect.origin.y+drawRect.size.height, fontHeight*sf/5., sf);
 			
 			NSPoint tPt;
 			
@@ -3858,7 +3839,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			[self glStr: textualBoxLine5 : tPt.x : tPt.y : line];	if( textualBoxLine5.length) line++;
 			[self glStr: textualBoxLine6 : tPt.x : tPt.y : line];	if( textualBoxLine6.length) line++;
 			
-			//glDisable(GL_POLYGON_SMOOTH);
+			glDisable(GL_POLYGON_SMOOTH);
 			glDisable(GL_BLEND);
 			
 			[curView applyImageTransformation];
@@ -3963,6 +3944,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
     
 	[roiLock lock];
 	
+    self.textualBoxLine1 = self.textualBoxLine2 = self.textualBoxLine3 = self.textualBoxLine4 = self.textualBoxLine5 = self.textualBoxLine6 = nil;
+    
 	@try
 	{
 		if( selectable == NO)
@@ -4498,8 +4481,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				glEnable (GL_TEXTURE_RECTANGLE_EXT);
 				
 				glEnable(GL_BLEND);
-				if( opacity == 1.0) glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-				else glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 				
 				if( stringTex == nil ) self.name = name;
 				
@@ -4528,6 +4510,11 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				
 				if( type == tArrow)
 				{
+                    thick *= 0.5;
+                    
+                    if( thick > 5)
+                        thick = 5;
+                    
 					NSPoint a, b;
 					float   slide, adj, op, angle;
 					
@@ -4547,14 +4534,14 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					}
 					#define ARROWSIZEConstant 25.0
 					
-					float ARROWSIZE = ARROWSIZEConstant * (thick / 3.0);
+					float ARROWSIZE = ARROWSIZEConstant * (thick * backingScaleFactor / 3.0);
 					
 					// LINE
 					glLineWidth( thick*2*backingScaleFactor);
 					
 					angle = 90 - atan( slide)/deg2rad;
-					adj = (ARROWSIZE + thick * 13)  * cos( angle*deg2rad);
-					op = (ARROWSIZE + thick * 13) * sin( angle*deg2rad);
+					adj = (ARROWSIZE + thick * backingScaleFactor * 13)  * cos( angle*deg2rad);
+					op = (ARROWSIZE + thick * backingScaleFactor * 13) * sin( angle*deg2rad);
 					
 					glBegin(GL_LINE_STRIP);
 						if(b.y-a.y > 0)
@@ -4601,9 +4588,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					{
 						angle = atan( slide)/deg2rad;
 						
-						angle = 80 - angle - thick;
-						adj = (ARROWSIZE + thick * 15)  * cos( angle*deg2rad);
-						op = (ARROWSIZE + thick * 15) * sin( angle*deg2rad);
+						angle = 80 - angle - thick * backingScaleFactor;
+						adj = (ARROWSIZE + thick * backingScaleFactor * 15)  * cos( angle*deg2rad);
+						op = (ARROWSIZE + thick * backingScaleFactor * 15) * sin( angle*deg2rad);
 						
 						if( pixelSpacingX != 0 && pixelSpacingY != 0 )
 							aa1 = NSMakePoint( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
@@ -4611,9 +4598,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 							aa1 = NSMakePoint( a.x + adj, a.y + (op));
 							
 						angle = atan( slide)/deg2rad;
-						angle = 100 - angle + thick;
-						adj = (ARROWSIZE + thick * 15) * cos( angle*deg2rad);
-						op = (ARROWSIZE + thick * 15) * sin( angle*deg2rad);
+						angle = 100 - angle + thick * backingScaleFactor;
+						adj = (ARROWSIZE + thick * backingScaleFactor * 15) * cos( angle*deg2rad);
+						op = (ARROWSIZE + thick * backingScaleFactor * 15) * sin( angle*deg2rad);
 						
 						if( pixelSpacingX != 0 && pixelSpacingY != 0 )
 							aa2 = NSMakePoint( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
@@ -4624,9 +4611,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					{
 						angle = atan( slide)/deg2rad;
 						
-						angle = 180 + 80 - angle - thick;
-						adj = (ARROWSIZE + thick * 15) * cos( angle*deg2rad);
-						op = (ARROWSIZE + thick * 15) * sin( angle*deg2rad);
+						angle = 180 + 80 - angle - thick * backingScaleFactor;
+						adj = (ARROWSIZE + thick * backingScaleFactor * 15) * cos( angle*deg2rad);
+						op = (ARROWSIZE + thick * backingScaleFactor * 15) * sin( angle*deg2rad);
 						
 						if( pixelSpacingX != 0 && pixelSpacingY != 0 )
 							aa1 = NSMakePoint( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
@@ -4634,9 +4621,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 							aa1 = NSMakePoint( a.x + adj, a.y + (op));
 							
 						angle = atan( slide)/deg2rad;
-						angle = 180 + 100 - angle + thick;
-						adj = (ARROWSIZE + thick * 15) * cos( angle*deg2rad);
-						op = (ARROWSIZE + thick * 15) * sin( angle*deg2rad);
+						angle = 180 + 100 - angle + thick * backingScaleFactor;
+						adj = (ARROWSIZE + thick * backingScaleFactor * 15) * cos( angle*deg2rad);
+						op = (ARROWSIZE + thick * backingScaleFactor * 15) * sin( angle*deg2rad);
 						
 						if( pixelSpacingX != 0 && pixelSpacingY != 0 )
 							aa2 = NSMakePoint( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));

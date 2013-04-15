@@ -1943,7 +1943,12 @@ static NSConditionLock *threadLock = nil;
 			NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: filesInput, @"filesInput", [NSNumber numberWithBool: YES], @"copyFiles", nil];
 			[dict addEntriesFromDictionary: options];
 			
-			NSThread *t = [[[NSThread alloc] initWithTarget:_database.independentDatabase selector:@selector(copyFilesThread:) object: dict] autorelease];
+            NSThread *t = nil;
+            if( [NSThread isMainThread] == NO)
+                t = [[[NSThread alloc] initWithTarget:_database.independentDatabase selector:@selector(copyFilesThread:) object: dict] autorelease];
+            else
+                t = [[[NSThread alloc] initWithTarget:_database selector:@selector(copyFilesThread:) object: dict] autorelease];
+            
 			if( [[options objectForKey: @"mountedVolume"] boolValue]) t.name = NSLocalizedString( @"Copying and indexing files from CD/DVD...", nil);
 			else t.name = NSLocalizedString( @"Copying and indexing files...", nil);
 			t.status = N2LocalizedSingularPluralCount( [filesInput count], NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil));
@@ -5225,7 +5230,7 @@ static NSConditionLock *threadLock = nil;
 			{
 				if ([series isDeleted] == NO)
                 {
-                    if ([series.images count] == 0 || [[series.images valueForKey: @"isDeleted"] containsObject: [NSNumber numberWithBool: NO]] == NO)
+                    if ([series.images count] == 0)
                     {
                         [database.managedObjectContext deleteObject:series];
                     }
@@ -5252,7 +5257,7 @@ static NSConditionLock *threadLock = nil;
                 
                 if( [study isDeleted] == NO)
                 {
-                    if( [study.imageSeries count] == 0 || [[study.imageSeries valueForKey: @"isDeleted"] containsObject: [NSNumber numberWithBool: NO]] == NO)
+                    if( [study.imageSeries count] == 0)
                     {
                         NSLog( @"Delete Study: %@ - %@", study.patientID, study.studyInstanceUID);
                         
@@ -5279,10 +5284,11 @@ static NSConditionLock *threadLock = nil;
         N2LogExceptionWithStackTrace(ne);
 	}
 	
+    for( DicomStudy *study in studiesSet)
+        [study noFiles];
+    [database save];
 	[database unlock];
     [database release];
-    
-    [self saveDatabase];
     
     [self outlineViewRefresh];
     [self refreshAlbums];
@@ -7877,9 +7883,9 @@ static BOOL withReset = NO;
 						
 						if( [animationSlider intValue] >= [images count]) return;
 						
-						NSManagedObject *imageObj = [images objectAtIndex: [animationSlider intValue]];
+						DicomImage *imageObj = [images objectAtIndex: [animationSlider intValue]];
 						
-						if( [[[imageView curDCM] sourceFile] isEqualToString: [[images objectAtIndex: [animationSlider intValue]] valueForKey:@"completePath"]] == NO || [[imageObj valueForKey: @"frameID"] intValue] != [[[imageView imageObj] valueForKey: @"frameID"] intValue])
+						if( [[[imageView curDCM] sourceFile] isEqualToString: [[images objectAtIndex: [animationSlider intValue]] valueForKey:@"completePath"]] == NO || [[imageObj valueForKey: @"frameID"] intValue] != [[imageView curDCM] frameNo])
 						{
 							DCMPix *dcmPix = nil;
 							

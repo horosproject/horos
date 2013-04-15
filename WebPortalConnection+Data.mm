@@ -950,6 +950,48 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	response.mimeType = @"text/html";
 }
 
+- (BOOL) processDeleteObject:(NSString*) XID
+{
+    NSManagedObject *dbObject = [self objectWithXID:XID];
+    
+    DicomStudy *study = nil;
+    DicomSeries *series = nil;
+    
+    if( [dbObject isKindOfClass: [DicomStudy class]])
+        study = (DicomStudy*) dbObject;
+    
+    if( [dbObject isKindOfClass: [DicomSeries class]])
+    {
+        study = [dbObject valueForKey: @"study"];
+        series = (DicomSeries*) dbObject;
+    }
+    
+    if( study)
+    {
+        [response.tokens addMessage:[NSString stringWithFormat:NSLocalizedString(@"Images successfully deleted.", nil)]];
+        [self.portal updateLogEntryForStudy: study withMessage: [NSString stringWithFormat: @"Images deleted"] forUser:user.name ip:asyncSocket.connectedHost];
+        
+        if( series)
+        {
+            [series.managedObjectContext deleteObject: series];
+            if( study.imageSeries.count == 0)
+                [study.managedObjectContext deleteObject: study];
+        }
+        else
+            [study.managedObjectContext deleteObject: study];
+        
+        BOOL isStudyDeleted = study.isDeleted;
+        
+        [self.independentDicomDatabase save];
+        
+        return isStudyDeleted;
+    }
+    else
+        [self.response.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"Study not found", nil)]];
+    
+    return NO;
+}
+
 -(void)processStudyHtml
 {
 //    [self.independentDicomDatabase.managedObjectContext reset]; //We want fresh data : from the persistentstore
@@ -1021,6 +1063,20 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			[response.tokens addError: NSLocalizedString(@"WADO URL Retrieve failed: no images selected. Select one or more series.", @"Web Portal, study, dicom send, error")];
 	}
 	
+    if( [parameters objectForKey:@"delete"] && study)
+    {
+        if (!user.isAdmin.boolValue)
+        {
+            response.statusCode = 401;
+            [self.portal updateLogEntryForStudy:NULL withMessage:@"Attempt to delete images without being an admin" forUser:user.name ip:asyncSocket.connectedHost];
+        }
+        else
+        {
+            if( [self processDeleteObject: [parameters objectForKey:@"delete"]])
+                study = nil;
+        }
+    }
+    
 	if ([[parameters objectForKey:@"shareStudy"] isEqual:@"shareStudy"] && study)
     {
         if( !user || user.shareStudyWithUser.boolValue)
@@ -1073,10 +1129,14 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
             [response.tokens addError: NSLocalizedString(@"Study share failed: not authorized.", @"Web Portal, study, share, error")];
 	}
 	
+    if( study)
+    {
+        [response.tokens setObject:[WebPortalProxy createWithObject:study transformer:DicomStudyTransformer.create] forKey:@"Study"];
+        [response.tokens setObject:[NSString stringWithFormat:NSLocalizedString(@"%@ - %@ - %@", @"Web Portal, study, title format (1st %@ is study.name, 2nd is study.studyName, 3rd date)"), study.name, study.studyName, [NSUserDefaults.dateTimeFormatter stringFromDate:study.date]] forKey:@"PageTitle"];
+    }
+    else
+        [response.tokens setObject:[NSString stringWithFormat:NSLocalizedString(@"Study Deleted", nil)] forKey:@"PageTitle"];
     
-	[response.tokens setObject:[WebPortalProxy createWithObject:study transformer:DicomStudyTransformer.create] forKey:@"Study"];
-	[response.tokens setObject:[NSString stringWithFormat:NSLocalizedString(@"%@ - %@ - %@", @"Web Portal, study, title format (1st %@ is study.name, 2nd is study.studyName, 3rd date)"), study.name, study.studyName, [NSUserDefaults.dateTimeFormatter stringFromDate:study.date]] forKey:@"PageTitle"];
-	
 	[self.portal updateLogEntryForStudy:study withMessage:@"Browsing Study" forUser:user.name ip:asyncSocket.connectedHost];
 	
 //	[self.portal.dicomDatabase.managedObjectContext lock];
@@ -1149,8 +1209,41 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	response.mimeType = @"text/html";
 }
 
--(void)processStudyListHtml {
-	NSString* title = NULL;
+-(void)processLogsListHtml
+{
+    if (!user.isAdmin.boolValue)
+    {
+        response.statusCode = 401;
+        [self.portal updateLogEntryForStudy:NULL withMessage:@"Attempt to see logs without being an admin" forUser:user.name ip:asyncSocket.connectedHost];
+        return;
+    }
+    
+    NSArray *logsArray = [self.independentDicomDatabase objectsForEntity: @"LogEntry" predicate: [NSPredicate predicateWithFormat: @"type == %@", @"Web"]];
+    
+    logsArray = [logsArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: @"startTime" ascending: NO]]];
+    
+	[response.tokens setObject: logsArray forKey:@"Logs"];
+    [response.tokens setObject: NSLocalizedString( @"Logs", nil) forKey:@"PageTitle"];
+	response.templateString = [self.portal stringForPath:@"admin/logs.html"];
+	response.mimeType = @"text/html";
+}
+
+-(void)processStudyListHtml
+{
+    if( [parameters objectForKey:@"delete"])
+    {
+        if (!user.isAdmin.boolValue)
+        {
+            response.statusCode = 401;
+            [self.portal updateLogEntryForStudy:NULL withMessage:@"Attempt to delete images without being an admin" forUser:user.name ip:asyncSocket.connectedHost];
+        }
+        else
+        {
+            [self processDeleteObject: [parameters objectForKey:@"delete"]];
+        }
+    }
+    
+    NSString* title = NULL;
 	[response.tokens setObject:[self studyList_requestedStudies:&title] forKey:@"Studies"];	
 	if (title) [response.tokens setObject:title forKey:@"PageTitle"];
 	response.templateString = [self.portal stringForPath:@"studyList.html"];

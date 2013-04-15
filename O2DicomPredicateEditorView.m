@@ -936,7 +936,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
                 
             case TM: {
                 [views addObject:_operatorsPopUp];
-                [self setAvailableOperators: N(NSLessThanOrEqualToPredicateOperatorType), N(NSGreaterThanOrEqualToPredicateOperatorType), N(NSEqualToPredicateOperatorType), nil]; // TODO: add 'is between'
+                [self setAvailableOperators: N(NSLessThanOrEqualToPredicateOperatorType), N(NSGreaterThanOrEqualToPredicateOperatorType), N(NSEqualToPredicateOperatorType), nil];
                 switch (self.operator) {
                     case NSLessThanOrEqualToPredicateOperatorType:
                     case NSGreaterThanOrEqualToPredicateOperatorType:
@@ -1090,8 +1090,8 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
                     if (otype == NSLessThanOrEqualToPredicateOperatorType && [[predicate constantValue] isKindOfClass:[NSDate class]])
                         return 1; // is before
                     if (otype == NSBetweenPredicateOperatorType && 
-                        ([[[[predicate collection] objectAtIndex:0] variable] isEqualToString:O2VarYesterday]) &&
-                        ([[[[predicate collection] objectAtIndex:1] variable] isEqualToString:O2VarToday])) // match "KeyPath between {NSDATE_YESTERDAY, NSDATE_TODAY}" for Yesterday
+                        [[[[predicate collection] objectAtIndex:0] variable] isEqualToString:O2VarYesterday] &&
+                        [[[[predicate collection] objectAtIndex:1] variable] isEqualToString:O2VarToday]) // match "KeyPath between {NSDATE_YESTERDAY, NSDATE_TODAY}" for Yesterday
                         return 1; // is yesterday
                     if (otype == NSBetweenPredicateOperatorType &&
                         ([[[[predicate collection] objectAtIndex:0] variable] isEqualToString:O2Var2Days]) &&
@@ -1106,7 +1106,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
                         return 1; // is before
                     if (otype == NSGreaterThanOrEqualToPredicateOperatorType && [[predicate constantValue] isKindOfClass:[NSDate class]])
                         return 1; // is after
-                    if (otype == NSEqualToPredicateOperatorType && [[predicate constantValue] isKindOfClass:[NSDate class]]) // TODO: probably we need a BETWEEN (Date, Date+1min) here...
+                    if (otype == NSEqualToPredicateOperatorType && [[predicate constantValue] isKindOfClass:[NSDate class]])
                         return 1; // is
                 } break;
                     

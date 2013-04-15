@@ -1,0 +1,35 @@
+%INCLUDE:/header.pvt.html%
+<div id="subheader">
+	<a class="back" href="../main">Home</a>
+</div>
+
+<div id="content">
+	%INCLUDE:/errors.pvt.html%
+	%INCLUDE:/messages.pvt.html%
+
+	<div>
+		<table class="wide gray">
+		%[FOREACH:Logs:Log%
+		<tr>
+		<td class="">
+            <b>%X:Log.startTime.DateTime%</b>
+		</td>
+		<td class="">
+			%X:Log.studyName%
+		</td>
+		<td class="">
+			%X:Log.patientName%
+		</td>
+		<td class="">
+			%X:Log.message%
+		</td>
+		<td class="">
+			<a href="https://apps.db.ripe.net/search/query.html?searchtext=%X:Log.originName%">%X:Log.originName%</a>
+		</td>
+		</tr>
+		%]FOREACH:Logs:Log%
+		</table>
+	</div>
+</div>
+	
+%INCLUDE:/footer.pvt.html%

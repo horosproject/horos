@@ -93,8 +93,8 @@
 	
 	NSFileManager* fm = NSFileManager.defaultManager;
 	
-    if (currpath && ![fm fileExistsAtPath:[basepath stringByAppendingPathComponent:currpath]])
-        rewinddir(self.DIR);
+//    if (currpath && ![fm fileExistsAtPath:[basepath stringByAppendingPathComponent:currpath]]) 
+//        rewinddir(self.DIR); Why this? Antoine: this can lead to infinite loop
     
 	NSString* subpath;
 	DIR* dir;

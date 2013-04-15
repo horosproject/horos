@@ -1220,7 +1220,12 @@ extern int delayedTileWindows;
     while( [theTask isRunning])
         [NSThread sleepForTimeInterval: 0.1];
 	
-	NSString *resString = [[[NSString alloc] initWithData:resData encoding: NSUTF8StringEncoding] autorelease];
+	NSString *resString = nil;
+    
+    resString = [[[NSString alloc] initWithData:resData encoding: NSUTF8StringEncoding] autorelease];
+    
+    if( resString == nil)
+        resString = [[[NSString alloc] initWithData:resData encoding: NSASCIIStringEncoding] autorelease];
 	
 	[validatorText setString: resString];
 	

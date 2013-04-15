@@ -1873,11 +1873,11 @@ static volatile int numberOfThreadsForRelisce = 0;
 			return;
 		}
 		
-		if( [[pixList[ curMovieIndex] objectAtIndex: 0] isRGB])
-		{
-			NSRunAlertPanel(NSLocalizedString(@"Data Error", nil), NSLocalizedString(@"This tool works only with B/W data series.", nil), nil, nil, nil);
-			return;
-		}
+//		if( [[pixList[ curMovieIndex] objectAtIndex: 0] isRGB])
+//		{
+//			NSRunAlertPanel(NSLocalizedString(@"Data Error", nil), NSLocalizedString(@"This tool works only with B/W data series.", nil), nil, nil, nil);
+//			return;
+//		}
 		
 		// To stop any attempt to reload the data...
 		postprocessed = YES;
@@ -2410,12 +2410,15 @@ static volatile int numberOfThreadsForRelisce = 0;
 			if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotFull)
 			{
 				if( [curImage valueForKeyPath:@"series.study.dateOfBirth"])
-					windowTitle = [NSString stringWithFormat: @"%@ - %@ (%@) - %@ (%@)", [curImage valueForKeyPath:@"series.study.name"], [BrowserController DateOfBirthFormat: bod], [curImage valueForKeyPath:@"series.study.yearOld"], seriesName, [[curImage valueForKeyPath:@"series.id"] stringValue]];
+					windowTitle = [NSString stringWithFormat: @"%@ - %@ (%@) - %@", [curImage valueForKeyPath:@"series.study.name"], [BrowserController DateOfBirthFormat: bod], [curImage valueForKeyPath:@"series.study.yearOld"], seriesName];
 				else
-					windowTitle = [NSString stringWithFormat: @"%@ - %@ (%@)", [curImage valueForKeyPath:@"series.study.name"], seriesName, [[curImage valueForKeyPath:@"series.id"] stringValue]];
+					windowTitle = [NSString stringWithFormat: @"%@ - %@", [curImage valueForKeyPath:@"series.study.name"], seriesName];
 			}	
-			else windowTitle = [NSString stringWithFormat: @"%@ (%@)", seriesName, [[curImage valueForKeyPath:@"series.id"] stringValue]];
+			else windowTitle = [NSString stringWithFormat: @"%@", seriesName];
 			
+            if( [[[curImage valueForKeyPath:@"series.id"] stringValue] length])
+                windowTitle = [windowTitle stringByAppendingFormat: @" (%@)", [[curImage valueForKeyPath:@"series.id"] stringValue]];
+                               
 			if( [[pixList[ curMovieIndex] objectAtIndex:0] generated] && [[pixList[ curMovieIndex] objectAtIndex:0] generatedName])
 				windowTitle = [windowTitle stringByAppendingString: [NSString stringWithFormat: @" - %@", [[pixList[ curMovieIndex] objectAtIndex:0] generatedName]]];
 			

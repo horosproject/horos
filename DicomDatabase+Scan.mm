@@ -600,6 +600,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
             return NO;
         
         NSInteger mode = [NSUserDefaults.standardUserDefaults integerForKey:@"MOUNT"];
+        
         if (mode == -1 || [[NSApp currentEvent] modifierFlags]&NSCommandKeyMask)
             [self performSelectorOnMainThread:@selector(_askUserDiscDataCopyOrBrowse:) withObject:[NSArray arrayWithObjects: path, [NSNumber numberWithInteger:dicomImages.count], [NSValue valueWithPointer:&mode], nil] waitUntilDone:YES];
         
@@ -680,12 +681,13 @@ static NSString* _dcmElementKey(DcmElement* element) {
                     }
                 }
                 
-                return YES;
+                return NO;
             }
         }
         
     //    if (![[[BrowserController currentBrowser] sourceForDatabase:self] isBeingEjected]) {
-        if (!thread.isCancelled) {
+        if (!thread.isCancelled)
+        {
             thread.status = NSLocalizedString(@"Generating series thumbnails...", nil);
             NSMutableArray* dicomSeries	= [NSMutableArray array];
             
@@ -706,19 +708,9 @@ static NSString* _dcmElementKey(DcmElement* element) {
                     N2LogExceptionWithStackTrace(e);
                 }
         }
-    //    }
         
-        if (mode == 2)
+        if (mode == 2) // ignore
             return NO;
-        
-        /*
-        
-        
-        for (int i = 0; i < 200; ++i) {
-            thread.status = [NSString stringWithFormat:@"Iteration %d.", i];
-            [NSThread sleepForTimeInterval:0.1];
-        }
-        */
     } @catch (NSException* e) {
         @throw;
     } @finally {
