@@ -154,7 +154,7 @@
 
 - (NSArray *)metricNames
 {
-	return [NSArray arrayWithObjects:@"intensityMean", @"intensityMax", @"intensityMin", nil];
+	return [NSArray arrayWithObjects:@"intensityMean", @"intensityMax", @"intensityMin", @"volume", nil];
 }
 
 - (NSString *)labelForMetric:(NSString *)metric
@@ -177,21 +177,48 @@
 		return @""; 
 	} else if ([metric isEqualToString:@"intensityMin"]) {
 		return @"";
-	}
+    } else if ([metric isEqualToString:@"volume"]) {
+        return @"mm3";
+    }
+
 	return nil;
 }
 
 - (id)valueForMetric:(NSString *)metric
 {
 	if ([metric isEqualToString:@"intensityMean"]) {
-		return [NSNumber numberWithDouble:[[self ROIFloatPixelData] intensityMean]];
+		return [NSNumber numberWithDouble:[self intensityMeanWithFloatVolumeData:[self homeFloatVolumeData]]];
 	} else if ([metric isEqualToString:@"intensityMax"]) {
-		return [NSNumber numberWithDouble:[[self ROIFloatPixelData] intensityMax]];
+		return [NSNumber numberWithDouble:[self intensityMaxWithFloatVolumeData:[self homeFloatVolumeData]]];
 	} else if ([metric isEqualToString:@"intensityMin"]) {
-		return [NSNumber numberWithDouble:[[self ROIFloatPixelData] intensityMin]];
+		return [NSNumber numberWithDouble:[self intensityMinWithFloatVolumeData:[self homeFloatVolumeData]]];
+	} else if ([metric isEqualToString:@"volume"]) {
+		return [NSNumber numberWithDouble:(double)[self volume]];
 	}
 	return nil;
-}	
+}
+
+- (CGFloat)intensityMeanWithFloatVolumeData:(OSIFloatVolumeData *)floatVolumeData
+{
+    return [[self ROIFloatPixelDataForFloatVolumeData:floatVolumeData] intensityMean];
+}
+
+- (CGFloat)intensityMaxWithFloatVolumeData:(OSIFloatVolumeData *)floatVolumeData
+{
+    return [[self ROIFloatPixelDataForFloatVolumeData:floatVolumeData] intensityMax];
+}
+
+- (CGFloat)intensityMinWithFloatVolumeData:(OSIFloatVolumeData *)floatVolumeData
+{
+    return [[self ROIFloatPixelDataForFloatVolumeData:floatVolumeData] intensityMin];
+}
+
+- (CGFloat)volume
+{
+    OSIROIMask *mask = [self ROIMaskForFloatVolumeData:[self homeFloatVolumeData]];
+    CGFloat voxelVolumeCM3 = self.homeFloatVolumeData.pixelSpacingX * self.homeFloatVolumeData.pixelSpacingY * self.homeFloatVolumeData.pixelSpacingZ* .001;
+    return (CGFloat)[mask maskIndexCount]*voxelVolumeCM3;
+}
 
 - (OSIROIFloatPixelData *)ROIFloatPixelData
 {

@@ -168,6 +168,50 @@
  */
 - (id)valueForMetric:(NSString *)metric;
 
+/** Returns the mean intesity of this ROI under the given float volume data.
+ 
+ @return The mean intesity of this ROI under the given float volume data.
+ @param metric The metric name for which to return a value.
+ @see label
+ @see metricNames
+ @see labelForMetric:
+ @see unitForMetric:
+ */
+- (CGFloat)intensityMeanWithFloatVolumeData:(OSIFloatVolumeData *)floatVolumeData;
+
+/** Returns the maximum intesity of this ROI under the given float volume data.
+ 
+ @return The maximum intesity of this ROI under the given float volume data.
+ @param metric The metric name for which to return a value.
+ @see label
+ @see metricNames
+ @see labelForMetric:
+ @see unitForMetric:
+ */
+- (CGFloat)intensityMaxWithFloatVolumeData:(OSIFloatVolumeData *)floatVolumeData;
+
+/** Returns the minimum intesity of this ROI under the given float volume data.
+ 
+ @return The minimum intesity of this ROI under the given float volume data.
+ @param metric The metric name for which to return a value.
+ @see label
+ @see metricNames
+ @see labelForMetric:
+ @see unitForMetric:
+ */
+- (CGFloat)intensityMinWithFloatVolumeData:(OSIFloatVolumeData *)floatVolumeData;
+
+/** Returns the volume of the ROI in cumbic centimeters
+ 
+ @return The maximum intesity of this ROI under the given float volume data.
+ @param metric The metric name for which to return a value.
+ @see label
+ @see metricNames
+ @see labelForMetric:
+ @see unitForMetric:
+ */
+- (CGFloat)volume;
+
 ///-----------------------------------
 /// @name Getting Pixel/Voxel Data values
 ///-----------------------------------

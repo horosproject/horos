@@ -487,6 +487,21 @@ NSArray *OSIROIMaskIndexesInRun(OSIROIMaskRun maskRun)
     return [[self maskRuns] count];
 }
 
+- (NSUInteger)maskIndexCount
+{
+    NSData *maskRunData = [self maskRunsData];
+    const OSIROIMaskRun *maskRunArray = [maskRunData bytes];
+    NSUInteger maskRunCount = [self maskRunCount];
+    NSUInteger maskIndexCount = 0;
+    NSUInteger i = 0;
+    
+    for (i = 0; i < maskRunCount; i++) {
+        maskIndexCount += maskRunArray[i].widthRange.length;
+    }
+    
+    return maskIndexCount;
+}
+
 - (NSArray *)maskIndexes
 {
 	NSValue *maskRunValue;
