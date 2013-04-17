@@ -246,6 +246,12 @@ CF_EXTERN_C_END
  */
 - (NSArray *)maskIndexes;
 
+/** Returns the count of mask indexes.
+ 
+ @return The count of mask index. (the number of voxels in the mask)
+ */
+- (NSUInteger)maskIndexCount;
+
 /** Returns YES if the given index is within the mask.
  
  @return YES if the given index is within the mask.
