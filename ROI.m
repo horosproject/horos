@@ -1507,17 +1507,15 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 
 - (StringTexture*) stringTextureForString: (NSString*) str
 {
-#define STRCAPACITY 20
-	
     if( stringTextureCache == nil)
-        stringTextureCache = [[NSMutableDictionary alloc] initWithCapacity: STRCAPACITY];
+    {
+        stringTextureCache = [[NSCache alloc] init];
+        stringTextureCache.countLimit = 30;
+    }
     
     StringTexture *sT = [stringTextureCache objectForKey: str];
     if( sT == nil)
     {
-        if( [stringTextureCache count] > STRCAPACITY)
-            [stringTextureCache removeAllObjects];
-        
         NSMutableDictionary *attrib = [NSMutableDictionary dictionary];
         
         NSFont *fontGL = [NSFont fontWithName: [[NSUserDefaults standardUserDefaults] stringForKey:@"LabelFONTNAME"] size: [[NSUserDefaults standardUserDefaults] floatForKey: @"LabelFONTSIZE"]];

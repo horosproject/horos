@@ -113,7 +113,7 @@ enum
 	
 	StringTexture	*stringTex;
 	NSMutableDictionary	*stanStringAttrib;
-	NSMutableDictionary	*stringTextureCache;
+	NSCache         *stringTextureCache;
     
 	ROI*			parentROI;
 	
