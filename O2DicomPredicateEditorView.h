@@ -15,7 +15,6 @@
 
 @interface O2DicomPredicateEditorView : NSView <NSMenuDelegate, NSTextFieldDelegate> {
     BOOL _reviewing;
-    NSArray* _tags;
     NSInteger _tagsSortKey;
     NSMutableArray* _menuItems;
     // values
@@ -38,7 +37,7 @@
     NSTextField* _isLabel;
 }
 
-@property(retain,nonatomic) NSArray* tags;
+@property(retain,nonatomic, readonly) NSArray* tags;
 @property NSInteger tagsSortKey;
 
 @property(retain) DCMAttributeTag* tag;
