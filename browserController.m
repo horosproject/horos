@@ -11011,8 +11011,11 @@ static BOOL needToRezoom;
 	
     [self.database save]; //To save 'dateOpened' field, and allow independentContext to see it
     
-    if( viewer && [[NSUserDefaults standardUserDefaults] boolForKey: @"tileWindowsOrderByStudyDate"])
-        [[AppController sharedAppController] tileWindows: self];
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
+    {
+        if( viewer && [[NSUserDefaults standardUserDefaults] boolForKey: @"tileWindowsOrderByStudyDate"])
+            [[AppController sharedAppController] tileWindows: self];
+    }
     
 	return createdViewer;
 }
