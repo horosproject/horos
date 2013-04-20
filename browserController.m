@@ -2789,18 +2789,21 @@ static NSConditionLock *threadLock = nil;
                         
                         if( inTheRetrieveQueue == NO)
                         {
+                            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"automaticallyRetrievePartialStudies"])
+                                autoretrieve = YES;
+                            
                             NSUInteger index = [localStudyInstanceUIDs indexOfObject: [distantStudy studyInstanceUID]];
                             
                             if( index != NSNotFound && [[[outlineViewArray objectAtIndex: index] rawNoFiles] intValue] < [[distantStudy noFiles] intValue])
                             {
-                                NSMutableArray *mutableCopy = [[outlineViewArray mutableCopy] autorelease];
-                                
-                                [mutableCopy replaceObjectAtIndex: index withObject: distantStudy];
-                                
-                                outlineViewArray = mutableCopy;
-                                
                                 if( autoretrieve)
                                     [studyToAutoretrieve addObject: distantStudy];
+                                else
+                                {
+                                    NSMutableArray *mutableCopy = [[outlineViewArray mutableCopy] autorelease];
+                                    [mutableCopy replaceObjectAtIndex: index withObject: distantStudy];
+                                    outlineViewArray = mutableCopy;
+                                }
                             }
                         }
                     }

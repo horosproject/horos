@@ -904,6 +904,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject: @"0" forKey: @"recomputePatientUID"];
 	[defaultValues setObject: @"1" forKey: @"ReserveScreenForDB"];
 	[defaultValues setObject: @"1" forKey: @"notificationsEmailsInterval"];
+    [defaultValues setObject: @"1" forKey: @"automaticallyRetrievePartialStudies"];
 	NSDateFormatter	*dateFormat = [[[NSDateFormatter alloc] init] autorelease];
 	[dateFormat setDateStyle: NSDateFormatterShortStyle];
 	[defaultValues setObject: [dateFormat dateFormat] forKey:@"DBDateOfBirthFormat2"];
