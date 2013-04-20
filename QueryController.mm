@@ -3230,7 +3230,7 @@ extern "C"
                 
                 for( NSDictionary *QRInstance in autoQRInstances)
                 {
-                    if( [[QRInstance objectForKey: @"autoRefreshQueryResults"] intValue])
+                    if( [[QRInstance objectForKey: @"autoRefreshQueryResults"] intValue] != 0)
                     {
                         if( --autoQueryRemainingSecs[ i] <= 0)
                         {
@@ -3251,7 +3251,10 @@ extern "C"
                                 t.supportsCancel = YES;
                                 [[ThreadsManager defaultManager] addThreadAndStart: t];
                                 
-                                autoQueryRemainingSecs[ i] = 60 * [[QRInstance objectForKey: @"autoRefreshQueryResults"] intValue];
+                                if( [[QRInstance objectForKey: @"autoRefreshQueryResults"] intValue] >= 0)
+                                    autoQueryRemainingSecs[ i] = 60 * [[QRInstance objectForKey: @"autoRefreshQueryResults"] intValue]; // minutes
+                                else if( [[QRInstance objectForKey: @"autoRefreshQueryResults"] intValue] < 0)
+                                    autoQueryRemainingSecs[ i] = - [[QRInstance objectForKey: @"autoRefreshQueryResults"] intValue]; // seconds
                                 
                                 [autoQueryLock unlock];
                             }
@@ -3264,7 +3267,7 @@ extern "C"
         }
         else
         {
-            if( self.autoRefreshQueryResults)
+            if( self.autoRefreshQueryResults != 0)
             {
                 if( --autoQueryRemainingSecs[ currentAutoQR] <= 0)
                 {
@@ -3279,10 +3282,10 @@ extern "C"
                         t.supportsCancel = YES;
                         [[ThreadsManager defaultManager] addThreadAndStart: t];
                         
-                        if( autoRefreshQueryInSeconds)
-                            autoQueryRemainingSecs[ currentAutoQR] = self.autoRefreshQueryResults;
+                        if( self.autoRefreshQueryResults >= 0)
+                            autoQueryRemainingSecs[ currentAutoQR] = 60 * self.autoRefreshQueryResults; // minutes
                         else
-                            autoQueryRemainingSecs[ currentAutoQR] = 60*self.autoRefreshQueryResults;
+                            autoQueryRemainingSecs[ currentAutoQR] = -self.autoRefreshQueryResults; // seconds
                         
                         [autoQueryLock unlock];
                     }
@@ -3304,15 +3307,10 @@ extern "C"
     [QueryTimer release];
     QueryTimer = nil;
     
-    if( [[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSAlternateKeyMask)
-        autoRefreshQueryInSeconds = YES;
+    if( self.autoRefreshQueryResults >= 0)
+        autoQueryRemainingSecs[ currentAutoQR] = 60*self.autoRefreshQueryResults; // minutes
     else
-        autoRefreshQueryInSeconds = NO;
-    
-    if( autoRefreshQueryInSeconds)
-        autoQueryRemainingSecs[ currentAutoQR] = self.autoRefreshQueryResults;
-    else
-        autoQueryRemainingSecs[ currentAutoQR] = 60*self.autoRefreshQueryResults;
+        autoQueryRemainingSecs[ currentAutoQR] = -self.autoRefreshQueryResults; // seconds
     
     if( self.autoRefreshQueryResults)
         [autoQueryCounter setStringValue: [NSString stringWithFormat: @"%2.2d:%2.2d", (int) (autoQueryRemainingSecs[ currentAutoQR]/60), (int) (autoQueryRemainingSecs[ currentAutoQR]%60)]];
@@ -4697,8 +4695,12 @@ extern "C"
             [self setCurrentAutoQR: 0];
             
             for( int i = 0; i < autoQRInstances.count; i++)
-                autoQueryRemainingSecs[ i] = 60 * [[[autoQRInstances objectAtIndex: i] valueForKey: @"autoRefreshQueryResults"] intValue];
-            
+            {
+                if( [[[autoQRInstances objectAtIndex: i] valueForKey: @"autoRefreshQueryResults"] intValue] >= 0)
+                    autoQueryRemainingSecs[ i] = 60 * [[[autoQRInstances objectAtIndex: i] valueForKey: @"autoRefreshQueryResults"] intValue]; // minutes
+                else
+                    autoQueryRemainingSecs[ i] = -[[[autoQRInstances objectAtIndex: i] valueForKey: @"autoRefreshQueryResults"] intValue]; // seconds
+            }
             [self didChangeValueForKey: @"instancesMenuList"];
 		}
         
