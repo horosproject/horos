@@ -2789,14 +2789,11 @@ static NSConditionLock *threadLock = nil;
                         
                         if( inTheRetrieveQueue == NO)
                         {
-                            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"automaticallyRetrievePartialStudies"])
-                                autoretrieve = YES;
-                            
                             NSUInteger index = [localStudyInstanceUIDs indexOfObject: [distantStudy studyInstanceUID]];
                             
                             if( index != NSNotFound && [[[outlineViewArray objectAtIndex: index] rawNoFiles] intValue] < [[distantStudy noFiles] intValue])
                             {
-                                if( autoretrieve)
+                                if( autoretrieve || [[NSUserDefaults standardUserDefaults] boolForKey: @"automaticallyRetrievePartialStudies"])
                                     [studyToAutoretrieve addObject: distantStudy];
                                 else
                                 {
