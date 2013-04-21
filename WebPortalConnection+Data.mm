@@ -501,7 +501,6 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 	
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	
 	NSArray *dicomImageArray = [dict valueForKey: @"DicomImageArray"];
 	
 	int location = [[dict valueForKey: @"location"] unsignedIntValue];
@@ -512,6 +511,8 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 	NSString *fileName = [dict valueForKey: @"fileName"];
     NSInteger* fpsP = (NSInteger*)[[dict valueForKey:@"fpsP"] pointerValue];
 	
+    NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat: 0.7] forKey:NSImageCompressionFactor];
+    
 	for( int x = location ; x < location+length; x++)
 	{
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -560,7 +561,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 				newImage = [dcmPix image];
 			
 			if ([outFile hasSuffix:@"swf"])
-				[[[NSBitmapImageRep imageRepWithData:[newImage TIFFRepresentation]] representationUsingType:NSJPEGFileType properties:NULL] writeToFile:[[fileName stringByAppendingString:@" dir"] stringByAppendingPathComponent:[NSString stringWithFormat:@"%6.6d.jpg", x]] atomically:YES];
+				[[[NSBitmapImageRep imageRepWithData:[newImage TIFFRepresentation]] representationUsingType:NSJPEGFileType properties:imageProps] writeToFile:[[fileName stringByAppendingString:@" dir"] stringByAppendingPathComponent:[NSString stringWithFormat:@"%6.6d.jpg", x]] atomically:YES];
 			else
 				[[newImage TIFFRepresentationUsingCompression: NSTIFFCompressionLZW factor: 1.0] writeToFile: [[fileName stringByAppendingString: @" dir"] stringByAppendingPathComponent: [NSString stringWithFormat: @"%6.6d.tiff", x]] atomically: YES];
 			
@@ -2647,7 +2648,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
     [[NSUserDefaults standardUserDefaults] setBool: savedSmartCropping forKey: @"allowSmartCropping"];
     
     NSArray *representations = [image representations];
-    NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+    NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.8] forKey:NSImageCompressionFactor]];
     
     NSString* path = [[@"/tmp/osirixwebservices" stringByAppendingPathComponent: dicomImage.XIDFilename] stringByAppendingPathExtension: @"jpg"];
     [[NSFileManager defaultManager] removeItemAtPath: path error: nil];
