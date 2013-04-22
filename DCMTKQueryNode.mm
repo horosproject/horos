@@ -518,7 +518,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 - (NSNumber *)numberImages{
 	return _numberImages;
 }
-- (NSMutableArray *)children
+- (NSArray *)children
 {
     @synchronized( _children)
     {
@@ -977,8 +977,6 @@ subOpCallback(void * /*subOpCallbackData*/ ,
             N2LogExceptionWithStackTrace(e);
     }
 	
-	NSMutableArray *urlToDownload = [NSMutableArray array];
-	
 	if( [self isKindOfClass:[DCMTKStudyQueryNode class]])
 	{
 		// We are at STUDY level, and we want to go direclty to IMAGE level
@@ -1013,6 +1011,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                     [_children removeAllObjects];
                 }
                 
+                NSMutableArray *urlToDownload = [NSMutableArray array];
                 @try
                 {
                     childrenArray = [childrenArray sortedArrayUsingDescriptors: [NSArray arrayWithObjects: [NSSortDescriptor sortDescriptorWithKey: @"seriesInstanceUID" ascending: YES], nil]];
@@ -1043,8 +1042,6 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                 
                 self.countOfSuboperations += urlToDownload.count;
                 self.countOfSuccessfulSuboperations += downloader.countOfSuccesses;
-                
-                [urlToDownload removeAllObjects];
             }
         }
         
@@ -1066,6 +1063,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
             
             childrenArray = [self children];
         }
+        
+        NSMutableArray *urlToDownload = [NSMutableArray array];
         
         @try
         {
