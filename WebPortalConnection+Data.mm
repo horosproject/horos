@@ -2751,7 +2751,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
     {
         NSArray *seriesImages = dicomImage.series.sortedImages;
         [image lockFocus];
-		[self drawText: [NSString stringWithFormat: @"%d / %d", [seriesImages indexOfObject: dicomImage]+1, seriesImages.count]  atLocation: NSMakePoint( 1, image.size.height - TEXTHEIGHT)];
+		[self drawText: [NSString stringWithFormat: @"%d / %d", (int) [seriesImages indexOfObject: dicomImage]+1, (int) seriesImages.count]  atLocation: NSMakePoint( 1, image.size.height - TEXTHEIGHT)];
 		[image unlockFocus];
     }
 	

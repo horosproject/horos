@@ -518,7 +518,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 - (NSNumber *)numberImages{
 	return _numberImages;
 }
-- (NSArray *)children
+- (NSMutableArray *)children
 {
     @synchronized( _children)
     {
@@ -870,6 +870,47 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 //	}
 //}
 
+//- (void) realtimeCFindResults: (NSNotification*) notification
+//{
+//    if( [notification object] == self)
+//    {
+//        NSLog( @"%d", [[self children] count]);
+//    }
+//}
+
+- (void) WADOCFindThread: (id) sender
+{
+    NSAutoreleasePool *pool = [NSAutoreleasePool new];
+    
+    NSLog( @"--- WADO CFIND Start");
+    
+    [NSThread currentThread].name = @"WADO C-FIND Thread";
+    
+    DcmDataset *dataset = new DcmDataset();
+    
+    dataset-> insertEmptyElement(DCM_StudyInstanceUID, OFTrue);
+    dataset-> insertEmptyElement(DCM_SeriesInstanceUID, OFTrue);
+    dataset-> insertEmptyElement(DCM_SOPInstanceUID, OFTrue);
+    dataset-> putAndInsertString(DCM_StudyInstanceUID, [_uid UTF8String], OFTrue);
+    dataset-> putAndInsertString(DCM_QueryRetrieveLevel, "IMAGE", OFTrue);
+    
+    [self queryWithValues: nil dataset: dataset];
+    
+    NSLog( @"--- WADO CFIND Done");
+    
+    [pool release];
+}
+
+- (NSUInteger) childrenCount
+{
+    if( _children == nil)
+        return 0;
+    
+    @synchronized( _children)
+    {
+        return _children.count;
+    }
+}
 
 - (void) WADORetrieve: (DCMTKStudyQueryNode*) study // requestService: WFIND?
 {
@@ -950,37 +991,64 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		dataset-> putAndInsertString(DCM_StudyInstanceUID, [_uid UTF8String], OFTrue);
 		dataset-> putAndInsertString(DCM_QueryRetrieveLevel, "IMAGE", OFTrue);
 		
-		[self queryWithValues: nil dataset: dataset];
+		NSThread *WADOCFind = [[[NSThread alloc] initWithTarget: self selector: @selector( WADOCFindThread:) object: nil] autorelease];
 		
-        NSArray *childrenArray = nil;
-        @synchronized( self)
-        {
-            childrenArray = [self children];
-        }
+        [WADOCFind start];
+        [NSThread sleepForTimeInterval: 0.3];
         
-        @try
+        WADODownload *downloader = [[WADODownload alloc] init];
+        
+        downloader.showErrorMessage = showErrorMessage;
+        downloader.WADOBaseTotal = localObjectUIDs.count;
+        downloader.WADOGrandTotal = self.numberImages.integerValue; // For the GUI progress bar
+        
+        while( (WADOCFind.isExecuting || self.childrenCount) && [[NSThread currentThread] isCancelled] == NO)
         {
-            childrenArray = [childrenArray sortedArrayUsingDescriptors: [NSArray arrayWithObjects: [NSSortDescriptor sortDescriptorWithKey: @"seriesInstanceUID" ascending: YES], nil]];
-            
-            for( DCMTKImageQueryNode *image in childrenArray)
+            if( self.childrenCount)
             {
-                if( [image uid])
+                NSArray *childrenArray = nil;
+                @synchronized( _children)
                 {
-                    if( [localObjectUIDs containsString: [image uid]] == NO)
+                    childrenArray = [[_children copy] autorelease];
+                    [_children removeAllObjects];
+                }
+                
+                @try
+                {
+                    childrenArray = [childrenArray sortedArrayUsingDescriptors: [NSArray arrayWithObjects: [NSSortDescriptor sortDescriptorWithKey: @"seriesInstanceUID" ascending: YES], nil]];
+                    
+                    for( DCMTKImageQueryNode *image in childrenArray)
                     {
-                        NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom%@", [self uid], [image seriesInstanceUID], [image uid], ts]];
-                        [urlToDownload addObject: url];
+                        if( [image uid])
+                        {
+                            if( [localObjectUIDs containsString: [image uid]] == NO)
+                            {
+                                NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom%@", [self uid], [image seriesInstanceUID], [image uid], ts]];
+                                [urlToDownload addObject: url];
+                            }
+                        }
+                        else NSLog( @"****** no image uid !");
                     }
                 }
-                else NSLog( @"****** no image uid !");
+                @catch (NSException* e)
+                {
+                    if (_dontCatchExceptions)
+                        @throw e;
+                    if (![NSThread.currentThread isCancelled])
+                        N2LogExceptionWithStackTrace(e);
+                }
+                
+                [downloader WADODownload: urlToDownload];
+                downloader.WADOBaseTotal += urlToDownload.count; // For the GUI progress bar
+                
+                self.countOfSuboperations += urlToDownload.count;
+                self.countOfSuccessfulSuboperations += downloader.countOfSuccesses;
+                
+                [urlToDownload removeAllObjects];
             }
         }
-        @catch (NSException* e) {
-            if (_dontCatchExceptions)
-                @throw e;
-            if (![NSThread.currentThread isCancelled])
-                N2LogExceptionWithStackTrace(e);
-        }
+        
+        [downloader release];
         
 		[self purgeChildren];
 	}
@@ -1022,18 +1090,18 @@ subOpCallback(void * /*subOpCallbackData*/ ,
         }
         
 		[self purgeChildren];
-	}
-	
-	WADODownload *downloader = [[WADODownload alloc] init];
-	
-	downloader.showErrorMessage = showErrorMessage;
-	
-	[downloader WADODownload: urlToDownload];
-	
-    self.countOfSuboperations = urlToDownload.count;
-    self.countOfSuccessfulSuboperations = downloader.countOfSuccesses;
-    
-	[downloader release];
+        
+        WADODownload *downloader = [[WADODownload alloc] init];
+        
+        downloader.showErrorMessage = showErrorMessage;
+        
+        [downloader WADODownload: urlToDownload];
+        
+        self.countOfSuboperations = urlToDownload.count;
+        self.countOfSuccessfulSuboperations = downloader.countOfSuccesses;
+        
+        [downloader release];
+    }
 }
 
 - (void) move:(NSDictionary*) dict retrieveMode: (int) retrieveMode

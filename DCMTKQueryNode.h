@@ -79,7 +79,7 @@
 - (DCMCalendarDate *)time;
 - (NSString *)modality;
 - (NSNumber *)numberImages;
-- (NSArray *)children;
+- (NSMutableArray *)children;
 - (void) setChildren: (NSArray *) c;
 - (void)purgeChildren;
 - (void)addChild:(DcmDataset *)dataset;

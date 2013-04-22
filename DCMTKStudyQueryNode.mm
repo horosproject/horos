@@ -398,7 +398,7 @@
     return nil;
 }
 
-- (NSArray*)children // instead of sorting after every addChild, we sort when the array is requested
+- (NSMutableArray*)children // instead of sorting after every addChild, we sort when the array is requested
 {
     @synchronized( _children)
     {
