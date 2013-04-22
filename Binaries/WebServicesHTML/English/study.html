@@ -192,7 +192,7 @@ function shareDestinationChange(select) {
 							%ELSE:Series.noFiles>9%
 							<a href="series%Series.seriesExtension%?xid=%Series.XID%&%Info.getParameters(xid=)%&frames=yes">
 							%]IF:Series.noFiles>9%
-								<span class="bigger">%X:ZWS:Series.name%</span>
+								<span class="bigger">%X:ZWS:Series.id% - %X:ZWS:Series.name%</span>
 								<span class="gray">
 									%[IF:Series.stateText%
 										%X:Series.stateText%,

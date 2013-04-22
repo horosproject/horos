@@ -148,6 +148,9 @@ static NSString* NotNil(NSString *s) {
 
 -(DicomDatabase*)independentDicomDatabase
 {
+    if( [NSThread isMainThread])
+        return self.portal.dicomDatabase;
+    
     if (_independentDicomDatabase)
         return _independentDicomDatabase;
         

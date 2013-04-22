@@ -158,7 +158,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
         NSArray* axid = [xid componentsSeparatedByString:@"/"];
         
         if (axid.count != 3) {
-            NSLog(@"ERROR: unexpected CoreData ID format, please contact dev team");
+            N2LogStackTrace(@"****** ERROR: unexpected CoreData ID format, please contact dev team");
             return nil;
         }
         
@@ -495,6 +495,16 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 	}
 }
 
+- (void) drawText: (NSString*) text atLocation: (NSPoint) loc
+{
+    [text drawAtPoint: loc withAttributes: [NSDictionary dictionaryWithObjectsAndKeys: [NSColor blackColor], NSForegroundColorAttributeName, nil]];
+    
+    loc.x++;
+    loc.y++;
+    
+    [text drawAtPoint: loc withAttributes: [NSDictionary dictionaryWithObjectsAndKeys: [NSColor whiteColor], NSForegroundColorAttributeName, nil]];
+}
+
 - (void) movieDCMPixLoad: (NSDictionary*) dict
 {
 	[dict retain];
@@ -512,6 +522,9 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
     NSInteger* fpsP = (NSInteger*)[[dict valueForKey:@"fpsP"] pointerValue];
 	
     NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat: 0.7] forKey:NSImageCompressionFactor];
+    
+    DicomSeries *series = [(DicomImage*)[dicomImageArray lastObject] series];
+    int totalImages = series.images.count;
     
 	for( int x = location ; x < location+length; x++)
 	{
@@ -560,6 +573,11 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 			else
 				newImage = [dcmPix image];
 			
+#define TEXTHEIGHT 15
+            [newImage lockFocus];
+            [self drawText: [NSString stringWithFormat: @"%d / %d", x+1, totalImages]  atLocation: NSMakePoint( 1, newImage.size.height - TEXTHEIGHT)];
+            [newImage unlockFocus];
+            
 			if ([outFile hasSuffix:@"swf"])
 				[[[NSBitmapImageRep imageRepWithData:[newImage TIFFRepresentation]] representationUsingType:NSJPEGFileType properties:imageProps] writeToFile:[[fileName stringByAppendingString:@" dir"] stringByAppendingPathComponent:[NSString stringWithFormat:@"%6.6d.jpg", x]] atomically:YES];
 			else
@@ -1285,7 +1303,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
             return;
         
         [response.tokens setObject:[WebPortalProxy createWithObject:series transformer:[DicomSeriesTransformer create]] forKey:@"Series"];
-        [response.tokens setObject:series.name forKey:@"PageTitle"];
+        [response.tokens setObject:[NSString stringWithFormat: @"%@ - %@", series.name, series.id.stringValue] forKey:@"PageTitle"];
         [response.tokens setObject:[NSString stringWithFormat:@"%@ - %@", series.study.name, series.study.studyName] forKey:@"BackLinkLabel"];
     }
     
@@ -2634,6 +2652,9 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 
 - (void) saveImageAsScreenCapture: (NSString*) XID
 {
+    if( [NSThread isMainThread] == NO)
+        NSLog( @"****** we should be on MAIN thread");
+    
     DicomImage *dicomImage = [self objectWithXID:[parameters objectForKey:@"xid"]];
     
     [DCMView setCLUTBARS: CLUTBARS ANNOTATIONS: annotGraphics];
@@ -2725,6 +2746,14 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		
 		[image unlockFocus];
 	}
+    
+    if( asDisplayed == NO)
+    {
+        NSArray *seriesImages = dicomImage.series.sortedImages;
+        [image lockFocus];
+		[self drawText: [NSString stringWithFormat: @"%d / %d", [seriesImages indexOfObject: dicomImage]+1, seriesImages.count]  atLocation: NSMakePoint( 1, image.size.height - TEXTHEIGHT)];
+		[image unlockFocus];
+    }
 	
 	NSBitmapImageRep* imageRep = [NSBitmapImageRep imageRepWithData:image.TIFFRepresentation];
 	
