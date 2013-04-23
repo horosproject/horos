@@ -102,7 +102,7 @@
 
 /** Returns by reference the quartiles of the intensity of the pixels under the mask. 
  
- Pass NULL 
+ Pass NULL to any parameter you don't care about
  
  */
 - (void)getIntensityMinimum:(float *)minimum firstQuartile:(float *)firstQuartile secondQuartile:(float *)secondQuartile thirdQuartile:(float *)thirdQuartile maximum:(float *)maximum;
@@ -137,21 +137,5 @@
  */
 - (NSData *)floatData;
 
-//    /** Returns the range within the receiver's floatVolumeData of the given Mask Run.
-//     
-//     @return The range within the receiver's floatVolumeData of the given Mask Run.
-//     
-//     @param maskRun The mask run for which to return a range
-//     */
-//    - (NSRange)volumeRangeForROIMaskRun:(OSIROIMaskRun)maskRun;
-
-/** Returns the range within the receiver's floatVolumeData of the given Mask Index.
- 
- @return The range within the receiver's floatVolumeData of the given Mask Index.
- The length of the returned range will be 1.
- 
- @param maskIndex The mask index for which to return a range
- */
-- (NSRange)volumeRangeForROIMaskIndex:(OSIROIMaskIndex)maskIndex;
 
 @end

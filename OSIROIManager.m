@@ -39,6 +39,8 @@ NSString* const OSIROIAddedROIKey = @"OSIROIAddedROIKey";
 - (void)_removeROINotification:(NSNotification *)notification;
 - (void)_removeROICallbackHack:(ROI *)roi;
 - (void)_addROINotification:(NSNotification *)notification;
+- (void)_volumeWindowDidChangeDataNotification:(NSNotification *)notification;
+
 - (void)_drawObjectsNotification:(NSNotification *)notification;
 - (NSArray *)_ROIListForWatchedOsiriXROIs:(NSArray **)watchedROIs; // returned watchedROI is the OsiriX rois the returned OSIROIs are based on
 - (NSArray *)_coalescedROIListForWatchedOsiriXROIs:(NSArray **)watchedROIs;
@@ -86,6 +88,8 @@ NSString* const OSIROIAddedROIKey = @"OSIROIAddedROIKey";
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_ROIChangeNotification:) name:OsirixROIChangeNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_removeROINotification:) name:OsirixRemoveROINotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_addROINotification:) name:OsirixAddROINotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_volumeWindowDidChangeDataNotification:) name:OSIVolumeWindowDidChangeDataNotification object:nil];
+        
 		[_volumeWindow addObserver:self forKeyPath:@"OSIROIs" options:NSKeyValueObservingOptionInitial context:self];
 		[_volumeWindow addObserver:self forKeyPath:@"dataLoaded" options:NSKeyValueObservingOptionInitial context:self];
 	}
@@ -269,6 +273,11 @@ NSString* const OSIROIAddedROIKey = @"OSIROIAddedROIKey";
 	[self _rebuildOSIROIs];
 }
 
+- (void)_volumeWindowDidChangeDataNotification:(NSNotification *)notification
+{
+	[self _rebuildOSIROIs];
+}
+
 - (void)_drawObjectsNotification:(NSNotification *)notification
 {
     DCMView *dcmView;
@@ -341,7 +350,7 @@ NSString* const OSIROIAddedROIKey = @"OSIROIAddedROIKey";
     NSArray *watchedROIs;
     
 	// because the OsiriX ROI posts notifications at super weird times (like within dealloc!?!?!) 
-	// we need to make surewe don't renter our ROI rebuilding call while rebuilding the ROIs;
+	// we need to make sure we don't renter our ROI rebuilding call while rebuilding the ROIs;
 
 	if (_rebuildingROIs) {
 		return;

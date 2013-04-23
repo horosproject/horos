@@ -50,19 +50,21 @@
 	NSUInteger floatCount = [self floatCount];
 	float mean;
     
-    NSNumber *meanNumber = [_valueCache objectForKey:@"intensityMean"];
-	if (meanNumber) {
-        return [meanNumber floatValue];
+    @synchronized(self) {
+        NSNumber *meanNumber = [_valueCache objectForKey:@"intensityMean"];
+        if (meanNumber) {
+            return [meanNumber floatValue];
+        }
+        
+        if (floatCount == 0) {
+            return NAN;
+        }
+        
+        floatCount = [self floatCount];
+        vDSP_meanv((float *)[[self floatData] bytes], 1, &mean, floatCount);
+        
+        [_valueCache setObject:[NSNumber numberWithFloat:mean] forKey:@"intensityMean"];
     }
-    
-    if (floatCount == 0) {
-        return NAN;
-    }
-    
-	floatCount = [self floatCount];
-	vDSP_meanv((float *)[[self floatData] bytes], 1, &mean, floatCount);
-    
-    [_valueCache setObject:[NSNumber numberWithFloat:mean] forKey:@"intensityMean"];
     
 	return mean;
 }
@@ -119,120 +121,122 @@
     float Q2;
     float Q3;
     
-    NSNumber *minimumNumber = [_valueCache objectForKey:@"intesityMinimum"];
-    NSNumber *Q1Number = [_valueCache objectForKey:@"intesityFirstQuartile"];
-    NSNumber *Q2Number = [_valueCache objectForKey:@"intesitySecondQuartile"];
-    NSNumber *Q3Number = [_valueCache objectForKey:@"intesityThirdQuartile"];
-    NSNumber *maximumNumber = [_valueCache objectForKey:@"intesityMaximum"];
-    
-    if (minimumNumber && Q1Number && Q2Number && Q3Number && maximumNumber) {
-        if (minimum) {
-            *minimum = [minimumNumber floatValue];
-        }
-        if (firstQuartile) {
-            *firstQuartile = [Q1Number floatValue];
-        }
-        if (secondQuartile) {
-            *secondQuartile = [Q2Number floatValue];
-        }
-        if (thirdQuartile) {
-            *thirdQuartile = [Q3Number floatValue];
-        }
-        if (maximum) {
-            *maximum = [maximumNumber floatValue];
-        }
-        return;
-    }
-    
-    if (floatCount == 0) {
-        if (minimum) {
-            *minimum = NAN;
-        }
-        if (firstQuartile) {
-            *firstQuartile = NAN;
-        }
-        if (secondQuartile) {
-            *secondQuartile = NAN;
-        }
-        if (thirdQuartile) {
-            *thirdQuartile = NAN;
-        }
-        if (maximum) {
-            *maximum = NAN;
-        }
-        return;
-    } else if (floatCount == 1) {
-        float intensity = ((float *)[[self floatData] bytes])[0];
-        if (minimum) {
-            *minimum = intensity;
-        }
-        if (firstQuartile) {
-            *firstQuartile = intensity;
-        }
-        if (secondQuartile) {
-            *secondQuartile = intensity;
-        }
-        if (thirdQuartile) {
-            *thirdQuartile = intensity;
-        }
-        if (maximum) {
-            *maximum = intensity;
-        }
-        return;
-    }
-    
-    float *sorted = malloc(floatCount * sizeof(float));
-    memcpy(sorted, [[self floatData] bytes], floatCount * sizeof(float));
-    vDSP_vsort(sorted, floatCount, 1);
-    
-    if (floatCount % 2) { // floatCount is odd
-        Q2Index = (floatCount - 1) / 2;
-        Q3StartIndex = Q2Index + 1;
-        Q2 = sorted[Q2Index];
-    } else {
-        Q2Index = floatCount/2;
-        Q3StartIndex = Q2Index;
-        Q2 = (sorted[Q2Index] + sorted[Q2Index - 1]) / 2.0f;
-    }
-    QLength = Q2Index;
-    
-    if (QLength % 2) {
-        Q1Index = (QLength - 1) / 2;
-        Q1 = sorted[Q1Index];
+    @synchronized(self) {
+        NSNumber *minimumNumber = [_valueCache objectForKey:@"intesityMinimum"];
+        NSNumber *Q1Number = [_valueCache objectForKey:@"intesityFirstQuartile"];
+        NSNumber *Q2Number = [_valueCache objectForKey:@"intesitySecondQuartile"];
+        NSNumber *Q3Number = [_valueCache objectForKey:@"intesityThirdQuartile"];
+        NSNumber *maximumNumber = [_valueCache objectForKey:@"intesityMaximum"];
         
-        Q3Index = Q1Index + Q3StartIndex;
-        Q3 = sorted[Q3Index];
-    } else {
-        Q1Index = QLength/2;
-        Q1 = (sorted[Q1Index] + sorted[Q1Index - 1]) / 2.0f;
+        if (minimumNumber && Q1Number && Q2Number && Q3Number && maximumNumber) {
+            if (minimum) {
+                *minimum = [minimumNumber floatValue];
+            }
+            if (firstQuartile) {
+                *firstQuartile = [Q1Number floatValue];
+            }
+            if (secondQuartile) {
+                *secondQuartile = [Q2Number floatValue];
+            }
+            if (thirdQuartile) {
+                *thirdQuartile = [Q3Number floatValue];
+            }
+            if (maximum) {
+                *maximum = [maximumNumber floatValue];
+            }
+            return;
+        }
         
-        Q3Index = Q1Index + Q3StartIndex;
-        Q3 = (sorted[Q3Index] + sorted[Q3Index - 1]) / 2.0f;
+        if (floatCount == 0) {
+            if (minimum) {
+                *minimum = NAN;
+            }
+            if (firstQuartile) {
+                *firstQuartile = NAN;
+            }
+            if (secondQuartile) {
+                *secondQuartile = NAN;
+            }
+            if (thirdQuartile) {
+                *thirdQuartile = NAN;
+            }
+            if (maximum) {
+                *maximum = NAN;
+            }
+            return;
+        } else if (floatCount == 1) {
+            float intensity = ((float *)[[self floatData] bytes])[0];
+            if (minimum) {
+                *minimum = intensity;
+            }
+            if (firstQuartile) {
+                *firstQuartile = intensity;
+            }
+            if (secondQuartile) {
+                *secondQuartile = intensity;
+            }
+            if (thirdQuartile) {
+                *thirdQuartile = intensity;
+            }
+            if (maximum) {
+                *maximum = intensity;
+            }
+            return;
+        }
+        
+        float *sorted = malloc(floatCount * sizeof(float));
+        memcpy(sorted, [[self floatData] bytes], floatCount * sizeof(float));
+        vDSP_vsort(sorted, floatCount, 1);
+        
+        if (floatCount % 2) { // floatCount is odd
+            Q2Index = (floatCount - 1) / 2;
+            Q3StartIndex = Q2Index + 1;
+            Q2 = sorted[Q2Index];
+        } else {
+            Q2Index = floatCount/2;
+            Q3StartIndex = Q2Index;
+            Q2 = (sorted[Q2Index] + sorted[Q2Index - 1]) / 2.0f;
+        }
+        QLength = Q2Index;
+        
+        if (QLength % 2) {
+            Q1Index = (QLength - 1) / 2;
+            Q1 = sorted[Q1Index];
+            
+            Q3Index = Q1Index + Q3StartIndex;
+            Q3 = sorted[Q3Index];
+        } else {
+            Q1Index = QLength/2;
+            Q1 = (sorted[Q1Index] + sorted[Q1Index - 1]) / 2.0f;
+            
+            Q3Index = Q1Index + Q3StartIndex;
+            Q3 = (sorted[Q3Index] + sorted[Q3Index - 1]) / 2.0f;
+        }
+        
+        [_valueCache setObject:[NSNumber numberWithFloat:sorted[0]] forKey:@"intesityMinimum"];
+        [_valueCache setObject:[NSNumber numberWithFloat:Q1] forKey:@"intesityFirstQuartile"];
+        [_valueCache setObject:[NSNumber numberWithFloat:Q2] forKey:@"intesitySecondQuartile"];
+        [_valueCache setObject:[NSNumber numberWithFloat:Q3] forKey:@"intesityThirdQuartile"];
+        [_valueCache setObject:[NSNumber numberWithFloat:sorted[floatCount - 1]] forKey:@"intesityMaximum"];
+        
+        if (minimum) {
+            *minimum = sorted[0];
+        }
+        if (firstQuartile) {
+            *firstQuartile = Q1;
+        }
+        if (secondQuartile) {
+            *secondQuartile = Q2;
+        }
+        if (thirdQuartile) {
+            *thirdQuartile = Q3;
+        }
+        if (maximum) {
+            *maximum = sorted[floatCount - 1];
+        }
+        
+        free( sorted);
     }
-    
-    [_valueCache setValue:[NSNumber numberWithFloat:sorted[0]] forKey:@"intesityMinimum"];
-    [_valueCache setValue:[NSNumber numberWithFloat:Q1] forKey:@"intesityFirstQuartile"];
-    [_valueCache setValue:[NSNumber numberWithFloat:Q2] forKey:@"intesitySecondQuartile"];
-    [_valueCache setValue:[NSNumber numberWithFloat:Q3] forKey:@"intesityThirdQuartile"];
-    [_valueCache setValue:[NSNumber numberWithFloat:sorted[floatCount - 1]] forKey:@"intesityMaximum"];
-    
-    if (minimum) {
-        *minimum = sorted[0];
-    }
-    if (firstQuartile) {
-        *firstQuartile = Q1;
-    }
-    if (secondQuartile) {
-        *secondQuartile = Q2;
-    }
-    if (thirdQuartile) {
-        *thirdQuartile = Q3;
-    }
-    if (maximum) {
-        *maximum = sorted[floatCount - 1];
-    }
-    
-    free( sorted);
 }
 
 - (float)intensityInterQuartileRange
@@ -250,28 +254,30 @@
     float unscaledStdDev;
     NSUInteger floatCount = [self floatCount];
     
-    NSNumber *standardDeviationNumber = [_valueCache objectForKey:@"intensityStandardDeviation"];
-    if (standardDeviationNumber) {
-        return [standardDeviationNumber floatValue];
+    @synchronized(self) {
+        NSNumber *standardDeviationNumber = [_valueCache objectForKey:@"intensityStandardDeviation"];
+        if (standardDeviationNumber) {
+            return [standardDeviationNumber floatValue];
+        }
+        
+        if (floatCount == 0) {
+            return NAN;
+        }
+        
+        float *scrap1 = malloc(floatCount * sizeof(float));
+        float *scrap2 = malloc(floatCount * sizeof(float));
+        
+        vDSP_vsadd((float *)[[self floatData] bytes], 1, &negativeMean, scrap1, 1, floatCount);
+        vDSP_vsq(scrap1, 1, scrap2, 1, floatCount);
+        vDSP_sve(scrap2, 1, &unscaledStdDev, floatCount);
+        
+        free(scrap1);
+        free(scrap2);
+        
+        stdDev = sqrtf(unscaledStdDev / (float)floatCount);
+        
+        [_valueCache setObject:[NSNumber numberWithFloat:stdDev] forKey:@"intensityStandardDeviation"];
     }
-    
-    if (floatCount == 0) {
-        return NAN;
-    }
-    
-    float *scrap1 = malloc(floatCount * sizeof(float));
-    float *scrap2 = malloc(floatCount * sizeof(float));
-    
-    vDSP_vsadd((float *)[[self floatData] bytes], 1, &negativeMean, scrap1, 1, floatCount);
-    vDSP_vsq(scrap1, 1, scrap2, 1, floatCount);
-    vDSP_sve(scrap2, 1, &unscaledStdDev, floatCount);
-    
-    free(scrap1);
-    free(scrap2);
-    
-    stdDev = sqrtf(unscaledStdDev / (float)floatCount);
-    
-    [_valueCache setObject:[NSNumber numberWithFloat:stdDev] forKey:@"intensityStandardDeviation"];
     
     return stdDev;
 }
@@ -331,19 +337,6 @@
         _floatData = [[NSData alloc] initWithBytesNoCopy:buffer length:[self floatCount] * sizeof(float) freeWhenDone:YES];
     }
     return _floatData;
-}
-
-//- (NSRange)volumeRangeForROIMaskRun:(OSIROIMaskRun)maskRun
-//{
-//	return NSMakeRange(maskRun.depthIndex*_volumeData.pixelsWide*_volumeData.pixelsHigh + 
-//					   maskRun.heightIndex*_volumeData.pixelsWide + maskRun.widthRange.location, maskRun.widthRange.length);
-//}
-
-
-- (NSRange)volumeRangeForROIMaskIndex:(OSIROIMaskIndex)maskIndex
-{
-	return NSMakeRange(maskIndex.z*_volumeData.pixelsWide*_volumeData.pixelsHigh + 
-					   maskIndex.y*_volumeData.pixelsWide + maskIndex.x, 1);
 }
 
 
