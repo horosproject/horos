@@ -997,7 +997,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
         WADODownload *downloader = [[WADODownload alloc] init];
         
         downloader.showErrorMessage = showErrorMessage;
-        downloader.WADOBaseTotal = localObjectUIDs.count;
+        downloader.WADOBaseTotal = 0;
         downloader.WADOGrandTotal = self.numberImages.integerValue; // For the GUI progress bar
         
         while( (WADOCFind.isExecuting || self.childrenCount) && [[NSThread currentThread] isCancelled] == NO)
@@ -1025,6 +1025,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                                 NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom%@", [self uid], [image seriesInstanceUID], [image uid], ts]];
                                 [urlToDownload addObject: url];
                             }
+                            else
+                                downloader.WADOBaseTotal++;
                         }
                         else NSLog( @"****** no image uid !");
                     }
