@@ -5065,10 +5065,10 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                                 if ( fabs( NSWidth(rect)*pixelSpacingX*NSHeight(rect)*pixelSpacingY) < 1.)
                                     self.textualBoxLine2 = [NSString stringWithFormat: @"Area: %0.1f %cm2 (W:%0.1f %cm H:%0.1f %cm)", fabs( NSWidth(rect)*pixelSpacingX*NSHeight(rect)*pixelSpacingY * 1000000.0), 0xB5, fabs(NSWidth(rect)*pixelSpacingX)*1000.0, 0xB5, fabs(NSHeight(rect)*pixelSpacingY)*1000.0, 0xB5];
                                 else
-                                    self.textualBoxLine2 = [NSString stringWithFormat: @"Area: %0.3f cm2 (W:%0.1f mm H:%0.1f mm)", fabs( NSWidth(rect)*pixelSpacingX*NSHeight(rect)*pixelSpacingY/100.), fabs(NSWidth(rect)*pixelSpacingX), fabs(NSHeight(rect)*pixelSpacingY)];
+                                    self.textualBoxLine2 = [NSString stringWithFormat: @"Area: %0.3f cm2 (W:%0.3f cm H:%0.3f cm)", fabs( NSWidth(rect)*pixelSpacingX*NSHeight(rect)*pixelSpacingY/100.), fabs(NSWidth(rect)*pixelSpacingX)/10., fabs(NSHeight(rect)*pixelSpacingY)/10.];
                             }
                             else
-                                self.textualBoxLine2 = [NSString stringWithFormat: @"Area: %0.3f pix2 (W:%0.1f pix H:%0.1f pix)", fabs( NSWidth(rect)*NSHeight(rect)), fabs(NSWidth(rect)), fabs(NSHeight(rect))];
+                                self.textualBoxLine2 = [NSString stringWithFormat: @"Area: %0.3f pix2 (W:%0.3f pix H:%0.3f pix)", fabs( NSWidth(rect)*NSHeight(rect)), fabs(NSWidth(rect)), fabs(NSHeight(rect))];
                             
                             char *pixelUnit = "";
                             
@@ -5215,12 +5215,12 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                         // <--- US Regions (Oval)
                         {
                             if( [self EllipseArea]*pixelSpacingX*pixelSpacingY < 1.)
-                                self.textualBoxLine2 = [NSString stringWithFormat: @"Area: %0.1f %cm2 (W:%0.1f %cm2 H:%0.1f %cm2)", [self EllipseArea]*pixelSpacingX*pixelSpacingY* 1000000.0, 0xB5, fabs(NSWidth(rect))*pixelSpacingX*10000.0, 0xB5, fabs(NSHeight(rect))*pixelSpacingY*10000.0, 0xB5];
+                                self.textualBoxLine2 = [NSString stringWithFormat: @"Area: %0.1f %cm2 (W:%0.1f %cm2 H:%0.1f %cm2)", [self EllipseArea]*pixelSpacingX*pixelSpacingY* 1000000.0, 0xB5, 2.0*fabs(NSWidth(rect))*pixelSpacingX*10000.0, 0xB5, 2.0*fabs(NSHeight(rect))*pixelSpacingY*10000.0, 0xB5];
                             else
-                                self.textualBoxLine2 = [NSString stringWithFormat: @"Area: %0.3f cm2 (W:%0.1f mm H:%0.1f mm)", [self EllipseArea]*pixelSpacingX*pixelSpacingY/100., fabs(NSWidth(rect))*pixelSpacingX, fabs(NSHeight(rect))*pixelSpacingY];
+                                self.textualBoxLine2 = [NSString stringWithFormat: @"Area: %0.3f cm2 (W:%0.3f cm H:%0.3f cm)", [self EllipseArea]*pixelSpacingX*pixelSpacingY/100., 2.0*fabs(NSWidth(rect))*pixelSpacingX/10., 2.0*fabs(NSHeight(rect))*pixelSpacingY/10.];
                         }
                         else
-                            self.textualBoxLine2 = [NSString stringWithFormat: @"Area: %0.3f pix2 (W:%0.1f pix H:%0.1f pix)", [self EllipseArea], fabs(NSWidth(rect)), fabs(NSHeight(rect))];
+                            self.textualBoxLine2 = [NSString stringWithFormat: @"Area: %0.3f pix2 (W:%0.3f pix H:%0.3f pix)", [self EllipseArea], 2.0*fabs(NSWidth(rect)), 2.0*fabs(NSHeight(rect))];
                         
                         char *pixelUnit = "";
                         
