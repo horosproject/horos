@@ -26,6 +26,8 @@
 
 #import <objc/runtime.h>
 
+static NSMutableArray* tagsCache = nil;
+static NSMutableArray* menuItemsCache = nil;
 
 @interface NSComparisonPredicate (OsiriX)
 
@@ -40,7 +42,6 @@
 
 @implementation O2DicomPredicateEditorView
 
-@synthesize tags = _tags;
 @synthesize tagsSortKey = _tagsSortKey;
 
 @synthesize tag = _tag;
@@ -261,23 +262,25 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
         menu.delegate = self;
         menu.autoenablesItems = NO;
         
-        _menuItems = [[NSMutableArray alloc] init];
-        for (DCMAttributeTag* tag in self.tags) {
-            NSString* title = nil;
-            if ([tag isKindOfClass:[O2DicomPredicateEditorDCMAttributeTag class]])
-                title = [tag description];
-            else title = [NSString stringWithFormat:@"(%04x,%04x) %@", tag.group, tag.element, [[self class] _transformTagName:tag.name]];
-            
-            NSMenuItem* mi = [menu addItemWithTitle:title action:nil keyEquivalent:@""]; // @selector(_setTag:)
-            
-            //            mi.target = self;
-            mi.representedObject = tag;
-            mi.tag = [[self class] tagForTag:tag];
-            
-            [_menuItems addObject:mi];
-            
-//            NSLog(@"mis: %@", _menuItems);
+        if( !menuItemsCache)
+        {
+            menuItemsCache = [[NSMutableArray alloc] init];
+            for (DCMAttributeTag* tag in self.tags) {
+                NSString* title = nil;
+                if ([tag isKindOfClass:[O2DicomPredicateEditorDCMAttributeTag class]])
+                    title = [tag description];
+                else title = [NSString stringWithFormat:@"(%04x,%04x) %@", tag.group, tag.element, [[self class] _transformTagName:tag.name]];
+                
+                NSMenuItem* mi = [menu addItemWithTitle:title action:nil keyEquivalent:@""]; // @selector(_setTag:)
+                
+                mi.representedObject = tag;
+                mi.tag = [[self class] tagForTag:tag];
+                
+                [menuItemsCache addObject:mi];
+            }
         }
+        
+        _menuItems = [[NSMutableArray alloc] initWithArray:menuItemsCache copyItems:YES];
         
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
@@ -573,40 +576,43 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
     return (tag.group<<16)|tag.element;
 }
 
+- (void) setTags:(NSArray *)tags
+{
+    NSLog( @"We should not be here");
+}
+
 - (NSArray*)tags {
-    if (!_tags) {
-        NSMutableArray* tags = [[NSMutableArray alloc] init];
+    if (!tagsCache) {
+        tagsCache = [[NSMutableArray alloc] init];
         
         // common DICOM tags
         for (NSString* dcmTagsKey in [[DCMTagDictionary sharedTagDictionary] allKeys]) {
             DCMAttributeTag* tag = [DCMAttributeTag tagWithTagString:dcmTagsKey];
             O2ValueRepresentation vr = [[self class] valueRepresentationFromVR:tag.vr];
             if (!tag.isPrivate && tag.group != 0x0000 && ((tag.group&0xfff0) != 0xfff0) && vr != SQ && vr != OW && vr != OF && vr != OB && vr != UN)
-                [tags addObject:tag];
+                [tagsCache addObject:tag];
         }
 
         int i = 0, g = 0x0001; // we use group 0x0001 which is private
-        [tags addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"PN" name:@"name" description:NSLocalizedString(@"Patient Name", nil)]];
-        [tags addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"LO" name:@"patientID" description:NSLocalizedString(@"Patient ID", nil)]];
-        [tags addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"CS" name:@"modality" description:NSLocalizedString(@"Modality", nil) cskey:@"Modality"]];
-        [tags addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"DT" name:@"date" description:NSLocalizedString(@"Study Date", nil)]];
-        [tags addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"SH" name:@"id" description:NSLocalizedString(@"Study ID", nil)]];
-        [tags addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"LO" name:@"studyName" description:NSLocalizedString(@"Study Description", nil)]];
-        [tags addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"PN" name:@"referringPhysician" description:NSLocalizedString(@"Referring Physician", nil)]];
-        [tags addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"PN" name:@"performingPhysician" description:NSLocalizedString(@"Performing Physician", nil)]];
-        [tags addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"LO" name:@"institutionName" description:NSLocalizedString(@"Institution", nil)]];
-        [tags addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"CS" name:@"stateText" description:NSLocalizedString(@"Study Status", nil) cskey:@"OsiriX StudyStatus"]];
-        [tags addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"DT" name:@"dateAdded" description:NSLocalizedString(@"Date Added", nil)]];
-        [tags addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"DT" name:@"dateOpened" description:NSLocalizedString(@"Date Opened", nil)]];
-        [tags addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"LT" name:@"comment" description:NSLocalizedString(@"Comments", nil)]];
-        [tags addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"LT" name:@"comment2" description:NSLocalizedString(@"Comments 2", nil)]];
-        [tags addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"LT" name:@"comment3" description:NSLocalizedString(@"Comments 3", nil)]];
-        [tags addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"LT" name:@"comment4" description:NSLocalizedString(@"Comments 4", nil)]];
-        
-        self.tags = tags;
+        [tagsCache addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"PN" name:@"name" description:NSLocalizedString(@"Patient Name", nil)]];
+        [tagsCache addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"LO" name:@"patientID" description:NSLocalizedString(@"Patient ID", nil)]];
+        [tagsCache addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"CS" name:@"modality" description:NSLocalizedString(@"Modality", nil) cskey:@"Modality"]];
+        [tagsCache addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"DT" name:@"date" description:NSLocalizedString(@"Study Date", nil)]];
+        [tagsCache addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"SH" name:@"id" description:NSLocalizedString(@"Study ID", nil)]];
+        [tagsCache addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"LO" name:@"studyName" description:NSLocalizedString(@"Study Description", nil)]];
+        [tagsCache addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"PN" name:@"referringPhysician" description:NSLocalizedString(@"Referring Physician", nil)]];
+        [tagsCache addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"PN" name:@"performingPhysician" description:NSLocalizedString(@"Performing Physician", nil)]];
+        [tagsCache addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"LO" name:@"institutionName" description:NSLocalizedString(@"Institution", nil)]];
+        [tagsCache addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"CS" name:@"stateText" description:NSLocalizedString(@"Study Status", nil) cskey:@"OsiriX StudyStatus"]];
+        [tagsCache addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"DT" name:@"dateAdded" description:NSLocalizedString(@"Date Added", nil)]];
+        [tagsCache addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"DT" name:@"dateOpened" description:NSLocalizedString(@"Date Opened", nil)]];
+        [tagsCache addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"LT" name:@"comment" description:NSLocalizedString(@"Comments", nil)]];
+        [tagsCache addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"LT" name:@"comment2" description:NSLocalizedString(@"Comments 2", nil)]];
+        [tagsCache addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"LT" name:@"comment3" description:NSLocalizedString(@"Comments 3", nil)]];
+        [tagsCache addObject:[O2DicomPredicateEditorDCMAttributeTag tagWithGroup:g element:++i vr:@"LT" name:@"comment4" description:NSLocalizedString(@"Comments 4", nil)]];
     }
     
-    return _tags;
+    return tagsCache;
 }
 
 - (DCMAttributeTag*)tagWithGroup:(int)group element:(int)element {

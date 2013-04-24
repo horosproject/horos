@@ -2793,14 +2793,14 @@ static NSConditionLock *threadLock = nil;
                             
                             if( index != NSNotFound && [[[outlineViewArray objectAtIndex: index] rawNoFiles] intValue] < [[distantStudy noFiles] intValue])
                             {
-                                NSMutableArray *mutableCopy = [[outlineViewArray mutableCopy] autorelease];
-                                
-                                [mutableCopy replaceObjectAtIndex: index withObject: distantStudy];
-                                
-                                outlineViewArray = mutableCopy;
-                                
-                                if( autoretrieve)
+                                if( autoretrieve || [[NSUserDefaults standardUserDefaults] boolForKey: @"automaticallyRetrievePartialStudies"])
                                     [studyToAutoretrieve addObject: distantStudy];
+                                else
+                                {
+                                    NSMutableArray *mutableCopy = [[outlineViewArray mutableCopy] autorelease];
+                                    [mutableCopy replaceObjectAtIndex: index withObject: distantStudy];
+                                    outlineViewArray = mutableCopy;
+                                }
                             }
                         }
                     }
@@ -11008,8 +11008,11 @@ static BOOL needToRezoom;
 	
     [self.database save]; //To save 'dateOpened' field, and allow independentContext to see it
     
-    if( viewer && [[NSUserDefaults standardUserDefaults] boolForKey: @"tileWindowsOrderByStudyDate"])
-        [[AppController sharedAppController] tileWindows: self];
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
+    {
+        if( viewer && [[NSUserDefaults standardUserDefaults] boolForKey: @"tileWindowsOrderByStudyDate"])
+            [[AppController sharedAppController] tileWindows: self];
+    }
     
 	return createdViewer;
 }
@@ -17936,8 +17939,13 @@ static volatile int numberOfThreadsForJPEG = 0;
 		{
 			NSString *str = [image.series.study roiPathForImage: image];
 			
-			if( str && [[NSUnarchiver unarchiveObjectWithData: [SRAnnotation roiFromDICOM: str]] count] > 0)
-				[roisImagesArray addObject: image];
+            @try {
+                if( str && [[NSUnarchiver unarchiveObjectWithData: [SRAnnotation roiFromDICOM: str]] count] > 0)
+                    [roisImagesArray addObject: image];
+            }
+            @catch (NSException *exception) {
+                N2LogException( exception);
+            }
 		}
 		
 		if( sameSeries)

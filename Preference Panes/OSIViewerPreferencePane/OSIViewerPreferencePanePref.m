@@ -30,127 +30,53 @@ static NSString* UserDefaultsObservingContext = @"UserDefaultsObservingContext";
 		[self mainViewDidLoad];
         
         [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.ReserveScreenForDB" options:0 context:UserDefaultsObservingContext];
+        
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.AUTOTILING" options:0 context:UserDefaultsObservingContext];
 	}
 	
 	return self;
 }
 
--(void)dealloc {
+- (void) dealloc
+{
 	NSLog(@"dealloc OSIViewerPreferencePanePref");
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.ReserveScreenForDB"];
     [super dealloc];
 }
 
--(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (context != UserDefaultsObservingContext) {
-        return [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-    }
-    
-    [self willChangeValueForKey:@"screensThumbnail"];
-    [self didChangeValueForKey:@"screensThumbnail"];
-}
-
-
-- (void) enableControls: (BOOL) val
+- (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-//	if( val == YES)
-//	{
-//		[[NSUserDefaults standardUserDefaults] setBool:[[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"] forKey: @"AUTOTILING"];
-//		[totoku12Bit setEnabled: [[NSUserDefaults standardUserDefaults] boolForKey:@"is12bitPluginAvailable"]]; // DONE THRU BINDINGS
-//	}
-//	NSLog(@"%@", totoku12Bit);
-//	[characterSetPopup setEnabled: val];
-//	[addServerDICOM setEnabled: val];
-//	[addServerSharing setEnabled: val];
+    if (context != UserDefaultsObservingContext)
+        return [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    
+     if( [keyPath isEqualToString: @"values.ReserveScreenForDB"])
+     {
+         [self willChangeValueForKey:@"screensThumbnail"];
+         [self didChangeValueForKey:@"screensThumbnail"];
+     }
+    
+    if( [keyPath isEqualToString: @"values.AUTOTILING"])
+    {
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
+            [[NSUserDefaults standardUserDefaults] setInteger:0 forKey: @"WINDOWSIZEVIEWER"];
+    }
 }
 
 - (void) willUnselect
 {
 	[[[self mainView] window] makeFirstResponder: nil];
-	
-	[[NSUserDefaults standardUserDefaults] setObject:[iPhotoAlbumName stringValue] forKey: @"ALBUMNAME"];
 }
 
 - (void) mainViewDidLoad
 {
-	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-
-	[totoku12Bit setEnabled: [[NSUserDefaults standardUserDefaults] boolForKey:@"is12bitPluginAvailable"]];
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"is12bitPluginAvailable"] == NO)
-	{
 		[[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"automatic12BitTotoku"];
-	}
-
-	[sizeMatrix selectCellWithTag: [defaults boolForKey: @"ORIGINALSIZE"]];
-	
-	[openViewerCheck setState: [defaults boolForKey: @"OPENVIEWER"]];
-	[reverseScrollWheelCheck setState: [defaults boolForKey: @"Scroll Wheel Reversed"]];
-	[iPhotoAlbumName setStringValue: [defaults stringForKey: @"ALBUMNAME"]];
-	[toolbarPanelMatrix selectCellWithTag:[defaults boolForKey: @"USEALWAYSTOOLBARPANEL2"]];
-	[autoHideMatrix setState: [defaults boolForKey: @"AUTOHIDEMATRIX"]];
-	[tilingCheck setState: [defaults boolForKey: @"AUTOTILING"]];
-	
-	[windowSizeMatrix selectCellWithTag: [defaults integerForKey: @"WINDOWSIZEVIEWER"]];
-	
-	int i = [defaults integerForKey: @"MAX3DTEXTURE"], x = 1;
-	
-	while( i > 32)
-	{
-		i /= 2;
-		x++;
-	}
 }
 
--(AppController*)appController {
+- (AppController*) appController
+{
 	return [AppController sharedAppController];
 }
-
-- (IBAction) setAutoTiling: (id) sender
-{
-	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey: @"AUTOTILING"];
-	
-	if( [sender state])
-	{
-		[[NSUserDefaults standardUserDefaults] setInteger:0 forKey: @"WINDOWSIZEVIEWER"];
-		[windowSizeMatrix selectCellWithTag: 0];
-	}
-}
-
-- (IBAction) setWindowSizeViewer: (id) sender
-{
-	[[NSUserDefaults standardUserDefaults] setInteger:[[sender selectedCell] tag] forKey: @"WINDOWSIZEVIEWER"];
-}
-
-- (IBAction) setToolbarMatrix: (id) sender
-{
-	[[NSUserDefaults standardUserDefaults] setBool:[[sender selectedCell] tag] forKey: @"USEALWAYSTOOLBARPANEL2"];
-}
-
-- (IBAction) setAutoHideMatrixState: (id) sender
-{
-	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey: @"AUTOHIDEMATRIX"];
-}
-
-- (IBAction) setExportSize: (id) sender
-{
-	[[NSUserDefaults standardUserDefaults] setBool:[[sender selectedCell] tag] forKey: @"ORIGINALSIZE"];
-}
-
-- (IBAction) setReverseScrollWheel: (id) sender
-{
-	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey: @"Scroll Wheel Reversed"];
-}
-
-- (IBAction) setOpenViewerBut: (id) sender
-{
-	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey: @"OPENVIEWER"];
-}
-
-- (IBAction) setAlbumName: (id) sender
-{
-	[[NSUserDefaults standardUserDefaults] setObject:[iPhotoAlbumName stringValue] forKey: @"ALBUMNAME"];
-}
-
 @end
 
 

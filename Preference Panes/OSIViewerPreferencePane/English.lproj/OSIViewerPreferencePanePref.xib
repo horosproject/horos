@@ -2,9 +2,9 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1070</int>
-		<string key="IBDocument.SystemVersion">12D78</string>
+		<string key="IBDocument.SystemVersion">12E33a</string>
 		<string key="IBDocument.InterfaceBuilderVersion">3084</string>
-		<string key="IBDocument.AppKitVersion">1187.37</string>
+		<string key="IBDocument.AppKitVersion">1187.39</string>
 		<string key="IBDocument.HIToolboxVersion">626.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -1693,7 +1693,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<reference key="NSWindow"/>
 					<reference key="NSNextKeyView" ref="199628005"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
 				<string key="NSMinSize">{224.66300000000001, 32}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -1711,126 +1711,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<reference key="destination" ref="690424935"/>
 					</object>
 					<int key="connectionID">26</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">setOpenViewerBut:</string>
-						<reference key="source" ref="969704240"/>
-						<reference key="destination" ref="853539574"/>
-					</object>
-					<int key="connectionID">145</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">openViewerCheck</string>
-						<reference key="source" ref="969704240"/>
-						<reference key="destination" ref="853539574"/>
-					</object>
-					<int key="connectionID">148</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">setReverseScrollWheel:</string>
-						<reference key="source" ref="969704240"/>
-						<reference key="destination" ref="870973193"/>
-					</object>
-					<int key="connectionID">199</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">autoHideMatrix</string>
-						<reference key="source" ref="969704240"/>
-						<reference key="destination" ref="229787279"/>
-					</object>
-					<int key="connectionID">230</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">reverseScrollWheelCheck</string>
-						<reference key="source" ref="969704240"/>
-						<reference key="destination" ref="870973193"/>
-					</object>
-					<int key="connectionID">232</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">setAutoHideMatrixState:</string>
-						<reference key="source" ref="969704240"/>
-						<reference key="destination" ref="229787279"/>
-					</object>
-					<int key="connectionID">234</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">noInterpolationCheck</string>
-						<reference key="source" ref="969704240"/>
-						<reference key="destination" ref="446106763"/>
-					</object>
-					<int key="connectionID">235</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">windowSizeMatrix</string>
-						<reference key="source" ref="969704240"/>
-						<reference key="destination" ref="782491095"/>
-					</object>
-					<int key="connectionID">257</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">setWindowSizeViewer:</string>
-						<reference key="source" ref="969704240"/>
-						<reference key="destination" ref="782491095"/>
-					</object>
-					<int key="connectionID">258</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">setToolbarMatrix:</string>
-						<reference key="source" ref="969704240"/>
-						<reference key="destination" ref="708177298"/>
-					</object>
-					<int key="connectionID">267</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">toolbarPanelMatrix</string>
-						<reference key="source" ref="969704240"/>
-						<reference key="destination" ref="708177298"/>
-					</object>
-					<int key="connectionID">269</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">iPhotoAlbumName</string>
-						<reference key="source" ref="969704240"/>
-						<reference key="destination" ref="44240982"/>
-					</object>
-					<int key="connectionID">278</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">tilingCheck</string>
-						<reference key="source" ref="969704240"/>
-						<reference key="destination" ref="405721140"/>
-					</object>
-					<int key="connectionID">299</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">setAutoTiling:</string>
-						<reference key="source" ref="969704240"/>
-						<reference key="destination" ref="405721140"/>
-					</object>
-					<int key="connectionID">300</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">totoku12Bit</string>
-						<reference key="source" ref="969704240"/>
-						<reference key="destination" ref="640506955"/>
-					</object>
-					<int key="connectionID">395</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -1855,6 +1735,54 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 					</object>
 					<int key="connectionID">441</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.OPENVIEWER</string>
+						<reference key="source" ref="853539574"/>
+						<reference key="destination" ref="749501989"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="853539574"/>
+							<reference key="NSDestination" ref="749501989"/>
+							<string key="NSLabel">value: values.OPENVIEWER</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.OPENVIEWER</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">538</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.Scroll Wheel Reversed</string>
+						<reference key="source" ref="870973193"/>
+						<reference key="destination" ref="749501989"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="870973193"/>
+							<reference key="NSDestination" ref="749501989"/>
+							<string key="NSLabel">value: values.Scroll Wheel Reversed</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.Scroll Wheel Reversed</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">537</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.AUTOHIDEMATRIX</string>
+						<reference key="source" ref="229787279"/>
+						<reference key="destination" ref="749501989"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="229787279"/>
+							<reference key="NSDestination" ref="749501989"/>
+							<string key="NSLabel">value: values.AUTOHIDEMATRIX</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.AUTOHIDEMATRIX</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">536</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -1891,6 +1819,70 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 					</object>
 					<int key="connectionID">318</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">selectedTag: values.WINDOWSIZEVIEWER</string>
+						<reference key="source" ref="782491095"/>
+						<reference key="destination" ref="749501989"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="782491095"/>
+							<reference key="NSDestination" ref="749501989"/>
+							<string key="NSLabel">selectedTag: values.WINDOWSIZEVIEWER</string>
+							<string key="NSBinding">selectedTag</string>
+							<string key="NSKeyPath">values.WINDOWSIZEVIEWER</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">533</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">selectedTag: values.USEALWAYSTOOLBARPANEL2</string>
+						<reference key="source" ref="708177298"/>
+						<reference key="destination" ref="749501989"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="708177298"/>
+							<reference key="NSDestination" ref="749501989"/>
+							<string key="NSLabel">selectedTag: values.USEALWAYSTOOLBARPANEL2</string>
+							<string key="NSBinding">selectedTag</string>
+							<string key="NSKeyPath">values.USEALWAYSTOOLBARPANEL2</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">534</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.ALBUMNAME</string>
+						<reference key="source" ref="44240982"/>
+						<reference key="destination" ref="749501989"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="44240982"/>
+							<reference key="NSDestination" ref="749501989"/>
+							<string key="NSLabel">value: values.ALBUMNAME</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.ALBUMNAME</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">535</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.AUTOTILING</string>
+						<reference key="source" ref="405721140"/>
+						<reference key="destination" ref="749501989"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="405721140"/>
+							<reference key="NSDestination" ref="749501989"/>
+							<string key="NSLabel">value: values.AUTOTILING</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.AUTOTILING</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">539</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -2491,6 +2483,22 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 					</object>
 					<int key="connectionID">531</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: values.AUTOTILING</string>
+						<reference key="source" ref="1045948053"/>
+						<reference key="destination" ref="749501989"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="1045948053"/>
+							<reference key="NSDestination" ref="749501989"/>
+							<string key="NSLabel">enabled: values.AUTOTILING</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">values.AUTOTILING</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">532</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -3419,7 +3427,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">531</int>
+			<int key="maxID">539</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -3466,109 +3474,17 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<object class="IBPartialClassDescription">
 					<string key="className">OSIViewerPreferencePanePref</string>
 					<string key="superclassName">NSPreferencePane</string>
-					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="setAlbumName:">id</string>
-						<string key="setAutoHideMatrixState:">id</string>
-						<string key="setAutoTiling:">id</string>
-						<string key="setExportSize:">id</string>
-						<string key="setOpenViewerBut:">id</string>
-						<string key="setReverseScrollWheel:">id</string>
-						<string key="setToolbarMatrix:">id</string>
-						<string key="setWindowSizeViewer:">id</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="setAlbumName:">
-							<string key="name">setAlbumName:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="setAutoHideMatrixState:">
-							<string key="name">setAutoHideMatrixState:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="setAutoTiling:">
-							<string key="name">setAutoTiling:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="setExportSize:">
-							<string key="name">setExportSize:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="setOpenViewerBut:">
-							<string key="name">setOpenViewerBut:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="setReverseScrollWheel:">
-							<string key="name">setReverseScrollWheel:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="setToolbarMatrix:">
-							<string key="name">setToolbarMatrix:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="setWindowSizeViewer:">
-							<string key="name">setWindowSizeViewer:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="outlets">
-						<string key="autoHideMatrix">NSButton</string>
-						<string key="iPhotoAlbumName">NSTextField</string>
-						<string key="mainWindow">NSWindow</string>
-						<string key="openViewerCheck">NSButton</string>
-						<string key="reverseScrollWheelCheck">NSButton</string>
-						<string key="screensButton">NSButton</string>
-						<string key="sizeMatrix">NSMatrix</string>
-						<string key="tilingCheck">NSButton</string>
-						<string key="toolbarPanelMatrix">NSMatrix</string>
-						<string key="totoku12Bit">NSButton</string>
-						<string key="windowSizeMatrix">NSMatrix</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<object class="IBToOneOutletInfo" key="autoHideMatrix">
-							<string key="name">autoHideMatrix</string>
-							<string key="candidateClassName">NSButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="iPhotoAlbumName">
-							<string key="name">iPhotoAlbumName</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="mainWindow">
+					<object class="NSMutableDictionary" key="outlets">
+						<string key="NS.key.0">mainWindow</string>
+						<string key="NS.object.0">NSWindow</string>
+					</object>
+					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<string key="NS.key.0">mainWindow</string>
+						<object class="IBToOneOutletInfo" key="NS.object.0">
 							<string key="name">mainWindow</string>
 							<string key="candidateClassName">NSWindow</string>
 						</object>
-						<object class="IBToOneOutletInfo" key="openViewerCheck">
-							<string key="name">openViewerCheck</string>
-							<string key="candidateClassName">NSButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="reverseScrollWheelCheck">
-							<string key="name">reverseScrollWheelCheck</string>
-							<string key="candidateClassName">NSButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="screensButton">
-							<string key="name">screensButton</string>
-							<string key="candidateClassName">NSButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="sizeMatrix">
-							<string key="name">sizeMatrix</string>
-							<string key="candidateClassName">NSMatrix</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="tilingCheck">
-							<string key="name">tilingCheck</string>
-							<string key="candidateClassName">NSButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="toolbarPanelMatrix">
-							<string key="name">toolbarPanelMatrix</string>
-							<string key="candidateClassName">NSMatrix</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="totoku12Bit">
-							<string key="name">totoku12Bit</string>
-							<string key="candidateClassName">NSButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="windowSizeMatrix">
-							<string key="name">windowSizeMatrix</string>
-							<string key="candidateClassName">NSMatrix</string>
-						</object>
-					</dictionary>
+					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">./Classes/OSIViewerPreferencePanePref.h</string>

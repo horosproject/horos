@@ -28,7 +28,7 @@
 
 @implementation WADODownload
 
-@synthesize _abortAssociation, showErrorMessage, countOfSuccesses;
+@synthesize _abortAssociation, showErrorMessage, countOfSuccesses, WADOGrandTotal, WADOBaseTotal;
 
 + (void) errorMessage:(NSArray*) msg
 {
@@ -193,7 +193,9 @@
             
             [[LogManager currentLogManager] addLogLine: logEntry];
             
-            if( WADOTotal)
+            if( WADOGrandTotal)
+                [[NSThread currentThread] setProgress: (float) ((WADOTotal - WADOThreads) + WADOBaseTotal) / (float) WADOGrandTotal];
+            else if( WADOTotal)
                 [[NSThread currentThread] setProgress: 1.0 - (float) WADOThreads / (float) WADOTotal];
             
             // To remove the '.'

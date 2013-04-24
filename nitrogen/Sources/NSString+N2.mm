@@ -163,7 +163,7 @@ NSString* N2NonNullString(NSString* s) {
 										 @"&lt;", @"<",
 										 @"&gt;", @">",
 									/*	 @"&amp;", @"&",	*/
-										 @"&apos;", @"'",
+										 @"&#39;", @"'", // &#39; &apos;
 										 @"&quot;", @"\"",
 										 NULL] retain];
 	

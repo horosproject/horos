@@ -253,7 +253,7 @@
 		[NSException raise:NSGenericException format:NSLocalizedString(@"%@ is not an email address.", NULL), email];
 	
     
-    NSArray *existingUsers = [self.database usersWithPredicate:[NSPredicate predicateWithFormat:@"email == %@", email]];
+    NSArray *existingUsers = [self.database.independentDatabase usersWithPredicate:[NSPredicate predicateWithFormat:@"email == %@", email]];
     
     WebPortalUser* user = nil;
     

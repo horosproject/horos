@@ -72,7 +72,6 @@ enum
     
     IBOutlet NSView*                        refreshGroup;
 	
-    BOOL                                    autoRefreshQueryInSeconds;
 	int										autoQueryRemainingSecs[ MAXINSTANCE];
 	IBOutlet NSTextField					*autoQueryCounter;
 	

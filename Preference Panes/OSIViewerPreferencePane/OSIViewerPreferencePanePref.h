@@ -18,32 +18,10 @@
 
 @interface OSIViewerPreferencePanePref : NSPreferencePane 
 {
-	IBOutlet NSButton						*autoHideMatrix,
-											*openViewerCheck,
-											*reverseScrollWheelCheck,
-											*tilingCheck,
-											*totoku12Bit;
-	
-	IBOutlet NSMatrix						*sizeMatrix,
-											*windowSizeMatrix,
-											*toolbarPanelMatrix;
-											
-	IBOutlet NSTextField					*iPhotoAlbumName;
-	
-	IBOutlet NSWindow						*mainWindow;
-    
-    IBOutlet NSButton* screensButton;
+	IBOutlet NSWindow *mainWindow;
 }
 
--(AppController*)appController;
+- (AppController*) appController;
 - (void) mainViewDidLoad;
-- (IBAction) setToolbarMatrix: (id) sender;
-- (IBAction) setExportSize: (id) sender;
-- (IBAction) setReverseScrollWheel: (id) sender;
-- (IBAction) setOpenViewerBut: (id) sender;
-- (IBAction) setAlbumName: (id) sender;
-- (IBAction) setAutoHideMatrixState: (id) sender;
-- (IBAction) setWindowSizeViewer: (id) sender;
-- (IBAction) setAutoTiling: (id) sender;
 
 @end
