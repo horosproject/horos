@@ -515,8 +515,10 @@ static DicomDatabase* activeLocalDatabase = nil;
     if( found == NO)
         N2LogStackTrace( @"*************** WTF");
     
-    if( databasesDictionary.count > 100)
+    #ifndef NDEBUG
+    if( databasesDictionary.count > 50)
         NSLog( @"******** WARNING databasesDictionary.count is very high = %d", databasesDictionary.count);
+    #endif
     
     [databasesDictionaryLock unlock]; //We are locked from -(oneway void) release
     
