@@ -4256,7 +4256,7 @@ static BOOL initialized = NO;
         screens = [[[NSScreen screens] mutableCopy] autorelease];
 	
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"ReserveScreenForDB"] && [screens containsObject:[dbWindow screen]] && [screens count] > 1)
-        [screens removeObject:[dbWindow screen]];
+        [screens removeObjectIdenticalTo:[dbWindow screen]];
     
 	// arrange them left to right
     [screens sortUsingComparator:^NSComparisonResult(id o1, id o2) {
@@ -4266,16 +4266,6 @@ static BOOL initialized = NO;
         if (c1 > c2) return NSOrderedDescending;
         return NSOrderedSame;
     }];
-
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseDBScreenAtLast"])
-    {
-        // only use the database screen last
-        NSScreen* dbscreen = [dbWindow screen];
-        if ([screens containsObject:dbscreen]) {
-            [screens removeObject:dbscreen];
-            [screens addObject:dbscreen];
-        }
-    }
     
     return screens;
 }
@@ -4633,11 +4623,9 @@ static BOOL initialized = NO;
 	NSRect screenRect =  screenFrame();
 	BOOL keepSameStudyOnSameScreen = [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesTogetherOnSameScreen"];
 	NSMutableArray *studyList = [NSMutableArray array];
-	int keyWindow = 0, numberOfMonitors;	
-	NSArray *screens = [self viewerScreens];
-	
+	int keyWindow = 0;	
+    
 	delayedTileWindows = NO;
-	numberOfMonitors = [screens count];
 	
 	[AppController checkForPreferencesUpdate: NO];
 	[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"COPYSETTINGS"];
@@ -4655,6 +4643,16 @@ static BOOL initialized = NO;
     //Retain windows
     NSArray *windows = [cWindows valueForKey: @"window"];
     
+	NSMutableArray* screens = [[[self viewerScreens] mutableCopy] autorelease];
+
+    if (viewersList.count < screens.count && [[NSUserDefaults standardUserDefaults] boolForKey: @"UseDBScreenAtLast"])
+    {
+        NSScreen* dbscreen = [dbWindow screen];
+        [screens removeObjectIdenticalTo:dbscreen];
+    }
+
+    int numberOfMonitors = [screens count];
+
 	NSMutableArray *cResult = [NSMutableArray array];
     
 	@try
