@@ -386,8 +386,10 @@ static NSRecursiveLock *dbModifyLock = nil;
 			[self setPrimitiveValue: [rootDict valueForKey: @"stateText"] forKey: @"stateText"];
 			[self didChangeValueForKey: @"stateText"];
             
-			NSArray *albums = [[DicomDatabase databaseForContext:[self managedObjectContext]] albums];
-			
+            NSFetchRequest *req = [NSFetchRequest fetchRequestWithEntityName: @"Album"];
+            req.predicate = [NSPredicate predicateWithValue: YES];
+            NSArray* albums = [self.managedObjectContext executeFetchRequest: req error: nil];
+            
 			for( NSString *name in [rootDict valueForKey: @"albums"])
 			{
 				NSUInteger index = [[albums valueForKey: @"name"] indexOfObject: name];
@@ -1642,8 +1644,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 					}
 				}
                 
-                DicomDatabase* database = [DicomDatabase databaseForContext:self.managedObjectContext];
-				[database save:nil];
+				[self.managedObjectContext save:nil];
 				
 				[r setValue: [NSNumber numberWithBool: YES] forKeyPath: @"inDatabaseFolder"];
 			}
@@ -1740,8 +1741,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 
                 [self setNumberOfImages: nil];
                 
-                DicomDatabase* database = [DicomDatabase databaseForContext:self.managedObjectContext];
-				[database save:nil];
+				[self.managedObjectContext save:nil];
 
 				[r setValue: [NSNumber numberWithBool: YES] forKeyPath: @"inDatabaseFolder"];
 			}
@@ -1800,8 +1800,7 @@ static NSRecursiveLock *dbModifyLock = nil;
                 
                 [self setNumberOfImages: nil];
                 
-                DicomDatabase* database = [DicomDatabase databaseForContext:self.managedObjectContext];
-				[database save:nil];
+				[self.managedObjectContext save:nil];
 
 				[r setValue: [NSNumber numberWithBool: YES] forKeyPath: @"inDatabaseFolder"];
 			}

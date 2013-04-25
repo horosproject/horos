@@ -166,7 +166,6 @@ static DicomDatabase* defaultDatabase = nil;
 }
 
 static NSMutableDictionary *databasesDictionary = [[NSMutableDictionary alloc] init];
-static NSMutableDictionary *databasesContextsDictionary = [[NSMutableDictionary alloc] init];
 static NSRecursiveLock *databasesDictionaryLock = [[NSRecursiveLock alloc] init];
 
 +(NSArray*)allDatabases
@@ -197,17 +196,13 @@ static NSRecursiveLock *databasesDictionaryLock = [[NSRecursiveLock alloc] init]
         if (![[databasesDictionary allValues] containsObject: [NSValue valueWithPointer: db]] && ![databasesDictionary objectForKey:db.baseDirPath])
         {
             [databasesDictionary setObject: [NSValue valueWithPointer: db] forKey:db.baseDirPath];
-            [databasesContextsDictionary setObject: db.managedObjectContext forKey:db.baseDirPath];
         }
         else
         {
-            NSDate* k = [NSDate date];
+            NSValue* k = [NSValue valueWithPointer: db];
             
             if (![databasesDictionary objectForKey:k])
-            {
                 [databasesDictionary setObject: [NSValue valueWithPointer: db] forKey:k];
-                [databasesContextsDictionary setObject: db.managedObjectContext forKey:k];
-            }
         }
         
 		[databasesDictionaryLock unlock];
@@ -279,7 +274,6 @@ static NSRecursiveLock *databasesDictionaryLock = [[NSRecursiveLock alloc] init]
                     // we must return a valid DicomDatabase with the specified context
                     DicomDatabase* db = [[[DicomDatabase alloc] initWithPath:dbi.baseDirPath context:c mainDatabase:dbi] autorelease];
                     db.name = dbi.name;
-                    returnedDB = db;
                 }
             }
         }
@@ -512,16 +506,17 @@ static DicomDatabase* activeLocalDatabase = nil;
     BOOL found = NO;
     for(id key in [NSDictionary dictionaryWithDictionary: databasesDictionary])
     {
-        if ( [[databasesDictionary objectForKey: key] pointerValue] == (void*) self)
+        if( [[databasesDictionary objectForKey: key] pointerValue] == (void*) self)
         {
-            [databasesContextsDictionary removeObjectForKey: key];
             [databasesDictionary removeObjectForKey: key];
-            
             found = YES;
         }
     }
     if( found == NO)
         N2LogStackTrace( @"*************** WTF");
+    
+    if( databasesDictionary.count > 100)
+        NSLog( @"******** WARNING databasesDictionary.count is very high = %d", databasesDictionary.count);
     
     [databasesDictionaryLock unlock]; //We are locked from -(oneway void) release
     

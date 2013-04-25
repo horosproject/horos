@@ -507,12 +507,11 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 
 - (void) movieDCMPixLoad: (NSDictionary*) dict
 {
-	[dict retain];
-	
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	NSArray *dicomImageArray = [dict valueForKey: @"DicomImageArray"];
-	
+    DicomDatabase *idd = self.portal.dicomDatabase.independentDatabase;
+    NSArray *dicomImageArray = [idd objectsWithIDs: [dict valueForKey: @"DicomImageArray"]];
+    
 	int location = [[dict valueForKey: @"location"] unsignedIntValue];
 	int length = [[dict valueForKey: @"length"] unsignedIntValue];
 	int width = [[dict valueForKey: @"width"] floatValue];
@@ -596,8 +595,6 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 	
 	[pool release];
 	
-	[dict release];
-	
 	@synchronized( self)
 	{
 		DCMPixLoadingThreads--;
@@ -649,6 +646,9 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		{
 			int noOfThreads = [[NSProcessInfo processInfo] processorCount];
 			
+            if( noOfThreads > 12)
+                noOfThreads = 12;
+            
 			NSRange range = NSMakeRange( 0, 1+ ([dicomImageArray count] / noOfThreads));
 						
 			if( DCMPixLoadingLock == nil)
@@ -695,7 +695,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 															[NSNumber numberWithFloat: height], @"height",
 															outFile, @"outFile",
 															fileName, @"fileName",
-															dicomImageArray, @"DicomImageArray",
+															[dicomImageArray valueForKey: @"objectID"], @"DicomImageArray",
                                                             [NSValue valueWithPointer:&fps], @"fpsP", nil]];
 					}
 					
