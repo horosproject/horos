@@ -42,7 +42,7 @@
 			[imagePaths addObject:image.completePath];
 	
 	thread.status = NSLocalizedString(@"Opening database...", nil);
-	DicomDatabase* dstDatabase = [[DicomDatabase databaseAtPath:destination.location] independentDatabase];
+	DicomDatabase* dstDatabase = [[io objectAtIndex:3] independentDatabase];
 	
     thread.status = [NSString stringWithFormat:NSLocalizedString(@"Copying %@ %@...", nil), N2LocalizedDecimal( imagePaths.count), (imagePaths.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil)) ];
 	NSMutableArray* dstPaths = [NSMutableArray array];
@@ -248,9 +248,9 @@
     {
 		if ([destination isKindOfClass:[LocalDatabaseNodeIdentifier class]]) { // local OsiriX to local OsiriX
             
-            [DicomDatabase databaseAtPath:destination.location]; // Create the mainDatabase on the MAIN thread, if necessary !
+            DicomDatabase *dst = [DicomDatabase databaseAtPath:destination.location]; // Create the mainDatabase on the MAIN thread, if necessary !
             
-            NSThread* thread = [[[NSThread alloc] initWithTarget:self selector:@selector(copyImagesToLocalBrowserSourceThread:) object:[NSArray arrayWithObjects: [dicomImages valueForKey:@"objectID"], destination, _database, NULL]] autorelease];
+            NSThread* thread = [[[NSThread alloc] initWithTarget:self selector:@selector(copyImagesToLocalBrowserSourceThread:) object:[NSArray arrayWithObjects: [dicomImages valueForKey:@"objectID"], destination, _database, dst, NULL]] autorelease];
             thread.name = NSLocalizedString(@"Copying images...", nil);
             thread.supportsCancel = YES;
             [[ThreadsManager defaultManager] addThreadAndStart:thread];
