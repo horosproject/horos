@@ -2866,24 +2866,30 @@ extern "C"
 
 -(void) query:(id)sender
 {
-	if ([sender isKindOfClass:[NSSearchField class]])
-	{
-		NSString	*chars = [[NSApp currentEvent] characters];
-		
-		if( [chars length])
-		{
-			if( [chars characterAtIndex:0] != 13 && [chars characterAtIndex:0] != 3) return;
-		}
-	}
-	
-	[self autoQueryTimer: self];
-	
-	[self queryWithDisplayingErrors: YES];
-	
-	queryButtonPressed = YES;
-	
-	if ([sender isKindOfClass:[NSSearchField class]])
-		[sender selectText: self];
+    @try
+    {
+        if ([sender isKindOfClass:[NSSearchField class]])
+        {
+            NSString	*chars = [[NSApp currentEvent] characters];
+            
+            if( [chars length])
+            {
+                if( [chars characterAtIndex:0] != 13 && [chars characterAtIndex:0] != 3) return;
+            }
+        }
+        
+        [self autoQueryTimer: self];
+        
+        [self queryWithDisplayingErrors: YES];
+        
+        queryButtonPressed = YES;
+        
+        if ([sender isKindOfClass:[NSSearchField class]])
+            [sender selectText: self];
+    }
+    @catch ( NSException *e) {
+        N2LogException( e);
+    }
 }
 
 - (void) performQuery:(NSNumber*) showErrors
