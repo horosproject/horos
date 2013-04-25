@@ -2742,6 +2742,42 @@ static BOOL initialized = NO;
                         }
                     }
                 }
+                
+                // now, sometimes databases point to other volumes for data storage through the DBFOLDER_LOCATION file, so if it's the case verify that that volume is mounted, too
+                dataBasePath = [DicomDatabase baseDirPathForPath:dataBasePath]; // we know this is the ".../OsiriX Data" path
+                // TODO: sometimes people use an alias... and if it's an alias, we should check that it points to an available volume..... should.
+                NSString* dataBaseDataPath = [NSString stringWithContentsOfFile:[dataBasePath stringByAppendingPathComponent:@"DBFOLDER_LOCATION"] encoding:NSUTF8StringEncoding error:NULL];
+                if ([dataBaseDataPath hasPrefix:@"/Volumes/"]) {
+                    NSString* volumePath = [[[dataBaseDataPath componentsSeparatedByString:@"/"] subarrayWithRange:NSMakeRange(0,3)] componentsJoinedByString:@"/"];
+                    if (![[NSFileManager defaultManager] fileExistsAtPath:volumePath]) {
+                        NSPanel* dialog = [NSPanel alertWithTitle:@"OsiriX Data"
+                                                          message:[NSString stringWithFormat:NSLocalizedString(@"OsiriX is configured to use the database with data located at %@. This volume is currently not available, most likely because it hasn't yet been mounted by the system, or because it is not plugged in or is turned off, or because you don't have write permissions for this location. OsiriX will wait for a few minutes, then give up and ignore this highly dangerous situation.", nil), dataBaseDataPath]
+                                                    defaultButton:@"Quit"
+                                                  alternateButton:@"Continue"
+                                                             icon:nil];
+                        NSModalSession session = [NSApp beginModalSessionForWindow:dialog];
+                        
+                        NSTimeInterval endTime = [NSDate timeIntervalSinceReferenceDate]+10*60; // if ignored, the dialog stays up for 10 minutes
+                        for (;;) {
+                            NSInteger r = [NSApp runModalSession:session];
+                            if (r == NSAlertDefaultReturn) // default button says Quit
+                                exit(0);
+                            else if (r == NSAlertAlternateReturn) // alternate button says Continue
+                                break;
+                            if ([[NSFileManager defaultManager] fileExistsAtPath:volumePath]) // the volume has become available, we can close the dialog
+                                break;
+                            if ([NSDate timeIntervalSinceReferenceDate] > endTime) { // time's out, we close the dialog
+                                NSLog(@"Warning: after waiting for 10 minutes, OsiriX is switching to the default database location because %@ is still not available", volumePath);
+                                break;
+                            }
+                        }
+                        
+                        [NSApp endModalSession:session];
+                        [dialog orderOut:self];
+                    }
+                }
+                
+                
 				
                 int processors;
                 int mib[2] = {CTL_HW, HW_NCPU};
