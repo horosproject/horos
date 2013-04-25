@@ -791,8 +791,13 @@ static float deg2rad = M_PI / 180.0f;
 						dataset->putAndInsertString( DCM_SeriesNumber, [[NSString stringWithFormat: @"%d", exportSeriesNumber] UTF8String]);
 					
 					if( modalityAsSource == NO || spp == 3)
+                    {
 						dataset->putAndInsertString( DCM_Modality, "SC");
-					
+                        dataset->putAndInsertString( DCM_MediaStorageSOPClassUID, UID_SecondaryCaptureImageStorage);
+                    }
+                    else
+                        delete dataset->remove( DCM_MediaStorageSOPClassUID);
+                    
 					dataset->putAndInsertString( DCM_ManufacturersModelName, "OsiriX");
 					dataset->putAndInsertString( DCM_InstanceNumber, [[NSString stringWithFormat: @"%d", exportInstanceNumber++] UTF8String]);
 					dataset->putAndInsertString( DCM_AcquisitionNumber, "1");
@@ -904,10 +909,7 @@ static float deg2rad = M_PI / 180.0f;
 					
 					delete dataset->remove( DCM_SmallestImagePixelValue);
 					delete dataset->remove( DCM_LargestImagePixelValue);
-
-					delete dataset->remove( DCM_MediaStorageSOPClassUID);
 					delete dataset->remove( DCM_MediaStorageSOPInstanceUID);
-					
                     delete dataset->remove(DCM_PerFrameFunctionalGroupsSequence);
                     
 					char buf[ 128];
