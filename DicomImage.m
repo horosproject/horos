@@ -942,7 +942,8 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	[self didChangeValueForKey: @"pathString"];
 }
 
-+ (NSString*) dbPathForManagedContext: (NSManagedObjectContext *) c
+/* // TODO: delete this method unless... unless there's a reason to keep it
+ + (NSString*) dbPathForManagedContext: (NSManagedObjectContext *) c
 {
 	NSPersistentStoreCoordinator *sc = [c persistentStoreCoordinator];
 	NSArray *stores = [sc persistentStores];
@@ -959,6 +960,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	}	
 	return [[[sc URLForPersistentStore: [stores lastObject]] path] stringByDeletingLastPathComponent];
 }
+ */
 
 -(NSString*) completePathWithDownload:(BOOL) download supportNonLocalDatabase: (BOOL) supportNonLocalDatabase
 {
@@ -992,7 +994,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
             
             if( !isLocal)
             {
-                NSString* temp = [DicomImage completePathForLocalPath:path directory:[DicomImage dbPathForManagedContext:[self managedObjectContext]]];
+                NSString* temp = [DicomImage completePathForLocalPath:path directory:db.dataBaseDirPath];
                 if ([[NSFileManager defaultManager] fileExistsAtPath:temp])
                     return temp;
                 
@@ -1010,7 +1012,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
                 if( [path characterAtIndex: 0] != '/')
                 {
                     [completePathCache release];
-                    completePathCache = [[DicomImage completePathForLocalPath: path directory: [DicomImage dbPathForManagedContext: [self managedObjectContext]]] retain];
+                    completePathCache = [[DicomImage completePathForLocalPath: path directory: db.dataBaseDirPath] retain];
                     return completePathCache;
                 }
             }
