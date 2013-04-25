@@ -79,7 +79,7 @@
 // ****************************
 #endif
 
-
+#define MAXDYNAMICVALUE 32000.
 
 #if USE3DCONNEXION
 #include <3DConnexionClient/ConnexionClientAPI.h>
@@ -5857,7 +5857,7 @@ public:
 			
 			if( [blendingFirstObject SUVConverted])
 			{
-				blendingValueFactor = 4095. / [controller blendingMaximumValue];
+				blendingValueFactor = MAXDYNAMICVALUE / [controller blendingMaximumValue];
 				blendingOFFSET16 = 0;
 				
 				[BrowserController multiThreadedImageConvert: @"FTo16U" :&blendingSrcf :&blendingDst8 :-blendingOFFSET16 :1./blendingValueFactor];
@@ -5865,9 +5865,9 @@ public:
 			}
 			else
 			{
-				if( [controller blendingMaximumValue] - [controller blendingMinimumValue] > 4095 ||  [controller blendingMaximumValue] - [controller blendingMinimumValue] < 50)
+				if( [controller blendingMaximumValue] - [controller blendingMinimumValue] > MAXDYNAMICVALUE ||  [controller blendingMaximumValue] - [controller blendingMinimumValue] < 50)
 				{
-					blendingValueFactor = 4095. / ( [controller blendingMaximumValue] - [controller blendingMinimumValue]);
+					blendingValueFactor = MAXDYNAMICVALUE / ( [controller blendingMaximumValue] - [controller blendingMinimumValue]);
 					blendingOFFSET16 = -[controller blendingMinimumValue];
 					
 					[BrowserController multiThreadedImageConvert: @"FTo16U" :&blendingSrcf :&blendingDst8 :-blendingOFFSET16 :1./blendingValueFactor];
@@ -6160,15 +6160,15 @@ public:
 	{
 		if( [firstObject SUVConverted])
 		{
-			valueFactor = 4095. / [controller maximumValue];
+			valueFactor = MAXDYNAMICVALUE / [controller maximumValue];
 			OFFSET16 = 0;
 		}
 		else
 		{
-			if([controller maximumValue] - [controller minimumValue] > 4095 || [controller maximumValue] - [controller minimumValue] < 50)
+			if([controller maximumValue] - [controller minimumValue] > MAXDYNAMICVALUE || [controller maximumValue] - [controller minimumValue] < 50)
 			{
-				valueFactor = 4095. / ([controller maximumValue] - [controller minimumValue]);
-				OFFSET16 = -[controller minimumValue];
+				valueFactor = MAXDYNAMICVALUE / ([controller maximumValue] - [controller minimumValue]);
+//				OFFSET16 = -[controller minimumValue];
 			}
 			else
 			{
