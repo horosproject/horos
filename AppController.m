@@ -2494,15 +2494,6 @@ static NSDate *lastWarningDate = nil;
 	
 	[AppController cleanOsiriXSubProcesses];
 	
-	// DELETE the content of TEMP.noindex directory...
-	NSString *tempDirectory = [[DicomDatabase activeLocalDatabase] tempDirPath];
-	if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory])
-		[[NSFileManager defaultManager] removeItemAtPath:tempDirectory error:NULL];
-    if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory])
-        [[NSFileManager defaultManager] moveItemAtPathToTrash: tempDirectory];
-    if ([[NSFileManager defaultManager] fileExistsAtPath: tempDirectory])
-        NSLog( @"******** FAILED to clean the tempDirectory directory: %@", tempDirectory);
-    
 	// DELETE THE DUMP DIRECTORY...
 	NSString *dumpDirectory = [[DicomDatabase activeLocalDatabase] dumpDirPath];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:dumpDirectory])
@@ -2512,15 +2503,28 @@ static NSDate *lastWarningDate = nil;
     if ([[NSFileManager defaultManager] fileExistsAtPath: dumpDirectory])
         NSLog( @"******** FAILED to clean the dumpDirectory directory: %@", dumpDirectory);
     
-	// DELETE THE DECOMPRESSION.noindex DIRECTORY...
-	NSString *decompressionDirectory = [[DicomDatabase activeLocalDatabase] decompressionDirPath];
-	if ([[NSFileManager defaultManager] fileExistsAtPath:decompressionDirectory])
-		[[NSFileManager defaultManager] removeItemAtPath:decompressionDirectory error:NULL];
-    if ([[NSFileManager defaultManager] fileExistsAtPath:decompressionDirectory])
-        [[NSFileManager defaultManager] moveItemAtPathToTrash: decompressionDirectory];
-    if ([[NSFileManager defaultManager] fileExistsAtPath: decompressionDirectory])
-        NSLog( @"******** FAILED to clean the decompressionDirectory directory: %@", decompressionDirectory);
-    
+    NSString *tempDirectory = [[DicomDatabase activeLocalDatabase] tempDirPath];
+    NSString *decompressionDirectory = [[DicomDatabase activeLocalDatabase] decompressionDirPath];
+
+    if (![NSUserDefaults.standardUserDefaults boolForKey:@"DoNotEmptyIncomingDir"]) // not DoNot -> delete files
+    {
+        // DELETE the content of TEMP.noindex directory...
+        if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory])
+            [[NSFileManager defaultManager] removeItemAtPath:tempDirectory error:NULL];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory])
+            [[NSFileManager defaultManager] moveItemAtPathToTrash: tempDirectory];
+        if ([[NSFileManager defaultManager] fileExistsAtPath: tempDirectory])
+            NSLog( @"******** FAILED to clean the tempDirectory directory: %@", tempDirectory);
+        
+        // DELETE THE DECOMPRESSION.noindex DIRECTORY...
+        if ([[NSFileManager defaultManager] fileExistsAtPath:decompressionDirectory])
+            [[NSFileManager defaultManager] removeItemAtPath:decompressionDirectory error:NULL];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:decompressionDirectory])
+            [[NSFileManager defaultManager] moveItemAtPathToTrash: decompressionDirectory];
+        if ([[NSFileManager defaultManager] fileExistsAtPath: decompressionDirectory])
+            NSLog( @"******** FAILED to clean the decompressionDirectory directory: %@", decompressionDirectory);
+    }
+
 	// Delete all process_state files
 	for (NSString* s in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: @"/tmp" error:nil])
 		if ([s hasPrefix:@"process_state-"])
@@ -3935,6 +3939,17 @@ static BOOL initialized = NO;
 		}
 	}
 	#endif
+    
+    
+    if ([NSUserDefaults.standardUserDefaults boolForKey:@"DoNotEmptyIncomingDir"]) // not DoNot -> delete files
+    {
+        NSString* inc = [[DicomDatabase activeLocalDatabase] incomingDirPath];
+        for (NSString* path in [NSArray arrayWithObjects: [[DicomDatabase activeLocalDatabase] tempDirPath], [[DicomDatabase activeLocalDatabase] decompressionDirPath], nil])
+            for (NSString* f in [[NSFileManager defaultManager] enumeratorAtPath:path filesOnly:NO recursive:NO])
+                [[NSFileManager defaultManager] moveItemAtPath:[path stringByAppendingPathComponent:f] toPath:[inc stringByAppendingPathComponent:f] error:NULL];
+    }
+    
+    
 	
 //	[self checkForOsirixMimeType];
 	

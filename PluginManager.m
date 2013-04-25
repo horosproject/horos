@@ -289,6 +289,8 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 						[othersMenu setSubmenu:subMenu forItem:subMenuItem];
 					}
 				}
+                
+                [subMenuItem setRepresentedObject:plugin];
 			}
 			else
 			{
@@ -297,6 +299,7 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 				NSMenuItem *item = [[[NSMenuItem alloc] init] autorelease];
 				
 				[item setTitle: [menuTitles objectAtIndex: 0]];	//pluginName];
+                [item setRepresentedObject:plugin];
 				
 				if( [pluginType rangeOfString: @"fusionFilter"].location != NSNotFound)
 				{

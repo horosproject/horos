@@ -8220,11 +8220,20 @@ return YES;
 
 
 // filter from plugin
-- (void)executeFilterFromString:(NSString*) name
+- (void)executeFilterFromString:(NSString*)name {
+    [self executeFilterFromBundle:nil title:name];
+}
+
+- (void)executeFilterFromBundle:(NSBundle*)bundle title:(NSString*)name
 {
 	long			result;
-    id				filter = [[PluginManager plugins] objectForKey:name];
-	
+    id				filter = nil;
+    
+    if (bundle) {
+        
+	} else
+        filter = [[PluginManager plugins] objectForKey:name];
+    
 	if( [AppController willExecutePlugin] == NO)
 		return;
 	

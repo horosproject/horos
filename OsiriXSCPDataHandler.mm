@@ -1809,7 +1809,7 @@ extern BOOL forkedProcess;
 					[moveSet unionSet:[moveEntity valueForKey:@"pathsForForkedProcess"]];
 				
                 [moveArray release];
-                moveArray = [[NSArray arrayWithArray: [[moveSet allObjects] sortedArrayUsingSelector: @selector(compare:)]] retain];
+                moveArray = [[[moveSet allObjects] sortedArrayUsingSelector:@selector(compare:)] retain];
 				
 				cond = EC_Normal;
 			}
