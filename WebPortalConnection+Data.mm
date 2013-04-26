@@ -523,6 +523,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
     NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat: 0.7] forKey:NSImageCompressionFactor];
     
     DicomSeries *series = [(DicomImage*)[dicomImageArray lastObject] series];
+    NSArray *allImages = [series sortedImages];
     int totalImages = series.images.count;
     
 	for( int x = location ; x < location+length; x++)
@@ -574,7 +575,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 			
 #define TEXTHEIGHT 15
             [newImage lockFocus];
-            [self drawText: [NSString stringWithFormat: @"%d / %d", x+1, totalImages]  atLocation: NSMakePoint( 1, newImage.size.height - TEXTHEIGHT)];
+            [self drawText: [NSString stringWithFormat: @"%d / %d", (int) [allImages indexOfObject: im]+1, totalImages]  atLocation: NSMakePoint( 1, newImage.size.height - TEXTHEIGHT)];
             [newImage unlockFocus];
             
 			if ([outFile hasSuffix:@"swf"])

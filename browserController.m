@@ -3286,31 +3286,6 @@ static NSConditionLock *threadLock = nil;
 	#endif
 }
 
-- (NSArray*) sortDescriptorsForImages
-{
-	int sortSeriesBySliceLocation = [[NSUserDefaults standardUserDefaults] integerForKey: @"sortSeriesBySliceLocation"];
-
-	NSSortDescriptor *sortInstance = nil, *sortLocation = nil, *sortDate = nil;
-
-	sortDate = [NSSortDescriptor sortDescriptorWithKey: @"date" ascending: (sortSeriesBySliceLocation > 0) ? YES : NO];
-	sortInstance = [NSSortDescriptor sortDescriptorWithKey: @"instanceNumber" ascending: YES];
-	sortLocation = [NSSortDescriptor sortDescriptorWithKey: @"sliceLocation" ascending: (sortSeriesBySliceLocation > 0) ? YES : NO];
-
-	NSArray *sortDescriptors = nil;
-
-	if( sortSeriesBySliceLocation == 0)
-		sortDescriptors = [NSArray arrayWithObjects: sortInstance, sortLocation, nil];
-	else
-	{
-		if( sortSeriesBySliceLocation == 2 || sortSeriesBySliceLocation == -2)
-			sortDescriptors = [NSArray arrayWithObjects: sortDate, sortLocation, sortInstance, nil];
-		else
-			sortDescriptors = [NSArray arrayWithObjects: sortLocation, sortInstance, nil];
-	}
-	
-	return sortDescriptors;
-}
-
 - (NSArray*) childrenArray: (id)item onlyImages: (BOOL)onlyImages
 {
     #ifndef OSIRIX_LIGHT
@@ -3331,17 +3306,7 @@ static NSConditionLock *threadLock = nil;
 	{
 		[_database lock];
 		
-		NSArray *sortedArray = nil;
-		
-		@try
-		{
-			sortedArray = [[[item valueForKey:@"images"] allObjects] sortedArrayUsingDescriptors: [self sortDescriptorsForImages]];
-		}
-		
-		@catch (NSException * e)
-		{
-            N2LogExceptionWithStackTrace(e);
-		}
+		NSArray *sortedArray = [item sortedImages];
 
 		[_database unlock];
 
@@ -10800,7 +10765,7 @@ static BOOL needToRezoom;
 						if( p1 && p2 && [ViewerController computeIntervalForDCMPix: p1 And: p2] < 0)
 						{
 							//Inverse the array
-							a = [[a reverseObjectEnumerator] allObjects];	//[a sortedArrayUsingDescriptors: [self sortDescriptorsForImages]];
+							a = [[a reverseObjectEnumerator] allObjects];
 							
 							preFlippedData = YES;
 							flipped = YES;
@@ -12019,7 +11984,7 @@ static NSArray*	openSubSeriesArray = nil;
 			if( i % interval == 0) [imagesArray addObject: image];
 		}
 		
-		[imagesArray sortUsingDescriptors: [self sortDescriptorsForImages]];
+		[imagesArray sortUsingDescriptors: [[imagesArray lastObject] sortDescriptorsForImages]];
 		
 		if( [imagesArray count] > 0)
 			[newArray addObject: imagesArray];
