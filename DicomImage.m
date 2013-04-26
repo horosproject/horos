@@ -971,14 +971,11 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
         if( completePathCache && download == NO)
             return completePathCache;
         
-        DicomDatabase* db = nil;
+        DicomDatabase* db = [DicomDatabase databaseForContext: self.managedObjectContext];
+        
         BOOL isLocal = YES;
         if (supportNonLocalDatabase)
-            @try {
-                db = [DicomDatabase databaseForContext:self.managedObjectContext];
-                isLocal = [db isLocal];
-            } @catch (...) {
-            }
+            isLocal = [db isLocal];
         
         if (completePathCache) {
             if (download == NO)

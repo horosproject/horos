@@ -575,7 +575,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 			
 #define TEXTHEIGHT 15
             [newImage lockFocus];
-            [self drawText: [NSString stringWithFormat: @"%d / %d", (int) [allImages indexOfObject: im]+1, totalImages]  atLocation: NSMakePoint( 1, newImage.size.height - TEXTHEIGHT)];
+            [self drawText: [NSString stringWithFormat: @"%d / %d", (int) ([allImages indexOfObject: im]+1), totalImages]  atLocation: NSMakePoint( 1, newImage.size.height - TEXTHEIGHT)];
             [newImage unlockFocus];
             
 			if ([outFile hasSuffix:@"swf"])

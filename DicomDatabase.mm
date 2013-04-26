@@ -247,63 +247,17 @@ static NSRecursiveLock *databasesDictionaryLock = [[NSRecursiveLock alloc] init]
     return database;
 }
 
-+(DicomDatabase*)databaseForContext:(NSManagedObjectContext*)c { // hopefully one day this will be __deprecated
-    if (!c)
-        return nil;
++(DicomDatabase*)databaseForContext:(NSManagedObjectContext*)c
+{
+    DicomDatabase *db = nil;
     
-    DicomDatabase* returnedDB = nil;
-	[databasesDictionaryLock lock];
-    {
-        // is it the MOC of a listed database?
-        for (NSValue *value in [databasesDictionary allValues])
-        {
-            DicomDatabase* dbi = (DicomDatabase*) [value pointerValue];
-            
-            if (dbi.managedObjectContext == c)
-                returnedDB = dbi;
-        }
-        if( returnedDB == nil)
-        {
-            // is it an independent MOC of a listed database?
-            for (NSValue *value in [databasesDictionary allValues])
-            {
-                DicomDatabase* dbi = (DicomDatabase*) [value pointerValue];
-                
-                if (dbi.managedObjectContext.persistentStoreCoordinator == c.persistentStoreCoordinator)
-                {
-                    // we must return a valid DicomDatabase with the specified context
-                    DicomDatabase* db = [[[DicomDatabase alloc] initWithPath:dbi.baseDirPath context:c mainDatabase:dbi] autorelease];
-                    db.name = dbi.name;
-                }
-            }
-        }
-        // uhm, let's try with the persistentStores
-        //for (NSPersistentStore* ps in [c.persistentStoreCoordinator persistentStores]) {
-        //    
-        //}
-    }
-    [databasesDictionaryLock unlock];
+    if( [c isKindOfClass: [N2ManagedObjectContext class]])
+        db = (DicomDatabase*) [(N2ManagedObjectContext*)c database];
     
-    if( returnedDB)
-        return returnedDB;
-
-    NSString* path = nil;
-    for (NSPersistentStore* ps in c.persistentStoreCoordinator.persistentStores)
-        if ([NSFileManager.defaultManager fileExistsAtPath:ps.URL.path]) {
-            path = ps.URL.path;
-            break;
-        }
-    
-    if (path) {
-        DicomDatabase* dbp = [self databaseAtPath:path];
-        if (dbp)
-            return dbp;
-    }
+    if( !db)
+        N2LogStackTrace( @"databaseForContext == nil");
         
-    return [[[[self class] alloc] initWithPath:path context:c] autorelease];
-    
-//	[NSException raise:NSGenericException format:@"Unidentified database context"];
-//  return nil;
+    return db;
 }
 
 static DicomDatabase* activeLocalDatabase = nil;

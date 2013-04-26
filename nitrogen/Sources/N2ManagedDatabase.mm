@@ -29,14 +29,6 @@
 
 #define N2PersistentStoreCoordinator NSPersistentStoreCoordinator // for debug purposes, disable this #define and enable the commented N2PersistentStoreCoordinator implementation
 
-@interface N2ManagedObjectContext : NSManagedObjectContext {
-	N2ManagedDatabase* _database;
-}
-
-@property(assign) N2ManagedDatabase* database;
-
-@end
-
 @implementation N2ManagedObjectContext
 
 @synthesize database = _database;
@@ -189,10 +181,6 @@
         
         [_managedObjectContext autorelease];
 		_managedObjectContext = [managedObjectContext retain];
-
-        // the database's main managedObjectContext must not retain the database
-		if ([_managedObjectContext isKindOfClass:[N2ManagedObjectContext class]])
-            ((N2ManagedObjectContext*)_managedObjectContext).database = nil;
         
 #ifndef NDEBUG
         [associatedThread release];
