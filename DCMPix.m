@@ -5135,14 +5135,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             }
             
             if( newDICOMSR.count)
-                [BrowserController addFiles: newDICOMSR
-                                  toContext: [[DicomDatabase activeLocalDatabase] independentContext: YES]
-                                     toDatabase: [BrowserController currentBrowser]
-                                      onlyDICOM: YES 
-                               notifyAddedFiles: YES
-                            parseExistingObject: YES
-                                       dbFolder: [[BrowserController currentBrowser] fixedDocumentsDirectory]
-                              generatedByOsiriX: YES];
+                [BrowserController.currentBrowser.database addFilesAtPaths: newDICOMSR
+                                                        postNotifications: YES
+                                                                dicomOnly: YES
+                                                    rereadExistingItems: YES
+                                                    generatedByOsiriX: YES];
         }
         
         END_CREATE_ROIS:

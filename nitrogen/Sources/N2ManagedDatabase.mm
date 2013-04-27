@@ -33,6 +33,21 @@
 
 @synthesize database = _database;
 
+-(id)init
+{
+    self = [super init];
+    
+    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector( N2ManagedDatabaseDealloced:) name: @"N2ManagedDatabaseDealloced" object: nil];
+    
+    return self;
+}
+
+-(void)N2ManagedDatabaseDealloced:(NSNotification*) n
+{
+    if( n.object == self.database)
+        self.database = nil;
+}
+
 -(void)dealloc {
 #ifndef NDEBUG
     [_database checkForCorrectContextThread: self];
@@ -412,6 +427,8 @@
     [associatedThread release];
     associatedThread = nil;
 #endif
+    
+    [NSNotificationCenter.defaultCenter postNotificationName: @"N2ManagedDatabaseDealloced" object:self];
     
     [NSNotificationCenter.defaultCenter removeObserver:self];
     

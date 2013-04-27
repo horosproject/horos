@@ -21,7 +21,7 @@
 
 - (void)awakeFromNib
 {
-	[self setManagedObjectContext: [[BrowserController currentBrowser].database managedObjectContext]];
+	[self setManagedObjectContext: [BrowserController.currentBrowser.database managedObjectContext]];
 	[self setAutomaticallyPreparesContent: YES];
     
 	[self fetch: self];

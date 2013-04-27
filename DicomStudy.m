@@ -584,7 +584,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	{
 		[self.managedObjectContext lock];
 		@try {
-            BOOL isMainDB = [self managedObjectContext] == [BrowserController currentBrowser].database.managedObjectContext;
+            BOOL isMainDB = [self managedObjectContext] == BrowserController.currentBrowser.database.managedObjectContext;
 
 			NSManagedObject *archivedAnnotations = [self annotationsSRImage];
 			NSString *dstPath = [archivedAnnotations valueForKey: @"completePath"];
@@ -601,14 +601,18 @@ static NSRecursiveLock *dbModifyLock = nil;
 				SRAnnotation *r = [[[SRAnnotation alloc] initWithDictionary: annotationsDict path: dstPath forImage: [[[self.series anyObject] valueForKey:@"images"] anyObject]] autorelease];
 				[r writeToFileAtPath: dstPath];
 				
-				[BrowserController addFiles: [NSArray arrayWithObject: dstPath]
-								  toContext: [self managedObjectContext]
-								 toDatabase: isMainDB? [BrowserController currentBrowser] : NULL
-								  onlyDICOM: YES 
-						   notifyAddedFiles: NO
-						parseExistingObject: YES
-								   dbFolder: isMainDB? [[BrowserController currentBrowser] fixedDocumentsDirectory] : @"/tmp"
-						  generatedByOsiriX: YES];
+                if( isMainDB)
+                    [BrowserController.currentBrowser.database addFilesAtPaths: [NSArray arrayWithObject: dstPath]
+                                                               postNotifications: NO
+                                                                       dicomOnly: YES
+                                                             rereadExistingItems: YES
+                                                               generatedByOsiriX: YES];
+                else
+                    [[DicomDatabase databaseAtPath: @"/tmp"] addFilesAtPaths: [NSArray arrayWithObject: dstPath]
+                                                           postNotifications: NO
+                                                                   dicomOnly: YES
+                                                         rereadExistingItems: YES
+                                                           generatedByOsiriX: YES];
 			}
 		}
 		@catch (NSException* e) {
@@ -642,7 +646,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 		[self.managedObjectContext lock];
 		@try
 		{
-            BOOL isMainDB = [self managedObjectContext] == [BrowserController currentBrowser].database.managedObjectContext;
+            BOOL isMainDB = [self managedObjectContext] == BrowserController.currentBrowser.database.managedObjectContext;
 
 			// Report
 			NSString *zippedFile = @"/tmp/zippedReport.zip";
@@ -713,14 +717,18 @@ static NSRecursiveLock *dbModifyLock = nil;
 				
                 [self.managedObjectContext save: nil];
                 
-				[BrowserController addFiles: [NSArray arrayWithObject: dstPath]
-								  toContext: [self managedObjectContext]
-								 toDatabase: isMainDB? [BrowserController currentBrowser] : NULL
-								  onlyDICOM: YES 
-						   notifyAddedFiles: YES
-						parseExistingObject: YES
-								   dbFolder: isMainDB? [[BrowserController currentBrowser] fixedDocumentsDirectory] : @"/tmp"
-						  generatedByOsiriX: YES];
+                if( isMainDB)
+                    [BrowserController.currentBrowser.database addFilesAtPaths: [NSArray arrayWithObject: dstPath]
+                                                               postNotifications: YES
+                                                                       dicomOnly: YES
+                                                             rereadExistingItems: YES
+                                                               generatedByOsiriX: YES];
+                else
+                    [[DicomDatabase databaseAtPath: @"/tmp"] addFilesAtPaths: [NSArray arrayWithObject: dstPath]
+                                                           postNotifications: YES
+                                                                   dicomOnly: YES
+                                                         rereadExistingItems: YES
+                                                           generatedByOsiriX: YES];
 			}
 			
 			if( zippedFile)
@@ -1014,20 +1022,24 @@ static NSRecursiveLock *dbModifyLock = nil;
             // Save as DICOM PDF
             if( [[NSUserDefaults standardUserDefaults] boolForKey:@"generateDICOMPDFWhenValidated"] && [c intValue] == 4)
             {
-                BOOL isMainDB = [self managedObjectContext] == [BrowserController currentBrowser].database.managedObjectContext;
+                BOOL isMainDB = [self managedObjectContext] == BrowserController.currentBrowser.database.managedObjectContext;
                 
                 NSString *filePath = isMainDB? [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"] : [[NSFileManager defaultManager] tmpFilePathInTmp];
                 
                 [self saveReportAsDicomAtPath: filePath];
                 
-                [BrowserController addFiles: [NSArray arrayWithObject: filePath]
-                                  toContext: [self managedObjectContext]
-                                 toDatabase: isMainDB? [BrowserController currentBrowser] : NULL
-                                  onlyDICOM: YES 
-                           notifyAddedFiles: YES
-                        parseExistingObject: YES
-                                   dbFolder: isMainDB? [[BrowserController currentBrowser] fixedDocumentsDirectory] : @"/tmp"
-                          generatedByOsiriX: YES];
+                if( isMainDB)
+                    [BrowserController.currentBrowser.database addFilesAtPaths: [NSArray arrayWithObject: filePath]
+                                                               postNotifications: YES
+                                                                       dicomOnly: YES
+                                                             rereadExistingItems: YES
+                                                               generatedByOsiriX: YES];
+                else
+                    [[DicomDatabase databaseAtPath: @"/tmp"] addFilesAtPaths: [NSArray arrayWithObject: filePath]
+                                                           postNotifications: YES
+                                                                   dicomOnly: YES
+                                                         rereadExistingItems: YES
+                                                           generatedByOsiriX: YES];
             }
 		}
 	}

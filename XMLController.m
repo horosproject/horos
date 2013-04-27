@@ -165,10 +165,10 @@ extern int delayedTileWindows;
 			
 			NSPredicate *predicate = [NSPredicate predicateWithFormat:  @"(patientID == %@)", [imObj valueForKeyPath:@"series.study.patientID"]];
 			NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-			[dbRequest setEntity: [[[BrowserController currentBrowser].database.managedObjectModel entitiesByName] objectForKey:@"Study"]];
+			[dbRequest setEntity: [[BrowserController.currentBrowser.database.managedObjectModel entitiesByName] objectForKey:@"Study"]];
 			[dbRequest setPredicate: predicate];
 			
-			[[BrowserController currentBrowser].database.managedObjectContext lock];
+			[BrowserController.currentBrowser.database.managedObjectContext lock];
 			
 			NSError	*error = nil;
 			NSMutableArray *result = [NSMutableArray array];
@@ -176,14 +176,14 @@ extern int delayedTileWindows;
 			
 			@try 
 			{
-				studiesArray = [[BrowserController currentBrowser].database.managedObjectContext executeFetchRequest:dbRequest error:&error];
+				studiesArray = [BrowserController.currentBrowser.database.managedObjectContext executeFetchRequest:dbRequest error:&error];
 			}
 			@catch (NSException * e) 
 			{
                 N2LogExceptionWithStackTrace(e);
 			}
 			
-			[[BrowserController currentBrowser].database.managedObjectContext unlock];
+			[BrowserController.currentBrowser.database.managedObjectContext unlock];
 			
 			if ([studiesArray count] > 0)
 			{
@@ -212,8 +212,10 @@ extern int delayedTileWindows;
 	
 	dontClose = YES;
 	
-	NSArray *addedObjects = [[BrowserController currentBrowser] addFilesToDatabase: files onlyDICOM:YES  produceAddedFiles:YES parseExistingObject:YES];
-	
+	NSArray *addedObjects = [BrowserController.currentBrowser.database addFilesAtPaths:files postNotifications:YES dicomOnly:YES rereadExistingItems:YES];
+   
+    addedObjects = [BrowserController.currentBrowser.database objectsWithIDs: addedObjects];
+    
 	if( objects)
 	{
 		NSMutableArray *previousSeries = [NSMutableArray array];
