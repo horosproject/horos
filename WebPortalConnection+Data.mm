@@ -462,7 +462,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 }
 
 -(void)getWidth:(CGFloat*)width height:(CGFloat*)height fromImagesArray:(NSArray*)images {
-	[self getWidth:width height:height fromImagesArray:images minSize:NSMakeSize(300) maxSize:NSMakeSize( [[NSUserDefaults standardUserDefaults] floatForKey: @"WebServerMaxWidthForMovie"])];
+	[self getWidth:width height:height fromImagesArray:images minSize:NSMakeSize( [[NSUserDefaults standardUserDefaults] floatForKey: @"WebServerMinWidthForMovie"]) maxSize:NSMakeSize( [[NSUserDefaults standardUserDefaults] floatForKey: @"WebServerMaxWidthForMovie"])];
 }
 
 -(void)getWidth:(CGFloat*)width height:(CGFloat*)height fromImagesArray:(NSArray*)imagesArray minSize:(NSSize)minSize maxSize:(NSSize)maxSize {

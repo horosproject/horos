@@ -2034,13 +2034,11 @@ static NSRecursiveLock *dbModifyLock = nil;
 #ifndef OSIRIX_LIGHT
 -(NSArray*)authorizedUsers
 {
-    NSManagedObjectContext* webContext = WebPortal.defaultWebPortal.database.managedObjectContext;
+    NSManagedObjectContext* webContext = [WebPortal.defaultWebPortal.database independentContext];
     
-    [webContext lock];
     @try
     {
-        NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-        dbRequest.entity = [NSEntityDescription entityForName:@"User" inManagedObjectContext: webContext];
+        NSFetchRequest *dbRequest = [NSFetchRequest fetchRequestWithEntityName: @"User"];
         dbRequest.predicate = [NSPredicate predicateWithValue:YES];
         dbRequest.sortDescriptors = [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: @"name" ascending: YES]];
 
@@ -2065,9 +2063,6 @@ static NSRecursiveLock *dbModifyLock = nil;
     }
     @catch (NSException* e) {
         N2LogExceptionWithStackTrace(e);
-    }
-    @finally {
-        [webContext unlock];
     }
     
     return nil;

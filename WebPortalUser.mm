@@ -481,8 +481,6 @@ static NSMutableDictionary *studiesForUserCache = nil;
 	
     DicomDatabase *dicomDBContext = [WebPortal.defaultWebPortal.dicomDatabase independentDatabase];
     
-	[dicomDBContext lock];
-	
 	@try
 	{
 		NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
@@ -589,8 +587,6 @@ static NSMutableDictionary *studiesForUserCache = nil;
 		
 	} @catch(NSException* e) {
 		NSLog(@"Error: [WebPortal studiesForUser:predicate:sortBy:] %@", e);
-	} @finally {
-		[dicomDBContext unlock];
 	}
 	
 	return studiesArray;
