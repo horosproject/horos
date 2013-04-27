@@ -149,7 +149,7 @@
 		
 		cur = curPoint.x;
 		
-		cur  *= 16;
+		cur *= 16;
 		
 		for( x = 0; x < cur-last; x++)
 		{
@@ -174,24 +174,24 @@
 {
 	int		x, cur, last = 0;
 	float	entries256[ 256];
-	NSPoint prevPoint;
+	NSPoint prevPoint = NSMakePoint( 1000, 0.0);
 	
-	for( id loopItem1 in pointsArray)
-	{
-		NSPoint curPoint = NSPointFromString( loopItem1);
-		
-		curPoint.x -= 1000;
-		
-		cur = curPoint.x;
-		
-		for( x = 0; x < cur-last; x++)
-		{
-			entries256[ last + x] = (prevPoint.y + ((curPoint.y - prevPoint.y) * x / (cur-last)));
-		}
-		
-		prevPoint = curPoint;
-		last = cur;
-	}
+    for( NSString *loopItem in pointsArray)
+    {
+        NSPoint curPoint = NSPointFromString( loopItem);
+        
+        curPoint.x -= 1000;
+        
+        cur = curPoint.x;
+        
+        for( x = 0; x < cur-last; x++)
+        {
+            entries256[ last + x] = (prevPoint.y + ((curPoint.y - prevPoint.y) * x / (cur-last)));
+        }
+        
+        prevPoint = curPoint;
+        last = cur;
+    }
 	
 	for( x = 0; x < 256-last; x++)
 	{

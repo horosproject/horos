@@ -32,7 +32,6 @@
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	NSThread* thread = [NSThread currentThread];
 	
-	DataNodeIdentifier* destination = [io objectAtIndex:1];
 	DicomDatabase *srcDatabase = [io objectAtIndex:2];
     NSArray* dicomImages = [srcDatabase.independentDatabase objectsWithIDs: [io objectAtIndex: 0]];
     

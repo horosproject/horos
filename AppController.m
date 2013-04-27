@@ -1155,7 +1155,7 @@ static NSDate *lastWarningDate = nil;
 	{
 		NSArray* urls = [NSArray arrayWithObject: [NSURL URLWithString:@"http://www.osirix-viewer.com/OsiriX-64bit.html"]];
 
-		BOOL opened = [[NSWorkspace sharedWorkspace] openURLs:urls withAppBundleIdentifier: nil options: NSWorkspaceLaunchWithoutActivation additionalEventParamDescriptor: nil launchIdentifiers: nil];
+        [[NSWorkspace sharedWorkspace] openURLs:urls withAppBundleIdentifier: nil options: NSWorkspaceLaunchWithoutActivation additionalEventParamDescriptor: nil launchIdentifiers: nil];
 	}
 }
 
@@ -3088,17 +3088,19 @@ static BOOL initialized = NO;
 {
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"doNotUseGrowl"]) return nil;
 	
-    NSArray *notifications = [NSArray arrayWithObjects: @"newstudy", @"newfiles", @"delete", @"result", @"autorouting", @"autoquery", @"send", nil];
     NSDictionary *dict = nil;
 	
 #ifndef OSIRIX_LIGHT
 #ifndef MACAPPSTORE
+    
+    NSArray *notifications = [NSArray arrayWithObjects: @"newstudy", @"newfiles", @"delete", @"result", @"autorouting", @"autoquery", @"send", nil];
+    
     dict = [NSDictionary dictionaryWithObjectsAndKeys:
                              notifications, GROWL_NOTIFICATIONS_ALL,
                          notifications, GROWL_NOTIFICATIONS_DEFAULT, nil];
 #endif
 #endif
-    return (dict);
+    return dict;
 }
 
 #pragma mark-

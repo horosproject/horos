@@ -2051,7 +2051,7 @@ static NSConditionLock *threadLock = nil;
 	NSThread* thread = [[NSThread alloc] initWithTarget:self selector:@selector(rebuildDatabaseThread:) object:io];
 	thread.name = NSLocalizedString(@"Rebuilding database...", nil);
 	
-	ThreadModalForWindowController* tmc = [thread startModalForWindow:self.window];
+    [thread startModalForWindow:self.window];
 	[thread start];
 	
 	return [thread autorelease];
@@ -2160,8 +2160,6 @@ static NSConditionLock *threadLock = nil;
 	DicomDatabase* database = [[self.database retain] autorelease];
 	[self setDatabase:nil];
     [self outlineViewRefresh];
-	
-	NSArray* io = [NSMutableArray arrayWithObjects: database, nil];
 	
 	NSThread* thread = [[NSThread alloc] initWithTarget:self selector:@selector(rebuildSqlThread:) object:database];
 	thread.name = NSLocalizedString(@"Rebuilding database index...", nil);
@@ -6731,8 +6729,6 @@ static NSConditionLock *threadLock = nil;
 - (IBAction) displayImagesOfSeries: (id) sender
 {
 	NSMutableArray *dicomFiles = [NSMutableArray array];
-	NSMutableArray *files;
-	
 	
 	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
 	{
@@ -6742,7 +6738,7 @@ static NSConditionLock *threadLock = nil;
 			
 			if( [[curObj valueForKey:@"type"] isEqualToString:@"Image"])
 			{ 
-				files = [self filesForDatabaseMatrixSelection: dicomFiles];
+                [self filesForDatabaseMatrixSelection: dicomFiles];
 				
 				if( [databaseOutline isItemExpanded: [curObj valueForKeyPath:@"series.study"]])
 					[databaseOutline collapseItem: [curObj valueForKeyPath:@"series.study"]];
@@ -6751,7 +6747,7 @@ static NSConditionLock *threadLock = nil;
 			}
 			else
 			{
-				files = [self filesForDatabaseMatrixSelection: dicomFiles];
+                [self filesForDatabaseMatrixSelection: dicomFiles];
 				[self findAndSelectFile:nil image:[dicomFiles objectAtIndex: 0] shouldExpand:YES];
 			}
 		}
@@ -13526,8 +13522,6 @@ static NSArray*	openSubSeriesArray = nil;
             [[NSFileManager defaultManager] removeItemAtPath: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"] error: nil];
         }
 	
-		NSMutableArray *folders = [NSMutableArray array];
-		
 		NSLog( @"---- save delete queue: %d objects", (int) [copyArray count]);
 		
         [[NSFileManager defaultManager] removeItemAtPath: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"] error: nil];
@@ -14795,12 +14789,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSOpenPanel *sPanel	= [NSOpenPanel openPanel];
 	
 	NSMutableArray *dicomFiles2Export = [NSMutableArray array];
-	NSMutableArray *filesToExport;
 	
 	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
-		filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export onlyImages: YES];
+        [self filesForDatabaseMatrixSelection: dicomFiles2Export onlyImages: YES];
 	else
-		filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export onlyImages: YES];
+        [self filesForDatabaseOutlineSelection: dicomFiles2Export onlyImages: YES];
 	
 	[sPanel setCanChooseDirectories:YES];
 	[sPanel setCanChooseFiles:NO];
