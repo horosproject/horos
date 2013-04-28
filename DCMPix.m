@@ -1107,8 +1107,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 - (void) computeMax:(float*) fResult pos:(int) pos threads:(int) threads object: (DCMPix*) o
 {
-	float				*fNext = NULL;
-	long				from, to, size = [o pheight] * [o pwidth];
+	float *fNext = NULL;
+	long from, to, size = [o pheight] * [o pwidth];
 	
 	from = (pos * size) / threads;
 	to = ((pos+1) * size) / threads;
@@ -12346,6 +12346,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			
 			int numberOfThreadsForCompute =[[NSProcessInfo processInfo] processorCount];
 			
+            if( numberOfThreadsForCompute > 12)
+                numberOfThreadsForCompute = 12;
+            
 			[processorsLock lock];
 			[processorsLock unlockWithCondition: numberOfThreadsForCompute];
 			
