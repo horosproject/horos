@@ -280,10 +280,10 @@ static float backgroundInset = 1.5;
 	[regularImage autorelease];
 	[smallImage autorelease];
 	
-	regularImage = [anImage retain];
+	regularImage = [anImage copy];
     [regularImage setSize:NSMakeSize(32,32)];
     
-	smallImage = [[anImage copy] retain];
+	smallImage = [anImage copy];
 	[smallImage setSize:NSMakeSize(24,24)];
 
 	if ([[self toolbar] sizeMode] == NSToolbarSizeModeSmall)

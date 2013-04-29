@@ -100,95 +100,105 @@ static NSString *DCM_MPEG2Main = @"1.2.840.10008.1.2.4.100";
 	return [[[DCMTransferSyntax alloc] initWithTS:DCM_MPEG2Main] autorelease];
 }
 
-- (id)initWithTS:(NSString *)ts{
+static NSMutableDictionary *gTransferSyntaxes = nil;
 
-	NSArray *syntaxes = [NSArray arrayWithObjects:		
-						
-					DCM_ExplicitVRBigEndian,					
-					DCM_ExplicitVRLittleEndian,
-					DCM_ImplicitVRLittleEndian,		
-					DCM_JPEG1012Retired,
-					DCM_JPEG1113Retired,
-					DCM_JPEG1618Retired,
-					DCM_JPEG1719Retired,
-					DCM_JPEG2000Lossless,
-					DCM_JPEG2000Lossy,
-					DCM_JPEG2022Retired,
-					DCM_JPEG2123Retired,
-					DCM_JPEG2426Retired,
-					DCM_JPEG2527Retired,
-					DCM_JPEG29Retired,
-					DCM_JPEG68Retired,
-					DCM_JPEG79Retired,
-					DCM_JPEGBaseline,
-					DCM_JPEGExtended,
-					DCM_JPEGExtended35Retired,
-					DCM_JPEGLoRetired,
-					DCM_JPEGLossless,
-					DCM_JPEGLossless14,
-					DCM_JPEGLossless15Retired,
-					DCM_JPEGLSLossless,
-					DCM_JPEGLSLossy,
-					DCM_RLELossless,
-					nil];
-
-	NSArray *names = [NSArray arrayWithObjects:
-					@"ExplicitVRBigEndian",
-					@"ExplicitVRLittleEndian",
-					@"ImplicitVRLittleEndian",
-					@"JPEG1012Retired",
-					@"JPEG1113Retired",
-					@"JPEG1618Retired",
-					@"JPEG1719Retired",
-					@"JPEG2000Lossless",
-					@"JPEG2000Lossy",
-					@"JPEG2022Retired",
-					@"JPEG2123Retired",
-					@"JPEG2426Retired",
-					@"JPEG2527Retired",
-					@"JPEG29Retired",
-					@"JPEG68Retired",
-					@"JPEG79Retired",
-					@"JPEGBaseline",
-					@"JPEGExtended",
-					@"JPEGExtended35Retired",
-					@"JPEGLoRetired",
-					@"JPEGLossless",
-					@"JPEGLossless14",
-					@"JPEGLossless15Retired",
-					@"JPEGLSLossless",
-					@"JPEGLSLossy",
-					@"RLELossless",
-					nil];
-	if (self = [super init]) {
-		NSMutableDictionary *transferSyntaxes = [NSMutableDictionary dictionary];
-		for ( unsigned int i = 0; i < [syntaxes count]; i++ ) {
-			NSString *key = [syntaxes objectAtIndex: i ];
-			NSString *aName = [names objectAtIndex: i];
-			BOOL encapsulated = YES;
-			BOOL littleEndian = YES;
-			BOOL explicitValue = YES;
-			//only Big Endian in ExplictVRBE
-			if ([key isEqualToString:DCM_ExplicitVRBigEndian])
-				littleEndian = NO;
-			//unencasualted TSs
-			if ([key isEqualToString:DCM_ExplicitVRBigEndian] ||					
-				[key isEqualToString:DCM_ExplicitVRLittleEndian] ||
-				[key isEqualToString:DCM_ImplicitVRLittleEndian])
-				encapsulated = NO;
-			//implicit TSs
-			if ([key isEqualToString:DCM_ImplicitVRLittleEndian]) 
-				explicitValue = NO;
-			NSMutableDictionary *syntax = [NSMutableDictionary dictionary];
-			[syntax setObject:[NSNumber numberWithBool:encapsulated] forKey:@"isEncapsulated"];
-			[syntax setObject:[NSNumber numberWithBool:littleEndian] forKey:@"isLittleEndian"];
-			[syntax setObject:[NSNumber numberWithBool:explicitValue] forKey:@"isExplicit"];
-			[syntax setObject:key forKey:@"TransferSyntax"];
-			[syntax setObject:aName forKey:@"Name"];
-			[transferSyntaxes setObject:syntax forKey:key];
+- (id)initWithTS:(NSString *)ts
+{
+    if( ts.length == 0)
+        return nil;
+    
+	if (self = [super init])
+    {
+        if( !gTransferSyntaxes)
+        {
+            NSArray *tsSyntaxes = [NSArray arrayWithObjects:
+                               DCM_ExplicitVRBigEndian,
+                               DCM_ExplicitVRLittleEndian,
+                               DCM_ImplicitVRLittleEndian,
+                               DCM_JPEG1012Retired,
+                               DCM_JPEG1113Retired,
+                               DCM_JPEG1618Retired,
+                               DCM_JPEG1719Retired,
+                               DCM_JPEG2000Lossless,
+                               DCM_JPEG2000Lossy,
+                               DCM_JPEG2022Retired,
+                               DCM_JPEG2123Retired,
+                               DCM_JPEG2426Retired,
+                               DCM_JPEG2527Retired,
+                               DCM_JPEG29Retired,
+                               DCM_JPEG68Retired,
+                               DCM_JPEG79Retired,
+                               DCM_JPEGBaseline,
+                               DCM_JPEGExtended,
+                               DCM_JPEGExtended35Retired,
+                               DCM_JPEGLoRetired,
+                               DCM_JPEGLossless,
+                               DCM_JPEGLossless14,
+                               DCM_JPEGLossless15Retired,
+                               DCM_JPEGLSLossless,
+                               DCM_JPEGLSLossy,
+                               DCM_RLELossless,
+                               nil];
+            
+            NSArray *tsNames = [NSArray arrayWithObjects:
+                            @"ExplicitVRBigEndian",
+                            @"ExplicitVRLittleEndian",
+                            @"ImplicitVRLittleEndian",
+                            @"JPEG1012Retired",
+                            @"JPEG1113Retired",
+                            @"JPEG1618Retired",
+                            @"JPEG1719Retired",
+                            @"JPEG2000Lossless",
+                            @"JPEG2000Lossy",
+                            @"JPEG2022Retired",
+                            @"JPEG2123Retired",
+                            @"JPEG2426Retired",
+                            @"JPEG2527Retired",
+                            @"JPEG29Retired",
+                            @"JPEG68Retired",
+                            @"JPEG79Retired",
+                            @"JPEGBaseline",
+                            @"JPEGExtended",
+                            @"JPEGExtended35Retired",
+                            @"JPEGLoRetired",
+                            @"JPEGLossless",
+                            @"JPEGLossless14",
+                            @"JPEGLossless15Retired",
+                            @"JPEGLSLossless",
+                            @"JPEGLSLossy",
+                            @"RLELossless",
+                            nil];
+            
+            gTransferSyntaxes = [[NSMutableDictionary alloc] init];
+            
+            for ( unsigned int i = 0; i < tsSyntaxes.count; i++ ) {
+                NSString *key = [tsSyntaxes objectAtIndex: i ];
+                NSString *aName = [tsNames objectAtIndex: i];
+                BOOL encapsulated = YES;
+                BOOL littleEndian = YES;
+                BOOL explicitValue = YES;
+                //only Big Endian in ExplictVRBE
+                if ([key isEqualToString:DCM_ExplicitVRBigEndian])
+                    littleEndian = NO;
+                //unencasualted TSs
+                if ([key isEqualToString:DCM_ExplicitVRBigEndian] ||					
+                    [key isEqualToString:DCM_ExplicitVRLittleEndian] ||
+                    [key isEqualToString:DCM_ImplicitVRLittleEndian])
+                    encapsulated = NO;
+                //implicit TSs
+                if ([key isEqualToString:DCM_ImplicitVRLittleEndian]) 
+                    explicitValue = NO;
+                NSMutableDictionary *syntax = [NSMutableDictionary dictionary];
+                [syntax setObject:[NSNumber numberWithBool:encapsulated] forKey:@"isEncapsulated"];
+                [syntax setObject:[NSNumber numberWithBool:littleEndian] forKey:@"isLittleEndian"];
+                [syntax setObject:[NSNumber numberWithBool:explicitValue] forKey:@"isExplicit"];
+                [syntax setObject:key forKey:@"TransferSyntax"];
+                [syntax setObject:aName forKey:@"Name"];
+                [gTransferSyntaxes setObject:syntax forKey:key];
+            }
 		}
-		
-		transferSyntaxDict = [[transferSyntaxes objectForKey: (NSString *)ts] retain];
+        
+		transferSyntaxDict = [[gTransferSyntaxes objectForKey: ts] retain];
 		transferSyntax = [ts retain];
 		if (transferSyntaxDict) {			
 			isEncapsulated = [[transferSyntaxDict objectForKey:@"isEncapsulated"] boolValue];
@@ -207,9 +217,12 @@ static NSString *DCM_MPEG2Main = @"1.2.840.10008.1.2.4.100";
 
 	if (ts)
 		return self;
-	else 
+	else
+    {
+        [self autorelease];
+        
 		return nil;
-
+    }
 }
 
 

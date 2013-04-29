@@ -34,7 +34,7 @@
 
 
 - (BOOL)getObjectValue:(id *)anObject forString:(NSString *)string errorDescription:(NSString **)error{
-	*anObject = [string copy];
+	*anObject = [[string copy] autorelease];
 	return YES;
 }
 
