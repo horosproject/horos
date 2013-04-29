@@ -2958,11 +2958,23 @@ static BOOL protectionAgainstReentry = NO;
         { 
 //            [self performSelectorInBackground:@selector(_threadDecompressToIncoming:) withObject:compressedPathArray];
             
+//            @synchronized (_decompressQueue) {
+//                [_decompressQueue addObjects:compressedPathArray];
+//            }
+//            
+//            [self kickstartCompressDecompress];
+            
             [self initiateDecompressFilesAtPaths: compressedPathArray intoDirAtPath: self.incomingDirPath];
 		}
         else if (listenerCompressionSettings == 2) // compress
         { 
 //            [self performSelectorInBackground:@selector(_threadCompressToIncoming:) withObject:compressedPathArray];
+            
+//            @synchronized (_decompressQueue) {
+//                [_compressQueue addObjects:compressedPathArray];
+//            }
+//            
+//            [self kickstartCompressDecompress];
             
             [self initiateCompressFilesAtPaths: compressedPathArray intoDirAtPath: self.incomingDirPath];
         }
@@ -3044,7 +3056,7 @@ static BOOL protectionAgainstReentry = NO;
 	
     if( [NSThread isMainThread] == NO)
     {
-        [self performSelectorOnMainThread: @selector( initiateImportFilesFromIncomingDirUnlessAlreadyImporting) withObject: nil waitUntilDone: NO];
+        [self performSelectorOnMainThread: @selector(initiateImportFilesFromIncomingDirUnlessAlreadyImporting) withObject: nil waitUntilDone: NO];
         return;
     }
     
