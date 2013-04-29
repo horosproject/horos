@@ -12888,8 +12888,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		imageLocation.size = NSMakeSize(32,32);
 		[pboard setData:nil forType:NSFilesPromisePboardType]; 
 		
-		if (destinationImage)
-			[destinationImage release];
+        [destinationImage release];
 		destinationImage = [image copy];
 		
 		[self dragPromisedFilesOfTypes:[NSArray arrayWithObject:@"jpg"] fromRect:imageLocation source:self slideBack:YES event:event];

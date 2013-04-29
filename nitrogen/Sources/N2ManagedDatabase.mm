@@ -176,6 +176,8 @@
 
     if( c == _managedObjectContext && associatedThread && associatedThread != [NSThread currentThread])
     {
+        NSLog( @"------------------------------");
+        NSLog( @"SQL path: %@", _sqlFilePath);
         N2LogStackTrace( @"--- warning : managedObjectContext was created in (%@), and is now used in (%@) (mainThread=%d)", associatedThread.name, [[NSThread currentThread] name], [NSThread isMainThread]);
         NSLog( @"--");
     }
