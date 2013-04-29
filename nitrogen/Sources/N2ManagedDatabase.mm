@@ -29,17 +29,24 @@
 
 #define N2PersistentStoreCoordinator NSPersistentStoreCoordinator // for debug purposes, disable this #define and enable the commented N2PersistentStoreCoordinator implementation
 
-@interface N2ManagedObjectContext : NSManagedObjectContext {
-	N2ManagedDatabase* _database;
-}
-
-@property(assign) N2ManagedDatabase* database;
-
-@end
-
 @implementation N2ManagedObjectContext
 
 @synthesize database = _database;
+
+-(id)init
+{
+    self = [super init];
+    
+    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector( N2ManagedDatabaseDealloced:) name: @"N2ManagedDatabaseDealloced" object: nil];
+    
+    return self;
+}
+
+-(void)N2ManagedDatabaseDealloced:(NSNotification*) n
+{
+    if( n.object == self.database)
+        self.database = nil;
+}
 
 -(void)dealloc {
 #ifndef NDEBUG
@@ -189,10 +196,6 @@
         
         [_managedObjectContext autorelease];
 		_managedObjectContext = [managedObjectContext retain];
-
-        // the database's main managedObjectContext must not retain the database
-		if ([_managedObjectContext isKindOfClass:[N2ManagedObjectContext class]])
-            ((N2ManagedObjectContext*)_managedObjectContext).database = nil;
         
 #ifndef NDEBUG
         [associatedThread release];
@@ -424,6 +427,8 @@
     [associatedThread release];
     associatedThread = nil;
 #endif
+    
+    [NSNotificationCenter.defaultCenter postNotificationName: @"N2ManagedDatabaseDealloced" object:self];
     
     [NSNotificationCenter.defaultCenter removeObserver:self];
     

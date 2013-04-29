@@ -345,11 +345,6 @@ static volatile int sendControllerObjects = 0;
 		
         if( objectsToSend.count)
         {
-//            if( database == nil)
-//                database = [DicomDatabase databaseForContext:[[objectsToSend lastObject] managedObjectContext]];
-//            else if( database != [DicomDatabase databaseForContext:[[objectsToSend lastObject] managedObjectContext]])
-//                NSLog( @"*********** database != [DicomDatabase databaseForContext:[[a lastObject] managedObjectContext]");
-            
             NSString *previousPatientUID = nil;
             NSMutableArray *samePatientArray = [NSMutableArray array];
             

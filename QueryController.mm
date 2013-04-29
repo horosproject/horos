@@ -3856,7 +3856,7 @@ extern "C"
 		{
 			NSPredicate	*predicate = [NSPredicate predicateWithFormat: @"(studyInstanceUID == %@)", [item valueForKey:@"uid"]];
 			
-			[request setEntity: [[[BrowserController currentBrowser].database.managedObjectModel entitiesByName] objectForKey:@"Study"]];
+			[request setEntity: [[BrowserController.currentBrowser.database.managedObjectModel entitiesByName] objectForKey:@"Study"]];
 			[request setPredicate: predicate];
 			
 			studyArray = [context executeFetchRequest:request error:&error];
@@ -3887,7 +3887,7 @@ extern "C"
 			
 			NSLog( @"%@",  [predicate description]);
 			
-			[request setEntity: [[[BrowserController currentBrowser].database.managedObjectModel entitiesByName] objectForKey:@"Series"]];
+			[request setEntity: [[BrowserController.currentBrowser.database.managedObjectModel entitiesByName] objectForKey:@"Series"]];
 			[request setPredicate: predicate];
 			
 			seriesArray = [context executeFetchRequest:request error:&error];

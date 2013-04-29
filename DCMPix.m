@@ -1107,8 +1107,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 - (void) computeMax:(float*) fResult pos:(int) pos threads:(int) threads object: (DCMPix*) o
 {
-	float				*fNext = NULL;
-	long				from, to, size = [o pheight] * [o pwidth];
+	float *fNext = NULL;
+	long from, to, size = [o pheight] * [o pwidth];
 	
 	from = (pos * size) / threads;
 	to = ((pos+1) * size) / threads;
@@ -5135,14 +5135,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             }
             
             if( newDICOMSR.count)
-                [BrowserController addFiles: newDICOMSR
-                                  toContext: [[DicomDatabase activeLocalDatabase] independentContext: YES]
-                                     toDatabase: [BrowserController currentBrowser]
-                                      onlyDICOM: YES 
-                               notifyAddedFiles: YES
-                            parseExistingObject: YES
-                                       dbFolder: [[BrowserController currentBrowser] fixedDocumentsDirectory]
-                              generatedByOsiriX: YES];
+                [BrowserController.currentBrowser.database addFilesAtPaths: newDICOMSR
+                                                        postNotifications: YES
+                                                                dicomOnly: YES
+                                                    rereadExistingItems: YES
+                                                    generatedByOsiriX: YES];
         }
         
         END_CREATE_ROIS:
@@ -12349,6 +12346,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			
 			int numberOfThreadsForCompute =[[NSProcessInfo processInfo] processorCount];
 			
+            if( numberOfThreadsForCompute > 12)
+                numberOfThreadsForCompute = 12;
+            
 			[processorsLock lock];
 			[processorsLock unlockWithCondition: numberOfThreadsForCompute];
 			

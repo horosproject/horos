@@ -33,7 +33,7 @@
 	
 	NSMutableString *csv = [NSMutableString string];
 	
-	NSArray *logEntries = [[[[[BrowserController currentBrowser].database.managedObjectModel entitiesByName] objectForKey:@"LogEntry"] attributesByName] allKeys];
+	NSArray *logEntries = [[[[BrowserController.currentBrowser.database.managedObjectModel entitiesByName] objectForKey:@"LogEntry"] attributesByName] allKeys];
 	
 	// HEADER
 	NSMutableString *line = [NSMutableString string];

@@ -92,3 +92,11 @@
 -(NSManagedObjectContext*)contextAtPath:(NSString*)sqlFilePath;
 
 @end
+
+@interface N2ManagedObjectContext : NSManagedObjectContext {
+	N2ManagedDatabase* _database;
+}
+
+@property(assign) N2ManagedDatabase* database;
+
+@end

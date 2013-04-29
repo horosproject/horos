@@ -17741,14 +17741,11 @@ int i,j,l;
 
 	if( [producedFiles count])
 	{
-		NSArray *objects = [BrowserController addFiles: [producedFiles valueForKey: @"file"]
-											 toContext: [BrowserController currentBrowser].database.managedObjectContext
-											toDatabase: [BrowserController currentBrowser]
-											 onlyDICOM: YES 
-									  notifyAddedFiles: YES
-								   parseExistingObject: YES
-											  dbFolder: [[BrowserController currentBrowser] documentsDirectory]
-									 generatedByOsiriX: YES];
+		NSArray *objects = [BrowserController.currentBrowser.database addFilesAtPaths: [producedFiles valueForKey: @"file"]
+                                                                    postNotifications: YES
+                                                                            dicomOnly: YES
+                                                                  rereadExistingItems: YES
+                                                                    generatedByOsiriX: YES];
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"])
 			[[BrowserController currentBrowser] selectServer: objects];
@@ -17874,14 +17871,11 @@ int i,j,l;
 		
 		if( [producedFiles count])
 		{
-			NSArray *objects = [BrowserController addFiles: [producedFiles valueForKey: @"file"]
-												 toContext: [BrowserController currentBrowser].database.managedObjectContext
-												toDatabase: [BrowserController currentBrowser]
-												 onlyDICOM: YES 
-										  notifyAddedFiles: YES
-									   parseExistingObject: YES
-												  dbFolder: [[BrowserController currentBrowser] documentsDirectory]
-										 generatedByOsiriX: YES];
+			NSArray *objects = [BrowserController.currentBrowser.database addFilesAtPaths: [producedFiles valueForKey: @"file"]
+                                                                        postNotifications: YES
+                                                                                dicomOnly: YES
+                                                                      rereadExistingItems: YES
+                                                                        generatedByOsiriX: YES];
 			
 			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"])
 				[[BrowserController currentBrowser] selectServer: objects];
