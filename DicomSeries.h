@@ -65,6 +65,7 @@
 - (NSNumber*) rawNoFiles;
 - (DicomSeries*) previousSeries;
 - (DicomSeries*) nextSeries;
+- (NSArray*) sortDescriptorsForImages;
 @end
 
 @interface DicomSeries (CoreDataGeneratedAccessors)

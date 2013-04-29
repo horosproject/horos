@@ -351,33 +351,6 @@ static volatile BOOL waitForRunningProcess = NO;
     return [[r copy] autorelease];
 }
 
-+(NSArray*)albumsInContext:(NSManagedObjectContext*)context { // __deprecated
-    if (!context) return [NSArray array];
-    
-	NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
-	req.entity = [NSEntityDescription entityForName: @"Album" inManagedObjectContext:context];
-	req.predicate = [NSPredicate predicateWithValue:YES];
-    
-    NSArray* albums = nil;
-    [context lock];
-    @try {
-        albums = [context executeFetchRequest:req error:NULL]; // this call locks the db -- does it?
-        albums = [albums sortedArrayUsingComparator: ^(id a, id b) { // the risk here is that an album is deleted while the list is being sorted
-            @try {
-                return [[a name] caseInsensitiveCompare:[b name]];
-            } @catch (...) {
-            }
-            return (NSComparisonResult) 0; // equal comparaison
-        }];
-    } @catch (NSException* e) {
-        N2LogException(e);
-    } @finally {
-        [context unlock];
-    }
-    
-    return albums;
-}
-
 -(NSArray*)albums
 {
 	return [self albumsInDatabase];
@@ -497,6 +470,7 @@ static NSConditionLock *threadLock = nil;
 #pragma deprecated (addFilesToDatabase:)
 -(NSArray*)addFilesToDatabase:(NSArray*)newFilesArray // __deprecated
 {
+    N2LogStackTrace( @"****** deprecated function");
     if( [NSThread isMainThread] == NO) N2LogStackTrace( @"********* We should be on MAIN thread for accessing objects from _database object");
 	return [_database objectsWithIDs:[_database addFilesAtPaths:newFilesArray]];
 }
@@ -504,6 +478,7 @@ static NSConditionLock *threadLock = nil;
 #pragma deprecated (addFilesToDatabase::)
 -(NSArray*)addFilesToDatabase:(NSArray*)newFilesArray :(BOOL)onlyDICOM // __deprecated
 {
+    N2LogStackTrace( @"****** deprecated function");
     if( [NSThread isMainThread] == NO) N2LogStackTrace( @"********* We should be on MAIN thread for accessing objects from _database object");
 	return [_database objectsWithIDs:[_database addFilesAtPaths:newFilesArray postNotifications:YES dicomOnly:onlyDICOM rereadExistingItems:NO]];
 }
@@ -511,6 +486,7 @@ static NSConditionLock *threadLock = nil;
 #pragma deprecated (addFilesToDatabase:onlyDICOM:produceAddedFiles:)
 -(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles // __deprecated
 {
+    N2LogStackTrace( @"****** deprecated function");
     if( [NSThread isMainThread] == NO) N2LogStackTrace( @"********* We should be on MAIN thread for accessing objects from _database object");
 	return [_database objectsWithIDs:[_database addFilesAtPaths:newFilesArray postNotifications:produceAddedFiles dicomOnly:onlyDICOM rereadExistingItems:NO]];
 }
@@ -518,6 +494,7 @@ static NSConditionLock *threadLock = nil;
 #pragma deprecated (addFilesToDatabase:onlyDICOM:produceAddedFiles:parseExistingObject:)
 -(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject // __deprecated
 {
+    N2LogStackTrace( @"****** deprecated function");
     if( [NSThread isMainThread] == NO) N2LogStackTrace( @"********* We should be on MAIN thread for accessing objects from _database object");
 	return [_database objectsWithIDs:[_database addFilesAtPaths:newFilesArray postNotifications:produceAddedFiles dicomOnly:onlyDICOM rereadExistingItems:parseExistingObject]];
 }
@@ -525,6 +502,7 @@ static NSConditionLock *threadLock = nil;
 #pragma deprecated (checkForExistingReport:dbFolder:)
 - (void) checkForExistingReport: (NSManagedObject*) study dbFolder: (NSString*) dbFolder
 {
+    N2LogStackTrace( @"****** deprecated function");
 	DicomDatabase* db = [DicomDatabase databaseForContext:study.managedObjectContext];
 	[db checkForExistingReportForStudy:study];
 }
@@ -534,6 +512,7 @@ static NSConditionLock *threadLock = nil;
 #pragma deprecated
 +(NSArray*)addFiles:(NSArray*)newFilesArray toContext:(NSManagedObjectContext*)context toDatabase:(BrowserController*)browserController onlyDICOM:(BOOL)onlyDICOM notifyAddedFiles:(BOOL)notifyAddedFiles parseExistingObject:(BOOL)parseExistingObject dbFolder:(NSString*)dbFolder // __deprecated
 {
+    N2LogStackTrace( @"****** deprecated function");
 	DicomDatabase* db = [DicomDatabase databaseForContext:context];
 	if (!db && browserController) db = [browserController database];
 	if (!db && dbFolder) db = [DicomDatabase databaseAtPath:dbFolder];
@@ -545,6 +524,7 @@ static NSConditionLock *threadLock = nil;
 #pragma deprecated
 +(NSArray*)addFiles:(NSArray*)newFilesArray toContext:(NSManagedObjectContext*)context toDatabase:(BrowserController*)browserController onlyDICOM:(BOOL)onlyDICOM notifyAddedFiles:(BOOL)notifyAddedFiles parseExistingObject:(BOOL)parseExistingObject dbFolder:(NSString*)dbFolder generatedByOsiriX:(BOOL)generatedByOsiriX // __deprecated
 {
+    N2LogStackTrace( @"****** deprecated function");
 	DicomDatabase* db = [DicomDatabase databaseForContext:context];
 	if (!db && browserController) db = [browserController database];
 	if (!db && dbFolder) db = [DicomDatabase databaseAtPath:dbFolder];
@@ -556,6 +536,7 @@ static NSConditionLock *threadLock = nil;
 #pragma deprecated
 +(NSArray*) addFiles:(NSArray*) newFilesArray toContext: (NSManagedObjectContext*) context toDatabase: (BrowserController*) browserController onlyDICOM: (BOOL) onlyDICOM  notifyAddedFiles: (BOOL) notifyAddedFiles parseExistingObject: (BOOL) parseExistingObject dbFolder: (NSString*) dbFolder generatedByOsiriX: (BOOL) generatedByOsiriX mountedVolume: (BOOL) mountedVolume // __deprecated
 {
+    N2LogStackTrace( @"****** deprecated function");
 	DicomDatabase* db = [DicomDatabase databaseForContext:context];
 	if (!db && browserController) db = [browserController database];
 	if (!db && dbFolder) db = [DicomDatabase databaseAtPath:dbFolder];
@@ -567,6 +548,7 @@ static NSConditionLock *threadLock = nil;
 #pragma deprecated
 +(NSArray*)addFiles:(NSArray*)newFilesArray toContext:(NSManagedObjectContext*)context onlyDICOM:(BOOL)onlyDICOM  notifyAddedFiles:(BOOL)notifyAddedFiles parseExistingObject:(BOOL)parseExistingObject dbFolder:(NSString*)dbFolder // __deprecated
 {
+    N2LogStackTrace( @"****** deprecated function");
 	DicomDatabase* db = [DicomDatabase databaseForContext:context];
 	if (!db && dbFolder) db = [DicomDatabase databaseAtPath:dbFolder];
 	if (!db && (context || dbFolder)) db = [[[DicomDatabase alloc] initWithPath:dbFolder context:context] autorelease];
@@ -577,6 +559,7 @@ static NSConditionLock *threadLock = nil;
 #pragma deprecated
 -(NSArray*)subAddFilesToDatabase:(NSArray*)newFilesArray onlyDICOM:(BOOL)onlyDICOM produceAddedFiles:(BOOL)produceAddedFiles parseExistingObject:(BOOL)parseExistingObject context:(NSManagedObjectContext*)context dbFolder:(NSString*)dbFolder // __deprecated
 {
+    N2LogStackTrace( @"****** deprecated function");
 	DicomDatabase* db = [DicomDatabase databaseForContext:context];
 	if (!db && dbFolder) db = [DicomDatabase databaseAtPath:dbFolder];
 	if (!db) db = _database;
@@ -586,6 +569,7 @@ static NSConditionLock *threadLock = nil;
 #pragma deprecated
 -(NSArray*)addFilesToDatabase:(NSArray*)newFilesArray onlyDICOM:(BOOL)onlyDICOM safeRebuild:(BOOL)safeRebuild produceAddedFiles:(BOOL)produceAddedFiles { // __deprecated // notice: the "safeRebuild" seemed to be already ignored before the DicomDatabase transition
 
+    N2LogStackTrace( @"****** deprecated function");
     if( [NSThread isMainThread] == NO) N2LogStackTrace( @"********* We should be on MAIN thread for accessing objects from _database object");
     return [_database objectsWithIDs:[_database addFilesAtPaths:newFilesArray postNotifications:produceAddedFiles dicomOnly:onlyDICOM rereadExistingItems:NO]];
 }
@@ -593,6 +577,7 @@ static NSConditionLock *threadLock = nil;
 #pragma deprecated
 -(NSArray*)addFilesToDatabase:(NSArray*)newFilesArray onlyDICOM:(BOOL)onlyDICOM produceAddedFiles:(BOOL)produceAddedFiles parseExistingObject:(BOOL)parseExistingObject context:(NSManagedObjectContext*)context dbFolder:(NSString*)dbFolder // __deprecated
 {
+    N2LogStackTrace( @"****** deprecated function");
 	DicomDatabase* db = [DicomDatabase databaseForContext:context];
 	if (!db && dbFolder) db = [DicomDatabase databaseAtPath:dbFolder];
 	if (!db) db = _database;
@@ -600,14 +585,6 @@ static NSConditionLock *threadLock = nil;
 }
 
 #pragma mark-
-
-- (void)newFilesGUIUpdateRun:(int)state viewersListToReload:(NSMutableArray*)cReload viewersListToRebuild:(NSMutableArray*)cRebuild // __deprecated
-{
-}
-
-- (void) newFilesGUIUpdate:(id) sender // __deprecated
-{
-}
 
 - (void) asyncWADODownload:(NSString*) filename
 {
@@ -2074,7 +2051,7 @@ static NSConditionLock *threadLock = nil;
 	NSThread* thread = [[NSThread alloc] initWithTarget:self selector:@selector(rebuildDatabaseThread:) object:io];
 	thread.name = NSLocalizedString(@"Rebuilding database...", nil);
 	
-	ThreadModalForWindowController* tmc = [thread startModalForWindow:self.window];
+    [thread startModalForWindow:self.window];
 	[thread start];
 	
 	return [thread autorelease];
@@ -2183,8 +2160,6 @@ static NSConditionLock *threadLock = nil;
 	DicomDatabase* database = [[self.database retain] autorelease];
 	[self setDatabase:nil];
     [self outlineViewRefresh];
-	
-	NSArray* io = [NSMutableArray arrayWithObjects: database, nil];
 	
 	NSThread* thread = [[NSThread alloc] initWithTarget:self selector:@selector(rebuildSqlThread:) object:database];
 	thread.name = NSLocalizedString(@"Rebuilding database index...", nil);
@@ -3286,31 +3261,6 @@ static NSConditionLock *threadLock = nil;
 	#endif
 }
 
-- (NSArray*) sortDescriptorsForImages
-{
-	int sortSeriesBySliceLocation = [[NSUserDefaults standardUserDefaults] integerForKey: @"sortSeriesBySliceLocation"];
-
-	NSSortDescriptor *sortInstance = nil, *sortLocation = nil, *sortDate = nil;
-
-	sortDate = [NSSortDescriptor sortDescriptorWithKey: @"date" ascending: (sortSeriesBySliceLocation > 0) ? YES : NO];
-	sortInstance = [NSSortDescriptor sortDescriptorWithKey: @"instanceNumber" ascending: YES];
-	sortLocation = [NSSortDescriptor sortDescriptorWithKey: @"sliceLocation" ascending: (sortSeriesBySliceLocation > 0) ? YES : NO];
-
-	NSArray *sortDescriptors = nil;
-
-	if( sortSeriesBySliceLocation == 0)
-		sortDescriptors = [NSArray arrayWithObjects: sortInstance, sortLocation, nil];
-	else
-	{
-		if( sortSeriesBySliceLocation == 2 || sortSeriesBySliceLocation == -2)
-			sortDescriptors = [NSArray arrayWithObjects: sortDate, sortLocation, sortInstance, nil];
-		else
-			sortDescriptors = [NSArray arrayWithObjects: sortLocation, sortInstance, nil];
-	}
-	
-	return sortDescriptors;
-}
-
 - (NSArray*) childrenArray: (id)item onlyImages: (BOOL)onlyImages
 {
     #ifndef OSIRIX_LIGHT
@@ -3331,17 +3281,7 @@ static NSConditionLock *threadLock = nil;
 	{
 		[_database lock];
 		
-		NSArray *sortedArray = nil;
-		
-		@try
-		{
-			sortedArray = [[[item valueForKey:@"images"] allObjects] sortedArrayUsingDescriptors: [self sortDescriptorsForImages]];
-		}
-		
-		@catch (NSException * e)
-		{
-            N2LogExceptionWithStackTrace(e);
-		}
+		NSArray *sortedArray = [item sortedImages];
 
 		[_database unlock];
 
@@ -4592,7 +4532,7 @@ static NSConditionLock *threadLock = nil;
 			BOOL refreshMatrix = YES;
 			long nowFiles = [[item valueForKey:@"noFiles"] intValue];
 			
-			if( previousItem == item)
+			if( [[previousItem objectID] isEqual: [item objectID]])
 			{
 				if( nowFiles == previousNoOfFiles)
 					refreshMatrix = NO;
@@ -4624,7 +4564,7 @@ static NSConditionLock *threadLock = nil;
                     else
                         matrixViewArray = [[self childrenArray: item] retain];
                     
-                    if( previousItem == item)
+                    if( [[previousItem objectID] isEqual: [item objectID]])
                     {
                         for( NSButtonCell *cell in oMatrix.cells)
                         {
@@ -4683,7 +4623,7 @@ static NSConditionLock *threadLock = nil;
                         matrixLoadIconsThread = [[NSThread alloc] initWithTarget: self selector: @selector(matrixLoadIcons:) object: dict];
                         [matrixLoadIconsThread start];
                         
-                        if( previousItem == item)
+                        if( [[previousItem objectID] isEqual: [item objectID]])
                         {
                             for( NSCell *cell in [oMatrix cells])
                             {
@@ -4702,7 +4642,7 @@ static NSConditionLock *threadLock = nil;
                     else
                     {
                         [self matrixLoadIcons: dict];
-                        if( previousItem == item)
+                        if( [[previousItem objectID] isEqual: [item objectID]])
                         {
                             for( NSCell *cell in [oMatrix cells])
                             {
@@ -4722,7 +4662,7 @@ static NSConditionLock *threadLock = nil;
                 }
 			}
 			
-			if( previousItem != item)
+			if( ![[previousItem objectID] isEqual: [item objectID]])
 			{
 				[previousItem release];
 				previousItem = [item retain];
@@ -6171,7 +6111,7 @@ static NSConditionLock *threadLock = nil;
 					{
 						NSString *uid = [item valueForKey: @"patientUID"];
 						
-						if( item != previousItem && [uid length] > 1 && [uid compare: [previousItem valueForKey: @"patientUID"] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
+						if( ![[previousItem objectID] isEqual: [item objectID]] && [uid length] > 1 && [uid compare: [previousItem valueForKey: @"patientUID"] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
 						{
 							[cell setDrawsBackground: YES];
 							[cell setBackgroundColor: [NSColor lightGrayColor]];	//secondarySelectedControlColor]];
@@ -6789,8 +6729,6 @@ static NSConditionLock *threadLock = nil;
 - (IBAction) displayImagesOfSeries: (id) sender
 {
 	NSMutableArray *dicomFiles = [NSMutableArray array];
-	NSMutableArray *files;
-	
 	
 	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
 	{
@@ -6800,7 +6738,7 @@ static NSConditionLock *threadLock = nil;
 			
 			if( [[curObj valueForKey:@"type"] isEqualToString:@"Image"])
 			{ 
-				files = [self filesForDatabaseMatrixSelection: dicomFiles];
+                [self filesForDatabaseMatrixSelection: dicomFiles];
 				
 				if( [databaseOutline isItemExpanded: [curObj valueForKeyPath:@"series.study"]])
 					[databaseOutline collapseItem: [curObj valueForKeyPath:@"series.study"]];
@@ -6809,7 +6747,7 @@ static NSConditionLock *threadLock = nil;
 			}
 			else
 			{
-				files = [self filesForDatabaseMatrixSelection: dicomFiles];
+                [self filesForDatabaseMatrixSelection: dicomFiles];
 				[self findAndSelectFile:nil image:[dicomFiles objectAtIndex: 0] shouldExpand:YES];
 			}
 		}
@@ -7565,14 +7503,11 @@ static NSConditionLock *threadLock = nil;
 				
 				if( f)
 				{
-					[BrowserController addFiles: [NSArray arrayWithObject: f]
-									  toContext: [self managedObjectContext]
-									 toDatabase: self
-									  onlyDICOM: YES 
-							   notifyAddedFiles: YES
-							parseExistingObject: YES
-									   dbFolder: [self documentsDirectory]
-							  generatedByOsiriX: YES];
+                    [_database addFilesAtPaths: [NSArray arrayWithObject: f]
+                             postNotifications: YES
+                                     dicomOnly: YES
+                           rereadExistingItems: YES
+                             generatedByOsiriX: YES];
 				
 					return;
 				}
@@ -9938,7 +9873,7 @@ static BOOL needToRezoom;
 	NSArray						*studyArray = nil;
 	NSError						*error = nil;
 	NSFetchRequest				*request = [[[NSFetchRequest alloc] init] autorelease];
-	NSManagedObjectContext		*context = [BrowserController currentBrowser].database.managedObjectContext;
+	NSManagedObjectContext		*context = BrowserController.currentBrowser.database.managedObjectContext;
 	NSPredicate					*predicate = [NSPredicate predicateWithFormat: @"(studyInstanceUID == %@)", uid];
 	
 	[request setEntity: [[self.database.managedObjectModel entitiesByName] objectForKey:@"Study"]];
@@ -9968,10 +9903,10 @@ static BOOL needToRezoom;
 	NSArray						*seriesArray = nil;
 	NSError						*error = nil;
 	NSFetchRequest				*request = [[[NSFetchRequest alloc] init] autorelease];
-	NSManagedObjectContext		*context = [BrowserController currentBrowser].database.managedObjectContext;
+	NSManagedObjectContext		*context = BrowserController.currentBrowser.database.managedObjectContext;
 	NSPredicate					*predicate = [NSPredicate predicateWithFormat: @"(seriesDICOMUID == %@)", uid];
 	
-	[request setEntity: [[[BrowserController currentBrowser].database.managedObjectModel entitiesByName] objectForKey:@"Series"]];
+	[request setEntity: [[BrowserController.currentBrowser.database.managedObjectModel entitiesByName] objectForKey:@"Series"]];
 	[request setPredicate: predicate];
 	
 	[context retain];
@@ -10010,40 +9945,6 @@ static BOOL needToRezoom;
 	if (![_database isLocal])
 		[(RemoteDicomDatabase*)_database uploadFilesAtPaths:files imageObjects:nil generatedByOsiriX:YES];
 	
-	[pool release];
-}
-
-- (void) copyToDB: (NSDictionary*) d
-{
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-	NSString *dbFolder = [d objectForKey: @"dbFolder"];
-	NSMutableArray *dstFiles = [NSMutableArray array];
-	NSManagedObjectContext *sqlContext = [d objectForKey: @"sqlContext"];
-	
-	int t = 0;
-	for( NSString *srcPath in [d objectForKey: @"packArray"])
-	{
-		NSString *dstPath;
-		BOOL isDicomFile = [DicomFile isDICOMFile:srcPath];
-		
-		if( isDicomFile) dstPath = [self getNewFileDatabasePath:@"dcm" dbFolder: [dbFolder stringByAppendingPathComponent: @"OsiriX Data"]];
-		else dstPath = [self getNewFileDatabasePath: [[srcPath pathExtension] lowercaseString] dbFolder: [dbFolder stringByAppendingPathComponent: @"OsiriX Data"]];
-		
-		if( [[NSFileManager defaultManager] copyPath:srcPath toPath:dstPath handler:nil])
-			[dstFiles addObject: dstPath];
-		
-		if( [NSThread currentThread].isCancelled)
-			break;
-			
-		[NSThread currentThread].progress = (float) ++t / (float) [[d objectForKey: @"packArray"] count];
-		[NSThread currentThread].status = N2LocalizedSingularPluralCount( [[d objectForKey: @"packArray"] count]-t, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil));
-	}
-	
-	// Then we add the files to the sql file
-	[NSThread currentThread].status = NSLocalizedString( @"Indexing the files...", nil);
-	[self addFilesToDatabase: dstFiles onlyDICOM: NO produceAddedFiles:YES parseExistingObject:NO context: sqlContext dbFolder: [dbFolder stringByAppendingPathComponent:@"OsiriX Data"]];
-						
 	[pool release];
 }
 
@@ -10800,7 +10701,7 @@ static BOOL needToRezoom;
 						if( p1 && p2 && [ViewerController computeIntervalForDCMPix: p1 And: p2] < 0)
 						{
 							//Inverse the array
-							a = [[a reverseObjectEnumerator] allObjects];	//[a sortedArrayUsingDescriptors: [self sortDescriptorsForImages]];
+							a = [[a reverseObjectEnumerator] allObjects];
 							
 							preFlippedData = YES;
 							flipped = YES;
@@ -12019,7 +11920,7 @@ static NSArray*	openSubSeriesArray = nil;
 			if( i % interval == 0) [imagesArray addObject: image];
 		}
 		
-		[imagesArray sortUsingDescriptors: [self sortDescriptorsForImages]];
+		[imagesArray sortUsingDescriptors: [[imagesArray lastObject] sortDescriptorsForImages]];
 		
 		if( [imagesArray count] > 0)
 			[newArray addObject: imagesArray];
@@ -13621,8 +13522,6 @@ static NSArray*	openSubSeriesArray = nil;
             [[NSFileManager defaultManager] removeItemAtPath: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"] error: nil];
         }
 	
-		NSMutableArray *folders = [NSMutableArray array];
-		
 		NSLog( @"---- save delete queue: %d objects", (int) [copyArray count]);
 		
         [[NSFileManager defaultManager] removeItemAtPath: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"] error: nil];
@@ -14890,12 +14789,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSOpenPanel *sPanel	= [NSOpenPanel openPanel];
 	
 	NSMutableArray *dicomFiles2Export = [NSMutableArray array];
-	NSMutableArray *filesToExport;
 	
 	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
-		filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export onlyImages: YES];
+        [self filesForDatabaseMatrixSelection: dicomFiles2Export onlyImages: YES];
 	else
-		filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export onlyImages: YES];
+        [self filesForDatabaseOutlineSelection: dicomFiles2Export onlyImages: YES];
 	
 	[sPanel setCanChooseDirectories:YES];
 	[sPanel setCanChooseFiles:NO];
@@ -16758,14 +16656,11 @@ static volatile int numberOfThreadsForJPEG = 0;
             [AppController printStackTrace: e];
         }
         
-        [BrowserController addFiles: newDICOMPDFReports
-                          toContext: [self managedObjectContext]
-                         toDatabase: self
-                          onlyDICOM: YES 
-                   notifyAddedFiles: YES
-                parseExistingObject: YES
-                           dbFolder: [self documentsDirectory]
-                  generatedByOsiriX: YES];
+        [_database addFilesAtPaths: newDICOMPDFReports
+                 postNotifications: YES
+                         dicomOnly: YES
+               rereadExistingItems: YES
+                 generatedByOsiriX: YES];
     }
     
 //    [checkBonjourUpToDateThreadLock unlock]; // TODO: merge

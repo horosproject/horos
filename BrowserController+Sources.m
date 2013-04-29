@@ -284,7 +284,7 @@ enum {
 	thread.supportsCancel = YES;
 	thread.status = NSLocalizedString(@"Reading data...", nil);
 	
-	ThreadModalForWindowController* tmc = [thread startModalForWindow:self.window];
+    [thread startModalForWindow:self.window];
 	[thread start];
 	
 	return thread;
@@ -297,7 +297,7 @@ enum {
 	NSThread* thread = [[NSThread alloc] initWithTarget:self selector:@selector(setDatabaseThread:) object:io];
 	thread.name = NSLocalizedString(@"Loading remote OsiriX database...", nil);
 	thread.supportsCancel = YES;
-	ThreadModalForWindowController* tmc = [thread startModalForWindow:self.window];
+    [thread startModalForWindow:self.window];
 	[thread start];
 	
 	return [thread autorelease];

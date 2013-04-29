@@ -166,7 +166,6 @@ static DicomDatabase* defaultDatabase = nil;
 }
 
 static NSMutableDictionary *databasesDictionary = [[NSMutableDictionary alloc] init];
-static NSMutableDictionary *databasesContextsDictionary = [[NSMutableDictionary alloc] init];
 static NSRecursiveLock *databasesDictionaryLock = [[NSRecursiveLock alloc] init];
 
 +(NSArray*)allDatabases
@@ -197,17 +196,13 @@ static NSRecursiveLock *databasesDictionaryLock = [[NSRecursiveLock alloc] init]
         if (![[databasesDictionary allValues] containsObject: [NSValue valueWithPointer: db]] && ![databasesDictionary objectForKey:db.baseDirPath])
         {
             [databasesDictionary setObject: [NSValue valueWithPointer: db] forKey:db.baseDirPath];
-            [databasesContextsDictionary setObject: db.managedObjectContext forKey:db.baseDirPath];
         }
         else
         {
-            NSDate* k = [NSDate date];
+            NSValue* k = [NSValue valueWithPointer: db];
             
             if (![databasesDictionary objectForKey:k])
-            {
                 [databasesDictionary setObject: [NSValue valueWithPointer: db] forKey:k];
-                [databasesContextsDictionary setObject: db.managedObjectContext forKey:k];
-            }
         }
         
 		[databasesDictionaryLock unlock];
@@ -252,64 +247,17 @@ static NSRecursiveLock *databasesDictionaryLock = [[NSRecursiveLock alloc] init]
     return database;
 }
 
-+(DicomDatabase*)databaseForContext:(NSManagedObjectContext*)c { // hopefully one day this will be __deprecated
-    if (!c)
-        return nil;
++(DicomDatabase*)databaseForContext:(NSManagedObjectContext*)c
+{
+    DicomDatabase *db = nil;
     
-    DicomDatabase* returnedDB = nil;
-	[databasesDictionaryLock lock];
-    {
-        // is it the MOC of a listed database?
-        for (NSValue *value in [databasesDictionary allValues])
-        {
-            DicomDatabase* dbi = (DicomDatabase*) [value pointerValue];
-            
-            if (dbi.managedObjectContext == c)
-                returnedDB = dbi;
-        }
-        if( returnedDB == nil)
-        {
-            // is it an independent MOC of a listed database?
-            for (NSValue *value in [databasesDictionary allValues])
-            {
-                DicomDatabase* dbi = (DicomDatabase*) [value pointerValue];
-                
-                if (dbi.managedObjectContext.persistentStoreCoordinator == c.persistentStoreCoordinator)
-                {
-                    // we must return a valid DicomDatabase with the specified context
-                    DicomDatabase* db = [[[DicomDatabase alloc] initWithPath:dbi.baseDirPath context:c mainDatabase:dbi] autorelease];
-                    db.name = dbi.name;
-                    returnedDB = db;
-                }
-            }
-        }
-        // uhm, let's try with the persistentStores
-        //for (NSPersistentStore* ps in [c.persistentStoreCoordinator persistentStores]) {
-        //    
-        //}
-    }
-    [databasesDictionaryLock unlock];
+    if( [c isKindOfClass: [N2ManagedObjectContext class]])
+        db = (DicomDatabase*) [(N2ManagedObjectContext*)c database];
     
-    if( returnedDB)
-        return returnedDB;
-
-    NSString* path = nil;
-    for (NSPersistentStore* ps in c.persistentStoreCoordinator.persistentStores)
-        if ([NSFileManager.defaultManager fileExistsAtPath:ps.URL.path]) {
-            path = ps.URL.path;
-            break;
-        }
-    
-    if (path) {
-        DicomDatabase* dbp = [self databaseAtPath:path];
-        if (dbp)
-            return dbp;
-    }
+    if( !db)
+        N2LogStackTrace( @"databaseForContext == nil");
         
-    return [[[[self class] alloc] initWithPath:path context:c] autorelease];
-    
-//	[NSException raise:NSGenericException format:@"Unidentified database context"];
-//  return nil;
+    return db;
 }
 
 static DicomDatabase* activeLocalDatabase = nil;
@@ -512,16 +460,19 @@ static DicomDatabase* activeLocalDatabase = nil;
     BOOL found = NO;
     for(id key in [NSDictionary dictionaryWithDictionary: databasesDictionary])
     {
-        if ( [[databasesDictionary objectForKey: key] pointerValue] == (void*) self)
+        if( [[databasesDictionary objectForKey: key] pointerValue] == (void*) self)
         {
-            [databasesContextsDictionary removeObjectForKey: key];
             [databasesDictionary removeObjectForKey: key];
-            
             found = YES;
         }
     }
     if( found == NO)
         N2LogStackTrace( @"*************** WTF");
+    
+    #ifndef NDEBUG
+    if( databasesDictionary.count > 50)
+        NSLog( @"******** WARNING databasesDictionary.count is very high = %d", databasesDictionary.count);
+    #endif
     
     [databasesDictionaryLock unlock]; //We are locked from -(oneway void) release
     

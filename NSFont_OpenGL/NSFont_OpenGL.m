@@ -332,8 +332,8 @@ static  unsigned char			*charPtrArrayScale2[ MAXCOUNT], *charPtrArrayPreviewScal
 	unichar currentUnichar;
 	BOOL retval;
 	
-	NSMutableArray  *curArray;
-	long *curSizeArray;
+	NSMutableArray *curArray = nil;
+	long *curSizeArray = nil;
 	unsigned char **curPtrArray = nil;
     
     if( scaling == 2.0)

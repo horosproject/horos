@@ -623,19 +623,40 @@
 	return nil;
 }
 
+- (NSArray*) sortDescriptorsForImages
+{
+	int sortSeriesBySliceLocation = [[NSUserDefaults standardUserDefaults] integerForKey: @"sortSeriesBySliceLocation"];
+    
+	NSSortDescriptor *sortInstance = nil, *sortLocation = nil, *sortDate = nil;
+    
+	sortDate = [NSSortDescriptor sortDescriptorWithKey: @"date" ascending: (sortSeriesBySliceLocation > 0) ? YES : NO];
+	sortInstance = [NSSortDescriptor sortDescriptorWithKey: @"instanceNumber" ascending: YES];
+	sortLocation = [NSSortDescriptor sortDescriptorWithKey: @"sliceLocation" ascending: (sortSeriesBySliceLocation > 0) ? YES : NO];
+    
+	NSArray *sortDescriptors = nil;
+    
+	if( sortSeriesBySliceLocation == 0)
+		sortDescriptors = [NSArray arrayWithObjects: sortInstance, sortLocation, nil];
+	else
+	{
+		if( sortSeriesBySliceLocation == 2 || sortSeriesBySliceLocation == -2)
+			sortDescriptors = [NSArray arrayWithObjects: sortDate, sortLocation, sortInstance, nil];
+		else
+			sortDescriptors = [NSArray arrayWithObjects: sortLocation, sortInstance, nil];
+	}
+	
+	return sortDescriptors;
+}
+
 - (NSArray *)sortedImages
 {
-	[self.managedObjectContext lock];
 	@try {
-		NSArray* imageArray = [self.images allObjects];
-		NSArray* sortDescriptors = [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES] autorelease]];
-        return [imageArray sortedArrayUsingDescriptors:sortDescriptors];
+        return [self.images.allObjects sortedArrayUsingDescriptors: self.sortDescriptorsForImages];
 	}
 	@catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	}	
     @finally {
-        [self.managedObjectContext unlock];
     }
 	
 	return nil;

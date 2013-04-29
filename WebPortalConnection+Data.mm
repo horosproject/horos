@@ -462,7 +462,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 }
 
 -(void)getWidth:(CGFloat*)width height:(CGFloat*)height fromImagesArray:(NSArray*)images {
-	[self getWidth:width height:height fromImagesArray:images minSize:NSMakeSize(300) maxSize:NSMakeSize( [[NSUserDefaults standardUserDefaults] floatForKey: @"WebServerMaxWidthForMovie"])];
+	[self getWidth:width height:height fromImagesArray:images minSize:NSMakeSize( [[NSUserDefaults standardUserDefaults] floatForKey: @"WebServerMinWidthForMovie"]) maxSize:NSMakeSize( [[NSUserDefaults standardUserDefaults] floatForKey: @"WebServerMaxWidthForMovie"])];
 }
 
 -(void)getWidth:(CGFloat*)width height:(CGFloat*)height fromImagesArray:(NSArray*)imagesArray minSize:(NSSize)minSize maxSize:(NSSize)maxSize {
@@ -507,12 +507,11 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 
 - (void) movieDCMPixLoad: (NSDictionary*) dict
 {
-	[dict retain];
-	
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	NSArray *dicomImageArray = [dict valueForKey: @"DicomImageArray"];
-	
+    DicomDatabase *idd = self.portal.dicomDatabase.independentDatabase;
+    NSArray *dicomImageArray = [idd objectsWithIDs: [dict valueForKey: @"DicomImageArray"]];
+    
 	int location = [[dict valueForKey: @"location"] unsignedIntValue];
 	int length = [[dict valueForKey: @"length"] unsignedIntValue];
 	int width = [[dict valueForKey: @"width"] floatValue];
@@ -524,6 +523,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
     NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat: 0.7] forKey:NSImageCompressionFactor];
     
     DicomSeries *series = [(DicomImage*)[dicomImageArray lastObject] series];
+    NSArray *allImages = [series sortedImages];
     int totalImages = series.images.count;
     
 	for( int x = location ; x < location+length; x++)
@@ -575,7 +575,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 			
 #define TEXTHEIGHT 15
             [newImage lockFocus];
-            [self drawText: [NSString stringWithFormat: @"%d / %d", x+1, totalImages]  atLocation: NSMakePoint( 1, newImage.size.height - TEXTHEIGHT)];
+            [self drawText: [NSString stringWithFormat: @"%d / %d", (int) ([allImages indexOfObject: im]+1), totalImages]  atLocation: NSMakePoint( 1, newImage.size.height - TEXTHEIGHT)];
             [newImage unlockFocus];
             
 			if ([outFile hasSuffix:@"swf"])
@@ -595,8 +595,6 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 	}
 	
 	[pool release];
-	
-	[dict release];
 	
 	@synchronized( self)
 	{
@@ -649,6 +647,9 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		{
 			int noOfThreads = [[NSProcessInfo processInfo] processorCount];
 			
+            if( noOfThreads > 12)
+                noOfThreads = 12;
+            
 			NSRange range = NSMakeRange( 0, 1+ ([dicomImageArray count] / noOfThreads));
 						
 			if( DCMPixLoadingLock == nil)
@@ -695,7 +696,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 															[NSNumber numberWithFloat: height], @"height",
 															outFile, @"outFile",
 															fileName, @"fileName",
-															dicomImageArray, @"DicomImageArray",
+															[dicomImageArray valueForKey: @"objectID"], @"DicomImageArray",
                                                             [NSValue valueWithPointer:&fps], @"fpsP", nil]];
 					}
 					
