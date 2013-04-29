@@ -801,6 +801,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		break;
 	}
 	
+//    return [NSString stringWithFormat: @"&transferSyntax=preserved"];
+    
 	return [NSString stringWithFormat: @"&useOrig=true"];
 }
 
@@ -1023,6 +1025,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                             if( [localObjectUIDs containsString: [image uid]] == NO)
                             {
                                 NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom%@", [self uid], [image seriesInstanceUID], [image uid], ts]];
+                                
                                 [urlToDownload addObject: url];
                             }
                             else

@@ -2041,14 +2041,14 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		{
 			if ([contentType isEqualToString: @"application/dicom"])
 			{
-				if ([useOrig isEqualToString: @"true"] || [useOrig isEqualToString: @"1"] || [useOrig isEqualToString: @"yes"] || transferSyntax == nil)
+                DCMTransferSyntax *ts = [[[DCMTransferSyntax alloc] initWithTS: transferSyntax] autorelease];
+                
+				if( [useOrig boolValue] == 1 || ts == nil || [ts.name isEqualToString: @"Unknown Syntax"])
 				{
 					response.data = [NSData dataWithContentsOfFile: cachedPathForSOPInstanceUID];
 				}
 				else
 				{
-					DCMTransferSyntax *ts = [[[DCMTransferSyntax alloc] initWithTS: transferSyntax] autorelease];
-					
 					if ([ts isEqualToTransferSyntax: [DCMTransferSyntax JPEG2000LosslessTransferSyntax]] ||
 						[ts isEqualToTransferSyntax: [DCMTransferSyntax JPEG2000LossyTransferSyntax]] ||
 						[ts isEqualToTransferSyntax: [DCMTransferSyntax JPEGBaselineTransferSyntax]] ||
