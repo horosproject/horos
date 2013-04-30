@@ -3429,8 +3429,7 @@ typedef struct _xyzArray
 		imageLocation.size = NSMakeSize(32,32);
 		[pboard setData:nil forType:NSFilesPromisePboardType]; 
 		
-		if (destinationImage)
-			[destinationImage release];
+        [destinationImage release];
 		destinationImage = [image copy];
 		
 		[self dragPromisedFilesOfTypes:[NSArray arrayWithObject:@"jpg"]

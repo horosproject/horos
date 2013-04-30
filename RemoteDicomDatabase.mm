@@ -425,7 +425,7 @@
     [_updateLock lock];
     
     @try
-        {
+    {
         NSManagedObjectContext* context = [self contextAtPath:path];
         
         for (ViewerController* vc in [ViewerController getDisplayed2DViewers])
@@ -436,12 +436,10 @@
         NSString* oldSqlFilePath = [_sqlFilePath autorelease];
         _sqlFilePath = [path retain];
         
-        NSManagedObjectContext* ocontext = self.managedObjectContext;
-        [ocontext lock];
-        [context lock];
+        NSManagedObjectContext *previousContext = self.managedObjectContext;
+        [[previousContext retain] autorelease];
+            
         self.managedObjectContext = context;
-        [context unlock];
-        [ocontext unlock];
         
         [[NSNotificationCenter defaultCenter] postNotificationName:OsirixAddToDBNotification object:self];
         [[NSNotificationCenter defaultCenter] postNotificationName:_O2AddToDBAnywayNotification object:self];
@@ -619,15 +617,19 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 				[RemoteDicomDatabase _data:count appendInt:filesInRequest.count];
 				[request replaceBytesInRange:NSMakeRange(6,count.length) withBytes:count.bytes length:count.length];
 				
-				NSMutableData* response = [[self synchronousRequest:request urgent:YES] mutableCopy];
-                if (dbObjsInRequest.count && response.length) {
+				NSMutableData* response = [[[self synchronousRequest:request urgent:YES] mutableCopy] autorelease];
+                if (dbObjsInRequest.count && response.length)
+                {
 					unsigned int count;
                     if ([[self class] data:response readInteger:&count])
-                        if (count == dbObjsInRequest.count) {
-                            [self lock];
-                            for (unsigned int i = 0; i < count; ++i) {
+                    {
+                        if (count == dbObjsInRequest.count)
+                        {
+                            for (unsigned int i = 0; i < count; ++i)
+                            {
                                 unsigned int number;
-                                if ([[self class] data:response readInteger:&number]) {
+                                if ([[self class] data:response readInteger:&number])
+                                {
                                     DicomImage* image = [dbObjsInRequest objectAtIndex:i];
                                     [image setValue:[NSString stringWithFormat:@"%d.dcm", number] forKey:@"path"];
                                     [image setValue:[NSNumber numberWithBool:YES] forKey:@"inDatabaseFolder"];
@@ -635,8 +637,8 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
                                 }
                                 else break;
                             }
-                            [self unlock];
                         }
+                    }
                 }
                 
 				[request setLength:6+count.length];

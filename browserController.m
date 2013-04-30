@@ -7161,7 +7161,6 @@ static NSConditionLock *threadLock = nil;
 
 -(void) loadNextPatient:(NSManagedObject *) curImage :(long) direction :(ViewerController*) viewer :(BOOL) firstViewer keyImagesOnly:(BOOL) keyImages
 {
-	BOOL applyToAllViewers = [[NSUserDefaults standardUserDefaults] boolForKey:@"nextSeriesToAllViewers"];
 	BOOL copyPatientsSettings = [[NSUserDefaults standardUserDefaults] boolForKey: @"onlyDisplayImagesOfSamePatient"];
 	
     NSDisableScreenUpdates();
@@ -7174,20 +7173,17 @@ static NSConditionLock *threadLock = nil;
         [NSObject cancelPreviousPerformRequestsWithTarget:[AppController sharedAppController] selector:@selector(tileWindows:) object:nil];
     }
     
-	if(  applyToAllViewers)
-	{
-		// If multiple viewer are opened, apply it to the entire list
-		for( ViewerController *v in [ViewerController get2DViewers])
+    if( [ViewerController get2DViewers].count)
+    {
+        // Save workspace
+        [viewer saveWindowsState: self];
+        
+        // If multiple viewer are opened, apply it to the entire list
+        for( ViewerController *v in [ViewerController get2DViewers])
             [[v window] orderOut: self];
         
         for( ViewerController *v in [ViewerController get2DViewers])
             [v close];
-	}
-	else
-    {
-        [[viewer window] orderOut: self];
-		[viewer close];
-	
     }
     
     if( delayedTileWindows)
