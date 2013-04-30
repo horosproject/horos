@@ -4970,12 +4970,14 @@ static NSConditionLock *threadLock = nil;
 		[_database save: nil];
 		
 		[self outlineViewRefresh];
-		
+        
 		[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: destStudy]] byExtendingSelection: NO];
 		[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 		
 		[self refreshMatrix: self];
 		
+        [self refreshPACSOnDemandResults: self];
+        
 		[context unlock];
 		[context release];
 	}
