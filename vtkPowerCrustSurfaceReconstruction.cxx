@@ -5370,7 +5370,7 @@ void *visit_hull(simplex *root, visit_func *visit)
             fprintf(DFILE,"---------------------\n");       \
             print_triang(a,DFILE, &print_neighbor_full);        \
         }\
-        /* TJH exit(1);*/ OSIRIX_ASSERT((long) (pcFALSE,"adjacency failure!"));                        \
+        /* TJH exit(1);*/ OSIRIX_ASSERT((long) (pcFALSE));                        \
         return 0;                       \
     }                               \
 }                                   \
@@ -5643,7 +5643,7 @@ void panic(const char *fmt, ...) {
     }
     va_end(args);
 
-    /* TJH exit(1);*/ OSIRIX_ASSERT((long) (pcFALSE,fmt));
+    /* TJH exit(1);*/ OSIRIX_ASSERT((long) (pcFALSE));
 }
 
 
