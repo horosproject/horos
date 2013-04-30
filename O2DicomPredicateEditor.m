@@ -37,7 +37,7 @@
 
 @implementation O2DicomPredicateEditor
 
-@synthesize dbMode = _dbMode;
+@synthesize dbMode = _dbMode, inited = _inited;
 
 - (id)initWithFrame:(NSRect)frame
 {
@@ -167,7 +167,6 @@
     if (dbMode)
         self.nestingMode = NSRuleEditorNestingModeCompound;
     else self.nestingMode = NSRuleEditorNestingModeList;
-
 }
 
 + (NSSet*)keyPathsForValuesAffectingValue {

@@ -16,7 +16,7 @@
     O2DicomPredicateEditorRowTemplate* _dpert;
 }
 
-@property(nonatomic) BOOL dbMode;
+@property(nonatomic) BOOL dbMode, inited;
 
 - (BOOL)matchForPredicate:(NSPredicate*)p;
 - (BOOL)reallyMatchForPredicate:(NSPredicate*)predicate;

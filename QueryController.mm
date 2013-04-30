@@ -15,13 +15,12 @@
 #import "QueryController.h"
 #import "WaitRendering.h"
 #import "QueryFilter.h"
-#import "AdvancedQuerySubview.h"
 #import "AppController.h"
 #import "ImageAndTextCell.h"
 #import <OsiriX/DCMCalendarDate.h>
 #import <OsiriX/DCMNetServiceDelegate.h>
 #import "QueryArrayController.h"
-#import "AdvancedQuerySubview.h"
+//#import "AdvancedQuerySubview.h"
 #import "DCMTKRootQueryNode.h"
 #import "DCMTKStudyQueryNode.h"
 #import "DCMTKSeriesQueryNode.h"

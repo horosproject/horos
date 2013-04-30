@@ -295,7 +295,9 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
         
         //        NSLog(@"ascadfasf %@", [_tagsPopUp exposedBindings]);
         [_tagsPopUp bind:@"selectedTag" toObject:self withKeyPath:@"selectedTag" options:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:NSValidatesImmediatelyBindingOption]];
-        
+
+        [self _observePopUpButtonWillPopUpNotification:nil];
+
         // operators pop-up
         
         _operatorsPopUp = [[O2DicomPredicateEditorPopUpButton alloc] initWithFrame:NSZeroRect pullsDown:NO];
@@ -704,7 +706,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
     
     [_tagsPopUp.menu removeAllItems];
     for (NSMenuItem* mi in _menuItems)
-        if ([mi.representedObject isKindOfClass:[O2DicomPredicateEditorDCMAttributeTag class]] == [self.editor dbMode]) {
+        if (![[self editor] inited] || [mi.representedObject isKindOfClass:[O2DicomPredicateEditorDCMAttributeTag class]] == [self.editor dbMode]) {
             [_tagsPopUp.menu addItem:mi];
     }
     
@@ -856,6 +858,153 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
 }
 
 
+- (NSArray*)views {
+    NSMutableArray* views = [NSMutableArray arrayWithObject:_tagsPopUp];
+    
+    DCMAttributeTag* tag = self.tag;
+    O2ValueRepresentation vr = [[self class] valueRepresentationFromVR:tag.vr];
+
+#define N(x) [NSNumber numberWithInteger:x]
+    
+    switch (vr) {
+        case SH:
+        case LO:
+        case ST:
+        case LT:
+        case UT:
+        case AE: // TODO: should be more restrictive for AE
+        case PN:
+        case UI:  {
+            [views addObject:_operatorsPopUp];
+            [self setAvailableOperators: N(NSContainsPredicateOperatorType), N(NSBeginsWithPredicateOperatorType), N(NSEndsWithPredicateOperatorType), N(NSEqualToPredicateOperatorType), N(NSNotEqualToPredicateOperatorType), nil];
+            _stringValueTextField.formatter = nil;
+            [views addObject:_stringValueTextField];
+        } break;
+            
+        case IS: {
+            [views addObject:_isLabel];
+            [self setAvailableOperators: N(NSEqualToPredicateOperatorType), nil];
+            _stringValueTextField.formatter = [[self class] integersFormatter];
+            [views addObject:_stringValueTextField];
+        } break;
+            
+        case SS:
+        case SL:
+        case US:
+        case UL: {
+            [views addObject:_isLabel];
+            [self setAvailableOperators: N(NSEqualToPredicateOperatorType), nil];
+            _numberValueTextField.formatter = [[self class] integerFormatter];
+            [views addObject:_numberValueTextField];
+        } break;
+            
+        case DS: {
+            [views addObject:_isLabel];
+            [self setAvailableOperators: N(NSEqualToPredicateOperatorType), nil];
+            _stringValueTextField.formatter = [[self class] decimalsFormatter];
+            [views addObject:_stringValueTextField];
+        } break;
+            
+        case FL:
+        case FD: {
+            [views addObject:_isLabel];
+            [self setAvailableOperators: N(NSEqualToPredicateOperatorType), nil];
+            _numberValueTextField.formatter = [[self class] decimalFormatter];
+            [views addObject:_numberValueTextField];
+        } break;
+            
+        case AS: {
+            [views addObject:_isLabel];
+            [self setAvailableOperators: N(NSEqualToPredicateOperatorType), nil];
+            _stringValueTextField.formatter = [[self class] ageFormatter];
+            [views addObject:_stringValueTextField];
+        } break;
+            
+        case DA: {
+            [views addObject:_operatorsPopUp];
+            [self setAvailableOperators: N(O2Today), N(O2Yesterday), N(O2DayBeforeYesterday), N(NSLessThanOrEqualToPredicateOperatorType), N(NSGreaterThanOrEqualToPredicateOperatorType), N(O2Within), N(NSEqualToPredicateOperatorType), nil]; // TODO: add 'is between'
+            switch (self.operator) {
+                case NSLessThanOrEqualToPredicateOperatorType:
+                case NSGreaterThanOrEqualToPredicateOperatorType:
+                case NSEqualToPredicateOperatorType:
+                    [views addObject:_datePicker];
+                    break;
+                case O2Within:
+                    [views addObject:_withinPopUp];
+                default:
+                    break;
+            }
+        } break;
+            
+        case TM: {
+            [views addObject:_operatorsPopUp];
+            [self setAvailableOperators: N(NSLessThanOrEqualToPredicateOperatorType), N(NSGreaterThanOrEqualToPredicateOperatorType), N(NSEqualToPredicateOperatorType), nil];
+            switch (self.operator) {
+                case NSLessThanOrEqualToPredicateOperatorType:
+                case NSGreaterThanOrEqualToPredicateOperatorType:
+                case NSEqualToPredicateOperatorType:
+                    [views addObject:_timePicker];
+                    break;
+                default:
+                    break;
+            }
+        } break;
+            
+        case DT: {
+            [views addObject:_operatorsPopUp];
+            [self setAvailableOperators: N(O2Today), N(O2Yesterday), N(O2DayBeforeYesterday), N(NSLessThanOrEqualToPredicateOperatorType), N(NSGreaterThanOrEqualToPredicateOperatorType), N(O2Within), N(NSEqualToPredicateOperatorType), nil]; // TODO: add 'is between'
+            switch (self.operator) {
+                case NSLessThanOrEqualToPredicateOperatorType:
+                case NSGreaterThanOrEqualToPredicateOperatorType:
+                case NSEqualToPredicateOperatorType:
+                    [views addObject:_dateTimePicker];
+                    break;
+                case O2Within:
+                    [views addObject:_withinPopUp];
+                default:
+                    break;
+            }
+        } break;
+            
+        case CS: {
+            [views addObject:_isLabel];
+            // .. popup
+            [_codeStringPopUp.menu removeAllItems];
+            NSDictionary* dic = [O2DicomPredicateEditorCodeStrings codeStringsForTag:self.tag];
+            NSInteger i = 0;
+            for (NSString* k in dic) {
+                NSString* t = nil;
+                if ([k isKindOfClass:[NSString class]] && ![k isEqualToString:[dic objectForKey:k]] && [[dic objectForKey:k] length] < 80)
+                    t = [NSString stringWithFormat:NSLocalizedString(@"%@, %@", nil), k, [dic objectForKey:k]];
+                else t = [dic objectForKey:k];
+                if (![t isKindOfClass:[NSString class]])
+                    t = [(id)t stringValue];
+                NSMenuItem* mi = [_codeStringPopUp.menu addItemWithTitle:t action:nil keyEquivalent:@""];
+                mi.tag = ++i;
+            }
+            // if there are items, show the popup
+            if (i)
+                [views addObject:_codeStringPopUp];
+            // add custom-value menu item
+            //                [_codeStringPopUp.menu addItem:[NSMenuItem separatorItem]];
+            NSMenuItem* mi = [_codeStringPopUp.menu addItemWithTitle:NSLocalizedString(@"user-defined", nil) action:nil keyEquivalent:@""];
+            mi.tag = ++i;
+            mi.representedObject =_stringValueTextField;
+            
+            [_codeStringPopUp selectItemWithTag:_codeStringTag];
+            
+            if (_codeStringTag == i) {
+                _stringValueTextField.formatter = nil;
+                [views addObject:_stringValueTextField];
+            }
+        } break;
+    }
+    
+#undef N
+    
+    return views;
+}
+
 
 - (void)review {
     if (_reviewing)
@@ -863,153 +1012,16 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
 
     _reviewing = YES;
 
-    NSMutableArray* views = [NSMutableArray arrayWithObject:_tagsPopUp];
+    NSArray* views = nil;
     
-    DCMAttributeTag* tag = self.tag;
-    O2ValueRepresentation vr = [[self class] valueRepresentationFromVR:tag.vr];
-    
-#define N(x) [NSNumber numberWithInteger:x]
     @try {
-        switch (vr) {
-            case SH:
-            case LO:
-            case ST:
-            case LT:
-            case UT:
-            case AE: // TODO: should be more restrictive for AE
-            case PN:
-            case UI:  {
-                [views addObject:_operatorsPopUp];
-                [self setAvailableOperators: N(NSContainsPredicateOperatorType), N(NSBeginsWithPredicateOperatorType), N(NSEndsWithPredicateOperatorType), N(NSEqualToPredicateOperatorType), N(NSNotEqualToPredicateOperatorType), nil];
-                _stringValueTextField.formatter = nil;
-                [views addObject:_stringValueTextField];
-            } break;
-                
-            case IS: {
-                [views addObject:_isLabel];
-                [self setAvailableOperators: N(NSEqualToPredicateOperatorType), nil];
-                _stringValueTextField.formatter = [[self class] integersFormatter];
-                [views addObject:_stringValueTextField];
-            } break;
-                
-            case SS:
-            case SL:
-            case US:
-            case UL: {
-                [views addObject:_isLabel];
-                [self setAvailableOperators: N(NSEqualToPredicateOperatorType), nil];
-                _numberValueTextField.formatter = [[self class] integerFormatter];
-                [views addObject:_numberValueTextField];
-            } break;
-                
-            case DS: {
-                [views addObject:_isLabel];
-                [self setAvailableOperators: N(NSEqualToPredicateOperatorType), nil];
-                _stringValueTextField.formatter = [[self class] decimalsFormatter];
-                [views addObject:_stringValueTextField];
-            } break;
-                
-            case FL:
-            case FD: {
-                [views addObject:_isLabel];
-                [self setAvailableOperators: N(NSEqualToPredicateOperatorType), nil];
-                _numberValueTextField.formatter = [[self class] decimalFormatter];
-                [views addObject:_numberValueTextField];
-            } break;
-                
-            case AS: {
-                [views addObject:_isLabel];
-                [self setAvailableOperators: N(NSEqualToPredicateOperatorType), nil];
-                _stringValueTextField.formatter = [[self class] ageFormatter];
-                [views addObject:_stringValueTextField];
-            } break;
-                
-            case DA: {
-                [views addObject:_operatorsPopUp];
-                [self setAvailableOperators: N(O2Today), N(O2Yesterday), N(O2DayBeforeYesterday), N(NSLessThanOrEqualToPredicateOperatorType), N(NSGreaterThanOrEqualToPredicateOperatorType), N(O2Within), N(NSEqualToPredicateOperatorType), nil]; // TODO: add 'is between'
-                switch (self.operator) {
-                    case NSLessThanOrEqualToPredicateOperatorType:
-                    case NSGreaterThanOrEqualToPredicateOperatorType:
-                    case NSEqualToPredicateOperatorType:
-                        [views addObject:_datePicker];
-                        break;
-                    case O2Within:
-                        [views addObject:_withinPopUp];
-                    default:
-                        break;
-                }
-            } break;
-                
-            case TM: {
-                [views addObject:_operatorsPopUp];
-                [self setAvailableOperators: N(NSLessThanOrEqualToPredicateOperatorType), N(NSGreaterThanOrEqualToPredicateOperatorType), N(NSEqualToPredicateOperatorType), nil];
-                switch (self.operator) {
-                    case NSLessThanOrEqualToPredicateOperatorType:
-                    case NSGreaterThanOrEqualToPredicateOperatorType:
-                    case NSEqualToPredicateOperatorType:
-                        [views addObject:_timePicker];
-                        break;
-                    default:
-                        break;
-                }
-            } break;
-                
-            case DT: {
-                [views addObject:_operatorsPopUp];
-                [self setAvailableOperators: N(O2Today), N(O2Yesterday), N(O2DayBeforeYesterday), N(NSLessThanOrEqualToPredicateOperatorType), N(NSGreaterThanOrEqualToPredicateOperatorType), N(O2Within), N(NSEqualToPredicateOperatorType), nil]; // TODO: add 'is between'
-                switch (self.operator) {
-                    case NSLessThanOrEqualToPredicateOperatorType:
-                    case NSGreaterThanOrEqualToPredicateOperatorType:
-                    case NSEqualToPredicateOperatorType:
-                        [views addObject:_dateTimePicker];
-                        break;
-                    case O2Within:
-                        [views addObject:_withinPopUp];
-                    default:
-                        break;
-                }
-            } break;
-                
-            case CS: {
-                [views addObject:_isLabel];
-                // .. popup
-                [_codeStringPopUp.menu removeAllItems];
-                NSDictionary* dic = [O2DicomPredicateEditorCodeStrings codeStringsForTag:self.tag];
-                NSInteger i = 0;
-                for (NSString* k in dic) {
-                    NSString* t = nil;
-                    if ([k isKindOfClass:[NSString class]] && ![k isEqualToString:[dic objectForKey:k]] && [[dic objectForKey:k] length] < 80)
-                        t = [NSString stringWithFormat:NSLocalizedString(@"%@, %@", nil), k, [dic objectForKey:k]];
-                    else t = [dic objectForKey:k];
-                    if (![t isKindOfClass:[NSString class]])
-                        t = [(id)t stringValue];
-                    NSMenuItem* mi = [_codeStringPopUp.menu addItemWithTitle:t action:nil keyEquivalent:@""];
-                    mi.tag = ++i;
-                }
-                // if there are items, show the popup
-                if (i)
-                    [views addObject:_codeStringPopUp];
-                // add custom-value menu item
-//                [_codeStringPopUp.menu addItem:[NSMenuItem separatorItem]];
-                NSMenuItem* mi = [_codeStringPopUp.menu addItemWithTitle:NSLocalizedString(@"user-defined", nil) action:nil keyEquivalent:@""];
-                mi.tag = ++i;
-                mi.representedObject =_stringValueTextField;
-                
-                [_codeStringPopUp selectItemWithTag:_codeStringTag];
-                
-                if (_codeStringTag == i) {
-                    _stringValueTextField.formatter = nil;
-                    [views addObject:_stringValueTextField];
-                }
-            } break;
-        }
+        views = [self views];
     } @catch (NSException* e) {
         N2LogExceptionWithStackTrace(e);
     }
     @finally {
         _reviewing = NO;
     }
-#undef N
     
     /*if ([_valueTextField.formatter isKindOfClass:[NSNumberFormatter class]]) {
      if (![self.value isKindOfClass:[NSNumber class]])

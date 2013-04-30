@@ -539,8 +539,6 @@
 		7E82C64008D9FF35000BAFF9 /* DCMLimitedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E82C63E08D9FF35000BAFF9 /* DCMLimitedObject.m */; };
 		7E8340DB08E9F7C500E41C5E /* DCMPresentationState.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E8340D908E9F7C500E41C5E /* DCMPresentationState.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7E8340DC08E9F7C500E41C5E /* DCMPresentationState.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E8340DA08E9F7C500E41C5E /* DCMPresentationState.m */; };
-		7E879E9F067F9BE100CB2F8A /* SearchSubview.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E879E9D067F9BE100CB2F8A /* SearchSubview.h */; };
-		7E879EA0067F9BE100CB2F8A /* SearchSubview.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E879E9E067F9BE100CB2F8A /* SearchSubview.m */; };
 		7E9C6D26066D2BCD00D33966 /* greenLight.tif in Resources */ = {isa = PBXBuildFile; fileRef = 7E9C6D24066D2BCD00D33966 /* greenLight.tif */; };
 		7E9C6D2E066D2BE800D33966 /* redLight.tif in Resources */ = {isa = PBXBuildFile; fileRef = 7E9C6D2C066D2BE800D33966 /* redLight.tif */; };
 		7EB4AAE7079494CB007AD271 /* QueryArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EB4AAE5079494CB007AD271 /* QueryArrayController.h */; };
@@ -1759,8 +1757,6 @@
 		A987970116DBAD3D00926023 /* DicomFileDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF2425500A51D39500D3D76B /* DicomFileDCMTKCategory.mm */; };
 		A987970216DBAD3D00926023 /* FVTiff.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE73FC808F44724002A395F /* FVTiff.m */; };
 		A987970316DBAD3D00926023 /* SmartWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E569398065007D6001A9762 /* SmartWindowController.m */; };
-		A987970416DBAD3D00926023 /* SearchSubview.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E879E9E067F9BE100CB2F8A /* SearchSubview.m */; };
-		A987970516DBAD3D00926023 /* AdvancedQuerySubview.m in Sources */ = {isa = PBXBuildFile; fileRef = ABE33387063D627800C8E087 /* AdvancedQuerySubview.m */; };
 		A987970616DBAD3D00926023 /* AppControllerDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF18A85809E0BF00005DEFB6 /* AppControllerDCMTKCategory.mm */; };
 		A987970716DBAD3D00926023 /* browserController.m in Sources */ = {isa = PBXBuildFile; fileRef = 599115EF12D7224A00924B5C /* browserController.m */; };
 		A987970816DBAD3D00926023 /* BrowserController+Sources.m in Sources */ = {isa = PBXBuildFile; fileRef = 59DB271114515B5800E78E03 /* BrowserController+Sources.m */; };
@@ -3268,8 +3264,6 @@
 		ABE1E8B00649F4150028E2E0 /* iPod.icns in Resources */ = {isa = PBXBuildFile; fileRef = ABE1E8AE0649F4150028E2E0 /* iPod.icns */; };
 		ABE3336B063D624400C8E087 /* QueryFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = ABE33369063D624400C8E087 /* QueryFilter.h */; };
 		ABE3336C063D624400C8E087 /* QueryFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = ABE3336A063D624400C8E087 /* QueryFilter.m */; };
-		ABE3338D063D629300C8E087 /* AdvancedQuerySubview.h in Headers */ = {isa = PBXBuildFile; fileRef = ABE33386063D627800C8E087 /* AdvancedQuerySubview.h */; };
-		ABE3338E063D629400C8E087 /* AdvancedQuerySubview.m in Sources */ = {isa = PBXBuildFile; fileRef = ABE33387063D627800C8E087 /* AdvancedQuerySubview.m */; };
 		ABE46F910A76410F00327466 /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C1409B6828200545F5E /* jaricom.c */; };
 		ABE46F920A76410F00327466 /* jcapimin.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C1509B6828200545F5E /* jcapimin.c */; };
 		ABE46F930A76410F00327466 /* jcapistd.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C1609B6828200545F5E /* jcapistd.c */; };
@@ -8995,7 +8989,6 @@
 		CEC7071B10A5C844008935EA /* OpacityTransferView.m in Sources */ = {isa = PBXBuildFile; fileRef = ABCA5BA30625FC1100637E73 /* OpacityTransferView.m */; };
 		CEC7071E10A5C844008935EA /* MutableArrayCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = AB94E72306343D91003E4C48 /* MutableArrayCategory.m */; };
 		CEC7071F10A5C844008935EA /* QuicktimeExport.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0128630635991400A74AA1 /* QuicktimeExport.m */; };
-		CEC7072110A5C844008935EA /* AdvancedQuerySubview.m in Sources */ = {isa = PBXBuildFile; fileRef = ABE33387063D627800C8E087 /* AdvancedQuerySubview.m */; };
 		CEC7072310A5C844008935EA /* PreviewView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB73E13706497EDA00545980 /* PreviewView.m */; };
 		CEC7072410A5C844008935EA /* SmartWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E569398065007D6001A9762 /* SmartWindowController.m */; };
 		CEC7072510A5C844008935EA /* ImageAndTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = BF5C0186065320A800BAFCF7 /* ImageAndTextCell.m */; };
@@ -9004,7 +8997,6 @@
 		CEC7072910A5C844008935EA /* Window3DController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3F4A1E0672674000E61A6C /* Window3DController.m */; };
 		CEC7072A10A5C844008935EA /* PluginFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = AB2C24E00677861300A08910 /* PluginFilter.m */; };
 		CEC7072B10A5C844008935EA /* PluginManager.m in Sources */ = {isa = PBXBuildFile; fileRef = AB2C25200677873200A08910 /* PluginManager.m */; };
-		CEC7072C10A5C844008935EA /* SearchSubview.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E879E9E067F9BE100CB2F8A /* SearchSubview.m */; };
 		CEC7073010A5C844008935EA /* ButtonAndTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = BF76A59806ACC6FD00FABE42 /* ButtonAndTextField.m */; };
 		CEC7073110A5C844008935EA /* ButtonAndTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = BF76A5A606ACC70C00FABE42 /* ButtonAndTextCell.m */; };
 		CEC7073310A5C844008935EA /* Mailer.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF0E60006AEF326001FF9E5 /* Mailer.m */; };
@@ -9278,7 +9270,6 @@
 		CEC7FC8910A5C844008935EA /* OpacityTransferView.h in Headers */ = {isa = PBXBuildFile; fileRef = ABCA5BA20625FC1100637E73 /* OpacityTransferView.h */; };
 		CEC7FC8C10A5C844008935EA /* MutableArrayCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = AB94E72406343D91003E4C48 /* MutableArrayCategory.h */; };
 		CEC7FC8D10A5C844008935EA /* QuicktimeExport.h in Headers */ = {isa = PBXBuildFile; fileRef = AB0128620635991400A74AA1 /* QuicktimeExport.h */; };
-		CEC7FC9B10A5C844008935EA /* AdvancedQuerySubview.h in Headers */ = {isa = PBXBuildFile; fileRef = ABE33386063D627800C8E087 /* AdvancedQuerySubview.h */; };
 		CEC7FC9C10A5C844008935EA /* Analyze.h in Headers */ = {isa = PBXBuildFile; fileRef = AB695A1D063D8261002BDF78 /* Analyze.h */; };
 		CEC7FC9E10A5C844008935EA /* PreviewView.h in Headers */ = {isa = PBXBuildFile; fileRef = AB73E13606497EDA00545980 /* PreviewView.h */; };
 		CEC7FC9F10A5C844008935EA /* SmartWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E569397065007D6001A9762 /* SmartWindowController.h */; };
@@ -9306,7 +9297,6 @@
 		CEC7FCB710A5C844008935EA /* PapyTypeDef3.h in Headers */ = {isa = PBXBuildFile; fileRef = AB8CC222067E4147008D5ED7 /* PapyTypeDef3.h */; };
 		CEC7FCB810A5C844008935EA /* Papyrus3.h in Headers */ = {isa = PBXBuildFile; fileRef = AB8CC223067E4147008D5ED7 /* Papyrus3.h */; };
 		CEC7FCB910A5C844008935EA /* PapyPubFunctionDef3.h in Headers */ = {isa = PBXBuildFile; fileRef = AB8CC224067E4147008D5ED7 /* PapyPubFunctionDef3.h */; };
-		CEC7FCBA10A5C844008935EA /* SearchSubview.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E879E9D067F9BE100CB2F8A /* SearchSubview.h */; };
 		CEC7FCBE10A5C844008935EA /* ButtonAndTextField.h in Headers */ = {isa = PBXBuildFile; fileRef = BF76A59706ACC6FD00FABE42 /* ButtonAndTextField.h */; };
 		CEC7FCBF10A5C844008935EA /* ButtonAndTextCell.h in Headers */ = {isa = PBXBuildFile; fileRef = BF76A5A506ACC70C00FABE42 /* ButtonAndTextCell.h */; };
 		CEC7FCC110A5C844008935EA /* Mailer.h in Headers */ = {isa = PBXBuildFile; fileRef = CEF0E5FF06AEF326001FF9E5 /* Mailer.h */; };
@@ -10241,8 +10231,6 @@
 		7E82C63E08D9FF35000BAFF9 /* DCMLimitedObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = DCMLimitedObject.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		7E8340D908E9F7C500E41C5E /* DCMPresentationState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMPresentationState.h; sourceTree = "<group>"; };
 		7E8340DA08E9F7C500E41C5E /* DCMPresentationState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMPresentationState.m; sourceTree = "<group>"; };
-		7E879E9D067F9BE100CB2F8A /* SearchSubview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchSubview.h; sourceTree = "<group>"; };
-		7E879E9E067F9BE100CB2F8A /* SearchSubview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchSubview.m; sourceTree = "<group>"; };
 		7E9C6D24066D2BCD00D33966 /* greenLight.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = greenLight.tif; sourceTree = "<group>"; };
 		7E9C6D2C066D2BE800D33966 /* redLight.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = redLight.tif; sourceTree = "<group>"; };
 		7EB4AAE5079494CB007AD271 /* QueryArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QueryArrayController.h; sourceTree = "<group>"; };
@@ -10938,8 +10926,6 @@
 		ABE1E8AE0649F4150028E2E0 /* iPod.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = iPod.icns; sourceTree = "<group>"; };
 		ABE33369063D624400C8E087 /* QueryFilter.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = QueryFilter.h; sourceTree = "<group>"; };
 		ABE3336A063D624400C8E087 /* QueryFilter.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = QueryFilter.m; sourceTree = "<group>"; };
-		ABE33386063D627800C8E087 /* AdvancedQuerySubview.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = AdvancedQuerySubview.h; sourceTree = "<group>"; };
-		ABE33387063D627800C8E087 /* AdvancedQuerySubview.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = AdvancedQuerySubview.m; sourceTree = "<group>"; };
 		ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ILCrashReporter.framework; path = Binaries/ILCrashReporter.framework; sourceTree = "<group>"; };
 		ABEF7E7609A21070006CEC3E /* Reports.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Reports.h; sourceTree = "<group>"; };
 		ABEF7E7709A21070006CEC3E /* Reports.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reports.m; sourceTree = "<group>"; };
@@ -19252,10 +19238,6 @@
 			children = (
 				7E569397065007D6001A9762 /* SmartWindowController.h */,
 				7E569398065007D6001A9762 /* SmartWindowController.m */,
-				7E879E9D067F9BE100CB2F8A /* SearchSubview.h */,
-				7E879E9E067F9BE100CB2F8A /* SearchSubview.m */,
-				ABE33386063D627800C8E087 /* AdvancedQuerySubview.h */,
-				ABE33387063D627800C8E087 /* AdvancedQuerySubview.m */,
 			);
 			name = SmartAlbums;
 			sourceTree = "<group>";
@@ -23077,7 +23059,6 @@
 				ABDE6E2306398E3400F0C5DD /* tiffvers.h in Headers */,
 				ABDE6E2406398E3400F0C5DD /* uvcode.h in Headers */,
 				ABE3336B063D624400C8E087 /* QueryFilter.h in Headers */,
-				ABE3338D063D629300C8E087 /* AdvancedQuerySubview.h in Headers */,
 				AB695A1F063D8261002BDF78 /* Analyze.h in Headers */,
 				AB73E13A06497EDA00545980 /* PreviewView.h in Headers */,
 				7E569399065007D6001A9762 /* SmartWindowController.h in Headers */,
@@ -23105,7 +23086,6 @@
 				AB8CC235067E4147008D5ED7 /* PapyTypeDef3.h in Headers */,
 				AB8CC236067E4147008D5ED7 /* Papyrus3.h in Headers */,
 				AB8CC237067E4147008D5ED7 /* PapyPubFunctionDef3.h in Headers */,
-				7E879E9F067F9BE100CB2F8A /* SearchSubview.h in Headers */,
 				CEEDA35706A061EB00DEAB22 /* ThickSlabVR.h in Headers */,
 				CE0E08E806A106D700F2C01C /* ThickSlabController.h in Headers */,
 				BF76A59906ACC6FD00FABE42 /* ButtonAndTextField.h in Headers */,
@@ -27326,7 +27306,6 @@
 				CEC7FC8910A5C844008935EA /* OpacityTransferView.h in Headers */,
 				CEC7FC8C10A5C844008935EA /* MutableArrayCategory.h in Headers */,
 				CEC7FC8D10A5C844008935EA /* QuicktimeExport.h in Headers */,
-				CEC7FC9B10A5C844008935EA /* AdvancedQuerySubview.h in Headers */,
 				CEC7FC9C10A5C844008935EA /* Analyze.h in Headers */,
 				CEC7FC9E10A5C844008935EA /* PreviewView.h in Headers */,
 				CEC7FC9F10A5C844008935EA /* SmartWindowController.h in Headers */,
@@ -27354,7 +27333,6 @@
 				CEC7FCB710A5C844008935EA /* PapyTypeDef3.h in Headers */,
 				CEC7FCB810A5C844008935EA /* Papyrus3.h in Headers */,
 				CEC7FCB910A5C844008935EA /* PapyPubFunctionDef3.h in Headers */,
-				CEC7FCBA10A5C844008935EA /* SearchSubview.h in Headers */,
 				CEC7FCBE10A5C844008935EA /* ButtonAndTextField.h in Headers */,
 				CEC7FCBF10A5C844008935EA /* ButtonAndTextCell.h in Headers */,
 				CEC7FCC110A5C844008935EA /* Mailer.h in Headers */,
@@ -30060,8 +30038,6 @@
 				A987970116DBAD3D00926023 /* DicomFileDCMTKCategory.mm in Sources */,
 				A987970216DBAD3D00926023 /* FVTiff.m in Sources */,
 				A987970316DBAD3D00926023 /* SmartWindowController.m in Sources */,
-				A987970416DBAD3D00926023 /* SearchSubview.m in Sources */,
-				A987970516DBAD3D00926023 /* AdvancedQuerySubview.m in Sources */,
 				A987970616DBAD3D00926023 /* AppControllerDCMTKCategory.mm in Sources */,
 				A987970716DBAD3D00926023 /* browserController.m in Sources */,
 				A987970816DBAD3D00926023 /* BrowserController+Sources.m in Sources */,
@@ -30752,7 +30728,6 @@
 				AB94E72506343D91003E4C48 /* MutableArrayCategory.m in Sources */,
 				AB0128650635991400A74AA1 /* QuicktimeExport.m in Sources */,
 				ABE3336C063D624400C8E087 /* QueryFilter.m in Sources */,
-				ABE3338E063D629400C8E087 /* AdvancedQuerySubview.m in Sources */,
 				AB73E13B06497EDA00545980 /* PreviewView.m in Sources */,
 				7E56939A065007D6001A9762 /* SmartWindowController.m in Sources */,
 				BF5C0188065320A800BAFCF7 /* ImageAndTextCell.m in Sources */,
@@ -30761,7 +30736,6 @@
 				AB3F4A200672674000E61A6C /* Window3DController.m in Sources */,
 				AB2C24E20677861300A08910 /* PluginFilter.m in Sources */,
 				AB2C25220677873200A08910 /* PluginManager.m in Sources */,
-				7E879EA0067F9BE100CB2F8A /* SearchSubview.m in Sources */,
 				CEEDA35806A061EB00DEAB22 /* ThickSlabVR.mm in Sources */,
 				CE0E08E906A106D700F2C01C /* ThickSlabController.mm in Sources */,
 				BF76A59A06ACC6FD00FABE42 /* ButtonAndTextField.m in Sources */,
@@ -32282,7 +32256,6 @@
 				CEC7071B10A5C844008935EA /* OpacityTransferView.m in Sources */,
 				CEC7071E10A5C844008935EA /* MutableArrayCategory.m in Sources */,
 				CEC7071F10A5C844008935EA /* QuicktimeExport.m in Sources */,
-				CEC7072110A5C844008935EA /* AdvancedQuerySubview.m in Sources */,
 				CEC7072310A5C844008935EA /* PreviewView.m in Sources */,
 				CEC7072410A5C844008935EA /* SmartWindowController.m in Sources */,
 				CEC7072510A5C844008935EA /* ImageAndTextCell.m in Sources */,
@@ -32291,7 +32264,6 @@
 				CEC7072910A5C844008935EA /* Window3DController.m in Sources */,
 				CEC7072A10A5C844008935EA /* PluginFilter.m in Sources */,
 				CEC7072B10A5C844008935EA /* PluginManager.m in Sources */,
-				CEC7072C10A5C844008935EA /* SearchSubview.m in Sources */,
 				CEC7073010A5C844008935EA /* ButtonAndTextField.m in Sources */,
 				CEC7073110A5C844008935EA /* ButtonAndTextCell.m in Sources */,
 				CEC7073310A5C844008935EA /* Mailer.m in Sources */,
