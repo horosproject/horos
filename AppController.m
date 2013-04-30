@@ -3943,7 +3943,7 @@ static BOOL initialized = NO;
 	#endif
     
     
-    if ([NSUserDefaults.standardUserDefaults boolForKey:@"DoNotEmptyIncomingDir"]) // not DoNot -> delete files
+    //if ([NSUserDefaults.standardUserDefaults boolForKey:@"DoNotEmptyIncomingDir"]) // move temp & decompress to incoming
     {
         NSString* inc = [[DicomDatabase activeLocalDatabase] incomingDirPath];
         for (NSString* path in [NSArray arrayWithObjects: [[DicomDatabase activeLocalDatabase] tempDirPath], [[DicomDatabase activeLocalDatabase] decompressionDirPath], nil])

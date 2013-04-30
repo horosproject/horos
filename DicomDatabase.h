@@ -38,6 +38,10 @@ extern NSString* const OsirixDataDirName;
 	NSTimeInterval _timeOfLastModification;
 	char baseDirPathC[4096], incomingDirPathC[4096], tempDirPathC[4096]; // these paths are used from the DICOM listener
     BOOL _isReadOnly, _hasPotentiallySlowDataAccess;
+    // compression/decompression
+    NSMutableArray* _decompressQueue;
+    NSMutableArray* _compressQueue;
+    NSThread* _compressDecompressThread;
 	// +Routing
 	NSMutableArray* _routingSendQueues;
 	NSRecursiveLock* _routingLock;

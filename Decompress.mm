@@ -48,6 +48,15 @@ short					UseOpenJpeg = 1, Use_kdu_IfAvailable = 1;
 
 extern void dcmtkSetJPEGColorSpace( int);
 
+/*
+void myunlink(const char * path) {
+    NSLog(@"Unlinking %s", path);
+    unlink(path);
+    NSLog(@"... Unlinked %s", path);
+}
+*/
+#define myunlink unlink
+
 // WHY THIS EXTERNAL APPLICATION FOR COMPRESS OR DECOMPRESSION?
 
 // Because if a file is corrupted, it will not crash the OsiriX application, but only this small task.
@@ -212,8 +221,8 @@ int main(int argc, const char *argv[])
 				{
                     NSString *tempCurFileDest = [[curFileDest stringByDeletingLastPathComponent] stringByAppendingPathComponent: [NSString stringWithFormat: @".%@", [curFileDest lastPathComponent]]];
                     
-                    [[NSFileManager defaultManager] removeItemAtPath: tempCurFileDest error: nil];
-                    [[NSFileManager defaultManager] removeItemAtPath: curFileDest error: nil];
+                    myunlink([tempCurFileDest fileSystemRepresentation]);
+                    myunlink([curFileDest fileSystemRepresentation]);
                     
 					NSTask *t = [[[NSTask alloc] init] autorelease];
 	
@@ -237,7 +246,7 @@ int main(int argc, const char *argv[])
                     
 					[[NSFileManager defaultManager] moveItemAtPath: tempCurFileDest toPath: curFileDest error: nil];
                     
-					[[NSFileManager defaultManager] removeItemAtPath: curFile error: nil];
+                    myunlink([curFile fileSystemRepresentation]);
 				}
 				else
 				{
@@ -335,13 +344,13 @@ int main(int argc, const char *argv[])
                                     
                                     if( succeed)
                                     {
-                                        [[NSFileManager defaultManager] removeItemAtPath: curFile error: nil];
+                                        myunlink([curFile fileSystemRepresentation]);
                                         if( destDirec == nil)
                                             [[NSFileManager defaultManager] moveItemAtPath: curFileDest toPath: curFile error: nil];
                                     }
                                     else
                                     {
-                                        [[NSFileManager defaultManager] removeItemAtPath: curFileDest error:nil];
+                                        myunlink([curFileDest fileSystemRepresentation]);
                                         
                                         if ([[dict objectForKey: @"DecompressMoveIfFail"] boolValue])
                                         {
@@ -349,7 +358,7 @@ int main(int argc, const char *argv[])
                                         }
                                         else if( destDirec)
                                         {
-                                            [[NSFileManager defaultManager] removeItemAtPath: curFile error: nil];
+                                            myunlink([curFile fileSystemRepresentation]);
                                             NSLog( @"failed to compress file: %@, the file is deleted", curFile);
                                         }
                                         else
@@ -423,8 +432,8 @@ int main(int argc, const char *argv[])
                                         {
                                             NSString *tempCurFileDest = [[curFileDest stringByDeletingLastPathComponent] stringByAppendingPathComponent: [NSString stringWithFormat: @".%@", [curFileDest lastPathComponent]]];
                                             
-                                            [[NSFileManager defaultManager] removeItemAtPath: tempCurFileDest error: nil];
-                                            [[NSFileManager defaultManager] removeItemAtPath: curFileDest error: nil];
+                                            myunlink([tempCurFileDest fileSystemRepresentation]);
+                                            myunlink([curFileDest fileSystemRepresentation]);
                                             
                                             cond = fileformat.saveFile( [tempCurFileDest UTF8String], tSyntax);
                                             status =  (cond.good()) ? YES : NO;
@@ -434,14 +443,14 @@ int main(int argc, const char *argv[])
                                         
                                         if( status == NO)
                                         {
-                                            [[NSFileManager defaultManager] removeItemAtPath: curFileDest error:nil];
+                                            myunlink([curFileDest fileSystemRepresentation]);
                                             if ([[dict objectForKey: @"DecompressMoveIfFail"] boolValue])
                                             {
                                                 [[NSFileManager defaultManager] moveItemAtPath: curFile toPath: curFileDest error: nil];
                                             }
                                             else if( destDirec)
                                             {
-                                                [[NSFileManager defaultManager] removeItemAtPath: curFile error: nil];
+                                                myunlink([curFile fileSystemRepresentation]);
                                                 NSLog( @"failed to compress file: %@, the file is deleted", curFile);
                                             }
                                             else
@@ -449,7 +458,7 @@ int main(int argc, const char *argv[])
                                         }
                                         else
                                         {
-                                            [[NSFileManager defaultManager] removeItemAtPath: curFile error: nil];
+                                            myunlink([curFile fileSystemRepresentation]);
                                             if( destDirec == nil)
                                                 [[NSFileManager defaultManager] moveItemAtPath: curFileDest toPath: curFile error: nil];
                                         }
@@ -459,9 +468,9 @@ int main(int argc, const char *argv[])
                                 {
                                     if( destDirec)
                                     {
-                                        [[NSFileManager defaultManager] removeItemAtPath: curFileDest error: nil];
+                                        myunlink([curFileDest fileSystemRepresentation]);
                                         [[NSFileManager defaultManager] moveItemAtPath: curFile toPath: curFileDest error: nil];
-                                        [[NSFileManager defaultManager] removeItemAtPath: curFile error: nil];
+                                        myunlink([curFile fileSystemRepresentation]);
                                     }
                                 }
                             }
@@ -469,16 +478,16 @@ int main(int argc, const char *argv[])
                             {
                                 if( destDirec)
                                 {
-                                    [[NSFileManager defaultManager] removeItemAtPath: curFileDest error: nil];
+                                    myunlink([curFileDest fileSystemRepresentation]);
                                     [[NSFileManager defaultManager] moveItemAtPath: curFile toPath: curFileDest error: nil];
-                                    [[NSFileManager defaultManager] removeItemAtPath: curFile error: nil];
+                                    myunlink([curFile fileSystemRepresentation]);
                                 }
                             }
 						}
 					}
 					else if ([[dict objectForKey: @"DecompressMoveIfFail"] boolValue])
                     {
-                        [[NSFileManager defaultManager] removeItemAtPath: curFileDest error: nil];
+                        myunlink([curFileDest fileSystemRepresentation]);
                         [[NSFileManager defaultManager] moveItemAtPath: curFile toPath: curFileDest error: nil];
                     }
                     else NSLog( @"compress : cannot read file: %@", curFile);
@@ -565,8 +574,8 @@ int main(int argc, const char *argv[])
 				{
                     NSString *tempCurFileDest = [[curFileDest stringByDeletingLastPathComponent] stringByAppendingPathComponent: [NSString stringWithFormat: @".%@", [curFileDest lastPathComponent]]];
                     
-                    [[NSFileManager defaultManager] removeItemAtPath: tempCurFileDest error: nil];
-                    [[NSFileManager defaultManager] removeItemAtPath: curFileDest error: nil];
+                    myunlink([tempCurFileDest fileSystemRepresentation]);
+                    myunlink([curFileDest fileSystemRepresentation]);
                     
 					NSTask *t = [[[NSTask alloc] init] autorelease];
 	
@@ -589,7 +598,7 @@ int main(int argc, const char *argv[])
 					
                     [[NSFileManager defaultManager] moveItemAtPath: tempCurFileDest toPath: curFileDest error: nil];
                     
-					[[NSFileManager defaultManager] removeItemAtPath: curFile error: nil];
+                    myunlink([curFile fileSystemRepresentation]);
 				}
 				else
 				{
@@ -621,11 +630,11 @@ int main(int argc, const char *argv[])
 							
 							if( status == NO)
 							{
-								[[NSFileManager defaultManager] removeItemAtPath: curFileDest error:nil];
+                                myunlink([curFileDest fileSystemRepresentation]);
 								
 								if( destDirec)
 								{
-									[[NSFileManager defaultManager] removeItemAtPath: curFile error: nil];
+                                    myunlink([curFile fileSystemRepresentation]);
 									NSLog( @"failed to decompress file: %@, the file is deleted", curFile);
 								}
 								else
@@ -648,8 +657,8 @@ int main(int argc, const char *argv[])
                                 
                                 NSString *tempCurFileDest = [[curFileDest stringByDeletingLastPathComponent] stringByAppendingPathComponent: [NSString stringWithFormat: @".%@", [curFileDest lastPathComponent]]];
                                 
-                                [[NSFileManager defaultManager] removeItemAtPath: tempCurFileDest error: nil];
-                                [[NSFileManager defaultManager] removeItemAtPath: curFileDest error: nil];
+                                myunlink([tempCurFileDest fileSystemRepresentation]);
+                                myunlink([curFileDest fileSystemRepresentation]);
                                 
 								cond = fileformat.saveFile( [tempCurFileDest UTF8String], EXS_LittleEndianExplicit);
 								status =  (cond.good()) ? YES : NO;
@@ -662,7 +671,7 @@ int main(int argc, const char *argv[])
 							{
                                 NSLog( @"********* Failed to open with dcmtk, try DCMFramework");
                                 
-								[[NSFileManager defaultManager] removeItemAtPath: curFileDest error:nil];
+                                myunlink([curFileDest fileSystemRepresentation]);
 								
 								DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: curFile decodingPixelData: NO];
 								@try
@@ -678,11 +687,11 @@ int main(int argc, const char *argv[])
 							
 							if( status == NO)
 							{
-								[[NSFileManager defaultManager] removeItemAtPath: curFileDest error:nil];
+                                myunlink([curFileDest fileSystemRepresentation]);
 								
 								if( destDirec)
 								{
-									[[NSFileManager defaultManager] removeItemAtPath: curFile error: nil];
+                                    myunlink([curFile fileSystemRepresentation]);
 									NSLog( @"failed to decompress file: %@, the file is deleted", curFile);
 								}
 								else
@@ -693,9 +702,9 @@ int main(int argc, const char *argv[])
 						{
 							if( destDirec)
 							{
-								[[NSFileManager defaultManager] removeItemAtPath: curFileDest error: nil];
+                                myunlink([curFileDest fileSystemRepresentation]);
 								[[NSFileManager defaultManager] moveItemAtPath: curFile toPath: curFileDest error: nil];
-								[[NSFileManager defaultManager] removeItemAtPath: curFile error: nil];
+                                myunlink([curFile fileSystemRepresentation]);
 							}
 							status = NO;
 						}
@@ -704,7 +713,7 @@ int main(int argc, const char *argv[])
 				
 				if( status)
 				{
-					[[NSFileManager defaultManager] removeItemAtPath: curFile error: nil];
+                    myunlink([curFile fileSystemRepresentation]);
 					if( destDirec == nil)
 						[[NSFileManager defaultManager] moveItemAtPath: curFileDest toPath: curFile error: nil];
 				}

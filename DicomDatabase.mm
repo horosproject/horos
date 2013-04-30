@@ -56,6 +56,9 @@ NSString* const CurrentDatabaseVersion = @"2.5";
 @property(readonly,retain) N2MutableUInteger* dataFileIndex;
 @property(readonly,retain) NSRecursiveLock* processFilesLock;
 @property(readonly,retain) NSRecursiveLock* importFilesFromIncomingDirLock;
+@property(readonly) NSMutableArray* compressQueue;
+@property(readonly) NSMutableArray* decompressQueue;
+@property(assign) NSThread* compressDecompressThread;
 
 +(NSString*)sqlFilePathForBasePath:(NSString*)basePath;
 -(void)modifyDefaultAlbums;
@@ -284,6 +287,7 @@ static DicomDatabase* activeLocalDatabase = nil;
 @synthesize processFilesLock = _processFilesLock;
 @synthesize importFilesFromIncomingDirLock = _importFilesFromIncomingDirLock;
 @synthesize hasPotentiallySlowDataAccess = _hasPotentiallySlowDataAccess;
+@synthesize compressQueue = _compressQueue, decompressQueue = _decompressQueue, compressDecompressThread = _compressDecompressThread;
 
 /*- (void)setIsReadOnly:(BOOL)isReadOnly {
     _isReadOnly = isReadOnly;
@@ -358,6 +362,9 @@ static DicomDatabase* activeLocalDatabase = nil;
             _processFilesLock = [[NSRecursiveLock alloc] init];
             _importFilesFromIncomingDirLock = [[NSRecursiveLock alloc] init];
             
+            _compressQueue = [[NSMutableArray alloc] init];
+            _decompressQueue = [[NSMutableArray alloc] init];
+            
             // create dirs if necessary
             [NSFileManager.defaultManager confirmDirectoryAtPath:self.dataDirPath];
             [NSFileManager.defaultManager confirmDirectoryAtPath:self.incomingDirPath];
@@ -421,6 +428,10 @@ static DicomDatabase* activeLocalDatabase = nil;
             _processFilesLock = [[self.mainDatabase processFilesLock] retain];
             _importFilesFromIncomingDirLock = [[self.mainDatabase importFilesFromIncomingDirLock] retain];
             _hasPotentiallySlowDataAccess = [self.mainDatabase hasPotentiallySlowDataAccess];
+            
+            _compressQueue = [[self.mainDatabase compressQueue] retain];
+            _decompressQueue = [[self.mainDatabase decompressQueue] retain];
+
             
             [NSNotificationCenter.defaultCenter addObserver:mainDbReference selector:@selector(observeIndependentDatabaseNotification:) name:_O2AddToDBAnywayNotification object:self];
             [NSNotificationCenter.defaultCenter addObserver:mainDbReference selector:@selector(observeIndependentDatabaseNotification:) name:_O2AddToDBAnywayCompleteNotification object:self];
@@ -505,6 +516,9 @@ static DicomDatabase* activeLocalDatabase = nil;
 	self.baseDirPath = nil;
     self.sourcePath = nil;
 	
+    [_decompressQueue release];
+    [_compressQueue release];
+    
 	[super dealloc];
     
     [databasesDictionaryLock lock]; //We will be unlocked from -(oneway void) release
@@ -1260,13 +1274,27 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 
 -(void)processFilesAtPaths:(NSArray*)paths intoDirAtPath:(NSString*)destDir mode:(int)mode
 {
-	NSString* nameFormat = mode == Compress ? NSLocalizedString(@"Compressing %d files...", nil) : NSLocalizedString(@"Decompressing %d files...", nil);
+	NSString* nameFormat = nil;
+    if (mode == Compress) {
+        if (paths.count != 1)
+            nameFormat = NSLocalizedString(@"Compressing %d files...", @"plural");
+        else nameFormat = NSLocalizedString(@"Compressing %d file...", @"singular");
+    } else {
+        if (paths.count != 1)
+            nameFormat = NSLocalizedString(@"Decompressing %d files...", @"plural");
+        else nameFormat = NSLocalizedString(@"Decompressing %d file...", @"singular");
+    }
 	
 	NSThread* thread = [NSThread currentThread];
+    
 //	[thread pushLevel];
 	thread.name = [NSString stringWithFormat:nameFormat, paths.count];
 	thread.status = NSLocalizedString(@"Waiting for similar threads to complete...", nil);
+    thread.progress = -1;
 	
+    if (![thread isMainThread])
+        [[ThreadsManager defaultManager] addThreadAndStart:thread]; // this thread will be added more than one time, manager supports this.
+
 	[_processFilesLock lock];
 	@try
     {
@@ -2659,6 +2687,8 @@ static BOOL protectionAgainstReentry = NO;
 	
 	[NSFileManager.defaultManager confirmNoIndexDirectoryAtPath:self.decompressionDirPath];
 	
+    N2DirectoryEnumerator *enumer = [NSFileManager.defaultManager enumeratorAtPath:self.incomingDirPath limitTo:-1];
+
 	[_importFilesFromIncomingDirLock lock];
 	@try {
 		if ([self isFileSystemFreeSizeLimitReached]) {
@@ -2681,12 +2711,12 @@ static BOOL protectionAgainstReentry = NO;
 		if (maxNumberOfFiles > 30000) maxNumberOfFiles = 30000;
 		
 		NSString *pathname;
-		N2DirectoryEnumerator *enumer = [NSFileManager.defaultManager enumeratorAtPath:self.incomingDirPath limitTo:-1]; // For next release...
 		// NSDirectoryEnumerator *enumer = [NSFileManager.defaultManager enumeratorAtPath:self.incomingDirPath];
 		
         NSTimeInterval startTime = [NSDate timeIntervalSinceReferenceDate];
         
-		while((pathname = [enumer nextObject]) && [filesArray count] < maxNumberOfFiles && ([NSDate timeIntervalSinceReferenceDate]-startTime < ([[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"]*3)) ) // don't let them wait more than (incomingdelay*3) seconds
+		while([filesArray count] < maxNumberOfFiles && ([NSDate timeIntervalSinceReferenceDate]-startTime < ([[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"]*3)) // don't let them wait more than (incomingdelay*3) seconds
+              && (pathname = [enumer nextObject]))
 		{
             if (thread.isCancelled)
                 return 0;
@@ -2833,7 +2863,7 @@ static BOOL protectionAgainstReentry = NO;
             if( filesArray.count % 20 == 0)
                 thread.status = [NSString stringWithFormat:NSLocalizedString(@"Listing files... %d", nil), (int)(filesArray.count)];
 		}
-		
+        
         if( filesArray.count)
             thread.status = [NSString stringWithFormat:NSLocalizedString(@"Listing files... %d", nil), (int)(filesArray.count)];
         
@@ -2887,6 +2917,7 @@ static BOOL protectionAgainstReentry = NO;
 					[[NSFileManager defaultManager] moveItemAtPath: file toPath: dstPath error: NULL];
 				}
 			}
+            
 		}
 		
 	}
@@ -2901,6 +2932,9 @@ static BOOL protectionAgainstReentry = NO;
         if (activityFeedbackShown)
             [OsiriX unsetReceivingIcon];
 	}
+    
+    if (enumer.nextObject) // there is more data
+        [self performSelector:@selector(initiateImportFilesFromIncomingDirUnlessAlreadyImporting) withObject:nil afterDelay:0];
 	
 #ifndef OSIRIX_LIGHT
 	if ([compressedPathArray count] > 0) // there are files to compress/decompress in the decompression dir
@@ -2909,30 +2943,86 @@ static BOOL protectionAgainstReentry = NO;
         { 
 //            [self performSelectorInBackground:@selector(_threadDecompressToIncoming:) withObject:compressedPathArray];
             
-//            @synchronized (_decompressQueue) {
-//                [_decompressQueue addObjects:compressedPathArray];
-//            }
-//            
-//            [self kickstartCompressDecompress];
+            @synchronized (_decompressQueue) {
+                [_decompressQueue addObjectsFromArray:compressedPathArray];
+            }
             
-            [self initiateDecompressFilesAtPaths: compressedPathArray intoDirAtPath: self.incomingDirPath];
+            [self kickstartCompressDecompress];
+            
+//            [self initiateDecompressFilesAtPaths: compressedPathArray intoDirAtPath: self.incomingDirPath];
 		}
         else if (listenerCompressionSettings == 2) // compress
         { 
 //            [self performSelectorInBackground:@selector(_threadCompressToIncoming:) withObject:compressedPathArray];
             
-//            @synchronized (_decompressQueue) {
-//                [_compressQueue addObjects:compressedPathArray];
-//            }
-//            
-//            [self kickstartCompressDecompress];
+            @synchronized (_decompressQueue) {
+                [_compressQueue addObjectsFromArray:compressedPathArray];
+            }
             
-            [self initiateCompressFilesAtPaths: compressedPathArray intoDirAtPath: self.incomingDirPath];
+            [self kickstartCompressDecompress];
+            
+//            [self initiateCompressFilesAtPaths: compressedPathArray intoDirAtPath: self.incomingDirPath];
         }
 	}
 #endif
 
 	return addedFilesCount;
+}
+
+- (void)kickstartCompressDecompress {
+    @synchronized (_compressQueue) {
+        @synchronized (_decompressQueue) {
+            DicomDatabase* mdb = self.isMainDatabase? self : self.mainDatabase;
+            if (!mdb.compressDecompressThread) {
+                mdb.compressDecompressThread = [[[NSThread alloc] initWithTarget:self selector:@selector(_threadCompressDecompress) object:nil] autorelease];
+                [mdb.compressDecompressThread start];
+            } else {
+                mdb.compressDecompressThread.status = [NSString stringWithFormat:NSLocalizedString(@"%d additional files queued", nil), _compressQueue.count+_decompressQueue.count];
+            }
+        }
+    }
+}
+
+- (void)_threadCompressDecompress {
+    while (true) {
+        for (int i = 0; i < 2; ++i) // i 0 -> compression; i 1 -> decompression
+            @autoreleasepool {
+                NSArray* todo = nil;
+                
+                if (i == 0) // compression
+                {
+                    @synchronized (_compressQueue) {
+                        todo = [[_compressQueue copy] autorelease];
+                        [_compressQueue removeAllObjects];
+                    }
+                    if (todo.count)
+                        if (self.isMainDatabase)
+                            [self.independentDatabase processFilesAtPaths:todo intoDirAtPath:self.incomingDirPath mode:Compress];
+                        else [self processFilesAtPaths:todo intoDirAtPath:self.incomingDirPath mode:Compress];
+                }
+                else // decompression
+                {
+                    @synchronized (_decompressQueue) {
+                        todo = [[_decompressQueue copy] autorelease];
+                        [_decompressQueue removeAllObjects];
+                    }
+                    if (todo.count)
+                        if (self.isMainDatabase)
+                            [self.independentDatabase processFilesAtPaths:todo intoDirAtPath:self.incomingDirPath mode:Decompress];
+                        else [self processFilesAtPaths:todo intoDirAtPath:self.incomingDirPath mode:Decompress];
+                }
+            }
+        
+        @synchronized (_compressQueue) {
+            @synchronized (_decompressQueue) {
+                if (!_compressQueue.count && !_decompressQueue.count) {
+                    DicomDatabase* mdb = self.isMainDatabase? self : self.mainDatabase;
+                    mdb.compressDecompressThread = nil;
+                    break;
+                }
+            }
+        }
+    }    
 }
 
 //-(void)_threadDecompressToIncoming:(NSArray*)compressedPathArray {
