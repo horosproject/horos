@@ -3097,7 +3097,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		NSPoint tempPt = [self convertPoint: [event locationInWindow] fromView: nil];
 		tempPt = [self ConvertFromNSView2GL:tempPt];
-		if( [self clickInROI: tempPt]) roiHit = YES;
+		if( [self clickInROI: tempPt])
+            roiHit = YES;
 	}
 	else if( ( [event modifierFlags] & NSShiftKeyMask) && !([event modifierFlags] & NSAlternateKeyMask)  && !([event modifierFlags] & NSCommandKeyMask)  && !([event modifierFlags] & NSControlKeyMask) && mouseDragging == NO)
 	{

@@ -2288,7 +2288,9 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 			case tOPolygon:
 			case tPencil:
 			{
-				selectedModifyPoint = -1;
+                if( mode != ROI_selectedModify)
+                    selectedModifyPoint = -1;
+                
 				for( int i = 0 ; i < [points count]; i++ )
 				{
 					if( [[points objectAtIndex: i] isNearToPoint: pt :scale :[[curView curDCM] pixelRatio]])
@@ -3029,12 +3031,12 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 
 	[roiLock lock];
 	
-	BOOL		action = NO;
+	BOOL action = NO;
 	
 	@try
 	{
-		BOOL		textureGrowDownX=YES,textureGrowDownY=YES;
-		float		oldTextureUpLeftCornerX,oldTextureUpLeftCornerY,offsetTextureX,offsetTextureY;
+		BOOL textureGrowDownX = YES,textureGrowDownY = YES;
+		float oldTextureUpLeftCornerX, oldTextureUpLeftCornerY, offsetTextureX, offsetTextureY;
 			
 		if( type == tText || type == t2DPoint)
 		{
@@ -3312,12 +3314,32 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 		}
 		else
 		{
-			if(type==tLayerROI) clickPoint = pt;
+			if( type == tLayerROI)
+                clickPoint = pt;
 			
 			switch( mode)
 			{
 				case ROI_drawing:
-					[[points lastObject] setPoint: pt];
+                    
+                    [[points lastObject] setPoint: pt];
+                    if( type == tMesure)
+                    {
+                        if( (modifier & NSShiftKeyMask) && points.count == 2)
+                        {
+                            NSPoint first = [[points objectAtIndex: 0] point];
+                            NSPoint last = [[points lastObject] point];
+                            
+                            if( fabs( first.y - last.y) / fabs( first.x - last.x) < 0.5)
+                                last.y = first.y;
+                            else if( fabs( first.y - last.y) / fabs( first.x - last.x) < 1.5)
+                                last.y = first.y + (last.x - first.x) * copysignf( 1.0, first.y - last.y) * copysignf( 1.0, first.x - last.x);
+                            else
+                                last.x = first.x;
+                            
+                            [[points lastObject] setPoint: last];
+                        }
+                    }
+                    
 					rtotal = -1;
 					Brtotal = -1;
 					action = YES;
@@ -3328,9 +3350,31 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 				break;
 				
 				case ROI_selectedModify:
+                    
 					if( selectedModifyPoint >= 0)
+                    {
 						[[points objectAtIndex: selectedModifyPoint] setPoint: pt];
-					rtotal = -1;
+					
+                        if( type == tMesure)
+                        {
+                            if( (modifier & NSShiftKeyMask) && points.count == 2)
+                            {
+                                NSPoint first = selectedModifyPoint ? [[points objectAtIndex: 0] point] : [[points objectAtIndex: 1] point];
+                                NSPoint last = [[points objectAtIndex: selectedModifyPoint] point];
+                                
+                                if( fabs( first.y - last.y) / fabs( first.x - last.x) < 0.5)
+                                    last.y = first.y;
+                                else if( fabs( first.y - last.y) / fabs( first.x - last.x) < 1.5)
+                                    last.y = first.y + (last.x - first.x) * copysignf( 1.0, first.y - last.y) * copysignf( 1.0, first.x - last.x);
+                                else
+                                    last.x = first.x;
+                                
+                                [[points objectAtIndex: selectedModifyPoint] setPoint: last];
+                            }
+                        }
+                    }
+                        
+                    rtotal = -1;
 					Brtotal = -1;
 					action = YES;
 				break;
