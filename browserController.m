@@ -4532,7 +4532,7 @@ static NSConditionLock *threadLock = nil;
 			BOOL refreshMatrix = YES;
 			long nowFiles = [[item valueForKey:@"noFiles"] intValue];
 			
-			if( [[previousItem objectID] isEqual: [item objectID]])
+			if( item == previousItem || ([previousItem isKindOfClass: [NSManagedObject class]] && [item isKindOfClass: [NSManagedObject class]] && [[previousItem objectID] isEqual: [item objectID]]))
 			{
 				if( nowFiles == previousNoOfFiles)
 					refreshMatrix = NO;
@@ -4564,7 +4564,7 @@ static NSConditionLock *threadLock = nil;
                     else
                         matrixViewArray = [[self childrenArray: item] retain];
                     
-                    if( [[previousItem objectID] isEqual: [item objectID]])
+                    if( item == previousItem || ([previousItem isKindOfClass: [NSManagedObject class]] && [item isKindOfClass: [NSManagedObject class]] && [[previousItem objectID] isEqual: [item objectID]]))
                     {
                         for( NSButtonCell *cell in oMatrix.cells)
                         {
@@ -4623,7 +4623,7 @@ static NSConditionLock *threadLock = nil;
                         matrixLoadIconsThread = [[NSThread alloc] initWithTarget: self selector: @selector(matrixLoadIcons:) object: dict];
                         [matrixLoadIconsThread start];
                         
-                        if( [[previousItem objectID] isEqual: [item objectID]])
+                        if( item == previousItem || ([previousItem isKindOfClass: [NSManagedObject class]] && [item isKindOfClass: [NSManagedObject class]] && [[previousItem objectID] isEqual: [item objectID]]))
                         {
                             for( NSCell *cell in [oMatrix cells])
                             {
@@ -4642,7 +4642,7 @@ static NSConditionLock *threadLock = nil;
                     else
                     {
                         [self matrixLoadIcons: dict];
-                        if( [[previousItem objectID] isEqual: [item objectID]])
+                        if( item == previousItem || ([previousItem isKindOfClass: [NSManagedObject class]] && [item isKindOfClass: [NSManagedObject class]] && [[previousItem objectID] isEqual: [item objectID]]))
                         {
                             for( NSCell *cell in [oMatrix cells])
                             {
@@ -4662,7 +4662,7 @@ static NSConditionLock *threadLock = nil;
                 }
 			}
 			
-			if( ![[previousItem objectID] isEqual: [item objectID]])
+			if( previousItem != item)
 			{
 				[previousItem release];
 				previousItem = [item retain];
@@ -6113,7 +6113,7 @@ static NSConditionLock *threadLock = nil;
 					{
 						NSString *uid = [item valueForKey: @"patientUID"];
 						
-						if( ![[previousItem objectID] isEqual: [item objectID]] && [uid length] > 1 && [uid compare: [previousItem valueForKey: @"patientUID"] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
+						if( previousItem != item && [uid length] > 1 && [uid compare: [previousItem valueForKey: @"patientUID"] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
 						{
 							[cell setDrawsBackground: YES];
 							[cell setBackgroundColor: [NSColor lightGrayColor]];	//secondarySelectedControlColor]];
