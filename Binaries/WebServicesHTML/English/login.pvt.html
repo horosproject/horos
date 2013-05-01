@@ -8,6 +8,13 @@
 	}
 	</script>
 	<input type="hidden" id="sha1" name="sha1" value="" />
+    %[IF:User%
+    <br>
+    <br>
+    Your session is still active (username: <b>%X:User.name%</b>), press login to enter, or logout (upper right) to change the session user.
+    <br>
+    <br>
+    %]IF:User%
 	<table class="centered form">
 		%[IF:Info.authenticationRequired%
 		<tr><td>Username:</td><td><input type="text" name="username" autofocus="autofocus"/></td></tr>
