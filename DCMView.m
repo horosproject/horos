@@ -3649,6 +3649,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             
             if( [NSUserDefaults.standardUserDefaults boolForKey: @"ROITextIfMouseIsOver"] && [NSUserDefaults.standardUserDefaults boolForKey:@"ROITEXTIFSELECTED"])
             {
+                NSPoint pt = [self convertPoint: eventLocationInWindow fromView:nil];
+                pt = [self ConvertFromNSView2GL: pt];
+                
                 for( ROI *r in curRoiList)
                 {
                     if( [r clickInROI:pt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :NO])
