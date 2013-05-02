@@ -3661,14 +3661,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                             r.mouseOverROI = YES;
                             [self setNeedsDisplay: YES];
                         }
-                        else
-                        {
-                            if( r.mouseOverROI)
-                            {
-                                r.mouseOverROI = NO;
-                                [self setNeedsDisplay: YES];
-                            }
-                        }
+                    }
+                    else if( r.mouseOverROI)
+                    {
+                        r.mouseOverROI = NO;
+                        [self setNeedsDisplay: YES];
                     }
                 }
             }
