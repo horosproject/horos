@@ -531,11 +531,15 @@ extern int splitPosition[ 3];
 		float startingDistance = curveLength - (noOfFrames-1) * exportTransverseSliceInterval;
 		startingDistance /= 2;
 		
+        CPRTransverseView *t = [[self windowController] middleTransverseView];
+        CGFloat transverseWidth = (float)t.curDCM.pwidth/t.pixelsPerMm;
+        transverseWidth /= self.pixelSpacingY;
+        
 		for( int i = 0; i < noOfFrames; i++)
 		{
 			transverseSectionPosition = (startingDistance + ((float) i * exportTransverseSliceInterval)) / (float) _curvedPath.bezierPath.length;
-			lineStart = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*transverseSectionPosition, 0, 0), pixToSubDrawRectTransform);
-			lineEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*transverseSectionPosition, curDCM.pheight, 0), pixToSubDrawRectTransform);
+			lineStart = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*transverseSectionPosition, curDCM.pheight/2. - transverseWidth/2., 0), pixToSubDrawRectTransform);
+			lineEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*transverseSectionPosition, curDCM.pheight/2. + transverseWidth/2., 0), pixToSubDrawRectTransform);
 			glLineWidth(2.0 * self.window.backingScaleFactor);
 			glBegin(GL_LINE_STRIP);
 			glVertex2f(lineStart.x, lineStart.y);
@@ -547,11 +551,15 @@ extern int splitPosition[ 3];
 	{
 		N3Vector lineAStart, lineAEnd, lineBStart, lineBEnd, lineCStart, lineCEnd;
 		
+        CPRTransverseView *t = [[self windowController] middleTransverseView];
+        CGFloat transverseWidth = (float)t.curDCM.pwidth/t.pixelsPerMm;
+        transverseWidth /= self.pixelSpacingY;
+        
 		// draw the transverse section lines
 		glColor4d(1.0, 1.0, 0.0, 1.0);
 		transverseSectionPosition = _curvedPath.transverseSectionPosition;
-		lineBStart = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*transverseSectionPosition, 0, 0), pixToSubDrawRectTransform);
-		lineBEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*transverseSectionPosition, curDCM.pheight, 0), pixToSubDrawRectTransform);
+		lineBStart = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*transverseSectionPosition, curDCM.pheight/2. - transverseWidth/2., 0), pixToSubDrawRectTransform);
+		lineBEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*transverseSectionPosition, curDCM.pheight/2. + transverseWidth/2., 0), pixToSubDrawRectTransform);
 		glLineWidth(2.0 * self.window.backingScaleFactor);
 		glBegin(GL_LINE_STRIP);
 		glVertex2f(lineBStart.x, lineBStart.y);
@@ -559,8 +567,8 @@ extern int splitPosition[ 3];
 		glEnd();
 				
 		leftTransverseSectionPosition = _curvedPath.leftTransverseSectionPosition;
-		lineAStart = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*leftTransverseSectionPosition, 0, 0), pixToSubDrawRectTransform);
-		lineAEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*leftTransverseSectionPosition, curDCM.pheight, 0), pixToSubDrawRectTransform);
+		lineAStart = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*leftTransverseSectionPosition, curDCM.pheight/2. - transverseWidth/2., 0), pixToSubDrawRectTransform);
+		lineAEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*leftTransverseSectionPosition, curDCM.pheight/2. + transverseWidth/2., 0), pixToSubDrawRectTransform);
 		glLineWidth(1.0 * self.window.backingScaleFactor);
 		glBegin(GL_LINE_STRIP);
 		glVertex2f(lineAStart.x, lineAStart.y);
@@ -568,8 +576,8 @@ extern int splitPosition[ 3];
 		glEnd();
 		
 		rightTransverseSectionPosition = _curvedPath.rightTransverseSectionPosition;
-		lineCStart = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*rightTransverseSectionPosition, 0, 0), pixToSubDrawRectTransform);
-		lineCEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*rightTransverseSectionPosition, curDCM.pheight, 0), pixToSubDrawRectTransform);
+		lineCStart = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*rightTransverseSectionPosition, curDCM.pheight/2. - transverseWidth/2., 0), pixToSubDrawRectTransform);
+		lineCEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*rightTransverseSectionPosition, curDCM.pheight/2. + transverseWidth/2., 0), pixToSubDrawRectTransform);
 		glBegin(GL_LINE_STRIP);
 		glVertex2f(lineCStart.x, lineCStart.y);
 		glVertex2f(lineCEnd.x, lineCEnd.y);

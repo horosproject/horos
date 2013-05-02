@@ -74,5 +74,6 @@ typedef NSInteger CPRTransverseViewSection;
 
 @property (nonatomic, readwrite, assign) CPRTransverseViewReformationDisplayStyle reformationDisplayStyle;
 
+- (float) pixelsPerMm;
 
 @end

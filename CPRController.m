@@ -61,6 +61,7 @@ static float deg2rad = M_PI / 180.0;
 @synthesize colorAxis1, colorAxis2, colorAxis3, displayMousePosition, movieRate, blendingPercentage, horizontalSplit1, horizontalSplit2, verticalSplit, lowLOD;
 @synthesize mprView1, mprView2, mprView3, curMovieIndex, maxMovieIndex, blendingMode, blendingModeAvailable, highResolutionMode;
 @synthesize curvedPath, displayInfo, curvedPathCreationMode, curvedPathColor, straightenedCPRAngle, cprType, cprView;//, assistantPathMode;
+@synthesize topTransverseView, middleTransverseView, bottomTransverseView;
 
 // export related synthesize
 @synthesize exportSeriesName;

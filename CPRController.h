@@ -189,6 +189,7 @@ typedef NSInteger CPRExportRotationSpan;
 @property (nonatomic, retain) Point3D *mousePosition;
 @property (retain) NSArray *wlwwMenuItems;
 @property (readonly) DCMPix *originalPix;
+@property (readonly) CPRTransverseView *topTransverseView, *middleTransverseView, *bottomTransverseView;
 @property (nonatomic) float LOD, movieRate;
 @property BOOL lowLOD, displayMousePosition, blendingModeAvailable;
 @property (nonatomic, retain) NSColor *colorAxis1, *colorAxis2, *colorAxis3;

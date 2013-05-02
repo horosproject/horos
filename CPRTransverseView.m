@@ -236,6 +236,11 @@ extern int splitPosition[ 3];
 	[self applyNewScaleValue];
 }
 
+- (float) pixelsPerMm
+{
+    return (CGFloat)curDCM.pwidth/(_sectionWidth / _renderingScale);
+}
+
 - (void)mouseMoved:(NSEvent *)theEvent
 {
 	NSView* view = [[[theEvent window] contentView] hitTest:[theEvent locationInWindow]];
@@ -253,7 +258,7 @@ extern int splitPosition[ 3];
 		if (NSPointInRect(viewPoint, self.bounds) && curDCM.pwidth > 0)
 		{
 			pixVector = N3VectorApplyTransform(N3VectorMakeFromNSPoint(viewPoint), [self viewToPixTransform]);
-			pixelsPerMm = (CGFloat)curDCM.pwidth/(_sectionWidth / _renderingScale);
+			pixelsPerMm = self.pixelsPerMm;
 		
 			line = N3LineMake(N3VectorMake((CGFloat)curDCM.pwidth / 2.0, 0, 0), N3VectorMake(0, 1, 0));
 			line = N3LineApplyTransform(line, N3AffineTransformInvert([self viewToPixTransform]));
@@ -464,7 +469,7 @@ extern int splitPosition[ 3];
     CGFloat pixelsPerMm;
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     
-    pixelsPerMm = (CGFloat)curDCM.pwidth/(_sectionWidth / _renderingScale);
+    pixelsPerMm = self.pixelsPerMm;
     pixToSubDrawRectTransform = [self pixToSubDrawRectTransform];
 
     // Dont display cross lines on transverse views, to keep coherence with streched mode

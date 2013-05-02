@@ -544,20 +544,24 @@ extern int splitPosition[ 3];
         tangents = malloc(noOfFrames * sizeof(N3Vector));
         noOfFrames = N3BezierCoreGetVectorInfo([_curvedPath.bezierPath N3BezierCore], exportTransverseSliceInterval, startingDistance, N3VectorZero, vectors, tangents, NULL, noOfFrames);
         
+        CPRTransverseView *t = [[self windowController] middleTransverseView];
+        CGFloat transverseWidth = (float)t.curDCM.pwidth/t.pixelsPerMm;
+        transverseWidth /= self.pixelSpacingY;
+        
 		for( int i = 0; i < noOfFrames; i++)
 		{
             _CPRStretchedViewPlaneRun *transverseRun;
             NSUInteger transverseIndex;
             
             relativePosition = (startingDistance + (exportTransverseSliceInterval * (CGFloat)i)) / curveLength;
-            transverseRun = [self _limitedRunForRelativePosition:relativePosition verticalLineIndex:&transverseIndex lengthFromCenterline:curDCM.pheight / 3];
+            transverseRun = [self _limitedRunForRelativePosition:relativePosition verticalLineIndex:&transverseIndex lengthFromCenterline: transverseWidth];
             
             glLineWidth(2.0 * self.window.backingScaleFactor);
 
             if (transverseRun) {
                 [self _drawPlaneRuns:[NSArray arrayWithObject:transverseRun]];
             } else {
-                [self _drawVerticalLines:[NSArray arrayWithObject:[NSNumber numberWithUnsignedInteger:transverseIndex]] length:curDCM.pheight / 3];
+                [self _drawVerticalLines:[NSArray arrayWithObject:[NSNumber numberWithUnsignedInteger:transverseIndex]] length: transverseWidth];
             }
 		}
 	}
@@ -2286,22 +2290,25 @@ extern int splitPosition[ 3];
     NSUInteger verticalLine;
     _CPRStretchedViewPlaneRun *planeRun;
     
+    CPRTransverseView *t = [[self windowController] middleTransverseView];
+    CGFloat transverseWidth = (float)t.curDCM.pwidth/t.pixelsPerMm;
+    transverseWidth /= self.pixelSpacingY;
     
-    planeRun = [self _limitedRunForRelativePosition:[_curvedPath transverseSectionPosition] verticalLineIndex:&verticalLine lengthFromCenterline:curDCM.pheight / 3];
+    planeRun = [self _limitedRunForRelativePosition:[_curvedPath transverseSectionPosition] verticalLineIndex:&verticalLine lengthFromCenterline: transverseWidth];
     if (planeRun) {
         [_transversePlaneRuns setObject:[NSArray arrayWithObject:planeRun] forKey:@"center"];
     } else {
         [_transverseVerticalLines setObject:[NSArray arrayWithObject:[NSNumber numberWithUnsignedInteger:verticalLine]] forKey:@"center"];
     }
     
-    planeRun = [self _limitedRunForRelativePosition:[_curvedPath leftTransverseSectionPosition] verticalLineIndex:&verticalLine lengthFromCenterline:curDCM.pheight / 3];
+    planeRun = [self _limitedRunForRelativePosition:[_curvedPath leftTransverseSectionPosition] verticalLineIndex:&verticalLine lengthFromCenterline: transverseWidth];
     if (planeRun) {
         [_transversePlaneRuns setObject:[NSArray arrayWithObject:planeRun] forKey:@"left"];
     } else {
         [_transverseVerticalLines setObject:[NSArray arrayWithObject:[NSNumber numberWithUnsignedInteger:verticalLine]] forKey:@"left"];
     }
     
-    planeRun = [self _limitedRunForRelativePosition:[_curvedPath rightTransverseSectionPosition] verticalLineIndex:&verticalLine lengthFromCenterline:curDCM.pheight / 3];
+    planeRun = [self _limitedRunForRelativePosition:[_curvedPath rightTransverseSectionPosition] verticalLineIndex:&verticalLine lengthFromCenterline: transverseWidth];
     if (planeRun) {
         [_transversePlaneRuns setObject:[NSArray arrayWithObject:planeRun] forKey:@"right"];
     } else {

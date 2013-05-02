@@ -11918,7 +11918,7 @@ static NSArray*	openSubSeriesArray = nil;
 			if( i % interval == 0) [imagesArray addObject: image];
 		}
 		
-		[imagesArray sortUsingDescriptors: [[imagesArray lastObject] sortDescriptorsForImages]];
+		[imagesArray sortUsingDescriptors: [[[imagesArray lastObject] series] sortDescriptorsForImages]];
 		
 		if( [imagesArray count] > 0)
 			[newArray addObject: imagesArray];
