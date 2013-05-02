@@ -38,7 +38,7 @@ extern long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuff
 
 static float ROIRegionOpacity, ROITextThickness, ROIThickness, ROIOpacity, ROIColorR, ROIColorG, ROIColorB, ROITextColorR, ROITextColorG, ROITextColorB;
 static float ROIRegionThickness, ROIRegionColorR, ROIRegionColorG, ROIRegionColorB, ROIArrowThickness;
-static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
+static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY, ROITextIfMouseIsOver;
 static BOOL ROIDefaultsLoaded = NO;
 static BOOL splineForROI = NO;
 static BOOL displayCobbAngle = NO;
@@ -333,7 +333,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 @synthesize layerImage;
 @synthesize layerPixelSpacingX, layerPixelSpacingY;
 @synthesize textualBoxLine1, textualBoxLine2, textualBoxLine3, textualBoxLine4, textualBoxLine5, textualBoxLine6;
-@synthesize groupID;
+@synthesize groupID, mouseOverROI;
 @synthesize isLayerOpacityConstant, canColorizeLayer, displayTextualData, clickPoint;
 
 +(void) setFontHeight: (float) f
@@ -388,6 +388,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	ROIArrowThickness = [[NSUserDefaults standardUserDefaults] floatForKey: @"ROIArrowThickness"];
 	
 	ROITEXTIFSELECTED = [[NSUserDefaults standardUserDefaults] boolForKey: @"ROITEXTIFSELECTED"];
+    ROITextIfMouseIsOver = [NSUserDefaults.standardUserDefaults boolForKey: @"ROITextIfMouseIsOver"];
 	ROITEXTNAMEONLY = [[NSUserDefaults standardUserDefaults] boolForKey: @"ROITEXTNAMEONLY"];
 	splineForROI = [[NSUserDefaults standardUserDefaults] boolForKey: @"splineForROI"];
 	displayCobbAngle = [[NSUserDefaults standardUserDefaults] boolForKey: @"displayCobbAngle"];
@@ -3767,7 +3768,13 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	{
 		drawTextBox = YES;
 	}
-	
+    
+    if( ROITEXTIFSELECTED)
+    {
+        if( mouseOverROI)
+            drawTextBox = YES;
+	}
+    
 	if( mode == ROI_selectedModify || mode == ROI_drawing)
 	{
 		if(	type == tOPolygon ||

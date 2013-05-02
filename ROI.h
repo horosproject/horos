@@ -99,6 +99,7 @@ enum
 	
 	// **** **** **** **** **** **** **** **** **** **** TRACKING
 	
+    BOOL            mouseOverROI;
 	int				PointUnderMouse;
 	long			selectedModifyPoint;
 	NSPoint			clickPoint, previousPoint, originAnchor;
@@ -154,7 +155,7 @@ enum
 @property(readonly) unsigned char *textureBuffer;
 @property(nonatomic) float opacity;
 @property int originalIndexForAlias;
-@property BOOL locked, selectable, isAliased, displayCMOrPixels;
+@property BOOL locked, selectable, isAliased, displayCMOrPixels, mouseOverROI;
 @property(nonatomic, copy) NSString *name;
 @property(retain) NSString *comments;
 @property long type;

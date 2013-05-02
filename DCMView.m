@@ -3647,6 +3647,29 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                 }
             }
             
+            if( [NSUserDefaults.standardUserDefaults boolForKey: @"ROITextIfMouseIsOver"] && [NSUserDefaults.standardUserDefaults boolForKey:@"ROITEXTIFSELECTED"])
+            {
+                for( ROI *r in curRoiList)
+                {
+                    if( [r clickInROI:pt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :NO])
+                    {
+                        if( !r.mouseOverROI)
+                        {
+                            r.mouseOverROI = YES;
+                            [self setNeedsDisplay: YES];
+                        }
+                        else
+                        {
+                            if( r.mouseOverROI)
+                            {
+                                r.mouseOverROI = NO;
+                                [self setNeedsDisplay: YES];
+                            }
+                        }
+                    }
+                }
+            }
+            
             if(!mouseOnImage)
             {
 #ifdef new_loupe

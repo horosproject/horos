@@ -3258,6 +3258,15 @@
 									<reference key="NSOnImage" ref="125626618"/>
 									<reference key="NSMixedImage" ref="973943092"/>
 								</object>
+								<object class="NSMenuItem" id="531174505">
+									<reference key="NSMenu" ref="1010933659"/>
+									<string key="NSTitle">Display Info when mouse is over</string>
+									<string key="NSKeyEquiv"/>
+									<int key="NSKeyEquivModMask">1048576</int>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="125626618"/>
+									<reference key="NSMixedImage" ref="973943092"/>
+								</object>
 								<object class="NSMenuItem" id="554172914">
 									<reference key="NSMenu" ref="1010933659"/>
 									<string key="NSTitle">Display Name Only</string>
@@ -13182,6 +13191,14 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<int key="connectionID">14649</int>
 				</object>
 				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">updateViews:</string>
+						<reference key="source" ref="61136146"/>
+						<reference key="destination" ref="531174505"/>
+					</object>
+					<int key="connectionID">14832</int>
+				</object>
+				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">delegate</string>
 						<reference key="source" ref="307923769"/>
@@ -15779,6 +15796,42 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 					<int key="connectionID">14814</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: values.ROITEXTIFSELECTED</string>
+						<reference key="source" ref="531174505"/>
+						<reference key="destination" ref="149985806"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="531174505"/>
+							<reference key="NSDestination" ref="149985806"/>
+							<string key="NSLabel">enabled: values.ROITEXTIFSELECTED</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">values.ROITEXTIFSELECTED</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">14834</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.ROITextIfMouseIsOver</string>
+						<reference key="source" ref="531174505"/>
+						<reference key="destination" ref="149985806"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="531174505"/>
+							<reference key="NSDestination" ref="149985806"/>
+							<string key="NSLabel">value: values.ROITextIfMouseIsOver</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.ROITextIfMouseIsOver</string>
+							<object class="NSDictionary" key="NSOptions">
+								<string key="NS.key.0">NSConditionallySetsEnabled</string>
+								<boolean value="NO" key="NS.object.0"/>
+							</object>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">14835</int>
+				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<array key="orderedObjects">
@@ -16474,6 +16527,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<reference ref="729769436"/>
 							<reference ref="1031050130"/>
 							<reference ref="584203387"/>
+							<reference ref="531174505"/>
 						</array>
 						<reference key="parent" ref="63428212"/>
 					</object>
@@ -21972,6 +22026,11 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<reference key="object" ref="115387514"/>
 						<reference key="parent" ref="299226132"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">14830</int>
+						<reference key="object" ref="531174505"/>
+						<reference key="parent" ref="1010933659"/>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -22936,6 +22995,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<string key="14821.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="14822.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="1483.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="14830.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="1487.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="1488.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="1489.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -23000,7 +23060,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">14829</int>
+			<int key="maxID">14835</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -23201,7 +23261,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="setSearchType:">id</string>
 						<string key="showLogWindow:">id</string>
 						<string key="showhide:">id</string>
-						<string key="smartAlbumHelpButton:">id</string>
 						<string key="switchSoundex:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
@@ -23391,10 +23450,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 						<object class="IBActionInfo" key="showhide:">
 							<string key="name">showhide:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="smartAlbumHelpButton:">
-							<string key="name">smartAlbumHelpButton:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="switchSoundex:">
@@ -27150,7 +27205,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string key="className">ViewerController</string>
 					<string key="superclassName">OSIWindowController</string>
 					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="AddConv:">id</string>
 						<string key="AddOpacity:">id</string>
 						<string key="ConvertToBWMenu:">id</string>
 						<string key="ConvertToRGBMenu:">id</string>
@@ -27206,7 +27260,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="makeAllROIsSelectable:">id</string>
 						<string key="makeSelectedROIsUnselectable:">id</string>
 						<string key="mergeBrushROI:">id</string>
-						<string key="mergeBrushROI:ROIs:ROIList:">id</string>
 						<string key="morphoSelectedBrushROI:">id</string>
 						<string key="morphoSelectedBrushROIWithRadius:">id</string>
 						<string key="mprViewer:">id</string>
@@ -27264,10 +27317,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="vertFlipDataSet:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="AddConv:">
-							<string key="name">AddConv:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="AddOpacity:">
 							<string key="name">AddOpacity:</string>
 							<string key="candidateClassName">id</string>
@@ -27486,10 +27535,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 						<object class="IBActionInfo" key="mergeBrushROI:">
 							<string key="name">mergeBrushROI:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="mergeBrushROI:ROIs:ROIList:">
-							<string key="name">mergeBrushROI:ROIs:ROIList:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="morphoSelectedBrushROI:">
