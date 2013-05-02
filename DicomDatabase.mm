@@ -2996,9 +2996,11 @@ static BOOL protectionAgainstReentry = NO;
                         [_compressQueue removeAllObjects];
                     }
                     if (todo.count)
+                    {
                         if (self.isMainDatabase)
                             [self.independentDatabase processFilesAtPaths:todo intoDirAtPath:self.incomingDirPath mode:Compress];
                         else [self processFilesAtPaths:todo intoDirAtPath:self.incomingDirPath mode:Compress];
+                    }
                 }
                 else // decompression
                 {
@@ -3007,9 +3009,11 @@ static BOOL protectionAgainstReentry = NO;
                         [_decompressQueue removeAllObjects];
                     }
                     if (todo.count)
+                    {
                         if (self.isMainDatabase)
                             [self.independentDatabase processFilesAtPaths:todo intoDirAtPath:self.incomingDirPath mode:Decompress];
                         else [self processFilesAtPaths:todo intoDirAtPath:self.incomingDirPath mode:Decompress];
+                    }
                 }
             }
         
