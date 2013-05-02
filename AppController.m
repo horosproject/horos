@@ -671,7 +671,7 @@ static NSDate *lastWarningDate = nil;
 @synthesize checkAllWindowsAreVisibleIsOff, filtersMenu, windowsTilingMenuRows, windowsTilingMenuColumns, isSessionInactive, dicomBonjourPublisher = BonjourDICOMService, XMLRPCServer;
 @synthesize bonjourPublisher = _bonjourPublisher;
 
-+(BOOL) hasMacOSX1083orHigher
++(BOOL) hasMacOSX1083
 {
 	OSErr err;
 	SInt32 osVersion;
@@ -679,7 +679,7 @@ static NSDate *lastWarningDate = nil;
 	err = Gestalt ( gestaltSystemVersion, &osVersion );
 	if ( err == noErr)
 	{
-		if ( osVersion < 0x1083UL )
+		if( osVersion < 0x1083UL || osVersion >= 0x1084UL)
 		{
 			return NO;
 		}
@@ -3526,7 +3526,7 @@ static BOOL initialized = NO;
 
 -(void)verifyHardwareInterpolation
 {
-    if( [AppController hasMacOSX1083orHigher]) // Intel 10.8.3 graphic bug
+    if( [AppController hasMacOSX1083]) // Intel 10.8.3 graphic bug
     {
         BOOL onlyIntelGraphicBoard = YES;
         for( NSString *gpuName in [AppController getGPUNames])
