@@ -2997,6 +2997,8 @@ static float deg2rad = M_PI / 180.0;
                        rereadExistingItems: YES
                          generatedByOsiriX: YES];
                 
+                objects = [BrowserController.currentBrowser.database objectsWithIDs: objects];
+                 
 				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"])
 					[[BrowserController currentBrowser] selectServer: objects];
 				

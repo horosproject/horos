@@ -255,6 +255,8 @@
                                                                   rereadExistingItems: YES
                                                                     generatedByOsiriX: YES];
 		
+        objects = [BrowserController.currentBrowser.database objectsWithIDs: objects];
+        
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"afterExportSendToDICOMNode"])
 			[[BrowserController currentBrowser] selectServer: objects];
 		
