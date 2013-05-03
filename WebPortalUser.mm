@@ -57,6 +57,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
 @dynamic downloadReport;
 @dynamic uploadDICOMAddToSpecificStudies;
 @dynamic studies;
+@dynamic recentStudies;
 
 #define TIMEOUT 5*60
 

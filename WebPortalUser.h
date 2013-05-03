@@ -47,6 +47,7 @@
 @property (nonatomic, retain) NSNumber * downloadReport;
 @property (nonatomic, retain) NSNumber * uploadDICOMAddToSpecificStudies;
 @property (nonatomic, retain) NSSet* studies;
+@property (nonatomic, retain) NSSet* recentStudies;
 
 -(void)generatePassword;
 -(void)convertPasswordToHashIfNeeded;
@@ -81,6 +82,7 @@
 - (void)removeStudiesObject:(WebPortalStudy*)value;
 - (void)addStudies:(NSSet *)value;
 - (void)removeStudies:(NSSet *)value;
-
+- (void)addRecentStudies:(NSSet *)value;
+- (void)removeRecentStudies:(NSSet *)value;
 @end
 

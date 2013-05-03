@@ -1025,6 +1025,17 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	for (NSString* selectedXID in [WebPortalConnection MakeArray:[parameters objectForKey:@"selected"]])
 		[selectedSeries addObject:[self objectWithXID:selectedXID]];
 	
+    if( study && user)
+    {
+        //save this study in recent studies list
+        
+//        WebPortalStudy *studyLink = [NSEntityDescription insertNewObjectForEntityForName: @"Study" inManagedObjectContext: user.managedObjectContext];
+//        
+//        studyLink.studyInstanceUID = [[[study valueForKey: @"studyInstanceUID"] copy] autorelease];
+//        studyLink.patientUID = [[[study valueForKey: @"patientUID"] copy] autorelease];
+//        studyLink.user = user;
+    }
+    
 	if ([[parameters objectForKey:@"dicomSend"] isEqual:@"dicomSend"] && study) {
 		NSArray* dicomDestinationArray = [[parameters objectForKey:@"dicomDestination"] componentsSeparatedByString:@":"];
 		if (dicomDestinationArray.count >= 4) {
