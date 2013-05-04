@@ -1014,8 +1014,6 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 
 -(void)processStudyHtml
 {
-//    [self.independentDicomDatabase.managedObjectContext reset]; //We want fresh data : from the persistentstore
-    
 	DicomStudy* study = [self objectWithXID:[parameters objectForKey:@"xid"]];
 	
 	if (!study)
@@ -1027,13 +1025,32 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	
     if( study && user)
     {
-        //save this study in recent studies list
+        //save this study in recent studies list, if not already here
+        WebPortalStudy *studyLink = [[user.recentStudies filteredSetUsingPredicate: [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", study.studyInstanceUID]] anyObject];
         
-//        WebPortalStudy *studyLink = [NSEntityDescription insertNewObjectForEntityForName: @"Study" inManagedObjectContext: user.managedObjectContext];
-//        
-//        studyLink.studyInstanceUID = [[[study valueForKey: @"studyInstanceUID"] copy] autorelease];
-//        studyLink.patientUID = [[[study valueForKey: @"patientUID"] copy] autorelease];
-//        studyLink.user = user;
+        if( !studyLink)
+        {
+            studyLink = [NSEntityDescription insertNewObjectForEntityForName: @"RecentStudy" inManagedObjectContext: user.managedObjectContext];
+        
+            studyLink.studyInstanceUID = [[[study valueForKey: @"studyInstanceUID"] copy] autorelease];
+            studyLink.patientUID = [[[study valueForKey: @"patientUID"] copy] autorelease];
+            studyLink.user = user;
+        }
+        
+        studyLink.dateAdded = [NSDate date];
+        
+        NSMutableSet *recentStudies = [user mutableSetValueForKey: @"recentStudies"];
+        if( recentStudies.count > [[NSUserDefaults standardUserDefaults] integerForKey: @"WebPortalMaximumNumberOfRecentStudies"])
+        {
+            NSMutableArray *array = [NSMutableArray arrayWithArray: recentStudies.allObjects];
+            [array sortUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: @"dateAdded" ascending: NO]]];
+            
+            for( WebPortalStudy *s in [array subarrayWithRange:  NSMakeRange(  [[NSUserDefaults standardUserDefaults] integerForKey: @"WebPortalMaximumNumberOfRecentStudies"], array.count - [[NSUserDefaults standardUserDefaults] integerForKey: @"WebPortalMaximumNumberOfRecentStudies"])])
+            {
+                [recentStudies removeObject: s];
+            }
+        }
+        [user.managedObjectContext save: nil];
     }
     
 	if ([[parameters objectForKey:@"dicomSend"] isEqual:@"dicomSend"] && study) {

@@ -837,6 +837,35 @@ static NSMutableDictionary *studiesForUserCache = nil;
 	return studiesArray;
 }
 
+- (NSArray*) recentPatients
+{
+    NSMutableArray *recentStudies = [NSMutableArray arrayWithArray: [[self.recentStudies allObjects] valueForKey: @"patientUID"]];
+    
+    NSCountedSet *countedSet = [NSCountedSet setWithArray: recentStudies];
+    NSMutableArray *patientUIDs = [NSMutableArray array];
+    
+    for(id obj in countedSet)
+    {
+        if([countedSet countForObject:obj] == 1)
+        {
+            [patientUIDs addObject:obj];
+        }
+    }
+    
+    NSMutableArray *recentPatients = [NSMutableArray array];
+    
+    for( NSString *patientUID in patientUIDs)
+    {
+        DicomDatabase* ddb = [[[WebPortal defaultWebPortal] dicomDatabase] independentDatabase];
+        
+        NSArray *studies = [ddb objectsForEntity: @"Study" predicate: [NSPredicate predicateWithFormat: @"patientUID == %@", patientUID]];
+        
+        if( studies.count)
+            [recentPatients addObject: [studies lastObject]];
+    }
+    
+    return recentPatients;
+}
 
 @end
 

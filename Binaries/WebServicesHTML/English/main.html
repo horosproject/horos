@@ -39,6 +39,15 @@
 		</div>
 	</div>
 	
+    %[IF:User.recentPatients.count%
+    <div>
+		<div class="title">Recent Patients</div>
+		%[FOREACH:User.recentPatients:RecentPatient%
+        %X:RecentPatient.name%<br>
+		%]FOREACH:User.recentPatients:RecentPatient%
+	</div>
+    %]IF:User.recentPatients.count%
+    
 	<div>
 		<div class="title">Browse</div>
 		<div class="peopleStudyList"><a href="studyList?browse=all">Study List</a></div><br>

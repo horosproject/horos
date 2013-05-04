@@ -1040,6 +1040,7 @@ static NSHost *currentHost = nil;
     [defaultValues setObject:@"1" forKey:@"wadoRequestRequireValidToken"];
     [defaultValues setObject:@"1024" forKey: @"DicomImageScreenCaptureWidth"];
     [defaultValues setObject:@"1024" forKey: @"DicomImageScreenCaptureHeight"];
+    [defaultValues setObject:@"30" forKey: @"WebPortalMaximumNumberOfRecentStudies"];
     
 	#ifdef MACAPPSTORE
 	[defaultValues setObject:@"1" forKey:@"MACAPPSTORE"];
