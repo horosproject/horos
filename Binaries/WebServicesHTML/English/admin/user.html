@@ -185,6 +185,7 @@
 			<tr><td><label><input type="checkbox" name="sendDICOMtoSelfIP" onchange="adjustForm(this)"%[IF:EditedUser.sendDICOMtoSelfIP% checked="checked"%]IF:EditedUser.sendDICOMtoSelfIP%/>Authorized to transfer DICOM files to itself</label></td></tr>
 			<tr><td style="padding-left:20px"><label><input type="checkbox" name="sendDICOMtoAnyNodes" onchange="adjustForm(this)"%[IF:EditedUser.sendDICOMtoAnyNodes% checked="checked"%]IF:EditedUser.sendDICOMtoAnyNodes%/>Authorized to transfer DICOM files to any node</label></td></tr>
 			<tr><td><label><input type="checkbox" name="emailNotification" onchange="adjustForm(this)"%[IF:EditedUser.emailNotification% checked="checked"%]IF:EditedUser.emailNotification% %[IF:Prefs.webServerNotificationEmails%disabled="disabled"%]IF:Prefs.webServerNotificationEmails%/>Automatic Notification Emails</label></td><tr>
+            <tr><td><label><input type="checkbox" name="showRecentPatients" onchange="adjustForm(this)"%[IF:EditedUser.showRecentPatients% checked="checked"%]IF:EditedUser.showRecentPatients%/>Show recently viewed patients</label></td><tr>
 			<tr><td>
 				<label><input type="checkbox" name="autoDelete" onchange="adjustForm(this)"%[IF:EditedUser.autoDelete% checked="checked"%]IF:EditedUser.autoDelete%/>Delete this user after:</label>
 				<select name="deletionDate_month" onChange="adjustDates(this)">

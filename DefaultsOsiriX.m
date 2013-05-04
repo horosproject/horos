@@ -1041,6 +1041,7 @@ static NSHost *currentHost = nil;
     [defaultValues setObject:@"1024" forKey: @"DicomImageScreenCaptureWidth"];
     [defaultValues setObject:@"1024" forKey: @"DicomImageScreenCaptureHeight"];
     [defaultValues setObject:@"30" forKey: @"WebPortalMaximumNumberOfRecentStudies"];
+    [defaultValues setObject:@"10" forKey: @"WebPortalMaximumNumberOfDaysForRecentStudies"];
     
 	#ifdef MACAPPSTORE
 	[defaultValues setObject:@"1" forKey:@"MACAPPSTORE"];

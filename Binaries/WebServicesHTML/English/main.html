@@ -39,6 +39,7 @@
 		</div>
 	</div>
 	
+    %[IF:User.showRecentPatients%
     %[IF:User.recentPatients.count%
     <div>
 		<div class="title">Recently Viewed Patients</div>
@@ -97,6 +98,7 @@
         </table>
 	</div>
     %]IF:User.recentPatients.count%
+    %]IF:User.showRecentPatients%
     
 	<div>
 		<div class="title">Browse</div>

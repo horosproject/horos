@@ -48,6 +48,7 @@
 @property (nonatomic, retain) NSNumber * uploadDICOMAddToSpecificStudies;
 @property (nonatomic, retain) NSSet* studies;
 @property (nonatomic, retain) NSSet* recentStudies;
+@property (nonatomic, retain) NSNumber * showRecentPatients;
 
 -(void)generatePassword;
 -(void)convertPasswordToHashIfNeeded;

@@ -58,6 +58,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
 @dynamic uploadDICOMAddToSpecificStudies;
 @dynamic studies;
 @dynamic recentStudies;
+@dynamic showRecentPatients;
 
 #define TIMEOUT 5*60
 
@@ -841,7 +842,11 @@ static NSMutableDictionary *studiesForUserCache = nil;
 {
     NSMutableArray *recentPatients = [NSMutableArray array];
     
-    for( NSString *patientUID in [[NSSet setWithArray: [[self.recentStudies allObjects] valueForKey: @"patientUID"]] allObjects])
+    NSDate *oldestDate = [[NSDate date] dateByAddingTimeInterval: -[NSUserDefaults.standardUserDefaults doubleForKey: @"WebPortalMaximumNumberOfDaysForRecentStudies"]*86400.];
+    
+    NSSet *recentStudies = [self.recentStudies filteredSetUsingPredicate:[NSPredicate predicateWithFormat: @"dateAdded > CAST(%lf, \"NSDate\")", [oldestDate timeIntervalSinceReferenceDate]]];
+    
+    for( NSString *patientUID in [[NSSet setWithArray: [recentStudies.allObjects valueForKey: @"patientUID"]] allObjects])
     {
         DicomDatabase* ddb = [[[WebPortal defaultWebPortal] dicomDatabase] independentDatabase];
         
@@ -853,6 +858,8 @@ static NSMutableDictionary *studiesForUserCache = nil;
             [recentPatients addObject: [[studies sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: @"date" ascending: YES]]] lastObject]];
         }
     }
+    
+    [recentPatients sortUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: @"name" ascending: YES]]];
     
     return recentPatients;
 }

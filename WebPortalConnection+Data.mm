@@ -1508,8 +1508,12 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		if ([[[parameters valueForKey:@"emailNotification"] lowercaseString] isEqualToString:@"on"])
 			user.emailNotification = [NSNumber numberWithBool:YES];
 		else user.emailNotification = [NSNumber numberWithBool: NO];
+        
+        if ([[[parameters valueForKey:@"showRecentPatients"] lowercaseString] isEqualToString:@"on"])
+			user.showRecentPatients = [NSNumber numberWithBool:YES];
+		else user.showRecentPatients = [NSNumber numberWithBool: NO];
 		
-		[self.portal.database save:NULL];
+		[user.managedObjectContext save: nil];
 		
 		[response.tokens addMessage:NSLocalizedString(@"Personal information updated successfully!", nil)];
 	}
@@ -1518,8 +1522,6 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	response.templateString = [self.portal stringForPath:@"account.html"];
 	response.mimeType = @"text/html";
 }
-
-
 
 #pragma mark Administration HTML
 
@@ -1628,6 +1630,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 				webUser.autoDelete = [NSNumber numberWithBool:[[parameters objectForKey:@"autoDelete"] isEqual:@"on"]];
 				webUser.downloadZIP = downloadZIP;
 				webUser.emailNotification = [NSNumber numberWithBool:[[parameters objectForKey:@"emailNotification"] isEqual:@"on"]];
+                webUser.showRecentPatients = [NSNumber numberWithBool:[[parameters objectForKey:@"showRecentPatients"] isEqual:@"on"]];
 				webUser.encryptedZIP = [NSNumber numberWithBool:[[parameters objectForKey:@"encryptedZIP"] isEqual:@"on"]];
 				webUser.uploadDICOM = [NSNumber numberWithBool:[[parameters objectForKey:@"uploadDICOM"] isEqual:@"on"]];
 				webUser.downloadReport = [NSNumber numberWithBool:[[parameters objectForKey:@"downloadReport"] isEqual:@"on"]];
