@@ -1053,7 +1053,8 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
         [user.managedObjectContext save: nil];
     }
     
-	if ([[parameters objectForKey:@"dicomSend"] isEqual:@"dicomSend"] && study) {
+	if ([[parameters objectForKey:@"dicomSend"] isEqual:@"dicomSend"] && study)
+    {
 		NSArray* dicomDestinationArray = [[parameters objectForKey:@"dicomDestination"] componentsSeparatedByString:@":"];
 		if (dicomDestinationArray.count >= 4) {
 			NSMutableDictionary* dicomDestination = [NSMutableDictionary dictionary];
@@ -1187,7 +1188,6 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
     
 	[self.portal updateLogEntryForStudy:study withMessage:@"Browsing Study" forUser:user.name ip:asyncSocket.connectedHost];
 	
-//	[self.portal.dicomDatabase.managedObjectContext lock];
 	@try {
 		NSString* browse = [parameters objectForKey:@"browse"];
 		NSString* search = [parameters objectForKey:@"search"];
@@ -1201,8 +1201,17 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			studyListLinkLabel = NSLocalizedString(@"Last 6 Hours", nil);
 		else if ([browse isEqualToString:@"today"])
 			studyListLinkLabel = NSLocalizedString(@"Today", nil);
-		[response.tokens setObject:studyListLinkLabel forKey:@"BackLinkLabel"];
+        
+        if( [[parameters objectForKey: @"back"] isEqualToString: @"main"])
+        {
+            studyListLinkLabel= NSLocalizedString(@"Home", nil);
+            [response.tokens setObject:@"main" forKey:@"backLink"];
+		}
+        else
+            [response.tokens setObject:@"studyList" forKey:@"backLink"];
 		
+        [response.tokens setObject:studyListLinkLabel forKey:@"BackLinkLabel"];
+        
 		// Series
 		
 		NSMutableArray* seriesArray = [NSMutableArray array];
@@ -1249,8 +1258,6 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 
 	} @catch (NSException* e) {
 		NSLog(@"Error: [WebPortalResponse processStudyHtml:] %@", e);
-	} @finally {
-//		[self.portal.dicomDatabase.managedObjectContext unlock];
 	}
 		
 	response.templateString = [self.portal stringForPath:@"study.html"];

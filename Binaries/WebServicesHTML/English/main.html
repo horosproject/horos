@@ -41,10 +41,60 @@
 	
     %[IF:User.recentPatients.count%
     <div>
-		<div class="title">Recent Patients</div>
-		%[FOREACH:User.recentPatients:RecentPatient%
-        %X:RecentPatient.name%<br>
-		%]FOREACH:User.recentPatients:RecentPatient%
+		<div class="title">Recently Viewed Patients</div>
+        <table class="wide separated fat">
+		%[FOREACH:User.recentPatients:Study%
+            <tr class="li%Study_Index2%">
+                <td class="">
+                    <a href="study?%Info.getParameters(sortKey=,back=)%&xid=%Study.XID%&back=main">
+                        <span class="bigger compressed">%X:ZWS:Study.name%</span> <span class="gray details">%X:Study.modality%%[IF:Study.imageSeries.count%, %X:Study.imageSeries.count% series%]IF:Study.imageSeries.count%%[IF:Study.patientID%, %X:Study.patientID%%]IF:Study.patientID%%[IF:Study.accessionNumber%, %X:Study.accessionNumber%%]IF:Study.accessionNumber%</span>
+                        <div class="gray indent compressed">
+                            %X:ZWS:Study.studyName%
+                            %[IF:Study.comment%<div class="italic indent">%X:ZWS:Study.comment%</div>%]IF:Study.comment%
+                        </div>
+                    </a>
+                </td>
+                
+                <td class="gray top right fat">
+                    %[IF:Study.date%
+                    <div>%Study.date.DateTime.Spanned%</div>
+                    %]IF:Study.date%
+                    
+                    %[IF:Study.stateText%
+                    <div>%X:Study.stateText%</div>
+                    %]IF:Study.stateText%
+                </td>
+                
+                %[IF:Info.proposeDelete%
+                <td class="narrow middle"></td>
+                <td class="narrow middle">
+                    <input type="image" name="delete" value="%Study.XID%" src="images/delete.png" alt="Delete images" onclick="if( !confirm('Are you sure you want to definitively delete these images?')) return false;"/>
+                </td>
+                <td class="narrow middle"></td>
+                %]IF:Info.proposeDelete%
+                
+                %[IF:Info.isMacOS%
+                %[IF:Info.proposeWADORetrieve%
+                <td class="narrow middle">
+                    <a href="osirix://?methodName=DownloadURL&Display=YES&URL='%Info.WADOBaseURL%?requestType=WADO&studyUID=%U:Study.studyInstanceUID%&token=%Info.newToken%'"><img src="images/osirix.png"/></a>
+                </td>
+                %]IF:Info.proposeWADORetrieve%
+                %]IF:Info.isMacOS%
+                
+                %[IF:Info.proposeZipDownload%
+                <td class="narrow middle">
+                    <a href="%U:Study.name% - %U:Study.studyName%.%[IF:Info.isMacOS%osirixzip%ELSE:Info.isMacOS%zip%]IF:Info.isMacOS%?xid=%Study.XID%"><img src="images/download.png"/></a>
+                </td>
+                %]IF:Info.proposeZipDownload%
+                
+                %[IF:Info.proposeWeasis%
+                <td class="narrow middle">
+                    <a href="/%X:Study.name%-weasis.jnlp?xid=%Study.XID%"><img src="images/weasis.png"/></a>
+                </td>
+                %]IF:Info.proposeWeasis%
+            </tr>
+		%]FOREACH:User.recentPatients:Study%
+        </table>
 	</div>
     %]IF:User.recentPatients.count%
     
