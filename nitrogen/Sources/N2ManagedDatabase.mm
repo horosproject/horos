@@ -527,11 +527,6 @@
 }
 
 -(NSEntityDescription*)entityForName:(NSString*)name {
-    
-#ifndef NDEBUG
-    [self checkForCorrectContextThread];
-#endif
-    
 	return [NSEntityDescription entityForName:name inManagedObjectContext:self.managedObjectContext];
 }
 
