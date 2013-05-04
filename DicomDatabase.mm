@@ -3308,7 +3308,12 @@ static BOOL protectionAgainstReentry = NO;
 					   [name isEqualToString: @"stateText"])
 					{
                         [newStudyTable willChangeValueForKey: name];
-						[newStudyTable setPrimitiveValue: [oldStudy primitiveValueForKey: name] forKey: name];
+                        @try {
+                            [newStudyTable setPrimitiveValue: [oldStudy primitiveValueForKey: name] forKey: name];
+                        }
+                        @catch (NSException *exception) {
+                            N2LogException( exception);
+                        }
                         [newStudyTable didChangeValueForKey: name];
 					}
 					else [newStudyTable setValue: [oldStudy primitiveValueForKey: name] forKey: name];
@@ -3350,7 +3355,12 @@ static BOOL protectionAgainstReentry = NO;
 									[name isEqualToString: @"stateText"])
 							{
                                 [newSeriesTable willChangeValueForKey: name];
-								[newSeriesTable setPrimitiveValue: [oldSeries primitiveValueForKey: name] forKey: name];
+                                @try {
+                                    [newSeriesTable setPrimitiveValue: [oldSeries primitiveValueForKey: name] forKey: name];
+                                }
+                                @catch (NSException *exception) {
+                                    N2LogException( exception);
+                                }
                                 [newSeriesTable didChangeValueForKey: name];
 							}
 							else [newSeriesTable setValue: [oldSeries primitiveValueForKey: name] forKey: name];
@@ -3387,7 +3397,12 @@ static BOOL protectionAgainstReentry = NO;
 											[name isEqualToString: @"stateText"])
 									{
                                         [newImageTable willChangeValueForKey: name];
-										[newImageTable setPrimitiveValue: [oldImage primitiveValueForKey: name] forKey: name];
+                                        @try {
+                                            [newImageTable setPrimitiveValue: [oldImage primitiveValueForKey: name] forKey: name];
+                                        }
+                                        @catch (NSException *exception) {
+                                            N2LogException( exception);
+                                        }
                                         [newImageTable didChangeValueForKey: name];
 									}
 									else [newImageTable setValue: [oldImage primitiveValueForKey: name] forKey: name];
