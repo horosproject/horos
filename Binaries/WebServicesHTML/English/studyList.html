@@ -21,15 +21,6 @@
 		if (currentPage < numberOfPages-1)
 			document.write("<a href=\"?"+parameters+"&page="+(numberOfPages-1)+"\">⇥</a>");
 	}
-    
-    function onSubmitForm(form) {
-        if (document.submitting == 'Weasis')
-		form.action ="weasis.jnlp";
-        else form.action = document.location;
-        if (form.message.value == form.message.defaultValue)
-		form.message.value = '';
-        return true;
-    }
 </script>
 
 <div id="content">
@@ -79,7 +70,7 @@
                         %[IF:Info.proposeDelete%
                         <td class="narrow middle"></td>
 						<td class="narrow middle">
-                            <form id="form" method="post" onsubmit="return onSubmitForm(this);">
+                            <form id="form" method="post">
                             <input type="hidden" id="delete" name="delete" value="%Study.XID%" />
                             <input type="image" src="images/delete.png" alt="Delete images" onclick="if( !confirm('Are you sure you want to definitively delete these images?')) return false;"/>
                             </form>
