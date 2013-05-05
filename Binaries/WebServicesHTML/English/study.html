@@ -43,10 +43,15 @@ function checkboxChanged(form) {
 function onSubmitForm(form) {
 	if (document.submitting == 'Weasis')
 		form.action ="weasis.jnlp";
-	else form.action = document.location;
-	if (form.message.value == form.message.defaultValue)
+	else
+        form.action = document.location;
+    
+    if (document.submitting == 'delete')
+        form.message.value = 'delete';
+	else if (form.message.value == form.message.defaultValue)
 		form.message.value = '';
-	return true;
+	
+    return true;
 }
 
 function imageClick(ixid, sxid) {
@@ -226,7 +231,8 @@ function shareDestinationChange(select) {
 						
                         %[IF:Info.proposeDelete%
 						<td class="narrow middle">
-							<input type="image" name="delete" value="%Series.XID%" src="images/delete.png" alt="Delete images" onclick="if( !confirm('Are you sure you want to definitively delete these images?')) return false;"/>
+                            <input type="hidden" name="seriesToDelete" value="%Series.XID%" />
+							<input type="image" name="delete" src="images/delete.png" alt="Delete images" onclick="if( !confirm('Are you sure you want to definitively delete these images?')) return false; else document.submitting='delete';"/>
 						</td>
                         <td class="narrow middle"></td>
                         <td class="narrow middle"></td>

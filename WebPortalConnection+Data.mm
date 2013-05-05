@@ -1112,7 +1112,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			[response.tokens addError: NSLocalizedString(@"WADO URL Retrieve failed: no images selected. Select one or more series.", @"Web Portal, study, dicom send, error")];
 	}
 	
-    if( [parameters objectForKey:@"delete"] && study)
+    if( [[parameters objectForKey:@"message"] isEqualToString: @"delete"] && [parameters objectForKey:@"seriesToDelete"] && study)
     {
         if (!user.isAdmin.boolValue)
         {
@@ -1121,7 +1121,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
         }
         else
         {
-            if( [self processDeleteObject: [parameters objectForKey:@"delete"]])
+            if( [self processDeleteObject: [parameters objectForKey:@"seriesToDelete"]])
                 study = nil;
         }
     }
