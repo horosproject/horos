@@ -136,16 +136,30 @@ function shareDestinationChange(select) {
 				<tr>
 					<td>Other&nbsp;Studies&nbsp;for&nbsp;this&nbsp;patient:</td>
 				</tr>
-				%[FOREACH:Study.otherStudiesForThisPatient:Study%
-					<td>%Study.date.DateTime.Spanned%:</td>
-					<td><a href="study?%Info.getParameters(xid=)%&xid=%Study.XID%">
-						<span class="bigger compressed">%X:ZWS:Study.studyName%</span> <span class="gray details">, %X:Study.modality%%[IF:Study.imageSeries.count%, %X:Study.imageSeries.count% series%]IF:Study.imageSeries.count%%[IF:Study.patientID%, %X:Study.patientID%%]IF:Study.patientID%%[IF:Study.accessionNumber%, %X:Study.accessionNumber%%]IF:Study.accessionNumber%</span>
+				%[FOREACH:Study.otherStudiesForThisPatient:ComparativeStudy%
+					<td>%ComparativeStudy.date.DateTime.Spanned%:</td>
+					<td>
+                        <script type="text/javascript" language="javascript">
+							if( "%ComparativeStudy.studyInstanceUID%" == "%Study.studyInstanceUID%") document.write( "<b>");
+                            else document.write( "<a href=\"study?%Info.getParameters(xid=)%&xid=%ComparativeStudy.XID%\">");
+                        </script>
+                        
+						<span class="bigger compressed">%X:ZWS:ComparativeStudy.studyName%</span> <span class="gray details">, %X:ComparativeStudy.modality%%[IF:ComparativeStudy.imageSeries.count%, %X:ComparativeStudy.imageSeries.count% series%]IF:ComparativeStudy.imageSeries.count%%[IF:ComparativeStudy.patientID%, %X:ComparativeStudy.patientID%%]IF:ComparativeStudy.patientID%%[IF:ComparativeStudy.accessionNumber%, %X:ComparativeStudy.accessionNumber%%]IF:ComparativeStudy.accessionNumber%</span>
 						<div class="gray indent compressed">
-									%[IF:Study.comment%<div class="italic indent">%X:ZWS:Study.comment%</div>%]IF:Study.comment%
+									%[IF:ComparativeStudy.comment%<div class="italic indent">%X:ZWS:ComparativeStudy.comment%</div>%]IF:ComparativeStudy.comment%
 						</div>
-					</a></td>
+                        
+                        <div class="gray indent compressed">
+                        </div>
+                        
+                        <script type="text/javascript" language="javascript">
+							if( "%ComparativeStudy.studyInstanceUID%" > "%Study.studyInstanceUID%") document.write( "</b>");
+                            else document.write( "</a>");
+                        </script>
+                        
+					</td>
 				</tr>
-				%]FOREACH:Study.otherStudiesForThisPatient:Study%
+				%]FOREACH:Study.otherStudiesForThisPatient:ComparativeStudy%
 				%]IF:Study.otherStudiesForThisPatient.count%
 			</table>
 		</div>

@@ -1033,10 +1033,10 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
             studyLink = [NSEntityDescription insertNewObjectForEntityForName: @"RecentStudy" inManagedObjectContext: user.managedObjectContext];
         
             studyLink.studyInstanceUID = [[[study valueForKey: @"studyInstanceUID"] copy] autorelease];
-            studyLink.patientUID = [[[study valueForKey: @"patientUID"] copy] autorelease];
             studyLink.user = user;
         }
         
+        studyLink.patientUID = [[[study valueForKey: @"patientUID"] copy] autorelease];
         studyLink.dateAdded = [NSDate date];
         
         NSMutableSet *recentStudies = [user mutableSetValueForKey: @"recentStudies"];

@@ -831,16 +831,6 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 #endif
                 }
             }
-            
-			// Important> keep these two separates steps !
-			for( DicomStudy *s in otherStudies)
-			{
-				if( [s.studyInstanceUID isEqualToString: study.studyInstanceUID])
-				{
-					[otherStudies removeObject: s];
-					break;
-				}
-			}
 		}
 		@catch (NSException * e)
 		{
