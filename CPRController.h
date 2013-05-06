@@ -162,6 +162,7 @@ typedef NSInteger CPRExportRotationSpan;
 //	int dcmmN;
 	
 	// Clipping Range
+    float dcmIntervalMin, dcmIntervalMax;
 	float clippingRangeThickness;
 	int clippingRangeMode;
 	
@@ -183,7 +184,7 @@ typedef NSInteger CPRExportRotationSpan;
 	NSMutableArray *_delegateDisplayInfoDebugging;
 }
 
-@property (nonatomic) float clippingRangeThickness, blendingPercentage;
+@property (nonatomic) float clippingRangeThickness, dcmIntervalMin, dcmIntervalMax, blendingPercentage;
 @property (nonatomic) int clippingRangeMode, mouseViewID;
 @property (nonatomic) int curMovieIndex, maxMovieIndex, blendingMode;
 @property (nonatomic, retain) Point3D *mousePosition;

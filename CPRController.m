@@ -74,6 +74,7 @@ static float deg2rad = M_PI / 180.0;
 @synthesize exportSlabThickness, exportNumberOfRotationFrames;
 @synthesize exportSliceIntervalSameAsVolumeSliceInterval;
 @synthesize exportSliceInterval, exportTransverseSliceInterval;
+@synthesize dcmIntervalMin, dcmIntervalMax;
 
 + (double) angleBetweenVector:(float*) a andPlane:(float*) orientation
 {
@@ -535,6 +536,14 @@ static float deg2rad = M_PI / 180.0;
 	[self setClippingRangeMode: 1]; // MIP
 	self.clippingRangeThickness = 0.5;
 	
+    int min = [self getClippingRangeThicknessInMm] * 100.;
+    self.dcmIntervalMin = (float) min / 100.;
+    self.dcmIntervalMin -= 0.001;
+    if( self.dcmIntervalMin < 0.01)
+        self.dcmIntervalMin = 0.01;
+    
+    self.dcmIntervalMax = 100;
+    
 	[[self window] makeFirstResponder: mprView1];
 	[mprView1.vrView resetImage: self];
 	
@@ -2051,6 +2060,13 @@ static float deg2rad = M_PI / 180.0;
 	return [mprView1.vrView getClippingRangeThicknessInMm];
 }
 
+- (void) setClippingRangeThicknessInMm:(float) c
+{
+	[mprView1.vrView setClippingRangeThicknessInMm: c];
+    
+    self.clippingRangeThickness = [mprView1.vrView getClippingRangeThickness];
+}
+
 - (void) setClippingRangeThickness:(float) f
 {
 	float previousThickness = clippingRangeThickness;
@@ -3485,6 +3501,8 @@ static float deg2rad = M_PI / 180.0;
 			topTransverseView.curvedPath = curvedPath;
 			middleTransverseView.curvedPath = curvedPath;
 			bottomTransverseView.curvedPath = curvedPath;
+            
+            self.clippingRangeThicknessInMm = curvedPath.thickness;
         }
     }
 }
