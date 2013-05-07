@@ -267,12 +267,10 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 {
 	self.user = NULL;
 	
-    WebPortalDatabase *idatabase = [self.portal.database independentDatabase];
+    NSFetchRequest *r = [NSFetchRequest fetchRequestWithEntityName: @"User"];
+    r.predicate = [NSPredicate predicateWithFormat:@"name LIKE[cd] %@", username];
+    self.user = [[self.portal.database.independentContext executeFetchRequest: r error: nil] lastObject];
     
-	NSArray* users = [idatabase objectsForEntity:idatabase.userEntity predicate:[NSPredicate predicateWithFormat:@"name LIKE[cd] %@", username]];
-	if (users.count)
-		self.user = users.lastObject;
-	
 	return self.user.password;
 }
 
@@ -1092,9 +1090,9 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	
 	if (session && [session objectForKey:SessionUsernameKey])
     {
-        WebPortalDatabase *idatabase = [self.portal.database independentDatabase];
-        
-		self.user = [idatabase userWithName:[session objectForKey:SessionUsernameKey]];
+        NSFetchRequest *r = [NSFetchRequest fetchRequestWithEntityName: @"User"];
+        r.predicate = [NSPredicate predicateWithFormat:@"name LIKE[cd] %@", [session objectForKey:SessionUsernameKey]];
+		self.user = [[self.portal.database.independentContext executeFetchRequest: r error: nil] lastObject];
         
         if( [session objectForKey: SessionLastActivityDateKey])
         {
