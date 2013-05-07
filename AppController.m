@@ -5469,4 +5469,15 @@ static NSMutableDictionary* _receivingDict = nil;
 	[[NSApp dockTile] display];
 }
 
+-(void)playGrabSound {
+    NSString* path = @"/System/Library/Components/CoreAudio.component/Contents/SharedSupport/SystemSounds/system/Grab.aif";
+    NSSound* sound = [[NSSound alloc] initWithContentsOfFile:path byReference:NO];
+    sound.delegate = self;
+    [sound play];
+}
+
+- (void)sound:(NSSound*)sound didFinishPlaying:(BOOL)finishedPlaying {
+    [sound release];
+}
+
 @end

@@ -84,6 +84,7 @@ NSString* const CurrentDatabaseVersion = @"2.5";
 
 static NSString* const SqlFileName = @"Database.sql";
 NSString* const OsirixDataDirName = @"OsiriX Data";
+NSString* const O2ScreenCapturesSeriesName = NSLocalizedString(@"OsiriX Screen Captures", nil);;
 
 +(NSString*)baseDirPathForPath:(NSString*)path {
 	// were we given a path inside a OsirixDataDirName dir?

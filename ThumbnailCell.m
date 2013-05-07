@@ -26,4 +26,8 @@
     }
 }
 
+- (NSRect)drawTitle:(NSAttributedString*)title withFrame:(NSRect)frame inView:(NSView*)controlView {
+    return [super drawTitle:title withFrame:NSInsetRect(frame, -2,0) inView:controlView]; // very precioussss 4px/pt
+}
+
 @end

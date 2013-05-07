@@ -97,7 +97,7 @@ extern "C"
 
 extern AppController* OsiriX;
 
-@interface AppController : NSObject	<NSNetServiceBrowserDelegate, NSNetServiceDelegate, GrowlApplicationBridgeDelegate>
+@interface AppController : NSObject	<NSNetServiceBrowserDelegate, NSNetServiceDelegate, GrowlApplicationBridgeDelegate, NSSoundDelegate>
 {
 	IBOutlet BrowserController		*browserController;
 
@@ -265,6 +265,8 @@ extern AppController* OsiriX;
 -(void)setReceivingIcon;
 -(void)unsetReceivingIcon;
 -(void)setBadgeLabel:(NSString*)label;
+
+- (void)playGrabSound;
 
 @end
 
