@@ -130,6 +130,7 @@ NSString* const O2NonViewerScreensDefaultsKey = @"NonViewerScreens";
 
 -(void)screen:(NSScreen*)screen setIsUsedForViewers:(BOOL)flag {
     NSMutableArray* a = [[[self arrayForKey:O2NonViewerScreensDefaultsKey] mutableCopy] autorelease];
+    if (!a) a = [NSMutableArray array];
 
     if (!flag && [self screenIsUsedForViewers:screen])
         [a addObject:[NSNumber numberWithUnsignedInteger:screen.screenNumber]];
