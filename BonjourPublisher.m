@@ -789,7 +789,7 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
                     }
                     else if( [[key pathComponents] count] == 1)
                     {
-                        value = [[idatabase.baseDirPath stringByAppendingPathComponent: @"/REPORTS/"] stringByAppendingPathComponent: [value lastPathComponent]];
+                        value = [[idatabase reportsDirPath] stringByAppendingPathComponent: [value lastPathComponent]];
                     }
                 }
                 

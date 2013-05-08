@@ -15334,9 +15334,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 				NSString *reportURL = nil;
 				
 				if( [[path pathExtension] length])
-					reportURL = [NSString stringWithFormat: @"%@/REPORTS/%@.%@", [self documentsDirectory], [Reports getUniqueFilename: s], [path pathExtension]];
+					reportURL = [NSString stringWithFormat: @"%@/%@.%@", [self.database reportsDirPath], [Reports getUniqueFilename: s], [path pathExtension]];
 				else
-					reportURL = [NSString stringWithFormat: @"%@/REPORTS/%@", [self documentsDirectory], [Reports getUniqueFilename: s]];
+					reportURL = [NSString stringWithFormat: @"%@/%@", [self.database reportsDirPath], [Reports getUniqueFilename: s]];
 					
 				[[NSFileManager defaultManager] removeFileAtPath: reportURL handler: nil];
 				[[NSFileManager defaultManager] copyPath: path toPath: reportURL handler: nil];
@@ -16923,7 +16923,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 					
 					if( localReportFile == nil)
 					{
-						NSLog( @"New report for : %@", [studySelected valueForKey: @"name"]);
+						NSLog( @"New report for: %@", [studySelected valueForKey: @"name"]);
 						
 						if (reportsMode != 3)
 						{
@@ -16934,7 +16934,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 							if (![_database isLocal])
 								[report createNewReport: studySelected destination: [NSString stringWithFormat: @"%@/TEMP.noindex/", [self documentsDirectory]] type:reportsMode];
 							else
-								[report createNewReport: studySelected destination: [NSString stringWithFormat: @"%@/REPORTS/", [self documentsDirectory]] type:reportsMode];
+								[report createNewReport: studySelected destination: [NSString stringWithFormat: @"%@/", [self.database reportsDirPath]] type:reportsMode];
 							
 							localReportFile = [studySelected valueForKey: @"reportURL"];
 							
