@@ -2790,7 +2790,7 @@ static NSConditionLock *threadLock = nil;
                 if( autoretrievingPACSOnDemandSmartAlbum == NO && studyToAutoretrieve.count)
                 {
                     NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector(autoretrievePACSOnDemandSmartAlbum:) object: studyToAutoretrieve] autorelease];
-                    t.name = NSLocalizedString( @"Auto-Retrieving Album...", nil);
+                    t.name = NSLocalizedString( @"Auto-Retrieving...", nil);
                     t.supportsCancel = YES;
                     [[ThreadsManager defaultManager] addThreadAndStart: t];
                 }
@@ -4191,7 +4191,7 @@ static NSConditionLock *threadLock = nil;
                                 distantStudies = [QueryController queryStudiesForPatient: studySelected usePatientID: usePatientID usePatientName: usePatientName usePatientBirthDate: usePatientBirthDate servers: servers showErrors: NO];
                                 
                                 // Merge local and distant studies
-                                
+                                NSMutableArray *studyToAutoretrieve = [NSMutableArray array];
                                 for( DCMTKStudyQueryNode *distantStudy in distantStudies)
                                 {
                                     if( [[mergedStudies valueForKey: @"studyInstanceUID"] containsObject: [distantStudy studyInstanceUID]] == NO)
@@ -4215,9 +4215,20 @@ static NSConditionLock *threadLock = nil;
                                             if( index != NSNotFound && [[[mergedStudies objectAtIndex: index] rawNoFiles] intValue] < [[distantStudy noFiles] intValue])
                                             {
                                                 [mergedStudies replaceObjectAtIndex: index withObject: distantStudy];
+                                                
+                                                if( [[NSUserDefaults standardUserDefaults] boolForKey: @"automaticallyRetrievePartialStudies"])
+                                                    [studyToAutoretrieve addObject: distantStudy];
                                             }
                                         }
                                     }
+                                }
+                                
+                                if( studyToAutoretrieve.count)
+                                {
+                                    NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector(autoretrievePACSOnDemandSmartAlbum:) object: studyToAutoretrieve] autorelease];
+                                    t.name = NSLocalizedString( @"Auto-Retrieving...", nil);
+                                    t.supportsCancel = YES;
+                                    [[ThreadsManager defaultManager] addThreadAndStart: t];
                                 }
                                 #endif
                             }
