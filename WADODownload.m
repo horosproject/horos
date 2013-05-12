@@ -213,124 +213,135 @@
 
 - (void) WADODownload: (NSArray*) urlToDownload
 {
-    if( [urlToDownload count])
-        urlToDownload = [[NSSet setWithArray: urlToDownload] allObjects]; // UNIQUE OBJECTS !
-	
-	if( [urlToDownload count])
-	{
-		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-		NSLog( @"------ WADO downloading : %d files", (int) [urlToDownload count]);
-		
-		firstWadoErrorDisplayed = NO;
-		
-		if( showErrorMessage == NO)
-			firstWadoErrorDisplayed = YES; // dont show errors
-		
-        [WADODownloadDictionary release];
-		WADODownloadDictionary = [[NSMutableDictionary dictionary] retain];
-		
-		int WADOMaximumConcurrentDownloads = [[NSUserDefaults standardUserDefaults] integerForKey: @"WADOMaximumConcurrentDownloads"];
-		if( WADOMaximumConcurrentDownloads < 1)
-			WADOMaximumConcurrentDownloads = 1;
-		
-		float timeout = [[NSUserDefaults standardUserDefaults] floatForKey: @"WADOTimeout"];
-		if( timeout < 240) timeout = 240;
-		
-		NSLog( @"------ WADO parameters: timeout:%2.2f [secs] / WADOMaximumConcurrentDownloads:%d [URLRequests]", timeout, WADOMaximumConcurrentDownloads);
-		
-		WADOTotal = WADOThreads = [urlToDownload count];
-		
-		NSMutableArray *connectionsArray = [NSMutableArray array];
-		
-		NSTimeInterval retrieveStartingDate = [NSDate timeIntervalSinceReferenceDate];
-		
-		BOOL aborted = NO;
-		for( NSURL *url in urlToDownload)
-		{
-			while( [WADODownloadDictionary count] > WADOMaximumConcurrentDownloads) //Dont download more than XXX images at the same time
-			{
-				[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.1]];
-				
-				if( _abortAssociation || [NSThread currentThread].isCancelled || [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"] || [NSDate timeIntervalSinceReferenceDate] - retrieveStartingDate > timeout)
-				{
-					aborted = YES;
-					break;
-				}
-			}
-			retrieveStartingDate = [NSDate timeIntervalSinceReferenceDate];
-			
-            @try
+    NSAutoreleasePool *pool = [NSAutoreleasePool new];
+    
+    @try
+    {
+        if( [urlToDownload count])
+            urlToDownload = [[NSSet setWithArray: urlToDownload] allObjects]; // UNIQUE OBJECTS !
+        
+        if( [urlToDownload count])
+        {
+            NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+            NSLog( @"------ WADO downloading : %d files", (int) [urlToDownload count]);
+            
+            firstWadoErrorDisplayed = NO;
+            
+            if( showErrorMessage == NO)
+                firstWadoErrorDisplayed = YES; // dont show errors
+            
+            [WADODownloadDictionary release];
+            WADODownloadDictionary = [[NSMutableDictionary dictionary] retain];
+            
+            int WADOMaximumConcurrentDownloads = [[NSUserDefaults standardUserDefaults] integerForKey: @"WADOMaximumConcurrentDownloads"];
+            if( WADOMaximumConcurrentDownloads < 1)
+                WADOMaximumConcurrentDownloads = 1;
+            
+            float timeout = [[NSUserDefaults standardUserDefaults] floatForKey: @"WADOTimeout"];
+            if( timeout < 240) timeout = 240;
+            
+            NSLog( @"------ WADO parameters: timeout:%2.2f [secs] / WADOMaximumConcurrentDownloads:%d [URLRequests]", timeout, WADOMaximumConcurrentDownloads);
+            
+            WADOTotal = WADOThreads = [urlToDownload count];
+            
+            NSMutableArray *connectionsArray = [NSMutableArray array];
+            
+            NSTimeInterval retrieveStartingDate = [NSDate timeIntervalSinceReferenceDate];
+            
+            BOOL aborted = NO;
+            for( NSURL *url in urlToDownload)
             {
-                if( [[url scheme] isEqualToString: @"https"])
-                    [NSURLRequest setAllowsAnyHTTPSCertificate:YES forHost:[url host]];
+                while( [WADODownloadDictionary count] > WADOMaximumConcurrentDownloads) //Dont download more than XXX images at the same time
+                {
+                    [[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.1]];
+                    
+                    if( _abortAssociation || [NSThread currentThread].isCancelled || [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"] || [NSDate timeIntervalSinceReferenceDate] - retrieveStartingDate > timeout)
+                    {
+                        aborted = YES;
+                        break;
+                    }
+                }
+                retrieveStartingDate = [NSDate timeIntervalSinceReferenceDate];
+                
+                @try
+                {
+                    if( [[url scheme] isEqualToString: @"https"])
+                        [NSURLRequest setAllowsAnyHTTPSCertificate:YES forHost:[url host]];
+                }
+                @catch (NSException *e)
+                {
+                    NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                }
+                
+                NSURLConnection *downloadConnection = [NSURLConnection connectionWithRequest: [NSURLRequest requestWithURL: url cachePolicy: NSURLRequestReloadIgnoringLocalCacheData timeoutInterval: timeout] delegate: self];
+                
+                if( downloadConnection)
+                {
+                    [WADODownloadDictionary setObject: [NSDictionary dictionaryWithObjectsAndKeys: url, @"url", [NSMutableData data], @"data", nil] forKey: [NSString stringWithFormat:@"%ld", (long) downloadConnection]];
+                    [downloadConnection start];
+                    [connectionsArray addObject: downloadConnection];
+                }
+                
+                if( downloadConnection == nil)
+                    OSAtomicDecrement32Barrier( &WADOThreads);
+                
+                if( _abortAssociation || [NSThread currentThread].isCancelled || [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"] || [NSDate timeIntervalSinceReferenceDate] - retrieveStartingDate > timeout)
+                {
+                    aborted = YES;
+                    break;
+                }
             }
-            @catch (NSException *e)
+            
+            if( aborted == NO)
             {
-                NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                while( WADOThreads > 0)
+                {
+                    [[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.1]];
+                    
+                    if( _abortAssociation || [NSThread currentThread].isCancelled || [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"]  || [NSDate timeIntervalSinceReferenceDate] - retrieveStartingDate > timeout)
+                    {
+                        aborted = YES;
+                        break;
+                    }
+                }
+                
+                if( aborted == NO && [[WADODownloadDictionary allKeys] count] > 0)
+                    NSLog( @"**** [[WADODownloadDictionary allKeys] count] > 0");
+                
+                [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
             }
             
-			NSURLConnection *downloadConnection = [NSURLConnection connectionWithRequest: [NSURLRequest requestWithURL: url cachePolicy: NSURLRequestReloadIgnoringLocalCacheData timeoutInterval: timeout] delegate: self];
-			
-            if( downloadConnection)
+            if( aborted) [logEntry setValue:@"Incomplete" forKey:@"logMessage"];
+            else [logEntry setValue:@"Complete" forKey:@"logMessage"];
+            
+            [[LogManager currentLogManager] addLogLine: logEntry];
+            
+            if( aborted)
             {
-                [WADODownloadDictionary setObject: [NSDictionary dictionaryWithObjectsAndKeys: url, @"url", [NSMutableData data], @"data", nil] forKey: [NSString stringWithFormat:@"%ld", (long) downloadConnection]];
-                [downloadConnection start];
-                [connectionsArray addObject: downloadConnection];
-			}
+                for( NSURLConnection *connection in connectionsArray)
+                    [connection cancel];
+            }
             
-			if( downloadConnection == nil)
-				OSAtomicDecrement32Barrier( &WADOThreads);
-			
-			if( _abortAssociation || [NSThread currentThread].isCancelled || [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"] || [NSDate timeIntervalSinceReferenceDate] - retrieveStartingDate > timeout)
-			{
-				aborted = YES;
-				break;
-			}
-		}
-		
-		if( aborted == NO)
-		{
-			while( WADOThreads > 0)
-			{
-				[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.1]];
-				
-				if( _abortAssociation || [NSThread currentThread].isCancelled || [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"]  || [NSDate timeIntervalSinceReferenceDate] - retrieveStartingDate > timeout)
-				{
-					aborted = YES;
-					break;
-				}
-			}
-			
-			if( aborted == NO && [[WADODownloadDictionary allKeys] count] > 0)
-				NSLog( @"**** [[WADODownloadDictionary allKeys] count] > 0");
+            [WADODownloadDictionary release];
+            WADODownloadDictionary = nil;
             
-            [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
-		}
-		
-        if( aborted) [logEntry setValue:@"Incomplete" forKey:@"logMessage"];
-        else [logEntry setValue:@"Complete" forKey:@"logMessage"];
-        
-        [[LogManager currentLogManager] addLogLine: logEntry];
-        
-		if( aborted)
-		{
-			for( NSURLConnection *connection in connectionsArray)
-				[connection cancel];
-		}
-		
-		[WADODownloadDictionary release];
-        WADODownloadDictionary = nil;
-		
-        [logEntry release];
-        logEntry = nil;
-        
-		[pool release];
-		
-		if( aborted)
-			NSLog( @"------ WADO downloading ABORTED");
-		else
-			NSLog( @"------ WADO downloading : %d files - finished", (int) [urlToDownload count]);
-	}	
+            [logEntry release];
+            logEntry = nil;
+            
+            [pool release];
+            
+            if( aborted)
+                NSLog( @"------ WADO downloading ABORTED");
+            else
+                NSLog( @"------ WADO downloading : %d files - finished", (int) [urlToDownload count]);
+        }
+    }
+    @catch (NSException *exception) {
+        N2LogException( exception);
+    }
+    @finally {
+        [pool release];
+    }
 }
 
 

@@ -529,6 +529,8 @@ extern NSString* O2AlbumDragType;
 - (IBAction)selectNoAlbums:(id)sender;
 - (NSArray *)databaseSelection;
 
+- (void) asyncWADOXMLDownloadURL:(NSURL*) url;
+
 - (void) refreshMatrix:(id) sender;
 - (void)updateReportToolbarIcon:(NSNotification *)note;
 

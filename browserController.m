@@ -107,6 +107,7 @@
 #import "QuicktimeExport.h"
 #import "DICOMToNSString.h"
 #import "XMLControllerDCMTKCategory.h"
+#import "WADOXML.h"
 
 #ifndef OSIRIX_LIGHT
 #import "Anonymization.h"
@@ -586,6 +587,20 @@ static NSConditionLock *threadLock = nil;
 
 #pragma mark-
 
+
+- (void) asyncWADOXMLDownloadURL:(NSURL*) url
+{
+    WADOXML *w = [[[WADOXML alloc] init] autorelease];
+    
+    [w parseURL: url];
+    
+    NSThread* t = [[[NSThread alloc] initWithTarget:[[[WADODownload alloc] init] autorelease] selector:@selector(WADODownload:) object: w.getWADOUrls] autorelease];
+    t.name = NSLocalizedString( @"WADO Retrieve...", nil);
+    t.supportsCancel = YES;
+    t.status = [url lastPathComponent];
+    [[ThreadsManager defaultManager] addThreadAndStart: t];
+}
+
 - (void) asyncWADODownload:(NSString*) filename
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -618,11 +633,8 @@ static NSConditionLock *threadLock = nil;
     {
 		N2LogExceptionWithStackTrace(e);
 	}
-	WADODownload *downloader = [[WADODownload alloc] init];
-	
+	WADODownload *downloader = [[[WADODownload alloc] init] autorelease];
 	[downloader WADODownload: urlToDownloads];
-	
-	[downloader release];
 	
 	[[NSFileManager defaultManager] removeItemAtPath: filename error: nil];
 	
@@ -719,7 +731,11 @@ static NSConditionLock *threadLock = nil;
 					}
 					else    // A file
 					{
-						if( [[filename pathExtension] isEqualToString: @"dcmURLs"])
+                        if( [[filename pathExtension] isEqualToString: @"xml"]) // Is it a WADO xml file? (like used for Weasis)
+						{
+                            [self asyncWADOXMLDownloadURL: [NSURL fileURLWithPath: filename]];
+						}
+						else if( [[filename pathExtension] isEqualToString: @"dcmURLs"])
 						{
 							NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector(asyncWADODownload:) object: filename] autorelease];
 							t.name = NSLocalizedString( @"WADO Retrieve...", nil);

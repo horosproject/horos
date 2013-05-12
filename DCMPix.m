@@ -12341,7 +12341,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					[NSThread detachNewThreadSelector: @selector(computeMaxThread:) toTarget: [[PixThread alloc] init] withObject: [minmaxThreads lastObject]];
 				}
 				
-				[NSThread sleepForTimeInterval: 0.2];
+				[NSThread sleepForTimeInterval: 0.01];
 			}
 			
 			int numberOfThreadsForCompute =[[NSProcessInfo processInfo] processorCount];

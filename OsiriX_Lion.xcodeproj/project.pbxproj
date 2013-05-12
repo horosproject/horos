@@ -4428,6 +4428,10 @@
 		CE2BFE57153B177C00037546 /* iPad.png in Resources */ = {isa = PBXBuildFile; fileRef = CE2BFE56153B177C00037546 /* iPad.png */; };
 		CE2BFE58153B177C00037546 /* iPad.png in Resources */ = {isa = PBXBuildFile; fileRef = CE2BFE56153B177C00037546 /* iPad.png */; };
 		CE2C82EC0C708B380093C162 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF5F14C20B14E12700B309B9 /* CoreVideo.framework */; };
+		CE373AAA173FEBBB009F60AC /* WADOXML.h in Headers */ = {isa = PBXBuildFile; fileRef = CE373AA8173FEBBB009F60AC /* WADOXML.h */; };
+		CE373AAB173FEBBB009F60AC /* WADOXML.h in Headers */ = {isa = PBXBuildFile; fileRef = CE373AA8173FEBBB009F60AC /* WADOXML.h */; };
+		CE373AAC173FEBBB009F60AC /* WADOXML.m in Sources */ = {isa = PBXBuildFile; fileRef = CE373AA9173FEBBB009F60AC /* WADOXML.m */; };
+		CE373AAD173FEBBB009F60AC /* WADOXML.m in Sources */ = {isa = PBXBuildFile; fileRef = CE373AA9173FEBBB009F60AC /* WADOXML.m */; };
 		CE39BFA306BC5DAE006D6824 /* Scripting_Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE39BF9F06BC5DAE006D6824 /* Scripting_Additions.h */; };
 		CE39BFA406BC5DAE006D6824 /* Scripting_Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE39BFA006BC5DAE006D6824 /* Scripting_Additions.m */; };
 		CE3B7E5A1580F518003CB266 /* Quaternion.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3B7E591580F518003CB266 /* Quaternion.h */; };
@@ -11901,6 +11905,8 @@
 		CE2BE05D1524344D00AE6156 /* Growl.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Growl.framework; path = Binaries/Growl.framework; sourceTree = "<group>"; };
 		CE2BFE56153B177C00037546 /* iPad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iPad.png; sourceTree = "<group>"; };
 		CE3368571595888D00167676 /* WebPortalDB 7.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "WebPortalDB 7.xcdatamodel"; sourceTree = "<group>"; };
+		CE373AA8173FEBBB009F60AC /* WADOXML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WADOXML.h; sourceTree = "<group>"; };
+		CE373AA9173FEBBB009F60AC /* WADOXML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WADOXML.m; sourceTree = "<group>"; };
 		CE39BF9F06BC5DAE006D6824 /* Scripting_Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Scripting_Additions.h; sourceTree = "<group>"; };
 		CE39BFA006BC5DAE006D6824 /* Scripting_Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Scripting_Additions.m; sourceTree = "<group>"; };
 		CE3B7E591580F518003CB266 /* Quaternion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Quaternion.h; sourceTree = "<group>"; };
@@ -17912,6 +17918,8 @@
 				BF18A85809E0BF00005DEFB6 /* AppControllerDCMTKCategory.mm */,
 				59EBFEA212BB500C00809C61 /* browserController.h */,
 				599115EF12D7224A00924B5C /* browserController.m */,
+				CE373AA8173FEBBB009F60AC /* WADOXML.h */,
+				CE373AA9173FEBBB009F60AC /* WADOXML.m */,
 				59DB271014515B5800E78E03 /* BrowserController+Sources.h */,
 				59DB271114515B5800E78E03 /* BrowserController+Sources.m */,
 				59DB271214515B5800E78E03 /* BrowserController+Sources+Copy.h */,
@@ -27203,6 +27211,7 @@
 				71EB83D016DCB9AE00D48646 /* N2PopUpMenu.h in Headers */,
 				713A26F617003DF900878CAB /* N2Locker.h in Headers */,
 				716DBDBD173920AF00BDB1E4 /* ViewerController+CPP.h in Headers */,
+				CE373AAA173FEBBB009F60AC /* WADOXML.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -27832,6 +27841,7 @@
 				71A28B781637F0D200489F2A /* DCMWaveform.h in Headers */,
 				7147C1891644160800A9D095 /* O2ViewerThumbnailsMatrix.h in Headers */,
 				84C6329616B945CD00F0EA89 /* ContextCleaner.h in Headers */,
+				CE373AAB173FEBBB009F60AC /* WADOXML.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -31628,6 +31638,7 @@
 				71EB83D116DCB9AE00D48646 /* N2PopUpMenu.mm in Sources */,
 				713A26F717003DF900878CAB /* N2Locker.m in Sources */,
 				716DBDBF173920AF00BDB1E4 /* ViewerController+CPP.mm in Sources */,
+				CE373AAC173FEBBB009F60AC /* WADOXML.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -32878,6 +32889,7 @@
 				7147C18B1644160800A9D095 /* O2ViewerThumbnailsMatrix.mm in Sources */,
 				717621E016FB195700803FFD /* BonjourPublisher.m in Sources */,
 				713A26F817003F3B00878CAB /* N2Locker.m in Sources */,
+				CE373AAD173FEBBB009F60AC /* WADOXML.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
