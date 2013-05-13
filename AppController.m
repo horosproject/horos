@@ -4520,10 +4520,7 @@ static BOOL initialized = NO;
 			[srcScreens removeObject: screen];
 		}
 	}
-	
-	[dstScreens removeObject: [dbWindow screen]];
-	[dstScreens addObject: [dbWindow screen]];
-	
+    
 	return dstScreens;
 }
 
@@ -4680,7 +4677,7 @@ static BOOL initialized = NO;
 	NSRect screenRect =  screenFrame();
 	BOOL keepSameStudyOnSameScreen = [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesTogetherOnSameScreen"];
 	NSMutableArray *studyList = [NSMutableArray array];
-	int keyWindow = 0;	
+	ViewerController *keyWindow = nil;
     
 	delayedTileWindows = NO;
 	
@@ -4753,7 +4750,6 @@ static BOOL initialized = NO;
 	NSMutableArray *hiddenWindows = [NSMutableArray array];
 	
 	// Add the hidden windows
-    keyWindow = -1;
 	for( ViewerController *v in viewersList)
 	{
 		if( [[v window] isVisible] == NO)
@@ -4761,28 +4757,28 @@ static BOOL initialized = NO;
 			[hiddenWindows addObject: v];
 			[cResult addObject: v];
             
-            keyWindow = [viewersList indexOfObject: v];
+            keyWindow = v;
 		}
 	}
 	
 	viewersList = cResult;
 	
-    if( keyWindow == -1)
+    if( keyWindow == nil)
     {
-        for( int i = 0; i < [viewersList count]; i++)
+        for( ViewerController *v in viewersList)
         {
-            if( [[[viewersList objectAtIndex: i] window] isKeyWindow])
-                keyWindow = i;
+            if( [[v window] isKeyWindow])
+                keyWindow = v;
         }
-        
-        if( keyWindow == -1)
-            keyWindow = 0;
     }
 	
 	BOOL identical = YES;
 	
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"tileWindowsOrderByStudyDate"])
     {
+        if( [hiddenWindows count])
+            [hiddenWindows removeAllObjects];
+        
         [viewersList sortUsingComparator: ^NSComparisonResult(id obj1, id obj2)
         {
             NSDate *date1 = [[obj1 currentStudy] date];
@@ -5196,12 +5192,12 @@ static BOOL initialized = NO;
 	[[NSUserDefaults standardUserDefaults] setBool: origCopySettings forKey: @"COPYSETTINGS"];
 	[AppController checkForPreferencesUpdate: YES];
 	
-	if( [viewersList count] > 0 && keyWindow >= 0)
+	if( [viewersList count] > 0 && keyWindow != nil)
 	{
         [DCMView setDontListenToSyncMessage: YES];
         
-		[[[viewersList objectAtIndex: keyWindow] window] makeKeyAndOrderFront:self];
-		[[viewersList objectAtIndex: keyWindow] propagateSettings];
+		[[keyWindow window] makeKeyAndOrderFront:self];
+		[keyWindow propagateSettings];
 		
 		NSDisableScreenUpdates();
 		
@@ -5220,7 +5216,7 @@ static BOOL initialized = NO;
 				[v autoHideMatrix];
 		}
 		
-        ViewerController *v = [viewersList objectAtIndex: keyWindow];
+        ViewerController *v = keyWindow;
         if( [v isKindOfClass: [ViewerController class]])
         {
             [[v imageView] becomeMainWindow];
@@ -5228,7 +5224,7 @@ static BOOL initialized = NO;
 		}
         
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"syncPreviewList"])
-			[[viewersList objectAtIndex: keyWindow] syncThumbnails];
+			[keyWindow syncThumbnails];
         
 		NSEnableScreenUpdates();
         

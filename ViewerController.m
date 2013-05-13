@@ -444,6 +444,11 @@ static int hotKeyToolCrossTable[] =
     return gStudyColors;
 }
 
+- (NSString*) description
+{
+    return [NSString stringWithFormat: @"ViewerController: %@, %@", self.studyInstanceUID, imageView.studyObj.date];
+}
+
 - (long) indexForPix: (long) pixIndex	// for backward compatibility
 {
 	return pixIndex;
