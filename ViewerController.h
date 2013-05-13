@@ -50,6 +50,8 @@
 #import "StaticScheduler.h"
 #import "OSIWindowController.h"
 
+extern BOOL SyncButtonBehaviorIsBetweenStudies;
+
 enum
 {
 	eSagittalPos = 0,		// 0
@@ -315,7 +317,7 @@ enum
 	
 	NSMutableArray			*undoQueue, *redoQueue;
 	
-	BOOL					SyncButtonBehaviorIsBetweenStudies, titledGantry, updateTilingViews;
+	BOOL					titledGantry, updateTilingViews;
 	
 	volatile BOOL			checkEverythingLoaded;
 	

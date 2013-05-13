@@ -171,6 +171,8 @@ volatile static int totalNumberOfLoadingWindow = 0;
 static int numberOf2DViewer = 0;
 static NSMutableArray *arrayOf2DViewers = nil;
 
+BOOL SyncButtonBehaviorIsBetweenStudies;
+
 // compares the names of 2 ROIs.
 // using the option NSNumericSearch => "Point 1" < "Point 5" < "Point 21".
 // use it with sortUsingFunction:context: to order an array of ROIs
@@ -6895,7 +6897,22 @@ return YES;
 	[imageView setDrawing: YES];
 	
 	[self SetSyncButtonBehavior: self];
-	[self turnOffSyncSeriesBetweenStudies: self];
+	//[self turnOffSyncSeriesBetweenStudies: self]; // TODO: why turn off sync? let's try making this new window sync with the old ones...
+    if (SYNCSERIES) {
+        // find other viewer of same study
+        ViewerController* samestudyviewer = nil;
+        for (ViewerController* iv in [ViewerController getDisplayed2DViewers])
+            if (iv != self && [iv.studyInstanceUID isEqualToString:self.studyInstanceUID]) {
+                samestudyviewer = iv;
+                break;
+            }
+        if (samestudyviewer) {
+            [imageView setSyncRelativeDiff:[[samestudyviewer imageView] syncRelativeDiff]];
+            [[self findSyncSeriesButton] setImage: [NSImage imageNamed: @"SyncLock.pdf"]];
+            [imageView setSyncSeriesIndex: 0];
+        }
+    }
+    
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOMATIC FUSE"])
 		[self blendWindows: nil];
