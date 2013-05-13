@@ -6897,8 +6897,9 @@ return YES;
 	[imageView setDrawing: YES];
 	
 	[self SetSyncButtonBehavior: self];
-	//[self turnOffSyncSeriesBetweenStudies: self]; // TODO: why turn off sync? let's try making this new window sync with the old ones...
-    if (SYNCSERIES) {
+    // why turn off sync? let's try making this new window sync with the old ones...
+    bool wedidsomethingsmart = NO;
+	if (SYNCSERIES) {
         // find other viewer of same study
         ViewerController* samestudyviewer = nil;
         for (ViewerController* iv in [ViewerController getDisplayed2DViewers])
@@ -6910,10 +6911,12 @@ return YES;
             [imageView setSyncRelativeDiff:[[samestudyviewer imageView] syncRelativeDiff]];
             [[self findSyncSeriesButton] setImage: [NSImage imageNamed: @"SyncLock.pdf"]];
             [imageView setSyncSeriesIndex: 0];
+            wedidsomethingsmart = YES;
         }
     }
+    if (!wedidsomethingsmart)
+        [self turnOffSyncSeriesBetweenStudies: self]; // keep the old behavior
     
-	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOMATIC FUSE"])
 		[self blendWindows: nil];
 	
