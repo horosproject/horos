@@ -171,7 +171,7 @@ volatile static int totalNumberOfLoadingWindow = 0;
 static int numberOf2DViewer = 0;
 static NSMutableArray *arrayOf2DViewers = nil;
 
-BOOL SyncButtonBehaviorIsBetweenStudies;
+BOOL SyncButtonBehaviorIsBetweenStudies = NO;
 
 // compares the names of 2 ROIs.
 // using the option NSNumericSearch => "Point 1" < "Point 5" < "Point 21".
