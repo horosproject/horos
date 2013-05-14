@@ -22,6 +22,7 @@
 #import "AppController.h"
 #import "NSData+N2.h"
 #import "NSString+N2.h"
+#import "NSFileManager+N2.h"
 #import "DDData.h"
 #import "DicomDatabase.h"
 #import "N2Debug.h"
@@ -510,7 +511,7 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 	BOOL isDirectory;
 	
 	for (NSInteger i = 0; i < dirsToScanForFile.count; ++i) {
-		NSString* path = [dirsToScanForFile objectAtIndex:i];
+		NSString* path = [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[dirsToScanForFile objectAtIndex:i]];
 		
 		// path not on disk, ignore
 		if (![[NSFileManager defaultManager] fileExistsAtPath: path isDirectory:&isDirectory] || !isDirectory) {

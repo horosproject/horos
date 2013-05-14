@@ -28,7 +28,7 @@ function checkboxChanged(form) {
 	form.CheckAll.disabled = allChecked;
 	form.UncheckAll.disabled = allUnchecked;
 	
-	var ifs = getElementsByClass('if_selection');
+	var ifs = $('.if_selection');
 	for (var i = 0; i < ifs.length; ++i) {
 		ifs[i].disabled = allUnchecked;
 		if (ifs[i].classList) {

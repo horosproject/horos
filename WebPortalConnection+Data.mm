@@ -69,6 +69,16 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 
 @implementation WebPortalConnection (Data)
 
++ (NSString*)tmpDirPath {
+    static NSString* path = nil;
+    if (!path) {
+        path = [[[NSFileManager.defaultManager tmpDirPath] stringByAppendingPathComponent:@"WebServer"] retain];
+        [NSFileManager.defaultManager confirmDirectoryAtPath:path];
+    }
+    
+    return path;
+}
+
 +(NSArray*)MakeArray:(id)obj {
 	if ([obj isKindOfClass:[NSArray class]])
 		return obj;
@@ -870,7 +880,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 
 -(NSData*)produceMovieForSeries:(DicomSeries*)series fileURL:(NSString*)fileURL
 {
-	NSString* path = @"/tmp/osirixwebservices";
+	NSString* path = [WebPortalConnection tmpDirPath];
 	[NSFileManager.defaultManager confirmDirectoryAtPath:path];
     
 	NSArray *dicomImageArray = [[series valueForKey:@"images"] allObjects];
@@ -2128,7 +2138,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 				
 				if ([dicomImageArray count] > 1)
 				{
-					NSString *path = @"/tmp/osirixwebservices";
+					NSString *path = [WebPortalConnection tmpDirPath];
 					[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
 					
 					NSString *name = [NSString stringWithFormat:@"%@",[parameters objectForKey:@"xid"]];
@@ -2710,7 +2720,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
     NSArray *representations = [image representations];
     NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.8] forKey:NSImageCompressionFactor]];
     
-    NSString* path = [[@"/tmp/osirixwebservices" stringByAppendingPathComponent: dicomImage.XIDFilename] stringByAppendingPathExtension: @"jpg"];
+    NSString* path = [[[WebPortalConnection tmpDirPath] stringByAppendingPathComponent: dicomImage.XIDFilename] stringByAppendingPathExtension: @"jpg"];
     [[NSFileManager defaultManager] removeItemAtPath: path error: nil];
     [bitmapData writeToFile: path atomically:YES];
 }
@@ -2741,7 +2751,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
             // waitUntileDone is very risky... cross lock possible ?!
             [self performSelectorOnMainThread: @selector( saveImageAsScreenCapture:) withObject: dicomImage.XID waitUntilDone: YES];
             
-            NSString* path = [[@"/tmp/osirixwebservices" stringByAppendingPathComponent: dicomImage.XIDFilename] stringByAppendingPathExtension: @"jpg"];
+            NSString* path = [[[WebPortalConnection tmpDirPath] stringByAppendingPathComponent: dicomImage.XIDFilename] stringByAppendingPathExtension: @"jpg"];
             response.data = [NSData dataWithContentsOfFile: path];
             response.mimeType = @"image/jpeg";
             return;

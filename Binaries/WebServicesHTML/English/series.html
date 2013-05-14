@@ -42,7 +42,7 @@
 					%ELSE:Series.images.count<2%
 						<a href="?%Info.getParameters(frames=yes)%">Show All Frames</a><br/><br/>
 						%[IF:Info.proposeFlash%
-							<object width="%X:Series.width%" height="%X:Series.height%">
+							<object width="%X:Series.width%" height="%X:Series.height%" id="flashobject">
 								<param name="movie" value="/movie.swf?xid=%Series.XID%" />
 								<param name="allowscriptaccess" value="always" />
 								<param name="wmode" value="transparent" />
@@ -50,9 +50,16 @@
 							</object>
 							<div class="smaller" id="flashwarning">Viewing this series requires <a href="http://get.adobe.com/flashplayer/">Adobe Flash Player</a></div>
 							<script src="/flash_detect_min.js" type="text/javascript"></script>
+                            <!--script src="/jquery.mousewheel.js" type="text/javascript"></script-->
 							<script type="text/javascript">
 								if (FlashDetect.installed)
-									document.getElementById("flashwarning").style.display = "none";
+									$("#flashwarning").hide();
+                                /*$('#flashobject').bind('mousewheel', function(e,d) { // this is an attempt to stop the page from scrolling when scrolling the flash video
+                                                       e.stopImmediatePropagation();
+                                                       e.stopPropagation();
+                                                       e.preventDefault();
+                                                       return false;
+                                });*/
 							</script>
 						%ELSE:Info.proposeFlash%
 							<video 	src="/movie.m4v?xid=%Series.XID%&username=%User.name%&token=%Info.newToken%"
