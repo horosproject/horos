@@ -182,143 +182,148 @@ static NSString* _dcmElementKey(DcmElement* element) {
 	}
 	
 	_DicomDatabaseScanDcmElement* elementReferencedFileID = [elements objectForKey:_dcmElementKey(0x0004,0x1500)];
-	if (elementReferencedFileID) {
+	if (elementReferencedFileID)
+    {
 		NSString* path = [elementReferencedFileID stringValue];
 		path = [path stringByReplacingOccurrencesOfString:@"\\" withString:@"/"];
 		path = [basepath stringByAppendingPathComponent:path];
-//		NSLog(@"\n\n%@", path);
 		NSString* temp;
 		NSInteger tempi;
 		
-		NSMutableDictionary* item = [NSMutableDictionary dictionaryWithObject:path forKey:@"filePath"];
-
-		NSMutableDictionary* elements = [NSMutableDictionary dictionary];
-		for (NSDictionary* e in context)
-			[elements addEntriesFromDictionary:e];
-		
-		//NSLog(@"\n\n%@\nDICOMDIR info:%@", path, elements);
-		
-		if ([[[elements objectForKeyRemove:_dcmElementKey(0x0004,0x1512)] stringValue] isEqualToString:@"1.2.840.10008.1.2.4.100"])
-			[item setObject:@"DICOMMPEG2" forKey:@"fileType"];
-		else [item setObject:@"DICOM" forKey:@"fileType"];
-		
-		[item conditionallySetObject:[NSNumber numberWithBool:YES] forKey:@"hasDICOM"];
-		
-		temp = [[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0016)] stringValue];
-		if (!temp) temp = [[elements objectForKey:_dcmElementKey(0x0004,0x1510)] stringValue];
-		[item conditionallySetObject:temp forKey:@"SOPClassUID"];
-		[elements removeObjectForKey:_dcmElementKey(0x0004,0x1510)];
-		
-		temp = [[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0018)] stringValue];
-		if (!temp) temp = [[elements objectForKey:_dcmElementKey(0x0004,0x1511)] stringValue];
-		[item conditionallySetObject:temp forKey:@"SOPUID"];
-		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0004,0x1511)] stringValue] forKey:@"referencedSOPInstanceUID"];
-		
-        [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0005)] stringValue] forKey:@"specificCharacterSet"];
-        
-        NSStringEncoding encodings[ 10];
-        NSArray	*c = [[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0005)] stringValue] componentsSeparatedByString:@"\\"];
-        
-        if( [c count] >= 10) NSLog( @"Encoding number >= 10 ???");
-        
-        if( [c count] < 10)
+        if( path.length < MAXPATHLEN)
         {
-            for( int i = 0; i < [c count]; i++) encodings[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
-            for( int i = [c count]; i < 10; i++) encodings[ i] = [NSString encodingForDICOMCharacterSet: [c lastObject]];
-        }
-        
-		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0020,0x000D)] stringValue] forKey:@"studyID"];
-		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0020,0x0010)] stringValue] forKey:@"studyNumber"];
-        
-		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x1030)] stringValueWithEncodings: encodings] forKey:@"studyDescription"];
-        
-		[item conditionallySetObject:[NSDate dateWithYYYYMMDD:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0020)] stringValue] HHMMss:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0030)] stringValue]] forKey:@"studyDate"];
-		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0060)] stringValue] forKey:@"modality"];
-		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0010,0x0020)] stringValue] forKey:@"patientID"];
-        
-		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0010,0x0010)] stringValueWithEncodings: encodings] forKey:@"patientName"];
+            NSMutableDictionary* item = [NSMutableDictionary dictionaryWithObject:path forKey:@"filePath"];
 
-		[item conditionallySetObject:[NSDate dateWithYYYYMMDD:[[elements objectForKeyRemove:_dcmElementKey(0x0010,0x0030)] stringValue] HHMMss:nil] forKey:@"patientBirthDate"];
-		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0010,0x0040)] stringValue] forKey:@"patientSex"];
-        
-		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0050)] stringValue] forKey:@"accessionNumber"];
-		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0004,0x1511)] stringValue] forKey:@"referencedSOPInstanceUID"];
-		
-        [item conditionallySetObject:[DicomFile patientUID: item] forKey:@"patientUID"];
-        
-		[item conditionallySetObject:[NSNumber numberWithInteger:1] forKey:@"numberOfSeries"];
-        
-        [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0028,0x0008)] integerNumberValue] forKey:@"numberOfFrames"];
-        if( [[item objectForKey:@"numberOfFrames"] integerValue] > 1) // SERIES ID MUST BE UNIQUE!!!!!
-		{
-			NSString *newSerieID = [NSString stringWithFormat:@"%@-%@", [[elements objectForKeyRemove:_dcmElementKey(0x0020,0x000E)] stringValue], [item objectForKey: @"SOPUID"]];
-			[item conditionallySetObject:newSerieID forKey:@"seriesDICOMUID"]; // SeriesInstanceUID
-		}
-        else
-            [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0020,0x000E)] stringValue] forKey:@"seriesDICOMUID"]; // SeriesInstanceUID
-        
-        NSString *seriesNumber = [[elements objectForKeyRemove:_dcmElementKey(0x0020,0x0011)] stringValue];
-        if( seriesNumber)
-        {
-            NSString *n = [NSString stringWithFormat:@"%8.8d %@", [seriesNumber intValue] , [item objectForKey: @"seriesDICOMUID"]];
-            [item conditionallySetObject: n forKey:@"seriesID"];
-        }
-        else
-            [item conditionallySetObject: [item objectForKey: @"seriesDICOMUID"] forKey:@"seriesID"];
-        
-		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x103E)] stringValueWithEncodings: encodings] forKey:@"seriesDescription"];
-		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0020,0x0011)] integerNumberValue] forKey:@"seriesNumber"];
-		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0020,0x0013)] integerNumberValue] forKey:@"imageID"];
-		
-		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0080)] stringValueWithEncodings: encodings] forKey:@"institutionName"];
-		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0090)] stringValueWithEncodings: encodings] forKey:@"referringPhysiciansName"];
-		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x1050)] stringValueWithEncodings: encodings] forKey:@"performingPhysiciansName"];
-		
-		tempi = [[elements objectForKeyRemove:_dcmElementKey(0x0028,0x0010)] integerValue];
-		[item conditionallySetObject:[NSNumber numberWithInteger:tempi? tempi : OsirixDicomImageSizeUnknown] forKey:@"height"];
-		tempi = [[elements objectForKeyRemove:_dcmElementKey(0x0028,0x0011)] integerValue];
-		[item conditionallySetObject:[NSNumber numberWithInteger:tempi? tempi : OsirixDicomImageSizeUnknown] forKey:@"width"];
-        
-        // thumbnail
-        _DicomDatabaseScanDcmElement* thumbnailElement = [elements objectForKeyRemove:_dcmElementKey(0x0088,0x0200)]; // IconImageSequence
-        if (thumbnailElement && thumbnailElement.element->ident() == EVR_SQ && ((DcmSequenceOfItems*)thumbnailElement.element)->card() == 1) {
-            DcmItem* thumb = ((DcmSequenceOfItems*)thumbnailElement.element)->getItem(0);
-            NSImage* im = [[self class] _nsImageForElement:thumb];
-            if (im)
-                [item setObject:im forKey:@"NSImageThumbnail"];
-        }
-        
-/*		[item setObject:path forKey:@"date"];
-		[item setObject:path forKey:@"seriesDICOMUID"];
-		[item setObject:path forKey:@"protocolName"];
-		[item setObject:path forKey:@"numberOfFrames"];
-		[item setObject:path forKey:@"SOPUID* ()"];
-		[item setObject:path forKey:@"imageID* ()"];
-		[item setObject:path forKey:@"sliceLocation"];
-		[item setObject:path forKey:@"numberOfSeries"];
-		[item setObject:path forKey:@"numberOfROIs"];
-		[item setObject:path forKey:@"commentsAutoFill"];
-		[item setObject:path forKey:@"seriesComments"];
-		[item setObject:path forKey:@"studyComments"];
-		[item setObject:path forKey:@"stateText"];
-		[item setObject:path forKey:@"keyFrames"];
-		[item setObject:path forKey:@"album"];*/
-		
-		[elements removeObjectForKey:_dcmElementKey(0x0004,0x1500)]; // ReferencedFileID = IMAGES\IM000000
-		[elements removeObjectForKey:_dcmElementKey(0x0004,0x1400)]; // OffsetOfTheNextDirectoryRecord = 0
-		[elements removeObjectForKey:_dcmElementKey(0x0004,0x1410)]; // RecordInUseFlag = 65535
-		[elements removeObjectForKey:_dcmElementKey(0x0004,0x1420)]; // OffsetOfReferencedLowerLevelDirectoryEntity = 0
-		[elements removeObjectForKey:_dcmElementKey(0x0004,0x1430)]; // DirectoryRecordType = IMAGE
-		[elements removeObjectForKey:_dcmElementKey(0x0008,0x0005)]; // SpecificCharacterSet = ISO_IR 100
-		[elements removeObjectForKey:_dcmElementKey(0x0008,0x0008)]; // ImageType = ORIGINAL\PRIMARY
-		[elements removeObjectForKey:_dcmElementKey(0x0008,0x0081)]; // InstitutionAddress = 
-		[elements removeObjectForKey:_dcmElementKey(0x0859,0x0010)]; // PrivateCreator = ETIAM DICOMDIR
-		[elements removeObjectForKey:_dcmElementKey(0x0859,0x1040)]; // Unknown Tag & Data = 13156912
-		
-		//if (elements.count) NSLog(@"\nUnused DICOMDIR info for %@: %@", path, elements);
-		if (elements.count) [item setObject:elements forKey:@"DEBUG"];
+            NSMutableDictionary* elements = [NSMutableDictionary dictionary];
+            for (NSDictionary* e in context)
+                [elements addEntriesFromDictionary:e];
+            
+            //NSLog(@"\n\n%@\nDICOMDIR info:%@", path, elements);
+            
+            if ([[[elements objectForKeyRemove:_dcmElementKey(0x0004,0x1512)] stringValue] isEqualToString:@"1.2.840.10008.1.2.4.100"])
+                [item setObject:@"DICOMMPEG2" forKey:@"fileType"];
+            else [item setObject:@"DICOM" forKey:@"fileType"];
+            
+            [item conditionallySetObject:[NSNumber numberWithBool:YES] forKey:@"hasDICOM"];
+            
+            temp = [[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0016)] stringValue];
+            if (!temp) temp = [[elements objectForKey:_dcmElementKey(0x0004,0x1510)] stringValue];
+            [item conditionallySetObject:temp forKey:@"SOPClassUID"];
+            [elements removeObjectForKey:_dcmElementKey(0x0004,0x1510)];
+            
+            temp = [[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0018)] stringValue];
+            if (!temp) temp = [[elements objectForKey:_dcmElementKey(0x0004,0x1511)] stringValue];
+            [item conditionallySetObject:temp forKey:@"SOPUID"];
+            [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0004,0x1511)] stringValue] forKey:@"referencedSOPInstanceUID"];
+            
+            [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0005)] stringValue] forKey:@"specificCharacterSet"];
+            
+            NSStringEncoding encodings[ 10];
+            NSArray	*c = [[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0005)] stringValue] componentsSeparatedByString:@"\\"];
+            
+            if( [c count] >= 10) NSLog( @"Encoding number >= 10 ???");
+            
+            if( [c count] < 10)
+            {
+                for( int i = 0; i < [c count]; i++) encodings[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
+                for( int i = [c count]; i < 10; i++) encodings[ i] = [NSString encodingForDICOMCharacterSet: [c lastObject]];
+            }
+            
+            [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0020,0x000D)] stringValue] forKey:@"studyID"];
+            [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0020,0x0010)] stringValue] forKey:@"studyNumber"];
+            
+            [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x1030)] stringValueWithEncodings: encodings] forKey:@"studyDescription"];
+            
+            [item conditionallySetObject:[NSDate dateWithYYYYMMDD:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0020)] stringValue] HHMMss:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0030)] stringValue]] forKey:@"studyDate"];
+            [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0060)] stringValue] forKey:@"modality"];
+            [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0010,0x0020)] stringValue] forKey:@"patientID"];
+            
+            [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0010,0x0010)] stringValueWithEncodings: encodings] forKey:@"patientName"];
 
-		[items addObject:item];
+            [item conditionallySetObject:[NSDate dateWithYYYYMMDD:[[elements objectForKeyRemove:_dcmElementKey(0x0010,0x0030)] stringValue] HHMMss:nil] forKey:@"patientBirthDate"];
+            [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0010,0x0040)] stringValue] forKey:@"patientSex"];
+            
+            [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0050)] stringValue] forKey:@"accessionNumber"];
+            [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0004,0x1511)] stringValue] forKey:@"referencedSOPInstanceUID"];
+            
+            [item conditionallySetObject:[DicomFile patientUID: item] forKey:@"patientUID"];
+            
+            [item conditionallySetObject:[NSNumber numberWithInteger:1] forKey:@"numberOfSeries"];
+            
+            [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0028,0x0008)] integerNumberValue] forKey:@"numberOfFrames"];
+            if( [[item objectForKey:@"numberOfFrames"] integerValue] > 1) // SERIES ID MUST BE UNIQUE!!!!!
+            {
+                NSString *newSerieID = [NSString stringWithFormat:@"%@-%@", [[elements objectForKeyRemove:_dcmElementKey(0x0020,0x000E)] stringValue], [item objectForKey: @"SOPUID"]];
+                [item conditionallySetObject:newSerieID forKey:@"seriesDICOMUID"]; // SeriesInstanceUID
+            }
+            else
+                [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0020,0x000E)] stringValue] forKey:@"seriesDICOMUID"]; // SeriesInstanceUID
+            
+            NSString *seriesNumber = [[elements objectForKeyRemove:_dcmElementKey(0x0020,0x0011)] stringValue];
+            if( seriesNumber)
+            {
+                NSString *n = [NSString stringWithFormat:@"%8.8d %@", [seriesNumber intValue] , [item objectForKey: @"seriesDICOMUID"]];
+                [item conditionallySetObject: n forKey:@"seriesID"];
+            }
+            else
+                [item conditionallySetObject: [item objectForKey: @"seriesDICOMUID"] forKey:@"seriesID"];
+            
+            [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x103E)] stringValueWithEncodings: encodings] forKey:@"seriesDescription"];
+            [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0020,0x0011)] integerNumberValue] forKey:@"seriesNumber"];
+            [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0020,0x0013)] integerNumberValue] forKey:@"imageID"];
+            
+            [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0080)] stringValueWithEncodings: encodings] forKey:@"institutionName"];
+            [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0090)] stringValueWithEncodings: encodings] forKey:@"referringPhysiciansName"];
+            [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x1050)] stringValueWithEncodings: encodings] forKey:@"performingPhysiciansName"];
+            
+            tempi = [[elements objectForKeyRemove:_dcmElementKey(0x0028,0x0010)] integerValue];
+            [item conditionallySetObject:[NSNumber numberWithInteger:tempi? tempi : OsirixDicomImageSizeUnknown] forKey:@"height"];
+            tempi = [[elements objectForKeyRemove:_dcmElementKey(0x0028,0x0011)] integerValue];
+            [item conditionallySetObject:[NSNumber numberWithInteger:tempi? tempi : OsirixDicomImageSizeUnknown] forKey:@"width"];
+            
+            // thumbnail
+            _DicomDatabaseScanDcmElement* thumbnailElement = [elements objectForKeyRemove:_dcmElementKey(0x0088,0x0200)]; // IconImageSequence
+            if (thumbnailElement && thumbnailElement.element->ident() == EVR_SQ && ((DcmSequenceOfItems*)thumbnailElement.element)->card() == 1) {
+                DcmItem* thumb = ((DcmSequenceOfItems*)thumbnailElement.element)->getItem(0);
+                NSImage* im = [[self class] _nsImageForElement:thumb];
+                if (im)
+                    [item setObject:im forKey:@"NSImageThumbnail"];
+            }
+            
+    /*		[item setObject:path forKey:@"date"];
+            [item setObject:path forKey:@"seriesDICOMUID"];
+            [item setObject:path forKey:@"protocolName"];
+            [item setObject:path forKey:@"numberOfFrames"];
+            [item setObject:path forKey:@"SOPUID* ()"];
+            [item setObject:path forKey:@"imageID* ()"];
+            [item setObject:path forKey:@"sliceLocation"];
+            [item setObject:path forKey:@"numberOfSeries"];
+            [item setObject:path forKey:@"numberOfROIs"];
+            [item setObject:path forKey:@"commentsAutoFill"];
+            [item setObject:path forKey:@"seriesComments"];
+            [item setObject:path forKey:@"studyComments"];
+            [item setObject:path forKey:@"stateText"];
+            [item setObject:path forKey:@"keyFrames"];
+            [item setObject:path forKey:@"album"];*/
+            
+            [elements removeObjectForKey:_dcmElementKey(0x0004,0x1500)]; // ReferencedFileID = IMAGES\IM000000
+            [elements removeObjectForKey:_dcmElementKey(0x0004,0x1400)]; // OffsetOfTheNextDirectoryRecord = 0
+            [elements removeObjectForKey:_dcmElementKey(0x0004,0x1410)]; // RecordInUseFlag = 65535
+            [elements removeObjectForKey:_dcmElementKey(0x0004,0x1420)]; // OffsetOfReferencedLowerLevelDirectoryEntity = 0
+            [elements removeObjectForKey:_dcmElementKey(0x0004,0x1430)]; // DirectoryRecordType = IMAGE
+            [elements removeObjectForKey:_dcmElementKey(0x0008,0x0005)]; // SpecificCharacterSet = ISO_IR 100
+            [elements removeObjectForKey:_dcmElementKey(0x0008,0x0008)]; // ImageType = ORIGINAL\PRIMARY
+            [elements removeObjectForKey:_dcmElementKey(0x0008,0x0081)]; // InstitutionAddress = 
+            [elements removeObjectForKey:_dcmElementKey(0x0859,0x0010)]; // PrivateCreator = ETIAM DICOMDIR
+            [elements removeObjectForKey:_dcmElementKey(0x0859,0x1040)]; // Unknown Tag & Data = 13156912
+            
+            //if (elements.count) NSLog(@"\nUnused DICOMDIR info for %@: %@", path, elements);
+            if (elements.count) [item setObject:elements forKey:@"DEBUG"];
+
+            [items addObject:item];
+        }
+        else
+            N2LogStackTrace( @"path > MAXPATHLEN : %d characters, %@", (int) path.length, path);
 	}
 	
 	for (unsigned long i = 0; i < record->cardSub(); ++i)
