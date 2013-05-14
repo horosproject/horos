@@ -738,42 +738,71 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
             [[NSFileManager defaultManager] removeItemAtPath: pluginCrash error: nil];
         }
         
+        NSMutableArray* pathsOfPluginsToLoad = [NSMutableArray array];
+        
         for (id path in paths)
-		@try {
-            NSArray* donotloadnames = nil;
-            if (![path isKindOfClass:[NSNull class]]) {
-                donotloadnames = [[NSString stringWithContentsOfFile:[path stringByAppendingPathComponent:@"DoNotLoad.txt"]] componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
-                if ([donotloadnames containsObject:@"*"])
-                    break;
-            }
+            @try {
+                NSArray* donotloadnames = nil;
+                if (![path isKindOfClass:[NSNull class]]) {
+                    donotloadnames = [[NSString stringWithContentsOfFile:[path stringByAppendingPathComponent:@"DoNotLoad.txt"]] componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+                    if ([donotloadnames containsObject:@"*"])
+                        break;
+                }
 
-            NSEnumerator* e = nil;
-            if ([path isKindOfClass:[NSString class]])
-                e = [[[NSFileManager defaultManager] directoryContentsAtPath:path] objectEnumerator];
-            else if (path == [NSNull null])
-            {
-                path = @"/";
-                NSMutableArray* cl = [NSMutableArray array];
-                NSArray* args = [[NSProcessInfo processInfo] arguments];
-                for (NSInteger i = 0; i < [args count]; ++i)
-                    if ([[args objectAtIndex:i] isEqualToString:@"--LoadPlugin"] && [args count] > i+1) {
-                        [cl addObject:[args objectAtIndex:++i]];
-                        NSLog(@"Should load plugin at %@", [cl lastObject]);
-                    }
-                e = [cl objectEnumerator];
+                NSEnumerator* e = nil;
+                if ([path isKindOfClass:[NSString class]])
+                    e = [[[NSFileManager defaultManager] directoryContentsAtPath:path] objectEnumerator];
+                else if (path == [NSNull null])
+                {
+                    path = @"/";
+                    NSMutableArray* cl = [NSMutableArray array];
+                    NSArray* args = [[NSProcessInfo processInfo] arguments];
+                    for (NSInteger i = 0; i < [args count]; ++i)
+                        if ([[args objectAtIndex:i] isEqualToString:@"--LoadPlugin"] && [args count] > i+1) {
+                            [cl addObject:[args objectAtIndex:++i]];
+                        }
+                    e = [cl objectEnumerator];
+                }
+                
+                NSString* name;
+                while (name = [e nextObject])
+                    if ([donotloadnames containsObject:[name stringByDeletingPathExtension]] == NO)
+                        [pathsOfPluginsToLoad addObject:[path stringByAppendingPathComponent: name]];
+            } @catch (NSException* e) {
+                N2LogExceptionWithStackTrace(e);
             }
-            
-			NSString* name;
-			while (name = [e nextObject])
-			{
-                if( [donotloadnames containsObject: [name stringByDeletingPathExtension]] == NO)
-                    [PluginManager loadPluginAtPath: [path stringByAppendingPathComponent: name]];
-			}
-		} @catch (NSException* e) {
-            N2LogExceptionWithStackTrace(e);
+        
+        // some plugins require other plugins to be loaded before them
+        for (__block NSInteger i = pathsOfPluginsToLoad.count-1; i >= 0; --i) {
+            NSBundle* bundle = [NSBundle bundleWithPath:[pathsOfPluginsToLoad objectAtIndex:i]];
+            NSString* name = [bundle.infoDictionary objectForKey:@"CFBundleName"];
+            if (!name) name = [[[pathsOfPluginsToLoad objectAtIndex:i] lastPathComponent] stringByDeletingPathExtension];
+            // list of requirements
+            for (NSString* req in [bundle.infoDictionary objectForKey:@"Requirements"]) {
+                // make sure they're loaded before this plugin
+                NSIndexSet* is = [pathsOfPluginsToLoad indexesOfObjectsPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
+                    if (idx <= i) return NO;
+                    NSBundle* bundle = [NSBundle bundleWithPath:obj];
+                    NSString* name = [bundle.infoDictionary objectForKey:@"CFBundleName"];
+                    if (!name) name = [[obj lastPathComponent] stringByDeletingPathExtension];
+                    return [name isEqualToString:req];
+                }];
+                if (!is.count)
+                    NSLog(@"Warning: plugin requirement %@ not available for %@", req, name); // we actually may decide not to load this plugin, since it requires something that isn't available, but hopefully it'll just raise an exception and end up not being loaded...
+                [is enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+                    id o = [[[pathsOfPluginsToLoad objectAtIndex:idx] retain] autorelease];
+                    [pathsOfPluginsToLoad removeObjectAtIndex:idx];
+                    [pathsOfPluginsToLoad insertObject:o atIndex:i++];
+                }];
+            }
         }
+        
+        for (id path in pathsOfPluginsToLoad)
+            [PluginManager loadPluginAtPath:path];
+            
 		#endif
-		NSLog( @"|||||||||||||||||| Plugins loading END ||||||||||||||||||");
+		
+        NSLog( @"|||||||||||||||||| Plugins loading END ||||||||||||||||||");
 	}
 	@catch (NSException * e)
 	{
