@@ -766,35 +766,45 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
                 
                 NSString* name;
                 while (name = [e nextObject])
-                    if ([donotloadnames containsObject:[name stringByDeletingPathExtension]] == NO)
-                        [pathsOfPluginsToLoad addObject:[path stringByAppendingPathComponent: name]];
+                    if ([[name pathExtension] isEqualToString:@"osirixplugin"] && [donotloadnames containsObject:[name stringByDeletingPathExtension]] == NO)
+                        [pathsOfPluginsToLoad addObject:[NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[path stringByAppendingPathComponent: name]]];
             } @catch (NSException* e) {
                 N2LogExceptionWithStackTrace(e);
             }
         
+//        NSLog(@"paths: %@", pathsOfPluginsToLoad);
+
         // some plugins require other plugins to be loaded before them
         for (__block NSInteger i = pathsOfPluginsToLoad.count-1; i >= 0; --i) {
+            
+            
             NSBundle* bundle = [NSBundle bundleWithPath:[pathsOfPluginsToLoad objectAtIndex:i]];
             NSString* name = [bundle.infoDictionary objectForKey:@"CFBundleName"];
             if (!name) name = [[[pathsOfPluginsToLoad objectAtIndex:i] lastPathComponent] stringByDeletingPathExtension];
+//            
+//            NSLog(@"for %@", name);
+            
             // list of requirements
             for (NSString* req in [bundle.infoDictionary objectForKey:@"Requirements"]) {
                 // make sure they're loaded before this plugin
                 NSIndexSet* is = [pathsOfPluginsToLoad indexesOfObjectsPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
-                    if (idx <= i) return NO;
                     NSBundle* bundle = [NSBundle bundleWithPath:obj];
                     NSString* name = [bundle.infoDictionary objectForKey:@"CFBundleName"];
                     if (!name) name = [[obj lastPathComponent] stringByDeletingPathExtension];
                     return [name isEqualToString:req];
                 }];
                 if (!is.count)
-                    NSLog(@"Warning: plugin requirement %@ not available for %@", req, name); // we actually may decide not to load this plugin, since it requires something that isn't available, but hopefully it'll just raise an exception and end up not being loaded...
+                    NSLog(@"Warning: plugin requirement %@ not available for %@", req, name); // we actually may decide not to load this plugin, since it requires something that apparently isn't available, but hopefully it'll just raise an exception and end up not being loaded...
                 [is enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
-                    id o = [[[pathsOfPluginsToLoad objectAtIndex:idx] retain] autorelease];
-                    [pathsOfPluginsToLoad removeObjectAtIndex:idx];
-                    [pathsOfPluginsToLoad insertObject:o atIndex:i++];
+                    if (idx > i) {
+                        id o = [[[pathsOfPluginsToLoad objectAtIndex:idx] retain] autorelease];
+                        [pathsOfPluginsToLoad removeObjectAtIndex:idx];
+                        [pathsOfPluginsToLoad insertObject:o atIndex:i++];
+                    }
                 }];
             }
+            
+//            NSLog(@"paths: %@", pathsOfPluginsToLoad);
         }
         
         for (id path in pathsOfPluginsToLoad)
