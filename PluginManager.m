@@ -766,7 +766,7 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
                 
                 NSString* name;
                 while (name = [e nextObject])
-                    if ([[name pathExtension] isEqualToString:@"osirixplugin"] && [donotloadnames containsObject:[name stringByDeletingPathExtension]] == NO)
+                    if (/*[[name pathExtension] isEqualToString:@"osirixplugin"] &&*/ [donotloadnames containsObject:[name stringByDeletingPathExtension]] == NO)
                         [pathsOfPluginsToLoad addObject:[NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[path stringByAppendingPathComponent: name]]];
             } @catch (NSException* e) {
                 N2LogExceptionWithStackTrace(e);
