@@ -297,11 +297,20 @@ function shareDestinationChange(select) {
 				%[IF:User.isAdmin&&Study.authorizedUsers.count%
 				<tr>
 					<td>This study is visible by:</td>
+                    
+                    %[IF:Study.authorizedUsers.count>10%
+                    <div style="height: 200px; width: 200px; overflow-y: auto; padding: 3px;">
+                    %ELSE:Study.authorizedUsers.count>10%
+                    <div>
+                    %]IF:Study.authorizedUsers.count>10%
+            
 					<td>
 					%[FOREACH:Study.authorizedUsers:aUser%
 					%X:aUser.name%<br>
 					%]FOREACH:Study.authorizedUsers:aUser%
 					</td>
+                    
+                    </div>
 				</tr>
 				%]IF:User.isAdmin&&Study.authorizedUsers.count%
 				<tr>
