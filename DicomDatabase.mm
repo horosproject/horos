@@ -2568,7 +2568,7 @@ static BOOL protectionAgainstReentry = NO;
 			
             [queue addOperationWithBlock:^{
                 NSThread* thread = [NSThread currentThread];
-                thread.name = NSLocalizedString(@"Adding copied files...", nil);
+                thread.name = NSLocalizedString(@"Adding files...", nil);
                 [[ThreadsManager defaultManager] addThreadAndStart:thread];
                 
                 BOOL succeed = YES;
