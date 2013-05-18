@@ -282,6 +282,20 @@ void DJCompressJP2K::findMinMax( int &_min, int &_max, char *bytes, long length,
 		vDSP_minv( fBuffer, 1, &min, length);
 		vDSP_maxv( fBuffer, 1, &max, length);
 		
+        //        if( min < _min || max > _max)
+        //        {
+        //            float fmin = _min;
+        //            float fmax = _max;
+        //
+        //            vDSP_vclip( fBuffer, nil, &fmin, &fmax, fBuffer, nil, columns * rows);
+        //
+        //            if( isSigned)
+        //				vImageConvert_FTo16S( &dstf, &src, 0, 1, 0);
+        //			else
+        //				vImageConvert_FTo16U( &dstf, &src, 0, 1, 0);
+        //        }
+
+        
 		_min = min;
 		_max = max;
 		
