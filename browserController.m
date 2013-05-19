@@ -5932,6 +5932,39 @@ static NSConditionLock *threadLock = nil;
         if( [[tableColumn identifier] isEqualToString:@"noSeries"])             return @"";
 	}
     
+    if( [[tableColumn identifier] isEqualToString:@"yearOld"])
+    {
+        switch ( [[NSUserDefaults standardUserDefaults] integerForKey: @"yearOldDatabaseDisplay"])
+        {
+            case 0:
+                return [item valueForKey: @"yearOld"];
+                break;
+            
+            case 1:
+                return [item valueForKey: @"yearOldAcquisition"];
+                break;
+            
+            case 2:
+            default:
+            {
+                NSString *yearOld = [item valueForKey: @"yearOld"];
+                NSString *yearOldAcquisition = [item valueForKey: @"yearOldAcquisition"];
+                
+                if( [yearOld isEqualToString: yearOldAcquisition])
+                    return yearOld;
+                else
+                {
+                    if( [yearOld hasSuffix: NSLocalizedString( @"%d y", @"y = year")] && [yearOldAcquisition hasSuffix: NSLocalizedString( @"%d y", @"y = year")])
+                        return [NSString stringWithFormat: @"%@/%@%@", [yearOld substringToIndex: yearOld.length-2], [yearOldAcquisition substringToIndex: yearOldAcquisition.length-2], NSLocalizedString( @"%d y", @"y = year")];
+                    else
+                        return [NSString stringWithFormat: @"%@/%@", yearOld, yearOldAcquisition];
+                }
+            }
+            break;
+        }
+        
+    }
+    
     if( [[tableColumn identifier] isEqualToString:@"noSeries"])
     {
         if( [item valueForKey:@"imageSeries"])
