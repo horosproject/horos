@@ -509,6 +509,10 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 {
     return [DicomStudy yearOldFromDateOfBirth: _birthdate];
 }
+- (NSString*) yearOldAcquisition
+{
+    return [DicomStudy yearOldAcquisition: _date FromDateOfBirth: _birthdate];
+}
 - (DCMCalendarDate *)time{
 	return _time;
 }

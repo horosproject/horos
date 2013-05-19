@@ -550,11 +550,11 @@ extern NSString* O2AlbumDragType;
 - (IBAction) anonymizeDICOM:(id) sender;
 - (void) queryDICOM:(id) sender;
 - (IBAction) querySelectedStudy:(id) sender;
-- (void) retrieveComparativeStudy: (DCMTKStudyQueryNode*) study select: (BOOL) select open:(BOOL) open;
 - (void) refreshComparativeStudies: (NSArray*) newStudies;
 + (NSArray*) comparativeServers;
 #endif
 
+- (void) retrieveComparativeStudy: (DCMTKStudyQueryNode*) study select: (BOOL) select open:(BOOL) open;
 - (void) refreshComparativeStudiesIfNeeded:(id) timer;
 - (NSArray*) distantStudiesForSmartAlbum: (NSString*) albumName;
 - (void) initAnimationSlider;

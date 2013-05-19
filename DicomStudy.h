@@ -62,6 +62,7 @@
 + (NSString*) soundex: (NSString*) s;
 - (NSString*) soundex;
 + (NSString*) yearOldFromDateOfBirth: (NSDate*) dateOfBirth;
++ (NSString*) yearOldAcquisition:(NSDate*) acquisitionDate FromDateOfBirth: (NSDate*) dateOfBirth;
 + (BOOL) displaySeriesWithSOPClassUID: (NSString*) uid andSeriesDescription: (NSString*) description;
 - (NSNumber *) noFiles;
 - (NSSet *) paths;
@@ -85,6 +86,7 @@
 - (void) archiveReportAsDICOMSR;
 - (void) archiveAnnotationsAsDICOMSR;
 - (BOOL) isHidden;
+- (BOOL) isDistant;
 - (void) setHidden: (BOOL) h;
 - (NSNumber *) noFilesExcludingMultiFrames;
 - (NSDictionary*) annotationsAsDictionary;

@@ -7260,8 +7260,8 @@ static NSConditionLock *threadLock = nil;
 	
 	if( index != NSNotFound)
 	{
-		BOOL				found = NO;
-		DicomStudy* nextStudy = nil;
+		BOOL found = NO;
+		DicomStudy *nextStudy = nil;
 		do
 		{
 			index += direction;
@@ -7269,10 +7269,16 @@ static NSConditionLock *threadLock = nil;
 			{
 				nextStudy = [outlineViewArray objectAtIndex: index];
 				
-				if( [nextStudy.patientUID compare:study.patientUID options:NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch|NSWidthInsensitiveSearch] != NSOrderedSame
-                   && nextStudy.images.count) // skip empty studies
+				if( [nextStudy.patientUID compare:study.patientUID options:NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch|NSWidthInsensitiveSearch] != NSOrderedSame) // skip empty studies
 				{
-					found = YES;
+                    if( [nextStudy isDistant])
+                    {
+                        [self retrieveComparativeStudy: (DCMTKStudyQueryNode*) nextStudy select: YES open: YES];
+                        found = YES;
+                    }
+                    
+                    if( [nextStudy isDistant] == NO && nextStudy.images.count)
+                        found = YES;
 				}
 			}
 			else
@@ -7283,10 +7289,13 @@ static NSConditionLock *threadLock = nil;
 			
 		}while( found == NO);
 		
-        if( found)
+        if( [nextStudy isDistant] == NO)
         {
-            [databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: nextStudy]] byExtendingSelection: NO];
-            [self databaseOpenStudy: nextStudy];
+            if( found)
+            {
+                [databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: nextStudy]] byExtendingSelection: NO];
+                [self databaseOpenStudy: nextStudy];
+            }
         }
         
 //		NSManagedObject	*series =  [[self childrenArray:nextStudy] objectAtIndex:0];

@@ -1197,12 +1197,12 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
-- (NSString*) yearOldAcquisition
++ (NSString*) yearOldAcquisition:(NSDate*) acquisitionDate FromDateOfBirth: (NSDate*) dateOfBirth
 {
-	if( self.dateOfBirth)
+	if( dateOfBirth && acquisitionDate)
 	{
-		NSCalendarDate *momsBDay = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [self.dateOfBirth timeIntervalSinceReferenceDate]];
-		NSCalendarDate *dateOfBirth = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [self.date timeIntervalSinceReferenceDate]];
+		NSCalendarDate *momsBDay = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [dateOfBirth timeIntervalSinceReferenceDate]];
+		NSCalendarDate *dateOfBirth = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [acquisitionDate timeIntervalSinceReferenceDate]];
 		
 		NSInteger years, months, days;
 		
@@ -1224,6 +1224,11 @@ static NSRecursiveLock *dbModifyLock = nil;
 		else return [NSString stringWithFormat: NSLocalizedString( @"%d y", @"y = year"), years];
 	}
 	else return @"";
+}
+
+- (NSString*) yearOldAcquisition
+{
+    return [DicomStudy yearOldAcquisition: self.date FromDateOfBirth: self.dateOfBirth];
 }
 
 + (NSString*) yearOldFromDateOfBirth: (NSDate*) dateOfBirth
