@@ -31,6 +31,84 @@
 
 static volatile int sendControllerObjects = 0;
 
+@interface DCMTKStoreSCUOperation: NSOperation
+{
+    NSArray *files;
+    NSDictionary *server;
+    NSThread *thread;
+}
+@property (retain) NSArray *files;
+@property (retain) NSDictionary *server;
+@property (retain) NSThread *thread;
+
+- (id) initWithFiles:(NSArray*) a server: (NSDictionary*) s;
+
+@end
+
+@implementation DCMTKStoreSCUOperation
+@synthesize files, server, thread;
+
+- (id) initWithFiles:(NSArray*) a server:(NSDictionary*) s
+{
+    self = [super init];
+    
+    self.files = a;
+    self.server = s;
+    
+    return self;
+}
+
+- (void) showErrorMessage:(NSException*) ne
+{
+	NSString *message = [NSString stringWithFormat:@"%@\r\r%@\r%@", NSLocalizedString( @"DICOM StoreSCU operation failed.", nil), [ne name], [ne reason]];
+    
+	NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Send Error",nil), message, NSLocalizedString( @"OK",nil), nil, nil);
+}
+
+- (void) main
+{
+    NSAutoreleasePool *pool = [NSAutoreleasePool new];
+    
+    if( self.isCancelled)
+        return;
+    
+    self.thread = [NSThread currentThread];
+    
+    DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc] initWithCallingAET: [NSUserDefaults defaultAETitle]
+                                               calledAET: [server objectForKey:@"AETitle"]
+                                                hostname: [server objectForKey:@"Address"]
+                                                    port: [[server objectForKey:@"Port"] intValue]
+                                             filesToSend: files
+                                          transferSyntax: [[NSUserDefaults standardUserDefaults] integerForKey:@"syntaxListOffis"]
+                                             compression: 1.0
+                                         extraParameters: server];
+    
+    @try
+    {
+        [storeSCU run:self];
+    }
+    
+    @catch( NSException *ne)
+    {
+        [self performSelectorOnMainThread:@selector(showErrorMessage:) withObject:ne waitUntilDone: NO];
+    }
+    
+    [storeSCU release];
+    storeSCU = nil;
+
+    [pool release];
+}
+
+- (void) dealloc
+{
+    self.files = nil;
+    self.server = nil;
+    self.thread = nil;
+    [super dealloc];
+}
+
+@end
+
 @implementation SendController
 
 +(int) sendControllerObjects
@@ -391,13 +469,6 @@ static volatile int sendControllerObjects = 0;
 
 #pragma mark Sending functions
 
-- (void) showErrorMessage:(NSException*) ne
-{
-	NSString	*message = [NSString stringWithFormat:@"%@\r\r%@\r%@", NSLocalizedString( @"DICOM StoreSCU operation failed.", nil), [ne name], [ne reason]];
-
-	NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Send Error",nil), message, NSLocalizedString( @"OK",nil), nil, nil);
-}
-
 - (void) executeSend:(NSArray*) files patientName: (NSString*) patientName
 {
 	if( [NSThread currentThread].isCancelled)
@@ -406,35 +477,64 @@ static volatile int sendControllerObjects = 0;
 	[NSThread currentThread].name = [NSString stringWithFormat: @"%@ %@", NSLocalizedString( @"Sending...", nil), patientName];
     
 	// Send the collected files from the same patient
-	
-	NSString *calledAET = [[self server] objectForKey:@"AETitle"];
-	NSString *hostname = [[self server] objectForKey:@"Address"];
-	NSString *destPort = [[self server] objectForKey:@"Port"];
-	
-    NSMutableDictionary* xp = [NSMutableDictionary dictionaryWithDictionary:[self server]];
-//    [xp setObject:database forKey:@"DicomDatabase"];
     
-	storeSCU = [[DCMTKStoreSCU alloc] initWithCallingAET:[NSUserDefaults defaultAETitle] 
-			calledAET:calledAET 
-			hostname:hostname 
-			port:[destPort intValue] 
-			filesToSend:files
-			transferSyntax: [[NSUserDefaults standardUserDefaults] integerForKey:@"syntaxListOffis"]
-			compression: 1.0
-			extraParameters:[self server]];
-	
-	@try
-	{
-		[storeSCU run:self];
-	}
-	
-	@catch( NSException *ne)
-	{
-		[self performSelectorOnMainThread:@selector(showErrorMessage:) withObject:ne waitUntilDone: NO];
-	}
-	
-	[storeSCU release];
-	storeSCU = nil;
+    NSMutableArray *operations = [NSMutableArray array];
+    NSOperationQueue *queue = [[[NSOperationQueue alloc] init] autorelease];
+    queue.name = [NSString stringWithFormat: @"%@ %@", NSLocalizedString( @"Sending...", nil), patientName];
+
+    unsigned int maxThreads = [[NSUserDefaults standardUserDefaults] integerForKey: @"SendControllerConcurrentThreads"];
+    if( maxThreads <= 0)
+        maxThreads = 1;
+    unsigned long loc = 0;
+    do
+    {
+        NSRange range = NSMakeRange( loc, ceil( (float)files.count / (float)maxThreads));
+        if( operations.count == maxThreads-1)
+            range.length = files.count - range.location;
+        
+        if( range.length)
+        {
+            loc += range.length;
+            
+            DCMTKStoreSCUOperation *op = [[[DCMTKStoreSCUOperation alloc] initWithFiles: [files subarrayWithRange: range] server: [self server]] autorelease];
+            
+            [operations addObject: op];
+            [queue addOperation: op];
+        }
+                                  
+    }
+    while( loc < files.count);
+    
+    NSUInteger initialOpCount = queue.operationCount;
+    while (queue.operationCount)
+    {
+        if( [[NSThread currentThread] isCancelled])
+        {
+            for( DCMTKStoreSCUOperation *o in operations)
+                [o.thread cancel];
+            
+            [queue cancelAllOperations];
+        }
+        
+        float progress = 0;
+        for( DCMTKStoreSCUOperation *o in operations)
+        {
+            if( [o.thread isFinished])
+                progress += 1;
+            else if( o.thread.progress >= 0)
+                progress += o.thread.progress;
+        }
+        
+        progress /= operations.count;
+        [NSThread currentThread].progress = progress;
+        
+        int remainingFiles = (files.count - files.count * progress);
+        [NSThread currentThread].status = N2LocalizedSingularPluralCount( remainingFiles, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil));
+        
+        [NSThread sleepForTimeInterval:0.1];
+    }
+    
+    [queue waitUntilAllOperationsAreFinished];
 }
 
 - (void) sendDICOMFilesOffis:(NSDictionary *) dict 

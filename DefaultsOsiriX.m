@@ -1043,6 +1043,7 @@ static NSHost *currentHost = nil;
     [defaultValues setObject:@"30" forKey: @"WebPortalMaximumNumberOfRecentStudies"];
     [defaultValues setObject:@"10" forKey: @"WebPortalMaximumNumberOfDaysForRecentStudies"];
     [defaultValues setObject:@"2" forKey:@"yearOldDatabaseDisplay"];
+    [defaultValues setObject:@"4" forKey:@"SendControllerConcurrentThreads"];
     
 	#ifdef MACAPPSTORE
 	[defaultValues setObject:@"1" forKey:@"MACAPPSTORE"];
