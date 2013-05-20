@@ -93,7 +93,7 @@
                                                                   transferSyntax:0
                                                                      compression:1.0
                                                                  extraParameters:nil] autorelease];
-            [storescu run:self];
+            [storescu run: nil];
         }];*/
     
     // set the new images as key images

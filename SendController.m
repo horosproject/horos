@@ -73,6 +73,7 @@ static volatile int sendControllerObjects = 0;
         return;
     
     self.thread = [NSThread currentThread];
+    self.thread.progress = 0;
     
     DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc] initWithCallingAET: [NSUserDefaults defaultAETitle]
                                                calledAET: [server objectForKey:@"AETitle"]
@@ -95,7 +96,7 @@ static volatile int sendControllerObjects = 0;
     
     [storeSCU release];
     storeSCU = nil;
-
+    
     [pool release];
 }
 
@@ -510,17 +511,17 @@ static volatile int sendControllerObjects = 0;
     {
         if( [[NSThread currentThread] isCancelled])
         {
-            for( DCMTKStoreSCUOperation *o in operations)
-                [o.thread cancel];
-            
+            [NSThread currentThread].progress = -1;
+            [NSThread currentThread].status = NSLocalizedString( @"Cancelling...", nil);
             [queue cancelAllOperations];
+            break;
         }
         
         float progress = 0;
         for( DCMTKStoreSCUOperation *o in operations)
         {
-            if( [o.thread isFinished])
-                progress += 1;
+            if( [queue.operations containsObject: o] == NO)
+                progress += 1.0;
             else if( o.thread.progress >= 0)
                 progress += o.thread.progress;
         }

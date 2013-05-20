@@ -220,7 +220,7 @@ extern const char *GetPrivateIP();
                                     
             @try
             {
-                [storeSCU run:self];
+                [storeSCU run: nil];
             }
             
             @catch (NSException *ne)

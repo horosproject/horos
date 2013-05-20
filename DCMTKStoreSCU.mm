@@ -1066,7 +1066,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	[super dealloc];
 }
 	
-- (void)run:(id)sender
+- (void)run:(NSOperation*) operation
 {
 	NSException* localException = nil;
 	
@@ -1605,13 +1605,15 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 		cond = EC_Normal;
 		OFListIterator(OFString) iter = fileNameList.begin();
 		OFListIterator(OFString) enditer = fileNameList.end();
-
-		while ((iter != enditer) && (cond == EC_Normal) && ![[NSThread currentThread] isCancelled]) // compare with EC_Normal since DUL_PEERREQUESTEDRELEASE is also good()
+        
+		while ((iter != enditer) && (cond == EC_Normal)) // compare with EC_Normal since DUL_PEERREQUESTEDRELEASE is also good()
 		{
 			cond = cstore(assoc, *iter);
 			++iter;
-			if (cond == EC_Normal)  _numberSent++;
-			else _numberErrors = _numberOfFiles - _numberSent;
+			if (cond == EC_Normal)
+                _numberSent++;
+			else
+                _numberErrors = _numberOfFiles - _numberSent;
 			
 			NSMutableDictionary  *userInfo = [NSMutableDictionary dictionary];
 			[userInfo setObject:[NSNumber numberWithInt:_numberOfFiles] forKey:@"SendTotal"];
@@ -1628,9 +1630,9 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 				[userInfo setObject:@"Complete" forKey:@"Message"];
 			}
             
-            if ([[NSThread currentThread] isCancelled])
+            if( [operation isCancelled] || (operation == nil && [[NSThread currentThread] isCancelled]))
                 [userInfo setObject:@"Incomplete" forKey:@"Message"];
-			
+            
 			[self updateLogEntry: userInfo];
 			
 			if( [[userInfo objectForKey: @"SendTotal"] floatValue] >= 1)
@@ -1643,7 +1645,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 				[NSThread currentThread].progress = [[userInfo objectForKey: @"NumberSent"] floatValue] / [[userInfo objectForKey: @"SendTotal"] floatValue];
 			}
             
-            if ([[NSThread currentThread] isCancelled])
+            if ([operation isCancelled] || (operation == nil && [[NSThread currentThread] isCancelled]))
                 break;
 		}
 		
@@ -1820,8 +1822,10 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 		
 		if( _numberSent != _numberOfFiles || localException != nil)
 		{
-			if( [[NSThread currentThread] isCancelled]) [userInfo setObject:@"Aborted" forKey:@"Message"];
-			else [userInfo setObject:@"Incomplete" forKey:@"Message"];
+			if( [operation isCancelled] || (operation == nil && [[NSThread currentThread] isCancelled]))
+                [userInfo setObject:@"Aborted" forKey:@"Message"];
+			else
+                [userInfo setObject:@"Incomplete" forKey:@"Message"];
 			
 			_numberErrors = _numberOfFiles - _numberSent;
 			

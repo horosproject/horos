@@ -139,7 +139,7 @@
 	
 	@try {
         NSThread.currentThread.supportsCancel = YES;
-		[storeSCU run:self];
+		[storeSCU run: nil];
 	} @catch (NSException *ne) {
 		NSLog( @"Autorouting FAILED : %@", ne);
 		
