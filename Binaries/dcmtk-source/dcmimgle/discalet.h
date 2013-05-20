@@ -839,7 +839,7 @@ class DiScaleTemplate
                     ey = y_factor * (OFstatic_cast(double, y) + 1.0);
                     byi = OFstatic_cast(int, by);
                     eyi = OFstatic_cast(int, ey);
-                    if (OFstatic_cast(double, eyi) == ey)
+                    if (ey - OFstatic_cast(double, eyi) < 0.00001)
                         --eyi;
                     b_factor = 1 + OFstatic_cast(double, byi) - by;
                     t_factor = ey - OFstatic_cast(double, eyi);
@@ -850,7 +850,7 @@ class DiScaleTemplate
                         ex = x_factor * (OFstatic_cast(double, x) + 1.0);
                         bxi = OFstatic_cast(int, bx);
                         exi = OFstatic_cast(int, ex);
-                        if (OFstatic_cast(double, exi) == ex)
+                        if (ex - OFstatic_cast(double, exi) < 0.00001)
                             --exi;
                         l_factor = 1 + OFstatic_cast(double, bxi) - bx;
                         r_factor = ex - OFstatic_cast(double, exi);

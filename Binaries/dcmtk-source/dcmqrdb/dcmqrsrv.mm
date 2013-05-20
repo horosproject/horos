@@ -1324,7 +1324,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
       cond = ASC_acceptContextsWithPreferredTransferSyntaxes(
         assoc->params,
         dcmAllStorageSOPClassUIDs, numberOfAllDcmStorageSOPClassUIDs,
-        (const char**)transferSyntaxes, DIM_OF(transferSyntaxes));
+        (const char**)transferSyntaxes, nTS);
       if (cond.bad()) {
         DcmQueryRetrieveOptions::errmsg("Cannot accept presentation contexts:");
         DimseCondition::dump(cond);

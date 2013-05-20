@@ -1791,7 +1791,7 @@ unsigned int DiMonoImage::createAWTBitmap(void *&data,
                              (value << 16) |
                              (value << 8);          // copy to the three RGB-planes
                 }
-                bytes = count;
+                bytes = count*4;
             }
         }
         deleteOutputData();                             // output data is no longer needed

@@ -1577,10 +1577,19 @@ ASC_receiveAssociation(T_ASC_Network * network,
     if (cond.bad()) return cond;
     
     cond = ASC_setTransportLayerType(params, useSecureLayer);
-    if (cond.bad()) return cond;
+    if (cond.bad())
+    {
+        ASC_destroyAssociationParameters(&params);
+        return cond;
+    }
 
     *assoc = (T_ASC_Association *) calloc(sizeof(**assoc), 1);
-    if (*assoc == NULL) return EC_MemoryExhausted;
+    if (*assoc == NULL)
+    {
+        ASC_destroyAssociationParameters(&params);
+        return EC_MemoryExhausted;
+    }
+    
     bzero((char*)*assoc, sizeof(**assoc));
 
     (*assoc)->params = params;
