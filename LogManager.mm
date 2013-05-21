@@ -68,8 +68,10 @@ static LogManager *currentLogManager = nil;
 	[super dealloc];
 }
 
-- (void) updateLogDatabase: (NSDictionary*) dict objectID: (NSManagedObjectID*) objectID
+- (BOOL) updateLogDatabase: (NSDictionary*) dict objectID: (NSManagedObjectID*) objectID
 {
+    BOOL complete = NO;
+    
     NSManagedObject *logEntry = nil;
     
     if( objectID)
@@ -88,6 +90,8 @@ static LogManager *currentLogManager = nil;
         {
             if( logEndTime == 0)
                 logEndTime = [NSDate date];
+            
+            complete = YES;
         }
         
         if( logEndTime != 0)
@@ -102,6 +106,8 @@ static LogManager *currentLogManager = nil;
             N2LogException( e);
         }
     }
+    
+    return complete;
 }
 
 - (void) addLogLine: (NSDictionary*) dict
@@ -142,12 +148,12 @@ static LogManager *currentLogManager = nil;
                         NSDictionary *previousDict = [_currentLogs objectForKey:uid];
                         [_currentLogs setObject: [NSDictionary dictionaryWithObjectsAndKeys: [previousDict objectForKey: @"objectID"] , @"objectID", dict, @"dict", nil] forKey: uid];
                     }
+                    else
+                        NSLog( @"********** [_currentLogs objectForKey:uid] == nil");
                     
                     if( [NSDate timeIntervalSinceReferenceDate] - lastSave > 10 || [[dict valueForKey: @"logMessage"] isEqualToString:@"Complete"])
                     {
-                        [self updateLogDatabase: [[_currentLogs objectForKey:uid] objectForKey: @"dict"] objectID: [[_currentLogs objectForKey:uid] objectForKey: @"objectID"]];
-                        
-                        if( [[dict valueForKey: @"logMessage"] isEqualToString:@"Complete"] || [[dict valueForKey: @"logMessage"] isEqualToString:@"Incomplete"])
+                        if( [self updateLogDatabase: [[_currentLogs objectForKey:uid] objectForKey: @"dict"] objectID: [[_currentLogs objectForKey:uid] objectForKey: @"objectID"]])
                             [_currentLogs removeObjectForKey: uid];
                         
                         lastSave = [NSDate timeIntervalSinceReferenceDate];
