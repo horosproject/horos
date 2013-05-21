@@ -75,7 +75,12 @@ static LogManager *currentLogManager = nil;
         NSManagedObject *logEntry = nil;
         
         if( objectID)
-            logEntry = [[[[BrowserController currentBrowser] database] independentContext] objectWithID: objectID];
+        {
+            if( [NSThread isMainThread])
+                logEntry = [[[BrowserController currentBrowser] database] objectWithID: objectID];
+            else
+                logEntry = [[[[BrowserController currentBrowser] database] independentContext] objectWithID: objectID];
+        }
         
         if( logEntry)
         {

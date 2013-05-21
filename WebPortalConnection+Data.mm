@@ -211,6 +211,29 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
             return nil;
         }
     }
+    
+    // Distant study with more images?
+    if( [o isKindOfClass: [DicomStudy class]] && [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"automaticallyRetrievePartialStudies"])
+    {
+        // Servers
+        NSArray *servers = [BrowserController comparativeServers];
+        DicomStudy *localStudy = (DicomStudy*) o;
+        
+        if( servers.count)
+        {
+            // Distant study
+            DicomStudy *distantStudy = [[QueryController queryStudiesForFilters: [NSDictionary dictionaryWithObject: [o valueForKey: @"studyInstanceUID"] forKey: @"StudyInstanceUID"] servers: servers showErrors: NO] lastObject];
+            
+            if( [[localStudy rawNoFiles] intValue] < [[distantStudy noFiles] intValue])
+            {
+                [QueryController retrieveStudies: [NSArray arrayWithObject: distantStudy] showErrors: NO checkForPreviousAutoRetrieve: YES];
+                
+                [NSThread sleepForTimeInterval: 0.2];
+                [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
+                [NSThread sleepForTimeInterval: 1];
+            }
+        }
+    }
 	
 	return o;
 }
@@ -982,6 +1005,12 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 
 - (BOOL) processDeleteObject:(NSString*) XID
 {
+    if( [XID hasPrefix: @"POD:"])
+    {
+        NSLog( @"-- Cannot delete a distant study: %@", XID);
+        return NO;
+    }
+    
     NSManagedObject *dbObject = [self objectWithXID:XID];
     
     DicomStudy *study = nil;

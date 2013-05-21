@@ -351,6 +351,9 @@ extern "C"
             if( [filters valueForKey: @"StudyID"])
                 [f setObject: [filters valueForKey: @"StudyID"] forKey: @"StudyID"];
             
+            if( [filters valueForKey: @"StudyInstanceUID"])
+                [f setObject: [filters valueForKey: @"StudyInstanceUID"] forKey: @"StudyInstanceUID"];
+            
             if( [filters valueForKey: PatientName])
                 [f setObject: [filters valueForKey: PatientName] forKey: PatientName];
             
