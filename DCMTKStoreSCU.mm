@@ -1619,17 +1619,9 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 			[userInfo setObject:[NSNumber numberWithInt:_numberOfFiles] forKey:@"SendTotal"];
 			[userInfo setObject:[NSNumber numberWithInt:_numberSent] forKey:@"NumberSent"];
 			[userInfo setObject:[NSNumber numberWithInt:_numberErrors] forKey:@"ErrorCount"];
-			if (_numberSent + _numberErrors < _numberOfFiles)
-			{
-				[userInfo setObject:[NSNumber numberWithInt:NO] forKey:@"Sent"];
-				[userInfo setObject:@"In Progress" forKey:@"Message"];
-			}
-			else
-			{
-				[userInfo setObject:[NSNumber numberWithInt:YES] forKey:@"Sent"];
-				[userInfo setObject:@"Complete" forKey:@"Message"];
-			}
-            
+			[userInfo setObject:[NSNumber numberWithInt:NO] forKey:@"Sent"];
+			[userInfo setObject:@"In Progress" forKey:@"Message"];
+			
             if( [operation isCancelled] || (operation == nil && [[NSThread currentThread] isCancelled]))
                 [userInfo setObject:@"Incomplete" forKey:@"Message"];
             

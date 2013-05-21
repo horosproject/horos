@@ -1347,6 +1347,8 @@ static NSConditionLock *threadLock = nil;
     {
 		@try
         {
+            [[LogManager currentLogManager] resetLogs];
+            
 			[self willChangeValueForKey:@"database"];
 			
             @synchronized( previewPixThumbnails)

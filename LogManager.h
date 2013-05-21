@@ -20,7 +20,6 @@
 @interface LogManager : NSObject
 {
 	NSMutableDictionary *_currentLogs;
-    NSTimeInterval lastSave;
 }
 
 + (id) currentLogManager;
