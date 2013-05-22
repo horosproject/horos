@@ -2,13 +2,13 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1070</int>
-		<string key="IBDocument.SystemVersion">12C60</string>
-		<string key="IBDocument.InterfaceBuilderVersion">2844</string>
-		<string key="IBDocument.AppKitVersion">1187.34</string>
-		<string key="IBDocument.HIToolboxVersion">625.00</string>
+		<string key="IBDocument.SystemVersion">12D78</string>
+		<string key="IBDocument.InterfaceBuilderVersion">3084</string>
+		<string key="IBDocument.AppKitVersion">1187.37</string>
+		<string key="IBDocument.HIToolboxVersion">626.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">2844</string>
+			<string key="NS.object.0">3084</string>
 		</object>
 		<array key="IBDocument.IntegratedClassDependencies">
 			<string>NSButton</string>
@@ -119,10 +119,13 @@
 												<reference key="NSNextKeyView" ref="223124745"/>
 												<reference key="NSTableView" ref="121118855"/>
 											</object>
-											<object class="_NSCornerView" key="NSCornerView">
-												<nil key="NSNextResponder"/>
+											<object class="_NSCornerView" key="NSCornerView" id="744888740">
+												<reference key="NSNextResponder" ref="387379599"/>
 												<int key="NSvFlags">-2147483392</int>
 												<string key="NSFrame">{{-26, 0}, {16, 17}}</string>
+												<reference key="NSSuperview" ref="387379599"/>
+												<reference key="NSWindow"/>
+												<reference key="NSNextKeyView" ref="1022736633"/>
 											</object>
 											<array class="NSMutableArray" key="NSTableColumns">
 												<object class="NSTableColumn" id="934409754">
@@ -330,7 +333,7 @@
 									<string key="NSFrame">{{-100, -100}, {655, 15}}</string>
 									<reference key="NSSuperview" ref="387379599"/>
 									<reference key="NSWindow"/>
-									<reference key="NSNextKeyView" ref="1022736633"/>
+									<reference key="NSNextKeyView" ref="744888740"/>
 									<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 									<int key="NSsFlags">1</int>
 									<reference key="NSTarget" ref="387379599"/>
@@ -351,6 +354,7 @@
 									<reference key="NSBGColor" ref="652418709"/>
 									<int key="NScvFlags">4</int>
 								</object>
+								<reference ref="744888740"/>
 							</array>
 							<string key="NSFrame">{{20, 52}, {657, 225}}</string>
 							<reference key="NSSuperview" ref="84591715"/>
@@ -361,6 +365,7 @@
 							<reference key="NSHScroller" ref="618069045"/>
 							<reference key="NSContentView" ref="612080759"/>
 							<reference key="NSHeaderClipView" ref="1022736633"/>
+							<reference key="NSCornerView" ref="744888740"/>
 							<bytes key="NSScrollAmts">AAAAAAAAAABBmAAAQZgAAA</bytes>
 							<double key="NSMinMagnification">0.25</double>
 							<double key="NSMaxMagnification">4</double>
@@ -395,16 +400,21 @@
 						<object class="NSTextField" id="948089893">
 							<reference key="NSNextResponder" ref="84591715"/>
 							<int key="NSvFlags">256</int>
-							<string key="NSFrame">{{21, 34}, {484, 14}}</string>
+							<string key="NSFrame">{{21, 13}, {484, 35}}</string>
 							<reference key="NSSuperview" ref="84591715"/>
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="258390403"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="877182345">
 								<int key="NSCellFlags">67108864</int>
-								<int key="NSCellFlags2">272629760</int>
-								<string key="NSContents">Double-Click on a route to edit filter parameters</string>
-								<reference key="NSSupport" ref="26"/>
+								<int key="NSCellFlags2">272891904</int>
+								<string type="base64-UTF8" key="NSContents">RG91YmxlLUNsaWNrIG9uIGEgcm91dGUgdG8gZWRpdCBmaWx0ZXIgcGFyYW1ldGVycwpQcmVzcyBEZWxl
+dGUga2V5IHRvIGRlbGV0ZSBhIHJvdXRlA</string>
+								<object class="NSFont" key="NSSupport" id="22">
+									<string key="NSName">LucidaGrande</string>
+									<double key="NSSize">9</double>
+									<int key="NSfFlags">3614</int>
+								</object>
 								<reference key="NSControlView" ref="948089893"/>
 								<object class="NSColor" key="NSBackgroundColor" id="738360528">
 									<int key="NSColorSpace">6</int>
@@ -972,11 +982,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 								<int key="NSCellFlags">67108864</int>
 								<int key="NSCellFlags2">134479872</int>
 								<string key="NSContents">OsiriX Tables</string>
-								<object class="NSFont" key="NSSupport" id="22">
-									<string key="NSName">LucidaGrande</string>
-									<double key="NSSize">9</double>
-									<int key="NSfFlags">3614</int>
-								</object>
+								<reference key="NSSupport" ref="22"/>
 								<reference key="NSControlView" ref="810303077"/>
 								<int key="NSButtonFlags">-2038284288</int>
 								<int key="NSButtonFlags2">1</int>
