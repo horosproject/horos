@@ -3595,16 +3595,16 @@ extern "C"
 		if( years < 1)
 		{
 			if( months < 1)
-			{
-				if( days < 0) yearOld = @"";
-				else yearOld = [NSString stringWithFormat: NSLocalizedString( @"%d d", @"d = day"), days];
-			}
-			else yearOld = [NSString stringWithFormat: NSLocalizedString( @"%d m", @"m = month"), months];
-		}
-		else yearOld = [NSString stringWithFormat: NSLocalizedString( @"%d y %d m", @"y = year, m = month"),years, months];
-	}
-	else yearOld = [NSString stringWithFormat: NSLocalizedString( @"%d y", @"y = year"), years];
-		
+            {
+                if( days < 0) yearOld = @"";
+                else yearOld = [NSString stringWithFormat: NSLocalizedString( @"%d d", @"d = day"), days];
+            }
+            else yearOld = [NSString stringWithFormat: @"%d%@", months, NSLocalizedString( @" m", @"m = month")];
+        }
+        else yearOld = [NSString stringWithFormat: @"%d%@ %d%@", years, NSLocalizedString( @" y", @"y = year"), months, NSLocalizedString( @" m", @"m = month")];
+    }
+    else yearOld = [NSString stringWithFormat: @"%d%@", years, NSLocalizedString( @" y", @"y = year")];
+    
 	[yearOldBirth setStringValue: yearOld];
 }
 

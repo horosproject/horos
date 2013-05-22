@@ -5956,8 +5956,8 @@ static NSConditionLock *threadLock = nil;
                     return yearOld;
                 else
                 {
-                    if( [yearOld hasSuffix: NSLocalizedString( @"%d y", @"y = year")] && [yearOldAcquisition hasSuffix: NSLocalizedString( @"%d y", @"y = year")])
-                        return [NSString stringWithFormat: @"%@/%@%@", [yearOld substringToIndex: yearOld.length-2], [yearOldAcquisition substringToIndex: yearOldAcquisition.length-2], NSLocalizedString( @"%d y", @"y = year")];
+                    if( [yearOld hasSuffix: NSLocalizedString( @" y", @"y = year")] && [yearOldAcquisition hasSuffix: NSLocalizedString( @" y", @"y = year")])
+                        return [NSString stringWithFormat: @"%@/%@%@", [yearOld substringToIndex: yearOld.length-[NSLocalizedString( @" y", @"y = year") length]], [yearOldAcquisition substringToIndex: yearOldAcquisition.length-[NSLocalizedString( @" y", @"y = year") length]], NSLocalizedString( @" y", @"y = year")];
                     else
                         return [NSString stringWithFormat: @"%@/%@", yearOld, yearOldAcquisition];
                 }
