@@ -348,6 +348,7 @@ enum
 @property(readonly) NSTimer	*timer;
 @property(readonly) NSButton *keyImageCheck;
 @property(readonly) NSSlider *speedSlider;
+@property(readonly) NSTextField *speedText;
 
 /** Accessors for plugins using blending window */
 @property(readonly) NSWindow *blendingTypeWindow;

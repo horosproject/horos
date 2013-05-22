@@ -268,7 +268,7 @@ enum
 
 @implementation ViewerController
 
-@synthesize currentOrientationTool, speedSlider;
+@synthesize currentOrientationTool, speedSlider, speedText;
 @synthesize timer, keyImageCheck, injectionDateTime, blendedWindow;
 @synthesize blendingTypeWindow, blendingTypeMultiply, blendingTypeSubtract, blendingTypeRGB, blendingPlugins, blendingResample;
 @synthesize flagListPODComparatives;
@@ -16152,7 +16152,7 @@ int i,j,l;
                     if( v.speedSlider.floatValue != self.frameRate)
                     {
                         v.speedSlider.floatValue = self.frameRate;
-                        [v speedSliderAction: v.speedSlider];
+                        v.speedText.stringValue = [NSString stringWithFormat: NSLocalizedString( @"%0.1f im/s", @"im/s = images per second"), (float) [self frameRate] * direction];
                     }
 				}
 			}
