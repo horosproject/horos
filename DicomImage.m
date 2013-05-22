@@ -311,7 +311,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
     @synchronized (self) {
         if( inDatabaseFolder) return inDatabaseFolder;
         
-        NSNumber	*f = [self primitiveValueForKey:@"storedInDatabaseFolder"];
+        NSNumber *f = [self primitiveValueForKey:@"storedInDatabaseFolder"];
         
         if( f == nil) f = [NSNumber numberWithBool: YES];
         
@@ -1061,19 +1061,11 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
             {
                 [[BrowserController currentBrowser] addFileToDeleteQueue: self.completePath];
                 
-                NSString *pathExtension = [self.path pathExtension];
-                
-                if( [pathExtension isEqualToString:@"hdr"])		// ANALYZE -> DELETE IMG
+                if( [[self.path pathExtension] isEqualToString:@"hdr"])		// ANALYZE -> DELETE IMG
                     [[BrowserController currentBrowser] addFileToDeleteQueue: [[self.completePath stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"]];
                 
-                [self setValue:[NSNumber numberWithBool:NO] forKey:@"inDatabaseFolder"];
+                self.inDatabaseFolder = [NSNumber numberWithBool: NO];
             }
-            #endif
-            
-            #ifndef OSIRIX_LIGHT
-            NSString *vrFile = [VRController getUniqueFilenameScissorStateFor: self];
-            if( vrFile && [[NSFileManager defaultManager] fileExistsAtPath: vrFile])
-                [[NSFileManager defaultManager] removeFileAtPath: vrFile handler: nil];
             #endif
         }
     }

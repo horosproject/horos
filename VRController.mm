@@ -801,24 +801,33 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 + (NSString*) getUniqueFilenameScissorStateFor:(NSManagedObject*) obj
 {
-	NSString		*path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:STATEDATABASE];
-	BOOL			isDir = YES;
+	NSString *path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:STATEDATABASE];
+	BOOL isDir = YES;
 	
-	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
+	if( ![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir])
 		[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
 
-	return [path stringByAppendingPathComponent: [NSString stringWithFormat:@"VR3DScissor-%@", [obj valueForKey:@"uniqueFilename"]]];
+    DicomSeries *series = nil;
+    
+    if( [obj isKindOfClass: [DicomSeries class]])
+        series = (DicomSeries*) obj;
+    
+    else  if( [obj isKindOfClass: [DicomImage class]])
+        series = [obj valueForKey: @"series"];
+    
+    else
+        NSLog( @"******** UNKNOWN class for getUniqueFilenameScissorStateFor");
+    
+	return [path stringByAppendingPathComponent: [NSString stringWithFormat:@"VR3DScissor-%@", series.uniqueFilename]];
 }
 
 -(void) save3DState
 {
-	NSString		*path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:STATEDATABASE];
-	BOOL			isDir = YES;
+	NSString *path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:STATEDATABASE];
+	BOOL isDir = YES;
 	
-	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
-	{
+	if( ![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir])
 		[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
-	}
 	
 	NSString *str;
 	

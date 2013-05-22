@@ -66,6 +66,7 @@
 - (DicomSeries*) previousSeries;
 - (DicomSeries*) nextSeries;
 - (NSArray*) sortDescriptorsForImages;
+- (NSString*) uniqueFilename;
 @end
 
 @interface DicomSeries (CoreDataGeneratedAccessors)

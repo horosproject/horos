@@ -30,6 +30,7 @@
 #import "XMLControllerDCMTKCategory.h"
 #import "ThreadsManager.h"
 #import "NSThread+N2.h"
+#import "VRController.h"
 #endif
 
 @implementation DicomSeries
@@ -660,6 +661,31 @@
     }
 	
 	return nil;
+}
+
+-(NSString*) uniqueFilename	// Return a 'unique' filename that identify this series
+{
+	return [NSString stringWithFormat:@"%@ %ld", self.seriesInstanceUID, (long) [self.date timeIntervalSinceReferenceDate]];
+}
+
+- (BOOL)validateForDelete:(NSError **)error
+{
+    BOOL delete = [super validateForDelete: error];
+    
+    @synchronized (self)
+    {
+        if (delete)
+        {
+#ifndef OSIRIX_LIGHT
+            NSString *vrFile = [VRController getUniqueFilenameScissorStateFor: self];
+            if( vrFile && [[NSFileManager defaultManager] fileExistsAtPath: vrFile])
+                [[NSFileManager defaultManager] removeFileAtPath: vrFile handler: nil];
+#endif
+
+        }
+    }
+    
+    return delete;
 }
 
 - (NSComparisonResult)compareName:(DicomSeries*)series;
