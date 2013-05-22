@@ -1219,7 +1219,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 				}
 				else return [NSString stringWithFormat: @"%d%@", (int) months, NSLocalizedString( @" m", @"m = month")];
 			}
-			else return [NSString stringWithFormat: @"%d%@ %d%@", (int) years, NSLocalizedString( @" y", @"y = year"), months, NSLocalizedString( @" m", @"m = month")];
+			else return [NSString stringWithFormat: @"%d%@ %d%@", (int) years, NSLocalizedString( @" y", @"y = year"), (int) months, NSLocalizedString( @" m", @"m = month")];
 		}
 		else return [NSString stringWithFormat: @"%d%@", (int) years, NSLocalizedString( @" y", @"y = year")];
 	}
@@ -1253,7 +1253,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 				}
 				else return [NSString stringWithFormat: @"%d%@", (int) months, NSLocalizedString( @" m", @"m = month")];
 			}
-			else return [NSString stringWithFormat: @"%d%@ %d%@", (int) years, NSLocalizedString( @" y", @"y = year"), months, NSLocalizedString( @" m", @"m = month")];
+			else return [NSString stringWithFormat: @"%d%@ %d%@", (int) years, NSLocalizedString( @" y", @"y = year"), (int) months, NSLocalizedString( @" m", @"m = month")];
 		}
 		else return [NSString stringWithFormat: @"%d%@", (int) years, NSLocalizedString( @" y", @"y = year")];
 	}
