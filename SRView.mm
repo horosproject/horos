@@ -426,13 +426,14 @@ typedef struct _xyzArray
 			{
 				vtkSTLWriter  *exporter = vtkSTLWriter::New();
 				
-				if (isoMapper[0]!=Nil)							// DDP (050326): added sanity check to avoid crashing bug.
+				if (isoMapper[0] != nil)
 					exporter->SetInput(isoMapper[0]->GetInput());
-				else if (isoMapper[1]!=Nil)						// Can you export both surfaces to the same file ????
+				else if (isoMapper[1] != nil)
 					exporter->SetInput(isoMapper[1]->GetInput());
 				else
-					exporter->SetInput(Nil);
-				exporter->SetFileName( [[[panel filename] stringByDeletingPathExtension] UTF8String]);
+					exporter->SetInput( nil);
+                
+				exporter->SetFileName( [[panel filename] UTF8String]);
 				exporter->Write();
 				
 				exporter->Delete();
