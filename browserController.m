@@ -1649,31 +1649,8 @@ static NSConditionLock *threadLock = nil;
 	return [self saveDatabase:path context:self.database.managedObjectContext];
 }
 
-- (void) addImagesToSelectedAlbum:(NSArray*) objectIDs
+-(void)selectStudyWithObjectID:(NSManagedObjectID*)oid
 {
-    if( albumTable.selectedRow > 0)
-    {
-        DicomAlbum* album = [self.albumArray objectAtIndex: albumTable.selectedRow];
-        
-        if (album.smartAlbum.boolValue == NO)
-        {
-            NSMutableSet *studies = [album mutableSetValueForKey: @"studies"];
-            
-            for (DicomImage* mobject in [self.database objectsWithIDs: objectIDs])
-            {
-                DicomStudy* s = [mobject valueForKeyPath:@"series.study"];
-                
-                if( s && [studies containsObject: s] == NO)
-                {
-                    [studies addObject:s];
-                    //[s archiveAnnotationsAsDICOMSR]; // Why this?
-                }
-            }
-        }
-    }
-}
-
--(void)selectStudyWithObjectID:(NSManagedObjectID*)oid {
     NSManagedObject* s = [self.database objectWithID:oid];
     DicomStudy *study = nil;
     
@@ -1925,7 +1902,7 @@ static NSConditionLock *threadLock = nil;
 		}
 	}
 	
-	NSMutableArray  *filesOutput = [NSMutableArray array];
+	NSMutableArray *filesOutput = [NSMutableArray array];
 	
 	if( copyFiles)
 	{
@@ -2019,7 +1996,9 @@ static NSConditionLock *threadLock = nil;
 	else
 	{
 		NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: filesInput, @"filesInput", [NSNumber numberWithBool: NO], @"copyFiles", nil];
-		[dict addEntriesFromDictionary: options];
+
+        
+		[dict addEntriesFromDictionary: options]; 
 		
 		NSThread *t = [[[NSThread alloc] initWithTarget:_database selector:@selector(copyFilesThread:) object: dict] autorelease];
 		
@@ -4127,7 +4106,7 @@ static NSConditionLock *threadLock = nil;
         
         [NSThread currentThread].name = @"Search For Comparative Studies";
         
-        if( [self.comparativePatientUID compare: studySelected.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame) // There was maybe other locks in the queue... Keep only the displayed patientUID
+        if( self.comparativePatientUID && [self.comparativePatientUID compare: studySelected.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame) // There was maybe other locks in the queue... Keep only the displayed patientUID
         {
 //            NSLog( @"Search history: %@", studySelected.patientUID);
             NSMutableArray *mergedStudies = nil;
@@ -4152,7 +4131,7 @@ static NSConditionLock *threadLock = nil;
                 mergedStudies = [NSMutableArray arrayWithArray: localStudies];
                 [mergedStudies sortUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: NO]]];
                 
-                if( [self.comparativePatientUID compare: studySelected.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
+                if( self.comparativePatientUID && [self.comparativePatientUID compare: studySelected.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
                     [self performSelectorOnMainThread: @selector(refreshComparativeStudies:) withObject: mergedStudies waitUntilDone: NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]]; // Already display the local studies, we will display the merged studies later
             }
             @catch (NSException* e)
@@ -4177,7 +4156,7 @@ static NSConditionLock *threadLock = nil;
                 }
                 
                 [searchForComparativeStudiesLock lock];
-                if( [self.comparativePatientUID compare: studySelected.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame && [[NSThread currentThread] isCancelled] == NO) // There was maybe other locks in the queue... Keep only the displayed patientUID
+                if( self.comparativePatientUID && [self.comparativePatientUID compare: studySelected.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame && [[NSThread currentThread] isCancelled] == NO) // There was maybe other locks in the queue... Keep only the displayed patientUID
                 {
                     id lastObjectInQueue = nil;
                     
@@ -4253,7 +4232,7 @@ static NSConditionLock *threadLock = nil;
                             
                             [mergedStudies sortUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: NO]]];
                             
-                            if( [self.comparativePatientUID compare: studySelected.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
+                            if( self.comparativePatientUID && [self.comparativePatientUID compare: studySelected.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
                             {
                                 [self performSelectorOnMainThread: @selector(refreshComparativeStudiesAndCheck:) withObject: mergedStudies waitUntilDone: NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
                             }
@@ -4463,7 +4442,7 @@ static NSConditionLock *threadLock = nil;
     
     for( DicomStudy *newStudy in newStudies)
     {
-        if( [self.comparativePatientUID compare: newStudy.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
+        if( self.comparativePatientUID && [self.comparativePatientUID compare: newStudy.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
         {
             NSMutableArray *copy = [NSMutableArray arrayWithArray: self.comparativeStudies];
             
@@ -5223,7 +5202,7 @@ static NSConditionLock *threadLock = nil;
 		{
             @try
             {
-                if( [self.comparativePatientUID compare: study.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
+                if( self.comparativePatientUID && [self.comparativePatientUID compare: study.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
                     refreshComparative = YES;
                 
                 if( [study isDeleted] == NO)
@@ -9830,6 +9809,18 @@ static BOOL needToRezoom;
     if( !_database.managedObjectContext) return [NSArray array];
     
 	return [[NSArray arrayWithObject:[NSDictionary dictionaryWithObject: NSLocalizedString(@"Database", nil) forKey:@"name"]] arrayByAddingObjectsFromArray:[self albumsInDatabase]];
+}
+
+- (NSManagedObjectID*) currentAlbumID
+{
+    DicomDatabase *d = [NSThread isMainThread] ? _database : _database.independentDatabase;
+    
+    NSString *albumName = self.selectedAlbumName;
+    
+    if( albumName)
+        return [[[d objectsForEntity: d.albumEntity predicate: [NSPredicate predicateWithFormat: @"name == %@", albumName]] lastObject] objectID];
+    
+    return nil;
 }
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ

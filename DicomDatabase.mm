@@ -2581,6 +2581,32 @@ static BOOL protectionAgainstReentry = NO;
                     DicomDatabase *idatabase = self.isMainDatabase? self.independentDatabase : [self.mainDatabase independentDatabase];
                     
                     objects = [idatabase addFilesAtPaths:copiedFiles postNotifications:YES dicomOnly:onlyDICOM rereadExistingItems:YES];
+                    
+                    DicomDatabase* mdatabase = self.isMainDatabase? self : self.mainDatabase;
+                    if( [[BrowserController currentBrowser] database] == mdatabase && [[dict objectForKey:@"addToAlbum"] boolValue])
+                    {
+                        if( [[BrowserController currentBrowser] currentAlbumID])
+                        {
+                            DicomAlbum *album = [idatabase objectWithID: [[BrowserController currentBrowser] currentAlbumID]];
+                            NSMutableSet *studies = [album mutableSetValueForKey: @"studies"];
+                            
+                            BOOL change = NO;
+                            for( DicomImage* mobject in [idatabase objectsWithIDs: objects])
+                            {
+                                DicomStudy* s = [mobject valueForKeyPath:@"series.study"];
+                                
+                                if( s && [studies containsObject: s] == NO)
+                                {
+                                    change = YES;
+                                    [studies addObject:s];
+                                }
+                            }
+                            
+                            if( change)
+                                [idatabase save];
+                        }
+                    }
+                    
                 }
                 else if( copyFiles)
                 {
@@ -2597,10 +2623,7 @@ static BOOL protectionAgainstReentry = NO;
                         
                         @try
                         {
-                            if (bc.database == mdatabase && [[dict objectForKey:@"addToAlbum"] boolValue])
-                                [bc performSelectorOnMainThread:@selector(addImagesToSelectedAlbum:) withObject: objects waitUntilDone:NO];
-                            
-                            if (studySelected == NO)
+                            if( studySelected == NO)
                             {
                                 studySelected = YES;
                                 if ([[dict objectForKey:@"selectStudy"] boolValue])
