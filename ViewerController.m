@@ -7771,6 +7771,17 @@ return YES;
 		case 2:	[imageView resizeWindowToScale: 1.5]; break;
 		case 3:	[imageView resizeWindowToScale: 2.0]; break;
 	}
+    
+    for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+    {
+        if( v != self)
+        {
+            NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt: v.imageView.currentTool], @"toolIndex", nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName: OsirixDefaultToolModifiedNotification object:nil userInfo: userInfo];
+            
+            break;
+        }
+    }
 }
 
 - (void) startLoadImageThread
