@@ -2585,9 +2585,10 @@ static BOOL protectionAgainstReentry = NO;
                     DicomDatabase* mdatabase = self.isMainDatabase? self : self.mainDatabase;
                     if( [[BrowserController currentBrowser] database] == mdatabase && [[dict objectForKey:@"addToAlbum"] boolValue])
                     {
-                        if( [[BrowserController currentBrowser] currentAlbumID])
+                        NSManagedObjectID *iAlbum = [[BrowserController currentBrowser] currentAlbumID: idatabase];
+                        if( iAlbum)
                         {
-                            DicomAlbum *album = [idatabase objectWithID: [[BrowserController currentBrowser] currentAlbumID]];
+                            DicomAlbum *album = [idatabase objectWithID: iAlbum];
                             NSMutableSet *studies = [album mutableSetValueForKey: @"studies"];
                             
                             BOOL change = NO;

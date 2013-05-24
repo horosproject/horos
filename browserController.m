@@ -9811,9 +9811,10 @@ static BOOL needToRezoom;
 	return [[NSArray arrayWithObject:[NSDictionary dictionaryWithObject: NSLocalizedString(@"Database", nil) forKey:@"name"]] arrayByAddingObjectsFromArray:[self albumsInDatabase]];
 }
 
-- (NSManagedObjectID*) currentAlbumID
+- (NSManagedObjectID*) currentAlbumID: (DicomDatabase*) d
 {
-    DicomDatabase *d = [NSThread isMainThread] ? _database : _database.independentDatabase;
+    if( d == nil)
+        d = [NSThread isMainThread] ? _database : _database.independentDatabase;
     
     NSString *albumName = self.selectedAlbumName;
     

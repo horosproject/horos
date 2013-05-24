@@ -315,7 +315,7 @@ extern NSString* O2AlbumDragType;
 - (IBAction)drawerToggle: (id)sender;
 - (void) openDatabasePath: (NSString*) path __deprecated;
 - (NSArray*) albums;
-- (NSManagedObjectID*) currentAlbumID;
+- (NSManagedObjectID*) currentAlbumID: (DicomDatabase*) d;
 - (BOOL) shouldTerminate: (id) sender;
 - (void) databaseOpenStudy: (NSManagedObject*) item;
 - (IBAction) databaseDoublePressed:(id)sender;
