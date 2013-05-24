@@ -150,7 +150,7 @@ static NSDate *CachedPluginsListDate = nil;
 		BOOL pluginIsActive = [[[pluginsList objectAtIndex:[pluginTable selectedRow]] objectForKey:@"active"] boolValue];
 		
 		[PluginManager deletePluginWithName:pluginName availability: availability isActive: pluginIsActive];
-	
+        
 		[self refreshPluginList];
 	}
 }

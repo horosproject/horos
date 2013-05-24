@@ -34,6 +34,8 @@ static NSMutableArray			*fusionPlugins = nil;
 static NSMutableDictionary		*pluginsNames = nil;
 static BOOL						ComPACSTested = NO, isComPACS = NO;
 
+BOOL gPluginsAlertAlreadyDisplayed = NO;
+
 @implementation PluginManager
 
 @synthesize downloadQueue;
@@ -495,45 +497,44 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 
 + (void) unloadPlugin: (NSBundle*) bundle
 {
-    NSLog( @"--- will unloadplugin: %@", [bundle bundlePath]);
-    @try
-    {
-        [PluginManager startProtectForCrashWithPath: [bundle bundlePath]];
-        
-        Class filterClass = [bundle principalClass];
-                
-        [PluginManager releaseInstanciedObjectsOfClass: filterClass];
-        
-        [PreferencesWindowController removePluginPaneWithBundle: bundle];
-        
-        [pluginsNames removeObjectForKey: [[[bundle bundlePath] lastPathComponent] stringByDeletingPathExtension]];
-        [fileFormatPlugins removeObject: bundle];
-        [pluginsDict removeObject: bundle];
-        [reportPlugins removeObject: bundle];
-        
-        [PluginManager endProtectForCrash];
-        
-        if( [bundle unload] == NO)
-        {
-            NSLog( @"***** failed to unload plugin: %@", [bundle bundlePath]);
-        }
-        else
-        {
-            for( NSString *key in [pluginsBundleDictionnary allKeys])
-            {
-                if( [pluginsBundleDictionnary valueForKey: key] == bundle)
-                {
-                    [pluginsBundleDictionnary removeObjectForKey: key];
-                    return;
-                }
-            }
-            
-        }
-    }
-    @catch (NSException *e)
-    {
-        NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-    }
+//    NSLog( @"--- will unloadplugin: %@", [bundle bundlePath]);
+//    @try
+//    {
+//        [PluginManager startProtectForCrashWithPath: [bundle bundlePath]];
+//        
+//        Class filterClass = [bundle principalClass];
+//                
+//        [PluginManager releaseInstanciedObjectsOfClass: filterClass];
+//        
+//        [PreferencesWindowController removePluginPaneWithBundle: bundle];
+//        
+//        [pluginsNames removeObjectForKey: [[[bundle bundlePath] lastPathComponent] stringByDeletingPathExtension]];
+//        [fileFormatPlugins removeObject: bundle];
+//        [pluginsDict removeObject: bundle];
+//        [reportPlugins removeObject: bundle];
+//        
+//        [PluginManager endProtectForCrash];
+//        
+//        if( [bundle unload] == NO) unload crash, if KVO Bindings is used in a plugin...
+//        {
+//            NSLog( @"***** failed to unload plugin: %@", [bundle bundlePath]);
+//        }
+//        else
+//        {
+//            for( NSString *key in [pluginsBundleDictionnary allKeys])
+//            {
+//                if( [pluginsBundleDictionnary valueForKey: key] == bundle)
+//                {
+//                    [pluginsBundleDictionnary removeObjectForKey: key];
+//                    return;
+//                }
+//            }
+//        }
+//    }
+//    @catch (NSException *e)
+//    {
+//        NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+//    }
 }
 
 + (void) unloadPluginWithName: (NSString*) name
@@ -951,7 +952,6 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 	NSEnumerator *activePathEnum = [activePaths objectEnumerator];
     NSString *activePath;
     NSString *inactivePath;
-	BOOL first = YES;
     
 	for(inactivePath in inactivePaths)
 	{
@@ -965,20 +965,18 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 				NSString *sourcePath = [NSString stringWithFormat:@"%@/%@", inactivePath, name];
 				NSString *destinationPath = [NSString stringWithFormat:@"%@/%@", activePath, name];
 				[PluginManager movePluginFromPath:sourcePath toPath:destinationPath];
-                
-                if( first)
-                {
-                    [PluginManager loadPluginAtPath: destinationPath];
-                    first = NO;
-                }
 			}
 		}
 	}
+    
+    if( !gPluginsAlertAlreadyDisplayed)
+        NSRunInformationalAlertPanel(NSLocalizedString(@"Plugins", @""), NSLocalizedString( @"Restart OsiriX to apply the changes to the plugin.", @""), NSLocalizedString(@"OK", @""), nil, nil);
+    gPluginsAlertAlreadyDisplayed = YES;
 }
 
 + (void)deactivatePluginWithName:(NSString*)pluginName;
 {
-    [PluginManager unloadPluginWithName: pluginName];
+//    [PluginManager unloadPluginWithName: pluginName];
     
 	NSMutableArray *activePaths = [NSMutableArray arrayWithArray:[PluginManager activeDirectories]];
 	NSMutableArray *inactivePaths = [NSMutableArray arrayWithArray:[PluginManager inactiveDirectories]];
@@ -1006,6 +1004,10 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 			}
 		}
 	}
+    
+    if( !gPluginsAlertAlreadyDisplayed)
+        NSRunInformationalAlertPanel(NSLocalizedString(@"Plugins", @""), NSLocalizedString( @"Restart OsiriX to apply the changes to the plugin.", @""), NSLocalizedString(@"OK", @""), nil, nil);
+    gPluginsAlertAlreadyDisplayed = YES;
 }
 
 + (void)changeAvailabilityOfPluginWithName:(NSString*)pluginName to:(NSString*)availability;
@@ -1165,7 +1167,7 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
     pluginName = [pluginName stringByDeletingPathExtension];
     
     // First unload the plugin, if currently running
-    [PluginManager unloadPluginWithName: pluginName];
+//    [PluginManager unloadPluginWithName: pluginName];
     
 	NSMutableArray *pluginsPaths = [NSMutableArray arrayWithArray:[PluginManager activeDirectories]];
 	[pluginsPaths addObjectsFromArray:[PluginManager inactiveDirectories]];
@@ -1234,6 +1236,10 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 		}
 	}
 	
+    if( !gPluginsAlertAlreadyDisplayed)
+        NSRunInformationalAlertPanel(NSLocalizedString(@"Plugins", @""), NSLocalizedString( @"Restart OsiriX to inactivate the deleted plugins.", @""), NSLocalizedString(@"OK", @""), nil, nil);
+    gPluginsAlertAlreadyDisplayed = YES;
+    
 	return returnPath;
 }
 
@@ -1472,8 +1478,11 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 	}
 	else
 	{
-		NSRunInformationalAlertPanel(NSLocalizedString(@"Plugin Update Completed", @""), NSLocalizedString(@"All your plugins are now up to date. Restart OsiriX to use the new or updated plugins.", @""), NSLocalizedString(@"OK", @""), nil, nil);
-		startedUpdateProcess = NO;
+        if( !gPluginsAlertAlreadyDisplayed)
+            NSRunInformationalAlertPanel(NSLocalizedString(@"Plugin Update Completed", @""), NSLocalizedString(@"All your plugins are now up to date. Restart OsiriX to use the new or updated plugins.", @""), NSLocalizedString(@"OK", @""), nil, nil);
+		gPluginsAlertAlreadyDisplayed = YES;
+        
+        startedUpdateProcess = NO;
 	}
 }
 
