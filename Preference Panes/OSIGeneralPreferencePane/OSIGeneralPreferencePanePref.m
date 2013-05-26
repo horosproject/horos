@@ -16,6 +16,8 @@
 #import "OSIGeneralPreferencePanePref.h"
 #import <OsiriXAPI/NSPreferencePane+OsiriX.h>
 #import <OsiriXAPI/AppController.h>
+#import <OsiriXAPI/DefaultsOsiriX.h>
+#import <OsiriXAPI/N2Debug.h>
 
 static NSArray *languagesToMoveWhenQuitting = nil;
 
@@ -137,6 +139,116 @@ static NSArray *languagesToMoveWhenQuitting = nil;
 		
 		[[NSUserDefaults standardUserDefaults] synchronize];
 	}
+}
+
+- (IBAction) savePreferences: (id) sender
+{
+	[[NSUserDefaults standardUserDefaults] synchronize];
+    
+    NSSavePanel *save = [NSSavePanel savePanel];
+    
+    [save setAllowedFileTypes: [NSArray arrayWithObject: @"plist"]];
+    [save setNameFieldStringValue: @"OsiriX-Preferences.plist"];
+    
+    if( [save runModal] == NSFileHandlingPanelOKButton)
+	{
+        NSDictionary *defaultsPreferences = [DefaultsOsiriX getDefaults];
+        NSMutableDictionary *customizedPreferences = [NSMutableDictionary dictionary];
+        
+        for( NSString *k in [[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] allKeys])
+        {
+            if( [defaultsPreferences objectForKey: k] == nil || [[[NSUserDefaults standardUserDefaults] objectForKey: k] isEqual: [defaultsPreferences objectForKey: k]] == NO)
+                [customizedPreferences setObject: [[NSUserDefaults standardUserDefaults] objectForKey: k] forKey: k];
+        }
+        
+		[customizedPreferences writeToURL: save.URL atomically: YES];
+	}
+}
+
++ (void) errorMessage:(NSURL*) url
+{
+    NSRunAlertPanel( NSLocalizedString( @"Preferences", nil), [NSString stringWithFormat: NSLocalizedString( @"Failed to download and synchronize preferences from this URL: %@", nil), url.absoluteString], NSLocalizedString( @"OK", nil), nil, nil);
+}
+
++ (void) addPreferencesFromURL: (NSURL*) url
+{
+    NSAutoreleasePool *pool = [NSAutoreleasePool new];
+    
+    BOOL succeed = NO;
+    
+    if( url)
+    {
+        NSLog( @"--- loading preferences from URL: %@", url);
+        
+        @try {
+            BOOL activated = NO;
+            if( [NSThread isMainThread] == NO)
+                activated = [[NSUserDefaults standardUserDefaults] boolForKey: @"SyncPreferencesFromURL"];
+            
+            NSDictionary *customizedPreferences = [NSDictionary dictionaryWithContentsOfURL: url];
+            
+            if( customizedPreferences)
+            {
+                for( NSString *key in customizedPreferences)
+                    [[NSUserDefaults standardUserDefaults] setObject: [customizedPreferences objectForKey: key] forKey: key];
+                
+                succeed = YES;
+                
+                if( [NSThread isMainThread] == NO)
+                {
+                    [[NSUserDefaults standardUserDefaults] setObject: url.absoluteString forKey: @"SyncPreferencesURL"];
+                    [[NSUserDefaults standardUserDefaults] setBool: activated forKey: @"SyncPreferencesFromURL"];
+                }
+            }
+        }
+        @catch (NSException *exception) {
+            N2LogException( exception);
+        }
+        NSLog( @"--- loading preferences from URL: %@ - DONE", url);
+    }
+    
+    if( succeed == NO)
+        [[OSIGeneralPreferencePanePref class] performSelectorOnMainThread: @selector( errorMessage:) withObject: url waitUntilDone: NO];
+    
+    [pool release];
+}
+
+- (IBAction) refreshPreferencesURLSync:(id)sender
+{
+    [[[self mainView] window] makeFirstResponder: nil];
+    
+    if( [NSURL URLWithString: [[NSUserDefaults standardUserDefaults] stringForKey: @"SyncPreferencesURL"]] == nil)
+        NSRunInformationalAlertPanel( NSLocalizedString(@"Sync Preferences", nil), NSLocalizedString(@"The provided URL doesn't seem correct. Check it's validity.", nil), NSLocalizedString(@"OK",nil), nil,  nil);
+    else
+    {
+        NSInteger result = NSRunInformationalAlertPanel( NSLocalizedString(@"Sync Preferences", nil), NSLocalizedString(@"Are you sure you want to replace  current preferences with the preferences stored at this URL? You cannot undo this operation.", nil), NSLocalizedString(@"Cancel",nil), NSLocalizedString(@"OK",nil),  nil);
+        
+        if( result == NSAlertAlternateReturn)
+            [NSThread detachNewThreadSelector: @selector( addPreferencesFromURL:) toTarget: [OSIGeneralPreferencePanePref class] withObject: [NSURL URLWithString: [[NSUserDefaults standardUserDefaults] stringForKey: @"SyncPreferencesURL"]]];
+    }
+}
+
+- (IBAction) loadPreferences: (id) sender
+{
+	[[NSUserDefaults standardUserDefaults] synchronize];
+    
+    NSOpenPanel *open = [NSOpenPanel openPanel];
+    
+    open.canChooseFiles = YES;
+	open.canChooseDirectories = NO;
+	open.canCreateDirectories = NO;
+	open.allowsMultipleSelection = NO;
+	open.message = NSLocalizedString(@"Select the preferences file (plist) to load:", nil);
+	
+    if( [open runModal] == NSFileHandlingPanelOKButton)
+    {
+        NSInteger result = NSRunInformationalAlertPanel( NSLocalizedString(@"Load Preferences", nil), NSLocalizedString(@"Are you sure you want to replace  current preferences with the preferences stored in this file? You cannot undo this operation.", nil), NSLocalizedString(@"Cancel",nil), NSLocalizedString(@"OK",nil),  nil);
+        
+        if( result == NSAlertAlternateReturn)
+            [OSIGeneralPreferencePanePref addPreferencesFromURL: open.URL];
+    }
+    
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 + (void)initialize

@@ -71,6 +71,7 @@
 #import "Security/SecRequirement.h"
 #import "Security/SecCode.h"
 #import "PFMoveApplication.h"
+#import "OSIGeneralPreferencePanePref.h"
 
 #include <OpenGL/OpenGL.h>
 
@@ -3453,6 +3454,9 @@ static BOOL initialized = NO;
         NSRunCriticalAlertPanel( NSLocalizedString( @"MacOS Version", nil), NSLocalizedString( @"OsiriX requires MacOS 10.7.5 or higher. Please update your OS: Apple Menu - Software Update...", nil), NSLocalizedString( @"Quit", nil) , nil, nil);
         exit( 0);
     }
+    
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SyncPreferencesFromURL"])
+        [NSThread detachNewThreadSelector: @selector( addPreferencesFromURL:) toTarget: [OSIGeneralPreferencePanePref class] withObject: [NSURL URLWithString: [[NSUserDefaults standardUserDefaults] stringForKey: @"SyncPreferencesURL"]]];
 }
 
 - (void) checkForOsirixMimeType
