@@ -1151,8 +1151,8 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
     // move the new plugin to the plugin folder				
     [PluginManager movePluginFromPath: path toPath: destinationPath];
     
-    // load the plugin
-    [PluginManager loadPluginAtPath: destinationPath];
+//    // load the plugin - The User has to restart
+//    [PluginManager loadPluginAtPath: destinationPath];
 }
 
 #pragma mark Deletion
