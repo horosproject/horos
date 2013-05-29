@@ -970,7 +970,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 	}
     
     if( !gPluginsAlertAlreadyDisplayed)
-        NSRunInformationalAlertPanel(NSLocalizedString(@"Plugins", @""), NSLocalizedString( @"Restart OsiriX to apply the changes to the plugin.", @""), NSLocalizedString(@"OK", @""), nil, nil);
+        NSRunInformationalAlertPanel(NSLocalizedString(@"Plugins", @""), NSLocalizedString( @"Restart OsiriX to apply the changes to the plugins.", @""), NSLocalizedString(@"OK", @""), nil, nil);
     gPluginsAlertAlreadyDisplayed = YES;
 }
 
@@ -1006,7 +1006,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 	}
     
     if( !gPluginsAlertAlreadyDisplayed)
-        NSRunInformationalAlertPanel(NSLocalizedString(@"Plugins", @""), NSLocalizedString( @"Restart OsiriX to apply the changes to the plugin.", @""), NSLocalizedString(@"OK", @""), nil, nil);
+        NSRunInformationalAlertPanel(NSLocalizedString(@"Plugins", @""), NSLocalizedString( @"Restart OsiriX to apply the changes to the plugins.", @""), NSLocalizedString(@"OK", @""), nil, nil);
     gPluginsAlertAlreadyDisplayed = YES;
 }
 
@@ -1237,7 +1237,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 	}
 	
     if( !gPluginsAlertAlreadyDisplayed)
-        NSRunInformationalAlertPanel(NSLocalizedString(@"Plugins", @""), NSLocalizedString( @"Restart OsiriX to inactivate the deleted plugins.", @""), NSLocalizedString(@"OK", @""), nil, nil);
+        NSRunInformationalAlertPanel(NSLocalizedString(@"Plugins", @""), NSLocalizedString( @"Restart OsiriX to apply the changes to the plugins.", @""), NSLocalizedString(@"OK", @""), nil, nil);
     gPluginsAlertAlreadyDisplayed = YES;
     
 	return returnPath;
