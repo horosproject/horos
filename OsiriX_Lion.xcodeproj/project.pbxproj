@@ -577,6 +577,10 @@
 		840C2D5F1588CE4600C4FE09 /* CustomIntervalPanel.h in Headers */ = {isa = PBXBuildFile; fileRef = 840C2D5B1588CE4600C4FE09 /* CustomIntervalPanel.h */; };
 		840C2D601588CE4600C4FE09 /* CustomIntervalPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 840C2D5C1588CE4600C4FE09 /* CustomIntervalPanel.m */; };
 		840C2D611588CE4600C4FE09 /* CustomIntervalPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 840C2D5C1588CE4600C4FE09 /* CustomIntervalPanel.m */; };
+		8412AF9A1758C38600092D95 /* libvtktiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEBD799914F1AD6B000DA1FE /* libvtktiff.a */; };
+		8412AF9B1758C3B500092D95 /* libvtkjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEBD799F14F1AD6B000DA1FE /* libvtkjpeg.a */; };
+		8412AF9C1758C3E300092D95 /* libvtktiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEBD799914F1AD6B000DA1FE /* libvtktiff.a */; };
+		8412AF9D1758C54400092D95 /* NSException+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592D333612F2C71A00C7C002 /* NSException+N2.mm */; };
 		841524C5113D6BDB008250E6 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 841524C4113D6BDB008250E6 /* QuartzCore.framework */; };
 		841524C6113D6BDB008250E6 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 841524C4113D6BDB008250E6 /* QuartzCore.framework */; };
 		841721B810D8D745001A833F /* AsyncSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 841721A410D8D745001A833F /* AsyncSocket.h */; };
@@ -16038,6 +16042,7 @@
 				CEBD93A814F1AE96000DA1FE /* libvtkzlib.a in Frameworks */,
 				8476BC321599D51300451331 /* AVFoundation.framework in Frameworks */,
 				8476BC361599D7E900451331 /* CoreMedia.framework in Frameworks */,
+				8412AF9C1758C3E300092D95 /* libvtktiff.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16084,6 +16089,8 @@
 				8476BC351599D7E900451331 /* CoreMedia.framework in Frameworks */,
 				CE65D9F215C4843300E9D94C /* DiskArbitration.framework in Frameworks */,
 				CEA9237315CE3F7C00D3385F /* InstantMessage.framework in Frameworks */,
+				8412AF9A1758C38600092D95 /* libvtktiff.a in Frameworks */,
+				8412AF9B1758C3B500092D95 /* libvtkjpeg.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -32022,6 +32029,7 @@
 				AB451868149F47F0006674BF /* djencode.cc in Sources */,
 				AB451869149F47F0006674BF /* djrparam.cc in Sources */,
 				71A28B8416383B2900489F2A /* DCMWaveform.m in Sources */,
+				8412AF9D1758C54400092D95 /* NSException+N2.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -34105,6 +34113,7 @@
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 					"\"$(SRCROOT)/Binaries/CharLS\"",
 					"\"$(SRCROOT)/Binaries/VTKLibs\"",
+					"\"$(SRCROOT)/Binaries/LibTiff\"",
 				);
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -34395,6 +34404,7 @@
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 					"\"$(SRCROOT)/Binaries/CharLS\"",
 					"\"$(SRCROOT)/Binaries/VTKLibs\"",
+					"\"$(SRCROOT)/Binaries/LibTiff\"",
 				);
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -34676,6 +34686,7 @@
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 					"\"$(SRCROOT)/Binaries/CharLS\"",
 					"\"$(SRCROOT)/Binaries/VTKLibs\"",
+					"\"$(SRCROOT)/Binaries/LibTiff\"",
 				);
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -34822,6 +34833,7 @@
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 					"\"$(SRCROOT)/Binaries/CharLS\"",
 					"\"$(SRCROOT)/Binaries/VTKLibs\"",
+					"\"$(SRCROOT)/Binaries/LibTiff\"",
 				);
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
@@ -34889,6 +34901,7 @@
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 					"\"$(SRCROOT)/Binaries/CharLS\"",
 					"\"$(SRCROOT)/Binaries/VTKLibs\"",
+					"\"$(SRCROOT)/Binaries/LibTiff\"",
 				);
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
@@ -34960,6 +34973,7 @@
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 					"\"$(SRCROOT)/Binaries/CharLS\"",
 					"\"$(SRCROOT)/Binaries/VTKLibs\"",
+					"\"$(SRCROOT)/Binaries/LibTiff\"",
 				);
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",

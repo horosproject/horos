@@ -41,8 +41,8 @@
 #import "ThickSlabController.h"
 #import "dicomFile.h"
 #import "PluginFileFormatDecoder.h"
-#ifndef OSIRIX_LIGHT
 #include "tiffio.h"
+#ifndef OSIRIX_LIGHT
 #include "FVTiff.h"
 #endif
 #include "Analyze.h"
@@ -10559,7 +10559,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 							[extension isEqualToString:@"tif"] == YES)
 				{
 #ifndef STATIC_DICOM_LIB
-#ifndef OSIRIX_LIGHT
 					TIFF* tif = TIFFOpen([srcFile UTF8String], "r");
 					if( tif)
 					{
@@ -10582,7 +10581,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 						
 						TIFFClose(tif);
 					}
-#endif
 #endif
 					if( USECUSTOMTIFF == NO)
 					{
