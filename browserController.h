@@ -313,7 +313,6 @@ extern NSString* O2AlbumDragType;
 - (IBAction) clickBanner:(id) sender;
 - (IBAction) refreshPACSOnDemandResults:(id)sender;
 - (IBAction) drawerToggle: (id)sender;
-- (IBAction) viewXML:(id) sender;
 - (void) openDatabasePath: (NSString*) path __deprecated;
 - (NSArray*) albums;
 - (NSManagedObjectID*) currentAlbumID: (DicomDatabase*) d;
@@ -554,6 +553,7 @@ extern NSString* O2AlbumDragType;
 - (IBAction) querySelectedStudy:(id) sender;
 - (void) refreshComparativeStudies: (NSArray*) newStudies;
 + (NSArray*) comparativeServers;
+- (IBAction) viewXML:(id) sender;
 #endif
 
 - (void) retrieveComparativeStudy: (DCMTKStudyQueryNode*) study select: (BOOL) select open:(BOOL) open;
