@@ -152,6 +152,12 @@
     
     return [super countForFetchRequest: request error: error];
 }
+- (void) mergeChangesFromContextDidSaveNotification:(NSNotification *)notification
+{
+    [_database checkForCorrectContextThread: self];
+    
+    return [super mergeChangesFromContextDidSaveNotification: notification];
+}
 #endif
 
 @end
