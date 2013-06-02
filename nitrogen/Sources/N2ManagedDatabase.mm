@@ -328,6 +328,8 @@
                 if (self.mainDatabase)
                     N2LogStackTrace(@"ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR: creating independent context from already independent database");
                 
+                // Our main DicomDatabase context will listen to changes from the independentContext
+                // Warning: our independentContext will NOT receive changes from the main DicomDatabase context
                 [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(mergeChangesFromContextDidSaveNotification:) name:NSManagedObjectContextDidSaveNotification object:moc];
             }
             

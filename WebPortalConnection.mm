@@ -133,16 +133,21 @@ static NSString* NotNil(NSString *s) {
 	self = [super initWithAsyncSocket:newSocket forServer:myServer];
 	sendLock = [[NSLock alloc] init];
     
-    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector( managedObjectContextDidSaveNotification:) name: NSManagedObjectContextDidSaveNotification object: self.portal.dicomDatabase.managedObjectContext];
+    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector( managedObjectContextDidSaveNotification:) name: NSManagedObjectContextDidSaveNotification object: nil];
     
 	return self;
 }
 
 - (void) managedObjectContextDidSaveNotification: (NSNotification*) n
 {
-    if (_independentDicomDatabase.managedObjectContext == n.object)
+    NSManagedObjectContext *moc = n.object;
+    
+    if (_independentDicomDatabase.managedObjectContext == moc)
         return;
     
+    if ( _independentDicomDatabase.managedObjectContext.persistentStoreCoordinator != moc.persistentStoreCoordinator)
+        return;
+        
     [_independentDicomDatabase.managedObjectContext mergeChangesFromContextDidSaveNotification:n];
 }
 
