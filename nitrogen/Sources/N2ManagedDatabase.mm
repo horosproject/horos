@@ -152,12 +152,6 @@
     
     return [super countForFetchRequest: request error: error];
 }
-- (void) mergeChangesFromContextDidSaveNotification:(NSNotification *)notification
-{
-    [_database checkForCorrectContextThread: self];
-    
-    return [super mergeChangesFromContextDidSaveNotification: notification];
-}
 #endif
 
 @end
@@ -335,7 +329,7 @@
                     N2LogStackTrace(@"ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR: creating independent context from already independent database");
                 
                 // Our main DicomDatabase context will listen to changes from the independentContext
-                // Warning: our independentContext will NOT receive changes from the main DicomDatabase context
+                // Warning: our independentContext will NOT receive changes from the main DicomDatabase context: add it by yourself if needed (see WebPortalConnection.mm)
                 [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(mergeChangesFromContextDidSaveNotification:) name:NSManagedObjectContextDidSaveNotification object:moc];
             }
             
@@ -357,27 +351,7 @@
     if (self.managedObjectContext == moc)
         return;
     
-    if (![NSThread isMainThread])
-    {
-        [self performSelectorOnMainThread:@selector(mergeChangesFromContextDidSaveNotification:) withObject:n waitUntilDone:NO];
-    }
-    else
-    {
-        [self.managedObjectContext lock];
-        @try {
-            [self.managedObjectContext mergeChangesFromContextDidSaveNotification:n];
-//            [self.managedObjectContext save: nil];
-            
-//            for (NSString* key in [NSArray arrayWithObjects: NSInsertedObjectsKey, NSUpdatedObjectsKey, NSDeletedObjectsKey, nil])
-//                for (NSManagedObject* o in [n.userInfo objectForKey:key])
-//                    [self.managedObjectContext refreshObject: [self.managedObjectContext objectWithID: o.objectID] mergeChanges: NO];
-            
-        } @catch (NSException* e) {
-            N2LogExceptionWithStackTrace(e);
-        } @finally {
-            [self.managedObjectContext unlock];
-        }
-    }
+    [self.managedObjectContext mergeChangesFromContextDidSaveNotification:n];
 }
 
 -(BOOL)lockBeforeDate:(NSDate*) date
