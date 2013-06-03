@@ -345,7 +345,12 @@
     if (self.managedObjectContext == moc)
         return;
     
-    [self.managedObjectContext mergeChangesFromContextDidSaveNotification:n];
+    @try {
+        [self.managedObjectContext mergeChangesFromContextDidSaveNotification:n];
+    }
+    @catch (NSException *exception) {
+        N2LogException( exception);
+    }
 }
 
 -(BOOL)lockBeforeDate:(NSDate*) date

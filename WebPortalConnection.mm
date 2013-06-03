@@ -147,8 +147,13 @@ static NSString* NotNil(NSString *s) {
     
     if ( _independentDicomDatabase.managedObjectContext.persistentStoreCoordinator != moc.persistentStoreCoordinator)
         return;
-        
-    [_independentDicomDatabase.managedObjectContext mergeChangesFromContextDidSaveNotification:n];
+    
+    @try {
+        [_independentDicomDatabase.managedObjectContext mergeChangesFromContextDidSaveNotification:n];
+    }
+    @catch (NSException *exception) {
+        N2LogException( exception);
+    }
 }
 
 -(DicomDatabase*)independentDicomDatabase
