@@ -4280,7 +4280,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                             NSString *pixelUnit = [NSString stringWithFormat:@" %@ ", self.pix.rescaleType];
                             
                             if( [self pix].SUVConverted)
-                                pixelUnit = NSLocalizedString( @" SUV ", @"SUV = Standard Uptake Value");
+                                pixelUnit = [NSString stringWithFormat:@" %@ ", NSLocalizedString( @"SUV", @"SUV = Standard Uptake Value")];
                             
 							self.textualBoxLine3 = [NSString stringWithFormat: NSLocalizedString( @"Mean: %0.3f%@ SDev: %0.3f%@ Sum: %0.0f%@", nil), rmean, pixelUnit, rdev, pixelUnit, rtotal, pixelUnit];
 							self.textualBoxLine4 = [NSString stringWithFormat: NSLocalizedString( @"Min: %0.3f%@ Max: %0.3f%@", nil), rmin, pixelUnit, rmax, pixelUnit];
@@ -4305,7 +4305,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                             NSString *pixelUnit = [NSString stringWithFormat:@" %@ ", blendedPix.rescaleType];
                             
                             if( blendedPix.SUVConverted)
-                                pixelUnit = NSLocalizedString( @" SUV ", @"SUV = Standard Uptake Value");
+                                pixelUnit = [NSString stringWithFormat:@" %@ ", NSLocalizedString( @"SUV", @"SUV = Standard Uptake Value")];
                             
 							self.textualBoxLine5 = [NSString stringWithFormat: NSLocalizedString( @"Fused Image Mean: %0.3f%@ SDev: %0.3f%@ Sum: %0.0f%@", nil), Brmean, pixelUnit, Brdev, pixelUnit, Brtotal, pixelUnit];
 							self.textualBoxLine6 = [NSString stringWithFormat: NSLocalizedString( @"Fused Image Min: %0.3f%@ Max: %0.3f%@", nil), Brmin, pixelUnit, Brmax, pixelUnit];
@@ -4424,7 +4424,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                         NSString *pixelUnit = [NSString stringWithFormat:@" %@ ", self.pix.rescaleType];
                         
                         if( [self pix].SUVConverted)
-                            pixelUnit = NSLocalizedString( @" SUV ", @"SUV = Standard Uptake Value");
+                            pixelUnit = [NSString stringWithFormat:@" %@ ", NSLocalizedString( @"SUV", @"SUV = Standard Uptake Value")];
                         
                         self.textualBoxLine2 = [NSString stringWithFormat: NSLocalizedString( @"Value: %0.3f%@", nil), rmean, pixelUnit];
                         
@@ -4435,7 +4435,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                             NSString *pixelUnit = [NSString stringWithFormat:@" %@ ", blendedPix.rescaleType];
                             
                             if( blendedPix.SUVConverted)
-                                pixelUnit = NSLocalizedString( @" SUV ", @"SUV = Standard Uptake Value");
+                                pixelUnit = [NSString stringWithFormat:@" %@ ", NSLocalizedString( @"SUV", @"SUV = Standard Uptake Value")];
                             
                             self.textualBoxLine3 = [NSString stringWithFormat: NSLocalizedString( @"Fused Image Value: %0.3f%@", nil), Brmean, pixelUnit];
                         }
@@ -5124,7 +5124,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                             NSString *pixelUnit = [NSString stringWithFormat:@" %@ ", self.pix.rescaleType];
                             
                             if( [self pix].SUVConverted)
-                                pixelUnit = NSLocalizedString( @" SUV ", @"SUV = Standard Uptake Value");
+                                pixelUnit = [NSString stringWithFormat:@" %@ ", NSLocalizedString( @"SUV", @"SUV = Standard Uptake Value")];
                             
 							self.textualBoxLine3 = [NSString stringWithFormat: NSLocalizedString( @"Mean: %0.3f%@ SDev: %0.3f%@ Sum: %0.0f%@", nil), rmean, pixelUnit, rdev, pixelUnit, rtotal, pixelUnit];
 							self.textualBoxLine4 = [NSString stringWithFormat: NSLocalizedString( @"Min: %0.3f%@ Max: %0.3f%@", nil), rmin, pixelUnit, rmax, pixelUnit];
@@ -5152,7 +5152,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                                 NSString *pixelUnit = [NSString stringWithFormat:@" %@ ", blendedPix.rescaleType];
                                 
                                 if( blendedPix.SUVConverted)
-                                    pixelUnit = NSLocalizedString( @" SUV ", @"SUV = Standard Uptake Value");
+                                    pixelUnit = [NSString stringWithFormat:@" %@ ", NSLocalizedString( @"SUV", @"SUV = Standard Uptake Value")];
                                 
 								self.textualBoxLine5 = [NSString stringWithFormat: NSLocalizedString( @"Fused Image Mean: %0.3f%@ SDev: %0.3f%@ Sum: %0.0f%@", nil), Brmean, pixelUnit, Brdev, pixelUnit, Brtotal, pixelUnit];
 								self.textualBoxLine6 = [NSString stringWithFormat: NSLocalizedString( @"Fused Image Min: %0.3f%@ Max: %0.3f%@", nil), Brmin, pixelUnit, Brmax, pixelUnit];
@@ -5276,7 +5276,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                         NSString *pixelUnit = [NSString stringWithFormat:@" %@ ", self.pix.rescaleType];
                         
                         if( [self pix].SUVConverted)
-                            pixelUnit = NSLocalizedString( @" SUV ", @"SUV = Standard Uptake Value");
+                            pixelUnit = [NSString stringWithFormat:@" %@ ", NSLocalizedString( @"SUV", @"SUV = Standard Uptake Value")];
                         
 						self.textualBoxLine3 = [NSString stringWithFormat: NSLocalizedString( @"Mean: %0.3f%@ SDev: %0.3f%@ Sum: %0.0f%@", nil), rmean, pixelUnit, rdev, pixelUnit, rtotal, pixelUnit];
 						self.textualBoxLine4 = [NSString stringWithFormat: NSLocalizedString( @"Min: %0.3f%@ Max: %0.3f%@", nil), rmin, pixelUnit, rmax, pixelUnit];
@@ -5298,7 +5298,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                             NSString *pixelUnit = [NSString stringWithFormat:@" %@ ", blendedPix.rescaleType];
                             
                             if( blendedPix.SUVConverted)
-                                pixelUnit = NSLocalizedString( @" SUV ", @"SUV = Standard Uptake Value");
+                                pixelUnit = [NSString stringWithFormat:@" %@ ", NSLocalizedString( @"SUV", @"SUV = Standard Uptake Value")];
                             
 							self.textualBoxLine5 = [NSString stringWithFormat: NSLocalizedString( @"Fused Image Mean: %0.3f%@ SDev: %0.3f%@ Sum: %0.0f%@", nil), Brmean, pixelUnit, Brdev, pixelUnit, Brtotal, pixelUnit];
 							self.textualBoxLine6 = [NSString stringWithFormat: NSLocalizedString( @"Fused Image Min: %0.3f%@ Max: %0.3f%@", nil), Brmin, pixelUnit, Brmax, pixelUnit];
@@ -5809,7 +5809,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                                 NSString *pixelUnit = [NSString stringWithFormat:@" %@ ", self.pix.rescaleType];
                                 
                                 if( [self pix].SUVConverted)
-                                    pixelUnit = NSLocalizedString( @" SUV ", @"SUV = Standard Uptake Value");
+                                    pixelUnit = [NSString stringWithFormat:@" %@ ", NSLocalizedString( @"SUV", @"SUV = Standard Uptake Value")];
                                 
                                 self.textualBoxLine3 = [NSString stringWithFormat: NSLocalizedString( @"Mean: %0.3f%@ SDev: %0.3f%@ Sum: %0.0f%@", nil), rmean, pixelUnit, rdev, pixelUnit, rtotal, pixelUnit];
 								self.textualBoxLine4 = [NSString stringWithFormat: NSLocalizedString( @"Min: %0.3f%@ Max: %0.3f%@", nil), rmin, pixelUnit, rmax, pixelUnit];
@@ -5839,7 +5839,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                                         NSString *pixelUnit = [NSString stringWithFormat:@" %@ ", blendedPix.rescaleType];
                                         
                                         if( blendedPix.SUVConverted)
-                                            pixelUnit = NSLocalizedString( @" SUV ", @"SUV = Standard Uptake Value");
+                                            pixelUnit = [NSString stringWithFormat:@" %@ ", NSLocalizedString( @"SUV", @"SUV = Standard Uptake Value")];
                                         
 										self.textualBoxLine5 = [NSString stringWithFormat: NSLocalizedString( @"Fused Image Mean: %0.3f%@ SDev: %0.3f%@ Sum: %0.0f%@", nil), Brmean, pixelUnit, Brdev, pixelUnit, Brtotal, pixelUnit];
 										self.textualBoxLine6 = [NSString stringWithFormat: NSLocalizedString( @"Fused Image Min: %0.3f%@ Max: %0.3f%@", nil), Brmin, pixelUnit, Brmax, pixelUnit];
@@ -5955,7 +5955,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                                     NSString *pixelUnit = [NSString stringWithFormat:@" %@ ", self.pix.rescaleType];
                                     
                                     if( [self pix].SUVConverted)
-                                        pixelUnit = NSLocalizedString( @" SUV ", @"SUV = Standard Uptake Value");
+                                        pixelUnit = [NSString stringWithFormat:@" %@ ", NSLocalizedString( @"SUV", @"SUV = Standard Uptake Value")];
                                     
 									self.textualBoxLine3 = [NSString stringWithFormat: NSLocalizedString( @"Mean: %0.3f%@ SDev: %0.3f%@ Sum: %0.0f%@", nil), rmean, pixelUnit, rdev, pixelUnit, rtotal, pixelUnit];
 									self.textualBoxLine4 = [NSString stringWithFormat: NSLocalizedString( @"Min: %0.3f%@ Max: %0.3f%@", nil), rmin, pixelUnit, rmax, pixelUnit];
@@ -5978,7 +5978,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                                     NSString *pixelUnit = [NSString stringWithFormat:@" %@ ", blendedPix.rescaleType];
                                     
                                     if( blendedPix.SUVConverted)
-                                        pixelUnit = NSLocalizedString( @" SUV ", @"SUV = Standard Uptake Value");
+                                        pixelUnit = [NSString stringWithFormat:@" %@ ", NSLocalizedString( @"SUV", @"SUV = Standard Uptake Value")];
                                     
 									self.textualBoxLine5 = [NSString stringWithFormat: NSLocalizedString( @"Fused Image Mean: %0.3f%@ SDev: %0.3f%@ Sum: %0.0f%@", nil), Brmean, pixelUnit, Brdev, pixelUnit, Brtotal, pixelUnit];
 									self.textualBoxLine6 = [NSString stringWithFormat: NSLocalizedString( @"Fused Image Min: %0.3f%@ Max: %0.3f%@", nil), Brmin, pixelUnit, Brmax, pixelUnit];
