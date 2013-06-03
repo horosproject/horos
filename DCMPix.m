@@ -1266,7 +1266,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 // SUV properties
 @synthesize philipsFactor, patientsWeight;
 @synthesize halflife, radionuclideTotalDose;
-@synthesize radionuclideTotalDoseCorrected, acquisitionTime, acquisitionDate;
+@synthesize radionuclideTotalDoseCorrected, acquisitionTime, acquisitionDate, rescaleType;
 @synthesize radiopharmaceuticalStartTime, SUVConverted;
 @synthesize hasSUV, decayFactor;
 @synthesize units, decayCorrection, displaySUVValue;
@@ -3273,7 +3273,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	orientation[8] = orientation[0]*orientation[4] - orientation[1]*orientation[3];
 	srcFile = nil;
 	generated = YES;
-	
+	self.rescaleType = @"";
+    
     return [super init];
 }
 
@@ -3307,6 +3308,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	stack = 2;
 	decayFactor = 1.0;
 	slope = 1.0;
+    self.rescaleType = @"";
 	//----------------------------------angio
 	subtractedfPercent = 1.0;
 	subtractedfZ = 0.8;
@@ -3327,6 +3329,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	orientation[6] = orientation[1]*orientation[5] - orientation[2]*orientation[4];
 	orientation[7] = orientation[2]*orientation[3] - orientation[0]*orientation[5];
 	orientation[8] = orientation[0]*orientation[4] - orientation[1]*orientation[3];
+    
+    
 }
 
 - (id) initwithdata :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ :(BOOL) volSize
@@ -3613,6 +3617,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	copy->radionuclideTotalDoseCorrected = self->radionuclideTotalDoseCorrected;
 	copy->acquisitionTime = [self->acquisitionTime retain];
 	copy->acquisitionDate = [self->acquisitionDate retain];
+    copy->rescaleType = [self->rescaleType retain];
 	copy->radiopharmaceuticalStartTime = [self->radiopharmaceuticalStartTime retain];
 	copy->displaySUVValue = self->displaySUVValue;
 	copy->decayFactor = self->decayFactor;
@@ -5504,6 +5509,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	if ([dcmObject attributeValueWithName:@"WindowWidth"] && isRGB == NO) savedWW =  (int) [[dcmObject attributeValueWithName:@"WindowWidth"] floatValue];
 	if(  savedWW < 0) savedWW =-savedWW;
 	
+    if( [[dcmObject attributeValueWithName:@"RescaleType"] isEqualToString: @"US"] == NO)
+        self.rescaleType = [dcmObject attributeValueWithName:@"RescaleType"];
+    
 	//planar configuration
 	if( [dcmObject attributeValueWithName:@"PlanarConfiguration"])
 		fPlanarConf = [[dcmObject attributeValueWithName:@"PlanarConfiguration"] intValue]; 
@@ -7292,6 +7300,14 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		if(  savedWW < 0) savedWW =-savedWW;
 	}
 	
+    val = Papy3GetElement (theGroupP, papRescaleTypeGr, &nbVal, &elemType);
+	if (val && val->a && validAPointer(elemType))
+    {
+        self.rescaleType = [NSString stringWithCString:val->a encoding:NSISOLatin1StringEncoding];
+        
+        if( [self.rescaleType isEqualToString: @"US"]) // US = unspecified
+            self.rescaleType = @"";
+    }
 	// PLANAR CONFIGURATION
 	val = Papy3GetElement (theGroupP, papPlanarConfigurationGr, &nbVal, &elemType);
 	if ( val)
@@ -12867,6 +12883,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 		[acquisitionTime release];					acquisitionTime = nil;
 		[acquisitionDate release];					acquisitionDate = nil;
+        [rescaleType release];                      rescaleType = nil;
 		[radiopharmaceuticalStartTime release];		radiopharmaceuticalStartTime = nil;
 		[repetitiontime release];					repetitiontime = nil;
 		[echotime release];							echotime = nil;
@@ -12916,6 +12933,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	[positionerSecondaryAngle release];
 	[acquisitionTime release];
 	[acquisitionDate release];
+    [rescaleType release];
 	[radiopharmaceuticalStartTime release];
 	[repetitiontime release];
 	[echotime release];
@@ -13005,6 +13023,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	self.radiopharmaceuticalStartTime = from.radiopharmaceuticalStartTime;
 	self.acquisitionTime = from.acquisitionTime;
 	self.acquisitionDate = from.acquisitionDate;
+    self.rescaleType = from.rescaleType;
 	self.radionuclideTotalDose = from.radionuclideTotalDose;
 	self.radionuclideTotalDoseCorrected = from.radionuclideTotalDoseCorrected;
 	self.patientsWeight = from.patientsWeight;

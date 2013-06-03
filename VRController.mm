@@ -1376,7 +1376,7 @@ return YES;
     [wl setStringValue:[NSString stringWithFormat:@"%0.f", iwl]];
     [ww setStringValue:[NSString stringWithFormat:@"%0.f", iww]];
     
-	[newName setStringValue: @"Unnamed"];
+	[newName setStringValue: NSLocalizedString( @"Unnamed", nil)];
 	
     [NSApp beginSheet: addWLWWWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 }

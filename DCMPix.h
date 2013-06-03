@@ -98,7 +98,7 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 // DICOM params needed for SUV calculations
 	float				patientsWeight;
 	NSString			*repetitiontime, *echotime, *flipAngle, *laterality;
-	NSString			*viewPosition, *patientPosition, *acquisitionDate, *SOPClassUID, *frameofReferenceUID;
+	NSString			*viewPosition, *patientPosition, *acquisitionDate, *SOPClassUID, *frameofReferenceUID, *rescaleType;
 	BOOL				hasSUV, SUVConverted;
 	NSString			*units, *decayCorrection;
 	float				decayFactor, factorPET2SUV;
@@ -318,7 +318,7 @@ Note setter is different to not break existing usage. :-( */
 @property float radionuclideTotalDose;
 @property float radionuclideTotalDoseCorrected;
 @property(retain) NSCalendarDate *acquisitionTime;
-@property(retain) NSString *acquisitionDate;
+@property(retain) NSString *acquisitionDate, *rescaleType;
 @property(retain) NSCalendarDate *radiopharmaceuticalStartTime;
 @property BOOL SUVConverted, full32bitPipeline, needToCompute8bitRepresentation;
 @property(readonly) BOOL hasSUV;
