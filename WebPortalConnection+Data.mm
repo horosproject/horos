@@ -2426,22 +2426,23 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
             NSMutableDictionary *study = nil;
             NSMutableDictionary *series = nil;
             
-            if( [patientDictionary objectForKey: [dcmFile elementForKey: @"patientID"]] == nil)
+            if( [dcmFile elementForKey: @"patientID"] && [patientDictionary objectForKey: [dcmFile elementForKey: @"patientID"]] == nil)
                [patientDictionary setObject: [NSMutableDictionary dictionary] forKey: [dcmFile elementForKey: @"patientID"]];
             
             patient = [patientDictionary objectForKey: [dcmFile elementForKey: @"patientID"]];
             
-            if( [patient objectForKey: [dcmFile elementForKey: @"studyID"]] == nil)
+            if( [dcmFile elementForKey: @"studyID"] && [patient objectForKey: [dcmFile elementForKey: @"studyID"]] == nil)
                 [patient setObject: [NSMutableDictionary dictionary] forKey: [dcmFile elementForKey: @"studyID"]];
             
             study = [patient objectForKey: [dcmFile elementForKey: @"studyID"]];
             
-            if( [study objectForKey: [dcmFile elementForKey: @"seriesDICOMUID"]] == nil)
+            if( [dcmFile elementForKey: @"seriesDICOMUID"] && [study objectForKey: [dcmFile elementForKey: @"seriesDICOMUID"]] == nil)
                 [study setObject: [NSMutableDictionary dictionary] forKey: [dcmFile elementForKey: @"seriesDICOMUID"]];
             
             series = [study objectForKey: [dcmFile elementForKey: @"seriesDICOMUID"]];
             
-            [series setObject: dcmFile forKey: [dcmFile elementForKey: @"SOPUID"]];
+            if( [dcmFile elementForKey: @"SOPUID"])
+                [series setObject: dcmFile forKey: [dcmFile elementForKey: @"SOPUID"]];
         }
     }
     
