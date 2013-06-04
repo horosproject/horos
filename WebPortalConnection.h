@@ -38,6 +38,7 @@
 	NSString *POSTfilename;
     
     DicomDatabase* _independentDicomDatabase;
+    NSThread* _independentDicomDatabaseThread;
 }
 
 -(CFHTTPMessageRef)request;

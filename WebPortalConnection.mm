@@ -133,8 +133,6 @@ static NSString* NotNil(NSString *s) {
 	self = [super initWithAsyncSocket:newSocket forServer:myServer];
 	sendLock = [[NSLock alloc] init];
     
-    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector( managedObjectContextDidSaveNotification:) name: NSManagedObjectContextDidSaveNotification object: nil];
-    
 	return self;
 }
 
@@ -149,7 +147,7 @@ static NSString* NotNil(NSString *s) {
         return;
     
     @try {
-        [_independentDicomDatabase.managedObjectContext mergeChangesFromContextDidSaveNotification:n];
+        [_independentDicomDatabase.managedObjectContext performSelector: @selector( mergeChangesFromContextDidSaveNotification:) onThread: _independentDicomDatabaseThread withObject: n waitUntilDone: NO];
     }
     @catch (NSException *exception) {
         N2LogException( exception);
@@ -162,9 +160,21 @@ static NSString* NotNil(NSString *s) {
         return self.portal.dicomDatabase;
     
     if (_independentDicomDatabase)
-        return _independentDicomDatabase;
+    {
+        if( [NSThread currentThread] != _independentDicomDatabaseThread)
+            N2LogStackTrace( @"***************** [NSThread currentThread] != _independentDicomDatabaseThread");
         
+        return _independentDicomDatabase;
+    }
+    
+    [[NSNotificationCenter defaultCenter] removeObserver: self name: NSManagedObjectContextDidSaveNotification object: nil];
+    
     _independentDicomDatabase = [[self.portal.dicomDatabase independentDatabase] retain];
+    
+    [_independentDicomDatabaseThread release];
+    _independentDicomDatabaseThread = [[NSThread currentThread] retain];
+    
+    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector( managedObjectContextDidSaveNotification:) name: NSManagedObjectContextDidSaveNotification object: nil];
     
     return _independentDicomDatabase;
 }
@@ -190,7 +200,8 @@ static NSString* NotNil(NSString *s) {
     if ([_independentDicomDatabase.managedObjectContext hasChanges])
         [_independentDicomDatabase save];
     [_independentDicomDatabase release];
-	
+	[_independentDicomDatabaseThread release];
+    
 	[super dealloc];
 }
 
