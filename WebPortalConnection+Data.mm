@@ -231,6 +231,8 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
                 [NSThread sleepForTimeInterval: 0.2];
                 [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
                 [NSThread sleepForTimeInterval: 1];
+                
+                [o.managedObjectContext refreshObject: o mergeChanges: NO];
             }
         }
     }
