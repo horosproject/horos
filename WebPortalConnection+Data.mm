@@ -1092,7 +1092,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
         [user.managedObjectContext save: nil];
     }
     
-	if ([[parameters objectForKey:@"dicomSend"] isEqual:@"dicomSend"] && study)
+	if( [parameters objectForKey:@"dicomSend"] && study)
     {
 		NSArray* dicomDestinationArray = [[parameters objectForKey:@"dicomDestination"] componentsSeparatedByString:@":"];
 		if (dicomDestinationArray.count >= 4) {
@@ -1115,7 +1115,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			[response.tokens addError: NSLocalizedString(@"Dicom send failed: cannot identify node.", @"Web Portal, study, dicom send, error")];
 	}
 	
-	if ([[parameters objectForKey:@"WADOURLsRetrieve"] isEqual:@"WADOURLsRetrieve"] && study && [[NSUserDefaults standardUserDefaults] boolForKey:@"wadoServer"])
+	if( [parameters objectForKey:@"WADOURLsRetrieve"] && study && [[NSUserDefaults standardUserDefaults] boolForKey:@"wadoServer"])
 	{
 		NSMutableArray* selectedImages = [NSMutableArray array];
 		for (DicomSeries* s in selectedSeries)
@@ -1165,7 +1165,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
         }
     }
     
-	if ([[parameters objectForKey:@"shareStudy"] isEqual:@"shareStudy"] && study)
+	if( [parameters objectForKey:@"shareStudy"] && study)
     {
         if( !user || user.shareStudyWithUser.boolValue)
         {
