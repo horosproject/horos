@@ -3719,7 +3719,27 @@ static NSConditionLock *threadLock = nil;
         if( [modalityFilterMenu indexOfSelectedItem] > 0 && self.modalityFilter.length)
             [d setObject: [NSArray arrayWithObject: self.modalityFilter] forKey: @"modality"];
         
-        return [QueryController queryStudiesForFilters: d servers: servers showErrors: NO];
+        NSArray *result = [QueryController queryStudiesForFilters: d servers: servers showErrors: NO];
+        
+        if(( curSearchType == 0 || curSearchType == 7) && [[curSearchString componentsSeparatedByString: @" "] count] > 1) // For patient name, if several components, try with ^ separator, and add missing results
+        {
+            NSString *s = [curSearchString stringByAppendingString:@"*"];
+            s = [s stringByReplacingOccurrencesOfString: @" " withString: @"^"];
+            
+            [d setObject: s forKey: @"PatientsName"];
+            
+            NSArray *subResult = [QueryController queryStudiesForFilters: d servers: servers showErrors: NO];
+            
+            NSArray *resultUIDs = [result valueForKey: @"uid"];
+            
+            for( DCMTKQueryNode *n in subResult)
+            {
+                if( [resultUIDs containsObject: n.uid] == NO)
+                    result = [result arrayByAddingObject: n];
+            }
+        }
+        
+        return result;
     }
     @catch (NSException* e)
     {
@@ -18417,7 +18437,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	NSString *description = nil;
 	
-	if ( [_searchString length] > 0)
+	if( [_searchString length] > 0)
 	{
 		switch(searchType) 
 		{
@@ -18474,6 +18494,28 @@ static volatile int numberOfThreadsForJPEG = 0;
 	return [description autorelease];
 }
 
+- (NSPredicate*) patientsnamePredicate: (NSString*) s
+{
+    s = [s stringByReplacingOccurrencesOfString: @"^" withString: @" "];
+    s = [s stringByReplacingOccurrencesOfString: @"," withString: @" "];
+    
+    NSArray *nameComponents = [s componentsSeparatedByString: @" "];
+    NSMutableArray *predicates = [NSMutableArray array];
+    for( NSString *component in nameComponents)
+    {
+        NSPredicate *p = nil;
+        
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useSoundexForName"] && [_searchString length] >= 2)
+            p = [NSPredicate predicateWithFormat: @"(soundex CONTAINS[cd] %@) OR (name CONTAINS[cd] %@)", [DicomStudy soundex: component], s];
+        else
+            p = [NSPredicate predicateWithFormat: @"name CONTAINS[cd] %@", component];
+        
+        [predicates addObject: p];
+    }
+    
+    return [NSCompoundPredicate andPredicateWithSubpredicates: predicates];
+}
+
 - (NSPredicate *)createFilterPredicate
 {
 	NSPredicate *predicate = nil;
@@ -18484,21 +18526,16 @@ static volatile int numberOfThreadsForJPEG = 0;
 		switch (searchType)
 		{
 			case 7:			// All Fields
-				s = [NSString stringWithFormat:@"%@", _searchString];
+				s = _searchString;
 				
-				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useSoundexForName"] && [s length] >= 3)
-					predicate = [NSPredicate predicateWithFormat: @"(soundex CONTAINS[cd] %@) OR (name CONTAINS[cd] %@) OR (patientID CONTAINS[cd] %@) OR (id CONTAINS[cd] %@) OR (comment CONTAINS[cd] %@) OR (comment2 CONTAINS[cd] %@) OR (comment3 CONTAINS[cd] %@) OR (comment4 CONTAINS[cd] %@) OR (studyName CONTAINS[cd] %@) OR (modality CONTAINS[cd] %@) OR (accessionNumber CONTAINS[cd] %@) OR (performingPhysician CONTAINS[cd] %@) OR (referringPhysician CONTAINS[cd] %@) OR (institutionName CONTAINS[cd] %@)", [DicomStudy soundex: s], s, s, s, s, s, s, s, s, s, s, s, s, s];
-				else if( [s length] >= 3)
+				if( [s length] >= 3)
 					predicate = [NSPredicate predicateWithFormat: @"(name CONTAINS[cd] %@) OR (patientID CONTAINS[cd] %@) OR (id CONTAINS[cd] %@) OR (comment CONTAINS[cd] %@) OR (comment2 CONTAINS[cd] %@) OR (comment3 CONTAINS[cd] %@) OR (comment4 CONTAINS[cd] %@) OR (studyName CONTAINS[cd] %@) OR (modality CONTAINS[cd] %@) OR (accessionNumber CONTAINS[cd] %@) OR (performingPhysician CONTAINS[cd] %@) OR (referringPhysician CONTAINS[cd] %@) OR (institutionName CONTAINS[cd] %@)", s, s, s, s, s, s, s, s, s, s, s, s, s];
                 else if( [s length] >= 1)
-                    predicate = [NSPredicate predicateWithFormat: @"(name CONTAINS[cd] %@)", s];
+                    predicate = [self patientsnamePredicate: _searchString];
 			break;
 			
 			case 0:			// Patient Name
-				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useSoundexForName"] && [_searchString length] >= 2)
-					predicate = [NSPredicate predicateWithFormat: @"(soundex CONTAINS[cd] %@) OR (name CONTAINS[cd] %@)", [DicomStudy soundex: _searchString], s];
-				else
-					predicate = [NSPredicate predicateWithFormat: @"name CONTAINS[cd] %@", _searchString];
+                predicate = [self patientsnamePredicate: _searchString];
 			break;
 			
 			case 1:			// Patient ID
