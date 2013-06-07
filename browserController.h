@@ -549,6 +549,7 @@ extern NSString* O2AlbumDragType;
 - (void) pdfPreview:(id)sender;
 - (void) burnDICOM:(id) sender;
 - (IBAction) anonymizeDICOM:(id) sender;
+- (IBAction)retrieveSelectedPODStudies:(id) sender;
 - (void) queryDICOM:(id) sender;
 - (IBAction) querySelectedStudy:(id) sender;
 - (void) refreshComparativeStudies: (NSArray*) newStudies;

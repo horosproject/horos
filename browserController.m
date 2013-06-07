@@ -5463,7 +5463,7 @@ static NSConditionLock *threadLock = nil;
 	
     if( matrixThumbnails == NO)
     {
-        BOOL containsDistantStudy = NO;
+        BOOL onlyDistantStudy = YES;
         
         if( [[databaseOutline selectedRowIndexes] count] > 0)
         {
@@ -5473,9 +5473,9 @@ static NSConditionLock *threadLock = nil;
             {
                 id object = [databaseOutline itemAtRow: idx];
                 
-                if( [object isDistant])
+                if( [object isDistant] == NO)
                 {
-                    containsDistantStudy = YES;
+                    onlyDistantStudy = NO;
                     break;
                 }
                 
@@ -5483,7 +5483,7 @@ static NSConditionLock *threadLock = nil;
             }
         }
         
-        if( containsDistantStudy)
+        if( onlyDistantStudy)
         {
             NSRunInformationalAlertPanel(NSLocalizedString(@"Delete images", nil), NSLocalizedString(@"These studies are not stored locally, you cannot delete them", nil), NSLocalizedString(@"OK",nil), nil, nil);
             return;
@@ -5585,13 +5585,9 @@ static NSConditionLock *threadLock = nil;
 		NSMutableSet *objectsToDeleteTree = [NSMutableSet set];
 		
 		if( matrixThumbnails)
-		{
 			[self filesForDatabaseMatrixSelection: objectsToDelete onlyImages: NO];
-		}
 		else
-		{
 			[self filesForDatabaseOutlineSelection: objectsToDelete treeObjects:objectsToDeleteTree onlyImages: NO];
-		}
 		
 		NSIndexSet *selectedRows = [databaseOutline selectedRowIndexes];
 		
@@ -8640,6 +8636,36 @@ static BOOL withReset = NO;
 	[context unlock];
 }
 
+-(IBAction)retrieveSelectedPODStudies:(id) sender
+{
+    @try
+    {
+		NSIndexSet* selectedRows = [databaseOutline selectedRowIndexes];
+		NSInteger row;
+		
+		if( [databaseOutline selectedRow] >= 0)
+        {
+			for (NSInteger x = 0; x < selectedRows.count; x++)
+            {
+				if (x == 0) row = selectedRows.firstIndex;
+				else row = [selectedRows indexGreaterThanIndex:row];
+				
+				id object = [databaseOutline itemAtRow:row];
+				
+                if( [object isDistant])
+                {
+                    // Check to see if already in retrieving mode, if not download it
+                    [self retrieveComparativeStudy: object select: NO open: NO showGUI: NO];
+                }
+			}
+		}
+	}
+    @catch (NSException* e)
+    {
+		N2LogExceptionWithStackTrace(e);
+	}
+}
+
 -(IBAction)rebuildThumbnails:(id)sender
 {
 	[_database lock];
@@ -10241,28 +10267,44 @@ static BOOL needToRezoom;
     if( comparativeRetrieveQueue == nil)
         comparativeRetrieveQueue = [[NSMutableArray alloc] init];
     
-    @synchronized( comparativeRetrieveQueue)
+    #define MAX_CONCURRENT_comparativeRetrieve 5
+    static dispatch_semaphore_t sid = 0;
+    if (!sid)
+        sid = dispatch_semaphore_create(MAX_CONCURRENT_comparativeRetrieve);
+    
+    dispatch_semaphore_wait(sid, DISPATCH_TIME_FOREVER);
+    
+    if( [[NSThread currentThread] isCancelled] == NO)
     {
-        [comparativeRetrieveQueue addObject: study];
+        @synchronized( comparativeRetrieveQueue)
+        {
+            [comparativeRetrieveQueue addObject: study];
+        }
+        
+        #ifndef OSIRIX_LIGHT
+        [QueryController retrieveStudies: [NSArray arrayWithObject: study] showErrors: NO checkForPreviousAutoRetrieve: NO];
+        #endif
+        
+        [NSThread sleepForTimeInterval: 0.2];
+        [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
+        [NSThread sleepForTimeInterval: 1];
+        
+        @synchronized( comparativeRetrieveQueue)
+        {
+            [comparativeRetrieveQueue removeObject: study];
+        }
     }
-    
-    #ifndef OSIRIX_LIGHT
-    [QueryController retrieveStudies: [NSArray arrayWithObject: study] showErrors: NO checkForPreviousAutoRetrieve: NO];
-    #endif
-    
-    [NSThread sleepForTimeInterval: 0.2];
-    [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
-    [NSThread sleepForTimeInterval: 1];
-    
-    @synchronized( comparativeRetrieveQueue)
-    {
-        [comparativeRetrieveQueue removeObject: study];
-    }
+    dispatch_semaphore_signal(sid);
     
     [pool release];
 }
 
 - (void) retrieveComparativeStudy: (DCMTKStudyQueryNode*) study select: (BOOL) select open: (BOOL) open
+{
+    [self retrieveComparativeStudy: study select: select open: open showGUI: YES];
+}
+
+- (void) retrieveComparativeStudy: (DCMTKStudyQueryNode*) study select: (BOOL) select open: (BOOL) open showGUI: (BOOL) showGUI
 {    
     BOOL retrieveStudy = YES;
     
@@ -10274,8 +10316,11 @@ static BOOL needToRezoom;
     
     if( retrieveStudy)
     {
-        WaitRendering *w = [[[WaitRendering alloc] init: NSLocalizedString(@"Retrieving...", nil)] autorelease];
-        [w showWindow:self];
+        WaitRendering *w = nil;
+        
+        if( showGUI)
+            w = [[[WaitRendering alloc] init: NSLocalizedString(@"Retrieving...", nil)] autorelease];
+        [w showWindow: self];
         
         NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector(comparativeRetrieve:) object: study] autorelease];
         t.name = NSLocalizedString( @"Retrieving images...", nil);
@@ -10283,16 +10328,20 @@ static BOOL needToRezoom;
         t.supportsCancel = YES;
         [[ThreadsManager defaultManager] addThreadAndStart: t];
         
-        [NSThread sleepForTimeInterval: 0.5];
+        if( showGUI)
+            [NSThread sleepForTimeInterval: 0.5];
         [w close];
     }
     
     // see refreshComparativeStudiesIfNeeded timer
-    comparativeStudyWaitedToOpen = open;
-    comparativeStudyWaitedToSelect = select;
-    [comparativeStudyWaited release];
-    comparativeStudyWaited = [study retain];
-    comparativeStudyWaitedTime = [NSDate timeIntervalSinceReferenceDate];
+    if( open || select)
+    {
+        comparativeStudyWaitedToOpen = open;
+        comparativeStudyWaitedToSelect = select;
+        [comparativeStudyWaited release];
+        comparativeStudyWaited = [study retain];
+        comparativeStudyWaitedTime = [NSDate timeIntervalSinceReferenceDate];
+    }
 }
 
 - (void) doubleClickComparativeStudy: (id) sender
@@ -13271,6 +13320,12 @@ static NSArray*	openSubSeriesArray = nil;
 		return NO;
 	}
     
+    if( [[databaseOutline selectedRowIndexes] count] < 1 || containsDistantStudy == NO)
+    {
+        if(	[menuItem action] == @selector(retrieveSelectedPODStudies:))
+            return NO;
+    }
+    
     if ([_database isReadOnly])
     {
         if([menuItem action] == @selector(compressSelectedFiles:) ||
@@ -13283,7 +13338,8 @@ static NSArray*	openSubSeriesArray = nil;
            [menuItem action] == @selector(regenerateAutoComments:) ||
            [menuItem action] == @selector(copyToDBFolder:) ||
            [menuItem action] == @selector(querySelectedStudy:) || 
-           [menuItem action] == @selector(unifyStudies:))
+           [menuItem action] == @selector(unifyStudies:) ||
+           [menuItem action] == @selector(retrieveSelectedPODStudies:))
             return NO;
     }
     
