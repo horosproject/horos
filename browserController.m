@@ -3724,7 +3724,9 @@ static NSConditionLock *threadLock = nil;
         if(( curSearchType == 0 || curSearchType == 7) && [[curSearchString componentsSeparatedByString: @" "] count] > 1) // For patient name, if several components, try with ^ separator, and add missing results
         {
             NSString *s = [curSearchString stringByAppendingString:@"*"];
-            s = [s stringByReplacingOccurrencesOfString: @" " withString: @"^"];
+            
+            // replace last occurence // fan siu hung
+            s = [s stringByReplacingCharactersInRange: [s rangeOfString: @" " options: NSBackwardsSearch] withString: @"^"];
             
             [d setObject: s forKey: @"PatientsName"];
             
