@@ -2091,12 +2091,27 @@ static NSRecursiveLock *dbModifyLock = nil;
                 else
                     studies = [[NSArray arrayWithObject: self] filteredArrayUsingPredicate: [DicomDatabase predicateForSmartAlbumFilter: user.studyPredicate]];
                 
+                
                 if( studies.count)
                     [authorizedUsers addObject: user];
-                
                 // And now his list of specific studies
-                else if( [[user.studies.allObjects valueForKey:@"studyInstanceUID"] containsObject: self.studyInstanceUID])
+                else 
+                {
+                    if( user.canAccessPatientsOtherStudies)
+                    {
+                        NSArray *userStudiesStudyInstanceUIDs = [user.studies.allObjects valueForKey:@"studyInstanceUID"];
+                        for( DicomStudy *s in allStudies)
+                        {
+                            if( [userStudiesStudyInstanceUIDs containsObject: s.studyInstanceUID])
+                            {
+                                [authorizedUsers addObject: user];
+                                break;
+                            }
+                        }
+                    }
+                    else if( [[user.studies.allObjects valueForKey:@"studyInstanceUID"] containsObject: self.studyInstanceUID])
                         [authorizedUsers addObject: user];
+                }
             }
             else
                 [authorizedUsers addObject: user];
