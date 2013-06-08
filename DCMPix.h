@@ -181,7 +181,7 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	NSString			*generatedName;
 	NSRecursiveLock		*checking;
 	
-	BOOL				useVOILUT, notAbleToLoadImage;
+	BOOL				notAbleToLoadImage, VOILUTApplied;
 	int					VOILUT_first;
 	unsigned int		VOILUT_number, VOILUT_depth, *VOILUT_table;
 	
@@ -242,7 +242,7 @@ Note setter is different to not break existing usage. :-( */
 @property(readonly) float ww, wl, fullww, fullwl;
 @property(nonatomic) float slope, offset, savedWW, savedWL, *subtractedfImage;
 
-@property(readonly) BOOL notAbleToLoadImage;
+@property(readonly) BOOL notAbleToLoadImage, VOILUTApplied;
 @property(readonly) NSPoint *shutterPolygonal;
 
 /**  X/Y ratio - non-square pixels */

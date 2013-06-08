@@ -1244,8 +1244,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 @synthesize minValueOfSeries, maxValueOfSeries, factorPET2SUV, slope, offset;
 @synthesize isRGB, pwidth = width, pheight = height, checking;
 @synthesize pixelRatio, transferFunction, subPixOffset, isOriginDefined;
-@synthesize imageType;
-@synthesize waveform;
+@synthesize imageType, waveform, VOILUTApplied;
 
 @synthesize DCMPixShutterRectWidth = shutterRect_w;
 @synthesize DCMPixShutterRectHeight = shutterRect_h;
@@ -5203,6 +5202,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"UseVOILUT"];
 		NSLog( @"***** VOI LUT seems corrupted ! -> It will be turned OFF");
 	}
+    else
+        VOILUTApplied = YES;
 }
 
 #pragma mark-

@@ -7605,6 +7605,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             yPosition += stringSize.height + 3;
         }
     }
+    
+    if( [self is2DViewer] && curDCM.VOILUTApplied)
+    {
+        [self DrawNSStringGL: @"VOI LUT Applied" : fontListGL :size.size.width/2 :yPosition align:DCMViewTextAlignCenter useStringTexture: YES];
+        yPosition += stringSize.height + 3;
+    }
 	
 	//Bottom
 	[self getOrientationText:string :vectors+3 :NO];
