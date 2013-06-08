@@ -2043,6 +2043,22 @@ static NSRecursiveLock *dbModifyLock = nil;
     return images;
 }
 
+- (NSArray*) studiesForThisPatient
+{
+    NSArray *comparatives = nil;
+    NSFetchRequest *req = [NSFetchRequest fetchRequestWithEntityName: @"Study"];
+	req.predicate = [NSPredicate predicateWithFormat: @"(patientUID == %@)", self.patientUID];
+    
+    @try {
+        comparatives = [self.managedObjectContext executeFetchRequest: req error: nil];
+    }
+    @catch ( NSException *e) {
+        N2LogException( e);
+    }
+    
+    return comparatives;
+}
+
 #ifdef OSIRIX_VIEWER
 #ifndef OSIRIX_LIGHT
 -(NSArray*)authorizedUsers
@@ -2054,19 +2070,33 @@ static NSRecursiveLock *dbModifyLock = nil;
         NSFetchRequest *dbRequest = [NSFetchRequest fetchRequestWithEntityName: @"User"];
         dbRequest.predicate = [NSPredicate predicateWithValue:YES];
         dbRequest.sortDescriptors = [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: @"name" ascending: YES]];
-
+        
         // Find all users
         NSArray* users = [webContext executeFetchRequest: dbRequest error:NULL];
+        
+        // Find all comparatives for this patient
+        NSArray* allStudies = [self studiesForThisPatient];
         
         NSMutableArray* authorizedUsers = [NSMutableArray array];
         for (WebPortalUser* user in users)
         {
             if( user.studyPredicate.length > 0)
             {
-                NSArray *studies = [WebPortalUser studiesForUser: user predicate: [NSPredicate predicateWithFormat: @"patientUID BEGINSWITH[cd] %@ AND studyInstanceUID == %@", self.patientUID, self.studyInstanceUID]];
+                NSArray *studies = nil;
+                
+                // First check the studyPredicate of the user
+                
+                if( user.canAccessPatientsOtherStudies)
+                    studies = [allStudies filteredArrayUsingPredicate: [DicomDatabase predicateForSmartAlbumFilter: user.studyPredicate]];
+                else
+                    studies = [[NSArray arrayWithObject: self] filteredArrayUsingPredicate: [DicomDatabase predicateForSmartAlbumFilter: user.studyPredicate]];
                 
                 if( studies.count)
                     [authorizedUsers addObject: user];
+                
+                // And now his list of specific studies
+                else if( [[user.studies.allObjects valueForKey:@"studyInstanceUID"] containsObject: self.studyInstanceUID])
+                        [authorizedUsers addObject: user];
             }
             else
                 [authorizedUsers addObject: user];

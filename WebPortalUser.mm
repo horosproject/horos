@@ -302,9 +302,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
 
 -(BOOL)validateStudyPredicate:(NSString**)value error:(NSError**)error
 {
-    DicomDatabase *dicomDBContext = [WebPortal.defaultWebPortal.dicomDatabase independentDatabase];
-    
-    [dicomDBContext lock];
+    DicomDatabase *dicomDBContext = [NSThread isMainThread] ? WebPortal.defaultWebPortal.dicomDatabase : [WebPortal.defaultWebPortal.dicomDatabase independentDatabase];
     
 	@try {
 		NSFetchRequest* request = [[[NSFetchRequest alloc] init] autorelease];
@@ -322,9 +320,6 @@ static NSMutableDictionary *studiesForUserCache = nil;
 		*error = [NSError osirixErrorWithCode:-31 localizedDescription:[NSString stringWithFormat:NSLocalizedString(@"Error: %@", nil), e]];
 		return NO;
 	}
-    @finally {
-        [dicomDBContext unlock];
-    }
 	
 	return YES;
 }
