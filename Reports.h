@@ -18,7 +18,6 @@
 /** \brief reports */
 @interface Reports : NSObject
 {
-	ComponentInstance myComponent;
 	NSMutableString *templateName;
 }
 

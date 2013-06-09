@@ -282,7 +282,6 @@ static id aedesc_to_id(AEDesc *desc)
 	self = [super init];
 	if (self)
 	{
-		myComponent = OpenDefaultComponent(kOSAComponentType, kOSAGenericScriptingComponentSubtype);
 		templateName = [[NSMutableString stringWithString:@"OsiriX Basic Report"] retain];
 	}
 	return self;
@@ -733,29 +732,30 @@ static id aedesc_to_id(AEDesc *desc)
 	
 	if(![xmlContentString writeToFile:indexFilePath atomically:YES encoding:xmlFileEncoding error:&xmlError])
 		return NO;
-	
-	// gzip back the index.xml file
-	gzip = [[NSTask alloc] init];
-	[gzip setLaunchPath:@"/usr/bin/gzip"];
-	[gzip setCurrentDirectoryPath:aPath];
-	[gzip setArguments:[NSArray arrayWithObjects:@"index.xml", nil]];
-	[gzip launch];
 
-	while( [gzip isRunning])
-        [NSThread sleepForTimeInterval: 0.1];
-    
-    //[aTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
-	status = [gzip terminationStatus];
- 
-	if (status == 0)
-		NSLog(@"Pages Report creation. Gzip succeeded.");
-	else
-	{
-		NSLog(@"Pages Report creation  failed. Cause: Gzip failed.");
-		// we don't need to return NO, because the xml has been modified. Thus, even if the file is not compressed, the report is valid...
-	}
-	// we don't need to gzip anything anymore 
-	[gzip release];
+//  Pages support ungzipped index file
+//	// gzip back the index.xml file
+//	gzip = [[NSTask alloc] init];
+//	[gzip setLaunchPath:@"/usr/bin/gzip"];
+//	[gzip setCurrentDirectoryPath:aPath];
+//	[gzip setArguments:[NSArray arrayWithObjects:@"index.xml", nil]];
+//	[gzip launch];
+//
+//	while( [gzip isRunning])
+//        [NSThread sleepForTimeInterval: 0.1];
+//    
+//    //[aTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
+//	status = [gzip terminationStatus];
+// 
+//	if (status == 0)
+//		NSLog(@"Pages Report creation. Gzip succeeded.");
+//	else
+//	{
+//		NSLog(@"Pages Report creation  failed. Cause: Gzip failed.");
+//		// we don't need to return NO, because the xml has been modified. Thus, even if the file is not compressed, the report is valid...
+//	}
+//	// we don't need to gzip anything anymore 
+//	[gzip release];
 	
 	[aStudy setValue: aPath forKey:@"reportURL"];
 	
