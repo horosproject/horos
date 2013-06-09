@@ -101,7 +101,6 @@ return s;
 	self = [super init];
 	if (self)
 	{
-		myComponent = OpenDefaultComponent(kOSAComponentType, kOSAGenericScriptingComponentSubtype);
 	}
 	
 return self;

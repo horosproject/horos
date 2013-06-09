@@ -98,7 +98,7 @@ return s;
 - (id)init {
 self = [super init];
 if (self) {
-myComponent = OpenDefaultComponent(kOSAComponentType, kOSAGenericScriptingComponentSubtype);
+//myComponent = OpenDefaultComponent(kOSAComponentType, kOSAGenericScriptingComponentSubtype);
 // other initialization code here
 }
 return self;

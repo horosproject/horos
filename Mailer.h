@@ -24,7 +24,6 @@
 /** \brief Sends email */
 @interface Mailer : NSObject {
 
-ComponentInstance myComponent;
 }
 
 - (void)runScript:(NSString *)txt;

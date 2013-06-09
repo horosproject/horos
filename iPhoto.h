@@ -19,9 +19,8 @@
 #import <Carbon/Carbon.h>
 
 /** \brief Import into iPhoto*/
-@interface iPhoto : NSObject {
-
-ComponentInstance myComponent;
+@interface iPhoto : NSObject
+{
 }
 
 - (void)runScript:(NSString *)txt;
