@@ -2078,7 +2078,7 @@ static NSRecursiveLock *dbModifyLock = nil;
         NSArray* allStudies = [self studiesForThisPatient];
         
         NSMutableArray* authorizedUsers = [NSMutableArray array];
-        for (WebPortalUser* user in users)
+        for( WebPortalUser* user in users)
         {
             if( user.studyPredicate.length > 0)
             {
@@ -2091,24 +2091,15 @@ static NSRecursiveLock *dbModifyLock = nil;
                 else
                     studies = [[NSArray arrayWithObject: self] filteredArrayUsingPredicate: [DicomDatabase predicateForSmartAlbumFilter: user.studyPredicate]];
                 
-                
                 if( studies.count)
                     [authorizedUsers addObject: user];
-                // And now his list of specific studies
+                
+                // And now check his list of specific studies
                 else 
                 {
-                    if( user.canAccessPatientsOtherStudies)
-                    {
-                        NSArray *userStudiesStudyInstanceUIDs = [user.studies.allObjects valueForKey:@"studyInstanceUID"];
-                        for( DicomStudy *s in allStudies)
-                        {
-                            if( [userStudiesStudyInstanceUIDs containsObject: s.studyInstanceUID])
-                            {
-                                [authorizedUsers addObject: user];
-                                break;
-                            }
-                        }
-                    }
+                    if( user.canAccessPatientsOtherStudies && [[user.studies.allObjects valueForKey:@"patientUID"] containsObject: self.patientUID])
+                        [authorizedUsers addObject: user];
+                    
                     else if( [[user.studies.allObjects valueForKey:@"studyInstanceUID"] containsObject: self.studyInstanceUID])
                         [authorizedUsers addObject: user];
                 }
