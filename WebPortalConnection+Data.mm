@@ -2662,7 +2662,8 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			[aTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Decompress"]];
 			[aTask setArguments:[NSArray arrayWithObjects:htmlpath, @"pdfFromURL", nil]];		
 			[aTask launch];
-			while( [aTask isRunning])
+            NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
+			while( [aTask isRunning] && [NSDate timeIntervalSinceReferenceDate] - start < 10)
                 [NSThread sleepForTimeInterval: 0.1];
             
             //[aTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
