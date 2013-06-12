@@ -2281,8 +2281,7 @@ static NSConditionLock *threadLock = nil;
             distantSearchThread = nil;
         }
         
-        if( albumTable.selectedRow == 0)
-            [NSThread detachNewThreadSelector: @selector(searchForSearchField:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: searchType], @"searchType", _searchString, @"searchString", nil]];
+        [NSThread detachNewThreadSelector: @selector(searchForSearchField:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: searchType], @"searchType", _searchString, @"searchString", [NSNumber numberWithInt: albumTable.selectedRow], @"selectedAlbumIndex", nil]];
     }
     else if( timeIntervalStart || timeIntervalEnd)
     {
@@ -2524,6 +2523,18 @@ static NSConditionLock *threadLock = nil;
 	return pred;
 }
 
+- (void) refreshEntireDBResult
+{
+    if( distantEntireDBResultCount > outlineViewArray.count || localEntireDBResultCount > outlineViewArray.count)
+    {
+        [searchInEntireDBResult setTitle: N2LocalizedSingularPluralCount( ((distantEntireDBResultCount > localEntireDBResultCount) ? distantEntireDBResultCount : localEntireDBResultCount), NSLocalizedString(@"result in entire DB", nil), NSLocalizedString(@"results in entire DB", nil))];
+        
+        [searchInEntireDBResult setHidden: NO];
+    }
+    else
+        [searchInEntireDBResult setHidden: YES];
+}
+
 - (NSString*) outlineViewRefresh		// This function creates the 'root' array for the outlineView
 {
     @synchronized (self)
@@ -2659,7 +2670,7 @@ static NSConditionLock *threadLock = nil;
 	{
         @try
         {
-            BOOL searchInEntireDBHidden = YES;
+            [searchInEntireDBResult setHidden: YES];
             
             if( albumArrayContent)
             {
@@ -2670,20 +2681,16 @@ static NSConditionLock *threadLock = nil;
                     NSFetchRequest *fetch = [NSFetchRequest fetchRequestWithEntityName: @"Study"];
                     [fetch setPredicate: self.filterPredicate];
                     
-                    NSUInteger globalCount = [_database.managedObjectContext countForFetchRequest: fetch error: nil];
+                    // Entire DB Result
                     
-                    if( globalCount > outlineViewArray.count)
-                    {
-                        searchInEntireDBHidden = NO;
-                        [searchInEntireDBResult setTitle: N2LocalizedSingularPluralCount( globalCount, NSLocalizedString(@"result in entire DB", nil), NSLocalizedString(@"results in entire DB", nil))];
-                    }
+                    distantEntireDBResultCount = 0;
+                    localEntireDBResultCount = [_database.managedObjectContext countForFetchRequest: fetch error: nil];
+                    
+                    [self refreshEntireDBResult];
                 }
             }
             else
                 outlineViewArray = [[_database objectsForEntity:_database.studyEntity predicate:nil error:&error] filteredArrayUsingPredicate:predicate];
-            
-            if( searchInEntireDBHidden != [searchInEntireDBResult isHidden])
-                [searchInEntireDBResult setHidden: searchInEntireDBHidden];
 		}
         @catch( NSException *ne)
         {
@@ -3771,10 +3778,11 @@ static NSConditionLock *threadLock = nil;
     
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
     
+    int selectedAlbumIndex = [[dict objectForKey: @"selectedAlbumIndex"] intValue];
     int curSearchType = [[dict objectForKey: @"searchType"] intValue];
     NSString *curSearchString = [dict objectForKey: @"searchString"];
     
-    [NSThread currentThread].name = @"Search For Search Field...";
+    [NSThread currentThread].name = NSLocalizedString( @"Search For Search Field...", nil);
     
     if( curSearchType == searchType && [curSearchString isEqualToString: _searchString]) // There was maybe other locks in the queue...
     {
@@ -3813,17 +3821,27 @@ static NSConditionLock *threadLock = nil;
                     @try
                     {
                         NSArray *array = [self distantStudiesForSearchString: curSearchString type: curSearchType];
-                        @synchronized( smartAlbumDistantArraySync)
+                        
+                        if( selectedAlbumIndex == 0)
                         {
-                            [smartAlbumDistantArray release];
-                            smartAlbumDistantArray = [array retain];
+                            @synchronized( smartAlbumDistantArraySync)
+                            {
+                                [smartAlbumDistantArray release];
+                                smartAlbumDistantArray = [array retain];
+                            }
                         }
+                        else distantEntireDBResultCount = array.count;
                         
                         self.distantSearchString = curSearchString;
                         self.distantSearchType = curSearchType;
                         
-                        if( curSearchType == searchType && [curSearchString isEqualToString: _searchString]) // There was maybe other locks in the queue...
-                            [self performSelectorOnMainThread: @selector(_refreshDatabaseDisplay) withObject: nil waitUntilDone: NO  modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+                        if( curSearchType == searchType && [curSearchString isEqualToString: _searchString]) // There were maybe other locks in the queue...
+                        {
+                            if( selectedAlbumIndex == 0)
+                                [self performSelectorOnMainThread: @selector(_refreshDatabaseDisplay) withObject: nil waitUntilDone: NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+                            else
+                                [self performSelectorOnMainThread: @selector(refreshEntireDBResult) withObject: nil waitUntilDone: NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+                        }
                     }
                     @catch (NSException* e)
                     {
@@ -18442,8 +18460,7 @@ static volatile int numberOfThreadsForJPEG = 0;
             distantSearchThread = nil;
         }
         
-        if( albumTable.selectedRow == 0)
-            [NSThread detachNewThreadSelector: @selector(searchForSearchField:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: searchType], @"searchType", _searchString, @"searchString", nil]];
+        [NSThread detachNewThreadSelector: @selector(searchForSearchField:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: searchType], @"searchType", _searchString, @"searchString", [NSNumber numberWithInt: albumTable.selectedRow], @"selectedAlbumIndex", nil]];
     }
     else if( timeIntervalStart || timeIntervalEnd)
     {

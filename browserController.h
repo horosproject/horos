@@ -254,6 +254,7 @@ extern NSString* O2AlbumDragType;
     NSDate *distantTimeIntervalStart, *distantTimeIntervalEnd;
     NSString *distantSearchString;
     int distantSearchType;
+    int distantEntireDBResultCount, localEntireDBResultCount;
     
     BOOL autoretrievingPACSOnDemandSmartAlbum;
 }
