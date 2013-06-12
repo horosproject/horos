@@ -3694,6 +3694,9 @@ static NSConditionLock *threadLock = nil;
 		{
             case 7:			// All fields -> Use only the Patient Name for distant nodes
             case 0:			// Patient Name
+                curSearchString = [curSearchString stringByReplacingOccurrencesOfString: @", " withString: @" "];
+                curSearchString = [curSearchString stringByReplacingOccurrencesOfString: @"," withString: @" "];
+                
                 [d setObject: [curSearchString stringByAppendingString:@"*"] forKey: @"PatientsName"];
                 break;
                 
@@ -18574,20 +18577,36 @@ static volatile int numberOfThreadsForJPEG = 0;
 - (NSPredicate*) patientsnamePredicate: (NSString*) s
 {
     s = [s stringByReplacingOccurrencesOfString: @"^" withString: @" "];
+    s = [s stringByReplacingOccurrencesOfString: @", " withString: @" "];
     s = [s stringByReplacingOccurrencesOfString: @"," withString: @" "];
     
+    BOOL firstComponent = YES;
     NSArray *nameComponents = [s componentsSeparatedByString: @" "];
     NSMutableArray *predicates = [NSMutableArray array];
     for( NSString *component in nameComponents)
     {
         NSPredicate *p = nil;
         
-        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useSoundexForName"] && [_searchString length] >= 2)
-            p = [NSPredicate predicateWithFormat: @"(soundex CONTAINS[cd] %@) OR (name CONTAINS[cd] %@)", [DicomStudy soundex: component], s];
+        if( (component.length >= 1 && [[component substringToIndex: 1] isEqualToString: @"*"]) || firstComponent == NO)
+        {
+            NSString *ss = [component substringFromIndex: 1];
+            
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useSoundexForName"] && [s length] >= 2)
+                p = [NSPredicate predicateWithFormat: @"(soundex CONTAINS[cd] %@) OR (name CONTAINS[cd] %@)", [DicomStudy soundex: ss], ss];
+            else
+                p = [NSPredicate predicateWithFormat: @"name CONTAINS[cd] %@", ss];
+        }
         else
-            p = [NSPredicate predicateWithFormat: @"name CONTAINS[cd] %@", component];
+        {
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useSoundexForName"] && [_searchString length] >= 2)
+                p = [NSPredicate predicateWithFormat: @"(soundex BEGINSWITH[cd] %@) OR (name BEGINSWITH[cd] %@)", [DicomStudy soundex: component], component];
+            else
+                p = [NSPredicate predicateWithFormat: @"name BEGINSWITH[cd] %@", component];
+        }
         
         [predicates addObject: p];
+        
+        firstComponent = NO;
     }
     
     return [NSCompoundPredicate andPredicateWithSubpredicates: predicates];
