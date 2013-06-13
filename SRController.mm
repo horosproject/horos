@@ -25,6 +25,7 @@
 #import "DicomStudy.h"
 #import "DicomSeries.h"
 #import "DicomImage.h"
+#import "N2Debug.h"
 
 static NSString* 	MIPToolbarIdentifier				= @"SR Toolbar Identifier";
 static NSString*	QTExportToolbarItemIdentifier		= @"QTExport.pdf";
@@ -132,165 +133,174 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
     short           err = 0;
 	BOOL			testInterval = YES;
 	
-    pixList = pix;
-	volumeData = vData;
-
-    DCMPix  *firstObject = [pixList objectAtIndex:0];
-    float sliceThickness = fabs( [firstObject sliceInterval]);  //fabs( [firstObject sliceLocation] - [[pixList objectAtIndex:1] sliceLocation]);
-    
-    if( sliceThickness == 0)
+    @try
     {
-		sliceThickness = [firstObject sliceThickness];
-		
-		testInterval = NO;
-		
-		if( sliceThickness > 0) NSRunCriticalAlertPanel(NSLocalizedString( @"Slice interval",nil),  NSLocalizedString(@"I'm not able to find the slice interval. Slice interval will be equal to slice thickness.",nil),NSLocalizedString( @"OK",nil), nil, nil);
-		else
-		{
-			NSRunCriticalAlertPanel(NSLocalizedString( @"Slice interval/thickness",nil), NSLocalizedString( @"Problems with slice thickness/interval to do a 3D reconstruction.",nil), NSLocalizedString(@"OK",nil), nil, nil);
-			return nil;
-		}
-    }
-    
-	err = 0;
-    // CHECK IMAGE SIZE
-    for( i =0 ; i < [pixList count]; i++)
-    {
-        if( [firstObject pwidth] != [[pixList objectAtIndex:i] pwidth]) err = -1;
-        if( [firstObject pheight] != [[pixList objectAtIndex:i] pheight]) err = -1;
-    }
-    if( err)
-    {
-        NSRunCriticalAlertPanel( NSLocalizedString(@"Images size",nil),  NSLocalizedString(@"These images don't have the same height and width to allow a 3D reconstruction...",nil), NSLocalizedString(@"OK",nil), nil, nil);
-        return nil;
-    }
-    
-    // CHECK IMAGE SIZE
-//	if( testInterval)
-//	{
-//		float prevLoc = [firstObject sliceLocation];
-//		for( i = 1 ; i < [pixList count]; i++)
-//		{
-//			if( fabs( sliceThickness - fabs( [[pixList objectAtIndex:i] sliceLocation] - prevLoc)) > 0.1) err = -1;
-//			prevLoc = [[pixList objectAtIndex:i] sliceLocation];
-//		}
-//		if( err)
-//		{
-//			if( NSRunCriticalAlertPanel( @"Slices location",  @"Slice thickness/interval is not exactly equal for all images. This could distord the 3D reconstruction...", @"Continue", @"Cancel", nil) != NSAlertDefaultReturn) return nil;
-//			err = 0;
-//		}
-//	}
-	fileList = f;
-	[fileList retain];
-	
-	[pixList retain];
-	[volumeData retain];
-    self = [super initWithWindowNibName:@"SR"];
-    
-    [[self window] setDelegate:self];
-    
-    err = [view setPixSource:pixList :(float*) [volumeData bytes]];
-    if( err != 0)
-    {
-       // [self dealloc];
-        return nil;
-    }
-    
-	blendingController = bC;
-	if( blendingController) // Blending! Activate image fusion
-	{
-		[view setBlendingPixSource: blendingController];
-	}
+        pixList = pix;
+        volumeData = vData;
 
-	roi2DPointsArray = [[NSMutableArray alloc] initWithCapacity:0];
-	sliceNumber2DPointsArray = [[NSMutableArray alloc] initWithCapacity:0];
-	x2DPointsArray = [[NSMutableArray alloc] initWithCapacity:0];
-	y2DPointsArray = [[NSMutableArray alloc] initWithCapacity:0];
-	z2DPointsArray = [[NSMutableArray alloc] initWithCapacity:0];
+        DCMPix  *firstObject = [pixList objectAtIndex:0];
+        float sliceThickness = fabs( [firstObject sliceInterval]);  //fabs( [firstObject sliceLocation] - [[pixList objectAtIndex:1] sliceLocation]);
+        
+        if( sliceThickness == 0)
+        {
+            sliceThickness = [firstObject sliceThickness];
+            
+            testInterval = NO;
+            
+            if( sliceThickness > 0) NSRunCriticalAlertPanel(NSLocalizedString( @"Slice interval",nil),  NSLocalizedString(@"I'm not able to find the slice interval. Slice interval will be equal to slice thickness.",nil),NSLocalizedString( @"OK",nil), nil, nil);
+            else
+            {
+                NSRunCriticalAlertPanel(NSLocalizedString( @"Slice interval/thickness",nil), NSLocalizedString( @"Problems with slice thickness/interval to do a 3D reconstruction.",nil), NSLocalizedString(@"OK",nil), nil, nil);
+                return nil;
+            }
+        }
+        
+        err = 0;
+        // CHECK IMAGE SIZE
+        for( i =0 ; i < [pixList count]; i++)
+        {
+            if( [firstObject pwidth] != [[pixList objectAtIndex:i] pwidth]) err = -1;
+            if( [firstObject pheight] != [[pixList objectAtIndex:i] pheight]) err = -1;
+        }
+        if( err)
+        {
+            NSRunCriticalAlertPanel( NSLocalizedString(@"Images size",nil),  NSLocalizedString(@"These images don't have the same height and width to allow a 3D reconstruction...",nil), NSLocalizedString(@"OK",nil), nil, nil);
+            return nil;
+        }
+        
+        // CHECK IMAGE SIZE
+    //	if( testInterval)
+    //	{
+    //		float prevLoc = [firstObject sliceLocation];
+    //		for( i = 1 ; i < [pixList count]; i++)
+    //		{
+    //			if( fabs( sliceThickness - fabs( [[pixList objectAtIndex:i] sliceLocation] - prevLoc)) > 0.1) err = -1;
+    //			prevLoc = [[pixList objectAtIndex:i] sliceLocation];
+    //		}
+    //		if( err)
+    //		{
+    //			if( NSRunCriticalAlertPanel( @"Slices location",  @"Slice thickness/interval is not exactly equal for all images. This could distord the 3D reconstruction...", @"Continue", @"Cancel", nil) != NSAlertDefaultReturn) return nil;
+    //			err = 0;
+    //		}
+    //	}
+        fileList = f;
+        [fileList retain];
+        
+        [pixList retain];
+        [volumeData retain];
+        self = [super initWithWindowNibName:@"SR"];
+        
+        [[self window] setDelegate:self];
+        
+        err = [view setPixSource:pixList :(float*) [volumeData bytes]];
+        if( err != 0)
+        {
+           // [self dealloc];
+            return nil;
+        }
+        
+        blendingController = bC;
+        if( blendingController) // Blending! Activate image fusion
+        {
+            [view setBlendingPixSource: blendingController];
+        }
 
-	viewer2D = [vC retain];
-	if (viewer2D)
-	{		
-		long i, j;
-		float x, y, z;
-		NSMutableArray	*curRoiList;
-		ROI	*curROI;
-		
-		for(i=0; i<[[[viewer2D imageView] dcmPixList] count]; i++)
-		{
-			curRoiList = [[viewer2D roiList] objectAtIndex: i];
-			for(j=0; j<[curRoiList count];j++)
-			{
-				curROI = [curRoiList objectAtIndex:j];
-				if ([curROI type] == t2DPoint)
-				{
-					float location[ 3 ];
-					
-					[[[viewer2D pixList] objectAtIndex: i] convertPixX: [[[curROI points] objectAtIndex:0] x] pixY: [[[curROI points] objectAtIndex:0] y] toDICOMCoords: location pixelCenter: YES];
-					
-					x =location[ 0 ];
-					y =location[ 1 ];
-					z =location[ 2 ];
+        roi2DPointsArray = [[NSMutableArray alloc] initWithCapacity:0];
+        sliceNumber2DPointsArray = [[NSMutableArray alloc] initWithCapacity:0];
+        x2DPointsArray = [[NSMutableArray alloc] initWithCapacity:0];
+        y2DPointsArray = [[NSMutableArray alloc] initWithCapacity:0];
+        z2DPointsArray = [[NSMutableArray alloc] initWithCapacity:0];
 
-					// add the 3D Point to the SR view
-					[[self view] add3DPoint:  x : y : z];
-					// add the 2D Point to our list
-					[roi2DPointsArray addObject:curROI];
-					[sliceNumber2DPointsArray addObject:[NSNumber numberWithLong:i]];
-					[x2DPointsArray addObject:[NSNumber numberWithFloat:x]];
-					[y2DPointsArray addObject:[NSNumber numberWithFloat:y]];
-					[z2DPointsArray addObject:[NSNumber numberWithFloat:z]];
-				}
-			}
-		}
-	}
-	
-	NSNotificationCenter *nc;
-	nc = [NSNotificationCenter defaultCenter];
-	
-	[nc addObserver: self
-		selector: @selector(remove3DPoint:)
-		name: OsirixRemoveROINotification
-		object: nil];
-	[nc addObserver: self
-		selector: @selector(add3DPoint:)
-		//name: OsirixROIChangeNotification
-		name: OsirixROISelectedNotification //OsirixROISelectedNotification
-		object: nil];
-	[nc	addObserver: self
-					selector: @selector(CloseViewerNotification:)
-					name: OsirixCloseViewerNotification
-					object: nil];
-//	curWLWWMenu = @"Other";
-//	
-//	NSNotificationCenter *nc;
-//    nc = [NSNotificationCenter defaultCenter];
-//    [nc addObserver: self
-//           selector: @selector(UpdateWLWWMenu:)
-//               name: OsirixUpdateWLWWMenuNotification
-//             object: nil];
-//	
-//	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: curWLWWMenu userInfo: nil];
-//	
-//	curCLUTMenu = NSLocalizedString(@"No CLUT", nil);
-//	
-//    [nc addObserver: self
-//           selector: @selector(UpdateCLUTMenu:)
-//               name: OsirixUpdateCLUTMenuNotification
-//             object: nil];
-//	
-//	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
-	
-	roiVolumes = [[NSMutableArray alloc] initWithCapacity:0];
-#ifdef roi3Dvolume
-	[self computeROIVolumes];
-	[self displayROIVolumes];
-#endif
-	//[[self window] performZoom:self];
-	
-    [self setupToolbar];
-    
-    return self;
+        viewer2D = [vC retain];
+        if (viewer2D)
+        {		
+            long i, j;
+            float x, y, z;
+            NSMutableArray	*curRoiList;
+            ROI	*curROI;
+            
+            for(i=0; i<[[[viewer2D imageView] dcmPixList] count]; i++)
+            {
+                curRoiList = [[viewer2D roiList] objectAtIndex: i];
+                for(j=0; j<[curRoiList count];j++)
+                {
+                    curROI = [curRoiList objectAtIndex:j];
+                    if ([curROI type] == t2DPoint)
+                    {
+                        float location[ 3 ];
+                        
+                        [[[viewer2D pixList] objectAtIndex: i] convertPixX: [[[curROI points] objectAtIndex:0] x] pixY: [[[curROI points] objectAtIndex:0] y] toDICOMCoords: location pixelCenter: YES];
+                        
+                        x =location[ 0 ];
+                        y =location[ 1 ];
+                        z =location[ 2 ];
+
+                        // add the 3D Point to the SR view
+                        [[self view] add3DPoint:  x : y : z];
+                        // add the 2D Point to our list
+                        [roi2DPointsArray addObject:curROI];
+                        [sliceNumber2DPointsArray addObject:[NSNumber numberWithLong:i]];
+                        [x2DPointsArray addObject:[NSNumber numberWithFloat:x]];
+                        [y2DPointsArray addObject:[NSNumber numberWithFloat:y]];
+                        [z2DPointsArray addObject:[NSNumber numberWithFloat:z]];
+                    }
+                }
+            }
+        }
+        
+        NSNotificationCenter *nc;
+        nc = [NSNotificationCenter defaultCenter];
+        
+        [nc addObserver: self
+            selector: @selector(remove3DPoint:)
+            name: OsirixRemoveROINotification
+            object: nil];
+        [nc addObserver: self
+            selector: @selector(add3DPoint:)
+            //name: OsirixROIChangeNotification
+            name: OsirixROISelectedNotification //OsirixROISelectedNotification
+            object: nil];
+        [nc	addObserver: self
+                        selector: @selector(CloseViewerNotification:)
+                        name: OsirixCloseViewerNotification
+                        object: nil];
+    //	curWLWWMenu = @"Other";
+    //	
+    //	NSNotificationCenter *nc;
+    //    nc = [NSNotificationCenter defaultCenter];
+    //    [nc addObserver: self
+    //           selector: @selector(UpdateWLWWMenu:)
+    //               name: OsirixUpdateWLWWMenuNotification
+    //             object: nil];
+    //	
+    //	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: curWLWWMenu userInfo: nil];
+    //	
+    //	curCLUTMenu = NSLocalizedString(@"No CLUT", nil);
+    //	
+    //    [nc addObserver: self
+    //           selector: @selector(UpdateCLUTMenu:)
+    //               name: OsirixUpdateCLUTMenuNotification
+    //             object: nil];
+    //	
+    //	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
+        
+        roiVolumes = [[NSMutableArray alloc] initWithCapacity:0];
+    #ifdef roi3Dvolume
+        [self computeROIVolumes];
+        [self displayROIVolumes];
+    #endif
+        //[[self window] performZoom:self];
+        
+        [self setupToolbar];
+        
+        return self;
+    }
+    @catch ( NSException *e)
+    {
+        N2LogException( e);
+        [self autorelease];
+    }
+    return nil;
 }
 
 -(void) dealloc

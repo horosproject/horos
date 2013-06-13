@@ -957,15 +957,18 @@ typedef struct _xyzArray
 	long			i, j;
 	vtkMatrix4x4	*matrix;
 	
-	matrix = aCamera->GetViewTransformMatrix();
-	
-	for( i = 0; i < 3; i++)
-		for( j = 0; j < 3; j++)
-			o[ 3*i + j] = matrix->GetElement( i , j);
-			
-	o[ 3] = -o[ 3];
-	o[ 4] = -o[ 4];
-	o[ 5] = -o[ 5];
+    if( aCamera)
+    {
+        matrix = aCamera->GetViewTransformMatrix();
+        
+        for( i = 0; i < 3; i++)
+            for( j = 0; j < 3; j++)
+                o[ 3*i + j] = matrix->GetElement( i , j);
+                
+        o[ 3] = -o[ 3];
+        o[ 4] = -o[ 4];
+        o[ 5] = -o[ 5];
+    }
 }
 
 - (void) computeOrientationText
