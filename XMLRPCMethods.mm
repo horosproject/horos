@@ -269,7 +269,7 @@
         
         NSThread* thread = [NSThread currentThread];
         thread.name = NSLocalizedString(@"Retrieving requested study...", nil);
-        thread.status = (dicomNodes.count == 1)? NSLocalizedString(@"Querying POD server...", nil) : NSLocalizedString(@"Querying POD servers...", nil);
+        thread.status = (dicomNodes.count == 1)? NSLocalizedString(@"Querying distant server...", nil) : NSLocalizedString(@"Querying distant servers...", nil);
         [ThreadsManager.defaultManager addThreadAndStart:thread];
         
         DcmDataset slDataset;

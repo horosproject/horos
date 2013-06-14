@@ -4721,9 +4721,9 @@ static volatile int numberOfThreadsForRelisce = 0;
                 tip = [tip stringByAppendingString:@", "];
             
             if (self.flagListPODComparatives.boolValue)
-                tip = [tip stringByAppendingString: NSLocalizedString( @"Click here to hide them", @"There are [more recent] POD comparatives, _____")];
+                tip = [tip stringByAppendingString: NSLocalizedString( @"Click here to hide them", nil)];
             else
-                tip = [tip stringByAppendingString: NSLocalizedString( @"Click here to show them", @"There are [more recent] POD comparatives, _____")];
+                tip = [tip stringByAppendingString: NSLocalizedString( @"Click here to show them", nil)];
         }
         NSMutableDictionary* attributes = [[[comparativesButton.attributedTitle attributesAtIndex:0 effectiveRange:NULL] mutableCopy] autorelease];
         [attributes setObject:color forKey:NSForegroundColorAttributeName];
