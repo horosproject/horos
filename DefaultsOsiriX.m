@@ -895,6 +895,8 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject: @"1" forKey: @"NOLOCALIZER"];
 	[defaultValues setObject: @"0" forKey: @"TRANSITIONEFFECT"];
 	[defaultValues setObject: @"0" forKey:@"NOINTERPOLATION"];
+    [defaultValues setObject: @"0" forKey:@"MultipleAssociationsRetrieve"];
+    [defaultValues setObject: @"3" forKey:@"NoOfMultipleAssociationsRetrieve"];
 	[defaultValues setObject: @"0" forKey: @"WINDOWSIZEVIEWER"];
 //	[defaultValues setObject: @"1" forKey: @"UseOpenJpegForJPEG2000"];
 	[defaultValues setObject: @"1" forKey: @"UseKDUForJPEG2000"];
