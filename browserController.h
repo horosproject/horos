@@ -503,7 +503,6 @@ extern NSString* O2AlbumDragType;
 - (NSArray*) openSubSeries: (NSArray*) toOpenArray;
 - (IBAction) checkMemory:(id) sender;
 - (IBAction) buildAllThumbnails:(id) sender;
-- (IBAction) mergeStudies:(id) sender;
 
 // Finding Comparisons
 - (NSArray *)relatedStudiesForStudy:(id)study;
