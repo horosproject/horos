@@ -11098,6 +11098,15 @@ short				matrix[25];
 
 -(ThickSlabController*) thickSlabController { return thickSlab;}
 
+-(NSString *) thicknessInMm
+{
+    float thickness = 0, location = 0;
+    
+    [imageView getThickSlabThickness:&thickness location:&location];
+    
+    return [NSString stringWithFormat: @"%2.1f mm", thickness];
+}
+
 - (void) setFusionMode:(long) m
 {
 	int i, x;
@@ -13118,6 +13127,9 @@ int i,j,l;
 			}
 		}
 	}
+    
+    [self willChangeValueForKey: @"thicknessInMm"];
+    [self didChangeValueForKey: @"thicknessInMm"];
 }
 
 - (IBAction) roiSetPixelsCheckButton:(id) sender

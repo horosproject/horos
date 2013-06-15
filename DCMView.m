@@ -2091,6 +2091,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			yearOld = [[[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.yearOld"] retain];
 		else
 			yearOld = [[NSString stringWithFormat:@"%@ / %@", [[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.yearOld"], [[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.yearOldAcquisition"]] retain];
+        
+        
+        if( self.is2DViewer)
+        {
+            [self.windowController willChangeValueForKey: @"thicknessInMm"];
+            [self.windowController didChangeValueForKey: @"thicknessInMm"];
+        }
 	}
 	else
 	{
@@ -2513,6 +2520,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					
 					done = YES;
 				}
+                
+                [self.windowController willChangeValueForKey: @"thicknessInMm"];
+                [self.windowController didChangeValueForKey: @"thicknessInMm"];
 			}
 			
 			if( done == NO)
@@ -8114,7 +8124,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 											[tempString appendFormat: NSLocalizedString( @"Thickness: %0.2f %cm Location: %0.2f mm", nil), fabs( vv * 1000.0), 0xB5, pp];
 									}
 									else
-										[tempString appendFormat: NSLocalizedString( @"Thickness: %0.2f mm Location: %0.2f mm", nil), fabs( vv), pp];								
+										[tempString appendFormat: NSLocalizedString( @"Thickness: %0.2f mm Location: %0.2f mm", nil), fabs( vv), pp];
 								}
 								else if( fullText)
 								{
