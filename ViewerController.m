@@ -467,7 +467,12 @@ return YES;
 	if( [[fileList[ 0] lastObject] isKindOfClass:[NSManagedObject class]] == NO)
 		return NO;
     
-    if( [item action] == @selector( flipDataSeries:))
+    if( [item action] == @selector( displaySUV:))
+    {
+        if( [[imageView curDCM] hasSUV])
+            valid = YES;
+    }
+    else if( [item action] == @selector( flipDataSeries:))
     {
         if( pixList[ curMovieIndex].count > 1)
             valid = YES;
