@@ -466,7 +466,33 @@ return YES;
     
 	if( [[fileList[ 0] lastObject] isKindOfClass:[NSManagedObject class]] == NO)
 		return NO;
-	if( [item action] == @selector(showHideMatrix:))
+    
+    if( [item action] == @selector( flipDataSeries:))
+    {
+        if( pixList[ curMovieIndex].count > 1)
+            valid = YES;
+    }
+    else if( [item action] == @selector( navigator:))
+    {
+        if( [[[self imageView] curDCM] isRGB] && [self isDataVolumicIn4D: YES])
+            valid = YES;
+    }
+    else if( [item action] == @selector( threeDPanel:))
+    {
+        if( [self isDataVolumicIn4D: YES])
+            valid = YES;
+    }
+    else if( [item action] == @selector( useVOILUT:))
+    {
+        if( imageView.curDCM.VOILUTApplied)
+            [item setState: NSOnState];
+        else
+            [item setState: [[NSUserDefaults standardUserDefaults] boolForKey: @"UseVOILUT"]];
+        
+        if( imageView.curDCM.VOILUT_table)
+            valid = YES;
+    }
+	else if( [item action] == @selector(showHideMatrix:))
 	{
 		[item setState: [self matrixIsVisible]? NSOnState : NSOffState ];
 		valid = YES;
@@ -15236,6 +15262,8 @@ int i,j,l;
 
 - (void)useVOILUT: (id)sender
 {
+    [[NSUserDefaults standardUserDefaults] setBool: ![[NSUserDefaults standardUserDefaults] boolForKey: @"UseVOILUT"] forKey: @"UseVOILUT"];
+    
 	[self performSelector:@selector(applyLUT:) withObject: self afterDelay:0.2];
 }
 

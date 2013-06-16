@@ -1244,7 +1244,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 @synthesize minValueOfSeries, maxValueOfSeries, factorPET2SUV, slope, offset;
 @synthesize isRGB, pwidth = width, pheight = height, checking;
 @synthesize pixelRatio, transferFunction, subPixOffset, isOriginDefined;
-@synthesize imageType, waveform, VOILUTApplied;
+@synthesize imageType, waveform, VOILUTApplied, VOILUT_table;
 
 @synthesize DCMPixShutterRectWidth = shutterRect_w;
 @synthesize DCMPixShutterRectHeight = shutterRect_h;
@@ -5169,7 +5169,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	
 	if( isSigned)
 	{
-		int *signedSrc = (int*) src;
+		short *signedSrc = (short*) src;
 		
 		i = width * height;
 		while( i-- > 0)
@@ -7689,48 +7689,45 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		} // endif ...extraction of the color palette
 	}
 	
-	if( gUseVOILUT)
-	{
-		val = Papy3GetElement (theGroupP, papVOILUTSequenceGr, &pos, &elemType);
-		
-		// Loop over sequence
-		
-		if ( val != NULL)
-		{
-			if( val->sq != NULL)
-			{
-				Papy_List	*dcmList = val->sq->object->item;
-				if (dcmList != NULL)	// We use ONLY the first VOILut available
-				{
-					SElement *gr = (SElement *)dcmList->object->group;
-					if ( gr->group == 0x0028)
-					{
-						
-						val = Papy3GetElement (gr, papLUTDescriptorGr, &pos, &elemType);
-						if( val)
-						{
-							VOILUT_number = val->us;		val++;
-							VOILUT_first = val->ss;			val++;	// By definition it should be us, but some images with neg values expect a ss
-							VOILUT_depth = val->us;			val++;
-						}
-						
-						val = Papy3GetElement (gr, papLUTDataGr, &pos, &elemType);
-						if( val)
-						{
-							VOILUT_number = pos;
-							
-							if( VOILUT_table) free( VOILUT_table);
-							VOILUT_table = malloc( sizeof(unsigned int) * VOILUT_number);
-							for ( int j = 0; j < VOILUT_number; j++)
-							{
-								VOILUT_table [j] = (unsigned int) val->us;			val++;
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+    val = Papy3GetElement (theGroupP, papVOILUTSequenceGr, &pos, &elemType);
+    
+    // Loop over sequence
+    
+    if ( val != NULL)
+    {
+        if( val->sq != NULL)
+        {
+            Papy_List	*dcmList = val->sq->object->item;
+            if (dcmList != NULL)	// We use ONLY the first VOILut available
+            {
+                SElement *gr = (SElement *)dcmList->object->group;
+                if ( gr->group == 0x0028)
+                {
+                    
+                    val = Papy3GetElement (gr, papLUTDescriptorGr, &pos, &elemType);
+                    if( val)
+                    {
+                        VOILUT_number = val->us;		val++;
+                        VOILUT_first = val->ss;			val++;	// By definition it should be us, but some images with neg values expect a ss
+                        VOILUT_depth = val->us;			val++;
+                    }
+                    
+                    val = Papy3GetElement (gr, papLUTDataGr, &pos, &elemType);
+                    if( val)
+                    {
+                        VOILUT_number = pos;
+                        
+                        if( VOILUT_table) free( VOILUT_table);
+                        VOILUT_table = malloc( sizeof(unsigned int) * VOILUT_number);
+                        for ( int j = 0; j < VOILUT_number; j++)
+                        {
+                            VOILUT_table [j] = (unsigned int) val->us;			val++;
+                        }
+                    }
+                }
+            }
+        }
+    }
 	
 	[PapyrusLock unlock];
 }
@@ -9431,10 +9428,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 									
 									if( VOILUT_number != 0 && VOILUT_depth != 0 && VOILUT_table != nil)
 									{
-										[self setVOILUT:VOILUT_first number:VOILUT_number depth:VOILUT_depth table:VOILUT_table image:(unsigned short*) oImage isSigned: fIsSigned];
-										
-										free( VOILUT_table);
-										VOILUT_table = nil;
+                                        if( gUseVOILUT)
+                                            [self setVOILUT:VOILUT_first number:VOILUT_number depth:VOILUT_depth table:VOILUT_table image:(unsigned short*) oImage isSigned: fIsSigned];
 									}
 									
 									if( fExternalOwnedImage)
@@ -9773,6 +9768,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		BOOL success = NO;
 		short *oImage = nil;
 		
+        VOILUTApplied = NO;
+        
 		needToCompute8bitRepresentation = YES;
 		
 		if( runOsiriXInProtectedMode) return;

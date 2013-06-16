@@ -306,6 +306,8 @@ Note setter is different to not break existing usage. :-( */
 @property(retain) NSString *generatedName;
 @property(retain) NSString *sourceFile;
 
+@property(readonly) unsigned int* VOILUT_table;
+
 /** Database links */
 @property(retain) NSManagedObjectID *imageObjectID;
 @property(retain) NSString *srcFile, *SOPClassUID;
