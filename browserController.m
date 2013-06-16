@@ -7803,6 +7803,9 @@ static BOOL withReset = NO;
 
 - (DCMPix*) getDCMPixFromViewerIfAvailable: (NSString*) pathToFind frameNumber: (int) frameNumber
 {
+    if( [NSThread isMainThread] == NO)
+        return nil;
+    
 	DCMPix *returnPix = nil;
 	
 	//Is this image already displayed on the front most 2D viewers? -> take the dcmpix from there
@@ -7816,9 +7819,8 @@ static BOOL withReset = NO;
 			NSArray *vPixList = nil;
 			NSData *volumeData = nil;
 			
-			[self.database lock];
             @try {
-				// We need to temporarly retain all these objects, because this function is called on a separated thread (matrixLoadIcons)
+				// We need to temporarly retain all these objects
 				vFileList = [[v fileList] copy];
 				vPixList = [[v pixList] copy];
 				volumeData = [[v volumeData] retain];
@@ -7826,9 +7828,6 @@ static BOOL withReset = NO;
             @catch (NSException * e) {
                 N2LogExceptionWithStackTrace(e);
 			}
-            @finally {
-                [self.database unlock];
-            }
 			
 			@try
 			{
