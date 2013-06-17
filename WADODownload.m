@@ -109,6 +109,9 @@
 	
 	showErrorMessage = YES;
 	
+    [[NSURLCache sharedURLCache] setDiskCapacity: 0];
+    [[NSURLCache sharedURLCache] setMemoryCapacity: 0];
+    
 	return self;
 }
 
@@ -213,6 +216,8 @@
 
 - (void) WADODownload: (NSArray*) urlToDownload
 {
+    NSMutableArray *connectionsArray = [NSMutableArray array];
+    
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
     
     @try
@@ -243,8 +248,6 @@
             NSLog( @"------ WADO parameters: timeout:%2.2f [secs] / WADOMaximumConcurrentDownloads:%d [URLRequests]", timeout, WADOMaximumConcurrentDownloads);
             
             WADOTotal = WADOThreads = [urlToDownload count];
-            
-            NSMutableArray *connectionsArray = [NSMutableArray array];
             
             NSTimeInterval retrieveStartingDate = [NSDate timeIntervalSinceReferenceDate];
             
