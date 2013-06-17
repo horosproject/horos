@@ -1055,8 +1055,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                 self.countOfSuboperations += urlToDownload.count;
                 self.countOfSuccessfulSuboperations += downloader.countOfSuccesses;
             }
-            else
-                [NSThread sleepForTimeInterval: 0.3];
+            
+            [NSThread sleepForTimeInterval: 0.3];
         }
         
         [downloader release];
