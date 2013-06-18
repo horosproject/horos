@@ -1394,6 +1394,52 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		NSRunCriticalAlertPanel(NSLocalizedString(@"ROIs Save Error",nil), NSLocalizedString(@"No ROI(s) selected to save!",nil) , NSLocalizedString(@"OK",nil), nil, nil);
 }
 
+- (void) roiLoadFromXML: (NSDictionary *) xml
+{
+    // Single ROI - assume current slice
+    
+    NSArray *pointsStringArray = [xml objectForKey: @"ROIPoints"];
+    
+    int type = tCPolygon;
+    if( [pointsStringArray count] == 2) type = tMesure;
+    if( [pointsStringArray count] == 1) type = t2DPoint;
+    
+    ROI *roi = [[[ROI alloc] initWithType: type :curDCM.pixelSpacingX :curDCM.pixelSpacingY :[DCMPix originCorrectedAccordingToOrientation: curDCM]] autorelease];
+    roi.name = [xml objectForKey: @"Name"];
+    roi.comments = [xml objectForKey: @"Comments"];
+    
+    NSMutableArray *pointsArray = [NSMutableArray array];
+    
+    if( type == t2DPoint)
+    {
+        NSRect irect;
+        irect.origin.x = NSPointFromString( [pointsStringArray objectAtIndex: 0] ).x;
+        irect.origin.y = NSPointFromString( [pointsStringArray objectAtIndex: 0] ).y;
+        [roi setROIRect:irect];
+    }
+    
+    if( [pointsStringArray count] > 0 )
+    {
+        for ( int j = 0; j < [pointsStringArray count]; j++ )
+        {
+            MyPoint *pt = [MyPoint point: NSPointFromString( [pointsStringArray objectAtIndex: j] )];
+            [pointsArray addObject: pt];
+        }
+        
+        roi.points = pointsArray;
+        roi.ROImode = ROI_selected;
+        [roi setRoiView :self];
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"markROIImageAsKeyImage"])
+        {
+            if( [self is2DViewer] == YES && [self isKeyImage] == NO && [[self windowController] isPostprocessed] == NO)
+                [[self windowController] setKeyImage: self];
+        }
+        
+        [curRoiList addObject: roi];
+        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixROISelectedNotification object: roi userInfo: nil];
+    }
+}
+
 - (IBAction) roiLoadFromXMLFiles: (NSArray*) filenames
 {
 	int	i;
@@ -1409,98 +1455,16 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	for( i = 0; i < [filenames count]; i++)
 	{
-		NSDictionary*	xml = [NSDictionary dictionaryWithContentsOfFile: [filenames objectAtIndex:i]];
-		NSArray*		roiArray = [xml objectForKey: @"ROI array"];
+		NSDictionary *xml = [NSDictionary dictionaryWithContentsOfFile: [filenames objectAtIndex:i]];
+		NSArray* roiArray = [xml objectForKey: @"ROI array"];
 		
-		if ( roiArray )
+		if( roiArray)
 		{
-			for ( int j = 0; j < [roiArray count]; j++ )
-			{
-				NSDictionary *roiDict = [roiArray objectAtIndex: j];
-				
-				int sliceIndex = [[roiDict objectForKey: @"Slice"] intValue] - 1;
-				
-				NSMutableArray *roiList = [dcmRoiList objectAtIndex: sliceIndex];
-				DCMPix *dcm = [dcmPixList objectAtIndex: sliceIndex];
-				
-				if ( roiList == nil || dcm == nil ) continue;  // No such slice.  Can't add ROI.
-				
-				NSArray *pointsStringArray = [roiDict objectForKey: @"ROIPoints"];
-				
-				int type = tCPolygon;
-				if( [pointsStringArray count] == 2) type = tMesure;
-				if( [pointsStringArray count] == 1)  type = t2DPoint;
-				
-				ROI *roi = [[ROI alloc] initWithType: type :[dcm pixelSpacingX] :[dcm pixelSpacingY] :[DCMPix originCorrectedAccordingToOrientation: dcm]];
-				roi.name = [roiDict objectForKey: @"Name"];
-				roi.comments = [roiDict objectForKey: @"Comments"];
-				
-				NSMutableArray *pointsArray = [NSMutableArray array];
-				
-				for ( int k = 0; k < [pointsStringArray count]; k++ ) {
-					MyPoint *pt = [MyPoint point: NSPointFromString( [pointsStringArray objectAtIndex: k] )];
-					[pointsArray addObject: pt];
-				}
-				
-				roi.points =pointsArray;
-				[roi setRoiView :self];
-				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"markROIImageAsKeyImage"])
-				{
-					if( [self is2DViewer] == YES && [self isKeyImage] == NO && [[self windowController] isPostprocessed] == NO)
-						[[self windowController] setKeyImage: self];
-				}
-				
-				[roiList addObject: roi];
-				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROISelectedNotification object: roi userInfo: nil];
-				
-				[roi release];
-			}
+			for( NSDictionary *x in roiArray)
+				[self roiLoadFromXML: x];
 		}
 		else
-		{
-			// Single ROI - assume current slice
-			
-			NSArray *pointsStringArray = [xml objectForKey: @"ROIPoints"];
-			
-			int type = tCPolygon;
-			if( [pointsStringArray count] == 2) type = tMesure;
-			if( [pointsStringArray count] == 1)  type = t2DPoint;
-			
-			ROI *roi = [[ROI alloc] initWithType: type :curDCM.pixelSpacingX :curDCM.pixelSpacingY :[DCMPix originCorrectedAccordingToOrientation: curDCM]];
-			roi.name = [xml objectForKey: @"Name"];
-			roi.comments = [xml objectForKey: @"Comments"];
-			
-			NSMutableArray *pointsArray = [NSMutableArray array];
-			
-			if( type == t2DPoint)
-			{
-				NSRect irect;
-				irect.origin.x = NSPointFromString( [pointsStringArray objectAtIndex: 0] ).x;
-				irect.origin.y = NSPointFromString( [pointsStringArray objectAtIndex: 0] ).y;
-				[roi setROIRect:irect];
-			}
-			
-			if( [pointsStringArray count] > 0 ) {
-				for ( int j = 0; j < [pointsStringArray count]; j++ ) {
-					MyPoint *pt = [MyPoint point: NSPointFromString( [pointsStringArray objectAtIndex: j] )];
-					[pointsArray addObject: pt];
-				}
-				
-				roi.points = pointsArray;
-				roi.ROImode = ROI_selected;
-				[roi setRoiView :self];
-				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"markROIImageAsKeyImage"])
-				{
-					if( [self is2DViewer] == YES && [self isKeyImage] == NO && [[self windowController] isPostprocessed] == NO)
-						[[self windowController] setKeyImage: self];
-				}
-				
-				[curRoiList addObject: roi];
-				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROISelectedNotification object: roi userInfo: nil];
-			}
-			
-			[roi release];
-		}
+            [self roiLoadFromXML: xml];
 	}
 	
 	[self setNeedsDisplay:YES];
