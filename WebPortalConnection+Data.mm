@@ -56,6 +56,7 @@
 #import "BrowserControllerDCMTKCategory.h" // TODO: remove when badness solved
 #import "DCMView.h"
 #import "DicomImage.h"
+#import "DCMTKQueryNode.h"
 
 // TODO: NSUserDefaults access for keys @"logWebServer", @"notificationsEmailsSender" and @"lastNotificationsDate" must be replaced with WebPortal properties
 
@@ -314,6 +315,8 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
             searchString = [newComponents componentsJoinedByString:@" "];
             searchString = [searchString stringByReplacingOccurrencesOfString: @"\"" withString: @"\'"];
             searchString = [searchString stringByReplacingOccurrencesOfString: @"\'" withString: @"\\'"];
+            searchString = [searchString stringByReplacingOccurrencesOfString: @", " withString: @" "];
+            searchString = [searchString stringByReplacingOccurrencesOfString: @"," withString: @" "];
             
             [search appendFormat:@"name BEGINSWITH[cd] '%@'", searchString]; // [c] is for 'case INsensitive' and [d] is to ignore accents (diacritic)
             browsePredicate = [NSPredicate predicateWithFormat: search];
@@ -393,6 +396,24 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
                 if( servers.count)
                 {
                     NSArray *distantStudies = [QueryController queryStudiesForFilters: PODFilter servers: servers showErrors: NO];
+                    
+                    if( [[[PODFilter valueForKey: @"PatientsName"] componentsSeparatedByString: @" "] count] > 1) // For patient name, if several components, try with ^ separator, and add missing results
+                    {
+                        NSString *s = [PODFilter valueForKey: @"PatientsName"];
+                        
+                        // replace last occurence // fan siu hung
+                        [PODFilter setValue: [s stringByReplacingCharactersInRange: [s rangeOfString: @" " options: NSBackwardsSearch] withString: @"^"] forKey: @"PatientsName"];
+                        
+                        NSArray *subResult = [QueryController queryStudiesForFilters: PODFilter servers: servers showErrors: NO];
+                        
+                        NSArray *resultUIDs = [distantStudies valueForKey: @"uid"];
+                        
+                        for( DCMTKQueryNode *n in subResult)
+                        {
+                            if( [resultUIDs containsObject: n.uid] == NO)
+                                distantStudies = [distantStudies arrayByAddingObject: n];
+                        }
+                    }
                     
                     if( distantStudies.count)
                     {
