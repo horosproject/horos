@@ -4862,7 +4862,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 							{
                                 if ( lCm < .01)
                                     self.textualBoxLine2 = [NSString stringWithFormat: NSLocalizedString( @"%0.1f %cm", nil), lCm * 10000.0, 0xb5];
-								else if ( lCm < .1)
+								else if ( lCm < 1)
 									self.textualBoxLine2 = [NSString stringWithFormat: NSLocalizedString( @"%0.2f mm", nil), lCm * 10.];
 								else
 									self.textualBoxLine2 = [NSString stringWithFormat: NSLocalizedString( @"%0.2f cm", nil), lCm];
@@ -4918,7 +4918,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                                             // RSF=2D, PUXD=cm, PUYD=cm
                                             if (lCm < .01)
                                                 self.textualBoxLine2 = [NSString stringWithFormat: NSLocalizedString( @"Length: %0.1f %cm", nil), lCm * 10000.0, 0xb5];
-                                            else if( lCm < .1)
+                                            else if( lCm < 1)
                                                 self.textualBoxLine2 = [NSString stringWithFormat: NSLocalizedString( @"Length: %0.3f mm", nil), lCm * 10.];
                                             else
                                                 self.textualBoxLine2 = [NSString stringWithFormat: NSLocalizedString( @"Length: %0.3f cm", nil), lCm];
@@ -4953,7 +4953,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                                 } else   // <--- US Regions (Length)
                                     if (lCm < .01)
                                         self.textualBoxLine2 = [NSString stringWithFormat: NSLocalizedString( @"Length: %0.1f %cm (%0.3f pix)", nil), lCm * 10000.0, 0xb5, lPix];
-                                    else if (lCm < .1)
+                                    else if (lCm < 1)
                                         self.textualBoxLine2 = [NSString stringWithFormat: NSLocalizedString( @"Length: %0.3f mm (%0.3f pix)", nil), lCm * 10., lPix];
                                     else
                                         self.textualBoxLine2 = [NSString stringWithFormat: NSLocalizedString( @"Length: %0.3f cm (%0.3f pix)", nil), lCm, lPix];
@@ -5392,7 +5392,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						
 						if (length < .01)
 							self.textualBoxLine5 = [NSString stringWithFormat: NSLocalizedString( @"Length: %0.1f %cm", nil), length * 10000.0, 0xB5];
-                        else if (length < .1)
+                        else if (length < 1)
 							self.textualBoxLine5 = [NSString stringWithFormat: NSLocalizedString( @"Length: %0.3f mm", nil), length * 10.0];
 						else
 							self.textualBoxLine5 = [NSString stringWithFormat: NSLocalizedString( @"Length: %0.3f cm", nil), length];
@@ -5674,7 +5674,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                         
                         if (length < .01)
                             self.textualBoxLine5 = [NSString stringWithFormat: NSLocalizedString( @"Length: %0.1f %cm", nil), length * 10000.0, 0xB5];
-                        else if (length < .1)
+                        else if (length < 1)
                             self.textualBoxLine5 = [NSString stringWithFormat: NSLocalizedString( @"Length: %0.3f mm", nil), length * 10.0];
                         else
                             self.textualBoxLine5 = [NSString stringWithFormat: NSLocalizedString( @"Length: %0.3f cm", nil), length];
@@ -5890,7 +5890,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 										
 										if (length < .01)
 											self.textualBoxLine5 = [NSString stringWithFormat: NSLocalizedString( @"Length: %0.1f %cm", nil), length * 10000.0, 0xB5];
-                                        else if (length < .1)
+                                        else if (length < 1)
 											self.textualBoxLine5 = [NSString stringWithFormat: NSLocalizedString( @"Length: %0.3f mm", nil), length * 10.0];
 										else
 											self.textualBoxLine5 = [NSString stringWithFormat: NSLocalizedString( @"Length: %0.3f cm", nil), length];
@@ -6026,7 +6026,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 								
 								if( length < .01)
 									self.textualBoxLine5 = [NSString stringWithFormat: NSLocalizedString( @"Length: %0.1f %cm", nil), length * 10000.0, 0xB5];
-                                else if( length < .1)
+                                else if( length < 1)
 									self.textualBoxLine5 = [NSString stringWithFormat: NSLocalizedString( @"Length: %0.3f mm", nil), length * 10.0];
 								else
 									self.textualBoxLine5 = [NSString stringWithFormat: NSLocalizedString( @"Length: %0.3f cm", nil), length];
@@ -6069,7 +6069,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 												
 												if (length < .01)
 													self.textualBoxLine6 = [NSString stringWithFormat: NSLocalizedString( @"3D Length: %0.1f %cm", nil), distance3d * 10000.0, 0xB5];
-                                                else if (length < .1)
+                                                else if (length < 1)
 													self.textualBoxLine6 = [NSString stringWithFormat: NSLocalizedString( @"3D Length: %0.3f mm", nil), distance3d * 10.0];
 												else
 													self.textualBoxLine6 = [NSString stringWithFormat: NSLocalizedString( @"3D Length: %0.3f cm", nil), distance3d / 10.];
