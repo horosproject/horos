@@ -1632,9 +1632,9 @@
 									<reference key="NSOnImage" ref="125626618"/>
 									<reference key="NSMixedImage" ref="973943092"/>
 								</object>
-								<object class="NSMenuItem" id="983141535">
+								<object class="NSMenuItem" id="787796857">
 									<reference key="NSMenu" ref="986057026"/>
-									<string key="NSTitle">Propagate Zoom Level Only if planes are parallel</string>
+									<string key="NSTitle">Propagate Zoom Level Only if Planes are Parallel</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSMnemonicLoc">2147483647</int>
 									<reference key="NSOnImage" ref="125626618"/>
@@ -6270,7 +6270,7 @@
 					<string key="NSFrameSize">{1043, 674}</string>
 					<reference key="NSNextKeyView" ref="534658191"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMinSize">{600, 622}</string>
 				<string key="NSMaxSize">{9000, 9022}</string>
 				<string key="NSFrameAutosaveName">DICOMDatabase</string>
@@ -6411,7 +6411,7 @@
 					<string key="NSFrameSize">{640, 99}</string>
 					<reference key="NSNextKeyView" ref="767583924"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMinSize">{213, 42}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -8000,7 +8000,7 @@
 					<string key="NSFrameSize">{418, 107}</string>
 					<reference key="NSNextKeyView" ref="340407387"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMinSize">{213, 129}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -8127,7 +8127,7 @@
 					<string key="NSFrameSize">{348, 124}</string>
 					<reference key="NSNextKeyView" ref="568133982"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMinSize">{213, 129}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -9071,7 +9071,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string key="NSFrameSize">{537, 273}</string>
 					<reference key="NSNextKeyView" ref="168355090"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
@@ -9671,7 +9671,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string key="NSFrameSize">{727, 353}</string>
 					<reference key="NSNextKeyView" ref="752048640"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMinSize">{213, 129}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -9727,7 +9727,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string key="NSFrameSize">{296, 113}</string>
 					<reference key="NSNextKeyView" ref="1022668451"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMinSize">{213, 129}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -9872,7 +9872,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string key="NSFrameSize">{508, 149}</string>
 					<reference key="NSNextKeyView" ref="498067642"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
@@ -10013,7 +10013,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string key="NSFrameSize">{554, 127}</string>
 					<reference key="NSNextKeyView" ref="880642626"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
@@ -10506,7 +10506,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string key="NSFrameSize">{813, 462}</string>
 					<reference key="NSNextKeyView" ref="389538596"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMinSize">{813, 394}</string>
 				<string key="NSMaxSize">{813, 1022}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -10928,7 +10928,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string key="NSFrameSize">{813, 372}</string>
 					<reference key="NSNextKeyView" ref="845472366"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMinSize">{813, 394}</string>
 				<string key="NSMaxSize">{813, 1022}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -11333,7 +11333,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string key="NSFrameSize">{488, 333}</string>
 					<reference key="NSNextKeyView" ref="905111944"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMinSize">{213, 129}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -15886,10 +15886,10 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">value: values.AlwaysPropagateScaleLevel</string>
-						<reference key="source" ref="983141535"/>
+						<reference key="source" ref="787796857"/>
 						<reference key="destination" ref="149985806"/>
 						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="983141535"/>
+							<reference key="NSSource" ref="787796857"/>
 							<reference key="NSDestination" ref="149985806"/>
 							<string key="NSLabel">value: values.AlwaysPropagateScaleLevel</string>
 							<string key="NSBinding">value</string>
@@ -17103,7 +17103,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<reference ref="557748922"/>
 							<reference ref="786319182"/>
 							<reference ref="704874897"/>
-							<reference ref="983141535"/>
+							<reference ref="787796857"/>
 						</array>
 						<reference key="parent" ref="204329503"/>
 					</object>
@@ -22129,7 +22129,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">14847</int>
-						<reference key="object" ref="983141535"/>
+						<reference key="object" ref="787796857"/>
 						<reference key="parent" ref="986057026"/>
 					</object>
 				</array>
@@ -24047,276 +24047,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
-					<string key="className">CPRController</string>
-					<string key="superclassName">Window3DController</string>
-					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="editShadingValues:">id</string>
-						<string key="endDCMExportSettings:">id</string>
-						<string key="loadBezierPath:">id</string>
-						<string key="onSliderMove:">id</string>
-						<string key="roiGetInfo:">id</string>
-						<string key="runFlyAssistant:">id</string>
-						<string key="saveBezierPath:">id</string>
-						<string key="setTool:">id</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="editShadingValues:">
-							<string key="name">editShadingValues:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="endDCMExportSettings:">
-							<string key="name">endDCMExportSettings:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="loadBezierPath:">
-							<string key="name">loadBezierPath:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="onSliderMove:">
-							<string key="name">onSliderMove:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="roiGetInfo:">
-							<string key="name">roiGetInfo:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="runFlyAssistant:">
-							<string key="name">runFlyAssistant:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="saveBezierPath:">
-							<string key="name">saveBezierPath:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="setTool:">
-							<string key="name">setTool:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="outlets">
-						<string key="bottomTransverseView">CPRTransverseView</string>
-						<string key="cprView">CPRView</string>
-						<string key="dcmSeriesView">NSView</string>
-						<string key="dcmWindow">NSWindow</string>
-						<string key="horizontalSplit1">NSSplitView</string>
-						<string key="horizontalSplit2">NSSplitView</string>
-						<string key="middleTransverseView">CPRTransverseView</string>
-						<string key="moviePosSlider">NSSlider</string>
-						<string key="mprView1">CPRMPRDCMView</string>
-						<string key="mprView2">CPRMPRDCMView</string>
-						<string key="mprView3">CPRMPRDCMView</string>
-						<string key="ob">NSObjectController</string>
-						<string key="pathSimplificationSlider">NSSlider</string>
-						<string key="popupRoi">NSPopUpButton</string>
-						<string key="quicktimeWindow">NSWindow</string>
-						<string key="shadingCheck">NSButton</string>
-						<string key="shadingPanel">NSPanel</string>
-						<string key="shadingValues">NSTextField</string>
-						<string key="shadingsPresetsController">ShadingArrayController</string>
-						<string key="tbAxisColors">NSView</string>
-						<string key="tbBlending">NSView</string>
-						<string key="tbCPRPathMode">NSView</string>
-						<string key="tbCPRType">NSView</string>
-						<string key="tbHighResolution">NSView</string>
-						<string key="tbLOD">NSView</string>
-						<string key="tbMovie">NSView</string>
-						<string key="tbPathAssistant">NSView</string>
-						<string key="tbShading">NSView</string>
-						<string key="tbStraightenedCPRAngle">NSView</string>
-						<string key="tbSyncZoomLevel">NSView</string>
-						<string key="tbThickSlab">NSView</string>
-						<string key="tbTools">NSView</string>
-						<string key="tbViewsPosition">NSView</string>
-						<string key="tbWLWW">NSView</string>
-						<string key="testView">NSView</string>
-						<string key="toolsMatrix">NSMatrix</string>
-						<string key="topTransverseView">CPRTransverseView</string>
-						<string key="verticalSplit">NSSplitView</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<object class="IBToOneOutletInfo" key="bottomTransverseView">
-							<string key="name">bottomTransverseView</string>
-							<string key="candidateClassName">CPRTransverseView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="cprView">
-							<string key="name">cprView</string>
-							<string key="candidateClassName">CPRView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="dcmSeriesView">
-							<string key="name">dcmSeriesView</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="dcmWindow">
-							<string key="name">dcmWindow</string>
-							<string key="candidateClassName">NSWindow</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="horizontalSplit1">
-							<string key="name">horizontalSplit1</string>
-							<string key="candidateClassName">NSSplitView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="horizontalSplit2">
-							<string key="name">horizontalSplit2</string>
-							<string key="candidateClassName">NSSplitView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="middleTransverseView">
-							<string key="name">middleTransverseView</string>
-							<string key="candidateClassName">CPRTransverseView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="moviePosSlider">
-							<string key="name">moviePosSlider</string>
-							<string key="candidateClassName">NSSlider</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="mprView1">
-							<string key="name">mprView1</string>
-							<string key="candidateClassName">CPRMPRDCMView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="mprView2">
-							<string key="name">mprView2</string>
-							<string key="candidateClassName">CPRMPRDCMView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="mprView3">
-							<string key="name">mprView3</string>
-							<string key="candidateClassName">CPRMPRDCMView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="ob">
-							<string key="name">ob</string>
-							<string key="candidateClassName">NSObjectController</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="pathSimplificationSlider">
-							<string key="name">pathSimplificationSlider</string>
-							<string key="candidateClassName">NSSlider</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="popupRoi">
-							<string key="name">popupRoi</string>
-							<string key="candidateClassName">NSPopUpButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="quicktimeWindow">
-							<string key="name">quicktimeWindow</string>
-							<string key="candidateClassName">NSWindow</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="shadingCheck">
-							<string key="name">shadingCheck</string>
-							<string key="candidateClassName">NSButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="shadingPanel">
-							<string key="name">shadingPanel</string>
-							<string key="candidateClassName">NSPanel</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="shadingValues">
-							<string key="name">shadingValues</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="shadingsPresetsController">
-							<string key="name">shadingsPresetsController</string>
-							<string key="candidateClassName">ShadingArrayController</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="tbAxisColors">
-							<string key="name">tbAxisColors</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="tbBlending">
-							<string key="name">tbBlending</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="tbCPRPathMode">
-							<string key="name">tbCPRPathMode</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="tbCPRType">
-							<string key="name">tbCPRType</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="tbHighResolution">
-							<string key="name">tbHighResolution</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="tbLOD">
-							<string key="name">tbLOD</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="tbMovie">
-							<string key="name">tbMovie</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="tbPathAssistant">
-							<string key="name">tbPathAssistant</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="tbShading">
-							<string key="name">tbShading</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="tbStraightenedCPRAngle">
-							<string key="name">tbStraightenedCPRAngle</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="tbSyncZoomLevel">
-							<string key="name">tbSyncZoomLevel</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="tbThickSlab">
-							<string key="name">tbThickSlab</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="tbTools">
-							<string key="name">tbTools</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="tbViewsPosition">
-							<string key="name">tbViewsPosition</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="tbWLWW">
-							<string key="name">tbWLWW</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="testView">
-							<string key="name">testView</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="toolsMatrix">
-							<string key="name">toolsMatrix</string>
-							<string key="candidateClassName">NSMatrix</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="topTransverseView">
-							<string key="name">topTransverseView</string>
-							<string key="candidateClassName">CPRTransverseView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="verticalSplit">
-							<string key="name">verticalSplit</string>
-							<string key="candidateClassName">NSSplitView</string>
-						</object>
-					</dictionary>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/CPRController.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">CPRMPRDCMView</string>
-					<string key="superclassName">DCMView</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/CPRMPRDCMView.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">CPRTransverseView</string>
-					<string key="superclassName">DCMView</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/CPRTransverseView.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">CPRView</string>
-					<string key="superclassName">NSView</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/CPRView.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
 					<string key="className">ColorTransferView</string>
 					<string key="superclassName">NSView</string>
 					<object class="NSMutableDictionary" key="actions">
@@ -24363,20 +24093,11 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="actualSize:">id</string>
 						<string key="alwaysSyncMenu:">id</string>
-						<string key="copy:">id</string>
-						<string key="cut:">id</string>
-						<string key="decreaseThickness:">id</string>
 						<string key="flipHorizontal:">id</string>
 						<string key="flipVertical:">id</string>
-						<string key="increaseThickness:">id</string>
-						<string key="mergeFusedImages:">id</string>
-						<string key="print:">id</string>
 						<string key="realSize:">id</string>
-						<string key="resizeWindow:">id</string>
 						<string key="roiLoadFromXMLFiles:">NSArray</string>
-						<string key="roiSaveSelected:">id</string>
 						<string key="scaleToFit:">id</string>
-						<string key="selectAll:">id</string>
 						<string key="sliderRGBFactor:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
@@ -24388,18 +24109,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">alwaysSyncMenu:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="copy:">
-							<string key="name">copy:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="cut:">
-							<string key="name">cut:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="decreaseThickness:">
-							<string key="name">decreaseThickness:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="flipHorizontal:">
 							<string key="name">flipHorizontal:</string>
 							<string key="candidateClassName">id</string>
@@ -24408,40 +24117,16 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">flipVertical:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="increaseThickness:">
-							<string key="name">increaseThickness:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="mergeFusedImages:">
-							<string key="name">mergeFusedImages:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="print:">
-							<string key="name">print:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="realSize:">
 							<string key="name">realSize:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="resizeWindow:">
-							<string key="name">resizeWindow:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="roiLoadFromXMLFiles:">
 							<string key="name">roiLoadFromXMLFiles:</string>
 							<string key="candidateClassName">NSArray</string>
 						</object>
-						<object class="IBActionInfo" key="roiSaveSelected:">
-							<string key="name">roiSaveSelected:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="scaleToFit:">
 							<string key="name">scaleToFit:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="selectAll:">
-							<string key="name">selectAll:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="sliderRGBFactor:">
@@ -25299,14 +24984,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
-					<string key="className">N2UnclickableSplitView</string>
-					<string key="superclassName">NSSplitView</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/N2UnclickableSplitView.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
 					<string key="className">OSIWindowController</string>
 					<string key="superclassName">NSWindowController</string>
 					<dictionary class="NSMutableDictionary" key="actions">
@@ -25959,22 +25636,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">./Classes/PluginsTableView.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">PreviewView</string>
-					<string key="superclassName">DCMView</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/PreviewView.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">ROI</string>
-					<string key="superclassName">NSObject</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/ROI.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -27374,7 +27035,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string key="className">ViewerController</string>
 					<string key="superclassName">OSIWindowController</string>
 					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="AddConv:">id</string>
 						<string key="AddOpacity:">id</string>
 						<string key="ConvertToBWMenu:">id</string>
 						<string key="ConvertToRGBMenu:">id</string>
@@ -27393,7 +27053,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="clutAction:">id</string>
 						<string key="computeSum:">id</string>
 						<string key="convMatrixAction:">id</string>
-						<string key="convertBrushPolygon:">id</string>
 						<string key="cprViewer:">id</string>
 						<string key="createLayerROIFromSelectedROI:">id</string>
 						<string key="editSUVinjectionTime:">id</string>
@@ -27432,7 +27091,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="makeAllROIsSelectable:">id</string>
 						<string key="makeSelectedROIsUnselectable:">id</string>
 						<string key="mergeBrushROI:">id</string>
-						<string key="mergeBrushROI:ROIs:ROIList:">id</string>
 						<string key="morphoSelectedBrushROI:">id</string>
 						<string key="morphoSelectedBrushROIWithRadius:">id</string>
 						<string key="mprViewer:">id</string>
@@ -27450,15 +27108,12 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="roiDeleteGeneratedROIs:">id</string>
 						<string key="roiDeleteGeneratedROIsForName:">NSString</string>
 						<string key="roiDeleteWithName:">NSString</string>
-						<string key="roiGetManager:">id</string>
 						<string key="roiIntDeleteAllROIsWithSameName:">NSString</string>
 						<string key="roiPropagate:">id</string>
 						<string key="roiPropagateSetup:">id</string>
 						<string key="roiRename:">id</string>
-						<string key="roiSaveSeries:">id</string>
 						<string key="roiSelectDeselectAll:">id</string>
 						<string key="roiSetPixels:">id</string>
-						<string key="roiSetPixels::::::::">ROI</string>
 						<string key="roiSetPixelsCheckButton:">id</string>
 						<string key="roiSetPixelsSetup:">id</string>
 						<string key="saveWindowsState:">id</string>
@@ -27493,10 +27148,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="vertFlipDataSet:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="AddConv:">
-							<string key="name">AddConv:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="AddOpacity:">
 							<string key="name">AddOpacity:</string>
 							<string key="candidateClassName">id</string>
@@ -27567,10 +27218,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 						<object class="IBActionInfo" key="convMatrixAction:">
 							<string key="name">convMatrixAction:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="convertBrushPolygon:">
-							<string key="name">convertBrushPolygon:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="cprViewer:">
@@ -27725,10 +27372,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">mergeBrushROI:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="mergeBrushROI:ROIs:ROIList:">
-							<string key="name">mergeBrushROI:ROIs:ROIList:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="morphoSelectedBrushROI:">
 							<string key="name">morphoSelectedBrushROI:</string>
 							<string key="candidateClassName">id</string>
@@ -27797,10 +27440,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">roiDeleteWithName:</string>
 							<string key="candidateClassName">NSString</string>
 						</object>
-						<object class="IBActionInfo" key="roiGetManager:">
-							<string key="name">roiGetManager:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="roiIntDeleteAllROIsWithSameName:">
 							<string key="name">roiIntDeleteAllROIsWithSameName:</string>
 							<string key="candidateClassName">NSString</string>
@@ -27817,10 +27456,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">roiRename:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="roiSaveSeries:">
-							<string key="name">roiSaveSeries:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="roiSelectDeselectAll:">
 							<string key="name">roiSelectDeselectAll:</string>
 							<string key="candidateClassName">id</string>
@@ -27828,10 +27463,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<object class="IBActionInfo" key="roiSetPixels:">
 							<string key="name">roiSetPixels:</string>
 							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="roiSetPixels::::::::">
-							<string key="name">roiSetPixels::::::::</string>
-							<string key="candidateClassName">ROI</string>
 						</object>
 						<object class="IBActionInfo" key="roiSetPixelsCheckButton:">
 							<string key="name">roiSetPixelsCheckButton:</string>
