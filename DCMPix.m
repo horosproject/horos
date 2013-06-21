@@ -5407,7 +5407,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 - (void) dcmFrameworkLoad0x0020: (DCMObject*) dcmObject
 {
 //orientation
-	originX = 0;	originY = 0;	originZ = 0;
+
 	NSArray *ipp = [dcmObject attributeArrayWithName:@"ImagePositionPatient"];
 	if( ipp)
 	{
@@ -5416,16 +5416,35 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		originZ = [[ipp objectAtIndex:2] floatValue];
 		isOriginDefined = YES;
 	}
-	
-	orientation[ 0] = 0;	orientation[ 1] = 0;	orientation[ 2] = 0;
-	orientation[ 3] = 0;	orientation[ 4] = 0;	orientation[ 5] = 0;
+    else
+    {
+        NSArray *ipv = [dcmObject attributeArrayWithName:@"ImagePositionVolume"];
+        if( ipv)
+        {
+            originX = [[ipv objectAtIndex:0] floatValue];
+            originY = [[ipv objectAtIndex:1] floatValue];
+            originZ = [[ipv objectAtIndex:2] floatValue];
+            isOriginDefined = YES;
+        }
+    }
+    
+
 	NSArray *iop = [dcmObject attributeArrayWithName:@"ImageOrientationPatient"];
 	if( iop)
 	{
 		for ( int j = 0; j < iop.count; j++) 
 			orientation[ j ] = [[iop objectAtIndex:j] floatValue];
 	}
-	
+    else
+    {
+        NSArray *iov = [dcmObject attributeArrayWithName:@"ImageOrientationVolume"];
+        if( iov)
+        {
+            for ( int j = 0; j < iov.count; j++)
+                orientation[ j ] = [[iov objectAtIndex:j] floatValue];
+        }
+	}
+    
 	if( [dcmObject attributeValueWithName:@"ImageLaterality"])
 	{
 		[laterality release];
@@ -5899,14 +5918,18 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		pixelSpacingY = 0;
 		offset = 0.0;
 		slope = 1.0;
+        
+        originX = 0;	originY = 0;	originZ = 0;
+        orientation[ 0] = 0;	orientation[ 1] = 0;	orientation[ 2] = 0;
+        orientation[ 3] = 0;	orientation[ 4] = 0;	orientation[ 5] = 0;
 		
 		[self dcmFrameworkLoad0x0018: dcmObject];
 		[self dcmFrameworkLoad0x0020: dcmObject];
 		[self dcmFrameworkLoad0x0028: dcmObject];
 		
-	#pragma mark *MR/CT functional multiframe
+	#pragma mark *MR/CT/US functional multiframe
 		
-		// Is it a new MR/CT multi-frame exam?
+		// Is it a new MR/CT/US multi-frame exam?
 		DCMSequenceAttribute *sharedFunctionalGroupsSequence = (DCMSequenceAttribute *)[dcmObject attributeWithName:@"SharedFunctionalGroupsSequence"];
 		if (sharedFunctionalGroupsSequence)
 		{
@@ -5921,6 +5944,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				DCMObject *planeOrientationObject = [[planeOrientationSequence sequence] objectAtIndex:0];
 				if( planeOrientationObject)
 					[self dcmFrameworkLoad0x0020: planeOrientationObject];
+                
+                DCMSequenceAttribute *planePositionSequence = (DCMSequenceAttribute *)[sequenceItem attributeWithName:@"PlanePositionVolumeSequence"];
+				DCMObject *planePositionObject = [[planePositionSequence sequence] objectAtIndex:0];
+				if( planePositionObject)
+					[self dcmFrameworkLoad0x0020: planePositionObject];
 				
 				DCMSequenceAttribute *pixelMeasureSequence = (DCMSequenceAttribute *)[sequenceItem attributeWithName:@"PixelMeasuresSequence"];
 				DCMObject *pixelMeasureObject = [[pixelMeasureSequence sequence] objectAtIndex:0];
@@ -5985,6 +6013,12 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					}
 						
                     if ((seq = (DCMSequenceAttribute*)[sequenceItem attributeWithName:@"PlaneOrientationSequence"]) && [seq isKindOfClass:[DCMSequenceAttribute class]])
+					{
+						if ((object = [[seq sequence] objectAtIndex:0]))
+							[self dcmFrameworkLoad0x0020:object];
+					}
+                    
+                    if ((seq = (DCMSequenceAttribute*)[sequenceItem attributeWithName:@"PlanePositionVolumeSequence"]) && [seq isKindOfClass:[DCMSequenceAttribute class]])
 					{
 						if ((object = [[seq sequence] objectAtIndex:0]))
 							[self dcmFrameworkLoad0x0020:object];
@@ -8171,8 +8205,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				
 				// End SUV			
 				
-				#pragma mark MR/CT multiframe		
-				// Is it a new MR/CT multi-frame exam?
+				#pragma mark MR/CT/US multiframe		
+				// Is it a new MR/CT/US multi-frame exam?
 				
 				SElement *groupOverlay = (SElement*) [self getPapyGroup: 0x5200];
 				if( groupOverlay)

@@ -848,12 +848,29 @@ extern NSRecursiveLock *PapyrusLock;
         DcmItem *ditem = NULL;
 		NSMutableArray *sliceLocationArray = [NSMutableArray array];
 		NSMutableArray *imageCardiacTriggerArray = [NSMutableArray array];
+        
+        double originMultiFrame[ 3] = {0, 0, 0}, orientationMultiFrame[ 9] = {1, 0, 0, 0, 1, 0};
+        
+        // SHARED
+        if (dataset->findAndGetSequenceItem(DCM_SharedFunctionalGroupsSequence, ditem, 0).good())
+        {
+            DcmItem *eitem = NULL;
+            if (ditem->findAndGetSequenceItem(DCM_PlanePositionVolumeSequence, eitem, 0).good())
+            {
+                int count = 0;
+                while (count < 6 && eitem->findAndGetFloat64(DCM_ImageOrientationVolume, orientationMultiFrame[count], count, OFFalse).good())
+                    count++;
+                
+                if( count != 6 && count != 0)
+                    NSLog( @"******* DCM_ImageOrientationVolume : count != 6 && count != 0");
+            }
+        }
+        
+        // PER FRAME
 		do
 		{
 			if (dataset->findAndGetSequenceItem(DCM_PerFrameFunctionalGroupsSequence, ditem, i++).good())
 			{
-				double originMultiFrame[ 3] = {0, 0, 0}, orientationMultiFrame[ 9] = {1, 0, 0, 0, 1, 0};
-				
 				int x = 0;
 				DcmItem *eitem = NULL;
 				do
@@ -865,37 +882,52 @@ extern NSRecursiveLock *PapyrusLock;
 						if( eitem->findAndGetFloat64(DCM_TriggerDelayTime, triggerSequence, 0, OFFalse).good())
 							[imageCardiacTriggerArray addObject: [NSString stringWithFormat: @"%lf", triggerSequence]];
 					}
-				
-					BOOL succeed = YES;
-					
-					if (ditem->findAndGetSequenceItem(DCM_PlanePositionSequence, eitem, x).good())
+                    
+                    BOOL succeed = YES;
+                    
+                    if (ditem->findAndGetSequenceItem(DCM_PlanePositionVolumeSequence, eitem, x).good())
 					{
 						int count = 0;
-						while (count < 3 && eitem->findAndGetFloat64(DCM_ImagePositionPatient, originMultiFrame[count], count, OFFalse).good())
+						while (count < 3 && eitem->findAndGetFloat64(DCM_ImagePositionVolume, originMultiFrame[count], count, OFFalse).good())
 							count++;
-						
-						if( count != 3)
+                        
+                        if( count != 3)
 							succeed = NO;
 					}
-					else succeed = NO;
-					
-					if (ditem->findAndGetSequenceItem(DCM_PlaneOrientationSequence, eitem, x).good())
-					{
-						int count = 0;
-						while (count < 6 && eitem->findAndGetFloat64(DCM_ImageOrientationPatient, orientationMultiFrame[count], count, OFFalse).good())
-							count++;
-						
-						if( count != 6 && count != 0)
-							succeed = NO;
+                    else
+                        succeed = NO;
+                    
+                    if( succeed == NO)
+                    {
+                        if (ditem->findAndGetSequenceItem(DCM_PlanePositionSequence, eitem, x).good())
+                        {
+                            int count = 0;
+                            while (count < 3 && eitem->findAndGetFloat64(DCM_ImagePositionPatient, originMultiFrame[count], count, OFFalse).good())
+                                count++;
+                            
+                            if( count != 3)
+                                succeed = NO;
+                        }
+                        else succeed = NO;
+                        
+                        if (ditem->findAndGetSequenceItem(DCM_PlaneOrientationSequence, eitem, x).good())
+                        {
+                            int count = 0;
+                            while (count < 6 && eitem->findAndGetFloat64(DCM_ImageOrientationPatient, orientationMultiFrame[count], count, OFFalse).good())
+                                count++;
+                            
+                            if( count != 6 && count != 0)
+                                succeed = NO;
+                        }
+                        else succeed = NO;
 					}
-					else succeed = NO;
-					
+                    
 					if( succeed)
 					{
 						// Compute normal vector
 						orientationMultiFrame[ 6] = orientationMultiFrame[ 1]*orientationMultiFrame[ 5] - orientationMultiFrame[ 2]*orientationMultiFrame[ 4];
 						orientationMultiFrame[ 7] = orientationMultiFrame[ 2]*orientationMultiFrame[ 3] - orientationMultiFrame[ 0]*orientationMultiFrame[ 5];
-						orientationMultiFrame[ 8] = orientationMultiFrame[ 0]*orientationMultiFrame[ 4] - orientationMultiFrame[ 1]*orientationMultiFrame[ 3];		
+						orientationMultiFrame[ 8] = orientationMultiFrame[ 0]*orientationMultiFrame[ 4] - orientationMultiFrame[ 1]*orientationMultiFrame[ 3];
 						
 						float location = 0;
 						
@@ -917,12 +949,13 @@ extern NSRecursiveLock *PapyrusLock;
 			}
 		}
 		while (ditem != NULL);
+        
 		if( sliceLocationArray.count)
 		{
 			if( NoOfFrames == sliceLocationArray.count)
 				[dicomElements setObject: sliceLocationArray forKey:@"sliceLocationArray"];
 			else
-				NSLog( @"*** NoOfFrames != sliceLocationArray.count for MR/CT multiframe sliceLocation computation (%d, %d)", (int) NoOfFrames, (int) sliceLocationArray.count);
+				NSLog( @"*** NoOfFrames != sliceLocationArray.count for MR/CT/US multiframe sliceLocation computation (%d, %d)", (int) NoOfFrames, (int) sliceLocationArray.count);
 		}
 		if( imageCardiacTriggerArray.count)
 		{
