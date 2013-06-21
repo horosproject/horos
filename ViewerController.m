@@ -9916,12 +9916,20 @@ return YES;
 {
 	float v[ 9], o[ 3];
 	long i;
+	DCMPix *p = [pixList[ curMovieIndex] objectAtIndex:0];
+    
+    if( [p sliceInterval])
+        [customInterval setFloatValue: [p sliceInterval]];
+	else
+    {
+        if( [p spacingBetweenSlices])
+            [customInterval setFloatValue: [p spacingBetweenSlices]];
+    }
+    
+    [customXSpacing setFloatValue: [p pixelSpacingX]];
+	[customYSpacing setFloatValue: [p pixelSpacingY]];
 	
-    [customInterval setFloatValue: [[pixList[ curMovieIndex] objectAtIndex:0] sliceInterval]];
-	[customXSpacing setFloatValue: [[pixList[ curMovieIndex] objectAtIndex:0] pixelSpacingX]];
-	[customYSpacing setFloatValue: [[pixList[ curMovieIndex] objectAtIndex:0] pixelSpacingY]];
-	
-	[[pixList[ curMovieIndex] objectAtIndex:0] orientation: v];
+	[p orientation: v];
 	
 	if( v[ 0] == 0 && v[ 1] == 0 && v[ 2] == 0)
 	{
@@ -9932,9 +9940,9 @@ return YES;
 	
 	for( i = 0; i < 9; i++) [[customVectors cellWithTag: i] setFloatValue: v[ i]];
 	
-	o[ 0] = [[pixList[ curMovieIndex] objectAtIndex:0] originX];
-	o[ 1] = [[pixList[ curMovieIndex] objectAtIndex:0] originY];
-	o[ 2] = [[pixList[ curMovieIndex] objectAtIndex:0] originZ];
+	o[ 0] = [p originX];
+	o[ 1] = [p originY];
+	o[ 2] = [p originZ];
 	for( i = 0; i < 3; i++) [[customOrigin cellWithTag: i] setFloatValue: o[ i]];
     
 	[NSApp beginSheet: ThickIntervalWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(sheetDidEnd:returnCode:contextInfo:) contextInfo:(void*) sender];

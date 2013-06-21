@@ -87,7 +87,12 @@
 			_readSeedFile = [TLS_SEED_FILE cStringUsingEncoding:NSUTF8StringEncoding];
 			_writeSeedFile = TLS_WRITE_SEED_FILE;
 		}
-
+        
+        if( numberOfDcmLongSCUStorageSOPClassUIDs > 120)
+            NSLog( @"******** numberOfDcmLongSCUStorageSOPClassUIDs > 120");
+        
+        if( numberOfDcmShortSCUStorageSOPClassUIDs > 64)
+             NSLog( @"******** numberOfDcmShortSCUStorageSOPClassUIDs > 64");
 	}
 	return self;
 }

@@ -56,6 +56,7 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 	static NSString *UltrasoundImageStorageRetired = @"1.2.840.10008.5.1.4.1.1.6";
 	/***/
 	static NSString *UltrasoundImageStorage = @"1.2.840.10008.5.1.4.1.1.6.1";
+    static NSString *EnhancedUSVolumeStorage = @"1.2.840.10008.5.1.4.1.1.6.2";
 	/***/
 	static NSString *SecondaryCaptureImageStorage = @"1.2.840.10008.5.1.4.1.1.7";
 	/***/
@@ -381,6 +382,10 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 	return UltrasoundImageStorage;
 }
 
++ (NSString *)enhancedUSVolumeStorage{
+	return EnhancedUSVolumeStorage;
+}
+
 + (NSString *)secondaryCaptureImageStorage{
 	return SecondaryCaptureImageStorage;
 }
@@ -553,6 +558,7 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 		    EnhancedMRImageStorage ,
 		    NuclearMedicineImageStorageRetired ,
 		    UltrasoundImageStorageRetired ,
+            EnhancedUSVolumeStorage,
 		    UltrasoundImageStorage ,
 		    SecondaryCaptureImageStorage ,
 		    MultiframeSingleBitSecondaryCaptureImageStorage ,

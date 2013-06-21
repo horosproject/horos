@@ -49,6 +49,7 @@ htt://www.pixelmed.com
 + (NSString *)nuclearMedicineImageStorageRetired;
 + (NSString *)ultrasoundImageStorageRetired;
 + (NSString *)ultrasoundImageStorage;
++ (NSString *)enhancedUSVolumeStorage;
 + (NSString *)secondaryCaptureImageStorage;
 + (NSString *)multiframeSingleBitSecondaryCaptureImageStorage;
 + (NSString *)multiframeGrayscaleByteSecondaryCaptureImageStorage;
