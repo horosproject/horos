@@ -2132,7 +2132,9 @@ static BOOL protectionAgainstReentry = NO;
                                             [study willChangeValueForKey: commentField];
                                             
 											[seriesTable setPrimitiveValue: [curDict objectForKey: @"commentsAutoFill"] forKey: commentField];
-											[study setPrimitiveValue:[curDict objectForKey: @"commentsAutoFill"] forKey: commentField];
+                                            
+                                            if( [[study valueForKey: commentField] length] == 0)
+                                                [study setPrimitiveValue:[curDict objectForKey: @"commentsAutoFill"] forKey: commentField];
                                             
                                             [seriesTable didChangeValueForKey: commentField];
                                             [study didChangeValueForKey: commentField];
