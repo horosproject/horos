@@ -2673,8 +2673,8 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 				rect.size.height = -rect.size.height;
 			}
 			
-			if( rect.size.width < 1) return NO;
-			if( rect.size.height < 1) return NO;
+			if( rect.size.width < 0.2) return NO;
+			if( rect.size.height < 0.2) return NO;
 		break;
 		
 		case t2DPoint:
@@ -2706,8 +2706,8 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 				rect.size.height = -rect.size.height;
 			}
 			
-			if( rect.size.width < 1) return NO;
-			if( rect.size.height < 1) return NO;
+			if( rect.size.width < 0.2) return NO;
+			if( rect.size.height < 0.2) return NO;
 		break;
 		
 		case tCPolygon:
@@ -2724,7 +2724,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 		case tArrow:
 			if( [points count] < 2) return NO;
 			
-			if( ABS([[points objectAtIndex:0] x] - [[points objectAtIndex:1] x]) < 1.0 && ABS([[points objectAtIndex:0] y] - [[points objectAtIndex:1] y]) < 1.0) return NO;
+			if( ABS([[points objectAtIndex:0] x] - [[points objectAtIndex:1] x]) < 0.2 && ABS([[points objectAtIndex:0] y] - [[points objectAtIndex:1] y]) < 0.2) return NO;
 		break;
 		
 		//JJCP
