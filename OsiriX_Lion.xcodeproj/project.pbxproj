@@ -1348,7 +1348,6 @@
 		A96F793216DBC55A000E877A /* libvtkftgl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEBD79A614F1AD6B000DA1FE /* libvtkftgl.a */; };
 		A96F793316DBC55A000E877A /* libLSDyna.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEBD79A714F1AD6B000DA1FE /* libLSDyna.a */; };
 		A96F793416DBC55A000E877A /* libmpistubs.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEBD79A814F1AD6B000DA1FE /* libmpistubs.a */; };
-		A96F793516DBC55A000E877A /* libPapyrusToolkit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEED77DD1230393A00258D00 /* libPapyrusToolkit.a */; };
 		A96F793616DBC561000E877A /* libtiffOsiriX.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEEA2D8313DB558600F4CE1C /* libtiffOsiriX.a */; };
 		A96F793716DBC59D000E877A /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3A9D09B681F500545F5E /* libcrypto.dylib */; };
 		A96F793816DBC59D000E877A /* libssl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3A9E09B681F500545F5E /* libssl.dylib */; };
@@ -4991,7 +4990,6 @@
 		CE6692DA0AF545F90073D923 /* printView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE6692D80AF545F90073D923 /* printView.h */; };
 		CE6692DB0AF545F90073D923 /* printView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE6692D90AF545F90073D923 /* printView.m */; };
 		CE6693C70AF551210073D923 /* libxerces-c.27.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE6693C60AF551210073D923 /* libxerces-c.27.dylib */; };
-		CE66BDC812303EC700BE2799 /* libPapyrusToolkit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEED77DD1230393A00258D00 /* libPapyrusToolkit.a */; };
 		CE6915011316AC8500EE7317 /* PluginManagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = A90202BA0B980CD60001A00B /* PluginManagerController.h */; };
 		CE6915021316AC8600EE7317 /* PluginManagerController.m in Sources */ = {isa = PBXBuildFile; fileRef = A90202BB0B980CD60001A00B /* PluginManagerController.m */; };
 		CE69151B1316AD9800EE7317 /* WebPortalDatabase.h in Headers */ = {isa = PBXBuildFile; fileRef = 590A3DCB12A92920004581C2 /* WebPortalDatabase.h */; };
@@ -9649,11 +9647,11 @@
 		CEED77D8123038F300258D00 /* PapyVars3.c in Sources */ = {isa = PBXBuildFile; fileRef = CEED77D7123038F300258D00 /* PapyVars3.c */; };
 		CEED77D9123038F300258D00 /* PapyVars3.c in Sources */ = {isa = PBXBuildFile; fileRef = CEED77D7123038F300258D00 /* PapyVars3.c */; };
 		CEED77DA123038F300258D00 /* PapyVars3.c in Sources */ = {isa = PBXBuildFile; fileRef = CEED77D7123038F300258D00 /* PapyVars3.c */; };
-		CEED780812303C8E00258D00 /* libPapyrusToolkit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEED77DD1230393A00258D00 /* libPapyrusToolkit.a */; };
-		CEED780C12303CB800258D00 /* libPapyrusToolkit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEED77DD1230393A00258D00 /* libPapyrusToolkit.a */; };
-		CEED780D12303CC900258D00 /* libPapyrusToolkit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEED77DD1230393A00258D00 /* libPapyrusToolkit.a */; };
 		CEEDA35706A061EB00DEAB22 /* ThickSlabVR.h in Headers */ = {isa = PBXBuildFile; fileRef = CEEDA35306A061EB00DEAB22 /* ThickSlabVR.h */; };
 		CEEDA35806A061EB00DEAB22 /* ThickSlabVR.mm in Sources */ = {isa = PBXBuildFile; fileRef = CEEDA35406A061EB00DEAB22 /* ThickSlabVR.mm */; };
+		CEEE567D1775EB11008C6DFA /* libPapyrusToolkit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEEE567C1775EB11008C6DFA /* libPapyrusToolkit.a */; };
+		CEEE567E1775EB11008C6DFA /* libPapyrusToolkit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEEE567C1775EB11008C6DFA /* libPapyrusToolkit.a */; };
+		CEEE567F1775EB11008C6DFA /* libPapyrusToolkit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEEE567C1775EB11008C6DFA /* libPapyrusToolkit.a */; };
 		CEF0E4BC06AEC91F001FF9E5 /* Message.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEF0E4BB06AEC91F001FF9E5 /* Message.framework */; };
 		CEF0E60306AEF326001FF9E5 /* Mailer.h in Headers */ = {isa = PBXBuildFile; fileRef = CEF0E5FF06AEF326001FF9E5 /* Mailer.h */; };
 		CEF0E60406AEF326001FF9E5 /* Mailer.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF0E60006AEF326001FF9E5 /* Mailer.m */; };
@@ -15642,9 +15640,9 @@
 		CEEA2D8313DB558600F4CE1C /* libtiffOsiriX.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libtiffOsiriX.a; sourceTree = "<group>"; };
 		CEEB5CCA0CCDD161008803E2 /* Centerline.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Centerline.tif; sourceTree = "<group>"; };
 		CEED77D7123038F300258D00 /* PapyVars3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = PapyVars3.c; path = Papyrus3/PapyVars3.c; sourceTree = "<group>"; };
-		CEED77DD1230393A00258D00 /* libPapyrusToolkit.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPapyrusToolkit.a; path = Binaries/libPapyrusToolkit.a; sourceTree = "<group>"; };
 		CEEDA35306A061EB00DEAB22 /* ThickSlabVR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThickSlabVR.h; sourceTree = "<group>"; };
 		CEEDA35406A061EB00DEAB22 /* ThickSlabVR.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ThickSlabVR.mm; sourceTree = "<group>"; };
+		CEEE567C1775EB11008C6DFA /* libPapyrusToolkit.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPapyrusToolkit.a; path = Binaries/libPapyrusToolkit.a; sourceTree = "<group>"; };
 		CEF0E4BB06AEC91F001FF9E5 /* Message.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Message.framework; path = /System/Library/Frameworks/Message.framework; sourceTree = "<absolute>"; };
 		CEF0E5FF06AEF326001FF9E5 /* Mailer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Mailer.h; sourceTree = "<group>"; };
 		CEF0E60006AEF326001FF9E5 /* Mailer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Mailer.m; sourceTree = "<group>"; };
@@ -15685,7 +15683,6 @@
 				BFE0652B06755B7200AC4B67 /* Cocoa.framework in Frameworks */,
 				7E47658007428C80000C9A74 /* Accelerate.framework in Frameworks */,
 				AB61D9BE11BD32E5003BC1A4 /* IOKit.framework in Frameworks */,
-				CE66BDC812303EC700BE2799 /* libPapyrusToolkit.a in Frameworks */,
 				84A9D48E12F7F8EB00DA1F99 /* libkdu_v72R.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -15841,7 +15838,6 @@
 				A96F793216DBC55A000E877A /* libvtkftgl.a in Frameworks */,
 				A96F793316DBC55A000E877A /* libLSDyna.a in Frameworks */,
 				A96F793416DBC55A000E877A /* libmpistubs.a in Frameworks */,
-				A96F793516DBC55A000E877A /* libPapyrusToolkit.a in Frameworks */,
 				A96F793616DBC561000E877A /* libtiffOsiriX.a in Frameworks */,
 				A9FBD38316DBE701003A0E04 /* Growl.framework in Frameworks */,
 				A96F796216DBC749000E877A /* AVFoundation.framework in Frameworks */,
@@ -15891,7 +15887,6 @@
 				8406956310B6800E00C37AD0 /* SystemConfiguration.framework in Frameworks */,
 				A997B15710E0C412004C5BB1 /* SecurityInterface.framework in Frameworks */,
 				841524C5113D6BDB008250E6 /* QuartzCore.framework in Frameworks */,
-				CEED780C12303CB800258D00 /* libPapyrusToolkit.a in Frameworks */,
 				84A9D48C12F7F8EA00DA1F99 /* libkdu_v72R.a in Frameworks */,
 				CEEA2D8613DB57C000F4CE1C /* libtiffOsiriX.a in Frameworks */,
 				AB451813149F464B006674BF /* libCharLS.a in Frameworks */,
@@ -16017,6 +16012,7 @@
 				CE65D9F115C4843300E9D94C /* DiskArbitration.framework in Frameworks */,
 				CEA9237215CE3F7C00D3385F /* InstantMessage.framework in Frameworks */,
 				CEA9237515CE436E00D3385F /* AddressBook.framework in Frameworks */,
+				CEEE567D1775EB11008C6DFA /* libPapyrusToolkit.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16031,7 +16027,6 @@
 				CE8D062A0FD8731B00165DDE /* libDCM StaticLibrary.a in Frameworks */,
 				CE8D062C0FD8733C00165DDE /* Accelerate.framework in Frameworks */,
 				84DE8CD311AC227B0029396D /* WebKit.framework in Frameworks */,
-				CEED780812303C8E00258D00 /* libPapyrusToolkit.a in Frameworks */,
 				59FB64391230EE4100EBA136 /* libfreetypeOsiriX.a in Frameworks */,
 				59FB643A1230EE4100EBA136 /* libgifOsiriX.a in Frameworks */,
 				59FB643B1230EE4100EBA136 /* libmingOsiriX.a in Frameworks */,
@@ -16043,6 +16038,7 @@
 				8476BC321599D51300451331 /* AVFoundation.framework in Frameworks */,
 				8476BC361599D7E900451331 /* CoreMedia.framework in Frameworks */,
 				8412AF9C1758C3E300092D95 /* libvtktiff.a in Frameworks */,
+				CEEE567F1775EB11008C6DFA /* libPapyrusToolkit.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16081,7 +16077,6 @@
 				8406956410B6800E00C37AD0 /* SystemConfiguration.framework in Frameworks */,
 				841524C6113D6BDB008250E6 /* QuartzCore.framework in Frameworks */,
 				597DA7B41188340500D3BBCF /* SecurityInterface.framework in Frameworks */,
-				CEED780D12303CC900258D00 /* libPapyrusToolkit.a in Frameworks */,
 				84A9D48D12F7F8EB00DA1F99 /* libkdu_v72R.a in Frameworks */,
 				AB451814149F464B006674BF /* libCharLS.a in Frameworks */,
 				CEBD93A914F1AEDA000DA1FE /* libvtkzlib.a in Frameworks */,
@@ -16091,6 +16086,7 @@
 				CEA9237315CE3F7C00D3385F /* InstantMessage.framework in Frameworks */,
 				8412AF9A1758C38600092D95 /* libvtktiff.a in Frameworks */,
 				8412AF9B1758C3B500092D95 /* libvtkjpeg.a in Frameworks */,
+				CEEE567E1775EB11008C6DFA /* libPapyrusToolkit.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16184,6 +16180,7 @@
 		1058C7A2FEA54F0111CA2CBB /* Other Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CEEE567C1775EB11008C6DFA /* libPapyrusToolkit.a */,
 				A97E19EE0CDF55E50065EE29 /* 3DconnexionClient.framework */,
 				ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */,
 				CE2BE05D1524344D00AE6156 /* Growl.framework */,
@@ -16399,7 +16396,6 @@
 				CE11138608EDD5E2005B15E1 /* ITKLibs */,
 				CEBD79CF14F1AD8F000DA1FE /* VTKHeaders */,
 				CE11138108EDD5CE005B15E1 /* VTKLibs */,
-				CEED77DD1230393A00258D00 /* libPapyrusToolkit.a */,
 				ABDE6E0806398E3400F0C5DD /* LibTiff */,
 				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
 				A98795C316DB9FD100926023 /* SenTestingKit.framework */,

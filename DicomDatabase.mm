@@ -1699,6 +1699,8 @@ static BOOL protectionAgainstReentry = NO;
 		BOOL COMMENTSAUTOFILL = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILL"];
 		BOOL DELETEFILELISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"DELETEFILELISTENER"];
         NSString *commentField = [[NSUserDefaults standardUserDefaults] stringForKey: @"commentFieldForAutoFill"];
+        BOOL COMMENTSAUTOFILLSeriesLevel = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILLSeriesLevel"];
+        BOOL COMMENTSAUTOFILLStudyLevel = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILLStudyLevel"];
         
 		NSString* newFile = nil;
 		
@@ -2131,10 +2133,14 @@ static BOOL protectionAgainstReentry = NO;
                                             [seriesTable willChangeValueForKey: commentField];
                                             [study willChangeValueForKey: commentField];
                                             
-											[seriesTable setPrimitiveValue: [curDict objectForKey: @"commentsAutoFill"] forKey: commentField];
+                                            if( COMMENTSAUTOFILLSeriesLevel)
+                                                [seriesTable setPrimitiveValue: [curDict objectForKey: @"commentsAutoFill"] forKey: commentField];
                                             
-                                            if( [[study valueForKey: commentField] length] == 0)
-                                                [study setPrimitiveValue:[curDict objectForKey: @"commentsAutoFill"] forKey: commentField];
+                                            if( COMMENTSAUTOFILLStudyLevel)
+                                            {
+                                                if( [[curDict objectForKey: @"commentsAutoFill"] length] > [[study valueForKey: commentField] length])
+                                                    [study setPrimitiveValue:[curDict objectForKey: @"commentsAutoFill"] forKey: commentField];
+                                            }
                                             
                                             [seriesTable didChangeValueForKey: commentField];
                                             [study didChangeValueForKey: commentField];

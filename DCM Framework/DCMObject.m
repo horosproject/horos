@@ -1331,20 +1331,20 @@ PixelRepresentation
 			switch (vr)
 			{
 					//NSNumbers
-				case AT:	//Attribute Tag 16bit unsigned integer 
-				case UL:	//unsigned Long            
-				case SL:	//signed long
-				case FL:	//floating point Single 4 bytes fixed
-				case FD:	//double floating point 8 bytes fixed
-				case US:   //unsigned short
-				case SS:	//signed short
+				case DCM_AT:	//Attribute Tag 16bit unsigned integer 
+				case DCM_UL:	//unsigned Long            
+				case DCM_SL:	//signed long
+				case DCM_FL:	//floating point Single 4 bytes fixed
+				case DCM_FD:	//double floating point 8 bytes fixed
+				case DCM_US:   //unsigned short
+				case DCM_SS:	//signed short
 					newValue = [NSNumber numberWithInt:0];
 					break;
 					//calendar dates
-				case DA:	format = @"%Y%m%d";
-				case TM:	if (!format)
+				case DCM_DA:	format = @"%Y%m%d";
+				case DCM_TM:	if (!format)
 								format = @"%H%M%S";
-				case DT:	if (!format)
+				case DCM_DT:	if (!format)
 								format = @"%Y%m%d%H%M%S";
 					newValue = [DCMCalendarDate dateWithYear:[value yearOfCommonEra] month:[value monthOfYear] day:1 hour:12 minute:00 second:00 timeZone:[value timeZone]];
 					if (![aValue isKindOfClass:[DCMCalendarDate class]])
@@ -1362,33 +1362,33 @@ PixelRepresentation
 				*/
 				
 						//NSData  make zeroed NSData of length of old NSData
-				case UN:	//unknown
-				case OB:	//other Byte byte string not little/big endian sensitive
-				case OW:	//other word 16bit word
+				case DCM_UN:	//unknown
+				case DCM_OB:	//other Byte byte string not little/big endian sensitive
+				case DCM_OW:	//other word 16bit word
 					newValue = [NSMutableData dataWithLength:[(NSData *)value length]];
 				break;
 					//NUmber strings	
-				case SH:	//short string	
-				case DS:	//Decimal String  representing floating point number 16 byte max
-				case IS:	//Integer String 12 bytes max
+				case DCM_SH:	//short string	
+				case DCM_DS:	//Decimal String  representing floating point number 16 byte max
+				case DCM_IS:	//Integer String 12 bytes max
 					newValue =  @"0";
 				break;
 					//Age string					
-				case AS:	//Age String Format mmmM,dddD,nnnY ie 018Y
+				case DCM_AS:	//Age String Format mmmM,dddD,nnnY ie 018Y
 					newValue = @"000Y";
 				break;
 					//code string
-				case CS:	//Code String   16 byte max
+				case DCM_CS:	//Code String   16 byte max
 					newValue = @"0000";
 				break;
-				case AE:	//Application Entity  String 16bytes max
-				case LO:	//Character String 64 char max
-				case LT:	//Long Text 10240 char Max
-				case PN:	//Person Name string
-				case ST:	//short Text 1024 char max
-				case UI:    //String for UID             
-				case UT:	//unlimited text
-				case QQ: 	
+				case DCM_AE:	//Application Entity  String 16bytes max
+				case DCM_LO:	//Character String 64 char max
+				case DCM_LT:	//Long Text 10240 char Max
+				case DCM_PN:	//Person Name string
+				case DCM_ST:	//short Text 1024 char max
+				case DCM_UI:    //String for UID             
+				case DCM_UT:	//unlimited text
+				case DCM_QQ: 	
 					//newValue = @"XXXXXXX";
 					//Patient ID are unique whene anonymized. but same for each ID
 					/*

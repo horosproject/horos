@@ -14,33 +14,34 @@
 
 #import <Foundation/Foundation.h>
 
-#define AE 0x4145 //Application Entity  String 16bytes max
-#define AS 0x4153 //Age String Format mmmM,dddD,nnnY ie 018Y
-#define AT 0x4154 //Attribute Tag 16bit unsigned integer
-#define CS 0x4353 //Code String   16 byte max
-#define DA 0x4441 //Date String yyyymmdd 8bytes old format was yyyy.mm.dd for 10 bytes. May need to implement old format
-#define DS 0x4453 //Decimal String  representing floating point number 16 byte max
-#define DT 0x4454 //Date Time YYYYMMDDHHMMSS.FFFFFF&ZZZZ FFFFFF= fractional Sec. ZZZZ=offset from Hr and min offset from universal time
-#define FD 0x4644 //floating point Single 4 bytes fixed
-#define FL 0x464C //double floating point 8 bytes fixed
-#define IS 0x4953 //Integer String 12 bytes max
-#define LO 0x4C4F //Character String 64 char max
-#define LT 0x4C54 //Long Text 10240 char Max
-#define PN 0x504E //Person Name string
-#define SH 0x5348 //short string
-#define SL 0x534C //signed long
-#define SS 0x5353 //signed short
-#define ST 0x5354 //short Text 1024 char max
-#define TM 0x544D //Time String
-#define UI 0x5549 //String for UID
-#define UL 0x554C //unsigned Long
-#define US 0x5553 //unsigned short
-#define UT 0x5554 //unlimited text
-#define OB 0x4F42 //other Byte byte string not little/big endian sensitive
-#define OW 0x4F57 //other word 16bit word
-#define SQ 0x5351 //Sequence of items
-#define UN 0x554E //unknown
-#define QQ 0x3F3F
+#define DCM_AE 0x4145 //Application Entity  String 16bytes max
+#define DCM_AS 0x4153 //Age String Format mmmM,dddD,nnnY ie 018Y
+#define DCM_AT 0x4154 //Attribute Tag 16bit unsigned integer
+#define DCM_CS 0x4353 //Code String   16 byte max
+#define DCM_DA 0x4441 //Date String yyyymmdd 8bytes old format was yyyy.mm.dd for 10 bytes. May need to implement old format
+#define DCM_DS 0x4453 //Decimal String  representing floating point number 16 byte max
+#define DCM_DT 0x4454 //Date Time YYYYMMDDHHMMSS.FFFFFF&ZZZZ FFFFFF= fractional Sec. ZZZZ=offset from Hr and min offset from universal time
+#define DCM_FD 0x4644 //floating point Single 4 bytes fixed
+#define DCM_FL 0x464C //double floating point 8 bytes fixed
+#define DCM_IS 0x4953 //Integer String 12 bytes max
+#define DCM_LO 0x4C4F //Character String 64 char max
+#define DCM_LT 0x4C54 //Long Text 10240 char Max
+#define DCM_PN 0x504E //Person Name string
+#define DCM_SH 0x5348 //short string
+#define DCM_SL 0x534C //signed long
+#define DCM_SS 0x5353 //signed short
+#define DCM_ST 0x5354 //short Text 1024 char max
+#define DCM_TM 0x544D //Time String
+#define DCM_UI 0x5549 //String for UID
+#define DCM_UL 0x554C //unsigned Long
+#define DCM_US 0x5553 //unsigned short
+#define DCM_UT 0x5554 //unlimited text
+#define DCM_OB 0x4F42 //other Byte byte string not little/big endian sensitive
+#define DCM_OW 0x4F57 //other word 16bit word
+#define DCM_OF 0x4F46 //Other Float 
+#define DCM_SQ 0x5351 //Sequence of items
+#define DCM_UN 0x554E //unknown
+#define DCM_QQ 0x3F3F
 
 @class DCMAttributeTag;
 @class DCMDataContainer;

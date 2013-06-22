@@ -681,9 +681,7 @@ extern NSRecursiveLock *PapyrusLock;
 		//Image Number
 		if (dataset->findAndGetString(DCM_InstanceNumber, string, OFFalse).good() && string != NULL)
 		{
-			imageID = [[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding];
-			int val = [imageID intValue];
-			[imageID release];
+			int val = [[NSString stringWithCString:string encoding: NSASCIIStringEncoding] intValue];
 			imageID = [[NSString alloc] initWithFormat:@"%5d", val];
 		}
 		else imageID = nil;

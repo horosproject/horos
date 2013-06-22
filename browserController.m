@@ -885,46 +885,63 @@ static NSConditionLock *threadLock = nil;
         BOOL commentsAutoFill = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILL"];
         
         int x = 0;
+        for( NSManagedObjectID *studyID in studiesArray)
+        {
+            DicomStudy *s = (DicomStudy*) [context objectWithID: studyID];
+            
+            [s willChangeValueForKey: commentField];
+            [s setPrimitiveValue: 0L forKey: commentField];
+            [s didChangeValueForKey: commentField];
+        }
+        
 		for( NSManagedObjectID *studyID in studiesArray)
         {
+            DicomStudy *s = (DicomStudy*) [context objectWithID: studyID];
             @try
             {
-                DicomStudy *s = (DicomStudy*) [context objectWithID: studyID];
-                
                 [s willChangeValueForKey: commentField];
                 
                 if( studyLevel == YES && seriesLevel == NO && commentsAutoFill == YES)
                 {
-                    NSManagedObject *o = [[[[s series] anyObject] valueForKey:@"images"] anyObject];
-                    
-                    @autoreleasepool
+                    for( DicomSeries *series in s.imageSeries)
                     {
-                        DicomFile *dcm = [[DicomFile alloc] init: [o valueForKey:@"completePath"]];
-                        
-                        if( dcm)
+                        if( [DCMAbstractSyntaxUID isImageStorage: series.seriesSOPClassUID] && [DCMAbstractSyntaxUID isPDF: series.seriesSOPClassUID] == NO)
                         {
-                            if( [dcm elementForKey:@"commentsAutoFill"])
-                                [s setPrimitiveValue: [dcm elementForKey: @"commentsAutoFill"] forKey: commentField];
-                            else
-                                [s setPrimitiveValue: nil forKey: commentField];
+                            NSManagedObject *o = [[series valueForKey:@"images"] anyObject];
                             
-                            [dcm release];
+                            @autoreleasepool
+                            {
+                                DicomFile *dcm = [[DicomFile alloc] init: [o valueForKey:@"completePath"]];
+                                
+                                if( dcm)
+                                {
+                                    if( [[dcm elementForKey:@"commentsAutoFill"] length] > [[s valueForKey: commentField] length])
+                                        [s setPrimitiveValue: [dcm elementForKey: @"commentsAutoFill"] forKey: commentField];
+                                    else
+                                        [s setPrimitiveValue: nil forKey: commentField];
+                                    
+                                    [dcm release];
+                                }
+                                
+                                float p = (float) (x++) / (float) studiesArray.count;
+                                [[NSThread currentThread] setProgress: p];
+                                
+                                if( x % 100 == 0)
+                                    [context save: nil];
+                            }
+                            
+                            break;
                         }
-                        
-                        float p = (float) (x++) / (float) studiesArray.count;
-                        [[NSThread currentThread] setProgress: p];
-                        
-                        if( x % 100 == 0)
-                            [context save: nil];
                     }
                 }
                 else
                     [s setPrimitiveValue: 0L forKey: commentField];
-                
-                [s didChangeValueForKey: commentField];
             }
             @catch (NSException *exception) {
                 N2LogException( exception);
+            }
+            @finally {
+                [s didChangeValueForKey: commentField];
             }
             
             if( [[NSThread currentThread] isCancelled])
@@ -942,46 +959,49 @@ static NSConditionLock *threadLock = nil;
                 {
                     DicomSeries *series = (DicomSeries*) [context objectWithID: seriesID];
                     
-                    NSManagedObject *o = [[series valueForKey:@"images"] anyObject];
-                    
-                    if( commentsAutoFill && seriesLevel)
+                    if( [DCMAbstractSyntaxUID isImageStorage: series.seriesSOPClassUID] && [DCMAbstractSyntaxUID isPDF: series.seriesSOPClassUID] == NO)
                     {
-                        DicomFile *dcm = [[DicomFile alloc] init: [o valueForKey:@"completePath"]];
+                        NSManagedObject *o = [[series valueForKey:@"images"] anyObject];
                         
-                        if( dcm)
+                        if( commentsAutoFill && seriesLevel)
                         {
-                            if( [dcm elementForKey:@"commentsAutoFill"])
+                            DicomFile *dcm = [[DicomFile alloc] init: [o valueForKey:@"completePath"]];
+                            
+                            if( dcm)
                             {
-                                [series willChangeValueForKey: commentField];
-                                [series setPrimitiveValue: [dcm elementForKey: @"commentsAutoFill"] forKey: commentField];
-                                [series didChangeValueForKey: commentField];
-                                
-                                if( studyLevel)
+                                if( [dcm elementForKey:@"commentsAutoFill"])
                                 {
-                                    NSManagedObject *study = [series valueForKey: @"study"];
+                                    [series willChangeValueForKey: commentField];
+                                    [series setPrimitiveValue: [dcm elementForKey: @"commentsAutoFill"] forKey: commentField];
+                                    [series didChangeValueForKey: commentField];
                                     
-                                    if( [study valueForKey: commentField] == nil || [[study valueForKey: commentField] isEqualToString:@""])
+                                    if( studyLevel)
                                     {
-                                        [study willChangeValueForKey: commentField];
-                                        [study setPrimitiveValue: [dcm elementForKey: @"commentsAutoFill"] forKey: commentField];
-                                        [study didChangeValueForKey: commentField];
+                                        NSManagedObject *study = [series valueForKey: @"study"];
+                                        
+                                        if( [study valueForKey: commentField] == nil || [[study valueForKey: commentField] isEqualToString:@""])
+                                        {
+                                            [study willChangeValueForKey: commentField];
+                                            [study setPrimitiveValue: [dcm elementForKey: @"commentsAutoFill"] forKey: commentField];
+                                            [study didChangeValueForKey: commentField];
+                                        }
                                     }
                                 }
+                                else
+                                {
+                                    [series willChangeValueForKey: commentField];
+                                    [series setPrimitiveValue: 0L forKey: commentField];
+                                    [series didChangeValueForKey: commentField];
+                                }
+                                [dcm release];
                             }
-                            else
-                            {
-                                [series willChangeValueForKey: commentField];
-                                [series setPrimitiveValue: 0L forKey: commentField];
-                                [series didChangeValueForKey: commentField];
-                            }
-                            [dcm release];
                         }
-                    }
-                    else
-                    {
-                        [series willChangeValueForKey: commentField];
-                        [series setPrimitiveValue: 0L forKey: commentField];
-                        [series didChangeValueForKey: commentField];
+                        else
+                        {
+                            [series willChangeValueForKey: commentField];
+                            [series setPrimitiveValue: 0L forKey: commentField];
+                            [series didChangeValueForKey: commentField];
+                        }
                     }
                 }
                 @catch ( NSException *e)
@@ -1046,6 +1066,9 @@ static NSConditionLock *threadLock = nil;
                     
                     if( [object isKindOfClass:[DicomStudy class]])
                         [selectedStudies addObject: object];
+                    
+                    if( [object isKindOfClass:[DicomSeries class]])
+                        [selectedStudies addObject: [object valueForKey: @"study"]];
                 }
             }
             

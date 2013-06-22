@@ -2656,10 +2656,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                     val = Papy3GetElement (theGroupP, papImageNumberGr, &nbVal, &itemType);
                     if (val != NULL && val->a && validAPointer( itemType))
                     {
-                        imageID = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
-                        int val = [imageID intValue];
-                        [imageID release];
-                        imageID = [[NSString alloc] initWithFormat:@"%5d", val];
+                        int v = [[NSString stringWithCString:val->a encoding: NSASCIIStringEncoding] intValue];
+                        imageID = [[NSString alloc] initWithFormat:@"%5d", v];
                     }
                     else imageID = nil;
                     
@@ -2673,46 +2671,21 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                     origin[0] = origin[1] = origin[2] = 0;
                     
                     val = Papy3GetElement (theGroupP, papImagePositionPatientGr, &nbVal, &itemType);
-                    if (val != NULL && val->a && validAPointer( itemType))
+                    if (val != NULL && val->a && validAPointer( itemType) && nbVal == 3)
                     {
-                        tmp = val;
-                        
-                        origin[0] = [[NSString stringWithCString:tmp->a encoding: NSISOLatin1StringEncoding] floatValue];
-                        
-                        if( nbVal > 1)
-                        {
-                            tmp++;
-                            origin[1] = [[NSString stringWithCString:tmp->a encoding: NSISOLatin1StringEncoding] floatValue];
-                        }
-                        
-                        if( nbVal > 2)
-                        {
-                            tmp++;
-                            origin[2] = [[NSString stringWithCString:tmp->a encoding: NSISOLatin1StringEncoding] floatValue];
-                        }
+                        origin[0] = [[NSString stringWithCString:val++->a encoding: NSISOLatin1StringEncoding] floatValue];
+                        origin[1] = [[NSString stringWithCString:val++->a encoding: NSISOLatin1StringEncoding] floatValue];
+                        origin[2] = [[NSString stringWithCString:val++->a encoding: NSISOLatin1StringEncoding] floatValue];
                     }
                     
                     orientation[ 0] = 1;	orientation[ 1] = 0;		orientation[ 2] = 0;
                     orientation[ 3] = 0;	orientation[ 4] = 1;		orientation[ 5] = 0;
                     
                     val = Papy3GetElement (theGroupP, papImageOrientationPatientGr, &nbVal, &itemType);
-                    if (val != NULL && val->a && validAPointer( itemType))
+                    if (val != NULL && val->a && validAPointer( itemType) && nbVal == 6)
                     {
-                        long j;
-                        tmp = val;
-                        if( nbVal != 6)
-                        {
-                            NSLog(@"Orientation is NOT 6 !!!");
-                            if( nbVal > 6) nbVal = 6;
-                        }
-                        for (j = 0; j < nbVal; j++)
-                        {
-                            orientation[ j]  = [[NSString stringWithCString:tmp->a encoding: NSISOLatin1StringEncoding] floatValue];
-                            tmp++;
-                        }
-                        
-                        for (j = nbVal; j < 6; j++)
-                            orientation[ j] = 0;
+                        for (int j = 0; j < nbVal; j++)
+                            orientation[ j]  = [[NSString stringWithCString:val++->a encoding: NSISOLatin1StringEncoding] floatValue];
                     }
                     
                     // Compute normal vector
@@ -2860,9 +2833,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                     // ROWS
                     val = Papy3GetElement (theGroupP, papRowsGr, &nbVal, &itemType);
                     if (val != NULL)
-                    {
                         height = (int) (*val).us;
-                    }
+                    
                     // COLUMNS
                     val = Papy3GetElement (theGroupP, papColumnsGr, &nbVal, &itemType);
                     if (val != NULL) 
@@ -2918,66 +2890,76 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                 theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x5200);
                 if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
                 {
-                    //				UValue_T *val3 = nil;
-                    //				// ****** ****** ****** ************************************************************************
-                    //				// SHARED FRAME
-                    //				// ****** ****** ****** ************************************************************************
-                    //				
-                    //				val = Papy3GetElement ( theGroupP, papSharedFunctionalGroupsSequence, &nbVal, &itemType);
-                    //				
-                    //				// there is an element
-                    //				if ( val)
-                    //				{
-                    //					// there is a sequence
-                    //					if (val->sq)
-                    //					{
-                    //						// get a pointer to the first element of the list
-                    //						Papy_List *dcmList = val->sq->object->item;
-                    //						
-                    //						// loop through the elements of the sequence
-                    //						while (dcmList != NULL)
-                    //						{
-                    //							SElement * gr = (SElement *) dcmList->object->group;
-                    //							
-                    //							switch( gr->group)
-                    //							{
-                    //								case 0x0020:
-                    //									val3 = Papy3GetElement (gr, papPlaneOrientationSequence, &nbVal, &itemType);
-                    //									if (val3 != NULL && nbVal >= 1)
-                    //									{
-                    //										// there is a sequence
-                    //										if (val3->sq)
-                    //										{
-                    //											Papy_List *PixelMatrixSeq = val3->sq->object->item;
-                    //											
-                    //											// loop through the elements of the sequence
-                    //											while (PixelMatrixSeq)
-                    //											{
-                    //												SElement * gr = (SElement *) PixelMatrixSeq->object->group;
-                    //												
-                    //												switch( gr->group)
-                    //												{
-                    //													case 0x0020:
-                    //													{
-                    //														float location = [self getSliceLocationFromPapyrusGroup: gr];
-                    //														
-                    //														[dicomElements setObject: [NSNumber numberWithFloat: location] forKey:@"sliceLocation"];
-                    //													}
-                    //													break;
-                    //												}
-                    //												
-                    //												// get the next element of the list
-                    //												PixelMatrixSeq = PixelMatrixSeq->next;
-                    //											}
-                    //										}
-                    //									}
-                    //									break;
-                    //							}
-                    //							// get the next element of the list
-                    //							dcmList = dcmList->next;
-                    //						} // while ...loop through the sequence
-                    //					} // if ...there is a sequence of groups
-                    //				} // if ...val is not NULL
+                    float originMultiFrame[ 3], orientationMultiFrame[ 9];
+                    
+                    originMultiFrame[0] = originMultiFrame[1] = originMultiFrame[2] = 0;
+                    orientationMultiFrame[ 0] = 1;	orientationMultiFrame[ 1] = 0;		orientationMultiFrame[ 2] = 0;
+                    orientationMultiFrame[ 3] = 0;	orientationMultiFrame[ 4] = 1;		orientationMultiFrame[ 5] = 0;
+                    
+                    UValue_T *val3 = nil;
+                    // ****** ****** ****** ************************************************************************
+                    // SHARED FRAME
+                    // ****** ****** ****** ************************************************************************
+                    
+                    val = Papy3GetElement ( theGroupP, papSharedFunctionalGroupsSequence, &nbVal, &itemType);
+                    
+                    // there is an element
+                    if ( val)
+                    {
+                        // there is a sequence
+                        if (val->sq)
+                        {
+                            // get a pointer to the first element of the list
+                            Papy_List *dcmList = val->sq->object->item;
+                            
+                            // loop through the elements of the sequence
+                            while (dcmList != NULL)
+                            {
+                                SElement * gr = (SElement *) dcmList->object->group;
+                                
+                                switch( gr->group)
+                                {
+                                    case 0x0020:
+                                        val3 = Papy3GetElement (gr, papPlanePositionVolumeSequence, &nbVal, &itemType);
+                                        if (val3 != NULL && nbVal >= 1)
+                                        {
+                                            // there is a sequence
+                                            if (val3->sq)
+                                            {
+                                                Papy_List *PixelMatrixSeq = val3->sq->object->item;
+                                                
+                                                // loop through the elements of the sequence
+                                                while (PixelMatrixSeq)
+                                                {
+                                                    SElement * gr = (SElement *) PixelMatrixSeq->object->group;
+                                                    
+                                                    switch( gr->group)
+                                                    {
+                                                        case 0x0020:
+                                                        {
+                                                            UValue_T *val4 = nil;
+                                                            val4 = Papy3GetElement (gr, papImageOrientationVolumeGr, &nbVal, &itemType);
+                                                            if (val4 != NULL && itemType == FD && nbVal == 6)
+                                                            {
+                                                                for ( int j = 0; j < nbVal; j++)
+                                                                    orientationMultiFrame[ j]  = val4++->fd;
+                                                            }
+                                                        }
+                                                        break;
+                                                    }
+                                                    
+                                                    // get the next element of the list
+                                                    PixelMatrixSeq = PixelMatrixSeq->next;
+                                                }
+                                            }
+                                        }
+                                        break;
+                                }
+                                // get the next element of the list
+                                dcmList = dcmList->next;
+                            } // while ...loop through the sequence
+                        } // if ...there is a sequence of groups
+                    } // if ...val is not NULL
                     
                     // ****** ****** ****** ************************************************************************
                     // PER FRAME
@@ -3004,11 +2986,6 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                             {
                                 if( dcmList->object->item)
                                 {
-                                    float originMultiFrame[ 3], orientationMultiFrame[ 9];
-                                    
-                                    originMultiFrame[0] = originMultiFrame[1] = originMultiFrame[2] = 0;
-                                    orientationMultiFrame[ 0] = 1;	orientationMultiFrame[ 1] = 0;		orientationMultiFrame[ 2] = 0;
-                                    orientationMultiFrame[ 3] = 0;	orientationMultiFrame[ 4] = 1;		orientationMultiFrame[ 5] = 0;
                                     
                                     {
                                         Papy_List *groupsForFrame = dcmList->object->item;
@@ -3042,7 +3019,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                                                                         case 0x0020:
                                                                         {
                                                                             valc = Papy3GetElement ( gr, papTriggerDelayTime, &nbVal, &itemType);
-                                                                            if (itemType == 8)
+                                                                            if (itemType == FD)
                                                                                 [imageCardiacTriggerArray addObject: [NSString stringWithFormat: @"%lf", valc->fd]];
                                                                         }
                                                                     }
@@ -3055,6 +3032,39 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                                                         break;
                                                         
                                                     case 0x0020:
+                                                        valb = Papy3GetElement (gr, papPlanePositionVolumeSequence, &nbVal, &itemType);
+                                                        if (valb != NULL && nbVal >= 1)
+                                                        {
+                                                            // there is a sequence
+                                                            if (valb->sq)
+                                                            {
+                                                                // get a pointer to the first element of the list
+                                                                Papy_List *seq = valb->sq->object->item;
+                                                                
+                                                                // loop through the elements of the sequence
+                                                                while (seq)
+                                                                {
+                                                                    SElement * gr = (SElement *) seq->object->group;
+                                                                    
+                                                                    switch( gr->group)
+                                                                    {
+                                                                        case 0x0020:
+                                                                            valc = Papy3GetElement ( gr, papImagePositionVolumeGr, &nbVal, &itemType);
+                                                                            if (valc != NULL && itemType == FD && nbVal == 3)
+                                                                            {
+                                                                                originMultiFrame[0] = valc++->fd;
+                                                                                originMultiFrame[1] = valc++->fd;
+                                                                                originMultiFrame[2] = valc++->fd;
+                                                                            }
+                                                                        break;
+                                                                    }
+                                                                    
+                                                                    // get the next element of the list
+                                                                    seq = seq->next;
+                                                                }
+                                                            }
+                                                        }
+                                                        
                                                         valb = Papy3GetElement (gr, papPlanePositionSequence, &nbVal, &itemType);
                                                         if (valb != NULL && nbVal >= 1)
                                                         {
@@ -3072,27 +3082,14 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                                                                     switch( gr->group)
                                                                     {
                                                                         case 0x0020:
-                                                                        {
                                                                             valc = Papy3GetElement ( gr, papImagePositionPatientGr, &nbVal, &itemType);
-                                                                            if (valc != NULL && valc->a && validAPointer( itemType))
+                                                                            if (valc != NULL && valc->a && validAPointer( itemType) && nbVal == 3)
                                                                             {
-                                                                                UValue_T *tmp = valc;
-                                                                                originMultiFrame[0] = [[NSString stringWithCString:tmp->a encoding: NSISOLatin1StringEncoding] floatValue];
-                                                                                
-                                                                                if( nbVal > 1)
-                                                                                {
-                                                                                    tmp++;
-                                                                                    originMultiFrame[1] = [[NSString stringWithCString:tmp->a encoding: NSISOLatin1StringEncoding] floatValue];
-                                                                                }
-                                                                                
-                                                                                if( nbVal > 2)
-                                                                                {
-                                                                                    tmp++;
-                                                                                    originMultiFrame[2] = [[NSString stringWithCString:tmp->a encoding: NSISOLatin1StringEncoding] floatValue];
-                                                                                }
+                                                                                originMultiFrame[0] = [[NSString stringWithCString:valc++->a encoding: NSISOLatin1StringEncoding] floatValue];
+                                                                                originMultiFrame[1] = [[NSString stringWithCString:valc++->a encoding: NSISOLatin1StringEncoding] floatValue];
+                                                                                originMultiFrame[2] = [[NSString stringWithCString:valc++->a encoding: NSISOLatin1StringEncoding] floatValue];
                                                                             }
-                                                                        }
-                                                                            break;
+                                                                        break;
                                                                     }
                                                                     
                                                                     // get the next element of the list
@@ -3120,43 +3117,13 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                                                                         case 0x0020:
                                                                         {
                                                                             valc = Papy3GetElement( gr, papImageOrientationPatientGr, &nbVal, &itemType);
-                                                                            if (valc != NULL && valc->a && validAPointer( itemType))
+                                                                            if (valc != NULL && valc->a && validAPointer( itemType) && nbVal == 6)
                                                                             {
-                                                                                UValue_T *tmp = valc;
-                                                                                if( nbVal != 6)
-                                                                                {
-                                                                                    NSLog(@"Orientation is NOT 6 !!!");
-                                                                                    if( nbVal > 6) nbVal = 6;
-                                                                                }
                                                                                 for (int j = 0; j < nbVal; j++)
-                                                                                {
-                                                                                    orientationMultiFrame[ j]  = [[NSString stringWithCString:tmp->a encoding: NSISOLatin1StringEncoding] floatValue];
-                                                                                    tmp++;
-                                                                                }
-                                                                                
-                                                                                for (int j = nbVal; j < 6; j++)
-                                                                                    orientationMultiFrame[ j] = 0;
-                                                                                
-                                                                                // Compute normal vector
-                                                                                orientationMultiFrame[ 6] = orientationMultiFrame[ 1]*orientationMultiFrame[ 5] - orientationMultiFrame[ 2]*orientationMultiFrame[ 4];
-                                                                                orientationMultiFrame[ 7] = orientationMultiFrame[ 2]*orientationMultiFrame[ 3] - orientationMultiFrame[ 0]*orientationMultiFrame[ 5];
-                                                                                orientationMultiFrame[ 8] = orientationMultiFrame[ 0]*orientationMultiFrame[ 4] - orientationMultiFrame[ 1]*orientationMultiFrame[ 3];		
+                                                                                    orientationMultiFrame[ j]  = [[NSString stringWithCString: valc++->a encoding: NSISOLatin1StringEncoding] floatValue];
                                                                             }
-                                                                            
-                                                                            float location = 0;
-                                                                            
-                                                                            if( fabs( orientationMultiFrame[ 6]) > fabs(orientationMultiFrame[ 7]) && fabs( orientationMultiFrame[ 6]) > fabs(orientationMultiFrame[ 8]))
-                                                                                location = originMultiFrame[ 0];
-                                                                            
-                                                                            if( fabs( orientationMultiFrame[ 7]) > fabs(orientationMultiFrame[ 6]) && fabs( orientationMultiFrame[ 7]) > fabs(orientationMultiFrame[ 8]))
-                                                                                location = originMultiFrame[ 1];
-                                                                            
-                                                                            if( fabs( orientationMultiFrame[ 8]) > fabs(orientationMultiFrame[ 6]) && fabs( orientationMultiFrame[ 8]) > fabs(orientationMultiFrame[ 7]))
-                                                                                location = originMultiFrame[ 2];
-                                                                            
-                                                                            [sliceLocationArray addObject: [NSNumber numberWithFloat: location]];
                                                                         }
-                                                                            break;
+                                                                        break;
                                                                     }
                                                                     
                                                                     // get the next element of the list
@@ -3164,6 +3131,25 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                                                                 }
                                                             }
                                                         }
+                                                        
+                                                        // Compute normal vector
+                                                        orientationMultiFrame[ 6] = orientationMultiFrame[ 1]*orientationMultiFrame[ 5] - orientationMultiFrame[ 2]*orientationMultiFrame[ 4];
+                                                        orientationMultiFrame[ 7] = orientationMultiFrame[ 2]*orientationMultiFrame[ 3] - orientationMultiFrame[ 0]*orientationMultiFrame[ 5];
+                                                        orientationMultiFrame[ 8] = orientationMultiFrame[ 0]*orientationMultiFrame[ 4] - orientationMultiFrame[ 1]*orientationMultiFrame[ 3];
+                                                        
+                                                        float location = 0;
+                                                        
+                                                        if( fabs( orientationMultiFrame[ 6]) > fabs(orientationMultiFrame[ 7]) && fabs( orientationMultiFrame[ 6]) > fabs(orientationMultiFrame[ 8]))
+                                                            location = originMultiFrame[ 0];
+                                                        
+                                                        if( fabs( orientationMultiFrame[ 7]) > fabs(orientationMultiFrame[ 6]) && fabs( orientationMultiFrame[ 7]) > fabs(orientationMultiFrame[ 8]))
+                                                            location = originMultiFrame[ 1];
+                                                        
+                                                        if( fabs( orientationMultiFrame[ 8]) > fabs(orientationMultiFrame[ 6]) && fabs( orientationMultiFrame[ 8]) > fabs(orientationMultiFrame[ 7]))
+                                                            location = originMultiFrame[ 2];
+                                                        
+                                                        [sliceLocationArray addObject: [NSNumber numberWithFloat: location]];
+                                                        
                                                         break;
                                                 } // switch( gr->group)
                                             } // if( groupsForFrame->object->item)

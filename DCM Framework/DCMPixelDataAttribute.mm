@@ -3802,7 +3802,7 @@ static inline int int_ceildivpow2(int a, int b) {
 			}
 			else
 			{
-				NSLog(@"Unknown compressed transfer syntax: %@ %@", transferSyntax.description, transferSyntax.transferSyntax);
+				NSLog( @"DCM Framework: Unknown compressed transfer syntax: %@ %@", transferSyntax.description, transferSyntax.transferSyntax);
 			}
 			
 			[singleThread lock];

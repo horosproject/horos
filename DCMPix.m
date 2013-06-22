@@ -6851,7 +6851,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 - (void) papyLoadGroup0x0018: (SElement*) theGroupP
 {
-	UValue_T *val, *tmp;
+	UValue_T *val;
 	PapyULong nbVal;
 	int elemType, i;
 	
@@ -7050,16 +7050,10 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	if( pixelSpacingFromUltrasoundRegions == NO)
 	{
 		val = Papy3GetElement (theGroupP, papImagerPixelSpacingGr, &nbVal, &elemType);
-		if ( val)
+		if( val && nbVal == 2)
 		{
-			tmp = val;
-			pixelSpacingY = atof( tmp->a);
-			
-			if( nbVal > 1)
-			{
-				tmp++;
-				pixelSpacingX = atof( tmp->a);
-			}
+			pixelSpacingY = atof( val++->a);
+            pixelSpacingX = atof( val++->a);
 		}
 	}
 	
@@ -7102,6 +7096,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			
 			for( i = 0 ; i < nbVal; i++)
 			{
+                UValue_T *tmp = nil;
+                
 				if( [[NSString stringWithCString:val->a encoding: NSISOLatin1StringEncoding] isEqualToString:@"RECTANGULAR"])
 				{
 					DCMPixShutterOnOff = YES;
@@ -7125,9 +7121,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					tmp = Papy3GetElement (theGroupP, papCenterofCircularShutterGr, &nbtmp, &elemType);
 					if (tmp != NULL && nbtmp == 2)
 					{
-						shutterCircular_x = atoi( tmp->a);
-						tmp++;
-						shutterCircular_y = atoi( tmp->a);
+						shutterCircular_x = atoi( tmp++->a);
+						shutterCircular_y = atoi( tmp++->a);
 					}
 					
 					tmp = Papy3GetElement (theGroupP, papRadiusofCircularShutterGr, &nbtmp, &elemType);
@@ -7147,8 +7142,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					int y, x;
 					for( y = 0, x = 0 ; y < nbtmp; y+=2, x++)
 					{
-						shutterPolygonal[ x].x = atoi( tmp->a);		tmp++;
-						shutterPolygonal[ x].y = atoi( tmp->a);		tmp++;
+						shutterPolygonal[ x].x = atoi( tmp++->a);
+						shutterPolygonal[ x].y = atoi( tmp++->a);
 						shutterPolygonalSize++;
 					}
 				}
@@ -7162,50 +7157,25 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 - (void) papyLoadGroup0x0020: (SElement*) theGroupP
 {
-	UValue_T *val, *tmp, *tmpVal3;
+	UValue_T *val;
 	PapyULong nbVal;
 	int elemType;
 	
 	val = Papy3GetElement (theGroupP, papImagePositionPatientGr, &nbVal, &elemType);
-	if ( val)
+	if( val && nbVal == 3)
 	{
-		tmp = val;
-		
-		originX = atof( tmp->a);
-		
-		if( nbVal > 1)
-		{
-			tmp++;
-			originY = atof( tmp->a);
-		}
-		
-		if( nbVal > 2)
-		{
-			tmp++;
-			originZ = atof( tmp->a);
-		}
+		originX = atof( val++->a);
+        originY = atof( val++->a);
+        originZ = atof( val++->a);
 		
 		isOriginDefined = YES;
 	}
 	
 	val = Papy3GetElement (theGroupP, papImageOrientationPatientGr, &nbVal, &elemType);
-	if ( val)
+	if ( val && nbVal == 6)
 	{
-		tmpVal3 = val;
-		if( nbVal != 6)
-		{
-			NSLog(@"Orientation is NOT 6 !!!");
-			if( nbVal > 6) nbVal = 6;
-		}
-		
-		for ( int j = 0; j < nbVal; j++)
-		{
-			orientation[ j]  = atof( tmpVal3->a);
-			tmpVal3++;
-		}
-		
-		for ( int j = nbVal; j < 6; j++)
-			orientation[ j] = 0;
+		for( int j = 0; j < nbVal; j++)
+			orientation[ j]  = atof( val++->a);
 	}
 	
 	val = Papy3GetElement (theGroupP, papImageLateralityGr, &nbVal, &elemType);
@@ -7232,24 +7202,23 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 - (void) papyLoadGroup0x0028: (SElement*) theGroupP
 {
-	UValue_T *val, *val3, *tmp, *tmpVal3;
+	UValue_T *val, *val3;
 	PapyULong nbVal, pos;
 	int elemType;
 
 	val3 = Papy3GetElement (theGroupP, papRescaleInterceptGr, &pos, &elemType);
-	if ( val3)	{
-		tmpVal3 = val3;
+	if( val3)
+    {
 		// get the last offset
-		for ( int j = 1; j < pos; j++) tmpVal3++;
-		offset =  atof( tmpVal3->a);
+		for ( int j = 1; j < pos; j++) val3++;
+		offset =  atof( val3->a);
 	}
 	val3 = Papy3GetElement (theGroupP, papRescaleSlopeGr, &pos, &elemType);
-	if ( val3)
+	if( val3)
 	{
-		tmpVal3 = val3;
 		// get the last slope
-		for ( int j = 1; j < pos; j++) tmpVal3++;
-		slope = atof( tmpVal3->a);
+		for ( int j = 1; j < pos; j++) val3++;
+		slope = atof( val3->a);
 		
 		if( slope == 0)
 			slope = 1.0;
@@ -7352,45 +7321,28 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	if( pixelSpacingFromUltrasoundRegions == NO)
 	{
 		val = Papy3GetElement (theGroupP, papPixelSpacingGr, &nbVal, &elemType);
-		if ( val)
+		if( val && nbVal == 2)
 		{
-			tmp = val;
-			
-			pixelSpacingY = atof( tmp->a);
-			
-			if( nbVal > 1)
-			{
-				tmp++;
-				
-				pixelSpacingX = atof( tmp->a);
-			}
+			pixelSpacingY = atof( val++->a);
+            pixelSpacingX = atof( val++->a);
 		}
 	}
 	
 	val = Papy3GetElement (theGroupP, papPixelAspectRatioGr, &nbVal, &elemType);
-	if ( val)
+	if( val && nbVal == 2)
 	{
 		float ratiox = 1, ratioy = 1;
 		
-		tmp = val;
-		
-		ratiox = atof( tmp->a);
-		
-		if( nbVal > 1)
-		{
-			tmp++;
-			
-			ratioy = atof( tmp->a);
-		}
+		ratiox = atof( val++->a);
+        ratioy = atof( val++->a);
 		
 		if( ratioy != 0)
-		{
 			pixelRatio = ratiox / ratioy;
-		}
 	}
 	else if( pixelSpacingX != pixelSpacingY)
 	{
-		if( pixelSpacingY != 0 && pixelSpacingX != 0) pixelRatio = pixelSpacingY / pixelSpacingX;
+		if( pixelSpacingY != 0 && pixelSpacingX != 0)
+            pixelRatio = pixelSpacingY / pixelSpacingX;
 	}
 	
 	[PapyrusLock lock];
@@ -7426,12 +7378,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			
 			// read the RED descriptor of the color lookup table
 			val = Papy3GetElement (theGroupP, papRedPaletteColorLookupTableDescriptorGr, &nbVal, &elemType);
-			tmp = val;
 			if ( val)
 			{
-				clutEntryR = tmp->us;
-				tmp++;tmp++;
-				clutDepthR = tmp->us;
+				clutEntryR = val->us;
+				val++;val++;
+				clutDepthR = val->us;
 			} // if ...read Red palette color descriptor
 			
 			// read the GREEN descriptor of the color lookup table
@@ -7439,8 +7390,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			if ( val)
 			{
 				clutEntryG	= val->us;
-				tmp			= val + 2;
-				clutDepthG	= tmp->us;
+				val++;val++;
+				clutDepthG	= val->us;
 			} // if ...read Green palette color descriptor
 			
 			// read the BLUE descriptor of the color lookup table
@@ -7448,8 +7399,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			if ( val)
 			{
 				clutEntryB = val->us;
-				tmp     = val + 2;
-				clutDepthB = tmp->us;
+				val++;val++;
+				clutDepthB = val->us;
 			} // if ...read Blue palette color descriptor
 			
 			if( clutEntryR > 256) NSLog(@"R-Palette > 256");
@@ -7766,7 +7717,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	[PapyrusLock unlock];
 }
 
-- (void)papyLoadCodeSequenceMacro:(DCMCodeSequenceMacro*)csm from:(papObject*)object {
+- (void)papyLoadCodeSequenceMacro:(DCMCodeSequenceMacro*)csm from:(papObject*)object
+{
     UValue_T* val;
     PapyULong nbVal;
 	int elemType;
@@ -7821,14 +7773,17 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     }
 }
 
-- (void)papyLoadSOPInstanceReferenceMacro:(DCMSOPInstanceReferenceMacro*)sirm from:(papObject*)object {
+- (void)papyLoadSOPInstanceReferenceMacro:(DCMSOPInstanceReferenceMacro*)sirm from:(papObject*)object
+{
     UValue_T* val;
     PapyULong nbVal;
 	int elemType;
-    for (Papy_List* l = object->item; l; l = l->next) {
+    for (Papy_List* l = object->item; l; l = l->next)
+    {
         SElement* group = (SElement*)l->object->group;
-        switch (group->group) {
-            case 0x0008: {
+        switch (group->group)
+        {
+            case 0x0008:
                 // (0008,1150) ReferencedSOPClassUID 1 UI [1]
                 val = Papy3GetElement(group, papReferencedSOPClassUID, &nbVal, &elemType);
                 if (val && val->a && validAPointer(elemType)) sirm.referencedSOPClassUID = [NSString stringWithCString:val->a encoding:NSISOLatin1StringEncoding];
@@ -7837,7 +7792,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                 val = Papy3GetElement(group, papContextIdentifierGr, &nbVal, &elemType);
                 if (val && val->a && validAPointer(elemType)) sirm.referencedSOPInstanceUID = [NSString stringWithCString:val->a encoding:NSISOLatin1StringEncoding];
 
-            } break;
+            break;
         }
     }
 }
@@ -7848,7 +7803,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	PapyShort		imageNb,  err = 0;
 	PapyULong		nbVal, i, pos;
 	SElement		*theGroupP;
-	UValue_T		*val, *tmp;
+	UValue_T		*val;
 	BOOL			returnValue = NO;
 	
 	clutRed = nil;
@@ -7991,11 +7946,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                 if ((val = Papy3GetElement(theGroupP, papImageTypeGr, &nbVal, &elemType))) {
                     NSMutableArray* imageTypeArray = [NSMutableArray array];
                     
-                    tmp = val;
-                    for (int i = 0; i < nbVal; ++i) {
-                        [imageTypeArray addObject:[NSString stringWithCString:tmp->a encoding:NSASCIIStringEncoding]];
-                        tmp++;
-                    }
+                    for (int i = 0; i < nbVal; ++i)
+                        [imageTypeArray addObject:[NSString stringWithCString:val++->a encoding:NSASCIIStringEncoding]];
                 
                     self.imageType = [imageTypeArray componentsJoinedByString:@"\\"];
                 }
@@ -8113,23 +8065,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 									if( gr->group == 0x0020)
 									{
 										val = Papy3GetElement (gr, papImagePositionPatientGr, &nbVal, &elemType);
-										if ( val)
+										if( val && nbVal == 3)
 										{
-											tmp = val;
-											
-											originX = atof( tmp->a);
-											
-											if( nbVal > 1)
-											{
-												tmp++;
-												originY = atof( tmp->a);
-											}
-											
-											if( nbVal > 2)
-											{
-												tmp++;
-												originZ = atof( tmp->a);
-											}
+											originX = atof( val++->a);
+                                            originY = atof( val++->a);
+                                            originZ = atof( val++->a);
 											
 											isOriginDefined = YES;
 										}
@@ -8140,22 +8080,13 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 											originZ += frameNo * sliceThickness;
 										
 										val = Papy3GetElement (gr, papImageOrientationPatientGr, &nbVal, &elemType);
-										if ( val)
+										if( val && nbVal == 6)
 										{
-											if( nbVal != 6)
-											{
-												NSLog(@"Orientation is NOT 6 !!!");
-												if( nbVal > 6) nbVal = 6;
-											}
-											
 											BOOL equalZero = YES;
 											
 											tmpVal3 = val;
 											for ( int j = 0; j < nbVal; j++)
-											{
-												if( atof( tmpVal3->a) != 0) equalZero = NO;
-												tmpVal3++;
-											}
+												if( atof( tmpVal3++->a) != 0) equalZero = NO;
 											
 											if( equalZero == NO)
 											{
@@ -8164,14 +8095,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 												
 												tmpVal3 = val;
 												for ( int j = 0; j < nbVal; j++)
-												{
-													orientation[ j]  = atof( tmpVal3->a);
-													tmpVal3++;
-												}
+													orientation[ j]  = atof( tmpVal3++->a);
 												
-												for (int j = nbVal; j < 6; j++)
-													orientation[ j] = 0;
-													
 //												orientation[ 0] = 1;	orientation[ 1] = 0;	orientation[ 2] = 0; tests, force axial matrix
 //												orientation[ 3] = 0;	orientation[ 4] = 1;	orientation[ 5] = 0;
 											}
@@ -8179,9 +8104,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 											{
 												equalZero = YES;
 												for ( int j = 0; j < 6; j++)
-												{
 													if( orientation[ j] != 0) equalZero = NO;
-												}
 												
 												if( equalZero)
 												{
@@ -8386,11 +8309,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                                                         if ((val = Papy3GetElement(theGroupP, papImageTypeGr, &nbVal, &elemType))) {
                                                             NSMutableArray* imageTypeArray = [NSMutableArray array];
                                                             
-                                                            tmp = val;
-                                                            for (int i = 0; i < nbVal; ++i) {
-                                                                [imageTypeArray addObject:[NSString stringWithCString:tmp->a encoding:NSASCIIStringEncoding]];
-                                                                tmp++;
-                                                            }
+                                                            for (int i = 0; i < nbVal; ++i)
+                                                                [imageTypeArray addObject:[NSString stringWithCString:val++->a encoding:NSASCIIStringEncoding]];
                                                             
                                                             self.imageType = [imageTypeArray componentsJoinedByString:@"\\"];
                                                         }
@@ -8811,11 +8731,10 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					if ( val && val->a && validAPointer( elemType)) oType = val->a[ 0];
 					
 					val = Papy3GetElement (theGroupP, papOriginGr, &nbVal, &elemType);
-					if ( val)
+					if( val && nbVal == 2)
 					{
-						oOrigin[ 0]	= val->us;
-						val++;
-						oOrigin[ 1]	= val->us;
+						oOrigin[ 0]	= val++->us;
+						oOrigin[ 1]	= val++->us;
 					}
 					
 					val = Papy3GetElement (theGroupP, papOverlayBitsAllocatedGr, &nbVal, &elemType);
@@ -13194,14 +13113,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					for ( int k = 0; k < inGrOrModP->nb_val; k++, theValueP++)
 					{
 						{
-#undef UL
-#undef IS
-#undef SL
-#undef SS
-#undef SQ
-#undef FD
-#undef FL
-#undef DS
 							if(inGrOrModP->vr==DS)	// floating point string
 							{
 								if( theValueP->a) [field appendString:[NSString stringWithFormat:@"%.6g", atof( theValueP->a)]];
@@ -13216,7 +13127,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 							}
 							else if(inGrOrModP->vr==UL)
 								[field appendString:[NSString stringWithFormat:@"%d", (int) theValueP->ul]];
-							else if(inGrOrModP->vr==US || inGrOrModP->vr==USS)
+							else if(inGrOrModP->vr==USS)
 								[field appendString:[NSString stringWithFormat:@"%d", (int) theValueP->us]];
 							else if(inGrOrModP->vr==SL)
 								[field appendString:[NSString stringWithFormat:@"%d", (int) theValueP->sl]];
@@ -13251,14 +13162,10 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 							else if( theValueP->a)
 								[field appendString:[NSString stringWithCString:theValueP->a encoding:NSASCIIStringEncoding]];
 							
-#undef OB
+
 							if(inGrOrModP->vr==OB)	
 								NSLog(@"inGrOrModP->vr==OB . field = %@", field);
 							
-#undef DA
-#undef DT
-#undef TM
-#undef AS
 							
 							if(inGrOrModP->vr==DA)
 							{
@@ -13284,7 +13191,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 							}
 							//break;
 						}
-						if(inGrOrModP->nb_val>1 && k<inGrOrModP->nb_val-1)[field appendString:@" / "];
+						if(inGrOrModP->nb_val>1 && k<inGrOrModP->nb_val-1)
+                            [field appendString:@" / "];
 					}
 				}
 			}

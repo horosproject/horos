@@ -185,11 +185,11 @@
 	NSString *string;
 	switch (vr) {
 		// unsigned Short
-		case US:   //unsigned short
-		case SS:	//signed short
+		case DCM_US:   //unsigned short
+		case DCM_SS:	//signed short
 			length = vm * 2;
 			break;
-		case DA:	//Date String yyyymmdd 8bytes old format was yyyy.mm.dd for 10 bytes. May need to implement old format
+		case DCM_DA:	//Date String yyyymmdd 8bytes old format was yyyy.mm.dd for 10 bytes. May need to implement old format
 			if ([_values count] && 
 				[[_values objectAtIndex:0] isKindOfClass:[DCMCalendarDate class]] && 
 				[[_values objectAtIndex:0] isQuery]) {
@@ -200,7 +200,7 @@
 				length = vm * 8 + (vm - 1);  //add (vm - 1) for between values.
 
                 break;
-		case TM:
+		case DCM_TM:
 			if ([_values count] && 
 				[[_values objectAtIndex:0] isKindOfClass:[DCMCalendarDate class]] && 
 				[[_values objectAtIndex:0] isQuery]) {
@@ -211,7 +211,7 @@
 			//length is 13 if we use microseconds other wise 10 for milliseconds
 				length = vm * 13 + (vm - 1);
                 break;
-		case DT:	
+		case DCM_DT:
 			if ([_values count] && 
 				[[_values objectAtIndex:0] isKindOfClass:[DCMCalendarDate class]] && 
 				[[_values objectAtIndex:0] isQuery]) {
@@ -223,44 +223,44 @@
 				length = vm * 0xe + (vm - 1);
                 break;
 				
-		//case SQ:	//Sequence of items
+		//case DCM_SQ:	//Sequence of items
 		//		//shouldn't get here
         //        break;
 		
-		case UN:	//unknown
-		case OB:	//other Byte byte string not little/big endian sensitive
-		case OW:	//other word 16bit word
+		case DCM_UN:	//unknown
+		case DCM_OB:	//other Byte byte string not little/big endian sensitive
+		case DCM_OW:	//other word 16bit word
 				length = 0;
 				for ( NSData *data in _values )
 					length += [data length];
 				//length = [(NSData *)[_values objectAtIndex:0] length];
                 break;
-		case AT:	//Attribute Tag 16bit unsigned integer
-		case UL:	//unsigned Long            
-		case SL:	//signed long
-		case FL:	//floating point Single 4 bytes fixed
+		case DCM_AT:	//Attribute Tag 16bit unsigned integer
+		case DCM_UL:	//unsigned Long
+		case DCM_SL:	//signed long
+		case DCM_FL:	//floating point Single 4 bytes fixed
 			length = vm * 4;
 			if (length%2)
 			 length++;
 			break;
-		case FD:	//double floating point 8 bytes fixed
+		case DCM_FD:	//double floating point 8 bytes fixed
 			length = vm * 8;
 			break;           
 			
-		case AE:	//Application Entity  String 16bytes max
-		case AS:	//Age String Format mmmM,dddD,nnnY ie 018Y
-		case CS:	//Code String   !6 byte max
-		case DS:	//Decimal String  representing floating point number 16 byte max
+		case DCM_AE:	//Application Entity  String 16bytes max
+		case DCM_AS:	//Age String Format mmmM,dddD,nnnY ie 018Y
+		case DCM_CS:	//Code String   !6 byte max
+		case DCM_DS:	//Decimal String  representing floating point number 16 byte max
 				  
-		case IS:	//Integer String 12 bytes max
-		case LO:	//Character String 64 char max
-		case LT:	//Long Text 10240 char Max
-		case PN:	//Person Name string
-		case SH:	//short string
-		case ST:	//short Text 1024 char max
-		case UI:    //String for UID             
-		case UT:	//unlimited text
-		case QQ: 
+		case DCM_IS:	//Integer String 12 bytes max
+		case DCM_LO:	//Character String 64 char max
+		case DCM_LT:	//Long Text 10240 char Max
+		case DCM_PN:	//Person Name string
+		case DCM_SH:	//short string
+		case DCM_ST:	//short Text 1024 char max
+		case DCM_UI:    //String for UID
+		case DCM_UT:	//unlimited text
+		case DCM_QQ:
 					//length may be different with different Character Sets
 			string = [_values componentsJoinedByString:@"\\"];
 			
@@ -358,16 +358,16 @@
 		switch (vr)
 		{
 		// unsigned Short
-		 case US:   //unsigned short
+		 case DCM_US:   //unsigned short
 				for (i = 0; i< vm; i++)
 					[container addUnsignedShort:[[_values objectAtIndex:i] intValue]]; 
 				break;
-            case SS:	//signed short
+            case DCM_SS:	//signed short
 				for (i = 0; i< vm; i++)
 					[container addSignedShort:[[_values objectAtIndex:i] intValue]];
                 break;
 			
-            case DA:	//Date String yyyymmdd 8bytes old format was yyyy.mm.dd for 10 bytes. May need to implement old format
+            case DCM_DA:	//Date String yyyymmdd 8bytes old format was yyyy.mm.dd for 10 bytes. May need to implement old format
 				for (i = 0; i< vm; i++) {
 
 					[container addDate:(DCMCalendarDate *)[_values objectAtIndex:i]];
@@ -378,7 +378,7 @@
 					[container addStringWithoutPadding:@" "];
                 break;
 			
-            case TM:
+            case DCM_TM:
 				for (i = 0; i< vm; i++) {
 					[container addTime:(DCMCalendarDate *)[_values objectAtIndex:i]];
 					if (i < (vm - 1))
@@ -388,7 +388,7 @@
 					[container addStringWithoutPadding:@" "];
                 break;
 			
-			case DT:	//Date Time YYYYMMDDHHMMSS.FFFFFF&ZZZZ FFFFFF= fractional Sec. ZZZZ=offset from Hr and min offset from universal time
+			case DCM_DT:	//Date Time YYYYMMDDHHMMSS.FFFFFF&ZZZZ FFFFFF= fractional Sec. ZZZZ=offset from Hr and min offset from universal time
 				for (i = 0; i< vm; i++) {
 					[container addDateTime:[_values objectAtIndex:i]];
 					if (i < (vm - 1))
@@ -399,56 +399,56 @@
 
                 break;
 				
-            case SQ:	//Sequence of items
+            case DCM_SQ:	//Sequence of items
 				//shouldn't get here
                 break;
 			
-			case UN:	//unknown
-            case OB:	//other Byte byte string not little/big endian sensitive
-            case OW:	//other word 16bit word
+			case DCM_UN:	//unknown
+            case DCM_OB:	//other Byte byte string not little/big endian sensitive
+            case DCM_OW:	//other word 16bit word
 				for (i = 0; i< [_values count]; i++) 
 					[container addData:[_values objectAtIndex:i]];
                 break;  
 			
-			case AT:	//Attribute Tag 16bit unsigned integer
-            case UL:	//unsigned Long
+			case DCM_AT:	//Attribute Tag 16bit unsigned integer
+            case DCM_UL:	//unsigned Long
 				for (i = 0; i< vm; i++)
 					[container addUnsignedLong:[[_values objectAtIndex:i] unsignedLongValue]];
                 break;
             
-            case SL:	//signed long
+            case DCM_SL:	//signed long
 				for (i = 0; i< vm; i++)
 					[container addSignedLong:[[_values objectAtIndex:i] longValue]];
                 break;
 			
-            case FL:	//floating point Single 4 bytes fixed
+            case DCM_FL:	//floating point Single 4 bytes fixed
 				for (i = 0; i< vm; i++)
 					[container addFloat:[[_values objectAtIndex:i] floatValue]];
                 break;
 			
-            case FD:	//double floating point 8 bytes fixed
+            case DCM_FD:	//double floating point 8 bytes fixed
 				for (i = 0; i< vm; i++)
 					[container addDouble:[[_values objectAtIndex:i] doubleValue]];
                 break;
 			
-            case AE:	//Application Entity  String 16bytes max
-            case AS:	//Age String Format mmmM,dddD,nnnY ie 018Y
-            case CS:	//Code String   !6 byte max
-            case DS:	//Decimal String  representing floating point number 16 byte max
+            case DCM_AE:	//Application Entity  String 16bytes max
+            case DCM_AS:	//Age String Format mmmM,dddD,nnnY ie 018Y
+            case DCM_CS:	//Code String   !6 byte max
+            case DCM_DS:	//Decimal String  representing floating point number 16 byte max
                       
-            case IS:	//Integer String 12 bytes max
-            case LO:	//Character String 64 char max
-            case LT:	//Long Text 10240 char Max
-            case PN:	//Person Name string
-            case SH:	//short string
-            case ST:	//short Text 1024 char max
-            case UT:	//unlimited text
-            case QQ: 
+            case DCM_IS:	//Integer String 12 bytes max
+            case DCM_LO:	//Character String 64 char max
+            case DCM_LT:	//Long Text 10240 char Max
+            case DCM_PN:	//Person Name string
+            case DCM_SH:	//short string
+            case DCM_ST:	//short Text 1024 char max
+            case DCM_UT:	//unlimited text
+            case DCM_QQ:
 				string =  [_values componentsJoinedByString:@"\\"];
 				[container addString:string];
                 break;
 			
-            case UI:    //String for UID
+            case DCM_UI:    //String for UID
 				string =  [_values componentsJoinedByString:@"\\"];
 				[container addStringWithZeroPadding:string];
 				break;
@@ -505,45 +505,45 @@
 		values = (NSMutableArray *)[string componentsSeparatedByString:@"\\"];
 	}
 	else  {
-		if (DCMDEBUG && vr == DT)
+		if (DCMDEBUG && vr == DCM_DT)
 			NSLog(@"valuesForVR: length %d", length);
 		switch (vr) {
 		// unsigned Short
-		 case US:   //unsigned short
+		 case DCM_US:   //unsigned short
 				count = length/2;
 				values = [NSMutableArray array];
 				for (i = 0; i < count; i ++) 
 					[(NSMutableArray *)values addObject:[NSNumber numberWithInt:[dicomData nextUnsignedShort]]];
                 break;
-            case SS:	//signed short
+            case DCM_SS:	//signed short
 				count = length/2;
 				values = [NSMutableArray array];
 				for (i = 0; i < count; i ++) 
 					[(NSMutableArray *)values addObject:[NSNumber numberWithInt:[dicomData nextSignedShort]]];
                 break;
 
-            case DA:	//Date String yyyymmdd 8bytes old format was yyyy.mm.dd for 10 bytes. May need to implement old format
+            case DCM_DA:	//Date String yyyymmdd 8bytes old format was yyyy.mm.dd for 10 bytes. May need to implement old format
 				values = [dicomData nextDatesWithLength:length];
 
                 break;
-            case TM:
+            case DCM_TM:
 				values = [dicomData nextTimesWithLength:length];
                 break;
-			case DT:	//Date Time YYYYMMDDHHMMSS.FFFFFF&ZZZZ FFFFFF= fractional Sec. ZZZZ=offset from Hr and min offset from universal time
+			case DCM_DT:	//Date Time YYYYMMDDHHMMSS.FFFFFF&ZZZZ FFFFFF= fractional Sec. ZZZZ=offset from Hr and min offset from universal time
 				values = [dicomData nextDateTimesWithLength:length];
                 break;
 				
-            case SQ:	//Sequence of items
+            case DCM_SQ:	//Sequence of items
 				//shouldn't get here
 				values = nil;
                 break;
-			case UN:	//unknown
-            case OB:	//other Byte byte string not little/big endian sensitive
-            case OW:	//other word 16bit word
+			case DCM_UN:	//unknown
+            case DCM_OB:	//other Byte byte string not little/big endian sensitive
+            case DCM_OW:	//other word 16bit word
 				values = [NSArray arrayWithObject:[dicomData nextDataWithLength:length]];               
                 break;
-			case AT:	//Attribute Tag 16bit unsigned integer
-            case UL:	//unsigned Long
+			case DCM_AT:	//Attribute Tag 16bit unsigned integer
+            case DCM_UL:	//unsigned Long
 				{
 					int p = 0;
 					count = length/4;
@@ -557,7 +557,7 @@
 				}
 				break;
             
-            case SL:	//signed long
+            case DCM_SL:	//signed long
 				{
 					int p = 0;
 					count = length/4;
@@ -570,7 +570,7 @@
 					if( length - p > 0) [dicomData skipLength: length - p];
 				}
                 break;
-            case FL:	//floating point Single 4 bytes fixed
+            case DCM_FL:	//floating point Single 4 bytes fixed
 				{
 					int p = 0;
 					count = length/4;
@@ -583,7 +583,7 @@
 					if( length - p > 0) [dicomData skipLength: length - p];
 				}
 				break;
-            case FD:	//double floating point 8 bytes fixed
+            case DCM_FD:	//double floating point 8 bytes fixed
 				{
 					int p = 0;
 					count = length/8;
@@ -597,20 +597,20 @@
 				}
 			break;           
 			
-            case AE:	//Application Entity  String 16bytes max
-            case AS:	//Age String Format mmmM,dddD,nnnY ie 018Y
-            case CS:	//Code String   !6 byte max
-            case DS:	//Decimal String  representing floating point number 16 byte max
+            case DCM_AE:	//Application Entity  String 16bytes max
+            case DCM_AS:	//Age String Format mmmM,dddD,nnnY ie 018Y
+            case DCM_CS:	//Code String   !6 byte max
+            case DCM_DS:	//Decimal String  representing floating point number 16 byte max
                       
-            case IS:	//Integer String 12 bytes max
-            case LO:	//Character String 64 char max
-            case LT:	//Long Text 10240 char Max
-            case PN:	//Person Name string
-            case SH:	//short string
-            case ST:	//short Text 1024 char max
-            case UI:    //String for UID             
-            case UT:	//unlimited text
-            case QQ: 
+            case DCM_IS:	//Integer String 12 bytes max
+            case DCM_LO:	//Character String 64 char max
+            case DCM_LT:	//Long Text 10240 char Max
+            case DCM_PN:	//Person Name string
+            case DCM_SH:	//short string
+            case DCM_ST:	//short Text 1024 char max
+            case DCM_UI:    //String for UID
+            case DCM_UT:	//unlimited text
+            case DCM_QQ:
 				string = [dicomData nextStringWithLength:length];
 				values = (NSMutableArray *)[string componentsSeparatedByString:@"\\"];
                 break;

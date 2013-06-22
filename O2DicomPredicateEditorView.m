@@ -170,65 +170,65 @@ static NSString* const O2Var1Year = @"NSDATE_YEAR";
 
 typedef NSUInteger O2ValueRepresentation;
 enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
-    O2AE = AE,
-    O2AS = AS,
+    O2AE = DCM_AE,
+    O2AS = DCM_AS,
 //    O2AT = AT,
-    O2CS = CS,
-    O2DA = DA,
-    O2DS = DS,
-    O2DT = DT,
-    O2FL = FL,
-    O2FD = FD,
-    O2IS = IS,
-    O2LO = LO,
-    O2LT = LT,
+    O2CS = DCM_CS,
+    O2DA = DCM_DA,
+    O2DS = DCM_DS,
+    O2DT = DCM_DT,
+    O2FL = DCM_FL,
+    O2FD = DCM_FD,
+    O2IS = DCM_IS,
+    O2LO = DCM_LO,
+    O2LT = DCM_LT,
 //    O2OB = OB,
 //    O2OF = OF,
 //    O2OW = OW,
-    O2PN = PN,
-    O2SH = SH,
-    O2SL = SL,
+    O2PN = DCM_PN,
+    O2SH = DCM_SH,
+    O2SL = DCM_SL,
 //    O2SQ = SQ,
-    O2SS = SS,
-    O2ST = ST,
-    O2TM = TM,
-    O2UI = UI,
-    O2UL = UL,
+    O2SS = DCM_SS,
+    O2ST = DCM_ST,
+    O2TM = DCM_TM,
+    O2UI = DCM_UI,
+    O2UL = DCM_UL,
 //    O2UN = UN,
-    O2US = US,
-    O2UT = UT
+    O2US = DCM_US,
+    O2UT = DCM_UT
 };
 
 + (O2ValueRepresentation)valueRepresentationFromVR:(NSString*)vr {
     if (!vr) return 0;
     const char* cvr = vr.UTF8String;
-    if (!strcmp(cvr, "AE")) return AE;
-    if (!strcmp(cvr, "AS")) return AS;
-    if (!strcmp(cvr, "AT")) return AT;
-    if (!strcmp(cvr, "CS")) return CS;
-    if (!strcmp(cvr, "DA")) return DA;
-    if (!strcmp(cvr, "DS")) return DS;
-    if (!strcmp(cvr, "DT")) return DT;
-    if (!strcmp(cvr, "FL")) return FL;
-    if (!strcmp(cvr, "FD")) return FD;
-    if (!strcmp(cvr, "IS")) return IS;
-    if (!strcmp(cvr, "LO")) return LO;
-    if (!strcmp(cvr, "LT")) return LT;
-    if (!strcmp(cvr, "OB")) return OB;
-    if (!strcmp(cvr, "OF")) return OF;
-    if (!strcmp(cvr, "OW")) return OW;
-    if (!strcmp(cvr, "PN")) return PN;
-    if (!strcmp(cvr, "SH")) return SH;
-    if (!strcmp(cvr, "SL")) return SL;
-    if (!strcmp(cvr, "SQ")) return SQ;
-    if (!strcmp(cvr, "SS")) return SS;
-    if (!strcmp(cvr, "ST")) return ST;
-    if (!strcmp(cvr, "TM")) return TM;
-    if (!strcmp(cvr, "UI")) return UI;
-    if (!strcmp(cvr, "UL")) return UL;
-    if (!strcmp(cvr, "UN")) return UN;
-    if (!strcmp(cvr, "US")) return US;
-    if (!strcmp(cvr, "UT")) return UT;
+    if (!strcmp(cvr, "AE")) return DCM_AE;
+    if (!strcmp(cvr, "AS")) return DCM_AS;
+    if (!strcmp(cvr, "AT")) return DCM_AT;
+    if (!strcmp(cvr, "CS")) return DCM_CS;
+    if (!strcmp(cvr, "DA")) return DCM_DA;
+    if (!strcmp(cvr, "DS")) return DCM_DS;
+    if (!strcmp(cvr, "DT")) return DCM_DT;
+    if (!strcmp(cvr, "FL")) return DCM_FL;
+    if (!strcmp(cvr, "FD")) return DCM_FD;
+    if (!strcmp(cvr, "IS")) return DCM_IS;
+    if (!strcmp(cvr, "LO")) return DCM_LO;
+    if (!strcmp(cvr, "LT")) return DCM_LT;
+    if (!strcmp(cvr, "OB")) return DCM_OB;
+    if (!strcmp(cvr, "OF")) return DCM_OF;
+    if (!strcmp(cvr, "OW")) return DCM_OW;
+    if (!strcmp(cvr, "PN")) return DCM_PN;
+    if (!strcmp(cvr, "SH")) return DCM_SH;
+    if (!strcmp(cvr, "SL")) return DCM_SL;
+    if (!strcmp(cvr, "SQ")) return DCM_SQ;
+    if (!strcmp(cvr, "SS")) return DCM_SS;
+    if (!strcmp(cvr, "ST")) return DCM_ST;
+    if (!strcmp(cvr, "TM")) return DCM_TM;
+    if (!strcmp(cvr, "UI")) return DCM_UI;
+    if (!strcmp(cvr, "UL")) return DCM_UL;
+    if (!strcmp(cvr, "UN")) return DCM_UN;
+    if (!strcmp(cvr, "US")) return DCM_US;
+    if (!strcmp(cvr, "UT")) return DCM_UT;
     return 0;
 }
 
@@ -503,39 +503,39 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
 
         if ([keyPath isEqualToString:@"tag"]) {
             switch ([[self class] valueRepresentationFromVR:self.tag.vr]) {
-                case SH:
-                case LO:
-                case ST:
-                case LT:
-                case UT:
-                case AE:
-                case AS:
-                case PN:
-                case UI:
-                case IS:
-                case DS: {
+                case DCM_SH:
+                case DCM_LO:
+                case DCM_ST:
+                case DCM_LT:
+                case DCM_UT:
+                case DCM_AE:
+                case DCM_AS:
+                case DCM_PN:
+                case DCM_UI:
+                case DCM_IS:
+                case DCM_DS: {
                     if (![self.stringValue isKindOfClass:[NSString class]])
                         self.stringValue = [NSString string];
                 } break;
                     
-                case CS: {
+                case DCM_CS: {
                     self.codeStringTag = 1;
                     self.stringValue = [NSString string];
                 } break;
                     
-                case SS:
-                case SL:
-                case US:
-                case UL:
-                case FL:
-                case FD: {
+                case DCM_SS:
+                case DCM_SL:
+                case DCM_US:
+                case DCM_UL:
+                case DCM_FL:
+                case DCM_FD: {
                     if (![self.numberValue isKindOfClass:[NSNumber class]])
                         self.numberValue = [NSNumber numberWithInt:0];
                 } break;
                     
-                case DA:
-                case TM:
-                case DT: {
+                case DCM_DA:
+                case DCM_TM:
+                case DCM_DT: {
                     if (![self.dateValue isKindOfClass:[NSDate class]])
                         self.dateValue = [NSDate date];
                 } break;
@@ -591,7 +591,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
         for (NSString* dcmTagsKey in [[DCMTagDictionary sharedTagDictionary] allKeys]) {
             DCMAttributeTag* tag = [DCMAttributeTag tagWithTagString:dcmTagsKey];
             O2ValueRepresentation vr = [[self class] valueRepresentationFromVR:tag.vr];
-            if (!tag.isPrivate && tag.group != 0x0000 && ((tag.group&0xfff0) != 0xfff0) && vr != SQ && vr != OW && vr != OF && vr != OB && vr != UN)
+            if (!tag.isPrivate && tag.group != 0x0000 && ((tag.group&0xfff0) != 0xfff0) && vr != DCM_SQ && vr != DCM_OW && vr != DCM_OF && vr != DCM_OB && vr != DCM_UN)
                 [tagsCache addObject:tag];
         }
 
@@ -867,60 +867,60 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
 #define N(x) [NSNumber numberWithInteger:x]
     
     switch (vr) {
-        case SH:
-        case LO:
-        case ST:
-        case LT:
-        case UT:
-        case AE: // TODO: should be more restrictive for AE
-        case PN:
-        case UI:  {
+        case DCM_SH:
+        case DCM_LO:
+        case DCM_ST:
+        case DCM_LT:
+        case DCM_UT:
+        case DCM_AE: // TODO: should be more restrictive for AE
+        case DCM_PN:
+        case DCM_UI:  {
             [views addObject:_operatorsPopUp];
             [self setAvailableOperators: N(NSContainsPredicateOperatorType), N(NSBeginsWithPredicateOperatorType), N(NSEndsWithPredicateOperatorType), N(NSEqualToPredicateOperatorType), N(NSNotEqualToPredicateOperatorType), nil];
             _stringValueTextField.formatter = nil;
             [views addObject:_stringValueTextField];
         } break;
             
-        case IS: {
+        case DCM_IS: {
             [views addObject:_isLabel];
             [self setAvailableOperators: N(NSEqualToPredicateOperatorType), nil];
             _stringValueTextField.formatter = [[self class] integersFormatter];
             [views addObject:_stringValueTextField];
         } break;
             
-        case SS:
-        case SL:
-        case US:
-        case UL: {
+        case DCM_SS:
+        case DCM_SL:
+        case DCM_US:
+        case DCM_UL: {
             [views addObject:_isLabel];
             [self setAvailableOperators: N(NSEqualToPredicateOperatorType), nil];
             _numberValueTextField.formatter = [[self class] integerFormatter];
             [views addObject:_numberValueTextField];
         } break;
             
-        case DS: {
+        case DCM_DS: {
             [views addObject:_isLabel];
             [self setAvailableOperators: N(NSEqualToPredicateOperatorType), nil];
             _stringValueTextField.formatter = [[self class] decimalsFormatter];
             [views addObject:_stringValueTextField];
         } break;
             
-        case FL:
-        case FD: {
+        case DCM_FL:
+        case DCM_FD: {
             [views addObject:_isLabel];
             [self setAvailableOperators: N(NSEqualToPredicateOperatorType), nil];
             _numberValueTextField.formatter = [[self class] decimalFormatter];
             [views addObject:_numberValueTextField];
         } break;
             
-        case AS: {
+        case DCM_AS: {
             [views addObject:_isLabel];
             [self setAvailableOperators: N(NSEqualToPredicateOperatorType), nil];
             _stringValueTextField.formatter = [[self class] ageFormatter];
             [views addObject:_stringValueTextField];
         } break;
             
-        case DA: {
+        case DCM_DA: {
             [views addObject:_operatorsPopUp];
             [self setAvailableOperators: N(O2Today), N(O2Yesterday), N(O2DayBeforeYesterday), N(NSLessThanOrEqualToPredicateOperatorType), N(NSGreaterThanOrEqualToPredicateOperatorType), N(O2Within), N(NSEqualToPredicateOperatorType), nil]; // TODO: add 'is between'
             switch (self.operator) {
@@ -936,7 +936,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
             }
         } break;
             
-        case TM: {
+        case DCM_TM: {
             [views addObject:_operatorsPopUp];
             [self setAvailableOperators: N(NSLessThanOrEqualToPredicateOperatorType), N(NSGreaterThanOrEqualToPredicateOperatorType), N(NSEqualToPredicateOperatorType), nil];
             switch (self.operator) {
@@ -950,7 +950,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
             }
         } break;
             
-        case DT: {
+        case DCM_DT: {
             [views addObject:_operatorsPopUp];
             [self setAvailableOperators: N(O2Today), N(O2Yesterday), N(O2DayBeforeYesterday), N(NSLessThanOrEqualToPredicateOperatorType), N(NSGreaterThanOrEqualToPredicateOperatorType), N(O2Within), N(NSEqualToPredicateOperatorType), nil]; // TODO: add 'is between'
             switch (self.operator) {
@@ -966,7 +966,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
             }
         } break;
             
-        case CS: {
+        case DCM_CS: {
             [views addObject:_isLabel];
             // .. popup
             [_codeStringPopUp.menu removeAllItems];
@@ -1063,18 +1063,18 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
             DCMAttributeTag* tag = [self tagWithKeyPath:[predicate keyPath]];
             O2ValueRepresentation vr = [[self class] valueRepresentationFromVR:tag.vr];
             
-            if (!vr || vr == UN)
+            if (!vr || vr == DCM_UN)
                 return 0; // we cannot handle tags of unknown type
             
             switch (vr) {
-                case SH:
-                case LO:
-                case ST:
-                case LT:
-                case UT:
-                case AE:
-                case PN:
-                case UI: /* TODO: should be more restrictive for AE */ {
+                case DCM_SH:
+                case DCM_LO:
+                case DCM_ST:
+                case DCM_LT:
+                case DCM_UT:
+                case DCM_AE:
+                case DCM_PN:
+                case DCM_UI: /* TODO: should be more restrictive for AE */ {
                     switch (otype) {
                         case NSContainsPredicateOperatorType:
                         case NSBeginsWithPredicateOperatorType:
@@ -1086,21 +1086,21 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
                     }
                 } break;
                     
-                case AS:
-                case IS:
-                case DS:
-                case SS:
-                case SL:
-                case US:
-                case UL:
-                case FL:
-                case FD: {
+                case DCM_AS:
+                case DCM_IS:
+                case DCM_DS:
+                case DCM_SS:
+                case DCM_SL:
+                case DCM_US:
+                case DCM_UL:
+                case DCM_FL:
+                case DCM_FD: {
                     if (otype == NSEqualToPredicateOperatorType)
                         return 1;
                 } break;
                     
-                case DA:
-                case DT: {
+                case DCM_DA:
+                case DCM_DT: {
                     if (otype == NSGreaterThanOrEqualToPredicateOperatorType && [[predicate constantValue] isKindOfClass:[NSDate class]])
                         return 1; // is after DATE
                     if (otype == NSGreaterThanOrEqualToPredicateOperatorType && ([[[self class] timeKeys] containsObject:[predicate variable]] || ([[predicate function] isEqualToString:@"castObject:toType:"] && [[[[predicate arguments] objectAtIndex:1] constantValue] isEqual:@"NSDate"] && [[[self class] legacyTimeKeys] containsObject:[[[predicate arguments] objectAtIndex:0] variable]])))
@@ -1119,7 +1119,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
                         return 1; // is
                 } break;
                     
-                case TM: {
+                case DCM_TM: {
                     if (otype == NSLessThanOrEqualToPredicateOperatorType && [[predicate constantValue] isKindOfClass:[NSDate class]])
                         return 1; // is before
                     if (otype == NSGreaterThanOrEqualToPredicateOperatorType && [[predicate constantValue] isKindOfClass:[NSDate class]])
@@ -1128,7 +1128,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
                         return 1; // is
                 } break;
                     
-                case CS: {
+                case DCM_CS: {
                     if ((otype == NSEqualToPredicateOperatorType || otype == NSContainsPredicateOperatorType) &&
                         [predicate constantValue])
                         return 1; // is
@@ -1160,21 +1160,21 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
                 NSComparisonPredicate* sp1 = [subpredicates objectAtIndex:1];
                 
                 // match old "DA_KeyPath >= $NSDATE_YESTERDAY AND DA_KeyPath <= $NSDATE_TODAY" for "KeyPath between {NSDATE_YESTERDAY, NSDATE_TODAY}"
-                if ((vr == DA || vr == DT) &&
+                if ((vr == DCM_DA || vr == DCM_DT) &&
                     subpredicates.count == 2 &&
                     sp0.predicateOperatorType == NSGreaterThanOrEqualToPredicateOperatorType && [sp0.variable isEqualToString:O2VarYesterday] &&
                     sp1.predicateOperatorType == NSLessThanOrEqualToPredicateOperatorType && [sp1.variable isEqualToString:O2VarToday])
                     return 1;
             
                 // match old "DA_KeyPath >= $NSDATE_2DAYS AND DA_KeyPath <= $NSDATE_YESTERDAY" for "KeyPath between {NSDATE_YESTERDAY, NSDATE_TODAY}"
-                if ((vr == DA || vr == DT) &&
+                if ((vr == DCM_DA || vr == DCM_DT) &&
                 subpredicates.count == 2 &&
                 sp0.predicateOperatorType == NSGreaterThanOrEqualToPredicateOperatorType && [sp0.variable isEqualToString:O2Var2Days] &&
                 sp1.predicateOperatorType == NSLessThanOrEqualToPredicateOperatorType && [sp1.variable isEqualToString:O2VarYesterday])
                 return 1;
             
                 // match "LT_KeyPath != '' AND LT_KeyPath != nil"
-                if ((vr == SH || vr == LO || vr == ST || vr == LT || vr == UT || vr == AE || vr == PN || vr == UI) &&
+                if ((vr == DCM_SH || vr == DCM_LO || vr == DCM_ST || vr == DCM_LT || vr == DCM_UT || vr == DCM_AE || vr == DCM_PN || vr == DCM_UI) &&
                     subpredicates.count == 2 &&
                     sp0.predicateOperatorType == NSNotEqualToPredicateOperatorType && sp1.predicateOperatorType == NSNotEqualToPredicateOperatorType &&
                     [sp0.constantValue isEqualToString:@""] && sp1.constantValue == nil)
@@ -1212,21 +1212,21 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
         [self setTag:tag];
         
         switch (vr) {
-            case SH:
-            case LO:
-            case ST:
-            case LT:
-            case UT:
-            case AE:
-            case PN:
-            case UI:
-            case AS: {
+            case DCM_SH:
+            case DCM_LO:
+            case DCM_ST:
+            case DCM_LT:
+            case DCM_UT:
+            case DCM_AE:
+            case DCM_PN:
+            case DCM_UI:
+            case DCM_AS: {
                 [self setOperator:[predicate predicateOperatorType]];
                 [self setStringValue:[predicate constantValue]];
             } break;
                 
-            case IS:
-            case DS: {
+            case DCM_IS:
+            case DCM_DS: {
                 [self setOperator:[predicate predicateOperatorType]];
                 id value = [predicate constantValue];
                 if ([value isKindOfClass:[NSNumber class]])
@@ -1235,12 +1235,12 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
                     [self setStringValue:value];
             } break;
                 
-            case SS:
-            case SL:
-            case US:
-            case UL:
-            case FL:
-            case FD: {
+            case DCM_SS:
+            case DCM_SL:
+            case DCM_US:
+            case DCM_UL:
+            case DCM_FL:
+            case DCM_FD: {
                 [self setOperator:[predicate predicateOperatorType]];
                 id value = [predicate constantValue];
                 if ([value isKindOfClass:[NSNumber class]])
@@ -1249,8 +1249,8 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
                     [self setNumberValue:[NSNumber numberWithDouble:[value doubleValue]]];
             } break;
                 
-            case DA:
-            case DT: {
+            case DCM_DA:
+            case DCM_DT: {
                 if (otype == NSGreaterThanOrEqualToPredicateOperatorType && ([predicate variable] || [predicate function])) {
                     if ([[predicate variable] isEqualToString:O2VarToday] || [[[[predicate arguments] objectAtIndex:0] variable] isEqualToString:LegacyTimeKey(O2VarToday)])
                         [self setOperator:O2Today];
@@ -1271,12 +1271,12 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
                     [NSException raise:NSGenericException format:@"Unexpected comparison for DA tag: %@", predicate];
             } break;
             
-            case TM: {
+            case DCM_TM: {
                 [self setOperator:[predicate predicateOperatorType]];
                 [self setDateValue:[predicate constantValue]];
             } break;
                 
-            case CS: {
+            case DCM_CS: {
                 [self setCodeStringTag:[self tagForCodeString:[predicate constantValue]]];
                 if ([[predicate constantValue] isKindOfClass:[NSString class]]) {
                     id v = [predicate constantValue];
@@ -1299,20 +1299,20 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
         NSComparisonPredicate* sp1 = [subpredicates objectAtIndex:1];
         
         // match old "DA_KeyPath >= $NSDATE_YESTERDAY AND DA_KeyPath <= $NSDATE_TODAY" for "KeyPath between {NSDATE_YESTERDAY, NSDATE_TODAY}"
-        if ((vr == DA || vr == DT) &&
+        if ((vr == DCM_DA || vr == DCM_DT) &&
             subpredicates.count == 2 &&
             sp0.predicateOperatorType == NSGreaterThanOrEqualToPredicateOperatorType && [[sp0 variable] isEqualToString:O2VarYesterday] &&
             sp1.predicateOperatorType == NSLessThanOrEqualToPredicateOperatorType && [[sp1 variable] isEqualToString:O2VarToday])
             [self setOperator:O2Yesterday];
         
-        if ((vr == DA || vr == DT) &&
+        if ((vr == DCM_DA || vr == DCM_DT) &&
             subpredicates.count == 2 &&
             sp0.predicateOperatorType == NSGreaterThanOrEqualToPredicateOperatorType && [[sp0 variable] isEqualToString:O2Var2Days] &&
             sp1.predicateOperatorType == NSLessThanOrEqualToPredicateOperatorType && [[sp1 variable] isEqualToString:O2VarYesterday])
             [self setOperator:O2DayBeforeYesterday];
         
         // match "LT_KeyPath != '' AND LT_KeyPath != nil"
-        if ((vr == SH || vr == LO || vr == ST || vr == LT || vr == UT || vr == AE || vr == PN || vr == UI) &&
+        if ((vr == DCM_SH || vr == DCM_LO || vr == DCM_ST || vr == DCM_LT || vr == DCM_UT || vr == DCM_AE || vr == DCM_PN || vr == DCM_UI) &&
             sp0.predicateOperatorType == NSNotEqualToPredicateOperatorType && sp1.predicateOperatorType == NSNotEqualToPredicateOperatorType &&
             [sp0.constantValue isEqualToString:@""] && sp1.constantValue == nil) {
             [self setOperator:NSNotEqualToPredicateOperatorType];
@@ -1333,15 +1333,15 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
     NSExpression* tagNameExpression = [NSExpression expressionForKeyPath:tag.name];
     
     switch (vr) {
-        case SH:
-        case LO:
-        case ST:
-        case LT:
-        case UT:
-        case AE:
-        case PN:
-        case UI:
-        case AS: {
+        case DCM_SH:
+        case DCM_LO:
+        case DCM_ST:
+        case DCM_LT:
+        case DCM_UT:
+        case DCM_AE:
+        case DCM_PN:
+        case DCM_UI:
+        case DCM_AS: {
             if (self.stringValue.length)
                 return [NSComparisonPredicate predicateWithLeftExpression:tagNameExpression
                                                           rightExpression:[NSExpression expressionForConstantValue:self.stringValue]
@@ -1364,8 +1364,8 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
         } break;
             
             
-        case DS:
-        case IS: {
+        case DCM_DS:
+        case DCM_IS: {
             return [NSComparisonPredicate predicateWithLeftExpression:tagNameExpression
                                                       rightExpression:[NSExpression expressionForConstantValue:self.stringValue]
                                                              modifier:NSDirectPredicateModifier
@@ -1373,12 +1373,12 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
                                                               options:NSCaseInsensitivePredicateOption];
         }
             
-        case SS:
-        case SL:
-        case US:
-        case UL:
-        case FL:
-        case FD: {
+        case DCM_SS:
+        case DCM_SL:
+        case DCM_US:
+        case DCM_UL:
+        case DCM_FL:
+        case DCM_FD: {
             return [NSComparisonPredicate predicateWithLeftExpression:tagNameExpression
                                                       rightExpression:[NSExpression expressionForConstantValue:self.numberValue]
                                                              modifier:NSDirectPredicateModifier
@@ -1386,8 +1386,8 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
                                                               options:NSCaseInsensitivePredicateOption];
         }
     
-        case DA:
-        case DT: {
+        case DCM_DA:
+        case DCM_DT: {
             switch (self.operator) {
                 case O2Today:
                     return [NSComparisonPredicate predicateWithLeftExpression:tagNameExpression
@@ -1436,7 +1436,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
             } // switch DA operator
         } break;
             
-        case TM: {
+        case DCM_TM: {
             switch (self.operator) {
                 case NSLessThanOrEqualToPredicateOperatorType:
                 case NSGreaterThanOrEqualToPredicateOperatorType:
@@ -1449,7 +1449,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
             }
         } break;
             
-        case CS: {
+        case DCM_CS: {
             return [NSComparisonPredicate predicateWithLeftExpression:tagNameExpression
                                                       rightExpression:[NSExpression expressionForConstantValue:[self codeStringForTag:self.codeStringTag]]
                                                              modifier:NSDirectPredicateModifier
