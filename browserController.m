@@ -884,6 +884,7 @@ static NSConditionLock *threadLock = nil;
         BOOL seriesLevel = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILLSeriesLevel"];
         BOOL commentsAutoFill = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILL"];
         
+        int x = 0;
 		for( NSManagedObjectID *studyID in studiesArray)
         {
             @try
@@ -892,11 +893,11 @@ static NSConditionLock *threadLock = nil;
                 
                 [s willChangeValueForKey: commentField];
                 
-                if( studyLevel == YES && seriesLevel == NO)
+                if( studyLevel == YES && seriesLevel == NO && commentsAutoFill == YES)
                 {
                     NSManagedObject *o = [[[[s series] anyObject] valueForKey:@"images"] anyObject];
                     
-                    if( commentsAutoFill)
+                    @autoreleasepool
                     {
                         DicomFile *dcm = [[DicomFile alloc] init: [o valueForKey:@"completePath"]];
                         
@@ -904,16 +905,30 @@ static NSConditionLock *threadLock = nil;
                         {
                             if( [dcm elementForKey:@"commentsAutoFill"])
                                 [s setPrimitiveValue: [dcm elementForKey: @"commentsAutoFill"] forKey: commentField];
+                            else
+                                [s setPrimitiveValue: nil forKey: commentField];
+                            
+                            [dcm release];
                         }
+                        
+                        float p = (float) (x++) / (float) studiesArray.count;
+                        [[NSThread currentThread] setProgress: p];
+                        
+                        if( x % 100 == 0)
+                            [context save: nil];
                     }
                 }
-                else [s setPrimitiveValue: 0L forKey: commentField];
+                else
+                    [s setPrimitiveValue: 0L forKey: commentField];
                 
                 [s didChangeValueForKey: commentField];
             }
             @catch (NSException *exception) {
                 N2LogException( exception);
             }
+            
+            if( [[NSThread currentThread] isCancelled])
+                break;
 		}
         
         NSArray *seriesArray = [arrays objectForKey: @"seriesArrayIDs"];
@@ -959,9 +974,8 @@ static NSConditionLock *threadLock = nil;
                                 [series setPrimitiveValue: 0L forKey: commentField];
                                 [series didChangeValueForKey: commentField];
                             }
+                            [dcm release];
                         }
-                        
-                        [dcm release];
                     }
                     else
                     {
@@ -1082,7 +1096,7 @@ static NSConditionLock *threadLock = nil;
         NSThread *t = nil;
             t = [[[NSThread alloc] initWithTarget: self selector:@selector(regenerateAutoCommentsThread:) object: [NSDictionary dictionaryWithObjectsAndKeys: studiesArray, @"studyArrayIDs", seriesArray, @"seriesArrayIDs", nil]] autorelease];
         
-        t.name = NSLocalizedString( @"Regenarate Auto Comments...", nil);
+        t.name = NSLocalizedString( @"Regenerate Auto Comments...", nil);
         t.status = N2LocalizedSingularPluralCount( [studiesArray count], NSLocalizedString(@"study", nil), NSLocalizedString(@"studies", nil));
         t.supportsCancel = YES;
         [[ThreadsManager defaultManager] addThreadAndStart: t];
