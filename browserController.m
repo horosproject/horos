@@ -144,7 +144,7 @@ static BOOL loadingIsOver = NO;//, isAutoCleanDatabaseRunning = NO;
 static NSMenu *contextual = nil;
 static NSMenu *contextualRT = nil;  // Alternate menus for RT objects (which often don't have images)
 static int DicomDirScanDepth = 0;
-static int DefaultFolderSizeForDB = 0; // TODO: change
+static int DefaultFolderSizeForDB = 0;
 static NSTimeInterval lastHardDiskCheck = 0;
 static unsigned long long lastFreeSpace = 0;
 static NSTimeInterval lastFreeSpaceLogTime = 0;
@@ -880,13 +880,35 @@ static NSConditionLock *threadLock = nil;
         
         NSString *commentField = [[NSUserDefaults standardUserDefaults] stringForKey: @"commentFieldForAutoFill"];
         
+        BOOL studyLevel = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILLStudyLevel"];
+        BOOL seriesLevel = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILLSeriesLevel"];
+        BOOL commentsAutoFill = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILL"];
+        
 		for( NSManagedObjectID *studyID in studiesArray)
         {
-            @try {
+            @try
+            {
                 DicomStudy *s = (DicomStudy*) [context objectWithID: studyID];
                 
                 [s willChangeValueForKey: commentField];
-                [s setPrimitiveValue: 0L forKey: commentField];
+                
+                if( studyLevel == YES && seriesLevel == NO)
+                {
+                    NSManagedObject *o = [[[[s series] anyObject] valueForKey:@"images"] anyObject];
+                    
+                    if( commentsAutoFill)
+                    {
+                        DicomFile *dcm = [[DicomFile alloc] init: [o valueForKey:@"completePath"]];
+                        
+                        if( dcm)
+                        {
+                            if( [dcm elementForKey:@"commentsAutoFill"])
+                                [s setPrimitiveValue: [dcm elementForKey: @"commentsAutoFill"] forKey: commentField];
+                        }
+                    }
+                }
+                else [s setPrimitiveValue: 0L forKey: commentField];
+                
                 [s didChangeValueForKey: commentField];
             }
             @catch (NSException *exception) {
@@ -897,63 +919,72 @@ static NSConditionLock *threadLock = nil;
         NSArray *seriesArray = [arrays objectForKey: @"seriesArrayIDs"];
         
         int i = 0;
-		for( NSManagedObjectID *seriesID in seriesArray)
-		{
-			@try
-			{
-                DicomSeries *series = (DicomSeries*) [context objectWithID: seriesID];
-                
-				NSManagedObject *o = [[series valueForKey:@"images"] anyObject];
-				
-				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILL"])
-				{
-					DicomFile *dcm = [[DicomFile alloc] init: [o valueForKey:@"completePath"]];
-					
-					if( dcm)
-					{
-						if( [dcm elementForKey:@"commentsAutoFill"])
-						{
-                            [series willChangeValueForKey: commentField];
-							[series setPrimitiveValue: [dcm elementForKey: @"commentsAutoFill"] forKey: commentField];
-							[series didChangeValueForKey: commentField];
-                            
-							NSManagedObject *study = [series valueForKey: @"study"];
-							
-							if( [study valueForKey: commentField] == nil || [[study valueForKey: commentField] isEqualToString:@""])
-                            {
-                                [study willChangeValueForKey: commentField];
-								[study setPrimitiveValue: [dcm elementForKey: @"commentsAutoFill"] forKey: commentField];
-                                [study didChangeValueForKey: commentField];
-                            }
-						}
-						else
-                        {
-                            [series willChangeValueForKey: commentField];
-                            [series setPrimitiveValue: 0L forKey: commentField];
-                            [series didChangeValueForKey: commentField];
-                        }
-					}
-					
-					[dcm release];
-				}
-				else
+        for( NSManagedObjectID *seriesID in seriesArray)
+        {
+            @autoreleasepool
+            {
+                @try
                 {
-                    [series willChangeValueForKey: commentField];
-                    [series setPrimitiveValue: 0L forKey: commentField];
-                    [series didChangeValueForKey: commentField];
+                    DicomSeries *series = (DicomSeries*) [context objectWithID: seriesID];
+                    
+                    NSManagedObject *o = [[series valueForKey:@"images"] anyObject];
+                    
+                    if( commentsAutoFill && seriesLevel)
+                    {
+                        DicomFile *dcm = [[DicomFile alloc] init: [o valueForKey:@"completePath"]];
+                        
+                        if( dcm)
+                        {
+                            if( [dcm elementForKey:@"commentsAutoFill"])
+                            {
+                                [series willChangeValueForKey: commentField];
+                                [series setPrimitiveValue: [dcm elementForKey: @"commentsAutoFill"] forKey: commentField];
+                                [series didChangeValueForKey: commentField];
+                                
+                                if( studyLevel)
+                                {
+                                    NSManagedObject *study = [series valueForKey: @"study"];
+                                    
+                                    if( [study valueForKey: commentField] == nil || [[study valueForKey: commentField] isEqualToString:@""])
+                                    {
+                                        [study willChangeValueForKey: commentField];
+                                        [study setPrimitiveValue: [dcm elementForKey: @"commentsAutoFill"] forKey: commentField];
+                                        [study didChangeValueForKey: commentField];
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                [series willChangeValueForKey: commentField];
+                                [series setPrimitiveValue: 0L forKey: commentField];
+                                [series didChangeValueForKey: commentField];
+                            }
+                        }
+                        
+                        [dcm release];
+                    }
+                    else
+                    {
+                        [series willChangeValueForKey: commentField];
+                        [series setPrimitiveValue: 0L forKey: commentField];
+                        [series didChangeValueForKey: commentField];
+                    }
                 }
-			}
-			@catch ( NSException *e)
-			{
-                N2LogExceptionWithStackTrace(e);
-			}
-			
+                @catch ( NSException *e)
+                {
+                    N2LogExceptionWithStackTrace(e);
+                }
+            }
+            
             float p = (float) (i++) / (float) seriesArray.count;
-			[[NSThread currentThread] setProgress: p];
+            [[NSThread currentThread] setProgress: p];
+            
+            if( i % 100 == 0)
+                [context save: nil];
             
             if( [[NSThread currentThread] isCancelled])
                 break;
-		}
+        }
         
         [context save: nil];
 		
@@ -1020,7 +1051,7 @@ static NSConditionLock *threadLock = nil;
             NSError *error = nil;
             
             seriesArray = [self.database.managedObjectContext executeFetchRequest:dbRequest error:&error];
-		}
+        }
         else
         {
             NSMutableArray *objects = [NSMutableArray array];
@@ -11285,7 +11316,7 @@ static BOOL needToRezoom;
 		{
 			if( ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask) || openReparsedSeriesFlag)
 			{
-				NSArray			*singleSeries = [[toOpenArray objectAtIndex: 0] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"instanceNumber" ascending: YES] autorelease]]];
+				NSArray			*singleSeries = [[toOpenArray objectAtIndex: 0] sortedArrayUsingDescriptors: [NSArray arrayWithObjects: [NSSortDescriptor sortDescriptorWithKey: @"instanceNumber" ascending: YES], [NSSortDescriptor sortDescriptorWithKey: @"frameID" ascending: YES], nil]];
 				NSMutableArray	*splittedSeries = [NSMutableArray array];
 				NSMutableArray  *intervalArray = [NSMutableArray array];
 				
@@ -11322,7 +11353,7 @@ static BOOL needToRezoom;
 						
 						for( int x = 1; x < [singleSeries count]; x++)
 						{
-							int interval4D = [[intervalArray objectAtIndex: x -1] floatValue] - [[intervalArray objectAtIndex: x] floatValue];
+							float interval4D = [[intervalArray objectAtIndex: x -1] floatValue] - [[intervalArray objectAtIndex: x] floatValue];
 							if( interval4D != 0) pos3Dindex = 0;
 							
 							if( [splittedSeries count] <= pos3Dindex) [splittedSeries addObject: [NSMutableArray array]];
