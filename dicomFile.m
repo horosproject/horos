@@ -2029,11 +2029,11 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
             if( [self getDicomFileDCMTK] == 0)	// First, try with dcmtk
                 return 0;
             
-    #ifndef DECOMPRESS_APP
-            // And if it failed, try to convert it...
-            converted = convertDICOM( filePath);
-            fileNb = Papy3FileOpen (  (char*) [converted UTF8String], (PAPY_FILE) 0, TRUE, 0);
-    #endif
+//    #ifndef DECOMPRESS_APP
+//            // And if it failed, try to convert it...
+//            converted = convertDICOM( filePath);
+//            fileNb = Papy3FileOpen (  (char*) [converted UTF8String], (PAPY_FILE) 0, TRUE, 0);
+//    #endif
         }
         
         if (fileNb >= 0)

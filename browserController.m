@@ -869,122 +869,44 @@ static NSConditionLock *threadLock = nil;
 #pragma mark-
 #pragma mark Database functions
 
-- (IBAction) regenerateAutoComments:(id) sender;
+- (void) regenerateAutoCommentsThread: (NSDictionary*) arrays
 {
-	if( NSRunInformationalAlertPanel(	NSLocalizedString(@"Regenerate Auto Comments", nil),
-											 NSLocalizedString(@"Are you sure you want to regenerate the comments field? It will delete the existing comments of studies and series.", nil),
-											 NSLocalizedString(@"OK",nil),
-											 NSLocalizedString(@"Cancel",nil),
-											 nil) == NSAlertDefaultReturn)
-	{        
-		Wait *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Regenerate Auto Comments...", nil)];
-			
-		[splash showWindow:self];
+    @autoreleasepool
+    {
+		NSManagedObjectContext *context = self.database.independentContext;
 		
-		[splash setCancel: YES];
-		
-		NSManagedObjectContext *context = self.database.managedObjectContext;
-		
-		[context lock];
-		
-        NSArray *studiesArray = nil;
+        NSArray *studiesArray = [arrays objectForKey: @"studyArrayIDs"];
         NSFetchRequest *dbRequest = nil;
-        
-        if( sender == nil) // Apply to all studies
-        {
-            // Find all studies
-            NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-            [dbRequest setEntity: [[self.database.managedObjectModel entitiesByName] objectForKey:@"Study"]];
-            [dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-            
-            NSError *error = nil;
-            
-            studiesArray = [context executeFetchRequest:dbRequest error:&error];
-		}
-        else
-        {
-            NSMutableArray *objects = [NSMutableArray array];
-            NSMutableArray *selectedStudies = [NSMutableArray array];
-            
-            NSIndexSet *selectedRows = [databaseOutline selectedRowIndexes];
-            if( [databaseOutline selectedRow] >= 0)
-            {
-                for( int x = 0; x < [selectedRows count] ; x++)
-                {
-                    NSUInteger row;
-                    if( x == 0) row = [selectedRows firstIndex];
-                    else row = [selectedRows indexGreaterThanIndex: row];
-                    
-                    id object = [databaseOutline itemAtRow: row];
-                    
-                    if( [object isKindOfClass:[DicomStudy class]])
-                        [selectedStudies addObject: object];
-                }
-            }
-            
-            studiesArray = selectedStudies;
-        }
         
         NSString *commentField = [[NSUserDefaults standardUserDefaults] stringForKey: @"commentFieldForAutoFill"];
         
-		for( DicomStudy *s in studiesArray)
+		for( NSManagedObjectID *studyID in studiesArray)
         {
-            [s willChangeValueForKey: commentField];
-			[s setPrimitiveValue: 0L forKey: commentField];
-            [s didChangeValueForKey: commentField];
-		}
-        NSArray *seriesArray = nil;
-        
-        if( sender == nil) // Apply to all studies
-        {
-            // Find all series
-            dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-            [dbRequest setEntity: [[self.database.managedObjectModel entitiesByName] objectForKey:@"Series"]];
-            [dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-		
-            NSError *error = nil;
-		
-            seriesArray = [context executeFetchRequest:dbRequest error:&error];
-		}
-        else
-        {
-            NSMutableArray *objects = [NSMutableArray array];
-            NSMutableArray *selectedSeries = [NSMutableArray array];
-            
-            NSIndexSet *selectedRows = [databaseOutline selectedRowIndexes];
-            if( [databaseOutline selectedRow] >= 0)
-            {
-                for( int x = 0; x < [selectedRows count] ; x++)
-                {
-                    NSUInteger row;
-                    if( x == 0) row = [selectedRows firstIndex];
-                    else row = [selectedRows indexGreaterThanIndex: row];
-                    
-                    NSManagedObject	*object = [databaseOutline itemAtRow: row];
-                    
-                    if( [object isKindOfClass: [DicomStudy class]])
-                        [selectedSeries addObjectsFromArray: [[object valueForKey: @"series"] allObjects]];
+            @try {
+                DicomStudy *s = (DicomStudy*) [context objectWithID: studyID];
                 
-                    if( [object isKindOfClass: [DicomSeries class]])
-                        [selectedSeries addObject: object];
-                }
+                [s willChangeValueForKey: commentField];
+                [s setPrimitiveValue: 0L forKey: commentField];
+                [s didChangeValueForKey: commentField];
             }
-            
-            seriesArray = selectedSeries;
-        }
+            @catch (NSException *exception) {
+                N2LogException( exception);
+            }
+		}
         
-		[[splash progress] setMaxValue: [seriesArray count]];
-		
+        NSArray *seriesArray = [arrays objectForKey: @"seriesArrayIDs"];
         
-        
-		for( NSManagedObject *series in seriesArray)
+        int i = 0;
+		for( NSManagedObjectID *seriesID in seriesArray)
 		{
 			@try
 			{
+                DicomSeries *series = (DicomSeries*) [context objectWithID: seriesID];
+                
 				NSManagedObject *o = [[series valueForKey:@"images"] anyObject];
 				
 				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILL"])
-				{			
+				{
 					DicomFile *dcm = [[DicomFile alloc] init: [o valueForKey:@"completePath"]];
 					
 					if( dcm)
@@ -1026,19 +948,113 @@ static NSConditionLock *threadLock = nil;
                 N2LogExceptionWithStackTrace(e);
 			}
 			
-			[splash incrementBy:1];
+            float p = (float) (i++) / (float) seriesArray.count;
+			[[NSThread currentThread] setProgress: p];
             
-            if( [splash aborted])
+            if( [[NSThread currentThread] isCancelled])
                 break;
 		}
-		[context unlock];
         
-        [self.database save];
+        [context save: nil];
 		
-		[self outlineViewRefresh];
-		
-		[splash close];
-		[splash autorelease];
+        [self performSelectorOnMainThread: @selector( outlineViewRefresh)  withObject: nil waitUntilDone: NO];
+    }
+}
+
+- (IBAction) regenerateAutoComments:(id) sender;
+{
+	if( NSRunInformationalAlertPanel(	NSLocalizedString(@"Regenerate Auto Comments", nil),
+											 NSLocalizedString(@"Are you sure you want to regenerate the comments field? It will delete the existing comments of studies and series.", nil),
+											 NSLocalizedString(@"OK",nil),
+											 NSLocalizedString(@"Cancel",nil),
+											 nil) == NSAlertDefaultReturn)
+	{
+        NSArray *studiesArray = nil;
+        
+        if( sender == nil) // Apply to all studies
+        {
+            // Find all studies
+            NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+            [dbRequest setResultType: NSManagedObjectIDResultType];
+            [dbRequest setEntity: [[self.database.managedObjectModel entitiesByName] objectForKey:@"Study"]];
+            [dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
+            
+            NSError *error = nil;
+            
+            studiesArray = [self.database.managedObjectContext executeFetchRequest:dbRequest error:&error];
+		}
+        else
+        {
+            NSMutableArray *objects = [NSMutableArray array];
+            NSMutableArray *selectedStudies = [NSMutableArray array];
+            
+            NSIndexSet *selectedRows = [databaseOutline selectedRowIndexes];
+            if( [databaseOutline selectedRow] >= 0)
+            {
+                for( int x = 0; x < [selectedRows count] ; x++)
+                {
+                    NSUInteger row = 0;
+                    if( x == 0) row = [selectedRows firstIndex];
+                    else row = [selectedRows indexGreaterThanIndex: row];
+                    
+                    id object = [databaseOutline itemAtRow: row];
+                    
+                    if( [object isKindOfClass:[DicomStudy class]])
+                        [selectedStudies addObject: object];
+                }
+            }
+            
+            studiesArray = [selectedStudies valueForKey: @"objectID"];
+        }
+        
+        NSArray *seriesArray = nil;
+        
+        if( sender == nil) // Apply to all studies
+        {
+            // Find all series
+            NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+            [dbRequest setResultType: NSManagedObjectIDResultType];
+            [dbRequest setEntity: [[self.database.managedObjectModel entitiesByName] objectForKey:@"Series"]];
+            [dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
+            
+            NSError *error = nil;
+            
+            seriesArray = [self.database.managedObjectContext executeFetchRequest:dbRequest error:&error];
+		}
+        else
+        {
+            NSMutableArray *objects = [NSMutableArray array];
+            NSMutableArray *selectedSeries = [NSMutableArray array];
+            
+            NSIndexSet *selectedRows = [databaseOutline selectedRowIndexes];
+            if( [databaseOutline selectedRow] >= 0)
+            {
+                for( int x = 0; x < [selectedRows count] ; x++)
+                {
+                    NSUInteger row = 0;
+                    if( x == 0) row = [selectedRows firstIndex];
+                    else row = [selectedRows indexGreaterThanIndex: row];
+                    
+                    NSManagedObject	*object = [databaseOutline itemAtRow: row];
+                    
+                    if( [object isKindOfClass: [DicomStudy class]])
+                        [selectedSeries addObjectsFromArray: [[object valueForKey: @"series"] allObjects]];
+                    
+                    if( [object isKindOfClass: [DicomSeries class]])
+                        [selectedSeries addObject: object];
+                }
+            }
+            
+            seriesArray = [selectedSeries valueForKey: @"objectID"];
+        }
+        
+        NSThread *t = nil;
+            t = [[[NSThread alloc] initWithTarget: self selector:@selector(regenerateAutoCommentsThread:) object: [NSDictionary dictionaryWithObjectsAndKeys: studiesArray, @"studyArrayIDs", seriesArray, @"seriesArrayIDs", nil]] autorelease];
+        
+        t.name = NSLocalizedString( @"Regenarate Auto Comments...", nil);
+        t.status = N2LocalizedSingularPluralCount( [studiesArray count], NSLocalizedString(@"study", nil), NSLocalizedString(@"studies", nil));
+        t.supportsCancel = YES;
+        [[ThreadsManager defaultManager] addThreadAndStart: t];
 	}
 }
 
