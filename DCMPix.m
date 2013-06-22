@@ -7164,12 +7164,18 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	val = Papy3GetElement (theGroupP, papImagePositionPatientGr, &nbVal, &elemType);
 	if( val && nbVal == 3)
 	{
-		originX = atof( val++->a);
-        originY = atof( val++->a);
-        originZ = atof( val++->a);
-		
+		originX = atof( val++->a); originY = atof( val++->a); originZ = atof( val++->a);
 		isOriginDefined = YES;
 	}
+    else
+    {
+        val = Papy3GetElement (theGroupP, papImagePositionVolumeGr, &nbVal, &elemType);
+        if( val && nbVal == 3 && elemType == FD)
+        {
+            originX = val++->fd; originY = val++->fd; originZ = val++->fd;
+            isOriginDefined = YES;
+        }
+    }
 	
 	val = Papy3GetElement (theGroupP, papImageOrientationPatientGr, &nbVal, &elemType);
 	if ( val && nbVal == 6)
@@ -7177,22 +7183,31 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		for( int j = 0; j < nbVal; j++)
 			orientation[ j]  = atof( val++->a);
 	}
+    else
+    {
+        val = Papy3GetElement (theGroupP, papImageOrientationVolumeGr, &nbVal, &elemType);
+        if( val && nbVal == 6 && elemType == FD)
+        {
+            for( int j = 0; j < nbVal; j++)
+                orientation[ j]  = val++->fd;
+        }
+    }
 	
 	val = Papy3GetElement (theGroupP, papImageLateralityGr, &nbVal, &elemType);
-	if ( val && val->a && validAPointer( elemType))
+	if( val && val->a && validAPointer( elemType))
 	{
 		[laterality release];
 		laterality = [[NSString stringWithCString:val->a encoding: NSISOLatin1StringEncoding] retain];
 	}
 	
 	val = Papy3GetElement (theGroupP, papFrameofReferenceUIDGr, &nbVal, &elemType);
-	if ( val && val->a && validAPointer( elemType))
+	if( val && val->a && validAPointer( elemType))
 		self.frameofReferenceUID = [NSString stringWithCString:val->a encoding: NSISOLatin1StringEncoding];
 	
 	if( laterality == nil)
 	{
 		val = Papy3GetElement (theGroupP, papLateralityGr, &nbVal, &elemType);
-		if ( val && val->a && validAPointer( elemType))
+		if( val && val->a && validAPointer( elemType))
 		{
 			[laterality release];
 			laterality = [[NSString stringWithCString:val->a encoding: NSISOLatin1StringEncoding] retain];
@@ -8202,6 +8217,30 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 												}
 											}
 										}
+                                        
+                                        val3 = Papy3GetElement (gr, papPlanePositionVolumeSequence, &nbVal, &elemType);
+										if (val3 != NULL && nbVal >= 1)
+										{
+											// there is a sequence
+											if (val3->sq)
+											{
+												Papy_List *PixelMatrixSeq = val3->sq->object->item;
+												
+												// loop through the elements of the sequence
+												while (PixelMatrixSeq)
+												{
+													SElement * gr = (SElement *) PixelMatrixSeq->object->group;
+													
+													switch( gr->group)
+													{
+														case 0x0020: [self papyLoadGroup0x0020: gr]; break;
+													}
+													
+													// get the next element of the list
+													PixelMatrixSeq = PixelMatrixSeq->next;
+												}
+											}
+										}
 									break;
                                     
                                     case 0x0022:
@@ -8424,6 +8463,31 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 														}
 														
 														val = Papy3GetElement (gr, papPlaneOrientationSequence, &nbVal, &elemType);
+														if (val != NULL && nbVal >= 1)
+														{
+															// there is a sequence
+															if (val->sq)
+															{
+																// get a pointer to the first element of the list
+																Papy_List *seq = val->sq->object->item;
+																
+																// loop through the elements of the sequence
+																while (seq)
+																{
+																	SElement * gr = (SElement *) seq->object->group;
+																	
+																	switch( gr->group)
+																	{
+																		case 0x0020: [self papyLoadGroup0x0020: gr]; break;
+																	}
+																	
+																	// get the next element of the list
+																	seq = seq->next;
+																}
+															}
+														}
+                                                        
+                                                        val = Papy3GetElement (gr, papPlanePositionVolumeSequence, &nbVal, &elemType);
 														if (val != NULL && nbVal >= 1)
 														{
 															// there is a sequence

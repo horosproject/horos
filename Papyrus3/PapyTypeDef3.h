@@ -194,7 +194,7 @@ typedef struct SElement_	/* structure of an element */
     PapyUShort		element;
     PapyULong		length;
     enum EV_R_T		vr;	/* Value Representation */
-    char 		*vm;	/* Value Multiplicity */
+    const char 		*vm;	/* Value Multiplicity */
     enum EType_T	type_t;	/* EType_T (mandatory, cond., optional) */
     PapyULong		nb_val;
     UValue_T		*value;
