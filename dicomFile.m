@@ -1090,9 +1090,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				
 				if( NoOfFrames > 1) // SERIES ID MUST BE UNIQUE!!!!!
 				{
-					NSString *newSerieID = [[NSString alloc] initWithFormat:@"%@-%@-%@", serieID, imageID, [filePath lastPathComponent]];
 					[serieID release];
-					serieID = newSerieID;
+					serieID = [[NSString alloc] initWithFormat:@"%@-%@-%@", serieID, imageID, [filePath lastPathComponent]];
 				}
 				
 				NoOfSeries = 1;
@@ -2737,57 +2736,39 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                     
                     if( cardiacTime != -1 && SEPARATECARDIAC4D == YES)  // For new Cardiac-CT Siemens series
                     {
-                        NSString	*n;
-                        
-                        n = [[NSString alloc] initWithFormat:@"%@ %2.2d", serieID , (int) cardiacTime];
                         [serieID release];
-                        serieID = n;
+                        serieID = [[NSString alloc] initWithFormat:@"%@ %2.2d", serieID , (int) cardiacTime];
                     }
                     
                     if( seriesNo)
                     {
-                        NSString	*n;
-                        
-                        n = [[NSString alloc] initWithFormat:@"%8.8d %@", [seriesNo intValue] , serieID];
                         [serieID release];
-                        serieID = n;
+                        serieID = [[NSString alloc] initWithFormat:@"%8.8d %@", [seriesNo intValue] , serieID];
                     }
                     
                     if( imageType != 0 && useSeriesDescription)
                     {
-                        NSString	*n;
-                        
-                        n = [[NSString alloc] initWithFormat:@"%@ %@", serieID , imageType];
                         [serieID release];
-                        serieID = n;
+                        serieID = [[NSString alloc] initWithFormat:@"%@ %@", serieID , imageType];
                     }
                     
                     if( serie != nil && useSeriesDescription)
                     {
-                        NSString	*n;
-                        
-                        n = [[NSString alloc] initWithFormat:@"%@ %@", serieID , serie];
                         [serieID release];
-                        serieID = n;
+                        serieID = [[NSString alloc] initWithFormat:@"%@ %@", serieID , serie];
                     }
                     
                     if( sopClassUID != nil && [[DCMAbstractSyntaxUID hiddenImageSyntaxes] containsObject: sopClassUID])
                     {
-                        NSString	*n;
-                        
-                        n = [[NSString alloc] initWithFormat:@"%@ %@", serieID , sopClassUID];
                         [serieID release];
-                        serieID = n;
+                        serieID = [[NSString alloc] initWithFormat:@"%@ %@", serieID , sopClassUID];
                     }
                     
                     //Segregate by TE  values
                     if( echoTime != nil && splitMultiEchoMR)
                     {
-                        NSString	*n;
-                        
-                        n = [[NSString alloc] initWithFormat:@"%@ TE-%@", serieID , echoTime];
                         [serieID release];
-                        serieID = n;
+                        serieID = [[NSString alloc] initWithFormat:@"%@ TE-%@", serieID , echoTime];
                     }
                     
                     val = Papy3GetElement (theGroupP, papStudyInstanceUIDGr, &nbVal, &itemType);
@@ -2797,7 +2778,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                     
                     [dicomElements setObject:studyID forKey:@"studyID"];
                     
-                    if( NOLOCALIZER && ([self containsString: @"LOCALIZER" inArray: imageTypeArray] || [self containsString: @"REF" inArray: imageTypeArray] || [self containsLocalizerInString: serie]))
+                    if( NOLOCALIZER && ([self containsString: @"LOCALIZER" inArray: imageTypeArray] || [self containsString: @"REF" inArray: imageTypeArray] || [self containsLocalizerInString: serie]) && [DCMAbstractSyntaxUID isImageStorage: sopClassUID])
                     {
                         [serieID release];
                         serieID = [[NSString alloc] initWithString: @"LOCALIZER"];
@@ -3305,9 +3286,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
             
             if( NoOfFrames > 1) // SERIES ID MUST BE UNIQUE!!!!!
             {
-                NSString *newSerieID = [[NSString alloc] initWithFormat:@"%@-%@-%@", serieID, imageID, [dicomElements objectForKey:@"SOPUID"]];
                 [serieID release];
-                serieID = newSerieID;
+                serieID = [[NSString alloc] initWithFormat:@"%@-%@-%@", serieID, imageID, [dicomElements objectForKey:@"SOPUID"]];
             }
             
             [dicomElements setObject:[self patientUID] forKey:@"patientUID"];
@@ -3841,48 +3821,34 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				
 		if( cardiacTime != -1 && SEPARATECARDIAC4D == YES)  // For new Cardiac-CT Siemens series
 		{
-			NSString	*n;
-			n = [[NSString alloc] initWithFormat:@"%@ %2.2d", serieID , (int) cardiacTime];
 			[serieID release];
-			serieID = n;
+			serieID = [[NSString alloc] initWithFormat:@"%@ %2.2d", serieID , (int) cardiacTime];
 		}
 		if( seriesNo)
 		{
-			NSString	*n;
-			
-			n = [[NSString alloc] initWithFormat:@"%8.8d %@", [seriesNo intValue] , serieID];
 			[serieID release];
-			serieID = n;
+			serieID = [[NSString alloc] initWithFormat:@"%8.8d %@", [seriesNo intValue] , serieID];
 		}
 		
 		if( imageType != 0 && useSeriesDescription)
 		{
-			NSString	*n;
-			
-			n = [[NSString alloc] initWithFormat:@"%@ %@", serieID , imageType];
 			[serieID release];
-			serieID = n;
+			serieID = [[NSString alloc] initWithFormat:@"%@ %@", serieID , imageType];
 		}
 		
 		if( serie != nil && useSeriesDescription)
 		{
-			NSString	*n;
-			
-			n = [[NSString alloc] initWithFormat:@"%@ %@", serieID , serie];
 			[serieID release];
-			serieID = n;
+			serieID = [[NSString alloc] initWithFormat:@"%@ %@", serieID , serie];
 		}
         
         if( [dcmObject attributeValueWithName: @"SOPClassUID"] != nil && [[DCMAbstractSyntaxUID hiddenImageSyntaxes] containsObject: [dcmObject attributeValueWithName: @"SOPClassUID"]])
 		{
-			NSString	*n;
-			
-			n = [[NSString alloc] initWithFormat:@"%@ %@", serieID , [dcmObject attributeValueWithName: @"SOPClassUID"]];
 			[serieID release];
-			serieID = n;
+			serieID = [[NSString alloc] initWithFormat:@"%@ %@", serieID , [dcmObject attributeValueWithName: @"SOPClassUID"]];
 		}
 		
-		if( NOLOCALIZER && ([self containsString: @"LOCALIZER" inArray: imageTypeArray] || [self containsString: @"REF" inArray: imageTypeArray] || [self containsLocalizerInString: serie]))
+		if( NOLOCALIZER && ([self containsString: @"LOCALIZER" inArray: imageTypeArray] || [self containsString: @"REF" inArray: imageTypeArray] || [self containsLocalizerInString: serie]) && [DCMAbstractSyntaxUID isImageStorage: [dcmObject attributeValueWithName: @"SOPClassUID"]])
 		{
 			[serieID release];
 			serieID = [[NSString alloc] initWithString: @"LOCALIZER"];
@@ -3985,17 +3951,14 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		
 		if ((echoTime = [dcmObject attributeValueWithName:@"EchoTime"])  && splitMultiEchoMR) 
 		{
-			NSString	*n;					
-			n = [[NSString alloc] initWithFormat:@"%@ TE-%@", serieID, echoTime];
 			[serieID release];
-			serieID = n;
+			serieID = [[NSString alloc] initWithFormat:@"%@ TE-%@", serieID, echoTime];
 		}
 		
 		if( NoOfFrames > 1) // SERIES ID MUST BE UNIQUE!!!!!
 		{
-			NSString *newSerieID = [[NSString alloc] initWithFormat:@"%@-%@-%@", serieID, imageID, [dicomElements objectForKey:@"SOPUID"]];
 			[serieID release];
-			serieID = newSerieID;
+			serieID = [[NSString alloc] initWithFormat:@"%@-%@-%@", serieID, imageID, [dicomElements objectForKey:@"SOPUID"]];
 		}
 		
 		if( serieID == nil)  

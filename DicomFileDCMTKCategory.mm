@@ -745,57 +745,39 @@ extern NSRecursiveLock *PapyrusLock;
 		
 		if( cardiacTime != -1 && [self separateCardiac4D] == YES)  // For new Cardiac-CT Siemens series
 		{
-			NSString	*n;
-			
-			n = [[NSString alloc] initWithFormat:@"%@ %2.2d", serieID , (int) cardiacTime];
 			[serieID release];
-			serieID = n;
+			serieID = [[NSString alloc] initWithFormat:@"%@ %2.2d", serieID , (int) cardiacTime];
 		}
 		
 		if( seriesNo)
 		{
-			NSString	*n;
-			
-			n = [[NSString alloc] initWithFormat:@"%8.8d %@", [seriesNo intValue] , serieID];
 			[serieID release];
-			serieID = n;
+			serieID = [[NSString alloc] initWithFormat:@"%8.8d %@", [seriesNo intValue] , serieID];
 		}
 		
 		if( imageType != 0 && [self useSeriesDescription])
 		{
-			NSString	*n;
-			
-			n = [[NSString alloc] initWithFormat:@"%@ %@", serieID , imageType];
 			[serieID release];
-			serieID = n;
+			serieID = [[NSString alloc] initWithFormat:@"%@ %@", serieID , imageType];
 		}
 		
 		if( serie != nil && [self useSeriesDescription])
 		{
-			NSString	*n;
-			
-			n = [[NSString alloc] initWithFormat:@"%@ %@", serieID , serie];
 			[serieID release];
-			serieID = n;
+			serieID = [[NSString alloc] initWithFormat:@"%@ %@", serieID , serie];
 		}
 		
         if( sopClassUID != nil && [[DCMAbstractSyntaxUID hiddenImageSyntaxes] containsObject: sopClassUID])
         {
-            NSString	*n;
-            
-            n = [[NSString alloc] initWithFormat:@"%@ %@", serieID , sopClassUID];
             [serieID release];
-            serieID = n;
+            serieID = [[NSString alloc] initWithFormat:@"%@ %@", serieID , sopClassUID];
         }
         
 		//Segregate by TE  values
 		if( echoTime != nil && [self splitMultiEchoMR])
 		{
-			NSString	*n;
-			
-			n = [[NSString alloc] initWithFormat:@"%@ TE-%@", serieID , echoTime];
 			[serieID release];
-			serieID = n;
+			serieID = [[NSString alloc] initWithFormat:@"%@ TE-%@", serieID , echoTime];
 		}
 				
 		//Study Instance UID
@@ -1052,12 +1034,11 @@ extern NSRecursiveLock *PapyrusLock;
 		
 		if( NoOfFrames > 1) // SERIES ID MUST BE UNIQUE!!!!!
 		{
-			NSString *newSerieID = [[NSString alloc] initWithFormat:@"%@-%@-%@", serieID, imageID, [dicomElements objectForKey:@"SOPUID"]];
 			[serieID release];
-			serieID = newSerieID;
+			serieID = [[NSString alloc] initWithFormat:@"%@-%@-%@", serieID, imageID, [dicomElements objectForKey:@"SOPUID"]];
 		}
 		
-		if( [self noLocalizer] && ([self containsString: @"LOCALIZER" inArray: imageTypeArray] || [self containsString: @"REF" inArray: imageTypeArray] || [self containsLocalizerInString: serie]))
+		if( [self noLocalizer] && ([self containsString: @"LOCALIZER" inArray: imageTypeArray] || [self containsString: @"REF" inArray: imageTypeArray] || [self containsLocalizerInString: serie]) && [DCMAbstractSyntaxUID isImageStorage: sopClassUID])
 		{
 			NSString	*n;
 			
