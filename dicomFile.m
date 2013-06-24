@@ -136,6 +136,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 //@end
 
 @implementation DicomFile
+@synthesize serieID;
 
 - (BOOL) containsLocalizerInString: (NSString*) str
 {
@@ -798,7 +799,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 //			name = [[NSString alloc] initWithCString:mm_head.Name encoding:NSWindowsCP1252StringEncoding];
 			patientID = [[NSString alloc] initWithString:name];
 			studyID = [[NSString alloc] initWithString:name];
-			serieID = [[NSString alloc] initWithString:name];
+			self.serieID = name;
 			imageID = [[NSString alloc] initWithString:name];
 			study = [[NSString alloc] initWithString:name];
 			serie = [[NSString alloc] initWithString:name];
@@ -850,7 +851,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				else
 					SeriesNum = @"";
 								
-				[dicomElements setObject:[SeriesNum stringByAppendingString:serieID] forKey:[@"seriesID" stringByAppendingString:SeriesNum]];
+				[dicomElements setObject:[SeriesNum stringByAppendingString: self.serieID] forKey:[@"seriesID" stringByAppendingString:SeriesNum]];
 //				[dicomElements setObject:[SeriesNum stringByAppendingString:name] forKey:[@"seriesDescription" stringByAppendingString:SeriesNum]];
 				[dicomElements setObject:[NSNumber numberWithInt: i] forKey:[@"seriesNumber" stringByAppendingString:SeriesNum]];
 				[dicomElements setObject:[imageID stringByAppendingString:SeriesNum] forKey:[@"SOPUID" stringByAppendingString:SeriesNum]];
@@ -900,7 +901,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	width = 512;
 
 	imageID = [[NSString alloc] initWithString: [[NSDate date] description]];
-	serieID = [[NSString alloc] initWithString: [[NSDate date] description]];
+	self.serieID = [[NSDate date] description];
 	studyID = [[NSString alloc] initWithFormat:@"%ld", random()];
 
 	name = [[NSString alloc] initWithString:[filePath lastPathComponent]];
@@ -921,7 +922,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	[dicomElements setObject:patientID forKey:@"patientID"];
 	[dicomElements setObject:name forKey:@"patientName"];
 	[dicomElements setObject:[self patientUID] forKey:@"patientUID"];
-	[dicomElements setObject:serieID forKey:@"seriesID"];
+	[dicomElements setObject:self.serieID forKey:@"seriesID"];
 	[dicomElements setObject:name forKey:@"seriesDescription"];
 	[dicomElements setObject:[NSNumber numberWithInt: 0] forKey:@"seriesNumber"];
 	[dicomElements setObject:imageID forKey:@"SOPUID"];
@@ -1031,7 +1032,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				{
 					imageID = [[NSString alloc] initWithCString: (char*) strNo encoding: NSASCIIStringEncoding];
 					SOPUID = [[NSString alloc] initWithString: [[tempString substringToIndex: [tempString length] - 4] stringByAppendingString:[NSString stringWithCString: (char*) strNo encoding: NSISOLatin1StringEncoding]]];
-					serieID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] - 4]];
+					self.serieID = [tempString substringToIndex: [tempString length] - 4];
 					studyID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] - 4]];
 				}
 				else if( strNo[ 1] >= '0' && strNo[ 1] <= '9' && strNo[ 2] >= '0' && strNo[ 2] <= '9' && strNo[ 3] >= '0' && strNo[ 3] <= '9')
@@ -1045,7 +1046,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					
 					imageID = [[NSString alloc] initWithCString: (char*) strNo encoding: NSASCIIStringEncoding];
 					SOPUID = [[NSString alloc] initWithString: [[tempString substringToIndex: [tempString length] - 3] stringByAppendingString:[NSString stringWithCString: (char*) strNo encoding: NSISOLatin1StringEncoding]]];
-					serieID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] - 3]];
+					self.serieID = [tempString substringToIndex: [tempString length] - 3];
 					studyID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] - 3]];
 				}
 				else if( strNo[ 2] >= '0' && strNo[ 2] <= '9' && strNo[ 3] >= '0' && strNo[ 3] <= '9')
@@ -1057,7 +1058,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					
 					imageID = [[NSString alloc] initWithCString: (char*) strNo encoding: NSASCIIStringEncoding];
 					SOPUID = [[NSString alloc] initWithString: [[tempString substringToIndex: [tempString length] - 2] stringByAppendingString:[NSString stringWithCString: (char*) strNo encoding: NSISOLatin1StringEncoding]]];
-					serieID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] - 2]];
+					self.serieID = [tempString substringToIndex: [tempString length] - 2];
 					studyID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] - 2]];
 				}
 				else if( strNo[ 3] >= '0' && strNo[ 3] <= '9')
@@ -1068,14 +1069,14 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					
 					imageID = [[NSString alloc] initWithCString: (char*) strNo encoding: NSASCIIStringEncoding];
 					SOPUID = [[NSString alloc] initWithString: [[tempString substringToIndex: [tempString length] - 1] stringByAppendingString:[NSString stringWithCString: (char*) strNo encoding: NSISOLatin1StringEncoding]]];
-					serieID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] - 1]];
+					self.serieID = [tempString substringToIndex: [tempString length] - 1];
 					studyID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] - 1]];
 				}
 				else
 				{
 					imageID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
 					SOPUID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
-					serieID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
+					self.serieID = [filePath lastPathComponent];
 					studyID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
 				}
 				
@@ -1089,10 +1090,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				fileType = [@"IMAGE" retain];
 				
 				if( NoOfFrames > 1) // SERIES ID MUST BE UNIQUE!!!!!
-				{
-					[serieID release];
-					serieID = [[NSString alloc] initWithFormat:@"%@-%@-%@", serieID, imageID, [filePath lastPathComponent]];
-				}
+					self.serieID = [NSString stringWithFormat:@"%@-%@-%@", self.serieID, imageID, [filePath lastPathComponent]];
 				
 				NoOfSeries = 1;
 				
@@ -1112,7 +1110,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				[dicomElements setObject:patientID forKey:@"patientID"];
 				[dicomElements setObject:name forKey:@"patientName"];
 				[dicomElements setObject:[self patientUID] forKey:@"patientUID"];
-				[dicomElements setObject:serieID forKey:@"seriesID"];
+				[dicomElements setObject:self.serieID forKey:@"seriesID"];
 				[dicomElements setObject:name forKey:@"seriesDescription"];
 				[dicomElements setObject:[NSNumber numberWithInt: 0] forKey:@"seriesNumber"];
 				[dicomElements setObject:SOPUID forKey:@"SOPUID"];
@@ -1133,7 +1131,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
         name = [[NSString alloc] initWithString:[filePath lastPathComponent]];
         patientID = [[NSString alloc] initWithString:name];
         studyID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
-        serieID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
+        self.serieID = [filePath lastPathComponent];
         imageID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
         
         
@@ -1199,7 +1197,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
         [dicomElements setObject:patientID forKey:@"patientID"];
         [dicomElements setObject:name forKey:@"patientName"];
         [dicomElements setObject:[self patientUID] forKey:@"patientUID"];
-        [dicomElements setObject:serieID forKey:@"seriesID"];
+        [dicomElements setObject:self.serieID forKey:@"seriesID"];
         [dicomElements setObject:name forKey:@"seriesDescription"];
         [dicomElements setObject:[NSNumber numberWithInt: 0] forKey:@"seriesNumber"];
         [dicomElements setObject:imageID forKey:@"SOPUID"];
@@ -1335,7 +1333,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			name = [[NSString alloc] initWithString: [filePath lastPathComponent]];
 			patientID = [[NSString alloc] initWithString:name];
 			studyID = [[NSString alloc] initWithString:imageStem];
-			serieID = [[NSString alloc] initWithString:fileNameStem];
+			self.serieID = fileNameStem;
 			imageID = [[NSString alloc] initWithString:fileNameStem];
 			study = [[NSString alloc] initWithString:imageStem];
 			serie = [[NSString alloc] initWithString:fileNameStem];
@@ -1369,14 +1367,14 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			[dicomElements setObject:patientID forKey:@"patientID"];
 			[dicomElements setObject:name forKey:@"patientName"];
 			[dicomElements setObject:[self patientUID] forKey:@"patientUID"];
-			[dicomElements setObject:serieID forKey:@"seriesID"];
+			[dicomElements setObject:self.serieID forKey:@"seriesID"];
 			[dicomElements setObject:name forKey:@"seriesDescription"];
 			[dicomElements setObject:[NSNumber numberWithInt: 0] forKey:@"seriesNumber"];
 			[dicomElements setObject:imageID forKey:@"SOPUID"];
 			[dicomElements setObject:[NSNumber numberWithInt:[imageID intValue]] forKey:@"imageID"];
 			[dicomElements setObject:fileType forKey:@"fileType"];
 			
-			if( name != nil && studyID != nil && serieID != nil && imageID != nil && NoOfFrames>0)
+			if( name != nil && studyID != nil && self.serieID != nil && imageID != nil && NoOfFrames>0)
 			{
 				return 0;   // success
 			}
@@ -1409,7 +1407,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			name = [[NSString alloc] initWithString: [filePath lastPathComponent]];
 			patientID = [[NSString alloc] initWithString:name];
 			studyID = [[NSString alloc] initWithString:name];
-			serieID = [[NSString alloc] initWithString:name];
+			self.serieID = name;
 			imageID = [[NSString alloc] initWithString:name];
 			study = [[NSString alloc] initWithString:name];
 			serie = [[NSString alloc] initWithString:name];
@@ -1700,7 +1698,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				else
 					SeriesNum = @"";
 								
-				[dicomElements setObject:[SeriesNum stringByAppendingString:serieID] forKey:[@"seriesID" stringByAppendingString:SeriesNum]];
+				[dicomElements setObject:[SeriesNum stringByAppendingString: self.serieID] forKey:[@"seriesID" stringByAppendingString:SeriesNum]];
 				[dicomElements setObject:[SeriesNum stringByAppendingString:name] forKey:[@"seriesDescription" stringByAppendingString:SeriesNum]];
 				[dicomElements setObject:[NSNumber numberWithInt: i] forKey:[@"seriesNumber" stringByAppendingString:SeriesNum]];
 				[dicomElements setObject:[imageID stringByAppendingString:SeriesNum] forKey:[@"SOPUID" stringByAppendingString:SeriesNum]];
@@ -1737,7 +1735,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				name = [[NSString alloc] initWithCString: replaceBadCharacter(Analyze->hk.db_name, NSISOLatin1StringEncoding) encoding: NSASCIIStringEncoding];
 				patientID = [[NSString alloc] initWithString:name];
 				studyID = [[NSString alloc] initWithString:name];
-				serieID = [[NSString alloc] initWithString:[[filePath lastPathComponent] stringByDeletingPathExtension]];
+				self.serieID = [[filePath lastPathComponent] stringByDeletingPathExtension];
 				imageID = [[NSString alloc] initWithString:name];
 				study = [[NSString alloc] initWithString:[[filePath lastPathComponent] stringByDeletingPathExtension]];
 				serie = [[NSString alloc] initWithString:[[filePath lastPathComponent] stringByDeletingPathExtension]];
@@ -1769,14 +1767,14 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				[dicomElements setObject:patientID forKey:@"patientID"];
 				[dicomElements setObject:name forKey:@"patientName"];
 				[dicomElements setObject:[self patientUID] forKey:@"patientUID"];
-				[dicomElements setObject:serieID forKey:@"seriesID"];
+				[dicomElements setObject:self.serieID forKey:@"seriesID"];
 				[dicomElements setObject:name forKey:@"seriesDescription"];
 				[dicomElements setObject:[NSNumber numberWithInt: 0] forKey:@"seriesNumber"];
 				[dicomElements setObject:imageID forKey:@"SOPUID"];
 				[dicomElements setObject:[NSNumber numberWithInt:[imageID intValue]] forKey:@"imageID"];
 				[dicomElements setObject:fileType forKey:@"fileType"];
 				
-				if( name != nil && studyID != nil && serieID != nil && imageID != nil)
+				if( name != nil && studyID != nil && self.serieID != nil && imageID != nil)
 				{
 					return 0;   // success
 				}
@@ -1817,7 +1815,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			name = [[DicomFile NSreplaceBadCharacter: [filePath lastPathComponent]] retain];
 			patientID = [[NSString alloc] initWithString:name];
 			studyID = [[NSString alloc] initWithString:name];
-			serieID = [[NSString alloc] initWithString:[[filePath lastPathComponent] stringByDeletingPathExtension]];
+			self.serieID = [[filePath lastPathComponent] stringByDeletingPathExtension];
 			imageID = [[NSString alloc] initWithString:name];
 			study = [[NSString alloc] initWithString:[[filePath lastPathComponent] stringByDeletingPathExtension]];
 			serie = [[NSString alloc] initWithString:[[filePath lastPathComponent] stringByDeletingPathExtension]];
@@ -1839,7 +1837,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			[dicomElements setObject:patientID forKey:@"patientID"];
 			[dicomElements setObject:name forKey:@"patientName"];
 			[dicomElements setObject:[self patientUID] forKey:@"patientUID"];
-			[dicomElements setObject:serieID forKey:@"seriesID"];
+			[dicomElements setObject:self.serieID forKey:@"seriesID"];
 			[dicomElements setObject:name forKey:@"seriesDescription"];
 			[dicomElements setObject:[NSNumber numberWithInt: 0] forKey:@"seriesNumber"];
 			[dicomElements setObject:imageID forKey:@"SOPUID"];
@@ -1847,7 +1845,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			[dicomElements setObject:fileType forKey:@"fileType"];
 			
 			
-			if( name != nil && studyID != nil && serieID != nil && imageID != nil)
+			if( name != nil && studyID != nil && self.serieID != nil && imageID != nil)
 			{
 				return 0;   // success
 			}
@@ -2729,47 +2727,29 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                     val = Papy3GetElement (theGroupP, papSeriesInstanceUIDGr, &nbVal, &itemType);
                     if( val != NULL && val->a && validAPointer( itemType)) [dicomElements setObject:[NSString stringWithCString:val->a encoding: NSISOLatin1StringEncoding] forKey:@"seriesDICOMUID"];
                     
-                    if (val != NULL && val->a && validAPointer( itemType)) serieID = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
-                    else serieID = [[NSString alloc] initWithString:name];
+                    if (val != NULL && val->a && validAPointer( itemType)) self.serieID = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
+                    else self.serieID = name;
                     
                     // *********** WARNING : SERIESID MUST BE IDENTICAL BETWEEN DCMFRAMEWORK & PAPYRUS TOOLKIT !!!!! OTHERWISE muliple identical series will be created during DATABASE rebuild !
                     
                     if( cardiacTime != -1 && SEPARATECARDIAC4D == YES)  // For new Cardiac-CT Siemens series
-                    {
-                        [serieID release];
-                        serieID = [[NSString alloc] initWithFormat:@"%@ %2.2d", serieID , (int) cardiacTime];
-                    }
+                        self.serieID = [NSString stringWithFormat:@"%@ %2.2d", serieID , (int) cardiacTime];
                     
                     if( seriesNo)
-                    {
-                        [serieID release];
-                        serieID = [[NSString alloc] initWithFormat:@"%8.8d %@", [seriesNo intValue] , serieID];
-                    }
+                        self.serieID = [NSString stringWithFormat:@"%8.8d %@", [seriesNo intValue] , serieID];
                     
                     if( imageType != 0 && useSeriesDescription)
-                    {
-                        [serieID release];
-                        serieID = [[NSString alloc] initWithFormat:@"%@ %@", serieID , imageType];
-                    }
+                        self.serieID = [NSString stringWithFormat:@"%@ %@", serieID , imageType];
                     
                     if( serie != nil && useSeriesDescription)
-                    {
-                        [serieID release];
-                        serieID = [[NSString alloc] initWithFormat:@"%@ %@", serieID , serie];
-                    }
+                        self.serieID = [NSString stringWithFormat:@"%@ %@", serieID , serie];
                     
                     if( sopClassUID != nil && [[DCMAbstractSyntaxUID hiddenImageSyntaxes] containsObject: sopClassUID])
-                    {
-                        [serieID release];
-                        serieID = [[NSString alloc] initWithFormat:@"%@ %@", serieID , sopClassUID];
-                    }
+                        self.serieID = [NSString stringWithFormat:@"%@ %@", serieID , sopClassUID];
                     
                     //Segregate by TE  values
                     if( echoTime != nil && splitMultiEchoMR)
-                    {
-                        [serieID release];
-                        serieID = [[NSString alloc] initWithFormat:@"%@ TE-%@", serieID , echoTime];
-                    }
+                        self.serieID = [NSString stringWithFormat:@"%@ TE-%@", serieID , echoTime];
                     
                     val = Papy3GetElement (theGroupP, papStudyInstanceUIDGr, &nbVal, &itemType);
                     if (val != NULL && val->a && validAPointer( itemType)) studyID = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
@@ -2780,14 +2760,13 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                     
                     if( NOLOCALIZER && ([self containsString: @"LOCALIZER" inArray: imageTypeArray] || [self containsString: @"REF" inArray: imageTypeArray] || [self containsLocalizerInString: serie]) && [DCMAbstractSyntaxUID isImageStorage: sopClassUID])
                     {
-                        [serieID release];
-                        serieID = [[NSString alloc] initWithString: @"LOCALIZER"];
+                        self.serieID = @"LOCALIZER";
                         
                         [serie release];
                         serie = [[NSString alloc] initWithString: @"Localizers"];
                         [dicomElements setObject: serie forKey: @"seriesDescription"];
                         
-                        [dicomElements setObject: [serieID stringByAppendingString: studyID] forKey: @"seriesDICOMUID"];
+                        [dicomElements setObject: [self.serieID stringByAppendingString: studyID] forKey: @"seriesDICOMUID"];
                     }
                     
                     val = Papy3GetElement (theGroupP, papStudyIDGr, &nbVal, &itemType);
@@ -3285,38 +3264,35 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
             Papy3FileClose (fileNb, TRUE);
             
             if( NoOfFrames > 1) // SERIES ID MUST BE UNIQUE!!!!!
-            {
-                [serieID release];
-                serieID = [[NSString alloc] initWithFormat:@"%@-%@-%@", serieID, imageID, [dicomElements objectForKey:@"SOPUID"]];
-            }
+                self.serieID = [NSString stringWithFormat:@"%@-%@-%@", self.serieID, imageID, [dicomElements objectForKey:@"SOPUID"]];
             
             [dicomElements setObject:[self patientUID] forKey:@"patientUID"];
             
-            if( serieID == nil) serieID = [[NSString alloc] initWithString:name];
+            if( self.serieID == nil) self.serieID = name;
             
             if( [Modality isEqualToString:@"US"] && oneFileOnSeriesForUS)
             {
-                [dicomElements setObject: [serieID stringByAppendingString: [filePath lastPathComponent]] forKey:@"seriesID"];
+                [dicomElements setObject: [self.serieID stringByAppendingString: [filePath lastPathComponent]] forKey:@"seriesID"];
             }
             else if (combineProjectionSeries && ([Modality isEqualToString:@"MG"] || [Modality isEqualToString:@"CR"] || [Modality isEqualToString:@"DR"] || [Modality isEqualToString:@"DX"] || [Modality  isEqualToString:@"RF"]))
             {
                 if( combineProjectionSeriesMode == 0)		// *******Combine all CR and DR Modality series in a study into one series
                 {
                     if( sopClassUID != nil && [[DCMAbstractSyntaxUID hiddenImageSyntaxes] containsObject: sopClassUID])
-                        [dicomElements setObject:serieID forKey:@"seriesID"];
+                        [dicomElements setObject: self.serieID forKey:@"seriesID"];
                     else
                         [dicomElements setObject: studyID forKey: @"seriesID"];
                     
-                    [dicomElements setObject: [NSNumber numberWithLong: [serieID intValue] * 1000 + [imageID intValue]] forKey: @"imageID"];
+                    [dicomElements setObject: [NSNumber numberWithLong: [self.serieID intValue] * 1000 + [imageID intValue]] forKey: @"imageID"];
                 }
                 else if( combineProjectionSeriesMode == 1)	// *******Split all CR and DR Modality series in a study into one series
                 {
-                    [dicomElements setObject: [serieID stringByAppendingString: imageID] forKey:@"seriesID"];
+                    [dicomElements setObject: [self.serieID stringByAppendingString: imageID] forKey:@"seriesID"];
                 }
                 else NSLog( @"ARG! ERROR !? Unknown combineProjectionSeriesMode");
             }
             else
-                [dicomElements setObject:serieID forKey:@"seriesID"];
+                [dicomElements setObject: self.serieID forKey:@"seriesID"];
             
             if( studyID == nil)
             {
@@ -3350,7 +3326,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                 [dicomElements setObject:study forKey: @"studyDescription"];
             }
             
-            if( name != nil && studyID != nil && serieID != nil && imageID != nil && width != 0 && height != 0)
+            if( name != nil && studyID != nil && self.serieID != nil && imageID != nil && width != 0 && height != 0)
             {
                 returnValue = 0;   // success
             }
@@ -3779,9 +3755,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			seriesNo = [[NSString alloc] initWithString: @"0"];
 		[dicomElements setObject:[NSNumber numberWithInt:[seriesNo intValue]] forKey:@"seriesNumber"];
 			
-		if ((serieID = [[dcmObject attributeValueWithName:@"SeriesInstanceUID"] retain]))
+		if ((self.serieID = [dcmObject attributeValueWithName:@"SeriesInstanceUID"]))
 		{
-			[dicomElements setObject: serieID forKey:@"seriesDICOMUID"];
+			[dicomElements setObject: self.serieID forKey:@"seriesDICOMUID"];
 		}
 			
 		if ((studyID = [[dcmObject attributeValueWithName:@"StudyInstanceUID"] retain]))
@@ -3820,44 +3796,29 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		// *********** WARNING : SERIESID MUST BE IDENTICAL BETWEEN DCMFRAMEWORK & PAPYRUS TOOLKIT !!!!! OTHERWISE muliple identical series will be created during DATABASE rebuild !
 				
 		if( cardiacTime != -1 && SEPARATECARDIAC4D == YES)  // For new Cardiac-CT Siemens series
-		{
-			[serieID release];
-			serieID = [[NSString alloc] initWithFormat:@"%@ %2.2d", serieID , (int) cardiacTime];
-		}
+			self.serieID = [NSString stringWithFormat:@"%@ %2.2d", self.serieID , (int) cardiacTime];
+        
 		if( seriesNo)
-		{
-			[serieID release];
-			serieID = [[NSString alloc] initWithFormat:@"%8.8d %@", [seriesNo intValue] , serieID];
-		}
+			self.serieID = [NSString stringWithFormat:@"%8.8d %@", [seriesNo intValue] , self.serieID];
 		
 		if( imageType != 0 && useSeriesDescription)
-		{
-			[serieID release];
-			serieID = [[NSString alloc] initWithFormat:@"%@ %@", serieID , imageType];
-		}
+			self.serieID = [NSString stringWithFormat:@"%@ %@", self.serieID , imageType];
 		
 		if( serie != nil && useSeriesDescription)
-		{
-			[serieID release];
-			serieID = [[NSString alloc] initWithFormat:@"%@ %@", serieID , serie];
-		}
+			self.serieID = [NSString stringWithFormat:@"%@ %@", self.serieID , serie];
         
         if( [dcmObject attributeValueWithName: @"SOPClassUID"] != nil && [[DCMAbstractSyntaxUID hiddenImageSyntaxes] containsObject: [dcmObject attributeValueWithName: @"SOPClassUID"]])
-		{
-			[serieID release];
-			serieID = [[NSString alloc] initWithFormat:@"%@ %@", serieID , [dcmObject attributeValueWithName: @"SOPClassUID"]];
-		}
+			self.serieID = [NSString stringWithFormat:@"%@ %@", self.serieID , [dcmObject attributeValueWithName: @"SOPClassUID"]];
 		
 		if( NOLOCALIZER && ([self containsString: @"LOCALIZER" inArray: imageTypeArray] || [self containsString: @"REF" inArray: imageTypeArray] || [self containsLocalizerInString: serie]) && [DCMAbstractSyntaxUID isImageStorage: [dcmObject attributeValueWithName: @"SOPClassUID"]])
 		{
-			[serieID release];
-			serieID = [[NSString alloc] initWithString: @"LOCALIZER"];
+			self.serieID = @"LOCALIZER";
 			
 			[serie release];
 			serie = [[NSString alloc] initWithString: @"Localizers"];
 			[dicomElements setObject:serie forKey:@"seriesDescription"];
 			
-			[dicomElements setObject: [serieID stringByAppendingString: studyID] forKey: @"seriesDICOMUID"];
+			[dicomElements setObject: [self.serieID stringByAppendingString: studyID] forKey: @"seriesDICOMUID"];
 		}
 		
 		NoOfSeries = 1;
@@ -3949,44 +3910,38 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		
 		NSString *echoTime = nil;
 		
-		if ((echoTime = [dcmObject attributeValueWithName:@"EchoTime"])  && splitMultiEchoMR) 
-		{
-			[serieID release];
-			serieID = [[NSString alloc] initWithFormat:@"%@ TE-%@", serieID, echoTime];
-		}
+		if ((echoTime = [dcmObject attributeValueWithName:@"EchoTime"])  && splitMultiEchoMR)
+			self.serieID = [NSString stringWithFormat:@"%@ TE-%@", self.serieID, echoTime];
 		
 		if( NoOfFrames > 1) // SERIES ID MUST BE UNIQUE!!!!!
-		{
-			[serieID release];
-			serieID = [[NSString alloc] initWithFormat:@"%@-%@-%@", serieID, imageID, [dicomElements objectForKey:@"SOPUID"]];
-		}
+			self.serieID = [NSString stringWithFormat:@"%@-%@-%@", self.serieID, imageID, [dicomElements objectForKey:@"SOPUID"]];
 		
-		if( serieID == nil)  
-			serieID = [[NSString alloc] initWithString:name];
+		if( self.serieID == nil)
+			self.serieID = name;
 		
 		if( [Modality isEqualToString:@"US"] && oneFileOnSeriesForUS)
 		{
-			[dicomElements setObject: [serieID stringByAppendingString: [filePath lastPathComponent]] forKey:@"seriesID"];
+			[dicomElements setObject: [self.serieID stringByAppendingString: [filePath lastPathComponent]] forKey:@"seriesID"];
 		}
 		else if( combineProjectionSeries && ([Modality isEqualToString:@"MG"] || [Modality isEqualToString:@"CR"] || [Modality isEqualToString:@"DR"] || [Modality isEqualToString:@"DX"] || [Modality  isEqualToString:@"RF"]))
 		{
 			if( combineProjectionSeriesMode == 0)		// *******Combine all CR and DR Modality series in a study into one series
 			{
                 if( [dcmObject attributeValueWithName: @"SOPClassUID"] != nil && [[DCMAbstractSyntaxUID hiddenImageSyntaxes] containsObject: [dcmObject attributeValueWithName: @"SOPClassUID"]])
-                    [dicomElements setObject:serieID forKey:@"seriesID"];
+                    [dicomElements setObject:self.serieID forKey:@"seriesID"];
                 else
                     [dicomElements setObject:studyID forKey:@"seriesID"];
                 
-				[dicomElements setObject:[NSNumber numberWithLong: [serieID intValue] * 1000 + [imageID intValue]] forKey:@"imageID"];
+				[dicomElements setObject:[NSNumber numberWithLong: [self.serieID intValue] * 1000 + [imageID intValue]] forKey:@"imageID"];
 			}
 			else if( combineProjectionSeriesMode == 1)	// *******Split all CR and DR Modality series in a study into one series
 			{
-				[dicomElements setObject: [serieID stringByAppendingString: imageID] forKey:@"seriesID"];
+				[dicomElements setObject: [self.serieID stringByAppendingString: imageID] forKey:@"seriesID"];
 			}
 			else NSLog( @"ARG! ERROR !? Unknown combineProjectionSeriesMode");
 		}
 		else
-			[dicomElements setObject:serieID forKey:@"seriesID"];
+			[dicomElements setObject:self.serieID forKey:@"seriesID"];
 		
 		if (width < 4)
 			width = 4;
@@ -4012,22 +3967,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		
 		width = 1;
 		height = 1;
-		name = nil;
-		study = nil;
-		serie = nil;
-		date = nil;
-		Modality = nil;
 		filePath = [[NSString alloc] initWithFormat:@"protp/aksidkoa/saodkireks/ksidjaiskd/orkerofk%d", (int) random()];
-		SOPUID = nil;
-		fileType = nil;
 		NoOfSeries = 1;
-		studyID = nil;
-		serieID = nil;
-		imageID = nil;
-		patientID = nil;
-		studyIDs = nil;
-		seriesNo = nil;
-		imageType = nil;
 		
 		dicomElements = [[NSMutableDictionary dictionary] retain];
 		
@@ -4061,25 +4002,10 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		
 		width = 1;
 		height = 1;
-		name = nil;
-		study = nil;
-		serie = nil;
-		date = nil;
-		Modality = nil;
 		filePath = f;
-		SOPUID = nil;
-		fileType = nil;
 		NoOfSeries = 1;
 		
 		[filePath retain];
-		
-		studyID = nil;
-		serieID = nil;
-		imageID = nil;
-		patientID = nil;
-		studyIDs = nil;
-		seriesNo = nil;
-		imageType = nil;
 		
 		dicomElements = [[NSMutableDictionary dictionary] retain];
 		
@@ -4176,7 +4102,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
     [filePath release];
     [studyID release];
 	[studyIDs release];
-    [serieID release];
+    self.serieID = nil;
     [imageID release];
     [Modality release];
 	[dicomElements release];
@@ -4309,7 +4235,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		if ([decoder seriesID])
 			[dicomElements setObject:[decoder seriesID] forKey:@"seriesID"];
 		else
-			[dicomElements setObject:serieID forKey:@"seriesID"];
+			[dicomElements setObject:self.serieID forKey:@"seriesID"];
 
 		if ([decoder seriesDescription])
 			[dicomElements setObject:[decoder seriesDescription] forKey:@"seriesDescription"];
@@ -4347,7 +4273,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			// We HAVE a number with 4 digit at the end of the file!! Make a serie of it!
 			
 			imageID = [[NSString alloc] initWithCString: (char*) strNo encoding: NSASCIIStringEncoding];
-			serieID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] -4]];
+			self.serieID = [tempString substringToIndex: [tempString length] -4];
 			studyID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] -4]];
 	}
 	else if( strNo[ 1] >= '0' && strNo[ 1] <= '9' && strNo[ 2] >= '0' && strNo[ 2] <= '9' && strNo[ 3] >= '0' && strNo[ 3] <= '9')
@@ -4360,7 +4286,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			strNo[3] = 0;
 			
 			imageID = [[NSString alloc] initWithCString: (char*) strNo encoding: NSASCIIStringEncoding];
-			serieID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] -3]];
+			self.serieID = [tempString substringToIndex: [tempString length] -3];
 			studyID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] -3]];
 	}
 	else if( strNo[ 2] >= '0' && strNo[ 2] <= '9' && strNo[ 3] >= '0' && strNo[ 3] <= '9')
@@ -4371,7 +4297,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			strNo[2] = 0;
 			
 			imageID = [[NSString alloc] initWithCString: (char*) strNo encoding: NSASCIIStringEncoding];
-			serieID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] -2]];
+			self.serieID = [tempString substringToIndex: [tempString length] -2];
 			studyID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] -2]];
 	}
 	else if( strNo[ 3] >= '0' && strNo[ 3] <= '9')
@@ -4381,13 +4307,13 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			strNo[1] = 0;
 			
 			imageID = [[NSString alloc] initWithCString: (char*) strNo encoding: NSASCIIStringEncoding];
-			serieID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] -1]];
+			self.serieID = [tempString substringToIndex: [tempString length] -1];
 			studyID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] -1]];
 	}
 	else
 	{
 			studyID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
-			serieID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
+			self.serieID = [filePath lastPathComponent];
 			imageID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
 	}
 
@@ -4476,7 +4402,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			NoOfFrames = [[xmlData objectForKey:@"numberOfImages"] intValue];
 			
 			studyID = [[xmlData objectForKey:@"studyID"] retain];
-			serieID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
+			self.serieID = [filePath lastPathComponent];
 			imageID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
 			SOPUID = [imageID retain];
 			patientID = [[xmlData objectForKey:@"patientID"] retain];
@@ -4500,7 +4426,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			[dicomElements setObject:[NSDate dateWithString:[xmlData objectForKey:@"patientBirthDate"]] forKey:@"patientBirthDate"];
 			
 			[dicomElements setObject:[self patientUID] forKey:@"patientUID"];
-			[dicomElements setObject:serieID forKey:@"seriesID"];
+			[dicomElements setObject:self.serieID forKey:@"seriesID"];
 			[dicomElements setObject:[[[NSString alloc] initWithString:[filePath lastPathComponent]] autorelease] forKey:@"seriesDescription"];
 			[dicomElements setObject:[NSNumber numberWithInt: 0] forKey:@"seriesNumber"];
 			[dicomElements setObject:imageID forKey:@"SOPUID"];

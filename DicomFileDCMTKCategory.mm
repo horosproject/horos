@@ -172,7 +172,7 @@ extern NSRecursiveLock *PapyrusLock;
 			NoOfSeries = 1;
 			
 			imageID = [[NSString alloc] initWithString: [[NSDate date] description]];
-			serieID = [[NSString alloc] initWithString: [[NSDate date] description]];
+			self.serieID = [[NSDate date] description];
 			
 			unsigned int random = (unsigned int)time(NULL);
 			studyID = [[NSString alloc] initWithFormat:@"%d", random];
@@ -195,7 +195,7 @@ extern NSRecursiveLock *PapyrusLock;
 			[dicomElements setObject:patientID forKey:@"patientID"];
 			[dicomElements setObject:name forKey:@"patientName"];
 			[dicomElements setObject:[self patientUID] forKey:@"patientUID"];
-			[dicomElements setObject:serieID forKey:@"seriesID"];
+			[dicomElements setObject:self.serieID forKey:@"seriesID"];
 			[dicomElements setObject:name forKey:@"seriesDescription"];
 			[dicomElements setObject:[NSNumber numberWithInt: 0] forKey:@"seriesNumber"];
 			[dicomElements setObject:imageID forKey:@"SOPUID"];
@@ -735,50 +735,32 @@ extern NSRecursiveLock *PapyrusLock;
 		//Series Instance UID		
 		if (dataset->findAndGetString(DCM_SeriesInstanceUID, string, OFFalse).good() && string != NULL)
 		{
-			serieID = [[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding];
-			[dicomElements setObject:serieID forKey:@"seriesDICOMUID"];
+			self.serieID = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
+			[dicomElements setObject:self.serieID forKey:@"seriesDICOMUID"];
 		}
 		else
-			serieID = [[NSString alloc] initWithString:name];
+			self.serieID = name;
 						
 		//Series ID
 		
 		if( cardiacTime != -1 && [self separateCardiac4D] == YES)  // For new Cardiac-CT Siemens series
-		{
-			[serieID release];
-			serieID = [[NSString alloc] initWithFormat:@"%@ %2.2d", serieID , (int) cardiacTime];
-		}
+			self.serieID = [NSString stringWithFormat:@"%@ %2.2d", self.serieID , (int) cardiacTime];
 		
 		if( seriesNo)
-		{
-			[serieID release];
-			serieID = [[NSString alloc] initWithFormat:@"%8.8d %@", [seriesNo intValue] , serieID];
-		}
+			self.serieID = [NSString stringWithFormat:@"%8.8d %@", [seriesNo intValue] , self.serieID];
 		
 		if( imageType != 0 && [self useSeriesDescription])
-		{
-			[serieID release];
-			serieID = [[NSString alloc] initWithFormat:@"%@ %@", serieID , imageType];
-		}
+			self.serieID = [NSString stringWithFormat:@"%@ %@", self.serieID , imageType];
 		
 		if( serie != nil && [self useSeriesDescription])
-		{
-			[serieID release];
-			serieID = [[NSString alloc] initWithFormat:@"%@ %@", serieID , serie];
-		}
+			self.serieID = [NSString stringWithFormat:@"%@ %@", self.serieID , serie];
 		
         if( sopClassUID != nil && [[DCMAbstractSyntaxUID hiddenImageSyntaxes] containsObject: sopClassUID])
-        {
-            [serieID release];
-            serieID = [[NSString alloc] initWithFormat:@"%@ %@", serieID , sopClassUID];
-        }
+            self.serieID = [NSString stringWithFormat:@"%@ %@", self.serieID , sopClassUID];
         
 		//Segregate by TE  values
 		if( echoTime != nil && [self splitMultiEchoMR])
-		{
-			[serieID release];
-			serieID = [[NSString alloc] initWithFormat:@"%@ TE-%@", serieID , echoTime];
-		}
+			self.serieID = [NSString stringWithFormat:@"%@ TE-%@", self.serieID , echoTime];
 				
 		//Study Instance UID
 		if (dataset->findAndGetString(DCM_StudyInstanceUID, string, OFFalse).good() && string != NULL)
@@ -1033,53 +1015,46 @@ extern NSRecursiveLock *PapyrusLock;
 		if( patientID == nil) patientID = [[NSString alloc] initWithString:@""];
 		
 		if( NoOfFrames > 1) // SERIES ID MUST BE UNIQUE!!!!!
-		{
-			[serieID release];
-			serieID = [[NSString alloc] initWithFormat:@"%@-%@-%@", serieID, imageID, [dicomElements objectForKey:@"SOPUID"]];
-		}
+			self.serieID = [NSString stringWithFormat:@"%@-%@-%@", self.serieID, imageID, [dicomElements objectForKey:@"SOPUID"]];
 		
 		if( [self noLocalizer] && ([self containsString: @"LOCALIZER" inArray: imageTypeArray] || [self containsString: @"REF" inArray: imageTypeArray] || [self containsLocalizerInString: serie]) && [DCMAbstractSyntaxUID isImageStorage: sopClassUID])
 		{
-			NSString	*n;
-			
-			n = [[NSString alloc] initWithString: @"LOCALIZER"];
-			[serieID release];
-			serieID = n;
+			self.serieID = @"LOCALIZER";
 			
 			[serie release];
 			serie = [[NSString alloc] initWithString: @"Localizers"];
 			[dicomElements setObject:serie forKey:@"seriesDescription"];
 			
-			[dicomElements setObject: [serieID stringByAppendingString: studyID] forKey: @"seriesDICOMUID"];
+			[dicomElements setObject: [self.serieID stringByAppendingString: studyID] forKey: @"seriesDICOMUID"];
 		}		
 		
 		[dicomElements setObject:[self patientUID] forKey:@"patientUID"];
 		
-		if( serieID == nil) serieID = [[NSString alloc] initWithString:name];
+		if( self.serieID == nil) self.serieID = name;
 		
 		if( [Modality isEqualToString:@"US"] && [self oneFileOnSeriesForUS])
 		{
-			[dicomElements setObject: [serieID stringByAppendingString: [filePath lastPathComponent]] forKey:@"seriesID"];
+			[dicomElements setObject: [self.serieID stringByAppendingString: [filePath lastPathComponent]] forKey:@"seriesID"];
 		}
 		else if ( [self combineProjectionSeries] && ([Modality isEqualToString:@"MG"] || [Modality isEqualToString:@"CR"] || [Modality isEqualToString:@"DR"] || [Modality isEqualToString:@"DX"] || [Modality  isEqualToString:@"RF"]))
 		{
 			if( [self combineProjectionSeriesMode] == 0)		// *******Combine all CR and DR Modality series in a study into one series
 			{
                 if( sopClassUID != nil && [[DCMAbstractSyntaxUID hiddenImageSyntaxes] containsObject: sopClassUID])
-                    [dicomElements setObject:serieID forKey:@"seriesID"];
+                    [dicomElements setObject:self.serieID forKey:@"seriesID"];
                 else
                     [dicomElements setObject:studyID forKey:@"seriesID"];
                 
-				[dicomElements setObject:[NSNumber numberWithLong: [serieID intValue] * 1000 + [imageID intValue]] forKey:@"imageID"];
+				[dicomElements setObject:[NSNumber numberWithLong: [self.serieID intValue] * 1000 + [imageID intValue]] forKey:@"imageID"];
 			}
 			else if( [self combineProjectionSeriesMode] == 1)	// *******Split all CR and DR Modality series in a study into one series
 			{
-				[dicomElements setObject: [serieID stringByAppendingString: imageID] forKey:@"seriesID"];
+				[dicomElements setObject: [self.serieID stringByAppendingString: imageID] forKey:@"seriesID"];
 			}
 			else NSLog( @"ARG! ERROR !? Unknown combineProjectionSeriesMode");
 		}
 		else
-			[dicomElements setObject:serieID forKey:@"seriesID"];
+			[dicomElements setObject:self.serieID forKey:@"seriesID"];
 		
 		if( studyID == nil)
 		{
@@ -1108,7 +1083,7 @@ extern NSRecursiveLock *PapyrusLock;
             [dicomElements setObject:study forKey: @"studyDescription"];
         }
         
-		if( name != nil && studyID != nil && serieID != nil && imageID != nil && width != 0 && height != 0)
+		if( name != nil && studyID != nil && self.serieID != nil && imageID != nil && width != 0 && height != 0)
 		{
 			return 0;   // success
 		}

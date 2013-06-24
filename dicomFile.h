@@ -42,6 +42,9 @@
     
 	NSMutableDictionary *dicomElements;
 }
+
+@property (retain) NSString *serieID;
+
 // file functions
 + (BOOL) isTiffFile:(NSString *) file; /**< Test for TIFF file format */
 + (BOOL) isFVTiffFile:(NSString *) file; /**< Test for FV TIFF file format */
