@@ -253,6 +253,15 @@ static NSMutableArray *cachedServersArray = nil;
 				{
 					NSDictionary *d = [serversArray objectAtIndex: i];
 					
+                    if( [d objectForKey: @"Activated"] == nil)
+                    {
+                        NSMutableDictionary *mdict = [NSMutableDictionary dictionaryWithDictionary: d];
+                        
+                        [mdict setObject: [NSNumber numberWithBool: YES] forKey: @"Activated"];
+                        
+                        toBeSaved = YES;
+                    }
+                    
 					if( [d objectForKey: @"retrieveMode"] == nil)
 					{
 						NSMutableDictionary *mdict = [NSMutableDictionary dictionaryWithDictionary: d];
@@ -386,6 +395,15 @@ static NSMutableArray *cachedServersArray = nil;
 			}
 			else serversArray = [NSMutableArray arrayWithArray: cachedServersArray];
 			
+            for( int i = 0 ; i < [serversArray count] ; i++)
+            {
+                if( [[[serversArray objectAtIndex: i] valueForKey:@"Activated"] boolValue] == NO)
+                {
+                    [serversArray removeObjectAtIndex: i];
+                    i--;
+                }
+            }
+            
 			if( send)
 			{
 				for( int i = 0 ; i < [serversArray count] ; i++)

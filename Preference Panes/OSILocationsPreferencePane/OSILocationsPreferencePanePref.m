@@ -72,6 +72,9 @@
 		[[serverList objectAtIndex: x] setValue: [NSNumber numberWithInt: value] forKey: @"Port"];		
 		[[serverList objectAtIndex: x] setValue: [[serverList objectAtIndex: x] valueForKey:@"AETitle"] forKey:@"AETitle"];
 		
+        if( [[serverList objectAtIndex: x] valueForKey:@"Activated"] == nil)
+            [[serverList objectAtIndex: x] setValue: [NSNumber numberWithBool: YES] forKey: @"Activated"];
+        
 		NSString *currentAETitle = [[serverList objectAtIndex: x] valueForKey: @"AETitle"];
 		
 		for( int i = 0; i < [serverList count]; i++)
@@ -662,7 +665,7 @@
 	
 	[progress startAnimation: self];
 	
-	NSArray		*serverList = [dicomNodes arrangedObjects];
+	NSArray *serverList = [dicomNodes arrangedObjects];
 	
 	for( i = 0 ; i < [serverList count]; i++)
 	{
@@ -671,7 +674,7 @@
 		[[dicomNodes tableView] selectRowIndexes: [NSIndexSet indexSetWithIndex: i] byExtendingSelection: NO];
 		[[dicomNodes tableView] display];
 		
-		if ([OSILocationsPreferencePanePref echoServer:aServer])
+		if( [[aServer objectForKey: @"Activated"] boolValue] && [OSILocationsPreferencePanePref echoServer:aServer])
 			status = 0;
 		else
 			status = -1;
@@ -683,6 +686,15 @@
 	
 	[[dicomNodes tableView] selectRowIndexes: [NSIndexSet indexSetWithIndex: selectedRow] byExtendingSelection: NO];
 	[[dicomNodes tableView] display];
+}
+
+- (IBAction) activateAllNone:(id) sender
+{
+	for( NSMutableDictionary *aServer in [dicomNodes arrangedObjects])
+    {
+        [aServer setObject: [NSNumber numberWithBool: [sender tag]] forKey: @"Activated"];
+    }
+    [[NSUserDefaults standardUserDefaults] setObject:[dicomNodes arrangedObjects] forKey:@"SERVERS"];
 }
 
 

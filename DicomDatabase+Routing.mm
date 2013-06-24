@@ -214,7 +214,7 @@
 			NSInteger total = 0;
 			for (NSDictionary *copy in routingSendQueues)
 				for (NSDictionary* aServer in serversArray)
-					if ([[aServer objectForKey:@"Description"] isEqualToString:[copy objectForKey:@"server"]]) {
+					if( [[aServer objectForKey:@"Activated"] boolValue] && [[aServer objectForKey:@"Description"] isEqualToString:[copy objectForKey:@"server"]]) {
 						total += [[copy objectForKey:@"objectIDs"] count];
 						break;
 					}
@@ -235,7 +235,7 @@
 				
 				NSDictionary* server = nil;
 				for (NSDictionary* aServer in serversArray)
-					if ([[aServer objectForKey:@"Description"] isEqualToString:serverName]) {
+					if( [[aServer objectForKey:@"Activated"] boolValue] && [[aServer objectForKey:@"Description"] isEqualToString:serverName]) {
 						NSLog(@" Autorouting destination: %@ - %@", [aServer objectForKey:@"Description"], [aServer objectForKey:@"Address"]);
 						server = aServer;
 						break;
@@ -485,9 +485,9 @@
 							NSString		*serverName = [routingRule objectForKey:@"server"];
 							NSDictionary	*server = nil;
 							
-							for ( NSDictionary *aServer in serversArray)
+							for( NSDictionary *aServer in serversArray)
 							{
-								if ([[aServer objectForKey:@"Description"] isEqualToString: serverName]) 
+								if( [[aServer objectForKey:@"Activated"] boolValue] && [[aServer objectForKey:@"Description"] isEqualToString: serverName])
 								{
 									server = aServer;
 									break;

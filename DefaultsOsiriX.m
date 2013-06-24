@@ -649,6 +649,7 @@ static NSHost *currentHost = nil;
 	NSMutableArray *serversValues = [NSMutableArray array];
 	
 	NSMutableDictionary *aServer = [[NSMutableDictionary alloc] init];
+    [aServer setObject:@"1" forKey:@"Activated"];
 	[aServer setObject:@"127.0.0.1" forKey: @"Address"];
 	[aServer setObject:@"OsiriX" forKey: @"AETitle"];
 	[aServer setObject:@"4444" forKey: @"Port"];

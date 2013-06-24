@@ -559,7 +559,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
             NSMutableDictionary* aa = [NSMutableDictionary dictionary];
             for (NSDictionary* ai in a)
             {
-                if( [[ai objectForKey: @"Send"] boolValue])
+                if( [[ai objectForKey: @"Activated"] boolValue] && [[ai objectForKey: @"Send"] boolValue])
                     [aa setObject:ai forKey:[DicomNodeIdentifier locationWithAddress:[ai objectForKey:@"Address"] port:[[ai objectForKey:@"Port"] integerValue] aet:[ai objectForKey:@"AETitle"]]];
             }
             // remove old items

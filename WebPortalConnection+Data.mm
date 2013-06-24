@@ -109,7 +109,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
             
             for( NSDictionary *aServer in serversArray)
             {
-                if( [[aServer objectForKey:@"Address"] isEqualToString: [axid objectAtIndex: 1]] && [[aServer objectForKey:@"Port"] intValue] == [[axid objectAtIndex: 2] intValue])
+                if( [[aServer objectForKey:@"Activated"] boolValue] && [[aServer objectForKey:@"Address"] isEqualToString: [axid objectAtIndex: 1]] && [[aServer objectForKey:@"Port"] intValue] == [[axid objectAtIndex: 2] intValue])
                 {
                     s = aServer;
                     break;
