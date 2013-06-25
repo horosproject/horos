@@ -24,6 +24,7 @@
 #import "ITKSegmentation3D.h"
 #import "Notifications.h"
 #import "N2Debug.h"
+#import "ITKBrushROIFilter.h"
 
 #import "DCMUSRegion.h"   // mapping ultrason
 
@@ -1109,7 +1110,8 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	[textArray release];
 	
 	if (textureBuffer) free(textureBuffer);
-	
+	if( textureBufferSelected) free( textureBufferSelected);
+    
 	[uniqueID release];
 	[points release];
 	[zPositions release];
@@ -1237,6 +1239,10 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 			
 			free( textureBuffer);
 			textureBuffer = newBuffer;
+            
+            if( textureBufferSelected) {
+                free( textureBufferSelected); textureBufferSelected = nil;
+            }
 		}
 		else
 		{
@@ -2097,16 +2103,21 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 			}
 			break;
 			case tPlain:
-				if (pt.x>textureUpLeftCornerX && pt.x<textureDownRightCornerX && pt.y>textureUpLeftCornerY && pt.y<textureDownRightCornerY)
+				if (pt.x > textureUpLeftCornerX && pt.x < textureDownRightCornerX && pt.y > textureUpLeftCornerY && pt.y < textureDownRightCornerY)
 				{
-					if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
-					{
-						if([curView currentTool]==tPlain) imode = ROI_selectedModify; // tPlain ROIs can only be modified by the tPlain tool
-					}
-					else
-					{
-						imode = ROI_selected;
-					}
+                    if( textureBuffer[ (int) pt.x - textureUpLeftCornerX + textureWidth * ( (int) pt.y - textureUpLeftCornerY)] > 1)
+                    {
+                        if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
+                        {
+                            imode = mode;
+                            if([curView currentTool] == tPlain)
+                                imode = ROI_selectedModify; // tPlain ROIs can only be modified by the tPlain tool
+                        }
+                        else
+                        {
+                            imode = ROI_selected;
+                        }
+                    }
 				}
 				break;
 			case tOval:
@@ -2431,6 +2442,10 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 			textureBuffer = malloc(textureWidth*textureHeight*sizeof(unsigned char));
 			memset (textureBuffer, 0, textureHeight*textureWidth);
 			
+            if( textureBufferSelected){
+                free( textureBufferSelected); textureBufferSelected = nil;
+            }
+            
 			mode = ROI_drawing;
 		}
 		else
@@ -2897,6 +2912,10 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	textureBuffer = tempBuf;
 	
 	[self reduceTextureIfPossible];
+    
+    if( textureBufferSelected){
+        free( textureBufferSelected); textureBufferSelected = nil;
+    }
 }
 
 - (BOOL) reduceTextureIfPossible
@@ -3003,6 +3022,10 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 		textureUpLeftCornerY += offsetTextureY;
 		textureDownRightCornerX = textureUpLeftCornerX + textureWidth-1;
 		textureDownRightCornerY = textureUpLeftCornerY + textureHeight-1;
+        
+        if( textureBufferSelected){
+            free( textureBufferSelected); textureBufferSelected = nil;
+        }
 	}
 	
 	return NO;	// means the ROI is NOT empty;
@@ -3096,6 +3119,10 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 						for( long i = 0; i < oldTextureWidth*oldTextureHeight;i++) tempTextureBuffer[i]=textureBuffer[i];
 						free(textureBuffer);
 						textureBuffer = nil;
+                        
+                        if( textureBufferSelected){
+                            free( textureBufferSelected); textureBufferSelected = nil;
+                        }
 					}
 					
 					// new width and height
@@ -3220,6 +3247,10 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 					
 					rtotal = -1;
 					Brtotal = -1;
+                    
+                    if( textureBufferSelected){
+                        free( textureBufferSelected); textureBufferSelected = nil;
+                    }
 				break;
 				
 				case ROI_selected:
@@ -3990,6 +4021,10 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
     textureBuffer = t;
     textureWidth = w;
     textureHeight = h;
+    
+    if( textureBufferSelected){
+        free( textureBufferSelected); textureBufferSelected = nil;
+    }
 }
 
 - (void) drawROIWithScaleValue:(float)scaleValue offsetX:(float)offsetx offsetY:(float)offsety pixelSpacingX:(float)spacingX pixelSpacingY:(float)spacingY highlightIfSelected:(BOOL)highlightIfSelected thickness:(float)thick prepareTextualData:(BOOL) prepareTextualData;
@@ -4138,24 +4173,126 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			case tPlain:
 			//	if( mode == ROI_selected | mode == ROI_selectedModify | mode == ROI_drawing)
 			{
-				//	NSLog(@"drawROI - tPlain, mode=%i, (ROI_sleep = 0,ROI_drawing = 1,ROI_selected = 2,	ROI_selectedModify = 3)",mode);
-				// test to display something !
-				// init
-				screenXUpL = (textureUpLeftCornerX-offsetx)*scaleValue;
-				screenYUpL = (textureUpLeftCornerY-offsety)*scaleValue;
-				screenXDr = screenXUpL + textureWidth*scaleValue;
-				screenYDr = screenYUpL + textureHeight*scaleValue;
-
-			//	screenXDr = (textureDownRightCornerX-offsetx)*scaleValue;
-			//	screenYDr = (textureDownRightCornerY-offsety)*scaleValue;
-				
 				glDisable(GL_POLYGON_SMOOTH);
-				glEnable(GL_TEXTURE_RECTANGLE_EXT);
 				
 				[self deleteTexture: currentContext];
 				
-				GLuint textureName = 0;
+                if( highlightIfSelected)
+                {
+                    switch( mode)
+                    {
+                        case 	ROI_drawing:
+                        case 	ROI_selected:
+                        case 	ROI_selectedModify:
+                        {
+                            #define MARGINSELECTED 1
+                            int margin = MARGINSELECTED;
+                            
+                            int newWidth = textureWidth + 2*margin;
+                            int newHeight = textureHeight + 2*margin;
+                            int newTextureDownRightCornerX = textureDownRightCornerX+margin;
+                            int newTextureDownRightCornerY = textureDownRightCornerY+margin;
+                            int newTextureUpLeftCornerX = textureUpLeftCornerX-margin;
+                            int newTextureUpLeftCornerY = textureUpLeftCornerY-margin;
+                            
+                            if( textureBufferSelected == nil)
+                            {
+                                textureBufferSelected = [ROI addMargin: margin buffer: textureBuffer width: textureWidth height: textureHeight];
+                                
+                                unsigned char* newBufferCopy = malloc( newWidth*newHeight);
+                                memcpy( newBufferCopy, textureBufferSelected, newWidth*newHeight);
+                                
+                                
+                                {
+                                    // input buffer
+                                    unsigned char *buff = textureBufferSelected;
+                                    int bufferWidth = newWidth;
+                                    int bufferHeight = newHeight;
+                                    
+                                    margin *= 2;
+                                    margin ++;
+                                    
+                                    unsigned char *kernelDilate = (unsigned char*) calloc( margin*margin, sizeof(unsigned char));
+                                    memset(kernelDilate,0x00,margin*margin);
+                                    
+                                    vImage_Buffer srcbuf, dstBuf;
+                                    vImage_Error err;
+                                    srcbuf.data = buff;
+                                    dstBuf.data = malloc( bufferHeight * bufferWidth);
+                                    dstBuf.height = srcbuf.height = bufferHeight;
+                                    dstBuf.width = srcbuf.width = bufferWidth;
+                                    dstBuf.rowBytes = srcbuf.rowBytes = bufferWidth;
+                                    err = vImageDilate_Planar8( &srcbuf, &dstBuf, 0, 0, kernelDilate, margin, margin, kvImageDoNotTile);
+                                    
+                                    memcpy(buff,dstBuf.data,bufferWidth*bufferHeight);
+                                    free( dstBuf.data);
+                                    free( kernelDilate);
+                                }
+                                
+                                // Subtraction
+                                for( int i = 0; i < newWidth*newHeight;i++)
+                                    if( newBufferCopy[ i]) textureBufferSelected[ i] = 0;
+                                
+                                free( newBufferCopy);
+                            }
+                            GLuint textureName = 0;
+                            
+                            glEnable(GL_TEXTURE_RECTANGLE_EXT);
+                            glTextureRangeAPPLE(GL_TEXTURE_RECTANGLE_EXT, newWidth * newHeight, textureBufferSelected);
+                            glGenTextures (1, &textureName);
+                            glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureName);
+                            glPixelStorei (GL_UNPACK_ROW_LENGTH, newWidth);
+                            glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
+                            glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
+                            
+                            [ctxArray addObject: currentContext];
+                            [textArray addObject: [NSNumber numberWithInt: textureName]];
+                            
+                            glBlendEquation(GL_FUNC_ADD);
+                            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                            
+                            if( [[NSUserDefaults standardUserDefaults] boolForKey:@"NOINTERPOLATION"])
+                            {
+                                glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MIN_FILTER, GL_NEAREST);	//GL_LINEAR_MIPMAP_LINEAR
+                                glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MAG_FILTER, GL_NEAREST);	//GL_LINEAR_MIPMAP_LINEAR
+                            }
+                            else
+                            {
+                                glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	//GL_LINEAR_MIPMAP_LINEAR
+                                glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	//GL_LINEAR_MIPMAP_LINEAR
+                            }
+                            
+                            glTexImage2D (GL_TEXTURE_RECTANGLE_EXT, 0, GL_INTENSITY8, newWidth, newHeight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, textureBufferSelected);
+                            
+                            glColor4f( 0, 0, 0, 1.0);
+                            
+                            screenXUpL = (newTextureUpLeftCornerX-offsetx)*scaleValue;
+                            screenYUpL = (newTextureUpLeftCornerY-offsety)*scaleValue;
+                            screenXDr = screenXUpL + newWidth*scaleValue;
+                            screenYDr = screenYUpL + newHeight*scaleValue;
+                            
+                            glBegin (GL_QUAD_STRIP); // draw either tri strips of line strips (so this will drw either two tris or 3 lines)
+                            glTexCoord2f (0, 0); // draw upper left in world coordinates
+                            glVertex3d (screenXUpL, screenYUpL, 0.0);
+                            
+                            glTexCoord2f (newWidth, 0); // draw lower left in world coordinates
+                            glVertex3d (screenXDr, screenYUpL, 0.0);
+                            
+                            glTexCoord2f (0, newHeight); // draw upper right in world coordinates
+                            glVertex3d (screenXUpL, screenYDr, 0.0);
+                            
+                            glTexCoord2f (newWidth, newHeight); // draw lower right in world coordinates
+                            glVertex3d (screenXDr, screenYDr, 0.0);
+                            glEnd();
+                            glDisable(GL_TEXTURE_RECTANGLE_EXT);
+                        }
+                        break;
+                    }
+                }
+                                
+                GLuint textureName = 0;
 				
+                glEnable(GL_TEXTURE_RECTANGLE_EXT);
 				glTextureRangeAPPLE(GL_TEXTURE_RECTANGLE_EXT, textureWidth * textureHeight, textureBuffer);
 				glGenTextures (1, &textureName);
 				glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureName);
@@ -4169,8 +4306,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				glBlendEquation(GL_FUNC_ADD);
 				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 				
-				glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
-				
                 if( [[NSUserDefaults standardUserDefaults] boolForKey:@"NOINTERPOLATION"])
                 {
                     glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MIN_FILTER, GL_NEAREST);	//GL_LINEAR_MIPMAP_LINEAR
@@ -4182,8 +4317,15 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                     glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	//GL_LINEAR_MIPMAP_LINEAR
                 }
                 
-				glTexImage2D (GL_TEXTURE_RECTANGLE_EXT, 0, GL_INTENSITY8, textureWidth, textureHeight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, textureBuffer);
-				
+                glTexImage2D (GL_TEXTURE_RECTANGLE_EXT, 0, GL_INTENSITY8, textureWidth, textureHeight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, textureBuffer);
+                
+                glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
+                
+                screenXUpL = (textureUpLeftCornerX-offsetx)*scaleValue;
+				screenYUpL = (textureUpLeftCornerY-offsety)*scaleValue;
+				screenXDr = screenXUpL + textureWidth*scaleValue;
+				screenYDr = screenYUpL + textureHeight*scaleValue;
+                
 				glBegin (GL_QUAD_STRIP); // draw either tri strips of line strips (so this will drw either two tris or 3 lines)
 				glTexCoord2f (0, 0); // draw upper left in world coordinates
 				glVertex3d (screenXUpL, screenYUpL, 0.0);
@@ -6365,41 +6507,55 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	return centroid;
 }
 
-- (void) addMarginToBuffer: (int) margin
++ (unsigned char*) addMargin: (int) margin buffer: (unsigned char *) textureBuffer width: (int) width height: (int) height
 {
-	int newWidth = textureWidth + 2*margin;
-	int newHeight = textureHeight + 2*margin;
+	int newWidth = width + 2*margin;
+	int newHeight = height + 2*margin;
+    
 	unsigned char* newBuffer = (unsigned char*)calloc(newWidth*newHeight, sizeof(unsigned char));
 	
-	if(newBuffer)
+	if( newBuffer)
 	{
 		for( int i=0; i<margin; i++)
 		{
 			// skip the 'margin' first lines
-			newBuffer += newWidth; 
+			newBuffer += newWidth;
 		}
 		
-		unsigned char	*temptextureBuffer = textureBuffer;
+		unsigned char *temptextureBuffer = textureBuffer;
 		
-		for( int i=0; i<textureHeight; i++)
+		for( int i=0; i<height; i++)
 		{
 			newBuffer += margin; // skip the left margin pixels
-			memcpy( newBuffer,temptextureBuffer,textureWidth*sizeof(unsigned char));
-			newBuffer += textureWidth+margin; // move to the next line, skipping the right margin pixels
-			temptextureBuffer += textureWidth; // move to the next line
+			memcpy( newBuffer,temptextureBuffer,width*sizeof(unsigned char));
+			newBuffer += width+margin; // move to the next line, skipping the right margin pixels
+			temptextureBuffer += width; // move to the next line
 		}
 		
-		newBuffer -= textureHeight*(textureWidth+2*margin)+newWidth*margin; // beginning of the buffer
-		
-		if( textureBuffer) free( textureBuffer);
-		textureBuffer = newBuffer;
-		textureDownRightCornerX += margin;
-		textureDownRightCornerY += margin;
-		textureUpLeftCornerX -= margin;
-		textureUpLeftCornerY -= margin;
-		textureWidth = newWidth;
-		textureHeight = newHeight;
+		newBuffer -= height*(width+2*margin)+newWidth*margin; // beginning of the buffer
 	}
+    
+    return newBuffer;
+}
+
+- (void) addMarginToBuffer: (int) margin
+{
+    unsigned char* newBuffer = [ROI addMargin: margin buffer: textureBuffer width: textureWidth height: textureHeight];
+    
+	textureWidth += 2*margin;
+	textureHeight += 2*margin;
+	
+    if( textureBuffer) free( textureBuffer);
+    textureBuffer = newBuffer;
+    
+    textureDownRightCornerX += margin;
+    textureDownRightCornerY += margin;
+    textureUpLeftCornerX -= margin;
+    textureUpLeftCornerY -= margin;
+    
+    if( textureBufferSelected){
+        free( textureBufferSelected); textureBufferSelected = nil;
+    }
 }
 
 // Calcium Scoring
@@ -6520,6 +6676,10 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	
 	if(textureBuffer) free(textureBuffer);
 	
+    if( textureBufferSelected){
+        free( textureBufferSelected); textureBufferSelected = nil;
+    }
+    
 	if(spp == 1)
 	{
 		bytesPerRow = [bitmap bytesPerRow]/spp;

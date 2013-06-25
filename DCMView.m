@@ -3617,7 +3617,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                 if( [[[NSApplication sharedApplication] currentEvent] type] == NSMouseMoved)
                 {
                     // Should we change the mouse cursor?
-                    if( modifierFlags) [self flagsChanged: [[NSApplication sharedApplication] currentEvent]];
+                    if( (modifierFlags & NSDeviceIndependentModifierFlagsMask)) [self flagsChanged: [[NSApplication sharedApplication] currentEvent]];
                 }
             }
             

@@ -2118,14 +2118,17 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[menu addItem:temp];
 	[temp release];
 	
-	[menu addItem:[NSMenuItem separatorItem]];
-	
-	temp = [[NSMenuItem alloc] initWithTitle:@"Remove" action:@selector(roiContextualMenuActionRemove:) keyEquivalent:@""];
-	[temp setRepresentedObject:roi];
-	[temp setTarget:self];
-	[menu addItem:temp];
-	[temp release];
-	
+    if( roi.locked == NO)
+    {
+        [menu addItem:[NSMenuItem separatorItem]];
+    
+        temp = [[NSMenuItem alloc] initWithTitle:@"Remove" action:@selector(roiContextualMenuActionRemove:) keyEquivalent:@""];
+        [temp setRepresentedObject:roi];
+        [temp setTarget:self];
+        [menu addItem:temp];
+        [temp release];
+	}
+    
 	return [menu autorelease];
 }
 

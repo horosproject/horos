@@ -66,7 +66,7 @@ enum
 	
 	int				textureWidth, textureHeight;
 
-	unsigned char*	textureBuffer;
+	unsigned char   *textureBuffer, *textureBufferSelected;
 	
 	NSMutableArray *ctxArray;	//All contexts where this texture is used
 	NSMutableArray *textArray;	//All texture id
