@@ -62,7 +62,7 @@ enum
 
 @interface ROI : NSObject <NSCoding, NSCopying>
 {
-	NSLock			*roiLock;
+	NSRecursiveLock *roiLock;
 	
 	int				textureWidth, textureHeight;
 
@@ -359,7 +359,7 @@ enum
 
 /** Delete texture */
 - (void) deleteTexture:(NSOpenGLContext*) c;
-
+- (void) textureBufferHasChanged;
 
 /** Set cab resize layer */
 - (void) setCanResizeLayer:(BOOL)boo;

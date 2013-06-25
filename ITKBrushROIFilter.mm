@@ -144,6 +144,8 @@ ImageType::Pointer CreateImagePointerFromBuffer(unsigned char *buffer, int buffe
 		
 		memcpy(buff, dstBuf.data, bufferWidth*bufferHeight);
 		free( dstBuf.data);
+        
+        [aROI textureBufferHasChanged];
 		
 	}
 //	else

@@ -1067,19 +1067,23 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 
 - (void) deleteTexture:(NSOpenGLContext*) c
 {
-	NSUInteger index = [ctxArray indexOfObjectIdenticalTo: c];
-	
-	if( c && index != NSNotFound)
-	{
-		GLuint t = [[textArray objectAtIndex: index] intValue];
-		CGLContextObj cgl_ctx = [c CGLContextObj];
-		
-		if( t)
-			(*cgl_ctx->disp.delete_textures)(cgl_ctx->rend, 1, &t);
-		
-		[ctxArray removeObjectAtIndex: index];
-		[textArray removeObjectAtIndex: index];
-	}
+    NSUInteger index;
+    do
+    {
+        index = [ctxArray indexOfObjectIdenticalTo: c];
+        
+        if( c && index != NSNotFound)
+        {
+            GLuint t = [[textArray objectAtIndex: index] intValue];
+            CGLContextObj cgl_ctx = [c CGLContextObj];
+            
+            if( t)
+                (*cgl_ctx->disp.delete_textures)(cgl_ctx->rend, 1, &t);
+            
+            [ctxArray removeObjectAtIndex: index];
+            [textArray removeObjectAtIndex: index];
+        }
+    } while( index != NSNotFound);
 }
 
 - (void) dealloc
@@ -1110,7 +1114,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	[textArray release];
 	
 	if (textureBuffer) free(textureBuffer);
-	if( textureBufferSelected) free( textureBufferSelected);
+	[self textureBufferHasChanged];
     
 	[uniqueID release];
 	[points release];
@@ -1240,9 +1244,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 			free( textureBuffer);
 			textureBuffer = newBuffer;
             
-            if( textureBufferSelected) {
-                free( textureBufferSelected); textureBufferSelected = nil;
-            }
+            [self textureBufferHasChanged];
 		}
 		else
 		{
@@ -2442,9 +2444,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 			textureBuffer = malloc(textureWidth*textureHeight*sizeof(unsigned char));
 			memset (textureBuffer, 0, textureHeight*textureWidth);
 			
-            if( textureBufferSelected){
-                free( textureBufferSelected); textureBufferSelected = nil;
-            }
+            [self textureBufferHasChanged];
             
 			mode = ROI_drawing;
 		}
@@ -2913,8 +2913,15 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	
 	[self reduceTextureIfPossible];
     
-    if( textureBufferSelected){
-        free( textureBufferSelected); textureBufferSelected = nil;
+    [self textureBufferHasChanged];
+}
+
+- (void) textureBufferHasChanged
+{
+    if( textureBufferSelected)
+    {
+        free( textureBufferSelected);
+        textureBufferSelected = nil;
     }
 }
 
@@ -3023,9 +3030,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 		textureDownRightCornerX = textureUpLeftCornerX + textureWidth-1;
 		textureDownRightCornerY = textureUpLeftCornerY + textureHeight-1;
         
-        if( textureBufferSelected){
-            free( textureBufferSelected); textureBufferSelected = nil;
-        }
+        [self textureBufferHasChanged];
 	}
 	
 	return NO;	// means the ROI is NOT empty;
@@ -3081,7 +3086,8 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 			{
 				case ROI_selectedModify:
 				case ROI_drawing:
-					
+                    
+                {
 					thickness = ROIRegionThickness;
 					
 					if (textureUpLeftCornerX > pt.x-thickness)
@@ -3115,19 +3121,16 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 					if (textureBuffer!=NULL)
 					{
 						tempTextureBuffer = malloc( oldTextureHeight*oldTextureWidth*sizeof(unsigned char));
-						
-						for( long i = 0; i < oldTextureWidth*oldTextureHeight;i++) tempTextureBuffer[i]=textureBuffer[i];
+						memcpy( tempTextureBuffer, textureBuffer, oldTextureWidth*oldTextureHeight);
 						free(textureBuffer);
 						textureBuffer = nil;
                         
-                        if( textureBufferSelected){
-                            free( textureBufferSelected); textureBufferSelected = nil;
-                        }
+                        [self textureBufferHasChanged];
 					}
 					
 					// new width and height
-					textureWidth=((textureDownRightCornerX-textureUpLeftCornerX))+1;
-					textureHeight=((textureDownRightCornerY-textureUpLeftCornerY))+1;	
+					textureWidth = (textureDownRightCornerX-textureUpLeftCornerX) + 1;
+					textureHeight = (textureDownRightCornerY-textureUpLeftCornerY) + 1;
 					
 	//				if( textureWidth%4) {textureWidth /=4;		textureWidth *=4;		textureWidth +=4;}
 	//				if( textureHeight%4) {textureHeight /=4;	textureHeight *=4;		textureHeight += 4;}
@@ -3143,13 +3146,11 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 						textureHeight=oldTextureHeight;
 					
 					// new texture buffer		
-					textureBuffer = malloc(textureWidth*textureHeight*sizeof(unsigned char));
-					
-					if (textureBuffer!=NULL)
+					textureBuffer = calloc( textureWidth * textureHeight, sizeof(unsigned char));
+					if( textureBuffer)
 					{
 						// copy temp buffer to the new buffer
-						for( long i = 0; i < textureWidth*textureHeight;i++) textureBuffer[i]=0;
-						
+                        
 						if (textureGrowDownX && textureGrowDownY)
 						{
 							for( long j=0; j<oldTextureHeight; j++ )
@@ -3189,9 +3190,9 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 					oldTextureWidth = textureWidth;
 					oldTextureHeight = textureHeight;	
 					
-					unsigned char	val;
+					unsigned char val;
 					
-					if (![curView eraserFlag]) val = 0xFF;
+					if( ![curView eraserFlag]) val = 0xFF;
 					else val = 0x00;
 					
 					if( modifier & NSCommandKeyMask && !(modifier & NSShiftKeyMask))
@@ -3200,13 +3201,13 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 						else val = 0xFF;
 					}
 					
-					long			size, *xPoints, *yPoints;
+					long size, *xPoints, *yPoints;
 					
 					if( previousPoint.x == -1000 && previousPoint.y == -1000) previousPoint = pt;
 					
 					int intThickness = thickness;
 					
-					unsigned char	*brush = calloc( intThickness*2*intThickness*2, sizeof( unsigned char));
+					unsigned char *brush = calloc( intThickness*2*intThickness*2, sizeof( unsigned char));
 					
 					[ROI fillCircle: brush :intThickness*2 :0xFF];
 
@@ -3217,12 +3218,13 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 										&xPoints,
 										&yPoints);
 					
-					for( long x = 0 ; x < size; x++ ) {
+					for( long x = 0 ; x < size; x++)
+                    {
 						long xx = xPoints[ x];
 						long yy = yPoints[ x];
 								
-						for ( long j =- intThickness; j < intThickness; j++ ) {
-							for ( long i =- intThickness; i < intThickness; i++ ) {
+						for( long j =- intThickness; j < intThickness; j++ ) {
+							for( long i =- intThickness; i < intThickness; i++ ) {
 								
 								if( xx+j > textureUpLeftCornerX && xx+j < textureDownRightCornerX)
 								{
@@ -3248,16 +3250,15 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 					rtotal = -1;
 					Brtotal = -1;
                     
-                    if( textureBufferSelected){
-                        free( textureBufferSelected); textureBufferSelected = nil;
-                    }
+                    [self textureBufferHasChanged];
+                }
 				break;
 				
 				case ROI_selected:
 					action = NO;
 					break;
 			}
-		}	
+		}
 		else if( type == tOval || type == tROI)
 		{
 			switch( mode)
@@ -4022,14 +4023,12 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
     textureWidth = w;
     textureHeight = h;
     
-    if( textureBufferSelected){
-        free( textureBufferSelected); textureBufferSelected = nil;
-    }
+    [self textureBufferHasChanged];
 }
 
 - (void) drawROIWithScaleValue:(float)scaleValue offsetX:(float)offsetx offsetY:(float)offsety pixelSpacingX:(float)spacingX pixelSpacingY:(float)spacingY highlightIfSelected:(BOOL)highlightIfSelected thickness:(float)thick prepareTextualData:(BOOL) prepareTextualData;
 {
-	if( roiLock == nil) roiLock = [[NSLock alloc] init];
+	if( roiLock == nil) roiLock = [[NSRecursiveLock alloc] init];
 	
 	if( curView == nil && prepareTextualData == YES) {NSLog(@"curView == nil! We will not draw this ROI..."); return;}
 	
@@ -4175,8 +4174,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			{
 				glDisable(GL_POLYGON_SMOOTH);
 				
-				[self deleteTexture: currentContext];
-				
                 if( highlightIfSelected)
                 {
                     switch( mode)
@@ -4201,7 +4198,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                                 
                                 unsigned char* newBufferCopy = malloc( newWidth*newHeight);
                                 memcpy( newBufferCopy, textureBufferSelected, newWidth*newHeight);
-                                
                                 
                                 {
                                     // input buffer
@@ -4245,9 +4241,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                             glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
                             glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
                             
-                            [ctxArray addObject: currentContext];
-                            [textArray addObject: [NSNumber numberWithInt: textureName]];
-                            
                             glBlendEquation(GL_FUNC_ADD);
                             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                             
@@ -4284,12 +4277,15 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                             glTexCoord2f (newWidth, newHeight); // draw lower right in world coordinates
                             glVertex3d (screenXDr, screenYDr, 0.0);
                             glEnd();
+                            
+                            glDeleteTextures( 1, &textureName);
+                            
                             glDisable(GL_TEXTURE_RECTANGLE_EXT);
                         }
                         break;
                     }
                 }
-                                
+                
                 GLuint textureName = 0;
 				
                 glEnable(GL_TEXTURE_RECTANGLE_EXT);
@@ -4299,9 +4295,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				glPixelStorei (GL_UNPACK_ROW_LENGTH, textureWidth);
 				glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
 				glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
-				
-				[ctxArray addObject: currentContext];
-				[textArray addObject: [NSNumber numberWithInt: textureName]];
 				
 				glBlendEquation(GL_FUNC_ADD);
 				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -4341,6 +4334,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				glEnd();
 				
 				glDisable(GL_TEXTURE_RECTANGLE_EXT);
+                
+                glDeleteTextures( 1, &textureName);
+                
 				glEnable(GL_POLYGON_SMOOTH);
 				
 				switch( mode)
@@ -6553,9 +6549,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
     textureUpLeftCornerX -= margin;
     textureUpLeftCornerY -= margin;
     
-    if( textureBufferSelected){
-        free( textureBufferSelected); textureBufferSelected = nil;
-    }
+    [self textureBufferHasChanged];
 }
 
 // Calcium Scoring
@@ -6676,9 +6670,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	
 	if(textureBuffer) free(textureBuffer);
 	
-    if( textureBufferSelected){
-        free( textureBufferSelected); textureBufferSelected = nil;
-    }
+    [self textureBufferHasChanged];
     
 	if(spp == 1)
 	{
