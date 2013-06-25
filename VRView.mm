@@ -2694,8 +2694,14 @@ public:
 	long			i, j;
 	vtkMatrix4x4	*matrix;
 	
+    if( aCamera == nil)
+        return;
+    
 	matrix = aCamera->GetViewTransformMatrix();
 	
+    if( matrix == nil)
+        return;
+    
 	for( i = 0; i < 3; i++)
 		for( j = 0; j < 3; j++)
 			o[ 3*i + j] = matrix->GetElement( i , j);

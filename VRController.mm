@@ -36,6 +36,7 @@
 #import "DicomStudy.h"
 #import "DicomSeries.h"
 #import "DicomImage.h"
+#import "N2Debug.h"
 
 #define PRESETS_DIRECTORY @"/3DPRESETS/"
 #define CLUTDATABASE @"/CLUTs/"
@@ -458,344 +459,352 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	BOOL			testInterval = YES;
 	DCMPix			*firstObject = [pix objectAtIndex: 0];
 	
-	// MEMORY TEST: The renderer needs to have the volume in short
-	{
-		unsigned long sizeofshort = sizeof( short) + 1;	//extra space for gradients computation
-		char	*testPtr = (char*) malloc( [firstObject pwidth] * [firstObject pheight] * [pix count] * sizeofshort);
-		if( testPtr == nil)
-		{
-			if( NSRunAlertPanel( NSLocalizedString(@"32-bit",nil), NSLocalizedString( @"Cannot use the 3D engine.\r\rUpgrade to OsiriX 64-bit or OsiriX MD to solve this issue.",nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"OsiriX 64-bit", nil), nil) == NSAlertAlternateReturn)
-				[[AppController sharedAppController] osirix64bit: self];
-			
-			return nil;
-		}
-		else free( testPtr);
-	}
-
-	[[NSUserDefaults standardUserDefaults] setFloat: 1125 forKey: @"VRGrowingRegionValue"];
-	[[NSUserDefaults standardUserDefaults] setFloat: 1750 forKey: @"VRGrowingRegionInterval"];
-	
-//	// ** RESAMPLE START
-//	
-
-//	WaitRendering *www = [[WaitRendering alloc] init: NSLocalizedString( @"Resampling 3D data...", nil)];
-//	[www start];
-//	
-//	NSMutableArray		*newPix = [NSMutableArray array], *newFiles = [NSMutableArray array];
-//	NSData				*newData = nil;
-//	
-//	if( [ViewerController resampleDataFromPixArray:pix fileArray:f inPixArray:newPix fileArray:newFiles data:&newData withXFactor:2 yFactor:2 zFactor:2] == NO)
-//	{
-//		NSRunCriticalAlertPanel( NSLocalizedString(@"Not Enough Memory",nil), NSLocalizedString( @"Not enough memory (RAM) to use the 3D engine.",nil), NSLocalizedString(@"OK",nil), nil, nil);
-//		return nil;
-//	}
-//	else
-//	{
-//		pix = newPix;
-//		f = newFiles;
-//		vData = newData;
-//		
-//		firstObject = [pix objectAtIndex: 0];
-//	}
-//	
-//	[www end];
-//	[www close];
-//	[www release];
-//	
-//	// ** RESAMPLE END
-			
-	style = [m retain];
-	_renderingMode = [renderingMode retain];
-    
-	for( i = 0; i < 100; i++) undodata[ i] = nil;
-	
-	curMovieIndex = 0;
-	maxMovieIndex = 1;
-	
-	fileList = f;
-	[fileList retain];
-	
-	pixList[0] = pix;
-	volumeData[0] = vData;
-	
-    float sliceThickness = fabs( [firstObject sliceInterval]);
-		
-	  //fabs( [firstObject sliceLocation] - [[pixList objectAtIndex:1] sliceLocation]);
-    
-    if( sliceThickness == 0)
+    @try
     {
-		sliceThickness = [firstObject sliceThickness];
-		
-		testInterval = NO;
-		
-		if( sliceThickness > 0) NSRunCriticalAlertPanel( NSLocalizedString(@"Slice interval",nil), NSLocalizedString( @"I'm not able to find the slice interval. Slice interval will be equal to slice thickness.",nil), NSLocalizedString(@"OK",nil), nil, nil);
-		else
-		{
-			NSRunCriticalAlertPanel(NSLocalizedString( @"Slice interval/thickness",nil), NSLocalizedString( @"Problems with slice thickness/interval to do a 3D reconstruction.",nil),NSLocalizedString( @"OK",nil), nil, nil);
-			return nil;
-		}
+        // MEMORY TEST: The renderer needs to have the volume in short
+        {
+            unsigned long sizeofshort = sizeof( short) + 1;	//extra space for gradients computation
+            char	*testPtr = (char*) malloc( [firstObject pwidth] * [firstObject pheight] * [pix count] * sizeofshort);
+            if( testPtr == nil)
+            {
+                if( NSRunAlertPanel( NSLocalizedString(@"32-bit",nil), NSLocalizedString( @"Cannot use the 3D engine.\r\rUpgrade to OsiriX 64-bit or OsiriX MD to solve this issue.",nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"OsiriX 64-bit", nil), nil) == NSAlertAlternateReturn)
+                    [[AppController sharedAppController] osirix64bit: self];
+                
+                return nil;
+            }
+            else free( testPtr);
+        }
+
+        [[NSUserDefaults standardUserDefaults] setFloat: 1125 forKey: @"VRGrowingRegionValue"];
+        [[NSUserDefaults standardUserDefaults] setFloat: 1750 forKey: @"VRGrowingRegionInterval"];
+        
+    //	// ** RESAMPLE START
+    //	
+
+    //	WaitRendering *www = [[WaitRendering alloc] init: NSLocalizedString( @"Resampling 3D data...", nil)];
+    //	[www start];
+    //	
+    //	NSMutableArray		*newPix = [NSMutableArray array], *newFiles = [NSMutableArray array];
+    //	NSData				*newData = nil;
+    //	
+    //	if( [ViewerController resampleDataFromPixArray:pix fileArray:f inPixArray:newPix fileArray:newFiles data:&newData withXFactor:2 yFactor:2 zFactor:2] == NO)
+    //	{
+    //		NSRunCriticalAlertPanel( NSLocalizedString(@"Not Enough Memory",nil), NSLocalizedString( @"Not enough memory (RAM) to use the 3D engine.",nil), NSLocalizedString(@"OK",nil), nil, nil);
+    //		return nil;
+    //	}
+    //	else
+    //	{
+    //		pix = newPix;
+    //		f = newFiles;
+    //		vData = newData;
+    //		
+    //		firstObject = [pix objectAtIndex: 0];
+    //	}
+    //	
+    //	[www end];
+    //	[www close];
+    //	[www release];
+    //	
+    //	// ** RESAMPLE END
+                
+        style = [m retain];
+        _renderingMode = [renderingMode retain];
+        
+        for( i = 0; i < 100; i++) undodata[ i] = nil;
+        
+        curMovieIndex = 0;
+        maxMovieIndex = 1;
+        
+        fileList = f;
+        [fileList retain];
+        
+        pixList[0] = pix;
+        volumeData[0] = vData;
+        
+        float sliceThickness = fabs( [firstObject sliceInterval]);
+            
+          //fabs( [firstObject sliceLocation] - [[pixList objectAtIndex:1] sliceLocation]);
+        
+        if( sliceThickness == 0)
+        {
+            sliceThickness = [firstObject sliceThickness];
+            
+            testInterval = NO;
+            
+            if( sliceThickness > 0) NSRunCriticalAlertPanel( NSLocalizedString(@"Slice interval",nil), NSLocalizedString( @"I'm not able to find the slice interval. Slice interval will be equal to slice thickness.",nil), NSLocalizedString(@"OK",nil), nil, nil);
+            else
+            {
+                NSRunCriticalAlertPanel(NSLocalizedString( @"Slice interval/thickness",nil), NSLocalizedString( @"Problems with slice thickness/interval to do a 3D reconstruction.",nil),NSLocalizedString( @"OK",nil), nil, nil);
+                return nil;
+            }
+        }
+        
+        err = 0;
+        // CHECK IMAGE SIZE
+        for( i =0 ; i < [pixList[0] count]; i++)
+        {
+            if( [firstObject pwidth] != [[pixList[0] objectAtIndex:i] pwidth]) err = -1;
+            if( [firstObject pheight] != [[pixList[0] objectAtIndex:i] pheight]) err = -1;
+        }
+        if( err)
+        {
+            NSRunCriticalAlertPanel(NSLocalizedString( @"Images size",nil),  NSLocalizedString(@"These images don't have the same height and width to allow a 3D reconstruction...",nil),NSLocalizedString( @"OK",nil), nil, nil);
+            return nil;
+        }
+        
+        // CHECK IMAGE SIZE
+    //	if( testInterval)
+    //	{
+    //		float prevLoc = [firstObject sliceLocation];
+    //		for( i = 1 ; i < [pixList count]; i++)
+    //		{
+    //			if( fabs( sliceThickness - fabs( [[pixList objectAtIndex:i] sliceLocation] - prevLoc)) > 0.1) err = -1;
+    //			prevLoc = [[pixList objectAtIndex:i] sliceLocation];
+    //		}
+    //		if( err)
+    //		{
+    //			if( NSRunCriticalAlertPanel( @"Slices location",  @"Slice thickness/interval is not exactly equal for all images. This could distord the 3D reconstruction...", @"Continue", @"Cancel", nil) != NSAlertDefaultReturn) return nil;
+    //			err = 0;
+    //		}
+    //	}
+
+        [pixList[0] retain];
+        [volumeData[0] retain];
+        viewer2D = [vC retain];
+        
+        blendingController = bC;
+        if( blendingController) blendingPixList = [blendingController pixList];
+        
+        // Find Minimum Value
+        if( [firstObject isRGB] == NO) [self computeMinMax];
+        else minimumValue = self.deleteValue = 0;
+
+        if( [style isEqualToString:@"standard"])
+            self = [super initWithWindowNibName:@"VR"];
+        else if( [style isEqualToString:@"noNib"])
+        {
+            self = [super initWithWindowNibName:@"VREmpty"];
+        }
+        else
+        {
+            self = [super initWithWindowNibName:@"VRPanel"];
+        }
+        [[self window] setDelegate:self];
+        
+        
+        
+        err = [view setPixSource:pixList[0] :(float*) [volumeData[0] bytes]];
+        if( err != 0)
+        {
+            if( NSRunAlertPanel( NSLocalizedString(@"32-bit",nil), NSLocalizedString( @"Cannot use the 3D engine.\r\rUpgrade to OsiriX 64-bit or OsiriX MD to solve this issue.",nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"OsiriX 64-bit", nil), nil) == NSAlertAlternateReturn)
+                [[AppController sharedAppController] osirix64bit: self];
+            [self autorelease];
+            return nil;
+        }
+        
+        if( blendingController) // Blending! Activate image fusion
+        {
+            [view setBlendingPixSource: blendingController];
+            
+            [blendingSlider setEnabled:YES];
+            [blendingPercentage setStringValue:[NSString stringWithFormat:@"%0.0f%%", (float) 100.*([blendingSlider floatValue]) / 256.]];
+            
+            [self updateBlendingImage];
+        }
+        
+        curWLWWMenu = [NSLocalizedString(@"Other", nil) retain];
+        
+        roi2DPointsArray = [[NSMutableArray alloc] initWithCapacity:0];
+        sliceNumber2DPointsArray = [[NSMutableArray alloc] initWithCapacity:0];
+        x2DPointsArray = [[NSMutableArray alloc] initWithCapacity:0];
+        y2DPointsArray = [[NSMutableArray alloc] initWithCapacity:0];
+        z2DPointsArray = [[NSMutableArray alloc] initWithCapacity:0];
+        
+        if (viewer2D)
+        {		
+            long i, j;
+            float x, y, z;
+            NSMutableArray	*curRoiList;
+            ROI	*curROI;
+            
+            for(i=0; i<[[[viewer2D imageView] dcmPixList] count]; i++)
+            {
+                curRoiList = [[viewer2D roiList] objectAtIndex: i];
+                for(j=0; j<[curRoiList count];j++)
+                {
+                    curROI = [curRoiList objectAtIndex:j];
+                    if ([curROI type] == t2DPoint)
+                    {
+                        float location[ 3 ];
+                        
+                        [[[viewer2D pixList] objectAtIndex: i] convertPixX: [[[curROI points] objectAtIndex:0] x] pixY: [[[curROI points] objectAtIndex:0] y] toDICOMCoords: location pixelCenter: YES];
+                        
+                        x = location[ 0 ];
+                        y = location[ 1 ];
+                        z = location[ 2 ];
+
+                        // add the 3D Point to the SR view
+                        [[self view] add3DPoint:  x : y : z : curROI.thickness :curROI.rgbcolor.red/65535. :curROI.rgbcolor.green/65535. :curROI.rgbcolor.blue/65535.];
+                        // add the 2D Point to our list
+                        [roi2DPointsArray addObject:curROI];
+                        [sliceNumber2DPointsArray addObject:[NSNumber numberWithLong:i]];
+                        [x2DPointsArray addObject:[NSNumber numberWithFloat:x]];
+                        [y2DPointsArray addObject:[NSNumber numberWithFloat:y]];
+                        [z2DPointsArray addObject:[NSNumber numberWithFloat:z]];
+                    }
+                }
+            }
+        }
+
+        NSNotificationCenter *nc;
+        nc = [NSNotificationCenter defaultCenter];
+        
+        [nc addObserver: self
+            selector: @selector(remove3DPoint:)
+            name: OsirixRemoveROINotification
+            object: nil];
+        [nc addObserver: self
+            selector: @selector(add3DPoint:)
+            //name: OsirixROIChangeNotification
+            name: OsirixROISelectedNotification //OsirixROISelectedNotification
+            object: nil];
+
+        [nc addObserver: self
+               selector: @selector(UpdateWLWWMenu:)
+                   name: OsirixUpdateWLWWMenuNotification
+                 object: nil];
+        
+        [nc addObserver: self
+               selector: @selector(updateVolumeData:)
+                   name: OsirixUpdateVolumeDataNotification
+                 object: nil];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: curWLWWMenu userInfo: nil];
+        
+        curCLUTMenu = [NSLocalizedString(@"No CLUT", nil) retain];
+        
+        [nc addObserver: self
+               selector: @selector(UpdateCLUTMenu:)
+                   name: OsirixUpdateCLUTMenuNotification
+                 object: nil];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
+        
+        curOpacityMenu = [NSLocalizedString(@"Linear Table", nil) retain];
+        
+        [nc addObserver: self
+               selector: @selector(UpdateOpacityMenu:)
+                   name: OsirixUpdateOpacityMenuNotification
+                 object: nil];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: nil];
+        
+        [nc addObserver: self
+               selector: @selector(CLUTChanged:)
+                   name: OsirixCLUTChangedNotification
+                 object: nil];
+
+        [nc addObserver: self
+               selector: @selector(UpdateConvolutionMenu:)
+                   name: OsirixUpdateConvolutionMenuNotification
+                 object: nil];
+         [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateConvolutionMenuNotification object: NSLocalizedString( @"No Filter", nil) userInfo: nil];
+                
+         [nc addObserver: self
+               selector: @selector(CloseViewerNotification:)
+                   name: OsirixCloseViewerNotification
+                 object: nil];
+        
+        //should we always zoom the Window?
+        //if( [style isEqualToString:@"standard"])
+        //	[[self window] performZoom:self];
+        
+        [movieRateSlider setEnabled: NO];
+        [moviePosSlider setEnabled: NO];
+        [moviePlayStop setEnabled: NO];
+        
+        [view updateScissorStateButtons];
+        
+        for(int m=0; m<maxMovieIndex; m++)
+        {
+            roiVolumes[m] = [[NSMutableArray alloc] initWithCapacity:0];
+        }
+    #ifdef roi3Dvolume
+        [self computeROIVolumes];
+        [self displayROIVolumes];
+        [nc addObserver:self selector:@selector(updateROIVolume:) name:OsirixROIVolumePropertiesChangedNotification object:nil];
+    #endif
+
+    //	// allow bones removal only for CT or SC scans
+    //	if( [[viewer2D modality] isEqualToString:@"CT"] == NO && [[viewer2D modality] isEqualToString:@"SC"])
+    //	{
+    //		[[toolsMatrix cellWithTag:21] setEnabled:NO];
+    //	}
+    //	else
+    //	{
+    //		[[toolsMatrix cellWithTag:21] setEnabled:YES];
+    //	}
+
+        if( [renderingMode isEqualToString:@"MIP"])
+            [self setModeIndex: 1];
+            
+        if( [style isEqualToString:@"panel"])
+        {
+            [view setRotate: YES];
+            [view setLOD: 1.0];
+        }
+        
+        appliedConvolutionFilters = [[NSMutableArray alloc] initWithCapacity:0];
+        
+        if( [style isEqualToString: @"noNib"] == NO)
+        {
+            NSLog( @"presets start");
+            presetPreviewArray = [[NSMutableArray alloc] initWithCapacity:0];
+            if(presetPreview1) [presetPreviewArray addObject:presetPreview1];
+            if(presetPreview2) [presetPreviewArray addObject:presetPreview2];
+            if(presetPreview3) [presetPreviewArray addObject:presetPreview3];
+            if(presetPreview4) [presetPreviewArray addObject:presetPreview4];
+            if(presetPreview5) [presetPreviewArray addObject:presetPreview5];
+            if(presetPreview6) [presetPreviewArray addObject:presetPreview6];
+            if(presetPreview7) [presetPreviewArray addObject:presetPreview7];
+            if(presetPreview8) [presetPreviewArray addObject:presetPreview8];
+            if(presetPreview9) [presetPreviewArray addObject:presetPreview9];
+            
+            
+            presetNameArray = [[NSMutableArray alloc] initWithCapacity:0];
+            if(presetName1) [presetNameArray addObject:presetName1];
+            if(presetName2) [presetNameArray addObject:presetName2];
+            if(presetName3) [presetNameArray addObject:presetName3];
+            if(presetName4) [presetNameArray addObject:presetName4];
+            if(presetName5) [presetNameArray addObject:presetName5];
+            if(presetName6) [presetNameArray addObject:presetName6];
+            if(presetName7) [presetNameArray addObject:presetName7];
+            if(presetName8) [presetNameArray addObject:presetName8];
+            if(presetName9) [presetNameArray addObject:presetName9];
+            
+            NSLog( @"presets end");
+        }
+        [nc addObserver:self selector:@selector(windowWillCloseNotification:) name:NSWindowWillCloseNotification object:nil];
+        [nc addObserver:self selector:@selector(windowWillMoveNotification:) name:NSWindowWillMoveNotification object:nil];
+        [nc addObserver:self selector:@selector(windowWillMoveNotification:) name:NSWindowWillMoveNotification object:nil];
+        
+        if( [style isEqualToString:@"panel"])
+        {
+            [self setShouldCascadeWindows: NO];
+            [[self window] setFrameAutosaveName:@"3D Panel"];
+            [[self window] setFrameUsingName:@"3D Panel"];
+        }
+        
+        [shadingsPresetsController setWindowController: self];
+        
+        [self setupToolbar];
     }
-    
-	err = 0;
-    // CHECK IMAGE SIZE
-    for( i =0 ; i < [pixList[0] count]; i++)
-    {
-        if( [firstObject pwidth] != [[pixList[0] objectAtIndex:i] pwidth]) err = -1;
-        if( [firstObject pheight] != [[pixList[0] objectAtIndex:i] pheight]) err = -1;
-    }
-    if( err)
-    {
-        NSRunCriticalAlertPanel(NSLocalizedString( @"Images size",nil),  NSLocalizedString(@"These images don't have the same height and width to allow a 3D reconstruction...",nil),NSLocalizedString( @"OK",nil), nil, nil);
-        return nil;
-    }
-    
-    // CHECK IMAGE SIZE
-//	if( testInterval)
-//	{
-//		float prevLoc = [firstObject sliceLocation];
-//		for( i = 1 ; i < [pixList count]; i++)
-//		{
-//			if( fabs( sliceThickness - fabs( [[pixList objectAtIndex:i] sliceLocation] - prevLoc)) > 0.1) err = -1;
-//			prevLoc = [[pixList objectAtIndex:i] sliceLocation];
-//		}
-//		if( err)
-//		{
-//			if( NSRunCriticalAlertPanel( @"Slices location",  @"Slice thickness/interval is not exactly equal for all images. This could distord the 3D reconstruction...", @"Continue", @"Cancel", nil) != NSAlertDefaultReturn) return nil;
-//			err = 0;
-//		}
-//	}
-
-	[pixList[0] retain];
-	[volumeData[0] retain];
-    viewer2D = [vC retain];
-	
-	blendingController = bC;
-	if( blendingController) blendingPixList = [blendingController pixList];
-	
-	// Find Minimum Value
-	if( [firstObject isRGB] == NO) [self computeMinMax];
-	else minimumValue = self.deleteValue = 0;
-
-	if( [style isEqualToString:@"standard"])
-		self = [super initWithWindowNibName:@"VR"];
-	else if( [style isEqualToString:@"noNib"])
-	{
-		self = [super initWithWindowNibName:@"VREmpty"];
-	}
-	else
-	{
-		self = [super initWithWindowNibName:@"VRPanel"];
-	}
-    [[self window] setDelegate:self];
-    
-    
-    
-    err = [view setPixSource:pixList[0] :(float*) [volumeData[0] bytes]];
-    if( err != 0)
-    {
-		if( NSRunAlertPanel( NSLocalizedString(@"32-bit",nil), NSLocalizedString( @"Cannot use the 3D engine.\r\rUpgrade to OsiriX 64-bit or OsiriX MD to solve this issue.",nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"OsiriX 64-bit", nil), nil) == NSAlertAlternateReturn)
-			[[AppController sharedAppController] osirix64bit: self];
+    @catch ( NSException *e) {
+        N2LogException( e);
+        
         [self autorelease];
         return nil;
     }
-	
-	if( blendingController) // Blending! Activate image fusion
-	{
-		[view setBlendingPixSource: blendingController];
-		
-		[blendingSlider setEnabled:YES];
-		[blendingPercentage setStringValue:[NSString stringWithFormat:@"%0.0f%%", (float) 100.*([blendingSlider floatValue]) / 256.]];
-		
-		[self updateBlendingImage];
-	}
-	
-	curWLWWMenu = [NSLocalizedString(@"Other", nil) retain];
-	
-	roi2DPointsArray = [[NSMutableArray alloc] initWithCapacity:0];
-	sliceNumber2DPointsArray = [[NSMutableArray alloc] initWithCapacity:0];
-	x2DPointsArray = [[NSMutableArray alloc] initWithCapacity:0];
-	y2DPointsArray = [[NSMutableArray alloc] initWithCapacity:0];
-	z2DPointsArray = [[NSMutableArray alloc] initWithCapacity:0];
-	
-	if (viewer2D)
-	{		
-		long i, j;
-		float x, y, z;
-		NSMutableArray	*curRoiList;
-		ROI	*curROI;
-		
-		for(i=0; i<[[[viewer2D imageView] dcmPixList] count]; i++)
-		{
-			curRoiList = [[viewer2D roiList] objectAtIndex: i];
-			for(j=0; j<[curRoiList count];j++)
-			{
-				curROI = [curRoiList objectAtIndex:j];
-				if ([curROI type] == t2DPoint)
-				{
-					float location[ 3 ];
-					
-					[[[viewer2D pixList] objectAtIndex: i] convertPixX: [[[curROI points] objectAtIndex:0] x] pixY: [[[curROI points] objectAtIndex:0] y] toDICOMCoords: location pixelCenter: YES];
-					
-					x = location[ 0 ];
-					y = location[ 1 ];
-					z = location[ 2 ];
-
-					// add the 3D Point to the SR view
-					[[self view] add3DPoint:  x : y : z : curROI.thickness :curROI.rgbcolor.red/65535. :curROI.rgbcolor.green/65535. :curROI.rgbcolor.blue/65535.];
-					// add the 2D Point to our list
-					[roi2DPointsArray addObject:curROI];
-					[sliceNumber2DPointsArray addObject:[NSNumber numberWithLong:i]];
-					[x2DPointsArray addObject:[NSNumber numberWithFloat:x]];
-					[y2DPointsArray addObject:[NSNumber numberWithFloat:y]];
-					[z2DPointsArray addObject:[NSNumber numberWithFloat:z]];
-				}
-			}
-		}
-	}
-
-	NSNotificationCenter *nc;
-	nc = [NSNotificationCenter defaultCenter];
-	
-	[nc addObserver: self
-		selector: @selector(remove3DPoint:)
-		name: OsirixRemoveROINotification
-		object: nil];
-	[nc addObserver: self
-		selector: @selector(add3DPoint:)
-		//name: OsirixROIChangeNotification
-		name: OsirixROISelectedNotification //OsirixROISelectedNotification
-		object: nil];
-
-    [nc addObserver: self
-           selector: @selector(UpdateWLWWMenu:)
-               name: OsirixUpdateWLWWMenuNotification
-             object: nil];
-	
-	[nc addObserver: self
-           selector: @selector(updateVolumeData:)
-               name: OsirixUpdateVolumeDataNotification
-             object: nil];
-	
-	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: curWLWWMenu userInfo: nil];
-	
-	curCLUTMenu = [NSLocalizedString(@"No CLUT", nil) retain];
-	
-    [nc addObserver: self
-           selector: @selector(UpdateCLUTMenu:)
-               name: OsirixUpdateCLUTMenuNotification
-             object: nil];
-	
-	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
-	
-	curOpacityMenu = [NSLocalizedString(@"Linear Table", nil) retain];
-	
-    [nc addObserver: self
-           selector: @selector(UpdateOpacityMenu:)
-               name: OsirixUpdateOpacityMenuNotification
-             object: nil];
-	
-	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: nil];
-	
-	[nc addObserver: self
-           selector: @selector(CLUTChanged:)
-               name: OsirixCLUTChangedNotification
-             object: nil];
-
-	[nc addObserver: self
-           selector: @selector(UpdateConvolutionMenu:)
-               name: OsirixUpdateConvolutionMenuNotification
-             object: nil];
-	 [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateConvolutionMenuNotification object: NSLocalizedString( @"No Filter", nil) userInfo: nil];
-			
-	 [nc addObserver: self
-           selector: @selector(CloseViewerNotification:)
-               name: OsirixCloseViewerNotification
-             object: nil];
-	
-	//should we always zoom the Window?
-	//if( [style isEqualToString:@"standard"])
-	//	[[self window] performZoom:self];
-	
-	[movieRateSlider setEnabled: NO];
-	[moviePosSlider setEnabled: NO];
-	[moviePlayStop setEnabled: NO];
-	
-	[view updateScissorStateButtons];
-	
-	for(int m=0; m<maxMovieIndex; m++)
-	{
-		roiVolumes[m] = [[NSMutableArray alloc] initWithCapacity:0];
-	}
-#ifdef roi3Dvolume
-	[self computeROIVolumes];
-	[self displayROIVolumes];
-	[nc addObserver:self selector:@selector(updateROIVolume:) name:OsirixROIVolumePropertiesChangedNotification object:nil];
-#endif
-
-//	// allow bones removal only for CT or SC scans
-//	if( [[viewer2D modality] isEqualToString:@"CT"] == NO && [[viewer2D modality] isEqualToString:@"SC"])
-//	{
-//		[[toolsMatrix cellWithTag:21] setEnabled:NO];
-//	}
-//	else
-//	{
-//		[[toolsMatrix cellWithTag:21] setEnabled:YES];
-//	}
-
-	if( [renderingMode isEqualToString:@"MIP"])
-		[self setModeIndex: 1];
-		
-	if( [style isEqualToString:@"panel"])
-	{
-		[view setRotate: YES];
-		[view setLOD: 1.0];
-	}
-	
-	appliedConvolutionFilters = [[NSMutableArray alloc] initWithCapacity:0];
-	
-	if( [style isEqualToString: @"noNib"] == NO)
-	{
-		NSLog( @"presets start");
-		presetPreviewArray = [[NSMutableArray alloc] initWithCapacity:0];
-		if(presetPreview1) [presetPreviewArray addObject:presetPreview1];
-		if(presetPreview2) [presetPreviewArray addObject:presetPreview2];
-		if(presetPreview3) [presetPreviewArray addObject:presetPreview3];
-		if(presetPreview4) [presetPreviewArray addObject:presetPreview4];
-		if(presetPreview5) [presetPreviewArray addObject:presetPreview5];
-		if(presetPreview6) [presetPreviewArray addObject:presetPreview6];
-		if(presetPreview7) [presetPreviewArray addObject:presetPreview7];
-		if(presetPreview8) [presetPreviewArray addObject:presetPreview8];
-		if(presetPreview9) [presetPreviewArray addObject:presetPreview9];
-		
-		
-		presetNameArray = [[NSMutableArray alloc] initWithCapacity:0];
-		if(presetName1) [presetNameArray addObject:presetName1];
-		if(presetName2) [presetNameArray addObject:presetName2];
-		if(presetName3) [presetNameArray addObject:presetName3];
-		if(presetName4) [presetNameArray addObject:presetName4];
-		if(presetName5) [presetNameArray addObject:presetName5];
-		if(presetName6) [presetNameArray addObject:presetName6];
-		if(presetName7) [presetNameArray addObject:presetName7];
-		if(presetName8) [presetNameArray addObject:presetName8];
-		if(presetName9) [presetNameArray addObject:presetName9];
-		
-		NSLog( @"presets end");
-	}
-	[nc addObserver:self selector:@selector(windowWillCloseNotification:) name:NSWindowWillCloseNotification object:nil];
-	[nc addObserver:self selector:@selector(windowWillMoveNotification:) name:NSWindowWillMoveNotification object:nil];
-    [nc addObserver:self selector:@selector(windowWillMoveNotification:) name:NSWindowWillMoveNotification object:nil];
-	
-    if( [style isEqualToString:@"panel"])
-	{
-		[self setShouldCascadeWindows: NO];
-		[[self window] setFrameAutosaveName:@"3D Panel"];
-		[[self window] setFrameUsingName:@"3D Panel"];
-	}
-	
-	[shadingsPresetsController setWindowController: self];
-    
-    [self setupToolbar];
-    
     return self;
 }
 
