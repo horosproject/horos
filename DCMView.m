@@ -3628,6 +3628,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                 
                 for( ROI *r in curRoiList)
                 {
+                    BOOL c = r.clickInTextBox;
                     if( [r clickInROI:pt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :NO])
                     {
                         if( !r.mouseOverROI)
@@ -3641,6 +3642,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                         r.mouseOverROI = NO;
                         [self setNeedsDisplay: YES];
                     }
+                    r.clickInTextBox = c;
                 }
             }
             
@@ -4229,11 +4231,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			// ROI TOOLS
 			if( [self roiTool:tool] == YES && crossMove == -1 )
 			{
+                mouseDraggedForROIUndo = NO;
+                
 				@try 
 				{
 					[self deleteMouseDownTimer];
-					
-					[[self windowController] addToUndoQueue:@"roi"];
 					
 					BOOL		DoNothing = NO;
 					NSInteger	selected = -1, i;
@@ -5062,10 +5064,16 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 	for( ROI *r in [NSArray arrayWithArray: curRoiList])
 	{
-		if( [r mouseRoiDragged: point :[event modifierFlags] :scaleValue] != NO)
-		{
-			haveHit = YES;
-		}
+        if( r.locked == NO)
+        {
+            if( !mouseDraggedForROIUndo) {
+                mouseDraggedForROIUndo = YES;
+                [[self windowController] addToUndoQueue:@"roi"];
+            }
+        
+            if( [r mouseRoiDragged: point :[event modifierFlags] :scaleValue] != NO)
+                haveHit = YES;
+        }
 	}
 	return haveHit;			
 }
@@ -5074,7 +5082,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (BOOL) mouseDraggedForROIs:(NSEvent *)event
 {
 	BOOL action = NO;
-	
+    
 	@try
 	{
 		NSPoint current = [self currentPointInView:event];
@@ -5082,6 +5090,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		// Command and Alternate rotate ROI
 		if (([event modifierFlags] & NSCommandKeyMask) && ([event modifierFlags] & NSAlternateKeyMask))
 		{
+            if( !mouseDraggedForROIUndo) {
+                mouseDraggedForROIUndo = YES;
+                [[self windowController] addToUndoQueue:@"roi"];
+            }
+            
 			NSPoint rotatePoint = [self ConvertFromNSView2GL: start];
 
 			NSPoint offset;
@@ -5101,6 +5114,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		// Command and Shift scale
 		else if (([event modifierFlags] & NSCommandKeyMask) && !([event modifierFlags] & NSShiftKeyMask))
 		{
+            if( !mouseDraggedForROIUndo) {
+                mouseDraggedForROIUndo = YES;
+                [[self windowController] addToUndoQueue:@"roi"];
+            }
+            
 			NSPoint rotatePoint = [self ConvertFromNSView2GL: start];
 			
 			double ss = 1.0 - (previous.x - current.x)/200.;
@@ -5156,6 +5174,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				{
 					if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
 					{
+                        if( !mouseDraggedForROIUndo) {
+                            mouseDraggedForROIUndo = YES;
+                            [[self windowController] addToUndoQueue:@"roi"];
+                        }
+                        
 						action = YES;
 						[[curRoiList objectAtIndex: i] setTextBoxOffset: offset];
 					}
@@ -5166,8 +5189,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			{
 				for( int i = 0; i < [curRoiList count]; i++)
 				{
-					if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
+					if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected && [[curRoiList objectAtIndex:i] locked] == NO)
 					{
+                        if( !mouseDraggedForROIUndo) {
+                            mouseDraggedForROIUndo = YES;
+                            [[self windowController] addToUndoQueue:@"roi"];
+                        }
+                        
 						action = YES;
 						[[curRoiList objectAtIndex:i] roiMove: offset];
 					}

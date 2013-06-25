@@ -273,7 +273,7 @@ enum
 @synthesize blendingTypeWindow, blendingTypeMultiply, blendingTypeSubtract, blendingTypeRGB, blendingPlugins, blendingResample;
 @synthesize flagListPODComparatives;
 
-#define UNDOQUEUESIZE 40
+#define UNDOQUEUESIZE 20
 #define PARALLELPLANETOLERANCE 0.0001
 // WARNING: If you add or modify this list, check ViewerController.m, DCMView.h and HotKey Pref Pane
 

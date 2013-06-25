@@ -67,7 +67,7 @@ enum
 	int				textureWidth, textureHeight;
 
 	unsigned char   *textureBuffer, *textureBufferSelected;
-	
+    
 	NSMutableArray *ctxArray;	//All contexts where this texture is used
 	NSMutableArray *textArray;	//All texture id
 
@@ -162,7 +162,7 @@ enum
 @property(nonatomic, setter=setROIMode:) long ROImode;
 @property(retain) NSMutableArray *points; // Return/set the points state of the ROI
 @property(readonly) NSMutableArray *zPositions;
-@property(readonly) BOOL clickInTextBox;
+@property BOOL clickInTextBox;
 @property(setter=setROIRect:) NSRect rect; // To create a Rectangular ROI (tROI) or an Oval ROI (tOval) or a 2DPoint
 @property(nonatomic, retain) DCMPix *pix; // The DCMPix associated to this ROI
 @property(readonly) DCMView *curView;  // The DCMView associated to this ROI

@@ -105,7 +105,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	
 	ROI				*curROI;
 	int				volumicData;
-	BOOL			drawingROI, noScale, volumicSeries;
+	BOOL			drawingROI, noScale, volumicSeries, mouseDraggedForROIUndo;
 	DCMView			*blendingView;
 	float			blendingFactor, blendingFactorStart;
 	BOOL			eraserFlag; // use by the PaletteController to switch between the Brush and the Eraser

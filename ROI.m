@@ -3853,6 +3853,11 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	
 	if( moved && ![curView suppressLabels] && self.isTextualDataDisplayed )	// Draw bezier line
 	{
+        NSPoint anchor = originAnchor;
+        
+        if( type == tPlain)
+            anchor = [curView ConvertFromGL2View: NSMakePoint( textureDownRightCornerX - textureWidth/2, textureDownRightCornerY - textureHeight/2)];
+        
 		CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		glLoadIdentity();
 //		glScalef( 2.0f /([curView frame].size.width), -2.0f / ([curView frame].size.height), 1.0f);	// JORIS ! Here is the problem for iChat : if ICHAT [curView frame] should be 640 *480....
@@ -3863,8 +3868,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		const int OFF = 30;
 		
 		ctrlpoints[0][0] = NSMinX( drawRect);				ctrlpoints[0][1] = NSMidY( drawRect);							ctrlpoints[0][2] = 0;
-		ctrlpoints[1][0] = originAnchor.x - OFF;			ctrlpoints[1][1] = originAnchor.y;								ctrlpoints[1][2] = 0;
-		ctrlpoints[2][0] = originAnchor.x;					ctrlpoints[2][1] = originAnchor.y;								ctrlpoints[2][2] = 0;
+		ctrlpoints[1][0] = anchor.x - OFF;                  ctrlpoints[1][1] = anchor.y;								ctrlpoints[1][2] = 0;
+		ctrlpoints[2][0] = anchor.x;                        ctrlpoints[2][1] = anchor.y;								ctrlpoints[2][2] = 0;
 		
 		glLineWidth( 3.0 * curView.window.backingScaleFactor);
 		if( mode == ROI_sleep) glColor4f(0.0f, 0.0f, 0.0f, 0.4f);
@@ -4333,9 +4338,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				glVertex3d (screenXDr, screenYDr, 0.0);
 				glEnd();
 				
-				glDisable(GL_TEXTURE_RECTANGLE_EXT);
-                
                 glDeleteTextures( 1, &textureName);
+                
+				glDisable(GL_TEXTURE_RECTANGLE_EXT);
                 
 				glEnable(GL_POLYGON_SMOOTH);
 				
