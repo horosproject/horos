@@ -28,7 +28,6 @@
 #define PRESETS_DIRECTORY @"/3DPRESETS/"
 #define CLUTDATABASE @"/CLUTs/"
 #define DATABASEPATH @"/DATABASE.noindex/"
-#define UNDOQUEUESIZE 40
 
 extern void setvtkMeanIPMode( int m);
 extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2, float *u, float *iP);
@@ -1116,12 +1115,15 @@ static float deg2rad = M_PI/180.0;
 
 - (void) addToUndoQueue:(NSString*) string
 {
+    if( [[NSUserDefaults standardUserDefaults] integerForKey: @"UndoQueueSize"] <= 0)
+        return;
+    
 	id obj = [self prepareObjectForUndo: string];
 	
 	if( obj)
 		[undoQueue addObject: obj];
 	
-	if( [undoQueue count] > UNDOQUEUESIZE)
+	if( [undoQueue count] > [[NSUserDefaults standardUserDefaults] integerForKey: @"UndoQueueSize"])
 	{
 		[undoQueue removeObjectAtIndex: 0];
 	}

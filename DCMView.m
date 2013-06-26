@@ -4233,6 +4233,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			{
                 mouseDraggedForROIUndo = NO;
                 
+                if( !mouseDraggedForROIUndo) {
+                    mouseDraggedForROIUndo = YES;
+                    [[self windowController] addToUndoQueue:@"roi"];
+                }
+                
 				@try 
 				{
 					[self deleteMouseDownTimer];
@@ -8231,7 +8236,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             warningNotice = [[GLString alloc] initWithAttributedString: text withBoxColor: [NSColor colorWithDeviceRed:1.0f green:0.f blue: 0.f alpha:0.4f] withBorderColor: [NSColor colorWithDeviceRed:1.0f green:0.f blue: 0.f alpha:1.0f]];
         }
         
-        if( annotations > annotNone && warningNotice)
+        if( warningNotice)
         {
             glColor4f( 1.0, 1.0, 1.0, 1.0);
             

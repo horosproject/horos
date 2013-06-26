@@ -41,7 +41,6 @@
 #define PRESETS_DIRECTORY @"/3DPRESETS/"
 #define CLUTDATABASE @"/CLUTs/"
 #define DATABASEPATH @"/DATABASE.noindex/"
-#define UNDOQUEUESIZE 40
 
 static NSString *MPRPlaneObservationContext = @"MPRPlaneObservationContext";
 
@@ -1437,12 +1436,15 @@ static float deg2rad = M_PI / 180.0;
 
 - (void) addToUndoQueue:(NSString*) string
 {
+    if( [[NSUserDefaults standardUserDefaults] integerForKey: @"UndoQueueSize"] <= 0)
+        return;
+    
 	id obj = [self prepareObjectForUndo: string];
 	
 	if( obj)
 		[undoQueue addObject: obj];
 	
-	if( [undoQueue count] > UNDOQUEUESIZE)
+	if( [undoQueue count] > [[NSUserDefaults standardUserDefaults] integerForKey: @"UndoQueueSize"])
 	{
 		[undoQueue removeObjectAtIndex: 0];
 	}

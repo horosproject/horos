@@ -273,7 +273,6 @@ enum
 @synthesize blendingTypeWindow, blendingTypeMultiply, blendingTypeSubtract, blendingTypeRGB, blendingPlugins, blendingResample;
 @synthesize flagListPODComparatives;
 
-#define UNDOQUEUESIZE 20
 #define PARALLELPLANETOLERANCE 0.0001
 // WARNING: If you add or modify this list, check ViewerController.m, DCMView.h and HotKey Pref Pane
 
@@ -1051,10 +1050,13 @@ return YES;
 
 - (void) addToUndoQueue:(NSString*) string
 {
+    if( [[NSUserDefaults standardUserDefaults] integerForKey: @"UndoQueueSize"] <= 0)
+        return;
+    
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"DontUseUndoQueueForROIs"] == NO)
         [undoQueue addObject: [self prepareObjectForUndo: string]];
 	
-	if( [undoQueue count] > UNDOQUEUESIZE)
+	if( [undoQueue count] > [[NSUserDefaults standardUserDefaults] integerForKey: @"UndoQueueSize"])
 	{
 		[undoQueue removeObjectAtIndex: 0];
 	}
