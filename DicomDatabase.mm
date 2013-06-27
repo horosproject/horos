@@ -45,6 +45,7 @@
 #import "ThreadModalForWindowController.h"
 #import "NSNotificationCenter+N2.h"
 #import "Wait.h"
+#import "WaitRendering.h"
 
 NSString* const CurrentDatabaseVersion = @"2.5";
 
@@ -163,7 +164,37 @@ static DicomDatabase* defaultDatabase = nil;
 +(DicomDatabase*)defaultDatabase {
 	@synchronized(self) {
 		if (!defaultDatabase)
+        {
+            WaitRendering *w = nil;
+            
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"eraseEntireDBAtStartup"])
+            {
+                NSString *databaseDir = [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[[self defaultBaseDirPath] stringByAppendingPathComponent:@"DATABASE.noindex"]];
+                
+                if( [NSThread isMainThread])
+                {
+                    w = [[[WaitRendering alloc] init:NSLocalizedString(@"Erase Entire Database...", nil)] autorelease];
+                    [w showWindow:self];
+                }
+                
+                [[NSFileManager defaultManager] removeItemAtPath: databaseDir  error: nil];
+                [[NSFileManager defaultManager] createDirectoryAtPath: databaseDir withIntermediateDirectories: NO attributes: nil error: nil];
+            }
+            
 			defaultDatabase = [[self databaseAtPath:[self defaultBaseDirPath] name:NSLocalizedString(@"Default Database", nil)] retain];
+            
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"eraseEntireDBAtStartup"])
+            {
+                NSArray *studies = [defaultDatabase objectsForEntity: defaultDatabase.studyEntity];
+                
+                for (DicomStudy *study in studies)
+                    [defaultDatabase.managedObjectContext deleteObject:study];
+                
+                [defaultDatabase save:NULL];
+            }
+            
+            [w close];
+        }
 	}
 	
 	return defaultDatabase;
