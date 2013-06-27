@@ -278,7 +278,6 @@
         
         NSString* table = @"Study";
         
-#define e else
         for (NSString* key in keys) {
             NSString* value = [keys objectForKey:key];
             if (![value isKindOfClass:[NSString class]])
@@ -295,18 +294,17 @@
                 if ([value isEqualToString:@"IMAGE"])
                     table = @"Image";
             }
-            e if ([k isEqualToString:@"studyInstanceUID"])
+            else if ([k isEqualToString:@"studyInstanceUID"])
                 slDataset.putAndInsertString(DCM_StudyInstanceUID, value.UTF8String);
-            e if ([k isEqualToString:@"seriesInstanceUID"])
+            else if ([k isEqualToString:@"seriesInstanceUID"])
                 slDataset.putAndInsertString(DCM_SeriesInstanceUID, value.UTF8String);
-            e if ([k isEqualToString:@"patientID"])
+            else if ([k isEqualToString:@"patientID"])
                 slDataset.putAndInsertString(DCM_PatientID, value.UTF8String);
-            e if ([k isEqualToString:@"accessionNumber"])
+            else if ([k isEqualToString:@"accessionNumber"])
                 slDataset.putAndInsertString(DCM_AccessionNumber, value.UTF8String);
         }
-#undef e
         
-        slDataset.print(std::cout);
+//        slDataset.print(std::cout);
         
         for (NSDictionary* dn in dicomNodes) {
             DCMTKRootQueryNode* qn = [DCMTKRootQueryNode queryNodeWithDataset:&slDataset
@@ -365,8 +363,12 @@
     
     NSString* patientID = [paramDict valueForKey:@"PatientID"];
     if (patientID.length) [subpredicates addObject:[NSPredicate predicateWithFormat:@"patientID == %@", patientID]];
+    
     NSString* studyInstanceUID = [paramDict valueForKey:@"StudyInstanceUID"];
     if (studyInstanceUID.length) [subpredicates addObject:[NSPredicate predicateWithFormat:@"studyInstanceUID == %@", studyInstanceUID]];
+    
+    NSString* accessionNumber = [paramDict valueForKey:@"AccessionNumber"];
+    if (accessionNumber.length) [subpredicates addObject:[NSPredicate predicateWithFormat:@"accessionNumber == %@", accessionNumber]];
 
     if (!subpredicates.count)
         ReturnWithCode(400); // Bad Request
@@ -387,6 +389,8 @@
             [keys setObject:patientID forKey:@"patientID"];
         if (studyInstanceUID.length)
             [keys setObject:studyInstanceUID forKey:@"studyInstanceUID"];
+        if (accessionNumber.length)
+            [keys setObject:accessionNumber forKey:@"accessionNumber"];
 
         if (keys.count)
             [self _PACSOnDemandRetrieve:keys open:predicate];
