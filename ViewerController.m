@@ -1018,27 +1018,32 @@ return YES;
 
 - (id) prepareObjectForUndo:(NSString*) string
 {
-	if( [string isEqualToString: @"roi"])
-	{
-		NSMutableArray	*rois = [NSMutableArray array];
-		
-		for( int i = 0; i < maxMovieIndex; i++)
-		{
-			NSMutableArray *array = [NSMutableArray array];
-			for( NSArray *ar in roiList[ i])
-			{
-				NSMutableArray	*a = [NSMutableArray array];
-				
-				for( ROI *r in ar)
-					[a addObject: [[r copy] autorelease]];
-				
-				[array addObject: a];
-			}
-			[rois addObject: array];
-		}
-		
-		return [NSDictionary dictionaryWithObjectsAndKeys: string, @"type", rois, @"rois", nil];
-	}
+    @try {
+        if( [string isEqualToString: @"roi"])
+        {
+            NSMutableArray	*rois = [NSMutableArray array];
+            
+            for( int i = 0; i < maxMovieIndex; i++)
+            {
+                NSMutableArray *array = [NSMutableArray array];
+                for( NSArray *ar in roiList[ i])
+                {
+                    NSMutableArray	*a = [NSMutableArray array];
+                    
+                    for( ROI *r in ar)
+                        [a addObject: [[r copy] autorelease]];
+                    
+                    [array addObject: a];
+                }
+                [rois addObject: array];
+            }
+            
+            return [NSDictionary dictionaryWithObjectsAndKeys: string, @"type", rois, @"rois", nil];
+        }
+    }
+    @catch (NSException *exception) {
+        N2LogException( exception);
+    }
 	return nil;
 }
 

@@ -811,19 +811,25 @@ int main(int argc, const char *argv[])
 					[printOp runOperation];
                     
                     //jf remove empty last PDF page
-                    NSURL *pdfURL = [theURL URLByAppendingPathExtension:@"pdf"];
-                    PDFDocument *pdf = [[[PDFDocument alloc]initWithURL:pdfURL]autorelease];
-                    NSUInteger pdfPageCount = [pdf pageCount];
-                    if (pdfPageCount > 1)
+                    @try
                     {
-                        NSUInteger pdfLastPageIndex = pdfPageCount - 1;
-                        PDFPage *pdfLastPage = [pdf pageAtIndex:pdfLastPageIndex];
-                        NSUInteger pdfLastPageCharCount = [pdfLastPage numberOfCharacters];
-                        if (pdfLastPageCharCount < 2)
+                        NSURL *pdfURL = [theURL URLByAppendingPathExtension:@"pdf"];
+                        PDFDocument *pdf = [[[PDFDocument alloc]initWithURL:pdfURL]autorelease];
+                        NSUInteger pdfPageCount = [pdf pageCount];
+                        if (pdfPageCount > 1)
                         {
-                            [pdf removePageAtIndex:pdfLastPageIndex];
-                            [pdf writeToURL:pdfURL];
+                            NSUInteger pdfLastPageIndex = pdfPageCount - 1;
+                            PDFPage *pdfLastPage = [pdf pageAtIndex:pdfLastPageIndex];
+                            NSUInteger pdfLastPageCharCount = [pdfLastPage numberOfCharacters];
+                            if (pdfLastPageCharCount < 2)
+                            {
+                                [pdf removePageAtIndex:pdfLastPageIndex];
+                                [pdf writeToURL:pdfURL];
+                            }
                         }
+                    }
+                    @catch ( NSException *e) {
+                        N2LogException( e);
                     }
 				}
 			}
