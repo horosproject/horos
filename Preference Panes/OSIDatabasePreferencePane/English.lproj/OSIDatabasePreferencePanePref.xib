@@ -1868,7 +1868,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											<string key="NSFrame">{{13, 28}, {735, 18}}</string>
 											<reference key="NSSuperview" ref="792082900"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView" ref="84567665"/>
+											<reference key="NSNextKeyView" ref="5681952"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSButtonCell" key="NSCell" id="659832604">
 												<int key="NSCellFlags">67108864</int>
@@ -1886,7 +1886,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											</object>
 											<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 										</object>
-										<object class="NSButton" id="84567665">
+										<object class="NSButton" id="5681952">
 											<reference key="NSNextResponder" ref="792082900"/>
 											<int key="NSvFlags">256</int>
 											<string key="NSFrame">{{13, 10}, {735, 18}}</string>
@@ -1894,12 +1894,12 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="872579425"/>
 											<bool key="NSEnabled">YES</bool>
-											<object class="NSButtonCell" key="NSCell" id="1030502156">
+											<object class="NSButtonCell" key="NSCell" id="103129083">
 												<int key="NSCellFlags">67108864</int>
 												<int key="NSCellFlags2">131072</int>
 												<string key="NSContents">Automatically delete the ENTIRE default database, at each startup: all studies will be deleted.</string>
 												<reference key="NSSupport" ref="26"/>
-												<reference key="NSControlView" ref="84567665"/>
+												<reference key="NSControlView" ref="5681952"/>
 												<int key="NSButtonFlags">1211912448</int>
 												<int key="NSButtonFlags2">2</int>
 												<reference key="NSAlternateImage" ref="270514410"/>
@@ -4625,10 +4625,10 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">value: values.eraseEntireDBAtStartup</string>
-						<reference key="source" ref="84567665"/>
+						<reference key="source" ref="5681952"/>
 						<reference key="destination" ref="563769253"/>
 						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="84567665"/>
+							<reference key="NSSource" ref="5681952"/>
 							<reference key="NSDestination" ref="563769253"/>
 							<string key="NSLabel">value: values.eraseEntireDBAtStartup</string>
 							<string key="NSBinding">value</string>
@@ -5388,7 +5388,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<reference ref="720905298"/>
 							<reference ref="103535991"/>
 							<reference ref="637146268"/>
-							<reference ref="84567665"/>
+							<reference ref="5681952"/>
 						</array>
 						<reference key="parent" ref="704182798"/>
 					</object>
@@ -6248,16 +6248,16 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">1032</int>
-						<reference key="object" ref="84567665"/>
+						<reference key="object" ref="5681952"/>
 						<array class="NSMutableArray" key="children">
-							<reference ref="1030502156"/>
+							<reference ref="103129083"/>
 						</array>
 						<reference key="parent" ref="216932804"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">1033</int>
-						<reference key="object" ref="1030502156"/>
-						<reference key="parent" ref="84567665"/>
+						<reference key="object" ref="103129083"/>
+						<reference key="parent" ref="5681952"/>
 					</object>
 				</array>
 			</object>
