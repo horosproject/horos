@@ -2183,7 +2183,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (NSMenu*) contextualMenu
 {
-
 // if contextualMenuPath says @"default", recreate the default menu once and again
 // if contextualMenuPath contains a path, create the new contextual menu
 // if contextualMenuPath says @"custom", don't do anything
@@ -2191,11 +2190,11 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[contextualMenu release];
 	contextualMenu = nil;
 	
-	if([contextualDictionaryPath isEqualToString:@"default"]) // JF20070102
+	if([contextualDictionaryPath isEqualToString:@"default"])
 	{
 		/******************* Tools menu ***************************/
 		contextualMenu =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"Tools", nil)];
-		NSMenu *submenu =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"ROI", nil)];
+		NSMenu *submenu =  [[[NSMenu alloc] initWithTitle:NSLocalizedString(@"ROI", nil)] autorelease];
 		NSMenuItem *item;
 		NSArray *titles = [NSArray arrayWithObjects:NSLocalizedString(@"Contrast", nil), NSLocalizedString(@"Move", nil), NSLocalizedString(@"Magnify", nil), 
 													NSLocalizedString(@"Rotate", nil), NSLocalizedString(@"Scroll", nil), nil];
@@ -2214,13 +2213,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 			int tag = [subItem tag];
 			if( tag)
 			{
-				item = [[NSMenuItem alloc] initWithTitle: [subItem title] action: @selector(setROITool:) keyEquivalent:@""];
+				item = [[[NSMenuItem alloc] initWithTitle: [subItem title] action: @selector(setROITool:) keyEquivalent:@""] autorelease];
 				[item setTag:tag];
 				
 				[item setTarget:self];
 				[[item image] setSize:ToolsMenuIconSize];
 				[submenu addItem:item];
-				[item release];
 			}
 			else [submenu addItem: [NSMenuItem separatorItem]];
 		}
@@ -2228,17 +2226,16 @@ static volatile int numberOfThreadsForRelisce = 0;
 		for (title in titles)
 		{
 			image = [enumerator2 nextObject];
-			item = [[NSMenuItem alloc] initWithTitle: title action: @selector(setDefaultTool:) keyEquivalent:@""];
+			item = [[[NSMenuItem alloc] initWithTitle: title action: @selector(setDefaultTool:) keyEquivalent:@""] autorelease];
 			[item setTag:i++];
 			[item setTarget:self];
 			[item setImage:[NSImage imageNamed:image]];
 			[[item image] setSize:ToolsMenuIconSize];
 			[contextualMenu addItem:item];
-			[item release];
 		}
 		
 		image = [enumerator2 nextObject];
-		item = [[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"ROI", nil) action: nil keyEquivalent:@""];
+		item = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"ROI", nil) action: nil keyEquivalent:@""] autorelease];
 		[item setTag: -1];
 		[item setTarget: self];
 		
@@ -2251,7 +2248,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[[item image] setSize:ToolsMenuIconSize];
 		
 		[contextualMenu addItem:item];
-		[item release];
 		
 		[[contextualMenu itemAtIndex:5] setSubmenu:submenu];
 		
@@ -2286,84 +2282,59 @@ static volatile int numberOfThreadsForRelisce = 0;
 			NSLog( @"***** Selected item: %@", [presetsMenu title]);
 		}
 		
-		NSMenu *menu = [presetsMenu copy];
-		item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Window Width & Level", nil) action: nil keyEquivalent:@""];
+		NSMenu *menu = [[presetsMenu copy] autorelease];
+		item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Window Width & Level", nil) action: nil keyEquivalent:@""] autorelease];
 		[item setSubmenu:menu];
 		[contextualMenu addItem:item];
-		[item release];
-		[menu release];
 		
 		[contextualMenu addItem:[NSMenuItem separatorItem]];
 		
 		/************* window resize Menu ****************/
 		
-		[submenu release];
-		submenu =  [[NSMenu alloc] initWithTitle:@"Resize window"];
+		submenu =  [[[NSMenu alloc] initWithTitle:@"Resize window"] autorelease];
 		
 		NSArray *resizeWindowArray = [NSArray arrayWithObjects:@"25%", @"50%", @"100%", @"200%", @"300%", @"iPod Video", nil];
 		i = 0;
-		NSString	*titleMenu;
-		for (titleMenu in resizeWindowArray) {
+		for (NSString *titleMenu in resizeWindowArray) {
 			int tag = i++;
-			item = [[NSMenuItem alloc] initWithTitle:titleMenu action: @selector(resizeWindow:) keyEquivalent:@""];
+			item = [[[NSMenuItem alloc] initWithTitle:titleMenu action: @selector(resizeWindow:) keyEquivalent:@""] autorelease];
 			[item setTag:tag];
 			[item setTarget:imageView];
 			[submenu addItem:item];
-			[item release];
 		}
 		
-		item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Resize window", nil) action: nil keyEquivalent:@""];
+		item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Resize window", nil) action: nil keyEquivalent:@""] autorelease];
 		[item setSubmenu:submenu];
 		[contextualMenu addItem:item];
-		[item release];
 		
 		[contextualMenu addItem:[NSMenuItem separatorItem]];
-		
-		item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"No Rescale Size (100%)", nil) action: @selector(actualSize:) keyEquivalent:@""];
-		[contextualMenu addItem:item];
-		[item release];
-		
-		item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Actual size", nil) action: @selector(realSize:) keyEquivalent:@""];
-		[contextualMenu addItem:item];
-		[item release];
-		
-		item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Scale To Fit", nil) action: @selector(scaleToFit:) keyEquivalent:@""];
-		[contextualMenu addItem:item];
-		[item release];
-		
-		item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Key image", nil) action: @selector(setKeyImage:) keyEquivalent:@""];
-		[contextualMenu addItem:item];
-		[item release];
+		[contextualMenu addItemWithTitle:NSLocalizedString(@"No Rescale Size (100%)", nil) action: @selector(actualSize:) keyEquivalent:@""];
+		[contextualMenu addItemWithTitle:NSLocalizedString(@"Actual size", nil) action: @selector(realSize:) keyEquivalent:@""];
+		[contextualMenu addItemWithTitle:NSLocalizedString(@"Scale To Fit", nil) action: @selector(scaleToFit:) keyEquivalent:@""];
+		[contextualMenu addItemWithTitle:NSLocalizedString(@"Key image", nil) action: @selector(setKeyImage:) keyEquivalent:@""];
 		
 		// Tiling
 		NSMenu *tilingMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Image Tiling", nil)] submenu];
 		if( tilingMenu == nil)
 		{
-			NSLog( @"***** NSLocalization bug.... tilingMenu == nil -> tilingMenu == itemAtIndex == 46");
 			NSLog( @"Not found item: %@", NSLocalizedString(@"Image Tiling", nil));
-			tilingMenu = [[viewerMenu itemAtIndex: 46] submenu];
+			tilingMenu = [[viewerMenu itemAtIndex: 48] submenu];
 			NSLog( @"***** Selected item: %@", [tilingMenu title]);
 		}
-		menu = [tilingMenu copy];
-		item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Image Tiling", nil) action: nil keyEquivalent:@""];
+		menu = [[tilingMenu copy] autorelease];
+		item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Image Tiling", nil) action: nil keyEquivalent:@""] autorelease];
 		[item setSubmenu:menu];
 		[contextualMenu addItem:item];
-		[item release];
-		[menu release];
 		
-		menu = [[AppController sharedAppController].windowsTilingMenuRows copy];
-		item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Windows Tiling - Rows", nil) action: nil keyEquivalent:@""];
+		menu = [[[AppController sharedAppController].windowsTilingMenuRows copy] autorelease];
+		item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Windows Tiling - Rows", nil) action: nil keyEquivalent:@""] autorelease];
 		[item setSubmenu:menu];
 		[contextualMenu addItem:item];
-		[item release];
-		[menu release];
 		
-		menu = [[AppController sharedAppController].windowsTilingMenuColumns copy];
-		item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Windows Tiling - Columns", nil) action: nil keyEquivalent:@""];
+		menu = [[[AppController sharedAppController].windowsTilingMenuColumns copy] autorelease];
+		item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Windows Tiling - Columns", nil) action: nil keyEquivalent:@""] autorelease];
 		[item setSubmenu:menu];
 		[contextualMenu addItem:item];
-		[item release];
-		[menu release];
 
 		/********** Orientation submenu ************/ 
 		
@@ -2376,12 +2347,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 			NSLog( @"***** Selected item: %@", [orientationMenu title]);
 		}
 		
-		menu = [orientationMenu copy];
-		item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Orientation", nil) action: nil keyEquivalent:@""];
+		menu = [[orientationMenu copy] autorelease];
+		item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Orientation", nil) action: nil keyEquivalent:@""] autorelease];
 		[item setSubmenu:menu];
 		[contextualMenu addItem:item];
-		[item release];
-		[menu release];
 
 		/*************Export submenu**************/
 		NSMenu *exportMenu = [[fileMenu itemWithTitle:NSLocalizedString(@"Export", nil)] submenu];
@@ -2393,20 +2362,15 @@ static volatile int numberOfThreadsForRelisce = 0;
 			NSLog( @"***** Selected item: %@", [exportMenu title]);
 		}
 		
-		menu = [exportMenu copy];
-		item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export", nil) action: nil keyEquivalent:@""];
+		menu = [[exportMenu copy] autorelease];
+		item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export", nil) action: nil keyEquivalent:@""] autorelease];
 		[item setSubmenu:menu];
 		[contextualMenu addItem:item];
-		[item release];
-		[menu release];
 		
 		[contextualMenu addItem:[NSMenuItem separatorItem]];
-		item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open database", nil) action: @selector(databaseWindow:)  keyEquivalent:@""];
+		item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open database", nil) action: @selector(databaseWindow:)  keyEquivalent:@""] autorelease];
 		[item setTarget:self];
 		[contextualMenu addItem:item];
-		[item release];
-		
-		[submenu release];
 	}
 	else //use the menuDictionary of the path
 	{

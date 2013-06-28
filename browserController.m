@@ -9590,42 +9590,42 @@ static BOOL withReset = NO;
 	
 	if ( contextual == nil) contextual	= [[NSMenu alloc] initWithTitle: NSLocalizedString(@"Tools", nil)];
 	
-	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open Images", nil) action:@selector(viewerDICOM:) keyEquivalent:@""] autorelease]];
-	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open Images in 4D", nil) action:@selector(MovieViewerDICOM:) keyEquivalent:@""] autorelease]];
-	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open Sub-Selection", nil) action:@selector(viewerSubSeriesDICOM:) keyEquivalent:@""] autorelease]];
-    [contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open Reparsed series", nil) action:@selector(viewerReparsedSeries:) keyEquivalent:@""] autorelease]];
-	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open Key Images", nil) action:@selector(viewerDICOMKeyImages:) keyEquivalent:@""] autorelease]];
-	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open ROIs Images", nil) action:@selector(viewerDICOMROIsImages:) keyEquivalent:@""] autorelease]];
-	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open ROIs and Key Images", nil) action:@selector(viewerKeyImagesAndROIsImages:) keyEquivalent:@""] autorelease]];
-	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open Merged Selection", nil) action:@selector(viewerDICOMMergeSelection:) keyEquivalent:@""] autorelease]];
-	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Reveal In Finder", nil) action:@selector(revealInFinder:) keyEquivalent:@""] autorelease]];
+	[contextual addItemWithTitle: NSLocalizedString(@"Open Images", nil) action:@selector(viewerDICOM:) keyEquivalent:@""];
+	[contextual addItemWithTitle: NSLocalizedString(@"Open Images in 4D", nil) action:@selector(MovieViewerDICOM:) keyEquivalent:@""];
+	[contextual addItemWithTitle: NSLocalizedString(@"Open Sub-Selection", nil) action:@selector(viewerSubSeriesDICOM:) keyEquivalent:@""];
+    [contextual addItemWithTitle: NSLocalizedString(@"Open Reparsed series", nil) action:@selector(viewerReparsedSeries:) keyEquivalent:@""];
+	[contextual addItemWithTitle: NSLocalizedString(@"Open Key Images", nil) action:@selector(viewerDICOMKeyImages:) keyEquivalent:@""];
+	[contextual addItemWithTitle: NSLocalizedString(@"Open ROIs Images", nil) action:@selector(viewerDICOMROIsImages:) keyEquivalent:@""];
+	[contextual addItemWithTitle: NSLocalizedString(@"Open ROIs and Key Images", nil) action:@selector(viewerKeyImagesAndROIsImages:) keyEquivalent:@""];
+	[contextual addItemWithTitle: NSLocalizedString(@"Open Merged Selection", nil) action:@selector(viewerDICOMMergeSelection:) keyEquivalent:@""];
+	[contextual addItemWithTitle: NSLocalizedString(@"Reveal In Finder", nil) action:@selector(revealInFinder:) keyEquivalent:@""];
 	[contextual addItem: [NSMenuItem separatorItem]];
 	
-	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to DICOM Network Node", nil) action:@selector(export2PACS:) keyEquivalent:@""] autorelease]];
-	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to Movie", nil) action:@selector(exportQuicktime:) keyEquivalent:@""] autorelease]];
-	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to JPEG", nil) action:@selector(exportJPEG:) keyEquivalent:@""] autorelease]];
-	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to TIFF", nil) action:@selector(exportTIFF:) keyEquivalent:@""] autorelease]];
-	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to DICOM File(s)", nil) action:@selector(exportDICOMFile:) keyEquivalent:@""] autorelease]];
+	[contextual addItemWithTitle: NSLocalizedString(@"Export to DICOM Network Node", nil) action:@selector(export2PACS:) keyEquivalent:@""];
+	[contextual addItemWithTitle: NSLocalizedString(@"Export to Movie", nil) action:@selector(exportQuicktime:) keyEquivalent:@""];
+	[contextual addItemWithTitle: NSLocalizedString(@"Export to JPEG", nil) action:@selector(exportJPEG:) keyEquivalent:@""];
+	[contextual addItemWithTitle: NSLocalizedString(@"Export to TIFF", nil) action:@selector(exportTIFF:) keyEquivalent:@""];
+	[contextual addItemWithTitle: NSLocalizedString(@"Export to DICOM File(s)", nil) action:@selector(exportDICOMFile:) keyEquivalent:@""];
 	[contextual addItem: [NSMenuItem separatorItem]];
 	
-	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Compress DICOM files", nil) action:@selector(compressSelectedFiles:) keyEquivalent:@""] autorelease]];
-	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Decompress DICOM files", nil) action:@selector(decompressSelectedFiles:) keyEquivalent:@""] autorelease]];
+	[contextual addItemWithTitle: NSLocalizedString(@"Compress DICOM files", nil) action:@selector(compressSelectedFiles:) keyEquivalent:@""];
+	[contextual addItemWithTitle: NSLocalizedString(@"Decompress DICOM files", nil) action:@selector(decompressSelectedFiles:) keyEquivalent:@""];
 	[contextual addItem: [NSMenuItem separatorItem]];
 	
-	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Toggle Images/Series Displaying", nil) action:@selector(displayImagesOfSeries:) keyEquivalent:@""] autorelease]];
+	[contextual addItemWithTitle: NSLocalizedString(@"Toggle Images/Series Displaying", nil) action:@selector(displayImagesOfSeries:) keyEquivalent:@""];
 	[contextual addItem: [NSMenuItem separatorItem]];
 	
-	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Merge Selected Series", nil) action:@selector(mergeSeries:) keyEquivalent:@""] autorelease]];
+	[contextual addItemWithTitle: NSLocalizedString(@"Merge Selected Series", nil) action:@selector(mergeSeries:) keyEquivalent:@""];
 	[contextual addItem: [NSMenuItem separatorItem]];
 	
-	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Delete", nil) action:@selector(delItem:) keyEquivalent:@""] autorelease]];
+	[contextual addItemWithTitle: NSLocalizedString(@"Delete", nil) action:@selector(delItem:) keyEquivalent:@""];
 	[contextual addItem: [NSMenuItem separatorItem]];
 	
-	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Query Selected Patient from Q&R Window...", nil) action:@selector(querySelectedStudy:) keyEquivalent:@""] autorelease]];
-	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Burn", nil) action:@selector(burnDICOM:) keyEquivalent:@""] autorelease]];
-	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Anonymize", nil) action:@selector(anonymizeDICOM:) keyEquivalent:@""] autorelease]];
-	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Rebuild Selected Thumbnails", nil) action:@selector(rebuildThumbnails:) keyEquivalent:@""] autorelease]];
-	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Copy Linked Files to Database Folder", nil) action:@selector(copyToDBFolder:) keyEquivalent:@""] autorelease]];
+	[contextual addItemWithTitle: NSLocalizedString(@"Query Selected Patient from Q&R Window...", nil) action:@selector(querySelectedStudy:) keyEquivalent:@""];
+	[contextual addItemWithTitle: NSLocalizedString(@"Burn", nil) action:@selector(burnDICOM:) keyEquivalent:@""];
+	[contextual addItemWithTitle: NSLocalizedString(@"Anonymize", nil) action:@selector(anonymizeDICOM:) keyEquivalent:@""];
+	[contextual addItemWithTitle: NSLocalizedString(@"Rebuild Selected Thumbnails", nil) action:@selector(rebuildThumbnails:) keyEquivalent:@""];
+	[contextual addItemWithTitle: NSLocalizedString(@"Copy Linked Files to Database Folder", nil) action:@selector(copyToDBFolder:) keyEquivalent:@""];
 	[oMatrix setMenu: contextual];
 	
 	// Create alternate contextual menu for RT objects
@@ -12670,71 +12670,71 @@ static NSArray*	openSubSeriesArray = nil;
         return;
     }
     
-	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Display only this patient", nil) action: @selector(searchForCurrentPatient:) keyEquivalent:@""] autorelease]];
+	[menu addItemWithTitle: NSLocalizedString(@"Display only this patient", nil) action: @selector(searchForCurrentPatient:) keyEquivalent:@""];
 	
 	[menu addItem: [NSMenuItem separatorItem]];
-	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open Images", nil) action: @selector(viewerDICOM:) keyEquivalent:@""] autorelease]];
-	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open Images in 4D", nil) action: @selector(MovieViewerDICOM:) keyEquivalent:@""] autorelease]];
-	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open Sub-Selection", nil)  action:@selector(viewerSubSeriesDICOM:) keyEquivalent:@""] autorelease]];
-	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open Reparsed Series", nil)  action:@selector(viewerReparsedSeries:) keyEquivalent:@""] autorelease]];
-    [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open Key Images", nil) action: @selector(viewerDICOMKeyImages:) keyEquivalent:@""] autorelease]];
-	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open ROIs Images", nil) action: @selector(viewerDICOMROIsImages:) keyEquivalent:@""] autorelease]];
-	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open ROIs and Key Images", nil) action: @selector(viewerKeyImagesAndROIsImages:) keyEquivalent:@""] autorelease]];
-	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open Merged Selection", nil) action: @selector(viewerDICOMMergeSelection:) keyEquivalent:@""] autorelease]];
-	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Reveal In Finder", nil) action: @selector(revealInFinder:) keyEquivalent:@""] autorelease]];
+	[menu addItemWithTitle: NSLocalizedString(@"Open Images", nil) action: @selector(viewerDICOM:) keyEquivalent:@""];
+	[menu addItemWithTitle: NSLocalizedString(@"Open Images in 4D", nil) action: @selector(MovieViewerDICOM:) keyEquivalent:@""];
+	[menu addItemWithTitle: NSLocalizedString(@"Open Sub-Selection", nil)  action:@selector(viewerSubSeriesDICOM:) keyEquivalent:@""];
+	[menu addItemWithTitle: NSLocalizedString(@"Open Reparsed Series", nil)  action:@selector(viewerReparsedSeries:) keyEquivalent:@""];
+    [menu addItemWithTitle: NSLocalizedString(@"Open Key Images", nil) action: @selector(viewerDICOMKeyImages:) keyEquivalent:@""];
+	[menu addItemWithTitle: NSLocalizedString(@"Open ROIs Images", nil) action: @selector(viewerDICOMROIsImages:) keyEquivalent:@""];
+	[menu addItemWithTitle: NSLocalizedString(@"Open ROIs and Key Images", nil) action: @selector(viewerKeyImagesAndROIsImages:) keyEquivalent:@""];
+	[menu addItemWithTitle: NSLocalizedString(@"Open Merged Selection", nil) action: @selector(viewerDICOMMergeSelection:) keyEquivalent:@""];
+	[menu addItemWithTitle: NSLocalizedString(@"Reveal In Finder", nil) action: @selector(revealInFinder:) keyEquivalent:@""];
 	
 	[menu addItem: [NSMenuItem separatorItem]];
-	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to DICOM Network Node", nil) action: @selector(export2PACS:) keyEquivalent:@""] autorelease]];
-	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to Movie", nil) action: @selector(exportQuicktime:) keyEquivalent:@""] autorelease]];
-	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to JPEG", nil) action: @selector(exportJPEG:) keyEquivalent:@""] autorelease]];
-	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to TIFF", nil) action: @selector(exportTIFF:) keyEquivalent:@""] autorelease]];
-	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to DICOM File(s)", nil) action: @selector(exportDICOMFile:) keyEquivalent:@""] autorelease]];
-	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to Email", nil)  action:@selector(sendMail:) keyEquivalent:@""] autorelease]];
+	[menu addItemWithTitle: NSLocalizedString(@"Export to DICOM Network Node", nil) action: @selector(export2PACS:) keyEquivalent:@""];
+	[menu addItemWithTitle: NSLocalizedString(@"Export to Movie", nil) action: @selector(exportQuicktime:) keyEquivalent:@""];
+	[menu addItemWithTitle: NSLocalizedString(@"Export to JPEG", nil) action: @selector(exportJPEG:) keyEquivalent:@""];
+	[menu addItemWithTitle: NSLocalizedString(@"Export to TIFF", nil) action: @selector(exportTIFF:) keyEquivalent:@""];
+	[menu addItemWithTitle: NSLocalizedString(@"Export to DICOM File(s)", nil) action: @selector(exportDICOMFile:) keyEquivalent:@""];
+	[menu addItemWithTitle: NSLocalizedString(@"Export to Email", nil)  action:@selector(sendMail:) keyEquivalent:@""];
 	
     if (isWritable) {
         [menu addItem: [NSMenuItem separatorItem]];
-        [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Add selected study(s) to user(s)", nil)  action:@selector(addStudiesToUser:) keyEquivalent:@""] autorelease]];
-        [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Send an email notification to user(s)", nil)  action:@selector(sendEmailNotification:) keyEquivalent:@""] autorelease]];
+        [menu addItemWithTitle: NSLocalizedString(@"Add selected study(s) to user(s)", nil)  action:@selector(addStudiesToUser:) keyEquivalent:@""];
+        [menu addItemWithTitle: NSLocalizedString(@"Send an email notification to user(s)", nil)  action:@selector(sendEmailNotification:) keyEquivalent:@""];
     }
 	
     if (isWritable) {
         [menu addItem: [NSMenuItem separatorItem]];
-        [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Compress DICOM files", nil)  action:@selector(compressSelectedFiles:) keyEquivalent:@""] autorelease]];
-        [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Decompress DICOM files", nil)  action:@selector(decompressSelectedFiles:) keyEquivalent:@""] autorelease]];
+        [menu addItemWithTitle: NSLocalizedString(@"Compress DICOM files", nil)  action:@selector(compressSelectedFiles:) keyEquivalent:@""];
+        [menu addItemWithTitle: NSLocalizedString(@"Decompress DICOM files", nil)  action:@selector(decompressSelectedFiles:) keyEquivalent:@""];
     }
     
     if (isWritable) {
         [menu addItem: [NSMenuItem separatorItem]];
-        [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Lock Studies", nil)  action:@selector(lockStudies:) keyEquivalent:@""] autorelease]];
-        [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Unlock Studies", nil)  action:@selector(unlockStudies:) keyEquivalent:@""] autorelease]];
+        [menu addItemWithTitle: NSLocalizedString(@"Lock Studies", nil)  action:@selector(lockStudies:) keyEquivalent:@""];
+        [menu addItemWithTitle: NSLocalizedString(@"Unlock Studies", nil)  action:@selector(unlockStudies:) keyEquivalent:@""];
     }
     
     if (isWritable) { // TODO: allow report access, read-only
         [menu addItem: [NSMenuItem separatorItem]];
-        [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Create/Open Report", nil) action: @selector(generateReport:) keyEquivalent:@""] autorelease]];
-        [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Convert Report to PDF...", nil) action: @selector(convertReportToPDF:) keyEquivalent:@""] autorelease]];
-        [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Convert Report to DICOM PDF", nil) action: @selector(convertReportToDICOMSR:) keyEquivalent:@""] autorelease]];
+        [menu addItemWithTitle: NSLocalizedString(@"Create/Open Report", nil) action: @selector(generateReport:) keyEquivalent:@""];
+        [menu addItemWithTitle: NSLocalizedString(@"Convert Report to PDF...", nil) action: @selector(convertReportToPDF:) keyEquivalent:@""];
+        [menu addItemWithTitle: NSLocalizedString(@"Convert Report to DICOM PDF", nil) action: @selector(convertReportToDICOMSR:) keyEquivalent:@""];
 	}
     
     if (isWritable) {
         [menu addItem: [NSMenuItem separatorItem]];
-        [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Merge Selected Studies", nil) action: @selector(mergeStudies:) keyEquivalent:@""] autorelease]];
-        [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Unify patient identity", nil) action: @selector(unifyStudies:) keyEquivalent:@""] autorelease]];
+        [menu addItemWithTitle: NSLocalizedString(@"Merge Selected Studies", nil) action: @selector(mergeStudies:) keyEquivalent:@""];
+        [menu addItemWithTitle: NSLocalizedString(@"Unify patient identity", nil) action: @selector(unifyStudies:) keyEquivalent:@""];
 	}
     
     if (isWritable) {
         [menu addItem: [NSMenuItem separatorItem]];
-        [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Delete", nil) action: @selector(delItem:) keyEquivalent:@""] autorelease]];
+        [menu addItemWithTitle: NSLocalizedString(@"Delete", nil) action: @selector(delItem:) keyEquivalent:@""];
 	}
     
     if (isWritable) {
         [menu addItem: [NSMenuItem separatorItem]];
-        [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Query Selected Patient from Q&R Window...", nil) action: @selector(querySelectedStudy:) keyEquivalent:@""] autorelease]];
-        [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Burn", nil) action: @selector(burnDICOM:) keyEquivalent:@""] autorelease]];
-        [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Anonymize", nil) action: @selector(anonymizeDICOM:) keyEquivalent:@""] autorelease]];
-        [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Rebuild Selected Thumbnails", nil)  action:@selector(rebuildThumbnails:) keyEquivalent:@""] autorelease]];
-        [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Regenerate Auto-Fill Comment field", nil)  action:@selector(regenerateAutoComments:) keyEquivalent:@""] autorelease]];
-        [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Copy Linked Files to Database Folder", nil)  action:@selector(copyToDBFolder:) keyEquivalent:@""] autorelease]];
+        [menu addItemWithTitle: NSLocalizedString(@"Query Selected Patient from Q&R Window...", nil) action: @selector(querySelectedStudy:) keyEquivalent:@""];
+        [menu addItemWithTitle: NSLocalizedString(@"Burn", nil) action: @selector(burnDICOM:) keyEquivalent:@""];
+        [menu addItemWithTitle: NSLocalizedString(@"Anonymize", nil) action: @selector(anonymizeDICOM:) keyEquivalent:@""];
+        [menu addItemWithTitle: NSLocalizedString(@"Rebuild Selected Thumbnails", nil)  action:@selector(rebuildThumbnails:) keyEquivalent:@""];
+        [menu addItemWithTitle: NSLocalizedString(@"Regenerate Auto-Fill Comment field", nil)  action:@selector(regenerateAutoComments:) keyEquivalent:@""];
+        [menu addItemWithTitle: NSLocalizedString(@"Copy Linked Files to Database Folder", nil)  action:@selector(copyToDBFolder:) keyEquivalent:@""];
     }
 
 	 NSArray *autoroutingRules = [[NSUserDefaults standardUserDefaults] arrayForKey: @"AUTOROUTINGDICTIONARY"];
