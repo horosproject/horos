@@ -19,6 +19,15 @@
 
 @implementation OSIHangingPreferencePanePref
 
+- (id) tilingMenu
+{
+    NSMenu *mainMenu = [NSApp mainMenu];
+    NSMenu *viewerMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"2D Viewer", nil)] submenu];
+    NSMenu *tilingMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Image Tiling", nil)] submenu];
+    
+    return [[tilingMenu itemArray] valueForKey: @"title"];
+}
+
 - (id) initWithBundle:(NSBundle *)bundle
 {
 	if( self = [super init])
@@ -141,11 +150,9 @@
 
 - (IBAction)newHangingProtocol:(id)sender{
 	NSMutableDictionary *protocol = [NSMutableDictionary dictionary];
-    [protocol setObject:@"Study Description" forKey:@"Study Description"];
-    [protocol setObject:[NSNumber numberWithInt:1] forKey:@"Rows"];
-    [protocol setObject:[NSNumber numberWithInt:2] forKey:@"Columns"];
-	[protocol setObject:[NSNumber numberWithInt:1] forKey:@"Image Rows"];
-	[protocol setObject:[NSNumber numberWithInt:1] forKey:@"Image Columns"];
+    [protocol setObject: NSLocalizedString( @"Study Description", nil) forKey:@"Study Description"];
+    [protocol setObject:[NSNumber numberWithInt:1] forKey:@"WindowsTiling"];
+	[protocol setObject:[NSNumber numberWithInt:1] forKey:@"ImageTiling"];
 
 	NSMutableArray *hangingProtocolArray = [[[hangingProtocols objectForKey:modalityForHangingProtocols] mutableCopy] autorelease];
     [hangingProtocolArray  addObject:protocol];

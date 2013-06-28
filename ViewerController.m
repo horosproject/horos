@@ -2341,7 +2341,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		{
 			NSLog( @"***** NSLocalization bug.... tilingMenu == nil -> tilingMenu == itemAtIndex == 46");
 			NSLog( @"Not found item: %@", NSLocalizedString(@"Image Tiling", nil));
-			tilingMenu = [[viewerMenu itemAtIndex: 45] submenu];
+			tilingMenu = [[viewerMenu itemAtIndex: 46] submenu];
 			NSLog( @"***** Selected item: %@", [tilingMenu title]);
 		}
 		menu = [tilingMenu copy];
