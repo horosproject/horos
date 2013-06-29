@@ -509,7 +509,26 @@
 	
 	document->setSpecificCharacterSet( "ISO_IR 192"); // UTF-8
 	
-	if ([study valueForKey:@"name"] )
+    // We want the original patient's name
+    BOOL originalPatientsName = NO;
+    
+    if( [[image completePath] length])
+    {
+        DcmFileFormat fileformat;
+        OFCondition status  = fileformat.loadFile([[image completePath] UTF8String]);
+        if (status.good())
+        {
+            const char *string = nil;
+            status = fileformat.getDataset()->findAndGetString( DCM_PatientsName, string, OFFalse);
+            if (status.good() && string)
+            {
+                document->setPatientsName( string);
+                originalPatientsName = YES;
+            }
+        }
+    }
+    
+	if (originalPatientsName == NO && [study valueForKey:@"name"])
 		document->setPatientsName([[study valueForKey:@"name"] UTF8String]);
 		
 	if ([study valueForKey:@"dateOfBirth"])

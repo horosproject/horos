@@ -22,11 +22,12 @@ typedef char DSRDocument;
 #endif
 
 #import "ROI.h"
+#import "DicomImage.h"
 
 @interface SRAnnotation : NSObject
 {
 	DSRDocument			*document;
-	id					image;
+	DicomImage          *image;
 	BOOL				_newSR;
 	NSString			*_seriesInstanceUID, *_DICOMSRDescription, *_DICOMSeriesNumber, *_reportURL;
 	NSData				*_dataEncapsulated;
