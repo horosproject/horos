@@ -762,7 +762,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 									}
 									@catch (NSException * e)
 									{
-										NSLog( @"*********** [self.portal.database save:NULL]");
+										NSLog( @"*********** [user.managedObjectContext save:NULL]");
 									}
 									
 									studiesArrayStudyInstanceUID = [user.studies.allObjects valueForKey:@"studyInstanceUID"];

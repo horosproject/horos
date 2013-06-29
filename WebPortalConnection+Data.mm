@@ -1431,9 +1431,10 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		NSString* username = [parameters valueForKey: @"username"];
 		
 		// TRY TO FIND THIS USER
-		if ([email length] > 0 || [username length] > 0) {
-			[self.portal.database.managedObjectContext lock];
-			
+		if ([email length] > 0 || [username length] > 0)
+        {
+            WebPortalDatabase *db = self.portal.database.independentDatabase;
+            
 			@try
 			{
                 NSPredicate* predicate = nil;
@@ -1441,7 +1442,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 					predicate = [NSPredicate predicateWithFormat: @"(email BEGINSWITH[cd] %@) AND (email ENDSWITH[cd] %@)", email, email];
 				else predicate = [NSPredicate predicateWithFormat: @"(name BEGINSWITH[cd] %@) AND (name ENDSWITH[cd] %@)", username, username];
 				
-				NSArray *users = [self.portal.database objectsForEntity:self.portal.database.userEntity predicate:predicate];
+				NSArray *users = [db objectsForEntity: db.userEntity predicate:predicate];
 				
 				if ([users count] >= 1)
 				{
@@ -1484,7 +1485,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                         
 						[response.tokens addMessage:NSLocalizedString(@"You will shortly receive an email with your new password.", nil)];
 						
-						[self.portal.database save:NULL];
+						[db save:NULL];
 					}
 				}
 				else
@@ -1499,9 +1500,6 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			}
 			@catch (NSException* e) {
 				NSLog( @"******* password_forgotten: %@", e);
-			}
-			@finally {
-				[self.portal.database.managedObjectContext unlock];
 			}
 		}
 	}
@@ -1548,7 +1546,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                         
                         [user convertPasswordToHashIfNeeded];
                         
-						[self.portal.database save:NULL];
+						[user.managedObjectContext save:NULL];
 						[response.tokens addMessage:NSLocalizedString(@"Password updated successfully!", nil)];
 						[self.portal updateLogEntryForStudy: nil withMessage: [NSString stringWithFormat: @"User changed his password"] forUser:self.user.name ip:asyncSocket.connectedHost];
 					}
