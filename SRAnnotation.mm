@@ -172,7 +172,7 @@
 	return self;
 }
 
-- (id)initWithDictionary:(NSDictionary *) dict path:(NSString *) path forImage: (NSManagedObject*) im
+- (id)initWithDictionary:(NSDictionary *) dict path:(NSString *) path forImage: (DicomImage*) im
 {
 	if (self = [super init])
 	{
@@ -223,7 +223,7 @@
 }
 
 
-- (id)initWithFileReport:(NSString *) file path:(NSString *) path forImage: (NSManagedObject*) im contentDate: (NSDate*) d
+- (id)initWithFileReport:(NSString *) file path:(NSString *) path forImage: (DicomImage*) im contentDate: (NSDate*) d
 {
 	if (self = [super init])
 	{
@@ -273,7 +273,7 @@
 	return self;
 }
 
-- (id)initWithROIs:(NSArray *)ROIs path:(NSString *) path forImage: (NSManagedObject*) im
+- (id)initWithROIs:(NSArray *)ROIs path:(NSString *) path forImage: (DicomImage*) im
 {
 	if (self = [super init])
 	{
@@ -385,7 +385,7 @@
 	return _reportURL;
 }
 
-- (id)initWithURLReport:(NSString *) s path:(NSString *) path forImage: (NSManagedObject*) im
+- (id)initWithURLReport:(NSString *) s path:(NSString *) path forImage: (DicomImage*) im
 {
 	if (self = [super init])
 	{

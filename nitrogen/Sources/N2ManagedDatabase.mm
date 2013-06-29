@@ -33,19 +33,19 @@
 
 @synthesize database = _database;
 
--(id)init
+-(id)initWithDatabase: (N2ManagedDatabase*) db
 {
     self = [super init];
     
-    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector( N2ManagedDatabaseDealloced:) name: @"N2ManagedDatabaseDealloced" object: nil];
+    _database = db;
+    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector( N2ManagedDatabaseDealloced:) name: @"N2ManagedDatabaseDealloced" object: db];
     
     return self;
 }
 
 -(void)N2ManagedDatabaseDealloced:(NSNotification*) n
 {
-    if( n.object == self.database)
-        self.database = nil;
+    _database = nil;
 }
 
 -(void)dealloc {
@@ -53,8 +53,8 @@
     [_database checkForCorrectContextThread: self];
 #endif
     [NSNotificationCenter.defaultCenter removeObserver:self];
-	self.database = nil;
-	[super dealloc];
+	_database = nil;
+	[super dealloc]; //test if db is deallocated
 }
 
 -(BOOL)save:(NSError**)error {
@@ -251,10 +251,9 @@
     if( sqlFilePath.length == 0)
         return nil;
     
-    N2ManagedObjectContext* moc = [[[N2ManagedObjectContext alloc] init] autorelease];
+    N2ManagedObjectContext* moc = [[[N2ManagedObjectContext alloc] initWithDatabase: self] autorelease];
     //	NSLog(@"---------- NEW %@ at %@", moc, sqlFilePath);
 	moc.undoManager = nil;
-	moc.database = self;
 	
     //	NSMutableDictionary* persistentStoreCoordinatorsDictionary = self.persistentStoreCoordinatorsDictionary;
 	

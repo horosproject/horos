@@ -94,9 +94,9 @@
 @end
 
 @interface N2ManagedObjectContext : NSManagedObjectContext {
+    
 	N2ManagedDatabase* _database;
 }
 
-@property(assign) N2ManagedDatabase* database;
-
+@property(readonly) N2ManagedDatabase* database;
 @end
