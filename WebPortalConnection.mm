@@ -284,17 +284,6 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	return [n stringValue];
 }
 
--(NSString*)passwordForUser:(NSString*)username
-{
-	self.user = NULL;
-	
-    NSFetchRequest *r = [NSFetchRequest fetchRequestWithEntityName: @"User"];
-    r.predicate = [NSPredicate predicateWithFormat:@"name LIKE[cd] %@", username];
-    self.user = [[self.portal.database.independentContext executeFetchRequest: r error: nil] lastObject];
-    
-	return self.user.password;
-}
-
 -(BOOL)isPasswordProtected:(NSString*)path
 {
 	if ([path hasPrefix: @"/wado"]
@@ -426,7 +415,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	NSArray *urlComponenents = [url componentsSeparatedByString:@"?"];
     
 	if ([urlComponenents count] == 2) self.GETParams = [urlComponenents lastObject];
-	else self.GETParams = NULL;
+	else self.GETParams = nil;
 	
 	NSMutableDictionary* params = [NSMutableDictionary dictionary];
 	// GET params
@@ -1067,7 +1056,8 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
                             
                             self.user = u;
                             
-                            [self.session setObject:username forKey:SessionUsernameKey];
+                            [self.session setObject: self.user.objectID forKey:SessionUserIDKey];
+                            [self.session setObject: username forKey:SessionUsernameKey];
                             [self.session deleteChallenge];
                             [self.portal updateLogEntryForStudy:NULL withMessage:[NSString stringWithFormat: @"Successful login (plugin) for user name: %@", username] forUser:NULL ip:asyncSocket.connectedHost];
                         }
@@ -1076,8 +1066,10 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
             }
             
             if( authenticatedByPlugin == NO && username.length && sha1.length)
-            {                
-                NSString *userInternalPassword = [self passwordForUser: username];
+            {
+                NSFetchRequest *r = [NSFetchRequest fetchRequestWithEntityName: @"User"];
+                r.predicate = [NSPredicate predicateWithFormat:@"name LIKE[cd] %@", username];
+                self.user = [[self.portal.database.independentContext executeFetchRequest: r error: nil] lastObject];
                 
                 [self.user convertPasswordToHashIfNeeded];
                 
@@ -1085,6 +1077,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
                 
                 if( [sha1internal length] > 0 && [sha1 compare:sha1internal options:NSLiteralSearch|NSCaseInsensitiveSearch] == NSOrderedSame)
                 {
+                    [self.session setObject: self.user.objectID forKey:SessionUserIDKey];
                     [self.session setObject:username forKey:SessionUsernameKey];
                     [self.session deleteChallenge];
                     [self.portal updateLogEntryForStudy:NULL withMessage:[NSString stringWithFormat: @"Successful login for user name: %@", username] forUser:NULL ip:asyncSocket.connectedHost];
@@ -1102,24 +1095,26 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 		
 		if ([params objectForKey:@"logout"])
 		{
-			[self.session setObject:NULL forKey:SessionUsernameKey];
+            [self.session setObject: nil forKey:SessionUserIDKey];
+			[self.session setObject: nil forKey:SessionUsernameKey];
 			self.user = nil;
 			
 			[self resetPOST];
 		}
 	}
 	
-	if (session && [session objectForKey:SessionUsernameKey])
+	if (session && [session objectForKey:SessionUsernameKey] && [session objectForKey:SessionUserIDKey])
     {
-        NSFetchRequest *r = [NSFetchRequest fetchRequestWithEntityName: @"User"];
-        r.predicate = [NSPredicate predicateWithFormat:@"name LIKE[cd] %@", [session objectForKey:SessionUsernameKey]];
-		self.user = [[self.portal.database.independentContext executeFetchRequest: r error: nil] lastObject];
+		self.user = (WebPortalUser*) [self.portal.database.independentContext objectWithID: [session objectForKey:SessionUserIDKey]];
+        
+        NSLog( @"*");
         
         if( [session objectForKey: SessionLastActivityDateKey])
         {
             if( [[NSDate date] timeIntervalSinceDate: [session objectForKey: SessionLastActivityDateKey]] > [[NSUserDefaults standardUserDefaults] integerForKey: @"WebServerTimeOut"])
             {
-                [self.session setObject:NULL forKey:SessionUsernameKey]; // logout
+                [self.session setObject: nil forKey:SessionUserIDKey]; // logout
+                [self.session setObject: nil forKey:SessionUsernameKey]; // logout
                 self.user = nil;
                 
                 [self resetPOST];
@@ -1152,24 +1147,20 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 
 //NSLog(@"User: %X (R: %@)", user, response.httpHeaders);
 	
-	self.response = NULL;
-	self.user = NULL;
-	self.session = NULL;
+	self.response = nil;
+	self.user = nil;
+	self.session = nil;
 }
 
--(BOOL)isAuthenticated {
-//	if ([super isAuthenticated]) { // HTTP based auth disabled after 3.8.1
-//		[session setObject:user.name forKey:SessionUsernameKey];
-//		return YES;
-//	}
-
+-(BOOL)isAuthenticated
+{
 	NSString* sessionUser = [session objectForKey:SessionUsernameKey];
-	if (sessionUser) {	// this sets user to sessionUser
-		[self passwordForUser:sessionUser];
-		if (user)
+	if (sessionUser)
+    {
+		if (self.user)
 			return YES;
 	} else
-		self.user = NULL;
+		self.user = nil;
 	
 	return NO;
 }

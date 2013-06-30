@@ -38,6 +38,7 @@ NSString* const SessionCookieName = @"OSID";
 	[super dealloc];
 }
 
+NSString* const SessionUserIDKey = @"UserID"; // NSManagedObjectID
 NSString* const SessionUsernameKey = @"Username"; // NSString
 NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 NSString* const SessionChallengeKey = @"Challenge"; // NSString

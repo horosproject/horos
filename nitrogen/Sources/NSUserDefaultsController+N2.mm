@@ -14,7 +14,7 @@
 
 
 #import "NSUserDefaultsController+N2.h"
-
+#import "N2Debug.h"
 
 @implementation NSUserDefaultsController (N2)
 
@@ -137,7 +137,13 @@ CF_EXTERN_C_END
 }
 
 -(void)removeObserver:(NSObject*)observer forValuesKey:(NSString*)key {
-	[self removeObserver:observer forKeyPath:valuesKeyPath(key)];
+    
+    @try {
+        [self removeObserver:observer forKeyPath:valuesKeyPath(key)];
+    }
+    @catch (NSException *exception) {
+        N2LogException( exception);
+    }
 }
 
 @end
