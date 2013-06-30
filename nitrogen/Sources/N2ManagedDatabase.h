@@ -77,6 +77,7 @@
 -(NSArray*)objectsForEntity:(id)e;
 -(NSArray*)objectsForEntity:(id)e predicate:(NSPredicate*)p;
 -(NSArray*)objectsForEntity:(id)e predicate:(NSPredicate*)p error:(NSError**)err;
+-(NSArray*)objectsForEntity:(id)e predicate:(NSPredicate*)p error:(NSError**)error fetchLimit:(NSUInteger)fetchLimit sortDescriptors:(NSArray*)sortDescriptors;
 -(NSUInteger)countObjectsForEntity:(id)e;
 -(NSUInteger)countObjectsForEntity:(id)e predicate:(NSPredicate*)p;
 -(NSUInteger)countObjectsForEntity:(id)e predicate:(NSPredicate*)p error:(NSError**)err;

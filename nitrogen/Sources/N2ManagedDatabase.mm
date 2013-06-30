@@ -547,6 +547,10 @@
 }
 
 -(NSArray*)objectsForEntity:(id)e predicate:(NSPredicate*)p error:(NSError**)error {
+    return [self objectsForEntity:e predicate:p error:error fetchLimit:0 sortDescriptors:nil];
+}
+
+-(NSArray*)objectsForEntity:(id)e predicate:(NSPredicate*)p error:(NSError**)error fetchLimit:(NSUInteger)fetchLimit sortDescriptors:(NSArray*)sortDescriptors{
 	[self _entity:&e];
     
 #ifndef NDEBUG
@@ -556,6 +560,9 @@
     NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
 	req.entity = e;
 	req.predicate = p? p : [NSPredicate predicateWithValue:YES];
+    req.sortDescriptors = sortDescriptors;
+    if( fetchLimit>0)
+        req.fetchLimit = fetchLimit;
     
     [self.managedObjectContext lock];
     @try {

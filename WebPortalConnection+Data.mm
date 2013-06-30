@@ -1335,9 +1335,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
         return;
     }
     
-    NSArray *logsArray = [self.independentDicomDatabase objectsForEntity: @"LogEntry" predicate: [NSPredicate predicateWithFormat: @"type == %@", @"Web"]];
-    
-    logsArray = [logsArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: @"startTime" ascending: NO]]];
+    NSArray *logsArray = [self.independentDicomDatabase objectsForEntity: @"LogEntry" predicate: [NSPredicate predicateWithFormat: @"type == %@", @"Web"] error:nil fetchLimit: 2000 sortDescriptors:[NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: @"startTime" ascending: NO]]];
     
 	[response.tokens setObject: logsArray forKey:@"Logs"];
     [response.tokens setObject: NSLocalizedString( @"Logs", nil) forKey:@"PageTitle"];

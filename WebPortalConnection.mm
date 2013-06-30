@@ -1107,8 +1107,6 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
     {
 		self.user = (WebPortalUser*) [self.portal.database.independentContext objectWithID: [session objectForKey:SessionUserIDKey]];
         
-        NSLog( @"*");
-        
         if( [session objectForKey: SessionLastActivityDateKey])
         {
             if( [[NSDate date] timeIntervalSinceDate: [session objectForKey: SessionLastActivityDateKey]] > [[NSUserDefaults standardUserDefaults] integerForKey: @"WebServerTimeOut"])
