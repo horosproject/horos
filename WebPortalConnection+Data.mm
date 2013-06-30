@@ -1006,17 +1006,14 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
     {
 		if (![[album valueForKey:@"name"] isEqualToString:NSLocalizedString(@"Database", nil)])
         {
-            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ShowAlbumOnlyIfNotEmpty"])
-            {
-                int numberOfStudies = 0;
-                
-                [WebPortalUser studiesForUser: user album: album.name sortBy: nil fetchLimit: 1 fetchOffset: 0 numberOfStudies: &numberOfStudies];
-                
-                if( numberOfStudies >= 1)
-                    [albums addObject:album];
-            }
-            else
+            int numberOfStudies = 0;
+            
+            [WebPortalUser studiesForUser: user album: album.name sortBy: nil fetchLimit: 1 fetchOffset: 0 numberOfStudies: &numberOfStudies];
+            
+            if( numberOfStudies >= 1)
                 [albums addObject:album];
+            
+            album.numberOfStudies = numberOfStudies;
         }
 	}
     [response.tokens setObject:albums forKey:@"Albums"];

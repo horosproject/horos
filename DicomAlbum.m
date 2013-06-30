@@ -21,5 +21,6 @@
 @dynamic predicateString;
 @dynamic smartAlbum;
 @dynamic studies;
+@synthesize numberOfStudies;
 
 @end

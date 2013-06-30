@@ -97,7 +97,7 @@
 		<div class="peopleStudyList"><a href="studyList?browse=all">Study List</a></div><br>
 		%[IF:!User||User.canSeeAlbums%
 		%[FOREACH:Albums:Album%
-			<div class="%[IF:Album.smartAlbum%SmartAlbum%ELSE:Album.smartAlbum%Album%]IF:Album.smartAlbum%"><a href="studyList?album=%U:Album.name%">%X:Album.name%</a></div><br>
+			<div class="%[IF:Album.smartAlbum%SmartAlbum%ELSE:Album.smartAlbum%Album%]IF:Album.smartAlbum%"><a href="studyList?album=%U:Album.name%">%X:Album.name% (%X:Album.numberOfStudies%)</a></div><br>
 		%]FOREACH:Albums:Album%
 		%]IF:!User||User.canSeeAlbums%
 	</div>

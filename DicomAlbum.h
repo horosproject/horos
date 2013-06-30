@@ -20,6 +20,7 @@
 /** \brief  Core Data Entity for an Album */
 
 @interface DicomAlbum : NSManagedObject {
+    int numberOfStudies;
 }
 
 @property(nonatomic, retain) NSNumber* index;
@@ -28,6 +29,7 @@
 //@property(nonatomic, retain) NSDictionary *correspondingDICOMNodeQuery;
 @property(nonatomic, retain) NSNumber* smartAlbum;
 @property(nonatomic, retain) NSSet* studies;
+@property int numberOfStudies;
 
 @end
 

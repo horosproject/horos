@@ -20,6 +20,8 @@
 
 //#import "DicomDatabase.h" // for debug purposes, REMOVE
 
+static int gTotalN2ManagedObjectContext = 0;
+
 @interface N2ManagedDatabase ()
 
 @property(readwrite,retain) NSString* sqlFilePath;
@@ -40,17 +42,28 @@
     _database = db;
     [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector( N2ManagedDatabaseDealloced:) name: @"N2ManagedDatabaseDealloced" object: db];
     
+#ifndef NDEBUG
+    gTotalN2ManagedObjectContext++;
+    
+    if( gTotalN2ManagedObjectContext > 4)
+        NSLog( @"-- gTotalN2ManagedObjectContext = %d", gTotalN2ManagedObjectContext);
+#endif
+    
     return self;
 }
 
 -(void)N2ManagedDatabaseDealloced:(NSNotification*) n
 {
+    if( n.object != _database)
+        N2LogStackTrace( @"******* N2ManagedDatabaseDealloced");
     _database = nil;
 }
 
 -(void)dealloc {
 #ifndef NDEBUG
     [_database checkForCorrectContextThread: self];
+    
+    gTotalN2ManagedObjectContext--;
 #endif
     [NSNotificationCenter.defaultCenter removeObserver:self];
 	_database = nil;
