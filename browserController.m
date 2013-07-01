@@ -10062,79 +10062,85 @@ static BOOL needToRezoom;
 
 - (void)tableView:(NSTableView *)aTableView willDisplayCell:(NSButtonCell*)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
 {
-    if ([aTableView isEqual:albumTable])
-	{
-		NSFont *txtFont;
-        PrettyCell *cell = (PrettyCell*) aCell;
-		
-		if( rowIndex == 0) txtFont = [NSFont boldSystemFontOfSize: 11];
-		else txtFont = [NSFont systemFontOfSize:11];			
-		
-		[cell setFont:txtFont];
-		
-        NSArray* albumArray = self.albumArray;
-        
-        if (albumArray.count > rowIndex && [[[albumArray objectAtIndex:rowIndex] valueForKey:@"smartAlbum"] boolValue])
-            if (![_database isLocal])
-                [cell setImage:[NSImage imageNamed:@"small_sharedSmartAlbum.tif"]];
-            else [cell setImage:[NSImage imageNamed:@"small_smartAlbum.tif"]];
-        else
-            if (![_database isLocal])
-                [cell setImage:[NSImage imageNamed:@"small_sharedAlbum.tif"]];
-            else [cell setImage:[NSImage imageNamed:@"small_album.tif"]];
-        
-        [cell setTitle:nil];
-        if (rowIndex >= 0 && rowIndex < albumArray.count)
-            [cell setTitle:[[albumArray objectAtIndex:rowIndex] valueForKey:@"name"]];
-        
-        NSString *noOfStudies = nil;
-		@synchronized (_albumNoOfStudiesCache)
-        {
-			if (_albumNoOfStudiesCache == nil || rowIndex >= [_albumNoOfStudiesCache count] || [[_albumNoOfStudiesCache objectAtIndex: rowIndex] isEqualToString:@""] == YES)
-            {
-                [self refreshAlbums];
-                // It will be computed in a separate thread, and then displayed later.
-                noOfStudies = @"#";
-            }
-            else
-                noOfStudies = [[[_albumNoOfStudiesCache objectAtIndex: rowIndex] copy] autorelease];
-        }
-
-        [cell setRightText:noOfStudies];
-    }
-    
-    if ([aTableView isEqual: comparativeTable])
-	{
-        ComparativeCell *cell = (ComparativeCell*) aCell;
-        
-        if (rowIndex >= 0 && rowIndex < comparativeStudies.count)
+    @try
+    {
+        if ([aTableView isEqual:albumTable])
         {
             NSFont *txtFont;
-            BOOL local = NO;
+            PrettyCell *cell = (PrettyCell*) aCell;
             
-            id study = [comparativeStudies objectAtIndex: rowIndex];
-        
-            if( [study isKindOfClass: [DicomStudy class]])
-                local = YES;
-        
-            if( local) txtFont = [NSFont boldSystemFontOfSize: 11];
-            else txtFont = [NSFont fontWithName: DISTANTSTUDYFONT size:11];		
-		
+            if( rowIndex == 0) txtFont = [NSFont boldSystemFontOfSize: 11];
+            else txtFont = [NSFont systemFontOfSize:11];			
+            
             [cell setFont:txtFont];
-            cell.title = @"DUMMY"; // avoid NIL values here
-            cell.leftTextFirstLine = [study studyName];
-            cell.rightTextFirstLine = [study modality];
-            cell.leftTextSecondLine = [[NSUserDefaults dateFormatter] stringFromDate: [study date]];
-            cell.rightTextSecondLine = N2LocalizedSingularPluralCount( (int) fabs( [[study numberOfImages] intValue]), NSLocalizedString(@"image", nil), NSLocalizedString(@"images", nil));
+            
+            NSArray* albumArray = self.albumArray;
+            
+            if (albumArray.count > rowIndex && [[[albumArray objectAtIndex:rowIndex] valueForKey:@"smartAlbum"] boolValue])
+                if (![_database isLocal])
+                    [cell setImage:[NSImage imageNamed:@"small_sharedSmartAlbum.tif"]];
+                else [cell setImage:[NSImage imageNamed:@"small_smartAlbum.tif"]];
+            else
+                if (![_database isLocal])
+                    [cell setImage:[NSImage imageNamed:@"small_sharedAlbum.tif"]];
+                else [cell setImage:[NSImage imageNamed:@"small_album.tif"]];
+            
+            [cell setTitle:nil];
+            if (rowIndex >= 0 && rowIndex < albumArray.count)
+                [cell setTitle:[[albumArray objectAtIndex:rowIndex] valueForKey:@"name"]];
+            
+            NSString *noOfStudies = nil;
+            @synchronized (_albumNoOfStudiesCache)
+            {
+                if (_albumNoOfStudiesCache == nil || rowIndex >= [_albumNoOfStudiesCache count] || [[_albumNoOfStudiesCache objectAtIndex: rowIndex] isEqualToString:@""] == YES)
+                {
+                    [self refreshAlbums];
+                    // It will be computed in a separate thread, and then displayed later.
+                    noOfStudies = @"#";
+                }
+                else
+                    noOfStudies = [[[_albumNoOfStudiesCache objectAtIndex: rowIndex] copy] autorelease];
+            }
+
+            [cell setRightText:noOfStudies];
         }
-        else
+        
+        if ([aTableView isEqual: comparativeTable])
         {
-            cell.title = @"";
-            cell.leftTextFirstLine = @"";
-            cell.rightTextFirstLine = @"";
-            cell.leftTextSecondLine = @"";
-            cell.rightTextSecondLine =@"";
+            ComparativeCell *cell = (ComparativeCell*) aCell;
+            
+            if (rowIndex >= 0 && rowIndex < comparativeStudies.count)
+            {
+                NSFont *txtFont;
+                BOOL local = NO;
+                
+                id study = [comparativeStudies objectAtIndex: rowIndex];
+            
+                if( [study isKindOfClass: [DicomStudy class]])
+                    local = YES;
+            
+                if( local) txtFont = [NSFont boldSystemFontOfSize: 11];
+                else txtFont = [NSFont fontWithName: DISTANTSTUDYFONT size:11];		
+            
+                [cell setFont:txtFont];
+                cell.title = @"DUMMY"; // avoid NIL values here
+                cell.leftTextFirstLine = [study studyName];
+                cell.rightTextFirstLine = [study modality];
+                cell.leftTextSecondLine = [[NSUserDefaults dateFormatter] stringFromDate: [study date]];
+                cell.rightTextSecondLine = N2LocalizedSingularPluralCount( (int) fabs( [[study numberOfImages] intValue]), NSLocalizedString(@"image", nil), NSLocalizedString(@"images", nil));
+            }
+            else
+            {
+                cell.title = @"";
+                cell.leftTextFirstLine = @"";
+                cell.rightTextFirstLine = @"";
+                cell.leftTextSecondLine = @"";
+                cell.rightTextSecondLine =@"";
+            }
         }
+    }
+    @catch (NSException *exception) {
+        N2LogException( exception);
     }
 }
 
