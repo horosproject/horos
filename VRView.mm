@@ -37,6 +37,7 @@
 #import "Notifications.h"
 #import "NSUserDefaultsController+OsiriX.h"
 #import "N2Debug.h"
+#import "PluginManager.h"
 
 #include "vtkMath.h"
 #include "vtkAbstractPropPicker.h"
@@ -220,6 +221,20 @@ public:
 @synthesize clipRangeActivated, projectionMode, clippingRangeThickness, keep3DRotateCentered, dontResetImage, renderingMode, currentOpacityArray, exportDCM, dcmSeriesString, bestRenderingMode;
 @synthesize lowResLODFactor, engine, lodDisplayed;
 
+
+- (BOOL) eventToPlugins: (NSEvent*) event
+{
+	BOOL used = NO;
+	
+	for (id key in [PluginManager plugins])
+	{
+		if ([[[PluginManager plugins] objectForKey:key] respondsToSelector:@selector(handleEvent:forVRViewer:)])
+			if ([[[PluginManager plugins] objectForKey:key] handleEvent:event forVRViewer: [[self window] windowController]])
+				used = YES;
+	}
+	
+	return used;
+}
 
 - (BOOL) checkPointInVolume: (double*) position
 {
@@ -2813,11 +2828,15 @@ public:
 
 - (void) scrollWheel:(NSEvent *)theEvent
 {
+    if ([self eventToPlugins:theEvent]) return;
+    
 	return [self scrollInStack: [theEvent deltaY]];
 }
 
 - (void)otherMouseDown:(NSEvent *)theEvent
 {
+    if ([self eventToPlugins:theEvent]) return;
+    
 	_hasChanged = YES;
 	int tool = [self getTool: theEvent];
 	[self setCursorForView: tool];
@@ -2832,6 +2851,8 @@ public:
 
 -(void) mouseMoved: (NSEvent*) theEvent
 {
+    if ([self eventToPlugins:theEvent]) return;
+    
 	if( ![[self window] isVisible])
 		return;
 	
@@ -2965,18 +2986,20 @@ public:
 	ROI3DData->SetPoints( pts);		pts->Delete();
 }
 
--(void) magnifyWithEvent:(NSEvent *)anEvent
+-(void) magnifyWithEvent:(NSEvent *)event
 {
-	
+	if ([self eventToPlugins:event]) return;
 }
 
--(void) rotateWithEvent:(NSEvent *)anEvent
+-(void) rotateWithEvent:(NSEvent *)event
 {
-	
+	if ([self eventToPlugins:event]) return;
 }
 
 - (void)mouseDragged:(NSEvent *)theEvent
 {
+    if ([self eventToPlugins:theEvent]) return;
+    
 	_hasChanged = YES;
 
 	if (_dragInProgress == NO && ([theEvent deltaX] != 0 || [theEvent deltaY] != 0))
@@ -3370,6 +3393,8 @@ public:
 
 - (void)rightMouseDragged:(NSEvent *)theEvent
 {
+    if ([self eventToPlugins:theEvent]) return;
+    
 	_hasChanged = YES;
 	[drawLock lock];
 	NSPoint mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
@@ -3414,6 +3439,8 @@ public:
 
 - (void)mouseUp:(NSEvent *)theEvent
 {
+    if ([self eventToPlugins:theEvent]) return;
+    
 	_hasChanged = YES;
 	[self deleteMouseDownTimer];
 	if (_contextualMenuActive)
@@ -3510,6 +3537,8 @@ public:
 
 - (void)zoomMouseUp:(NSEvent *)theEvent
 {
+    if ([self eventToPlugins:theEvent]) return;
+    
 	_hasChanged = YES;
 	if (_tool == tZoom)
 	{
@@ -3535,6 +3564,8 @@ public:
 
 - (void)rightMouseDown:(NSEvent *)theEvent
 {
+    if ([self eventToPlugins:theEvent]) return;
+    
 	_hasChanged = YES;
 	[drawLock lock];
 	_contextualMenuActive = NO;
@@ -3548,6 +3579,8 @@ public:
 
 - (void)rightMouseUp:(NSEvent *)theEvent
 {
+    if ([self eventToPlugins:theEvent]) return;
+    
 	_hasChanged = YES;
 	[drawLock lock];
 	
@@ -3594,6 +3627,8 @@ public:
 
 - (void)mouseDown:(NSEvent *)theEvent
 {
+    if ([self eventToPlugins:theEvent]) return;
+    
 	snVRView = self;
 	dontRenderVolumeRenderingOsiriX = 0;
 	
@@ -4798,6 +4833,8 @@ public:
 
 - (void) keyUp:(NSEvent *)event
 {
+    if ([self eventToPlugins: event]) return;
+    
     if( [[event characters] length] == 0) return;
     
 	unichar c = [[event characters] characterAtIndex:0];
@@ -4811,6 +4848,8 @@ public:
 
 - (void) keyDown:(NSEvent *)event
 {
+    if ([self eventToPlugins: event]) return;
+    
     if( [[event characters] length] == 0) return;
     
     unichar c = [[event characters] characterAtIndex:0];
@@ -8338,16 +8377,22 @@ public:
 
 - (void)mouseEntered:(NSEvent *)theEvent
 {
+    if ([self eventToPlugins:theEvent]) return;
+    
 	cursorSet = YES;
 }
 
 - (void)mouseExited:(NSEvent *)theEvent
 {
+    if ([self eventToPlugins:theEvent]) return;
+    
 	cursorSet = NO;
 }
 
 -(void)cursorUpdate:(NSEvent *)theEvent
 {
+    if ([self eventToPlugins:theEvent]) return;
+    
     [cursor set];
 }
 

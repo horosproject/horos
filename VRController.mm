@@ -37,6 +37,7 @@
 #import "DicomSeries.h"
 #import "DicomImage.h"
 #import "N2Debug.h"
+#import "PluginManager.h"
 
 #define PRESETS_DIRECTORY @"/3DPRESETS/"
 #define CLUTDATABASE @"/CLUTs/"
@@ -1676,10 +1677,11 @@ return YES;
     [toolbar runCustomizationPalette:sender];
 }
 
-- (NSToolbarItem *) toolbar: (NSToolbar *)toolbar itemForItemIdentifier: (NSString *) itemIdent willBeInsertedIntoToolbar:(BOOL) willBeInserted {
+- (NSToolbarItem *) toolbar: (NSToolbar *)toolbar itemForItemIdentifier: (NSString *) itemIdent willBeInsertedIntoToolbar:(BOOL) willBeInserted
+{
     // Required delegate method:  Given an item identifier, this method returns an item 
     // The toolbar will use this method to obtain toolbar items that can be displayed in the customization sheet, or in the toolbar itself 
-    NSToolbarItem *toolbarItem = [[NSToolbarItem alloc] initWithItemIdentifier: itemIdent];
+    NSToolbarItem *toolbarItem = [[[NSToolbarItem alloc] initWithItemIdentifier: itemIdent] autorelease];
     
 //	if ([itemIdent isEqualToString: QTExportVRToolbarItemIdentifier])
 //	{
@@ -1981,19 +1983,19 @@ return YES;
 		[toolbarItem setMinSize: NSMakeSize(NSWidth([CLUTEditorsView frame]), NSHeight([CLUTEditorsView frame]))];
 	}
 	else
-	{
-		[toolbarItem release];
 		toolbarItem = nil;
-	}
 	
-	return [toolbarItem autorelease];
+    for (id key in [PluginManager plugins])
+    {
+        if ([[[PluginManager plugins] objectForKey:key] respondsToSelector:@selector(toolbarItemForItemIdentifier:forVRViewer:)])
+            toolbarItem = [[[PluginManager plugins] objectForKey:key] toolbarItemForItemIdentifier: itemIdent forVRViewer: self];
+    }
+    
+	return toolbarItem;
 }
 
-- (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar {
-    // Required delegate method:  Returns the ordered list of items to be shown in the toolbar by default    
-    // If during the toolbar's initialization, no overriding values are found in the user defaults, or if the
-    // user chooses to revert to the default items this set will be used 
-    
+- (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar
+{
 	if( [style isEqualToString:@"standard"])
 		return [NSArray arrayWithObjects:       ToolsToolbarItemIdentifier,
 												WLWWToolbarItemIdentifier,
@@ -2034,11 +2036,8 @@ return YES;
 												nil];
 }
 
-- (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar {
-    // Required delegate method:  Returns the list of all allowed items by identifier.  By default, the toolbar 
-    // does not assume any items are allowed, even the separator.  So, every allowed item must be explicitly listed   
-    // The set of allowed items is used to construct the customization palette
-	
+- (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar
+{
 	if( [style isEqualToString:@"standard"])
 	{
 		NSMutableArray * a = [NSMutableArray arrayWithObjects: 	NSToolbarCustomizeToolbarItemIdentifier,
@@ -2076,7 +2075,14 @@ return YES;
                                             EngineToolbarItemIdentifier,
 											nil];
 		
-			
+        
+        
+        for (id key in [PluginManager plugins])
+        {
+            if ([[[PluginManager plugins] objectForKey:key] respondsToSelector:@selector(toolbarAllowedIdentifiersForVRViewer:)])
+                [a addObjectsFromArray: [[[PluginManager plugins] objectForKey:key] toolbarAllowedIdentifiersForVRViewer: self]];
+        }
+        
 		return a;
 	}
 	else
@@ -2102,25 +2108,12 @@ return YES;
 											nil];
 }
 
-- (void) toolbarWillAddItem: (NSNotification *) notif {
-    // Optional delegate method:  Before an new item is added to the toolbar, this notification is posted.
-    // This is the best place to notice a new item is going into the toolbar.  For instance, if you need to 
-    // cache a reference to the toolbar item or need to set up some initial state, this is the best place 
-    // to do it.  The notification object is the toolbar to which the item is being added.  The item being 
-    // added is found by referencing the @"item" key in the userInfo 
-//    NSToolbarItem *addedItem = [[notif userInfo] objectForKey: @"item"];
-	
-//	[addedItem retain];
+- (void) toolbarWillAddItem: (NSNotification *) notif
+{
 }  
 
-- (void) toolbarDidRemoveItem: (NSNotification *) notif {
-    // Optional delegate method:  After an item is removed from a toolbar, this notification is sent.   This allows 
-    // the chance to tear down information related to the item that may have been cached.   The notification object
-    // is the toolbar from which the item is being removed.  The item being added is found by referencing the @"item"
-    // key in the userInfo 
-//    NSToolbarItem *removedItem = [[notif userInfo] objectForKey: @"item"];
-	
-//	[removedItem retain];
+- (void) toolbarDidRemoveItem: (NSNotification *) notif
+{
 }
 
 - (BOOL) validateToolbarItem: (NSToolbarItem *) toolbarItem
@@ -2129,12 +2122,7 @@ return YES;
 return YES;
 #endif
 
-    // Optional method:  This message is sent to us since we are the target of some toolbar item actions 
-    // (for example:  of the save items action) 
     BOOL enable = YES;
-	
-//	if ([[toolbarItem itemIdentifier] isEqualToString: CaptureToolbarItemIdentifier])
-//		enable=!([[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"] == 1);
 	
 	if ([[toolbarItem itemIdentifier] isEqualToString: MovieToolbarItemIdentifier])
     {

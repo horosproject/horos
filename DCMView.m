@@ -4827,13 +4827,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	if( pluginOverridesMouse)
 	{
-		NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-		NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-			[NSNumber numberWithInt:curImage], @"curImage", event, @"event", nil];
-		[nc postNotificationName: OsirixRightMouseDownNotification object: self userInfo: userInfo];
+		NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: curImage], @"curImage", event, @"event", nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRightMouseDownNotification object: self userInfo: userInfo];
 		return;
 	}
-		
+    
 	[self mouseDown: event];
 }
 
@@ -4844,14 +4842,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	mouseDragging = NO;
 	
-	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-	NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-					   [NSNumber numberWithInt:curImage], @"curImage", event, @"event", nil];
+	NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:  [NSNumber numberWithInt:curImage], @"curImage", event, @"event", nil];
 
-	if ( pluginOverridesMouse )
-	{
-		[nc postNotificationName: OsirixRightMouseUpNotification object: self userInfo: userInfo];
-	}
+	if( pluginOverridesMouse)
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRightMouseUpNotification object: self userInfo: userInfo];
 	else 
 	{
 		int clickCount = 0;

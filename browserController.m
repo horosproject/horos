@@ -17566,9 +17566,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (NSToolbarItem *) toolbar: (NSToolbar *)toolbar itemForItemIdentifier: (NSString *) itemIdent willBeInsertedIntoToolbar:(BOOL) willBeInserted
 {
-    // Required delegate method:  Given an item identifier, this method returns an item 
-    // The toolbar will use this method to obtain toolbar items that can be displayed in the customization sheet, or in the toolbar itself 
-    NSToolbarItem *toolbarItem = [[NSToolbarItem alloc] initWithItemIdentifier: itemIdent];
+    NSToolbarItem *toolbarItem = [[[NSToolbarItem alloc] initWithItemIdentifier: itemIdent] autorelease];
 	
 	if ([itemIdent isEqualToString: ImportToolbarItemIdentifier])
 	{
@@ -17805,14 +17803,15 @@ static volatile int numberOfThreadsForJPEG = 0;
 			[toolbarItem setTarget: self];
 			[toolbarItem setAction: @selector(executeFilterFromToolbar:)];
 		}
-		else
-		{
-//			[toolbarItem release];
-//			toolbarItem = nil;
-		}
+        
+        for (id key in [PluginManager plugins])
+        {
+            if ([[[PluginManager plugins] objectForKey:key] respondsToSelector:@selector(toolbarItemForItemIdentifier:forBrowserController:)])
+                toolbarItem = [[[PluginManager plugins] objectForKey:key] toolbarItemForItemIdentifier: itemIdent forBrowserController: self];
+        }
 	}
-	
-	return [toolbarItem autorelease];
+    
+	return toolbarItem;
 }
 
 
@@ -17845,9 +17844,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (NSArray *)toolbarAllowedItemIdentifiers: (NSToolbar *)toolbar
 {	
-	NSArray	*array;
-	
-	array = [NSArray arrayWithObjects:
+	NSMutableArray *array = [NSMutableArray arrayWithObjects:
 			 ViewersToolbarItemIdentifier,
 			 SearchToolbarItemIdentifier,
 			 TimeIntervalToolbarItemIdentifier,
@@ -17908,8 +17905,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 	
 	if( [pluginsItems count])
-		array = [array arrayByAddingObjectsFromArray: [pluginsItems allObjects]];
+		[array addObjectsFromArray: [pluginsItems allObjects]];
 	
+    for (id key in [PluginManager plugins])
+    {
+        if ([[[PluginManager plugins] objectForKey:key] respondsToSelector:@selector(toolbarAllowedIdentifiersForBrowserController:)])
+            [array addObjectsFromArray: [[[PluginManager plugins] objectForKey:key] toolbarAllowedIdentifiersForBrowserController: self]];
+    }
+    
     return array;
 }
 

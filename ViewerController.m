@@ -5351,7 +5351,7 @@ static ViewerController *draggedController = nil;
 {
     // Required delegate method:  Given an item identifier, this method returns an item 
     // The toolbar will use this method to obtain toolbar items that can be displayed in the customization sheet, or in the toolbar itself 
-    NSToolbarItem *toolbarItem = [[NSToolbarItem alloc] initWithItemIdentifier: itemIdent];
+    NSToolbarItem *toolbarItem = [[[NSToolbarItem alloc] initWithItemIdentifier: itemIdent] autorelease];
     
     if ([itemIdent isEqualToString: QTSaveToolbarItemIdentifier])
 	{
@@ -5899,12 +5899,16 @@ static ViewerController *draggedController = nil;
 			[toolbarItem setAction: @selector(executeFilterFromToolbar:)];
 		}
 		else
-		{
-			[toolbarItem release];
 			toolbarItem = nil;
-		}
     }
-    return [toolbarItem autorelease];
+    
+    for (id key in [PluginManager plugins])
+    {
+        if ([[[PluginManager plugins] objectForKey:key] respondsToSelector:@selector(toolbarItemForItemIdentifier:forViewer:)])
+            toolbarItem = [[[PluginManager plugins] objectForKey:key] toolbarItemForItemIdentifier: itemIdent forViewer: self];
+    }
+    
+    return toolbarItem;
 }
 
 - (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar {
@@ -5933,10 +5937,7 @@ static ViewerController *draggedController = nil;
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar
 {
-    // Required delegate method:  Returns the list of all allowed items by identifier.  By default, the toolbar 
-    // does not assume any items are allowed, even the separator.  So, every allowed item must be explicitly listed   
-    // The set of allowed items is used to construct the customization palette 
-    NSArray		*array = [NSArray arrayWithObjects: 	NSToolbarCustomizeToolbarItemIdentifier,
+    NSMutableArray *array = [NSMutableArray arrayWithObjects: 	NSToolbarCustomizeToolbarItemIdentifier,
 														NSToolbarFlexibleSpaceItemIdentifier,
 														NSToolbarSpaceItemIdentifier,
 														NSToolbarSeparatorItemIdentifier,
@@ -5987,7 +5988,7 @@ static ViewerController *draggedController = nil;
 														SetPixelValueItemIdentifier,
 														nil];
 	
-	if([AppController canDisplay12Bit]) array = [array arrayByAddingObject: LUT12BitToolbarItemIdentifier];
+	if([AppController canDisplay12Bit]) [array addObject: LUT12BitToolbarItemIdentifier];
 	
 	NSArray*		allPlugins = [[PluginManager pluginsDict] allKeys];
 	NSMutableSet*	pluginsItems = [NSMutableSet setWithCapacity: [allPlugins count]];
@@ -6000,14 +6001,13 @@ static ViewerController *draggedController = nil;
 		NSBundle		*bundle = [[PluginManager pluginsDict] objectForKey: plugin];
 		NSDictionary	*info = [bundle infoDictionary];
 		NSString		*pluginType = [info objectForKey: @"pluginType"];
-		//NSLog(@"plugin %@", [[allPlugins objectAtIndex: i] description]);
+        
 		if( [pluginType isEqualToString: @"imageFilter"] == YES || [pluginType isEqualToString: @"roiTool"] == YES || [pluginType isEqualToString: @"other"] == YES)
 		{
 			id allowToolbarIcon = [info objectForKey: @"allowToolbarIcon"];
-			//NSLog(@"allow allowToolbarIcon: %@", [[allPlugins objectAtIndex: i] description]);
+            
 			if( allowToolbarIcon)
 			{
-				//NSLog(@"allow allowToolbarIcon %@", [bundle description]);
 				if( [allowToolbarIcon boolValue] == YES)
 				{
 					NSArray* toolbarNames = [info objectForKey: @"ToolbarNames"];
@@ -6024,8 +6024,14 @@ static ViewerController *draggedController = nil;
 	}
 
 	if( [pluginsItems count])
-		array = [array arrayByAddingObjectsFromArray: [pluginsItems allObjects]];
+		[array addObjectsFromArray: [pluginsItems allObjects]];
 
+    for (id key in [PluginManager plugins])
+    {
+        if ([[[PluginManager plugins] objectForKey:key] respondsToSelector:@selector(toolbarAllowedIdentifiersForViewer:)])
+            [array addObjectsFromArray: [[[PluginManager plugins] objectForKey:key] toolbarAllowedIdentifiersForViewer: self]];
+    }
+    
 	return array;
 }
 

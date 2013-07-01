@@ -81,6 +81,15 @@
 @interface PluginFilter (Optional)
 
 /** Called to pass the plugin all sorts of events sent to a DCMView.  */
--(BOOL)handleEvent:(NSEvent*)event forViewer:(id)controller;
 
+-(BOOL)handleEvent:(NSEvent*)event forViewer:(id)controller;
+-(NSArray*)toolbarAllowedIdentifiersForViewer:(id)controller;
+-(NSToolbarItem*)toolbarItemForItemIdentifier:(NSString*) identifier forViewer:(id)controller;
+
+-(BOOL)handleEvent:(NSEvent*)event forVRViewer:(id)controller;
+-(NSArray*)toolbarAllowedIdentifiersForVRViewer:(id)controller;
+-(NSToolbarItem*)toolbarItemForItemIdentifier:(NSString*) identifier forVRViewer:(id)controller;
+
+-(NSArray*)toolbarAllowedIdentifiersForBrowserController:(id)controller;
+-(NSToolbarItem*)toolbarItemForItemIdentifier:(NSString*) identifier forBrowserController:(id)controller;
 @end;
