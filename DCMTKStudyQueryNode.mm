@@ -187,16 +187,18 @@
 	dataset-> insertEmptyElement(DCM_SeriesNumber, OFTrue);
 	dataset-> insertEmptyElement(DCM_NumberOfSeriesRelatedInstances, OFTrue);
 	dataset-> insertEmptyElement(DCM_Modality, OFTrue);
-    dataset-> insertEmptyElement(DCM_StudyComments, OFTrue);
-    dataset-> insertEmptyElement(DCM_InterpretationStatusID, OFTrue);
 	dataset-> insertEmptyElement(DCM_ReferringPhysiciansName, OFTrue);
     dataset-> insertEmptyElement(DCM_PerformingPhysiciansName, OFTrue);
 	dataset-> insertEmptyElement(DCM_InstitutionName, OFTrue);
 	dataset-> putAndInsertString(DCM_StudyInstanceUID, [_uid UTF8String], OFTrue);
 	dataset-> putAndInsertString(DCM_QueryRetrieveLevel, "SERIES", OFTrue);
 	
-//	dataset->print( COUT);
-	
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CFINDCommentsAndStatusSupport"])
+    {
+        dataset-> insertEmptyElement(DCM_StudyComments, OFTrue);
+        dataset-> insertEmptyElement(DCM_InterpretationStatusID, OFTrue);
+	}
+    
 	return dataset;
 }
 
