@@ -17,16 +17,17 @@
 @interface OSIHangingPreferencePanePref : NSPreferencePane 
 {
 	NSMutableDictionary *hangingProtocols;
-	IBOutlet NSTableView *hangingProtocolTableView;
-	IBOutlet NSButton *newHangingProtocolButton;
 	NSString *modalityForHangingProtocols;
-	IBOutlet NSArrayController *bodyRegionController;
 	IBOutlet NSWindow *mainWindow;
+    IBOutlet NSMenu *windowsTilingPopup;
+    IBOutlet NSMenu *imageTilingPopup;
+    IBOutlet NSMenu *WLWWPopup;
 }
+
+@property (retain, nonatomic) NSString *modalityForHangingProtocols;
 
 - (void) mainViewDidLoad;
 - (void) deleteSelectedRow:(id)sender;
-- (IBAction)setModalityForHangingProtocols:(id)sender;
 - (IBAction)newHangingProtocol:(id)sender;
 
 

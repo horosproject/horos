@@ -19,13 +19,11 @@
 
 @implementation OSIHangingPreferencePanePref
 
-- (id) tilingMenu
+@synthesize modalityForHangingProtocols;
+
+- (NSArray*) currentHangingProtocol
 {
-    NSMenu *mainMenu = [NSApp mainMenu];
-    NSMenu *viewerMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"2D Viewer", nil)] submenu];
-    NSMenu *tilingMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Image Tiling", nil)] submenu];
-    
-    return [[tilingMenu itemArray] valueForKey: @"title"];
+    return [hangingProtocols objectForKey: modalityForHangingProtocols];
 }
 
 - (id) initWithBundle:(NSBundle *)bundle
@@ -37,6 +35,44 @@
 		
 		[self setMainView: [mainWindow contentView]];
 		[self mainViewDidLoad];
+        
+        // Windows/Image/WLWW menus
+        NSMenu *mainMenu = [NSApp mainMenu];
+        NSMenu *viewerMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"2D Viewer", nil)] submenu];
+        NSMenu *tilingMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Image Tiling", nil)] submenu];
+        NSMenu *wlwwMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Window Width & Level", nil)] submenu];
+        
+        [windowsTilingPopup removeAllItems];
+        [imageTilingPopup removeAllItems];
+        
+        for( NSMenuItem *i in tilingMenu.itemArray)
+        {
+            [windowsTilingPopup addItem: [i.copy autorelease]];
+            [imageTilingPopup addItem: [i.copy autorelease]];
+        }
+        
+        for( NSMenuItem *i in windowsTilingPopup.itemArray)
+            [i setAction: nil];
+        
+        for( NSMenuItem *i in imageTilingPopup.itemArray)
+            [i setAction: nil];
+        
+        [WLWWPopup removeAllItems];
+		NSArray *sortedKeys = [[[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"WLWW3"] allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+		
+		[WLWWPopup addItemWithTitle:NSLocalizedString(@"Default WL & WW", nil) action: nil keyEquivalent:@""];
+        [[WLWWPopup itemAtIndex: WLWWPopup.itemArray.count -1] setTag: 100];
+        
+		[WLWWPopup addItemWithTitle:NSLocalizedString(@"Full dynamic", nil) action: nil keyEquivalent:@""];
+		[[WLWWPopup itemAtIndex: WLWWPopup.itemArray.count -1] setTag: 101];
+        
+		[WLWWPopup addItem: [NSMenuItem separatorItem]];
+		
+		for( int i = 0; i < [sortedKeys count]; i++)
+		{
+			[WLWWPopup addItemWithTitle:[NSString stringWithFormat:@"%d - %@", i+1, [sortedKeys objectAtIndex:i]] action: nil keyEquivalent:@""];
+            [[WLWWPopup itemAtIndex: WLWWPopup.itemArray.count -1] setTag: i+1];
+		}
 	}
 	
 	return self;
@@ -44,142 +80,51 @@
 
 - (void) mainViewDidLoad
 {
-	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+	hangingProtocols = [[[NSUserDefaults standardUserDefaults] objectForKey:@"HANGINGPROTOCOLS"] mutableCopy];
 	
-	hangingProtocols = [[defaults objectForKey:@"HANGINGPROTOCOLS"] mutableCopy];
-	
-	
-	//setup GUI
-	
-	modalityForHangingProtocols = [@"CR" retain];
-	[hangingProtocolTableView reloadData];
-	
-//	[bodyRegionBrowser setDoubleAction:@selector(browserDoubleAction:)];
-//	[bodyRegionBrowser setTarget:bodyRegionController];
-//	[bodyRegionBrowser setDelegate:bodyRegionController];
+	self.modalityForHangingProtocols = @"CR";
 }
 
 - (void)dealloc {
 	[hangingProtocols release];
-	[modalityForHangingProtocols release];
+	self.modalityForHangingProtocols = nil;
 	
 	NSLog(@"dealloc OSIHangingPreferencePanePref");
 
 	[super dealloc];
 }
 
-//****** TABLEVIEW
-
-- (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView
+- (void)setModalityForHangingProtocols:(NSString*) m
 {
-	return [[hangingProtocols objectForKey:modalityForHangingProtocols] count];
+    [self willChangeValueForKey: @"currentHangingProtocol"];
+	[modalityForHangingProtocols autorelease];
+	modalityForHangingProtocols = [m retain];
+    [self didChangeValueForKey: @"currentHangingProtocol"];
 }
 
-- (void)tableView:(NSTableView *)aTableView
-    setObjectValue:anObject
-    forTableColumn:(NSTableColumn *)aTableColumn
-    row:(NSInteger)rowIndex
+- (IBAction)newHangingProtocol:(id)sender
 {
-	NSMutableArray *hangingProtocolArray = [[[hangingProtocols objectForKey:modalityForHangingProtocols] mutableCopy] autorelease];
-	
-	NSParameterAssert(rowIndex >= 0 && rowIndex < [hangingProtocolArray count]);
-	id theRecord = [[[hangingProtocolArray objectAtIndex:rowIndex] mutableCopy] autorelease];
-	
-	if( [[aTableColumn identifier] isEqualToString: @"Study Description"] == NO)
-	{
-		if( [anObject intValue] < 1 || [anObject intValue] > 4) anObject = [NSNumber numberWithInt: 1];
-	}
-	[theRecord setObject:anObject forKey:[aTableColumn identifier]];
-	
-	[hangingProtocolArray replaceObjectAtIndex:rowIndex withObject: theRecord];
-	[hangingProtocols setObject:hangingProtocolArray forKey: modalityForHangingProtocols];
-	[[NSUserDefaults standardUserDefaults] setObject:hangingProtocols forKey:@"HANGINGPROTOCOLS"];
-
-}
-
-- (id)tableView:(NSTableView *)aTableView
-    objectValueForTableColumn:(NSTableColumn *)aTableColumn
-    row:(NSInteger)rowIndex
-{
-	NSMutableArray *hangingProtocolArray = [[[hangingProtocols objectForKey:modalityForHangingProtocols] mutableCopy] autorelease];
-	NSParameterAssert(rowIndex >= 0 && rowIndex < [hangingProtocolArray count]);
-	id theRecord = [hangingProtocolArray objectAtIndex:rowIndex];
-	
-	if( [[aTableColumn identifier] isEqualToString:@"Study Description"] == NO)
-	{
-		NSNumber *n = [theRecord objectForKey:[aTableColumn identifier]];
-		
-		if( [n intValue] < 1 || [n intValue] > 4 || [n isKindOfClass: [NSNumber class]] == NO)
-		{
-			theRecord = [[[hangingProtocolArray objectAtIndex:rowIndex] mutableCopy] autorelease];
-			
-			[theRecord setObject: [NSNumber numberWithInt: 1] forKey:[aTableColumn identifier]];
-			
-			[hangingProtocolArray replaceObjectAtIndex:rowIndex withObject: theRecord];
-			[hangingProtocols setObject:hangingProtocolArray forKey: modalityForHangingProtocols];
-			[[NSUserDefaults standardUserDefaults] setObject:hangingProtocols forKey:@"HANGINGPROTOCOLS"];
-		}
-	}
-	
-	return [theRecord objectForKey:[aTableColumn identifier]];
-}
-
-- (BOOL)tableView:(NSTableView *)aTableView shouldEditTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
-{
-	if (![self isUnlocked])
-		return NO;
-	
-	if ([aTableView isEqual:hangingProtocolTableView] && [[aTableColumn identifier] isEqualToString:@"Study Description"] && rowIndex == 0) 
-		return NO;
-	
-	return YES;
-}
-
-- (IBAction)setModalityForHangingProtocols:(id)sender
-{
-	[hangingProtocolTableView validateEditing];
-	[hangingProtocolTableView reloadData];
-	
-	[modalityForHangingProtocols release];
-	
-	modalityForHangingProtocols = [[sender title] retain];
-	[hangingProtocolTableView setHidden:NO];
-	[newHangingProtocolButton setHidden:NO];
-	[hangingProtocolTableView reloadData];
-}
-
-- (IBAction)newHangingProtocol:(id)sender{
 	NSMutableDictionary *protocol = [NSMutableDictionary dictionary];
     [protocol setObject: NSLocalizedString( @"Study Description", nil) forKey:@"Study Description"];
     [protocol setObject:[NSNumber numberWithInt:1] forKey:@"WindowsTiling"];
 	[protocol setObject:[NSNumber numberWithInt:1] forKey:@"ImageTiling"];
 
 	NSMutableArray *hangingProtocolArray = [[[hangingProtocols objectForKey:modalityForHangingProtocols] mutableCopy] autorelease];
-    [hangingProtocolArray  addObject:protocol];
+    [hangingProtocolArray addObject:protocol];
     [hangingProtocols setObject: hangingProtocolArray forKey: modalityForHangingProtocols];
 	
     [[NSUserDefaults standardUserDefaults] setObject:hangingProtocols forKey:@"HANGINGPROTOCOLS"];
-    [hangingProtocolTableView reloadData];
-	
-//Set to edit new entry
-	[hangingProtocolTableView  selectRowIndexes: [NSIndexSet indexSetWithIndex: [hangingProtocolArray count] - 1] byExtendingSelection:NO];
-	[hangingProtocolTableView  editColumn:0 row:[hangingProtocolArray count] - 1  withEvent:nil select:YES];
-
 }
 
 - (void) deleteSelectedRow:(id)sender
 {
     NSMutableArray *hangingProtocolArray = [[[hangingProtocols objectForKey:modalityForHangingProtocols] mutableCopy] autorelease];
-    [hangingProtocolArray removeObjectAtIndex:[hangingProtocolTableView selectedRow]];
     [hangingProtocols setObject: hangingProtocolArray forKey: modalityForHangingProtocols];
-    [hangingProtocolTableView reloadData];
     [[NSUserDefaults standardUserDefaults] setObject:hangingProtocols forKey:@"HANGINGPROTOCOLS"];
 }
 
 -(void) willUnselect
 {
 	[[[self mainView] window] makeFirstResponder: nil];
-	
-	[[NSUserDefaults standardUserDefaults] setObject:[bodyRegionController content] forKey:@"bodyRegions"];
 }
 @end
