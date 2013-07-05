@@ -2794,7 +2794,60 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		return 0;
 }
 
++ (double) moment: (double *) x length:(long) length mean: (double) mean order: (int) order
+{
+    if (x == nil || order == 1)
+        return 0.;
+    else
+    {
+        double mu = mean;
+        double sum = 0;
+        for (int i = 0; i < length; i++)
+        {
+            sum += pow((x[i] - mu), order);
+        }
+        return (sum / ( length - 1));
+    }
+}
+
+/**
+ * This method calculates the skewness of a data set. Skewness is the third central moment divided by the third
+ * power of the standard deviation.
+ */
+ 
++ (double) skewness: (double*) data length: (long) length mean: (double) mean
+{
+    if (data == nil || length < 2)
+        return 0.;
+    else {
+        double m3 = [DCMPix moment: data length: length mean: mean order: 3];
+        double sm2 = sqrt([DCMPix moment: data length: length mean: mean order: 2]);
+        return (m3 / pow(sm2, 3));
+    }
+}
+
+/**
+ * This method calculates the kurtosis of a data set. Kurtosis is the fourth central moment divided by the fourth
+ * power of the standard deviation.
+ */
++ (double) kurtosis: (double*) data length: (long) length mean: (double) mean
+{    
+    if (data == nil || length < 2)
+        return 0.;
+    else
+    {
+        double m4 = [DCMPix moment: data length: length mean: mean order: 4];
+        double sm2 = sqrt( [DCMPix moment: data length: length mean: mean order: 2]);
+        return (m4 / pow(sm2, 4));
+    }
+}
+
 - (void) computeROIInt:(ROI*) roi :(float*) mean :(float *)total :(float *)dev :(float *)min :(float *)max
+{
+    return [self computeROIInt: roi :mean :total :dev :min :max :nil :nil];
+}
+
+- (void) computeROIInt:(ROI*) roi :(float*) mean :(float *)total :(float *)dev :(float *)min :(float *)max :(float *)skewness :(float*) kurtosis
 {
 	long count, no;
 	float imax, imin, itotal, idev, imean;
@@ -3022,6 +3075,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 - (void) computeROI:(ROI*) roi :(float*) mean :(float *)total :(float *)dev :(float *)min :(float *)max
 {
+    return [self computeROI: roi :mean :total :dev :min :max :nil :nil];
+}
+
+- (void) computeROI:(ROI*) roi :(float*) mean :(float *)total :(float *)dev :(float *)min :(float *)max :(float *)skewness :(float*) kurtosis
+{
 	if( (stackMode == 1 || stackMode == 2 || stackMode == 3) && stack >= 1)
 	{
 		long	countstack = 0;
@@ -3062,7 +3120,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		}
 		if( total) *total /= countstack;
 	}
-	else [self computeROIInt: roi :mean :total :dev :min :max];
+	else [self computeROIInt: roi :mean :total :dev :min :max :skewness :kurtosis];
 }
 
 - (void) setRGB:(BOOL) b
