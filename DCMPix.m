@@ -511,14 +511,24 @@ static inline void DrawRuns(	struct edge *active,
 							float *idev,
 							float imean,
 							long orientation,
-							long stackNo,	// Only if X/Y orientation
-							BOOL restore)		
+							long stackNo,	// Only if X/Y orientation : for 3D VR scissor in any direction
+							BOOL restore,
+                            float *values,
+                            float *locations)
 {
-	long			xCoords[ 4096];
-	float			*curPix, val, temp;
-    long			numCoords = 0;
-    long			start, end, ims = w * h;
-	
+	long xCoords[ 4096];
+	float *curPix = nil, val = 0, temp = 0;
+    long numCoords = 0;
+    long start, end, ims = w * h;
+	float *ivalues = nil;
+    float *ilocations = nil;
+    
+    if( compute && orientation == 2) // standard orientation
+    {
+        ivalues = values;
+        ilocations = locations;
+    }
+    
     for ( struct edge *e = active; e != NULL; e = e->next)
 	{
 		long i;
@@ -538,7 +548,7 @@ static inline void DrawRuns(	struct edge *active,
     if (numCoords % 2)  /* Protect from degenerate polygons */
         xCoords[numCoords] = xCoords[numCoords - 1], numCoords++;
 	
-    for ( long i = 0; i < numCoords; i += 2)
+    for( long i = 0; i < numCoords; i += 2)
 	{
 		// ** COMPUTE
 		if( compute)
@@ -561,16 +571,17 @@ static inline void DrawRuns(	struct edge *active,
 				{
 					val = *curPix;
 					
-					if( imax)
-					{
-						if( val > *imax) *imax = val;
-						if( val < *imin) *imin = val;
-						
-						*itotal += val;
-						
-						(*count)++;
-					}
-					
+					if( imax && val > *imax) *imax = val;
+                    if( imin && val < *imin) *imin = val;
+                    if( itotal) *itotal += val;
+                    if( count) (*count)++;
+                    if( values) (*ivalues++) = val;
+                    if( locations)
+                    {
+                        (*locations++) = start + x;
+                        (*locations++) = curY;
+                    }
+                    
 					if( idev)
 					{
 						temp = imean - val;
@@ -590,16 +601,17 @@ static inline void DrawRuns(	struct edge *active,
                     
 					val = (curPixRGB[ 1] + curPixRGB[ 2] + curPixRGB[ 3]) / 3.;
 					
-					if( imax)
-					{
-						if( val > *imax) *imax = val;
-						if( val < *imin) *imin = val;
-						
-						*itotal += val;
-						
-						(*count)++;
-					}
-					
+					if( imax && val > *imax) *imax = val;
+                    if( imin && val < *imin) *imin = val;
+                    if( itotal) *itotal += val;
+                    if( count) (*count)++;
+                    if( values) (*ivalues++) = val;
+                    if( locations)
+                    {
+                        (*locations++) = start + x;
+                        (*locations++) = w;
+                    }
+                    
 					if( idev)
 					{
 						temp = imean - val;
@@ -832,7 +844,7 @@ static inline void DrawRuns(	struct edge *active,
 	}
 }
 
-void ras_FillPolygon(	NSPointInt *p,
+void ras_FillPolygon( NSPointInt *p,
 					 long no,
 					 float *pix,
 					 long w,
@@ -853,11 +865,13 @@ void ras_FillPolygon(	NSPointInt *p,
 					 float imean,
 					 long orientation,
 					 long stackNo,
-					 BOOL restore)
+					 BOOL restore,
+                     float *values,
+                     float *locations)
 {
 	struct edge **edgeTable = (struct edge **) malloc( MAXVERTICAL * sizeof( struct edge *));
     struct edge *active = nil;
-	long curY;
+	long curY = 0;
 	
 //	float test;
 //	
@@ -883,10 +897,27 @@ void ras_FillPolygon(	NSPointInt *p,
 		}
 	}
 	
+    float *ivalues = nil;
+    float *ilocations = nil;
+    
+    if( count)
+    {
+        ivalues = values;
+        ilocations = locations;
+    }
+    
     for (active = NULL; (active = UpdateActive(active, edgeTable, curY)) != NULL; curY++)
 	{
 		if( active)
-			DrawRuns(active, curY, pix, w, h, min, max, outside, newVal, addition, RGB, compute, imax, imin, count, itotal, idev, imean, orientation, stackNo, restore);
+        {
+			DrawRuns(active, curY, pix, w, h, min, max, outside, newVal, addition, RGB, compute, imax, imin, count, itotal, idev, imean, orientation, stackNo, restore, ivalues, ilocations);
+            
+            if( ivalues)
+                ivalues = values + *count;
+            
+            if( ilocations)
+                ilocations = locations + *count * 2;
+        }
 	}
 	
 	free( edgeTable);
@@ -1920,139 +1951,188 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     long			count = 0, no;
 	float			*values = nil;
 	long			upleftx, uplefty, downrightx, downrighty;
-	NSPoint			*pts;
 	
-	if( roi.type == tPlain)
-	{
-		long			textWidth = roi.textureWidth;
-		long			textHeight = roi.textureHeight;
-		long			textureUpLeftCornerX = roi.textureUpLeftCornerX;
-		long			textureUpLeftCornerY = roi.textureUpLeftCornerY;
-		unsigned char	*buf = roi.textureBuffer;
-		
-		values = (float*) malloc( textHeight*textWidth* sizeof(float));
-		
-		if( locations) *locations = (float*) malloc( textHeight*textWidth*2* sizeof(float));
-		
-		if( values)	{
-			count = 0;
-			
-			for( long y = 0; y < textHeight; y++)
-			{
-				for( long x = 0; x < textWidth; x++)
-				{
-					if( buf [ x + y * textWidth] != 0)
-					{
-						
-						long	xx = (x + textureUpLeftCornerX);
-						long	yy = (y + textureUpLeftCornerY);
-						
-						if( xx >= 0 && xx < width && yy >= 0 && yy < height)
-						{
-							
-							float	*curPix = &fImage[ (yy * width) + xx];
-							values[ count] = *curPix;	//fImage[ width*y + x];
-							
-							if( locations)
-							{
-								if( *locations)
-								{
-									(*locations)[ count*2] = xx;
-									(*locations)[ count*2 + 1] = yy;
-								}
-							}
-							count++;
-						}
-					}
-				}
-			}
-		}
+    BOOL isComputefImageRGB = isRGB;
+    float *computedfImage = nil;
+    
+    @try
+    {
+        if( [self thickSlabVRActivated])
+            isComputefImageRGB = YES;
+        else
+            computedfImage = [self computefImage];
+        
+        if( isComputefImageRGB)
+            computedfImage = (float*) self.baseAddr;
+        
+        if( roi.type == tPlain)
+        {
+            long textWidth = roi.textureWidth, textHeight = roi.textureHeight;
+            long textureUpLeftCornerX = roi.textureUpLeftCornerX, textureUpLeftCornerY = roi.textureUpLeftCornerY;
+            unsigned char *buf = roi.textureBuffer;
+            
+            values = (float*) malloc( textHeight*textWidth* sizeof(float));
+            if( locations) *locations = (float*) malloc( textHeight*textWidth*2* sizeof(float));
+            
+            if( values)
+            {
+                for( long y = 0; y < textHeight; y++)
+                {
+                    for( long x = 0; x < textWidth; x++)
+                    {
+                        if( buf [ x + y * textWidth] != 0)
+                        {
+                            long xx = (x + textureUpLeftCornerX);
+                            long yy = (y + textureUpLeftCornerY);
+                            
+                            if( xx >= 0 && xx < width && yy >= 0 && yy < height)
+                            {
+                                if( isComputefImageRGB)
+                                {
+                                    unsigned char*  rgbPtr = (unsigned char*) &computedfImage[ (yy * width) + xx];
+                                    float val = rgbPtr[ 0] + rgbPtr[ 1] + rgbPtr[2] / 3;
+                                    
+                                    values[ count] = val;
+                                    
+                                    if( locations)
+                                    {
+                                        if( *locations)
+                                        {
+                                            (*locations)[ count*2] = xx;
+                                            (*locations)[ count*2 + 1] = yy;
+                                        }
+                                    }
+                                    count++;
+                                }
+                                else
+                                {
+                                    float *curPix = &computedfImage[ (yy * width) + xx];
+                                    values[ count] = *curPix;
+                                    
+                                    if( locations)
+                                    {
+                                        if( *locations)
+                                        {
+                                            (*locations)[ count*2] = xx;
+                                            (*locations)[ count*2 + 1] = yy;
+                                        }
+                                    }
+                                    count++;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            NSMutableArray *ptsTemp = [roi splinePoints];
+            
+            if( [ptsTemp count] == 0) return nil;
+            
+            [self CheckLoad];
+            
+            NSPointInt *pts = (NSPointInt*) malloc( ptsTemp.count * sizeof(NSPointInt));
+            if( pts)
+            {
+                no = ptsTemp.count;
+                for( int i = 0; i < no; i++)
+                {
+                    pts[ i].x = [[ptsTemp objectAtIndex: i] point].x;
+                    pts[ i].y = [[ptsTemp objectAtIndex: i] point].y;
+                }
+            
+                // Need to clip?
+                NSPointInt *pTemp;
+                BOOL clip = NO;
+                
+                for( int i = 0; i < no && clip == NO; i++)
+                {
+                    if( pts[ i].x < 0) clip = YES;
+                    if( pts[ i].y < 0) clip = YES;
+                    if( pts[ i].x >= width) clip = YES;
+                    if( pts[ i].y >= height) clip = YES;
+                }
+                
+                if( no == 1)
+                {
+                    values = (float*) malloc( sizeof(float));
+                    if( locations) *locations = (float*) malloc( 2 * sizeof(float));
+                    
+                    if( isComputefImageRGB)
+                    {
+                        unsigned char *rgbPtr = (unsigned char*) &computedfImage[ (pts[ 0].y * width) + pts[ 0].x];
+                        
+                        float val = rgbPtr[ 0] + rgbPtr[ 1] + rgbPtr[2] / 3;
+                        
+                        values[ count] = val;
+                        
+                        if( locations && *locations)
+                        {
+                            (*locations)[ count*2] = pts[ 0].x;
+                            (*locations)[ count*2 + 1] = pts[ 0].y;
+                        }
+                        count++;
+                    }
+                    else
+                    {
+                        float *curPix = &computedfImage[ (pts[ 0].y * width) + pts[ 0].x];
+                        
+                        float val = *curPix;
+                        
+                        values[ count] = val;
+                        
+                        if( locations && *locations)
+                        {
+                            (*locations)[ count*2] = pts[ 0].x;
+                            (*locations)[ count*2 + 1] = pts[ 0].y;
+                        }
+                        count++;
+                    }
+                }
+                else
+                {
+                    if( clip)
+                    {
+                        long newNo;
+                        
+                        pTemp = (NSPointInt*) malloc( sizeof(NSPointInt) * 4 * no);
+                        CLIP_Polygon( pts, no, pTemp, &newNo, width, height);
+                        
+                        free( pts);
+                        pts = pTemp;
+                        
+                        no = newNo;
+                    }
+                    
+                    [self computeROIBoundsFromPoints: pts count: ptsTemp.count upleftx: &upleftx uplefty:&uplefty downrightx: &downrightx downrighty: &downrighty];
+                    
+                    long size = ((downrightx-upleftx)+1)*((downrighty-uplefty)+1);
+                    values = (float*) malloc( size*sizeof(float));
+                    
+                    float *ilocations = nil;
+                    if( locations) *locations = ilocations = (float*) malloc( size * 2 * sizeof(float));
+                    
+                    ras_FillPolygon( pts, no, computedfImage, width, height, pixArray.count, 0, 0, NO, 0, NO, isComputefImageRGB, YES, nil, nil, &count, nil, nil, 0, 2, 0, NO, values, ilocations);
+                }
+                
+                free( pts);
+            }
+        }
 	}
-	else
-	{
-		NSMutableArray  *ptsTemp = [roi splinePoints];
-		
-		if( [ptsTemp count] == 0) return nil;
-		
-		[self CheckLoad];
-		
-		pts = (NSPoint*) malloc( [ptsTemp count] * sizeof(NSPoint));
-		no = [ptsTemp count];
-		for( long i = 0; i < no; i++) pts[ i] = [[ptsTemp objectAtIndex: i] point];
-		
-		upleftx = downrightx = [[ptsTemp objectAtIndex:0] x];
-		uplefty = downrighty = [[ptsTemp objectAtIndex:0] y];
-		
-		for( long i = 0; i < [ptsTemp count]; i++)
-		{
-			if( upleftx > [[ptsTemp objectAtIndex:i] x]) upleftx = [[ptsTemp objectAtIndex:i] x];
-			if( uplefty > [[ptsTemp objectAtIndex:i] y]) uplefty = [[ptsTemp objectAtIndex:i] y];
-			
-			if( downrightx < [[ptsTemp objectAtIndex:i] x]) downrightx = [[ptsTemp objectAtIndex:i] x];
-			if( downrighty < [[ptsTemp objectAtIndex:i] y]) downrighty = [[ptsTemp objectAtIndex:i] y];
-		}
-		
-		if( upleftx < 0) upleftx = 0;
-		if( downrightx < 0) downrightx = 0;
-		if( upleftx > width) upleftx = width;
-		if( downrightx > width) downrightx = width;
-		
-		if( uplefty < 0) uplefty = 0;
-		if( downrighty < 0) downrighty = 0;
-		if( uplefty > height) uplefty = height;
-		if( downrighty > height) downrighty = height;
-		
-		count = 0;
-		long y = (downrighty - uplefty);
-		long x = (downrightx - upleftx);
-		values = (float*) malloc( x*y* sizeof(float));
-		if( locations) *locations = (float*) malloc( x*y*2* sizeof(float));
-		
-		if( values)	{
-			
-			for( y = uplefty; y < downrighty ; y++)
-			{
-				for( x = upleftx; x < downrightx ; x++)
-				{
-					
-					if( pnpoly( pts, no, x, y) > 0)
-					{
-						if( isRGB)
-						{
-							unsigned char*  rgbPtr = (unsigned char*) fImage;
-							long			pos;
-							
-							pos =  4*width*y;
-							pos += 4*x;
-							
-							values[ count] = (rgbPtr[ pos+1] + rgbPtr[ pos+2] + rgbPtr[ pos+3])/3;
-						}
-						else
-						{
-							values[ count] = fImage[ width*y + x];
-						}
-						
-						if( locations)
-						{
-							if( *locations)	{
-								(*locations)[ count*2] = x;
-								(*locations)[ count*2 + 1] = y;
-							}
-						}
-						count++;
-					}
-				}
-			}
-		}
-		
-		y = (downrighty - uplefty);
-		x = (downrightx - upleftx);
-		
-//		if( count > x*y) NSLog(@"%d / %d", count, (long) ((downrighty - uplefty) * (downrightx - upleftx)));
-		
-		if( roi) free( pts);
-	}
-	
+    @catch (NSException *exception) {
+        N2LogException( exception);
+    }
+    @finally
+    {
+        if( computedfImage && isComputefImageRGB == NO)
+        {
+            if( computedfImage != self.fImage)
+                free( computedfImage);
+        }
+    }
+    
 	*numberOfValues = count;
 	
 	return values;
@@ -2238,7 +2318,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         {
 			BOOL restore = NO, addition = NO, outside = NO;
 			
-			ras_FillPolygon( ptsInt, no, tempImage, size->width, size->height, [pixArray count], -FLT_MAX, FLT_MAX, outside, 255, addition, NO, NO, nil, nil, nil, nil, nil, 0, 2, 0, restore);
+			ras_FillPolygon( ptsInt, no, tempImage, size->width, size->height, [pixArray count], -FLT_MAX, FLT_MAX, outside, 255, addition, NO, NO, nil, nil, nil, nil, nil, 0, 2, 0, restore, nil, nil);
 		}
 		
 		// Convert float to char
@@ -2653,7 +2733,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	
 	if( ptsInt != nil && no > 1)
 	{
-		ras_FillPolygon( ptsInt, no, fImage, width, height, pixArray.count, minValue, maxValue, outside, newVal, addition, isRGB, NO, nil, nil, nil, nil, nil, 0, orientationStack, stackNo, restore);
+		ras_FillPolygon( ptsInt, no, fImage, width, height, pixArray.count, minValue, maxValue, outside, newVal, addition, isRGB, NO, nil, nil, nil, nil, nil, 0, orientationStack, stackNo, restore, nil, nil);
 	}
 	else
 	{	// Fill the image that contains no ROI :
@@ -2847,9 +2927,39 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     return [self computeROIInt: roi :mean :total :dev :min :max :nil :nil];
 }
 
+- (void) computeROIBoundsFromPoints: (NSPointInt*) pts count: (long) count upleftx:(long*) upleftx uplefty:(long*)uplefty downrightx:(long*)downrightx downrighty:(long*) downrighty
+{
+    if( count == 0)
+    {
+        NSLog( @"******** computeROIBoundsFromPoints pts.count == 0 !!!!!!");
+        return;
+    }
+    *upleftx = *downrightx = pts[0].x;
+    *uplefty = *downrighty = pts[0].y;
+    
+    for( long i = 0; i < count; i++)
+    {
+        if( *upleftx > pts[i].x) *upleftx = pts[i].x;
+        if( *uplefty > pts[i].y) *uplefty = pts[i].y;
+        
+        if( *downrightx < pts[i].x) *downrightx = pts[i].x;
+        if( *downrighty < pts[i].y) *downrighty = pts[i].y;
+    }
+    
+    if( *upleftx < 0) *upleftx = 0;
+    if( *downrightx < 0) *downrightx = 0;
+    if( *upleftx > width) *upleftx = width;
+    if( *downrightx > width) *downrightx = width;
+    
+    if( *uplefty < 0) *uplefty = 0;
+    if( *downrighty < 0) *downrighty = 0;
+    if( *uplefty > height) *uplefty = height;
+    if( *downrighty > height) *downrighty = height;
+}
+
 - (void) computeROIInt:(ROI*) roi :(float*) mean :(float *)total :(float *)dev :(float *)min :(float *)max :(float *)skewness :(float*) kurtosis
 {
-	long count, no;
+	long count;
 	float imax, imin, itotal, idev, imean;
 	
 	count = 0;
@@ -2859,218 +2969,48 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	imin = FLT_MAX;
 	imax = -FLT_MAX;
 	
-	[self CheckLoad];
-	
-	if( roi.type == tPlain)
-	{
-		int	textWidth = roi.textureWidth;
-		int	textHeight = roi.textureHeight;
-		int	textureUpLeftCornerX = roi.textureUpLeftCornerX;
-		int	textureUpLeftCornerY = roi.textureUpLeftCornerY;
-		unsigned char *buf = roi.textureBuffer;
-		float *fImageTemp;
-		
-		for( int y = 0; y < textHeight; y++)
-		{
-			fImageTemp = fImage + ((y + textureUpLeftCornerY) * width) + textureUpLeftCornerX;
-			
-			for( int x = 0; x < textWidth; x++, fImageTemp++)
-			{
-				if( *buf++ != 0)
-				{
-					int	xx = (x + textureUpLeftCornerX);
-					int	yy = (y + textureUpLeftCornerY);
-					
-					if( xx >= 0 && xx < width && yy >= 0 && yy < height)
-					{
-						if( isRGB)
-						{
-							unsigned char*  rgbPtr = (unsigned char*) &fImage[ (yy * width) + xx];
-							float val = rgbPtr[ 0] + rgbPtr[ 1] + rgbPtr[2] / 3;
-							
-							count++;
-							itotal += val;
-							
-							if( imin > val) imin = val;
-							if( imax < val) imax = val;
-						}
-						else
-						{
-							float	val = *fImageTemp;
-							
-							count++;
-							itotal += val;
-							
-							if( imin > val) imin = val;
-							if( imax < val) imax = val;
-						}
-					}
-				}
-			}
-		}
-		
-		if( count != 0) imean = itotal / count;
-		
-		if( dev != nil && count > 0)
-		{
-			idev = 0;
-			
-			buf = [roi textureBuffer];
-			
-			for( int y = 0; y < textHeight; y++)
-			{
-				fImageTemp = fImage + ((y + textureUpLeftCornerY) * width) + textureUpLeftCornerX;
-				
-				for( int x = 0; x < textWidth; x++, fImageTemp++)
-				{
-					if( *buf++ != 0)
-					{
-						int	xx = (x + textureUpLeftCornerX);
-						int	yy = (y + textureUpLeftCornerY);
-						
-						if( xx >= 0 && xx < width && yy >= 0 && yy < height)
-						{
-							if( isRGB)
-							{
-								unsigned char*  rgbPtr = (unsigned char*) &fImage[ (yy * width) + xx];
-								float val = rgbPtr[ 0] + rgbPtr[ 1] + rgbPtr[2] / 3;
-								
-								float temp = imean - val;
-								temp *= temp;
-								idev += temp;
-							}
-							else
-							{
-								float val = *fImageTemp;
-								float temp = imean - val;
-								temp *= temp;
-								idev += temp;
-							}
-						}
-					}
-				}
-			}
-			*dev = idev;
-			*dev = *dev / (count-1);
-			*dev = sqrt(*dev);
-		}
-		else if( dev) *dev = 0;
-		
-		if( max) *max = imax;
-		if( min) *min = imin;
-		if( total) *total = itotal;
-		if( mean) *mean = imean;
-	}
-	else
-	{
-		NSMutableArray  *ptsTemp = [roi splinePoints];
-		NSPointInt		*pts;
-		
-		pts = (NSPointInt*) malloc( ptsTemp.count * sizeof(NSPointInt));
-		no = [ptsTemp count];
-		for( int i = 0; i < no; i++)
-		{
-			pts[ i].x = [[ptsTemp objectAtIndex: i] point].x;
-			pts[ i].y = [[ptsTemp objectAtIndex: i] point].y;
-		}
-		
-		// Need to clip?
-		NSPointInt *pTemp;
-		BOOL clip = NO;
-		
-		for( int i = 0; i < no && clip == NO; i++)
-		{
-			if( pts[ i].x < 0) clip = YES;
-			if( pts[ i].y < 0) clip = YES;
-			if( pts[ i].x >= width) clip = YES;
-			if( pts[ i].y >= height) clip = YES;
-		}
-		
-		if( no == 1)
-		{
-			if( clip)
-			{
-				if( max) *max = 0;
-				if( min) *min = 0;
-				if( mean) *mean = 0;
-				if( total) *total = 0;
-				if( dev) *dev = 0;
-			}
-			else if( isRGB)
-			{
-				unsigned char*  rgbPtr = (unsigned char*) &fImage[ (pts[ 0].y * width) + pts[ 0].x];
-				
-				float val = rgbPtr[ 0] + rgbPtr[ 1] + rgbPtr[2] / 3;
-				
-				if( max) *max = val;
-				if( min) *min = val;
-				if( mean) *mean = val;
-				if( total) *total = val;
-				if( dev) *dev = 0;
-			}
-			else
-			{
-				float	*curPix = &fImage[ (pts[ 0].y * width) + pts[ 0].x];
-				
-				float val = *curPix;
-				
-				if( max) *max = val;
-				if( min) *min = val;
-				if( mean) *mean = val;
-				if( total) *total = val;
-				if( dev) *dev = 0;
-			}
-		}
-		else
-		{
-			if( clip)
-			{
-				long newNo;
-				
-				pTemp = (NSPointInt*) malloc( sizeof(NSPointInt) * 4 * no);
-				CLIP_Polygon( pts, no, pTemp, &newNo, width, height);
-				
-				free( pts);
-				pts = pTemp;
-				
-				no = newNo;
-			}
-			
-			ras_FillPolygon( pts, no, fImage, width, height, pixArray.count, 0, 0, NO, 0, NO, isRGB, YES, &imax, &imin, &count, &itotal, nil, 0, 2, 0, NO);
-			
-			if( max) *max = imax;
-			if( min) *min = imin;
-			if( total) *total = itotal;
-			
-			if( count != 0) imean = itotal / count;
-			
-			if( dev != nil && count > 0)
-			{
-				idev = 0 ;
-				
-				ras_FillPolygon( pts, no, fImage, width, height, pixArray.count, 0, 0, NO, 0, NO, isRGB, YES, nil, nil, nil, nil, &idev, imean, 2, 0, NO);
-				
-				*dev = idev;
-				*dev = *dev / (count-1);
-				*dev = sqrt(*dev);
-			}
-			else if( dev) *dev = 0;
-			
-			if( mean) *mean = imean;
-		}
-		
-		free( pts);
-	}
-	
-	if( max)
-	{
-		if( *max == -FLT_MAX) *max = 0;
-	}
-	
-	if( min)
-	{
-		if( *min == FLT_MAX) *min = 0;
-	}
+    float *values = [self getROIValue: &count :roi :nil];
+    
+    for( long i = 0; i < count; i++)
+    {
+        float val = values[ i];
+        
+        itotal += val;
+        
+        if( imin > val) imin = val;
+        if( imax < val) imax = val;
+    }
+
+    if( count != 0)
+        imean = itotal / count;
+            
+    if( dev)
+    {
+        idev = 0;
+                
+        for( long i = 0; i < count; i++)
+        {
+            float val = values[ i];
+            float temp = imean - val;
+            temp *= temp;
+            idev += temp;
+        }
+        
+        *dev = idev;
+        *dev = *dev / (count-1);
+        *dev = sqrt(*dev);
+    }
+            
+    if( max) *max = imax;
+    if( min) *min = imin;
+    if( total) *total = itotal;
+    if( mean) *mean = imean;
+    
+    if( max && *max == -FLT_MAX) *max = 0;
+    if( min && *min == FLT_MAX) *min = 0;
+    
+    if( values)
+        free( values);
 }
 
 - (void) computeROI:(ROI*) roi :(float*) mean :(float *)total :(float *)dev :(float *)min :(float *)max
@@ -3080,47 +3020,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 - (void) computeROI:(ROI*) roi :(float*) mean :(float *)total :(float *)dev :(float *)min :(float *)max :(float *)skewness :(float*) kurtosis
 {
-	if( (stackMode == 1 || stackMode == 2 || stackMode == 3) && stack >= 1)
-	{
-		long	countstack = 0;
-		float	meanslice, totalslice, devslice, minslice, maxslice;
-		
-		[self computeROIInt: roi :mean :total :dev :min :max];
-		countstack++;
-		
-		for( long i = 1; i < stack; i++)
-		{
-			long next;
-			if( stackDirection) next = pixPos-i;
-			else next = pixPos+i;
-			
-			if( next < pixArray.count && next >= 0)
-			{
-				[[pixArray objectAtIndex: next] computeROIInt: roi :&meanslice :&totalslice :&devslice :&minslice :&maxslice];
-				countstack++;
-				
-				if( mean) *mean += meanslice;
-				if( dev) *dev += devslice;
-				if( total) *total += totalslice;
-				
-				if( min) if(minslice < *min) *min = minslice;
-				if( max) if(maxslice > *max) *max = maxslice;
-			}
-		}
-		
-		if( mean) *mean /= countstack;
-		if( dev)
-		{
-			*dev /= countstack;
-			
-			float vv = fabs( (countstack-1) * sliceInterval);
-			vv += sliceThickness;
-			
-			*dev /= sqrtf( vv / sliceThickness);
-		}
-		if( total) *total /= countstack;
-	}
-	else [self computeROIInt: roi :mean :total :dev :min :max :skewness :kurtosis];
+    [self computeROIInt: roi :mean :total :dev :min :max :skewness :kurtosis];
 }
 
 - (void) setRGB:(BOOL) b
