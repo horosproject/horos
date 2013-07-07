@@ -4068,6 +4068,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		
 		switch( type)
 		{
+#pragma mark tLayerROI
 			case tLayerROI:
 			{
 				if(layerImage)
@@ -4173,7 +4174,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				}
 			}
 			break;
-			
+#pragma mark tPlain
 			case tPlain:
 			//	if( mode == ROI_selected | mode == ROI_selectedModify | mode == ROI_drawing)
 			{
@@ -4380,7 +4381,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					
 					if ( ROITEXTNAMEONLY == NO )
 					{
-						if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
+						if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax :&rskewness :&rkurtosis];
 						
 						float area = [self plainArea];
 
@@ -4453,7 +4454,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 							ROI *blendedROI = [self copy];
 							blendedROI.pix = blendedPix;
 							[blendedROI setOriginAndSpacing: blendedPix.pixelSpacingX: blendedPix.pixelSpacingY :[DCMPix originCorrectedAccordingToOrientation: blendedPix]];
-							[blendedPix computeROI: blendedROI :&Brmean :&Brtotal :&Brdev :&Brmin :&Brmax];
+							[blendedPix computeROI: blendedROI :&Brmean :&Brtotal :&Brdev :&Brmin :&Brmax :&Brskewness :&Brkurtosis];
 							[blendedROI release];
 							
                             NSString *pixelUnit = [NSString stringWithFormat:@" %@ ", blendedPix.rescaleType];
@@ -4470,7 +4471,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				}
 			}
 			break;
-			
+#pragma mark t2DPoint
 			case t2DPoint:
 			{
 				float angle;
@@ -4511,7 +4512,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					
 					if( ROITEXTNAMEONLY == NO )
 					{
-						if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
+						if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax :&rskewness :&rkurtosis];
 						
 						if( [curView blendingView])
 						{
@@ -4523,7 +4524,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 							blendedRect.origin = [curView ConvertFromGL2GL: blendedRect.origin toView:[curView blendingView]];
 							[blendedROI setROIRect: blendedRect];
 							
-							[blendedPix computeROI: blendedROI :&Brmean :&Brtotal :&Brdev :&Brmin :&Brmax];
+							[blendedPix computeROI: blendedROI :&Brmean :&Brtotal :&Brdev :&Brmin :&Brmax :&rskewness :&rkurtosis];
 						}
                         
                         // US Regions (Point) --->
@@ -4633,7 +4634,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				}
 			}
 			break;
-			
+#pragma mark tText
 			case tText:
 			{
 				glPushMatrix();
@@ -4702,7 +4703,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				glPopMatrix();
 			}
 			break;
-			
+#pragma mark tMesure / tArrow
 			case tMesure:
 			case tArrow:
 			{
@@ -5189,7 +5190,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				}
 			}
 			break;
-			
+#pragma mark tROI
 			case tROI:
 			{
 				glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
@@ -5235,8 +5236,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						
 						if( ROITEXTNAMEONLY == NO )
 						{
-							if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
-							
+							if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax :&rskewness :&rkurtosis];
 							
                             // US Regions (Rectangle) --->
                             BOOL roiInside2DUSRegion = FALSE;
@@ -5287,7 +5287,10 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                                 pixelUnit = [NSString stringWithFormat:@" %@ ", NSLocalizedString( @"SUV", @"SUV = Standard Uptake Value")];
                             
 							self.textualBoxLine3 = [NSString stringWithFormat: NSLocalizedString( @"Mean: %0.3f%@ SDev: %0.3f%@ Sum: %0.0f%@", nil), rmean, pixelUnit, rdev, pixelUnit, rtotal, pixelUnit];
-							self.textualBoxLine4 = [NSString stringWithFormat: NSLocalizedString( @"Min: %0.3f%@ Max: %0.3f%@", nil), rmin, pixelUnit, rmax, pixelUnit];
+                            if( rskewness || rkurtosis)
+                                self.textualBoxLine4 = [NSString stringWithFormat: NSLocalizedString( @"Min: %0.3f%@ Max: %0.3f%@ Skewness: %0.3f Kurtosis: %0.3f", nil), rmin, pixelUnit, rmax, pixelUnit, rskewness, rkurtosis];
+                            else
+                                self.textualBoxLine4 = [NSString stringWithFormat: NSLocalizedString( @"Min: %0.3f%@ Max: %0.3f%@", nil), rmin, pixelUnit, rmax, pixelUnit];
 							
 							if( [curView blendingView])
 							{
@@ -5307,7 +5310,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 								
 								[blendedROI setROIRect: blendedRect];
 								
-								[blendedPix computeROI: blendedROI :&Brmean :&Brtotal :&Brdev :&Brmin :&Brmax];
+								[blendedPix computeROI: blendedROI :&Brmean :&Brtotal :&Brdev :&Brmin :&Brmax :&Brskewness :&Brkurtosis];
 								
                                 NSString *pixelUnit = [NSString stringWithFormat:@" %@ ", blendedPix.rescaleType];
                                 
@@ -5315,7 +5318,11 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                                     pixelUnit = [NSString stringWithFormat:@" %@ ", NSLocalizedString( @"SUV", @"SUV = Standard Uptake Value")];
                                 
 								self.textualBoxLine5 = [NSString stringWithFormat: NSLocalizedString( @"Fused Image Mean: %0.3f%@ SDev: %0.3f%@ Sum: %0.0f%@", nil), Brmean, pixelUnit, Brdev, pixelUnit, Brtotal, pixelUnit];
-								self.textualBoxLine6 = [NSString stringWithFormat: NSLocalizedString( @"Fused Image Min: %0.3f%@ Max: %0.3f%@", nil), Brmin, pixelUnit, Brmax, pixelUnit];
+                                
+                                if( Brskewness || Brkurtosis)
+                                    self.textualBoxLine6 = [NSString stringWithFormat: NSLocalizedString( @"Fused Image Min: %0.3f%@ Max: %0.3f%@ Skewness: %0.3f Kurtosis: %0.3f", nil), Brmin, pixelUnit, Brmax, pixelUnit, Brskewness, Brkurtosis];
+                                else
+                                    self.textualBoxLine6 = [NSString stringWithFormat: NSLocalizedString( @"Fused Image Min: %0.3f%@ Max: %0.3f%@", nil), Brmin, pixelUnit, Brmax, pixelUnit];
 							}
 						}
 						
@@ -5324,7 +5331,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				}
 			}
 			break;
-			
+#pragma mark tOval
 			case tOval:
 			{
 				float angle;
@@ -5390,7 +5397,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                     
 					if( ROITEXTNAMEONLY == NO )
 					{
-						if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
+						if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax :&rskewness :&rkurtosis];
 						
                         // US Regions (Oval) --->
                         BOOL roiInside2DUSRegion = FALSE;
@@ -5442,7 +5449,11 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                             pixelUnit = [NSString stringWithFormat:@" %@ ", NSLocalizedString( @"SUV", @"SUV = Standard Uptake Value")];
                         
 						self.textualBoxLine3 = [NSString stringWithFormat: NSLocalizedString( @"Mean: %0.3f%@ SDev: %0.3f%@ Sum: %0.0f%@", nil), rmean, pixelUnit, rdev, pixelUnit, rtotal, pixelUnit];
-						self.textualBoxLine4 = [NSString stringWithFormat: NSLocalizedString( @"Min: %0.3f%@ Max: %0.3f%@", nil), rmin, pixelUnit, rmax, pixelUnit];
+                        
+                        if( rskewness || rkurtosis)
+                            self.textualBoxLine4 = [NSString stringWithFormat: NSLocalizedString( @"Min: %0.3f%@ Max: %0.3f%@ Skewness: %0.3f Kurtosis: %0.3f", nil), rmin, pixelUnit, rmax, pixelUnit, rskewness, rkurtosis];
+						else
+                            self.textualBoxLine4 = [NSString stringWithFormat: NSLocalizedString( @"Min: %0.3f%@ Max: %0.3f%@", nil), rmin, pixelUnit, rmax, pixelUnit];
 						
 						if( [curView blendingView])
 						{
@@ -5456,7 +5467,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 								[p setPoint: [curView ConvertFromGL2GL: [p point] toView:[curView blendingView]]];
 							
 							[blendedROI setPoints: pts];
-							[blendedPix computeROI: blendedROI :&Brmean :&Brtotal :&Brdev :&Brmin :&Brmax];
+							[blendedPix computeROI: blendedROI :&Brmean :&Brtotal :&Brdev :&Brmin :&Brmax :&Brskewness :&Brkurtosis];
 							
                             NSString *pixelUnit = [NSString stringWithFormat:@" %@ ", blendedPix.rescaleType];
                             
@@ -5464,7 +5475,10 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                                 pixelUnit = [NSString stringWithFormat:@" %@ ", NSLocalizedString( @"SUV", @"SUV = Standard Uptake Value")];
                             
 							self.textualBoxLine5 = [NSString stringWithFormat: NSLocalizedString( @"Fused Image Mean: %0.3f%@ SDev: %0.3f%@ Sum: %0.0f%@", nil), Brmean, pixelUnit, Brdev, pixelUnit, Brtotal, pixelUnit];
-							self.textualBoxLine6 = [NSString stringWithFormat: NSLocalizedString( @"Fused Image Min: %0.3f%@ Max: %0.3f%@", nil), Brmin, pixelUnit, Brmax, pixelUnit];
+                            if( Brskewness || Brkurtosis)
+                                self.textualBoxLine6 = [NSString stringWithFormat: NSLocalizedString( @"Fused Image Min: %0.3f%@ Max: %0.3f%@ Skewness: %0.3f Kurtosis: %0.3f", nil), Brmin, pixelUnit, Brmax, pixelUnit, Brskewness, Brkurtosis];
+                            else
+                                self.textualBoxLine6 = [NSString stringWithFormat: NSLocalizedString( @"Fused Image Min: %0.3f%@ Max: %0.3f%@", nil), Brmin, pixelUnit, Brmax, pixelUnit];
 						}
 					}
 					
@@ -5472,7 +5486,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				}
 			}
 			break;
-			
+#pragma mark tAxis
 			case tAxis:
 			{
 				glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
@@ -5509,7 +5523,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                     else self.textualBoxLine1 = nil;
                     
 					if( ROITEXTNAMEONLY == NO ) {
-						if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
+						if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax :&rskewness :&rkurtosis];
 						
 						if( pixelSpacingX != 0 && pixelSpacingY != 0 )
                         {
@@ -5697,7 +5711,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				glColor3f (1.0f, 1.0f, 1.0f);			
 			}
 			break;
-			
+#pragma mark tDynAngle
 			case tDynAngle:
 			{
 				glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
@@ -5791,7 +5805,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                     
                     if( ROITEXTNAMEONLY == NO)
                     {
-                        if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
+                        if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax :&rskewness :&rkurtosis];
                         
                         if( pixelSpacingX != 0 && pixelSpacingY != 0 )
                         {
@@ -5851,7 +5865,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				glColor3f (1.0f, 1.0f, 1.0f);
 			}
 			break;
-				
+#pragma mark tCPolygon, tOPolygon, tAngle, tPencil
 			case tCPolygon:
 			case tOPolygon:
 			case tAngle:
@@ -5918,7 +5932,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                             
 							if( ROITEXTNAMEONLY == NO )
 							{
-								if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
+								if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax :&rskewness :&rkurtosis];
                                 
                                 // US Regions (Pencil or Closed Polygon) --->
                                 BOOL roiInside2DUSRegion = FALSE;
@@ -5990,8 +6004,11 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                                     pixelUnit = [NSString stringWithFormat:@" %@ ", NSLocalizedString( @"SUV", @"SUV = Standard Uptake Value")];
                                 
                                 self.textualBoxLine3 = [NSString stringWithFormat: NSLocalizedString( @"Mean: %0.3f%@ SDev: %0.3f%@ Sum: %0.0f%@", nil), rmean, pixelUnit, rdev, pixelUnit, rtotal, pixelUnit];
-								self.textualBoxLine4 = [NSString stringWithFormat: NSLocalizedString( @"Min: %0.3f%@ Max: %0.3f%@", nil), rmin, pixelUnit, rmax, pixelUnit];
-								
+                                if( rskewness || rkurtosis)
+                                    self.textualBoxLine4 = [NSString stringWithFormat: NSLocalizedString( @"Min: %0.3f%@ Max: %0.3f%@ Skewness: %0.3f Kurtosis: %0.3f", nil), rmin, pixelUnit, rmax, pixelUnit, rskewness, rkurtosis];
+								else
+                                    self.textualBoxLine4 = [NSString stringWithFormat: NSLocalizedString( @"Min: %0.3f%@ Max: %0.3f%@", nil), rmin, pixelUnit, rmax, pixelUnit];
+                                
 								length = 0;
 								
 								if( [splinePoints count] < 2)
@@ -6012,7 +6029,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 											[p setPoint: [curView ConvertFromGL2GL: [p point] toView:[curView blendingView]]];
 										
 										[blendedROI setPoints: pts];
-										[blendedPix computeROI: blendedROI :&Brmean :&Brtotal :&Brdev :&Brmin :&Brmax];
+										[blendedPix computeROI: blendedROI :&Brmean :&Brtotal :&Brdev :&Brmin :&Brmax :&Brskewness :&Brkurtosis];
 										
                                         NSString *pixelUnit = [NSString stringWithFormat:@" %@ ", blendedPix.rescaleType];
                                         
@@ -6020,7 +6037,11 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                                             pixelUnit = [NSString stringWithFormat:@" %@ ", NSLocalizedString( @"SUV", @"SUV = Standard Uptake Value")];
                                         
 										self.textualBoxLine5 = [NSString stringWithFormat: NSLocalizedString( @"Fused Image Mean: %0.3f%@ SDev: %0.3f%@ Sum: %0.0f%@", nil), Brmean, pixelUnit, Brdev, pixelUnit, Brtotal, pixelUnit];
-										self.textualBoxLine6 = [NSString stringWithFormat: NSLocalizedString( @"Fused Image Min: %0.3f%@ Max: %0.3f%@", nil), Brmin, pixelUnit, Brmax, pixelUnit];
+                                        
+                                        if( Brskewness || Brkurtosis)
+                                            self.textualBoxLine6 = [NSString stringWithFormat: NSLocalizedString( @"Fused Image Min: %0.3f%@ Max: %0.3f%@ Skewness: %0.3f Kurtosis: %0.3f", nil), Brmin, pixelUnit, Brmax, pixelUnit, Brskewness, Brkurtosis];
+                                        else
+                                            self.textualBoxLine6 = [NSString stringWithFormat: NSLocalizedString( @"Fused Image Min: %0.3f%@ Max: %0.3f%@", nil), Brmin, pixelUnit, Brmax, pixelUnit];
 									}
 									else
 									{
@@ -6056,7 +6077,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                             
 							if( ROITEXTNAMEONLY == NO )
 							{
-								if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
+								if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax :&rskewness :&rkurtosis];
                                 
                                 // US Regions (Opened Polygon) --->
                                 BOOL roiInside2DUSRegion = FALSE;
@@ -6156,7 +6177,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 										[p setPoint: [curView ConvertFromGL2GL: [p point] toView:[curView blendingView]]];
 									
 									[blendedROI setPoints: pts];
-									[blendedPix computeROI: blendedROI :&Brmean :&Brtotal :&Brdev :&Brmin :&Brmax];
+									[blendedPix computeROI: blendedROI :&Brmean :&Brtotal :&Brdev :&Brmin :&Brmax :&Brskewness :&Brkurtosis];
 									
                                     NSString *pixelUnit = [NSString stringWithFormat:@" %@ ", blendedPix.rescaleType];
                                     
@@ -6375,7 +6396,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		case tPlain: {
 			array = [NSMutableDictionary dictionaryWithCapacity:0];
 		
-			if( rtotal == -1) [[self pix] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
+			if( rtotal == -1) [[self pix] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax :&rskewness :&rkurtosis];
 			
 			if( type == tOval)
 			{

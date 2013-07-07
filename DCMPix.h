@@ -368,9 +368,8 @@ Note setter is different to not break existing usage. :-( */
 /** returns calculated values for ROI:
 *  mean, total, deviation, min, max
 */
-- (void) computeROI:(ROI*) roi :(float *)mean :(float *)total :(float *)dev :(float *)min :(float *)max;  
-/** Not sure when this is used rather than computeROI: */
-- (void) computeROIInt:(ROI*) roi :(float*) mean :(float *)total :(float *)dev :(float *)min :(float *)max;
+- (void) computeROI:(ROI*) roi :(float *)mean :(float *)total :(float *)dev :(float *)min :(float *)max :(float*) skewness :(float*) kurtosis;
+- (void) computeROI:(ROI*) roi :(float *)mean :(float *)total :(float *)dev :(float *)min :(float *)max;
 
 /** Fill a ROI with a value
 * @param roi  Selected ROI

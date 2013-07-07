@@ -2874,7 +2874,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		return 0;
 }
 
-+ (double) moment: (double *) x length:(long) length mean: (double) mean order: (int) order
++ (double) moment: (float *) x length:(long) length mean: (double) mean order: (int) order
 {
     if (x == nil || order == 1)
         return 0.;
@@ -2895,7 +2895,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
  * power of the standard deviation.
  */
  
-+ (double) skewness: (double*) data length: (long) length mean: (double) mean
++ (double) skewness: (float*) data length: (long) length mean: (double) mean
 {
     if (data == nil || length < 2)
         return 0.;
@@ -2910,7 +2910,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
  * This method calculates the kurtosis of a data set. Kurtosis is the fourth central moment divided by the fourth
  * power of the standard deviation.
  */
-+ (double) kurtosis: (double*) data length: (long) length mean: (double) mean
++ (double) kurtosis: (float*) data length: (long) length mean: (double) mean
 {    
     if (data == nil || length < 2)
         return 0.;
@@ -2920,11 +2920,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         double sm2 = sqrt( [DCMPix moment: data length: length mean: mean order: 2]);
         return (m4 / pow(sm2, 4));
     }
-}
-
-- (void) computeROIInt:(ROI*) roi :(float*) mean :(float *)total :(float *)dev :(float *)min :(float *)max
-{
-    return [self computeROIInt: roi :mean :total :dev :min :max :nil :nil];
 }
 
 - (void) computeROIBoundsFromPoints: (NSPointInt*) pts count: (long) count upleftx:(long*) upleftx uplefty:(long*)uplefty downrightx:(long*)downrightx downrighty:(long*) downrighty
@@ -2957,10 +2952,26 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     if( *downrighty > height) *downrighty = height;
 }
 
-- (void) computeROIInt:(ROI*) roi :(float*) mean :(float *)total :(float *)dev :(float *)min :(float *)max :(float *)skewness :(float*) kurtosis
+- (void) computeROI:(ROI*) roi :(float*) mean :(float *)total :(float *)dev :(float *)min :(float *)max
 {
+    return [self computeROI: roi :mean :total :dev :min :max :nil :nil];
+}
+
+- (void) computeROI:(ROI*) roi :(float*) mean :(float *)total :(float *)dev :(float *)min :(float *)max :(float *)skewness :(float*) kurtosis
+{
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ROIComputeSkewnessAndKurtosis"] == NO)
+    {
+        if( skewness)
+            *skewness = 0;
+        if( kurtosis)
+            *kurtosis = 0;
+        
+        skewness = nil;
+        kurtosis = nil;
+    }
+    
 	long count;
-	float imax, imin, itotal, idev, imean;
+	double imax, imin, itotal, idev, imean;
 	
 	count = 0;
 	itotal = 0;
@@ -3009,18 +3020,14 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     if( max && *max == -FLT_MAX) *max = 0;
     if( min && *min == FLT_MAX) *min = 0;
     
+    if( skewness)
+        *skewness = [DCMPix skewness: values length: count mean: imean];
+    
+    if( kurtosis)
+        *kurtosis = [DCMPix kurtosis: values length: count mean: imean];
+        
     if( values)
         free( values);
-}
-
-- (void) computeROI:(ROI*) roi :(float*) mean :(float *)total :(float *)dev :(float *)min :(float *)max
-{
-    return [self computeROI: roi :mean :total :dev :min :max :nil :nil];
-}
-
-- (void) computeROI:(ROI*) roi :(float*) mean :(float *)total :(float *)dev :(float *)min :(float *)max :(float *)skewness :(float*) kurtosis
-{
-    [self computeROIInt: roi :mean :total :dev :min :max :skewness :kurtosis];
 }
 
 - (void) setRGB:(BOOL) b

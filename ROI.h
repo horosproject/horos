@@ -107,8 +107,8 @@ enum
 	DCMView			*curView;
 	DCMPix			*pix;
 	
-	float			rmean, rmax, rmin, rdev, rtotal;
-	float			Brmean, Brmax, Brmin, Brdev, Brtotal;
+	float			rmean, rmax, rmin, rdev, rtotal, rskewness, rkurtosis;
+	float			Brmean, Brmax, Brmin, Brdev, Brtotal, Brskewness, Brkurtosis;
 	
 	float			mousePosMeasure;
 	
