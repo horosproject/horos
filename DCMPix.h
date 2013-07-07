@@ -689,6 +689,10 @@ Note setter is different to not break existing usage. :-( */
 */
 - (void *) getPapyGroup: (int)group;
 
++ (double) moment: (float *) x length:(long) length mean: (double) mean order: (int) order;
++ (double) skewness: (float*) data length: (long) length mean: (double) mean;
++ (double) kurtosis: (float*) data length: (long) length mean: (double) mean;
+
 #ifndef OSIRIX_LIGHT
 /** create ROIs from RTSTRUCT */
 - (void)createROIsFromRTSTRUCT: (DCMObject*)dcmObject;

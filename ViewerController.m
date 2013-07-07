@@ -13045,14 +13045,15 @@ int i,j,l;
 		NSString *volumeString;
 		
 		if( volume < 0.01)
-			volumeString = [NSString stringWithFormat:NSLocalizedString(@"Volume : %2.4f mm3", nil), volume*1000.];
+			volumeString = [NSString stringWithFormat:NSLocalizedString(@"Volume : %2.4f mm\u00B3", @"mm\u00B3 == mm3"), volume*1000.];
 		else
-			volumeString = [NSString stringWithFormat:NSLocalizedString(@"Volume : %2.4f cm3", nil), volume];
+			volumeString = [NSString stringWithFormat:NSLocalizedString(@"Volume : %2.4f cm\u00B3", @"cm\u00B3 == mm3"), volume];
 		
 		[s appendString: volumeString];
 		
-		[s appendString: [NSString stringWithFormat:NSLocalizedString(@"\rMean : %2.4f SDev: %2.4f Total : %2.4f", nil), [[data valueForKey:@"mean"] floatValue], [[data valueForKey:@"dev"] floatValue], [[data valueForKey:@"total"] floatValue]]];
-		[s appendString: [NSString stringWithFormat:NSLocalizedString(@"\rMin : %2.4f Max : %2.4f ", nil), [[data valueForKey:@"min"] floatValue], [[data valueForKey:@"max"] floatValue]]];
+		[s appendString: [NSString stringWithFormat:NSLocalizedString(@"\rMean: %2.4f SDev: %2.4f Total: %2.4f", nil), [[data valueForKey:@"mean"] floatValue], [[data valueForKey:@"dev"] floatValue], [[data valueForKey:@"total"] floatValue]]];
+		[s appendString: [NSString stringWithFormat:NSLocalizedString(@"\rMin: %2.4f Max: %2.4f ", nil), [[data valueForKey:@"min"] floatValue], [[data valueForKey:@"max"] floatValue]]];
+        [s appendString: [NSString stringWithFormat:NSLocalizedString(@"\rSkewness: %2.4f Kurtosis: %2.4f ", nil), [[data valueForKey:@"skewness"] floatValue], [[data valueForKey:@"kurtosis"] floatValue]]];
 		
 		[viewer setDataString: s volume: volumeString];
 		
@@ -19277,7 +19278,7 @@ int i,j,l;
 		if( missingSlice) NSLog( @"**** Warning cannot compute data on a ROI with missing slices. Turn generateMissingROIs to TRUE to solve this.");
 		else
 		{
-			double gmean = 0, gtotal = 0, gmin = 0, gmax = 0, gdev = 0;
+			double gmean = 0, gtotal = 0, gmin = 0, gmax = 0, gdev = 0, gskewness = 0, gkurtosis = 0;
 			
 //			for( i = 0 ; i < [theSlices count]; i++)
 //			{
@@ -19355,7 +19356,7 @@ int i,j,l;
                 gmax = totalPtr[ 0];
                 for( i = 0; i < memSize; i++)
                 {
-                    float	val = totalPtr[ i];
+                    float val = totalPtr[ i];
                     
                     float temp = gmean - val;
                     temp *= temp;
@@ -19366,6 +19367,10 @@ int i,j,l;
                 }
                 gdev = gdev / (double) (memSize-1);
                 gdev = sqrt( gdev);
+                
+                gskewness = [DCMPix skewness: totalPtr length: memSize mean: gmean];
+                gkurtosis = [DCMPix kurtosis: totalPtr length: memSize mean: gmean];
+                
 			}
             
 			free( totalPtr);
@@ -19375,6 +19380,8 @@ int i,j,l;
 			[data setObject: [NSNumber numberWithDouble: gmean] forKey:@"mean"];
 			[data setObject: [NSNumber numberWithDouble: gtotal] forKey:@"total"];
 			[data setObject: [NSNumber numberWithDouble: gdev] forKey:@"dev"];
+            [data setObject: [NSNumber numberWithDouble: gskewness] forKey:@"skewness"];
+            [data setObject: [NSNumber numberWithDouble: gkurtosis] forKey:@"kurtosis"];
 			[data setObject: rois forKey:@"rois"];
 		}
 	}

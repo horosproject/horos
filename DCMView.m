@@ -3623,26 +3623,30 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             
             if( [NSUserDefaults.standardUserDefaults boolForKey: @"ROITextIfMouseIsOver"] && [NSUserDefaults.standardUserDefaults boolForKey:@"ROITEXTIFSELECTED"])
             {
-                NSPoint pt = [self convertPoint: eventLocationInWindow fromView:nil];
-                pt = [self ConvertFromNSView2GL: pt];
-                
-                for( ROI *r in curRoiList)
+                if( mouseDragging == NO)
                 {
-                    BOOL c = r.clickInTextBox;
-                    if( [r clickInROI:pt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :NO])
+                    NSPoint pt = [self convertPoint: eventLocationInWindow fromView:nil];
+                    pt = [self ConvertFromNSView2GL: pt];
+                    
+                    for( ROI *r in curRoiList)
                     {
-                        if( !r.mouseOverROI)
+                        BOOL c = r.clickInTextBox;
+                        
+                        if( [r clickInROI:pt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :NO])
                         {
-                            r.mouseOverROI = YES;
+                            if( !r.mouseOverROI)
+                            {
+                                r.mouseOverROI = YES;
+                                [self setNeedsDisplay: YES];
+                            }
+                        }
+                        else if( r.mouseOverROI)
+                        {
+                            r.mouseOverROI = NO;
                             [self setNeedsDisplay: YES];
                         }
+                        r.clickInTextBox = c;
                     }
-                    else if( r.mouseOverROI)
-                    {
-                        r.mouseOverROI = NO;
-                        [self setNeedsDisplay: YES];
-                    }
-                    r.clickInTextBox = c;
                 }
             }
             

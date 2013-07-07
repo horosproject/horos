@@ -2899,7 +2899,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 {
     if (data == nil || length < 2)
         return 0.;
-    else {
+    else
+    {
         double m3 = [DCMPix moment: data length: length mean: mean order: 3];
         double sm2 = sqrt([DCMPix moment: data length: length mean: mean order: 2]);
         return (m3 / pow(sm2, 3));
@@ -2918,7 +2919,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     {
         double m4 = [DCMPix moment: data length: length mean: mean order: 4];
         double sm2 = sqrt( [DCMPix moment: data length: length mean: mean order: 2]);
-        return (m4 / pow(sm2, 4));
+        return (m4 / pow(sm2, 4)) - 3.; // WHY - 3.0 ?
     }
 }
 
@@ -3001,8 +3002,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                 
         for( long i = 0; i < count; i++)
         {
-            float val = values[ i];
-            float temp = imean - val;
+            float temp = imean - values[ i];
             temp *= temp;
             idev += temp;
         }
@@ -3020,12 +3020,14 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     if( max && *max == -FLT_MAX) *max = 0;
     if( min && *min == FLT_MAX) *min = 0;
     
-    if( skewness)
-        *skewness = [DCMPix skewness: values length: count mean: imean];
     
     if( kurtosis)
         *kurtosis = [DCMPix kurtosis: values length: count mean: imean];
-        
+    
+    if( skewness)
+        *skewness = [DCMPix skewness: values length: count mean: imean];
+    
+    
     if( values)
         free( values);
 }

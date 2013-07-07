@@ -1949,6 +1949,8 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 
 - (void) addPointUnderMouse: (NSPoint) pt scale:(float) scale
 {
+    float backingScaleFactor = curView.window.backingScaleFactor;
+    
 	switch( type)
 	{
 		case tOPolygon:
@@ -1960,7 +1962,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 			// Is it near from existing points?
 			for( MyPoint *p in points)
 			{
-				if( [p isNearToPoint: pt :scale :[[curView curDCM] pixelRatio]])
+				if( [p isNearToPoint: pt :scale/backingScaleFactor :[[curView curDCM] pixelRatio]])
 					nearPoint = YES;
 			}
 			
@@ -2007,7 +2009,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
     
     #define NEIGHBORHOODRADIUS 10.0
     float neighborhoodRad = NEIGHBORHOODRADIUS * curView.window.backingScaleFactor;
-
+    float backingScaleFactor = curView.window.backingScaleFactor;
 	
 	if( testDrawRect)
 	{
@@ -2091,7 +2093,6 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 							yj = y+j;
 							if(xi>=0.0 && yj>=0.0 && xi<width && yj<height)
 							{
-								
 								NSColor *pixelColor = [bitmap colorAtX:xi y:yj];
 								if([pixelColor alphaComponent]>0.0)
 									found = YES;
@@ -2125,26 +2126,30 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 			case tOval:
 				arect = NSMakeRect( rect.origin.x -rect.size.width -(neighborhoodRad/2)/scale, rect.origin.y -rect.size.height -(neighborhoodRad/2)/scale, 2*rect.size.width + neighborhoodRad/scale, 2*rect.size.height + neighborhoodRad/scale);
 				
-				if( NSPointInRect( pt, arect)) imode = ROI_selected;
+				if( NSPointInRect( pt, arect))
+                    imode = ROI_selected;
 			break;
 			
 			
 			case tROI:
 				arect = NSMakeRect( rect.origin.x -(neighborhoodRad/2), rect.origin.y-(neighborhoodRad/2), rect.size.width+neighborhoodRad, rect.size.height+neighborhoodRad);
 				
-				if( NSPointInRect( pt, arect)) imode = ROI_selected;
+				if( NSPointInRect( pt, arect))
+                    imode = ROI_selected;
 			break;
 			
 			case t2DPoint:
 				arect = NSMakeRect( rect.origin.x - neighborhoodRad/scale, rect.origin.y - neighborhoodRad/scale, neighborhoodRad*2/scale, neighborhoodRad*2/scale);
 				
-				if( NSPointInRect( pt, arect)) imode = ROI_selected;
+				if( NSPointInRect( pt, arect))
+                    imode = ROI_selected;
 			break;
 			
 			case tText:
 				arect = NSMakeRect( rect.origin.x - rect.size.width/(2*scale), rect.origin.y - rect.size.height/(2*scale), rect.size.width/scale, rect.size.height/scale);
 				
-				if( NSPointInRect( pt, arect)) imode = ROI_selected;
+				if( NSPointInRect( pt, arect))
+                    imode = ROI_selected;
 			break;
 			
 			
@@ -2156,9 +2161,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 				[self DistancePointLine:pt :[[points objectAtIndex:0] point] : [[points objectAtIndex:1] point] :&distance];
 				
 				if( distance*scale < neighborhoodRad/2)
-				{
 					imode = ROI_selected;
-				}
 			}
 			break;
 			
@@ -2207,7 +2210,8 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 					}
 					
 					[self DistancePointLine:pt :[[splinePoints objectAtIndex:i] point] : [[splinePoints objectAtIndex:0] point] :&distance];
-					if( distance*scale < neighborhoodRad/2 )	imode = ROI_selected;
+					if( distance*scale < neighborhoodRad/2)
+                        imode = ROI_selected;
 				}
 			}
 			break;
@@ -2268,16 +2272,16 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 				selectedModifyPoint = 0;
 				
 				aPt.x = rect.origin.x - rect.size.width;		aPt.y = rect.origin.y - rect.size.height;
-				if( [tempPoint isNearToPoint: aPt :scale :[[curView curDCM] pixelRatio]]) selectedModifyPoint = 1;
+				if( [tempPoint isNearToPoint: aPt :scale/backingScaleFactor :[[curView curDCM] pixelRatio]]) selectedModifyPoint = 1;
 				
 				aPt.x = rect.origin.x - rect.size.width;		aPt.y = rect.origin.y + rect.size.height;
-				if( [tempPoint isNearToPoint: aPt :scale :[[curView curDCM] pixelRatio]]) selectedModifyPoint = 2;
+				if( [tempPoint isNearToPoint: aPt :scale/backingScaleFactor :[[curView curDCM] pixelRatio]]) selectedModifyPoint = 2;
 				
 				aPt.x = rect.origin.x + rect.size.width;		aPt.y = rect.origin.y + rect.size.height;
-				if( [tempPoint isNearToPoint: aPt :scale :[[curView curDCM] pixelRatio]]) selectedModifyPoint = 3;
+				if( [tempPoint isNearToPoint: aPt :scale/backingScaleFactor :[[curView curDCM] pixelRatio]]) selectedModifyPoint = 3;
 				
 				aPt.x = rect.origin.x + rect.size.width;		aPt.y = rect.origin.y - rect.size.height;
-				if( [tempPoint isNearToPoint: aPt :scale :[[curView curDCM] pixelRatio]]) selectedModifyPoint = 4;
+				if( [tempPoint isNearToPoint: aPt :scale/backingScaleFactor :[[curView curDCM] pixelRatio]]) selectedModifyPoint = 4;
 				
 				if( selectedModifyPoint) imode = ROI_selectedModify;
 			break;
@@ -2286,16 +2290,16 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 				selectedModifyPoint = 0;
 				
 				aPt.x = rect.origin.x;		aPt.y = rect.origin.y;
-				if( [tempPoint isNearToPoint: aPt :scale :[[curView curDCM] pixelRatio]]) selectedModifyPoint = 1;
+				if( [tempPoint isNearToPoint: aPt :scale/backingScaleFactor :[[curView curDCM] pixelRatio]]) selectedModifyPoint = 1;
 				
 				aPt.x = rect.origin.x;		aPt.y = rect.origin.y + rect.size.height;
-				if( [tempPoint isNearToPoint: aPt :scale :[[curView curDCM] pixelRatio]]) selectedModifyPoint = 2;
+				if( [tempPoint isNearToPoint: aPt :scale/backingScaleFactor :[[curView curDCM] pixelRatio]]) selectedModifyPoint = 2;
 				
 				aPt.x = rect.origin.x + rect.size.width;		aPt.y = rect.origin.y + rect.size.height;
-				if( [tempPoint isNearToPoint: aPt :scale :[[curView curDCM] pixelRatio]]) selectedModifyPoint = 3;
+				if( [tempPoint isNearToPoint: aPt :scale/backingScaleFactor :[[curView curDCM] pixelRatio]]) selectedModifyPoint = 3;
 				
 				aPt.x = rect.origin.x + rect.size.width;		aPt.y = rect.origin.y;
-				if( [tempPoint isNearToPoint: aPt :scale :[[curView curDCM] pixelRatio]]) selectedModifyPoint = 4;
+				if( [tempPoint isNearToPoint: aPt :scale/backingScaleFactor :[[curView curDCM] pixelRatio]]) selectedModifyPoint = 4;
 				
 				if( selectedModifyPoint) imode = ROI_selectedModify;
 			break;
@@ -2316,7 +2320,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
                 
 				for( int i = 0 ; i < [points count]; i++ )
 				{
-					if( [[points objectAtIndex: i] isNearToPoint: pt :scale :[[curView curDCM] pixelRatio]])
+					if( [[points objectAtIndex: i] isNearToPoint: pt :scale/backingScaleFactor :[[curView curDCM] pixelRatio]])
 					{
 						imode = ROI_selectedModify;
 						selectedModifyPoint = i;
@@ -2342,35 +2346,36 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	
 	PointUnderMouse = -1;
 	NSPoint aPt;
-	
+	float backingScaleFactor = curView.window.backingScaleFactor;
+    
 	switch( type)
 	{
 		case tOval:
 			aPt.x = rect.origin.x - rect.size.width;		aPt.y = rect.origin.y - rect.size.height;
-			if( [tempPoint isNearToPoint: aPt :scale :[[curView curDCM] pixelRatio]]) PointUnderMouse = 1;
+			if( [tempPoint isNearToPoint: aPt :scale/backingScaleFactor :[[curView curDCM] pixelRatio]]) PointUnderMouse = 1;
 			
 			aPt.x = rect.origin.x - rect.size.width;		aPt.y = rect.origin.y + rect.size.height;
-			if( [tempPoint isNearToPoint: aPt :scale :[[curView curDCM] pixelRatio]]) PointUnderMouse = 2;
+			if( [tempPoint isNearToPoint: aPt :scale/backingScaleFactor :[[curView curDCM] pixelRatio]]) PointUnderMouse = 2;
 			
 			aPt.x = rect.origin.x + rect.size.width;		aPt.y = rect.origin.y + rect.size.height;
-			if( [tempPoint isNearToPoint: aPt :scale :[[curView curDCM] pixelRatio]]) PointUnderMouse = 3;
+			if( [tempPoint isNearToPoint: aPt :scale/backingScaleFactor :[[curView curDCM] pixelRatio]]) PointUnderMouse = 3;
 			
 			aPt.x = rect.origin.x + rect.size.width;		aPt.y = rect.origin.y - rect.size.height;
-			if( [tempPoint isNearToPoint: aPt :scale :[[curView curDCM] pixelRatio]]) PointUnderMouse = 4;
+			if( [tempPoint isNearToPoint: aPt :scale/backingScaleFactor :[[curView curDCM] pixelRatio]]) PointUnderMouse = 4;
 		break;
 		
 		case tROI:
 			aPt.x = rect.origin.x;		aPt.y = rect.origin.y;
-			if( [tempPoint isNearToPoint: aPt :scale :[[curView curDCM] pixelRatio]]) PointUnderMouse = 1;
+			if( [tempPoint isNearToPoint: aPt :scale/backingScaleFactor :[[curView curDCM] pixelRatio]]) PointUnderMouse = 1;
 			
 			aPt.x = rect.origin.x;		aPt.y = rect.origin.y + rect.size.height;
-			if( [tempPoint isNearToPoint: aPt :scale :[[curView curDCM] pixelRatio]]) PointUnderMouse = 2;
+			if( [tempPoint isNearToPoint: aPt :scale/backingScaleFactor :[[curView curDCM] pixelRatio]]) PointUnderMouse = 2;
 			
 			aPt.x = rect.origin.x + rect.size.width;		aPt.y = rect.origin.y + rect.size.height;
-			if( [tempPoint isNearToPoint: aPt :scale :[[curView curDCM] pixelRatio]]) PointUnderMouse = 3;
+			if( [tempPoint isNearToPoint: aPt :scale/backingScaleFactor :[[curView curDCM] pixelRatio]]) PointUnderMouse = 3;
 			
 			aPt.x = rect.origin.x + rect.size.width;		aPt.y = rect.origin.y;
-			if( [tempPoint isNearToPoint: aPt :scale :[[curView curDCM] pixelRatio]]) PointUnderMouse = 4;
+			if( [tempPoint isNearToPoint: aPt :scale/backingScaleFactor :[[curView curDCM] pixelRatio]]) PointUnderMouse = 4;
 		break;
 		
 		case tAngle:
@@ -2386,7 +2391,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 		{
 			for( int i = 0 ; i < [points count]; i++ )
 			{
-				if( [[points objectAtIndex: i] isNearToPoint: pt :scale :[[curView curDCM] pixelRatio]])
+				if( [[points objectAtIndex: i] isNearToPoint: pt :scale/backingScaleFactor :[[curView curDCM] pixelRatio]])
 				{
 					PointUnderMouse = i;
 				}
@@ -2408,6 +2413,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 
 - (BOOL)mouseRoiDownIn:(NSPoint)pt :(int)slice :(float)scale
 {
+    float backingScaleFactor = curView.window.backingScaleFactor;
 	MyPoint	*mypt;
 	
 	if( selectable == NO)
@@ -2512,7 +2518,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 //	}
 	else
 	{
-		if( [[points lastObject] isNearToPoint: pt : scale/thickness :[[curView curDCM] pixelRatio]] == NO)
+		if( [[points lastObject] isNearToPoint: pt : scale/(thickness*backingScaleFactor) :[[curView curDCM] pixelRatio]] == NO)
 		{
 			mypt = [[MyPoint alloc] initWithPoint: pt];
 			
@@ -2532,7 +2538,8 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 		
 		if( type == tAngle)
 		{
-			if( [points count] > 2) mode = ROI_selected;
+			if( [points count] > 2)
+                mode = ROI_selected;
 		}
 	}
 	
@@ -3070,7 +3077,8 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	[roiLock lock];
 	
 	BOOL action = NO;
-	
+	float backingScaleFactor = curView.window.backingScaleFactor;
+    
 	@try
 	{
 		BOOL textureGrowDownX = YES,textureGrowDownY = YES;
@@ -3324,7 +3332,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 			switch( mode)
 			{
 				case ROI_drawing:
-				if( [[points lastObject] isNearToPoint: pt : scale/thickness :[[curView curDCM] pixelRatio]] == NO)
+				if( [[points lastObject] isNearToPoint: pt : scale/(thickness*backingScaleFactor) :[[curView curDCM] pixelRatio]] == NO)
 				{
 					MyPoint *mypt = [[MyPoint alloc] initWithPoint: pt];
 				
@@ -5573,7 +5581,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						glBegin( GL_POINTS);
 						for( long i = 0; i < [points count]; i++) {
 							if( mode >= ROI_selected && (i == selectedModifyPoint || i == PointUnderMouse)) glColor3f (1.0f, 0.2f, 0.2f);
-							else if( mode == ROI_drawing && [[points objectAtIndex: i] isNearToPoint: tempPt : scaleValue/thick :[[curView curDCM] pixelRatio]] == YES) glColor3f (1.0f, 0.0f, 1.0f);
+							else if( mode == ROI_drawing && [[points objectAtIndex: i] isNearToPoint: tempPt : scaleValue/(thick*backingScaleFactor) :[[curView curDCM] pixelRatio]] == YES) glColor3f (1.0f, 0.0f, 1.0f);
 							else glColor3f (0.5f, 0.5f, 1.0f);
 							
 							glVertex2f( ([[points objectAtIndex: i] x]- offsetx) * scaleValue , ([[points objectAtIndex: i] y]- offsety) * scaleValue);
@@ -5859,7 +5867,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					glBegin( GL_POINTS);
 					for( long i = 0; i < [points count]; i++) {
 						if( mode >= ROI_selected && (i == selectedModifyPoint || i == PointUnderMouse)) glColor3f (1.0f, 0.2f, 0.2f);
-						else if( mode == ROI_drawing && [[points objectAtIndex: i] isNearToPoint: tempPt : scaleValue/thick :[[curView curDCM] pixelRatio]] == YES) glColor3f (1.0f, 0.0f, 1.0f);
+						else if( mode == ROI_drawing && [[points objectAtIndex: i] isNearToPoint: tempPt : scaleValue/(thick*backingScaleFactor) :[[curView curDCM] pixelRatio]] == YES) glColor3f (1.0f, 0.0f, 1.0f);
 						else glColor3f (0.5f, 0.5f, 1.0f);
 						
 						glVertex2f( ([[points objectAtIndex: i] x]- offsetx) * scaleValue , ([[points objectAtIndex: i] y]- offsety) * scaleValue);
@@ -6290,7 +6298,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						for( long i = 0; i < [points count]; i++)
 						{
 							if( mode >= ROI_selected && (i == selectedModifyPoint || i == PointUnderMouse)) glColor3f (1.0f, 0.2f, 0.2f);
-							else if( mode == ROI_drawing && [[points objectAtIndex: i] isNearToPoint: tempPt : scaleValue/thick :[[curView curDCM] pixelRatio]] == YES) glColor3f (1.0f, 0.0f, 1.0f);
+							else if( mode == ROI_drawing && [[points objectAtIndex: i] isNearToPoint: tempPt : scaleValue/(thick*backingScaleFactor) :[[curView curDCM] pixelRatio]] == YES) glColor3f (1.0f, 0.0f, 1.0f);
 							else glColor3f (0.5f, 0.5f, 1.0f);
 							
 							glVertex2f( ([[points objectAtIndex: i] x]- offsetx) * scaleValue , ([[points objectAtIndex: i] y]- offsety) * scaleValue);
