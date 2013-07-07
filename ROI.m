@@ -4438,7 +4438,10 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                                 pixelUnit = [NSString stringWithFormat:@" %@ ", NSLocalizedString( @"SUV", @"SUV = Standard Uptake Value")];
                             
 							self.textualBoxLine3 = [NSString stringWithFormat: NSLocalizedString( @"Mean: %0.3f%@ SDev: %0.3f%@ Sum: %0.0f%@", nil), rmean, pixelUnit, rdev, pixelUnit, rtotal, pixelUnit];
-							self.textualBoxLine4 = [NSString stringWithFormat: NSLocalizedString( @"Min: %0.3f%@ Max: %0.3f%@", nil), rmin, pixelUnit, rmax, pixelUnit];
+                            if( rskewness || rkurtosis)
+                                self.textualBoxLine4 = [NSString stringWithFormat: NSLocalizedString( @"Min: %0.3f%@ Max: %0.3f%@ Skewness: %0.3f Kurtosis: %0.3f", nil), rmin, pixelUnit, rmax, pixelUnit, rskewness, rkurtosis];
+                            else
+                                self.textualBoxLine4 = [NSString stringWithFormat: NSLocalizedString( @"Min: %0.3f%@ Max: %0.3f%@", nil), rmin, pixelUnit, rmax, pixelUnit];
 						}
 						else
 						{
@@ -4463,7 +4466,10 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                                 pixelUnit = [NSString stringWithFormat:@" %@ ", NSLocalizedString( @"SUV", @"SUV = Standard Uptake Value")];
                             
 							self.textualBoxLine5 = [NSString stringWithFormat: NSLocalizedString( @"Fused Image Mean: %0.3f%@ SDev: %0.3f%@ Sum: %0.0f%@", nil), Brmean, pixelUnit, Brdev, pixelUnit, Brtotal, pixelUnit];
-							self.textualBoxLine6 = [NSString stringWithFormat: NSLocalizedString( @"Fused Image Min: %0.3f%@ Max: %0.3f%@", nil), Brmin, pixelUnit, Brmax, pixelUnit];
+                            if( Brskewness || Brkurtosis)
+                                self.textualBoxLine6 = [NSString stringWithFormat: NSLocalizedString( @"Fused Image Min: %0.3f%@ Max: %0.3f%@ Skewness: %0.3f Kurtosis: %0.3f", nil), Brmin, pixelUnit, Brmax, pixelUnit, Brskewness, Brkurtosis];
+                            else
+                                self.textualBoxLine6 = [NSString stringWithFormat: NSLocalizedString( @"Fused Image Min: %0.3f%@ Max: %0.3f%@", nil), Brmin, pixelUnit, Brmax, pixelUnit];
 						}
 					}
 					//if (!_displayCalciumScoring)
