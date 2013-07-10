@@ -2903,7 +2903,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     {
         double m3 = [DCMPix moment: data length: length mean: mean order: 3];
         double sm2 = sqrt([DCMPix moment: data length: length mean: mean order: 2]);
-        return (m3 / pow(sm2, 3));
+        return (m3 / (sm2*sm2*sm2));
     }
 }
 
@@ -2919,7 +2919,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     {
         double m4 = [DCMPix moment: data length: length mean: mean order: 4];
         double sm2 = sqrt( [DCMPix moment: data length: length mean: mean order: 2]);
-        return (m4 / pow(sm2, 4)) - 3.; // WHY - 3.0 ?
+        return (m4 / (sm2*sm2*sm2*sm2)) - 3.; /* makes kurtosis zero for a Gaussian */
     }
 }
 
