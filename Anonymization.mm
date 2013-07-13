@@ -277,6 +277,11 @@ static NSString *templateDicomFile = nil;
 	return s;	
 }
 
++ (void) error: (NSString*) s
+{
+    NSRunCriticalAlertPanel( NSLocalizedString( @"Error", nil), s, NSLocalizedString( @"OK", nil), nil, nil);
+}
+
 +(NSDictionary*)anonymizeFiles:(NSArray*)files dicomImages: (NSArray*) dicomImages toPath:(NSString*)dirPath withTags:(NSArray*)intags
 {
 	if( [files count] != [dicomImages count])
@@ -314,7 +319,13 @@ static NSString *templateDicomFile = nil;
 	NSMutableDictionary* filenameTranslation = [NSMutableDictionary dictionaryWithCapacity:files.count];
 	
 	NSString* tempDirPath = [dirPath stringByAppendingPathComponent:@".temp"];
-	[[NSFileManager defaultManager] confirmDirectoryAtPath:tempDirPath];
+    @try {
+        [[NSFileManager defaultManager] confirmDirectoryAtPath:tempDirPath];
+    }
+    @catch (NSException *exception) {
+        [self performSelectorOnMainThread: @selector( error:) withObject: exception.description waitUntilDone: NO];
+        return nil;
+    }
 	
     Wait *splash = nil;
     if( [NSThread isMainThread])
@@ -452,7 +463,13 @@ static NSString *templateDicomFile = nil;
                 
                 fileDirPath = [fileDirPath stringByAppendingPathComponent: [Anonymization cleanStringForFile: [NSString stringWithFormat:@"%@ - %@", image.series.name, image.series.id]]];
                 
-                [[NSFileManager defaultManager] confirmDirectoryAtPath:fileDirPath];
+                @try {
+                    [[NSFileManager defaultManager] confirmDirectoryAtPath:fileDirPath];
+                }
+                @catch (NSException *exception) {
+                    [self performSelectorOnMainThread: @selector( error:) withObject: exception.description waitUntilDone: NO];
+                    break;
+                }
                 
                 NSString* filePath;
                 NSInteger i = 0;
