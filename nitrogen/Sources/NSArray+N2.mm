@@ -14,8 +14,44 @@
 
 #import "NSArray+N2.h"
 
+static id copy(id obj)
+{
+    if ([obj isKindOfClass:[NSArray class]])
+    {
+        id temp = [obj mutableCopy];
+        
+        for (int i = 0 ; i < [temp count]; i++)
+        {
+            id copied = [copy([temp objectAtIndex:i]) autorelease];
+            
+            [temp replaceObjectAtIndex:i withObject: copied];
+        }
+        
+        return temp;
+    }
+    else if ([obj isKindOfClass:[NSDictionary class]])
+    {
+        NSMutableDictionary *temp = [obj mutableCopy];
+        
+        for( int i = 0; i < temp.allKeys.count; i++)
+        {
+            NSString *key = [temp.allKeys objectAtIndex: i];
+            
+            [temp setObject:[copy([temp objectForKey: key]) autorelease] forKey: key];
+        }
+        
+        return temp;
+    }
+    
+    return [obj copy];
+}
 
 @implementation NSArray (N2)
+
+- (id)deepMutableCopy
+{
+    return (copy(self));
+}
 
 -(NSArray*)splitArrayIntoArraysOfMinSize:(NSUInteger)minSize maxArrays:(NSUInteger)maxArrays {
 	NSMutableArray* chunks = [NSMutableArray array];

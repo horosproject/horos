@@ -14,6 +14,7 @@
 
 
 #import "OSIHangingPreferencePanePref.h"
+#import "NSArray+N2.h"
 #import <OsiriXAPI/NSPreferencePane+OsiriX.h>
 
 
@@ -23,7 +24,17 @@
 
 - (NSArray*) currentHangingProtocol
 {
-    return [hangingProtocols objectForKey: modalityForHangingProtocols];
+    NSArray *a = [hangingProtocols objectForKey: modalityForHangingProtocols];
+    
+    for( NSMutableDictionary *d in a)
+    {
+        if( [[d valueForKey: @"WLWW"] intValue] <= 0)
+        {
+            [d setValue: [NSNumber numberWithInt: 100] forKey: @"WLWW"];
+        }
+    }
+    
+    return a;
 }
 
 - (id) initWithBundle:(NSBundle *)bundle
@@ -80,7 +91,7 @@
 
 - (void) mainViewDidLoad
 {
-	hangingProtocols = [[[NSUserDefaults standardUserDefaults] objectForKey:@"HANGINGPROTOCOLS"] mutableCopy];
+	hangingProtocols = [[[NSUserDefaults standardUserDefaults] objectForKey:@"HANGINGPROTOCOLS"] deepMutableCopy];
 	
 	self.modalityForHangingProtocols = @"CR";
 }
@@ -108,23 +119,26 @@
     [protocol setObject: NSLocalizedString( @"Study Description", nil) forKey:@"Study Description"];
     [protocol setObject:[NSNumber numberWithInt:1] forKey:@"WindowsTiling"];
 	[protocol setObject:[NSNumber numberWithInt:1] forKey:@"ImageTiling"];
-
-	NSMutableArray *hangingProtocolArray = [[[hangingProtocols objectForKey:modalityForHangingProtocols] mutableCopy] autorelease];
-    [hangingProtocolArray addObject:protocol];
-    [hangingProtocols setObject: hangingProtocolArray forKey: modalityForHangingProtocols];
-	
-    [[NSUserDefaults standardUserDefaults] setObject:hangingProtocols forKey:@"HANGINGPROTOCOLS"];
+    [protocol setObject:[NSNumber numberWithInt:100] forKey:@"WLWW"]; // Default
+    
+    [self willChangeValueForKey: @"currentHangingProtocol"];
+    [[hangingProtocols objectForKey:modalityForHangingProtocols] addObject:protocol];
+    [self didChangeValueForKey: @"currentHangingProtocol"];
 }
 
-- (void) deleteSelectedRow:(id)sender
+- (void) deleteSelectedRow:(NSTableView*)sender
 {
-    NSMutableArray *hangingProtocolArray = [[[hangingProtocols objectForKey:modalityForHangingProtocols] mutableCopy] autorelease];
-    [hangingProtocols setObject: hangingProtocolArray forKey: modalityForHangingProtocols];
-    [[NSUserDefaults standardUserDefaults] setObject:hangingProtocols forKey:@"HANGINGPROTOCOLS"];
+    if( NSRunInformationalAlertPanel(NSLocalizedString( @"Delete Protocol", 0L), NSLocalizedString( @"Are you sure you want to delete the selected protocol?", 0L), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
+    {
+        [self willChangeValueForKey: @"currentHangingProtocol"];
+        [[hangingProtocols objectForKey:modalityForHangingProtocols] removeObjectAtIndex: sender.selectedRow];
+        [self didChangeValueForKey: @"currentHangingProtocol"];
+    }
 }
 
 -(void) willUnselect
 {
 	[[[self mainView] window] makeFirstResponder: nil];
+    [[NSUserDefaults standardUserDefaults] setObject:hangingProtocols forKey:@"HANGINGPROTOCOLS"];
 }
 @end
