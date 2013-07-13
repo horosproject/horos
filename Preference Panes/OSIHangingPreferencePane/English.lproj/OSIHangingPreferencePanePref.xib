@@ -736,6 +736,7 @@
 							<string key="NSFrame">{{150, 18}, {274, 18}}</string>
 							<reference key="NSSuperview" ref="846046586"/>
 							<reference key="NSWindow"/>
+							<reference key="NSNextKeyView"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="367743128">
@@ -932,6 +933,70 @@
 						</object>
 					</object>
 					<int key="connectionID">343</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: selection.PreviousStudySameModality</string>
+						<reference key="source" ref="503887846"/>
+						<reference key="destination" ref="1057704356"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="503887846"/>
+							<reference key="NSDestination" ref="1057704356"/>
+							<string key="NSLabel">value: selection.PreviousStudySameModality</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">selection.PreviousStudySameModality</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">372</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: selection.Comparative</string>
+						<reference key="source" ref="503887846"/>
+						<reference key="destination" ref="1057704356"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="503887846"/>
+							<reference key="NSDestination" ref="1057704356"/>
+							<string key="NSLabel">enabled: selection.Comparative</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">selection.Comparative</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">375</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: selection.PreviousStudySameDescription</string>
+						<reference key="source" ref="441931640"/>
+						<reference key="destination" ref="1057704356"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="441931640"/>
+							<reference key="NSDestination" ref="1057704356"/>
+							<string key="NSLabel">value: selection.PreviousStudySameDescription</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">selection.PreviousStudySameDescription</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">373</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: selection.Comparative</string>
+						<reference key="source" ref="441931640"/>
+						<reference key="destination" ref="1057704356"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="441931640"/>
+							<reference key="NSDestination" ref="1057704356"/>
+							<string key="NSLabel">enabled: selection.Comparative</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">selection.Comparative</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">374</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -1404,7 +1469,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">349</int>
+			<int key="maxID">375</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
