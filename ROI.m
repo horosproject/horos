@@ -40,7 +40,7 @@ extern long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuff
 
 static float ROIRegionOpacity, ROITextThickness, ROIThickness, ROIOpacity, ROIColorR, ROIColorG, ROIColorB, ROITextColorR, ROITextColorG, ROITextColorB;
 static float ROIRegionThickness, ROIRegionColorR, ROIRegionColorG, ROIRegionColorB, ROIArrowThickness;
-static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY, ROITextIfMouseIsOver;
+static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY, ROITextIfMouseIsOver, ROIDrawPlainEdge;
 static BOOL ROIDefaultsLoaded = NO;
 static BOOL splineForROI = NO;
 static BOOL displayCobbAngle = NO;
@@ -394,6 +394,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	ROITEXTNAMEONLY = [[NSUserDefaults standardUserDefaults] boolForKey: @"ROITEXTNAMEONLY"];
 	splineForROI = [[NSUserDefaults standardUserDefaults] boolForKey: @"splineForROI"];
 	displayCobbAngle = [[NSUserDefaults standardUserDefaults] boolForKey: @"displayCobbAngle"];
+    ROIDrawPlainEdge = [[NSUserDefaults standardUserDefaults] boolForKey: @"ROIDrawPlainEdge"];
 	
 	ROIDefaultsLoaded = YES;
 }
@@ -4188,7 +4189,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			{
 				glDisable(GL_POLYGON_SMOOTH);
 				
-                if( highlightIfSelected)
+                if( highlightIfSelected && ROIDrawPlainEdge)
                 {
                     switch( mode)
                     {
