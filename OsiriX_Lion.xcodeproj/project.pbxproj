@@ -1665,12 +1665,7 @@
 		A98796A016DBAD3D00926023 /* HotKeyTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB98BBE133508040083F3FD /* HotKeyTableView.m */; };
 		A98796A116DBAD3D00926023 /* HotKeyTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB98BC0133508040083F3FD /* HotKeyTextFieldCell.m */; };
 		A98796A216DBAD3D00926023 /* OSIHotKeysPref.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB98BC2133508040083F3FD /* OSIHotKeysPref.m */; };
-		A98796A316DBAD3D00926023 /* BodyRegionArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB98BDA133508180083F3FD /* BodyRegionArrayController.m */; };
-		A98796A416DBAD3D00926023 /* HangingTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB98BDE133508180083F3FD /* HangingTableView.m */; };
-		A98796A516DBAD3D00926023 /* KeywordsArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB98BE0133508180083F3FD /* KeywordsArrayController.m */; };
 		A98796A616DBAD3D00926023 /* OSIHangingPreferencePanePref.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB98BE2133508180083F3FD /* OSIHangingPreferencePanePref.m */; };
-		A98796A716DBAD3D00926023 /* UpperCaseStringFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB98BE4133508180083F3FD /* UpperCaseStringFormatter.m */; };
-		A98796A816DBAD3D00926023 /* UpperCaseTableColumn.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB98BE6133508180083F3FD /* UpperCaseTableColumn.m */; };
 		A98796A916DBAD3D00926023 /* OSIGeneralPreferencePanePref.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB98C04133508280083F3FD /* OSIGeneralPreferencePanePref.m */; };
 		A98796AA16DBAD3D00926023 /* OSIDatabasePreferencePanePref.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB98C0E133508350083F3FD /* OSIDatabasePreferencePanePref.m */; };
 		A98796AB16DBAD3D00926023 /* CIADICOMField.m in Sources */ = {isa = PBXBuildFile; fileRef = CED2CF950C9B288C0047F123 /* CIADICOMField.m */; };
@@ -5267,32 +5262,12 @@
 		CEB98BD6133508040083F3FD /* HotKeyTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB98BC0133508040083F3FD /* HotKeyTextFieldCell.m */; };
 		CEB98BD7133508040083F3FD /* OSIHotKeysPref.h in Headers */ = {isa = PBXBuildFile; fileRef = CEB98BC1133508040083F3FD /* OSIHotKeysPref.h */; };
 		CEB98BD8133508040083F3FD /* OSIHotKeysPref.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB98BC2133508040083F3FD /* OSIHotKeysPref.m */; };
-		CEB98BE7133508180083F3FD /* BodyRegionArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = CEB98BD9133508180083F3FD /* BodyRegionArrayController.h */; };
-		CEB98BE8133508180083F3FD /* BodyRegionArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB98BDA133508180083F3FD /* BodyRegionArrayController.m */; };
 		CEB98BE9133508180083F3FD /* OSIHangingPreferencePanePref.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEB98BDB133508180083F3FD /* OSIHangingPreferencePanePref.xib */; };
-		CEB98BEA133508180083F3FD /* HangingTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = CEB98BDD133508180083F3FD /* HangingTableView.h */; };
-		CEB98BEB133508180083F3FD /* HangingTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB98BDE133508180083F3FD /* HangingTableView.m */; };
-		CEB98BEC133508180083F3FD /* KeywordsArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = CEB98BDF133508180083F3FD /* KeywordsArrayController.h */; };
-		CEB98BED133508180083F3FD /* KeywordsArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB98BE0133508180083F3FD /* KeywordsArrayController.m */; };
 		CEB98BEE133508180083F3FD /* OSIHangingPreferencePanePref.h in Headers */ = {isa = PBXBuildFile; fileRef = CEB98BE1133508180083F3FD /* OSIHangingPreferencePanePref.h */; };
 		CEB98BEF133508180083F3FD /* OSIHangingPreferencePanePref.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB98BE2133508180083F3FD /* OSIHangingPreferencePanePref.m */; };
-		CEB98BF0133508180083F3FD /* UpperCaseStringFormatter.h in Headers */ = {isa = PBXBuildFile; fileRef = CEB98BE3133508180083F3FD /* UpperCaseStringFormatter.h */; };
-		CEB98BF1133508180083F3FD /* UpperCaseStringFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB98BE4133508180083F3FD /* UpperCaseStringFormatter.m */; };
-		CEB98BF2133508180083F3FD /* UpperCaseTableColumn.h in Headers */ = {isa = PBXBuildFile; fileRef = CEB98BE5133508180083F3FD /* UpperCaseTableColumn.h */; };
-		CEB98BF3133508180083F3FD /* UpperCaseTableColumn.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB98BE6133508180083F3FD /* UpperCaseTableColumn.m */; };
-		CEB98BF4133508180083F3FD /* BodyRegionArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = CEB98BD9133508180083F3FD /* BodyRegionArrayController.h */; };
-		CEB98BF5133508180083F3FD /* BodyRegionArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB98BDA133508180083F3FD /* BodyRegionArrayController.m */; };
 		CEB98BF6133508180083F3FD /* OSIHangingPreferencePanePref.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEB98BDB133508180083F3FD /* OSIHangingPreferencePanePref.xib */; };
-		CEB98BF7133508180083F3FD /* HangingTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = CEB98BDD133508180083F3FD /* HangingTableView.h */; };
-		CEB98BF8133508180083F3FD /* HangingTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB98BDE133508180083F3FD /* HangingTableView.m */; };
-		CEB98BF9133508180083F3FD /* KeywordsArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = CEB98BDF133508180083F3FD /* KeywordsArrayController.h */; };
-		CEB98BFA133508180083F3FD /* KeywordsArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB98BE0133508180083F3FD /* KeywordsArrayController.m */; };
 		CEB98BFB133508180083F3FD /* OSIHangingPreferencePanePref.h in Headers */ = {isa = PBXBuildFile; fileRef = CEB98BE1133508180083F3FD /* OSIHangingPreferencePanePref.h */; };
 		CEB98BFC133508180083F3FD /* OSIHangingPreferencePanePref.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB98BE2133508180083F3FD /* OSIHangingPreferencePanePref.m */; };
-		CEB98BFD133508180083F3FD /* UpperCaseStringFormatter.h in Headers */ = {isa = PBXBuildFile; fileRef = CEB98BE3133508180083F3FD /* UpperCaseStringFormatter.h */; };
-		CEB98BFE133508180083F3FD /* UpperCaseStringFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB98BE4133508180083F3FD /* UpperCaseStringFormatter.m */; };
-		CEB98BFF133508180083F3FD /* UpperCaseTableColumn.h in Headers */ = {isa = PBXBuildFile; fileRef = CEB98BE5133508180083F3FD /* UpperCaseTableColumn.h */; };
-		CEB98C00133508180083F3FD /* UpperCaseTableColumn.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB98BE6133508180083F3FD /* UpperCaseTableColumn.m */; };
 		CEB98C05133508280083F3FD /* OSIGeneralPreferencePanePref.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEB98C01133508280083F3FD /* OSIGeneralPreferencePanePref.xib */; };
 		CEB98C06133508280083F3FD /* OSIGeneralPreferencePanePref.h in Headers */ = {isa = PBXBuildFile; fileRef = CEB98C03133508280083F3FD /* OSIGeneralPreferencePanePref.h */; };
 		CEB98C07133508280083F3FD /* OSIGeneralPreferencePanePref.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB98C04133508280083F3FD /* OSIGeneralPreferencePanePref.m */; };
@@ -12198,19 +12173,9 @@
 		CEB98BC0133508040083F3FD /* HotKeyTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HotKeyTextFieldCell.m; path = "Preference Panes/OSIHotKeysPreferencePane/HotKeyTextFieldCell.m"; sourceTree = "<group>"; };
 		CEB98BC1133508040083F3FD /* OSIHotKeysPref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OSIHotKeysPref.h; path = "Preference Panes/OSIHotKeysPreferencePane/OSIHotKeysPref.h"; sourceTree = "<group>"; };
 		CEB98BC2133508040083F3FD /* OSIHotKeysPref.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OSIHotKeysPref.m; path = "Preference Panes/OSIHotKeysPreferencePane/OSIHotKeysPref.m"; sourceTree = "<group>"; };
-		CEB98BD9133508180083F3FD /* BodyRegionArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BodyRegionArrayController.h; path = "Preference Panes/OSIHangingPreferencePane/BodyRegionArrayController.h"; sourceTree = "<group>"; };
-		CEB98BDA133508180083F3FD /* BodyRegionArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BodyRegionArrayController.m; path = "Preference Panes/OSIHangingPreferencePane/BodyRegionArrayController.m"; sourceTree = "<group>"; };
 		CEB98BDC133508180083F3FD /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = "Preference Panes/OSIHangingPreferencePane/English.lproj/OSIHangingPreferencePanePref.xib"; sourceTree = "<group>"; };
-		CEB98BDD133508180083F3FD /* HangingTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HangingTableView.h; path = "Preference Panes/OSIHangingPreferencePane/HangingTableView.h"; sourceTree = "<group>"; };
-		CEB98BDE133508180083F3FD /* HangingTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HangingTableView.m; path = "Preference Panes/OSIHangingPreferencePane/HangingTableView.m"; sourceTree = "<group>"; };
-		CEB98BDF133508180083F3FD /* KeywordsArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KeywordsArrayController.h; path = "Preference Panes/OSIHangingPreferencePane/KeywordsArrayController.h"; sourceTree = "<group>"; };
-		CEB98BE0133508180083F3FD /* KeywordsArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KeywordsArrayController.m; path = "Preference Panes/OSIHangingPreferencePane/KeywordsArrayController.m"; sourceTree = "<group>"; };
 		CEB98BE1133508180083F3FD /* OSIHangingPreferencePanePref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OSIHangingPreferencePanePref.h; path = "Preference Panes/OSIHangingPreferencePane/OSIHangingPreferencePanePref.h"; sourceTree = "<group>"; };
 		CEB98BE2133508180083F3FD /* OSIHangingPreferencePanePref.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OSIHangingPreferencePanePref.m; path = "Preference Panes/OSIHangingPreferencePane/OSIHangingPreferencePanePref.m"; sourceTree = "<group>"; };
-		CEB98BE3133508180083F3FD /* UpperCaseStringFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UpperCaseStringFormatter.h; path = "Preference Panes/OSIHangingPreferencePane/UpperCaseStringFormatter.h"; sourceTree = "<group>"; };
-		CEB98BE4133508180083F3FD /* UpperCaseStringFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UpperCaseStringFormatter.m; path = "Preference Panes/OSIHangingPreferencePane/UpperCaseStringFormatter.m"; sourceTree = "<group>"; };
-		CEB98BE5133508180083F3FD /* UpperCaseTableColumn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UpperCaseTableColumn.h; path = "Preference Panes/OSIHangingPreferencePane/UpperCaseTableColumn.h"; sourceTree = "<group>"; };
-		CEB98BE6133508180083F3FD /* UpperCaseTableColumn.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UpperCaseTableColumn.m; path = "Preference Panes/OSIHangingPreferencePane/UpperCaseTableColumn.m"; sourceTree = "<group>"; };
 		CEB98C02133508280083F3FD /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = "Preference Panes/OSIGeneralPreferencePane/English.lproj/OSIGeneralPreferencePanePref.xib"; sourceTree = "<group>"; };
 		CEB98C03133508280083F3FD /* OSIGeneralPreferencePanePref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OSIGeneralPreferencePanePref.h; path = "Preference Panes/OSIGeneralPreferencePane/OSIGeneralPreferencePanePref.h"; sourceTree = "<group>"; };
 		CEB98C04133508280083F3FD /* OSIGeneralPreferencePanePref.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OSIGeneralPreferencePanePref.m; path = "Preference Panes/OSIGeneralPreferencePane/OSIGeneralPreferencePanePref.m"; sourceTree = "<group>"; };
@@ -19494,18 +19459,8 @@
 			isa = PBXGroup;
 			children = (
 				CEB98BDB133508180083F3FD /* OSIHangingPreferencePanePref.xib */,
-				CEB98BD9133508180083F3FD /* BodyRegionArrayController.h */,
-				CEB98BDA133508180083F3FD /* BodyRegionArrayController.m */,
-				CEB98BDD133508180083F3FD /* HangingTableView.h */,
-				CEB98BDE133508180083F3FD /* HangingTableView.m */,
-				CEB98BDF133508180083F3FD /* KeywordsArrayController.h */,
-				CEB98BE0133508180083F3FD /* KeywordsArrayController.m */,
 				CEB98BE1133508180083F3FD /* OSIHangingPreferencePanePref.h */,
 				CEB98BE2133508180083F3FD /* OSIHangingPreferencePanePref.m */,
-				CEB98BE3133508180083F3FD /* UpperCaseStringFormatter.h */,
-				CEB98BE4133508180083F3FD /* UpperCaseStringFormatter.m */,
-				CEB98BE5133508180083F3FD /* UpperCaseTableColumn.h */,
-				CEB98BE6133508180083F3FD /* UpperCaseTableColumn.m */,
 			);
 			name = Hanging;
 			sourceTree = "<group>";
@@ -23796,12 +23751,7 @@
 				CEB98BC8133508040083F3FD /* HotKeyTableView.h in Headers */,
 				CEB98BCA133508040083F3FD /* HotKeyTextFieldCell.h in Headers */,
 				CEB98BCC133508040083F3FD /* OSIHotKeysPref.h in Headers */,
-				CEB98BE7133508180083F3FD /* BodyRegionArrayController.h in Headers */,
-				CEB98BEA133508180083F3FD /* HangingTableView.h in Headers */,
-				CEB98BEC133508180083F3FD /* KeywordsArrayController.h in Headers */,
 				CEB98BEE133508180083F3FD /* OSIHangingPreferencePanePref.h in Headers */,
-				CEB98BF0133508180083F3FD /* UpperCaseStringFormatter.h in Headers */,
-				CEB98BF2133508180083F3FD /* UpperCaseTableColumn.h in Headers */,
 				CEB98C06133508280083F3FD /* OSIGeneralPreferencePanePref.h in Headers */,
 				CEB98C10133508350083F3FD /* OSIDatabasePreferencePanePref.h in Headers */,
 				CEB98C2E1335084F0083F3FD /* CIAAnnotation.h in Headers */,
@@ -27784,12 +27734,7 @@
 				CEB98BD3133508040083F3FD /* HotKeyTableView.h in Headers */,
 				CEB98BD5133508040083F3FD /* HotKeyTextFieldCell.h in Headers */,
 				CEB98BD7133508040083F3FD /* OSIHotKeysPref.h in Headers */,
-				CEB98BF4133508180083F3FD /* BodyRegionArrayController.h in Headers */,
-				CEB98BF7133508180083F3FD /* HangingTableView.h in Headers */,
-				CEB98BF9133508180083F3FD /* KeywordsArrayController.h in Headers */,
 				CEB98BFB133508180083F3FD /* OSIHangingPreferencePanePref.h in Headers */,
-				CEB98BFD133508180083F3FD /* UpperCaseStringFormatter.h in Headers */,
-				CEB98BFF133508180083F3FD /* UpperCaseTableColumn.h in Headers */,
 				CEB98C09133508280083F3FD /* OSIGeneralPreferencePanePref.h in Headers */,
 				CEB98C13133508350083F3FD /* OSIDatabasePreferencePanePref.h in Headers */,
 				CEB98C451335084F0083F3FD /* CIAAnnotation.h in Headers */,
@@ -29961,12 +29906,7 @@
 				A98796A016DBAD3D00926023 /* HotKeyTableView.m in Sources */,
 				A98796A116DBAD3D00926023 /* HotKeyTextFieldCell.m in Sources */,
 				A98796A216DBAD3D00926023 /* OSIHotKeysPref.m in Sources */,
-				A98796A316DBAD3D00926023 /* BodyRegionArrayController.m in Sources */,
-				A98796A416DBAD3D00926023 /* HangingTableView.m in Sources */,
-				A98796A516DBAD3D00926023 /* KeywordsArrayController.m in Sources */,
 				A98796A616DBAD3D00926023 /* OSIHangingPreferencePanePref.m in Sources */,
-				A98796A716DBAD3D00926023 /* UpperCaseStringFormatter.m in Sources */,
-				A98796A816DBAD3D00926023 /* UpperCaseTableColumn.m in Sources */,
 				A98796A916DBAD3D00926023 /* OSIGeneralPreferencePanePref.m in Sources */,
 				A98796AA16DBAD3D00926023 /* OSIDatabasePreferencePanePref.m in Sources */,
 				A98796AB16DBAD3D00926023 /* CIADICOMField.m in Sources */,
@@ -31083,12 +31023,7 @@
 				CEB98BC9133508040083F3FD /* HotKeyTableView.m in Sources */,
 				CEB98BCB133508040083F3FD /* HotKeyTextFieldCell.m in Sources */,
 				CEB98BCD133508040083F3FD /* OSIHotKeysPref.m in Sources */,
-				CEB98BE8133508180083F3FD /* BodyRegionArrayController.m in Sources */,
-				CEB98BEB133508180083F3FD /* HangingTableView.m in Sources */,
-				CEB98BED133508180083F3FD /* KeywordsArrayController.m in Sources */,
 				CEB98BEF133508180083F3FD /* OSIHangingPreferencePanePref.m in Sources */,
-				CEB98BF1133508180083F3FD /* UpperCaseStringFormatter.m in Sources */,
-				CEB98BF3133508180083F3FD /* UpperCaseTableColumn.m in Sources */,
 				CEB98C07133508280083F3FD /* OSIGeneralPreferencePanePref.m in Sources */,
 				CEB98C11133508350083F3FD /* OSIDatabasePreferencePanePref.m in Sources */,
 				CEB98C2F1335084F0083F3FD /* CIAAnnotation.m in Sources */,
@@ -32847,12 +32782,7 @@
 				CEB98BD4133508040083F3FD /* HotKeyTableView.m in Sources */,
 				CEB98BD6133508040083F3FD /* HotKeyTextFieldCell.m in Sources */,
 				CEB98BD8133508040083F3FD /* OSIHotKeysPref.m in Sources */,
-				CEB98BF5133508180083F3FD /* BodyRegionArrayController.m in Sources */,
-				CEB98BF8133508180083F3FD /* HangingTableView.m in Sources */,
-				CEB98BFA133508180083F3FD /* KeywordsArrayController.m in Sources */,
 				CEB98BFC133508180083F3FD /* OSIHangingPreferencePanePref.m in Sources */,
-				CEB98BFE133508180083F3FD /* UpperCaseStringFormatter.m in Sources */,
-				CEB98C00133508180083F3FD /* UpperCaseTableColumn.m in Sources */,
 				CEB98C0A133508280083F3FD /* OSIGeneralPreferencePanePref.m in Sources */,
 				CEB98C14133508350083F3FD /* OSIDatabasePreferencePanePref.m in Sources */,
 				CEB98C461335084F0083F3FD /* CIAAnnotation.m in Sources */,

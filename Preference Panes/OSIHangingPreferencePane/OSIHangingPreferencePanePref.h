@@ -22,6 +22,7 @@
     IBOutlet NSMenu *windowsTilingPopup;
     IBOutlet NSMenu *imageTilingPopup;
     IBOutlet NSMenu *WLWWPopup;
+    IBOutlet NSArrayController *arrayController;
 }
 
 @property (retain, nonatomic) NSString *modalityForHangingProtocols;
