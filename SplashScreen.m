@@ -20,7 +20,7 @@
 #include <mach/machine.h>
 #include <sys/sysctl.h>
 
-
+extern NSString	*checkSN64String;
 
 BOOL IsPPC()
 
@@ -140,13 +140,26 @@ BOOL useQuartz() {
             [[NSPasteboard generalPasteboard] clearContents];
             [[NSPasteboard generalPasteboard] writeObjects:[NSArray arrayWithObject: currVersionNumber]];
         break;
+            
+        case 3:
+            currVersionNumber = [[checkSN64String mutableCopy] autorelease];
+        break;
 	}
 	
 	[version setTitle: currVersionNumber];
 
     versionType++;
-    if( versionType >= 3)
-        versionType = 0;
+    
+    if( checkSN64String.length)
+    {
+        if( versionType >= 4)
+            versionType = 0;
+    }
+    else
+    {
+        if( versionType >= 3)
+            versionType = 0;
+    }
 }
 
 - (IBAction)showWindow:(id)sender{

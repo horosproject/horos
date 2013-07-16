@@ -3975,6 +3975,13 @@ static BOOL initialized = NO;
 		NSLog( @"/*\\ /*\\ KDU Engine AVAILABLE /*\\ /*\\");
 	else
 		NSLog( @"KDU Engine NOT available");
+    
+    if( checkSN64String.length)
+    {
+        NSLog( @"-----------------------------------------------------------------");
+        NSLog( @"UID: %@", checkSN64String);
+        NSLog( @"-----------------------------------------------------------------");
+    }
 }
 
 - (IBAction) updateViews:(id) sender
