@@ -181,7 +181,18 @@ static DicomDatabase* defaultDatabase = nil;
                 [[NSFileManager defaultManager] createDirectoryAtPath: databaseDir withIntermediateDirectories: NO attributes: nil error: nil];
             }
             
-			defaultDatabase = [[self databaseAtPath:[self defaultBaseDirPath] name:NSLocalizedString(@"Default Database", nil)] retain];
+            NSString *dbName = nil;
+            
+            for( NSDictionary *d in [[NSUserDefaults standardUserDefaults] objectForKey:@"localDatabasePaths"])
+            {
+                if( [[d valueForKey:@"Path"] isEqualToString: [[self defaultBaseDirPath] stringByDeletingLastPathComponent]])
+                    dbName = [d valueForKey: @"Description"];
+            }
+            
+            if( dbName == nil)
+                dbName = [[[[self defaultBaseDirPath] stringByDeletingLastPathComponent] lastPathComponent] stringByAppendingString: NSLocalizedString( @" DB", @"DB = DataBase")];
+            
+			defaultDatabase = [[self databaseAtPath:[self defaultBaseDirPath] name: dbName] retain];
             
             if( [[NSUserDefaults standardUserDefaults] boolForKey: @"eraseEntireDBAtStartup"])
             {
