@@ -5299,6 +5299,9 @@ public:
 	
 	if( fullDepthMode) return;
 	
+    if( r == nil || g == nil || b == nil)
+        return;
+    
 	if( blendingController)
 	{
 		if( r)
