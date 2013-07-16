@@ -16,11 +16,12 @@
 #import "OSIHangingPreferencePanePref.h"
 #import "NSArray+N2.h"
 #import <OsiriXAPI/NSPreferencePane+OsiriX.h>
-
+#import "Notifications.h"
 
 @implementation OSIHangingPreferencePanePref
 
 @synthesize modalityForHangingProtocols;
+@synthesize WLWWNewName, WLnew, WWnew;
 
 + (void) convertWLWWToMenuTag: (NSMutableDictionary*) protocol
 {
@@ -59,7 +60,7 @@
     if( [protocol objectForKey: @"WLWW"] == nil)
         return;
     
-    if( [[protocol objectForKey: @"WLWW"] intValue] == 100)
+    if( [[protocol objectForKey: @"WLWW"] intValue] == 100 || [[protocol objectForKey: @"WLWW"] intValue] == 0)
     {
         [protocol setObject: @0 forKey: @"WL"]; //Default
         [protocol setObject: @0 forKey: @"WW"];
@@ -94,6 +95,87 @@
     return;
 }
 
+- (void) AddCurrentWLWW:(NSMutableDictionary*) sender
+{
+	self.WLWWNewName = NSLocalizedString(@"Unnamed", nil);
+	
+    currentWLWWProtocol = [sender retain];
+    
+	[NSApp beginSheet: addWLWWWindow modalForWindow: self.mainView.window modalDelegate:self didEndSelector:nil contextInfo:nil];
+}
+
+-(IBAction) endNameWLWW:(id) sender
+{
+    [addWLWWWindow makeFirstResponder: nil];
+    
+    if( WLnew == nil || WWnew == nil)
+    {
+        NSRunCriticalAlertPanel( NSLocalizedString( @"WL / WW Error", nil), NSLocalizedString( @"Provide values for WL and WW.", nil), NSLocalizedString( @"OK", nil), nil, nil);
+        return;
+    }
+    
+	float iwl, iww;
+    
+    iwl = [WLnew floatValue];
+    iww = [WWnew floatValue];
+    if( iww < 1) iww = 1;
+    
+    if( [sender tag])   //User clicks OK Button
+    {
+        if( self.WLWWNewName.length)
+        {
+            NSMutableDictionary *presetsDict = [[[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"WLWW3"] mutableCopy] autorelease];
+            
+            if( [presetsDict valueForKey: self.WLWWNewName])
+            {
+                if( NSRunInformationalAlertPanel(NSLocalizedString( @"WL / WW", 0L), NSLocalizedString( @"Another WL/WW setting with this name already exists. Are you sure you want to replace it with this one?", 0L), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) != NSAlertDefaultReturn)
+                {
+                    return;
+                }
+            }
+            
+            [presetsDict setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], nil] forKey:self.WLWWNewName];
+            [[NSUserDefaults standardUserDefaults] setObject: presetsDict forKey:@"WLWW3"];
+            
+            [self buildWLWWMenu];
+            
+            [currentWLWWProtocol setValue: @(iwl) forKey: @"WL"];
+            [currentWLWWProtocol setValue: @(iww) forKey: @"WW"];
+            
+            NSArray *sortedKeys = [[presetsDict allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+            
+            for( NSString *key in sortedKeys)
+            {
+                NSArray *a = [presetsDict objectForKey: key];
+                
+                if( [[currentWLWWProtocol objectForKey: @"WL"] floatValue] == [[a objectAtIndex:0] floatValue] && [[currentWLWWProtocol objectForKey: @"WW"] floatValue] == [[a objectAtIndex:1] floatValue])
+                {
+                    [currentWLWWProtocol setObject: @([sortedKeys indexOfObject: key] + 1) forKey: @"WLWW"];
+                    break;
+                }
+            }
+        }
+        else
+        {
+            NSRunCriticalAlertPanel( NSLocalizedString( @"WL / WW Error", nil), NSLocalizedString( @"Provide a new for this setting.", nil), NSLocalizedString( @"OK", nil), nil, nil);
+            return;
+        }
+    }
+    else
+    {
+        [currentWLWWProtocol setValue: @0 forKey: @"WL"];
+        [currentWLWWProtocol setValue: @0 forKey: @"WW"];
+        [currentWLWWProtocol setValue: @100 forKey: @"WLWW"]; // Default
+    }
+    
+    [addWLWWWindow orderOut:sender];
+    
+    [NSApp endSheet:addWLWWWindow returnCode:[sender tag]];
+    
+    [currentWLWWProtocol release];
+    currentWLWWProtocol = nil;
+}
+
 - (NSArray*) currentHangingProtocol
 {
     NSArray *a = [hangingProtocols objectForKey: modalityForHangingProtocols];
@@ -102,11 +184,33 @@
     {
         if( [[d valueForKey: @"NumberOfComparativeToDisplay"] intValue] <= 0)
              [d setValue: [NSNumber numberWithInt: 1] forKey: @"NumberOfComparativeToDisplay"];
-        
-        [OSIHangingPreferencePanePref convertWLWWToMenuTag: d];
     }
     
     return a;
+}
+
+- (void) buildWLWWMenu
+{
+    [WLWWPopup removeAllItems];
+    
+    NSArray *sortedKeys = [[[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"WLWW3"] allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+    
+    [WLWWPopup addItemWithTitle:NSLocalizedString(@"Default WL & WW", nil) action: nil keyEquivalent:@""];
+    [[WLWWPopup itemAtIndex: WLWWPopup.itemArray.count -1] setTag: 100];
+    
+    [WLWWPopup addItemWithTitle:NSLocalizedString(@"Full dynamic", nil) action: nil keyEquivalent:@""];
+    [[WLWWPopup itemAtIndex: WLWWPopup.itemArray.count -1] setTag: 101];
+    
+    [WLWWPopup addItemWithTitle:NSLocalizedString(@"Other", nil) action: nil keyEquivalent:@""];
+    [[WLWWPopup itemAtIndex: WLWWPopup.itemArray.count -1] setTag: 0];
+    
+    [WLWWPopup addItem: [NSMenuItem separatorItem]];
+    
+    for( int i = 0; i < [sortedKeys count]; i++)
+    {
+        [WLWWPopup addItemWithTitle:[NSString stringWithFormat:@"%@", [sortedKeys objectAtIndex:i]] action: nil keyEquivalent:@""];
+        [[WLWWPopup itemAtIndex: WLWWPopup.itemArray.count -1] setTag: i+1];
+    }
 }
 
 - (id) initWithBundle:(NSBundle *)bundle
@@ -140,34 +244,34 @@
         for( NSMenuItem *i in imageTilingPopup.itemArray)
             [i setAction: nil];
         
-        [WLWWPopup removeAllItems];
-		NSArray *sortedKeys = [[[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"WLWW3"] allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
-		
-		[WLWWPopup addItemWithTitle:NSLocalizedString(@"Default WL & WW", nil) action: nil keyEquivalent:@""];
-        [[WLWWPopup itemAtIndex: WLWWPopup.itemArray.count -1] setTag: 100];
-        
-		[WLWWPopup addItemWithTitle:NSLocalizedString(@"Full dynamic", nil) action: nil keyEquivalent:@""];
-		[[WLWWPopup itemAtIndex: WLWWPopup.itemArray.count -1] setTag: 101];
-        
-        [WLWWPopup addItemWithTitle:NSLocalizedString(@"Other", nil) action: nil keyEquivalent:@""];
-        [[WLWWPopup itemAtIndex: WLWWPopup.itemArray.count -1] setTag: 0];
-        
-		[WLWWPopup addItem: [NSMenuItem separatorItem]];
-		
-		for( int i = 0; i < [sortedKeys count]; i++)
-		{
-			[WLWWPopup addItemWithTitle:[NSString stringWithFormat:@"%d - %@", i+1, [sortedKeys objectAtIndex:i]] action: nil keyEquivalent:@""];
-            [[WLWWPopup itemAtIndex: WLWWPopup.itemArray.count -1] setTag: i+1];
-		}
+        [self buildWLWWMenu];
 	}
 	
 	return self;
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id) object change:(NSDictionary *)change context:(void *)context
+{
+    if( [keyPath isEqualToString: @"arrangedObjects.WLWW"])
+    {
+        for( NSMutableDictionary *d in [arrayController selectedObjects])
+        {
+            if( [[d valueForKey: @"WLWW"] intValue] == 0)
+                [self AddCurrentWLWW: d];
+        }
+    }
 }
 
 - (void) mainViewDidLoad
 {
 	hangingProtocols = [[[NSUserDefaults standardUserDefaults] objectForKey:@"HANGINGPROTOCOLS"] deepMutableCopy];
 	
+    for( NSString *modality in hangingProtocols)
+        for( NSMutableDictionary *protocol in [hangingProtocols objectForKey: modality])
+            [OSIHangingPreferencePanePref convertWLWWToMenuTag: protocol];
+    
+    [arrayController addObserver:self forKeyPath: @"arrangedObjects.WLWW" options: 0 context:NULL];
+    
 	self.modalityForHangingProtocols = @"CR";
 }
 
@@ -176,16 +280,17 @@
 	[hangingProtocols release];
 	self.modalityForHangingProtocols = nil;
 	
+    self.WWnew = nil;
+    self.WLnew = nil;
+    self.WLWWNewName = nil;
+    
 	NSLog(@"dealloc OSIHangingPreferencePanePref");
-
+    
 	[super dealloc];
 }
 
 - (void)setModalityForHangingProtocols:(NSString*) m
 {
-    for( NSMutableDictionary *d in [hangingProtocols objectForKey: modalityForHangingProtocols])
-        [OSIHangingPreferencePanePref convertMenuTagToWLWW: d];
-    
     [self willChangeValueForKey: @"currentHangingProtocol"];
 	[modalityForHangingProtocols autorelease];
 	modalityForHangingProtocols = [m retain];
@@ -222,13 +327,11 @@
 {
 	[[[self mainView] window] makeFirstResponder: nil];
     
-    for( NSArray *modality in hangingProtocols)
-    {
-        for( NSMutableDictionary *protocol in modality)
-        {
+    [arrayController removeObserver: self forKeyPath: @"arrangedObjects.WLWW"];
+    
+    for( NSString *modality in hangingProtocols)
+        for( NSMutableDictionary *protocol in [hangingProtocols objectForKey: modality])
             [OSIHangingPreferencePanePref convertMenuTagToWLWW: protocol];
-        }
-    }
     
     [[NSUserDefaults standardUserDefaults] setObject:hangingProtocols forKey:@"HANGINGPROTOCOLS"];
 }

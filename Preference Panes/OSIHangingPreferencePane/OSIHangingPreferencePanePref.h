@@ -23,9 +23,16 @@
     IBOutlet NSMenu *imageTilingPopup;
     IBOutlet NSMenu *WLWWPopup;
     IBOutlet NSArrayController *arrayController;
+    
+    IBOutlet NSWindow *addWLWWWindow;
+    NSString *WLWWNewName;
+    NSNumber *WLnew, *WWnew;
+    NSMutableDictionary *currentWLWWProtocol;
 }
 
 @property (retain, nonatomic) NSString *modalityForHangingProtocols;
+@property (retain) NSString *WLWWNewName;
+@property (retain) NSNumber *WLnew, *WWnew;
 
 - (void) mainViewDidLoad;
 - (void) deleteSelectedRow:(id)sender;
