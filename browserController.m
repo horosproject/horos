@@ -13044,9 +13044,6 @@ static NSArray*	openSubSeriesArray = nil;
             [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"autoRetrieving"];
         #endif
         
-    //	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"MOUNT"])
-    //		[self ReadDicomCDRom: nil];
-        
         #ifdef __LP64__
         #else
         [NSThread detachNewThreadSelector: @selector(checkForBanner:) toTarget: self withObject: nil];

@@ -395,8 +395,12 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(_observeVolumeNotification:) name:NSWorkspaceDidUnmountNotification object:nil];
         [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(_observeVolumeNotification:) name:NSWorkspaceDidRenameVolumeNotification object:nil];
 		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(_observeVolumeWillUnmountNotification:) name:NSWorkspaceWillUnmountNotification object:nil];
-		for (NSString* path in [[NSWorkspace sharedWorkspace] mountedRemovableMedia])
-			[self _analyzeVolumeAtPath:path];
+        
+        if( [[NSUserDefaults standardUserDefaults] integerForKey: @"MOUNT"] != 2)
+        {
+            for (NSString* path in [[NSWorkspace sharedWorkspace] mountedRemovableMedia])
+                [self _analyzeVolumeAtPath:path];
+        }
 	}
 	
 	return self;
@@ -957,6 +961,9 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 -(void)_observeVolumeNotification:(NSNotification*)notification
 {
+    if( [[NSUserDefaults standardUserDefaults] integerForKey: @"MOUNT"] == 2)
+        return;
+    
 	NSString* path = [[notification.userInfo objectForKey: NSWorkspaceVolumeURLKey] path];
     BOOL oldPathWasMounted = NO;
     
@@ -1215,12 +1222,12 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
         
         NSInteger mode = [NSUserDefaults.standardUserDefaults integerForKey:@"MOUNT"];
         if (mode == -1 || [[NSApp currentEvent] modifierFlags]&NSCommandKeyMask) //The user clicked on the dialog box
-            {
-                if( autoselect)
-                    selectSource = YES;
-            }
-		else if ([[NSUserDefaults standardUserDefaults] boolForKey:@"autoSelectSourceCDDVD"] && [[NSFileManager defaultManager] fileExistsAtPath:self.devicePath])
+        {
+            if( autoselect)
                 selectSource = YES;
+        }
+		else if ([[NSUserDefaults standardUserDefaults] boolForKey:@"autoSelectSourceCDDVD"] && [[NSFileManager defaultManager] fileExistsAtPath:self.devicePath])
+            selectSource = YES;
         
         if( selectSource)
 			[[BrowserController currentBrowser] performSelectorOnMainThread:@selector(setDatabaseFromSourceIdentifier:) withObject:self waitUntilDone:NO modes:[NSArray arrayWithObject:NSDefaultRunLoopMode]];
