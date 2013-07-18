@@ -171,8 +171,8 @@ bool N3PlaneMakeWithDictionaryRepresentation(CFDictionaryRef dict, N3Plane *plan
 void N3AffineTransformGetOpenGLMatrixd(N3AffineTransform transform, double *d); // d better be 16 elements long
 void N3AffineTransformGetOpenGLMatrixf(N3AffineTransform transform, float *f); // f better be 16 elements long
 
-N3AffineTransform N3AffineTransformFromOpenGLMatrixd(double *d); // d better be 16 elements long
-N3AffineTransform N3AffineTransformFromOpenGLMatrixf(float *f); // f better be 16 elements long
+N3AffineTransform N3AffineTransformMakeFromOpenGLMatrixd(double *d); // d better be 16 elements long
+N3AffineTransform N3AffineTransformMakeFromOpenGLMatrixf(float *f); // f better be 16 elements long
 
 // returns the real numbered roots of ax+b
 CFIndex findRealLinearRoot(CGFloat a, CGFloat b, CGFloat *root); // returns the number of roots set

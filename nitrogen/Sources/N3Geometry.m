@@ -994,7 +994,7 @@ void N3AffineTransformGetOpenGLMatrixf(N3AffineTransform transform, float *f) //
     f[12] = transform.m41; f[13] = transform.m42; f[14] = transform.m43; f[15] = transform.m44;     
 }
 
-N3AffineTransform N3AffineTransformFromOpenGLMatrixd(double *d) // d better be 16 elements long
+N3AffineTransform N3AffineTransformMakeFromOpenGLMatrixd(double *d) // d better be 16 elements long
 {
     N3AffineTransform transform;
     transform.m11 = d[0];  transform.m12 = d[1];  transform.m13 = d[2];  transform.m14 = d[3];
@@ -1004,7 +1004,7 @@ N3AffineTransform N3AffineTransformFromOpenGLMatrixd(double *d) // d better be 1
     return transform;
 }
 
-N3AffineTransform N3AffineTransformFromOpenGLMatrixf(float *f) // f better be 16 elements long
+N3AffineTransform N3AffineTransformMakeFromOpenGLMatrixf(float *f) // f better be 16 elements long
 {
     N3AffineTransform transform;
     transform.m11 = f[0];  transform.m12 = f[1];  transform.m13 = f[2];  transform.m14 = f[3];
