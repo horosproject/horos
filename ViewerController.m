@@ -597,11 +597,18 @@ return YES;
 	}
 	else if( [item action] == @selector(groupSelectedROIs:))
 	{
-		if( [self selectedROI]) valid = YES;
+		if( [[self selectedROIs] count] > 1) valid = YES;
 	}
 	else if( [item action] == @selector(ungroupSelectedROIs:))
 	{
-		if( [self selectedROI]) valid = YES;
+		for( ROI *r in [roiList[ curMovieIndex] objectAtIndex: [imageView curImage]])
+		{
+			if( r.groupID)
+			{
+				valid = YES;
+				break;
+			}
+		}
 	}
 	else if( [item action] == @selector(lockSelectedROIs:))
 	{
