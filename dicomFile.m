@@ -946,6 +946,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		[extension isEqualToString:@"png"] == YES ||
 		[extension isEqualToString:@"jpg"] == YES ||
 		[extension isEqualToString:@"jpeg"] == YES ||
+        [extension isEqualToString:@"jp2"] == YES ||
 		[extension isEqualToString:@"pdf"] == YES ||
 		[extension isEqualToString:@"pct"] == YES ||
 		[extension isEqualToString:@"gif"] == YES)

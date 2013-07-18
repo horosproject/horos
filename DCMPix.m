@@ -10545,6 +10545,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				}
 				#endif
 				else if( [extension isEqualToString:@"jpg"] == YES ||
+                        [extension isEqualToString:@"jp2"] == YES ||
 						[extension isEqualToString:@"jpeg"] == YES ||
 						[extension isEqualToString:@"pdf"] == YES ||
 						[extension isEqualToString:@"pct"] == YES ||
