@@ -1345,7 +1345,6 @@ N3MutableBezierCoreRef N3BezierCoreCreateMutableCopyWithEndpointsAtPlaneIntersec
 	N3BezierCoreSegmentType segmentType;
     N3Vector endpoint;
     N3Vector prevEndpoint;
-	N3Vector segment;
 	N3Vector intersection;
     
     if (N3BezierCoreSegmentCount(bezierCore) < 2) {
@@ -1600,10 +1599,10 @@ N3MutableBezierCoreRef N3BezierCoreCreateMutableCopyByReversing(N3BezierCoreRef 
     needsClose = false;
     needsMove = true;
     
-    prevSegmentType = N3BezierCoreRandomAccessorGetSegmentAtIndex(bezierAccessor, i, &prevControl1, &prevControl2, &prevEndpoint);
+    prevSegmentType = N3BezierCoreRandomAccessorGetSegmentAtIndex(bezierAccessor, N3BezierCoreRandomAccessorSegmentCount(bezierAccessor) - 1, &prevControl1, &prevControl2, &prevEndpoint);
     
     for (i = N3BezierCoreRandomAccessorSegmentCount(bezierAccessor) - 2; i >= 0; i--) {
-        segmentType = N3BezierCoreRandomAccessorGetSegmentAtIndex(bezierAccessor, N3BezierCoreRandomAccessorSegmentCount(bezierAccessor) - 1, &control1, &control2, &endpoint);
+        segmentType = N3BezierCoreRandomAccessorGetSegmentAtIndex(bezierAccessor, i, &control1, &control2, &endpoint);
         
         if (needsMove && prevSegmentType != N3CloseBezierCoreSegmentType) {
             N3BezierCoreAddSegment(reversedBezier, N3MoveToBezierCoreSegmentType, N3VectorZero, N3VectorZero, prevEndpoint);
@@ -1641,6 +1640,7 @@ N3MutableBezierCoreRef N3BezierCoreCreateMutableCopyByReversing(N3BezierCoreRef 
     assert(prevSegmentType == N3MoveToBezierCoreSegmentType);
     
     N3BezierCoreRandomAccessorRelease(bezierAccessor);
+    N3BezierCoreCheckDebug(reversedBezier);
         
     return reversedBezier;
 }
