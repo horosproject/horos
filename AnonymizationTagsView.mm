@@ -164,7 +164,8 @@
 	
 	NSDateFormatter* df = NULL;
 	NSNumberFormatter* nf = NULL;
-	if ([tag.vr isEqual:@"DA"] || [tag.vr isEqual:@"TM"] || [tag.vr isEqual:@"DT"]) {
+	if ([tag.vr isEqual:@"DA"] || [tag.vr isEqual:@"TM"] || [tag.vr isEqual:@"DT"])
+    {
 		[textField.cell setFormatter: df = [[[NSDateFormatter alloc] init] autorelease]];
 		[df setFormatterBehavior:NSDateFormatterBehavior10_4];
 		if ([tag.vr isEqual:@"DA"]) { //Date String
@@ -177,34 +178,51 @@
 			[df setTimeStyle:NSDateFormatterShortStyle];
 			[df setDateStyle:NSDateFormatterShortStyle];
 		}
+        
+        if ([df.dateFormat rangeOfString:@"yyyy"].location == NSNotFound && [df.dateFormat rangeOfString:@"yy"].location != NSNotFound)
+        {
+            NSString *fourDigitYearFormat = [[df dateFormat] stringByReplacingOccurrencesOfString:@"yy" withString:@"yyyy"];
+            [df setDateFormat:fourDigitYearFormat];
+        }
+        
+        [textField setToolTip: [NSString stringWithFormat: NSLocalizedString( @"Required format: %@", nil), df.dateFormat]];
+        
 	} else if ([tag.vr isEqual:@"DS"] || [tag.vr isEqual:@"IS"] || [tag.vr isEqual:@"SL"] || [tag.vr isEqual:@"SS"] || [tag.vr isEqual:@"UL"] || [tag.vr isEqual:@"US"] || [tag.vr isEqual:@"FL"] || [tag.vr isEqual:@"FD"]) {
 		[textField.cell setFormatter: nf = [[[NSNumberFormatter alloc] init] autorelease]];
 		[nf setFormatterBehavior:NSNumberFormatterBehavior10_4];
 		[nf setNumberStyle:NSNumberFormatterDecimalStyle];
 		if ([tag.vr isEqual:@"DS"]) { //Decimal String representing floating point
 			[nf setMaximumSignificantDigits:16];
+            [textField setToolTip: NSLocalizedString( @"Required format: floating point number", nil)];
 		} else if ([tag.vr isEqual:@"IS"]) { //Integer String
 			[nf setMaximumSignificantDigits:12];
 			[nf setAllowsFloats:NO];
+            [textField setToolTip: NSLocalizedString( @"Required format: integer number", nil)];
 		} else if ([tag.vr isEqual:@"SL"]) { //signed long
 			[nf setAllowsFloats:NO];
 			[nf setMinimum:[NSNumber numberWithInteger:-0x80000000]];
 			[nf setMaximum:[NSNumber numberWithInteger:0x7FFFFFFF]];
+            [textField setToolTip: NSLocalizedString( @"Required format: integer number", nil)];
 		} else if ([tag.vr isEqual:@"SS"]) { //signed short
 			[nf setAllowsFloats:NO];
 			[nf setMinimum:[NSNumber numberWithInteger:-0x8000]];
 			[nf setMaximum:[NSNumber numberWithInteger:0x7FFF]];
+            [textField setToolTip: NSLocalizedString( @"Required format: integer number", nil)];
 		} else if ([tag.vr isEqual:@"UL"]) { //unsigned long
 			[textField.cell setFormatter: nf = [[[NSNumberFormatter alloc] init] autorelease]];
 			[nf setAllowsFloats:NO];
 			[nf setMinimum:[NSNumber numberWithInteger:0]];
 			[nf setMaximum:[NSNumber numberWithInteger:0xFFFFFFFF]];
+            [textField setToolTip: NSLocalizedString( @"Required format: integer number", nil)];
 		} else if ([tag.vr isEqual:@"US"]) { //unsigned short
 			[nf setAllowsFloats:NO];
 			[nf setMinimum:[NSNumber numberWithInteger:0]];
 			[nf setMaximum:[NSNumber numberWithInteger:0xFFFF]];
+            [textField setToolTip: NSLocalizedString( @"Required format: integer number", nil)];
 		} else if ([tag.vr isEqual:@"FL"]) { //float
+            [textField setToolTip: NSLocalizedString( @"Required format: floating point number", nil)];
 		} else if ([tag.vr isEqual:@"FD"]) { //double
+            [textField setToolTip: NSLocalizedString( @"Required format: floating point number", nil)];
 		}
 	}
 	
