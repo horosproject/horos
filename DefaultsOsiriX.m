@@ -1080,12 +1080,12 @@ static NSHost *currentHost = nil;
 	// **HANGING PROTOCOLS
 	NSMutableDictionary *defaultHangingProtocols = [NSMutableDictionary dictionary];
 	NSArray *modalities = [NSArray arrayWithObjects:NSLocalizedString(@"CR", nil), NSLocalizedString(@"CT", nil), NSLocalizedString(@"DX", nil), NSLocalizedString(@"ES", nil), NSLocalizedString(@"MG", nil), NSLocalizedString(@"MR", nil), NSLocalizedString(@"NM", nil), NSLocalizedString(@"OT", nil),NSLocalizedString(@"PT", nil),NSLocalizedString(@"RF", nil),NSLocalizedString(@"SC", nil),NSLocalizedString(@"US", nil),NSLocalizedString(@"XA", nil), nil];
-	NSString *modality;
-	for (modality in modalities) {
-		//NSLog(@"Modality %@", modality);
-		NSMutableDictionary *protocol = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"Default", [NSNumber numberWithInt:1], [NSNumber numberWithInt:1], [NSNumber numberWithInt:1], [NSNumber numberWithInt:1], nil] forKeys:[NSArray arrayWithObjects:@"Study Description", @"Rows", @"Columns",@"Image Rows", @"Image Columns", nil]];
-		NSMutableArray *protocols = [NSMutableArray arrayWithObject:protocol];
-		[defaultHangingProtocols setObject:protocols forKey:modality];
+    
+	for (NSString *modality in modalities)
+    {
+		NSMutableDictionary *protocol = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects: NSLocalizedString( @"Default", nil), [NSNumber numberWithInt:1], [NSNumber numberWithInt:1], [NSNumber numberWithInt:1], [NSNumber numberWithInt:1], nil] forKeys:[NSArray arrayWithObjects:@"Study Description", @"Rows", @"Columns",@"Image Rows", @"Image Columns", nil]];
+        
+		[defaultHangingProtocols setObject: [NSMutableArray arrayWithObject:protocol] forKey:modality];
 	}
 	[defaultValues setObject: defaultHangingProtocols forKey: @"HANGINGPROTOCOLS"];
 	

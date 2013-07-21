@@ -6854,30 +6854,123 @@ static NSConditionLock *threadLock = nil;
 				}
 			}
 			
+            NSMutableArray *seriesArray = [NSMutableArray arrayWithArray: [self childrenArray: item]];
+            // Prepare the series to be displayed
+            if( [[currentHangingProtocol valueForKey: @"Comparative"] boolValue])
+            {
+                NSMutableArray *comparatives = [NSMutableArray array];
+                
+                // Find the previous studies
+                int numberOfComparative = [[currentHangingProtocol valueForKey:@"NumberOfComparativeToDisplay"] intValue];
+                
+                //PreviousStudySameModality , PreviousStudySameDescription
+                
+                for( id s in [NSArray arrayWithArray: self.comparativeStudies])
+                {
+                    id comparativeStudy = nil;
+                    
+#ifndef OSIRIX_LIGHT
+                    if( [s isKindOfClass: [DCMTKStudyQueryNode class]])
+                    {
+                        DCMTKStudyQueryNode *study = s;
+                        
+                        if( ![[study studyInstanceUID] isEqualToString: [item valueForKey: @"studyInstanceUID"]])
+                        {
+                            if( [[currentHangingProtocol valueForKey:@"PreviousStudySameModality"] boolValue])
+                            {
+                                if( [[study modality] isEqualToString: [item valueForKey: @"modality"]])
+                                    comparativeStudy = study;
+                                else
+                                    continue;
+                            }
+                            
+                            if( [[currentHangingProtocol valueForKey:@"PreviousStudySameDescription"] boolValue])
+                            {
+                                if( [[study studyName] isEqualToString: [item valueForKey: @"studyName"]])
+                                    comparativeStudy = study;
+                                else
+                                    continue;
+                            }
+                            
+                            if( comparativeStudy)
+                                [self retrieveComparativeStudy: comparativeStudy select: NO open: NO];
+                        }
+                    }
+#endif
+                    
+                    if( [s isKindOfClass: [DicomStudy class]])
+                    {
+                        DicomStudy *study = s;
+                        
+                        if( ![[study studyInstanceUID] isEqualToString: [item valueForKey: @"studyInstanceUID"]])
+                        {
+                            if( [[currentHangingProtocol valueForKey:@"PreviousStudySameModality"] boolValue])
+                            {
+                                if( [[study modality] isEqualToString: [item valueForKey: @"modality"]])
+                                    comparativeStudy = study;
+                                else
+                                    continue;
+                            }
+                            
+                            if( [[currentHangingProtocol valueForKey:@"PreviousStudySameDescription"] boolValue])
+                            {
+                                if( [[study studyName] isEqualToString: [item valueForKey: @"studyName"]])
+                                    comparativeStudy = study;
+                                else
+                                    continue;
+                            }
+                        }
+                    }
+                    
+                    if( comparativeStudy)
+                        [comparatives addObject: comparativeStudy];
+                    
+                    if( comparatives.count >= numberOfComparative)
+                        break;
+                }
+                
+                int total = [[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue];
+                
+                while( seriesArray.count + comparatives.count > total && seriesArray.count >= 1 && comparatives.count > 0)
+                {
+                    [seriesArray removeLastObject];
+                    [seriesArray addObject: [comparatives objectAtIndex: 0]]; // XXX we are adding study, instead of series
+                    [comparatives removeObject: [comparatives objectAtIndex: 0]];
+                }
+            }
+            
 			if( alreadyDisplayed == 0)
 			{
-				if ([[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue] >= [[item valueForKey:@"imageSeries"] count])
-				{
-					[self viewerDICOMInt :NO  dcmFile:[self childrenArray: item] viewer:nil];
-				}
-				else
-				{
-					unsigned count = [[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue];
-					if( count < 1) count = 1;
-					
-					NSMutableArray *children =  [NSMutableArray array];
-					
-					for ( int i = 0; i < count; i++)
-                        [children addObject: [[self childrenArray: item] objectAtIndex:i]];
-					
-					[self viewerDICOMInt :NO  dcmFile:children viewer:nil];
-				}
+				[self viewerDICOMInt :NO  dcmFile: seriesArray viewer:nil];
 			}
 			else
 			{
 				for( ViewerController *v in [ViewerController getDisplayed2DViewers])
 					[[v window] makeKeyAndOrderFront: self];
 			}
+            
+            // Apply WL/WW
+            for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+            {
+                NSDictionary *p = [WindowLayoutManager hangingProtocolForModality: v.modality description: v.currentStudy.studyName];
+                
+                if( p)
+                {
+                    if( [[p valueForKey: @"WL"] intValue] == 0 && [[p valueForKey: @"WW"] intValue] == 0) // Default
+                    {
+                    }
+                    
+                    else if( [[p valueForKey: @"WL"] intValue] == 1 && [[p valueForKey: @"WW"] intValue] == 1) // Full
+                    {
+                        [v.imageView setWLWW: 0 : 0];
+                    }
+                    
+                    else if( [p valueForKey: @"WL"] && [p valueForKey: @"WW"])
+                    {
+                        [v.imageView setWLWW: [[p valueForKey: @"WL"] floatValue] :[[p valueForKey: @"WW"] floatValue]];
+                    }
+                }
+            }
 		}
 	}
 }

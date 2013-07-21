@@ -157,7 +157,7 @@
         }
         else
         {
-            NSRunCriticalAlertPanel( NSLocalizedString( @"WL / WW Error", nil), NSLocalizedString( @"Provide a new for this setting.", nil), NSLocalizedString( @"OK", nil), nil, nil);
+            NSRunCriticalAlertPanel( NSLocalizedString( @"WL / WW Error", nil), NSLocalizedString( @"Provide a name for this setting.", nil), NSLocalizedString( @"OK", nil), nil, nil);
             return;
         }
     }
@@ -250,6 +250,38 @@
 	return self;
 }
 
+- (void)deleteWLWW:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo
+{
+	NSString *name = (id) contextInfo;
+	
+    if( returnCode == 1)
+    {
+		NSMutableDictionary *presetsDict = [[[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"WLWW3"] mutableCopy] autorelease];
+        
+        NSUInteger index = [[[presetsDict allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)] indexOfObject: name];
+        
+		[presetsDict removeObjectForKey: name];
+		[[NSUserDefaults standardUserDefaults] setObject: presetsDict forKey:@"WLWW3"];
+        
+        [self buildWLWWMenu];
+        
+        for( NSString *modality in hangingProtocols)
+        {
+            for( NSMutableDictionary *p in [hangingProtocols objectForKey: modality])
+            {
+                if( [[p valueForKey: @"WLWW"] intValue] == index+1)
+                {
+                    [p setValue: @0 forKey: @"WL"];
+                    [p setValue: @0 forKey: @"WW"];
+                    [p setValue: @100 forKey: @"WLWW"];
+                }
+            }
+        }
+    }
+	
+	[name release];
+}
+
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id) object change:(NSDictionary *)change context:(void *)context
 {
     if( [keyPath isEqualToString: @"arrangedObjects.WLWW"])
@@ -258,21 +290,41 @@
         {
             if( [[d valueForKey: @"WLWW"] intValue] == 0)
                 [self AddCurrentWLWW: d];
+            
+            if( [[d valueForKey: @"WLWW"] intValue] != 0 && [[d valueForKey: @"WLWW"] intValue] != 100 && [[d valueForKey: @"WLWW"] intValue] != 101)
+            {
+                if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask) // Delete
+                {
+                    NSDictionary *wlwwDict = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"WLWW3"];
+                    NSArray *sortedKeys = [[wlwwDict allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+                    
+                    NSString *name = [sortedKeys objectAtIndex: [[d valueForKey: @"WLWW"] intValue]-1];
+                    
+                    NSBeginAlertSheet( NSLocalizedString(@"Remove a WL/WW preset", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, self.mainView.window, self, @selector(deleteWLWW:returnCode:contextInfo:), NULL, [name retain], [NSString stringWithFormat: NSLocalizedString( @"Are you sure you want to delete preset : '%@'?", nil), name]);
+                }
+            }
+        }
+    }
+    
+    if( [keyPath isEqualToString: @"arrangedObjects.Study Description"])
+    {
+        for( NSMutableDictionary *d in [arrayController selectedObjects])
+        {
+           if( [[arrayController arrangedObjects] indexOfObject: d] == 0)
+           {
+               if( [[d valueForKey: @"Study Description"] isEqualToString: NSLocalizedString( @"Default", nil)] == NO && [[d valueForKey: @"Study Description"] isEqualToString: @"Default"] == NO)
+               {
+                   NSRunCriticalAlertPanel( NSLocalizedString( @"Default Protocol", nil), NSLocalizedString( @"Default protocol cannot be renamed", nil), NSLocalizedString( @"OK", nil), nil, nil);
+                   
+                   [d setValue: NSLocalizedString( @"Default", nil) forKey: @"Study Description"];
+               }
+           }
         }
     }
 }
 
 - (void) mainViewDidLoad
 {
-	hangingProtocols = [[[NSUserDefaults standardUserDefaults] objectForKey:@"HANGINGPROTOCOLS"] deepMutableCopy];
-	
-    for( NSString *modality in hangingProtocols)
-        for( NSMutableDictionary *protocol in [hangingProtocols objectForKey: modality])
-            [OSIHangingPreferencePanePref convertWLWWToMenuTag: protocol];
-    
-    [arrayController addObserver:self forKeyPath: @"arrangedObjects.WLWW" options: 0 context:NULL];
-    
-	self.modalityForHangingProtocols = @"CR";
 }
 
 - (void)dealloc
@@ -323,11 +375,31 @@
     }
 }
 
+-(void) willSelect
+{
+	hangingProtocols = [[[NSUserDefaults standardUserDefaults] objectForKey:@"HANGINGPROTOCOLS"] deepMutableCopy];
+	
+    for( NSString *modality in hangingProtocols)
+        for( NSMutableDictionary *protocol in [hangingProtocols objectForKey: modality])
+        {
+            [OSIHangingPreferencePanePref convertWLWWToMenuTag: protocol];
+            
+            if( [[hangingProtocols objectForKey: modality] indexOfObject: protocol] == 0)
+                [protocol setValue: NSLocalizedString( @"Default", nil) forKey: @"Study Description"];
+        }
+    
+	self.modalityForHangingProtocols = @"CR";
+    
+    [arrayController addObserver:self forKeyPath: @"arrangedObjects.WLWW" options: 0 context:NULL];
+    [arrayController addObserver:self forKeyPath: @"arrangedObjects.Study Description" options: 0 context:NULL];
+}
+
 -(void) willUnselect
 {
 	[[[self mainView] window] makeFirstResponder: nil];
     
     [arrayController removeObserver: self forKeyPath: @"arrangedObjects.WLWW"];
+    [arrayController removeObserver: self forKeyPath: @"arrangedObjects.Study Description"];
     
     for( NSString *modality in hangingProtocols)
         for( NSMutableDictionary *protocol in [hangingProtocols objectForKey: modality])
