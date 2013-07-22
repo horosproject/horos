@@ -28,4 +28,6 @@
 
 - (id)initWith:(N3BezierPath *)path slab:(OSISlab)slab homeFloatVolumeData:(OSIFloatVolumeData *)floatVolumeData name:(NSString *)name;
 
+@property (nonatomic, readonly, retain) N3BezierPath *bezierPath;
+
 @end
