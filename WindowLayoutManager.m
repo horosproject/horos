@@ -35,7 +35,7 @@ static WindowLayoutManager *sharedLayoutManager = nil;
 
 @synthesize currentHangingProtocol = _currentHangingProtocol;
 
-+ (id)sharedWindowLayoutManager
++ (WindowLayoutManager*)sharedWindowLayoutManager
 {
 	if (!sharedLayoutManager)
 		sharedLayoutManager = [[WindowLayoutManager alloc] init];
@@ -50,16 +50,64 @@ static WindowLayoutManager *sharedLayoutManager = nil;
 	return self;
 }
 
-- (int) IMAGEROWS
+- (int) windowsRows
 {
+    if( [self.currentHangingProtocol objectForKey: @"WindowsTiling"])
+    {
+        int tag = [[self.currentHangingProtocol objectForKey: @"WindowsTiling"] intValue];
+        
+        if (tag < 16)
+            return (tag / 4) + 1; // See SetImageTiling ViewerController.m
+    }
+    
+	if( [[self.currentHangingProtocol objectForKey: @"Rows"] intValue] > 0)
+        return [[self.currentHangingProtocol objectForKey: @"Rows"] intValue];
+    
+    return 1;
+}
+
+- (int) windowsColumns
+{
+    if( [self.currentHangingProtocol objectForKey: @"WindowsTiling"])
+    {
+        int tag = [[self.currentHangingProtocol objectForKey: @"WindowsTiling"] intValue];
+        
+        if (tag < 16)
+            return (tag %  4) + 1; // See SetImageTiling ViewerController.m
+    }
+    
+	if( [[self.currentHangingProtocol objectForKey: @"Columns"] intValue] > 0)
+        return [[self.currentHangingProtocol objectForKey: @"Columns"] intValue];
+    
+	return 1;
+}
+
+- (int) imagesRows
+{
+    if( [self.currentHangingProtocol objectForKey: @"ImageTiling"])
+    {
+        int tag = [[self.currentHangingProtocol objectForKey: @"ImageTiling"] intValue];
+        
+        if (tag < 16)
+            return (tag / 4) + 1; // See SetImageTiling ViewerController.m
+    }
+    
 	if( [[self.currentHangingProtocol objectForKey: @"Image Rows"] intValue] > 0)
         return [[self.currentHangingProtocol objectForKey: @"Image Rows"] intValue];
     
     return 1;
 }
 
-- (int) IMAGECOLUMNS
+- (int) imagesColumns
 {
+    if( [self.currentHangingProtocol objectForKey: @"ImageTiling"])
+    {
+        int tag = [[self.currentHangingProtocol objectForKey: @"ImageTiling"] intValue];
+        
+        if (tag < 16)
+            return (tag %  4) + 1; // See SetImageTiling ViewerController.m
+    }
+    
 	if( [[self.currentHangingProtocol objectForKey: @"Image Columns"] intValue] > 0)
         return [[self.currentHangingProtocol objectForKey: @"Image Columns"] intValue];
     
@@ -92,7 +140,7 @@ static WindowLayoutManager *sharedLayoutManager = nil;
 		{
 			@try
 			{
-                NSDictionary *foundProtocol = nil;
+                NSDictionary *foundProtocol = [hangingProtocolArray objectAtIndex: 0]; //First one is the default protocol
                 
 				for( NSDictionary *protocol in hangingProtocolArray)
 				{

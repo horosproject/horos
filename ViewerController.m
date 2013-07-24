@@ -7662,13 +7662,8 @@ return YES;
                     // default protocol
                     [[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality:[study valueForKey:@"modality"] description:[study valueForKey:@"studyName"]];
                     
-                    NSDictionary *currentHangingProtocol = [[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol];
-                    
-                    if( currentHangingProtocol)
-                    {
-                        newColumns = [[currentHangingProtocol valueForKey: @"Image Columns"] intValue];
-                        newRows = [[currentHangingProtocol valueForKey: @"Image Rows"] intValue];
-                    }
+                    newColumns = [[WindowLayoutManager sharedWindowLayoutManager] imagesColumns];
+                    newRows = [[WindowLayoutManager sharedWindowLayoutManager] imagesRows];
                     
                     // is there a windows state?
                     

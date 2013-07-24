@@ -6878,22 +6878,18 @@ static NSConditionLock *threadLock = nil;
                         {
                             if( [[currentHangingProtocol valueForKey:@"PreviousStudySameModality"] boolValue])
                             {
-                                if( [[study modality] isEqualToString: [item valueForKey: @"modality"]])
-                                    comparativeStudy = study;
-                                else
-                                    continue;
+                                if( [[study modality] isEqualToString: [item valueForKey: @"modality"]] == NO)
+                                    comparativeStudy = nil;
                             }
                             
                             if( [[currentHangingProtocol valueForKey:@"PreviousStudySameDescription"] boolValue])
                             {
-                                if( [[study studyName] isEqualToString: [item valueForKey: @"studyName"]])
-                                    comparativeStudy = study;
-                                else
-                                    continue;
+                                if( [[study studyName] isEqualToString: [item valueForKey: @"studyName"]] == NO)
+                                    comparativeStudy = nil;
                             }
                             
                             if( comparativeStudy)
-                                [self retrieveComparativeStudy: comparativeStudy select: NO open: NO];
+                                [self retrieveComparativeStudy: comparativeStudy select: NO open: NO showGUI: NO];
                         }
                     }
 #endif
@@ -6904,20 +6900,18 @@ static NSConditionLock *threadLock = nil;
                         
                         if( ![[study studyInstanceUID] isEqualToString: [item valueForKey: @"studyInstanceUID"]])
                         {
+                            comparativeStudy = study;
+                            
                             if( [[currentHangingProtocol valueForKey:@"PreviousStudySameModality"] boolValue])
                             {
-                                if( [[study modality] isEqualToString: [item valueForKey: @"modality"]])
-                                    comparativeStudy = study;
-                                else
-                                    continue;
+                                if( [[study modality] isEqualToString: [item valueForKey: @"modality"]] == NO)
+                                    comparativeStudy = nil;
                             }
                             
                             if( [[currentHangingProtocol valueForKey:@"PreviousStudySameDescription"] boolValue])
                             {
-                                if( [[study studyName] isEqualToString: [item valueForKey: @"studyName"]])
-                                    comparativeStudy = study;
-                                else
-                                    continue;
+                                if( [[study studyName] isEqualToString: [item valueForKey: @"studyName"]] == NO)
+                                    comparativeStudy = nil;
                             }
                         }
                     }
@@ -6929,14 +6923,66 @@ static NSConditionLock *threadLock = nil;
                         break;
                 }
                 
-                int total = [[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue];
-                
-                while( seriesArray.count + comparatives.count > total && seriesArray.count >= 1 && comparatives.count > 0)
+#ifndef OSIRIX_LIGHT
+                // Wait until all distant studies are retrieved
+                NSTimeInterval timeout = [NSDate timeIntervalSinceReferenceDate];
+                BOOL distantStudies = NO;
+                do
                 {
-                    [seriesArray removeLastObject];
-                    [seriesArray addObject: [comparatives objectAtIndex: 0]]; // XXX we are adding study, instead of series
-                    [comparatives removeObject: [comparatives objectAtIndex: 0]];
+                    for( int i = 0; i < comparatives.count; i++)
+                    {
+                        if( [[comparatives objectAtIndex: i] isKindOfClass: [DCMTKStudyQueryNode class]])
+                        {
+                            [NSThread sleepForTimeInterval: 0.5];
+                            
+                            [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
+                            
+                            NSFetchRequest *r = [NSFetchRequest fetchRequestWithEntityName: @"Study"];
+                            [r setPredicate: [NSPredicate predicateWithFormat: @"(studyInstanceUID == %@)", [[comparatives objectAtIndex: i] studyInstanceUID]]];
+                            
+                            NSArray *studyArray = nil;
+                            @try
+                            {
+                                studyArray = [self.database.managedObjectContext executeFetchRequest: r error: nil];
+                            }
+                            @catch (NSException *e) { N2LogExceptionWithStackTrace(e);}
+                            
+                            if( [[[studyArray lastObject] imageSeries] count])
+                                [comparatives replaceObjectAtIndex: i withObject: [studyArray lastObject]];
+                            else
+                                distantStudies = YES;
+                        }
+                    }
                 }
+#define TIMEOUT 30
+                while ( distantStudies && [NSDate timeIntervalSinceReferenceDate] - timeout < TIMEOUT);
+#endif
+                for( int i = 0; i < comparatives.count; i++)
+                {
+                    if( [[comparatives objectAtIndex: i] isKindOfClass: [DicomStudy class]] == NO)
+                    {
+                        [comparatives removeObjectAtIndex: i];
+                        i--;
+                    }
+                }
+                
+                // Prepare the series
+                
+                int total = [[WindowLayoutManager sharedWindowLayoutManager] windowsRows] * [[WindowLayoutManager sharedWindowLayoutManager] windowsColumns];
+                
+                if( seriesArray.count > total)
+                    [seriesArray removeObjectsInRange: NSMakeRange( total, seriesArray.count-total)];
+                
+                if( seriesArray.count + comparatives.count > total)
+                {
+                    while( seriesArray.count - comparatives.count < 1)
+                        [comparatives removeLastObject];
+                    
+                    while( seriesArray.count + comparatives.count > total)
+                        [seriesArray removeLastObject];
+                }
+                
+                [seriesArray addObjectsFromArray: comparatives];
             }
             
 			if( alreadyDisplayed == 0)

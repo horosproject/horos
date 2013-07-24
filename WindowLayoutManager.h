@@ -30,9 +30,11 @@ It is a shared class.
 
 @property( retain) NSDictionary *currentHangingProtocol;
 
-+ (id)sharedWindowLayoutManager;
-- (int) IMAGEROWS;
-- (int) IMAGECOLUMNS;
++ (WindowLayoutManager*)sharedWindowLayoutManager;
+- (int) windowsRows;
+- (int) windowsColumns;
+- (int) imagesRows;
+- (int) imagesColumns;
 
 #pragma mark-
 #pragma mark hanging protocol setters and getters
