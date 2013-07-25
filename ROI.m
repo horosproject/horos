@@ -7053,7 +7053,7 @@ NSInteger sortPointArrayAlongX(id point1, id point2, void *context)
 
 -(NSMutableArray*) splinePoints;
 {
-	return [self splinePoints: 2.0];
+	return [self splinePoints: 5.0];
 }
 
 -(NSMutableArray*)splineZPositions;
