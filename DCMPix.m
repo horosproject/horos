@@ -2252,8 +2252,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 		for( int i = 0; i < no; i++)
 		{
-			ptsInt[ i].x = [[ptsTemp objectAtIndex: i] point].x + 0.5;
-			ptsInt[ i].y = [[ptsTemp objectAtIndex: i] point].y + 0.5;
+			ptsInt[ i].x = [[ptsTemp objectAtIndex: i] point].x;
+			ptsInt[ i].y = [[ptsTemp objectAtIndex: i] point].y;
 			
 			if( i == 0)
 			{
