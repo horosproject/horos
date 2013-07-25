@@ -100,7 +100,9 @@
 {
 	if( [sender tag] == 0)
 	{
-		[[NSWorkspace sharedWorkspace] openFile:[[NSBundle mainBundle] pathForResource:@"OsiriXTables" ofType:@"pdf"]];
+        [[NSFileManager defaultManager] removeItemAtPath: @"/tmp/OsiriXTables.pdf" error:nil];
+        [[NSFileManager defaultManager] copyItemAtPath: [[NSBundle mainBundle] pathForResource:@"OsiriXTables" ofType:@"pdf"] toPath: @"/tmp/OsiriXTables.pdf" error: nil];
+		[[NSWorkspace sharedWorkspace] openFile: @"/tmp/OsiriXTables.pdf"];
 	}
 	
 	if( [sender tag] == 1)

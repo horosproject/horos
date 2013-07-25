@@ -107,8 +107,12 @@
 }
 
 - (IBAction)helpAction:(NSSegmentedControl*)sender {
-    if ([sender selectedSegment] == 0) {
-        [NSWorkspace.sharedWorkspace openFile:[[NSBundle mainBundle] pathForResource:@"OsiriXTables" ofType:@"pdf"] withApplication: nil andDeactivate: YES];
+    if ([sender selectedSegment] == 0)
+    {
+        [[NSFileManager defaultManager] removeItemAtPath: @"/tmp/OsiriXTables.pdf" error:nil];
+        [[NSFileManager defaultManager] copyItemAtPath: [[NSBundle mainBundle] pathForResource:@"OsiriXTables" ofType:@"pdf"] toPath: @"/tmp/OsiriXTables.pdf" error: nil];
+		[[NSWorkspace sharedWorkspace] openFile: @"/tmp/OsiriXTables.pdf" withApplication: nil andDeactivate: YES];
+        
         [NSThread sleepForTimeInterval:1];
     }
     
