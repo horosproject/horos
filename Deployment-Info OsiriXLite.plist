@@ -248,6 +248,6 @@
 	<key>NSContactsUsageDescription</key>
 	<string>Your account will be used for the built-in iChat sharing service. If you don&apos;t allow access, you cannot use the iChat functions.</string>
 	<key>GitHash</key>
-	<string>5729b9817870ca7d35f77106af4c528ca43f59f0</string>
+	<string>d946b283a7104f4e164227103ee90ec6091da3d4</string>
 </dict>
 </plist>
