@@ -1477,18 +1477,36 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ------------------------ Series subselections-----------------------------------ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
-+ (BOOL) displaySeriesWithSOPClassUID: (NSString*) uid andSeriesDescription: (NSString*) description
++ (BOOL) displaySeriesWithSOPClassUID: (NSString*) uid andSeriesDescription: (NSString*) description containingOnlyPixels: (BOOL) pixels
 {
     if ([description isEqualToString:@"OsiriX No Autodeletion"])
         return NO;
-
-	if (uid == nil || [DCMAbstractSyntaxUID isImageStorage: uid] || [DCMAbstractSyntaxUID isRadiotherapy:uid] || [DCMAbstractSyntaxUID isWaveform:uid])
-		return YES;
     
-    if ([DCMAbstractSyntaxUID isStructuredReport:uid] && [description hasPrefix: @"OsiriX ROI SR"] == NO && [description hasPrefix: @"OsiriX Annotations SR"] == NO && [description hasPrefix: @"OsiriX Report SR"] == NO)
-		return YES;
-	
+    if( pixels)
+    {
+        if (uid == nil || [DCMAbstractSyntaxUID isImageStorage: uid])
+        {
+            if( [uid isEqualToString: [DCMAbstractSyntaxUID pdfStorageClassUID]])
+                return NO;
+            
+            return YES;
+        }
+    }
+    else
+    {
+        if (uid == nil || [DCMAbstractSyntaxUID isImageStorage: uid] || [DCMAbstractSyntaxUID isRadiotherapy:uid] || [DCMAbstractSyntaxUID isWaveform:uid])
+            return YES;
+        
+        if ([DCMAbstractSyntaxUID isStructuredReport:uid] && [description hasPrefix: @"OsiriX ROI SR"] == NO && [description hasPrefix: @"OsiriX Annotations SR"] == NO && [description hasPrefix: @"OsiriX Report SR"] == NO)
+            return YES;
+	}
+    
 	return NO;
+}
+
++ (BOOL) displaySeriesWithSOPClassUID: (NSString*) uid andSeriesDescription: (NSString*) description
+{
+    return [self displaySeriesWithSOPClassUID: uid andSeriesDescription: description containingOnlyPixels: NO];
 }
 
 - (NSSet*)images
@@ -1528,14 +1546,14 @@ static NSRecursiveLock *dbModifyLock = nil;
     return [self.series sortedArrayUsingDescriptors: [DicomStudy seriesSortDescriptors]];
 }
 
-- (NSArray*)imageSeries
+- (NSArray*)imageSeriesContainingPixels:(BOOL) pixels
 {
 	[self.managedObjectContext lock];
     @try {
         NSMutableArray* newArray = [NSMutableArray array];
 		for (DicomSeries* series in [self.series sortedArrayUsingDescriptors: [DicomStudy seriesSortDescriptors]])
 			@try {
-                if ([DicomStudy displaySeriesWithSOPClassUID:series.seriesSOPClassUID andSeriesDescription:series.name])
+                if ([DicomStudy displaySeriesWithSOPClassUID:series.seriesSOPClassUID andSeriesDescription:series.name containingOnlyPixels: pixels])
                     [newArray addObject:series];
             } @catch (...) {
             }
@@ -1549,6 +1567,11 @@ static NSRecursiveLock *dbModifyLock = nil;
     }
     
 	return nil;
+}
+
+- (NSArray*)imageSeries
+{
+    return [self imageSeriesContainingPixels: NO];
 }
 
 - (NSArray*)keyObjectSeries
