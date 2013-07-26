@@ -635,7 +635,8 @@ extern int delayedTileWindows;
 	
 	if( [note object] == viewer)
 	{
-		[[self window] close];
+		[viewer release];
+        viewer = nil;
 	}
 }
 
