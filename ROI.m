@@ -1643,20 +1643,12 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	return [self Area: [self splinePoints]];
 }
 
--(float) AngleUncorrected:(NSPoint) p2 :(NSPoint) p1 :(NSPoint) p3
+- (double) angleBetween2Lines: (NSPoint) line1pt1 :(NSPoint) line1pt2 : (NSPoint) line2pt1 :(NSPoint) line2pt2
 {
-  float 		ax,ay,bx,by;
-  float			val, angle;
-  
-  ax = p2.x - p1.x;
-  ay = p2.y - p1.y;
-  bx = p3.x - p1.x;
-  by = p3.y - p1.y;
-  
-  if (ax == 0 && ay == 0) return 0;
-  val = ((ax * bx) + (ay * by)) / (sqrt(ax*ax + ay*ay) * sqrt(bx*bx + by*by));
-  angle = acos (val) / deg2rad;
-  return angle;
+    double angle1 = atan2(line1pt1.y - line1pt2.y, line1pt1.x - line1pt2.x);
+    double angle2 = atan2(line2pt1.y - line2pt2.y, line2pt1.x - line2pt2.x);
+    
+    return (angle1 - angle2) * (180. / M_PI);
 }
 
 -(float) Angle:(NSPoint) p2 :(NSPoint) p1 :(NSPoint) p3
@@ -5149,52 +5141,38 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 												pY = 1;
 											}
 											
-											NSPoint a1, a2, b1, b2;
-											a1 = NSMakePoint(u1.x * pX, u1.y * pY);
-											a2 = NSMakePoint(u2.x * pX, u2.y * pY);
-											b1 = NSMakePoint(v1.x * pX, v1.y * pY);
-											b2 = NSMakePoint(v2.x * pX, v2.y * pY);
+											NSPoint a1 = NSMakePoint(u1.x * pX, u1.y * pY);
+											NSPoint a2 = NSMakePoint(u2.x * pX, u2.y * pY);
+											NSPoint b1 = NSMakePoint(v1.x * pX, v1.y * pY);
+											NSPoint b2 = NSMakePoint(v2.x * pX, v2.y * pY);
 											
-											if( (a2.x - a1.x) != 0 && (b2.x - b1.x) != 0)
-											{
-												NSPoint a = NSMakePoint( a1.x + (a2.x - a1.x)/2, a1.y + (a2.y - a1.y)/2);
-												
-												float slope1 = (a2.y - a1.y) / (a2.x - a1.x);
-												slope1 = -1./slope1;
-												float or1 = a.y - slope1*a.x;
-												
-												float slope2 = (b2.y - b1.y) / (b2.x - b1.x);
-												float or2 = b1.y - slope2*b1.x;
-												
-												float xx = (or2 - or1) / (slope1 - slope2);
-												
-												NSPoint d = NSMakePoint( xx, or1 + xx*slope1);
-												
-												NSPoint b = [self ProjectionPointLine: a :b1 :b2];
-												
-												b.x = b.x + (d.x - b.x)/2.;
-												b.y = b.y + (d.y - b.y)/2.;
-												
-												slope2 = -1./slope2;
-												or2 = b.y - slope2*b.x;
-												
-												xx = (or2 - or1) / (slope1 - slope2);
-												
-												NSPoint c = NSMakePoint( xx, or1 + xx*slope1);
-												float angle = [self AngleUncorrected :b :c :d];
-												
-												NSString *rName = r.name;
-												
-												if( [rName isEqualToString: @"Unnamed"] || [rName isEqualToString: NSLocalizedString( @"Unnamed", nil)])
-													rName = nil;
-												
-												if( rName)
-													self.textualBoxLine3 = [NSString stringWithFormat: NSLocalizedString( @"Cobb's Angle: %0.3f%@ with: %@", nil), angle, @"\u00B0", rName];
-												else
-													self.textualBoxLine3 = [NSString stringWithFormat: NSLocalizedString( @"Cobb's Angle: %0.3f%@", nil), angle, @"\u00B0"];
-												
-												break;
-											}
+                                            double angle = [self angleBetween2Lines: a1 :a2 :b1 :b2];
+                                            
+                                            if( angle < -180)
+                                                angle = -180 - angle;
+                                            else if( angle < -90)
+                                                angle += 180;
+                                            else if( angle < 0)
+                                                angle *= -1;
+                                            
+                                            if( angle > 270)
+                                                angle = 360 - angle;
+                                            else if( angle > 180)
+                                                angle -= 180;
+                                            else if( angle > 90)
+                                                angle = 180 -angle;
+                                            
+                                            NSString *rName = r.name;
+                                            
+                                            if( [rName isEqualToString: @"Unnamed"] || [rName isEqualToString: NSLocalizedString( @"Unnamed", nil)])
+                                                rName = nil;
+                                            
+                                            if( rName)
+                                                self.textualBoxLine3 = [NSString stringWithFormat: NSLocalizedString( @"Cobb's Angle: %0.3f%@ with: %@", nil), angle, @"\u00B0", rName];
+                                            else
+                                                self.textualBoxLine3 = [NSString stringWithFormat: NSLocalizedString( @"Cobb's Angle: %0.3f%@", nil), angle, @"\u00B0"];
+                                            
+                                            break;
 										}
 									}
 								}
@@ -5777,37 +5755,21 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						b2 = NSMakePoint(b2.x * pixelSpacingX, b2.y * pixelSpacingY);
 					}
 					
-					//plot=YES;
-					//plot2=YES;
-					
-					//Code from Cobb's angle plugin.
-					a = NSMakePoint( a1.x + (a2.x - a1.x)/2, a1.y + (a2.y - a1.y)/2);
-					
-					float slope1 = (a2.y - a1.y) / (a2.x - a1.x);
-					slope1 = -1./slope1;
-					float or1 = a.y - slope1*a.x;
-					
-					float slope2 = (b2.y - b1.y) / (b2.x - b1.x);
-					float or2 = b1.y - slope2*b1.x;
-					
-					float xx = (or2 - or1) / (slope1 - slope2);
-					
-					d = NSMakePoint( xx, or1 + xx*slope1);
-					
-					b = [self ProjectionPointLine: a :b1 :b2];
-					
-					b.x = b.x + (d.x - b.x)/2.;
-					b.y = b.y + (d.y - b.y)/2.;
-					
-					slope2 = -1./slope2;
-					or2 = b.y - slope2*b.x;
-					
-					xx = (or2 - or1) / (slope1 - slope2);
-					
-					c = NSMakePoint( xx, or1 + xx*slope1);
-					
-					//Angle given by b,c,d points
-					angle = [self AngleUncorrected:b :c :d];
+                    angle = [self angleBetween2Lines: a1 :a2 :b1 :b2];
+                    
+                    if( angle < -180)
+                        angle = -180 - angle;
+                    else if( angle < -90)
+                        angle += 180;
+                    else if( angle < 0)
+                        angle *= -1;
+                    
+                    if( angle > 270)
+                        angle = 360 - angle;
+                    else if( angle > 180)
+                        angle -= 180;
+                    else if( angle > 90)
+                        angle = 180 -angle;
 				}
 				//TEXT
 				if( self.isTextualDataDisplayed && prepareTextualData)
