@@ -1396,7 +1396,20 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void) roiLoadFromXML: (NSDictionary *) xml
 {
-    // Single ROI - assume current slice
+    // Single ROI
+    
+    if( [xml valueForKey: @"Slice"])
+    {
+        [self setIndex: [[xml valueForKey: @"Slice"] intValue] - 1];
+        
+        if( [self is2DViewer] == YES)
+            [[self windowController] adjustSlider];
+        
+        // SYNCRO
+        [self sendSyncMessage: 0];
+        
+        [self setNeedsDisplay:YES];
+    }
     
     NSArray *pointsStringArray = [xml objectForKey: @"ROIPoints"];
     
