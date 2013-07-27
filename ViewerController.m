@@ -1237,19 +1237,22 @@ static volatile int numberOfThreadsForRelisce = 0;
 		}
 	}
     
-    vImage_Buffer	srcVimage, dstVimage;
-    
-    srcVimage.data = [curPix fImage];
-    srcVimage.height =  [pixList[ j] count];
-    srcVimage.width = newX;
-    srcVimage.rowBytes = newX*4;
-    
-    dstVimage.data = [curPix fImage];
-    dstVimage.height =  newY;
-    dstVimage.width = newX;
-    dstVimage.rowBytes = newX*4;
-    
-    vImageScale_PlanarF( &srcVimage, &dstVimage, nil, kvImageHighQualityResampling);
+    if( square)
+    {
+        vImage_Buffer	srcVimage, dstVimage;
+        
+        srcVimage.data = [curPix fImage];
+        srcVimage.height =  [pixList[ j] count];
+        srcVimage.width = newX;
+        srcVimage.rowBytes = newX*4;
+        
+        dstVimage.data = [curPix fImage];
+        dstVimage.height =  newY;
+        dstVimage.width = newX;
+        dstVimage.rowBytes = newX*4;
+        
+        vImageScale_PlanarF( &srcVimage, &dstVimage, nil, kvImageHighQualityResampling);
+    }
     
 	[processorsLock lock];
 	if( numberOfThreadsForRelisce >= 0) numberOfThreadsForRelisce--;
@@ -1363,6 +1366,25 @@ static volatile int numberOfThreadsForRelisce = 0;
 			
 			NSLog( @"reslice start");
 			
+#ifdef VIMAGEYRESLICE
+            if( directionm)
+            {
+                vImage_Buffer src;
+                vImage_Buffer dst;
+                
+                src.height = firstPix.pheight * newY;
+                src.width = firstPix.pwidth;
+                src.rowBytes = src.width*4;
+                src.data = firstPix.fImage;
+                
+                dst.width = firstPix.pheight * newY;
+                dst.height = firstPix.pwidth;
+                dst.rowBytes = dst.width*4;
+                dst.data = emptyData;
+                
+                vImageRotate90_PlanarF( &src, &dst, kRotate270DegreesClockwise, 0, 0);
+            }
+#endif
 			for( i = 0 ; i < newTotal; i ++)
 			{
 				[newPixList addObject: [[[pixList[ j] objectAtIndex: 0] copy] autorelease]];
@@ -1470,12 +1492,13 @@ static volatile int numberOfThreadsForRelisce = 0;
 					DCMPix	*curPix = [newPixList lastObject];
 					long	rowBytes = [firstPix pwidth]*4;
 					
+#ifndef VIMAGEYRESLICE
 					[self waitForAProcessor];
 					
                     NSDictionary *d = [NSDictionary dictionaryWithObjectsAndKeys: @(i), @"i", @(sign), @"sign", @(newX), @"newX", @(newY), @"newY", @(square), @"square", [NSNumber numberWithInt: rowBytes], @"rowBytes", curPix, @"curPix", @(j), @"curMovieIndex", nil];
                     
                     [NSThread detachNewThreadSelector: @selector(resliceThread:) toTarget:self withObject: d];
-					
+#endif 
 					[lastPix orientationDouble: orientation];
 					
 					// Y Vector = Normal Vector
