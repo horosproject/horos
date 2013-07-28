@@ -1020,7 +1020,7 @@ static NSHost *currentHost = nil;
     [defaultValues setObject:@"1" forKey:@"SeriesListVisible"];
     [defaultValues setObject:@"1" forKey:@"RescaleDuring3DResampling"];
     [defaultValues setObject:@"1" forKey:@"listPODComparativesIn2DViewer"];
-    
+    [defaultValues setObject:@"1" forKey:@"OVERFLOWLINES"];
     [defaultValues setObject:@"1" forKey:@"allow_qr_name"];
     [defaultValues setObject:@"1" forKey:@"allow_qr_id"];
     [defaultValues setObject:@"1" forKey:@"allow_qr_accession_number"];

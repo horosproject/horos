@@ -62,6 +62,7 @@ static		float						deg2rad = M_PI / 180.0;
 static		unsigned char				*PETredTable = nil, *PETgreenTable = nil, *PETblueTable = nil;
 static		BOOL						NOINTERPOLATION = NO, SOFTWAREINTERPOLATION = NO, IndependentCRWLWW, pluginOverridesMouse = NO;  // Allows plugins to override mouse click actions.
             BOOL						FULL32BITPIPELINE = NO, gDontListenToSyncMessage = NO;
+            BOOL                        OVERFLOWLINES = NO;
 			int							CLUTBARS, /*ANNOTATIONS = -999,*/ SOFTWAREINTERPOLATION_MAX, DISPLAYCROSSREFERENCELINES = YES;
 static		BOOL						gClickCountSet = NO, avoidSetWLWWRentry = NO;
 static		NSDictionary				*_hotKeyDictionary = nil, *_hotKeyModifiersDictionary = nil;
@@ -644,7 +645,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 	NOINTERPOLATION = [[NSUserDefaults standardUserDefaults] boolForKey:@"NOINTERPOLATION"];
 	FULL32BITPIPELINE = [[NSUserDefaults standardUserDefaults] boolForKey:@"FULL32BITPIPELINE"];
-	
+	OVERFLOWLINES = [[NSUserDefaults standardUserDefaults] boolForKey:@"OVERFLOWLINES"];
+    
 	SOFTWAREINTERPOLATION = [[NSUserDefaults standardUserDefaults] boolForKey:@"SOFTWAREINTERPOLATION"];
 	SOFTWAREINTERPOLATION_MAX = [[NSUserDefaults standardUserDefaults] integerForKey:@"SOFTWAREINTERPOLATION_MAX"];
 	DISPLAYCROSSREFERENCELINES = [[NSUserDefaults standardUserDefaults] boolForKey:@"DisplayCrossReferenceLines"];
@@ -8913,6 +8915,64 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					}
 				}  //drawLines for ImageView Frames
 				
+                // Draw a dot line if the raw data overflows the displayed view
+                if( OVERFLOWLINES && is2DViewer && stringID == nil)
+                {
+                    float heighthalf = drawingFrameRect.size.height/2;
+                    float widthhalf = drawingFrameRect.size.width/2;
+                    float offset = 4 * sf;
+                    
+                    NSRect dstRect = [curDCM usefulRectWithRotation: rotation scale: scaleValue xFlipped: xFlipped yFlipped: yFlipped];
+                    NSPoint oo = [DCMPix rotatePoint: [self origin] aroundPoint:NSMakePoint( 0, 0) angle: -rotation*deg2rad];
+                    dstRect.origin = NSMakePoint( drawingFrameRect.size.width/2 + oo.x - dstRect.size.width/2, drawingFrameRect.size.height/2 - oo.y - dstRect.size.height/2);
+                    
+                    glColor4f (1.0f, 0.1f, 0.0f, 0.8f);
+                    glLineWidth(6.0 * sf);
+                    
+                    glPushAttrib( GL_ENABLE_BIT);
+                    glLineStipple( 5 * sf, 0xAAAA);
+                    glEnable(GL_LINE_STIPPLE);
+                    
+                    // Left
+                    if( dstRect.origin.x <= -5)
+                    {
+                        glBegin(GL_LINES);
+                        glVertex2f( -widthhalf +offset, dstRect.origin.y -heighthalf);
+                        glVertex2f( -widthhalf +offset, dstRect.origin.y +dstRect.size.height -heighthalf);
+                        glEnd();
+                    }
+                    
+                    // Top
+                    if( dstRect.origin.y <= -5)
+                    {
+                        glBegin(GL_LINES);
+                        glVertex2f( dstRect.origin.x -widthhalf, -heighthalf +offset);
+                        glVertex2f( dstRect.origin.x +dstRect.size.width -widthhalf, -heighthalf +offset);
+                        glEnd();
+                    }
+                    
+                    // Right
+                    if( dstRect.origin.x + dstRect.size.width >= drawingFrameRect.size.width+5)
+                    {
+                        glBegin(GL_LINES);
+                        glVertex2f( widthhalf -offset, dstRect.origin.y -heighthalf);
+                        glVertex2f( widthhalf -offset, dstRect.origin.y +dstRect.size.height -heighthalf);
+                        glEnd();
+                    }
+                    
+                    // Bottom
+                    if( dstRect.origin.y + dstRect.size.height >= drawingFrameRect.size.height+5)
+                    {
+                        glBegin(GL_LINES);
+                        glVertex2f( dstRect.origin.x -widthhalf, heighthalf -offset);
+                        glVertex2f( dstRect.origin.x +dstRect.size.width -widthhalf, heighthalf -offset);
+                        glEnd();
+                    }
+                        
+                    glLineWidth(1.0 * sf);
+                    glPopAttrib();
+                }
+                    
 				if ((_imageColumns > 1 || _imageRows > 1) && is2DViewer == YES && stringID == nil )
 				{
 					float heighthalf = drawingFrameRect.size.height/2 - 1;
