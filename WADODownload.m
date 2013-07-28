@@ -28,7 +28,7 @@
 
 @implementation WADODownload
 
-@synthesize _abortAssociation, showErrorMessage, countOfSuccesses, WADOGrandTotal, WADOBaseTotal;
+@synthesize _abortAssociation, showErrorMessage, countOfSuccesses, WADOGrandTotal, WADOBaseTotal, receivedData, totalData;
 
 + (void) errorMessage:(NSArray*) msg
 {
@@ -47,7 +47,7 @@
 	if( [httpResponse statusCode] >= 300)
 	{
 		NSLog( @"***** WADO http status code error: %d", (int) [httpResponse statusCode]);
-		NSLog( @"***** WADO URL : %@", connection);
+		NSLog( @"***** WADO URL : %@", response.URL);
 		
 		if( firstWadoErrorDisplayed == NO)
 		{
@@ -58,6 +58,8 @@
 		
 		[WADODownloadDictionary removeObjectForKey: [NSString stringWithFormat:@"%ld", (long) connection]];
 	}
+    else
+        totalData += [[httpResponse.allHeaderFields valueForKey: @"Content-Length"] longLongValue];
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
@@ -69,6 +71,14 @@
 		NSMutableData *d = [[WADODownloadDictionary objectForKey: [NSString stringWithFormat:@"%ld", (long) connection]] objectForKey: @"data"];
 		[d appendData: data];
 		
+        receivedData += data.length;
+        
+        if( WADOTotal == 1) // Only one file: display progress in bytes
+        {
+            if( totalData > 0)
+                [[NSThread currentThread] setProgress: (double) receivedData / (double) totalData];
+        }
+        
 		[pool release];
 	}
 }
@@ -336,7 +346,7 @@
             if( aborted)
                 NSLog( @"------ WADO downloading ABORTED");
             else
-                NSLog( @"------ WADO downloading : %d files - finished", (int) [urlToDownload count]);
+                NSLog( @"------ WADO downloading : %d files - finished (errors: %d / total: %d)", (int) [urlToDownload count], countOfSuccesses, urlToDownload.count);
         }
     }
     @catch (NSException *exception) {

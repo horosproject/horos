@@ -21,12 +21,14 @@
 	volatile int32_t WADOThreads __attribute__ ((aligned (4)));
     int WADOTotal, countOfSuccesses;
     int WADOGrandTotal, WADOBaseTotal;
+    unsigned long totalData, receivedData;
 	NSMutableDictionary *WADODownloadDictionary, *logEntry;
 	BOOL showErrorMessage, firstWadoErrorDisplayed, _abortAssociation;
 }
 
 @property BOOL _abortAssociation, showErrorMessage;
 @property int countOfSuccesses, WADOGrandTotal, WADOBaseTotal;
+@property unsigned long totalData, receivedData;
 
 - (void) WADODownload: (NSArray*) urlToDownload;
 

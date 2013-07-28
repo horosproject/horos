@@ -197,53 +197,60 @@
 	@try {
         NSString* url = [paramDict valueForKey:@"URL"];
         
-        WADODownload* downloader = [[WADODownload alloc] init];        
+        WADODownload* downloader = [[[WADODownload alloc] init] autorelease];
         [downloader WADODownload:[NSArray arrayWithObject:[NSURL URLWithString:url]]];
-        [downloader release];
         
-        if ([[paramDict valueForKey:@"Display"] boolValue]) {
-            NSString* studyUID = nil;
-            NSString* seriesUID = nil;
-            
-            for (NSString* s in [[[url componentsSeparatedByString:@"?"] lastObject] componentsSeparatedByString:@"&"]) {
-                NSRange separatorRange = [s rangeOfString:@"="];
-                if (separatorRange.location == NSNotFound)
-                    continue;
-                @try {
-                    if ([[s substringToIndex:separatorRange.location] isEqualToString:@"studyUID"])
-                        studyUID = [s substringFromIndex:separatorRange.location+1];
-                    if ([[s substringToIndex:separatorRange.location] isEqualToString:@"seriesUID"])
-                        seriesUID = [s substringFromIndex:separatorRange.location+1];
-                } @catch (NSException* e) {
-                    N2LogExceptionWithStackTrace(e);
-                }
-            }
-            
-            if (studyUID) {
-                NSPredicate* predicate = nil;
-                if (seriesUID)
-                    predicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@ AND ANY series.seriesDICOMUID == %@", studyUID, seriesUID];
-                else predicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", studyUID];
+        if( downloader.countOfSuccesses)
+        {
+            if ([[paramDict valueForKey:@"Display"] boolValue]) {
+                NSString* studyUID = nil;
+                NSString* seriesUID = nil;
                 
-                NSTimeInterval startTime = [NSDate timeIntervalSinceReferenceDate];
-                do {
-                    NSArray* istudies = [[self.database independentDatabase] objectsForEntity:@"Study" predicate:predicate error:NULL];
-                    DicomStudy* istudy = [istudies lastObject];
-                    if ([istudy.studyInstanceUID isEqualToString:studyUID]) {
-                        DicomSeries* iseries = nil;
-                        if (seriesUID)
-                            for (DicomSeries* is in istudy.series)
-                                if ([is.seriesDICOMUID isEqualToString:seriesUID])
-                                    iseries = is;
-                        
-                        NSManagedObject* obj = iseries? (id)iseries : (id)istudy;
-                        [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjectsWithIDs:) withObject:[NSArray arrayWithObject:obj.objectID] waitUntilDone:NO];
-                        
-                        break;
+                for (NSString* s in [[[url componentsSeparatedByString:@"?"] lastObject] componentsSeparatedByString:@"&"]) {
+                    NSRange separatorRange = [s rangeOfString:@"="];
+                    if (separatorRange.location == NSNotFound)
+                        continue;
+                    @try {
+                        if ([[s substringToIndex:separatorRange.location] isEqualToString:@"studyUID"])
+                            studyUID = [s substringFromIndex:separatorRange.location+1];
+                        if ([[s substringToIndex:separatorRange.location] isEqualToString:@"seriesUID"])
+                            seriesUID = [s substringFromIndex:separatorRange.location+1];
+                    } @catch (NSException* e) {
+                        N2LogExceptionWithStackTrace(e);
                     }
+                }
+                
+                if (studyUID)
+                {
+                    [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
                     
-                    [NSThread sleepForTimeInterval:4];
-                } while ([NSDate timeIntervalSinceReferenceDate] - startTime < 300); // try for 300 seconds = 5 minutes
+                    [NSThread sleepForTimeInterval: 2];
+                    
+                    NSPredicate* predicate = nil;
+                    if (seriesUID)
+                        predicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@ AND ANY series.seriesDICOMUID == %@", studyUID, seriesUID];
+                    else predicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", studyUID];
+                    
+                    NSTimeInterval startTime = [NSDate timeIntervalSinceReferenceDate];
+                    do {
+                        NSArray* istudies = [[self.database independentDatabase] objectsForEntity:@"Study" predicate:predicate error:NULL];
+                        DicomStudy* istudy = [istudies lastObject];
+                        if ([istudy.studyInstanceUID isEqualToString:studyUID]) {
+                            DicomSeries* iseries = nil;
+                            if (seriesUID)
+                                for (DicomSeries* is in istudy.series)
+                                    if ([is.seriesDICOMUID isEqualToString:seriesUID])
+                                        iseries = is;
+                            
+                            NSManagedObject* obj = iseries? (id)iseries : (id)istudy;
+                            [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjectsWithIDs:) withObject:[NSArray arrayWithObject:obj.objectID] waitUntilDone:NO];
+                            
+                            break;
+                        }
+                        
+                        [NSThread sleepForTimeInterval: 2];
+                    } while ([NSDate timeIntervalSinceReferenceDate] - startTime < 30 && [[NSThread currentThread] isCancelled] == NO); // try for 30 seconds
+                }
             }
         }
 	} @catch (NSException* e) {
