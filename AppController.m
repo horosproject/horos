@@ -5215,14 +5215,23 @@ static BOOL initialized = NO;
 		[keyWindow propagateSettings];
 		
 		NSDisableScreenUpdates();
-		
-		for( id v in viewersList)
+        
+		for( id v in [[viewersList reverseObjectEnumerator] allObjects])
 		{
 			if( [v isKindOfClass:[ViewerController class]])
 			{
-				[v checkBuiltMatrixPreview];
-				[v redrawToolbar]; // To avoid the drag & remove item bug - multiple windows
+                if( v != keyWindow)
+                {
+                    if( [v checkFrameSize] == YES)
+                        [v buildMatrixPreview: YES];
+                    
+                    [v redrawToolbar]; // To avoid the drag & remove item bug - multiple windows
+                }
 			}
+            
+            if( [keyWindow checkFrameSize] == YES)
+                [keyWindow buildMatrixPreview: YES];
+            [keyWindow redrawToolbar];
 		}
 		
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOHIDEMATRIX"])

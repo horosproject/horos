@@ -7000,11 +7000,11 @@ static NSConditionLock *threadLock = nil;
                     
                     if( seriesArray.count + comparatives.count > total)
                     {
-                        while( seriesArray.count - comparatives.count < 1)
-                            [comparatives removeLastObject];
-                        
-                        while( seriesArray.count + comparatives.count > total)
+                        while( seriesArray.count + comparatives.count > total && seriesArray.count > 1)
                             [seriesArray removeLastObject];
+                        
+                        while( seriesArray.count + comparatives.count > total && comparatives.count > 0)
+                            [comparatives removeLastObject];
                     }
                     
                     [seriesArray addObjectsFromArray: comparatives];
