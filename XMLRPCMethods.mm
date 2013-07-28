@@ -179,7 +179,7 @@
             NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector(_threadRetrieveWado:) object:paramDict] autorelease];
             t.name = NSLocalizedString(@"WADO Retrieve...", nil);
             t.supportsCancel = YES;
-            t.status = [paramDict valueForKey:@"URL"];
+            t.status = [[[NSURL URLWithString:@"/" relativeToURL: [NSURL URLWithString: [paramDict valueForKey:@"URL"]]] absoluteURL] description];
             [[ThreadsManager defaultManager] addThreadAndStart:t];
         }
         else 
@@ -200,7 +200,7 @@
         WADODownload* downloader = [[[WADODownload alloc] init] autorelease];
         [downloader WADODownload:[NSArray arrayWithObject:[NSURL URLWithString:url]]];
         
-        if( downloader.countOfSuccesses)
+        if( downloader.countOfSuccesses && [[NSThread currentThread] isCancelled] == NO)
         {
             if ([[paramDict valueForKey:@"Display"] boolValue]) {
                 NSString* studyUID = nil;

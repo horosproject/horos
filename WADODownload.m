@@ -20,6 +20,7 @@
 #import "dicomFile.h"
 #import "LogManager.h"
 #import "N2Debug.h"
+#import "NSString+N2.h"
 
 @interface NSURLRequest (DummyInterface)
 + (BOOL)allowsAnyHTTPSCertificateForHost:(NSString*)host;
@@ -28,7 +29,7 @@
 
 @implementation WADODownload
 
-@synthesize _abortAssociation, showErrorMessage, countOfSuccesses, WADOGrandTotal, WADOBaseTotal, receivedData, totalData;
+@synthesize _abortAssociation, showErrorMessage, countOfSuccesses, WADOGrandTotal, WADOBaseTotal, baseStatus, receivedData, totalData;
 
 + (void) errorMessage:(NSArray*) msg
 {
@@ -77,6 +78,15 @@
         {
             if( totalData > 0)
                 [[NSThread currentThread] setProgress: (double) receivedData / (double) totalData];
+            
+            if( firstReceivedTime == 0)
+                firstReceivedTime = [NSDate timeIntervalSinceReferenceDate];
+            
+            if( [NSDate timeIntervalSinceReferenceDate] - lastStatusUpdate > 1 && [NSDate timeIntervalSinceReferenceDate] - firstReceivedTime > 2)
+            {
+                lastStatusUpdate = [NSDate timeIntervalSinceReferenceDate];
+                [NSThread currentThread].status = [NSString stringWithFormat: @"%@ - %@/s", self.baseStatus, [NSString sizeString: (double) receivedData / ([NSDate timeIntervalSinceReferenceDate] - firstReceivedTime)]];
+            }
         }
         
 		[pool release];
@@ -127,6 +137,8 @@
 
 - (void) dealloc
 {
+    self.baseStatus = nil;
+    
     [WADODownloadDictionary release];
     WADODownloadDictionary = nil;
     
@@ -229,6 +241,8 @@
     NSMutableArray *connectionsArray = [NSMutableArray array];
     
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
+    
+    self.baseStatus = [[NSThread currentThread] status];
     
     @try
     {

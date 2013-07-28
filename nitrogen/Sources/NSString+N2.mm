@@ -61,12 +61,12 @@ NSString* N2NonNullString(NSString* s) {
         return [NSString stringWithFormat:NSLocalizedString(@"%i bytes", nil), size];
     float floatSize = float(size) / 1024;
     if (floatSize<1023)
-        return [NSString stringWithFormat:NSLocalizedString(@"%1.2f KB", nil), floatSize];
+        return [NSString stringWithFormat:NSLocalizedString(@"%1.2f KB", @"KB = kilo bytes"), floatSize];
     floatSize = floatSize / 1024;
     if (floatSize<1023)
-        return [NSString stringWithFormat:NSLocalizedString(@"%1.2f MB", nil), floatSize];
+        return [NSString stringWithFormat:NSLocalizedString(@"%1.2f MB", @"MB = mega bytes"), floatSize];
     floatSize = floatSize / 1024;
-    return [NSString stringWithFormat:NSLocalizedString(@"%1.2f GB", nil), floatSize];
+    return [NSString stringWithFormat:NSLocalizedString(@"%1.2f GB", @"GB = giga bytes"), floatSize];
 }
 
 +(NSString*)timeString:(NSTimeInterval)time {
