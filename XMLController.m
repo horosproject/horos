@@ -51,6 +51,7 @@ static BOOL showWarning = YES;
 
 extern int delayedTileWindows;
 
+
 @implementation XMLController
 
 @synthesize imObj, editingActivated;
@@ -695,7 +696,7 @@ extern int delayedTileWindows;
 	{
 		id item = [main childAtIndex: i];
 		
-		if( [item childCount] > 1)
+		if( [item childCount] > 0)
 		{
 			id subItem = [self scanThrough: item forString: s];
 			if( subItem)
@@ -704,11 +705,11 @@ extern int delayedTileWindows;
 				return subItem;
 			}
 		}
-		else
-			if( [self item: item containsString: [search stringValue]])
-				return item;
+		
+        if( [self item: item containsString: s])
+            return item;
 	}
-	
+    
 	return nil;
 }
 
@@ -722,14 +723,29 @@ extern int delayedTileWindows;
 		 
 		id item = [self scanThrough: xmlDocument forString: [search stringValue]];
 		
-		if( [tree count] > 0)
-		{
-			for( int i = (long)[tree count]-1; i >= 0; i--)
-				[table expandItem: [tree objectAtIndex: i]];
-		}
-		
-		if( [table rowForItem: item] >= 0)
-			[table scrollRowToVisible: [table rowForItem: item]];
+        if( item)
+        {
+            if( [tree count] > 0)
+            {
+                for( long i = (long)[tree count]-1; i >= 0; i--)
+                    [table expandItem: [tree objectAtIndex: i]];
+            }
+            
+            if( [table rowForItem: item] >= 0)
+                [table scrollRowToVisible: [table rowForItem: item]];
+            else if( [table rowForItem: [item parent]] >= 0)
+                [table scrollRowToVisible: [table rowForItem: [item parent]]];
+            else
+                for( id item in tree)
+                {
+                    if( [table rowForItem: [item parent]] >= 0)
+                    {
+                        [table scrollRowToVisible: [table rowForItem: [item parent]]];
+                        break;
+                    }
+                }
+        }
+        tree = nil;
 	}
 }
 
@@ -789,8 +805,12 @@ extern int delayedTileWindows;
 	{
 		@try
 		{
-			range = [[item valueForKey:@"name"] rangeOfString: [search stringValue] options: NSCaseInsensitiveSearch];
-			if( range.location != NSNotFound) found = YES;
+            if( [item valueForKey:@"name"])
+            {
+                range = [[item valueForKey:@"name"] rangeOfString: s options: NSCaseInsensitiveSearch];
+                if( range.location != NSNotFound)
+                    found = YES;
+            }
 		}
 		@catch (NSException *e)
 		{
@@ -801,8 +821,12 @@ extern int delayedTileWindows;
 	{
 		@try
 		{
-			range = [[item valueForKey:@"attributeTag"] rangeOfString: [search stringValue] options: NSCaseInsensitiveSearch];
-			if( range.location != NSNotFound) found = YES;
+            if( [item valueForKey:@"attributeTag"])
+            {
+                range = [[item valueForKey:@"attributeTag"] rangeOfString: s options: NSCaseInsensitiveSearch];
+                if( range.location != NSNotFound)
+                    found = YES;
+            }
 		}
 		@catch (NSException *e)
 		{
@@ -813,14 +837,34 @@ extern int delayedTileWindows;
 	{
 		@try
 		{
-			range = [[item valueForKey:@"stringValue"] rangeOfString: [search stringValue] options: NSCaseInsensitiveSearch];
-			if( range.location != NSNotFound) found = YES;
+            if( [item valueForKey:@"stringValue"])
+            {
+                range = [[item valueForKey:@"stringValue"] rangeOfString: s options: NSCaseInsensitiveSearch];
+                if( range.location != NSNotFound)
+                    found = YES;
+            }
 		}
 		@catch (NSException *e)
 		{
 		}
 	}
-	
+    
+    if( found == NO)
+	{
+		@try
+		{
+            if( [item valueForKey:@"objectValue"])
+            {
+                range = [[item valueForKey:@"objectValue"] rangeOfString: s options: NSCaseInsensitiveSearch];
+                if( range.location != NSNotFound)
+                    found = YES;
+            }
+		}
+		@catch (NSException *e)
+		{
+		}
+	}
+    
 	return found;
 }
 
