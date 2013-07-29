@@ -6349,35 +6349,60 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				free(oImage);
 				oImage = (short*) tmpImage;
 			}
-			else if( bitsAllocated == 8)
-			{
-				// Planar 8
-				//-> 16 bits image
-				unsigned char   *bufPtr;
-				short			*ptr, *tmpImage;
-				int			loop, totSize;
-				
-				totSize = (int) ((int) height * (int) width * 2L);
-				tmpImage = malloc( totSize);
-				
-				bufPtr = (unsigned char*) oImage;
-				ptr    = tmpImage;
-				
-				loop = totSize/2;
-				
-				if( [pixData length] < loop)
-				{
-					NSLog( @"************* [pixData length] < height * width");
-					loop = [pixData length];
-				}
-				
-				while( loop-- > 0)
-				{
-					*ptr++ = *bufPtr++;
-				}
-				free(oImage);
-				oImage =  (short*) tmpImage;
-			}
+			else
+            {
+                if( fIsSigned && bitsAllocated != bitsStored) //We have to move the signing bit
+                {
+                    if( bitsAllocated == 16)
+                    {
+                        short *bufPtr = (short*) oImage, *tmpImage;
+                        long loop, totSize;
+                        const int shift = bitsAllocated - bitsStored;
+                        
+                        tmpImage = malloc( height * width * 2L);
+                        short *ptr = tmpImage;
+                        
+                        loop = height * width;
+                        short div = pow( 2, shift);
+                        while( loop-- > 0)
+                            *ptr++ = ((short)(*(bufPtr++) << shift))/div;
+                        
+                        free(oImage);
+                        oImage =  (short*) tmpImage;
+                    }
+                }
+                
+                if( bitsAllocated == 8)
+                {
+                    // Planar 8
+                    //-> 16 bits image
+                    unsigned char   *bufPtr;
+                    short			*ptr, *tmpImage;
+                    int			loop, totSize;
+                    
+                    totSize = (int) ((int) height * (int) width * 2L);
+                    tmpImage = malloc( totSize);
+                    
+                    bufPtr = (unsigned char*) oImage;
+                    ptr    = tmpImage;
+                    
+                    loop = totSize/2;
+                    
+                    if( [pixData length] < loop)
+                    {
+                        NSLog( @"************* [pixData length] < height * width");
+                        loop = [pixData length];
+                    }
+                    
+                    while( loop-- > 0)
+                    {
+                        *ptr++ = *bufPtr++;
+                    }
+                    free(oImage);
+                    oImage =  (short*) tmpImage;
+                }
+            }
+            
 			
 			//***********
 			
@@ -9285,29 +9310,53 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 										}
 									}
 								}
-								else if( bitsAllocated == 8)	// Black & White 8 bit image -> 16 bits image
-								{
-									unsigned char   *bufPtr;
-									short			*ptr, *tmpImage;
-									int				loop, totSize;
-									
-									totSize = (int) ((int) height * (int) width * 2L);
-									tmpImage = malloc( totSize);
-									
-									bufPtr = (unsigned char*) oImage;
-									ptr    = tmpImage;
-									
-									loop = totSize/2;
-									while( loop-- > 0)
-									{
-										*ptr++ = *bufPtr++;
-									}
-									
-									efree3 ((void **) &oImage);
-									oImage =  (short*) tmpImage;
-									goImageSize[ fileNb] = height * (int) width * 2L;
+								else
+                                {
+                                    if( fIsSigned && bitsAllocated != bitsStored) //We have to move the signing bit
+                                    {
+                                        if( bitsAllocated == 16)
+                                        {
+                                            short *bufPtr = (short*) oImage, *tmpImage;
+                                            long loop, totSize;
+                                            const int shift = bitsAllocated - bitsStored;
+                                            
+                                            tmpImage = malloc( height * width * 2L);
+                                            short *ptr = tmpImage;
+                                            
+                                            loop = height * width;
+                                            short div = pow( 2, shift);
+                                            while( loop-- > 0)
+                                                *ptr++ = ((short)(*(bufPtr++) << shift))/div;
+                                            
+                                            free(oImage);
+                                            oImage =  (short*) tmpImage;
+                                        }
+                                    }
+                                    
+                                    if( bitsAllocated == 8)	// Black & White 8 bit image -> 16 bits image
+                                    {
+                                        unsigned char   *bufPtr;
+                                        short			*ptr, *tmpImage;
+                                        int				loop, totSize;
+                                        
+                                        totSize = (int) ((int) height * (int) width * 2L);
+                                        tmpImage = malloc( totSize);
+                                        
+                                        bufPtr = (unsigned char*) oImage;
+                                        ptr    = tmpImage;
+                                        
+                                        loop = totSize/2;
+                                        while( loop-- > 0)
+                                        {
+                                            *ptr++ = *bufPtr++;
+                                        }
+                                        
+                                        efree3 ((void **) &oImage);
+                                        oImage =  (short*) tmpImage;
+                                        goImageSize[ fileNb] = height * (int) width * 2L;
+                                    }
 								}
-								
+                            
 								//if( fIsSigned == YES && 
 								
 								[PapyrusLock lock];

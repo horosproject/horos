@@ -5229,9 +5229,12 @@ static BOOL initialized = NO;
                 }
 			}
             
-            if( [keyWindow checkFrameSize] == YES)
-                [keyWindow buildMatrixPreview: YES];
-            [keyWindow redrawToolbar];
+            if( [keyWindow isKindOfClass:[ViewerController class]])
+            {
+                if( [keyWindow checkFrameSize] == YES)
+                    [keyWindow buildMatrixPreview: YES];
+                [keyWindow redrawToolbar];
+            }
 		}
 		
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOHIDEMATRIX"])
