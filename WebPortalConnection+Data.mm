@@ -142,24 +142,31 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
                     NSArray *studies = [QueryController queryStudyInstanceUID: [axid objectAtIndex: 4] server: s showErrors: NO];
                     [QueryController retrieveStudies: studies showErrors: NO checkForPreviousAutoRetrieve: YES];
                     
-                    [NSThread sleepForTimeInterval: 0.2];
-                    [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
-                    [NSThread sleepForTimeInterval: 1];
-                    
-                    // And find the study locally
-                    N2ManagedDatabase* db = self.independentDicomDatabase;
-                    NSFetchRequest *r = [NSFetchRequest fetchRequestWithEntityName: @"Study"];
-                    [r setPredicate: [NSPredicate predicateWithFormat: @"(studyInstanceUID == %@)", [axid objectAtIndex: 4]]];
-                    
                     NSArray *studyArray = nil;
-                    @try
-                    {
-                        studyArray = [db.managedObjectContext executeFetchRequest: r error: nil];
-                    }
-                    @catch (NSException *e) { N2LogExceptionWithStackTrace(e);}
+                    NSTimeInterval dateStart = [NSDate timeIntervalSinceReferenceDate];
                     
-                    if( [studyArray count] > 0)
-                        return [studyArray lastObject];
+                    do
+                    {
+                        [NSThread sleepForTimeInterval: 1];
+                        [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
+                        [NSThread sleepForTimeInterval: 3];
+                        
+                        // And find the study locally
+                        N2ManagedDatabase* db = self.independentDicomDatabase;
+                        NSFetchRequest *r = [NSFetchRequest fetchRequestWithEntityName: @"Study"];
+                        [r setPredicate: [NSPredicate predicateWithFormat: @"(studyInstanceUID == %@)", [axid objectAtIndex: 4]]];
+                        
+                        
+                        @try
+                        {
+                            studyArray = [db.managedObjectContext executeFetchRequest: r error: nil];
+                        }
+                        @catch (NSException *e) { N2LogExceptionWithStackTrace(e);}
+                        
+                        if( [studyArray count] > 0)
+                            return [studyArray lastObject];
+                        
+                    } while( [studyArray count] == 0 && [NSDate timeIntervalSinceReferenceDate] - dateStart > 20);
                 }
             }
         }
