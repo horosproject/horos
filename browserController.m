@@ -6866,10 +6866,9 @@ static NSConditionLock *threadLock = nil;
                     seriesArray = [NSMutableArray arrayWithArray: [currentStudy imageSeries]];
                 
                 // Prepare the series to be displayed
+                NSMutableArray *comparatives = [NSMutableArray array];
                 if( [[currentHangingProtocol valueForKey: @"Comparative"] boolValue])
                 {
-                    NSMutableArray *comparatives = [NSMutableArray array];
-                    
                     // Find the previous studies
                     int numberOfComparative = [[currentHangingProtocol valueForKey:@"NumberOfComparativeToDisplay"] intValue];
                     
@@ -6991,24 +6990,25 @@ static NSConditionLock *threadLock = nil;
                             i--;
                         }
                     }
-                    
-                    // Prepare the series
-                    int total = [[WindowLayoutManager sharedWindowLayoutManager] windowsRows] * [[WindowLayoutManager sharedWindowLayoutManager] windowsColumns];
-                    
-                    if( seriesArray.count > total)
-                        [seriesArray removeObjectsInRange: NSMakeRange( total, seriesArray.count-total)];
-                    
-                    if( seriesArray.count + comparatives.count > total)
-                    {
-                        while( seriesArray.count + comparatives.count > total && seriesArray.count > 1)
-                            [seriesArray removeLastObject];
-                        
-                        while( seriesArray.count + comparatives.count > total && comparatives.count > 0)
-                            [comparatives removeLastObject];
-                    }
-                    
-                    [seriesArray addObjectsFromArray: comparatives];
                 }
+                
+                // Prepare the series
+                int total = [[WindowLayoutManager sharedWindowLayoutManager] windowsRows] * [[WindowLayoutManager sharedWindowLayoutManager] windowsColumns];
+                
+                if( seriesArray.count > total)
+                    [seriesArray removeObjectsInRange: NSMakeRange( total, seriesArray.count-total)];
+                
+                if( seriesArray.count + comparatives.count > total)
+                {
+                    while( seriesArray.count + comparatives.count > total && seriesArray.count > 1)
+                        [seriesArray removeLastObject];
+                    
+                    while( seriesArray.count + comparatives.count > total && comparatives.count > 0)
+                        [comparatives removeLastObject];
+                }
+                
+                [seriesArray addObjectsFromArray: comparatives];
+                
                 
                 // Go to the series level, if we are at study level (comparatives)
                 for( int i = 0; i < seriesArray.count; i++)
