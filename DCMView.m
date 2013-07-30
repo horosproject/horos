@@ -8926,8 +8926,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                     NSPoint oo = [DCMPix rotatePoint: [self origin] aroundPoint:NSMakePoint( 0, 0) angle: -rotation*deg2rad];
                     dstRect.origin = NSMakePoint( drawingFrameRect.size.width/2 + oo.x - dstRect.size.width/2, drawingFrameRect.size.height/2 - oo.y - dstRect.size.height/2);
                     
-                    glColor4f (1.0f, 0.1f, 0.0f, 0.8f);
-                    glLineWidth(6.0 * sf);
+                    glColor4f (0, 1, 0.0f, 0.8f);
+                    glLineWidth( 4.0 * sf);
                     
                     glPushAttrib( GL_ENABLE_BIT);
                     glLineStipple( 5 * sf, 0xAAAA);
