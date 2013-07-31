@@ -228,12 +228,13 @@
 
 		if([annotationsArray count]==0) annotationNumber = 1;
 		[anAnnotation setTitle:[NSString stringWithFormat:@"%@ %d", [anAnnotation title], annotationNumber++]];
-
-		[self selectAnnotation:anAnnotation];
+        
 		[annotationsArray addObject:anAnnotation];
 		[layoutView addSubview:anAnnotation];
 		[layoutView setNeedsDisplay:YES];
 		[anAnnotation release];
+        
+        [self selectAnnotation:anAnnotation];
 	}
 }
 
@@ -1084,9 +1085,8 @@
 		CIAAnnotation *annotation = [annotationsArray objectAtIndex:a];
 		content = [annotation content];
 		
-		for (i=0; i<[content count]; i++)
+		for( NSString *token in content)
 		{
-			NSString *token = [content objectAtIndex:i];
 			if([token isEqualToString:@"DICOM_"] || [token isEqualToString:@"DB_"] || [token isEqualToString:@"Special_"])
 			{
 				check = NO;
@@ -1097,14 +1097,14 @@
 
 	if(!check || [annotationsArray count]==0)
 	{
-		int r = NSRunAlertPanel(NSLocalizedString( @"Annotation Content", nil), NSLocalizedString( @"Some token have no content. Token such as 'DICOM_', 'DB_', 'Special_' will not be displayed.", nil), NSLocalizedString( @"OK", nil), NSLocalizedString( @"Cancel", nil), nil);
-		if(r==NSAlertDefaultReturn)
-			return YES;
-		else
-		{
-			[self selectAnnotation:unfinishedAnnotation];
-			return NO;
-		}
+//		int r = NSRunAlertPanel(NSLocalizedString( @"Annotation Content", nil), NSLocalizedString( @"Some token have no content. Token such as 'DICOM_', 'DB_', 'Special_' will not be displayed.", nil), NSLocalizedString( @"OK", nil), NSLocalizedString( @"Cancel", nil), nil);
+//		if(r==NSAlertDefaultReturn)
+//			return YES;
+//		else
+//		{
+//			[self selectAnnotation:unfinishedAnnotation];
+//			return NO;
+//		}
 	}
 	
 	return YES;
@@ -1116,10 +1116,8 @@
 	
 	BOOL check = YES;
 	
-	int i;
-	for (i=0; i<[content count]; i++)
+	for( NSString *token in content)
 	{
-		NSString *token = [content objectAtIndex:i];
 		if([token isEqualToString:@"DICOM_"] || [token isEqualToString:@"DB_"] || [token isEqualToString:@"Special_"])
 		{
 			check = NO;
@@ -1128,11 +1126,11 @@
 
 	if(!check || [content count]==0)
 	{
-		int r = NSRunAlertPanel(NSLocalizedString( @"Annotation Content", nil), NSLocalizedString( @"Some token have no content. Token such as 'DICOM_', 'DB_', 'Special_' will not be displayed.", nil), NSLocalizedString( @"OK", nil), NSLocalizedString( @"Cancel", nil), nil);
-		if(r==NSAlertDefaultReturn)
-			return YES;
-		else
-			return NO;
+//		int r = NSRunAlertPanel(NSLocalizedString( @"Annotation Content", nil), NSLocalizedString( @"Some token have no content. Token such as 'DICOM_', 'DB_', 'Special_' will not be displayed.", nil), NSLocalizedString( @"OK", nil), NSLocalizedString( @"Cancel", nil), nil);
+//		if(r==NSAlertDefaultReturn)
+//			return YES;
+//		else
+//			return NO;
 	}
 	return YES;
 }
