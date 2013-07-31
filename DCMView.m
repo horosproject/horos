@@ -63,7 +63,7 @@ static		unsigned char				*PETredTable = nil, *PETgreenTable = nil, *PETblueTable
 static		BOOL						NOINTERPOLATION = NO, SOFTWAREINTERPOLATION = NO, IndependentCRWLWW, pluginOverridesMouse = NO;  // Allows plugins to override mouse click actions.
             BOOL						FULL32BITPIPELINE = NO, gDontListenToSyncMessage = NO;
             BOOL                        OVERFLOWLINES = NO;
-			int							CLUTBARS, /*ANNOTATIONS = -999,*/ SOFTWAREINTERPOLATION_MAX, DISPLAYCROSSREFERENCELINES = YES;
+			int							CLUTBARS, MAXNUMBEROF32BITVIEWERS = 4, SOFTWAREINTERPOLATION_MAX, DISPLAYCROSSREFERENCELINES = YES;
 static		BOOL						gClickCountSet = NO, avoidSetWLWWRentry = NO;
 static		NSDictionary				*_hotKeyDictionary = nil, *_hotKeyModifiersDictionary = nil;
 static		NSRecursiveLock				*drawLock = nil;
@@ -645,6 +645,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 	NOINTERPOLATION = [[NSUserDefaults standardUserDefaults] boolForKey:@"NOINTERPOLATION"];
 	FULL32BITPIPELINE = [[NSUserDefaults standardUserDefaults] boolForKey:@"FULL32BITPIPELINE"];
+    MAXNUMBEROF32BITVIEWERS = [[NSUserDefaults standardUserDefaults] integerForKey: @"MAXNUMBEROF32BITVIEWERS"];
 	OVERFLOWLINES = [[NSUserDefaults standardUserDefaults] boolForKey:@"OVERFLOWLINES"];
     
 	SOFTWAREINTERPOLATION = [[NSUserDefaults standardUserDefaults] boolForKey:@"SOFTWAREINTERPOLATION"];
@@ -11462,7 +11463,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	if( redFactor != 1.0 || greenFactor != 1.0 || blueFactor != 1.0)
 		localColorTransfer = YES;
 	
-	if( [ViewerController numberOf2DViewer] > 3)
+	if( [ViewerController numberOf2DViewer] > MAXNUMBEROF32BITVIEWERS)
 		intFULL32BITPIPELINE = NO;
 	
 	if( curDCM.pheight >= maxTextureSize) 
