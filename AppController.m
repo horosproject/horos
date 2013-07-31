@@ -4864,13 +4864,13 @@ static BOOL initialized = NO;
     if( screenRect.size.width/screenRect.size.height > 1.7) // 16/9 screen or more
         landscapeRatio = 2.0;
     
-    float portraitRatio = 1.0;
+    float portraitRatio = 0.9;
     
     if( screenRect.size.height/screenRect.size.width > 1.7) // 16/9 screen or more
         portraitRatio = 0.49;
     
-	int rows = [[[[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol] objectForKey:@"Rows"] intValue];
-	int columns = [[[[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol] objectForKey:@"Columns"] intValue];
+	int rows = [[WindowLayoutManager sharedWindowLayoutManager] windowsRows];
+	int columns = [[WindowLayoutManager sharedWindowLayoutManager] windowsColumns];
 	
 	if( [sender isKindOfClass: [NSDictionary class]])
 	{
