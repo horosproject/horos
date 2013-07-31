@@ -174,6 +174,8 @@ enum
 - (IBAction) pressButtons:(id) sender;
 - (NSArray*) localSeries:(id) item;
 - (NSArray*) localStudy:(id) item;
+- (NSArray*) localSeries:(id) item context: (NSManagedObjectContext*) context;
+- (NSArray*) localStudy:(id) item context: (NSManagedObjectContext*) context;
 - (IBAction) endAddPreset:(id) sender;
 - (void) buildPresetsMenu;
 - (IBAction) autoQueryTimer:(id) sender;

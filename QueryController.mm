@@ -1291,7 +1291,7 @@ extern "C"
 		{
 			if( [indices containsIndex: i])
 			{
-				NSArray *studyArray = [self localStudy: [outlineView itemAtRow: i]];
+				NSArray *studyArray = [self localStudy: [outlineView itemAtRow: i] context: nil];
 
 				if( [studyArray count] > 0)
 				{
@@ -1339,7 +1339,7 @@ extern "C"
                 {
                     if( [[outlineView itemAtRow: i] isMemberOfClass:[DCMTKStudyQueryNode class]])
                     {
-                        NSArray *studyArray = [self localStudy: [outlineView itemAtRow: i]];
+                        NSArray *studyArray = [self localStudy: [outlineView itemAtRow: i] context: nil];
                         
                         if( [studyArray count] > 0)
                         {
@@ -1576,17 +1576,26 @@ extern "C"
 
 - (NSArray*) localSeries:(id) item
 {
+    return [self localSeries: item context: nil];
+}
+
+- (NSArray*) localSeries:(id) item context: (NSManagedObjectContext*) context
+{
 	NSArray *seriesArray = nil;
-	NSManagedObject *study = [[self localStudy: [outlineView parentForItem: item]] lastObject];
+	NSManagedObject *study = [[self localStudy: [outlineView parentForItem: item] context: context] lastObject];
 	
 	if( study == nil) return seriesArray;
 	
 	if( [item isMemberOfClass:[DCMTKSeriesQueryNode class]] == YES)
 	{
-		NSManagedObjectContext *context = [[DicomDatabase activeLocalDatabase] managedObjectContext];
-		
-		[context lock];
-		
+        if( context == nil)
+        {
+            if( [NSThread isMainThread])
+                context = [[[BrowserController currentBrowser] database] managedObjectContext];
+            else
+                context = [[[BrowserController currentBrowser] database] independentContext];
+        }
+        
 		@try
 		{
 			seriesArray = [[[study valueForKey:@"series"] allObjects] filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"(seriesDICOMUID == %@)", [item valueForKey:@"uid"]]];
@@ -1595,8 +1604,6 @@ extern "C"
 		{
             N2LogExceptionWithStackTrace(e);
 		}
-		
-		[context unlock];
 	}
 	else
 		NSLog( @"Warning! Not a series class ! %@", [item class]);
@@ -1699,6 +1706,11 @@ extern "C"
 
 - (NSArray*) localStudy:(id) item
 {
+    return [self localStudy: item context: nil];
+}
+
+- (NSArray*) localStudy:(id) item context: (NSManagedObjectContext*) context
+{
 	if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
 	{
 		@try
@@ -1714,14 +1726,15 @@ extern "C"
                 
                 if( index != NSNotFound)
                 {
-                    NSManagedObjectContext *icontext;
+                    if( context == nil)
+                    {
+                        if( [NSThread isMainThread])
+                            context = [[[BrowserController currentBrowser] database] managedObjectContext];
+                        else
+                            context = [[[BrowserController currentBrowser] database] independentContext];
+                    }
                     
-                    if( [NSThread isMainThread])
-                        icontext = [[[BrowserController currentBrowser] database] managedObjectContext];
-                    else
-                        icontext = [[[BrowserController currentBrowser] database] independentContext];
-                    
-                    DicomStudy *s = (DicomStudy*) [icontext existingObjectWithID:[studyArrayID objectAtIndex: index] error:NULL];
+                    DicomStudy *s = (DicomStudy*) [context existingObjectWithID:[studyArrayID objectAtIndex: index] error:NULL];
                     
                     if( s)
                         result = [NSArray arrayWithObject: s];
@@ -1752,7 +1765,7 @@ extern "C"
 			{
 				NSArray *studyArray;
 				
-				studyArray = [self localStudy: item];
+				studyArray = [self localStudy: item context: nil];
 				
 				if( [studyArray count] > 0)
 				{
@@ -1772,7 +1785,7 @@ extern "C"
 			{
 				NSArray *seriesArray;
 				
-				seriesArray = [self localSeries: item];
+				seriesArray = [self localSeries: item context: nil];
 				
 				if( [seriesArray count] > 0)
 				{
@@ -1838,7 +1851,7 @@ extern "C"
             
 			if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
 			{
-				NSArray	*studyArray = [self localStudy: item];
+				NSArray	*studyArray = [self localStudy: item context: nil];
 				
 				if( [studyArray count] > 0)
 				{
@@ -1857,7 +1870,7 @@ extern "C"
 			{
 				NSArray	*seriesArray;
 				
-				seriesArray = [self localSeries: item];
+				seriesArray = [self localSeries: item context: nil];
 				
 				if( [seriesArray count] > 0)
 				{
@@ -1899,7 +1912,7 @@ extern "C"
 		{
 			if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
 			{
-				NSArray *studyArray = [self localStudy: item];
+				NSArray *studyArray = [self localStudy: item context: nil];
 				
 				if( [studyArray count] > 0)
 				{
@@ -1911,7 +1924,7 @@ extern "C"
 			}
 			else if( [item isMemberOfClass:[DCMTKSeriesQueryNode class]])
 			{
-				NSArray *seriesArray = [self localSeries: item];
+				NSArray *seriesArray = [self localSeries: item context: nil];
 				if( [seriesArray count])
 				{
 					if( [[[seriesArray objectAtIndex: 0] valueForKey:@"stateText"] intValue] == 0)
@@ -1941,14 +1954,14 @@ extern "C"
 		{
 			if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
 			{
-				NSArray *studyArray = [self localStudy: item];
+				NSArray *studyArray = [self localStudy: item context: nil];
 				
 				if( [studyArray count] > 0)
 					return [[studyArray objectAtIndex: 0] valueForKey: @"comment"];
 			}
 			else if( [item isMemberOfClass:[DCMTKSeriesQueryNode class]])
 			{
-				NSArray *seriesArray = [self localSeries: item];
+				NSArray *seriesArray = [self localSeries: item context: nil];
 				if( [seriesArray count] > 0)
 					return [[seriesArray objectAtIndex: 0] valueForKey: @"comment"];
 			}
@@ -1998,9 +2011,9 @@ extern "C"
 //		if( [[tableColumn identifier] isEqualToString: @"comment"] || [[tableColumn identifier] isEqualToString: @"stateText"])
 //		{
 //			if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
-//				array = [self localStudy: item];
+//				array = [self localStudy: item context: nil];
 //			else
-//				array = [self localSeries: item];
+//				array = [self localSeries: item context: nil];
 //			
 //			if( [array count] > 0)
 //			{
@@ -2950,9 +2963,9 @@ extern "C"
 	return [NSString stringWithFormat:@"%@-%@-%@-%@-%@-%@", [item valueForKey:@"name"], [item valueForKey:@"patientID"], [item valueForKey:@"accessionNumber"], [item valueForKey:@"date"], [item valueForKey:@"time"], [item valueForKey:@"uid"]];
 }
 
-- (void) addStudyIfNotAvailable: (id) item toArray:(NSMutableArray*) selectedItems
+- (void) addStudyIfNotAvailable: (id) item toArray:(NSMutableArray*) selectedItems context: (NSManagedObjectContext*) context
 {
-	NSArray *studyArray = [self localStudy: item];
+	NSArray *studyArray = [self localStudy: item context: context];
 	
 	int localFiles = 0;
 	int totalFiles = [[item valueForKey:@"numberImages"] intValue];
@@ -3011,7 +3024,13 @@ extern "C"
 	@try 
 	{
 		NSMutableArray *selectedItems = [NSMutableArray array];
-		
+		NSManagedObjectContext *context = nil;
+        
+        if( [NSThread isMainThread])
+            context = [[[BrowserController currentBrowser] database] managedObjectContext];
+        else
+            context = [[[BrowserController currentBrowser] database] independentContext];
+        
 		for( id item in list)
 		{
             BOOL addItem = YES;
@@ -3061,7 +3080,7 @@ extern "C"
             
             if( addItem)
             {
-                [self addStudyIfNotAvailable: item toArray: selectedItems];
+                [self addStudyIfNotAvailable: item toArray: selectedItems context: context];
                 
                 if( [[NSUserDefaults standardUserDefaults] boolForKey: @"QR_DontReDownloadStudies"])
                 {
@@ -3079,6 +3098,12 @@ extern "C"
 		{
 			if( [[instance objectForKey:@"NumberOfPreviousStudyToRetrieve"] intValue])
 			{
+                NSManagedObjectContext *context = nil;
+                if( [NSThread isMainThread])
+                    context = [[[BrowserController currentBrowser] database] managedObjectContext];
+                else
+                    context = [[[BrowserController currentBrowser] database] independentContext];
+                
 				NSMutableArray *previousStudies = [NSMutableArray array];
 				for( id item in selectedItems)
 				{
@@ -3129,7 +3154,7 @@ extern "C"
 								
 								if( found)
 								{
-									[self addStudyIfNotAvailable: study toArray: previousStudies];
+									[self addStudyIfNotAvailable: study toArray: previousStudies context: context];
 									numberOfStudiesAssociated--;
 								}
 							}
@@ -3383,14 +3408,14 @@ extern "C"
 //					// Local Study
 //					if( [item isMemberOfClass: [DCMTKSeriesQueryNode class]])
 //					{
-//						array = [self localSeries: item];
+//						array = [self localSeries: item context: nil];
 //						
 //						if( [array count])
 //							localStudy = [[array lastObject] valueForKey: @"study"];
 //					}
 //					else
 //					{
-//						array = [self localStudy: item];
+//						array = [self localStudy: item context: nil];
 //						
 //						if( [array count])
 //							localStudy = [array lastObject];
@@ -3437,9 +3462,9 @@ extern "C"
 					NSArray *array = 0L;
 					
 					if( [item isMemberOfClass: [DCMTKSeriesQueryNode class]])
-						array = [self localSeries: item];
+						array = [self localSeries: item context: nil];
 					else
-						array = [self localStudy: item];
+						array = [self localStudy: item context: nil];
 					
 					if( [array count])
 						localNumber = [[[array objectAtIndex: 0] valueForKey: @"rawNoFiles"] intValue];
