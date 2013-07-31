@@ -568,8 +568,22 @@
 }
 
 -(void)_onMainThreadOpenObjectsWithIDs:(NSArray*)objectIDs { // actually, only the first element is opened...
-    [NSApp activateIgnoringOtherApps:YES];
-    for (NSManagedObject* obj in [self.database objectsWithIDs:objectIDs]) {
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"bringOsiriXToFrontAfterReceivingMessage"])
+        [NSApp activateIgnoringOtherApps:YES];
+    
+    NSMutableArray *objectIDsMutable = [NSMutableArray arrayWithArray: objectIDs];
+    
+    //Remove already displayed studies
+    for( ViewerController *v in [ViewerController get2DViewers])
+    {
+        if( [objectIDs containsObject: [v.currentStudy objectID]])
+        {
+            [objectIDsMutable removeObject: [v.currentStudy objectID]];
+            [v.window makeKeyAndOrderFront: self];
+        }
+    }
+    
+    for (NSManagedObject* obj in [self.database objectsWithIDs: objectIDsMutable]) {
         DicomStudy* study = [self studyForObject:obj];
         if ([study.imageSeries count]) {
 			[[BrowserController currentBrowser] displayStudy:study object:obj command:@"Open"];
@@ -579,8 +593,23 @@
 }
 
 -(void)_onMainThreadSelectObjectsWithIDs:(NSArray*)objectIDs { // actually, only the first element is opened...
-    [NSApp activateIgnoringOtherApps:YES];
-    for (NSManagedObject* obj in [self.database objectsWithIDs:objectIDs]) {
+    
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"bringOsiriXToFrontAfterReceivingMessage"])
+        [NSApp activateIgnoringOtherApps:YES];
+    
+    NSMutableArray *objectIDsMutable = [NSMutableArray arrayWithArray: objectIDs];
+    
+    //Remove already displayed studies
+    for( ViewerController *v in [ViewerController get2DViewers])
+    {
+        if( [objectIDs containsObject: [v.currentStudy objectID]])
+        {
+            [objectIDsMutable removeObject: [v.currentStudy objectID]];
+            [v.window makeKeyAndOrderFront: self];
+        }
+    }
+    
+    for (NSManagedObject* obj in [self.database objectsWithIDs: objectIDsMutable]) {
         DicomStudy* study = [self studyForObject:obj];
         if ([study.imageSeries count]) {
 			[[BrowserController currentBrowser] displayStudy:study object:obj command:@"Select"];
