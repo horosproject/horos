@@ -353,8 +353,8 @@
 {
 	NSMutableDictionary *protocol = [NSMutableDictionary dictionary];
     [protocol setObject: [NSString stringWithFormat: @"%@ %d", NSLocalizedString( @"Character String", nil), (int) [[hangingProtocols objectForKey:modalityForHangingProtocols] count]] forKey:@"Study Description"];
-    [protocol setObject: [NSNumber numberWithInt:1] forKey:@"WindowsTiling"];
-	[protocol setObject: [NSNumber numberWithInt:1] forKey:@"ImageTiling"];
+    [protocol setObject: [NSNumber numberWithInt:0] forKey:@"WindowsTiling"];
+	[protocol setObject: [NSNumber numberWithInt:0] forKey:@"ImageTiling"];
     [protocol setObject: [NSNumber numberWithInt:0] forKey:@"WL"]; // Default WL/WW
     [protocol setObject: [NSNumber numberWithInt:0] forKey:@"WW"];
     [protocol setObject: [NSNumber numberWithInt:100] forKey:@"WLWW"];
