@@ -96,7 +96,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
     
     if( [xid hasPrefix: @"POD:"]) // PACS On Demand object
     {
-         NSArray* axid = [xid componentsSeparatedByString:@":"];
+        NSArray* axid = [xid componentsSeparatedByString:@":"];
         
         if (axid.count == 5)
         {
@@ -144,7 +144,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
                     
                     NSArray *studyArray = nil;
                     NSTimeInterval dateStart = [NSDate timeIntervalSinceReferenceDate];
-                    
+                    NSUInteger lastNumberOfImages = 0, currentNumberOfImages = 0;
                     do
                     {
                         [NSThread sleepForTimeInterval: 1];
@@ -156,7 +156,6 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
                         NSFetchRequest *r = [NSFetchRequest fetchRequestWithEntityName: @"Study"];
                         [r setPredicate: [NSPredicate predicateWithFormat: @"(studyInstanceUID == %@)", [axid objectAtIndex: 4]]];
                         
-                        
                         @try
                         {
                             studyArray = [db.managedObjectContext executeFetchRequest: r error: nil];
@@ -164,9 +163,17 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
                         @catch (NSException *e) { N2LogExceptionWithStackTrace(e);}
                         
                         if( [studyArray count] > 0)
-                            return [studyArray lastObject];
+                        {
+                            DicomStudy *s = [studyArray lastObject];
+                            lastNumberOfImages = s.images.count;
+                            
+                            o = s = [studyArray lastObject];
+                            
+                            currentNumberOfImages = s.images.count;
+                        }
                         
-                    } while( [studyArray count] == 0 && [NSDate timeIntervalSinceReferenceDate] - dateStart > 20);
+                    }
+                    while( [studyArray count] == 0 && [NSDate timeIntervalSinceReferenceDate] - dateStart > 20 && lastNumberOfImages != currentNumberOfImages);
                 }
             }
         }
@@ -190,7 +197,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
         
         o = [db objectWithID:[NSManagedObject UidForXid:xid]];
     }
-
+    
     // ensure that the user is allowed to access this object
     if (user && ([o isKindOfClass: [DicomStudy class]] || [o isKindOfClass: [DicomSeries class]])) // Too slow to check for DicomImage
     {
@@ -236,11 +243,23 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
             {
                 [QueryController retrieveStudies: [NSArray arrayWithObject: distantStudy] showErrors: NO checkForPreviousAutoRetrieve: YES];
                 
-                [NSThread sleepForTimeInterval: 0.2];
-                [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
-                [NSThread sleepForTimeInterval: 1];
-                
-                [o.managedObjectContext refreshObject: o mergeChanges: NO];
+                NSTimeInterval dateStart = [NSDate timeIntervalSinceReferenceDate];
+                NSUInteger lastNumberOfImages = 0, currentNumberOfImages = 0;
+                do
+                {
+                    DicomStudy *s = (DicomStudy*) o;
+                    
+                    lastNumberOfImages = s.images.count;
+                    
+                    [NSThread sleepForTimeInterval: 1];
+                    [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
+                    [NSThread sleepForTimeInterval: 3];
+                    
+                    [s.managedObjectContext refreshObject: s mergeChanges: NO];
+                    
+                    currentNumberOfImages = s.images.count;
+                }
+                while( [NSDate timeIntervalSinceReferenceDate] - dateStart > 20 && lastNumberOfImages != currentNumberOfImages);
             }
         }
     }
@@ -380,7 +399,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
         {
             *title = NSLocalizedString(@"Study List", @"Web portal, study list, title");
             //browsePredicate = [NSPredicate predicateWithValue:YES];
-        }	
+        }
         
         result = [WebPortalUser studiesForUser: user predicate:browsePredicate sortBy: nil fetchLimit: 0 fetchOffset: 0 numberOfStudies: nil]; // Sort and FetchLimit is applied AFTER PACS On Demand
         
@@ -501,7 +520,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 		[NSThread detachNewThreadSelector:@selector(sendImagesToDicomNodeThread:) toTarget:self withObject:todo];
 	} @catch (NSException* e) {
 		NSLog( @"Error: [WebPortalConnection sendImages:toDicomNode:] %@", e);
-	}	
+	}
 }
 
 - (void)sendImagesToDicomNodeThread:(NSDictionary*)todo;
@@ -509,12 +528,12 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	
 	@try {
-		[[[[DCMTKStoreSCU alloc] initWithCallingAET:[NSUserDefaults defaultAETitle] 
-										  calledAET:[todo objectForKey:@"AETitle"] 
-										   hostname:[todo objectForKey:@"Address"] 
-											   port:[[todo objectForKey:@"Port"] intValue] 
+		[[[[DCMTKStoreSCU alloc] initWithCallingAET:[NSUserDefaults defaultAETitle]
+										  calledAET:[todo objectForKey:@"AETitle"]
+										   hostname:[todo objectForKey:@"Address"]
+											   port:[[todo objectForKey:@"Port"] intValue]
 										filesToSend:[todo valueForKey: @"Files"]
-									 transferSyntax:[[todo objectForKey:@"TransferSyntax"] intValue] 
+									 transferSyntax:[[todo objectForKey:@"TransferSyntax"] intValue]
 										compression:1.0
 									extraParameters:[NSDictionary dictionaryWithObject:self.portal.dicomDatabase.independentDatabase forKey:@"DicomDatabase"]] autorelease] run: nil];
 	} @catch (NSException* e) {
@@ -595,7 +614,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 		
 		DicomImage *im = [dicomImageArray objectAtIndex: x];
 		
-		@try 
+		@try
 		{
 			DCMPix* dcmPix = [[DCMPix alloc] initWithPath:im.completePathResolved :0 :1 :nil :im.frameID.intValue :im.series.id.intValue isBonjour:NO imageObj:im];
 			
@@ -648,7 +667,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 			
 			[dcmPix release];
 		}
-		@catch (NSException * e) 
+		@catch (NSException * e)
 		{
             N2LogExceptionWithStackTrace(e);
 		}
@@ -701,7 +720,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		if (![self.portal.locks objectForKey:outFile])
 			[self.portal.locks setObject:[[[NSRecursiveLock alloc] init] autorelease] forKey:outFile];
 	}
-		
+    
 	[[self.portal.locks objectForKey:outFile] lock];
 	
 	@try
@@ -714,13 +733,13 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                 noOfThreads = 12;
             
 			NSRange range = NSMakeRange( 0, 1+ ([dicomImageArray count] / noOfThreads));
-						
+            
 			if( DCMPixLoadingLock == nil)
 				DCMPixLoadingLock = [[NSRecursiveLock alloc] init];
 			
 			[DCMPixLoadingLock lock];
 			
-//			[self.portal.dicomDatabase lock];
+            //			[self.portal.dicomDatabase lock];
 			
 			NSLog( @"generateMovie: start dcmpix reading");
 			
@@ -739,7 +758,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			
             NSInteger fps = 0;
             
-			@try 
+			@try
 			{
 				DCMPixLoadingThreads = 0;
 				for( int i = 0 ; i < noOfThreads; i++)
@@ -771,12 +790,12 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 				while( DCMPixLoadingThreads > 0)
 					[NSThread sleepForTimeInterval: 0.1];
 			}
-			@catch (NSException * e) 
+			@catch (NSException * e)
 			{
                 N2LogExceptionWithStackTrace(e);
 			}
 			
-//			[self.portal.dicomDatabase unlock];
+            //			[self.portal.dicomDatabase unlock];
 			
 			[DCMPixLoadingLock unlock];
             
@@ -870,10 +889,10 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                                 CVPixelBufferRef buffer = nil;
                                 
                                 {
-                                NSImage *im = [[NSImage alloc] initWithContentsOfFile: [root stringByAppendingPathComponent: file]];
-                                if( im)
-                                   buffer = [QuicktimeExport CVPixelBufferFromNSImage: im];
-                                [im release];
+                                    NSImage *im = [[NSImage alloc] initWithContentsOfFile: [root stringByAppendingPathComponent: file]];
+                                    if( im)
+                                        buffer = [QuicktimeExport CVPixelBufferFromNSImage: im];
+                                    [im release];
                                 }
                                 
                                 [pool release];
@@ -975,12 +994,12 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			
 			NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: /*[NSNumber numberWithBool: isiPhone], @"isiPhone", */fileURL, @"fileURL", fileName, @"fileName", outFile, @"outFile", parameters, @"parameters", dicomImageArray, @"dicomImageArray", nil];
 			
-//			[self.portal.dicomDatabase unlock];	
+            //			[self.portal.dicomDatabase unlock];
 			
 			[self generateMovie: dict];
 			
-//			[self.portal.dicomDatabase lock];	
-
+            //			[self.portal.dicomDatabase lock];
+            
 			
 			data = [NSData dataWithContentsOfFile: outFile];
 		}
@@ -1003,10 +1022,10 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 }
 
 -(void)processMainHtml {
-//	if (!user || user.uploadDICOM.boolValue)
-//		[self resetPOST];
+    //	if (!user || user.uploadDICOM.boolValue)
+    //		[self resetPOST];
 	
-//    [self.independentDicomDatabase.managedObjectContext reset]; //We want fresh data : from the persistentstore
+    //    [self.independentDicomDatabase.managedObjectContext reset]; //We want fresh data : from the persistentstore
     
 	NSMutableArray* albums = [NSMutableArray array];
 	for (DicomAlbum* album in self.independentDicomDatabase.albums)
@@ -1097,7 +1116,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
         if( !studyLink)
         {
             studyLink = [NSEntityDescription insertNewObjectForEntityForName: @"RecentStudy" inManagedObjectContext: user.managedObjectContext];
-        
+            
             studyLink.studyInstanceUID = [[[study valueForKey: @"studyInstanceUID"] copy] autorelease];
             studyLink.user = user;
         }
@@ -1284,18 +1303,18 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		for (DicomSeries* s in study.imageSeries)
 			[seriesArray addObject:[WebPortalProxy createWithObject:s transformer:[DicomSeriesTransformer create]]];
 		[response.tokens setObject:seriesArray forKey:@"Series"];
-			
+        
 		// DICOM destinations
-
+        
 		NSMutableArray* dicomDestinations = [NSMutableArray array];
 		if (!user || user.sendDICOMtoSelfIP.boolValue) {
-				[dicomDestinations addObject:[NSDictionary dictionaryWithObjectsAndKeys:
-											  [asyncSocket connectedHost], @"address",
-											  self.dicomCStorePortString, @"port",
-											  @"This Computer", @"aeTitle",
-											  @"1", @"syntax", // 1 == JPEG2000 Lossless
-											  self.requestIsIOS? @"This Device" : [NSString stringWithFormat:@"This Computer [%@:%@]", [asyncSocket connectedHost], self.dicomCStorePortString], @"description",
-											  NULL]];
+            [dicomDestinations addObject:[NSDictionary dictionaryWithObjectsAndKeys:
+                                          [asyncSocket connectedHost], @"address",
+                                          self.dicomCStorePortString, @"port",
+                                          @"This Computer", @"aeTitle",
+                                          @"1", @"syntax", // 1 == JPEG2000 Lossless
+                                          self.requestIsIOS? @"This Device" : [NSString stringWithFormat:@"This Computer [%@:%@]", [asyncSocket connectedHost], self.dicomCStorePortString], @"description",
+                                          NULL]];
 			if (!user || user.sendDICOMtoAnyNodes.boolValue)
 				for (NSDictionary* node in [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO])
 					[dicomDestinations addObject:[NSDictionary dictionaryWithObjectsAndKeys:
@@ -1321,11 +1340,11 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 					[shareDestinations addObject:[WebPortalProxy createWithObject:u transformer:[WebPortalUserTransformer create]]];
 		}
 		[response.tokens setObject:shareDestinations forKey:@"ShareDestinations"];
-
+        
 	} @catch (NSException* e) {
 		NSLog(@"Error: [WebPortalResponse processStudyHtml:] %@", e);
 	}
-		
+    
 	response.templateString = [self.portal stringForPath:@"study.html"];
 	response.mimeType = @"text/html";
 }
@@ -1363,7 +1382,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
     }
     
     NSString* title = NULL;
-	[response.tokens setObject:[self studyList_requestedStudies:&title] forKey:@"Studies"];	
+	[response.tokens setObject:[self studyList_requestedStudies:&title] forKey:@"Studies"];
 	if (title) [response.tokens setObject:title forKey:@"PageTitle"];
 	response.templateString = [self.portal stringForPath:@"studyList.html"];
 	response.mimeType = @"text/html";
@@ -1537,12 +1556,12 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                 {
 					// We can update the user password
 					
-//					if( [previouspassword isEqualToString: @"public"] && [self.user.name isEqualToString:@"public"])
-//					{
-//						// public / public demo account not editable
-//						[response.tokens addMessage:NSLocalizedString(@"Public account not editable!", nil)];
-//					}
-//					else
+                    //					if( [previouspassword isEqualToString: @"public"] && [self.user.name isEqualToString:@"public"])
+                    //					{
+                    //						// public / public demo account not editable
+                    //						[response.tokens addMessage:NSLocalizedString(@"Public account not editable!", nil)];
+                    //					}
+                    //					else
 					{
 						user.password = password;
                         
@@ -1609,7 +1628,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		[self.portal updateLogEntryForStudy:NULL withMessage:@"Attempt to access admin area without being an admin" forUser:user.name ip:asyncSocket.connectedHost];
 		return;
 	}
-
+    
 	NSObject* luser = NULL;
 	BOOL userRecycleParams = NO;
 	NSString* action = [parameters objectForKey:@"action"];
@@ -1767,7 +1786,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 -(void)processStudyListJson {
 	NSArray* studies = [self studyList_requestedStudies:NULL];
 	
-//	[self.portal.dicomDatabase.managedObjectContext lock];
+    //	[self.portal.dicomDatabase.managedObjectContext lock];
 	@try {
 		NSMutableArray* r = [NSMutableArray array];
 		for (DicomStudy* study in studies) {
@@ -1783,9 +1802,9 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			if (stateText.intValue)
 				stateText = [BrowserController.statesArray objectAtIndex:stateText.intValue];
 			[s setObject:N2NonNullString(stateText) forKey:@"stateText"];
-
+            
 			[s setObject:N2NonNullString(study.studyInstanceUID) forKey:@"studyInstanceUID"];
-
+            
 			[r addObject:s];
 		}
 		
@@ -1793,7 +1812,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	} @catch (NSException* e) {
 		NSLog(@"Error: [WebPortalResponse processStudyListJson:] %@", e);
 	} @finally {
-//		[self.portal.dicomDatabase.managedObjectContext unlock];
+        //		[self.portal.dicomDatabase.managedObjectContext unlock];
 	}
 }
 
@@ -1801,7 +1820,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	DicomSeries* series = [self objectWithXID:[parameters objectForKey:@"xid"]];
 	if (!series)
 		return;
-
+    
 	NSArray* imagesArray = series.images.allObjects;
 	@try { // Sort images with "instanceNumber"
 		NSSortDescriptor *sort = [[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES];
@@ -1811,7 +1830,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	} @catch (NSException* e) { /* ignore */ }
 	
 	
-//	[self.portal.dicomDatabase.managedObjectContext lock];
+    //	[self.portal.dicomDatabase.managedObjectContext lock];
 	@try {
 		NSMutableArray* jsonImagesArray = [NSMutableArray array];
 		for (DicomImage* image in imagesArray)
@@ -1822,7 +1841,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	@catch (NSException *e) {
 		NSLog( @"***** jsonImageListForImages exception: %@", e);
 	} @finally {
-//		[self.portal.dicomDatabase.managedObjectContext unlock];
+        //		[self.portal.dicomDatabase.managedObjectContext unlock];
 	}
 }
 
@@ -1853,7 +1872,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	
 	NSMutableArray *jsonSeriesArray = [NSMutableArray array];
 	
-//	[self.portal.dicomDatabase.managedObjectContext lock];
+    //	[self.portal.dicomDatabase.managedObjectContext lock];
 	@try {
 		for (DicomSeries* s in [study imageSeries]) {
 			NSMutableDictionary* seriesDictionary = [NSMutableDictionary dictionary];
@@ -1871,7 +1890,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	} @catch (NSException *e) {
 		NSLog( @"******* jsonSeriesListForSeries exception: %@", e);
 	} @finally {
-//		[self.portal.dicomDatabase.managedObjectContext unlock];
+        //		[self.portal.dicomDatabase.managedObjectContext unlock];
 	}
 	
 	[response setDataWithString:[jsonSeriesArray JSONRepresentation]];
@@ -2004,7 +2023,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			[NSFileManager.defaultManager confirmDirectoryAtPath:srcFolder];
 			
 			[BrowserController encryptFiles: [allImages valueForKey:@"completePath"] inZIPFile:destFile password: user.encryptedZIP.boolValue? user.password : NULL ];
-
+            
 			self.response.data = [NSData dataWithContentsOfFile:destFile];
 			self.response.statusCode = 0;
 			[self.response setMimeType: @"application/osirixzip"];
@@ -2160,11 +2179,11 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 					else // Explicit VR Little Endian
 						ts = [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax];
 					
-					#ifdef OSIRIX_LIGHT
+#ifdef OSIRIX_LIGHT
 					response.data = [NSData dataWithContentsOfFile: cachedPathForSOPInstanceUID];
-					#else
+#else
 					response.data = [[BrowserController currentBrowser] getDICOMFile:cachedPathForSOPInstanceUID inSyntax: ts.transferSyntax quality: imageQuality];
-					#endif
+#endif
 				}
 				//err = NO;
 			}
@@ -2332,7 +2351,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		
 		if (!self.response.data)
 			self.response.data = [NSData data];
-
+        
 	}
     @catch (NSException * e)
     {
@@ -2360,7 +2379,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	}
 	
 	// find requested core data objects
-
+    
 	NSMutableArray* requestedStudies = [NSMutableArray arrayWithCapacity:8];
 	NSMutableArray* requestedSeries = [NSMutableArray arrayWithCapacity:64];
 	
@@ -2450,7 +2469,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
             NSMutableDictionary *series = nil;
             
             if( [dcmFile elementForKey: @"patientID"] && [patientDictionary objectForKey: [dcmFile elementForKey: @"patientID"]] == nil)
-               [patientDictionary setObject: [NSMutableDictionary dictionary] forKey: [dcmFile elementForKey: @"patientID"]];
+                [patientDictionary setObject: [NSMutableDictionary dictionary] forKey: [dcmFile elementForKey: @"patientID"]];
             
             patient = [patientDictionary objectForKey: [dcmFile elementForKey: @"patientID"]];
             
@@ -2477,7 +2496,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	NSDateFormatter* dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
 	dateFormatter.dateFormat = @"yyyyMMdd";
 	NSDateFormatter* timeFormatter = [[[NSDateFormatter alloc] init] autorelease];
-	timeFormatter.dateFormat = @"HHmmss";	
+	timeFormatter.dateFormat = @"HHmmss";
 	
 	for (NSString* patientId in [patientDictionary allKeys])
     {
@@ -2536,7 +2555,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	}
 	
 	[response setDataWithString:[[doc autorelease] XMLString]];
-	response.mimeType = @"text/xml";	
+	response.mimeType = @"text/xml";
 }
 
 #pragma mark Other
@@ -2556,35 +2575,35 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
     
     [[NSFileManager defaultManager] removeFileAtPath: tmpFile handler:nil];
     
-//	NSString *reportType = [reportFilePath pathExtension];
-//	
-//	if ([reportType isEqualToString: @"pages"])
-//	{
-//		NSString* zipFileName = [NSString stringWithFormat:@"%@.zip", [reportFilePath lastPathComponent]];
-//		// zip the directory into a single archive file
-//		NSTask *zipTask   = [[NSTask alloc] init];
-//		[zipTask setLaunchPath:@"/usr/bin/zip"];
-//		[zipTask setCurrentDirectoryPath:[[reportFilePath stringByDeletingLastPathComponent] stringByAppendingString:@"/"]];
-//		if ([reportType isEqualToString:@"pages"])
-//			[zipTask setArguments:[NSArray arrayWithObjects: @"-q", @"-r" , zipFileName, [reportFilePath lastPathComponent], nil]];
-//		else
-//			[zipTask setArguments:[NSArray arrayWithObjects: zipFileName, [reportFilePath lastPathComponent], nil]];
-//		[zipTask launch];
-//		while( [zipTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
-//		int result = [zipTask terminationStatus];
-//		[zipTask release];
-//		
-//		if (result==0)
-//			reportFilePath = [[reportFilePath stringByDeletingLastPathComponent] stringByAppendingPathComponent:zipFileName];
-//		
-//		response.data = [NSData dataWithContentsOfFile: reportFilePath];
-//		
-//		[[NSFileManager defaultManager] removeFileAtPath:reportFilePath handler:nil];
-//	}
-//	else
-//	{
-//		response.data = [NSData dataWithContentsOfFile: reportFilePath];
-//	}
+    //	NSString *reportType = [reportFilePath pathExtension];
+    //
+    //	if ([reportType isEqualToString: @"pages"])
+    //	{
+    //		NSString* zipFileName = [NSString stringWithFormat:@"%@.zip", [reportFilePath lastPathComponent]];
+    //		// zip the directory into a single archive file
+    //		NSTask *zipTask   = [[NSTask alloc] init];
+    //		[zipTask setLaunchPath:@"/usr/bin/zip"];
+    //		[zipTask setCurrentDirectoryPath:[[reportFilePath stringByDeletingLastPathComponent] stringByAppendingString:@"/"]];
+    //		if ([reportType isEqualToString:@"pages"])
+    //			[zipTask setArguments:[NSArray arrayWithObjects: @"-q", @"-r" , zipFileName, [reportFilePath lastPathComponent], nil]];
+    //		else
+    //			[zipTask setArguments:[NSArray arrayWithObjects: zipFileName, [reportFilePath lastPathComponent], nil]];
+    //		[zipTask launch];
+    //		while( [zipTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
+    //		int result = [zipTask terminationStatus];
+    //		[zipTask release];
+    //
+    //		if (result==0)
+    //			reportFilePath = [[reportFilePath stringByDeletingLastPathComponent] stringByAppendingPathComponent:zipFileName];
+    //
+    //		response.data = [NSData dataWithContentsOfFile: reportFilePath];
+    //
+    //		[[NSFileManager defaultManager] removeFileAtPath:reportFilePath handler:nil];
+    //	}
+    //	else
+    //	{
+    //		response.data = [NSData dataWithContentsOfFile: reportFilePath];
+    //	}
 }
 
 -(NSMutableDictionary*)thumbnailsCache {
@@ -2595,7 +2614,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
         NSMutableDictionary* dict = [self.portal.cache objectForKey:ThumbsCacheKey];
         if (!dict || ![dict isKindOfClass:[NSMutableDictionary class]])
             [self.portal.cache setObject: dict = [NSMutableDictionary dictionary] forKey:ThumbsCacheKey];
-    
+        
         return dict;
     }
     
@@ -2638,7 +2657,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
     {
         if (data)
         {
-            #define MAX_ThumbnailsCacheSize 400
+#define MAX_ThumbnailsCacheSize 400
             
             if( [self.thumbnailsCache count] > MAX_ThumbnailsCacheSize)
                 [self.thumbnailsCache removeAllObjects];
@@ -2649,7 +2668,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 }
 
 -(void)processSeriesPdf {
-	#ifndef OSIRIX_LIGHT
+#ifndef OSIRIX_LIGHT
 	DicomSeries* series = [self objectWithXID:[parameters objectForKey:@"xid"]];
 	if (!series)
 		return;
@@ -2668,7 +2687,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			NSTask* aTask = [[[NSTask alloc] init] autorelease];
 			[aTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"dicom.dic"] forKey:@"DCMDICTPATH"]];
 			[aTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"dsr2html"]];
-			[aTask setArguments:[NSArray arrayWithObjects: @"+X1", @"--unknown-relationship", @"--ignore-constraints", @"--ignore-item-errors", @"--skip-invalid-items", [series.images.anyObject valueForKey:@"completePath"], htmlpath, nil]];		
+			[aTask setArguments:[NSArray arrayWithObjects: @"+X1", @"--unknown-relationship", @"--ignore-constraints", @"--ignore-item-errors", @"--skip-invalid-items", [series.images.anyObject valueForKey:@"completePath"], htmlpath, nil]];
 			[aTask launch];
 			while( [aTask isRunning])
                 [NSThread sleepForTimeInterval: 0.1];
@@ -2681,7 +2700,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		if ([[NSFileManager defaultManager] fileExistsAtPath:pdfpath] == NO) {
 			NSTask* aTask = [[[NSTask alloc] init] autorelease];
 			[aTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Decompress"]];
-			[aTask setArguments:[NSArray arrayWithObjects:htmlpath, @"pdfFromURL", nil]];		
+			[aTask setArguments:[NSArray arrayWithObjects:htmlpath, @"pdfFromURL", nil]];
 			[aTask launch];
             NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
 			while( [aTask isRunning] && [NSDate timeIntervalSinceReferenceDate] - start < 10)
@@ -2692,14 +2711,14 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		
 		response.data = [NSData dataWithContentsOfFile:pdfpath];
 	}
-	#endif
+#endif
 }
 
 
 -(void)processZip {
 	NSMutableArray* images = [NSMutableArray array];
 	DicomStudy* study = nil;
-
+    
 	NSManagedObject* o = [self objectWithXID:[parameters objectForKey:@"xid"]];
 	if ([o isKindOfClass:[DicomStudy class]]) {
 		study = (DicomStudy*)o;
@@ -2712,11 +2731,11 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	
 	if (!images.count)
 		return;
-		
+    
 	if (user.encryptedZIP.boolValue)
 		[self.portal updateLogEntryForStudy:study withMessage:@"Download encrypted DICOM ZIP" forUser:self.user.name ip:asyncSocket.connectedHost];
 	else [self.portal updateLogEntryForStudy:study withMessage:@"Download DICOM ZIP" forUser:self.user.name ip:asyncSocket.connectedHost];
-		
+    
 	@try
 	{
 		NSString *srcFolder = @"/tmp";
@@ -2736,10 +2755,10 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		
 		[NSFileManager.defaultManager confirmDirectoryAtPath:srcFolder];
 		
-//		[self.portal.dicomDatabase.managedObjectContext unlock];
+        //		[self.portal.dicomDatabase.managedObjectContext unlock];
 		[BrowserController encryptFiles:[images valueForKey:@"completePath"] inZIPFile:destFile password: user.encryptedZIP.boolValue? user.password : NULL ];
-//		[self.portal.dicomDatabase.managedObjectContext lock];
-
+        //		[self.portal.dicomDatabase.managedObjectContext lock];
+        
 		response.data = [NSData dataWithContentsOfFile:destFile];
 		
 		if (srcFolder)
