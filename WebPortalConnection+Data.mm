@@ -147,6 +147,12 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
                     NSUInteger lastNumberOfImages = 0, currentNumberOfImages = 0;
                     do
                     {
+                        if( [studyArray count] > 0)
+                        {
+                            DicomStudy *s = [studyArray lastObject];
+                            lastNumberOfImages = s.images.count;
+                        }
+                        
                         [NSThread sleepForTimeInterval: 1];
                         [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
                         [NSThread sleepForTimeInterval: 1];
@@ -165,7 +171,6 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
                         if( [studyArray count] > 0)
                         {
                             DicomStudy *s = [studyArray lastObject];
-                            lastNumberOfImages = s.images.count;
                             o = s = [studyArray lastObject];
                             currentNumberOfImages = s.images.count;
                         }
