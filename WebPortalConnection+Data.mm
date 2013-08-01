@@ -254,7 +254,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
                     
                     currentNumberOfImages = s.images.count;
                 }
-                while( [NSDate timeIntervalSinceReferenceDate] - dateStart < 20 || lastNumberOfImages != currentNumberOfImages);
+                while( [NSDate timeIntervalSinceReferenceDate] - dateStart < 10 && lastNumberOfImages != currentNumberOfImages);
             }
         }
     }

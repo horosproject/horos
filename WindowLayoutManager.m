@@ -165,7 +165,10 @@ static WindowLayoutManager *sharedLayoutManager = nil;
 
 - (void) setCurrentHangingProtocolForModality: (NSString *) modalities description: (NSString *) description
 {
-    self.currentHangingProtocol = [WindowLayoutManager hangingProtocolForModality: modalities description: description];
+    if( modalities == nil)
+        self.currentHangingProtocol = nil;
+    else
+        self.currentHangingProtocol = [WindowLayoutManager hangingProtocolForModality: modalities description: description];
 }
 
 - (void) dealloc

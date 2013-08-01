@@ -2818,6 +2818,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[AppController setUSETOOLBARPANEL: NO];
 		for( int i = 0; i < [[NSScreen screens] count]; i++)
 			[[toolbarPanel[ i] window] orderOut:self];
+        
+        [[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality: nil description: nil];
 	}
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
