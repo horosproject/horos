@@ -149,7 +149,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
                     {
                         [NSThread sleepForTimeInterval: 1];
                         [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
-                        [NSThread sleepForTimeInterval: 3];
+                        [NSThread sleepForTimeInterval: 1];
                         
                         // And find the study locally
                         N2ManagedDatabase* db = self.independentDicomDatabase;
@@ -166,14 +166,11 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
                         {
                             DicomStudy *s = [studyArray lastObject];
                             lastNumberOfImages = s.images.count;
-                            
                             o = s = [studyArray lastObject];
-                            
                             currentNumberOfImages = s.images.count;
                         }
-                        
                     }
-                    while( [studyArray count] == 0 && [NSDate timeIntervalSinceReferenceDate] - dateStart > 20 && lastNumberOfImages != currentNumberOfImages);
+                    while( ([studyArray count] == 0 || lastNumberOfImages != currentNumberOfImages) && [NSDate timeIntervalSinceReferenceDate] - dateStart < 20);
                 }
             }
         }
@@ -253,13 +250,13 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
                     
                     [NSThread sleepForTimeInterval: 1];
                     [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
-                    [NSThread sleepForTimeInterval: 3];
+                    [NSThread sleepForTimeInterval: 1];
                     
                     [s.managedObjectContext refreshObject: s mergeChanges: NO];
                     
                     currentNumberOfImages = s.images.count;
                 }
-                while( [NSDate timeIntervalSinceReferenceDate] - dateStart > 20 && lastNumberOfImages != currentNumberOfImages);
+                while( [NSDate timeIntervalSinceReferenceDate] - dateStart < 20 || lastNumberOfImages != currentNumberOfImages);
             }
         }
     }
