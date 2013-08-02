@@ -4209,18 +4209,20 @@ static NSConditionLock *threadLock = nil;
     [pool release];
 }
 
-- (void) searchForComparativeStudies: (id) studySelectedID
+- (NSArray*) subSearchForComparativeStudies: (id) studySelectedID
 {
-    if( self.database == nil)
-        return;
-    
-    NSAutoreleasePool *pool = [NSAutoreleasePool new];
-    
     @try
     {
+        NSMutableArray *mergedStudies = nil;
+        
         //[NSNotificationCenter.defaultCenter postNotificationOnMainThreadName:O2SearchForComparativeStudiesStartedNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys: studySelectedID, @"study", nil]];
         
-        DicomDatabase *idatabase = [self.database independentDatabase];
+        DicomDatabase *idatabase = nil;
+        if( [NSThread isMainThread])
+            idatabase = self.database;
+        else
+            idatabase = [self.database independentDatabase];
+        
         DicomStudy *studySelected = nil;
         
         if( [studySelectedID isKindOfClass: [NSManagedObjectID class]])
@@ -4229,15 +4231,12 @@ static NSConditionLock *threadLock = nil;
             studySelected = studySelectedID; //DCMTKStudyQueryNode
         
         if( studySelected.patientUID.length == 0)
-            return;
+            return nil;
         
         [NSThread currentThread].name = @"Search For Comparative Studies";
         
         if( self.comparativePatientUID && [self.comparativePatientUID compare: studySelected.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame) // There was maybe other locks in the queue... Keep only the displayed patientUID
         {
-//            NSLog( @"Search history: %@", studySelected.patientUID);
-            NSMutableArray *mergedStudies = nil;
-            
             lastRefreshComparativeStudies = [NSDate timeIntervalSinceReferenceDate];
             
             @try
@@ -4311,7 +4310,7 @@ static NSConditionLock *threadLock = nil;
                             if( servers.count)
                             {
                                 // Distant studies
-                                #ifndef OSIRIX_LIGHT
+#ifndef OSIRIX_LIGHT
                                 distantStudies = [QueryController queryStudiesForPatient: studySelected usePatientID: usePatientID usePatientName: usePatientName usePatientBirthDate: usePatientBirthDate servers: servers showErrors: NO];
                                 
                                 // Merge local and distant studies
@@ -4354,7 +4353,7 @@ static NSConditionLock *threadLock = nil;
                                     t.supportsCancel = YES;
                                     [[ThreadsManager defaultManager] addThreadAndStart: t];
                                 }
-                                #endif
+#endif
                             }
                             
                             [mergedStudies sortUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: NO]]];
@@ -4379,13 +4378,24 @@ static NSConditionLock *threadLock = nil;
                 [searchForComparativeStudiesLock unlock];
             }
         }
+        
+        return mergedStudies;
     }
     @catch (NSException *e) {
         N2LogException( e);
     }
-    @finally {
-        [pool release];
-    }
+}
+
+- (void) searchForComparativeStudies: (id) studySelectedID
+{
+    if( self.database == nil)
+        return;
+    
+    NSAutoreleasePool *pool = [NSAutoreleasePool new];
+    
+    [self subSearchForComparativeStudies: studySelectedID];
+    
+    [pool release];
 }
 
 - (IBAction) refreshPACSOnDemandResults:(id) sender
@@ -6874,7 +6884,7 @@ static NSConditionLock *threadLock = nil;
                     
                     //PreviousStudySameModality , PreviousStudySameDescription
                     
-                    for( id s in [NSArray arrayWithArray: self.comparativeStudies])
+                    for( id s in [NSArray arrayWithArray: [self subSearchForComparativeStudies: currentStudy]])
                     {
                         id comparativeStudy = nil;
                         
@@ -6978,7 +6988,7 @@ static NSConditionLock *threadLock = nil;
                         }
                     }
     #define TIMEOUT 30
-                    while ( distantStudies && [NSDate timeIntervalSinceReferenceDate] - timeout < TIMEOUT);
+                    while( distantStudies && [NSDate timeIntervalSinceReferenceDate] - timeout < TIMEOUT);
                     
                     [w close];
     #endif
@@ -12047,7 +12057,9 @@ static BOOL needToRezoom;
 		NSManagedObject		*selectedLine = [selectedLines objectAtIndex: 0];
 		NSInteger			row, column;
 		NSMutableArray		*selectedFilesList;
-		NSArray				*loadList, *cells = [oMatrix selectedCells];
+		NSArray				*loadList;
+			
+		NSArray				*cells = [oMatrix selectedCells];
 		
 		if( [cells count] == 0 && [[oMatrix cells] count] > 0)
 		{
@@ -12169,10 +12181,6 @@ static BOOL needToRezoom;
 			else
 				[[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];
 		}
-        
-        //Select first series
-        if( [[ViewerController getDisplayed2DViewers] count])
-            [[[[ViewerController getDisplayed2DViewers] objectAtIndex: 0] window] makeKeyAndOrderFront: self];
 	}
 	@catch (NSException *e)
 	{
