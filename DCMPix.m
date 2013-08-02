@@ -5294,6 +5294,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		[positionerSecondaryAngle release];
 		positionerSecondaryAngle = [[dcmObject attributeValueWithName:@"PositionerSecondaryAngle"] retain];
 	}
+    if( [dcmObject attributeValueWithName:@"EstimatedRadiographicMagnificationFactor"])
+		estimatedRadiographicMagnificationFactor = [[dcmObject attributeValueWithName:@"EstimatedRadiographicMagnificationFactor"] doubleValue];
 	if( [dcmObject attributeValueWithName:@"PatientPosition"])
 	{
 		[patientPosition release];
@@ -5883,6 +5885,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	{
 		pixelSpacingX = 0;
 		pixelSpacingY = 0;
+        estimatedRadiographicMagnificationFactor = 0;
 		offset = 0.0;
 		slope = 1.0;
         
@@ -6591,8 +6594,17 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 		if( pixelSpacingX < 0) pixelSpacingX = -pixelSpacingX;
 		if( pixelSpacingY < 0) pixelSpacingY = -pixelSpacingY;
-		if( pixelSpacingY != 0 && pixelSpacingX != 0) pixelRatio = pixelSpacingY / pixelSpacingX;
-		
+		if( pixelSpacingY != 0 && pixelSpacingX != 0)
+		{
+            if( estimatedRadiographicMagnificationFactor)
+            {
+                pixelSpacingX /= estimatedRadiographicMagnificationFactor;
+                pixelSpacingY /= estimatedRadiographicMagnificationFactor;
+            }
+            
+            pixelRatio = pixelSpacingY / pixelSpacingX;
+        }
+        
 		#ifdef OSIRIX_VIEWER
 			[self loadCustomImageAnnotationsPapyLink:-1 DCMLink:dcmObject];
 		#endif
@@ -6904,6 +6916,10 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		positionerSecondaryAngle = [[NSNumber numberWithDouble: atof( val->a)] retain];
 	}
 	
+    val = Papy3GetElement (theGroupP, papEstimatedRadiographicMagnificationFactorGr, &nbVal, &elemType);
+	if ( val && val->a && validAPointer( elemType))
+		estimatedRadiographicMagnificationFactor = atof( val->a);
+    
 	val = Papy3GetElement (theGroupP, papPatientPositionGr, &nbVal, &elemType);
 	if ( val && val->a && validAPointer( elemType))
 	{
@@ -7859,6 +7875,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			
 			pixelSpacingX = 0;
 			pixelSpacingY = 0;
+            estimatedRadiographicMagnificationFactor = 0;
 			
 			offset = 0.0;
 			slope = 1.0;
@@ -9565,8 +9582,17 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				
 				if( pixelSpacingX < 0) pixelSpacingX = -pixelSpacingX;
 				if( pixelSpacingY < 0) pixelSpacingY = -pixelSpacingY;
-				if( pixelSpacingY != 0 && pixelSpacingX != 0) pixelRatio = pixelSpacingY / pixelSpacingX;
-				
+				if( pixelSpacingY != 0 && pixelSpacingX != 0)
+                {
+                    if( estimatedRadiographicMagnificationFactor)
+                    {
+                        pixelSpacingX /= estimatedRadiographicMagnificationFactor;
+                        pixelSpacingY /= estimatedRadiographicMagnificationFactor;
+                    }
+                    
+                    pixelRatio = pixelSpacingY / pixelSpacingX;
+				}
+                
 				if( err >= 0)
 					returnValue = YES;
 			}
