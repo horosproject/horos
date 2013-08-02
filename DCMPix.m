@@ -3757,8 +3757,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					
 					switch( [axisNumberString intValue])
 				{
-					case 2: pixelSpacingX = [pixelSpacingString floatValue];  		break;
-					case 3: pixelSpacingY = [pixelSpacingString floatValue];  		break;
+					case 2: pixelSpacingX = [pixelSpacingString doubleValue];  		break;
+					case 3: pixelSpacingY = [pixelSpacingString doubleValue];  		break;
 					case 4: sliceInterval = sliceThickness = [pixelSpacingString floatValue];
 						sliceLocation = frameNo * sliceInterval;		break;
 				}
@@ -5262,8 +5262,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 {
 	if( [dcmObject attributeValueWithName:@"PatientsWeight"]) patientsWeight = [[dcmObject attributeValueWithName:@"PatientsWeight"] floatValue];
 	
-	if( [dcmObject attributeValueWithName:@"SliceThickness"]) sliceThickness = [[dcmObject attributeValueWithName:@"SliceThickness"] floatValue];
-	if( [dcmObject attributeValueWithName:@"SpacingBetweenSlices"]) spacingBetweenSlices = [[dcmObject attributeValueWithName:@"SpacingBetweenSlices"] floatValue];
+	if( [dcmObject attributeValueWithName:@"SliceThickness"]) sliceThickness = [[dcmObject attributeValueWithName:@"SliceThickness"] doubleValue];
+	if( [dcmObject attributeValueWithName:@"SpacingBetweenSlices"]) spacingBetweenSlices = [[dcmObject attributeValueWithName:@"SpacingBetweenSlices"] doubleValue];
 	if( [dcmObject attributeValueWithName:@"RepetitionTime"])
 	{
 		[repetitiontime release];
@@ -5380,9 +5380,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	NSArray *ipp = [dcmObject attributeArrayWithName:@"ImagePositionPatient"];
 	if( ipp)
 	{
-		originX = [[ipp objectAtIndex:0] floatValue];
-		originY = [[ipp objectAtIndex:1] floatValue];
-		originZ = [[ipp objectAtIndex:2] floatValue];
+		originX = [[ipp objectAtIndex:0] doubleValue];
+		originY = [[ipp objectAtIndex:1] doubleValue];
+		originZ = [[ipp objectAtIndex:2] doubleValue];
 		isOriginDefined = YES;
 	}
     else
@@ -5390,9 +5390,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         NSArray *ipv = [dcmObject attributeArrayWithName:@"ImagePositionVolume"];
         if( ipv)
         {
-            originX = [[ipv objectAtIndex:0] floatValue];
-            originY = [[ipv objectAtIndex:1] floatValue];
-            originZ = [[ipv objectAtIndex:2] floatValue];
+            originX = [[ipv objectAtIndex:0] doubleValue];
+            originY = [[ipv objectAtIndex:1] doubleValue];
+            originZ = [[ipv objectAtIndex:2] doubleValue];
             isOriginDefined = YES;
         }
     }
@@ -5402,7 +5402,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	if( iop)
 	{
 		for ( int j = 0; j < iop.count; j++) 
-			orientation[ j ] = [[iop objectAtIndex:j] floatValue];
+			orientation[ j ] = [[iop objectAtIndex:j] doubleValue];
 	}
     else
     {
@@ -5410,7 +5410,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         if( iov)
         {
             for ( int j = 0; j < iov.count; j++)
-                orientation[ j ] = [[iov objectAtIndex:j] floatValue];
+                orientation[ j ] = [[iov objectAtIndex:j] doubleValue];
         }
 	}
     
@@ -5511,26 +5511,26 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		NSArray *pixelSpacing = [dcmObject attributeArrayWithName:@"PixelSpacing"];
 		if(pixelSpacing.count >= 2)
 		{
-			pixelSpacingY = [[pixelSpacing objectAtIndex:0] floatValue];
-			pixelSpacingX = [[pixelSpacing objectAtIndex:1] floatValue];
+			pixelSpacingY = [[pixelSpacing objectAtIndex:0] doubleValue];
+			pixelSpacingX = [[pixelSpacing objectAtIndex:1] doubleValue];
 		}
 		else if(pixelSpacing.count >= 1)
 		{ 
-			pixelSpacingY = [[pixelSpacing objectAtIndex:0] floatValue];
-			pixelSpacingX = [[pixelSpacing objectAtIndex:0] floatValue];
+			pixelSpacingY = [[pixelSpacing objectAtIndex:0] doubleValue];
+			pixelSpacingX = [[pixelSpacing objectAtIndex:0] doubleValue];
 		}
 		else
 		{
 			NSArray *pixelSpacing = [dcmObject attributeArrayWithName:@"ImagerPixelSpacing"];
 			if(pixelSpacing.count >= 2)
 			{
-				pixelSpacingY = [[pixelSpacing objectAtIndex:0] floatValue];
-				pixelSpacingX = [[pixelSpacing objectAtIndex:1] floatValue];
+				pixelSpacingY = [[pixelSpacing objectAtIndex:0] doubleValue];
+				pixelSpacingX = [[pixelSpacing objectAtIndex:1] doubleValue];
 			}
 			else if(pixelSpacing.count >= 1)
 			{
-				pixelSpacingY = [[pixelSpacing objectAtIndex:0] floatValue];
-				pixelSpacingX = [[pixelSpacing objectAtIndex:0] floatValue];
+				pixelSpacingY = [[pixelSpacing objectAtIndex:0] doubleValue];
+				pixelSpacingX = [[pixelSpacing objectAtIndex:0] doubleValue];
 			}
 		}
 	}
@@ -5624,9 +5624,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		NSArray *par = [dcmObject attributeArrayWithName:@"PixelAspectRatio"];
 		if ( par.count >= 2)
 		{
-			float ratiox = 1, ratioy = 1;
-			ratiox = [[par objectAtIndex:0] floatValue];
-			ratioy = [[par objectAtIndex:1] floatValue];
+			double ratiox = 1, ratioy = 1;
+			ratiox = [[par objectAtIndex:0] doubleValue];
+			ratioy = [[par objectAtIndex:1] doubleValue];
 			
 			if( ratioy != 0)
 			{
@@ -6146,9 +6146,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			NSArray *ipp = [detectorInformation attributeArrayWithName:@"ImagePositionPatient"];
 			if( ipp)
 			{
-				originX = [[ipp objectAtIndex:0] floatValue];
-				originY = [[ipp objectAtIndex:1] floatValue];
-				originZ = [[ipp objectAtIndex:2] floatValue];
+				originX = [[ipp objectAtIndex:0] doubleValue];
+				originY = [[ipp objectAtIndex:1] doubleValue];
+				originZ = [[ipp objectAtIndex:2] doubleValue];
 				isOriginDefined = YES;
 			}
 			
@@ -6172,7 +6172,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				if( equalZero == NO)
 				{
 					for ( int j = 0; j < iop.count; j++) 
-						orientation[ j ] = [[iop objectAtIndex:j] floatValue];
+						orientation[ j ] = [[iop objectAtIndex:j] doubleValue];
 				}
 				else // doesnt the root Image Orientation contains valid data? if not use the normal vector
 				{
@@ -6233,7 +6233,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			{  // Set Z value for each frame
 				NSArray *gridFrameOffsetArray = [dcmObject attributeArrayWithName: @"GridFrameOffsetVector"];  //List of Z values
                 
-				originZ += [[gridFrameOffsetArray objectAtIndex: imageNb] floatValue];
+				originZ += [[gridFrameOffsetArray objectAtIndex: imageNb] doubleValue];
 				
                 [self computeSliceLocation];
 			}
