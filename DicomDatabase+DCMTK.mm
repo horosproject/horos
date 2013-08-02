@@ -147,11 +147,14 @@
 				[theTask setArguments:[[NSArray arrayWithObjects: dest, @"compress", nil] arrayByAddingObjectsFromArray: subArray]];
 				[theTask launch];
                 
+                NSTimeInterval timeout = TIMEOUT * subArray.count;
+                if( timeout < 600)
+                    timeout = 600;
                 NSTimeInterval taskStart = [NSDate timeIntervalSinceReferenceDate];
 				while( [theTask isRunning])
                 {
                     [NSThread sleepForTimeInterval: 0.1];
-                    if( [NSDate timeIntervalSinceReferenceDate] - taskStart > TIMEOUT * subArray.count)
+                    if( [NSDate timeIntervalSinceReferenceDate] - taskStart > timeout)
                         break;
                 }
                 
@@ -324,11 +327,14 @@
 				[theTask setArguments:[[NSArray arrayWithObjects: dest, @"decompressList", nil] arrayByAddingObjectsFromArray: subArray]];
 				[theTask launch];
 				
+                NSTimeInterval timeout = TIMEOUT * subArray.count;
+                if( timeout < 600)
+                    timeout = 600;
                 NSTimeInterval taskStart = [NSDate timeIntervalSinceReferenceDate];
 				while( [theTask isRunning])
                 {
                     [NSThread sleepForTimeInterval: 0.1];
-                    if( [NSDate timeIntervalSinceReferenceDate] - taskStart > TIMEOUT * subArray.count)
+                    if( [NSDate timeIntervalSinceReferenceDate] - taskStart > timeout)
                         break;
                 }
                 
