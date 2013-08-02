@@ -12048,7 +12048,7 @@ static BOOL needToRezoom;
 		NSInteger			row, column;
 		NSMutableArray		*selectedFilesList;
 		NSArray				*loadList;
-			
+        NSMutableArray      *viewers = [NSMutableArray array];
 		NSArray				*cells = [oMatrix selectedCells];
 		
 		if( [cells count] == 0 && [[oMatrix cells] count] > 0)
@@ -12171,6 +12171,10 @@ static BOOL needToRezoom;
 			else
 				[[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];
 		}
+        
+        //Select first series
+        if( [[ViewerController getDisplayed2DViewers] count])
+            [[[[ViewerController getDisplayed2DViewers] objectAtIndex: 0] window] makeKeyAndOrderFront: self];
 	}
 	@catch (NSException *e)
 	{
