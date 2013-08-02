@@ -342,6 +342,9 @@ extern "C"
             if( [filters valueForKey: @"AccessionNumber"])
                 [f setObject: [filters valueForKey: @"AccessionNumber"] forKey: @"AccessionNumber"];
             
+            if( [filters valueForKey: @"accessionNumber"])
+                [f setObject: [filters valueForKey: @"accessionNumber"] forKey: @"AccessionNumber"];
+            
             if( [filters valueForKey: @"StudyDescription"])
                 [f setObject: [filters valueForKey: @"StudyDescription"] forKey: @"StudyDescription"];
             
@@ -351,14 +354,26 @@ extern "C"
             if( [filters valueForKey: @"StudyID"])
                 [f setObject: [filters valueForKey: @"StudyID"] forKey: @"StudyID"];
             
+            if( [filters valueForKey: @"studyID"])
+                [f setObject: [filters valueForKey: @"studyID"] forKey: @"StudyID"];
+            
             if( [filters valueForKey: @"StudyInstanceUID"])
                 [f setObject: [filters valueForKey: @"StudyInstanceUID"] forKey: @"StudyInstanceUID"];
+            
+            if( [filters valueForKey: @"studyInstanceUID"])
+                [f setObject: [filters valueForKey: @"studyInstanceUID"] forKey: @"StudyInstanceUID"];
             
             if( [filters valueForKey: PatientName])
                 [f setObject: [filters valueForKey: PatientName] forKey: PatientName];
             
+            if( [filters valueForKey: @"patientName"])
+                [f setObject: [filters valueForKey: @"patientName"] forKey: PatientName];
+            
             if( [filters valueForKey: PatientID])
                 [f setObject: [filters valueForKey: PatientID] forKey: PatientID];
+            
+            if( [filters valueForKey: @"patientID"])
+                [f setObject: [filters valueForKey: @"patientID"] forKey: PatientID];
             
             if( [filters valueForKey: PatientBirthDate])
                 [f setObject: [DCMCalendarDate queryDate: [[filters valueForKey: PatientBirthDate] descriptionWithCalendarFormat:@"%Y%m%d" timeZone: nil locale:nil]] forKey: PatientBirthDate];

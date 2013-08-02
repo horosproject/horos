@@ -229,13 +229,16 @@
                     NSPredicate* predicate = nil;
                     if (seriesUID)
                         predicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@ AND ANY series.seriesDICOMUID == %@", studyUID, seriesUID];
-                    else predicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", studyUID];
+                    else
+                        predicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", studyUID];
                     
                     NSTimeInterval startTime = [NSDate timeIntervalSinceReferenceDate];
-                    do {
+                    do
+                    {
                         NSArray* istudies = [[self.database independentDatabase] objectsForEntity:@"Study" predicate:predicate error:NULL];
                         DicomStudy* istudy = [istudies lastObject];
-                        if ([istudy.studyInstanceUID isEqualToString:studyUID]) {
+                        if ([istudy.studyInstanceUID isEqualToString:studyUID])
+                        {
                             DicomSeries* iseries = nil;
                             if (seriesUID)
                                 for (DicomSeries* is in istudy.series)
@@ -249,7 +252,8 @@
                         }
                         
                         [NSThread sleepForTimeInterval: 2];
-                    } while ([NSDate timeIntervalSinceReferenceDate] - startTime < 30 && [[NSThread currentThread] isCancelled] == NO); // try for 30 seconds
+                    }
+                    while ([NSDate timeIntervalSinceReferenceDate] - startTime < 30 && [[NSThread currentThread] isCancelled] == NO); // try for 30 seconds
                 }
             }
         }
@@ -260,9 +264,11 @@
     }
 }
 
-
-- (void)_PACSOnDemandRetrieve:(NSDictionary*)keys open:(NSPredicate*)predicate {
-    [NSThread performBlockInBackground:^{
+- (void) _PACSOnDemandRetrieve:(NSDictionary*)keys
+{
+    @autoreleasepool
+    {
+        NSArray *iobjects = nil;
         NSMutableArray* dicomNodes = [NSMutableArray array];
         NSArray* allDicomNodes = [DCMNetServiceDelegate DICOMServersList];
         for (NSDictionary* si in [NSUserDefaults.standardUserDefaults arrayForKey:@"comparativeSearchDICOMNodes"])
@@ -274,85 +280,10 @@
                     [dicomNodes addObject:di];
                 }
         
-        NSThread* thread = [NSThread currentThread];
-        thread.name = NSLocalizedString(@"Retrieving requested study...", nil);
-        thread.status = (dicomNodes.count == 1)? NSLocalizedString(@"Querying distant server...", nil) : NSLocalizedString(@"Querying distant servers...", nil);
-        [ThreadsManager.defaultManager addThreadAndStart:thread];
+            NSArray *studies = [QueryController queryStudiesForFilters: keys servers: dicomNodes showErrors: NO];
         
-        DcmDataset slDataset;
-        slDataset.putAndInsertString(DCM_QueryRetrieveLevel, "STUDY");
-        slDataset.insertEmptyElement(DCM_StudyInstanceUID);
-        
-        NSString* table = @"Study";
-        
-        for (NSString* key in keys) {
-            NSString* value = [keys objectForKey:key];
-            if (![value isKindOfClass:[NSString class]])
-                value = [(id)value stringValue];
-            
-            NSString* k = [[key componentsSeparatedByString:@"."] lastObject];
-            
-            if ([k isEqualToString:@"QueryRetrieveLevel"]) {
-                slDataset.putAndInsertString(DCM_QueryRetrieveLevel, value.UTF8String);
-                if ([value isEqualToString:@"STUDY"])
-                    table = @"Study";
-                if ([value isEqualToString:@"SERIES"])
-                    table = @"Series";
-                if ([value isEqualToString:@"IMAGE"])
-                    table = @"Image";
-            }
-            else if ([k isEqualToString:@"studyInstanceUID"])
-                slDataset.putAndInsertString(DCM_StudyInstanceUID, value.UTF8String);
-            else if ([k isEqualToString:@"seriesInstanceUID"])
-                slDataset.putAndInsertString(DCM_SeriesInstanceUID, value.UTF8String);
-            else if ([k isEqualToString:@"patientID"])
-                slDataset.putAndInsertString(DCM_PatientID, value.UTF8String);
-            else if ([k isEqualToString:@"accessionNumber"])
-                slDataset.putAndInsertString(DCM_AccessionNumber, value.UTF8String);
-        }
-        
-//        slDataset.print(std::cout);
-        
-        for (NSDictionary* dn in dicomNodes) {
-            DCMTKRootQueryNode* qn = [DCMTKRootQueryNode queryNodeWithDataset:&slDataset
-                                                                   callingAET:[NSUserDefaults.standardUserDefaults stringForKey:@"AETITLE"]
-                                                                    calledAET:[dn objectForKey:@"AETitle"]
-                                                                     hostname:[dn objectForKey:@"Address"]
-                                                                         port:[[dn objectForKey:@"Port"] intValue]
-                                                               transferSyntax:[[dn objectForKey:@"TransferSyntax"] intValue]
-                                                                  compression:0
-                                                              extraParameters:dn];
-            [qn setShowErrorMessage:NO];
-            
-            [qn setupNetworkWithSyntax:UID_FINDStudyRootQueryRetrieveInformationModel dataset:&slDataset destination:nil];
-            
-            if (qn.children.count) {
-                NSMutableDictionary* params = [[dn mutableCopy] autorelease];
-                [params setObject:[NSUserDefaults.standardUserDefaults stringForKey:@"AETITLE"] forKey:@"moveDestination"];
-                
-                [NSThread performBlockInBackground:^{
-                    NSDate* date = [NSDate date];
-                    const NSTimeInterval maxWaitSeconds = 60;
-                    DicomDatabase* idatabase = [self.database independentDatabase];
-                    while (-[date timeIntervalSinceNow] < maxWaitSeconds) {
-                        NSArray* iobjects = [idatabase objectsForEntity:table predicate:predicate error:NULL];
-                        if (iobjects.count) {
-                            [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjectsWithIDs:) withObject:[iobjects valueForKey:@"objectID"] waitUntilDone:NO];
-                            break;
-                        }
-                        
-                        [NSThread sleepForTimeInterval:0.1];
-                    }
-                    
-                }];
-                
-                thread.status = NSLocalizedString(@"Retrieving...", nil);
-                
-                for (DCMTKStudyQueryNode* sqn in qn.children)
-                    [sqn move:params retrieveMode:[[dn objectForKey:@"retrieveMode"] intValue]];
-            }
-        }
-    }];
+            [QueryController retrieveStudies: studies showErrors:NO];
+    }
 }
 
 /**
@@ -388,19 +319,39 @@
     
     NSArray* iobjects = [[self.database independentDatabase] objectsForEntity:@"Study" predicate:predicate error:error];
     
-//  if (!iobjects.count) // do this anyway, to complete the study if something is amiss
-    if ([NSUserDefaults.standardUserDefaults boolForKey:@"XMLRPCWithPOD"] && [NSUserDefaults.standardUserDefaults boolForKey:@"searchForComparativeStudiesOnDICOMNodes"]) {
-        NSMutableDictionary* keys = [NSMutableDictionary dictionary];
-        
-        if (patientID.length)
-            [keys setObject:patientID forKey:@"patientID"];
-        if (studyInstanceUID.length)
-            [keys setObject:studyInstanceUID forKey:@"studyInstanceUID"];
-        if (accessionNumber.length)
-            [keys setObject:accessionNumber forKey:@"accessionNumber"];
-
-        if (keys.count)
-            [self _PACSOnDemandRetrieve:keys open:predicate];
+    if (!iobjects.count)
+    {
+        if ([NSUserDefaults.standardUserDefaults boolForKey:@"XMLRPCWithPOD"] && [NSUserDefaults.standardUserDefaults boolForKey:@"searchForComparativeStudiesOnDICOMNodes"]) {
+            NSMutableDictionary* keys = [NSMutableDictionary dictionary];
+            
+            if (patientID.length)
+                [keys setObject:patientID forKey:@"PatientID"];
+            if (studyInstanceUID.length)
+                [keys setObject:studyInstanceUID forKey:@"StudyInstanceUID"];
+            if (accessionNumber.length)
+                [keys setObject:accessionNumber forKey:@"AccessionNumber"];
+            
+            if (keys.count)
+            {
+                [NSThread detachNewThreadSelector: @selector( _PACSOnDemandRetrieve:) toTarget: self withObject: keys];
+                
+                NSTimeInterval dateStart = [NSDate timeIntervalSinceReferenceDate];
+                do
+                {
+                    [NSThread sleepForTimeInterval: 1];
+                    [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
+                    [NSThread sleepForTimeInterval: 1];
+                    
+                    // And find the study locally
+                    iobjects = [[self.database independentDatabase] objectsForEntity:@"Study" predicate:predicate error:error];
+                    
+                    DicomStudy *s = [iobjects lastObject];
+                    if( s.imageSeries.count == 0)
+                        iobjects = nil;
+                }
+                while( [iobjects count] == 0 && [NSDate timeIntervalSinceReferenceDate] - dateStart < 20);
+            }
+        }
     }
     
     if (error && *error)
@@ -445,20 +396,23 @@
     
     NSArray* iobjects = [[self.database independentDatabase] objectsForEntity:@"Series" predicate:predicate error:error];
     
-//  if (!iobjects.count) // do this anyway, to complete the study if something is amiss
-    if ([NSUserDefaults.standardUserDefaults boolForKey:@"XMLRPCWithPOD"] && [NSUserDefaults.standardUserDefaults boolForKey:@"searchForComparativeStudiesOnDICOMNodes"]) {
-        NSMutableDictionary* keys = [NSMutableDictionary dictionary];
-        
-        if (patientID.length)
-            [keys setObject:patientID forKey:@"study.patientID"];
-        if (seriesInstanceUID.length)
-            [keys setObject:seriesInstanceUID forKey:@"seriesInstanceUID"];
-        
-        if (keys.count) {
-            [keys setObject:@"SERIES" forKey:@"QueryRetrieveLevel"];
-            [self _PACSOnDemandRetrieve:keys open:predicate];
-        }
-    }
+// NOT SUPPORTED AT SERIES LEVEL
+//    if (!iobjects.count)
+//    {
+//        if ([NSUserDefaults.standardUserDefaults boolForKey:@"XMLRPCWithPOD"] && [NSUserDefaults.standardUserDefaults boolForKey:@"searchForComparativeStudiesOnDICOMNodes"]) {
+//            NSMutableDictionary* keys = [NSMutableDictionary dictionary];
+//            
+//            if (patientID.length)
+//                [keys setObject:patientID forKey:@"study.patientID"];
+//            if (seriesInstanceUID.length)
+//                [keys setObject:seriesInstanceUID forKey:@"seriesInstanceUID"];
+//            
+//            if (keys.count) {
+//                [keys setObject:@"SERIES" forKey:@"QueryRetrieveLevel"];
+//                iobjects = [self _PACSOnDemandRetrieve:keys];
+//            }
+//        }
+//    }
     
     if (error && *error)
         ReturnWithErrorValue((*error).code);
@@ -508,37 +462,48 @@
     
 //  NSLog(@"FindObject %@ ||| %@ ||| %@ ||| %d", entityName, request, command, (int)iobjects.count);
     
-//  if (!iobjects.count) // do this anyway, to complete the study if something is amiss
-    if ([command isEqualToString:@"Open"] && [NSUserDefaults.standardUserDefaults boolForKey:@"XMLRPCWithPOD"] && [NSUserDefaults.standardUserDefaults boolForKey:@"searchForComparativeStudiesOnDICOMNodes"]) {
-        NSMutableArray* predicates = [NSMutableArray array];
-        if ([predicate isKindOfClass:[NSComparisonPredicate class]])
-            [predicates addObject:predicate];
-        if ([predicate isKindOfClass:[NSCompoundPredicate class]] && [(id)predicate compoundPredicateType] == NSAndPredicateType)
-            for (id subpredicate in [(id)predicate subpredicates])
-                if ([subpredicate isKindOfClass:[NSComparisonPredicate class]])
-                    [predicates addObject:subpredicate];
+    if (!iobjects.count && [entityName isEqualToString: @"Study"])
+    {
+        if ([command isEqualToString:@"Open"] && [NSUserDefaults.standardUserDefaults boolForKey:@"XMLRPCWithPOD"] && [NSUserDefaults.standardUserDefaults boolForKey:@"searchForComparativeStudiesOnDICOMNodes"]) {
+            NSMutableArray* predicates = [NSMutableArray array];
+            if ([predicate isKindOfClass:[NSComparisonPredicate class]])
+                [predicates addObject:predicate];
+            if ([predicate isKindOfClass:[NSCompoundPredicate class]] && [(id)predicate compoundPredicateType] == NSAndPredicateType)
+                for (id subpredicate in [(id)predicate subpredicates])
+                    if ([subpredicate isKindOfClass:[NSComparisonPredicate class]])
+                        [predicates addObject:subpredicate];
 
-        NSMutableDictionary* keys = [NSMutableDictionary dictionary];
-        for (NSComparisonPredicate* p in predicates)
-            if (p.comparisonPredicateModifier == NSDirectPredicateModifier && p.predicateOperatorType == NSEqualToPredicateOperatorType) {
-                if (p.leftExpression.expressionType == NSKeyPathExpressionType && p.rightExpression.expressionType == NSConstantValueExpressionType)
-                    [keys setObject:p.rightExpression.constantValue forKey:p.leftExpression.keyPath];
-                else if (p.rightExpression.expressionType == NSKeyPathExpressionType && p.leftExpression.expressionType == NSConstantValueExpressionType)
-                    [keys setObject:p.leftExpression.constantValue forKey:p.rightExpression.keyPath];
+            NSMutableDictionary* keys = [NSMutableDictionary dictionary];
+            for (NSComparisonPredicate* p in predicates)
+                if (p.comparisonPredicateModifier == NSDirectPredicateModifier && p.predicateOperatorType == NSEqualToPredicateOperatorType) {
+                    if (p.leftExpression.expressionType == NSKeyPathExpressionType && p.rightExpression.expressionType == NSConstantValueExpressionType)
+                        [keys setObject:p.rightExpression.constantValue forKey:p.leftExpression.keyPath];
+                    else if (p.rightExpression.expressionType == NSKeyPathExpressionType && p.leftExpression.expressionType == NSConstantValueExpressionType)
+                        [keys setObject:p.leftExpression.constantValue forKey:p.rightExpression.keyPath];
+                }
+            
+            if (keys.count)
+            {
+                [NSThread detachNewThreadSelector: @selector( _PACSOnDemandRetrieve:) toTarget: self withObject: keys];
+                
+                NSTimeInterval dateStart = [NSDate timeIntervalSinceReferenceDate];
+                do
+                {
+                    [NSThread sleepForTimeInterval: 1];
+                    [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
+                    [NSThread sleepForTimeInterval: 1];
+                    
+                    // And find the study locally
+                    iobjects = [[self.database independentDatabase] objectsForEntity:@"Study" predicate:predicate error:error];
+                    
+                    DicomStudy *s = [iobjects lastObject];
+                    if( s.imageSeries.count == 0)
+                        iobjects = nil;
+                }
+                while( [iobjects count] == 0 && [NSDate timeIntervalSinceReferenceDate] - dateStart < 20);
             }
-        
-        if (keys.count) {
-            if ([entityName isEqual:@"Study"])
-                [keys setObject:@"STUDY" forKey:@"QueryRetrieveLevel"];
-            if ([entityName isEqual:@"Series"])
-                [keys setObject:@"SERIES" forKey:@"QueryRetrieveLevel"];
-            if ([entityName isEqual:@"Image"])
-                [keys setObject:@"IMAGE" forKey:@"QueryRetrieveLevel"];
-
-            [self _PACSOnDemandRetrieve:keys open:predicate];
         }
     }
-
     
     if (error && *error)
         ReturnWithErrorValue((*error).code);
