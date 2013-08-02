@@ -151,7 +151,7 @@ static BOOL protectedReentryWindowDidResize = NO;
 				e = [[NSApp windows] objectEnumerator];
 				while (window = [e nextObject])
 				{
-					if (window != theWindow && [window isVisible] && [[window windowController] isKindOfClass: [OSIWindowController class]])
+					if (window != theWindow && [window isVisible] && [[window windowController] isKindOfClass: [OSIWindowController class]] && [window.screen isEqualTo: theWindow.screen])
 					{
 						if( [[window windowController] magnetic])
 							[rects addObject: [NSValue valueWithRect: [window frame]]];
@@ -357,7 +357,7 @@ static BOOL protectedReentryWindowDidResize = NO;
 			e = [[NSApp windows] objectEnumerator];
 			while (window = [e nextObject])
 			{
-				if (window != theWindow && [window isVisible] && [[window windowController] isKindOfClass: [OSIWindowController class]])
+				if (window != theWindow && [window isVisible] && [[window windowController] isKindOfClass: [OSIWindowController class]] && [window.screen isEqualTo: theWindow.screen])
 				{
 					if( [[window windowController] magnetic])
 						[rects addObject: [NSValue valueWithRect: [window frame]]];
