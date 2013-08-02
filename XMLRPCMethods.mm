@@ -264,25 +264,11 @@
     }
 }
 
-- (void) _PACSOnDemandRetrieve:(NSDictionary*)keys
+- (void) _PACSOnDemandRetrieve:(NSArray*) studies
 {
     @autoreleasepool
     {
-        NSArray *iobjects = nil;
-        NSMutableArray* dicomNodes = [NSMutableArray array];
-        NSArray* allDicomNodes = [DCMNetServiceDelegate DICOMServersList];
-        for (NSDictionary* si in [NSUserDefaults.standardUserDefaults arrayForKey:@"comparativeSearchDICOMNodes"])
-            for (NSDictionary* di in allDicomNodes)
-                if ([[si objectForKey:@"AETitle"] isEqualToString:[di objectForKey:@"AETitle"]] &&
-                    [[si objectForKey:@"name"] isEqualToString:[di objectForKey:@"Description"]] &&
-                    [[si objectForKey:@"AddressAndPort"] isEqualToString:[NSString stringWithFormat:@"%@:%@", [di valueForKey:@"Address"], [di valueForKey:@"Port"]]])
-                {
-                    [dicomNodes addObject:di];
-                }
-        
-            NSArray *studies = [QueryController queryStudiesForFilters: keys servers: dicomNodes showErrors: NO];
-        
-            [QueryController retrieveStudies: studies showErrors:NO];
+        [QueryController retrieveStudies: studies showErrors:NO];
     }
 }
 
@@ -333,23 +319,39 @@
             
             if (keys.count)
             {
-                [NSThread detachNewThreadSelector: @selector( _PACSOnDemandRetrieve:) toTarget: self withObject: keys];
+                NSMutableArray* dicomNodes = [NSMutableArray array];
+                NSArray* allDicomNodes = [DCMNetServiceDelegate DICOMServersList];
+                for (NSDictionary* si in [NSUserDefaults.standardUserDefaults arrayForKey:@"comparativeSearchDICOMNodes"])
+                    for (NSDictionary* di in allDicomNodes)
+                        if ([[si objectForKey:@"AETitle"] isEqualToString:[di objectForKey:@"AETitle"]] &&
+                            [[si objectForKey:@"name"] isEqualToString:[di objectForKey:@"Description"]] &&
+                            [[si objectForKey:@"AddressAndPort"] isEqualToString:[NSString stringWithFormat:@"%@:%@", [di valueForKey:@"Address"], [di valueForKey:@"Port"]]])
+                        {
+                            [dicomNodes addObject:di];
+                        }
                 
-                NSTimeInterval dateStart = [NSDate timeIntervalSinceReferenceDate];
-                do
+                NSArray *studies = [QueryController queryStudiesForFilters: keys servers: dicomNodes showErrors: NO];
+                
+                if( studies.count)
                 {
-                    [NSThread sleepForTimeInterval: 1];
-                    [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
-                    [NSThread sleepForTimeInterval: 1];
+                    [NSThread detachNewThreadSelector: @selector( _PACSOnDemandRetrieve:) toTarget: self withObject: studies];
                     
-                    // And find the study locally
-                    iobjects = [[self.database independentDatabase] objectsForEntity:@"Study" predicate:predicate error:error];
-                    
-                    DicomStudy *s = [iobjects lastObject];
-                    if( s.imageSeries.count == 0)
-                        iobjects = nil;
+                    NSTimeInterval dateStart = [NSDate timeIntervalSinceReferenceDate];
+                    do
+                    {
+                        [NSThread sleepForTimeInterval: 1];
+                        [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
+                        [NSThread sleepForTimeInterval: 1];
+                        
+                        // And find the study locally
+                        iobjects = [[self.database independentDatabase] objectsForEntity:@"Study" predicate:predicate error:error];
+                        
+                        DicomStudy *s = [iobjects lastObject];
+                        if( s.imageSeries.count == 0)
+                            iobjects = nil;
+                    }
+                    while( [iobjects count] == 0 && [NSDate timeIntervalSinceReferenceDate] - dateStart < 20);
                 }
-                while( [iobjects count] == 0 && [NSDate timeIntervalSinceReferenceDate] - dateStart < 20);
             }
         }
     }
@@ -484,23 +486,39 @@
             
             if (keys.count)
             {
-                [NSThread detachNewThreadSelector: @selector( _PACSOnDemandRetrieve:) toTarget: self withObject: keys];
+                NSMutableArray* dicomNodes = [NSMutableArray array];
+                NSArray* allDicomNodes = [DCMNetServiceDelegate DICOMServersList];
+                for (NSDictionary* si in [NSUserDefaults.standardUserDefaults arrayForKey:@"comparativeSearchDICOMNodes"])
+                    for (NSDictionary* di in allDicomNodes)
+                        if ([[si objectForKey:@"AETitle"] isEqualToString:[di objectForKey:@"AETitle"]] &&
+                            [[si objectForKey:@"name"] isEqualToString:[di objectForKey:@"Description"]] &&
+                            [[si objectForKey:@"AddressAndPort"] isEqualToString:[NSString stringWithFormat:@"%@:%@", [di valueForKey:@"Address"], [di valueForKey:@"Port"]]])
+                        {
+                            [dicomNodes addObject:di];
+                        }
                 
-                NSTimeInterval dateStart = [NSDate timeIntervalSinceReferenceDate];
-                do
+                NSArray *studies = [QueryController queryStudiesForFilters: keys servers: dicomNodes showErrors: NO];
+                
+                if( studies.count)
                 {
-                    [NSThread sleepForTimeInterval: 1];
-                    [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
-                    [NSThread sleepForTimeInterval: 1];
+                    [NSThread detachNewThreadSelector: @selector( _PACSOnDemandRetrieve:) toTarget: self withObject: studies];
                     
-                    // And find the study locally
-                    iobjects = [[self.database independentDatabase] objectsForEntity:@"Study" predicate:predicate error:error];
-                    
-                    DicomStudy *s = [iobjects lastObject];
-                    if( s.imageSeries.count == 0)
-                        iobjects = nil;
+                    NSTimeInterval dateStart = [NSDate timeIntervalSinceReferenceDate];
+                    do
+                    {
+                        [NSThread sleepForTimeInterval: 1];
+                        [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
+                        [NSThread sleepForTimeInterval: 1];
+                        
+                        // And find the study locally
+                        iobjects = [[self.database independentDatabase] objectsForEntity:@"Study" predicate:predicate error:error];
+                        
+                        DicomStudy *s = [iobjects lastObject];
+                        if( s.imageSeries.count == 0)
+                            iobjects = nil;
+                    }
+                    while( [iobjects count] == 0 && [NSDate timeIntervalSinceReferenceDate] - dateStart < 20);
                 }
-                while( [iobjects count] == 0 && [NSDate timeIntervalSinceReferenceDate] - dateStart < 20);
             }
         }
     }
