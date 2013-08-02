@@ -45,7 +45,7 @@
 #include "dcdeftag.h"
 
 #define CHUNK_SUBPROCESS 200
-#define TIMEOUT 600UL
+#define TIMEOUT 20UL
 
 // Maximum of 200 files: no more than 10 min...
 
@@ -151,7 +151,7 @@
 				while( [theTask isRunning])
                 {
                     [NSThread sleepForTimeInterval: 0.1];
-                    if( [NSDate timeIntervalSinceReferenceDate] - taskStart > TIMEOUT)
+                    if( [NSDate timeIntervalSinceReferenceDate] - taskStart > TIMEOUT * subArray.count)
                         break;
                 }
                 
@@ -328,7 +328,7 @@
 				while( [theTask isRunning])
                 {
                     [NSThread sleepForTimeInterval: 0.1];
-                    if( [NSDate timeIntervalSinceReferenceDate] - taskStart > TIMEOUT)
+                    if( [NSDate timeIntervalSinceReferenceDate] - taskStart > TIMEOUT * subArray.count)
                         break;
                 }
                 

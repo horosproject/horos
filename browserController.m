@@ -12047,9 +12047,7 @@ static BOOL needToRezoom;
 		NSManagedObject		*selectedLine = [selectedLines objectAtIndex: 0];
 		NSInteger			row, column;
 		NSMutableArray		*selectedFilesList;
-		NSArray				*loadList;
-        NSMutableArray      *viewers = [NSMutableArray array];
-		NSArray				*cells = [oMatrix selectedCells];
+		NSArray				*loadList, *cells = [oMatrix selectedCells];
 		
 		if( [cells count] == 0 && [[oMatrix cells] count] > 0)
 		{
