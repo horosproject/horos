@@ -138,45 +138,44 @@
 
 +(void)transformReportAtPath:(NSString*)reportPath toPdfAtPath:(NSString*)outPdfPath
 {
-    if ([reportPath.pathExtension.lowercaseString isEqualToString:@"odt"]) {
+    if ([reportPath.pathExtension.lowercaseString isEqualToString:@"odt"])
+    {
         [[self class] _transformOdtAtPath:reportPath toPdfAtPath:outPdfPath];
     }
-    else
-        if ([reportPath.pathExtension.lowercaseString isEqualToString:@"rtf"] || [reportPath.pathExtension.lowercaseString isEqualToString:@"rtfd"]) {
-            int result = 0;
+    else  if ([reportPath.pathExtension.lowercaseString isEqualToString:@"rtf"] || [reportPath.pathExtension.lowercaseString isEqualToString:@"rtfd"])
+    {
+        int result = 0;
+        
+        if( [[NSFileManager defaultManager] fileExistsAtPath: @"/System/Library/Printers/Libraries/convert"]) // Not available anymore in 10.8
+            [N2Shell execute:@"/System/Library/Printers/Libraries/convert" arguments:[NSArray arrayWithObjects: @"-f", reportPath, @"-o", outPdfPath, nil] outStatus:&result];
+        else if( [[NSFileManager defaultManager] fileExistsAtPath: @"/usr/sbin/cupsfilter"])
+        {
+            [NSFileManager.defaultManager removeItemAtPath: outPdfPath error:nil];
+            [NSFileManager.defaultManager createFileAtPath: outPdfPath contents:[NSData data] attributes:nil];
             
-            if( [[NSFileManager defaultManager] fileExistsAtPath: @"/System/Library/Printers/Libraries/convert"]) // Not available anymore in 10.8
-                [N2Shell execute:@"/System/Library/Printers/Libraries/convert" arguments:[NSArray arrayWithObjects: @"-f", reportPath, @"-o", outPdfPath, nil] outStatus:&result];
-            else if( [[NSFileManager defaultManager] fileExistsAtPath: @"/usr/sbin/cupsfilter"])
-            {
-                [NSFileManager.defaultManager removeItemAtPath: outPdfPath error:nil];
-                [NSFileManager.defaultManager createFileAtPath: outPdfPath contents:[NSData data] attributes:nil];
-                
-                NSTask* task = [[[NSTask alloc] init] autorelease];
-                [task setLaunchPath: @"/usr/sbin/cupsfilter"];
-                [task setArguments: [NSArray arrayWithObjects: reportPath, nil]];
-                [task setStandardOutput:[NSFileHandle fileHandleForWritingAtPath: outPdfPath]];
-                [task setStandardError:[NSPipe pipe]];
-                
-                [task launch];
-                while( [task isRunning])
-                    [NSThread sleepForTimeInterval: 0.1];
-            }
-            else
-                NSLog( @"************* no converter tool available");
+            NSTask* task = [[[NSTask alloc] init] autorelease];
+            [task setLaunchPath: @"/usr/sbin/cupsfilter"];
+            [task setArguments: [NSArray arrayWithObjects: reportPath, nil]];
+            [task setStandardOutput:[NSFileHandle fileHandleForWritingAtPath: outPdfPath]];
+            [task setStandardError:[NSPipe pipe]];
+            
+            [task launch];
+            while( [task isRunning])
+                [NSThread sleepForTimeInterval: 0.1];
         }
         else
-            if ([reportPath.pathExtension.lowercaseString isEqualToString:@"pages"]) {
-                NSString* path = [[NSBundle mainBundle] pathForResource:@"pages2pdf" ofType:@"applescript"];
-                [[self class] _runAppleScriptAtPath:path withArguments:[NSArray arrayWithObjects: reportPath, outPdfPath, nil]];
-            }
-            else
-                if ([reportPath.pathExtension.lowercaseString isEqualToString:@"doc"] || [reportPath.pathExtension.lowercaseString isEqualToString:@"docx"]) {
-                    NSString* path = [[NSBundle mainBundle] pathForResource:@"word2pdf" ofType:@"applescript"];
-                    [[self class] _runAppleScriptAtPath:path withArguments:[NSArray arrayWithObjects: reportPath, outPdfPath, nil]];
-                }
-                else
-                    [NSException raise:NSGenericException format:@"Can't transform report to PDF: %@", reportPath];
+            NSLog( @"************* no converter tool available");
+    }
+    else if ([reportPath.pathExtension.lowercaseString isEqualToString:@"pages"]) {
+        NSString* path = [[NSBundle mainBundle] pathForResource:@"pages2pdf" ofType:@"applescript"];
+        [[self class] _runAppleScriptAtPath:path withArguments:[NSArray arrayWithObjects: reportPath, outPdfPath, nil]];
+    }
+    else if ([reportPath.pathExtension.lowercaseString isEqualToString:@"doc"] || [reportPath.pathExtension.lowercaseString isEqualToString:@"docx"]) {
+        NSString* path = [[NSBundle mainBundle] pathForResource:@"word2pdf" ofType:@"applescript"];
+        [[self class] _runAppleScriptAtPath:path withArguments:[NSArray arrayWithObjects: reportPath, outPdfPath, nil]];
+    }
+    else
+        [NSException raise:NSGenericException format:@"Can't transform report to PDF: %@", reportPath];
 }
 
 -(void)saveReportAsPdfAtPath:(NSString*)path
@@ -220,7 +219,7 @@
     
     DCMObject* output = [DCMObject encapsulatedPDF:[NSFileManager.defaultManager contentsAtPath:pdfPath]];
     
-    NSString *reportName = @"Report PDF";
+    NSString *reportName = NSLocalizedString( @"Report PDF", nil);
     
     if( [[NSUserDefaults standardUserDefaults] objectForKey: @"ReportName"])
         reportName = [[NSUserDefaults standardUserDefaults] objectForKey: @"ReportName"];

@@ -582,9 +582,8 @@ static NSRecursiveLock *dbModifyLock = nil;
 	#ifndef OSIRIX_LIGHT
 	if ([self.hasDICOM boolValue] == YES)
 	{
-		[self.managedObjectContext lock];
 		@try {
-            BOOL isMainDB = [self managedObjectContext] == BrowserController.currentBrowser.database.managedObjectContext;
+            BOOL isMainDB = self.managedObjectContext.persistentStoreCoordinator == BrowserController.currentBrowser.database.managedObjectContext.persistentStoreCoordinator;
 
 			NSManagedObject *archivedAnnotations = [self annotationsSRImage];
 			NSString *dstPath = [archivedAnnotations valueForKey: @"completePath"];
@@ -601,8 +600,14 @@ static NSRecursiveLock *dbModifyLock = nil;
 				SRAnnotation *r = [[[SRAnnotation alloc] initWithDictionary: annotationsDict path: dstPath forImage: [[[self.series anyObject] valueForKey:@"images"] anyObject]] autorelease];
 				[r writeToFileAtPath: dstPath];
 				
+                DicomDatabase *idb = nil;
+                if( [[NSThread currentThread] isMainThread])
+                    idb = BrowserController.currentBrowser.database;
+                else
+                    idb = [BrowserController.currentBrowser.database independentDatabase];
+                
                 if( isMainDB)
-                    [BrowserController.currentBrowser.database addFilesAtPaths: [NSArray arrayWithObject: dstPath]
+                    [idb addFilesAtPaths: [NSArray arrayWithObject: dstPath]
                                                                postNotifications: NO
                                                                        dicomOnly: YES
                                                              rereadExistingItems: YES
@@ -619,7 +624,6 @@ static NSRecursiveLock *dbModifyLock = nil;
             N2LogExceptionWithStackTrace(e);
 		}
         @finally {
-            [self.managedObjectContext unlock];
         }
 	}
 	#endif
@@ -646,7 +650,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 		[self.managedObjectContext lock];
 		@try
 		{
-            BOOL isMainDB = [self managedObjectContext] == BrowserController.currentBrowser.database.managedObjectContext;
+            BOOL isMainDB = self.managedObjectContext.persistentStoreCoordinator == BrowserController.currentBrowser.database.managedObjectContext.persistentStoreCoordinator;
 
 			// Report
 			NSString *zippedFile = @"/tmp/zippedReport.zip";
@@ -717,8 +721,14 @@ static NSRecursiveLock *dbModifyLock = nil;
 				
                 [self.managedObjectContext save: nil];
                 
+                DicomDatabase *idb = nil;
+                if( [[NSThread currentThread] isMainThread])
+                    idb = BrowserController.currentBrowser.database;
+                else
+                    idb = [BrowserController.currentBrowser.database independentDatabase];
+                
                 if( isMainDB)
-                    [BrowserController.currentBrowser.database addFilesAtPaths: [NSArray arrayWithObject: dstPath]
+                    [idb addFilesAtPaths: [NSArray arrayWithObject: dstPath]
                                                                postNotifications: YES
                                                                        dicomOnly: YES
                                                              rereadExistingItems: YES
@@ -1020,26 +1030,37 @@ static NSRecursiveLock *dbModifyLock = nil;
         if( [self.hasDICOM boolValue] == YES)
         {
             // Save as DICOM PDF
-            if( [[NSUserDefaults standardUserDefaults] boolForKey:@"generateDICOMPDFWhenValidated"] && [c intValue] == 4)
+            if( [[NSUserDefaults standardUserDefaults] boolForKey:@"generateDICOMPDFWhenValidated"] && [c intValue] == 4 && self.reportURL.length)
             {
-                BOOL isMainDB = [self managedObjectContext] == BrowserController.currentBrowser.database.managedObjectContext;
+                BOOL isMainDB = self.managedObjectContext.persistentStoreCoordinator == BrowserController.currentBrowser.database.managedObjectContext.persistentStoreCoordinator;
                 
                 NSString *filePath = isMainDB? [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"] : [[NSFileManager defaultManager] tmpFilePathInTmp];
                 
-                [self saveReportAsDicomAtPath: filePath];
-                
-                if( isMainDB)
-                    [BrowserController.currentBrowser.database addFilesAtPaths: [NSArray arrayWithObject: filePath]
+                @try {
+                    [self saveReportAsDicomAtPath: filePath];
+                    
+                    DicomDatabase *idb = nil;
+                    if( [[NSThread currentThread] isMainThread])
+                        idb = BrowserController.currentBrowser.database;
+                    else
+                        idb = [BrowserController.currentBrowser.database independentDatabase];
+                    
+                    if( isMainDB)
+                        [idb addFilesAtPaths: [NSArray arrayWithObject: filePath]
+                           postNotifications: YES
+                                   dicomOnly: YES
+                         rereadExistingItems: YES
+                           generatedByOsiriX: YES];
+                    else
+                        [[DicomDatabase databaseAtPath: @"/tmp"] addFilesAtPaths: [NSArray arrayWithObject: filePath]
                                                                postNotifications: YES
                                                                        dicomOnly: YES
                                                              rereadExistingItems: YES
                                                                generatedByOsiriX: YES];
-                else
-                    [[DicomDatabase databaseAtPath: @"/tmp"] addFilesAtPaths: [NSArray arrayWithObject: filePath]
-                                                           postNotifications: YES
-                                                                   dicomOnly: YES
-                                                         rereadExistingItems: YES
-                                                           generatedByOsiriX: YES];
+                }
+                @catch (NSException *e) {
+                    N2LogExceptionWithStackTrace(e);
+                }
             }
 		}
 	}
