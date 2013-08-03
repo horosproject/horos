@@ -771,34 +771,46 @@
  Example: osirix://?methodName=retrieve&serverName=Minipacs&filterKey=PatientID&filterValue=296228
 
  Response: {error: "0"}
+ 
+ osirix://?methodName=retrieve&serverName=LaTour&filterKey=StudyInstanceUID&filterValue=2.16.840.1.113669.632.20.121711.10000348708
+ 
  */
--(NSDictionary*)Retrieve:(NSDictionary*)paramDict error:(NSError**)error {
+-(NSDictionary*)Retrieve:(NSDictionary*)paramDict error:(NSError**)error
+{
     NSString* serverName = [paramDict objectForKey:@"serverName"];
     NSInteger retrieveModeParam = [[paramDict objectForKey:@"retrieveMode"] integerValue];
     
     if (!serverName.length)
+    {
+        NSLog( @"****** XMLRPC server name is empty: %@", paramDict);
         ReturnWithCode(400);
+    }
     
     NSDictionary* source = nil;
     NSArray* sources = [DCMNetServiceDelegate DICOMServersList];
     for (NSDictionary* si in sources)
-        if ([[si objectForKey:@"Description"] isEqualToString:serverName]) {
+        if ([[si objectForKey:@"Description"] isEqualToString:serverName])
+        {
             source = si;
             break;
         }
     
     if (!source)
+    {
+        NSLog( @"****** XMLRPC server name not found: %@", paramDict);
         ReturnWithErrorValue(-2);
+    }
     
-    @try {
-        DCMTKRootQueryNode* rootNode = [[DCMTKRootQueryNode alloc] initWithDataset:nil
+    @try
+    {
+        DCMTKRootQueryNode* rootNode = [[[DCMTKRootQueryNode alloc] initWithDataset:nil
                                                                         callingAET:[NSUserDefaults defaultAETitle]
                                                                          calledAET:[source objectForKey:@"AETitle"]
                                                                           hostname:[source objectForKey:@"Address"]
                                                                               port:[[source objectForKey:@"Port"] intValue]
                                                                     transferSyntax:0
                                                                        compression:nil
-                                                                   extraParameters:source];
+                                                                   extraParameters:source] autorelease];
         
         NSMutableArray* filters = [NSMutableArray array];
         for (NSInteger i = 1; i < 100; ++i) {
@@ -810,7 +822,7 @@
        
         [rootNode queryWithValues:filters];
         
-        int retrieveMode = CMOVERetrieveMode;
+        int retrieveMode = [[source objectForKey: @"retrieveMode"] intValue];
         if (retrieveModeParam == WADORetrieveMode) retrieveMode = WADORetrieveMode;
         if (retrieveModeParam == CGETRetrieveMode) retrieveMode = CGETRetrieveMode;
         
@@ -823,8 +835,12 @@
             [NSThread detachNewThreadSelector:@selector(_threadRetrieve:) toTarget:self withObject:dict];
             
             ReturnWithErrorValue(0);
-        } else
+        }
+        else
+        {
+            NSLog( @"****** XMLRPC no images found corresponding to this filter: %@", paramDict);
             ReturnWithErrorValue(-3);
+        }
     } @catch (NSException* e) {
         N2LogExceptionWithStackTrace(e);
     }
