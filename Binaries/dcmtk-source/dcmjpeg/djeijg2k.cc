@@ -412,7 +412,7 @@ OFCondition DJCompressJP2K::encode(
 		
 		int bits = 1, value = 2;
 		
-		while( value < amplitude)
+		while( value < amplitude && bits <= 16)
 		{
 			value *= 2;
 			bits++;

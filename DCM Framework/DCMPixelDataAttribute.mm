@@ -1660,7 +1660,7 @@ static inline int int_ceildivpow2(int a, int b) {
 //			
 //			int bits = 1, value = 2;
 //			
-//			while( value < amplitude)
+//			while( value < amplitude && bits <= 16))
 //			{
 //				value *= 2;
 //				bits++;
@@ -1782,7 +1782,7 @@ static inline int int_ceildivpow2(int a, int b) {
 //			
 //			int bits = 1, value = 2;
 //			
-//			while( value < amplitude)
+//			while( value < amplitude && bits <= 16))
 //			{
 //				value *= 2;
 //				bits++;
