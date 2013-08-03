@@ -803,17 +803,17 @@
     
     @try
     {
-        DCMTKRootQueryNode* rootNode = [[[DCMTKRootQueryNode alloc] initWithDataset:nil
+        DCMTKRootQueryNode* rootNode = [DCMTKRootQueryNode queryNodeWithDataset:nil
                                                                         callingAET:[NSUserDefaults defaultAETitle]
                                                                          calledAET:[source objectForKey:@"AETitle"]
                                                                           hostname:[source objectForKey:@"Address"]
                                                                               port:[[source objectForKey:@"Port"] intValue]
                                                                     transferSyntax:0
                                                                        compression:nil
-                                                                   extraParameters:source] autorelease];
+                                                                   extraParameters:source];
         
         NSMutableArray* filters = [NSMutableArray array];
-        for (NSInteger i = 1; i < 100; ++i) {
+        for (NSInteger i = 1; i < 10; ++i) {
             NSString* filterKey = [paramDict objectForKey:(i != 1 ? [NSString stringWithFormat:@"filterKey%d", (int)i] : @"filterKey")];
             NSString* filterValue = [paramDict objectForKey:(i != 1 ? [NSString stringWithFormat:@"filterValue%d", (int)i] : @"filterValue")];
             if (filterKey && filterValue)
