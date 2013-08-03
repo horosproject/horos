@@ -360,7 +360,7 @@
             if( aborted)
                 NSLog( @"------ WADO downloading ABORTED");
             else
-                NSLog( @"------ WADO downloading : %d files - finished (errors: %d / total: %d)", (int) [urlToDownload count], countOfSuccesses, (int) urlToDownload.count);
+                NSLog( @"------ WADO downloading : %d files - finished (errors: %d / total: %d)", (int) [urlToDownload count], urlToDownload.count - countOfSuccesses, (int) urlToDownload.count);
         }
     }
     @catch (NSException *exception) {
