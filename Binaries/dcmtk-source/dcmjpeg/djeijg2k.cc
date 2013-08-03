@@ -244,8 +244,10 @@ DJCompressJP2K::~DJCompressJP2K()
 
 void DJCompressJP2K::findMinMax( int &_min, int &_max, char *bytes, long length, OFBool isSigned, int rows, int columns, int bitsAllocated)
 {
-//	int i = 0;
-	float max,  min;
+    _min = 0;
+    _max = 0;
+    
+	float max = 0,  min = 0;
 	
 	if (bitsAllocated <= 8) 
 		length = length;
@@ -332,6 +334,8 @@ void DJCompressJP2K::findMinMax( int &_min, int &_max, char *bytes, long length,
 		
 		free(fBuffer);
 	}
+    else
+        printf( "\r**** DJCompressJP2K::findMinMax malloc failed\r");
 }
 
 OFCondition DJCompressJP2K::encode( 
