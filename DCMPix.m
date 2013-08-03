@@ -576,10 +576,10 @@ static inline void DrawRuns(	struct edge *active,
                     if( itotal) *itotal += val;
                     if( count) (*count)++;
                     if( values) (*ivalues++) = val;
-                    if( locations)
+                    if( ilocations)
                     {
-                        (*locations++) = start + x;
-                        (*locations++) = curY;
+                        (*ilocations++) = start + x;
+                        (*ilocations++) = curY;
                     }
                     
 					if( idev)
@@ -606,10 +606,10 @@ static inline void DrawRuns(	struct edge *active,
                     if( itotal) *itotal += val;
                     if( count) (*count)++;
                     if( values) (*ivalues++) = val;
-                    if( locations)
+                    if( ilocations)
                     {
-                        (*locations++) = start + x;
-                        (*locations++) = w;
+                        (*ilocations++) = start + x;
+                        (*ilocations++) = w;
                     }
                     
 					if( idev)
@@ -12410,7 +12410,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				
 				for( int i = 0; i <[[NSProcessInfo processInfo] processorCount]; i++)
 				{
-					[minmaxThreads addObject: [[NSMutableDictionary dictionaryWithObjectsAndKeys: [[NSConditionLock alloc] initWithCondition: 0], @"threadLock", nil] retain]];
+					[minmaxThreads addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys: [[NSConditionLock alloc] initWithCondition: 0], @"threadLock", nil]];
 					
 					[NSThread detachNewThreadSelector: @selector(computeMaxThread:) toTarget: [[PixThread alloc] init] withObject: [minmaxThreads lastObject]];
 				}

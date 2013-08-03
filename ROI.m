@@ -6511,7 +6511,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	int newWidth = width + 2*margin;
 	int newHeight = height + 2*margin;
     
-	unsigned char* newBuffer = (unsigned char*)calloc(newWidth*newHeight, sizeof(unsigned char));
+	unsigned char* newBuffer, *originalBuffer;
+    
+    newBuffer = originalBuffer = (unsigned char*)calloc(newWidth*newHeight, sizeof(unsigned char));
 	
 	if( newBuffer)
 	{
@@ -6530,11 +6532,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			newBuffer += width+margin; // move to the next line, skipping the right margin pixels
 			temptextureBuffer += width; // move to the next line
 		}
-		
-		newBuffer -= height*(width+2*margin)+newWidth*margin; // beginning of the buffer
 	}
     
-    return newBuffer;
+    return originalBuffer;
 }
 
 - (void) addMarginToBuffer: (int) margin
@@ -6666,7 +6666,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 {
 	NSBitmapImageRep* bitmap = [[NSBitmapImageRep alloc] initWithData: [layerImage TIFFRepresentation]];
     size_t height = [bitmap pixelsHigh], width = [bitmap pixelsWide];
-    NSSize osize = [layerImage size];
+//    NSSize osize = [layerImage size];
 
 	int bytesPerRow = [bitmap bytesPerRow];
 	int spp = [bitmap samplesPerPixel];

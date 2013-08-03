@@ -311,7 +311,7 @@ static float backgroundInset = 1.5;
 {
 	// First, make sure the toolbar image size fits the toolbar size mode; there must be a better place to do this!
 	NSToolbarSizeMode sizeMode = [[self toolbar] sizeMode];
-	float imgWidth = [[self image] size].width;
+//	float imgWidth = [[self image] size].width;
 	
 	if (sizeMode == NSToolbarSizeModeSmall)
 	{

@@ -725,7 +725,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
                 {
                     struct sockaddr_in6* sockAddrIn6 = (struct sockaddr_in6*)sockAddr;
                     char buffer[256];
-                    const char* rv = inet_ntop(AF_INET6, &sockAddrIn6->sin6_addr, buffer, sizeof(buffer));
+//                    const char* rv = inet_ntop(AF_INET6, &sockAddrIn6->sin6_addr, buffer, sizeof(buffer));
                     NSString* host = [NSString stringWithUTF8String:buffer];
                     NSInteger port = ntohs(sockAddrIn6->sin6_port);
                     [addresses addObject:[NSArray arrayWithObjects: host, [NSNumber numberWithInteger:port], NULL]];

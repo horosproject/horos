@@ -1050,7 +1050,7 @@ static NSConditionLock *threadLock = nil;
 		}
         else
         {
-            NSMutableArray *objects = [NSMutableArray array];
+//            NSMutableArray *objects = [NSMutableArray array];
             NSMutableArray *selectedStudies = [NSMutableArray array];
             
             NSIndexSet *selectedRows = [databaseOutline selectedRowIndexes];
@@ -1091,7 +1091,7 @@ static NSConditionLock *threadLock = nil;
         }
         else
         {
-            NSMutableArray *objects = [NSMutableArray array];
+//            NSMutableArray *objects = [NSMutableArray array];
             NSMutableArray *selectedSeries = [NSMutableArray array];
             
             NSIndexSet *selectedRows = [databaseOutline selectedRowIndexes];
@@ -2190,7 +2190,7 @@ static NSConditionLock *threadLock = nil;
 	long durationFor1000;
 	
 	NSRect frame = [rebuildWindow frame];
-	BOOL warningWasHidden = [warning isHidden];
+//	BOOL warningWasHidden = [warning isHidden];
 	if ([[NSUserDefaults standardUserDefaults] integerForKey: @"TOOLKITPARSER3"] == 0)
     {
 		durationFor1000 = 18;
@@ -8025,7 +8025,7 @@ static BOOL withReset = NO;
 		}
 		else if([[aFile valueForKey:@"type"] isEqualToString:@"Study"])
 		{
-            id item = [matrixViewArray objectAtIndex: [cell tag]];
+//            id item = [matrixViewArray objectAtIndex: [cell tag]];
             
 			NSArray *images = matrixViewArray.count? [self imagesArray: [matrixViewArray objectAtIndex: [cell tag]]] : nil;
 			

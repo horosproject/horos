@@ -671,10 +671,10 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
     
     NSDictionary* d = [NSPropertyListSerialization propertyListFromData:da mutabilityOption: NSPropertyListImmutable format: nil errorDescription: nil];
     
-    if (d)
-    {
-        NSString *message = [d objectForKey:@"message"];
-    }
+//    if (d)
+//    {
+//        NSString *message = [d objectForKey:@"message"];
+//    }
     
     _mode = DONE;
 }

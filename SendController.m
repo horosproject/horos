@@ -506,7 +506,7 @@ static volatile int sendControllerObjects = 0;
     }
     while( loc < files.count);
     
-    NSUInteger initialOpCount = queue.operationCount;
+//    NSUInteger initialOpCount = queue.operationCount;
     while (queue.operationCount)
     {
         if( [[NSThread currentThread] isCancelled])

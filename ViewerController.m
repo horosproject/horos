@@ -1268,7 +1268,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	long				i, newTotal;
 	unsigned char		*emptyData;
 	long				imageSize, size, y, newX, newY;
-	double				orientation[ 9], newXSpace, newYSpace, origin[ 3], sign, ratio;
+	double				orientation[ 9], newXSpace, newYSpace, origin[ 3], sign;
 	BOOL				square = NO;
 	BOOL				succeed = YES;
 	
@@ -1290,8 +1290,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 			newXSpace = [firstPix pixelSpacingX];
 			newYSpace = [firstPix pixelSpacingX];
 			
-			ratio = fabs( [firstPix sliceInterval]) / [firstPix pixelSpacingX];
-			
 			newY = ([pixList[ curMovieIndex] count] * fabs( [firstPix sliceInterval])) / [firstPix pixelSpacingX];
 		}
 		else
@@ -1311,8 +1309,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 		{
 			newXSpace = [firstPix pixelSpacingY];
 			newYSpace = [firstPix pixelSpacingY];
-			
-			ratio = fabs( [firstPix sliceInterval]) / [firstPix pixelSpacingY];
 			
 			newY = ([pixList[ curMovieIndex] count]  * fabs( [firstPix sliceInterval])) / [firstPix pixelSpacingY];
 		}
@@ -3707,10 +3703,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	NSInteger			index = [[[previewMatrix cells] valueForKeyPath:@"representedObject.object"] indexOfObject: series];
 	
 	if( index != NSNotFound)
-	{
-		NSButtonCell *cell = [previewMatrix cellAtRow:index column: 0];
         [previewMatrix scrollCellToVisibleAtRow: index column:0];
-	}
 }
 
 - (void) matrixPreviewPressed:(id) sender

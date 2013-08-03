@@ -1569,6 +1569,9 @@ static inline int int_ceildivpow2(int a, int b) {
 		if( _rows*_columns > 256*1024) // 512 * 512
 			processors = [[NSProcessInfo processInfo] processorCount]/2;
 		
+        if( processors > 8)
+            processors = 8;
+        
 		void *outBuffer = kdu_compressJPEG2K( (void*) [data bytes], _samplesPerPixel, _rows, _columns, precision, false, rate, &compressedLength, processors);
 		
 		NSMutableData *jpeg2000Data = [NSMutableData dataWithBytesNoCopy: outBuffer length: compressedLength freeWhenDone: YES];
