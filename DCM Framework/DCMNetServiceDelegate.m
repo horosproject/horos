@@ -488,7 +488,8 @@ static NSMutableArray *cachedServersArray = nil;
 	NSString			*hostname = nil;
 	NSString			*portString = nil;
 	
-	for ( NSData *addr in [sender addresses] )
+    // IPv4
+	for( NSData *addr in [sender addresses])
 	{
 		result = (struct sockaddr *)[addr bytes];
 	
@@ -501,17 +502,35 @@ static NSMutableArray *cachedServersArray = nil;
 				portString = [NSString stringWithFormat:@"%d", ntohs(((struct sockaddr_in *)result)->sin_port)];
 				
 				if(port) *port = [portString intValue];
+                
+                break;
 			}
 		}
-		else if (family == AF_INET6)
-		{
-		
-		}
-		else
-		{
-		
-		}
-	}
+    }
+    
+    if( hostname == nil)
+    {
+        // IPv6
+        for( NSData *addr in [sender addresses])
+        {
+            result = (struct sockaddr *)[addr bytes];
+            
+            int family = result->sa_family;
+            
+            if (family == AF_INET6)
+            {
+                if (inet_ntop(AF_INET6, &((struct sockaddr_in6 *)result)->sin6_addr, buffer, sizeof(buffer)))
+                {
+                    hostname = [NSString stringWithCString:buffer encoding: NSISOLatin1StringEncoding];
+                    portString = [NSString stringWithFormat:@"%d", ntohs(((struct sockaddr_in6 *)result)->sin6_port)];
+                    
+                    if(port) *port = [portString intValue];
+                    
+                    break;
+                }
+            }
+        }
+    }
     
 	return hostname;
 }

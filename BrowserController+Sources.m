@@ -720,6 +720,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
             {
                 // we're now back in the main thread
                 NSMutableArray* addresses = [NSMutableArray array];
+                // Prefer IP4
                 for (NSData* address in service.addresses)
                 {
                     struct sockaddr* sockAddr = (struct sockaddr*)address.bytes;
@@ -734,7 +735,12 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
                             [addresses addObject:[NSArray arrayWithObjects: host, [NSNumber numberWithInteger:port], NULL]];
                         }
                     }
-                    else if (sockAddr->sa_family == AF_INET6)
+                }
+                // And search IPv6
+                for (NSData* address in service.addresses)
+                {
+                    struct sockaddr* sockAddr = (struct sockaddr*)address.bytes;
+                    if (sockAddr->sa_family == AF_INET6)
                     {
                         struct sockaddr_in6* sockAddrIn6 = (struct sockaddr_in6*)sockAddr;
                         char buffer[INET6_ADDRSTRLEN];

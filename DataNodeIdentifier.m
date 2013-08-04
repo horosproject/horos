@@ -185,7 +185,12 @@
     if (address)
     {
         if( parts.count > 0)
-            *address = [parts objectAtIndex:0];
+        {
+            NSMutableArray *allPartsExceptPort  = [NSMutableArray arrayWithArray: parts];
+            [allPartsExceptPort removeLastObject];
+            
+            *address = [allPartsExceptPort componentsJoinedByString: @":"];
+        }
         else
             *address = nil;
     }
@@ -193,7 +198,7 @@
 	if (port)
     {
         if (parts.count > 1)
-			*port = [[parts objectAtIndex:1] integerValue];
+			*port = [[parts objectAtIndex: parts.count-1] integerValue];
 		else
             *port = defaultPort;
     }

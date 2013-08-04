@@ -300,7 +300,11 @@ static BonjourBrowser *currentBrowser = nil;
                     }
                     break;
                 case AF_INET6:
-                    // OsiriX server doesn't support IPv6
+                    if (inet_ntop(AF_INET6, &((struct sockaddr_in6 *)socketAddress)->sin6_addr, buffer, sizeof(buffer)))
+                    {
+                        ipAddressString = [NSString stringWithCString:buffer];
+                        portString = [NSString stringWithFormat:@"%d", ntohs(((struct sockaddr_in6 *)socketAddress)->sin6_port)];
+                    }
                     break;
             }
         }
