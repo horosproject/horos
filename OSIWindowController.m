@@ -381,12 +381,6 @@ static BOOL protectedReentryWindowDidResize = NO;
 			{
 				frame = [value rectValue];
 				
-                if( [rects indexOfObject: value] == [rects count]-1) // last object -> screen : make it harder
-                {
-                    gravityX -= 20;
-                    gravityY -= 20;
-                }
-                
 				/* horizontal magnet */
 				if (fabs(NSMinX(frame) - NSMinX(myFrame)) <= gravityX)
 				{
