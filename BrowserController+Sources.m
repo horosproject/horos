@@ -745,12 +745,12 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
                 
                 for (NSArray* address in addresses)
                 {
-                    // NSLog(@"\t%@:%@", [address objectAtIndex:0], [address objectAtIndex:1]);
-                    if (!source.location)
+                    if (!source.location && address.count >= 2)
                     {
                         if ([source isKindOfClass:[RemoteDatabaseNodeIdentifier class]])
                             source.location = [[address objectAtIndex:0] stringByAppendingFormat:@":%@", [address objectAtIndex:1]];
-                        else source.location = [service.name stringByAppendingFormat:@"@%@:%@", [address objectAtIndex:0], [address objectAtIndex:1]];
+                        else
+                            source.location = [service.name stringByAppendingFormat:@"@%@:%@", [address objectAtIndex:0], [address objectAtIndex:1]];
                     }
                 }
                 
