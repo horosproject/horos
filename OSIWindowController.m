@@ -381,6 +381,12 @@ static BOOL protectedReentryWindowDidResize = NO;
 			{
 				frame = [value rectValue];
 				
+                if( [rects indexOfObject: value] == [rects count]-1) // last object -> screen : make it harder
+                {
+                    gravityX -= 20;
+                    gravityY -= 20;
+                }
+                
 				/* horizontal magnet */
 				if (fabs(NSMinX(frame) - NSMinX(myFrame)) <= gravityX)
 				{
@@ -444,7 +450,7 @@ static BOOL protectedReentryWindowDidResize = NO;
 					{
 						frame = [window frame];
 						
-						if( fabs( frame.origin.x - myFrame.origin.x) < 3 && fabs( NSMaxY( frame) - NSMaxY( myFrame)) < 3)
+						if( fabs( frame.origin.x - myFrame.origin.x) < 30 && fabs( NSMaxY( frame) - NSMaxY( myFrame)) < 30)
 						{
 							dontEnterMagneticFunctions = YES;
 							
