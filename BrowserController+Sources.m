@@ -726,18 +726,24 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
                     if (sockAddr->sa_family == AF_INET)
                     {
                         struct sockaddr_in* sockAddrIn = (struct sockaddr_in*)sockAddr;
-                        NSString* host = [NSString stringWithUTF8String:inet_ntoa(sockAddrIn->sin_addr)];
-                        NSInteger port = ntohs(sockAddrIn->sin_port);
-                        [addresses addObject:[NSArray arrayWithObjects: host, [NSNumber numberWithInteger:port], NULL]];
+                        char *str = inet_ntoa(sockAddrIn->sin_addr);
+                        if( str)
+                        {
+                            NSString* host = [NSString stringWithUTF8String:str];
+                            NSInteger port = ntohs(sockAddrIn->sin_port);
+                            [addresses addObject:[NSArray arrayWithObjects: host, [NSNumber numberWithInteger:port], NULL]];
+                        }
                     }
                     else if (sockAddr->sa_family == AF_INET6)
                     {
                         struct sockaddr_in6* sockAddrIn6 = (struct sockaddr_in6*)sockAddr;
-                        char buffer[256];
-    //                    const char* rv = inet_ntop(AF_INET6, &sockAddrIn6->sin6_addr, buffer, sizeof(buffer));
-                        NSString* host = [NSString stringWithUTF8String:buffer];
-                        NSInteger port = ntohs(sockAddrIn6->sin6_port);
-                        [addresses addObject:[NSArray arrayWithObjects: host, [NSNumber numberWithInteger:port], NULL]];
+                        char buffer[INET6_ADDRSTRLEN];
+                        if( inet_ntop(AF_INET6, &sockAddrIn6->sin6_addr, buffer, INET6_ADDRSTRLEN))
+                        {
+                            NSString* host = [NSString stringWithUTF8String:buffer];
+                            NSInteger port = ntohs(sockAddrIn6->sin6_port);
+                            [addresses addObject:[NSArray arrayWithObjects: host, [NSNumber numberWithInteger:port], NULL]];
+                        }
                     }
                 }
                 
