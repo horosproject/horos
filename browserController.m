@@ -1793,11 +1793,11 @@ static NSConditionLock *threadLock = nil;
     if( studyIndex != NSNotFound)
         rowIndex = [databaseOutline rowForItem: [outlineViewArray objectAtIndex: studyIndex]];
     
-    if( studyIndex == NSNotFound && albumTable.selectedRow > 0)
+    if( studyIndex == NSNotFound && (albumTable.selectedRow > 0 || self.searchString.length > 0 || self.timeIntervalType != 0))
     {
         if( [study isKindOfClass: [DicomStudy class]]) // It's a local study: we HAVE to find it ! Select the entire DB
         {
-            [albumTable selectRowIndexes:[NSIndexSet indexSetWithIndex:0] byExtendingSelection:NO]; // Select the entire DB
+            [self showEntireDatabase];
             [self outlineViewRefresh];
             
             NSUInteger studyIndex = [[outlineViewArray valueForKey: @"studyInstanceUID"] indexOfObject: [study valueForKey: @"studyInstanceUID"]]; // We can have DicomStudy OR DCMTKQueryStudyNode... : search with studyInstanceUID
