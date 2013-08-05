@@ -30,7 +30,6 @@ static NSString* UserDefaultsObservingContext = @"UserDefaultsObservingContext";
 		[self mainViewDidLoad];
         
         [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.ReserveScreenForDB" options:0 context:UserDefaultsObservingContext];
-        
         [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.AUTOTILING" options:0 context:UserDefaultsObservingContext];
 	}
 	
@@ -41,6 +40,7 @@ static NSString* UserDefaultsObservingContext = @"UserDefaultsObservingContext";
 {
 	NSLog(@"dealloc OSIViewerPreferencePanePref");
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.ReserveScreenForDB"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.AUTOTILING"];
     [super dealloc];
 }
 
