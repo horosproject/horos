@@ -8272,7 +8272,7 @@ return YES;
 	} else
         filter = [[PluginManager plugins] objectForKey:name];
     
-	if( [AppController willExecutePlugin] == NO)
+	if( [AppController willExecutePlugin: filter] == NO)
 		return;
 	
 	if( filter == nil)

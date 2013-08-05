@@ -994,8 +994,18 @@ static NSDate *lastWarningDate = nil;
 
 + (BOOL) willExecutePlugin
 {
+    return [self willExecutePlugin: nil];
+}
+
++ (BOOL) willExecutePlugin:(id) filter;
+{
 	BOOL returnValue = YES;
 	
+    if( filter && [filter respondsToSelector: @selector( isCertifiedForMedicalImaging)])
+    {
+        return [filter isCertifiedForMedicalImaging];
+    }
+    
 	if( [AppController isFDACleared])
     {
         if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hidePluginCertificationWarning"] == NO)
@@ -4799,7 +4809,10 @@ static BOOL initialized = NO;
             NSDate *date1 = [[obj1 currentStudy] date];
             NSDate *date2 = [[obj2 currentStudy] date];
             
-            return [date2 compare: date1];
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"reversedTileWindowsOrderByStudyDate"])
+                return [date1 compare: date2];
+            else
+                return [date2 compare: date1];
         }];
     }
     

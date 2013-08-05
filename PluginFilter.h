@@ -53,6 +53,9 @@
 /** This function is called if OsiriX needs to kill the current running plugin, to install an update, for example. */
 - (void) willUnload;
 
+/** This function is called if OsiriX needs to display a warning to the user about a non-certified plugin. */
+- (BOOL) isCertifiedForMedicalImaging;
+
 /** Opportunity for plugins to make Menu changes if necessary */
 
 - (void)setMenus;

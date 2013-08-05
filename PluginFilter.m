@@ -59,6 +59,11 @@
 	return 0;
 }
 
+- (BOOL) isCertifiedForMedicalImaging
+{
+    return NO;
+}
+
 - (ViewerController*) duplicateCurrent2DViewerWindow
 {
 	long							i;
