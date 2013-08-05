@@ -3899,16 +3899,27 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	NSPoint	mouse = [window mouseLocationOutsideOfEventStream];
 	
+    BOOL isCurrentlyVisible = [self matrixIsVisible];
+    
 	if( hide == NO)
 	{
-		if( mouse.x >= 0 && mouse.x <= [previewMatrix cellSize].width+13 && mouse.y >= 0 && mouse.y <= [splitView frame].size.height-20)
-		{
-			
-		}
-		else hide = YES;
+        if( isCurrentlyVisible == NO)
+        {
+            if( mouse.x >= 0 && mouse.x <= [previewMatrix cellSize].width+13 && mouse.y >= 0 && mouse.y <= [splitView frame].size.height-20)
+            {
+                
+            }
+            else hide = YES;
+        }
+        else
+        {
+            if( mouse.x >= 0 && mouse.x <= [previewMatrix cellSize].width+13 && mouse.y >= 0 && mouse.y <= [splitView frame].size.height)
+            {
+                
+            }
+            else hide = YES;
+        }
 	}
-	
-	BOOL isCurrentlyVisible = [self matrixIsVisible];
     
 	if( isCurrentlyVisible == hide)
 	{
