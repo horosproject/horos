@@ -1001,13 +1001,14 @@ static NSDate *lastWarningDate = nil;
 {
 	BOOL returnValue = YES;
 	
-    if( filter && [filter respondsToSelector: @selector( isCertifiedForMedicalImaging)])
-    {
-        return [filter isCertifiedForMedicalImaging];
-    }
-    
 	if( [AppController isFDACleared])
     {
+        if( filter && [filter respondsToSelector: @selector( isCertifiedForMedicalImaging)])
+        {
+            if( [filter isCertifiedForMedicalImaging])
+                return YES;
+        }
+        
         if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hidePluginCertificationWarning"] == NO)
         {
             NSAlert* alert = [[NSAlert new] autorelease];

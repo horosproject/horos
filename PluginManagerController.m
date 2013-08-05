@@ -19,6 +19,7 @@
 #import "PreferencesWindowController.h"
 #import "ThreadsManager.h"
 #import "NSThread+N2.h"
+#import "AppController.h"
 
 // this is the address of the plist containing the list of the available plugins.
 // the alternative link will be used if the first one doesn't reply...
@@ -88,8 +89,16 @@ static NSDate *CachedPluginsListDate = nil;
 	
     [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(WebViewProgressStartedNotification:) name: WebViewProgressStartedNotification object: webView];
     [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(WebViewProgressFinishedNotification:) name: WebViewProgressFinishedNotification object: webView];
-    
+        
 	return self;
+}
+
+- (void)windowDidBecomeMain:(NSNotification *)notification
+{
+    if( [AppController isFDACleared])
+    {
+        NSRunCriticalAlertPanel( NSLocalizedString( @"Important Notice", nil), NSLocalizedString( @"Plugins are not certified for primary diagnosis in medical imaging, unless specifically written by the plugin author(s).", nil), NSLocalizedString( @"OK", nil), nil, nil);
+    }
 }
 
 - (void)dealloc
