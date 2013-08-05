@@ -4714,7 +4714,7 @@ static volatile int numberOfThreadsForRelisce = 0;
             }
         }
         else
-            comparativesButton.title = NSLocalizedString( @"✓ Comparatives", nil);
+            comparativesButton.title = [NSString stringWithFormat: @"✓ %@", NSLocalizedString( @"Comparatives", nil)];
         
         if (hasComparatives)
         {
