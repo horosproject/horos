@@ -1107,6 +1107,11 @@ static NSDate *lastWarningDate = nil;
 	
 	if( res)
 	{
+        if( [AppController isFDACleared])
+        {
+            NSRunCriticalAlertPanel( NSLocalizedString( @"Important Notice", nil), NSLocalizedString( @"Plugins are not certified for primary diagnosis in medical imaging, unless specifically written by the plugin author(s).", nil), NSLocalizedString( @"OK", nil), nil, nil);
+        }
+        
 		for( NSString *path in pluginsArray)
             [PluginManager installPluginFromPath: path];
 		
