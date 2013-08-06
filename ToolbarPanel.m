@@ -135,7 +135,8 @@ static int increment = 0;
 {
 	if( [aNotification object] == [self window])
 	{
-		if( [[self window] isVisible]) [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
+		if( [[self window] isVisible] && viewer)
+            [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
 	}
 }
 
@@ -147,7 +148,24 @@ static int increment = 0;
 		{
 			if( [[viewer window] isVisible])
 				[[viewer window] makeKeyAndOrderFront: self];
-			[[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
+            
+            if( viewer)
+                [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
+            else
+            {
+                BOOL found = NO;
+                for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+                {
+                    if( [v.window.screen isEqualTo: self.window.screen])
+                    {
+                        [v.window makeKeyAndOrderFront: self];
+                        found = YES;
+                    }
+                }
+                
+                if( found == NO)
+                    [(ToolBarNSWindow*) (self.window) orderOutIfNeeded: self];
+            }
 		}
 	}
 }
@@ -156,7 +174,8 @@ static int increment = 0;
 {
 	if( [aNotification object] == [self window])
 	{
-		if( [[self window] isVisible]) [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
+		if( [[self window] isVisible] && viewer)
+            [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
 	}
 }
 
@@ -165,11 +184,15 @@ static int increment = 0;
 	if( [aNotification object] == [self window])
 	{
 		[[viewer window] makeKeyAndOrderFront: self];
-		if( [[self window] isVisible]) [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
+        
+		if( [[self window] isVisible] && viewer)
+            [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
+        
 		return;
 	}
 	
-	if( [(NSWindow*)[aNotification object] level] != NSNormalWindowLevel) return;
+	if( [(NSWindow*)[aNotification object] level] != NSNormalWindowLevel)
+        return;
 	
 	if( USETOOLBARPANEL == NO)
 	{
@@ -189,7 +212,9 @@ static int increment = 0;
 				
 				[[self window] orderBack:self];
 				[toolbar setVisible:YES];
-				[[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
+                
+                if( viewer)
+                    [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
 				
 				if( [[viewer window] isVisible] == NO)
 				{
@@ -201,7 +226,7 @@ static int increment = 0;
 			else
 			{
 				[self setToolbar: nil viewer: nil];
-				[[self window] orderOut:self];
+				[(ToolBarNSWindow*) (self.window) orderOutIfNeeded:self];
 			}
 		}
 	}
@@ -226,7 +251,7 @@ static int increment = 0;
 	 if ([itemIdent isEqualToString: @"emptyItem"])
 	 {
 		#define HEIGHT 53
-		[toolbarItem setLabel: @"Aqpghil"];
+		[toolbarItem setLabel: @""];
 		[toolbarItem setView: [[[NSView alloc] initWithFrame: NSMakeRect( 0, 0, HEIGHT, HEIGHT)] autorelease]];
 		[toolbarItem setMinSize: NSMakeSize( HEIGHT, HEIGHT)];
 		[toolbarItem setMaxSize: NSMakeSize( HEIGHT, HEIGHT)];
@@ -307,7 +332,8 @@ static int increment = 0;
 					[associatedScreen removeObjectForKey: [NSValue valueWithPointer: toolbar]];
 			}
 		}
-		else [[self window] orderOut: self];
+		else
+            [[self window] orderOut: self];
         
         NSEnableScreenUpdates();
         

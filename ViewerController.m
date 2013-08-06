@@ -100,6 +100,7 @@
 #import "DCMTKQueryNode.h"
 #import "DCMTKStudyQueryNode.h"
 #import "O2ViewerThumbnailsMatrix.h"
+#import "ToolBarNSWindow.h"
 
 int delayedTileWindows = NO;
 
@@ -3053,7 +3054,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 				[toolbarPanel[ i] setToolbar: toolbar viewer: self];
 				found = YES;
 			}
-			else [[toolbarPanel[ i] window] orderOut:self];
+			else
+                [[toolbarPanel[ i] window] orderOut:self];
 		}
 		if( found == NO) NSLog( @"ViewerController windowDidChangeScreen: Toolbar NOT found");
 	}
@@ -3087,14 +3089,18 @@ static volatile int numberOfThreadsForRelisce = 0;
 			else
             {
                 if( [[toolbarPanel[ i] window] isVisible])
-                    [[toolbarPanel[ i] window] orderOut:self];
+                {
+                    [toolbarPanel[ i] setToolbar: nil viewer: nil];
+                    [(ToolBarNSWindow*) ([toolbarPanel[ i] window]) orderOutIfNeeded:self];
+                }
             }
 		}
 		if( found == NO) NSLog( @"Toolbar NOT found");
 	}
 	else
 	{
-		for( int i = 0; i < [[NSScreen screens] count]; i++) [[toolbarPanel[ i] window] orderOut:self];
+		for( int i = 0; i < [[NSScreen screens] count]; i++)
+            [[toolbarPanel[ i] window] orderOut:self];
 	}
 }
 

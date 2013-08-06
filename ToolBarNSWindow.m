@@ -14,50 +14,41 @@
 
 #import "ToolBarNSWindow.h"
 #import "ToolbarPanel.h"
-
+#import "ViewerController.h"
+#import "N2Debug.h"
 
 @implementation ToolBarNSWindow
 
-- (BOOL) canBecomeMainWindow {
-//	[self setDelegate: self];
+- (BOOL) canBecomeMainWindow
+{
 	return NO;
 }
 
-- (BOOL) canBecomeKeyWindow {
+- (BOOL) canBecomeKeyWindow
+{
 	return YES;
 }
 
-/*- (void)windowDidResize:(NSNotification *)notification
+- (void) orderOutIfNeeded:(id)sender
 {
-//	[ (ToolbarPanelController*) [self windowController] fixSize];
-}*/
-
-/*- (void)setFrame:(NSRect)windowFrame display:(BOOL)displayViews
-{
-	if( willClose == NO)
-	{
-		if( [self toolbar])
-		{
-			[super setFrame: windowFrame display:displayViews];
-		}
-	}
-}*/
-
-/*- (void)display
-{
-	if( [self toolbar] &&  willClose == NO)
-		[super display];
-}*/
-
-/*- (void)displayIfNeeded
-{
-	if( [self toolbar] &&  willClose == NO)
-		[super displayIfNeeded];
-}*/
-
-/*-(void)setFrame:(NSRect)windowFrame display:(BOOL)displayViews animate:(BOOL)performAnimation {
-	return [super setFrame:windowFrame display:displayViews animate:NO];
-}*/
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideToolbarIfNotActive"] == NO)
+    {
+        BOOL found = NO;
+        for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+        {
+            if( [v.window.screen isEqualTo: self.screen])
+            {
+                [self orderWindow: NSWindowBelow relativeTo: v.window.windowNumber];
+                found = YES;
+            }
+        }
+        
+        if( found == NO)
+            [super orderOut:sender];
+    }
+    else
+        [super orderOut:sender];
+}
 
 -(NSTimeInterval)animationResizeTime:(NSRect)newFrame {
 	return 0;
@@ -66,7 +57,5 @@
 -(NSRect)constrainFrameRect:(NSRect)frameRect toScreen:(NSScreen*)screen {
 	return frameRect; // not movable, and OsiriX knows where to place toolbars ;)
 }
-
-// @synthesize willClose;
 
 @end

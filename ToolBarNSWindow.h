@@ -12,9 +12,6 @@
      PURPOSE.
 =========================================================================*/
 
-
-
-
 #import <Foundation/Foundation.h>
 
 /** \brief Window with only a toolbar */
@@ -23,6 +20,6 @@
 //	BOOL willClose;
 }
 
-//@property BOOL willClose;
+- (void) orderOutIfNeeded:(id)sender;
 
 @end
