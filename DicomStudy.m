@@ -579,6 +579,16 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (void) archiveAnnotationsAsDICOMSR
 {
+    static int avoidReentry2 = 0;
+    
+    if( avoidReentry2)
+    {
+        NSLog( @"****** archiveAnnotationsAsDICOMSR avoidReentry");
+        return;
+    }
+    
+    avoidReentry2++;
+    
 	#ifndef OSIRIX_LIGHT
 	if ([self.hasDICOM boolValue] == YES)
 	{
@@ -626,6 +636,8 @@ static NSRecursiveLock *dbModifyLock = nil;
         @finally {
         }
 	}
+    avoidReentry2--;
+    
 	#endif
 }
 
