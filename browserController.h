@@ -405,6 +405,8 @@ extern NSString* O2AlbumDragType;
 - (void) processOpenViewerDICOMFromArray:(NSArray*) toOpenArray movie:(BOOL) movieViewer viewer: (ViewerController*) viewer;
 - (void) setDatabaseValue:(id) object item:(id) item forKey:(NSString*) key;
 - (void) setupToolbar;
+- (float) fontSize: (NSString*) type;
+- (void) setTableViewRowHeight;
 - (void) addAlbumsFile: (NSString*) file;
 - (void) sendFilesToCurrentBonjourDB: (NSArray*) files __deprecated;
 - (NSString*) getDatabaseFolderFor: (NSString*) path __deprecated;

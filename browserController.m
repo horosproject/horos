@@ -271,6 +271,155 @@ static volatile BOOL waitForRunningProcess = NO;
 //	[decimalNumberFormatter setHasThousandSeparators: YES];
 }
 
+- (void) setTableViewRowHeight
+{
+    int mode = [[NSUserDefaults standardUserDefaults] integerForKey: @"dbFontSize"];
+    
+    if( mode == -1) //Small
+    {
+        [albumTable setRowHeight: 13];
+        [_sourcesTableView setRowHeight: 13];
+        [databaseOutline setRowHeight: 13];
+        [comparativeTable setRowHeight: 24];
+        [_activityTableView setRowHeight: 34];
+    }
+    
+    if( mode == 0) // Regular
+    {
+        [albumTable setRowHeight: 17];
+        [_sourcesTableView setRowHeight: 17];
+        [databaseOutline setRowHeight: 17];
+        [comparativeTable setRowHeight: 29];
+        [_activityTableView setRowHeight: 38];
+    }
+    
+    if( mode == 1) // Large
+    {
+        [albumTable setRowHeight: 25];
+        [_sourcesTableView setRowHeight: 25];
+        [databaseOutline setRowHeight: 22];
+        [comparativeTable setRowHeight: 43];
+        [_activityTableView setRowHeight: 48];
+    }
+}
+
+- (float) fontSize: (NSString*) type
+{
+    int mode = [[NSUserDefaults standardUserDefaults] integerForKey: @"dbFontSize"];
+    
+    if( mode == -1) //Small
+    {
+        if( [type isEqualToString: @"threadNameSize"])
+            return 9;
+        
+        if( [type isEqualToString: @"threadNameStatus"])
+            return 8;
+        
+        if( [type isEqualToString: @"comparativeLineSpace"])
+            return 12;
+        
+        if( [type isEqualToString: @"threadCellLineSpace"])
+            return 10;
+        
+        if( [type isEqualToString: @"dbFont"])
+            return 10;
+        
+        if( [type isEqualToString: @"dbComparativeFont"])
+            return 9;
+        
+        if( [type isEqualToString: @"dbAlbumFont"])
+            return 9;
+        
+        if( [type isEqualToString: @"dbSourceFont"])
+            return 9;
+        
+        if( [type isEqualToString: @"dbSeriesFont"])
+            return 8;
+        
+        if( [type isEqualToString: @"dbMatrixFont"])
+            return 9;
+        
+        if( [type isEqualToString: @"dbSmallMatrixFont"])
+            return 8.5;
+    }
+    
+    if( mode == 0) // Regular
+    {
+        if( [type isEqualToString: @"threadNameSize"])
+            return [NSFont systemFontSizeForControlSize:NSSmallControlSize];
+        
+        if( [type isEqualToString: @"threadNameStatus"])
+            return [NSFont systemFontSizeForControlSize:NSMiniControlSize];
+        
+        if( [type isEqualToString: @"comparativeLineSpace"])
+            return 14;
+        
+        if( [type isEqualToString: @"threadCellLineSpace"])
+            return 13;
+        
+        if( [type isEqualToString: @"dbFont"])
+            return 12;
+        
+        if( [type isEqualToString: @"dbComparativeFont"])
+            return 11;
+        
+        if( [type isEqualToString: @"dbAlbumFont"])
+            return 11;
+        
+        if( [type isEqualToString: @"dbSourceFont"])
+            return 11;
+        
+        if( [type isEqualToString: @"dbSeriesFont"])
+            return 10;
+        
+        if( [type isEqualToString: @"dbMatrixFont"])
+            return 9;
+        
+        if( [type isEqualToString: @"dbSmallMatrixFont"])
+            return 8.5;
+    }
+    
+    if( mode == 1) // Large
+    {
+        if( [type isEqualToString: @"threadNameSize"])
+            return 13;
+        
+        if( [type isEqualToString: @"threadNameStatus"])
+            return 11;
+        
+        if( [type isEqualToString: @"comparativeLineSpace"])
+            return 20;
+        
+        if( [type isEqualToString: @"threadCellLineSpace"])
+            return 19;
+        
+        if( [type isEqualToString: @"dbFont"])
+            return 15;
+        
+        if( [type isEqualToString: @"dbComparativeFont"])
+            return 13.5;
+        
+        if( [type isEqualToString: @"dbAlbumFont"])
+            return 14;
+        
+        if( [type isEqualToString: @"dbSourceFont"])
+            return 14;
+        
+        if( [type isEqualToString: @"dbSeriesFont"])
+            return 13;
+        
+        if( [type isEqualToString: @"dbMatrixFont"])
+            return 9;
+        
+        if( [type isEqualToString: @"dbSmallMatrixFont"])
+            return 8.5;
+    }
+    
+    N2LogStackTrace( @"********* fontSize not found for type: %@", type);
+    
+    return 12;
+}
+
 @synthesize database = _database;
 @synthesize sources = _sourcesArrayController;
 
@@ -6323,15 +6472,15 @@ static NSConditionLock *threadLock = nil;
 			
             if( [item isDistant])
             {
-                [cell setFont: [NSFont fontWithName: DISTANTSTUDYFONT size:12]];
+                [cell setFont: [NSFont fontWithName: DISTANTSTUDYFONT size: [self fontSize: @"dbFont"]]];
 //                [cell setTextColor: [NSColor grayColor]];
             }
 			else if( originalOutlineViewArray)
 			{
-				if( [originalOutlineViewArray containsObject: item]) [cell setFont: [NSFont boldSystemFontOfSize:12]];
-				else [cell setFont: [NSFont systemFontOfSize:12]];
+				if( [originalOutlineViewArray containsObject: item]) [cell setFont: [NSFont boldSystemFontOfSize: [self fontSize: @"dbFont"]]];
+				else [cell setFont: [NSFont systemFontOfSize: [self fontSize: @"dbFont"]]];
 			}
-			else [cell setFont: [NSFont boldSystemFontOfSize:12]];
+			else [cell setFont: [NSFont boldSystemFontOfSize: [self fontSize: @"dbFont"]]];
 			
 			if( [[tableColumn identifier] isEqualToString:@"name"])
 			{
@@ -6407,7 +6556,7 @@ static NSConditionLock *threadLock = nil;
 		{
 			if( [[tableColumn identifier] isEqualToString:@"lockedStudy"]) [cell setTransparent: YES];
 			
-			[cell setFont: [NSFont boldSystemFontOfSize:10]];
+			[cell setFont: [NSFont boldSystemFontOfSize: [self fontSize: @"dbSeriesFont"]]];
 		}
 		[cell setLineBreakMode: NSLineBreakByTruncatingMiddle];
         
@@ -8498,7 +8647,7 @@ static BOOL withReset = NO;
             cell.tag = i;
             [cell setTransparent:(i>=noOfImages)];
             [cell setEnabled:NO];
-            [cell setFont:[NSFont systemFontOfSize:9]];
+            [cell setFont:[NSFont systemFontOfSize: [self fontSize: @"dbMatrixFont"]]];
             [cell setImagePosition: NSImageBelow];
             cell.title = NSLocalizedString(@"loading...", nil);
             cell.image = nil;
@@ -8570,7 +8719,7 @@ static BOOL withReset = NO;
                 [cell setTransparent:NO];
                 [cell setEnabled:YES];
                 [cell setLineBreakMode: NSLineBreakByCharWrapping];
-                [cell setFont:[NSFont systemFontOfSize:9]];
+                [cell setFont:[NSFont systemFontOfSize: [self fontSize: @"dbMatrixFont"]]];
                 [cell setImagePosition: NSImageBelow];
                 [cell setAction: @selector(matrixPressed:)];
                 [cell setRepresentedObject: [curFile objectID]];
@@ -8590,7 +8739,7 @@ static BOOL withReset = NO;
                 
                 if( name.length > 18)
                 {
-                    [cell setFont:[NSFont systemFontOfSize: 8.5]];
+                    [cell setFont:[NSFont systemFontOfSize: [self fontSize: @"dbSmallMatrixFont"]]];
                     name = [name stringByTruncatingToLength: 36]; // 2 lines
                 }
                 
@@ -8681,7 +8830,7 @@ static BOOL withReset = NO;
                 [cell setImage: nil];
                 [oMatrix setToolTip: NSLocalizedString(@"File not readable", nil) forCell:cell];
                 [cell setTitle: NSLocalizedString(@"File not readable", nil)];			
-                [cell setFont:[NSFont systemFontOfSize:9]];
+                [cell setFont:[NSFont systemFontOfSize: [self fontSize: @"dbMatrixFont"]]];
                 [cell setImagePosition: NSImageBelow];
                 [cell setTransparent:NO];
                 [cell setEnabled:NO];
@@ -10263,8 +10412,8 @@ static BOOL needToRezoom;
             NSFont *txtFont;
             PrettyCell *cell = (PrettyCell*) aCell;
             
-            if( rowIndex == 0) txtFont = [NSFont boldSystemFontOfSize: 11];
-            else txtFont = [NSFont systemFontOfSize:11];			
+            if( rowIndex == 0) txtFont = [NSFont boldSystemFontOfSize: [self fontSize: @"dbAlbumFont"]];
+            else txtFont = [NSFont systemFontOfSize: [self fontSize: @"dbAlbumFont"]];			
             
             [cell setFont:txtFont];
             
@@ -10313,8 +10462,8 @@ static BOOL needToRezoom;
                 if( [study isKindOfClass: [DicomStudy class]])
                     local = YES;
             
-                if( local) txtFont = [NSFont boldSystemFontOfSize: 11];
-                else txtFont = [NSFont fontWithName: DISTANTSTUDYFONT size:11];		
+                if( local) txtFont = [NSFont boldSystemFontOfSize: [self fontSize: @"dbComparativeFont"]];
+                else txtFont = [NSFont fontWithName: DISTANTSTUDYFONT size: [self fontSize: @"dbComparativeFont"]];
             
                 [cell setFont:txtFont];
                 cell.title = @"DUMMY"; // avoid NIL values here
@@ -10332,6 +10481,8 @@ static BOOL needToRezoom;
                 cell.rightTextSecondLine =@"";
             }
         }
+        
+        
     }
     @catch (NSException *exception) {
         N2LogException( exception);
@@ -12992,6 +13143,8 @@ static NSArray*	openSubSeriesArray = nil;
     //	});
         
     //    NSLog( @"%@", [[NSFontManager sharedFontManager] availableFonts]);
+        
+        [self setTableViewRowHeight];
         
         [self saveLoadAlbumsSortDescriptors];
         

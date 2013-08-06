@@ -204,7 +204,7 @@
     
 	NSMutableParagraphStyle* paragraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
 	[paragraphStyle setLineBreakMode:NSLineBreakByTruncatingTail];
-	NSMutableDictionary* textAttributes = [NSMutableDictionary dictionaryWithObjectsAndKeys: [self textColor], NSForegroundColorAttributeName, [NSFont labelFontOfSize:[NSFont systemFontSizeForControlSize:NSSmallControlSize]], NSFontAttributeName, paragraphStyle, NSParagraphStyleAttributeName, NULL];
+	NSMutableDictionary* textAttributes = [NSMutableDictionary dictionaryWithObjectsAndKeys: [self textColor], NSForegroundColorAttributeName, [NSFont labelFontOfSize:[[BrowserController currentBrowser] fontSize: @"threadNameSize"]], NSFontAttributeName, paragraphStyle, NSParagraphStyleAttributeName, NULL];
 
 	[NSGraphicsContext saveGraphicsState];
 	
@@ -220,7 +220,7 @@
 	[tempName drawWithRect:nameFrame options:NSStringDrawingUsesLineFragmentOrigin+NSStringDrawingTruncatesLastVisibleLine attributes:textAttributes];
     
 	NSRect statusFrame = [self statusFrame];
-	[textAttributes setObject:[NSFont labelFontOfSize:[NSFont systemFontSizeForControlSize:NSMiniControlSize]] forKey:NSFontAttributeName];
+	[textAttributes setObject:[NSFont labelFontOfSize: [[BrowserController currentBrowser] fontSize: @"threadNameStatus"]] forKey:NSFontAttributeName];
 	if (!tempStatus) tempStatus = @"";
     [tempStatus drawWithRect:statusFrame options:NSStringDrawingUsesLineFragmentOrigin attributes:textAttributes];
 	
@@ -230,11 +230,7 @@
 		[self.progressIndicator startAnimation:self];
 	}
     
-    NSRect progressFrame;
-    if ([AppController hasMacOSXLion])
-        progressFrame = NSMakeRect(frame.origin.x+3, frame.origin.y+27, frame.size.width-6, frame.size.height-32);
-    else progressFrame = NSMakeRect(frame.origin.x+1, frame.origin.y+26, frame.size.width-2, frame.size.height-28);
-
+    NSRect progressFrame = NSMakeRect(frame.origin.x+3, frame.origin.y + (frame.size.height - 12), frame.size.width-6, 10);
     
 	if (!NSEqualRects(self.progressIndicator.frame, progressFrame))
         [self.progressIndicator setFrame:progressFrame];
@@ -251,17 +247,6 @@
 //		
 //		[NSGraphicsContext restoreGraphicsState];
 //	}
-	
-//	if ([self.thread isFinished])
-//    {
-//        // I agree this is U-G-L-Y... bug the phantom bug is even more ugly...
-//        @synchronized( [[ThreadsManager defaultManager] threadsController])
-//        {
-//            if( [[[[ThreadsManager defaultManager] threadsController] arrangedObjects] containsObject: self.thread])
-//                [[ThreadsManager defaultManager] removeThread: self.thread];
-//        }
-//        return;
-//    }
     
 	[self drawInteriorWithFrame:frame inView:view];
 	
@@ -273,9 +258,11 @@
 	[NSGraphicsContext restoreGraphicsState];
 }
 
--(NSRect)statusFrame {
+-(NSRect)statusFrame
+{
     NSRect frame = [self.view rectOfRow:[self.manager.threads indexOfObject:self.thread]];
-    return NSMakeRect(frame.origin.x+3, frame.origin.y+13, frame.size.width-22, frame.size.height-13);
+
+    return NSMakeRect(frame.origin.x+3, frame.origin.y + [[BrowserController currentBrowser] fontSize: @"threadCellLineSpace"], frame.size.width-22, frame.size.height- (frame.origin.y + [[BrowserController currentBrowser] fontSize: @"threadCellLineSpace"]));
 }
 
 @end

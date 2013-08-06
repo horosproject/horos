@@ -1069,7 +1069,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 -(void)tableView:(NSTableView*)aTableView willDisplayCell:(PrettyCell*)cell forTableColumn:(NSTableColumn*)tableColumn row:(NSInteger)row
 {
 	cell.image = nil;
-	cell.font = [NSFont systemFontOfSize:11];
+	cell.font = [NSFont systemFontOfSize: [_browser fontSize: @"dbSourceFont"]];
 	cell.textColor = nil;
     [cell.rightSubviews removeAllObjects];
 	DataNodeIdentifier* bs = [_browser sourceIdentifierAtRow:row];
@@ -1143,7 +1143,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 -(void)willDisplayCell:(PrettyCell*)cell
 {
-	cell.font = [NSFont boldSystemFontOfSize:11];
+	cell.font = [NSFont boldSystemFontOfSize: [[BrowserController currentBrowser] fontSize: @"dbSourceFont"]];
 	cell.image = [NSImage imageNamed:@"Osirix.icns"];
 }
 

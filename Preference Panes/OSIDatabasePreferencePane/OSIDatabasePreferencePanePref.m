@@ -38,18 +38,28 @@
 		[self mainViewDidLoad];
         
         [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath: @"values.eraseEntireDBAtStartup" options: NSKeyValueObservingOptionNew context:nil];
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath: @"values.dbFontSize" options: NSKeyValueObservingOptionNew context:nil];
 	}
 	
 	return self;
 }
 
--(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context {
-	if (object == [NSUserDefaultsController sharedUserDefaultsController]) {
-		if ([keyPath isEqual:@"values.eraseEntireDBAtStartup" ]) {
+-(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context
+{
+	if (object == [NSUserDefaultsController sharedUserDefaultsController])
+    {
+		if ([keyPath isEqual:@"values.eraseEntireDBAtStartup" ])
+        {
             if( [[NSUserDefaults standardUserDefaults] boolForKey: @"eraseEntireDBAtStartup"])
             {
                 NSRunCriticalAlertPanel( NSLocalizedString( @"Erase Entire Database", nil), NSLocalizedString( @"Warning! With this option, each time OsiriX is restarted, the entire database will be erased. All studies will be deleted. This cannot be undone.", nil), NSLocalizedString( @"OK", nil), nil, nil);
             }
+        }
+        
+        if ([keyPath isEqual:@"values.dbFontSize"])
+        {
+            [[BrowserController currentBrowser] setTableViewRowHeight];
+            [[[BrowserController currentBrowser] window] display];
         }
     }
 }
@@ -83,6 +93,8 @@
 {	
 	NSLog(@"dealloc OSIDatabasePreferencePanePref");
 	
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver: self];
+    
 	[DICOMFieldsArray release];
 	
 	[super dealloc];

@@ -16,6 +16,7 @@
 #import "NSString+N2.h"
 #import "N2Operators.h"
 #import "N2Debug.h"
+#import "browserController.h"
 
 @implementation ComparativeCell
 
@@ -139,9 +140,9 @@
         [rightAlignmentParagraphStyle setAlignment:NSRightTextAlignment];
         [attributes setObject:rightAlignmentParagraphStyle forKey:NSParagraphStyleAttributeName];
         
-        initialFrame.origin.y += 14;
+        initialFrame.origin.y += [[BrowserController currentBrowser] fontSize: @"comparativeLineSpace"];
         [self.rightTextSecondLine drawInRect:initialFrame withAttributes:attributes];
-        initialFrame.origin.y -= 14;
+        initialFrame.origin.y -= [[BrowserController currentBrowser] fontSize: @"comparativeLineSpace"];
         
         CGFloat w = [self.rightTextSecondLine sizeWithAttributes:attributes].width;
         frame.size.width -= w + spacer;
@@ -155,9 +156,9 @@
         [leftAlignmentParagraphStyle setLineBreakMode: NSLineBreakByTruncatingTail];
         [attributes setObject:leftAlignmentParagraphStyle forKey:NSParagraphStyleAttributeName];
         
-        frame.origin.y += 14;
+        frame.origin.y += [[BrowserController currentBrowser] fontSize: @"comparativeLineSpace"];
         [self.leftTextSecondLine drawInRect:frame withAttributes:attributes];
-        frame.origin.y -= 14;
+        frame.origin.y -= [[BrowserController currentBrowser] fontSize: @"comparativeLineSpace"];
     }
     
     return initialFrame;
