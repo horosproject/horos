@@ -160,6 +160,7 @@ static int increment = 0;
                     {
                         [v.window makeKeyAndOrderFront: self];
                         found = YES;
+                        break;
                     }
                 }
                 

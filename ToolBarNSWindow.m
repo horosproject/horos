@@ -40,6 +40,7 @@
             {
                 [self orderWindow: NSWindowBelow relativeTo: v.window.windowNumber];
                 found = YES;
+                break;
             }
         }
         
