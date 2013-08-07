@@ -98,7 +98,9 @@ static int increment = 0;
 		
         emptyToolbar = [[NSToolbar alloc] initWithIdentifier: [NSString stringWithFormat:@"nstoolbar osirix %d", increment++]];
         [emptyToolbar setDelegate: self];
-        [emptyToolbar insertItemWithItemIdentifier: @"emptyItem" atIndex: 0];
+//        [emptyToolbar insertItemWithItemIdentifier: NSToolbarFlexibleSpaceItemIdentifier atIndex:0];
+//        [emptyToolbar insertItemWithItemIdentifier: @"emptyItem" atIndex: 1];
+//        [emptyToolbar insertItemWithItemIdentifier: NSToolbarSeparatorItemIdentifier atIndex:2];
         
         [[self window] setAnimationBehavior: NSWindowAnimationBehaviorNone];
         
@@ -142,6 +144,9 @@ static int increment = 0;
 
 - (void)windowDidBecomeKey:(NSNotification *)aNotification
 {
+//    [[self window] setToolbar: emptyToolbar]; for testing the empty toolbar
+//    return;
+    
 	if( [aNotification object] == [self window])
 	{
 		if( [[self window] isVisible])
@@ -237,25 +242,37 @@ static int increment = 0;
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar
 {
-	 return [NSArray arrayWithObject: @"emptyItem"];
-}
+    return [NSArray arrayWithObjects: @"emptyItem", NSToolbarFlexibleSpaceItemIdentifier, NSToolbarSeparatorItemIdentifier, NSToolbarSpaceItemIdentifier, nil];
+};
 
 - (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar
 {
-	  return [NSArray arrayWithObject: @"emptyItem"];
+    return [NSArray arrayWithObjects: NSToolbarFlexibleSpaceItemIdentifier, @"emptyItem", NSToolbarFlexibleSpaceItemIdentifier, nil];
 }
 
 - (NSToolbarItem *) toolbar: (NSToolbar *)toolbar itemForItemIdentifier: (NSString *) itemIdent willBeInsertedIntoToolbar:(BOOL) willBeInserted
 {
-	 NSToolbarItem *toolbarItem = [[NSToolbarItem alloc] initWithItemIdentifier: itemIdent];
+    NSToolbarItem *toolbarItem = [[NSToolbarItem alloc] initWithItemIdentifier: itemIdent];
 	 
-	 if ([itemIdent isEqualToString: @"emptyItem"])
-	 {
-		#define HEIGHT 53
+    if ([itemIdent isEqualToString: @"emptyItem"])
+    {
+        #define HEIGHT 53
+        #define WIDTH 600
+        
 		[toolbarItem setLabel: @""];
-		[toolbarItem setView: [[[NSView alloc] initWithFrame: NSMakeRect( 0, 0, HEIGHT, HEIGHT)] autorelease]];
-		[toolbarItem setMinSize: NSMakeSize( HEIGHT, HEIGHT)];
-		[toolbarItem setMaxSize: NSMakeSize( HEIGHT, HEIGHT)];
+         
+        NSTextView *txtView = [[[NSTextView alloc] initWithFrame: NSMakeRect( 0, 0, WIDTH, HEIGHT)] autorelease];
+         
+        [txtView insertText: NSLocalizedString( @"\rSelect a viewer to display the toolbar", nil)];
+        [txtView setEditable: NO];
+        [txtView setSelectable: NO];
+        [txtView setDrawsBackground: NO];
+        [txtView setFont: [NSFont systemFontOfSize: 18]];
+        [txtView setAlignment: NSCenterTextAlignment];
+        
+		[toolbarItem setView: txtView];
+		[toolbarItem setMinSize: NSMakeSize( WIDTH, HEIGHT)];
+		[toolbarItem setMaxSize: NSMakeSize( WIDTH, HEIGHT)];
 		[toolbarItem setTarget: nil];
 		[toolbarItem setAction: nil];
     }

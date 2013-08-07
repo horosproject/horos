@@ -3346,7 +3346,7 @@ static NSConditionLock *threadLock = nil;
                             NSArray *distantStudies = nil;
                             @synchronized(_albumNoOfStudiesCache)
                             {
-                                distantStudies = [_distantAlbumNoOfStudiesCache objectForKey: ialbum.name];
+                                distantStudies = [[[_distantAlbumNoOfStudiesCache objectForKey: ialbum.name] copy] autorelease];
                             }
                             
                             if( recomputeDistantStudies || distantStudies == nil)
