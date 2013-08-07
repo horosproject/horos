@@ -222,7 +222,9 @@ static NSMutableArray *cachedServersArray = nil;
 		NSString *icon = [[[NSString alloc] initWithData: [dict valueForKey: @"icon"] encoding:NSUTF8StringEncoding] autorelease];
 		[s setObject: icon forKey: @"icon"];
 	}
-
+    
+    [s setObject: [NSNumber numberWithBool: YES] forKey: @"Activated"];
+    
 	return s;
 }
 
@@ -362,6 +364,8 @@ static NSMutableArray *cachedServersArray = nil;
 								[s setObject: icon forKey: @"icon"];
 							}
 							
+                            [s setObject: @1 forKey: @"Activated"];
+                            
 							// Dont add duplicate addresses
 							BOOL alreadyHere = NO;
 							for( int v = 0; v < [serversArray count]; v++)
@@ -399,7 +403,7 @@ static NSMutableArray *cachedServersArray = nil;
 			
             for( int i = 0 ; i < [serversArray count] ; i++)
             {
-                if( [[[serversArray objectAtIndex: i] valueForKey:@"Activated"] boolValue] == NO)
+                if( [[serversArray objectAtIndex: i] valueForKey:@"Activated"] != nil && [[[serversArray objectAtIndex: i] valueForKey:@"Activated"] boolValue] == NO)
                 {
                     [serversArray removeObjectAtIndex: i];
                     i--;
