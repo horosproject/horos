@@ -16,6 +16,7 @@
 #import "ToolbarPanel.h"
 #import "ViewerController.h"
 #import "N2Debug.h"
+#import "AppController.h"
 
 @implementation ToolBarNSWindow
 
@@ -31,7 +32,7 @@
 
 - (void) orderOut:(id)sender
 {
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideToolbarIfNotActive"] == NO)
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideToolbarIfNotActive"] == NO && [AppController USETOOLBARPANEL] == YES)
     {
         ViewerController *v = [ViewerController frontMostDisplayed2DViewerForScreen: self.screen];
         if( v)
