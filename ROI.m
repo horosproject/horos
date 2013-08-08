@@ -4203,91 +4203,107 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                             {
                                 textureBufferSelected = [ROI addMargin: margin buffer: textureBuffer width: textureWidth height: textureHeight];
                                 
-                                unsigned char* newBufferCopy = malloc( newWidth*newHeight);
-                                memcpy( newBufferCopy, textureBufferSelected, newWidth*newHeight);
-                                
+                                if( textureBufferSelected)
                                 {
-                                    // input buffer
-                                    unsigned char *buff = textureBufferSelected;
-                                    int bufferWidth = newWidth;
-                                    int bufferHeight = newHeight;
-                                    
-                                    margin *= 2;
-                                    margin ++;
-                                    
-                                    unsigned char *kernelDilate = (unsigned char*) calloc( margin*margin, sizeof(unsigned char));
-                                    memset(kernelDilate,0x00,margin*margin);
-                                    
-                                    vImage_Buffer srcbuf, dstBuf;
-                                    vImage_Error err;
-                                    srcbuf.data = buff;
-                                    dstBuf.data = malloc( bufferHeight * bufferWidth);
-                                    dstBuf.height = srcbuf.height = bufferHeight;
-                                    dstBuf.width = srcbuf.width = bufferWidth;
-                                    dstBuf.rowBytes = srcbuf.rowBytes = bufferWidth;
-                                    err = vImageDilate_Planar8( &srcbuf, &dstBuf, 0, 0, kernelDilate, margin, margin, kvImageDoNotTile);
-                                    
-                                    memcpy(buff,dstBuf.data,bufferWidth*bufferHeight);
-                                    free( dstBuf.data);
-                                    free( kernelDilate);
+                                    unsigned char* newBufferCopy = malloc( newWidth*newHeight);
+                                    if( newBufferCopy)
+                                    {
+                                        memcpy( newBufferCopy, textureBufferSelected, newWidth*newHeight);
+                                        
+                                        {
+                                            // input buffer
+                                            unsigned char *buff = textureBufferSelected;
+                                            int bufferWidth = newWidth;
+                                            int bufferHeight = newHeight;
+                                            
+                                            margin *= 2;
+                                            margin ++;
+                                            
+                                            unsigned char *kernelDilate = (unsigned char*) calloc( margin*margin, sizeof(unsigned char));
+                                            if( kernelDilate)
+                                            {
+                                                memset(kernelDilate,0x00,margin*margin);
+                                                
+                                                vImage_Buffer srcbuf, dstBuf;
+                                                vImage_Error err;
+                                                srcbuf.data = buff;
+                                                dstBuf.data = malloc( bufferHeight * bufferWidth);
+                                                if( dstBuf.data)
+                                                {
+                                                    dstBuf.height = srcbuf.height = bufferHeight;
+                                                    dstBuf.width = srcbuf.width = bufferWidth;
+                                                    dstBuf.rowBytes = srcbuf.rowBytes = bufferWidth;
+                                                    err = vImageDilate_Planar8( &srcbuf, &dstBuf, 0, 0, kernelDilate, margin, margin, kvImageDoNotTile);
+                                                
+                                                    memcpy(buff,dstBuf.data,bufferWidth*bufferHeight);
+                                                    free( dstBuf.data);
+                                                }
+                                                free( kernelDilate);
+                                            }
+                                        }
+                                        
+                                        // Subtraction
+                                        for( long i = 0; i < newWidth*newHeight;i++)
+                                            if( newBufferCopy[ i]) textureBufferSelected[ i] = 0;
+                                        
+                                        free( newBufferCopy);
+                                    }
+                                }
+                            }
+                            
+                            if( textureBufferSelected)
+                            {
+                                GLuint textureName = 0;
+                                
+                                glEnable(GL_TEXTURE_RECTANGLE_EXT);
+                                glTextureRangeAPPLE(GL_TEXTURE_RECTANGLE_EXT, newWidth * newHeight, textureBufferSelected);
+                                glGenTextures (1, &textureName);
+                                glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureName);
+                                glPixelStorei (GL_UNPACK_ROW_LENGTH, newWidth);
+                                glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
+                                glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
+                                
+                                glBlendEquation(GL_FUNC_ADD);
+                                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                                
+                                if( [[NSUserDefaults standardUserDefaults] boolForKey:@"NOINTERPOLATION"])
+                                {
+                                    glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MIN_FILTER, GL_NEAREST);	//GL_LINEAR_MIPMAP_LINEAR
+                                    glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MAG_FILTER, GL_NEAREST);	//GL_LINEAR_MIPMAP_LINEAR
+                                }
+                                else
+                                {
+                                    glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	//GL_LINEAR_MIPMAP_LINEAR
+                                    glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	//GL_LINEAR_MIPMAP_LINEAR
                                 }
                                 
-                                // Subtraction
-                                for( int i = 0; i < newWidth*newHeight;i++)
-                                    if( newBufferCopy[ i]) textureBufferSelected[ i] = 0;
+                                glTexImage2D (GL_TEXTURE_RECTANGLE_EXT, 0, GL_INTENSITY8, newWidth, newHeight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, textureBufferSelected);
                                 
-                                free( newBufferCopy);
+                                glColor4f( 0, 0, 0, 1.0);
+                                
+                                screenXUpL = (newTextureUpLeftCornerX-offsetx)*scaleValue;
+                                screenYUpL = (newTextureUpLeftCornerY-offsety)*scaleValue;
+                                screenXDr = screenXUpL + newWidth*scaleValue;
+                                screenYDr = screenYUpL + newHeight*scaleValue;
+                                
+                                glBegin (GL_QUAD_STRIP); // draw either tri strips of line strips (so this will drw either two tris or 3 lines)
+                                glTexCoord2f (0, 0); // draw upper left in world coordinates
+                                glVertex3d (screenXUpL, screenYUpL, 0.0);
+                                
+                                glTexCoord2f (newWidth, 0); // draw lower left in world coordinates
+                                glVertex3d (screenXDr, screenYUpL, 0.0);
+                                
+                                glTexCoord2f (0, newHeight); // draw upper right in world coordinates
+                                glVertex3d (screenXUpL, screenYDr, 0.0);
+                                
+                                glTexCoord2f (newWidth, newHeight); // draw lower right in world coordinates
+                                glVertex3d (screenXDr, screenYDr, 0.0);
+                                glEnd();
+                                
+                                glDeleteTextures( 1, &textureName);
+                                
+                                glDisable(GL_TEXTURE_RECTANGLE_EXT);
                             }
-                            GLuint textureName = 0;
-                            
-                            glEnable(GL_TEXTURE_RECTANGLE_EXT);
-                            glTextureRangeAPPLE(GL_TEXTURE_RECTANGLE_EXT, newWidth * newHeight, textureBufferSelected);
-                            glGenTextures (1, &textureName);
-                            glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureName);
-                            glPixelStorei (GL_UNPACK_ROW_LENGTH, newWidth);
-                            glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
-                            glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
-                            
-                            glBlendEquation(GL_FUNC_ADD);
-                            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                            
-                            if( [[NSUserDefaults standardUserDefaults] boolForKey:@"NOINTERPOLATION"])
-                            {
-                                glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MIN_FILTER, GL_NEAREST);	//GL_LINEAR_MIPMAP_LINEAR
-                                glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MAG_FILTER, GL_NEAREST);	//GL_LINEAR_MIPMAP_LINEAR
-                            }
-                            else
-                            {
-                                glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	//GL_LINEAR_MIPMAP_LINEAR
-                                glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	//GL_LINEAR_MIPMAP_LINEAR
-                            }
-                            
-                            glTexImage2D (GL_TEXTURE_RECTANGLE_EXT, 0, GL_INTENSITY8, newWidth, newHeight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, textureBufferSelected);
-                            
-                            glColor4f( 0, 0, 0, 1.0);
-                            
-                            screenXUpL = (newTextureUpLeftCornerX-offsetx)*scaleValue;
-                            screenYUpL = (newTextureUpLeftCornerY-offsety)*scaleValue;
-                            screenXDr = screenXUpL + newWidth*scaleValue;
-                            screenYDr = screenYUpL + newHeight*scaleValue;
-                            
-                            glBegin (GL_QUAD_STRIP); // draw either tri strips of line strips (so this will drw either two tris or 3 lines)
-                            glTexCoord2f (0, 0); // draw upper left in world coordinates
-                            glVertex3d (screenXUpL, screenYUpL, 0.0);
-                            
-                            glTexCoord2f (newWidth, 0); // draw lower left in world coordinates
-                            glVertex3d (screenXDr, screenYUpL, 0.0);
-                            
-                            glTexCoord2f (0, newHeight); // draw upper right in world coordinates
-                            glVertex3d (screenXUpL, screenYDr, 0.0);
-                            
-                            glTexCoord2f (newWidth, newHeight); // draw lower right in world coordinates
-                            glVertex3d (screenXDr, screenYDr, 0.0);
-                            glEnd();
-                            
-                            glDeleteTextures( 1, &textureName);
-                            
-                            glDisable(GL_TEXTURE_RECTANGLE_EXT);
                         }
                         break;
                     }
