@@ -327,37 +327,42 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (void) reapplyAnnotationsFromDICOMSR
 {
+    static int avoidReentry3 = 0;
+    
+    if( avoidReentry3)
+    {
+        NSLog( @"****** reapplyAnnotationsFromDICOMSR avoidReentry");
+        return;
+    }
+    
+    avoidReentry3++;
+    
 	#ifndef OSIRIX_LIGHT
 	if( [self.hasDICOM boolValue] == YES)
 	{
-		[self.managedObjectContext lock];
-        if( reentry == NO)
+        @try
         {
-            reentry = YES;
-            @try
+            NSManagedObject *archivedAnnotations = [self annotationsSRImage];
+            NSString *dstPath = [archivedAnnotations valueForKey: @"completePath"];
+            
+            if( dstPath)
             {
-                NSManagedObject *archivedAnnotations = [self annotationsSRImage];
-                NSString *dstPath = [archivedAnnotations valueForKey: @"completePath"];
+                SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: dstPath] autorelease];
                 
-                if( dstPath)
-                {
-                    SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: dstPath] autorelease];
-                    
-                    NSDictionary *annotations = [r annotations];
-                    if( annotations)
-                        [self applyAnnotationsFromDictionary: annotations];
-                }
+                NSDictionary *annotations = [r annotations];
+                if( annotations)
+                    [self applyAnnotationsFromDictionary: annotations];
             }
-            @catch (NSException* e) {
-                N2LogExceptionWithStackTrace(e);
-            }
-            @finally {
-                [self.managedObjectContext unlock];
-                reentry = NO;
-            }
+        }
+        @catch (NSException* e) {
+            N2LogExceptionWithStackTrace(e);
+        }
+        @finally {
         }
 	}
 	#endif
+    
+    avoidReentry3--;
 }
 
 - (void) applyAnnotationsFromDictionary: (NSDictionary*) rootDict
