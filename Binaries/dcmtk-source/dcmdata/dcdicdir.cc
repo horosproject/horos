@@ -398,19 +398,33 @@ OFCondition DcmDicomDir::linkMRDRtoRecord( DcmDirectoryRecord *dRec )
 
 // ********************************
 
+static int reentry = 0;
+#define MAXREENTRY 50
+
 OFCondition DcmDicomDir::moveRecordToTree( DcmDirectoryRecord *startRec,
                                            DcmSequenceOfItems &fromDirSQ,
                                            DcmDirectoryRecord *toRecord )
 {
     OFCondition l_error = EC_Normal;
     
+    if( reentry > MAXREENTRY)
+    {
+        ofConsole.lockCerr() << "DcmDicomDir::moveRecordToTree() maximum reentry reached - return" << endl;
+        ofConsole.unlockCerr();
+        
+        l_error = EC_IllegalCall;
+        return l_error;
+    }
+    
+    reentry++;
+    
     if (toRecord  == NULL)
         l_error = EC_IllegalCall;
-    else if ( startRec != NULL )
+    else while ( startRec != NULL )
     {
         DcmDirectoryRecord *lowerRec = NULL;
         DcmDirectoryRecord *nextRec = NULL;
-
+        
         DcmUnsignedLongOffset *offElem;
         offElem = lookForOffsetElem( startRec, DCM_OffsetOfReferencedLowerLevelDirectoryEntity );
         if ( offElem != NULL )
@@ -418,34 +432,46 @@ OFCondition DcmDicomDir::moveRecordToTree( DcmDirectoryRecord *startRec,
         offElem = lookForOffsetElem( startRec, DCM_OffsetOfTheNextDirectoryRecord );
         if ( offElem != NULL )
             nextRec = OFstatic_cast(DcmDirectoryRecord *, offElem->getNextRecord());
-
-DCM_dcmdataDebug(2,( "DcmDicomDir::moveRecordToTree() Record(0x%4.4hx,0x%4.4hx) p=%p has lower=%p and next=%p Record",
-           startRec->getGTag(), startRec->getETag(),
-           startRec, lowerRec, nextRec ));
-
+        
+//        DCMDATA_TRACE("DcmDicomDir::moveRecordToTree() Record ("
+//                      << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
+//                      << STD_NAMESPACE setw(4) << startRec->getGTag() << ","
+//                      << STD_NAMESPACE setw(4) << startRec->getETag()
+//                      << ") p=" << OFstatic_cast(void *, startRec)
+//                      << " has lower=" << OFstatic_cast(void *, lowerRec)
+//                      << " and next=" << OFstatic_cast(void *, nextRec) << " Record");
+        
         linkMRDRtoRecord( startRec );
-
+        
         // use protected method for insertion without type check:
         if ( toRecord->masterInsertSub( startRec ) == EC_Normal )
-        {                                         // only works since friend class
-             DcmItem *dit = fromDirSQ.remove( startRec );
-             if ( dit == NULL )
-             {
-               ofConsole.lockCerr() << "Error: DcmDicomDir::moveRecordToTree() DirRecord is part of unknown Sequence" << endl;
-               ofConsole.unlockCerr();
-             }
+        {
+            // only works since friend class
+            DcmItem *dit = fromDirSQ.remove( startRec );
+            if ( dit == NULL )
+            {
+                ofConsole.lockCerr() << "DcmDicomDir::moveRecordToTree() DirRecord is part of unknown Sequence" << endl;
+                ofConsole.unlockCerr();
+            }
         }
         else
         {
-           ofConsole.lockCerr() << "Error: DcmDicomDir::moveRecordToTree() cannot insert DirRecord (=NULL?)" << endl;
-           ofConsole.unlockCerr();
+            ofConsole.lockCerr() << "DcmDicomDir::moveRecordToTree() Cannot insert DirRecord (=NULL?)" << endl;
+            ofConsole.unlockCerr();
         }
         moveRecordToTree( lowerRec, fromDirSQ, startRec );
-        moveRecordToTree( nextRec, fromDirSQ, toRecord );
+        
+        // We handled this record, now move on to the next one on this level.
+        // The next while-loop iteration does the equivalent of the following:
+        // moveRecordToTree( nextRec, fromDirSQ, toRecord );
+        startRec = nextRec;
     }
+    
+    reentry--;
     
     return l_error;
 }
+
 
 
 // ********************************
