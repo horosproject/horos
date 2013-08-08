@@ -329,11 +329,25 @@ static int hotKeyToolCrossTable[] =
 	return -1;
 }
 
++ (ViewerController*) frontMostDisplayed2DViewerForScreen: (NSScreen*) screen
+{
+	for( NSWindow *w in [NSApp orderedWindows])
+	{
+		if( [[w windowController] isKindOfClass:[ViewerController class]] && w.isVisible)
+		{
+            if( [w.screen isEqual: screen])
+                return [w windowController];
+		}
+	}
+	
+	return nil;
+}
+
 + (ViewerController*) frontMostDisplayed2DViewer
 {
 	for( NSWindow *w in [NSApp orderedWindows])
 	{
-		if( [[w windowController] isKindOfClass:[ViewerController class]])
+		if( [[w windowController] isKindOfClass:[ViewerController class]] && w.isVisible)
 		{
 			return [w windowController];
 		}
@@ -3089,10 +3103,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			else
             {
                 if( [[toolbarPanel[ i] window] isVisible])
-                {
-                    [toolbarPanel[ i] setToolbar: nil viewer: nil];
-                    [(ToolBarNSWindow*) ([toolbarPanel[ i] window]) orderOutIfNeeded:self];
-                }
+                    [[toolbarPanel[ i] window] orderOut:self];
             }
 		}
 		if( found == NO) NSLog( @"Toolbar NOT found");

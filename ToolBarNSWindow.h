@@ -20,6 +20,4 @@
 //	BOOL willClose;
 }
 
-- (void) orderOutIfNeeded:(id)sender;
-
 @end

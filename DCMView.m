@@ -8895,24 +8895,27 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				{
 					// draw line around key View
 					
-					if( frontMost  && isKeyView && [[self windowController] FullScreenON] == FALSE)
+					if( (isKeyView && frontMost) || [ViewerController frontMostDisplayed2DViewerForScreen: self.window.screen] == self.windowController)
 					{
-						float heighthalf = drawingFrameRect.size.height/2;
-						float widthhalf = drawingFrameRect.size.width/2;
-						
-						// red square
-						
-	//					glEnable(GL_BLEND);
-						glColor4f (1.0f, 0.0f, 0.0f, 0.8f);
-						glLineWidth(8.0 * sf);
-						glBegin(GL_LINE_LOOP);
-							glVertex2f(  -widthhalf, -heighthalf);
-							glVertex2f(  -widthhalf, heighthalf);
-							glVertex2f(  widthhalf, heighthalf);
-							glVertex2f(  widthhalf, -heighthalf);
-						glEnd();
-						glLineWidth(1.0 * sf);
-	//					glDisable(GL_BLEND);
+                        if( [[self windowController] FullScreenON] == FALSE)
+                        {
+                            float heighthalf = drawingFrameRect.size.height/2;
+                            float widthhalf = drawingFrameRect.size.width/2;
+                            
+                            // red square
+                            
+        //					glEnable(GL_BLEND);
+                            glColor4f (1.0f, 0.0f, 0.0f, 0.8f);
+                            glLineWidth(8.0 * sf);
+                            glBegin(GL_LINE_LOOP);
+                                glVertex2f(  -widthhalf, -heighthalf);
+                                glVertex2f(  -widthhalf, heighthalf);
+                                glVertex2f(  widthhalf, heighthalf);
+                                glVertex2f(  widthhalf, -heighthalf);
+                            glEnd();
+                            glLineWidth(1.0 * sf);
+        //					glDisable(GL_BLEND);
+                        }
 					}
 				}  //drawLines for ImageView Frames
 				
@@ -8989,7 +8992,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					glEnd();
 					glLineWidth(1.0 * sf);
 					
-					if (isKeyView && frontMost)
+					if( (isKeyView && frontMost) || [ViewerController frontMostDisplayed2DViewerForScreen: self.window.screen] == self.windowController)
 					{
 						float heighthalf = drawingFrameRect.size.height/2 - 1;
 						float widthhalf = drawingFrameRect.size.width/2 - 1;

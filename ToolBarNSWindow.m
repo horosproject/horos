@@ -29,23 +29,21 @@
 	return YES;
 }
 
-- (void) orderOutIfNeeded:(id)sender
+- (void) orderOut:(id)sender
 {
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideToolbarIfNotActive"] == NO)
     {
-        BOOL found = NO;
-        for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+        ViewerController *v = [ViewerController frontMostDisplayed2DViewerForScreen: self.screen];
+        if( v)
         {
-            if( [v.window.screen isEqualTo: self.screen])
-            {
-                [self orderWindow: NSWindowBelow relativeTo: v.window.windowNumber];
-                found = YES;
-                break;
-            }
+            [self.windowController setToolbar: v.toolbar viewer: v];
+            [self orderWindow: NSWindowBelow relativeTo: v.window.windowNumber];
         }
-        
-        if( found == NO)
+        else
+        {
+            [self.windowController setToolbar: nil viewer: nil];
             [super orderOut:sender];
+        }
     }
     else
         [super orderOut:sender];

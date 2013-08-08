@@ -158,19 +158,7 @@ static int increment = 0;
                 [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
             else
             {
-                BOOL found = NO;
-                for( ViewerController *v in [ViewerController getDisplayed2DViewers])
-                {
-                    if( [v.window.screen isEqualTo: self.window.screen])
-                    {
-                        [v.window makeKeyAndOrderFront: self];
-                        found = YES;
-                        break;
-                    }
-                }
-                
-                if( found == NO)
-                    [(ToolBarNSWindow*) (self.window) orderOutIfNeeded: self];
+                [self.window orderOut: self];
             }
 		}
 	}
@@ -231,8 +219,7 @@ static int increment = 0;
 			}
 			else
 			{
-				[self setToolbar: nil viewer: nil];
-				[(ToolBarNSWindow*) (self.window) orderOutIfNeeded:self];
+				[self.window orderOut:self];
 			}
 		}
 	}
@@ -351,7 +338,7 @@ static int increment = 0;
 			}
 		}
 		else
-            [[self window] orderOut: self];
+            [self.window orderOut: self];
         
         NSEnableScreenUpdates();
         
@@ -394,7 +381,7 @@ static int increment = 0;
 	}
 	else
 	{
-		[[self window] orderOut: self];
+		[self.window orderOut: self];
 	}
 	
 	if( toolbar)

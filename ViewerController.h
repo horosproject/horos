@@ -369,6 +369,7 @@ enum
 + (NSArray*) getDisplayedSeries;
 + (BOOL) isFrontMost2DViewer: (NSWindow*) ww;
 + (ViewerController*) frontMostDisplayed2DViewer;
++ (ViewerController*) frontMostDisplayed2DViewerForScreen: (NSScreen*) screen;
 + (void) closeAllWindows;
 + (NSArray*) studyColors;
 
