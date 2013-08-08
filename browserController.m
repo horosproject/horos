@@ -6993,6 +6993,12 @@ static NSConditionLock *threadLock = nil;
 				waitOpeningWindow = nil;
 				
 				windowsStateApplied = YES;
+                
+                for( id v in [[displayedViewers reverseObjectEnumerator] allObjects])
+                {
+                    if( [v checkFrameSize] == YES)
+                        [v buildMatrixPreview: YES];
+                }
 			}
 		}
 		

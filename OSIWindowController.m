@@ -457,6 +457,8 @@ static BOOL protectedReentryWindowDidResize = NO;
 							
 							dontEnterMagneticFunctions = NO;
 							
+                            [theWindow.windowController windowDidChangeScreen:nil];
+                            
 		//					[window makeKeyAndOrderFront: self];
 		//					[theWindow makeKeyAndOrderFront: self];
 		//					[self refreshToolbar];

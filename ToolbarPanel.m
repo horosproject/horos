@@ -98,14 +98,13 @@ static int increment = 0;
 		
         emptyToolbar = [[NSToolbar alloc] initWithIdentifier: [NSString stringWithFormat:@"nstoolbar osirix %d", increment++]];
         [emptyToolbar setDelegate: self];
-//        [emptyToolbar insertItemWithItemIdentifier: NSToolbarFlexibleSpaceItemIdentifier atIndex:0];
-//        [emptyToolbar insertItemWithItemIdentifier: @"emptyItem" atIndex: 1];
-//        [emptyToolbar insertItemWithItemIdentifier: NSToolbarSeparatorItemIdentifier atIndex:2];
         
         [[self window] setAnimationBehavior: NSWindowAnimationBehaviorNone];
         
         [[self window] setToolbar: emptyToolbar];
         [[self window] setLevel: NSNormalWindowLevel];
+        
+        [self applicationDidChangeScreenParameters: nil];
         
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidChangeScreenParameters:) name:NSApplicationDidChangeScreenParametersNotification object:NSApp];
         
