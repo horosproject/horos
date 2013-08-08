@@ -7760,7 +7760,12 @@ static NSConditionLock *threadLock = nil;
     
 	DicomStudy* study = [curImage valueForKeyPath:@"series.study"];
 	
-	NSInteger index = [originalOutlineViewArray indexOfObject: study];
+    NSArray *studiesList = originalOutlineViewArray;
+    
+    if( studiesList == nil)
+        studiesList = outlineViewArray;
+    
+	NSInteger index = [studiesList indexOfObject: study];
 	
 	if( index != NSNotFound)
 	{
@@ -7769,9 +7774,9 @@ static NSConditionLock *threadLock = nil;
 		do
 		{
 			index += direction;
-			if( index >= 0 && index < [originalOutlineViewArray count])
+			if( index >= 0 && index < [studiesList count])
 			{
-				nextStudy = [originalOutlineViewArray objectAtIndex: index];
+				nextStudy = [studiesList objectAtIndex: index];
 				
 				if( [nextStudy.patientUID compare:study.patientUID options:NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch|NSWidthInsensitiveSearch] != NSOrderedSame) // skip empty studies
 				{
