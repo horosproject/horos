@@ -1306,8 +1306,15 @@ static volatile int numberOfThreadsForRelisce = 0;
 			newYSpace = [firstPix pixelSpacingX];
 			
 			newY = ([pixList[ curMovieIndex] count] * fabs( [firstPix sliceInterval])) / [firstPix pixelSpacingX];
+            
+            if( newY < [pixList[ curMovieIndex] count])
+            {
+                NSLog( @"---- newY < [pixList[ curMovieIndex] count]");
+                square = NO;
+            }
 		}
-		else
+        
+		if( square == NO)
 		{
 			newXSpace = [firstPix pixelSpacingX];
 			newYSpace = fabs( [firstPix sliceInterval]);
@@ -1326,8 +1333,16 @@ static volatile int numberOfThreadsForRelisce = 0;
 			newYSpace = [firstPix pixelSpacingY];
 			
 			newY = ([pixList[ curMovieIndex] count]  * fabs( [firstPix sliceInterval])) / [firstPix pixelSpacingY];
+            
+            if( newY < [pixList[ curMovieIndex] count])
+            {
+                NSLog( @"---- newY < [pixList[ curMovieIndex] count]");
+                square = NO;
+            }
 		}
-		else
+		
+        
+        if( square == NO)
 		{
 			newY = [pixList[ curMovieIndex] count];
 			
