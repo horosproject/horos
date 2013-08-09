@@ -12634,7 +12634,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		else
 			self.yFlipped = NO;
 		
-		if( ([self is2DViewer] && firstTimeDisplay && [[NSUserDefaults standardUserDefaults] boolForKey:@"AlwaysScaleToFit"] == NO) && COPYSETTINGSINSERIES == NO)
+		if( ([self is2DViewer] && firstTimeDisplay && [[NSUserDefaults standardUserDefaults] boolForKey:@"AlwaysScaleToFit"] == NO) || COPYSETTINGSINSERIES == NO)
 		{
 			if( [image valueForKey:@"scale"])
 				[self setScaleValue: [[image valueForKey:@"scale"] floatValue]];
@@ -12651,14 +12651,17 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						else
 							[self setScaleValue: [[series valueForKey:@"scale"] floatValue]];
 					}
-					else [self scaleToFit];
+					else
+                        [self scaleToFit];
 				}
-				else [self scaleToFit];
+				else
+                    [self scaleToFit];
 			}
 			else 
 				[self scaleToFit];
 		}
-		else [self scaleToFit];
+		else
+            [self scaleToFit];
 		
 		if( [image valueForKey:@"rotationAngle"])
 			[self setRotation: [[image valueForKey:@"rotationAngle"] floatValue]];
