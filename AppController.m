@@ -5072,6 +5072,7 @@ static BOOL initialized = NO;
 			[[viewersList objectAtIndex:i] setWindowFrame: frame showWindow:YES animate: YES];			
 		}
 		
+        lastRows = 1;
 		lastColumns = numberOfMonitors;
 	}
 	

@@ -8895,7 +8895,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				{
 					// draw line around key View
 					
-					if( (isKeyView && frontMost) || [ViewerController frontMostDisplayed2DViewerForScreen: self.window.screen] == self.windowController)
+					if( isKeyView && (frontMost || [ViewerController frontMostDisplayed2DViewerForScreen: self.window.screen] == self.windowController))
 					{
                         if( [[self windowController] FullScreenON] == FALSE)
                         {
@@ -8931,10 +8931,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                     dstRect.origin = NSMakePoint( drawingFrameRect.size.width/2 + oo.x - dstRect.size.width/2, drawingFrameRect.size.height/2 - oo.y - dstRect.size.height/2);
                     
                     glColor4f (0, 1, 0.0f, 0.8f);
-                    glLineWidth( 4.0 * sf);
+                    glLineWidth( 3.0 * sf);
                     
                     glPushAttrib( GL_ENABLE_BIT);
-                    glLineStipple( 5 * sf, 0xAAAA);
+                    glLineStipple( 4 * sf, 0xAAAA);
                     glEnable(GL_LINE_STIPPLE);
                     
                     // Left
@@ -8992,7 +8992,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					glEnd();
 					glLineWidth(1.0 * sf);
 					
-					if( (isKeyView && frontMost) || [ViewerController frontMostDisplayed2DViewerForScreen: self.window.screen] == self.windowController)
+					if( isKeyView && (frontMost || [ViewerController frontMostDisplayed2DViewerForScreen: self.window.screen] == self.windowController))
 					{
 						float heighthalf = drawingFrameRect.size.height/2 - 1;
 						float widthhalf = drawingFrameRect.size.width/2 - 1;
