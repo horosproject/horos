@@ -1648,7 +1648,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             [[self seriesObj]  setValue:[NSNumber numberWithBool:yFlipped] forKey:@"yFlipped"];
             
             // Image Level
-            if( (curImage >= 0 && dcmFilesList.count > curImage && [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"]]) || COPYSETTINGSINSERIES == NO)
+            if( (curImage >= 0 && dcmFilesList.count > curImage) && COPYSETTINGSINSERIES == NO)
                 [[self imageObj] setValue:[NSNumber numberWithBool:yFlipped] forKey:@"yFlipped"];
             else
                 [[self imageObj] setValue: nil forKey:@"yFlipped"];
@@ -1674,7 +1674,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             [[self seriesObj] setValue:[NSNumber numberWithBool:xFlipped] forKey:@"xFlipped"];
             
             // Image Level
-            if( (curImage >= 0 && dcmFilesList.count > curImage && [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"]]) || COPYSETTINGSINSERIES == NO)
+            if( (curImage >= 0 && dcmFilesList.count > curImage) && COPYSETTINGSINSERIES == NO)
                 [[self imageObj] setValue:[NSNumber numberWithBool:xFlipped] forKey:@"xFlipped"];
             else
                 [[self imageObj] setValue: nil forKey:@"xFlipped"];
@@ -2144,6 +2144,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			[dcmFilesList release];
 			dcmFilesList = [files retain];
 		}
+        
+        COPYSETTINGSINSERIES = ![DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: 0] valueForKey:@"modality"]];
 		
 		flippedData = NO;
 		
@@ -2379,59 +2381,53 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	COPYSETTINGSINSERIES = !COPYSETTINGSINSERIES;
 	
-	[[self.imageObj managedObjectContext] lock];
-	
 	@try 
 	{
-		for( ViewerController *v in [ViewerController getDisplayed2DViewers])
-		{
-			for( DCMView *imageView in [v imageViews])
-			{
-				if( [imageView seriesObj] == [self seriesObj])
-				{
-					imageView.COPYSETTINGSINSERIES = COPYSETTINGSINSERIES;
-					
-					for( int i = 0 ; i < [v  maxMovieIndex]; i++)
-					{
-						for( DCMPix *pix in [v pixList: i])
-						{
-							[pix changeWLWW :curWL :curWW];
-							
-							if( COPYSETTINGSINSERIES)
-							{
-								[pix.imageObj setValue: nil forKey:@"windowWidth"];
-								[pix.imageObj setValue: nil forKey:@"windowLevel"];
-								[pix.imageObj setValue: nil forKey:@"scale"];
-								[pix.imageObj setValue: nil forKey:@"rotationAngle"];
-								[pix.imageObj setValue: nil forKey:@"yFlipped"];
-								[pix.imageObj setValue: nil forKey:@"xFlipped"];
-								[pix.imageObj setValue: nil forKey:@"xOffset"];
-								[pix.imageObj setValue: nil forKey:@"yOffset"];
-							}
-							else
-							{
-								[pix.imageObj setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
-								[pix.imageObj setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
-								[pix.imageObj setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
-								[pix.imageObj setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
-								[pix.imageObj setValue:[NSNumber numberWithBool:yFlipped] forKey:@"yFlipped"];
-								[pix.imageObj setValue:[NSNumber numberWithBool:yFlipped] forKey:@"xFlipped"];
-								[pix.imageObj setValue:[NSNumber numberWithFloat:origin.x] forKey:@"xOffset"];
-								[pix.imageObj setValue:[NSNumber numberWithFloat:origin.y] forKey:@"yOffset"];
-							}
-						}
-					}
-				}
-			}
-		}
+        ViewerController *v = self.windowController;
+        
+        for( DCMView *imageView in [v imageViews])
+        {
+            if( [imageView seriesObj] == [self seriesObj])
+            {
+                imageView.COPYSETTINGSINSERIES = COPYSETTINGSINSERIES;
+                
+                for( int i = 0 ; i < [v  maxMovieIndex]; i++)
+                {
+                    for( DCMPix *pix in [v pixList: i])
+                    {
+                        [pix changeWLWW :curWL :curWW];
+                        
+                        if( COPYSETTINGSINSERIES)
+                        {
+                            [pix.imageObj setValue: nil forKey:@"windowWidth"];
+                            [pix.imageObj setValue: nil forKey:@"windowLevel"];
+                            [pix.imageObj setValue: nil forKey:@"scale"];
+                            [pix.imageObj setValue: nil forKey:@"rotationAngle"];
+                            [pix.imageObj setValue: nil forKey:@"yFlipped"];
+                            [pix.imageObj setValue: nil forKey:@"xFlipped"];
+                            [pix.imageObj setValue: nil forKey:@"xOffset"];
+                            [pix.imageObj setValue: nil forKey:@"yOffset"];
+                        }
+                        else
+                        {
+                            [pix.imageObj setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
+                            [pix.imageObj setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
+                            [pix.imageObj setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
+                            [pix.imageObj setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
+                            [pix.imageObj setValue:[NSNumber numberWithBool:yFlipped] forKey:@"yFlipped"];
+                            [pix.imageObj setValue:[NSNumber numberWithBool:yFlipped] forKey:@"xFlipped"];
+                            [pix.imageObj setValue:[NSNumber numberWithFloat:origin.x] forKey:@"xOffset"];
+                            [pix.imageObj setValue:[NSNumber numberWithFloat:origin.y] forKey:@"yOffset"];
+                        }
+                    }
+                }
+            }
+        }
 	}
 	@catch (NSException * e) 
 	{
 		N2LogExceptionWithStackTrace(e);
 	}
-
-	
-	[[self.imageObj managedObjectContext] unlock];
 }
 
 - (void) setIndex:(short) index
@@ -2488,7 +2484,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			if( [self is2DViewer] == YES)
 			{
-				if( (curImage >= 0 && [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"]]) || COPYSETTINGSINSERIES == NO)
+				if( curImage >= 0 && COPYSETTINGSINSERIES == NO)
 				{
 					if( curWW != curDCM.ww || curWL != curDCM.wl || [curDCM updateToApply] == YES)
 					{
@@ -5856,7 +5852,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	DCMPix	*otherPix = [note object];
 	
-	if( curImage < 0 || [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"]] || COPYSETTINGSINSERIES == NO)
+	if( curImage < 0 || COPYSETTINGSINSERIES == NO)
 		return;
 	
 	if( avoidChangeWLWWRecursive == NO)
@@ -5948,7 +5944,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                     [[self seriesObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
                     
                     // Image Level
-                    if( (curImage >= 0 && [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"]]) || COPYSETTINGSINSERIES == NO)
+                    if( curImage >= 0 && COPYSETTINGSINSERIES == NO)
                     {
                         [[self imageObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
                         [[self imageObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
@@ -5967,7 +5963,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                         [[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
                         
                         // Image Level
-                        if( (curImage >= 0 && [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"]]) || COPYSETTINGSINSERIES == NO)
+                        if( curImage >= 0 && COPYSETTINGSINSERIES == NO)
                         {
                             [[self imageObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
                             [[self imageObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
@@ -6015,7 +6011,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                     [[self seriesObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
                     
                     // Image Level
-                    if( (curImage >= 0 && [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"]]) || COPYSETTINGSINSERIES == NO)
+                    if( curImage >= 0 && COPYSETTINGSINSERIES == NO)
                     {
                         [[self imageObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
                         [[self imageObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
@@ -6034,7 +6030,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                         [[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
                         
                         // Image Level
-                        if( (curImage >= 0 && [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"]]) || COPYSETTINGSINSERIES == NO)
+                        if( curImage >= 0 && COPYSETTINGSINSERIES == NO)
                         {
                             [[self imageObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
                             [[self imageObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
@@ -9676,7 +9672,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				
 				if( is2DViewer == YES)
 				{
-					if( (curImage >= 0 && [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"]]) || COPYSETTINGSINSERIES == NO)
+					if( curImage >= 0 && COPYSETTINGSINSERIES == NO)
 					{
 						ViewerController *v = [self windowController];
 						
@@ -9729,7 +9725,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				{
 					[[self windowController] setUpdateTilingViewsValue: YES];
 				
-					if( (curImage >= 0 && [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"]]) || COPYSETTINGSINSERIES == NO)
+					if( curImage >= 0 && COPYSETTINGSINSERIES == NO)
 					{
 						ViewerController *v = [self windowController];
 						
@@ -11090,7 +11086,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				[[self seriesObj] setValue:[NSNumber numberWithInt: 3] forKey: @"displayStyle"];
 				
 				// Image Level
-				if( (curImage >= 0 && [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"]]) || COPYSETTINGSINSERIES == NO)
+				if( curImage >= 0 && COPYSETTINGSINSERIES == NO)
 					[[self imageObj] setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
 				else
 					[[self imageObj] setValue: nil forKey:@"scale"];
@@ -11134,7 +11130,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                         [[self seriesObj] setValue:[NSNumber numberWithInt: 3] forKey: @"displayStyle"];
                         
                         // Image Level
-                        if( (curImage >= 0 && [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"]]) || COPYSETTINGSINSERIES == NO)
+                        if( curImage >= 0 && COPYSETTINGSINSERIES == NO)
                             [[self imageObj] setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
                         else
                             [[self imageObj] setValue: nil forKey:@"scale"];
@@ -11268,7 +11264,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			[[self seriesObj] setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
 			
 			// Image Level
-			if( (curImage >= 0 && [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"]]) || COPYSETTINGSINSERIES == NO)
+			if( curImage >= 0 && COPYSETTINGSINSERIES == NO)
 				[[self imageObj] setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
 			else
 				[[self imageObj] setValue: nil forKey:@"rotationAngle"];
@@ -11401,7 +11397,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			[[self seriesObj] setValue:[NSNumber numberWithFloat:y] forKey:@"yOffset"];
 			
 			// Image Level
-			if( (curImage >= 0 && [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"]]) || COPYSETTINGSINSERIES == NO)
+			if( curImage >= 0 && COPYSETTINGSINSERIES == NO)
 			{
 				[[self imageObj] setValue:[NSNumber numberWithFloat:x] forKey:@"xOffset"];
 				[[self imageObj] setValue:[NSNumber numberWithFloat:y] forKey:@"yOffset"];
@@ -12326,7 +12322,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		{
 			[self setCOPYSETTINGSINSERIESdirectly: aView.COPYSETTINGSINSERIES];
 			
-			if( (curImage >= 0 && [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"]]) || COPYSETTINGSINSERIES == NO)
+			if( curImage >= 0 && COPYSETTINGSINSERIES == NO)
 			{
 				
 			}
@@ -12638,7 +12634,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		else
 			self.yFlipped = NO;
 		
-		if( ([self is2DViewer] && firstTimeDisplay && [[NSUserDefaults standardUserDefaults] boolForKey:@"AlwaysScaleToFit"] == NO) || COPYSETTINGSINSERIES == NO)
+		if( ([self is2DViewer] && firstTimeDisplay && [[NSUserDefaults standardUserDefaults] boolForKey:@"AlwaysScaleToFit"] == NO) && COPYSETTINGSINSERIES == NO)
 		{
 			if( [image valueForKey:@"scale"])
 				[self setScaleValue: [[image valueForKey:@"scale"] floatValue]];
@@ -12671,7 +12667,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		else
 			[self setRotation: 0];
 		
-		if( ([self is2DViewer] == YES && [[NSUserDefaults standardUserDefaults] boolForKey:@"AlwaysScaleToFit"] == NO) || COPYSETTINGSINSERIES == NO)
+		if( ([self is2DViewer] == YES && [[NSUserDefaults standardUserDefaults] boolForKey:@"AlwaysScaleToFit"] == NO) && COPYSETTINGSINSERIES == NO)
 		{
 			NSPoint o = NSMakePoint( HUGE_VALF, HUGE_VALF);
 			
@@ -12699,7 +12695,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		if( ww == 0)
 		{
-			if( (curImage >= 0 && [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"]]) || COPYSETTINGSINSERIES == NO || [self is2DViewer] == NO)
+			if( (curImage >= 0) || COPYSETTINGSINSERIES == NO || [self is2DViewer] == NO)
 			{
 				ww = curDCM.savedWW;
 				wl = curDCM.savedWL;

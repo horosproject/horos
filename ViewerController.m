@@ -8040,7 +8040,8 @@ return YES;
                 identicalChannelRepresentation = NO;
         }
         
-        [imageView setCOPYSETTINGSINSERIESdirectly: identicalChannelRepresentation];
+        if( identicalChannelRepresentation == NO)
+            [imageView setCOPYSETTINGSINSERIESdirectly: identicalChannelRepresentation];
     }
     
     for( NSArray *pList in pixListArray)
