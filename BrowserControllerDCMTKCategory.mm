@@ -142,41 +142,44 @@ extern NSRecursiveLock *PapyrusLock;
 					NSLog( @"getDICOMFile:(NSString*) file inSyntax:(NSString*) syntax quality: (int) quality failed");
 			}
 		}
-		else
-		{
-			DCMObject *dcmObject = nil;
-			@try
-			{
-				dcmObject = [[DCMObject alloc] initWithContentsOfFile: file decodingPixelData: NO];
-				status = [dcmObject writeToFile: @"/tmp/wado-recompress.dcm" withTransferSyntax: [[[DCMTransferSyntax alloc] initWithTS: syntax] autorelease] quality: quality AET:@"OsiriX" atomically:YES];
-			}
-			@catch (NSException *e)
-			{
-				NSLog( @"dcmObject writeToFile failed: %@", e);
-			}
-			[dcmObject release];
-		}
+//		else
+//		{
+//			DCMObject *dcmObject = nil;
+//			@try
+//			{
+//				dcmObject = [[DCMObject alloc] initWithContentsOfFile: file decodingPixelData: NO];
+//				status = [dcmObject writeToFile: @"/tmp/wado-recompress.dcm" withTransferSyntax: [[[DCMTransferSyntax alloc] initWithTS: syntax] autorelease] quality: quality AET:@"OsiriX" atomically:YES];
+//			}
+//			@catch (NSException *e)
+//			{
+//				NSLog( @"dcmObject writeToFile failed: %@", e);
+//			}
+//			[dcmObject release];
+//		}
 		
-		if( status == NO || [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/wado-recompress.dcm"] == NO)
-		{
-			DCMObject *dcmObject = nil;
-			@try
-			{
-				dcmObject = [[DCMObject alloc] initWithContentsOfFile: file decodingPixelData: NO];
-				status = [dcmObject writeToFile: @"/tmp/wado-recompress.dcm" withTransferSyntax: [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] quality: quality AET:@"OsiriX" atomically:YES];
-				
-			}
-			@catch (NSException *e)
-			{
-				NSLog( @"dcmObject writeToFile failed: %@", e);
-			}
-			[dcmObject release];
-		}
+//		if( status == NO || [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/wado-recompress.dcm"] == NO)
+//		{
+//			DCMObject *dcmObject = nil;
+//			@try
+//			{
+//				dcmObject = [[DCMObject alloc] initWithContentsOfFile: file decodingPixelData: NO];
+//				status = [dcmObject writeToFile: @"/tmp/wado-recompress.dcm" withTransferSyntax: [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] quality: quality AET:@"OsiriX" atomically:YES];
+//				
+//			}
+//			@catch (NSException *e)
+//			{
+//				NSLog( @"dcmObject writeToFile failed: %@", e);
+//			}
+//			[dcmObject release];
+//		}
 		
 		NSData *data = [NSData dataWithContentsOfFile: @"/tmp/wado-recompress.dcm"];
 		
 		[[NSFileManager defaultManager] removeItemAtPath: @"/tmp/wado-recompress.dcm"  error: nil];
 		
+        if( data == nil)
+            data = [NSData dataWithContentsOfFile: file]; // Original file
+        
 		return data;
 	}
 	
