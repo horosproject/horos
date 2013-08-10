@@ -235,13 +235,8 @@ extern BOOL forkedProcess;
 					if (dcelem->getString(pn).good() && pn != NULL)
 					{
 						NSString *patientNameString = [NSString stringWithCString:pn  DICOMEncoding:specificCharacterSet];
-						
-						patientNameString = [patientNameString stringByReplacingOccurrencesOfString: @", " withString:@" "];
-						patientNameString = [patientNameString stringByReplacingOccurrencesOfString: @"," withString:@" "];
-						patientNameString = [patientNameString stringByReplacingOccurrencesOfString: @"^ " withString:@" "];
-						patientNameString = [patientNameString stringByReplacingOccurrencesOfString: @"^" withString:@" "];
-						
-						predicate = [self predicateWithString: patientNameString forField: @"name"];
+                        
+                        predicate = [[BrowserController currentBrowser] patientsnamePredicate: patientNameString];
 					}
 				}
 				else if (key == DCM_PatientID)
@@ -850,7 +845,7 @@ extern BOOL forkedProcess;
                     
                     if( key == DCM_PatientsName && [fetchedObject valueForKey:@"name"])
                     {
-                        dataset->putAndInsertString( DCM_PatientsName, [self encodeString: [fetchedObject valueForKey:@"name"] image: image]);
+                        dataset->putAndInsertString( DCM_PatientsName, [self encodeString: [fetchedObject primitiveValueForKey:@"name"] image: image]);
                     }
                     
                     else if( key == DCM_PatientID && [fetchedObject valueForKey:@"patientID"])

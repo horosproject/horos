@@ -422,6 +422,7 @@ extern NSString* O2AlbumDragType;
 - (void)newViewerDICOM:(id) sender;
 - (void) viewerDICOMKeyImages:(id) sender;
 - (void) viewerDICOMMergeSelection:(id) sender;
+- (NSPredicate*) patientsnamePredicate: (NSString*) s;
 - (IBAction)addSmartAlbum: (id)sender;
 - (IBAction)search: (id)sender;
 - (IBAction)setSearchType: (id)sender;

@@ -19093,11 +19093,14 @@ static volatile int numberOfThreadsForJPEG = 0;
         {
             NSPredicate *p = nil;
             
-            if( component.length >= 1 && [[component substringToIndex: 1] isEqualToString: @"*"])
+            if( component.length >= 1 && [component hasPrefix: @"*"])
             {
                 component = [component substringFromIndex: 1];
                 firstComponent = NO;
             }
+            
+            if( [component hasSuffix: @"*"])
+                component = [component substringToIndex: component.length-1];
             
             if( firstComponent == NO)
             {
