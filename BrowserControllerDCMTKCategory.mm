@@ -62,6 +62,9 @@ extern NSRecursiveLock *PapyrusLock;
 
 #ifndef OSIRIX_LIGHT
 
+static int uniqueID = 1;
+static NSString *uniqueSync = @"uniqueSync";
+
 - (NSData*) getDICOMFile:(NSString*) file inSyntax:(NSString*) syntax quality: (int) quality
 {
 	OFCondition cond;
@@ -94,7 +97,13 @@ extern NSRecursiveLock *PapyrusLock;
 		
 		// ------
 		
-		[[NSFileManager defaultManager] removeItemAtPath: @"/tmp/wado-recompress.dcm"  error: nil];
+        NSString *tmpWADOFile = nil;
+        @synchronized( uniqueSync)
+        {
+            tmpWADOFile = [NSString stringWithFormat: @"/tmp/wado-recompress-%d.dcm", uniqueID++];
+        }
+        
+		[[NSFileManager defaultManager] removeItemAtPath: tmpWADOFile  error: nil];
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useDCMTKForJP2K"])
 		{
@@ -135,7 +144,7 @@ extern NSRecursiveLock *PapyrusLock;
 				
 				fileformat.loadAllDataIntoMemory();
 				
-				cond = fileformat.saveFile( "/tmp/wado-recompress.dcm", xfer.getXfer());
+				cond = fileformat.saveFile( [tmpWADOFile fileSystemRepresentation], xfer.getXfer());
 				status =  (cond.good()) ? YES : NO;
 				
 				if( status == NO)
@@ -148,7 +157,7 @@ extern NSRecursiveLock *PapyrusLock;
 //			@try
 //			{
 //				dcmObject = [[DCMObject alloc] initWithContentsOfFile: file decodingPixelData: NO];
-//				status = [dcmObject writeToFile: @"/tmp/wado-recompress.dcm" withTransferSyntax: [[[DCMTransferSyntax alloc] initWithTS: syntax] autorelease] quality: quality AET:@"OsiriX" atomically:YES];
+//				status = [dcmObject writeToFile: tmpWADOFile withTransferSyntax: [[[DCMTransferSyntax alloc] initWithTS: syntax] autorelease] quality: quality AET:@"OsiriX" atomically:YES];
 //			}
 //			@catch (NSException *e)
 //			{
@@ -157,13 +166,13 @@ extern NSRecursiveLock *PapyrusLock;
 //			[dcmObject release];
 //		}
 		
-//		if( status == NO || [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/wado-recompress.dcm"] == NO)
+//		if( status == NO || [[NSFileManager defaultManager] fileExistsAtPath: tmpWADOFile] == NO)
 //		{
 //			DCMObject *dcmObject = nil;
 //			@try
 //			{
 //				dcmObject = [[DCMObject alloc] initWithContentsOfFile: file decodingPixelData: NO];
-//				status = [dcmObject writeToFile: @"/tmp/wado-recompress.dcm" withTransferSyntax: [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] quality: quality AET:@"OsiriX" atomically:YES];
+//				status = [dcmObject writeToFile: tmpWADOFile withTransferSyntax: [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] quality: quality AET:@"OsiriX" atomically:YES];
 //				
 //			}
 //			@catch (NSException *e)
@@ -173,9 +182,8 @@ extern NSRecursiveLock *PapyrusLock;
 //			[dcmObject release];
 //		}
 		
-		NSData *data = [NSData dataWithContentsOfFile: @"/tmp/wado-recompress.dcm"];
-		
-		[[NSFileManager defaultManager] removeItemAtPath: @"/tmp/wado-recompress.dcm"  error: nil];
+		NSData *data = [NSData dataWithContentsOfFile: tmpWADOFile];
+		[[NSFileManager defaultManager] removeItemAtPath: tmpWADOFile  error: nil];
 		
         if( data == nil)
             data = [NSData dataWithContentsOfFile: file]; // Original file
