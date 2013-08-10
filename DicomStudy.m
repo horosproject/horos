@@ -312,10 +312,12 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (NSString*) name
 {
+    NSString *s = [[self primitiveValueForKey: @"name"] stringByReplacingOccurrencesOfString:@"^" withString:@" "];
+    
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
-        return [[self primitiveValueForKey: @"name"] capitalizedString];
-
-    return [self primitiveValueForKey: @"name"];
+        return [s capitalizedString];
+    
+    return s;
     
 //    return [DicomStudy scrambleString: [self primitiveValueForKey: @"name"]];
 }
@@ -787,7 +789,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (NSString*) soundex
 {
-	return [DicomStudy soundex: [self primitiveValueForKey: @"name"]];
+	return [DicomStudy soundex: self.name];
 }
 
 + (NSString*) displayedModalitiesForSeries: (NSArray*) seriesModalities

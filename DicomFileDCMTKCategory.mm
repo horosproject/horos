@@ -591,7 +591,7 @@ extern NSRecursiveLock *PapyrusLock;
 		//Patients Name
 		if (dataset->findAndGetString(DCM_PatientsName, string, OFFalse).good() && string != NULL)
 		{
-			name = [[DicomFile stringWithBytes: (char*) string encodings:encoding] retain];
+			name = [[DicomFile stringWithBytes: (char*) string encodings:encoding replaceBadCharacters:NO] retain];
 			if(name == nil) name = [[NSString alloc] initWithCString: string encoding: encoding[ 0]];
 		}
 		else

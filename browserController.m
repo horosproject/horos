@@ -19083,33 +19083,45 @@ static volatile int numberOfThreadsForJPEG = 0;
     s = [s stringByReplacingOccurrencesOfString: @", " withString: @" "];
     s = [s stringByReplacingOccurrencesOfString: @"," withString: @" "];
     
-    BOOL firstComponent = YES;
-    NSArray *nameComponents = [s componentsSeparatedByString: @" "];
     NSMutableArray *predicates = [NSMutableArray array];
-    for( NSString *component in nameComponents)
-    {
-        NSPredicate *p = nil;
+    
+    @try {
+        BOOL firstComponent = YES;
+        NSArray *nameComponents = [s componentsSeparatedByString: @" "];
         
-        if( (component.length >= 1 && [[component substringToIndex: 1] isEqualToString: @"*"]) || firstComponent == NO)
+        for( NSString *component in nameComponents)
         {
-            NSString *ss = [component substringFromIndex: 1];
+            NSPredicate *p = nil;
             
-            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useSoundexForName"] && [s length] >= 2)
-                p = [NSPredicate predicateWithFormat: @"(soundex CONTAINS[cd] %@) OR (name CONTAINS[cd] %@)", [DicomStudy soundex: ss], ss];
+            if( component.length >= 1 && [[component substringToIndex: 1] isEqualToString: @"*"])
+            {
+                component = [component substringFromIndex: 1];
+                firstComponent = NO;
+            }
+            
+            if( firstComponent == NO)
+            {
+                if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useSoundexForName"] && [component length] >= 2)
+                    p = [NSPredicate predicateWithFormat: @"(soundex CONTAINS[cd] %@) OR (name CONTAINS[cd] %@)", [DicomStudy soundex: component], component];
+                else
+                    p = [NSPredicate predicateWithFormat: @"name CONTAINS[cd] %@", component];
+            }
             else
-                p = [NSPredicate predicateWithFormat: @"name CONTAINS[cd] %@", ss];
+            {
+                if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useSoundexForName"] && [component length] >= 2)
+                    p = [NSPredicate predicateWithFormat: @"(soundex BEGINSWITH[cd] %@) OR (name BEGINSWITH[cd] %@)", [DicomStudy soundex: component], component];
+                else
+                    p = [NSPredicate predicateWithFormat: @"name BEGINSWITH[cd] %@", component];
+            }
+            
+            if( p)
+                [predicates addObject: p];
+            
+            firstComponent = NO;
         }
-        else
-        {
-            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useSoundexForName"] && [_searchString length] >= 2)
-                p = [NSPredicate predicateWithFormat: @"(soundex BEGINSWITH[cd] %@) OR (name BEGINSWITH[cd] %@)", [DicomStudy soundex: component], component];
-            else
-                p = [NSPredicate predicateWithFormat: @"name BEGINSWITH[cd] %@", component];
-        }
-        
-        [predicates addObject: p];
-        
-        firstComponent = NO;
+    }
+    @catch (NSException *exception) {
+        N2LogException( exception);
     }
     
     return [NSCompoundPredicate andPredicateWithSubpredicates: predicates];

@@ -3653,7 +3653,7 @@ static BOOL protectionAgainstReentry = NO;
                 
                 @try {
                     
-                    NSString *uid = [DicomFile patientUID: [NSDictionary dictionaryWithObjectsAndKeys: [study primitiveValueForKey:@"name"], @"patientName", study.patientID, @"patientID", study.dateOfBirth, @"patientBirthDate", nil]];
+                    NSString *uid = [DicomFile patientUID: [NSDictionary dictionaryWithObjectsAndKeys: study.name, @"patientName", study.patientID, @"patientID", study.dateOfBirth, @"patientBirthDate", nil]];
                     
                     if( uid)
                         study.patientUID = uid;

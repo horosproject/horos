@@ -2547,7 +2547,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                     val = Papy3GetElement (theGroupP, papPatientsNameGr, &nbVal, &itemType);
                     if (val != NULL && val->a && validAPointer( itemType))
                     {
-                        name = [[DicomFile stringWithBytes: (char*) val->a encodings:encoding] retain];
+                        name = [[DicomFile stringWithBytes: (char*) val->a encodings:encoding replaceBadCharacters: NO] retain];
                         if(name == nil) name = [[NSString alloc] initWithCString: val->a encoding: encoding[ 0]];
                     }
                     else name = [[NSString alloc] initWithString:@"No name"];
@@ -3649,7 +3649,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		if ([dcmObject attributeValueWithName:@"AccessionNumber"])
 			[dicomElements setObject:[dcmObject attributeValueWithName:@"AccessionNumber"] forKey:@"accessionNumber"];
 			
-		if ((name = [[DicomFile NSreplaceBadCharacter: [dcmObject attributeValueWithName:@"PatientsName"]] retain]))
+		if ((name = [[dcmObject attributeValueWithName:@"PatientsName"] retain]))
 			[dicomElements setObject:name forKey:@"patientName"];
 		else
 		{
@@ -4125,7 +4125,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
     
     if( gUsePatientNameForUID)
     {
-        patientName = [[src valueForKey:@"patientName"] stringByReplacingOccurrencesOfString: @"-" withString: @" "];
+        patientName = [DicomFile NSreplaceBadCharacter: [src valueForKey:@"patientName"]];
+        patientName = [patientName stringByReplacingOccurrencesOfString: @"-" withString: @" "];
         
         NSString *firstRepresentation = [[patientName componentsSeparatedByString: @"="] objectAtIndex: 0];
         

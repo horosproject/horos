@@ -1707,7 +1707,7 @@ extern "C"
         }
         
         if( [NSThread isMainThread])
-            [self applyNewStudyArray: nil];
+            [self performSelector: @selector(applyNewStudyArray:) withObject: nil afterDelay: 0.001];
         else
             [self performSelectorOnMainThread:@selector(applyNewStudyArray:) withObject: nil waitUntilDone: NO];
     }
