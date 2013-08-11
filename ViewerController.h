@@ -67,7 +67,7 @@ enum
 @interface ViewerController : OSIWindowController  <Schedulable, NSWindowDelegate, NSSplitViewDelegate, NSToolbarDelegate>
 {
 	NSRecursiveLock	*roiLock;
-	NSConditionLock *flipDataThread;
+	NSConditionLock *flipDataThread, *convThread;
 	NSThread *loadingThread;
 	
 	IBOutlet StudyView		*studyView;

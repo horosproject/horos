@@ -7194,7 +7194,9 @@ return YES;
 	[editedAcquisitionTime release]; editedAcquisitionTime = nil;
 	[toolbar release]; toolbar = nil;
 	[injectionDateTime release]; injectionDateTime = nil;
-	
+	[convThread release];
+    [flipDataThread release];
+    
     [self unbind:@"flagListPODComparatives"];
     self.flagListPODComparatives = nil;
     
@@ -10145,14 +10147,19 @@ static float oldsetww, oldsetwl;
 {
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	
-	for ( int x = 0; x < maxMovieIndex; x++)
-	{
-		for ( DCMPix *p in [pixList[ x] subarrayWithRange: NSMakeRange( [[dict objectForKey: @"from"] intValue], [[dict objectForKey: @"to"] intValue] - [[dict objectForKey: @"from"] intValue])])
-			[p applyConvolutionOnSourceImage];
+    @try {
+        for( int x = 0; x < maxMovieIndex; x++)
+        {
+            for ( DCMPix *p in [pixList[ x] subarrayWithRange: NSMakeRange( [[dict objectForKey: @"from"] intValue], [[dict objectForKey: @"to"] intValue] - [[dict objectForKey: @"from"] intValue])])
+                [p applyConvolutionOnSourceImage];
+        }
 	}
-	
-	[flipDataThread lock];
-	[flipDataThread unlockWithCondition: [flipDataThread condition]-1];
+    @catch (NSException *exception) {
+        N2LogException( exception);
+    }
+    
+	[convThread lock];
+	[convThread unlockWithCondition: [convThread condition]-1];
 	
 	[p release];
 }
@@ -10161,35 +10168,40 @@ static float oldsetww, oldsetwl;
 {
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	
-	for ( int x = 0; x < maxMovieIndex; x++)
-	{
-		DCMPix	*pix = [pixList[ x] objectAtIndex: 0];
-		
-		vImage_Buffer dstf, srcf;
-		
-		dstf.height = [pixList[ x] count];
-		dstf.width = [pix pwidth];
-		dstf.rowBytes = [pix pwidth]*[pix pheight]*sizeof(float);
-		srcf = dstf;
-		
-		int from = [[dict objectForKey: @"from"] intValue];
-		int to = [[dict objectForKey: @"to"] intValue];
-		float *fkernel = [[dict objectForKey: @"kernel"] pointerValue];
-		
-		for( int y = from; y < to; y++)
-		{
-			srcf.data = dstf.data = (void*) [volumeData[ x] bytes] + y*[pix pwidth]*sizeof(float);
-		
-			if( srcf.data)
-			{
-				if( vImageConvolve_PlanarF( &dstf, &srcf, 0, 0, 0, fkernel, [pix kernelsize], [pix kernelsize], 0, kvImageDoNotTile + kvImageEdgeExtend))
-					NSLog( @"Error applyConvolutionOnImage");
-			}
-		}
-	}
+    @try {
+        for( int x = 0; x < maxMovieIndex; x++)
+        {
+            DCMPix	*pix = [pixList[ x] objectAtIndex: 0];
+            
+            vImage_Buffer dstf, srcf;
+            
+            dstf.height = [pixList[ x] count];
+            dstf.width = [pix pwidth];
+            dstf.rowBytes = [pix pwidth]*[pix pheight]*sizeof(float);
+            srcf = dstf;
+            
+            int from = [[dict objectForKey: @"from"] intValue];
+            int to = [[dict objectForKey: @"to"] intValue];
+            float *fkernel = [[dict objectForKey: @"kernel"] pointerValue];
+            
+            for( int y = from; y < to; y++)
+            {
+                srcf.data = dstf.data = (void*) [volumeData[ x] bytes] + y*[pix pwidth]*sizeof(float);
+            
+                if( srcf.data)
+                {
+                    if( vImageConvolve_PlanarF( &dstf, &srcf, 0, 0, 0, fkernel, [pix kernelsize], [pix kernelsize], 0, kvImageDoNotTile + kvImageEdgeExtend))
+                        NSLog( @"Error applyConvolutionOnImage");
+                }
+            }
+        }
+    }
+    @catch (NSException *exception) {
+        N2LogException( exception);
+    }
 	
-	[flipDataThread lock];
-	[flipDataThread unlockWithCondition: [flipDataThread condition]-1];
+	[convThread lock];
+	[convThread unlockWithCondition: [convThread condition]-1];
 	
 	[p release];
 }
@@ -10202,11 +10214,11 @@ static float oldsetww, oldsetwl;
 	{
 		int mpprocessors = [[NSProcessInfo processInfo] processorCount];
 		
-		if( flipDataThread == nil)
-			flipDataThread = [[NSConditionLock alloc] initWithCondition: 0];
+		if( convThread == nil)
+			convThread = [[NSConditionLock alloc] initWithCondition: 0];
 		
-		[flipDataThread lockWhenCondition: 0];
-		[flipDataThread unlockWithCondition: mpprocessors];
+		[convThread lockWhenCondition: 0];
+		[convThread unlockWithCondition: mpprocessors];
 		
 		NSMutableDictionary *baseDict = [NSMutableDictionary dictionary];
 		int no = [pixList[ 0] count];
@@ -10224,17 +10236,17 @@ static float oldsetww, oldsetwl;
 			[NSThread detachNewThreadSelector: @selector(applyConvolutionXYThread:) toTarget: self withObject: d];
 		}
 		
-		[flipDataThread lockWhenCondition: 0];
-		[flipDataThread unlock];
+		[convThread lockWhenCondition: 0];
+		[convThread unlock];
 		
 		if( [self isDataVolumicIn4D: YES])
 		{
-			[flipDataThread lockWhenCondition: 0];
-			[flipDataThread unlockWithCondition: mpprocessors];
-			
-			// Apply the convolution in the Z direction
+            // Apply the convolution in the Z direction
 			for ( x = 0; x < maxMovieIndex; x++)
 			{
+                [convThread lockWhenCondition: 0];
+                [convThread unlockWithCondition: mpprocessors];
+                
 				DCMPix *pix = [pixList[ x] objectAtIndex: 0];
 				float m = *[pix fImage];
 				
@@ -10267,12 +10279,12 @@ static float oldsetww, oldsetwl;
 				}
 				else
 				{
-					[flipDataThread lock];
-					[flipDataThread unlockWithCondition: [flipDataThread condition]-1];
+					[convThread lock];
+					[convThread unlockWithCondition: [convThread condition]-1];
 				}
 				
-				[flipDataThread lockWhenCondition: 0];
-				[flipDataThread unlock];
+				[convThread lockWhenCondition: 0];
+				[convThread unlock];
 				
 				// check the first line to avoid nan value....
 				for( DCMPix *p in pixList[ x])
