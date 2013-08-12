@@ -314,6 +314,8 @@ static NSRecursiveLock *dbModifyLock = nil;
 {
     NSString *s = [[self primitiveValueForKey: @"name"] stringByReplacingOccurrencesOfString:@"^" withString:@" "];
     
+    s = [s stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]];
+    
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
         return [s capitalizedString];
     
