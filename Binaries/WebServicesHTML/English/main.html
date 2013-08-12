@@ -122,6 +122,7 @@
                         document.getElementById('fileName').innerHTML = 'Name: ' + file.name;
                         document.getElementById('fileSize').innerHTML = 'Size: ' + fileSize;
                         document.getElementById('fileType').innerHTML = 'Type: ' + file.type;
+                        document.getElementById('upload').style.display= 'block';
                     }
                 }
                 
@@ -135,6 +136,8 @@
                     xhr.addEventListener("abort", uploadCanceled, false);
                     xhr.open("POST", "", true);
                     xhr.send(fd);
+                    
+                    document.getElementById('upload').style.display= 'none';
                 }
                 
                 function uploadProgress(evt) {
@@ -152,13 +155,16 @@
                 
                 function uploadComplete(evt) {
                     document.getElementById('progressNumber').innerHTML = 'Upload completed !';
+                    document.getElementById('upload').style.display= 'block';
                 }
                 
                 function uploadFailed(evt) {
+                    document.getElementById('upload').style.display= 'block';
                     alert("There was an error attempting to upload the file.");
                 }
                 
                 function uploadCanceled(evt) {
+                    document.getElementById('upload').style.display= 'block';
                     alert("The upload has been canceled by the user or the browser dropped the connection.");
                 }
                 </script>
@@ -170,7 +176,7 @@
 				<div id="fileName"></div>
                 <div id="fileSize"></div>
                 <div id="fileType"></div>
-                <div class="row">
+                <div id="upload" class="row" style="display: none">
                 <button type="submit" name="button" onclick="uploadFile()" value="Upload">Upload</button>
                 </div>
                 <div id="progressNumber"></div>
