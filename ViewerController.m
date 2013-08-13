@@ -4418,130 +4418,141 @@ static volatile int numberOfThreadsForRelisce = 0;
                 
                 if( [curStudy isKindOfClass: [DicomStudy class]])
                 {
-                    images = [[BrowserController currentBrowser] imagesArray: curStudy preferredObject: oAny];
-                    
-                    if( [series count] != [images count])
-                        NSLog(@"[series count] != [images count] : You should not be here......");
-                    
-                    NSString *name = [[curStudy valueForKey:@"studyName"] stringByTruncatingToLength: 34];
-                    
-                    NSString *stateText;
-                    if( [[curStudy valueForKey:@"stateText"] intValue]) stateText = [[BrowserController statesArray] objectAtIndex: [[curStudy valueForKey:@"stateText"] intValue]];
-                    else stateText = @"";
-                    NSString *comment = [curStudy valueForKey:@"comment"];
-                    
-                    if( comment == nil)
-                        comment = @"";
-                    comment = [comment stringWithTruncatingToLength: 32];
-                    
-                    NSString *modality = [curStudy valueForKey:@"modality"];
-                    if( modality == nil)
-                        modality = @"OT:";
-                    
-                    NSString *action = nil;
-#ifndef OSIRIX_LIGHT
-                    if ([[cell.representedObject object] isKindOfClass:[DCMTKStudyQueryNode class]]) { // this is an incomplete study
-                        [cell setImage:retrieveImage];
-                        [cell setImagePosition:NSImageOverlaps];
-                        [cell setImageScaling:NSImageScaleNone];
+                    @try
+                    {
+                        images = [[BrowserController currentBrowser] imagesArray: curStudy preferredObject: oAny];
+                        
+                        if( [series count] != [images count])
+                            NSLog(@"[series count] != [images count] : You should not be here......");
+                        
+                        NSString *name = [[curStudy valueForKey:@"studyName"] stringByTruncatingToLength: 34];
+                        
+                        NSString *stateText;
+                        NSUInteger stateIndex = [[curStudy valueForKey:@"stateText"] intValue];
+                        if( stateIndex && stateIndex < BrowserController.statesArray.count) stateText = [BrowserController.statesArray objectAtIndex: stateIndex];
+                        else stateText = @"";
+                        NSString *comment = [curStudy valueForKey:@"comment"];
+                        
+                        if( comment == nil)
+                            comment = @"";
+                        comment = [comment stringWithTruncatingToLength: 32];
+                        
+                        NSString *modality = [curStudy valueForKey:@"modality"];
+                        if( modality == nil)
+                            modality = @"OT:";
+                        
+                        NSString *action = nil;
+    #ifndef OSIRIX_LIGHT
+                        if ([[cell.representedObject object] isKindOfClass:[DCMTKStudyQueryNode class]]) { // this is an incomplete study
+                            [cell setImage:retrieveImage];
+                            [cell setImagePosition:NSImageOverlaps];
+                            [cell setImageScaling:NSImageScaleNone];
 
-                    } else {
-#endif
-                        if( [curStudy isHidden])
-                            action = NSLocalizedString(@"Show Series", nil);
+                        } else {
+    #endif
+                            if( [curStudy isHidden])
+                                action = NSLocalizedString(@"Show Series", nil);
+                            else
+                                action = NSLocalizedString(@"Hide Series", nil);
+    #ifndef OSIRIX_LIGHT
+                        }
+    #endif
+                        
+                        NSString *patName = @"";
+                        
+                        if( [curStudy valueForKey:@"name"] && [curStudy valueForKey:@"dateOfBirth"])
+                            patName = [NSString stringWithFormat: @"%@\r%@", [curStudy valueForKey:@"name"], [NSUserDefaults formatDate:[curStudy valueForKey:@"dateOfBirth"]]];
+                        
+                        if( [[curStudy valueForKey:@"name"] isEqualToString: study.name])
+                            patName = @"";
+                        
+                        if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] != annotFull)
+                            patName = @"";
+                        
+                        NSMutableArray* components = [NSMutableArray array];
+                        [components addObject: [NSString stringWithFormat: @" %d ", (int) curStudyIndex+1]];
+                        [components addObject: @""];
+                        if (patName.length) [components addObject:patName];
+                        if (name.length) [components addObject:name];
+                        if ([curStudy date]) [components addObject:[[NSUserDefaults dateTimeFormatter] stringFromDate:[curStudy date]]];
+                        [components addObject:[NSString stringWithFormat:NSLocalizedString(@"%@: %@", @"semicolon separator for spacing"), modality, N2SingularPluralCount([series count], NSLocalizedString(@"series", @"one series, singular"), NSLocalizedString(@"series", @"zero or 2 or more series, plural"))]];
+                        if (stateText.length) [components addObject:stateText];
+                        if (comment.length) [components addObject:comment];
+                        if (action.length) [components addObject:[NSString stringWithFormat:@"\r%@", action]];
+                        
+                        
+                        NSMutableAttributedString *finalString = [[[NSMutableAttributedString alloc] initWithString: [components componentsJoinedByString:@"\r"]] autorelease];
+                        
+                        NSMutableDictionary *attribs = [NSMutableDictionary dictionary];
+                        [attribs setObject: [NSFont boldSystemFontOfSize: 15] forKey: NSFontAttributeName];
+                        
+                        NSArray *colors = ViewerController.studyColors;
+                        NSColor *bkgColor = nil;
+                        if( curStudyIndex >= colors.count)
+                            bkgColor = [colors lastObject];
                         else
-                            action = NSLocalizedString(@"Hide Series", nil);
-#ifndef OSIRIX_LIGHT
+                            bkgColor = [colors objectAtIndex: curStudyIndex];
+                        
+                        [attribs setObject: bkgColor forKey: NSBackgroundColorAttributeName];
+                        [finalString setAttributes: attribs range: NSMakeRange( 0, [[components objectAtIndex: 0] length])];
+                        
+                        [attribs setObject: [NSFont boldSystemFontOfSize:8.5] forKey: NSFontAttributeName];
+                        [attribs removeObjectForKey: NSBackgroundColorAttributeName];
+                        [finalString setAttributes: attribs range: NSMakeRange( [[components objectAtIndex: 0] length], finalString.length - [[components objectAtIndex: 0] length])];
+                        
+                        [finalString setAlignment:NSCenterTextAlignment range: NSMakeRange( 0, finalString.length)];
+                        [cell setAttributedTitle: finalString];
                     }
-#endif
-                    
-                    NSString *patName = @"";
-                    
-                    if( [curStudy valueForKey:@"name"] && [curStudy valueForKey:@"dateOfBirth"])
-                        patName = [NSString stringWithFormat: @"%@\r%@", [curStudy valueForKey:@"name"], [NSUserDefaults formatDate:[curStudy valueForKey:@"dateOfBirth"]]];
-                    
-                    if( [[curStudy valueForKey:@"name"] isEqualToString: study.name])
-                        patName = @"";
-                    
-                    if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] != annotFull)
-                        patName = @"";
-                    
-                    NSMutableArray* components = [NSMutableArray array];
-                    [components addObject: [NSString stringWithFormat: @" %d ", (int) curStudyIndex+1]];
-                    [components addObject: @""];
-                    if (patName.length) [components addObject:patName];
-                    if (name.length) [components addObject:name];
-                    if ([curStudy date]) [components addObject:[[NSUserDefaults dateTimeFormatter] stringFromDate:[curStudy date]]];
-                    [components addObject:[NSString stringWithFormat:NSLocalizedString(@"%@: %@", @"semicolon separator for spacing"), modality, N2SingularPluralCount([series count], NSLocalizedString(@"series", @"one series, singular"), NSLocalizedString(@"series", @"zero or 2 or more series, plural"))]];
-                    if (stateText.length) [components addObject:stateText];
-                    if (comment.length) [components addObject:comment];
-                    if (action.length) [components addObject:[NSString stringWithFormat:@"\r%@", action]];
-                    
-                    
-                    NSMutableAttributedString *finalString = [[[NSMutableAttributedString alloc] initWithString: [components componentsJoinedByString:@"\r"]] autorelease];
-                    
-                    NSMutableDictionary *attribs = [NSMutableDictionary dictionary];
-                    [attribs setObject: [NSFont boldSystemFontOfSize: 15] forKey: NSFontAttributeName];
-                    
-                    NSArray *colors = ViewerController.studyColors;
-                    NSColor *bkgColor = nil;
-                    if( curStudyIndex >= colors.count)
-                        bkgColor = [colors lastObject];
-                    else
-                        bkgColor = [colors objectAtIndex: curStudyIndex];
-                    
-                    [attribs setObject: bkgColor forKey: NSBackgroundColorAttributeName];
-                    [finalString setAttributes: attribs range: NSMakeRange( 0, [[components objectAtIndex: 0] length])];
-                    
-                    [attribs setObject: [NSFont boldSystemFontOfSize:8.5] forKey: NSFontAttributeName];
-                    [attribs removeObjectForKey: NSBackgroundColorAttributeName];
-                    [finalString setAttributes: attribs range: NSMakeRange( [[components objectAtIndex: 0] length], finalString.length - [[components objectAtIndex: 0] length])];
-                    
-                    [finalString setAlignment:NSCenterTextAlignment range: NSMakeRange( 0, finalString.length)];
-                    [cell setAttributedTitle: finalString];
-                    
+                    @catch (NSException *exception) {
+                        N2LogException( exception);
+                    }
                     index++;
                 }
                 
                 #ifndef OSIRIX_LIGHT
                 if ([curStudy isKindOfClass: [DCMTKQueryNode class]]) //Distant Study DCMTKQueryStudyNode
                 {
-                    NSArray* local = [db objectsForEntity:db.studyEntity predicate:[NSPredicate predicateWithFormat:@"studyInstanceUID = %@ AND patientID = %@", [curStudy studyInstanceUID], [curStudy patientID]]];
-                    if (local.count)
-                        images = [[BrowserController currentBrowser] imagesArray:[local objectAtIndex:0] preferredObject: oAny];
-                    
-                    NSString *name = [[curStudy valueForKey:@"studyName"] stringByTruncatingToLength: 34];
-                    if( name == nil)
-                        name = @"";
-                    NSString *stateText = @"";
-                    NSString *comment = @"";
-                    NSString *modality = [curStudy valueForKey:@"modality"];
-                    if( modality == nil)
-                        modality = @"OT";
-                    
-                    NSString *patName = @"";
-                    
-                    if( [curStudy valueForKey:@"name"] && [curStudy valueForKey:@"dateOfBirth"])
-                        patName = [NSString stringWithFormat: @"%@\r%@", [curStudy valueForKey:@"name"], [NSUserDefaults formatDate:[curStudy valueForKey:@"dateOfBirth"]]];
-                    
-                    if( [[curStudy name] isEqualToString:study.name])
-                        patName = @"";
-                    if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] != annotFull)
-                        patName = @"";
-                    
-                    if ([stateText length] == 0 && [comment length] == 0) {
-                        NSMutableArray* components = [NSMutableArray array];
-                        if (patName.length) [components addObject:patName];
-                        if (name.length) [components addObject:name];
-                        if ([curStudy date]) [components addObject:[[NSUserDefaults dateTimeFormatter] stringFromDate:[curStudy date]]];
-                        if (modality.length) [components addObject:modality];
-                        [cell setTitle:[components componentsJoinedByString:@"\r"]];
+                    @try
+                    {
+                        NSArray* local = [db objectsForEntity:db.studyEntity predicate:[NSPredicate predicateWithFormat:@"studyInstanceUID = %@ AND patientID = %@", [curStudy studyInstanceUID], [curStudy patientID]]];
+                        if (local.count)
+                            images = [[BrowserController currentBrowser] imagesArray:[local objectAtIndex:0] preferredObject: oAny];
+                        
+                        NSString *name = [[curStudy valueForKey:@"studyName"] stringByTruncatingToLength: 34];
+                        if( name == nil)
+                            name = @"";
+                        NSString *stateText = @"";
+                        NSString *comment = @"";
+                        NSString *modality = [curStudy valueForKey:@"modality"];
+                        if( modality == nil)
+                            modality = @"OT";
+                        
+                        NSString *patName = @"";
+                        
+                        if( [curStudy valueForKey:@"name"] && [curStudy valueForKey:@"dateOfBirth"])
+                            patName = [NSString stringWithFormat: @"%@\r%@", [curStudy valueForKey:@"name"], [NSUserDefaults formatDate:[curStudy valueForKey:@"dateOfBirth"]]];
+                        
+                        if( [[curStudy name] isEqualToString:study.name])
+                            patName = @"";
+                        if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] != annotFull)
+                            patName = @"";
+                        
+                        if ([stateText length] == 0 && [comment length] == 0) {
+                            NSMutableArray* components = [NSMutableArray array];
+                            if (patName.length) [components addObject:patName];
+                            if (name.length) [components addObject:name];
+                            if ([curStudy date]) [components addObject:[[NSUserDefaults dateTimeFormatter] stringFromDate:[curStudy date]]];
+                            if (modality.length) [components addObject:modality];
+                            [cell setTitle:[components componentsJoinedByString:@"\r"]];
+                        }
+                        
+                        [cell setImage:retrieveImage];
+                        [cell setImagePosition:NSImageOverlaps];
+                        [cell setImageScaling:NSImageScaleNone];
                     }
-                    
-                    [cell setImage:retrieveImage];
-                    [cell setImagePosition:NSImageOverlaps];
-                    [cell setImageScaling:NSImageScaleNone];
-                    
+                    @catch ( NSException *e) {
+                        N2LogException( e);
+                    }
                     index++;
                 }
                 #endif
