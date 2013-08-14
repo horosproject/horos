@@ -5227,6 +5227,9 @@ static BOOL initialized = NO;
 	[[NSUserDefaults standardUserDefaults] setBool: origCopySettings forKey: @"COPYSETTINGS"];
 	[AppController checkForPreferencesUpdate: YES];
 	
+    for( int i = 0; i < [[NSScreen screens] count]; i++)
+        [toolbarPanel[ i] setToolbar: nil viewer: nil];
+    
 	if( [viewersList count] > 0 && keyWindow != nil)
 	{
         [DCMView setDontListenToSyncMessage: YES];
