@@ -4934,7 +4934,8 @@ static BOOL initialized = NO;
 		else ratioValue = portraitRatio;
 		
 		float viewerCountPerScreen = (float) viewerCount / (float) numberOfMonitors;
-		
+		int columnsPerScreen = ceil( (float) columns / (float) numberOfMonitors);
+        
         BOOL fixedRows = NO, fixedColumns = NO;
         
         if( [sender isKindOfClass: [NSDictionary class]] && [sender objectForKey: @"rows"])
@@ -4943,10 +4944,10 @@ static BOOL initialized = NO;
         if( [sender isKindOfClass: [NSDictionary class]] && [sender objectForKey: @"columns"])
             fixedColumns = YES;
         
-		while (viewerCountPerScreen > (rows * columns))
+		while (viewerCountPerScreen > (rows * columnsPerScreen))
 		{
 			if( fixedRows)
-				columns++;
+				columnsPerScreen++;
 			else if( fixedColumns)
 				rows++;
 			else
@@ -4956,17 +4957,20 @@ static BOOL initialized = NO;
 				if (ratio > ratioValue)
 					rows ++;
 				else 
-					columns ++;
+					columnsPerScreen ++;
 			}
 		}
         
-        if( rows * columns > viewerCountPerScreen && rows*(columns-1) == viewerCountPerScreen)
-            columns --;
-		
-        if( rows * columns > viewerCountPerScreen && columns*(rows-1) == viewerCountPerScreen)
+        int intViewerCountPerScreen = ceilf( viewerCountPerScreen);
+        
+        if( rows * columnsPerScreen > intViewerCountPerScreen && rows*(columnsPerScreen-1) == intViewerCountPerScreen)
+            columnsPerScreen --;
+
+        if( rows * columnsPerScreen > intViewerCountPerScreen && columnsPerScreen*(rows-1) == intViewerCountPerScreen)
             rows --;
         
-		columns *= numberOfMonitors;
+        columns = columnsPerScreen * numberOfMonitors;
+        
 	}
 	
 	// Smart arrangement if one window was added or removed
