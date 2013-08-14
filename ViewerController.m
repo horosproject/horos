@@ -3782,12 +3782,13 @@ static volatile int numberOfThreadsForRelisce = 0;
 		if( [viewerSeries containsObject: [[[sender selectedCell] representedObject] object]] == NO)
 		{
 			BOOL found = NO;
-		
-			if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
-			{
-				
-			}
-			else
+            
+            BOOL showWindowIfDisplayed = [[NSUserDefaults standardUserDefaults] boolForKey: @"showWindowInsteadOfSwitching"];
+            
+            if( ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSShiftKeyMask))
+                showWindowIfDisplayed = !showWindowIfDisplayed;
+            
+			if( showWindowIfDisplayed)
 			{
 				// is this series already displayed? -> select it !
 				
