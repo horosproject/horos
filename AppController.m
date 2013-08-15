@@ -4952,7 +4952,7 @@ static BOOL initialized = NO;
 				rows++;
 			else
 			{
-				float ratio = (float) columns / (float) rows;
+				float ratio = (float) columnsPerScreen / (float) rows;
 			
 				if (ratio > ratioValue)
 					rows ++;
