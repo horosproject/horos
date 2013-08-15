@@ -4717,6 +4717,11 @@ public:
 	
 	int savedMovieFrame = [controller curMovieIndex];
 	
+    [self display];
+    
+    dontRenderVolumeRenderingOsiriX = 1;
+    aRenderer->SetDraw( 0);
+    
 	for ( int m = 0; m < [[controller viewer2D] maxMovieIndex] ; m++)
 	{
 		[controller setMovieFrame: m];
@@ -4742,6 +4747,9 @@ public:
 		
 		[[[controller curPixList] objectAtIndex: 0] freeRestore];
 	}
+    
+    dontRenderVolumeRenderingOsiriX = 0;
+    aRenderer->SetDraw( 1);
 	
 	[controller setMovieFrame: savedMovieFrame];
 	
