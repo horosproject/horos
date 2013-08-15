@@ -185,6 +185,7 @@ static volatile int sendControllerObjects = 0;
 		_lock = [[NSRecursiveLock alloc] init];
 		
         [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:@"SERVERS" options:NSKeyValueObservingOptionInitial context:nil];
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:@"SendControllerConcurrentThreads" options:NSKeyValueObservingOptionInitial context:nil];
         
 		[[NSNotificationCenter defaultCenter] addObserver: self
 												selector: @selector(updateDestinationPopup:)
@@ -201,6 +202,30 @@ static volatile int sendControllerObjects = 0;
         if( [keyPath isEqualToString: @"values.SERVERS"])
         {
             [self updateDestinationPopup: nil];
+        }
+        
+        if( [keyPath isEqualToString: @"values.SendControllerConcurrentThreads"])
+        {
+            // Find current server (if it exists)
+            
+            NSMutableArray *servers = [[[[NSUserDefaults standardUserDefaults] objectForKey: @"SERVERS"] mutableCopy] autorelease];
+            NSDictionary *currentServer = [self server];
+            
+            for( NSDictionary *server in servers)
+            {
+                if( [[server objectForKey: @"Address"] isEqualToString: [currentServer objectForKey: @"Address"]] && [[server objectForKey: @"Description"] isEqualToString: [currentServer objectForKey: @"Description"]])
+                {
+                    NSMutableDictionary *d = [NSMutableDictionary dictionaryWithDictionary: server];
+                    
+                    [d setObject: [[NSUserDefaults standardUserDefaults] objectForKey: @"SendControllerConcurrentThreads"] forKey: @"SendControllerConcurrentThreads"];
+                    
+                    [servers replaceObjectAtIndex: [servers indexOfObject: server] withObject: d];
+                    
+                    [[NSUserDefaults standardUserDefaults] setObject: servers forKey: @"SERVERS"];
+                    
+                    break;
+                }
+            }
         }
 	}
 }
@@ -226,7 +251,8 @@ static volatile int sendControllerObjects = 0;
 - (void)dealloc
 {
 	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:@"SERVERS"];
-	
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:@"SendControllerConcurrentThreads"];
+    
     [[NSNotificationCenter defaultCenter] removeObserver: self];
     
 	sendControllerObjects--;
@@ -295,7 +321,10 @@ static volatile int sendControllerObjects = 0;
 	{
 		int preferredTS = [[[self server] objectForKey:@"TransferSyntax"] intValue];
 		
-		[[NSUserDefaults standardUserDefaults] setInteger: preferredTS forKey:@"syntaxListOffis"];
+		[[NSUserDefaults standardUserDefaults] setInteger: preferredTS forKey: @"syntaxListOffis"];
+        
+        if( [[self server] objectForKey: @"SendControllerConcurrentThreads"])
+            [[NSUserDefaults standardUserDefaults] setInteger: [[[self server] objectForKey: @"SendControllerConcurrentThreads"] intValue] forKey: @"SendControllerConcurrentThreads"];
 	}	
 	
 	[addressAndPort setStringValue: [NSString stringWithFormat:@"%@ : %@", [[self server] objectForKey:@"Address"], [[self server] objectForKey:@"Port"]]];
@@ -482,7 +511,7 @@ static volatile int sendControllerObjects = 0;
     NSMutableArray *operations = [NSMutableArray array];
     NSOperationQueue *queue = [[[NSOperationQueue alloc] init] autorelease];
     queue.name = [NSString stringWithFormat: @"%@ %@", NSLocalizedString( @"Sending...", nil), patientName];
-
+    
     unsigned int maxThreads = [[NSUserDefaults standardUserDefaults] integerForKey: @"SendControllerConcurrentThreads"];
     if( maxThreads <= 0)
         maxThreads = 1;
