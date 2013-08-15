@@ -2057,16 +2057,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                 
                 if( no == 1)
                 {
-                    values = (float*) malloc( sizeof(float));
-                    if( locations) *locations = (float*) malloc( 2 * sizeof(float));
-                    
-                    if( isComputefImageRGB)
+                    if( clip)
                     {
-                        unsigned char *rgbPtr = (unsigned char*) &computedfImage[ (pts[ 0].y * width) + pts[ 0].x];
-                        
-                        float val = rgbPtr[ 0] + rgbPtr[ 1] + rgbPtr[2] / 3;
-                        
-                        values[ count] = val;
+                        values[ count] = 0;
                         
                         if( locations && *locations)
                         {
@@ -2077,18 +2070,39 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                     }
                     else
                     {
-                        float *curPix = &computedfImage[ (pts[ 0].y * width) + pts[ 0].x];
+                        values = (float*) malloc( sizeof(float));
+                        if( locations) *locations = (float*) malloc( 2 * sizeof(float));
                         
-                        float val = *curPix;
-                        
-                        values[ count] = val;
-                        
-                        if( locations && *locations)
+                        if( isComputefImageRGB)
                         {
-                            (*locations)[ count*2] = pts[ 0].x;
-                            (*locations)[ count*2 + 1] = pts[ 0].y;
+                            unsigned char *rgbPtr = (unsigned char*) &computedfImage[ (pts[ 0].y * width) + pts[ 0].x];
+                            
+                            float val = rgbPtr[ 0] + rgbPtr[ 1] + rgbPtr[2] / 3;
+                            
+                            values[ count] = val;
+                            
+                            if( locations && *locations)
+                            {
+                                (*locations)[ count*2] = pts[ 0].x;
+                                (*locations)[ count*2 + 1] = pts[ 0].y;
+                            }
+                            count++;
                         }
-                        count++;
+                        else
+                        {
+                            float *curPix = &computedfImage[ (pts[ 0].y * width) + pts[ 0].x];
+                            
+                            float val = *curPix;
+                            
+                            values[ count] = val;
+                            
+                            if( locations && *locations)
+                            {
+                                (*locations)[ count*2] = pts[ 0].x;
+                                (*locations)[ count*2 + 1] = pts[ 0].y;
+                            }
+                            count++;
+                        }
                     }
                 }
                 else
