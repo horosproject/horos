@@ -6824,6 +6824,10 @@ static NSConditionLock *threadLock = nil;
     }
 #endif
     
+    NSArray *cells = [oMatrix selectedCells];
+    if( [cells count] > 1)
+        [oMatrix selectCell: [cells objectAtIndex: 0]];
+    
 	if ([[item valueForKey:@"type"] isEqualToString:@"Series"])
 	{
 		if( [self isUsingExternalViewer: item] == NO)
