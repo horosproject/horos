@@ -355,6 +355,8 @@
     [protocol setObject: [NSString stringWithFormat: @"%@ %d", NSLocalizedString( @"Character String", nil), (int) [[hangingProtocols objectForKey:modalityForHangingProtocols] count]] forKey:@"Study Description"];
     [protocol setObject: [NSNumber numberWithInt:0] forKey:@"WindowsTiling"];
 	[protocol setObject: [NSNumber numberWithInt:0] forKey:@"ImageTiling"];
+    [protocol setObject: @(YES) forKey:@"Sync"];
+    [protocol setObject: @(YES) forKey:@"Propagate"];
     [protocol setObject: [NSNumber numberWithInt:0] forKey:@"WL"]; // Default WL/WW
     [protocol setObject: [NSNumber numberWithInt:0] forKey:@"WW"];
     [protocol setObject: [NSNumber numberWithInt:100] forKey:@"WLWW"];
@@ -386,6 +388,12 @@
             
             if( [[hangingProtocols objectForKey: modality] indexOfObject: protocol] == 0)
                 [protocol setValue: NSLocalizedString( @"Default", nil) forKey: @"Study Description"];
+            
+            if( [protocol objectForKey: @"Sync"] == nil)
+                [protocol setObject: @(YES) forKey: @"Sync"];
+            
+            if( [protocol objectForKey: @"Propagate"] == nil)
+                [protocol setObject: @(YES) forKey: @"Propagate"];
         }
     
 	self.modalityForHangingProtocols = @"CR";

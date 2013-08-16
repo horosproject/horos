@@ -7023,6 +7023,19 @@ static NSConditionLock *threadLock = nil;
 			
 			if( alreadyDisplayed == 0)
 			{
+                if( [currentHangingProtocol valueForKey: @"Sync"])
+                {
+                    if( [[currentHangingProtocol valueForKey: @"Sync"] boolValue])
+                        [DCMView setSyncro: syncroLOC];
+                    else
+                        [DCMView setSyncro: syncroOFF];
+                }
+                
+                if( [currentHangingProtocol valueForKey: @"Propagate"])
+                {
+                    [[NSUserDefaults standardUserDefaults] setBool: [[currentHangingProtocol valueForKey: @"Propagate"] boolValue] forKey:@"COPYSETTINGS"];
+                }
+                
                 NSMutableArray *seriesArray = nil;
                 
                 if( [[currentStudy imageSeriesContainingPixels: YES] count])

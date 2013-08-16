@@ -3543,6 +3543,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 -(void) UpdateConvolutionMenu: (NSNotification*) note
 {
+    if( windowWillClose)
+        return;
+    
 	if( convolutionPresetsMenu == nil || [note userInfo] != nil)
 	{
 		//*** Build the menu
@@ -3576,6 +3579,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 -(void) UpdateWLWWMenu: (NSNotification*) note
 {
+    if( windowWillClose)
+        return;
+    
 	if( wlwwPresetsMenu == nil || [note userInfo] != nil)
 	{
 		//*** Build the menu
@@ -3667,6 +3673,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 -(void) UpdateOpacityMenu: (NSNotification*) note
 {
+    if( windowWillClose)
+        return;
+    
 	if( opacityPresetsMenu == nil || [note userInfo] != nil)
 	{
 		//*** Build the menu
