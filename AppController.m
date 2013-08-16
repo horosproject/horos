@@ -3458,7 +3458,7 @@ static BOOL initialized = NO;
             NSLog( @"SecStaticCodeCheckValidity: %d", (int) status);
             NSLog( @"%@", errors);
             
-            NSRunCriticalAlertPanel( NSLocalizedString( @"Code signing and Certificate", nil), [NSString stringWithFormat: NSLocalizedString( @"Invalid code signing or certificate. Redownload OsiriX from the pixmeo web site.\r\r%@\r\r%@", nil), errors.localizedDescription, errors.userInfo], NSLocalizedString( @"Quit", nil) , nil, nil);
+            NSRunCriticalAlertPanel( NSLocalizedString( @"Code signing and Certificate", nil), [NSString stringWithFormat: NSLocalizedString( @"Invalid code signing or certificate. Redownload and re-install OsiriX from the pixmeo web site.\r\r%@\r\r%@", nil), errors.localizedDescription, errors.userInfo], NSLocalizedString( @"Quit", nil) , nil, nil);
             exit( 0);
         }
         
@@ -3996,6 +3996,9 @@ static BOOL initialized = NO;
     {
         NSLog( @"-----------------------------------------------------------------");
         NSLog( @"UID: %@", checkSN64String);
+#ifndef OSIRIX_LIGHT
+        NSLog( @"MAC: %@", getMacAddress());
+#endif
         NSLog( @"-----------------------------------------------------------------");
     }
 }
