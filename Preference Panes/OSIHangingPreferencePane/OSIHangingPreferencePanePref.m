@@ -108,20 +108,20 @@
 {
     [addWLWWWindow makeFirstResponder: nil];
     
-    if( WLnew == nil || WWnew == nil)
-    {
-        NSRunCriticalAlertPanel( NSLocalizedString( @"WL / WW Error", nil), NSLocalizedString( @"Provide values for WL and WW.", nil), NSLocalizedString( @"OK", nil), nil, nil);
-        return;
-    }
-    
-	float iwl, iww;
-    
-    iwl = [WLnew floatValue];
-    iww = [WWnew floatValue];
-    if( iww < 1) iww = 1;
-    
     if( [sender tag])   //User clicks OK Button
-    {
+    {        
+        if( WLnew == nil || WWnew == nil)
+        {
+            NSRunCriticalAlertPanel( NSLocalizedString( @"WL / WW Error", nil), NSLocalizedString( @"Provide values for WL and WW.", nil), NSLocalizedString( @"OK", nil), nil, nil);
+            return;
+        }
+        
+        float iwl, iww;
+        
+        iwl = [WLnew floatValue];
+        iww = [WWnew floatValue];
+        if( iww < 1) iww = 1;
+        
         if( self.WLWWNewName.length)
         {
             NSMutableDictionary *presetsDict = [[[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"WLWW3"] mutableCopy] autorelease];
