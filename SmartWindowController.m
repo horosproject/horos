@@ -100,10 +100,16 @@
 
 - (IBAction)cancelAction:(id)sender {
     [NSApp endSheet:self.window returnCode:NSRunAbortedResponse];
+    
+    [BrowserController currentBrowser].testPredicate = nil;
+    [[BrowserController currentBrowser] outlineViewRefresh];;
 }
 
 - (IBAction)okAction:(id)sender {
     [NSApp endSheet:self.window];
+    
+    [BrowserController currentBrowser].testPredicate = nil;
+    [[BrowserController currentBrowser] outlineViewRefresh];;
 }
 
 - (IBAction)helpAction:(NSSegmentedControl*)sender {
@@ -124,10 +130,6 @@
     @try {
         NSPredicate* p = [NSPredicate predicateWithFormat:self.predicateFormat];
         
-        /*BOOL warning = NO;
-        if (![self.editor matchForPredicate:p])
-            warning = YES;*/
-
         BrowserController* bc = [BrowserController currentBrowser];
         p = [bc smartAlbumPredicateString:self.predicateFormat];
         if (!p)
@@ -138,9 +140,10 @@
         if (error)
             [NSException raise:NSGenericException format:@"%@", error.localizedDescription];
         
+        bc.testPredicate = p;
+        [bc outlineViewRefresh];
+        
         NSString* message = NSLocalizedString(@"This filter works: the result is now displayed in the Database Window.", nil);
-//        if (warning)
-//            message = NSLocalizedString(@"This filter works, however it contains bits that don't make any sense in the OsiriX database context.", nil);
         
         NSRunInformationalAlertPanel( NSLocalizedString(@"It works!",nil), message, nil, nil, nil);
     }
