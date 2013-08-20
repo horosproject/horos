@@ -24,3 +24,5 @@ Binaries/KDU SDK/libkdu_v72R.a
 Binaries/LibTiff/
 Binaries/openjpeg/
 Binaries/._OsiriX Report.template
+
+*.xcscheme
