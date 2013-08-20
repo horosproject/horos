@@ -26,3 +26,5 @@ Binaries/openjpeg/
 Binaries/._OsiriX Report.template
 
 *.xcscheme
+
+nitrogen/Nitrogen.xcodeproj/xcuserdata/admin.xcuserdatad/xcschemes/xcschememanagement.plist
