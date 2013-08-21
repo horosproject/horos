@@ -259,6 +259,8 @@ static const NSUInteger colWidth = 80, colSeparator = 1, rowHeight = 101, titleH
 			[button setFrame:rect];
 		}
 	}
+    
+    [super layout];
 }
 
 @end

@@ -148,12 +148,10 @@
 
 - (void) dealloc
 {
-    [[NSNotificationCenter defaultCenter] removeObserver: self];
-    
-    [studiesArrayController removeObserver: self forKeyPath: @"selection"];
-    
 	NSLog(@"dealloc OSIWebSharingPreferencePanePref");
 	
+    [studiesArrayController removeObserver: self forKeyPath: @"selection"];
+    
 	[super dealloc];
 }
 
@@ -188,6 +186,8 @@
 	
 	[BrowserController currentBrowser].testPredicate = nil;
 	[[BrowserController currentBrowser] outlineViewRefresh];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver: self];
 }
 
 - (IBAction)smartAlbumHelpButton: (id)sender
