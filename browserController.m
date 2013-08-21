@@ -7008,6 +7008,9 @@ static NSConditionLock *threadLock = nil;
 		
 		if( windowsStateApplied == NO)
 		{
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"] != YES)
+                [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"AUTOTILING"];
+            
 			[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality:[currentStudy valueForKey:@"modality"] description:[currentStudy valueForKey:@"studyName"]];
 			
 			NSDictionary *currentHangingProtocol = [[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol];
