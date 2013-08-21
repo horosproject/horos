@@ -218,6 +218,13 @@ static NSString* BrowserControllerClassHelperContext = @"BrowserControllerClassH
 	}
 }
 
+- (void) dealloc
+{
+    [[NSUserDefaults standardUserDefaults] removeObserver: self forValuesKey: OsirixCanActivateDefaultDatabaseOnlyDefaultsKey];
+    
+    [super dealloc];
+}
+
 @end
 
 @implementation BrowserController

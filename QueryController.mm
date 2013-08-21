@@ -4784,8 +4784,8 @@ extern "C"
 	avoidQueryControllerDeallocReentry = YES;
 
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:@"SERVERS"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:@"KeepQRWindowOnTop"];
     
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver: self];
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:OsirixAddToDBNotification object:nil];
 
 	NSLog( @"dealloc QueryController");

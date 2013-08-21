@@ -94,6 +94,7 @@ static NSString* const BrowserActivityHelperContext = @"BrowserActivityHelperCon
 
 -(void)dealloc {
 	[_cells release];
+    [ThreadsManager.defaultManager.threadsController removeObserver:self forKeyPath: @"arrangedObjects"];
 	[super dealloc];
 }
 

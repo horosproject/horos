@@ -93,7 +93,8 @@
 {	
 	NSLog(@"dealloc OSIDatabasePreferencePanePref");
 	
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver: self];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver: self forKeyPath: @"values.eraseEntireDBAtStartup"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver: self forKeyPath: @"values.dbFontSize"];
     
 	[DICOMFieldsArray release];
 	

@@ -186,6 +186,9 @@
     [fromDate release];
     [toDate release];
     
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver: self forKeyPath: @"values.customIntervalWithHoursAndMinutes"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver: self forKeyPath: @"values.betweenDatesMode"];
+    
     [super dealloc];
 }
 @end

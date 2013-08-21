@@ -150,6 +150,8 @@
 {
     [[NSNotificationCenter defaultCenter] removeObserver: self];
     
+    [studiesArrayController removeObserver: self forKeyPath: @"selection"];
+    
 	NSLog(@"dealloc OSIWebSharingPreferencePanePref");
 	
 	[super dealloc];
