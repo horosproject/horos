@@ -149,6 +149,7 @@ static NSString*	ShutterToolbarItemIdentifier		= @"Shutter";
 static NSString*	PropagateSettingsToolbarItemIdentifier		= @"PropagateSettings";
 static NSString*	OrientationToolbarItemIdentifier	= @"Orientation";
 static NSString* WindowsTilingToolbarItemIdentifier   = @"WindowsTiling";
+static NSString* SeriesPopupToolbarItemIdentifier   = @"SeriesPopup";
 static NSString* AnnotationsToolbarItemIdentifier   = @"Annotations";
 static NSString*	PrintToolbarItemIdentifier			= @"Print.tiff";
 static NSString*	LUT12BitToolbarItemIdentifier		= @"LUT12Bit";
@@ -167,6 +168,7 @@ static NSMenu *contextualMenu = nil;
 static NSMenu *clutPresetsMenu = nil;
 static NSMenu *convolutionPresetsMenu = nil;
 static NSMenu *opacityPresetsMenu = nil;
+static NSImage* retrieveImage = nil;
 volatile static int totalNumberOfLoadingWindow = 0;
 
 static int numberOf2DViewer = 0;
@@ -3738,6 +3740,434 @@ static volatile int numberOfThreadsForRelisce = 0;
 #pragma mark-
 #pragma mark 2. window subdivision
 
+- (IBAction) seriesPopupSelect:(id)sender
+{
+    
+}
+
+- (void) buildSeriesPopup
+{
+    [seriesPopupMenu.menu removeAllItems];
+    
+    BOOL hasComparatives = NO, hasComparativesNewerThanMostRecentLoaded = NO;
+    
+    @try
+    {
+        DicomDatabase *db = [[BrowserController currentBrowser] database];
+        NSPredicate				*predicate;
+        NSFetchRequest			*dbRequest;
+        NSError					*error = nil;
+        long					i, index = 0;
+        NSManagedObject			*curImage = [fileList[0] objectAtIndex:0];
+        NSPoint					origin = [[previewMatrix superview] bounds].origin;
+        
+        DicomStudy *study = [curImage valueForKeyPath:@"series.study"];
+        if( study == nil)
+                return;
+        
+        NSMutableArray *viewerSeries = [NSMutableArray array];
+        
+        for( int i = 0 ; i < maxMovieIndex; i++)
+            [viewerSeries addObject: [[fileList[ i] objectAtIndex:0] valueForKey:@"series"]];
+            
+        // FIND ALL STUDIES of this patient
+        NSString *searchString = [study valueForKey:@"patientUID"];
+        
+        if( [searchString length] == 0 || [searchString isEqualToString:@"0"])
+        {
+            searchString = [study valueForKey:@"name"];
+            predicate = [NSPredicate predicateWithFormat: @"(name == %@)", searchString];
+        }
+        else predicate = [NSPredicate predicateWithFormat: @"(patientUID BEGINSWITH[cd] %@)", searchString];
+        
+        NSArray *studiesArray = nil;
+        // Use the 'history' array of the browser controller, if available (with the distant studies)
+        if( [[[BrowserController currentBrowser] comparativePatientUID] compare: [study patientUID] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame && [[BrowserController currentBrowser] comparativeStudies] != nil)
+            studiesArray = [BrowserController currentBrowser].comparativeStudies;
+        else
+        {
+            studiesArray = [db objectsForEntity:db.studyEntity predicate:predicate];
+            studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: @"date" ascending: NO]]];
+        }
+        
+#ifndef OSIRIX_LIGHT
+        if (!retrieveImage) {
+            retrieveImage = [[NSImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DownArrowGreyRev" ofType:@"pdf"]];
+            retrieveImage.size = NSMakeSize(50,50);
+        }
+#endif
+        
+        if ([studiesArray count])
+        {
+            studiesArray = [NSArray arrayWithArray: studiesArray];
+            
+            NSArray *displayedSeries = [ViewerController getDisplayedSeries];
+            NSMutableArray *seriesArray = [NSMutableArray array];
+            
+            i = 0;
+            for( id s in studiesArray)
+            {
+#ifndef OSIRIX_LIGHT
+                if( [s isKindOfClass: [DCMTKStudyQueryNode class]] && [[s valueForKey: @"studyInstanceUID"] isEqualToString: study.studyInstanceUID]) // For the current study, always take the local images
+                    s = study;
+                else if ([s isKindOfClass: [DCMTKStudyQueryNode class]]) { // and still, if there are local series, display them!
+                        NSArray* local = [db objectsForEntity:db.studyEntity predicate:[NSPredicate predicateWithFormat:@"studyInstanceUID = %@ AND patientID = %@", [s studyInstanceUID], [s patientID]]];
+                    if (local.count)
+                        s = [local objectAtIndex:0];
+                }
+#endif
+                    
+                if( [s isKindOfClass: [DicomStudy class]]) //Local Study DicomStudy
+                {
+                    [seriesArray addObject: [[BrowserController currentBrowser] childrenArray: s]];
+                    
+                    //if( [s isHidden] == NO)
+                    i += [[seriesArray lastObject] count];
+                }
+#ifndef OSIRIX_LIGHT
+                else if( [s isKindOfClass: [DCMTKStudyQueryNode class]]) //Distant Study DCMTKQueryStudyNode
+                {
+                    [seriesArray addObject: [NSArray array]];
+                }
+#endif
+            }
+                
+#ifndef OSIRIX_LIGHT
+            NSMutableArray* tstudiesArray = [NSMutableArray array];
+            NSMutableArray* tseriesArray = [NSMutableArray array];
+            BOOL iteratedFirstLoaded = NO;
+            for (int i = 0; i < studiesArray.count; ++i) {
+                id s = [studiesArray objectAtIndex:i];
+                NSArray* series = [seriesArray objectAtIndex:i];
+                
+                BOOL isNonLoadedComp = [s isKindOfClass:[DCMTKQueryNode class]];
+                if (!isNonLoadedComp || series.count || self.flagListPODComparatives.boolValue) {
+                    [tstudiesArray addObject:s];
+                    [tseriesArray addObject:series];
+                }
+                
+                if (isNonLoadedComp) {
+                    hasComparatives = YES;
+                    if (!iteratedFirstLoaded)
+                        hasComparativesNewerThanMostRecentLoaded = YES;
+                } else
+                    iteratedFirstLoaded = YES;
+            }
+            studiesArray = tstudiesArray;
+            seriesArray = tseriesArray;
+#endif
+            
+            for( id curStudy in studiesArray)
+            {
+                NSMenuItem *cell = [[[NSMenuItem alloc] initWithTitle: @"" action: nil keyEquivalent: @""] autorelease];
+                [seriesPopupMenu.menu addItem: cell];
+                
+                NSUInteger curStudyIndex = [studiesArray indexOfObject: curStudy];
+                
+                [cell setRepresentedObject:[O2ViewerThumbnailsMatrixRepresentedObject object:curStudy children:[seriesArray objectAtIndex:curStudyIndex]]];
+                
+#ifndef OSIRIX_LIGHT
+                if( [curStudy isKindOfClass: [DCMTKStudyQueryNode class]] && [[curStudy valueForKey: @"studyInstanceUID"] isEqualToString: study.studyInstanceUID]) // For the current study, always take the local images
+                    curStudy = study;
+#endif
+                NSColor *color = nil;
+                
+//                if( [[curStudy valueForKey: @"studyInstanceUID"] isEqualToString: study.studyInstanceUID])
+//                    [attributes removeObjectForKey: NSBackgroundColorAttributeName];
+//                else
+//                    [attributes setObject: [[self class] _differentStudyColor] forKey: NSBackgroundColorAttributeName];
+                
+                NSArray *series = [seriesArray objectAtIndex: curStudyIndex];
+                NSArray *images = nil;
+                
+                if( [curStudy isKindOfClass: [DicomStudy class]])
+                {
+                    @try
+                    {
+                        images = [[BrowserController currentBrowser] imagesArray: curStudy preferredObject: oAny];
+                            
+                        if( [series count] != [images count])
+                            NSLog(@"[series count] != [images count] : You should not be here......");
+                        
+                        NSString *name = [[curStudy valueForKey:@"studyName"] stringByTruncatingToLength: 34];
+                            
+                        NSString *stateText;
+                        NSUInteger stateIndex = [[curStudy valueForKey:@"stateText"] intValue];
+                        if( stateIndex && stateIndex < BrowserController.statesArray.count) stateText = [BrowserController.statesArray objectAtIndex: stateIndex];
+                        else stateText = @"";
+                        
+                        NSString *comment = [curStudy valueForKey:@"comment"];
+                            
+                        if( comment == nil)
+                            comment = @"";
+                        comment = [comment stringWithTruncatingToLength: 32];
+                            
+                        NSString *modality = [curStudy valueForKey:@"modality"];
+                        if( modality == nil)
+                            modality = @"OT:";
+                            
+                        NSString *action = nil;
+#ifndef OSIRIX_LIGHT
+                        if ([[cell.representedObject object] isKindOfClass:[DCMTKStudyQueryNode class]]) { // this is an incomplete study
+                            [cell setImage:retrieveImage];
+                        
+                        }
+#endif
+                            
+                        NSString *patName = @"";
+                        
+                        if( [curStudy valueForKey:@"name"] && [curStudy valueForKey:@"dateOfBirth"])
+                            patName = [NSString stringWithFormat: @"%@\r%@", [curStudy valueForKey:@"name"], [NSUserDefaults formatDate:[curStudy valueForKey:@"dateOfBirth"]]];
+                        
+                        if( [[curStudy valueForKey:@"name"] isEqualToString: study.name])
+                            patName = @"";
+                            
+                        if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] != annotFull)
+                            patName = @"";
+                            
+                        NSMutableArray* components = [NSMutableArray array];
+                        [components addObject: [NSString stringWithFormat: @" %d ", (int) curStudyIndex+1]];
+                        [components addObject: @""];
+                        if (patName.length) [components addObject:patName];
+                        if (name.length) [components addObject:name];
+                        if ([curStudy date]) [components addObject:[[NSUserDefaults dateTimeFormatter] stringFromDate:[curStudy date]]];
+                        [components addObject:[NSString stringWithFormat:NSLocalizedString(@"%@: %@", @"semicolon separator for spacing"), modality, N2SingularPluralCount([series count], NSLocalizedString(@"series", @"one series, singular"), NSLocalizedString(@"series", @"zero or 2 or more series, plural"))]];
+                        if (stateText.length) [components addObject:stateText];
+                        if (comment.length) [components addObject:comment];
+                        if (action.length) [components addObject:[NSString stringWithFormat:@"\r%@", action]];
+                        
+                        
+                        NSMutableAttributedString *finalString = [[[NSMutableAttributedString alloc] initWithString: [components componentsJoinedByString:@"\r"]] autorelease];
+                            
+                        NSMutableDictionary *attribs = [NSMutableDictionary dictionary];
+                        [attribs setObject: [NSFont boldSystemFontOfSize: 15] forKey: NSFontAttributeName];
+                            
+                        NSArray *colors = ViewerController.studyColors;
+                        NSColor *bkgColor = nil;
+                        if( curStudyIndex >= colors.count)
+                            bkgColor = [colors lastObject];
+                        else
+                            bkgColor = [colors objectAtIndex: curStudyIndex];
+                        
+                        [attribs setObject: bkgColor forKey: NSBackgroundColorAttributeName];
+                        [finalString setAttributes: attribs range: NSMakeRange( 0, [[components objectAtIndex: 0] length])];
+                            
+                        [attribs setObject: [NSFont boldSystemFontOfSize:8.5] forKey: NSFontAttributeName];
+                        [attribs removeObjectForKey: NSBackgroundColorAttributeName];
+                        [finalString setAttributes: attribs range: NSMakeRange( [[components objectAtIndex: 0] length], finalString.length - [[components objectAtIndex: 0] length])];
+                            
+                        [finalString setAlignment:NSCenterTextAlignment range: NSMakeRange( 0, finalString.length)];
+                        [cell setAttributedTitle: finalString];
+                    }
+                    @catch (NSException *exception) {
+                        N2LogException( exception);
+                    }
+                    index++;
+                }
+                    
+#ifndef OSIRIX_LIGHT
+                if ([curStudy isKindOfClass: [DCMTKQueryNode class]]) //Distant Study DCMTKQueryStudyNode
+                {
+                    @try
+                    {
+                        NSArray* local = [db objectsForEntity:db.studyEntity predicate:[NSPredicate predicateWithFormat:@"studyInstanceUID = %@ AND patientID = %@", [curStudy studyInstanceUID], [curStudy patientID]]];
+                        if (local.count)
+                            images = [[BrowserController currentBrowser] imagesArray:[local objectAtIndex:0] preferredObject: oAny];
+                        
+                        NSString *name = [[curStudy valueForKey:@"studyName"] stringByTruncatingToLength: 34];
+                        if( name == nil)
+                            name = @"";
+                        NSString *stateText = @"";
+                        NSString *comment = @"";
+                        NSString *modality = [curStudy valueForKey:@"modality"];
+                        if( modality == nil)
+                            modality = @"OT";
+                        
+                        NSString *patName = @"";
+                        
+                        if( [curStudy valueForKey:@"name"] && [curStudy valueForKey:@"dateOfBirth"])
+                            patName = [NSString stringWithFormat: @"%@\r%@", [curStudy valueForKey:@"name"], [NSUserDefaults formatDate:[curStudy valueForKey:@"dateOfBirth"]]];
+                        
+                        if( [[curStudy name] isEqualToString:study.name])
+                            patName = @"";
+                        if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] != annotFull)
+                            patName = @"";
+                        
+                        if ([stateText length] == 0 && [comment length] == 0) {
+                            NSMutableArray* components = [NSMutableArray array];
+                            if (patName.length) [components addObject:patName];
+                            if (name.length) [components addObject:name];
+                            if ([curStudy date]) [components addObject:[[NSUserDefaults dateTimeFormatter] stringFromDate:[curStudy date]]];
+                            if (modality.length) [components addObject:modality];
+                            
+                            NSAttributedString *title = [[[NSAttributedString alloc] initWithString: [components componentsJoinedByString:@"\r"] attributes: nil] autorelease];
+                            [cell setAttributedTitle: title];
+                        }
+                        
+                        [cell setImage:retrieveImage];
+                    }
+                    @catch ( NSException *e) {
+                        N2LogException( e);
+                    }
+                    index++;
+                }
+#endif
+                    
+//                if(![curStudy respondsToSelector:@selector(isHidden)] || [curStudy isHidden] == NO)
+                {
+                    for( i = 0; i < [series count]; i++)
+                    {
+                        DicomSeries* curSeries = [series objectAtIndex:i];
+                        
+                        NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
+                        NSMenuItem *cell = [[[NSMenuItem alloc] initWithTitle: @"" action: @selector( seriesPopupSelect:) keyEquivalent: @""] autorelease];
+                        [cell setTarget: self];
+                        [seriesPopupMenu.menu addItem: cell];
+                        
+                        if( [[curStudy valueForKey: @"studyInstanceUID"] isEqualToString: study.studyInstanceUID])
+                            [attributes removeObjectForKey: NSBackgroundColorAttributeName];
+                        else
+                            [attributes setObject: [[self class] _differentStudyColor] forKey: NSBackgroundColorAttributeName];
+                        
+                        [cell setRepresentedObject: [O2ViewerThumbnailsMatrixRepresentedObject object:curSeries]];
+                        
+                        NSString *name = [curSeries valueForKey:@"name"];
+                        
+                        if( [name length] > 34)
+                            name = [name stringByTruncatingToLength: 34];
+                        
+                        NSString	*type = nil;
+                        int count = [[curSeries valueForKey:@"noFiles"] intValue];
+                        if( count == 1)
+                        {
+                            [[[[BrowserController currentBrowser] database] managedObjectContext] lock];
+                            
+                            @try
+                            {
+                                type = NSLocalizedString( @"Image", nil);
+                                int frames = [[[[curSeries valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
+                                if( frames > 1)
+                                {
+                                    count = frames;
+                                    type = NSLocalizedString( @"Frames", @"Frames: for example, 50 Frames in a series");
+                                }
+                            }
+                            @catch (NSException * e)
+                            {
+                                N2LogExceptionWithStackTrace(e);
+                            }
+                            
+                            [[[[BrowserController currentBrowser] database] managedObjectContext] unlock];
+                        }
+                        else if (count == 0)
+                        {
+                            count = [[curSeries valueForKey: @"rawNoFiles"] intValue];
+                            
+                            int frames = [[[[curSeries valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
+                            
+                            if( count == 1 && frames > 1)
+                                count = frames;
+                            
+                            if( count == 1)
+                                type = NSLocalizedString( @"Object", nil);
+                            else
+                                type = NSLocalizedString( @"Objects", nil);
+                        }
+                        else type = NSLocalizedString( @"Images", nil);
+                        
+                        if( name == nil)
+                            name = @"";
+                        
+                        if( [viewerSeries containsObject: curSeries]) // Red
+                        {
+                            [attributes setObject: [[self class] _selectedItemColor] forKey: NSBackgroundColorAttributeName];
+                        }
+                        else if( [[self blendingController] currentSeries] == curSeries) // Green
+                        {
+                            [attributes setObject:  [[self class] _fusionedItemColor] forKey: NSBackgroundColorAttributeName];
+                        }
+                        else if( [displayedSeries containsObject: curSeries]) // Yellow
+                        {
+                            [attributes setObject:  [[self class] _openItemColor] forKey: NSBackgroundColorAttributeName];
+                        }
+                        
+                        NSAttributedString *title = [[[NSAttributedString alloc] initWithString: [NSString stringWithFormat:@"%@\r%@\r%d %@\r", name, [[NSUserDefaults dateTimeFormatter] stringFromDate: [curSeries valueForKey:@"date"]], count, type] attributes: attributes] autorelease];
+                        [cell setAttributedTitle: title];
+                        
+                        if( 1)
+                        {
+                            NSImage	*img = nil;
+                            
+                            img = [[[NSImage alloc] initWithData: [curSeries primitiveValueForKey:@"thumbnail"]] autorelease];
+                            
+                            if( img == nil)
+                            {
+                                @try
+                                {
+                                    DCMPix* dcmPix = [[DCMPix alloc] initWithPath: [[images objectAtIndex: i] valueForKey:@"completePath"] :0 :0 :nil :0 :[[[images objectAtIndex: i] valueForKeyPath:@"series.id"] intValue] isBonjour:[[BrowserController currentBrowser] isCurrentDatabaseBonjour] imageObj:[images objectAtIndex: i]];
+                                    
+                                    [dcmPix CheckLoad];
+                                    
+                                    if (dcmPix && dcmPix.notAbleToLoadImage == NO)
+                                    {
+                                        img = [dcmPix generateThumbnailImageWithWW:0 WL:0];
+                                        
+                                        if (img)
+                                        {
+                                            [cell setImage:img];
+                                            
+                                            if ([[NSUserDefaults standardUserDefaults] boolForKey:@"StoreThumbnailsInDB"])
+                                                curSeries.thumbnail = [BrowserController produceJPEGThumbnail:img];
+                                        }
+                                        else [cell setImage:[NSImage imageNamed:@"FileNotFound.tif"]];
+                                        
+                                    }
+                                    else [cell setImage:[NSImage imageNamed:@"FileNotFound.tif"]];
+                                    
+                                    [dcmPix release];
+                                }
+                                @catch (NSException* e)
+                                {
+                                    N2LogExceptionWithStackTrace(e);
+                                    [cell setImage:[NSImage imageNamed:@"FileNotFound.tif"]];
+                                }
+                            } else
+                                [cell setImage:img];
+                        }
+                        
+                        
+                        
+                        index++;
+                    }
+                }
+                
+                if( curStudy != studiesArray.lastObject)
+                    [seriesPopupMenu.menu addItem: [NSMenuItem separatorItem]];
+            }
+        }
+        
+//            if( showSelected)
+//            {
+//                NSInteger index = [[[previewMatrix cells] valueForKeyPath:@"representedObject.object"] indexOfObject: [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"]];
+//                
+//                if( index != NSNotFound)
+//                    [previewMatrix scrollCellToVisibleAtRow: index column:0];
+//            }
+//            else
+//            {
+//                [[previewMatrixScrollView contentView] scrollToPoint: origin];
+//                [previewMatrixScrollView reflectScrolledClipView: [previewMatrixScrollView contentView]];
+//            }
+    }
+    @catch (NSException *e)
+    {
+        N2LogExceptionWithStackTrace(e);
+    }
+
+    for( DCMView *v in self.imageViews)
+        [v computeColor];
+}
+
 - (void) matrixPreviewSelectCurrentSeries
 {
 	NSManagedObject		*series = [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"];
@@ -3873,45 +4303,6 @@ static volatile int numberOfThreadsForRelisce = 0;
         }
         [splitView resizeSubviewsWithOldSize:splitView.bounds.size];
     }
-/*    
-    NSRect	frameLeft, frameRight, previous;
-	
-	if( [[splitView subviews] count] > 1)
-	{
-		[self splitViewWillResizeSubviews: nil];
-		
-		frameLeft =  previous  = [[[splitView subviews] objectAtIndex: 0] frame];
-		frameRight = [[[splitView subviews] objectAtIndex: 1] frame];
-		
-		if( visible == YES)
-		{
-			frameLeft.size.width = [previewMatrix cellSize].width+13;
-			frameRight.size.width = [splitView frame].size.width - [splitView dividerThickness] - frameLeft.size.width;
-		}
-		else
-		{
-			frameLeft.size.width = 0;
-			frameRight.size.width = [splitView frame].size.width - [splitView dividerThickness] - frameLeft.size.width;
-		}
-		
-		if( previous.size.width != frameLeft.size.width)
-		{
-			imageView.dontEnterReshape = YES;
-			
-//			[NSAnimationContext beginGrouping];
-//			[[NSAnimationContext currentContext] setDuration: 1];
-//			[[[[splitView subviews] objectAtIndex: 0] animator] setFrameSize: frameLeft.size];
-//			[[[[splitView subviews] objectAtIndex: 1] animator] setFrameSize: frameRight.size];
-//			[splitView adjustSubviews];
-//			[NSAnimationContext endGrouping];
-			
-			[[[splitView subviews] objectAtIndex: 0] setFrameSize: frameLeft.size];
-			[[[splitView subviews] objectAtIndex: 1] setFrameSize: frameRight.size];
-			[splitView adjustSubviews];
-			
-			imageView.dontEnterReshape = NO;
-		}
-	}*/
 }
 
 - (IBAction) showHideMatrix: (id) sender
@@ -4258,6 +4649,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 	if( [[self window] isVisible] == NO) return;	//we will do it in checkBuiltMatrixPreview : faster opening !
 	if( windowWillClose) return;
     
+    [self buildSeriesPopup];
+    
     BOOL hasComparatives = NO, hasComparativesNewerThanMostRecentLoaded = NO;
     
 	@try
@@ -4313,7 +4706,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		}
         
 #ifndef OSIRIX_LIGHT
-        static NSImage* retrieveImage = nil;
+        
         if (!retrieveImage) {
             retrieveImage = [[NSImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DownArrowGreyRev" ofType:@"pdf"]];
             retrieveImage.size = NSMakeSize(50,50);
@@ -5759,6 +6152,16 @@ static ViewerController *draggedController = nil;
 	[toolbarItem setMinSize:NSMakeSize(NSWidth([orientationView frame]), NSHeight([orientationView frame]))];
 	[toolbarItem setMaxSize:NSMakeSize(NSWidth([orientationView frame]), NSHeight([orientationView frame]))];
 	}
+    else if([itemIdent isEqualToString: SeriesPopupToolbarItemIdentifier])
+    {
+        [toolbarItem setLabel: NSLocalizedString(@"Series", nil)];
+        [toolbarItem setPaletteLabel: NSLocalizedString(@"Series Selection", nil)];
+        [toolbarItem setToolTip: NSLocalizedString(@"Series Selection", nil)];
+        
+        [toolbarItem setView: seriesPopupView];
+        [toolbarItem setMinSize:NSMakeSize(NSWidth([seriesPopupView frame]), NSHeight([seriesPopupView frame]))];
+        [toolbarItem setMaxSize:NSMakeSize(NSWidth([seriesPopupView frame]), NSHeight([seriesPopupView frame]))];
+	}
     else if([itemIdent isEqualToString: WindowsTilingToolbarItemIdentifier])
     {
         // Set up the standard properties 
@@ -5766,7 +6169,6 @@ static ViewerController *draggedController = nil;
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Windows Tiling", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Windows Tiling", nil)];
         
-        // Use a custom view, a text field, for the search item 
         [toolbarItem setView: windowsTiling];
         [toolbarItem setMinSize:NSMakeSize(NSWidth([windowsTiling frame]), NSHeight([windowsTiling frame]))];
         [toolbarItem setMaxSize:NSMakeSize(NSWidth([windowsTiling frame]), NSHeight([windowsTiling frame]))];
@@ -5966,6 +6368,7 @@ static ViewerController *draggedController = nil;
     // user chooses to revert to the default items this set will be used 
     return [NSArray arrayWithObjects:	DatabaseWindowToolbarItemIdentifier,
                                         WindowsTilingToolbarItemIdentifier,
+                                        SeriesPopupToolbarItemIdentifier,
 										AnnotationsToolbarItemIdentifier,
 										PatientToolbarItemIdentifier,
 										ToolsToolbarItemIdentifier,
@@ -6009,6 +6412,7 @@ static ViewerController *draggedController = nil;
 														DatabaseWindowToolbarItemIdentifier,
 														TileWindowsToolbarItemIdentifier,
                                                         WindowsTilingToolbarItemIdentifier,
+                                                        SeriesPopupToolbarItemIdentifier,
                                                         AnnotationsToolbarItemIdentifier,
 														PlayToolbarItemIdentifier,
 														SpeedToolbarItemIdentifier,

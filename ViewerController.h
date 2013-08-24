@@ -91,9 +91,8 @@ enum
 	
 	DCMView					*imageView;
 	
-    IBOutlet NSView         *windowsTiling, *annotations;
+    IBOutlet NSView         *windowsTiling, *annotations, *seriesPopupView;
 	IBOutlet NSView         *orientationView;
-    IBOutlet NSMenu         *orientationViewPopUpMenu;
 	IBOutlet NSMatrix		*orientationMatrix;
 	
 	short					currentOrientationTool, originalOrientation;
@@ -114,6 +113,7 @@ enum
     IBOutlet NSPopUpButton  *convPopup;
     IBOutlet NSPopUpButton  *clutPopup;
 	IBOutlet NSPopUpButton  *OpacityPopup;
+    IBOutlet NSPopUpButton  *seriesPopupMenu;
 	
 	IBOutlet NSView			*propagateSettingsView;
 	
