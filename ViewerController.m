@@ -483,7 +483,12 @@ return YES;
 	if( [[fileList[ 0] lastObject] isKindOfClass:[NSManagedObject class]] == NO)
 		return NO;
     
-    if( [item action] == @selector( displaySUV:))
+    if( [item action] == @selector( seriesPopupSelect:))
+    {
+        [self buildSeriesPopup];
+        valid = YES;
+    }
+    else if( [item action] == @selector( displaySUV:))
     {
         if( [[imageView curDCM] hasSUV])
             valid = YES;
@@ -3740,13 +3745,13 @@ static volatile int numberOfThreadsForRelisce = 0;
 #pragma mark-
 #pragma mark 2. window subdivision
 
-- (IBAction) seriesPopupSelect:(id)sender
-{
-    
-}
-
 - (void) buildSeriesPopup
 {
+    if( needsToBuildSeriesPopupMenu == NO)
+        return;
+    
+    needsToBuildSeriesPopupMenu = NO;
+    
     [seriesPopupMenu.menu removeAllItems];
     
     BOOL hasComparatives = NO, hasComparativesNewerThanMostRecentLoaded = NO;
@@ -3871,12 +3876,6 @@ static volatile int numberOfThreadsForRelisce = 0;
                     curStudy = study;
 #endif
                 NSColor *color = nil;
-                
-//                if( [[curStudy valueForKey: @"studyInstanceUID"] isEqualToString: study.studyInstanceUID])
-//                    [attributes removeObjectForKey: NSBackgroundColorAttributeName];
-//                else
-//                    [attributes setObject: [[self class] _differentStudyColor] forKey: NSBackgroundColorAttributeName];
-                
                 NSArray *series = [seriesArray objectAtIndex: curStudyIndex];
                 NSArray *images = nil;
                 
@@ -3887,9 +3886,9 @@ static volatile int numberOfThreadsForRelisce = 0;
                         images = [[BrowserController currentBrowser] imagesArray: curStudy preferredObject: oAny];
                             
                         if( [series count] != [images count])
-                            NSLog(@"[series count] != [images count] : You should not be here......");
+                            N2LogStackTrace(@"[series count] != [images count] : You should not be here......");
                         
-                        NSString *name = [[curStudy valueForKey:@"studyName"] stringByTruncatingToLength: 34];
+                        NSString *name = [[curStudy valueForKey:@"studyName"] stringByTruncatingToLength: 50];
                             
                         NSString *stateText;
                         NSUInteger stateIndex = [[curStudy valueForKey:@"stateText"] intValue];
@@ -3900,48 +3899,34 @@ static volatile int numberOfThreadsForRelisce = 0;
                             
                         if( comment == nil)
                             comment = @"";
-                        comment = [comment stringWithTruncatingToLength: 32];
+                        comment = [comment stringWithTruncatingToLength: 50];
                             
                         NSString *modality = [curStudy valueForKey:@"modality"];
                         if( modality == nil)
                             modality = @"OT:";
-                            
-                        NSString *action = nil;
+                        
 #ifndef OSIRIX_LIGHT
                         if ([[cell.representedObject object] isKindOfClass:[DCMTKStudyQueryNode class]]) { // this is an incomplete study
                             [cell setImage:retrieveImage];
                         
                         }
 #endif
-                            
+                        
                         NSString *patName = @"";
                         
                         if( [curStudy valueForKey:@"name"] && [curStudy valueForKey:@"dateOfBirth"])
-                            patName = [NSString stringWithFormat: @"%@\r%@", [curStudy valueForKey:@"name"], [NSUserDefaults formatDate:[curStudy valueForKey:@"dateOfBirth"]]];
+                            patName = [NSString stringWithFormat: @"%@ %@", [curStudy valueForKey:@"name"], [NSUserDefaults formatDate:[curStudy valueForKey:@"dateOfBirth"]]];
                         
                         if( [[curStudy valueForKey:@"name"] isEqualToString: study.name])
                             patName = @"";
                             
                         if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] != annotFull)
                             patName = @"";
-                            
-                        NSMutableArray* components = [NSMutableArray array];
-                        [components addObject: [NSString stringWithFormat: @" %d ", (int) curStudyIndex+1]];
-                        [components addObject: @""];
-                        if (patName.length) [components addObject:patName];
-                        if (name.length) [components addObject:name];
-                        if ([curStudy date]) [components addObject:[[NSUserDefaults dateTimeFormatter] stringFromDate:[curStudy date]]];
-                        [components addObject:[NSString stringWithFormat:NSLocalizedString(@"%@: %@", @"semicolon separator for spacing"), modality, N2SingularPluralCount([series count], NSLocalizedString(@"series", @"one series, singular"), NSLocalizedString(@"series", @"zero or 2 or more series, plural"))]];
-                        if (stateText.length) [components addObject:stateText];
-                        if (comment.length) [components addObject:comment];
-                        if (action.length) [components addObject:[NSString stringWithFormat:@"\r%@", action]];
                         
+                        NSImage *number = [[NSImage alloc] initWithSize: NSMakeSize( 40, 40)];
                         
-                        NSMutableAttributedString *finalString = [[[NSMutableAttributedString alloc] initWithString: [components componentsJoinedByString:@"\r"]] autorelease];
-                            
-                        NSMutableDictionary *attribs = [NSMutableDictionary dictionary];
-                        [attribs setObject: [NSFont boldSystemFontOfSize: 15] forKey: NSFontAttributeName];
-                            
+                        NSMutableDictionary *d = [NSMutableDictionary dictionary];
+                        
                         NSArray *colors = ViewerController.studyColors;
                         NSColor *bkgColor = nil;
                         if( curStudyIndex >= colors.count)
@@ -3949,14 +3934,25 @@ static volatile int numberOfThreadsForRelisce = 0;
                         else
                             bkgColor = [colors objectAtIndex: curStudyIndex];
                         
-                        [attribs setObject: bkgColor forKey: NSBackgroundColorAttributeName];
-                        [finalString setAttributes: attribs range: NSMakeRange( 0, [[components objectAtIndex: 0] length])];
-                            
-                        [attribs setObject: [NSFont boldSystemFontOfSize:8.5] forKey: NSFontAttributeName];
-                        [attribs removeObjectForKey: NSBackgroundColorAttributeName];
-                        [finalString setAttributes: attribs range: NSMakeRange( [[components objectAtIndex: 0] length], finalString.length - [[components objectAtIndex: 0] length])];
-                            
-                        [finalString setAlignment:NSCenterTextAlignment range: NSMakeRange( 0, finalString.length)];
+                        [d setObject: [NSFont boldSystemFontOfSize: 20] forKey: NSFontAttributeName];
+                        
+                        NSAttributedString *s = [[[NSAttributedString alloc] initWithString: [NSString stringWithFormat: @"%d", (int) curStudyIndex+1] attributes: d] autorelease];
+                        
+                        [number lockFocus];
+                        [bkgColor set];
+                        [[NSBezierPath bezierPathWithRoundedRect: NSMakeRect( 0, 0, 40, 40) xRadius: 5 yRadius: 5] fill];
+                        [s drawAtPoint: NSMakePoint( (40 - s.size.width) / 2, (40 - s.size.height) /2)];
+                        [number unlockFocus];
+                        
+                        [cell setImage: number];
+                        
+                        NSMutableArray* components = [NSMutableArray array];
+                        if( [curStudy date]) [components addObject:[[NSUserDefaults dateTimeFormatter] stringFromDate:[curStudy date]]];
+                        if( patName.length) [components addObject:patName];
+                        if( name.length) [components addObject:name];
+                        if( comment.length) [components addObject:comment];
+                        
+                        NSAttributedString *finalString = [[[NSAttributedString alloc] initWithString: [components componentsJoinedByString:@" / "] attributes: [NSDictionary dictionaryWithObject: [NSFont boldSystemFontOfSize: 14] forKey: NSFontAttributeName]] autorelease];
                         [cell setAttributedTitle: finalString];
                     }
                     @catch (NSException *exception) {
@@ -4000,7 +3996,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                             if ([curStudy date]) [components addObject:[[NSUserDefaults dateTimeFormatter] stringFromDate:[curStudy date]]];
                             if (modality.length) [components addObject:modality];
                             
-                            NSAttributedString *title = [[[NSAttributedString alloc] initWithString: [components componentsJoinedByString:@"\r"] attributes: nil] autorelease];
+                            NSAttributedString *title = [[[NSAttributedString alloc] initWithString: [components componentsJoinedByString:@"\r"] attributes: [NSDictionary dictionaryWithObject: [NSFont boldSystemFontOfSize: 14] forKey: NSFontAttributeName]] autorelease];
                             [cell setAttributedTitle: title];
                         }
                         
@@ -4024,56 +4020,12 @@ static volatile int numberOfThreadsForRelisce = 0;
                         [cell setTarget: self];
                         [seriesPopupMenu.menu addItem: cell];
                         
-                        if( [[curStudy valueForKey: @"studyInstanceUID"] isEqualToString: study.studyInstanceUID])
-                            [attributes removeObjectForKey: NSBackgroundColorAttributeName];
-                        else
-                            [attributes setObject: [[self class] _differentStudyColor] forKey: NSBackgroundColorAttributeName];
-                        
                         [cell setRepresentedObject: [O2ViewerThumbnailsMatrixRepresentedObject object:curSeries]];
                         
                         NSString *name = [curSeries valueForKey:@"name"];
                         
-                        if( [name length] > 34)
-                            name = [name stringByTruncatingToLength: 34];
-                        
-                        NSString	*type = nil;
-                        int count = [[curSeries valueForKey:@"noFiles"] intValue];
-                        if( count == 1)
-                        {
-                            [[[[BrowserController currentBrowser] database] managedObjectContext] lock];
-                            
-                            @try
-                            {
-                                type = NSLocalizedString( @"Image", nil);
-                                int frames = [[[[curSeries valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
-                                if( frames > 1)
-                                {
-                                    count = frames;
-                                    type = NSLocalizedString( @"Frames", @"Frames: for example, 50 Frames in a series");
-                                }
-                            }
-                            @catch (NSException * e)
-                            {
-                                N2LogExceptionWithStackTrace(e);
-                            }
-                            
-                            [[[[BrowserController currentBrowser] database] managedObjectContext] unlock];
-                        }
-                        else if (count == 0)
-                        {
-                            count = [[curSeries valueForKey: @"rawNoFiles"] intValue];
-                            
-                            int frames = [[[[curSeries valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
-                            
-                            if( count == 1 && frames > 1)
-                                count = frames;
-                            
-                            if( count == 1)
-                                type = NSLocalizedString( @"Object", nil);
-                            else
-                                type = NSLocalizedString( @"Objects", nil);
-                        }
-                        else type = NSLocalizedString( @"Images", nil);
+                        if( [name length] > 50)
+                            name = [name stringByTruncatingToLength: 50];
                         
                         if( name == nil)
                             name = @"";
@@ -4081,17 +4033,17 @@ static volatile int numberOfThreadsForRelisce = 0;
                         if( [viewerSeries containsObject: curSeries]) // Red
                         {
                             [attributes setObject: [[self class] _selectedItemColor] forKey: NSBackgroundColorAttributeName];
+                            [seriesPopupMenu selectItem: cell];
                         }
                         else if( [[self blendingController] currentSeries] == curSeries) // Green
-                        {
                             [attributes setObject:  [[self class] _fusionedItemColor] forKey: NSBackgroundColorAttributeName];
-                        }
-                        else if( [displayedSeries containsObject: curSeries]) // Yellow
-                        {
-                            [attributes setObject:  [[self class] _openItemColor] forKey: NSBackgroundColorAttributeName];
-                        }
                         
-                        NSAttributedString *title = [[[NSAttributedString alloc] initWithString: [NSString stringWithFormat:@"%@\r%@\r%d %@\r", name, [[NSUserDefaults dateTimeFormatter] stringFromDate: [curSeries valueForKey:@"date"]], count, type] attributes: attributes] autorelease];
+                        else if( [displayedSeries containsObject: curSeries]) // Yellow
+                            [attributes setObject:  [[self class] _openItemColor] forKey: NSBackgroundColorAttributeName];
+                        
+                        [attributes setObject: [NSFont systemFontOfSize: 14] forKey: NSFontAttributeName];
+                        
+                        NSAttributedString *title = [[[NSAttributedString alloc] initWithString: name attributes: attributes] autorelease];
                         [cell setAttributedTitle: title];
                         
                         if( 1)
@@ -4112,27 +4064,30 @@ static volatile int numberOfThreadsForRelisce = 0;
                                     {
                                         img = [dcmPix generateThumbnailImageWithWW:0 WL:0];
                                         
-                                        if (img)
+                                        if( img)
                                         {
-                                            [cell setImage:img];
-                                            
                                             if ([[NSUserDefaults standardUserDefaults] boolForKey:@"StoreThumbnailsInDB"])
                                                 curSeries.thumbnail = [BrowserController produceJPEGThumbnail:img];
                                         }
-                                        else [cell setImage:[NSImage imageNamed:@"FileNotFound.tif"]];
+                                        else
+                                            img = [NSImage imageNamed:@"FileNotFound.tif"];
                                         
                                     }
-                                    else [cell setImage:[NSImage imageNamed:@"FileNotFound.tif"]];
+                                    else
+                                        img = [NSImage imageNamed:@"FileNotFound.tif"];
                                     
                                     [dcmPix release];
                                 }
                                 @catch (NSException* e)
                                 {
                                     N2LogExceptionWithStackTrace(e);
-                                    [cell setImage:[NSImage imageNamed:@"FileNotFound.tif"]];
+                                    img = [NSImage imageNamed:@"FileNotFound.tif"];
                                 }
-                            } else
-                                [cell setImage:img];
+                            }
+                            
+                            [img setSize: NSMakeSize( 40, 40)];
+                            
+                            [cell setImage:img];
                         }
                         
                         
@@ -4145,19 +4100,6 @@ static volatile int numberOfThreadsForRelisce = 0;
                     [seriesPopupMenu.menu addItem: [NSMenuItem separatorItem]];
             }
         }
-        
-//            if( showSelected)
-//            {
-//                NSInteger index = [[[previewMatrix cells] valueForKeyPath:@"representedObject.object"] indexOfObject: [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"]];
-//                
-//                if( index != NSNotFound)
-//                    [previewMatrix scrollCellToVisibleAtRow: index column:0];
-//            }
-//            else
-//            {
-//                [[previewMatrixScrollView contentView] scrollToPoint: origin];
-//                [previewMatrixScrollView reflectScrolledClipView: [previewMatrixScrollView contentView]];
-//            }
     }
     @catch (NSException *e)
     {
@@ -4177,10 +4119,8 @@ static volatile int numberOfThreadsForRelisce = 0;
         [previewMatrix scrollCellToVisibleAtRow: index column:0];
 }
 
-- (void) matrixPreviewPressed:(id) sender
+- (void) loadSelectedSeries: (id) series rightClick: (BOOL) rightClick
 {
-    [[NSUserDefaults standardUserDefaults] setBool: [self matrixIsVisible] forKey: @"SeriesListVisible"];
-    
     NSMutableArray *viewerSeries = [NSMutableArray array];
     
     for( int i = 0 ; i < maxMovieIndex; i++)
@@ -4189,24 +4129,19 @@ static volatile int numberOfThreadsForRelisce = 0;
             [viewerSeries addObject: [[fileList[ i] objectAtIndex:0] valueForKey:@"series"]];
     }
     
-	ThumbnailCell *c = [sender selectedCell];
-
-	if( ([c rightClick] || ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSCommandKeyMask)) && FullScreenOn == NO) 
+    if( (rightClick || ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSCommandKeyMask)) && FullScreenOn == NO)
 	{
-        if( ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSShiftKeyMask) || [[BrowserController currentBrowser] isUsingExternalViewer: [[[sender selectedCell] representedObject] object]] == NO)
+        if( ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSShiftKeyMask) || [[BrowserController currentBrowser] isUsingExternalViewer: series] == NO)
         {
-            ViewerController *newViewer = [[BrowserController currentBrowser] loadSeries :[[[sender selectedCell] representedObject] object] :nil :YES keyImagesOnly: displayOnlyKeyImages];
+            ViewerController *newViewer = [[BrowserController currentBrowser] loadSeries :series :nil :YES keyImagesOnly: displayOnlyKeyImages];
             [newViewer setHighLighted: 1.0];
-            lastHighLightedRow = [sender selectedRow];
             
             [self matrixPreviewSelectCurrentSeries];
             
             if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
                 [NSApp sendAction: @selector(tileWindows:) to:nil from: self];
             else
-            {
                 [[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];
-            }
             
             for( int i = 0; i < [[NSScreen screens] count]; i++) [toolbarPanel[ i] setToolbar: nil viewer: nil];
             [[self window] makeKeyAndOrderFront: self];
@@ -4218,10 +4153,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 	}
 	else
 	{
-		if( [viewerSeries containsObject: [[[sender selectedCell] representedObject] object]] == NO)
+		if( [viewerSeries containsObject: series] == NO)
 		{
 			BOOL found = NO;
-            
             BOOL showWindowIfDisplayed = [[NSUserDefaults standardUserDefaults] boolForKey: @"showWindowInsteadOfSwitching"];
             
             if( ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSShiftKeyMask))
@@ -4233,11 +4167,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 				
 				for( ViewerController *v in [ViewerController getDisplayed2DViewers])
 				{
-					if( [[v imageView] seriesObj] == [[[sender selectedCell] representedObject] object] && v != self)
+					if( [[v imageView] seriesObj] == series && v != self)
 					{
 						[[v window] makeKeyAndOrderFront: self];
 						[v setHighLighted: 1.0];
-						lastHighLightedRow = [sender selectedRow];
 						
 						found = YES;
 					}
@@ -4250,9 +4183,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 				
 				[[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"AUTOHIDEMATRIX"];
 				
-                if( ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSShiftKeyMask) || [[BrowserController currentBrowser] isUsingExternalViewer: [[[sender selectedCell] representedObject] object]] == NO)
+                if( ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSShiftKeyMask) || [[BrowserController currentBrowser] isUsingExternalViewer: series] == NO)
                 {
-                    ViewerController *newViewer = [[BrowserController currentBrowser] loadSeries :[[[sender selectedCell] representedObject] object] :self :YES keyImagesOnly: displayOnlyKeyImages];
+                    ViewerController *newViewer = [[BrowserController currentBrowser] loadSeries :series :self :YES keyImagesOnly: displayOnlyKeyImages];
                     
                     [self matrixPreviewSelectCurrentSeries];
                     [self updateNavigator];
@@ -4261,9 +4194,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 				[[NSUserDefaults standardUserDefaults] setBool: savedAUTOHIDEMATRIX forKey:@"AUTOHIDEMATRIX"];
 			}
 		}
-        else if( [[[sender selectedCell] representedObject] object] != [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"]) // Select it in 4D !
+        else if( series != [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"]) // Select it in 4D !
         {
-            NSUInteger idx = [viewerSeries indexOfObject: [[[sender selectedCell] representedObject] object]];
+            NSUInteger idx = [viewerSeries indexOfObject: series];
             
             if( idx != NSNotFound)
             {
@@ -4272,11 +4205,23 @@ static volatile int numberOfThreadsForRelisce = 0;
             }
         }
 		else
-		{
-			lastHighLightedRow = 0;
 			[self mouseMoved: nil];
-		}
 	}
+}
+- (IBAction)seriesPopupSelect:(NSMenuItem *)sender
+{
+    [self loadSelectedSeries: [sender.representedObject object] rightClick: NO];
+}
+
+- (void) matrixPreviewPressed:(id) sender
+{
+    [[NSUserDefaults standardUserDefaults] setBool: [self matrixIsVisible] forKey: @"SeriesListVisible"];
+    
+	ThumbnailCell *c = [sender selectedCell];
+    
+    id series = [[[sender selectedCell] representedObject] object];
+    
+    [self loadSelectedSeries: series rightClick: c.rightClick];
 }
 
 -(BOOL) checkFrameSize
@@ -4649,7 +4594,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	if( [[self window] isVisible] == NO) return;	//we will do it in checkBuiltMatrixPreview : faster opening !
 	if( windowWillClose) return;
     
-    [self buildSeriesPopup];
+    needsToBuildSeriesPopupMenu = YES;
     
     BOOL hasComparatives = NO, hasComparativesNewerThanMostRecentLoaded = NO;
     
@@ -4709,7 +4654,7 @@ static volatile int numberOfThreadsForRelisce = 0;
         
         if (!retrieveImage) {
             retrieveImage = [[NSImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DownArrowGreyRev" ofType:@"pdf"]];
-            retrieveImage.size = NSMakeSize(50,50);
+            retrieveImage.size = NSMakeSize(40,40);
         }
 #endif
         
@@ -5654,64 +5599,6 @@ static ViewerController *draggedController = nil;
 	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOHIDEMATRIX"])
 		[self autoHideMatrix];
-    
-//	if( [self checkFrameSize])
-//	{
-//		NSPoint	mouse = [[self window] mouseLocationOutsideOfEventStream];
-//		
-//		NSArray	*displayedViewers = [ViewerController getDisplayed2DViewers];
-//		
-//		if( [displayedViewers count] > 2)
-//		{
-//			if( mouse.x >= 0 && mouse.x <= [previewMatrix cellSize].width+13 && mouse.y >= 0 && mouse.y <= [splitView frame].size.height-20)
-//			{
-//				NSInteger row, column;
-//				
-//				mouse = [previewMatrix convertPoint:mouse fromView: nil];
-//				
-//				BOOL found = NO;
-//				
-//				if( [previewMatrix getRow: &row column: &column forPoint: mouse])
-//				{
-//					for( ViewerController *v in displayedViewers)
-//					{
-//						if( [[v imageView] seriesObj] == [[previewMatrix cellAtRow: row column: column] representedObject] object] && v != self)
-//						{
-//							found = YES;
-//							
-//							if( lastHighLightedRow != row)
-//							{							
-//								[v setHighLighted: 1.0];
-//							}
-//						}
-//					}
-//					
-//					if( found)
-//						lastHighLightedRow = row;
-//					else
-//						lastHighLightedRow = 0;
-//				}
-//				else lastHighLightedRow = 0;
-//			}
-//			else
-//			{
-//				lastHighLightedRow = 0;
-//				if( theEvent)
-//				{
-//					for( ViewerController *v in displayedViewers)
-//					{
-//						NSPoint	mouse = [NSEvent mouseLocation];
-//						
-//						if( NSPointInRect( mouse, [[v window] frame]))
-//						{
-//							[v mouseMoved: nil];
-//							break;
-//						}
-//					}
-//				}
-//			}
-//		}
-//	}
 }
 
 - (void) Display3DPoint:(NSNotification*) note

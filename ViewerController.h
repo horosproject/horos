@@ -79,7 +79,6 @@ enum
 	IBOutlet NSScrollView	*previewMatrixScrollView;
 	BOOL					matrixPreviewBuilt;
 	float					highLighted;
-	int						lastHighLightedRow;
 	NSTimer					*highLightedTimer;
 	
     IBOutlet NSWindow       *quicktimeWindow;
@@ -114,6 +113,7 @@ enum
     IBOutlet NSPopUpButton  *clutPopup;
 	IBOutlet NSPopUpButton  *OpacityPopup;
     IBOutlet NSPopUpButton  *seriesPopupMenu;
+    BOOL                    needsToBuildSeriesPopupMenu;
 	
 	IBOutlet NSView			*propagateSettingsView;
 	
