@@ -5252,17 +5252,14 @@ static BOOL initialized = NO;
 			{
                 if( v != keyWindow)
                 {
-                    if( [v checkFrameSize] == YES)
-                        [v buildMatrixPreview: YES];
-                    
+                    [v buildMatrixPreview: YES];
                     [v redrawToolbar]; // To avoid the drag & remove item bug - multiple windows
                 }
 			}
             
             if( [keyWindow isKindOfClass:[ViewerController class]])
             {
-                if( [keyWindow checkFrameSize] == YES)
-                    [keyWindow buildMatrixPreview: YES];
+                [keyWindow buildMatrixPreview: YES];
                 [keyWindow redrawToolbar];
             }
 		}

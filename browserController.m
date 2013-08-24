@@ -7007,8 +7007,7 @@ static NSConditionLock *threadLock = nil;
                 
                 for( id v in [[displayedViewers reverseObjectEnumerator] allObjects])
                 {
-                    if( [v checkFrameSize] == YES)
-                        [v buildMatrixPreview: YES];
+                    [v buildMatrixPreview: YES];
                 }
 			}
 		}

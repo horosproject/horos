@@ -3866,7 +3866,8 @@ static volatile int numberOfThreadsForRelisce = 0;
             
             for( id curStudy in studiesArray)
             {
-                NSMenuItem *cell = [[[NSMenuItem alloc] initWithTitle: @"" action: nil keyEquivalent: @""] autorelease];
+                NSMenuItem *cell = [[[NSMenuItem alloc] initWithTitle: @"" action: @selector( seriesPopupSelect:) keyEquivalent: @""] autorelease];
+                [cell setTarget: self];
                 [seriesPopupMenu.menu addItem: cell];
                 
                 NSUInteger curStudyIndex = [studiesArray indexOfObject: curStudy];
@@ -3952,6 +3953,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                         if( [curStudy date]) [components addObject:[[NSUserDefaults dateTimeFormatter] stringFromDate:[curStudy date]]];
                         if( patName.length) [components addObject:patName];
                         if( name.length) [components addObject:name];
+                        if( modality.length) [components addObject:modality];
                         if( comment.length) [components addObject:comment];
                         
                         NSAttributedString *finalString = [[[NSAttributedString alloc] initWithString: [components componentsJoinedByString:@" / "] attributes: [NSDictionary dictionaryWithObject: [NSFont boldSystemFontOfSize: 14] forKey: NSFontAttributeName]] autorelease];
@@ -4046,9 +4048,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                         
                         if( 1)
                         {
-                            NSImage	*img = nil;
-                            
-                            img = [[[NSImage alloc] initWithData: [curSeries primitiveValueForKey:@"thumbnail"]] autorelease];
+                            NSImage	*img = [[[NSImage alloc] initWithData: [curSeries primitiveValueForKey:@"thumbnail"]] autorelease];
                             
                             if( img == nil)
                             {
@@ -4119,6 +4119,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) loadSelectedSeries: (id) series rightClick: (BOOL) rightClick
 {
+    if( [series isKindOfClass: [DicomStudy class]])
+    {
+        DicomStudy *s = series;
+        series = [s.imageSeries objectAtIndex: 0];
+    }
+    
     NSMutableArray *viewerSeries = [NSMutableArray array];
     
     for( int i = 0 ; i < maxMovieIndex; i++)
@@ -4208,7 +4214,21 @@ static volatile int numberOfThreadsForRelisce = 0;
 }
 - (IBAction)seriesPopupSelect:(NSMenuItem *)sender
 {
-    [self loadSelectedSeries: [sender.representedObject object] rightClick: NO];
+    id series = [sender.representedObject object];
+    
+    if( [series isKindOfClass: [DicomStudy class]])
+    {
+        DicomStudy *s = series;
+        series = [s.imageSeries objectAtIndex: 0];
+        
+        for( NSMenuItem *i in seriesPopupMenu.menu.itemArray)
+        {
+            if( series == [i.representedObject object])
+                [seriesPopupMenu selectItem: i];
+        }
+    }
+    
+    [self loadSelectedSeries: series rightClick: NO];
 }
 
 - (void) matrixPreviewPressed:(id) sender
@@ -4224,7 +4244,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 -(BOOL) checkFrameSize
 {
-	BOOL	visible = [self matrixIsVisible];
+	BOOL visible = [self matrixIsVisible];
     
 	return visible;
 }
@@ -4592,7 +4612,21 @@ static volatile int numberOfThreadsForRelisce = 0;
 	if( [[self window] isVisible] == NO) return;	//we will do it in checkBuiltMatrixPreview : faster opening !
 	if( windowWillClose) return;
     
+    // series popup menu button : will build all the items, when needed, later
+    
     needsToBuildSeriesPopupMenu = YES;
+    
+    [seriesPopupMenu.menu removeAllItems];
+    NSMenuItem *menuItem = [[[NSMenuItem alloc] initWithTitle: @"" action: @selector( seriesPopupSelect:) keyEquivalent: @""] autorelease];
+    NSImage	*img = [[[NSImage alloc] initWithData: [self.currentSeries primitiveValueForKey:@"thumbnail"]] autorelease];
+    [img setSize: NSMakeSize( SERIESPOPUPSIZE, SERIESPOPUPSIZE)];
+    [menuItem setImage: img];
+    [seriesPopupMenu.menu addItem: menuItem];
+    
+    if( [self matrixIsVisible] == NO)
+        return;
+    
+    // *************
     
     BOOL hasComparatives = NO, hasComparativesNewerThanMostRecentLoaded = NO;
     
