@@ -3745,6 +3745,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 #pragma mark-
 #pragma mark 2. window subdivision
 
+#define SERIESPOPUPSIZE 35
+
 - (void) buildSeriesPopup
 {
     if( needsToBuildSeriesPopupMenu == NO)
@@ -3923,7 +3925,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                         if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] != annotFull)
                             patName = @"";
                         
-                        NSImage *number = [[NSImage alloc] initWithSize: NSMakeSize( 40, 40)];
+                        NSImage *number = [[NSImage alloc] initWithSize: NSMakeSize( SERIESPOPUPSIZE, SERIESPOPUPSIZE)];
                         
                         NSMutableDictionary *d = [NSMutableDictionary dictionary];
                         
@@ -3934,14 +3936,14 @@ static volatile int numberOfThreadsForRelisce = 0;
                         else
                             bkgColor = [colors objectAtIndex: curStudyIndex];
                         
-                        [d setObject: [NSFont boldSystemFontOfSize: 20] forKey: NSFontAttributeName];
+                        [d setObject: [NSFont boldSystemFontOfSize: 18] forKey: NSFontAttributeName];
                         
                         NSAttributedString *s = [[[NSAttributedString alloc] initWithString: [NSString stringWithFormat: @"%d", (int) curStudyIndex+1] attributes: d] autorelease];
                         
                         [number lockFocus];
                         [bkgColor set];
-                        [[NSBezierPath bezierPathWithRoundedRect: NSMakeRect( 0, 0, 40, 40) xRadius: 5 yRadius: 5] fill];
-                        [s drawAtPoint: NSMakePoint( (40 - s.size.width) / 2, (40 - s.size.height) /2)];
+                        [[NSBezierPath bezierPathWithRoundedRect: NSMakeRect( 0, 0, SERIESPOPUPSIZE, SERIESPOPUPSIZE) xRadius: 5 yRadius: 5] fill];
+                        [s drawAtPoint: NSMakePoint( (SERIESPOPUPSIZE - s.size.width) / 2, (SERIESPOPUPSIZE - s.size.height) /2)];
                         [number unlockFocus];
                         
                         [cell setImage: number];
@@ -3970,11 +3972,9 @@ static volatile int numberOfThreadsForRelisce = 0;
                         if (local.count)
                             images = [[BrowserController currentBrowser] imagesArray:[local objectAtIndex:0] preferredObject: oAny];
                         
-                        NSString *name = [[curStudy valueForKey:@"studyName"] stringByTruncatingToLength: 34];
+                        NSString *name = [[curStudy valueForKey:@"studyName"] stringByTruncatingToLength: 50];
                         if( name == nil)
                             name = @"";
-                        NSString *stateText = @"";
-                        NSString *comment = @"";
                         NSString *modality = [curStudy valueForKey:@"modality"];
                         if( modality == nil)
                             modality = @"OT";
@@ -3989,16 +3989,14 @@ static volatile int numberOfThreadsForRelisce = 0;
                         if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] != annotFull)
                             patName = @"";
                         
-                        if ([stateText length] == 0 && [comment length] == 0) {
-                            NSMutableArray* components = [NSMutableArray array];
-                            if (patName.length) [components addObject:patName];
-                            if (name.length) [components addObject:name];
-                            if ([curStudy date]) [components addObject:[[NSUserDefaults dateTimeFormatter] stringFromDate:[curStudy date]]];
-                            if (modality.length) [components addObject:modality];
-                            
-                            NSAttributedString *title = [[[NSAttributedString alloc] initWithString: [components componentsJoinedByString:@"\r"] attributes: [NSDictionary dictionaryWithObject: [NSFont boldSystemFontOfSize: 14] forKey: NSFontAttributeName]] autorelease];
-                            [cell setAttributedTitle: title];
-                        }
+                        NSMutableArray* components = [NSMutableArray array];
+                        if ([curStudy date]) [components addObject:[[NSUserDefaults dateTimeFormatter] stringFromDate:[curStudy date]]];
+                        if (patName.length) [components addObject:patName];
+                        if (name.length) [components addObject:name];
+                        if (modality.length) [components addObject:modality];
+                        
+                        NSAttributedString *title = [[[NSAttributedString alloc] initWithString: [components componentsJoinedByString:@" / "] attributes: [NSDictionary dictionaryWithObject: [NSFont boldSystemFontOfSize: 14] forKey: NSFontAttributeName]] autorelease];
+                        [cell setAttributedTitle: title];
                         
                         [cell setImage:retrieveImage];
                     }
@@ -4085,7 +4083,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                                 }
                             }
                             
-                            [img setSize: NSMakeSize( 40, 40)];
+                            [img setSize: NSMakeSize( SERIESPOPUPSIZE, SERIESPOPUPSIZE)];
                             
                             [cell setImage:img];
                         }
@@ -4654,7 +4652,7 @@ static volatile int numberOfThreadsForRelisce = 0;
         
         if (!retrieveImage) {
             retrieveImage = [[NSImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DownArrowGreyRev" ofType:@"pdf"]];
-            retrieveImage.size = NSMakeSize(40,40);
+            retrieveImage.size = NSMakeSize(SERIESPOPUPSIZE,SERIESPOPUPSIZE);
         }
 #endif
         
