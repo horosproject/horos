@@ -4706,17 +4706,28 @@ static NSConditionLock *threadLock = nil;
                             [comparativeStudyWaited release];
                             comparativeStudyWaited = nil;
                             
-                            if( comparativeStudyWaitedToOpen)
+                            if( comparativeStudyWaitedToOpen && comparativeStudyWaitedViewer)
+                            {
+                                if( comparativeStudyWaitedViewer.window.isVisible)
+                                    [comparativeStudyWaitedViewer loadSelectedSeries: study rightClick: NO];
+                            }
+                            else if( comparativeStudyWaitedToOpen)
                                 [self databaseOpenStudy: study];
                             
                             if( [[self window] firstResponder] != searchField && [[self window] firstResponder] != searchField.currentEditor)
                                 [[self window] makeFirstResponder: databaseOutline];
+                            
+                            [comparativeStudyWaitedViewer release];
+                            comparativeStudyWaitedViewer = nil;
                         }
                     }
                     else
                     {
                         [comparativeStudyWaited release];
                         comparativeStudyWaited = nil;
+                        
+                        [comparativeStudyWaitedViewer release];
+                        comparativeStudyWaitedViewer = nil;
                     }
                 }
             }
@@ -4725,6 +4736,9 @@ static NSConditionLock *threadLock = nil;
         {
             [comparativeStudyWaited release];
             comparativeStudyWaited = nil;
+            
+            [comparativeStudyWaitedViewer release];
+            comparativeStudyWaitedViewer = nil;
         }
     }
 }
@@ -10854,6 +10868,11 @@ static BOOL needToRezoom;
 }
 
 - (void) retrieveComparativeStudy: (DCMTKStudyQueryNode*) study select: (BOOL) select open: (BOOL) open showGUI: (BOOL) showGUI
+{
+    [self retrieveComparativeStudy: study select: select open: open showGUI: showGUI viewer: nil];
+}
+
+- (void) retrieveComparativeStudy: (DCMTKStudyQueryNode*) study select: (BOOL) select open: (BOOL) open showGUI: (BOOL) showGUI viewer: (ViewerController*) viewer
 {    
     BOOL retrieveStudy = YES;
     
@@ -10890,6 +10909,9 @@ static BOOL needToRezoom;
         [comparativeStudyWaited release];
         comparativeStudyWaited = [study retain];
         comparativeStudyWaitedTime = [NSDate timeIntervalSinceReferenceDate];
+        
+        [comparativeStudyWaitedViewer release];
+        comparativeStudyWaitedViewer = [viewer retain];
     }
 }
 

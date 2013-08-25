@@ -602,6 +602,7 @@ enum
 - (void) contextualDictionaryPath:(NSString *)newContextualDictionaryPath;
 - (NSString *) contextualDictionaryPath;
 - (void) contextualMenuEvent:(id)sender;
+- (void) loadSelectedSeries: (id) series rightClick: (BOOL) rightClick;
 - (IBAction) setAxialOrientation:(id) sender;
 - (IBAction) reSyncOrigin:(id) sender;
 - (void) loadROI:(long) mIndex;

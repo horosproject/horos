@@ -209,12 +209,12 @@ static int increment = 0;
                 if( viewer)
                     [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
 				
-				if( [[viewer window] isVisible] == NO)
-				{
-					[[self window] orderBack:self];
-					[[self window] close];
-					NSLog( @"ToolbarPanel.m : [[viewer window] isVisible] == NO -> hide toolbar");
-				}
+//				if( [[viewer window] isVisible] == NO)
+//				{
+//					[[self window] orderBack:self];
+//					[[self window] close];
+//					NSLog( @"ToolbarPanel.m : [[viewer window] isVisible] == NO -> hide toolbar");
+//				}
 			}
 			else
 			{

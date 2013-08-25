@@ -4140,7 +4140,12 @@ static volatile int numberOfThreadsForRelisce = 0;
     if( [series isKindOfClass: [DicomStudy class]])
     {
         DicomStudy *s = series;
-        series = [s.imageSeries objectAtIndex: 0];
+        
+        NSArray *seriesArray = [s imageSeriesContainingPixels: YES];
+        if( seriesArray.count)
+            series = [seriesArray objectAtIndex: 0];
+        else
+            return;
     }
     
     NSMutableArray *viewerSeries = [NSMutableArray array];
@@ -4245,6 +4250,14 @@ static volatile int numberOfThreadsForRelisce = 0;
                 [seriesPopupMenu selectItem: i];
         }
     }
+    
+    #ifndef OSIRIX_LIGHT
+    if( [series isKindOfClass: [DCMTKStudyQueryNode class]]) //Distant Study
+    {
+        [[BrowserController currentBrowser] retrieveComparativeStudy: series select: YES open: YES showGUI: YES viewer: self];
+        return;
+    }
+    #endif
     
     [self loadSelectedSeries: series rightClick: NO];
 }

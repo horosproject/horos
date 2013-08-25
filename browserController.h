@@ -241,6 +241,7 @@ extern NSString* O2AlbumDragType;
     
     NSMutableArray *comparativeRetrieveQueue; //Retrieve Queue: don't retrieve the same study multiple times
     DCMTKStudyQueryNode *comparativeStudyWaited; //The study to be selected or opened
+    ViewerController *comparativeStudyWaitedViewer; //The destination viewer
     NSTimeInterval comparativeStudyWaitedTime; //The time when the study to be selected or opened was activated
     BOOL comparativeStudyWaitedToOpen; // for retrieveStudy: function
     BOOL comparativeStudyWaitedToSelect; // for retrieveStudy: function
@@ -560,7 +561,8 @@ extern NSString* O2AlbumDragType;
 - (IBAction) viewXML:(id) sender;
 #endif
 
-- (void) retrieveComparativeStudy: (DCMTKStudyQueryNode*) study select: (BOOL) select open:(BOOL) open;
+- (void) retrieveComparativeStudy: (DCMTKStudyQueryNode*) study select: (BOOL) select open: (BOOL) open;
+- (void) retrieveComparativeStudy: (DCMTKStudyQueryNode*) study select: (BOOL) select open: (BOOL) open showGUI: (BOOL) showGUI viewer: (ViewerController*) viewer;
 - (void) refreshComparativeStudiesIfNeeded:(id) timer;
 - (NSArray*) distantStudiesForSmartAlbum: (NSString*) albumName;
 - (void) initAnimationSlider;
