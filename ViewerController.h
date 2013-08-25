@@ -113,6 +113,7 @@ enum
     IBOutlet NSPopUpButton  *clutPopup;
 	IBOutlet NSPopUpButton  *OpacityPopup;
     IBOutlet NSPopUpButton  *seriesPopupMenu;
+    NSMenuItem               *seriesPopupContextualMenu;
     BOOL                    needsToBuildSeriesPopupMenu;
 	
 	IBOutlet NSView			*propagateSettingsView;

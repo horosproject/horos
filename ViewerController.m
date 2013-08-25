@@ -2217,6 +2217,16 @@ static volatile int numberOfThreadsForRelisce = 0;
 	{
 		/******************* Tools menu ***************************/
 		contextualMenu =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"Tools", nil)];
+        
+        // ******************* series popup menu *********************
+        
+        [self buildSeriesPopup];
+		[contextualMenu addItem: seriesPopupContextualMenu];
+		[contextualMenu addItem: [NSMenuItem separatorItem]];
+        
+        
+        //  *****
+        
 		NSMenu *submenu =  [[[NSMenu alloc] initWithTitle:NSLocalizedString(@"ROI", nil)] autorelease];
 		NSMenuItem *item;
 		NSArray *titles = [NSArray arrayWithObjects:NSLocalizedString(@"Contrast", nil), NSLocalizedString(@"Move", nil), NSLocalizedString(@"Magnify", nil), 
@@ -2272,10 +2282,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 		[contextualMenu addItem:item];
 		
-		[[contextualMenu itemAtIndex:5] setSubmenu:submenu];
+		[[contextualMenu itemAtIndex: contextualMenu.itemArray.count-1] setSubmenu:submenu];
 		
 		[contextualMenu addItem:[NSMenuItem separatorItem]];
-		
+        
 		/******************* WW/WL menu items **********************/
 		NSMenu *mainMenu = [NSApp mainMenu];
 		NSMenu *viewerMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"2D Viewer", nil)] submenu];
@@ -3756,6 +3766,11 @@ static volatile int numberOfThreadsForRelisce = 0;
     
     [seriesPopupMenu.menu removeAllItems];
     
+    if( seriesPopupContextualMenu == nil)
+        seriesPopupContextualMenu = [[NSMenuItem alloc] initWithTitle: @"Displayed Series" action: nil keyEquivalent: @""];
+    
+    [seriesPopupContextualMenu setSubmenu: nil];
+    
     BOOL hasComparatives = NO, hasComparativesNewerThanMostRecentLoaded = NO;
     
     @try
@@ -4043,6 +4058,8 @@ static volatile int numberOfThreadsForRelisce = 0;
                         
                         [attributes setObject: [NSFont systemFontOfSize: 14] forKey: NSFontAttributeName];
                         
+                        name = [name stringByAppendingFormat: @" / %@", N2LocalizedSingularPluralCount( curSeries.images.count, @"image", @"images")];
+                        
                         NSAttributedString *title = [[[NSAttributedString alloc] initWithString: name attributes: attributes] autorelease];
                         [cell setAttributedTitle: title];
                         
@@ -4088,8 +4105,6 @@ static volatile int numberOfThreadsForRelisce = 0;
                             [cell setImage:img];
                         }
                         
-                        
-                        
                         index++;
                     }
                 }
@@ -4104,6 +4119,10 @@ static volatile int numberOfThreadsForRelisce = 0;
         N2LogExceptionWithStackTrace(e);
     }
 
+    [seriesPopupContextualMenu setSubmenu: [[seriesPopupMenu.menu copy] autorelease]];
+    [seriesPopupContextualMenu setImage: seriesPopupMenu.selectedItem.image];
+    [seriesPopupContextualMenu setTitle: self.currentSeries.name];
+    
     for( DCMView *v in self.imageViews)
         [v computeColor];
 }
@@ -4622,6 +4641,7 @@ static volatile int numberOfThreadsForRelisce = 0;
     [img setSize: NSMakeSize( SERIESPOPUPSIZE, SERIESPOPUPSIZE)];
     [menuItem setImage: img];
     [seriesPopupMenu.menu addItem: menuItem];
+    [seriesPopupContextualMenu setTitle: self.currentSeries.name];
     
     if( [self matrixIsVisible] == NO)
         return;
@@ -7491,6 +7511,9 @@ return YES;
         [loadingThread autorelease];
         loadingThread = nil;
     }
+    
+    [seriesPopupContextualMenu release];
+    seriesPopupContextualMenu = nil;
     
 	[undoQueue release];
     undoQueue = nil;
@@ -15561,8 +15584,7 @@ int i,j,l;
 		superMenu = [currentMenu supermenu];
 		i++;
 	}
-	NSLog( @"%@", composedMenuTitle);
-	
+    
 	if ([composedMenuTitle isEqualToString:@"?"]) //creating a content panel
 	{
 		[NSApp beginSheet: CommentsWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
