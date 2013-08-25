@@ -12,6 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
+#import "NSImage+N2.h"
 #import "DefaultsOsiriX.h"
 #import "NSAppleScript+HandlerCalls.h"
 #import "AYDicomPrintWindowController.h"
@@ -3952,7 +3953,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                         else
                             bkgColor = [colors objectAtIndex: curStudyIndex];
                         
-                        [d setObject: [NSFont boldSystemFontOfSize: 18] forKey: NSFontAttributeName];
+                        [d setObject: [NSFont boldSystemFontOfSize: 16] forKey: NSFontAttributeName];
                         
                         NSAttributedString *s = [[[NSAttributedString alloc] initWithString: [NSString stringWithFormat: @"%d", (int) curStudyIndex+1] attributes: d] autorelease];
                         
@@ -4100,9 +4101,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                                 }
                             }
                             
-                            [img setSize: NSMakeSize( SERIESPOPUPSIZE, SERIESPOPUPSIZE)];
-                            
-                            [cell setImage:img];
+                            [cell setImage: [img imageByScalingProportionallyToSizeUsingNSImage: NSMakeSize( SERIESPOPUPSIZE, SERIESPOPUPSIZE)]];
                         }
                         
                         index++;
@@ -4638,8 +4637,7 @@ static volatile int numberOfThreadsForRelisce = 0;
     [seriesPopupMenu.menu removeAllItems];
     NSMenuItem *menuItem = [[[NSMenuItem alloc] initWithTitle: @"" action: @selector( seriesPopupSelect:) keyEquivalent: @""] autorelease];
     NSImage	*img = [[[NSImage alloc] initWithData: [self.currentSeries primitiveValueForKey:@"thumbnail"]] autorelease];
-    [img setSize: NSMakeSize( SERIESPOPUPSIZE, SERIESPOPUPSIZE)];
-    [menuItem setImage: img];
+    [menuItem setImage: [img imageByScalingProportionallyToSizeUsingNSImage: NSMakeSize( SERIESPOPUPSIZE, SERIESPOPUPSIZE)]];
     [seriesPopupMenu.menu addItem: menuItem];
     [seriesPopupContextualMenu setTitle: self.currentSeries.name];
     

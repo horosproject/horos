@@ -27,6 +27,7 @@
 -(NSSize)sizeByScalingProportionallyToSize:(NSSize)targetSize;
 -(NSSize)sizeByScalingDownProportionallyToSize:(NSSize)targetSize;
 -(NSImage*)imageByScalingProportionallyToSize:(NSSize)targetSize;
+-(NSImage*)imageByScalingProportionallyToSizeUsingNSImage:(NSSize)targetSize;
 
 @end
 

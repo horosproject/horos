@@ -230,6 +230,66 @@ end_size_y:
     return outSize.width < imageSize.width? outSize : imageSize;
 }
 
+- (NSImage*)imageByScalingProportionallyToSizeUsingNSImage:(NSSize)targetSize
+{
+    NSImage *newImage = [[[NSImage alloc] initWithSize: targetSize] autorelease];
+
+    if( [newImage size].width > 0 && [newImage size].height > 0)
+    {
+        [newImage lockFocus];
+
+        [[NSGraphicsContext currentContext] setImageInterpolation: NSImageInterpolationHigh];
+        
+        NSPoint thumbnailPoint = NSZeroPoint;
+        
+        NSSize imageSize = [self size];
+        float width  = imageSize.width;
+        float height = imageSize.height;
+        float targetWidth  = targetSize.width;
+        float targetHeight = targetSize.height;
+        float scaledWidth  = targetWidth;
+        float scaledHeight = targetHeight;
+        
+        if( NSEqualSizes( imageSize, targetSize) == NO)
+        {
+            float widthFactor  = targetWidth / width;
+            float heightFactor = targetHeight / height;
+            float scaleFactor  = 0.0;
+			
+            
+            if ( widthFactor < heightFactor )
+                scaleFactor = widthFactor;
+            else
+                scaleFactor = heightFactor;
+            
+            scaledWidth  = width  * scaleFactor;
+            scaledHeight = height * scaleFactor;
+            
+            if ( widthFactor < heightFactor )
+                thumbnailPoint.y = (targetHeight - scaledHeight) * 0.5;
+            
+            else if ( widthFactor > heightFactor )
+                thumbnailPoint.x = (targetWidth - scaledWidth) * 0.5;
+        }
+        
+        NSRect thumbnailRect;
+        thumbnailRect.origin = thumbnailPoint;
+        thumbnailRect.size.width = scaledWidth;
+        thumbnailRect.size.height = scaledHeight;
+
+        [self drawInRect: thumbnailRect
+                       fromRect: NSZeroRect
+                      operation: NSCompositeCopy
+                       fraction: 1.0];
+
+        [newImage unlockFocus];
+        
+        return newImage;
+    }
+    
+    return self;
+}
+
 - (NSImage*)imageByScalingProportionallyToSize:(NSSize)targetSize
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
