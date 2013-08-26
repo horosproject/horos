@@ -59,6 +59,7 @@
         if ([keyPath isEqual:@"values.dbFontSize"])
         {
             [[BrowserController currentBrowser] setTableViewRowHeight];
+            [[BrowserController currentBrowser] refreshMatrix: self];
             [[[BrowserController currentBrowser] window] display];
         }
     }

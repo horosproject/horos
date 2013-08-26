@@ -289,6 +289,7 @@ static volatile BOOL waitForRunningProcess = NO;
         [databaseOutline setRowHeight: 13];
         [comparativeTable setRowHeight: 24];
         [_activityTableView setRowHeight: 34];
+        [oMatrix setCellSize: NSMakeSize( 105 * 0.8, 113 * 0.8)];
     }
     
     if( mode == 0) // Regular
@@ -298,6 +299,7 @@ static volatile BOOL waitForRunningProcess = NO;
         [databaseOutline setRowHeight: 17];
         [comparativeTable setRowHeight: 29];
         [_activityTableView setRowHeight: 38];
+        [oMatrix setCellSize: NSMakeSize( 105, 113)];
     }
     
     if( mode == 1) // Large
@@ -307,6 +309,7 @@ static volatile BOOL waitForRunningProcess = NO;
         [databaseOutline setRowHeight: 22];
         [comparativeTable setRowHeight: 43];
         [_activityTableView setRowHeight: 48];
+        [oMatrix setCellSize: NSMakeSize( 105 * 1.3, 113 * 1.3)];
     }
 }
 
@@ -344,10 +347,16 @@ static volatile BOOL waitForRunningProcess = NO;
             return 8;
         
         if( [type isEqualToString: @"dbMatrixFont"])
-            return 9;
+            return 8;
         
         if( [type isEqualToString: @"dbSmallMatrixFont"])
-            return 8.5;
+            return 7.5;
+        
+        if( [type isEqualToString: @"viewerSmallCellFont"])
+            return 7;
+        
+        if( [type isEqualToString: @"viewerNumberFont"])
+            return 11;
     }
     
     if( mode == 0) // Regular
@@ -384,6 +393,12 @@ static volatile BOOL waitForRunningProcess = NO;
         
         if( [type isEqualToString: @"dbSmallMatrixFont"])
             return 8.5;
+        
+        if( [type isEqualToString: @"viewerSmallCellFont"])
+            return 7.8;
+        
+        if( [type isEqualToString: @"viewerNumberFont"])
+            return 15;
     }
     
     if( mode == 1) // Large
@@ -416,10 +431,16 @@ static volatile BOOL waitForRunningProcess = NO;
             return 13;
         
         if( [type isEqualToString: @"dbMatrixFont"])
-            return 9;
+            return 13;
         
         if( [type isEqualToString: @"dbSmallMatrixFont"])
-            return 8.5;
+            return 12;
+        
+        if( [type isEqualToString: @"viewerSmallCellFont"])
+            return 11;
+        
+        if( [type isEqualToString: @"viewerNumberFont"])
+            return 20;
     }
     
     N2LogStackTrace( @"********* fontSize not found for type: %@", type);
@@ -8855,7 +8876,12 @@ static BOOL withReset = NO;
                 
                 [cell setButtonType:NSPushOnPushOffButton];
                 
-                [cell setImage: img];
+                switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"dbFontSize"])
+                {
+                    case -1: [cell setImage: [img imageByScalingProportionallyUsingNSImage: 0.6]]; break;
+                    case 0: [cell setImage: img]; break;
+                    case 1: [cell setImage: [img imageByScalingProportionallyUsingNSImage: 1.3]]; break;
+                }
                 
                 if( setDCMDone == NO)
                 {

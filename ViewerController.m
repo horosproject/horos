@@ -4791,7 +4791,7 @@ static volatile int numberOfThreadsForRelisce = 0;
             for (NSButtonCell* cell in previewMatrix.cells) {
                 [cell setTransparent: NO];
                 [cell setBezelStyle: NSShadowlessSquareBezelStyle];
-                [cell setFont:[NSFont boldSystemFontOfSize:8.5]];
+                [cell setFont:[NSFont boldSystemFontOfSize: [[BrowserController currentBrowser] fontSize: @"dbSmallMatrixFont"]]];
                 [cell setButtonType:NSMomentaryPushInButton];
                 [cell setEnabled:YES];
                 [cell setTarget: self];
@@ -4855,7 +4855,14 @@ static volatile int numberOfThreadsForRelisce = 0;
                         NSString *action = nil;
     #ifndef OSIRIX_LIGHT
                         if ([[cell.representedObject object] isKindOfClass:[DCMTKStudyQueryNode class]]) { // this is an incomplete study
-                            [cell setImage:retrieveImage];
+                                                        
+                            switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"dbFontSize"])
+                            {
+                                case -1: [cell setImage: [retrieveImage imageByScalingProportionallyUsingNSImage: 0.6]]; break;
+                                case 0: [cell setImage: retrieveImage]; break;
+                                case 1: [cell setImage: [retrieveImage imageByScalingProportionallyUsingNSImage: 1.3]]; break;
+                            }
+                            
                             [cell setImagePosition:NSImageOverlaps];
                             [cell setImageScaling:NSImageScaleNone];
 
@@ -4895,7 +4902,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                         NSMutableAttributedString *finalString = [[[NSMutableAttributedString alloc] initWithString: [components componentsJoinedByString:@"\r"]] autorelease];
                         
                         NSMutableDictionary *attribs = [NSMutableDictionary dictionary];
-                        [attribs setObject: [NSFont boldSystemFontOfSize: 15] forKey: NSFontAttributeName];
+                        [attribs setObject: [NSFont boldSystemFontOfSize: [[BrowserController currentBrowser] fontSize: @"viewerNumberFont"]] forKey: NSFontAttributeName];
                         
                         NSArray *colors = ViewerController.studyColors;
                         NSColor *bkgColor = nil;
@@ -4907,7 +4914,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                         [attribs setObject: bkgColor forKey: NSBackgroundColorAttributeName];
                         [finalString setAttributes: attribs range: NSMakeRange( 0, [[components objectAtIndex: 0] length])];
                         
-                        [attribs setObject: [NSFont boldSystemFontOfSize:8.5] forKey: NSFontAttributeName];
+                        [attribs setObject: [NSFont boldSystemFontOfSize: [[BrowserController currentBrowser] fontSize: @"dbSmallMatrixFont"]] forKey: NSFontAttributeName];
                         [attribs removeObjectForKey: NSBackgroundColorAttributeName];
                         [finalString setAttributes: attribs range: NSMakeRange( [[components objectAtIndex: 0] length], finalString.length - [[components objectAtIndex: 0] length])];
                         
@@ -4957,7 +4964,13 @@ static volatile int numberOfThreadsForRelisce = 0;
                             [cell setTitle:[components componentsJoinedByString:@"\r"]];
                         }
                         
-                        [cell setImage:retrieveImage];
+                        switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"dbFontSize"])
+                        {
+                            case -1: [cell setImage: [retrieveImage imageByScalingProportionallyUsingNSImage: 0.6]]; break;
+                            case 0: [cell setImage: retrieveImage]; break;
+                            case 1: [cell setImage: [retrieveImage imageByScalingProportionallyUsingNSImage: 1.3]]; break;
+                        }
+                        
                         [cell setImagePosition:NSImageOverlaps];
                         [cell setImageScaling:NSImageScaleNone];
                     }
@@ -4982,7 +4995,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                             [cell setBackgroundColor: [[self class] _differentStudyColor]];
                         
                         [cell setRepresentedObject: [O2ViewerThumbnailsMatrixRepresentedObject object:curSeries]];
-                        [cell setFont:[NSFont systemFontOfSize:8.5]];
+                        [cell setFont:[NSFont systemFontOfSize: [[BrowserController currentBrowser] fontSize: @"dbSmallMatrixFont"]]];
                         [cell setAction: @selector(matrixPreviewPressed:)];
                         [cell setLineBreakMode: NSLineBreakByCharWrapping];
                         
@@ -4990,7 +5003,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                         
                         if( [name length] > 18)
                         {
-                            [cell setFont:[NSFont boldSystemFontOfSize: 7.8]];
+                            [cell setFont:[NSFont boldSystemFontOfSize: [[BrowserController currentBrowser] fontSize: @"viewerSmallCellFont"]]];
                             name = [name stringByTruncatingToLength: 34];
                         }
                         
@@ -5053,9 +5066,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                         
                         if( visible)
                         {
-                            NSImage	*img = nil;
-                            
-                            img = [[[NSImage alloc] initWithData: [curSeries primitiveValueForKey:@"thumbnail"]] autorelease];
+                            NSImage	*img = [[[NSImage alloc] initWithData: [curSeries primitiveValueForKey:@"thumbnail"]] autorelease];
                             
                             if( img == nil)
                             {
@@ -5071,25 +5082,29 @@ static volatile int numberOfThreadsForRelisce = 0;
                                         
                                         if (img)
                                         {
-                                            [cell setImage:img];
-                                            
                                             if ([[NSUserDefaults standardUserDefaults] boolForKey:@"StoreThumbnailsInDB"])
                                                 curSeries.thumbnail = [BrowserController produceJPEGThumbnail:img];
                                         }
-                                        else [cell setImage:[NSImage imageNamed:@"FileNotFound.tif"]];
+                                        else img = [NSImage imageNamed:@"FileNotFound.tif"];
                                         
                                     }
-                                    else [cell setImage:[NSImage imageNamed:@"FileNotFound.tif"]];
+                                    else img = [NSImage imageNamed:@"FileNotFound.tif"];
                                     
                                     [dcmPix release];
                                 }
                                 @catch (NSException* e)
                                 {
                                     N2LogExceptionWithStackTrace(e);
-                                    [cell setImage:[NSImage imageNamed:@"FileNotFound.tif"]];
+                                    img = [NSImage imageNamed:@"FileNotFound.tif"];
                                 }
-                            } else
-                                [cell setImage:img];
+                            }
+                            
+                            switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"dbFontSize"])
+                            {
+                                case -1: [cell setImage: [img imageByScalingProportionallyUsingNSImage: 0.6]]; break;
+                                case 0: [cell setImage: img]; break;
+                                case 1: [cell setImage: [img imageByScalingProportionallyUsingNSImage: 1.3]]; break;
+                            }
                         }
                         
                         index++;
@@ -7357,6 +7372,12 @@ return YES;
 -(void)awakeFromNib
 {
     [previewMatrix setIntercellSpacing:NSMakeSize(-1, -1)];
+    switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"dbFontSize"])
+    {
+        case -1:    [previewMatrix setCellSize: NSMakeSize( 100 * 0.8, 120 * 0.8)]; break;
+        case 0:    [previewMatrix setCellSize: NSMakeSize( 100, 120)]; break;
+        case 1:    [previewMatrix setCellSize: NSMakeSize( 100 * 1.3, 120 * 1.3)]; break;
+    }
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(observeScrollerStyleDidChangeNotification:) name:@"NSPreferredScrollerStyleDidChangeNotification" object:nil];
     [self observeScrollerStyleDidChangeNotification:nil];

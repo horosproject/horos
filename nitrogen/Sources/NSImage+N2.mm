@@ -230,6 +230,11 @@ end_size_y:
     return outSize.width < imageSize.width? outSize : imageSize;
 }
 
+- (NSImage*)imageByScalingProportionallyUsingNSImage:(float)ratio
+{
+    return [self imageByScalingProportionallyToSizeUsingNSImage: NSMakeSize( self.size.width*ratio, self.size.height*ratio)];
+}
+
 - (NSImage*)imageByScalingProportionallyToSizeUsingNSImage:(NSSize)targetSize
 {
     NSImage *newImage = [[[NSImage alloc] initWithSize: targetSize] autorelease];
