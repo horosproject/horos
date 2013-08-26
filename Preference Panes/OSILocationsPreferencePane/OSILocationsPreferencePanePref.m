@@ -313,17 +313,18 @@
 	[characterSetPopup selectItemAtIndex:-1];
 	[characterSetPopup selectItemAtIndex:tag];
 	
-	[self checkUniqueAETitle];
-	
-	[self resetTest];
-	
-	int i;
-	for( i = 0 ; i < [[dicomNodes arrangedObjects] count]; i++)
+	for( int i = 0 ; i < [[dicomNodes arrangedObjects] count]; i++)
 	{
 		NSMutableDictionary *aServer = [[dicomNodes arrangedObjects] objectAtIndex: i];
 		if( [aServer valueForKey:@"Send"] == 0L)
 			[aServer setValue:[NSNumber numberWithBool:YES] forKey:@"Send"];
 	}
+}
+
+- (void) willSelect
+{
+    [self checkUniqueAETitle];
+	[self resetTest];
 }
 
 - (void) willUnselect
@@ -475,9 +476,7 @@
 
 - (void) resetTest
 {
-	int i;
-	
-	for( i = 0 ; i < [[dicomNodes arrangedObjects] count]; i++)
+	for( int i = 0 ; i < [[dicomNodes arrangedObjects] count]; i++)
 	{
 		NSMutableDictionary *aServer = [[dicomNodes arrangedObjects] objectAtIndex: i];
 		[aServer removeObjectForKey: @"test"];

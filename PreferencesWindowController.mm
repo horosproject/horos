@@ -55,6 +55,8 @@
 	[super dealloc];
 }
 
+static NSMutableDictionary *prefPanes = nil;
+
 -(NSPreferencePane*)pane {
 	if (!_pane)
 	{
@@ -65,7 +67,13 @@
 			if( [builtinPrefPaneClass isSubclassOfClass: [NSPreferencePane class]] == NO)
 				builtinPrefPaneClass = nil;
 		}
-	
+        
+        if( prefPanes == nil)
+            prefPanes = [[NSMutableDictionary alloc] init];
+        
+        if( [prefPanes objectForKey: self.resourceName])
+            return [prefPanes objectForKey: self.resourceName];
+        
 		if( builtinPrefPaneClass)
 		{
 			self.pane = [[[builtinPrefPaneClass alloc] initWithBundle: nil] autorelease];
@@ -75,6 +83,8 @@
 			NSBundle* bundle = [NSBundle bundleWithPath:[self.parentBundle pathForResource:self.resourceName ofType:@"prefPane"]];
 			self.pane = [[[[bundle principalClass] alloc] initWithBundle:bundle] autorelease];
 		}
+        
+        [prefPanes setObject: self.pane forKey: self.resourceName];
 	}
 	
 	return _pane;
@@ -368,8 +378,8 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 		[animations removeAllObjects];
 		
 		// remove old view
-		
 		[currentContext.pane willUnselect];
+        [currentContext.pane.mainView.window makeFirstResponder: nil];
 		NSView* oldview = currentContext? currentContext.pane.mainView : panesListView;
 		[oldview retain];
 		[oldview removeFromSuperview];

@@ -125,7 +125,6 @@ static OSIHotKeysPref *currentKeysPref = 0L;
 											nil];
 	
 	NSDictionary *keys = [[NSUserDefaults standardUserDefaults] objectForKey:@"HOTKEYS"];
-//	NSDictionary *keysModifiers = [[NSUserDefaults standardUserDefaults] objectForKey:@"HOTKEYSMODIFIERS"];
 	
 	NSEnumerator *enumerator = [keys objectEnumerator];
 	id index;
@@ -142,9 +141,6 @@ static OSIHotKeysPref *currentKeysPref = 0L;
 		}
 	}
 	[self setActions:actions];
-
-	//NSLog(@"MainViewDidLoad arrayController: %@", [arrayController description]);
-											
 }
 
 - (NSArray *)actions{

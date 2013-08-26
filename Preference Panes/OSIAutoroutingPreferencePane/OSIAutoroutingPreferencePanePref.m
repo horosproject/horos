@@ -42,8 +42,7 @@
 	routesArray = [[defaults arrayForKey:@"AUTOROUTINGDICTIONARY"] mutableCopy];
 	if (routesArray == 0L) routesArray = [[NSMutableArray alloc] initWithCapacity: 0];
 	
-	int i;
-	for( i = 0 ; i < [routesArray count] ; i++)
+	for( int i = 0 ; i < [routesArray count] ; i++)
 	{
 		NSMutableDictionary	*newDict = [NSMutableDictionary dictionaryWithDictionary: [routesArray objectAtIndex: i]];
 		[routesArray replaceObjectAtIndex: i withObject:newDict];
@@ -62,14 +61,16 @@
 	
 	[serversArray release];
 	serversArray = [[[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"] retain];
-	
-	for( i = 0; i < [routesArray count]; i++)
+}
+
+-(void) willSelect
+{
+    for( int i = 0; i < [routesArray count]; i++)
 	{
 		NSLog( @"%@", [[routesArray objectAtIndex:i] valueForKey:@"server"]);
 		
-		int		x;
-		BOOL	found = NO;
-		for( x = 0; x < [serversArray count]; x++)
+		BOOL found = NO;
+		for( int x = 0; x < [serversArray count]; x++)
 		{
 			if( [[[serversArray objectAtIndex: x] valueForKey:@"Activated"] boolValue] && [[[serversArray objectAtIndex: x] valueForKey:@"Description"] isEqualToString: [[routesArray objectAtIndex:i] valueForKey:@"server"]]) found = YES;
 		}
