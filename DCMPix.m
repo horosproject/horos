@@ -2218,7 +2218,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	if( restoreImageCache)
 		[self freeRestore];
 	
-	restoreImageCache = malloc( [pixArray count] * sizeof(void*));
+	restoreImageCache = (DCMPix**) malloc( [pixArray count] * sizeof(DCMPix*));
 	
 	if( restoreImageCache)
 	{

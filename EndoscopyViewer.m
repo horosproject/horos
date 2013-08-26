@@ -1250,7 +1250,7 @@ return YES;
 	*height = heightAx+heightSag;
 	*spp = 3;
 	*bpp = 8;
-	unsigned char *dataPtr = malloc(*width**height*3*sizeof(char));
+	unsigned char *dataPtr = (unsigned char*) malloc(*width**height*3*sizeof(char));
 
 	if(dataPtr)
 	{

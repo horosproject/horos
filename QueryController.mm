@@ -5021,6 +5021,7 @@ extern "C"
 		
 		switch( [self dicomEcho: [aServer objectForKey:@"server"]])
 		{
+            default:
 			case 1:		status = 0;			break;
 			case 0:		status = -1;		break;
 			case -1:	status = -2;		break;

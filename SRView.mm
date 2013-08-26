@@ -3167,35 +3167,16 @@ typedef struct _xyzArray
 
 - (void) setAnnotationWithPosition:(int)displayPosition for3DPointAtIndex:(unsigned int) index
 {
-	const char *position;//*name, *glue;
-
-//	// name
-//	if(displayName)
-//		name = "Test Name";
-//	else
-//		name = "";
-	
+	const char *position = nil;
+    
 	//position
 	if(displayPosition)
 		position = [[point3DPositionsStringsArray objectAtIndex:index] UTF8String];
 	else
 		position = "";
 	
-	//line break
-//	if(displayName && displayPosition)
-//		glue = "\n";
-//	else
-//		glue = "";
-	
-	//char *bufferAnnotation = (char *)calloc((strlen(name) + strlen(glue) + strlen(position) + 0),sizeof(char));
-	char *bufferAnnotation = (char *)calloc(strlen(position),sizeof(char));
-	
-//	strcat(bufferAnnotation, name);
-//	strcat(bufferAnnotation, glue);
-	strcat(bufferAnnotation, position);
-
-	[self setAnnotation:bufferAnnotation for3DPointAtIndex:index];
-	if (strlen(bufferAnnotation)>0)
+	[self setAnnotation:position for3DPointAtIndex:index];
+	if (strlen( position)>0)
 		[self displayAnnotationFor3DPointAtIndex:index];
 	else
 		[self hideAnnotationFor3DPointAtIndex:index];
