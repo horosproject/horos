@@ -3942,7 +3942,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                         if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] != annotFull)
                             patName = @"";
                         
-                        NSImage *number = [[NSImage alloc] initWithSize: NSMakeSize( SERIESPOPUPSIZE, SERIESPOPUPSIZE)];
+                        NSImage *number = [[[NSImage alloc] initWithSize: NSMakeSize( SERIESPOPUPSIZE, SERIESPOPUPSIZE)] autorelease];
                         
                         NSMutableDictionary *d = [NSMutableDictionary dictionary];
                         
