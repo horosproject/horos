@@ -2057,6 +2057,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                 
                 if( no == 1)
                 {
+                    values = (float*) malloc( sizeof(float));
+                    if( locations) *locations = (float*) malloc( 2 * sizeof(float));
+                    
                     if( clip)
                     {
                         values[ count] = 0;
@@ -2070,9 +2073,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                     }
                     else
                     {
-                        values = (float*) malloc( sizeof(float));
-                        if( locations) *locations = (float*) malloc( 2 * sizeof(float));
-                        
                         if( isComputefImageRGB)
                         {
                             unsigned char *rgbPtr = (unsigned char*) &computedfImage[ (pts[ 0].y * width) + pts[ 0].x];
