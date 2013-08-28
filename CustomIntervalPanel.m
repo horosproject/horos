@@ -108,7 +108,7 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    if( [keyPath isEqual:@"values.betweenDatesMode"] || [keyPath isEqual:@"values.customIntervalWithHoursAndMinutes"])
+    if( [keyPath isEqualToString:@"values.betweenDatesMode"] || [keyPath isEqualToString:@"values.customIntervalWithHoursAndMinutes"])
     {
         [self setFormatAccordingToSettings];
         

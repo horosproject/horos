@@ -1592,7 +1592,7 @@ static NSConditionLock *threadLock = nil;
 
 +(BOOL)automaticallyNotifiesObserversForKey:(NSString*)key
 {
-	if ([key isEqual:@"database"])
+	if ([key isEqualToString:@"database"])
 		return NO;
 	return [super automaticallyNotifiesObserversForKey:key];
 }

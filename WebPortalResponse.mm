@@ -145,7 +145,7 @@ static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
     @synchronized( WebPortalResponseLock)
     {
         
-        /*if ([part0 isEqual:@"Defaults"]) {
+        /*if ([part0 isEqualToString:@"Defaults"]) {
             o = [NSUserDefaultsController sharedUserDefaultsController];
             keyPath = [[parts subarrayWithRange:NSMakeRange(1,(long)parts.count-1)] componentsJoinedByString:@"."];
         }*/
@@ -208,7 +208,7 @@ static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
 	
 //	NSLog(@"Evaluating %@ with %@", tokenStr, dict.description);
 	
-	if ([part0 isEqual:@"FOREACH"]) {
+	if ([part0 isEqualToString:@"FOREACH"]) {
 		NSString* arrayName = [parts objectAtIndex:1];
 		NSString* iName = [parts objectAtIndex:2];
 		
@@ -236,7 +236,7 @@ static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
 		return ret;
 	}
 	
-	if ([part0 isEqual:@"IF"]) {
+	if ([part0 isEqualToString:@"IF"]) {
 		NSString* condition = [parts objectAtIndex:1];
 		
 		NSArray* conditionPartsOr = [condition componentsSeparatedByString:@"||"];
@@ -282,15 +282,15 @@ static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
 							NSComparisonResult cr = [(NSNumber*)vl compare:(NSNumber*)vr];
 							NSString* op = [condition substringWithRange:NSMakeRange(sl.length, condition.length-sl.length-sr.length)];
 							
-							if ([op isEqual:@"=="])
+							if ([op isEqualToString:@"=="])
 								satisfied = cr==NSOrderedSame;
-							if ([op isEqual:@"<"])
+							if ([op isEqualToString:@"<"])
 								satisfied = cr==NSOrderedAscending;
-							if ([op isEqual:@">"])
+							if ([op isEqualToString:@">"])
 								satisfied = cr==NSOrderedDescending;
-							if ([op isEqual:@">="])
+							if ([op isEqualToString:@">="])
 								satisfied = cr!=NSOrderedAscending;
-							if ([op isEqual:@"<="])
+							if ([op isEqualToString:@"<="])
 								satisfied = cr!=NSOrderedDescending;
 						}
 				} else {
@@ -327,13 +327,13 @@ static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
 		return orSatisfied? bodyYes : bodyNo;
 	}
 	
-	if ([part0 isEqual:@"URLENC"] || [part0 isEqual:@"U"]) {
+	if ([part0 isEqualToString:@"URLENC"] || [part0 isEqualToString:@"U"]) {
 		token = [[parts subarrayWithRange:NSMakeRange(1,(long)parts.count-1)] componentsJoinedByString:@":"];
 		NSString* str = [self evaluateToken:token withDictionary:dict context:context mustReevaluate:mustReevaluate];
 		return [(NSString*)CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)[[str mutableCopy] autorelease], NULL, CFSTR("￼=,!$&'()*+;@?\n\"<>#\t :/"), kCFStringEncodingUTF8) autorelease];
 	}
 	
-	if ([part0 isEqual:@"XMLENC"] || [part0 isEqual:@"X"]) {
+	if ([part0 isEqualToString:@"XMLENC"] || [part0 isEqualToString:@"X"]) {
 		NSUInteger from = 1;
 		
 		NSString* part1 = NULL;
@@ -352,7 +352,7 @@ static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
 		return [evaldToken xmlEscapedString];
 	}
     
-    if ([part0 isEqual:@"LOCNUM"])
+    if ([part0 isEqualToString:@"LOCNUM"])
     {
         token = [[parts subarrayWithRange:NSMakeRange(1,(long)parts.count-1)] componentsJoinedByString:@":"];
         NSObject* o = [self object:dict valueForKeyPath:token context:context];
@@ -493,7 +493,7 @@ static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
 
 -(id)valueForKey:(NSString*)key object:(NSObject*)o context:(WebPortalConnection*)wpc {
 
-	if ([o isKindOfClass: [NSManagedObject class]] && [key isEqual:@"isSelected"]) {
+	if ([o isKindOfClass: [NSManagedObject class]] && [key isEqualToString:@"isSelected"]) {
 		NSString* xid = ((NSManagedObject*)o).XID;
 		for (NSString* selectedID in [WebPortalConnection MakeArray:[wpc.parameters objectForKey:@"selected"]])
 			if ([selectedID isEqualToString:xid])
@@ -515,25 +515,25 @@ static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
 }
 
 -(id)valueForKey:(NSString*)key object:(WebPortalConnection*)wpc context:(WebPortalConnection*)wpcagain {
-	if ([key isEqual:@"isIOS"])
+	if ([key isEqualToString:@"isIOS"])
 		return [NSNumber numberWithBool: wpc.requestIsIOS];
-	if ([key isEqual:@"isMacOS"])
+	if ([key isEqualToString:@"isMacOS"])
 		return [NSNumber numberWithBool: wpc.requestIsMacOS];
-	if ([key isEqual:@"proposeWeasis"])
+	if ([key isEqualToString:@"proposeWeasis"])
 		return [NSNumber numberWithBool: wpc.portal.weasisEnabled && !wpc.requestIsIOS];
-	if ([key isEqual:@"proposeFlash"])
+	if ([key isEqualToString:@"proposeFlash"])
 		return [NSNumber numberWithBool: wpc.portal.flashEnabled && !wpc.requestIsIOS];
-	if ([key isEqual:@"authenticationRequired"])
+	if ([key isEqualToString:@"authenticationRequired"])
 		return [NSNumber numberWithBool: wpc.portal.authenticationRequired && !wpc.user];
-	if ([key isEqual:@"newToken"])
+	if ([key isEqualToString:@"newToken"])
 		return [wpc.session createToken];
-	if ([key isEqual:@"passwordRestoreAllowed"])
+	if ([key isEqualToString:@"passwordRestoreAllowed"])
 		return [NSNumber numberWithBool: wpc.portal.passwordRestoreAllowed];
-	if ([key isEqual:@"baseUrl"])
+	if ([key isEqualToString:@"baseUrl"])
 		return wpc.portalURL;
-    if ([key isEqual:@"clientAddress"])
+    if ([key isEqualToString:@"clientAddress"])
 		return wpc.asyncSocket.connectedHost;
-    if ([key isEqual:@"isLAN"])
+    if ([key isEqualToString:@"isLAN"])
 	{
         if( [wpc.asyncSocket.connectedHost hasPrefix: @"10."]) return [NSNumber numberWithBool: YES];
         if( [wpc.asyncSocket.connectedHost hasPrefix: @"172."]) return [NSNumber numberWithBool: YES];
@@ -542,19 +542,19 @@ static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
         
         return [NSNumber numberWithBool: NO];
     }
-	if ([key isEqual:@"dicomCStorePort"])
+	if ([key isEqualToString:@"dicomCStorePort"])
 		return wpc.dicomCStorePortString;
-	if ([key isEqual:@"newChallenge"])
+	if ([key isEqualToString:@"newChallenge"])
 		return [wpc.session newChallenge];
-    if ([key isEqual:@"proposeReport"])
+    if ([key isEqualToString:@"proposeReport"])
         return [NSNumber numberWithBool: !wpc.user || wpc.user.downloadReport.boolValue];
-	if ([key isEqual:@"proposeDicomUpload"])
+	if ([key isEqualToString:@"proposeDicomUpload"])
 		return [NSNumber numberWithBool: (!wpc.user || wpc.user.uploadDICOM.boolValue) && !wpc.requestIsIOS];
-	if ([key isEqual:@"proposeDicomSend"])
+	if ([key isEqualToString:@"proposeDicomSend"])
 		return [NSNumber numberWithBool: !wpc.user || wpc.user.sendDICOMtoSelfIP.boolValue || (wpc.user.sendDICOMtoAnyNodes.boolValue)]; 
-	if ([key isEqual:@"proposeWADORetrieve"])
+	if ([key isEqualToString:@"proposeWADORetrieve"])
 		return [NSNumber numberWithBool: wpc.portal.weasisEnabled]; 
-	if ([key isEqual:@"WADOBaseURL"])
+	if ([key isEqualToString:@"WADOBaseURL"])
 	{
 		NSString *protocol = [[NSUserDefaults standardUserDefaults] boolForKey:@"encryptedWebServer"] ? @"https" : @"http";
 		NSString *wadoSubUrl = @"wado"; // See Web Server Preferences
@@ -567,13 +567,13 @@ static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
 		return baseURL; 
 	}
     
-	if ([key isEqual:@"proposeZipDownload"])
+	if ([key isEqualToString:@"proposeZipDownload"])
 		return [NSNumber numberWithBool: (!wpc.user || wpc.user.downloadZIP.boolValue) && !wpc.requestIsIOS];
 	
-    if ([key isEqual:@"proposeDelete"])
+    if ([key isEqualToString:@"proposeDelete"])
 		return [NSNumber numberWithBool: ([[NSUserDefaults standardUserDefaults] boolForKey:@"webPortalAdminCanDeleteStudies"] && wpc.user.isAdmin.boolValue)];
     
-	if ([key isEqual:@"proposeShare"])
+	if ([key isEqualToString:@"proposeShare"])
     {
 		if (!wpc.user || wpc.user.shareStudyWithUser.boolValue)
         {
@@ -639,7 +639,7 @@ static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
 }
 
 -(id)valueForKey:(NSString*)key object:(WebPortalUser*)user context:(WebPortalConnection*)wpc {
-	if ([key isEqual:@"originalName"])
+	if ([key isEqualToString:@"originalName"])
 		return user.name;
 	
 	return [super valueForKey:key object:user context:wpc];
@@ -665,7 +665,7 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 }
 
 -(id)valueForKey:(NSString*)key object:(NSString*)object context:(WebPortalConnection*)wpc {
-	if ([key isEqual:@"Spanned"])
+	if ([key isEqualToString:@"Spanned"])
 		return iPhoneCompatibleNumericalFormat(object);
 	
 	return [super valueForKey:key object:object context:wpc];
@@ -681,7 +681,7 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 }
 
 -(id)valueForKey:(NSString*)key object:(NSArray*)object context:(WebPortalConnection*)wpc {
-//	if ([key isEqual:@"count"])
+//	if ([key isEqualToString:@"count"])
 //		NSLog();
 	//	return [NSNumber numberWithUnsignedInt:object.count];
 	
@@ -698,7 +698,7 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 }
 
 -(id)valueForKey:(NSString*)key object:(NSSet*)object context:(WebPortalConnection*)wpc {
-	//if ([key isEqual:@"count"])
+	//if ([key isEqualToString:@"count"])
 	//	return [NSNumber numberWithUnsignedInt:object.count];
 	
 	return [super valueForKey:key object:object context:wpc];
@@ -714,15 +714,15 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 }
 
 -(id)valueForKey:(NSString*)key object:(NSDate*)object context:(WebPortalConnection*)wpc {
-	if ([key isEqual:@"DateTime"]) {
+	if ([key isEqualToString:@"DateTime"]) {
 		return [NSUserDefaults.dateTimeFormatter stringFromDate:object];
 	}
 	
-	if ([key isEqual:@"Date"]) {
+	if ([key isEqualToString:@"Date"]) {
 		return [NSUserDefaults.dateFormatter stringFromDate:object];
 	}
 	
-	if ([key isEqual:@"Months"]) {
+	if ([key isEqualToString:@"Months"]) {
 		static NSArray* monthNames = [[NSArray alloc] initWithObjects: NSLocalizedString(@"January", @"Month"), NSLocalizedString(@"February", @"Month"), NSLocalizedString(@"March", @"Month"), NSLocalizedString(@"April", @"Month"), NSLocalizedString(@"May", @"Month"), NSLocalizedString(@"June", @"Month"), NSLocalizedString(@"July", @"Month"), NSLocalizedString(@"August", @"Month"), NSLocalizedString(@"September", @"Month"), NSLocalizedString(@"October", @"Month"), NSLocalizedString(@"November", @"Month"), NSLocalizedString(@"December", @"Month"), NULL];
 		NSMutableArray* months = [NSMutableArray array];
 		NSCalendarDate* calDate = object? [NSCalendarDate dateWithTimeIntervalSinceReferenceDate:object.timeIntervalSinceReferenceDate] : NULL;
@@ -733,7 +733,7 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 		return months;
 	}
 	
-	if ([key isEqual:@"Days"]) {
+	if ([key isEqualToString:@"Days"]) {
 		NSMutableArray* days = [NSMutableArray array];
 		NSCalendarDate* calDate = object? [NSCalendarDate dateWithTimeIntervalSinceReferenceDate:object.timeIntervalSinceReferenceDate] : NULL;
 		if (!object)
@@ -744,7 +744,7 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 	}
 	
 	const NSUInteger NextYears = 5;
-	if ([key isEqual:@"NextYears"]) {
+	if ([key isEqualToString:@"NextYears"]) {
 		NSMutableArray* years = [NSMutableArray array];
 		NSCalendarDate* calDate = object? [NSCalendarDate dateWithTimeIntervalSinceReferenceDate:object.timeIntervalSinceReferenceDate] : NULL;
 		NSCalendarDate* currDate = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate:[NSDate timeIntervalSinceReferenceDate]];
@@ -771,7 +771,7 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 
 -(id)valueForKey:(NSString*)key object:(DicomStudy*)study context:(WebPortalConnection*)wpc
 {
-    if ([key isEqual:@"hasKeyImagesOrROIImages"])
+    if ([key isEqualToString:@"hasKeyImagesOrROIImages"])
 	{
         if( [[study keyImages] count])
             return [NSNumber numberWithBool: YES];
@@ -782,12 +782,12 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
         return [NSNumber numberWithBool: NO];
     }
     
-	if ([key isEqual:@"reportIsLink"])
+	if ([key isEqualToString:@"reportIsLink"])
     {
 		return [NSNumber numberWithBool: [study.reportURL hasPrefix:@"http://"] || [study.reportURL hasPrefix:@"https://"] ];
 	}
 	
-	if ([key isEqual:@"otherStudiesForThisPatient"])
+	if ([key isEqualToString:@"otherStudiesForThisPatient"])
 	{
 		NSMutableArray *otherStudies = nil;
 		
@@ -842,13 +842,13 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 		return otherStudies;
 	}
 	
-	if ([key isEqual:@"reportExtension"]) {
+	if ([key isEqualToString:@"reportExtension"]) {
 		BOOL isDir = NO;
 		[NSFileManager.defaultManager fileExistsAtPath:study.reportURL isDirectory:&isDir];
 		return isDir? @"zip" : study.reportURL.pathExtension;
 	}
 	
-	if ([key isEqual:@"stateText"]) {
+	if ([key isEqualToString:@"stateText"]) {
 		if (!study.stateText.intValue)
 			return NULL;
 		return [BrowserController.statesArray objectAtIndex:study.stateText.intValue];
@@ -873,23 +873,23 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 }
 
 -(id)valueForKey:(NSString*)key object:(DicomSeries*)series context:(WebPortalConnection*)wpc {
-	if ([key isEqual:@"seriesExtension"]) {
+	if ([key isEqualToString:@"seriesExtension"]) {
 		if ([DCMAbstractSyntaxUID isPDF:series.seriesSOPClassUID] || [DCMAbstractSyntaxUID isStructuredReport:series.seriesSOPClassUID])
 			return @".pdf";
 		return @"";
 	}
 	
-	if ([key isEqual:@"stateText"]) {
+	if ([key isEqualToString:@"stateText"]) {
 		if (series.stateText.intValue)
 			return [[BrowserController statesArray] objectAtIndex:series.stateText.intValue];
 		return NULL;
 	}
 	
-	/*if ([key isEqual:@"noFiles"]) {
+	/*if ([key isEqualToString:@"noFiles"]) {
 		return [NSNumber numberWithInt:[[series performSelector:@selector(noFiles)] intValue]];
 	}*/
 
-	if ([key isEqual:@"width"] || [key isEqual:@"height"]) {
+	if ([key isEqualToString:@"width"] || [key isEqualToString:@"height"]) {
 		if (size.height == -1) {
 			NSArray* images = [series.images allObjects];
 			
@@ -906,9 +906,9 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 			}
 
 		}
-		if ([key isEqual:@"width"])
+		if ([key isEqualToString:@"width"])
 			return [NSNumber numberWithInt:size.width];
-		if ([key isEqual:@"height"])
+		if ([key isEqualToString:@"height"])
 			return [NSNumber numberWithInt:size.height];
 	}
 	

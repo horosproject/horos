@@ -206,7 +206,7 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
                 
                 if( obj.threadDictionary == _retainedThreadDictionary)
                 {
-                    if ([keyPath isEqual:NSThreadProgressKey])
+                    if ([keyPath isEqualToString:NSThreadProgressKey])
                     {
                         // display
                         if( [NSDate timeIntervalSinceReferenceDate] - lastGUIUpdate > 0.1)
@@ -220,24 +220,24 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
                         }
                     }
                     
-                    if ([keyPath isEqual:NSThreadNameKey]) {
+                    if ([keyPath isEqualToString:NSThreadNameKey]) {
                         self.window.title = obj.name? obj.name : NSLocalizedString(@"Task Progress", nil);
                         self.titleField.stringValue = obj.name? obj.name : @"";
                         /* if ([obj isMainThread]) */ [self.titleField displayIfNeeded];
                     }
-                    if ([keyPath isEqual:NSThreadStatusKey]) {
+                    if ([keyPath isEqualToString:NSThreadStatusKey]) {
                         self.statusField.string = obj.status? obj.status : @"";
                         /* if ([obj isMainThread]) */ [self.statusField displayIfNeeded];
                     }
-                    if ([keyPath isEqual:NSThreadProgressDetailsKey]) {
+                    if ([keyPath isEqualToString:NSThreadProgressDetailsKey]) {
                         self.progressDetailsField.stringValue = obj.progressDetails? obj.progressDetails : @"";
                         /* if ([obj isMainThread]) */ [self.progressDetailsField displayIfNeeded];
                     }
-                    if ([keyPath isEqual:NSThreadSupportsCancelKey] || [keyPath isEqual:NSThreadIsCancelledKey]) {
+                    if ([keyPath isEqualToString:NSThreadSupportsCancelKey] || [keyPath isEqualToString:NSThreadIsCancelledKey]) {
                         [self.cancelButton setHidden: !obj.supportsCancel && !obj.isCancelled];
                        /* if ([obj isMainThread]) */ [self.cancelButton displayIfNeeded];
                     }
-                    if ([keyPath isEqual:NSThreadSupportsBackgroundingKey]) {
+                    if ([keyPath isEqualToString:NSThreadSupportsBackgroundingKey]) {
                         [self.backgroundButton setHidden: !obj.supportsBackgrounding];
                         /* if ([obj isMainThread]) */ [self.backgroundButton displayIfNeeded];
                     }

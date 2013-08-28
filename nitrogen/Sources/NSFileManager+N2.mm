@@ -75,7 +75,7 @@
 	if( dirPath == nil) return nil;
 	NSString* parentDirPath = [dirPath stringByDeletingLastPathComponent];
     
-	if (![dirPath isEqual:parentDirPath])
+	if (![dirPath isEqualToString:parentDirPath])
 		[self confirmDirectoryAtPath:parentDirPath subDirectory: YES];
     
 	BOOL isDir, create = NO;

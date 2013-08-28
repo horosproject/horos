@@ -40,7 +40,7 @@
 {
 	if (object == [NSUserDefaultsController sharedUserDefaultsController])
     {
-		if ([keyPath isEqual: @"values.MAPPERMODEVR"])
+		if ([keyPath isEqualToString: @"values.MAPPERMODEVR"])
         {
             if( [[NSUserDefaults standardUserDefaults] boolForKey: @"MAPPERMODEVR"])
             {

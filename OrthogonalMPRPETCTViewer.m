@@ -1021,7 +1021,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 
     //    NSToolbarItem *toolbarItem = [[NSToolbarItem alloc] initWithItemIdentifier: itemIdent];
     
-	if ([itemIdent isEqual: MailToolbarItemIdentifier])
+	if ([itemIdent isEqualToString: MailToolbarItemIdentifier])
 	{
         
 	[toolbarItem setLabel: NSLocalizedString(@"Email",nil)];
@@ -1031,7 +1031,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(sendMail:)];
     }
-	else if ([itemIdent isEqual: ExportToolbarItemIdentifier])
+	else if ([itemIdent isEqualToString: ExportToolbarItemIdentifier])
 	{
         
 	[toolbarItem setLabel: NSLocalizedString(@"DICOM File",nil)];
@@ -1041,7 +1041,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(exportDICOMFile:)];
     }
-	else if([itemIdent isEqual: ToolsToolbarItemIdentifier])
+	else if([itemIdent isEqualToString: ToolsToolbarItemIdentifier])
 	{
 	// Set up the standard properties 
 	[toolbarItem setLabel: NSLocalizedString(@"Mouse button function",nil)];
@@ -1054,7 +1054,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 	[toolbarItem setMaxSize:NSMakeSize(NSWidth([toolsView frame]),NSHeight([toolsView frame]))];
 
     }
-/*	 else if([itemIdent isEqual: ThickSlabToolbarItemIdentifier])
+/*	 else if([itemIdent isEqualToString: ThickSlabToolbarItemIdentifier])
 	{
 	// Set up the standard properties 
 	[toolbarItem setLabel: NSLocalizedString(@"Thick Slab", @"Thick Slab")];
@@ -1065,7 +1065,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 	[toolbarItem setMinSize:NSMakeSize(NSWidth([ThickSlabView frame]), NSHeight([ThickSlabView frame]))];
 	[toolbarItem setMinSize:NSMakeSize(NSWidth([ThickSlabView frame]) + 100, NSHeight([ThickSlabView frame]))];
     }*/
-	 else if([itemIdent isEqual: BlendingToolbarItemIdentifier])
+	 else if([itemIdent isEqualToString: BlendingToolbarItemIdentifier])
 	{
 	// Set up the standard properties 
 	[toolbarItem setLabel: NSLocalizedString(@"Fusion",nil)];
@@ -1077,7 +1077,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 	[toolbarItem setMinSize:NSMakeSize(NSWidth([blendingToolView frame]), NSHeight([blendingToolView frame]))];
 	[toolbarItem setMinSize:NSMakeSize(NSWidth([blendingToolView frame]), NSHeight([blendingToolView frame]))];
     }
-	else if ([itemIdent isEqual: VRPanelToolbarItemIdentifier])
+	else if ([itemIdent isEqualToString: VRPanelToolbarItemIdentifier])
 	{
 		[toolbarItem setLabel:NSLocalizedString(@"3D Panel", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"3D Panel",nil)];
@@ -1096,7 +1096,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 		[toolbarItem setTarget:self];
 		[toolbarItem setAction:@selector(threeDPanel:)];
     }
-	else if ([itemIdent isEqual: SameWidthSplitViewToolbarItemIdentifier])
+	else if ([itemIdent isEqualToString: SameWidthSplitViewToolbarItemIdentifier])
 	{
 		[toolbarItem setLabel:NSLocalizedString(@"Same Widths", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Same Widths",nil)];
@@ -1106,7 +1106,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(adjustWidthSplitView)];
     }
-	else if ([itemIdent isEqual: SameHeightSplitViewToolbarItemIdentifier])
+	else if ([itemIdent isEqualToString: SameHeightSplitViewToolbarItemIdentifier])
 	{
 		[toolbarItem setLabel:NSLocalizedString(@"Same Heights", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Same Heights",nil)];
@@ -1116,7 +1116,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(adjustHeightSplitView)];
     }
-//	else if ([itemIdent isEqual: TurnSplitViewToolbarItemIdentifier])
+//	else if ([itemIdent isEqualToString: TurnSplitViewToolbarItemIdentifier])
 //	{
 //		if (![modalitySplitView isVertical])
 //		{
@@ -1284,15 +1284,15 @@ return YES;
     // (for example:  of the save items action) 
     BOOL enable = YES;
 	
-//	if ([[toolbarItem itemIdentifier] isEqual: SameWidthSplitViewToolbarItemIdentifier])
+//	if ([[toolbarItem itemIdentifier] isEqualToString: SameWidthSplitViewToolbarItemIdentifier])
 //    {
 //        if(isFullWindow == YES) enable = NO;
 //    }
-//	else if ([[toolbarItem itemIdentifier] isEqual: SameHeightSplitViewToolbarItemIdentifier])
+//	else if ([[toolbarItem itemIdentifier] isEqualToString: SameHeightSplitViewToolbarItemIdentifier])
 //    {
 //        if(isFullWindow == YES) enable = NO;
 //    }
-//	else if ([[toolbarItem itemIdentifier] isEqual: TurnSplitViewToolbarItemIdentifier])
+//	else if ([[toolbarItem itemIdentifier] isEqualToString: TurnSplitViewToolbarItemIdentifier])
 //    {
 //        if(isFullWindow == YES) enable = NO;
 //    }

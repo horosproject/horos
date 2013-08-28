@@ -827,7 +827,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
     // The toolbar will use this method to obtain toolbar items that can be displayed in the customization sheet, or in the toolbar itself 
     NSToolbarItem *toolbarItem = [[NSToolbarItem alloc] initWithItemIdentifier: itemIdent];
     
-	if([itemIdent isEqual: ToolsToolbarItemIdentifier])
+	if([itemIdent isEqualToString: ToolsToolbarItemIdentifier])
 	{
 		// Set up the standard properties 
 		[toolbarItem setLabel: NSLocalizedString(@"Mouse button function",nil)];
@@ -853,7 +853,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 
 		[[wlwwPopup cell] setUsesItemFromMenu:YES];
 	}
-	else if([itemIdent isEqual: ThickSlabToolbarItemIdentifier]) {
+	else if([itemIdent isEqualToString: ThickSlabToolbarItemIdentifier]) {
 		// Set up the standard properties 
 		[toolbarItem setLabel: NSLocalizedString(@"Thick Slab", @"Thick Slab")];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Thick Slab", @"Thick Slab")];
@@ -863,7 +863,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	//	[toolbarItem setMinSize:NSMakeSize(NSWidth([ThickSlabView frame]), NSHeight([ThickSlabView frame]))];
 		[toolbarItem setMinSize:NSMakeSize(NSWidth([ThickSlabView frame]) + 200, NSHeight([ThickSlabView frame]))];
     }
-	else if([itemIdent isEqual: Produce2DResultToolbarItemIdentifier]) {
+	else if([itemIdent isEqualToString: Produce2DResultToolbarItemIdentifier]) {
 		// Set up the standard properties 
 		[toolbarItem setLabel: NSLocalizedString(@"2D Result", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"2D Result", nil)];
@@ -872,7 +872,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(produceResultInMemory:)];
     }
-	else if([itemIdent isEqual: Produce3DResultToolbarItemIdentifier]) {
+	else if([itemIdent isEqualToString: Produce3DResultToolbarItemIdentifier]) {
 		// Set up the standard properties 
 		[toolbarItem setLabel: NSLocalizedString(@"3D Result", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"3D Result", nil)];
@@ -881,7 +881,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(produce3DResult:)];
     }
-	else if([itemIdent isEqual: ParameterPanelToolbarItemIdentifier]) {
+	else if([itemIdent isEqualToString: ParameterPanelToolbarItemIdentifier]) {
 		// Set up the standard properties 
 		[toolbarItem setLabel: NSLocalizedString(@"Parameters", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Parameters", nil)];

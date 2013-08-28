@@ -989,7 +989,7 @@ return YES;
 //    NSToolbarItem *toolbarItem = [[NSToolbarItem alloc] initWithItemIdentifier: itemIdent];
     
     
-//    if ([itemIdent isEqual: QTExportToolbarItemIdentifier]) {
+//    if ([itemIdent isEqualToString: QTExportToolbarItemIdentifier]) {
 //        
 //	[toolbarItem setLabel: NSLocalizedString(@"Export",nil)];
 //	[toolbarItem setPaletteLabel: NSLocalizedString(@"Export",nil)];
@@ -998,7 +998,7 @@ return YES;
 //	[toolbarItem setTarget: self];
 //	[toolbarItem setAction: @selector(exportQuicktime:)];
 //    }
-//	else if ([itemIdent isEqual: iPhotoToolbarItemIdentifier]) {
+//	else if ([itemIdent isEqualToString: iPhotoToolbarItemIdentifier]) {
 //        
 //	[toolbarItem setLabel: NSLocalizedString(@"iPhoto",nil)];
 //	[toolbarItem setPaletteLabel: NSLocalizedString(@"iPhoto",nil)];
@@ -1008,7 +1008,7 @@ return YES;
 //	[toolbarItem setMinSize:NSMakeSize(NSWidth([iPhotoView frame]), NSHeight([iPhotoView frame]))];
 //	[toolbarItem setMaxSize:NSMakeSize(NSWidth([iPhotoView frame]), NSHeight([iPhotoView frame]))];
 //    }
-    if ([itemIdent isEqual: MailToolbarItemIdentifier]) {
+    if ([itemIdent isEqualToString: MailToolbarItemIdentifier]) {
         
 	[toolbarItem setLabel: NSLocalizedString(@"Email",nil)];
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Email",nil)];
@@ -1017,7 +1017,7 @@ return YES;
 	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(sendMail:)];
     }
-	else if ([itemIdent isEqual: ExportToolbarItemIdentifier]) {
+	else if ([itemIdent isEqualToString: ExportToolbarItemIdentifier]) {
         
 	[toolbarItem setLabel: NSLocalizedString(@"DICOM File",nil)];
 	[toolbarItem setPaletteLabel:NSLocalizedString( @"Save as DICOM",nil)];
@@ -1026,7 +1026,7 @@ return YES;
 	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(exportDICOMFile:)];
     }
-	else if([itemIdent isEqual: ToolsToolbarItemIdentifier]) {
+	else if([itemIdent isEqualToString: ToolsToolbarItemIdentifier]) {
 	// Set up the standard properties 
 	[toolbarItem setLabel: NSLocalizedString(@"Mouse button function",nil)];
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Mouse button function",nil)];
@@ -1038,7 +1038,7 @@ return YES;
 	[toolbarItem setMaxSize:NSMakeSize(NSWidth([toolsView frame]),NSHeight([toolsView frame]))];
 
     }
-	 else if([itemIdent isEqual: ThickSlabToolbarItemIdentifier]) {
+	 else if([itemIdent isEqualToString: ThickSlabToolbarItemIdentifier]) {
 	// Set up the standard properties 
 	[toolbarItem setLabel: NSLocalizedString(@"Thick Slab", @"Thick Slab")];
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Thick Slab", @"Thick Slab")];
@@ -1048,7 +1048,7 @@ return YES;
 //	[toolbarItem setMinSize:NSMakeSize(NSWidth([ThickSlabView frame]), NSHeight([ThickSlabView frame]))];
 	[toolbarItem setMinSize:NSMakeSize(NSWidth([ThickSlabView frame]) + 200, NSHeight([ThickSlabView frame]))];
     }
-//	 else if([itemIdent isEqual: BlendingToolbarItemIdentifier]) {
+//	 else if([itemIdent isEqualToString: BlendingToolbarItemIdentifier]) {
 //	// Set up the standard properties 
 //	[toolbarItem setLabel: NSLocalizedString(@"Fusion",nil)];
 //	[toolbarItem setPaletteLabel:NSLocalizedString( @"Fusion",nil)];
@@ -1059,7 +1059,7 @@ return YES;
 //	[toolbarItem setMinSize:NSMakeSize(NSWidth([BlendingView frame]), NSHeight([BlendingView frame]))];
 //	[toolbarItem setMinSize:NSMakeSize(NSWidth([BlendingView frame]), NSHeight([BlendingView frame]))];
 //    }
-//	else if([itemIdent isEqual: AxesToolbarItemIdentifier]) {
+//	else if([itemIdent isEqualToString: AxesToolbarItemIdentifier]) {
 //	// Set up the standard properties 
 //	[toolbarItem setLabel: @"MPR Axes"];
 //	[toolbarItem setPaletteLabel: @"MPR Axes"];
@@ -1071,7 +1071,7 @@ return YES;
 //	[toolbarItem setMaxSize:NSMakeSize(NSWidth([axesView frame]),NSHeight([axesView frame]))];
 //
 //    }
-	else if ([itemIdent isEqual: AdjustSplitViewToolbarItemIdentifier]) {
+	else if ([itemIdent isEqualToString: AdjustSplitViewToolbarItemIdentifier]) {
 		if ([splitView isVertical])
 		{
 			[toolbarItem setLabel:NSLocalizedString(@"Same Widths", nil)];
@@ -1089,7 +1089,7 @@ return YES;
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(adjustSplitView)];
     }
-//	else if ([itemIdent isEqual: TurnSplitViewToolbarItemIdentifier])
+//	else if ([itemIdent isEqualToString: TurnSplitViewToolbarItemIdentifier])
 //	{
 //		if ([splitView isVertical])
 //		{
@@ -1116,7 +1116,7 @@ return YES;
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(resetImage:)];
     }
-	else if ([itemIdent isEqual: VRPanelToolbarItemIdentifier]) {
+	else if ([itemIdent isEqualToString: VRPanelToolbarItemIdentifier]) {
 		[toolbarItem setLabel:NSLocalizedString(@"3D Panel", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"3D Panel",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"3D Panel",nil)];
@@ -1281,7 +1281,7 @@ return YES;
     // Optional method:  This message is sent to us since we are the target of some toolbar item actions 
     // (for example:  of the save items action) 
     BOOL enable = YES;
-  /*if ([[toolbarItem itemIdentifier] isEqual: PlayToolbarItemIdentifier])
+  /*if ([[toolbarItem itemIdentifier] isEqualToString: PlayToolbarItemIdentifier])
     {
         if([fileList count] == 1) enable = NO;
     }*/

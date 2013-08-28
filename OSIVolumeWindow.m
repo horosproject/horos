@@ -124,7 +124,7 @@ NSString* const OSIVolumeWindowDidChangeDataNotification = @"OSIVolumeWindowDidC
     assert([dimensions count] == 1);
     assert([indexes count] == 1);
     
-    assert([[dimensions objectAtIndex:0] isEqual:@"movieIndex"]);
+    assert([[dimensions objectAtIndex:0] isEqualToString:@"movieIndex"]);
     assert([[indexes objectAtIndex:0] isKindOfClass:[NSNumber class]]);
     
     dimensionAndIndexKey = [NSString stringWithFormat:@"movieIndex_%@", [indexes objectAtIndex:0]]; // THIS is totally bogus once we handle more than one dimension

@@ -156,31 +156,31 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 
 +(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context {
 	if (!context) {
-		if ([keyPath isEqual:valuesKeyPath(OsirixWadoServiceEnabledDefaultsKey)])
+		if ([keyPath isEqualToString:valuesKeyPath(OsirixWadoServiceEnabledDefaultsKey)])
 			if (!NSUserDefaults.wadoServiceEnabled)
 				[NSUserDefaultsController.sharedUserDefaultsController setBool:NO forKey:OsirixWebPortalUsesWeasisDefaultsKey];
 	} else {
 		WebPortal* webPortal = (id)context;
 		
-		if ([keyPath isEqual:valuesKeyPath(OsirixWebPortalEnabledDefaultsKey)])
+		if ([keyPath isEqualToString:valuesKeyPath(OsirixWebPortalEnabledDefaultsKey)])
 			if (NSUserDefaults.webPortalEnabled)
 				[webPortal startAcceptingConnections];
 			else [webPortal stopAcceptingConnections];
 		else
 			
-		if ([keyPath isEqual:valuesKeyPath(OsirixWebPortalUsesSSLDefaultsKey)])
+		if ([keyPath isEqualToString:valuesKeyPath(OsirixWebPortalUsesSSLDefaultsKey)])
 			webPortal.usesSSL = NSUserDefaults.webPortalUsesSSL;
 		else
 
-		if ([keyPath isEqual:valuesKeyPath(OsirixWebPortalPortNumberDefaultsKey)])
+		if ([keyPath isEqualToString:valuesKeyPath(OsirixWebPortalPortNumberDefaultsKey)])
 			webPortal.portNumber = NSUserDefaults.webPortalPortNumber;
 		else
 			
-		if ([keyPath isEqual:valuesKeyPath(OsirixWebPortalAddressDefaultsKey)])
+		if ([keyPath isEqualToString:valuesKeyPath(OsirixWebPortalAddressDefaultsKey)])
 			webPortal.address = NSUserDefaults.webPortalAddress;
 		else
 			
-		if ([keyPath isEqual:valuesKeyPath(OsirixWebPortalPrefersCustomWebPagesKey)])
+		if ([keyPath isEqualToString:valuesKeyPath(OsirixWebPortalPrefersCustomWebPagesKey)])
         {
 			NSMutableArray* dirsToScanForFiles = [NSMutableArray arrayWithCapacity:2];
             #ifdef MACAPPSTORE
@@ -193,31 +193,31 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 		}
         else
 			
-		if ([keyPath isEqual:valuesKeyPath(OsirixWebPortalRequiresAuthenticationDefaultsKey)])
+		if ([keyPath isEqualToString:valuesKeyPath(OsirixWebPortalRequiresAuthenticationDefaultsKey)])
 			webPortal.authenticationRequired = NSUserDefaults.webPortalRequiresAuthentication;
 		else
 			
-		if ([keyPath isEqual:valuesKeyPath(OsirixWebPortalUsersCanRestorePasswordDefaultsKey)])
+		if ([keyPath isEqualToString:valuesKeyPath(OsirixWebPortalUsersCanRestorePasswordDefaultsKey)])
 			webPortal.passwordRestoreAllowed = NSUserDefaults.webPortalUsersCanRestorePassword;
 		else
 			
-		if ([keyPath isEqual:valuesKeyPath(OsirixWebPortalUsesWeasisDefaultsKey)])
+		if ([keyPath isEqualToString:valuesKeyPath(OsirixWebPortalUsesWeasisDefaultsKey)])
 			webPortal.weasisEnabled = NSUserDefaults.webPortalUsesWeasis;
 		else
 			
-		if ([keyPath isEqual:valuesKeyPath(OsirixWebPortalPrefersFlashDefaultsKey)])
+		if ([keyPath isEqualToString:valuesKeyPath(OsirixWebPortalPrefersFlashDefaultsKey)])
 			webPortal.flashEnabled = NSUserDefaults.webPortalPrefersFlash;
 		else
 			
-		if ([keyPath isEqual:valuesKeyPath(OsirixWadoServiceEnabledDefaultsKey)])
+		if ([keyPath isEqualToString:valuesKeyPath(OsirixWadoServiceEnabledDefaultsKey)])
 			webPortal.wadoEnabled = NSUserDefaults.wadoServiceEnabled;
 		else
 		
-		if ([keyPath isEqual:valuesKeyPath(OsirixWebPortalNotificationsIntervalDefaultsKey)])
+		if ([keyPath isEqualToString:valuesKeyPath(OsirixWebPortalNotificationsIntervalDefaultsKey)])
 			webPortal.notificationsInterval = NSUserDefaults.webPortalNotificationsInterval;
 		else
 			
-		if ([keyPath isEqual:valuesKeyPath(OsirixWebPortalNotificationsEnabledDefaultsKey)])
+		if ([keyPath isEqualToString:valuesKeyPath(OsirixWebPortalNotificationsEnabledDefaultsKey)])
 			webPortal.notificationsEnabled = NSUserDefaults.webPortalNotificationsEnabled;
 					
 	}
@@ -639,7 +639,7 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 	WebPortalSession* session = NULL;
 	
 	for (WebPortalSession* isession in sessions)
-		if ([isession.sid isEqual:sid]) {
+		if ([isession.sid isEqualToString:sid]) {
 			session = isession;
 			break;
 		}
@@ -663,14 +663,14 @@ static NSString* DefaultWebPortalDatabasePath = nil;
     {
         if( doConsume)
         {
-            if ([[isession objectForKey:SessionUsernameKey] isEqual:username] && [isession consumeToken:token]) {
+            if ([[isession objectForKey:SessionUsernameKey] isEqualToString:username] && [isession consumeToken:token]) {
                 session = isession;
                 break;
             }
         }
         else
         {
-            if ([[isession objectForKey:SessionUsernameKey] isEqual:username] && [isession containsToken:token]) {
+            if ([[isession objectForKey:SessionUsernameKey] isEqualToString:username] && [isession containsToken:token]) {
                 session = isession;
                 break;
             }

@@ -48,7 +48,7 @@
 {
 	if (object == [NSUserDefaultsController sharedUserDefaultsController])
     {
-		if ([keyPath isEqual:@"values.eraseEntireDBAtStartup" ])
+		if ([keyPath isEqualToString:@"values.eraseEntireDBAtStartup" ])
         {
             if( [[NSUserDefaults standardUserDefaults] boolForKey: @"eraseEntireDBAtStartup"])
             {
@@ -56,7 +56,7 @@
             }
         }
         
-        if ([keyPath isEqual:@"values.dbFontSize"])
+        if ([keyPath isEqualToString:@"values.dbFontSize"])
         {
             [[BrowserController currentBrowser] setTableViewRowHeight];
             [[BrowserController currentBrowser] refreshMatrix: self];

@@ -228,7 +228,7 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 			NSDictionary* b = [view infoForBinding:bk];
 			if (!b) break;
 			
-			if ([b objectForKey:NSObservedObjectKey] == obj && [[b objectForKey:NSObservedKeyPathKey] isEqual:keyPath])
+			if ([b objectForKey:NSObservedObjectKey] == obj && [[b objectForKey:NSObservedKeyPathKey] isEqualToString:keyPath])
 				unbind = YES;
 		}
 		

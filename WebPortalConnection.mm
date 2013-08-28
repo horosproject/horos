@@ -288,7 +288,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 {
 	if ([path hasPrefix: @"/wado"]
 	|| [path hasPrefix: @"/images/"]
-	|| [path isEqual: @"/"]
+	|| [path isEqualToString: @"/"]
 	|| [path hasSuffix: @".js"]
 	|| [path hasSuffix: @".css"]
 	|| [path hasPrefix: @"/password_forgotten"]
@@ -464,40 +464,40 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	{
 		@try
         {
-			if ([requestedPath isEqual:@"/"] || [requestedPath hasPrefix: @"/index"])
+			if ([requestedPath isEqualToString:@"/"] || [requestedPath hasPrefix: @"/index"])
 				[self processIndexHtml];
 			else
-			if ([requestedPath isEqual: @"/main"])
+			if ([requestedPath isEqualToString: @"/main"])
 				[self processMainHtml];
             else
-            if ([requestedPath isEqual:@"/logs"])
+            if ([requestedPath isEqualToString:@"/logs"])
                 [self processLogsListHtml];
             else
-			if ([requestedPath isEqual:@"/studyList"])
+			if ([requestedPath isEqualToString:@"/studyList"])
 				[self processStudyListHtml];
 			else	
-			if ([requestedPath isEqual:@"/studyList.json"])
+			if ([requestedPath isEqualToString:@"/studyList.json"])
 				[self processStudyListJson];
 			else
-			if ([requestedPath isEqual:@"/study"])
+			if ([requestedPath isEqualToString:@"/study"])
 				[self processStudyHtml];
 			else
-			if ([requestedPath isEqual:@"/wado"])
+			if ([requestedPath isEqualToString:@"/wado"])
 				[self processWado];
 			else
-			if ([requestedPath isEqual:@"/thumbnail"])
+			if ([requestedPath isEqualToString:@"/thumbnail"])
 				[self processThumbnail];
 			else
-			if ([requestedPath isEqual:@"/series.pdf"])
+			if ([requestedPath isEqualToString:@"/series.pdf"])
 				[self processSeriesPdf];
 			else
-			if ([requestedPath isEqual:@"/series"])
+			if ([requestedPath isEqualToString:@"/series"])
 				[self processSeriesHtml];
             else
-            if ([requestedPath isEqual:@"/keyroisimages"])
+            if ([requestedPath isEqualToString:@"/keyroisimages"])
                 [self processKeyROIsImagesHtml];
 			else
-			if ([requestedPath isEqual:@"/series.json"])
+			if ([requestedPath isEqualToString:@"/series.json"])
 				[self processSeriesJson];
 			else
 			if ([requestedPath hasPrefix:@"/report"])
@@ -512,28 +512,28 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
             if ([requestedPath hasPrefix:@"/imageAsScreenCapture."])
                 [self processImageAsScreenCapture: YES];
 			else
-			if ([requestedPath isEqual:@"/movie.mov"] || [requestedPath isEqual:@"/movie.m4v"] || [requestedPath isEqual:@"/movie.mp4"] || [requestedPath isEqual:@"/movie.swf"])
+			if ([requestedPath isEqualToString:@"/movie.mov"] || [requestedPath isEqualToString:@"/movie.m4v"] || [requestedPath isEqualToString:@"/movie.mp4"] || [requestedPath isEqualToString:@"/movie.swf"])
 				[self processMovie];
 			else
-			if ([requestedPath isEqual:@"/password_forgotten"])
+			if ([requestedPath isEqualToString:@"/password_forgotten"])
 				[self processPasswordForgottenHtml];
 			else
-			if ([requestedPath isEqual: @"/account"])
+			if ([requestedPath isEqualToString: @"/account"])
 				[self processAccountHtml];
 			else
-			if ([requestedPath isEqual:@"/albums.json"])
+			if ([requestedPath isEqualToString:@"/albums.json"])
 				[self processAlbumsJson];
 			else
-			if ([requestedPath isEqual:@"/seriesList.json"])
+			if ([requestedPath isEqualToString:@"/seriesList.json"])
 				[self processSeriesListJson];
 			else
 			if ([requestedPath hasSuffix:@"weasis.jnlp"])
 				[self processWeasisJnlp];
 			else
-			if ([requestedPath isEqual:@"/weasis.xml"])
+			if ([requestedPath isEqualToString:@"/weasis.xml"])
 				[self processWeasisXml];
 			else
-			if ([requestedPath isEqual:@"/admin/"] || [requestedPath isEqual:@"/admin/index"])
+			if ([requestedPath isEqualToString:@"/admin/"] || [requestedPath isEqualToString:@"/admin/index"])
 				[self processAdminIndexHtml];
 			else
 			if ([requestedPath isEqualToString:@"/admin/user"])
@@ -542,7 +542,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
             if ([requestedPath isEqualToString:@"/quitOsiriX"] && user.isAdmin.boolValue)
                 exit(0);
             else
-                if ([requestedPath isEqual:@"/testdbalive"])
+                if ([requestedPath isEqualToString:@"/testdbalive"])
                 {
                     [self.portal.dicomDatabase.managedObjectContext lock]; // Can we obtain a lock on the main db?
                     [self.portal.dicomDatabase.managedObjectContext unlock];
@@ -581,7 +581,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 }
 
 -(BOOL)supportsMethod:(NSString *)method atPath:(NSString *)relativePath {
-	if ([method isEqual:@"POST"])
+	if ([method isEqualToString:@"POST"])
 		return YES;
 	return [super supportsMethod:method atPath:relativePath];
 }
@@ -976,7 +976,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	for (NSString* cookie in cookies) {
 		// cookie = [cookie stringByTrimmingStartAndEnd];
 		NSArray* cookieBits = [cookie componentsSeparatedByString:@"="];
-		if (cookieBits.count == 2 && [[cookieBits objectAtIndex:0] isEqual:SessionCookieName]) {
+		if (cookieBits.count == 2 && [[cookieBits objectAtIndex:0] isEqualToString:SessionCookieName]) {
 			WebPortalSession* temp = [self.portal sessionForId:[cookieBits objectAtIndex:1]];
 			if (temp) self.session = temp;
 		}

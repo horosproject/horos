@@ -124,7 +124,7 @@ static const NSInteger labelHeight = 38, labelSeparator = 3;
 -(PreferencesViewGroup*)groupWithName:(NSString*)name {
 	PreferencesViewGroup* group = NULL;
 	for (PreferencesViewGroup* g in groups)
-		if ([g.label.stringValue isEqual:name])
+		if ([g.label.stringValue isEqualToString:name])
 			group = g;
 
 	if (!group) {

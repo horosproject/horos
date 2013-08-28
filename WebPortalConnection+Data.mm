@@ -292,14 +292,14 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
         NSMutableDictionary *PODFilter = [NSMutableDictionary dictionary];
         NSPredicate* browsePredicate = NULL;
         
-        if ([browseReq isEqual:@"newAddedStudies"] && browseParameterReq.doubleValue > 0)
+        if ([browseReq isEqualToString:@"newAddedStudies"] && browseParameterReq.doubleValue > 0)
         {
             *title = NSLocalizedString( @"New Studies", @"Web portal, study list, title");
             browsePredicate = [NSPredicate predicateWithFormat: @"dateAdded >= CAST(%lf, \"NSDate\")", browseParameterReq.doubleValue];
             
             // No equivalence in PACS On Demand
         }
-        else if ([browseReq isEqual:@"today"])
+        else if ([browseReq isEqualToString:@"today"])
         {
             *title = NSLocalizedString( @"Today", @"Web portal, study list, title");
             NSTimeInterval ti = StartOfDay(NSCalendarDate.calendarDate);
@@ -308,7 +308,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
             [PODFilter setObject: [NSNumber numberWithInt: after] forKey: @"date"];
             [PODFilter setObject: [NSDate dateWithTimeIntervalSinceReferenceDate: ti] forKey: @"fromDate"];
         }
-        else if ([browseReq isEqual:@"6hours"])
+        else if ([browseReq isEqualToString:@"6hours"])
         {
             *title = NSLocalizedString( @"Last 6 Hours", @"Web portal, study list, title");
             NSCalendarDate *now = [NSCalendarDate calendarDate];
@@ -1216,7 +1216,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
             NSString* shareStudyDestination = [parameters objectForKey:@"shareStudyDestination"];
             WebPortalUser* destUser = NULL;
             
-            if ([shareStudyDestination isEqual:@"NEW"])
+            if ([shareStudyDestination isEqualToString:@"NEW"])
             {
                 if( !user || user.createTemporaryUser.boolValue)
                 {
@@ -1634,7 +1634,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	
     WebPortalDatabase *idatabase = [self.portal.database independentDatabase];
     
-	if ([action isEqual:@"delete"])
+	if ([action isEqualToString:@"delete"])
     {
 		originalName = [parameters objectForKey:@"originalName"];
 		NSManagedObject* tempUser = [idatabase userWithName:originalName];
@@ -1647,7 +1647,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		}
 	}
 	
-	if ([action isEqual:@"save"]) {
+	if ([action isEqualToString:@"save"]) {
 		originalName = [parameters objectForKey:@"originalName"];
 		WebPortalUser* webUser = [idatabase userWithName:originalName];
 		if (!webUser) {
@@ -1660,7 +1660,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			NSString* newPassword = [[parameters objectForKey:@"newPassword"] stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
 			NSString* newPassword2 = [[parameters objectForKey:@"newPassword2"] stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
             NSString* studyPredicate = [parameters objectForKey:@"studyPredicate"];
-			NSNumber* downloadZIP = [NSNumber numberWithBool:[[parameters objectForKey:@"downloadZIP"] isEqual:@"on"]];
+			NSNumber* downloadZIP = [NSNumber numberWithBool:[[parameters objectForKey:@"downloadZIP"] isEqualToString:@"on"]];
 			
 			NSError* err;
 			
@@ -1706,20 +1706,20 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 				webUser.address = [parameters objectForKey:@"address"];
 				webUser.studyPredicate = studyPredicate;
 				
-				webUser.autoDelete = [NSNumber numberWithBool:[[parameters objectForKey:@"autoDelete"] isEqual:@"on"]];
+				webUser.autoDelete = [NSNumber numberWithBool:[[parameters objectForKey:@"autoDelete"] isEqualToString:@"on"]];
 				webUser.downloadZIP = downloadZIP;
-				webUser.emailNotification = [NSNumber numberWithBool:[[parameters objectForKey:@"emailNotification"] isEqual:@"on"]];
-                webUser.showRecentPatients = [NSNumber numberWithBool:[[parameters objectForKey:@"showRecentPatients"] isEqual:@"on"]];
-				webUser.encryptedZIP = [NSNumber numberWithBool:[[parameters objectForKey:@"encryptedZIP"] isEqual:@"on"]];
-				webUser.uploadDICOM = [NSNumber numberWithBool:[[parameters objectForKey:@"uploadDICOM"] isEqual:@"on"]];
-				webUser.downloadReport = [NSNumber numberWithBool:[[parameters objectForKey:@"downloadReport"] isEqual:@"on"]];
-                webUser.sendDICOMtoSelfIP = [NSNumber numberWithBool:[[parameters objectForKey:@"sendDICOMtoSelfIP"] isEqual:@"on"]];
-				webUser.uploadDICOMAddToSpecificStudies = [NSNumber numberWithBool:[[parameters objectForKey:@"uploadDICOMAddToSpecificStudies"] isEqual:@"on"]];
-				webUser.sendDICOMtoAnyNodes = [NSNumber numberWithBool:[[parameters objectForKey:@"sendDICOMtoAnyNodes"] isEqual:@"on"]];
-				webUser.shareStudyWithUser = [NSNumber numberWithBool:[[parameters objectForKey:@"shareStudyWithUser"] isEqual:@"on"]];
-                webUser.createTemporaryUser = [NSNumber numberWithBool:[[parameters objectForKey:@"createTemporaryUser"] isEqual:@"on"]];
-				webUser.canAccessPatientsOtherStudies = [NSNumber numberWithBool:[[parameters objectForKey:@"canAccessPatientsOtherStudies"] isEqual:@"on"]];
-				webUser.canSeeAlbums = [NSNumber numberWithBool:[[parameters objectForKey:@"canSeeAlbums"] isEqual:@"on"]];
+				webUser.emailNotification = [NSNumber numberWithBool:[[parameters objectForKey:@"emailNotification"] isEqualToString:@"on"]];
+                webUser.showRecentPatients = [NSNumber numberWithBool:[[parameters objectForKey:@"showRecentPatients"] isEqualToString:@"on"]];
+				webUser.encryptedZIP = [NSNumber numberWithBool:[[parameters objectForKey:@"encryptedZIP"] isEqualToString:@"on"]];
+				webUser.uploadDICOM = [NSNumber numberWithBool:[[parameters objectForKey:@"uploadDICOM"] isEqualToString:@"on"]];
+				webUser.downloadReport = [NSNumber numberWithBool:[[parameters objectForKey:@"downloadReport"] isEqualToString:@"on"]];
+                webUser.sendDICOMtoSelfIP = [NSNumber numberWithBool:[[parameters objectForKey:@"sendDICOMtoSelfIP"] isEqualToString:@"on"]];
+				webUser.uploadDICOMAddToSpecificStudies = [NSNumber numberWithBool:[[parameters objectForKey:@"uploadDICOMAddToSpecificStudies"] isEqualToString:@"on"]];
+				webUser.sendDICOMtoAnyNodes = [NSNumber numberWithBool:[[parameters objectForKey:@"sendDICOMtoAnyNodes"] isEqualToString:@"on"]];
+				webUser.shareStudyWithUser = [NSNumber numberWithBool:[[parameters objectForKey:@"shareStudyWithUser"] isEqualToString:@"on"]];
+                webUser.createTemporaryUser = [NSNumber numberWithBool:[[parameters objectForKey:@"createTemporaryUser"] isEqualToString:@"on"]];
+				webUser.canAccessPatientsOtherStudies = [NSNumber numberWithBool:[[parameters objectForKey:@"canAccessPatientsOtherStudies"] isEqualToString:@"on"]];
+				webUser.canSeeAlbums = [NSNumber numberWithBool:[[parameters objectForKey:@"canSeeAlbums"] isEqualToString:@"on"]];
 				
 				if (webUser.autoDelete.boolValue)
 					webUser.deletionDate = [NSCalendarDate dateWithYear:[[parameters objectForKey:@"deletionDate_year"] integerValue] month:[[parameters objectForKey:@"deletionDate_month"] integerValue]+1 day:[[parameters objectForKey:@"deletionDate_day"] integerValue] hour:0 minute:0 second:0 timeZone:NULL];
@@ -1734,7 +1734,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                         WebPortalStudy* wpStudy = NULL;
                         // this is Mac OS X 10.6 SnowLeopard only // wpStudy = [webUser.managedObjectContext existingObjectWithID:[webUser.managedObjectContext.persistentStoreCoordinator managedObjectIDForURIRepresentation:[NSURL URLWithString:studyObjectID]] error:NULL];
                         for (WebPortalStudy* iwpStudy in webUser.studies)
-                            if ([iwpStudy.XID isEqual:studyXid])
+                            if ([iwpStudy.XID isEqualToString:studyXid])
                             {
                                 wpStudy = iwpStudy;
                                 break;
@@ -1759,7 +1759,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		}
 	}
 	
-	if ([action isEqual:@"new"]) {
+	if ([action isEqualToString:@"new"]) {
 		luser = [idatabase newUser];
 	}
 	
@@ -1937,7 +1937,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		return;
 	}
 	
-	if (![[[parameters objectForKey:@"requestType"] lowercaseString] isEqual:@"wado"])
+	if (![[[parameters objectForKey:@"requestType"] lowercaseString] isEqualToString:@"wado"])
     {
 		self.response.statusCode = 404;
 		return;

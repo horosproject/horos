@@ -1487,7 +1487,7 @@ extern int delayedTileWindows;
     // The toolbar will use this method to obtain toolbar items that can be displayed in the customization sheet, or in the toolbar itself 
     NSToolbarItem *toolbarItem = [[NSToolbarItem alloc] initWithItemIdentifier: itemIdent];
     
-    if ([itemIdent isEqual: ExportToolbarItemIdentifier]) {
+    if ([itemIdent isEqualToString: ExportToolbarItemIdentifier]) {
 		[toolbarItem setLabel: NSLocalizedString(@"Export XML",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Export XML",nil)];
 			[toolbarItem setToolTip: NSLocalizedString(@"Export these XML Data in a XML File",nil)];
@@ -1495,7 +1495,7 @@ extern int delayedTileWindows;
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(exportXML:)];
     }
-	else if ([itemIdent isEqual: EditingToolbarItemIdentifier])
+	else if ([itemIdent isEqualToString: EditingToolbarItemIdentifier])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"DICOM Editing", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"DICOM Editing", nil)];
@@ -1505,7 +1505,7 @@ extern int delayedTileWindows;
 		[toolbarItem setMinSize:NSMakeSize(NSWidth([dicomEditingView frame]), NSHeight([dicomEditingView frame]))];
 		[toolbarItem setMaxSize:NSMakeSize(NSWidth([dicomEditingView frame]), NSHeight([dicomEditingView frame]))];
     }
-	else if ([itemIdent isEqual: SearchToolbarItemIdentifier])
+	else if ([itemIdent isEqualToString: SearchToolbarItemIdentifier])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Search", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Search", nil)];
@@ -1515,7 +1515,7 @@ extern int delayedTileWindows;
 		[toolbarItem setMinSize:NSMakeSize(NSWidth([searchView frame]), NSHeight([searchView frame]))];
 		[toolbarItem setMaxSize:NSMakeSize(NSWidth([searchView frame]), NSHeight([searchView frame]))];
     }
-	else if ([itemIdent isEqual: ExportTextToolbarItemIdentifier]) {       
+	else if ([itemIdent isEqualToString: ExportTextToolbarItemIdentifier]) {
 		[toolbarItem setLabel: NSLocalizedString(@"Export Text", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Export Text", nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Export these XML Data in a Text File", nil)];
@@ -1523,7 +1523,7 @@ extern int delayedTileWindows;
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(exportText:)];
     }
-	else if ([itemIdent isEqual: ExpandAllItemsToolbarItemIdentifier]) {
+	else if ([itemIdent isEqualToString: ExpandAllItemsToolbarItemIdentifier]) {
 		[toolbarItem setLabel: NSLocalizedString(@"Expand All", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Expand All Items", nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Expand All Items", nil)];
@@ -1531,7 +1531,7 @@ extern int delayedTileWindows;
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(deepExpandAllItems:)];
     }
-	else if ([itemIdent isEqual: CollapseAllItemsToolbarItemIdentifier]) {
+	else if ([itemIdent isEqualToString: CollapseAllItemsToolbarItemIdentifier]) {
 		[toolbarItem setLabel: NSLocalizedString(@"Collapse All", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Collapse All Items", nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Collapse All Items", nil)];
@@ -1539,7 +1539,7 @@ extern int delayedTileWindows;
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(deepCollapseAllItems:)];
     }
-	else if ([itemIdent isEqual: SortSeriesToolbarItemIdentifier]) {
+	else if ([itemIdent isEqualToString: SortSeriesToolbarItemIdentifier]) {
 		[toolbarItem setLabel: NSLocalizedString(@"Sort Images", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Sort Images", nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Sort Series Images by selected element", nil)];
@@ -1547,7 +1547,7 @@ extern int delayedTileWindows;
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(sortSeries:)];
     }
-	else if ([itemIdent isEqual: VerifyToolbarItemIdentifier])
+	else if ([itemIdent isEqualToString: VerifyToolbarItemIdentifier])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Validator", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Validator", nil)];
@@ -1608,7 +1608,7 @@ extern int delayedTileWindows;
 	
     BOOL enable = YES;
 	
-	if ([[toolbarItem itemIdentifier] isEqual: SortSeriesToolbarItemIdentifier])
+	if ([[toolbarItem itemIdentifier] isEqualToString: SortSeriesToolbarItemIdentifier])
 	{
 		if( viewer)	enable = YES;
 	}	

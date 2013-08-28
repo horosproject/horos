@@ -199,7 +199,7 @@ NSString* N2NonNullString(NSString* s) {
 
 -(NSString*)stringByPrefixingLinesWithString:(NSString*)prefix {
 	NSMutableArray* lines = [[[self componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]] mutableCopy] autorelease];
-	if ([[lines lastObject] isEqual:@""]) [lines removeLastObject];	
+	if ([[lines lastObject] isEqualToString:@""]) [lines removeLastObject];
 	return [NSString stringWithFormat:@"%@%@\n", prefix, [lines componentsJoinedByString:[NSString stringWithFormat:@"\n%@", prefix]]];
 }
 
@@ -344,7 +344,7 @@ NSString* N2NonNullString(NSString* s) {
 //	// Process all remaining components.
 //	for (NSString *component in pathComponents)
 //	{
-//		if ([component isEqual:@".."])
+//		if ([component isEqualToString:@".."])
 //			resolvedPath = [resolvedPath stringByDeletingLastPathComponent];
 //		else {
 //			resolvedPath = [resolvedPath stringByAppendingPathComponent:component];

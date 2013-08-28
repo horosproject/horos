@@ -899,7 +899,7 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
     // The toolbar will use this method to obtain toolbar items that can be displayed in the customization sheet, or in the toolbar itself 
     NSToolbarItem *toolbarItem = [[NSToolbarItem alloc] initWithItemIdentifier: itemIdent];
  
-	if([itemIdent isEqual: endo3DToolsToolbarItemIdentifier])
+	if([itemIdent isEqualToString: endo3DToolsToolbarItemIdentifier])
 	{
 		// Set up the standard properties 
 		[toolbarItem setLabel: NSLocalizedString(@"3D Mouse button function",nil)];
@@ -911,7 +911,7 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 		[toolbarItem setMinSize:NSMakeSize(NSWidth([tools3DView frame]), NSHeight([tools3DView frame]))];
 		[toolbarItem setMaxSize:NSMakeSize(NSWidth([tools3DView frame]),NSHeight([tools3DView frame]))];
     }
-	else if([itemIdent isEqual: endoMPRToolsToolbarItemIdentifier])
+	else if([itemIdent isEqualToString: endoMPRToolsToolbarItemIdentifier])
 	{
 		// Set up the standard properties 
 		[toolbarItem setLabel: NSLocalizedString(@"MPR Mouse button function",nil)];
@@ -983,7 +983,7 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 		
         [[[vrController wlwwPopup] cell] setUsesItemFromMenu:YES];
     }
-	else if ([itemIdent isEqual: ExportToolbarItemIdentifier]) {
+	else if ([itemIdent isEqualToString: ExportToolbarItemIdentifier]) {
         
 		[toolbarItem setLabel: NSLocalizedString(@"DICOM File",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"Save as DICOM",nil)];

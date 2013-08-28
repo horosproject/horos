@@ -79,7 +79,7 @@
 
 	while (addr = (NSString*)[e nextObject])
 	{
-		if ([[addr componentsSeparatedByString:@"."] count] == 4 && ![addr isEqual:@"127.0.0.1"])
+		if ([[addr componentsSeparatedByString:@"."] count] == 4 && ![addr isEqualToString:@"127.0.0.1"])
 		{
 			[r addObject: addr];
 		}

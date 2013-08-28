@@ -937,59 +937,59 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 	return _type;
 }
 - (BOOL)isImageStorage{
-	if ([_type isEqual: @"ImageStorage"])
+	if ([_type isEqualToString: @"ImageStorage"])
 		return YES;
 	return NO;
 }
 - (BOOL) isDirectory{
-if ([_type isEqual: @"Directory"])
+if ([_type isEqualToString: @"Directory"])
 		return YES;
 	return NO;
 }
 - (BOOL) isStructuredReport{
-	if ([_type isEqual: @"StructuredReport"])
+	if ([_type isEqualToString: @"StructuredReport"])
 		return YES;
 	return NO;
 }
 
 - (BOOL) isPresentationState{
-	if ([_type isEqual: @"PresentationState"])
+	if ([_type isEqualToString: @"PresentationState"])
 		return YES;
 	return NO;
 }
 
 - (BOOL) isWaveform{
-	if ([_type isEqual: @"Waveform"])
+	if ([_type isEqualToString: @"Waveform"])
 		return YES;
 	return NO;
 }
 
 - (BOOL) isStandalone{
-	if ([_type isEqual: @"Standalone"])
+	if ([_type isEqualToString: @"Standalone"])
 		return YES;
 	return NO;
 }
 
 - (BOOL)  isRadiotherapy{
-	if ([_type isEqual: @"Radiotherapy"])
+	if ([_type isEqualToString: @"Radiotherapy"])
 		return YES;
 	return NO;
 }
 
 - (BOOL) isSpectroscopy{
-	if ([_type isEqual: @"Spectroscopy"])
+	if ([_type isEqualToString: @"Spectroscopy"])
 		return YES;
 	return NO;
 }
 
 - (BOOL) isRawData{
-	if ([_type isEqual: @"RawData"])
+	if ([_type isEqualToString: @"RawData"])
 		return YES;
 	return NO;
 }
 
 - (BOOL) isNonImageStorage{
-	if ([_type isEqual: @"ImageStorage"])
+	if ([_type isEqualToString: @"ImageStorage"])
 		return NO;
 	return YES;
 }

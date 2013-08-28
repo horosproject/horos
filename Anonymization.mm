@@ -298,18 +298,18 @@ static NSString *templateDicomFile = nil;
 		
 		if ([val isKindOfClass:[NSDate class]])
 		{
-			if ([tag.vr isEqual:@"DA"]) //Date String
+			if ([tag.vr isEqualToString:@"DA"]) //Date String
 				val = [DCMCalendarDate dicomDateWithDate:val];
-			else if ([tag.vr isEqual:@"TM"]) //Time String
+			else if ([tag.vr isEqualToString:@"TM"]) //Time String
 				val = [DCMCalendarDate dicomTimeWithDate:val];
-			else if ([tag.vr isEqual:@"DT"]) //Date Time
+			else if ([tag.vr isEqualToString:@"DT"]) //Date Time
 				val = [DCMCalendarDate dicomDateTimeWithDicomDate:[DCMCalendarDate dicomDateWithDate:val] dicomTime:[DCMCalendarDate dicomTimeWithDate:val]];
 		}
 		else if ([val isKindOfClass:[NSNumber class]])
 		{
-			if ([tag.vr isEqual:@"DS"]) //Decimal String representing floating point
+			if ([tag.vr isEqualToString:@"DS"]) //Decimal String representing floating point
 				val = [val stringValue];
-			else if ([tag.vr isEqual:@"IS"]) //Integer String
+			else if ([tag.vr isEqualToString:@"IS"]) //Integer String
 				val = [val stringValue];
 		}
 		

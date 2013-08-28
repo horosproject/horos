@@ -207,7 +207,7 @@
 		
 		[deleteTemplateButton setEnabled: matchName != NULL];
 	}
-	else if ([keyPath isEqual:@"formatIsOk"]) {
+	else if ([keyPath isEqualToString:@"formatIsOk"]) {
 		[self updateFormatsAreOk];
 	}
 }
@@ -311,7 +311,7 @@ NSInteger CompareArraysByNameOfDCMAttributeTagAtIndexZero(id arg1, id arg2, void
 	NSArray* arr = [Anonymization tagsValuesArrayFromDictionary:dic];
 	[self setTagsValues:arr];
 	// backwards compatibility: prefs might contain NSStrings, which might not match with the corresponding objects, so if no match is found we autosave
-	if (![name isEqual:[self nameOfCurrentMatchingTemplate]])
+	if (![name isEqualToString:[self nameOfCurrentMatchingTemplate]])
 		[self saveTemplate:[self tagsValues] withName:name];
 }
 

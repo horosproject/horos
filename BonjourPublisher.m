@@ -89,18 +89,18 @@ extern const char *GetPrivateIP();
 -(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context {
 	if (object == [NSUserDefaultsController sharedUserDefaultsController]) {
 		keyPath = [keyPath substringFromIndex:7];
-		if ([keyPath isEqual:OsirixBonjourSharingActiveFlagDefaultsKey]) {
+		if ([keyPath isEqualToString:OsirixBonjourSharingActiveFlagDefaultsKey]) {
 			[self toggleSharing:[NSUserDefaultsController IsBonjourSharingActive]];
 			return;
 		} else
-		if ([keyPath isEqual:OsirixBonjourSharingNameDefaultsKey]) {
+		if ([keyPath isEqualToString:OsirixBonjourSharingNameDefaultsKey]) {
 		//	[self ];
 			return;
 		} else
-		if ([keyPath isEqual:OsirixBonjourSharingPasswordFlagDefaultsKey]) {
+		if ([keyPath isEqualToString:OsirixBonjourSharingPasswordFlagDefaultsKey]) {
 			return;
 		} else
-		if ([keyPath isEqual:OsirixBonjourSharingPasswordDefaultsKey]) {
+		if ([keyPath isEqualToString:OsirixBonjourSharingPasswordDefaultsKey]) {
 			return;
 		}
 	}

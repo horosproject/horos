@@ -617,7 +617,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
     // The toolbar will use this method to obtain toolbar items that can be displayed in the customization sheet, or in the toolbar itself 
     NSToolbarItem *toolbarItem = [[NSToolbarItem alloc] initWithItemIdentifier: itemIdent];
     
-//	if ([itemIdent isEqual: QTExportVRToolbarItemIdentifier]) {
+//	if ([itemIdent isEqualToString: QTExportVRToolbarItemIdentifier]) {
 //        
 //	[toolbarItem setLabel: NSLocalizedString(@"Export QTVR",nil)];
 //	[toolbarItem setPaletteLabel: NSLocalizedString(@"Export QTVR",nil)];
@@ -627,7 +627,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 //	[toolbarItem setAction: @selector(exportQuicktime3DVR:)];
 //    }	
 //	else
-        if ([itemIdent isEqual: StereoIdentifier]) {
+        if ([itemIdent isEqualToString: StereoIdentifier]) {
         
 	[toolbarItem setLabel: NSLocalizedString(@"Stereo",nil)];
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Stereo",nil)];
@@ -636,7 +636,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	[toolbarItem setTarget: view];
 	[toolbarItem setAction: @selector(SwitchStereoMode:)];
     }
-	else if ([itemIdent isEqual: QTExportToolbarItemIdentifier]) {
+	else if ([itemIdent isEqualToString: QTExportToolbarItemIdentifier]) {
         
 	[toolbarItem setLabel: NSLocalizedString(@"Movie Export",nil)];
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Movie Export",nil)];
@@ -645,7 +645,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	[toolbarItem setTarget: view];
 	[toolbarItem setAction: @selector(exportQuicktime:)];
     }
-	else if ([itemIdent isEqual: iPhotoToolbarItemIdentifier]) {
+	else if ([itemIdent isEqualToString: iPhotoToolbarItemIdentifier]) {
         
 	[toolbarItem setLabel: NSLocalizedString(@"iPhoto",nil)];
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"iPhoto",nil)];
@@ -654,7 +654,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(export2iPhoto:)];
     }
-	else if ([itemIdent isEqual: Export3DFileFormat]) {
+	else if ([itemIdent isEqualToString: Export3DFileFormat]) {
         
 	[toolbarItem setLabel: NSLocalizedString(@"Export 3D-SR",nil)];
 	[toolbarItem setPaletteLabel:NSLocalizedString( @"Export 3D-SR",nil)];
@@ -663,7 +663,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	[toolbarItem setMinSize:NSMakeSize(NSWidth([export3DView frame]), NSHeight([export3DView frame]))];
 	[toolbarItem setMaxSize:NSMakeSize(NSWidth([export3DView frame]), NSHeight([export3DView frame]))];
     }
-	else if ([itemIdent isEqual: SRSettingsToolbarItemIdentifier]) {
+	else if ([itemIdent isEqualToString: SRSettingsToolbarItemIdentifier]) {
 	
 	[toolbarItem setLabel: NSLocalizedString(@"Surface Settings",nil)];
 	[toolbarItem setPaletteLabel:NSLocalizedString( @"Surface Settings",nil)];
@@ -672,7 +672,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(ChangeSettings:)];
     }
-	else if ([itemIdent isEqual: BSRSettingsToolbarItemIdentifier]) {
+	else if ([itemIdent isEqualToString: BSRSettingsToolbarItemIdentifier]) {
 	
 	[toolbarItem setLabel: NSLocalizedString(@"Fusion Surface Settings",nil)];
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Fusion Surface Settings",nil)];
@@ -690,7 +690,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	[toolbarItem setTarget: view];
 	[toolbarItem setAction: @selector(switchOrientationWidget:)];
     }
-     else if([itemIdent isEqual: ToolsToolbarItemIdentifier]) {
+     else if([itemIdent isEqualToString: ToolsToolbarItemIdentifier]) {
 	// Set up the standard properties 
 	[toolbarItem setLabel:NSLocalizedString( @"Mouse button function",nil)];
 	[toolbarItem setPaletteLabel:NSLocalizedString( @"Mouse button function",nil)];
@@ -700,7 +700,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	[toolbarItem setMinSize:NSMakeSize(NSWidth([toolsView frame]), NSHeight([toolsView frame]))];
 	[toolbarItem setMaxSize:NSMakeSize(NSWidth([toolsView frame]), NSHeight([toolsView frame]))];
     }
-	else if([itemIdent isEqual: FlyThruToolbarItemIdentifier]) {
+	else if([itemIdent isEqualToString: FlyThruToolbarItemIdentifier]) {
 	// Set up the standard properties 
 	[toolbarItem setLabel: NSLocalizedString(@"Fly Thru",nil)];
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Fly Thru",nil)];
@@ -711,7 +711,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	[toolbarItem setAction: @selector(flyThruControllerInit:)];
 	
     }
-	else if([itemIdent isEqual: ToggleDisplay3DpointsItemIdentifier]) {
+	else if([itemIdent isEqualToString: ToggleDisplay3DpointsItemIdentifier]) {
 	// Set up the standard properties 
 	[toolbarItem setLabel: NSLocalizedString(@"Show/Hide",nil)];
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Show/Hide 3D points",nil)];
@@ -868,7 +868,7 @@ return YES;
     // Optional method:  This message is sent to us since we are the target of some toolbar item actions 
     // (for example:  of the save items action) 
     BOOL enable = YES;
-	if ([[toolbarItem itemIdentifier] isEqual: BSRSettingsToolbarItemIdentifier])
+	if ([[toolbarItem itemIdentifier] isEqualToString: BSRSettingsToolbarItemIdentifier])
     {
         if(blendingController == nil) enable = NO;
     }

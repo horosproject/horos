@@ -159,10 +159,10 @@
             return;
         }
         
-        if ([keyPath isEqual:NSThreadStatusKey]) {
+        if ([keyPath isEqualToString:NSThreadStatusKey]) {
             [self.view setNeedsDisplayInRect: [self.view rectOfRow:[self.manager.threads indexOfObject:self.thread]]];
             return;
-        } else if ([keyPath isEqual:NSThreadProgressKey]) {
+        } else if ([keyPath isEqualToString:NSThreadProgressKey]) {
             [self.progressIndicator setDoubleValue:self.thread.subthreadsAwareProgress];
             [self.progressIndicator setIndeterminate: self.thread.progress < 0];
             if (self.thread.progress < 0) [self.progressIndicator startAnimation:self];
@@ -171,7 +171,7 @@
                 [self.progressIndicator setNeedsDisplay: YES];
             }
             return;
-        } else if ([keyPath isEqual:NSThreadSupportsCancelKey] || [keyPath isEqual:NSThreadIsCancelledKey]) {
+        } else if ([keyPath isEqualToString:NSThreadSupportsCancelKey] || [keyPath isEqualToString:NSThreadIsCancelledKey]) {
             [self.cancelButton setHidden:(!self.thread.supportsCancel)||self.thread.isCancelled];
             [self.cancelButton setEnabled:self.thread.supportsCancel];
             return;
