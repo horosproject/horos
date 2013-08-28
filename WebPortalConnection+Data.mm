@@ -340,10 +340,13 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
             searchString = [searchString stringByReplacingOccurrencesOfString: @"," withString: @" "];
             
             [search appendFormat:@"name BEGINSWITH[cd] '%@'", searchString]; // [c] is for 'case INsensitive' and [d] is to ignore accents (diacritic)
-            browsePredicate = [NSPredicate predicateWithFormat: search];
             
             if( searchString.length >= 2)
                 [PODFilter setObject: [searchString stringByAppendingString:@"*"] forKey: @"PatientsName"];
+            
+            //
+            
+            browsePredicate = [[BrowserController currentBrowser] patientsnamePredicate: [parameters objectForKey:@"search"]];
         }
         else if ([parameters objectForKey:@"searchID"])
         {
