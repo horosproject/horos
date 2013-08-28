@@ -16,6 +16,7 @@
 #import "OrthogonalMPRViewer.h"
 #import "OpacityTransferView.h"
 #import "Notifications.h"
+#import "AppController.h"
 
 #include <OpenGL/CGLCurrent.h>
 #include <OpenGL/CGLContext.h>
@@ -1230,36 +1231,17 @@
 			[contextual addItem:[NSMenuItem separatorItem]];
 			
 			/******************* WW/WL menu items **********************/
-			NSMenu *mainMenu = [NSApp mainMenu];
-			NSMenu *viewerMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"2D Viewer", nil)] submenu];
-			if( viewerMenu == nil)
-			{
-				NSLog( @"***** NSLocalization bug.... viewerMenu == nil -> viewerMenu == itemAtIndex == 5");
-				NSLog( @"Not found item: %@", NSLocalizedString(@"2D Viewer", nil));
-				viewerMenu = [[mainMenu itemAtIndex: 5]  submenu];
-				NSLog( @"***** Selected item: %@", [viewerMenu title]);
-			}
-			NSMenu *presetsMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Window Width & Level", nil)] submenu];
-			if( presetsMenu == nil)
-			{
-				NSLog( @"***** NSLocalization bug.... presetsMenu == nil -> presetsMenu == itemAtIndex");
-				NSLog( @"Not found item: %@", NSLocalizedString(@"Window Width & Level", nil));
-				presetsMenu = [[viewerMenu itemAtIndex: 38]  submenu];
-				NSLog( @"***** Selected item: %@", [presetsMenu title]);
-			}
-			NSMenu *menu = [presetsMenu copy];
-			item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Window Width & Level", nil) action: nil keyEquivalent:@""];
+			NSMenu *menu = [[[[AppController sharedAppController] wlwwMenu] copy] autorelease];
+			item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Window Width & Level", nil) action: nil keyEquivalent:@""] autorelease];
 			[item setSubmenu:menu];
 			[contextual addItem:item];
-			[item release];
-			[menu release];
 			
 			[contextual addItem:[NSMenuItem separatorItem]];
 			
 			/************* window resize Menu ****************/
 			
 			
-			NSMenu *submenu =  [[NSMenu alloc] initWithTitle:@"Resize window"];
+			NSMenu *submenu =  [[[NSMenu alloc] initWithTitle:@"Resize window"] autorelease];
 			
 			NSArray *resizeWindowArray = [NSArray arrayWithObjects:@"25%", @"50%", @"100%", @"200%", @"300%", @"iPod Video", nil];
 			i = 0;
@@ -1272,22 +1254,18 @@
 				[item release];
 			}
 			
-			item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Resize window", nil) action: nil keyEquivalent:@""];
+			item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Resize window", nil) action: nil keyEquivalent:@""] autorelease];
 			[item setSubmenu:submenu];
 			[contextual addItem:item];
-			[item release];
 			
 			[contextual addItem:[NSMenuItem separatorItem]];
 			
-			item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"No Rescale Size (100%)", nil) action: @selector(actualSize:) keyEquivalent:@""];
+			item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"No Rescale Size (100%)", nil) action: @selector(actualSize:) keyEquivalent:@""] autorelease];
 			[contextual addItem:item];
 			[item release];
 			
 			item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Actual size", nil) action: @selector(realSize:) keyEquivalent:@""];
 			[contextual addItem:item];
-			[item release];
-			
-			[submenu release];
 	}
 	
 	/*

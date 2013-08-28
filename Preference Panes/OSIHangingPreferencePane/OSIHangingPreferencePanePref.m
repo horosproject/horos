@@ -17,6 +17,7 @@
 #import "NSArray+N2.h"
 #import <OsiriXAPI/NSPreferencePane+OsiriX.h>
 #import "Notifications.h"
+#import "AppController.h"
 
 @implementation OSIHangingPreferencePanePref
 
@@ -224,10 +225,8 @@
 		[self mainViewDidLoad];
         
         // Windows/Image/WLWW menus
-        NSMenu *mainMenu = [NSApp mainMenu];
-        NSMenu *viewerMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"2D Viewer", nil)] submenu];
-        NSMenu *tilingMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Image Tiling", nil)] submenu];
-        NSMenu *wlwwMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Window Width & Level", nil)] submenu];
+        NSMenu *tilingMenu = [[AppController sharedAppController] imageTilingMenu];
+        NSMenu *wlwwMenu = [[AppController sharedAppController] wlwwMenu];
         
         [windowsTilingPopup removeAllItems];
         [imageTilingPopup removeAllItems];

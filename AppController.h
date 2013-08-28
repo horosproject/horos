@@ -238,6 +238,16 @@ extern AppController* OsiriX;
 + (BOOL) USETOOLBARPANEL;
 + (void) setUSETOOLBARPANEL: (BOOL) b;
 
+- (NSMenu*) viewerMenu;
+- (NSMenu*) fileMenu;
+- (NSMenu*) exportMenu;
+- (NSMenu*)imageTilingMenu;
+- (NSMenu*) orientationMenu;
+- (NSMenu*) opacityMenu;
+- (NSMenu*) wlwwMenu;
+- (NSMenu*) convMenu;
+- (NSMenu*) clutMenu;
+
 #pragma mark-
 #pragma mark growl
 - (void) growlTitle:(NSString*) title description:(NSString*) description name:(NSString*) name;
