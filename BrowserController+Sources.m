@@ -353,7 +353,10 @@ enum {
 
 -(void)redrawSources
 {
-	[_sourcesTableView setNeedsDisplay:YES];
+    if( [NSThread isMainThread])
+        [_sourcesTableView setNeedsDisplay:YES];
+    else
+        [self performSelectorOnMainThread: @selector( redrawSources) withObject: nil waitUntilDone: NO];
 }
 
 -(int)findDBPath:(NSString*)path dbFolder:(NSString*)DBFolderLocation { // __deprecated
