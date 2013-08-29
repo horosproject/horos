@@ -4034,10 +4034,10 @@ static NSConditionLock *threadLock = nil;
     if( self.database.isReadOnly || !self.database.isLocal)
         return;
     
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForSmartAlbumStudiesOnDICOMNodes"] == NO)
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"] == NO)
         return;
     
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"] == NO)
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"PACSOnDemandForSearchField"] == NO)
         return;
     
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
@@ -4177,9 +4177,6 @@ static NSConditionLock *threadLock = nil;
     if( self.database.isReadOnly)
         return;
     
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForSmartAlbumStudiesOnDICOMNodes"] == NO)
-        return;
-    
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"] == NO)
         return;
     
@@ -4265,6 +4262,9 @@ static NSConditionLock *threadLock = nil;
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"] == NO)
         return [NSArray array];
     
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForSmartAlbumStudiesOnDICOMNodes"] == NO)
+        return [NSArray array];
+    
 #ifndef OSIRIX_LIGHT
     if( !searchForComparativeStudiesLock)
         searchForComparativeStudiesLock = [NSRecursiveLock new];
@@ -4306,6 +4306,9 @@ static NSConditionLock *threadLock = nil;
         return;
     
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"] == NO)
+        return;
+    
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForSmartAlbumStudiesOnDICOMNodes"] == NO)
         return;
     
     if( albumName.length == 0)

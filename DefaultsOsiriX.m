@@ -1052,6 +1052,7 @@ static NSHost *currentHost = nil;
     [defaultValues setObject:@"4" forKey:@"SendControllerConcurrentThreads"];
     [defaultValues setObject:@"1" forKey:@"COMMENTSAUTOFILLStudyLevel"];
     [defaultValues setObject:@"1" forKey:@"ROIDrawPlainEdge"];
+    [defaultValues setObject:@"1" forKey:@"PACSOnDemandForSearchField"];
     
 	#ifdef MACAPPSTORE
 	[defaultValues setObject:@"1" forKey:@"MACAPPSTORE"];
