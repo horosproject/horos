@@ -998,29 +998,17 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				#endif
 				#endif
 				{
-					if( otherImage && [extension isEqualToString:@"pdf"])
-					{
-						height = [otherImage size].height;
-						width = [otherImage size].width;
-					}
-					else
-					{
-						rep = [NSBitmapImageRep imageRepWithData:[otherImage TIFFRepresentation]];
-						
-						if( rep)
-						{
-							if( [rep pixelsWide] > [otherImage size].width)
-							{
-								height = [rep pixelsHigh];
-								width = [rep pixelsWide];
-							}
-							else
-							{
-								height = [otherImage size].height;
-								width = [otherImage size].width;
-							}
-						}
-					}
+                    @autoreleasepool
+                    {
+                        CGImageRef cgRef = [otherImage CGImageForProposedRect:NULL context:nil hints:nil];
+                        NSBitmapImageRep *r = [[[NSBitmapImageRep alloc] initWithCGImage:cgRef] autorelease];
+                        [r setSize: otherImage.size];
+                        
+                        NSBitmapImageRep *TIFFRep = [NSBitmapImageRep imageRepWithData: [r TIFFRepresentation]];
+                        
+                        width = TIFFRep.pixelsWide;
+                        height = TIFFRep.pixelsHigh;
+                    }
 				}
 				
 				if( [tempString length] >= 4) strNo[ 0] = [tempString characterAtIndex: [tempString length] -4];	else strNo[ 0]= 0;

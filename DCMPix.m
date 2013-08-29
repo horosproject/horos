@@ -9647,121 +9647,106 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 - (void) getDataFromNSImage:(NSImage*) otherImage
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	@try {
-        int x, y;
+	@try
+    {
+        CGImageRef cgRef = [otherImage CGImageForProposedRect:NULL context:nil hints:nil];
+        NSBitmapImageRep *r = [[[NSBitmapImageRep alloc] initWithCGImage:cgRef] autorelease];
+        [r setSize: otherImage.size];
         
-        NSBitmapImageRep *rep = [NSBitmapImageRep imageRepWithData: [otherImage TIFFRepresentation]];
+        NSBitmapImageRep *TIFFRep = [NSBitmapImageRep imageRepWithData: [r TIFFRepresentation]];
         
-        NSImage *r = nil;
-        
-        if( [rep pixelsWide] > [otherImage size].width)
-            r = [[[NSImage alloc] initWithSize: NSMakeSize( [rep pixelsWide], [rep pixelsHigh])] autorelease];
-        else
-            r = [[[NSImage alloc] initWithSize: NSMakeSize( [otherImage size].width, [otherImage size].height)] autorelease];
-        
-        if( r)
+        if( TIFFRep)
         {
-            [r lockFocus];
+            height = TIFFRep.pixelsHigh;
+            width = TIFFRep.pixelsWide;
             
-            [[NSColor whiteColor] set];
-            NSRectFill( NSMakeRect( 0, 0, [r size].width, [r size].height));
-            
-            [[NSAffineTransform transform] set]; // On Retina system, this will cancel the default 2x resolution in the NSImage "world"
-            
-            [otherImage drawInRect: NSMakeRect( 0, 0, [r size].width, [r size].height)
-                          fromRect: NSMakeRect( 0, 0, [otherImage size].width, [otherImage size].height)
-                         operation: NSCompositeSourceOver
-                          fraction: 1.0];
-            
-            [r unlockFocus];
-            
-            NSBitmapImageRep *TIFFRep = [[NSBitmapImageRep alloc] initWithData: [r TIFFRepresentation]];
-            if( TIFFRep)
-            {
-                BOOL retina = NO;
-                
-                if( [r size].height != TIFFRep.pixelsHigh)
-                    retina = YES;
-                
-                height = [r size].height;
-                width = [r size].width;
-                
 #ifdef OSIRIX_VIEWER
-                NSManagedObjectContext *iContext = nil;
+            NSManagedObjectContext *iContext = nil;
+            
+            if( savedHeightInDB != 0 && savedHeightInDB != height)
+            {
+                if( savedHeightInDB != OsirixDicomImageSizeUnknown)
+                    NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height. New: %d / DB: %d", (int)height, (int)savedHeightInDB);
                 
-                if( savedHeightInDB != 0 && savedHeightInDB != height)
-                {
-                    if( savedHeightInDB != OsirixDicomImageSizeUnknown)
-                        NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height. New: %d / DB: %d", (int)height, (int)savedHeightInDB);
-                    
-                    if( iContext == nil)
-                        iContext = ([[NSThread currentThread] isMainThread] ? [[[BrowserController currentBrowser] database] managedObjectContext] : [[[BrowserController currentBrowser] database] independentContext]);
-                    
-                    [[iContext existingObjectWithID: imageObjectID error: nil] setValue: [NSNumber numberWithInt: height] forKey: @"height"];
-                }
+                if( iContext == nil)
+                    iContext = ([[NSThread currentThread] isMainThread] ? [[[BrowserController currentBrowser] database] managedObjectContext] : [[[BrowserController currentBrowser] database] independentContext]);
                 
-                if( height > savedHeightInDB && fExternalOwnedImage)
-                    height = savedHeightInDB;
+                [[iContext existingObjectWithID: imageObjectID error: nil] setValue: [NSNumber numberWithInt: height] forKey: @"height"];
+            }
+            
+            if( height > savedHeightInDB && fExternalOwnedImage)
+                height = savedHeightInDB;
+            
+            if( savedWidthInDB != 0 && savedWidthInDB != width)
+            {
+                if( savedWidthInDB != OsirixDicomImageSizeUnknown)
+                    NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width. New: %d / DB: %d", (int)width, (int)savedWidthInDB);
                 
-                if( savedWidthInDB != 0 && savedWidthInDB != width)
-                {
-                    if( savedWidthInDB != OsirixDicomImageSizeUnknown)
-                        NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width. New: %d / DB: %d", (int)width, (int)savedWidthInDB);
-                    
-                    if( iContext == nil)
-                        iContext = ([[NSThread currentThread] isMainThread] ? [[[BrowserController currentBrowser] database] managedObjectContext] : [[[BrowserController currentBrowser] database] independentContext]);
-                    
-                    [[iContext existingObjectWithID: imageObjectID error: nil] setValue: [NSNumber numberWithInt: width] forKey: @"width"];
-                }
+                if( iContext == nil)
+                    iContext = ([[NSThread currentThread] isMainThread] ? [[[BrowserController currentBrowser] database] managedObjectContext] : [[[BrowserController currentBrowser] database] independentContext]);
                 
-                if( width > savedWidthInDB && fExternalOwnedImage)
-                    width = savedWidthInDB;
-                
-                [iContext save: nil];
+                [[iContext existingObjectWithID: imageObjectID error: nil] setValue: [NSNumber numberWithInt: width] forKey: @"width"];
+            }
+            
+            if( width > savedWidthInDB && fExternalOwnedImage)
+                width = savedWidthInDB;
+            
+            [iContext save: nil];
 #endif
-                unsigned char *srcImage = [TIFFRep bitmapData];
+            unsigned char *srcImage = [TIFFRep bitmapData];
+            
+            unsigned char *argbImage = nil, *srcPtr = nil, *tmpPtr = nil;
+            
+            int totSize = height * width * 4;
+            if( fExternalOwnedImage)
+                argbImage =	(unsigned char*) fExternalOwnedImage;
+            else
+                argbImage = malloc( totSize);
+            
+            if( srcImage != nil && argbImage != nil)
+            {
+                int x, y;
                 
-                if( retina)
-                    srcImage += height * [TIFFRep bytesPerRow];
-                
-                unsigned char *argbImage = nil, *srcPtr = nil, *tmpPtr = nil;
-                
-                int totSize = height * width * 4;
-                if( fExternalOwnedImage)
-                    argbImage =	(unsigned char*) fExternalOwnedImage;
-                else
-                    argbImage = malloc( totSize);
-                
-                if( srcImage != nil && argbImage != nil)
+                switch( [TIFFRep bitsPerPixel])
                 {
-                    switch( [TIFFRep bitsPerPixel])
-                    {
-                        case 8:
-                            tmpPtr = argbImage;
-                            for( y = 0 ; y < height; y++)
+                    case 8:
+                        tmpPtr = argbImage;
+                        for( y = 0 ; y < height; y++)
+                        {
+                            srcPtr = srcImage + y*[TIFFRep bytesPerRow];
+                            
+                            x = width;
+                            while( x-->0)
                             {
-                                srcPtr = srcImage + y*[TIFFRep bytesPerRow];
+                                tmpPtr++;
+                                *tmpPtr++ = *srcPtr;
+                                *tmpPtr++ = *srcPtr;
+                                *tmpPtr++ = *srcPtr;
+                                srcPtr++;
+                            }
+                        }
+                    break;
+                        
+                    case 32:
+                        tmpPtr = argbImage;
+                        for( y = 0 ; y < height; y++)
+                        {
+                            srcPtr = srcImage + y*[TIFFRep bytesPerRow];
+                            
+                            x = width;
+                            while( x-->0)
+                            {
+                                unsigned char alpha = srcPtr[ 3];
                                 
-                                x = width;
-                                while( x-->0)
+                                if( alpha != 255) // -> white background
                                 {
-                                    tmpPtr++;
-                                    *tmpPtr++ = *srcPtr;
-                                    *tmpPtr++ = *srcPtr;
-                                    *tmpPtr++ = *srcPtr;
+                                    *tmpPtr++ = 255;
+                                    *tmpPtr++ = (255 - alpha) + (alpha * *srcPtr++ / 255);
+                                    *tmpPtr++ = (255 - alpha) + (alpha * *srcPtr++ / 255);
+                                    *tmpPtr++ = (255 - alpha) + (alpha * *srcPtr++ / 255);
                                     srcPtr++;
                                 }
-                            }
-                        break;
-                            
-                        case 32:
-                            tmpPtr = argbImage;
-                            for( y = 0 ; y < height; y++)
-                            {
-                                srcPtr = srcImage + y*[TIFFRep bytesPerRow];
-                                
-                                x = width;
-                                while( x-->0)
+                                else
                                 {
                                     *tmpPtr++ = 255;
                                     *tmpPtr++ = *srcPtr++;
@@ -9770,54 +9755,53 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                                     srcPtr++;
                                 }
                             }
-                        break;
+                        }
+                    break;
+                        
+                    case 24:
+                        tmpPtr = argbImage;
+                        for( y = 0 ; y < height; y++)
+                        {
+                            srcPtr = srcImage + y*[TIFFRep bytesPerRow];
                             
-                        case 24:
-                            tmpPtr = argbImage;
-                            for( y = 0 ; y < height; y++)
+                            x = width;
+                            while( x-->0)
                             {
-                                srcPtr = srcImage + y*[TIFFRep bytesPerRow];
+                                tmpPtr++;
                                 
-                                x = width;
-                                while( x-->0)
-                                {
-                                    tmpPtr++;
-                                    
-                                    *((short*)tmpPtr) = *((short*)srcPtr);
-                                    tmpPtr+=2;
-                                    srcPtr+=2;
-                                    
-                                    *tmpPtr++ = *srcPtr++;
-                                }
+                                *((short*)tmpPtr) = *((short*)srcPtr);
+                                tmpPtr+=2;
+                                srcPtr+=2;
+                                
+                                *tmpPtr++ = *srcPtr++;
                             }
-                        break;
+                        }
+                    break;
+                        
+                    case 48:
+                        tmpPtr = argbImage;
+                        for( y = 0 ; y < height; y++)
+                        {
+                            srcPtr = srcImage + y*[TIFFRep bytesPerRow];
                             
-                        case 48:
-                            tmpPtr = argbImage;
-                            for( y = 0 ; y < height; y++)
+                            x = width;
+                            while( x-->0)
                             {
-                                srcPtr = srcImage + y*[TIFFRep bytesPerRow];
-                                
-                                x = width;
-                                while( x-->0)
-                                {
-                                    tmpPtr++;
-                                    *tmpPtr++ = *srcPtr;	srcPtr += 2;
-                                    *tmpPtr++ = *srcPtr;	srcPtr += 2;
-                                    *tmpPtr++ = *srcPtr;	srcPtr += 2;
-                                }
+                                tmpPtr++;
+                                *tmpPtr++ = *srcPtr;	srcPtr += 2;
+                                *tmpPtr++ = *srcPtr;	srcPtr += 2;
+                                *tmpPtr++ = *srcPtr;	srcPtr += 2;
                             }
-                        break;
-                            
-                        default:
-                            NSLog(@"Error - Unknow bitsPerPixel ...");
-                        break;
-                    }
-                    
-                    fImage = (float*) argbImage;
-                    isRGB = YES;
+                        }
+                    break;
+                        
+                    default:
+                        NSLog(@"Error - Unknow bitsPerPixel ...");
+                    break;
                 }
-                [TIFFRep release];
+                
+                fImage = (float*) argbImage;
+                isRGB = YES;
             }
         }
 	}
