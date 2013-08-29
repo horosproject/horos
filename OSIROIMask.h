@@ -175,6 +175,44 @@ CF_EXTERN_C_END
  */
 - (id)initWithSortedMaskRuns:(NSArray *)maskRuns;
 
+/** Initializes and returns a newly created ROI Mask.
+ 
+ Creates a ROI Mask based on the given individual indexes.
+ 
+ @return The initialized ROI Mask object or `nil` if there was a problem initializing the object.
+ @param maskRuns An array of OSIROIMaskIndex structs in NSValues.
+ */
+- (id)initWithIndexes:(NSArray *)maskIndexes;
+
+
+
+/** Initializes and returns a newly created ROI Mask.
+ 
+ Creates a ROI Mask based on the given individual indexes.
+ 
+ @return The initialized ROI Mask object or `nil` if there was a problem initializing the object.
+ @param maskRuns An array of OSIROIMaskIndex structs in NSValues.
+ */
+- (id)initWithIndexData:(NSData *)indexData;
+
+/** Initializes and returns a newly created ROI Mask.
+ 
+ Creates a ROI Mask based on the given individual indexes. The mask indexes must be sorted.
+ 
+ @return The initialized ROI Mask object or `nil` if there was a problem initializing the object.
+ @param maskRuns An array of OSIROIMaskIndex structs in NSValues.
+ */
+- (id)initWithSortedIndexes:(NSArray *)maskIndexes;
+
+/** Initializes and returns a newly created ROI Mask.
+ 
+ Creates a ROI Mask based on the given individual indexes. The mask indexes must be sorted.
+ 
+ @return The initialized ROI Mask object or `nil` if there was a problem initializing the object.
+ @param maskRuns An array of OSIROIMaskIndex structs in NSValues.
+ */
+- (id)initWithSortedIndexData:(NSData *)indexData;
+
 ///-----------------------------------
 /// @name Working with the Mask
 ///-----------------------------------
