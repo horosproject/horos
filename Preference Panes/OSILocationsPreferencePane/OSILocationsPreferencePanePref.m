@@ -37,7 +37,7 @@
 
 @implementation OSILocationsPreferencePanePref
 
-@synthesize WADOPort, WADOhttps, WADOTransferSyntax, WADOUrl, WADOUsername, WADOPassword;
+@synthesize WADOPort, WADOhttps, WADOTransferSyntax, WADOUrl, WADOUsername, WADOPassword, testingNodes;
 
 @synthesize TLSEnabled, TLSAuthenticated, TLSUseDHParameterFileURL;
 @synthesize TLSDHParameterFileURL;
@@ -656,35 +656,40 @@
 	[self resetTest];
 }
 
+- (void) testThread:(NSArray*) serverList
+{
+    @autoreleasepool
+    {
+        self.testingNodes = YES;
+        
+        for( int i = 0 ; i < [serverList count]; i++)
+        {
+            NSMutableDictionary *aServer = [serverList objectAtIndex: i];
+            int status;
+            
+            if( [[aServer objectForKey: @"Activated"] boolValue] && [OSILocationsPreferencePanePref echoServer:aServer])
+                status = 0;
+            else
+                status = -1;
+            
+            [aServer setObject:[NSNumber numberWithInt: status] forKey:@"test"];
+            
+            [[dicomNodes tableView] performSelectorOnMainThread: @selector( display) withObject:nil waitUntilDone:NO];
+        }
+        
+        self.testingNodes = NO;
+    }
+}
+
 - (IBAction) test:(id) sender
 {
-	int i;
-	int status;
-	int selectedRow = [[dicomNodes tableView] selectedRow];
-	
-	[progress startAnimation: self];
-	
-	NSArray *serverList = [dicomNodes arrangedObjects];
-	
-	for( i = 0 ; i < [serverList count]; i++)
-	{
-		NSMutableDictionary *aServer = [serverList objectAtIndex: i];
-		
-		[[dicomNodes tableView] selectRowIndexes: [NSIndexSet indexSetWithIndex: i] byExtendingSelection: NO];
-		[[dicomNodes tableView] display];
-		
-		if( [[aServer objectForKey: @"Activated"] boolValue] && [OSILocationsPreferencePanePref echoServer:aServer])
-			status = 0;
-		else
-			status = -1;
-		
-		[aServer setObject:[NSNumber numberWithInt: status] forKey:@"test"];
-	}
-	
-	[progress stopAnimation: self];
-	
-	[[dicomNodes tableView] selectRowIndexes: [NSIndexSet indexSetWithIndex: selectedRow] byExtendingSelection: NO];
-	[[dicomNodes tableView] display];
+    
+    for( NSMutableDictionary *server in [dicomNodes arrangedObjects])
+        [server setObject: @0 forKey:@"test"];
+    
+    [[dicomNodes tableView] display];
+    
+    [NSThread detachNewThreadSelector: @selector( testThread:) toTarget: self withObject: [dicomNodes arrangedObjects]];
 }
 
 - (IBAction) activateAllNone:(id) sender

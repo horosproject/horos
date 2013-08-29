@@ -25,7 +25,6 @@
 	IBOutlet NSPopUpButton			*characterSetPopup;
 	IBOutlet NSButton				*addServerDICOM, *addServerSharing, *searchDICOMBonjourNodes, *verifyPing, *addLocalPath, *loadNodes;
 	NSString						*stringEncoding;
-	IBOutlet NSProgressIndicator	*progress;
 	
 	IBOutlet DNDArrayController		*localPaths, *osiriXServers, *dicomNodes;
 	
@@ -49,6 +48,7 @@
 	TLSCertificateVerificationType	TLSCertificateVerification;
 	
 	IBOutlet NSWindow						*mainWindow;
+    BOOL                            testingNodes;
 }
 
 @property int WADOhttps, WADOPort, WADOTransferSyntax;
@@ -56,7 +56,7 @@
 @property (retain) NSString *WADOUsername;
 @property (retain) NSString *WADOPassword;
 
-@property BOOL TLSEnabled, TLSAuthenticated, TLSUseDHParameterFileURL;
+@property BOOL TLSEnabled, TLSAuthenticated, TLSUseDHParameterFileURL, testingNodes;
 @property (retain) NSURL *TLSDHParameterFileURL;
 @property (retain) NSArray *TLSSupportedCipherSuite;
 @property TLSCertificateVerificationType TLSCertificateVerification;
