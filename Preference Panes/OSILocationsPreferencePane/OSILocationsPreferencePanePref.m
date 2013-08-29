@@ -683,6 +683,8 @@
 
 - (IBAction) test:(id) sender
 {
+    if( self.testingNodes)
+        return;
     
     for( NSMutableDictionary *server in [dicomNodes arrangedObjects])
         [server setObject: @0 forKey:@"test"];
