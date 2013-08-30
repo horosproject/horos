@@ -2526,9 +2526,12 @@ static BOOL protectionAgainstReentry = NO;
 			{
 				if ([[NSThread currentThread] isCancelled]) break;
                 
-                [NSThread currentThread].status = N2LocalizedSingularPluralCount((long)filesInput.count-i, NSLocalizedString(@"file left", nil), NSLocalizedString(@"files left", nil));
-                [NSThread currentThread].progress = float(i)/filesInput.count;
-
+                if( i % 10 == 0)
+                {
+                    [NSThread currentThread].status = N2LocalizedSingularPluralCount((long)filesInput.count-i, NSLocalizedString(@"file left", nil), NSLocalizedString(@"files left", nil));
+                    [NSThread currentThread].progress = float(i)/filesInput.count;
+                }
+                
                 NSString *srcPath = [filesInput objectAtIndex: i], *dstPath = nil;
 				
 				if( copyFiles)
