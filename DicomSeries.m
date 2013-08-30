@@ -462,13 +462,19 @@
 
 - (NSSet*) images
 {
-    return [[self primitiveValueForKey: @"images"] objectsWithOptions: NSEnumerationConcurrent passingTest:^BOOL(DicomImage *obj, BOOL *stop)
+    NSSet *s = nil;
+    @autoreleasepool
+    {
+        s = [[[self primitiveValueForKey: @"images"] objectsWithOptions: NSEnumerationConcurrent passingTest:^BOOL(DicomImage *obj, BOOL *stop)
             {
                 if( obj.isDeleted)
                     return NO;
                 
                 return YES;
-            }];
+            }] retain];
+    }
+    
+    return [s autorelease];
 }
 
 - (NSNumber *) noFiles

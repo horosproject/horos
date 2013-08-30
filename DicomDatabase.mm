@@ -1751,634 +1751,645 @@ static BOOL protectionAgainstReentry = NO;
         {
 			thread.progress = 1.0*i/dicomFilesArray.count;
 			
-			@try
+            @autoreleasepool
             {
-				NSMutableDictionary *curDict = [dicomFilesArray objectAtIndex:i];
-//				NSLog(@"curDict: %@", curDict);
-				
-				newFile = [curDict objectForKey:@"filePath"];
-				
-				BOOL DICOMSR = NO;
-				BOOL inParseExistingObject = rereadExistingItems;
-				
-				NSString *SOPClassUID = [curDict objectForKey:@"SOPClassUID"];
-				
-				if ([DCMAbstractSyntaxUID isStructuredReport: SOPClassUID])
-				{
-					// Check if it is an OsiriX Annotations SR
-					if ([[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX Annotations SR"])
-					{
-						[curDict setValue: @"OsiriX Annotations SR" forKey: @"seriesID"];
-						inParseExistingObject = YES;
-						DICOMSR = YES;
-					}
-					
-					// Check if it is an OsiriX ROI SR
-					if ([[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX ROI SR"])
-					{
-						[curDict setValue: @"OsiriX ROI SR" forKey: @"seriesID"];
-						
-						inParseExistingObject = YES;
-						DICOMSR = YES;
-					}
-					
-					// Check if it is an OsiriX Report SR
-					if ([[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX Report SR"])
-					{
-						[curDict setValue: @"OsiriX Report SR" forKey: @"seriesID"];
-						
-						inParseExistingObject = YES;
-						DICOMSR = YES;
-					}
-				}
-				
-				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"acceptUnsupportedSOPClassUID"] == NO)
+                @try
                 {
-                    if( SOPClassUID != nil)
+                    NSMutableDictionary *curDict = [dicomFilesArray objectAtIndex:i];
+    //				NSLog(@"curDict: %@", curDict);
+                    
+                    newFile = [curDict objectForKey:@"filePath"];
+                    
+                    BOOL DICOMSR = NO;
+                    BOOL inParseExistingObject = rereadExistingItems;
+                    
+                    NSString *SOPClassUID = [curDict objectForKey:@"SOPClassUID"];
+                    
+                    if ([DCMAbstractSyntaxUID isStructuredReport: SOPClassUID])
                     {
-                        BOOL supportedSOPClass = NO;
-                        for( NSString *s in [DCMAbstractSyntaxUID allSupportedSyntaxes])
+                        // Check if it is an OsiriX Annotations SR
+                        if ([[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX Annotations SR"])
                         {
-                            if( [SOPClassUID hasPrefix: s])
-                            {
-                                supportedSOPClass = YES;
-                                break;
-                            }
+                            [curDict setValue: @"OsiriX Annotations SR" forKey: @"seriesID"];
+                            inParseExistingObject = YES;
+                            DICOMSR = YES;
                         }
                         
-                        if( supportedSOPClass == NO)
+                        // Check if it is an OsiriX ROI SR
+                        if ([[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX ROI SR"])
                         {
-                            NSLog( @"unsupported DICOM SOP CLASS (%@)-> Reject the file : %@", SOPClassUID, newFile);
-                            curDict = nil;
+                            [curDict setValue: @"OsiriX ROI SR" forKey: @"seriesID"];
+                            
+                            inParseExistingObject = YES;
+                            DICOMSR = YES;
+                        }
+                        
+                        // Check if it is an OsiriX Report SR
+                        if ([[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX Report SR"])
+                        {
+                            [curDict setValue: @"OsiriX Report SR" forKey: @"seriesID"];
+                            
+                            inParseExistingObject = YES;
+                            DICOMSR = YES;
+                        }
+                    }
+                    
+                    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"acceptUnsupportedSOPClassUID"] == NO)
+                    {
+                        if( SOPClassUID != nil)
+                        {
+                            BOOL supportedSOPClass = NO;
+                            for( NSString *s in [DCMAbstractSyntaxUID allSupportedSyntaxes])
+                            {
+                                if( [SOPClassUID hasPrefix: s])
+                                {
+                                    supportedSOPClass = YES;
+                                    break;
+                                }
+                            }
+                            
+                            if( supportedSOPClass == NO)
+                            {
+                                NSLog( @"unsupported DICOM SOP CLASS (%@)-> Reject the file : %@", SOPClassUID, newFile);
+                                curDict = nil;
+                            }
+                        }
+                    }
+                    
+                    if ([curDict objectForKey:@"SOPClassUID"] == nil && [[curDict objectForKey: @"fileType"] hasPrefix:@"DICOM"] == YES)
+                    {
+                        NSLog(@"no DICOM SOP CLASS -> Reject the file: %@", newFile);
+                        curDict = nil;
+                    }
+                    
+                    if (curDict != nil)
+                    {
+                        if ([[curDict objectForKey: @"studyID"] isEqualToString: curStudyID] == YES && [[curDict objectForKey: @"patientUID"] compare: curPatientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
+                        {
+                            if ([[study valueForKey: @"modality"] isEqualToString: @"SR"] || [[study valueForKey: @"modality"] isEqualToString: @"OT"])
+                                [study setValue: [curDict objectForKey: @"modality"] forKey:@"modality"];
+                        }
+                        else
+                        {
+                            /*******************************************/
+                            /*********** Find study object *************/
+                            // match: StudyInstanceUID and patientUID (see patientUID function in dicomFile.m, based on patientName, patientID and patientBirthDate)
+                            study = nil;
+                            curSerieID = nil;
+                            
+                            NSInteger index = [studiesArrayStudyInstanceUID indexOfObject:[curDict objectForKey: @"studyID"]];
+                            
+                            newObject = NO;
+                            
+                            if (index != NSNotFound)
+                            {
+                                if ([[curDict objectForKey: @"fileType"] hasPrefix:@"DICOM"] == NO) // We do this double check only for DICOM files.
+                                {
+                                    study = [studiesArray objectAtIndex: index];
+                                }
+                                else
+                                {
+                                    DicomStudy* tstudy = [studiesArray objectAtIndex:index];
+                                    
+                                    // is this actually an empty study? if so, treat it as a newObject
+                                    NSSet* series = [tstudy series];
+                                    if (series.count == 1 && [[series.anyObject id] intValue] == 5005 && [[series.anyObject name] isEqualToString:@"OsiriX No Autodeletion"]) {
+                                        newObject = YES;
+                                        tstudy.dateAdded = today;
+                                        tstudy.patientUID = [curDict objectForKey: @"patientUID"];
+                                    }
+                                    
+                                    if (!tstudy.patientUID)
+                                        tstudy.patientUID = [curDict objectForKey: @"patientUID"];
+                                    
+                                    if ([[curDict objectForKey: @"patientUID"] compare:tstudy.patientUID options:NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch|NSWidthInsensitiveSearch] == NSOrderedSame)
+                                        study = tstudy;
+                                    else
+                                    {
+                                        // Are there multiple studies with same studyInstanceUID ???
+                                        NSString *curUID = [curDict objectForKey: @"studyID"];
+                                        for( int i = 0 ; i < [studiesArrayStudyInstanceUID count]; i++)
+                                        {
+                                            NSString *uid = [studiesArrayStudyInstanceUID objectAtIndex: i];
+                                            
+                                            if ([uid isEqualToString: curUID])
+                                            {
+                                                if ([[curDict objectForKey: @"patientUID"] compare:[[studiesArray objectAtIndex: i] patientUID] options:NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch|NSWidthInsensitiveSearch] == NSOrderedSame)
+                                                        study = [studiesArray objectAtIndex:i];
+                                            }
+                                        }
+                                        
+                                        if( study == nil)
+                                        {
+                                            NSLog( @"-*-*-*-*-* same studyUID (%@), but not same patientUID (%@ versus %@)", [curDict objectForKey: @"studyID"], [curDict objectForKey: @"patientUID"], [[studiesArray objectAtIndex: index] valueForKey: @"patientUID"]);
+                                            
+                                            if( self.hasPotentiallySlowDataAccess) //It's a CD... be less restrictive !
+                                                study = tstudy;
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            if (study == nil)
+                            {
+                                // Fields
+                                study = [NSEntityDescription insertNewObjectForEntityForName:@"Study" inManagedObjectContext:self.managedObjectContext];
+                                
+                                newObject = YES;
+                                newStudy = YES;
+                                
+                                study.dateAdded = today;
+                                
+                                [newStudies addObject: study];
+                                [studiesArray addObject: study];
+                                [studiesArrayStudyInstanceUID addObject: [curDict objectForKey: @"studyID"]];
+                                
+                                curSerieID = nil;
+                            }
+                            
+                            if (newObject || inParseExistingObject)
+                            {
+                                study.studyInstanceUID = [curDict objectForKey: @"studyID"];
+                                study.accessionNumber = [curDict objectForKey: @"accessionNumber"];
+                                study.modality = study.modalities;
+                                study.dateOfBirth = [curDict objectForKey: @"patientBirthDate"];
+                                study.patientSex = [curDict objectForKey: @"patientSex"];
+                                study.patientID = [curDict objectForKey: @"patientID"];
+                                study.name = [curDict objectForKey: @"patientName"];
+                                study.patientUID = [curDict objectForKey: @"patientUID"];
+                                study.id = [curDict objectForKey: @"studyNumber"];
+                                
+                                if (([DCMAbstractSyntaxUID isStructuredReport: SOPClassUID] || [DCMAbstractSyntaxUID isPDF: SOPClassUID]) && inParseExistingObject)
+                                {
+                                    if ([[curDict objectForKey: @"studyDescription"] length])
+                                        study.studyName = [curDict objectForKey: @"studyDescription"];
+                                    if ([[curDict objectForKey: @"referringPhysiciansName"] length])
+                                        study.referringPhysician = [curDict objectForKey: @"referringPhysiciansName"];
+                                    if ([[curDict objectForKey: @"performingPhysiciansName"] length])
+                                        study.performingPhysician = [curDict objectForKey: @"performingPhysiciansName"];
+                                    if ([[curDict objectForKey: @"institutionName"] length])
+                                        study.institutionName = [curDict objectForKey: @"institutionName"];
+                                }
+                                else
+                                {
+                                    study.studyName = [curDict objectForKey: @"studyDescription"];
+                                    study.referringPhysician = [curDict objectForKey: @"referringPhysiciansName"];
+                                    study.performingPhysician = [curDict objectForKey: @"performingPhysiciansName"];
+                                    study.institutionName = [curDict objectForKey: @"institutionName"];
+                                }
+                                
+                                //need to know if is DICOM so only DICOM is queried for Q/R
+                                if ([curDict objectForKey: @"hasDICOM"])
+                                    study.hasDICOM = [curDict objectForKey: @"hasDICOM"];
+                                
+                                if (newObject)
+                                    [self checkForExistingReportForStudy:study];
+                            }
+                            else
+                            {
+                                if ([[study valueForKey: @"modality"] isEqualToString: @"SR"] || [[study valueForKey: @"modality"] isEqualToString: @"OT"])
+                                    study.modality = [curDict objectForKey: @"modality"];
+                                
+                                if ([study valueForKey: @"studyName"] == nil || [[study valueForKey: @"studyName"] isEqualToString: @"unnamed"] || [[study valueForKey: @"studyName"] isEqualToString: @""])
+                                    study.studyName = [curDict objectForKey: @"studyDescription"];
+                            }
+                            
+                            if ([curDict objectForKey: @"studyDate"] && [[curDict objectForKey: @"studyDate"] isEqualToDate: defaultDate] == NO)
+                            {
+                                if ([study valueForKey: @"date"] == 0L || [[study valueForKey: @"date"] isEqualToDate: defaultDate] || [[study valueForKey: @"date"] timeIntervalSinceDate: [curDict objectForKey: @"studyDate"]] >= 0)
+                                    [study setValue:[curDict objectForKey: @"studyDate"] forKey:@"date"];
+                            }
+                            
+                            curStudyID = [curDict objectForKey: @"studyID"];
+                            curPatientUID = [curDict objectForKey: @"patientUID"];
+                            
+                            [modifiedStudiesArray addObject: study];
+                        }
+                        
+                        int NoOfSeries = [[curDict objectForKey: @"numberOfSeries"] intValue];
+                        for( int i = 0; i < NoOfSeries; i++)
+                        {
+                            NSString* SeriesNum = i ? [NSString stringWithFormat:@"%d",i] : @"";
+                            NSString* curDictSeriesID = [curDict objectForKey:[@"seriesID" stringByAppendingString:SeriesNum]];
+                            
+                            if ([curDictSeriesID isEqualToString: curSerieID])
+                            {
+                            }
+                            else
+                            {
+                                /********************************************/
+                                /*********** Find series object *************/
+                                
+                                NSArray *seriesArray = [[study valueForKey:@"series"] allObjects];
+                                
+                                NSInteger index = [[seriesArray valueForKey:@"seriesInstanceUID"] indexOfObject:[curDict objectForKey: [@"seriesID" stringByAppendingString:SeriesNum]]];
+                                if (index == NSNotFound)
+                                {
+                                    // Fields
+                                    seriesTable = [NSEntityDescription insertNewObjectForEntityForName:@"Series" inManagedObjectContext:self.managedObjectContext];
+                                    [seriesTable setValue:today forKey:@"dateAdded"];
+                                    
+                                    newObject = YES;
+                                }
+                                else
+                                {
+                                    seriesTable = [seriesArray objectAtIndex: index];
+                                    newObject = NO;
+                                }
+                                
+                                if (newObject || inParseExistingObject)
+                                {
+                                    if ([curDict objectForKey: @"seriesDICOMUID"]) [seriesTable setValue:[curDict objectForKey: @"seriesDICOMUID"] forKey:@"seriesDICOMUID"];
+                                    if ([curDict objectForKey: @"SOPClassUID"]) [seriesTable setValue:[curDict objectForKey: @"SOPClassUID"] forKey:@"seriesSOPClassUID"];
+                                    [seriesTable setValue:[curDict objectForKey: [@"seriesID" stringByAppendingString:SeriesNum]] forKey:@"seriesInstanceUID"];
+                                    [seriesTable setValue:[curDict objectForKey: [@"seriesDescription" stringByAppendingString:SeriesNum]] forKey:@"name"];
+                                    [seriesTable setValue:[curDict objectForKey: @"modality"] forKey:@"modality"];
+                                    [seriesTable setValue:[curDict objectForKey: [@"seriesNumber" stringByAppendingString:SeriesNum]] forKey:@"id"];
+                                    [seriesTable setValue:[curDict objectForKey: @"studyDate"] forKey:@"date"];
+                                    [seriesTable setValue:[curDict objectForKey: @"protocolName"] forKey:@"seriesDescription"];
+                                    
+                                    // Relations
+                                    [seriesTable setValue:study forKey:@"study"];
+                                    // If a study has an SC or other non primary image  series. May need to change modality to true modality
+                                    if (([[study valueForKey:@"modality"] isEqualToString:@"OT"]  || [[study valueForKey:@"modality"] isEqualToString:@"SC"])
+                                        && !([[curDict objectForKey: @"modality"] isEqualToString:@"OT"] || [[curDict objectForKey: @"modality"] isEqualToString:@"SC"]))
+                                        [study setValue:[curDict objectForKey: @"modality"] forKey:@"modality"];
+                                }
+                                
+                                curSerieID = curDictSeriesID;
+                            }
+                            
+                            /*******************************************/
+                            /*********** Find image object *************/
+                            
+                            BOOL local = NO;
+                            if (dataDirPath && [newFile hasPrefix:dataDirPath])
+                                local = YES;
+                            
+                            NSArray	*imagesArray = [[seriesTable valueForKey:@"images"] allObjects];
+                            int numberOfFrames = [[curDict objectForKey: @"numberOfFrames"] intValue];
+                            if (numberOfFrames == 0)
+                                numberOfFrames = 1;
+                            
+                            for( int f = 0 ; f < numberOfFrames; f++)
+                            {
+                                image = nil;
+                                
+                                NSString *SOPUID = [curDict objectForKey: [@"SOPUID" stringByAppendingString: SeriesNum]];
+                                
+                                @autoreleasepool
+                                {
+                                    for( DicomImage *ii in imagesArray)
+                                    {
+                                        if( [ii.sopInstanceUID isEqualToString: SOPUID] && [ii.frameID intValue] == f)
+                                        {
+                                            image = ii;
+                                            break;
+                                        }
+                                    }
+                                }
+                                
+                                if( image)
+                                {
+                                    // Does this image contain a valid image path? If not replace it, with the new one
+                                    if ([[NSFileManager defaultManager] fileExistsAtPath: [DicomImage completePathForLocalPath: [image valueForKey:@"path"] directory:self.dataBaseDirPath]] == YES && inParseExistingObject == NO)
+                                    {
+                                        if (local)	// Delete this file, it's already in the DB folder
+                                        {
+                                            if ([[image valueForKey:@"path"] isEqualToString: [newFile lastPathComponent]] == NO)
+                                                [[NSFileManager defaultManager] removeFileAtPath: newFile handler:nil];
+                                        }
+                                        
+                                        newObject = NO;
+                                    }
+                                    else
+                                    {
+                                        newObject = YES;
+                                        [image clearCompletePathCache];
+                                        
+                                        NSString *imPath = [DicomImage completePathForLocalPath: [image valueForKey:@"path"] directory:self.dataBaseDirPath];
+                                        
+                                        if ([[image valueForKey:@"inDatabaseFolder"] boolValue] && [imPath isEqualToString: newFile] == NO)
+                                        {
+                                            if ([[NSFileManager defaultManager] fileExistsAtPath: imPath])
+                                                [[NSFileManager defaultManager] removeFileAtPath: imPath handler:nil];
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    image = [self newObjectForEntity:self.imageEntity];
+                                    newObject = YES;
+                                }
+                                
+                                [completeAddedImageObjects addObject:image];
+                                
+                                NSString* imagePrivateInformationCreatorUID = [curDict objectForKey:@"PrivateInformationCreatorUID"];
+                                if (!imagePrivateInformationCreatorUID.length)
+                                    imagePrivateInformationCreatorUID = [NSUserDefaults.standardUserDefaults stringForKey:@"AETITLE"];
+                                
+                                NSMutableArray* completeAddedImagesForImageCreator = [completeAddedImagesPerCreatorUID objectForKey:imagePrivateInformationCreatorUID];
+                                if (!completeAddedImagesForImageCreator)
+                                    [completeAddedImagesPerCreatorUID setObject:(completeAddedImagesForImageCreator = [NSMutableArray array]) forKey:imagePrivateInformationCreatorUID];
+                                
+                                [completeAddedImagesForImageCreator addObject:image];
+                                
+                                if (newObject || inParseExistingObject)
+                                {
+                                    if (DICOMSR == NO)
+                                    {
+                                        [seriesTable setValue:today forKey:@"dateAdded"];
+                                        study.dateAdded = today;
+                                    }
+                                    
+                                    if (numberOfFrames > 1)
+                                    {
+                                        [image setValue: [NSNumber numberWithInt: f] forKey:@"frameID"];
+                                        
+                                        NSString *Modality = [study valueForKey: @"modality"];
+                                        if (combineProjectionSeries && combineProjectionSeriesMode == 0 && ([Modality isEqualToString:@"MG"] || [Modality isEqualToString:@"CR"] || [Modality isEqualToString:@"DR"] || [Modality isEqualToString:@"DX"] || [Modality  isEqualToString:@"RF"]))
+                                        {
+                                            // *******Combine all CR and DR Modality series in a study into one series
+                                            long imageInstance = [[curDict objectForKey: [ @"imageID" stringByAppendingString: SeriesNum]] intValue];
+                                            imageInstance *= 10000;
+                                            imageInstance += f;
+                                            [image setValue: [NSNumber numberWithLong: imageInstance] forKey:@"instanceNumber"];
+                                        }
+                                        else
+                                        {
+                                            int instanceNumber = [[curDict objectForKey: [@"imageID" stringByAppendingString: SeriesNum]] intValue];
+                                            [image setValue: [NSNumber numberWithInt: instanceNumber + f] forKey:@"instanceNumber"];
+                                        }
+                                    }
+                                    else
+                                        [image setValue: [curDict objectForKey: [@"imageID" stringByAppendingString: SeriesNum]] forKey:@"instanceNumber"];
+                                    
+                                    if (local) [image setValue: [newFile lastPathComponent] forKey:@"path"];
+                                    else [image setValue:newFile forKey:@"path"];
+                                    
+                                    [image setValue:[NSNumber numberWithBool: local] forKey:@"inDatabaseFolder"];
+                                    
+                                    [image setValue:[curDict objectForKey: @"studyDate"]  forKey:@"date"];
+                                    
+                                    [image setValue:SOPUID forKey:@"sopInstanceUID"];
+                                    
+                                    if( [[curDict objectForKey: @"sliceLocationArray"] count] > f)
+                                        [image setValue: [[curDict objectForKey: @"sliceLocationArray"] objectAtIndex: f] forKey:@"sliceLocation"];
+                                    else
+                                        [image setValue:[curDict objectForKey: @"sliceLocation"] forKey:@"sliceLocation"];
+                                    
+                                    if( [[curDict objectForKey: @"imageCommentPerFrame"] count] > f)
+                                        [image setValue: [[curDict objectForKey: @"imageCommentPerFrame"] objectAtIndex: f] forKey:@"comment"];
+
+                                    [image setValue:[[newFile pathExtension] lowercaseString] forKey:@"extension"];
+                                    [image setValue:[curDict objectForKey: @"fileType"] forKey:@"fileType"];
+                                    
+                                    [image setValue:[curDict objectForKey: @"height"] forKey:@"height"];
+                                    [image setValue:[curDict objectForKey: @"width"] forKey:@"width"];
+                                    [image setValue:[curDict objectForKey: @"numberOfFrames"] forKey:@"numberOfFrames"];
+                                    [image setValue:[curDict objectForKey: @"numberOfSeries"] forKey:@"numberOfSeries"];
+                                    
+                                    [image setThumbnail:[curDict objectForKey:@"NSImageThumbnail"]];
+                                    
+                                    if (generatedByOsiriX)
+                                        [image setValue: [NSNumber numberWithBool: generatedByOsiriX] forKey: @"generatedByOsiriX"];
+                                    else
+                                        [image setValue: 0L forKey: @"generatedByOsiriX"];
+                                    
+                                    if (newObject) {
+                                        [seriesTable setValue: nil forKey: @"windowWidth"];
+                                        [seriesTable setValue: nil forKey: @"windowLevel"];
+                                    }
+                                    
+                                    [image setValue: [curDict objectForKey: @"modality"]  forKey:@"modality"];
+                                    [study setValue:[study valueForKey:@"modalities"] forKey:@"modality"];
+                                    [seriesTable setValue: nil forKey:@"thumbnail"];
+                                    
+                                    if (DICOMSR && [curDict objectForKey: @"numberOfROIs"] && [curDict objectForKey: @"referencedSOPInstanceUID"]) // OsiriX ROI SR
+                                    {
+                                        NSString *s = [curDict objectForKey: @"referencedSOPInstanceUID"];
+                                        [image setValue: s forKey:@"comment"];
+                                        [image setValue: [curDict objectForKey: @"numberOfROIs"] forKey:@"scale"];
+                                    }
+                                    
+                                    // Relations
+                                    [image setValue:seriesTable forKey:@"series"];
+                                    
+                                    if (DICOMSR == NO)
+                                    {
+                                        if (COMMENTSAUTOFILL)
+                                        {
+                                            if([curDict objectForKey: @"commentsAutoFill"])
+                                            {
+                                                [seriesTable willChangeValueForKey: commentField];
+                                                [study willChangeValueForKey: commentField];
+                                                
+                                                if( COMMENTSAUTOFILLSeriesLevel)
+                                                    [seriesTable setPrimitiveValue: [curDict objectForKey: @"commentsAutoFill"] forKey: commentField];
+                                                
+                                                if( COMMENTSAUTOFILLStudyLevel)
+                                                {
+                                                    if( [[curDict objectForKey: @"commentsAutoFill"] length] > [[study valueForKey: commentField] length])
+                                                        [study setPrimitiveValue:[curDict objectForKey: @"commentsAutoFill"] forKey: commentField];
+                                                }
+                                                
+                                                [seriesTable didChangeValueForKey: commentField];
+                                                [study didChangeValueForKey: commentField];
+                                            }
+                                        }
+                                        
+                                        if (generatedByOsiriX == NO && [(NSString*)[curDict objectForKey: @"seriesComments"] length] > 0)
+                                        {
+                                            [seriesTable willChangeValueForKey: @"comment"];
+                                            [seriesTable setPrimitiveValue: [curDict objectForKey: @"seriesComments"] forKey: @"comment"];
+                                            [seriesTable didChangeValueForKey: @"comment"];
+                                        }
+                                        
+                                        if (generatedByOsiriX == NO && [(NSString*)[curDict objectForKey: @"studyComments"] length] > 0)
+                                        {
+                                            [study willChangeValueForKey: @"comment"];
+                                            [study setPrimitiveValue: [curDict objectForKey: @"studyComments"] forKey: @"comment"];
+                                            [study didChangeValueForKey: @"comment"];
+                                        }
+                                        
+                                        if (generatedByOsiriX == NO && [[study valueForKey:@"stateText"] intValue] == 0 && [[curDict objectForKey: @"stateText"] intValue] != 0)
+                                        {
+                                            [study willChangeValueForKey: @"stateText"];
+                                            [study setPrimitiveValue: [curDict objectForKey: @"stateText"] forKey: @"stateText"];
+                                            [study didChangeValueForKey: @"stateText"];
+                                        }
+                                        
+                                        if (generatedByOsiriX == NO && [curDict objectForKey: @"keyFrames"])
+                                        {
+                                            @try
+                                            {
+                                                for( NSString *k in [curDict objectForKey: @"keyFrames"])
+                                                {
+                                                    if ([k intValue] == f) // corresponding frame
+                                                    {
+                                                        [image willChangeValueForKey: @"storedIsKeyImage"];
+                                                        [image setPrimitiveValue: [NSNumber numberWithBool: YES] forKey: @"storedIsKeyImage"];
+                                                        [image didChangeValueForKey: @"storedIsKeyImage"];
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                            @catch (NSException * e) {
+                                                N2LogExceptionWithStackTrace(e);
+                                            }
+                                        }
+                                    }
+                                    
+                                    if (DICOMSR && [[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX Report SR"])
+                                    {
+                                        BOOL reportUpToDate = NO;
+                                        NSString *p = [study reportURL];
+                                        
+                                        if (p && [[NSFileManager defaultManager] fileExistsAtPath: p])
+                                        {
+                                            NSDictionary *fattrs = [[NSFileManager defaultManager] attributesOfItemAtPath: p error: nil];
+                                            if ([[curDict objectForKey: @"studyDate"] isEqualToDate: [fattrs objectForKey: NSFileModificationDate]])
+                                                reportUpToDate = YES;
+                                        }
+                                        
+                                        if (reportUpToDate == NO)
+                                        {
+                                            NSString *reportURL = nil; // <- For an empty DICOM SR File
+                                            
+                                            DicomImage *reportSR = [study reportImage];
+                                            
+                                            if (reportSR == image) // Because we can have multiple reports -> only the most recent one is valid
+                                            {
+                                                NSString *reportURL = nil, *reportPath = [DicomDatabase extractReportSR: newFile contentDate: [curDict objectForKey: @"studyDate"]];
+                                                
+                                                if (reportPath)
+                                                {
+                                                    if ([reportPath length] > 8 && ([reportPath hasPrefix: @"http://"] || [reportPath hasPrefix: @"https://"]))
+                                                    {
+                                                        reportURL = reportPath;
+                                                    }
+                                                    else // It's a file!
+                                                    {
+                                                        NSString *reportFilePath = nil;
+                                                        
+                                                        //														if (isBonjour)
+                                                        //															reportFilePath = [tempDirPath stringByAppendingPathComponent: [reportPath lastPathComponent]];
+                                                        //														else
+                                                        reportFilePath = [reportsDirPath stringByAppendingPathComponent: [reportPath lastPathComponent]];
+                                                        
+                                                        [[NSFileManager defaultManager] removeItemAtPath: reportFilePath error: nil];
+                                                        [[NSFileManager defaultManager] moveItemAtPath: reportPath toPath: reportFilePath error: nil];
+                                                        
+                                                        reportURL = [@"REPORTS/" stringByAppendingPathComponent: [reportPath lastPathComponent]];
+                                                    }
+                                                    
+                                                    NSLog( @"--- DICOM SR -> Report : %@", [curDict valueForKey: @"patientName"]);
+                                                }
+                                                
+                                                [study willChangeValueForKey: @"reportURL"];
+                                                if ([reportURL length] > 0)
+                                                    [study setPrimitiveValue: reportURL forKey: @"reportURL"];
+                                                else
+                                                    [study setPrimitiveValue: 0L forKey: @"reportURL"];
+                                                [study didChangeValueForKey: @"reportURL"];
+                                            }
+                                        }
+                                    }
+                                    
+                                    [addedImageObjects addObject:image];
+                                    
+                                    NSMutableArray* addedImagesForImageCreator = [addedImagesPerCreatorUID objectForKey:imagePrivateInformationCreatorUID];
+                                    if (!addedImagesForImageCreator)
+                                        [addedImagesPerCreatorUID setObject:(addedImagesForImageCreator = [NSMutableArray array]) forKey:imagePrivateInformationCreatorUID];
+                                    
+                                    [addedImagesForImageCreator addObject:image];
+                                    
+    //								if(seriesTable && [addedSeries containsObject: seriesTable] == NO)
+    //									[addedSeries addObject: seriesTable];
+                                    
+                                    if (DICOMSR == NO && [curDict valueForKey:@"album"] !=nil)
+                                    {
+                                        NSArray* albumArray = self.albums;
+                                        
+                                        DicomAlbum* album = NULL;
+                                        for (album in albumArray)
+                                        {
+                                            if ([album.name isEqualToString:[curDict valueForKey:@"album"]])
+                                                break;
+                                        }
+                                        
+                                        if (album == nil)
+                                        {
+                                            //NSString *name = [curDict valueForKey:@"album"];
+                                            //album = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: context];
+                                            //[album setValue:name forKey:@"name"];
+                                            
+                                            for (album in albumArray)
+                                            {
+                                                if ([album.name isEqualToString:@"other"])
+                                                    break;
+                                            }
+                                            
+                                            if (album == nil)
+                                            {
+                                                album = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: self.managedObjectContext];
+                                                [album setValue:@"other" forKey:@"name"];
+                                                
+                                                [NSNotificationCenter.defaultCenter postNotificationName:O2DatabaseInvalidateAlbumsCacheNotification object:self userInfo:nil];
+                                            }
+                                        }
+                                        
+                                        // add the file to the album
+                                        if ( [[album valueForKey:@"smartAlbum"] boolValue] == NO)
+                                        {
+                                            NSMutableSet *studies = [album mutableSetValueForKey: @"studies"];	
+                                            [studies addObject: [image valueForKeyPath:@"series.study"]];
+                                            [[image valueForKeyPath:@"series.study"] archiveAnnotationsAsDICOMSR];
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (DICOMSR == NO)
+                                    {
+                                        [seriesTable setValue:today forKey:@"dateAdded"];
+                                        study.dateAdded = today;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // This file was not readable -> If it is located in the DATABASE folder, we have to delete it or to move it to the 'NOT READABLE' folder
+                        if (dataDirPath && [newFile hasPrefix: dataDirPath])
+                        {
+                            NSLog(@"**** Unreadable file: %@", newFile);
+                            
+                            if ( DELETEFILELISTENER)
+                            {
+                                [[NSFileManager defaultManager] removeFileAtPath: newFile handler:nil];
+                            }
+                            else
+                            {
+                                if ([[NSFileManager defaultManager] moveItemAtPath: newFile toPath:[errorsDirPath stringByAppendingPathComponent: [newFile lastPathComponent]]  error:NULL] == NO)
+                                    [[NSFileManager defaultManager] removeFileAtPath: newFile handler:nil];
+                            }
                         }
                     }
                 }
-				
-				if ([curDict objectForKey:@"SOPClassUID"] == nil && [[curDict objectForKey: @"fileType"] hasPrefix:@"DICOM"] == YES)
-				{
-					NSLog(@"no DICOM SOP CLASS -> Reject the file: %@", newFile);
-					curDict = nil;
-				}
-				
-				if (curDict != nil)
-				{
-					if ([[curDict objectForKey: @"studyID"] isEqualToString: curStudyID] == YES && [[curDict objectForKey: @"patientUID"] compare: curPatientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
-					{
-						if ([[study valueForKey: @"modality"] isEqualToString: @"SR"] || [[study valueForKey: @"modality"] isEqualToString: @"OT"])
-							[study setValue: [curDict objectForKey: @"modality"] forKey:@"modality"];
-					}
-					else
-					{
-						/*******************************************/
-						/*********** Find study object *************/
-						// match: StudyInstanceUID and patientUID (see patientUID function in dicomFile.m, based on patientName, patientID and patientBirthDate)
-						study = nil;
-						curSerieID = nil;
-						
-						NSInteger index = [studiesArrayStudyInstanceUID indexOfObject:[curDict objectForKey: @"studyID"]];
-						
-                        newObject = NO;
-                        
-						if (index != NSNotFound)
-						{
-							if ([[curDict objectForKey: @"fileType"] hasPrefix:@"DICOM"] == NO) // We do this double check only for DICOM files.
-							{
-								study = [studiesArray objectAtIndex: index];
-							}
-							else
-							{
-								DicomStudy* tstudy = [studiesArray objectAtIndex:index];
-                                
-                                // is this actually an empty study? if so, treat it as a newObject
-                                NSSet* series = [tstudy series];
-                                if (series.count == 1 && [[series.anyObject id] intValue] == 5005 && [[series.anyObject name] isEqualToString:@"OsiriX No Autodeletion"]) {
-                                    newObject = YES;
-                                    tstudy.dateAdded = today;
-                                    tstudy.patientUID = [curDict objectForKey: @"patientUID"];
-                                }
-                                
-                                if (!tstudy.patientUID)
-                                    tstudy.patientUID = [curDict objectForKey: @"patientUID"];
-                                
-                                if ([[curDict objectForKey: @"patientUID"] compare:tstudy.patientUID options:NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch|NSWidthInsensitiveSearch] == NSOrderedSame)
-									study = tstudy;
-								else
-								{
-                                    // Are there multiple studies with same studyInstanceUID ???
-									NSString *curUID = [curDict objectForKey: @"studyID"];
-									for( int i = 0 ; i < [studiesArrayStudyInstanceUID count]; i++)
-									{
-										NSString *uid = [studiesArrayStudyInstanceUID objectAtIndex: i];
-										
-										if ([uid isEqualToString: curUID])
-										{
-											if ([[curDict objectForKey: @"patientUID"] compare:[[studiesArray objectAtIndex: i] patientUID] options:NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch|NSWidthInsensitiveSearch] == NSOrderedSame)
-                                                    study = [studiesArray objectAtIndex:i];
-										}
-									}
-                                    
-                                    if( study == nil)
-                                    {
-                                        NSLog( @"-*-*-*-*-* same studyUID (%@), but not same patientUID (%@ versus %@)", [curDict objectForKey: @"studyID"], [curDict objectForKey: @"patientUID"], [[studiesArray objectAtIndex: index] valueForKey: @"patientUID"]);
-                                        
-                                        if( self.hasPotentiallySlowDataAccess) //It's a CD... be less restrictive !
-                                            study = tstudy;
-                                    }
-								}
-							}
-						}
-                        
-						if (study == nil)
-						{
-							// Fields
-							study = [NSEntityDescription insertNewObjectForEntityForName:@"Study" inManagedObjectContext:self.managedObjectContext];
-							
-							newObject = YES;
-							newStudy = YES;
-							
-							study.dateAdded = today;
-							
-                            [newStudies addObject: study];
-							[studiesArray addObject: study];
-							[studiesArrayStudyInstanceUID addObject: [curDict objectForKey: @"studyID"]];
-							
-							curSerieID = nil;
-						}
-						
-						if (newObject || inParseExistingObject)
-						{
-							study.studyInstanceUID = [curDict objectForKey: @"studyID"];
-							study.accessionNumber = [curDict objectForKey: @"accessionNumber"];
-							study.modality = study.modalities;
-							study.dateOfBirth = [curDict objectForKey: @"patientBirthDate"];
-							study.patientSex = [curDict objectForKey: @"patientSex"];
-							study.patientID = [curDict objectForKey: @"patientID"];
-							study.name = [curDict objectForKey: @"patientName"];
-							study.patientUID = [curDict objectForKey: @"patientUID"];
-							study.id = [curDict objectForKey: @"studyNumber"];
-							
-							if (([DCMAbstractSyntaxUID isStructuredReport: SOPClassUID] || [DCMAbstractSyntaxUID isPDF: SOPClassUID]) && inParseExistingObject)
-							{
-								if ([[curDict objectForKey: @"studyDescription"] length])
-									study.studyName = [curDict objectForKey: @"studyDescription"];
-								if ([[curDict objectForKey: @"referringPhysiciansName"] length])
-									study.referringPhysician = [curDict objectForKey: @"referringPhysiciansName"];
-								if ([[curDict objectForKey: @"performingPhysiciansName"] length])
-									study.performingPhysician = [curDict objectForKey: @"performingPhysiciansName"];
-								if ([[curDict objectForKey: @"institutionName"] length])
-									study.institutionName = [curDict objectForKey: @"institutionName"];
-							}
-							else
-							{
-								study.studyName = [curDict objectForKey: @"studyDescription"];
-								study.referringPhysician = [curDict objectForKey: @"referringPhysiciansName"];
-								study.performingPhysician = [curDict objectForKey: @"performingPhysiciansName"];
-								study.institutionName = [curDict objectForKey: @"institutionName"];
-							}
-							
-							//need to know if is DICOM so only DICOM is queried for Q/R
-							if ([curDict objectForKey: @"hasDICOM"])
-								study.hasDICOM = [curDict objectForKey: @"hasDICOM"];
-							
-							if (newObject)
-								[self checkForExistingReportForStudy:study];
-						}
-						else
-						{
-							if ([[study valueForKey: @"modality"] isEqualToString: @"SR"] || [[study valueForKey: @"modality"] isEqualToString: @"OT"])
-								study.modality = [curDict objectForKey: @"modality"];
-							
-							if ([study valueForKey: @"studyName"] == nil || [[study valueForKey: @"studyName"] isEqualToString: @"unnamed"] || [[study valueForKey: @"studyName"] isEqualToString: @""])
-								study.studyName = [curDict objectForKey: @"studyDescription"];
-						}
-						
-						if ([curDict objectForKey: @"studyDate"] && [[curDict objectForKey: @"studyDate"] isEqualToDate: defaultDate] == NO)
-						{
-							if ([study valueForKey: @"date"] == 0L || [[study valueForKey: @"date"] isEqualToDate: defaultDate] || [[study valueForKey: @"date"] timeIntervalSinceDate: [curDict objectForKey: @"studyDate"]] >= 0)
-								[study setValue:[curDict objectForKey: @"studyDate"] forKey:@"date"];
-						}
-						
-						curStudyID = [curDict objectForKey: @"studyID"];
-						curPatientUID = [curDict objectForKey: @"patientUID"];
-						
-						[modifiedStudiesArray addObject: study];
-					}
-					
-					int NoOfSeries = [[curDict objectForKey: @"numberOfSeries"] intValue];
-					for( int i = 0; i < NoOfSeries; i++)
-					{
-						NSString* SeriesNum = i ? [NSString stringWithFormat:@"%d",i] : @"";
-						NSString* curDictSeriesID = [curDict objectForKey:[@"seriesID" stringByAppendingString:SeriesNum]];
-						
-						if ([curDictSeriesID isEqualToString: curSerieID])
-						{
-						}
-						else
-						{
-							/********************************************/
-							/*********** Find series object *************/
-							
-							NSArray *seriesArray = [[study valueForKey:@"series"] allObjects];
-							
-							NSInteger index = [[seriesArray valueForKey:@"seriesInstanceUID"] indexOfObject:[curDict objectForKey: [@"seriesID" stringByAppendingString:SeriesNum]]];
-							if (index == NSNotFound)
-							{
-								// Fields
-								seriesTable = [NSEntityDescription insertNewObjectForEntityForName:@"Series" inManagedObjectContext:self.managedObjectContext];
-								[seriesTable setValue:today forKey:@"dateAdded"];
-								
-								newObject = YES;
-							}
-							else
-							{
-								seriesTable = [seriesArray objectAtIndex: index];
-								newObject = NO;
-							}
-							
-							if (newObject || inParseExistingObject)
-							{
-								if ([curDict objectForKey: @"seriesDICOMUID"]) [seriesTable setValue:[curDict objectForKey: @"seriesDICOMUID"] forKey:@"seriesDICOMUID"];
-								if ([curDict objectForKey: @"SOPClassUID"]) [seriesTable setValue:[curDict objectForKey: @"SOPClassUID"] forKey:@"seriesSOPClassUID"];
-								[seriesTable setValue:[curDict objectForKey: [@"seriesID" stringByAppendingString:SeriesNum]] forKey:@"seriesInstanceUID"];
-								[seriesTable setValue:[curDict objectForKey: [@"seriesDescription" stringByAppendingString:SeriesNum]] forKey:@"name"];
-								[seriesTable setValue:[curDict objectForKey: @"modality"] forKey:@"modality"];
-								[seriesTable setValue:[curDict objectForKey: [@"seriesNumber" stringByAppendingString:SeriesNum]] forKey:@"id"];
-								[seriesTable setValue:[curDict objectForKey: @"studyDate"] forKey:@"date"];
-								[seriesTable setValue:[curDict objectForKey: @"protocolName"] forKey:@"seriesDescription"];
-								
-								// Relations
-								[seriesTable setValue:study forKey:@"study"];
-								// If a study has an SC or other non primary image  series. May need to change modality to true modality
-								if (([[study valueForKey:@"modality"] isEqualToString:@"OT"]  || [[study valueForKey:@"modality"] isEqualToString:@"SC"])
-									&& !([[curDict objectForKey: @"modality"] isEqualToString:@"OT"] || [[curDict objectForKey: @"modality"] isEqualToString:@"SC"]))
-									[study setValue:[curDict objectForKey: @"modality"] forKey:@"modality"];
-							}
-							
-							curSerieID = curDictSeriesID;
-						}
-						
-						/*******************************************/
-						/*********** Find image object *************/
-						
-						BOOL local = NO;
-						if (dataDirPath && [newFile hasPrefix:dataDirPath])
-							local = YES;
-						
-						NSArray	*imagesArray = [[seriesTable valueForKey:@"images"] allObjects];
-						int numberOfFrames = [[curDict objectForKey: @"numberOfFrames"] intValue];
-						if (numberOfFrames == 0)
-                            numberOfFrames = 1;
-						
-						for( int f = 0 ; f < numberOfFrames; f++)
-						{
-                            image = nil;
-                            
-                            NSString *SOPUID = [curDict objectForKey: [@"SOPUID" stringByAppendingString: SeriesNum]];
-                            for( DicomImage *ii in imagesArray)
-                            {
-                                if( [ii.sopInstanceUID isEqualToString: SOPUID] && [ii.frameID intValue] == f)
-                                    image = ii;
-                            }
-                            
-							if( image)
-							{
-								// Does this image contain a valid image path? If not replace it, with the new one
-								if ([[NSFileManager defaultManager] fileExistsAtPath: [DicomImage completePathForLocalPath: [image valueForKey:@"path"] directory:self.dataBaseDirPath]] == YES && inParseExistingObject == NO)
-								{
-									if (local)	// Delete this file, it's already in the DB folder
-									{
-										if ([[image valueForKey:@"path"] isEqualToString: [newFile lastPathComponent]] == NO)
-											[[NSFileManager defaultManager] removeFileAtPath: newFile handler:nil];
-									}
-									
-									newObject = NO;
-								}
-								else
-								{
-									newObject = YES;
-									[image clearCompletePathCache];
-									
-									NSString *imPath = [DicomImage completePathForLocalPath: [image valueForKey:@"path"] directory:self.dataBaseDirPath];
-									
-									if ([[image valueForKey:@"inDatabaseFolder"] boolValue] && [imPath isEqualToString: newFile] == NO)
-									{
-										if ([[NSFileManager defaultManager] fileExistsAtPath: imPath])
-											[[NSFileManager defaultManager] removeFileAtPath: imPath handler:nil];
-									}
-								}
-							}
-							else
-							{
-								image = [self newObjectForEntity:self.imageEntity];
-								newObject = YES;
-							}
-							
-							[completeAddedImageObjects addObject:image];
-                            
-                            NSString* imagePrivateInformationCreatorUID = [curDict objectForKey:@"PrivateInformationCreatorUID"];
-                            if (!imagePrivateInformationCreatorUID.length)
-                                imagePrivateInformationCreatorUID = [NSUserDefaults.standardUserDefaults stringForKey:@"AETITLE"];
-                            
-                            NSMutableArray* completeAddedImagesForImageCreator = [completeAddedImagesPerCreatorUID objectForKey:imagePrivateInformationCreatorUID];
-                            if (!completeAddedImagesForImageCreator)
-                                [completeAddedImagesPerCreatorUID setObject:(completeAddedImagesForImageCreator = [NSMutableArray array]) forKey:imagePrivateInformationCreatorUID];
-                            
-                            [completeAddedImagesForImageCreator addObject:image];
-							
-							if (newObject || inParseExistingObject)
-							{
-								if (DICOMSR == NO)
-                                {
-									[seriesTable setValue:today forKey:@"dateAdded"];
-                                    study.dateAdded = today;
-                                }
-                                
-								if (numberOfFrames > 1)
-								{
-									[image setValue: [NSNumber numberWithInt: f] forKey:@"frameID"];
-									
-									NSString *Modality = [study valueForKey: @"modality"];
-									if (combineProjectionSeries && combineProjectionSeriesMode == 0 && ([Modality isEqualToString:@"MG"] || [Modality isEqualToString:@"CR"] || [Modality isEqualToString:@"DR"] || [Modality isEqualToString:@"DX"] || [Modality  isEqualToString:@"RF"]))
-									{
-										// *******Combine all CR and DR Modality series in a study into one series
-										long imageInstance = [[curDict objectForKey: [ @"imageID" stringByAppendingString: SeriesNum]] intValue];
-										imageInstance *= 10000;
-										imageInstance += f;
-										[image setValue: [NSNumber numberWithLong: imageInstance] forKey:@"instanceNumber"];
-									}
-									else
-                                    {
-                                        int instanceNumber = [[curDict objectForKey: [@"imageID" stringByAppendingString: SeriesNum]] intValue];
-                                        [image setValue: [NSNumber numberWithInt: instanceNumber + f] forKey:@"instanceNumber"];
-                                    }
-								}
-								else
-									[image setValue: [curDict objectForKey: [@"imageID" stringByAppendingString: SeriesNum]] forKey:@"instanceNumber"];
-								
-								if (local) [image setValue: [newFile lastPathComponent] forKey:@"path"];
-								else [image setValue:newFile forKey:@"path"];
-								
-								[image setValue:[NSNumber numberWithBool: local] forKey:@"inDatabaseFolder"];
-								
-								[image setValue:[curDict objectForKey: @"studyDate"]  forKey:@"date"];
-								
-								[image setValue:SOPUID forKey:@"sopInstanceUID"];
-								
-                                if( [[curDict objectForKey: @"sliceLocationArray"] count] > f)
-									[image setValue: [[curDict objectForKey: @"sliceLocationArray"] objectAtIndex: f] forKey:@"sliceLocation"];
-								else
-									[image setValue:[curDict objectForKey: @"sliceLocation"] forKey:@"sliceLocation"];
-                                
-                                if( [[curDict objectForKey: @"imageCommentPerFrame"] count] > f)
-									[image setValue: [[curDict objectForKey: @"imageCommentPerFrame"] objectAtIndex: f] forKey:@"comment"];
-
-								[image setValue:[[newFile pathExtension] lowercaseString] forKey:@"extension"];
-								[image setValue:[curDict objectForKey: @"fileType"] forKey:@"fileType"];
-								
-								[image setValue:[curDict objectForKey: @"height"] forKey:@"height"];
-								[image setValue:[curDict objectForKey: @"width"] forKey:@"width"];
-								[image setValue:[curDict objectForKey: @"numberOfFrames"] forKey:@"numberOfFrames"];
-								[image setValue:[curDict objectForKey: @"numberOfSeries"] forKey:@"numberOfSeries"];
-								
-                                [image setThumbnail:[curDict objectForKey:@"NSImageThumbnail"]];
-                                
-								if (generatedByOsiriX)
-									[image setValue: [NSNumber numberWithBool: generatedByOsiriX] forKey: @"generatedByOsiriX"];
-								else
-									[image setValue: 0L forKey: @"generatedByOsiriX"];
-								
-                                if (newObject) {
-                                    [seriesTable setValue: nil forKey: @"windowWidth"];
-                                    [seriesTable setValue: nil forKey: @"windowLevel"];
-								}
-                                
-                                [image setValue: [curDict objectForKey: @"modality"]  forKey:@"modality"];
-                                [study setValue:[study valueForKey:@"modalities"] forKey:@"modality"];
-								[seriesTable setValue: nil forKey:@"thumbnail"];
-								
-								if (DICOMSR && [curDict objectForKey: @"numberOfROIs"] && [curDict objectForKey: @"referencedSOPInstanceUID"]) // OsiriX ROI SR
-								{
-									NSString *s = [curDict objectForKey: @"referencedSOPInstanceUID"];
-									[image setValue: s forKey:@"comment"];
-									[image setValue: [curDict objectForKey: @"numberOfROIs"] forKey:@"scale"];
-								}
-								
-								// Relations
-								[image setValue:seriesTable forKey:@"series"];
-                                
-								if (DICOMSR == NO)
-								{
-									if (COMMENTSAUTOFILL)
-									{
-										if([curDict objectForKey: @"commentsAutoFill"])
-										{
-                                            [seriesTable willChangeValueForKey: commentField];
-                                            [study willChangeValueForKey: commentField];
-                                            
-                                            if( COMMENTSAUTOFILLSeriesLevel)
-                                                [seriesTable setPrimitiveValue: [curDict objectForKey: @"commentsAutoFill"] forKey: commentField];
-                                            
-                                            if( COMMENTSAUTOFILLStudyLevel)
-                                            {
-                                                if( [[curDict objectForKey: @"commentsAutoFill"] length] > [[study valueForKey: commentField] length])
-                                                    [study setPrimitiveValue:[curDict objectForKey: @"commentsAutoFill"] forKey: commentField];
-                                            }
-                                            
-                                            [seriesTable didChangeValueForKey: commentField];
-                                            [study didChangeValueForKey: commentField];
-										}
-									}
-									
-									if (generatedByOsiriX == NO && [(NSString*)[curDict objectForKey: @"seriesComments"] length] > 0)
-                                    {
-                                        [seriesTable willChangeValueForKey: @"comment"];
-										[seriesTable setPrimitiveValue: [curDict objectForKey: @"seriesComments"] forKey: @"comment"];
-                                        [seriesTable didChangeValueForKey: @"comment"];
-									}
-                                    
-									if (generatedByOsiriX == NO && [(NSString*)[curDict objectForKey: @"studyComments"] length] > 0)
-                                    {
-                                        [study willChangeValueForKey: @"comment"];
-										[study setPrimitiveValue: [curDict objectForKey: @"studyComments"] forKey: @"comment"];
-                                        [study didChangeValueForKey: @"comment"];
-									}
-                                    
-									if (generatedByOsiriX == NO && [[study valueForKey:@"stateText"] intValue] == 0 && [[curDict objectForKey: @"stateText"] intValue] != 0)
-                                    {
-                                        [study willChangeValueForKey: @"stateText"];
-										[study setPrimitiveValue: [curDict objectForKey: @"stateText"] forKey: @"stateText"];
-                                        [study didChangeValueForKey: @"stateText"];
-									}
-                                    
-									if (generatedByOsiriX == NO && [curDict objectForKey: @"keyFrames"])
-									{
-										@try
-										{
-											for( NSString *k in [curDict objectForKey: @"keyFrames"])
-											{
-												if ([k intValue] == f) // corresponding frame
-												{
-                                                    [image willChangeValueForKey: @"storedIsKeyImage"];
-													[image setPrimitiveValue: [NSNumber numberWithBool: YES] forKey: @"storedIsKeyImage"];
-                                                    [image didChangeValueForKey: @"storedIsKeyImage"];
-													break;
-												}
-											}
-										}
-										@catch (NSException * e) {
-                                            N2LogExceptionWithStackTrace(e);
-                                        }
-									}
-								}
-								
-								if (DICOMSR && [[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX Report SR"])
-								{
-									BOOL reportUpToDate = NO;
-									NSString *p = [study reportURL];
-									
-									if (p && [[NSFileManager defaultManager] fileExistsAtPath: p])
-									{
-										NSDictionary *fattrs = [[NSFileManager defaultManager] attributesOfItemAtPath: p error: nil];
-										if ([[curDict objectForKey: @"studyDate"] isEqualToDate: [fattrs objectForKey: NSFileModificationDate]])
-											reportUpToDate = YES;
-									}
-									
-									if (reportUpToDate == NO)
-									{
-										NSString *reportURL = nil; // <- For an empty DICOM SR File
-										
-										DicomImage *reportSR = [study reportImage];
-										
-										if (reportSR == image) // Because we can have multiple reports -> only the most recent one is valid
-										{
-											NSString *reportURL = nil, *reportPath = [DicomDatabase extractReportSR: newFile contentDate: [curDict objectForKey: @"studyDate"]];
-											
-											if (reportPath)
-											{
-												if ([reportPath length] > 8 && ([reportPath hasPrefix: @"http://"] || [reportPath hasPrefix: @"https://"]))
-												{
-													reportURL = reportPath;
-												}
-												else // It's a file!
-												{
-													NSString *reportFilePath = nil;
-													
-													//														if (isBonjour)
-													//															reportFilePath = [tempDirPath stringByAppendingPathComponent: [reportPath lastPathComponent]];
-													//														else
-													reportFilePath = [reportsDirPath stringByAppendingPathComponent: [reportPath lastPathComponent]];
-													
-													[[NSFileManager defaultManager] removeItemAtPath: reportFilePath error: nil];
-													[[NSFileManager defaultManager] moveItemAtPath: reportPath toPath: reportFilePath error: nil];
-													
-													reportURL = [@"REPORTS/" stringByAppendingPathComponent: [reportPath lastPathComponent]];
-												}
-												
-												NSLog( @"--- DICOM SR -> Report : %@", [curDict valueForKey: @"patientName"]);
-											}
-											
-                                            [study willChangeValueForKey: @"reportURL"];
-											if ([reportURL length] > 0)
-												[study setPrimitiveValue: reportURL forKey: @"reportURL"];
-											else
-												[study setPrimitiveValue: 0L forKey: @"reportURL"];
-                                            [study didChangeValueForKey: @"reportURL"];
-										}
-									}
-								}
-								
-								[addedImageObjects addObject:image];
-                                
-                                NSMutableArray* addedImagesForImageCreator = [addedImagesPerCreatorUID objectForKey:imagePrivateInformationCreatorUID];
-                                if (!addedImagesForImageCreator)
-                                    [addedImagesPerCreatorUID setObject:(addedImagesForImageCreator = [NSMutableArray array]) forKey:imagePrivateInformationCreatorUID];
-                                
-                                [addedImagesForImageCreator addObject:image];
-								
-//								if(seriesTable && [addedSeries containsObject: seriesTable] == NO)
-//									[addedSeries addObject: seriesTable];
-								
-								if (DICOMSR == NO && [curDict valueForKey:@"album"] !=nil)
-								{
-									NSArray* albumArray = self.albums;
-									
-									DicomAlbum* album = NULL;
-									for (album in albumArray)
-									{
-										if ([album.name isEqualToString:[curDict valueForKey:@"album"]])
-											break;
-									}
-									
-									if (album == nil)
-									{
-										//NSString *name = [curDict valueForKey:@"album"];
-										//album = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: context];
-										//[album setValue:name forKey:@"name"];
-										
-										for (album in albumArray)
-										{
-											if ([album.name isEqualToString:@"other"])
-												break;
-										}
-										
-										if (album == nil)
-										{
-											album = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: self.managedObjectContext];
-											[album setValue:@"other" forKey:@"name"];
-											
-                                            [NSNotificationCenter.defaultCenter postNotificationName:O2DatabaseInvalidateAlbumsCacheNotification object:self userInfo:nil];
-										}
-									}
-									
-									// add the file to the album
-									if ( [[album valueForKey:@"smartAlbum"] boolValue] == NO)
-									{
-										NSMutableSet *studies = [album mutableSetValueForKey: @"studies"];	
-										[studies addObject: [image valueForKeyPath:@"series.study"]];
-										[[image valueForKeyPath:@"series.study"] archiveAnnotationsAsDICOMSR];
-									}
-								}
-							}
-                            else
-                            {
-                                if (DICOMSR == NO)
-                                {
-									[seriesTable setValue:today forKey:@"dateAdded"];
-                                    study.dateAdded = today;
-                                }
-                            }
-						}
-					}
-				}
-				else
-				{
-					// This file was not readable -> If it is located in the DATABASE folder, we have to delete it or to move it to the 'NOT READABLE' folder
-					if (dataDirPath && [newFile hasPrefix: dataDirPath])
-					{
-						NSLog(@"**** Unreadable file: %@", newFile);
-						
-						if ( DELETEFILELISTENER)
-						{
-							[[NSFileManager defaultManager] removeFileAtPath: newFile handler:nil];
-						}
-						else
-						{
-							if ([[NSFileManager defaultManager] moveItemAtPath: newFile toPath:[errorsDirPath stringByAppendingPathComponent: [newFile lastPathComponent]]  error:NULL] == NO)
-								[[NSFileManager defaultManager] removeFileAtPath: newFile handler:nil];
-						}
-					}
-				}
-			}
-			@catch (NSException* e)
-			{
-				N2LogExceptionWithStackTrace(e);
-			}
-		}
+                @catch (NSException* e)
+                {
+                    N2LogExceptionWithStackTrace(e);
+                }
+            }
+        }
         
         [studiesArrayStudyInstanceUID release];
 		[studiesArray release];
 		
-        for (DicomStudy* study in modifiedStudiesArray) {
+        for (DicomStudy* study in modifiedStudiesArray)
+        {
             // Compute no of images in studies/series
             [study noFiles];
             // Reapply annotations from DICOMSR file
