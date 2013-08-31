@@ -1749,7 +1749,8 @@ static BOOL protectionAgainstReentry = NO;
 		// Add the new files
 		for (NSInteger i = 0; i < dicomFilesArray.count; ++i)
         {
-			thread.progress = 1.0*i/dicomFilesArray.count;
+            if( i%100 == 0)
+                thread.progress = 1.0*i/dicomFilesArray.count;
 			
             @autoreleasepool
             {
@@ -2519,15 +2520,17 @@ static BOOL protectionAgainstReentry = NO;
 		@try
 		{
 			NSMutableArray *copiedFiles = [NSMutableArray array];
-			
+			NSTimeInterval lastGUIUpdate = 0;
 			NSTimeInterval twentySeconds = [NSDate timeIntervalSinceReferenceDate] + 5; // actually fiveSeconds 
 			
 			for( ; i < [filesInput count] && twentySeconds > [NSDate timeIntervalSinceReferenceDate]; i++)
 			{
 				if ([[NSThread currentThread] isCancelled]) break;
                 
-                if( i % 10 == 0)
+                if( [NSDate timeIntervalSinceReferenceDate] - lastGUIUpdate > 1)
                 {
+                    lastGUIUpdate = [NSDate timeIntervalSinceReferenceDate];
+                    
                     [NSThread currentThread].status = N2LocalizedSingularPluralCount((long)filesInput.count-i, NSLocalizedString(@"file left", nil), NSLocalizedString(@"files left", nil));
                     [NSThread currentThread].progress = float(i)/filesInput.count;
                 }
