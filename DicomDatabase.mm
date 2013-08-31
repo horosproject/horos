@@ -1578,12 +1578,24 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 			}
 			
 			if (thread.isCancelled)
+            {
+                [dicomFilesArray removeAllObjects];
 				break;
+            }
+            
+            BOOL cancelled = NO;
+            for( NSOperation *o in [[NSOperationQueue currentQueue] operations])
+            {
+                if( o.isCancelled)
+                    cancelled = YES;
+            }
+            if( cancelled)
+            {
+                [dicomFilesArray removeAllObjects];
+                break;
+            }
 		}
-		
-		// Find all current studies
-		
-		
+        
 		[thread enterOperationIgnoringLowerLevels];
         thread.status = [NSString stringWithFormat:NSLocalizedString(@"Adding %@", nil), N2LocalizedSingularPluralCount(dicomFilesArray.count, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil))];
 //        NSLog(@"before: %X", self.managedObjectContext);
@@ -2728,7 +2740,13 @@ static BOOL protectionAgainstReentry = NO;
     if (queue.operationCount) {
         [NSThread currentThread].status = NSLocalizedString(@"Waiting for subtasks to complete...", nil);
         while (queue.operationCount)
+        {
             [NSThread sleepForTimeInterval:0.05];
+            
+            
+            if( [[NSThread currentThread] isCancelled])
+                [queue cancelAllOperations];
+        }
     }
     
 	//	[autoroutingInProgress unlock];
