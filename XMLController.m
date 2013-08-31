@@ -36,6 +36,7 @@
 #import "OsiriX/DCMAttribute.h"
 #import "OsiriX/DCMAttributeTag.h"
 #import "DicomDatabase.h"
+#import "PluginManager.h"
 
 static NSString* 	XMLToolbarIdentifier					= @"XML Toolbar Identifier";
 static NSString*	ExportToolbarItemIdentifier				= @"Export.icns";
@@ -1485,7 +1486,7 @@ extern int delayedTileWindows;
 - (NSToolbarItem *) toolbar: (NSToolbar *)toolbar itemForItemIdentifier: (NSString *) itemIdent willBeInsertedIntoToolbar:(BOOL) willBeInserted {
     // Required delegate method:  Given an item identifier, this method returns an item 
     // The toolbar will use this method to obtain toolbar items that can be displayed in the customization sheet, or in the toolbar itself 
-    NSToolbarItem *toolbarItem = [[NSToolbarItem alloc] initWithItemIdentifier: itemIdent];
+    NSToolbarItem *toolbarItem = [[[NSToolbarItem alloc] initWithItemIdentifier: itemIdent] autorelease];
     
     if ([itemIdent isEqualToString: ExportToolbarItemIdentifier]) {
 		[toolbarItem setLabel: NSLocalizedString(@"Export XML",nil)];
@@ -1558,11 +1559,16 @@ extern int delayedTileWindows;
     }
     else 
 	{
-		[toolbarItem release];
 		toolbarItem = nil;
 	}
+    
+    for (id key in [PluginManager plugins])
+    {
+        if ([[[PluginManager plugins] objectForKey:key] respondsToSelector:@selector(toolbarItemForItemIdentifier:forViewer:)])
+            toolbarItem = [[[PluginManager plugins] objectForKey:key] toolbarItemForItemIdentifier: itemIdent forViewer: self];
+    }
 	
-     return [toolbarItem autorelease];
+    return toolbarItem;
 }
 
 - (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar {
@@ -1586,7 +1592,7 @@ extern int delayedTileWindows;
     // Required delegate method:  Returns the list of all allowed items by identifier.  By default, the toolbar 
     // does not assume any items are allowed, even the separator.  So, every allowed item must be explicitly listed   
     // The set of allowed items is used to construct the customization palette 
-    return [NSArray arrayWithObjects: 	NSToolbarCustomizeToolbarItemIdentifier,
+    NSMutableArray *array = [NSMutableArray arrayWithObjects: 	NSToolbarCustomizeToolbarItemIdentifier,
 										NSToolbarFlexibleSpaceItemIdentifier,
 										NSToolbarSpaceItemIdentifier,
 										NSToolbarSeparatorItemIdentifier,
@@ -1599,6 +1605,14 @@ extern int delayedTileWindows;
 										VerifyToolbarItemIdentifier,
 										SearchToolbarItemIdentifier,
 										nil];
+    
+    for (id key in [PluginManager plugins])
+    {
+        if ([[[PluginManager plugins] objectForKey:key] respondsToSelector:@selector(toolbarAllowedIdentifiersForViewer:)])
+            [array addObjectsFromArray: [[[PluginManager plugins] objectForKey:key] toolbarAllowedIdentifiersForViewer: self]];
+    }
+    
+    return array;
 }
 
 - (BOOL) validateToolbarItem: (NSToolbarItem *) toolbarItem

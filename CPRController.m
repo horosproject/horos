@@ -37,6 +37,7 @@
 #import "AppController.h"
 #import "DicomDatabase.h"
 #import <N2Debug.h>
+#import "PluginManager.h"
 
 #define PRESETS_DIRECTORY @"/3DPRESETS/"
 #define CLUTDATABASE @"/CLUTs/"
@@ -3712,7 +3713,7 @@ static float deg2rad = M_PI / 180.0;
 
 - (NSToolbarItem *) toolbar: (NSToolbar *)toolbar itemForItemIdentifier: (NSString *) itemIdent willBeInsertedIntoToolbar:(BOOL) willBeInserted
 {
-    NSToolbarItem *toolbarItem = [[NSToolbarItem alloc] initWithItemIdentifier: itemIdent];
+    NSToolbarItem *toolbarItem = [[[NSToolbarItem alloc] initWithItemIdentifier: itemIdent] autorelease];
     
 //	if ([itemIdent isEqualToString: @"tbLOD"])
 //	{
@@ -3919,11 +3920,16 @@ static float deg2rad = M_PI / 180.0;
     }
 	else
 	{
-		[toolbarItem release];
 		toolbarItem = nil;
 	}
 	
-	return [toolbarItem autorelease];
+    for (id key in [PluginManager plugins])
+    {
+        if ([[[PluginManager plugins] objectForKey:key] respondsToSelector:@selector(toolbarItemForItemIdentifier:forViewer:)])
+            toolbarItem = [[[PluginManager plugins] objectForKey:key] toolbarItemForItemIdentifier: itemIdent forViewer: self];
+    }
+    
+	return toolbarItem;
 }
 
 - (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar
@@ -3933,11 +3939,19 @@ static float deg2rad = M_PI / 180.0;
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar
 {
-    return [NSArray arrayWithObjects: NSToolbarCustomizeToolbarItemIdentifier,
+    NSMutableArray *array = [NSMutableArray arrayWithObjects: NSToolbarCustomizeToolbarItemIdentifier,
             NSToolbarFlexibleSpaceItemIdentifier,
             NSToolbarSpaceItemIdentifier,
             NSToolbarSeparatorItemIdentifier,
             @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbHighRes", @"tbPathAssistant", @"tbCPRPathMode", @"tbViewsPosition", @"tbThickSlab", @"Reset.pdf", @"Export.icns", @"curvedPath.icns", @"BestRendering.pdf", @"AxisColors", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
+    
+    for (id key in [PluginManager plugins])
+    {
+        if ([[[PluginManager plugins] objectForKey:key] respondsToSelector:@selector(toolbarAllowedIdentifiersForViewer:)])
+            [array addObjectsFromArray: [[[PluginManager plugins] objectForKey:key] toolbarAllowedIdentifiersForViewer: self]];
+    }
+    
+    return array;
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)item

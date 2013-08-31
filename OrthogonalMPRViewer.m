@@ -29,6 +29,7 @@
 #import "DicomStudy.h"
 #import "DicomSeries.h"
 #import "DicomImage.h"
+#import "PluginManager.h"
 
 static NSString* 	MPROrthoToolbarIdentifier				= @"MPROrtho Viewer Toolbar Identifier";
 static NSString*	AdjustSplitViewToolbarItemIdentifier	= @"sameSizeSplitView";
@@ -981,9 +982,9 @@ return YES;
     NSToolbarItem *toolbarItem =nil;
     
     if ([itemIdent isEqualToString: SyncSeriesToolbarItemIdentifier]) {
-        toolbarItem = [[KBPopUpToolbarItem alloc] initWithItemIdentifier: itemIdent];
+        toolbarItem = [[[KBPopUpToolbarItem alloc] initWithItemIdentifier: itemIdent] autorelease];
     }else{
-        toolbarItem = [[NSToolbarItem alloc] initWithItemIdentifier: itemIdent];
+        toolbarItem = [[[NSToolbarItem alloc] initWithItemIdentifier: itemIdent] autorelease];
     }
     
 //    NSToolbarItem *toolbarItem = [[NSToolbarItem alloc] initWithItemIdentifier: itemIdent];
@@ -1163,11 +1164,15 @@ return YES;
         [OrthogonalMPRViewer initSyncSeriesToolbarItem:self : toolbarItem];
     }
     else
-    {
-        [toolbarItem release];
         toolbarItem = nil;
+    
+    for (id key in [PluginManager plugins])
+    {
+        if ([[[PluginManager plugins] objectForKey:key] respondsToSelector:@selector(toolbarItemForItemIdentifier:forViewer:)])
+            toolbarItem = [[[PluginManager plugins] objectForKey:key] toolbarItemForItemIdentifier: itemIdent forViewer: self];
     }
-    return [toolbarItem autorelease];
+    
+    return toolbarItem;
 }
 
 - (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar {
@@ -1193,7 +1198,7 @@ return YES;
     // Required delegate method:  Returns the list of all allowed items by identifier.  By default, the toolbar 
     // does not assume any items are allowed, even the separator.  So, every allowed item must be explicitly listed   
     // The set of allowed items is used to construct the customization palette 
-    return [NSArray arrayWithObjects: 	NSToolbarCustomizeToolbarItemIdentifier,
+    NSMutableArray *array = [NSMutableArray arrayWithObjects: 	NSToolbarCustomizeToolbarItemIdentifier,
 										NSToolbarFlexibleSpaceItemIdentifier,
 										NSToolbarSpaceItemIdentifier,
 										NSToolbarSeparatorItemIdentifier,
@@ -1212,6 +1217,14 @@ return YES;
 										FlipVolumeToolbarItemIdentifier,
 										VRPanelToolbarItemIdentifier,
 										nil];
+    
+    for (id key in [PluginManager plugins])
+    {
+        if ([[[PluginManager plugins] objectForKey:key] respondsToSelector:@selector(toolbarAllowedIdentifiersForViewer:)])
+            [array addObjectsFromArray: [[[PluginManager plugins] objectForKey:key] toolbarAllowedIdentifiersForViewer: self]];
+    }
+    
+    return array;
 }
 
 - (void) toolbarWillAddItem: (NSNotification *) notif {

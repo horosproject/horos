@@ -25,6 +25,7 @@
 #import "DicomStudy.h"
 #import "DicomSeries.h"
 #import "DicomImage.h"
+#import "PluginManager.h"
 #import "N2Debug.h"
 
 static NSString* 	MIPToolbarIdentifier				= @"SR Toolbar Identifier";
@@ -615,7 +616,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 - (NSToolbarItem *) toolbar: (NSToolbar *)toolbar itemForItemIdentifier: (NSString *) itemIdent willBeInsertedIntoToolbar:(BOOL) willBeInserted {
     // Required delegate method:  Given an item identifier, this method returns an item 
     // The toolbar will use this method to obtain toolbar items that can be displayed in the customization sheet, or in the toolbar itself 
-    NSToolbarItem *toolbarItem = [[NSToolbarItem alloc] initWithItemIdentifier: itemIdent];
+    NSToolbarItem *toolbarItem = [[[NSToolbarItem alloc] initWithItemIdentifier: itemIdent] autorelease];
     
 //	if ([itemIdent isEqualToString: QTExportVRToolbarItemIdentifier]) {
 //        
@@ -780,11 +781,17 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	[toolbarItem setAction: @selector(exportDICOMFile:)];
     }
 	else
-		{
-			[toolbarItem release];
-			toolbarItem = nil;
-		}
-     return [toolbarItem autorelease];
+    {
+        toolbarItem = nil;
+    }
+    
+    for (id key in [PluginManager plugins])
+    {
+        if ([[[PluginManager plugins] objectForKey:key] respondsToSelector:@selector(toolbarItemForItemIdentifier:forViewer:)])
+            toolbarItem = [[[PluginManager plugins] objectForKey:key] toolbarItemForItemIdentifier: itemIdent forViewer: self];
+    }
+    
+    return toolbarItem;
 }
 
 - (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar {
@@ -811,7 +818,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
     // Required delegate method:  Returns the list of all allowed items by identifier.  By default, the toolbar 
     // does not assume any items are allowed, even the separator.  So, every allowed item must be explicitly listed   
     // The set of allowed items is used to construct the customization palette 
-    return [NSArray arrayWithObjects: 	NSToolbarCustomizeToolbarItemIdentifier,
+    NSMutableArray *array = [NSMutableArray arrayWithObjects: 	NSToolbarCustomizeToolbarItemIdentifier,
                                         NSToolbarFlexibleSpaceItemIdentifier,
                                         NSToolbarSpaceItemIdentifier,
                                         NSToolbarSeparatorItemIdentifier,
@@ -836,6 +843,14 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 										ExportToolbarItemIdentifier,
 										BackgroundColorViewToolbarItemIdentifier,
                                         nil];
+    
+    for (id key in [PluginManager plugins])
+    {
+        if ([[[PluginManager plugins] objectForKey:key] respondsToSelector:@selector(toolbarAllowedIdentifiersForViewer:)])
+            [array addObjectsFromArray: [[[PluginManager plugins] objectForKey:key] toolbarAllowedIdentifiersForViewer: self]];
+    }
+    
+    return array;
 }
 
 - (void) toolbarWillAddItem: (NSNotification *) notif {
