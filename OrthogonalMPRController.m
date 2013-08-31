@@ -992,7 +992,7 @@
             
             if( [aROI type] == tPlain)
             {
-                if( x >= aROI.textureUpLeftCornerX && x <= aROI.textureDownRightCornerX)
+                if( x >= aROI.textureUpLeftCornerX && x < aROI.textureDownRightCornerX)
                 {
                     if( [plainDict objectForKey: [aROI name]] == nil)
                     {
@@ -1085,7 +1085,7 @@
             
             if( [aROI type] == tPlain)
             {
-                if( y >= aROI.textureUpLeftCornerY && y <= aROI.textureDownRightCornerY)
+                if( y >= aROI.textureUpLeftCornerY && y < aROI.textureDownRightCornerY)
                 {
                     if( [plainDict objectForKey: [aROI name]] == nil)
                     {
@@ -1170,7 +1170,7 @@
 		//if([contextualDictionaryPath isEqualToString:@"default"]) // JF20070102
 		{
 			/******************* Tools menu ***************************/
-			contextual =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"Tools", nil)];
+			contextual =  [[[NSMenu alloc] initWithTitle:NSLocalizedString(@"Tools", nil)] autorelease];
 			NSMenuItem *item;
 			//Menu titles
 			NSArray *titles = [NSArray arrayWithObjects:NSLocalizedString(@"Contrast", nil),
@@ -1219,13 +1219,12 @@
             {
 				image = [enumerator2 nextObject];
 				tag = [enumerator3 nextObject];
-				item = [[NSMenuItem alloc] initWithTitle: title action: @selector(changeTool:) keyEquivalent:@""];
+				item = [[[NSMenuItem alloc] initWithTitle: title action: @selector(changeTool:) keyEquivalent:@""] autorelease];
 				[item setTag:[tag intValue]];
 				//[item setTarget:self];
 				[item setImage:[NSImage imageNamed:image]];
                 [[item image] setSize:ToolsMenuIconSize];
 				[contextual addItem:item];
-				[item release];
 			}
 			
 			[contextual addItem:[NSMenuItem separatorItem]];
@@ -1248,10 +1247,9 @@
 			NSString	*titleMenu;
 			for (titleMenu in resizeWindowArray) {
 				int tag = i++;
-				item = [[NSMenuItem alloc] initWithTitle:titleMenu action: @selector(resizeWindow:) keyEquivalent:@""];
+				item = [[[NSMenuItem alloc] initWithTitle:titleMenu action: @selector(resizeWindow:) keyEquivalent:@""] autorelease];
 				[item setTag:tag];
 				[submenu addItem:item];
-				[item release];
 			}
 			
 			item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Resize window", nil) action: nil keyEquivalent:@""] autorelease];
@@ -1262,9 +1260,8 @@
 			
 			item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"No Rescale Size (100%)", nil) action: @selector(actualSize:) keyEquivalent:@""] autorelease];
 			[contextual addItem:item];
-			[item release];
 			
-			item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Actual size", nil) action: @selector(realSize:) keyEquivalent:@""];
+			item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Actual size", nil) action: @selector(realSize:) keyEquivalent:@""] autorelease];
 			[contextual addItem:item];
 	}
 	
@@ -1280,7 +1277,7 @@
 	}
 	*/
 	
-	return [contextual autorelease];
+	return contextual;
 }
 
 - (IBAction) flipVertical: (id)sender{
