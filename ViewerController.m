@@ -2142,25 +2142,23 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 -(NSMenu*)contextualMenuForROI:(ROI*)roi
 {
-	NSMenu* menu = [[NSMenu alloc] init];
+	NSMenu* menu = [[[NSMenu alloc] init] autorelease];
 	NSMenuItem* temp;
 	
-	temp = [[NSMenuItem alloc] initWithTitle:[NSString stringWithFormat:@"ROI: %@", [roi name]] action:NULL keyEquivalent:@""];
+	temp = [[[NSMenuItem alloc] initWithTitle:[NSString stringWithFormat:@"ROI: %@", [roi name]] action:NULL keyEquivalent:@""] autorelease];
 	[menu addItem:temp];
-	[temp release];
 	
     if( roi.locked == NO)
     {
         [menu addItem:[NSMenuItem separatorItem]];
     
-        temp = [[NSMenuItem alloc] initWithTitle:@"Remove" action:@selector(roiContextualMenuActionRemove:) keyEquivalent:@""];
+        temp = [[[NSMenuItem alloc] initWithTitle:@"Remove" action:@selector(roiContextualMenuActionRemove:) keyEquivalent:@""] autorelease];
         [temp setRepresentedObject:roi];
         [temp setTarget:self];
         [menu addItem:temp];
-        [temp release];
 	}
     
-	return [menu autorelease];
+	return menu;
 }
 
 - (void)sendWillFreeVolumeDataNotificationWithVolumeData:(NSData *)freeingVolumeData movieIndex:(NSInteger)movieIndex

@@ -63,13 +63,13 @@ NSInteger CompareDCMAttributeTagStringValues(id lsp, id rsp, void* context) {
 }
 
 +(NSMenu*)tagsMenuWithTarget:(id)obj action:(SEL)action {
-	NSMenu* tagsMenu = [[NSMenu alloc] initWithTitle:@"DCM Annotation Tags"];
+	NSMenu* tagsMenu = [[[NSMenu alloc] initWithTitle:@"DCM Annotation Tags"] autorelease];
 	
 	NSArray *tagsOfFile = [self tagsForFile: [Anonymization templateDicomFile]];
 	if( tagsOfFile)
 	{
-		NSMenu* tagsOfTheDICOMFile = [[NSMenu alloc] initWithTitle:@""];
-		NSMenuItem* tagsOfTheDICOMFileMenuItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"File(s) tags", NULL) action:NULL keyEquivalent:@""];
+		NSMenu* tagsOfTheDICOMFile = [[[NSMenu alloc] initWithTitle:@""] autorelease];
+		NSMenuItem* tagsOfTheDICOMFileMenuItem = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"File(s) tags", NULL) action:NULL keyEquivalent:@""] autorelease];
 		[tagsOfTheDICOMFileMenuItem setSubmenu:tagsOfTheDICOMFile];
 		[tagsMenu addItem:tagsOfTheDICOMFileMenuItem];
 		for (DCMAttribute* tag in tagsOfFile)
@@ -91,7 +91,7 @@ NSInteger CompareDCMAttributeTagStringValues(id lsp, id rsp, void* context) {
 				else
 					description = [NSString stringWithFormat:@"%@ - %@", [tag attrTag].stringValue, [tag attrTag].name];
 				
-				NSMenuItem* item = [[NSMenuItem alloc] initWithTitle: description action:action keyEquivalent:@""];
+				NSMenuItem* item = [[[NSMenuItem alloc] initWithTitle: description action:action keyEquivalent:@""] autorelease];
 				item.representedObject = [tag attrTag];
 				item.target = obj;
 				[tagsOfTheDICOMFile addItem:item];
@@ -107,31 +107,30 @@ NSInteger CompareDCMAttributeTagStringValues(id lsp, id rsp, void* context) {
 	for (NSString* dcmTagsKey in [[DCMTagDictionary sharedTagDictionary] allKeys])
 		[dcmTags addObject:[DCMAttributeTag tagWithTagString:dcmTagsKey]];
 	
-	NSMenu* tagsSortedByNameMenu = [[NSMenu alloc] initWithTitle:@""];
-	NSMenuItem* tagsSortedByNameMenuItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Sorted by Name", NULL) action:NULL keyEquivalent:@""];
+	NSMenu* tagsSortedByNameMenu = [[[NSMenu alloc] initWithTitle:@""] autorelease];
+	NSMenuItem* tagsSortedByNameMenuItem = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Sorted by Name", NULL) action:NULL keyEquivalent:@""] autorelease];
 	[tagsSortedByNameMenuItem setSubmenu:tagsSortedByNameMenu];
 	[tagsMenu addItem:tagsSortedByNameMenuItem];
 	for (DCMAttributeTag* tag in [dcmTags sortedArrayUsingFunction:CompareDCMAttributeTagNames context:NULL]) {
-		NSMenuItem* item = [[NSMenuItem alloc] initWithTitle:[NSString stringWithFormat:@"%@ - %@", tag.name, tag.stringValue] action:action keyEquivalent:@""];
+		NSMenuItem* item = [[[NSMenuItem alloc] initWithTitle:[NSString stringWithFormat:@"%@ - %@", tag.name, tag.stringValue] action:action keyEquivalent:@""] autorelease];
 		item.representedObject = tag;
 		item.target = obj;
 		[tagsSortedByNameMenu addItem:item];
-		[item autorelease];
 	}
 	
-	NSMenu* tagsSortedByStringValueMenu = [[NSMenu alloc] initWithTitle:@""];
-	NSMenuItem* tagsSortedByStringValueMenuItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Sorted by Value", NULL) action:NULL keyEquivalent:@""];
+	NSMenu* tagsSortedByStringValueMenu = [[[NSMenu alloc] initWithTitle:@""] autorelease];
+	NSMenuItem* tagsSortedByStringValueMenuItem = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Sorted by Value", NULL) action:NULL keyEquivalent:@""] autorelease];
 	[tagsSortedByStringValueMenuItem setSubmenu:tagsSortedByStringValueMenu];
 	[tagsMenu addItem:tagsSortedByStringValueMenuItem];
 	for (DCMAttributeTag* tag in [dcmTags sortedArrayUsingFunction:CompareDCMAttributeTagStringValues context:NULL])
 	{
-		NSMenuItem* item = [[NSMenuItem alloc] initWithTitle:[NSString stringWithFormat:@"%@ - %@", tag.stringValue, tag.name] action:action keyEquivalent:@""];
+		NSMenuItem* item = [[[NSMenuItem alloc] initWithTitle:[NSString stringWithFormat:@"%@ - %@", tag.stringValue, tag.name] action:action keyEquivalent:@""] autorelease];
 		item.representedObject = tag;
 		item.target = obj;
 		[tagsSortedByStringValueMenu addItem:item];
 	}
 	
-	return [tagsMenu autorelease];
+	return tagsMenu;
 }
 
 -(id)initWithFrame:(NSRect)frame {
@@ -141,10 +140,9 @@ NSInteger CompareDCMAttributeTagStringValues(id lsp, id rsp, void* context) {
 	self.autoenablesItems = NO;
 	self.menu = [AnonymizationTagsPopUpButton tagsMenuWithTarget:self action:@selector(tagsMenuItemSelectedAction:)];
 	
-	NSMenuItem* extraItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Custom...", @"Title of menu item allowing the user to specify a custom anonymization dicom tag") action:@selector(customMenuItemAction:) keyEquivalent:@""];
+	NSMenuItem* extraItem = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Custom...", @"Title of menu item allowing the user to specify a custom anonymization dicom tag") action:@selector(customMenuItemAction:) keyEquivalent:@""] autorelease];
 	extraItem.target = self;
 	[self.menu addItem:extraItem];
-	[extraItem release];
 	
 	self.selectedTag = NULL;
 	

@@ -244,10 +244,9 @@ static float backgroundInset = 1.5;
 	
 	// Also set menu form representation -
     // This is used in the toolbar overflow menu but also, more importantly, to display a menu in text-only mode.
-	NSMenuItem *menuFormRep = [[NSMenuItem alloc] initWithTitle:[self label] action:nil keyEquivalent:@""];
+	NSMenuItem *menuFormRep = [[[NSMenuItem alloc] initWithTitle:[self label] action:nil keyEquivalent:@""] autorelease];
 	[menuFormRep setSubmenu:menu];
 	[self setMenuFormRepresentation:menuFormRep];
-	[menuFormRep release];
 }
 
 - (NSMenu *)menu

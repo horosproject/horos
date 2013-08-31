@@ -10055,9 +10055,8 @@ static BOOL withReset = NO;
 	
 	if( contextualRT == nil) contextualRT = [contextual copy];
 	
-	item = [[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Create ROIs from RTSTRUCT", nil)  action:@selector(createROIsFromRTSTRUCT:) keyEquivalent:@""];
+	item = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Create ROIs from RTSTRUCT", nil)  action:@selector(createROIsFromRTSTRUCT:) keyEquivalent:@""] autorelease];
 	[contextualRT insertItem: item atIndex: 0];
-	[item release];
 	
 	[contextualRT insertItem: [NSMenuItem separatorItem] atIndex: 1];
 	

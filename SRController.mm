@@ -1208,13 +1208,13 @@ return YES;
 
 - (void)createContextualMenu
 {
-	NSMenu *contextual =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"Tools", nil)];
+	NSMenu *contextual =  [[[NSMenu alloc] initWithTitle:NSLocalizedString(@"Tools", nil)] autorelease];
 	NSMenuItem *item, *subItem;
 	
 	//tools
-	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Tools", nil) action: nil  keyEquivalent:@""];
+	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Tools", nil) action: nil  keyEquivalent:@""] autorelease];
 	[contextual addItem:item];
-	NSMenu *toolsSubmenu =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"Tools", nil)];
+	NSMenu *toolsSubmenu =  [[[NSMenu alloc] initWithTitle:NSLocalizedString(@"Tools", nil)] autorelease];
 	[item setSubmenu:toolsSubmenu];
 	
 	
@@ -1250,99 +1250,74 @@ return YES;
 	NSString *title;
 	while (title = [titleEnumerator nextObject])
     {
-		subItem = [[NSMenuItem alloc] initWithTitle:title action: @selector(setDefaultTool:) keyEquivalent:@""];
+		subItem = [[[NSMenuItem alloc] initWithTitle:title action: @selector(setDefaultTool:) keyEquivalent:@""] autorelease];
 		[subItem setTag:[[tagEnumerator nextObject] intValue]];
 		[subItem setImage:[NSImage imageNamed:[imageEnumerator nextObject]]];
         [[subItem image] setSize:ToolsMenuIconSize];
 		[subItem setTarget:self];
 		[toolsSubmenu addItem:subItem];
-		[subItem release];
 	}
-	[toolsSubmenu release];
-	[item release];
 	
 	//View
-	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"View", nil) action: nil  keyEquivalent:@""];
+	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"View", nil) action: nil  keyEquivalent:@""] autorelease];
 	[contextual addItem:item];
-	NSMenu *viewSubmenu =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"View", nil)];
+	NSMenu *viewSubmenu =  [[[NSMenu alloc] initWithTitle:NSLocalizedString(@"View", nil)] autorelease];
 	[item setSubmenu:viewSubmenu];
 	
-		subItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Axial", nil) action: @selector(axView:) keyEquivalent:@""];
+		subItem = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Axial", nil) action: @selector(axView:) keyEquivalent:@""] autorelease];
 		[subItem setTag:[[tagEnumerator nextObject] intValue]];
 		[subItem setTarget:view];
 		[viewSubmenu addItem:subItem];
-		[subItem release];
 		
-		subItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Sagittal Right", nil) action: @selector(saView:) keyEquivalent:@""];
+		subItem = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Sagittal Right", nil) action: @selector(saView:) keyEquivalent:@""] autorelease];
 		[subItem setTag:[[tagEnumerator nextObject] intValue]];
 		[subItem setTarget:view];
 		[viewSubmenu addItem:subItem];
-		[subItem release];
 		
-		subItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Sagittal Left", nil) action: @selector(saViewOpposite:) keyEquivalent:@""];
+		subItem = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Sagittal Left", nil) action: @selector(saViewOpposite:) keyEquivalent:@""] autorelease];
 		[subItem setTag:[[tagEnumerator nextObject] intValue]];
 		[subItem setTarget:view];
 		[viewSubmenu addItem:subItem];
-		[subItem release];
 		
-		subItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Coronal", nil) action: @selector(coView:) keyEquivalent:@""];
+		subItem = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Coronal", nil) action: @selector(coView:) keyEquivalent:@""] autorelease];
 		[subItem setTag:[[tagEnumerator nextObject] intValue]];
 		[subItem setTarget:view];
 		[viewSubmenu addItem:subItem];
-		[subItem release];
 		
-	[viewSubmenu release];
-	[item release];
-	
 	//Export
-	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export", nil) action: nil  keyEquivalent:@""];
+	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export", nil) action: nil  keyEquivalent:@""] autorelease];
 	[contextual addItem:item];
-	NSMenu *exportSubmenu =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"Export", nil)];
+	NSMenu *exportSubmenu =  [[[NSMenu alloc] initWithTitle:NSLocalizedString(@"Export", nil)] autorelease];
 	[item setSubmenu:exportSubmenu];
-		subItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"QuickTime", nil)  action:@selector(exportQuicktime:) keyEquivalent:@""];
+		subItem = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"QuickTime", nil)  action:@selector(exportQuicktime:) keyEquivalent:@""] autorelease];
 		[subItem setTarget:view];
 		[exportSubmenu addItem:subItem];
-		[subItem release];
 		
-		subItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"QuickTime VR", nil)  action:@selector(exportQuicktime3DVR:) keyEquivalent:@""];
+		subItem = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"QuickTime VR", nil)  action:@selector(exportQuicktime3DVR:) keyEquivalent:@""] autorelease];
 		[subItem setTarget:view];
 		[exportSubmenu addItem:subItem];
-		[subItem release];
 		
-		subItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"DICOM", nil)  action:@selector(exportDICOMFile:) keyEquivalent:@""];
+		subItem = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"DICOM", nil)  action:@selector(exportDICOMFile:) keyEquivalent:@""] autorelease];
 		[subItem setTarget:view];
 		[exportSubmenu addItem:subItem];
-		[subItem release];
 		
-		subItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Email", nil)  action:@selector(sendMail:) keyEquivalent:@""];
+		subItem = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Email", nil)  action:@selector(sendMail:) keyEquivalent:@""] autorelease];
 		[subItem setTarget:self];
 		[exportSubmenu addItem:subItem];
-		[subItem release];
 		
-		subItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"iPhoto", nil)  action:@selector(export2iPhoto:) keyEquivalent:@""];
+		subItem = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"iPhoto", nil)  action:@selector(export2iPhoto:) keyEquivalent:@""] autorelease];
 		[subItem setTarget:self];
 		[exportSubmenu addItem:subItem];
-		[subItem release];
 		
-		subItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"JPEG", nil)  action:@selector(exportJPEG:) keyEquivalent:@""];
+		subItem = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"JPEG", nil)  action:@selector(exportJPEG:) keyEquivalent:@""] autorelease];
 		[subItem setTarget:self];
 		[exportSubmenu addItem:subItem];
-		[subItem release];
 		
-		subItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"TIFF", nil)  action:@selector(exportTIFF:) keyEquivalent:@""];
+		subItem = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"TIFF", nil)  action:@selector(exportTIFF:) keyEquivalent:@""] autorelease];
 		[subItem setTarget:self];
 		[exportSubmenu addItem:subItem];
-		[subItem release];
-		
-		
-	
-	[exportSubmenu release];
-	[item release];
-	
-	
-	[view setMenu:contextual];
-	[contextual release];
-												
+    
+	[view setMenu:contextual];								
 }
 
 // ROIs Volumes

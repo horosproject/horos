@@ -39,7 +39,7 @@
 				//separate prefix, title and sufix
 				NSArray *prefixTitle = [[keysListed objectAtIndex:i] componentsSeparatedByString:@"@"];
 				//selector requires a valid method of Target. Else, at runtime the menu is grayed out
-				item = [[NSMenuItem alloc] initWithTitle:[prefixTitle objectAtIndex:1] action: @selector(contextualMenuEvent:) keyEquivalent:@""];
+				item = [[[NSMenuItem alloc] initWithTitle:[prefixTitle objectAtIndex:1] action: @selector(contextualMenuEvent:) keyEquivalent:@""] autorelease];
 				[item setTag: (NSInteger) [prefixTitle objectAtIndex:0]];
 				[item setTarget:aWindowController];
 				
@@ -76,7 +76,6 @@
 				}
 				
 				[self addItem:item]; //adding the completed submenu, created during regression
-				[item release];
 			}
 	return self;
 }
