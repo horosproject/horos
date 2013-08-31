@@ -19141,13 +19141,14 @@ int i,j,l;
 				else
 					filePath = [panel filename];
 				
-				if( [[NSFileManager defaultManager] fileExistsAtPath: filePath] == NO && filePath != nil)
-					NSRunAlertPanel(NSLocalizedString(@"Export", nil), NSLocalizedString(@"Failed to export this file.", nil), NSLocalizedString(@"OK", nil), nil, nil);
-				
-				if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
-				{
-					[ws openFile: filePath];
-				}
+                if( filePath)
+                {
+                    if( [[NSFileManager defaultManager] fileExistsAtPath: filePath] == NO)
+                        NSRunAlertPanel(NSLocalizedString(@"Export", nil), NSLocalizedString(@"Failed to export this file.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+                    
+                    else if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
+                        [ws openFile: filePath];
+                }
 			}
 		}
 //			{
