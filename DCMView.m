@@ -3320,6 +3320,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"magnifyingLens"] == NO)
         return;
 	
+    if( isKeyView == NO)
+        [[self window] makeFirstResponder: self];
+    
 	if( needToLoadTexture)
 		[self loadTexturesCompute];
 	
