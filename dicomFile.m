@@ -55,7 +55,7 @@ extern NSString * convertDICOM( NSString *inputfile);
 extern NSRecursiveLock *PapyrusLock;
 
 static BOOL DEFAULTSSET = NO;
-static int TOOLKITPARSER = NO, PREFERPAPYRUSFORCD = NO;
+static int TOOLKITPARSER = 1, PREFERPAPYRUSFORCD = 1;
 static BOOL COMMENTSAUTOFILL = NO, COMMENTSFROMDICOMFILES = NO;
 static BOOL splitMultiEchoMR = NO;
 static BOOL useSeriesDescription = NO;
@@ -512,7 +512,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			
 			PREFERPAPYRUSFORCD = [sd integerForKey: @"PREFERPAPYRUSFORCD"];
 			TOOLKITPARSER = [sd integerForKey: @"TOOLKITPARSER4"];
-			
+			if( TOOLKITPARSER == 0)
+                TOOLKITPARSER = 2;
+            
 			#ifdef OSIRIX_LIGHT
 			TOOLKITPARSER = 2;
 			#endif
@@ -555,7 +557,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			
 			PREFERPAPYRUSFORCD = [[dict objectForKey: @"PREFERPAPYRUSFORCD"] intValue];
 			TOOLKITPARSER = [[dict objectForKey: @"TOOLKITPARSER4"] intValue];
-			
+			if( TOOLKITPARSER == 0)
+                TOOLKITPARSER = 2;
+            
 			COMMENTSFROMDICOMFILES = [[dict objectForKey: @"CommentsFromDICOMFiles"] intValue];
 			COMMENTSAUTOFILL = [[dict objectForKey: @"COMMENTSAUTOFILL"] intValue];
 			SEPARATECARDIAC4D = [[dict objectForKey: @"SEPARATECARDIAC4D"] intValue];
