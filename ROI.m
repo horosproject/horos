@@ -319,7 +319,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 @synthesize min = rmin, max = rmax, mean = rmean;
 @synthesize textureWidth, textureHeight, textureBuffer, locked, selectable, isAliased, originalIndexForAlias, imageOrigin, pixelSpacingX, pixelSpacingY;
 @synthesize textureDownRightCornerX,textureDownRightCornerY, textureUpLeftCornerX, textureUpLeftCornerY;
-@synthesize opacity;
+@synthesize opacity, hidden;
 @synthesize name, comments, type, ROImode = mode, thickness;
 @synthesize zPositions;
 @synthesize clickInTextBox;
@@ -1991,6 +1991,9 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	NSRect		arect;
 	long		imode = ROI_sleep;
 	
+    if( hidden)
+        return ROI_sleep;
+    
 	if( selectable == NO)
 		return ROI_sleep;
 	
@@ -2333,6 +2336,9 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 
 - (void) displayPointUnderMouse:(NSPoint) pt :(float) offsetx :(float) offsety :(float) scale
 {
+    if( hidden)
+        return;
+    
 	MyPoint		*tempPoint = [[[MyPoint alloc] initWithPoint: pt] autorelease];
 	
 	int previousPointUnderMouse = PointUnderMouse;
@@ -3441,8 +3447,33 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	return action;
 }
 
+- (BOOL) selectable
+{
+    if( hidden)
+        return NO;
+    
+    return selectable;
+}
+
+- (BOOL) locked
+{
+    if( hidden)
+        return YES;
+    
+    return locked;
+}
+
+- (void) setHidden:(BOOL) h
+{
+    hidden = h;
+    curView.needsDisplay = YES;
+}
+
 - (void) setROIMode: (long) m
 {
+    if( hidden)
+        m = ROI_sleep;
+    
 	if( mode != m)
 	{
         if( [NSEvent pressedMouseButtons] != 0 && (mode == ROI_drawing || mode == ROI_selectedModify))
@@ -3587,6 +3618,9 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 
 - (BOOL) deleteSelectedPoint
 {
+    if( hidden)
+        return NO;
+    
 	if( locked)
 		return NO;
 
@@ -3798,8 +3832,12 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 
 - (BOOL) isTextualDataDisplayed
 {
-	if(!displayTextualData) return NO;
+	if(!displayTextualData)
+        return NO;
 	
+    if( hidden)
+        return NO;
+    
 	// NO text for Calcium Score
 	if (_displayCalciumScoring)
 		return NO;
@@ -3833,6 +3871,12 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 {
 	BOOL moved;
 	
+    if( hidden)
+    {
+        drawRect = NSMakeRect(0, 0, 0, 0);
+        return;
+    }
+    
 	if( textualBoxLine1.length == 0 && textualBoxLine2.length == 0  && textualBoxLine3.length == 0  && textualBoxLine4.length == 0  && textualBoxLine5.length == 0  && textualBoxLine6.length == 0 )
 	{
 		drawRect = NSMakeRect(0, 0, 0, 0);
@@ -4034,6 +4078,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 
 - (void) drawROIWithScaleValue:(float)scaleValue offsetX:(float)offsetx offsetY:(float)offsety pixelSpacingX:(float)spacingX pixelSpacingY:(float)spacingY highlightIfSelected:(BOOL)highlightIfSelected thickness:(float)thick prepareTextualData:(BOOL) prepareTextualData;
 {
+    if( hidden)
+        return;
+    
 	if( roiLock == nil) roiLock = [[NSRecursiveLock alloc] init];
 	
 	if( curView == nil && prepareTextualData == YES) {NSLog(@"curView == nil! We will not draw this ROI..."); return;}

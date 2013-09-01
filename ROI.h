@@ -147,6 +147,8 @@ enum
 	BOOL			selectable;
 	BOOL			isAliased;
 	int				originalIndexForAlias;
+    
+    BOOL            hidden;
 }
 
 @property NSPoint imageOrigin;
@@ -155,7 +157,8 @@ enum
 @property(readonly) unsigned char *textureBuffer;
 @property(nonatomic) float opacity;
 @property int originalIndexForAlias;
-@property BOOL locked, selectable, isAliased, displayCMOrPixels, mouseOverROI;
+@property(nonatomic) BOOL hidden, locked, selectable;
+@property BOOL isAliased, displayCMOrPixels, mouseOverROI;
 @property(nonatomic, copy) NSString *name;
 @property(retain) NSString *comments;
 @property long type;

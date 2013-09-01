@@ -2623,7 +2623,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				{
 					ROI *r = [curRoiList objectAtIndex:i];
 					
-					if( [r ROImode] == ROI_selected  && r.locked == NO)
+					if( [r ROImode] == ROI_selected  && r.locked == NO && r.hidden == NO)
 					{
 						groupID = [r groupID];
 						[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:r userInfo: nil];
