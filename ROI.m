@@ -842,9 +842,6 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 		}
 		
 		[self reduceTextureIfPossible];
-        
-        [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"LabelFONTNAME" options:NSKeyValueObservingOptionNew context:nil];
-        [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"LabelFONTSIZE" options:NSKeyValueObservingOptionNew context:nil];
     }
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:self userInfo: nil];
@@ -965,9 +962,6 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	c->_hasIsSpline = _hasIsSpline;
 	c->_isSpline = _isSpline;
 	
-    [[NSUserDefaults standardUserDefaults] addObserver:c forKeyPath:@"LabelFONTNAME" options:NSKeyValueObservingOptionNew context:nil];
-    [[NSUserDefaults standardUserDefaults] addObserver:c forKeyPath:@"LabelFONTSIZE" options:NSKeyValueObservingOptionNew context:nil];
-    
 	return c;
 }
 
@@ -1090,15 +1084,6 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 - (void) dealloc
 {
 	self.parentROI = nil;
-	
-    @try
-    {
-        [[NSUserDefaults standardUserDefaults] removeObserver:self forKeyPath:@"LabelFONTNAME"];
-        [[NSUserDefaults standardUserDefaults] removeObserver:self forKeyPath:@"LabelFONTSIZE"];
-    }
-    @catch (NSException *exception) {
-        N2LogException( exception);
-    }
 	
 	// This autorelease pool is required : postNotificationName seems to keep the self object with an autorelease, creating a conflict with the 'hard' [super dealloc] at the end of this function.
 	// We have to drain the pool before !
@@ -1374,9 +1359,6 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 		opacity = ROIRegionOpacity;		//;
 	}
 	
-    [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"LabelFONTNAME" options:NSKeyValueObservingOptionNew context:nil];
-    [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"LabelFONTSIZE" options:NSKeyValueObservingOptionNew context:nil];
-    
 	if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotNone)
 	{
 		[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
@@ -1500,9 +1482,6 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 		
 		displayTextualData = YES;
 		
-        [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"LabelFONTNAME" options:NSKeyValueObservingOptionNew context:nil];
-        [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"LabelFONTSIZE" options:NSKeyValueObservingOptionNew context:nil];
-        
 		if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotNone)
 		{
 			[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
@@ -1513,13 +1492,10 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
     return self;
 }
 
--(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+-(void)updateLabelFont
 {
-    if( [keyPath isEqualToString:@"LabelFONTNAME"] || [keyPath isEqualToString:@"LabelFONTSIZE"])
-    {
-        [stringTextureCache removeAllObjects];
-        [curView setNeedsDisplay: YES];
-    }
+    [stringTextureCache removeAllObjects];
+    [curView setNeedsDisplay: YES];
 }
 
 - (StringTexture*) stringTextureForString: (NSString*) str

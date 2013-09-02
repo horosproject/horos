@@ -194,6 +194,7 @@ enum
 - (void) setDefaultName:(NSString*) n;
 - (NSString*) defaultName;
 - (BOOL) isValidForVolume;
+- (void) updateLabelFont;
 
 + (BOOL) splineForROI;
 

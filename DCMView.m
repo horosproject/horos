@@ -2184,7 +2184,17 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (void) dealloc
 {
 	NSLog(@"DCMView released");
-    [[NSUserDefaults standardUserDefaults] removeObserver:self forKeyPath:@"ANNOTATIONS"];
+    
+    
+    @try
+    {
+        [[NSUserDefaults standardUserDefaults] removeObserver:self forKeyPath:@"ANNOTATIONS"];
+        [[NSUserDefaults standardUserDefaults] removeObserver:self forKeyPath:@"LabelFONTNAME"];
+        [[NSUserDefaults standardUserDefaults] removeObserver:self forKeyPath:@"LabelFONTSIZE"];
+    }
+    @catch (NSException *exception) {
+        N2LogException( exception);
+    }
     
 	[self prepareToRelease];
 	
@@ -6259,7 +6269,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     
     annotationType = [[NSUserDefaults standardUserDefaults] integerForKey:@"ANNOTATIONS"];
     [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"ANNOTATIONS" options:NSKeyValueObservingOptionNew context:nil];
-	
+    [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"LabelFONTNAME" options:NSKeyValueObservingOptionNew context:nil];
+    [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"LabelFONTSIZE" options:NSKeyValueObservingOptionNew context:nil];
+    
 //	NSOpenGLPixelFormatAttribute attrs[] =
 //    {
 //			NSOpenGLPFAAccelerated,
@@ -7011,6 +7023,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         {
             self.annotationType = newValue;
             [self setNeedsDisplay:YES];
+        }
+    }
+    
+    if( [keyPath isEqualToString:@"LabelFONTNAME"] || [keyPath isEqualToString:@"LabelFONTSIZE"])
+    {
+        for( NSArray *rois in dcmRoiList)
+        {
+            for( ROI *r in rois)
+                [r updateLabelFont];
         }
     }
 }
