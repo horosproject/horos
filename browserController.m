@@ -15135,8 +15135,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 	if (dicomFiles2Export.count)
 		managedObjectContext = [[dicomFiles2Export objectAtIndex:0] managedObjectContext];
 	
-	[managedObjectContext lock];
-	
 	@try
 	{
 		int uniqueSeriesID = 0;
@@ -15239,13 +15237,13 @@ static volatile int numberOfThreadsForJPEG = 0;
 						{
 							if( (int) [im size].width != width || height != (int) [im size].height)
 							{
-                                NSAutoreleasePool *pool = [NSAutoreleasePool new];
-                                
-								NSImage *newImage = [im imageByScalingProportionallyToSize:NSMakeSize( width, height)];
-                                if( newImage)
-                                    [imagesArray replaceObjectAtIndex: index withObject: newImage];
-                                
-                                [pool release];
+                                @autoreleasepool
+                                {
+                                    NSImage *newImage = [im imageByScalingProportionallyToSize:NSMakeSize( width, height)];
+                                    if( newImage)
+                                        [imagesArray replaceObjectAtIndex: index withObject: newImage];
+                                    
+                                }
 							}
 						}
 					}
@@ -15386,54 +15384,54 @@ static volatile int numberOfThreadsForJPEG = 0;
 			else
 			#endif
 			{
-				NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-				
-				@try
-				{
-					int frame = 0;
-					
-					if( [curImage valueForKey:@"frameID"])
-						frame = [[curImage valueForKey:@"frameID"] intValue];
-					
-					DCMPix* dcmPix = [[DCMPix alloc] initWithPath: [curImage valueForKey:@"completePathResolved"] :0 :1 :nil :frame :[[curImage valueForKeyPath:@"series.id"] intValue] isBonjour:browser.isCurrentDatabaseBonjour imageObj:curImage];
-					
-					if( dcmPix)
-					{
-						float curWW = 0;
-						float curWL = 0;
-						
-						if( [[curImage valueForKey:@"series"] valueForKey:@"windowWidth"])
-						{
-							curWW = [[[curImage valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
-							curWL = [[[curImage valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
-						}
-						
-						if( curWW != 0 && curWW !=curWL)
-							[dcmPix checkImageAvailble :curWW :curWL];
-						else
-							[dcmPix checkImageAvailble :[dcmPix savedWW] :[dcmPix savedWL]];
+				@autoreleasepool
+                {
+                    @try
+                    {
+                        int frame = 0;
+                        
+                        if( [curImage valueForKey:@"frameID"])
+                            frame = [[curImage valueForKey:@"frameID"] intValue];
+                        
+                        DCMPix* dcmPix = [[DCMPix alloc] initWithPath: [curImage valueForKey:@"completePathResolved"] :0 :1 :nil :frame :[[curImage valueForKeyPath:@"series.id"] intValue] isBonjour:browser.isCurrentDatabaseBonjour imageObj:curImage];
+                        
+                        if( dcmPix)
+                        {
+                            float curWW = 0;
+                            float curWL = 0;
+                            
+                            if( [[curImage valueForKey:@"series"] valueForKey:@"windowWidth"])
+                            {
+                                curWW = [[[curImage valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
+                                curWL = [[[curImage valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
+                            }
+                            
+                            if( curWW != 0 && curWW !=curWL)
+                                [dcmPix checkImageAvailble :curWW :curWL];
+                            else
+                                [dcmPix checkImageAvailble :[dcmPix savedWW] :[dcmPix savedWL]];
 
-						NSImage *im = [dcmPix image];
-						
-						if( im)
-						{
-							[imagesArray addObject: im];
-							[imagesArrayObjects addObject: curImage];
-							
-							if( cineRateSet == NO && [dcmPix cineRate])
-							{
-								fps = [dcmPix cineRate];
-							}
-						}
-						
-						[dcmPix release];
-					}
+                            NSImage *im = [dcmPix image];
+                            
+                            if( im)
+                            {
+                                [imagesArray addObject: im];
+                                [imagesArrayObjects addObject: curImage];
+                                
+                                if( cineRateSet == NO && [dcmPix cineRate])
+                                {
+                                    fps = [dcmPix cineRate];
+                                }
+                            }
+                            
+                            [dcmPix release];
+                        }
+                    }
+                    @catch( NSException *e)
+                    {
+                        N2LogExceptionWithStackTrace(e);
+                    }
 				}
-				@catch( NSException *e)
-				{
-                    N2LogExceptionWithStackTrace(e);
-				}
-				[pool release];
 			}
 			
 			[splash incrementBy:1];
@@ -15468,14 +15466,13 @@ static volatile int numberOfThreadsForJPEG = 0;
 				{
 					if( (int) [im size].width != width || height != (int) [im size].height)
 					{
-                        NSAutoreleasePool *pool = [NSAutoreleasePool new];
+                        @autoreleasepool
+                        {
+                            NSImage *newImage = [im imageByScalingProportionallyToSize:NSMakeSize( width, height)];
                         
-						NSImage *newImage = [im imageByScalingProportionallyToSize:NSMakeSize( width, height)];
-                        
-                        if( newImage)
-                            [imagesArray replaceObjectAtIndex: index withObject: newImage];
-                        
-                        [pool release];
+                            if( newImage)
+                                [imagesArray replaceObjectAtIndex: index withObject: newImage];
+                        }
 					}
 				}
 			}
@@ -15493,7 +15490,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			[BrowserController setPath:fullPath relativeTo:path forSeriesId:previousSeries kind:@"jpg" toSeriesPaths:seriesPaths];
 		}
 		
-		if(createHTML)
+		if( createHTML && imagesArray.count)
 		{
 			QTExportHTMLSummary *htmlExport = [[QTExportHTMLSummary alloc] init];
 			[htmlExport setPatientsDictionary:htmlExportDictionary];
@@ -15510,8 +15507,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	@finally
     {
-		[managedObjectContext unlock];
-		
 		[splash close];
 		[splash autorelease];
 	}

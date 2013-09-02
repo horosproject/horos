@@ -401,13 +401,9 @@
 
 - (void)createHTMLfiles;
 {
-	[BrowserController.currentBrowser.database.managedObjectContext lock];
-
 	[self createHTMLPatientsList];
 	[self createHTMLStudiesList];
 	[self createHTMLExtraDirectory];
-	
-	[BrowserController.currentBrowser.database.managedObjectContext unlock];
 }
 
 - (void)createHTMLPatientsList;
