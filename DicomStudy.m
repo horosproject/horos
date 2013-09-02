@@ -268,7 +268,10 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (NSSet*) series
 {
-    return [[self primitiveValueForKey: @"series"] objectsPassingTest:^BOOL(DicomSeries *obj, BOOL *stop)
+    if( self.managedObjectContext.deletedObjects.count == 0)
+        return [self primitiveValueForKey: @"series"];
+    else
+        return [[self primitiveValueForKey: @"series"] objectsPassingTest:^BOOL(DicomSeries *obj, BOOL *stop)
             {
                 if( obj.isDeleted)
                     return NO;
