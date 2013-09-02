@@ -1349,7 +1349,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 		memcpy( textureBuffer, tBuff, tHeight*tWidth);
 		[self reduceTextureIfPossible];
 		
-		name = [[NSString alloc] initWithString:tName];
+		self.name = tName;
 		displayTextualData = YES;
 		
 		thickness = ROIRegionThickness;	//;
@@ -1424,7 +1424,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 			[stanStringAttrib setObject:font forKey:NSFontAttributeName];
 			[stanStringAttrib setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
 			
-			self.name = @"Double-Click to edit";	// Recompute the texture
+			self.name = NSLocalizedString( @"Double-Click to edit", nil);	// Recompute the texture
 			
 			color.red = ROITextColorR;	//[[NSUserDefaults standardUserDefaults] floatForKey: @"ROITextColorR"];
 			color.green = ROITextColorG;	//[[NSUserDefaults standardUserDefaults] floatForKey: @"ROITextColorG"];
@@ -1447,7 +1447,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 			color.blue = ROIRegionColorB;	//[[NSUserDefaults standardUserDefaults] floatForKey: @"ROIRegionColorB"];
 			opacity = ROIRegionOpacity;		//[[NSUserDefaults standardUserDefaults] floatForKey: @"ROIRegionOpacity"];
 			
-			name = [[NSString alloc] initWithString:@"Region"];
+			self.name = NSLocalizedString( @"Region", nil);
 		}
 		else if(type == tLayerROI)
 		{
@@ -1457,7 +1457,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 //			layerImageWhenSelected = nil;
 			layerPixelSpacingX = 1.0 / 72.0 * 25.4; // 1/72 inches in milimeters
 			layerPixelSpacingY = layerPixelSpacingX;
-			name = [[NSString alloc] initWithString:@"Layer"];
+			self.name = NSLocalizedString( @"Layer", nil);
 			textualBoxLine1 = @"";
 			textualBoxLine2 = @"";
 			textualBoxLine3 = @"";
@@ -1477,7 +1477,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 		}
 		else
 		{
-			name = [[NSString alloc] initWithString: NSLocalizedString( @"Unnamed", nil)];
+			self.name = NSLocalizedString( @"Unnamed", nil);
 		}
 		
 		displayTextualData = YES;
