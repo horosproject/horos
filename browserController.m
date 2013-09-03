@@ -6871,7 +6871,12 @@ static NSConditionLock *threadLock = nil;
     
     NSArray *cells = [oMatrix selectedCells];
     if( [cells count] > 1)
+    {
+        for( NSCell *c in oMatrix.cells)
+            [c setHighlighted: NO];
+        
         [oMatrix selectCell: [cells objectAtIndex: 0]];
+    }
     
 	if ([[item valueForKey:@"type"] isEqualToString:@"Series"])
 	{
