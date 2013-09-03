@@ -9534,6 +9534,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			/* multitexturing starts */
 			
+            glPushAttrib( GL_TEXTURE_BIT);
+            
 			glActiveTexture(GL_TEXTURE0);
 			glEnable(loupeMaskTextureID);
 			glBindTexture(TEXTRECTMODE, loupeMaskTextureID);
@@ -9609,8 +9611,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				
 				glDisable(GL_TEXTURE_RECTANGLE_EXT);
 			}
-
-		
+            
+            glDisable(GL_BLEND);
+            
+            glPopAttrib();
 			
 	//		glColor4f ( 0, 0, 0 , 0.8);
 	//		glLineWidth( 3 * sf);
@@ -9648,7 +9652,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	//		glDisable(GL_POLYGON_SMOOTH);
 	//		glDisable(GL_POINT_SMOOTH);
 			
-			glDisable(GL_BLEND);
+			
 		}
 		#endif
         
