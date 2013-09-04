@@ -1321,9 +1321,9 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
     
 	NSString* nameFormat = nil;
     if (mode == Compress)
-        thread.name = [NSString stringWithFormat: @"Compressing %@", N2LocalizedSingularPluralCount( paths.count, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil))];
+        thread.name = [NSString stringWithFormat: NSLocalizedString( @"Compressing %@", nil), N2LocalizedSingularPluralCount( paths.count, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil))];
     else
-        thread.name = [NSString stringWithFormat: @"Decompressing %@", N2LocalizedSingularPluralCount( paths.count, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil))];
+        thread.name = [NSString stringWithFormat: NSLocalizedString( @"Decompressing %@", nil), N2LocalizedSingularPluralCount( paths.count, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil))];
 	
 	thread.status = NSLocalizedString(@"Waiting for similar threads to complete...", nil);
     thread.progress = -1;
