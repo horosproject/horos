@@ -72,7 +72,7 @@
 #import "Security/SecCode.h"
 #import "PFMoveApplication.h"
 #import "OSIGeneralPreferencePanePref.h"
-
+#import "NSArray+N2.h"
 #include <OpenGL/OpenGL.h>
 
 #include <kdu_OsiriXSupport.h>
@@ -3768,6 +3768,20 @@ static BOOL initialized = NO;
 	if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/"] == NO)
 		[[NSFileManager defaultManager] createDirectoryAtPath: @"/tmp/" attributes: nil];
 	
+    
+    NSMutableArray *dbArray = [[[[NSUserDefaults standardUserDefaults] arrayForKey: @"localDatabasePaths"] deepMutableCopy] autorelease];
+    NSMutableArray *toBeRemoved = [NSMutableArray array];
+    for( NSMutableDictionary *d in dbArray)
+	{
+		if( [[d valueForKey:@"Path"] hasPrefix: @"/tmp/"] || [[d valueForKey:@"Path"] hasPrefix: @"/private/tmp/"] || [[d valueForKey:@"Path"] hasPrefix: @"/private/var/tmp/"])
+			[toBeRemoved addObject: d];
+	}
+    if( toBeRemoved.count)
+    {
+        [dbArray removeObjectsInArray: toBeRemoved];
+        [[NSUserDefaults standardUserDefaults] setObject: dbArray forKey: @"localDatabasePaths"];
+    }
+    
 	if( [[NSUserDefaults standardUserDefaults] valueForKey: @"timeZone"])
 	{
 		if( [[NSUserDefaults standardUserDefaults] integerForKey: @"timeZone"] != [[NSTimeZone localTimeZone] secondsFromGMT])
