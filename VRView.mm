@@ -7300,22 +7300,26 @@ public:
 			waiting = [[WaitRendering alloc] init:NSLocalizedString(@"Loading 3D object...", nil)];
 			[waiting showWindow:self];
 			
-			volumeData = [[NSData alloc] initWithContentsOfFile:str];
-			
-			if( volumeData)
-			{
-				if( [volumeData length] == volumeSize)
-				{
-					memcpy( data, [volumeData bytes], volumeSize);
-					[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateVolumeDataNotification object: pixList userInfo: 0];
-					
-					if( croppingBox)
-						cropcallback->Execute(croppingBox, 0, nil);
-				}
-				else NSRunAlertPanel(NSLocalizedString(@"3D Scissor State", nil), NSLocalizedString(@"No saved data are available.", nil), NSLocalizedString(@"OK", nil), nil, nil);
-				
-				[volumeData release];
-			}
+            if( [[NSFileManager defaultManager] fileExistsAtPath: str])
+            {
+                volumeData = [[NSData alloc] initWithContentsOfFile:str];
+                
+                if( volumeData)
+                {
+                    if( [volumeData length] == volumeSize)
+                    {
+                        memcpy( data, [volumeData bytes], volumeSize);
+                        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateVolumeDataNotification object: pixList userInfo: 0];
+                        
+                        if( croppingBox)
+                            cropcallback->Execute(croppingBox, 0, nil);
+                    }
+                    else NSRunAlertPanel(NSLocalizedString(@"3D Scissor State", nil), NSLocalizedString(@"No saved data are available.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+                    
+                    [volumeData release];
+                }
+                else NSRunAlertPanel(NSLocalizedString(@"3D Scissor State", nil), NSLocalizedString(@"No saved data are available.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+            }
 			else NSRunAlertPanel(NSLocalizedString(@"3D Scissor State", nil), NSLocalizedString(@"No saved data are available.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 		break;
 		
