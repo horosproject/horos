@@ -685,13 +685,16 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 +(void) setCLUTBARS:(int) c ANNOTATIONS:(int) a
 {
 	CLUTBARS = c;
-	
+    
 	BOOL reload = NO;
 	
 	NSArray *viewers = [ViewerController getDisplayed2DViewers];
 	
 	for( ViewerController *v in viewers)
 	{
+        for( DCMView *vi in v.imageViews)
+            vi.annotationType = a;
+        
 		[v refresh];
 	}
 }
