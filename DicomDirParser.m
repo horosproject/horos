@@ -216,7 +216,7 @@ static int validFilePathDepth = 0;
     NSMutableArray *theArguments = [NSMutableArray array];
     NSPipe *newPipe = [NSPipe pipe];
     NSData *inData = nil;
-    NSString *s = @"";
+    NSMutableString *s = [NSMutableString stringWithString: @""];
     
     self = [super init];
     
@@ -258,14 +258,21 @@ static int validFilePathDepth = 0;
     
     [aTask launch];
     
-    while ([inData=[[newPipe fileHandleForReading] availableData] length]>0 || [aTask isRunning]) 
-    {
-        if( inData.length)
-            s = [s stringByAppendingString:[[[NSString alloc] initWithData:inData encoding:NSUTF8StringEncoding] autorelease]];
-    }
-	
     while( [aTask isRunning])
         [NSThread sleepForTimeInterval: 0.1];
+    
+    @autoreleasepool
+    {
+        while( [inData=[[newPipe fileHandleForReading] availableData] length] > 0 || [aTask isRunning]) 
+        {
+            if( inData.length)
+            {
+                NSString *r = [[NSString alloc] initWithData:inData encoding:NSUTF8StringEncoding];
+                [s appendString: r];
+                [r release];
+            }
+        }
+	}
     
     //[aTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
 	[aTask release];
