@@ -7996,12 +7996,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 								if( volumicData == -1)
 									volumicData = [[self windowController] isDataVolumicIn4D: YES checkEverythingLoaded: YES tryToCorrect: NO];
 								
-								if( volumicSeries == YES && [dcmPixList count] > 1 && volumicData == YES)
+								if( volumicSeries == YES && [dcmPixList count] > 2 && volumicData == YES)
 								{
 									double interval3d;
-									double xd = [[dcmPixList objectAtIndex: 1] originX] - [[dcmPixList objectAtIndex: 0] originX];
-									double yd = [[dcmPixList objectAtIndex: 1] originY] - [[dcmPixList objectAtIndex: 0] originY];
-									double zd = [[dcmPixList objectAtIndex: 1] originZ] - [[dcmPixList objectAtIndex: 0] originZ];
+									double xd = [[dcmPixList objectAtIndex: 2] originX] - [[dcmPixList objectAtIndex: 1] originX]; // To avoid the problem with 1st scout image
+									double yd = [[dcmPixList objectAtIndex: 2] originY] - [[dcmPixList objectAtIndex: 1] originY];
+									double zd = [[dcmPixList objectAtIndex: 2] originZ] - [[dcmPixList objectAtIndex: 1] originZ];
 									
 									interval3d = sqrt(xd*xd + yd*yd + zd*zd);
 									xd /= interval3d;	yd /= interval3d;	zd /= interval3d;
