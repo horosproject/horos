@@ -2,7 +2,7 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1070</int>
-		<string key="IBDocument.SystemVersion">12F33</string>
+		<string key="IBDocument.SystemVersion">12E55</string>
 		<string key="IBDocument.InterfaceBuilderVersion">3084</string>
 		<string key="IBDocument.AppKitVersion">1187.39</string>
 		<string key="IBDocument.HIToolboxVersion">626.00</string>
@@ -1015,6 +1015,7 @@ OAA</bytes>
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{106, 20}, {374, 68}}</string>
 							<reference key="NSSuperview" ref="235520153"/>
+							<reference key="NSNextKeyView"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<string key="NSAntiCompressionPriority">{250, 750}</string>
 							<bool key="NSEnabled">YES</bool>
@@ -1041,7 +1042,7 @@ OAA</bytes>
 					<reference key="NSNextKeyView" ref="280038740"/>
 					<string key="NSReuseIdentifierKey">_NS:20</string>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
@@ -1140,7 +1141,7 @@ OAA</bytes>
 							<object class="NSButtonCell" key="NSCell" id="634682824">
 								<int key="NSCellFlags">67108864</int>
 								<int key="NSCellFlags2">0</int>
-								<string key="NSContents">Use PACS On Demand, when using the toolbar search field</string>
+								<string key="NSContents">Use PACS On Demand, when using the toolbar search fields</string>
 								<reference key="NSSupport" ref="455650177"/>
 								<reference key="NSControlView" ref="38979781"/>
 								<int key="NSButtonFlags">1211912448</int>
@@ -1511,10 +1512,12 @@ OAA</bytes>
 												<reference key="NSNextKeyView" ref="893615243"/>
 												<reference key="NSTableView" ref="271892887"/>
 											</object>
-											<object class="_NSCornerView" key="NSCornerView">
-												<nil key="NSNextResponder"/>
+											<object class="_NSCornerView" key="NSCornerView" id="788370705">
+												<reference key="NSNextResponder" ref="87240668"/>
 												<int key="NSvFlags">-2147483392</int>
 												<string key="NSFrame">{{-22, 0}, {12, 17}}</string>
+												<reference key="NSSuperview" ref="87240668"/>
+												<reference key="NSNextKeyView" ref="435994100"/>
 											</object>
 											<array class="NSMutableArray" key="NSTableColumns">
 												<object class="NSTableColumn" id="910447188">
@@ -1727,15 +1730,17 @@ OAA</bytes>
 									<reference key="NSBGColor" ref="4820308"/>
 									<int key="NScvFlags">4</int>
 								</object>
+								<reference ref="788370705"/>
 							</array>
 							<string key="NSFrame">{{21, 163}, {561, 114}}</string>
 							<reference key="NSSuperview" ref="827468134"/>
-							<reference key="NSNextKeyView" ref="435994100"/>
+							<reference key="NSNextKeyView" ref="788370705"/>
 							<int key="NSsFlags">133682</int>
 							<reference key="NSVScroller" ref="260778054"/>
 							<reference key="NSHScroller" ref="945275861"/>
 							<reference key="NSContentView" ref="893615243"/>
 							<reference key="NSHeaderClipView" ref="435994100"/>
+							<reference key="NSCornerView" ref="788370705"/>
 							<bytes key="NSScrollAmts">AAAAAAAAAABBgAAAQYAAAA</bytes>
 							<double key="NSMinMagnification">0.25</double>
 							<double key="NSMaxMagnification">4</double>
@@ -1953,7 +1958,7 @@ OAA</bytes>
 					<reference key="NSSuperview"/>
 					<reference key="NSNextKeyView" ref="745940580"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMinSize">{224.66300000000001, 32}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>

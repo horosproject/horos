@@ -4180,6 +4180,9 @@ static NSConditionLock *threadLock = nil;
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"] == NO)
         return;
     
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"PACSOnDemandForSearchField"] == NO)
+        return;
+    
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
     
     NSDate* from = [dict objectForKey: @"from"];
