@@ -2424,7 +2424,7 @@ static volatile int numberOfThreadsForRelisce = 0;
             @synchronized( loadingThread)
             {
                 if( loadingThread.isExecuting == NO || [[loadingThread.threadDictionary objectForKey: @"loadingPercentage"] floatValue] >= 1)
-                    if( [[imageView curDCM] sourceFile])
+                    if( [[imageView curDCM] sourceFile] && [[NSFileManager defaultManager] fileExistsAtPath: [[imageView curDCM] sourceFile]])
                         [[self window] setRepresentedFilename: [[imageView curDCM] sourceFile]];
             }
 		}

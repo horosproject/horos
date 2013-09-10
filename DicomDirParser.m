@@ -216,7 +216,7 @@ static int validFilePathDepth = 0;
     NSMutableArray *theArguments = [NSMutableArray array];
     NSPipe *newPipe = [NSPipe pipe];
     NSData *inData = nil;
-    NSString *s = @"";
+    NSMutableString *s = [NSMutableString stringWithString: @""];
     
     self = [super init];
     
@@ -260,25 +260,25 @@ static int validFilePathDepth = 0;
     
     NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
     
-    while( [inData = [[newPipe fileHandleForReading] availableData] length] > 0 || [aTask isRunning]) 
-    {
-        if( inData.length)
-            s = [s stringByAppendingString:[[[NSString alloc] initWithData:inData encoding:NSUTF8StringEncoding] autorelease]];
-        
-        if( [NSDate timeIntervalSinceReferenceDate] - start > 30)
-            break;
-            
-    }
-	
-    while( [aTask isRunning])
-    {
-        [NSThread sleepForTimeInterval: 0.1];
-        
-        if( [NSDate timeIntervalSinceReferenceDate] - start > 30)
-            break;
-    }
+#define TIMEOUT 45
     
-    if( [NSDate timeIntervalSinceReferenceDate] - start > 30)
+    @autoreleasepool
+    {
+        while( [inData=[[newPipe fileHandleForReading] availableData] length] > 0 || [aTask isRunning]) 
+        {
+            if( inData.length)
+            {
+                NSString *r = [[NSString alloc] initWithData:inData encoding:NSUTF8StringEncoding];
+                [s appendString: r];
+                [r release];
+            }
+            
+            if( [NSDate timeIntervalSinceReferenceDate] - start > TIMEOUT)
+                break;
+        }
+	}
+    
+    if( [NSDate timeIntervalSinceReferenceDate] - start > TIMEOUT)
         [aTask interrupt];
     
     //[aTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...

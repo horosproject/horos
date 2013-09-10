@@ -18,6 +18,7 @@
 #import "BrowserController.h"
 #import "DicomDatabase.h"
 #import "N2Debug.h"
+#import "NSFileManager+N2.h"
 
 #import <CoreMedia/CoreMedia.h>
 #import <AVFoundation/AVFoundation.h>
@@ -164,6 +165,11 @@
         
         fileName = [panel filename];
     }
+    
+    [[NSFileManager defaultManager] removeItemAtPath: fileName error: nil];
+    
+    if( [[NSFileManager defaultManager] fileExistsAtPath: fileName])
+        [[NSFileManager defaultManager] moveItemAtPathToTrash: fileName];
     
     @try
     {

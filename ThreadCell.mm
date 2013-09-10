@@ -68,6 +68,8 @@
         [_progressIndicator removeFromSuperview];
         [_progressIndicator autorelease]; _progressIndicator = nil;
         
+        _cancelButton.target = nil;
+        _cancelButton.action = nil;
         [_cancelButton removeFromSuperview];
         [_cancelButton autorelease]; _cancelButton = nil;
         
