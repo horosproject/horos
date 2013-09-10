@@ -258,16 +258,31 @@ static int validFilePathDepth = 0;
     
     [aTask launch];
     
-    while ([inData=[[newPipe fileHandleForReading] availableData] length]>0 || [aTask isRunning]) 
+    NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
+    
+    while( [inData = [[newPipe fileHandleForReading] availableData] length] > 0 || [aTask isRunning]) 
     {
         if( inData.length)
             s = [s stringByAppendingString:[[[NSString alloc] initWithData:inData encoding:NSUTF8StringEncoding] autorelease]];
+        
+        if( [NSDate timeIntervalSinceReferenceDate] - start > 30)
+            break;
+            
     }
 	
     while( [aTask isRunning])
+    {
         [NSThread sleepForTimeInterval: 0.1];
+        
+        if( [NSDate timeIntervalSinceReferenceDate] - start > 30)
+            break;
+    }
+    
+    if( [NSDate timeIntervalSinceReferenceDate] - start > 30)
+        [aTask interrupt];
     
     //[aTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
+    
 	[aTask release];
     aTask = nil;
 	
