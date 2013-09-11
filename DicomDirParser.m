@@ -245,7 +245,6 @@ static int validFilePathDepth = 0;
     
     [aTask setStandardOutput:newPipe];
     
-    // set the subprocess to start a ping session
     [aTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
     [aTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dcmdump"]];
     [theArguments addObject:srcFile];
@@ -264,17 +263,22 @@ static int validFilePathDepth = 0;
     
     @autoreleasepool
     {
-        while( [inData=[[newPipe fileHandleForReading] availableData] length] > 0 || [aTask isRunning]) 
+        while( [inData = [[newPipe fileHandleForReading] availableData] length] > 0 || [aTask isRunning]) 
         {
-            if( inData.length)
+            if( inData.length > 0 && inData.length < 2000UL * 1024UL)
             {
                 NSString *r = [[NSString alloc] initWithData:inData encoding:NSUTF8StringEncoding];
-                [s appendString: r];
-                [r release];
+                if( r)
+                {
+                    [s appendString: r];
+                    [r release];
+                }
             }
             
             if( [NSDate timeIntervalSinceReferenceDate] - start > TIMEOUT)
                 break;
+            
+            [NSThread sleepForTimeInterval: 0.1];
         }
 	}
     
