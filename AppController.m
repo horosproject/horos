@@ -4960,19 +4960,23 @@ static BOOL initialized = NO;
 	
 	if( [sender isKindOfClass: [NSDictionary class]])
 	{
-		if( [[sender objectForKey: @"rows"] intValue])
+        if( [[sender objectForKey: @"rows"] intValue] && [[sender objectForKey: @"columns"] intValue])
+        {
+            rows = [[sender objectForKey: @"rows"] intValue];
+            columns = [[sender objectForKey: @"columns"] intValue];
+        }
+		else if( [[sender objectForKey: @"rows"] intValue])
 		{
 			rows = [[sender objectForKey: @"rows"] intValue];
 			columns = floor( (float) viewerCount / (float) rows);
 		}
-		if( [[sender objectForKey: @"columns"] intValue])
+		else if( [[sender objectForKey: @"columns"] intValue])
 		{
 			columns = [[sender objectForKey: @"columns"] intValue];
 			rows = floor( (float) viewerCount / (float) columns);
 		}
 	}
-	
-	if( ![[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol] || viewerCount < rows * columns)
+	else if( ![[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol] || viewerCount < rows * columns)
 	{
 		if (landscape)
 		{

@@ -11652,7 +11652,21 @@ static BOOL needToRezoom;
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
     {
         if( viewer && [[NSUserDefaults standardUserDefaults] boolForKey: @"tileWindowsOrderByStudyDate"])
-            [[AppController sharedAppController] tileWindows: self];
+        {
+            // Keep current row/column
+            NSDictionary *d = nil;
+            
+            NSString *rw = [[NSUserDefaults standardUserDefaults] stringForKey: @"LastWindowsTilingRowsColumns"];
+            if( rw)
+            {
+                if( rw.length == 2)
+                {
+                    d = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: [[rw substringWithRange: NSMakeRange( 0, 1)] intValue]], @"rows", [NSNumber numberWithInt: [[rw substringWithRange: NSMakeRange( 1, 1)] intValue]], @"columns", nil];
+                }
+            }
+            
+            [[AppController sharedAppController] tileWindows: d];
+        }
     }
     
 	return createdViewer;
