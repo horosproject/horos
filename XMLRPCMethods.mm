@@ -506,9 +506,9 @@
                     NSTimeInterval dateStart = [NSDate timeIntervalSinceReferenceDate];
                     do
                     {
-                        [NSThread sleepForTimeInterval: 1];
+                        [NSThread sleepForTimeInterval: 6];
                         [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
-                        [NSThread sleepForTimeInterval: 1];
+                        [NSThread sleepForTimeInterval: 2];
                         
                         // And find the study locally
                         iobjects = [[self.database independentDatabase] objectsForEntity:@"Study" predicate:predicate error:error];
