@@ -271,6 +271,7 @@
             
             NSLog( @"------ WADO parameters: timeout:%2.2f [secs] / WADOMaximumConcurrentDownloads:%d [URLRequests]", timeout, WADOMaximumConcurrentDownloads);
             
+            self.countOfSuccesses = 0;
             WADOTotal = WADOThreads = [urlToDownload count];
             
             NSTimeInterval retrieveStartingDate = [NSDate timeIntervalSinceReferenceDate];
