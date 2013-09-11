@@ -559,7 +559,6 @@
 		7EE0DC3F067A5138003E745F /* DCMSequenceAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE0DC3D067A5138003E745F /* DCMSequenceAttribute.m */; };
 		7EE416FB08B2615A00D4C9CC /* QueryLogController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EE416C708B2612600D4C9CC /* QueryLogController.h */; };
 		7EE416FC08B2615B00D4C9CC /* QueryLogController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE416C808B2612600D4C9CC /* QueryLogController.m */; };
-		7EE713BC097450B000510E88 /* dcmmkdir in Resources */ = {isa = PBXBuildFile; fileRef = 7EE713BA097450B000510E88 /* dcmmkdir */; };
 		8404168714CF195800242C63 /* Tiling1x3.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 8404168214CF195800242C63 /* Tiling1x3.pdf */; };
 		8404168814CF195800242C63 /* Tiling1x3.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 8404168214CF195800242C63 /* Tiling1x3.pdf */; };
 		8404168914CF195800242C63 /* Tiling2x3.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 8404168314CF195800242C63 /* Tiling2x3.pdf */; };
@@ -2070,7 +2069,6 @@
 		A9FBD22D16DBE2A2003A0E04 /* OsiriXDB_Previous_DataModel2.4.mom in Resources */ = {isa = PBXBuildFile; fileRef = 84CD250C11EC5564004669D6 /* OsiriXDB_Previous_DataModel2.4.mom */; };
 		A9FBD22E16DBE2A8003A0E04 /* dsr2html in Resources */ = {isa = PBXBuildFile; fileRef = 84B5EA4211A2BC0900193FDB /* dsr2html */; };
 		A9FBD22F16DBE2A8003A0E04 /* echoscu in Resources */ = {isa = PBXBuildFile; fileRef = CE9C73490B34946B0062FCCC /* echoscu */; };
-		A9FBD23016DBE2A8003A0E04 /* dcmmkdir in Resources */ = {isa = PBXBuildFile; fileRef = 7EE713BA097450B000510E88 /* dcmmkdir */; };
 		A9FBD23116DBE2A8003A0E04 /* dcmdump in Resources */ = {isa = PBXBuildFile; fileRef = ABBB639D0635874D00D9531F /* dcmdump */; };
 		A9FBD23216DBE2A8003A0E04 /* dicom.dic in Resources */ = {isa = PBXBuildFile; fileRef = ABBB639E0635874D00D9531F /* dicom.dic */; };
 		A9FBD23316DBE2AF003A0E04 /* DownArrowGreyRev.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 718416061654022400180467 /* DownArrowGreyRev.pdf */; };
@@ -10232,7 +10230,6 @@
 		7EE0DC3D067A5138003E745F /* DCMSequenceAttribute.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMSequenceAttribute.m; sourceTree = "<group>"; };
 		7EE416C708B2612600D4C9CC /* QueryLogController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QueryLogController.h; sourceTree = "<group>"; };
 		7EE416C808B2612600D4C9CC /* QueryLogController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QueryLogController.m; sourceTree = "<group>"; };
-		7EE713BA097450B000510E88 /* dcmmkdir */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = dcmmkdir; sourceTree = "<group>"; };
 		8404168214CF195800242C63 /* Tiling1x3.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = Tiling1x3.pdf; path = Binaries/Icons/Tiling/Tiling1x3.pdf; sourceTree = "<group>"; };
 		8404168314CF195800242C63 /* Tiling2x3.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = Tiling2x3.pdf; path = Binaries/Icons/Tiling/Tiling2x3.pdf; sourceTree = "<group>"; };
 		8404168414CF195800242C63 /* Tiling3x1.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = Tiling3x1.pdf; path = Binaries/Icons/Tiling/Tiling3x1.pdf; sourceTree = "<group>"; };
@@ -17636,7 +17633,6 @@
 			children = (
 				84B5EA4211A2BC0900193FDB /* dsr2html */,
 				CE9C73490B34946B0062FCCC /* echoscu */,
-				7EE713BA097450B000510E88 /* dcmmkdir */,
 				ABBB639D0635874D00D9531F /* dcmdump */,
 				ABBB639E0635874D00D9531F /* dicom.dic */,
 			);
@@ -28086,7 +28082,6 @@
 				A9FBD22D16DBE2A2003A0E04 /* OsiriXDB_Previous_DataModel2.4.mom in Resources */,
 				A9FBD22E16DBE2A8003A0E04 /* dsr2html in Resources */,
 				A9FBD22F16DBE2A8003A0E04 /* echoscu in Resources */,
-				A9FBD23016DBE2A8003A0E04 /* dcmmkdir in Resources */,
 				A9FBD23116DBE2A8003A0E04 /* dcmdump in Resources */,
 				A9FBD23216DBE2A8003A0E04 /* dicom.dic in Resources */,
 				A9FBD23316DBE2AF003A0E04 /* DownArrowGreyRev.pdf in Resources */,
@@ -28553,7 +28548,6 @@
 				CE286C120964196C001A4573 /* Localizable.strings in Resources */,
 				CE6C77ED09739B3100F951C2 /* Rotate3DCursor.tif in Resources */,
 				CE6C77EE09739B3100F951C2 /* Rotate3DCameraCursor.tif in Resources */,
-				7EE713BC097450B000510E88 /* dcmmkdir in Resources */,
 				CED8BC7C097F93D1002665CE /* SUV.tif in Resources */,
 				CE5487410989346800CF4C60 /* BrushPalette.tif in Resources */,
 				CE54877A0989363200CF4C60 /* Brush.tif in Resources */,

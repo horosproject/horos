@@ -384,14 +384,21 @@ static NSString* _dcmElementKey(DcmElement* element) {
 	DcmDirectoryRecord& record = dcmdir.getRootRecord();
 	NSMutableArray* items = [self _itemsInRecord:&record basePath:[path stringByDeletingLastPathComponent]];
 	
+    BOOL notFoundFiles = NO;
+    
 	// file paths are sometimes wrong the DICOMDIR, see if these files exist
-	for (NSInteger i = (long)items.count-1; i >= 0; --i) {
+	for (NSInteger i = (long)items.count-1; i >= 0; --i)
+    {
         NSMutableDictionary* item = [items objectAtIndex:i];
         
 		NSString* filepath = [item objectForKey:@"filePath"];
-		if (![NSFileManager.defaultManager fileExistsAtPath:filepath]) { // reference invalid, try and find the file...
+		if (![NSFileManager.defaultManager fileExistsAtPath:filepath])
+        { // reference invalid, try and find the file...
 			filepath = [self _fixedPathForPath:filepath withPaths:allpaths];
-			if (filepath) [item setObject:filepath forKey:@"filePath"];
+            
+			if( filepath) [item setObject:filepath forKey:@"filePath"];
+            
+            notFoundFiles = YES;
 		}
         
         // some DICOMDIR files only list 1 image for 1 multiframe DICOM file
@@ -408,29 +415,32 @@ static NSString* _dcmElementKey(DcmElement* element) {
 	}
     
     // DUMP the DICOMDIR... did we miss some files??
-    @try
+    if( items.count <= 1 || notFoundFiles == YES)
     {
-        NSMutableArray *files = [NSMutableArray array];
-        DicomDirParser *parsed = [[DicomDirParser alloc] init: path];
-        [parsed parseArray: files];
-        [parsed release];
-        
-        if( files.count > items.count * 2) //We found more than 50% more files... Let's use only the files discovered by the DicomDirParser
+        @try
         {
-            [items removeAllObjects];
-            [pathsToScanAnyway addObjectsFromArray: files];
-        }
-        else
-        {
-            for( NSDictionary *item in items)
-                [files removeObject: [item objectForKey:@"filePath"]];
+            NSMutableArray *files = [NSMutableArray array];
+            DicomDirParser *parsed = [[DicomDirParser alloc] init: path];
+            [parsed parseArray: files];
+            [parsed release];
             
-            [pathsToScanAnyway addObjectsFromArray: files];
+            if( files.count > items.count * 2) //We found more than 50% more files... Let's use only the files discovered by the DicomDirParser
+            {
+                [items removeAllObjects];
+                [pathsToScanAnyway addObjectsFromArray: files];
+            }
+            else
+            {
+                for( NSDictionary *item in items)
+                    [files removeObject: [item objectForKey:@"filePath"]];
+                
+                [pathsToScanAnyway addObjectsFromArray: files];
+            }
         }
-    }
-    @catch (NSException *exception)
-    {
-        N2LogStackTrace( @"%@", exception);
+        @catch (NSException *exception)
+        {
+            N2LogStackTrace( @"%@", exception);
+        }
     }
     
     NSArray* objectIDs = nil;

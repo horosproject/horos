@@ -108,6 +108,7 @@
 #import "DICOMToNSString.h"
 #import "XMLControllerDCMTKCategory.h"
 #import "WADOXML.h"
+#import "DicomDir.h"
 
 #ifndef OSIRIX_LIGHT
 #import "Anonymization.h"
@@ -8873,7 +8874,7 @@ static BOOL withReset = NO;
                         pluralType = NSLocalizedString(@"Images", nil);
                     }
                     
-                    [cell setTitle:[NSString stringWithFormat: @"%@\r%@", name, N2SingularPluralCount(count, singleType, pluralType)]];
+                    [cell setTitle:[NSString stringWithFormat: @"%@\r%@", name, N2LocalizedSingularPluralCount(count, singleType, pluralType)]];
                 }
                 else if( [[curFile valueForKey:@"type"] isEqualToString: @"Image"])
                 {
@@ -16438,11 +16439,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 	//		[waitCompressionWindow close];
 		}
 		
-		// add DICOMDIR
-		//NSString *dicomdirPath = [NSString stringWithFormat:@"%@/DICOMDIR",path];
-		
 		// ANR - I had to create this loop, otherwise, if I export a folder on the desktop, the dcmkdir will scan all files and folders available on the desktop.... not only the exported folder.
 		
+#ifndef OSIRIX_LIGHT
 		if (addDICOMDIR && exportAborted == NO)
 		{
 			for( int i = 0; i < [filesToExport count]; i++)
@@ -16469,36 +16468,39 @@ static volatile int numberOfThreadsForJPEG = 0;
 				
 				if( [[NSFileManager defaultManager] fileExistsAtPath: [tempPath stringByAppendingPathComponent:@"DICOMDIR"]] == NO)
 				{
-					if( [AppController hasMacOSXSnowLeopard] == NO)
-					{
-						NSRunCriticalAlertPanel( NSLocalizedString( @"DICOMDIR", nil), NSLocalizedString( @"DICOMDIR creation requires MacOS 10.6 or higher. DICOMDIR file will NOT be generated.", nil), NSLocalizedString( @"OK", nil), nil, nil);
-					}
-					else
-					{
-						NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-						
-						NSTask *theTask;
-						NSMutableArray *theArguments = [NSMutableArray arrayWithObjects:@"+r", @"-Pfl", @"-W", @"-Nxc",@"+I",@"+id", tempPath,  nil];
-						
-						theTask = [[NSTask alloc] init];
-						[theTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];	// DO NOT REMOVE !
-						[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dcmmkdir"]];
-						[theTask setCurrentDirectoryPath:tempPath];
-						[theTask setArguments:theArguments];		
-						
-						[theTask launch];
-						while( [theTask isRunning])
-                            [NSThread sleepForTimeInterval: 0.1];
-                        
-                        //[theTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
-						[theTask release];
-						
-						[pool release];
-					}
+//					if( [AppController hasMacOSXSnowLeopard] == NO)
+//					{
+//						NSRunCriticalAlertPanel( NSLocalizedString( @"DICOMDIR", nil), NSLocalizedString( @"DICOMDIR creation requires MacOS 10.6 or higher. DICOMDIR file will NOT be generated.", nil), NSLocalizedString( @"OK", nil), nil, nil);
+//					}
+//					else
+//					{
+//						NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+//						
+//						NSTask *theTask;
+//						NSMutableArray *theArguments = [NSMutableArray arrayWithObjects:@"+r", @"-Pfl", @"-W", @"-Nxc",@"+I",@"+id", tempPath,  nil];
+//						
+//						theTask = [[NSTask alloc] init];
+//						[theTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];	// DO NOT REMOVE !
+//						[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dcmmkdir"]];
+//						[theTask setCurrentDirectoryPath:tempPath];
+//						[theTask setArguments:theArguments];		
+//						
+//						[theTask launch];
+//						while( [theTask isRunning])
+//                            [NSThread sleepForTimeInterval: 0.1];
+//                        
+//                        //[theTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
+//						[theTask release];
+//						
+//						[pool release];
+//					}
+                    
+                    [NSThread currentThread].status = NSLocalizedString( @"Writing DICOMDIR...", nil);
+                    [DicomDir createDicomDirAtDir: tempPath];
 				}
 			}
 		}
-		
+#endif
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"encryptForExport"] == YES && exportAborted == NO)
 		{
             for( int i = 0; i < [filesToExport count]; i++)

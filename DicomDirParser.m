@@ -259,7 +259,7 @@ static int validFilePathDepth = 0;
     
     NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
     
-#define TIMEOUT 45
+#define TIMEOUT 20
     
     @autoreleasepool
     {
@@ -277,8 +277,6 @@ static int validFilePathDepth = 0;
             
             if( [NSDate timeIntervalSinceReferenceDate] - start > TIMEOUT)
                 break;
-            
-            [NSThread sleepForTimeInterval: 0.1];
         }
 	}
     

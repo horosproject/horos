@@ -4953,28 +4953,24 @@ static volatile int numberOfThreadsForRelisce = 0;
                             name = [name stringByTruncatingToLength: 34];
                         }
                         
-                        NSString	*type = nil;
+                        NSString *singleType = NSLocalizedString( @"Image", nil);
+                        NSString *pluralType = NSLocalizedString( @"Images", nil);
                         int count = [[curSeries valueForKey:@"noFiles"] intValue];
                         if( count == 1)
                         {
-                            [[[[BrowserController currentBrowser] database] managedObjectContext] lock];
-                            
                             @try
                             {
-                                type = NSLocalizedString( @"Image", nil);
                                 int frames = [[[[curSeries valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
                                 if( frames > 1)
                                 {
                                     count = frames;
-                                    type = NSLocalizedString( @"Frames", @"Frames: for example, 50 Frames in a series");
+                                    pluralType = NSLocalizedString( @"Frames", @"Frames: for example, 50 Frames in a series");
                                 }
                             }
                             @catch (NSException * e)
                             {
                                 N2LogExceptionWithStackTrace(e);
                             }
-                            
-                            [[[[BrowserController currentBrowser] database] managedObjectContext] unlock];
                         }
                         else if (count == 0)
                         {
@@ -4986,16 +4982,15 @@ static volatile int numberOfThreadsForRelisce = 0;
                                 count = frames;
                             
                             if( count == 1)
-                                type = NSLocalizedString( @"Object", nil);
+                                singleType = NSLocalizedString( @"Object", nil);
                             else
-                                type = NSLocalizedString( @"Objects", nil);
+                                pluralType = NSLocalizedString( @"Objects", nil);
                         }
-                        else type = NSLocalizedString( @"Images", nil);
                         
                         if( name == nil)
                             name = @"";
                         
-                        [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d %@", name, [[NSUserDefaults dateTimeFormatter] stringFromDate: [curSeries valueForKey:@"date"]], count, type]];
+                        [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%@", name, [[NSUserDefaults dateTimeFormatter] stringFromDate: [curSeries valueForKey:@"date"]], N2LocalizedSingularPluralCount(count, singleType, pluralType)]];
                         
                         if( [viewerSeries containsObject: curSeries]) // Red
                         {
