@@ -502,13 +502,17 @@ int main(int argc, const char *argv[])
             DcmDicomDir dcmdir( [[NSString stringWithUTF8String: argv[ 1]] fileSystemRepresentation]);
             DcmDirectoryRecord& record = dcmdir.getRootRecord();
             
-            for (unsigned int i = 0; i < record.card(); ++i)
+            for (unsigned int i = 0; i < record.card();)
             {
                 DcmElement* element = record.getElement(i);
-                
                 OFString ofstr;
                 element->getOFStringArray(ofstr).good();
+                
+                i += 10;
             }
+            
+            NSLog( @"-- Testing DICOMDIR done");
+                  
 //            *(long*) 0x00 = 0xDEADBEEF;
         }
         

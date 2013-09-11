@@ -2433,7 +2433,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                             }
                         }
                     }
-                    if( [studyDate length] != 6) studyDate = [studyDate stringByReplacingOccurrencesOfString:@"." withString:@""];
+                    if( [studyDate length] != 8)
+                        studyDate = [studyDate stringByReplacingOccurrencesOfString:@"." withString:@""];
                     
                     val = Papy3GetElement (theGroupP, papAcquisitionTimeGr, &nbVal, &itemType);
                     if (val != NULL && val->a && validAPointer( itemType) && strlen( val->a) > 0 && atof( val->a) > 0)

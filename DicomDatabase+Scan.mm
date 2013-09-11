@@ -131,35 +131,45 @@ static NSString* _dcmElementKey(DcmElement* element) {
     if (!thumb->findAndGetUint16(DcmTagKey(0x0028,0x0010), height).good()) return nil; // Rows must be defined
     if (!thumb->findAndGetUint16(DcmTagKey(0x0028,0x0011), width).good()) return nil; // Columns must be defined
     
-    const Uint8* data;
+    const Uint8* data = nil;
     if (!thumb->findAndGetUint8Array(DcmTagKey(0x7fe0,0x0010), data).good()) return nil; // PixelRepresentation must be defined
     
-    // Photometric Interpretation (0028,0004) shall have a Value of either MONOCHROME 1, MONOCHROME 2 or PALETTE COLOR
-    OFString spi;
-    if (!thumb->findAndGetOFString(DcmTagKey(0x0028,0x0004), spi).good()) return nil;
     NSBitmapImageRep* rep = nil;
-    if (spi == "MONOCHROME1") {
-        rep = [[[NSBitmapImageRep alloc] initWithBitmapDataPlanes:nil pixelsWide:width pixelsHigh:height bitsPerSample:bitsStored samplesPerPixel:1 hasAlpha:NO isPlanar:NO colorSpaceName:NSDeviceWhiteColorSpace bytesPerRow:0 bitsPerPixel:bitsAllocated] autorelease];
-        unsigned char* bitmapData = rep.bitmapData;
-        // invert data
-        for (NSUInteger i = 0; i < width*height*bitsAllocated/8; ++i) {
-            if (bitsAllocated == 1)
-                bitmapData[i] = data[i]^0xff;
-            else bitmapData[i] = 0xff-data[i];
-        }
-    } else
-    if (spi == "MONOCHROME2") {
-        rep = [[[NSBitmapImageRep alloc] initWithBitmapDataPlanes:nil pixelsWide:width pixelsHigh:height bitsPerSample:bitsStored samplesPerPixel:1 hasAlpha:NO isPlanar:NO colorSpaceName:NSDeviceWhiteColorSpace bytesPerRow:width*8/bitsAllocated bitsPerPixel:bitsAllocated] autorelease];
-        memcpy(rep.bitmapData, data, ceilf(1.0*width*height*bitsAllocated/8));
-    } else
-    if (spi == "PALETTE COLOR") {
-        return nil; // TODO: this type of thumbnail should be read too...
-    } else
+    if( data) {
+        // Photometric Interpretation (0028,0004) shall have a Value of either MONOCHROME 1, MONOCHROME 2 or PALETTE COLOR
+        OFString spi;
+        if (!thumb->findAndGetOFString(DcmTagKey(0x0028,0x0004), spi).good()) return nil;
+        
+        if (spi == "MONOCHROME1") {
+            rep = [[[NSBitmapImageRep alloc] initWithBitmapDataPlanes:nil pixelsWide:width pixelsHigh:height bitsPerSample:bitsStored samplesPerPixel:1 hasAlpha:NO isPlanar:NO colorSpaceName:NSDeviceWhiteColorSpace bytesPerRow:0 bitsPerPixel:bitsAllocated] autorelease];
+            unsigned char* bitmapData = rep.bitmapData;
+            // invert data
+            for (NSUInteger i = 0; i < width*height*bitsAllocated/8; ++i) {
+                if (bitsAllocated == 1)
+                    bitmapData[i] = data[i]^0xff;
+                else bitmapData[i] = 0xff-data[i];
+            }
+        } else
+        if (spi == "MONOCHROME2") {
+            rep = [[[NSBitmapImageRep alloc] initWithBitmapDataPlanes:nil pixelsWide:width pixelsHigh:height bitsPerSample:bitsStored samplesPerPixel:1 hasAlpha:NO isPlanar:NO colorSpaceName:NSDeviceWhiteColorSpace bytesPerRow:width*8/bitsAllocated bitsPerPixel:bitsAllocated] autorelease];
+            memcpy(rep.bitmapData, data, ceilf(1.0*width*height*bitsAllocated/8));
+        } else
+        if (spi == "PALETTE COLOR") {
+            return nil; // TODO: this type of thumbnail should be read too...
+        } else
+            return nil;
+    }
+    else
         return nil;
-
-    NSImage* im = [[[NSImage alloc] init] autorelease];
-    [im addRepresentation:rep];
-    return im;
+    
+    if( rep)
+    {
+        NSImage* im = [[[NSImage alloc] init] autorelease];
+        [im addRepresentation:rep];
+        return im;
+    }
+    
+    return nil;
 }
 
 -(NSMutableArray*)_itemsInRecord:(DcmDirectoryRecord*)record context:(NSMutableArray*)context basePath:(NSString*)basepath {
@@ -181,7 +191,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
 		[elements setObject:[_DicomDatabaseScanDcmElement elementWithElement:element] forKey:_dcmElementKey(element)];
 	}
 	
-	_DicomDatabaseScanDcmElement* elementReferencedFileID = [elements objectForKey:_dcmElementKey(0x0004,0x1500)];
+	_DicomDatabaseScanDcmElement* elementReferencedFileID = [elements objectForKey: @"0004,1500"];
 	if (elementReferencedFileID)
     {
 		NSString* path = [elementReferencedFileID stringValue];
@@ -200,26 +210,26 @@ static NSString* _dcmElementKey(DcmElement* element) {
             
             //NSLog(@"\n\n%@\nDICOMDIR info:%@", path, elements);
             
-            if ([[[elements objectForKeyRemove:_dcmElementKey(0x0004,0x1512)] stringValue] isEqualToString:@"1.2.840.10008.1.2.4.100"])
+            if ([[[elements objectForKeyRemove: @"0004,1512"] stringValue] isEqualToString:@"1.2.840.10008.1.2.4.100"])
                 [item setObject:@"DICOMMPEG2" forKey:@"fileType"];
             else [item setObject:@"DICOM" forKey:@"fileType"];
             
             [item conditionallySetObject:[NSNumber numberWithBool:YES] forKey:@"hasDICOM"];
             
-            temp = [[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0016)] stringValue];
-            if (!temp) temp = [[elements objectForKey:_dcmElementKey(0x0004,0x1510)] stringValue];
+            temp = [[elements objectForKeyRemove: @"0008,0016"] stringValue];
+            if (!temp) temp = [[elements objectForKey: @"0004,1510"] stringValue];
             [item conditionallySetObject:temp forKey:@"SOPClassUID"];
-            [elements removeObjectForKey:_dcmElementKey(0x0004,0x1510)];
+            [elements removeObjectForKey: @"0004,1510"];
             
-            temp = [[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0018)] stringValue];
-            if (!temp) temp = [[elements objectForKey:_dcmElementKey(0x0004,0x1511)] stringValue];
+            temp = [[elements objectForKeyRemove: @"0008,0018"] stringValue];
+            if (!temp) temp = [[elements objectForKey: @"0004,1511"] stringValue];
             [item conditionallySetObject:temp forKey:@"SOPUID"];
-            [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0004,0x1511)] stringValue] forKey:@"referencedSOPInstanceUID"];
+            [item conditionallySetObject:[[elements objectForKeyRemove: @"0004,1511"] stringValue] forKey:@"referencedSOPInstanceUID"];
             
-            [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0005)] stringValue] forKey:@"specificCharacterSet"];
+            [item conditionallySetObject:[[elements objectForKeyRemove: @"0008,0005"] stringValue] forKey:@"specificCharacterSet"];
             
             NSStringEncoding encodings[ 10];
-            NSArray	*c = [[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0005)] stringValue] componentsSeparatedByString:@"\\"];
+            NSArray	*c = [[[elements objectForKeyRemove: @"0008,0005"] stringValue] componentsSeparatedByString:@"\\"];
             
             if( [c count] >= 10) NSLog( @"Encoding number >= 10 ???");
             
@@ -229,37 +239,37 @@ static NSString* _dcmElementKey(DcmElement* element) {
                 for( int i = [c count]; i < 10; i++) encodings[ i] = [NSString encodingForDICOMCharacterSet: [c lastObject]];
             }
             
-            [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0020,0x000D)] stringValue] forKey:@"studyID"];
-            [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0020,0x0010)] stringValue] forKey:@"studyNumber"];
+            [item conditionallySetObject:[[elements objectForKeyRemove: @"0020,000D"] stringValue] forKey:@"studyID"];
+            [item conditionallySetObject:[[elements objectForKeyRemove: @"0020,0010"] stringValue] forKey:@"studyNumber"];
             
-            [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x1030)] stringValueWithEncodings: encodings] forKey:@"studyDescription"];
+            [item conditionallySetObject:[[elements objectForKeyRemove: @"0008,1030"] stringValueWithEncodings: encodings] forKey:@"studyDescription"];
             
-            [item conditionallySetObject:[NSDate dateWithYYYYMMDD:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0020)] stringValue] HHMMss:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0030)] stringValue]] forKey:@"studyDate"];
-            [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0060)] stringValue] forKey:@"modality"];
-            [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0010,0x0020)] stringValue] forKey:@"patientID"];
+            [item conditionallySetObject:[NSDate dateWithYYYYMMDD:[[elements objectForKeyRemove: @"0008,0020"] stringValue] HHMMss:[[elements objectForKeyRemove: @"0008,0030"] stringValue]] forKey:@"studyDate"];
+            [item conditionallySetObject:[[elements objectForKeyRemove: @"0008,0060"] stringValue] forKey:@"modality"];
+            [item conditionallySetObject:[[elements objectForKeyRemove: @"0010,0020"] stringValue] forKey:@"patientID"];
             
-            [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0010,0x0010)] stringValueWithEncodings: encodings] forKey:@"patientName"];
+            [item conditionallySetObject:[[elements objectForKeyRemove: @"0010,0010"] stringValueWithEncodings: encodings] forKey:@"patientName"];
 
-            [item conditionallySetObject:[NSDate dateWithYYYYMMDD:[[elements objectForKeyRemove:_dcmElementKey(0x0010,0x0030)] stringValue] HHMMss:nil] forKey:@"patientBirthDate"];
-            [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0010,0x0040)] stringValue] forKey:@"patientSex"];
+            [item conditionallySetObject:[NSDate dateWithYYYYMMDD:[[elements objectForKeyRemove: @"0010,0030"] stringValue] HHMMss:nil] forKey:@"patientBirthDate"];
+            [item conditionallySetObject:[[elements objectForKeyRemove: @"0010,0040"] stringValue] forKey:@"patientSex"];
             
-            [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0050)] stringValue] forKey:@"accessionNumber"];
-            [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0004,0x1511)] stringValue] forKey:@"referencedSOPInstanceUID"];
+            [item conditionallySetObject:[[elements objectForKeyRemove: @"0008,0050"] stringValue] forKey:@"accessionNumber"];
+            [item conditionallySetObject:[[elements objectForKeyRemove: @"0004,1511"] stringValue] forKey:@"referencedSOPInstanceUID"];
             
             [item conditionallySetObject:[DicomFile patientUID: item] forKey:@"patientUID"];
             
             [item conditionallySetObject:[NSNumber numberWithInteger:1] forKey:@"numberOfSeries"];
             
-            [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0028,0x0008)] integerNumberValue] forKey:@"numberOfFrames"];
+            [item conditionallySetObject:[[elements objectForKeyRemove: @"0028,0008"] integerNumberValue] forKey:@"numberOfFrames"];
             if( [[item objectForKey:@"numberOfFrames"] integerValue] > 1) // SERIES ID MUST BE UNIQUE!!!!!
             {
-                NSString *newSerieID = [NSString stringWithFormat:@"%@-%@", [[elements objectForKeyRemove:_dcmElementKey(0x0020,0x000E)] stringValue], [item objectForKey: @"SOPUID"]];
+                NSString *newSerieID = [NSString stringWithFormat:@"%@-%@", [[elements objectForKeyRemove: @"0020,000E"] stringValue], [item objectForKey: @"SOPUID"]];
                 [item conditionallySetObject:newSerieID forKey:@"seriesDICOMUID"]; // SeriesInstanceUID
             }
             else
-                [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0020,0x000E)] stringValue] forKey:@"seriesDICOMUID"]; // SeriesInstanceUID
+                [item conditionallySetObject:[[elements objectForKeyRemove: @"0020,000E"] stringValue] forKey:@"seriesDICOMUID"]; // SeriesInstanceUID
             
-            NSString *seriesNumber = [[elements objectForKeyRemove:_dcmElementKey(0x0020,0x0011)] stringValue];
+            NSString *seriesNumber = [[elements objectForKeyRemove: @"0020,0011"] stringValue];
             if( seriesNumber)
             {
                 NSString *n = [NSString stringWithFormat:@"%8.8d %@", [seriesNumber intValue] , [item objectForKey: @"seriesDICOMUID"]];
@@ -268,21 +278,21 @@ static NSString* _dcmElementKey(DcmElement* element) {
             else
                 [item conditionallySetObject: [item objectForKey: @"seriesDICOMUID"] forKey:@"seriesID"];
             
-            [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x103E)] stringValueWithEncodings: encodings] forKey:@"seriesDescription"];
-            [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0020,0x0011)] integerNumberValue] forKey:@"seriesNumber"];
-            [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0020,0x0013)] integerNumberValue] forKey:@"imageID"];
+            [item conditionallySetObject:[[elements objectForKeyRemove: @"0008,103E"] stringValueWithEncodings: encodings] forKey:@"seriesDescription"];
+            [item conditionallySetObject:[[elements objectForKeyRemove: @"0020,0011"] integerNumberValue] forKey:@"seriesNumber"];
+            [item conditionallySetObject:[[elements objectForKeyRemove: @"0020,0013"] integerNumberValue] forKey:@"imageID"];
             
-            [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0080)] stringValueWithEncodings: encodings] forKey:@"institutionName"];
-            [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0090)] stringValueWithEncodings: encodings] forKey:@"referringPhysiciansName"];
-            [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x1050)] stringValueWithEncodings: encodings] forKey:@"performingPhysiciansName"];
+            [item conditionallySetObject:[[elements objectForKeyRemove: @"0008,0080"] stringValueWithEncodings: encodings] forKey:@"institutionName"];
+            [item conditionallySetObject:[[elements objectForKeyRemove: @"0008,0090"] stringValueWithEncodings: encodings] forKey:@"referringPhysiciansName"];
+            [item conditionallySetObject:[[elements objectForKeyRemove: @"0008,1050"] stringValueWithEncodings: encodings] forKey:@"performingPhysiciansName"];
             
-            tempi = [[elements objectForKeyRemove:_dcmElementKey(0x0028,0x0010)] integerValue];
+            tempi = [[elements objectForKeyRemove: @"0028,0010"] integerValue];
             [item conditionallySetObject:[NSNumber numberWithInteger:tempi? tempi : OsirixDicomImageSizeUnknown] forKey:@"height"];
-            tempi = [[elements objectForKeyRemove:_dcmElementKey(0x0028,0x0011)] integerValue];
+            tempi = [[elements objectForKeyRemove: @"0028,0011"] integerValue];
             [item conditionallySetObject:[NSNumber numberWithInteger:tempi? tempi : OsirixDicomImageSizeUnknown] forKey:@"width"];
             
             // thumbnail
-            _DicomDatabaseScanDcmElement* thumbnailElement = [elements objectForKeyRemove:_dcmElementKey(0x0088,0x0200)]; // IconImageSequence
+            _DicomDatabaseScanDcmElement* thumbnailElement = [elements objectForKeyRemove: @"0088,0200"]; // IconImageSequence
             if (thumbnailElement && thumbnailElement.element->ident() == EVR_SQ && ((DcmSequenceOfItems*)thumbnailElement.element)->card() == 1) {
                 DcmItem* thumb = ((DcmSequenceOfItems*)thumbnailElement.element)->getItem(0);
                 NSImage* im = [[self class] _nsImageForElement:thumb];
@@ -306,16 +316,16 @@ static NSString* _dcmElementKey(DcmElement* element) {
             [item setObject:path forKey:@"keyFrames"];
             [item setObject:path forKey:@"album"];*/
             
-            [elements removeObjectForKey:_dcmElementKey(0x0004,0x1500)]; // ReferencedFileID = IMAGES\IM000000
-            [elements removeObjectForKey:_dcmElementKey(0x0004,0x1400)]; // OffsetOfTheNextDirectoryRecord = 0
-            [elements removeObjectForKey:_dcmElementKey(0x0004,0x1410)]; // RecordInUseFlag = 65535
-            [elements removeObjectForKey:_dcmElementKey(0x0004,0x1420)]; // OffsetOfReferencedLowerLevelDirectoryEntity = 0
-            [elements removeObjectForKey:_dcmElementKey(0x0004,0x1430)]; // DirectoryRecordType = IMAGE
-            [elements removeObjectForKey:_dcmElementKey(0x0008,0x0005)]; // SpecificCharacterSet = ISO_IR 100
-            [elements removeObjectForKey:_dcmElementKey(0x0008,0x0008)]; // ImageType = ORIGINAL\PRIMARY
-            [elements removeObjectForKey:_dcmElementKey(0x0008,0x0081)]; // InstitutionAddress = 
-            [elements removeObjectForKey:_dcmElementKey(0x0859,0x0010)]; // PrivateCreator = ETIAM DICOMDIR
-            [elements removeObjectForKey:_dcmElementKey(0x0859,0x1040)]; // Unknown Tag & Data = 13156912
+            [elements removeObjectForKey: @"0004,1500"]; // ReferencedFileID = IMAGES\IM000000
+            [elements removeObjectForKey: @"0004,1400"]; // OffsetOfTheNextDirectoryRecord = 0
+            [elements removeObjectForKey: @"0004,1410"]; // RecordInUseFlag = 65535
+            [elements removeObjectForKey: @"0004,1420"]; // OffsetOfReferencedLowerLevelDirectoryEntity = 0
+            [elements removeObjectForKey: @"0004,1430"]; // DirectoryRecordType = IMAGE
+            [elements removeObjectForKey: @"0008,0005"]; // SpecificCharacterSet = ISO_IR 100
+            [elements removeObjectForKey: @"0008,0008"]; // ImageType = ORIGINAL\PRIMARY
+            [elements removeObjectForKey: @"0008,0081"]; // InstitutionAddress =
+            [elements removeObjectForKey: @"0859,0010"]; // PrivateCreator = ETIAM DICOMDIR
+            [elements removeObjectForKey: @"0859,1040"]; // Unknown Tag & Data = 13156912
             
             //if (elements.count) NSLog(@"\nUnused DICOMDIR info for %@: %@", path, elements);
             if (elements.count) [item setObject:elements forKey:@"DEBUG"];
@@ -363,20 +373,23 @@ static NSString* _dcmElementKey(DcmElement* element) {
 -(NSArray*)scanDicomdirAt:(NSString*)path withPaths:(NSArray*)allpaths pathsToScanAnyway:(NSMutableArray*)pathsToScanAnyway {
 	NSThread* thread = [NSThread currentThread];
     
-    // Test DICOMDIR validity on a separate process...
-    if( [[NSFileManager defaultManager] fileExistsAtPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]])
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"validateFilesBeforeImporting"])
     {
-        NSTask *aTask = [[[NSTask alloc] init] autorelease];
-        [aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
-        [aTask setArguments: [NSArray arrayWithObjects: path, @"testDICOMDIR", nil]];
-        [aTask launch];
-        while( [aTask isRunning])
-            [NSThread sleepForTimeInterval: 0.1];
-        
-        if( [aTask terminationStatus] != 0)
+        // Test DICOMDIR validity on a separate process...
+        if( [[NSFileManager defaultManager] fileExistsAtPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]])
         {
-            NSLog( @"****** failed to read DICOMDIR: %@", path);
-            return nil;
+            NSTask *aTask = [[[NSTask alloc] init] autorelease];
+            [aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
+            [aTask setArguments: [NSArray arrayWithObjects: path, @"testDICOMDIR", nil]];
+            [aTask launch];
+            while( [aTask isRunning])
+                [NSThread sleepForTimeInterval: 0.1];
+            
+            if( [aTask terminationStatus] != 0)
+            {
+                NSLog( @"****** failed to read DICOMDIR: %@", path);
+                return nil;
+            }
         }
     }
     
@@ -403,8 +416,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
         
         // some DICOMDIR files only list 1 image for 1 multiframe DICOM file
         NSString* scuid = [item objectForKey:@"SOPClassUID"];
-        if ([[self class] _item:item isOnlyEntryForItsSeriesInItems:items] &&
-            ([DCMAbstractSyntaxUID isMultiframe:scuid]))
+        if( ([DCMAbstractSyntaxUID isMultiframe:scuid]) && [[self class] _item:item isOnlyEntryForItsSeriesInItems:items])
         {
             [pathsToScanAnyway addObject:filepath];
             [items removeObjectAtIndex:i];
@@ -417,6 +429,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
     // DUMP the DICOMDIR... did we miss some files??
     if( items.count <= 1 || notFoundFiles == YES)
     {
+        NSLog( @"dcmdump DICOMDIR");
         @try
         {
             NSMutableArray *files = [NSMutableArray array];
