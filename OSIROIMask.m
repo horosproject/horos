@@ -520,10 +520,40 @@ NSArray *OSIROIMaskIndexesInRun(OSIROIMaskRun maskRun)
 	return indexes;
 }
 
-// possibly the slowest implentation I can think of...
 - (BOOL)indexInMask:(OSIROIMaskIndex)index
 {
-	return [[self maskIndexes] containsObject:[NSValue valueWithOSIROIMaskIndex:index]];
+    // since the runs are sorted, we can binary search
+    NSUInteger runIndex = 0;
+    NSUInteger runCount = 0;
+    
+    NSData *maskRunsData = [self maskRunsData];
+    const OSIROIMaskRun *maskRuns = [maskRunsData bytes];
+    runCount = [self maskRunCount];
+
+    while (runCount) {
+        NSUInteger middleIndex = runIndex + (runCount / 2);
+        if (OSIROIMaskIndexInRun(index, maskRuns[middleIndex])) {
+            return YES;
+        }
+        
+        BOOL before = NO;
+        if (index.z < maskRuns[middleIndex].depthIndex) {
+            before = YES;
+        } else if (index.z == maskRuns[middleIndex].depthIndex && index.y < maskRuns[middleIndex].heightIndex) {
+            before = YES;
+        } else if (index.z == maskRuns[middleIndex].depthIndex && index.y == maskRuns[middleIndex].heightIndex && index.x < maskRuns[middleIndex].widthRange.location) {
+            before = YES;
+        }
+        
+        if (before) {
+            runCount /= 2; 
+        } else {
+            runIndex = middleIndex + 1;
+            runCount = (runCount - 1) / 2;
+        }
+    }
+    
+    return NO;
 }
 
 - (NSArray *)convexHull
