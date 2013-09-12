@@ -531,12 +531,12 @@ NSArray *OSIROIMaskIndexesInRun(OSIROIMaskRun maskRun)
     NSValue *maskRunValue;
     OSIROIMaskRun maskRun;
 
-    NSInteger maxHeight;
-    NSInteger minHeight;
-    NSInteger maxDepth;
-    NSInteger minDepth;
-    NSInteger maxWidth;
-    NSInteger minWidth;
+    NSInteger maxHeight = NSIntegerMin;
+    NSInteger minHeight = NSIntegerMax;
+    NSInteger maxDepth = NSIntegerMin;
+    NSInteger minDepth = NSIntegerMax;
+    NSInteger maxWidth = NSIntegerMin;
+    NSInteger minWidth = NSIntegerMax;
     
     for (maskRunValue in _maskRuns) {
         maskRun = [maskRunValue OSIROIMaskRunValue];
