@@ -342,26 +342,29 @@
     tmpResult.rowBytes  = buffer->rowBytes;
     tmpResult.data      = (float *)malloc(tmpResult.rowBytes*tmpResult.height);
     
-    float kernel[x*y];
-    for (unsigned int i = 0; i < x * y; ++i) {
-        kernel[i] = 1;
-    }
-    memset(kernel, 1, x*y*sizeof(float));
-    
-    if (buffer->data) {
-        vImage_Error err;
-        err = vImageErode_PlanarF(buffer, &tmpResult, 0, 0, kernel, x, y, kvImageNoFlags );
-        if (err != kvImageNoError) {
-            [self mmError:err];
-            return;
+    if( tmpResult.data)
+    {
+        float kernel[x*y];
+        for (unsigned int i = 0; i < x * y; ++i) {
+            kernel[i] = 1;
         }
-        err = vImageDilate_PlanarF(&tmpResult, buffer, 0, 0, kernel, x, y, kvImageNoFlags );
-        if (err != kvImageNoError) {
-            [self mmError:err];
-            return;
+        memset(kernel, 1, x*y*sizeof(float));
+        
+        if (buffer->data) {
+            vImage_Error err;
+            err = vImageErode_PlanarF(buffer, &tmpResult, 0, 0, kernel, x, y, kvImageNoFlags );
+            if (err != kvImageNoError) {
+                [self mmError:err];
+                return;
+            }
+            err = vImageDilate_PlanarF(&tmpResult, buffer, 0, 0, kernel, x, y, kvImageNoFlags );
+            if (err != kvImageNoError) {
+                [self mmError:err];
+                return;
+            }
         }
+        free(tmpResult.data);
     }
-    free(tmpResult.data);
 }
 
 - (void) mmClosing:(vImage_Buffer *) buffer :(vImagePixelCount) x :(vImagePixelCount) y
@@ -372,25 +375,28 @@
     tmpResult.rowBytes  = buffer->rowBytes;
     tmpResult.data      = (float *)malloc(tmpResult.rowBytes*tmpResult.height);
     
-    float kernel[x*y];
-    for (unsigned int i = 0; i < x * y; ++i) {
-        kernel[i] = 1;
-    }
-        
-    if (buffer->data) {
-        vImage_Error err;
-        err = vImageDilate_PlanarF(buffer, &tmpResult, 0, 0, kernel, x, y, kvImageNoFlags);
-        if (err != kvImageNoError) {
-            [self mmError:err];
-            return;
+    if( tmpResult.data)
+    {
+        float kernel[x*y];
+        for (unsigned int i = 0; i < x * y; ++i) {
+            kernel[i] = 1;
         }
-        err = vImageErode_PlanarF(&tmpResult, buffer, 0, 0, kernel, x, y, kvImageNoFlags);
-        if (err != kvImageNoError) {
-            [self mmError:err];
-            return;
+            
+        if (buffer->data) {
+            vImage_Error err;
+            err = vImageDilate_PlanarF(buffer, &tmpResult, 0, 0, kernel, x, y, kvImageNoFlags);
+            if (err != kvImageNoError) {
+                [self mmError:err];
+                return;
+            }
+            err = vImageErode_PlanarF(&tmpResult, buffer, 0, 0, kernel, x, y, kvImageNoFlags);
+            if (err != kvImageNoError) {
+                [self mmError:err];
+                return;
+            }
         }
+        free(tmpResult.data);
     }
-    free(tmpResult.data);
 }
 
 - (void) mmErosion:(vImage_Buffer *) buffer :(vImagePixelCount) x :(vImagePixelCount) y
@@ -401,20 +407,23 @@
     tmpResult.rowBytes  = buffer->rowBytes;
     tmpResult.data      = (float *)malloc(tmpResult.rowBytes*tmpResult.height);
     
-    float kernel[x*y];
-    for (unsigned int i = 0; i < x * y; ++i) {
-        kernel[i] = 1;
-    }
-    
-    if (buffer->data) {
-        vImage_Error err = vImageErode_PlanarF(&tmpResult, buffer, 0, 0, kernel, x, y, kvImageNoFlags);
-        if (err != kvImageNoError) {
-            [self mmError:err];
-            return;
+    if( tmpResult.data)
+    {
+        float kernel[x*y];
+        for (unsigned int i = 0; i < x * y; ++i) {
+            kernel[i] = 1;
         }
-        memccpy(buffer->data, tmpResult.data, tmpResult.height*tmpResult.width, tmpResult.rowBytes);
+        
+        if (buffer->data) {
+            vImage_Error err = vImageErode_PlanarF(&tmpResult, buffer, 0, 0, kernel, x, y, kvImageNoFlags);
+            if (err != kvImageNoError) {
+                [self mmError:err];
+                return;
+            }
+            memccpy(buffer->data, tmpResult.data, tmpResult.height*tmpResult.width, tmpResult.rowBytes);
+        }
+        free(tmpResult.data);
     }
-    free(tmpResult.data);
 }
 
 - (void) mmDilation:(vImage_Buffer *) buffer :(vImagePixelCount) x :(vImagePixelCount) y
@@ -425,20 +434,23 @@
     tmpResult.rowBytes  = buffer->rowBytes;
     tmpResult.data      = (float *)malloc(tmpResult.rowBytes*tmpResult.height);
     
-    float kernel[x*y];
-    for (unsigned int i = 0; i < x * y; ++i) {
-        kernel[i] = 1;
-    }
-    
-    if (buffer->data) {
-        vImage_Error err = vImageDilate_PlanarF(&tmpResult, buffer, 0, 0, kernel, x, y, kvImageNoFlags);
-        if (err != kvImageNoError) {
-            [self mmError:err];
-            return;
+    if( tmpResult.data)
+    {
+        float kernel[x*y];
+        for (unsigned int i = 0; i < x * y; ++i) {
+            kernel[i] = 1;
         }
-        memccpy(buffer->data, tmpResult.data, tmpResult.height*tmpResult.width, tmpResult.rowBytes*tmpResult.height);
+        
+        if (buffer->data) {
+            vImage_Error err = vImageDilate_PlanarF(&tmpResult, buffer, 0, 0, kernel, x, y, kvImageNoFlags);
+            if (err != kvImageNoError) {
+                [self mmError:err];
+                return;
+            }
+            memccpy(buffer->data, tmpResult.data, tmpResult.height*tmpResult.width, tmpResult.rowBytes*tmpResult.height);
+        }
+        free(tmpResult.data);
     }
-    free(tmpResult.data);
 }
 
 @end
