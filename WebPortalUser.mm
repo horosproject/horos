@@ -474,7 +474,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
 
 +(NSArray*)studiesForUser: (WebPortalUser*) user predicate:(NSPredicate*)predicate sortBy:(NSString*)sortValue fetchLimit:(int) fetchLimit fetchOffset:(int) fetchOffset numberOfStudies:(int*) numberOfStudies
 {
-	NSArray* studiesArray = nil;
+	NSArray* studiesArray = [NSArray array];
 	
     DicomDatabase *dicomDBContext = [WebPortal.defaultWebPortal.dicomDatabase independentDatabase];
     

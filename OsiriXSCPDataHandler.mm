@@ -236,7 +236,7 @@ extern BOOL forkedProcess;
 					{
 						NSString *patientNameString = [NSString stringWithCString:pn  DICOMEncoding:specificCharacterSet];
                         
-                        predicate = [[BrowserController currentBrowser] patientsnamePredicate: patientNameString];
+                        predicate = [[BrowserController currentBrowser] patientsnamePredicate: patientNameString soundex: NO];
 					}
 				}
 				else if (key == DCM_PatientID)

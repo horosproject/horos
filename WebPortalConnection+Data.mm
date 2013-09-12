@@ -346,7 +346,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
             
             //
             
-            browsePredicate = [[BrowserController currentBrowser] patientsnamePredicate: [parameters objectForKey:@"search"]];
+            browsePredicate = [[BrowserController currentBrowser] patientsnamePredicate: [parameters objectForKey:@"search"] soundex: NO];
         }
         else if ([parameters objectForKey:@"searchID"])
         {

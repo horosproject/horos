@@ -19174,6 +19174,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (NSPredicate*) patientsnamePredicate: (NSString*) s
 {
+    return [self patientsnamePredicate: s soundex: [[NSUserDefaults standardUserDefaults] boolForKey: @"useSoundexForName"]];
+}
+
+- (NSPredicate*) patientsnamePredicate: (NSString*) s soundex:(BOOL) soundex
+{
     s = [s stringByReplacingOccurrencesOfString: @"^" withString: @" "];
     s = [s stringByReplacingOccurrencesOfString: @", " withString: @" "];
     s = [s stringByReplacingOccurrencesOfString: @"," withString: @" "];
@@ -19199,14 +19204,14 @@ static volatile int numberOfThreadsForJPEG = 0;
             
             if( firstComponent == NO)
             {
-                if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useSoundexForName"] && [component length] >= 2)
+                if( soundex && [component length] >= 2)
                     p = [NSPredicate predicateWithFormat: @"(soundex CONTAINS[cd] %@) OR (name CONTAINS[cd] %@)", [DicomStudy soundex: component], component];
                 else
                     p = [NSPredicate predicateWithFormat: @"name CONTAINS[cd] %@", component];
             }
             else
             {
-                if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useSoundexForName"] && [component length] >= 2)
+                if( soundex && [component length] >= 2)
                     p = [NSPredicate predicateWithFormat: @"(soundex BEGINSWITH[cd] %@) OR (name BEGINSWITH[cd] %@)", [DicomStudy soundex: component], component];
                 else
                     p = [NSPredicate predicateWithFormat: @"name BEGINSWITH[cd] %@", component];
