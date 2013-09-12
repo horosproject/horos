@@ -67,37 +67,36 @@ static volatile int sendControllerObjects = 0;
 
 - (void) main
 {
-    NSAutoreleasePool *pool = [NSAutoreleasePool new];
-    
-    if( self.isCancelled)
-        return;
-    
-    self.thread = [NSThread currentThread];
-    self.thread.progress = 0;
-    
-    DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc] initWithCallingAET: [NSUserDefaults defaultAETitle]
-                                               calledAET: [server objectForKey:@"AETitle"]
-                                                hostname: [server objectForKey:@"Address"]
-                                                    port: [[server objectForKey:@"Port"] intValue]
-                                             filesToSend: files
-                                          transferSyntax: [[NSUserDefaults standardUserDefaults] integerForKey:@"syntaxListOffis"]
-                                             compression: 1.0
-                                         extraParameters: server];
-    
-    @try
+    @autoreleasepool
     {
-        [storeSCU run:self];
+        if( self.isCancelled)
+            return;
+        
+        self.thread = [NSThread currentThread];
+        self.thread.progress = 0;
+        
+        DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc] initWithCallingAET: [NSUserDefaults defaultAETitle]
+                                                   calledAET: [server objectForKey:@"AETitle"]
+                                                    hostname: [server objectForKey:@"Address"]
+                                                        port: [[server objectForKey:@"Port"] intValue]
+                                                 filesToSend: files
+                                              transferSyntax: [[NSUserDefaults standardUserDefaults] integerForKey:@"syntaxListOffis"]
+                                                 compression: 1.0
+                                             extraParameters: server];
+        
+        @try
+        {
+            [storeSCU run:self];
+        }
+        
+        @catch( NSException *ne)
+        {
+            [self performSelectorOnMainThread:@selector(showErrorMessage:) withObject:ne waitUntilDone: NO];
+        }
+        
+        [storeSCU release];
+        storeSCU = nil;
     }
-    
-    @catch( NSException *ne)
-    {
-        [self performSelectorOnMainThread:@selector(showErrorMessage:) withObject:ne waitUntilDone: NO];
-    }
-    
-    [storeSCU release];
-    storeSCU = nil;
-    
-    [pool release];
 }
 
 - (void) dealloc
