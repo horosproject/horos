@@ -45,9 +45,6 @@
 - (BOOL)performPluginDragOperation:(id <NSDraggingInfo>)sender destination:(ViewerController*)vc;
 @end
 
-#import "Schedulable.h"
-#import "Scheduler.h"
-#import "StaticScheduler.h"
 #import "OSIWindowController.h"
 
 extern BOOL SyncButtonBehaviorIsBetweenStudies;
@@ -64,7 +61,7 @@ enum
 
 /** \brief Window Controller for 2D Viewer*/
 
-@interface ViewerController : OSIWindowController  <Schedulable, NSWindowDelegate, NSSplitViewDelegate, NSToolbarDelegate>
+@interface ViewerController : OSIWindowController  <NSWindowDelegate, NSSplitViewDelegate, NSToolbarDelegate>
 {
 	NSRecursiveLock	*roiLock;
 	NSConditionLock *flipDataThread, *convThread;

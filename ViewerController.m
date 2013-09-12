@@ -66,7 +66,7 @@
 #import "OsiriX/DCMAbstractSyntaxUID.h"
 #import "printView.h"
 #import "ITKTransform.h"
-#import "LLScoutViewer.h"
+//#import "LLScoutViewer.h"
 #import "DicomStudy.h"
 #import "KeyObjectController.h"
 #import "KeyObjectPopupController.h"
@@ -186,6 +186,88 @@ NSInteger sortROIByName(id roi1, id roi2, void *context)
     NSString *n2 = [roi2 name];
     return [n1 compare:n2 options:NSNumericSearch];
 }
+
+@interface ViewerControllerOperation: NSOperation
+{
+    ViewerController *ctrl;
+    NSDictionary *dict;
+}
+
+- (id) initWithController:(ViewerController*) c dict: (NSDictionary*) d;
+
+@end
+
+@implementation ViewerControllerOperation
+
+- (id) initWithController:(ViewerController*) c dict: (NSDictionary*) d;
+{
+    self = [super init];
+    
+    ctrl = [c retain];
+    dict = [d retain];
+    
+    return self;
+}
+
+- (void) main
+{
+    @autoreleasepool
+    {
+#ifndef OSIRIX_LIGHT
+        // ** Set Pixels
+        
+        if( [[dict valueForKey:@"action"] isEqualToString:@"setPixel"])
+        {
+            [[dict objectForKey:@"curPix"]	fillROI:		nil
+                                              newVal:			[[dict objectForKey:@"newValue"] floatValue]
+                                            minValue:		[[dict objectForKey:@"minValue"] floatValue]
+                                            maxValue:		[[dict objectForKey:@"maxValue"] floatValue]
+                                             outside:		[[dict objectForKey:@"outside"] boolValue]
+                                    orientationStack:2
+                                             stackNo:		[[dict objectForKey:@"stackNo"] intValue]
+                                             restore:		[[dict objectForKey:@"revert"] boolValue]
+                                            addition:		[[dict objectForKey:@"addition"] boolValue]];
+        }
+        
+        if( [[dict valueForKey:@"action"] isEqualToString:@"setPixelRoi"])
+        {
+            [[dict objectForKey:@"curPix"]	fillROI:			[dict objectForKey:@"roi"]
+                                              newVal:				[[dict objectForKey:@"newValue"] floatValue]
+                                            minValue:			[[dict objectForKey:@"minValue"] floatValue]
+                                            maxValue:			[[dict objectForKey:@"maxValue"] floatValue]
+                                             outside:			[[dict objectForKey:@"outside"] boolValue]
+                                    orientationStack:	2
+                                             stackNo:			[[dict objectForKey:@"stackNo"] intValue]
+                                             restore:			[[dict objectForKey:@"revert"] boolValue]
+                                            addition:			[[dict objectForKey:@"addition"] boolValue]];
+        }
+        // ** Math Morphology
+        
+        if( [[dict valueForKey:@"action"] isEqualToString:@"close"])
+            [[dict objectForKey:@"filter"] close: [dict objectForKey:@"roi"] withStructuringElementRadius: [[dict objectForKey:@"radius"] intValue]];
+        
+        if( [[dict valueForKey:@"action"] isEqualToString:@"open"])
+            [[dict objectForKey:@"filter"] open: [dict objectForKey:@"roi"] withStructuringElementRadius: [[dict objectForKey:@"radius"] intValue]];
+        
+        if( [[dict valueForKey:@"action"] isEqualToString:@"dilate"])
+            [[dict objectForKey:@"filter"] dilate: [dict objectForKey:@"roi"] withStructuringElementRadius: [[dict objectForKey:@"radius"] intValue]];
+        
+        if( [[dict valueForKey:@"action"] isEqualToString:@"erode"])
+            [[dict objectForKey:@"filter"] erode: [dict objectForKey:@"roi"] withStructuringElementRadius: [[dict objectForKey:@"radius"] intValue]];
+#endif
+
+    }
+}
+
+- (void) dealloc
+{
+    [ctrl release];
+    [dict release];
+    [super dealloc];
+}
+
+@end
+
 
 @interface ViewerController (Private)
 
@@ -12047,20 +12129,20 @@ short				matrix[25];
 		
 		break;
 		
-		#ifndef OSIRIX_LIGHT
-		case 9: // LL
-		{
-			[self checkEverythingLoaded];
-			[bc checkEverythingLoaded];
-			if([LLScoutViewer verifyRequiredConditions:[self pixList] :[bc pixList]])
-			{
-				LLScoutViewer *llScoutViewer;
-				llScoutViewer = [[LLScoutViewer alloc] initWithPixList: pixList[0] :fileList[0] :volumeData[0] :self :bc];
-				[llScoutViewer showWindow:self];
-			}
-		}
-		break;
-		#endif
+//		#ifndef OSIRIX_LIGHT
+//		case 9: // LL
+//		{
+//			[self checkEverythingLoaded];
+//			[bc checkEverythingLoaded];
+//			if([LLScoutViewer verifyRequiredConditions:[self pixList] :[bc pixList]])
+//			{
+//				LLScoutViewer *llScoutViewer;
+//				llScoutViewer = [[LLScoutViewer alloc] initWithPixList: pixList[0] :fileList[0] :volumeData[0] :self :bc];
+//				[llScoutViewer showWindow:self];
+//			}
+//		}
+//		break;
+//		#endif
 		
 		case 10:	// Copy ROIs
 		{
@@ -13632,22 +13714,26 @@ int i,j,l;
 	#ifndef OSIRIX_LIGHT
 	if( [roiToProceed count])
 	{
-		// Create a scheduler
-		id sched = [[StaticScheduler alloc] initForSchedulableObject: self];
-		[sched setDelegate: self];
-		
-		// Create the work units.
-		NSMutableSet *unitsSet = [NSMutableSet set];
-		for ( id loopItem in roiToProceed)
-		{
-			[unitsSet addObject: loopItem];
-		}
-		
-		[sched performScheduleForWorkUnits:unitsSet];
-		
-		while( [sched numberOfDetachedThreads] > 0) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
-		
-		[sched release];
+        [roiLock lock];
+        
+        @try
+        {
+            NSOperationQueue *queue = [[[NSOperationQueue alloc] init] autorelease];
+            
+            for( id loopItem in roiToProceed)
+            {
+                ViewerControllerOperation *op = [[[ViewerControllerOperation alloc] initWithController: self dict: loopItem] autorelease];
+                
+                [queue addOperation: op];
+            }
+            
+            [queue waitUntilAllOperationsAreFinished];
+        }
+        @catch (NSException *exception) {
+            N2LogException( exception);
+        }
+        
+        [roiLock unlock];
 	}
 	#endif
 }
@@ -14826,67 +14912,12 @@ int i,j,l;
 
 - (NSRecursiveLock*) roiLock { return roiLock;}
 
-//obligatory class for protocol Schedulable.h
--(void)performWorkUnits:(NSSet *)workUnits forScheduler:(Scheduler *)scheduler
-{
-	#ifndef OSIRIX_LIGHT
-	NSDictionary	*object;
-	
-	for (object in workUnits)
-	{
-		// ** Set Pixels
-		
-		if( [[object valueForKey:@"action"] isEqualToString:@"setPixel"])
-		{
-			[[object objectForKey:@"curPix"]	fillROI:		nil
-												newVal:			[[object objectForKey:@"newValue"] floatValue]
-												minValue:		[[object objectForKey:@"minValue"] floatValue]
-												maxValue:		[[object objectForKey:@"maxValue"] floatValue]
-												outside:		[[object objectForKey:@"outside"] boolValue]
-												orientationStack:2
-												stackNo:		[[object objectForKey:@"stackNo"] intValue]
-												restore:		[[object objectForKey:@"revert"] boolValue]
-												addition:		[[object objectForKey:@"addition"] boolValue]];
-		}
-		
-		if( [[object valueForKey:@"action"] isEqualToString:@"setPixelRoi"])
-		{
-			[[object objectForKey:@"curPix"]	fillROI:			[object objectForKey:@"roi"]
-												newVal:				[[object objectForKey:@"newValue"] floatValue]
-												minValue:			[[object objectForKey:@"minValue"] floatValue]
-												maxValue:			[[object objectForKey:@"maxValue"] floatValue]
-												outside:			[[object objectForKey:@"outside"] boolValue]
-												orientationStack:	2
-												stackNo:			[[object objectForKey:@"stackNo"] intValue]
-												restore:			[[object objectForKey:@"revert"] boolValue]
-												addition:			[[object objectForKey:@"addition"] boolValue]];
-		}
-		// ** Math Morphology
-		
-		if( [[object valueForKey:@"action"] isEqualToString:@"close"])
-			[[object objectForKey:@"filter"] close: [object objectForKey:@"roi"] withStructuringElementRadius: [[object objectForKey:@"radius"] intValue]];
-		
-		if( [[object valueForKey:@"action"] isEqualToString:@"open"])
-			[[object objectForKey:@"filter"] open: [object objectForKey:@"roi"] withStructuringElementRadius: [[object objectForKey:@"radius"] intValue]];
-		
-		if( [[object valueForKey:@"action"] isEqualToString:@"dilate"])
-			[[object objectForKey:@"filter"] dilate: [object objectForKey:@"roi"] withStructuringElementRadius: [[object objectForKey:@"radius"] intValue]];
-		
-		if( [[object valueForKey:@"action"] isEqualToString:@"erode"])
-			[[object objectForKey:@"filter"] erode: [object objectForKey:@"roi"] withStructuringElementRadius: [[object objectForKey:@"radius"] intValue]];
-	}
-	#endif
-}
-
 #ifndef OSIRIX_LIGHT
 - (void) applyMorphology: (NSArray*) rois action:(NSString*) action	radius: (long) radius sendNotification: (BOOL) sendNotification
 {
 	NSLog( @"****** applyMorphology - START");
 	
-	// Create a scheduler
-	id sched = [[StaticScheduler alloc] initForSchedulableObject: self];
-	[sched setDelegate: self];
-	
+    
 	[roiLock lock];
 	
 	ITKBrushROIFilter *filter = nil;
@@ -14895,18 +14926,16 @@ int i,j,l;
 	{
 		filter = [[ITKBrushROIFilter alloc] init];
 		
-		// Create the work units.
-		NSMutableSet *unitsSet = [NSMutableSet set];
-		for ( int i = 0; i < [rois count]; i++)
-		{
-			[unitsSet addObject: [NSDictionary dictionaryWithObjectsAndKeys: [rois objectAtIndex:i], @"roi", action, @"action", filter, @"filter", [NSNumber numberWithInt: radius], @"radius", nil]];
-		}
-		
-		[sched performScheduleForWorkUnits:unitsSet];
-		
-		while( [sched numberOfDetachedThreads] > 0) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
-		
-		[sched release];
+        NSOperationQueue *queue = [[[NSOperationQueue alloc] init] autorelease];
+        
+        for ( int i = 0; i < [rois count]; i++)
+        {
+            ViewerControllerOperation *op = [[[ViewerControllerOperation alloc] initWithController: self dict: [NSDictionary dictionaryWithObjectsAndKeys: [rois objectAtIndex:i], @"roi", action, @"action", filter, @"filter", [NSNumber numberWithInt: radius], @"radius", nil]] autorelease];
+            
+            [queue addOperation: op];
+        }
+        
+        [queue waitUntilAllOperationsAreFinished];
 	}
 	@catch (NSException * e) 
 	{

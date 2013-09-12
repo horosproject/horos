@@ -18,6 +18,71 @@
 
 #include <Accelerate/Accelerate.h>
 
+@interface ResliceOperation: NSOperation
+{
+    NSDictionary *dict;
+}
+
+- (id) initWithDict:(NSDictionary *) d;
+
+@end
+
+@implementation ResliceOperation
+
+- (id) initWithDict:(NSDictionary *) d
+{
+    self = [super init];
+    dict = [d retain];
+    
+    return self;
+}
+
+- (void) main
+{
+    @autoreleasepool
+    {
+        NSLog( @"+");
+        
+        NSArray *originalDCMPixList = [dict objectForKey: @"DCMPixArray"];
+        DCMPix *fPix = [originalDCMPixList objectAtIndex: 0];
+        float *Ycache = [[dict objectForKey: @"Ycache"] pointerValue];
+        
+        int	z;
+        const register int maxY = [fPix pheight];
+        const register int maxX = [fPix pwidth];
+        
+        z = [[dict objectForKey:@"zValue"] intValue];
+        
+        register float *basedstPtr = Ycache + z*maxY*maxX;
+        register float *basesrcPtr = [[originalDCMPixList objectAtIndex: z] fImage];
+        register int x = maxX;
+        while (x-->0)
+        {
+            register float *dstPtr = basedstPtr;
+            register float *srcPtr = basesrcPtr;
+            
+            basedstPtr += maxY;
+            basesrcPtr++;
+            
+            register int yy = maxY;
+            while (yy-->0)
+            {
+                *dstPtr++ = *srcPtr;
+                srcPtr += maxX;
+            }
+        }
+    }
+}
+
+- (void) dealloc
+{
+    [dict release];
+    [super dealloc];
+}
+
+@end
+
+
 @implementation OrthogonalReslice
 
 - (id) init
@@ -29,10 +94,9 @@
 		
 		newPixListX = [[NSMutableArray alloc] initWithCapacity: 0];
 		newPixListY = [[NSMutableArray alloc] initWithCapacity: 0];
-		yCacheComputation = [[NSLock alloc] init];
 		
 		thickSlab = 1;
-		Ycache = 0;
+		Ycache = nil;
 		useYcache = YES;
 	}
 	return self;
@@ -67,12 +131,11 @@
 
 -(void) dealloc
 {
-	[yCacheComputation lock];
-	[yCacheComputation unlock];
-	
+    while( yCacheQueue.operationCount > 0)
+        [NSThread sleepForTimeInterval: 0.1];
+    [yCacheQueue release];
 	if( Ycache) free( Ycache);
 	
-	[yCacheComputation release];
 	[processorsLock release];
 	[xReslicedDCMPixList release];
 	[yReslicedDCMPixList release];
@@ -123,50 +186,6 @@
 	
 	[self yReslice:x];
 	[self xReslice:y];
-}
-
--(void) schedulerDidFinishSchedule: (Scheduler *)scheduler
-{
-	[yCacheComputation unlock];
-	[scheduler release];
-	
-	NSLog( @"end YCache");
-}
-
--(void) performWorkUnits:(NSSet *)workUnits forScheduler:(Scheduler *)scheduler
-{
-	DCMPix *fPix = [originalDCMPixList objectAtIndex: 0];
-	NSDictionary *object;
-	int	z;
-	const register int maxY = [fPix pheight];
-	const register int maxX = [fPix pwidth];
-	
-	for (object in workUnits)
-	{
-		if( [[object objectForKey:@"action"] isEqualToString: @"Ycache"])
-		{
-			z = [[object objectForKey:@"zValue"] intValue];
-			
-			register float *basedstPtr = Ycache + z*maxY*maxX;
-			register float *basesrcPtr = [[originalDCMPixList objectAtIndex: z] fImage];
-			register int x = maxX;
-			while (x-->0)
-			{
-				register float *dstPtr = basedstPtr;
-				register float *srcPtr = basesrcPtr;
-				
-				basedstPtr += maxY;
-				basesrcPtr++;
-				
-				register int yy = maxY;
-				while (yy-->0)
-				{
-					*dstPtr++ = *srcPtr;
-					srcPtr += maxX;
-				}
-			}
-		}
-	}
 }
 
 - (void) subReslice:(NSNumber*) posNumber
@@ -221,9 +240,8 @@
 			
 			DCMPix *curPix = [newPixListY objectAtIndex: stack];
 			
-			if( Ycache && [yCacheComputation tryLock])
+			if( Ycache && yCacheQueue.operationCount == 0)
 			{
-				[yCacheComputation unlock];
 //				BlockMoveData(	Ycache + newY*newX*i,
 //								[curPix fImage],
 //								newX * newY *sizeof(float));
@@ -365,21 +383,15 @@
 			if( Ycache)
 			{
 				NSLog( @"start YCache");
-				[yCacheComputation lock];
 				
-				// Create a scheduler
-				id sched = [[StaticScheduler alloc] initForSchedulableObject: self];
-				[sched setDelegate: self];
-				
-				// Create the work units.
-				NSMutableSet *unitsSet = [NSMutableSet set];
-				for ( x = 0; x < newY; x ++)
-				{
-					[unitsSet addObject: [NSDictionary dictionaryWithObjectsAndKeys: @"Ycache", @"action", [NSNumber numberWithInt:x], @"zValue", nil]];
-				}
-				
-				// Perform work schedule
-				[sched performScheduleForWorkUnits:unitsSet];
+                yCacheQueue = [[NSOperationQueue alloc] init];
+                
+                for ( x = 0; x < newY; x ++)
+                {
+                    ResliceOperation *op = [[[ResliceOperation alloc] initWithDict: [NSDictionary dictionaryWithObjectsAndKeys: [NSValue valueWithPointer: Ycache], @"Ycache", [NSNumber numberWithInt:x], @"zValue", originalDCMPixList, @"DCMPixArray", nil]] autorelease];
+                    
+                    [yCacheQueue addOperation: op];
+                }
 			}
 		}
 	}
@@ -605,9 +617,6 @@
 
 - (void)freeYCache;
 {
-	[yCacheComputation lock];
-	[yCacheComputation unlock];
-	
 	if(Ycache) free(Ycache);
 	Ycache = nil;
 }

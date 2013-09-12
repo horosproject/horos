@@ -15,13 +15,9 @@
 #import <Cocoa/Cocoa.h>
 #import "DCMPix.h"
 
-#import "Schedulable.h"
-#import "Scheduler.h"
-#import "StaticScheduler.h"
-
 /** \brief Reslcie volume sagittally and Coronally */
 
-@interface OrthogonalReslice : NSObject  <Schedulable> {
+@interface OrthogonalReslice : NSObject {
 	NSMutableArray		*originalDCMPixList, *xReslicedDCMPixList, *yReslicedDCMPixList;
 	NSMutableArray		*newPixListX, *newPixListY;
 	short				thickSlab;
@@ -35,7 +31,8 @@
 	long				minI, maxI, newX, newY, newTotal, currentAxe;
 	DCMPix				*firstPix;
 	
-	NSLock				*processorsLock, *yCacheComputation;
+    NSOperationQueue    *yCacheQueue;
+	NSLock				*processorsLock;
 	volatile int		numberOfThreadsForCompute;
 }
 

@@ -169,10 +169,6 @@ typedef char* VTKStereoVRView;
 #import "ViewerController.h"
 #import "WaitRendering.h"
 
-#import "Schedulable.h"
-#import "Scheduler.h"
-#import "StaticScheduler.h"
-
 @class DICOMExport;
 @class Camera;
 @class VRController;
@@ -189,7 +185,7 @@ typedef char* VTKStereoVRView;
 #define VTKView NSView
 #endif
 
-@interface VRView : VTKView <Schedulable>
+@interface VRView : VTKView
 {
 	NSTimer						*autoRotate, *startAutoRotate;
 	BOOL						isRotating, flyto;

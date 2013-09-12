@@ -16,10 +16,6 @@
 #import "DCMPix.h"
 #import "DCMView.h"
 
-#import "Schedulable.h"
-#import "Scheduler.h"
-#import "StaticScheduler.h"
-
 @interface LLSubtraction : NSObject {
 
 }

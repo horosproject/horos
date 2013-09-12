@@ -210,6 +210,47 @@ public:
     }
 };
 
+
+@interface VRViewOperation: NSOperation
+{
+    VRController *controller;
+    NSArray *objects;
+}
+
+- (id) initWithController:(VRController*) c objects: (NSArray*) objects;
+
+@end
+
+@implementation VRViewOperation
+
+- (id) initWithController:(VRController*) c objects:(NSArray *) o
+{
+    self = [super init];
+    
+    controller = [c retain];
+    objects = [o retain];
+    
+    return self;
+}
+
+- (void) main
+{
+    @autoreleasepool
+    {
+        [controller applyScissor: objects];
+    }
+}
+
+- (void) dealloc
+{
+    [controller release];
+    [objects release];
+    [super dealloc];
+}
+
+@end
+
+
 @implementation VRView
 
 #ifdef _STEREO_VISION_
@@ -4728,25 +4769,52 @@ public:
 		
 		[[[controller curPixList] objectAtIndex: 0] prepareRestore];
 		
-		// Create a scheduler
-		StaticScheduler *deleteRegionScheduler = [[StaticScheduler alloc] initForSchedulableObject: self];
-		[deleteRegionScheduler setDelegate: self];
-		
-		// Create the work units. These can be anything. We will use NSNumbers
-		NSMutableSet *unitsSet = [NSMutableSet set];
-		for ( i = 0; i < stackMax; i++ )
-		{
-			[unitsSet addObject: [NSArray arrayWithObjects: [NSNumber numberWithInt:i], [NSNumber numberWithInt:stackOrientation], [NSNumber numberWithInt: c], [ROIList objectAtIndex: i], [NSNumber numberWithInt: blendedSeries], [NSNumber numberWithBool: addition], [NSNumber numberWithFloat: newVal], nil]];
-		}
-		// Perform work schedule
-		[deleteRegionScheduler performScheduleForWorkUnits: unitsSet];
-		
-		while( [deleteRegionScheduler numberOfDetachedThreads] > 0) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
-		
-		[deleteRegionScheduler release];
-		
+        
+        
+        NSOperationQueue *queue = [[[NSOperationQueue alloc] init] autorelease];
+        
+        for ( i = 0; i < stackMax; i++ )
+        {
+            VRViewOperation *op = [[[VRViewOperation alloc] initWithController: controller objects: [NSArray arrayWithObjects: [NSNumber numberWithInt:i], [NSNumber numberWithInt:stackOrientation], [NSNumber numberWithInt: c], [ROIList objectAtIndex: i], [NSNumber numberWithInt: blendedSeries], [NSNumber numberWithBool: addition], [NSNumber numberWithFloat: newVal], nil]] autorelease];
+            
+            [queue addOperation: op];
+        }
+        
+        [queue waitUntilAllOperationsAreFinished];
+        
+        
+        
 		[[[controller curPixList] objectAtIndex: 0] freeRestore];
 	}
+    
+    // Update everything..
+    ROIUPDATE = NO;
+    [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateVolumeDataNotification object: pixList userInfo: [NSDictionary dictionaryWithObject: self forKey: @"sender"]];
+    
+    if( cropcallback)
+        cropcallback->Execute(croppingBox, 0, nil);
+    
+    if( textureMapper || gDataValuesChanged)
+    {
+        [self computeValueFactor];
+        // Force min/max recomputing
+        [self movieChangeSource: data];
+        
+        gDataValuesChanged = NO;
+    }
+    else
+    {
+        if( isRGB == NO)
+            [BrowserController multiThreadedImageConvert: @"FTo16U" :&srcf :&dst8 :-OFFSET16 :1./valueFactor];
+    }
+    
+    if( clutOpacityView)
+    {
+        [clutOpacityView callComputeHistogram];
+        [clutOpacityView updateView];
+    }
+    
+    [self setNeedsDisplay:YES];
     
     dontRenderVolumeRenderingOsiriX = 0;
     aRenderer->SetDraw( 1);
@@ -4759,6 +4827,8 @@ public:
 	ROI3DData-> SetPoints( pts);		pts->Delete();
 	ROI3DData-> SetLines( rect);		rect->Delete();
 	[ROIPoints removeAllObjects];
+    
+    NSLog(@"Scissor End");
 }
 
 #define FLYTO 30
@@ -4997,6 +5067,8 @@ public:
 			if( [deleteRegion tryLock])
 			{
 				[self deleteRegion: c :pixList :NO];
+                
+                [deleteRegion unlock];
 			}
 			
 //			if( blendingController)
@@ -5045,67 +5117,6 @@ public:
 //	}	
 //}
 
--(void) schedulerDidFinishSchedule: (Scheduler *)scheduler
-{
-	NSLog(@"Scissor End");
-	
-	// Update everything..
-	ROIUPDATE = NO;
-	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateVolumeDataNotification object: pixList userInfo: [NSDictionary dictionaryWithObject: self forKey: @"sender"]];
-	
-	if( cropcallback)
-		cropcallback->Execute(croppingBox, 0, nil);
-	
-	if( textureMapper || gDataValuesChanged)
-	{
-//		double a[ 6];
-//		BOOL validBox = [VRView getCroppingBox: a :volume :croppingBox];
-	
-		[self computeValueFactor];
-		// Force min/max recomputing
-		[self movieChangeSource: data];
-		
-		gDataValuesChanged = NO;
-		
-//		if( validBox)
-//		{
-//			[self setCroppingBox: a];
-//			
-//			[VRView getCroppingBox: a :blendingVolume :croppingBox];
-//			[self setBlendingCroppingBox: a];
-//		}
-	}
-	else
-	{
-		if( isRGB == NO)
-//			vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
-			[BrowserController multiThreadedImageConvert: @"FTo16U" :&srcf :&dst8 :-OFFSET16 :1./valueFactor];
-	}
-	
-//	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontAutoCropScissors"] == NO)
-//		[self autoCroppingBox];
-	
-	[self setNeedsDisplay:YES];
-	
-	[deleteRegion unlock];
-	
-	if(clutOpacityView)
-	{
-		[clutOpacityView callComputeHistogram];
-		[clutOpacityView updateView];
-	}
-}
-
--(void)performWorkUnits:(NSSet *)workUnits forScheduler:(Scheduler *)scheduler
-{
-	NSEnumerator *enumerator = [workUnits objectEnumerator];
-	NSArray	*object;
-	
-	while (object = [enumerator nextObject])
-	{
-		[controller applyScissor :object];
-	}
-}
 
 - (IBAction) undo:(id) sender
 {

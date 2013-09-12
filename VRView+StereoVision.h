@@ -152,10 +152,6 @@ typedef char* vtkMyCallbackVR;*/
 #import "ViewerController.h"
 #import "WaitRendering.h"
 
-#import "Schedulable.h"
-#import "Scheduler.h"
-#import "StaticScheduler.h"
-
 @class DICOMExport;
 @class Camera;
 @class VRController;
