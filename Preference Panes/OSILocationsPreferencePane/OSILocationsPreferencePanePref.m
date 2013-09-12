@@ -662,9 +662,8 @@
     {
         self.testingNodes = YES;
         
-        for( int i = 0 ; i < [serverList count]; i++)
+        for( NSMutableDictionary *aServer in [NSArray arrayWithArray: serverList])
         {
-            NSMutableDictionary *aServer = [serverList objectAtIndex: i];
             int status;
             
             if( [[aServer objectForKey: @"Activated"] boolValue] && [OSILocationsPreferencePanePref echoServer:aServer])
