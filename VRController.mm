@@ -1988,7 +1988,12 @@ return YES;
     for (id key in [PluginManager plugins])
     {
         if ([[[PluginManager plugins] objectForKey:key] respondsToSelector:@selector(toolbarItemForItemIdentifier:forVRViewer:)])
-            toolbarItem = [[[PluginManager plugins] objectForKey:key] toolbarItemForItemIdentifier: itemIdent forVRViewer: self];
+        {
+            NSToolbarItem *item = [[[PluginManager plugins] objectForKey:key] toolbarItemForItemIdentifier: itemIdent forVRViewer: self];
+            
+            if( item)
+                toolbarItem = item;
+        }
     }
     
 	return toolbarItem;

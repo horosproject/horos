@@ -18257,7 +18257,12 @@ static volatile int numberOfThreadsForJPEG = 0;
         for (id key in [PluginManager plugins])
         {
             if ([[[PluginManager plugins] objectForKey:key] respondsToSelector:@selector(toolbarItemForItemIdentifier:forBrowserController:)])
-                toolbarItem = [[[PluginManager plugins] objectForKey:key] toolbarItemForItemIdentifier: itemIdent forBrowserController: self];
+            {
+                NSToolbarItem *item = [[[PluginManager plugins] objectForKey:key] toolbarItemForItemIdentifier: itemIdent forBrowserController: self];
+                
+                if( item)
+                    toolbarItem = item;
+            }
         }
 	}
     
