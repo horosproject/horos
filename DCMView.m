@@ -4974,6 +4974,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 #pragma mark Mouse dragging methods	
 - (void)mouseDragged:(NSEvent *)event
 {
+    if( curImage < 0)
+        return;
+    
     if( CGCursorIsVisible() == NO && lensTexture == nil) return; //For Synergy compatibility
     
 	if ([self eventToPlugins:event]) return;
@@ -12353,11 +12356,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		{
 			[self setCOPYSETTINGSINSERIESdirectly: aView.COPYSETTINGSINSERIES];
 			
-			if( curImage >= 0 && COPYSETTINGSINSERIES == NO)
+			if( curImage < 0)
 			{
 				
 			}
-			else
+			else if( COPYSETTINGSINSERIES)
 			{
 				if( [aView curWL] != 0 && [aView curWW] != 0)
 				{
@@ -12367,23 +12370,23 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				self.scaleValue = aView.scaleValue;
 				self.rotation = aView.rotation;
 				[self setOrigin: [aView origin]];
-			}
 			
-			self.xFlipped = aView.xFlipped;
-			self.yFlipped = aView.yFlipped;
-			
-			// Blending
-			if (blendingView != aView.blendingView)
-				self.blendingView = aView.blendingView;
-			if (blendingFactor != aView.blendingFactor)
-				self.blendingFactor = aView.blendingFactor;
-			if (blendingMode != aView.blendingMode)
-				self.blendingMode = aView.blendingMode;
-			
-			// CLUT
-			unsigned char *aR, *aG, *aB;
-			[aView getCLUT: &aR :&aG :&aB];
-			[self setCLUT:aR :aG: aB];
+                self.xFlipped = aView.xFlipped;
+                self.yFlipped = aView.yFlipped;
+                
+                // Blending
+                if (blendingView != aView.blendingView)
+                    self.blendingView = aView.blendingView;
+                if (blendingFactor != aView.blendingFactor)
+                    self.blendingFactor = aView.blendingFactor;
+                if (blendingMode != aView.blendingMode)
+                    self.blendingMode = aView.blendingMode;
+                
+                // CLUT
+                unsigned char *aR, *aG, *aB;
+                [aView getCLUT: &aR :&aG :&aB];
+                [self setCLUT:aR :aG: aB];
+            }
 		}
 		
 		self.flippedData = aView.flippedData;
