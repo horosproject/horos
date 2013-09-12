@@ -1205,15 +1205,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	long no;
 	
 	drawingROI = NO;
-	for( long i = 0; i < [curRoiList count]; i++)
+	for( ROI *r in curRoiList)
 	{
-		if( curROI != [curRoiList objectAtIndex:i] )
+		if( curROI != r )
 		{
-			if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selectedModify || [[curRoiList objectAtIndex:i] ROImode] == ROI_drawing)
-			{
-				ROI	*roi = [curRoiList objectAtIndex:i];
-				[roi setROIMode: ROI_selected];
-			}
+			if( [r ROImode] == ROI_selectedModify || [r ROImode] == ROI_drawing)
+				[r setROIMode: ROI_selected];
 		}
 	}
 	
@@ -1282,7 +1279,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (void) roiLoadFromFilesArray: (NSArray*) filenames
 {
 	// Unselect all ROIs
-	for( int i = 0 ; i < [curRoiList count] ; i++) [[curRoiList objectAtIndex: i] setROIMode: ROI_sleep];
+	for( ROI *r in curRoiList) [r setROIMode: ROI_sleep];
 	
 	for( NSString *path in filenames)
 	{
@@ -1315,9 +1312,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
     if ([item action] == @selector(roiSaveSelected:) || [item action] == @selector(increaseThickness:) || [item action] == @selector(decreaseThickness:))
 	{
-		for( id loopItem in curRoiList)
+		for( ROI *r in curRoiList)
 		{
-			if( [loopItem ROImode] == ROI_selected) valid = YES;
+			if( [r ROImode] == ROI_selected) valid = YES;
 		}
     }
     else if( [item action] == @selector(copy:) && [item tag] == 1) // copy all viewers
@@ -1380,10 +1377,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	NSMutableArray  *selectedROIs = [NSMutableArray  array];
 	
-	for( i = 0; i < [curRoiList count]; i++)
+	for( ROI *r in curRoiList)
 	{
-		if( [[curRoiList objectAtIndex: i] ROImode] == ROI_selected)
-			[selectedROIs addObject: [curRoiList objectAtIndex: i]];
+		if( [r ROImode] == ROI_selected)
+			[selectedROIs addObject: r];
 	}
 	
 	if( [selectedROIs count] > 0)
@@ -1470,7 +1467,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	
 	// Unselect all ROIs
-	for( i = 0 ; i < [curRoiList count] ; i++) [[curRoiList objectAtIndex: i] setROIMode: ROI_sleep];
+	for( ROI *r in curRoiList) [r setROIMode: ROI_sleep];
 	
 	for( i = 0; i < [filenames count]; i++)
 	{
@@ -1562,13 +1559,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	BOOL			roiSelected = NO;
 	NSMutableArray  *roiSelectedArray = [NSMutableArray array];
 	
-	for( long i = 0; i < [curRoiList count]; i++)
+	for( ROI *r in curRoiList)
 	{
-		if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
+		if( [r ROImode] == ROI_selected)
 		{
 			roiSelected = YES;
 			
-			[roiSelectedArray addObject: [curRoiList objectAtIndex:i]];
+			[roiSelectedArray addObject: r];
 		}
 	}
 
@@ -1898,7 +1895,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	if( keepROITool == NO)
 	{
 		// Unselect previous ROIs
-		for( i = 0; i < [curRoiList count]; i++) [[curRoiList objectAtIndex: i] setROIMode : ROI_sleep];
+		for( ROI *r in curRoiList) [r setROIMode : ROI_sleep];
 	}
 	
 	NSEvent *event = [[NSApplication sharedApplication] currentEvent];
@@ -2036,12 +2033,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		if( dcmRoiList) curRoiList = [[dcmRoiList objectAtIndex: curImage] retain];
 		else 			curRoiList = [[NSMutableArray alloc] initWithCapacity:0];
 		
-		for( int i = 0; i < [curRoiList count]; i++ )
+		for( ROI *r in curRoiList)
 		{
-			[[curRoiList objectAtIndex:i ] setRoiView :self];
-			[[curRoiList objectAtIndex:i ] recompute];
+			[r setRoiView :self];
+			[r recompute];
 			// Unselect previous ROIs
-			[[curRoiList objectAtIndex: i] setROIMode : ROI_sleep];
+			[r setROIMode : ROI_sleep];
 		}
 		
 		curWL = curDCM.wl;
@@ -2480,11 +2477,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				curRoiList = [[NSMutableArray alloc] initWithCapacity:0];
 
 			keepIt = NO;
-			for( int i = 0; i < [curRoiList count]; i++ )
+			for( ROI *r in curRoiList)
 			{
-				[[curRoiList objectAtIndex:i ] setRoiView :self];
-				[[curRoiList objectAtIndex:i ] recompute];
-				if( curROI == [curRoiList objectAtIndex:i ]) keepIt = YES;
+				[r setRoiView :self];
+				[r recompute];
+				if( curROI == r) keepIt = YES;
 			}
 			
 			if( keepIt == NO)
@@ -3189,13 +3186,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				
 				tempPt = [self ConvertFromNSView2GL:tempPt];
 				
-				for( long i = 0; i < [curRoiList count]; i++)
+				for( ROI *r in curRoiList)
 				{
-					[[curRoiList objectAtIndex:i] mouseRoiUp: tempPt scaleValue: (float) scaleValue];
+					[r mouseRoiUp: tempPt scaleValue: (float) scaleValue];
 					
-					if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
+					if( [r ROImode] == ROI_selected)
 					{
-						[nc postNotificationName: OsirixROISelectedNotification object: [curRoiList objectAtIndex:i] userInfo: nil];
+						[nc postNotificationName: OsirixROISelectedNotification object: r userInfo: nil];
 						break;
 					}
 				}
@@ -3300,10 +3297,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (IBAction) selectAll: (id) sender
 {	
-	for( long i = 0; i < [curRoiList count]; i++)
+	for( ROI *r in curRoiList)
 	{
-		[[curRoiList objectAtIndex: i] setROIMode: ROI_selected];
-		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROISelectedNotification object: [curRoiList objectAtIndex: i] userInfo: nil];
+		[r setROIMode: ROI_selected];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROISelectedNotification object: r userInfo: nil];
 	}
 	
 	[self setNeedsDisplay:YES];
@@ -4120,9 +4117,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				tempPt = [self ConvertFromNSView2GL:tempPt];
 				
 				BOOL clickInROI = NO;
-				for( int i = 0; i < [curRoiList count]; i++)
+				for( ROI *r in curRoiList)
 				{
-					if([[curRoiList objectAtIndex: i] clickInROI:tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :YES])
+					if([r clickInROI:tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :YES])
 					{
 						clickInROI = YES;
 					}
@@ -4130,9 +4127,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 				if(!clickInROI)
 				{
-					for( int i = 0; i < [curRoiList count]; i++)
+					for( ROI *r in curRoiList)
 					{
-						if([[curRoiList objectAtIndex: i] clickInROI:tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :NO])
+						if([r clickInROI:tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :NO])
 						{
 							clickInROI = YES;
 						}
@@ -4213,10 +4210,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				// if shift key is pressed, we need to keep track of the ROIs that were selected before the click 
 				if([event modifierFlags] & NSShiftKeyMask)
 				{
-					for( int i=0; i<[curRoiList count]; i++ )
+					for( ROI *r in curRoiList)
 					{
-						if([[curRoiList objectAtIndex:i] ROImode]==ROI_selected)
-							[ROISelectorSelectedROIList addObject:[curRoiList objectAtIndex:i]];
+						if([r ROImode]==ROI_selected)
+							[ROISelectorSelectedROIList addObject: r];
 					}
 				}
 				
@@ -4233,9 +4230,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				tempPt = [self ConvertFromNSView2GL:tempPt];
 
 				BOOL clickInROI = NO;
-				for( int i = 0; i < [curRoiList count]; i++ )
+				for( ROI *r in curRoiList)
 				{
-					if([[curRoiList objectAtIndex: i] clickInROI:tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :YES])
+					if([r clickInROI:tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :YES])
 					{
 						clickInROI = YES;
 					}
@@ -4243,9 +4240,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 				if(!clickInROI)
 				{
-					for( int i = 0; i < [curRoiList count]; i++)
+					for( ROI *r in curRoiList)
 					{
-						if([[curRoiList objectAtIndex: i] clickInROI:tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :NO])
+						if([r clickInROI:tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :NO])
 						{
 							clickInROI = YES;
 						}
@@ -4305,9 +4302,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					
 					if( roiFound == NO)
 					{
-						for( int i = 0; i < [curRoiList count]; i++)
+						for( ROI *r in curRoiList)
 						{
-							if( [[curRoiList objectAtIndex: i] clickInROI: tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :NO])
+							if( [r clickInROI: tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :NO])
 							{
 								selected = i;
 								break;
@@ -4333,7 +4330,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						if( selected == -1 || ( [[curRoiList objectAtIndex: selected] ROImode] != ROI_selected &&  [[curRoiList objectAtIndex: selected] ROImode] != ROI_selectedModify))
 						{
 							// Unselect previous ROIs
-							for( i = 0; i < [curRoiList count]; i++) [[curRoiList objectAtIndex: i] setROIMode : ROI_sleep];
+							for( ROI *r in curRoiList) [r setROIMode : ROI_sleep];
 						}
 					}
 							
@@ -4407,7 +4404,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 							else
 							{
 								// Unselect previous ROIs
-								for( int i = 0; i < [curRoiList count]; i++) [[curRoiList objectAtIndex: i] setROIMode : ROI_sleep];
+								for( ROI *r in curRoiList) [r setROIMode : ROI_sleep];
 								
 								ROI*		aNewROI;
 								NSString	*roiName = nil, *finalName;
@@ -5553,15 +5550,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (NSMutableArray*) selectedROIs
 {
 	NSMutableArray *selectedRois = [NSMutableArray array];
-	int i;
-	
-	for( i = 0; i < [curRoiList count]; i++)
+	for( ROI *r in curRoiList)
 	{
-		long mode = [[curRoiList objectAtIndex: i] ROImode];
+		long mode = [r ROImode];
 			
 		if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
 		{
-			[selectedRois addObject: [curRoiList objectAtIndex: i]];
+			[selectedRois addObject: r];
 		}
 	}
 	
@@ -5678,13 +5673,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	NSMutableArray *points;
 	
 	// deselect all ROIs
-	for( int i=0; i<[curRoiList count]; i++ )
+	for( ROI *r in curRoiList)
 	{
 		// ROISelectorSelectedROIList contains ROIs that were selected _before_ the click
-		if([ROISelectorSelectedROIList containsObject:[curRoiList objectAtIndex:i]])// this will be possible only if shift key is pressed
-			[[curRoiList objectAtIndex:i] setROIMode:ROI_selected];
+		if([ROISelectorSelectedROIList containsObject: r])// this will be possible only if shift key is pressed
+			[r setROIMode:ROI_selected];
 		else
-			[[curRoiList objectAtIndex:i] setROIMode:ROI_sleep];
+			[r setROIMode:ROI_sleep];
 	}
 
 	NSRect frame = [self frame];
