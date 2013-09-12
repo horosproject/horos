@@ -5136,12 +5136,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			offset.x = - (previous.x - current.x) / scaleValue;
 			offset.y =  (previous.y - current.y) / scaleValue;
 			
-			for( int i = 0; i < [curRoiList count]; i++ )
+			for( ROI *r in curRoiList)
 			{
-				if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
+				if( [r ROImode] == ROI_selected)
 				{
 					action = YES;
-					[[curRoiList objectAtIndex:i] rotate: offset.x :rotatePoint];
+					[r rotate: offset.x :rotatePoint];
 				}
 			}
 		}
@@ -5162,12 +5162,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			resizeTotal *= ss;
 			
-			for( int i = 0; i < [curRoiList count]; i++)
+			for( ROI *r in curRoiList)
 			{
-				if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
+				if( [r ROImode] == ROI_selected)
 				{
 					action = YES;
-					[[curRoiList objectAtIndex:i] resize: ss :rotatePoint];
+					[r resize: ss :rotatePoint];
 				}
 			}
 		}
@@ -5194,19 +5194,19 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			offset.y /=  curDCM.pixelRatio;
 			// hit test for text box
-			for( int i = 0; i < [curRoiList count]; i++ )
+			for( ROI *r in curRoiList)
 			{
-				if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
+				if( [r ROImode] == ROI_selected)
 				{
-					if( [[curRoiList objectAtIndex: i] clickInTextBox]) textBoxMove = YES;
+					if( [r clickInTextBox]) textBoxMove = YES;
 				}
 			}
 			// Move text Box
 			if( textBoxMove)
 			{
-				for( int i = 0; i < [curRoiList count]; i++)
+				for( ROI *r in curRoiList)
 				{
-					if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
+					if( [r ROImode] == ROI_selected)
 					{
                         if( !mouseDraggedForROIUndo) {
                             mouseDraggedForROIUndo = YES;
@@ -5214,16 +5214,16 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                         }
                         
 						action = YES;
-						[[curRoiList objectAtIndex: i] setTextBoxOffset: offset];
+						[r setTextBoxOffset: offset];
 					}
 				}
 			}
 			// move ROI
 			else
 			{
-				for( int i = 0; i < [curRoiList count]; i++)
+				for( ROI *r in curRoiList)
 				{
-					if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected && [[curRoiList objectAtIndex:i] locked] == NO)
+					if( [r ROImode] == ROI_selected && [r locked] == NO && [r type] != tPlain)
 					{
                         if( !mouseDraggedForROIUndo) {
                             mouseDraggedForROIUndo = YES;
@@ -5231,7 +5231,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                         }
                         
 						action = YES;
-						[[curRoiList objectAtIndex:i] roiMove: offset];
+						[r roiMove: offset];
 					}
 				}
 			}
