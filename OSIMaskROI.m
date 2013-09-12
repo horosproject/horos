@@ -39,6 +39,7 @@
 {
     self.mask = nil;
     self.name = nil;
+    self.fillColor = nil;
     [_cachedMaskRunsData release];
     _cachedMaskRunsData = nil;
 
