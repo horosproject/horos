@@ -242,7 +242,8 @@
     NSValue *endpointValue;
 	
     if(state->state == 0) {
-        state->mutationsPtr = (unsigned long *)self;
+        [self length];
+        state->mutationsPtr = (unsigned long *)&(self->_length);
     }
     
     if (state->state >= [self elementCount]) {
