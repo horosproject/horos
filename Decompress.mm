@@ -1,9 +1,9 @@
 #import <Foundation/Foundation.h>
-#import <OsiriX/DCMObject.h>
-#import <OsiriX/DCM.h>
-#import <OsiriX/DCMTransferSyntax.h>
-#import <OsiriX/DCMPixelDataAttribute.h>
-#import <OsiriX/DCMAbstractSyntaxUID.h>
+//#import <OsiriX/DCMObject.h>
+//#import <OsiriX/DCM.h>
+//#import <OsiriX/DCMTransferSyntax.h>
+//#import <OsiriX/DCMPixelDataAttribute.h>
+//#import <OsiriX/DCMAbstractSyntaxUID.h>
 #import "DefaultsOsiriX.h"
 #import "AppController.h"
 #import "QTKit/QTMovie.h"
@@ -37,7 +37,15 @@
 extern "C"
 {
 	extern short Papy3Init ();
+
+
+    void exitOsiriX(void)
+    {
+        [NSException raise: @"JPEG error exception raised" format: @"JPEG error exception raised - See Console.app for error message"];
+    }
 }
+
+enum DCM_CompressionQuality {DCMLosslessQuality = 0, DCMHighQuality, DCMMediumQuality, DCMLowQuality};
 
 NSLock					*PapyrusLock = 0L;
 NSThread				*mainThread = 0L;
@@ -184,13 +192,11 @@ int main(int argc, const char *argv[])
 		
 		dcmtkSetJPEGColorSpace( [[dict objectForKey:@"UseJPEGColorSpace"] intValue]);
 		
-		BOOL useDCMTKForJP2K = [[dict objectForKey:@"useDCMTKForJP2K"] intValue];
+//		BOOL useDCMTKForJP2K = [[dict objectForKey:@"useDCMTKForJP2K"] intValue];
 		
 #pragma mark compress
 		if( [what isEqualToString:@"compress"])
 		{
-			[DCMPixelDataAttribute setUse_kdu_IfAvailable: [[dict objectForKey:@"UseKDUForJPEG2000"] intValue]];
-			
 			UseOpenJpeg = [[dict objectForKey:@"UseOpenJpegForJPEG2000"] intValue];
 			Use_kdu_IfAvailable = [[dict objectForKey:@"UseKDUForJPEG2000"] intValue];
 			
@@ -316,56 +322,58 @@ int main(int argc, const char *argv[])
                             
                             if( alreadyCompressed == NO)
                             {
-                                if( useDCMTKForJP2K == NO && compression == compression_JPEG2000)
-                                {
-                                    DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: curFile decodingPixelData: NO];
-                                    
-                                    BOOL succeed = NO;
-                                    
-                                    // See - (BOOL) needToCompressFile: (NSString*) path in BrowserControllerDCMTKCategory for these exceptions
-                                    if( [DCMAbstractSyntaxUID isImageStorage: [dcmObject attributeValueWithName:@"SOPClassUID"]] == YES && [[dcmObject attributeValueWithName:@"SOPClassUID"] isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]] == NO && [DCMAbstractSyntaxUID isStructuredReport: [dcmObject attributeValueWithName:@"SOPClassUID"]] == NO)
-                                    {
-                                        @try
-                                        {
-                                            DCMTransferSyntax *tsx = [DCMTransferSyntax JPEG2000LossyTransferSyntax];
-                                            succeed = [dcmObject writeToFile: curFileDest withTransferSyntax: tsx quality: quality AET:@"OsiriX" atomically:YES];
-                                        }
-                                        @catch (NSException *e)
-                                        {
-                                            NSLog( @"dcmObject writeToFile failed: %@", e);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        succeed = [[NSData dataWithContentsOfFile: curFile] writeToFile: curFileDest atomically: YES];
-                                    }
-                                    
-                                    [dcmObject release];
-                                    
-                                    if( succeed)
-                                    {
-                                        myunlink([curFile fileSystemRepresentation]);
-                                        if( destDirec == nil)
-                                            [[NSFileManager defaultManager] moveItemAtPath: curFileDest toPath: curFile error: nil];
-                                    }
-                                    else
-                                    {
-                                        myunlink([curFileDest fileSystemRepresentation]);
-                                        
-                                        if ([[dict objectForKey: @"DecompressMoveIfFail"] boolValue])
-                                        {
-                                            [[NSFileManager defaultManager] moveItemAtPath: curFile toPath: curFileDest error: nil];
-                                        }
-                                        else if( destDirec)
-                                        {
-                                            myunlink([curFile fileSystemRepresentation]);
-                                            NSLog( @"failed to compress file: %@, the file is deleted", curFile);
-                                        }
-                                        else
-                                            NSLog( @"failed to compress file: %@", curFile);
-                                    }
-                                }
-                                else if( compression == compression_JPEG || compression == compression_JPEG2000 || compression == compression_JPEGLS)
+//                                if( useDCMTKForJP2K == NO && compression == compression_JPEG2000)
+//                                {
+//                                    [DCMPixelDataAttribute setUse_kdu_IfAvailable: [[dict objectForKey:@"UseKDUForJPEG2000"] intValue]];
+//                                    DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: curFile decodingPixelData: NO];
+//                                    
+//                                    BOOL succeed = NO;
+//                                    
+//                                    // See - (BOOL) needToCompressFile: (NSString*) path in BrowserControllerDCMTKCategory for these exceptions
+//                                    if( [DCMAbstractSyntaxUID isImageStorage: [dcmObject attributeValueWithName:@"SOPClassUID"]] == YES && [[dcmObject attributeValueWithName:@"SOPClassUID"] isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]] == NO && [DCMAbstractSyntaxUID isStructuredReport: [dcmObject attributeValueWithName:@"SOPClassUID"]] == NO)
+//                                    {
+//                                        @try
+//                                        {
+//                                            DCMTransferSyntax *tsx = [DCMTransferSyntax JPEG2000LossyTransferSyntax];
+//                                            succeed = [dcmObject writeToFile: curFileDest withTransferSyntax: tsx quality: quality AET:@"OsiriX" atomically:YES];
+//                                        }
+//                                        @catch (NSException *e)
+//                                        {
+//                                            NSLog( @"dcmObject writeToFile failed: %@", e);
+//                                        }
+//                                    }
+//                                    else
+//                                    {
+//                                        succeed = [[NSData dataWithContentsOfFile: curFile] writeToFile: curFileDest atomically: YES];
+//                                    }
+//                                    
+//                                    [dcmObject release];
+//                                    
+//                                    if( succeed)
+//                                    {
+//                                        myunlink([curFile fileSystemRepresentation]);
+//                                        if( destDirec == nil)
+//                                            [[NSFileManager defaultManager] moveItemAtPath: curFileDest toPath: curFile error: nil];
+//                                    }
+//                                    else
+//                                    {
+//                                        myunlink([curFileDest fileSystemRepresentation]);
+//                                        
+//                                        if ([[dict objectForKey: @"DecompressMoveIfFail"] boolValue])
+//                                        {
+//                                            [[NSFileManager defaultManager] moveItemAtPath: curFile toPath: curFileDest error: nil];
+//                                        }
+//                                        else if( destDirec)
+//                                        {
+//                                            myunlink([curFile fileSystemRepresentation]);
+//                                            NSLog( @"failed to compress file: %@, the file is deleted", curFile);
+//                                        }
+//                                        else
+//                                            NSLog( @"failed to compress file: %@", curFile);
+//                                    }
+//                                }
+//                                else
+                                    if( compression == compression_JPEG || compression == compression_JPEG2000 || compression == compression_JPEGLS)
                                 {
                                     DcmRepresentationParameter *params = nil;
                                     E_TransferSyntax tSyntax;
@@ -521,7 +529,7 @@ int main(int argc, const char *argv[])
 		{
 			Papy3Init();
 			
-			[DCMPixelDataAttribute setUse_kdu_IfAvailable: [[dict objectForKey:@"UseKDUForJPEG2000"] intValue]];
+			//[DCMPixelDataAttribute setUse_kdu_IfAvailable: [[dict objectForKey:@"UseKDUForJPEG2000"] intValue]];
 			
 			UseOpenJpeg = [[dict objectForKey:@"UseOpenJpegForJPEG2000"] intValue];
 			Use_kdu_IfAvailable = [[dict objectForKey:@"UseKDUForJPEG2000"] intValue];
@@ -555,8 +563,6 @@ int main(int argc, const char *argv[])
 				destDirec = nil;
 			else
 				destDirec = path;
-			
-			[DCMPixelDataAttribute setUse_kdu_IfAvailable: [[dict objectForKey:@"UseKDUForJPEG2000"] intValue]];
 			
 			UseOpenJpeg = [[dict objectForKey:@"UseOpenJpegForJPEG2000"] intValue];
 			Use_kdu_IfAvailable = [[dict objectForKey:@"UseKDUForJPEG2000"] intValue];
@@ -619,33 +625,35 @@ int main(int argc, const char *argv[])
 						
 						//hopefully dcmtk willsupport jpeg2000 compression and decompression in the future: November 7th 2010 : I did it !
 						
-						if( useDCMTKForJP2K == NO && (filexfer.getXfer() == EXS_JPEG2000LosslessOnly || filexfer.getXfer() == EXS_JPEG2000))
-						{
-							DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: curFile decodingPixelData: NO];
-							@try
-							{
-								status = [dcmObject writeToFile: curFileDest withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];	//ImplicitVRLittleEndianTransferSyntax
-							}
-							@catch (NSException *e)
-							{
-								NSLog( @"dcmObject writeToFile failed: %@", e);
-							}
-							[dcmObject release];
-							
-							if( status == NO)
-							{
-                                myunlink([curFileDest fileSystemRepresentation]);
-								
-								if( destDirec)
-								{
-                                    myunlink([curFile fileSystemRepresentation]);
-									NSLog( @"failed to decompress file: %@, the file is deleted", curFile);
-								}
-								else
-									NSLog( @"failed to decompress file: %@", curFile);
-							}
-						}
-						else if( filexfer.getXfer() != EXS_LittleEndianExplicit || filexfer.getXfer() != EXS_LittleEndianImplicit)
+//						if( useDCMTKForJP2K == NO && (filexfer.getXfer() == EXS_JPEG2000LosslessOnly || filexfer.getXfer() == EXS_JPEG2000))
+//						{
+//                          [DCMPixelDataAttribute setUse_kdu_IfAvailable: [[dict objectForKey:@"UseKDUForJPEG2000"]; intValue]];
+//							DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: curFile decodingPixelData: NO];
+//							@try
+//							{
+//								status = [dcmObject writeToFile: curFileDest withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];	//ImplicitVRLittleEndianTransferSyntax
+//							}
+//							@catch (NSException *e)
+//							{
+//								NSLog( @"dcmObject writeToFile failed: %@", e);
+//							}
+//							[dcmObject release];
+//							
+//							if( status == NO)
+//							{
+//                                myunlink([curFileDest fileSystemRepresentation]);
+//								
+//								if( destDirec)
+//								{
+//                                    myunlink([curFile fileSystemRepresentation]);
+//									NSLog( @"failed to decompress file: %@, the file is deleted", curFile);
+//								}
+//								else
+//									NSLog( @"failed to decompress file: %@", curFile);
+//							}
+//						}
+//						else
+                            if( filexfer.getXfer() != EXS_LittleEndianExplicit || filexfer.getXfer() != EXS_LittleEndianImplicit)
 						{
 							DcmDataset *dataset = fileformat.getDataset();
 							
@@ -671,23 +679,23 @@ int main(int argc, const char *argv[])
 							}
 							else status = NO;
 							
-							if( status == NO) // Try DCM Framework...
-							{
-                                NSLog( @"********* Failed to open with dcmtk, try DCMFramework");
-                                
-                                myunlink([curFileDest fileSystemRepresentation]);
-								
-								DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: curFile decodingPixelData: NO];
-								@try
-								{
-									status = [dcmObject writeToFile: curFileDest withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];	//ImplicitVRLittleEndianTransferSyntax
-								}
-								@catch (NSException *e)
-								{
-									NSLog( @"******** dcmObject writeToFile failed: %@", e);
-								}
-								[dcmObject release];
-							}
+//							if( status == NO) // Try DCM Framework...
+//							{
+//                                NSLog( @"********* Failed to open with dcmtk, try DCMFramework");
+//                                
+//                                myunlink([curFileDest fileSystemRepresentation]);
+//								
+//								DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: curFile decodingPixelData: NO];
+//								@try
+//								{
+//									status = [dcmObject writeToFile: curFileDest withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];	//ImplicitVRLittleEndianTransferSyntax
+//								}
+//								@catch (NSException *e)
+//								{
+//									NSLog( @"******** dcmObject writeToFile failed: %@", e);
+//								}
+//								[dcmObject release];
+//							}
 							
 							if( status == NO)
 							{
