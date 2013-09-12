@@ -994,6 +994,26 @@ void N3AffineTransformGetOpenGLMatrixf(N3AffineTransform transform, float *f) //
     f[12] = transform.m41; f[13] = transform.m42; f[14] = transform.m43; f[15] = transform.m44;     
 }
 
+N3AffineTransform N3AffineTransformMakeFromOpenGLMatrixd(double *d) // d better be 16 elements long
+{
+    N3AffineTransform transform;
+    transform.m11 = d[0];  transform.m12 = d[1];  transform.m13 = d[2];  transform.m14 = d[3];
+    transform.m21 = d[4];  transform.m22 = d[5];  transform.m23 = d[6];  transform.m24 = d[7];
+    transform.m31 = d[8];  transform.m32 = d[9];  transform.m33 = d[10]; transform.m34 = d[11];
+    transform.m41 = d[12]; transform.m42 = d[13]; transform.m43 = d[14]; transform.m44 = d[15];
+    return transform;
+}
+
+N3AffineTransform N3AffineTransformMakeFromOpenGLMatrixf(float *f) // f better be 16 elements long
+{
+    N3AffineTransform transform;
+    transform.m11 = f[0];  transform.m12 = f[1];  transform.m13 = f[2];  transform.m14 = f[3];
+    transform.m21 = f[4];  transform.m22 = f[5];  transform.m23 = f[6];  transform.m24 = f[7];
+    transform.m31 = f[8];  transform.m32 = f[9];  transform.m33 = f[10]; transform.m34 = f[11];
+    transform.m41 = f[12]; transform.m42 = f[13]; transform.m43 = f[14]; transform.m44 = f[15];
+    return transform;
+}
+
 @implementation NSValue (N3GeometryAdditions)
 
 + (NSValue *)valueWithN3Vector:(N3Vector)vector
