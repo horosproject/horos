@@ -723,15 +723,15 @@ NSArray *OSIROIMaskIndexesInRun(OSIROIMaskRun maskRun)
     N3Vector centerOfMass = N3VectorZero;
     
     for (i = 0; i < runCount; i++) {
-        centerOfMass.x += ((CGFloat)runArray[i].widthRange.location/(CGFloat)runArray[i].widthRange.length) + 0.5;
-        centerOfMass.y += (CGFloat)runArray[i].heightIndex/(CGFloat)runArray[i].widthRange.length;
-        centerOfMass.z += (CGFloat)runArray[i].depthIndex/(CGFloat)runArray[i].widthRange.length;
+        centerOfMass.x += ((CGFloat)runArray[i].widthRange.location+((CGFloat)runArray[i].widthRange.length/2.0)) * (CGFloat)runArray[i].widthRange.length;
+        centerOfMass.y += (CGFloat)runArray[i].heightIndex*(CGFloat)runArray[i].widthRange.length;
+        centerOfMass.z += (CGFloat)runArray[i].depthIndex*(CGFloat)runArray[i].widthRange.length;
         floatCount += runArray[i].widthRange.length;
     }
     
-    centerOfMass.x *= floatCount;
-    centerOfMass.y *= floatCount;
-    centerOfMass.z *= floatCount;
+    centerOfMass.x /= floatCount;
+    centerOfMass.y /= floatCount;
+    centerOfMass.z /= floatCount;
     
     return centerOfMass;
 }
