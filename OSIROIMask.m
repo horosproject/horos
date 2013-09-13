@@ -329,6 +329,10 @@ NSArray *OSIROIMaskIndexesInRun(OSIROIMaskRun maskRun)
 	return self;
 }
 
+- (id)copyWithZone:(NSZone *)zone
+{
+    return [[[self class] allocWithZone:zone] initWithSortedMaskRuns:[[[self maskRuns] copy] autorelease]];
+}
 
 - (void)dealloc
 {

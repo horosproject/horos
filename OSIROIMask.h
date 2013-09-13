@@ -122,7 +122,7 @@ CF_EXTERN_C_END
  */
 
 
-@interface OSIROIMask : NSObject {
+@interface OSIROIMask : NSObject <NSCopying> {
 @private
     NSData *_maskRunsData;
 	NSArray *_maskRuns;
