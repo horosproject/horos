@@ -265,5 +265,10 @@
     }
 }
 
+- (N3BezierPath *)bezierPath
+{
+    return self.path;
+}
+
 
 @end
