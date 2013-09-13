@@ -15,6 +15,8 @@
 #import "N2Debug.h"
 #import "DicomDirParser.h"
 
+static NSString *singeDcmDump = @"singeDcmDump";
+
 extern int maindcmdump(int argc, char *argv[]);
 
 @implementation NSString(NumberStuff)
@@ -212,84 +214,88 @@ static int validFilePathDepth = 0;
 
 -(id) init:(NSString*) srcFile
 {
-    NSTask *aTask;
-    NSMutableArray *theArguments = [NSMutableArray array];
-    NSPipe *newPipe = [NSPipe pipe];
-    NSData *inData = nil;
-    NSMutableString *s = [NSMutableString stringWithString: @""];
-    
-    self = [super init];
-    
-	dirpath = [[NSString alloc] initWithFormat: @"%@/", [srcFile stringByDeletingLastPathComponent]];
-	
-//	const char *args[ 4];
-//	
-//	args[ 0] = [srcFile UTF8String];
-//	args[ 1] = "+L";
-//	args[ 2] = "+P";
-//	args[ 3] = "0004,1500";
-//	
-//	FILE *fp;
-//	
-//	if((fp=freopen("/tmp/out.txt", "w", stdout))==NULL)
-//	{
-//		printf("Cannot open file.\n");
-//	}
-//	
-//	maindcmdump(4, (char**) args);
-//	
-//	fclose(fp);
-//	
-    // create the subprocess
-    aTask = [[NSTask alloc] init];
-    
-    [aTask setStandardOutput:newPipe];
-    
-    [aTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
-    [aTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dcmdump"]];
-    [theArguments addObject:srcFile];
-	
-	[theArguments addObject:@"+L"];
-	[theArguments addObject:@"+P"];
-	[theArguments addObject:@"0004,1500"];
-	
-    [aTask setArguments:theArguments];
-    
-    [aTask launch];
-    
-    NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
-    
-#define TIMEOUT 20
-    
-    @autoreleasepool
+    @synchronized( singeDcmDump)
     {
-        while( [inData = [[newPipe fileHandleForReading] availableData] length] > 0 || [aTask isRunning]) 
+        NSTask *aTask;
+        NSMutableArray *theArguments = [NSMutableArray array];
+        NSPipe *newPipe = [NSPipe pipe];
+        NSData *inData = nil;
+        NSMutableString *s = [NSMutableString stringWithString: @""];
+        
+        self = [super init];
+        
+        dirpath = [[NSString alloc] initWithFormat: @"%@/", [srcFile stringByDeletingLastPathComponent]];
+        
+    //	const char *args[ 4];
+    //	
+    //	args[ 0] = [srcFile UTF8String];
+    //	args[ 1] = "+L";
+    //	args[ 2] = "+P";
+    //	args[ 3] = "0004,1500";
+    //	
+    //	FILE *fp;
+    //	
+    //	if((fp=freopen("/tmp/out.txt", "w", stdout))==NULL)
+    //	{
+    //		printf("Cannot open file.\n");
+    //	}
+    //	
+    //	maindcmdump(4, (char**) args);
+    //	
+    //	fclose(fp);
+    //
+
+        // create the subprocess
+        aTask = [[NSTask alloc] init];
+        
+        [aTask setStandardOutput:newPipe];
+        
+        [aTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
+        [aTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dcmdump"]];
+        [theArguments addObject:srcFile];
+        
+        [theArguments addObject:@"+L"];
+        [theArguments addObject:@"+P"];
+        [theArguments addObject:@"0004,1500"];
+        
+        [aTask setArguments:theArguments];
+        
+        [aTask launch];
+        
+        NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
+        
+#define TIMEOUT 20
+        
+        @autoreleasepool
         {
-            if( inData.length > 0 && inData.length < 2000UL * 1024UL)
+            while( [inData = [[newPipe fileHandleForReading] availableData] length] > 0 || [aTask isRunning]) 
             {
-                NSString *r = [[NSString alloc] initWithData:inData encoding:NSUTF8StringEncoding];
-                if( r)
+                if( inData.length > 0 && inData.length < 2000UL * 1024UL)
                 {
-                    [s appendString: r];
-                    [r release];
+                    NSString *r = [[NSString alloc] initWithData:inData encoding:NSUTF8StringEncoding];
+                    if( r)
+                    {
+                        [s appendString: r];
+                        [r release];
+                    }
                 }
+                
+                if( [NSDate timeIntervalSinceReferenceDate] - start > TIMEOUT)
+                    break;
             }
-            
-            if( [NSDate timeIntervalSinceReferenceDate] - start > TIMEOUT)
-                break;
         }
+        
+        if( [NSDate timeIntervalSinceReferenceDate] - start > TIMEOUT)
+            [aTask interrupt];
+        
+        //[aTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
+        
+        [aTask release];
+        aTask = nil;
+        
+        data = [[NSString alloc] initWithString: s];
 	}
     
-    if( [NSDate timeIntervalSinceReferenceDate] - start > TIMEOUT)
-        [aTask interrupt];
-    
-    //[aTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
-    
-	[aTask release];
-    aTask = nil;
-	
-	data = [[NSString alloc] initWithString: s];
-	
     return self;
 }
 
