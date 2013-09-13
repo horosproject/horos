@@ -23,4 +23,6 @@
 
 - (id)initWithROIMask:(OSIROIMask *)mask homeFloatVolumeData:(OSIFloatVolumeData *)floatVolumeData name:(NSString *)name;
 
+@property (nonatomic, readonly, retain) OSIROIMask *mask;
+
 @end
