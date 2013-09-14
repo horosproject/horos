@@ -14555,6 +14555,33 @@ int i,j,l;
 
 - (ROI*) roiMorphingBetween:(ROI*) a and:(ROI*) b ratio:(float) ratio
 {
+    if (a.type == tMesure && b.type == tMesure)
+    {
+        ROI* newMeasure = [self newROI: tMesure];
+
+        [newMeasure addPoint:[ROI pointBetweenPoint:[a pointAtIndex:0] and:[b pointAtIndex:0] ratio:ratio]];
+        [newMeasure addPoint:[ROI pointBetweenPoint:[a pointAtIndex:1] and:[b pointAtIndex:1] ratio:ratio]];
+        
+        [newMeasure setColor: [a rgbcolor]];
+        [newMeasure setOpacity: [a opacity]];
+        [newMeasure setThickness: [a thickness]];
+        [newMeasure setName: [a name]];
+        
+        return newMeasure;
+    }
+    
+    if( a.type == tMesure)
+    {
+        [a.points insertObject:[MyPoint point:[ROI pointBetweenPoint:[a pointAtIndex:0] and:[a pointAtIndex:1] ratio:0.5]] atIndex:1];
+        a.type = tOPolygon;
+    }
+    
+    if( b.type == tMesure)
+    {
+        [b.points insertObject:[MyPoint point:[ROI pointBetweenPoint:[b pointAtIndex:0] and:[b pointAtIndex:1] ratio:0.5]] atIndex:1];
+        b.type = tOPolygon;
+    }
+    
     if( a.type == tROI || a.type == tOval)
     {
         NSMutableArray *points = a.points;
@@ -14575,13 +14602,11 @@ int i,j,l;
         b.points = points;
     }
     
-	// Convert both ROIs into polygons, after a marching square isocontour
 	
 	NSMutableArray	*aPts = [a points];
 	NSMutableArray	*bPts = [b points];
 	
-	int maxPoints = [aPts count];
-	if( maxPoints < [bPts count]) maxPoints = [bPts count];
+	int maxPoints = MAX([aPts count], [bPts count]);
 	maxPoints += maxPoints / 3;
 	
 	ROI* inputROI = a;
@@ -14592,6 +14617,8 @@ int i,j,l;
 	a.isAliased = NO;
 	b.isAliased = NO;
 	
+    // If the ROIs are brush ROIs, convert them into polygons, using a marching square isocontour
+    // Otherwise update the points so they both have maxPoints number of points
 	a = [self isoContourROI: a numberOfPoints: maxPoints];
 	b = [self isoContourROI: b numberOfPoints: maxPoints];
 	
@@ -14607,8 +14634,16 @@ int i,j,l;
 	aPts = [a points];
 	bPts = [b points];
 	
-	ROI* newROI = [self newROI: tCPolygon];
-	NSMutableArray *pts = [newROI points];
+    ROI* newROI = nil;
+    if ( a.type == tOPolygon) {
+        newROI = [self newROI: tOPolygon];
+    }
+    else
+    {
+        newROI = [self newROI: tCPolygon];
+    }
+    
+    NSMutableArray *pts = [newROI points];
 	int i;
 	
 	for( i = 0; i < [aPts count]; i++)
