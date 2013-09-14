@@ -429,57 +429,12 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 
 + (NSPoint) pointBetweenPoint:(NSPoint) a and:(NSPoint) b ratio: (float) r
 {
-	NSPoint	pt = NSMakePoint( a.x, a.y);
-	float	theta, pyth;
-	
-	if( b.x == a.x &&  b.y == a.y) return pt;
-	
-	if( (b.x - a.x) == 0)
-	{
-		pt.y += r * (b.y-a.y);
-	}
-	
-	theta = atan( (b.y -  a.y) / (b.x - a.x));
-	
-	pyth =	(b.y - a.y) * (b.y - a.y) +
-			(b.x - a.x) * (b.x - a.x);
-	
-	pyth = sqrt( pyth);
-	
-	if( (b.x - a.x) < 0)
-	{
-		pt.x -= (r * pyth) * cos( theta);
-		pt.y -= (r * pyth) * sin( theta);
-	}
-	else
-	{
-		pt.x += (r * pyth) * cos( theta);
-		pt.y += (r * pyth) * sin( theta);
-	}
-	
-	return pt;
+    return NSMakePoint(a.x*(1.0-r)+b.x*r, a.y*(1.0-r)+b.y*r);
 }
 
 + (float) lengthBetween:(NSPoint) mesureA and :(NSPoint) mesureB
 {
-	short yT, xT;
-	float mesureLength;
-	
-	if( mesureA.x > mesureB.x) { yT = mesureA.y;  xT = mesureA.x;}
-	else {yT = mesureB.y;   xT = mesureB.x;}
-	
-	{
-		double coteA, coteB;
-		
-		coteA = fabs(mesureA.x - mesureB.x);
-		coteB = fabs(mesureA.y - mesureB.y);
-		
-		if( coteA == 0) mesureLength = coteB;
-		else if( coteB == 0) mesureLength = coteA;
-		else mesureLength = coteB / (sin (atan( coteB / coteA)));
-	}
-	
-	return mesureLength;
+    return sqrtf((mesureA.x-mesureB.x)*(mesureA.x-mesureB.x)+(mesureA.y-mesureB.y)*(mesureA.y-mesureB.y));
 }
 
 +(NSPoint) positionAtDistance: (float) distance inPolygon:(NSArray*) points
