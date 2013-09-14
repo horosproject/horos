@@ -2804,6 +2804,7 @@ static BOOL protectionAgainstReentry = NO;
 		// NSDirectoryEnumerator *enumer = [NSFileManager.defaultManager enumeratorAtPath:self.incomingDirPath];
 		
         NSTimeInterval startTime = [NSDate timeIntervalSinceReferenceDate];
+        NSTimeInterval start = startTime;
         
 		while([filesArray count] < maxNumberOfFiles && ([NSDate timeIntervalSinceReferenceDate]-startTime < ([[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"]*3)) // don't let them wait more than (incomingdelay*3) seconds
               && (pathname = [enumer nextObject]))
@@ -2950,12 +2951,15 @@ static BOOL protectionAgainstReentry = NO;
 				}
 			}
             
-            if( filesArray.count % 20 == 0)
-                thread.status = [NSString stringWithFormat:NSLocalizedString(@"Listing files... %d", nil), (int)(filesArray.count)];
+            if( [NSDate timeIntervalSinceReferenceDate] - start > 0.5)
+            {
+                thread.status =  N2LocalizedSingularPluralCount( filesArray.count, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil));
+                start = [NSDate timeIntervalSinceReferenceDate];
+            }
 		}
         
         if( filesArray.count)
-            thread.status = [NSString stringWithFormat:NSLocalizedString(@"Listing files... %d", nil), (int)(filesArray.count)];
+            thread.status = N2LocalizedSingularPluralCount( filesArray.count, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil));
         
 		if ([filesArray count] > 0)
 		{
