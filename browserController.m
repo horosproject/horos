@@ -11084,9 +11084,15 @@ static BOOL needToRezoom;
 			{
                 [thread enterOperation];
                 thread.status = NSLocalizedString(@"Evaluating amount of memory needed...", nil);
+                
+                NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
                 for (NSUInteger i = 0; i < loadList.count; ++i)
 				{
-                    thread.progress = 1.0*i/loadList.count;
+                    if( [NSDate timeIntervalSinceReferenceDate] - start > 0.5 || i == loadList.count-1) {
+                        thread.progress = 1.0*i/loadList.count;
+                        start = [NSDate timeIntervalSinceReferenceDate];
+                    }
+                    
                     curFile = [loadList objectAtIndex:i];
 					mem += ([[curFile valueForKey:@"width"] intValue] +1) * ([[curFile valueForKey:@"height"] intValue] +1);
 					memBlock += ([[curFile valueForKey:@"width"] intValue]) * ([[curFile valueForKey:@"height"] intValue]);

@@ -1508,10 +1508,15 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		BOOL isCDMedia = [BrowserController isItCD:[paths objectAtIndex:chunkRange.location]];
 		[DicomFile setFilesAreFromCDMedia:isCDMedia];
 		
+        NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
+        
 		for (NSUInteger i = chunkRange.location; i < chunkRange.location+chunkRange.length; ++i)
         {
-            if( i%100 == 0)
+            if( [NSDate timeIntervalSinceReferenceDate] - start > 0.5 || i == chunkRange.location+chunkRange.length-1) {
                 thread.progress = 1.0*i/paths.count;
+                start = [NSDate timeIntervalSinceReferenceDate];
+            }
+                
 			
 			NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 			@try {
@@ -1756,13 +1761,15 @@ static BOOL protectionAgainstReentry = NO;
         BOOL COMMENTSAUTOFILLStudyLevel = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILLStudyLevel"];
         
 		NSString* newFile = nil;
-		
+		NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
 		// Add the new files
 		for (NSInteger i = 0; i < dicomFilesArray.count; ++i)
         {
-            if( i%100 == 0)
+            if( [NSDate timeIntervalSinceReferenceDate] - start > 0.5 || i == dicomFilesArray.count-1) {
                 thread.progress = 1.0*i/dicomFilesArray.count;
-			
+                start = [NSDate timeIntervalSinceReferenceDate];
+            }
+            
             @autoreleasepool
             {
                 @try
