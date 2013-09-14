@@ -4272,7 +4272,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					[self deleteMouseDownTimer];
 					
 					BOOL		DoNothing = NO;
-					NSInteger	selected = -1, i;
+					NSInteger	selected = -1;
 					NSPoint tempPt = [self convertPoint:eventLocation fromView: nil];
 					tempPt = [self ConvertFromNSView2GL:tempPt];
 					
@@ -4286,12 +4286,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					
 					if (!(([event modifierFlags] & NSCommandKeyMask) && ([event modifierFlags] & NSShiftKeyMask)))
 					{
-						for( i = 0; i < [curRoiList count] && !roiFound; i++)
+						for( ROI *r in curRoiList)
 						{
-							if( [[curRoiList objectAtIndex: i] clickInROI: tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :YES])
+							if( [r clickInROI: tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :YES])
 							{
-								selected = i;
+								selected = [curRoiList indexOfObject: r];
 								roiFound = YES;
+                                break;
 							}
 						}
 					}
@@ -4306,7 +4307,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						{
 							if( [r clickInROI: tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :NO])
 							{
-								selected = i;
+								selected = [curRoiList indexOfObject: r];
 								break;
 							}
 						}
