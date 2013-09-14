@@ -17,6 +17,7 @@
 #import "ViewerController.h"
 #import "AppController.h"
 #import "NSWindow+N2.h"
+#import "N2Debug.h"
 #import "Notifications.h"
 
 extern BOOL USETOOLBARPANEL;
@@ -358,25 +359,31 @@ static int increment = 0;
     
 	if( toolbar)
 	{
-		if( [associatedScreen objectForKey: [NSValue valueWithPointer: toolbar]] != [[self window] screen])
-		{
-			if( [[NSScreen screens] count] > 1)
-				[[self window] setToolbar: emptyToolbar];	//To avoid the stupid add an item in customize toolbar.....
-				
-			if( [[self window] screen])
-				[associatedScreen setObject: [[self window] screen] forKey: [NSValue valueWithPointer: toolbar]];
-			else
-				[associatedScreen removeObjectForKey: [NSValue valueWithPointer: toolbar]];
-		}
-		
-		[[self window] setToolbar: toolbar];
-		
-		[[self window] setShowsToolbarButton:NO];
-		[[[self window] toolbar] setVisible: YES];
-		
-		
-		if( [[viewer window] isKeyWindow])
-			[[self window] orderBack: self];
+        @try
+        {
+            if( [associatedScreen objectForKey: [NSValue valueWithPointer: toolbar]] != [[self window] screen])
+            {
+                if( [[NSScreen screens] count] > 1)
+                    [[self window] setToolbar: emptyToolbar];	//To avoid the stupid add an item in customize toolbar.....
+                    
+                if( [[self window] screen])
+                    [associatedScreen setObject: [[self window] screen] forKey: [NSValue valueWithPointer: toolbar]];
+                else
+                    [associatedScreen removeObjectForKey: [NSValue valueWithPointer: toolbar]];
+            }
+            
+            [[self window] setToolbar: toolbar];
+            
+            [[self window] setShowsToolbarButton:NO];
+            [[[self window] toolbar] setVisible: YES];
+            
+            
+            if( [[viewer window] isKeyWindow])
+                [[self window] orderBack: self];
+        }
+        @catch (NSException *exception) {
+            N2LogException( exception);
+        }
 	}
 	else
 	{
