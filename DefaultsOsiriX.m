@@ -996,7 +996,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"1" forKey:@"activateCGETSCP"];
     [defaultValues setObject:@"1" forKey:@"activateCFINDSCP"];
 	[defaultValues setObject:@"0" forKey:@"notificationsEmails"];
-	[defaultValues setObject:@"1" forKey:@"validateFilesBeforeImporting"];
+	[defaultValues setObject:@"0" forKey:@"validateFilesBeforeImporting"];
 	[defaultValues setObject:@"10" forKey:@"defaultFrameRate"];
 	[defaultValues setObject:@"10" forKey:@"quicktimeExportRateValue"];
     [defaultValues setObject:AVVideoCodecJPEG forKey:@"selectedMenuAVFoundationExport"];
