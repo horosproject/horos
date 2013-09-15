@@ -19492,6 +19492,8 @@ int i,j,l;
 									[[roiList[curMovieIndex] objectAtIndex: y] addObject: c];
 									
 									[generatedROIs addObject: c];
+                                    [[NSNotificationCenter defaultCenter] postNotificationName:OsirixAddROINotification object:self
+                                                                                      userInfo:@{@"ROI": c, @"sliceNumber": [NSNumber numberWithLong:x]}];
 								}
 							}
 						}
