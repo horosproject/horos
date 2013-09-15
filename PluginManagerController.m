@@ -13,7 +13,7 @@
 =========================================================================*/
 
 #import "PluginManagerController.h"
-#import <Message/NSMailDelivery.h>
+//#import <Message/NSMailDelivery.h>
 #import "WaitRendering.h"
 #import "Notifications.h"
 #import "PreferencesWindowController.h"
@@ -602,11 +602,11 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 
 - (void)loadSubmitPluginPage;
 {
-	#if !__LP64__
-	if([NSMailDelivery hasDeliveryClassBeenConfigured])
-		[self setURL:PLUGIN_SUBMISSION_URL];
-	else
-	#endif
+//	#if !__LP64__
+//	if([NSMailDelivery hasDeliveryClassBeenConfigured])
+//		[self setURL:PLUGIN_SUBMISSION_URL];
+//	else
+//	#endif
 		[self setURL:PLUGIN_SUBMISSION_NO_MAIL_APP_URL];
 }
 
@@ -626,11 +626,11 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 	NSString *emailAddress = @"pixmeo@pixmeo.com";
 	NSString *emailSubject = @"OsiriX: New Plugin Submission"; // don't localize this. This is the subject of the email WE will receive.
 	
-	#if !__LP64__
-	[NSMailDelivery deliverMessage:emailMessage subject:emailSubject to:emailAddress];
-	#else
+//	#if !__LP64__
+//	[NSMailDelivery deliverMessage:emailMessage subject:emailSubject to:emailAddress];
+//	#else
 	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"mailto:rossetantoine@osirix-viewer.com"]];
-	#endif
+//	#endif
 }
 
 #pragma mark WebPolicyDelegate Protocol methods

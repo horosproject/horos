@@ -12,8 +12,8 @@
  PURPOSE.
  =========================================================================*/
 
-#import <CoreMedia/CoreMedia.h>
-#import <AVFoundation/AVFoundation.h>
+//#import <CoreMedia/CoreMedia.h>
+//#import <AVFoundation/AVFoundation.h>
 #import "DicomDatabase.h"
 #import "DicomDatabase+Routing.h"
 #import "DicomDatabase+DCMTK.h"

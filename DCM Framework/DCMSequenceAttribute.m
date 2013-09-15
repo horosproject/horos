@@ -30,9 +30,9 @@
 	
 	DCMSequenceAttribute *sequence = [DCMSequenceAttribute sequenceAttributeWithName:@"ConceptNameCodeSequence"];
 	DCMObject *dcmObject = [DCMObject dcmObject];
-	[dcmObject setAttributeValues:[NSArray arrayWithObject:codeValue] forName:@"CodeValue"];
-	[dcmObject setAttributeValues:[NSArray arrayWithObject:csd] forName:@"CodingSchemeDesignator"];
-	[dcmObject setAttributeValues:[NSArray arrayWithObject:cm] forName:@"CodeMeaning"];
+	[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:codeValue] forName:@"CodeValue"];
+	[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:csd] forName:@"CodingSchemeDesignator"];
+	[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:cm] forName:@"CodeMeaning"];
 	[sequence addItem:dcmObject];
 	
 	return sequence;	
