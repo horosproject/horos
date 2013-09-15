@@ -558,7 +558,7 @@ NSString* const OSIROIAddedROIKey = @"OSIROIAddedROIKey";
     
     //    [dcmView getThickSlabThickness:&thickness location:&location];
     //    slab.thickness = thickness;
-    slab.thickness = 0;
+    slab.thickness = [[dcmView curDCM] sliceThickness];
     slab.plane = plane;
     //    slab.plane.point = N3VectorAdd(slab.plane.point, N3VectorScalarMultiply(N3VectorNormalize(slab.plane.normal), thickness/2.0));
 	
