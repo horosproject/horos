@@ -137,7 +137,7 @@ static int increment = 0;
 {
 	if( [aNotification object] == [self window])
 	{
-		if( [[self window] isVisible] && viewer)
+		if( [[self window] isVisible] && viewer && [self.window.toolbar customizationPaletteIsRunning] == NO)
             [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
 	}
 }
@@ -154,7 +154,7 @@ static int increment = 0;
 			if( [[viewer window] isVisible])
 				[[viewer window] makeKeyAndOrderFront: self];
             
-            if( viewer)
+            if( viewer && [self.window.toolbar customizationPaletteIsRunning] == NO)
                 [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
             else
             {
@@ -168,7 +168,7 @@ static int increment = 0;
 {
 	if( [aNotification object] == [self window])
 	{
-		if( [[self window] isVisible] && viewer)
+		if( [[self window] isVisible] && viewer && [self.window.toolbar customizationPaletteIsRunning] == NO)
             [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
 	}
 }
@@ -179,7 +179,7 @@ static int increment = 0;
 	{
 		[[viewer window] makeKeyAndOrderFront: self];
         
-		if( [[self window] isVisible] && viewer)
+		if( [[self window] isVisible] && viewer && [self.window.toolbar customizationPaletteIsRunning] == NO)
             [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
         
 		return;
@@ -207,7 +207,7 @@ static int increment = 0;
 				[[self window] orderBack:self];
 				[toolbar setVisible:YES];
                 
-                if( viewer)
+                if( viewer && [self.window.toolbar customizationPaletteIsRunning] == NO)
                     [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
 				
 //				if( [[viewer window] isVisible] == NO)
@@ -314,13 +314,16 @@ static int increment = 0;
 	if( associatedScreen == nil) associatedScreen = [[NSMutableDictionary alloc] init];
 	
 	if( tb == nil)
-		tb = emptyToolbar;
+		tb = nil;   //emptyToolbar;
+    
+    if( toolbar == nil && tb == nil)
+        return;
 	
 	if( tb == toolbar)
 	{
         NSDisableScreenUpdates();
         
-		if( viewer != nil)
+		if( viewer != nil && [self.window.toolbar customizationPaletteIsRunning] == NO)
 			[[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
 	
 		if( toolbar)
@@ -338,7 +341,8 @@ static int increment = 0;
 			}
 		}
 		else
-            [self.window orderOut: self];
+            if( self.window.isVisible)
+                [self.window orderOut: self];
         
         NSEnableScreenUpdates();
         
@@ -386,15 +390,14 @@ static int increment = 0;
         }
 	}
 	else
-	{
-		[self.window orderOut: self];
-	}
+        if( self.window.isVisible)
+            [self.window orderOut: self];
 	
 	if( toolbar)
 	{
 		[self applicationDidChangeScreenParameters:nil];
 		
-		if( [[viewer window] isKeyWindow])
+		if( [[viewer window] isKeyWindow] && [self.window.toolbar customizationPaletteIsRunning] == NO)
 			[[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
 	}
     
