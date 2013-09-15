@@ -172,6 +172,8 @@
         return [[[OSIROIMask alloc] initWithMaskRuns:[NSArray array]] autorelease];
     }
 	
+    NSMutableData *runData = [[NSMutableData alloc] init];
+
 	for (i = minY; i <= maxY; i++) {
         if (i < 0 || i >= floatVolume.pixelsHigh) {
             continue;
@@ -209,13 +211,16 @@
 #endif
                 for (z = minZ; z <= maxZ; z++) {
                     maskRunCopy.depthIndex = z;
-                    [ROIRuns addObject:[NSValue valueWithOSIROIMaskRun:maskRunCopy]];
+                    [runData appendBytes:&maskRunCopy length:sizeof(OSIROIMaskRun)];
                 }
 			}
 		}
-	}
+	}           
 	
-    return [[[OSIROIMask alloc] initWithMaskRuns:ROIRuns] autorelease];
+    OSIROIMask *mask = [[[OSIROIMask alloc] initWithMaskRunData:runData] autorelease];
+    [runData release];
+    
+    return mask;
 }
 
 - (void)drawSlab:(OSISlab)slab inCGLContext:(CGLContextObj)cgl_ctx pixelFormat:(CGLPixelFormatObj)pixelFormat dicomToPixTransform:(N3AffineTransform)dicomToPixTransform
