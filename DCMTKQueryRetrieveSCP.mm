@@ -179,6 +179,11 @@ void errmsg(const char* msg, ...)
 		_aeTitle = [aeTitle retain];
 		_params = [params retain];
 	}
+    
+#ifdef NONETWORKFUNCTIONS
+    return nil;
+#endif
+    
 	return self;
 }
 

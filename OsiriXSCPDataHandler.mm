@@ -91,6 +91,10 @@ extern BOOL forkedProcess;
 
 + (id)allocRequestDataHandler
 {
+#ifdef NONETWORKFUNCTIONS
+    return nil;
+#endif
+    
 	return [[OsiriXSCPDataHandler alloc] init];
 }
 
