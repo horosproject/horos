@@ -10572,65 +10572,62 @@ static float oldsetww, oldsetwl;
 
 - (void) applyConvolutionXYThread:(id) dict
 {
-	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
-	
-    @try {
-        for( int x = 0; x < maxMovieIndex; x++)
-        {
-            for ( DCMPix *p in [pixList[ x] subarrayWithRange: NSMakeRange( [[dict objectForKey: @"from"] intValue], [[dict objectForKey: @"to"] intValue] - [[dict objectForKey: @"from"] intValue])])
-                [p applyConvolutionOnSourceImage];
+	@autoreleasepool
+    {
+        @try {
+            for( int x = 0; x < maxMovieIndex; x++)
+            {
+                for ( DCMPix *p in [pixList[ x] subarrayWithRange: NSMakeRange( [[dict objectForKey: @"from"] intValue], [[dict objectForKey: @"to"] intValue] - [[dict objectForKey: @"from"] intValue])])
+                    [p applyConvolutionOnSourceImage];
+            }
         }
+        @catch (NSException *exception) {
+            N2LogException( exception);
+        }
+        
+        [convThread lock];
+        [convThread unlockWithCondition: [convThread condition]-1];
 	}
-    @catch (NSException *exception) {
-        N2LogException( exception);
-    }
-    
-	[convThread lock];
-	[convThread unlockWithCondition: [convThread condition]-1];
-	
-	[p release];
 }
 
 - (void) applyConvolutionZThread: (id) dict
 {
-	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
-	
-    @try {
-        for( int x = 0; x < maxMovieIndex; x++)
-        {
-            DCMPix	*pix = [pixList[ x] objectAtIndex: 0];
-            
-            vImage_Buffer dstf, srcf;
-            
-            dstf.height = [pixList[ x] count];
-            dstf.width = [pix pwidth];
-            dstf.rowBytes = [pix pwidth]*[pix pheight]*sizeof(float);
-            srcf = dstf;
-            
-            int from = [[dict objectForKey: @"from"] intValue];
-            int to = [[dict objectForKey: @"to"] intValue];
-            float *fkernel = [[dict objectForKey: @"kernel"] pointerValue];
-            
-            for( int y = from; y < to; y++)
+	@autoreleasepool {
+        @try {
+            for( int x = 0; x < maxMovieIndex; x++)
             {
-                srcf.data = dstf.data = (void*) [volumeData[ x] bytes] + y*[pix pwidth]*sizeof(float);
-            
-                if( srcf.data)
+                DCMPix	*pix = [pixList[ x] objectAtIndex: 0];
+                
+                vImage_Buffer dstf, srcf;
+                
+                dstf.height = [pixList[ x] count];
+                dstf.width = [pix pwidth];
+                dstf.rowBytes = [pix pwidth]*[pix pheight]*sizeof(float);
+                srcf = dstf;
+                
+                int from = [[dict objectForKey: @"from"] intValue];
+                int to = [[dict objectForKey: @"to"] intValue];
+                float *fkernel = [[dict objectForKey: @"kernel"] pointerValue];
+                
+                for( int y = from; y < to; y++)
                 {
-                    if( vImageConvolve_PlanarF( &dstf, &srcf, 0, 0, 0, fkernel, [pix kernelsize], [pix kernelsize], 0, kvImageDoNotTile + kvImageEdgeExtend))
-                        NSLog( @"Error applyConvolutionOnImage");
+                    srcf.data = dstf.data = (void*) [volumeData[ x] bytes] + y*[pix pwidth]*sizeof(float);
+                
+                    if( srcf.data)
+                    {
+                        if( vImageConvolve_PlanarF( &dstf, &srcf, 0, 0, 0, fkernel, [pix kernelsize], [pix kernelsize], 0, kvImageDoNotTile + kvImageEdgeExtend))
+                            NSLog( @"Error applyConvolutionOnImage");
+                    }
                 }
             }
         }
-    }
-    @catch (NSException *exception) {
-        N2LogException( exception);
-    }
-	
-	[convThread lock];
-	[convThread unlockWithCondition: [convThread condition]-1];
-	
-	[p release];
+        @catch (NSException *exception) {
+            N2LogException( exception);
+        }
+        
+        [convThread lock];
+        [convThread unlockWithCondition: [convThread condition]-1];
+	}
 }
 
 - (IBAction) applyConvolutionOnSource:(id) sender
@@ -10732,6 +10729,9 @@ static float oldsetww, oldsetwl;
 		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateVolumeDataNotification object: pixList[ curMovieIndex] userInfo: nil];
 	}
 	else NSRunAlertPanel(NSLocalizedString(@"Convolution", nil), NSLocalizedString(@"First, apply a convolution filter...", nil), nil, nil, nil);
+    
+    [convThread release];
+    convThread = nil;
 }
 
 - (IBAction) computeSum:(id) sender
