@@ -58,13 +58,13 @@
 	[routesTable setDelegate:self];
 	[routesTable setDoubleAction:@selector(editRoute:)];
 	[routesTable setTarget: self];
-	
-	[serversArray release];
-	serversArray = [[[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"] retain];
 }
 
 -(void) willSelect
 {
+    [serversArray release];
+	serversArray = [[[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"] retain];
+    
     for( int i = 0; i < [routesArray count]; i++)
 	{
 		NSLog( @"%@", [[routesArray objectAtIndex:i] valueForKey:@"server"]);
