@@ -1662,7 +1662,8 @@ static NSConditionLock *threadLock = nil;
 			
             @try
             {
-                [self showEntireDatabase];
+                if( [[NSUserDefaults standardUserDefaults] boolForKey: @"clearSearchAndTimeIntervalWhenSelectingAlbum"])
+                    [self showEntireDatabase];
             }
             @catch (...) {
             }
@@ -1796,7 +1797,8 @@ static NSConditionLock *threadLock = nil;
 - (void)showEntireDatabase
 {
 	self.timeIntervalType = 0;
-	
+	self.modalityFilter = nil;
+    
 	[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection:NO];
 	self.searchString = @"";
 }
@@ -2686,6 +2688,9 @@ static NSConditionLock *threadLock = nil;
 
 - (void) setModalityFilter:(NSString *) m
 {
+    if( m == nil)
+        m = [[modalityFilterMenu itemAtIndex: 0] title];
+    
     [self willChangeValueForKey: @"modalityFilter"];
     modalityFilter = m;
     [self didChangeValueForKey: @"modalityFilter"];
@@ -10995,6 +11000,8 @@ static BOOL needToRezoom;
                 // Clear the time interval
                 if( [[[CustomIntervalPanel sharedCustomIntervalPanel] window] isVisible] == NO)
                     [self setTimeIntervalType: 0];
+                
+                [self setModalityFilter: nil];
             }
             else
                 [self setSearchString: self.searchString];
@@ -13401,7 +13408,7 @@ static NSArray*	openSubSeriesArray = nil;
             [databaseOutline scrollRowToVisible: 0];
             [self buildColumnsMenu];
             
-            self.modalityFilter = [[modalityFilterMenu itemAtIndex: 0] title];
+            self.modalityFilter = nil;
             
             [animationCheck setState: [[NSUserDefaults standardUserDefaults] boolForKey: @"AutoPlayAnimation"]];
             

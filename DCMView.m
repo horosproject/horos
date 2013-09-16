@@ -8268,7 +8268,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                 [stanStringAttrib setObject: [NSColor colorWithDeviceRed:0.2f green:0.2 blue:0.2 alpha: 1.0] forKey: NSForegroundColorAttributeName];
             else
                 [stanStringAttrib setObject: [NSColor colorWithDeviceRed:1.0f green:0.8 blue:0.8 alpha: 1.0] forKey: NSForegroundColorAttributeName];
-            NSAttributedString *text = [[[NSAttributedString alloc] initWithString: NSLocalizedString( @"NOT FOR MEDICAL USAGE", nil) attributes: stanStringAttrib] autorelease];
+            NSString *s = NSLocalizedString( @"NOT FOR MEDICAL USAGE", nil);
+            if( [[s stringByReplacingOccurrencesOfString:@" " withString:@""] stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]].length < 5)
+                s = @"NOT FOR MEDICAL USAGE";
+            
+            NSAttributedString *text = [[[NSAttributedString alloc] initWithString:s  attributes: stanStringAttrib] autorelease];
             warningNotice = [[GLString alloc] initWithAttributedString: text withBoxColor: [NSColor colorWithDeviceRed:1.0f green:0.f blue: 0.f alpha:0.4f] withBorderColor: [NSColor colorWithDeviceRed:1.0f green:0.f blue: 0.f alpha:1.0f]];
         }
         
