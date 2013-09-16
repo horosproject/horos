@@ -216,10 +216,8 @@ static NSMatrix *gDateMatrix = nil;
 	[super dealloc];
 }
 
-- (void) mainViewDidLoad
+- (void) willSelect
 {
-	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    
     // Smart Albums
     NSMutableArray *savedSmartAlbums = [NSMutableArray array];
     
@@ -227,16 +225,18 @@ static NSMatrix *gDateMatrix = nil;
     for( NSDictionary *d in [[NSUserDefaults standardUserDefaults] objectForKey: @"smartAlbumStudiesDICOMNodes"])
         [savedSmartAlbums addObject: [NSMutableDictionary dictionaryWithDictionary: d]];
     
+    [self willChangeValueForKey: @"smartAlbumsArray"];
+    
     self.smartAlbumsArray = savedSmartAlbums;
     
-    [self willChangeValueForKey: @"smartAlbumsArray"];
-    [[DicomDatabase activeLocalDatabase] lock];
     @try
     {
         NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
         [dbRequest setEntity: [[DicomDatabase activeLocalDatabase] entityForName: @"Album"]];
         [dbRequest setPredicate: [NSPredicate predicateWithFormat: @"smartAlbum == YES"]];
         NSError *error = nil;
+        
+        [albumDBArray release];
         
         albumDBArray = [[[DicomDatabase activeLocalDatabase] managedObjectContext] executeFetchRequest:dbRequest error:&error];
         albumDBArray = [albumDBArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: @"name" ascending: YES]]];
@@ -298,21 +298,26 @@ static NSMatrix *gDateMatrix = nil;
     {
         N2LogExceptionWithStackTrace(e);
     }
-    [[DicomDatabase activeLocalDatabase] unlock];
     [self didChangeValueForKey: @"smartAlbumsArray"];
+    
+    // History
+    [sourcesArray release];
+    sourcesArray = [[[NSUserDefaults standardUserDefaults] objectForKey: @"comparativeSearchDICOMNodes"] mutableCopy];
+    if( sourcesArray == nil)
+        sourcesArray = [[NSMutableArray array] retain];
+    
+    [self refreshSources];
+}
+
+- (void) mainViewDidLoad
+{
+	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
     [smartAlbumsTable setDoubleAction: @selector(editSmartAlbumFilter:)];
     [smartAlbumsTable setTarget: self];
     
-    // History
-    
-    sourcesArray = [[[NSUserDefaults standardUserDefaults] objectForKey: @"comparativeSearchDICOMNodes"] mutableCopy];
-    if( sourcesArray == nil) sourcesArray = [[NSMutableArray array] retain];
-    
     [sourcesTable setDoubleAction: @selector(selectUniqueSource:)];
     
-    [self refreshSources];
-	
 	for( NSUInteger i = 0; i < [sourcesArray count]; i++)
 	{
 		if( [[[sourcesArray objectAtIndex: i] valueForKey:@"activated"] boolValue] == YES)
