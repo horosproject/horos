@@ -8273,6 +8273,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                 s = @"NOT FOR MEDICAL USAGE";
             
             NSAttributedString *text = [[[NSAttributedString alloc] initWithString:s  attributes: stanStringAttrib] autorelease];
+            
+            if( text.size.width <= 100) {
+                s = [NSString stringWithFormat: @"%s %s %s %s", "NOT", "FOR", "MEDICAL", "USAGE"];
+                text = [[[NSAttributedString alloc] initWithString:s  attributes: stanStringAttrib] autorelease];
+            }
+            
             warningNotice = [[GLString alloc] initWithAttributedString: text withBoxColor: [NSColor colorWithDeviceRed:1.0f green:0.f blue: 0.f alpha:0.4f] withBorderColor: [NSColor colorWithDeviceRed:1.0f green:0.f blue: 0.f alpha:1.0f]];
         }
         
