@@ -5702,16 +5702,16 @@ static ViewerController *draggedController = nil;
 		[self autoHideMatrix];
 }
 
-- (void) Display3DPoint:(NSNotification*) note
-{
-	NSMutableArray	*v = [note object];
-	
-	if( v == pixList[ 0])
-	{
-		[imageView setIndex: [[[note userInfo] valueForKey:@"z"] intValue]];
-		[imageView sendSyncMessage: 0];
-	}
-}
+//- (void) Display3DPoint:(NSNotification*) note
+//{
+//	NSMutableArray	*v = [note object];
+//	
+//	if( v == pixList[ 0])
+//	{
+//		[imageView setIndex: [[[note userInfo] valueForKey:@"z"] intValue]];
+//		[imageView sendSyncMessage: 0];
+//	}
+//}
 
 - (IBAction) setCurrentPosition:(id) sender
 {
@@ -19934,7 +19934,7 @@ int i,j,l;
 	
 	[nc addObserver:self selector:@selector(applicationDidResignActive:) name:NSApplicationDidResignActiveNotification object:nil];
     [nc addObserver:self selector:@selector(UpdateWLWWMenu:) name:OsirixUpdateWLWWMenuNotification object:nil];
-	[nc	addObserver:self selector:@selector(Display3DPoint:) name:OsirixDisplay3dPointNotification object:nil];
+//	[nc	addObserver:self selector:@selector(Display3DPoint:) name:OsirixDisplay3dPointNotification object:nil];
 	[nc addObserver:self selector:@selector(ViewFrameDidChange:) name:NSViewFrameDidChangeNotification object:nil];
 	[nc addObserver:self selector:@selector(ViewBoundsDidChange:) name:NSViewBoundsDidChangeNotification object:nil];
 	

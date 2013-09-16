@@ -1070,27 +1070,35 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	if( display2DPoint.x != 0 || display2DPoint.y != 0)
 	{
-		CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-		
-		glColor3f (0.0f, 0.5f, 1.0f);
-		glLineWidth(2.0 * self.window.backingScaleFactor);
-		glBegin(GL_LINES);
-		
-		float crossx, crossy;
-		
-		crossx = display2DPoint.x - curDCM.pwidth/2.;
-		crossy = display2DPoint.y - curDCM.pheight/2.;
-		
-		glVertex2f( scaleValue * (crossx - 40), scaleValue*(crossy));
-		glVertex2f( scaleValue * (crossx - 5), scaleValue*(crossy));
-		glVertex2f( scaleValue * (crossx + 40), scaleValue*(crossy));
-		glVertex2f( scaleValue * (crossx + 5), scaleValue*(crossy));
-		
-		glVertex2f( scaleValue * (crossx), scaleValue*(crossy-40));
-		glVertex2f( scaleValue * (crossx), scaleValue*(crossy-5));
-		glVertex2f( scaleValue * (crossx), scaleValue*(crossy+5));
-		glVertex2f( scaleValue * (crossx), scaleValue*(crossy+40));
-		glEnd();
+        if( display2DPointIndex == curImage)
+        {
+            CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+            
+            glColor3f (0.0f, 0.5f, 1.0f);
+            glLineWidth(2.0 * self.window.backingScaleFactor);
+            glBegin(GL_LINES);
+            
+            float crossx, crossy;
+            
+            crossx = display2DPoint.x - curDCM.pwidth/2.;
+            crossy = display2DPoint.y - curDCM.pheight/2.;
+            
+            glVertex2f( scaleValue * (crossx - 40), scaleValue*(crossy));
+            glVertex2f( scaleValue * (crossx - 5), scaleValue*(crossy));
+            glVertex2f( scaleValue * (crossx + 40), scaleValue*(crossy));
+            glVertex2f( scaleValue * (crossx + 5), scaleValue*(crossy));
+            
+            glVertex2f( scaleValue * (crossx), scaleValue*(crossy-40));
+            glVertex2f( scaleValue * (crossx), scaleValue*(crossy-5));
+            glVertex2f( scaleValue * (crossx), scaleValue*(crossy+5));
+            glVertex2f( scaleValue * (crossx), scaleValue*(crossy+40));
+            glEnd();
+        }
+        else
+        {
+            display2DPoint.x = 0;
+            display2DPoint.y = 0;
+        }
 	}
 }
 
@@ -1190,6 +1198,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		{
 			display2DPoint.x = [[[note userInfo] valueForKey:@"x"] intValue];
 			display2DPoint.y = [[[note userInfo] valueForKey:@"y"] intValue];
+            display2DPointIndex = [[[note userInfo] valueForKey:@"z"] intValue];
+            
+            [self setIndex: [[[note userInfo] valueForKey:@"z"] intValue]];
+            
+            [self sendSyncMessage: 0];
 			[self setNeedsDisplay: YES];
 		}
 	}
@@ -8925,7 +8938,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				
 				if( [ViewerController numberOf2DViewer] > 1 && is2DViewer == YES && stringID == nil)
 				{
-					// draw line around key View
+					// draw line around key View - RED BOX
 					
 					if( isKeyView && (frontMost || [ViewerController frontMostDisplayed2DViewerForScreen: self.window.screen] == self.windowController))
 					{
@@ -9024,6 +9037,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					glEnd();
 					glLineWidth(1.0 * sf);
 					
+                    // KEY VIEW
+                    
 					if( isKeyView && (frontMost || [ViewerController frontMostDisplayed2DViewerForScreen: self.window.screen] == self.windowController))
 					{
 						float heighthalf = drawingFrameRect.size.height/2 - 1;
@@ -9114,7 +9129,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				if( drawROI && is2DViewer == YES) [[[self windowController] roiLock] unlock];
 				
 				// Draw 2D point cross (used when double-click in 3D panel)
-				
+				// BLUE CROSS
 				if( is2DViewer)
 				{
 					[self draw2DPointMarker];
@@ -12188,6 +12203,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	sliceVector[ 0] = sliceVector[ 1] = sliceVector[ 2] = 0;
 	slicePoint3D[ 0] = HUGE_VALF;
 	
+    [self erase2DPointMarker];
+    if( blendingView) [blendingView erase2DPointMarker];
+    
 	[self sendSyncMessage: 0];
 	
 	[self flagsChanged: [[NSApplication sharedApplication] currentEvent]];

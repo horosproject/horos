@@ -222,6 +222,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	NSTrackingArea	*cursorTracking;
 	
 	NSPoint			display2DPoint;
+    int             display2DPointIndex;
 	
 	NSMutableDictionary	*stringTextureCache;
 	
