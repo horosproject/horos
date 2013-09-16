@@ -4345,7 +4345,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					case 	ROI_drawing:
 					case 	ROI_selected:
 					case 	ROI_selectedModify:
-						if(highlightIfSelected)
+						if(highlightIfSelected && ROIDrawPlainEdge == NO)
 						{
 							glColor3f (0.5f, 0.5f, 1.0f);
 							//smaller points for calcium scoring
