@@ -2199,8 +2199,6 @@ public:
 			[self computeOrientationText];
             
 			[super drawRect:aRect];
-            
-            throw 20;
 		}
 		
 		catch (...)

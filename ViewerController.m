@@ -5923,7 +5923,6 @@ static ViewerController *draggedController = nil;
 	{
 	[toolbarItem setLabel: NSLocalizedString(@"ROI Manager", nil)];
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"ROI Manager", nil)];
-	[toolbarItem setToolTip: NSLocalizedString(@"ROI Manager", nil)];
 	[toolbarItem setImage: [NSImage imageNamed: ROIManagerToolbarItemIdentifier]];
 	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(roiGetManager:)];
@@ -6097,7 +6096,6 @@ static ViewerController *draggedController = nil;
 	// Set up the standard properties 
 	[toolbarItem setLabel: NSLocalizedString(@"Status & Comments", nil)];
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Status & Comments", nil)];
-	[toolbarItem setToolTip: NSLocalizedString(@"Status & Comments", nil)];
 	
 	// Use a custom view, a text field, for the search item 
 	[toolbarItem setView: StatusView];
@@ -6121,7 +6119,6 @@ static ViewerController *draggedController = nil;
 	// Set up the standard properties 
 	[toolbarItem setLabel: NSLocalizedString(@"RGB Factors", nil)];
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"RGB Factors", nil)];
-	[toolbarItem setToolTip: NSLocalizedString(@"RGB Factors", nil)];
 	
 	// Use a custom view, a text field, for the search item 
 	[toolbarItem setView: RGBFactorsView];
@@ -6133,7 +6130,6 @@ static ViewerController *draggedController = nil;
 	// Set up the standard properties 
 	[toolbarItem setLabel: NSLocalizedString(@"Orientation", nil)];
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Orientation", nil)];
-	[toolbarItem setToolTip: NSLocalizedString(@"Orientation", nil)];
 	
 	// Use a custom view, a text field, for the search item 
 	[toolbarItem setView: orientationView];
@@ -6166,7 +6162,6 @@ static ViewerController *draggedController = nil;
         // Set up the standard properties 
         [toolbarItem setLabel: NSLocalizedString(@"Annotations", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Annotations", nil)];
-        [toolbarItem setToolTip: NSLocalizedString(@"Annotations", nil)];
         
         // Use a custom view, a text field, for the search item 
         [toolbarItem setView: annotations];
@@ -6178,7 +6173,6 @@ static ViewerController *draggedController = nil;
 	// Set up the standard properties 
 	[toolbarItem setLabel: NSLocalizedString(@"Shutter", nil)];
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Shutter", nil)];
-	[toolbarItem setToolTip: NSLocalizedString(@"Shutter", nil)];
 	
 	// Use a custom view, a text field, for the search item 
 	[toolbarItem setView: shutterView];
@@ -6213,7 +6207,6 @@ static ViewerController *draggedController = nil;
 	// Set up the standard properties 
 	[toolbarItem setLabel: NSLocalizedString(@"Key Images", nil)];
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Key Images", nil)];
-	[toolbarItem setToolTip: NSLocalizedString(@"Key Images", nil)];
 	
 	// Use a custom view, a text field, for the search item 
 	[toolbarItem setView: keyImages];
@@ -6263,7 +6256,6 @@ static ViewerController *draggedController = nil;
 
  	[toolbarItem setLabel: NSLocalizedString(@"3D Panel", nil)];
  	[toolbarItem setPaletteLabel: NSLocalizedString(@"3D Panel", nil)];
- 	[toolbarItem setToolTip: NSLocalizedString(@"3D Panel", nil)];
  	[toolbarItem setImage: [NSImage imageNamed: VRPanelToolbarItemIdentifier]];
  	[toolbarItem setTarget: nil];
  	[toolbarItem setAction: @selector(Panel3D:)];
@@ -6300,7 +6292,6 @@ static ViewerController *draggedController = nil;
 	{
 		[toolbarItem setLabel:NSLocalizedString(@"3D Pos", nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString(@"3D Pos", nil)];
-		[toolbarItem setToolTip:NSLocalizedString(@"3D Pos", nil)];
 		[toolbarItem setImage:[NSImage imageNamed:@"OrientationWidget.tif"]];
 		[toolbarItem setTarget:nil];
 		[toolbarItem setAction:@selector(threeDPanel:)];
@@ -6309,7 +6300,6 @@ static ViewerController *draggedController = nil;
 	{
 		[toolbarItem setLabel:NSLocalizedString(@"Navigator", nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString(@"Navigator", nil)];
-		[toolbarItem setToolTip:NSLocalizedString(@"Navigator", nil)];
 		[toolbarItem setImage:[NSImage imageNamed:NavigatorToolbarItemIdentifier]];
 		[toolbarItem setTarget:nil];
 		[toolbarItem setAction:@selector(navigator:)];
@@ -16947,7 +16937,6 @@ int i,j,l;
 		[sender setImage: [NSImage imageNamed: PauseToolbarItemIdentifier]];
         [sender setLabel: NSLocalizedString(@"Stop", nil)];
 		[sender setPaletteLabel: NSLocalizedString(@"Stop", nil)];
-        [sender setToolTip: NSLocalizedString(@"Stop", nil)];
     }
 }
 
