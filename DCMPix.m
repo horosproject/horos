@@ -6948,125 +6948,123 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	if( [self.modalityString isEqualToString:@"US"])
 	{
 		val = Papy3GetElement (theGroupP, papSequenceofUltrasoundRegionsGr, &nbVal, &elemType);
-		if ( val != NULL)
-		{
-			if( val->sq != NULL)
-			{
-                // US Regions --->
-                // BOOL spacingFound = NO;
-				[usRegions release];
-                usRegions = [[NSMutableArray array] retain];
-                // <--- US Regions
-                
-				Papy_List	*dcmList = val->sq;
-				while (dcmList != NULL)
-				{
-					if( dcmList->object->item)
-					{
-						SElement *gr = (SElement *)dcmList->object->item->object->group;
+        
+        if( val && elemType == SQ && val->sq && nbVal >= 1)
+        {
+            // US Regions --->
+            // BOOL spacingFound = NO;
+            [usRegions release];
+            usRegions = [[NSMutableArray array] retain];
+            // <--- US Regions
+            
+            Papy_List	*dcmList = val->sq;
+            while (dcmList != NULL)
+            {
+                if( dcmList->object->item)
+                {
+                    SElement *gr = (SElement *)dcmList->object->item->object->group;
 //						if ( gr->group == 0x0018 && spacingFound == NO)
-                        if ( gr->group == 0x0018 )
-						{
+                    if ( gr->group == 0x0018 )
+                    {
 /* US Regions --->
-							int physicalUnitsX = 0;
-							int physicalUnitsY = 0;
-							int spatialFormat = 0;
-							
-							val = Papy3GetElement (gr, papPhysicalUnitsXDirectionGr, &nbVal, &elemType);
-							if ( val) physicalUnitsX = val->us;
-							val = Papy3GetElement (gr, papPhysicalUnitsYDirectionGr, &nbVal, &elemType);
-							if ( val) physicalUnitsY = val->us;
-							val = Papy3GetElement (gr, papRegionSpatialFormatGr, &nbVal, &elemType);
-							if ( val) spatialFormat = val->us;
-							
-							if( physicalUnitsX == 3 && physicalUnitsY == 3 && spatialFormat == 1)	// We want only cm, for 2D images
-							{
-								double xxx = 0, yyy = 0;
-								
-								val = Papy3GetElement (gr, papPhysicalDeltaXGr, &nbVal, &elemType);
-								if ( val) xxx = val->fd;
-								val = Papy3GetElement (gr, papPhysicalDeltaYGr, &nbVal, &elemType);
-								if ( val) yyy = val->fd;
-								
-								if( xxx && yyy)
-								{
-									pixelSpacingX = fabs( xxx) * 10.;	// These are in cm !
-									pixelSpacingY = fabs( yyy) * 10.;
-									spacingFound = YES;
-									
-									pixelSpacingFromUltrasoundRegions = YES;
-								}
-							}
+                        int physicalUnitsX = 0;
+                        int physicalUnitsY = 0;
+                        int spatialFormat = 0;
+                        
+                        val = Papy3GetElement (gr, papPhysicalUnitsXDirectionGr, &nbVal, &elemType);
+                        if ( val) physicalUnitsX = val->us;
+                        val = Papy3GetElement (gr, papPhysicalUnitsYDirectionGr, &nbVal, &elemType);
+                        if ( val) physicalUnitsY = val->us;
+                        val = Papy3GetElement (gr, papRegionSpatialFormatGr, &nbVal, &elemType);
+                        if ( val) spatialFormat = val->us;
+                        
+                        if( physicalUnitsX == 3 && physicalUnitsY == 3 && spatialFormat == 1)	// We want only cm, for 2D images
+                        {
+                            double xxx = 0, yyy = 0;
+                            
+                            val = Papy3GetElement (gr, papPhysicalDeltaXGr, &nbVal, &elemType);
+                            if ( val) xxx = val->fd;
+                            val = Papy3GetElement (gr, papPhysicalDeltaYGr, &nbVal, &elemType);
+                            if ( val) yyy = val->fd;
+                            
+                            if( xxx && yyy)
+                            {
+                                pixelSpacingX = fabs( xxx) * 10.;	// These are in cm !
+                                pixelSpacingY = fabs( yyy) * 10.;
+                                spacingFound = YES;
+                                
+                                pixelSpacingFromUltrasoundRegions = YES;
+                            }
+                        }
 <--- US Regions */
 // US Regions --->
 #ifdef OSIRIX_VIEWER
-                            // Read US Region Calibration Attributes
-                            DCMUSRegion *usRegion = [[[DCMUSRegion alloc] init] autorelease];
-                            
-                            val = Papy3GetElement (gr, papRegionSpatialFormatGr, &nbVal, &elemType);
-                            if (val) [usRegion setRegionSpatialFormat: val->us];
-                            val = Papy3GetElement (gr, papRegionDataTypeGr, &nbVal, &elemType);
-                            if (val) [usRegion setRegionDataType: val->us];
-                            val = Papy3GetElement (gr, papRegionFlagsGr, &nbVal, &elemType);
-                            if (val) [usRegion setRegionFlags: val->us];
+                        // Read US Region Calibration Attributes
+                        DCMUSRegion *usRegion = [[[DCMUSRegion alloc] init] autorelease];
+                        
+                        val = Papy3GetElement (gr, papRegionSpatialFormatGr, &nbVal, &elemType);
+                        if (val) [usRegion setRegionSpatialFormat: val->us];
+                        val = Papy3GetElement (gr, papRegionDataTypeGr, &nbVal, &elemType);
+                        if (val) [usRegion setRegionDataType: val->us];
+                        val = Papy3GetElement (gr, papRegionFlagsGr, &nbVal, &elemType);
+                        if (val) [usRegion setRegionFlags: val->us];
 
-                            val = Papy3GetElement (gr, papRegionLocationMinX0Gr, &nbVal, &elemType);
-                            if (val) [usRegion setRegionLocationMinX0: val->us];
-                            val = Papy3GetElement (gr, papRegionLocationMinY0Gr, &nbVal, &elemType);
-                            if (val) [usRegion setRegionLocationMinY0: val->us];
-                            val = Papy3GetElement (gr, papRegionLocationMaxX1Gr, &nbVal, &elemType);
-                            if (val) [usRegion setRegionLocationMaxX1: val->us];
-                            val = Papy3GetElement (gr, papRegionLocationMaxY1Gr, &nbVal, &elemType);
-                            if (val) [usRegion setRegionLocationMaxY1: val->us];
-                            
-                            val = Papy3GetElement (gr, papReferencePixelX0Gr, &nbVal, &elemType);
-                            if (val) [usRegion setReferencePixelX0: val->ss];
-                            [usRegion setIsReferencePixelX0Present:(val != nil)];
-                            val = Papy3GetElement (gr, papReferencePixelY0Gr, &nbVal, &elemType);
-                            if (val) [usRegion setReferencePixelY0: val->ss];
-                            [usRegion setIsReferencePixelY0Present:(val != nil)];
-                            
-                            val = Papy3GetElement (gr, papPhysicalUnitsXDirectionGr, &nbVal, &elemType);
-                            if (val) [usRegion setPhysicalUnitsXDirection: val->us];
-                            val = Papy3GetElement (gr, papPhysicalUnitsYDirectionGr, &nbVal, &elemType);
-                            if (val) [usRegion setPhysicalUnitsYDirection: val->us];
+                        val = Papy3GetElement (gr, papRegionLocationMinX0Gr, &nbVal, &elemType);
+                        if (val) [usRegion setRegionLocationMinX0: val->us];
+                        val = Papy3GetElement (gr, papRegionLocationMinY0Gr, &nbVal, &elemType);
+                        if (val) [usRegion setRegionLocationMinY0: val->us];
+                        val = Papy3GetElement (gr, papRegionLocationMaxX1Gr, &nbVal, &elemType);
+                        if (val) [usRegion setRegionLocationMaxX1: val->us];
+                        val = Papy3GetElement (gr, papRegionLocationMaxY1Gr, &nbVal, &elemType);
+                        if (val) [usRegion setRegionLocationMaxY1: val->us];
+                        
+                        val = Papy3GetElement (gr, papReferencePixelX0Gr, &nbVal, &elemType);
+                        if (val) [usRegion setReferencePixelX0: val->ss];
+                        [usRegion setIsReferencePixelX0Present:(val != nil)];
+                        val = Papy3GetElement (gr, papReferencePixelY0Gr, &nbVal, &elemType);
+                        if (val) [usRegion setReferencePixelY0: val->ss];
+                        [usRegion setIsReferencePixelY0Present:(val != nil)];
+                        
+                        val = Papy3GetElement (gr, papPhysicalUnitsXDirectionGr, &nbVal, &elemType);
+                        if (val) [usRegion setPhysicalUnitsXDirection: val->us];
+                        val = Papy3GetElement (gr, papPhysicalUnitsYDirectionGr, &nbVal, &elemType);
+                        if (val) [usRegion setPhysicalUnitsYDirection: val->us];
 
-                            val = Papy3GetElement (gr, papReferencePixelPhysicalValueXGr, &nbVal, &elemType);
-                            if (val) [usRegion setRefPixelPhysicalValueX: val->fd];
-                            val = Papy3GetElement (gr, papReferencePixelPhysicalValueYGr, &nbVal, &elemType);
-                            if (val) [usRegion setRefPixelPhysicalValueY: val->fd];
+                        val = Papy3GetElement (gr, papReferencePixelPhysicalValueXGr, &nbVal, &elemType);
+                        if (val) [usRegion setRefPixelPhysicalValueX: val->fd];
+                        val = Papy3GetElement (gr, papReferencePixelPhysicalValueYGr, &nbVal, &elemType);
+                        if (val) [usRegion setRefPixelPhysicalValueY: val->fd];
 
-                            val = Papy3GetElement (gr, papPhysicalDeltaXGr, &nbVal, &elemType);
-                            if (val) [usRegion setPhysicalDeltaX: val->fd];
-                            val = Papy3GetElement (gr, papPhysicalDeltaYGr, &nbVal, &elemType);
-                            if (val) [usRegion setPhysicalDeltaY: val->fd];
-                            
-                            val = Papy3GetElement (gr, papDopplerCorrectionAngleGr, &nbVal, &elemType);
-                            if (val) [usRegion setDopplerCorrectionAngle: val->fd];
-                            
-							if ([usRegion physicalUnitsXDirection] == 3 && [usRegion physicalUnitsYDirection] == 3 && [usRegion regionSpatialFormat] == 1) {
-								// We want only cm, for 2D images
-                                if ([usRegion physicalDeltaX] && [usRegion physicalDeltaY])
-								{
-									pixelSpacingX = fabs([usRegion physicalDeltaX]) * 10.;	// These are in cm !
-									pixelSpacingY = fabs([usRegion physicalDeltaY]) * 10.;
-									pixelSpacingFromUltrasoundRegions = YES;
-								}
-							}
-                            
-                            // Adds current US Region Calibration Attributes to usRegions collection
-                            [usRegions addObject:usRegion];
+                        val = Papy3GetElement (gr, papPhysicalDeltaXGr, &nbVal, &elemType);
+                        if (val) [usRegion setPhysicalDeltaX: val->fd];
+                        val = Papy3GetElement (gr, papPhysicalDeltaYGr, &nbVal, &elemType);
+                        if (val) [usRegion setPhysicalDeltaY: val->fd];
+                        
+                        val = Papy3GetElement (gr, papDopplerCorrectionAngleGr, &nbVal, &elemType);
+                        if (val) [usRegion setDopplerCorrectionAngle: val->fd];
+                        
+                        if ([usRegion physicalUnitsXDirection] == 3 && [usRegion physicalUnitsYDirection] == 3 && [usRegion regionSpatialFormat] == 1) {
+                            // We want only cm, for 2D images
+                            if ([usRegion physicalDeltaX] && [usRegion physicalDeltaY])
+                            {
+                                pixelSpacingX = fabs([usRegion physicalDeltaX]) * 10.;	// These are in cm !
+                                pixelSpacingY = fabs([usRegion physicalDeltaY]) * 10.;
+                                pixelSpacingFromUltrasoundRegions = YES;
+                            }
+                        }
+                        
+                        // Adds current US Region Calibration Attributes to usRegions collection
+                        [usRegions addObject:usRegion];
 
-                            //NSLog (@"papyLoadGroup0x0018 - US REGION is [%@]", [usRegion toString]);
-                            
+                        //NSLog (@"papyLoadGroup0x0018 - US REGION is [%@]", [usRegion toString]);
+                        
 #endif
 // <--- US Regions
-						}
-					}
-					dcmList = dcmList->next;
-				}
-			}
-		}
+                    }
+                }
+                dcmList = dcmList->next;
+            }
+        }
 	}
 	
 	if( pixelSpacingFromUltrasoundRegions == NO)
@@ -7715,36 +7713,33 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     
     // Loop over sequence
     
-    if ( val != NULL)
+    if( val && elemType == SQ && val->sq && pos >= 1)
     {
-        if( val->sq != NULL)
+        Papy_List	*dcmList = val->sq->object->item;
+        if (dcmList != NULL)	// We use ONLY the first VOILut available
         {
-            Papy_List	*dcmList = val->sq->object->item;
-            if (dcmList != NULL)	// We use ONLY the first VOILut available
+            SElement *gr = (SElement *)dcmList->object->group;
+            if ( gr->group == 0x0028)
             {
-                SElement *gr = (SElement *)dcmList->object->group;
-                if ( gr->group == 0x0028)
+                
+                val = Papy3GetElement (gr, papLUTDescriptorGr, &pos, &elemType);
+                if( val)
                 {
+                    VOILUT_number = val->us;		val++;
+                    VOILUT_first = val->ss;			val++;	// By definition it should be us, but some images with neg values expect a ss
+                    VOILUT_depth = val->us;			val++;
+                }
+                
+                val = Papy3GetElement (gr, papLUTDataGr, &pos, &elemType);
+                if( val)
+                {
+                    VOILUT_number = pos;
                     
-                    val = Papy3GetElement (gr, papLUTDescriptorGr, &pos, &elemType);
-                    if( val)
+                    if( VOILUT_table) free( VOILUT_table);
+                    VOILUT_table = malloc( sizeof(unsigned int) * VOILUT_number);
+                    for ( int j = 0; j < VOILUT_number; j++)
                     {
-                        VOILUT_number = val->us;		val++;
-                        VOILUT_first = val->ss;			val++;	// By definition it should be us, but some images with neg values expect a ss
-                        VOILUT_depth = val->us;			val++;
-                    }
-                    
-                    val = Papy3GetElement (gr, papLUTDataGr, &pos, &elemType);
-                    if( val)
-                    {
-                        VOILUT_number = pos;
-                        
-                        if( VOILUT_table) free( VOILUT_table);
-                        VOILUT_table = malloc( sizeof(unsigned int) * VOILUT_number);
-                        for ( int j = 0; j < VOILUT_number; j++)
-                        {
-                            VOILUT_table [j] = (unsigned int) val->us;			val++;
-                        }
+                        VOILUT_table [j] = (unsigned int) val->us;			val++;
                     }
                 }
             }
@@ -8040,48 +8035,45 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					
 					// Loop over sequence to find injected dose
 					
-					if ( val)
+					if( val && elemType == SQ && val->sq && pos >= 1)
 					{
-						if( val->sq)
-						{
-							Papy_List	*dcmList = val->sq;
-							while (dcmList != NULL)
-							{
-								if( dcmList->object->item)
-								{
-									SElement *gr = (SElement *)dcmList->object->item->object->group;
-									if ( gr->group == 0x0018)
-									{
-										val = Papy3GetElement (gr, papRadionuclideTotalDoseGr, &pos, &elemType);
-										if( val && val->a && validAPointer( elemType))
-											radionuclideTotalDose = atof( val->a);
-										else
-											radionuclideTotalDose = 0.0;
-										
-										val = Papy3GetElement (gr, papRadiopharmaceuticalStartTimeGr, &pos, &elemType);
-										if( val && val->a && validAPointer( elemType) && acquisitionDate)
-										{
-											NSString *pharmaTime = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
-											NSString *completeDate = [acquisitionDate stringByAppendingString: pharmaTime];
-											
-											if( [pharmaTime length] >= 6)
-												radiopharmaceuticalStartTime = [[NSCalendarDate alloc] initWithString: completeDate calendarFormat:@"%Y%m%d%H%M%S"];
-											else
-												radiopharmaceuticalStartTime = [[NSCalendarDate alloc] initWithString: completeDate calendarFormat:@"%Y%m%d%H%M"];
-										}
-										
-										val = Papy3GetElement (gr, papRadionuclideHalfLifeGr, &pos, &elemType);
-										if( val && val->a && validAPointer( elemType))
-											halflife = atof( val->a);
-										else
-											halflife = 0;
-											
-										break;
-									}
-								}
-								dcmList = dcmList->next;
-							}
-						}
+                        Papy_List	*dcmList = val->sq;
+                        while (dcmList != NULL)
+                        {
+                            if( dcmList->object->item)
+                            {
+                                SElement *gr = (SElement *)dcmList->object->item->object->group;
+                                if ( gr->group == 0x0018)
+                                {
+                                    val = Papy3GetElement (gr, papRadionuclideTotalDoseGr, &pos, &elemType);
+                                    if( val && val->a && validAPointer( elemType))
+                                        radionuclideTotalDose = atof( val->a);
+                                    else
+                                        radionuclideTotalDose = 0.0;
+                                    
+                                    val = Papy3GetElement (gr, papRadiopharmaceuticalStartTimeGr, &pos, &elemType);
+                                    if( val && val->a && validAPointer( elemType) && acquisitionDate)
+                                    {
+                                        NSString *pharmaTime = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
+                                        NSString *completeDate = [acquisitionDate stringByAppendingString: pharmaTime];
+                                        
+                                        if( [pharmaTime length] >= 6)
+                                            radiopharmaceuticalStartTime = [[NSCalendarDate alloc] initWithString: completeDate calendarFormat:@"%Y%m%d%H%M%S"];
+                                        else
+                                            radiopharmaceuticalStartTime = [[NSCalendarDate alloc] initWithString: completeDate calendarFormat:@"%Y%m%d%H%M"];
+                                    }
+                                    
+                                    val = Papy3GetElement (gr, papRadionuclideHalfLifeGr, &pos, &elemType);
+                                    if( val && val->a && validAPointer( elemType))
+                                        halflife = atof( val->a);
+                                    else
+                                        halflife = 0;
+                                        
+                                    break;
+                                }
+                            }
+                            dcmList = dcmList->next;
+                        }
 						
 						[self computeTotalDoseCorrected];
 						
@@ -8089,9 +8081,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					}
 					
 					val = Papy3GetElement (theGroupP, papDetectorInformationSequenceGr, &pos, &elemType);
-					if( val)
-					{
-						if( val->sq)
+					if( val && elemType == SQ && val->sq && pos >= 1)
+                    {
 						{
 							Papy_List *dcmList = val->sq->object->item;
 							while (dcmList != NULL)
@@ -8179,10 +8170,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					val = Papy3GetElement (groupOverlay, papSharedFunctionalGroupsSequence, &nbVal, &elemType);
 					
 					// there is an element
-					if ( val)
-					{
-						// there is a sequence
-						if (val->sq)
+					if( val && elemType == SQ && val->sq && nbVal >= 1)
+                    {
 						{
 							// get a pointer to the first element of the list
 							Papy_List *dcmList = val->sq->object->item;
@@ -8342,10 +8331,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					val = Papy3GetElement (groupOverlay, papPerFrameFunctionalGroupsSequence, &nbVal, &elemType);
 					
 					// there is an element
-					if ( val)
-					{
-						// there is a sequence
-						if (val->sq)
+					if( val && elemType == SQ && val->sq && nbVal >= 1)
+                    {
 						{
 							// get a pointer to the first element of the list
 							Papy_List *dcmList = val->sq;
@@ -8380,160 +8367,142 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                                                         
                                                     case 0x0018:
 														val = Papy3GetElement (gr, papMREchoSequence, &nbVal, &elemType);
-														if (val != NULL && nbVal >= 1)
-														{
-															// there is a sequence
-															if (val->sq)
-															{
-																// get a pointer to the first element of the list
-																Papy_List *seq = val->sq->object->item;
-																
-																// loop through the elements of the sequence
-																while (seq)
-																{
-																	SElement * gr20 = (SElement *) seq->object->group;
-																	
-																	switch( gr20->group)
-																	{
-																		case 0x0018: [self papyLoadGroup0x0018: gr20]; break;
-																	}
-																	
-																	// get the next element of the list
-																	seq = seq->next;
-																}
-															}
-														}
+                                                        // there is a sequence
+                                                        if( val && elemType == SQ && val->sq && nbVal >= 1)
+                                                        {
+                                                            // get a pointer to the first element of the list
+                                                            Papy_List *seq = val->sq->object->item;
+                                                            
+                                                            // loop through the elements of the sequence
+                                                            while (seq)
+                                                            {
+                                                                SElement * gr20 = (SElement *) seq->object->group;
+                                                                
+                                                                switch( gr20->group)
+                                                                {
+                                                                    case 0x0018: [self papyLoadGroup0x0018: gr20]; break;
+                                                                }
+                                                                
+                                                                // get the next element of the list
+                                                                seq = seq->next;
+                                                            }
+                                                        }
 													break;
 													
 													case 0x0028:
 														val = Papy3GetElement (gr, papPixelMatrixSequence, &nbVal, &elemType);
-														if (val != NULL && nbVal >= 1)
-														{
-															// there is a sequence
-															if (val->sq)
-															{
-																// get a pointer to the first element of the list
-																Papy_List *seq = val->sq->object->item;
-																
-																// loop through the elements of the sequence
-																while (seq)
-																{
-																	SElement * gr20 = (SElement *) seq->object->group;
-																	
-																	switch( gr20->group)
-																	{
-																		case 0x0018: [self papyLoadGroup0x0018: gr20]; break;
-																		case 0x0028: [self papyLoadGroup0x0028: gr20]; break;
-																	}
-																	
-																	// get the next element of the list
-																	seq = seq->next;
-																}
-															}
-														}
+                                                        // there is a sequence
+                                                        if( val && elemType == SQ && val->sq && nbVal >= 1)
+                                                        {
+                                                            // get a pointer to the first element of the list
+                                                            Papy_List *seq = val->sq->object->item;
+                                                            
+                                                            // loop through the elements of the sequence
+                                                            while (seq)
+                                                            {
+                                                                SElement * gr20 = (SElement *) seq->object->group;
+                                                                
+                                                                switch( gr20->group)
+                                                                {
+                                                                    case 0x0018: [self papyLoadGroup0x0018: gr20]; break;
+                                                                    case 0x0028: [self papyLoadGroup0x0028: gr20]; break;
+                                                                }
+                                                                
+                                                                // get the next element of the list
+                                                                seq = seq->next;
+                                                            }
+                                                        }
                                                         
                                                         val = Papy3GetElement (gr, papPixelValueTransformationSequence, &nbVal, &elemType);
-														if (val != NULL && nbVal >= 1)
-														{
-															// there is a sequence
-															if (val->sq)
-															{
-																// get a pointer to the first element of the list
-																Papy_List *seq = val->sq->object->item;
-																
-																// loop through the elements of the sequence
-																while (seq)
-																{
-																	SElement * gr20 = (SElement *) seq->object->group;
-																	
-																	switch( gr20->group)
-																	{
-																		case 0x0028: [self papyLoadGroup0x0028: gr20]; break;
-																	}
-																	
-																	// get the next element of the list
-																	seq = seq->next;
-																}
-															}
-														}
+                                                        // there is a sequence
+                                                        if( val && elemType == SQ && val->sq && nbVal >= 1)
+                                                        {
+                                                            // get a pointer to the first element of the list
+                                                            Papy_List *seq = val->sq->object->item;
+                                                            
+                                                            // loop through the elements of the sequence
+                                                            while (seq)
+                                                            {
+                                                                SElement * gr20 = (SElement *) seq->object->group;
+                                                                
+                                                                switch( gr20->group)
+                                                                {
+                                                                    case 0x0028: [self papyLoadGroup0x0028: gr20]; break;
+                                                                }
+                                                                
+                                                                // get the next element of the list
+                                                                seq = seq->next;
+                                                            }
+                                                        }
 													break;
 													
 													case 0x0020:
 														val = Papy3GetElement (gr, papPlanePositionSequence, &nbVal, &elemType);
-														if (val != NULL && nbVal >= 1)
-														{
-															// there is a sequence
-															if (val->sq)
-															{
-																// get a pointer to the first element of the list
-																Papy_List *seq = val->sq->object->item;
-																
-																// loop through the elements of the sequence
-																while (seq)
-																{
-																	SElement * gr = (SElement *) seq->object->group;
-																	
-																	switch( gr->group)
-																	{
-																		case 0x0020: [self papyLoadGroup0x0020: gr]; break;
-																		case 0x0028: [self papyLoadGroup0x0028: gr]; break;
-																	}
-																	
-																	// get the next element of the list
-																	seq = seq->next;
-																}
-															}
-														}
+                                                        // there is a sequence
+                                                        if( val && elemType == SQ && val->sq && nbVal >= 1)
+                                                        {
+                                                            // get a pointer to the first element of the list
+                                                            Papy_List *seq = val->sq->object->item;
+                                                            
+                                                            // loop through the elements of the sequence
+                                                            while (seq)
+                                                            {
+                                                                SElement * gr = (SElement *) seq->object->group;
+                                                                
+                                                                switch( gr->group)
+                                                                {
+                                                                    case 0x0020: [self papyLoadGroup0x0020: gr]; break;
+                                                                    case 0x0028: [self papyLoadGroup0x0028: gr]; break;
+                                                                }
+                                                                
+                                                                // get the next element of the list
+                                                                seq = seq->next;
+                                                            }
+                                                        }
 														
 														val = Papy3GetElement (gr, papPlaneOrientationSequence, &nbVal, &elemType);
-														if (val != NULL && nbVal >= 1)
-														{
-															// there is a sequence
-															if (val->sq)
-															{
-																// get a pointer to the first element of the list
-																Papy_List *seq = val->sq->object->item;
-																
-																// loop through the elements of the sequence
-																while (seq)
-																{
-																	SElement * gr = (SElement *) seq->object->group;
-																	
-																	switch( gr->group)
-																	{
-																		case 0x0020: [self papyLoadGroup0x0020: gr]; break;
-																	}
-																	
-																	// get the next element of the list
-																	seq = seq->next;
-																}
-															}
+                                                        // there is a sequence
+                                                        if( val && elemType == SQ && val->sq && nbVal >= 1)
+                                                        {
+                                                            // get a pointer to the first element of the list
+                                                            Papy_List *seq = val->sq->object->item;
+                                                            
+                                                            // loop through the elements of the sequence
+                                                            while (seq)
+                                                            {
+                                                                SElement * gr = (SElement *) seq->object->group;
+                                                                
+                                                                switch( gr->group)
+                                                                {
+                                                                    case 0x0020: [self papyLoadGroup0x0020: gr]; break;
+                                                                }
+                                                                
+                                                                // get the next element of the list
+                                                                seq = seq->next;
+                                                            }
 														}
                                                         
                                                         val = Papy3GetElement (gr, papPlanePositionVolumeSequence, &nbVal, &elemType);
-														if (val != NULL && nbVal >= 1)
-														{
-															// there is a sequence
-															if (val->sq)
-															{
-																// get a pointer to the first element of the list
-																Papy_List *seq = val->sq->object->item;
-																
-																// loop through the elements of the sequence
-																while (seq)
-																{
-																	SElement * gr = (SElement *) seq->object->group;
-																	
-																	switch( gr->group)
-																	{
-																		case 0x0020: [self papyLoadGroup0x0020: gr]; break;
-																	}
-																	
-																	// get the next element of the list
-																	seq = seq->next;
-																}
-															}
-														}
+                                                        // there is a sequence
+                                                        if( val && elemType == SQ && val->sq && nbVal >= 1)
+                                                        {
+                                                            // get a pointer to the first element of the list
+                                                            Papy_List *seq = val->sq->object->item;
+                                                            
+                                                            // loop through the elements of the sequence
+                                                            while (seq)
+                                                            {
+                                                                SElement * gr = (SElement *) seq->object->group;
+                                                                
+                                                                switch( gr->group)
+                                                                {
+                                                                    case 0x0020: [self papyLoadGroup0x0020: gr]; break;
+                                                                }
+                                                                
+                                                                // get the next element of the list
+                                                                seq = seq->next;
+                                                            }
+                                                        }
 													break;
 												} // switch( gr->group)
 											} // if( groupsForFrame->object->item)

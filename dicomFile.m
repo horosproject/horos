@@ -2380,7 +2380,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                     else
                     {
                         val = Papy3GetElement (theGroupP, papProcedureCodeSequenceGr, &nbVal, &itemType);
-                        if (val != NULL && nbVal >= 1 && val->sq)
+                        if( val && itemType == SQ && val->sq && nbVal >= 1)
                         {
                             // get a pointer to the first element of the list
                             Papy_List *seq = val->sq->object->item;
@@ -2858,62 +2858,58 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                     val = Papy3GetElement ( theGroupP, papSharedFunctionalGroupsSequence, &nbVal, &itemType);
                     
                     // there is an element
-                    if ( val)
+                    if( val && itemType == SQ && val->sq && nbVal >= 1)
                     {
-                        // there is a sequence
-                        if (val->sq)
+                        // get a pointer to the first element of the list
+                        Papy_List *dcmList = val->sq->object->item;
+                        
+                        // loop through the elements of the sequence
+                        while (dcmList != NULL)
                         {
-                            // get a pointer to the first element of the list
-                            Papy_List *dcmList = val->sq->object->item;
+                            SElement * gr = (SElement *) dcmList->object->group;
                             
-                            // loop through the elements of the sequence
-                            while (dcmList != NULL)
+                            switch( gr->group)
                             {
-                                SElement * gr = (SElement *) dcmList->object->group;
-                                
-                                switch( gr->group)
-                                {
-                                    case 0x0020:
-                                        val3 = Papy3GetElement (gr, papPlanePositionVolumeSequence, &nbVal, &itemType);
-                                        if (val3 != NULL && nbVal >= 1)
+                                case 0x0020:
+                                    val3 = Papy3GetElement (gr, papPlanePositionVolumeSequence, &nbVal, &itemType);
+                                    if (val3 != NULL && nbVal >= 1)
+                                    {
+                                        // there is a sequence
+                                        if (val3->sq)
                                         {
-                                            // there is a sequence
-                                            if (val3->sq)
+                                            Papy_List *PixelMatrixSeq = val3->sq->object->item;
+                                            
+                                            // loop through the elements of the sequence
+                                            while (PixelMatrixSeq)
                                             {
-                                                Papy_List *PixelMatrixSeq = val3->sq->object->item;
+                                                SElement * gr = (SElement *) PixelMatrixSeq->object->group;
                                                 
-                                                // loop through the elements of the sequence
-                                                while (PixelMatrixSeq)
+                                                switch( gr->group)
                                                 {
-                                                    SElement * gr = (SElement *) PixelMatrixSeq->object->group;
-                                                    
-                                                    switch( gr->group)
+                                                    case 0x0020:
                                                     {
-                                                        case 0x0020:
+                                                        UValue_T *val4 = nil;
+                                                        val4 = Papy3GetElement (gr, papImageOrientationVolumeGr, &nbVal, &itemType);
+                                                        if (val4 != NULL && itemType == FD && nbVal == 6)
                                                         {
-                                                            UValue_T *val4 = nil;
-                                                            val4 = Papy3GetElement (gr, papImageOrientationVolumeGr, &nbVal, &itemType);
-                                                            if (val4 != NULL && itemType == FD && nbVal == 6)
-                                                            {
-                                                                for ( int j = 0; j < nbVal; j++)
-                                                                    orientationMultiFrame[ j]  = val4++->fd;
-                                                            }
+                                                            for ( int j = 0; j < nbVal; j++)
+                                                                orientationMultiFrame[ j]  = val4++->fd;
                                                         }
-                                                        break;
                                                     }
-                                                    
-                                                    // get the next element of the list
-                                                    PixelMatrixSeq = PixelMatrixSeq->next;
+                                                    break;
                                                 }
+                                                
+                                                // get the next element of the list
+                                                PixelMatrixSeq = PixelMatrixSeq->next;
                                             }
                                         }
-                                        break;
-                                }
-                                // get the next element of the list
-                                dcmList = dcmList->next;
-                            } // while ...loop through the sequence
-                        } // if ...there is a sequence of groups
-                    } // if ...val is not NULL
+                                    }
+                                    break;
+                            }
+                            // get the next element of the list
+                            dcmList = dcmList->next;
+                        } // while ...loop through the sequence
+                    } // if ...there is a sequence of groups
                     
                     // ****** ****** ****** ************************************************************************
                     // PER FRAME
@@ -2924,226 +2920,222 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                     val = Papy3GetElement ( theGroupP, papPerFrameFunctionalGroupsSequence, &nbVal, &itemType);
                     
                     // there is an element
-                    if ( val)
+                    if( val && itemType == SQ && val->sq && nbVal >= 1)
                     {
-                        // there is a sequence
-                        if (val->sq)
+                        // get a pointer to the first element of the list
+                        Papy_List *dcmList = val->sq;
+                        
+                        NSMutableArray *sliceLocationArray = [NSMutableArray array];
+                        NSMutableArray *imageCardiacTriggerArray = [NSMutableArray array];
+                        
+                        // loop through the elements of the sequence
+                        while (dcmList)
                         {
-                            // get a pointer to the first element of the list
-                            Papy_List *dcmList = val->sq;
-                            
-                            NSMutableArray *sliceLocationArray = [NSMutableArray array];
-                            NSMutableArray *imageCardiacTriggerArray = [NSMutableArray array];
-                            
-                            // loop through the elements of the sequence
-                            while (dcmList)
+                            if( dcmList->object->item)
                             {
-                                if( dcmList->object->item)
+                                
                                 {
+                                    Papy_List *groupsForFrame = dcmList->object->item;
                                     
+                                    while( groupsForFrame)
                                     {
-                                        Papy_List *groupsForFrame = dcmList->object->item;
-                                        
-                                        while( groupsForFrame)
+                                        if( groupsForFrame->object->group)
                                         {
-                                            if( groupsForFrame->object->group)
-                                            {
-                                                UValue_T *valb = nil, *valc = nil;
-                                                SElement *gr = (SElement *) groupsForFrame->object->group;
-                                                
-                                                switch( gr->group)
-                                                {
-                                                    case 0x0018:
-                                                        valb = Papy3GetElement (gr, papCardiacTriggerSequence, &nbVal, &itemType);
-                                                        if (valb != NULL && nbVal >= 1)
-                                                        {
-                                                            // there is a sequence
-                                                            if (valb->sq)
-                                                            {
-                                                                // get a pointer to the first element of the list
-                                                                Papy_List *seq = valb->sq->object->item;
-                                                                
-                                                                // loop through the elements of the sequence
-                                                                while (seq)
-                                                                {
-                                                                    SElement * gr = (SElement *) seq->object->group;
-                                                                    
-                                                                    switch( gr->group)
-                                                                    {
-                                                                        case 0x0020:
-                                                                        {
-                                                                            valc = Papy3GetElement ( gr, papTriggerDelayTime, &nbVal, &itemType);
-                                                                            if (itemType == FD)
-                                                                                [imageCardiacTriggerArray addObject: [NSString stringWithFormat: @"%lf", valc->fd]];
-                                                                        }
-                                                                    }
-                                                                    
-                                                                    // get the next element of the list
-                                                                    seq = seq->next;
-                                                                }
-                                                            }
-                                                        }
-                                                        break;
-                                                        
-                                                    case 0x0020:
-                                                        valb = Papy3GetElement (gr, papPlanePositionVolumeSequence, &nbVal, &itemType);
-                                                        if (valb != NULL && nbVal >= 1)
-                                                        {
-                                                            // there is a sequence
-                                                            if (valb->sq)
-                                                            {
-                                                                // get a pointer to the first element of the list
-                                                                Papy_List *seq = valb->sq->object->item;
-                                                                
-                                                                // loop through the elements of the sequence
-                                                                while (seq)
-                                                                {
-                                                                    SElement * gr = (SElement *) seq->object->group;
-                                                                    
-                                                                    switch( gr->group)
-                                                                    {
-                                                                        case 0x0020:
-                                                                            valc = Papy3GetElement ( gr, papImagePositionVolumeGr, &nbVal, &itemType);
-                                                                            if (valc != NULL && itemType == FD && nbVal == 3)
-                                                                            {
-                                                                                originMultiFrame[0] = valc++->fd;
-                                                                                originMultiFrame[1] = valc++->fd;
-                                                                                originMultiFrame[2] = valc++->fd;
-                                                                            }
-                                                                        break;
-                                                                    }
-                                                                    
-                                                                    // get the next element of the list
-                                                                    seq = seq->next;
-                                                                }
-                                                            }
-                                                        }
-                                                        
-                                                        valb = Papy3GetElement (gr, papPlanePositionSequence, &nbVal, &itemType);
-                                                        if (valb != NULL && nbVal >= 1)
-                                                        {
-                                                            // there is a sequence
-                                                            if (valb->sq)
-                                                            {
-                                                                // get a pointer to the first element of the list
-                                                                Papy_List *seq = valb->sq->object->item;
-                                                                
-                                                                // loop through the elements of the sequence
-                                                                while (seq)
-                                                                {
-                                                                    SElement * gr = (SElement *) seq->object->group;
-                                                                    
-                                                                    switch( gr->group)
-                                                                    {
-                                                                        case 0x0020:
-                                                                            valc = Papy3GetElement ( gr, papImagePositionPatientGr, &nbVal, &itemType);
-                                                                            if (valc != NULL && valc->a && validAPointer( itemType) && nbVal == 3)
-                                                                            {
-                                                                                originMultiFrame[0] = [[NSString stringWithCString:valc++->a encoding: NSISOLatin1StringEncoding] floatValue];
-                                                                                originMultiFrame[1] = [[NSString stringWithCString:valc++->a encoding: NSISOLatin1StringEncoding] floatValue];
-                                                                                originMultiFrame[2] = [[NSString stringWithCString:valc++->a encoding: NSISOLatin1StringEncoding] floatValue];
-                                                                            }
-                                                                        break;
-                                                                    }
-                                                                    
-                                                                    // get the next element of the list
-                                                                    seq = seq->next;
-                                                                }
-                                                            }
-                                                        }
-                                                        
-                                                        valb = Papy3GetElement (gr, papPlaneOrientationSequence, &nbVal, &itemType);
-                                                        if (valb != NULL && nbVal >= 1)
-                                                        {
-                                                            // there is a sequence
-                                                            if (valb->sq)
-                                                            {
-                                                                // get a pointer to the first element of the list
-                                                                Papy_List *seq = valb->sq->object->item;
-                                                                
-                                                                // loop through the elements of the sequence
-                                                                while (seq)
-                                                                {
-                                                                    SElement * gr = (SElement *) seq->object->group;
-                                                                    
-                                                                    switch( gr->group)
-                                                                    {
-                                                                        case 0x0020:
-                                                                        {
-                                                                            valc = Papy3GetElement( gr, papImageOrientationPatientGr, &nbVal, &itemType);
-                                                                            if (valc != NULL && valc->a && validAPointer( itemType) && nbVal == 6)
-                                                                            {
-                                                                                for (int j = 0; j < nbVal; j++)
-                                                                                    orientationMultiFrame[ j]  = [[NSString stringWithCString: valc++->a encoding: NSISOLatin1StringEncoding] floatValue];
-                                                                            }
-                                                                        }
-                                                                        break;
-                                                                    }
-                                                                    
-                                                                    // get the next element of the list
-                                                                    seq = seq->next;
-                                                                }
-                                                            }
-                                                        }
-                                                        
-                                                        // Compute normal vector
-                                                        orientationMultiFrame[ 6] = orientationMultiFrame[ 1]*orientationMultiFrame[ 5] - orientationMultiFrame[ 2]*orientationMultiFrame[ 4];
-                                                        orientationMultiFrame[ 7] = orientationMultiFrame[ 2]*orientationMultiFrame[ 3] - orientationMultiFrame[ 0]*orientationMultiFrame[ 5];
-                                                        orientationMultiFrame[ 8] = orientationMultiFrame[ 0]*orientationMultiFrame[ 4] - orientationMultiFrame[ 1]*orientationMultiFrame[ 3];
-                                                        
-                                                        float location = 0;
-                                                        
-                                                        if( fabs( orientationMultiFrame[ 6]) > fabs(orientationMultiFrame[ 7]) && fabs( orientationMultiFrame[ 6]) > fabs(orientationMultiFrame[ 8]))
-                                                            location = originMultiFrame[ 0];
-                                                        
-                                                        if( fabs( orientationMultiFrame[ 7]) > fabs(orientationMultiFrame[ 6]) && fabs( orientationMultiFrame[ 7]) > fabs(orientationMultiFrame[ 8]))
-                                                            location = originMultiFrame[ 1];
-                                                        
-                                                        if( fabs( orientationMultiFrame[ 8]) > fabs(orientationMultiFrame[ 6]) && fabs( orientationMultiFrame[ 8]) > fabs(orientationMultiFrame[ 7]))
-                                                            location = originMultiFrame[ 2];
-                                                        
-                                                        [sliceLocationArray addObject: [NSNumber numberWithFloat: location]];
-                                                        
-                                                        break;
-                                                } // switch( gr->group)
-                                            } // if( groupsForFrame->object->item)
+                                            UValue_T *valb = nil, *valc = nil;
+                                            SElement *gr = (SElement *) groupsForFrame->object->group;
                                             
-                                            if( groupsForFrame)
+                                            switch( gr->group)
                                             {
-                                                // get the next element of the list
-                                                groupsForFrame = groupsForFrame->next;
-                                            }
-                                        } // while groupsForFrame
-                                    }
+                                                case 0x0018:
+                                                    valb = Papy3GetElement (gr, papCardiacTriggerSequence, &nbVal, &itemType);
+                                                    if (valb != NULL && nbVal >= 1)
+                                                    {
+                                                        // there is a sequence
+                                                        if (valb->sq)
+                                                        {
+                                                            // get a pointer to the first element of the list
+                                                            Papy_List *seq = valb->sq->object->item;
+                                                            
+                                                            // loop through the elements of the sequence
+                                                            while (seq)
+                                                            {
+                                                                SElement * gr = (SElement *) seq->object->group;
+                                                                
+                                                                switch( gr->group)
+                                                                {
+                                                                    case 0x0020:
+                                                                    {
+                                                                        valc = Papy3GetElement ( gr, papTriggerDelayTime, &nbVal, &itemType);
+                                                                        if (itemType == FD)
+                                                                            [imageCardiacTriggerArray addObject: [NSString stringWithFormat: @"%lf", valc->fd]];
+                                                                    }
+                                                                }
+                                                                
+                                                                // get the next element of the list
+                                                                seq = seq->next;
+                                                            }
+                                                        }
+                                                    }
+                                                    break;
+                                                    
+                                                case 0x0020:
+                                                    valb = Papy3GetElement (gr, papPlanePositionVolumeSequence, &nbVal, &itemType);
+                                                    if (valb != NULL && nbVal >= 1)
+                                                    {
+                                                        // there is a sequence
+                                                        if (valb->sq)
+                                                        {
+                                                            // get a pointer to the first element of the list
+                                                            Papy_List *seq = valb->sq->object->item;
+                                                            
+                                                            // loop through the elements of the sequence
+                                                            while (seq)
+                                                            {
+                                                                SElement * gr = (SElement *) seq->object->group;
+                                                                
+                                                                switch( gr->group)
+                                                                {
+                                                                    case 0x0020:
+                                                                        valc = Papy3GetElement ( gr, papImagePositionVolumeGr, &nbVal, &itemType);
+                                                                        if (valc != NULL && itemType == FD && nbVal == 3)
+                                                                        {
+                                                                            originMultiFrame[0] = valc++->fd;
+                                                                            originMultiFrame[1] = valc++->fd;
+                                                                            originMultiFrame[2] = valc++->fd;
+                                                                        }
+                                                                    break;
+                                                                }
+                                                                
+                                                                // get the next element of the list
+                                                                seq = seq->next;
+                                                            }
+                                                        }
+                                                    }
+                                                    
+                                                    valb = Papy3GetElement (gr, papPlanePositionSequence, &nbVal, &itemType);
+                                                    if (valb != NULL && nbVal >= 1)
+                                                    {
+                                                        // there is a sequence
+                                                        if (valb->sq)
+                                                        {
+                                                            // get a pointer to the first element of the list
+                                                            Papy_List *seq = valb->sq->object->item;
+                                                            
+                                                            // loop through the elements of the sequence
+                                                            while (seq)
+                                                            {
+                                                                SElement * gr = (SElement *) seq->object->group;
+                                                                
+                                                                switch( gr->group)
+                                                                {
+                                                                    case 0x0020:
+                                                                        valc = Papy3GetElement ( gr, papImagePositionPatientGr, &nbVal, &itemType);
+                                                                        if (valc != NULL && valc->a && validAPointer( itemType) && nbVal == 3)
+                                                                        {
+                                                                            originMultiFrame[0] = [[NSString stringWithCString:valc++->a encoding: NSISOLatin1StringEncoding] floatValue];
+                                                                            originMultiFrame[1] = [[NSString stringWithCString:valc++->a encoding: NSISOLatin1StringEncoding] floatValue];
+                                                                            originMultiFrame[2] = [[NSString stringWithCString:valc++->a encoding: NSISOLatin1StringEncoding] floatValue];
+                                                                        }
+                                                                    break;
+                                                                }
+                                                                
+                                                                // get the next element of the list
+                                                                seq = seq->next;
+                                                            }
+                                                        }
+                                                    }
+                                                    
+                                                    valb = Papy3GetElement (gr, papPlaneOrientationSequence, &nbVal, &itemType);
+                                                    if (valb != NULL && nbVal >= 1)
+                                                    {
+                                                        // there is a sequence
+                                                        if (valb->sq)
+                                                        {
+                                                            // get a pointer to the first element of the list
+                                                            Papy_List *seq = valb->sq->object->item;
+                                                            
+                                                            // loop through the elements of the sequence
+                                                            while (seq)
+                                                            {
+                                                                SElement * gr = (SElement *) seq->object->group;
+                                                                
+                                                                switch( gr->group)
+                                                                {
+                                                                    case 0x0020:
+                                                                    {
+                                                                        valc = Papy3GetElement( gr, papImageOrientationPatientGr, &nbVal, &itemType);
+                                                                        if (valc != NULL && valc->a && validAPointer( itemType) && nbVal == 6)
+                                                                        {
+                                                                            for (int j = 0; j < nbVal; j++)
+                                                                                orientationMultiFrame[ j]  = [[NSString stringWithCString: valc++->a encoding: NSISOLatin1StringEncoding] floatValue];
+                                                                        }
+                                                                    }
+                                                                    break;
+                                                                }
+                                                                
+                                                                // get the next element of the list
+                                                                seq = seq->next;
+                                                            }
+                                                        }
+                                                    }
+                                                    
+                                                    // Compute normal vector
+                                                    orientationMultiFrame[ 6] = orientationMultiFrame[ 1]*orientationMultiFrame[ 5] - orientationMultiFrame[ 2]*orientationMultiFrame[ 4];
+                                                    orientationMultiFrame[ 7] = orientationMultiFrame[ 2]*orientationMultiFrame[ 3] - orientationMultiFrame[ 0]*orientationMultiFrame[ 5];
+                                                    orientationMultiFrame[ 8] = orientationMultiFrame[ 0]*orientationMultiFrame[ 4] - orientationMultiFrame[ 1]*orientationMultiFrame[ 3];
+                                                    
+                                                    float location = 0;
+                                                    
+                                                    if( fabs( orientationMultiFrame[ 6]) > fabs(orientationMultiFrame[ 7]) && fabs( orientationMultiFrame[ 6]) > fabs(orientationMultiFrame[ 8]))
+                                                        location = originMultiFrame[ 0];
+                                                    
+                                                    if( fabs( orientationMultiFrame[ 7]) > fabs(orientationMultiFrame[ 6]) && fabs( orientationMultiFrame[ 7]) > fabs(orientationMultiFrame[ 8]))
+                                                        location = originMultiFrame[ 1];
+                                                    
+                                                    if( fabs( orientationMultiFrame[ 8]) > fabs(orientationMultiFrame[ 6]) && fabs( orientationMultiFrame[ 8]) > fabs(orientationMultiFrame[ 7]))
+                                                        location = originMultiFrame[ 2];
+                                                    
+                                                    [sliceLocationArray addObject: [NSNumber numberWithFloat: location]];
+                                                    
+                                                    break;
+                                            } // switch( gr->group)
+                                        } // if( groupsForFrame->object->item)
+                                        
+                                        if( groupsForFrame)
+                                        {
+                                            // get the next element of the list
+                                            groupsForFrame = groupsForFrame->next;
+                                        }
+                                    } // while groupsForFrame
                                 }
-                                
-                                if( dcmList)
-                                {
-                                    // get the next element of the list
-                                    dcmList = dcmList->next;
-                                    
-                                    frameCount++;
-                                }
-                            } // while ...loop through the sequence
-                            
-                            if( sliceLocationArray.count)
-                            {
-                                if( NoOfFrames == sliceLocationArray.count)
-                                    [dicomElements setObject: sliceLocationArray forKey:@"sliceLocationArray"];
-                                else
-                                    NSLog( @"*** NoOfFrames != sliceLocationArray.count for MR/CT multiframe sliceLocation computation (%d, %d)", (int) NoOfFrames, (int) sliceLocationArray.count);
                             }
                             
-                            if( imageCardiacTriggerArray.count)
+                            if( dcmList)
                             {
-                                if( NoOfFrames == imageCardiacTriggerArray.count)
-                                    [dicomElements setObject: imageCardiacTriggerArray forKey:@"imageCommentPerFrame"];
-                                else
-                                    NSLog( @"*** NoOfFrames != imageCardiacTriggerArray.count for MR/CT multiframe image type frame computation (%d, %d)", (int) NoOfFrames, (int) imageCardiacTriggerArray.count);
+                                // get the next element of the list
+                                dcmList = dcmList->next;
                                 
+                                frameCount++;
                             }
-                        } // if ...there is a sequence of groups
-                    } // if ...val is not NULL
+                        } // while ...loop through the sequence
+                        
+                        if( sliceLocationArray.count)
+                        {
+                            if( NoOfFrames == sliceLocationArray.count)
+                                [dicomElements setObject: sliceLocationArray forKey:@"sliceLocationArray"];
+                            else
+                                NSLog( @"*** NoOfFrames != sliceLocationArray.count for MR/CT multiframe sliceLocation computation (%d, %d)", (int) NoOfFrames, (int) sliceLocationArray.count);
+                        }
+                        
+                        if( imageCardiacTriggerArray.count)
+                        {
+                            if( NoOfFrames == imageCardiacTriggerArray.count)
+                                [dicomElements setObject: imageCardiacTriggerArray forKey:@"imageCommentPerFrame"];
+                            else
+                                NSLog( @"*** NoOfFrames != imageCardiacTriggerArray.count for MR/CT multiframe image type frame computation (%d, %d)", (int) NoOfFrames, (int) imageCardiacTriggerArray.count);
+                            
+                        }
+                    } // if ...there is a sequence of groups
                     
                     theErr = Papy3GroupFree (&theGroupP, TRUE);
                     
