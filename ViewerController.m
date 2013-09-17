@@ -5702,16 +5702,16 @@ static ViewerController *draggedController = nil;
 		[self autoHideMatrix];
 }
 
-- (void) Display3DPoint:(NSNotification*) note
-{
-	NSMutableArray	*v = [note object];
-	
-	if( v == pixList[ 0])
-	{
-		[imageView setIndex: [[[note userInfo] valueForKey:@"z"] intValue]];
-		[imageView sendSyncMessage: 0];
-	}
-}
+//- (void) Display3DPoint:(NSNotification*) note
+//{
+//	NSMutableArray	*v = [note object];
+//	
+//	if( v == pixList[ 0])
+//	{
+//		[imageView setIndex: [[[note userInfo] valueForKey:@"z"] intValue]];
+//		[imageView sendSyncMessage: 0];
+//	}
+//}
 
 - (IBAction) setCurrentPosition:(id) sender
 {
@@ -10572,65 +10572,62 @@ static float oldsetww, oldsetwl;
 
 - (void) applyConvolutionXYThread:(id) dict
 {
-	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
-	
-    @try {
-        for( int x = 0; x < maxMovieIndex; x++)
-        {
-            for ( DCMPix *p in [pixList[ x] subarrayWithRange: NSMakeRange( [[dict objectForKey: @"from"] intValue], [[dict objectForKey: @"to"] intValue] - [[dict objectForKey: @"from"] intValue])])
-                [p applyConvolutionOnSourceImage];
+	@autoreleasepool
+    {
+        @try {
+            for( int x = 0; x < maxMovieIndex; x++)
+            {
+                for ( DCMPix *p in [pixList[ x] subarrayWithRange: NSMakeRange( [[dict objectForKey: @"from"] intValue], [[dict objectForKey: @"to"] intValue] - [[dict objectForKey: @"from"] intValue])])
+                    [p applyConvolutionOnSourceImage];
+            }
         }
+        @catch (NSException *exception) {
+            N2LogException( exception);
+        }
+        
+        [convThread lock];
+        [convThread unlockWithCondition: [convThread condition]-1];
 	}
-    @catch (NSException *exception) {
-        N2LogException( exception);
-    }
-    
-	[convThread lock];
-	[convThread unlockWithCondition: [convThread condition]-1];
-	
-	[p release];
 }
 
 - (void) applyConvolutionZThread: (id) dict
 {
-	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
-	
-    @try {
-        for( int x = 0; x < maxMovieIndex; x++)
-        {
-            DCMPix	*pix = [pixList[ x] objectAtIndex: 0];
-            
-            vImage_Buffer dstf, srcf;
-            
-            dstf.height = [pixList[ x] count];
-            dstf.width = [pix pwidth];
-            dstf.rowBytes = [pix pwidth]*[pix pheight]*sizeof(float);
-            srcf = dstf;
-            
-            int from = [[dict objectForKey: @"from"] intValue];
-            int to = [[dict objectForKey: @"to"] intValue];
-            float *fkernel = [[dict objectForKey: @"kernel"] pointerValue];
-            
-            for( int y = from; y < to; y++)
+	@autoreleasepool {
+        @try {
+            for( int x = 0; x < maxMovieIndex; x++)
             {
-                srcf.data = dstf.data = (void*) [volumeData[ x] bytes] + y*[pix pwidth]*sizeof(float);
-            
-                if( srcf.data)
+                DCMPix	*pix = [pixList[ x] objectAtIndex: 0];
+                
+                vImage_Buffer dstf, srcf;
+                
+                dstf.height = [pixList[ x] count];
+                dstf.width = [pix pwidth];
+                dstf.rowBytes = [pix pwidth]*[pix pheight]*sizeof(float);
+                srcf = dstf;
+                
+                int from = [[dict objectForKey: @"from"] intValue];
+                int to = [[dict objectForKey: @"to"] intValue];
+                float *fkernel = [[dict objectForKey: @"kernel"] pointerValue];
+                
+                for( int y = from; y < to; y++)
                 {
-                    if( vImageConvolve_PlanarF( &dstf, &srcf, 0, 0, 0, fkernel, [pix kernelsize], [pix kernelsize], 0, kvImageDoNotTile + kvImageEdgeExtend))
-                        NSLog( @"Error applyConvolutionOnImage");
+                    srcf.data = dstf.data = (void*) [volumeData[ x] bytes] + y*[pix pwidth]*sizeof(float);
+                
+                    if( srcf.data)
+                    {
+                        if( vImageConvolve_PlanarF( &dstf, &srcf, 0, 0, 0, fkernel, [pix kernelsize], [pix kernelsize], 0, kvImageDoNotTile + kvImageEdgeExtend))
+                            NSLog( @"Error applyConvolutionOnImage");
+                    }
                 }
             }
         }
-    }
-    @catch (NSException *exception) {
-        N2LogException( exception);
-    }
-	
-	[convThread lock];
-	[convThread unlockWithCondition: [convThread condition]-1];
-	
-	[p release];
+        @catch (NSException *exception) {
+            N2LogException( exception);
+        }
+        
+        [convThread lock];
+        [convThread unlockWithCondition: [convThread condition]-1];
+	}
 }
 
 - (IBAction) applyConvolutionOnSource:(id) sender
@@ -10732,6 +10729,9 @@ static float oldsetww, oldsetwl;
 		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateVolumeDataNotification object: pixList[ curMovieIndex] userInfo: nil];
 	}
 	else NSRunAlertPanel(NSLocalizedString(@"Convolution", nil), NSLocalizedString(@"First, apply a convolution filter...", nil), nil, nil, nil);
+    
+    [convThread release];
+    convThread = nil;
 }
 
 - (IBAction) computeSum:(id) sender
@@ -14555,6 +14555,33 @@ int i,j,l;
 
 - (ROI*) roiMorphingBetween:(ROI*) a and:(ROI*) b ratio:(float) ratio
 {
+    if (a.type == tMesure && b.type == tMesure)
+    {
+        ROI* newMeasure = [self newROI: tMesure];
+
+        [newMeasure addPoint:[ROI pointBetweenPoint:[a pointAtIndex:0] and:[b pointAtIndex:0] ratio:ratio]];
+        [newMeasure addPoint:[ROI pointBetweenPoint:[a pointAtIndex:1] and:[b pointAtIndex:1] ratio:ratio]];
+        
+        [newMeasure setColor: [a rgbcolor]];
+        [newMeasure setOpacity: [a opacity]];
+        [newMeasure setThickness: [a thickness]];
+        [newMeasure setName: [a name]];
+        
+        return newMeasure;
+    }
+    
+    if( a.type == tMesure)
+    {
+        [a.points insertObject:[MyPoint point:[ROI pointBetweenPoint:[a pointAtIndex:0] and:[a pointAtIndex:1] ratio:0.5]] atIndex:1];
+        a.type = tOPolygon;
+    }
+    
+    if( b.type == tMesure)
+    {
+        [b.points insertObject:[MyPoint point:[ROI pointBetweenPoint:[b pointAtIndex:0] and:[b pointAtIndex:1] ratio:0.5]] atIndex:1];
+        b.type = tOPolygon;
+    }
+    
     if( a.type == tROI || a.type == tOval)
     {
         NSMutableArray *points = a.points;
@@ -14575,13 +14602,11 @@ int i,j,l;
         b.points = points;
     }
     
-	// Convert both ROIs into polygons, after a marching square isocontour
 	
 	NSMutableArray	*aPts = [a points];
 	NSMutableArray	*bPts = [b points];
 	
-	int maxPoints = [aPts count];
-	if( maxPoints < [bPts count]) maxPoints = [bPts count];
+	int maxPoints = MAX([aPts count], [bPts count]);
 	maxPoints += maxPoints / 3;
 	
 	ROI* inputROI = a;
@@ -14592,6 +14617,8 @@ int i,j,l;
 	a.isAliased = NO;
 	b.isAliased = NO;
 	
+    // If the ROIs are brush ROIs, convert them into polygons, using a marching square isocontour
+    // Otherwise update the points so they both have maxPoints number of points
 	a = [self isoContourROI: a numberOfPoints: maxPoints];
 	b = [self isoContourROI: b numberOfPoints: maxPoints];
 	
@@ -14607,8 +14634,16 @@ int i,j,l;
 	aPts = [a points];
 	bPts = [b points];
 	
-	ROI* newROI = [self newROI: tCPolygon];
-	NSMutableArray *pts = [newROI points];
+    ROI* newROI = nil;
+    if ( a.type == tOPolygon) {
+        newROI = [self newROI: tOPolygon];
+    }
+    else
+    {
+        newROI = [self newROI: tCPolygon];
+    }
+    
+    NSMutableArray *pts = [newROI points];
 	int i;
 	
 	for( i = 0; i < [aPts count]; i++)
@@ -19457,6 +19492,8 @@ int i,j,l;
 									[[roiList[curMovieIndex] objectAtIndex: y] addObject: c];
 									
 									[generatedROIs addObject: c];
+                                    [[NSNotificationCenter defaultCenter] postNotificationName:OsirixAddROINotification object:self
+                                                                                      userInfo:@{@"ROI": c, @"sliceNumber": [NSNumber numberWithLong:x]}];
 								}
 							}
 						}
@@ -19897,7 +19934,7 @@ int i,j,l;
 	
 	[nc addObserver:self selector:@selector(applicationDidResignActive:) name:NSApplicationDidResignActiveNotification object:nil];
     [nc addObserver:self selector:@selector(UpdateWLWWMenu:) name:OsirixUpdateWLWWMenuNotification object:nil];
-	[nc	addObserver:self selector:@selector(Display3DPoint:) name:OsirixDisplay3dPointNotification object:nil];
+//	[nc	addObserver:self selector:@selector(Display3DPoint:) name:OsirixDisplay3dPointNotification object:nil];
 	[nc addObserver:self selector:@selector(ViewFrameDidChange:) name:NSViewFrameDidChangeNotification object:nil];
 	[nc addObserver:self selector:@selector(ViewBoundsDidChange:) name:NSViewBoundsDidChangeNotification object:nil];
 	

@@ -38,7 +38,9 @@
         if( v)
         {
             [self.windowController setToolbar: v.toolbar viewer: v];
-            [self orderWindow: NSWindowBelow relativeTo: v.window.windowNumber];
+            
+            if( [self.toolbar customizationPaletteIsRunning] == NO)
+                [self orderWindow: NSWindowBelow relativeTo: v.window.windowNumber];
         }
         else
         {

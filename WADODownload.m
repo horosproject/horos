@@ -132,6 +132,10 @@
     [[NSURLCache sharedURLCache] setDiskCapacity: 0];
     [[NSURLCache sharedURLCache] setMemoryCapacity: 0];
     
+#ifdef NONETWORKFUNCTIONS
+    return nil;
+#endif
+
 	return self;
 }
 

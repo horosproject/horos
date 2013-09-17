@@ -165,6 +165,24 @@ CF_EXTERN_C_END
  */
 - (id)initWithMaskRuns:(NSArray *)maskRuns;
 
+/** Initializes and returns a newly created ROI Mask.
+ 
+ Creates a ROI Mask based on the given individual runs.
+ 
+ @return The initialized ROI Mask object or `nil` if there was a problem initializing the object.
+ @param maskRunData is the serialized OSIROIMaskRuns.
+ */
+- (id)initWithMaskRunData:(NSData *)maskRunData;
+
+/** Initializes and returns a newly created ROI Mask.
+ 
+ Creates a ROI Mask based on the given individual runs. The mask runs must be sorted.
+ 
+ @return The initialized ROI Mask object or `nil` if there was a problem initializing the object.
+ @param maskRunData is the serialized OSIROIMaskRuns.
+ */
+- (id)initWithSortedMaskRunData:(NSData *)maskRunData;
+
 // create the thing, maybe we should really be working with C arrays.... or at least give the option
 /** Initializes and returns a newly created ROI Mask.
  
@@ -184,14 +202,12 @@ CF_EXTERN_C_END
  */
 - (id)initWithIndexes:(NSArray *)maskIndexes;
 
-
-
 /** Initializes and returns a newly created ROI Mask.
  
  Creates a ROI Mask based on the given individual indexes.
  
  @return The initialized ROI Mask object or `nil` if there was a problem initializing the object.
- @param maskRuns An array of OSIROIMaskIndex structs in NSValues.
+ @param indexData is the serialized OSIROIMaskIndexes.
  */
 - (id)initWithIndexData:(NSData *)indexData;
 

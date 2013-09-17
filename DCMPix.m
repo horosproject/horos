@@ -12196,53 +12196,61 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 - (float*) applyConvolutionOnImage:(float*) src RGB:(BOOL) color
 {
-	float	*result = src;
-	
-	[self CheckLoad]; 
-	
-	vImage_Buffer dstf, srcf;
-	
-	dstf.height = height;
-	dstf.width = width;
-	dstf.rowBytes = width*sizeof(float);
-	dstf.data = src;
-	
-	srcf = dstf;
-	srcf.data = result = malloc( height*width*sizeof(float));
-	if( srcf.data && dstf.data)
-	{
-		short err;
-		
-		if( color)
-		{
-			err = vImageConvolve_ARGB8888( &dstf, &srcf, 0, 0, 0,  kernel, kernelsize, kernelsize, normalization, 0, kvImageDoNotTile + kvImageLeaveAlphaUnchanged + kvImageEdgeExtend);
-		}
-		else
-		{
-			float  fkernel[25], m;
-			int i;
-			
-			if( normalization != 0)
-				for( i = 0; i < 25; i++) fkernel[ i] = (float) kernel[ i] / (float) normalization; 
-			else
-				for( i = 0; i < 25; i++) fkernel[ i] = (float) kernel[ i]; 
-			
-			m = *src;
-			err = vImageConvolve_PlanarF( &dstf, &srcf, 0, 0, 0, fkernel, kernelsize, kernelsize, 0, kvImageDoNotTile + kvImageEdgeExtend);
-			
-			// check the first line to avoid nan value....
-			
-			float *ptr = result;
-			int x = width;
-			while( x-- > 0)
-				*ptr++ = m;
-		}
-		
-		if( err) NSLog(@"Error applyConvolutionOnImage = %d", err);
-		
-		if( src != fImage) free( src);
-	}
-	
+    float *result = src;
+    
+    @try
+    {
+        [self CheckLoad]; 
+        
+        vImage_Buffer dstf, srcf;
+        
+        dstf.height = height;
+        dstf.width = width;
+        dstf.rowBytes = width*sizeof(float);
+        dstf.data = src;
+        
+        srcf = dstf;
+        srcf.data = result = malloc( height*width*sizeof(float));
+        if( srcf.data && dstf.data)
+        {
+            short err;
+            
+            if( color)
+            {
+                err = vImageConvolve_ARGB8888( &dstf, &srcf, 0, 0, 0,  kernel, kernelsize, kernelsize, normalization, 0, kvImageDoNotTile + kvImageLeaveAlphaUnchanged + kvImageEdgeExtend);
+            }
+            else
+            {
+                float  fkernel[25], m;
+                int i;
+                
+                if( normalization != 0)
+                    for( i = 0; i < 25; i++) fkernel[ i] = (float) kernel[ i] / (float) normalization; 
+                else
+                    for( i = 0; i < 25; i++) fkernel[ i] = (float) kernel[ i]; 
+                
+                m = *src;
+                err = vImageConvolve_PlanarF( &dstf, &srcf, 0, 0, 0, fkernel, kernelsize, kernelsize, 0, kvImageDoNotTile + kvImageEdgeExtend);
+                
+                // check the first line to avoid nan value....
+                
+                float *ptr = result;
+                int x = width;
+                while( x-- > 0)
+                    *ptr++ = m;
+            }
+            
+            if( err) NSLog(@"Error applyConvolutionOnImage = %d", err);
+            
+            if( src != fImage)
+                free( src);
+        }
+            
+        
+    }
+    @catch (NSException *exception) {
+        N2LogException( exception);
+    }
 	return result;
 }
 
@@ -12252,9 +12260,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	
 	float *result = [self applyConvolutionOnImage: fImage RGB: isRGB];
 	
-	memcpy( fImage, result, height*width*sizeof(float));
-	
-	free( result);
+    if( result != fImage)
+    {
+        memcpy( fImage, result, height*width*sizeof(float));
+        free( result);
+    }
 }
 
 - (float*) computeThickSlabRGB

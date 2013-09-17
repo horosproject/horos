@@ -311,9 +311,9 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 		// create DICOM OBJECT
 		DCMObject *dcmObject = [DCMObject encapsulatedPDF:pdf];
 		
-		[dcmObject setAttributeValues:[NSArray arrayWithObject:[study valueForKey:@"studyInstanceUID"]] forName:@"StudyInstanceUID"];
+		[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[study valueForKey:@"studyInstanceUID"]] forName:@"StudyInstanceUID"];
 		//[dcmObject setAttributeValues:[NSArray arrayWithObject:_seriesInstanceUID] forName:@"SeriesInstanceUID"];
-		[dcmObject setAttributeValues:[NSArray arrayWithObject:@"PDF"] forName:@"SeriesDescription"];
+		[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@"PDF"] forName:@"SeriesDescription"];
 		//Add name
 		if ([self patientsName])
 			[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[self patientsName]] forName:@"PatientsName"];

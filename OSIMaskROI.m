@@ -84,7 +84,7 @@
     
     glLineWidth(3.0);
     
-    // let's try drawing some the mask
+    // let's try drawing the mask
     OSIROIMask *mask;
     NSArray *maskRuns;
     OSIROIMaskRun maskRun;
@@ -115,12 +115,14 @@
         quad3 = N3VectorApplyTransform(quad3, inverseVolumeTransform);
         quad4 = N3VectorApplyTransform(quad4, inverseVolumeTransform);
         
-        glBegin(GL_TRIANGLE_STRIP);
-        glVertex3d(quad1.x, quad1.y, quad1.z);
-        glVertex3d(quad2.x, quad2.y, quad2.z);
-        glVertex3d(quad3.x, quad3.y, quad3.z);
-        glVertex3d(quad4.x, quad4.y, quad4.z);
-        glEnd();
+        if (OSISlabContainsVector(slab, quad1) && OSISlabContainsVector(slab, quad2) && OSISlabContainsVector(slab, quad3) && OSISlabContainsVector(slab, quad4)) {
+            glBegin(GL_TRIANGLE_STRIP);
+            glVertex3d(quad1.x, quad1.y, quad1.z);
+            glVertex3d(quad2.x, quad2.y, quad2.z);
+            glVertex3d(quad3.x, quad3.y, quad3.z);
+            glVertex3d(quad4.x, quad4.y, quad4.z);
+            glEnd();
+        }
     }
     
     glPopMatrix();

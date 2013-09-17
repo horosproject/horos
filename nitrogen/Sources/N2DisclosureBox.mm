@@ -135,7 +135,7 @@ NSString* N2DisclosureBoxDidCollapseNotification = @"N2DisclosureBoxDidCollapseN
 	return n2::ceil(size);
 }
 
--(NSView*)additionalSubviews {
+-(NSArray*)additionalSubviews {
 	return [NSArray arrayWithObject:_content];
 }
 

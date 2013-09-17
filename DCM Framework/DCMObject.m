@@ -278,7 +278,7 @@ static NSString* getMacAddress( void)
 	//	NSLog(@"anonymizing %@, was %@", [tag name], [[object attributeForTag:tag] valuesAsString]);
 		
 		if ([tag.name isEqualToString: @"StudyInstanceUID"]) {
-			DCMAttribute *attr = [DCMAttribute attributeWithAttributeTag:tag vr: tag.vr values: [NSArray arrayWithObject: value]];
+			DCMAttribute *attr = [DCMAttribute attributeWithAttributeTag:tag vr: tag.vr values: [NSMutableArray arrayWithObject: value]];
 			[[object attributes] setObject:attr forKey: tag.stringValue];
 		} else
 			[object anonymizeAttributeForTag:tag replacingWith:value];
@@ -1815,7 +1815,7 @@ PixelRepresentation
 					if( [[attr values] count] > 1) // DCMFramework doesn't support multi-encoded string when writing -> switch for UTF-8
 					{
 						specificCharacterSet = [[DCMCharacterSet alloc] initWithCode: @"ISO_IR 192"];
-						attr.values = [NSArray arrayWithObject: @"ISO_IR 192"];
+						attr.values = [NSMutableArray arrayWithObject: @"ISO_IR 192"];
 					}
 					else
 						specificCharacterSet = [[DCMCharacterSet alloc] initWithCode: [[attr values] componentsJoinedByString:@"\\"]];

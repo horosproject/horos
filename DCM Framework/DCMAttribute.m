@@ -502,7 +502,7 @@
 	else if ([DCMValueRepresentation isAffectedBySpecificCharacterSet:vrString])
 	{
 		string = [dicomData nextStringWithLength:length encodings:[characterSet encodings]];
-		values = (NSMutableArray *)[string componentsSeparatedByString:@"\\"];
+		values = [NSMutableArray arrayWithArray: [string componentsSeparatedByString:@"\\"]];
 	}
 	else  {
 		if (DCMDEBUG && vr == DCM_DT)
@@ -513,13 +513,13 @@
 				count = length/2;
 				values = [NSMutableArray array];
 				for (i = 0; i < count; i ++) 
-					[(NSMutableArray *)values addObject:[NSNumber numberWithInt:[dicomData nextUnsignedShort]]];
+					[values addObject:[NSNumber numberWithInt:[dicomData nextUnsignedShort]]];
                 break;
             case DCM_SS:	//signed short
 				count = length/2;
 				values = [NSMutableArray array];
 				for (i = 0; i < count; i ++) 
-					[(NSMutableArray *)values addObject:[NSNumber numberWithInt:[dicomData nextSignedShort]]];
+					[values addObject:[NSNumber numberWithInt:[dicomData nextSignedShort]]];
                 break;
 
             case DCM_DA:	//Date String yyyymmdd 8bytes old format was yyyy.mm.dd for 10 bytes. May need to implement old format
@@ -540,7 +540,7 @@
 			case DCM_UN:	//unknown
             case DCM_OB:	//other Byte byte string not little/big endian sensitive
             case DCM_OW:	//other word 16bit word
-				values = [NSArray arrayWithObject:[dicomData nextDataWithLength:length]];               
+				values = [NSMutableArray arrayWithObject:[dicomData nextDataWithLength:length]];
                 break;
 			case DCM_AT:	//Attribute Tag 16bit unsigned integer
             case DCM_UL:	//unsigned Long
@@ -550,7 +550,7 @@
 					values = [NSMutableArray array];
 					for (i = 0; i < count; i ++)
 					{
-						[(NSMutableArray *)values addObject:[NSNumber numberWithUnsignedLong: [dicomData nextUnsignedLong]]];
+						[values addObject:[NSNumber numberWithUnsignedLong: [dicomData nextUnsignedLong]]];
 						p += 4;
 					}
 					if( length - p > 0) [dicomData skipLength: length - p];
@@ -564,7 +564,7 @@
 					values = [NSMutableArray array];
 					for (i = 0; i < count; i ++)
 					{
-						[(NSMutableArray *)values addObject:[NSNumber numberWithLong:[dicomData nextSignedLong]]];
+						[values addObject:[NSNumber numberWithLong:[dicomData nextSignedLong]]];
 						p += 4;
 					}
 					if( length - p > 0) [dicomData skipLength: length - p];
@@ -577,7 +577,7 @@
 					values = [NSMutableArray array];
 					for (i = 0; i < count; i ++) 
 					{
-						[(NSMutableArray *)values addObject:[NSNumber numberWithFloat:[dicomData nextFloat]]];
+						[values addObject:[NSNumber numberWithFloat:[dicomData nextFloat]]];
 						p += 4;
 					}
 					if( length - p > 0) [dicomData skipLength: length - p];
@@ -590,7 +590,7 @@
 					values = [NSMutableArray array];
 					for (i = 0; i < count; i ++)
 					{
-						[(NSMutableArray *)values addObject:[NSNumber numberWithDouble:[dicomData nextDouble]]];
+						[values addObject:[NSNumber numberWithDouble:[dicomData nextDouble]]];
 						p += 8;
 					}
 					if( length - p > 0) [dicomData skipLength: length - p];
@@ -612,17 +612,15 @@
             case DCM_UT:	//unlimited text
             case DCM_QQ:
 				string = [dicomData nextStringWithLength:length];
-				values = (NSMutableArray *)[string componentsSeparatedByString:@"\\"];
+				values = [NSMutableArray arrayWithArray: [string componentsSeparatedByString:@"\\"]];
                 break;
             default: 
-				values = [NSArray arrayWithObject:[dicomData nextDataWithLength:length]];
+				values = [NSMutableArray arrayWithObject:[dicomData nextDataWithLength:length]];
                 break;
 
 		}
 	}
-	NSMutableArray *mutableValues = [NSMutableArray arrayWithArray:values];
-
-	return mutableValues;
+	return values;
 	
 }
 

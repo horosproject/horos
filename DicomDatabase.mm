@@ -1508,10 +1508,15 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		BOOL isCDMedia = [BrowserController isItCD:[paths objectAtIndex:chunkRange.location]];
 		[DicomFile setFilesAreFromCDMedia:isCDMedia];
 		
+        NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
+        
 		for (NSUInteger i = chunkRange.location; i < chunkRange.location+chunkRange.length; ++i)
         {
-            if( i%100 == 0)
+            if( [NSDate timeIntervalSinceReferenceDate] - start > 0.5 || i == chunkRange.location+chunkRange.length-1) {
                 thread.progress = 1.0*i/paths.count;
+                start = [NSDate timeIntervalSinceReferenceDate];
+            }
+                
 			
 			NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 			@try {
@@ -1730,7 +1735,6 @@ static BOOL protectionAgainstReentry = NO;
     
     [self cleanForFreeSpace];
     
-	[self lock];
 	@try
     {
 		NSMutableArray* studiesArray = [[self objectsForEntity:self.studyEntity] mutableCopy];
@@ -1757,13 +1761,15 @@ static BOOL protectionAgainstReentry = NO;
         BOOL COMMENTSAUTOFILLStudyLevel = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILLStudyLevel"];
         
 		NSString* newFile = nil;
-		
+		NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
 		// Add the new files
 		for (NSInteger i = 0; i < dicomFilesArray.count; ++i)
         {
-            if( i%100 == 0)
+            if( [NSDate timeIntervalSinceReferenceDate] - start > 0.5 || i == dicomFilesArray.count-1) {
                 thread.progress = 1.0*i/dicomFilesArray.count;
-			
+                start = [NSDate timeIntervalSinceReferenceDate];
+            }
+            
             @autoreleasepool
             {
                 @try
@@ -2423,14 +2429,9 @@ static BOOL protectionAgainstReentry = NO;
     {
 		N2LogExceptionWithStackTrace(e);
 	}
-    @finally
-    {
-		[self unlock];
-	}
     
 	@try
     {
-        thread.status = NSLocalizedString(@"Distributing added information...", nil);
         thread.progress = -1;
 
 		NSString* growlString = nil;
@@ -2490,15 +2491,12 @@ static BOOL protectionAgainstReentry = NO;
             if (newStudy && growlStringNewStudy)
                 [self performSelectorOnMainThread:@selector(_growlNewStudy:) withObject:growlStringNewStudy waitUntilDone:NO];
         }
-        
-        thread.status = NSLocalizedString(@"Done.", nil);
 	}
     @catch (NSException* e)
     {
 		N2LogExceptionWithStackTrace(e);
     }
     
-    thread.status = NSLocalizedString(@"Cleaning up...", nil);
     [pool release];
     
 	return [addedImageObjects valueForKey:@"objectID"];
@@ -2511,253 +2509,242 @@ static BOOL protectionAgainstReentry = NO;
 
 -(void)copyFilesThread:(NSDictionary*)dict
 {
-    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-	
-	//	[autoroutingInProgress lock];
-    NSOperationQueue* queue = [[[NSOperationQueue alloc] init] autorelease];
-    [queue setMaxConcurrentOperationCount:1];
-    
-	BOOL first = YES, onlyDICOM = [[dict objectForKey: @"onlyDICOM"] boolValue], copyFiles = [[dict objectForKey: @"copyFiles"] boolValue];
-    __block BOOL studySelected = NO;
-	NSArray *filesInput = [[dict objectForKey: @"filesInput"] sortedArrayUsingSelector:@selector(compare:)]; // sorting the array should make the data access faster on optical media
-	
-//	int total = 0;
-	
-	for( int i = 0; i < [filesInput count];)
-	{
-        if ([[NSThread currentThread] isCancelled]) break;
-
-		NSAutoreleasePool *pool2 = [[NSAutoreleasePool alloc] init];
+    @autoreleasepool
+    {
+        NSOperationQueue* queue = [[[NSOperationQueue alloc] init] autorelease];
+        [queue setMaxConcurrentOperationCount:1];
         
-		@try
-		{
-			NSMutableArray *copiedFiles = [NSMutableArray array];
-			NSTimeInterval lastGUIUpdate = 0;
-			NSTimeInterval twentySeconds = [NSDate timeIntervalSinceReferenceDate] + 5; // actually fiveSeconds 
-			
-			for( ; i < [filesInput count] && twentySeconds > [NSDate timeIntervalSinceReferenceDate]; i++)
-			{
-				if ([[NSThread currentThread] isCancelled]) break;
-                
-                if( [NSDate timeIntervalSinceReferenceDate] - lastGUIUpdate > 1)
+        BOOL first = YES, onlyDICOM = [[dict objectForKey: @"onlyDICOM"] boolValue], copyFiles = [[dict objectForKey: @"copyFiles"] boolValue];
+        __block BOOL studySelected = NO;
+        NSArray *filesInput = [[dict objectForKey: @"filesInput"] sortedArrayUsingSelector:@selector(compare:)]; // sorting the array should make the data access faster on optical media
+        
+        for( int i = 0; i < [filesInput count];)
+        {
+            if ([[NSThread currentThread] isCancelled]) break;
+
+            @autoreleasepool
+            {
+                @try
                 {
-                    lastGUIUpdate = [NSDate timeIntervalSinceReferenceDate];
+                    NSMutableArray *copiedFiles = [NSMutableArray array];
+                    NSTimeInterval lastGUIUpdate = 0;
+                    NSTimeInterval twentySeconds = [NSDate timeIntervalSinceReferenceDate] + 5; // actually fiveSeconds 
                     
-                    [NSThread currentThread].status = N2LocalizedSingularPluralCount((long)filesInput.count-i, NSLocalizedString(@"file left", nil), NSLocalizedString(@"files left", nil));
-                    [NSThread currentThread].progress = float(i)/filesInput.count;
-                }
-                
-                NSString *srcPath = [filesInput objectAtIndex: i], *dstPath = nil;
-				
-				if( copyFiles)
-				{
-					NSString *extension = [srcPath pathExtension];
-					
-					if( [extension isEqualToString:@""])
-						extension = @"dcm"; 
-					
-					if( [extension length] > 4 || [extension length] < 3)
-						extension = @"dcm";
-					
-					dstPath = [self uniquePathForNewDataFileWithExtension:extension];
-                    
-                    //We want an atomic copy: use a temp path for copy, then rename
-                    
-                    NSString *tempDstPath = [dstPath stringByAppendingPathExtension:@"temp"];
-                    
-//#define USECORESERVICESFORCOPY 1
-//
-//#ifdef USECORESERVICESFORCOPY
-                    try
+                    for( ; i < [filesInput count] && twentySeconds > [NSDate timeIntervalSinceReferenceDate]; i++)
                     {
-                        @try
+                        if ([[NSThread currentThread] isCancelled]) break;
+                        
+                        if( [NSDate timeIntervalSinceReferenceDate] - lastGUIUpdate > 1)
                         {
-                            char *targetPath = nil;
-                            OptionBits options = kFSFileOperationSkipSourcePermissionErrors + kFSFileOperationSkipPreflight;
-                            OSStatus err = FSPathCopyObjectSync([srcPath fileSystemRepresentation], [[tempDstPath stringByDeletingLastPathComponent] fileSystemRepresentation], (CFStringRef)[tempDstPath lastPathComponent], &targetPath, options);
-                            [[NSFileManager defaultManager] moveItemAtPath: tempDstPath toPath: dstPath error: nil];
+                            lastGUIUpdate = [NSDate timeIntervalSinceReferenceDate];
                             
-                            if( err != 0)
-                                NSLog( @"***** copyItemAtPath %@ failed : %d", srcPath, (int) err);
-                            else
+                            [NSThread currentThread].status = N2LocalizedSingularPluralCount((long)filesInput.count-i, NSLocalizedString(@"file left", nil), NSLocalizedString(@"files left", nil));
+                            [NSThread currentThread].progress = float(i)/filesInput.count;
+                        }
+                        
+                        NSString *srcPath = [filesInput objectAtIndex: i], *dstPath = nil;
+                        
+                        if( copyFiles)
+                        {
+                            NSString *extension = [srcPath pathExtension];
+                            
+                            if( [extension isEqualToString:@""])
+                                extension = @"dcm"; 
+                            
+                            if( [extension length] > 4 || [extension length] < 3)
+                                extension = @"dcm";
+                            
+                            dstPath = [self uniquePathForNewDataFileWithExtension:extension];
+                            
+                            //We want an atomic copy: use a temp path for copy, then rename
+                            
+                            NSString *tempDstPath = [dstPath stringByAppendingPathExtension:@"temp"];
+                            
+        //#define USECORESERVICESFORCOPY 1
+        //
+        //#ifdef USECORESERVICESFORCOPY
+                            try
                             {
-                                if( [extension isEqualToString: @"dcm"] == NO)
+                                @try
                                 {
-                                    if([DicomFile isDICOMFile:dstPath])
+                                    char *targetPath = nil;
+                                    OptionBits options = kFSFileOperationSkipSourcePermissionErrors + kFSFileOperationSkipPreflight;
+                                    OSStatus err = FSPathCopyObjectSync([srcPath fileSystemRepresentation], [[tempDstPath stringByDeletingLastPathComponent] fileSystemRepresentation], (CFStringRef)[tempDstPath lastPathComponent], &targetPath, options);
+                                    [[NSFileManager defaultManager] moveItemAtPath: tempDstPath toPath: dstPath error: nil];
+                                    
+                                    if( err != 0)
+                                        NSLog( @"***** copyItemAtPath %@ failed : %d", srcPath, (int) err);
+                                    else
                                     {
-                                        NSString *newPathExtension = [[dstPath stringByDeletingPathExtension] stringByAppendingPathExtension: @"dcm"];
-                                        [[NSFileManager defaultManager] moveItemAtPath: dstPath toPath: newPathExtension error: nil];
-                                        dstPath = newPathExtension;
+                                        if( [extension isEqualToString: @"dcm"] == NO)
+                                        {
+                                            if([DicomFile isDICOMFile:dstPath])
+                                            {
+                                                NSString *newPathExtension = [[dstPath stringByDeletingPathExtension] stringByAppendingPathExtension: @"dcm"];
+                                                [[NSFileManager defaultManager] moveItemAtPath: dstPath toPath: newPathExtension error: nil];
+                                                dstPath = newPathExtension;
+                                            }
+                                        }
+                                        
+                                        [copiedFiles addObject: dstPath];
                                     }
                                 }
-                                
-                                [copiedFiles addObject: dstPath];
-                            }
-                        }
-                        @catch (NSException *exception)
-                        {
-                            N2LogException( exception);
-                        }
-                    }
-                    catch (...)
-                    {
-                        N2LogStackTrace( @"C++ exception");
-                    }
-				}
-				else
-				{
-					if( [[NSFileManager defaultManager] fileExistsAtPath: srcPath])
-					{
-						if( [[dict objectForKey: @"mountedVolume"] boolValue])
-						{
-							@try
-							{
-								if( [[[DicomFile alloc] init: srcPath] autorelease]) // Pre-load for CD/DVD in cache
-								{
-									[copiedFiles addObject: srcPath];
-								}
-								else NSLog( @"**** DicomFile *curFile = nil");
-							}
-							@catch (NSException * e) {
-                                N2LogExceptionWithStackTrace(e);
-                            }
-						}
-						else
-						{
-							if( [[NSUserDefaults standardUserDefaults] boolForKey: @"validateFilesBeforeImporting"] && [[dict objectForKey: @"mountedVolume"] boolValue] == NO) // mountedVolume : it's too slow to test the files now from a CD
-							{
-								// Pre-load for faster validating
-								NSData *d = [NSData dataWithContentsOfFile: srcPath];
-							}
-							[copiedFiles addObject: srcPath];
-						}
-					}
-				}
-				
-				if ([NSThread currentThread].isCancelled)
-					break;
-			}
-			
-            [queue addOperationWithBlock:^{
-                NSThread* thread = [NSThread currentThread];
-                thread.name = NSLocalizedString(@"Adding files...", nil);
-                [[ThreadsManager defaultManager] addThreadAndStart:thread];
-                
-                BOOL succeed = YES;
-                
-#ifndef OSIRIX_LIGHT
-                thread.status = NSLocalizedString(@"Validating the files...", nil);
-                if( [[NSUserDefaults standardUserDefaults] boolForKey: @"validateFilesBeforeImporting"] && [[dict objectForKey: @"mountedVolume"] boolValue] == NO) // mountedVolume : it's too slow to test the files now from a CD
-                    succeed = [DicomDatabase testFiles: copiedFiles];
-#endif
-                
-                NSArray *objects = nil;
-                
-                if( succeed)
-                {
-                    thread.status = NSLocalizedString(@"Indexing the files...", nil);
-                    
-                    DicomDatabase *idatabase = self.isMainDatabase? self.independentDatabase : [self.mainDatabase independentDatabase];
-                    
-                    objects = [idatabase addFilesAtPaths:copiedFiles postNotifications:YES dicomOnly:onlyDICOM rereadExistingItems:YES];
-                    
-                    DicomDatabase* mdatabase = self.isMainDatabase? self : self.mainDatabase;
-                    if( [[BrowserController currentBrowser] database] == mdatabase && [[dict objectForKey:@"addToAlbum"] boolValue])
-                    {
-                        NSManagedObjectID *iAlbum = [[BrowserController currentBrowser] currentAlbumID: idatabase];
-                        if( iAlbum)
-                        {
-                            DicomAlbum *album = [idatabase objectWithID: iAlbum];
-                            NSMutableSet *studies = [album mutableSetValueForKey: @"studies"];
-                            
-                            BOOL change = NO;
-                            for( DicomImage* mobject in [idatabase objectsWithIDs: objects])
-                            {
-                                DicomStudy* s = [mobject valueForKeyPath:@"series.study"];
-                                
-                                if( s && [studies containsObject: s] == NO)
+                                @catch (NSException *exception)
                                 {
-                                    change = YES;
-                                    [studies addObject:s];
+                                    N2LogException( exception);
+                                }
+                            }
+                            catch (...)
+                            {
+                                N2LogStackTrace( @"C++ exception");
+                            }
+                        }
+                        else
+                        {
+                            if( [[NSFileManager defaultManager] fileExistsAtPath: srcPath])
+                            {
+                                if( [[dict objectForKey: @"mountedVolume"] boolValue])
+                                {
+                                    @try
+                                    {
+                                        if( [[[DicomFile alloc] init: srcPath] autorelease]) // Pre-load for CD/DVD in cache
+                                        {
+                                            [copiedFiles addObject: srcPath];
+                                        }
+                                        else NSLog( @"**** DicomFile *curFile = nil");
+                                    }
+                                    @catch (NSException * e) {
+                                        N2LogExceptionWithStackTrace(e);
+                                    }
+                                }
+                                else
+                                {
+                                    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"validateFilesBeforeImporting"] && [[dict objectForKey: @"mountedVolume"] boolValue] == NO) // mountedVolume : it's too slow to test the files now from a CD
+                                    {
+                                        // Pre-load for faster validating
+                                        NSData *d = [NSData dataWithContentsOfFile: srcPath];
+                                    }
+                                    [copiedFiles addObject: srcPath];
+                                }
+                            }
+                        }
+                        
+                        if ([NSThread currentThread].isCancelled)
+                            break;
+                    }
+                    
+                    [queue addOperationWithBlock:^{
+                        NSThread* thread = [NSThread currentThread];
+                        thread.name = NSLocalizedString(@"Adding files...", nil);
+                        [[ThreadsManager defaultManager] addThreadAndStart:thread];
+                        
+                        BOOL succeed = YES;
+                        
+        #ifndef OSIRIX_LIGHT
+                        thread.status = NSLocalizedString(@"Validating the files...", nil);
+                        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"validateFilesBeforeImporting"] && [[dict objectForKey: @"mountedVolume"] boolValue] == NO) // mountedVolume : it's too slow to test the files now from a CD
+                            succeed = [DicomDatabase testFiles: copiedFiles];
+        #endif
+                        
+                        NSArray *objects = nil;
+                        
+                        if( succeed)
+                        {
+                            thread.status = NSLocalizedString(@"Indexing the files...", nil);
+                            
+                            DicomDatabase *idatabase = self.isMainDatabase? self.independentDatabase : [self.mainDatabase independentDatabase];
+                            
+                            objects = [idatabase addFilesAtPaths:copiedFiles postNotifications:YES dicomOnly:onlyDICOM rereadExistingItems:YES];
+                            
+                            DicomDatabase* mdatabase = self.isMainDatabase? self : self.mainDatabase;
+                            if( [[BrowserController currentBrowser] database] == mdatabase && [[dict objectForKey:@"addToAlbum"] boolValue])
+                            {
+                                NSManagedObjectID *iAlbum = [[BrowserController currentBrowser] currentAlbumID: idatabase];
+                                if( iAlbum)
+                                {
+                                    DicomAlbum *album = [idatabase objectWithID: iAlbum];
+                                    NSMutableSet *studies = [album mutableSetValueForKey: @"studies"];
+                                    
+                                    BOOL change = NO;
+                                    for( DicomImage* mobject in [idatabase objectsWithIDs: objects])
+                                    {
+                                        DicomStudy* s = [mobject valueForKeyPath:@"series.study"];
+                                        
+                                        if( s && [studies containsObject: s] == NO)
+                                        {
+                                            change = YES;
+                                            [studies addObject:s];
+                                        }
+                                    }
+                                    
+                                    if( change)
+                                        [idatabase save];
                                 }
                             }
                             
-                            if( change)
-                                [idatabase save];
                         }
-                    }
-                    
-                }
-                else if( copyFiles)
-                {
-                    for( NSString * f in copiedFiles)
-                        [[NSFileManager defaultManager]removeItemAtPath: f error: nil];
-                }
-                
-                if ([objects count])
-                {
-                    @try
-                    {
-                        BrowserController* bc = [BrowserController currentBrowser];
-                        DicomDatabase* mdatabase = self.isMainDatabase? self : self.mainDatabase;
-                        
-                        @try
+                        else if( copyFiles)
                         {
-                            if( studySelected == NO)
+                            for( NSString * f in copiedFiles)
+                                [[NSFileManager defaultManager]removeItemAtPath: f error: nil];
+                        }
+                        
+                        if ([objects count])
+                        {
+                            @try
                             {
-                                studySelected = YES;
-                                if ([[dict objectForKey:@"selectStudy"] boolValue])
-                                    [bc performSelectorOnMainThread:@selector(selectStudyWithObjectID:) withObject: [objects objectAtIndex:0] waitUntilDone:NO];
+                                BrowserController* bc = [BrowserController currentBrowser];
+                                DicomDatabase* mdatabase = self.isMainDatabase? self : self.mainDatabase;
+                                
+                                @try
+                                {
+                                    if( studySelected == NO)
+                                    {
+                                        studySelected = YES;
+                                        if ([[dict objectForKey:@"selectStudy"] boolValue])
+                                            [bc performSelectorOnMainThread:@selector(selectStudyWithObjectID:) withObject: [objects objectAtIndex:0] waitUntilDone:NO];
+                                    }
+                                }
+                                @catch (NSException *e) {
+                                    N2LogExceptionWithStackTrace(e);
+                                }
+                                
+                            } @catch (NSException* e) {
+                                N2LogExceptionWithStackTrace(e);
                             }
                         }
-                        @catch (NSException *e) {
-                            N2LogExceptionWithStackTrace(e);
-                        }
-                        @finally {
-                        }
                         
-                    } @catch (NSException* e) {
-                        N2LogExceptionWithStackTrace(e);
-                    } @finally {
-                    }
+                        [[ThreadsManager defaultManager] removeThread:thread]; // NSOperationQueue threads don't finish after ablock execution, they're recycled
+                    }];
+                    
+                    if( [NSThread currentThread].isCancelled)
+                        break;
                 }
-                
-                [[ThreadsManager defaultManager] removeThread:thread]; // NSOperationQueue threads don't finish after ablock execution, they're recycled
-            }];
-			
-			if( [NSThread currentThread].isCancelled)
-				break;
-		}
-		@catch (NSException * e)
-		{
-            N2LogExceptionWithStackTrace(e);
-		}
-		@finally {
-            [pool2 release];
+                @catch (NSException * e)
+                {
+                    N2LogExceptionWithStackTrace(e);
+                }
+            }
         }
-	}
-	
-    if (queue.operationCount) {
-        [NSThread currentThread].status = NSLocalizedString(@"Waiting for subtasks to complete...", nil);
-        while (queue.operationCount)
+        
+        if (queue.operationCount) {
+            [NSThread currentThread].status = NSLocalizedString(@"Waiting for subtasks to complete...", nil);
+            while (queue.operationCount)
+            {
+                [NSThread sleepForTimeInterval:0.05];
+                
+                
+                if( [[NSThread currentThread] isCancelled])
+                    [queue cancelAllOperations];
+            }
+        }
+        
+        if( [[dict objectForKey: @"ejectCDDVD"] boolValue] == YES && copyFiles == YES)
         {
-            [NSThread sleepForTimeInterval:0.05];
-            
-            
-            if( [[NSThread currentThread] isCancelled])
-                [queue cancelAllOperations];
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"EJECTCDDVD"])
+                [[NSWorkspace sharedWorkspace] unmountAndEjectDeviceAtPath: [filesInput objectAtIndex:0]];
         }
     }
-    
-	//	[autoroutingInProgress unlock];
-	
-	if( [[dict objectForKey: @"ejectCDDVD"] boolValue] == YES && copyFiles == YES)
-	{
-		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"EJECTCDDVD"])
-			[[NSWorkspace sharedWorkspace] unmountAndEjectDeviceAtPath: [filesInput objectAtIndex:0]];
-	}
-	
-	[pool release];
 }
 
 
@@ -2817,6 +2804,7 @@ static BOOL protectionAgainstReentry = NO;
 		// NSDirectoryEnumerator *enumer = [NSFileManager.defaultManager enumeratorAtPath:self.incomingDirPath];
 		
         NSTimeInterval startTime = [NSDate timeIntervalSinceReferenceDate];
+        NSTimeInterval start = startTime;
         
 		while([filesArray count] < maxNumberOfFiles && ([NSDate timeIntervalSinceReferenceDate]-startTime < ([[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"]*3)) // don't let them wait more than (incomingdelay*3) seconds
               && (pathname = [enumer nextObject]))
@@ -2963,12 +2951,15 @@ static BOOL protectionAgainstReentry = NO;
 				}
 			}
             
-            if( filesArray.count % 20 == 0)
-                thread.status = [NSString stringWithFormat:NSLocalizedString(@"Listing files... %d", nil), (int)(filesArray.count)];
+            if( [NSDate timeIntervalSinceReferenceDate] - start > 0.5)
+            {
+                thread.status =  N2LocalizedSingularPluralCount( filesArray.count, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil));
+                start = [NSDate timeIntervalSinceReferenceDate];
+            }
 		}
         
         if( filesArray.count)
-            thread.status = [NSString stringWithFormat:NSLocalizedString(@"Listing files... %d", nil), (int)(filesArray.count)];
+            thread.status = N2LocalizedSingularPluralCount( filesArray.count, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil));
         
 		if ([filesArray count] > 0)
 		{

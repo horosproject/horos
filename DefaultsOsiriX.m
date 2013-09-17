@@ -996,7 +996,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"1" forKey:@"activateCGETSCP"];
     [defaultValues setObject:@"1" forKey:@"activateCFINDSCP"];
 	[defaultValues setObject:@"0" forKey:@"notificationsEmails"];
-	[defaultValues setObject:@"1" forKey:@"validateFilesBeforeImporting"];
+	[defaultValues setObject:@"0" forKey:@"validateFilesBeforeImporting"];
 	[defaultValues setObject:@"10" forKey:@"defaultFrameRate"];
 	[defaultValues setObject:@"10" forKey:@"quicktimeExportRateValue"];
     [defaultValues setObject:AVVideoCodecJPEG forKey:@"selectedMenuAVFoundationExport"];
@@ -1085,7 +1085,7 @@ static NSHost *currentHost = nil;
     
 	for (NSString *modality in modalities)
     {
-		NSMutableDictionary *protocol = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects: NSLocalizedString( @"Default", nil), [NSNumber numberWithInt:0], [NSNumber numberWithInt:0], nil] forKeys:[NSArray arrayWithObjects:@"Study Description", @"WindowsTiling", @"ImageTiling", nil]];
+		NSMutableDictionary *protocol = [NSMutableDictionary dictionaryWithObjects:[NSArray arrayWithObjects: NSLocalizedString( @"Default", nil), [NSNumber numberWithInt:0], [NSNumber numberWithInt:0], nil] forKeys:[NSArray arrayWithObjects:@"Study Description", @"WindowsTiling", @"ImageTiling", nil]];
         
 		[defaultHangingProtocols setObject: [NSMutableArray arrayWithObject:protocol] forKey:modality];
 	}

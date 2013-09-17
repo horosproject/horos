@@ -3868,7 +3868,7 @@ static inline int int_ceildivpow2(int a, int b) {
 			{
 				if( [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGExtendedTransferSyntax]] || [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGLosslessTransferSyntax]] || [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax]] || [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEG2000LossyTransferSyntax]])
 				{
-					[_dcmObject setAttributeValues:[NSArray arrayWithObject: [NSNumber numberWithInt: 0]] forName:@"PlanarConfiguration"];
+					[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject: [NSNumber numberWithInt: 0]] forName:@"PlanarConfiguration"];
 				}
 				else data = [self interleavePlanesInData:data];
 			}

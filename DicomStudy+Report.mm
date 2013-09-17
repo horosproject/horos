@@ -227,10 +227,10 @@
 //    [self _ifAvailableCopyAttributeWithName:@"SpecificCharacterSet" from:source to:output alternatively:@"ISO_IR 100"];
     [self _ifAvailableCopyAttributeWithName:@"SpecificCharacterSet" from:source to:output];
     [self _ifAvailableCopyAttributeWithName:@"StudyInstanceUID" from:source to:output];
-    [output setAttributeValues:[NSArray arrayWithObject: reportName] forName:@"SeriesDescription"];
-    [output setAttributeValues:[NSArray arrayWithObject:@"1"] forName:@"InstanceNumber"];
-    [output setAttributeValues:[NSArray arrayWithObject:@"1"] forName:@"StudyID"];
-    [output setAttributeValues:[NSArray arrayWithObject:@"0"] forName:@"SeriesNumber"];
+    [output setAttributeValues:[NSMutableArray arrayWithObject: reportName] forName:@"SeriesDescription"];
+    [output setAttributeValues:[NSMutableArray arrayWithObject:@"1"] forName:@"InstanceNumber"];
+    [output setAttributeValues:[NSMutableArray arrayWithObject:@"1"] forName:@"StudyID"];
+    [output setAttributeValues:[NSMutableArray arrayWithObject:@"0"] forName:@"SeriesNumber"];
     [self _ifAvailableCopyAttributeWithName:@"StudyDescription" from:source to:output];
     [self _ifAvailableCopyAttributeWithName:@"PatientsName" from:source to:output alternatively:@""];
     [self _ifAvailableCopyAttributeWithName:@"PatientID" from:source to:output alternatively:@"0"];
@@ -243,8 +243,8 @@
     [self _ifAvailableCopyAttributeWithName:@"StudyDate" from:source to:output alternatively:[DCMCalendarDate dicomDateWithDate:[NSDate date]]];
     [self _ifAvailableCopyAttributeWithName:@"StudyTime" from:source to:output alternatively:[DCMCalendarDate dicomTimeWithDate:[NSDate date]]];
     
-    [output setAttributeValues:[NSArray arrayWithObject: [DCMCalendarDate dicomDateWithDate:[NSDate date]]] forName:@"SeriesDate"];
-    [output setAttributeValues:[NSArray arrayWithObject: [DCMCalendarDate dicomTimeWithDate:[NSDate date]]] forName:@"SeriesTime"];
+    [output setAttributeValues:[NSMutableArray arrayWithObject: [DCMCalendarDate dicomDateWithDate:[NSDate date]]] forName:@"SeriesDate"];
+    [output setAttributeValues:[NSMutableArray arrayWithObject: [DCMCalendarDate dicomTimeWithDate:[NSDate date]]] forName:@"SeriesTime"];
     
     [output writeToFile:outDicomPath withTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] quality:DCMLosslessQuality atomically:YES];
 }

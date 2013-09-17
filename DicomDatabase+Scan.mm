@@ -539,9 +539,15 @@ static NSString* _dcmElementKey(DcmElement* element) {
             {
                 thread.status = NSLocalizedString(@"Looking for DICOM files...", nil);
                 thread.supportsCancel = YES;
+                
+                NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
                 for (NSInteger i = 0; i < allpaths.count; ++i)
                 {
-                    thread.progress = 1.0*i/allpaths.count;
+                    if( [NSDate timeIntervalSinceReferenceDate] - start > 0.5 || i == allpaths.count-1) {
+                        thread.progress = 1.0*i/allpaths.count;
+                        start = [NSDate timeIntervalSinceReferenceDate];
+                    }
+                    
                     NSString* path = [allpaths objectAtIndex:i];
                     
                     if ([dicomFilePaths containsObject:path])

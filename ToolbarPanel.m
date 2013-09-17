@@ -17,6 +17,7 @@
 #import "ViewerController.h"
 #import "AppController.h"
 #import "NSWindow+N2.h"
+#import "N2Debug.h"
 #import "Notifications.h"
 
 extern BOOL USETOOLBARPANEL;
@@ -136,7 +137,7 @@ static int increment = 0;
 {
 	if( [aNotification object] == [self window])
 	{
-		if( [[self window] isVisible] && viewer)
+		if( [[self window] isVisible] && viewer && [self.window.toolbar customizationPaletteIsRunning] == NO)
             [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
 	}
 }
@@ -153,7 +154,7 @@ static int increment = 0;
 			if( [[viewer window] isVisible])
 				[[viewer window] makeKeyAndOrderFront: self];
             
-            if( viewer)
+            if( viewer && [self.window.toolbar customizationPaletteIsRunning] == NO)
                 [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
             else
             {
@@ -167,7 +168,7 @@ static int increment = 0;
 {
 	if( [aNotification object] == [self window])
 	{
-		if( [[self window] isVisible] && viewer)
+		if( [[self window] isVisible] && viewer && [self.window.toolbar customizationPaletteIsRunning] == NO)
             [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
 	}
 }
@@ -178,7 +179,7 @@ static int increment = 0;
 	{
 		[[viewer window] makeKeyAndOrderFront: self];
         
-		if( [[self window] isVisible] && viewer)
+		if( [[self window] isVisible] && viewer && [self.window.toolbar customizationPaletteIsRunning] == NO)
             [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
         
 		return;
@@ -206,7 +207,7 @@ static int increment = 0;
 				[[self window] orderBack:self];
 				[toolbar setVisible:YES];
                 
-                if( viewer)
+                if( viewer && [self.window.toolbar customizationPaletteIsRunning] == NO)
                     [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
 				
 //				if( [[viewer window] isVisible] == NO)
@@ -313,13 +314,16 @@ static int increment = 0;
 	if( associatedScreen == nil) associatedScreen = [[NSMutableDictionary alloc] init];
 	
 	if( tb == nil)
-		tb = emptyToolbar;
+		tb = nil;   //emptyToolbar;
+    
+    if( toolbar == nil && tb == nil)
+        return;
 	
 	if( tb == toolbar)
 	{
         NSDisableScreenUpdates();
         
-		if( viewer != nil)
+		if( viewer != nil && [self.window.toolbar customizationPaletteIsRunning] == NO)
 			[[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
 	
 		if( toolbar)
@@ -337,7 +341,8 @@ static int increment = 0;
 			}
 		}
 		else
-            [self.window orderOut: self];
+            if( self.window.isVisible)
+                [self.window orderOut: self];
         
         NSEnableScreenUpdates();
         
@@ -358,36 +363,41 @@ static int increment = 0;
     
 	if( toolbar)
 	{
-		if( [associatedScreen objectForKey: [NSValue valueWithPointer: toolbar]] != [[self window] screen])
-		{
-			if( [[NSScreen screens] count] > 1)
-				[[self window] setToolbar: emptyToolbar];	//To avoid the stupid add an item in customize toolbar.....
-				
-			if( [[self window] screen])
-				[associatedScreen setObject: [[self window] screen] forKey: [NSValue valueWithPointer: toolbar]];
-			else
-				[associatedScreen removeObjectForKey: [NSValue valueWithPointer: toolbar]];
-		}
-		
-		[[self window] setToolbar: toolbar];
-		
-		[[self window] setShowsToolbarButton:NO];
-		[[[self window] toolbar] setVisible: YES];
-		
-		
-		if( [[viewer window] isKeyWindow])
-			[[self window] orderBack: self];
+        @try
+        {
+            if( [associatedScreen objectForKey: [NSValue valueWithPointer: toolbar]] != [[self window] screen])
+            {
+                if( [[NSScreen screens] count] > 1)
+                    [[self window] setToolbar: emptyToolbar];	//To avoid the stupid add an item in customize toolbar.....
+                    
+                if( [[self window] screen])
+                    [associatedScreen setObject: [[self window] screen] forKey: [NSValue valueWithPointer: toolbar]];
+                else
+                    [associatedScreen removeObjectForKey: [NSValue valueWithPointer: toolbar]];
+            }
+            
+            [[self window] setToolbar: toolbar];
+            
+            [[self window] setShowsToolbarButton:NO];
+            [[[self window] toolbar] setVisible: YES];
+            
+            
+            if( [[viewer window] isKeyWindow])
+                [[self window] orderBack: self];
+        }
+        @catch (NSException *exception) {
+            N2LogException( exception);
+        }
 	}
 	else
-	{
-		[self.window orderOut: self];
-	}
+        if( self.window.isVisible)
+            [self.window orderOut: self];
 	
 	if( toolbar)
 	{
 		[self applicationDidChangeScreenParameters:nil];
 		
-		if( [[viewer window] isKeyWindow])
+		if( [[viewer window] isKeyWindow] && [self.window.toolbar customizationPaletteIsRunning] == NO)
 			[[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
 	}
     

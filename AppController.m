@@ -688,6 +688,22 @@ static NSDate *lastWarningDate = nil;
 	return YES;
 }
 
++(BOOL) hasMacOSXMaverick
+{
+	OSErr err;
+	SInt32 osVersion;
+	
+	err = Gestalt ( gestaltSystemVersion, &osVersion );
+	if ( err == noErr)
+	{
+		if ( osVersion < 0x1090UL )
+		{
+			return NO;
+		}
+	}
+	return YES;
+}
+
 +(BOOL) hasMacOSXMountainLion
 {
 	OSErr err;
@@ -3650,7 +3666,7 @@ static BOOL initialized = NO;
 	[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"FULL32BITPIPELINE"];
 	
 	dcmView = [[DCMView alloc] initWithFrame:NSMakeRect(0, 0, size,size)];
-	[dcmView setPixels:[NSArray arrayWithObject:dcmPix] files:NULL rois:NULL firstImage:0 level:'i' reset:YES];
+	[dcmView setPixels:[NSMutableArray arrayWithObject:dcmPix] files:NULL rois:NULL firstImage:0 level:'i' reset:YES];
 	[dcmView setScaleValueCentered:size];
 	[win.contentView addSubview:dcmView];
 	[dcmView drawRect:NSMakeRect(0,0,size,size)];
@@ -3689,7 +3705,7 @@ static BOOL initialized = NO;
 	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"SOFTWAREINTERPOLATION"];
 	[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"FULL32BITPIPELINE"];
 	dcmView = [[DCMView alloc] initWithFrame: NSMakeRect(0, 0, size,size)];
-	[dcmView setPixels:[NSArray arrayWithObject:dcmPix] files:NULL rois:NULL firstImage:0 level:'i' reset:YES];
+	[dcmView setPixels:[NSMutableArray arrayWithObject:dcmPix] files:NULL rois:NULL firstImage:0 level:'i' reset:YES];
 	[dcmView setScaleValueCentered:size];
 	[win.contentView addSubview:dcmView];
 	[dcmView drawRect:NSMakeRect(0,0,size,size)];
@@ -3998,6 +4014,21 @@ static BOOL initialized = NO;
     [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"UseKDUForJPEG2000"];
     [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"UseOpenJpegForJPEG2000"];
     [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"useDCMTKForJP2K"];
+    
+    if( [AppController hasMacOSXMaverick])
+    {
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideMaverickWarning"] == NO)
+		{
+			NSAlert* alert = [[NSAlert new] autorelease];
+			[alert setMessageText: NSLocalizedString( @"Mac OS Version", nil)];
+			[alert setInformativeText: NSLocalizedString( @"This version of OsiriX has not been validated or certified for this version of MacOS. Bugs, errors and instabilities can occur. Upgrade to latest version of OsiriX.", nil)];
+			[alert setShowsSuppressionButton:YES ];
+			[alert addButtonWithTitle: NSLocalizedString( @"OK", nil)];
+            
+			if ([[alert suppressionButton] state] == NSOnState)
+				[[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"hideMaverickWarning"];
+		}
+    }
     
 	if( [AppController hasMacOSXMountainLion] == NO)
 	{
