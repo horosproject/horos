@@ -215,7 +215,7 @@ typedef char* VTKStereoVRView;
 	vtkPiecewiseFunction		*blendingOpacityTransferFunction;
 	double						blendingtable[257][3];
 	
-	BOOL						needToFlip, blendingNeedToFlip, firstTime;
+	BOOL						needToFlip, blendingNeedToFlip, firstTime, alertDisplayed;
 	
 	IBOutlet NSWindow			*export3DWindow;
 	IBOutlet NSSlider			*framesSlider;

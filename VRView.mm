@@ -2158,6 +2158,21 @@ public:
 	}
 }
 
+- (void) displayVTKError
+{
+    if( alertDisplayed == NO)
+    {
+        alertDisplayed = YES;
+        
+        NSLog( @"C++ Exception during drawRect... not enough memory?");
+        
+        if( NSRunAlertPanel( NSLocalizedString(@"32-bit",nil), NSLocalizedString( @"Cannot use the 3D engine.\r\rUpgrade to OsiriX 64-bit or OsiriX MD to solve this issue.",nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"OsiriX 64-bit", nil), nil) == NSAlertAlternateReturn)
+            [[AppController sharedAppController] osirix64bit: self];
+        
+        [[self window] performClose: self];
+    }
+}
+
 - (void) drawRect:(NSRect)aRect
 {
 	if( drawLock == nil) drawLock = [[NSRecursiveLock alloc] init];
@@ -2184,16 +2199,14 @@ public:
 			[self computeOrientationText];
             
 			[super drawRect:aRect];
+            
+            throw 20;
 		}
 		
 		catch (...)
 		{
-			NSLog( @"C++ Exception during drawRect... not enough memory?");
-			
-			if( NSRunAlertPanel( NSLocalizedString(@"32-bit",nil), NSLocalizedString( @"Cannot use the 3D engine.\r\rUpgrade to OsiriX 64-bit or OsiriX MD to solve this issue.",nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"OsiriX 64-bit", nil), nil) == NSAlertAlternateReturn)
-				[[AppController sharedAppController] osirix64bit: self];
-				
-			[[self window] performSelector:@selector(performClose:) withObject:self afterDelay: 1.0];
+            if( alertDisplayed == NO)
+                [self performSelector: @selector( displayVTKError) withObject:nil afterDelay:0.1];
 		}
         
 		if( www)
