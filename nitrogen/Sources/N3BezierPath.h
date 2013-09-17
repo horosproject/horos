@@ -89,6 +89,11 @@ typedef NSInteger N3BezierPathElement;
 - (NSArray*)intersectionsWithPlane:(N3Plane)plane; // returns NSValues containing N3Vectors of the intersections.
 - (NSArray*)intersectionsWithPlane:(N3Plane)plane relativePositions:(NSArray **)returnedRelativePositions;
 
+- (NSArray *)subPaths;
+- (N3BezierPath *)bezierPathByClippingFromRelativePosition:(CGFloat)startRelativePosition toRelativePosition:(CGFloat)endRelativePosition;
+
+- (CGFloat)signedAreaUsingNormal:(N3Vector)normal;
+
 @end
 
 

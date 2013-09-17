@@ -613,6 +613,37 @@
 	return intersectionArray;
 }
 
+- (NSArray *)subPaths
+{
+    NSMutableArray *subPaths = [NSMutableArray array];
+    CFArrayRef cfSubPaths = N3BezierCoreCopySubpaths(_bezierCore);
+    NSUInteger i;
+    
+    for (i = 0; i < CFArrayGetCount(cfSubPaths); i++) {
+        [subPaths addObject:[N3BezierPath bezierPathN3BezierCore:CFArrayGetValueAtIndex(cfSubPaths, i)]];
+    }
+    
+    CFRelease(cfSubPaths);
+    return subPaths;
+}
+
+- (N3BezierPath *)bezierPathByClippingFromRelativePosition:(CGFloat)startRelativePosition toRelativePosition:(CGFloat)endRelativePosition
+{
+    N3BezierCoreRef clippedBezierCore;
+    N3MutableBezierPath *clippedBezierPath;
+    
+    clippedBezierCore = N3BezierCoreCreateCopyByClipping(_bezierCore, startRelativePosition, endRelativePosition);
+    clippedBezierPath = [N3MutableBezierPath bezierPathN3BezierCore:clippedBezierCore];
+    N3BezierCoreRelease(clippedBezierCore);
+    return clippedBezierPath;
+}
+
+- (CGFloat)signedAreaUsingNormal:(N3Vector)normal
+{
+    return N3BezierCoreSignedAreaUsingNormal(_bezierCore, normal);
+}
+
+
 @end
 
 @interface N3MutableBezierPath ()
