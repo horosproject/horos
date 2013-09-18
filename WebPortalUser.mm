@@ -474,7 +474,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
 
 +(NSArray*)studiesForUser: (WebPortalUser*) user predicate:(NSPredicate*)predicate sortBy:(NSString*)sortValue fetchLimit:(int) fetchLimit fetchOffset:(int) fetchOffset numberOfStudies:(int*) numberOfStudies
 {
-	NSArray* studiesArray = [NSArray array];
+	NSArray* studiesArray = nil;
 	
     DicomDatabase *dicomDBContext = [WebPortal.defaultWebPortal.dicomDatabase independentDatabase];
     
@@ -586,6 +586,9 @@ static NSMutableDictionary *studiesForUserCache = nil;
 		NSLog(@"Error: [WebPortal studiesForUser:predicate:sortBy:] %@", e);
 	}
 	
+    if( studiesArray == nil)
+        studiesArray = [NSArray array];
+    
 	return studiesArray;
 }
 
