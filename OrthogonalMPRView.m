@@ -1110,12 +1110,8 @@
 		curWL = [curDCM wl];
 		
 		if( [self is2DViewer] == YES)
-		{
 			[[self windowController] setCurWLWWMenu: [DCMView findWLWWPreset: curWL :curWW :curDCM]];
-		}
-		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: [DCMView findWLWWPreset: curWL :curWW :curDCM] userInfo: nil];
 		
-
 		// change Window level
 		[self setWLWW: curWL :curWW];
 

@@ -601,15 +601,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 + (NSString*) findWLWWPreset: (float) wl :(float) ww :(DCMPix*) pix
 {
-	NSDictionary	*list = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"WLWW3"];
-	NSArray			*allKeys = [list allKeys];
-	
-	
-	for( id loopItem in allKeys)
+    NSDictionary *wlwwPresets = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"WLWW3"];
+    
+	for( NSString *key in [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"WLWW3"])
 	{
-		NSArray		*value = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"WLWW3"] objectForKey: loopItem];
+		NSArray	 *value = [wlwwPresets objectForKey: key];
 		
-		if( [[value objectAtIndex: 0] floatValue] == wl && [[value objectAtIndex: 1] floatValue] == ww) return loopItem;
+		if( [[value objectAtIndex: 0] floatValue] == wl && [[value objectAtIndex: 1] floatValue] == ww)
+            return key;
 	}
 	
 	if( pix )
@@ -3265,7 +3264,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             N2LogExceptionWithStackTrace(e);
 		}
 		
-		
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: [DCMView findWLWWPreset: curWL :curWW :curDCM] userInfo: nil];
+        
 		[drawLock unlock];
     }
 }
@@ -4916,6 +4916,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			[NSMenu popUpContextMenu:[self menu] withEvent:event forView:self];
 		}
 	}
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: [DCMView findWLWWPreset: curWL :curWW :curDCM] userInfo: nil];
 }
 
 - (void)otherMouseDragged:(NSEvent *)event
@@ -5474,10 +5476,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		[[blendingView windowController] setCurWLWWMenu: [DCMView findWLWWPreset: [[blendingView curDCM] wl] :[[blendingView curDCM] ww] :curDCM]];
 	}
-
-	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: [DCMView findWLWWPreset: [[blendingView curDCM] wl] :[[blendingView curDCM] ww] :curDCM] userInfo: nil];
-
-
+    
 	[blendingView loadTextures];
 	[self loadTextures];
 
@@ -5554,8 +5553,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		{
 			[[self windowController] setCurWLWWMenu: [DCMView findWLWWPreset: curWL :curWW :curDCM]];
 		}
-		
-		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: [DCMView findWLWWPreset: curWL :curWW :curDCM] userInfo: nil];
 		
 		[self setWLWW:curWL :curWW];
 	}
