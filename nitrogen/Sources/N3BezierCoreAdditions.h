@@ -74,6 +74,10 @@ bool N3BezierCoreGetBoundingPlanesForNormal(N3BezierCoreRef bezierCore, N3Vector
 N3BezierCoreRef N3BezierCoreCreateCopyByReversing(N3BezierCoreRef bezierCore);
 N3MutableBezierCoreRef N3BezierCoreCreateMutableCopyByReversing(N3BezierCoreRef bezierCore);
 
+CFArrayRef N3BezierCoreCopySubpaths(N3BezierCoreRef bezierCore);
+N3BezierCoreRef N3BezierCoreCreateCopyByClipping(N3BezierCoreRef bezierCore, CGFloat startRelativePosition, CGFloat endRelativePosition);
+N3MutableBezierCoreRef N3BezierCoreCreateMutableCopyByClipping(N3BezierCoreRef bezierCore, CGFloat startRelativePosition, CGFloat endRelativePosition);
+CGFloat N3BezierCoreSignedAreaUsingNormal(N3BezierCoreRef bezierCore, N3Vector normal);
 
 CF_EXTERN_C_END
 
