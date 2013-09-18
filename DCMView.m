@@ -605,16 +605,16 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     
 	for( NSString *key in [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"WLWW3"])
 	{
-		NSArray	 *value = [wlwwPresets objectForKey: key];
+		NSArray *value = [wlwwPresets objectForKey: key];
 		
 		if( [[value objectAtIndex: 0] floatValue] == wl && [[value objectAtIndex: 1] floatValue] == ww)
             return key;
 	}
 	
-	if( pix )
+	if( pix)
 	{
-		if( wl == pix.fullwl && ww == pix.fullww ) return NSLocalizedString( @"Full dynamic", nil);
-		if( wl == pix.savedWL && ww == pix.savedWW ) return NSLocalizedString(@"Default WL & WW", nil);
+		if( wl == pix.fullwl && ww == pix.fullww) return NSLocalizedString( @"Full dynamic", nil);
+		if( wl == pix.savedWL && ww == pix.savedWW) return NSLocalizedString(@"Default WL & WW", nil);
 	}
 	
 	return NSLocalizedString( @"Other", nil);
