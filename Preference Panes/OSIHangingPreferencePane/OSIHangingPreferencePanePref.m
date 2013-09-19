@@ -299,7 +299,7 @@
                     
                     NSString *name = [sortedKeys objectAtIndex: [[d valueForKey: @"WLWW"] intValue]-1];
                     
-                    NSBeginAlertSheet( NSLocalizedString(@"Remove a WL/WW preset", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, self.mainView.window, self, @selector(deleteWLWW:returnCode:contextInfo:), NULL, [name retain], [NSString stringWithFormat: NSLocalizedString( @"Are you sure you want to delete preset : '%@'?", nil), name]);
+                    NSBeginAlertSheet( NSLocalizedString(@"Remove a WL/WW preset", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, self.mainView.window, self, @selector(deleteWLWW:returnCode:contextInfo:), NULL, [name retain], NSLocalizedString( @"Are you sure you want to delete preset : '%@'?", nil), name);
                 }
             }
         }
