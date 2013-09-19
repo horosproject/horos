@@ -16200,7 +16200,7 @@ static volatile int numberOfThreadsForJPEG = 0;
                 {
                     NSString *name = [curImage valueForKeyPath: @"series.study.name"];
                     
-                    if( name == nil)
+                    if( name.length == 0)
                         name = @"unnamed";
                     
 					tempPath = [path stringByAppendingPathComponent: [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: name]]];
@@ -16209,7 +16209,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				{
 					NSMutableString *name;
 					
-					if( [curImage valueForKeyPath: @"series.study.name"] == nil)
+					if( [[curImage valueForKeyPath: @"series.study.name"] length] == 0)
 						name = [NSMutableString stringWithString: @"unnamed"];
                     
 					else if ([(NSString*) [curImage valueForKeyPath: @"series.study.name"] length] > 8)
@@ -16273,7 +16273,7 @@ static volatile int numberOfThreadsForJPEG = 0;
                     NSString *name = [curImage valueForKeyPath: @"series.study.studyName"];
                     NSString *idstring = [curImage valueForKeyPath: @"series.study.id"];
                     
-                    if( name == nil)
+                    if( name.length == 0)
                         name = @"unnamed";
                     
                     if( idstring == nil)
@@ -16285,7 +16285,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 					if( studyId == nil || [studyId length] == 0)
 						studyId = @"0";
 					
-					if( studyName == nil || [studyName length] == 0)
+					if( studyName.length == 0)
 						studyName = @"unnamed";
 					
 					if (!addDICOMDIR)
@@ -16322,7 +16322,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 					if( seriesId == nil)
 						seriesId = [NSNumber numberWithInt: 0];
 					
-					if( seriesName == nil || [seriesName length] == 0)
+					if( seriesName.length == 0)
 						seriesName = @"unnamed";
 					
 					if ( !addDICOMDIR)
@@ -16476,7 +16476,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				NSManagedObject	*curImage = [dicomFiles2Export objectAtIndex:i];
                 NSString *studyName = [curImage valueForKeyPath: @"series.study.name"];
                 
-                if( studyName == nil)
+                if( studyName.length == 0)
                     studyName = @"unnamed";
                 
 				NSMutableString *name;
@@ -16536,7 +16536,7 @@ static volatile int numberOfThreadsForJPEG = 0;
                 
                 NSString *studyName = [curImage valueForKeyPath: @"series.study.name"];
                 
-                if( studyName == nil)
+                if( studyName.length == 0)
                     studyName = @"unnamed";
                 
 				NSMutableString *name;
@@ -16567,7 +16567,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				NSManagedObject	*curImage = [dicomFiles2Export objectAtIndex:i];
                 NSString *studyName = [curImage valueForKeyPath: @"series.study.name"];
                 
-                if( studyName == nil)
+                if( studyName.length == 0)
                     studyName = @"unnamed";
                 
 				NSMutableString *name;

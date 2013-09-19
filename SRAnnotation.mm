@@ -22,6 +22,7 @@
 #import "DicomStudy.h"
 #import "DicomSeries.h"
 #import "N2Debug.h"
+#import "DICOMToNSString.h"
 
 #include "osconfig.h"   /* make sure OS specific configuration is included first */
 #include "dsrtypes.h"
@@ -518,12 +519,37 @@
         OFCondition status  = fileformat.loadFile([[image completePath] UTF8String]);
         if (status.good())
         {
+            NSStringEncoding encoding[ 10];
+            for( int i = 0; i < 10; i++) encoding[ i] = 0;
+			encoding[ 0] = NSISOLatin1StringEncoding;
+            
             const char *string = nil;
+            if (fileformat.getDataset()->findAndGetString(DCM_SpecificCharacterSet, string, OFFalse).good() && string != NULL)
+            {
+                NSArray	*c = [[NSString stringWithCString:string encoding: NSISOLatin1StringEncoding] componentsSeparatedByString:@"\\"];
+                
+                if( [c count] >= 10) NSLog( @"Encoding number >= 10 ???");
+                
+                if( [c count] < 10)
+                {
+                    for( int i = 0; i < [c count]; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
+                    for( int i = [c count]; i < 10; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c lastObject]];
+                }
+            }
+            
+            string = nil;
             status = fileformat.getDataset()->findAndGetString( DCM_PatientsName, string, OFFalse);
             if (status.good() && string)
             {
-                document->setPatientsName( string);
-                originalPatientsName = YES;
+                NSString *name = [DicomFile stringWithBytes: (char*) string encodings:encoding replaceBadCharacters:NO];
+                if(name == nil)
+                    name = [NSString stringWithCString: string encoding: encoding[ 0]];
+                
+                if( name.length)
+                {
+                    document->setPatientsName( [name UTF8String]); //We have to convert it to UTF-8
+                    originalPatientsName = YES;
+                }
             }
         }
     }
