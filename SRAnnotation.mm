@@ -508,8 +508,6 @@
 	if ([study valueForKey:@"studyName"])
 		document->setStudyDescription([[study valueForKey:@"studyName"] UTF8String]);
 	
-	document->setSpecificCharacterSet( "ISO_IR 192"); // UTF-8
-	
     // We want the original patient's name
     BOOL originalPatientsName = NO;
     
@@ -519,44 +517,26 @@
         OFCondition status  = fileformat.loadFile([[image completePath] UTF8String]);
         if (status.good())
         {
-            NSStringEncoding encoding[ 10];
-            for( int i = 0; i < 10; i++) encoding[ i] = 0;
-			encoding[ 0] = NSISOLatin1StringEncoding;
-            
             const char *string = nil;
             if (fileformat.getDataset()->findAndGetString(DCM_SpecificCharacterSet, string, OFFalse).good() && string != NULL)
-            {
-                NSArray	*c = [[NSString stringWithCString:string encoding: NSISOLatin1StringEncoding] componentsSeparatedByString:@"\\"];
-                
-                if( [c count] >= 10) NSLog( @"Encoding number >= 10 ???");
-                
-                if( [c count] < 10)
-                {
-                    for( int i = 0; i < [c count]; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
-                    for( int i = [c count]; i < 10; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c lastObject]];
-                }
-            }
+                document->setSpecificCharacterSet( string);
             
             string = nil;
             status = fileformat.getDataset()->findAndGetString( DCM_PatientsName, string, OFFalse);
             if (status.good() && string)
             {
-                NSString *name = [DicomFile stringWithBytes: (char*) string encodings:encoding replaceBadCharacters:NO];
-                if(name == nil)
-                    name = [NSString stringWithCString: string encoding: encoding[ 0]];
-                
-                if( name.length)
-                {
-                    document->setPatientsName( [name UTF8String]); //We have to convert it to UTF-8
-                    originalPatientsName = YES;
-                }
+                document->setPatientsName( string); //We have to convert it to UTF-8
+                originalPatientsName = YES;
             }
         }
     }
     
 	if (originalPatientsName == NO && [study valueForKey:@"name"])
+    {
+        document->setSpecificCharacterSet( "ISO_IR 192"); // UTF-8
 		document->setPatientsName([[study valueForKey:@"name"] UTF8String]);
-		
+    }
+    
 	if ([study valueForKey:@"dateOfBirth"])
 		document->setPatientsBirthDate([[[study valueForKey:@"dateOfBirth"] descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil] UTF8String]);
 		

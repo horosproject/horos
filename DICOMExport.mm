@@ -317,9 +317,10 @@ static float deg2rad = M_PI / 180.0f;
 	if (result.good()) result = dataset->insertEmptyElement(DCM_AcquisitionDatetime);
 	if (result.good()) result = dataset->insertEmptyElement(DCM_ConceptNameCodeSequence);
 	
+    if (result.good()) result = dataset->putAndInsertString(DCM_SOPClassUID, UID_SecondaryCaptureImageStorage);
+    
 	// insert const value attributes
 	if (result.good()) result = dataset->putAndInsertString(DCM_SpecificCharacterSet, "ISO_IR 100");
-	if (result.good()) result = dataset->putAndInsertString(DCM_SOPClassUID, UID_SecondaryCaptureImageStorage);
 	
 	// there is no way we could determine a meaningful series number, so we just use a constant.
 	if (result.good()) result = dataset->putAndInsertString(DCM_SeriesNumber, "1");
@@ -744,14 +745,16 @@ static float deg2rad = M_PI / 180.0f;
 																[file elementForKey: @"patientSex"], @"patientsSex",
 																[file elementForKey: @"studyDate"], @"studyDate",
 																nil]];
+                            
+                            dcmtkFileFormat->getMetaInfo()->putAndInsertString(DCM_MediaStorageSOPClassUID, UID_SecondaryCaptureImageStorage);
 						}
 					}
 				}
 				
 				if( succeed == NO)
 				{
-					succeed = [self createDICOMHeader: dcmtkFileFormat->getDataset()
-											 dictionary: metaDataDict];
+					succeed = [self createDICOMHeader: dcmtkFileFormat->getDataset() dictionary: metaDataDict];
+                    dcmtkFileFormat->getMetaInfo()->putAndInsertString(DCM_MediaStorageSOPClassUID, UID_SecondaryCaptureImageStorage);
 				}
 				
 				if( succeed)
@@ -793,7 +796,8 @@ static float deg2rad = M_PI / 180.0f;
 					if( modalityAsSource == NO || spp == 3)
                     {
 						dataset->putAndInsertString( DCM_Modality, "SC");
-                        dataset->putAndInsertString( DCM_MediaStorageSOPClassUID, UID_SecondaryCaptureImageStorage);
+                        metaInfo->putAndInsertString( DCM_MediaStorageSOPClassUID, UID_SecondaryCaptureImageStorage);
+                        dataset->putAndInsertString( DCM_SOPClassUID, UID_SecondaryCaptureImageStorage);
                     }
                     else
                         delete dataset->remove( DCM_MediaStorageSOPClassUID);
