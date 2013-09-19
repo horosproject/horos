@@ -935,20 +935,23 @@ typedef GreaterPathNodeOnF NodeCompare;
 			for (dy=-1; dy<=1; dy++) {
 				for (dx=-1; dx<=1; dx++) {
 					neighborindex = (z+dz)*distmapImageSize + (y+dy)*distmapWidth + (x+dx);
-					if (!(labelmap[neighborindex]&OPTIMIZED))
-					{
-						newcost = currentcost + [self stepCostFrom:currentindex To:neighborindex];
-						if (newcost < costmap[neighborindex]) {
-							costmap[neighborindex] = newcost;
-							currentdirection=(-dz+1)*9+(-dy+1)*3-dx+1;
-							labelmap[neighborindex] = currentlabel|currentdirection;
-							PathNode aneighbor;
-							aneighbor.index = neighborindex;
-							aneighbor.cost = newcost;
-							priorityQ.push(aneighbor);
-						}
-					}
 					
+                    if( neighborindex < distmapVolumeSize && neighborindex >= 0)
+                    {
+                        if (!(labelmap[neighborindex]&OPTIMIZED))
+                        {
+                            newcost = currentcost + [self stepCostFrom:currentindex To:neighborindex];
+                            if (newcost < costmap[neighborindex]) {
+                                costmap[neighborindex] = newcost;
+                                currentdirection=(-dz+1)*9+(-dy+1)*3-dx+1;
+                                labelmap[neighborindex] = currentlabel|currentdirection;
+                                PathNode aneighbor;
+                                aneighbor.index = neighborindex;
+                                aneighbor.cost = newcost;
+                                priorityQ.push(aneighbor);
+                            }
+                        }
+					}
 				}
 			}
 		}
