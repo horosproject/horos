@@ -298,6 +298,19 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
     || [path isEqualToString: @"/testdbalive"])
 		return NO;
     
+    for (id key in [PluginManager plugins])
+    {
+        id plugin = [[PluginManager plugins] objectForKey:key];
+        
+        if ([plugin respondsToSelector:@selector(isPasswordProtected:forConnection:)])
+        {
+            NSNumber *v = [plugin performSelector: @selector(isPasswordProtected:forConnection:) withObject: path withObject: self];
+            
+            if( v)
+                return [v boolValue];
+        }
+    }
+    
 	return self.portal.authenticationRequired;
 }
 
@@ -541,30 +554,47 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
             else
             if ([requestedPath isEqualToString:@"/quitOsiriX"] && user.isAdmin.boolValue)
                 exit(0);
+            else if ([requestedPath isEqualToString:@"/testdbalive"])
+            {
+                [self.portal.dicomDatabase.managedObjectContext lock]; // Can we obtain a lock on the main db?
+                [self.portal.dicomDatabase.managedObjectContext unlock];
+                
+                [self.portal.dicomDatabase.managedObjectContext.persistentStoreCoordinator lock]; // Can we obtain a lock on the main db?
+                [self.portal.dicomDatabase.managedObjectContext.persistentStoreCoordinator unlock];
+                
+                [self.portal.database.managedObjectContext lock];
+                [self.portal.database objectsForEntity:self.portal.database.userEntity predicate:[NSPredicate predicateWithFormat:@"name == %@", @"test"]];
+                [self.portal.database.managedObjectContext unlock];
+                
+                [self.portal.database.managedObjectContext.persistentStoreCoordinator lock];
+                [self.portal.database.managedObjectContext.persistentStoreCoordinator unlock];
+                
+                [self performSelectorOnMainThread: @selector( alive:) withObject: self waitUntilDone: YES];
+                
+                [response setDataWithString: @"Test DB Alive succeeded"];
+                response.mimeType = @"text/html";
+            }
             else
-                if ([requestedPath isEqualToString:@"/testdbalive"])
-                {
-                    [self.portal.dicomDatabase.managedObjectContext lock]; // Can we obtain a lock on the main db?
-                    [self.portal.dicomDatabase.managedObjectContext unlock];
-                    
-                    [self.portal.dicomDatabase.managedObjectContext.persistentStoreCoordinator lock]; // Can we obtain a lock on the main db?
-                    [self.portal.dicomDatabase.managedObjectContext.persistentStoreCoordinator unlock];
-                    
-                    [self.portal.database.managedObjectContext lock];
-                    [self.portal.database objectsForEntity:self.portal.database.userEntity predicate:[NSPredicate predicateWithFormat:@"name == %@", @"test"]];
-                    [self.portal.database.managedObjectContext unlock];
-                    
-                    [self.portal.database.managedObjectContext.persistentStoreCoordinator lock];
-                    [self.portal.database.managedObjectContext.persistentStoreCoordinator unlock];
-                    
-                    [self performSelectorOnMainThread: @selector( alive:) withObject: self waitUntilDone: YES];
-                    
-                    [response setDataWithString: @"Test DB Alive succeeded"];
-                    response.mimeType = @"text/html";
-                }
-            else
+            {
 				response.data = [self.portal dataForPath:requestedPath];
-			
+                
+                if( response.data.length == 0) // Maybe a plugin has an answer ?
+                {
+                    for (id key in [PluginManager plugins])
+                    {
+                        id plugin = [[PluginManager plugins] objectForKey:key];
+                        
+                        if ([plugin respondsToSelector:@selector(httpResponseForPath:forConnection:)])
+                        {
+                            response.data = [plugin performSelector: @selector(httpResponseForPath:forConnection:) withObject: requestedPath withObject: self];
+                            
+                            if( response.data)
+                                break;
+                        }
+                    }
+                }
+            }
+            
 			if (!response.data.length && !response.statusCode)
 				response.statusCode = 404;
 		}
