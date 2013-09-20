@@ -3627,14 +3627,14 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 {
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     
-	glLineWidth( 5 * factor);
+//	glLineWidth( 0.1 * factor);
 //	glBegin(GL_POLYGON);
 //		glVertex2f(  minx, miny);
 //		glVertex2f(  minx, maxy);
 //		glVertex2f(  maxx, maxy);
 //		glVertex2f(  maxx, miny);
 //	glEnd();
-
+    
     float vec[7][2]= {{0.195, 0.02}, {0.383, 0.067}, {0.55, 0.169}, {0.707, 0.293}, {0.831, 0.45}, {0.924, 0.617}, {0.98, 0.805}};
     
     rad *= factor;
@@ -3885,21 +3885,20 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
             
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-			glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-			glEnable(GL_POLYGON_SMOOTH);
-            
+			
             float sf = curView.window.backingScaleFactor;
             
 			glScalef( 2.0f /([curView drawingFrameRect].size.width), -2.0f / ([curView drawingFrameRect].size.height), 1.0f);
             
             if( mode == ROI_sleep) glColor4f(0.0f, 0.0f, 0.0f, 0.4f);
 			else glColor4f(0.3f, 0.0f, 0.0f, 0.8f);
+            
+//            glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+//			glEnable(GL_POLYGON_SMOOTH);
 			gl_round_box(GL_POLYGON, drawRect.origin.x, drawRect.origin.y-1, drawRect.origin.x+drawRect.size.width, drawRect.origin.y+drawRect.size.height, fontHeight*sf/5., sf);
-			
-			NSPoint tPt;
-			
-			tPt.x = drawRect.origin.x + 4*sf;
-			tPt.y = drawRect.origin.y + (fontHeight*sf + 2*sf);
+//			glDisable(GL_POLYGON_SMOOTH);
+            
+			NSPoint tPt = NSMakePoint( drawRect.origin.x + 4*sf, drawRect.origin.y + (fontHeight*sf + 2*sf));
 			
 			long line = 0;
 			
@@ -3910,7 +3909,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			[self glStr: textualBoxLine5 : tPt.x : tPt.y : line];	if( textualBoxLine5.length) line++;
 			[self glStr: textualBoxLine6 : tPt.x : tPt.y : line];	if( textualBoxLine6.length) line++;
 			
-			glDisable(GL_POLYGON_SMOOTH);
+			
 			glDisable(GL_BLEND);
 			
 			[curView applyImageTransformation];
