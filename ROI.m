@@ -3893,9 +3893,16 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
             if( mode == ROI_sleep) glColor4f(0.0f, 0.0f, 0.0f, 0.4f);
 			else glColor4f(0.3f, 0.0f, 0.0f, 0.8f);
             
+            glBegin(GL_POLYGON);
+            glVertex2f(  drawRect.origin.x, drawRect.origin.y-1);
+            glVertex2f(  drawRect.origin.x, drawRect.origin.y+drawRect.size.height);
+            glVertex2f(  drawRect.origin.x+drawRect.size.width, drawRect.origin.y+drawRect.size.height);
+            glVertex2f(  drawRect.origin.x+drawRect.size.width, drawRect.origin.y-1);
+            glEnd();
+            
 //            glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
 //			glEnable(GL_POLYGON_SMOOTH);
-			gl_round_box(GL_POLYGON, drawRect.origin.x, drawRect.origin.y-1, drawRect.origin.x+drawRect.size.width, drawRect.origin.y+drawRect.size.height, fontHeight*sf/5., sf);
+//			gl_round_box(GL_POLYGON, drawRect.origin.x, drawRect.origin.y-1, drawRect.origin.x+drawRect.size.width, drawRect.origin.y+drawRect.size.height, fontHeight*sf/5., sf);
 //			glDisable(GL_POLYGON_SMOOTH);
             
 			NSPoint tPt = NSMakePoint( drawRect.origin.x + 4*sf, drawRect.origin.y + (fontHeight*sf + 2*sf));
