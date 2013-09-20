@@ -1100,8 +1100,13 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 
 -(void)processStudyHtml
 {
-	DicomStudy* study = [self objectWithXID:[parameters objectForKey:@"xid"]];
+    [self processStudyHtml: [parameters objectForKey:@"xid"]];
+}
 	
+-(void)processStudyHtml: (NSString*) xid
+{
+    DicomStudy* study = [self objectWithXID: xid];
+    
 	if (!study)
 		return;
 	

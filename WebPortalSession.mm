@@ -18,6 +18,11 @@
 
 
 NSString* const SessionCookieName = @"OSID";
+NSString* const SessionUserIDKey = @"UserID"; // NSManagedObjectID
+NSString* const SessionUsernameKey = @"Username"; // NSString
+NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
+NSString* const SessionChallengeKey = @"Challenge"; // NSString
+NSString* const SessionLastActivityDateKey = @"LastActivityDate"; // NSDate
 
 @implementation WebPortalSession
 
@@ -38,11 +43,6 @@ NSString* const SessionCookieName = @"OSID";
 	[super dealloc];
 }
 
-NSString* const SessionUserIDKey = @"UserID"; // NSManagedObjectID
-NSString* const SessionUsernameKey = @"Username"; // NSString
-NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
-NSString* const SessionChallengeKey = @"Challenge"; // NSString
-NSString* const SessionLastActivityDateKey = @"LastActivityDate"; // NSDate
 
 -(void)setObject:(id)o forKey:(NSString*)k {
 	[dictLock lock];

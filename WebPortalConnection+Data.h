@@ -14,6 +14,8 @@
 
 #import "WebPortalConnection.h"
 
+@class DicomStudy;
+
 @interface WebPortalConnection (Data)
 
 +(NSArray*)MakeArray:(id)obj;
@@ -29,6 +31,7 @@
 -(void)processKeyROIsImagesHtml;
 -(void)processSeriesHtml;
 -(void)processStudyHtml;
+-(void)processStudyHtml: (NSString*) xid;
 -(void)processPasswordForgottenHtml;
 -(void)processAccountHtml;
 
