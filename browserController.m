@@ -7066,8 +7066,14 @@ static NSConditionLock *threadLock = nil;
 		
 		if( windowsStateApplied == NO)
 		{
+            BOOL restoreNOAutotiling = NO;
+            int WINDOWSIZEVIEWERCopy = 0;
             if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"] != YES)
+            {
+                restoreNOAutotiling = YES;
+                WINDOWSIZEVIEWERCopy = [[NSUserDefaults standardUserDefaults] integerForKey: @"WINDOWSIZEVIEWER"];
                 [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"AUTOTILING"];
+            }
             
 			[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality:[currentStudy valueForKey:@"modality"] description:[currentStudy valueForKey:@"studyName"]];
 			
@@ -7304,6 +7310,12 @@ static NSConditionLock *threadLock = nil;
                         [v.imageView setWLWW: [[p valueForKey: @"WL"] floatValue] :[[p valueForKey: @"WW"] floatValue]];
                     }
                 }
+            }
+            
+            if( restoreNOAutotiling)
+            {
+                [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"AUTOTILING"];
+                [[NSUserDefaults standardUserDefaults] setInteger: WINDOWSIZEVIEWERCopy forKey: @"WINDOWSIZEVIEWER"];
             }
 		}
 	}
