@@ -509,32 +509,36 @@
 		document->setStudyDescription([[study valueForKey:@"studyName"] UTF8String]);
 	
     // We want the original patient's name
-    BOOL originalPatientsName = NO;
-    
-    if( [[image completePath] length])
+    if( [[NSFileManager defaultManager] fileExistsAtPath: image.completePath])
     {
         DcmFileFormat fileformat;
-        OFCondition status  = fileformat.loadFile([[image completePath] UTF8String]);
+        OFCondition status  = fileformat.loadFile( image.completePath.fileSystemRepresentation);
         if (status.good())
         {
             const char *string = nil;
-            if (fileformat.getDataset()->findAndGetString(DCM_SpecificCharacterSet, string, OFFalse).good() && string != NULL)
+            if (fileformat.getDataset()->findAndGetString( DCM_SpecificCharacterSet, string, OFFalse).good() && string != NULL)
                 document->setSpecificCharacterSet( string);
             
             string = nil;
             status = fileformat.getDataset()->findAndGetString( DCM_PatientsName, string, OFFalse);
             if (status.good() && string)
-            {
-                document->setPatientsName( string); //We have to convert it to UTF-8
-                originalPatientsName = YES;
-            }
+                document->setPatientsName( string);
+            
+            string = nil;
+            status = fileformat.getDataset()->findAndGetString( DCM_ReferringPhysiciansName, string, OFFalse);
+            if (status.good() && string)
+                document->setReferringPhysiciansName( string);
         }
     }
-    
-	if (originalPatientsName == NO && [study valueForKey:@"name"])
+    else
     {
         document->setSpecificCharacterSet( "ISO_IR 192"); // UTF-8
-		document->setPatientsName([[study valueForKey:@"name"] UTF8String]);
+        
+        if( [study valueForKey:@"name"])
+            document->setPatientsName([[study valueForKey:@"name"] UTF8String]);
+        
+        if ([study valueForKey:@"referringPhysician"])
+            document->setReferringPhysiciansName([[study valueForKey:@"referringPhysician"] UTF8String]);
     }
     
 	if ([study valueForKey:@"dateOfBirth"])
@@ -547,9 +551,6 @@
 	
 	if (patientID)
 		document->setPatientID([patientID UTF8String]);
-	
-	if ([study valueForKey:@"referringPhysician"])
-		document->setReferringPhysiciansName([[study valueForKey:@"referringPhysician"] UTF8String]);
 	
 	if ([study valueForKey:@"id"])
 	{
