@@ -680,7 +680,19 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 	return session;    
 }
 
--(id)newSession {
+-(WebPortalSession*)addSession:(NSString*) sid
+{
+    WebPortalSession* session = [[[WebPortalSession alloc] initWithId:sid] autorelease];
+    
+	[sessionsArrayLock lock];
+	[sessions addObject:session];
+	[sessionsArrayLock unlock];
+    
+    return session;
+}
+
+-(id)newSession
+{
 	[sessionCreateLock lock];
 	
 	NSString* sid;
@@ -689,13 +701,10 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 		sidd = random();
 	} while ([self sessionForId: sid = [[[NSData dataWithBytes:&sidd length:sizeof(long)] md5Digest] hex]]);
 	
-	WebPortalSession* session = [[WebPortalSession alloc] initWithId:sid];
-	[sessionsArrayLock lock];
-	[sessions addObject:session];
-	[sessionsArrayLock unlock];
-	[session release];
-	
+    WebPortalSession* session = [self addSession: sid];
+    
 	[sessionCreateLock unlock];
+    
 	return session;
 }
 

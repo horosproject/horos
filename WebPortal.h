@@ -95,6 +95,7 @@
 -(NSString*)stringForPath:(NSString*)file;
 
 -(WebPortalSession*)newSession;
+-(WebPortalSession*)addSession:(NSString*) sid;
 -(WebPortalSession*)sessionForId:(NSString*)sid;
 -(WebPortalSession*)sessionForUsername:(NSString*)username token:(NSString*)token;
 -(id)sessionForUsername:(NSString*)username token:(NSString*)token doConsume: (BOOL) doConsume;

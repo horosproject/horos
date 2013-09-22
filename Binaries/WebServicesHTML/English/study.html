@@ -1,6 +1,8 @@
 %INCLUDE:header.pvt.html%
 <div id="subheader">
+    %[IF:!Session.dontDisplayBack%
 	<a class="back" href="%X:backLink%?%Info.getParameters(xid=)%">%X:ZWS:BackLinkLabel%</a>
+    %]IF:!Session.dontDisplayBack%
 </div>
 
 <script type="text/javascript" language="javascript">

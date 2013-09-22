@@ -44,7 +44,7 @@
 -(CFHTTPMessageRef)request;
 
 @property(retain,readonly) WebPortalResponse* response;
-@property(retain,readonly, nonatomic) WebPortalSession* session;
+@property(retain, nonatomic) WebPortalSession* session;
 @property(retain) WebPortalUser* user;
 @property(retain) NSDictionary* parameters;
 @property(retain) NSString* GETParams;

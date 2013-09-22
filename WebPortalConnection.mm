@@ -85,7 +85,6 @@ static NSString* NotNil(NSString *s) {
 @interface WebPortalConnection ()
 
 @property(retain,readwrite) WebPortalResponse* response;
-@property(retain,readwrite,nonatomic) WebPortalSession* session;
 
 @end
 
@@ -575,9 +574,9 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
             }
             else
             {
-				response.data = [self.portal dataForPath:requestedPath];
+				NSData *data = response.data = [self.portal dataForPath:requestedPath];
                 
-                if( response.data.length == 0) // Maybe a plugin has an answer ?
+                if( data.length == 0) // Maybe a plugin has an answer ?
                 {
                     for (id key in [PluginManager plugins])
                     {
@@ -1001,13 +1000,14 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	
 	
 	NSArray* cookies = [[(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"Cookie") autorelease] componentsSeparatedByString:@"; "];
-//NSLog(@"\tCookies: %@", cookies);
 	for (NSString* cookie in cookies) {
 		// cookie = [cookie stringByTrimmingStartAndEnd];
 		NSArray* cookieBits = [cookie componentsSeparatedByString:@"="];
-		if (cookieBits.count == 2 && [[cookieBits objectAtIndex:0] isEqualToString:SessionCookieName]) {
+		if (cookieBits.count == 2 && [[cookieBits objectAtIndex:0] isEqualToString:SessionCookieName])
+        {
 			WebPortalSession* temp = [self.portal sessionForId:[cookieBits objectAtIndex:1]];
-			if (temp) self.session = temp;
+			if (temp)
+                self.session = temp;
 		}
 	}
 	
@@ -1029,6 +1029,13 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
                 else
                     self.session = [self.portal sessionForUsername:username token:token];
             }
+            else if( token)
+            {
+                WebPortalSession* temp = [self.portal sessionForId: [token uppercaseString]];
+                if (temp)
+                    self.session = temp;
+            }
+            
 //            else if( username && sha1 && token == nil) //username and password in http request : major security breach... no way to tell the web browser to not store the URL in the history -- http://stackoverflow.com/questions/3178715/
 //            {
 //                if (username.length && sha1.length)
@@ -1166,8 +1173,10 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	
 	[response.tokens setObject: webPortalDefaultTitle forKey:@"PageTitle"]; // the default title
 	[response.tokens setObject:[WebPortalProxy createWithObject:self transformer:[InfoTransformer create]] forKey:@"Info"];
-	if (user) [response.tokens setObject:[WebPortalProxy createWithObject:user transformer:[WebPortalUserTransformer create]] forKey:@"User"];	
-	if (session) [response.tokens setObject:session forKey:@"Session"];
+	if (user)
+        [response.tokens setObject:[WebPortalProxy createWithObject:user transformer:[WebPortalUserTransformer create]] forKey:@"User"];
+	if (session)
+        [response.tokens setObject:session forKey:@"Session"];
 	[response.tokens setObject:NSUserDefaults.standardUserDefaults forKey:@"Defaults"];
 	
 	[super replyToHTTPRequest];

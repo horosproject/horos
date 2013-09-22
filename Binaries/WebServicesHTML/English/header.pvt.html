@@ -14,8 +14,10 @@
 </head>
 <body>
 	<div id="header" class="compressed">
+        %[IF:!Session.dontDisplayUser%
 		%[IF:User%
 		<div id="userbox"><form method="POST" action="/"><div><span class="text">Logged in as <a href="/account">%X:User.name%</a></span><button type="submit" name="logout" value="logout">Logout</button></div></form></div>
-		%]IF:User%
+        %]IF:User%
+        %]IF:!Session.dontDisplayUser%
 		%X:ZWS:PageTitle%
 	</div>

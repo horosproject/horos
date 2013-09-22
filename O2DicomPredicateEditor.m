@@ -8,7 +8,7 @@
 
 #import "O2DicomPredicateEditor.h"
 #import "O2DicomPredicateEditorView.h"
-
+#import "N2Debug.h"
 
 @interface O2DicomPredicateEditorRowTemplate : NSPredicateEditorRowTemplate {
     O2DicomPredicateEditorView* _view;
@@ -155,8 +155,8 @@
     _setting = YES;
     @try {
         [super setObjectValue:value];
-    } @catch (...) {
-        @throw;
+    } @catch ( NSException *e) {
+        N2LogException( e);
     } @finally {
         _setting = NO;
     }
