@@ -4035,7 +4035,7 @@ static BOOL initialized = NO;
 		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"EncryptCD"];
 		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"encryptForExport"];
 		
-		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideNoMountainLionWarning"] == NO)
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideNoMountainLionWarning2"] == NO)
 		{
 			NSAlert* alert = [[NSAlert new] autorelease];
 			[alert setMessageText: NSLocalizedString( @"Mac OS Version", nil)];
@@ -4047,7 +4047,7 @@ static BOOL initialized = NO;
                 [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://itunes.apple.com/us/app/os-x-mountain-lion/id537386512?mt=12"]];
             
 			if ([[alert suppressionButton] state] == NSOnState)
-				[[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"hideNoMountainLionWarning"];
+				[[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"hideNoMountainLionWarning2"];
 		}
 	}
 	
