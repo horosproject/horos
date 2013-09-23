@@ -394,9 +394,12 @@ static NSRecursiveLock *dbModifyLock = nil;
             if( [rootDict valueForKey: @"comment3"]) {[self willChangeValueForKey: @"comment3"];[self setPrimitiveValue: [rootDict valueForKey: @"comment3"] forKey: @"comment3"]; [self didChangeValueForKey: @"comment3"];}
             if( [rootDict valueForKey: @"comment4"]) {[self willChangeValueForKey: @"comment4"];[self setPrimitiveValue: [rootDict valueForKey: @"comment4"] forKey: @"comment4"]; [self didChangeValueForKey: @"comment4"];}
 			
-            [self willChangeValueForKey: @"stateText"];
-			[self setPrimitiveValue: [rootDict valueForKey: @"stateText"] forKey: @"stateText"];
-			[self didChangeValueForKey: @"stateText"];
+            if( [rootDict valueForKey: @"stateText"])
+            {
+                [self willChangeValueForKey: @"stateText"];
+                [self setPrimitiveValue: [rootDict valueForKey: @"stateText"] forKey: @"stateText"];
+                [self didChangeValueForKey: @"stateText"];
+            }
             
             NSFetchRequest *req = [NSFetchRequest fetchRequestWithEntityName: @"Album"];
             req.predicate = [NSPredicate predicateWithValue: YES];
@@ -436,14 +439,18 @@ static NSRecursiveLock *dbModifyLock = nil;
 					{
 						DicomSeries *s = [seriesArray objectAtIndex: index];
 						
-						if( [series valueForKey:@"comment"]) [s setValue: [series valueForKey:@"comment"] forKey: @"comment"];
-						if( [series valueForKey:@"comment2"]) [s setValue: [series valueForKey:@"comment2"] forKey: @"comment2"];
-						if( [series valueForKey:@"comment3"]) [s setValue: [series valueForKey:@"comment3"] forKey: @"comment3"];
-						if( [series valueForKey:@"comment4"]) [s setValue: [series valueForKey:@"comment4"] forKey: @"comment4"];
+						if( [series valueForKey:@"comment"]) {[s willChangeValueForKey: @"comment"];[s setPrimitiveValue: [series valueForKey: @"comment"] forKey: @"comment"]; [s didChangeValueForKey: @"comment"];}
+						if( [series valueForKey:@"comment2"]) {[s willChangeValueForKey: @"comment2"];[s setPrimitiveValue: [series valueForKey: @"comment2"] forKey: @"comment2"]; [s didChangeValueForKey: @"comment2"];};
+						if( [series valueForKey:@"comment3"]) {[s willChangeValueForKey: @"comment3"];[s setPrimitiveValue: [series valueForKey: @"comment3"] forKey: @"comment3"]; [s didChangeValueForKey: @"comment3"];};
+						if( [series valueForKey:@"comment4"]) {[s willChangeValueForKey: @"comment4"];[s setPrimitiveValue: [series valueForKey: @"comment4"] forKey: @"comment4"]; [s didChangeValueForKey: @"comment4"];};
 						
 						if( [series valueForKey:@"stateText"])
-							[s setValue: [series valueForKey:@"stateText"] forKey: @"stateText"];
-						
+                        {
+                            [s willChangeValueForKey: @"stateText"];
+							[s setPrimitiveValue: [series valueForKey:@"stateText"] forKey: @"stateText"];
+                            [s didChangeValueForKey: @"stateText"];
+						}
+                        
 						for( NSDictionary *image in [series valueForKey: @"images"])
 						{
 							if( allImages == nil)
@@ -465,7 +472,11 @@ static NSRecursiveLock *dbModifyLock = nil;
 								DicomImage *i = [found lastObject];
 								
 								if( [image valueForKey:@"isKeyImage"])
-									[i setValue: [image valueForKey:@"isKeyImage"] forKey: @"isKeyImage"];
+                                {
+                                    [i willChangeValueForKey: @"isKeyImage"];
+									[i setPrimitiveValue: [image valueForKey:@"isKeyImage"] forKey: @"isKeyImage"];
+                                    [i didChangeValueForKey: @"isKeyImage"];
+                                }
 							}
 //							else NSLog( @"----- applyAnnotationsFromDictionary : image not found : %@", [image valueForKey: @"sopInstanceUID"]);
 						}
