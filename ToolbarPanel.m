@@ -314,11 +314,8 @@ static int increment = 0;
 	if( associatedScreen == nil) associatedScreen = [[NSMutableDictionary alloc] init];
 	
 	if( tb == nil)
-		tb = nil;   //emptyToolbar;
+		tb = emptyToolbar;
     
-    if( toolbar == nil && tb == nil)
-        return;
-	
 	if( tb == toolbar)
 	{
         NSDisableScreenUpdates();
@@ -390,10 +387,12 @@ static int increment = 0;
         }
 	}
 	else
+    {
         if( self.window.isVisible)
             [self.window orderOut: self];
-	
-	if( toolbar)
+	}
+    
+	if( toolbar && toolbar != emptyToolbar)
 	{
 		[self applicationDidChangeScreenParameters:nil];
 		

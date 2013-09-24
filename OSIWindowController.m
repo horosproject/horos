@@ -457,12 +457,12 @@ static BOOL protectedReentryWindowDidResize = NO;
 							
 							dontEnterMagneticFunctions = NO;
 							
-                            [theWindow.windowController windowDidChangeScreen:nil];
+                            if( [self isKindOfClass: [ViewerController class]])
+                                [theWindow.windowController windowDidChangeScreen:nil];
                             
 		//					[window makeKeyAndOrderFront: self];
 		//					[theWindow makeKeyAndOrderFront: self];
-		//					[self refreshToolbar];
-							
+                            
 							return;
 						}
 					}
