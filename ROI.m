@@ -3950,7 +3950,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	maxWidth = [self maxStringWidth:textualBoxLine5 max: maxWidth];	if( textualBoxLine5.length) line++;
 	maxWidth = [self maxStringWidth:textualBoxLine6 max: maxWidth];	if( textualBoxLine6.length) line++;
 	
-	drawRect.size.height = line * fontHeight*curView.window.backingScaleFactor + 4;
+	drawRect.size.height = line * fontHeight*curView.window.backingScaleFactor + 2;
 	drawRect.size.width = maxWidth + 8;
 	
 	if( type == tDynAngle || type == tAxis || type == tCPolygon || type == tOPolygon || type == tPencil)
