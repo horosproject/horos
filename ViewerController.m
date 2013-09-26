@@ -4148,7 +4148,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
     [seriesPopupContextualMenu setSubmenu: [[seriesPopupMenu.menu copy] autorelease]];
     [seriesPopupContextualMenu setImage: seriesPopupMenu.selectedItem.image];
-    [seriesPopupContextualMenu setTitle: self.currentSeries.name];
+    [seriesPopupContextualMenu setTitle: (self.currentSeries.name ? self.currentSeries.name : NSLocalizedString( @"Unnamed", nil))];
     
     for( DCMView *v in self.imageViews)
         [v computeColor];
@@ -4680,7 +4680,7 @@ static volatile int numberOfThreadsForRelisce = 0;
     NSImage	*img = [[[NSImage alloc] initWithData: [self.currentSeries primitiveValueForKey:@"thumbnail"]] autorelease];
     [menuItem setImage: [img imageByScalingProportionallyToSizeUsingNSImage: NSMakeSize( SERIESPOPUPSIZE, SERIESPOPUPSIZE)]];
     [seriesPopupMenu.menu addItem: menuItem];
-    [seriesPopupContextualMenu setTitle: self.currentSeries.name];
+    [seriesPopupContextualMenu setTitle: (self.currentSeries.name ? self.currentSeries.name : NSLocalizedString( @"Unnamed", nil))];
     
     if( [self matrixIsVisible] == NO)
         return;

@@ -362,6 +362,9 @@ static NSMutableArray *cachedServersArray = nil;
 							{
 								NSString *icon = [[[NSString alloc] initWithData: [dict valueForKey: @"icon"] encoding:NSUTF8StringEncoding] autorelease];
 								[s setObject: icon forKey: @"icon"];
+                                
+//                                if( [icon isEqualToString: @"iPad"] || [icon isEqualToString: @"iPhone"])
+//                                    [s setObject: @1 forKey: @"SendControllerConcurrentThreads"];
 							}
 							
                             [s setObject: @1 forKey: @"Activated"];
