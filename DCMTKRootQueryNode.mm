@@ -57,6 +57,9 @@
     dataset-> insertEmptyElement(DCM_ReferringPhysiciansName, OFTrue);
     dataset-> insertEmptyElement(DCM_PerformingPhysiciansName, OFTrue);
     
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CFINDBodyPartExaminedSupport"])
+        dataset-> insertEmptyElement(DCM_BodyPartExamined, OFTrue);
+    
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CFINDCommentsAndStatusSupport"])
     {
         dataset-> insertEmptyElement(DCM_StudyComments, OFTrue);

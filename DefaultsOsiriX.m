@@ -984,6 +984,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"0" forKey: @"anonymizedBeforeBurning"];
 	[defaultValues setObject:@"0" forKey: @"ZoomWithHorizonScroll"];
 	[defaultValues setObject:@"1" forKey: @"dcmExportFormat"];
+    [defaultValues setObject:@"0" forKey: @"CFINDBodyPartExaminedSupport"];
 	[defaultValues setObject:@"2" forKey: @"preferredSyntaxForIncoming"]; // 2 = EXS_LittleEndianExplicit See dcmqrsrv.mm
 	[defaultValues setObject:@"ISO_IR 100" forKey: @"STRINGENCODING"];
 	[defaultValues setObject:@"1" forKey:@"syncPreviewList"];

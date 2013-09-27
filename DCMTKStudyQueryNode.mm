@@ -193,6 +193,9 @@
 	dataset-> putAndInsertString(DCM_StudyInstanceUID, [_uid UTF8String], OFTrue);
 	dataset-> putAndInsertString(DCM_QueryRetrieveLevel, "SERIES", OFTrue);
 	
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CFINDBodyPartExaminedSupport"])
+        dataset-> insertEmptyElement(DCM_BodyPartExamined, OFTrue);
+    
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CFINDCommentsAndStatusSupport"])
     {
         dataset-> insertEmptyElement(DCM_StudyComments, OFTrue);
