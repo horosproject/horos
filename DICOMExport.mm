@@ -817,7 +817,8 @@ static float deg2rad = M_PI / 180.0f;
 					dataset->putAndInsertString( DCM_BitsStored, [[NSString stringWithFormat: @"%d", bitsAllocated] UTF8String]);
 					
 					delete dataset->remove( DCM_ImagerPixelSpacing);
-					
+					delete dataset->remove( DCM_EstimatedRadiographicMagnificationFactor);
+                    
 					if( spacingX != 0 && spacingY != 0)
 						dataset->putAndInsertString( DCM_PixelSpacing, [[NSString stringWithFormat: @"%f\\%f", spacingY, spacingX] UTF8String]);
 					
