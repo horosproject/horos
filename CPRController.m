@@ -1170,8 +1170,11 @@ static float deg2rad = M_PI / 180.0;
 
 - (IBAction) roiGetInfo:(id) sender
 {
-	CPRMPRDCMView *s = [[self selectedViewOnlyMPRView : NO] reformationView];
-	
+    DCMView *s = [self selectedViewOnlyMPRView : NO];
+    
+    if( [s isKindOfClass: [CPRView class]])
+        s = [(CPRView*)s reformationView];
+    
     @try
     {
         for( ROI *r in [s curRoiList])
@@ -1263,7 +1266,10 @@ static float deg2rad = M_PI / 180.0;
 {
 	[self addToUndoQueue: @"roi"];
 	
-	CPRMPRDCMView *s = [[self selectedViewOnlyMPRView: NO] reformationView];
+	DCMView *s = [self selectedViewOnlyMPRView : NO];
+    
+    if( [s isKindOfClass: [CPRView class]])
+         s = [(CPRView*)s reformationView];
 	
 	[s stopROIEditingForce: YES];
 	
