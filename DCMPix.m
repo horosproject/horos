@@ -5039,7 +5039,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                         
                         roi.name = roiName;
                         roi.rgbcolor = color;
-                        roi.points = pointsArray;
+                        
+                        if( type == t2DPoint)
+                            roi.ROIRect = NSMakeRect( [pointsArray.lastObject x], [pointsArray.lastObject y], 1, 1);
+                        else
+                            roi.points = pointsArray;
                         roi.opacity = 1.0;
                         roi.thickness = 1.0;
                         roi.isSpline = NO;

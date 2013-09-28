@@ -327,6 +327,11 @@
                             <menuItem title="Rebuild Entire Database..." id="1112">
                                 <connections>
                                     <action selector="ReBuildDatabaseSheet:" target="898" id="12510"/>
+                                    <binding destination="898" name="enabled" keyPath="database.isReadOnly" id="14405">
+                                        <dictionary key="options">
+                                            <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                        </dictionary>
+                                    </binding>
                                     <binding destination="898" name="enabled2" keyPath="database.rebuildAllowed" previousBinding="14405" id="14409">
                                         <dictionary key="options">
                                             <integer key="NSNotApplicablePlaceholder" value="-1"/>
@@ -335,27 +340,22 @@
                                             <integer key="NSNullPlaceholder" value="-1"/>
                                         </dictionary>
                                     </binding>
-                                    <binding destination="898" name="enabled" keyPath="database.isReadOnly" id="14405">
-                                        <dictionary key="options">
-                                            <string key="NSValueTransformerName">NSNegateBoolean</string>
-                                        </dictionary>
-                                    </binding>
                                 </connections>
                             </menuItem>
                             <menuItem title="Rebuild SQL Index File..." id="13527">
                                 <connections>
                                     <action selector="rebuildSQLFile:" target="-1" id="13529"/>
+                                    <binding destination="898" name="enabled" keyPath="database.isReadOnly" id="14414">
+                                        <dictionary key="options">
+                                            <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                        </dictionary>
+                                    </binding>
                                     <binding destination="898" name="enabled2" keyPath="database.rebuildAllowed" previousBinding="14414" id="14417">
                                         <dictionary key="options">
                                             <integer key="NSNotApplicablePlaceholder" value="-1"/>
                                             <integer key="NSNoSelectionPlaceholder" value="-1"/>
                                             <integer key="NSMultipleValuesPlaceholder" value="-1"/>
                                             <integer key="NSNullPlaceholder" value="-1"/>
-                                        </dictionary>
-                                    </binding>
-                                    <binding destination="898" name="enabled" keyPath="database.isReadOnly" id="14414">
-                                        <dictionary key="options">
-                                            <string key="NSValueTransformerName">NSNegateBoolean</string>
                                         </dictionary>
                                     </binding>
                                 </connections>
@@ -2602,7 +2602,7 @@ CA
                                                             <autoresizingMask key="autoresizingMask"/>
                                                         </scroller>
                                                         <scroller key="verticalScroller" verticalHuggingPriority="750" id="13467">
-                                                            <rect key="frame" x="415" y="17" width="16" height="234"/>
+                                                            <rect key="frame" x="416" y="17" width="15" height="234"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                         </scroller>
                                                         <tableHeaderView key="headerView" id="13469">
@@ -3309,12 +3309,12 @@ Gw
                 <popUpButton verticalHuggingPriority="750" id="14782">
                     <rect key="frame" x="0.0" y="2" width="106" height="22"/>
                     <autoresizingMask key="autoresizingMask"/>
-                    <popUpButtonCell key="cell" type="push" title="All modalities" bezelStyle="rounded" alignment="center" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" id="14783">
+                    <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="center" controlSize="small" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" id="14783">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="smallSystem"/>
                         <menu key="menu" title="ModalitiesFilter" id="14784">
                             <items>
-                                <menuItem title="All modalities" state="on" id="14785"/>
+                                <menuItem title="All modalities" id="14785"/>
                                 <menuItem isSeparatorItem="YES" id="14809"/>
                                 <menuItem title="CR" tag="1" id="14808"/>
                                 <menuItem title="SC" tag="2" id="14792"/>
@@ -3351,12 +3351,12 @@ Gw
                 <popUpButton verticalHuggingPriority="750" id="11619">
                     <rect key="frame" x="0.0" y="2" width="106" height="22"/>
                     <autoresizingMask key="autoresizingMask"/>
-                    <popUpButtonCell key="cell" type="push" title="None" bezelStyle="rounded" alignment="center" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" id="13363">
+                    <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="center" controlSize="small" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" id="13363">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="smallSystem"/>
                         <menu key="menu" title="OtherViews" id="11620">
                             <items>
-                                <menuItem title="None" state="on" id="11621"/>
+                                <menuItem title="None" id="11621"/>
                                 <menuItem title="1 hour" tag="1" id="11622"/>
                                 <menuItem title="6 hours" tag="2" id="11629"/>
                                 <menuItem title="12 hours" tag="3" id="11630"/>
@@ -3645,6 +3645,8 @@ Gw
                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                     <connections>
+                        <binding destination="898" name="value" keyPath="passwordForExportEncryption" id="13839"/>
+                        <binding destination="12279" name="enabled" keyPath="values.encryptForExport" id="13840"/>
                         <binding destination="12279" name="enabled2" keyPath="values.hasMacOSXSnowLeopard" previousBinding="13840" id="13842">
                             <dictionary key="options">
                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
@@ -3653,8 +3655,6 @@ Gw
                                 <integer key="NSNullPlaceholder" value="-1"/>
                             </dictionary>
                         </binding>
-                        <binding destination="12279" name="enabled" keyPath="values.encryptForExport" id="13840"/>
-                        <binding destination="898" name="value" keyPath="passwordForExportEncryption" id="13839"/>
                     </connections>
                 </textField>
             </subviews>
@@ -3781,8 +3781,8 @@ update to OsiriX 64-bit:</string>
                             <font key="font" size="12" name="Helvetica"/>
                         </sliderCell>
                         <connections>
-                            <binding destination="12768" name="maxValue" keyPath="selection.subMax" id="14628"/>
                             <binding destination="12768" name="value" keyPath="selection.subFrom" previousBinding="14628" id="14629"/>
+                            <binding destination="12768" name="maxValue" keyPath="selection.subMax" id="14628"/>
                         </connections>
                     </slider>
                     <textField verticalHuggingPriority="750" id="14476">
@@ -3934,7 +3934,7 @@ update to OsiriX 64-bit:</string>
                     <autoresizingMask key="autoresizingMask"/>
                     <popUpButtonCell key="cell" type="square" bezelStyle="shadowlessSquare" imagePosition="only" alignment="left" borderStyle="bezel" inset="2" pullsDown="YES" preferredEdge="maxY" selectedItem="12683" id="13425">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="system"/>
+                        <font key="font" metaFont="menu"/>
                         <menu key="menu" title="OtherViews" id="12682">
                             <items>
                                 <menuItem hidden="YES" id="12683"/>
@@ -4346,12 +4346,12 @@ Gw
                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                     <connections>
-                                        <binding destination="13871" name="displayPatternValue1" keyPath="selection.@count" id="13876">
+                                        <binding destination="13871" name="displayPatternValue2" keyPath="arrangedObjects.@count" previousBinding="13876" id="13877">
                                             <dictionary key="options">
                                                 <string key="NSDisplayPattern">%{value1}@ out of %{value2}@</string>
                                             </dictionary>
                                         </binding>
-                                        <binding destination="13871" name="displayPatternValue2" keyPath="arrangedObjects.@count" previousBinding="13876" id="13877">
+                                        <binding destination="13871" name="displayPatternValue1" keyPath="selection.@count" id="13876">
                                             <dictionary key="options">
                                                 <string key="NSDisplayPattern">%{value1}@ out of %{value2}@</string>
                                             </dictionary>
@@ -4464,6 +4464,12 @@ Gw
                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     </searchFieldCell>
                                     <connections>
+                                        <binding destination="13871" name="predicate" keyPath="filterPredicate" id="13897">
+                                            <dictionary key="options">
+                                                <string key="NSDisplayName">All</string>
+                                                <string key="NSPredicateFormat">(phone contains[c] $value) or (address contains[c] $value) or (email contains[c] $value) or (name contains[c] $value)</string>
+                                            </dictionary>
+                                        </binding>
                                         <binding destination="13871" name="predicate2" keyPath="filterPredicate" previousBinding="13897" id="13898">
                                             <dictionary key="options">
                                                 <string key="NSDisplayName">Phone</string>
@@ -4486,12 +4492,6 @@ Gw
                                             <dictionary key="options">
                                                 <string key="NSDisplayName">Name</string>
                                                 <string key="NSPredicateFormat">name contains[c] $value</string>
-                                            </dictionary>
-                                        </binding>
-                                        <binding destination="13871" name="predicate" keyPath="filterPredicate" id="13897">
-                                            <dictionary key="options">
-                                                <string key="NSDisplayName">All</string>
-                                                <string key="NSPredicateFormat">(phone contains[c] $value) or (address contains[c] $value) or (email contains[c] $value) or (name contains[c] $value)</string>
                                             </dictionary>
                                         </binding>
                                     </connections>
@@ -4640,12 +4640,12 @@ Gw
                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                     <connections>
-                                        <binding destination="13871" name="displayPatternValue1" keyPath="selection.@count" id="13965">
+                                        <binding destination="13871" name="displayPatternValue2" keyPath="arrangedObjects.@count" previousBinding="13965" id="13966">
                                             <dictionary key="options">
                                                 <string key="NSDisplayPattern">%{value1}@ out of %{value2}@</string>
                                             </dictionary>
                                         </binding>
-                                        <binding destination="13871" name="displayPatternValue2" keyPath="arrangedObjects.@count" previousBinding="13965" id="13966">
+                                        <binding destination="13871" name="displayPatternValue1" keyPath="selection.@count" id="13965">
                                             <dictionary key="options">
                                                 <string key="NSDisplayPattern">%{value1}@ out of %{value2}@</string>
                                             </dictionary>
@@ -4758,6 +4758,12 @@ Gw
                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     </searchFieldCell>
                                     <connections>
+                                        <binding destination="13871" name="predicate" keyPath="filterPredicate" id="13968">
+                                            <dictionary key="options">
+                                                <string key="NSDisplayName">All</string>
+                                                <string key="NSPredicateFormat">(phone contains[c] $value) or (address contains[c] $value) or (email contains[c] $value) or (name contains[c] $value)</string>
+                                            </dictionary>
+                                        </binding>
                                         <binding destination="13871" name="predicate2" keyPath="filterPredicate" previousBinding="13968" id="13969">
                                             <dictionary key="options">
                                                 <string key="NSDisplayName">Phone</string>
@@ -4780,12 +4786,6 @@ Gw
                                             <dictionary key="options">
                                                 <string key="NSDisplayName">Name</string>
                                                 <string key="NSPredicateFormat">name contains[c] $value</string>
-                                            </dictionary>
-                                        </binding>
-                                        <binding destination="13871" name="predicate" keyPath="filterPredicate" id="13968">
-                                            <dictionary key="options">
-                                                <string key="NSDisplayName">All</string>
-                                                <string key="NSPredicateFormat">(phone contains[c] $value) or (address contains[c] $value) or (email contains[c] $value) or (name contains[c] $value)</string>
                                             </dictionary>
                                         </binding>
                                     </connections>
