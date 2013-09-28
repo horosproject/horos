@@ -2300,36 +2300,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		ROIorigin->x = minX;
 		ROIorigin->y = minY;
 		
-		map = malloc( size->height * size->width);
-		tempImage = calloc( 1, size->height * size->width * sizeof(float));
+		map = malloc( (5 + size->height) * (5+size->width));
+		tempImage = calloc( 1, (5 + size->height) * (5+size->width) * sizeof(float));
 		
 		// Need to clip?
-//		NSPointInt *pTemp;
-		int yIm, xIm;
-		
-		yIm = size->height;
-		xIm = size->width;
-		
-//		BOOL clip = NO;
-		
-//		for( int i = 0; i < no && clip == NO; i++) {
-//			if( ptsInt[ i].x < 0) clip = YES;
-//			if( ptsInt[ i].y < 0) clip = YES;
-//			if( ptsInt[ i].x >= width) clip = YES;
-//			if( ptsInt[ i].y >= height) clip = YES;
-//		}
-//		
-//		if( clip) {
-//			long newNo;
-//			
-//			pTemp = (NSPointInt*) malloc( sizeof(NSPointInt) * 4 * no);
-//			CLIP_Polygon( ptsInt, no, pTemp, &newNo, width, height);
-//			
-//			free( ptsInt);
-//			ptsInt = pTemp;
-//			
-//			no = newNo;
-//		}
+		int yIm = size->height, xIm = size->width;
 		
 		if( ptsInt != nil && no > 1)
         {
@@ -2339,22 +2314,21 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		}
 		
 		// Convert float to char
-		int i = size->height * size->width;
-		while ( i-- > 0)	{
+		int i = yIm * xIm;
+		while ( i-- > 0)
 			map[ i] = tempImage[ i];
-		}
 		
 		// Keep a free box around the image
-		for ( int i = 0 ; i < (int)size->width; i++)
+		for( int i = 0 ; i < xIm; i++)
 		{
 			map[ i] = 0;
-			map[(int)size->height*((int)size->width-2) +i] = 0;
+			map[ (yIm-1)*xIm +i] = 0;
 		}
 		
-		for ( int i = 0 ; i < (int)size->height; i++)
+		for( int i = 0 ; i < yIm; i++)
 		{
-			map[ i*(int)size->width] = 0;
-			map[ i*(int)size->width + (int)size->width-1] = 0;
+			map[ i*xIm] = 0;
+			map[ i*xIm + xIm-1] = 0;
 		}
 		
 		free( tempImage);
