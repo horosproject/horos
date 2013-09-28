@@ -261,8 +261,9 @@ static NSMutableArray *cachedServersArray = nil;
                         
                         [mdict setObject: [NSNumber numberWithBool: YES] forKey: @"Activated"];
                         
-                        [serversArray replaceObjectAtIndex: [serversArray indexOfObject: d] withObject: mdict];
+                        [serversArray replaceObjectAtIndex: i withObject: mdict];
                         
+                        d = mdict;
                         toBeSaved = YES;
                     }
                     
@@ -279,8 +280,9 @@ static NSMutableArray *cachedServersArray = nil;
 						[mdict removeObjectForKey: @"CMOVE"];
 						[mdict removeObjectForKey: @"WADO"];
 						
-						[serversArray replaceObjectAtIndex: [serversArray indexOfObject: d] withObject: mdict];
+						[serversArray replaceObjectAtIndex: i withObject: mdict];
 						
+                        d = mdict;
 						toBeSaved = YES;
 					}
 				}
