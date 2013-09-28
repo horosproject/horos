@@ -43,7 +43,7 @@ extern NSString* O2AlbumDragType;
 *
 *   This is a large class with a lot of functions.
 *   Along with managing the Browser Window it manages all the view in the browser
-*	and manges the database
+*	and manages the database
 */
 
 @interface BrowserController : NSWindowController
@@ -284,8 +284,6 @@ extern NSString* O2AlbumDragType;
 
 @property(nonatomic, retain) NSString *modalityFilter;
 @property(nonatomic) int timeIntervalType;
-@property BOOL rtstructProgressBar;
-@property float rtstructProgressPercent;
 @property (nonatomic) NSTimeInterval databaseLastModification __deprecated;
 @property(readonly) NSMutableDictionary *databaseIndexDictionary;
 @property(readonly) PluginManagerController *pluginManagerController;

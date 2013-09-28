@@ -460,7 +460,7 @@ static volatile BOOL waitForRunningProcess = NO;
 @synthesize bonjourBrowser, pathToEncryptedFile, comparativeStudies, distantTimeIntervalStart, distantTimeIntervalEnd;
 @synthesize searchString = _searchString, fetchPredicate = _fetchPredicate, distantSearchType, distantSearchString;
 @synthesize filterPredicate = _filterPredicate, filterPredicateDescription = _filterPredicateDescription;
-@synthesize rtstructProgressBar, rtstructProgressPercent, pluginManagerController, modalityFilter;
+@synthesize pluginManagerController, modalityFilter;
 
 + (BOOL) tryLock:(id) c during:(NSTimeInterval) sec
 {
@@ -13016,7 +13016,6 @@ static NSArray*	openSubSeriesArray = nil;
         
 		loadPreviewIndex = 0;
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:OsirixReportModeChangedNotification object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rtstructNotification:) name:OsirixRTStructNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(alternateButtonPressed:) name:OsirixAlternateButtonPressedNotification object:nil];
 	}
 	return self;
@@ -17323,20 +17322,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 }
 #endif
-
-- (void)rtstructNotification: (NSNotification *)note
-{
-    if( [NSThread isMainThread] == NO)
-    {
-        [self performSelectorOnMainThread: @selector( rtstructNotification:)  withObject: note waitUntilDone: NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
-    }
-    else
-    {
-        BOOL visible = [[[note userInfo] objectForKey: @"RTSTRUCTProgressBar"] boolValue];
-        if ( visible) [self setRtstructProgressPercent: [[[note userInfo] objectForKey: @"RTSTRUCTProgressPercent"] floatValue]];
-        [self setRtstructProgressBar: visible];
-    }
-}
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 

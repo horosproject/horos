@@ -623,7 +623,13 @@
 			if( _seriesInstanceUID)
 				status = dataset->putAndInsertString(DCM_SeriesInstanceUID, [_seriesInstanceUID UTF8String], OFTrue);
 				
-			fileformat->saveFile( [path UTF8String], EXS_LittleEndianExplicit);
+			OFCondition cond = fileformat->saveFile( path.fileSystemRepresentation, EXS_LittleEndianExplicit);
+            if( cond.good())
+            {
+                
+            }
+            else
+                NSLog( @"failed to write file : %@ : %s", path, cond.text());
 		}
 	}
 	
