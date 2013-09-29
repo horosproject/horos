@@ -419,6 +419,7 @@ Note setter is different to not break existing usage. :-( */
 - (void) fillROI:(ROI*) roi :(float) newVal :(float) minValue :(float) maxValue :(BOOL) outside;
 
 - (unsigned char*) getMapFromPolygonROI:(ROI*) roi size:(NSSize*) size origin:(NSPoint*) origin; /**< Map from Polygon ROI */
++ (unsigned char*) getMapFromPolygonROI:(ROI*) roi size:(NSSize*) size origin:(NSPoint*) ROIorigin;
 
 /** Is this Point (pt) in this ROI ? */
 - (BOOL) isInROI:(ROI*) roi :(NSPoint) pt;

@@ -15061,7 +15061,7 @@ int i,j,l;
     {
         NSSize s;
         NSPoint o;
-        unsigned char* texture = [[imageView curDCM] getMapFromPolygonROI: selectedROI size: &s origin: &o];
+        unsigned char* texture = [DCMPix getMapFromPolygonROI: selectedROI size: &s origin: &o];
         
         if( texture)
         {

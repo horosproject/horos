@@ -2252,6 +2252,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 }
 
 - (unsigned char*) getMapFromPolygonROI:(ROI*) roi size:(NSSize*) size origin:(NSPoint*) ROIorigin
+{
+    return [DCMPix getMapFromPolygonROI: roi size: size origin: ROIorigin];
+}
+
++ (unsigned char*) getMapFromPolygonROI:(ROI*) roi size:(NSSize*) size origin:(NSPoint*) ROIorigin
 {	
 	unsigned char*	map = nil;
 	float*			tempImage = nil;
@@ -2310,7 +2315,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         {
 			BOOL restore = NO, addition = NO, outside = NO;
 			
-			ras_FillPolygon( ptsInt, no, tempImage, size->width, size->height, [pixArray count], -FLT_MAX, FLT_MAX, outside, 255, addition, NO, NO, nil, nil, nil, nil, nil, 0, 2, 0, restore, nil, nil);
+			ras_FillPolygon( ptsInt, no, tempImage, size->width, size->height, 1, -FLT_MAX, FLT_MAX, outside, 255, addition, NO, NO, nil, nil, nil, nil, nil, 0, 2, 0, restore, nil, nil);
 		}
 		
 		// Convert float to char
@@ -4763,7 +4768,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 - (void)createROIsFromRTSTRUCTThread: (NSDictionary*)dict
 {
-	
 #ifdef OSIRIX_VIEWER
 	
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];  // Cuz this is run as a detached thread.
@@ -4783,8 +4787,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             [NSException raise: @"RTStruct" format: @"ReferencedFrameofReferenceSequence not found"];
         
         NSMutableArray *refSeriesUIDPredicates = [NSMutableArray array];
-        
-//        [[NSNotificationCenter defaultCenter] postNotificationName:OsirixRTStructNotification object:nil userInfo: [NSDictionary dictionaryWithObjectsAndKeys:  [NSNumber numberWithBool: YES], @"RTSTRUCTProgressBar", [NSNumber numberWithFloat: 1.0f], @"RTSTRUCTProgressPercent",  nil]];
         
         [NSThread currentThread].progress = 0;
         
@@ -5022,8 +5024,57 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                         roi.thickness = 1.0;
                         roi.isSpline = NO;
                         
-                        [roiArray[ [imgObjects indexOfObject: img] ] addObject: roi];
+                        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"RSTRUCTConvertToBrush"])
+                        {
+                            ROI *theNewROI = nil;
+                            
+                            if( roi.type == tOval)
+                            {
+                                NSMutableArray *points = roi.points;
+                                if( roi.type == tROI)
+                                    roi.isSpline = NO;
+                                
+                                roi.type = tCPolygon;
+                                roi.points = points;
+                            }
+                            
+                            if( roi.type == tCPolygon || roi.type == tOPolygon || roi.type == tPencil)
+                            {
+                                NSSize s;
+                                NSPoint o;
+                                unsigned char* texture = [DCMPix getMapFromPolygonROI: roi size: &s origin: &o];
+                                
+                                if( texture)
+                                {
+                                    theNewROI = [[ROI alloc]		initWithTexture: texture
+                                                                    textWidth: s.width
+                                                                   textHeight: s.height
+                                                                     textName: roi.name
+                                                                    positionX: o.x
+                                                                    positionY: o.y
+                                                                     spacingX: pixSpacingX
+                                                                     spacingY: pixSpacingY
+                                                                  imageOrigin: NSMakePoint( posX, posY)];
+                                    if( [theNewROI reduceTextureIfPossible] == NO)	// NO means that the ROI is NOT empty
+                                    {
+                                        theNewROI.rgbcolor = roi.rgbcolor;
+                                        theNewROI.opacity = 0.5;
+                                    }
+                                    else
+                                    {
+                                        [theNewROI release];
+                                        theNewROI = nil;
+                                    }
+                                    
+                                    free( texture);
+                                }
+                            }
+                            
+                            if( theNewROI)
+                                roi = [theNewROI autorelease];
+                        }
                         
+                        [roiArray[[imgObjects indexOfObject: img]] addObject: roi];
                     }
                     
                 } // End loop over images in series (looking for containing slices)
