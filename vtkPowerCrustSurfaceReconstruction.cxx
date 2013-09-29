@@ -19,6 +19,7 @@
 #include "vtkPowerCrustSurfaceReconstruction.h"
 #include "vtkObjectFactory.h"
 #include "vtkFloatArray.h"
+#include <exception>
 
 vtkCxxRevisionMacro(vtkPowerCrustSurfaceReconstruction, "$Revision: 1.4 $");
 vtkStandardNewMacro(vtkPowerCrustSurfaceReconstruction);
@@ -34,7 +35,7 @@ vtkPowerCrustSurfaceReconstruction::~vtkPowerCrustSurfaceReconstruction()
     this->medial_surface->Delete();
 }
 
-
+#define DEPTHLIMIT 500
 
 //=================================================================================================
 
@@ -5387,7 +5388,7 @@ neighbor *op_vert(simplex *a, site b) {lookup(a,b,vert,site)}
 void connect(simplex *s) {
     /* make neighbor connections between newly created simplices incident to p */
 
-    if( depthConnect > 200) // protection against infinite recursive loops
+    if( depthConnect > DEPTHLIMIT) // protection against infinite recursive loops
     {
         printf( "depth connect limit reached\r");
         s->visit = pnum;
@@ -11642,9 +11643,12 @@ void vtkPowerCrustSurfaceReconstruction::Execute()
   our_filter=this;
 
   // this function is in hullmain.c
-  adapted_main();
-
-
+    try {
+        adapted_main();
+    } catch (...) {
+        vtkErrorMacro("PowerCrust C++ exception");
+    }
+    
   this->medial_surface->Modified();
 
 }
