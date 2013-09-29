@@ -67,7 +67,7 @@
 #include "vtkVolumeRayCastCompositeFunction.h"
 #include "vtkVolumeRayCastMapper.h"
 #include "vtkVolumeRayCastMIPFunction.h"
-
+#include "vtkCleanPolyData.h"
 #include "vtkTransform.h"
 #include "vtkSphere.h"
 #include "vtkImplicitBoolean.h"

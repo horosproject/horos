@@ -348,11 +348,15 @@
 			vtkDecimatePro *isoDeci = nil;
 			vtkSmoothPolyDataFilter * pSmooth = nil;
 			vtkDataSet*	output = nil;
+            vtkCleanPolyData *cleaner = nil;
 			
 			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"UseDelaunayFor3DRoi"])
 			{
+//                cleaner = vtkCleanPolyData::New();
+//                cleaner->SetInput( profile);
+                
 				delaunayTriangulator = vtkDelaunay3D::New();
-				delaunayTriangulator->SetInput(profile);
+				delaunayTriangulator->SetInput( profile);
 				
 				delaunayTriangulator->SetTolerance( 0.001);
 				delaunayTriangulator->SetAlpha( 20);
@@ -557,8 +561,9 @@
 			
 			if( polyDataNormals) polyDataNormals->Delete();
 			if( delaunayTriangulator) delaunayTriangulator->Delete();
-			if (isoDeci) isoDeci->Delete();
-			if (pSmooth) pSmooth->Delete();
+			if( isoDeci) isoDeci->Delete();
+			if( pSmooth) pSmooth->Delete();
+            if( cleaner) cleaner->Delete();
 
 			vtkTransformTextureCoords *xform = vtkTransformTextureCoords::New();
 				xform->SetInput(tmapper->GetOutput());
