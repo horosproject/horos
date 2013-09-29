@@ -16,9 +16,9 @@
 
 #import <Cocoa/Cocoa.h>
 #import "OSIWindowController.h"
-#import "OsiriX/DCMObject.h"
 
 @class ViewerController;
+@class DCMObject;
 
 /** \brief Window Controller for XML parsing */
 
