@@ -5298,7 +5298,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				   Y: (((originStart.y ) * scaleValue) / startScaleValue) + o.y];
 }
 
-
 // Method for translating the image while dragging
 - (void)mouseDraggedTranslate:(NSEvent *)event
 {
@@ -10173,9 +10172,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		if( force8bits == YES || curDCM.isRGB == YES || blendingView != nil)		// Screen Capture in RGB - 8 bit
 		{
-			NSPoint shiftOrigin;
+			NSPoint shiftOrigin, blendedShiftOrigin;
 			BOOL smartCropped = NO;
 			NSRect smartCroppedRect;
+            NSRect blendedViewRect;
 			
 			if( allowSmartCropping && [[NSUserDefaults standardUserDefaults] boolForKey: @"ScreenCaptureSmartCropping"])
 			{
@@ -10189,6 +10189,42 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					*height = smartCroppedRect.size.height;
 					smartCropped = YES;
 				}
+                
+                if( self.blendingView)
+                {
+                    blendedViewRect = [self.blendingView smartCrop: &blendedShiftOrigin];
+                    NSRect unionRect = NSUnionRect( blendedViewRect, smartCroppedRect);;
+                    
+                    #define NSRectCenterX(r) (r.origin.x+r.size.width/2.)
+                    #define NSRectCenterY(r) (r.origin.y+r.size.height/2.)
+                    
+                    NSPoint oo = NSMakePoint( NSRectCenterX(smartCroppedRect) - NSRectCenterX(unionRect), NSRectCenterY(smartCroppedRect) - NSRectCenterY(unionRect));
+                    
+//                    if( xFlipped) oo.x = -oo.x;
+//                    if( yFlipped) oo.y = -oo.y;
+                    
+                    shiftOrigin.x = oo.x*cos((rotation)*deg2rad) + oo.y*sin((rotation)*deg2rad) + shiftOrigin.x;
+                    shiftOrigin.y = oo.x*sin((rotation)*deg2rad) - oo.y*cos((rotation)*deg2rad) + shiftOrigin.y;
+                    
+                    oo = NSMakePoint( NSRectCenterX(blendedViewRect) - NSRectCenterX(unionRect), NSRectCenterY(blendedViewRect) - NSRectCenterY(unionRect));
+                    
+//                    if( blendingView.xFlipped) oo.x = -oo.x;
+//                    if( blendingView.yFlipped) oo.y = -oo.y;
+                    
+                    blendedShiftOrigin.x = oo.x*cos((blendingView.rotation)*deg2rad) + oo.y*sin((blendingView.rotation)*deg2rad) + blendedShiftOrigin.x;
+                    blendedShiftOrigin.y = oo.x*sin((blendingView.rotation)*deg2rad) - oo.y*cos((blendingView.rotation)*deg2rad) + blendedShiftOrigin.y;
+                    
+                    smartCroppedRect = unionRect;
+                    
+                    if( smartCroppedRect.size.width == drawingFrameRect.size.width && smartCroppedRect.size.height == drawingFrameRect.size.height)
+                        smartCropped = NO;
+                    else
+                    {
+                        *width = smartCroppedRect.size.width;
+                        *height = smartCroppedRect.size.height;
+                        smartCropped = YES;
+                    }
+                }
 			}
 			else smartCroppedRect = NSMakeRect( 0, 0, drawingFrameRect.size.width, drawingFrameRect.size.height);
 			
@@ -10261,21 +10297,32 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					NSPoint oo = [self origin];
 					NSRect cc = [self frame]; // copy, to restore later
 					
+                    NSPoint boo = [self.blendingView origin];
+					NSRect bcc = [self.blendingView frame]; // copy, to restore later
+                    
 					if( smartCropped)
 					{
 						dontEnterReshape = YES;
+                        blendingView.dontEnterReshape = YES;
 						[self setFrame: [self convertRectFromBacking: smartCroppedRect]];
-						[self setOrigin: NSMakePoint( shiftOrigin.x, shiftOrigin.y)];
+						[self setOrigin: shiftOrigin];
 						
 						if( blendingView && [self is2DViewer])
+                        {
+                            [self.blendingView setFrame: [self.blendingView convertRectFromBacking: smartCroppedRect]];
+                            [self.blendingView setOrigin: blendedShiftOrigin];
 							[[self windowController] propagateSettings];
+                        }
 					}
 					
 					[self display];
+                    [self.blendingView display];
 					
 					if( smartCropped)
+                    {
 						[[self superview] display];	// to avoid the 'white' screen behind
-					
+                        [[self.blendingView superview] display];
+                    }
 					glReadBuffer(GL_FRONT);
 					
 					#if __BIG_ENDIAN__
@@ -10309,9 +10356,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						[self setOrigin: oo];
 						
 						if( blendingView && [self is2DViewer])
+                        {
+                            [self.blendingView setFrame: bcc];
+                            [self.blendingView setOrigin: boo];
+                            
 							[[self windowController] propagateSettings];
+                        }
 					}
 					
+                    blendingView.dontEnterReshape = NO;
 					dontEnterReshape = NO;
 				}
 				
@@ -11420,6 +11473,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     return pixToSubDrawRectTransform;
 }
 #endif
+
+-(void) setOriginWithRotationX:(float) x Y:(float) y
+{
+    x = x*cos(rotation*deg2rad) + y*sin(rotation*deg2rad);
+    y = x*sin(rotation*deg2rad) - y*cos(rotation*deg2rad);
+
+    [self setOriginX: x Y: y];
+}
 
 -(void) setOrigin:(NSPoint) x
 {
