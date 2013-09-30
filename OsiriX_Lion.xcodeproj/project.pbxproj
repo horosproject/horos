@@ -4367,6 +4367,8 @@
 		CE111A641165CDC000EDD254 /* jcshuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CCA09B6828400545F5E /* jcshuff.c */; };
 		CE111A791165CE7F00EDD254 /* sirsa.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3DC709B6828800545F5E /* sirsa.h */; };
 		CE111A7A1165CE8D00EDD254 /* sirsa.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3DC709B6828800545F5E /* sirsa.h */; };
+		CE114AC417F9568600CB4ED7 /* RTStructIcon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = CE114AC317F9568600CB4ED7 /* RTStructIcon.jpg */; };
+		CE114AC517F9568600CB4ED7 /* RTStructIcon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = CE114AC317F9568600CB4ED7 /* RTStructIcon.jpg */; };
 		CE1335EA06B02DC000B7FC03 /* iChat.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE1335E806B02DC000B7FC03 /* iChat.icns */; };
 		CE1366B50B41D0F200944876 /* mpeg2.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE1366B40B41D0F200944876 /* mpeg2.tif */; };
 		CE142E7F1119DA53000F4A8C /* DCMPix.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0CB16F084A623C00C6385F /* DCMPix.m */; };
@@ -11519,6 +11521,7 @@
 		CE0E08E706A106D700F2C01C /* ThickSlabController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ThickSlabController.mm; sourceTree = "<group>"; };
 		CE0E3A530D87C56D008135A8 /* ThreeDPanView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreeDPanView.h; sourceTree = "<group>"; };
 		CE0E3A540D87C56D008135A8 /* ThreeDPanView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThreeDPanView.m; sourceTree = "<group>"; };
+		CE114AC317F9568600CB4ED7 /* RTStructIcon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = RTStructIcon.jpg; sourceTree = "<group>"; };
 		CE1335E806B02DC000B7FC03 /* iChat.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = iChat.icns; sourceTree = "<group>"; };
 		CE1366B40B41D0F200944876 /* mpeg2.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = mpeg2.tif; sourceTree = "<group>"; };
 		CE142EC91119DD27000F4A8C /* Decompres_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Decompres_Prefix.pch; sourceTree = "<group>"; };
@@ -17428,6 +17431,7 @@
 				A9B23D0C15CFDF8E000E47C3 /* Rotate.pdf */,
 				CE6C77EC09739B3100F951C2 /* Rotate3DCameraCursor.tif */,
 				CE6C77EB09739B3100F951C2 /* Rotate3DCursor.tif */,
+				CE114AC317F9568600CB4ED7 /* RTStructIcon.jpg */,
 				7E2BE3D00715DB9A0017898A /* route.tif */,
 				CE4B5CFB10E5F9DE00C11948 /* Safari.tif */,
 				ABBB64A1063587B200D9531F /* Sag.tif */,
@@ -28282,6 +28286,7 @@
 				CEBD8BCA14F1ADDA000DA1FE /* vtkDenseArray.txx in Resources */,
 				CEBD8D8814F1ADDA000DA1FE /* vtkImageIterator.txx in Resources */,
 				CEBD8DA714F1ADDA000DA1FE /* vtkImageProgressIterator.txx in Resources */,
+				CE114AC417F9568600CB4ED7 /* RTStructIcon.jpg in Resources */,
 				CEBD8DCF14F1ADDA000DA1FE /* vtkImageStencilIterator.txx in Resources */,
 				CEBD919014F1ADDB000DA1FE /* vtkSparseArray.txx in Resources */,
 				CEBD928C14F1ADDB000DA1FE /* vtkTypedArray.txx in Resources */,
@@ -28403,6 +28408,7 @@
 				CEC7059910A5C844008935EA /* minus.tif in Resources */,
 				CEC7059A10A5C844008935EA /* BlackBody.plist in Resources */,
 				CEC7059B10A5C844008935EA /* Flow.plist in Resources */,
+				CE114AC517F9568600CB4ED7 /* RTStructIcon.jpg in Resources */,
 				CEC7059C10A5C844008935EA /* NIH.plist in Resources */,
 				CEC7059D10A5C844008935EA /* Spectrum.plist in Resources */,
 				CEC7059E10A5C844008935EA /* GEcolor.plist in Resources */,

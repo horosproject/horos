@@ -6857,6 +6857,29 @@ static NSConditionLock *threadLock = nil;
 			
 			[NSThread sleepForTimeInterval: 1];
 		}
+        
+        // RTSTRUCT
+        if( [[[im valueForKey:@"modality"] lowercaseString] isEqualToString:@"rtstruct"])
+		{
+			if( NSRunInformationalAlertPanel(NSLocalizedString(@"RTSTRUCT", nil),
+                                         NSLocalizedString(@"This series contains RTSTRUCT ROIs. Should I generate the corresponding ROIs on the images series?", nil),
+                                         NSLocalizedString(@"OK",nil),
+                                         NSLocalizedString(@"Cancel",nil),
+                                         nil) == NSAlertDefaultReturn)
+            {
+                DCMObject *dcmObj = [DCMObject objectWithContentsOfFile: im.completePathResolved decodingPixelData: NO];
+                
+                DCMPix *pix = nil;
+                @synchronized( previewPixThumbnails)
+                {
+                    pix = [previewPix objectAtIndex: 0];  // Should only be one DCMPix associated w/ an RTSTRUCT
+                }
+                
+                [pix createROIsFromRTSTRUCT: dcmObj];
+                
+                r = YES;
+            }
+		}
 		
 		#endif
 		
@@ -17304,10 +17327,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSMutableArray *filesArray = [NSMutableArray array];
 	NSMutableArray *filePaths = [self filesForDatabaseMatrixSelection: filesArray];
 	
-	for ( int i = 0; i < [filesArray count]; i++)
+	for( int i = 0; i < [filesArray count]; i++)
 	{
 		NSString *modality = [[filesArray objectAtIndex: i] valueForKey: @"modality"];
-		if ( [modality isEqualToString: @"RTSTRUCT"])
+		if( [modality isEqualToString: @"RTSTRUCT"])
 		{
 			DCMObject *dcmObj = [DCMObject objectWithContentsOfFile: [filePaths objectAtIndex: i ] decodingPixelData: NO];
             

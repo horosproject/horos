@@ -327,7 +327,12 @@
                         NSImage *thumbnail = nil;
                         NSString *seriesSOPClassUID = self.seriesSOPClassUID;
                         
-                        if( [DCMAbstractSyntaxUID isSpectroscopy: seriesSOPClassUID])
+                        if( [[DCMAbstractSyntaxUID RTStructureSetStorage] isEqualToString: seriesSOPClassUID])
+                        {
+                            thumbnail = [NSImage imageNamed: @"RTStructIcon.jpg"];
+                            thumbnailData = [[thumbnail TIFFRepresentation] retain]; // autoreleased when returning
+                        }
+                        else if( [DCMAbstractSyntaxUID isSpectroscopy: seriesSOPClassUID])
                         {
                             thumbnail = [NSImage imageNamed: @"SpectroIcon.jpg"];
                             thumbnailData = [[thumbnail TIFFRepresentation] retain]; // autoreleased when returning
