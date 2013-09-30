@@ -5515,39 +5515,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					if( [name isEqualToString:@"Unnamed"] == NO && [name isEqualToString: NSLocalizedString( @"Unnamed", nil)] == NO) self.textualBoxLine1 = name;
                     else self.textualBoxLine1 = nil;
                     
-					if( ROITEXTNAMEONLY == NO ) {
-						if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax :&rskewness :&rkurtosis];
-						
-						if( pixelSpacingX != 0 && pixelSpacingY != 0 )
-                        {
-                            float area = [self Area];
-							if(area *pixelSpacingX*pixelSpacingY < 1.)
-								self.textualBoxLine2 = [NSString stringWithFormat: NSLocalizedString( @"Area: %0.1f %cm\u00B2", nil), area *pixelSpacingX*pixelSpacingY * 1000000.0, 0xB5];
-							else if(area *pixelSpacingX*pixelSpacingY/100. < 1.)
-								self.textualBoxLine2 = [NSString stringWithFormat: NSLocalizedString( @"Area: %0.3f mm\u00B2", nil), area *pixelSpacingX*pixelSpacingY];
-                            else
-								self.textualBoxLine2 = [NSString stringWithFormat: NSLocalizedString( @"Area: %0.3f cm\u00B2", nil), area *pixelSpacingX*pixelSpacingY / 100.];
-						}
-						else
-							self.textualBoxLine2 = [NSString stringWithFormat: NSLocalizedString( @"Area: %0.3f pix2", nil), [self Area]];
-						self.textualBoxLine3 = [NSString stringWithFormat: NSLocalizedString( @"Mean: %0.3f SDev: %0.3f Sum: %0.0f", nil), rmean, rdev, rtotal];
-						self.textualBoxLine4 = [NSString stringWithFormat: NSLocalizedString( @"Min: %0.3f Max: %0.3f", nil), rmin, rmax];
-						
-						length = 0;
-						long i;
-						for( i = 0; i < (long)[points count]-1; i++ ) {
-							length += [self Length:[[points objectAtIndex:i] point] :[[points objectAtIndex:i+1] point]];
-						}
-						length += [self Length:[[points objectAtIndex:i] point] :[[points objectAtIndex:0] point]];
-						
-						if (length < .01)
-							self.textualBoxLine5 = [NSString stringWithFormat: NSLocalizedString( @"Length: %0.1f %cm", nil), length * 10000.0, 0xB5];
-                        else if (length < 1)
-							self.textualBoxLine5 = [NSString stringWithFormat: NSLocalizedString( @"Length: %0.3f mm", nil), length * 10.0];
-						else
-							self.textualBoxLine5 = [NSString stringWithFormat: NSLocalizedString( @"Length: %0.3f cm", nil), length];
-					}
-					
 					[self prepareTextualData:tPt];
 				}
 					if((mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing) && highlightIfSelected)
@@ -5716,24 +5683,19 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				
 				glBegin(GL_LINE_STRIP);
 				
-				for( long i = 0; i < [points count]; i++) {				
+				for( long i = 0; i < [points count]; i++)
+                {
 					if(i==1||i==2)
-					{
 						glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., 0.1);
-					}
 					else
-					{
 						glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
-					}
+                    
 					glVertex2f( ([[points objectAtIndex: i] x]- offsetx) * scaleValue , ([[points objectAtIndex: i] y]- offsety) * scaleValue );
 					if(i>2)
-					{
-						//glEnd();
 						break;
-					}
 				}
 				glEnd();
-				if( [points count]>3 )
+				if( [points count]>3)
 				{
 					for( long i=4; i<[points count]; i++ ) [points removeObjectAtIndex: i];
 				}
@@ -5774,48 +5736,14 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				//TEXT
 				if( self.isTextualDataDisplayed && prepareTextualData)
 				{
-						NSPoint tPt = self.lowerRightPoint;
-						float   length;
-						
+                    NSPoint tPt = self.lowerRightPoint;
+                    
                     if( [name isEqualToString:@"Unnamed"] == NO && [name isEqualToString: NSLocalizedString( @"Unnamed", nil)] == NO) self.textualBoxLine1 = name;
                     else self.textualBoxLine1 = nil;
-                    
-                    if( ROITEXTNAMEONLY == NO)
-                    {
-                        if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax :&rskewness :&rkurtosis];
-                        
-                        if( pixelSpacingX != 0 && pixelSpacingY != 0 )
-                        {
-                            float area = [self Area];
-                            if (area *pixelSpacingX*pixelSpacingY < 1.)
-                                self.textualBoxLine2 = [NSString stringWithFormat: NSLocalizedString( @"Area: %0.1f %cm\u00B2", nil), area *pixelSpacingX*pixelSpacingY * 1000000.0, 0xB5];
-                            else if (area *pixelSpacingX*pixelSpacingY/100. < 1.)
-                                self.textualBoxLine2 = [NSString stringWithFormat: NSLocalizedString( @"Area: %0.3f mm\u00B2", nil), area *pixelSpacingX*pixelSpacingY];
-                            else
-                                self.textualBoxLine2 = [NSString stringWithFormat: NSLocalizedString( @"Area: %0.3f cm\u00B2", nil), area *pixelSpacingX*pixelSpacingY / 100.];
-                        }
-                        else
-                            self.textualBoxLine2 = [NSString stringWithFormat: NSLocalizedString( @"Area: %0.3f pix2", nil), [self Area]];
-                        
-                        self.textualBoxLine3 = [NSString stringWithFormat: NSLocalizedString( @"Mean: %0.3f SDev: %0.3f Sum: %0.0f", nil), rmean, rdev, rtotal];
-                        self.textualBoxLine4 = [NSString stringWithFormat: NSLocalizedString( @"Min: %0.3f Max: %0.3f", nil), rmin, rmax];
-                        
-                        length = 0;
-                        for( long i = 0; i < (long)[points count]-1; i++ )
-                        {
-                            length += [self Length:[[points objectAtIndex:i] point] :[[points objectAtIndex:i+1] point]];
-                        }
-                        
-                        if (length < .01)
-                            self.textualBoxLine5 = [NSString stringWithFormat: NSLocalizedString( @"Length: %0.1f %cm", nil), length * 10000.0, 0xB5];
-                        else if (length < 1)
-                            self.textualBoxLine5 = [NSString stringWithFormat: NSLocalizedString( @"Length: %0.3f mm", nil), length * 10.0];
-                        else
-                            self.textualBoxLine5 = [NSString stringWithFormat: NSLocalizedString( @"Length: %0.3f cm", nil), length];
-                    }
                     self.textualBoxLine2 = [NSString stringWithFormat: NSLocalizedString( @"Angle: %0.2f%@", nil), angle, @"\u00B0"];
                     self.textualBoxLine3 = [NSString stringWithFormat: NSLocalizedString( @"Angle 2: %0.2f%@", nil), 360 - angle, @"\u00B0"];
                     self.textualBoxLine4 = nil;
+                    self.textualBoxLine5 = nil;
                     
                     [self prepareTextualData:tPt];
 				}
@@ -5828,7 +5756,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					glColor3f (0.5f, 0.5f, 1.0f);
 					glPointSize( (1 * backingScaleFactor + sqrt( thick))*3.5 * backingScaleFactor);
 					glBegin( GL_POINTS);
-					for( long i = 0; i < [points count]; i++) {
+					for( long i = 0; i < [points count]; i++)
+                    {
 						if( mode >= ROI_selected && (i == selectedModifyPoint || i == PointUnderMouse)) glColor3f (1.0f, 0.2f, 0.2f);
 						else if( mode == ROI_drawing && [[points objectAtIndex: i] isNearToPoint: tempPt : scaleValue/(thick*backingScaleFactor) :[[curView curDCM] pixelRatio]] == YES) glColor3f (1.0f, 0.0f, 1.0f);
 						else glColor3f (0.5f, 0.5f, 1.0f);

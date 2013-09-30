@@ -224,24 +224,30 @@
 		[textColor set];
 		[string drawAtPoint:NSMakePoint (marginSize.width, marginSize.height)];
 		
-		bitmap = [[NSBitmapImageRep alloc] initWithFocusedViewRect:NSMakeRect (0.0f, 0.0f, frameSize.width, frameSize.height)];
-		
+        if( frameSize.width > 0 && frameSize.height > 0)
+            bitmap = [[NSBitmapImageRep alloc] initWithFocusedViewRect:NSMakeRect (0.0f, 0.0f, frameSize.width, frameSize.height)];
+		else
+            NSLog( @"StringTexture: frameSize.width > 0 && frameSize.height > 0");
+        
 		[image unlockFocus];
         
-		texSize.width = [bitmap size].width * backingScaleFactor; // retina
-		texSize.height = [bitmap size].height * backingScaleFactor; // retina
-		
-		glGenTextures (1, &texName);
-		glBindTexture (GL_TEXTURE_RECTANGLE_EXT, texName);
-		glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
-		
-		glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
-		glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
-		
-		glTexImage2D (GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, bitmap.pixelsWide, bitmap.pixelsHigh, 0, GL_RGBA, GL_UNSIGNED_BYTE, [bitmap bitmapData]);
-		
-		[ctxArray addObject: currentContext];
-		[textArray addObject: [NSNumber numberWithInt: texName]];
+        if( bitmap)
+        {
+            texSize.width = [bitmap size].width * backingScaleFactor; // retina
+            texSize.height = [bitmap size].height * backingScaleFactor; // retina
+            
+            glGenTextures (1, &texName);
+            glBindTexture (GL_TEXTURE_RECTANGLE_EXT, texName);
+            glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+            
+            glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
+            glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
+            
+            glTexImage2D (GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, bitmap.pixelsWide, bitmap.pixelsHigh, 0, GL_RGBA, GL_UNSIGNED_BYTE, [bitmap bitmapData]);
+            
+            [ctxArray addObject: currentContext];
+            [textArray addObject: [NSNumber numberWithInt: texName]];
+        }
 	}
 //    [[image TIFFRepresentation] writeToFile: @"/tmp/string.tiff" atomically: YES];
 	[image release];
