@@ -66,7 +66,7 @@
 #import "OsiriX/DCMAbstractSyntaxUID.h"
 #import "printView.h"
 #import "ITKTransform.h"
-//#import "LLScoutViewer.h"
+#import "NSManagedObject+N2.h"
 #import "DicomStudy.h"
 #import "KeyObjectController.h"
 #import "KeyObjectPopupController.h"
@@ -81,8 +81,6 @@
 #import "N2Stuff.h"
 #import "BonjourBrowser.h"
 #import "PluginManager.h"
-//#import <InstantMessage/IMService.h>
-//#import <InstantMessage/IMAVManager.h>
 #import "DCMObject.h"
 #import "DCMAttributeTag.h"
 #import "NavigatorWindowController.h"
@@ -5395,6 +5393,19 @@ static ViewerController *draggedController = nil;
 			return [source performPluginDragOperation:sender destination:self];
 		} 
 	}
+    else if( [[paste availableTypeFromArray: [NSArray arrayWithObject: @"BrowserController.database.context.XIDs"]] isEqualToString: @"BrowserController.database.context.XIDs"])
+    {
+        NSArray* xids = [NSPropertyListSerialization propertyListFromData:[paste propertyListForType:@"BrowserController.database.context.XIDs"]
+                                                         mutabilityOption:NSPropertyListImmutable
+                                                                   format:NULL
+                                                         errorDescription:NULL];
+        NSMutableArray* items = [NSMutableArray array];
+        for (NSString* xid in xids)
+            [items addObject:[BrowserController.currentBrowser.database objectWithID:[NSManagedObject UidForXid:xid]]];
+        
+        if( [[items lastObject] isKindOfClass: [DicomSeries class]])
+            [self loadSelectedSeries: [items lastObject] rightClick: NO];
+    }
 	else
 	{
 	    NSArray			*types = [NSArray arrayWithObjects:NSFilenamesPboardType, nil];
@@ -19948,7 +19959,7 @@ int i,j,l;
 	[nc addObserver:self selector:@selector(reportToolbarItemWillPopUp:) name:NSPopUpButtonWillPopUpNotification object:nil];
 
 	
-	[[self window] registerForDraggedTypes: [NSArray arrayWithObjects:NSFilenamesPboardType, pasteBoardOsiriX, pasteBoardOsiriXPlugin, nil]];
+	[[self window] registerForDraggedTypes: [NSArray arrayWithObjects:NSFilenamesPboardType, pasteBoardOsiriX, pasteBoardOsiriXPlugin, @"BrowserController.database.context.XIDs", nil]];
 	
 	if( [[pixList[0] objectAtIndex: 0] isRGB] == NO)
 	{

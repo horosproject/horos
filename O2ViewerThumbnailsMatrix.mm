@@ -15,6 +15,7 @@
 #import "O2ViewerThumbnailsMatrix.h"
 #import "DicomStudy.h"
 #import "BrowserController.h"
+#import "DicomSeries.h"
 
 static NSString *dragType = @"Osirix Series Viewer Drag";
 
@@ -51,8 +52,8 @@ static NSString *dragType = @"Osirix Series Viewer Drag";
 
 - (void) startDrag:(NSEvent *) event
 {
-	@try {
-        
+	@try
+    {
         NSSize dragOffset = NSMakeSize(0.0, 0.0);
         
         NSPoint event_location = [event locationInWindow];
@@ -61,26 +62,16 @@ static NSString *dragType = @"Osirix Series Viewer Drag";
         local_point.x -= 35;
         local_point.y += 35;
         
-        NSArray *cells = [self selectedCells];
-        
-        if( [cells count])
+        if( [self selectedCell])
         {
-            NSArray *subArray = cells;
-            
-            if( subArray.count > 20)
-                subArray = [cells subarrayWithRange: NSMakeRange( 0, 20)];
-            
             int i, width = 0;
-            NSImage	*firstCell = [[subArray objectAtIndex: 0] image];
+            NSImage	*firstCell = [[self selectedCell] image];
             
 #define MARGIN 3
             
             width += MARGIN;
-            for( i = 0; i < [subArray count]; i++)
-            {
-                width += [[[subArray objectAtIndex: i] image] size].width;
-                width += MARGIN;
-            }
+            width += [firstCell size].width;
+            width += MARGIN;
             
             NSImage *thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize( width, 70+6)] autorelease];
             
@@ -93,28 +84,23 @@ static NSString *dragType = @"Osirix Series Viewer Drag";
                 
                 width = 0;
                 width += MARGIN;
-                for( i = 0; i < [subArray count]; i++)
-                {
-                    NSRectFill( NSMakeRect( width, 0, [firstCell size].width, [firstCell size].height));
-                    
-                    NSImage	*im = [[subArray objectAtIndex: i] image];
-                    [im drawAtPoint: NSMakePoint(width, 3) fromRect:NSMakeRect(0,0,[im size].width, [im size].height) operation: NSCompositeCopy fraction: 0.8];
-                    
-                    width += [im size].width;
-                    width += MARGIN;
-                }
+                
+                NSRectFill( NSMakeRect( width, 0, [firstCell size].width, [firstCell size].height));
+                [firstCell drawAtPoint: NSMakePoint(width, 3) fromRect:NSMakeRect(0,0,[firstCell size].width, [firstCell size].height) operation: NSCompositeCopy fraction: 0.8];
+                
+                width += [firstCell size].width;
+                width += MARGIN;
+                
                 [thumbnail unlockFocus];
             }
             
             NSPasteboard *pboard = [NSPasteboard pasteboardWithName: NSDragPboard];
             
-            [pboard declareTypes:[NSArray arrayWithObjects: @"BrowserController.database.context.XIDs", dragType, NSFilesPromisePboardType, NSFilenamesPboardType, NSStringPboardType, nil]  owner:self];
+            [pboard declareTypes:[NSArray arrayWithObjects: @"BrowserController.database.context.XIDs", dragType, nil] owner:self]; //NSFilesPromisePboardType, NSFilenamesPboardType, NSStringPboardType
             [pboard setPropertyList:nil forType:dragType];
-            [pboard setPropertyList:[NSArray arrayWithObject:@"dcm"] forType:NSFilesPromisePboardType];
             
             NSMutableArray* objects = [NSMutableArray array];
-            for( NSCell *c in cells)
-                [objects addObject: [[c representedObject] object]];
+            [objects addObject: [[[self selectedCell] representedObject] object]];
             
             [pboard setPropertyList:[NSPropertyListSerialization dataFromPropertyList:[objects valueForKey:@"XID"] format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL] forType:@"BrowserController.database.context.XIDs"];
             
@@ -141,8 +127,10 @@ static NSString *dragType = @"Osirix Series Viewer Drag";
 {
     NSEvent *lastMouse = event;
     NSDate *start = [NSDate date];
-    NSCell *previousSelectedCell = [self selectedCell];
+    NSCell *previousSelectedCell = nil;
     BOOL drag = NO;
+    
+#define DRAGTIMEOUT -2
     
     do
     {
@@ -164,22 +152,28 @@ static NSString *dragType = @"Osirix Series Viewer Drag";
             [self selectCellAtRow:[self.cells indexOfObjectIdenticalTo:cell] column:0];
             self.keyCell = cell;
             
-            if( self.selectedCell != previousSelectedCell)
-                start = [NSDate dateWithTimeIntervalSinceNow: -2]; // Force drag
+            if( previousSelectedCell != nil && self.selectedCell != previousSelectedCell)
+            {
+                [self selectCell: previousSelectedCell];
+                start = [NSDate dateWithTimeIntervalSinceNow: DRAGTIMEOUT]; // Force drag
+            }
+            
+            if( previousSelectedCell == nil)
+                previousSelectedCell = self.selectedCell;
         }
         else
-            start = [NSDate dateWithTimeIntervalSinceNow: -2]; // Force drag
+            start = [NSDate dateWithTimeIntervalSinceNow: DRAGTIMEOUT]; // Force drag
         
         event = [self.window nextEventMatchingMask:NSLeftMouseUpMask|NSLeftMouseDraggedMask|NSPeriodicMask];
         
         if(event.type != NSPeriodic)
             lastMouse = event;
     }
-    while (lastMouse.type != NSLeftMouseUp && [start timeIntervalSinceNow] >= -1);
+    while (lastMouse.type != NSLeftMouseUp && [start timeIntervalSinceNow] >= DRAGTIMEOUT);
     
     [self.selectedCell setHighlighted: NO];
     
-    if( [start timeIntervalSinceNow] < -1)
+    if( [start timeIntervalSinceNow] < DRAGTIMEOUT && [[[[self selectedCell] representedObject] object] isKindOfClass: [DicomSeries class]])
         [self startDrag: event];
     else
         [super mouseDown: event];
