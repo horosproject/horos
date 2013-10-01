@@ -10200,16 +10200,16 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                     
                     NSPoint oo = NSMakePoint( NSRectCenterX(smartCroppedRect) - NSRectCenterX(unionRect), NSRectCenterY(smartCroppedRect) - NSRectCenterY(unionRect));
                     
-//                    if( xFlipped) oo.x = -oo.x;
-//                    if( yFlipped) oo.y = -oo.y;
+                    if( xFlipped) {oo.x = -oo.x; shiftOrigin.x *=-1;}
+                    if( yFlipped) {oo.y = -oo.y; shiftOrigin.y *=-1;}
                     
                     shiftOrigin.x = oo.x*cos((rotation)*deg2rad) + oo.y*sin((rotation)*deg2rad) + shiftOrigin.x;
                     shiftOrigin.y = oo.x*sin((rotation)*deg2rad) - oo.y*cos((rotation)*deg2rad) + shiftOrigin.y;
                     
                     oo = NSMakePoint( NSRectCenterX(blendedViewRect) - NSRectCenterX(unionRect), NSRectCenterY(blendedViewRect) - NSRectCenterY(unionRect));
                     
-//                    if( blendingView.xFlipped) oo.x = -oo.x;
-//                    if( blendingView.yFlipped) oo.y = -oo.y;
+                    if( blendingView.xFlipped) {oo.x = -oo.x; blendedShiftOrigin.x *= -1.;}
+                    if( blendingView.yFlipped) {oo.y = -oo.y; blendedShiftOrigin.y *= -1.;}
                     
                     blendedShiftOrigin.x = oo.x*cos((blendingView.rotation)*deg2rad) + oo.y*sin((blendingView.rotation)*deg2rad) + blendedShiftOrigin.x;
                     blendedShiftOrigin.y = oo.x*sin((blendingView.rotation)*deg2rad) - oo.y*cos((blendingView.rotation)*deg2rad) + blendedShiftOrigin.y;

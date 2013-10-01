@@ -15,6 +15,7 @@
 #import <Cocoa/Cocoa.h>
 
 @interface O2ViewerThumbnailsMatrix : NSMatrix {
+    BOOL avoidRecursive;
 }
 
 @end
