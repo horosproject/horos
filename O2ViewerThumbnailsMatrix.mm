@@ -64,32 +64,20 @@ static NSString *dragType = @"Osirix Series Viewer Drag";
         
         if( [self selectedCell])
         {
-            int i, width = 0;
             NSImage	*firstCell = [[self selectedCell] image];
             
 #define MARGIN 3
             
-            width += MARGIN;
-            width += [firstCell size].width;
-            width += MARGIN;
-            
-            NSImage *thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize( width, 70+6)] autorelease];
+            NSImage *thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize( [firstCell size].width + MARGIN*2, [firstCell size].height+MARGIN*2)] autorelease];
             
             if( [thumbnail size].width > 0 && [thumbnail size].height > 0)
             {
                 [thumbnail lockFocus];
                 
                 [[NSColor grayColor] set];
-                NSRectFill(NSMakeRect(0,0,width, 70+6));
+                NSRectFill(NSMakeRect(0,0, [thumbnail size].width, [thumbnail size].height));
                 
-                width = 0;
-                width += MARGIN;
-                
-                NSRectFill( NSMakeRect( width, 0, [firstCell size].width, [firstCell size].height));
-                [firstCell drawAtPoint: NSMakePoint(width, 3) fromRect:NSMakeRect(0,0,[firstCell size].width, [firstCell size].height) operation: NSCompositeCopy fraction: 0.8];
-                
-                width += [firstCell size].width;
-                width += MARGIN;
+                [firstCell drawAtPoint: NSMakePoint( MARGIN, MARGIN) fromRect:NSMakeRect(0,0,[firstCell size].width, [firstCell size].height) operation: NSCompositeCopy fraction: 0.8];
                 
                 [thumbnail unlockFocus];
             }
@@ -176,7 +164,7 @@ static NSString *dragType = @"Osirix Series Viewer Drag";
     if( [start timeIntervalSinceNow] < DRAGTIMEOUT && [[[[self selectedCell] representedObject] object] isKindOfClass: [DicomSeries class]])
         [self startDrag: event];
     else
-        [super mouseDown: event];
+        [[[self selectedCell] target] performSelector: [[self selectedCell] action] withObject: self];
 }
 
 - (NSRect)cellFrameAtRow:(NSInteger)row column:(NSInteger)col
