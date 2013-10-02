@@ -5351,7 +5351,7 @@ static BOOL initialized = NO;
 			{
                 if( v != keyWindow)
                 {
-                    [v buildMatrixPreview: YES];
+                    [v buildMatrixPreview: [hiddenWindows containsObject: [v window]]];
                     [v redrawToolbar]; // To avoid the drag & remove item bug - multiple windows
                 }
 			}
