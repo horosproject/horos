@@ -1,7 +1,7 @@
 %INCLUDE:header.pvt.html%
 <div id="subheader">
     %[IF:!Session.dontDisplayBack%
-	<a class="back" href="%X:backLink%?%Info.getParameters(xid=)%">%X:ZWS:BackLinkLabel%</a>
+	<a class="back" href="../main">Home</a> <a class="back" href="%X:backLink%?%Info.getParameters(xid=)%">%X:ZWS:BackLinkLabel%</a>
     %]IF:!Session.dontDisplayBack%
 </div>
 
@@ -146,12 +146,30 @@ function shareDestinationChange(select) {
 				%[FOREACH:Study.otherStudiesForThisPatient:ComparativeStudy%
 					<td>%ComparativeStudy.date.DateTime.Spanned%:</td>
 					<td>
+                        %[IF:Info.isMacOS%
+                        %[IF:Info.proposeWADORetrieve%
+                            <a href="osirix://?methodName=DownloadURL&Display=YES&URL='%Info.WADOBaseURL%?requestType=WADO&studyUID=%U:ComparativeStudy.studyInstanceUID%&token=%Info.newToken%'"><img src="images/osirix.png" onload="this.width/=1.4;this.onload=null;" style="vertical-align:middle"/></a>
+                        %]IF:Info.proposeWADORetrieve%
+                        %]IF:Info.isMacOS%
+                   
+                        %[IF:Info.proposeZipDownload%
+                            <a href="%U:ComparativeStudy.name% - %U:ComparativeStudy.studyName%.%[IF:Info.isMacOS%osirixzip%ELSE:Info.isMacOS%zip%]IF:Info.isMacOS%?xid=%ComparativeStudy.XID%"><img src="images/download.png" onload="this.width/=1.4;this.onload=null;" style="vertical-align:middle"/></a>
+                        %]IF:Info.proposeZipDownload%
+                    
+                        %[IF:Info.proposeWeasis%
+                            <a href="/%X:ComparativeStudy.name%-weasis.jnlp?xid=%ComparativeStudy.XID%"><img src="images/weasis.png" onload="this.width/=1.4;this.onload=null;" style="vertical-align:middle"/></a>
+                        %]IF:Info.proposeWeasis%
+                        
+                        
                         <script type="text/javascript" language="javascript">
 							if( "%ComparativeStudy.studyInstanceUID%" == "%Study.studyInstanceUID%") document.write( "<b>");
                             else document.write( "<a href=\"study?%Info.getParameters(xid=)%&xid=%ComparativeStudy.XID%\">");
-                        </script>
+                            </script>
                         
 						<span class="bigger compressed">%X:ZWS:ComparativeStudy.studyName%</span> <span class="gray details">, %X:ComparativeStudy.modality%%[IF:ComparativeStudy.imageSeries.count%, %X:ComparativeStudy.imageSeries.count% series%]IF:ComparativeStudy.imageSeries.count%%[IF:ComparativeStudy.patientID%, %X:ComparativeStudy.patientID%%]IF:ComparativeStudy.patientID%%[IF:ComparativeStudy.accessionNumber%, %X:ComparativeStudy.accessionNumber%%]IF:ComparativeStudy.accessionNumber%</span>
+                        
+                        
+                        
 						<div class="gray indent compressed">
 									%[IF:ComparativeStudy.comment%<div class="italic indent">%X:ZWS:ComparativeStudy.comment%</div>%]IF:ComparativeStudy.comment%
 						</div>

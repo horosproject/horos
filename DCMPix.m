@@ -9023,7 +9023,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 								
 								if( oImage == nil)
 								{
-									NSLog(@"This is really bad..... Please send this file to rossetantoine@bluewin.ch");
+									NSLog(@"This is really bad..... Please send this file to pixmeo@pixmeo.com");
 									goImageSize[ fileNb] = height * width * 8; // *8 in case of a 16-bit RGB encoding....
 									oImage = malloc( goImageSize[ fileNb]);
 									if( oImage)
