@@ -1,7 +1,7 @@
 %INCLUDE:header.pvt.html%
 <div id="subheader">
     %[IF:!Session.dontDisplayBack%
-	<a class="back" href="../main">Home</a> <a class="back" href="%X:backLink%?%Info.getParameters(xid=)%">%X:ZWS:BackLinkLabel%</a>
+	<a class="back" href="../main">Home</a> %[IF:backLink=="main"%%ELSE:backLink=="main"%<a class="back" href="%X:backLink%?%Info.getParameters(xid=)%">%X:ZWS:BackLinkLabel%</a>%]IF:backLink=="main"%
     %]IF:!Session.dontDisplayBack%
 </div>
 
