@@ -504,10 +504,7 @@
 	document->setInstanceNumber( [[v stringValue] UTF8String]);
 	
 	// Add metadata for DICOM
-	//Study Description
-	if ([study valueForKey:@"studyName"])
-		document->setStudyDescription([[study valueForKey:@"studyName"] UTF8String]);
-	
+    
     // We want the original patient's name
     if( [[NSFileManager defaultManager] fileExistsAtPath: image.completePath])
     {
@@ -515,9 +512,18 @@
         OFCondition status  = fileformat.loadFile( image.completePath.fileSystemRepresentation);
         if (status.good())
         {
+            NSArray *encodingArray = nil;
             const char *string = nil;
             if (fileformat.getDataset()->findAndGetString( DCM_SpecificCharacterSet, string, OFFalse).good() && string != NULL)
+            {
                 document->setSpecificCharacterSet( string);
+                encodingArray = [[NSString stringWithCString:string encoding: NSISOLatin1StringEncoding] componentsSeparatedByString:@"\\"];
+            }
+        
+            if( encodingArray == nil)
+                encodingArray = [NSArray arrayWithObject: @"ISO_IR 100"];
+            
+            NSStringEncoding encoding = [NSString encodingForDICOMCharacterSet: [encodingArray objectAtIndex: 0]];
             
             string = nil;
             status = fileformat.getDataset()->findAndGetString( DCM_PatientsName, string, OFFalse);
@@ -528,6 +534,12 @@
             status = fileformat.getDataset()->findAndGetString( DCM_ReferringPhysiciansName, string, OFFalse);
             if (status.good() && string)
                 document->setReferringPhysiciansName( string);
+            
+            if( _DICOMSRDescription)
+                document->setSeriesDescription( (char*) [[_DICOMSRDescription dataUsingEncoding:encoding allowLossyConversion: YES] bytes]);
+            
+            if ([study valueForKey:@"studyName"])
+                document->setStudyDescription( (char*) [[[study valueForKey:@"studyName"] dataUsingEncoding:encoding allowLossyConversion: YES] bytes]);
         }
     }
     else
@@ -539,6 +551,12 @@
         
         if ([study valueForKey:@"referringPhysician"])
             document->setReferringPhysiciansName([[study valueForKey:@"referringPhysician"] UTF8String]);
+        
+        if( _DICOMSRDescription)
+            document->setSeriesDescription( [_DICOMSRDescription UTF8String]);
+        
+        if ([study valueForKey:@"studyName"])
+            document->setStudyDescription([[study valueForKey:@"studyName"] UTF8String]);
     }
     
 	if ([study valueForKey:@"dateOfBirth"])
@@ -560,9 +578,6 @@
 	
 	if ([study valueForKey:@"accessionNumber"])
 		document->setAccessionNumber( [[study valueForKey:@"accessionNumber"] UTF8String]);
-	
-	if( _DICOMSRDescription)
-		document->setSeriesDescription( [_DICOMSRDescription UTF8String]);
 	
 	document->setManufacturer( [@"OsiriX" UTF8String]);
 	
