@@ -117,9 +117,9 @@
                                     </connections>
                                 </button>
                                 <button id="313">
-                                    <rect key="frame" x="10" y="211" width="400" height="18"/>
+                                    <rect key="frame" x="10" y="211" width="256" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="No 'Propagate settings in series' for CR, DX, DR, RF, XA" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="349">
+                                    <buttonCell key="cell" type="check" title="No 'Propagate settings in series' for:" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="349">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -184,8 +184,8 @@
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
                                     <connections>
-                                        <binding destination="308" name="enabled" keyPath="values.hasFULL32BITPIPELINE" id="453"/>
                                         <binding destination="308" name="value" keyPath="values.FULL32BITPIPELINE" id="436"/>
+                                        <binding destination="308" name="enabled" keyPath="values.hasFULL32BITPIPELINE" id="453"/>
                                     </connections>
                                 </button>
                                 <button id="458">
@@ -364,6 +364,46 @@
                                         <binding destination="308" name="value" keyPath="values.openPDFwithPreview" id="440"/>
                                     </connections>
                                 </button>
+                                <popUpButton verticalHuggingPriority="750" id="1Xf-Mw-WhA">
+                                    <rect key="frame" x="269" y="207" width="124" height="26"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <popUpButtonCell key="cell" type="push" title="Modalities" bezelStyle="rounded" alignment="center" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" pullsDown="YES" id="fhV-XV-SCY">
+                                        <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                        <menu key="menu" title="OtherViews" id="jDc-fg-eC3">
+                                            <items>
+                                                <menuItem title="Modalities" hidden="YES" id="rUf-a6-mNm">
+                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                </menuItem>
+                                                <menuItem title="CR" state="on" id="FOf-lv-Yw4">
+                                                    <connections>
+                                                        <binding destination="308" name="value" keyPath="values.noPropagateInSeriesForCR" id="F8f-OF-O5Z"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="DX" id="jbC-CP-MNd">
+                                                    <connections>
+                                                        <binding destination="308" name="value" keyPath="values.noPropagateInSeriesForDX" id="SYc-fl-hLB"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="DR" id="WGV-vh-73b">
+                                                    <connections>
+                                                        <binding destination="308" name="value" keyPath="values.noPropagateInSeriesForDR" id="p4b-ru-lzE"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="RF" id="uMP-Y0-V9I">
+                                                    <connections>
+                                                        <binding destination="308" name="value" keyPath="values.noPropagateInSeriesForRF" id="1Hb-Hi-T3N"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="XA" id="bs8-nn-AfS">
+                                                    <connections>
+                                                        <binding destination="308" name="value" keyPath="values.noPropagateInSeriesForXA" id="2ry-T6-XZ2"/>
+                                                    </connections>
+                                                </menuItem>
+                                            </items>
+                                        </menu>
+                                    </popUpButtonCell>
+                                </popUpButton>
                             </subviews>
                         </view>
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
@@ -605,6 +645,8 @@
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
                                     <connections>
+                                        <binding destination="308" name="enabled" keyPath="values.AUTOTILING" id="550"/>
+                                        <binding destination="308" name="value" keyPath="values.reversedTileWindowsOrderByStudyDate" id="552"/>
                                         <binding destination="308" name="enabled2" keyPath="values.tileWindowsOrderByStudyDate" previousBinding="550" id="554">
                                             <dictionary key="options">
                                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
@@ -613,8 +655,6 @@
                                                 <integer key="NSNullPlaceholder" value="-1"/>
                                             </dictionary>
                                         </binding>
-                                        <binding destination="308" name="enabled" keyPath="values.AUTOTILING" id="550"/>
-                                        <binding destination="308" name="value" keyPath="values.reversedTileWindowsOrderByStudyDate" id="552"/>
                                     </connections>
                                 </button>
                                 <button id="390">
@@ -628,8 +668,8 @@
                                         </connections>
                                     </buttonCell>
                                     <connections>
-                                        <binding destination="308" name="enabled" keyPath="values.is12bitPluginAvailable" id="443"/>
                                         <binding destination="308" name="value" keyPath="values.automatic12BitTotoku" id="394"/>
+                                        <binding destination="308" name="enabled" keyPath="values.is12bitPluginAvailable" id="443"/>
                                     </connections>
                                 </button>
                                 <button id="401">

@@ -1099,6 +1099,12 @@ static NSHost *currentHost = nil;
 	
 	// **
 	
+    [defaultValues setObject: @"1" forKey: @"noPropagateInSeriesForCR"];
+    [defaultValues setObject: @"1" forKey: @"noPropagateInSeriesForDR"];
+    [defaultValues setObject: @"1" forKey: @"noPropagateInSeriesForDX"];
+    [defaultValues setObject: @"1" forKey: @"noPropagateInSeriesForRF"];
+    [defaultValues setObject: @"1" forKey: @"noPropagateInSeriesForXA"];
+    
 	[defaultValues setObject: @"1" forKey: @"COPYSETTINGS"];
 	[defaultValues setObject: @"1" forKey: @"USESTORESCP"];
 	[defaultValues setObject: @"1" forKey: @"splitMultiEchoMR"];
