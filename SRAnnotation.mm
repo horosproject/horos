@@ -535,10 +535,10 @@
             if (status.good() && string)
                 document->setReferringPhysiciansName( string);
             
-            if( _DICOMSRDescription)
+            if( _DICOMSRDescription.length && [[_DICOMSRDescription dataUsingEncoding:encoding allowLossyConversion: YES] bytes])
                 document->setSeriesDescription( (char*) [[_DICOMSRDescription dataUsingEncoding:encoding allowLossyConversion: YES] bytes]);
             
-            if ([study valueForKey:@"studyName"])
+            if ([[study valueForKey:@"studyName"] length] && [[[study valueForKey:@"studyName"] dataUsingEncoding:encoding allowLossyConversion: YES] bytes])
                 document->setStudyDescription( (char*) [[[study valueForKey:@"studyName"] dataUsingEncoding:encoding allowLossyConversion: YES] bytes]);
         }
     }
