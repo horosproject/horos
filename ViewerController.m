@@ -2283,6 +2283,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[roi release];
 }
 
+- (void) applyWindowProtocol:(id) sender
+{
+    [[AppController sharedAppController] closeAllViewers: self];
+    [[BrowserController currentBrowser] databaseOpenStudy: self.currentStudy withProtocol: [sender representedObject]];
+}
+
 - (NSMenu*) contextualMenu
 {
 // if contextualMenuPath says @"default", recreate the default menu once and again
@@ -2396,7 +2402,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[contextualMenu addItemWithTitle:NSLocalizedString(@"No Rescale Size (100%)", nil) action: @selector(actualSize:) keyEquivalent:@""];
 		[contextualMenu addItemWithTitle:NSLocalizedString(@"Actual size", nil) action: @selector(realSize:) keyEquivalent:@""];
 		[contextualMenu addItemWithTitle:NSLocalizedString(@"Scale To Fit", nil) action: @selector(scaleToFit:) keyEquivalent:@""];
-		[contextualMenu addItemWithTitle:NSLocalizedString(@"Key image", nil) action: @selector(setKeyImage:) keyEquivalent:@""];
+		[contextualMenu addItemWithTitle:NSLocalizedString(@"Mark as Key image", nil) action: @selector(setKeyImage:) keyEquivalent:@""];
 		
 		// Tiling
 		menu = [[[[AppController sharedAppController] imageTilingMenu] copy] autorelease];
@@ -2413,7 +2419,24 @@ static volatile int numberOfThreadsForRelisce = 0;
 		item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Windows Tiling - Columns", nil) action: nil keyEquivalent:@""] autorelease];
 		[item setSubmenu:menu];
 		[contextualMenu addItem:item];
-
+        
+        /********** Protocol submenu ************/
+        submenu =  [[[NSMenu alloc] initWithTitle: NSLocalizedString(@"Apply Window Protocol", nil)] autorelease];
+        NSString *m = self.modality;
+		for (NSDictionary *protocol in [WindowLayoutManager hangingProtocolsForModality: m])
+        {
+            NSString *t = [NSString stringWithFormat: @"%@ - %@", m, [protocol objectForKey: @"Study Description"]];
+            
+			item = [[[NSMenuItem alloc] initWithTitle: t action: @selector( applyWindowProtocol:) keyEquivalent:@""] autorelease];
+			[item setTarget: self];
+            [item setRepresentedObject: protocol];
+			[submenu addItem:item];
+		}
+        
+        item = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Apply Window Protocol", nil) action: nil keyEquivalent:@""] autorelease];
+		[item setSubmenu:submenu];
+		[contextualMenu addItem:item];
+        
 		/********** Orientation submenu ************/ 
 		
 		menu = [[[[AppController sharedAppController] orientationMenu] copy] autorelease];

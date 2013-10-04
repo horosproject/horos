@@ -318,6 +318,7 @@ extern NSString* O2AlbumDragType;
 - (NSManagedObjectID*) currentAlbumID: (DicomDatabase*) d;
 - (BOOL) shouldTerminate: (id) sender;
 - (void) databaseOpenStudy: (NSManagedObject*) item;
+- (void) databaseOpenStudy:(DicomStudy*) currentStudy withProtocol:(NSDictionary*) currentHangingProtocol;
 - (IBAction) databaseDoublePressed:(id)sender;
 - (void) setDBDate;
 - (void) emptyDeleteQueueNow: (id) sender;

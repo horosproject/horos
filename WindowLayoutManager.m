@@ -117,6 +117,21 @@ static WindowLayoutManager *sharedLayoutManager = nil;
 #pragma mark-
 #pragma mark hanging protocol setters and getters
 
++ (NSArray*) hangingProtocolsForModality: (NSString*) modality
+{
+    NSArray *hangingProtocolArray = [NSArray array];
+    for( NSString *hangingModality in [[[NSUserDefaults standardUserDefaults] objectForKey: @"HANGINGPROTOCOLS"] allKeys])
+    {
+        if( [modality rangeOfString: hangingModality].location != NSNotFound)
+        {
+            hangingProtocolArray = [[[NSUserDefaults standardUserDefaults] objectForKey: @"HANGINGPROTOCOLS"] objectForKey: hangingModality];
+            return hangingProtocolArray;
+        }
+    }
+    
+    return nil;
+}
+
 + (NSDictionary*) hangingProtocolForModality: (NSString*) modalities description: (NSString *) description
 {
 	// if no modalities set to 1 row and 1 column

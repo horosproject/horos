@@ -39,6 +39,7 @@ It is a shared class.
 #pragma mark-
 #pragma mark hanging protocol setters and getters
 
++ (NSArray*) hangingProtocolsForModality: (NSString*) modality;
 + (NSDictionary*) hangingProtocolForModality: (NSString*) modalities description: (NSString *) description;
 - (void) setCurrentHangingProtocolForModality: (NSString*) modality description: (NSString*) description;
 - (NSDictionary*) currentHangingProtocol;
