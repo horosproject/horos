@@ -4048,7 +4048,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			BOOL roiHit = NO;
 			
-			if( [self roiTool: currentTool])
+			if( [self roiTool: currentTool] || currentTool == tRepulsor || currentTool == tROISelector)
 			{
 				NSPoint tempPt = [self convertPoint:eventLocation fromView: nil];
 				tempPt = [self ConvertFromNSView2GL:tempPt];
