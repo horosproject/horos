@@ -701,11 +701,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 + (BOOL) noPropagateSettingsInSeriesForModality: (NSString*) m
 {
 	if( IndependentCRWLWW &&
-       ([m isEqualToString: @"CR"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"noPropagateInSeriesForCR"]) ||
+       (([m isEqualToString: @"CR"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"noPropagateInSeriesForCR"]) ||
        ([m isEqualToString: @"DR"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"noPropagateInSeriesForDR"]) ||
        ([m isEqualToString: @"DX"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"noPropagateInSeriesForDX"]) ||
        ([m isEqualToString: @"RF"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"noPropagateInSeriesForRF"]) ||
-       ([m isEqualToString: @"XA"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"noPropagateInSeriesForXA"]))
+       ([m isEqualToString: @"XA"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"noPropagateInSeriesForXA"])))
 		return YES;
 	else
 		return NO;
