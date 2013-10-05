@@ -342,47 +342,66 @@ static inline void CLIP_Bottom(NSPointInt *Polygon,long *count, NSPointInt V1,NS
 	}
 }
 
+static NSPointInt *TmpPoly = nil;
+static NSString *CLIP_PolygonSync = @"CLIP_PolygonSync";
+
 void CLIP_Polygon(NSPointInt *inPoly, long inCount, NSPointInt *outPoly, long *outCount, long w, long h)
 {
-	int				d;
-	NSPointInt		*TmpPoly = malloc( MAXVERTICAL * sizeof( NSPointInt));
-	long			TmpCount;	
-	NSPointInt		DownRight;
-	
-	DownRight.x = w-1;
-	DownRight.y = h-1;
-	
-	*outCount = 0;
-	TmpCount=0;
-	
-	for ( int v=0; v<inCount; v++)
-	{
-		d=v+1;
-		if(d==inCount)d=0;
-		CLIP_Left( TmpPoly, &TmpCount, inPoly[v],inPoly[d]);
+    @synchronized( CLIP_PolygonSync)
+    {
+        int	d;
+        
+        if( TmpPoly == nil)
+            TmpPoly = malloc( MAXVERTICAL * sizeof( NSPointInt));
+        
+        long TmpCount;
+        NSPointInt DownRight;
+        
+        DownRight.x = w-1;
+        DownRight.y = h-1;
+        
+        *outCount = 0;
+        TmpCount=0;
+        
+        for( int v=0; v<inCount; v++)
+        {
+            d=v+1;
+            if(d==inCount)d=0;
+            CLIP_Left( TmpPoly, &TmpCount, inPoly[v],inPoly[d]);
+            
+//            if( v > MAXVERTICAL || d > MAXVERTICAL)
+//                NSLog( @"( v || d > MAXVERTICAL)");
+        }
+        for( int v=0; v<TmpCount; v++)
+        {
+            d=v+1;
+            if(d==TmpCount)d=0;
+            CLIP_Right(outPoly, outCount, TmpPoly[v],TmpPoly[d], DownRight);
+            
+//            if( v > MAXVERTICAL || d > MAXVERTICAL)
+//                NSLog( @"( v || d > MAXVERTICAL)");
+        }
+        TmpCount=0;
+        for( int v=0; v<*outCount; v++)
+        {
+            d=v+1;
+            if(d==*outCount)d=0;
+            CLIP_Top( TmpPoly, &TmpCount, outPoly[v],outPoly[d]);
+            
+//            if( v > MAXVERTICAL || d > MAXVERTICAL)
+//                NSLog( @"( v || d > MAXVERTICAL)");
+        }
+        *outCount=0;
+        for( int v=0; v<TmpCount; v++)
+        {
+            d=v+1;
+            if(d==TmpCount)d=0;
+            CLIP_Bottom(outPoly, outCount, TmpPoly[v],TmpPoly[d], DownRight);
+            
+//            if( v > MAXVERTICAL || d > MAXVERTICAL)
+//                NSLog( @"( v || d > MAXVERTICAL)");
+        }
 	}
-	for ( int v=0; v<TmpCount; v++)
-	{
-		d=v+1;
-		if(d==TmpCount)d=0;
-		CLIP_Right(outPoly, outCount, TmpPoly[v],TmpPoly[d], DownRight);
-	}
-	TmpCount=0;
-	for ( int v=0; v<*outCount; v++)
-	{
-		d=v+1;
-		if(d==*outCount)d=0;
-		CLIP_Top( TmpPoly, &TmpCount, outPoly[v],outPoly[d]);
-	}
-	*outCount=0;
-	for ( int v=0; v<TmpCount; v++)
-	{
-		d=v+1;
-		if(d==TmpCount)d=0;
-		CLIP_Bottom(outPoly, outCount, TmpPoly[v],TmpPoly[d], DownRight);
-	}
-	
-	free( TmpPoly);
 }
 
 // POLY FILL
@@ -1951,9 +1970,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 - (float*) getROIValue: (long*)numberOfValues : (ROI*)roi : (float**)locations
 {
-    long			count = 0, no;
-	float			*values = nil;
-	long			upleftx, uplefty, downrightx, downrighty;
+    long count = 0, no;
+	float *values = nil;
+	long upleftx, uplefty, downrightx, downrighty;
 	
     BOOL isComputefImageRGB = isRGB;
     float *computedfImage = nil;
@@ -2047,7 +2066,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                 }
             
                 // Need to clip?
-                NSPointInt *pTemp;
                 BOOL clip = NO;
                 
                 for( int i = 0; i < no && clip == NO; i++)
@@ -2114,24 +2132,48 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                     {
                         long newNo;
                         
-                        pTemp = (NSPointInt*) malloc( sizeof(NSPointInt) * 4 * no);
-                        CLIP_Polygon( pts, no, pTemp, &newNo, width, height);
-                        
-                        free( pts);
-                        pts = pTemp;
-                        
-                        no = newNo;
+                        NSPointInt *pTemp = (NSPointInt*) malloc( sizeof(NSPointInt) * 4 * no);
+                        if( pTemp)
+                        {
+                            CLIP_Polygon( pts, no, pTemp, &newNo, width, height);
+                            
+                            free( pts);
+                            pts = pTemp;
+                            no = newNo;
+                            
+//                            // Need to clip?
+//                            NSPointInt *pTemp;
+//                            BOOL clip = NO;
+//                            
+//                            for( int i = 0; i < no && clip == NO; i++)
+//                            {
+//                                if( pts[ i].x < 0) clip = YES;
+//                                if( pts[ i].y < 0) clip = YES;
+//                                if( pts[ i].x >= width) clip = YES;
+//                                if( pts[ i].y >= height) clip = YES;
+//                            }
+//                            
+//                            if( clip)
+//                                NSLog( @"arggg");
+                        }
+                        else
+                            no = 0;
                     }
                     
-                    [self computeROIBoundsFromPoints: pts count: ptsTemp.count upleftx: &upleftx uplefty:&uplefty downrightx: &downrightx downrighty: &downrighty];
-                    
-                    long size = ((downrightx-upleftx)+1)*((downrighty-uplefty)+1);
-                    values = (float*) malloc( size*sizeof(float));
-                    
-                    float *ilocations = nil;
-                    if( locations) *locations = ilocations = (float*) malloc( size * 2 * sizeof(float));
-                    
-                    ras_FillPolygon( pts, no, computedfImage, width, height, pixArray.count, 0, 0, NO, 0, NO, isComputefImageRGB, YES, nil, nil, &count, nil, nil, 0, 2, 0, NO, values, ilocations);
+                    if( no > 2)
+                    {
+                        [self computeROIBoundsFromPoints: pts count: no upleftx: &upleftx uplefty:&uplefty downrightx: &downrightx downrighty: &downrighty];
+                        
+                        long size = ((downrightx-upleftx)+2)*((downrighty-uplefty)+2);
+                        values = (float*) malloc( size*sizeof(float));
+                        
+                        float *ilocations = nil;
+                        if( locations)
+                            *locations = ilocations = (float*) malloc( size * 2 * sizeof(float));
+                        
+                        if( values)
+                            ras_FillPolygon( pts, no, computedfImage, width, height, pixArray.count, 0, 0, NO, 0, NO, isComputefImageRGB, YES, nil, nil, &count, nil, nil, 0, 2, 0, NO, values, ilocations);
+                    }
                 }
                 
                 free( pts);
@@ -2938,15 +2980,23 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         if( *downrighty < pts[i].y) *downrighty = pts[i].y;
     }
     
-    if( *upleftx < 0) *upleftx = 0;
-    if( *downrightx < 0) *downrightx = 0;
-    if( *upleftx > width) *upleftx = width;
-    if( *downrightx > width) *downrightx = width;
+    if( *upleftx < 0)
+        *upleftx = 0;
+    if( *downrightx < 0)
+        *downrightx = 0;
+    if( *upleftx > width)
+        *upleftx = width;
+    if( *downrightx > width)
+        *downrightx = width;
     
-    if( *uplefty < 0) *uplefty = 0;
-    if( *downrighty < 0) *downrighty = 0;
-    if( *uplefty > height) *uplefty = height;
-    if( *downrighty > height) *downrighty = height;
+    if( *uplefty < 0)
+        *uplefty = 0;
+    if( *downrighty < 0)
+        *downrighty = 0;
+    if( *uplefty > height)
+        *uplefty = height;
+    if( *downrighty > height)
+        *downrighty = height;
 }
 
 - (void) computeROI:(ROI*) roi :(float*) mean :(float *)total :(float *)dev :(float *)min :(float *)max
@@ -2956,6 +3006,10 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 - (void) computeROI:(ROI*) roi :(float*) mean :(float *)total :(float *)dev :(float *)min :(float *)max :(float *)skewness :(float*) kurtosis
 {
+//    if( total)
+//        *total = rand();
+//    return;
+    
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ROIComputeSkewnessAndKurtosis"] == NO)
     {
         if( skewness)
@@ -2978,6 +3032,10 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	imax = -FLT_MAX;
 	
     float *values = [self getROIValue: &count :roi :nil];
+    
+//    if( total)
+//        *total = rand();
+//    return;
     
     for( long i = 0; i < count; i++)
     {

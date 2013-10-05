@@ -59,14 +59,10 @@
 	antialiasing = NO;
 	texSize.width = 0.0f;
 	texSize.height = 0.0f;
-	[attributedString retain];
-	string = attributedString;
-	[text retain];
-	[box retain];
-	[border retain];
-	textColor = text;
-	boxColor = box;
-	borderColor = border;
+	string = [attributedString copy];
+	textColor = [text retain];
+	boxColor = [box retain];
+	borderColor = [border retain];
 	staticFrame = NO;
 	marginSize.width = 4.0f;
 	marginSize.height = 2.0f;
@@ -98,16 +94,15 @@
 - (void) dealloc
 {
 	while( [ctxArray count]) [self deleteTexture: [ctxArray lastObject]];
-	[ctxArray release];
+	[ctxArray release]; ctxArray = nil;
 	if( [textArray count]) NSLog( @"** not all texture were deleted...");
-	[textArray release];
+	[textArray release]; textArray = nil;
 	
-	[textColor release];
-	[boxColor release];
-	[borderColor release];
-	[string release];
-	[bitmap release];
-	bitmap = nil;
+	[textColor release]; textColor = nil;
+	[boxColor release]; boxColor = nil;
+	[borderColor release]; borderColor = nil;
+	[string release]; string = nil;
+	[bitmap release]; bitmap = nil;
 	
 	[super dealloc];
 }
@@ -175,8 +170,6 @@
     
     sf = backingScaleFactor;
     
-	NSImage * image;
-	
 	NSOpenGLContext *currentContext = [NSOpenGLContext currentContext];
 	CGLContextObj cgl_ctx = [currentContext CGLContextObj];
 	
@@ -187,7 +180,7 @@
 	}
 	
 	[self deleteTexture: currentContext];
-	if ((NO == staticFrame) && (0.0f == frameSize.width) && (0.0f == frameSize.height)) // find frame size if we have not already found it
+	if( staticFrame == NO && frameSize.width == 0 && frameSize.height == 0) // find frame size if we have not already found it
     {
 		frameSize = [string size]; // current string size
 		frameSize.width += marginSize.width * 2.0f; // add padding
@@ -201,7 +194,7 @@
 	
 	[bitmap release];
 	bitmap = nil;
-	image = [[NSImage alloc] initWithSize:frameSize];
+	NSImage *image = [[NSImage alloc] initWithSize:frameSize];
 	if( [image size].width > 0 && [image size].height > 0)
 	{
 		[image lockFocus];
@@ -375,9 +368,8 @@
 	while( [ctxArray count]) [self deleteTexture: [ctxArray lastObject]];
 	if( [textArray count]) NSLog( @"** not all texture were deleted...");
 	
-	[attributedString retain];
 	[string release];
-	string = attributedString;
+	string = [attributedString copy];
 	if (NO == staticFrame) { // ensure dynamic frame sizes will be recalculated
 		frameSize.width = 0.0f;
 		frameSize.height = 0.0f;

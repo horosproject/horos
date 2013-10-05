@@ -1458,7 +1458,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
     if( stringTextureCache == nil)
     {
         stringTextureCache = [[NSCache alloc] init];
-        stringTextureCache.countLimit = 30;
+        stringTextureCache.countLimit = 50;
     }
     
     StringTexture *sT = [stringTextureCache objectForKey: str];
@@ -1472,11 +1472,13 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
         [attrib setObject: [NSColor whiteColor] forKey:NSForegroundColorAttributeName];
         
         
-        sT = [[[StringTexture alloc] initWithString: str withAttributes: attrib] autorelease];
+        sT = [[StringTexture alloc] initWithString: str withAttributes: attrib];
         [sT setAntiAliasing: YES];
         [sT genTextureWithBackingScaleFactor: curView.window.backingScaleFactor];
         
         [stringTextureCache setObject: sT forKey: str];
+        
+        [sT release];
     }
     
     return sT;
@@ -2504,7 +2506,6 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	if( locked) return;
 
     float theta;
-    long intUpper;
     float new_x;
     float new_y;
 	float intYCenter, intXCenter;
@@ -2515,8 +2516,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 		self.isSpline = NO;
 	}
 	
-    intUpper = [pts count];
-	if( intUpper > 0)
+	if( pts.count > 0)
 	{
 		theta = deg2rad * angle; 
 		
@@ -2524,7 +2524,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 		{
 			type = tCPolygon;
 			[points release];
-			points = [pts retain];
+			points = [pts copy];
 		}
 		
 		intXCenter = center.x;
@@ -2535,12 +2535,12 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 		if( ratio == 0)
 			ratio = 1.0;
 		
-		for( long i = 0; i < intUpper; i++)
+		for( MyPoint *pt in pts)
 		{ 
-			new_x = cos(theta) * ([[pts objectAtIndex: i] x] - intXCenter) - sin(theta) * ([[pts objectAtIndex: i] y] - intYCenter)  * ratio;
-			new_y = sin(theta) * ([[pts objectAtIndex: i] x] - intXCenter) + cos(theta) * ([[pts objectAtIndex: i] y] - intYCenter)  * ratio;
+			new_x = cos(theta) * ([pt x] - intXCenter) - sin(theta) * ([pt y] - intYCenter)  * ratio;
+			new_y = sin(theta) * ([pt x] - intXCenter) + cos(theta) * ([pt y] - intYCenter)  * ratio;
 			
-			[[pts objectAtIndex: i] setPoint: NSMakePoint( new_x + intXCenter, new_y / ratio + intYCenter)];
+			[pt setPoint: NSMakePoint( new_x + intXCenter, new_y / ratio + intYCenter)];
 		}
 		
 		rtotal = -1;
@@ -2563,14 +2563,12 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	
 	if( locked) return;
 	
-    long intUpper;
     float new_x;
     float new_y;
 	float intYCenter, intXCenter;
 	NSMutableArray	*pts = self.points;
 	
-    intUpper = [pts count];
-	if( intUpper > 0)
+	if( pts.count > 0)
 	{
 		if( type == tROI || type == tOval)
 		{
@@ -2588,12 +2586,12 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 			intXCenter = center.x;
 			intYCenter = center.y;
 			
-			for( long i = 0; i < intUpper; i++)
+			for( MyPoint *pt in pts)
 			{ 
-				new_x = ([[pts objectAtIndex: i] x] - intXCenter) * factor;
-				new_y = ([[pts objectAtIndex: i] y] - intYCenter) * factor;
+				new_x = ([pt x] - intXCenter) * factor;
+				new_y = ([pt y] - intYCenter) * factor;
 				
-				[[pts objectAtIndex: i] setPoint: NSMakePoint( new_x + intXCenter, new_y + intYCenter)];
+				[pt setPoint: NSMakePoint( new_x + intXCenter, new_y + intYCenter)];
 			}
 		}
 		
