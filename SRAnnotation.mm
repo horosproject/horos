@@ -535,11 +535,25 @@
             if (status.good() && string)
                 document->setReferringPhysiciansName( string);
             
-            if( _DICOMSRDescription.length && [[_DICOMSRDescription dataUsingEncoding:encoding allowLossyConversion: YES] bytes])
-                document->setSeriesDescription( (char*) [[_DICOMSRDescription dataUsingEncoding:encoding allowLossyConversion: YES] bytes]);
+            if( _DICOMSRDescription.length)
+            {
+                NSMutableData *data = [NSMutableData dataWithData: [_DICOMSRDescription dataUsingEncoding:encoding allowLossyConversion: YES]];
+                unsigned char zeroByte = 0;
+                [data appendBytes:&zeroByte length:1];
+                
+                if( [data bytes])
+                    document->setSeriesDescription( (char*) [data bytes]);
+            }
             
-            if ([[study valueForKey:@"studyName"] length] && [[[study valueForKey:@"studyName"] dataUsingEncoding:encoding allowLossyConversion: YES] bytes])
-                document->setStudyDescription( (char*) [[[study valueForKey:@"studyName"] dataUsingEncoding:encoding allowLossyConversion: YES] bytes]);
+            if ([[study valueForKey:@"studyName"] length])
+            {
+                NSMutableData *data = [NSMutableData dataWithData: [[study valueForKey:@"studyName"] dataUsingEncoding:encoding allowLossyConversion: YES]];
+                unsigned char zeroByte = 0;
+                [data appendBytes:&zeroByte length:1];
+                
+                if( [data bytes])
+                    document->setStudyDescription( (char*) [data bytes]);
+            }
         }
     }
     else
