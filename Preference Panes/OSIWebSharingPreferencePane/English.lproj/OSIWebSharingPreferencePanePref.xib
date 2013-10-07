@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4510" systemVersion="12F37" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4510" systemVersion="12F45" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4510"/>
@@ -131,8 +131,8 @@
                                     </buttonCell>
                                     <connections>
                                         <action selector="viewTLSCertificate:" target="-2" id="881"/>
-                                        <binding destination="296" name="enabled" keyPath="values.encryptedWebServer" id="876"/>
                                         <binding destination="-2" name="title" keyPath="TLSAuthenticationCertificate" id="880"/>
+                                        <binding destination="296" name="enabled" keyPath="values.encryptedWebServer" id="876"/>
                                     </connections>
                                 </button>
                             </subviews>
@@ -166,8 +166,8 @@
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
                                     <connections>
-                                        <binding destination="296" name="enabled" keyPath="values.wadoServer" id="1224"/>
                                         <binding destination="296" name="value" keyPath="values.wadoRequestRequireValidToken" id="1222"/>
+                                        <binding destination="296" name="enabled" keyPath="values.wadoServer" id="1224"/>
                                     </connections>
                                 </button>
                                 <button id="1061">
@@ -211,8 +211,8 @@
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
                                     <connections>
-                                        <binding destination="296" name="enabled" keyPath="values.wadoServer" id="1106"/>
                                         <binding destination="296" name="value" keyPath="values.WebServerUsesWeasis" id="1104"/>
+                                        <binding destination="296" name="enabled" keyPath="values.wadoServer" id="1106"/>
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" id="1060">
@@ -318,8 +318,8 @@
                                 <textField verticalHuggingPriority="750" id="1182">
                                     <rect key="frame" x="374" y="204" width="72" height="19"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" title="10,000" drawsBackground="YES" id="1183">
-                                        <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="3" id="1184">
+                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" title="10'000" drawsBackground="YES" id="1183">
+                                        <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="3" groupingSeparator="'" id="1184">
                                             <real key="roundingIncrement" value="0.0"/>
                                             <real key="minimum" value="2"/>
                                             <metadata>
@@ -338,8 +338,8 @@
                                 <textField verticalHuggingPriority="750" id="XHr-7Y-bbX">
                                     <rect key="frame" x="374" y="182" width="72" height="19"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" title="10,000" drawsBackground="YES" id="yUL-wL-W2j">
-                                        <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="3" id="HaI-Tj-Vqc">
+                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" title="10'000" drawsBackground="YES" id="yUL-wL-W2j">
+                                        <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="3" groupingSeparator="'" id="HaI-Tj-Vqc">
                                             <real key="roundingIncrement" value="0.0"/>
                                             <real key="minimum" value="2"/>
                                             <metadata>
@@ -358,8 +358,8 @@
                                 <textField verticalHuggingPriority="750" id="5kN-Ud-Rbi">
                                     <rect key="frame" x="374" y="160" width="72" height="19"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" title="10,000" drawsBackground="YES" id="pvz-76-qnV">
-                                        <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="3" id="7Jt-h7-v0c">
+                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" title="10'000" drawsBackground="YES" id="pvz-76-qnV">
+                                        <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="3" groupingSeparator="'" id="7Jt-h7-v0c">
                                             <real key="roundingIncrement" value="0.0"/>
                                             <real key="minimum" value="2"/>
                                             <metadata>
@@ -378,8 +378,8 @@
                                 <textField verticalHuggingPriority="750" id="fZ5-s4-Zot">
                                     <rect key="frame" x="374" y="138" width="72" height="19"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" title="10,000" drawsBackground="YES" id="BvQ-RH-Tp7">
-                                        <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="3" id="6Ai-N0-6vP">
+                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" title="10'000" drawsBackground="YES" id="BvQ-RH-Tp7">
+                                        <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="3" groupingSeparator="'" id="6Ai-N0-6vP">
                                             <real key="roundingIncrement" value="0.0"/>
                                             <real key="minimum" value="2"/>
                                             <metadata>
@@ -487,12 +487,12 @@
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
                                     <connections>
-                                        <binding destination="296" name="enabled" keyPath="values.passwordWebServer" id="1120"/>
                                         <binding destination="296" name="value" keyPath="values.notificationsEmails" id="1118">
                                             <dictionary key="options">
                                                 <bool key="NSValidatesImmediately" value="YES"/>
                                             </dictionary>
                                         </binding>
+                                        <binding destination="296" name="enabled" keyPath="values.passwordWebServer" id="1120"/>
                                     </connections>
                                 </button>
                                 <textField verticalHuggingPriority="750" id="1083">
@@ -534,6 +534,8 @@
                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                     <connections>
+                                        <binding destination="296" name="enabled" keyPath="values.notificationsEmails" id="1112"/>
+                                        <binding destination="296" name="value" keyPath="values.notificationsEmailsInterval" id="1117"/>
                                         <binding destination="296" name="enabled2" keyPath="values.passwordWebServer" previousBinding="1112" id="1113">
                                             <dictionary key="options">
                                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
@@ -542,8 +544,6 @@
                                                 <integer key="NSNullPlaceholder" value="-1"/>
                                             </dictionary>
                                         </binding>
-                                        <binding destination="296" name="enabled" keyPath="values.notificationsEmails" id="1112"/>
-                                        <binding destination="296" name="value" keyPath="values.notificationsEmailsInterval" id="1117"/>
                                         <outlet property="nextKeyView" destination="1082" id="PmP-uG-bC6"/>
                                     </connections>
                                 </textField>
@@ -699,9 +699,9 @@ DQ
                                     </tableColumns>
                                     <connections>
                                         <binding destination="483" name="content" keyPath="arrangedObjects" id="1172"/>
-                                        <binding destination="296" name="enabled" keyPath="values.passwordWebServer" id="628"/>
                                         <binding destination="483" name="selectionIndexes" keyPath="selectionIndexes" previousBinding="1172" id="1174"/>
                                         <binding destination="483" name="sortDescriptors" keyPath="sortDescriptors" previousBinding="1174" id="1176"/>
+                                        <binding destination="296" name="enabled" keyPath="values.passwordWebServer" id="628"/>
                                     </connections>
                                 </tableView>
                             </subviews>
@@ -746,6 +746,7 @@ DQ
                         </buttonCell>
                         <connections>
                             <action selector="add:" target="483" id="537"/>
+                            <binding destination="483" name="enabled" keyPath="canAdd" id="538"/>
                             <binding destination="296" name="enabled2" keyPath="values.passwordWebServer" previousBinding="538" id="629">
                                 <dictionary key="options">
                                     <integer key="NSNotApplicablePlaceholder" value="-1"/>
@@ -754,7 +755,6 @@ DQ
                                     <integer key="NSNullPlaceholder" value="-1"/>
                                 </dictionary>
                             </binding>
-                            <binding destination="483" name="enabled" keyPath="canAdd" id="538"/>
                             <binding destination="296" name="hidden" keyPath="values.passwordWebServer" previousBinding="629" id="672">
                                 <dictionary key="options">
                                     <string key="NSValueTransformerName">NSNegateBoolean</string>
@@ -771,6 +771,12 @@ DQ
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </searchFieldCell>
                         <connections>
+                            <binding destination="483" name="predicate" keyPath="filterPredicate" id="571">
+                                <dictionary key="options">
+                                    <string key="NSDisplayName">All</string>
+                                    <string key="NSPredicateFormat">(address contains[c] $value) or (password contains[c] $value) or (phone contains[c] $value) or (email contains[c] $value) or (studyPredicate contains[c] $value) or (name contains[c] $value) or (passwordCreationDate.description contains[c] $value)</string>
+                                </dictionary>
+                            </binding>
                             <binding destination="483" name="predicate2" keyPath="filterPredicate" previousBinding="571" id="572">
                                 <dictionary key="options">
                                     <string key="NSDisplayName">Address</string>
@@ -811,12 +817,6 @@ DQ
                                 <dictionary key="options">
                                     <string key="NSDisplayName">Password Creation Date</string>
                                     <string key="NSPredicateFormat">passwordCreationDate.description contains[c] $value</string>
-                                </dictionary>
-                            </binding>
-                            <binding destination="483" name="predicate" keyPath="filterPredicate" id="571">
-                                <dictionary key="options">
-                                    <string key="NSDisplayName">All</string>
-                                    <string key="NSPredicateFormat">(address contains[c] $value) or (password contains[c] $value) or (phone contains[c] $value) or (email contains[c] $value) or (studyPredicate contains[c] $value) or (name contains[c] $value) or (passwordCreationDate.description contains[c] $value)</string>
                                 </dictionary>
                             </binding>
                         </connections>
@@ -971,6 +971,7 @@ DQ
                             <font key="font" metaFont="smallSystem"/>
                         </buttonCell>
                         <connections>
+                            <binding destination="483" name="value" keyPath="selection.emailNotification" id="615"/>
                             <binding destination="296" name="enabled" keyPath="values.notificationsEmails" id="1168">
                                 <dictionary key="options">
                                     <integer key="NSNotApplicablePlaceholder" value="-1"/>
@@ -979,7 +980,6 @@ DQ
                                     <integer key="NSNullPlaceholder" value="-1"/>
                                 </dictionary>
                             </binding>
-                            <binding destination="483" name="value" keyPath="selection.emailNotification" id="615"/>
                         </connections>
                     </button>
                     <button tag="-1" id="1229">
@@ -1042,6 +1042,7 @@ DQ
                             <font key="font" metaFont="smallSystem"/>
                         </buttonCell>
                         <connections>
+                            <binding destination="483" name="value" keyPath="selection.sendDICOMtoAnyNodes" id="666"/>
                             <binding destination="483" name="enabled" keyPath="selection.sendDICOMtoSelfIP" id="1167">
                                 <dictionary key="options">
                                     <integer key="NSNotApplicablePlaceholder" value="-1"/>
@@ -1050,7 +1051,6 @@ DQ
                                     <integer key="NSNullPlaceholder" value="-1"/>
                                 </dictionary>
                             </binding>
-                            <binding destination="483" name="value" keyPath="selection.sendDICOMtoAnyNodes" id="666"/>
                         </connections>
                     </button>
                     <button tag="-1" id="969">
@@ -1229,6 +1229,7 @@ DQ
                         </buttonCell>
                         <connections>
                             <action selector="remove:" target="786" id="790"/>
+                            <binding destination="786" name="enabled" keyPath="canRemove" id="791"/>
                             <binding destination="296" name="enabled2" keyPath="values.passwordWebServer" previousBinding="791" id="845">
                                 <dictionary key="options">
                                     <integer key="NSNotApplicablePlaceholder" value="-1"/>
@@ -1237,7 +1238,6 @@ DQ
                                     <integer key="NSNullPlaceholder" value="-1"/>
                                 </dictionary>
                             </binding>
-                            <binding destination="786" name="enabled" keyPath="canRemove" id="791"/>
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" tag="1" id="646">
@@ -1362,12 +1362,12 @@ DQ
                             <font key="font" metaFont="smallSystem"/>
                         </buttonCell>
                         <connections>
-                            <binding destination="483" name="enabled" keyPath="selection.shareStudyWithUser" id="1211"/>
                             <binding destination="483" name="value" keyPath="selection.createTemporaryUser" id="1210">
                                 <dictionary key="options">
                                     <bool key="NSValidatesImmediately" value="YES"/>
                                 </dictionary>
                             </binding>
+                            <binding destination="483" name="enabled" keyPath="selection.shareStudyWithUser" id="1211"/>
                         </connections>
                     </button>
                 </subviews>

@@ -2326,7 +2326,6 @@
 		A9FBD34D16DBE34E003A0E04 /* SmartAlbum.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98E40C84724B00CB38F1 /* SmartAlbum.xib */; };
 		A9FBD34E16DBE34E003A0E04 /* Splash.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98FC0C84724B00CB38F1 /* Splash.xib */; };
 		A9FBD34F16DBE34E003A0E04 /* SR.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99340C84724B00CB38F1 /* SR.xib */; };
-		A9FBD35016DBE34E003A0E04 /* ThickSlab.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99180C84724B00CB38F1 /* ThickSlab.xib */; };
 		A9FBD35116DBE34E003A0E04 /* ThreadModalForWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5926822111CF60BD00CFA81F /* ThreadModalForWindow.xib */; };
 		A9FBD35216DBE34E003A0E04 /* ToolbarPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98F00C84724B00CB38F1 /* ToolbarPanel.xib */; };
 		A9FBD35316DBE34E003A0E04 /* Viewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99360C84724B00CB38F1 /* Viewer.xib */; };
@@ -4423,7 +4422,6 @@
 		CE3F995B0C84724B00CB38F1 /* Query.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99120C84724B00CB38F1 /* Query.xib */; };
 		CE3F995C0C84724B00CB38F1 /* Histogram.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99140C84724B00CB38F1 /* Histogram.xib */; };
 		CE3F995D0C84724B00CB38F1 /* PluginManager.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99160C84724B00CB38F1 /* PluginManager.xib */; };
-		CE3F995E0C84724B00CB38F1 /* ThickSlab.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99180C84724B00CB38F1 /* ThickSlab.xib */; };
 		CE3F995F0C84724B00CB38F1 /* WaitRendering.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F991A0C84724B00CB38F1 /* WaitRendering.xib */; };
 		CE3F99600C84724B00CB38F1 /* Plot.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F991C0C84724B00CB38F1 /* Plot.xib */; };
 		CE3F99610C84724B00CB38F1 /* ROIVolume.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F991E0C84724B00CB38F1 /* ROIVolume.xib */; };
@@ -8594,7 +8592,6 @@
 		CEC706A910A5C844008935EA /* Query.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99120C84724B00CB38F1 /* Query.xib */; };
 		CEC706AA10A5C844008935EA /* Histogram.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99140C84724B00CB38F1 /* Histogram.xib */; };
 		CEC706AB10A5C844008935EA /* PluginManager.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99160C84724B00CB38F1 /* PluginManager.xib */; };
-		CEC706AC10A5C844008935EA /* ThickSlab.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99180C84724B00CB38F1 /* ThickSlab.xib */; };
 		CEC706AD10A5C844008935EA /* WaitRendering.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F991A0C84724B00CB38F1 /* WaitRendering.xib */; };
 		CEC706AE10A5C844008935EA /* Plot.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F991C0C84724B00CB38F1 /* Plot.xib */; };
 		CEC706AF10A5C844008935EA /* ROIVolume.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F991E0C84724B00CB38F1 /* ROIVolume.xib */; };
@@ -11569,7 +11566,6 @@
 		CE3F99130C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Query.xib; sourceTree = "<group>"; };
 		CE3F99150C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Histogram.xib; sourceTree = "<group>"; };
 		CE3F99170C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/PluginManager.xib; sourceTree = "<group>"; };
-		CE3F99190C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ThickSlab.xib; sourceTree = "<group>"; };
 		CE3F991B0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/WaitRendering.xib; sourceTree = "<group>"; };
 		CE3F991D0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Plot.xib; sourceTree = "<group>"; };
 		CE3F991F0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ROIVolume.xib; sourceTree = "<group>"; };
@@ -15951,7 +15947,6 @@
 				CE3F98E40C84724B00CB38F1 /* SmartAlbum.xib */,
 				CE3F98FC0C84724B00CB38F1 /* Splash.xib */,
 				CE3F99340C84724B00CB38F1 /* SR.xib */,
-				CE3F99180C84724B00CB38F1 /* ThickSlab.xib */,
 				5926822111CF60BD00CFA81F /* ThreadModalForWindow.xib */,
 				CE3F98F00C84724B00CB38F1 /* ToolbarPanel.xib */,
 				CE3F99360C84724B00CB38F1 /* Viewer.xib */,
@@ -27872,7 +27867,6 @@
 				A9FBD34D16DBE34E003A0E04 /* SmartAlbum.xib in Resources */,
 				A9FBD34E16DBE34E003A0E04 /* Splash.xib in Resources */,
 				A9FBD34F16DBE34E003A0E04 /* SR.xib in Resources */,
-				A9FBD35016DBE34E003A0E04 /* ThickSlab.xib in Resources */,
 				A9FBD35116DBE34E003A0E04 /* ThreadModalForWindow.xib in Resources */,
 				A9FBD35216DBE34E003A0E04 /* ToolbarPanel.xib in Resources */,
 				A9FBD35316DBE34E003A0E04 /* Viewer.xib in Resources */,
@@ -28154,7 +28148,6 @@
 				CE3F995B0C84724B00CB38F1 /* Query.xib in Resources */,
 				CE3F995C0C84724B00CB38F1 /* Histogram.xib in Resources */,
 				CE3F995D0C84724B00CB38F1 /* PluginManager.xib in Resources */,
-				CE3F995E0C84724B00CB38F1 /* ThickSlab.xib in Resources */,
 				CE3F995F0C84724B00CB38F1 /* WaitRendering.xib in Resources */,
 				CE3F99600C84724B00CB38F1 /* Plot.xib in Resources */,
 				CE3F99610C84724B00CB38F1 /* ROIVolume.xib in Resources */,
@@ -28573,7 +28566,6 @@
 				CEC706A910A5C844008935EA /* Query.xib in Resources */,
 				CEC706AA10A5C844008935EA /* Histogram.xib in Resources */,
 				CEC706AB10A5C844008935EA /* PluginManager.xib in Resources */,
-				CEC706AC10A5C844008935EA /* ThickSlab.xib in Resources */,
 				CEC706AD10A5C844008935EA /* WaitRendering.xib in Resources */,
 				CEC706AE10A5C844008935EA /* Plot.xib in Resources */,
 				CEC706AF10A5C844008935EA /* ROIVolume.xib in Resources */,
@@ -32394,14 +32386,6 @@
 				CE3F99170C84724B00CB38F1 /* English */,
 			);
 			name = PluginManager.xib;
-			sourceTree = "<group>";
-		};
-		CE3F99180C84724B00CB38F1 /* ThickSlab.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CE3F99190C84724B00CB38F1 /* English */,
-			);
-			name = ThickSlab.xib;
 			sourceTree = "<group>";
 		};
 		CE3F991A0C84724B00CB38F1 /* WaitRendering.xib */ = {
