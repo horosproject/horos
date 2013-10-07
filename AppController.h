@@ -36,8 +36,8 @@
 #import <AppKit/AppKit.h>
 #import "XMLRPCMethods.h"
 
-@class ThreadPoolServer;
-@class ThreadPerConnectionServer;
+//@class ThreadPoolServer;
+//@class ThreadPerConnectionServer;
 
 //#import "IChatTheatreDelegate.h"
 
@@ -116,20 +116,14 @@ extern AppController* OsiriX;
 	
     volatile BOOL					quitting;
 	BOOL							verboseUpdateCheck;
-    NSTask							*theTask;
 	NSNetService					*BonjourDICOMService;
 	
-	BOOL							xFlipped, yFlipped;  // Dependent on current DCMView settings.
-	
 	NSTimer							*updateTimer;
-	DCMNetServiceDelegate			*dicomNetServiceDelegate;
 	XMLRPCInterface					*XMLRPCServer;
-	ThreadPoolServer				*webServer;
 	
 	BOOL							checkAllWindowsAreVisibleIsOff, isSessionInactive;
 	
 	int								lastColumns, lastRows, lastCount;
-//	NSMutableArray					*viewersAddresses;
     
     BonjourPublisher* _bonjourPublisher;
 }
@@ -174,7 +168,6 @@ extern AppController* OsiriX;
 - (void) restartSTORESCP; /**< Restart listener (Q/R SCP) */
 - (void) startSTORESCP:(id) sender; /**< Start listener (Q/R SCP) */
 - (void) startSTORESCPTLS:(id) sender; /**< Start TLS listener (Q/R SCP) */
-- (void) startDICOMBonjourSearch; /**< Use Bonjour to search for other DICOM services */
 - (void) installPlugins: (NSArray*) pluginsArray;
 - (BOOL) isStoreSCPRunning;
 

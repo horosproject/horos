@@ -2167,71 +2167,6 @@ static NSDate *lastWarningDate = nil;
 	#endif
 	
 	return;
-	
-//	// this method is always executed as a new thread detached from the NSthread command of RestartSTORESCP method
-//	// this implies it needs it's own pool of objects
-//	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-//	
-//	quitting = NO;
-//	
-//	// create the subprocess
-//	theTask = [[NSTask alloc] init];
-//	
-//	// set DICOMDICTPATH in the environment of execution and choose storescp command
-//	[theTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
-//	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/storescp"]];
-//	
-//	// initialize arguments for CLI
-//	NSMutableArray *theArguments = [NSMutableArray array];
-//	[theArguments addObject: @"-aet"];
-//	[theArguments addObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"]];
-//	[theArguments addObject: @"-od"];
-//	[theArguments addObject: [documentsDirectory() stringByAppendingPathComponent:INCOMINGPATH]];
-//	[theArguments addObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETransferSyntax"]];
-//	[theArguments addObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"]];
-//	[theArguments addObject: @"--fork"];
-//
-//	if( [[NSUserDefaults standardUserDefaults] stringForKey: @"STORESCPEXTRA"] != nil &&
-//		[[[NSUserDefaults standardUserDefaults] stringForKey: @"STORESCPEXTRA"] isEqualToString:@""] == NO ) {
-//		
-//		NSLog([[NSUserDefaults standardUserDefaults] stringForKey: @"STORESCPEXTRA"]);
-//		[theArguments addObjectsFromArray:[[[NSUserDefaults standardUserDefaults] stringForKey: @"STORESCPEXTRA"] componentsSeparatedByString:@" "]];
-//	}
-//		
-//	[theTask setArguments: theArguments];
-//
-//	
-//	// open a pipe for traceroute to send its output to
-//	NSPipe *thePipe = [NSPipe pipe];
-//	[theTask setStandardOutput:thePipe];
-//	
-//	// open another pipe for the errors
-//	NSPipe *errorPipe = [NSPipe pipe];
-//	[theTask setStandardError:errorPipe];
-//	
-//	//-------------------------------launches dcmtk----------------------
-//	[theTask launch];
-//	[theTask waitUntilExit];
-//	//-------------------------------------------------------------------
-//	
-//	//    int status = [theTask terminationStatus];	
-//	NSData  *errData = [[errorPipe fileHandleForReading] availableData];
-//	NSData  *resData = [[thePipe fileHandleForReading] availableData];	
-//	NSString    *errString = [[NSString alloc] initWithData:errData encoding:NSUTF8StringEncoding];
-//	NSString    *resString = [[NSString alloc] initWithData:resData encoding:NSUTF8StringEncoding];
-//	
-//	if( quitting == NO)
-//		{
-//		NSLog(@"Task failed.");
-//		if( [errString isEqualToString:@""] == NO)
-//			{
-//				[self performSelectorOnMainThread:@selector(displayListenerError:) withObject:errString waitUntilDone: YES];
-//			}
-//		}
-//	
-//	[errString release];
-//	[resString release];
-//	[pool release];
 }
 
 -(void) startSTORESCPTLS:(id) sender
@@ -2575,8 +2510,8 @@ static NSDate *lastWarningDate = nil;
 {
 	unlink( "/tmp/kill_all_storescu");
 	
-	[webServer release];
-	webServer = nil;
+//	[webServer release];
+//	webServer = nil;
 	
 	[XMLRPCServer release];
 	XMLRPCServer = nil;
@@ -2599,8 +2534,6 @@ static NSDate *lastWarningDate = nil;
 	BonjourDICOMService = nil;
 
     quitting = YES;
-    [theTask interrupt];
-	[theTask release];
 	
 //	if (BUILTIN_DCMTK == YES)
 //	{
@@ -3858,8 +3791,6 @@ static BOOL initialized = NO;
 	
 	[PluginManager setMenus: filtersMenu :roisMenu :othersMenu :dbMenu];
     
-	theTask = nil;
-	
 	appController = self;
 	[self initDCMTK];
 	[self restartSTORESCP];
@@ -3997,7 +3928,7 @@ static BOOL initialized = NO;
 	
 		
 	//Checks for Bonjour enabled dicom servers. Most likely other copies of OsiriX
-	[self startDICOMBonjourSearch];
+	[DCMNetServiceDelegate sharedNetServiceDelegate];
 	
 	previousDefaults = [[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] retain];
 	showRestartNeeded = YES;
@@ -5401,12 +5332,6 @@ static BOOL initialized = NO;
     }
     
 	[ViewerController closeAllWindows];
-}
-
-- (void) startDICOMBonjourSearch
-{
-	if (!dicomNetServiceDelegate)
-		dicomNetServiceDelegate = [DCMNetServiceDelegate sharedNetServiceDelegate];
 }
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
