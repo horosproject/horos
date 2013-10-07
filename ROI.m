@@ -2501,6 +2501,56 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	return result;
 }
 
+- (void) flipVertically: (BOOL) vertically
+{
+	if( locked) return;
+    
+    float new_x, new_y, intYCenter, intXCenter;
+	NSMutableArray	*pts = self.points;
+	
+	if( type == tROI)
+	{
+		self.isSpline = NO;
+	}
+	
+	if( pts.count > 0)
+	{
+		if( type == tROI || type == tOval)
+		{
+			type = tCPolygon;
+			[points release];
+			points = [pts copy];
+		}
+		
+		float ratio = [[self pix] pixelRatio];
+		
+		if( ratio == 0)
+			ratio = 1.0;
+		
+        NSPoint centroid = self.centroid;
+        
+		for( MyPoint *pt in pts)
+		{
+            if( vertically)
+            {
+                new_x = pt.x;
+                new_y = -(pt.y - centroid.y) + centroid.y;
+			}
+            else
+            {
+                new_x = -(pt.x - centroid.x) + centroid.x;
+                new_y = pt.y;
+            }
+            
+			[pt setPoint: NSMakePoint( new_x, new_y)];
+		}
+		
+		rtotal = -1;
+		Brtotal = -1;
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:self userInfo: nil];
+	}
+}
+
 - (void) rotate: (float) angle :(NSPoint) center
 {
 	if( locked) return;
@@ -3406,7 +3456,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	if( mode != m)
 	{
         if( [NSEvent pressedMouseButtons] != 0 && (mode == ROI_drawing || mode == ROI_selectedModify))
-            NSLog( @"*** change ROI mode during modification?");
+            NSLog( @"---- change ROI mode during modification?");
         
 		mode = m;
 		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:self userInfo: nil];

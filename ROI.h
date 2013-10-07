@@ -336,6 +336,9 @@ enum
 /** Rotate the ROI */
 - (void) rotate: (float) angle :(NSPoint) center;
 
+/** Flip the ROI vertically or horizontally */
+- (void) flipVertically: (BOOL) vertically;
+
 /** Test to see if ROI can be resized */
 - (BOOL)canResize;
 

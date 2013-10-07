@@ -12370,6 +12370,22 @@ short				matrix[25];
 	return identical;	
 }
 
+- (IBAction) flipROIHorizontally:(id)sender
+{
+    for( ROI* roi in self.selectedROIs)
+    {
+        [roi flipVertically: NO];
+    }
+}
+
+- (IBAction) flipROIVertically:(id)sender
+{
+    for( ROI* roi in self.selectedROIs)
+    {
+        [roi flipVertically: YES];
+    }
+}
+
 - (void) saveROI:(long) mIndex
 {
 	BOOL isDir = YES, toBeSaved = NO;
