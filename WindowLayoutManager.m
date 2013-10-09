@@ -50,36 +50,46 @@ static WindowLayoutManager *sharedLayoutManager = nil;
 	return self;
 }
 
-- (int) windowsRows
++ (int) windowsRowsForHangingProtocol:(NSDictionary*) protocol
 {
-    if( [self.currentHangingProtocol objectForKey: @"WindowsTiling"])
+    if( [protocol objectForKey: @"WindowsTiling"])
     {
-        int tag = [[self.currentHangingProtocol objectForKey: @"WindowsTiling"] intValue];
+        int tag = [[protocol objectForKey: @"WindowsTiling"] intValue];
         
         if (tag < 16)
             return (tag / 4) + 1; // See SetImageTiling ViewerController.m
     }
     
-	if( [[self.currentHangingProtocol objectForKey: @"Rows"] intValue] > 0)
-        return [[self.currentHangingProtocol objectForKey: @"Rows"] intValue];
+	if( [[protocol objectForKey: @"Rows"] intValue] > 0)
+        return [[protocol objectForKey: @"Rows"] intValue];
     
     return 1;
 }
 
-- (int) windowsColumns
++ (int) windowsColumnsForHangingProtocol:(NSDictionary*) protocol
 {
-    if( [self.currentHangingProtocol objectForKey: @"WindowsTiling"])
+    if( [protocol objectForKey: @"WindowsTiling"])
     {
-        int tag = [[self.currentHangingProtocol objectForKey: @"WindowsTiling"] intValue];
+        int tag = [[protocol objectForKey: @"WindowsTiling"] intValue];
         
         if (tag < 16)
             return (tag %  4) + 1; // See SetImageTiling ViewerController.m
     }
     
-	if( [[self.currentHangingProtocol objectForKey: @"Columns"] intValue] > 0)
-        return [[self.currentHangingProtocol objectForKey: @"Columns"] intValue];
+	if( [[protocol objectForKey: @"Columns"] intValue] > 0)
+        return [[protocol objectForKey: @"Columns"] intValue];
     
 	return 1;
+}
+
+- (int) windowsRows
+{
+    return [WindowLayoutManager windowsRowsForHangingProtocol: self.currentHangingProtocol];
+}
+
+- (int) windowsColumns
+{
+    return [WindowLayoutManager windowsColumnsForHangingProtocol: self.currentHangingProtocol];
 }
 
 - (int) imagesRows

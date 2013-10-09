@@ -7063,7 +7063,7 @@ static NSConditionLock *threadLock = nil;
         }
         
         // Prepare the series
-        int total = [[WindowLayoutManager sharedWindowLayoutManager] windowsRows] * [[WindowLayoutManager sharedWindowLayoutManager] windowsColumns];
+        int total = [WindowLayoutManager windowsRowsForHangingProtocol: currentHangingProtocol] * [WindowLayoutManager windowsColumnsForHangingProtocol: currentHangingProtocol];
         
         if( seriesArray.count > total)
             [seriesArray removeObjectsInRange: NSMakeRange( total, seriesArray.count-total)];

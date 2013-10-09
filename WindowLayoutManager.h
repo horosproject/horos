@@ -31,6 +31,8 @@ It is a shared class.
 @property( retain) NSDictionary *currentHangingProtocol;
 
 + (WindowLayoutManager*)sharedWindowLayoutManager;
++ (int) windowsRowsForHangingProtocol:(NSDictionary*) protocol;
++ (int) windowsColumnsForHangingProtocol:(NSDictionary*) protocol;
 - (int) windowsRows;
 - (int) windowsColumns;
 - (int) imagesRows;
