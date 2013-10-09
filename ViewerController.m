@@ -3903,7 +3903,9 @@ static volatile int numberOfThreadsForRelisce = 0;
                 }
 #endif
             }
-                
+            
+            NSArray *allStudiesArray = studiesArray;
+            
 #ifndef OSIRIX_LIGHT
             NSMutableArray* tstudiesArray = [NSMutableArray array];
             NSMutableArray* tseriesArray = [NSMutableArray array];
@@ -3935,6 +3937,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                 [cell setTarget: self];
                 [seriesPopupMenu.menu addItem: cell];
                 
+                NSUInteger curStudyIndexAll = [allStudiesArray indexOfObject: curStudy];
                 NSUInteger curStudyIndex = [studiesArray indexOfObject: curStudy];
                 
                 [cell setRepresentedObject:[O2ViewerThumbnailsMatrixRepresentedObject object:curStudy children:[seriesArray objectAtIndex:curStudyIndex]]];
@@ -3997,14 +4000,14 @@ static volatile int numberOfThreadsForRelisce = 0;
                         
                         NSArray *colors = ViewerController.studyColors;
                         NSColor *bkgColor = nil;
-                        if( curStudyIndex >= colors.count)
+                        if( curStudyIndexAll >= colors.count)
                             bkgColor = [colors lastObject];
                         else
-                            bkgColor = [colors objectAtIndex: curStudyIndex];
+                            bkgColor = [colors objectAtIndex: curStudyIndexAll];
                         
                         [d setObject: [NSFont boldSystemFontOfSize: 16] forKey: NSFontAttributeName];
                         
-                        NSAttributedString *s = [[[NSAttributedString alloc] initWithString: [NSString stringWithFormat: @"%d", (int) curStudyIndex+1] attributes: d] autorelease];
+                        NSAttributedString *s = [[[NSAttributedString alloc] initWithString: [NSString stringWithFormat: @"%d", (int) curStudyIndexAll+1] attributes: d] autorelease];
                         
                         [number lockFocus];
                         [bkgColor set];
@@ -4805,6 +4808,8 @@ static volatile int numberOfThreadsForRelisce = 0;
                 #endif
 			}
             
+            NSArray *allStudiesArray = studiesArray;
+            
 #ifndef OSIRIX_LIGHT
             NSMutableArray* tstudiesArray = [NSMutableArray array];
             NSMutableArray* tseriesArray = [NSMutableArray array];
@@ -4826,6 +4831,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                 } else
                     iteratedFirstLoaded = YES;
             }
+            
             studiesArray = tstudiesArray;
             seriesArray = tseriesArray;
 #endif
@@ -4857,7 +4863,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 			for( id curStudy in studiesArray)
 			{
                 NSButtonCell* cell = [previewMatrix cellAtRow: index column:0];
-
+                
+                NSUInteger curStudyIndexAll = [allStudiesArray indexOfObject: curStudy];
                 NSUInteger curStudyIndex = [studiesArray indexOfObject: curStudy];
 
                 [cell setRepresentedObject:[O2ViewerThumbnailsMatrixRepresentedObject object:curStudy children:[seriesArray objectAtIndex:curStudyIndex]]];
@@ -4937,7 +4944,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                             patName = @"";
                         
                         NSMutableArray* components = [NSMutableArray array];
-                        [components addObject: [NSString stringWithFormat: @" %d ", (int) curStudyIndex+1]];
+                        [components addObject: [NSString stringWithFormat: @" %d ", (int) curStudyIndexAll+1]];
                         [components addObject: @""];
                         if (patName.length) [components addObject:patName];
                         if (name.length) [components addObject:name];
@@ -4955,10 +4962,10 @@ static volatile int numberOfThreadsForRelisce = 0;
                         
                         NSArray *colors = ViewerController.studyColors;
                         NSColor *bkgColor = nil;
-                        if( curStudyIndex >= colors.count)
+                        if( curStudyIndexAll >= colors.count)
                             bkgColor = [colors lastObject];
                         else
-                            bkgColor = [colors objectAtIndex: curStudyIndex];
+                            bkgColor = [colors objectAtIndex: curStudyIndexAll];
                         
                         [attribs setObject: bkgColor forKey: NSBackgroundColorAttributeName];
                         [finalString setAttributes: attribs range: NSMakeRange( 0, [[components objectAtIndex: 0] length])];
