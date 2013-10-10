@@ -162,7 +162,7 @@
         else
             imageFrame.origin.y += ceil((cellFrame.size.height - imageFrame.size.height) / 2);
         
-        [image compositeToPoint:imageFrame.origin operation:NSCompositeSourceOver];
+        [image drawAtPoint:imageFrame.origin fromRect: NSZeroRect operation:NSCompositeSourceOver fraction: 1.0];
     }
 	
 	if (lastImage != nil)
@@ -184,7 +184,7 @@
         else
             imageFrame.origin.y += ceil((cellFrame.size.height - imageFrame.size.height) / 2);
         
-        [lastImage compositeToPoint:imageFrame.origin operation:NSCompositeSourceOver];
+        [lastImage drawAtPoint:imageFrame.origin fromRect:NSZeroRect operation:NSCompositeSourceOver fraction: 1.0];
 	}
 
     } @catch( NSException *localException) {

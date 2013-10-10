@@ -25,18 +25,18 @@
 	float fillX = x + size.width;
 	float fillWidth = cellFrame.size.width - size.width - addX;
 	
-	[leftImage compositeToPoint:NSMakePoint(x, y) operation:NSCompositeSourceOver];
+	[leftImage drawAtPoint:NSMakePoint(x, y) fromRect: NSZeroRect operation:NSCompositeSourceOver fraction: 1.0];
 
 	size = [rightImage size];
 	addX = size.width / 2.0;
 	x = NSMaxX(cellFrame) - size.width - addX;
 	fillWidth -= size.width+addX;
 	
-	[rightImage compositeToPoint:NSMakePoint(x, y) operation:NSCompositeSourceOver];
+	[rightImage drawAtPoint:NSMakePoint(x, y) fromRect: NSZeroRect operation:NSCompositeSourceOver fraction: 1.0];
 	
 	[fillImage setScalesWhenResized:YES];
 	[fillImage setSize:NSMakeSize(fillWidth, [fillImage size].height)];
-	[fillImage compositeToPoint:NSMakePoint(fillX, y) operation:NSCompositeSourceOver];
+	[fillImage drawAtPoint:NSMakePoint(fillX, y) fromRect: NSZeroRect operation:NSCompositeSourceOver fraction: 1.0];
 	
 	[self drawInteriorWithFrame:cellFrame inView:controlView];
 }
