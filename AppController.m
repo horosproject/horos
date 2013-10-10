@@ -3128,43 +3128,27 @@ static BOOL initialized = NO;
 {
 #ifndef OSIRIX_LIGHT
 #ifndef MACAPPSTORE
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"doNotUseGrowl"]) return;
-	
-	[GrowlApplicationBridge notifyWithTitle: title
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"displayGrowlNotification"])
+	{
+        [GrowlApplicationBridge notifyWithTitle: title
 							description: description 
 							notificationName: name
 							iconData: nil
 							priority: 0
 							isSticky: NO
 							clickContext: nil];
-#endif
-#endif
+    }
     
-//    NSUserNotification *userNotification = [[NSUserNotification new] autorelease];
-//    
-//    userNotification.title = title;
-//    userNotification.subtitle = description;
-//    
-//    [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification: userNotification];
-}
-
-- (NSDictionary *) registrationDictionaryForGrowl
-{
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"doNotUseGrowl"]) return nil;
-	
-    NSDictionary *dict = nil;
-	
-#ifndef OSIRIX_LIGHT
-#ifndef MACAPPSTORE
-    
-    NSArray *notifications = [NSArray arrayWithObjects: @"newstudy", @"newfiles", @"delete", @"result", @"autorouting", @"autoquery", @"send", nil];
-    
-    dict = [NSDictionary dictionaryWithObjectsAndKeys:
-                             notifications, GROWL_NOTIFICATIONS_ALL,
-                         notifications, GROWL_NOTIFICATIONS_DEFAULT, nil];
+//    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"displayMacOSUserNotification"] && [AppController hasMacOSXMountainLion]) Growl SDK 1.3 will automatically use MacOS User Notification, if Growl is not installed
+//    {
+//        NSUserNotification *notification = [[NSUserNotification alloc] init];
+//        [notification setTitle: title];
+//        [notification setInformativeText: description];
+//        [notification setSoundName: NSUserNotificationDefaultSoundName];
+//        [[NSUserNotificationCenter defaultUserNotificationCenter] scheduleNotification: notification];
+//    }
 #endif
 #endif
-    return dict;
 }
 
 #pragma mark-
@@ -3826,29 +3810,29 @@ static BOOL initialized = NO;
 	#endif
     #endif
 	
-	#ifndef OSIRIX_LIGHT
-	#ifndef MACAPPSTORE
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"doNotUseGrowl"] == NO)
-	{
-        // If Growl crashed before...
-        NSString *GrowlCrashed = @"/tmp/OsiriXGrowlCrashed";
-        
-        if( [[NSFileManager defaultManager] fileExistsAtPath: GrowlCrashed])
-        {
-            [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"doNotUseGrowl"];
-            [[NSFileManager defaultManager] removeItemAtPath: GrowlCrashed error: nil];
-        }
-        else 
-        {
-            [GrowlCrashed writeToFile: GrowlCrashed atomically: YES encoding: NSUTF8StringEncoding error: nil];
-            
-            [GrowlApplicationBridge setGrowlDelegate: self];
-            
-            [[NSFileManager defaultManager] removeItemAtPath: GrowlCrashed error: nil];
-        }
-	}
-	#endif
-	#endif
+//	#ifndef OSIRIX_LIGHT
+//	#ifndef MACAPPSTORE
+//	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"displayGrowlNotification"])
+//	{
+//        // If Growl crashed before...
+//        NSString *GrowlCrashed = @"/tmp/OsiriXGrowlCrashed";
+//        
+//        if( [[NSFileManager defaultManager] fileExistsAtPath: GrowlCrashed])
+//        {
+//            [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"displayGrowlNotification"];
+//            [[NSFileManager defaultManager] removeItemAtPath: GrowlCrashed error: nil];
+//        }
+//        else 
+//        {
+//            [GrowlCrashed writeToFile: GrowlCrashed atomically: YES encoding: NSUTF8StringEncoding error: nil];
+//            
+//            [GrowlApplicationBridge setGrowlDelegate: self];
+//            
+//            [[NSFileManager defaultManager] removeItemAtPath: GrowlCrashed error: nil];
+//        }
+//	}
+//	#endif
+//	#endif
 	
 	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     [nc addObserver: self
@@ -3966,7 +3950,7 @@ static BOOL initialized = NO;
 		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"EncryptCD"];
 		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"encryptForExport"];
 		
-		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideNoMountainLionWarning2"] == NO)
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideNoMountainLionWarning3"] == NO)
 		{
 			NSAlert* alert = [[NSAlert new] autorelease];
 			[alert setMessageText: NSLocalizedString( @"Mac OS Version", nil)];
@@ -3978,7 +3962,7 @@ static BOOL initialized = NO;
                 [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://itunes.apple.com/us/app/os-x-mountain-lion/id537386512?mt=12"]];
             
 			if ([[alert suppressionButton] state] == NSOnState)
-				[[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"hideNoMountainLionWarning2"];
+				[[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"hideNoMountainLionWarning3"];
 		}
 	}
 	

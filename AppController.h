@@ -87,17 +87,17 @@ extern "C"
 *
 */
 
-#if defined(OSIRIX_VIEWER) && !defined(OSIRIX_LIGHT) && !defined(MACAPPSTORE)
-#else
-@protocol GrowlApplicationBridgeDelegate
-@end
-#endif
+//#if defined(OSIRIX_VIEWER) && !defined(OSIRIX_LIGHT) && !defined(MACAPPSTORE)
+//#else
+//@protocol GrowlApplicationBridgeDelegate
+//@end
+//#endif
 
 @class AppController, ToolbarPanelController, BonjourPublisher;
 
 extern AppController* OsiriX;
 
-@interface AppController : NSObject	<NSNetServiceBrowserDelegate, NSNetServiceDelegate, GrowlApplicationBridgeDelegate, NSSoundDelegate>
+@interface AppController : NSObject	<NSNetServiceBrowserDelegate, NSNetServiceDelegate, NSSoundDelegate> // GrowlApplicationBridgeDelegate
 {
 	IBOutlet BrowserController		*browserController;
 
@@ -244,7 +244,7 @@ extern AppController* OsiriX;
 #pragma mark-
 #pragma mark growl
 - (void) growlTitle:(NSString*) title description:(NSString*) description name:(NSString*) name;
-- (NSDictionary *) registrationDictionaryForGrowl;
+//- (NSDictionary *) registrationDictionaryForGrowl;
 
 //#pragma mark-
 //#pragma mark display setters and getters

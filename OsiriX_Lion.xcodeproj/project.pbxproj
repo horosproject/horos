@@ -4816,6 +4816,7 @@
 		CEA4F07715AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA4F07315AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.m */; };
 		CEA4F07915AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.h in Headers */ = {isa = PBXBuildFile; fileRef = CEA4F07415AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.h */; };
 		CEA4F07D15AEA606009584C7 /* OSIPACSOnDemand.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEA4F07B15AEA606009584C7 /* OSIPACSOnDemand.xib */; };
+		CEA6CC7318068CE900F5A748 /* Growl Registration Ticket.growlRegDict in Resources */ = {isa = PBXBuildFile; fileRef = CEA6CC7218068CE900F5A748 /* Growl Registration Ticket.growlRegDict */; };
 		CEA9237215CE3F7C00D3385F /* InstantMessage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA9237115CE3F7C00D3385F /* InstantMessage.framework */; };
 		CEA9237315CE3F7C00D3385F /* InstantMessage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA9237115CE3F7C00D3385F /* InstantMessage.framework */; };
 		CEA9237515CE436E00D3385F /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA9237415CE436E00D3385F /* AddressBook.framework */; };
@@ -11713,6 +11714,7 @@
 		CEA4F07315AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OSIPACSOnDemandPreferencePane.m; path = "Preference Panes/OSIPACSOnDemandPreferencePane/OSIPACSOnDemandPreferencePane.m"; sourceTree = "<group>"; };
 		CEA4F07415AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OSIPACSOnDemandPreferencePane.h; path = "Preference Panes/OSIPACSOnDemandPreferencePane/OSIPACSOnDemandPreferencePane.h"; sourceTree = "<group>"; };
 		CEA4F07C15AEA606009584C7 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = "Preference Panes/OSIPACSOnDemandPreferencePane/English.lproj/OSIPACSOnDemand.xib"; sourceTree = "<group>"; };
+		CEA6CC7218068CE900F5A748 /* Growl Registration Ticket.growlRegDict */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = "Growl Registration Ticket.growlRegDict"; path = "Binaries/Growl Registration Ticket.growlRegDict"; sourceTree = "<group>"; };
 		CEA9237115CE3F7C00D3385F /* InstantMessage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = InstantMessage.framework; path = ../../../../System/Library/Frameworks/InstantMessage.framework; sourceTree = "<group>"; };
 		CEA9237415CE436E00D3385F /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = ../../../../System/Library/Frameworks/AddressBook.framework; sourceTree = "<group>"; };
 		CEAE02DF0DE7E33B00E9BD01 /* DICOMDestination.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = DICOMDestination.tif; sourceTree = "<group>"; };
@@ -15888,6 +15890,7 @@
 				ABE0D6920CDB1A4400F0494B /* iChatHelper.xib */,
 				59FB652912312D8900EBA136 /* weasis */,
 				7183153D1610651E0098576F /* weasis-ext-config.properties */,
+				CEA6CC7218068CE900F5A748 /* Growl Registration Ticket.growlRegDict */,
 				CECDBE690C95467B006B11A5 /* AnnotationsDefault.plist */,
 				CE897DD30C21D951005C669E /* texture.tif */,
 				844003990E8CF99500A00EBD /* dciodvfy */,
@@ -28321,6 +28324,7 @@
 				A9701A9E15C9587C0019EE55 /* burn_anim09.tif in Resources */,
 				A9701AA015C9587C0019EE55 /* burn_anim10.tif in Resources */,
 				A9701AA215C9587C0019EE55 /* burn_anim11.tif in Resources */,
+				CEA6CC7318068CE900F5A748 /* Growl Registration Ticket.growlRegDict in Resources */,
 				A934924215CFC45D0029326E /* WLWW.pdf in Resources */,
 				A9B23D0315CFDF62000E47C3 /* Move.pdf in Resources */,
 				A9B23D0715CFDF76000E47C3 /* Stack.pdf in Resources */,
