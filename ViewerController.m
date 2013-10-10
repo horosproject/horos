@@ -4348,6 +4348,9 @@ static volatile int numberOfThreadsForRelisce = 0;
             [v setFrame:f];
         }
         [splitView resizeSubviewsWithOldSize:splitView.bounds.size];
+        
+        if( visible && needsToBuildSeriesMatrix)
+            [self buildMatrixPreview: NO];
     }
 }
 
@@ -4698,6 +4701,7 @@ static volatile int numberOfThreadsForRelisce = 0;
     // series popup menu button : will build all the items, when needed, later
     
     needsToBuildSeriesPopupMenu = YES;
+    needsToBuildSeriesMatrix = YES;
     
     [seriesPopupMenu.menu removeAllItems];
     NSMenuItem *menuItem = [[[NSMenuItem alloc] initWithTitle: @"" action: @selector( seriesPopupSelect:) keyEquivalent: @""] autorelease];
@@ -5267,6 +5271,8 @@ static volatile int numberOfThreadsForRelisce = 0;
     
     for( DCMView *v in self.imageViews)
         [v computeColor];
+    
+    needsToBuildSeriesMatrix = NO;
 }
 
 - (void) showCurrentThumbnail:(id) sender;

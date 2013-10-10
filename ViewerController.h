@@ -111,7 +111,7 @@ enum
 	IBOutlet NSPopUpButton  *OpacityPopup;
     IBOutlet NSPopUpButton  *seriesPopupMenu;
     NSMenuItem               *seriesPopupContextualMenu;
-    BOOL                    needsToBuildSeriesPopupMenu;
+    BOOL                    needsToBuildSeriesPopupMenu, needsToBuildSeriesMatrix;
 	
 	IBOutlet NSView			*propagateSettingsView;
 	
