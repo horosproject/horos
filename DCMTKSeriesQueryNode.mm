@@ -167,11 +167,17 @@
 
 - (NSString*) studyInstanceUID
 {
+    if( _studyInstanceUID == nil)
+        return @"";
+    
     return _studyInstanceUID;
 }
 
 - (NSString*) seriesInstanceUID
 {
+    if( _uid == nil)
+        return @"";
+    
     return _uid;
 }
 

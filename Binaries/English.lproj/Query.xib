@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4510" systemVersion="12F45" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
+        <deployment defaultVersion="1070" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4510"/>
     </dependencies>
     <objects>
@@ -603,14 +604,14 @@ AQAAAA4QAAVDRVNUAENFVAAAAAEBAAABAQ
                                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     </box>
                                     <box boxType="secondary" borderType="bezel" titlePosition="noTitle" id="551">
-                                        <rect key="frame" x="492" y="-1.9999999999999991" width="349" height="167"/>
+                                        <rect key="frame" x="492" y="-2.0000000000000133" width="349" height="167"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES" heightSizable="YES"/>
                                         <view key="contentView">
                                             <rect key="frame" x="3" y="3" width="343" height="161"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
                                                 <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="515">
-                                                    <rect key="frame" x="5" y="7.9999999999999858" width="341" height="150"/>
+                                                    <rect key="frame" x="5" y="8" width="341" height="150"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                     <size key="cellSize" width="111" height="17"/>
@@ -729,7 +730,7 @@ AQAAAA4QAAVDRVNUAENFVAAAAAEBAAABAQ
                                                     </connections>
                                                 </matrix>
                                                 <datePicker verticalHuggingPriority="750" id="969">
-                                                    <rect key="frame" x="130" y="56" width="104" height="27"/>
+                                                    <rect key="frame" x="130" y="56.000000000000014" width="104" height="27"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <datePickerCell key="cell" borderStyle="bezel" alignment="left" id="970">
                                                         <font key="font" metaFont="system"/>
@@ -762,7 +763,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                                     </datePickerCell>
                                                 </datePicker>
                                                 <datePicker verticalHuggingPriority="750" id="971">
-                                                    <rect key="frame" x="130" y="26" width="104" height="27"/>
+                                                    <rect key="frame" x="130" y="26.000000000000014" width="104" height="27"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <datePickerCell key="cell" borderStyle="bezel" alignment="left" id="972">
                                                         <font key="font" metaFont="system"/>
@@ -911,8 +912,8 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                             </tableHeaderCell>
-                                                            <textFieldCell key="dataCell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" alignment="center" title="avr. 01, 1976" id="773">
-                                                                <dateFormatter key="formatter" formatterBehavior="pre10_4" dateFormat="%b %d, %Y" id="647"/>
+                                                            <textFieldCell key="dataCell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" alignment="center" title="01.04.76" id="773">
+                                                                <dateFormatter key="formatter" dateStyle="short" id="647"/>
                                                                 <font key="font" metaFont="system"/>
                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -973,8 +974,8 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                             </tableHeaderCell>
-                                                            <textFieldCell key="dataCell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" alignment="center" title="avr. 01, 1976" id="767">
-                                                                <dateFormatter key="formatter" formatterBehavior="pre10_4" dateFormat="%b %d, %Y" id="509"/>
+                                                            <textFieldCell key="dataCell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" alignment="center" title="01.04.76" id="767">
+                                                                <dateFormatter key="formatter" dateStyle="short" id="509"/>
                                                                 <font key="font" metaFont="system"/>
                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -989,7 +990,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                             </tableHeaderCell>
                                                             <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="center" title="21:00:00" id="771">
-                                                                <dateFormatter key="formatter" formatterBehavior="pre10_4" dateFormat="%H:%M:%S" id="508"/>
+                                                                <dateFormatter key="formatter" timeStyle="medium" id="508"/>
                                                                 <font key="font" metaFont="system"/>
                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -1220,10 +1221,10 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                                     <binding destination="832" name="value" keyPath="values.autoRetrieving" id="843"/>
                                                     <binding destination="832" name="enabled2" keyPath="values.dontAuthorizeAutoRetrieve" previousBinding="925" id="926">
                                                         <dictionary key="options">
-                                                            <integer key="NSNullPlaceholder" value="-1"/>
+                                                            <integer key="NSMultipleValuesPlaceholder" value="-1"/>
                                                             <integer key="NSNotApplicablePlaceholder" value="-1"/>
                                                             <integer key="NSNoSelectionPlaceholder" value="-1"/>
-                                                            <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                                            <integer key="NSNullPlaceholder" value="-1"/>
                                                             <string key="NSValueTransformerName">NSNegateBoolean</string>
                                                         </dictionary>
                                                     </binding>
@@ -1246,10 +1247,10 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                                     <binding destination="-2" name="enabled" keyPath="autoRefreshQueryResults" id="943"/>
                                                     <binding destination="832" name="enabled2" keyPath="values.dontAuthorizeAutoRetrieve" previousBinding="943" id="947">
                                                         <dictionary key="options">
-                                                            <integer key="NSNullPlaceholder" value="-1"/>
+                                                            <integer key="NSMultipleValuesPlaceholder" value="-1"/>
                                                             <integer key="NSNotApplicablePlaceholder" value="-1"/>
                                                             <integer key="NSNoSelectionPlaceholder" value="-1"/>
-                                                            <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                                            <integer key="NSNullPlaceholder" value="-1"/>
                                                             <string key="NSValueTransformerName">NSNegateBoolean</string>
                                                         </dictionary>
                                                     </binding>

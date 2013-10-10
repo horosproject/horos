@@ -900,6 +900,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 			return; // device is somehow already listed as a source
         }
     
+    NSLog( @"--- start diskutil");
 	NSTask* task = [[NSTask alloc] init];
 	[task setLaunchPath:@"/usr/sbin/diskutil"];
 	[task setArguments:[NSArray arrayWithObjects: @"info", @"-plist", path, NULL]];
@@ -907,6 +908,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	[task setStandardOutput:[task standardError]];
 	[task launch];
     while( [task isRunning]) [NSThread sleepForTimeInterval: 0.01];
+    NSLog( @"--- end diskutil");
     
 	NSData* output = [[[[[task standardError] fileHandleForReading] readDataToEndOfFile] retain] autorelease];
 	[task release];

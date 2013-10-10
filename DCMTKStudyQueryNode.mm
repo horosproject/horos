@@ -220,6 +220,9 @@
 
 - (NSString*) studyInstanceUID // Match DicomStudy
 {
+    if( _uid == nil)
+        return @"";
+    
     return _uid;
 }
 

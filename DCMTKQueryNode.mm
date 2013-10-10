@@ -450,6 +450,9 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	return 0;
 }
 - (NSString *)uid{
+    if( _uid == nil)
+        return @"";
+    
 	return _uid;
 }
 - (NSString *)theDescription
