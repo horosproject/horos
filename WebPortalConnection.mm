@@ -69,6 +69,7 @@
 static NSMutableDictionary *movieLock = nil;
 static NSMutableDictionary *wadoJPEGCache = nil;
 static NSMutableDictionary *thumbnailCache = nil;
+static NSMutableArray *pluginWithHTTPResponses = nil;
 
 static NSString* NotNil(NSString *s) {
 	return s? s : @"";
@@ -473,134 +474,153 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	}
 	else
 	{
-		@try
+        BOOL handledByPlugin = NO;
+        @try
         {
-			if ([requestedPath isEqualToString:@"/"] || [requestedPath hasPrefix: @"/index"])
-				[self processIndexHtml];
-			else
-			if ([requestedPath isEqualToString: @"/main"])
-				[self processMainHtml];
-            else
-            if ([requestedPath isEqualToString:@"/logs"])
-                [self processLogsListHtml];
-            else
-			if ([requestedPath isEqualToString:@"/studyList"])
-				[self processStudyListHtml];
-			else	
-			if ([requestedPath isEqualToString:@"/studyList.json"])
-				[self processStudyListJson];
-			else
-			if ([requestedPath isEqualToString:@"/study"])
-				[self processStudyHtml];
-			else
-			if ([requestedPath isEqualToString:@"/wado"])
-				[self processWado];
-			else
-			if ([requestedPath isEqualToString:@"/thumbnail"])
-				[self processThumbnail];
-			else
-			if ([requestedPath isEqualToString:@"/series.pdf"])
-				[self processSeriesPdf];
-			else
-			if ([requestedPath isEqualToString:@"/series"])
-				[self processSeriesHtml];
-            else
-            if ([requestedPath isEqualToString:@"/keyroisimages"])
-                [self processKeyROIsImagesHtml];
-			else
-			if ([requestedPath isEqualToString:@"/series.json"])
-				[self processSeriesJson];
-			else
-			if ([requestedPath hasPrefix:@"/report"])
-				[self processReport];
-			else
-			if ([requestedPath hasSuffix:@".zip"] || [requestedPath hasSuffix:@".osirixzip"])
-				[self processZip];
-			else
-			if ([requestedPath hasPrefix:@"/image."])
-				[self processImage];
-            else
-            if ([requestedPath hasPrefix:@"/imageAsScreenCapture."])
-                [self processImageAsScreenCapture: YES];
-			else
-			if ([requestedPath isEqualToString:@"/movie.mov"] || [requestedPath isEqualToString:@"/movie.m4v"] || [requestedPath isEqualToString:@"/movie.mp4"] || [requestedPath isEqualToString:@"/movie.swf"])
-				[self processMovie];
-			else
-			if ([requestedPath isEqualToString:@"/password_forgotten"])
-				[self processPasswordForgottenHtml];
-			else
-			if ([requestedPath isEqualToString: @"/account"])
-				[self processAccountHtml];
-			else
-			if ([requestedPath isEqualToString:@"/albums.json"])
-				[self processAlbumsJson];
-			else
-			if ([requestedPath isEqualToString:@"/seriesList.json"])
-				[self processSeriesListJson];
-			else
-			if ([requestedPath hasSuffix:@"weasis.jnlp"])
-				[self processWeasisJnlp];
-			else
-			if ([requestedPath isEqualToString:@"/weasis.xml"])
-				[self processWeasisXml];
-			else
-			if ([requestedPath isEqualToString:@"/admin/"] || [requestedPath isEqualToString:@"/admin/index"])
-				[self processAdminIndexHtml];
-			else
-			if ([requestedPath isEqualToString:@"/admin/user"])
-				[self processAdminUserHtml];
-            else
-            if ([requestedPath isEqualToString:@"/quitOsiriX"] && user.isAdmin.boolValue)
-                exit(0);
-            else if ([requestedPath isEqualToString:@"/testdbalive"])
+            // Maybe a plugin has an answer ?
+            if( pluginWithHTTPResponses == nil)
             {
-                [self.portal.dicomDatabase.managedObjectContext lock]; // Can we obtain a lock on the main db?
-                [self.portal.dicomDatabase.managedObjectContext unlock];
-                
-                [self.portal.dicomDatabase.managedObjectContext.persistentStoreCoordinator lock]; // Can we obtain a lock on the main db?
-                [self.portal.dicomDatabase.managedObjectContext.persistentStoreCoordinator unlock];
-                
-                [self.portal.database.managedObjectContext lock];
-                [self.portal.database objectsForEntity:self.portal.database.userEntity predicate:[NSPredicate predicateWithFormat:@"name == %@", @"test"]];
-                [self.portal.database.managedObjectContext unlock];
-                
-                [self.portal.database.managedObjectContext.persistentStoreCoordinator lock];
-                [self.portal.database.managedObjectContext.persistentStoreCoordinator unlock];
-                
-                [self performSelectorOnMainThread: @selector( alive:) withObject: self waitUntilDone: YES];
-                
-                [response setDataWithString: @"Test DB Alive succeeded"];
-                response.mimeType = @"text/html";
-            }
-            else
-            {
-				NSData *data = response.data = [self.portal dataForPath:requestedPath];
-                
-                if( data.length == 0) // Maybe a plugin has an answer ?
+                pluginWithHTTPResponses = [[NSMutableArray alloc] init];
+                for( id key in [PluginManager plugins])
                 {
-                    for (id key in [PluginManager plugins])
-                    {
-                        id plugin = [[PluginManager plugins] objectForKey:key];
-                        
-                        if ([plugin respondsToSelector:@selector(httpResponseForPath:forConnection:)])
-                        {
-                            response.data = [plugin performSelector: @selector(httpResponseForPath:forConnection:) withObject: requestedPath withObject: self];
-                            
-                            if( response.data)
-                                break;
-                        }
-                    }
+                    id plugin = [[PluginManager plugins] objectForKey:key];
+                    
+                    if( [plugin respondsToSelector:@selector(httpResponseForPath:forConnection:)])
+                        [pluginWithHTTPResponses addObject: plugin];
                 }
             }
             
-			if (!response.data.length && !response.statusCode)
-				response.statusCode = 404;
-		}
-        @catch (NSException* e)
+            for( id plugin in pluginWithHTTPResponses)
+            {
+                NSData *data = [plugin performSelector: @selector(httpResponseForPath:forConnection:) withObject: requestedPath withObject: self];
+                
+                if( data.length)
+                {
+                    response.data = data;
+                    handledByPlugin = YES;
+                    break;
+                }
+            }
+        }
+        @catch (NSException *exception) {
+            N2LogException( exception);
+        }
+        
+        if( handledByPlugin == NO)
         {
-			response.statusCode = 500;
-			NSLog(@"Error: [WebPortalConnection httpResponseForMethod:URI:] %@", e);
-		}
+            @try
+            {
+                if ([requestedPath isEqualToString:@"/"] || [requestedPath hasPrefix: @"/index"])
+                    [self processIndexHtml];
+                else
+                if ([requestedPath isEqualToString: @"/main"])
+                    [self processMainHtml];
+                else
+                if ([requestedPath isEqualToString:@"/logs"])
+                    [self processLogsListHtml];
+                else
+                if ([requestedPath isEqualToString:@"/studyList"])
+                    [self processStudyListHtml];
+                else	
+                if ([requestedPath isEqualToString:@"/studyList.json"])
+                    [self processStudyListJson];
+                else
+                if ([requestedPath isEqualToString:@"/study"])
+                    [self processStudyHtml];
+                else
+                if ([requestedPath isEqualToString:@"/wado"])
+                    [self processWado];
+                else
+                if ([requestedPath isEqualToString:@"/thumbnail"])
+                    [self processThumbnail];
+                else
+                if ([requestedPath isEqualToString:@"/series.pdf"])
+                    [self processSeriesPdf];
+                else
+                if ([requestedPath isEqualToString:@"/series"])
+                    [self processSeriesHtml];
+                else
+                if ([requestedPath isEqualToString:@"/keyroisimages"])
+                    [self processKeyROIsImagesHtml];
+                else
+                if ([requestedPath isEqualToString:@"/series.json"])
+                    [self processSeriesJson];
+                else
+                if ([requestedPath hasPrefix:@"/report"])
+                    [self processReport];
+                else
+                if ([requestedPath hasSuffix:@".zip"] || [requestedPath hasSuffix:@".osirixzip"])
+                    [self processZip];
+                else
+                if ([requestedPath hasPrefix:@"/image."])
+                    [self processImage];
+                else
+                if ([requestedPath hasPrefix:@"/imageAsScreenCapture."])
+                    [self processImageAsScreenCapture: YES];
+                else
+                if ([requestedPath isEqualToString:@"/movie.mov"] || [requestedPath isEqualToString:@"/movie.m4v"] || [requestedPath isEqualToString:@"/movie.mp4"] || [requestedPath isEqualToString:@"/movie.swf"])
+                    [self processMovie];
+                else
+                if ([requestedPath isEqualToString:@"/password_forgotten"])
+                    [self processPasswordForgottenHtml];
+                else
+                if ([requestedPath isEqualToString: @"/account"])
+                    [self processAccountHtml];
+                else
+                if ([requestedPath isEqualToString:@"/albums.json"])
+                    [self processAlbumsJson];
+                else
+                if ([requestedPath isEqualToString:@"/seriesList.json"])
+                    [self processSeriesListJson];
+                else
+                if ([requestedPath hasSuffix:@"weasis.jnlp"])
+                    [self processWeasisJnlp];
+                else
+                if ([requestedPath isEqualToString:@"/weasis.xml"])
+                    [self processWeasisXml];
+                else
+                if ([requestedPath isEqualToString:@"/admin/"] || [requestedPath isEqualToString:@"/admin/index"])
+                    [self processAdminIndexHtml];
+                else
+                if ([requestedPath isEqualToString:@"/admin/user"])
+                    [self processAdminUserHtml];
+                else
+                if ([requestedPath isEqualToString:@"/quitOsiriX"] && user.isAdmin.boolValue)
+                    exit(0);
+                else if ([requestedPath isEqualToString:@"/testdbalive"])
+                {
+                    [self.portal.dicomDatabase.managedObjectContext lock]; // Can we obtain a lock on the main db?
+                    [self.portal.dicomDatabase.managedObjectContext unlock];
+                    
+                    [self.portal.dicomDatabase.managedObjectContext.persistentStoreCoordinator lock]; // Can we obtain a lock on the main db?
+                    [self.portal.dicomDatabase.managedObjectContext.persistentStoreCoordinator unlock];
+                    
+                    [self.portal.database.managedObjectContext lock];
+                    [self.portal.database objectsForEntity:self.portal.database.userEntity predicate:[NSPredicate predicateWithFormat:@"name == %@", @"test"]];
+                    [self.portal.database.managedObjectContext unlock];
+                    
+                    [self.portal.database.managedObjectContext.persistentStoreCoordinator lock];
+                    [self.portal.database.managedObjectContext.persistentStoreCoordinator unlock];
+                    
+                    [self performSelectorOnMainThread: @selector( alive:) withObject: self waitUntilDone: YES];
+                    
+                    [response setDataWithString: @"Test DB Alive succeeded"];
+                    response.mimeType = @"text/html";
+                }
+                else
+                {
+                    response.data = [self.portal dataForPath:requestedPath];
+                }
+                
+                if (!response.data.length && !response.statusCode)
+                    response.statusCode = 404;
+            }
+            @catch (NSException* e)
+            {
+                response.statusCode = 500;
+                NSLog(@"Error: [WebPortalConnection httpResponseForMethod:URI:] %@", e);
+            }
+        }
 	}
 	
 	if (response.data && !response.statusCode)

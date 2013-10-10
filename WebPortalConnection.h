@@ -65,7 +65,7 @@
 
 -(NSString*)portalURL;
 -(NSString*)dicomCStorePortString;
-
+- (void) resetPOST;
 - (void) fillSessionAndUserVariables;
 
 @end
