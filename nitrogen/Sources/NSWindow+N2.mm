@@ -19,7 +19,7 @@
 @interface NSWindow (ActuallyInCocoa)
 
 -(void)setMovable:(BOOL)flag;
--(void)_setUsesLightBottomGradient:(BOOL)flag;
+//-(void)_setUsesLightBottomGradient:(BOOL)flag;
 
 @end
 
@@ -47,10 +47,10 @@
 	else NSLog(@"Warning: -[NSWindow setMovable] is not available");
 }
 
--(void)safelySetUsesLightBottomGradient:(BOOL)flag {
-    if ([self respondsToSelector:@selector(_setUsesLightBottomGradient:)]) {
-        [self _setUsesLightBottomGradient:flag];
-    } else NSLog(@"Warning: -[NSWindow _setUsesLightBottomGradient] is not available");
-}
+//-(void)safelySetUsesLightBottomGradient:(BOOL)flag {
+//    if ([self respondsToSelector:@selector(_setUsesLightBottomGradient:)]) {
+//        [self _setUsesLightBottomGradient:flag];
+//    } else NSLog(@"Warning: -[NSWindow _setUsesLightBottomGradient] is not available");
+//}
 
 @end

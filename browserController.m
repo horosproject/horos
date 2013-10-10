@@ -13334,7 +13334,7 @@ static NSArray*	openSubSeriesArray = nil;
         
         @try
         {
-            [self.window safelySetUsesLightBottomGradient:YES];
+//            [self.window safelySetUsesLightBottomGradient:YES];
             
           //  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(previewMatrixFrameDidChange:) name:NSViewFrameDidChangeNotification object:oMatrix];
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(previewMatrixScrollViewFrameDidChange:) name:NSViewFrameDidChangeNotification object:thumbnailsScrollView];

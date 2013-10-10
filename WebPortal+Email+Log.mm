@@ -151,7 +151,7 @@
         @try
         {
             // Find all studies AFTER the lastCheckDate
-            NSArray *studies = [dicomDatabase.independentDatabase objectsForEntity:@"Study"];
+            NSArray *studies = [dicomDatabase objectsForEntity:@"Study"];
             
             if ([studies count] > 0)
             {
