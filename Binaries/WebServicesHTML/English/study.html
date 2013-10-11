@@ -148,16 +148,16 @@ function shareDestinationChange(select) {
 					<td>
                         %[IF:Info.isMacOS%
                         %[IF:Info.proposeWADORetrieve%
-                            <a href="osirix://?methodName=DownloadURL&Display=YES&URL='%Info.WADOBaseURL%?requestType=WADO&studyUID=%U:ComparativeStudy.studyInstanceUID%&token=%Info.newToken%'"><img src="images/osirix.png" onload="this.width/=1.4;this.onload=null;" style="vertical-align:middle"/></a>
+                            <a href="osirix://?methodName=DownloadURL&Display=YES&URL='%Info.WADOBaseURL%?requestType=WADO&studyUID=%U:ComparativeStudy.studyInstanceUID%&token=%Info.newToken%'"><img src="images/osirixSmall.png" style="vertical-align:middle"/></a>
                         %]IF:Info.proposeWADORetrieve%
                         %]IF:Info.isMacOS%
                    
                         %[IF:Info.proposeZipDownload%
-                            <a href="%U:ComparativeStudy.name% - %U:ComparativeStudy.studyName%.%[IF:Info.isMacOS%osirixzip%ELSE:Info.isMacOS%zip%]IF:Info.isMacOS%?xid=%ComparativeStudy.XID%"><img src="images/download.png" onload="this.width/=1.4;this.onload=null;" style="vertical-align:middle"/></a>
+                            <a href="%U:ComparativeStudy.name% - %U:ComparativeStudy.studyName%.%[IF:Info.isMacOS%osirixzip%ELSE:Info.isMacOS%zip%]IF:Info.isMacOS%?xid=%ComparativeStudy.XID%"><img src="images/downloadSmall.png" style="vertical-align:middle"/></a>
                         %]IF:Info.proposeZipDownload%
                     
                         %[IF:Info.proposeWeasis%
-                            <a href="/%X:ComparativeStudy.name%-weasis.jnlp?xid=%ComparativeStudy.XID%"><img src="images/weasis.png" onload="this.width/=1.4;this.onload=null;" style="vertical-align:middle"/></a>
+                            <a href="/%X:ComparativeStudy.name%-weasis.jnlp?xid=%ComparativeStudy.XID%"><img src="images/weasisSmall.png" style="vertical-align:middle"/></a>
                         %]IF:Info.proposeWeasis%
                         
                         
