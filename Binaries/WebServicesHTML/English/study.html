@@ -142,7 +142,7 @@ function shareDestinationChange(select) {
                 %]IF:Info.proposeReport%
 				%[IF:Study.otherStudiesForThisPatient.count%
 				<tr>
-					<td>Other&nbsp;Studies&nbsp;for&nbsp;this&nbsp;patient:</td>
+					<td><b>Other&nbsp;Studies&nbsp;for&nbsp;this&nbsp;patient:</b></td>
 				</tr>
                 <form id="form" method="post" onsubmit="return onSubmitForm(this);">
 				%[FOREACH:Study.otherStudiesForThisPatient:ComparativeStudy%
@@ -150,7 +150,7 @@ function shareDestinationChange(select) {
 					<td>%ComparativeStudy.date.DateTime.Spanned%:</td>
 					<td>
                         %[IF:Info.proposeWeasis%
-                        <input type="checkbox" class="checkbox" name="selected" value="%Study.XID%" onchange="checkboxChanged(this.form)" %[IF:Study.isSelected%checked="checked"%]IF:Study.isSelected% />
+                        <input type="checkbox" class="checkbox" name="selected" value="%ComparativeStudy.XID%" onchange="checkboxChanged(this.form)" %[IF:ComparativeStudy.isSelected%checked="checked"%]IF:ComparativeStudy.isSelected% />
                         %]IF:Info.proposeWeasis%
                         
                         %[IF:Info.isMacOS%
@@ -191,6 +191,25 @@ function shareDestinationChange(select) {
 					</td>
 				</tr>
 				%]FOREACH:Study.otherStudiesForThisPatient:ComparativeStudy%
+                
+                
+                %[IF:Study.otherStudiesForThisPatient.count>1%
+				%[IF:Info.proposeDicomSend||Info.proposeWeasis%
+				<tr>
+                    <td>
+                        Selection:
+                    </td>
+                    
+                    <td>
+					%[IF:Info.proposeWeasis%
+						<input type="image" src="images/weasisSmall.png" alt="Open selected series in Weasis" onclick="document.submitting='Weasis'" class="if_selection" />
+					%]IF:Info.proposeWeasis%
+                    </td>
+				</tr>
+				%]IF:Info.proposeDicomSend||Info.proposeWeasis%
+				%]IF:Study.otherStudiesForThisPatient.count>1%
+                
+                
                 </form>
 				%]IF:Study.otherStudiesForThisPatient.count%
 			</table>
@@ -220,9 +239,11 @@ function shareDestinationChange(select) {
 				%[FOREACH:Series:Series%
 					<tr class="li%X:Series_Index2%">
 						%[IF:Info.proposeDicomSend||Info.proposeWeasis||Info.proposeWADORetrieve||Info.proposeDelete%
+                        %[IF:Study.Series.count>1%
 						<td class="narrow fat">
 							<input type="checkbox" class="checkbox" name="selected" value="%Series.XID%" onchange="checkboxChanged(this.form)" %[IF:Series.isSelected%checked="checked"%]IF:Series.isSelected% />
 						</td>
+                        %]IF:Study.Series.count>1%
 						%]IF:Info.proposeDicomSend||Info.proposeWeasis||Info.proposeWADORetrieve||Info.proposeDelete%
                         
                         %[IF:Info.isMacOS||Info.isIOS%
@@ -285,21 +306,10 @@ function shareDestinationChange(select) {
 				%[IF:Info.proposeDicomSend||Info.proposeWeasis%
 				<tr>
 					<td>
-						<button type="button" name="CheckAll" onclick="checkAll(this.form)">Check All</button>
-						<button type="button" name="UncheckAll" onclick="uncheckAll(this.form)">Uncheck All</button>
+						<button type="button" name="CheckAll" onclick="checkAll(this.form)">All</button>
+						<button type="button" name="UncheckAll" onclick="uncheckAll(this.form)">None</button>
 					</td>
                     
-					%[IF:Info.proposeZipDownload%
-					<td>
-					</td>
-					%]IF:Info.proposeZipDownload%
-					%[IF:Info.isMacOS%
-					%[IF:Info.proposeWADORetrieve%
-					<td class="narrow middle">
-						<a href="osirix://?methodName=DownloadURL&Display=YES&URL='%Info.WADOBaseURL%?requestType=WADO&studyUID=%U:Study.studyInstanceUID%&token=%Info.newToken%'"><img src="images/osirix.png"/></a>
-					</td>
-					%]IF:Info.proposeWADORetrieve%
-					%]IF:Info.isMacOS%
 					%[IF:Info.proposeWeasis%
 					<td class="narrow middle">
 						<input type="image" src="images/weasis.png" alt="Open selected series in Weasis" onclick="document.submitting='Weasis'" class="if_selection" />

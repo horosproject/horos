@@ -176,6 +176,10 @@
     {
         if ([[paramDict valueForKey:@"URL"] length])
         {
+            //Look for an XML file? like weasis.xml (weasis.jnlp)
+            
+            // TODO
+            
             NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector(_threadRetrieveWado:) object:paramDict] autorelease];
             t.name = NSLocalizedString(@"WADO Retrieve...", nil);
             t.supportsCancel = YES;

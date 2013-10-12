@@ -11818,7 +11818,7 @@ short				matrix[25];
 	
 	if( fused == NO && sender != nil)
 	{
-		NSRunCriticalAlertPanel(NSLocalizedString(@"PET-CT Fusion", nil), NSLocalizedString(@"This function requires a PET series and a CT series in the same study.", nil) , NSLocalizedString(@"OK", nil), nil, nil);
+		NSRunCriticalAlertPanel(NSLocalizedString(@"PET-CT Fusion", nil), NSLocalizedString(@"This function requires two parallel series: a PT/NM series and a CT series in the same study.", nil) , NSLocalizedString(@"OK", nil), nil, nil);
 	}
 }
 
