@@ -70,7 +70,6 @@ function shareDestinationChange(select) {
 
 </script>
 
-<form id="form" method="post" onsubmit="return onSubmitForm(this);">
 <div id="content">
 	%INCLUDE:/errors.pvt.html%
 	%INCLUDE:/messages.pvt.html%
@@ -80,6 +79,8 @@ function shareDestinationChange(select) {
 		<div class="title">Study Information</div>
 		<div>
 			<table class="form">
+                <col width="250">
+                <col width="99%">
 				<tr>
 					<td>Patient's&nbsp;name:</td>
 					<td>%X:Study.name%</td>
@@ -143,9 +144,15 @@ function shareDestinationChange(select) {
 				<tr>
 					<td>Other&nbsp;Studies&nbsp;for&nbsp;this&nbsp;patient:</td>
 				</tr>
+                <form id="form" method="post" onsubmit="return onSubmitForm(this);">
 				%[FOREACH:Study.otherStudiesForThisPatient:ComparativeStudy%
+                <tr>
 					<td>%ComparativeStudy.date.DateTime.Spanned%:</td>
 					<td>
+                        %[IF:Info.proposeWeasis%
+                        <input type="checkbox" class="checkbox" name="selected" value="%Study.XID%" onchange="checkboxChanged(this.form)" %[IF:Study.isSelected%checked="checked"%]IF:Study.isSelected% />
+                        %]IF:Info.proposeWeasis%
+                        
                         %[IF:Info.isMacOS%
                         %[IF:Info.proposeWADORetrieve%
                             <a href="osirix://?methodName=DownloadURL&Display=YES&URL='%Info.WADOBaseURL%?requestType=WADO&studyUID=%U:ComparativeStudy.studyInstanceUID%&token=%Info.newToken%'"><img src="images/osirixSmall.png" style="vertical-align:middle"/></a>
@@ -181,10 +188,10 @@ function shareDestinationChange(select) {
 							if( "%ComparativeStudy.studyInstanceUID%" > "%Study.studyInstanceUID%") document.write( "</b>");
                             else document.write( "</a>");
                         </script>
-                        
 					</td>
 				</tr>
 				%]FOREACH:Study.otherStudiesForThisPatient:ComparativeStudy%
+                </form>
 				%]IF:Study.otherStudiesForThisPatient.count%
 			</table>
 		</div>
@@ -207,6 +214,7 @@ function shareDestinationChange(select) {
 		%]IF:Study.hasKeyImagesOrROIImages%
 		
 		<div class="separated title">Series</div>
+        <form id="form" method="post" onsubmit="return onSubmitForm(this);">
 		<div class="noleftmargin">
 			<table class="wide fat">
 				%[FOREACH:Series:Series%
@@ -216,6 +224,27 @@ function shareDestinationChange(select) {
 							<input type="checkbox" class="checkbox" name="selected" value="%Series.XID%" onchange="checkboxChanged(this.form)" %[IF:Series.isSelected%checked="checked"%]IF:Series.isSelected% />
 						</td>
 						%]IF:Info.proposeDicomSend||Info.proposeWeasis||Info.proposeWADORetrieve||Info.proposeDelete%
+                        
+                        %[IF:Info.isMacOS||Info.isIOS%
+						%[IF:Info.proposeWADORetrieve%
+						<td class="narrow middle">
+							<a href="osirix://?methodName=DownloadURL&Display=YES&URL='%Info.WADOBaseURL%?requestType=WADO&studyUID=%U:Study.studyInstanceUID%&seriesUID=%U:Series.seriesDICOMUID%&token=%Info.newToken%'"><img src="images/osirix.png"/></a>
+						</td>
+						%]IF:Info.proposeWADORetrieve%
+						%]IF:Info.isMacOS||Info.isIOS%
+                        
+                        %[IF:Info.proposeZipDownload%
+						<td class="narrow middle">
+							<a href="%U:Study.name% - %U:Series.name%.%[IF:Info.isMacOS%osirixzip%ELSE:Info.isMacOS%zip%]IF:Info.isMacOS%?xid=%Series.XID%"><img src="images/download.png"/></a>
+						</td>
+                        %]IF:Info.proposeZipDownload%
+
+						%[IF:Info.proposeWeasis%
+						<td class="narrow middle">
+                            <a href="/%X:Study.name%-weasis.jnlp?xid=%Series.XID%"><img src="images/weasis.png"/></a>
+						</td>
+						%]IF:Info.proposeWeasis%
+                        
 						<td class="narrow middle center">
 							%[IF:Series.noFiles>9%
 							<a href="series%Series.seriesExtension%?xid=%Series.XID%&%Info.getParameters(xid=)%">
@@ -225,6 +254,7 @@ function shareDestinationChange(select) {
 								<img src="/thumbnail?xid=%Series.XID%" />
 							</a>
 						</td>
+                        
 						<td class="fat">
 							%[IF:Series.noFiles>9%
 							<a href="series%Series.seriesExtension%?xid=%Series.XID%&%Info.getParameters(xid=)%">
@@ -248,33 +278,13 @@ function shareDestinationChange(select) {
 								</span>
 							</a>
 						</td>
-						
-						%[IF:Info.isMacOS||Info.isIOS%
-						%[IF:Info.proposeWADORetrieve%
-						<td class="narrow middle">
-							<a href="osirix://?methodName=DownloadURL&Display=YES&URL='%Info.WADOBaseURL%?requestType=WADO&studyUID=%U:Study.studyInstanceUID%&seriesUID=%U:Series.seriesDICOMUID%&token=%Info.newToken%'"><img src="images/osirix.png"/></a>
-						</td>
-						%]IF:Info.proposeWADORetrieve%
-						%]IF:Info.isMacOS||Info.isIOS%
-                        
-                        %[IF:Info.proposeZipDownload%
-						<td class="narrow middle">
-							<a href="%U:Study.name% - %U:Series.name%.%[IF:Info.isMacOS%osirixzip%ELSE:Info.isMacOS%zip%]IF:Info.isMacOS%?xid=%Series.XID%"><img src="images/download.png"/></a>
-						</td>
-                        %]IF:Info.proposeZipDownload%
-                        
-						%[IF:Info.proposeWeasis%
-						<td class="narrow middle">
-								<a href="/%X:Study.name%-weasis.jnlp?xid=%Series.XID%"><img src="images/weasis.png"/></a>
-						</td>
-						%]IF:Info.proposeWeasis%
 					</tr>
 				%]FOREACH:Series:Series%
-	
+
 				%[IF:Series.count>1%
 				%[IF:Info.proposeDicomSend||Info.proposeWeasis%
 				<tr>
-					<td colspan="3">
+					<td>
 						<button type="button" name="CheckAll" onclick="checkAll(this.form)">Check All</button>
 						<button type="button" name="UncheckAll" onclick="uncheckAll(this.form)">Uncheck All</button>
 					</td>
@@ -298,8 +308,10 @@ function shareDestinationChange(select) {
 				</tr>
 				%]IF:Info.proposeDicomSend||Info.proposeWeasis%
 				%]IF:Series.count>1%
+
 			</table>
 		</div>
+        </form>
 	
 		%[IF:Info.proposeShare&&ShareDestinations.count%
 		<div class="title separated">Share</div>
@@ -383,7 +395,6 @@ function shareDestinationChange(select) {
 	</div>
 	%]IF:Study%
 </div>
-</form>
 
 <script type="text/javascript" language="javascript">
 	checkboxChanged(document.getElementById('form'));
