@@ -1093,7 +1093,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	if (row >= _browser.sourcesCount && _browser.database != DicomDatabase.defaultDatabase)
     {
 		[tableView setDropRow:[_browser rowForDatabase:DicomDatabase.defaultDatabase] dropOperation:NSTableViewDropOn];
-		return NSTableViewDropAbove;
+		return NSDragOperationCopy;
 	}
 	
 	if (row < [_browser sourcesCount])
@@ -1101,7 +1101,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 		if ([[_browser sourceIdentifierAtRow:row] isReadOnly])
 			return NSDragOperationNone;
 		[tableView setDropRow:row dropOperation:NSTableViewDropOn];
-		return NSTableViewDropAbove;
+		return NSDragOperationCopy;
 	}
 	
 	return NSDragOperationNone;

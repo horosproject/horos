@@ -7454,6 +7454,21 @@ return YES;
     
     flagListPODComparatives = [[NSNumber alloc] initWithBool:YES];
 	[self bind:@"flagListPODComparatives" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.listPODComparativesIn2DViewer" options:nil];
+    
+    if( [[[AppController sharedAppController] viewerScreens] count] == 2)
+    {
+        for( NSMenuItem *item in windowsTilingMenu.itemArray)
+        {
+            int tag = [item tag];
+            int rows = tag / 10;
+            int columns = tag % 10;
+            
+            if( columns % 2 != 0)
+            {
+                [windowsTilingMenu removeItemAtIndex: [windowsTilingMenu indexOfItem: item]];
+            }
+        }
+    }
 }
 
 -(void)comparativeRefresh:(NSString*) patientUID

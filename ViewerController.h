@@ -110,6 +110,7 @@ enum
     IBOutlet NSPopUpButton  *clutPopup;
 	IBOutlet NSPopUpButton  *OpacityPopup;
     IBOutlet NSPopUpButton  *seriesPopupMenu;
+    IBOutlet NSPopUpButton  *windowsTilingMenu;
     NSMenuItem               *seriesPopupContextualMenu;
     BOOL                    needsToBuildSeriesPopupMenu, needsToBuildSeriesMatrix;
 	
@@ -339,7 +340,6 @@ enum
 	
 	int						isDataVolumicIn4DLevel;
 	int						previousFullscreenColumns, previousFullscreenRows, previousFullscreenCurImage, previousFullscreenViewIndex;
-    NSMenu *SetWindowsTiling;
 }
 @property(retain) NSCalendarDate *injectionDateTime;
 @property(readonly) short currentOrientationTool;

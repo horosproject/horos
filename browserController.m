@@ -16198,7 +16198,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		[filesToExport removeDuplicatedStringsInSyncWithThisArray: dicomFiles2Export];
 
-		NSString			*dest, *path = location;
+		NSString			*dest = nil, *path = location;
 		Wait                *splash = nil;
 		BOOL				addDICOMDIR = [[NSUserDefaults standardUserDefaults] boolForKey:@"AddDICOMDIRForExport"];
 		long				previousSeries = -1, serieCount = 0;
@@ -16432,7 +16432,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				}
 				
 				NSError *error = nil;
-				if( [[NSFileManager defaultManager] copyItemAtPath:[filesToExport objectAtIndex:i] toPath:dest error: &error] == NO)
+				if( dest == nil || [[NSFileManager defaultManager] copyItemAtPath:[filesToExport objectAtIndex:i] toPath:dest error: &error] == NO)
 				{
 					NSLog( @"***** %@", error);
 					NSLog( @"***** src = %@", [filesToExport objectAtIndex:i]);
