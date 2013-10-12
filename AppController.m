@@ -3937,11 +3937,11 @@ static BOOL initialized = NO;
 			NSAlert* alert = [[NSAlert new] autorelease];
 			[alert setMessageText: NSLocalizedString( @"Mac OS Version", nil)];
 			[alert setInformativeText: NSLocalizedString( @"This version of OsiriX has not been validated or certified for this version of MacOS. Bugs, errors and instabilities can occur. Upgrade to latest version of OsiriX.", nil)];
-			[alert setShowsSuppressionButton:YES ];
+//			[alert setShowsSuppressionButton:YES ];
 			[alert addButtonWithTitle: NSLocalizedString( @"OK", nil)];
             
-			if ([[alert suppressionButton] state] == NSOnState)
-				[[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"hideMaverickWarning"];
+//			if ([[alert suppressionButton] state] == NSOnState)
+//				[[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"hideMaverickWarning"];
 		}
     }
     
