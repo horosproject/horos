@@ -1744,8 +1744,6 @@ static NSDate *lastWarningDate = nil;
 		[mainOpacityMenu addItem: [NSMenuItem separatorItem]];
 		[mainOpacityMenu addItemWithTitle:NSLocalizedString(@"Add an Opacity Table", nil) action:@selector (AddOpacity:) keyEquivalent:@""];
 	}
-	
-	[[mainOpacityMenu itemWithTitle:[note object]] setState:NSOnState];
 }
 
 -(void) UpdateWLWWMenu: (NSNotification*) note
@@ -1784,8 +1782,6 @@ static NSDate *lastWarningDate = nil;
 		[mainMenuWLWWMenu addItemWithTitle:NSLocalizedString(@"Add Current WL/WW", nil) action:@selector (AddCurrentWLWW:) keyEquivalent:@""];
 		[mainMenuWLWWMenu addItemWithTitle:NSLocalizedString(@"Set WL/WW manually", nil) action:@selector (AddCurrentWLWW:) keyEquivalent:@""];
 	}
-	
-	[[mainMenuWLWWMenu itemWithTitle:[note object]] setState:NSOnState];
 }
 
 -(void) UpdateConvolutionMenu: (NSNotification*) note
@@ -1856,8 +1852,6 @@ static NSDate *lastWarningDate = nil;
 		[mainMenuCLUTMenu addItem: [NSMenuItem separatorItem]];
 		[mainMenuCLUTMenu addItemWithTitle:NSLocalizedString(@"Add a CLUT", nil) action:@selector (AddCLUT:) keyEquivalent:@""];
 	}
-	
-	[[mainMenuCLUTMenu itemWithTitle:[note object]] setState:NSOnState];
 }
 
 #ifndef OSIRIX_LIGHT

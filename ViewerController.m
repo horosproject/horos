@@ -1182,35 +1182,15 @@ return YES;
 
 - (void) refreshMenus
 {
-	if( wlwwPresetsMenu == nil) 
-        [[NSNotificationCenter defaultCenter] postNotificationName:OsirixUpdateWLWWMenuNotification object: curWLWWMenu userInfo: nil];
-	else
-        [wlwwPopup setMenu: [[wlwwPresetsMenu copy] autorelease]];
-	
-	if( clutPresetsMenu == nil) 
-        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
-	else
-        [clutPopup setMenu: [[clutPresetsMenu copy] autorelease]];
-	
-	if( convolutionPresetsMenu == nil) 
-        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateConvolutionMenuNotification object: curConvMenu userInfo: nil];
-	else
-        [convPopup setMenu: [[convolutionPresetsMenu copy] autorelease]];
-	
-	if( opacityPresetsMenu == nil) 
-        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: nil];
-	else
-        [OpacityPopup setMenu: [[opacityPresetsMenu copy] autorelease]];
+    [[NSNotificationCenter defaultCenter] postNotificationName:OsirixUpdateWLWWMenuNotification object: curWLWWMenu userInfo: nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateConvolutionMenuNotification object: curConvMenu userInfo: nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: nil];
 
 	[clutPopup setTitle:curCLUTMenu];
 	[convPopup setTitle:curConvMenu];
 	[wlwwPopup setTitle:curWLWWMenu];
 	[OpacityPopup setTitle:curOpacityMenu];
-
-	[clutPopup display];
-	[convPopup display];
-	[wlwwPopup display];
-	[OpacityPopup display];
 }
 
 - (void) refresh
@@ -3640,9 +3620,15 @@ static volatile int numberOfThreadsForRelisce = 0;
 		}
 		[convolutionPresetsMenu addItem: [NSMenuItem separatorItem]];
 		[convolutionPresetsMenu addItemWithTitle:NSLocalizedString(@"Add a Filter", nil) action:@selector (AddConv:) keyEquivalent:@""];
+        [convPopup setMenu: [[convolutionPresetsMenu copy] autorelease]];
+        convPopupSet = YES;
 	}
-
-	[convPopup setMenu: [[convolutionPresetsMenu copy] autorelease]];
+    else if( convPopupSet == NO)
+    {
+        [convPopup setMenu: [[convolutionPresetsMenu copy] autorelease]];
+        convPopupSet = YES;
+    }
+    
 	[convPopup setTitle: curConvMenu];
 }
 
@@ -3654,7 +3640,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 	if( wlwwPresetsMenu == nil || [note userInfo] != nil)
 	{
 		//*** Build the menu
-		short       i;
 		NSArray     *keys;
 		NSArray     *sortedKeys;
 
@@ -3672,7 +3657,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[wlwwPresetsMenu addItemWithTitle: NSLocalizedString(@"Full dynamic", nil) action:@selector (ApplyWLWW:) keyEquivalent:@""];
 		[wlwwPresetsMenu addItem: [NSMenuItem separatorItem]];
 		
-		for( i = 0; i < [sortedKeys count]; i++)
+		for( int i = 0; i < [sortedKeys count]; i++)
 		{
 			[wlwwPresetsMenu addItemWithTitle:[NSString stringWithFormat:@"%d - %@", i+1, [sortedKeys objectAtIndex:i]] action:@selector (ApplyWLWW:) keyEquivalent:@""];
 		}
@@ -3680,14 +3665,19 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[wlwwPresetsMenu addItemWithTitle: NSLocalizedString(@"Add Current WL/WW", nil) action:@selector (AddCurrentWLWW:) keyEquivalent:@""];
 		[wlwwPresetsMenu addItemWithTitle: NSLocalizedString(@"Set WL/WW Manually", nil) action:@selector (SetWLWW:) keyEquivalent:@""];
 		
+        [wlwwPopup setMenu: [[wlwwPresetsMenu copy] autorelease]];
+        
 		[contextualMenu release];
 		contextualMenu = nil;
 		[imageView setMenu: nil];	// Will force recomputing, when needed
+        wlwwPopupSet = YES;
 	}
-	
-	[wlwwPopup setMenu: [[wlwwPresetsMenu copy] autorelease]];
-	[imageView setMenu: [[contextualMenu copy] autorelease]];
-	[wlwwPopup setTitle: curWLWWMenu];
+    else if( wlwwPopupSet == NO)
+    {
+        [wlwwPopup setMenu: [[wlwwPresetsMenu copy] autorelease]];
+        wlwwPopupSet = YES;
+    }
+    [wlwwPopup setTitle: curWLWWMenu];
 }
 
 - (void) AddCurrentWLWW:(id) sender
@@ -3768,9 +3758,16 @@ static volatile int numberOfThreadsForRelisce = 0;
 		}
 		[opacityPresetsMenu addItem: [NSMenuItem separatorItem]];
 		[opacityPresetsMenu addItemWithTitle:NSLocalizedString(@"Add an Opacity Table", nil) action:@selector (AddOpacity:) keyEquivalent:@""];
+        
+        [OpacityPopup setMenu: [[opacityPresetsMenu copy] autorelease]];
+        OpacityPopupSet = YES;
 	}
-	
-	[OpacityPopup setMenu: [[opacityPresetsMenu copy] autorelease]];
+    else if( OpacityPopupSet == NO)
+    {
+        [OpacityPopup setMenu: [[opacityPresetsMenu copy] autorelease]];
+        OpacityPopupSet = YES;
+    }
+    
 	[OpacityPopup setTitle: curOpacityMenu];
 }
 
@@ -6904,9 +6901,15 @@ return YES;
 		[clutPresetsMenu addItemWithTitle: NSLocalizedString(@"Reset CLUT List", nil) action:@selector (resetCLUT:) keyEquivalent:@""];
 
 		[clutPopup setTitle: curCLUTMenu];
+        [clutPopup setMenu: [[clutPresetsMenu copy] autorelease]];
+        clutPopupSet = YES;
 	}
+    else if( clutPopupSet == NO)
+    {
+        [clutPopup setMenu: [[clutPresetsMenu copy] autorelease]];
+        clutPopupSet = YES;
+    }
 	
-	[clutPopup setMenu: [[clutPresetsMenu copy] autorelease]];
 	[clutPopup setTitle: curCLUTMenu];
 }
 

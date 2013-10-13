@@ -109,6 +109,7 @@ enum
     IBOutlet NSPopUpButton  *convPopup;
     IBOutlet NSPopUpButton  *clutPopup;
 	IBOutlet NSPopUpButton  *OpacityPopup;
+    BOOL OpacityPopupSet, clutPopupSet, convPopupSet, wlwwPopupSet;
     IBOutlet NSPopUpButton  *seriesPopupMenu;
     IBOutlet NSPopUpButton  *windowsTilingMenu;
     NSMenuItem               *seriesPopupContextualMenu;

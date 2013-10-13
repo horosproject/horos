@@ -550,14 +550,12 @@
                 <popUpButton verticalHuggingPriority="750" id="892">
                     <rect key="frame" x="55" y="0.0" width="100" height="15"/>
                     <autoresizingMask key="autoresizingMask"/>
-                    <popUpButtonCell key="cell" type="push" title="Opacity" bezelStyle="rounded" alignment="left" controlSize="mini" lineBreakMode="clipping" enabled="NO" borderStyle="borderAndBezel" inset="2" pullsDown="YES" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="894" id="2119">
+                    <popUpButtonCell key="cell" type="push" title="Opacity" bezelStyle="rounded" alignment="left" controlSize="mini" lineBreakMode="clipping" enabled="NO" borderStyle="borderAndBezel" inset="2" pullsDown="YES" arrowPosition="arrowAtCenter" preferredEdge="maxY" id="2119">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="miniSystem"/>
                         <menu key="menu" title="OtherViews" id="893">
                             <items>
                                 <menuItem title="Opacity" hidden="YES" id="894"/>
-                                <menuItem title="Item2" id="891"/>
-                                <menuItem title="Item3" id="890"/>
                             </items>
                         </menu>
                     </popUpButtonCell>
@@ -598,8 +596,6 @@
                         <menu key="menu" title="OtherViews" id="498">
                             <items>
                                 <menuItem title="CLUT" hidden="YES" id="497"/>
-                                <menuItem title="Item2" id="495"/>
-                                <menuItem title="Item3" id="496"/>
                             </items>
                         </menu>
                     </popUpButtonCell>
@@ -607,14 +603,12 @@
                 <popUpButton verticalHuggingPriority="750" id="139">
                     <rect key="frame" x="55" y="32" width="100" height="15"/>
                     <autoresizingMask key="autoresizingMask"/>
-                    <popUpButtonCell key="cell" type="push" title="WL/WW" bezelStyle="rounded" alignment="left" controlSize="mini" lineBreakMode="clipping" borderStyle="borderAndBezel" inset="2" pullsDown="YES" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="142" id="2114">
+                    <popUpButtonCell key="cell" type="push" title="WL/WW" bezelStyle="rounded" alignment="left" controlSize="mini" lineBreakMode="clipping" borderStyle="borderAndBezel" inset="2" pullsDown="YES" arrowPosition="arrowAtCenter" preferredEdge="maxY" id="2114">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="miniSystem"/>
                         <menu key="menu" title="OtherViews" id="140">
                             <items>
                                 <menuItem title="WL/WW" hidden="YES" id="142"/>
-                                <menuItem title="Item2" id="141"/>
-                                <menuItem title="Item3" id="138"/>
                             </items>
                         </menu>
                     </popUpButtonCell>

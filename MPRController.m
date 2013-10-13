@@ -1206,13 +1206,7 @@ static float deg2rad = M_PI/180.0;
     {
         [[wlwwPopup menu] addItem:[self.wlwwMenuItems objectAtIndex:i]];
     }
-	
-	if( [note object])
-	{
-		[curWLWWMenu release];
-		curWLWWMenu = [[note object] retain];
-		[wlwwPopup setTitle: curWLWWMenu];
-	}
+    [wlwwPopup setTitle: curWLWWMenu];
 }
 
 - (void)ApplyWLWW:(id)sender;
