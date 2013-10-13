@@ -22,15 +22,18 @@ function uncheckAll(form) {
 function checkboxChanged(form) {
 	var allChecked = true;
 	var allUnchecked = true;
+	
+	if( form.selected) {
 	for (var i = 0; i < form.selected.length; i++) {
 		if (allChecked && !form.selected[i].checked) allChecked = false;
 		if (allUnchecked && form.selected[i].checked) allUnchecked = false;
 	}
+	}
 	
-	form.CheckAll.disabled = allChecked;
-	form.UncheckAll.disabled = allUnchecked;
+	if( form.CheckAll) form.CheckAll.disabled = allChecked;
+	if( form.UncheckAll) form.UncheckAll.disabled = allUnchecked;
 	
-	var ifs = $('.if_selection');
+	var ifs = form.getElementsByClassName('if_selection');
 	for (var i = 0; i < ifs.length; ++i) {
 		ifs[i].disabled = allUnchecked;
 		if (ifs[i].classList) {
@@ -44,16 +47,13 @@ function checkboxChanged(form) {
 
 function onSubmitForm(form) {
 	if (document.submitting == 'Weasis')
-		form.action ="weasis.jnlp";
-	else
-        form.action = document.location;
-    
-    if (document.submitting == 'delete')
-        form.message.value = 'delete';
-	else if (form.message.value == form.message.defaultValue)
-		form.message.value = '';
-	
-    return true;
+		form.action ="%X:Study.name%-weasis.jnlp";
+	else form.action = document.location;
+	if( form.message) {
+		if (form.message.value == form.message.defaultValue)
+			form.message.value = '';
+	}
+	return true;
 }
 
 function imageClick(ixid, sxid) {
@@ -78,6 +78,7 @@ function shareDestinationChange(select) {
 	<div>
 		<div class="title">Study Information</div>
 		<div>
+			<form id="formComparative" method="post" onsubmit="return onSubmitForm(this);">
 			<table class="form">
                 <col width="250">
                 <col width="99%">
@@ -144,13 +145,15 @@ function shareDestinationChange(select) {
 				<tr>
 					<td><b>Other&nbsp;Studies&nbsp;for&nbsp;this&nbsp;patient:</b></td>
 				</tr>
-                <form id="form" method="post" onsubmit="return onSubmitForm(this);">
 				%[FOREACH:Study.otherStudiesForThisPatient:ComparativeStudy%
-                <tr>
-					<td>%ComparativeStudy.date.DateTime.Spanned%:</td>
 					<td>
-                        %[IF:Info.proposeWeasis%
-                        <input type="checkbox" class="checkbox" name="selected" value="%ComparativeStudy.XID%" onchange="checkboxChanged(this.form)" %[IF:ComparativeStudy.isSelected%checked="checked"%]IF:ComparativeStudy.isSelected% />
+						%[IF:ComparativeStudy.studyInstanceUID==Study.studyInstanceUID%<b>%]IF:ComparativeStudy.studyInstanceUID==Study.studyInstanceUID%
+						%ComparativeStudy.date.DateTime.Spanned%:
+						%[IF:ComparativeStudy.studyInstanceUID==Study.studyInstanceUID%</b>%]IF:ComparativeStudy.studyInstanceUID==Study.studyInstanceUID%
+					</td>
+					<td>
+						%[IF:Info.proposeWeasis%
+                        <input type="checkbox" class="checkbox" name="selected" value="%ComparativeStudy.XID%" onchange="checkboxChanged(this.form)" %[IF:ComparativeStudy.studyInstanceUID==Study.studyInstanceUID%checked="checked"%]IF:ComparativeStudy.studyInstanceUID==Study.studyInstanceUID% />
                         %]IF:Info.proposeWeasis%
                         
                         %[IF:Info.isMacOS%
@@ -164,19 +167,16 @@ function shareDestinationChange(select) {
                         %]IF:Info.proposeZipDownload%
                     
                         %[IF:Info.proposeWeasis%
-                            <a href="/%X:ComparativeStudy.name%-weasis.jnlp?xid=%ComparativeStudy.XID%"><img src="images/weasisSmall.png" style="vertical-align:middle"/></a>
+                            <a href="/%X:ComparativeStudy.name%-%X:ComparativeStudy.studyName%-weasis.jnlp?xid=%ComparativeStudy.XID%"><img src="images/weasisSmall.png" style="vertical-align:middle"/></a>
                         %]IF:Info.proposeWeasis%
-                        
-                        
-                        <script type="text/javascript" language="javascript">
-							if( "%ComparativeStudy.studyInstanceUID%" == "%Study.studyInstanceUID%") document.write( "<b>");
-                            else document.write( "<a href=\"study?%Info.getParameters(xid=)%&xid=%ComparativeStudy.XID%\">");
-                            </script>
+					
+                        %[IF:ComparativeStudy.studyInstanceUID==Study.studyInstanceUID%
+                        <b>
+                        %ELSE:ComparativeStudy.studyInstanceUID==Study.studyInstanceUID%
+                        <a href="study?%Info.getParameters(xid=)%&xid=%ComparativeStudy.XID%">
+                        %]IF:ComparativeStudy.studyInstanceUID==Study.studyInstanceUID%
                         
 						<span class="bigger compressed">%X:ZWS:ComparativeStudy.studyName%</span> <span class="gray details">, %X:ComparativeStudy.modality%%[IF:ComparativeStudy.imageSeries.count%, %X:ComparativeStudy.imageSeries.count% series%]IF:ComparativeStudy.imageSeries.count%%[IF:ComparativeStudy.patientID%, %X:ComparativeStudy.patientID%%]IF:ComparativeStudy.patientID%%[IF:ComparativeStudy.accessionNumber%, %X:ComparativeStudy.accessionNumber%%]IF:ComparativeStudy.accessionNumber%</span>
-                        
-                        
-                        
 						<div class="gray indent compressed">
 									%[IF:ComparativeStudy.comment%<div class="italic indent">%X:ZWS:ComparativeStudy.comment%</div>%]IF:ComparativeStudy.comment%
 						</div>
@@ -184,10 +184,11 @@ function shareDestinationChange(select) {
                         <div class="gray indent compressed">
                         </div>
                         
-                        <script type="text/javascript" language="javascript">
-							if( "%ComparativeStudy.studyInstanceUID%" > "%Study.studyInstanceUID%") document.write( "</b>");
-                            else document.write( "</a>");
-                        </script>
+                        %[IF:ComparativeStudy.studyInstanceUID==Study.studyInstanceUID%
+                        </b>
+                        %ELSE:ComparativeStudy.studyInstanceUID==Study.studyInstanceUID%
+                        </a>
+                        %]IF:ComparativeStudy.studyInstanceUID==Study.studyInstanceUID%
 					</td>
 				</tr>
 				%]FOREACH:Study.otherStudiesForThisPatient:ComparativeStudy%
@@ -200,6 +201,12 @@ function shareDestinationChange(select) {
                         Selection:
                     </td>
                     
+<!--                    <td>
+						<button type="button" name="CheckAll" onclick="checkAll(this.form)">Tout</button>
+						<button type="button" name="UncheckAll" onclick="uncheckAll(this.form)">Aucun</button>
+					</td>
+-->      
+                    
                     <td>
 					%[IF:Info.proposeWeasis%
 						<input type="image" src="images/weasisSmall.png" alt="Open selected series in Weasis" onclick="document.submitting='Weasis'" class="if_selection" />
@@ -209,10 +216,9 @@ function shareDestinationChange(select) {
 				%]IF:Info.proposeDicomSend||Info.proposeWeasis%
 				%]IF:Study.otherStudiesForThisPatient.count>1%
                 
-                
-                </form>
 				%]IF:Study.otherStudiesForThisPatient.count%
 			</table>
+			</form>
 		</div>
 		
 		%[IF:Study.hasKeyImagesOrROIImages%
@@ -239,11 +245,11 @@ function shareDestinationChange(select) {
 				%[FOREACH:Series:Series%
 					<tr class="li%X:Series_Index2%">
 						%[IF:Info.proposeDicomSend||Info.proposeWeasis||Info.proposeWADORetrieve||Info.proposeDelete%
-                        %[IF:Study.Series.count>1%
+                        %[IF:Study.imageSeries.count>1%
 						<td class="narrow fat">
 							<input type="checkbox" class="checkbox" name="selected" value="%Series.XID%" onchange="checkboxChanged(this.form)" %[IF:Series.isSelected%checked="checked"%]IF:Series.isSelected% />
 						</td>
-                        %]IF:Study.Series.count>1%
+                        %]IF:Study.imageSeries.count>1%
 						%]IF:Info.proposeDicomSend||Info.proposeWeasis||Info.proposeWADORetrieve||Info.proposeDelete%
                         
                         %[IF:Info.isMacOS||Info.isIOS%
@@ -405,7 +411,6 @@ function shareDestinationChange(select) {
 	</div>
 	%]IF:Study%
 </div>
-
 <script type="text/javascript" language="javascript">
 	checkboxChanged(document.getElementById('form'));
 </script>
