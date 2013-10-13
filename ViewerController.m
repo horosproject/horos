@@ -2642,6 +2642,8 @@ static volatile int numberOfThreadsForRelisce = 0;
     int rows = tag / 10;
     int columns = tag % 10;
     
+    columns *= [[[AppController sharedAppController] viewerScreens] count];
+    
     int displayedViewersCount = [ViewerController getDisplayed2DViewers].count;
     
     BOOL copyAutoTilingPreference = [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"];
@@ -7454,21 +7456,6 @@ return YES;
     
     flagListPODComparatives = [[NSNumber alloc] initWithBool:YES];
 	[self bind:@"flagListPODComparatives" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.listPODComparativesIn2DViewer" options:nil];
-    
-    if( [[[AppController sharedAppController] viewerScreens] count] == 2)
-    {
-        for( NSMenuItem *item in windowsTilingMenu.itemArray)
-        {
-            int tag = [item tag];
-            int rows = tag / 10;
-            int columns = tag % 10;
-            
-            if( columns % 2 != 0)
-            {
-                [windowsTilingMenu removeItemAtIndex: [windowsTilingMenu indexOfItem: item]];
-            }
-        }
-    }
 }
 
 -(void)comparativeRefresh:(NSString*) patientUID

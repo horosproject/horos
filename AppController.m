@@ -5220,7 +5220,11 @@ static BOOL initialized = NO;
 	else
 		NSLog(@"NO tiling");
 	
-    [[NSUserDefaults standardUserDefaults] setObject: [NSString stringWithFormat: @"%d%d", lastRows, lastColumns] forKey: @"LastWindowsTilingRowsColumns"];
+    int p = lastColumns / [[[AppController sharedAppController] viewerScreens] count];
+    if( p < 1)
+        p = 1;
+    
+    [[NSUserDefaults standardUserDefaults] setObject: [NSString stringWithFormat: @"%d%d", lastRows, p] forKey: @"LastWindowsTilingRowsColumns"];
     
 	accumulateAnimations = NO;
 	if( [accumulateAnimationsArray count])
