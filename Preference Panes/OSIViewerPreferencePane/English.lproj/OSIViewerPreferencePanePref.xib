@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4510" systemVersion="12F37" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4510" systemVersion="12F45" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4510"/>
@@ -235,7 +235,7 @@
                                 <button id="431">
                                     <rect key="frame" x="10" y="111" width="366" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Continuously scroll through images and series" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="432">
+                                    <buttonCell key="cell" type="check" title="Scroll through image and series for:" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="432">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -369,7 +369,7 @@
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <popUpButtonCell key="cell" type="push" title="Modalities" bezelStyle="rounded" alignment="center" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" pullsDown="YES" id="fhV-XV-SCY">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="system"/>
+                                        <font key="font" metaFont="menu"/>
                                         <menu key="menu" title="OtherViews" id="jDc-fg-eC3">
                                             <items>
                                                 <menuItem title="Modalities" hidden="YES" id="rUf-a6-mNm">
@@ -400,9 +400,65 @@
                                                         <binding destination="308" name="value" keyPath="values.noPropagateInSeriesForXA" id="2ry-T6-XZ2"/>
                                                     </connections>
                                                 </menuItem>
+                                                <menuItem title="MG" id="6kW-Wr-Cu0">
+                                                    <connections>
+                                                        <binding destination="308" name="value" keyPath="values.noPropagateInSeriesForMG" id="CeE-wL-CzV"/>
+                                                    </connections>
+                                                </menuItem>
                                             </items>
                                         </menu>
                                     </popUpButtonCell>
+                                    <connections>
+                                        <binding destination="308" name="enabled" keyPath="values.IndependentCRWLWW" id="l3E-9x-q7V"/>
+                                    </connections>
+                                </popUpButton>
+                                <popUpButton verticalHuggingPriority="750" id="Pyh-nV-fiK">
+                                    <rect key="frame" x="269" y="107" width="124" height="26"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <popUpButtonCell key="cell" type="push" title="Modalities" bezelStyle="rounded" alignment="center" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" pullsDown="YES" id="XCc-0E-TE4">
+                                        <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                        <font key="font" metaFont="menu"/>
+                                        <menu key="menu" title="OtherViews" id="3N3-Wh-vx1">
+                                            <items>
+                                                <menuItem title="Modalities" hidden="YES" id="M0C-0c-XXi">
+                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                </menuItem>
+                                                <menuItem title="CR" state="on" id="8uS-Ii-xSk">
+                                                    <connections>
+                                                        <binding destination="308" name="value" keyPath="values.scrollThroughSeriesForCR" id="EY1-Fq-jfi"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="DX" id="ai8-gB-ewz">
+                                                    <connections>
+                                                        <binding destination="308" name="value" keyPath="values.scrollThroughSeriesForDX" id="afJ-VH-28l"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="DR" id="cza-Ci-dMD">
+                                                    <connections>
+                                                        <binding destination="308" name="value" keyPath="values.scrollThroughSeriesForDR" id="lps-qo-ERK"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="RF" id="seo-e0-Zo4">
+                                                    <connections>
+                                                        <binding destination="308" name="value" keyPath="values.scrollThroughSeriesForRF" id="8g1-Bh-6qC"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="XA" id="pNw-K4-kef">
+                                                    <connections>
+                                                        <binding destination="308" name="value" keyPath="values.scrollThroughSeriesForXA" id="Bri-xQ-4zc"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="MG" id="n0T-TJ-mPS">
+                                                    <connections>
+                                                        <binding destination="308" name="value" keyPath="values.scrollThroughSeriesForMG" id="xRu-9U-IGO"/>
+                                                    </connections>
+                                                </menuItem>
+                                            </items>
+                                        </menu>
+                                    </popUpButtonCell>
+                                    <connections>
+                                        <binding destination="308" name="enabled" keyPath="values.scrollThroughSeries" id="g5L-aQ-wtn"/>
+                                    </connections>
                                 </popUpButton>
                             </subviews>
                         </view>

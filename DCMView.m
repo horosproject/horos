@@ -701,11 +701,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 + (BOOL) noPropagateSettingsInSeriesForModality: (NSString*) m
 {
 	if( IndependentCRWLWW &&
-       (([m isEqualToString: @"CR"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"noPropagateInSeriesForCR"]) ||
-       ([m isEqualToString: @"DR"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"noPropagateInSeriesForDR"]) ||
-       ([m isEqualToString: @"DX"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"noPropagateInSeriesForDX"]) ||
-       ([m isEqualToString: @"RF"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"noPropagateInSeriesForRF"]) ||
-       ([m isEqualToString: @"XA"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"noPropagateInSeriesForXA"])))
+       [[NSUserDefaults standardUserDefaults] boolForKey: [NSString stringWithFormat: @"noPropagateInSeriesFor%@", m]])
 		return YES;
 	else
 		return NO;
@@ -2589,6 +2585,55 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
      return YES;
 }
 
+- (BOOL) scrollThroughSeriesIfNecessary: (int) i
+{
+    BOOL switchSeries = NO;
+    
+    if( [self is2DViewer] && [[NSUserDefaults standardUserDefaults] boolForKey:@"scrollThroughSeries"] && [[NSUserDefaults standardUserDefaults] boolForKey: [NSString stringWithFormat: @"scrollThroughSeriesFor%@", curDCM.modalityString]])
+    {
+        int imIndex = curImage;
+        
+        if( flippedData)
+            imIndex = (long)[dcmPixList count]-1-imIndex;
+        
+        if( imIndex < 0)
+        {
+            NSArray *seriesArray = [[BrowserController currentBrowser] childrenArray: [[self seriesObj] valueForKey: @"study"]];
+            NSInteger index = [seriesArray indexOfObject: [self seriesObj]];
+            
+            if( index != NSNotFound)
+            {
+                if( index > 0)
+                {
+                    [NSObject cancelPreviousPerformRequestsWithTarget: [self windowController] selector: @selector(loadSeriesDown) object: nil];
+                    [[self windowController] performSelector: @selector(loadSeriesDown) withObject: nil afterDelay: 0.01];
+                    switchSeries = YES;
+                }
+            }
+        }
+        else if( imIndex >= [dcmPixList count])
+        {
+            NSArray *seriesArray = [[BrowserController currentBrowser] childrenArray: [[self seriesObj] valueForKey: @"study"]];
+            NSInteger index = [seriesArray indexOfObject: [self seriesObj]];
+            
+            if( index != NSNotFound)
+            {
+                if( index + 1 < [seriesArray count])
+                {
+                    [NSObject cancelPreviousPerformRequestsWithTarget: [self windowController] selector: @selector(loadSeriesUp) object: nil];
+                    [[self windowController] performSelector: @selector(loadSeriesUp) withObject: nil afterDelay: 0.01];
+                    switchSeries = YES;
+                }
+            }
+        }
+        
+        if( curImage < 0) curImage = 0;
+        if( curImage >= [dcmPixList count]) curImage = (long)[dcmPixList count]-1;
+    }
+    
+    return switchSeries;
+}
+
 - (void) keyDown:(NSEvent *)event
 {
 	if ([self eventToPlugins:event]) return;
@@ -2694,6 +2739,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				{
 					inc = - curDCM.stack;
 					curImage += inc;
+                    
+                    [self scrollThroughSeriesIfNecessary: curImage];
+                    
 					if( curImage < 0) curImage = 0;
 				}
 				else
@@ -2701,6 +2749,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					if( [event modifierFlags]  & NSAlternateKeyMask) [[self windowController] setKeyImage:self];
 					inc = -_imageRows * _imageColumns;
 					curImage -= _imageRows * _imageColumns;
+                    
+                    [self scrollThroughSeriesIfNecessary: curImage];
+                    
 					if( curImage < 0) curImage = 0;
 				}
 			}
@@ -2717,6 +2768,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				{
 					inc = curDCM.stack;
 					curImage += inc;
+                    
+                    [self scrollThroughSeriesIfNecessary: curImage];
+                    
 					if( curImage >= [dcmPixList count]) curImage = (long)[dcmPixList count]-1;
 				}
 				else
@@ -2724,6 +2778,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					if( [event modifierFlags]  & NSAlternateKeyMask) [[self windowController] setKeyImage:self];
 					inc = _imageRows * _imageColumns;
 					curImage += _imageRows * _imageColumns;
+                    
+                    [self scrollThroughSeriesIfNecessary: curImage];
+                    
 					if( curImage >= [dcmPixList count]) curImage = (long)[dcmPixList count]-1;
 				}
 			}
@@ -4778,44 +4835,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				[self setNeedsDisplay:YES];
 			}
 			
-			if( [self is2DViewer] && [[NSUserDefaults standardUserDefaults] boolForKey:@"scrollThroughSeries"])
+			if( [self scrollThroughSeriesIfNecessary: curImage])
 			{
-				int imIndex = curImage;
-				
-				if( flippedData)
-					imIndex = (long)[dcmPixList count]-1-imIndex;
-				
-				if( imIndex < 0)
-				{
-					NSArray *seriesArray = [[BrowserController currentBrowser] childrenArray: [[self seriesObj] valueForKey: @"study"]];
-					NSInteger index = [seriesArray indexOfObject: [self seriesObj]];
-					
-					if( index != NSNotFound)
-					{
-						if( index > 0)
-						{
-							[NSObject cancelPreviousPerformRequestsWithTarget: [self windowController] selector: @selector(loadSeriesDown) object: nil];
-							[[self windowController] performSelector: @selector(loadSeriesDown) withObject: nil afterDelay: 0.01];
-						}
-					}
-				}
-				else if( imIndex >= [dcmPixList count])
-				{
-					NSArray *seriesArray = [[BrowserController currentBrowser] childrenArray: [[self seriesObj] valueForKey: @"study"]];
-					NSInteger index = [seriesArray indexOfObject: [self seriesObj]];
-					
-					if( index != NSNotFound)
-					{
-						if( index + 1 < [seriesArray count])
-						{
-							[NSObject cancelPreviousPerformRequestsWithTarget: [self windowController] selector: @selector(loadSeriesUp) object: nil];
-							[[self windowController] performSelector: @selector(loadSeriesUp) withObject: nil afterDelay: 0.01];
-						}
-					}
-				}
-				
-				if( curImage < 0) curImage = 0;
-				if( curImage >= [dcmPixList count]) curImage = (long)[dcmPixList count]-1;
 			}
 			else if( [dcmPixList count] > 3 && [[NSUserDefaults standardUserDefaults] boolForKey:@"loopScrollWheel"])
 			{

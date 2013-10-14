@@ -2294,8 +2294,7 @@ static volatile int numberOfThreadsForRelisce = 0;
         
 		NSMenu *submenu =  [[[NSMenu alloc] initWithTitle:NSLocalizedString(@"ROI", nil)] autorelease];
 		NSMenuItem *item;
-		NSArray *titles = [NSArray arrayWithObjects:NSLocalizedString(@"Contrast", nil), NSLocalizedString(@"Move", nil), NSLocalizedString(@"Magnify", nil), 
-													NSLocalizedString(@"Rotate", nil), NSLocalizedString(@"Scroll", nil), nil];
+		NSArray *titles = [NSArray arrayWithObjects:NSLocalizedString(@"Contrast", nil), NSLocalizedString(@"Move", nil), NSLocalizedString(@"Magnify", nil), NSLocalizedString(@"Rotate", nil), NSLocalizedString(@"Scroll", nil), nil];
 		NSArray *images = [NSArray arrayWithObjects: @"WLWW", @"Move", @"Zoom",  @"Rotate",  @"Stack", @"Length", nil];	// DO NOT LOCALIZE THIS LINE ! -> filenames !
 		NSEnumerator *enumerator2 = [images objectEnumerator];
 		NSEnumerator *enumerator3 = [[popupRoi itemArray] objectEnumerator];
