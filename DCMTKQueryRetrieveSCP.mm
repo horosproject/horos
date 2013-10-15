@@ -400,7 +400,7 @@ void errmsg(const char* msg, ...)
 		
 //		if (_doAuthenticate)
 		{			
-			tLayer->setPrivateKeyPasswd([TLS_PRIVATE_KEY_PASSWORD cStringUsingEncoding:NSUTF8StringEncoding]);
+			tLayer->setPrivateKeyPasswd([[DICOMTLS TLS_PRIVATE_KEY_PASSWORD] cStringUsingEncoding:NSUTF8StringEncoding]);
 			
 			[DICOMTLS generateCertificateAndKeyForLabel:TLS_KEYCHAIN_IDENTITY_NAME_SERVER withStringID:@"StoreSCPTLS"]; // export certificate/key from the Keychain to the disk
 			

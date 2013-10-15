@@ -573,7 +573,7 @@ extern "C"
 				[args addObject:[DICOMTLS certificatePathForServerAddress:address port:[port intValue] AETitle:aet withStringID:uniqueStringID]]; // [c]ertificate file: string
 						
 				[args addObject:@"--use-passwd"];
-				[args addObject:TLS_PRIVATE_KEY_PASSWORD];
+				[args addObject: [DICOMTLS TLS_PRIVATE_KEY_PASSWORD]];
 			}
 			else
 				[args addObject:@"--anonymous-tls"]; // use secure TLS connection without certificate

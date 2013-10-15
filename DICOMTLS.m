@@ -89,6 +89,24 @@
 
 #pragma mark Keychain Access
 
+static NSMutableString *TLS_PRIVATE_KEY_PASSWORD = nil;
+
++ (NSString*) TLS_PRIVATE_KEY_PASSWORD
+{
+    if( TLS_PRIVATE_KEY_PASSWORD == nil)
+    {
+        NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        
+        TLS_PRIVATE_KEY_PASSWORD = [[NSMutableString string] retain];
+        
+        for (int i=0; i<10; i++) {
+            [TLS_PRIVATE_KEY_PASSWORD appendFormat: @"%C", [letters characterAtIndex: arc4random() % [letters length]]];
+        }
+    }
+    
+    return TLS_PRIVATE_KEY_PASSWORD;
+}
+
 + (void)generateCertificateAndKeyForLabel:(NSString*)label withStringID:(NSString*)stringID;
 {	
 	SecIdentityRef identity = [DDKeychain identityForLabel:label];
@@ -97,7 +115,7 @@
 		// identity to certificate
 		[DDKeychain KeychainAccessExportCertificateForIdentity:identity toPath:[[DICOMTLS certificatePathForLabel:label] stringByAppendingFormat:@"%@", stringID]];
 		// identity to private key
-		[DDKeychain KeychainAccessExportPrivateKeyForIdentity:identity toPath:[[DICOMTLS keyPathForLabel:label] stringByAppendingFormat:@"%@", stringID] cryptWithPassword:TLS_PRIVATE_KEY_PASSWORD];
+		[DDKeychain KeychainAccessExportPrivateKeyForIdentity:identity toPath:[[DICOMTLS keyPathForLabel:label] stringByAppendingFormat:@"%@", stringID] cryptWithPassword: [DICOMTLS TLS_PRIVATE_KEY_PASSWORD]];
 		CFRelease(identity);
 	}
 }

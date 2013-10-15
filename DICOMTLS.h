@@ -29,7 +29,6 @@ typedef enum
 #define TLS_TRUSTED_CERTIFICATES_DIR @"/tmp/TLSTrustedCert" 
 #define TLS_KEYCHAIN_IDENTITY_NAME_CLIENT @"com.osirixviewer.dicomtlsclient"
 #define TLS_KEYCHAIN_IDENTITY_NAME_SERVER @"com.osirixviewer.dicomtlsserver"
-#define TLS_PRIVATE_KEY_PASSWORD @"SuperSecretPassword"
 
 /** \brief
  A utility class for secure DICOM connections with TLS.
@@ -46,6 +45,8 @@ typedef enum
  */
 + (NSArray*)availableCipherSuites;
 + (NSArray*)defaultCipherSuites;
+
++ (NSString*) TLS_PRIVATE_KEY_PASSWORD;
 
 #pragma mark Keychain Access
 + (void)generateCertificateAndKeyForLabel:(NSString*)label withStringID:(NSString*)stringID;
