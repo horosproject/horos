@@ -73,6 +73,7 @@
 #import "PFMoveApplication.h"
 #import "OSIGeneralPreferencePanePref.h"
 #import "NSArray+N2.h"
+#import "DICOMTLS.h"
 #include <OpenGL/OpenGL.h>
 
 #include <kdu_OsiriXSupport.h>
@@ -2504,6 +2505,10 @@ static NSDate *lastWarningDate = nil;
 {
 	unlink( "/tmp/kill_all_storescu");
 	
+#ifndef OSIRIX_LIGHT
+    [DICOMTLS eraseKeys];
+#endif
+    
 //	[webServer release];
 //	webServer = nil;
 	
@@ -2652,6 +2657,9 @@ static NSDate *lastWarningDate = nil;
         self = [super init];
         OsiriX = appController = self;
         
+#ifndef OSIRIX_LIGHT
+        [DICOMTLS eraseKeys];
+#endif
         [[NSFileManager defaultManager] removeItemAtPath:[[NSFileManager defaultManager] tmpDirPath] error:NULL];
         
         if ([[NSFileManager defaultManager] fileExistsAtPath:[[[[NSFileManager defaultManager] findSystemFolderOfType:kApplicationSupportFolderType forDomain:kLocalDomain] stringByAppendingPathComponent:[[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleNameKey]] stringByAppendingPathComponent:@"DLog.enable"]])

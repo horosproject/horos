@@ -47,6 +47,7 @@ typedef enum
 + (NSArray*)defaultCipherSuites;
 
 + (NSString*) TLS_PRIVATE_KEY_PASSWORD;
++ (void) eraseKeys;
 
 #pragma mark Keychain Access
 + (void)generateCertificateAndKeyForLabel:(NSString*)label withStringID:(NSString*)stringID;

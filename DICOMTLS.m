@@ -91,6 +91,19 @@
 
 static NSMutableString *TLS_PRIVATE_KEY_PASSWORD = nil;
 
++ (void) eraseKeys
+{
+    for( NSString *path in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: @"/tmp" error: nil])
+    {
+        path = [@"/tmp/" stringByAppendingPathComponent: path];
+        
+        if( [path hasPrefix: TLS_SEED_FILE] || [path hasPrefix: [NSString stringWithUTF8String: TLS_WRITE_SEED_FILE]] || [path hasPrefix: TLS_PRIVATE_KEY_FILE] || [path hasPrefix: TLS_CERTIFICATE_FILE] || [path hasPrefix: TLS_TRUSTED_CERTIFICATES_DIR])
+        {
+            [[NSFileManager defaultManager] removeItemAtPath: path error: nil];
+        }
+    }
+}
+
 + (NSString*) TLS_PRIVATE_KEY_PASSWORD
 {
     if( TLS_PRIVATE_KEY_PASSWORD == nil)
@@ -111,7 +124,7 @@ static NSMutableString *TLS_PRIVATE_KEY_PASSWORD = nil;
 {	
 	SecIdentityRef identity = [DDKeychain identityForLabel:label];
 	if( identity)
-	{		
+	{
 		// identity to certificate
 		[DDKeychain KeychainAccessExportCertificateForIdentity:identity toPath:[[DICOMTLS certificatePathForLabel:label] stringByAppendingFormat:@"%@", stringID]];
 		// identity to private key
