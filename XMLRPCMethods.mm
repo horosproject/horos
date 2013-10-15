@@ -692,9 +692,16 @@
 
  Response: {error: "0"}
  */
+
+- (void) closeAllWindowsMainThread: (id) sender {
+    [ViewerController closeAllWindows];
+}
+
 -(NSDictionary*)CloseAllWindows:(NSDictionary*)paramDict error:(NSError**)error {
     
-    [ViewerController closeAllWindows];
+    [self performSelectorOnMainThread: @selector( closeAllWindowsMainThread:) withObject: nil waitUntilDone:NO];
+    
+    [NSThread sleepForTimeInterval: 1];
     
     ReturnWithErrorValue(0);
 }
