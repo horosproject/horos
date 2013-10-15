@@ -649,6 +649,7 @@ SecPolicySearchCreate:
 # pragma mark Keychain Access
 
 // Returns the list of Certificates stored in Keychain Access
+#if 0
 + (NSArray *)KeychainAccessCertificatesList;
 {
 	SecKeychainRef keychain = NULL;
@@ -678,9 +679,78 @@ SecPolicySearchCreate:
 	if(keychain)  CFRelease(keychain);
 	if(searchRef) CFRelease(searchRef);
 	
-	return result;	
+	return result;
 }
+#else
++ (NSArray *)KeychainAccessCertificatesList {
+    CFArrayRef searchList;
+    SecKeychainCopySearchList (&searchList);
+    
+    CFTypeRef   arrayRef     = NULL;
+    const void *keys[] =   { kSecClass, kSecMatchLimit, kSecReturnAttributes, kSecReturnRef };
+    const void *values[] = { kSecClassIdentity, kSecMatchLimitAll, kCFBooleanTrue,  kCFBooleanTrue};
+    
+    CFDictionaryRef dict = CFDictionaryCreate(NULL, keys, values, sizeof(keys)/sizeof(const void*), NULL, NULL);
+    OSStatus err = SecItemCopyMatching(dict, &arrayRef);
 
+    if (err != errSecSuccess) {
+        if (err == errSecItemNotFound)
+            return [NSArray array];
+        NSLog(@"%@:%s: SecItemCopyMatching failed: %@", [[self class] description],
+              __PRETTY_FUNCTION__, [DDKeychain stringForError:err]);
+        return nil;
+    }
+    
+    NSMutableArray * found = [NSMutableArray array];
+    
+    for(int i = 0; i < CFArrayGetCount(arrayRef); i++) {
+        NSDictionary * attr = (__bridge NSDictionary *)(CFArrayGetValueAtIndex(arrayRef, i));
+        NSString * label = (NSString *)[attr objectForKey:kSecAttrLabel];
+        
+        if (YES)  {
+            SecIdentityRef identityRef = (__bridge SecIdentityRef)([attr objectForKey:kSecValueRef]);
+            SecCertificateRef certRef;
+            err = SecIdentityCopyCertificate(identityRef, &certRef);
+            if (err != errSecSuccess) {
+                NSLog(@"%@:%s: SecIdentityCopyCertificate failed: %@ (skipping %@)", [[self class] description],
+                      __PRETTY_FUNCTION__, [DDKeychain stringForError:err], identityRef);
+                continue;
+            }
+            
+            NSDictionary * valRef = CFBridgingRelease(SecCertificateCopyValues(certRef, nil, nil));
+            
+            // Skip certs which cannot be used. Page 29 of ITU-T Rec. X.509 (11/2008):
+            //
+            // KeyUsage  ::=  BIT STRING {
+            //    digitalSignature  (0),
+            //    contentCommitment (1),
+            //    keyEncipherment   (2),
+            //    dataEncipherment  (3),
+            //    keyAgreement      (4),
+            //    keyCertSign       (5),
+            //    cRLSign           (6),
+            //    encipherOnly      (7),
+            //    decipherOnly      (8),
+            //
+            NSDictionary * keyUsage = [valRef objectForKey:(__bridge id)(kSecOIDKeyUsage)];
+            NSInteger flag = keyUsage ? [[keyUsage objectForKey:@"value"] integerValue] : 0;
+            
+            // Value of 0 is implies any use - seems to be passed by apple if none is set.
+            //
+            if (!((flag != 0)&& ((flag & 1) == 0)))
+                [found addObject:(__bridge id)(identityRef)];
+            
+            CFRelease(certRef);
+        }
+    };
+    if (arrayRef)
+        CFRelease(arrayRef);
+    if (searchList)
+        CFRelease(searchList);
+
+    return found;
+}
+#endif
 
 + (void)KeychainAccessExportTrustedCertificatesToDirectory:(NSString*)directory;
 {
