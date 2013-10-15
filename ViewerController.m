@@ -3440,6 +3440,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 + (void)closeAllWindows
 {
+    if( [NSThread isMainThread] == NO)
+    {
+        N2LogStackTrace( @"ViewerController closeAllWindows NOT on mainThread");
+        return;
+    }
+    
 	if( recursiveCloseWindowsProtected) return;
 	recursiveCloseWindowsProtected = YES;
 	
@@ -10777,10 +10783,9 @@ static float oldsetww, oldsetwl;
 
 - (IBAction) computeSum:(id) sender
 {
-	long sum, i;
-	
-	sum = 0;
-	for( i = 0; i < 25; i++)
+	float sum = 0;
+    
+	for( int i = 0; i < 25; i++)
 	{
 		NSCell  *theCell = [convMatrix cellWithTag: i];
 		
