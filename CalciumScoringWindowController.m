@@ -396,6 +396,8 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 					[NSNumber numberWithInt:_upperThreshold],
 					nil];
 		
+        NSString *temporaryName = [NSString stringWithFormat: @"%ld", (unsigned long) [NSDate timeIntervalSinceReferenceDate]];
+        
 		[itk regionGrowing3D	: _viewer
 								: nil
 								: slice
@@ -408,9 +410,91 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 								: 0
 								: 0 // Brush ROI
 								: 1
-								: name
+								: temporaryName
 								: NO];
 		
+        // Check that there are no overlaping ROIs
+        
+        ROI *newROI = nil;
+        
+        for( ROI *r in _viewer.imageView.curRoiList)
+        {
+            if( [r.name isEqualToString: temporaryName])
+                newROI = r;
+        }
+        
+        if( newROI)
+        {
+            NSRect newRoiRect = NSMakeRect( newROI.textureUpLeftCornerX, newROI.textureUpLeftCornerY, newROI.textureWidth, newROI.textureHeight);
+            
+            float *locations = nil;
+            long numberOfValues = 0;
+            float *newRoiValues = [_viewer.imageView.curDCM getROIValue: &numberOfValues : newROI : &locations];
+            
+            
+            NSMutableArray *roisToDelete = [NSMutableArray array];
+            
+            for( ROI *r in _viewer.imageView.curRoiList)
+            {
+                if( r.type == tPlain && r != newROI)
+                {
+                    NSRect roiRect = NSMakeRect( r.textureUpLeftCornerX, r.textureUpLeftCornerY, r.textureWidth, r.textureHeight);
+                    
+                    if( NSIntersectsRect( roiRect, newRoiRect))
+                    {
+                        BOOL intersect = NO;
+                        float *l = nil;
+                        long n = 0;
+                        float *nRV = [_viewer.imageView.curDCM getROIValue: &n : r : &l];
+                        
+                        for( long i = 0; i < n; i++)
+                        {
+                            if( nRV[ i] != 0)
+                            {
+                                int x = l[ i*2];
+                                int y = l[ i*2 + 1];
+                                
+                                for( long j = 0; j < numberOfValues; j++)
+                                {
+                                    if( newRoiValues[ j] != 0)
+                                    {
+                                        int newX = locations[ j*2];
+                                        int newY = locations[ j*2 + 1];
+                                        
+                                        if( newX == x && newY == y)
+                                            intersect = YES;
+                                    }
+                                }
+                            }
+                        }
+                            
+                        if( l)
+                            free( l);
+                        
+                        if( nRV)
+                            free( nRV);
+                        
+                        if( intersect)
+                        {
+                            //Delete this ROI
+                            [roisToDelete addObject: r];
+                        }
+                    }
+                }
+            }
+            
+            if( locations)
+                free( locations);
+            
+            if( newRoiValues)
+                free( newRoiValues);
+            
+            for( ROI *r in roisToDelete)
+                [_viewer deleteROI: r];
+        }
+        
+        newROI.name = name;
+        
 		[itk release];
 	}
 	
