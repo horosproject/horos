@@ -156,8 +156,8 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 //convolution	
 	BOOL				convolution, updateToBeApplied;
 	short				kernelsize;
-	short				normalization;
-	short				kernel[25];
+	float				normalization;
+	float				kernel[25];
 
 	float				cineRate;
 
@@ -519,15 +519,15 @@ Note setter is different to not break existing usage. :-( */
 - (void) computeTotalDoseCorrected;
 //- (void) copyFromOther:(DCMPix *) fromDcm;
 - (void) setRGB : (BOOL) val;
-- (void) setConvolutionKernel:(short*)val :(short) size :(short) norm;
+- (void) setConvolutionKernel:(float*)val :(short) size :(float) norm;
 - (void) applyConvolutionOnSourceImage;
 - (void) setArrayPix :(NSArray*) array :(short) i;
 - (BOOL) updateToApply;
 - (id) myinitEmpty;  /**< Returns an Empty object */
-- (short*) kernel;
+- (float*) kernel;
 - (void) applyShutter;
 + (NSPoint) rotatePoint:(NSPoint)pt aroundPoint:(NSPoint)c angle:(float)a;
-- (short) normalization;
+- (float) normalization;
 - (short) kernelsize;
 - (DCMPix*) renderWithRotation:(float) r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF;
 - (DCMPix*) renderWithRotation:(float) r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF backgroundOffset: (float) bgO;

@@ -10784,10 +10784,10 @@ static float oldsetww, oldsetwl;
 	{
 		NSCell  *theCell = [convMatrix cellWithTag: i];
 		
-		sum += [[theCell stringValue] intValue];
+		sum += [[theCell stringValue] floatValue];
 	}
 	
-	[matrixNorm setIntValue: sum];
+	[matrixNorm setFloatValue: sum];
 	
 	[self convMatrixAction:self];
 }
@@ -10853,11 +10853,11 @@ static float oldsetww, oldsetwl;
     }
 }
 
-- (void) setConv:(short*) m :(short) s :(short) norm
+- (void) setConv:(float*) m :(short) s :(float) norm
 {
-	long			x, i;
-	short			kernelsize;
-	short			kernel[ 25];
+	long x, i;
+	short kernelsize;
+	float kernel[ 25];
 	
 	kernelsize = s;
 	
@@ -10897,8 +10897,8 @@ static float oldsetww, oldsetwl;
 		NSDictionary   *aConv;
 		NSArray			*array;
 		long			size, i;
-		long			nomalization;
-		short			matrix[25];
+		float			nomalization;
+		float			matrix[25];
 		
 		aConv = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"Convolution"] objectForKey:str];
 		
@@ -10951,7 +10951,7 @@ static float oldsetww, oldsetwl;
 		array = [aConv objectForKey:@"Matrix"];
 			
 		[matrixName setStringValue: [sender title]];
-		[matrixNorm setIntValue: nomalization];
+		[matrixNorm setFloatValue: nomalization];
 		
 		inc = 0;
 		switch( size)
@@ -10974,7 +10974,7 @@ static float oldsetww, oldsetwl;
 							[theCell setEnabled:YES];
 							if( [[theCell stringValue] isEqualToString:@""] == YES) [theCell setStringValue:@"0"];
 							[theCell setAlignment:NSCenterTextAlignment];
-							[[convMatrix cellAtRow:x column:y] setIntValue: [[array objectAtIndex:inc++] longValue]];
+							[[convMatrix cellAtRow:x column:y] setFloatValue: [[array objectAtIndex:inc++] floatValue]];
 						}
 					}
 				}
@@ -10991,7 +10991,7 @@ static float oldsetww, oldsetwl;
 						[theCell setEnabled:YES];
 						if( [[theCell stringValue] isEqualToString:@""] == YES) [theCell setStringValue:@"0"];
 						[theCell setAlignment:NSCenterTextAlignment];
-						[[convMatrix cellAtRow:x column:y] setIntValue: [[array objectAtIndex:inc++] longValue]];
+						[[convMatrix cellAtRow:x column:y] setFloatValue: [[array objectAtIndex:inc++] floatValue]];
 					}
 				}
 			break;
@@ -11025,7 +11025,7 @@ long				x, y;
 					}
 					else
 					{
-						[valArray addObject: [NSNumber numberWithLong:[theCell intValue]]];
+						[valArray addObject: [NSNumber numberWithFloat:[theCell floatValue]]];
 					}
 				}
 			}
@@ -11038,7 +11038,7 @@ long				x, y;
 				{
 					NSCell *theCell = [convMatrix cellAtRow:y column:x];
 					
-					[valArray addObject: [NSNumber numberWithLong:[theCell intValue]]];
+					[valArray addObject: [NSNumber numberWithFloat:[theCell floatValue]]];
 				}
 			}
 		break;
@@ -11068,7 +11068,7 @@ long				x, y;
 		NSMutableArray			*valArray;
 		
 		[aConvFilter setObject:[NSNumber numberWithLong:[[sizeMatrix selectedCell] tag]] forKey: @"Size"];
-		[aConvFilter setObject:[NSNumber numberWithLong:[matrixNorm intValue]] forKey: @"Normalization"];
+		[aConvFilter setObject:[NSNumber numberWithFloat:[matrixNorm floatValue]] forKey: @"Normalization"];
 		
 		valArray = [self getMatrix:[[sizeMatrix selectedCell] tag]];
 		
@@ -11097,15 +11097,15 @@ long				x, y;
 {
 long				i, size = [[sizeMatrix selectedCell] tag];
 NSMutableArray		*array;
-short				matrix[25];
+float				matrix[25];
 
 	array = [self getMatrix:size];	
 	for( i = 0; i < size*size; i++)
 	{
-		matrix[i] = [[array objectAtIndex: i] longValue];
+		matrix[i] = [[array objectAtIndex: i] floatValue];
 	}
 	
-	[self setConv:matrix :[[sizeMatrix selectedCell] tag] :[matrixNorm intValue]];
+	[self setConv:matrix :[[sizeMatrix selectedCell] tag] :[matrixNorm floatValue]];
 	[imageView setIndex:[imageView curImage]];
 }
 

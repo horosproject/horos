@@ -12233,7 +12233,12 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             
             if( color)
             {
-                err = vImageConvolve_ARGB8888( &dstf, &srcf, 0, 0, 0,  kernel, kernelsize, kernelsize, normalization, 0, kvImageDoNotTile + kvImageLeaveAlphaUnchanged + kvImageEdgeExtend);
+                int16_t intKernel[ 25];
+                
+                for( int i = 0; i < kernelsize*kernelsize; i++)
+                    intKernel[ i] = kernel[ i];
+                
+                err = vImageConvolve_ARGB8888( &dstf, &srcf, 0, 0, 0, intKernel, kernelsize, kernelsize, normalization, 0, kvImageDoNotTile + kvImageLeaveAlphaUnchanged + kvImageEdgeExtend);
             }
             else
             {
@@ -12913,7 +12918,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 -(BOOL) updateToApply { return updateToBeApplied;}
 
-- (short) normalization
+- (float) normalization
 {
 	return normalization;
 }
@@ -12923,12 +12928,12 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	return kernelsize;
 }
 
-- (short*) kernel
+- (float*) kernel
 {
 	return kernel;
 }
 
--(void) setConvolutionKernel:(short*)val :(short) size :(short) norm
+-(void) setConvolutionKernel:(float*)val :(short) size :(float) norm
 {
 	
 	if( val)

@@ -840,7 +840,7 @@ enum
 - (IBAction) setOrientationTool:(id) sender;
 - (void) setWindowTitle:(id) sender;
 - (IBAction) printSlider:(id) sender;
-- (void) setConv:(short*) matrix :(short) size :(short) norm;
+- (void) setConv:(float*) matrix :(short) size :(float) norm;
 -(BOOL) checkFrameSize;
 - (IBAction) vertFlipDataSet:(id) sender;
 - (IBAction) horzFlipDataSet:(id) sender;
