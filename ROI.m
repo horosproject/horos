@@ -4201,6 +4201,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						// TEXT
 						NSPoint tPt = self.lowerRightPoint;
                         
+                        if( [name isEqualToString:@"Unnamed"] == NO && [name isEqualToString: NSLocalizedString( @"Unnamed", nil)] == NO) self.textualBoxLine1 = name;
+                        else self.textualBoxLine1 = nil;
+
 						[self prepareTextualData:tPt];
 					}
 					[pool release];
