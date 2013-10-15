@@ -499,8 +499,7 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 	}
 	
 	NSArray *roiList = [_viewer roisWithName:name];
-	ROI *roi ;
-	for (roi in roiList)
+	for(ROI *roi in roiList)
 	{
 		[roi setDisplayCalciumScoring:YES];
 		if (addROIs)

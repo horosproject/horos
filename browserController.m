@@ -7187,10 +7187,19 @@ static NSConditionLock *threadLock = nil;
 			
 			[ViewerController closeAllWindows];
 			
+            NSNumber *propagateSettings = nil;
+            NSNumber *syncSettings = nil;
+            
 			for( NSDictionary *dict in viewers)
 			{
 				NSString *studyUID = [dict valueForKey:@"studyInstanceUID"];
 				NSString *seriesUID = [dict valueForKey:@"seriesInstanceUID"];
+                
+                if( [dict valueForKey: @"propagateSettings"])
+                    propagateSettings = [dict valueForKey: @"propagateSettings"];
+                
+                if( [dict valueForKey: @"syncSettings"])
+                    syncSettings = [dict valueForKey: @"syncSettings"];
 				
 				NSArray	 *series4D = [seriesUID componentsSeparatedByString:@"\\**\\"];
 				// Find the corresponding study & 4D series
@@ -7249,9 +7258,20 @@ static NSConditionLock *threadLock = nil;
                     N2LogExceptionWithStackTrace(e);
 				}
 			}
-			
+            
 			if( [seriesToOpen count] > 0 && [viewersToLoad count] == [seriesToOpen count])
 			{
+                if( propagateSettings)
+                {
+                    if( [propagateSettings boolValue])
+                        [DCMView setSyncro: syncroLOC];
+                    else
+                        [DCMView setSyncro: syncroOFF];
+                }
+                
+                if( syncSettings)
+                    [[NSUserDefaults standardUserDefaults] setBool: [syncSettings boolValue] forKey:@"COPYSETTINGS"];
+                
 				if( waitOpeningWindow == nil) waitOpeningWindow  = [[WaitRendering alloc] init: NSLocalizedString(@"Opening...", nil)];
 				[waitOpeningWindow showWindow:self];
 				

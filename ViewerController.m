@@ -1015,6 +1015,13 @@ return YES;
                 if( [[NSUserDefaults standardUserDefaults] objectForKey:@"LastWindowsTilingRowsColumns"])
                     [dict setObject: [[NSUserDefaults standardUserDefaults] objectForKey:@"LastWindowsTilingRowsColumns"] forKey:@"LastWindowsTilingRowsColumns"];
                 
+                [dict setObject: [[NSUserDefaults standardUserDefaults] objectForKey:@"COPYSETTINGS"] forKey:@"propagateSettings"];
+                
+                if( [DCMView syncro] == syncroLOC)
+                    [dict setObject: [NSNumber numberWithBool: YES] forKey:@"syncSettings"];
+                else if( [DCMView syncro] == syncroOFF)
+                    [dict setObject: [NSNumber numberWithBool: NO] forKey:@"syncSettings"];
+                    
                 [state addObject: dict];
             }
         }
