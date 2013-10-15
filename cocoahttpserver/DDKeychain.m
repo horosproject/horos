@@ -1,5 +1,6 @@
 #import "DDKeychain.h"
 #import "DICOMTLS.h"
+#include <stdio.h>
 
 static NSMutableDictionary *lockedFiles = nil;
 static NSRecursiveLock *lockFile = nil;
@@ -648,39 +649,105 @@ SecPolicySearchCreate:
 
 # pragma mark Keychain Access
 
-// Returns the list of Certificates stored in Keychain Access
-+ (NSArray *)KeychainAccessCertificatesList;
-{
-	SecKeychainRef keychain = NULL;
-	SecIdentitySearchRef searchRef = NULL;
-	
-	// Create array to hold the results
-	NSMutableArray *result = [NSMutableArray array];
-	
-	SecKeychainCopyDefault(&keychain);
-	SecIdentitySearchCreate(keychain, CSSM_KEYUSE_ANY, &searchRef);
-	
-	SecIdentityRef currentIdentityRef = NULL;
-	while(searchRef && (SecIdentitySearchCopyNext(searchRef, &currentIdentityRef) != errSecItemNotFound))
-	{
-		// Extract the Certificate from the identity, and examine it to see if it will work for us
-		SecCertificateRef certificateRef = NULL;
-		SecIdentityCopyCertificate(currentIdentityRef, &certificateRef);
-				
-		if(certificateRef)
-		{		
-			[result addObject:(id)currentIdentityRef];
-			CFRelease(certificateRef);
-		}
-		CFRelease(currentIdentityRef);
-	}
-	
-	if(keychain)  CFRelease(keychain);
-	if(searchRef) CFRelease(searchRef);
-	
-	return result;	
-}
 
++ (NSArray *)KeychainAccessCertificatesList {
+    CFArrayRef searchList;
+    SecKeychainCopySearchList (&searchList);
+    
+    CFTypeRef   arrayRef     = NULL;
+    NSDictionary * dict = @{
+                            (id) kSecClass: (id) kSecClassIdentity,
+                            (id) kSecMatchLimit: (id) kSecMatchLimitAll,
+                            (id) kSecReturnAttributes: (id) kCFBooleanTrue,
+                            (id) kSecReturnRef: (id) kCFBooleanTrue,
+                            };
+    
+    OSStatus err = SecItemCopyMatching((CFDictionaryRef) dict, &arrayRef);
+
+    if (err != errSecSuccess) {
+        if (err == errSecItemNotFound)
+            return [NSArray array];
+        NSLog(@"%@:%s: SecItemCopyMatching failed: %@", [[self class] description],
+              __PRETTY_FUNCTION__, [DDKeychain stringForError:err]);
+        return nil;
+    }
+    
+    NSMutableArray * found = [NSMutableArray array];
+    
+    for(int i = 0; i < CFArrayGetCount(arrayRef); i++) {
+        NSDictionary * attr = (__bridge NSDictionary *)(CFArrayGetValueAtIndex(arrayRef, i));
+        NSString * label = (NSString *)[attr objectForKey:kSecAttrLabel];
+        
+        if (YES)  {
+            SecIdentityRef identityRef = (__bridge SecIdentityRef)([attr objectForKey:kSecValueRef]);
+            SecCertificateRef certRef;
+            err = SecIdentityCopyCertificate(identityRef, &certRef);
+            if (err != errSecSuccess) {
+                NSLog(@"%@:%s: SecIdentityCopyCertificate failed: %@ (skipping %@)", [[self class] description],
+                      __PRETTY_FUNCTION__, [DDKeychain stringForError:err], identityRef);
+                goto skip;
+            }
+
+            NSDictionary * valRef = CFBridgingRelease(SecCertificateCopyValues(certRef, nil, nil));
+
+#if 0
+            SecKeychainRef keychainRef;
+            err = SecKeychainItemCopyKeychain((SecKeychainItemRef)identityRef, &keychainRef);
+            if (err != errSecSuccess) {
+                NSLog(@"%@:%s: SecKeychainItemCopyKeychain failed: %@ (skipping %@)", [[self class] description],
+                      __PRETTY_FUNCTION__, [DDKeychain stringForError:err], identityRef);
+                goto skip;
+            };
+            
+            char path[PATH_MAX];
+            UInt32 len = sizeof(path);
+            err = SecKeychainGetPath(keychainRef, &len, path);
+            if (err != errSecSuccess) {
+                NSLog(@"%@:%s: SecKeychainGetPath failed: %@ (skipping %@)", [[self class] description],
+                      __PRETTY_FUNCTION__, [DDKeychain stringForError:err], identityRef);
+                goto skip;
+            };
+            NSLog(@"%@: %s",[valRef objectForKey:(__bridge id)(kSecOIDCommonName)], path);
+#endif
+            
+            // Skip certs which cannot be used. Page 29 of ITU-T Rec. X.509 (11/2008):
+            //
+            // KeyUsage  ::=  BIT STRING {
+            //    digitalSignature  (0),
+            //    contentCommitment (1),
+            //    keyEncipherment   (2),
+            //    dataEncipherment  (3),
+            //    keyAgreement      (4),
+            //    keyCertSign       (5),
+            //    cRLSign           (6),
+            //    encipherOnly      (7),
+            //    decipherOnly      (8),
+            //
+            NSDictionary * keyUsage = [valRef objectForKey:(__bridge id)(kSecOIDKeyUsage)];
+            NSInteger flag = keyUsage ? [[keyUsage objectForKey:@"value"] integerValue] : 0;
+            
+            CFBooleanRef invisible = (CFBooleanRef) [valRef objectForKey:(__bridge id)(kSecAttrIsInvisible)];
+            
+            // Value of 0 is implies any use - seems to be passed by apple if none is set.
+            //
+            if (invisible == kCFBooleanTrue)
+                goto skip;
+            
+            if ((flag != 0)&& ((flag & 1) == 0))
+                goto skip;
+                
+                [found addObject:(__bridge id)(identityRef)];
+        skip:
+            CFRelease(certRef);
+        }
+    };
+    if (arrayRef)
+        CFRelease(arrayRef);
+    if (searchList)
+        CFRelease(searchList);
+
+    return found;
+}
 
 + (void)KeychainAccessExportTrustedCertificatesToDirectory:(NSString*)directory;
 {
