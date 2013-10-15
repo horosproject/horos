@@ -308,7 +308,7 @@
     NSPredicate* predicate = [NSCompoundPredicate andPredicateWithSubpredicates:subpredicates];
     
     NSArray* iobjects = [[self.database independentDatabase] objectsForEntity:@"Study" predicate:predicate error:error];
-    
+    BOOL downloading = NO;
     if (!iobjects.count)
     {
         if ([NSUserDefaults.standardUserDefaults boolForKey:@"XMLRPCWithPOD"] && [NSUserDefaults.standardUserDefaults boolForKey:@"searchForComparativeStudiesOnDICOMNodes"]) {
@@ -355,6 +355,8 @@
                             iobjects = nil;
                     }
                     while( [iobjects count] == 0 && [NSDate timeIntervalSinceReferenceDate] - dateStart < 20);
+                    
+                    downloading = YES;
                 }
             }
         }
@@ -365,7 +367,10 @@
     if (iobjects.count == 0)
         ReturnWithErrorValue(-1);
 
-    [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjectsWithIDs:) withObject:[iobjects valueForKey:@"objectID"] waitUntilDone:NO];
+    if( downloading)
+        [NSThread detachNewThreadSelector: @selector(_onMainThreadOpenWithDelayObjectsWithIDs:) toTarget:self withObject: [iobjects valueForKey:@"objectID"]];
+    else
+        [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjectsWithIDs:) withObject:[iobjects valueForKey:@"objectID"] waitUntilDone:NO];
     
     NSMutableArray* elements = [NSMutableArray array];
     for (NSManagedObject* iobj in iobjects)
@@ -465,7 +470,7 @@
     NSPredicate* predicate = [NSPredicate predicateWithFormat:request];
     
     NSArray* iobjects = [idatabase objectsForEntity:entityName predicate:predicate error:error];
-    
+    BOOL downloading = NO;
 //  NSLog(@"FindObject %@ ||| %@ ||| %@ ||| %d", entityName, request, command, (int)iobjects.count);
     
     if (!iobjects.count && [entityName isEqualToString: @"Study"])
@@ -510,9 +515,9 @@
                     NSTimeInterval dateStart = [NSDate timeIntervalSinceReferenceDate];
                     do
                     {
-                        [NSThread sleepForTimeInterval: 6];
+                        [NSThread sleepForTimeInterval: 1];
                         [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
-                        [NSThread sleepForTimeInterval: 2];
+                        [NSThread sleepForTimeInterval: 1];
                         
                         // And find the study locally
                         iobjects = [[self.database independentDatabase] objectsForEntity:@"Study" predicate:predicate error:error];
@@ -522,6 +527,7 @@
                             iobjects = nil;
                     }
                     while( [iobjects count] == 0 && [NSDate timeIntervalSinceReferenceDate] - dateStart < 20);
+                    downloading = YES;
                 }
             }
         }
@@ -533,7 +539,14 @@
         ReturnWithErrorValue(-1);
     
     if ([command isEqualToString:@"Open"])
+    {
+        if( downloading)
+            [NSThread detachNewThreadSelector: @selector(_onMainThreadOpenWithDelayObjectsWithIDs:) toTarget:self withObject: [iobjects valueForKey:@"objectID"]];
+        else
+            [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjectsWithIDs:) withObject:[iobjects valueForKey:@"objectID"] waitUntilDone:NO];
+        
         [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjectsWithIDs:) withObject:[iobjects valueForKey:@"objectID"] waitUntilDone:NO];
+    }
     if ([command isEqualToString:@"Select"])
         [self performSelectorOnMainThread:@selector(_onMainThreadSelectObjectsWithIDs:) withObject:[iobjects valueForKey:@"objectID"] waitUntilDone:NO];
     
@@ -552,6 +565,13 @@
     }
     
     ReturnWithErrorValueAndObjectForKey(0, elements, @"elements");
+}
+
+-(void)_onMainThreadOpenWithDelayObjectsWithIDs:(NSArray*)objectIDs {
+    @autoreleasepool {
+        [NSThread sleepForTimeInterval: 5];
+        [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjectsWithIDs:) withObject:objectIDs waitUntilDone:NO];
+    }
 }
 
 -(void)_onMainThreadOpenObjectsWithIDs:(NSArray*)objectIDs { // actually, only the first element is opened...
