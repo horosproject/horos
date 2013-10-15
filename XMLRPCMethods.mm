@@ -544,8 +544,6 @@
             [NSThread detachNewThreadSelector: @selector(_onMainThreadOpenWithDelayObjectsWithIDs:) toTarget:self withObject: [iobjects valueForKey:@"objectID"]];
         else
             [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjectsWithIDs:) withObject:[iobjects valueForKey:@"objectID"] waitUntilDone:NO];
-        
-        [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjectsWithIDs:) withObject:[iobjects valueForKey:@"objectID"] waitUntilDone:NO];
     }
     if ([command isEqualToString:@"Select"])
         [self performSelectorOnMainThread:@selector(_onMainThreadSelectObjectsWithIDs:) withObject:[iobjects valueForKey:@"objectID"] waitUntilDone:NO];
@@ -569,7 +567,9 @@
 
 -(void)_onMainThreadOpenWithDelayObjectsWithIDs:(NSArray*)objectIDs {
     @autoreleasepool {
-        [NSThread sleepForTimeInterval: 5];
+        [NSThread sleepForTimeInterval: 4];
+        [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
+        [NSThread sleepForTimeInterval: 2];
         [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjectsWithIDs:) withObject:objectIDs waitUntilDone:NO];
     }
 }
@@ -578,19 +578,9 @@
 //    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"bringOsiriXToFrontAfterReceivingMessage"])
         [NSApp activateIgnoringOtherApps:YES];
     
-    NSMutableArray *objectIDsMutable = [NSMutableArray arrayWithArray: objectIDs];
+    [ViewerController closeAllWindows];
     
-    //Remove already displayed studies
-    for( ViewerController *v in [ViewerController get2DViewers])
-    {
-        if( [objectIDs containsObject: [v.currentStudy objectID]])
-        {
-            [objectIDsMutable removeObject: [v.currentStudy objectID]];
-            [v.window makeKeyAndOrderFront: self];
-        }
-    }
-    
-    for (NSManagedObject* obj in [self.database objectsWithIDs: objectIDsMutable]) {
+    for (NSManagedObject* obj in [self.database objectsWithIDs: objectIDs]) {
         DicomStudy* study = [self studyForObject:obj];
         if ([study.imageSeries count]) {
 			[[BrowserController currentBrowser] displayStudy:study object:obj command:@"Open"];
@@ -703,8 +693,9 @@
  Response: {error: "0"}
  */
 -(NSDictionary*)CloseAllWindows:(NSDictionary*)paramDict error:(NSError**)error {
-    for (ViewerController* v in [ViewerController getDisplayed2DViewers])
-        [[v window] performSelectorOnMainThread:@selector(close) withObject:nil waitUntilDone:NO];
+    
+    [ViewerController closeAllWindows];
+    
     ReturnWithErrorValue(0);
 }
 
