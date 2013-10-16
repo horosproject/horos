@@ -107,7 +107,7 @@ extern AppController* OsiriX;
 	IBOutlet NSMenu					*dbMenu;
 	IBOutlet NSWindow				*dbWindow;
 	IBOutlet NSMenu					*windowsTilingMenuRows, *windowsTilingMenuColumns;
-    IBOutlet NSMenu                 *recentStudies;
+    IBOutlet NSMenu                 *recentStudiesMenu;
 	
 	NSDictionary					*previousDefaults;
 	
@@ -130,7 +130,7 @@ extern AppController* OsiriX;
 }
 
 @property BOOL checkAllWindowsAreVisibleIsOff, isSessionInactive;
-@property (readonly) NSMenu *filtersMenu, *recentStudies, *windowsTilingMenuRows, *windowsTilingMenuColumns;
+@property (readonly) NSMenu *filtersMenu, *recentStudiesMenu, *windowsTilingMenuRows, *windowsTilingMenuColumns;
 @property(readonly) NSNetService* dicomBonjourPublisher;
 @property (readonly) XMLRPCInterface *XMLRPCServer;
 @property(readonly) BonjourPublisher* bonjourPublisher;
@@ -231,6 +231,10 @@ extern AppController* OsiriX;
 + (void) checkForPreferencesUpdate: (BOOL) b;
 + (BOOL) USETOOLBARPANEL;
 + (void) setUSETOOLBARPANEL: (BOOL) b;
+
+- (void) addStudyToRecentStudiesMenu: (NSManagedObjectID*) studyID;
+- (void) loadRecentStudy: (id) sender;
+- (void) buildRecentStudiesMenu;
 
 - (NSMenu*) viewerMenu;
 - (NSMenu*) fileMenu;

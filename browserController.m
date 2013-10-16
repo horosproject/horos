@@ -7185,6 +7185,8 @@ static NSConditionLock *threadLock = nil;
         
         [self checkIfLocalStudyHasMoreOrSameNumberOfImagesOfADistantStudy: [NSArray arrayWithObject: currentStudy]];
         
+        [[AppController sharedAppController] addStudyToRecentStudiesMenu: currentStudy.objectID];
+        
 		BOOL windowsStateApplied = NO;
 		
 		if( [currentStudy valueForKey:@"windowsState"] && [[NSUserDefaults standardUserDefaults] boolForKey:@"automaticWorkspaceLoad"])

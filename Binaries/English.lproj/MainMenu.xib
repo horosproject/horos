@@ -1951,6 +1951,7 @@ CA
                 <outlet property="filtersMenu" destination="1705" id="11822"/>
                 <outlet property="othersMenu" destination="1710" id="11824"/>
                 <outlet property="recentStudies" destination="29E-Kt-qaZ" id="B7M-Qv-XzY"/>
+                <outlet property="recentStudiesMenu" destination="29E-Kt-qaZ" id="gv2-8i-tkD"/>
                 <outlet property="roisMenu" destination="1709" id="11823"/>
                 <outlet property="windowsTilingMenuColumns" destination="14018" id="14037"/>
                 <outlet property="windowsTilingMenuRows" destination="14015" id="14036"/>

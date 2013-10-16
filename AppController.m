@@ -74,6 +74,7 @@
 #import "OSIGeneralPreferencePanePref.h"
 #import "NSArray+N2.h"
 #import "DICOMTLS.h"
+#import "DicomStudy.h"
 #include <OpenGL/OpenGL.h>
 
 #include <kdu_OsiriXSupport.h>
@@ -105,7 +106,7 @@ DCMTKQueryRetrieveSCP   *dcmtkQRSCP = nil, *dcmtkQRSCPTLS = nil;
 NSString				*checkSN64String = nil;
 NSNetService			*checkSN64Service = nil;
 NSRecursiveLock			*PapyrusLock = nil, *STORESCP = nil, *STORESCPTLS = nil;			// Papyrus is NOT thread-safe
-NSMutableArray			*accumulateAnimationsArray = nil;
+NSMutableArray			*accumulateAnimationsArray = nil, *recentStudies = nil;
 BOOL					accumulateAnimations = NO;
 
 AppController* OsiriX = nil;
@@ -670,7 +671,7 @@ static NSDate *lastWarningDate = nil;
 
 @implementation AppController
 
-@synthesize checkAllWindowsAreVisibleIsOff, filtersMenu, windowsTilingMenuRows, recentStudies, windowsTilingMenuColumns, isSessionInactive, dicomBonjourPublisher = BonjourDICOMService, XMLRPCServer;
+@synthesize checkAllWindowsAreVisibleIsOff, filtersMenu, windowsTilingMenuRows, recentStudiesMenu, windowsTilingMenuColumns, isSessionInactive, dicomBonjourPublisher = BonjourDICOMService, XMLRPCServer;
 @synthesize bonjourPublisher = _bonjourPublisher;
 
 +(BOOL) hasMacOSX1083
@@ -4599,6 +4600,80 @@ static BOOL initialized = NO;
 	
 	return NSMakePoint( i + [w frame].origin.x + [w frame].size.width/2, i + [w frame].origin.y + [w frame].size.height/2);
 }
+
+#pragma mark-
+
+- (void) addStudyToRecentStudiesMenu: (NSManagedObjectID*) studyID
+{
+    if( [NSThread isMainThread] == NO)
+    {
+        [self performSelectorOnMainThread: @selector( addStudyToRecentStudiesMenu:) withObject: studyID waitUntilDone: NO];
+        return;
+    }
+         
+    if( recentStudies == nil)
+        recentStudies = [[NSMutableArray alloc] init];
+    
+    [recentStudies removeObject: studyID];
+    [recentStudies insertObject: studyID atIndex: 0];
+    
+    if( recentStudies.count > [[NSUserDefaults standardUserDefaults] integerForKey: @"MaxNumberOfRecentStudies"])
+        [recentStudies removeLastObject];
+    
+    [self buildRecentStudiesMenu];
+}
+
+- (void) loadRecentStudy: (id) sender
+{
+    [ViewerController closeAllWindows];
+    
+    NSLog( @"%@", sender);
+    
+//    [[BrowserController currentBrowser] databaseOpenStudy: sender];
+}
+
+- (void) buildRecentStudiesMenu
+{
+    [recentStudiesMenu removeAllItems];
+    
+    NSMutableArray *studiesToRemove = [NSMutableArray array];
+    DicomDatabase *db = [[BrowserController currentBrowser] database];
+    for( NSManagedObjectID *studyID in recentStudies)
+    {
+        DicomStudy *study = [db objectWithID: studyID];
+        if( study == nil)
+            [studiesToRemove addObject: studyID];
+        else
+        {
+            NSMutableArray* components = [NSMutableArray array];
+            
+            if( study.name.length)
+                [components addObject: study.name];
+            
+            if( study.date)
+                [components addObject: [[NSUserDefaults dateTimeFormatter] stringFromDate: study.date]];
+            
+            if( study.studyName.length)
+                [components addObject: study.studyName];
+            
+            if( study.modality.length)
+                [components addObject: study.modality];
+            
+            NSAttributedString *title = [[[NSAttributedString alloc] initWithString: [components componentsJoinedByString:@" / "] attributes: [NSDictionary dictionaryWithObject: [NSFont boldSystemFontOfSize: 14] forKey: NSFontAttributeName]] autorelease];
+            
+            NSMenuItem *menuItem = [[[NSMenuItem alloc] initWithTitle: @"" action: @selector( loadRecentStudy:) keyEquivalent: nil] autorelease];
+            
+            [menuItem setAttributedTitle: title];
+            [menuItem setTarget: self];
+            
+            [recentStudiesMenu addItem: menuItem];
+        }
+    }
+    
+    [recentStudies removeObjectsInArray: studiesToRemove];
+}
+
+#pragma mark-
 
 - (void) initTilingWindows
 {

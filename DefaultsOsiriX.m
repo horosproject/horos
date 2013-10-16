@@ -1098,7 +1098,8 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject: defaultDATABASECOLUMNS forKey: @"COLUMNSDATABASE"];
 	
 	// **
-	
+	[defaultValues setObject: @"20" forKey: @"MaxNumberOfRecentStudies"];
+    
     [defaultValues setObject: @"1" forKey: @"noPropagateInSeriesForCR"];
     [defaultValues setObject: @"1" forKey: @"noPropagateInSeriesForDR"];
     [defaultValues setObject: @"1" forKey: @"noPropagateInSeriesForDX"];
