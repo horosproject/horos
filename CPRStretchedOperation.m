@@ -245,7 +245,7 @@ static NSOperationQueue *_stretchedOperationFillQueue = nil;
                 }                
             }
             
-            _outstandingFillOperationCount = [fillOperations count];
+            _outstandingFillOperationCount = (int32_t)[fillOperations count];
             
 			fillQueue = [[self class] _fillQueue];
 			for (horizontalFillOperation in fillOperations) {
@@ -362,7 +362,6 @@ static NSOperationQueue *_stretchedOperationFillQueue = nil;
 
 - (NSUInteger)_pixelsDeep
 {
-    CGFloat slabSampleDistance;
     return MAX(self.request.slabWidth / [self _slabSampleDistance], 0) + 1;
 }
 

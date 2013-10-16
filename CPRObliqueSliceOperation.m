@@ -199,7 +199,7 @@ static NSOperationQueue *_obliqueSliceOperationFillQueue = nil;
                 }                
             }
             
-            _oustandingFillOperationCount = [fillOperations count];
+            _oustandingFillOperationCount = (int32_t)[fillOperations count];
             
 			fillQueue = [[self class] _fillQueue];
 			for (horizontalFillOperation in fillOperations) {
@@ -311,7 +311,6 @@ static NSOperationQueue *_obliqueSliceOperationFillQueue = nil;
 
 - (NSUInteger)_pixelsDeep
 {
-    CGFloat slabSampleDistance;
     return MAX(self.request.slabWidth / [self _slabSampleDistance], 0) + 1;
 }
 

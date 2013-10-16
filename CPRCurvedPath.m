@@ -46,7 +46,7 @@ static NSInteger _elementForControlToken(CPRCurvedPathControlToken token)
 
 static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
 {
-    return element << 2;
+    return (int32_t)(element << 2);
 }
 
 @interface CPRCurvedPath ()
@@ -399,12 +399,8 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
 
 - (CPRCurvedPathControlToken)controlTokenNearPoint:(NSPoint)point transform:(N3AffineTransform)transform;
 {
-    NSValue *value;
     NSUInteger i;
-    N3Vector pointVector;
     N3Vector nodeVector;
-    N3Vector transverseSectionVector;
-    N3BezierPath *flattenedBezierPath;
     
     for (i = 0; i < [_nodes count]; i++) {
         nodeVector = [[_nodes objectAtIndex:i] N3VectorValue];
@@ -457,8 +453,6 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
 - (CGFloat)relativePositionForControlToken:(CPRCurvedPathControlToken)token;
 {
     NSUInteger element;
-    CGFloat lengthToSegment;
-    CGFloat length;
     
     if (_isElementControlToken(token)) {
         element = _elementForControlToken(token);

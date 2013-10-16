@@ -78,9 +78,6 @@
 
 - (CGFloat)minPixelSpacing
 {
-    N3Vector zero;
-    CGFloat spacing;
-    
     return MIN(MIN(self.pixelSpacingX, self.pixelSpacingY), self.pixelSpacingZ);
 }
 
@@ -159,10 +156,6 @@
 // will copy fill length*sizeof(float) bytes
 - (BOOL)getFloatRun:(float *)buffer atPixelCoordinateX:(NSUInteger)x y:(NSUInteger)y z:(NSUInteger)z length:(NSUInteger)length
 {
-    NSUInteger clippedX;
-    NSUInteger runStartIndex;
-    NSUInteger runLength;
-    
     if (_isValid == NO) {
         memset(buffer, 0, sizeof(float) * length);
         return NO;
@@ -338,8 +331,6 @@
     float *i2Positions;
     float *j1Positions;
     float *j2Positions;
-    
-    float *xPositionClipped;
     
     float *yFloorPosition;
     float *yCielPosition;

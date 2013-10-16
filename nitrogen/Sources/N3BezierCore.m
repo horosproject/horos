@@ -157,7 +157,6 @@ void N3BezierCoreRelease(N3BezierCoreRef bezierCore)
 
 bool N3BezierCoreEqualToBezierCore(N3BezierCoreRef bezierCore1, N3BezierCoreRef bezierCore2)
 {
-    CFIndex i;
     N3BezierCoreElementRef element1;
     N3BezierCoreElementRef element2;
     
