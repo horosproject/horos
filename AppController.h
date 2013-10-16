@@ -107,6 +107,7 @@ extern AppController* OsiriX;
 	IBOutlet NSMenu					*dbMenu;
 	IBOutlet NSWindow				*dbWindow;
 	IBOutlet NSMenu					*windowsTilingMenuRows, *windowsTilingMenuColumns;
+    IBOutlet NSMenu                 *recentStudies;
 	
 	NSDictionary					*previousDefaults;
 	
@@ -129,7 +130,7 @@ extern AppController* OsiriX;
 }
 
 @property BOOL checkAllWindowsAreVisibleIsOff, isSessionInactive;
-@property (readonly) NSMenu *filtersMenu, *windowsTilingMenuRows, *windowsTilingMenuColumns;
+@property (readonly) NSMenu *filtersMenu, *recentStudies, *windowsTilingMenuRows, *windowsTilingMenuColumns;
 @property(readonly) NSNetService* dicomBonjourPublisher;
 @property (readonly) XMLRPCInterface *XMLRPCServer;
 @property(readonly) BonjourPublisher* bonjourPublisher;

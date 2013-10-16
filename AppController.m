@@ -670,7 +670,7 @@ static NSDate *lastWarningDate = nil;
 
 @implementation AppController
 
-@synthesize checkAllWindowsAreVisibleIsOff, filtersMenu, windowsTilingMenuRows, windowsTilingMenuColumns, isSessionInactive, dicomBonjourPublisher = BonjourDICOMService, XMLRPCServer;
+@synthesize checkAllWindowsAreVisibleIsOff, filtersMenu, windowsTilingMenuRows, recentStudies, windowsTilingMenuColumns, isSessionInactive, dicomBonjourPublisher = BonjourDICOMService, XMLRPCServer;
 @synthesize bonjourPublisher = _bonjourPublisher;
 
 +(BOOL) hasMacOSX1083

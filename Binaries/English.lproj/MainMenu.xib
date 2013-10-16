@@ -601,6 +601,16 @@
                                     <action selector="showHideMatrix:" target="-1" id="14620"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="Recent studies" id="s6n-JH-Vxn">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Recent studies" id="29E-Kt-qaZ">
+                                    <items>
+                                        <menuItem title="Item" id="hl9-Sh-a6Q">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
                             <menuItem isSeparatorItem="YES" id="13179">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
@@ -1940,6 +1950,7 @@ CA
                 <outlet property="dbWindow" destination="885" id="12350"/>
                 <outlet property="filtersMenu" destination="1705" id="11822"/>
                 <outlet property="othersMenu" destination="1710" id="11824"/>
+                <outlet property="recentStudies" destination="29E-Kt-qaZ" id="B7M-Qv-XzY"/>
                 <outlet property="roisMenu" destination="1709" id="11823"/>
                 <outlet property="windowsTilingMenuColumns" destination="14018" id="14037"/>
                 <outlet property="windowsTilingMenuRows" destination="14015" id="14036"/>
