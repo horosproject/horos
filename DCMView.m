@@ -6824,19 +6824,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				{
 					if( volumicSeries == YES && [otherView volumicSeries] == YES)
 					{
-                        float orientA[9], orientB[9], result[3];
+                        float orientA[9], orientB[9];
                         
                         [[self curDCM] orientation:orientA];
                         [[otherView curDCM] orientation:orientB];
                         
-                        // normal vector of planes
-                        
-                        result[0] = fabs( orientB[ 6] - orientA[ 6]);
-                        result[1] = fabs( orientB[ 7] - orientA[ 7]);
-                        result[2] = fabs( orientB[ 8] - orientA[ 8]);
-                        
-                        #define PARALLELPLANETOLERANCE 0.2
-						if( result[0] + result[1] + result[2] < PARALLELPLANETOLERANCE)
+                        #define PARALLELPLANETOLERANCE 0.1
+						if( [DCMView angleBetweenVector: orientA+6 andVector:orientB+6] < PARALLELPLANETOLERANCE)
 						{
                             // we need to avoid the situations where a localizer blocks two series from synchronizing
                             // if( (sliceVector[0] == 0 && sliceVector[1] == 0 && sliceVector[2] == 0) || syncSeriesIndex != -1)  // Planes are parallel !
@@ -7533,6 +7527,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
     return norm( sub);
 }
+
++ (float) angleBetweenVector: (float*) v1 andVector: (float*) v2
+{
+    float cosTheta = dot( v1, v2) / (norm( v1)*norm( v2));
+    
+    return acosf( cosTheta);
+}
+
 //===================================================================
 
 - (int) findPlaneAndPoint:(float*) pt :(float*) location
@@ -7603,7 +7605,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         
         BOOL currParallel = NO;
         
-        if (parto && fabs( parto[6] - vectors[6]) < 0.005 && fabs( parto[7] - vectors[7]) < 0.005 && fabs( parto[8] - vectors[8]) < 0.005) // are parallel!
+        if (parto && [DCMView angleBetweenVector: parto+6 andVector:vectors+6] < PARALLELPLANETOLERANCE) // are parallel!
             currParallel = YES;
 		
 		orig[ 0] = [pix originX];
