@@ -6824,8 +6824,19 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				{
 					if( volumicSeries == YES && [otherView volumicSeries] == YES)
 					{
-                        // even if the orthogonalOrientation isn't the same, sync should be possible : ben non... j'arrive plus a interpreter mes IRMs...
-						if( [[self windowController] orthogonalOrientation] == [[otherView windowController] orthogonalOrientation])
+                        float orientA[9], orientB[9], result[3];
+                        
+                        [[self curDCM] orientation:orientA];
+                        [[otherView curDCM] orientation:orientB];
+                        
+                        // normal vector of planes
+                        
+                        result[0] = fabs( orientB[ 6] - orientA[ 6]);
+                        result[1] = fabs( orientB[ 7] - orientA[ 7]);
+                        result[2] = fabs( orientB[ 8] - orientA[ 8]);
+                        
+                        #define PARALLELPLANETOLERANCE 0.2
+						if( result[0] + result[1] + result[2] < PARALLELPLANETOLERANCE)
 						{
                             // we need to avoid the situations where a localizer blocks two series from synchronizing
                             // if( (sliceVector[0] == 0 && sliceVector[1] == 0 && sliceVector[2] == 0) || syncSeriesIndex != -1)  // Planes are parallel !
