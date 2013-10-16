@@ -22,7 +22,6 @@ N3BezierCoreRef N3BezierCoreCreateCurveWithNodes(N3VectorArray vectors, CFIndex 
 
 N3MutableBezierCoreRef N3BezierCoreCreateMutableCurveWithNodes(N3VectorArray vectors, CFIndex numVectors, N3BezierNodeStyle style)
 {
-	N3Vector p1, p2;
 	long long  i, j;
 	double xi, yi, zi;
 	long long nb;
@@ -473,7 +472,6 @@ CGFloat N3BezierCoreRelativePositionClosestToLine(N3BezierCoreRef bezierCore, N3
     N3Vector start;
     N3Vector end;
     N3Line segment;
-    N3Vector translatedVector;
     N3Vector closestPoint;
     N3Vector bestVector;
 	N3BezierCoreSegmentType segmentType;
@@ -833,7 +831,6 @@ CFIndex N3BezierCoreGetProjectedVectorInfo(N3BezierCoreRef bezierCore, CGFloat s
         previousTangentVector = tangentVector;
         tangentVector = nextTangentVector;
         segmentDirection = nextSegmentDirection;
-        projectedSegmentDirection = nextProjectedSegmentDirection;
         startVector = endVector;
         endVector = nextVector;
         startProjectedVector = endProjectedVector;
@@ -1250,7 +1247,6 @@ CFIndex N3BezierCoreCountIntersectionsWithPlane(N3BezierCoreRef bezierCore, N3Pl
     N3Vector prevEndpoint;
 	N3BezierCoreSegmentType segmentType;
     NSInteger count;
-    NSUInteger numVectors;
     
     if (N3BezierCoreSegmentCount(bezierCore) < 2) {
         return 0;
@@ -1288,7 +1284,6 @@ CFIndex N3BezierCoreIntersectionsWithPlane(N3BezierCoreRef bezierCore, N3Plane p
 	N3BezierCoreIteratorRef bezierCoreIterator;
     N3Vector endpoint;
     N3Vector prevEndpoint;
-	N3Vector segment;
 	N3Vector intersection;
 	N3BezierCoreSegmentType segmentType;
     CGFloat length;
@@ -1762,7 +1757,7 @@ N3MutableBezierCoreRef N3BezierCoreCreateMutableCopyByClipping(N3BezierCoreRef b
         
         N3BezierCoreIteratorRelease(bezierCoreIterator);
         bezierCoreIterator = N3BezierCoreIteratorCreateWithBezierCore(flattenedBezierCore);
-        segmentType = N3BezierCoreIteratorGetNextSegment(bezierCoreIterator, NULL, NULL, &prevEndpoint);
+        N3BezierCoreIteratorGetNextSegment(bezierCoreIterator, NULL, NULL, &prevEndpoint);
         if (needsMoveto) {
             N3BezierCoreAddSegment(newBezierCore, N3MoveToBezierCoreSegmentType, N3VectorZero, N3VectorZero, prevEndpoint);
         }

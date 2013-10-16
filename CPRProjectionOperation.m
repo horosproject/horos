@@ -42,7 +42,6 @@
 - (void)main
 {
     float *floatBytes;
-    CPRVolumeData *generatedVolume;
     NSInteger i;
     float floati;
     NSInteger pixelsPerPlane;

@@ -42,7 +42,7 @@ NSString * const _CPRGeneratorRunLoopMode = @"_CPRGeneratorRunLoopMode";
         if (_synchronousRequestQueue == nil) {
             _synchronousRequestQueue = [[NSOperationQueue alloc] init];
             
-            int threads = [[NSProcessInfo processInfo] processorCount];
+            NSUInteger threads = [[NSProcessInfo processInfo] processorCount];
             if( threads > 2)
                 threads = 2;
             
@@ -80,7 +80,7 @@ NSString * const _CPRGeneratorRunLoopMode = @"_CPRGeneratorRunLoopMode";
         _volumeData = [volumeData retain];
         _generatorQueue = [[NSOperationQueue alloc] init];
         
-        int threads = [[NSProcessInfo processInfo] processorCount];
+        NSUInteger threads = [[NSProcessInfo processInfo] processorCount];
         if( threads > 2)
             threads = 2;
         

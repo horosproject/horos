@@ -258,7 +258,7 @@ void N3VectorApplyTransformToVectors(N3AffineTransform transform, N3VectorArray 
 
     assert(N3AffineTransformIsAffine(transform));
 
-    transformedVectors = malloc(numVectors * sizeof(N3Vector));
+    transformedVectors = malloc(numVectors * sizeof(CGFloat) * 3);
     smallTransform[0] = transform.m11;
     smallTransform[1] = transform.m12;
     smallTransform[2] = transform.m13;
