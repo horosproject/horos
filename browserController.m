@@ -5216,10 +5216,13 @@ static NSConditionLock *threadLock = nil;
                 {
                     if( [[study valueForKey:@"type"] isEqualToString: @"Study"])
                     {
-                        NSInteger confirm = NSRunInformationalAlertPanel(NSLocalizedString(@"Unify Patient Identity", nil), [NSString stringWithFormat: NSLocalizedString(@"Do you confirm to DEFINITIVELY change this patient identity: %@ / %@ to this new identity:\r\r%@ / %@ ?", nil), study.name, study.patientID, destStudy.name, destStudy.patientID], NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
+                        NSInteger confirm = NSRunInformationalAlertPanel(NSLocalizedString(@"Unify Patient Identity", nil), [NSString stringWithFormat: NSLocalizedString(@"Do you confirm to DEFINITIVELY change this patient identity:\r\r%@ / %@ / %@\r\rto this new identity:\r\r%@ / %@ ?", nil), study.name, study.patientID, study.studyName, destStudy.name, destStudy.patientID], NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
                         
                         if( confirm == NSAlertDefaultReturn)
                         {
+                            WaitRendering *wait = [[[WaitRendering alloc] init: NSLocalizedString(@"Updating files...", nil)] autorelease];
+                            [wait showWindow:self];
+                            
                             NSMutableArray *params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--ignore-errors", nil];
                             
                             DCMObject *dcmObject = [DCMObject objectWithContentsOfFile: [[[destStudy paths] allObjects] objectAtIndex: 0] decodingPixelData: NO];
@@ -5274,9 +5277,15 @@ static NSConditionLock *threadLock = nil;
                                          NSLog(@"**** DicomStudy setComment: %@", e);
                                      }
                                 }
+                                
+                                [wait close];
                             }
                             else
+                            {
+                                [wait close];
+                                
                                 NSRunCriticalAlertPanel( NSLocalizedString(@"Unify Patient Identity", nil), NSLocalizedString( @"Failed to change the DICOM files", nil), NSLocalizedString(@"OK",nil), nil, nil);
+                            }
                         }
                         else return;
                     }
@@ -5298,7 +5307,7 @@ static NSConditionLock *threadLock = nil;
                     NSInteger confirm = NSAlertDefaultReturn;
                     
                     if( result == NSAlertAlternateReturn)
-                        confirm = NSRunInformationalAlertPanel(NSLocalizedString(@"Unify Patient Identity", nil), [NSString stringWithFormat: NSLocalizedString(@"Do you confirm to DEFINITIVELY change this patient identity: %@ / %@ to this new identity:\r\r%@ / %@ ?", nil), study.name, study.patientID, destStudy.name, destStudy.patientID], NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
+                        confirm = NSRunInformationalAlertPanel(NSLocalizedString(@"Unify Patient Identity", nil), [NSString stringWithFormat: NSLocalizedString(@"Do you confirm to DEFINITIVELY change this patient identity:\r\r%@ / %@ / %@\r\rto this new identity:\r\r%@ / %@ ?", nil), study.name, study.patientID, study.studyName, destStudy.name, destStudy.patientID], NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
                     
                     if( confirm == NSAlertDefaultReturn)
                     {
