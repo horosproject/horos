@@ -1056,6 +1056,13 @@ static NSHost *currentHost = nil;
     [defaultValues setObject:@"1" forKey:@"ROIDrawPlainEdge"];
     [defaultValues setObject:@"1" forKey:@"PACSOnDemandForSearchField"];
     
+    [defaultValues setObject:@"1" forKey:@"scrollThroughSeries"];
+    [defaultValues setObject:@"1" forKey:@"scrollThroughSeriesForCR"];
+    [defaultValues setObject:@"1" forKey:@"scrollThroughSeriesForMG"];
+    [defaultValues setObject:@"1" forKey:@"scrollThroughSeriesForRF"];
+    [defaultValues setObject:@"1" forKey:@"scrollThroughSeriesForDR"];
+    [defaultValues setObject:@"1" forKey:@"scrollThroughSeriesForDX"];
+    
 	#ifdef MACAPPSTORE
 	[defaultValues setObject:@"1" forKey:@"MACAPPSTORE"];
 	#else

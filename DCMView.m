@@ -2585,11 +2585,24 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
      return YES;
 }
 
+- (BOOL) containsScrollThroughModality
+{
+    for( NSString *m in [self.studyObj.modalities componentsSeparatedByString:@"\\"])
+    {
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: [NSString stringWithFormat: @"scrollThroughSeriesFor%@", m]])
+        {
+            return YES;
+        }
+    }
+    
+    return NO;
+}
+
 - (BOOL) scrollThroughSeriesIfNecessary: (int) i
 {
     BOOL switchSeries = NO;
     
-    if( [self is2DViewer] && [[NSUserDefaults standardUserDefaults] boolForKey:@"scrollThroughSeries"] && [[NSUserDefaults standardUserDefaults] boolForKey: [NSString stringWithFormat: @"scrollThroughSeriesFor%@", curDCM.modalityString]])
+    if( [self is2DViewer] && [[NSUserDefaults standardUserDefaults] boolForKey:@"scrollThroughSeries"] && [self containsScrollThroughModality])
     {
         int imIndex = curImage;
         
