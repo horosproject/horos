@@ -1207,7 +1207,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     
 	NSConditionLock *threadLock = [dict valueForKey:@"threadLock"];
 	
-	int p = [[NSProcessInfo processInfo] processorCount];
+	int numberOfThreadsForCompute = [DCMPix maxProcessors];
 	
 	do
 	{
@@ -1216,7 +1216,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		[threadLock lockWhenCondition: 1];
 		
 		if( [[dict valueForKey:@"fResult"] pointerValue])
-			[self computeMax: [[dict valueForKey:@"fResult"] pointerValue] pos: [[dict valueForKey:@"pos"] intValue] threads: p object: [dict valueForKey:@"self"]];
+			[self computeMax: [[dict valueForKey:@"fResult"] pointerValue] pos: [[dict valueForKey:@"pos"] intValue] threads: numberOfThreadsForCompute object: [dict valueForKey:@"self"]];
 		
 		[threadLock unlockWithCondition: 0];
 		
@@ -1367,6 +1367,15 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 #else
     return nil;
 #endif
+}
+
++(int) maxProcessors
+{
+    int numberOfThreadsForCompute =[[NSProcessInfo processInfo] processorCount];
+    if( numberOfThreadsForCompute > 12)
+        numberOfThreadsForCompute = 12;
+    
+    return numberOfThreadsForCompute;
 }
 
 + (BOOL) IsPoint:(NSPoint) x inPolygon:(NSPoint*) pts size:(int) no
@@ -12433,11 +12442,13 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			if( processorsLock == nil)
 				processorsLock = [[NSConditionLock alloc] init];
 			
+            int numberOfThreadsForCompute = [DCMPix maxProcessors];
+            
 			if( minmaxThreads == nil)
 			{
 				minmaxThreads = [[NSMutableArray array] retain];
 				
-				for( int i = 0; i <[[NSProcessInfo processInfo] processorCount]; i++)
+				for( int i = 0; i < numberOfThreadsForCompute; i++)
 				{
 					[minmaxThreads addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys: [[NSConditionLock alloc] initWithCondition: 0], @"threadLock", nil]];
 					
@@ -12447,11 +12458,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				[NSThread sleepForTimeInterval: 0.01];
 			}
 			
-			int numberOfThreadsForCompute =[[NSProcessInfo processInfo] processorCount];
-			
-            if( numberOfThreadsForCompute > 12)
-                numberOfThreadsForCompute = 12;
-            
 			[processorsLock lock];
 			[processorsLock unlockWithCondition: numberOfThreadsForCompute];
 			
@@ -12603,18 +12609,18 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 						if( processorsLock == nil)
 							processorsLock = [[NSConditionLock alloc] init];
 						
+                        int numberOfThreadsForCompute = [DCMPix maxProcessors];
+                        
 						if( nonLinearWLWWThreads == nil)
 						{
 							nonLinearWLWWThreads = [[NSMutableArray array] retain];
 							
-							for( int i = 0; i <[[NSProcessInfo processInfo] processorCount]; i++)
+							for( int i = 0; i < numberOfThreadsForCompute; i++)
 							{
 								[nonLinearWLWWThreads addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys: [[[NSConditionLock alloc] initWithCondition: 0] autorelease], @"threadLock", nil]];
 								[NSThread detachNewThreadSelector: @selector(applyNonLinearWLWWThread:) toTarget:[[PixThread alloc] init] withObject: [nonLinearWLWWThreads lastObject]];
 							}
 						} 
-						
-						int numberOfThreadsForCompute =[[NSProcessInfo processInfo] processorCount];
 						
 						NSValue *srcNSValue = [NSValue valueWithPointer: srcf.data];
 						

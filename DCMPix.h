@@ -483,7 +483,7 @@ Note setter is different to not break existing usage. :-( */
 - (void) ConvertToRGB:(long) mode :(long) cwl :(long) cww;
 - (void) setPixelX: (int) x Y:(int) y value:(float) v;
 - (float) cineRate;  /**< Returns the Cine rate */
-
++(int) maxProcessors;
 // drag-drop subtraction-multiplication between series
 - (void) imageArithmeticMultiplication:(DCMPix*) sub;
 - (float*) multiplyImages :(float*) input :(float*) subfImage;
