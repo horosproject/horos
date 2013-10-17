@@ -4661,7 +4661,7 @@ static BOOL initialized = NO;
             
             NSAttributedString *title = [[[NSAttributedString alloc] initWithString: [components componentsJoinedByString:@" / "] attributes: [NSDictionary dictionaryWithObject: [NSFont boldSystemFontOfSize: 14] forKey: NSFontAttributeName]] autorelease];
             
-            NSMenuItem *menuItem = [[[NSMenuItem alloc] initWithTitle: @"" action: @selector( loadRecentStudy:) keyEquivalent: nil] autorelease];
+            NSMenuItem *menuItem = [[[NSMenuItem alloc] initWithTitle: title.string action: @selector( loadRecentStudy:) keyEquivalent: @""] autorelease];
             
             [menuItem setAttributedTitle: title];
             [menuItem setTarget: self];
