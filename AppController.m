@@ -1562,158 +1562,267 @@ static NSDate *lastWarningDate = nil;
 	NSLog( @"Testing localization for menus");
 	
 	if( [self viewerMenu] == nil)
-        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS 1");
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! viewerMenu");
     
 	if( [self fileMenu] == nil)
-        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS 2");
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! fileMenu");
 	
 	if( [self wlwwMenu] == nil)
-        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS 3");
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! wlwwMenu");
     
 	if( [self imageTilingMenu] == nil)
-        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS 4");
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! imageTilingMenu");
     
 	if( [self orientationMenu] == nil)
-        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS 5");
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! orientationMenu");
     
 	if( [self opacityMenu] == nil)
-        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS 6");
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! opacityMenu");
     
 	if( [self convMenu] == nil)
-        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS 7");
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! convMenu");
     
 	if( [self clutMenu] == nil)
-        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS 8");
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! clutMenu");
 	
 	if( [self exportMenu] == nil)
-        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS 9");
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! exportMenu");
+
+    
+    if( [self viewerMenuTestLocalized: YES] == nil)
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! viewerMenu Localized");
+    
+	if( [self fileMenuTestLocalized: YES] == nil)
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! fileMenu Localized");
+	
+	if( [self wlwwMenuTestLocalized: YES] == nil)
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! wlwwMenu Localized");
+    
+	if( [self imageTilingMenuTestLocalized: YES] == nil)
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! imageTilingMenu Localized");
+    
+	if( [self orientationMenuTestLocalized: YES] == nil)
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! orientationMenu Localized");
+    
+	if( [self opacityMenuTestLocalized: YES] == nil)
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! opacityMenu Localized");
+    
+	if( [self convMenuTestLocalized: YES] == nil)
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! convMenu Localized");
+    
+	if( [self clutMenuTestLocalized: YES] == nil)
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! clutMenu Localized");
+	
+	if( [self exportMenuTestLocalized: YES] == nil)
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! exportMenu Localized");
+
 #endif
 }
 
-- (NSMenu*) viewerMenu
+- (NSMenu*) viewerMenuTestLocalized: (BOOL) testLocalized
 {
     NSMenu *mainMenu = [NSApp mainMenu];
     NSMenu *viewerMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"2D Viewer", nil)] submenu];
+    if( testLocalized) viewerMenu = nil;
     if( viewerMenu == nil)
     {
-        NSLog( @"Not found item: %@", NSLocalizedString(@"2D Viewer", nil));
         viewerMenu = [[mainMenu itemAtIndex: 5]  submenu];
-        NSLog( @"***** Selected item: %@", [viewerMenu title]);
+        if( testLocalized)
+        {
+            if( [[viewerMenu title] isEqualToString: NSLocalizedString(@"2D Viewer", nil)] == NO)
+                return nil;
+        }
     }
     
     return viewerMenu;
 }
 
-- (NSMenu*) fileMenu
+- (NSMenu*) viewerMenu
+{
+    return [self viewerMenuTestLocalized: NO];
+}
+
+- (NSMenu*) fileMenuTestLocalized: (BOOL) testLocalized
 {
     NSMenu *mainMenu = [NSApp mainMenu];
     NSMenu *fileMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"File", nil)] submenu];
+    if( testLocalized) fileMenu = nil;
     if( fileMenu == nil)
     {
-        NSLog( @"Not found item: %@", NSLocalizedString(@"File", nil));
         fileMenu = [[mainMenu itemAtIndex: 1] submenu];
-        NSLog( @"***** Selected item: %@", [fileMenu title]);
+        if( testLocalized)
+        {
+            if( [[fileMenu title] isEqualToString: NSLocalizedString(@"File", nil)] == NO)
+                return nil;
+        }
     }
     
     return fileMenu;
 }
 
-- (NSMenu*) exportMenu
+- (NSMenu*) fileMenu
+{
+    return [self fileMenuTestLocalized: NO];
+}
+
+- (NSMenu*) exportMenuTestLocalized: (BOOL) testLocalized
 {
     NSMenu *fileMenu = [self fileMenu];
     NSMenu *exportMenu = [[fileMenu itemWithTitle:NSLocalizedString(@"Export", nil)] submenu];
+    if( testLocalized) exportMenu = nil;
     if( exportMenu == nil)
     {
-        NSLog( @"Not found item: %@", NSLocalizedString(@"File", nil));
         exportMenu = [[fileMenu itemAtIndex: 12] submenu];
-        NSLog( @"***** Selected item: %@", [exportMenu title]);
+        if( testLocalized)
+        {
+            if( [[exportMenu title] isEqualToString: NSLocalizedString(@"Export", nil)] == NO)
+                return nil;
+        }
     }
     
     return exportMenu;
 }
 
-- (NSMenu*)imageTilingMenu
+- (NSMenu*) exportMenu
+{
+    return [self exportMenuTestLocalized: NO];
+}
+
+- (NSMenu*)imageTilingMenuTestLocalized: (BOOL) testLocalized
 {
     NSMenu *viewerMenu = [self viewerMenu];
     NSMenu *imageTilingMenu = [[viewerMenu itemWithTitle: NSLocalizedString(@"Image Tiling", nil)] submenu];
     if( imageTilingMenu == nil)
     {
-        NSLog( @"Not found item: %@", NSLocalizedString(@"Image Tiling", nil));
         imageTilingMenu = [[viewerMenu itemAtIndex: 48]  submenu];
-        NSLog( @"***** Selected item: %@", [imageTilingMenu title]);
+        if( testLocalized)
+        {
+            if( [[imageTilingMenu title] isEqualToString: NSLocalizedString(@"Image Tiling", nil)] == NO)
+                return nil;
+        }
     }
     
     return imageTilingMenu;
 }
 
-- (NSMenu*) orientationMenu
+- (NSMenu*)imageTilingMenu
+{
+    return [self imageTilingMenuTestLocalized: NO];
+}
+
+- (NSMenu*) orientationMenuTestLocalized: (BOOL) testLocalized
 {
     NSMenu *viewerMenu = [self viewerMenu];
     NSMenu *orientationMenu = [[viewerMenu itemWithTitle: NSLocalizedString(@"Orientation", nil)] submenu];
+    if( testLocalized) orientationMenu = nil;
     if( orientationMenu == nil)
     {
-        NSLog( @"Not found item: %@", NSLocalizedString(@"Orientation", nil));
-        orientationMenu = [[viewerMenu itemAtIndex: 12]  submenu];
-        NSLog( @"***** Selected item: %@", [orientationMenu title]);
+        orientationMenu = [[viewerMenu itemAtIndex: 13]  submenu];
+        if( testLocalized)
+        {
+            if( [[orientationMenu title] isEqualToString: NSLocalizedString(@"Orientation", nil)] == NO)
+                return nil;
+        }
     }
     
     return orientationMenu;
 }
 
-- (NSMenu*) opacityMenu
+- (NSMenu*) orientationMenu
+{
+    return [self orientationMenuTestLocalized: NO];
+}
+
+- (NSMenu*) opacityMenuTestLocalized: (BOOL) testLocalized
 {
     NSMenu *viewerMenu = [self viewerMenu];
     NSMenu *opacityMenu = [[viewerMenu itemWithTitle: NSLocalizedString(@"Opacity", nil)] submenu];
+    if( testLocalized) opacityMenu = nil;
     if( opacityMenu == nil)
     {
-        NSLog( @"Not found item: %@", NSLocalizedString(@"Opacity", nil));
-        opacityMenu = [[viewerMenu itemAtIndex: 44]  submenu];
-        NSLog( @"***** Selected item: %@", [opacityMenu title]);
+        opacityMenu = [[viewerMenu itemAtIndex: 45]  submenu];
+        if( testLocalized)
+        {
+            if( [[opacityMenu title] isEqualToString: NSLocalizedString(@"Opacity", nil)] == NO)
+                return nil;
+        }
     }
     
     return opacityMenu;
 }
 
-- (NSMenu*) wlwwMenu
+- (NSMenu*) opacityMenu
+{
+    return [self opacityMenuTestLocalized: NO];
+}
+
+- (NSMenu*) wlwwMenuTestLocalized: (BOOL) testLocalized
 {
     NSMenu *viewerMenu = [self viewerMenu];
     NSMenu *wlwwMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Window Width & Level", nil)] submenu];
+    if( testLocalized) wlwwMenu = nil;
     if( wlwwMenu == nil)
     {
-        NSLog( @"Not found item: %@", NSLocalizedString(@"Window Width & Level", nil));
-        wlwwMenu = [[viewerMenu itemAtIndex: 41]  submenu];
-        NSLog( @"***** Selected item: %@", [wlwwMenu title]);
+        wlwwMenu = [[viewerMenu itemAtIndex: 42]  submenu];
+        if( testLocalized)
+        {
+            if( [[wlwwMenu title] isEqualToString: NSLocalizedString(@"Window Width & Level", nil)] == NO)
+                return nil;
+        }
     }
     
     return wlwwMenu;
 }
 
-- (NSMenu*) convMenu
+- (NSMenu*) wlwwMenu
+{
+    return [self wlwwMenuTestLocalized: NO];
+}
+
+- (NSMenu*) convMenuTestLocalized: (BOOL) testLocalized
 {
     NSMenu *viewerMenu = [self viewerMenu];
     NSMenu *convMenu = [[viewerMenu itemWithTitle: NSLocalizedString(@"Convolution Filters", nil)] submenu];
+    if( testLocalized) convMenu = nil;
     if( convMenu == nil)
     {
-        NSLog( @"Not found item: %@", NSLocalizedString(@"Convolution Filters", nil));
-        convMenu = [[viewerMenu itemAtIndex: 45]  submenu];
-        NSLog( @"***** Selected item: %@", [convMenu title]);
+        convMenu = [[viewerMenu itemAtIndex: 46]  submenu];
+        if( testLocalized)
+        {
+            if( [[convMenu title] isEqualToString: NSLocalizedString(@"Convolution Filters", nil)] == NO)
+                return nil;
+        }
     }
     
     return convMenu;
 }
 
-- (NSMenu*) clutMenu
+- (NSMenu*) convMenu
+{
+    return [self convMenuTestLocalized: NO];
+}
+
+- (NSMenu*) clutMenuTestLocalized: (BOOL) testLocalized
 {
     NSMenu *viewerMenu = [self viewerMenu];
-    NSMenu *clutMenu = [[[viewerMenu itemWithTitle:NSLocalizedString(@"Color Look Up Table", nil)] submenu] retain];
+    NSMenu *clutMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Color Look Up Table", nil)] submenu];
+    if( testLocalized) clutMenu = nil;
     if( clutMenu == nil)
     {
-        NSLog( @"Not found item: %@", NSLocalizedString(@"Color Look Up Table", nil));
-        clutMenu = [[viewerMenu itemAtIndex: 42]  submenu];
-        NSLog( @"***** Selected item: %@", [clutMenu title]);
+        clutMenu = [[viewerMenu itemAtIndex: 43]  submenu];
+        if( testLocalized)
+        {
+            if( [[clutMenu title] isEqualToString: NSLocalizedString(@"Color Look Up Table", nil)] == NO)
+                return nil;
+        }
     }
     
     return clutMenu;
+}
+
+- (NSMenu*) clutMenu
+{
+    return [self clutMenuTestLocalized: NO];
 }
 
 -(void) UpdateOpacityMenu: (NSNotification*) note
@@ -4623,13 +4732,15 @@ static BOOL initialized = NO;
     [self buildRecentStudiesMenu];
 }
 
-- (void) loadRecentStudy: (id) sender
+- (void) loadRecentStudy: (NSMenuItem*) item
 {
     [ViewerController closeAllWindows];
     
-    NSLog( @"%@", sender);
+    DicomDatabase *db = [[BrowserController currentBrowser] database];
+    DicomStudy *study = [db objectWithID: item.representedObject];
     
-//    [[BrowserController currentBrowser] databaseOpenStudy: sender];
+    if( study && study.isDeleted == NO)
+        [[BrowserController currentBrowser] databaseOpenStudy: study];
 }
 
 - (void) buildRecentStudiesMenu
@@ -4665,6 +4776,7 @@ static BOOL initialized = NO;
             
             [menuItem setAttributedTitle: title];
             [menuItem setTarget: self];
+            [menuItem setRepresentedObject: studyID];
             
             [recentStudiesMenu addItem: menuItem];
         }
@@ -4702,7 +4814,34 @@ static BOOL initialized = NO;
 
 - (BOOL) validateMenuItem:(NSMenuItem *) item
 {
-    if( [item action] == @selector(setFixedTilingRows:) || [item action] == @selector(setFixedTilingColumns:))
+    if( [item action] == @selector(loadRecentStudy:))
+    {
+        DicomDatabase *db = [[BrowserController currentBrowser] database];
+        
+        NSMenu *menu = [[item parentItem] submenu];
+        
+        for( NSMenuItem *item in recentStudiesMenu.itemArray)
+        {
+            DicomStudy *study = [db objectWithID: item.representedObject];
+            
+            if( study == nil || study.isDeleted)
+            {
+                [item setEnabled: NO];
+                [item setState: NSOffState];
+            }
+            else
+            {
+                [item setEnabled: YES];
+                
+                if( [[[[ViewerController getDisplayed2DViewers] valueForKey: @"currentStudy"] valueForKey: @"objectID"] containsObject: item.representedObject])
+                    [item setState: NSOnState];
+                else
+                    [item setState: NSOffState];
+            }
+        }
+        return YES;
+    }
+    else if( [item action] == @selector(setFixedTilingRows:) || [item action] == @selector(setFixedTilingColumns:))
 	{
 		if( [item action] == @selector(setFixedTilingColumns:))
 		{

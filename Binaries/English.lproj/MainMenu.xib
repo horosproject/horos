@@ -601,11 +601,11 @@
                                     <action selector="showHideMatrix:" target="-1" id="14620"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Recent studies" id="s6n-JH-Vxn">
+                            <menuItem title="Recent Studies" id="s6n-JH-Vxn">
                                 <modifierMask key="keyEquivalentModifierMask"/>
-                                <menu key="submenu" title="Recent studies" id="29E-Kt-qaZ">
+                                <menu key="submenu" title="Recent Studies" id="29E-Kt-qaZ">
                                     <items>
-                                        <menuItem title="Item" id="hl9-Sh-a6Q">
+                                        <menuItem title="empty" enabled="NO" id="hl9-Sh-a6Q">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                         </menuItem>
                                     </items>

@@ -1472,13 +1472,11 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
         [attrib setObject: [NSColor whiteColor] forKey:NSForegroundColorAttributeName];
         
         
-        sT = [[StringTexture alloc] initWithString: str withAttributes: attrib];
+        sT = [[[StringTexture alloc] initWithString: str withAttributes: attrib] autorelease];
         [sT setAntiAliasing: YES];
         [sT genTextureWithBackingScaleFactor: curView.window.backingScaleFactor];
         
         [stringTextureCache setObject: sT forKey: str];
-        
-        [sT release];
     }
     
     return sT;

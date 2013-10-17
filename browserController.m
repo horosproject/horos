@@ -12410,7 +12410,12 @@ static BOOL needToRezoom;
 		{
 			cells = [NSArray arrayWithObject: [[oMatrix cells] objectAtIndex: 0]];
 		}
-		
+        
+        if( [[selectedLine valueForKey:@"type"] isEqualToString: @"Series"])
+            [[AppController sharedAppController] addStudyToRecentStudiesMenu: [[selectedLine valueForKey: @"study"] objectID]];
+		else
+            [[AppController sharedAppController] addStudyToRecentStudiesMenu: selectedLine.objectID];
+        
 		//////////////////////////////////////
 		// Open selected images only !!!
 		//////////////////////////////////////

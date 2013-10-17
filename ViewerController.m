@@ -2437,9 +2437,14 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[item setSubmenu:menu];
 		[contextualMenu addItem:item];
 		
-		[contextualMenu addItem:[NSMenuItem separatorItem]];
-		item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open database", nil) action: @selector(databaseWindow:)  keyEquivalent:@""] autorelease];
-		[item setTarget:self];
+//		[contextualMenu addItem:[NSMenuItem separatorItem]];
+//		item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open database", nil) action: @selector(databaseWindow:)  keyEquivalent:@""] autorelease];
+//		[item setTarget:self];
+//		[contextualMenu addItem:item];
+        
+		menu = [[[[AppController sharedAppController] recentStudiesMenu] copy] autorelease];
+		item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Recent Studies", nil) action: nil keyEquivalent:@""] autorelease];
+		[item setSubmenu:menu];
 		[contextualMenu addItem:item];
 	}
 	else //use the menuDictionary of the path
