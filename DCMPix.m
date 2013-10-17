@@ -1201,84 +1201,91 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 - (void)computeMaxThread: (NSDictionary*)dict
 {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-    [NSThread currentThread].name = @"Compute Pixels thread";
-    
-	NSConditionLock *threadLock = [dict valueForKey:@"threadLock"];
-	
-	int numberOfThreadsForCompute = [DCMPix maxProcessors];
-	
-	do
+	@autoreleasepool
 	{
-		NSAutoreleasePool *p2 = [[NSAutoreleasePool alloc] init];
-		
-		[threadLock lockWhenCondition: 1];
-		
-		if( [[dict valueForKey:@"fResult"] pointerValue])
-			[self computeMax: [[dict valueForKey:@"fResult"] pointerValue] pos: [[dict valueForKey:@"pos"] intValue] threads: numberOfThreadsForCompute object: [dict valueForKey:@"self"]];
-		
-		[threadLock unlockWithCondition: 0];
-		
-		[p2 release];
+        [NSThread currentThread].name = @"Compute Pixels thread";
+        
+        NSConditionLock *threadLock = [dict valueForKey:@"threadLock"];
+        
+        int numberOfThreadsForCompute = [DCMPix maxProcessors];
+        
+        do
+        {
+            @autoreleasepool
+            {
+                [threadLock lockWhenCondition: 1];
+                
+                @try {
+                    if( [[dict valueForKey:@"fResult"] pointerValue])
+                        [self computeMax: [[dict valueForKey:@"fResult"] pointerValue] pos: [[dict valueForKey:@"pos"] intValue] threads: numberOfThreadsForCompute object: [dict valueForKey:@"self"]];
+                }
+                @catch (NSException *exception) {
+                    N2LogException( exception);
+                }
+                
+                [threadLock unlockWithCondition: 0];
+            }
+        }
+        while( 1);
 	}
-	while( 1);
-	
-	[pool release];
 }
 
 - (void)applyNonLinearWLWWThread: (NSDictionary*)dict
 {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-	NSConditionLock *threadLock = [dict valueForKey:@"threadLock"];
-	
-	do
+	@autoreleasepool
 	{
-		NSAutoreleasePool *p2 = [[NSAutoreleasePool alloc] init];
-		
-		[threadLock lockWhenCondition: 1];
-		
-		DCMPix *o = [dict valueForKey:@"self"];
-		
-		if( o)
-		{
-			int startLine = [[dict valueForKey:@"start"] intValue];
-			int endLine = [[dict valueForKey:@"end"] intValue];
-			
-			register int			ii = (endLine - startLine) * [o pwidth];
-			register unsigned char	*dst8Ptr = (unsigned char*) [o baseAddr] + startLine * [o pwidth];
-			register float			*src32Ptr = (float*) [[dict valueForKey:@"src"] pointerValue];
-			register float			from = [o wl] - [o ww]/2.;
-			register float			ratio = 4096. / [o ww];
-			register float			*tfPtr = [o transferFunctionPtr];
-			
-			src32Ptr += startLine * [o pwidth];
-			
-			if( tfPtr)
-			{
-				while( ii-- > 0)
-				{
-					int value = ratio * (*src32Ptr++ - from);
-					
-					if( value < 0) value = 0;
-					else if( value >= 4095) value = 4095;
-					
-					*dst8Ptr++ = 255.*tfPtr[ value];
-				}
-			}
-		}
-		
-		[processorsLock lock];
-		[processorsLock unlockWithCondition: [processorsLock condition]-1];
-		
-		[threadLock unlockWithCondition: 0];
-		
-		[p2 release];
-	}
-	while( 1);
-
-	[pool release];
+        NSConditionLock *threadLock = [dict valueForKey:@"threadLock"];
+        
+        do
+        {
+            @autoreleasepool
+            {
+                [threadLock lockWhenCondition: 1];
+            
+                @try
+                {
+                    DCMPix *o = [dict valueForKey:@"self"];
+                    
+                    if( o)
+                    {
+                        int startLine = [[dict valueForKey:@"start"] intValue];
+                        int endLine = [[dict valueForKey:@"end"] intValue];
+                        
+                        register int			ii = (endLine - startLine) * [o pwidth];
+                        register unsigned char	*dst8Ptr = (unsigned char*) [o baseAddr] + startLine * [o pwidth];
+                        register float			*src32Ptr = (float*) [[dict valueForKey:@"src"] pointerValue];
+                        register float			from = [o wl] - [o ww]/2.;
+                        register float			ratio = 4096. / [o ww];
+                        register float			*tfPtr = [o transferFunctionPtr];
+                        
+                        src32Ptr += startLine * [o pwidth];
+                        
+                        if( tfPtr)
+                        {
+                            while( ii-- > 0)
+                            {
+                                int value = ratio * (*src32Ptr++ - from);
+                                
+                                if( value < 0) value = 0;
+                                else if( value >= 4095) value = 4095;
+                                
+                                *dst8Ptr++ = 255.*tfPtr[ value];
+                            }
+                        }
+                    }
+                }
+                @catch (NSException *exception) {
+                    N2LogException( exception);
+                }
+                
+                [processorsLock lock];
+                [processorsLock unlockWithCondition: [processorsLock condition]-1];
+            
+                [threadLock unlockWithCondition: 0];
+            }
+        }
+        while( 1);
+    }
 }
 @end
 
