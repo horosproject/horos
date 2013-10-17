@@ -532,6 +532,7 @@ extern NSString* O2AlbumDragType;
 
 - (IBAction) rebuildThumbnails:(id) sender;
 - (IBAction)selectNoAlbums:(id)sender;
+- (void) selectAlbumWithName: (NSString*) name;
 - (NSArray *)databaseSelection;
 
 - (void) asyncWADOXMLDownloadURL:(NSURL*) url;

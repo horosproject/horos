@@ -107,6 +107,7 @@ NSString				*checkSN64String = nil;
 NSNetService			*checkSN64Service = nil;
 NSRecursiveLock			*PapyrusLock = nil, *STORESCP = nil, *STORESCPTLS = nil;			// Papyrus is NOT thread-safe
 NSMutableArray			*accumulateAnimationsArray = nil, *recentStudies = nil;
+NSMutableDictionary     *recentStudiesAlbums = nil;
 BOOL					accumulateAnimations = NO;
 
 AppController* OsiriX = nil;
@@ -4721,11 +4722,17 @@ static BOOL initialized = NO;
     }
          
     if( recentStudies == nil)
+    {
         recentStudies = [[NSMutableArray alloc] init];
+        recentStudiesAlbums = [[NSMutableDictionary alloc] init];
+    }
     
     [recentStudies removeObject: studyID];
     [recentStudies insertObject: studyID atIndex: 0];
     
+    if( BrowserController.currentBrowser.selectedAlbumName)
+        [recentStudiesAlbums setObject: BrowserController.currentBrowser.selectedAlbumName forKey: studyID];
+     
     if( recentStudies.count > [[NSUserDefaults standardUserDefaults] integerForKey: @"MaxNumberOfRecentStudies"])
         [recentStudies removeLastObject];
     
@@ -4740,7 +4747,12 @@ static BOOL initialized = NO;
     DicomStudy *study = [db objectWithID: item.representedObject];
     
     if( study && study.isDeleted == NO)
+    {
+        if( [recentStudiesAlbums objectForKey: item.representedObject])
+            [[BrowserController currentBrowser] selectAlbumWithName: [recentStudiesAlbums objectForKey: item.representedObject]];
+        
         [[BrowserController currentBrowser] databaseOpenStudy: study];
+    }
 }
 
 - (void) buildRecentStudiesMenu

@@ -2772,6 +2772,18 @@ static NSConditionLock *threadLock = nil;
     [[NSUserDefaults standardUserDefaults] setBool: copyClearSearchAndTimeIntervalWhenSelectingAlbum forKey: @"clearSearchAndTimeIntervalWhenSelectingAlbum"];
 }
 
+- (void) selectAlbumWithName: (NSString*) name
+{
+    for( DicomAlbum *album in _database.albums)
+    {
+        if( [album.name isEqualToString: name])
+        {
+            if( [self.albumArray indexOfObject:album] != NSNotFound)
+                [albumTable selectRowIndexes:[NSIndexSet indexSetWithIndex:[self.albumArray indexOfObject:album]] byExtendingSelection:NO];
+        }
+    }
+}
+
 - (NSPredicate*)smartAlbumPredicate: (NSManagedObject*)album
 {
 	NSPredicate	*pred = nil;
