@@ -36,7 +36,7 @@
 @property(readonly) NSString *stringValue;
 @property(readonly) BOOL isPrivate;
 @property(readonly) long longValue;
-@property(readonly) NSString *vr;
+@property(retain) NSString *vr;
 @property(readonly) NSString *name;
 @property(readonly) NSString *description;
 

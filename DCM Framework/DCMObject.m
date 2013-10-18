@@ -785,6 +785,15 @@ PixelRepresentation
                         *byteOffset+=2;
                         if (!vr)
                             vr = [tag vr];
+                        else
+                        {
+#ifdef NDEBUG
+#else
+                            if( [tag.vr isEqualToString: vr] == NO && [tag.vr isEqualToString: @"UN"] == NO)
+                                NSLog( @"%@ versus %@", tag.vr, vr);
+#endif
+                            tag.vr = vr;
+                        }
                     }
                     
                     //implicit
