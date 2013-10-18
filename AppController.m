@@ -1718,7 +1718,7 @@ static NSDate *lastWarningDate = nil;
     if( testLocalized) orientationMenu = nil;
     if( orientationMenu == nil)
     {
-        orientationMenu = [[viewerMenu itemAtIndex: 13]  submenu];
+        orientationMenu = [[viewerMenu itemAtIndex: 12]  submenu];
         if( testLocalized)
         {
             if( [[orientationMenu title] isEqualToString: NSLocalizedString(@"Orientation", nil)] == NO)
@@ -1741,7 +1741,7 @@ static NSDate *lastWarningDate = nil;
     if( testLocalized) opacityMenu = nil;
     if( opacityMenu == nil)
     {
-        opacityMenu = [[viewerMenu itemAtIndex: 45]  submenu];
+        opacityMenu = [[viewerMenu itemAtIndex: 44]  submenu];
         if( testLocalized)
         {
             if( [[opacityMenu title] isEqualToString: NSLocalizedString(@"Opacity", nil)] == NO)
@@ -1764,7 +1764,7 @@ static NSDate *lastWarningDate = nil;
     if( testLocalized) wlwwMenu = nil;
     if( wlwwMenu == nil)
     {
-        wlwwMenu = [[viewerMenu itemAtIndex: 42]  submenu];
+        wlwwMenu = [[viewerMenu itemAtIndex: 41]  submenu];
         if( testLocalized)
         {
             if( [[wlwwMenu title] isEqualToString: NSLocalizedString(@"Window Width & Level", nil)] == NO)
@@ -1787,7 +1787,7 @@ static NSDate *lastWarningDate = nil;
     if( testLocalized) convMenu = nil;
     if( convMenu == nil)
     {
-        convMenu = [[viewerMenu itemAtIndex: 46]  submenu];
+        convMenu = [[viewerMenu itemAtIndex: 45]  submenu];
         if( testLocalized)
         {
             if( [[convMenu title] isEqualToString: NSLocalizedString(@"Convolution Filters", nil)] == NO)
@@ -1810,7 +1810,7 @@ static NSDate *lastWarningDate = nil;
     if( testLocalized) clutMenu = nil;
     if( clutMenu == nil)
     {
-        clutMenu = [[viewerMenu itemAtIndex: 43]  submenu];
+        clutMenu = [[viewerMenu itemAtIndex: 42]  submenu];
         if( testLocalized)
         {
             if( [[clutMenu title] isEqualToString: NSLocalizedString(@"Color Look Up Table", nil)] == NO)
@@ -4751,6 +4751,7 @@ static BOOL initialized = NO;
         if( [recentStudiesAlbums objectForKey: item.representedObject])
             [[BrowserController currentBrowser] selectAlbumWithName: [recentStudiesAlbums objectForKey: item.representedObject]];
         
+        [[BrowserController currentBrowser] selectThisStudy: study];
         [[BrowserController currentBrowser] databaseOpenStudy: study];
     }
 }
