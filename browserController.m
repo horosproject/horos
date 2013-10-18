@@ -8135,7 +8135,22 @@ static NSConditionLock *threadLock = nil;
 
 - (ViewerController*) loadSeries:(NSManagedObject *) series :(ViewerController*) viewer :(BOOL) firstViewer keyImagesOnly:(BOOL) keyImages
 {
-    return [self openViewerFromImages :[NSArray arrayWithObject: [self childrenArray: series]] movie: NO viewer :viewer keyImagesOnly:keyImages tryToFlipData: YES];
+    BOOL movie4D = NO;
+    
+    if( [[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSControlKeyMask)
+        movie4D = YES;
+    
+    BOOL reparsed = NO;
+    if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
+    {
+        openReparsedSeriesFlag = YES;
+        [self processOpenViewerDICOMFromArray: [NSArray arrayWithObject: [self childrenArray: series]] movie: NO viewer: viewer];
+        openReparsedSeriesFlag = NO;
+    }
+    else
+        return [self openViewerFromImages :[NSArray arrayWithObject: [self childrenArray: series]] movie: movie4D viewer :viewer keyImagesOnly:keyImages tryToFlipData: YES];
+    
+    return nil;
 }
 
 - (NSString*) exportDBListOnlySelected:(BOOL) onlySelected
@@ -11696,7 +11711,18 @@ static BOOL needToRezoom;
 						{
 							//movieViewer==YES
 							if( movieController == nil)
-								movieController = [[ViewerController alloc] initWithPix:viewerPix[0] withFiles:[NSMutableArray arrayWithArray:correspondingObjects] withVolume:volumeData];
+                            {
+                                if( viewer)
+                                {
+                                    [viewer changeImageData:viewerPix[0] :[NSMutableArray arrayWithArray:correspondingObjects] :volumeData :NO];
+                                    
+                                    movieController = viewer;
+                                }
+                                else
+                                {
+                                    movieController = [[ViewerController alloc] initWithPix:viewerPix[0] withFiles:[NSMutableArray arrayWithArray:correspondingObjects] withVolume:volumeData];
+                                }
+                            }
 							else
 								[movieController addMovieSerie:viewerPix[0] :[NSMutableArray arrayWithArray:correspondingObjects] :volumeData];
 						}
