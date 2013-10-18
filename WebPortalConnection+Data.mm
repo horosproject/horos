@@ -90,6 +90,88 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 	return [NSArray arrayWithObject:obj];
 }
 
+- (DicomStudy*) studyForStudyInstanceUID: (NSString*) uid server: (NSDictionary*)
+ss
+{
+    DicomStudy *returnedStudy = nil;
+    
+    @try
+    {
+        // First try to find it locally
+        N2ManagedDatabase* db = self.independentDicomDatabase;
+        NSFetchRequest *r = [NSFetchRequest fetchRequestWithEntityName: @"Study"];
+        [r setPredicate: [NSPredicate predicateWithFormat: @"(studyInstanceUID == %@)", uid]];
+        
+        NSArray *studyArray = nil;
+        @try
+        {
+            studyArray = [db.managedObjectContext executeFetchRequest: r error: nil];
+        }
+        @catch (NSException *e) { N2LogExceptionWithStackTrace(e);}
+        
+        if( studyArray.count > 1)
+			NSLog( @"****** WADO Server : more than 1 study with same uid : %d", (int) studyArray.count);
+        
+        if( studyArray.count > 0)
+            return [studyArray lastObject];
+        
+        // Find it on a distant server
+        
+        NSArray *studies = nil;
+        
+        if( ss)
+            studies = [QueryController queryStudyInstanceUID: uid server: ss showErrors: NO];
+        else
+        {
+            studies = [QueryController queryStudiesForFilters: [NSDictionary dictionaryWithObjectsAndKeys: uid, @"StudyInstanceUID", nil] servers: [BrowserController comparativeServers] showErrors: NO];
+        }
+        
+        if( studies.count)
+        {
+            [QueryController retrieveStudies: studies showErrors: NO checkForPreviousAutoRetrieve: YES];
+            
+            NSTimeInterval dateStart = [NSDate timeIntervalSinceReferenceDate];
+            NSUInteger lastNumberOfImages = 0, currentNumberOfImages = 0;
+            studyArray = nil;
+            
+            do
+            {
+                DicomStudy *s = [studyArray lastObject];
+                lastNumberOfImages = s.images.count;
+                
+                [NSThread sleepForTimeInterval: 0.5];
+                [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
+                [NSThread sleepForTimeInterval: 0.5];
+                
+                // And find the study locally
+                N2ManagedDatabase* db = self.independentDicomDatabase;
+                NSFetchRequest *r = [NSFetchRequest fetchRequestWithEntityName: @"Study"];
+                [r setPredicate: [NSPredicate predicateWithFormat: @"(studyInstanceUID == %@)", uid]];
+                
+                @try
+                {
+                    studyArray = [db.managedObjectContext executeFetchRequest: r error: nil];
+                }
+                @catch (NSException *e) { N2LogExceptionWithStackTrace(e);}
+                
+                returnedStudy = s = [studyArray lastObject];
+                currentNumberOfImages = s.images.count;
+            }
+            while( ([studyArray count] == 0 || lastNumberOfImages != currentNumberOfImages) && [NSDate timeIntervalSinceReferenceDate] - dateStart < 20);
+            
+            if( studyArray.count == 0)
+                N2LogStackTrace( @"---- failed to retrieve distant study");
+        }
+        else
+            N2LogStackTrace( @"---- study uid NOT found on distant servers");
+    }
+    @catch ( NSException *e) {
+        N2LogException( e);
+    }
+    
+    return returnedStudy;
+}
+
 - (id)objectWithXID:(NSString*)xid
 {
     NSManagedObject* o = nil;
@@ -119,57 +201,9 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
             if( s)
             {
                 if( [[axid objectAtIndex: 3] isEqualToString: @"STUDY"])
-                {
-                    // First try to find it locally
-                    {
-                        N2ManagedDatabase* db = self.independentDicomDatabase;
-                        NSFetchRequest *r = [NSFetchRequest fetchRequestWithEntityName: @"Study"];
-                        [r setPredicate: [NSPredicate predicateWithFormat: @"(studyInstanceUID == %@)", [axid objectAtIndex: 4]]];
-                        
-                        NSArray *studyArray = nil;
-                        @try
-                        {
-                            studyArray = [db.managedObjectContext executeFetchRequest: r error: nil];
-                        }
-                        @catch (NSException *e) { N2LogExceptionWithStackTrace(e);}
-                        
-                        if( [studyArray count] > 0)
-                            return [studyArray lastObject];
-                    }
-                    
-                    // Find it on the distant server
-                    
-                    NSArray *studies = [QueryController queryStudyInstanceUID: [axid objectAtIndex: 4] server: s showErrors: NO];
-                    [QueryController retrieveStudies: studies showErrors: NO checkForPreviousAutoRetrieve: YES];
-                    
-                    NSArray *studyArray = nil;
-                    NSTimeInterval dateStart = [NSDate timeIntervalSinceReferenceDate];
-                    NSUInteger lastNumberOfImages = 0, currentNumberOfImages = 0;
-                    do
-                    {
-                        DicomStudy *s = [studyArray lastObject];
-                        lastNumberOfImages = s.images.count;
-                        
-                        [NSThread sleepForTimeInterval: 1];
-                        [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
-                        [NSThread sleepForTimeInterval: 1];
-                        
-                        // And find the study locally
-                        N2ManagedDatabase* db = self.independentDicomDatabase;
-                        NSFetchRequest *r = [NSFetchRequest fetchRequestWithEntityName: @"Study"];
-                        [r setPredicate: [NSPredicate predicateWithFormat: @"(studyInstanceUID == %@)", [axid objectAtIndex: 4]]];
-                        
-                        @try
-                        {
-                            studyArray = [db.managedObjectContext executeFetchRequest: r error: nil];
-                        }
-                        @catch (NSException *e) { N2LogExceptionWithStackTrace(e);}
-                        
-                        o = s = [studyArray lastObject];
-                        currentNumberOfImages = s.images.count;
-                    }
-                    while( ([studyArray count] == 0 || lastNumberOfImages != currentNumberOfImages) && [NSDate timeIntervalSinceReferenceDate] - dateStart < 20);
-                }
+                    [self studyForStudyInstanceUID: [axid objectAtIndex: 4] server: s];
+                else
+                    N2LogStackTrace( @"**** XID POD at non-study level??");
             }
         }
     }
@@ -1988,22 +2022,9 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	
 	if (objectUID == nil && (seriesUID.length > 0 || studyUID.length > 0)) // This is a 'special case', not officially supported by DICOM standard : we take all the series or study objects -> zip them -> send them
 	{
-		NSPredicate* predicate = nil;
-		if (studyUID)
-			predicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", studyUID];
-		
-		NSArray* studies = [self.independentDicomDatabase objectsForEntity:self.independentDicomDatabase.studyEntity predicate:predicate];
-		
-		if ([studies count] == 0)
-			NSLog( @"****** WADO Server : study not found");
-		
-		if ([studies count] > 1)
-			NSLog( @"****** WADO Server : more than 1 study with same uid : %d", (int) studies.count);
-		
-        NSArray *allSeries = [NSArray array];
+        DicomStudy *study = [self studyForStudyInstanceUID: studyUID server: nil];
         
-        for( DicomStudy *s in studies)
-            allSeries = [allSeries arrayByAddingObjectsFromArray: [[s valueForKey: @"series"] allObjects]];
+        NSArray *allSeries = [[study valueForKey: @"series"] allObjects];
 		
 		if (seriesUID)
 			allSeries = [allSeries filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"seriesDICOMUID == %@", seriesUID]];
@@ -2043,8 +2064,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			if (destFile)
 				[NSFileManager.defaultManager removeItemAtPath:destFile error:nil];
             
-            for( DicomStudy *s in studies)
-                [self.portal updateLogEntryForStudy:s withMessage: @"WADO Send" forUser:user.name ip:asyncSocket.connectedHost];
+            [self.portal updateLogEntryForStudy:study withMessage: @"WADO Send" forUser:user.name ip:asyncSocket.connectedHost];
             
 			return;
 		}
