@@ -138,6 +138,7 @@ extern NSString* const DicomDatabaseLogEntryEntityName;
 -(BOOL) hasFilesToImport;
 -(NSInteger)importFilesFromIncomingDir; // this method should be private, but is declared because called from deprecated api
 -(void)initiateImportFilesFromIncomingDirUnlessAlreadyImporting;
+-(void)importFilesFromIncomingDirThread;
 +(void)syncImportFilesFromIncomingDirTimerWithUserDefaults; // called from deprecated API
 
 #pragma mark Compress/decompress

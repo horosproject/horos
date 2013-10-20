@@ -226,9 +226,9 @@
                 
                 if (studyUID)
                 {
-                    [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
-                    
-                    [NSThread sleepForTimeInterval: 2];
+                    [[DicomDatabase activeLocalDatabase] importFilesFromIncomingDirThread];
+                    //[[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
+                    //[NSThread sleepForTimeInterval: 1];
                     
                     NSPredicate* predicate = nil;
                     if (seriesUID)
@@ -343,9 +343,11 @@
                     NSTimeInterval dateStart = [NSDate timeIntervalSinceReferenceDate];
                     do
                     {
-                        [NSThread sleepForTimeInterval: 1];
-                        [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
-                        [NSThread sleepForTimeInterval: 1];
+                        [[DicomDatabase activeLocalDatabase] importFilesFromIncomingDirThread];
+                        
+                        //[NSThread sleepForTimeInterval: 0.3];
+                        //[[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
+                        //[NSThread sleepForTimeInterval: 0.3];
                         
                         // And find the study locally
                         iobjects = [[self.database independentDatabase] objectsForEntity:@"Study" predicate:predicate error:error];
@@ -515,9 +517,10 @@
                     NSTimeInterval dateStart = [NSDate timeIntervalSinceReferenceDate];
                     do
                     {
-                        [NSThread sleepForTimeInterval: 1];
-                        [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
-                        [NSThread sleepForTimeInterval: 1];
+                        [[DicomDatabase activeLocalDatabase] importFilesFromIncomingDirThread];
+                        //[NSThread sleepForTimeInterval: 0.3];
+                        //[[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
+                        //[NSThread sleepForTimeInterval: 0.3];
                         
                         // And find the study locally
                         iobjects = [[self.database independentDatabase] objectsForEntity:@"Study" predicate:predicate error:error];
@@ -567,9 +570,10 @@
 
 -(void)_onMainThreadOpenWithDelayObjectsWithIDs:(NSArray*)objectIDs {
     @autoreleasepool {
-        [NSThread sleepForTimeInterval: 4];
-        [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
-        [NSThread sleepForTimeInterval: 2];
+//        [NSThread sleepForTimeInterval: 3];
+//        [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
+//        [NSThread sleepForTimeInterval: 2];
+        [[DicomDatabase activeLocalDatabase] importFilesFromIncomingDirThread];
         [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjectsWithIDs:) withObject:objectIDs waitUntilDone:NO];
     }
 }

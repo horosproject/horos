@@ -7038,9 +7038,9 @@ static NSConditionLock *threadLock = nil;
                 {
                     if( [[comparatives objectAtIndex: i] isKindOfClass: [DCMTKStudyQueryNode class]])
                     {
-                        [NSThread sleepForTimeInterval: 0.5];
-                        
-                        [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
+//                        [NSThread sleepForTimeInterval: 0.3];
+//                        [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
+                        [[DicomDatabase activeLocalDatabase] importFilesFromIncomingDirThread];
                         
                         NSFetchRequest *r = [NSFetchRequest fetchRequestWithEntityName: @"Study"];
                         [r setPredicate: [NSPredicate predicateWithFormat: @"(studyInstanceUID == %@)", [[comparatives objectAtIndex: i] studyInstanceUID]]];
@@ -10988,9 +10988,11 @@ static BOOL needToRezoom;
         [QueryController retrieveStudies: [NSArray arrayWithObject: study] showErrors: NO checkForPreviousAutoRetrieve: NO];
         #endif
         
-        [NSThread sleepForTimeInterval: 0.2];
-        [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
-        [NSThread sleepForTimeInterval: 1];
+//        [NSThread sleepForTimeInterval: 0.2];
+//        [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
+//        [NSThread sleepForTimeInterval: 0.5];
+        
+        [[DicomDatabase activeLocalDatabase] importFilesFromIncomingDirThread];
         
         @synchronized( comparativeRetrieveQueue)
         {
