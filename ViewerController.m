@@ -168,7 +168,6 @@ static NSMenu *clutPresetsMenu = nil;
 static NSMenu *convolutionPresetsMenu = nil;
 static NSMenu *opacityPresetsMenu = nil;
 static NSImage* retrieveImage = nil;
-volatile static int totalNumberOfLoadingWindow = 0;
 
 static int numberOf2DViewer = 0;
 static NSMutableArray *arrayOf2DViewers = nil;
@@ -8639,8 +8638,6 @@ return YES;
             if( compressed == NO)
                 numberOfThreadsForCompute = 1;
             
-            totalNumberOfLoadingWindow ++;
-            
             NSMutableDictionary *d = [NSMutableDictionary dictionary];
             
             [d setObject: [NSThread currentThread] forKey: @"loadingThread"];
@@ -8666,7 +8663,15 @@ return YES;
                     [dd setObject: [NSNumber numberWithInt: from] forKey: @"from"];
                     [dd setObject: [NSNumber numberWithInt: to] forKey: @"to"];
                     
-                    [NSThread detachNewThreadSelector: @selector(subLoadingThread:) toTarget: self withObject: dd];
+                    static dispatch_semaphore_t sid = 0;
+                    if (!sid)
+                        sid = dispatch_semaphore_create( mpprocessors);
+                    
+                    if (dispatch_semaphore_wait(sid, DISPATCH_TIME_FOREVER) == 0)
+                    {
+                        [NSThread detachNewThreadSelector: @selector(subLoadingThread:) toTarget: self withObject: dd];
+                        dispatch_semaphore_signal(sid);
+                    }
                 }
                 
                 [subLoadingThread lockWhenCondition: 0];
@@ -8682,8 +8687,6 @@ return YES;
                 
                 [ViewerController subLoadingThread: d];
             }
-            
-            totalNumberOfLoadingWindow --;
 		}
         if( [[NSThread currentThread] isCancelled] == YES)
             NSLog( @"thread was cancelled");
