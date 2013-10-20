@@ -202,7 +202,7 @@ ss
             if( s)
             {
                 if( [[axid objectAtIndex: 3] isEqualToString: @"STUDY"])
-                    [self studyForStudyInstanceUID: [axid objectAtIndex: 4] server: s];
+                    o = [self studyForStudyInstanceUID: [axid objectAtIndex: 4] server: s];
                 else
                     N2LogStackTrace( @"**** XID POD at non-study level??");
             }
