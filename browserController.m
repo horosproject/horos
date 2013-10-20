@@ -7040,7 +7040,8 @@ static NSConditionLock *threadLock = nil;
                     {
 //                        [NSThread sleepForTimeInterval: 0.3];
 //                        [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
-                        [[DicomDatabase activeLocalDatabase] importFilesFromIncomingDirThread];
+                        
+                        [self.database importFilesFromIncomingDir];
                         
                         NSFetchRequest *r = [NSFetchRequest fetchRequestWithEntityName: @"Study"];
                         [r setPredicate: [NSPredicate predicateWithFormat: @"(studyInstanceUID == %@)", [[comparatives objectAtIndex: i] studyInstanceUID]]];
@@ -10992,7 +10993,7 @@ static BOOL needToRezoom;
 //        [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
 //        [NSThread sleepForTimeInterval: 0.5];
         
-        [[DicomDatabase activeLocalDatabase] importFilesFromIncomingDirThread];
+        [[[DicomDatabase activeLocalDatabase] independentDatabase] importFilesFromIncomingDir];
         
         @synchronized( comparativeRetrieveQueue)
         {

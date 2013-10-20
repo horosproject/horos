@@ -138,14 +138,14 @@ ss
             {
                 DicomStudy *s = [studyArray lastObject];
                 lastNumberOfImages = s.images.count;
+                DicomDatabase* db = self.independentDicomDatabase;
                 
 //                [NSThread sleepForTimeInterval: 0.3];
 //                [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
 //                [NSThread sleepForTimeInterval: 0.3];
-                [[DicomDatabase activeLocalDatabase] importFilesFromIncomingDirThread];
+                [db importFilesFromIncomingDir];
                 
                 // And find the study locally
-                N2ManagedDatabase* db = self.independentDicomDatabase;
                 NSFetchRequest *r = [NSFetchRequest fetchRequestWithEntityName: @"Study"];
                 [r setPredicate: [NSPredicate predicateWithFormat: @"(studyInstanceUID == %@)", uid]];
                 
@@ -285,7 +285,7 @@ ss
 //                    [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
 //                    [NSThread sleepForTimeInterval: 0.3];
                     
-                    [[DicomDatabase activeLocalDatabase] importFilesFromIncomingDirThread];
+                    [[[DicomDatabase activeLocalDatabase] independentDatabase] importFilesFromIncomingDir];
                     
                     [s.managedObjectContext refreshObject: s mergeChanges: NO];
                     

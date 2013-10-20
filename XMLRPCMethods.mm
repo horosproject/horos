@@ -226,7 +226,8 @@
                 
                 if (studyUID)
                 {
-                    [[DicomDatabase activeLocalDatabase] importFilesFromIncomingDirThread];
+                    DicomDatabase *db = [self.database independentDatabase];
+                    [db importFilesFromIncomingDir];
                     //[[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
                     //[NSThread sleepForTimeInterval: 1];
                     
@@ -239,7 +240,7 @@
                     NSTimeInterval startTime = [NSDate timeIntervalSinceReferenceDate];
                     do
                     {
-                        NSArray* istudies = [[self.database independentDatabase] objectsForEntity:@"Study" predicate:predicate error:NULL];
+                        NSArray* istudies = [db objectsForEntity:@"Study" predicate:predicate error:NULL];
                         DicomStudy* istudy = [istudies lastObject];
                         if ([istudy.studyInstanceUID isEqualToString:studyUID])
                         {
@@ -255,7 +256,7 @@
                             break;
                         }
                         
-                        [NSThread sleepForTimeInterval: 2];
+                        [NSThread sleepForTimeInterval: 1];
                     }
                     while ([NSDate timeIntervalSinceReferenceDate] - startTime < 30 && [[NSThread currentThread] isCancelled] == NO); // try for 30 seconds
                 }
@@ -341,16 +342,17 @@
                     [NSThread detachNewThreadSelector: @selector( _PACSOnDemandRetrieve:) toTarget: self withObject: studies];
                     
                     NSTimeInterval dateStart = [NSDate timeIntervalSinceReferenceDate];
+                    DicomDatabase *db = [self.database independentDatabase];
                     do
                     {
-                        [[DicomDatabase activeLocalDatabase] importFilesFromIncomingDirThread];
+                        [db importFilesFromIncomingDir];
                         
                         //[NSThread sleepForTimeInterval: 0.3];
                         //[[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
                         //[NSThread sleepForTimeInterval: 0.3];
                         
                         // And find the study locally
-                        iobjects = [[self.database independentDatabase] objectsForEntity:@"Study" predicate:predicate error:error];
+                        iobjects = [db objectsForEntity:@"Study" predicate:predicate error:error];
                         
                         DicomStudy *s = [iobjects lastObject];
                         if( s.imageSeries.count == 0)
@@ -515,15 +517,16 @@
                     [NSThread detachNewThreadSelector: @selector( _PACSOnDemandRetrieve:) toTarget: self withObject: studies];
                     
                     NSTimeInterval dateStart = [NSDate timeIntervalSinceReferenceDate];
+                    DicomDatabase *db = [self.database independentDatabase];
                     do
                     {
-                        [[DicomDatabase activeLocalDatabase] importFilesFromIncomingDirThread];
+                        [db importFilesFromIncomingDir];
                         //[NSThread sleepForTimeInterval: 0.3];
                         //[[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
                         //[NSThread sleepForTimeInterval: 0.3];
                         
                         // And find the study locally
-                        iobjects = [[self.database independentDatabase] objectsForEntity:@"Study" predicate:predicate error:error];
+                        iobjects = [db objectsForEntity:@"Study" predicate:predicate error:error];
                         
                         DicomStudy *s = [iobjects lastObject];
                         if( s.imageSeries.count == 0)
@@ -573,7 +576,7 @@
 //        [NSThread sleepForTimeInterval: 3];
 //        [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
 //        [NSThread sleepForTimeInterval: 2];
-        [[DicomDatabase activeLocalDatabase] importFilesFromIncomingDirThread];
+        [[[DicomDatabase activeLocalDatabase] independentDatabase] importFilesFromIncomingDir];
         [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjectsWithIDs:) withObject:objectIDs waitUntilDone:NO];
     }
 }
