@@ -2766,15 +2766,18 @@ static BOOL protectionAgainstReentry = NO;
     return NO;
 }
 
--(NSInteger)importFilesFromIncomingDir {
+-(NSInteger)importFilesFromIncomingDir
+{
+    return [self importFilesFromIncomingDir: @NO];
+}
+
+-(NSInteger)importFilesFromIncomingDir: (NSNumber*) showGUI {
 	NSMutableArray* compressedPathArray = [NSMutableArray array];
 	NSThread* thread = [NSThread currentThread];
 	BOOL listenerCompressionSettings = [[NSUserDefaults standardUserDefaults] integerForKey: @"ListenerCompressionSettings"];
 	NSUInteger addedFilesCount = 0;
 	BOOL activityFeedbackShown = NO;
     
-	[thread enterOperation];
-	
 	[NSFileManager.defaultManager confirmNoIndexDirectoryAtPath:self.decompressionDirPath];
 	
     N2DirectoryEnumerator *enumer = [NSFileManager.defaultManager enumeratorAtPath:self.incomingDirPath limitTo:-1];
@@ -2855,7 +2858,7 @@ static BOOL protectionAgainstReentry = NO;
 			BOOL isAlias = NO;
 			srcPath = [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:srcPath resolved:&isAlias];
 			
-            if ((filesArray.count) && !activityFeedbackShown) {
+            if( filesArray.count && !activityFeedbackShown && showGUI.boolValue) {
 				[ThreadsManager.defaultManager addThreadAndStart:thread];
                 [OsiriX setReceivingIcon];
                 activityFeedbackShown = YES;
@@ -3022,7 +3025,6 @@ static BOOL protectionAgainstReentry = NO;
     @finally
     {
 		[_importFilesFromIncomingDirLock unlock];
-        [thread exitOperation];
         if (activityFeedbackShown)
             [OsiriX unsetReceivingIcon];
 	}
@@ -3164,7 +3166,9 @@ static BOOL protectionAgainstReentry = NO;
         {
             NSThread* thread = [NSThread currentThread];
             thread.name = NSLocalizedString(@"Adding incoming files...", nil);
-            importCount = [self.independentDatabase importFilesFromIncomingDir];
+            [thread enterOperation];
+            importCount = [self.independentDatabase importFilesFromIncomingDir: @YES];
+            [thread exitOperation];
             thread.status = NSLocalizedString(@"Finishing...", nil);
             thread.progress = -1;
 		}

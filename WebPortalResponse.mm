@@ -815,7 +815,7 @@ static NSMutableDictionary *otherStudiesForThisPatientCache = nil;
                 if( otherStudiesForThisPatientCache == nil)
                     otherStudiesForThisPatientCache = [[NSMutableDictionary alloc] init];
                 
-                #define CACHETIMEOUT -120
+                #define CACHETIMEOUT -30
                 @synchronized( otherStudiesForThisPatientCache)
                 {
                     // REMOVE OLD KEYS
