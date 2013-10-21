@@ -39,6 +39,7 @@
 #import "CIADICOMField.h"
 #import "N2Stuff.h"
 #import "DICOMFile.h"
+#import "N2Debug.h"
 
 #include "osconfig.h"
 #include "mdfconen.h"
@@ -482,6 +483,10 @@ extern "C"
         NSLog( @"****** QR: cannot query history on patient's name only, patient birthdate or patient ID required !");
         return 0;
     }
+    
+#ifndef NDEBUG
+    NSLog( @"------- queryStudiesForPatient: %@", study.name);
+#endif
     
     NSMutableDictionary *filters = [NSMutableDictionary dictionary];
     

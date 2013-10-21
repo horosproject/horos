@@ -29,6 +29,7 @@
 #import "NSUserDefaults+OsiriX.h"
 #import "QueryController.h"
 #import "AsyncSocket.h"
+#import "N2Debug.h"
 
 static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
 
@@ -776,6 +777,8 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 @end
 
 
+static NSMutableDictionary *otherStudiesForThisPatientCache = nil;
+
 @implementation DicomStudyTransformer
 
 +(id)create {
@@ -804,53 +807,106 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 	{
 		NSMutableArray *otherStudies = nil;
 		
-		@try
-		{
-			otherStudies = [[[WebPortalUser studiesForUser: wpc.user predicate: [NSPredicate predicateWithFormat: @"(patientID == %@)", study.patientID] sortBy: @"date"] mutableCopy] autorelease];
-			
-            // PACS On Demand
+        @try
+        {
+            // Cache system for comparative studies, if PACS On Demand is activated
             if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"ActivatePACSOnDemandForWebPortalOtherStudies"])
             {
-                BOOL usePatientID = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientIDForUID"];
-                BOOL usePatientBirthDate = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientBirthDateForUID"];
-                BOOL usePatientName = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientNameForUID"];
+                if( otherStudiesForThisPatientCache == nil)
+                    otherStudiesForThisPatientCache = [[NSMutableDictionary alloc] init];
                 
-                // Servers
-                NSArray *servers = [BrowserController comparativeServers];
-                
-                if( servers.count)
+                #define CACHETIMEOUT -120
+                @synchronized( otherStudiesForThisPatientCache)
                 {
-                    // Distant studies
-#ifndef OSIRIX_LIGHT
-                    NSArray *distantStudies = [QueryController queryStudiesForPatient: study usePatientID: usePatientID usePatientName: usePatientName usePatientBirthDate: usePatientBirthDate servers: servers showErrors: NO];
-                    
-                    // Merge local and distant studies
-                    for( DCMTKStudyQueryNode *distantStudy in distantStudies)
+                    // REMOVE OLD KEYS
+                    NSMutableArray *keysToRemove = [NSMutableArray array];
+                    for( NSString *key in otherStudiesForThisPatientCache)
                     {
-                        if( [[otherStudies valueForKey: @"studyInstanceUID"] containsObject: [distantStudy studyInstanceUID]] == NO && [[distantStudy noFiles] integerValue] > 0)
+                        if( [[[otherStudiesForThisPatientCache objectForKey: key] objectForKey: @"date"] timeIntervalSinceNow] < CACHETIMEOUT)
+                            [keysToRemove addObject: key];
+                    }
+                    [otherStudiesForThisPatientCache removeObjectsForKeys: keysToRemove];
+                    
+                    if( [otherStudiesForThisPatientCache objectForKey: study.patientID])
+                    {
+                        NSDictionary *d = [otherStudiesForThisPatientCache objectForKey: study.patientID];
+                        NSDate *timeStamp = [d objectForKey: @"date"];
+                        
+                        if( [timeStamp timeIntervalSinceNow] > CACHETIMEOUT)
                         {
-                            [otherStudies addObject: distantStudy];
-                        }
-                        else if( [[NSUserDefaults standardUserDefaults] boolForKey: @"preferStudyWithMoreImages"])
-                        {
-                            NSUInteger index = [[otherStudies valueForKey: @"studyInstanceUID"] indexOfObject: [distantStudy studyInstanceUID]];
-                            
-                            if( index != NSNotFound && [[[otherStudies objectAtIndex: index] rawNoFiles] intValue] < [[distantStudy noFiles] intValue])
-                            {
-                                [otherStudies replaceObjectAtIndex: index withObject: distantStudy];
-                            }
+                            DicomDatabase *db = [WebPortal.defaultWebPortal.dicomDatabase independentDatabase];
+                            otherStudies = [NSMutableArray arrayWithArray: [db objectsWithIDs: [d objectForKey: @"studyIDs"]]];
                         }
                     }
-#endif
                 }
             }
-		}
-		@catch (NSException * e)
-		{
-			NSLog(@"***** [WebPortalRosponse object:valueForKeyPath:context] %@", e);
-		}
-		
-        [otherStudies sortUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: @"date" ascending: NO]]];
+        }
+        @catch (NSException *exception) {
+            N2LogExceptionWithStackTrace( exception);
+        }
+        
+        if( otherStudies == nil)
+        {
+            @try
+            {
+                otherStudies = [[[WebPortalUser studiesForUser: wpc.user predicate: [NSPredicate predicateWithFormat: @"(patientID == %@)", study.patientID] sortBy: @"date"] mutableCopy] autorelease];
+                
+                // PACS On Demand
+                if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"ActivatePACSOnDemandForWebPortalOtherStudies"])
+                {
+                    BOOL usePatientID = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientIDForUID"];
+                    BOOL usePatientBirthDate = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientBirthDateForUID"];
+                    BOOL usePatientName = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientNameForUID"];
+                    
+                    // Servers
+                    NSArray *servers = [BrowserController comparativeServers];
+                    
+                    if( servers.count)
+                    {
+                        // Distant studies
+    #ifndef OSIRIX_LIGHT
+                        NSArray *distantStudies = [QueryController queryStudiesForPatient: study usePatientID: usePatientID usePatientName: usePatientName usePatientBirthDate: usePatientBirthDate servers: servers showErrors: NO];
+                        
+                        // Merge local and distant studies
+                        for( DCMTKStudyQueryNode *distantStudy in distantStudies)
+                        {
+                            if( [[otherStudies valueForKey: @"studyInstanceUID"] containsObject: [distantStudy studyInstanceUID]] == NO && [[distantStudy noFiles] integerValue] > 0)
+                            {
+                                [otherStudies addObject: distantStudy];
+                            }
+                            else if( [[NSUserDefaults standardUserDefaults] boolForKey: @"preferStudyWithMoreImages"])
+                            {
+                                NSUInteger index = [[otherStudies valueForKey: @"studyInstanceUID"] indexOfObject: [distantStudy studyInstanceUID]];
+                                
+                                if( index != NSNotFound && [[[otherStudies objectAtIndex: index] rawNoFiles] intValue] < [[distantStudy noFiles] intValue])
+                                {
+                                    [otherStudies replaceObjectAtIndex: index withObject: distantStudy];
+                                }
+                            }
+                        }
+    #endif
+                    }
+                }
+            }
+            @catch (NSException * e)
+            {
+                NSLog(@"***** [WebPortalRosponse object:valueForKeyPath:context] %@", e);
+            }
+            
+            [otherStudies sortUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: @"date" ascending: NO]]];
+        }
+        // Cache system for comparative studies, if PACS On Demand is activated
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"ActivatePACSOnDemandForWebPortalOtherStudies"])
+        {
+            if( otherStudiesForThisPatientCache == nil)
+                otherStudiesForThisPatientCache = [[NSMutableDictionary alloc] init];
+            
+            @synchronized( otherStudiesForThisPatientCache)
+            {
+                NSDictionary *d = [NSDictionary dictionaryWithObjectsAndKeys: [NSDate date], @"timeStamp", [otherStudies valueForKey: @"objectID"], @"studyIDs", nil];
+                [otherStudiesForThisPatientCache setObject: d forKey:study.patientID];
+            }
+        }
         
 		return otherStudies;
 	}

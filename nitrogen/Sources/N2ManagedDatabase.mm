@@ -17,7 +17,7 @@
 #import "N2Debug.h"
 #import "NSFileManager+N2.h"
 #import "NSException+N2.h"
-
+#import "DCMTKQueryNode.h"
 //#import "DicomDatabase.h" // for debug purposes, REMOVE
 
 static int gTotalN2ManagedObjectContext = 0;
@@ -500,7 +500,13 @@ static int gTotalN2ManagedObjectContext = 0;
             // nothing, just avoid all other checks for performance
         } else if ([oid isKindOfClass:[NSManagedObject class]]) {
             oid = [oid objectID];
-        } else if ([oid isKindOfClass:[NSURL class]]) {
+        }
+#ifndef OSIRIX_LIGHT
+        else if ([oid isKindOfClass:[DCMTKQueryNode class]]) {
+            return oid;
+        }
+#endif
+        else if ([oid isKindOfClass:[NSURL class]]) {
             oid = [self.managedObjectContext.persistentStoreCoordinator managedObjectIDForURIRepresentation:oid];
         } else if ([oid isKindOfClass:[NSString class]]) {
             oid = [self.managedObjectContext.persistentStoreCoordinator managedObjectIDForURIRepresentation:[NSURL URLWithString:oid]];

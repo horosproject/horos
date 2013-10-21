@@ -226,6 +226,11 @@
     return _uid;
 }
 
+- (id) objectID // Match DicomStudy
+{
+    return self;
+}
+
 - (NSString*) studyName // Match DicomStudy
 {
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
