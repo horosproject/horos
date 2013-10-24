@@ -330,6 +330,7 @@ function shareDestinationChange(select) {
         </form>
 	
 		%[IF:Info.proposeShare&&ShareDestinations.count%
+        <form id="form" method="post" onsubmit="return onSubmitForm(this);">
 		<div class="title separated">Share</div>
 		<div>
 			<table class="basic wide form">
@@ -388,9 +389,11 @@ function shareDestinationChange(select) {
 				</tr>
 			</table>
 		</div>
+        </form>
 		%]IF:Info.proposeShare&&ShareDestinations.count%
 	
 		%[IF:Info.proposeDicomSend%
+        <form id="form" method="post" onsubmit="return onSubmitForm(this);">
 		<div class="title separated">DICOM Transfer</div>
 		<div>
 			<table class="form">
@@ -407,6 +410,7 @@ function shareDestinationChange(select) {
 				</tr>
 			</table>
 		</div>
+        </form>
 		%]IF:Info.proposeDicomSend%
 	</div>
 	%]IF:Study%
