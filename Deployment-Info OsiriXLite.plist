@@ -206,7 +206,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>20131022</string>
+	<string>20131024</string>
 	<key>LSCanProvideIMVideoDataSource</key>
 	<string>Yes</string>
 	<key>NSAppleScriptEnabled</key>
@@ -248,6 +248,6 @@
 	<key>NSContactsUsageDescription</key>
 	<string>Your account will be used for the built-in iChat sharing service. If you don&apos;t allow access, you cannot use the iChat functions.</string>
 	<key>GitHash</key>
-	<string>1fc2185923dd4c7c7a2897e3568708da3f967aca</string>
+	<string>6c260272a15386f84aa24ea238c8bd7d3264fa7f</string>
 </dict>
 </plist>
