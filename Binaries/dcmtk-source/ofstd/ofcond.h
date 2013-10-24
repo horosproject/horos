@@ -362,8 +362,11 @@ public:
       {
         delete OFconst_cast(OFConditionBase *, theCondition); // cast away const
       }
+    if( &arg && arg.theCondition)
+    {
       theCondition = arg.theCondition->clone();
       assert(theCondition);
+    }
     }
     return *this;
   }

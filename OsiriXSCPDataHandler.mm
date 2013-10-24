@@ -1478,160 +1478,166 @@ extern BOOL forkedProcess;
 	NSError *error = nil;
 	NSEntityDescription *entity;
 	NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+    
+    OFCondition cond = EC_Normal;
+    
+    @try
+    {
+        const char *sType;
+        dataset->findAndGetString (DCM_QueryRetrieveLevel, sType, OFFalse);
         
-    const char *sType;
-	dataset->findAndGetString (DCM_QueryRetrieveLevel, sType, OFFalse);
-	OFCondition cond;
-	
-	[findTemplate release];
-	findTemplate = [[NSMutableDictionary alloc] init];
-	
-	int elemCount = (int)(dataset->card());
-    for (int elemIndex=0; elemIndex<elemCount; elemIndex++)
-	{
-		DcmElement* dcelem = dataset->getElement(elemIndex);
-		DcmTagKey key = dcelem->getTag().getXTag();
-		
-		[findTemplate setObject: [NSNumber numberWithBool: YES] forKey: [NSString stringWithFormat: @"%d,%d", key.getElement(), key.getGroup()]];
-	}
-	
-	if (strcmp(sType, "STUDY") == 0) 
-		entity = [[model entitiesByName] objectForKey:@"Study"];
-	else if (strcmp(sType, "SERIES") == 0) 
-		entity = [[model entitiesByName] objectForKey:@"Series"];
-	else if (strcmp(sType, "IMAGE") == 0) 
-		entity = [[model entitiesByName] objectForKey:@"Image"];
-	else 
-		entity = nil;
-	
-	if (entity)
-	{
-		[request setEntity: entity];
-		[request setPredicate: predicate];
-					
-		error = nil;
-		
-		[findArray release];
-        findArray = nil;
+        [findTemplate release];
+        findTemplate = [[NSMutableDictionary alloc] init];
         
-        NSArray *tempFindArray = [NSArray array];
-        
-		@try
-		{
-			if( seriesLevelPredicate) // First find at series level, then move to image level
-			{
-				NSFetchRequest *seriesRequest = [[[NSFetchRequest alloc] init] autorelease];
-				
-				[seriesRequest setEntity: [[model entitiesByName] objectForKey:@"Series"]];
-				[seriesRequest setPredicate: seriesLevelPredicate];
-				
-                NSArray *newObjects = nil;
-                NSArray *allSeries = [NSArray array];
-                
-                int total = [context countForFetchRequest: seriesRequest error: &error];
-                
-                [seriesRequest setFetchLimit: FETCHNUMBER];
-                do
-                {
-                    newObjects = [context executeFetchRequest: seriesRequest error: &error];
-                    allSeries = [allSeries arrayByAddingObjectsFromArray: newObjects];
-                    
-                    [seriesRequest setFetchOffset: [seriesRequest fetchOffset] + FETCHNUMBER];
-                    
-                    if( [NSThread currentThread].isCancelled)
-                        break;
-                    
-                    if( total)
-                        [[NSThread currentThread] setProgress: (float) tempFindArray.count / (float) total];
-                }
-                while( [newObjects count]);
-                
-				for( id series in allSeries)
-					tempFindArray = [tempFindArray arrayByAddingObjectsFromArray: [[series valueForKey: @"images"] allObjects]];
-				
-				tempFindArray = [tempFindArray filteredArrayUsingPredicate: predicate];
-			}
-			else
-            {
-                NSArray *newObjects = nil;
-                
-                int total = [context countForFetchRequest: request error: &error];
-                
-                [request setFetchLimit: FETCHNUMBER];
-                do
-                {
-                    newObjects = [context executeFetchRequest: request error: &error];
-                    tempFindArray = [tempFindArray arrayByAddingObjectsFromArray: newObjects];
-                    
-                    [request setFetchOffset: [request fetchOffset] + FETCHNUMBER];
-                    
-                    if( [NSThread currentThread].isCancelled)
-                        break;
-                    
-                    if( total)
-                        [[NSThread currentThread] setProgress: (float) tempFindArray.count / (float) total];
-                }
-                while( [newObjects count]);
-			}
+        int elemCount = (int)(dataset->card());
+        for (int elemIndex=0; elemIndex<elemCount; elemIndex++)
+        {
+            DcmElement* dcelem = dataset->getElement(elemIndex);
+            DcmTagKey key = dcelem->getTag().getXTag();
             
-			if( strcmp(sType, "IMAGE") == 0 && compressedSOPInstancePredicate)
-				tempFindArray = [tempFindArray filteredArrayUsingPredicate: compressedSOPInstancePredicate];
-			
-			if( strcmp(sType, "IMAGE") == 0)
-				tempFindArray = [tempFindArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"instanceNumber" ascending: YES] autorelease]]];
-			
-			if( strcmp(sType, "SERIES") == 0)
-			  tempFindArray = [tempFindArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending: YES] autorelease]]];
-			
-            if (strcmp(sType, "STUDY") == 0 || strcmp(sType, "SERIES") == 0) // Only at series or study level
+            [findTemplate setObject: [NSNumber numberWithBool: YES] forKey: [NSString stringWithFormat: @"%d,%d", key.getElement(), key.getGroup()]];
+        }
+        
+        if (strcmp(sType, "STUDY") == 0) 
+            entity = [[model entitiesByName] objectForKey:@"Study"];
+        else if (strcmp(sType, "SERIES") == 0) 
+            entity = [[model entitiesByName] objectForKey:@"Series"];
+        else if (strcmp(sType, "IMAGE") == 0) 
+            entity = [[model entitiesByName] objectForKey:@"Image"];
+        else 
+            entity = nil;
+        
+        if (entity)
+        {
+            [request setEntity: entity];
+            [request setPredicate: predicate];
+                        
+            error = nil;
+            
+            [findArray release];
+            findArray = nil;
+            
+            NSArray *tempFindArray = [NSArray array];
+            
+            @try
             {
-                if( [[NSUserDefaults standardUserDefaults] integerForKey: @"maximumNumberOfCFindObjects"] > 0 && tempFindArray.count > [[NSUserDefaults standardUserDefaults] integerForKey: @"maximumNumberOfCFindObjects"])
+                if( seriesLevelPredicate) // First find at series level, then move to image level
                 {
-                    NSLog( @"----- C-Find maximumNumberOfCFindObjects reached: %d, %d", (int) tempFindArray.count, (int) [[NSUserDefaults standardUserDefaults] integerForKey: @"maximumNumberOfCFindObjects"]);
-                    tempFindArray = [tempFindArray subarrayWithRange: NSMakeRange( 0, [[NSUserDefaults standardUserDefaults] integerForKey: @"maximumNumberOfCFindObjects"])];
+                    NSFetchRequest *seriesRequest = [[[NSFetchRequest alloc] init] autorelease];
+                    
+                    [seriesRequest setEntity: [[model entitiesByName] objectForKey:@"Series"]];
+                    [seriesRequest setPredicate: seriesLevelPredicate];
+                    
+                    NSArray *newObjects = nil;
+                    NSArray *allSeries = [NSArray array];
+                    
+                    int total = [context countForFetchRequest: seriesRequest error: &error];
+                    
+                    [seriesRequest setFetchLimit: FETCHNUMBER];
+                    do
+                    {
+                        newObjects = [context executeFetchRequest: seriesRequest error: &error];
+                        allSeries = [allSeries arrayByAddingObjectsFromArray: newObjects];
+                        
+                        [seriesRequest setFetchOffset: [seriesRequest fetchOffset] + FETCHNUMBER];
+                        
+                        if( [NSThread currentThread].isCancelled)
+                            break;
+                        
+                        if( total)
+                            [[NSThread currentThread] setProgress: (float) tempFindArray.count / (float) total];
+                    }
+                    while( [newObjects count]);
+                    
+                    for( id series in allSeries)
+                        tempFindArray = [tempFindArray arrayByAddingObjectsFromArray: [[series valueForKey: @"images"] allObjects]];
+                    
+                    tempFindArray = [tempFindArray filteredArrayUsingPredicate: predicate];
                 }
+                else
+                {
+                    NSArray *newObjects = nil;
+                    
+                    int total = [context countForFetchRequest: request error: &error];
+                    
+                    [request setFetchLimit: FETCHNUMBER];
+                    do
+                    {
+                        newObjects = [context executeFetchRequest: request error: &error];
+                        tempFindArray = [tempFindArray arrayByAddingObjectsFromArray: newObjects];
+                        
+                        [request setFetchOffset: [request fetchOffset] + FETCHNUMBER];
+                        
+                        if( [NSThread currentThread].isCancelled)
+                            break;
+                        
+                        if( total)
+                            [[NSThread currentThread] setProgress: (float) tempFindArray.count / (float) total];
+                    }
+                    while( [newObjects count]);
+                }
+                
+                if( strcmp(sType, "IMAGE") == 0 && compressedSOPInstancePredicate)
+                    tempFindArray = [tempFindArray filteredArrayUsingPredicate: compressedSOPInstancePredicate];
+                
+                if( strcmp(sType, "IMAGE") == 0)
+                    tempFindArray = [tempFindArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"instanceNumber" ascending: YES] autorelease]]];
+                
+                if( strcmp(sType, "SERIES") == 0)
+                  tempFindArray = [tempFindArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending: YES] autorelease]]];
+                
+                if (strcmp(sType, "STUDY") == 0 || strcmp(sType, "SERIES") == 0) // Only at series or study level
+                {
+                    if( [[NSUserDefaults standardUserDefaults] integerForKey: @"maximumNumberOfCFindObjects"] > 0 && tempFindArray.count > [[NSUserDefaults standardUserDefaults] integerForKey: @"maximumNumberOfCFindObjects"])
+                    {
+                        NSLog( @"----- C-Find maximumNumberOfCFindObjects reached: %d, %d", (int) tempFindArray.count, (int) [[NSUserDefaults standardUserDefaults] integerForKey: @"maximumNumberOfCFindObjects"]);
+                        tempFindArray = [tempFindArray subarrayWithRange: NSMakeRange( 0, [[NSUserDefaults standardUserDefaults] integerForKey: @"maximumNumberOfCFindObjects"])];
+                    }
+                }
+                
+                if( strcmp(sType, "IMAGE") == 0) //Only ONE DICOM "instance" : multiple frames are stored in multiple instance in OsiriX DB
+                {
+                    NSMutableArray *mutableTempFindArray = [NSMutableArray arrayWithArray: tempFindArray];
+                    NSMutableArray *imagePaths = [NSMutableArray arrayWithArray: [tempFindArray valueForKey:@"completePath"]];
+                    [imagePaths removeDuplicatedStringsInSyncWithThisArray: mutableTempFindArray];
+                    
+                    tempFindArray = mutableTempFindArray;
+                }
+                
+                findArray = [[NSArray alloc] initWithArray: tempFindArray];
+            }
+            @catch (NSException * e)
+            {
+                NSLog( @"prepareFindForDataSet exception");
+                NSLog( @"%@", [e description]);
             }
             
-            if( strcmp(sType, "IMAGE") == 0) //Only ONE DICOM "instance" : multiple frames are stored in multiple instance in OsiriX DB
+            if (error)
             {
-                NSMutableArray *mutableTempFindArray = [NSMutableArray arrayWithArray: tempFindArray];
-                NSMutableArray *imagePaths = [NSMutableArray arrayWithArray: [tempFindArray valueForKey:@"completePath"]];
-                [imagePaths removeDuplicatedStringsInSyncWithThisArray: mutableTempFindArray];
-                
-                tempFindArray = mutableTempFindArray;
+                [findArray release];
+                findArray = nil;
+                cond = EC_IllegalParameter;
             }
+            else
+                cond = EC_Normal;
+        }
+        else
+        {
+            [findArray release];
+            findArray = nil;
             
-			findArray = [[NSArray alloc] initWithArray: tempFindArray];
-		}
-		@catch (NSException * e)
-		{
-			NSLog( @"prepareFindForDataSet exception");
-			NSLog( @"%@", [e description]);
-		}
-		
-		if (error)
-		{
-			[findArray release];
-			findArray = nil;
-			cond = EC_IllegalParameter;
-		}
-		else
-			cond = EC_Normal;
-	}
-	else
-	{
-		[findArray release];
-		findArray = nil;
-		
-		cond = EC_IllegalParameter;
-	}
+            cond = EC_IllegalParameter;
+        }
+    }
+    @catch ( NSException *e) {
+        N2LogException( e);
+    }
     
 	[findEnumerator release];
 	findEnumerator = [[findArray objectEnumerator] retain];
     findEnumeratorIndex = 0;
 	
 	return cond;
-	 
 }
 
 - (void) updateLog:(NSArray*) mArray
