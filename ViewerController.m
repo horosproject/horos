@@ -3497,6 +3497,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 	}
 	
 	recursiveCloseWindowsProtected = NO;
+    
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"DontResetListPODComparativesIn2DViewer"] == NO)
+        [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"listPODComparativesIn2DViewer"];
 }
 
 - (void)applicationDidResignActive:(NSNotification *)aNotification
