@@ -275,7 +275,6 @@ static NSMutableDictionary *studiesForUserCache = nil;
 		return NO;
 	}
 	
-	[self.managedObjectContext lock];
 	@try {
 		NSError* err = NULL;
 		NSFetchRequest* request = [[[NSFetchRequest alloc] init] autorelease];
@@ -294,7 +293,6 @@ static NSMutableDictionary *studiesForUserCache = nil;
 		if (error) *error = [NSError errorWithDomain:@"OsiriXDomain" code:-31 userInfo:info];
 		return NO;
 	} @finally {
-		[self.managedObjectContext unlock];
 	}
 
 	return YES;

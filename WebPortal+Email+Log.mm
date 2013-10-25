@@ -261,7 +261,7 @@
         user = [existingUsers objectAtIndex: 0];
     else
     {
-        user = [self.database newUser];
+        user = [self.database.independentDatabase newUser];
         user.email = email;
         user.name = [email substringToIndex:[email rangeOfString:@"@"].location];
         

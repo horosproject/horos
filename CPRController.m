@@ -1313,7 +1313,7 @@ static float deg2rad = M_PI / 180.0;
     //		return [NSDictionary dictionaryWithObjectsAndKeys: string, @"type", rois, @"rois", nil];
     //	}
 	
-	if( [string isEqualToString: @"mprCamera"])
+	if( [string isEqualToString: @"mprCamera"] && mprView1.camera && mprView2.camera && mprView3.camera)
 	{
 		NSMutableArray	*cameras = [NSMutableArray array];
 		
