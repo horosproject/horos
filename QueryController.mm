@@ -2022,34 +2022,34 @@ extern "C"
 	return nil;
 }
 
-- (void)outlineView:(NSOutlineView *) o setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
-{
-	NSArray *array;
-	
-	@try
-	{
-//		if( [[tableColumn identifier] isEqualToString: @"comment"] || [[tableColumn identifier] isEqualToString: @"stateText"])
-//		{
-//			if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
-//				array = [self localStudy: item context: nil];
-//			else
-//				array = [self localSeries: item context: nil];
-//			
-//			if( [array count] > 0)
-//			{
-//				[[BrowserController currentBrowser] setDatabaseValue: object item: [array objectAtIndex: 0] forKey: [tableColumn identifier]];
-//			}
-//			else NSRunCriticalAlertPanel( NSLocalizedString(@"Study not available", nil), NSLocalizedString(@"The study is not available in the local Database, you cannot modify or set the comments/status fields.", nil), NSLocalizedString(@"OK", nil), nil, nil) ;
-//		}
-	}
-	@catch (NSException * e)
-	{
-		N2LogExceptionWithStackTrace(e);
-	}
-	
-	DatabaseIsEdited = NO;
-	[outlineView reloadData];
-}
+//- (void)outlineView:(NSOutlineView *) o setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
+//{
+//	NSArray *array;
+//	
+//	@try
+//	{
+////		if( [[tableColumn identifier] isEqualToString: @"comment"] || [[tableColumn identifier] isEqualToString: @"stateText"])
+////		{
+////			if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
+////				array = [self localStudy: item context: nil];
+////			else
+////				array = [self localSeries: item context: nil];
+////			
+////			if( [array count] > 0)
+////			{
+////				[[BrowserController currentBrowser] setDatabaseValue: object item: [array objectAtIndex: 0] forKey: [tableColumn identifier]];
+////			}
+////			else NSRunCriticalAlertPanel( NSLocalizedString(@"Study not available", nil), NSLocalizedString(@"The study is not available in the local Database, you cannot modify or set the comments/status fields.", nil), NSLocalizedString(@"OK", nil), nil, nil) ;
+////		}
+//	}
+//	@catch (NSException * e)
+//	{
+//		N2LogExceptionWithStackTrace(e);
+//	}
+//	
+//	DatabaseIsEdited = NO;
+//	[outlineView reloadData];
+//}
 
 - (NSArray*) sortArray
 {
