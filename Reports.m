@@ -768,7 +768,7 @@ static id aedesc_to_id(AEDesc *desc)
 	while ((file = [directoryEnumerator nextObject]))
 	{
 		[directoryEnumerator skipDescendents];
-		if( [file.stringByDeletingPathExtension isEqualToString: templateName])
+		if( [file.stringByDeletingPathExtension isEqualToString: templateName.stringByDeletingPathExtension])
             return [templateDirectory stringByAppendingPathComponent: file];
 	}
     
@@ -801,8 +801,7 @@ static id aedesc_to_id(AEDesc *desc)
 - (void)setTemplateName:(NSString *)aName;
 {
 	[templateName setString:aName];
-	[templateName replaceOccurrencesOfString:@".template" withString:@"" options:NSLiteralSearch range:templateName.range];
-	[templateName insertString:@"OsiriX " atIndex:0];
+	[templateName replaceOccurrencesOfString:@".pages" withString:@"" options:NSLiteralSearch range:templateName.range];
 }
 
 @end
