@@ -4754,6 +4754,7 @@
 		CE8D057E0FD8505000165DDE /* OsiriX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE8D057D0FD8505000165DDE /* OsiriX.framework */; };
 		CE8D05CE0FD851F400165DDE /* DCMAbstractSyntaxUID.h in Headers */ = {isa = PBXBuildFile; fileRef = CE79D9860FD84C350043DD73 /* DCMAbstractSyntaxUID.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CE8D062C0FD8733C00165DDE /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB5E1A300595697700C48BEB /* Accelerate.framework */; };
+		CE902EA3181C034E00CC4B88 /* pages2pages09.applescript in Resources */ = {isa = PBXBuildFile; fileRef = CE902EA1181C004C00CC4B88 /* pages2pages09.applescript */; };
 		CE9054F512F5B64300263AB6 /* CPRClusterView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9054CF12F5B64200263AB6 /* CPRClusterView.h */; };
 		CE9054F612F5B64300263AB6 /* CPRClusterView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9054D012F5B64200263AB6 /* CPRClusterView.m */; };
 		CE9054F712F5B64300263AB6 /* CPRController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9054D112F5B64200263AB6 /* CPRController.h */; };
@@ -11654,6 +11655,7 @@
 		CE8CAB0A0B4715DD0068DBAE /* DICOMPrint */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = DICOMPrint; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE8CDAF112B3C88D00268E4F /* DatabaseIcon.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = DatabaseIcon.tif; sourceTree = "<group>"; };
 		CE8D057D0FD8505000165DDE /* OsiriX.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OsiriX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE902EA1181C004C00CC4B88 /* pages2pages09.applescript */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.applescript; name = pages2pages09.applescript; path = Binaries/ReportsToPDF/pages2pages09.applescript; sourceTree = "<group>"; };
 		CE9054CF12F5B64200263AB6 /* CPRClusterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRClusterView.h; sourceTree = "<group>"; };
 		CE9054D012F5B64200263AB6 /* CPRClusterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRClusterView.m; sourceTree = "<group>"; };
 		CE9054D112F5B64200263AB6 /* CPRController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRController.h; sourceTree = "<group>"; };
@@ -15896,6 +15898,7 @@
 				AB7250370ADE6F5D00A212A0 /* Decompress */,
 				596D30AC1439B979004EE9EC /* odt2pdf */,
 				596D30AE1439B98A004EE9EC /* pages2pdf.applescript */,
+				CE902EA1181C004C00CC4B88 /* pages2pages09.applescript */,
 				596D30AF1439B98A004EE9EC /* word2pdf.applescript */,
 				AB9DCD7A09A9C47800AA19E7 /* ReportTemplate.rtf */,
 				CEFB8A9810C19902000DCCB0 /* ReportTemplate.odt */,
@@ -27934,6 +27937,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE902EA3181C034E00CC4B88 /* pages2pages09.applescript in Resources */,
 				596D30B31439B9CD004EE9EC /* word2pdf.applescript in Resources */,
 				596D30B21439B9C8004EE9EC /* pages2pdf.applescript in Resources */,
 				CE289B1D0D00AF91004F0A93 /* Mail.scpt in Resources */,

@@ -683,6 +683,39 @@ static id aedesc_to_id(AEDesc *desc)
 #pragma mark -
 #pragma mark Pages.app
 
+- (void) decompressPagesFileIfNecessary: (NSString*) aPath
+{
+    BOOL isDirectory = NO;
+    if( [[NSFileManager defaultManager] fileExistsAtPath: aPath isDirectory: &isDirectory] && isDirectory == NO)
+    {
+#define UNZIPPEDNAME @"unzipped"
+        
+        // decompress .pages file
+        NSTask *unzip = [[[NSTask alloc] init] autorelease];
+        [unzip setLaunchPath:@"/usr/bin/unzip"];
+        [unzip setCurrentDirectoryPath:aPath.stringByDeletingLastPathComponent];
+        [unzip setArguments:[NSArray arrayWithObjects: @"-qq", @"-o", @"-d", UNZIPPEDNAME, aPath, nil]];
+        [unzip launch];
+        
+        while( [unzip isRunning])
+            [NSThread sleepForTimeInterval: 0.1];
+        
+        //[aTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
+        int status = [unzip terminationStatus];
+        
+        if (status == 0)
+            NSLog(@"Pages Report creation. unzip -d succeeded.");
+        else
+        {
+            NSLog(@"Pages Report creation  failed. Cause: unzip -d failed.");
+            return;
+        }
+        
+        [[NSFileManager defaultManager] removeItemAtPath: aPath error: nil];
+        [[NSFileManager defaultManager] moveItemAtPath: [aPath.stringByDeletingLastPathComponent stringByAppendingPathComponent: UNZIPPEDNAME] toPath: aPath error: nil];
+    }
+}
+
 - (BOOL)createNewPagesReportForStudy:(NSManagedObject*)aStudy toDestinationPath:(NSString*)aPath;
 {	
 	// create the Pages file, using the template (not filling the patient's data yet)
@@ -702,42 +735,32 @@ static id aedesc_to_id(AEDesc *desc)
         return NO;
 	}
     
-    BOOL isDirectory = NO;
-    if( [[NSFileManager defaultManager] fileExistsAtPath: aPath isDirectory: &isDirectory] && isDirectory == NO)
-    {
-        #define UNZIPPEDNAME @"unzipped"
-        
-        // decompress .pages file
-        NSTask *unzip = [[[NSTask alloc] init] autorelease];
-        [unzip setLaunchPath:@"/usr/bin/unzip"];
-        [unzip setCurrentDirectoryPath:aPath.stringByDeletingLastPathComponent];
-        [unzip setArguments:[NSArray arrayWithObjects: @"-qq", @"-o", @"-d", UNZIPPEDNAME, aPath, nil]];
-        [unzip launch];
-
-        while( [unzip isRunning])
-            [NSThread sleepForTimeInterval: 0.1];
-        
-        //[aTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
-        int status = [unzip terminationStatus];
-        
-        if (status == 0)
-            NSLog(@"Pages Report creation. unzip -d succeeded.");
-        else
-        {
-            NSLog(@"Pages Report creation  failed. Cause: unzip -d failed.");
-            return NO;
-        }
-        
-        [[NSFileManager defaultManager] removeItemAtPath: aPath error: nil];
-        [[NSFileManager defaultManager] moveItemAtPath: [aPath.stringByDeletingLastPathComponent stringByAppendingPathComponent: UNZIPPEDNAME] toPath: aPath error: nil];
-    }
+    [self decompressPagesFileIfNecessary: aPath];
     
 	// read the xml file and find & replace templated string with patient's datas
 	NSString *indexFilePath = [aPath stringByAppendingPathComponent:@"index.xml"];
     if( [[NSFileManager defaultManager] fileExistsAtPath:indexFilePath] == NO)
     {
-        NSRunCriticalAlertPanel( NSLocalizedString( @"Pages", nil),  NSLocalizedString(@"OsiriX requires templates files in Pages '09 format. Open you template in Pages, select File menu and Export to Pages '09 format.", nil), NSLocalizedString(@"OK", nil), nil, nil);
-        return NO;
+        NSString* path = [[NSBundle mainBundle] pathForResource:@"pages2pages09" ofType:@"applescript"];
+        [[self class] _runAppleScript: [NSString stringWithContentsOfFile: path encoding:NSUTF8StringEncoding error:nil] withArguments:[NSArray arrayWithObjects: templatePath, [templatePath stringByAppendingString: @"09.pages"], nil]];
+        
+        NSLog( @"-- Try to convert to Pages 09: %@", templateName);
+        
+        if( [[NSFileManager defaultManager] fileExistsAtPath: [templatePath stringByAppendingString: @"09.pages"]])
+        {
+            [[NSFileManager defaultManager] removeItemAtPath: templatePath error: nil];
+            [[NSFileManager defaultManager] moveItemAtPath: [templatePath stringByAppendingString: @"09.pages"] toPath:templatePath error: nil];
+            [[NSFileManager defaultManager] removeItemAtPath: aPath error: nil];
+            [[NSFileManager defaultManager] copyItemAtPath: templatePath toPath:aPath byReplacingExisting:YES error: nil];
+            
+            [self decompressPagesFileIfNecessary: aPath];
+        }
+        
+        if( [[NSFileManager defaultManager] fileExistsAtPath:indexFilePath] == NO)
+        {
+            NSRunCriticalAlertPanel( NSLocalizedString( @"Pages", nil),  NSLocalizedString(@"OsiriX requires templates files in Pages '09 format. Open you template in Pages, select File menu and Export to Pages '09 format.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+            return NO;
+        }
     }
     
 	NSError *xmlError = nil;
