@@ -328,6 +328,9 @@ static id aedesc_to_id(AEDesc *desc)
 	
 	NSDateFormatter		*date = [[[NSDateFormatter alloc] init] autorelease];
 	[date setDateStyle: NSDateFormatterShortStyle];
+    
+    NSDateFormatter		*longDate = [[[NSDateFormatter alloc] init] autorelease];
+	[longDate setDateStyle: NSDateFormatterLongStyle];
 	
 	for( NSString *propertyName in properties)
 	{
@@ -350,6 +353,9 @@ static id aedesc_to_id(AEDesc *desc)
 	// "today"
 	[aString replaceOccurrencesOfString:@"&#xAB;today&#xBB;" withString:[date stringFromDate: [NSDate date]] options:NSLiteralSearch range:aString.range];
 	[aString replaceOccurrencesOfString:@"«today»" withString:[date stringFromDate: [NSDate date]] options:NSLiteralSearch range:aString.range];
+    
+    [aString replaceOccurrencesOfString:@"&#xAB;longtoday&#xBB;" withString:[longDate stringFromDate: [NSDate date]] options:NSLiteralSearch range:aString.range];
+	[aString replaceOccurrencesOfString:@"«longtoday»" withString:[longDate stringFromDate: [NSDate date]] options:NSLiteralSearch range:aString.range];
 	
 	NSArray	*seriesArray = [[BrowserController currentBrowser] childrenArray: aStudy];
 	NSArray	*imagePathsArray = [[BrowserController currentBrowser] imagesPathArray: [seriesArray objectAtIndex: 0]];
@@ -454,6 +460,10 @@ static id aedesc_to_id(AEDesc *desc)
 
 +(NSString*)databaseWordTemplatesDirPath {
     return [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"WORD TEMPLATES"];
+}
+
++(NSString*)databasePagesTemplatesDirPath {
+    return [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"PAGES TEMPLATES"];
 }
 
 +(NSString*)resolvedDatabaseWordTemplatesDirPath {
@@ -679,51 +689,57 @@ static id aedesc_to_id(AEDesc *desc)
 	
 	[[NSFileManager defaultManager] removeItemAtPath:aPath error:NULL];
     
-	// Applescript doesnt support UTF-8 encoding... but it should be ok if the accents are in the passed arguments
-    NSString* source = 
-    @"on run argv\n"
-    @"  set templateName to (item 1 of argv)\n"
-	@"  set tempPathUnix to (item 2 of argv)\n"
-    @"  set tempPath to POSIX file tempPathUnix\n"
-    @"  tell application \"Pages\"\n"
-    @"    set myDocument to make new document with properties {template name: templateName}\n"
-    @"    close myDocument saving in tempPath\n"
-	@"  end tell\n"
-    @"end run\n";
-    @try {
-        [[self class] _runAppleScript:source withArguments:[NSArray arrayWithObjects: templateName, aPath, nil]];
-    } @catch (NSException* e) {
-        NSLog(@"Exception: %@", e.reason);
+    NSString* templatePath = [[self class] pathForPagesTemplate: templateName];
+    if( templatePath)
+        [[NSFileManager defaultManager] copyItemAtPath: templatePath toPath:aPath byReplacingExisting:YES error: nil];
+    else {
+		NSRunCriticalAlertPanel( NSLocalizedString( @"Pages", nil),  NSLocalizedString(@"Failed to create the report with Pages.", nil), NSLocalizedString(@"OK", nil), nil, nil);
         return NO;
-    }
-	
+	}
+    
 	if ([[NSFileManager defaultManager] fileExistsAtPath:aPath] == NO) {
 		NSRunCriticalAlertPanel( NSLocalizedString( @"Pages", nil),  NSLocalizedString(@"Failed to create the report with Pages.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+        return NO;
 	}
-	
-	// decompress the gzipped index.xml.gz file in the .pages bundle
-	NSTask *gzip = [[[NSTask alloc] init] autorelease];
-	[gzip setLaunchPath:@"/usr/bin/gzip"];
-	[gzip setCurrentDirectoryPath:aPath];
-	[gzip setArguments:[NSArray arrayWithObjects:@"-d", @"index.xml.gz", nil]];
-	[gzip launch];
-
-	while( [gzip isRunning])
-        [NSThread sleepForTimeInterval: 0.1];
     
-    //[aTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
-	int status = [gzip terminationStatus];
- 
-	if (status == 0)
-		NSLog(@"Pages Report creation. Gzip -d succeeded.");
-	else
-	{
-		NSLog(@"Pages Report creation  failed. Cause: Gzip -d failed.");
-		return NO;
-	}
+    BOOL isDirectory = NO;
+    if( [[NSFileManager defaultManager] fileExistsAtPath: aPath isDirectory: &isDirectory] && isDirectory == NO)
+    {
+        #define UNZIPPEDNAME @"unzipped"
+        
+        // decompress .pages file
+        NSTask *unzip = [[[NSTask alloc] init] autorelease];
+        [unzip setLaunchPath:@"/usr/bin/unzip"];
+        [unzip setCurrentDirectoryPath:aPath.stringByDeletingLastPathComponent];
+        [unzip setArguments:[NSArray arrayWithObjects: @"-qq", @"-o", @"-d", UNZIPPEDNAME, aPath, nil]];
+        [unzip launch];
+
+        while( [unzip isRunning])
+            [NSThread sleepForTimeInterval: 0.1];
+        
+        //[aTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
+        int status = [unzip terminationStatus];
+        
+        if (status == 0)
+            NSLog(@"Pages Report creation. unzip -d succeeded.");
+        else
+        {
+            NSLog(@"Pages Report creation  failed. Cause: unzip -d failed.");
+            return NO;
+        }
+        
+        [[NSFileManager defaultManager] removeItemAtPath: aPath error: nil];
+        [[NSFileManager defaultManager] moveItemAtPath: [aPath.stringByDeletingLastPathComponent stringByAppendingPathComponent: UNZIPPEDNAME] toPath: aPath error: nil];
+    }
     
 	// read the xml file and find & replace templated string with patient's datas
-	NSString *indexFilePath = [NSString stringWithFormat:@"%@/index.xml", aPath];
+	NSString *indexFilePath = [aPath stringByAppendingPathComponent:@"index.xml"];
+    if( [[NSFileManager defaultManager] fileExistsAtPath:indexFilePath] == NO)
+    {
+        NSRunCriticalAlertPanel( NSLocalizedString( @"Pages", nil),  NSLocalizedString(@"OsiriX requires templates files in Pages '09 format. Open you template in Pages, select File menu and Export to Pages '09 format.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+        return NO;
+    }
+    
 	NSError *xmlError = nil;
 	NSStringEncoding xmlFileEncoding = NSUTF8StringEncoding;
 	NSMutableString *xmlContentString = [NSMutableString stringWithContentsOfFile:indexFilePath encoding:xmlFileEncoding error:&xmlError];
@@ -732,30 +748,6 @@ static id aedesc_to_id(AEDesc *desc)
 	
 	if(![xmlContentString writeToFile:indexFilePath atomically:YES encoding:xmlFileEncoding error:&xmlError])
 		return NO;
-
-//  Pages support ungzipped index file
-//	// gzip back the index.xml file
-//	gzip = [[NSTask alloc] init];
-//	[gzip setLaunchPath:@"/usr/bin/gzip"];
-//	[gzip setCurrentDirectoryPath:aPath];
-//	[gzip setArguments:[NSArray arrayWithObjects:@"index.xml", nil]];
-//	[gzip launch];
-//
-//	while( [gzip isRunning])
-//        [NSThread sleepForTimeInterval: 0.1];
-//    
-//    //[aTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
-//	status = [gzip terminationStatus];
-// 
-//	if (status == 0)
-//		NSLog(@"Pages Report creation. Gzip succeeded.");
-//	else
-//	{
-//		NSLog(@"Pages Report creation  failed. Cause: Gzip failed.");
-//		// we don't need to return NO, because the xml has been modified. Thus, even if the file is not compressed, the report is valid...
-//	}
-//	// we don't need to gzip anything anymore 
-//	[gzip release];
 	
 	[aStudy setValue: aPath forKey:@"reportURL"];
 	
@@ -767,24 +759,35 @@ static id aedesc_to_id(AEDesc *desc)
 	return YES;
 }
 
-+ (NSMutableArray*)pagesTemplatesList;
++ (NSString*) pathForPagesTemplate: (NSString*) templateName
 {
-	// iWork templates directory
-	NSArray *templateDirectoryPathArray = [NSArray arrayWithObjects:NSHomeDirectory(), @"Library", @"Application Support", @"iWork", @"Pages", @"Templates", @"OsiriX", nil];
-	NSString *templateDirectory = [NSString pathWithComponents:templateDirectoryPathArray];
+	NSString *templateDirectory = [self databasePagesTemplatesDirPath];
 	NSDirectoryEnumerator *directoryEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:templateDirectory];
 	
-	NSMutableArray *templatesArray = [NSMutableArray arrayWithCapacity:1];
-	id file;
+	NSString *file;
 	while ((file = [directoryEnumerator nextObject]))
 	{
 		[directoryEnumerator skipDescendents];
-		NSRange rangeOfOsiriX = [file rangeOfString:@"OsiriX "];
-		if(rangeOfOsiriX.location==0 && rangeOfOsiriX.length==7)
-		{
-			// this is a template for us (we should maybe verify that it is a valid Pages template... but what ever...)
-			[templatesArray addObject:[file substringFromIndex:7]];
-		}
+		if( [file.stringByDeletingPathExtension isEqualToString: templateName])
+            return [templateDirectory stringByAppendingPathComponent: file];
+	}
+    
+    return nil;
+}
+
++ (NSMutableArray*)pagesTemplatesList;
+{
+	// iWork templates directory
+	NSString *templateDirectory = [self databasePagesTemplatesDirPath];
+	NSDirectoryEnumerator *directoryEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:templateDirectory];
+	
+	NSMutableArray *templatesArray = [NSMutableArray arrayWithCapacity:1];
+	NSString *file;
+	while ((file = [directoryEnumerator nextObject]))
+	{
+		[directoryEnumerator skipDescendents];
+		if( [file.pathExtension isEqualToString: @"pages"])
+			[templatesArray addObject: file];
 	}
 	
 	return templatesArray;

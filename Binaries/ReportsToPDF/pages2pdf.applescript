@@ -27,7 +27,7 @@ on run argv
 		
 		open inFilePath
 		
-		save front document as "SLDocumentTypePDF" in outFilePath
+		export front document to outFilePath as PDF
 		
 		if not fileWasOpen then
 			close document 1

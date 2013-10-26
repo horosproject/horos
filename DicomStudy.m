@@ -473,9 +473,9 @@ static NSRecursiveLock *dbModifyLock = nil;
 								
 								if( [image valueForKey:@"isKeyImage"])
                                 {
-                                    [i willChangeValueForKey: @"isKeyImage"];
-									[i setPrimitiveValue: [image valueForKey:@"isKeyImage"] forKey: @"isKeyImage"];
-                                    [i didChangeValueForKey: @"isKeyImage"];
+                                    [i willChangeValueForKey: @"storedIsKeyImage"];
+									[i setPrimitiveValue: [image valueForKey:@"isKeyImage"] forKey: @"storedIsKeyImage"];
+                                    [i didChangeValueForKey: @"storedIsKeyImage"];
                                 }
 							}
 //							else NSLog( @"----- applyAnnotationsFromDictionary : image not found : %@", [image valueForKey: @"sopInstanceUID"]);
