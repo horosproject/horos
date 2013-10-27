@@ -29,74 +29,92 @@
 
 -(void)copyImagesToLocalBrowserSourceThread:(NSArray*)io
 {
-	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-	NSThread* thread = [NSThread currentThread];
-	
-	DicomDatabase *srcDatabase = [io objectAtIndex:2];
-    NSArray* dicomImages = [srcDatabase.independentDatabase objectsWithIDs: [io objectAtIndex: 0]];
-    
-	NSMutableArray* imagePaths = [NSMutableArray array];
-	for (DicomImage* image in dicomImages)
-		if (![imagePaths containsObject:image.completePath])
-			[imagePaths addObject:image.completePath];
-	
-	thread.status = NSLocalizedString(@"Opening database...", nil);
-	DicomDatabase* dstDatabase = [[io objectAtIndex:3] independentDatabase];
-	
-    thread.status = [NSString stringWithFormat:NSLocalizedString(@"Copying %@ %@...", nil), N2LocalizedDecimal( imagePaths.count), (imagePaths.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil)) ];
-	NSMutableArray* dstPaths = [NSMutableArray array];
-    
-    NSTimeInterval fiveSeconds = [NSDate timeIntervalSinceReferenceDate] + 5;
-    
-    for (NSInteger i = 0; i < imagePaths.count; ++i)
+    @autoreleasepool
     {
-		thread.progress = 1.0*i/imagePaths.count;
-        
-        if (thread.isCancelled)
-            break;
-        
-		NSString* srcPath = [imagePaths objectAtIndex:i];
-		NSString* dstPath = [dstDatabase uniquePathForNewDataFileWithExtension: @"dcm"];
-		
-        if( dstPath.length)
+        if( io.count < 4)
         {
-            #define USECORESERVICESFORCOPY 1
+            NSLog( @"******* copyImagesToLocalBrowserSourceThread : io.count < 4");
+            return;
+        }
+        
+        @try
+        {
+            NSThread* thread = [NSThread currentThread];
             
-            #ifdef USECORESERVICESFORCOPY
-            char *targetPath = nil;
-            OptionBits options = kFSFileOperationSkipSourcePermissionErrors + kFSFileOperationSkipPreflight;
-            OSStatus err = FSPathCopyObjectSync( [srcPath UTF8String], [[dstPath stringByDeletingLastPathComponent] UTF8String], (CFStringRef) [dstPath lastPathComponent], &targetPath, options);
+            DicomDatabase *srcDatabase = [io objectAtIndex:2];
+            NSArray* dicomImages = [srcDatabase.independentDatabase objectsWithIDs: [io objectAtIndex: 0]];
             
-            if( err == 0)
-            #else
-            NSError* err = nil;
-            if([[NSFileManager defaultManager] copyItemAtPath:srcPath toPath:dstPath error:nil])
-            #endif
+            NSMutableArray* imagePaths = [NSMutableArray array];
+            for (DicomImage* image in dicomImages)
+                if (![imagePaths containsObject:image.completePath])
+                    [imagePaths addObject:image.completePath];
+            
+            thread.status = NSLocalizedString(@"Opening database...", nil);
+            DicomDatabase* dstDatabase = [[io objectAtIndex:3] independentDatabase];
+            
+            thread.status = [NSString stringWithFormat:NSLocalizedString(@"Copying %@ %@...", nil), N2LocalizedDecimal( imagePaths.count), (imagePaths.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil)) ];
+            NSMutableArray* dstPaths = [NSMutableArray array];
+            
+            NSTimeInterval fiveSeconds = [NSDate timeIntervalSinceReferenceDate] + 5;
+            NSTimeInterval oneSecond = [NSDate timeIntervalSinceReferenceDate] + 1;
+            
+            for (NSInteger i = 0; i < imagePaths.count; ++i)
             {
-                if( [DicomFile isDICOMFile: dstPath] == NO)
-                    [[NSFileManager defaultManager] moveItemAtPath: dstPath toPath: [[dstPath stringByDeletingPathExtension] stringByAppendingPathExtension: [srcPath pathExtension]] error: nil];
+                thread.progress = 1.0*i/imagePaths.count;
                 
-                [dstPaths addObject:dstPath];
+                if (thread.isCancelled)
+                    break;
+                
+                NSString* srcPath = [imagePaths objectAtIndex:i];
+                NSString* dstPath = [dstDatabase uniquePathForNewDataFileWithExtension: @"dcm"];
+                
+                if( dstPath.length)
+                {
+                    #define USECORESERVICESFORCOPY 1
+                    
+                    #ifdef USECORESERVICESFORCOPY
+                    char *targetPath = nil;
+                    OptionBits options = kFSFileOperationSkipSourcePermissionErrors + kFSFileOperationSkipPreflight;
+                    OSStatus err = FSPathCopyObjectSync( [srcPath UTF8String], [[dstPath stringByDeletingLastPathComponent] UTF8String], (CFStringRef) [dstPath lastPathComponent], &targetPath, options);
+                    
+                    if( err == 0)
+                    #else
+                    NSError* err = nil;
+                    if([[NSFileManager defaultManager] copyItemAtPath:srcPath toPath:dstPath error:nil])
+                    #endif
+                    {
+                        if( [DicomFile isDICOMFile: dstPath] == NO)
+                            [[NSFileManager defaultManager] moveItemAtPath: dstPath toPath: [[dstPath stringByDeletingPathExtension] stringByAppendingPathExtension: [srcPath pathExtension]] error: nil];
+                        
+                        [dstPaths addObject:dstPath];
+                    }
+                }
+                
+                if( fiveSeconds < [NSDate timeIntervalSinceReferenceDate])
+                {
+                    thread.status = [NSString stringWithFormat:NSLocalizedString(@"Indexing %@ %@...", nil), N2LocalizedDecimal( dstPaths.count), (dstPaths.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil))];
+                    [dstDatabase addFilesAtPaths:dstPaths];
+                    [dstPaths removeAllObjects];
+                    
+                    fiveSeconds = [NSDate timeIntervalSinceReferenceDate] + 5;
+                }
+                
+                if( oneSecond < [NSDate timeIntervalSinceReferenceDate])
+                {
+                    thread.status = [NSString stringWithFormat:NSLocalizedString(@"Copying %@ %@...", nil), N2LocalizedDecimal( (long)imagePaths.count-i), ((long)imagePaths.count-i == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil))];
+                    
+                    oneSecond = [NSDate timeIntervalSinceReferenceDate] + 5;
+                }
             }
-        }
-        
-        if( fiveSeconds < [NSDate timeIntervalSinceReferenceDate])
-        {
-            thread.status = [NSString stringWithFormat:NSLocalizedString(@"Indexing %@ %@...", nil), N2LocalizedDecimal( dstPaths.count), (dstPaths.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil))];
-            [dstDatabase addFilesAtPaths:dstPaths];
-            [dstPaths removeAllObjects];
             
-            fiveSeconds = [NSDate timeIntervalSinceReferenceDate] + 5;
+            thread.status = [NSString stringWithFormat:NSLocalizedString(@"Indexing %@ %@...", nil), N2LocalizedDecimal( dstPaths.count), (dstPaths.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil))];
+            thread.progress = -1;
+            [dstDatabase addFilesAtPaths:dstPaths];
         }
-        
-        thread.status = [NSString stringWithFormat:NSLocalizedString(@"Copying %@ %@...", nil), N2LocalizedDecimal( (long)imagePaths.count-i), ((long)imagePaths.count-i == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil)) ];
+        @catch (NSException *exception) {
+            N2LogException( exception);
+        }
 	}
-	
-    thread.status = [NSString stringWithFormat:NSLocalizedString(@"Indexing %@ %@...", nil), N2LocalizedDecimal( dstPaths.count), (dstPaths.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil))];
-	thread.progress = -1;
-	[dstDatabase addFilesAtPaths:dstPaths];
-	
-	[pool release];
 }
 
 -(void)copyImagesToRemoteBrowserSourceThread:(NSArray*)io
