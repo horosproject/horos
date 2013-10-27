@@ -24,6 +24,7 @@ extern BOOL USETOOLBARPANEL;
 
 static 	NSMutableDictionary *associatedScreen = nil;
 static int increment = 0;
+static int MacOSVersion109orHigher = -1;
 
 @implementation ToolbarPanelController
 
@@ -33,7 +34,19 @@ static int increment = 0;
 	//return 90;
     NSRect windowFrame = [NSWindow contentRectForFrameRect:[self.window frame] styleMask:[self.window styleMask]];
     NSRect contentFrame = [[self.window contentView] frame];
-    return NSHeight(windowFrame) - NSHeight(contentFrame) + 13;
+    
+    if( MacOSVersion109orHigher == -1)
+    {
+        if( [AppController hasMacOSXMaverick])
+            MacOSVersion109orHigher = 1;
+        else
+            MacOSVersion109orHigher = 0;
+    }
+    
+    if( MacOSVersion109orHigher)
+        return NSHeight(windowFrame) - NSHeight(contentFrame) + 16;
+    else
+        return NSHeight(windowFrame) - NSHeight(contentFrame) + 13;
 }
 
 - (long) hiddenHeight {

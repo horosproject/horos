@@ -938,7 +938,13 @@ return YES;
 	if( c == NO) [[NSUserDefaults standardUserDefaults] setBool: c forKey:@"automaticWorkspaceLoad"];
 }
 
+
 - (IBAction) saveWindowsState:(id) sender
+{
+    [ViewerController saveWindowsState];
+}
+
++ (void) saveWindowsState
 {
 	NSArray				*displayedViewers = [ViewerController getDisplayed2DViewers];
 	NSMutableArray		*state = [NSMutableArray array];
@@ -950,39 +956,39 @@ return YES;
         for( ViewerController *win in displayedViewers)
         {
             DCMView *view = [win imageView];
-            if ([[view curDCM] generated])
-                continue;
+//            if ([[view curDCM] generated])
+//                continue;
             
             NSMutableDictionary	*dict = [NSMutableDictionary dictionary];
             
             if( [win studyInstanceUID] && [[view seriesObj] valueForKey:@"seriesInstanceUID"])
-            {		
+            {
                 NSRect	r = [[win window] frame];
                 [dict setObject: [NSString stringWithFormat: @"%f %f %f %f", r.origin.x, r.origin.y, r.size.width, r.size.height]  forKey:@"window position"];
-                [dict setObject: [NSNumber numberWithInt: [view rows]] forKey:@"rows"];
-                [dict setObject: [NSNumber numberWithInt: [view columns]] forKey:@"columns"];
+                [dict setObject: @([view rows]) forKey:@"rows"];
+                [dict setObject: @([view columns]) forKey:@"columns"];
                 
                 if( [view flippedData]) indexImage = [win getNumberOfImages] -1 -[[[win seriesView] firstView] curImage];
                 else indexImage = [[[win seriesView] firstView] curImage];
                 
-                [dict setObject: [NSNumber numberWithInt: indexImage] forKey:@"index"];
+                [dict setObject: @(indexImage) forKey:@"index"];
                 
                 if( [[view curDCM] SUVConverted] == NO)
                 {
-                    [dict setObject: [NSNumber numberWithFloat: [view curWL]] forKey:@"wl"];
-                    [dict setObject: [NSNumber numberWithFloat: [view curWW]] forKey:@"ww"];
+                    [dict setObject: @([view curWL]) forKey:@"wl"];
+                    [dict setObject: @([view curWW]) forKey:@"ww"];
                 }
                 else
                 {
-                    [dict setObject: [NSNumber numberWithFloat: [view curWL] / [win factorPET2SUV]] forKey:@"wl"];
-                    [dict setObject: [NSNumber numberWithFloat: [view curWW] / [win factorPET2SUV]] forKey:@"ww"];
+                    [dict setObject: @([view curWL] / [win factorPET2SUV]) forKey:@"wl"];
+                    [dict setObject: @([view curWW] / [win factorPET2SUV]) forKey:@"ww"];
                 }
-                [dict setObject: [NSNumber numberWithFloat: [view scaleValue]] forKey:@"scale"];
-                [dict setObject: [NSNumber numberWithFloat: [view origin].x] forKey:@"x"];
-                [dict setObject: [NSNumber numberWithFloat: [view origin].y] forKey:@"y"];
-                [dict setObject: [NSNumber numberWithFloat: [view rotation]] forKey:@"rotation"];
-                [dict setObject: [NSNumber numberWithBool: [view xFlipped]] forKey:@"xFlipped"];
-                [dict setObject: [NSNumber numberWithBool: [view xFlipped]] forKey:@"yFlipped"];
+                [dict setObject: @([view scaleValue]) forKey:@"scale"];
+                [dict setObject: @([view origin].x) forKey:@"x"];
+                [dict setObject: @([view origin].y) forKey:@"y"];
+                [dict setObject: @([view rotation]) forKey:@"rotation"];
+                [dict setObject: @([view xFlipped]) forKey:@"xFlipped"];
+                [dict setObject: @([view xFlipped]) forKey:@"yFlipped"];
                 
                 [dict setObject: [win studyInstanceUID] forKey:@"studyInstanceUID"];
                 
@@ -1008,9 +1014,9 @@ return YES;
                     [dict setObject: [seriesUIDs lastObject] forKey:@"seriesInstanceUID"];
                 
                 if( [win maxMovieIndex] > 1)
-                    [dict setObject: [NSNumber numberWithBool: YES] forKey:@"4DData"];
+                    [dict setObject: @YES forKey:@"4DData"];
                 else
-                    [dict setObject: [NSNumber numberWithBool: NO] forKey:@"4DData"];
+                    [dict setObject: @NO forKey:@"4DData"];
                 
                 if( [[NSUserDefaults standardUserDefaults] objectForKey:@"LastWindowsTilingRowsColumns"])
                     [dict setObject: [[NSUserDefaults standardUserDefaults] objectForKey:@"LastWindowsTilingRowsColumns"] forKey:@"LastWindowsTilingRowsColumns"];
@@ -1018,9 +1024,16 @@ return YES;
                 [dict setObject: [[NSUserDefaults standardUserDefaults] objectForKey:@"COPYSETTINGS"] forKey:@"propagateSettings"];
                 
                 if( [DCMView syncro] == syncroLOC)
-                    [dict setObject: [NSNumber numberWithBool: YES] forKey:@"syncSettings"];
+                    [dict setObject: @YES forKey:@"syncSettings"];
                 else if( [DCMView syncro] == syncroOFF)
-                    [dict setObject: [NSNumber numberWithBool: NO] forKey:@"syncSettings"];
+                    [dict setObject: @NO forKey:@"syncSettings"];
+                
+                if( SyncButtonBehaviorIsBetweenStudies)
+                {
+                    [dict setObject: @YES forKey:@"SyncButtonBehaviorIsBetweenStudies"];
+                    [dict setObject: @(SYNCSERIES) forKey: @"SYNCSERIES"];
+                    [dict setObject: @(view.syncRelativeDiff) forKey:@"syncRelativeDiff"];
+                }
                     
                 [state addObject: dict];
             }
@@ -3471,7 +3484,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	if( [v count])
 	{
-		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"automaticWorkspaceSave"]) [[v lastObject] saveWindowsState: self];
+		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"automaticWorkspaceSave"])
+        {
+            [ViewerController saveWindowsState];
+        }
 		
 		for (ViewerController* viewer in v)
 		{
@@ -15909,6 +15925,9 @@ int i,j,l;
 		SYNCSERIES = NO;
 		[[AppController sharedAppController] didChangeValueForKey:@"SYNCSERIES"];
 		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixSyncSeriesNotification object:nil userInfo: nil];
+        
+        for( ViewerController *v in viewersList)
+            v.imageView.syncSeriesIndex = -1;
 	}
 }
 

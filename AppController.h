@@ -141,6 +141,7 @@ extern AppController* OsiriX;
 + (BOOL) hasMacOSXLion;
 + (BOOL) hasMacOSXSnowLeopard;
 + (BOOL) hasMacOSXLeopard;
++ (BOOL) hasMacOSXMaverick;
 
 +(NSString*)UID;
 

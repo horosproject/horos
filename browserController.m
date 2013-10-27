@@ -7206,180 +7206,204 @@ static NSConditionLock *threadLock = nil;
 		{
 			NSArray *viewers = [NSPropertyListSerialization propertyListFromData: [currentStudy valueForKey:@"windowsState"] mutabilityOption: NSPropertyListImmutable format: nil errorDescription: nil];
 			
-			NSMutableArray *seriesToOpen =  [NSMutableArray array];
-			NSMutableArray *viewersToLoad = [NSMutableArray array];
-			
-			[ViewerController closeAllWindows];
-			
-            NSNumber *propagateSettings = nil;
-            NSNumber *syncSettings = nil;
+            // Check if this windowsState contains at least this study...
             
-			for( NSDictionary *dict in viewers)
+            BOOL studyUIDFound = NO;
+            for( NSDictionary *dict in viewers)
 			{
-				NSString *studyUID = [dict valueForKey:@"studyInstanceUID"];
-				NSString *seriesUID = [dict valueForKey:@"seriesInstanceUID"];
-                
-                if( [dict valueForKey: @"propagateSettings"])
-                    propagateSettings = [dict valueForKey: @"propagateSettings"];
-                
-                if( [dict valueForKey: @"syncSettings"])
-                    syncSettings = [dict valueForKey: @"syncSettings"];
-				
-				NSArray	 *series4D = [seriesUID componentsSeparatedByString:@"\\**\\"];
-				// Find the corresponding study & 4D series
-				
-				@try
-				{
-					NSError					*error = nil;
-					NSManagedObjectContext	*context = self.database.managedObjectContext;
-					
-					[context lock];
-					
-					NSMutableArray *seriesForThisViewer =  nil;
-					
-					@try 
-					{
-						for( NSString *curSeriesUID in series4D)
-						{
-							NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-							[request setEntity: [[self.database.managedObjectModel entitiesByName] objectForKey:@"Series"]];
-							[request setPredicate: [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", studyUID, curSeriesUID]];
-							
-							NSArray	*seriesArray = [context executeFetchRequest:request error:&error];
-							
-							if( [seriesArray count] != 1)
-							{
-								NSLog( @"****** number of series corresponding to these UID (%@) is not unique?: %d", curSeriesUID, (int) [seriesArray count]);
-							}
-							else
-							{
-								if( [[[seriesArray objectAtIndex: 0] valueForKeyPath:@"study.patientUID"] compare: [currentStudy valueForKey: @"patientUID"] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
-								{
-									if( seriesForThisViewer == nil)
-									{
-										seriesForThisViewer = [NSMutableArray array];
-										
-										[seriesToOpen addObject: seriesForThisViewer];
-										[viewersToLoad addObject: dict];
-									}
-									
-									[seriesForThisViewer addObject: [seriesArray objectAtIndex: 0]];
-								}
-								else
-									NSLog(@"%@ versus %@", [[seriesArray objectAtIndex: 0] valueForKeyPath:@"study.patientUID"], [currentStudy valueForKey: @"patientUID"]);
-							}
-						}
-					}
-					@catch (NSException * e) 
-					{
-                        N2LogExceptionWithStackTrace(e);
-					}
-					
-					[context unlock];
-				}
-				@catch (NSException *e)
-				{
-                    N2LogExceptionWithStackTrace(e);
-				}
-			}
+                if( [currentStudy.studyInstanceUID isEqualToString: [dict valueForKey:@"studyInstanceUID"]])
+                    studyUIDFound = YES;
+            }
             
-			if( [seriesToOpen count] > 0 && [viewersToLoad count] == [seriesToOpen count])
-			{
-                if( propagateSettings)
+            if( studyUIDFound)
+            {
+                NSMutableArray *seriesToOpen =  [NSMutableArray array];
+                NSMutableArray *viewersToLoad = [NSMutableArray array];
+                
+                [ViewerController closeAllWindows];
+                
+                NSNumber *propagateSettings = nil;
+                NSNumber *syncSettings = nil;
+                NSNumber *SYNCSERIES = nil;
+                
+                for( NSDictionary *dict in viewers)
                 {
-                    if( [propagateSettings boolValue])
-                        [DCMView setSyncro: syncroLOC];
-                    else
-                        [DCMView setSyncro: syncroOFF];
-                }
-                
-                if( syncSettings)
-                    [[NSUserDefaults standardUserDefaults] setBool: [syncSettings boolValue] forKey:@"COPYSETTINGS"];
-                
-				if( waitOpeningWindow == nil) waitOpeningWindow  = [[WaitRendering alloc] init: NSLocalizedString(@"Opening...", nil)];
-				[waitOpeningWindow showWindow:self];
-				
-				[AppController sharedAppController].checkAllWindowsAreVisibleIsOff = YES;
-				
-				for( int i = 0 ; i < [seriesToOpen count]; i++)
-				{
-					NSMutableArray * toOpenArray = [NSMutableArray array];
-					
-					NSDictionary *dict = [viewersToLoad objectAtIndex: i];
-					
-					for( NSManagedObject* curFile in [seriesToOpen objectAtIndex: i])
-					{
-						NSArray *loadList = [self childrenArray: curFile];
-						if( loadList) [toOpenArray addObject: loadList];
-					}
-					
-					if( [[dict valueForKey: @"4DData"] boolValue])
-						[self processOpenViewerDICOMFromArray: toOpenArray movie: YES viewer: nil];
-					else
-						[self processOpenViewerDICOMFromArray: toOpenArray movie: NO viewer: nil];
-				}
-				
-				NSArray	*displayedViewers = [ViewerController getDisplayed2DViewers];
-				
-				for( int i = 0 ; i < [viewersToLoad count]; i++)
-				{
-					NSDictionary		*dict = [viewersToLoad objectAtIndex: i];
-					
-					if( i < [displayedViewers count])
-					{
-						ViewerController	*v = [displayedViewers objectAtIndex: i];
-						
-						NSRect r;
-						NSScanner* s = [NSScanner scannerWithString: [dict valueForKey:@"window position"]];
-						
-						float a;
-						[s scanFloat: &a];	r.origin.x = a;		[s scanFloat: &a];	r.origin.y = a;
-						[s scanFloat: &a];	r.size.width = a;	[s scanFloat: &a];	r.size.height = a;
-						
-						int index = [[dict valueForKey:@"index"] intValue];
-						int rows = [[dict valueForKey:@"rows"] intValue];
-						int columns = [[dict valueForKey:@"columns"] intValue];
-						float wl = [[dict valueForKey:@"wl"] floatValue];
-						float ww = [[dict valueForKey:@"ww"] floatValue];
-						float x = [[dict valueForKey:@"x"] floatValue];
-						float y = [[dict valueForKey:@"y"] floatValue];
-						float rotation = [[dict valueForKey:@"rotation"] floatValue];
-						float scale = [[dict valueForKey:@"scale"] floatValue];
-						
-						[v setWindowFrame: r showWindow: NO];
-						[v setImageRows: rows columns: columns];
-						
-						[v setImageIndex: index];
-						
-						if( [[[v imageView] curDCM] SUVConverted]) [v setWL: wl*[v factorPET2SUV] WW: ww*[v factorPET2SUV]];
-						else [v setWL: wl WW: ww];
-						
-						[v setScaleValue: scale];
-						[v setRotation: rotation];
-						[v setOrigin: NSMakePoint( x, y)];
+                    NSString *studyUID = [dict valueForKey:@"studyInstanceUID"];
+                    NSString *seriesUID = [dict valueForKey:@"seriesInstanceUID"];
+                    
+                    if( [dict valueForKey: @"propagateSettings"])
+                        propagateSettings = [dict valueForKey: @"propagateSettings"];
+                    
+                    if( [dict valueForKey: @"syncSettings"])
+                        syncSettings = [dict valueForKey: @"syncSettings"];
+                    
+                    if( [dict valueForKey: @"SYNCSERIES"])
+                        SYNCSERIES = [dict valueForKey: @"SYNCSERIES"];
+                    
+                    NSArray	 *series4D = [seriesUID componentsSeparatedByString:@"\\**\\"];
+                    // Find the corresponding study & 4D series
+                    
+                    @try
+                    {
+                        NSError					*error = nil;
+                        NSManagedObjectContext	*context = self.database.managedObjectContext;
                         
-                        if( [dict valueForKey: @"LastWindowsTilingRowsColumns"])
-                            [[NSUserDefaults standardUserDefaults] setObject: [dict valueForKey: @"LastWindowsTilingRowsColumns"] forKey: @"LastWindowsTilingRowsColumns"];
-					}
-				}
-				
-				[AppController sharedAppController].checkAllWindowsAreVisibleIsOff = NO;
-				[[AppController sharedAppController] checkAllWindowsAreVisible: self];
-				
-				if( [displayedViewers count] > 0)
-					[[[displayedViewers objectAtIndex: 0] window] makeKeyAndOrderFront: self];
-				
-				[waitOpeningWindow close];
-				[waitOpeningWindow autorelease];
-				waitOpeningWindow = nil;
-				
-				windowsStateApplied = YES;
-                
-                for( id v in [[displayedViewers reverseObjectEnumerator] allObjects])
-                {
-                    [v buildMatrixPreview: YES];
+                        [context lock];
+                        
+                        NSMutableArray *seriesForThisViewer =  nil;
+                        
+                        @try 
+                        {
+                            for( NSString *curSeriesUID in series4D)
+                            {
+                                NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+                                [request setEntity: [[self.database.managedObjectModel entitiesByName] objectForKey:@"Series"]];
+                                [request setPredicate: [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", studyUID, curSeriesUID]];
+                                
+                                NSArray	*seriesArray = [context executeFetchRequest:request error:&error];
+                                
+                                if( [seriesArray count] != 1)
+                                {
+                                    NSLog( @"****** number of series corresponding to these UID (%@) is not unique?: %d", curSeriesUID, (int) [seriesArray count]);
+                                }
+                                else
+                                {
+                                    if( [[[seriesArray objectAtIndex: 0] valueForKeyPath:@"study.patientUID"] compare: [currentStudy valueForKey: @"patientUID"] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
+                                    {
+                                        if( seriesForThisViewer == nil)
+                                        {
+                                            seriesForThisViewer = [NSMutableArray array];
+                                            
+                                            [seriesToOpen addObject: seriesForThisViewer];
+                                            [viewersToLoad addObject: dict];
+                                        }
+                                        
+                                        [seriesForThisViewer addObject: [seriesArray objectAtIndex: 0]];
+                                    }
+                                    else
+                                        NSLog(@"%@ versus %@", [[seriesArray objectAtIndex: 0] valueForKeyPath:@"study.patientUID"], [currentStudy valueForKey: @"patientUID"]);
+                                }
+                            }
+                        }
+                        @catch (NSException * e) 
+                        {
+                            N2LogExceptionWithStackTrace(e);
+                        }
+                        
+                        [context unlock];
+                    }
+                    @catch (NSException *e)
+                    {
+                        N2LogExceptionWithStackTrace(e);
+                    }
                 }
-			}
+                
+                if( [seriesToOpen count] > 0 && [viewersToLoad count] == [seriesToOpen count])
+                {
+                    if( syncSettings)
+                    {
+                        if( [syncSettings boolValue])
+                            [DCMView setSyncro: syncroLOC];
+                        else
+                            [DCMView setSyncro: syncroOFF];
+                    }
+                    
+                    if( propagateSettings)
+                        [[NSUserDefaults standardUserDefaults] setBool: [propagateSettings boolValue] forKey:@"COPYSETTINGS"];
+                    
+                    if( waitOpeningWindow == nil) waitOpeningWindow  = [[WaitRendering alloc] init: NSLocalizedString(@"Opening...", nil)];
+                    [waitOpeningWindow showWindow:self];
+                    
+                    [AppController sharedAppController].checkAllWindowsAreVisibleIsOff = YES;
+                    
+                    for( int i = 0 ; i < [seriesToOpen count]; i++)
+                    {
+                        NSMutableArray * toOpenArray = [NSMutableArray array];
+                        
+                        NSDictionary *dict = [viewersToLoad objectAtIndex: i];
+                        
+                        for( NSManagedObject* curFile in [seriesToOpen objectAtIndex: i])
+                        {
+                            NSArray *loadList = [self childrenArray: curFile];
+                            if( loadList) [toOpenArray addObject: loadList];
+                        }
+                        
+                        if( [[dict valueForKey: @"4DData"] boolValue])
+                            [self processOpenViewerDICOMFromArray: toOpenArray movie: YES viewer: nil];
+                        else
+                            [self processOpenViewerDICOMFromArray: toOpenArray movie: NO viewer: nil];
+                    }
+                    
+                    NSArray	*displayedViewers = [ViewerController getDisplayed2DViewers];
+                    
+                    for( int i = 0 ; i < [viewersToLoad count]; i++)
+                    {
+                        NSDictionary		*dict = [viewersToLoad objectAtIndex: i];
+                        
+                        if( i < [displayedViewers count])
+                        {
+                            ViewerController	*v = [displayedViewers objectAtIndex: i];
+                            
+                            NSRect r;
+                            NSScanner* s = [NSScanner scannerWithString: [dict valueForKey:@"window position"]];
+                            
+                            float a;
+                            [s scanFloat: &a];	r.origin.x = a;		[s scanFloat: &a];	r.origin.y = a;
+                            [s scanFloat: &a];	r.size.width = a;	[s scanFloat: &a];	r.size.height = a;
+                            
+                            int index = [[dict valueForKey:@"index"] intValue];
+                            int rows = [[dict valueForKey:@"rows"] intValue];
+                            int columns = [[dict valueForKey:@"columns"] intValue];
+                            float wl = [[dict valueForKey:@"wl"] floatValue];
+                            float ww = [[dict valueForKey:@"ww"] floatValue];
+                            float x = [[dict valueForKey:@"x"] floatValue];
+                            float y = [[dict valueForKey:@"y"] floatValue];
+                            float rotation = [[dict valueForKey:@"rotation"] floatValue];
+                            float scale = [[dict valueForKey:@"scale"] floatValue];
+                            
+                            [v setWindowFrame: r showWindow: NO];
+                            [v setImageRows: rows columns: columns];
+                            
+                            [v setImageIndex: index];
+                            
+                            if( [[[v imageView] curDCM] SUVConverted]) [v setWL: wl*[v factorPET2SUV] WW: ww*[v factorPET2SUV]];
+                            else [v setWL: wl WW: ww];
+                            
+                            [v setScaleValue: scale];
+                            [v setRotation: rotation];
+                            [v setOrigin: NSMakePoint( x, y)];
+                            
+                            if( [[dict valueForKey: @"SyncButtonBehaviorIsBetweenStudies"] boolValue])
+                            {
+                                v.imageView.syncRelativeDiff = [[dict valueForKey: @"syncRelativeDiff"] floatValue];
+                            }
+                            
+                            if( [dict valueForKey: @"LastWindowsTilingRowsColumns"])
+                                [[NSUserDefaults standardUserDefaults] setObject: [dict valueForKey: @"LastWindowsTilingRowsColumns"] forKey: @"LastWindowsTilingRowsColumns"];
+                        }
+                    }
+                    
+                    [AppController sharedAppController].checkAllWindowsAreVisibleIsOff = NO;
+                    [[AppController sharedAppController] checkAllWindowsAreVisible: self];
+                    
+                    if( [displayedViewers count] > 0)
+                        [[[displayedViewers objectAtIndex: 0] window] makeKeyAndOrderFront: self];
+                    
+                    [waitOpeningWindow close];
+                    [waitOpeningWindow autorelease];
+                    waitOpeningWindow = nil;
+                    
+                    windowsStateApplied = YES;
+                    
+                    for( ViewerController *v in [[displayedViewers reverseObjectEnumerator] allObjects])
+                    {
+                        [v buildMatrixPreview: YES];
+                    }
+                    
+                    if( SYNCSERIES)
+                        [displayedViewers.lastObject SyncSeries: self];
+                }
+            }
 		}
 		
 		if( windowsStateApplied == NO)

@@ -57,6 +57,8 @@
 #define BS 10.
 //#define new_loupe
 
+#define PARALLELPLANETOLERANCE 0.1
+
 			short						syncro = syncroLOC;
 static		float						deg2rad = M_PI / 180.0; 
 static		unsigned char				*PETredTable = nil, *PETgreenTable = nil, *PETblueTable = nil;
@@ -181,33 +183,26 @@ short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2, float
     float    ay = (u[1] >= 0 ? u[1] : -u[1]);
     float    az = (u[2] >= 0 ? u[2] : -u[2]);
 	
-    // test if the two planes are parallel
-    if ((ax+ay+az) < 0.05)
-	{   // Pn1 and Pn2 are near parallel
-        // test if disjoint or coincide
-        //Vector   v = Pn2.V0 - Pn1.V0;
-
-        //if (dot(Pn1.n, v) == 0)         // Pn2.V0 lies in Pn1
-        //    return -2;                   // Pn1 and Pn2 coincide
-        //else
-		
-		return -1;                   // Pn1 and Pn2 are disjoint
-    }
+    
+    if( [DCMView angleBetweenVector: Pn1 andVector:Pn2] < PARALLELPLANETOLERANCE)
+		return -1;
 	
     // Pn1 and Pn2 intersect in a line
     // first determine max abs coordinate of cross product
-    int      maxc;                      // max coordinate
+    int maxc;                      // max coordinate
     if (ax > ay)
 	{
         if (ax > az)
-             maxc = 1;
-        else maxc = 3;
+            maxc = 1;
+        else
+            maxc = 3;
     }
     else
 	{
         if (ay > az)
-             maxc = 2;
-        else maxc = 3;
+            maxc = 2;
+        else
+            maxc = 3;
     }
 	
     // next, to get a point on the intersect line
@@ -6842,7 +6837,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                         [[self curDCM] orientation:orientA];
                         [[otherView curDCM] orientation:orientB];
                         
-                        #define PARALLELPLANETOLERANCE 0.1
 						if( [DCMView angleBetweenVector: orientA+6 andVector:orientB+6] < PARALLELPLANETOLERANCE)
 						{
                             // we need to avoid the situations where a localizer blocks two series from synchronizing

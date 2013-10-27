@@ -128,63 +128,66 @@ static LogManager *currentLogManager = nil;
 
 - (void) addLogLine: (NSDictionary*) dict
 {
-    if( [[BrowserController currentBrowser] isNetworkLogsActive] && [[[BrowserController currentBrowser] database] isLocal])
-	{
-        @synchronized (self)
+    @autoreleasepool
+    {
+        if( [[BrowserController currentBrowser] isNetworkLogsActive] && [[[BrowserController currentBrowser] database] isLocal])
         {
-            @try
+            @synchronized (self)
             {
-                if( [[dict valueForKey: @"logMessage"] isEqualToString:@"In Progress"] || [[dict valueForKey: @"logMessage"] isEqualToString:@"Complete"] || [[dict valueForKey: @"logMessage"] isEqualToString:@"Incomplete"])
+                @try
                 {
-                    NSString *uid = [dict valueForKey: @"logUID"];
-                    
-                    if( [_currentLogs objectForKey:uid] == nil)
+                    if( [[dict valueForKey: @"logMessage"] isEqualToString:@"In Progress"] || [[dict valueForKey: @"logMessage"] isEqualToString:@"Complete"] || [[dict valueForKey: @"logMessage"] isEqualToString:@"Incomplete"])
                     {
-                        NSManagedObject *logEntry = [NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext: [[[BrowserController currentBrowser] database] independentContext]];
+                        NSString *uid = [dict valueForKey: @"logUID"];
                         
-                        [logEntry setValue:[dict valueForKey: @"logStartTime"]  forKey:@"startTime"];
-                        [logEntry setValue:[dict valueForKey: @"logType"] forKey:@"type"];
-                        [logEntry setValue:[dict valueForKey: @"logCallingAET"] forKey:@"originName"];
-                        [logEntry setValue:[dict valueForKey: @"logCalledAET"] forKey:@"destinationName"];
-                        [logEntry setValue:[dict valueForKey: @"logPatientName"] forKey:@"patientName"];
-                        [logEntry setValue:[dict valueForKey: @"logStudyDescription"] forKey:@"studyName"];
-                        
-                        @try {
-                            [logEntry.managedObjectContext save: nil];
-                        }
-                        @catch ( NSException *e) {
-                            N2LogException( e);
-                        }
-                        
-                        [_currentLogs setObject: [NSDictionary dictionaryWithObjectsAndKeys: logEntry.objectID, @"objectID", dict, @"dict", [NSNumber numberWithDouble: [NSDate timeIntervalSinceReferenceDate]], @"lastSave", nil] forKey:uid];
-                    }
-                    
-                    if( [_currentLogs objectForKey:uid])
-                    {
-                        NSMutableDictionary *previousDict = [[[_currentLogs objectForKey:uid] mutableCopy] autorelease];
-                        
-                        [previousDict setObject: dict forKey: @"dict"];
-                        
-                        NSTimeInterval lastSave = [[previousDict objectForKey: @"lastSave"] doubleValue];
-                        if( [NSDate timeIntervalSinceReferenceDate] - lastSave > 5 || [[dict valueForKey: @"logMessage"] isEqualToString:@"Complete"])
+                        if( [_currentLogs objectForKey:uid] == nil)
                         {
-                            if( [self updateLogDatabase: [[_currentLogs objectForKey:uid] objectForKey: @"dict"] objectID: [[_currentLogs objectForKey:uid] objectForKey: @"objectID"]])
-                            {
-                                [NSObject cancelPreviousPerformRequestsWithTarget: self selector: @selector( removeFromCurrentLog:) object: uid];
-                                [self performSelector: @selector( removeFromCurrentLog:) withObject: uid afterDelay: 5];
+                            NSManagedObject *logEntry = [NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext: [[[BrowserController currentBrowser] database] independentContext]];
+                            
+                            [logEntry setValue:[dict valueForKey: @"logStartTime"]  forKey:@"startTime"];
+                            [logEntry setValue:[dict valueForKey: @"logType"] forKey:@"type"];
+                            [logEntry setValue:[dict valueForKey: @"logCallingAET"] forKey:@"originName"];
+                            [logEntry setValue:[dict valueForKey: @"logCalledAET"] forKey:@"destinationName"];
+                            [logEntry setValue:[dict valueForKey: @"logPatientName"] forKey:@"patientName"];
+                            [logEntry setValue:[dict valueForKey: @"logStudyDescription"] forKey:@"studyName"];
+                            
+                            @try {
+                                [logEntry.managedObjectContext save: nil];
+                            }
+                            @catch ( NSException *e) {
+                                N2LogException( e);
                             }
                             
-                            [previousDict setObject: [NSNumber numberWithDouble: [NSDate timeIntervalSinceReferenceDate]] forKey: @"lastSave"];
+                            [_currentLogs setObject: [NSDictionary dictionaryWithObjectsAndKeys: logEntry.objectID, @"objectID", dict, @"dict", [NSNumber numberWithDouble: [NSDate timeIntervalSinceReferenceDate]], @"lastSave", nil] forKey:uid];
                         }
                         
-                        [_currentLogs setObject: previousDict forKey: uid];
+                        if( [_currentLogs objectForKey:uid])
+                        {
+                            NSMutableDictionary *previousDict = [[[_currentLogs objectForKey:uid] mutableCopy] autorelease];
+                            
+                            [previousDict setObject: dict forKey: @"dict"];
+                            
+                            NSTimeInterval lastSave = [[previousDict objectForKey: @"lastSave"] doubleValue];
+                            if( [NSDate timeIntervalSinceReferenceDate] - lastSave > 5 || [[dict valueForKey: @"logMessage"] isEqualToString:@"Complete"])
+                            {
+                                if( [self updateLogDatabase: [[_currentLogs objectForKey:uid] objectForKey: @"dict"] objectID: [[_currentLogs objectForKey:uid] objectForKey: @"objectID"]])
+                                {
+                                    [NSObject cancelPreviousPerformRequestsWithTarget: self selector: @selector( removeFromCurrentLog:) object: uid];
+                                    [self performSelector: @selector( removeFromCurrentLog:) withObject: uid afterDelay: 5];
+                                }
+                                
+                                [previousDict setObject: [NSNumber numberWithDouble: [NSDate timeIntervalSinceReferenceDate]] forKey: @"lastSave"];
+                            }
+                            
+                            [_currentLogs setObject: previousDict forKey: uid];
+                        }
+                        else
+                            NSLog( @"********** [_currentLogs objectForKey:uid] == nil");
                     }
-                    else
-                        NSLog( @"********** [_currentLogs objectForKey:uid] == nil");
                 }
-            }
-            @catch ( NSException *e) {
-                N2LogException( e);
+                @catch ( NSException *e) {
+                    N2LogException( e);
+                }
             }
         }
     }
