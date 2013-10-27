@@ -103,7 +103,7 @@
                 {
                     thread.status = [NSString stringWithFormat:NSLocalizedString(@"Copying %@ %@...", nil), N2LocalizedDecimal( (long)imagePaths.count-i), ((long)imagePaths.count-i == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil))];
                     
-                    oneSecond = [NSDate timeIntervalSinceReferenceDate] + 5;
+                    oneSecond = [NSDate timeIntervalSinceReferenceDate] + 1;
                 }
             }
             
