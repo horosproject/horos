@@ -436,9 +436,7 @@ static DicomDatabase* activeLocalDatabase = nil;
                 }
             }
             
-            NSString* pagesTemplatesDirPath = [self.baseDirPath stringByAppendingPathComponent:@"PAGES TEMPLATES"];
-            if (![NSFileManager.defaultManager fileExistsAtPath:pagesTemplatesDirPath])
-                [NSFileManager.defaultManager createSymbolicLinkAtPath:pagesTemplatesDirPath withDestinationPath:[AppController checkForPagesTemplate] error:NULL];
+            [AppController checkForPagesTemplate];
             
             NSString* wordTemplatesOsirixDirPath = [self.baseDirPath stringByAppendingPathComponent:@"WORD TEMPLATES"];
             if (![NSFileManager.defaultManager fileExistsAtPath:wordTemplatesOsirixDirPath])

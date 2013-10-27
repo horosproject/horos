@@ -792,7 +792,10 @@ static id aedesc_to_id(AEDesc *desc)
 	{
 		[directoryEnumerator skipDescendents];
 		if( [file.stringByDeletingPathExtension isEqualToString: templateName.stringByDeletingPathExtension])
-            return [templateDirectory stringByAppendingPathComponent: file];
+        {
+            if( [file.pathExtension isEqualToString: @"pages"])
+                return [templateDirectory stringByAppendingPathComponent: file];
+        }
 	}
     
     return nil;
