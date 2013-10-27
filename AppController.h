@@ -151,7 +151,8 @@ extern AppController* OsiriX;
 + (void) createNoIndexDirectoryIfNecessary:(NSString*) path __deprecated;
 + (void) displayImportantNotice:(id) sender;
 + (AppController*) sharedAppController; /**< Return the shared AppController instance */
-+ (NSString*)checkForPagesTemplate; /**< Check for Pages report template */
++ (void)checkForPagesTemplate; /**< Check for Pages report template */
++ (void)checkForWordTemplates;
 + (void) resizeWindowWithAnimation:(NSWindow*) window newSize: (NSRect) newWindowFrame;
 + (void) pause __deprecated;
 + (void) resetToolbars;

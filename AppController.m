@@ -5562,7 +5562,7 @@ static BOOL initialized = NO;
 #pragma mark-
 #pragma mark Pages Template
 
-+ (NSString*)checkForPagesTemplate;
++ (void)checkForPagesTemplate;
 {
 #ifndef MACAPPSTORE
 #ifndef OSIRIX_LIGHT
@@ -5578,8 +5578,6 @@ static BOOL initialized = NO;
 	
 #endif
 #endif
-    
-    return nil;
 }
 
 +(void)checkForWordTemplates

@@ -437,10 +437,7 @@ static DicomDatabase* activeLocalDatabase = nil;
             }
             
             [AppController checkForPagesTemplate];
-            
-            NSString* wordTemplatesOsirixDirPath = [self.baseDirPath stringByAppendingPathComponent:@"WORD TEMPLATES"];
-            if (![NSFileManager.defaultManager fileExistsAtPath:wordTemplatesOsirixDirPath])
-                [[NSFileManager defaultManager] createSymbolicLinkAtPath:wordTemplatesOsirixDirPath pathContent:[Reports wordTemplatesOsirixDirPath]];
+            [AppController checkForWordTemplates];
             
     #endif
     #endif
