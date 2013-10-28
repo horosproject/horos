@@ -10844,22 +10844,25 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 -(void) CheckLoad
 {
-	// uses DCMPix class variable NSString *srcFile to load (CheckLoadIn method), for the first time or again, an fImage or oImage....
-	
-	[checking lock];
-	
-	@try
-	{
-		[self CheckLoadIn];
-	}
-	@catch (NSException *ne)
-	{
-		NSLog( @"CheckLoad Exception");
-		NSLog( @"Exception : %@", [ne description]);
-		NSLog( @"Exception for this file: %@", srcFile);
-	}
-    @finally {
-        [checking unlock];
+    @autoreleasepool
+    {
+        // uses DCMPix class variable NSString *srcFile to load (CheckLoadIn method), for the first time or again, an fImage or oImage....
+        
+        [checking lock];
+        
+        @try
+        {
+            [self CheckLoadIn];
+        }
+        @catch (NSException *ne)
+        {
+            NSLog( @"CheckLoad Exception");
+            NSLog( @"Exception : %@", [ne description]);
+            NSLog( @"Exception for this file: %@", srcFile);
+        }
+        @finally {
+            [checking unlock];
+        }
     }
 }
 
