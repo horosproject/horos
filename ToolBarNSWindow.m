@@ -34,6 +34,8 @@
 {
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideToolbarIfNotActive"] == NO && [AppController USETOOLBARPANEL] == YES)
     {
+        NSDisableScreenUpdates();
+        
         ViewerController *v = [ViewerController frontMostDisplayed2DViewerForScreen: self.screen];
         if( v)
         {
@@ -47,6 +49,8 @@
             [self.windowController setToolbar: nil viewer: nil];
             [super orderOut:sender];
         }
+        
+        NSEnableScreenUpdates();
     }
     else
         [super orderOut:sender];

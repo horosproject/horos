@@ -326,94 +326,98 @@ static int MacOSVersion109orHigher = -1;
 {
 	if( associatedScreen == nil) associatedScreen = [[NSMutableDictionary alloc] init];
 	
-	if( tb == nil)
-		tb = emptyToolbar;
-    
-	if( tb == toolbar)
-	{
-        NSDisableScreenUpdates();
-        
-		if( viewer != nil && [self.window.toolbar customizationPaletteIsRunning] == NO)
-			[[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
-	
-		if( toolbar)
-		{
-			if( [associatedScreen objectForKey: [NSValue valueWithPointer: toolbar]] != [[self window] screen])
-			{
-				if( [[NSScreen screens] count] > 1)
-					[[self window] setToolbar: emptyToolbar];
-				[[self window] setToolbar: toolbar];
-				
-				if( [[self window] screen])
-					[associatedScreen setObject: [[self window] screen] forKey: [NSValue valueWithPointer: toolbar]];
-				else
-					[associatedScreen removeObjectForKey: [NSValue valueWithPointer: toolbar]];
-			}
-		}
-		else
-            if( self.window.isVisible)
-                [self.window orderOut: self];
-        
-        NSEnableScreenUpdates();
-        
-		return;
-	}
-	
-    [viewer release];
-	viewer = [v retain];
-	
-	if( toolbar != tb)
-	{
-		[toolbar release];
-		toolbar = [tb retain];
-		[toolbar setShowsBaselineSeparator: NO];
-	}
-    
     NSDisableScreenUpdates();
     
-	if( toolbar)
-	{
-        @try
-        {
-            if( [associatedScreen objectForKey: [NSValue valueWithPointer: toolbar]] != [[self window] screen])
-            {
-                if( [[NSScreen screens] count] > 1)
-                    [[self window] setToolbar: emptyToolbar];	//To avoid the stupid add an item in customize toolbar.....
-                    
-                if( [[self window] screen])
-                    [associatedScreen setObject: [[self window] screen] forKey: [NSValue valueWithPointer: toolbar]];
-                else
-                    [associatedScreen removeObjectForKey: [NSValue valueWithPointer: toolbar]];
-            }
-            
-            [[self window] setToolbar: toolbar];
-            
-            [[self window] setShowsToolbarButton:NO];
-            [[[self window] toolbar] setVisible: YES];
-            
-            
-            if( [[viewer window] isKeyWindow])
-                [[self window] orderBack: self];
-        }
-        @catch (NSException *exception) {
-            N2LogException( exception);
-        }
-	}
-	else
+    @try
     {
-        if( self.window.isVisible)
-            [self.window orderOut: self];
-	}
-    
-	if( toolbar && toolbar != emptyToolbar)
-	{
-		[self applicationDidChangeScreenParameters:nil];
-		
-		if( [[viewer window] isKeyWindow] && [self.window.toolbar customizationPaletteIsRunning] == NO)
-			[[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
-	}
-    
-    NSEnableScreenUpdates();
+        if( tb == nil)
+            tb = emptyToolbar;
+        
+        if( tb == toolbar)
+        {
+            if( viewer != nil && [self.window.toolbar customizationPaletteIsRunning] == NO)
+                [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
+        
+            if( toolbar)
+            {
+                if( [associatedScreen objectForKey: [NSValue valueWithPointer: toolbar]] != [[self window] screen])
+                {
+                    if( [[NSScreen screens] count] > 1)
+                        [[self window] setToolbar: emptyToolbar];
+                    [[self window] setToolbar: toolbar];
+                    
+                    if( [[self window] screen])
+                        [associatedScreen setObject: [[self window] screen] forKey: [NSValue valueWithPointer: toolbar]];
+                    else
+                        [associatedScreen removeObjectForKey: [NSValue valueWithPointer: toolbar]];
+                }
+            }
+            else
+                if( self.window.isVisible)
+                    [self.window orderOut: self];
+            
+            return;
+        }
+        
+        [viewer release];
+        viewer = [v retain];
+        
+        if( toolbar != tb)
+        {
+            [toolbar release];
+            toolbar = [tb retain];
+            [toolbar setShowsBaselineSeparator: NO];
+        }
+        
+        if( toolbar)
+        {
+            @try
+            {
+                if( [associatedScreen objectForKey: [NSValue valueWithPointer: toolbar]] != [[self window] screen])
+                {
+                    if( [[NSScreen screens] count] > 1)
+                        [[self window] setToolbar: emptyToolbar];	//To avoid the stupid add an item in customize toolbar.....
+                        
+                    if( [[self window] screen])
+                        [associatedScreen setObject: [[self window] screen] forKey: [NSValue valueWithPointer: toolbar]];
+                    else
+                        [associatedScreen removeObjectForKey: [NSValue valueWithPointer: toolbar]];
+                }
+                
+                [[self window] setToolbar: toolbar];
+                
+                [[self window] setShowsToolbarButton:NO];
+                [[[self window] toolbar] setVisible: YES];
+                
+                
+                if( [[viewer window] isKeyWindow])
+                    [[self window] orderBack: self];
+            }
+            @catch (NSException *exception) {
+                N2LogException( exception);
+            }
+        }
+        else
+        {
+            if( self.window.isVisible)
+                [self.window orderOut: self];
+        }
+        
+        if( toolbar && toolbar != emptyToolbar)
+        {
+            [self applicationDidChangeScreenParameters:nil];
+            
+            if( [[viewer window] isKeyWindow] && [self.window.toolbar customizationPaletteIsRunning] == NO)
+                [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
+        }
+            
+    }
+    @catch (NSException *exception) {
+        N2LogException( exception);
+    }
+    @finally {
+        NSEnableScreenUpdates();
+    }
 }
 
 @end
