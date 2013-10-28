@@ -514,7 +514,10 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
             [self _unstack];
         }
         else
+        {
             representationToSend = [NSMutableData dataWithContentsOfFile: databasePath];
+            done = YES;
+        }
         
         [self _unstack];
 #endif
