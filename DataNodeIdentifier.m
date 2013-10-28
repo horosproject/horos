@@ -184,21 +184,26 @@
     
     if (address)
     {
-        if( parts.count > 0)
-        {
-            NSMutableArray *allPartsExceptPort  = [NSMutableArray arrayWithArray: parts];
-            [allPartsExceptPort removeLastObject];
-            
-            *address = [allPartsExceptPort componentsJoinedByString: @":"];
-        }
+        if( parts.count == 2) //IPv4 with port
+            *address = [parts objectAtIndex: 0];
+        
+        else if( parts.count == 1) //IPv4 without port
+            *address = [parts objectAtIndex: 0];
+        
+//TODO : add support IPv6
+        
         else
             *address = nil;
     }
     
 	if (port)
     {
-        if (parts.count > 1)
-			*port = [[parts objectAtIndex: parts.count-1] integerValue];
+        if (parts.count ==  2) //IPv4 with port
+			*port = [[parts lastObject] integerValue];
+        
+        else if (parts.count ==  1) //IPv4 without port
+			*port = defaultPort;
+        
 		else
             *port = defaultPort;
     }
