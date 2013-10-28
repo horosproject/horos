@@ -338,8 +338,11 @@
 
 + (void) addROIValues: (ROI*) r dictionary: (NSMutableDictionary*) d
 {
-    [d setObject:[r name] forKey:@"Name"];
-    [d setObject:[r comments] forKey:@"Comments"];
+    if( r.name.length)
+        [d setObject: r.name forKey:@"Name"];
+    
+    if( r.comments.length)
+        [d setObject: r.comments forKey:@"Comments"];
     
     NSMutableArray *ROIPoints = [NSMutableArray array];
     for( MyPoint *p in [r points])
