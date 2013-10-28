@@ -6337,7 +6337,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 
 - (NSMutableDictionary*) dataString
 {
-	NSMutableDictionary* array = nil;
+	NSMutableDictionary* array = [NSMutableDictionary dictionary];
 		
 	switch( type)
 	{

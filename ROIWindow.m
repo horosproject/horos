@@ -336,12 +336,29 @@
 	[comments setTextColor:nil];
 }
 
++ (void) addROIValues: (ROI*) r dictionary: (NSMutableDictionary*) d
+{
+    [d setObject:[r name] forKey:@"Name"];
+    [d setObject:[r comments] forKey:@"Comments"];
+    
+    NSMutableArray *ROIPoints = [NSMutableArray array];
+    for( MyPoint *p in [r points])
+        [ROIPoints addObject: NSStringFromPoint( [p point])];
+    
+    [d setObject: ROIPoints forKey:@"ROIPoints"];
+    
+    if( [r dataString])
+        [d setObject:[r dataString] forKey:@"DataSummary"];
+    
+    if( [r dataValues])
+        [d setObject:[r dataValues] forKey:@"DataValues"];
+}
+
 - (IBAction) exportData:(id) sender
 {
 	if([curROI type]==tPlain)
 	{
-		NSInteger confirm;
-		confirm = NSRunInformationalAlertPanel(NSLocalizedString(@"Export to XML", @""), NSLocalizedString(@"Exporting this kind of ROI to XML will only export the contour line.", @""), NSLocalizedString(@"OK", @""), NSLocalizedString(@"Cancel", @""), nil);
+		NSInteger confirm = NSRunInformationalAlertPanel(NSLocalizedString(@"Export to XML", @""), NSLocalizedString(@"Exporting this kind of ROI to XML will only export the contour line.", @""), NSLocalizedString(@"OK", @""), NSLocalizedString(@"Cancel", @""), nil);
 		if(!confirm) return;
 	}
 	else if([curROI type]==tLayerROI)
@@ -350,20 +367,16 @@
 		return;
 	}
 	
-	NSSavePanel     *panel = [NSSavePanel savePanel];
+	NSSavePanel *panel = [NSSavePanel savePanel];
 	
 	[panel setCanSelectHiddenExtension:NO];
 	[panel setRequiredFileType:@"xml"];
 	
 	if( [panel runModalForDirectory:nil file:[curROI name]] == NSFileHandlingPanelOKButton)
 	{
-		NSMutableDictionary *xml;
-		NSMutableArray		*points, *temp;
-
-		// allocate an NSMutableDictionary to hold our preference data
-		xml = [[NSMutableDictionary alloc] init];
+		NSMutableDictionary *xml = [NSMutableDictionary dictionary];
 		
-		if ( [self allWithSameName] )
+		if( [self allWithSameName])
 		{
 			NSArray *roiSeriesList = [curController roiList];
 			NSMutableArray *roiArray = [NSMutableArray array];
@@ -373,24 +386,14 @@
 			{
 				NSArray *roiImageList = [roiSeriesList objectAtIndex: i];
 				
-				for ( ROI *roi in roiImageList )
+				for( ROI *roi in roiImageList )
 				{
-					if ( [[roi name] isEqualToString: [curROI name]] )
+					if ( [[roi name] isEqualToString: [curROI name]])
 					{
 						NSMutableDictionary *roiData = [NSMutableDictionary dictionary];
 						
+                        [ROIWindow addROIValues: roi dictionary: roiData];
 						[roiData setObject:[NSNumber numberWithInt: i + 1] forKey: @"Slice"];
-						[roiData setObject:[roi name] forKey:@"Name"];
-						[roiData setObject:[roi comments] forKey:@"Comments"];
-						
-						// Points composing the ROI
-						points = [roi points];
-						temp = [NSMutableArray array];
-						
-						for( id loopItem3 in points)
-							[temp addObject: NSStringFromPoint( [loopItem3 point]) ];
-						
-						[roiData setObject:temp forKey:@"ROIPoints"];
 						
 						[roiArray addObject: roiData];
 					}
@@ -400,31 +403,10 @@
 			[xml setObject: roiArray forKey: @"ROI array"];
 		}
 		
-		else
-		{  // Output curROI only
-			[xml setObject:[curROI comments] forKey:@"Comments"];
-			
-			// Points composing the ROI
-			points = [curROI points];
-			temp = [NSMutableArray array];
-			
-			for( id loopItem in points)
-			{
-				[temp addObject: NSStringFromPoint( [loopItem point]) ];
-			}
-			[xml setObject:temp forKey:@"ROIPoints"];
-			
-			// Data composing the ROI
-			if( [curROI dataString])
-				[xml setObject:[curROI dataString] forKey:@"DataSummary"];
-			
-			if( [curROI dataValues])
-				[xml setObject:[curROI dataValues] forKey:@"DataValues"];
-		}
+		else // Output curROI only
+            [ROIWindow addROIValues: curROI dictionary: xml];
 		
 		[xml writeToFile:[panel filename] atomically: TRUE];
-		
-		[xml release];
 	}
 }
 
