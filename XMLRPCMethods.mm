@@ -65,9 +65,14 @@
 }
 
 -(void)connectionOpened:(NSNotification*)notification {
-	XMLRPCInterfaceConnection* connection = [[notification userInfo] objectForKey:N2ConnectionListenerOpenedConnection];
-    connection.dontSpecifyStringType = YES;
-	[connection setDelegate:self];
+	N2Connection* connection = [[notification userInfo] objectForKey:N2ConnectionListenerOpenedConnection];
+    
+    if( [connection isKindOfClass: [XMLRPCInterfaceConnection class]])
+    {
+        XMLRPCInterfaceConnection *xmlrpcConnection = (XMLRPCInterfaceConnection*) connection;
+        xmlrpcConnection.dontSpecifyStringType = YES;
+        [xmlrpcConnection setDelegate:self];
+    }
 }
 
 #pragma mark N2XMLRPCConnectionDelegate
