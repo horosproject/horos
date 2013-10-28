@@ -689,11 +689,11 @@ static NSHost *currentHost = nil;
     
 	[defaultValues setObject:@"11112" forKey:@"AEPORT"];
 
-	[defaultValues setObject:@"1.0" forKey:@"points3DcolorRed"];
+	[defaultValues setObject:@"1" forKey:@"points3DcolorRed"];
 	[defaultValues setObject:@"0" forKey:@"points3DcolorGreen"];
 	[defaultValues setObject:@"0" forKey:@"points3DcolorBlue"];
-	[defaultValues setObject:@"1.0" forKey:@"points3DcolorAlpha"];
-	[defaultValues setObject:@"1.0" forKey:@"MagneticWindows"];
+	[defaultValues setObject:@"1" forKey:@"points3DcolorAlpha"];
+	[defaultValues setObject:@"1" forKey:@"MagneticWindows"];
 	[defaultValues setObject:@"0" forKey:@"MPR2DViewsPosition"];
 	
 	[defaultValues setObject:@"1" forKey:@"StoreThumbnailsInDB"];
