@@ -27407,6 +27407,7 @@
 				ABF307FB1443330100BBC96A /* Copy odt2pdf script */,
 				59F69A4E1056328D008585F5 /* Clean Frameworks */,
 				847B929C15480BC400271A61 /* Create Resources Disabled folder */,
+				CE48FEFE181E486C00A0910B /* Git Hash */,
 				CED88262125064F70085A861 /* CodeSigning */,
 			);
 			buildRules = (
@@ -28943,6 +28944,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "/Applications/Doxygen.app/Contents/Resources/doxygen Doxyfile-osirix\n/Applications/Doxygen.app/Contents/Resources/doxygen Doxyfile-dcmframework\nexit 0";
+		};
+		CE48FEFE181E486C00A0910B /* Git Hash */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Git Hash";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /usr/bin/perl;
+			shellScript = "use strict;\nuse warnings;\n\ndie \"$0: Must be run from Xcode\" unless $ENV{\"BUILT_PRODUCTS_DIR\"};\n\nmy $FH;\nmy $output;\n\n# SHA hash :\n\nopen $FH, \"xcrun git rev-parse HEAD|\" or die;\n$output = <$FH>;\nclose($FH);\n\nchomp( $output );\nmy $GitHash = $output;\n\n# clean state :\n\n$output = `xcrun git status`;\n\nmy $GitState;\nif ( index( $output, \"nothing to commit (working directory clean)\" ) != -1 ) {\n    $GitState = \"clean\";\n} else {\n    $GitState = \"dirty\";\n}\n\nprint \"GitHash : $GitHash\\n\";\nprint \"GitState : $GitState\";\n\n# Update Info.plist in build product. Use defaults command\n\n#my $INFO = \"$ENV{BUILT_PRODUCTS_DIR}/$ENV{WRAPPER_NAME}/Info\"; #iOS\nmy $INFO = \"$ENV{BUILT_PRODUCTS_DIR}/$ENV{WRAPPER_NAME}/Contents/Info\"; #OSX\n\nmy @defaults = ( 'defaults', 'write', $INFO, 'GitHash', \"$GitHash\" );\nsystem( @defaults );\n\n@defaults = ( 'defaults', 'write', $INFO, 'GitState', \"$GitState\" );\nsystem( @defaults );";
 		};
 		CEC70A1710A5C844008935EA /* SVN Revision number */ = {
 			isa = PBXShellScriptBuildPhase;
