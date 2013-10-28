@@ -16064,13 +16064,15 @@ int i,j,l;
 //				&&
 //				curvedController == nil)
 			{
-			//	if( [[vC modality] isEqualToString:[self modality]])	For PET CT, we have to sync this even if the modalities are not equal!
+                BOOL propagateScale = YES;
+                
+                if( [vC.modality isEqualToString: @"US"] || [self.modality isEqualToString: @"US"])
+                    propagateScale = NO;
 				
 				if( [DCMView noPropagateSettingsInSeriesForModality: [vC modality]] && [DCMView noPropagateSettingsInSeriesForModality: [self modality]])
-				{
-				
-				}
-				else
+                    propagateScale = NO;
+                
+				if( propagateScale)
 				{
 					if( [imageView pixelSpacing] != 0 && [[vC imageView] pixelSpacing] != 0)
 					{
