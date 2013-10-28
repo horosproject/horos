@@ -200,9 +200,13 @@
 {
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"logWebServer"] == NO) return;
 	
-//	[self.dicomDatabase.managedObjectContext lock];
-	
-    DicomDatabase* independentDatabase = self.dicomDatabase.independentDatabase;
+    DicomDatabase* independentDatabase = nil;
+    
+    if( [NSThread isMainThread])
+        independentDatabase = self.dicomDatabase;
+    else
+        independentDatabase = self.dicomDatabase.independentDatabase;
+    
 	@try {
 		if (user)
 			message = [user stringByAppendingFormat:@": %@", message];
@@ -212,7 +216,6 @@
 		
 		// Search for same log entry during last 5 min
 		NSArray* logs = NULL;
-        
         
         NSPredicate* predicate = [NSPredicate predicateWithFormat: @"(patientName==%@) AND (studyName==%@) AND (message==%@) AND (originName==%@) AND (endTime >= CAST(%lf, \"NSDate\"))", study.name, study.studyName, message, ip, [[NSDate dateWithTimeIntervalSinceNow: -5 * 60] timeIntervalSinceReferenceDate]];
         logs = [independentDatabase objectsForEntity:independentDatabase.logEntryEntity predicate:predicate];
