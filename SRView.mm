@@ -2464,10 +2464,10 @@ typedef struct _xyzArray
 			aCamera->SetViewAngle( 60);
 		break;
 		
-//		case 1:
-//			aCamera->SetParallelProjection( true);
-//			aCamera->SetViewAngle( 30);
-//		break;
+		case 1:
+			aCamera->SetParallelProjection( true);
+			aCamera->SetViewAngle( 30);
+		break;
 	}
 //	
 //	if( aCamera->GetParallelProjection())
