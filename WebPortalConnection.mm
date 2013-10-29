@@ -1113,9 +1113,9 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
                             self.user = u;
                             
                             [self.session setObject: self.user.objectID forKey:SessionUserIDKey];
-                            [self.session setObject: username forKey:SessionUsernameKey];
+                            [self.session setObject: self.user.name forKey:SessionUsernameKey];
                             [self.session deleteChallenge];
-                            [self.portal updateLogEntryForStudy:NULL withMessage:[NSString stringWithFormat: @"Successful login (plugin) for user name: %@", username] forUser:NULL ip:asyncSocket.connectedHost];
+                            [self.portal updateLogEntryForStudy:NULL withMessage:[NSString stringWithFormat: @"Successful login (plugin) for user name: %@", self.user.name] forUser:NULL ip:asyncSocket.connectedHost];
                         }
                     }
                 }

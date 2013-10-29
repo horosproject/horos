@@ -165,7 +165,8 @@ static WindowLayoutManager *sharedLayoutManager = nil;
 		{
 			@try
 			{
-                NSDictionary *foundProtocol = [hangingProtocolArray objectAtIndex: 0]; //First one is the default protocol
+                NSMutableDictionary *foundProtocol = [NSMutableDictionary dictionaryWithDictionary: [hangingProtocolArray objectAtIndex: 0]]; //First one is the default protocol
+                [foundProtocol setValue: @YES forKey: @"isDefaultProtocolForModality"];
                 
 				for( NSDictionary *protocol in hangingProtocolArray)
 				{
@@ -173,7 +174,12 @@ static WindowLayoutManager *sharedLayoutManager = nil;
 					{
 						NSRange searchRange = [description rangeOfString:[protocol objectForKey: @"Study Description"] options: NSCaseInsensitiveSearch | NSLiteralSearch];
 						if (searchRange.location != NSNotFound)
-							foundProtocol = protocol;
+                        {
+							foundProtocol = [NSMutableDictionary dictionaryWithDictionary: protocol];
+                            [foundProtocol setValue: @NO forKey: @"isDefaultProtocolForModality"];
+                            
+                            break;
+                        }
 					}
 				}
                 
