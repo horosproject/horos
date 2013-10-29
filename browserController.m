@@ -9597,16 +9597,14 @@ static BOOL withReset = NO;
 
 		CGFloat rcs = oMatrix.cellSize.width+oMatrix.intercellSpacing.width;
 		
-//        NSScrollView* scrollView = [[(NSScrollView*)[[[[[[sender subviews] objectAtIndex:0] subviews] objectAtIndex:0] subviews] objectAtIndex:0] subviews] objectAtIndex:0]; // This crash randomly...
-//        
         CGFloat scrollbarWidth = 0;
-//        if ([scrollView isKindOfClass:[NSScrollView class]])
-//        {
-//            NSScroller* scroller = [scrollView verticalScroller];
-//            if ([[self class] _scrollerStyle:scroller] != 1)
-//                if ([scrollView hasVerticalScroller] && ![scroller isHidden])
-//                    scrollbarWidth = [scroller frame].size.width;
-//        }
+        if ([thumbnailsScrollView isKindOfClass:[NSScrollView class]])
+        {
+            NSScroller* scroller = [thumbnailsScrollView verticalScroller];
+            if ([[self class] _scrollerStyle:scroller] != 1)
+                if ([thumbnailsScrollView hasVerticalScroller] && ![scroller isHidden])
+                    scrollbarWidth = [scroller frame].size.width;
+        }
         
         proposedPosition -= scrollbarWidth;
 
@@ -9655,7 +9653,6 @@ static BOOL withReset = NO;
         [thumbnailsScrollView setFrame:frame];
     }
     [splitViewVert resizeSubviewsWithOldSize:[splitViewVert bounds].size];
-//    [self ];
 }
 
 - (void) windowDidChangeScreen:(NSNotification *)aNotification
