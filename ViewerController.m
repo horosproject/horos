@@ -7757,6 +7757,8 @@ return YES;
 	
 	@synchronized( self)
 	{
+        NSDisableScreenUpdates();
+        
 		@try 
 		{
             BOOL equalVector = YES;
@@ -8262,6 +8264,9 @@ return YES;
 		{
             N2LogExceptionWithStackTrace(e);
 		}
+        @finally {
+            NSEnableScreenUpdates();
+        }
 	}
 	
 	for( ViewerController * v in [ViewerController getDisplayed2DViewers])
