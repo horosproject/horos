@@ -6986,8 +6986,17 @@ static NSConditionLock *threadLock = nil;
                         
                         if( [[currentHangingProtocol valueForKey:@"PreviousStudySameDescription"] boolValue])
                         {
-                            if( [[study studyName] isEqualToString: [currentStudy valueForKey: @"studyName"]] == NO)
-                                comparativeStudy = nil;
+                            if( [[currentHangingProtocol objectForKey: @"isDefaultProtocolForModality"] boolValue])
+                            {
+                                if( [[study studyName] isEqualToString: [currentStudy valueForKey: @"studyName"]] == NO)
+                                    comparativeStudy = nil;
+                            }
+                            else
+                            {
+                                NSRange searchRange = [[study studyName] rangeOfString: [currentHangingProtocol objectForKey: @"Study Description"] options: NSCaseInsensitiveSearch | NSLiteralSearch];
+                                if (searchRange.location == NSNotFound)
+                                    comparativeStudy = nil;
+                            }
                         }
                         
                         if( comparativeStudy)
@@ -7012,8 +7021,17 @@ static NSConditionLock *threadLock = nil;
                         
                         if( [[currentHangingProtocol valueForKey:@"PreviousStudySameDescription"] boolValue])
                         {
-                            if( [[study studyName] isEqualToString: [currentStudy valueForKey: @"studyName"]] == NO)
-                                comparativeStudy = nil;
+                            if( [[currentHangingProtocol objectForKey: @"isDefaultProtocolForModality"] boolValue])
+                            {
+                                if( [[study studyName] isEqualToString: [currentStudy valueForKey: @"studyName"]] == NO)
+                                    comparativeStudy = nil;
+                            }
+                            else
+                            {
+                                NSRange searchRange = [[study studyName] rangeOfString: [currentHangingProtocol objectForKey: @"Study Description"] options: NSCaseInsensitiveSearch | NSLiteralSearch];
+                                if (searchRange.location == NSNotFound)
+                                    comparativeStudy = nil;
+                            }
                         }
                     }
                 }
