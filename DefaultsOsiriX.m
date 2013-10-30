@@ -1593,6 +1593,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:NSLocalizedString(@"Growing Region", nil) forKey:@"growingRegionROIName"];
 	[defaultValues setObject:[NSNumber numberWithInt:0] forKey:@"displayCalciumScore"];
 	[defaultValues setObject:[NSNumber numberWithInt:0] forKey:@"CalciumScoreCTType"];
+    [defaultValues setObject: @YES forKey: @"defaultShading"];
 	
 	
 	[defaultValues setObject:[NSNumber numberWithBool:YES] forKey:OsirixWadoServiceEnabledDefaultsKey];

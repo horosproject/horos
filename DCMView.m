@@ -7535,6 +7535,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 + (float) angleBetweenVector: (float*) v1 andVector: (float*) v2
 {
+    if( v1[ 0] == 0 && v1[ 1] == 0 && v1[ 2] == 0 && v2[ 0] == 0 && v2[ 1] == 0 && v2[ 2] == 0)
+        return 0;
+    
+    if( v1[ 0] == 0 && v1[ 1] == 0 && v1[ 2] == 0)
+        return deg2rad* 180;
+    
+    if( v2[ 0] == 0 && v2[ 1] == 0 && v2[ 2] == 0)
+        return deg2rad* 180;
+    
     float cosTheta = dot( v1, v2) / (norm( v1)*norm( v2));
     
     return acosf( cosTheta);

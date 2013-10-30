@@ -1031,6 +1031,11 @@ return YES;
                     [dict setObject: @(SYNCSERIES) forKey: @"SYNCSERIES"];
                     [dict setObject: @(view.syncRelativeDiff) forKey:@"syncRelativeDiff"];
                 }
+                else
+                {
+                    [dict setObject: @NO forKey:@"SyncButtonBehaviorIsBetweenStudies"];
+                    [dict setObject: @(SYNCSERIES) forKey: @"SYNCSERIES"];
+                }
                     
                 [state addObject: dict];
             }
@@ -4478,6 +4483,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) syncThumbnails
 {
+    ViewBoundsDidChangeProtect = YES;
+    
 	for( ViewerController *v in [ViewerController getDisplayed2DViewers])
 	{
 		if( v != self && [[v studyInstanceUID] isEqualToString: [self studyInstanceUID]])
@@ -4486,6 +4493,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 			[v.previewMatrixScrollView reflectScrolledClipView: [v.previewMatrixScrollView contentView]];
 		}
 	}
+    
+    ViewBoundsDidChangeProtect = NO;
 }
 
 - (void) ViewBoundsDidChange: (NSNotification*) note
@@ -4502,7 +4511,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 				syncThumbnails = !syncThumbnails;
 			
 			if( syncThumbnails)
-				[self syncThumbnails];
+            {
+                [NSObject cancelPreviousPerformRequestsWithTarget: self selector:@selector( syncThumbnails) object:nil];
+                [self performSelector: @selector( syncThumbnails) withObject:nil afterDelay: 0.1];
+            }
 		}
 		
 		ViewBoundsDidChangeProtect = NO;
@@ -4550,6 +4562,11 @@ static volatile int numberOfThreadsForRelisce = 0;
                         {
                             if (showMatrix != [v matrixIsVisible])
                                 [v setMatrixVisible: showMatrix];
+                        }
+                        else
+                        {
+                            if( [v matrixIsVisible] && needsToBuildSeriesMatrix)
+                                [self buildMatrixPreview: NO];
                         }
                     }
                 }
@@ -15868,6 +15885,20 @@ int i,j,l;
 			[self SyncSeries: self];
 		}
 	}
+}
+
++ (void) activateSYNCSERIESBetweenStudies
+{
+    if( SyncButtonBehaviorIsBetweenStudies)
+    {
+        SYNCSERIES = YES;
+        
+        for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+        {
+            [[v findSyncSeriesButton] setImage: [NSImage imageNamed: @"SyncLock.pdf"]];
+            [v.imageView setSyncSeriesIndex: 0];
+        }
+    }
 }
 
 - (void) SyncSeries:(id) sender

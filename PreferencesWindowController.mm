@@ -84,8 +84,8 @@ static NSMutableDictionary *prefPanes = nil;
 			self.pane = [[[[bundle principalClass] alloc] initWithBundle:bundle] autorelease];
 		}
         
-        if( self.pane)
-            [prefPanes setObject: self.pane forKey: self.resourceName];
+        if( _pane)
+            [prefPanes setObject: _pane forKey: self.resourceName];
 	}
 	
 	return _pane;

@@ -7418,8 +7418,8 @@ static NSConditionLock *threadLock = nil;
                         [v buildMatrixPreview: YES];
                     }
                     
-                    if( SYNCSERIES)
-                        [displayedViewers.lastObject SyncSeries: self];
+                    if( SYNCSERIES) //
+                        [ViewerController activateSYNCSERIESBetweenStudies];
                 }
             }
 		}

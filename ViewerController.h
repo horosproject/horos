@@ -820,15 +820,16 @@ enum
 #endif
 - (void) convertPETtoSUV;
 - (IBAction) fullScreenMenu:(id) sender;
--(int) imageIndexOfROI:(ROI*) c;
+- (int) imageIndexOfROI:(ROI*) c;
 - (void)exportTextFieldDidChange:(NSNotification *)note;
 - (short) orientationVector;
 - (short) orthogonalOrientation;
 // functions s that plugins can also play with globals
 + (ViewerController *) draggedController;
 + (void) setDraggedController:(ViewerController *) controller;
++ (void) activateSYNCSERIESBetweenStudies;
 - (void) clear8bitRepresentations;
--(void) ApplyConvString:(NSString*) str;
+- (void) ApplyConvString:(NSString*) str;
 - (void)checkView:(NSView *)aView :(BOOL) OnOff;
 - (void)executeFilterFromString:(NSString*) name;
 - (IBAction) applyConvolutionOnSource:(id) sender;
@@ -841,7 +842,7 @@ enum
 - (void) setWindowTitle:(id) sender;
 - (IBAction) printSlider:(id) sender;
 - (void) setConv:(float*) matrix :(short) size :(float) norm;
--(BOOL) checkFrameSize;
+- (BOOL) checkFrameSize;
 - (IBAction) vertFlipDataSet:(id) sender;
 - (IBAction) horzFlipDataSet:(id) sender;
 - (void) rotateDataSet:(int) constant;
