@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4510" systemVersion="12F45" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13A603" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4510"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
@@ -969,7 +969,7 @@
                                         <menuItem isSeparatorItem="YES" id="13111">
                                             <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                                         </menuItem>
-                                        <menuItem title="Pixel Shift NE" tag="7" keyEquivalent="7" id="13112">
+                                        <menuItem title="Pixel Shift NE" tag="7" keyEquivalent="9" id="13112">
                                             <connections>
                                                 <action selector="subCtrlOffset:" target="-1" id="13290"/>
                                             </connections>
@@ -979,7 +979,7 @@
                                                 <action selector="subCtrlOffset:" target="-1" id="13285"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Pixel Shift NW" tag="9" keyEquivalent="9" id="13114">
+                                        <menuItem title="Pixel Shift NW" tag="9" keyEquivalent="7" id="13114">
                                             <connections>
                                                 <action selector="subCtrlOffset:" target="-1" id="13300"/>
                                             </connections>
@@ -2080,11 +2080,11 @@ CA
                                                         </subviews>
                                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </clipView>
-                                                    <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="0.0051020408163265302" id="13473">
+                                                    <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="0.0051020408163265302" horizontal="YES" id="13473">
                                                         <rect key="frame" x="-100" y="-100" width="194" height="15"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                     </scroller>
-                                                    <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" id="13472">
+                                                    <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="13472">
                                                         <rect key="frame" x="-100" y="-100" width="15" height="204"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                     </scroller>
@@ -2151,11 +2151,11 @@ CA
                                                         </subviews>
                                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </clipView>
-                                                    <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="0.35062066063538821" id="13476">
+                                                    <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="0.35062066063538821" horizontal="YES" id="13476">
                                                         <rect key="frame" x="-100" y="-100" width="160" height="15"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                     </scroller>
-                                                    <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="0.99253132371411923" id="13475">
+                                                    <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="0.99253132371411923" horizontal="NO" id="13475">
                                                         <rect key="frame" x="-30" y="17" width="15" height="244"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                     </scroller>
@@ -2209,11 +2209,11 @@ CA
                                                         </subviews>
                                                         <color key="backgroundColor" red="0.84705889229999998" green="0.86666673419999996" blue="0.89019614459999996" alpha="1" colorSpace="deviceRGB"/>
                                                     </clipView>
-                                                    <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="0.71190558445836027" id="14155">
+                                                    <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="0.71190558445836027" horizontal="YES" id="14155">
                                                         <rect key="frame" x="-100" y="-100" width="336" height="15"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                     </scroller>
-                                                    <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" controlSize="small" id="14154">
+                                                    <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" controlSize="small" horizontal="NO" id="14154">
                                                         <rect key="frame" x="184" y="1" width="11" height="42"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                     </scroller>
@@ -2254,11 +2254,11 @@ CA
                                                         <rect key="frame" x="0.0" y="0.0" width="431" height="251"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <clipView key="contentView" id="cHT-ZM-bts">
-                                                            <rect key="frame" x="0.0" y="17" width="431" height="234"/>
+                                                            <rect key="frame" x="0.0" y="17" width="416" height="219"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <outlineView focusRingType="exterior" verticalHuggingPriority="750" allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" emptySelection="NO" autosaveColumns="NO" headerView="13469" indentationPerLevel="16" autoresizesOutlineColumn="YES" outlineTableColumn="958" id="966" customClass="MyOutlineView">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="2587" height="234"/>
+                                                                    <rect key="frame" x="0.0" y="0.0" width="2587" height="219"/>
                                                                     <autoresizingMask key="autoresizingMask"/>
                                                                     <size key="intercellSpacing" width="3" height="2"/>
                                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -2622,12 +2622,12 @@ CA
                                                             </subviews>
                                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                         </clipView>
-                                                        <scroller key="horizontalScroller" verticalHuggingPriority="750" id="13468">
-                                                            <rect key="frame" x="0.0" y="235" width="431" height="16"/>
+                                                        <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="13468">
+                                                            <rect key="frame" x="0.0" y="236" width="416" height="15"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                         </scroller>
-                                                        <scroller key="verticalScroller" verticalHuggingPriority="750" id="13467">
-                                                            <rect key="frame" x="415" y="17" width="16" height="234"/>
+                                                        <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="13467">
+                                                            <rect key="frame" x="416" y="17" width="15" height="219"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                         </scroller>
                                                         <tableHeaderView key="headerView" id="13469">
@@ -2671,11 +2671,11 @@ CA
                                                             </subviews>
                                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                         </clipView>
-                                                        <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="0.0051020408163265302" id="14722">
+                                                        <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="0.0051020408163265302" horizontal="YES" id="14722">
                                                             <rect key="frame" x="-100" y="-100" width="194" height="15"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                         </scroller>
-                                                        <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" id="14723">
+                                                        <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="14723">
                                                             <rect key="frame" x="-100" y="-100" width="15" height="204"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                         </scroller>
@@ -2725,11 +2725,11 @@ CA
                                                                                 <rect key="frame" x="2" y="0.0" width="385" height="371"/>
                                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                 <clipView key="contentView" id="mpo-d1-Wrk">
-                                                                                    <rect key="frame" x="0.0" y="0.0" width="385" height="371"/>
+                                                                                    <rect key="frame" x="0.0" y="0.0" width="370" height="371"/>
                                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                     <subviews>
                                                                                         <matrix verticalHuggingPriority="750" mode="list" allowsEmptySelection="NO" autosizesCells="NO" id="12411" customClass="BrowserMatrix">
-                                                                                            <rect key="frame" x="0.0" y="0.0" width="425" height="452"/>
+                                                                                            <rect key="frame" x="0.0" y="0.0" width="410" height="452"/>
                                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                                                                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                                                             <size key="cellSize" width="105" height="113"/>
@@ -2815,12 +2815,12 @@ CA
                                                                                     </subviews>
                                                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                                                 </clipView>
-                                                                                <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" id="13471">
+                                                                                <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="13471">
                                                                                     <rect key="frame" x="-100" y="-100" width="470" height="15"/>
                                                                                     <autoresizingMask key="autoresizingMask"/>
                                                                                 </scroller>
-                                                                                <scroller key="verticalScroller" verticalHuggingPriority="750" id="13470">
-                                                                                    <rect key="frame" x="369" y="0.0" width="16" height="371"/>
+                                                                                <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="13470">
+                                                                                    <rect key="frame" x="370" y="0.0" width="15" height="371"/>
                                                                                     <autoresizingMask key="autoresizingMask"/>
                                                                                 </scroller>
                                                                             </scrollView>
@@ -3993,7 +3993,7 @@ update to OsiriX 64-bit:</string>
                         <rect key="frame" x="35" y="188" width="559" height="130"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                         <clipView key="contentView" id="x65-cS-UGw">
-                            <rect key="frame" x="1" y="1" width="557" height="128"/>
+                            <rect key="frame" x="1" y="1" width="557" height="113"/>
                             <autoresizingMask key="autoresizingMask"/>
                             <subviews>
                                 <matrix verticalHuggingPriority="750" selectionByRect="NO" autosizesCells="NO" id="12805">
@@ -4017,11 +4017,11 @@ update to OsiriX 64-bit:</string>
                             </subviews>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </clipView>
-                        <scroller key="horizontalScroller" verticalHuggingPriority="750" id="13479">
+                        <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="13479">
                             <rect key="frame" x="1" y="114" width="557" height="15"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
-                        <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" id="13478">
+                        <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="13478">
                             <rect key="frame" x="-100" y="-100" width="15" height="300"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
@@ -4074,7 +4074,7 @@ Gw
                         <rect key="frame" x="35" y="30" width="559" height="130"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                         <clipView key="contentView" id="q7Q-H8-RIB">
-                            <rect key="frame" x="1" y="1" width="557" height="128"/>
+                            <rect key="frame" x="1" y="1" width="557" height="113"/>
                             <autoresizingMask key="autoresizingMask"/>
                             <subviews>
                                 <matrix verticalHuggingPriority="750" selectionByRect="NO" autosizesCells="NO" id="12937">
@@ -4098,11 +4098,11 @@ Gw
                             </subviews>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </clipView>
-                        <scroller key="horizontalScroller" verticalHuggingPriority="750" id="13481">
+                        <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="13481">
                             <rect key="frame" x="1" y="114" width="557" height="15"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
-                        <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" id="13480">
+                        <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="13480">
                             <rect key="frame" x="-100" y="-100" width="15" height="300"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
@@ -4467,11 +4467,11 @@ Gw
                                         </subviews>
                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     </clipView>
-                                    <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" id="13880">
+                                    <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="13880">
                                         <rect key="frame" x="1" y="145" width="727" height="15"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                     </scroller>
-                                    <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" id="13879">
+                                    <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="13879">
                                         <rect key="frame" x="728" y="17" width="15" height="128"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                     </scroller>
@@ -4761,11 +4761,11 @@ Gw
                                         </subviews>
                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     </clipView>
-                                    <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" id="13944">
+                                    <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="13944">
                                         <rect key="frame" x="1" y="145" width="727" height="15"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                     </scroller>
-                                    <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" id="13945">
+                                    <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="13945">
                                         <rect key="frame" x="728" y="17" width="15" height="128"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                     </scroller>
@@ -5034,7 +5034,7 @@ Gw
         <image name="MPR" width="32" height="32"/>
         <image name="NSLockLockedTemplate" width="9" height="12"/>
         <image name="NSRemoveTemplate" width="8" height="8"/>
-        <image name="ReportPages" width="128" height="128"/>
+        <image name="ReportPages" width="256" height="256"/>
         <image name="StartupDisk" width="64" height="64"/>
         <image name="Surface" width="32" height="32"/>
         <image name="VolumeRendering" width="32" height="32"/>
