@@ -2082,7 +2082,7 @@ public:
 	else
 	{
 		if( renderingMode == 0)				// volume rendering
-			volumeProperty->SetShade( 1);
+			volumeProperty->SetShade( [[NSUserDefaults standardUserDefaults] boolForKey: @"defaultShading"]);
 	}
     
     if( volume->GetMapper() == nil)
