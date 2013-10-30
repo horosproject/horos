@@ -356,9 +356,6 @@ enum
 @synthesize blendingTypeWindow, blendingTypeMultiply, blendingTypeSubtract, blendingTypeRGB, blendingPlugins, blendingResample;
 @synthesize flagListPODComparatives;
 
-// About 5 degrees
-#define PARALLELPLANETOLERANCE 0.1
-
 // WARNING: If you add or modify this list, check ViewerController.m, DCMView.h and HotKey Pref Pane
 static int hotKeyToolCrossTable[] =
 {
@@ -16069,9 +16066,7 @@ int i,j,l;
 		
 //		if(  curvedController == nil && [vC curvedController] == nil)
 		{
-			#define SENSIBILITY 0.05
-			if( (fabs( vectorsA[ 0] - vectorsB[ 0]) < SENSIBILITY && fabs( vectorsA[ 1] - vectorsB[ 1]) < SENSIBILITY && fabs( vectorsA[ 2] - vectorsB[ 2]) < SENSIBILITY &&
-				fabs( vectorsA[ 3] - vectorsB[ 3]) < SENSIBILITY && fabs( vectorsA[ 4] - vectorsB[ 4]) < SENSIBILITY && fabs( vectorsA[ 5] - vectorsB[ 5]) < SENSIBILITY) || [[NSUserDefaults standardUserDefaults] boolForKey:@"AlwaysPropagateScaleLevel"])
+			if( [DCMView angleBetweenVector: vectorsA+6 andVector: vectorsB+6] < PARALLELPLANETOLERANCE || [[NSUserDefaults standardUserDefaults] boolForKey:@"AlwaysPropagateScaleLevel"])
 //				&&
 //				curvedController == nil)
 			{
@@ -16102,8 +16097,7 @@ int i,j,l;
 			}
 		}
 		
-		if(		fabs( vectorsA[ 0] - vectorsB[ 0]) < SENSIBILITY && fabs( vectorsA[ 1] - vectorsB[ 1]) < SENSIBILITY && fabs( vectorsA[ 2] - vectorsB[ 2]) < SENSIBILITY &&
-				fabs( vectorsA[ 3] - vectorsB[ 3]) < SENSIBILITY && fabs( vectorsA[ 4] - vectorsB[ 4]) < SENSIBILITY && fabs( vectorsA[ 5] - vectorsB[ 5]) < SENSIBILITY)
+		if( [DCMView angleBetweenVector: vectorsA+6 andVector: vectorsB+6] < PARALLELPLANETOLERANCE)
 //			&& curvedController == nil)
 		{
 			//if( [self isEverythingLoaded])
@@ -16118,19 +16112,20 @@ int i,j,l;
 				{
 					if( [[[[self fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"] isEqualToString: [[[vC fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"]] || registeredViewers == YES)
 					{
-						NSPoint pan, delta;
-						
-						pan = [imageView origin];
-						
-						if( [[vC imageView] curDCM].isOriginDefined && [imageView curDCM].isOriginDefined)
-						{								
-							delta = [DCMPix originDeltaBetween:[[vC imageView] curDCM] And:[imageView curDCM]];
-							
-							delta.x *= [imageView scaleValue];
-							delta.y *= [imageView scaleValue];
-							
-							[[vC imageView] setOrigin: NSMakePoint( pan.x + delta.x, pan.y - delta.y)];
-						}
+                        // Overlapping rect? to avoid pan if left/right limb are acquired in the same study for example
+                        if( NSIntersectsRect( vC.imageView.curDCM.rectCoordinates,imageView.curDCM.rectCoordinates))
+                        {
+                            if( [[vC imageView] curDCM].isOriginDefined && [imageView curDCM].isOriginDefined)
+                            {
+                                NSPoint pan = [imageView origin];
+                                NSPoint delta = [DCMPix originDeltaBetween:[[vC imageView] curDCM] And:[imageView curDCM]];
+                                
+                                delta.x *= [imageView scaleValue];
+                                delta.y *= [imageView scaleValue];
+                                
+                                [[vC imageView] setOrigin: NSMakePoint( pan.x + delta.x, pan.y - delta.y)];
+                            }
+                        }
 					}
 					
 					fValue = [imageView rotation];

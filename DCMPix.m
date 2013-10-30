@@ -1505,6 +1505,14 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	return offset;
 }
 
+- (NSRect) rectCoordinates
+{
+    if( self.pixelSpacingX && self.pixelSpacingY)
+        return NSMakeRect( self.originX, self.originY, self.pixelSpacingX*self.pwidth, self.pixelSpacingY*self.pheight);
+    else
+        return NSMakeRect( self.originX, self.originY, self.pwidth, self.pheight);
+}
+
 + (NSPoint) originCorrectedAccordingToOrientation: (DCMPix*) pix1
 {
 	double destOrigin[ 2];

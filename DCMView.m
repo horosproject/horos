@@ -57,8 +57,6 @@
 #define BS 10.
 //#define new_loupe
 
-#define PARALLELPLANETOLERANCE 0.1
-
 			short						syncro = syncroLOC;
 static		float						deg2rad = M_PI / 180.0; 
 static		unsigned char				*PETredTable = nil, *PETgreenTable = nil, *PETblueTable = nil;

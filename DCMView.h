@@ -27,6 +27,8 @@
 #define IMAGE_COUNT					1
 #define IMAGE_DEPTH					32
 
+// About 5 degrees
+#define PARALLELPLANETOLERANCE 0.1
 
 // Tools.
 
