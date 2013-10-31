@@ -962,6 +962,9 @@ return YES;
             {
                 NSRect	r = [[win window] frame];
                 [dict setObject: [NSString stringWithFormat: @"%f %f %f %f", r.origin.x, r.origin.y, r.size.width, r.size.height]  forKey:@"window position"];
+                [dict setObject: NSStringFromRect( win.window.screen.visibleFrame) forKey: @"screen"];
+                [dict setObject: @([[AppController toolbarForScreen: win.window.screen] exposedHeight]) forKey: @"screenYOrigin"];
+                [dict setObject: @([[NSScreen screens] indexOfObject: win.window.screen]) forKey:@"screenIndex"];
                 [dict setObject: @([view rows]) forKey:@"rows"];
                 [dict setObject: @([view columns]) forKey:@"columns"];
                 

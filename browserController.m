@@ -109,6 +109,7 @@
 #import "XMLControllerDCMTKCategory.h"
 #import "WADOXML.h"
 #import "DicomDir.h"
+#import "ToolbarPanel.h"
 
 #ifndef OSIRIX_LIGHT
 #import "Anonymization.h"
@@ -7355,14 +7356,14 @@ static NSConditionLock *threadLock = nil;
                     }
                     
                     NSArray	*displayedViewers = [ViewerController getDisplayed2DViewers];
-                    
+                    BOOL validWindowsPosition = YES;
                     for( int i = 0 ; i < [viewersToLoad count]; i++)
                     {
                         NSDictionary		*dict = [viewersToLoad objectAtIndex: i];
                         
                         if( i < [displayedViewers count])
                         {
-                            ViewerController	*v = [displayedViewers objectAtIndex: i];
+                            ViewerController *v = [displayedViewers objectAtIndex: i];
                             
                             NSRect r;
                             NSScanner* s = [NSScanner scannerWithString: [dict valueForKey:@"window position"]];
@@ -7370,6 +7371,33 @@ static NSConditionLock *threadLock = nil;
                             float a;
                             [s scanFloat: &a];	r.origin.x = a;		[s scanFloat: &a];	r.origin.y = a;
                             [s scanFloat: &a];	r.size.width = a;	[s scanFloat: &a];	r.size.height = a;
+                            
+                            NSUInteger screenIndex = [[dict valueForKey:@"screenIndex"] unsignedIntegerValue];
+                            float savedScreenYOrigin = [[dict valueForKey: @"screenYOrigin"] floatValue];
+                            NSRect savedScreenRect = NSRectFromString( [dict valueForKey:@"screen"]);
+                            if( savedScreenRect.size.width > 0 && savedScreenRect.size.height > 0)
+                            {
+                                if( screenIndex < NSScreen.screens.count)
+                                {
+                                    float widthRatio = 1, heightRatio = 1;
+                                    NSScreen *curScreen = [[NSScreen screens] objectAtIndex: screenIndex];
+                                    
+                                    widthRatio = curScreen.visibleFrame.size.width / savedScreenRect.size.width;
+                                    heightRatio = (curScreen.visibleFrame.size.height-[[AppController toolbarForScreen: curScreen] exposedHeight]) / (savedScreenRect.size.height-savedScreenYOrigin);
+                                    
+                                    r.size.width *= widthRatio;
+                                    r.size.height *= heightRatio;
+                                    
+                                    r.origin.x = ((r.origin.x - savedScreenRect.origin.x) * widthRatio) + curScreen.visibleFrame.origin.x;
+                                    r.origin.y = ((r.origin.y - savedScreenRect.origin.y) * heightRatio) + curScreen.visibleFrame.origin.y;
+                                    
+                                    // Test if the window is completely contained in the screen, otherwise, we will TileWindows.
+                                    if( NSEqualRects(NSIntersectionRect( curScreen.visibleFrame, r), r) == NO)
+                                        validWindowsPosition = NO;
+                                }
+                                else
+                                    validWindowsPosition = NO;
+                            }
                             
                             int index = [[dict valueForKey:@"index"] intValue];
                             int rows = [[dict valueForKey:@"rows"] intValue];
@@ -7405,6 +7433,9 @@ static NSConditionLock *threadLock = nil;
                     
                     [AppController sharedAppController].checkAllWindowsAreVisibleIsOff = NO;
                     [[AppController sharedAppController] checkAllWindowsAreVisible: self];
+                    
+                    if( validWindowsPosition == NO)
+                       [[AppController sharedAppController] tileWindows: self];
                     
                     if( [displayedViewers count] > 0)
                         [[[displayedViewers objectAtIndex: 0] window] makeKeyAndOrderFront: self];
