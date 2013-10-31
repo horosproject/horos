@@ -520,6 +520,8 @@ static volatile BOOL waitForRunningProcess = NO;
         @synchronized (self) {
             [_cachedAlbums release];
             _cachedAlbums = [r retain];
+            [_cachedAlbumsIDs release];
+            _cachedAlbumsIDs = [[_cachedAlbums valueForKey: @"objectID"] retain];
             _cachedAlbumsContext = _database.managedObjectContext;
         }
     }
@@ -3342,7 +3344,7 @@ static NSConditionLock *threadLock = nil;
             NSArray* albumObjectIDs;
             @synchronized (self)
             {
-                albumObjectIDs = [_cachedAlbums valueForKey:@"objectID"];
+                albumObjectIDs = [NSArray arrayWithArray: _cachedAlbumsIDs];
             }
             
             NSTimeInterval lastTime = [NSDate timeIntervalSinceReferenceDate];

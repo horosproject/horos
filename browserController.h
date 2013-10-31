@@ -91,7 +91,7 @@ extern NSString* O2AlbumDragType;
     NSMutableDictionary     *_distantAlbumNoOfStudiesCache;
     NSThread                *distantSearchThread;
 	NSMutableArray*         _albumNoOfStudiesCache;
-    NSArray*                _cachedAlbums;
+    NSArray*                _cachedAlbums, *_cachedAlbumsIDs;
     NSManagedObjectContext* _cachedAlbumsContext;
     NSString                *selectedAlbumName;
 	
