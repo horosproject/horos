@@ -192,7 +192,7 @@ static NSString *albumDragType = @"Osirix Album drag";
 				
 //				r = [[BrowserController currentBrowser] exportDICOMFileInt: [dropDestination path] files: filesToExport objects: dicomFiles2Export];
 				
-				NSMutableDictionary *d = [NSMutableDictionary dictionaryWithObjectsAndKeys: [dropDestination path], @"location", filesToExport, @"filesToExport", dicomFiles2Export, @"dicomFiles2Export", nil];
+				NSMutableDictionary *d = [NSMutableDictionary dictionaryWithObjectsAndKeys: [dropDestination path], @"location", filesToExport, @"filesToExport", [dicomFiles2Export valueForKey: @"objectID"], @"dicomFiles2Export", nil];
 				
 				NSThread* t = [[[NSThread alloc] initWithTarget:[BrowserController currentBrowser] selector:@selector(exportDICOMFileInt: ) object: d] autorelease];
 				t.name = NSLocalizedString( @"Exporting...", nil);

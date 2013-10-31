@@ -4421,11 +4421,7 @@ static NSConditionLock *threadLock = nil;
         
         //[NSNotificationCenter.defaultCenter postNotificationOnMainThreadName:O2SearchForComparativeStudiesStartedNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys: studySelectedID, @"study", nil]];
         
-        DicomDatabase *idatabase = nil;
-        if( [NSThread isMainThread])
-            idatabase = self.database;
-        else
-            idatabase = [self.database independentDatabase];
+        DicomDatabase *idatabase = [NSThread isMainThread] ? self.database : self.database.independentDatabase;
         
         DicomStudy *studySelected = nil;
         
@@ -6697,7 +6693,7 @@ static NSConditionLock *threadLock = nil;
 				NSMutableArray *dicomFiles2Export = [NSMutableArray array];
 				NSMutableArray *filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export onlyImages: NO];
 				
-				NSMutableDictionary *d = [NSMutableDictionary dictionaryWithObjectsAndKeys: [dropDestination path], @"location", filesToExport, @"filesToExport", dicomFiles2Export, @"dicomFiles2Export", nil];
+				NSMutableDictionary *d = [NSMutableDictionary dictionaryWithObjectsAndKeys: [dropDestination path], @"location", filesToExport, @"filesToExport", [dicomFiles2Export valueForKey: @"objectID"], @"dicomFiles2Export", nil];
 		
 				NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector(exportDICOMFileInt: ) object: d] autorelease];
 				t.name = NSLocalizedString( @"Exporting...", nil);
@@ -16341,9 +16337,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	@try 
 	{
+        DicomDatabase *idatabase = [NSThread isMainThread] ? self.database : self.database.independentDatabase;
 		NSString *location = [parameters objectForKey: @"location"];
 		NSMutableArray *filesToExport = [parameters objectForKey: @"filesToExport"];
-		NSMutableArray *dicomFiles2Export = [parameters objectForKey: @"dicomFiles2Export"];
+		NSMutableArray *dicomFiles2Export = [NSMutableArray arrayWithArray: [idatabase objectsWithIDs: [parameters objectForKey: @"dicomFiles2Export"]]];
 		
 		[filesToExport removeDuplicatedStringsInSyncWithThisArray: dicomFiles2Export];
 
@@ -17009,7 +17006,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[wait close];
 		[wait autorelease];
 		
-		NSMutableDictionary *d = [NSMutableDictionary dictionaryWithObjectsAndKeys: [[sPanel filenames] objectAtIndex:0], @"location", filesToExport, @"filesToExport", dicomFiles2Export, @"dicomFiles2Export", nil];
+		NSMutableDictionary *d = [NSMutableDictionary dictionaryWithObjectsAndKeys: [[sPanel filenames] objectAtIndex:0], @"location", filesToExport, @"filesToExport", [dicomFiles2Export valueForKey: @"objectID"], @"dicomFiles2Export", nil];
 		
 		NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector(exportDICOMFileInt: ) object: d] autorelease];
 		t.name = NSLocalizedString( @"Exporting...", nil);
