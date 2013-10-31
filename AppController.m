@@ -5278,6 +5278,11 @@ static BOOL initialized = NO;
 	
 	if( keepSameStudyOnSameScreen && numberOfMonitors > 1)
 	{
+        int columnsPerScreen = columns;
+		int rowsPerScreen = rows;
+		
+		columnsPerScreen = ceil(((float) columns / (float) numberOfMonitors));
+        
 		@try
 		{
 			NSLog(@"Tile Windows with keepSameStudyOnSameScreen == YES");
@@ -5296,7 +5301,7 @@ static BOOL initialized = NO;
 					}
 				}
 				
-				[self displayViewers: viewersForThisScreen monitorIndex: i screens: screens numberOfMonitors: numberOfMonitors rowsPerScreen: rows columnsPerScreen: columns];
+				[self displayViewers: viewersForThisScreen monitorIndex: i screens: screens numberOfMonitors: numberOfMonitors rowsPerScreen: rowsPerScreen columnsPerScreen: columnsPerScreen];
 			}
 			
 		}
