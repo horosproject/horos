@@ -5216,7 +5216,6 @@ static BOOL initialized = NO;
             rows --;
         
         columns = columnsPerScreen * numberOfMonitors;
-        
 	}
 	
 	// Smart arrangement if one window was added or removed
@@ -5278,10 +5277,10 @@ static BOOL initialized = NO;
 	
 	if( keepSameStudyOnSameScreen && numberOfMonitors > 1)
 	{
-        int columnsPerScreen = columns;
-		int rowsPerScreen = rows;
+        int columnsForThisScreen = columns;
+		int rowsForThisScreen = rows;
 		
-		columnsPerScreen = ceil(((float) columns / (float) numberOfMonitors));
+		columnsForThisScreen = ceil(((float) columns / (float) numberOfMonitors));
         
 		@try
 		{
@@ -5301,7 +5300,54 @@ static BOOL initialized = NO;
 					}
 				}
 				
-				[self displayViewers: viewersForThisScreen monitorIndex: i screens: screens numberOfMonitors: numberOfMonitors rowsPerScreen: rowsPerScreen columnsPerScreen: columnsPerScreen];
+                if( viewersForThisScreen.count > (rowsForThisScreen * columnsForThisScreen))
+                {
+                    {
+                        float ratioValue;
+                        
+                        if( landscape) ratioValue = landscapeRatio;
+                        else ratioValue = portraitRatio;
+                        
+                        float viewerCountPerScreen = (float) viewersForThisScreen.count;
+                        
+                        BOOL fixedRows = NO, fixedColumns = NO;
+                        
+                        if( [sender isKindOfClass: [NSDictionary class]] && [sender objectForKey: @"rows"])
+                            fixedRows = YES;
+                        
+                        if( [sender isKindOfClass: [NSDictionary class]] && [sender objectForKey: @"columns"])
+                            fixedColumns = YES;
+                        
+                        while (viewersForThisScreen.count > (rowsForThisScreen * columnsForThisScreen))
+                        {
+                            if( fixedRows)
+                                columnsForThisScreen++;
+                            else if( fixedColumns)
+                                rowsForThisScreen++;
+                            else
+                            {
+                                float ratio = (float) columnsForThisScreen / (float) rowsForThisScreen;
+                                
+                                if (ratio > ratioValue)
+                                    rowsForThisScreen ++;
+                                else 
+                                    columnsForThisScreen ++;
+                            }
+                        }
+                        
+                        int intViewerCountPerScreen = ceilf( viewersForThisScreen.count);
+                        
+                        if( rowsForThisScreen * columnsForThisScreen > intViewerCountPerScreen && rowsForThisScreen*(columnsForThisScreen-1) == intViewerCountPerScreen)
+                            columnsForThisScreen --;
+                        
+                        if( rowsForThisScreen * columnsForThisScreen > intViewerCountPerScreen && columnsForThisScreen*(rowsForThisScreen-1) == intViewerCountPerScreen)
+                            rowsForThisScreen --;
+                        
+                        columns = columnsForThisScreen * numberOfMonitors;
+                    }
+                }
+                
+				[self displayViewers: viewersForThisScreen monitorIndex: i screens: screens numberOfMonitors: i+1 rowsPerScreen: rowsForThisScreen columnsPerScreen: columnsForThisScreen];
 			}
 			
 		}
