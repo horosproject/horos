@@ -7355,7 +7355,7 @@ static NSConditionLock *threadLock = nil;
                     BOOL validWindowsPosition = YES;
                     for( int i = 0 ; i < [viewersToLoad count]; i++)
                     {
-                        NSDictionary		*dict = [viewersToLoad objectAtIndex: i];
+                        NSDictionary *dict = [viewersToLoad objectAtIndex: i];
                         
                         if( i < [displayedViewers count])
                         {
@@ -7429,6 +7429,27 @@ static NSConditionLock *threadLock = nil;
                     
                     [AppController sharedAppController].checkAllWindowsAreVisibleIsOff = NO;
                     [[AppController sharedAppController] checkAllWindowsAreVisible: self];
+                    
+                    if( validWindowsPosition)
+                    {
+                        for( int i = 0 ; i < [viewersToLoad count]; i++)
+                        {
+                            NSDictionary *dict = [viewersToLoad objectAtIndex: i];
+                            
+                            if( i < [displayedViewers count])
+                            {
+                                ViewerController *v = [displayedViewers objectAtIndex: i];
+                                
+                                if( v.window.screen == nil)
+                                    validWindowsPosition = NO;
+                                else
+                                    // Test if the window is completely contained in the screen, otherwise, we will TileWindows.
+                                    if( NSEqualRects(NSIntersectionRect( v.window.screen.visibleFrame, v.window.frame), v.window.frame) == NO)
+                                        validWindowsPosition = NO;
+                            }
+                        }
+                        
+                    }
                     
                     if( validWindowsPosition == NO)
                        [[AppController sharedAppController] tileWindows: self];
