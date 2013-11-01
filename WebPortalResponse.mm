@@ -781,6 +781,14 @@ static NSMutableDictionary *otherStudiesForThisPatientCache = nil;
 
 @implementation DicomStudyTransformer
 
++ (void) clearOtherStudiesForThisPatientCache
+{
+    @synchronized( otherStudiesForThisPatientCache)
+    {
+        [otherStudiesForThisPatientCache removeAllObjects];
+    }
+}
+
 +(id)create {
 	return [[[self alloc] init] autorelease];
 }
@@ -822,15 +830,16 @@ static NSMutableDictionary *otherStudiesForThisPatientCache = nil;
                     NSMutableArray *keysToRemove = [NSMutableArray array];
                     for( NSString *key in otherStudiesForThisPatientCache)
                     {
-                        if( [[[otherStudiesForThisPatientCache objectForKey: key] objectForKey: @"date"] timeIntervalSinceNow] < CACHETIMEOUT)
+                        if( [[[otherStudiesForThisPatientCache objectForKey: key] objectForKey: @"timeStamp"] timeIntervalSinceNow] < CACHETIMEOUT)
                             [keysToRemove addObject: key];
                     }
-                    [otherStudiesForThisPatientCache removeObjectsForKeys: keysToRemove];
+                    if( keysToRemove.count)
+                        [otherStudiesForThisPatientCache removeObjectsForKeys: keysToRemove];
                     
                     if( [otherStudiesForThisPatientCache objectForKey: study.patientID])
                     {
                         NSDictionary *d = [otherStudiesForThisPatientCache objectForKey: study.patientID];
-                        NSDate *timeStamp = [d objectForKey: @"date"];
+                        NSDate *timeStamp = [d objectForKey: @"timeStamp"];
                         
                         if( [timeStamp timeIntervalSinceNow] > CACHETIMEOUT)
                         {
