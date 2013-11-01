@@ -27,7 +27,7 @@
 #import <arpa/inet.h>
 #import <unistd.h>
 #import "NSUserDefaultsController+OsiriX.h"
-
+#import "N2Debug.h"
 
 @implementation BonjourBrowser
 
@@ -268,63 +268,73 @@ static BonjourBrowser *currentBrowser = nil;
 
 - (void) netServiceDidResolveAddress:(NSNetService *)sender
 {
-    if ([[sender addresses] count] > 0)
+    [sender retain];
+    @try
     {
-        NSData * address;
-        struct sockaddr * socketAddress = nil;
-        NSString * ipAddressString = nil;
-        NSString * portString = nil;
-        char buffer[256];
-        int index;
-
-        // Iterate through addresses until we find an IPv4 address
-        for (index = 0; index < [[sender addresses] count]; index++)
+        if ([[sender addresses] count] > 0)
         {
-            address = [[sender addresses] objectAtIndex:index];
-            socketAddress = (struct sockaddr *)[address bytes];
+            NSData * address;
+            struct sockaddr * socketAddress = nil;
+            NSString * ipAddressString = nil;
+            NSString * portString = nil;
+            char buffer[256];
+            int index;
 
-            if (socketAddress->sa_family == AF_INET) break;
-        }
-
-        // Be sure to include <netinet/in.h> and <arpa/inet.h> or else you'll get compile errors.
-
-        if (socketAddress)
-        {
-            switch(socketAddress->sa_family)
+            // Iterate through addresses until we find an IPv4 address
+            for (index = 0; index < [[sender addresses] count]; index++)
             {
-                case AF_INET:
-                    if (inet_ntop(AF_INET, &((struct sockaddr_in *)socketAddress)->sin_addr, buffer, sizeof(buffer)))
-                    {
-                        ipAddressString = [NSString stringWithCString:buffer];
-                        portString = [NSString stringWithFormat:@"%d", ntohs(((struct sockaddr_in *)socketAddress)->sin_port)];
-                    }
-                    break;
-                case AF_INET6:
-                    if (inet_ntop(AF_INET6, &((struct sockaddr_in6 *)socketAddress)->sin6_addr, buffer, sizeof(buffer)))
-                    {
-                        ipAddressString = [NSString stringWithCString:buffer];
-                        portString = [NSString stringWithFormat:@"%d", ntohs(((struct sockaddr_in6 *)socketAddress)->sin6_port)];
-                    }
-                    break;
+                address = [[sender addresses] objectAtIndex:index];
+                socketAddress = (struct sockaddr *)[address bytes];
+
+                if (socketAddress->sa_family == AF_INET) break;
             }
-        }
-        
-        if( ipAddressString && portString)
-        {
-            for( NSDictionary *serviceDict in services)
+
+            // Be sure to include <netinet/in.h> and <arpa/inet.h> or else you'll get compile errors.
+
+            if (socketAddress)
             {
-                if( [serviceDict objectForKey:@"service"] == sender)
+                switch(socketAddress->sa_family)
                 {
-                    NSLog( @"netServiceDidResolveAddress: %@:%@", ipAddressString, portString);
-                    
-                    [serviceDict setValue: ipAddressString forKey:@"Address"];
-                    [serviceDict setValue: portString forKey:@"OsiriXPort"];
+                    case AF_INET:
+                        if (inet_ntop(AF_INET, &((struct sockaddr_in *)socketAddress)->sin_addr, buffer, sizeof(buffer)))
+                        {
+                            ipAddressString = [NSString stringWithCString:buffer];
+                            portString = [NSString stringWithFormat:@"%d", ntohs(((struct sockaddr_in *)socketAddress)->sin_port)];
+                        }
+                        break;
+                    case AF_INET6:
+                        if (inet_ntop(AF_INET6, &((struct sockaddr_in6 *)socketAddress)->sin6_addr, buffer, sizeof(buffer)))
+                        {
+                            ipAddressString = [NSString stringWithCString:buffer];
+                            portString = [NSString stringWithFormat:@"%d", ntohs(((struct sockaddr_in6 *)socketAddress)->sin6_port)];
+                        }
+                        break;
+                }
+            }
+            
+            if( ipAddressString && portString)
+            {
+                for( NSDictionary *serviceDict in services)
+                {
+                    if( [serviceDict objectForKey:@"service"] == sender)
+                    {
+                        NSLog( @"netServiceDidResolveAddress: %@:%@", ipAddressString, portString);
+                        
+                        [serviceDict setValue: ipAddressString forKey:@"Address"];
+                        [serviceDict setValue: portString forKey:@"OsiriXPort"];
+                    }
                 }
             }
         }
+        
+        [sender stop];
     }
-    
-    [sender stop];
+    @catch (NSException *exception) {
+        N2LogException( exception);
+    }
+    @finally {
+        [sender release];
+    }
 }
 
 @end

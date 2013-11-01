@@ -707,7 +707,6 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
                     {
                         [_bonjourSources removeObjectAtIndex: [_bonjourServices indexOfObject: service]];
                         [_bonjourServices removeObject: service];
-                        service = nil;
                     }
                     else
                         NSLog( @"***** unknown didResolve Service");
