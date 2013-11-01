@@ -7364,7 +7364,7 @@ static NSConditionLock *threadLock = nil;
                             NSRect r;
                             NSScanner* s = [NSScanner scannerWithString: [dict valueForKey:@"window position"]];
                             
-                            float a;
+                            float scaleRatio = 1, a;
                             [s scanFloat: &a];	r.origin.x = a;		[s scanFloat: &a];	r.origin.y = a;
                             [s scanFloat: &a];	r.size.width = a;	[s scanFloat: &a];	r.size.height = a;
                             
@@ -7387,6 +7387,12 @@ static NSConditionLock *threadLock = nil;
                                     r.origin.x = ((r.origin.x - savedScreenRect.origin.x) * widthRatio) + curScreen.visibleFrame.origin.x;
                                     r.origin.y = ((r.origin.y - savedScreenRect.origin.y) * heightRatio) + curScreen.visibleFrame.origin.y;
                                     
+                                    if( widthRatio < 1 || heightRatio < 1)
+                                        scaleRatio = widthRatio < heightRatio ? widthRatio : heightRatio;
+                                    
+                                    if( widthRatio > 1 || heightRatio > 1)
+                                        scaleRatio = widthRatio > heightRatio ? widthRatio : heightRatio;
+                                        
                                     // Test if the window is completely contained in the screen, otherwise, we will TileWindows.
                                     if( NSEqualRects(NSIntersectionRect( curScreen.visibleFrame, r), r) == NO)
                                         validWindowsPosition = NO;
@@ -7403,7 +7409,7 @@ static NSConditionLock *threadLock = nil;
                             float x = [[dict valueForKey:@"x"] floatValue];
                             float y = [[dict valueForKey:@"y"] floatValue];
                             float rotation = [[dict valueForKey:@"rotation"] floatValue];
-                            float scale = [[dict valueForKey:@"scale"] floatValue];
+                            float scale = [[dict valueForKey:@"scale"] floatValue] * scaleRatio*scaleRatio;
                             
                             [v setWindowFrame: r showWindow: NO];
                             [v setImageRows: rows columns: columns];
