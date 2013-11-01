@@ -675,20 +675,22 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 -(void)netServiceDidResolveAddress:(NSNetService*)service
 {
-    [service stop]; //Technical Q&A QA1297
-    
-    DataNodeIdentifier* source0 = nil;
-    @synchronized (_bonjourSources)
+    @try
     {
-        if( [_bonjourServices indexOfObject: service] != NSNotFound)
-            source0 = [_bonjourSources objectAtIndex: [_bonjourServices indexOfObject: service]];
-        else
-            NSLog( @"***** unknown didResolve Service");
-    }
-	if (!source0) return;
-    
-    [NSThread performBlockInBackground:^{
-        // we're now in a background thread
+        [service retain];
+        [service stop]; //Technical Q&A QA1297
+        
+        DataNodeIdentifier* source0 = nil;
+        @synchronized (_bonjourSources)
+        {
+            if( [_bonjourServices indexOfObject: service] != NSNotFound)
+                source0 = [_bonjourSources objectAtIndex: [_bonjourServices indexOfObject: service]];
+            else
+                NSLog( @"***** unknown didResolve Service");
+        }
+        if (!source0)
+            return;
+        
         @try
         {
             NSDictionary* dict = nil;
@@ -696,20 +698,20 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
                 dict = [BonjourPublisher dictionaryFromXTRecordData:service.TXTRecordData];
             else dict = [DCMNetServiceDelegate DICOMNodeInfoFromTXTRecordData:service.TXTRecordData];
             
-            if ([[dict objectForKey:@"UID"] isEqualToString:[AppController UID]]) {
-                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                    // we're now back in the main thread
-                    @synchronized (_bonjourSources) {
-                        NSLog( @"Remove Service: %@", service);
-                        if( [_bonjourServices indexOfObject: service] != NSNotFound)
-                        {
-                            [_bonjourSources removeObjectAtIndex: [_bonjourServices indexOfObject: service]];
-                            [_bonjourServices removeObject: service];
-                        }
-                        else
-                            NSLog( @"***** unknown didResolve Service");
+            if ([[dict objectForKey:@"UID"] isEqualToString:[AppController UID]])
+            {
+                @synchronized (_bonjourSources)
+                {
+                    NSLog( @"Remove Service: %@", service);
+                    if( [_bonjourServices indexOfObject: service] != NSNotFound)
+                    {
+                        [_bonjourSources removeObjectAtIndex: [_bonjourServices indexOfObject: service]];
+                        [_bonjourServices removeObject: service];
+                        service = nil;
                     }
-                }];
+                    else
+                        NSLog( @"***** unknown didResolve Service");
+                }
                 return; // it's me
             }
         }
@@ -717,90 +719,91 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
             N2LogException( exception);
             return;
         }
-        
-        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-            
-            @try
+    
+        @try {
+            // we're now back in the main thread
+            NSMutableArray* addresses = [NSMutableArray array];
+            // Prefer IP4
+            for (NSData* address in service.addresses)
             {
-                // we're now back in the main thread
-                NSMutableArray* addresses = [NSMutableArray array];
-                // Prefer IP4
-                for (NSData* address in service.addresses)
+                struct sockaddr* sockAddr = (struct sockaddr*)address.bytes;
+                if (sockAddr->sa_family == AF_INET)
                 {
-                    struct sockaddr* sockAddr = (struct sockaddr*)address.bytes;
-                    if (sockAddr->sa_family == AF_INET)
+                    struct sockaddr_in* sockAddrIn = (struct sockaddr_in*)sockAddr;
+                    char *str = inet_ntoa(sockAddrIn->sin_addr);
+                    if( str)
                     {
-                        struct sockaddr_in* sockAddrIn = (struct sockaddr_in*)sockAddr;
-                        char *str = inet_ntoa(sockAddrIn->sin_addr);
-                        if( str)
-                        {
-                            NSString* host = [NSString stringWithUTF8String:str];
-                            NSInteger port = ntohs(sockAddrIn->sin_port);
-                            [addresses addObject:[NSArray arrayWithObjects: host, [NSNumber numberWithInteger:port], NULL]];
-                        }
-                    }
-                }
-                // And search IPv6
-                for (NSData* address in service.addresses)
-                {
-                    struct sockaddr* sockAddr = (struct sockaddr*)address.bytes;
-                    if (sockAddr->sa_family == AF_INET6)
-                    {
-                        struct sockaddr_in6* sockAddrIn6 = (struct sockaddr_in6*)sockAddr;
-                        char buffer[INET6_ADDRSTRLEN];
-                        if( inet_ntop(AF_INET6, &sockAddrIn6->sin6_addr, buffer, INET6_ADDRSTRLEN))
-                        {
-                            NSString* host = [NSString stringWithUTF8String:buffer];
-                            NSInteger port = ntohs(sockAddrIn6->sin6_port);
-                            [addresses addObject:[NSArray arrayWithObjects: host, [NSNumber numberWithInteger:port], NULL]];
-                        }
-                    }
-                }
-                
-                DataNodeIdentifier* source = source0;
-                
-                for (NSArray* address in addresses)
-                {
-                    if (!source.location && address.count >= 2)
-                    {
-                        if ([source isKindOfClass:[RemoteDatabaseNodeIdentifier class]])
-                            source.location = [[address objectAtIndex:0] stringByAppendingFormat:@":%@", [address objectAtIndex:1]];
-                        else
-                            source.location = [service.name stringByAppendingFormat:@"@%@:%@", [address objectAtIndex:0], [address objectAtIndex:1]];
-                    }
-                }
-                
-                NSUInteger i = [_browser.sources.content indexOfObject:source];
-                if (i != NSNotFound) // Already known
-                    @synchronized (_bonjourSources)
-                    {
-                        if( [_bonjourServices indexOfObject: service] != NSNotFound)
-                            [_bonjourSources replaceObjectAtIndex: [_bonjourServices indexOfObject: service] withObject: (source = [_browser.sources.content objectAtIndex:i])];
-                        else
-                            NSLog( @"***** unknown didResolve Service");
-                    }
-                
-                if ([source isKindOfClass:[RemoteDatabaseNodeIdentifier class]])
-                    source.dictionary = [BonjourPublisher dictionaryFromXTRecordData:service.TXTRecordData];
-                else source.dictionary = [DCMNetServiceDelegate DICOMNodeInfoFromTXTRecordData:service.TXTRecordData];
-                
-                if (source.location)
-                {
-             //       NSLog(@" -> Adding %@", source.location);
-                    if (([source isKindOfClass:[RemoteDatabaseNodeIdentifier class]] && ![[NSUserDefaults standardUserDefaults] boolForKey:@"DoNotSearchForBonjourServices"]) || 
-                        ([source isKindOfClass:[DicomNodeIdentifier class]] && [[NSUserDefaults standardUserDefaults] boolForKey:@"searchDICOMBonjour"])) {
-                        
-                        source.detected = YES;
-                        if (![_browser.sources.content containsObject:source])
-                            [_browser.sources addObject:source];
+                        NSString* host = [NSString stringWithUTF8String:str];
+                        NSInteger port = ntohs(sockAddrIn->sin_port);
+                        [addresses addObject:[NSArray arrayWithObjects: host, [NSNumber numberWithInteger:port], NULL]];
                     }
                 }
             }
-            @catch (NSException *exception) {
-                N2LogException( exception);
-            } 
-        }];
-    }];
+            // And search IPv6
+            for (NSData* address in service.addresses)
+            {
+                struct sockaddr* sockAddr = (struct sockaddr*)address.bytes;
+                if (sockAddr->sa_family == AF_INET6)
+                {
+                    struct sockaddr_in6* sockAddrIn6 = (struct sockaddr_in6*)sockAddr;
+                    char buffer[INET6_ADDRSTRLEN];
+                    if( inet_ntop(AF_INET6, &sockAddrIn6->sin6_addr, buffer, INET6_ADDRSTRLEN))
+                    {
+                        NSString* host = [NSString stringWithUTF8String:buffer];
+                        NSInteger port = ntohs(sockAddrIn6->sin6_port);
+                        [addresses addObject:[NSArray arrayWithObjects: host, [NSNumber numberWithInteger:port], NULL]];
+                    }
+                }
+            }
+            
+            DataNodeIdentifier* source = source0;
+            
+            for (NSArray* address in addresses)
+            {
+                if (!source.location && address.count >= 2)
+                {
+                    if ([source isKindOfClass:[RemoteDatabaseNodeIdentifier class]])
+                        source.location = [[address objectAtIndex:0] stringByAppendingFormat:@":%@", [address objectAtIndex:1]];
+                    else
+                        source.location = [service.name stringByAppendingFormat:@"@%@:%@", [address objectAtIndex:0], [address objectAtIndex:1]];
+                }
+            }
+            
+            NSUInteger i = [_browser.sources.content indexOfObject:source];
+            if (i != NSNotFound) // Already known
+                @synchronized (_bonjourSources)
+                {
+                    if( [_bonjourServices indexOfObject: service] != NSNotFound)
+                        [_bonjourSources replaceObjectAtIndex: [_bonjourServices indexOfObject: service] withObject: (source = [_browser.sources.content objectAtIndex:i])];
+                    else
+                        NSLog( @"***** unknown didResolve Service");
+                }
+            
+            if ([source isKindOfClass:[RemoteDatabaseNodeIdentifier class]])
+                source.dictionary = [BonjourPublisher dictionaryFromXTRecordData:service.TXTRecordData];
+            else source.dictionary = [DCMNetServiceDelegate DICOMNodeInfoFromTXTRecordData:service.TXTRecordData];
+            
+            if (source.location)
+            {
+                if (([source isKindOfClass:[RemoteDatabaseNodeIdentifier class]] && ![[NSUserDefaults standardUserDefaults] boolForKey:@"DoNotSearchForBonjourServices"]) || 
+                    ([source isKindOfClass:[DicomNodeIdentifier class]] && [[NSUserDefaults standardUserDefaults] boolForKey:@"searchDICOMBonjour"])) {
+                    
+                    source.detected = YES;
+                    if (![_browser.sources.content containsObject:source])
+                        [_browser.sources addObject:source];
+                }
+            }
+        }
+        @catch (NSException *exception) {
+            N2LogException( exception);
+        }
+    }
+    @catch ( NSException *exception) {
+        N2LogException( exception);
+    }
+    @finally {
+        [service release];
+    }
 }
 
 -(void)netService:(NSNetService*)service didNotResolve:(NSDictionary*)errorDict
@@ -845,7 +848,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
     
 	// resolve the address and port for this NSNetService
 	[service setDelegate:self];
-	[service resolveWithTimeout:5];
+	[service resolveWithTimeout:30];
 }
 
 -(void)netServiceBrowser:(NSNetServiceBrowser*)nsb didRemoveService:(NSNetService*)service moreComing:(BOOL)moreComing
