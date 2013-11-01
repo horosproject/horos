@@ -143,7 +143,8 @@
 					NSDate				*openedDate = [now addTimeInterval: -[[defaults stringForKey:@"AUTOCLEANINGDATEOPENEDDAYS"] intValue]*60*60*24];
 					NSMutableArray		*toBeRemoved = [NSMutableArray array];
 					BOOL				dontDeleteStudiesWithComments = [[NSUserDefaults standardUserDefaults] boolForKey: @"dontDeleteStudiesWithComments"];
-					
+					BOOL                dontDeleteStudiesIfInAlbum = [[NSUserDefaults standardUserDefaults] boolForKey:@"dontDeleteStudiesIfInAlbum"];
+                    
 					@try {
 						studiesArray = [[self objectsForEntity:self.studyEntity] sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"patientUID" ascending:YES] autorelease]]];
 						for (NSInteger i = 0; i < [studiesArray count]; i++)
@@ -183,10 +184,17 @@
 								{
 									if( [toBeRemoved containsObject:[studiesArray objectAtIndex: x]] == NO && [[[studiesArray objectAtIndex: x] valueForKey:@"lockedStudy"] boolValue] == NO)
 									{
+                                        BOOL addIt = YES;
+                                        DicomStudy *dy = [studiesArray objectAtIndex: x];
+                                        
+                                        if( dontDeleteStudiesIfInAlbum)
+                                        {
+                                            if( dy.albums.count > 0)
+                                                addIt = NO;
+                                        }
+                                        
 										if( dontDeleteStudiesWithComments)
 										{
-											DicomStudy *dy = [studiesArray objectAtIndex: x];
-											
 											NSString *str = @"";
 											
 											if( [dy valueForKey: @"comment"])
@@ -198,11 +206,11 @@
 											if( [dy valueForKey: @"comment4"])
 												str = [str stringByAppendingString: [dy valueForKey: @"comment4"]];
 											
-											
-											if( str == nil || [str isEqualToString: @""])
-												[toBeRemoved addObject: [studiesArray objectAtIndex: x]];
+											if( str.length > 0)
+												addIt = NO;
 										}
-										else
+										
+                                        if( addIt)
 											[toBeRemoved addObject: [studiesArray objectAtIndex: x]];
 									}
 								}
@@ -451,6 +459,7 @@ static BOOL _cleanForFreeSpaceLimitSoonReachedDisplayed = NO;
         NSMutableArray* studies = [NSMutableArray array];
         NSMutableArray* studiesDates = [NSMutableArray array];
         
+        BOOL dontDeleteStudiesIfInAlbum = [[NSUserDefaults standardUserDefaults] boolForKey:@"dontDeleteStudiesIfInAlbum"];
         BOOL flagDoNotDeleteIfComments = [[NSUserDefaults standardUserDefaults] boolForKey:@"dontDeleteStudiesWithComments"];
         NSInteger autocleanSpaceMode = [[[NSUserDefaults standardUserDefaults] objectForKey:@"AutocleanSpaceMode"] intValue];
         
@@ -462,6 +471,9 @@ static BOOL _cleanForFreeSpaceLimitSoonReachedDisplayed = NO;
             if (flagDoNotDeleteIfComments)
                 if (study.comment.length || study.comment2.length || study.comment3.length || study.comment4.length)
                     continue;
+            
+            if( study.albums.count > 0)
+                continue;
             
             // study can be deleted
             NSDate* d = nil; // determine the delete priority date

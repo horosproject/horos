@@ -1594,8 +1594,8 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:[NSNumber numberWithInt:0] forKey:@"displayCalciumScore"];
 	[defaultValues setObject:[NSNumber numberWithInt:0] forKey:@"CalciumScoreCTType"];
     [defaultValues setObject: @YES forKey: @"defaultShading"];
-	
-	
+    [defaultValues setObject: @YES forKey: @"dontDeleteStudiesIfInAlbum"];
+		
 	[defaultValues setObject:[NSNumber numberWithBool:YES] forKey:OsirixWadoServiceEnabledDefaultsKey];
 	[defaultValues setObject:[NSNumber numberWithBool:YES] forKey:OsirixWebPortalUsesWeasisDefaultsKey];
 	[defaultValues setObject:[NSNumber numberWithBool:YES] forKey:OsirixWebPortalPrefersFlashDefaultsKey];
