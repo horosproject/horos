@@ -27,6 +27,27 @@
 			<key>weight</key>
 			<integer>1200</integer>
 		</dict>
+		<key>^Plugins/</key>
+		<dict>
+			<key>omit</key>
+			<true/>
+			<key>weight</key>
+			<integer>1200</integer>
+		</dict>
+		<key>^Plugins Disabled/</key>
+		<dict>
+			<key>omit</key>
+			<true/>
+			<key>weight</key>
+			<integer>1200</integer>
+		</dict>
+		<key>^PlugIns Disabled/</key>
+		<dict>
+			<key>omit</key>
+			<true/>
+			<key>weight</key>
+			<integer>1200</integer>
+		</dict>
 		<key>^Resources Disabled/</key>
 		<dict>
 			<key>omit</key>
