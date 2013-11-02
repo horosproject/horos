@@ -2689,7 +2689,6 @@ static BOOL protectionAgainstReentry = NO;
                             @try
                             {
                                 BrowserController* bc = [BrowserController currentBrowser];
-                                DicomDatabase* mdatabase = self.isMainDatabase? self : self.mainDatabase;
                                 
                                 @try
                                 {
