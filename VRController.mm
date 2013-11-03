@@ -959,7 +959,9 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	BOOL		blendedSeries		= [[object objectAtIndex: 4] intValue];
 	BOOL		addition			= [[object objectAtIndex: 5] intValue];
 	float		newVal				= [[object objectAtIndex: 6] intValue];
-	
+	NSPoint     minClip             = [[object objectAtIndex: 7] pointValue];
+    NSPoint     maxClip             = [[object objectAtIndex: 8] pointValue];
+    
 	int			index;
 		
 	switch( stackOrientation)
@@ -984,11 +986,11 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	
 	if( blendedSeries)
 	{
-		[[blendingPixList objectAtIndex: index] fillROI:roi newVal:newVal minValue: -FLT_MAX maxValue: FLT_MAX outside:outside orientationStack:stackOrientation stackNo:i restore:restore addition:addition spline: NO];
+		[[blendingPixList objectAtIndex: index] fillROI:roi newVal:newVal minValue: -FLT_MAX maxValue: FLT_MAX outside:outside orientationStack:stackOrientation stackNo:i restore:restore addition:addition spline: NO clipMin: minClip clipMax: maxClip];
 	}
 	else
 	{
-		[[pixList[ curMovieIndex] objectAtIndex: index] fillROI:roi newVal:newVal minValue: -FLT_MAX maxValue: FLT_MAX outside:outside orientationStack:stackOrientation stackNo:i restore:restore addition:addition spline: NO];
+		[[pixList[ curMovieIndex] objectAtIndex: index] fillROI:roi newVal:newVal minValue: -FLT_MAX maxValue: FLT_MAX outside:outside orientationStack:stackOrientation stackNo:i restore:restore addition:addition spline: NO clipMin: minClip clipMax: maxClip];
 	}
 }
 
