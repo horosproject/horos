@@ -57,6 +57,7 @@
 	[selectedBinColor  release];
 	[textColor release];
 	[borderColor release];
+    [curROI release];
 	
 	[super dealloc];
 }
@@ -93,7 +94,8 @@
 
 -(void) setCurROI: (ROI*) r
 {
-	curROI = r;
+    [curROI release];
+	curROI = [r retain];
 }
 
 - (void)setRange:(long) mi :(long) max

@@ -26,8 +26,11 @@
 {
     [[NSNotificationCenter defaultCenter] removeObserver: self];
 	
-	free( data);
+    if( data)
+        free( data);
 	
+    [curROI release];
+    
 	[super dealloc];
 }
 
@@ -51,7 +54,6 @@
 {
 	if( [note object] == curROI)
 	{
-		
 		if( data) free( data);
 		data = [curROI dataValuesAsFloatPointer: &dataSize];
 	
@@ -104,7 +106,7 @@
 	[[self window] setFrameAutosaveName:@"HistogramWindow"];
 	
 	data = nil;
-	curROI = iroi;
+	curROI = [iroi retain];
 	
 	[[self window] setTitle: [NSString stringWithFormat:NSLocalizedString(@"Histogram of '%@' ROI", nil), [curROI name]]];
 	
