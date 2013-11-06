@@ -1405,11 +1405,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 
 -(void)initiateProcessFilesAtPaths:(NSArray*)paths intoDirAtPath:(NSString*)destDir mode:(int)mode
 {
-	[self performSelectorInBackground:@selector(threadBridgeForProcessFilesAtPaths:) withObject:[NSDictionary dictionaryWithObjectsAndKeys:
-																								 paths, @":",
-																								 [NSNumber numberWithInt:mode], @"mode:",
-																								 destDir, @"intoDirAtPath:", // destDir can be nil
-																								 nil]];
+	[self performSelectorInBackground:@selector(threadBridgeForProcessFilesAtPaths:) withObject:[NSDictionary dictionaryWithObjectsAndKeys: paths, @":", [NSNumber numberWithInt:mode], @"mode:", destDir, @"intoDirAtPath:", /*destDir can be nil*/nil]];
 }
 
 -(void)initiateCompressFilesAtPaths:(NSArray*)paths
@@ -2179,7 +2175,7 @@ static BOOL protectionAgainstReentry = NO;
                                         image.importedFile = @YES;
                                     else
                                         image.importedFile = nil;
-                                        
+                                    
                                     if (generatedByOsiriX)
                                         [image setValue: [NSNumber numberWithBool: generatedByOsiriX] forKey: @"generatedByOsiriX"];
                                     else

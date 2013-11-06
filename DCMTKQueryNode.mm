@@ -516,6 +516,13 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 {
     return [DicomStudy yearOldAcquisition: _date FromDateOfBirth: _birthdate];
 }
+- (NSNumber*) intervalSinceBirth
+{
+    if( [[NSUserDefaults standardUserDefaults] integerForKey: @"yearOldDatabaseDisplay"] == 0)
+        return [NSNumber numberWithDouble: [[NSDate date] timeIntervalSinceDate: _birthdate]];
+    else
+        return [NSNumber numberWithDouble: [self.date timeIntervalSinceDate: _birthdate]];
+}
 - (DCMCalendarDate *)time{
 	return _time;
 }

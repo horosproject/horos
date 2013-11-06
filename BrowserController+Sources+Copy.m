@@ -93,7 +93,9 @@
                 if( fiveSeconds < [NSDate timeIntervalSinceReferenceDate])
                 {
                     thread.status = [NSString stringWithFormat:NSLocalizedString(@"Indexing %@ %@...", nil), N2LocalizedDecimal( dstPaths.count), (dstPaths.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil))];
-                    [dstDatabase addFilesAtPaths:dstPaths];
+                    
+                    [dstDatabase addFilesAtPaths: dstPaths postNotifications: YES dicomOnly: [[NSUserDefaults standardUserDefaults] boolForKey: @"onlyDICOM"] rereadExistingItems:NO  generatedByOsiriX: NO importedFiles: YES returnArray: NO];
+                    
                     [dstPaths removeAllObjects];
                     
                     fiveSeconds = [NSDate timeIntervalSinceReferenceDate] + 5;
