@@ -494,7 +494,7 @@ AQAAAA4QAAVDRVNUAENFVAAAAAEBAAABAQ
                                                         <rect key="frame" x="1" y="1.0000000496088433" width="453" height="126"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
-                                                            <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="none" alternatingRowBackgroundColors="YES" multipleSelection="NO" emptySelection="NO" autosaveName="srcsTable" id="691" customClass="sourcesTableView">
+                                                            <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" multipleSelection="NO" emptySelection="NO" autosaveName="srcsTable" id="691" customClass="sourcesTableView">
                                                                 <rect key="frame" x="0.0" y="0.0" width="458" height="126"/>
                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                 <size key="intercellSpacing" width="3" height="2"/>
