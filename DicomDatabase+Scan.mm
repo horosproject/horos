@@ -459,7 +459,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
     NSArray* objectIDs = nil;
     if (items.count) {
         thread.status = [NSString stringWithFormat:NSLocalizedString(@"Importing %@...", nil), N2LocalizedSingularPluralCount(items.count, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil))];
-        objectIDs = [self addFilesDescribedInDictionaries:items postNotifications:NO rereadExistingItems:NO generatedByOsiriX:NO];
+        objectIDs = [self addFilesDescribedInDictionaries:items postNotifications:NO rereadExistingItems:NO generatedByOsiriX:NO importedFiles:YES returnArray: YES];
     }
     
     return [self objectsWithIDs:objectIDs];
@@ -627,7 +627,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
                 }
             }
             
-            dicomImages = [dicomImages arrayByAddingObjectsFromArray: [self objectsWithIDs:[self addFilesAtPaths:dicomFilePaths postNotifications:NO dicomOnly:NO rereadExistingItems:NO generatedByOsiriX:NO]]];
+            dicomImages = [dicomImages arrayByAddingObjectsFromArray: [self objectsWithIDs:[self addFilesAtPaths:dicomFilePaths postNotifications:NO dicomOnly:NO rereadExistingItems:NO generatedByOsiriX:NO importedFiles:YES returnArray:YES]]];
         }
         
         if (!dicomImages.count)

@@ -168,6 +168,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 @dynamic date;
 @dynamic frameID;
 @dynamic instanceNumber;
+@dynamic importedFile;
 @dynamic pathNumber;
 @dynamic pathString;
 @dynamic rotationAngle;

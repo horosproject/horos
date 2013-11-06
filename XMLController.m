@@ -214,7 +214,7 @@ extern int delayedTileWindows;
 	
 	dontClose = YES;
 	
-	NSArray *addedObjects = [BrowserController.currentBrowser.database addFilesAtPaths:files postNotifications:YES dicomOnly:YES rereadExistingItems:YES];
+	NSArray *addedObjects = [BrowserController.currentBrowser.database addFilesAtPaths:files postNotifications:YES dicomOnly:YES rereadExistingItems:YES generatedByOsiriX:NO importedFiles:NO returnArray:YES];
    
     addedObjects = [BrowserController.currentBrowser.database objectsWithIDs: addedObjects];
     

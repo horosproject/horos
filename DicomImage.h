@@ -55,6 +55,7 @@ void* sopInstanceUIDEncode( NSString *sopuid);
 @property(nonatomic, retain) NSDate* date;
 @property(nonatomic, retain) NSNumber* frameID;
 @property(nonatomic, retain) NSNumber* instanceNumber;
+@property(nonatomic, retain) NSNumber* importedFile;
 @property(nonatomic, retain) NSNumber* pathNumber;
 @property(nonatomic, retain) NSString* pathString;
 @property(nonatomic, retain) NSNumber* rotationAngle;

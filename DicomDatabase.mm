@@ -1454,6 +1454,11 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 
 -(NSArray*)addFilesAtPaths:(NSArray*)paths postNotifications:(BOOL)postNotifications dicomOnly:(BOOL)dicomOnly rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX returnArray: (BOOL) returnArray
 {
+    return [self addFilesAtPaths: paths postNotifications: postNotifications dicomOnly: dicomOnly rereadExistingItems: rereadExistingItems generatedByOsiriX: generatedByOsiriX importedFiles: NO returnArray: returnArray];
+}
+
+-(NSArray*)addFilesAtPaths:(NSArray*)paths postNotifications:(BOOL)postNotifications dicomOnly:(BOOL)dicomOnly rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX importedFiles: (BOOL) importedFiles returnArray: (BOOL) returnArray
+{
 	NSThread* thread = [NSThread currentThread];
     
     //#define RANDOMFILES
@@ -1601,7 +1606,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 //        NSLog(@"before: %X", self.managedObjectContext);
 //      NSArray* addedImagesArray = [self addFilesInDictionaries:dicomFilesArray postNotifications:postNotifications rereadExistingItems:rereadExistingItems generatedByOsiriX:generatedByOsiriX];
         
-        NSArray* objectIDs = [self addFilesDescribedInDictionaries:dicomFilesArray postNotifications:postNotifications rereadExistingItems:rereadExistingItems generatedByOsiriX:generatedByOsiriX returnArray: returnArray];
+        NSArray* objectIDs = [self addFilesDescribedInDictionaries:dicomFilesArray postNotifications:postNotifications rereadExistingItems:rereadExistingItems generatedByOsiriX:generatedByOsiriX importedFiles: importedFiles returnArray: returnArray];
         
 		[thread exitOperation];
 		
@@ -1699,6 +1704,11 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 static BOOL protectionAgainstReentry = NO;
 
 -(NSArray*)addFilesDescribedInDictionaries:(NSArray*)dicomFilesArray postNotifications:(BOOL)postNotifications rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX returnArray: (BOOL) returnArray
+{
+    return [self addFilesDescribedInDictionaries: dicomFilesArray postNotifications: postNotifications rereadExistingItems: rereadExistingItems generatedByOsiriX: generatedByOsiriX importedFiles: NO returnArray: returnArray];
+}
+
+-(NSArray*)addFilesDescribedInDictionaries:(NSArray*)dicomFilesArray postNotifications:(BOOL)postNotifications rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX importedFiles: (BOOL) importedFiles returnArray: (BOOL) returnArray
 {
 #ifndef NDEBUG
     [self checkForCorrectContextThread];
@@ -2165,6 +2175,11 @@ static BOOL protectionAgainstReentry = NO;
                                     
                                     [image setThumbnail:[curDict objectForKey:@"NSImageThumbnail"]];
                                     
+                                    if (importedFiles)
+                                        image.importedFile = @YES;
+                                    else
+                                        image.importedFile = nil;
+                                        
                                     if (generatedByOsiriX)
                                         [image setValue: [NSNumber numberWithBool: generatedByOsiriX] forKey: @"generatedByOsiriX"];
                                     else
@@ -2649,7 +2664,7 @@ static BOOL protectionAgainstReentry = NO;
                             
                             DicomDatabase *idatabase = self.isMainDatabase? self.independentDatabase : [self.mainDatabase independentDatabase];
                             
-                            objects = [idatabase addFilesAtPaths:copiedFiles postNotifications:YES dicomOnly:onlyDICOM rereadExistingItems:YES];
+                            objects = [idatabase addFilesAtPaths:copiedFiles postNotifications:YES dicomOnly:onlyDICOM rereadExistingItems:YES generatedByOsiriX:NO importedFiles:YES returnArray:YES];
                             
                             DicomDatabase* mdatabase = self.isMainDatabase? self : self.mainDatabase;
                             if( [[BrowserController currentBrowser] database] == mdatabase && [[dict objectForKey:@"addToAlbum"] boolValue])

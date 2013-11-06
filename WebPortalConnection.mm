@@ -744,7 +744,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 				
 			if ([studyInstanceUID isEqualToString: previousStudyInstanceUID] == NO || [patientUID compare: previousPatientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] != NSOrderedSame)
 			{
-                [idatabase addFilesAtPaths: filesAccumulator postNotifications:YES dicomOnly:YES rereadExistingItems:YES generatedByOsiriX:YES];
+                [idatabase addFilesAtPaths: filesAccumulator postNotifications:YES dicomOnly:YES rereadExistingItems:YES generatedByOsiriX:YES importedFiles:YES returnArray:NO];
 				
 				[filesAccumulator removeAllObjects];
 				
@@ -838,7 +838,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 		}
 	}
 	
-    [idatabase addFilesAtPaths: filesAccumulator postNotifications:YES dicomOnly:YES rereadExistingItems:YES generatedByOsiriX:YES];
+    [idatabase addFilesAtPaths: filesAccumulator postNotifications:YES dicomOnly:YES rereadExistingItems:YES generatedByOsiriX:YES importedFiles:YES returnArray:NO];
 	
 	[[NSFileManager defaultManager] removeItemAtPath: @"/tmp/osirixUnzippedFolder" error: nil];
 	
