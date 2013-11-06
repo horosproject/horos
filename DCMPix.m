@@ -238,25 +238,25 @@ unsigned char* CreateIconFrom16 (float* image,  unsigned char*icon,  int height,
 #define INIT_DELTAS dx=V2.x-V1.x;  dy=V2.y-V1.y;
 #define INIT_CLIP INIT_DELTAS if(dx)m=dy/dx;
 
-static inline void CLIP_Left(NSPointInt *Polygon, long *count, NSPointInt V1, NSPointInt V2)
+static inline void CLIP_Left(NSPointInt *Polygon, long *count, NSPointInt V1, NSPointInt V2, NSPointInt UpLeft)
 {
 	float   dx,dy, m=1;
 	INIT_CLIP
-	
+    
 	// ************OK************
-	if ( (V1.x>=0) && (V2.x>=0))
+	if ( (V1.x>=UpLeft.x) && (V2.x>=UpLeft.x))
 		Polygon[(*count)++]=V2;
 	// *********LEAVING**********
-	if ( (V1.x>=0) && (V2.x<0))
+	if ( (V1.x>=UpLeft.x) && (V2.x<UpLeft.x))
 	{
-		Polygon[(*count)].x=0;
-		Polygon[(*count)++].y=V1.y+m*(0-V1.x);
+		Polygon[(*count)].x=UpLeft.x;
+		Polygon[(*count)++].y=V1.y+m*(UpLeft.x-V1.x);
 	}
 	// ********ENTERING*********
-	if ( (V1.x<0) && (V2.x>=0))
+	if ( (V1.x<UpLeft.x) && (V2.x>=UpLeft.x))
 	{
-		Polygon[(*count)].x=0;
-		Polygon[(*count)++].y=V1.y+m*(0-V1.x);
+		Polygon[(*count)].x=UpLeft.x;
+		Polygon[(*count)++].y=V1.y+m*(UpLeft.x-V1.x);
 		Polygon[(*count)++]=V2;
 	}
 }
@@ -287,30 +287,30 @@ static inline void CLIP_Right(NSPointInt *Polygon, long *count, NSPointInt V1, N
  CLIP_Top
  =================
  */
-static inline void CLIP_Top(NSPointInt *Polygon,long *count, NSPointInt V1,NSPointInt V2)
+static inline void CLIP_Top(NSPointInt *Polygon,long *count, NSPointInt V1,NSPointInt V2, NSPointInt UpLeft)
 {
 	float   dx,dy, m=1;
 	INIT_CLIP
 	// ************OK************
-	if ( (V1.y>=0) && (V2.y>=0))
+	if ( (V1.y>=UpLeft.y) && (V2.y>=UpLeft.y))
 		Polygon[(*count)++]=V2;
 	// *********LEAVING**********
-	if ( (V1.y>=0) && (V2.y<0))
+	if ( (V1.y>=UpLeft.y) && (V2.y<UpLeft.y))
 	{
 		if(dx)
-			Polygon[(*count)].x=V1.x+(0-V1.y)/m;
+			Polygon[(*count)].x=V1.x+(UpLeft.y-V1.y)/m;
 		else
 			Polygon[(*count)].x=V1.x;
-		Polygon[(*count)++].y=0;
+		Polygon[(*count)++].y=UpLeft.y;
 	}
 	// ********ENTERING*********
-	if ( (V1.y<0) && (V2.y>=0))
+	if ( (V1.y<UpLeft.y) && (V2.y>=UpLeft.y))
 	{
 		if(dx)
-			Polygon[(*count)].x=V1.x+(0-V1.y)/m;
+			Polygon[(*count)].x=V1.x+(UpLeft.y-V1.y)/m;
 		else
 			Polygon[(*count)].x=V1.x;
-		Polygon[(*count)++].y=0;
+		Polygon[(*count)++].y=UpLeft.y;
 		Polygon[(*count)++]=V2;
 	}
 }
@@ -345,7 +345,7 @@ static inline void CLIP_Bottom(NSPointInt *Polygon,long *count, NSPointInt V1,NS
 static NSPointInt *TmpPoly = nil;
 static NSString *CLIP_PolygonSync = @"CLIP_PolygonSync";
 
-void CLIP_Polygon(NSPointInt *inPoly, long inCount, NSPointInt *outPoly, long *outCount, long w, long h)
+void CLIP_Polygon(NSPointInt *inPoly, long inCount, NSPointInt *outPoly, long *outCount, NSPoint clipMin, NSPoint clipMax)
 {
     @synchronized( CLIP_PolygonSync)
     {
@@ -355,10 +355,12 @@ void CLIP_Polygon(NSPointInt *inPoly, long inCount, NSPointInt *outPoly, long *o
             TmpPoly = malloc( MAXVERTICAL * sizeof( NSPointInt));
         
         long TmpCount;
-        NSPointInt DownRight;
+        NSPointInt DownRight, UpLeft;
         
-        DownRight.x = w-1;
-        DownRight.y = h-1;
+        UpLeft.x = clipMin.x;
+        UpLeft.y = clipMin.y;
+        DownRight.x = clipMax.x-1;
+        DownRight.y = clipMax.y-1;
         
         *outCount = 0;
         TmpCount=0;
@@ -367,7 +369,7 @@ void CLIP_Polygon(NSPointInt *inPoly, long inCount, NSPointInt *outPoly, long *o
         {
             d=v+1;
             if(d==inCount)d=0;
-            CLIP_Left( TmpPoly, &TmpCount, inPoly[v],inPoly[d]);
+            CLIP_Left( TmpPoly, &TmpCount, inPoly[v],inPoly[d], UpLeft);
             
 //            if( v > MAXVERTICAL || d > MAXVERTICAL)
 //                NSLog( @"( v || d > MAXVERTICAL)");
@@ -386,7 +388,7 @@ void CLIP_Polygon(NSPointInt *inPoly, long inCount, NSPointInt *outPoly, long *o
         {
             d=v+1;
             if(d==*outCount)d=0;
-            CLIP_Top( TmpPoly, &TmpCount, outPoly[v],outPoly[d]);
+            CLIP_Top( TmpPoly, &TmpCount, outPoly[v],outPoly[d], UpLeft);
             
 //            if( v > MAXVERTICAL || d > MAXVERTICAL)
 //                NSLog( @"( v || d > MAXVERTICAL)");
@@ -2159,7 +2161,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                         NSPointInt *pTemp = (NSPointInt*) malloc( sizeof(NSPointInt) * 4 * no);
                         if( pTemp)
                         {
-                            CLIP_Polygon( pts, no, pTemp, &newNo, width, height);
+                            CLIP_Polygon( pts, no, pTemp, &newNo, NSMakePoint( 0, 0), NSMakePoint( width, height));
                             
                             free( pts);
                             pts = pTemp;
@@ -2420,6 +2422,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 - (void) fillROI:(ROI*) roi newVal :(float) newVal minValue :(float) minValue maxValue :(float) maxValue outside :(BOOL) outside orientationStack :(long) orientationStack stackNo :(long) stackNo restore :(BOOL) restore addition:(BOOL) addition spline:(BOOL) spline;
 {
+    return [self fillROI: roi newVal: newVal minValue: minValue maxValue: maxValue outside: outside orientationStack:orientationStack stackNo: stackNo restore: restore addition: addition spline: spline clipMin: NSMakePoint(0, 0) clipMax: NSMakePoint(0, 0)];
+}
+
+- (void) fillROI:(ROI*) roi newVal :(float) newVal minValue :(float) minValue maxValue :(float) maxValue outside :(BOOL) outside orientationStack :(long) orientationStack stackNo :(long) stackNo restore :(BOOL) restore addition:(BOOL) addition spline:(BOOL) spline clipMin: (NSPoint) clipMin clipMax: (NSPoint) clipMax;
+{
     long				no = 0;
 	long				y;
     long				uplefty, downrighty, ims = width * height;
@@ -2435,6 +2442,16 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		restore = NO;
 	}
 	
+    if( clipMin.x == 0 && clipMax.x == 0 && clipMin.y == 0 && clipMax.y == 0)
+    {
+        switch( orientationStack)
+        {
+            case 0:	clipMin = NSMakePoint( 0, 0);   clipMax = NSMakePoint( height, pixArray.count); break;
+            case 1:	clipMin = NSMakePoint( 0, 0);   clipMax = NSMakePoint( width, pixArray.count); break;
+            case 2:	clipMin = NSMakePoint( 0, 0);   clipMax = NSMakePoint( width, height); break;
+        }
+    }
+    
 	if( roi)
 	{
 		if( roi.type == tPlain)
@@ -2607,10 +2624,10 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				case 2:
 					for( long i = 0; i < no && clip == NO; i++)
 					{
-						if( ptsInt[ i].x < 0) clip = YES;
-						if( ptsInt[ i].y < 0) clip = YES;
-						if( ptsInt[ i].x >= width) clip = YES;
-						if( ptsInt[ i].y >= height) clip = YES;
+						if( ptsInt[ i].x < clipMin.x) clip = YES;
+						if( ptsInt[ i].y < clipMin.y) clip = YES;
+						if( ptsInt[ i].x >= clipMax.x) clip = YES;
+						if( ptsInt[ i].y >= clipMax.y) clip = YES;
 					}
 					
 					if( clip)
@@ -2619,7 +2636,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 						
 						pTemp = (NSPointInt*) malloc( sizeof(NSPointInt) * 4 * no);
 						
-						CLIP_Polygon( ptsInt, no, pTemp, &newNo, width, height);
+						CLIP_Polygon( ptsInt, no, pTemp, &newNo, clipMin, clipMax);
 						
 						free( ptsInt);
 						ptsInt = pTemp;
@@ -2628,13 +2645,13 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					}
 					break;
 					
-					case 0:
+                case 0:
 					for( long i = 0; i < no && clip == NO; i++)
 					{
-						if( ptsInt[ i].x < 0) clip = YES;
-						if( ptsInt[ i].y < 0) clip = YES;
-						if( ptsInt[ i].x >= height) clip = YES;
-						if( ptsInt[ i].y >= pixArray.count) clip = YES;
+						if( ptsInt[ i].x < clipMin.x) clip = YES;
+						if( ptsInt[ i].y < clipMin.y) clip = YES;
+						if( ptsInt[ i].x >= clipMax.x) clip = YES;
+						if( ptsInt[ i].y >= clipMax.y) clip = YES;
 					}
 					
 					if( clip)
@@ -2642,7 +2659,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 						long newNo;
 						
 						pTemp = (NSPointInt*) malloc( sizeof(NSPointInt) * 4 * no);
-						CLIP_Polygon( ptsInt, no, pTemp, &newNo, height, pixArray.count);
+						CLIP_Polygon( ptsInt, no, pTemp, &newNo, clipMin, clipMax);
 						
 						free( ptsInt);
 						ptsInt = pTemp;
@@ -2650,13 +2667,13 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					}
 					break;
 					
-					case 1:
+                case 1:
 					for( long i = 0; i < no && clip == NO; i++)
 					{
-						if( ptsInt[ i].x < 0) clip = YES;
-						if( ptsInt[ i].y < 0) clip = YES;
-						if( ptsInt[ i].x >= width) clip = YES;
-						if( ptsInt[ i].y >= pixArray.count) clip = YES;
+						if( ptsInt[ i].x < clipMin.x) clip = YES;
+						if( ptsInt[ i].y < clipMin.y) clip = YES;
+						if( ptsInt[ i].x >= clipMax.x) clip = YES;
+						if( ptsInt[ i].y >= clipMax.y) clip = YES;
 					}
 					
 					if( clip)
@@ -2664,7 +2681,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 						long newNo;
 						
 						pTemp = (NSPointInt*) malloc( sizeof(NSPointInt) * 4 * no);
-						CLIP_Polygon( ptsInt, no, pTemp, &newNo, width, pixArray.count);
+						CLIP_Polygon( ptsInt, no, pTemp, &newNo, clipMin, clipMax);
 						
 						free( ptsInt);
 						ptsInt = pTemp;

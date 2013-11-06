@@ -691,6 +691,20 @@ static NSDate *lastWarningDate = nil;
 	return YES;
 }
 
++(BOOL) hasMacOSXSyrah
+{
+    SInt32 OSXversionMajor, OSXversionMinor;
+    if(Gestalt(gestaltSystemVersionMajor, &OSXversionMajor) == noErr && Gestalt(gestaltSystemVersionMinor, &OSXversionMinor) == noErr)
+    {
+        if(OSXversionMajor == 10 && OSXversionMinor >= 10)
+        {
+            return YES;
+        }
+    }
+    
+    return NO;
+}
+
 +(BOOL) hasMacOSXMaverick
 {
 	OSErr err;
@@ -4043,15 +4057,17 @@ static BOOL initialized = NO;
     [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"UseOpenJpegForJPEG2000"];
     [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"useDCMTKForJP2K"];
     
-    if( [AppController hasMacOSXMaverick])
+    if( [AppController hasMacOSXSyrah])
     {
-        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideMaverickWarning"] == NO)
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideSyrahWarning"] == NO)
 		{
 			NSAlert* alert = [[NSAlert new] autorelease];
 			[alert setMessageText: NSLocalizedString( @"Mac OS Version", nil)];
-			[alert setInformativeText: NSLocalizedString( @"This version of OsiriX has not been validated or certified for this version of MacOS. Bugs, errors and instabilities can occur. Upgrade to latest version of OsiriX.", nil)];
+			[alert setInformativeText: NSLocalizedString( @"This version of OsiriX has not been validated or certified for this version of MacOS. Bugs, errors and instabilities can occur. Upgrade to latest version of OsiriX to solve this problem.", nil)];
 //			[alert setShowsSuppressionButton:YES ];
 			[alert addButtonWithTitle: NSLocalizedString( @"OK", nil)];
+            
+            [alert runModal];
             
 //			if ([[alert suppressionButton] state] == NSOnState)
 //				[[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"hideMaverickWarning"];

@@ -5534,47 +5534,51 @@ static NSConditionLock *threadLock = nil;
 		
 		for( NSManagedObject *obj in objectsToDelete)
 		{
-            // ********* SERIES
-            if( [obj valueForKey:@"series"] != series)
-			{
-				series = [obj valueForKey:@"series"];
-				
-				if([seriesSet containsObject: series] == NO)
-				{
-					if( series)
-						[seriesSet addObject: series];
-					
-					// Is a viewer containing this series opened? -> close it
-					for( ViewerController *vc in [ViewerController getDisplayed2DViewers])
-					{
-						if( series == [[[vc fileList] objectAtIndex: 0] valueForKey:@"series"])
-							[[vc window] close];
-					}
-				}
-				
-				// ********* STUDY
-				if( [series valueForKey:@"study"] != study)
-				{
-					study = [series valueForKey:@"study"];
-					
-					if([studiesSet containsObject: study] == NO)
-					{
-						if( study)
-							[studiesSet addObject: study];
-						
-						// Is a viewer containing this series opened? -> close it
-						for( ViewerController *vc in [ViewerController getDisplayed2DViewers])
-						{
-							if( study == [[[vc fileList] objectAtIndex: 0] valueForKeyPath:@"series.study"])
-								[vc buildMatrixPreview];
-						}
-					}
-				}
-			}
+            @autoreleasepool
+            {
+                // ********* SERIES
+                if( [obj valueForKey:@"series"] != series)
+                {
+                    series = [obj valueForKey:@"series"];
+                    
+                    if([seriesSet containsObject: series] == NO)
+                    {
+                        if( series)
+                            [seriesSet addObject: series];
+                        
+                        // Is a viewer containing this series opened? -> close it
+                        for( ViewerController *vc in [ViewerController getDisplayed2DViewers])
+                        {
+                            if( series == [[[vc fileList] objectAtIndex: 0] valueForKey:@"series"])
+                                [[vc window] close];
+                        }
+                    }
+                    
+                    // ********* STUDY
+                    if( [series valueForKey:@"study"] != study)
+                    {
+                        study = [series valueForKey:@"study"];
+                        
+                        if([studiesSet containsObject: study] == NO)
+                        {
+                            if( study)
+                                [studiesSet addObject: study];
+                            
+                            // Is a viewer containing this series opened? -> close it
+                            for( ViewerController *vc in [ViewerController getDisplayed2DViewers])
+                            {
+                                if( study == [[[vc fileList] objectAtIndex: 0] valueForKeyPath:@"series.study"])
+                                    [vc buildMatrixPreview];
+                            }
+                        }
+                    }
+                }
+            }
         }
         
         for ( NSManagedObject *obj in objectsToDelete)
-			[database.managedObjectContext deleteObject:obj];
+            [database.managedObjectContext deleteObject:obj];
+			
 	}
 	@catch ( NSException *e)
 	{
@@ -5592,53 +5596,59 @@ static NSConditionLock *threadLock = nil;
 		// Remove series without images !
 		for (DicomSeries* series in seriesSet)
 		{
-			@try
-			{
-				if ([series isDeleted] == NO)
+            @autoreleasepool
+            {
+                @try
                 {
-                    if ([series.images count] == 0)
+                    if ([series isDeleted] == NO)
                     {
-                        [database.managedObjectContext deleteObject:series];
-                    }
-                    else
-                    {
-                        series.numberOfImages = [NSNumber numberWithInt:0];
-                        series.thumbnail = nil;
+                        if ([series.images count] == 0)
+                        {
+                            [database.managedObjectContext deleteObject:series];
+                        }
+                        else
+                        {
+                            series.numberOfImages = [NSNumber numberWithInt:0];
+                            series.thumbnail = nil;
+                        }
                     }
                 }
-			}
-			@catch (NSException* e)
-			{
-                N2LogExceptionWithStackTrace(e/*, @"context deleteObject: series"*/);
-			}
+                @catch (NSException* e)
+                {
+                    N2LogExceptionWithStackTrace(e/*, @"context deleteObject: series"*/);
+                }
+            }
 		}
         
 		// Remove studies without series !
 		for( DicomStudy *study in studiesSet)
 		{
-            @try
+            @autoreleasepool
             {
-                if( self.comparativePatientUID && [self.comparativePatientUID compare: study.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
-                    refreshComparative = YES;
-                
-                if( [study isDeleted] == NO)
+                @try
                 {
-                    if( [study.imageSeries count] == 0)
+                    if( self.comparativePatientUID && [self.comparativePatientUID compare: study.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
+                        refreshComparative = YES;
+                    
+                    if( [study isDeleted] == NO)
                     {
-                        NSLog( @"Delete Study: %@ - %@", study.patientID, study.studyInstanceUID);
-                        
-                        [database.managedObjectContext deleteObject:study];
-                    }
-                    else
-                    {
-                        [study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
-                        [study setValue:[study valueForKey: @"modalities"] forKey:@"modality"];
+                        if( [study.imageSeries count] == 0)
+                        {
+                            NSLog( @"Delete Study: %@ - %@", study.patientID, study.studyInstanceUID);
+                            
+                            [database.managedObjectContext deleteObject:study];
+                        }
+                        else
+                        {
+                            [study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
+                            [study setValue:[study valueForKey: @"modalities"] forKey:@"modality"];
+                        }
                     }
                 }
-            }
-            @catch( NSException *e)
-            {
-                N2LogExceptionWithStackTrace(e/*, @"context deleteObject: study"*/);
+                @catch( NSException *e)
+                {
+                    N2LogExceptionWithStackTrace(e/*, @"context deleteObject: study"*/);
+                }
             }
 		}
         

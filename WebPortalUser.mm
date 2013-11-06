@@ -26,6 +26,7 @@
 #import "QueryController.h"
 #import "DicomStudy.h"
 #import "DCMTKStudyQueryNode.h"
+#import "WebPortalResponse.h"
 
 static PSGenerator *generator = nil;
 static NSMutableDictionary *studiesForUserCache = nil;
@@ -632,8 +633,8 @@ static NSMutableDictionary *studiesForUserCache = nil;
             if( [object isKindOfClass: [DicomStudy class]] || [object isKindOfClass: [WebPortalUser class]] || [object isKindOfClass: [WebPortalStudy class]])
             {
                 [studiesForUserCache removeAllObjects];
+                [DicomStudyTransformer clearOtherStudiesForThisPatientCache];
                 return;
-                
             }
         }
         
@@ -649,6 +650,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
             if( [object isKindOfClass: [WebPortalUser class]])
             {
                 [studiesForUserCache removeAllObjects];
+                [DicomStudyTransformer clearOtherStudiesForThisPatientCache];
                 return;
             }
         }

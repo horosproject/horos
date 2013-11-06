@@ -70,10 +70,10 @@
                 
                 if( dstPath.length)
                 {
-                    #define USECORESERVICESFORCOPY 1
+//                    #define USECORESERVICESFORCOPY 1
                     
                     #ifdef USECORESERVICESFORCOPY
-                    char *targetPath = nil;
+                    xxx char *targetPath = nil;
                     OptionBits options = kFSFileOperationSkipSourcePermissionErrors + kFSFileOperationSkipPreflight;
                     OSStatus err = FSPathCopyObjectSync( [srcPath UTF8String], [[dstPath stringByDeletingLastPathComponent] UTF8String], (CFStringRef) [dstPath lastPathComponent], &targetPath, options);
                     

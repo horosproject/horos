@@ -552,25 +552,26 @@ static id aedesc_to_id(AEDesc *desc)
     NSString* templatePath = nil;
     
     NSString* templatesDirPath = [[self class] resolvedDatabaseWordTemplatesDirPath];
-    if ([[NSFileManager defaultManager] fileExistsAtPath:templatesDirPath]) {
+    if ([[NSFileManager defaultManager] fileExistsAtPath:templatesDirPath])
+    {
         NSMutableArray* templatesDirPathContents = [[[[NSFileManager defaultManager] contentsOfDirectoryAtPath:templatesDirPath error:NULL] mutableCopy] autorelease];
         for (NSInteger i = (long)templatesDirPathContents.count-1; i >= 0; --i)
-            if (![[templatesDirPathContents objectAtIndex:i] hasPrefix:@"OsiriX "])
+            if (![[templatesDirPathContents objectAtIndex:i] hasPrefix: @"OsiriX "])
                 [templatesDirPathContents removeObjectAtIndex:i];
         if ([templatesDirPathContents count] == 1)
             inTemplateName = [templatesDirPathContents objectAtIndex:0];
         
-        templatePath = [templatesDirPath stringByAppendingPathComponent:inTemplateName];
+        templatePath = [templatesDirPath stringByAppendingPathComponent: [@"OsiriX " stringByAppendingString: inTemplateName]];
     }
-    else {
+    else
         templatePath = [[templatesDirPath stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"ReportTemplate.doc"];
-    }
     
     if (![[NSFileManager defaultManager] fileExistsAtPath:templatePath])
     {
         NSRunCriticalAlertPanel( NSLocalizedString( @"Microsoft Word", nil),  NSLocalizedString(@"I cannot find the OsiriX Word Template doc file.", nil), NSLocalizedString(@"OK", nil), nil, nil);
         return NO;
     }
+    
 	NSString* source =
     @"on run argv\n"
     @"  set dataSourceFileUnix to (item 1 of argv)\n"

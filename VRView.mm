@@ -438,26 +438,53 @@ public:
 	return linearOpacity;
 }
 	
-//+ (BOOL) getCroppingBox:(double*) a :(vtkVolume *) volume :(vtkBoxWidget*) croppingBox
-//{
-//	if( volume == nil) return NO;
-//	if( croppingBox == nil) return NO;
-//	
-//	vtkVolumeMapper *mapper = (vtkVolumeMapper*) volume->GetMapper();
-//	if( mapper)
-//	{
-//		// cropping box
-//		vtkPolyData *pd = vtkPolyData::New();
-//		croppingBox->GetPolyData(pd);
-//		
-//		vtkTransform *Transform = vtkTransform::New();
-//		Transform->SetMatrix(volume->GetUserMatrix());
-//		Transform->Push();
-//		Transform->Inverse();
-//		
-//		double min[3], max[3];
-//		double pointA[3], pointB[3];
-//			
++ (BOOL) getCroppingBox:(double*) a :(vtkVolume *) volume :(vtkBoxWidget*) croppingBox
+{
+	if( volume == nil) return NO;
+	if( croppingBox == nil) return NO;
+	
+	vtkVolumeMapper *mapper = (vtkVolumeMapper*) volume->GetMapper();
+	if( mapper)
+	{
+		// cropping box
+		vtkPolyData *pd = vtkPolyData::New();
+		croppingBox->GetPolyData(pd);
+		
+		vtkTransform *Transform = vtkTransform::New();
+		Transform->SetMatrix(volume->GetUserMatrix());
+		Transform->Push();
+		Transform->Inverse();
+		
+		double min[3], max[3];
+		double pointA[3], pointB[3];
+        
+        for( int i = 0 ; i < 8; i++)
+        {
+            pd->GetPoint( i, pointA);
+            NSLog( @"%f %f %f", pointA[ 0], pointA[ 1], pointA[ 2]);
+            
+            if( i == 0)
+            {
+                min[ 0] = pointA[ 0];
+                min[ 1] = pointA[ 1];
+                min[ 2] = pointA[ 2];
+                max[ 0] = pointA[ 0];
+                max[ 1] = pointA[ 1];
+                max[ 2] = pointA[ 2];
+            }
+            else
+            {
+                if( pointA[ 0] < min[ 0]) min[ 0] = pointA[ 0];
+                if( pointA[ 1] < min[ 1]) min[ 1] = pointA[ 1];
+                if( pointA[ 2] < min[ 2]) min[ 2] = pointA[ 2];
+                
+                if( pointA[ 0] > max[ 0]) max[ 0] = pointA[ 0];
+                if( pointA[ 1] > max[ 1]) max[ 1] = pointA[ 1];
+                if( pointA[ 2] > max[ 2]) max[ 2] = pointA[ 2];
+            }
+        }
+        
+        
 //		pd->GetPoint(8, pointA);	pd->GetPoint(9, pointB);
 //		min[0] = pointA[0];			max[0] = pointB[0];
 //
@@ -466,42 +493,42 @@ public:
 //		
 //		pd->GetPoint(12, pointA);	pd->GetPoint(13, pointB);
 //		min[2] = pointA[2];			max[2] = pointB[2];
-//
+
 //		Transform->TransformPoint( min, min);
 //		Transform->TransformPoint (max, max);
-//		
-//		a[ 0] = min[ 0];
-//		a[ 2] = min[ 1];
-//		a[ 4] = min[ 2];
-//
-//		a[ 1] = max[ 0];
-//		a[ 3] = max[ 1];
-//		a[ 5] = max[ 2];
-//		
-//		double origin[3];
-//		volume->GetPosition(origin);	//GetOrigin
-//		
-//		a[0] -= origin[0];		a[1] -= origin[0];
-//		a[2] -= origin[1];		a[3] -= origin[1];
-//		a[4] -= origin[2];		a[5] -= origin[2];
-//		
-//		double temp;
-//		if((a[0]) > (a[1]))
-//		{temp = a[0]; a[0] = a[1]; a[1] = temp;}
-//		
-//		if((a[2]) > (a[3]))
-//		{temp = a[2]; a[2] = a[3]; a[3] = temp;}
-//		
-//		if((a[4]) > (a[5]))
-//		{temp = a[4]; a[4] = a[5]; a[5] = temp;}
-//		
-//		pd->Delete();
-//		Transform->Delete();
-//		
-//		return YES;
-//	}
-//	else return NO;
-//}
+		
+		a[ 0] = min[ 0];
+		a[ 2] = min[ 1];
+		a[ 4] = min[ 2];
+
+		a[ 1] = max[ 0];
+		a[ 3] = max[ 1];
+		a[ 5] = max[ 2];
+		
+		double origin[3];
+		volume->GetPosition(origin);	//GetOrigin
+		
+		a[0] -= origin[0];		a[1] -= origin[0];
+		a[2] -= origin[1];		a[3] -= origin[1];
+		a[4] -= origin[2];		a[5] -= origin[2];
+		
+		double temp;
+		if((a[0]) > (a[1]))
+		{temp = a[0]; a[0] = a[1]; a[1] = temp;}
+		
+		if((a[2]) > (a[3]))
+		{temp = a[2]; a[2] = a[3]; a[3] = temp;}
+		
+		if((a[4]) > (a[5]))
+		{temp = a[4]; a[4] = a[5]; a[5] = temp;}
+		
+		pd->Delete();
+		Transform->Delete();
+		
+		return YES;
+	}
+	else return NO;
+}
 
 //+ (void) setCroppingBox:(double*) a :(vtkVolume*) volume
 //{
@@ -4557,7 +4584,70 @@ public:
 	
 	for( i = 0 ; i < stackMax ; i++)
 		[ROIList addObject: [[[ROI alloc] initWithType: tCPolygon :[fObject pixelSpacingX]*factor :[fObject pixelSpacingY]*factor :[DCMPix originCorrectedAccordingToOrientation: fObject]] autorelease]];
-		
+    
+    // Clip the polygons to the crop box?
+    NSValue *minClip = [NSValue valueWithPoint: NSMakePoint( 0, 0)];
+    NSValue *maxClip = [NSValue valueWithPoint: NSMakePoint( 0, 0)];
+    NSPoint zClip = NSMakePoint( 0, stackMax);
+    double a[ 6];
+    BOOL applyInsideCroppBox = NO;
+    
+    if( [VRView getCroppingBox: a :volume :croppingBox])
+    {
+        int width = [firstObject pwidth], height = [firstObject pheight], depth = [pixList count], slice = width * height;
+        
+		for( int x = 0 ; x < 6; x++)
+			a[ x] /= superSampling;
+        
+		float sliceThickness = [firstObject sliceInterval];
+        
+		if( sliceThickness == 0)
+			sliceThickness = [firstObject sliceThickness];
+        
+		a[ 4] *= [firstObject pixelSpacingX];
+		a[ 4] /= sliceThickness;
+		a[ 5] *= [firstObject pixelSpacingX];
+		a[ 5] /= sliceThickness;
+        
+		a[ 2] *= [firstObject pixelSpacingX] / [firstObject pixelSpacingY];
+		a[ 3] *= [firstObject pixelSpacingX] / [firstObject pixelSpacingY];
+        
+        a[ 0] --;   a[ 1] ++;
+        a[ 2] --;   a[ 3] ++;
+        a[ 4] --;   a[ 5] ++;
+        
+		a[ 0] = a[ 0] >= width ? width : a[ 0];		a[ 1] = a[ 1] >= width ? width : a[ 1];
+		a[ 2] = a[ 2] >= height ? height : a[ 2];	a[ 3] = a[ 3] >= height ? height : a[ 3];
+		a[ 4] = a[ 4] >= depth ? depth : a[ 4];		a[ 5] = a[ 5] >= depth ? depth : a[ 5];
+        
+		a[ 0] = a[ 0] < 0 ? 0 : a[ 0];		a[ 1] = a[ 1] < 0 ? 0 : a[ 1];
+		a[ 2] = a[ 2] < 0 ? 0 : a[ 2];		a[ 3] = a[ 3] < 0 ? 0 : a[ 3];
+		a[ 4] = a[ 4] < 0 ? 0 : a[ 4];		a[ 5] = a[ 5] < 0 ? 0 : a[ 5];
+        
+        applyInsideCroppBox = YES;
+        
+        switch( stackOrientation)
+        {
+            case 0:
+                minClip = [NSValue valueWithPoint: NSMakePoint( floor(a[ 2]), floor( a[ 4]))];
+                maxClip = [NSValue valueWithPoint: NSMakePoint( ceil(a[ 3]), ceil( a[ 5]))];
+                zClip = NSMakePoint( floor( a[ 0]), ceil( a[ 1]));
+            break;
+                
+            case 1:
+                minClip = [NSValue valueWithPoint: NSMakePoint( floor(a[ 0]), floor( a[ 4]))];
+                maxClip = [NSValue valueWithPoint: NSMakePoint( ceil(a[ 1]), ceil( a[ 5]))];
+                zClip = NSMakePoint( floor( a[ 2]), ceil( a[ 3]));
+            break;
+                
+            case 2:
+                minClip = [NSValue valueWithPoint: NSMakePoint( floor(a[ 0]), floor( a[ 2]))];
+                maxClip = [NSValue valueWithPoint: NSMakePoint( ceil(a[ 1]), ceil( a[ 3]))];
+                zClip = NSMakePoint( floor( a[ 4]), ceil( a[ 5]));
+            break;
+        }
+    }
+    
 	for( tt = 0; tt < roiPts->GetNumberOfPoints(); tt++)
 	{
 		float	point1[ 3], point2[ 3];
@@ -4707,38 +4797,37 @@ public:
 				ptInt[ 1] = (long) (tempPoint3D[1] + 0.5);
 				ptInt[ 2] = (long) (tempPoint3D[2] + 0.5);
 				
-				
 				if( needToFlip) 
 					ptInt[ 2] = [pxList count] - ptInt[ 2] -1;
 				
-				switch( stackOrientation)
-				{
-					case 0:	
-						roiID = ptInt[0];
-						
-						if( roiID >= 0 && roiID < stackMax)
-							[[[ROIList objectAtIndex: roiID] points] addObject: [MyPoint point: NSMakePoint(ptInt[1], ptInt[2])]];
-					break;
-					
-					case 1:
-						roiID = ptInt[1];
-						
-						if( roiID >= 0 && roiID < stackMax)
-							[[[ROIList objectAtIndex: roiID] points] addObject: [MyPoint point: NSMakePoint(ptInt[0], ptInt[2])]];
-					break;
-					
-					case 2:
-						roiID = ptInt[2];
-						
-						if( roiID >= 0 && roiID < stackMax)
-							[[[ROIList objectAtIndex: roiID] points] addObject: [MyPoint point: NSMakePoint(ptInt[0], ptInt[1])]];
-					break;
-				}
+                switch( stackOrientation)
+                {
+                    case 0:	
+                        roiID = ptInt[0];
+                        
+                        if( roiID >= zClip.x && roiID < zClip.y)
+                            [[[ROIList objectAtIndex: roiID] points] addObject: [MyPoint point: NSMakePoint(ptInt[1], ptInt[2])]];
+                    break;
+                    
+                    case 1:
+                        roiID = ptInt[1];
+                        
+                        if( roiID >= zClip.x && roiID < zClip.y)
+                            [[[ROIList objectAtIndex: roiID] points] addObject: [MyPoint point: NSMakePoint(ptInt[0], ptInt[2])]];
+                    break;
+                    
+                    case 2:
+                        roiID = ptInt[2];
+                        
+                        if( roiID >= zClip.x && roiID < zClip.y)
+                            [[[ROIList objectAtIndex: roiID] points] addObject: [MyPoint point: NSMakePoint(ptInt[0], ptInt[1])]];
+                    break;
+                }
 			}
 		}
 	}
-	
-	Transform->Delete();
+    
+    Transform->Delete();
 	
 	BOOL	addition = NO;
 	float	newVal = 0;
@@ -4786,7 +4875,7 @@ public:
         
         for ( i = 0; i < stackMax; i++ )
         {
-            VRViewOperation *op = [[[VRViewOperation alloc] initWithController: controller objects: [NSArray arrayWithObjects: [NSNumber numberWithInt:i], [NSNumber numberWithInt:stackOrientation], [NSNumber numberWithInt: c], [ROIList objectAtIndex: i], [NSNumber numberWithInt: blendedSeries], [NSNumber numberWithBool: addition], [NSNumber numberWithFloat: newVal], nil]] autorelease];
+            VRViewOperation *op = [[[VRViewOperation alloc] initWithController: controller objects: [NSArray arrayWithObjects: [NSNumber numberWithInt:i], [NSNumber numberWithInt:stackOrientation], [NSNumber numberWithInt: c], [ROIList objectAtIndex: i], [NSNumber numberWithInt: blendedSeries], [NSNumber numberWithBool: addition], [NSNumber numberWithFloat: newVal], minClip, maxClip, nil]] autorelease];
             
             [queue addOperation: op];
         }

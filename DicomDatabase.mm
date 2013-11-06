@@ -2577,13 +2577,15 @@ static BOOL protectionAgainstReentry = NO;
                             {
                                 @try
                                 {
-                                    char *targetPath = nil;
-                                    OptionBits options = kFSFileOperationSkipSourcePermissionErrors + kFSFileOperationSkipPreflight;
-                                    OSStatus err = FSPathCopyObjectSync([srcPath fileSystemRepresentation], [[tempDstPath stringByDeletingLastPathComponent] fileSystemRepresentation], (CFStringRef)[tempDstPath lastPathComponent], &targetPath, options);
-                                    [[NSFileManager defaultManager] moveItemAtPath: tempDstPath toPath: dstPath error: nil];
+//                                    char *targetPath = nil;
+//                                    OptionBits options = kFSFileOperationSkipSourcePermissionErrors + kFSFileOperationSkipPreflight;
+//                                    OSStatus err = FSPathCopyObjectSync([srcPath fileSystemRepresentation], [[tempDstPath stringByDeletingLastPathComponent] fileSystemRepresentation], (CFStringRef)[tempDstPath lastPathComponent], &targetPath, options);
+//                                    [[NSFileManager defaultManager] moveItemAtPath: tempDstPath toPath: dstPath error: nil];
                                     
-                                    if( err != 0)
-                                        NSLog( @"***** copyItemAtPath %@ failed : %d", srcPath, (int) err);
+                                    ;
+                                    
+                                    if( [[NSFileManager defaultManager] copyItemAtPath: srcPath toPath: dstPath error: nil] == NO)
+                                        NSLog( @"***** copyItemAtPath %@ failed", srcPath);
                                     else
                                     {
                                         if( [extension isEqualToString: @"dcm"] == NO)
@@ -2704,7 +2706,6 @@ static BOOL protectionAgainstReentry = NO;
                             @try
                             {
                                 BrowserController* bc = [BrowserController currentBrowser];
-                                DicomDatabase* mdatabase = self.isMainDatabase? self : self.mainDatabase;
                                 
                                 @try
                                 {
