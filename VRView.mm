@@ -461,7 +461,9 @@ public:
         for( int i = 0 ; i < 8; i++)
         {
             pd->GetPoint( i, pointA);
-            NSLog( @"%f %f %f", pointA[ 0], pointA[ 1], pointA[ 2]);
+//            NSLog( @"%f %f %f", pointA[ 0], pointA[ 1], pointA[ 2]);
+            
+            Transform->TransformPoint( pointA, pointA);
             
             if( i == 0)
             {
