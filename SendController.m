@@ -521,6 +521,9 @@ static volatile int sendControllerObjects = 0;
         if( operations.count == maxThreads-1)
             range.length = files.count - range.location;
         
+        if( range.location + range.length > files.count)
+            range.length = files.count-range.location;
+        
         if( range.length)
         {
             loc += range.length;

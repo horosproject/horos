@@ -22,10 +22,6 @@ extern NSString* const O2ScreenCapturesSeriesName;
 
 @class N2MutableUInteger, DicomAlbum, DataNodeIdentifier;
 
-/*
- This class currently only does 1/1000 of what it is planned to do later.
- This will be a BrowserController's backbone.
- */
 @interface DicomDatabase : N2ManagedDatabase {
 	N2MutableUInteger* _dataFileIndex;
 	NSString* _baseDirPath;
