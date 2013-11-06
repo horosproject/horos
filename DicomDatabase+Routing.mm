@@ -78,7 +78,7 @@
 	if (routingTimer)
 		return;
 	
-	routingTimer = [[NSTimer timerWithTimeInterval:30 target:self selector:@selector(_routingTimerCallback:) userInfo:nil repeats:YES] retain];
+	routingTimer = [[NSTimer timerWithTimeInterval:10 target:self selector:@selector(_routingTimerCallback:) userInfo:nil repeats:YES] retain];
 	[[NSRunLoop mainRunLoop] addTimer:routingTimer forMode:NSModalPanelRunLoopMode];
 	[[NSRunLoop mainRunLoop] addTimer:routingTimer forMode:NSDefaultRunLoopMode];
 }
@@ -352,42 +352,26 @@
 			NSArray	*result = nil;
 			
 			@try {
-				if ([[routingRule objectForKey:@"filterType"] intValue] == 0)
-					predicate = [DicomDatabase predicateForSmartAlbumFilter:[routingRule objectForKey:@"filter"]];
-				else { // GeneratedByOsiriX filterType
-					/*if (generatedByOsiriX)
-					 predicate = [NSPredicate predicateWithValue: YES];
-					 else
-					 {
-					 if( manually)
-					 {
-					 NSMutableArray *studies = [NSMutableArray arrayWithArray: [newImages valueForKeyPath: @"series.study"]];
-					 [studies removeDuplicatedObjects];
-					 for( DicomStudy *study in studies)
-					 {
-					 [study archiveAnnotationsAsDICOMSR];
-					 [study archiveReportAsDICOMSR];
-					 
-					 for( DicomImage *im in [[[study roiSRSeries] valueForKey: @"images"] allObjects])
-					 [im setValue: [NSNumber numberWithBool: YES] forKey: @"generatedByOsiriX"];
-					 
-					 for( DicomImage *im in [[[study reportSRSeries] valueForKey: @"images"] allObjects])
-					 [im setValue: [NSNumber numberWithBool: YES] forKey: @"generatedByOsiriX"];
-					 
-					 [[study annotationsSRImage] setValue: [NSNumber numberWithBool: YES] forKey: @"generatedByOsiriX"];
-					 }
-					 */
-					predicate = [NSPredicate predicateWithFormat:@"generatedByOsiriX == YES"];
-					/*}
-					 else
-					 predicate = [NSPredicate predicateWithValue: NO];
-					 }*/
-				}
+                switch( [[routingRule objectForKey:@"filterType"] intValue])
+                {
+                    case 0:
+                        predicate = [DicomDatabase predicateForSmartAlbumFilter:[routingRule objectForKey:@"filter"]];
+                    break;
+                        
+                    case 1:
+                        predicate = [NSPredicate predicateWithFormat:@"generatedByOsiriX == YES"];
+                        break;
+                        
+                    case 2:
+                        predicate = [NSPredicate predicateWithFormat:@"importedFile == YES"];
+                        break;
+                }
 				
 				if (predicate)
 					result = [newImages filteredArrayUsingPredicate:predicate];
 				
-				if (result.count) {
+				if (result.count)
+                {
 					if ([[routingRule valueForKey:@"previousStudies"] intValue] > 0 && [[routingRule objectForKey: @"filterType"] intValue] == 0)
 					{
 						NSMutableDictionary *patients = [NSMutableDictionary dictionary];
@@ -401,8 +385,6 @@
 						
 						for( NSString *patientUID in [patients allKeys])
 						{
-							NSLog( @"%@", patientUID);
-							
 							id study = [patients objectForKey: patientUID];
 							
                             // Pourquoi n'y a-t-il pas de lock? Oui il en faut bien mais pas pendant TOUT le routage... seulement ici:

@@ -2480,7 +2480,6 @@ static BOOL protectionAgainstReentry = NO;
 				}
 			}
             if (self.isLocal && returnArray && [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOROUTINGACTIVATED"])
-                
                 [self applyRoutingRules:nil toImages:addedImageObjects];
 		}
 		@catch( NSException *ne)
