@@ -77,9 +77,7 @@
 #ifdef USECORESERVICESFORCOPY
                         //We want an atomic copy: use a temp path for copy, then rename
                         NSString *tempDstPath = [dstPath stringByAppendingPathExtension:@"temp"];
-                        char *targetPath = nil;
-                        OptionBits options = kFSFileOperationSkipSourcePermissionErrors + kFSFileOperationSkipPreflight;
-                        OSStatus err = FSPathCopyObjectSync( srcPath.fileSystemRepresentation, tempDstPath.stringByDeletingLastPathComponent.fileSystemRepresentation, (CFStringRef)tempDstPath.lastPathComponent, &targetPath, options);
+                        OSStatus err = FSPathCopyObjectSync( srcPath.fileSystemRepresentation, tempDstPath.stringByDeletingLastPathComponent.fileSystemRepresentation, (CFStringRef)tempDstPath.lastPathComponent, nil, 0);
                         if( [[NSFileManager defaultManager] moveItemAtPath: tempDstPath toPath: dstPath error: nil])
 #else
                         if( [[NSFileManager defaultManager] copyItemAtPath: srcPath toPath: dstPath error: nil])
