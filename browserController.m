@@ -7252,20 +7252,17 @@ static NSConditionLock *threadLock = nil;
                 NSNumber *propagateSettings = nil;
                 NSNumber *syncSettings = nil;
                 NSNumber *SYNCSERIES = nil;
+                NSNumber *syncButtonBehaviorIsBetweenStudies = nil;
                 
                 for( NSDictionary *dict in viewers)
                 {
                     NSString *studyUID = [dict valueForKey:@"studyInstanceUID"];
                     NSString *seriesUID = [dict valueForKey:@"seriesInstanceUID"];
                     
-                    if( [dict valueForKey: @"propagateSettings"])
-                        propagateSettings = [dict valueForKey: @"propagateSettings"];
-                    
-                    if( [dict valueForKey: @"syncSettings"])
-                        syncSettings = [dict valueForKey: @"syncSettings"];
-                    
-                    if( [dict valueForKey: @"SYNCSERIES"])
-                        SYNCSERIES = [dict valueForKey: @"SYNCSERIES"];
+                    propagateSettings = [dict valueForKey: @"propagateSettings"];
+                    syncSettings = [dict valueForKey: @"syncSettings"];
+                    SYNCSERIES = [dict valueForKey: @"SYNCSERIES"];
+                    syncButtonBehaviorIsBetweenStudies = [dict valueForKey: @"SyncButtonBehaviorIsBetweenStudies"];
                     
                     NSArray	 *series4D = [seriesUID componentsSeparatedByString:@"\\**\\"];
                     // Find the corresponding study & 4D series
@@ -7484,7 +7481,7 @@ static NSConditionLock *threadLock = nil;
                         [v buildMatrixPreview: YES];
                     }
                     
-                    if( SYNCSERIES) //
+                    if( [syncButtonBehaviorIsBetweenStudies boolValue] && [SYNCSERIES boolValue])
                         [ViewerController activateSYNCSERIESBetweenStudies];
                 }
             }
@@ -17030,6 +17027,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 				dicomFiles2Export = [[[dicomFiles2Export filteredArrayUsingPredicate: predicate] mutableCopy] autorelease];
 				
 				predicate = [NSPredicate predicateWithFormat: @"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", @"OsiriX No Autodeletion", @"5005"];
+				dicomFiles2Export = [[[dicomFiles2Export filteredArrayUsingPredicate: predicate] mutableCopy] autorelease];
+                
+                predicate = [NSPredicate predicateWithFormat: @"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", @"OsiriX WindowsState SR", @"5006"];
 				dicomFiles2Export = [[[dicomFiles2Export filteredArrayUsingPredicate: predicate] mutableCopy] autorelease];
 			}
 			@catch (NSException *e)

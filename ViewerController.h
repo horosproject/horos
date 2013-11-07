@@ -776,6 +776,7 @@ enum
 - (IBAction) keyImageDisplayButton:(id) sender;
 - (void) adjustKeyImage;
 - (IBAction) saveWindowsState:(id) sender;
+- (IBAction) saveWindowsStateAsDICOMSR:(id) sender;
 - (IBAction) loadWindowsState:(id) sender;
 - (IBAction) resetWindowsState:(id) sender;
 - (void) buildMatrixPreview;

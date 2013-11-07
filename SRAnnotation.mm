@@ -223,6 +223,54 @@
 	return self;
 }
 
+- (id)initWithWindowsState:(NSData *) dict path:(NSString *) path forImage: (DicomImage*) im
+{
+	if (self = [super init])
+	{
+		_seriesInstanceUID = nil;
+		_DICOMSRDescription =  @"OsiriX WindowsState SR";
+		_DICOMSeriesNumber = @"5006";
+		
+		[_DICOMSRDescription retain];
+		[_DICOMSeriesNumber retain];
+		
+		document = new DSRDocument();
+		_newSR = NO;
+		OFCondition status = EC_Normal;
+		
+		// load old SR and replace as needed
+		if ([[NSFileManager defaultManager] fileExistsAtPath: path])
+		{
+			DcmFileFormat fileformat;
+			status  = fileformat.loadFile([path UTF8String]);
+			if (status.good())
+				status = document->read(*fileformat.getDataset());
+			
+			//clear old content	Don't want to UIDs if already created
+			if (status.good())
+				document->getTree().clear();
+		}
+		
+		// create new Doc
+		if (![[NSFileManager defaultManager] fileExistsAtPath: path] || !status.good())
+		{
+			_newSR = YES;
+			document->createNewDocument(DSRTypes::DT_BasicTextSR);
+		}
+        
+		document->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
+		document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1", "99HUG", "Windows State"));
+		
+		document->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent);
+		document->getTree().getCurrentContentItem().setConceptName( DSRCodedEntryValue("CODE_01", OFFIS_CODING_SCHEME_DESIGNATOR, "Description"));
+		
+		image = [im retain];
+		
+		_dataEncapsulated = [dict retain];
+	}
+	
+	return self;
+}
 
 - (id)initWithFileReport:(NSString *) file path:(NSString *) path forImage: (DicomImage*) im contentDate: (NSDate*) d
 {

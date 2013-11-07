@@ -664,6 +664,33 @@ static NSRecursiveLock *dbModifyLock = nil;
 	#endif
 }
 
+- (void) archiveWindowsStateAsDICOMSR
+{
+    NSLog( @"--- Windows State -> DICOM SR : %@", self.name);
+    
+    NSData *windowsState = self.windowsState;
+    
+    NSString *dstPath = [BrowserController.currentBrowser.database uniquePathForNewDataFileWithExtension: @"dcm"];
+    
+    SRAnnotation *r = [[[SRAnnotation alloc] initWithWindowsState: windowsState path:dstPath forImage: [[[self.series anyObject] valueForKey:@"images"] anyObject]] autorelease];
+    
+    [r writeToFileAtPath: dstPath];
+    
+    [self.managedObjectContext save: nil];
+    
+    DicomDatabase *idb = nil;
+    if( [[NSThread currentThread] isMainThread])
+        idb = BrowserController.currentBrowser.database;
+    else
+        idb = [BrowserController.currentBrowser.database independentDatabase];
+    
+    [idb addFilesAtPaths: [NSArray arrayWithObject: dstPath]
+       postNotifications: YES
+               dicomOnly: YES
+     rereadExistingItems: YES
+       generatedByOsiriX: YES];
+}
+
 - (void) archiveReportAsDICOMSR
 {
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"archiveReportsAndAnnotationsAsDICOMSR"] == NO)
@@ -1855,6 +1882,89 @@ static NSRecursiveLock *dbModifyLock = nil;
 			}
 		}
 
+        return [newArray lastObject];
+	}
+	@catch (NSException* e) {
+		N2LogExceptionWithStackTrace(e);
+	}
+	@finally {
+        [self.managedObjectContext unlock];
+    }
+	
+	return nil;
+}
+
+- (DicomImage*) windowsStateImage
+{
+	NSArray *images = nil;
+	
+	@try
+	{
+		images = [[[self reportSRSeries] valueForKey: @"images"] allObjects];
+		
+		if( [images count] > 1)
+		{
+			// Take the most recent image
+			NSSortDescriptor *sort = [[[NSSortDescriptor alloc] initWithKey: @"date" ascending: YES] autorelease];
+			images = [images sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]];
+		}
+	}
+	@catch (NSException * e)
+	{
+		N2LogExceptionWithStackTrace(e);
+	}
+	
+	return [images lastObject];
+}
+
+- (NSManagedObject *) windowsStateSRSeries
+{
+	NSSet* array = self.series;
+	if (array.count < 1) return nil;
+	
+	[self.managedObjectContext lock];
+	@try {
+        NSMutableArray *newArray = [NSMutableArray array];
+        
+		for( DicomSeries *series in array)
+		{
+			if( [[series valueForKey:@"id"] intValue] == 5006 && [[series valueForKey:@"name"] isEqualToString: @"OsiriX WindowsState SR"] == YES && [DCMAbstractSyntaxUID isStructuredReport:[series valueForKey:@"seriesSOPClassUID"]] == YES)
+				[newArray addObject:series];
+		}
+		
+		if( [newArray count] > 1)
+		{
+			NSLog( @"****** multiple (%d) reportSRSeries: Delete the extra series and merge the images...", (int) [newArray count]);
+			
+			@try
+			{
+				NSMutableSet *r = [[newArray lastObject] mutableSetValueForKey: @"images"];
+                
+				for( DicomSeries *i in newArray)
+				{
+					if( i != [newArray lastObject])
+					{
+						[r addObjectsFromArray: [[i valueForKey: @"images"] allObjects]];
+						
+						NSMutableSet *o = [i mutableSetValueForKey: @"images"];
+						[o setValue: [NSNumber numberWithBool: NO] forKeyPath: @"inDatabaseFolder"];
+						[o removeAllObjects];
+						[[self managedObjectContext] deleteObject: i];
+					}
+				}
+                
+                [self setNumberOfImages: nil];
+                
+				[self.managedObjectContext save:nil];
+                
+				[r setValue: [NSNumber numberWithBool: YES] forKeyPath: @"inDatabaseFolder"];
+			}
+			@catch (NSException * e)
+			{
+                N2LogExceptionWithStackTrace(e);
+			}
+		}
+        
         return [newArray lastObject];
 	}
 	@catch (NSException* e) {

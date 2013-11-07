@@ -1342,6 +1342,11 @@
                                     <action selector="saveWindowsState:" target="-1" id="13264"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="Save Workspace State as DICOM SR" id="za0-zz-olt">
+                                <connections>
+                                    <action selector="saveWindowsStateAsDICOMSR:" target="-1" id="yyV-BT-5J9"/>
+                                </connections>
+                            </menuItem>
                             <menuItem title="Load Workspace State" id="13132">
                                 <connections>
                                     <action selector="loadWindowsState:" target="-1" id="13215"/>

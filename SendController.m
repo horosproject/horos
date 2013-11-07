@@ -408,6 +408,9 @@ static volatile int sendControllerObjects = 0;
             
             predicate = [NSPredicate predicateWithFormat:@"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", @"OsiriX No Autodeletion", @"5005"];
             [a filterUsingPredicate:predicate];
+            
+            predicate = [NSPredicate predicateWithFormat:@"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", @"OsiriX WindowsState SR", @"5006"];
+            [a filterUsingPredicate:predicate];
         }
         
         @catch( NSException *e)

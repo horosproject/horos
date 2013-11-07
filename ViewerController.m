@@ -941,7 +941,17 @@ return YES;
     [ViewerController saveWindowsState];
 }
 
+- (IBAction) saveWindowsStateAsDICOMSR:(id) sender
+{
+    [ViewerController saveWindowsStateWithDICOMSR: YES];
+}
+
 + (void) saveWindowsState
+{
+    [ViewerController saveWindowsStateWithDICOMSR: [[NSUserDefaults standardUserDefaults] boolForKey: @"archiveWindowsStateAsDICOMSR"]];
+}
+
++ (void) saveWindowsStateWithDICOMSR: (BOOL) DICOMSR
 {
 	NSArray				*displayedViewers = [ViewerController getDisplayed2DViewers];
 	NSMutableArray		*state = [NSMutableArray array];
@@ -1067,14 +1077,13 @@ return YES;
             }
         }
         
-        for( NSManagedObject *study in studiesArray)
+        for( DicomStudy *study in studiesArray)
         {
             [study setValue: windowsState forKey:@"windowsState"];
+            
+            if( DICOMSR)
+                [study archiveWindowsStateAsDICOMSR];
         }
-        
-    //	[[NSFileManager defaultManager] removeFileAtPath: tmp handler:nil];
-            
-            
     }
     @catch (NSException *e) {
         N2LogExceptionWithStackTrace( e);

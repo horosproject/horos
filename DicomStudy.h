@@ -82,10 +82,13 @@
 - (DicomImage*) roiForImage: (DicomImage*) image inArray: (NSArray*) roisArray;
 - (DicomSeries *) roiSRSeries;
 - (DicomSeries *) reportSRSeries;
+- (DicomImage*) windowsStateImage;
+- (DicomSeries *) windowsStateSRSeries;
 - (DicomImage*) reportImage;
 - (DicomImage *) annotationsSRImage;
 - (void) archiveReportAsDICOMSR;
 - (void) archiveAnnotationsAsDICOMSR;
+- (void) archiveWindowsStateAsDICOMSR;
 - (BOOL) isHidden;
 - (BOOL) isDistant;
 - (void) setHidden: (BOOL) h;
