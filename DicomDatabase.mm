@@ -46,6 +46,7 @@
 #import "NSNotificationCenter+N2.h"
 #import "Wait.h"
 #import "WaitRendering.h"
+#include <copyfile.h>
 
 NSString* const CurrentDatabaseVersion = @"2.5";
 
@@ -454,7 +455,7 @@ static DicomDatabase* activeLocalDatabase = nil;
                 [NSThread.currentThread exitOperation];
             }
             
-            if (isNewFile)
+            if (isNewFile && ![p hasPrefix:@"/tmp/"])
                 [self addDefaultAlbums];
             [self modifyDefaultAlbums];
         
@@ -2561,39 +2562,40 @@ static BOOL protectionAgainstReentry = NO;
                             
                             dstPath = [self uniquePathForNewDataFileWithExtension:extension];
                             
-                            //We want an atomic copy: use a temp path for copy, then rename
-                            
-                            NSString *tempDstPath = [dstPath stringByAppendingPathExtension:@"temp"];
-                            
-        //#define USECORESERVICESFORCOPY 1
-        //
-        //#ifdef USECORESERVICESFORCOPY
+#define USECORESERVICESFORCOPY 1
+
                             try
                             {
                                 @try
                                 {
-//                                    char *targetPath = nil;
-//                                    OptionBits options = kFSFileOperationSkipSourcePermissionErrors + kFSFileOperationSkipPreflight;
-//                                    OSStatus err = FSPathCopyObjectSync([srcPath fileSystemRepresentation], [[tempDstPath stringByDeletingLastPathComponent] fileSystemRepresentation], (CFStringRef)[tempDstPath lastPathComponent], &targetPath, options);
-//                                    [[NSFileManager defaultManager] moveItemAtPath: tempDstPath toPath: dstPath error: nil];
-                                    
-                                    ;
-                                    
-                                    if( [[NSFileManager defaultManager] copyItemAtPath: srcPath toPath: dstPath error: nil] == NO)
-                                        NSLog( @"***** copyItemAtPath %@ failed", srcPath);
-                                    else
+                                    static NSString *oneCopyAtATime = @"oneCopyAtATime";
+                                    @synchronized( oneCopyAtATime)
                                     {
-                                        if( [extension isEqualToString: @"dcm"] == NO)
+#ifdef USECORESERVICESFORCOPY
+                                        //We want an atomic copy: use a temp path for copy, then rename
+                                        NSString *tempDstPath = [dstPath stringByAppendingPathExtension:@"temp"];
+                                        char *targetPath = nil;
+                                        OptionBits options = kFSFileOperationSkipSourcePermissionErrors + kFSFileOperationSkipPreflight;
+                                        OSStatus err = FSPathCopyObjectSync( srcPath.fileSystemRepresentation, tempDstPath.stringByDeletingLastPathComponent.fileSystemRepresentation, (CFStringRef)tempDstPath.lastPathComponent, &targetPath, options);
+                                        [[NSFileManager defaultManager] moveItemAtPath: tempDstPath toPath: dstPath error: nil];
+#else
+                                        if( [[NSFileManager defaultManager] copyItemAtPath: srcPath toPath: dstPath error: nil] == NO)
+                                            NSLog( @"***** copyItemAtPath %@ failed", srcPath);
+                                        else
+#endif
                                         {
-                                            if([DicomFile isDICOMFile:dstPath])
+                                            if( [extension isEqualToString: @"dcm"] == NO)
                                             {
-                                                NSString *newPathExtension = [[dstPath stringByDeletingPathExtension] stringByAppendingPathExtension: @"dcm"];
-                                                [[NSFileManager defaultManager] moveItemAtPath: dstPath toPath: newPathExtension error: nil];
-                                                dstPath = newPathExtension;
+                                                if([DicomFile isDICOMFile:dstPath])
+                                                {
+                                                    NSString *newPathExtension = [[dstPath stringByDeletingPathExtension] stringByAppendingPathExtension: @"dcm"];
+                                                    [[NSFileManager defaultManager] moveItemAtPath: dstPath toPath: newPathExtension error: nil];
+                                                    dstPath = newPathExtension;
+                                                }
                                             }
+                                            
+                                            [copiedFiles addObject: dstPath];
                                         }
-                                        
-                                        [copiedFiles addObject: dstPath];
                                     }
                                 }
                                 @catch (NSException *exception)
