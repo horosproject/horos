@@ -2572,10 +2572,8 @@ static BOOL protectionAgainstReentry = NO;
                                     @synchronized( oneCopyAtATime)
                                     {
 #ifdef USECORESERVICESFORCOPY
-                                        //We want an atomic copy: use a temp path for copy, then rename
-                                        NSString *tempDstPath = [dstPath stringByAppendingPathExtension:@"temp"];
-                                        OSStatus err = FSPathCopyObjectSync( srcPath.fileSystemRepresentation, tempDstPath.stringByDeletingLastPathComponent.fileSystemRepresentation, (CFStringRef)tempDstPath.lastPathComponent, nil, 0);
-                                        [[NSFileManager defaultManager] moveItemAtPath: tempDstPath toPath: dstPath error: nil];
+                                        NSTask *t = [NSTask launchedTaskWithLaunchPath: @"/bin/cp" arguments: @[srcPath, dstPath]];
+                                        [t waitUntilExit];
 #else
                                         if( [[NSFileManager defaultManager] copyItemAtPath: srcPath toPath: dstPath error: nil] == NO)
                                             NSLog( @"***** copyItemAtPath %@ failed", srcPath);
