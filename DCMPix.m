@@ -588,7 +588,7 @@ static inline void DrawRuns(	struct edge *active,
 			}
 			
 			long x = end - start;
-			
+			long xx = 0;
 			if( RGB == NO)
 			{
 				while( x-- >= 0)
@@ -602,7 +602,7 @@ static inline void DrawRuns(	struct edge *active,
                     if( values) (*ivalues++) = val;
                     if( ilocations)
                     {
-                        (*ilocations++) = start + x;
+                        (*ilocations++) = start + xx++;
                         (*ilocations++) = curY;
                     }
                     
@@ -632,7 +632,7 @@ static inline void DrawRuns(	struct edge *active,
                     if( values) (*ivalues++) = val;
                     if( ilocations)
                     {
-                        (*ilocations++) = start + x;
+                        (*ilocations++) = start + xx++;
                         (*ilocations++) = w;
                     }
                     
