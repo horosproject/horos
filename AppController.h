@@ -93,7 +93,7 @@ extern "C"
 //@end
 //#endif
 
-@class AppController, ToolbarPanelController, BonjourPublisher;
+@class AppController, ToolbarPanelController, ThumbnailsListPanel, BonjourPublisher;
 
 extern AppController* OsiriX;
 
@@ -157,6 +157,7 @@ extern AppController* OsiriX;
 + (void) pause __deprecated;
 + (void) resetToolbars;
 + (ToolbarPanelController*)toolbarForScreen:(NSScreen*)screen;
++ (ThumbnailsListPanel*)thumbnailsListPanelForScreen:(NSScreen*)screen;
 + (NSString*)printStackTrace:(NSException*)e __deprecated; // use -[NSException printStackTrace] form NSException+N2
 + (BOOL) isKDUEngineAvailable;
 
@@ -191,7 +192,7 @@ extern AppController* OsiriX;
 - (void) initTilingWindows;
 - (IBAction) tileWindows:(id)sender;  /**< Tile open window */
 - (IBAction) tile3DWindows:(id)sender; /**< Tile 3D open window */
-- (void) tileWindows:(id)sender windows: (NSMutableArray*) viewersList display2DViewerToolbar: (BOOL) display2DViewerToolbar;
+- (void) tileWindows:(id)sender windows: (NSMutableArray*) viewersList display2DViewerToolbar: (BOOL) display2DViewerToolbar displayThumbnailsList: (BOOL) displayThumbnailsList;
 - (void) scaleToFit:(id)sender;    /**< Scale opened windows */
 - (IBAction) closeAllViewers: (id) sender;  /**< Close All Viewers */
 - (void) checkAllWindowsAreVisible:(id) sender;

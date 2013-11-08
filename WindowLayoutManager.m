@@ -15,7 +15,6 @@
 #import "WindowLayoutManager.h"
 #import "ViewerController.h"
 #import "AppController.h"
-#import "ToolbarPanel.h"
 #import "OSIWindowController.h"
 #import "Window3DController.h"
 #import "browserController.h"

@@ -15,25 +15,21 @@
 #import <AppKit/AppKit.h>
 #import "ViewerController.h"
 
-/** Window Controller for Toolbar */
-@interface ToolbarPanelController : NSWindowController <NSToolbarDelegate>
+@interface ThumbnailsListPanel : NSWindowController
 {	
-	NSToolbar               *toolbar;
+	NSView                  *thumbnailsView;
+    NSView                  *superView;
 	long					screen;
-	NSToolbar				*emptyToolbar;
 	ViewerController		*viewer;
 	BOOL					dontReenter;
 }
 
 @property (readonly) ViewerController *viewer;
 
-- (long) fixedHeight;
-- (long) hiddenHeight;
-- (long) exposedHeight;
-- (void) setToolbar :(NSToolbar*) tb viewer:(ViewerController*) v;
-//- (void) fixSize;
-- (void) toolbarWillClose :(NSToolbar*) tb;
++ (long) fixedWidth;
+- (void) setThumbnailsView :(NSView*) tb viewer:(ViewerController*) v;
+- (void) thumbnailsListWillClose :(NSView*) tb;
 - (id)initForScreen: (long) s;
-- (NSToolbar*) toolbar;
+- (NSView*) thumbnailsView;
 
 @end

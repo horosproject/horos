@@ -12,8 +12,7 @@
  PURPOSE.
  =========================================================================*/
 
-//#import <CoreMedia/CoreMedia.h>
-//#import <AVFoundation/AVFoundation.h>
+#import "ToolbarPanel.h"
 #import "DicomDatabase.h"
 #import "DicomDatabase+Routing.h"
 #import "DicomDatabase+DCMTK.h"
@@ -109,7 +108,6 @@
 #import "XMLControllerDCMTKCategory.h"
 #import "WADOXML.h"
 #import "DicomDir.h"
-#import "ToolbarPanel.h"
 
 #ifndef OSIRIX_LIGHT
 #import "Anonymization.h"
@@ -13980,6 +13978,8 @@ static NSArray*	openSubSeriesArray = nil;
             return NO;
         }
     }
+    
+    [ViewerController closeAllWindows];
     
 	[_database save:NULL];
 	

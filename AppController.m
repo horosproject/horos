@@ -18,6 +18,7 @@
 #include <CoreFoundation/CoreFoundation.h>
 #include <ApplicationServices/ApplicationServices.h>
 #import "ToolbarPanel.h"
+#import "ThumbnailsListPanel.h"
 #import "AppController.h"
 #import "PreferencesWindowController.h"
 #import "BrowserController.h"
@@ -86,7 +87,9 @@
 #define BUILTIN_DCMTK YES
 
 #define MAXSCREENS 10
+
 ToolbarPanelController *toolbarPanel[ MAXSCREENS] = {nil, nil, nil, nil, nil, nil, nil, nil, nil, nil};
+ThumbnailsListPanel *thumbnailsListPanel[ MAXSCREENS] = {nil, nil, nil, nil, nil, nil, nil, nil, nil, nil};
 
 static NSMenu *mainMenuCLUTMenu = nil, *mainMenuWLWWMenu = nil, *mainMenuConvMenu = nil, *mainOpacityMenu = nil;
 static NSDictionary *previousWLWWKeys = nil, *previousCLUTKeys = nil, *previousConvKeys = nil, *previousOpacityKeys = nil;
@@ -802,6 +805,7 @@ static NSDate *lastWarningDate = nil;
     [[AppController sharedAppController] closeAllViewers: self];
     
     [AppController resetToolbars];
+    [AppController resetThumbnailsList];
 }
 
 + (void) resetToolbars
@@ -818,6 +822,22 @@ static NSDate *lastWarningDate = nil;
     
 	for( int i = 0; i < numberOfScreens; i++)
 		toolbarPanel[ i] = [[ToolbarPanelController alloc] initForScreen: i];
+}
+
++ (void) resetThumbnailsList
+{
+	int numberOfScreens = [[NSScreen screens] count] + 1; //Just in case, we connect a second monitor when using OsiriX.
+	
+	for( int i = 0; i < MAXSCREENS; i++)
+    {
+		if( thumbnailsListPanel[ i])
+            [thumbnailsListPanel[ i] release];
+        
+        thumbnailsListPanel[ i] = nil;
+	}
+    
+	for( int i = 0; i < numberOfScreens; i++)
+		thumbnailsListPanel[ i] = [[ThumbnailsListPanel alloc] initForScreen: i];
 }
 
 + (void) resizeWindowWithAnimation:(NSWindow*) window newSize: (NSRect) newWindowFrame
@@ -872,6 +892,20 @@ static NSDate *lastWarningDate = nil;
         return nil;
     
     return toolbarPanel[i];
+}
+
++ (ThumbnailsListPanel*)thumbnailsListPanelForScreen:(NSScreen*)screen
+{
+    NSArray* screens = [NSScreen screens];
+    NSUInteger i = [screens indexOfObject:screen];
+    
+    if( i == NSNotFound)
+        return nil;
+    
+    if( i>= MAXSCREENS)
+        return nil;
+    
+    return thumbnailsListPanel[i];
 }
 
 + (void) displayImportantNotice:(id) sender
@@ -3990,6 +4024,7 @@ static BOOL initialized = NO;
 	
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidChangeScreenParameters:) name:NSApplicationDidChangeScreenParametersNotification object:NSApp];
 	[AppController resetToolbars];
+    [AppController resetThumbnailsList];
 	
 //	if( USETOOLBARPANEL) [[toolbarPanel window] makeKeyAndOrderFront:self];
 	
@@ -4575,6 +4610,12 @@ static BOOL initialized = NO;
 		NSRect frame = [screen visibleFrame];
 
 		if( USETOOLBARPANEL) frame.size.height -= [[AppController toolbarForScreen:screen] exposedHeight];
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
+        {
+            frame.size.width -= [ThumbnailsListPanel fixedWidth];
+            frame.origin.x += [ThumbnailsListPanel fixedWidth];
+        }
+        
 		frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
 
 		int temp;
@@ -4934,7 +4975,7 @@ static BOOL initialized = NO;
         [win setAnimationBehavior: NSWindowAnimationBehaviorNone];
 	}
     
-    [self tileWindows: sender windows: viewersList display2DViewerToolbar: USETOOLBARPANEL];
+    [self tileWindows: sender windows: viewersList display2DViewerToolbar: USETOOLBARPANEL displayThumbnailsList: [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"]];
 }
 
 - (IBAction) tile3DWindows:(id)sender
@@ -4958,13 +4999,13 @@ static BOOL initialized = NO;
 		}
 	}
     
-    [self tileWindows: sender windows: viewersList display2DViewerToolbar: NO];
+    [self tileWindows: sender windows: viewersList display2DViewerToolbar: NO displayThumbnailsList: NO];
     
     for( NSWindowController *win in viewersList)
         [[win window] makeKeyAndOrderFront: self];
 }
 
-- (void) tileWindows:(id)sender windows: (NSMutableArray*) viewersList display2DViewerToolbar: (BOOL) display2DViewerToolbar
+- (void) tileWindows:(id)sender windows: (NSMutableArray*) viewersList display2DViewerToolbar: (BOOL) display2DViewerToolbar displayThumbnailsList: (BOOL) displayThumbnailsList
 {
 	BOOL origCopySettings = [[NSUserDefaults standardUserDefaults] boolForKey: @"COPYSETTINGS"];
 	NSRect screenRect =  screenFrame();
@@ -5388,6 +5429,12 @@ static BOOL initialized = NO;
 			NSScreen *screen = [screens objectAtIndex:i];
 			NSRect frame = [screen visibleFrame];
 			if( display2DViewerToolbar) frame.size.height -= [[AppController toolbarForScreen:screen] exposedHeight];
+            if( displayThumbnailsList)
+            {
+                frame.origin.x += [ThumbnailsListPanel fixedWidth];
+                frame.size.width -= [ThumbnailsListPanel fixedWidth];
+            }
+            
 			frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
 			
 			[[viewersList objectAtIndex:i] setWindowFrame: frame showWindow:YES animate: YES];			
@@ -5412,6 +5459,11 @@ static BOOL initialized = NO;
 			NSRect frame = [screen visibleFrame];
 			
 			if( display2DViewerToolbar) frame.size.height -= [[AppController toolbarForScreen:screen] exposedHeight];
+            if( displayThumbnailsList)
+            {
+                frame.origin.x += [ThumbnailsListPanel fixedWidth];
+                frame.size.width -= [ThumbnailsListPanel fixedWidth];
+            }
 			frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
 			
 			frame.size.width /= viewersPerScreen;
@@ -5437,6 +5489,11 @@ static BOOL initialized = NO;
 			NSRect frame = [screen visibleFrame];
 			
 			if( display2DViewerToolbar) frame.size.height -= [[AppController toolbarForScreen:screen] exposedHeight];
+            if( displayThumbnailsList)
+            {
+                frame.origin.x += [ThumbnailsListPanel fixedWidth];
+                frame.size.width -= [ThumbnailsListPanel fixedWidth];
+            }
 			frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
 			
 			if (monitorIndex < extraViewers) 

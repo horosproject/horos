@@ -33,6 +33,7 @@
 #import "OrthogonalMPRPETCTView.h"
 #import "ROIWindow.h"
 #import "ToolbarPanel.h"
+#import "ThumbnailsListPanel.h"
 #import "NSUserDefaultsController+OsiriX.h"
 #import "DicomStudy.h"
 #import "DicomSeries.h"
@@ -13021,10 +13022,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			NSRect	screenFrame = [loopItem visibleFrame];
 			
 			if( [AppController USETOOLBARPANEL] || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
-			{
 				screenFrame.size.height -= [[AppController toolbarForScreen:loopItem] exposedHeight];
+            
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
+            {
+                screenFrame.origin.x += [ThumbnailsListPanel fixedWidth];
+				screenFrame.size.width -= [ThumbnailsListPanel fixedWidth];
 			}
-			
 			if( newHeight > screenFrame.size.height) newHeight = screenFrame.size.height;
 			if( newWidth > screenFrame.size.width) newWidth = screenFrame.size.width;
 			

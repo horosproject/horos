@@ -39,6 +39,7 @@
 #import <ScreenSaver/ScreenSaverView.h>
 #import "AppController.h"
 #import "ToolbarPanel.h"
+#import "ThumbnailsListPanel.h"
 #import "Papyrus3/Papyrus3.h"
 #import "DCMView.h"
 #import "StudyView.h"
@@ -103,7 +104,10 @@
 
 int delayedTileWindows = NO;
 
-extern  ToolbarPanelController  *toolbarPanel[ 10];
+#define MAXSCREENS 10
+extern ToolbarPanelController *toolbarPanel[ MAXSCREENS];
+extern ThumbnailsListPanel *thumbnailsListPanel[ MAXSCREENS];
+
 extern BOOL FULL32BITPIPELINE;
 
 static	BOOL SYNCSERIES = NO, ViewBoundsDidChangeProtect = NO, recursiveCloseWindowsProtected = NO;
@@ -2703,6 +2707,7 @@ static volatile int numberOfThreadsForRelisce = 0;
         }
         
         for( int i = 0; i < [[NSScreen screens] count]; i++) [toolbarPanel[ i] setToolbar: nil viewer: nil];
+        for( int i = 0; i < [[NSScreen screens] count]; i++) [thumbnailsListPanel[ i] setThumbnailsView: nil viewer:nil];
         [[self window] makeKeyAndOrderFront: self];
         [self refreshToolbar];
         [self updateNavigator];
@@ -2725,8 +2730,14 @@ static volatile int numberOfThreadsForRelisce = 0;
 	if( NSIsEmptyRect( standardRect)) standardRect = currentFrame;
 	
 	if( [AppController USETOOLBARPANEL])
-		screenRect.size.height -= [[AppController toolbarForScreen:[sender screen]] exposedHeight];	
-
+		screenRect.size.height -= [[AppController toolbarForScreen:[sender screen]] exposedHeight];
+    
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
+    {
+		screenRect.size.width -= [ThumbnailsListPanel fixedWidth];
+        screenRect.origin.x += [ThumbnailsListPanel fixedWidth];
+    }
+    
 	if (currentFrame.size.height >= screenRect.size.height - 20 && currentFrame.size.width >= screenRect.size.width - 20)
 		return standardRect;
 	else
@@ -2931,8 +2942,12 @@ static volatile int numberOfThreadsForRelisce = 0;
     if( numberOf2DViewer == 0)
 	{
 		[AppController setUSETOOLBARPANEL: NO];
+        
 		for( int i = 0; i < [[NSScreen screens] count]; i++)
 			[[toolbarPanel[ i] window] orderOut:self];
+        
+        for( int i = 0; i < [[NSScreen screens] count]; i++)
+			[[thumbnailsListPanel[ i] window] orderOut:self];
         
         [[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality: nil description: nil];
 	}
@@ -3105,6 +3120,15 @@ static volatile int numberOfThreadsForRelisce = 0;
 				[[toolbarPanel[ i] window] orderOut: self];
 		}
 	}
+    
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
+	{
+		for( int i = 0; i < [[NSScreen screens] count]; i++)
+		{
+			if( [thumbnailsListPanel[ i] thumbnailsView] == leftSplitView)
+				[[toolbarPanel[ i] window] orderOut: self];
+		}
+	}
 }
 
 - (void)windowDidDeminiaturize:(NSNotification *)notification
@@ -3122,6 +3146,15 @@ static volatile int numberOfThreadsForRelisce = 0;
 				[[toolbarPanel[ i] window] orderFront: self];
 		}
 	}
+    
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
+    {
+        for( int i = 0; i < [[NSScreen screens] count]; i++)
+		{
+			if( [thumbnailsListPanel[ i] thumbnailsView] == leftSplitView)
+				[[toolbarPanel[ i] window] orderOut: self];
+		}
+    }
 }
 
 - (void) windowDidResignMain:(NSNotification *)aNotification
@@ -3146,54 +3179,65 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void)windowDidChangeScreen:(NSNotification *)aNotification
 {
-	int i;
-	
     if( windowWillClose)
         return;
     
 	if( [OSIWindowController dontWindowDidChangeScreen])
 		return;
 	
-	if( [AppController USETOOLBARPANEL])
+	if( [AppController USETOOLBARPANEL] || [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
 	{
-		for( i = 0; i < [[NSScreen screens] count]; i++)
+		for( int i = 0; i < [[NSScreen screens] count]; i++)
 		{
 			if( [toolbarPanel[ i] toolbar] == toolbar && [[self window] screen] != [[NSScreen screens] objectAtIndex: i])
-			{
 				[toolbarPanel[ i] setToolbar: nil viewer: nil];
-			}
+            
+            if( [thumbnailsListPanel[ i] thumbnailsView] == leftSplitView && [[self window] screen] != [[NSScreen screens] objectAtIndex: i])
+				[thumbnailsListPanel[ i] setThumbnailsView: nil viewer:nil];
 		}
 		
 		BOOL found = NO;
-		for( i = 0; i < [[NSScreen screens] count]; i++)
+		for( int i = 0; i < [[NSScreen screens] count]; i++)
 		{
 			if( [[self window] screen] == [[NSScreen screens] objectAtIndex: i])
 			{
 				[toolbarPanel[ i] setToolbar: toolbar viewer: self];
+                [thumbnailsListPanel[ i] setThumbnailsView: leftSplitView viewer: self];
 				found = YES;
 			}
 			else
+            {
                 [[toolbarPanel[ i] window] orderOut:self];
+                [[thumbnailsListPanel[ i] window] orderOut:self];
+            }
 		}
 		if( found == NO) NSLog( @"ViewerController windowDidChangeScreen: Toolbar NOT found");
 	}
-	else
+	
+    if( [AppController USETOOLBARPANEL] == NO)
 	{
-		for( i = 0; i < [[NSScreen screens] count]; i++)
+		for( int i = 0; i < [[NSScreen screens] count]; i++)
 			[[toolbarPanel[ i] window] orderOut:self];
+	}
+    
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"] == NO)
+	{
+		for( int i = 0; i < [[NSScreen screens] count]; i++)
+			[[thumbnailsListPanel[ i] window] orderOut:self];
 	}
 }
 
 - (void) redrawToolbar
 {
-	if( [AppController USETOOLBARPANEL])
+	if( [AppController USETOOLBARPANEL] || [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
 	{
 		for( int i = 0; i < [[NSScreen screens] count]; i++)
 		{
 			if( [toolbarPanel[ i] toolbar] == toolbar && [[self window] screen] != [[NSScreen screens] objectAtIndex: i])
-			{
 				[toolbarPanel[ i] setToolbar: nil viewer: nil];
-			}
+			
+            if( [thumbnailsListPanel[ i] thumbnailsView] == leftSplitView && [[self window] screen] != [[NSScreen screens] objectAtIndex: i])
+				[thumbnailsListPanel[ i] setThumbnailsView: nil viewer:nil];
 		}
 		
 		BOOL found = NO;
@@ -3202,20 +3246,31 @@ static volatile int numberOfThreadsForRelisce = 0;
 			if( [[self window] screen] == [[NSScreen screens] objectAtIndex: i])
 			{
 				[toolbarPanel[ i] setToolbar: toolbar viewer: self];
+                [thumbnailsListPanel[ i] setThumbnailsView: leftSplitView viewer: self];
 				found = YES;
 			}
 			else
             {
                 if( [[toolbarPanel[ i] window] isVisible])
                     [[toolbarPanel[ i] window] orderOut:self];
+                
+                if( [[thumbnailsListPanel[ i] window] isVisible])
+                    [[thumbnailsListPanel[ i] window] orderOut:self];
             }
 		}
 		if( found == NO) NSLog( @"Toolbar NOT found");
 	}
-	else
+	
+    if( [AppController USETOOLBARPANEL] == NO)
 	{
 		for( int i = 0; i < [[NSScreen screens] count]; i++)
-            [[toolbarPanel[ i] window] orderOut:self];
+			[[toolbarPanel[ i] window] orderOut:self];
+	}
+    
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"] == NO)
+	{
+		for( int i = 0; i < [[NSScreen screens] count]; i++)
+			[[thumbnailsListPanel[ i] window] orderOut:self];
 	}
 }
 
@@ -4277,6 +4332,8 @@ static volatile int numberOfThreadsForRelisce = 0;
                 [[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];
             
             for( int i = 0; i < [[NSScreen screens] count]; i++) [toolbarPanel[ i] setToolbar: nil viewer: nil];
+            for( int i = 0; i < [[NSScreen screens] count]; i++) [thumbnailsListPanel[ i] setThumbnailsView: nil viewer: nil];
+            
             [[self window] makeKeyAndOrderFront: self];
             [self refreshToolbar];
             [self updateNavigator];
@@ -4627,6 +4684,9 @@ static volatile int numberOfThreadsForRelisce = 0;
     
     if (sender == splitView)
     {
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
+            return 0;
+        
 		CGFloat rcs = previewMatrix.cellSize.width;
         
         NSScrollView* scrollView = previewMatrixScrollView;
@@ -4657,7 +4717,8 @@ static volatile int numberOfThreadsForRelisce = 0;
         {
             if ([sender isSubviewCollapsed:[sender.subviews objectAtIndex:0]])//[sender.subviews count] == 2)
                 return 0;
-            else return 15;
+            else
+                return 15;
         }
     }
 	
@@ -4666,6 +4727,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 -(BOOL) matrixIsVisible
 {
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
+        return YES;
+    
     NSView* v = [[splitView subviews] objectAtIndex:0];
     return ![v isHidden] && [v frame].size.width > 0; 
 }
@@ -7729,6 +7793,12 @@ static int avoidReentryRefreshDatabase = 0;
 			[toolbarPanel[ i] toolbarWillClose : toolbar];
 	}
 	
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
+    {
+        for( int i = 0 ; i < [[NSScreen screens] count]; i++)
+			[thumbnailsListPanel[ i] thumbnailsListWillClose: leftSplitView];
+    }
+    
 	[ROINamesArray release];
 	ROINamesArray = nil;
     
@@ -8356,6 +8426,12 @@ static int avoidReentryRefreshDatabase = 0;
 	{
 		screenRect.size.height -= [[AppController toolbarForScreen:[[self window] screen]] exposedHeight];
 	}
+    
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
+    {
+        screenRect.size.width -= [ThumbnailsListPanel fixedWidth];
+        screenRect.origin.x += [ThumbnailsListPanel fixedWidth];
+    }
 	
 	[[self window] setFrame:screenRect display:YES];
 	
@@ -20047,18 +20123,28 @@ int i,j,l;
 		{
 			[AppController setUSETOOLBARPANEL: YES];
 			
-			NSArray *winList = [NSApp windows];
-			
-			for( int i = 0; i < [winList count]; i++)
+			for( NSWindow *win in [NSApp windows])
 			{
-				if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]])
+				if( [[win windowController] isKindOfClass:[ViewerController class]])
 				{
-					if( [[winList objectAtIndex:i] toolbar])
-						[[winList objectAtIndex:i] setToolbar: nil];
+					if( [win toolbar])
+						[win setToolbar: nil];
 				}
 			}
 		}
 	}
+    
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
+    {
+        for( NSWindow *win in [NSApp windows])
+        {
+            if( [[win windowController] isKindOfClass:[ViewerController class]])
+            {
+//                if( [win toolbar])
+//                    [win setToolbar: nil];
+            }
+        }
+    }
 	
 	roiLock = [[NSRecursiveLock alloc] init];
 	
