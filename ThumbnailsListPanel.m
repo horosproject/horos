@@ -220,6 +220,9 @@ extern  BOOL USETOOLBARPANEL;
 
 - (void) setThumbnailsView:(NSView*) tb viewer:(ViewerController*) v
 {
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"] == NO)
+        return;
+    
 	if( associatedScreen == nil) associatedScreen = [[NSMutableDictionary alloc] init];
 	
     NSDisableScreenUpdates();

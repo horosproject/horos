@@ -15,22 +15,22 @@
         <customObject id="-3" userLabel="Application"/>
         <window title="&lt;&lt; do not localize >>" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" deferred="NO" oneShot="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="12" userLabel="PrefPane">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
-            <rect key="contentRect" x="0.0" y="0.0" width="714" height="910"/>
+            <rect key="contentRect" x="0.0" y="0.0" width="779" height="908"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <value key="minSize" type="size" width="224.66300000000001" height="10"/>
             <view key="contentView" id="6">
-                <rect key="frame" x="0.0" y="0.0" width="714" height="910"/>
+                <rect key="frame" x="0.0" y="0.0" width="779" height="908"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <box title="Miscellaneous" id="100">
-                        <rect key="frame" x="8" y="18" width="700" height="335"/>
+                        <rect key="frame" x="8" y="9" width="761" height="342"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
-                            <rect key="frame" x="2" y="2" width="696" height="315"/>
+                            <rect key="frame" x="2" y="2" width="757" height="322"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <button id="104">
-                                    <rect key="frame" x="10" y="291" width="372" height="18"/>
+                                    <rect key="frame" x="10" y="298" width="372" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Save left button mouse tool" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="342">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -41,7 +41,7 @@
                                     </connections>
                                 </button>
                                 <button id="197">
-                                    <rect key="frame" x="10" y="271" width="397" height="18"/>
+                                    <rect key="frame" x="10" y="278" width="397" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Reverse scroll wheel direction" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="343">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -52,7 +52,7 @@
                                     </connections>
                                 </button>
                                 <button id="228">
-                                    <rect key="frame" x="411" y="291" width="280" height="18"/>
+                                    <rect key="frame" x="412" y="298" width="280" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Series List View : auto hiding" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="344">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -62,8 +62,19 @@
                                         <binding destination="308" name="value" keyPath="values.AUTOHIDEMATRIX" id="536"/>
                                     </connections>
                                 </button>
+                                <button id="jtO-yZ-VJB">
+                                    <rect key="frame" x="412" y="278" width="280" height="18"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <buttonCell key="cell" type="check" title="Single Series List View per screen" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="5Rf-f1-QKF">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.UseFloatingThumbnailsList" id="Lsk-Ad-EAL"/>
+                                    </connections>
+                                </button>
                                 <button id="229">
-                                    <rect key="frame" x="411" y="211" width="280" height="18"/>
+                                    <rect key="frame" x="411" y="198" width="280" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="No interpolation for zoom" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="345">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -74,7 +85,7 @@
                                     </connections>
                                 </button>
                                 <textField verticalHuggingPriority="750" id="275">
-                                    <rect key="frame" x="512" y="24" width="172" height="22"/>
+                                    <rect key="frame" x="512" y="11" width="228" height="22"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="346">
                                         <font key="font" metaFont="system"/>
@@ -86,7 +97,7 @@
                                     </connections>
                                 </textField>
                                 <textField verticalHuggingPriority="750" id="276">
-                                    <rect key="frame" x="357" y="26" width="150" height="17"/>
+                                    <rect key="frame" x="357" y="13" width="150" height="17"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="iPhoto Album:" id="347">
                                         <font key="font" metaFont="system"/>
@@ -95,7 +106,7 @@
                                     </textFieldCell>
                                 </textField>
                                 <button id="301">
-                                    <rect key="frame" x="10" y="231" width="390" height="18"/>
+                                    <rect key="frame" x="10" y="238" width="390" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Zoom with horizontal scrollwheel" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="348">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -106,7 +117,7 @@
                                     </connections>
                                 </button>
                                 <button id="425">
-                                    <rect key="frame" x="10" y="251" width="390" height="18"/>
+                                    <rect key="frame" x="10" y="258" width="390" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Loop in the series with mouse scroll wheel" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="426">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -117,7 +128,7 @@
                                     </connections>
                                 </button>
                                 <button id="313">
-                                    <rect key="frame" x="10" y="211" width="256" height="18"/>
+                                    <rect key="frame" x="10" y="218" width="256" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="No 'Propagate settings in series' for:" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="349">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -128,7 +139,7 @@
                                     </connections>
                                 </button>
                                 <button id="323">
-                                    <rect key="frame" x="10" y="191" width="400" height="18"/>
+                                    <rect key="frame" x="10" y="198" width="400" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Apply Next/Previous Series button to all opened viewers" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="350">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -139,7 +150,7 @@
                                     </connections>
                                 </button>
                                 <button id="327">
-                                    <rect key="frame" x="411" y="191" width="280" height="18"/>
+                                    <rect key="frame" x="411" y="178" width="280" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="High Quality Zoom (Lanczos 5)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="351">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -155,7 +166,7 @@
                                     </connections>
                                 </button>
                                 <button id="415">
-                                    <rect key="frame" x="411" y="171" width="280" height="18"/>
+                                    <rect key="frame" x="411" y="158" width="280" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Show Magnifying Lens with 'shift' key" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="416">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -166,7 +177,7 @@
                                     </connections>
                                 </button>
                                 <button id="421">
-                                    <rect key="frame" x="411" y="151" width="280" height="18"/>
+                                    <rect key="frame" x="411" y="138" width="280" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Mark ROI image as Key image" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="422">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -177,7 +188,7 @@
                                     </connections>
                                 </button>
                                 <button id="434">
-                                    <rect key="frame" x="411" y="111" width="280" height="18"/>
+                                    <rect key="frame" x="411" y="98" width="280" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Full 32-bit OpenGL pipeline" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="435">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -189,7 +200,7 @@
                                     </connections>
                                 </button>
                                 <button id="458">
-                                    <rect key="frame" x="411" y="91" width="280" height="18"/>
+                                    <rect key="frame" x="411" y="78" width="280" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Select window when using scroll wheel" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="459">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -200,7 +211,7 @@
                                     </connections>
                                 </button>
                                 <button id="480">
-                                    <rect key="frame" x="411" y="71" width="290" height="18"/>
+                                    <rect key="frame" x="411" y="58" width="290" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Switch to 1x1 Tiling in Fullscreen mode" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="481">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -211,7 +222,7 @@
                                     </connections>
                                 </button>
                                 <button id="372">
-                                    <rect key="frame" x="10" y="151" width="366" height="18"/>
+                                    <rect key="frame" x="10" y="158" width="366" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Spline Rendering for polygons and pencils ROIs" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="373">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -222,7 +233,7 @@
                                     </connections>
                                 </button>
                                 <button id="418">
-                                    <rect key="frame" x="10" y="131" width="366" height="18"/>
+                                    <rect key="frame" x="10" y="138" width="366" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="New ROIs are unnamed" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="419">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -233,7 +244,7 @@
                                     </connections>
                                 </button>
                                 <button id="431">
-                                    <rect key="frame" x="10" y="111" width="366" height="18"/>
+                                    <rect key="frame" x="10" y="118" width="366" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Scroll through image and series for:" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="432">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -244,7 +255,7 @@
                                     </connections>
                                 </button>
                                 <button id="454">
-                                    <rect key="frame" x="10" y="91" width="400" height="18"/>
+                                    <rect key="frame" x="10" y="98" width="400" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Keep CLUT Bars when exporting Screen Captures" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="455">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -255,7 +266,7 @@
                                     </connections>
                                 </button>
                                 <button id="463">
-                                    <rect key="frame" x="10" y="31" width="400" height="18"/>
+                                    <rect key="frame" x="10" y="38" width="400" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Zoom centered around mouse position" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="464">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -266,7 +277,7 @@
                                     </connections>
                                 </button>
                                 <button id="mzt-vU-47c">
-                                    <rect key="frame" x="10" y="11" width="400" height="18"/>
+                                    <rect key="frame" x="10" y="18" width="400" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Convert RTSTRUCT ROIs to Brush ROIs" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="zMF-Em-hzR">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -277,7 +288,7 @@
                                     </connections>
                                 </button>
                                 <button id="472">
-                                    <rect key="frame" x="10" y="51" width="397" height="18"/>
+                                    <rect key="frame" x="10" y="58" width="397" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Use FrameofReferenceUID for cross reference lines" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="473">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -288,7 +299,7 @@
                                     </connections>
                                 </button>
                                 <button id="540">
-                                    <rect key="frame" x="10" y="71" width="350" height="18"/>
+                                    <rect key="frame" x="10" y="78" width="350" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Compute Skewness and Kurtosis for ROI" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="541">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -299,7 +310,7 @@
                                     </connections>
                                 </button>
                                 <button id="544">
-                                    <rect key="frame" x="411" y="51" width="350" height="18"/>
+                                    <rect key="frame" x="411" y="38" width="350" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Display Overflow Lines" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="545">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -310,7 +321,7 @@
                                     </connections>
                                 </button>
                                 <button id="437">
-                                    <rect key="frame" x="411" y="131" width="366" height="18"/>
+                                    <rect key="frame" x="411" y="118" width="366" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Only display images of the same patient" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="438">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -321,7 +332,7 @@
                                     </connections>
                                 </button>
                                 <button id="375">
-                                    <rect key="frame" x="10" y="171" width="400" height="18"/>
+                                    <rect key="frame" x="10" y="178" width="400" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Use VOI LUT if available" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="376">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -332,7 +343,7 @@
                                     </connections>
                                 </button>
                                 <button id="408">
-                                    <rect key="frame" x="411" y="271" width="280" height="18"/>
+                                    <rect key="frame" x="411" y="258" width="280" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Sync Series List of all 2D Viewers" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="409">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -343,7 +354,7 @@
                                     </connections>
                                 </button>
                                 <button id="555">
-                                    <rect key="frame" x="411" y="251" width="302" height="18"/>
+                                    <rect key="frame" x="411" y="238" width="302" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Don't switch series if already displayed" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="556">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -354,7 +365,7 @@
                                     </connections>
                                 </button>
                                 <button id="412">
-                                    <rect key="frame" x="411" y="231" width="280" height="18"/>
+                                    <rect key="frame" x="411" y="218" width="280" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Open PDF with Preview application" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="413">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -365,7 +376,7 @@
                                     </connections>
                                 </button>
                                 <popUpButton verticalHuggingPriority="750" id="1Xf-Mw-WhA">
-                                    <rect key="frame" x="269" y="207" width="124" height="26"/>
+                                    <rect key="frame" x="269" y="214" width="124" height="26"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <popUpButtonCell key="cell" type="push" title="Modalities" bezelStyle="rounded" alignment="center" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" pullsDown="YES" id="fhV-XV-SCY">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -413,7 +424,7 @@
                                     </connections>
                                 </popUpButton>
                                 <popUpButton verticalHuggingPriority="750" id="Pyh-nV-fiK">
-                                    <rect key="frame" x="269" y="107" width="124" height="26"/>
+                                    <rect key="frame" x="269" y="114" width="124" height="26"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <popUpButtonCell key="cell" type="push" title="Modalities" bezelStyle="rounded" alignment="center" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" pullsDown="YES" id="XCc-0E-TE4">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -467,10 +478,10 @@
                         <font key="titleFont" metaFont="system"/>
                     </box>
                     <box title="TIFF, JPEG, Quicktime, DICOM Export" id="110">
-                        <rect key="frame" x="8" y="810" width="700" height="92"/>
+                        <rect key="frame" x="8" y="808" width="761" height="92"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
-                            <rect key="frame" x="2" y="2" width="696" height="72"/>
+                            <rect key="frame" x="2" y="2" width="757" height="72"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <button id="133">
@@ -513,10 +524,10 @@
                         <font key="titleFont" metaFont="system"/>
                     </box>
                     <box title="Screens &amp; Window size" id="149">
-                        <rect key="frame" x="8" y="357" width="700" height="453"/>
+                        <rect key="frame" x="8" y="355" width="761" height="453"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
-                            <rect key="frame" x="2" y="2" width="696" height="433"/>
+                            <rect key="frame" x="2" y="2" width="757" height="433"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="250">
@@ -667,8 +678,8 @@
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
                                     <connections>
-                                        <binding destination="308" name="enabled" keyPath="values.automaticWorkspaceSave" id="mPr-9O-d5p"/>
                                         <binding destination="308" name="value" keyPath="values.archiveWindowsStateAsDICOMSR" id="pei-yn-IQr"/>
+                                        <binding destination="308" name="enabled" keyPath="values.automaticWorkspaceSave" id="mPr-9O-d5p"/>
                                     </connections>
                                 </button>
                                 <button id="336">
@@ -815,7 +826,7 @@
                                     </textFieldCell>
                                 </textField>
                                 <customView id="521" customClass="O2ScreensPrefsView">
-                                    <rect key="frame" x="132" y="375" width="547" height="48"/>
+                                    <rect key="frame" x="132" y="375" width="608" height="48"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 </customView>
                             </subviews>
