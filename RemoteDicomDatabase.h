@@ -33,11 +33,9 @@
 @property(readonly) NSInteger port;
 @property(readonly,retain) NSHost* host;
 
-+(RemoteDicomDatabase*)databaseForLocation:(NSString*)location;
-+(RemoteDicomDatabase*)databaseForLocation:(NSString*)location name:(NSString*)name;
-+(RemoteDicomDatabase*)databaseForLocation:(NSString*)location name:(NSString*)name update:(BOOL)flagUpdate;
++(RemoteDicomDatabase*)databaseForLocation:(NSString*)location port:(NSUInteger)port name:(NSString*)name update:(BOOL)flagUpdate;
 
--(id)initWithLocation:(NSString*)location;
+-(id)initWithLocation:(NSString*)location port:(NSUInteger)port;
 -(id)initWithHost:(NSHost*)host port:(NSInteger)port update:(BOOL)flagUpdate;
 
 -(NSThread*)initiateUpdate;

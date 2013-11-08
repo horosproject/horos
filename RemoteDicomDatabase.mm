@@ -44,18 +44,10 @@
 
 @implementation RemoteDicomDatabase
 
-+(RemoteDicomDatabase*)databaseForLocation:(NSString*)location {
-	return [self databaseForLocation:location name:nil];
-}
-
-+(RemoteDicomDatabase*)databaseForLocation:(NSString*)location name:(NSString*)name {
-	return [self databaseForLocation:location name:name update:YES];
-}
-
-+(RemoteDicomDatabase*)databaseForLocation:(NSString*)location name:(NSString*)name update:(BOOL)flagUpdate {
++(RemoteDicomDatabase*)databaseForLocation:(NSString*)location port:(NSUInteger)port name:(NSString*)name update:(BOOL)flagUpdate {
 	NSHost* host;
-	NSInteger port;
-	[RemoteDatabaseNodeIdentifier location:location toHost:&host port:&port];
+	NSInteger outputPort;
+	[RemoteDatabaseNodeIdentifier location:location port:port toHost:&host port:&outputPort];
 	
     if (!host.addresses.count && !host.names.count)
         [NSException raise:NSGenericException format:@"%@", NSLocalizedString(@"This remote database is unaccessible because its address could not be resolved.", nil)];
@@ -63,7 +55,7 @@
 	NSArray* dbs = [DicomDatabase allDatabases];
 	for (RemoteDicomDatabase* db in dbs)
 		if ([db isKindOfClass:[RemoteDicomDatabase class]])
-			if ([(RemoteDicomDatabase*)db port] == port && [[[(RemoteDicomDatabase*)db host] address] isEqualToString: [host address]]) {
+			if ([(RemoteDicomDatabase*)db port] == outputPort && [[[(RemoteDicomDatabase*)db host] address] isEqualToString: [host address]]) {
 				if (flagUpdate)
 					[db update];
 				return db;
@@ -79,23 +71,20 @@
 
 @synthesize address = _address, port = _port, host = _host;
 
--(NSString*)location {
-    return [RemoteDatabaseNodeIdentifier locationWithAddress:self.address port:self.port];
-}
-
 -(DataNodeIdentifier*)dataNodeIdentifier {
-    return [RemoteDatabaseNodeIdentifier remoteDatabaseNodeIdentifierWithLocation:self.location description:self.description dictionary:nil];
+    return [RemoteDatabaseNodeIdentifier remoteDatabaseNodeIdentifierWithLocation:self.address port:self.port description:self.description dictionary:nil];
 }
 
 -(NSString*)name {
 	return [NSString stringWithFormat:NSLocalizedString(@"%@ database at %@", nil), _name? _name : @"OsiriX", (self.host.name? self.host.name : self.address)];
 }
 
--(id)initWithLocation:(NSString*)location {
+-(id)initWithLocation:(NSString*)location port:(NSUInteger)port {
 	NSHost* host;
-	NSInteger port;
-	[RemoteDatabaseNodeIdentifier location:location toHost:&host port:&port];
-	return [self initWithHost:host port:port update:YES];
+	NSInteger outputPort;
+	[RemoteDatabaseNodeIdentifier location:location port:port toHost:&host port:&outputPort];
+    
+	return [self initWithHost:host port:outputPort update:YES];
 }
 
 -(id)initWithHost:(NSHost*)host port:(NSInteger)port update:(BOOL)flagUpdate {

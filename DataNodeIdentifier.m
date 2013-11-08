@@ -22,14 +22,18 @@
 @implementation DataNodeIdentifier
 
 @synthesize location = _location;
+@synthesize port = _port;
 @synthesize description = _description;
 @synthesize dictionary = _dictionary;
 @synthesize detected = _detected;
 @synthesize entered = _entered;
+@synthesize aetitle = _aetitle;
 
--(id)initWithLocation:(NSString*)location description:(NSString*)description dictionary:(NSDictionary*)dictionary {
+-(id)initWithLocation:(NSString*)location port:(NSUInteger) port aetitle:(NSString*) aetitle description:(NSString*)description dictionary:(NSDictionary*)dictionary {
     if ((self = [self init])) {
         self.location = location;
+        self.port = port;
+        self.aetitle = aetitle;
         self.description = description;
         self.dictionary = dictionary;
     }
@@ -39,6 +43,7 @@
 
 -(void)dealloc {
 	self.location = nil;
+    self.aetitle = nil;
 	self.description = nil;
 	self.dictionary = nil;
 	[super dealloc];
@@ -86,7 +91,15 @@
 }
 
 -(NSString*)toolTip {
-	return self.location;
+    NSString *tip = self.location;
+    
+    if( self.port > 0)
+        tip = [tip stringByAppendingFormat: @" - %d", self.port];
+    
+    if( self.aetitle.length)
+        tip = [tip stringByAppendingFormat: @" - %@", self.aetitle];
+    
+	return tip;
 }
 
 -(BOOL)isReadOnly {
@@ -126,7 +139,7 @@
 }
 
 +(id)localDatabaseNodeIdentifierWithPath:(NSString*)path description:(NSString*)description dictionary:(NSDictionary*)dictionary {
-    return [[[[self class] alloc] initWithLocation:path description:description dictionary:dictionary] autorelease];
+    return [[[[self class] alloc] initWithLocation:path port:0 aetitle:@"" description:description dictionary:dictionary] autorelease];
 }
 
 -(BOOL)isEqualToDataNodeIdentifier:(DataNodeIdentifier*)dni {
@@ -175,37 +188,21 @@
 
 @implementation RemoteDataNodeIdentifier
 
-+(NSString*)location:(NSString*)location toAddress:(NSString**)address port:(NSInteger*)port defaultPort:(NSInteger)defaultPort
++(NSString*)location:(NSString*)location port:(NSUInteger)port toAddress:(NSString**)address port:(NSInteger*)outputPort defaultPort:(NSInteger)defaultPort
 {
-	NSArray* parts = [location componentsSeparatedByString:@":"];
-	
     NSString* localAddress = nil;
-    if (!address) address = &localAddress;
+    if( !address) address = &localAddress;
     
-    if (address)
-    {
-        if( parts.count == 2) //IPv4 with port
-            *address = [parts objectAtIndex: 0];
-        
-        else if( parts.count == 1) //IPv4 without port
-            *address = [parts objectAtIndex: 0];
-        
-//TODO : add support IPv6
-        
-        else
-            *address = nil;
-    }
+    if( address)
+        *address = [NSString stringWithString: location];
     
-	if (port)
+	if( outputPort)
     {
-        if (parts.count ==  2) //IPv4 with port
-			*port = [[parts lastObject] integerValue];
-        
-        else if (parts.count ==  1) //IPv4 without port
-			*port = defaultPort;
+        if( port) //IPv4 with port
+			*outputPort = port;
         
 		else
-            *port = defaultPort;
+            *outputPort = defaultPort;
     }
     
 	return *address;
@@ -227,8 +224,8 @@
 
 @implementation RemoteDatabaseNodeIdentifier
 
-+(id)remoteDatabaseNodeIdentifierWithLocation:(NSString*)location description:(NSString*)description dictionary:(NSDictionary*)dictionary {
-    return [[[[self class] alloc] initWithLocation:location description:description dictionary:dictionary] autorelease];
++(id)remoteDatabaseNodeIdentifierWithLocation:(NSString*)location port:(NSUInteger)port description:(NSString*)description dictionary:(NSDictionary*)dictionary {
+    return [[[[self class] alloc] initWithLocation:location port:port aetitle:@"" description:description dictionary:dictionary] autorelease];
 }
 
 -(BOOL)isEqualToDataNodeIdentifier:(RemoteDatabaseNodeIdentifier*)dni {
@@ -236,10 +233,10 @@
         return NO;
     
     NSHost* selfHost = nil; NSInteger selfPort;
-    [[self class] location:self.location toHost:&selfHost port:&selfPort];
+    [[self class] location:self.location port:self.port toHost:&selfHost port:&selfPort];
     
     NSHost* dniHost = nil; NSInteger dniPort;
-    [[self class] location:dni.location toHost:&dniHost port:&dniPort];
+    [[self class] location:dni.location port:self.port toHost:&dniHost port:&dniPort];
     
     if (selfPort == dniPort && [[selfHost address] isEqualToString: [dniHost address]])
         return YES;
@@ -247,12 +244,12 @@
     return NO;
 }
 
-+(NSString*)location:(NSString*)location toAddress:(NSString**)address port:(NSInteger*)port {
-    return [[self class] location:location toAddress:address port:port defaultPort:8780];
++(NSString*)location:(NSString*)location port:(NSUInteger) port toAddress:(NSString**)address port:(NSInteger*)outputPort {
+    return [[self class] location:location port:port toAddress:address port:outputPort defaultPort:8780];
 }
 
-+(NSHost*)location:(NSString*)location toHost:(NSHost**)host port:(NSInteger*)port {
-    NSString* address = [self location:location toAddress:NULL port:port]; 
++(NSHost*)location:(NSString*)location port:(NSUInteger) port toHost:(NSHost**)host port:(NSInteger*)outputPort {
+    NSString* address = [self location:location port:port toAddress:NULL port:outputPort];
 	
     NSHost* localHost = nil;
     if (!host) host = &localHost;
@@ -262,20 +259,20 @@
 	return *host;
 }
 
-+(NSString*)locationWithHost:(NSHost*)host port:(NSInteger)port {
-	return [[self class] locationWithAddress:host.address port:port];
-}
-
-+(NSString*)locationWithAddress:(NSString*)address port:(NSInteger)port {
-	return [NSString stringWithFormat:@"%@:%d", address, (int) port];
-}
+//+(NSString*)locationWithHost:(NSHost*)host port:(NSInteger)port {
+//	return [[self class] locationWithAddress:host.address port:port];
+//}
+//
+//+(NSString*)locationWithAddress:(NSString*)address port:(NSInteger)port {
+//	return [NSString stringWithFormat:@"%@:%d", address, (int) port];
+//}
 
 @end
 
 @implementation DicomNodeIdentifier
 
-+(id)dicomNodeIdentifierWithLocation:(NSString*)location description:(NSString*)description dictionary:(NSDictionary*)dictionary {
-    return [[[[self class] alloc] initWithLocation:location description:description dictionary:dictionary] autorelease];
++(id)dicomNodeIdentifierWithLocation:(NSString*)location port:(NSUInteger)port aetitle:(NSString*)aetitle description:(NSString*)description dictionary:(NSDictionary*)dictionary {
+    return [[[[self class] alloc] initWithLocation:location port:port aetitle:aetitle description:description dictionary:dictionary] autorelease];
 }
 
 -(void)willDisplayCell:(PrettyCell*)cell {
@@ -295,9 +292,10 @@
         return NO;
     
     NSHost* selfHost; NSInteger selfPort; NSString* selfAet;
-    [[self class] location:self.location toHost:&selfHost port:&selfPort aet:&selfAet];
+    [[self class] location:self.location port:self.port toHost:&selfHost port:&selfPort aet:&selfAet];
+    
     NSHost* dniHost; NSInteger dniPort; NSString* dniAet;
-    [[self class] location:dni.location toHost:&dniHost port:&dniPort aet:&dniAet];
+    [[self class] location:dni.location port:self.port toHost:&dniHost port:&dniPort aet:&dniAet];
     
     if (selfPort == dniPort && [selfAet isEqualToString:dniAet] && [[selfHost address] isEqualToString: [dniHost address]])
         return YES;
@@ -308,23 +306,24 @@
 -(BOOL)isEqualToDictionary:(NSDictionary*)d {
     if ([super isEqualToDictionary:d])
         return YES;
-    return [self.location isEqual:[[self class] locationWithAddress:[d objectForKey:@"Address"] port:[[d objectForKey:@"Port"] intValue] aet:[d objectForKey:@"AETitle"]]];
+    
+    return [self.location isEqualToString: [d objectForKey:@"Address"]] && self.port == [[d objectForKey:@"Port"] intValue] && [self.aetitle isEqualToString: [d objectForKey:@"AETitle"]];
 }
 
-+(NSString*)location:(NSString*)location toAddress:(NSString**)address port:(NSInteger*)port aet:(NSString**)aet {
++(NSString*)location:(NSString*)location port:(NSUInteger)port toAddress:(NSString**)address port:(NSInteger*)outputPort aet:(NSString**)aet {
 	NSArray* parts = [location componentsSeparatedByString:@"@"];
     
     if (aet && parts.count > 0) *aet = [parts objectAtIndex:0];
     
     if (parts.count > 1)
-        return [[self class] location:[[parts subarrayWithRange:NSMakeRange(1,(long)parts.count-1)] componentsJoinedByString:@"@"] toAddress:address port:port defaultPort:11112];
+        return [[self class] location:[[parts subarrayWithRange:NSMakeRange(1,(long)parts.count-1)] componentsJoinedByString:@"@"] port:port toAddress:address port:outputPort defaultPort:11112];
     
     return nil;
 }
 
 
-+(NSHost*)location:(NSString*)location toHost:(NSHost**)host port:(NSInteger*)port aet:(NSString**)aet {
-    NSString* address = [self location:location toAddress:NULL port:port aet:aet]; 
++(NSHost*)location:(NSString*)location port:(NSUInteger)port toHost:(NSHost**)host port:(NSInteger*)outputPort aet:(NSString**)aet {
+    NSString* address = [self location:location port:port toAddress:NULL port:outputPort aet:aet];
 	
     NSHost* localHost = nil;
     if (!host) host = &localHost;
@@ -334,12 +333,12 @@
 	return *host;
 }
 
-+(NSString*)locationWithHost:(NSHost*)host port:(NSInteger)port aet:(NSString*)aet {
-	return [[self class] locationWithAddress:host.address port:port aet:aet];
-}
-
-+(NSString*)locationWithAddress:(NSString*)host port:(NSInteger)port aet:(NSString*)aet {
-	return [NSString stringWithFormat:@"%@@%@:%d", aet, host, (int) port];
-}
+//+(NSString*)locationWithHost:(NSHost*)host port:(NSInteger)port aet:(NSString*)aet {
+//	return [[self class] locationWithAddress:host.address port:port aet:aet];
+//}
+//
+//+(NSString*)locationWithAddress:(NSString*)host port:(NSInteger)port aet:(NSString*)aet {
+//	return [NSString stringWithFormat:@"%@@%@:%d", aet, host, (int) port];
+//}
 
 @end

@@ -30,6 +30,8 @@ typedef NSInteger DataNodeIdentifierType;*/
 @interface DataNodeIdentifier : NSObject {
 //	DataNodeIdentifierType _type;
 	NSString* _location;
+    NSString* _aetitle;
+    NSUInteger _port;
 	NSString* _description;
 	NSDictionary* _dictionary;
     BOOL _detected; // i.e. if this node was detected through bonjour, or mounted
@@ -40,12 +42,14 @@ typedef NSInteger DataNodeIdentifierType;*/
 
 //@property(readonly) DataNodeIdentifierType type;
 @property(retain) NSString* location;
+@property(retain) NSString* aetitle;
+@property NSUInteger port;
 @property(retain) NSString* description;
 @property(retain) NSDictionary* dictionary;
 @property BOOL detected;
 @property BOOL entered;
 
--(id)initWithLocation:(NSString*)location description:(NSString*)description dictionary:(NSDictionary*)dictionary;
+-(id)initWithLocation:(NSString*)location port:(NSUInteger) port aetitle:(NSString*) aetitle description:(NSString*)description dictionary:(NSDictionary*)dictionary;
 
 -(BOOL)isEqualToDataNodeIdentifier:(DataNodeIdentifier*)dni;
 -(BOOL)isEqualToDictionary:(NSDictionary*)d;
@@ -73,22 +77,17 @@ typedef NSInteger DataNodeIdentifierType;*/
 
 @interface RemoteDatabaseNodeIdentifier : RemoteDataNodeIdentifier
 
-+(id)remoteDatabaseNodeIdentifierWithLocation:(NSString*)location description:(NSString*)description dictionary:(NSDictionary*)dictionary;
++(id)remoteDatabaseNodeIdentifierWithLocation:(NSString*)location port:(NSUInteger)port description:(NSString*)description dictionary:(NSDictionary*)dictionary;
 
-+(NSString*)location:(NSString*)location toAddress:(NSString**)address port:(NSInteger*)port;
-+(NSHost*)location:(NSString*)location toHost:(NSHost**)host port:(NSInteger*)port;
-+(NSString*)locationWithHost:(NSHost*)host port:(NSInteger)port;
-+(NSString*)locationWithAddress:(NSString*)address port:(NSInteger)port;
++(NSHost*)location:(NSString*)location port:(NSUInteger)port toHost:(NSHost**)host port:(NSInteger*)port;
++(NSString*)location:(NSString*)location port:(NSUInteger) port toAddress:(NSString**)address port:(NSInteger*)outputPort;
 
 @end
 
 @interface DicomNodeIdentifier : RemoteDataNodeIdentifier
 
-+(id)dicomNodeIdentifierWithLocation:(NSString*)location description:(NSString*)description dictionary:(NSDictionary*)dictionary;
++(id)dicomNodeIdentifierWithLocation:(NSString*)location port:(NSUInteger)port aetitle:(NSString*)aetitle description:(NSString*)description dictionary:(NSDictionary*)dictionary;
 
-+(NSString*)location:(NSString*)location toAddress:(NSString**)address port:(NSInteger*)port aet:(NSString**)aet;
-+(NSHost*)location:(NSString*)location toHost:(NSHost**)host port:(NSInteger*)port aet:(NSString**)aet;
-+(NSString*)locationWithHost:(NSHost*)host port:(NSInteger)port aet:(NSString*)aet;
-+(NSString*)locationWithAddress:(NSString*)address port:(NSInteger)port aet:(NSString*)aet;
++(NSString*)location:(NSString*)location port:(NSUInteger)port toAddress:(NSString**)address port:(NSInteger*)port aet:(NSString**)aet;
 
 @end

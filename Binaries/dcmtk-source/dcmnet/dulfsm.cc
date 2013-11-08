@@ -2204,7 +2204,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
     int s;
     struct linger sockarg;
 
-    if (sscanf(params->calledPresentationAddress, "%[^:]:%d", node, &port) != 2)
+    if (sscanf(params->calledPresentationAddress, "%[^:]:%d", node, &port) != 2) // This will fail with IPv6
     {
         char buf[1024];
         sprintf(buf,"Illegal service parameter: %s", params->calledPresentationAddress);

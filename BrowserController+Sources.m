@@ -178,7 +178,8 @@ enum {
 		return [DefaultLocalDatabaseNodeIdentifier identifier];
 	if (database.isLocal)
 		return [LocalDatabaseNodeIdentifier localDatabaseNodeIdentifierWithPath:database.baseDirPath];
-	else return [RemoteDatabaseNodeIdentifier remoteDatabaseNodeIdentifierWithLocation:[RemoteDatabaseNodeIdentifier locationWithAddress:[(RemoteDicomDatabase*)database address] port:[(RemoteDicomDatabase*)database port]] description:nil dictionary:nil];	
+	else
+        return [RemoteDatabaseNodeIdentifier remoteDatabaseNodeIdentifierWithLocation:[(RemoteDicomDatabase*)database address] port:[(RemoteDicomDatabase*)database port] description:nil dictionary:nil];
 }
 
 -(int)rowForDatabase:(DicomDatabase*)database
@@ -247,8 +248,7 @@ enum {
 			NSString* address = [io objectAtIndex:1];
 			NSInteger port = [[io objectAtIndex:2] intValue];
 			NSString* name = io.count > 3? [io objectAtIndex:3] : nil;
-			NSString* ap = [NSString stringWithFormat:@"%@:%d", address, (int) port];
-			db = [RemoteDicomDatabase databaseForLocation:ap name:name];
+			db = [RemoteDicomDatabase databaseForLocation:address port:port name:name update:YES];
 		}
 		
 		[self performSelectorOnMainThread:@selector( setDatabaseOnMainThread:) withObject:db waitUntilDone:NO modes:[NSArray arrayWithObject:NSDefaultRunLoopMode]];
@@ -336,7 +336,7 @@ enum {
         else if ([dni isKindOfClass:[RemoteDatabaseNodeIdentifier class]])
         {
             NSString* host = nil; NSInteger port = -1;
-            [RemoteDatabaseNodeIdentifier location:dni.location toAddress:&host port:&port];
+            [RemoteDatabaseNodeIdentifier location:dni.location port:dni.port toAddress:&host port:&port];
             
             if( host && port != -1)
                 [self initiateSetRemoteDatabaseWithAddress:host port:port name:dni.description];
@@ -546,7 +546,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
                         DataNodeIdentifier* dni;
                         NSUInteger i = [[_browser.sources.content valueForKey:@"location"] indexOfObject:dadd];
                         if (i == NSNotFound) {
-                            dni = [RemoteDatabaseNodeIdentifier remoteDatabaseNodeIdentifierWithLocation:dadd description:[d objectForKey:@"Description"] dictionary:d];
+                            dni = [RemoteDatabaseNodeIdentifier remoteDatabaseNodeIdentifierWithLocation:dadd port:[[d valueForKey:@"Port"] intValue] description:[d objectForKey:@"Description"] dictionary:d];
                             dni.entered = YES;
                             [_browser.sources addObject:dni];
                         } else {
@@ -568,7 +568,10 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
             for (NSDictionary* ai in a)
             {
                 if( [[ai objectForKey: @"Activated"] boolValue] && [[ai objectForKey: @"Send"] boolValue])
-                    [aa setObject:ai forKey:[DicomNodeIdentifier locationWithAddress:[ai objectForKey:@"Address"] port:[[ai objectForKey:@"Port"] integerValue] aet:[ai objectForKey:@"AETitle"]]];
+                {
+                    NSString *uniqueKey =[NSString stringWithFormat:@"%@%d%@", [ai objectForKey:@"Address"],[[ai objectForKey:@"Port"] integerValue],[ai objectForKey:@"AETitle"]];
+                    [aa setObject:ai forKey:uniqueKey];
+                }
             }
             // remove old items
             for (DataNodeIdentifier* dni in [[_browser.sources.content copy] autorelease])
@@ -596,8 +599,10 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
                         // we're now back in the main thread
                         DataNodeIdentifier* dni;
                         NSUInteger i = [[_browser.sources.content valueForKey:@"location"] indexOfObject:aak];
-                        if (i == NSNotFound) {
-                            dni = [DicomNodeIdentifier dicomNodeIdentifierWithLocation:aak description:[[aa objectForKey:aak] objectForKey:@"Description"] dictionary:[aa objectForKey:aak]];
+                        if (i == NSNotFound)
+                        {
+                            NSDictionary *k = [aa objectForKey:aak];
+                            dni = [DicomNodeIdentifier dicomNodeIdentifierWithLocation: [k objectForKey:@"Address"] port:[[k objectForKey:@"Port"] intValue] aetitle:[k objectForKey:@"AETitle"] description:[k objectForKey:@"Description"] dictionary:[aa objectForKey:aak]];
                             dni.entered = YES;
                             [_browser.sources addObject:dni];
                         } else {
@@ -761,10 +766,14 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
             {
                 if (!source.location && address.count >= 2)
                 {
-                    if ([source isKindOfClass:[RemoteDatabaseNodeIdentifier class]])
-                        source.location = [[address objectAtIndex:0] stringByAppendingFormat:@":%@", [address objectAtIndex:1]];
-                    else
-                        source.location = [service.name stringByAppendingFormat:@"@%@:%@", [address objectAtIndex:0], [address objectAtIndex:1]];
+                    if ([source isKindOfClass:[RemoteDatabaseNodeIdentifier class]] || [source isKindOfClass:[DicomNodeIdentifier class]])
+                    {
+                        source.location = [address objectAtIndex:0];
+                        source.port = [[address objectAtIndex:1] integerValue];
+                    }
+                    
+                    if( [source isKindOfClass:[DicomNodeIdentifier class]])
+                        source.aetitle = source.description;
                 }
             }
             
@@ -780,7 +789,8 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
             
             if ([source isKindOfClass:[RemoteDatabaseNodeIdentifier class]])
                 source.dictionary = [BonjourPublisher dictionaryFromXTRecordData:service.TXTRecordData];
-            else source.dictionary = [DCMNetServiceDelegate DICOMNodeInfoFromTXTRecordData:service.TXTRecordData];
+            else
+                source.dictionary = [DCMNetServiceDelegate DICOMNodeInfoFromTXTRecordData:service.TXTRecordData];
             
             if (source.location)
             {
@@ -834,8 +844,9 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 	DataNodeIdentifier* source;
 	if (nsb == _nsbOsirix)
-		source = [RemoteDatabaseNodeIdentifier remoteDatabaseNodeIdentifierWithLocation:nil description:service.name dictionary:nil];
-	else source = [DicomNodeIdentifier dicomNodeIdentifierWithLocation:nil description:service.name dictionary:nil];
+		source = [RemoteDatabaseNodeIdentifier remoteDatabaseNodeIdentifierWithLocation:nil port:0 description:service.name dictionary:nil];
+	else
+        source = [DicomNodeIdentifier dicomNodeIdentifierWithLocation:nil port:0 aetitle:@"" description:service.name dictionary:nil];
 	
 //    source.discovered = YES;
 //	source.service = service;
@@ -1070,8 +1081,9 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 {
 	DataNodeIdentifier* bs = [_browser sourceIdentifierAtRow:row];
 	NSString* tip = [bs toolTip];
-	if (tip) return tip;
-	return bs.location;
+	if (tip)
+        return tip;
+    return @"";
 }
 
 -(void)tableView:(NSTableView*)aTableView willDisplayCell:(PrettyCell*)cell forTableColumn:(NSTableColumn*)tableColumn row:(NSInteger)row
