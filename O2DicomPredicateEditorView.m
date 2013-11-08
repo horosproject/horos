@@ -485,7 +485,11 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
     
     self.tags = nil;
     
-    // TODO: release stringValue, numberValue, dateValue, ...
+    self.dateValue = nil;
+    self.numberValue = nil;
+    self.stringValue = nil;
+    
+    // TODO memory leaking... this dealloc is never called...
     
     [super dealloc];
 }
@@ -685,13 +689,9 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
     NSDictionary* binding = [_tagsPopUp infoForBinding:@"selectedTag"];
     [_tagsPopUp unbind:@"selectedTag"];
     
-    for (NSUInteger i = 0; i < mis.count; ++i) {
-        NSMenuItem* mi = [mis objectAtIndex:i];
-        if ([menu itemAtIndex:i] != mi) {
-            [menu removeItem:mi];
-            [menu insertItem:mi atIndex:i];
-        }
-    }
+    [menu removeAllItems];
+    for (NSMenuItem *mi in mis)
+        [menu addItem: mi];
     
     if (binding)
         [_tagsPopUp bind:@"selectedTag" toObject:[binding valueForKey:NSObservedObjectKey] withKeyPath:[binding valueForKey:NSObservedKeyPathKey] options:[binding objectForKey:NSOptionsKey]];
