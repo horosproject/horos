@@ -4162,6 +4162,10 @@
 		CE087B0D0DE9BD6E000E5593 /* GLString.h in Headers */ = {isa = PBXBuildFile; fileRef = CE087B0B0DE9BD6E000E5593 /* GLString.h */; };
 		CE0CB171084A623C00C6385F /* DCMPix.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0CB16F084A623C00C6385F /* DCMPix.m */; };
 		CE0CB172084A623C00C6385F /* DCMPix.h in Headers */ = {isa = PBXBuildFile; fileRef = CE0CB170084A623C00C6385F /* DCMPix.h */; };
+		CE0DB327182D604900C90B43 /* ThumbnailsListNSWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0DB325182D604900C90B43 /* ThumbnailsListNSWindow.m */; };
+		CE0DB328182D604900C90B43 /* ThumbnailsListNSWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0DB325182D604900C90B43 /* ThumbnailsListNSWindow.m */; };
+		CE0DB329182D604900C90B43 /* ThumbnailsListNSWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = CE0DB326182D604900C90B43 /* ThumbnailsListNSWindow.h */; };
+		CE0DB32A182D604900C90B43 /* ThumbnailsListNSWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = CE0DB326182D604900C90B43 /* ThumbnailsListNSWindow.h */; };
 		CE0E08E806A106D700F2C01C /* ThickSlabController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE0E08E606A106D700F2C01C /* ThickSlabController.h */; };
 		CE0E08E906A106D700F2C01C /* ThickSlabController.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE0E08E706A106D700F2C01C /* ThickSlabController.mm */; };
 		CE0E3A550D87C56D008135A8 /* ThreeDPanView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE0E3A530D87C56D008135A8 /* ThreeDPanView.h */; };
@@ -11519,6 +11523,8 @@
 		CE087B0B0DE9BD6E000E5593 /* GLString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLString.h; sourceTree = "<group>"; };
 		CE0CB16F084A623C00C6385F /* DCMPix.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DCMPix.m; sourceTree = "<group>"; };
 		CE0CB170084A623C00C6385F /* DCMPix.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DCMPix.h; sourceTree = "<group>"; };
+		CE0DB325182D604900C90B43 /* ThumbnailsListNSWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThumbnailsListNSWindow.m; sourceTree = "<group>"; };
+		CE0DB326182D604900C90B43 /* ThumbnailsListNSWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThumbnailsListNSWindow.h; sourceTree = "<group>"; };
 		CE0E08E606A106D700F2C01C /* ThickSlabController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThickSlabController.h; sourceTree = "<group>"; };
 		CE0E08E706A106D700F2C01C /* ThickSlabController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ThickSlabController.mm; sourceTree = "<group>"; };
 		CE0E3A530D87C56D008135A8 /* ThreeDPanView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreeDPanView.h; sourceTree = "<group>"; };
@@ -17206,6 +17212,8 @@
 				CE569B730E29612100F4A234 /* ThumbnailCell.m */,
 				CE5EEFC7182D249B009D2045 /* ThumbnailsListPanel.m */,
 				CE5EEFC8182D249B009D2045 /* ThumbnailsListPanel.h */,
+				CE0DB325182D604900C90B43 /* ThumbnailsListNSWindow.m */,
+				CE0DB326182D604900C90B43 /* ThumbnailsListNSWindow.h */,
 				ABDC3C730670FF440042069D /* ToolBarNSWindow.h */,
 				ABDC3C720670FF440042069D /* ToolBarNSWindow.m */,
 				AB866038066E40970015E1C4 /* ToolbarPanel.h */,
@@ -24011,6 +24019,7 @@
 				CEBD88FB14F1ADDA000DA1FE /* pstables.h in Headers */,
 				CEBD88FC14F1ADDA000DA1FE /* pstdint.h in Headers */,
 				CEBD88FD14F1ADDA000DA1FE /* PyVTKClass.h in Headers */,
+				CE0DB329182D604900C90B43 /* ThumbnailsListNSWindow.h in Headers */,
 				CEBD88FE14F1ADDA000DA1FE /* PyVTKMutableObject.h in Headers */,
 				CEBD88FF14F1ADDA000DA1FE /* PyVTKObject.h in Headers */,
 				CEBD890014F1ADDA000DA1FE /* PyVTKSpecialObject.h in Headers */,
@@ -26857,6 +26866,7 @@
 				CEC7FD0C10A5C844008935EA /* QueryLogController.h in Headers */,
 				CEC7FD0D10A5C844008935EA /* LogWindowController.h in Headers */,
 				CEC7FD0E10A5C844008935EA /* PluginFileFormatDecoder.h in Headers */,
+				CE0DB32A182D604900C90B43 /* ThumbnailsListNSWindow.h in Headers */,
 				CEC7FD1010A5C844008935EA /* stringNumericCompare.h in Headers */,
 				CEC7FD1110A5C844008935EA /* ROIManagerController.h in Headers */,
 				CEC7FD1210A5C844008935EA /* PaletteController.h in Headers */,
@@ -30324,6 +30334,7 @@
 				BFF97D720BDE8BE6008333CF /* ShadingArrayController.m in Sources */,
 				CE96D0E40BEE6F9800C4E397 /* XMLControllerDCMTKCategory.mm in Sources */,
 				CE96D0F80BEE71E800C4E397 /* mdfconen.cc in Sources */,
+				CE0DB327182D604900C90B43 /* ThumbnailsListNSWindow.m in Sources */,
 				CE96D11D0BEE732A00C4E397 /* mdfdsman.cc in Sources */,
 				A90A04980BF09BA000D00273 /* VRPresetPreview.mm in Sources */,
 				A9154D8D0BF34D4E00BAF408 /* SelectionView.m in Sources */,
@@ -31730,6 +31741,7 @@
 				CEC7099210A5C844008935EA /* CIADICOMField.m in Sources */,
 				CEC7099310A5C844008935EA /* altivecFunctions.c in Sources */,
 				CEC7099710A5C844008935EA /* NFHUDButtonCell.m in Sources */,
+				CE0DB328182D604900C90B43 /* ThumbnailsListNSWindow.m in Sources */,
 				CEC7099810A5C844008935EA /* NFHUDButton.m in Sources */,
 				CEC7099910A5C844008935EA /* NFHUDSliderCell.m in Sources */,
 				CEC7099A10A5C844008935EA /* NFHUDSlider.m in Sources */,

@@ -358,7 +358,7 @@ enum
 @synthesize currentOrientationTool, speedSlider, speedText;
 @synthesize timer, keyImageCheck, injectionDateTime, blendedWindow;
 @synthesize blendingTypeWindow, blendingTypeMultiply, blendingTypeSubtract, blendingTypeRGB, blendingPlugins, blendingResample;
-@synthesize flagListPODComparatives;
+@synthesize flagListPODComparatives, leftSplitView;
 
 // WARNING: If you add or modify this list, check ViewerController.m, DCMView.h and HotKey Pref Pane
 static int hotKeyToolCrossTable[] =
@@ -420,7 +420,12 @@ static int hotKeyToolCrossTable[] =
 		if( [[w windowController] isKindOfClass:[ViewerController class]] && w.isVisible)
 		{
             if( [w.screen isEqual: screen])
-                return [w windowController];
+            {
+                ViewerController *v = w.windowController;
+                
+                if( v.windowWillClose == NO)
+                    return v;
+            }
 		}
 	}
 	

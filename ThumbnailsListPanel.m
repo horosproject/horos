@@ -177,9 +177,7 @@ extern  BOOL USETOOLBARPANEL;
                     [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
 			}
 			else
-			{
 				[self.window orderOut:self];
-			}
 		}
 	}
 	
@@ -220,7 +218,7 @@ extern  BOOL USETOOLBARPANEL;
     return thumbnailsView;
 }
 
-- (void) setThumbnailsView :(NSView*) tb viewer:(ViewerController*) v
+- (void) setThumbnailsView:(NSView*) tb viewer:(ViewerController*) v
 {
 	if( associatedScreen == nil) associatedScreen = [[NSMutableDictionary alloc] init];
 	
@@ -244,8 +242,10 @@ extern  BOOL USETOOLBARPANEL;
                 }
             }
             else
+            {
                 if( self.window.isVisible)
                     [self.window orderOut: self];
+            }
             
             return;
         }
