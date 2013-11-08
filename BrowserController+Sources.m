@@ -569,7 +569,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
             {
                 if( [[ai objectForKey: @"Activated"] boolValue] && [[ai objectForKey: @"Send"] boolValue])
                 {
-                    NSString *uniqueKey =[NSString stringWithFormat:@"%@%d%@", [ai objectForKey:@"Address"],[[ai objectForKey:@"Port"] integerValue],[ai objectForKey:@"AETitle"]];
+                    NSString *uniqueKey =[NSString stringWithFormat:@"%@%d%@", [ai objectForKey:@"Address"],[[ai objectForKey:@"Port"] unsignedIntValue],[ai objectForKey:@"AETitle"]];
                     [aa setObject:ai forKey:uniqueKey];
                 }
             }

@@ -94,7 +94,7 @@
     NSString *tip = self.location;
     
     if( self.port > 0)
-        tip = [tip stringByAppendingFormat: @" - %d", self.port];
+        tip = [tip stringByAppendingFormat: @" - %d", (int) self.port];
     
     if( self.aetitle.length)
         tip = [tip stringByAppendingFormat: @" - %@", self.aetitle];
