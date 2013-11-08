@@ -2179,7 +2179,7 @@ static NSConditionLock *threadLock = nil;
 		
 		if( [[options objectForKey: @"async"] boolValue])
 		{
-			NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: filesInput, @"filesInput", [NSNumber numberWithBool: YES], @"copyFiles", nil];
+			NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: filesInput, @"filesInput", [NSNumber numberWithBool: YES], @"copyFiles", [NSNumber numberWithBool: [[options objectForKey: @"mountedVolume"] boolValue]], @"mountedVolume", nil];
 			[dict addEntriesFromDictionary: options];
 			
             NSThread *t = nil;
@@ -2262,7 +2262,7 @@ static NSConditionLock *threadLock = nil;
 	}
 	else
 	{
-		NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: filesInput, @"filesInput", [NSNumber numberWithBool: NO], @"copyFiles", nil];
+		NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: filesInput, @"filesInput", [NSNumber numberWithBool: NO], @"copyFiles", [NSNumber numberWithBool: [[options objectForKey: @"mountedVolume"] boolValue]], @"mountedVolume", nil];
 
         
 		[dict addEntriesFromDictionary: options]; 

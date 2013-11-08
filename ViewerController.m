@@ -916,7 +916,7 @@ return YES;
 
 - (IBAction) resetWindowsState:(id)sender
 {
-	NSArray				*studiesArray = [ViewerController getDisplayedStudies];
+	NSArray *studiesArray = [ViewerController getDisplayedStudies];
 		
 	for( id loopItem in studiesArray)
 	{
@@ -1049,7 +1049,9 @@ return YES;
                     [dict setObject: @NO forKey:@"SyncButtonBehaviorIsBetweenStudies"];
                     [dict setObject: @(SYNCSERIES) forKey: @"SYNCSERIES"];
                 }
-                    
+                
+                [dict setObject: [NSDate date] forKey:@"date"];
+                
                 [state addObject: dict];
             }
         }

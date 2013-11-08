@@ -73,13 +73,15 @@
                     static NSString *oneCopyAtATime = @"oneCopyAtATime";
                     @synchronized( oneCopyAtATime)
                     {
-#define USECORESERVICESFORCOPY 1
-#ifdef USECORESERVICESFORCOPY
-                        NSTask *t = [NSTask launchedTaskWithLaunchPath: @"/bin/cp" arguments: @[srcPath, dstPath]];
-                        [t waitUntilExit];
-#else
-                        if( [[NSFileManager defaultManager] copyItemAtPath: srcPath toPath: dstPath error: nil])
-#endif
+                        if( srcDatabase.isReadOnly)
+                        {
+                            NSTask *t = [NSTask launchedTaskWithLaunchPath: @"/bin/cp" arguments: @[srcPath, dstPath]];
+                            while( [t isRunning]){};
+                        }
+                        else if( [[NSFileManager defaultManager] copyItemAtPath: srcPath toPath: dstPath error: nil] == NO)
+                            NSLog( @"**** copyItemAtPath failed: %@", dstPath);
+
+                        if( [[NSFileManager defaultManager] fileExistsAtPath: dstPath])
                         {
                             if( [DicomFile isDICOMFile: dstPath] == NO)
                                 [[NSFileManager defaultManager] moveItemAtPath: dstPath toPath: [[dstPath stringByDeletingPathExtension] stringByAppendingPathExtension: [srcPath pathExtension]] error: nil];

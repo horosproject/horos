@@ -46,6 +46,7 @@
 #import "NSNotificationCenter+N2.h"
 #import "Wait.h"
 #import "WaitRendering.h"
+#import "SRAnnotation.h"
 #include <copyfile.h>
 
 NSString* const CurrentDatabaseVersion = @"2.5";
@@ -1813,6 +1814,15 @@ static BOOL protectionAgainstReentry = NO;
                             inParseExistingObject = YES;
                             DICOMSR = YES;
                         }
+                        
+                        // Check if it is an OsiriX WindowsState SR
+                        if ([[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX WindowsState SR"])
+                        {
+                            [curDict setValue: @"OsiriX WindowsState SR" forKey: @"seriesID"];
+                            
+                            inParseExistingObject = YES;
+                            DICOMSR = YES;
+                        }
                     }
                     
                     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"acceptUnsupportedSOPClassUID"] == NO)
@@ -2266,6 +2276,30 @@ static BOOL protectionAgainstReentry = NO;
                                         }
                                     }
                                     
+                                    if (DICOMSR && [[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX WindowsState SR"])
+                                    {
+                                        DicomImage *reportSR = [study windowsStateImage]; // return the most recent sr
+                                        
+                                        if (reportSR == image) // Because we can have multiple sr -> only the most recent one is valid
+                                        {
+                                            @try {
+                                                SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: newFile] autorelease];
+                                                
+                                                NSArray *viewers = [NSPropertyListSerialization propertyListFromData: r.dataEncapsulated mutabilityOption: NSPropertyListImmutable format: nil errorDescription: nil];
+                                                
+                                                if( viewers.count > 0)
+                                                {
+                                                    [study willChangeValueForKey: @"windowsState"];
+                                                    [study setPrimitiveValue: r.dataEncapsulated forKey: @"windowsState"];
+                                                    [study didChangeValueForKey: @"windowsState"];
+                                                }
+                                            }
+                                            @catch (NSException *exception) {
+                                                N2LogException( exception);
+                                            }
+                                        }
+                                    }
+                                    
                                     if (DICOMSR && [[curDict valueForKey:@"seriesDescription"] isEqualToString: @"OsiriX Report SR"])
                                     {
                                         BOOL reportUpToDate = NO;
@@ -2562,8 +2596,6 @@ static BOOL protectionAgainstReentry = NO;
                             
                             dstPath = [self uniquePathForNewDataFileWithExtension:extension];
                             
-#define USECORESERVICESFORCOPY 1
-
                             try
                             {
                                 @try
@@ -2571,14 +2603,18 @@ static BOOL protectionAgainstReentry = NO;
                                     static NSString *oneCopyAtATime = @"oneCopyAtATime";
                                     @synchronized( oneCopyAtATime)
                                     {
-#ifdef USECORESERVICESFORCOPY
-                                        NSTask *t = [NSTask launchedTaskWithLaunchPath: @"/bin/cp" arguments: @[srcPath, dstPath]];
-                                        [t waitUntilExit];
-#else
-                                        if( [[NSFileManager defaultManager] copyItemAtPath: srcPath toPath: dstPath error: nil] == NO)
-                                            NSLog( @"***** copyItemAtPath %@ failed", srcPath);
+                                        if( [[dict objectForKey: @"mountedVolume"] boolValue])
+                                        {
+                                            NSTask *t = [NSTask launchedTaskWithLaunchPath: @"/bin/cp" arguments: @[srcPath, dstPath]];
+                                            while( [t isRunning]){};
+                                        }
                                         else
-#endif
+                                        {
+                                            if( [[NSFileManager defaultManager] copyItemAtPath: srcPath toPath: dstPath error: nil] == NO)
+                                                NSLog( @"***** copyItemAtPath %@ failed", srcPath);
+                                        }
+                                        
+                                        if( [[NSFileManager defaultManager] fileExistsAtPath: dstPath])
                                         {
                                             if( [extension isEqualToString: @"dcm"] == NO)
                                             {

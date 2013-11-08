@@ -1580,7 +1580,7 @@ static NSRecursiveLock *dbModifyLock = nil;
         if (uid == nil || [DCMAbstractSyntaxUID isImageStorage: uid] || [DCMAbstractSyntaxUID isRadiotherapy:uid] || [DCMAbstractSyntaxUID isWaveform:uid])
             return YES;
         
-        if ([DCMAbstractSyntaxUID isStructuredReport:uid] && [description hasPrefix: @"OsiriX ROI SR"] == NO && [description hasPrefix: @"OsiriX Annotations SR"] == NO && [description hasPrefix: @"OsiriX Report SR"] == NO)
+        if ([DCMAbstractSyntaxUID isStructuredReport:uid] && [description hasPrefix: @"OsiriX ROI SR"] == NO && [description hasPrefix: @"OsiriX Annotations SR"] == NO && [description hasPrefix: @"OsiriX Report SR"] == NO && [description hasPrefix: @"OsiriX WindowsState SR"] == NO)
             return YES;
 	}
     
@@ -1900,7 +1900,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	
 	@try
 	{
-		images = [[[self reportSRSeries] valueForKey: @"images"] allObjects];
+		images = [[[self windowsStateSRSeries] valueForKey: @"images"] allObjects];
 		
 		if( [images count] > 1)
 		{
