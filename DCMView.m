@@ -13019,16 +13019,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		if( NSPointInRect( center, [loopItem frame]))
 		{
-			NSRect	screenFrame = [loopItem visibleFrame];
-			
-			if( [AppController USETOOLBARPANEL] || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
-				screenFrame.size.height -= [[AppController toolbarForScreen:loopItem] exposedHeight];
+			NSRect screenFrame = [AppController usefullRectForScreen: loopItem];
             
-            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
-            {
-                screenFrame.origin.x += [ThumbnailsListPanel fixedWidth];
-				screenFrame.size.width -= [ThumbnailsListPanel fixedWidth];
-			}
 			if( newHeight > screenFrame.size.height) newHeight = screenFrame.size.height;
 			if( newWidth > screenFrame.size.width) newWidth = screenFrame.size.width;
 			

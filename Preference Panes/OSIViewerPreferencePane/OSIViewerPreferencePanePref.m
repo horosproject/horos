@@ -14,6 +14,7 @@
 
 #import "OSIViewerPreferencePanePref.h"
 #import "AppController.h"
+#import "ViewerController.h"
 
 @implementation OSIViewerPreferencePanePref
 
@@ -31,6 +32,7 @@ static NSString* UserDefaultsObservingContext = @"UserDefaultsObservingContext";
         
         [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.ReserveScreenForDB" options:0 context:UserDefaultsObservingContext];
         [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.AUTOTILING" options:0 context:UserDefaultsObservingContext];
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.UseFloatingThumbnailsList" options:0 context:UserDefaultsObservingContext];
 	}
 	
 	return self;
@@ -49,17 +51,20 @@ static NSString* UserDefaultsObservingContext = @"UserDefaultsObservingContext";
     if (context != UserDefaultsObservingContext)
         return [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     
-     if( [keyPath isEqualToString: @"values.ReserveScreenForDB"])
-     {
-         [self willChangeValueForKey:@"screensThumbnail"];
-         [self didChangeValueForKey:@"screensThumbnail"];
-     }
+    if( [keyPath isEqualToString: @"values.ReserveScreenForDB"])
+    {
+        [self willChangeValueForKey:@"screensThumbnail"];
+        [self didChangeValueForKey:@"screensThumbnail"];
+    }
     
     if( [keyPath isEqualToString: @"values.AUTOTILING"])
     {
         if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
             [[NSUserDefaults standardUserDefaults] setInteger:0 forKey: @"WINDOWSIZEVIEWER"];
     }
+    
+    if( [keyPath isEqualToString: @"values.UseFloatingThumbnailsList"])
+        [ViewerController closeAllWindows];
 }
 
 - (void) willUnselect

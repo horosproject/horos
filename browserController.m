@@ -7374,23 +7374,22 @@ static NSConditionLock *threadLock = nil;
                             [s scanFloat: &a];	r.size.width = a;	[s scanFloat: &a];	r.size.height = a;
                             
                             NSUInteger screenIndex = [[dict valueForKey:@"screenIndex"] unsignedIntegerValue];
-                            float savedScreenYOrigin = [[dict valueForKey: @"screenYOrigin"] floatValue];
                             NSRect savedScreenRect = NSRectFromString( [dict valueForKey:@"screen"]);
                             if( savedScreenRect.size.width > 0 && savedScreenRect.size.height > 0)
                             {
                                 if( screenIndex < NSScreen.screens.count)
                                 {
                                     float widthRatio = 1, heightRatio = 1;
-                                    NSScreen *curScreen = [[NSScreen screens] objectAtIndex: screenIndex];
+                                    NSRect curScreenVisibleRect = [AppController usefullRectForScreen: [[NSScreen screens] objectAtIndex: screenIndex]];
                                     
-                                    widthRatio = curScreen.visibleFrame.size.width / savedScreenRect.size.width;
-                                    heightRatio = (curScreen.visibleFrame.size.height-[[AppController toolbarForScreen: curScreen] exposedHeight]) / (savedScreenRect.size.height-savedScreenYOrigin);
+                                    widthRatio = curScreenVisibleRect.size.width / savedScreenRect.size.width;
+                                    heightRatio = curScreenVisibleRect.size.height / savedScreenRect.size.height;
                                     
                                     r.size.width *= widthRatio;
                                     r.size.height *= heightRatio;
                                     
-                                    r.origin.x = ((r.origin.x - savedScreenRect.origin.x) * widthRatio) + curScreen.visibleFrame.origin.x;
-                                    r.origin.y = ((r.origin.y - savedScreenRect.origin.y) * heightRatio) + curScreen.visibleFrame.origin.y;
+                                    r.origin.x = ((r.origin.x - savedScreenRect.origin.x) * widthRatio) + curScreenVisibleRect.origin.x;
+                                    r.origin.y = ((r.origin.y - savedScreenRect.origin.y) * heightRatio) + curScreenVisibleRect.origin.y;
                                     
                                     if( widthRatio < 1 || heightRatio < 1)
                                         scaleRatio = widthRatio < heightRatio ? widthRatio : heightRatio;
@@ -7399,7 +7398,7 @@ static NSConditionLock *threadLock = nil;
                                         scaleRatio = widthRatio > heightRatio ? widthRatio : heightRatio;
                                         
                                     // Test if the window is completely contained in the screen, otherwise, we will TileWindows.
-                                    if( NSEqualRects(NSIntersectionRect( curScreen.visibleFrame, r), r) == NO)
+                                    if( NSEqualRects(NSIntersectionRect( curScreenVisibleRect, r), r) == NO)
                                         validWindowsPosition = NO;
                                 }
                                 else

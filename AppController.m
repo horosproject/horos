@@ -4606,18 +4606,8 @@ static BOOL initialized = NO;
 		int row = posInScreen / columnsPerScreen;
 		int column = posInScreen % columnsPerScreen;
 		
-		NSScreen *screen = [screens objectAtIndex: monitorIndex];
-		NSRect frame = [screen visibleFrame];
-
-		if( USETOOLBARPANEL) frame.size.height -= [[AppController toolbarForScreen:screen] exposedHeight];
-        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
-        {
-            frame.size.width -= [ThumbnailsListPanel fixedWidth];
-            frame.origin.x += [ThumbnailsListPanel fixedWidth];
-        }
+		NSRect frame = [AppController usefullRectForScreen: [screens objectAtIndex: monitorIndex]];
         
-		frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
-
 		int temp;
 
 		temp = frame.size.width / columnsPerScreen;
@@ -4645,69 +4635,6 @@ static BOOL initialized = NO;
 		[[viewers objectAtIndex:i] setWindowFrame:frame showWindow:YES animate: YES];
 	}
 }
-
-//-(IBAction)toggleActivityWindow:(id)sender
-//{
-//	ActivityWindowController* controller = [ActivityWindowController defaultController];
-//	if (![controller.window isVisible] || ![controller.window isKeyWindow])
-//		[controller.window makeKeyAndOrderFront:sender];
-//	else
-//		[controller.window orderOut:sender];
-//	
-//	[[NSUserDefaultsController sharedUserDefaultsController] setBool: [controller.window isVisible] forKey:@"ActivityWindowVisibleFlag"];
-//}
-
-//{
-//	NSRect screenRect = [screen visibleFrame];
-//	BOOL landscape = (screenRect.size.width/screenRect.size.height > 1) ? YES : NO;
-//
-//	int rows = 1,  columns = 1, viewerCount = [viewers count];
-//	
-//	while (viewerCount > (rows * columns))
-//	{
-//		float ratio = ((float)columns/(float)rows);
-//		
-//		if (ratio > 1.5 && landscape)
-//			rows ++;
-//		else 
-//			columns ++;
-//	}
-//	
-//	int i;
-//	
-//	for( i = 0; i < viewerCount; i++)
-//	{
-//		int row = i/columns;
-//		int columnIndex = (i - (row * columns));
-//		int viewerPosition = i;
-//		
-//		NSRect frame = [screen visibleFrame];
-//
-//		if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController exposedHeight];
-//		frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
-//		
-//		int temp;
-//			
-////		temp = frame.size.width / columnsPerScreen;
-////		frame.size.width = temp * columnsPerScreen;
-////		
-////		temp = frame.size.height / rows;
-////		frame.size.height = temp * rows;
-//		
-//		frame.size.width /= columns;
-//		frame.origin.x += (frame.size.width * columnIndex);
-//		
-//		if( i == viewerCount-1)
-//		{
-//			frame.size.width = [screen visibleFrame].size.width - (frame.origin.x - [screen visibleFrame].origin.x);
-//		}
-//		
-//		frame.size.height /= rows;
-//		frame.origin.y += frame.size.height * ((rows - 1) - row);
-//		
-//		[[viewers objectAtIndex:i] setWindowFrame:frame showWindow:YES animate: YES];
-//	}
-//}
 
 - (NSArray*) orderedScreens
 {
@@ -4947,6 +4874,32 @@ static BOOL initialized = NO;
 			return NO;
     }
     return YES;
+}
+
++ (NSRect) usefullRectForScreen: (NSScreen*) screen
+{
+    return [AppController usefullRectForScreen: screen showFloatingWindows: YES];
+}
+
++ (NSRect) usefullRectForScreen: (NSScreen*) screen showFloatingWindows: (BOOL) showFloatingWindows
+{
+    NSRect screenFrame = screen.visibleFrame;
+    
+    if( showFloatingWindows)
+    {
+        if( [AppController USETOOLBARPANEL] || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
+            screenFrame.size.height -= [[AppController toolbarForScreen: screen] exposedHeight];
+        
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
+        {
+            screenFrame.origin.x += [ThumbnailsListPanel fixedWidth];
+            screenFrame.size.width -= [ThumbnailsListPanel fixedWidth];
+        }
+        
+        screenFrame = [NavigatorView adjustIfScreenAreaIf4DNavigator: screenFrame];
+    }
+    
+    return screenFrame;
 }
 
 - (IBAction) tileWindows:(id)sender
@@ -5426,16 +5379,7 @@ static BOOL initialized = NO;
 		
 		for( int i = 0; i < count; i++)
 		{
-			NSScreen *screen = [screens objectAtIndex:i];
-			NSRect frame = [screen visibleFrame];
-			if( display2DViewerToolbar) frame.size.height -= [[AppController toolbarForScreen:screen] exposedHeight];
-            if( displayThumbnailsList)
-            {
-                frame.origin.x += [ThumbnailsListPanel fixedWidth];
-                frame.size.width -= [ThumbnailsListPanel fixedWidth];
-            }
-            
-			frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
+			NSRect frame = [AppController usefullRectForScreen: [screens objectAtIndex:i] showFloatingWindows: display2DViewerToolbar];
 			
 			[[viewersList objectAtIndex:i] setWindowFrame: frame showWindow:YES animate: YES];			
 		}
@@ -5455,16 +5399,7 @@ static BOOL initialized = NO;
 		{
 			int index = (int) i/viewersPerScreen;
 			int viewerPosition = i % viewersPerScreen;
-			NSScreen *screen = [screens objectAtIndex:index];
-			NSRect frame = [screen visibleFrame];
-			
-			if( display2DViewerToolbar) frame.size.height -= [[AppController toolbarForScreen:screen] exposedHeight];
-            if( displayThumbnailsList)
-            {
-                frame.origin.x += [ThumbnailsListPanel fixedWidth];
-                frame.size.width -= [ThumbnailsListPanel fixedWidth];
-            }
-			frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
+			NSRect frame = [AppController usefullRectForScreen: [screens objectAtIndex:index] showFloatingWindows: display2DViewerToolbar];
 			
 			frame.size.width /= viewersPerScreen;
 			frame.origin.x += (frame.size.width * viewerPosition);
@@ -5486,15 +5421,7 @@ static BOOL initialized = NO;
 			int monitorIndex = (int) i /columnsPerScreen;
 			int viewerPosition = i % columnsPerScreen;
 			NSScreen *screen = [screens objectAtIndex: monitorIndex];
-			NSRect frame = [screen visibleFrame];
-			
-			if( display2DViewerToolbar) frame.size.height -= [[AppController toolbarForScreen:screen] exposedHeight];
-            if( displayThumbnailsList)
-            {
-                frame.origin.x += [ThumbnailsListPanel fixedWidth];
-                frame.size.width -= [ThumbnailsListPanel fixedWidth];
-            }
-			frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
+			NSRect frame = [AppController usefullRectForScreen: screen showFloatingWindows: display2DViewerToolbar];
 			
 			if (monitorIndex < extraViewers) 
 				frame.size.width /= columnsPerScreen;

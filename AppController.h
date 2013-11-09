@@ -234,6 +234,7 @@ extern AppController* OsiriX;
 + (void) checkForPreferencesUpdate: (BOOL) b;
 + (BOOL) USETOOLBARPANEL;
 + (void) setUSETOOLBARPANEL: (BOOL) b;
++ (NSRect) usefullRectForScreen: (NSScreen*) screen;
 
 - (void) addStudyToRecentStudiesMenu: (NSManagedObjectID*) studyID;
 - (void) loadRecentStudy: (id) sender;

@@ -599,6 +599,11 @@
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="showHideMatrix:" target="-1" id="14620"/>
+                                    <binding destination="12279" name="enabled" keyPath="values.UseFloatingThumbnailsList" id="VfC-Lj-hGl">
+                                        <dictionary key="options">
+                                            <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                        </dictionary>
+                                    </binding>
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="13179">
@@ -2632,7 +2637,7 @@ CA
                                                             <autoresizingMask key="autoresizingMask"/>
                                                         </scroller>
                                                         <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="13467">
-                                                            <rect key="frame" x="415" y="17" width="16" height="234"/>
+                                                            <rect key="frame" x="416" y="17" width="15" height="234"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                         </scroller>
                                                         <tableHeaderView key="headerView" id="13469">

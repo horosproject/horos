@@ -163,14 +163,7 @@ static BOOL protectedReentryWindowDidResize = NO;
 	//			e = [[NSScreen screens] objectEnumerator];
 	//			while (screen = [e nextObject])
 				{
-					NSRect frame = [[[self window] screen] visibleFrame];
-					
-                    if( USETOOLBARPANEL) frame.size.height -= [[AppController toolbarForScreen:[[self window] screen]] exposedHeight];
-                    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
-                    {
-                        frame.size.width -= [ThumbnailsListPanel fixedWidth];
-                        frame.origin.x += [ThumbnailsListPanel fixedWidth];
-                    }
+					NSRect frame = [AppController usefullRectForScreen: [[self window] screen]];
                     
 					frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
 					[rects addObject: [NSValue valueWithRect: frame]];
@@ -259,18 +252,13 @@ static BOOL protectedReentryWindowDidResize = NO;
 		else
 		{
 			NSRect dstFrame = [[self window] frame];
-			
-			if( USETOOLBARPANEL)
-			{
-				if( dstFrame.size.height >= [[[self window] screen] visibleFrame].size.height - [[AppController toolbarForScreen:[[self window] screen]] exposedHeight])
-					dstFrame.size.height = [[[self window] screen] visibleFrame].size.height - [[AppController toolbarForScreen:[[self window] screen]] exposedHeight];
-			}
+			NSRect visibleRect = [AppController usefullRectForScreen: self.window.screen];
             
-            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
-			{
-				if( dstFrame.size.width >= [[[self window] screen] visibleFrame].size.width - [ThumbnailsListPanel fixedWidth])
-					dstFrame.size.width = [[[self window] screen] visibleFrame].size.width - [ThumbnailsListPanel fixedWidth];
-			}
+            if( dstFrame.size.height >= visibleRect.size.height)
+                dstFrame.size.height = visibleRect.size.height;
+            
+            if( dstFrame.size.width >= visibleRect.size.width)
+                dstFrame.size.width = visibleRect.size.width;
 			
 			if( dstFrame.size.height < [[self window] contentMinSize].height) dstFrame.size.height = [[self window] contentMinSize].height;
 			if( dstFrame.size.width < [[self window] contentMinSize].width) dstFrame.size.width = [[self window] contentMinSize].width;
@@ -380,13 +368,8 @@ static BOOL protectedReentryWindowDidResize = NO;
 	//		e = [[NSScreen screens] objectEnumerator];
 	//		while (screen = [e nextObject])
 			{
-				NSRect frame = [[[self window] screen] visibleFrame];
-				if( USETOOLBARPANEL) frame.size.height -= [[AppController toolbarForScreen:[[self window] screen]] exposedHeight];
-                if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
-                {
-                    frame.size.width -= [ThumbnailsListPanel fixedWidth];
-                    frame.origin.x += [ThumbnailsListPanel fixedWidth];
-                }
+				NSRect frame = [AppController usefullRectForScreen: [[self window] screen]];
+                
 				frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
 				
 				[rects addObject: [NSValue valueWithRect: frame]];
