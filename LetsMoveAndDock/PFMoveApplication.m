@@ -14,16 +14,6 @@
 #import <ILCrashReporter/ILCrashReporter.h>
 
 
-// Strings
-#define kStrMoveApplicationCouldNotMove (NSLocalizedString( @"Could not move OsiriX to Applications folder.", nil))
-#define kStrMoveApplicationQuestionTitle  (NSLocalizedString( @"Move OsiriX to Applications folder?", nil))
-#define kStrMoveApplicationQuestionTitleHome (NSLocalizedString( @"Move OsiriX to Applications folder in your Home folder?", nil))
-#define kStrMoveApplicationQuestionMessage (NSLocalizedString( @"OsiriX is currently not in the Applications folder. It is recommended to run OsiriX from the Applications folder. I can move it now, add an icon to the dock and restart, if you agree? (recommended)", nil))
-#define kStrMoveApplicationButtonMove (NSLocalizedString( @"Move OsiriX to Applications Folder", nil))
-#define kStrMoveApplicationButtonDoNotMove (NSLocalizedString( @"Do Not Move", nil))
-#define kStrMoveApplicationQuestionInfoWillRequirePasswd (NSLocalizedString( @"Note that this will require an administrator password.", nil))
-#define kStrMoveApplicationQuestionInfoInDownloadsFolder (NSLocalizedString( @"This will keep your Downloads folder uncluttered.", nil))
-
 // Needs to be defined for compiling under 10.4 SDK
 #ifndef NSAppKitVersionNumber10_4
 	#define NSAppKitVersionNumber10_4 824
@@ -82,27 +72,27 @@ void PFMoveToApplicationsFolderIfNecessary() {
 	{
 		NSString *informativeText = nil;
 
-		[alert setMessageText:(installToUserApplications ? kStrMoveApplicationQuestionTitleHome : kStrMoveApplicationQuestionTitle)];
+		[alert setMessageText:(installToUserApplications ? NSLocalizedString( @"Move OsiriX to Applications folder in your Home folder?", nil) : NSLocalizedString( @"Move OsiriX to Applications folder?", nil))];
 
-		informativeText = kStrMoveApplicationQuestionMessage;
+		informativeText = NSLocalizedString( @"OsiriX is currently not in the Applications folder. It is recommended to run OsiriX from the Applications folder. I can move it now, add an icon to the dock and restart, if you agree? (recommended)", nil);
 
 		if (needAuthorization) {
 			informativeText = [informativeText stringByAppendingString:@" "];
-			informativeText = [informativeText stringByAppendingString:kStrMoveApplicationQuestionInfoWillRequirePasswd];
+			informativeText = [informativeText stringByAppendingString:NSLocalizedString( @"Note that this will require an administrator password.", nil)];
 		}
 		else if (IsInDownloadsFolder(bundlePath)) {
 			// Don't mention this stuff if we need authentication. The informative text is long enough as it is in that case.
 			informativeText = [informativeText stringByAppendingString:@" "];
-			informativeText = [informativeText stringByAppendingString:kStrMoveApplicationQuestionInfoInDownloadsFolder];
+			informativeText = [informativeText stringByAppendingString:NSLocalizedString( @"This will keep your Downloads folder uncluttered.", nil)];
 		}
 
 		[alert setInformativeText:informativeText];
 
 		// Add accept button
-		[alert addButtonWithTitle:kStrMoveApplicationButtonMove];
+		[alert addButtonWithTitle:NSLocalizedString( @"Move OsiriX to Applications Folder", nil)];
 
 		// Add deny button
-		NSButton *cancelButton = [alert addButtonWithTitle:kStrMoveApplicationButtonDoNotMove];
+		NSButton *cancelButton = [alert addButtonWithTitle:NSLocalizedString( @"Do Not Move", nil)];
 		[cancelButton setKeyEquivalent:@"\e"];
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_4
@@ -218,7 +208,7 @@ fail:
 	{
 		// Show failure message
 		alert = [[[NSAlert alloc] init] autorelease];
-		[alert setMessageText:kStrMoveApplicationCouldNotMove];
+		[alert setMessageText: NSLocalizedString( @"Could not move OsiriX to Applications folder.", nil)];
 		[alert runModal];
 	}
 }
