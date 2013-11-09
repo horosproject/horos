@@ -59,6 +59,11 @@
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
                                     <connections>
+                                        <binding destination="308" name="enabled" keyPath="values.UseFloatingThumbnailsList" id="1bO-PP-z9t">
+                                            <dictionary key="options">
+                                                <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                            </dictionary>
+                                        </binding>
                                         <binding destination="308" name="value" keyPath="values.AUTOHIDEMATRIX" id="536"/>
                                     </connections>
                                 </button>

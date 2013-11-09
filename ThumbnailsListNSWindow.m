@@ -27,7 +27,7 @@
 
 - (BOOL) canBecomeKeyWindow
 {
-	return YES;
+	return NO;
 }
 
 - (void) orderOut:(id)sender

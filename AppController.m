@@ -5539,6 +5539,9 @@ static BOOL initialized = NO;
     for( int i = 0; i < [[NSScreen screens] count]; i++)
         [toolbarPanel[ i] setToolbar: nil viewer: nil];
     
+    if( keyWindow == nil)
+        keyWindow = [ViewerController frontMostDisplayed2DViewerForScreen: nil];
+    
 	if( [viewersList count] > 0 && keyWindow != nil)
 	{
         [DCMView setDontListenToSyncMessage: YES];

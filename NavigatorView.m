@@ -16,6 +16,7 @@
 #import "NavigatorWindowController.h"
 #import "ROI.h"
 #import "Notifications.h"
+#import "AppController.h"
 
 #include <OpenGL/CGLMacro.h>
 #include <OpenGL/CGLCurrent.h>
@@ -59,11 +60,13 @@ static float deg2rad = M_PI/180.0;
 		rect.size.width = [[n window] maxSize].width;
 		rect.size.height = [v maxMovieIndex]*n.thumbnailHeight;
 		
-		if( rect.size.width > [[[v window] screen] visibleFrame].size.width) rect.size.width = [[[v window] screen] visibleFrame].size.width;
-		if( rect.size.height > [[[v window] screen] visibleFrame].size.height/2) rect.size.height = [[[v window] screen] visibleFrame].size.height/2;
+        NSScreen *screen = [[[AppController sharedAppController] viewerScreens] objectAtIndex: 0];
+        
+		if( rect.size.width > [screen visibleFrame].size.width) rect.size.width = [screen visibleFrame].size.width;
+		if( rect.size.height > [screen visibleFrame].size.height/2) rect.size.height = [screen visibleFrame].size.height/2;
 		
-		rect.origin.x = [[[v window] screen] visibleFrame].origin.x;
-		rect.origin.y = [[[v window] screen] visibleFrame].origin.y;
+		rect.origin.x = [screen visibleFrame].origin.x;
+		rect.origin.y = [screen visibleFrame].origin.y;
 		
 		float scrollbarShift = 0;
 		if(rect.size.width < [n frame].size.width) scrollbarShift = 12;

@@ -22,6 +22,7 @@
 {
 	ViewerController *viewerController;
 	IBOutlet NavigatorView *navigatorView;
+    IBOutlet NSScrollView *scrollview;
 	BOOL dontReEnter;
 }
 

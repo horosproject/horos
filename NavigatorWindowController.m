@@ -16,6 +16,7 @@
 #import "ViewerController.h"
 #import "AppController.h"
 #import "Notifications.h"
+#import "ThumbnailsListPanel.h"
 
 static NavigatorWindowController *nav = nil;
 
@@ -50,6 +51,7 @@ static NavigatorWindowController *nav = nil;
 - (void)awakeFromNib; 
 {
 	[[self window] setAcceptsMouseMovedEvents:YES];
+    [scrollview setScrollerStyle: NSScrollerStyleLegacy];
 }
 
 - (void)setViewer:(ViewerController*)viewer;
@@ -88,6 +90,7 @@ static NavigatorWindowController *nav = nil;
 {
 	[self initView];
 	[super showWindow:sender];
+    [ThumbnailsListPanel checkScreenParameters];
 }
 
 - (void)closeViewerNotification:(NSNotification*)notif;
@@ -111,7 +114,9 @@ static NavigatorWindowController *nav = nil;
 	
 	NSRect r = [NavigatorView rect];
 	
-	r.origin.y = [[[self window] screen] visibleFrame].origin.y;
+    NSScreen *screen = [[[AppController sharedAppController] viewerScreens] objectAtIndex: 0];
+    
+	r.origin.y = [screen visibleFrame].origin.y;
 	r.size.height = height + [[self window] frame].origin.y - r.origin.y;
 	
 	if( r.size.height > [NavigatorView rect].size.height)
@@ -162,13 +167,17 @@ static NavigatorWindowController *nav = nil;
 	[viewerController release];
 	[super dealloc];
 	[[AppController sharedAppController] tileWindows: nil];
+    [ThumbnailsListPanel checkScreenParameters];
 }
 
 - (void)computeMinAndMaxSize;
 {	
 	NSSize maxSize = [navigatorView frame].size;
 	maxSize.height += 16; // 16px for the title bar
-	float screenWidth = [[[viewerController window] screen] frame].size.width;
+    
+    NSScreen *screen = [[[AppController sharedAppController] viewerScreens] objectAtIndex: 0];
+    
+	float screenWidth = [screen frame].size.width;
 	maxSize.width = screenWidth;
 	if([[self window] frame].size.width < [navigatorView frame].size.width) maxSize.height += 11; // 11px for the horizontal scroller
 

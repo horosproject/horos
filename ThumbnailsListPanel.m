@@ -19,6 +19,7 @@
 #import "N2Debug.h"
 #import "Notifications.h"
 #import "ToolbarPanel.h"
+#import "NavigatorWindowController.h"
 
 static 	NSMutableDictionary *associatedScreen = nil;
 static int increment = 0;
@@ -45,6 +46,12 @@ extern  BOOL USETOOLBARPANEL;
     return w;
 }
 
++ (void) checkScreenParameters
+{
+    for( NSScreen *s in [NSScreen screens])
+        [[AppController thumbnailsListPanelForScreen: s] applicationDidChangeScreenParameters: nil];
+}
+
 -(void)applicationDidChangeScreenParameters:(NSNotification*)aNotification
 {
 	if ([[NSScreen screens] count] <= screen)
@@ -60,6 +67,12 @@ extern  BOOL USETOOLBARPANEL;
 	
     if( USETOOLBARPANEL)
         dstframe.size.height -= [[AppController toolbarForScreen:[[self window] screen]] exposedHeight];
+    
+    if( NavigatorWindowController.navigatorWindowController.window.screen == self.window.screen)
+    {
+        dstframe.origin.y += NavigatorWindowController.navigatorWindowController.window.frame.size.height;
+        dstframe.size.height -= NavigatorWindowController.navigatorWindowController.window.frame.size.height;
+    }
     
 	[[self window] setFrame:dstframe display:YES];
 }
@@ -229,6 +242,9 @@ extern  BOOL USETOOLBARPANEL;
     
     @try
     {
+        if( tb == nil && viewer)
+            tb = [[[NSView alloc] initWithFrame: NSMakeRect(0, 0, 10, 10)] autorelease];
+        
         if( tb == thumbnailsView)
         {
             if( viewer != nil)

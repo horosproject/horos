@@ -419,7 +419,7 @@ static int hotKeyToolCrossTable[] =
 	{
 		if( [[w windowController] isKindOfClass:[ViewerController class]] && w.isVisible)
 		{
-            if( [w.screen isEqual: screen])
+            if( screen == nil || [w.screen isEqual: screen])
             {
                 ViewerController *v = w.windowController;
                 
@@ -3274,6 +3274,20 @@ static volatile int numberOfThreadsForRelisce = 0;
 			[self setImageRows: previousFullscreenRows columns: previousFullscreenColumns];
 			[[self window] makeFirstResponder: [[seriesView imageViews] objectAtIndex: previousFullscreenViewIndex]];
 		}
+        
+//        if( SavedUseFloatingThumbnailsList)
+//        {
+//            [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"UseFloatingThumbnailsList"];
+//            
+//            for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+//            {
+//                NSRect frame = [[[v.splitView subviews] objectAtIndex: 0] frame];
+//                frame.size.width = 0;
+//                [[[v.splitView subviews] objectAtIndex: 0] setFrameSize: frame.size];
+//            }
+//            
+//            [self redrawToolbar];
+//        }
 	}
     else // FullScreenOn == false
     {
@@ -3283,11 +3297,20 @@ static volatile int numberOfThreadsForRelisce = 0;
 		previousFullscreenColumns = [imageView columns];
 		previousFullscreenRows = [imageView rows];
 		int selectedIndex = [imageView curImage];
-		previousFullscreenViewIndex = [[seriesView imageViews] indexOfObject: imageView]; 
-		
+		previousFullscreenViewIndex = [[seriesView imageViews] indexOfObject: imageView];
+        
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"NoImageTilingInFullscreen"] && (previousFullscreenColumns != 1 || previousFullscreenRows != 1))
 			[self setImageRows: 1 columns: 1];
 		
+//        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
+//        {
+//            SavedUseFloatingThumbnailsList = YES;
+//            [[AppController thumbnailsListPanelForScreen: self.window.screen] setThumbnailsView: nil  viewer: self];
+//            [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"UseFloatingThumbnailsList"];
+//        }
+//        else
+//            SavedUseFloatingThumbnailsList = NO;
+        
 		previousFullscreenCurImage = [imageView curImage];
 		
 		[imageView setIndex: selectedIndex];

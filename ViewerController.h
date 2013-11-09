@@ -265,7 +265,7 @@ enum
 	
 	float					factorPET2SUV;
 	
-    BOOL                    FullScreenOn;
+    BOOL                    FullScreenOn, SavedUseFloatingThumbnailsList;
     NSWindow                *FullScreenWindow;
     NSWindow                *StartingWindow;
     NSView                  *contentView;
