@@ -4285,7 +4285,7 @@ static volatile int numberOfThreadsForRelisce = 0;
     
     if (notification.object == splitView)
     {    
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOHIDEMATRIX"] == NO)
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOHIDEMATRIX"] == NO && FullScreenOn == NO)
         {
             // Apply show / hide matrix to all viewers
             if( ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask) == NO)
