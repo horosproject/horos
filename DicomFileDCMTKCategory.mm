@@ -861,6 +861,8 @@ extern NSRecursiveLock *PapyrusLock;
                     
                     if( succeed == NO)
                     {
+                        succeed = YES;
+                        
                         if (ditem->findAndGetSequenceItem(DCM_PlanePositionSequence, eitem, x).good())
                         {
                             int count = 0;
