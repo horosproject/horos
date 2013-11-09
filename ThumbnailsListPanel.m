@@ -103,7 +103,11 @@ extern  BOOL USETOOLBARPANEL;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidResignKey:) name:NSWindowDidResignKeyNotification object:0];
         
         [self.window safelySetMovable:NO];
+        
+        if( self.window == nil)
+            [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"UseFloatingThumbnailsList"];
 	}
+    
 	
 	return self;
 }
