@@ -1195,10 +1195,14 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			[dicomDestination setObject:[dicomDestinationArray objectAtIndex:(long)dicomDestinationArray.count-2] forKey:@"AETitle"];
 			[dicomDestination setObject:[dicomDestinationArray objectAtIndex:(long)dicomDestinationArray.count-1] forKey:@"TransferSyntax"];
 			
-			NSMutableArray* selectedImages = [NSMutableArray array];
-			for (DicomSeries* s in selectedSeries)
-				[selectedImages addObjectsFromArray:s.sortedImages];
-			
+            NSMutableArray* selectedImages = [NSMutableArray array];
+            if( selectedSeries.count)
+                for (DicomSeries* s in selectedSeries)
+                    [selectedImages addObjectsFromArray:s.sortedImages];
+            else
+                for (DicomSeries* s in study.series)
+                    [selectedImages addObjectsFromArray:s.sortedImages];
+            
 			if (selectedImages.count) {
 				[self sendImages:selectedImages toDicomNode:dicomDestination];
 				[response.tokens addMessage:[NSString stringWithFormat:NSLocalizedString(@"Dicom send to node %@ initiated.", @"Web Portal, study, dicom send, success"), [[dicomDestination objectForKey:@"AETitle"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
