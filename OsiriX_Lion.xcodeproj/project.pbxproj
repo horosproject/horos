@@ -4160,6 +4160,7 @@
 		CE06475210F12DA500551AD9 /* PlayTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = CE06475110F12DA500551AD9 /* PlayTemplate.png */; };
 		CE087B0C0DE9BD6E000E5593 /* GLString.m in Sources */ = {isa = PBXBuildFile; fileRef = CE087B0A0DE9BD6E000E5593 /* GLString.m */; };
 		CE087B0D0DE9BD6E000E5593 /* GLString.h in Headers */ = {isa = PBXBuildFile; fileRef = CE087B0B0DE9BD6E000E5593 /* GLString.h */; };
+		CE0C4792183139C400D4C50E /* pages092pdf.applescript in Resources */ = {isa = PBXBuildFile; fileRef = CE0C478F1831366600D4C50E /* pages092pdf.applescript */; };
 		CE0CB171084A623C00C6385F /* DCMPix.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0CB16F084A623C00C6385F /* DCMPix.m */; };
 		CE0CB172084A623C00C6385F /* DCMPix.h in Headers */ = {isa = PBXBuildFile; fileRef = CE0CB170084A623C00C6385F /* DCMPix.h */; };
 		CE0DB327182D604900C90B43 /* ThumbnailsListNSWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0DB325182D604900C90B43 /* ThumbnailsListNSWindow.m */; };
@@ -11523,6 +11524,7 @@
 		CE06475110F12DA500551AD9 /* PlayTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PlayTemplate.png; sourceTree = "<group>"; };
 		CE087B0A0DE9BD6E000E5593 /* GLString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLString.m; sourceTree = "<group>"; };
 		CE087B0B0DE9BD6E000E5593 /* GLString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLString.h; sourceTree = "<group>"; };
+		CE0C478F1831366600D4C50E /* pages092pdf.applescript */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.applescript; name = pages092pdf.applescript; path = Binaries/ReportsToPDF/pages092pdf.applescript; sourceTree = "<group>"; };
 		CE0CB16F084A623C00C6385F /* DCMPix.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DCMPix.m; sourceTree = "<group>"; };
 		CE0CB170084A623C00C6385F /* DCMPix.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DCMPix.h; sourceTree = "<group>"; };
 		CE0DB325182D604900C90B43 /* ThumbnailsListNSWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThumbnailsListNSWindow.m; sourceTree = "<group>"; };
@@ -15916,6 +15918,7 @@
 				AB7250370ADE6F5D00A212A0 /* Decompress */,
 				596D30AC1439B979004EE9EC /* odt2pdf */,
 				596D30AE1439B98A004EE9EC /* pages2pdf.applescript */,
+				CE0C478F1831366600D4C50E /* pages092pdf.applescript */,
 				CE902EA1181C004C00CC4B88 /* pages2pages09.applescript */,
 				596D30AF1439B98A004EE9EC /* word2pdf.applescript */,
 				AB9DCD7A09A9C47800AA19E7 /* ReportTemplate.rtf */,
@@ -27968,6 +27971,7 @@
 			files = (
 				CE902EA3181C034E00CC4B88 /* pages2pages09.applescript in Resources */,
 				596D30B31439B9CD004EE9EC /* word2pdf.applescript in Resources */,
+				CE0C4792183139C400D4C50E /* pages092pdf.applescript in Resources */,
 				596D30B21439B9C8004EE9EC /* pages2pdf.applescript in Resources */,
 				CE289B1D0D00AF91004F0A93 /* Mail.scpt in Resources */,
 				ABBB63A70635874E00D9531F /* dcmdump in Resources */,
