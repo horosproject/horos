@@ -2848,9 +2848,21 @@ static volatile int numberOfThreadsForRelisce = 0;
     [previewMatrixScrollView setPostsBoundsChangedNotifications: NO];
     [[[splitView subviews] objectAtIndex: 0] setPostsFrameChangedNotifications: NO];
     
+    @synchronized( loadingThread) {
+        [loadingThread cancel];
+    }
+    
+    BOOL isExecuting = NO;
+    do {
+        @synchronized( loadingThread) {
+            isExecuting = loadingThread.isExecuting;
+        }
+        if( isExecuting)
+            [NSThread sleepForTimeInterval: 0.01];
+    } while (isExecuting);
+    
     @synchronized( loadingThread)
     {
-        [loadingThread cancel];
         [loadingThread autorelease];
         loadingThread = nil;
     }
@@ -2926,7 +2938,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		}
 	}
 	
-	[self autorelease];
+    [self autorelease];
 	
 	numberOf2DViewer--;
 	@synchronized( arrayOf2DViewers)
@@ -7360,10 +7372,6 @@ static int avoidReentryRefreshDatabase = 0;
     @synchronized( loadingThread)
     {
         [loadingThread cancel];
-        
-        while( loadingThread.isExecuting)
-            [NSThread sleepForTimeInterval: 0.01];
-        
         [loadingThread autorelease];
         loadingThread = nil;
 	}
