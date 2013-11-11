@@ -4390,6 +4390,8 @@
 		CE28086C0B6B76730093E9D3 /* CalciumScoringWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2808640B6B76730093E9D3 /* CalciumScoringWindowController.m */; };
 		CE286C120964196C001A4573 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE286C100964196C001A4573 /* Localizable.strings */; };
 		CE289B1D0D00AF91004F0A93 /* Mail.scpt in Resources */ = {isa = PBXBuildFile; fileRef = CE289B020D00ADBA004F0A93 /* Mail.scpt */; };
+		CE2AC2681830BEFB00C2B67B /* ThickSlab.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE2AC2661830BEFB00C2B67B /* ThickSlab.xib */; };
+		CE2AC2691830BEFB00C2B67B /* ThickSlab.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE2AC2661830BEFB00C2B67B /* ThickSlab.xib */; };
 		CE2BE05E1524344D00AE6156 /* Growl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BE05D1524344D00AE6156 /* Growl.framework */; };
 		CE2BFE57153B177C00037546 /* iPad.png in Resources */ = {isa = PBXBuildFile; fileRef = CE2BFE56153B177C00037546 /* iPad.png */; };
 		CE2BFE58153B177C00037546 /* iPad.png in Resources */ = {isa = PBXBuildFile; fileRef = CE2BFE56153B177C00037546 /* iPad.png */; };
@@ -11547,6 +11549,7 @@
 		CE2808640B6B76730093E9D3 /* CalciumScoringWindowController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = CalciumScoringWindowController.m; sourceTree = "<group>"; };
 		CE286C110964196C001A4573 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = Binaries/English.lproj/Localizable.strings; sourceTree = "<group>"; };
 		CE289B020D00ADBA004F0A93 /* Mail.scpt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.scpt; name = Mail.scpt; path = Binaries/Mail.scpt; sourceTree = "<group>"; };
+		CE2AC2671830BEFB00C2B67B /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ThickSlab.xib; sourceTree = "<group>"; };
 		CE2BE05D1524344D00AE6156 /* Growl.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Growl.framework; path = Binaries/Growl.framework; sourceTree = "<group>"; };
 		CE2BFE56153B177C00037546 /* iPad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iPad.png; sourceTree = "<group>"; };
 		CE3368571595888D00167676 /* WebPortalDB 7.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "WebPortalDB 7.xcdatamodel"; sourceTree = "<group>"; };
@@ -15966,6 +15969,7 @@
 				CE3F98E40C84724B00CB38F1 /* SmartAlbum.xib */,
 				CE3F98FC0C84724B00CB38F1 /* Splash.xib */,
 				CE3F99340C84724B00CB38F1 /* SR.xib */,
+				CE2AC2661830BEFB00C2B67B /* ThickSlab.xib */,
 				5926822111CF60BD00CFA81F /* ThreadModalForWindow.xib */,
 				CEF09315182D23B20020C70A /* ThumbnailsList.xib */,
 				CE3F98F00C84724B00CB38F1 /* ToolbarPanel.xib */,
@@ -28344,6 +28348,7 @@
 				A9701A7415C958020019EE55 /* burn_iris12.tif in Resources */,
 				A9701A7615C958020019EE55 /* burn_iris13.tif in Resources */,
 				A9701A7815C958020019EE55 /* burn_iris14.tif in Resources */,
+				CE2AC2681830BEFB00C2B67B /* ThickSlab.xib in Resources */,
 				A9701A7A15C958020019EE55 /* burn_iris15.tif in Resources */,
 				A9701A7C15C958020019EE55 /* burn_iris16.tif in Resources */,
 				A9701A7E15C958020019EE55 /* burn_iris17.tif in Resources */,
@@ -28410,6 +28415,7 @@
 				CEC7056C10A5C844008935EA /* BSRSettings.tif in Resources */,
 				CEC7056D10A5C844008935EA /* BestRendering.pdf in Resources */,
 				CEC7057010A5C844008935EA /* Cor.tif in Resources */,
+				CE2AC2691830BEFB00C2B67B /* ThickSlab.xib in Resources */,
 				CEC7057110A5C844008935EA /* Cropping.pdf in Resources */,
 				CEC7057310A5C844008935EA /* DAT.icns in Resources */,
 				CEC7057410A5C844008935EA /* dcm.icns in Resources */,
@@ -32308,6 +32314,14 @@
 				CE286C110964196C001A4573 /* English */,
 			);
 			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		CE2AC2661830BEFB00C2B67B /* ThickSlab.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CE2AC2671830BEFB00C2B67B /* English */,
+			);
+			name = ThickSlab.xib;
 			sourceTree = "<group>";
 		};
 		CE3F98E40C84724B00CB38F1 /* SmartAlbum.xib */ = {
