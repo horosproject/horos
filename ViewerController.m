@@ -7360,6 +7360,10 @@ static int avoidReentryRefreshDatabase = 0;
     @synchronized( loadingThread)
     {
         [loadingThread cancel];
+        
+        while( loadingThread.isExecuting)
+            [NSThread sleepForTimeInterval: 0.01];
+        
         [loadingThread autorelease];
         loadingThread = nil;
 	}
@@ -7410,6 +7414,9 @@ static int avoidReentryRefreshDatabase = 0;
 
 - (void) dealloc
 {
+    if( [NSThread isMainThread] == NO)
+        N2LogStackTrace( @"dealloc NOT on main thread");
+    
     [[self window] setDelegate: nil];
 	
     [previewMatrixScrollView setPostsBoundsChangedNotifications: NO];
@@ -8244,61 +8251,60 @@ static int avoidReentryRefreshDatabase = 0;
 
 + (void) subLoadingThread: (NSDictionary*) dict
 {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-    [NSThread currentThread].name = @"Load Image Data Sub Thread";
-    
-    NSThread *mainLoadingThread = [dict objectForKey: @"loadingThread"];
-	NSArray *p = [dict objectForKey: @"pixList"];
-	NSArray *f = [dict objectForKey: @"fileList"];
-    NSConditionLock *subLoadingThread = [dict objectForKey: @"subLoadingThread"];
-	int from = [[dict objectForKey: @"from"] intValue];
-	int to = [[dict objectForKey: @"to"] intValue];
-	int movieIndex = [[dict objectForKey: @"movieIndex"] intValue];
-    int maxMovieIndex = [[dict objectForKey: @"maxMovieIndex"] intValue];
-	
-    BOOL isLocal = [[[BrowserController currentBrowser] database] isLocal];
-    NSManagedObjectContext* db = nil;
-    
-	for( int i = from; i < to; i++)
-	{
-        BOOL isCancelled;
+	@autoreleasepool
+    {
+        [NSThread currentThread].name = @"Load Image Data Sub Thread";
         
-        @synchronized( mainLoadingThread)
+        NSThread *mainLoadingThread = [dict objectForKey: @"loadingThread"];
+        NSArray *p = [dict objectForKey: @"pixList"];
+        NSArray *f = [dict objectForKey: @"fileList"];
+        NSConditionLock *subLoadingThread = [dict objectForKey: @"subLoadingThread"];
+        int from = [[dict objectForKey: @"from"] intValue];
+        int to = [[dict objectForKey: @"to"] intValue];
+        int movieIndex = [[dict objectForKey: @"movieIndex"] intValue];
+        int maxMovieIndex = [[dict objectForKey: @"maxMovieIndex"] intValue];
+        
+        BOOL isLocal = [[[BrowserController currentBrowser] database] isLocal];
+        NSManagedObjectContext* db = nil;
+        
+        for( int i = from; i < to; i++)
         {
-            isCancelled = mainLoadingThread.isCancelled;
-        }
-        
-		if( isCancelled == NO)
-		{
-            if( !isLocal)
-            {
-                if( db == nil)
-                    db = [[[BrowserController currentBrowser] database] independentContext];
-                
-                NSManagedObject *image = [db objectRegisteredForID: [[f objectAtIndex: i] objectID]];
-                [[BrowserController currentBrowser] getLocalDCMPath: image : 5];
-			}
-            [[p objectAtIndex: i] CheckLoad];
-		}
-		
-		if( from == 0)
-		{
-			float loadingPercentage = (float) ((movieIndex*(to-from)) + i) / (float) (maxMovieIndex * (to-from));
-			if( loadingPercentage >= 1)
-                loadingPercentage = 0.99;
+            BOOL isCancelled;
             
             @synchronized( mainLoadingThread)
             {
-                [mainLoadingThread.threadDictionary setObject: [NSNumber numberWithFloat: loadingPercentage] forKey: @"loadingPercentage"];
+                isCancelled = mainLoadingThread.isCancelled;
             }
-		}
-	}
-	
-	[subLoadingThread lock];
-	[subLoadingThread unlockWithCondition: [subLoadingThread condition]-1];
-	
-	[pool release];
+            
+            if( isCancelled == NO)
+            {
+                if( !isLocal)
+                {
+                    if( db == nil)
+                        db = [[[BrowserController currentBrowser] database] independentContext];
+                    
+                    NSManagedObject *image = [db objectRegisteredForID: [[f objectAtIndex: i] objectID]];
+                    [[BrowserController currentBrowser] getLocalDCMPath: image : 5];
+                }
+                [[p objectAtIndex: i] CheckLoad];
+            }
+            
+            if( from == 0)
+            {
+                float loadingPercentage = (float) ((movieIndex*(to-from)) + i) / (float) (maxMovieIndex * (to-from));
+                if( loadingPercentage >= 1)
+                    loadingPercentage = 0.99;
+                
+                @synchronized( mainLoadingThread)
+                {
+                    [mainLoadingThread.threadDictionary setObject: [NSNumber numberWithFloat: loadingPercentage] forKey: @"loadingPercentage"];
+                }
+            }
+        }
+        
+        [subLoadingThread lock];
+        [subLoadingThread unlockWithCondition: [subLoadingThread condition]-1];
+    }
 }
 
 + (BOOL) areLoadingViewers
@@ -8410,120 +8416,120 @@ static int avoidReentryRefreshDatabase = 0;
 
 + (void) loadImageData:(id) dict
 {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    int i, x;
-	BOOL compressed = NO;
-	
-    NSArray *pixListArray = [dict objectForKey: @"pixListArray"];
-    NSArray *fileListArray = [dict objectForKey: @"fileListArray"];
-    NSArray *volumeDataArray = [dict objectForKey: @"volumeDataArray"];
-    ViewerController *viewer = [dict objectForKey: @"viewerController"];
-    
-    [NSThread currentThread].name = @"Load Image Data";
-    
-    DCMPix *firstPix = [[pixListArray objectAtIndex: 0] objectAtIndex: 0];
-    
-	@try 
-	{
-		[DicomFile isDICOMFile: [firstPix sourceFile] compressed: &compressed];
-		
-        if( compressed)
-            if( [BrowserController isItCD: [firstPix sourceFile]]) //Always Single thread for CD/DVD
-                compressed = NO;
+    @autoreleasepool
+    {
+        int i, x;
+        BOOL compressed = NO;
         
-		if( compressed)
-			NSLog( @"start loading multiple thread");
-		else
-			NSLog( @"start loading single thread");
+        NSArray *pixListArray = [dict objectForKey: @"pixListArray"];
+        NSArray *fileListArray = [dict objectForKey: @"fileListArray"];
+        NSArray *volumeDataArray = [dict objectForKey: @"volumeDataArray"];
+        ViewerController *viewer = [dict objectForKey: @"viewerController"];
         
-        NSConditionLock *subLoadingThread = [[[NSConditionLock alloc] init] autorelease];
+        [NSThread currentThread].name = @"Load Image Data";
         
-		for( x = 0; x < pixListArray.count; x++)
-		{
-            int mpprocessors = [[NSProcessInfo processInfo] processorCount];
-            if( mpprocessors < 1)
-                mpprocessors = 1;
-            
-            int numberOfThreadsForCompute = mpprocessors;
-            
-            if( compressed == NO)
-                numberOfThreadsForCompute = 1;
-            
-            NSMutableDictionary *d = [NSMutableDictionary dictionary];
-            
-            [d setObject: [NSThread currentThread] forKey: @"loadingThread"];
-            [d setObject: [pixListArray objectAtIndex: x] forKey: @"pixList"];
-            [d setObject: [fileListArray objectAtIndex: x] forKey: @"fileList"];
-            [d setObject: subLoadingThread forKey: @"subLoadingThread"];
-            [d setObject: [NSNumber numberWithInt: x] forKey: @"movieIndex"];
-            [d setObject: [NSNumber numberWithInt: pixListArray.count] forKey: @"maxMovieIndex"];
-            [d setObject: volumeDataArray forKey: @"volumeDataArray"];
-            
-            if( numberOfThreadsForCompute > 1)
-            {
-                [subLoadingThread lock];
-                [subLoadingThread unlockWithCondition: numberOfThreadsForCompute];
-                
-                for( i = 0; i < numberOfThreadsForCompute; i++)
-                {
-                    int from = (i * [[pixListArray objectAtIndex: x] count]) / numberOfThreadsForCompute;
-                    int to = ((i+1) * [[pixListArray objectAtIndex: x] count]) / numberOfThreadsForCompute;
-                    
-                    NSMutableDictionary *dd = [NSMutableDictionary dictionaryWithDictionary: d];
-                    
-                    [dd setObject: [NSNumber numberWithInt: from] forKey: @"from"];
-                    [dd setObject: [NSNumber numberWithInt: to] forKey: @"to"];
-                    
-                    static dispatch_semaphore_t sid = 0;
-                    if (!sid)
-                        sid = dispatch_semaphore_create( mpprocessors);
-                    
-                    if (dispatch_semaphore_wait(sid, DISPATCH_TIME_FOREVER) == 0)
-                    {
-                        [NSThread detachNewThreadSelector: @selector(subLoadingThread:) toTarget: self withObject: dd];
-                        dispatch_semaphore_signal(sid);
-                    }
-                }
-                
-                [subLoadingThread lockWhenCondition: 0];
-                [subLoadingThread unlock];
-            }
-            else
-            {
-                int from = 0;
-                int to = [[pixListArray objectAtIndex: x] count];
-                
-                [d setObject: [NSNumber numberWithInt: from] forKey: @"from"];
-                [d setObject: [NSNumber numberWithInt: to] forKey: @"to"];
-                
-                [ViewerController subLoadingThread: d];
-            }
-		}
-        if( [[NSThread currentThread] isCancelled] == YES)
-            NSLog( @"thread was cancelled");
+        DCMPix *firstPix = [[pixListArray objectAtIndex: 0] objectAtIndex: 0];
         
-		NSLog( @"end loading");
-		
-		if( [[NSThread currentThread] isCancelled] == YES)
-		{
-			[pool release];
-			return;
-		}
-		
-        @synchronized( [NSThread currentThread])
+        @try 
         {
-            [[NSThread currentThread].threadDictionary setObject: [NSNumber numberWithFloat: 1.0] forKey: @"loadingPercentage"];
+            [DicomFile isDICOMFile: [firstPix sourceFile] compressed: &compressed];
+            
+            if( compressed)
+                if( [BrowserController isItCD: [firstPix sourceFile]]) //Always Single thread for CD/DVD
+                    compressed = NO;
+            
+            if( compressed)
+                NSLog( @"start loading multiple thread");
+            else
+                NSLog( @"start loading single thread");
+            
+            NSConditionLock *subLoadingThread = [[[NSConditionLock alloc] init] autorelease];
+            
+            for( x = 0; x < pixListArray.count; x++)
+            {
+                int mpprocessors = [[NSProcessInfo processInfo] processorCount];
+                if( mpprocessors < 1)
+                    mpprocessors = 1;
+                
+                int numberOfThreadsForCompute = mpprocessors;
+                
+                if( compressed == NO)
+                    numberOfThreadsForCompute = 1;
+                
+                NSMutableDictionary *d = [NSMutableDictionary dictionary];
+                
+                [d setObject: [NSThread currentThread] forKey: @"loadingThread"];
+                [d setObject: [pixListArray objectAtIndex: x] forKey: @"pixList"];
+                [d setObject: [fileListArray objectAtIndex: x] forKey: @"fileList"];
+                [d setObject: subLoadingThread forKey: @"subLoadingThread"];
+                [d setObject: [NSNumber numberWithInt: x] forKey: @"movieIndex"];
+                [d setObject: [NSNumber numberWithInt: pixListArray.count] forKey: @"maxMovieIndex"];
+                [d setObject: volumeDataArray forKey: @"volumeDataArray"];
+                
+                if( numberOfThreadsForCompute > 1)
+                {
+                    [subLoadingThread lock];
+                    [subLoadingThread unlockWithCondition: numberOfThreadsForCompute];
+                    
+                    for( i = 0; i < numberOfThreadsForCompute; i++)
+                    {
+                        int from = (i * [[pixListArray objectAtIndex: x] count]) / numberOfThreadsForCompute;
+                        int to = ((i+1) * [[pixListArray objectAtIndex: x] count]) / numberOfThreadsForCompute;
+                        
+                        NSMutableDictionary *dd = [NSMutableDictionary dictionaryWithDictionary: d];
+                        
+                        [dd setObject: [NSNumber numberWithInt: from] forKey: @"from"];
+                        [dd setObject: [NSNumber numberWithInt: to] forKey: @"to"];
+                        
+                        static dispatch_semaphore_t sid = 0;
+                        if (!sid)
+                            sid = dispatch_semaphore_create( mpprocessors);
+                        
+                        if (dispatch_semaphore_wait(sid, DISPATCH_TIME_FOREVER) == 0)
+                        {
+                            [NSThread detachNewThreadSelector: @selector(subLoadingThread:) toTarget: self withObject: dd];
+                            dispatch_semaphore_signal(sid);
+                        }
+                    }
+                    
+                    [subLoadingThread lockWhenCondition: 0];
+                    [subLoadingThread unlock];
+                }
+                else
+                {
+                    int from = 0;
+                    int to = [[pixListArray objectAtIndex: x] count];
+                    
+                    [d setObject: [NSNumber numberWithInt: from] forKey: @"from"];
+                    [d setObject: [NSNumber numberWithInt: to] forKey: @"to"];
+                    
+                    [ViewerController subLoadingThread: d];
+                }
+            }
+            if( [[NSThread currentThread] isCancelled] == YES)
+            {
+                [NSThread sleepForTimeInterval: 0.2];
+                NSLog( @"Load Image Thread cancelled");
+            }
+            
+            NSLog( @"end loading");
+            
+            if( [[NSThread currentThread] isCancelled] == YES)
+                return;
+            
+            @synchronized( [NSThread currentThread])
+            {
+                [[NSThread currentThread].threadDictionary setObject: [NSNumber numberWithFloat: 1.0] forKey: @"loadingPercentage"];
+            }
         }
-	}
-	@catch (NSException * e) 
-	{
-		N2LogExceptionWithStackTrace(e);
-	}
+        @catch (NSException * e) 
+        {
+            N2LogExceptionWithStackTrace(e);
+        }
 
-    if( [[NSThread currentThread] isCancelled] == NO)
-        [viewer performSelectorOnMainThread: @selector(finishLoadImageData:) withObject: dict waitUntilDone: NO];
-	
-    [pool release];
+        if( [[NSThread currentThread] isCancelled] == NO)
+            [viewer performSelectorOnMainThread: @selector(finishLoadImageData:) withObject: dict waitUntilDone: NO];
+    }
 }
 
 - (short) getNumberOfImages
