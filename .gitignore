@@ -8,6 +8,9 @@ build/
 VTKHeaders/
 ITK180/
 AYDicomPrint/
+AYDicomPrint/xercesc
+AYDicomPrint/libxerces-c.27.dylib
+AYDicomPrint/libdcmprintscu.dylib
 Binaries/VTKLibs/
 Binaries/weasis/
 Binaries/DCMTK/
