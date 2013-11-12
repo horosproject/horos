@@ -16,6 +16,7 @@
 #import "DicomStudy.h"
 #import "BrowserController.h"
 #import "DicomSeries.h"
+#import "ViewerController.h"
 
 static NSString *dragType = @"Osirix Series Viewer Drag";
 
@@ -98,12 +99,33 @@ static NSString *dragType = @"Osirix Series Viewer Drag";
                       event:event
                  pasteboard:pboard
                      source:self
-                  slideBack:YES];
+                  slideBack:NO];
         }
         
 	} @catch( NSException *localException) {
 		NSLog(@"Exception while dragging: %@", [localException description]);
 	}
+}
+
+//- (void) draggingEnded:(id<NSDraggingInfo>)sender
+//{
+//    NSWindow *w = [sender draggingDestinationWindow];
+//
+//    if( w == nil || w.windowController == nil || [w.windowController isKindOfClass: [ViewerController class]] == NO)
+//        NSLog( @"create a new window?");
+//}
+
+- (void)draggingSession:(NSDraggingSession *)session endedAtPoint:(NSPoint)screenPoint operation:(NSDragOperation)operation
+{
+    if( operation == NSDragOperationNone)
+    {
+        NSLog( @"Create a new ViewerController?");
+    }
+}
+
+- (NSDragOperation)draggingSession:(NSDraggingSession *)session sourceOperationMaskForDraggingContext:(NSDraggingContext)context
+{
+    return NSDragOperationEvery;
 }
 
 - (NSDragOperation) draggingSourceOperationMaskForLocal:(BOOL)isLocal

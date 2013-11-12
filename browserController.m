@@ -7252,10 +7252,65 @@ static NSConditionLock *threadLock = nil;
                 NSNumber *SYNCSERIES = nil;
                 NSNumber *syncButtonBehaviorIsBetweenStudies = nil;
                 
+                if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"])
+                {
+                    // Check if all studies are available, available on PACS-On-Demand ?
+                    for( NSDictionary *dict in viewers)
+                    {
+                        NSString *studyUID = [dict valueForKey:@"studyInstanceUID"];
+                        
+                        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName: @"Study"];
+                        [request setPredicate: [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", studyUID]];
+                        
+                        NSManagedObjectContext	*context = self.database.managedObjectContext;
+                        NSArray	*studiesArray = [context executeFetchRequest:request error: nil];
+                        
+                        if( [studiesArray count] == 0)
+                        {
+#ifndef OSIRIX_LIGHT
+                            NSArray *servers = [BrowserController comparativeServers];
+                            
+                            DCMTKStudyQueryNode *distantStudy = [[QueryController queryStudiesForFilters: [NSDictionary dictionaryWithObject: studyUID forKey: @"StudyInstanceUID"] servers: servers showErrors: NO] lastObject];
+                            
+                            if( distantStudy)
+                            {
+                                [QueryController retrieveStudies: [NSArray arrayWithObject: distantStudy] showErrors: NO checkForPreviousAutoRetrieve: YES];
+                                
+                                int lastNumberOfImages = 0, currentNumberOfImages = 0;
+                                NSTimeInterval dateStart = [NSDate timeIntervalSinceReferenceDate];
+                                
+                                do
+                                {
+                                    [NSThread sleepForTimeInterval: 0.1];
+                                    
+                                    lastNumberOfImages = [[[studiesArray lastObject] images] count];
+                                    
+                                    [[DicomDatabase activeLocalDatabase] importFilesFromIncomingDir];
+                                    
+                                    // And find the study locally
+                                    NSFetchRequest *r = [NSFetchRequest fetchRequestWithEntityName: @"Study"];
+                                    [r setPredicate: [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", studyUID]];
+                                    
+                                    @try
+                                    {
+                                        studiesArray = [context executeFetchRequest: r error: nil];
+                                    }
+                                    @catch (NSException *e) { N2LogExceptionWithStackTrace(e);}
+                                    
+                                    currentNumberOfImages = [[[studiesArray lastObject] images] count];
+                                }
+                                while( ([studiesArray count] == 0 || lastNumberOfImages != currentNumberOfImages) && [NSDate timeIntervalSinceReferenceDate] - dateStart < 20);
+                            }
+#endif
+                        }
+                    }
+                }
+                
                 for( NSDictionary *dict in viewers)
                 {
                     NSString *studyUID = [dict valueForKey:@"studyInstanceUID"];
                     NSString *seriesUID = [dict valueForKey:@"seriesInstanceUID"];
+                    NSString *seriesDICOMUID = [dict valueForKey:@"seriesDICOMUID"];
                     
                     propagateSettings = [dict valueForKey: @"propagateSettings"];
                     syncSettings = [dict valueForKey: @"syncSettings"];
@@ -7267,8 +7322,8 @@ static NSConditionLock *threadLock = nil;
                     
                     @try
                     {
-                        NSError					*error = nil;
-                        NSManagedObjectContext	*context = self.database.managedObjectContext;
+                        NSError *error = nil;
+                        NSManagedObjectContext *context = self.database.managedObjectContext;
                         
                         [context lock];
                         
@@ -7278,17 +7333,20 @@ static NSConditionLock *threadLock = nil;
                         {
                             for( NSString *curSeriesUID in series4D)
                             {
-                                NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-                                [request setEntity: [[self.database.managedObjectModel entitiesByName] objectForKey:@"Series"]];
+                                NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName: @"Series"];
                                 [request setPredicate: [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", studyUID, curSeriesUID]];
                                 
                                 NSArray	*seriesArray = [context executeFetchRequest:request error:&error];
                                 
-                                if( [seriesArray count] != 1)
+                                //Try the DICOMSeriesUID
+                                if( seriesArray.count == 0 && seriesDICOMUID.length)
                                 {
-                                    NSLog( @"****** number of series corresponding to these UID (%@) is not unique?: %d", curSeriesUID, (int) [seriesArray count]);
+                                    request = [NSFetchRequest fetchRequestWithEntityName: @"Series"];
+                                    [request setPredicate: [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesDICOMUID == %@", studyUID, seriesDICOMUID]];
+                                    seriesArray = [context executeFetchRequest:request error:&error];
                                 }
-                                else
+                                
+                                if( [seriesArray count] == 1)
                                 {
                                     if( [[[seriesArray objectAtIndex: 0] valueForKeyPath:@"study.patientUID"] compare: [currentStudy valueForKey: @"patientUID"] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
                                     {
@@ -7305,6 +7363,8 @@ static NSConditionLock *threadLock = nil;
                                     else
                                         NSLog(@"%@ versus %@", [[seriesArray objectAtIndex: 0] valueForKeyPath:@"study.patientUID"], [currentStudy valueForKey: @"patientUID"]);
                                 }
+                                else if( [seriesArray count] > 1)
+                                    NSLog( @"****** number of series corresponding to these UID (%@) is not unique?: %d", curSeriesUID, (int) [seriesArray count]);
                             }
                         }
                         @catch (NSException * e) 

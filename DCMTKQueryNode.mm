@@ -973,7 +973,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	{
 		NSError *error = nil;
 		NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-		NSManagedObjectContext *context = [[DicomDatabase activeLocalDatabase] independentContext];
+		NSManagedObjectContext *context = [NSThread isMainThread] ? [[DicomDatabase activeLocalDatabase] managedObjectContext] : [[DicomDatabase activeLocalDatabase] independentContext];
 		
 		NSPredicate *predicate = [NSPredicate predicateWithValue: NO];
 		if( [self isKindOfClass: [DCMTKSeriesQueryNode class]])
@@ -1207,7 +1207,9 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                             
                             [request setPredicate: [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", studyInstanceUID]];
                             
-                            DicomStudy *localStudy = [[[[DicomDatabase activeLocalDatabase] independentContext] executeFetchRequest: request error: &error] lastObject];
+                            NSManagedObjectContext *context = [NSThread isMainThread] ? [[DicomDatabase activeLocalDatabase] managedObjectContext] : [[DicomDatabase activeLocalDatabase] independentContext];
+                            
+                            DicomStudy *localStudy = [[context executeFetchRequest: request error: &error] lastObject];
                             
                             for( DicomSeries *s in [localStudy valueForKey: @"series"])
                                 [localObjectUIDs addObjectsFromArray: [[[s images] valueForKey: @"sopInstanceUID"] allObjects]];

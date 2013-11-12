@@ -1031,6 +1031,8 @@ return YES;
                 else if( seriesUIDs.count)
                     [dict setObject: [seriesUIDs lastObject] forKey:@"seriesInstanceUID"];
                 
+                [dict setObject: [win.currentSeries valueForKey:@"seriesDICOMUID"] forKey:@"seriesDICOMUID"];
+                
                 if( [win maxMovieIndex] > 1)
                     [dict setObject: @YES forKey:@"4DData"];
                 else

@@ -139,8 +139,8 @@ ss
                 DicomStudy *s = [studyArray lastObject];
                 lastNumberOfImages = s.images.count;
                 DicomDatabase* db = self.independentDicomDatabase;
+                [NSThread sleepForTimeInterval: 0.1];
                 
-//                [NSThread sleepForTimeInterval: 0.3];
 //                [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
 //                [NSThread sleepForTimeInterval: 0.3];
                 [db importFilesFromIncomingDir];
@@ -280,8 +280,8 @@ ss
                     DicomStudy *s = (DicomStudy*) o;
                     
                     lastNumberOfImages = s.images.count;
+                    [NSThread sleepForTimeInterval: 0.1];
                     
-//                    [NSThread sleepForTimeInterval: 0.3];
 //                    [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
 //                    [NSThread sleepForTimeInterval: 0.3];
                     

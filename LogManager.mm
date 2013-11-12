@@ -142,7 +142,9 @@ static LogManager *currentLogManager = nil;
                         
                         if( [_currentLogs objectForKey:uid] == nil)
                         {
-                            NSManagedObject *logEntry = [NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext: [[[BrowserController currentBrowser] database] independentContext]];
+                            NSManagedObjectContext *context = [NSThread isMainThread] ? [[[BrowserController currentBrowser] database] managedObjectContext] : [[[BrowserController currentBrowser] database] independentContext];
+                            
+                            NSManagedObject *logEntry = [NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext: context];
                             
                             [logEntry setValue:[dict valueForKey: @"logStartTime"]  forKey:@"startTime"];
                             [logEntry setValue:[dict valueForKey: @"logType"] forKey:@"type"];
