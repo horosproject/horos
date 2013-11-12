@@ -7462,8 +7462,18 @@ static NSConditionLock *threadLock = nil;
                     }
                     
                     if( validWindowsPosition == NO)
-                       [[AppController sharedAppController] tileWindows: self];
-                    
+                    {
+                        NSDictionary *d = nil;
+                        NSString *rw = [[NSUserDefaults standardUserDefaults] stringForKey: @"LastWindowsTilingRowsColumns"];
+                        if( rw)
+                        {
+                            if( rw.length == 2)
+                            {
+                                d = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: [[rw substringWithRange: NSMakeRange( 0, 1)] intValue]], @"rows", [NSNumber numberWithInt: [[rw substringWithRange: NSMakeRange( 1, 1)] intValue]], @"columns", nil];
+                            }
+                        }
+                        [[AppController sharedAppController] tileWindows: d];
+                    }
                     if( [displayedViewers count] > 0)
                         [[[displayedViewers objectAtIndex: 0] window] makeKeyAndOrderFront: self];
                     
