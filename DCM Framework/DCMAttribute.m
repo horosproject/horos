@@ -639,14 +639,25 @@
 	NSMutableArray *elements = [NSMutableArray array];
 	int i = 0;
 	for ( id value in self.values ) {
-		NSString *string;
+		NSString *string = nil;
 		if ([value isKindOfClass:[NSString class]])
 			string = value;
 		else if ([value isKindOfClass:[NSNumber class]])
 			string = [value stringValue];
 		else if ([value isKindOfClass:[NSDate class]])
 			string = [value description];
-		else
+		else if ([value isKindOfClass:[NSData class]])
+        {
+            string = nil;
+            @try {
+                if( [value length] < 256)
+                    string = [[[NSString alloc] initWithBytes: [value bytes] length: [value length] encoding: NSASCIIStringEncoding] autorelease];
+            }
+            @catch (NSException *exception) {
+                string = nil;
+            }
+        }
+        else
 			string = nil;
 			
 		NSXMLNode *number = [NSXMLNode attributeWithName:@"number" stringValue:[NSString stringWithFormat:@"%d",i++]];		
