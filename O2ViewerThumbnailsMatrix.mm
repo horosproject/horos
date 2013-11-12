@@ -17,6 +17,7 @@
 #import "BrowserController.h"
 #import "DicomSeries.h"
 #import "ViewerController.h"
+#import "AppController.h"
 
 static NSString *dragType = @"Osirix Series Viewer Drag";
 
@@ -107,19 +108,24 @@ static NSString *dragType = @"Osirix Series Viewer Drag";
 	}
 }
 
-//- (void) draggingEnded:(id<NSDraggingInfo>)sender
-//{
-//    NSWindow *w = [sender draggingDestinationWindow];
-//
-//    if( w == nil || w.windowController == nil || [w.windowController isKindOfClass: [ViewerController class]] == NO)
-//        NSLog( @"create a new window?");
-//}
+- (void)draggingSession:(NSDraggingSession *)session willBeginAtPoint:(NSPoint)screenPoint
+{
+    draggingStartingPoint = screenPoint;
+}
 
 - (void)draggingSession:(NSDraggingSession *)session endedAtPoint:(NSPoint)screenPoint operation:(NSDragOperation)operation
 {
     if( operation == NSDragOperationNone)
     {
-        NSLog( @"Create a new ViewerController?");
+        if( fabs( screenPoint.x - draggingStartingPoint.x) > 150)
+        {
+            ViewerController *newViewer = [[BrowserController currentBrowser] loadSeries :[[[self selectedCell] representedObject] object] :nil :YES keyImagesOnly: NO];
+            [newViewer setHighLighted: 1.0];
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
+                [NSApp sendAction: @selector(tileWindows:) to:nil from: self];
+            else
+                [[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];
+        }
     }
 }
 

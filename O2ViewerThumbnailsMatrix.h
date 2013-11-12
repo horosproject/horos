@@ -16,6 +16,7 @@
 
 @interface O2ViewerThumbnailsMatrix : NSMatrix {
     BOOL avoidRecursive;
+    NSPoint draggingStartingPoint;
 }
 
 @end
