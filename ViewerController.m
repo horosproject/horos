@@ -7649,7 +7649,7 @@ static int avoidReentryRefreshDatabase = 0;
 				if( [subCtrlOnOff state]) [imageView setWLWW: 0 :0];
 				[self checkView: subCtrlView :NO];
 				
-				if( currentOrientationTool != originalOrientation)
+				if( currentOrientationTool != originalOrientation && originalOrientation != -1)
 				{
 					[imageView setXFlipped: NO];
 					[imageView setYFlipped: NO];
@@ -21626,7 +21626,7 @@ int i,j,l;
 
 - (BOOL)xFlipped
 {
-		return [imageView xFlipped];
+    return [imageView xFlipped];
 }
 	
 - (BOOL)yFlipped
