@@ -122,8 +122,7 @@ static NSString *dragType = @"Osirix Series Viewer Drag";
         
         NSEnumerator *screenEnumerator = [[NSScreen screens] objectEnumerator];
         NSScreen *screen = nil;
-        while ((screen = [screenEnumerator nextObject]) && !NSMouseInRect(screenPoint, screen.frame, NO))
-            ;
+        while ((screen = [screenEnumerator nextObject]) && !NSMouseInRect(screenPoint, screen.frame, NO));
         
         NSRect usefulRect = [AppController usefullRectForScreen: screen];
         
