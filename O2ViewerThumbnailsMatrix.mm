@@ -18,6 +18,7 @@
 #import "DicomSeries.h"
 #import "ViewerController.h"
 #import "AppController.h"
+#import "ThumbnailsListPanel.h"
 
 static NSString *dragType = @"Osirix Series Viewer Drag";
 
@@ -117,7 +118,9 @@ static NSString *dragType = @"Osirix Series Viewer Drag";
 {
     if( operation == NSDragOperationNone)
     {
-        if( fabs( screenPoint.x - draggingStartingPoint.x) > 150)
+        NSWindow *w = [[NSApplication sharedApplication] windowWithWindowNumber: [NSWindow windowNumberAtPoint: screenPoint belowWindowWithWindowNumber:0]];
+        
+        if( fabs( screenPoint.x - draggingStartingPoint.x) > 150 && [w.windowController isKindOfClass: [ThumbnailsListPanel class]] == NO)
         {
             ViewerController *newViewer = [[BrowserController currentBrowser] loadSeries :[[[self selectedCell] representedObject] object] :nil :YES keyImagesOnly: NO];
             [newViewer setHighLighted: 1.0];

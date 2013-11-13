@@ -1064,6 +1064,7 @@ static NSHost *currentHost = nil;
     [defaultValues setObject:@"1" forKey:@"scrollThroughSeriesForRF"];
     [defaultValues setObject:@"1" forKey:@"scrollThroughSeriesForDR"];
     [defaultValues setObject:@"1" forKey:@"scrollThroughSeriesForDX"];
+    [defaultValues setObject:@"1" forKey:@"scrollThroughSeriesForOT"];
     
 	#ifdef MACAPPSTORE
 	[defaultValues setObject:@"1" forKey:@"MACAPPSTORE"];

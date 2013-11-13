@@ -59,12 +59,12 @@
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
                                     <connections>
+                                        <binding destination="308" name="value" keyPath="values.AUTOHIDEMATRIX" id="536"/>
                                         <binding destination="308" name="enabled" keyPath="values.UseFloatingThumbnailsList" id="1bO-PP-z9t">
                                             <dictionary key="options">
                                                 <string key="NSValueTransformerName">NSNegateBoolean</string>
                                             </dictionary>
                                         </binding>
-                                        <binding destination="308" name="value" keyPath="values.AUTOHIDEMATRIX" id="536"/>
                                     </connections>
                                 </button>
                                 <button id="jtO-yZ-VJB">
@@ -467,6 +467,21 @@
                                                 <menuItem title="MG" id="n0T-TJ-mPS">
                                                     <connections>
                                                         <binding destination="308" name="value" keyPath="values.scrollThroughSeriesForMG" id="xRu-9U-IGO"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="OT" id="pDt-aZ-dzv">
+                                                    <connections>
+                                                        <binding destination="308" name="value" keyPath="values.scrollThroughSeriesForOT" id="95I-qW-siZ"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="CT" id="7zl-Dg-jTQ">
+                                                    <connections>
+                                                        <binding destination="308" name="value" keyPath="values.scrollThroughSeriesForCT" id="meA-EN-rgb"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="MR" id="Mb4-tf-Nb8">
+                                                    <connections>
+                                                        <binding destination="308" name="value" keyPath="values.scrollThroughSeriesForMR" id="Xe2-sM-DwO"/>
                                                     </connections>
                                                 </menuItem>
                                             </items>
