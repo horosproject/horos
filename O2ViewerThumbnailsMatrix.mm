@@ -120,7 +120,14 @@ static NSString *dragType = @"Osirix Series Viewer Drag";
     {
         NSWindow *w = [[NSApplication sharedApplication] windowWithWindowNumber: [NSWindow windowNumberAtPoint: screenPoint belowWindowWithWindowNumber:0]];
         
-        if( fabs( screenPoint.x - draggingStartingPoint.x) > 150 && [w.windowController isKindOfClass: [ThumbnailsListPanel class]] == NO)
+        NSEnumerator *screenEnumerator = [[NSScreen screens] objectEnumerator];
+        NSScreen *screen = nil;
+        while ((screen = [screenEnumerator nextObject]) && !NSMouseInRect(screenPoint, screen.frame, NO))
+            ;
+        
+        NSRect usefulRect = [AppController usefullRectForScreen: screen];
+        
+        if( fabs( screenPoint.x - draggingStartingPoint.x) > 50 && [w.windowController isKindOfClass: [ThumbnailsListPanel class]] == NO && NSPointInRect( screenPoint, usefulRect))
         {
             ViewerController *newViewer = [[BrowserController currentBrowser] loadSeries :[[[self selectedCell] representedObject] object] :nil :YES keyImagesOnly: NO];
             [newViewer setHighLighted: 1.0];
