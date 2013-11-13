@@ -8098,6 +8098,16 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				if( theGroupP)
 				   [self papyLoadGroup0x0028: theGroupP];
 				
+                NSData *pdfData = nil;
+                theGroupP = (SElement*) [self getPapyGroup: 0x0042];
+                if( theGroupP)
+                {
+                    SElement *element = theGroupP + papEncapsulatedDocumentGr;
+                    
+                    if( element->nb_val > 0)
+                        pdfData = [NSData dataWithBytes: element->value->a length: element->length];
+                }
+                
 				#pragma mark SUV
 				
 				// Get values needed for SUV calcs:
@@ -8963,34 +8973,23 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					
 					if( SOPClassUID != nil && [SOPClassUID hasPrefix: [DCMAbstractSyntaxUID pdfStorageClassUID]]) // EncapsulatedPDFStorage
 					{
-						if (gIsPapyFile[ fileNb] == DICOM10)
-							err = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
-						
-						if ((err = Papy3GotoGroupNb (fileNb, 0x0042)) == 0)
-						{
-							if ((err = Papy3GroupRead (fileNb, &theGroupP)) > 0) 
-							{
-								SElement *element = theGroupP + papEncapsulatedDocumentGr;
-								
-								if( element->nb_val > 0)
-								{
-									NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData: [NSData dataWithBytes: element->value->a length: element->length]];
-									
-									[rep setCurrentPage: frameNo];	
-									
-									NSImage *pdfImage = [[[NSImage alloc] init] autorelease];
-									[pdfImage addRepresentation: rep];
-									
-									[self getDataFromNSImage: pdfImage];
-								}
-								
-								err = Papy3GroupFree (&theGroupP, TRUE);
-							}
-						}
+                        if( pdfData)
+                        {
+                            NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData: pdfData];
+                            
+                            [rep setCurrentPage: frameNo];	
+                            
+                            NSImage *pdfImage = [[[NSImage alloc] init] autorelease];
+                            [pdfImage addRepresentation: rep];
+                            
+                            [self getDataFromNSImage: pdfImage];
+                            
+                            returnValue = YES;
+                        }
 					}
                     else if( SOPClassUID != nil && [SOPClassUID hasPrefix: [DCMAbstractSyntaxUID EncapsulatedCDAStorage]]) // EncapsulatedPDFStorage
 					{
-                        
+                        returnValue = YES;
                     }
 					else if( SOPClassUID != nil && [SOPClassUID hasPrefix: @"1.2.840.10008.5.1.4.1.1.88"]) // DICOM SR
 					{
@@ -9075,6 +9074,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 						
 						for( int i = 0; i < 128*128; i++)
 							fImage[ i ] = i%2;
+                        
+                        returnValue = YES;
 					}
 					else
 					{
