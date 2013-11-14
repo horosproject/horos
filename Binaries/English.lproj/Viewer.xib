@@ -144,6 +144,7 @@
                 <outlet property="roiRenameName" destination="1459" id="1462"/>
                 <outlet property="roiRenameWindow" destination="1450" id="1461"/>
                 <outlet property="roiSetPixWindow" destination="665" id="681"/>
+                <outlet property="saveWindowsStateWindow" destination="aob-Jz-PIZ" id="s4G-YB-OMR"/>
                 <outlet property="sc1" destination="1549" id="1590"/>
                 <outlet property="sc2" destination="1550" id="1591"/>
                 <outlet property="sc3" destination="1551" id="1592"/>
@@ -237,7 +238,7 @@
                                                 <rect key="frame" x="0.0" y="18" width="116" height="220"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <clipView key="contentView" autoresizesSubviews="NO" drawsBackground="NO" copiesOnScroll="NO" id="rm6-IB-Qbb">
-                                                    <rect key="frame" x="0.0" y="0.0" width="116" height="220"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="105" height="220"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
                                                         <matrix verticalHuggingPriority="750" selectionByRect="NO" allowsEmptySelection="NO" autosizesCells="NO" id="1215" customClass="O2ViewerThumbnailsMatrix">
@@ -266,7 +267,7 @@
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </scroller>
                                                 <scroller key="verticalScroller" verticalHuggingPriority="750" controlSize="small" horizontal="NO" id="2394">
-                                                    <rect key="frame" x="102" y="0.0" width="14" height="220"/>
+                                                    <rect key="frame" x="105" y="0.0" width="11" height="220"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </scroller>
                                             </scrollView>
@@ -3166,7 +3167,7 @@ Gw
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="83" y="307" width="337" height="107"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
             <value key="minSize" type="size" width="337" height="107"/>
             <view key="contentView" id="1072">
                 <rect key="frame" x="0.0" y="0.0" width="337" height="107"/>
@@ -5033,6 +5034,68 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <font key="titleFont" metaFont="smallSystemBold"/>
                     </box>
+                </subviews>
+            </view>
+        </window>
+        <window title="Save Workspace State" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="aob-Jz-PIZ" userLabel="Save Workspace State">
+            <windowStyleMask key="styleMask" titled="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="83" y="307" width="337" height="107"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
+            <value key="minSize" type="size" width="337" height="107"/>
+            <view key="contentView" id="fDG-SH-xgD">
+                <rect key="frame" x="0.0" y="0.0" width="337" height="107"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <textField verticalHuggingPriority="750" id="MrV-ed-ZAQ">
+                        <rect key="frame" x="106" y="60" width="211" height="22"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="kFu-Y6-XjJ">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                        <connections>
+                            <binding destination="-2" name="value" keyPath="self.windowsStateName" id="bnj-WK-jex"/>
+                        </connections>
+                    </textField>
+                    <textField verticalHuggingPriority="750" id="MT9-UU-6ho">
+                        <rect key="frame" x="7" y="62" width="93" height="17"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Name:" id="zOV-Vf-eEI">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <button verticalHuggingPriority="750" id="x3T-QX-ICQ">
+                        <rect key="frame" x="125" y="12" width="97" height="32"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="uc4-tS-Lij">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="endSaveWindowsStateAsDICOMSR:" target="-2" id="gqE-4X-4FA"/>
+                        </connections>
+                    </button>
+                    <button toolTip="option return" verticalHuggingPriority="750" tag="1" id="jAv-BO-Ihr">
+                        <rect key="frame" x="226" y="12" width="97" height="32"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <buttonCell key="cell" type="push" title="Save" bezelStyle="rounded" alignment="center" borderStyle="border" tag="2" inset="2" id="kWi-zY-8hw">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+DQ
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="endSaveWindowsStateAsDICOMSR:" target="-2" id="aou-uo-iGY"/>
+                        </connections>
+                    </button>
                 </subviews>
             </view>
         </window>

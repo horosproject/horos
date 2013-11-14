@@ -76,6 +76,7 @@
 #import "NSArray+N2.h"
 #import "DICOMTLS.h"
 #import "DicomStudy.h"
+#import "SRAnnotation.h"
 #include <OpenGL/OpenGL.h>
 
 #include <kdu_OsiriXSupport.h>
@@ -1633,6 +1634,9 @@ static NSDate *lastWarningDate = nil;
     
 	if( [self clutMenu] == nil)
         NSLog( @"******* WARNING MENU MOVED / RENAMED ! clutMenu");
+    
+    if( [self workspaceMenu] == nil)
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! workspaceMenu");
 	
 	if( [self exportMenu] == nil)
         NSLog( @"******* WARNING MENU MOVED / RENAMED ! exportMenu");
@@ -1661,6 +1665,9 @@ static NSDate *lastWarningDate = nil;
     
 	if( [self clutMenuTestLocalized: YES] == nil)
         NSLog( @"******* WARNING MENU MOVED / RENAMED ! clutMenu Localized");
+    
+    if( [self workspaceMenuTestLocalized: YES] == nil)
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! workspaceMenu Localized");
 	
 	if( [self exportMenuTestLocalized: YES] == nil)
         NSLog( @"******* WARNING MENU MOVED / RENAMED ! exportMenu Localized");
@@ -1872,6 +1879,117 @@ static NSDate *lastWarningDate = nil;
 - (NSMenu*) clutMenu
 {
     return [self clutMenuTestLocalized: NO];
+}
+
+- (NSMenu*) workspaceMenuTestLocalized: (BOOL) testLocalized
+{
+    NSMenu *viewerMenu = [self viewerMenu];
+    NSMenu *workspaceMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Load Workspace State DICOM SR", nil)] submenu];
+    if( testLocalized) workspaceMenu = nil;
+    if( workspaceMenu == nil)
+    {
+        workspaceMenu = [[viewerMenu itemAtIndex: 55]  submenu];
+        if( testLocalized)
+        {
+            if( [[workspaceMenu title] isEqualToString: NSLocalizedString(@"Load Workspace State DICOM SR", nil)] == NO)
+                return nil;
+        }
+    }
+    
+    return workspaceMenu;
+}
+
+- (NSMenu*) workspaceMenu
+{
+    return [self workspaceMenuTestLocalized: NO];
+}
+
+// Build the Load Workspace DICOM SR menu
+- (void)menuNeedsUpdate:(NSMenu *)menu
+{
+    [menu removeAllItems];
+   
+    NSMutableArray *studies = [NSMutableArray array];
+    
+    if( [BrowserController.currentBrowser.window isKeyWindow])
+        [studies addObject: BrowserController.currentBrowser.selectedStudy];
+    
+    if( studies.count == 0)
+    {
+        for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+        {
+            if( [studies containsObject: v.currentStudy] == NO)
+                [studies addObject: v.currentStudy];
+        }
+    }
+    
+    if( studies.count)
+    {
+        int index = 1;
+        DicomStudy *study = [studies objectAtIndex: 0];
+        
+        for( DicomImage *i in [study allWindowsStateSRSeries])
+        {
+            @try {
+                SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: [i completePathResolved]] autorelease];
+                
+                NSArray *viewers = [NSPropertyListSerialization propertyListFromData: r.dataEncapsulated mutabilityOption: NSPropertyListImmutable format: nil errorDescription: nil];
+                
+                if( viewers.count)
+                {
+                    NSString *name = [[viewers lastObject] objectForKey: @"name"];
+                    
+                    if( name.length == 0)
+                    {
+                        if( [[viewers lastObject] objectForKey: @"date"])
+                            name = [NSUserDefaults formatDateTime: [[viewers lastObject] objectForKey: @"date"]];
+                        else
+                        {
+                            name = NSLocalizedString( @"State",  nil);
+                            name = [name stringByAppendingFormat: @" %d", index++];
+                        }
+                    }
+                    
+                    NSMenuItem *mi = [[[NSMenuItem alloc] initWithTitle: name action: @selector( loadWindowsStateDICOMSR:) keyEquivalent:@""] autorelease];
+                    
+                    [mi setRepresentedObject: [NSDictionary dictionaryWithObjectsAndKeys: study, @"study", viewers, @"windowsState", nil]];
+                    [mi setTarget: self];
+                    
+                    [menu addItem: mi];
+                }
+            }
+            @catch (NSException *e) {
+                N2LogException( e);
+            }
+        }
+    }
+    
+    if( menu.numberOfItems == 0)
+        [menu addItemWithTitle: NSLocalizedString( @"No saved state", nil) action: nil keyEquivalent: @""];
+    
+    return;
+}
+
+- (void) loadWindowsStateDICOMSR: (NSMenuItem*) menuItem
+{
+    DicomStudy *study = [menuItem.representedObject objectForKey: @"study"];
+    NSArray *state = [menuItem.representedObject objectForKey: @"windowsState"];
+    
+    NSData *windowsState = [NSPropertyListSerialization dataFromPropertyList: state  format: NSPropertyListXMLFormat_v1_0 errorDescription: nil];
+    
+    if( study && windowsState)
+    {
+        // Replace the current windows state of the study, with the content of the DICOM SR
+        [study setValue: windowsState forKey: @"windowsState"];
+        
+        BOOL c = [[NSUserDefaults standardUserDefaults] boolForKey:@"automaticWorkspaceLoad"];
+        
+        if( c == NO) [[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"automaticWorkspaceLoad"];
+        
+        [[BrowserController currentBrowser] databaseOpenStudy: study];
+        
+        if( c == NO) [[NSUserDefaults standardUserDefaults] setBool: c forKey:@"automaticWorkspaceLoad"];
+    }
 }
 
 -(void) UpdateOpacityMenu: (NSNotification*) note

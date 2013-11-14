@@ -358,7 +358,7 @@ enum
 @synthesize currentOrientationTool, speedSlider, speedText;
 @synthesize timer, keyImageCheck, injectionDateTime, blendedWindow;
 @synthesize blendingTypeWindow, blendingTypeMultiply, blendingTypeSubtract, blendingTypeRGB, blendingPlugins, blendingResample;
-@synthesize flagListPODComparatives, leftSplitView;
+@synthesize flagListPODComparatives, leftSplitView, windowsStateName;
 
 // WARNING: If you add or modify this list, check ViewerController.m, DCMView.h and HotKey Pref Pane
 static int hotKeyToolCrossTable[] =
@@ -664,7 +664,7 @@ return YES;
 	}
 	else if( [item action] == @selector(loadWindowsState:))
 	{
-		if( [[[imageView seriesObj] valueForKey:@"study"] valueForKey:@"windowsState"]) valid = YES;
+		if( [imageView.studyObj valueForKey:@"windowsState"]) valid = YES;
 	}
 	else if( [item action] == @selector(roiDeleteAllROIsWithSameName:))
 	{
@@ -944,7 +944,6 @@ return YES;
 	if( c == NO) [[NSUserDefaults standardUserDefaults] setBool: c forKey:@"automaticWorkspaceLoad"];
 }
 
-
 - (IBAction) saveWindowsState:(id) sender
 {
     [ViewerController saveWindowsState];
@@ -952,21 +951,36 @@ return YES;
 
 - (IBAction) saveWindowsStateAsDICOMSR:(id) sender
 {
-    [ViewerController saveWindowsStateWithDICOMSR: YES];
+    self.windowsStateName = [NSUserDefaults formatDateTime: [NSDate date]];
+    
+    [NSApp beginSheet: saveWindowsStateWindow modalForWindow: nil modalDelegate:self didEndSelector:nil contextInfo:nil];
+}
+
+- (IBAction) endSaveWindowsStateAsDICOMSR:(id) sender
+{
+    [saveWindowsStateWindow orderOut:sender];
+    
+    [NSApp endSheet: saveWindowsStateWindow returnCode: [sender tag]];
+	
+	if( [sender tag])
+        [ViewerController saveWindowsStateWithDICOMSR: YES name: self.windowsStateName];
 }
 
 + (void) saveWindowsState
 {
-    [ViewerController saveWindowsStateWithDICOMSR: [[NSUserDefaults standardUserDefaults] boolForKey: @"archiveWindowsStateAsDICOMSR"]];
+    [ViewerController saveWindowsStateWithDICOMSR: [[NSUserDefaults standardUserDefaults] boolForKey: @"archiveWindowsStateAsDICOMSR"] name: nil];
 }
 
-+ (void) saveWindowsStateWithDICOMSR: (BOOL) DICOMSR
++ (void) saveWindowsStateWithDICOMSR: (BOOL) DICOMSR name: (NSString*) name
 {
 	NSArray				*displayedViewers = [ViewerController getDisplayed2DViewers];
 	NSMutableArray		*state = [NSMutableArray array];
 	
 	int i, indexImage;
 	
+    if( name == nil)
+        name = [NSUserDefaults formatDateTime: [NSDate date]];
+    
     @try
     {
         for( ViewerController *win in displayedViewers)
@@ -980,6 +994,7 @@ return YES;
             if( [win studyInstanceUID] && [[view seriesObj] valueForKey:@"seriesInstanceUID"])
             {
                 NSRect	r = [[win window] frame];
+                [dict setObject: name forKey: @"name"];
                 [dict setObject: [NSString stringWithFormat: @"%f %f %f %f", r.origin.x, r.origin.y, r.size.width, r.size.height]  forKey:@"window position"];
                 [dict setObject: NSStringFromRect( [AppController usefullRectForScreen: win.window.screen]) forKey: @"screen"];
                 [dict setObject: @([[NSScreen screens] indexOfObject: win.window.screen]) forKey:@"screenIndex"];
@@ -4243,7 +4258,14 @@ static volatile int numberOfThreadsForRelisce = 0;
     
 	for( ViewerController *v in [ViewerController getDisplayed2DViewers])
 	{
-		if( v != self && [[v studyInstanceUID] isEqualToString: [self studyInstanceUID]])
+        BOOL same = NO;
+        
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
+            same = [v.currentStudy.patientUID isEqualToString: self.currentStudy.patientUID];
+        else
+            same = [[v studyInstanceUID] isEqualToString: [self studyInstanceUID]];
+        
+		if( v != self && same)
 		{
 			[[v.previewMatrixScrollView contentView] scrollToPoint: [[v.previewMatrixScrollView contentView] constrainScrollPoint: [[previewMatrix superview] bounds].origin]];
 			[v.previewMatrixScrollView reflectScrolledClipView: [v.previewMatrixScrollView contentView]];
@@ -7508,6 +7530,7 @@ static int avoidReentryRefreshDatabase = 0;
 	[injectionDateTime release]; injectionDateTime = nil;
 	[convThread release];
     [flipDataThread release];
+    self.windowsStateName = nil;
     
     [self unbind:@"flagListPODComparatives"];
     self.flagListPODComparatives = nil;
@@ -21593,15 +21616,15 @@ int i,j,l;
 
 #pragma mark-
 #pragma mark current Core Data Objects
-- (NSManagedObject *)currentStudy
+- (DicomStudy *)currentStudy
 {
 	return [[imageView seriesObj] valueForKey:@"study"];
 }
-- (NSManagedObject *)currentSeries
+- (DicomSeries *)currentSeries
 {
 	return [imageView seriesObj];
 }
-- (NSManagedObject *)currentImage
+- (DicomImage *)currentImage
 {
 	return [imageView imageObj];
 }

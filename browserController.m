@@ -1013,6 +1013,17 @@ static NSConditionLock *threadLock = nil;
 	#endif
 }
 
+- (DicomStudy*) selectedStudy
+{
+    NSMutableArray *objects = [NSMutableArray array];
+    
+    [self filesForDatabaseMatrixSelection: objects onlyImages: NO];
+    
+    DicomImage *im = objects.lastObject;
+    
+    return im.series.study;
+}
+
 - (void) applyRoutingRule: (id) sender // For manually applying a routing rule, from the DB contextual menu 
 {
 	BOOL matrixThumbnails = NO;
@@ -7459,7 +7470,10 @@ static NSConditionLock *threadLock = nil;
                                         
                                     // Test if the window is completely contained in the screen, otherwise, we will TileWindows.
                                     if( NSEqualRects(NSIntersectionRect( curScreenVisibleRect, r), r) == NO)
+                                    {
+                                        r = NSIntersectionRect( curScreenVisibleRect, r);
                                         validWindowsPosition = NO;
+                                    }
                                 }
                                 else
                                     validWindowsPosition = NO;

@@ -590,7 +590,8 @@
 //    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"bringOsiriXToFrontAfterReceivingMessage"])
         [NSApp activateIgnoringOtherApps:YES];
     
-    [ViewerController closeAllWindows];
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CloseAllWindowsBeforeXMLRPCOpen"])
+        [ViewerController closeAllWindows];
     
     for (NSManagedObject* obj in [self.database objectsWithIDs: objectIDs]) {
         DicomStudy* study = [self studyForObject:obj];

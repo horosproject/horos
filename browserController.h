@@ -316,6 +316,7 @@ extern NSString* O2AlbumDragType;
 - (void) openDatabasePath: (NSString*) path __deprecated;
 - (NSArray*) albums;
 - (NSManagedObjectID*) currentAlbumID: (DicomDatabase*) d;
+- (DicomStudy*) selectedStudy;
 - (BOOL) shouldTerminate: (id) sender;
 - (void) databaseOpenStudy: (NSManagedObject*) item;
 - (void) databaseOpenStudy:(DicomStudy*) currentStudy withProtocol:(NSDictionary*) currentHangingProtocol;

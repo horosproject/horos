@@ -89,6 +89,7 @@
 - (void) archiveReportAsDICOMSR;
 - (void) archiveAnnotationsAsDICOMSR;
 - (void) archiveWindowsStateAsDICOMSR;
+- (NSArray*) allWindowsStateSRSeries;
 - (BOOL) isHidden;
 - (BOOL) isDistant;
 - (void) setHidden: (BOOL) h;

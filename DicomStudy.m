@@ -1894,7 +1894,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	return nil;
 }
 
-- (DicomImage*) windowsStateImage
+- (NSArray*) allWindowsStateSRSeries
 {
 	NSArray *images = nil;
 	
@@ -1914,7 +1914,12 @@ static NSRecursiveLock *dbModifyLock = nil;
 		N2LogExceptionWithStackTrace(e);
 	}
 	
-	return [images lastObject];
+	return images;
+}
+
+- (DicomImage*) windowsStateImage // most recent state
+{
+	return [[self allWindowsStateSRSeries] lastObject];
 }
 
 - (NSManagedObject *) windowsStateSRSeries

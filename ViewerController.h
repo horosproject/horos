@@ -148,7 +148,7 @@ enum
 	IBOutlet NSView			*StatusView;
 	IBOutlet NSButton		*CommentsField;
 	IBOutlet NSPopUpButton	*StatusPopup;
-	IBOutlet NSWindow		*CommentsWindow;
+	IBOutlet NSWindow		*CommentsWindow, *saveWindowsStateWindow;
 	IBOutlet NSTextField    *CommentsEditField;
 	
 	IBOutlet NSButton		*keyImageCheck;
@@ -341,6 +341,7 @@ enum
 	
 	int						isDataVolumicIn4DLevel;
 	int						previousFullscreenColumns, previousFullscreenRows, previousFullscreenCurImage, previousFullscreenViewIndex;
+    NSString                *windowsStateName;
 }
 @property(retain) NSCalendarDate *injectionDateTime;
 @property(readonly) short currentOrientationTool;
@@ -349,7 +350,7 @@ enum
 @property(readonly) NSSlider *speedSlider;
 @property(readonly) NSTextField *speedText;
 @property(readonly) NSSplitView *leftSplitView;
-
+@property(retain) NSString *windowsStateName;
 /** Accessors for plugins using blending window */
 @property(readonly) NSWindow *blendingTypeWindow;
 @property(readonly) NSButton *blendingTypeMultiply;
@@ -778,6 +779,7 @@ enum
 - (void) adjustKeyImage;
 - (IBAction) saveWindowsState:(id) sender;
 - (IBAction) saveWindowsStateAsDICOMSR:(id) sender;
+- (IBAction) endSaveWindowsStateAsDICOMSR:(id) sender;
 - (IBAction) loadWindowsState:(id) sender;
 - (IBAction) resetWindowsState:(id) sender;
 - (void) buildMatrixPreview;
@@ -795,6 +797,9 @@ enum
 - (IBAction) endRoiRename:(id) sender;
 - (IBAction) roiRename:(id) sender;
 - (void) SyncSeries:(id) sender;
+- (DicomStudy *)currentStudy;
+- (DicomSeries *)currentSeries;
+- (DicomImage *)currentImage;
 
 - (NSArray*)roisWithName:(NSString*)name;
 - (NSArray*)roisWithName:(NSString*)name in4D:(BOOL)in4D;

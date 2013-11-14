@@ -97,7 +97,7 @@ extern "C"
 
 extern AppController* OsiriX;
 
-@interface AppController : NSObject	<NSNetServiceBrowserDelegate, NSNetServiceDelegate, NSSoundDelegate> // GrowlApplicationBridgeDelegate
+@interface AppController : NSObject	<NSNetServiceBrowserDelegate, NSNetServiceDelegate, NSSoundDelegate, NSMenuDelegate> // GrowlApplicationBridgeDelegate
 {
 	IBOutlet BrowserController		*browserController;
 
@@ -249,6 +249,7 @@ extern AppController* OsiriX;
 - (NSMenu*) wlwwMenu;
 - (NSMenu*) convMenu;
 - (NSMenu*) clutMenu;
+- (NSMenu*) workspaceMenu;
 
 #pragma mark-
 #pragma mark growl
