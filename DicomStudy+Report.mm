@@ -23,6 +23,7 @@
 #import "DCMCalendarDate.h"
 #import "DCMTransferSyntax.h"
 #import "DCM.h"
+#import "Reports.h"
 
 @implementation DicomStudy (Report)
 
@@ -168,22 +169,13 @@
     }
     else if ([reportPath.pathExtension.lowercaseString isEqualToString:@"pages"])
     {
-        // Pages 09 (4.0) or 2013 (5.0) ??
-        NSString *appPath = [[NSWorkspace sharedWorkspace] absolutePathForAppBundleWithIdentifier:@"com.apple.iWork.Pages"];
+        NSString *path = nil;
+        if( [Reports Pages5orHigher])
+            path = [[NSBundle mainBundle] pathForResource:@"pages2pdf" ofType:@"applescript"];
+        else
+            path = [[NSBundle mainBundle] pathForResource:@"pages092pdf" ofType:@"applescript"];
         
-        if( appPath.length)
-        {
-            NSString *version = [[[NSBundle bundleWithPath: appPath] infoDictionary] objectForKey:@"DTXcode"];
-            
-            NSString *path = nil;
-            int number =  version.integerValue;
-            if( number >= 500)
-                path = [[NSBundle mainBundle] pathForResource:@"pages2pdf" ofType:@"applescript"];
-            else
-                path = [[NSBundle mainBundle] pathForResource:@"pages092pdf" ofType:@"applescript"];
-            
-            [[self class] _runAppleScriptAtPath:path withArguments:[NSArray arrayWithObjects: reportPath, outPdfPath, nil]];
-        }
+        [[self class] _runAppleScriptAtPath:path withArguments:[NSArray arrayWithObjects: reportPath, outPdfPath, nil]];
     }
     else if ([reportPath.pathExtension.lowercaseString isEqualToString:@"doc"] || [reportPath.pathExtension.lowercaseString isEqualToString:@"docx"]) {
         NSString* path = [[NSBundle mainBundle] pathForResource:@"word2pdf" ofType:@"applescript"];

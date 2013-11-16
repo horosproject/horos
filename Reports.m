@@ -684,6 +684,31 @@ static id aedesc_to_id(AEDesc *desc)
 #pragma mark -
 #pragma mark Pages.app
 
+static int Pages5orHigher = -1;
+
++ (int) Pages5orHigher
+{
+    if( Pages5orHigher != -1)
+        return Pages5orHigher;
+    
+    // Pages 09 (4.0) or 2013 (5.0) ??
+    NSString *appPath = [[NSWorkspace sharedWorkspace] absolutePathForAppBundleWithIdentifier:@"com.apple.iWork.Pages"];
+    
+    if( appPath.length)
+    {
+        NSString *version = [[[NSBundle bundleWithPath: appPath] infoDictionary] objectForKey:@"DTXcode"];
+        
+        NSString *path = nil;
+        int number =  version.integerValue;
+        if( number >= 500)
+            Pages5orHigher = YES;
+        else
+            Pages5orHigher = NO;
+    }
+    
+    return Pages5orHigher;
+}
+
 - (void) decompressPagesFileIfNecessary: (NSString*) aPath
 {
     BOOL isDirectory = NO;
@@ -785,39 +810,112 @@ static id aedesc_to_id(AEDesc *desc)
 
 + (NSString*) pathForPagesTemplate: (NSString*) templateName
 {
-	NSString *templateDirectory = [self databasePagesTemplatesDirPath];
-	NSDirectoryEnumerator *directoryEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:templateDirectory];
-	
-	NSString *file;
-	while ((file = [directoryEnumerator nextObject]))
-	{
-		[directoryEnumerator skipDescendents];
-		if( [file.stringByDeletingPathExtension isEqualToString: templateName.stringByDeletingPathExtension])
+    if( [Reports Pages5orHigher])
+    {
+        NSString *templateDirectory = [self databasePagesTemplatesDirPath];
+        NSDirectoryEnumerator *directoryEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:templateDirectory];
+        
+        NSString *file;
+        while ((file = [directoryEnumerator nextObject]))
         {
-            if( [file.pathExtension isEqualToString: @"pages"])
+            [directoryEnumerator skipDescendents];
+            if( [file.stringByDeletingPathExtension isEqualToString: templateName.stringByDeletingPathExtension])
+            {
+                if( [file.pathExtension isEqualToString: @"pages"])
+                    return [templateDirectory stringByAppendingPathComponent: file];
+            }
+        }
+    }
+    else
+    {
+        NSArray *templateDirectoryPathArray = [NSArray arrayWithObjects:NSHomeDirectory(), @"Library", @"Application Support", @"iWork", @"Pages", @"Templates", @"OsiriX", nil];
+        NSString *templateDirectory = [NSString pathWithComponents:templateDirectoryPathArray];
+        NSDirectoryEnumerator *directoryEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:templateDirectory];
+        
+        NSMutableArray *templatesArray = [NSMutableArray arrayWithCapacity:1];
+        id file;
+        while ((file = [directoryEnumerator nextObject]))
+        {
+            [directoryEnumerator skipDescendents];
+            
+            if( [file isEqualToString: templateName] || [file isEqualToString: [NSString stringWithFormat: @"OsiriX %@", templateName]])
                 return [templateDirectory stringByAppendingPathComponent: file];
         }
-	}
+    }
     
     return nil;
 }
 
++ (void) copyPages4templatesToPages5: (NSString*) newDirectory
+{
+    NSArray *templateDirectoryPathArray = [NSArray arrayWithObjects:NSHomeDirectory(), @"Library", @"Application Support", @"iWork", @"Pages", @"Templates", @"OsiriX", nil];
+    NSString *templateDirectory = [NSString pathWithComponents:templateDirectoryPathArray];
+    NSDirectoryEnumerator *directoryEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:templateDirectory];
+    
+    NSMutableArray *templatesArray = [NSMutableArray arrayWithCapacity:1];
+    id file;
+    while ((file = [directoryEnumerator nextObject]))
+    {
+        [directoryEnumerator skipDescendents];
+        NSRange rangeOfOsiriX = [file rangeOfString:@"OsiriX "];
+        if( rangeOfOsiriX.location==0 && rangeOfOsiriX.length==7)
+        {
+            NSString *fromPath = [templateDirectory stringByAppendingPathComponent: file];
+            NSString *toPath = [newDirectory stringByAppendingPathComponent: file];
+            
+            toPath = [[toPath stringByDeletingPathExtension] stringByAppendingPathExtension: @"pages"];
+            
+            [[NSFileManager defaultManager] copyItemAtPath: fromPath toPath: toPath byReplacingExisting: NO error: nil];
+        }
+    }
+}
+
 + (NSMutableArray*)pagesTemplatesList;
 {
-	// iWork templates directory
-	NSString *templateDirectory = [self databasePagesTemplatesDirPath];
-	NSDirectoryEnumerator *directoryEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:templateDirectory];
-	
-	NSMutableArray *templatesArray = [NSMutableArray arrayWithCapacity:1];
-	NSString *file;
-	while ((file = [directoryEnumerator nextObject]))
-	{
-		[directoryEnumerator skipDescendents];
-		if( [file.pathExtension isEqualToString: @"pages"])
-			[templatesArray addObject: file];
-	}
-	
-	return templatesArray;
+    if( [Reports Pages5orHigher])
+    {
+        NSString *templateDirectory = [self databasePagesTemplatesDirPath];
+        
+        static BOOL firstTime = YES;
+        if( firstTime)
+        {
+            firstTime = NO;
+            [Reports copyPages4templatesToPages5: templateDirectory];
+        }
+        
+        NSDirectoryEnumerator *directoryEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:templateDirectory];
+        NSMutableArray *templatesArray = [NSMutableArray arrayWithCapacity:1];
+        NSString *file;
+        while ((file = [directoryEnumerator nextObject]))
+        {
+            [directoryEnumerator skipDescendents];
+            if( [file.pathExtension isEqualToString: @"pages"])
+                [templatesArray addObject: file];
+        }
+        
+        return templatesArray;
+    }
+    else
+    {
+        NSArray *templateDirectoryPathArray = [NSArray arrayWithObjects:NSHomeDirectory(), @"Library", @"Application Support", @"iWork", @"Pages", @"Templates", @"OsiriX", nil];
+        NSString *templateDirectory = [NSString pathWithComponents:templateDirectoryPathArray];
+        NSDirectoryEnumerator *directoryEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:templateDirectory];
+        
+        NSMutableArray *templatesArray = [NSMutableArray arrayWithCapacity:1];
+        id file;
+        while ((file = [directoryEnumerator nextObject]))
+        {
+            [directoryEnumerator skipDescendents];
+            NSRange rangeOfOsiriX = [file rangeOfString:@"OsiriX "];
+            if(rangeOfOsiriX.location==0 && rangeOfOsiriX.length==7)
+            {
+                // this is a template for us (we should maybe verify that it is a valid Pages template... but what ever...)
+                [templatesArray addObject:[file substringFromIndex:7]];
+            }
+        }
+        
+        return templatesArray;
+    }
 }
 
 - (NSMutableString *)templateName;
