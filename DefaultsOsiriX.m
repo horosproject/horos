@@ -1172,6 +1172,15 @@ static NSHost *currentHost = nil;
 						@"\\",	//DictatedHotKeyAction
                         @"",	//ValidatedHotKeyAction
 						@"y",	//OrthoMPRCrossTool
+                      @"",	//Preset1OpacityLHotKeyAction
+                      @"",	//Preset2OpacityLHotKeyAction
+                      @"",	//Preset3OpacityLHotKeyAction
+                      @"",	//Preset4OpacityLHotKeyAction
+                      @"",	//Preset5OpacityLHotKeyAction
+                      @"",	//Preset6OpacityLHotKeyAction
+                      @"",	//Preset7OpacityLHotKeyAction
+                      @"",	//Preset8OpacityLHotKeyAction
+                      @"",	//Preset9OpacityLHotKeyAction
 						nil];						
 	
 	for( int x = 0; x < [array count]; x++)

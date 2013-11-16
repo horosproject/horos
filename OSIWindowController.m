@@ -27,6 +27,7 @@
 #import "DicomSeries.h"
 #import "DicomImage.h"
 #import "DicomDatabase.h"
+#import "N2Debug.h"
 
 static	BOOL dontEnterMagneticFunctions = NO;
 static	BOOL dontWindowDidChangeScreen = NO;
@@ -573,6 +574,11 @@ static BOOL protectedReentryWindowDidResize = NO;
 - (void) applyShading:(id) sender
 {
 	NSLog( @"OSIWindowController applyShading - CALL SUPER ??");
+}
+
+- (void) ApplyOpacityString: (NSString*) s
+{
+    N2LogStackTrace( @"ApplyOpacityString - CALL SUPER ??");
 }
 
 #pragma mark-

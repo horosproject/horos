@@ -13248,6 +13248,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		NSDictionary *wlwwDict = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"WLWW3"];
 		NSArray *wwwlValues = [[wlwwDict allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 		
+        NSDictionary *opacityDict = [[NSUserDefaults standardUserDefaults] dictionaryForKey: @"OPACITY"];
+        NSArray *opacityValues = [[opacityDict allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+        
 		NSArray *wwwl = nil;
 		hotKey = [hotKey lowercaseString];
         
@@ -13265,6 +13268,29 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					[self setWLWW:0 :0];											// full dynamic WW/WL
 				break;
 																							
+				case Preset1OpacityHotKeyAction:																	// 1 - 9 will be presets WW/WL
+				case Preset2OpacityHotKeyAction:
+				case Preset3OpacityHotKeyAction:
+				case Preset4OpacityHotKeyAction:
+				case Preset5OpacityHotKeyAction:
+				case Preset6OpacityHotKeyAction:
+				case Preset7OpacityHotKeyAction:
+				case Preset8OpacityHotKeyAction:
+				case Preset9OpacityHotKeyAction:
+					if([opacityValues count] >= key-Preset1OpacityHotKeyAction)
+					{
+                        // First is always linear
+                        int index = key-Preset1OpacityHotKeyAction-1;
+                        
+                        if( index < 0)
+                            [[self windowController] ApplyOpacityString: NSLocalizedString(@"Linear Table", nil)];
+                        else
+                            [[self windowController] ApplyOpacityString: [opacityValues objectAtIndex: index]];
+                        
+                        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: [opacityValues objectAtIndex: index] userInfo: nil];
+					}
+					break;
+
 				case Preset1WWWLHotKeyAction:																	// 1 - 9 will be presets WW/WL
 				case Preset2WWWLHotKeyAction:
 				case Preset3WWWLHotKeyAction:

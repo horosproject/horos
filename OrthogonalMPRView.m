@@ -893,7 +893,10 @@
 	{
 		NSDictionary *wlwwDict = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"WLWW3"];
 		NSArray *wwwlValues = [[wlwwDict allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
-	
+        
+        NSDictionary *opacityDict = [[NSUserDefaults standardUserDefaults] dictionaryForKey: @"OPACITY"];
+        NSArray *opacityValues = [[opacityDict allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+        
 		hotKey = [hotKey lowercaseString];
 		unichar key = [hotKey characterAtIndex:0];
 		if( [[DCMView hotKeyDictionary] objectForKey:hotKey])
@@ -930,6 +933,31 @@
 						[windowController applyWLWWForString:wwwlMenuString];
 						[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: wwwlMenuString userInfo: nil];
 					}	
+					break;
+                    
+                case Preset1OpacityHotKeyAction:			// 1 - 9 will be presets Opacity
+				case Preset2OpacityHotKeyAction:
+				case Preset3OpacityHotKeyAction:
+				case Preset4OpacityHotKeyAction:
+				case Preset5OpacityHotKeyAction:
+				case Preset6OpacityHotKeyAction:
+				case Preset7OpacityHotKeyAction:
+				case Preset8OpacityHotKeyAction:
+				case Preset9OpacityHotKeyAction:
+					if([opacityValues count] >= key-Preset1OpacityHotKeyAction)
+					{
+                        int index = key-Preset1OpacityHotKeyAction-1;
+                        
+                        NSString *opacityMenuString;
+                        
+                        if( index < 0)
+                            opacityMenuString = NSLocalizedString(@"Linear Table", nil);
+						else
+                            opacityMenuString = [opacityValues objectAtIndex: index];
+                            
+                        [windowController ApplyOpacityString: opacityMenuString];
+						[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: opacityMenuString userInfo: nil];
+					}
 					break;
 				
 				// Flip

@@ -122,6 +122,15 @@ static OSIHotKeysPref *currentKeysPref = 0L;
 											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Mark Status as Dictated", nil), @"action", nil],
                                             [NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Mark Status as Validated", nil), @"action", nil],
 											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Ortho MPR Cross Tool", nil), @"action", nil],
+                                            [NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"1st Opacity preset", nil), @"action", nil],
+                                            [NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"2nd Opacity preset", nil), @"action", nil],
+                                            [NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"3rd Opacity preset", nil), @"action", nil],
+                                            [NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"4th Opacity preset", nil), @"action", nil],
+                                            [NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"5th Opacity preset", nil), @"action", nil],
+                                            [NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"6th Opacity preset", nil), @"action", nil],
+                                            [NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"7th Opacity preset", nil), @"action", nil],
+                                            [NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"8th Opacity preset", nil), @"action", nil],
+                                            [NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"9th Opacity preset", nil), @"action", nil],
 											nil];
 	
 	NSDictionary *keys = [[NSUserDefaults standardUserDefaults] objectForKey:@"HOTKEYS"];
