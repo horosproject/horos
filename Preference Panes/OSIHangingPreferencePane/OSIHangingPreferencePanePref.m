@@ -393,6 +393,9 @@
             
             if( [protocol objectForKey: @"Propagate"] == nil)
                 [protocol setObject: @(YES) forKey: @"Propagate"];
+            
+            if( [[protocol objectForKey: @"NumberOfSeriesPerComparative"] integerValue] < 1)
+                [protocol setObject: @1 forKey: @"NumberOfSeriesPerComparative"];
         }
     
 	self.modalityForHangingProtocols = @"CR";

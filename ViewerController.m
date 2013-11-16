@@ -968,7 +968,7 @@ return YES;
 
 + (void) saveWindowsState
 {
-    [ViewerController saveWindowsStateWithDICOMSR: [[NSUserDefaults standardUserDefaults] boolForKey: @"archiveWindowsStateAsDICOMSR"] name: nil];
+    [ViewerController saveWindowsStateWithDICOMSR: [[NSUserDefaults standardUserDefaults] boolForKey: @"alwaysArchiveWindowsStateAsDICOMSR"] name: nil];
 }
 
 + (void) saveWindowsStateWithDICOMSR: (BOOL) DICOMSR name: (NSString*) name

@@ -59,6 +59,8 @@
 
 - (void)windowWillCloseNotification:(NSNotification*)notification;
 {
+    [NSObject cancelPreviousPerformRequestsWithTarget: self selector: @selector(setCLUTtoVRViewHighRes) object: nil];
+    
 	if( [notification object] == vrViewWindow)
 		windowWillClose = YES;
 }

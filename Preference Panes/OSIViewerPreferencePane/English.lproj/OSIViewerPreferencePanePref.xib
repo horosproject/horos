@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13A603" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13B27" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
@@ -15,15 +15,15 @@
         <customObject id="-3" userLabel="Application"/>
         <window title="&lt;&lt; do not localize >>" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" deferred="NO" oneShot="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="12" userLabel="PrefPane">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
-            <rect key="contentRect" x="0.0" y="0.0" width="779" height="908"/>
+            <rect key="contentRect" x="0.0" y="0.0" width="779" height="874"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <value key="minSize" type="size" width="224.66300000000001" height="10"/>
             <view key="contentView" id="6">
-                <rect key="frame" x="0.0" y="0.0" width="779" height="908"/>
+                <rect key="frame" x="0.0" y="0.0" width="779" height="874"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <box title="Miscellaneous" id="100">
-                        <rect key="frame" x="8" y="9" width="761" height="342"/>
+                        <rect key="frame" x="8" y="11" width="761" height="342"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
                             <rect key="frame" x="2" y="2" width="757" height="322"/>
@@ -498,7 +498,7 @@
                         <font key="titleFont" metaFont="system"/>
                     </box>
                     <box title="TIFF, JPEG, Quicktime, DICOM Export" id="110">
-                        <rect key="frame" x="8" y="808" width="761" height="92"/>
+                        <rect key="frame" x="8" y="774" width="761" height="92"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
                             <rect key="frame" x="2" y="2" width="757" height="72"/>
@@ -544,14 +544,14 @@
                         <font key="titleFont" metaFont="system"/>
                     </box>
                     <box title="Screens &amp; Window size" id="149">
-                        <rect key="frame" x="8" y="355" width="761" height="453"/>
+                        <rect key="frame" x="8" y="357" width="761" height="417"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
-                            <rect key="frame" x="2" y="2" width="757" height="433"/>
+                            <rect key="frame" x="2" y="2" width="757" height="397"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="250">
-                                    <rect key="frame" x="130" y="267" width="550" height="38"/>
+                                    <rect key="frame" x="130" y="231" width="550" height="38"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     <size key="cellSize" width="273" height="18"/>
@@ -592,7 +592,7 @@
                                     </connections>
                                 </matrix>
                                 <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="260">
-                                    <rect key="frame" x="130" y="245" width="550" height="18"/>
+                                    <rect key="frame" x="130" y="209" width="550" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     <size key="cellSize" width="273" height="18"/>
@@ -620,7 +620,7 @@
                                     </connections>
                                 </matrix>
                                 <button id="298">
-                                    <rect key="frame" x="130" y="223" width="551" height="18"/>
+                                    <rect key="frame" x="130" y="187" width="551" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Automatically Tile Windows when closing or opening a new series" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="358">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -631,7 +631,7 @@
                                     </connections>
                                 </button>
                                 <button id="319">
-                                    <rect key="frame" x="130" y="311" width="551" height="18"/>
+                                    <rect key="frame" x="130" y="275" width="551" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Group series of same study on same screen" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="359">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -642,7 +642,7 @@
                                     </connections>
                                 </button>
                                 <button id="497">
-                                    <rect key="frame" x="130" y="351" width="551" height="18"/>
+                                    <rect key="frame" x="130" y="315" width="551" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Reserve the database screen for the database" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="498">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -653,7 +653,7 @@
                                     </connections>
                                 </button>
                                 <button id="522">
-                                    <rect key="frame" x="130" y="331" width="551" height="18"/>
+                                    <rect key="frame" x="130" y="295" width="551" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Use database screen in the last" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="523">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -669,7 +669,7 @@
                                     </connections>
                                 </button>
                                 <button id="325">
-                                    <rect key="frame" x="130" y="203" width="551" height="18"/>
+                                    <rect key="frame" x="130" y="167" width="551" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Magnetic Windows for move &amp; resize" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="360">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -680,7 +680,7 @@
                                     </connections>
                                 </button>
                                 <button id="335">
-                                    <rect key="frame" x="130" y="119" width="551" height="18"/>
+                                    <rect key="frame" x="130" y="83" width="551" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Automatically save Workspace State when closing all viewers (database icon)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="362">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -690,20 +690,8 @@
                                         <binding destination="308" name="value" keyPath="values.automaticWorkspaceSave" id="337"/>
                                     </connections>
                                 </button>
-                                <button id="egD-wy-jKv">
-                                    <rect key="frame" x="146" y="99" width="551" height="18"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Automatically save the Workspace State as a DICOM SR file" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="O9F-4R-ieW">
-                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                        <font key="font" metaFont="system"/>
-                                    </buttonCell>
-                                    <connections>
-                                        <binding destination="308" name="value" keyPath="values.archiveWindowsStateAsDICOMSR" id="pei-yn-IQr"/>
-                                        <binding destination="308" name="enabled" keyPath="values.automaticWorkspaceSave" id="mPr-9O-d5p"/>
-                                    </connections>
-                                </button>
                                 <button id="336">
-                                    <rect key="frame" x="130" y="79" width="551" height="18"/>
+                                    <rect key="frame" x="130" y="61" width="551" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Automatically load Workspace State when opening a study" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="363">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -714,7 +702,7 @@
                                     </connections>
                                 </button>
                                 <button id="368">
-                                    <rect key="frame" x="130" y="183" width="551" height="18"/>
+                                    <rect key="frame" x="130" y="147" width="551" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Stretch last windows to fill the entire screen" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="369">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -725,7 +713,7 @@
                                     </connections>
                                 </button>
                                 <button id="528">
-                                    <rect key="frame" x="130" y="163" width="551" height="18"/>
+                                    <rect key="frame" x="130" y="127" width="551" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Order windows from most recent to oldest studies" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="529">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -737,7 +725,7 @@
                                     </connections>
                                 </button>
                                 <button id="548">
-                                    <rect key="frame" x="146" y="143" width="551" height="18"/>
+                                    <rect key="frame" x="146" y="107" width="551" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Reversed order" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="549">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -757,7 +745,7 @@
                                     </connections>
                                 </button>
                                 <button id="390">
-                                    <rect key="frame" x="130" y="52" width="558" height="16"/>
+                                    <rect key="frame" x="130" y="34" width="558" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Automatically enable 12 Bit Totoku Display support for CR, MG, DX, DR, XA and RF" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="391">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -772,7 +760,7 @@
                                     </connections>
                                 </button>
                                 <button id="401">
-                                    <rect key="frame" x="130" y="30" width="551" height="18"/>
+                                    <rect key="frame" x="130" y="12" width="551" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Always 'scale to fit' when displaying or resizing windows" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="402">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -783,7 +771,7 @@
                                     </connections>
                                 </button>
                                 <textField verticalHuggingPriority="750" id="503">
-                                    <rect key="frame" x="14" y="406" width="113" height="17"/>
+                                    <rect key="frame" x="14" y="370" width="113" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Screens:" id="504">
                                         <font key="font" metaFont="system"/>
@@ -792,7 +780,7 @@
                                     </textFieldCell>
                                 </textField>
                                 <textField verticalHuggingPriority="750" id="505">
-                                    <rect key="frame" x="13" y="288" width="113" height="17"/>
+                                    <rect key="frame" x="13" y="252" width="113" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Window Size:" id="506">
                                         <font key="font" metaFont="system"/>
@@ -801,7 +789,7 @@
                                     </textFieldCell>
                                 </textField>
                                 <textField verticalHuggingPriority="750" id="507">
-                                    <rect key="frame" x="14" y="246" width="113" height="17"/>
+                                    <rect key="frame" x="14" y="210" width="113" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Toolbar Panel:" id="508">
                                         <font key="font" metaFont="system"/>
@@ -810,7 +798,7 @@
                                     </textFieldCell>
                                 </textField>
                                 <textField verticalHuggingPriority="750" id="509">
-                                    <rect key="frame" x="14" y="224" width="113" height="17"/>
+                                    <rect key="frame" x="14" y="188" width="113" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Tiling:" id="510">
                                         <font key="font" metaFont="system"/>
@@ -819,7 +807,7 @@
                                     </textFieldCell>
                                 </textField>
                                 <textField verticalHuggingPriority="750" id="511">
-                                    <rect key="frame" x="14" y="120" width="113" height="17"/>
+                                    <rect key="frame" x="14" y="84" width="113" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Workspace State:" id="512">
                                         <font key="font" metaFont="system"/>
@@ -828,7 +816,7 @@
                                     </textFieldCell>
                                 </textField>
                                 <textField verticalHuggingPriority="750" id="515">
-                                    <rect key="frame" x="14" y="52" width="113" height="17"/>
+                                    <rect key="frame" x="14" y="34" width="113" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="12bit Display:" id="516">
                                         <font key="font" metaFont="system"/>
@@ -837,7 +825,7 @@
                                     </textFieldCell>
                                 </textField>
                                 <textField verticalHuggingPriority="750" id="517">
-                                    <rect key="frame" x="14" y="31" width="113" height="17"/>
+                                    <rect key="frame" x="14" y="13" width="113" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Scale:" id="518">
                                         <font key="font" metaFont="system"/>
@@ -846,7 +834,7 @@
                                     </textFieldCell>
                                 </textField>
                                 <customView id="521" customClass="O2ScreensPrefsView">
-                                    <rect key="frame" x="132" y="375" width="608" height="48"/>
+                                    <rect key="frame" x="132" y="339" width="608" height="48"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 </customView>
                             </subviews>

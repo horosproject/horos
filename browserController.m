@@ -6974,6 +6974,32 @@ static NSConditionLock *threadLock = nil;
         else
             seriesArray = [NSMutableArray arrayWithArray: [currentStudy imageSeries]];
         
+        // Sort series according to SeriesOrder, if available
+        if( [currentHangingProtocol valueForKey: @"SeriesOrder"])
+        {
+            NSMutableArray *newSeriesArray = [NSMutableArray array];
+            
+            for( NSString *term in [[currentHangingProtocol valueForKey: @"SeriesOrder"] componentsSeparatedByString: @","])
+            {
+                term = [term stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                
+                for( int i = 0; i < seriesArray.count; i++)
+                {
+                    DicomSeries *s = [seriesArray objectAtIndex: i];
+                    
+                    if( [s.description contains: term])
+                    {
+                        [newSeriesArray addObject: s];
+                        [seriesArray removeObject: s];
+                        i--;
+                    }
+                }
+            }
+            [newSeriesArray addObjectsFromArray: seriesArray];
+            
+            seriesArray = newSeriesArray;
+        }
+        
         // Prepare the series to be displayed
         NSMutableArray *comparatives = [NSMutableArray array];
         if( [[currentHangingProtocol valueForKey: @"Comparative"] boolValue])
@@ -7118,6 +7144,51 @@ static NSConditionLock *threadLock = nil;
                     i--;
                 }
             }
+        }
+        
+        // Expand comparatives study according to NumberOfSeriesPerComparative
+        if( [[currentHangingProtocol valueForKey: @"NumberOfSeriesPerComparative"] integerValue] > 1)
+        {
+            int n = [[currentHangingProtocol valueForKey: @"NumberOfSeriesPerComparative"] integerValue];
+            
+            NSMutableArray *newComparatives = [NSMutableArray array];
+            for( DicomStudy *study in comparatives)
+            {
+                NSMutableArray *series = [NSMutableArray arrayWithArray: [study imageSeriesContainingPixels: YES]];
+                
+                // Sort series according to SeriesOrder, if available
+                if( [currentHangingProtocol valueForKey: @"SeriesOrder"])
+                {
+                    NSMutableArray *newSeriesArray = [NSMutableArray array];
+                    
+                    for( NSString *term in [[currentHangingProtocol valueForKey: @"SeriesOrder"] componentsSeparatedByString: @","])
+                    {
+                        term = [term stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                        
+                        for( int i = 0; i < series.count; i++)
+                        {
+                            DicomSeries *s = [series objectAtIndex: i];
+                            
+                            if( [s.description contains: term])
+                            {
+                                [newSeriesArray addObject: s];
+                                [series removeObject: s];
+                                i--;
+                            }
+                        }
+                    }
+                    [newSeriesArray addObjectsFromArray: series];
+                    
+                    series = newSeriesArray;
+                }
+                
+                if( series.count > n)
+                    [newComparatives addObjectsFromArray: [series subarrayWithRange: NSMakeRange( 0, n)]];
+                else
+                    [newComparatives addObjectsFromArray: series];
+            }
+            
+            comparatives = newComparatives;
         }
         
         // Prepare the series
