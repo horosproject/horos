@@ -965,65 +965,63 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 
 -(NSString*) completePathWithDownload:(BOOL) download supportNonLocalDatabase: (BOOL) supportNonLocalDatabase
 {
-    [self.managedObjectContext lock];
-    
-    @try
+    @autoreleasepool
     {
-        if( completePathCache && download == NO)
-            return completePathCache;
-        
-        DicomDatabase* db = [DicomDatabase databaseForContext: self.managedObjectContext];
-        
-        BOOL isLocal = YES;
-        if (supportNonLocalDatabase)
-            isLocal = [db isLocal];
-        
-        if (completePathCache) {
-            if (download == NO)
-                return completePathCache;
-            else if (isLocal)
-                return completePathCache;
-        }
-        
-        #ifdef OSIRIX_VIEWER
-        if( [self.inDatabaseFolder boolValue] == YES)
+        @try
         {
-            NSString *path = self.path;
-            
-            if( !isLocal)
-            {
-                NSString* temp = [DicomImage completePathForLocalPath:path directory:db.dataBaseDirPath];
-                if ([[NSFileManager defaultManager] fileExistsAtPath:temp])
-                    return temp;
-                
-                [completePathCache release];
-                
-                if (download)
-                    completePathCache = [[(RemoteDicomDatabase*)db cacheDataForImage:self maxFiles:1] retain];
-                else
-                    completePathCache = [[(RemoteDicomDatabase*)db localPathForImage:self] retain];
-                
+            if( completePathCache && download == NO)
                 return completePathCache;
+            
+            DicomDatabase* db = [DicomDatabase databaseForContext: self.managedObjectContext];
+            
+            BOOL isLocal = YES;
+            if (supportNonLocalDatabase)
+                isLocal = [db isLocal];
+            
+            if (completePathCache) {
+                if (download == NO)
+                    return completePathCache;
+                else if (isLocal)
+                    return completePathCache;
             }
-            else
+            
+            #ifdef OSIRIX_VIEWER
+            if( [self.inDatabaseFolder boolValue] == YES)
             {
-                if( [path characterAtIndex: 0] != '/')
+                NSString *path = self.path;
+                
+                if( !isLocal)
                 {
+                    NSString* temp = [DicomImage completePathForLocalPath:path directory:db.dataBaseDirPath];
+                    if ([[NSFileManager defaultManager] fileExistsAtPath:temp])
+                        return temp;
+                    
                     [completePathCache release];
-                    completePathCache = [[DicomImage completePathForLocalPath: path directory: db.dataBaseDirPath] retain];
+                    
+                    if (download)
+                        completePathCache = [[(RemoteDicomDatabase*)db cacheDataForImage:self maxFiles:1] retain];
+                    else
+                        completePathCache = [[(RemoteDicomDatabase*)db localPathForImage:self] retain];
+                    
                     return completePathCache;
                 }
+                else
+                {
+                    if( [path characterAtIndex: 0] != '/')
+                    {
+                        [completePathCache release];
+                        completePathCache = [[DicomImage completePathForLocalPath: path directory: db.dataBaseDirPath] retain];
+                        return completePathCache;
+                    }
+                }
             }
+            #endif
+            
+            return self.path;
         }
-        #endif
-        
-        return self.path;
-    }
-    @catch (NSException *e) {
-        N2LogExceptionWithStackTrace(e);
-    }
-    @finally {
-        [self.managedObjectContext unlock];
+        @catch (NSException *e) {
+            N2LogExceptionWithStackTrace(e);
+        }
     }
     
     return nil; // to resolve a compiler warning: this line never executes
