@@ -2518,7 +2518,7 @@ extern "C"
                     if( instance)
                         studyStatusValue = [NSString stringWithFormat: @"%d", [[instance objectForKey: @"searchStatus"] intValue]];
                     else
-                        studyStatusValue = [NSString stringWithFormat: @"%d", [statusFilterMatrix selectedTag]];
+                        studyStatusValue = [NSString stringWithFormat: @"%d", (int) [statusFilterMatrix selectedTag]];
                     
                     if( showError && [studyStatusValue cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
                     {
