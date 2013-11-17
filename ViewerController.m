@@ -2406,9 +2406,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[[item image] setSize:ToolsMenuIconSize];
 		
 		[contextualMenu addItem:item];
-		
 		[[contextualMenu itemAtIndex: contextualMenu.itemArray.count-1] setSubmenu:submenu];
-		
 		[contextualMenu addItem:[NSMenuItem separatorItem]];
         
 		/******************* WW/WL menu items **********************/
@@ -2490,15 +2488,13 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[item setSubmenu:menu];
 		[contextualMenu addItem:item];
 		
-//		[contextualMenu addItem:[NSMenuItem separatorItem]];
-//		item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open database", nil) action: @selector(databaseWindow:)  keyEquivalent:@""] autorelease];
-//		[item setTarget:self];
-//		[contextualMenu addItem:item];
-        
-//		menu = [[[[AppController sharedAppController] recentStudiesMenu] copy] autorelease];
-//		item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Recent Studies", nil) action: nil keyEquivalent:@""] autorelease];
-//		[item setSubmenu:menu];
-//		[contextualMenu addItem:item];
+        /*************Workspace submenu**************/
+        [contextualMenu addItem: [NSMenuItem separatorItem]];
+        [contextualMenu addItemWithTitle: NSLocalizedString(@"Save Workspace State", nil) action: @selector(saveWindowsState:) keyEquivalent:@""];
+        [contextualMenu addItemWithTitle: NSLocalizedString(@"Save Workspace State as DICOM SR", nil) action: @selector(saveWindowsStateAsDICOMSR:) keyEquivalent:@""];
+        NSMenuItem *mi = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Load Workspace State DICOM SR", nil) action: nil keyEquivalent:@""] autorelease];
+        [mi setSubmenu: [[[[AppController sharedAppController] workspaceMenu] copy] autorelease]];
+        [contextualMenu addItem: mi];
 	}
 	else //use the menuDictionary of the path
 	{
