@@ -2298,9 +2298,9 @@ static NSConditionLock *threadLock = nil;
         if( self.database != nil)
             NSLog( @"****** WARNING we should not be here if self.database != nil");
         
-		DicomDatabase* database = [[io objectAtIndex:0] independentDatabase];
+		DicomDatabase* database = [io objectAtIndex:0];
 		BOOL complete = [[io objectAtIndex:1] boolValue];
-		[database rebuild:complete];
+		[database.independentDatabase rebuild:complete];
 		[self performSelectorOnMainThread:@selector(setDatabase:) withObject:database waitUntilDone:NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
 	}
     @catch (NSException* e)

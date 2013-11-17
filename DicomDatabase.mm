@@ -3810,17 +3810,20 @@ static BOOL protectionAgainstReentry = NO;
         
 		// In the DATABASE FOLDER, we have only folders! Move all files that are wrongly there to the INCOMING folder.... and then scan these folders containing the DICOM files
 		
-		NSArray	*dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:aPath];
-		for( NSString *dir in dirContent)
-		{
-			NSString * itemPath = [aPath stringByAppendingPathComponent: dir];
-			id fileType = [[[NSFileManager defaultManager] fileAttributesAtPath: itemPath traverseLink: YES] objectForKey:NSFileType];
-			if ([fileType isEqual:NSFileTypeRegular])
-			{
-				[[NSFileManager defaultManager] moveItemAtPath:itemPath toPath:[incomingPath stringByAppendingPathComponent: [itemPath lastPathComponent]] error:NULL];
-			}
-			else totalFiles += [[[[NSFileManager defaultManager] fileAttributesAtPath: itemPath traverseLink: YES] objectForKey: NSFileReferenceCount] intValue];
-		}
+        NSArray	*dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:aPath];
+        @autoreleasepool
+        {
+            for( NSString *dir in dirContent)
+            {
+                NSString * itemPath = [aPath stringByAppendingPathComponent: dir];
+                id fileType = [[[NSFileManager defaultManager] fileAttributesAtPath: itemPath traverseLink: YES] objectForKey:NSFileType];
+                if ([fileType isEqual:NSFileTypeRegular])
+                {
+                    [[NSFileManager defaultManager] moveItemAtPath:itemPath toPath:[incomingPath stringByAppendingPathComponent: [itemPath lastPathComponent]] error:NULL];
+                }
+                else totalFiles += [[[[NSFileManager defaultManager] fileAttributesAtPath: itemPath traverseLink: YES] objectForKey: NSFileReferenceCount] intValue];
+            }
+        }
 		
 		dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:aPath];
 		
@@ -3828,32 +3831,36 @@ static BOOL protectionAgainstReentry = NO;
 		
 		for( NSString *name in dirContent)
 		{
-			NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-			
-			NSString *curDir = [aPath stringByAppendingPathComponent: name];
-			NSArray *subDir = [[NSFileManager defaultManager] directoryContentsAtPath: [aPath stringByAppendingPathComponent: name]];
-			
-			for( NSString *subName in subDir)
+			@autoreleasepool
 			{
-				if ([subName characterAtIndex: 0] != '.')
-					[filesArray addObject: [curDir stringByAppendingPathComponent: subName]];
+                NSString *curDir = [aPath stringByAppendingPathComponent: name];
+                NSArray *subDir = [[NSFileManager defaultManager] directoryContentsAtPath: [aPath stringByAppendingPathComponent: name]];
+                
+                for( NSString *subName in subDir)
+                {
+                    if ([subName characterAtIndex: 0] != '.')
+                        [filesArray addObject: [curDir stringByAppendingPathComponent: subName]];
+                }
 			}
-			
-			[pool release];
 		}
 		
 		// ** DICOM ROI SR FOLDER
-		dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:self.roisDirPath];
-		for (NSString *name in dirContent)
-			if ([name characterAtIndex:0] != '.')
-				[filesArray addObject: [self.roisDirPath stringByAppendingPathComponent: name]];
-	
+        @autoreleasepool
+        {
+            dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:self.roisDirPath];
+            for (NSString *name in dirContent)
+                if ([name characterAtIndex:0] != '.')
+                    [filesArray addObject: [self.roisDirPath stringByAppendingPathComponent: name]];
+        }
 	
 		// ** Finish the rebuild
         
 		thread.status = [NSString stringWithFormat:NSLocalizedString(@"Adding %@...", @"rebuild database thread status: Adding %@ (%@ = '120 files')"), N2LocalizedSingularPluralCount(filesArray.count, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil))];
         
-        [self addFilesAtPaths: filesArray postNotifications: NO dicomOnly: [[NSUserDefaults standardUserDefaults] boolForKey: @"onlyDICOM"] rereadExistingItems: NO generatedByOsiriX: NO returnArray: NO];
+        @autoreleasepool
+        {
+            [self addFilesAtPaths: filesArray postNotifications: NO dicomOnly: [[NSUserDefaults standardUserDefaults] boolForKey: @"onlyDICOM"] rereadExistingItems: NO generatedByOsiriX: NO returnArray: NO];
+        }
         
 		NSLog(@"End Rebuild");
 		
