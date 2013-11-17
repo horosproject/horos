@@ -13526,11 +13526,13 @@ static NSArray*	openSubSeriesArray = nil;
 	[menu addItemWithTitle: NSLocalizedString(@"Open ROIs and Key Images", nil) action: @selector(viewerKeyImagesAndROIsImages:) keyEquivalent:@""];
 	[menu addItemWithTitle: NSLocalizedString(@"Open Merged Selection", nil) action: @selector(viewerDICOMMergeSelection:) keyEquivalent:@""];
 	[menu addItemWithTitle: NSLocalizedString(@"Reveal In Finder", nil) action: @selector(revealInFinder:) keyEquivalent:@""];
-	[menu addItem: [NSMenuItem separatorItem]];
-    NSMenuItem *mi = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Load Workspace State DICOM SR", nil) action: nil keyEquivalent:@""] autorelease];
-    [mi setSubmenu: [[[[AppController sharedAppController] workspaceMenu] copy] autorelease]];
-	[menu addItem: mi];
-	[menu addItemWithTitle: NSLocalizedString(@"Reset Workspace State", nil) action: @selector(resetWindowsState:) keyEquivalent:@""];
+    if( [[AppController sharedAppController] workspaceMenu]) {
+        [menu addItem: [NSMenuItem separatorItem]];
+        NSMenuItem *mi = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Load Workspace State DICOM SR", nil) action: nil keyEquivalent:@""] autorelease];
+        [mi setSubmenu: [[[[AppController sharedAppController] workspaceMenu] copy] autorelease]];
+        [menu addItem: mi];
+        [menu addItemWithTitle: NSLocalizedString(@"Reset Workspace State", nil) action: @selector(resetWindowsState:) keyEquivalent:@""];
+    }
 	[menu addItem: [NSMenuItem separatorItem]];
 	[menu addItemWithTitle: NSLocalizedString(@"Export to DICOM Network Node", nil) action: @selector(export2PACS:) keyEquivalent:@""];
 	[menu addItemWithTitle: NSLocalizedString(@"Export to Movie", nil) action: @selector(exportQuicktime:) keyEquivalent:@""];

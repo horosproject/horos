@@ -953,7 +953,10 @@ return YES;
 {
     self.windowsStateName = [NSUserDefaults formatDateTime: [NSDate date]];
     
-    [NSApp beginSheet: saveWindowsStateWindow modalForWindow: nil modalDelegate:self didEndSelector:nil contextInfo:nil];
+    if( saveWindowsStateWindow)
+        [NSApp beginSheet: saveWindowsStateWindow modalForWindow: nil modalDelegate:self didEndSelector:nil contextInfo:nil];
+    else
+        [ViewerController saveWindowsStateWithDICOMSR: YES name: nil];
 }
 
 - (IBAction) endSaveWindowsStateAsDICOMSR:(id) sender
@@ -978,7 +981,7 @@ return YES;
 	
 	int i, indexImage;
 	
-    if( name == nil)
+    if( name.length == 0)
         name = [NSUserDefaults formatDateTime: [NSDate date]];
     
     @try
@@ -2489,12 +2492,14 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[contextualMenu addItem:item];
 		
         /*************Workspace submenu**************/
-        [contextualMenu addItem: [NSMenuItem separatorItem]];
-        [contextualMenu addItemWithTitle: NSLocalizedString(@"Save Workspace State", nil) action: @selector(saveWindowsState:) keyEquivalent:@""];
-        [contextualMenu addItemWithTitle: NSLocalizedString(@"Save Workspace State as DICOM SR", nil) action: @selector(saveWindowsStateAsDICOMSR:) keyEquivalent:@""];
-        NSMenuItem *mi = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Load Workspace State DICOM SR", nil) action: nil keyEquivalent:@""] autorelease];
-        [mi setSubmenu: [[[[AppController sharedAppController] workspaceMenu] copy] autorelease]];
-        [contextualMenu addItem: mi];
+        if( [[AppController sharedAppController] workspaceMenu]) {
+            [contextualMenu addItem: [NSMenuItem separatorItem]];
+            [contextualMenu addItemWithTitle: NSLocalizedString(@"Save Workspace State", nil) action: @selector(saveWindowsState:) keyEquivalent:@""];
+            [contextualMenu addItemWithTitle: NSLocalizedString(@"Save Workspace State as DICOM SR", nil) action: @selector(saveWindowsStateAsDICOMSR:) keyEquivalent:@""];
+            NSMenuItem *mi = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Load Workspace State DICOM SR", nil) action: nil keyEquivalent:@""] autorelease];
+            [mi setSubmenu: [[[[AppController sharedAppController] workspaceMenu] copy] autorelease]];
+            [contextualMenu addItem: mi];
+        }
 	}
 	else //use the menuDictionary of the path
 	{

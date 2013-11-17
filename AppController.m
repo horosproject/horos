@@ -1888,11 +1888,16 @@ static NSDate *lastWarningDate = nil;
     if( testLocalized) workspaceMenu = nil;
     if( workspaceMenu == nil)
     {
-        workspaceMenu = [[viewerMenu itemAtIndex: 55]  submenu];
-        if( testLocalized)
-        {
-            if( [[workspaceMenu title] isEqualToString: NSLocalizedString(@"Load Workspace State DICOM SR", nil)] == NO)
-                return nil;
+        @try {
+            workspaceMenu = [[viewerMenu itemAtIndex: 55]  submenu];
+            if( testLocalized)
+            {
+                if( [[workspaceMenu title] isEqualToString: NSLocalizedString(@"Load Workspace State DICOM SR", nil)] == NO)
+                    return nil;
+            }
+        }
+        @catch (NSException *exception) {
+            N2LogException( exception);
         }
     }
     
