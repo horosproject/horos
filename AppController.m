@@ -3130,6 +3130,7 @@ static BOOL initialized = NO;
                 [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_referring_physician"];
                 [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_comments"];
                 [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_institution"];
+                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_status"];
                 [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_study_date"];
                 [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_modality"];
                 [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_blank_query"];

@@ -65,6 +65,7 @@ enum
 	IBOutlet	NSMatrix					*birthdateFilterMatrix;
 	IBOutlet	NSMatrix					*dateFilterMatrix;
 	IBOutlet	NSMatrix					*modalityFilterMatrix;
+    IBOutlet    NSMatrix                    *statusFilterMatrix;
 	IBOutlet	NSTabView					*PatientModeMatrix;
 	IBOutlet	NSDatePicker				*fromDate, *toDate, *searchBirth;
 	IBOutlet	NSTextField					*yearOldBirth;

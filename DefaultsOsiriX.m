@@ -1034,6 +1034,7 @@ static NSHost *currentHost = nil;
     [defaultValues setObject:@"1" forKey:@"allow_qr_referring_physician"];
     [defaultValues setObject:@"1" forKey:@"allow_qr_comments"];
     [defaultValues setObject:@"1" forKey:@"allow_qr_institution"];
+    [defaultValues setObject:@"1" forKey:@"allow_qr_status"];
     [defaultValues setObject:@"1" forKey:@"allow_qr_study_date"];
     [defaultValues setObject:@"1" forKey:@"allow_qr_modality"];
     [defaultValues setObject:@"1" forKey:@"allow_qr_blank_query"];
