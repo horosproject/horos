@@ -14714,6 +14714,7 @@ static NSArray*	openSubSeriesArray = nil;
         
 		long f = 0;
 		NSString *lastFolder = nil;
+        NSTimeInterval date = 0;
 		for( NSString *file in copyArray)
 		{
 			unlink( [file UTF8String]);		// <- this is faster
@@ -14728,8 +14729,9 @@ static NSArray*	openSubSeriesArray = nil;
 				lastFolder = [[NSString alloc] initWithString: parentFolder];
 			}
 			
-            if( f%20 == 0)
+            if( [NSDate timeIntervalSinceReferenceDate] - date > 1)
             {
+                date = [NSDate timeIntervalSinceReferenceDate];
                 [NSThread currentThread].progress = (float)f / (float)[copyArray count];
                 [NSThread currentThread].status = N2LocalizedSingularPluralCount( (long)copyArray.count-f, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil));
                 
