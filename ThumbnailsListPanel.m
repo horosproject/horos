@@ -138,8 +138,8 @@ extern  BOOL USETOOLBARPANEL;
 			if( [[viewer window] isVisible])
 				[[viewer window] makeKeyAndOrderFront: self];
             
-            if( viewer)
-                [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
+            if( viewer && viewer.window.windowNumber > 0)
+                [[self window] orderWindow: NSWindowBelow relativeTo: viewer.window.windowNumber];
             else
             {
                 [self.window orderOut: self];
@@ -153,7 +153,7 @@ extern  BOOL USETOOLBARPANEL;
 	if( [aNotification object] == [self window])
 	{
 		if( [[self window] isVisible] && viewer)
-            [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
+            [[self window] orderWindow: NSWindowBelow relativeTo: viewer.window.windowNumber];
 	}
 }
 
@@ -164,7 +164,7 @@ extern  BOOL USETOOLBARPANEL;
 		[[viewer window] makeKeyAndOrderFront: self];
         
 		if( [[self window] isVisible] && viewer)
-            [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
+            [[self window] orderWindow: NSWindowBelow relativeTo: viewer.window.windowNumber];
         
 		return;
 	}
@@ -190,8 +190,8 @@ extern  BOOL USETOOLBARPANEL;
 				
 				[[self window] orderBack:self];
                 
-                if( viewer)
-                    [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
+                if( viewer && viewer.window.windowNumber > 0)
+                    [[self window] orderWindow: NSWindowBelow relativeTo: viewer.window.windowNumber];
 			}
 			else
 				[self.window orderOut:self];
@@ -251,7 +251,7 @@ extern  BOOL USETOOLBARPANEL;
         
         if( tb == thumbnailsView)
         {
-            if( viewer != nil)
+            if( viewer != nil && viewer.window.windowNumber > 0)
                 [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
         
             if( thumbnailsView)

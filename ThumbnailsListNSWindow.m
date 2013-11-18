@@ -40,7 +40,9 @@
         if( v)
         {
             [self.windowController setThumbnailsView: v.leftSplitView viewer: v];
-            [self orderWindow: NSWindowBelow relativeTo: v.window.windowNumber];
+            
+            if( v.window.windowNumber > 0)
+                [self orderWindow: NSWindowBelow relativeTo: v.window.windowNumber];
         }
         else
         {
