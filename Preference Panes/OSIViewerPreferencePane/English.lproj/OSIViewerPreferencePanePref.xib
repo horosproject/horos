@@ -15,15 +15,15 @@
         <customObject id="-3" userLabel="Application"/>
         <window title="&lt;&lt; do not localize >>" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" deferred="NO" oneShot="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="12" userLabel="PrefPane">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
-            <rect key="contentRect" x="0.0" y="0.0" width="779" height="874"/>
+            <rect key="contentRect" x="0.0" y="0.0" width="779" height="854"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <value key="minSize" type="size" width="224.66300000000001" height="10"/>
             <view key="contentView" id="6">
-                <rect key="frame" x="0.0" y="0.0" width="779" height="874"/>
+                <rect key="frame" x="0.0" y="0.0" width="779" height="854"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <box title="Miscellaneous" id="100">
-                        <rect key="frame" x="8" y="11" width="761" height="342"/>
+                        <rect key="frame" x="8" y="9" width="761" height="342"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
                             <rect key="frame" x="2" y="2" width="757" height="322"/>
@@ -498,7 +498,7 @@
                         <font key="titleFont" metaFont="system"/>
                     </box>
                     <box title="TIFF, JPEG, Quicktime, DICOM Export" id="110">
-                        <rect key="frame" x="8" y="774" width="761" height="92"/>
+                        <rect key="frame" x="8" y="754" width="761" height="92"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
                             <rect key="frame" x="2" y="2" width="757" height="72"/>
@@ -544,14 +544,14 @@
                         <font key="titleFont" metaFont="system"/>
                     </box>
                     <box title="Screens &amp; Window size" id="149">
-                        <rect key="frame" x="8" y="357" width="761" height="417"/>
+                        <rect key="frame" x="8" y="355" width="761" height="399"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
-                            <rect key="frame" x="2" y="2" width="757" height="397"/>
+                            <rect key="frame" x="2" y="2" width="757" height="379"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="250">
-                                    <rect key="frame" x="130" y="231" width="550" height="38"/>
+                                    <rect key="frame" x="130" y="213" width="550" height="38"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     <size key="cellSize" width="273" height="18"/>
@@ -591,34 +591,6 @@
                                         <binding destination="308" name="selectedTag" keyPath="values.WINDOWSIZEVIEWER" id="533"/>
                                     </connections>
                                 </matrix>
-                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="260">
-                                    <rect key="frame" x="130" y="209" width="550" height="18"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                    <size key="cellSize" width="273" height="18"/>
-                                    <size key="intercellSpacing" width="4" height="2"/>
-                                    <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="367">
-                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                        <font key="font" metaFont="system"/>
-                                    </buttonCell>
-                                    <cells>
-                                        <column>
-                                            <buttonCell type="radio" title="If multiple windows" imagePosition="left" alignment="left" state="on" inset="2" id="265">
-                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="system"/>
-                                            </buttonCell>
-                                        </column>
-                                        <column>
-                                            <buttonCell type="radio" title="Always" imagePosition="left" alignment="left" tag="1" inset="2" id="266">
-                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="system"/>
-                                            </buttonCell>
-                                        </column>
-                                    </cells>
-                                    <connections>
-                                        <binding destination="308" name="selectedTag" keyPath="values.USEALWAYSTOOLBARPANEL2" id="534"/>
-                                    </connections>
-                                </matrix>
                                 <button id="298">
                                     <rect key="frame" x="130" y="187" width="551" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
@@ -631,7 +603,7 @@
                                     </connections>
                                 </button>
                                 <button id="319">
-                                    <rect key="frame" x="130" y="275" width="551" height="18"/>
+                                    <rect key="frame" x="130" y="257" width="551" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Group series of same study on same screen" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="359">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -642,7 +614,7 @@
                                     </connections>
                                 </button>
                                 <button id="497">
-                                    <rect key="frame" x="130" y="315" width="551" height="18"/>
+                                    <rect key="frame" x="130" y="297" width="551" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Reserve the database screen for the database" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="498">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -653,7 +625,7 @@
                                     </connections>
                                 </button>
                                 <button id="522">
-                                    <rect key="frame" x="130" y="295" width="551" height="18"/>
+                                    <rect key="frame" x="130" y="277" width="551" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Use database screen in the last" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="523">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -771,7 +743,7 @@
                                     </connections>
                                 </button>
                                 <textField verticalHuggingPriority="750" id="503">
-                                    <rect key="frame" x="14" y="370" width="113" height="17"/>
+                                    <rect key="frame" x="14" y="352" width="113" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Screens:" id="504">
                                         <font key="font" metaFont="system"/>
@@ -780,18 +752,9 @@
                                     </textFieldCell>
                                 </textField>
                                 <textField verticalHuggingPriority="750" id="505">
-                                    <rect key="frame" x="13" y="252" width="113" height="17"/>
+                                    <rect key="frame" x="13" y="234" width="113" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Window Size:" id="506">
-                                        <font key="font" metaFont="system"/>
-                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                    </textFieldCell>
-                                </textField>
-                                <textField verticalHuggingPriority="750" id="507">
-                                    <rect key="frame" x="14" y="210" width="113" height="17"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Toolbar Panel:" id="508">
                                         <font key="font" metaFont="system"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -834,7 +797,7 @@
                                     </textFieldCell>
                                 </textField>
                                 <customView id="521" customClass="O2ScreensPrefsView">
-                                    <rect key="frame" x="132" y="339" width="608" height="48"/>
+                                    <rect key="frame" x="132" y="321" width="608" height="48"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 </customView>
                             </subviews>

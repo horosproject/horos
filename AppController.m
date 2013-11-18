@@ -3051,6 +3051,7 @@ static BOOL initialized = NO;
 				NSLog(@"Number of processors: %d / %d", processors, (int) [[NSProcessInfo processInfo] processorCount]);
 				NSLog(@"Main screen backingScaleFactor: %f", (float) [[NSScreen mainScreen] backingScaleFactor]);
                 NSLog(@"Version: %@ - %@ - %@", [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey], [[[NSBundle mainBundle] infoDictionary] objectForKey: @"CFBundleShortVersionString"], bits);
+                NSLog(@"Localization: %@", [[NSBundle mainBundle] pathForResource: @"Localizable" ofType: @"strings"]);
 				#ifdef NDEBUG
 				#else
 				NSLog( @"**** DEBUG MODE ****");
@@ -3574,6 +3575,8 @@ static BOOL initialized = NO;
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"])
 		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"checkForUpdatesPlugins"];
 	
+    [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"USEALWAYSTOOLBARPANEL2"];
+    
 	#ifndef MACAPPSTORE
 	#ifndef OSIRIX_LIGHT
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"checkForUpdatesPlugins"])
