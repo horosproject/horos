@@ -3049,9 +3049,12 @@ static BOOL initialized = NO;
                 
                 NSLog(@"*-+-*-+-*-+-*-+-*-+-*-+-*-+-*-+-*-+-*-+-*-+-*-+-*-+-*-+-*-+-*-+-*-+-*");
 				NSLog(@"Number of processors: %d / %d", processors, (int) [[NSProcessInfo processInfo] processorCount]);
+                NSLog(@"Number of screens: %d", (int) [[NSScreen screens] count]);
 				NSLog(@"Main screen backingScaleFactor: %f", (float) [[NSScreen mainScreen] backingScaleFactor]);
                 NSLog(@"Version: %@ - %@ - %@", [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey], [[[NSBundle mainBundle] infoDictionary] objectForKey: @"CFBundleShortVersionString"], bits);
-                NSLog(@"Localization: %@", [[NSBundle mainBundle] pathForResource: @"Localizable" ofType: @"strings"]);
+                NSArray *components = [[[NSBundle mainBundle] pathForResource: @"Localizable" ofType: @"strings"] pathComponents];
+                if( components.count > 3)
+                    NSLog(@"Localization: %@", [components objectAtIndex: components.count -2]);
 				#ifdef NDEBUG
 				#else
 				NSLog( @"**** DEBUG MODE ****");
