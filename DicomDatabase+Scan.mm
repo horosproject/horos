@@ -349,17 +349,21 @@ static NSString* _dcmElementKey(DcmElement* element) {
 
 -(NSString*)_fixedPathForPath:(NSString*)path withPaths:(NSArray*)allpaths { // path was listed in DICOMDIR and [NSFileManager.defaultManager fileExistsAtPath:path] says NO
 	NSString* cutpath = [path stringByDeletingPathExtension];
-	
-    @try {
-        for (NSString* ipath in allpaths)
-            if ([[ipath stringByDeletingPathExtension] compare:cutpath options:NSCaseInsensitiveSearch] == NSOrderedSame)
-                return ipath;
-    }
-    @catch (NSException *exception) {
-        N2LogException( exception);
-    }
-	
-	return nil;
+	NSString* returnString = nil;
+    
+    @autoreleasepool
+    {
+        @try {
+            for (NSString* ipath in allpaths)
+                if ([[ipath stringByDeletingPathExtension] compare:cutpath options:NSCaseInsensitiveSearch] == NSOrderedSame)
+                    returnString = [ipath copy];
+        }
+        @catch (NSException *exception) {
+            N2LogException( exception);
+        }
+	}
+    
+	return [returnString autorelease];
 }
 
 +(BOOL)_item:(NSDictionary*)item isOnlyEntryForItsSeriesInItems:(NSArray*)items {
