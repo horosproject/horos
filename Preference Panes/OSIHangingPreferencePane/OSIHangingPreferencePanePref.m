@@ -342,6 +342,8 @@
 
 - (void)setModalityForHangingProtocols:(NSString*) m
 {
+    [[[self mainView] window] makeFirstResponder: nil];
+    
     [self willChangeValueForKey: @"currentHangingProtocol"];
 	[modalityForHangingProtocols autorelease];
 	modalityForHangingProtocols = [m retain];

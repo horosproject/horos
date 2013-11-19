@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13B27" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13A603" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
@@ -34,7 +34,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <popUpButtonCell key="cell" type="push" title="CR" bezelStyle="rounded" alignment="left" lineBreakMode="clipping" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="274" id="248">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="menu"/>
                             <menu key="menu" title="OtherViews" id="105">
                                 <items>
                                     <menuItem title="CR" state="on" id="274"/>
@@ -58,14 +58,14 @@
                         </connections>
                     </popUpButton>
                     <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="107">
-                        <rect key="frame" x="20" y="212" width="793" height="311"/>
+                        <rect key="frame" x="20" y="233" width="793" height="290"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <clipView key="contentView" id="dm9-H1-37F">
-                            <rect key="frame" x="1" y="17" width="791" height="293"/>
+                            <rect key="frame" x="1" y="17" width="791" height="272"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" headerView="262" id="106" customClass="HangingTableView">
-                                    <rect key="frame" x="0.0" y="0.0" width="791" height="293"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="791" height="272"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <size key="intercellSpacing" width="3" height="2"/>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -99,7 +99,7 @@
                                             </tableHeaderCell>
                                             <popUpButtonCell key="dataCell" type="bevel" bezelStyle="rounded" alignment="center" lineBreakMode="truncatingTail" borderStyle="bezel" imageScaling="proportionallyDown" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" id="306">
                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                <font key="font" metaFont="system"/>
+                                                <font key="font" metaFont="menu"/>
                                                 <menu key="menu" title="OtherViews" id="307"/>
                                             </popUpButtonCell>
                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
@@ -119,7 +119,7 @@
                                             </tableHeaderCell>
                                             <popUpButtonCell key="dataCell" type="bevel" title="Pop Up" bezelStyle="rounded" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="bezel" imageScaling="proportionallyDown" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="311" id="309">
                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                <font key="font" metaFont="system"/>
+                                                <font key="font" metaFont="menu"/>
                                                 <menu key="menu" title="OtherViews" id="310">
                                                     <items>
                                                         <menuItem title="Pop Up" state="on" id="311"/>
@@ -200,7 +200,7 @@
                                             </tableHeaderCell>
                                             <popUpButtonCell key="dataCell" type="bevel" title="Pop Up" bezelStyle="rounded" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="bezel" imageScaling="proportionallyDown" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="305" id="303">
                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                <font key="font" metaFont="system"/>
+                                                <font key="font" metaFont="menu"/>
                                                 <menu key="menu" title="OtherViews" id="304">
                                                     <items>
                                                         <menuItem title="Pop Up" state="on" id="305"/>
@@ -266,6 +266,15 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
+                    <textField verticalHuggingPriority="750" id="5qP-63-Wyl">
+                        <rect key="frame" x="17" y="208" width="119" height="17"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Windows:" id="T9W-wp-PJS">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
                     <textField verticalHuggingPriority="750" id="T6w-wp-eIt">
                         <rect key="frame" x="17" y="71" width="119" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -298,6 +307,17 @@ Use commas to separate terms.</string>
                             <binding destination="331" name="value" keyPath="selection.PreviousStudySameModality" id="372"/>
                         </connections>
                     </button>
+                    <button id="cLy-b3-d59">
+                        <rect key="frame" x="150" y="206" width="665" height="18"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="check" title="If not enough series for number of windows, repeat series" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="F3i-NS-cfp">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <binding destination="331" name="value" keyPath="selection.RepeatSeriesIfNotEnoughSeries" id="cPC-uS-25l"/>
+                        </connections>
+                    </button>
                     <button id="298">
                         <rect key="frame" x="150" y="166" width="274" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -315,7 +335,7 @@ Use commas to separate terms.</string>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <popUpButtonCell key="cell" type="push" title="Display last study, if possible" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="1" imageScaling="proportionallyDown" inset="2" selectedItem="383" id="381">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="menu"/>
                             <menu key="menu" title="OtherViews" id="382">
                                 <items>
                                     <menuItem title="Display last study, if possible" state="on" tag="1" id="383"/>
@@ -334,7 +354,7 @@ Use commas to separate terms.</string>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <popUpButtonCell key="cell" type="push" title="Display 1 series per previous study" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="1" imageScaling="proportionallyDown" inset="2" selectedItem="ew2-hP-L3n" id="Skm-0N-d3N">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="menu"/>
                             <menu key="menu" title="OtherViews" id="Rgq-3j-bmV">
                                 <items>
                                     <menuItem title="Display 1 series per previous study" state="on" tag="1" id="ew2-hP-L3n"/>
@@ -358,7 +378,11 @@ Use commas to separate terms.</string>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                         <connections>
-                            <binding destination="331" name="value" keyPath="selection.SeriesOrder" id="EM2-Gl-O59"/>
+                            <binding destination="331" name="value" keyPath="selection.SeriesOrder" id="OxF-MY-ykN">
+                                <dictionary key="options">
+                                    <bool key="NSValidatesImmediately" value="YES"/>
+                                </dictionary>
+                            </binding>
                         </connections>
                     </textField>
                 </subviews>

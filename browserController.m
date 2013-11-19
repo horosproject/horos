@@ -6983,16 +6983,19 @@ static NSConditionLock *threadLock = nil;
             {
                 term = [term stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
                 
+                int index = -1;
                 for( int i = 0; i < seriesArray.count; i++)
                 {
                     DicomSeries *s = [seriesArray objectAtIndex: i];
                     
                     if( [s.description contains: term])
-                    {
-                        [newSeriesArray addObject: s];
-                        [seriesArray removeObject: s];
-                        i--;
-                    }
+                        index = i;
+                }
+                
+                if( index != -1)
+                {
+                    [newSeriesArray addObject: [seriesArray objectAtIndex: index]];
+                    [seriesArray removeObjectAtIndex: index];
                 }
             }
             [newSeriesArray addObjectsFromArray: seriesArray];
@@ -7165,16 +7168,19 @@ static NSConditionLock *threadLock = nil;
                     {
                         term = [term stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
                         
+                        int index = -1;
                         for( int i = 0; i < series.count; i++)
                         {
                             DicomSeries *s = [series objectAtIndex: i];
                             
                             if( [s.description contains: term])
-                            {
-                                [newSeriesArray addObject: s];
-                                [series removeObject: s];
-                                i--;
-                            }
+                                index = i;
+                        }
+                        
+                        if( index != -1)
+                        {
+                            [newSeriesArray addObject: [series objectAtIndex: index]];
+                            [series removeObjectAtIndex: index];
                         }
                     }
                     [newSeriesArray addObjectsFromArray: series];
@@ -7206,6 +7212,16 @@ static NSConditionLock *threadLock = nil;
                 [comparatives removeLastObject];
         }
         
+        if( [[currentHangingProtocol objectForKey: @"RepeatSeriesIfNotEnoughSeries"] boolValue])
+        {
+            if( seriesArray.count + comparatives.count < total)
+            {
+                int i = 0;
+                while( seriesArray.count + comparatives.count < total && seriesArray.count)
+                    [seriesArray addObject: [seriesArray objectAtIndex: i++]];
+            }
+        }
+        
         [seriesArray addObjectsFromArray: comparatives];
         
         
@@ -7231,7 +7247,7 @@ static NSConditionLock *threadLock = nil;
             }
         }
         
-        [self viewerDICOMInt: NO  dcmFile: seriesArray viewer: nil];
+        [self viewerDICOMInt: NO  dcmFile: seriesArray viewer: nil tileWindows: YES protocol: currentHangingProtocol];
     }
     else
     {
@@ -12683,10 +12699,15 @@ static BOOL needToRezoom;
 
 - (void) viewerDICOMInt:(BOOL) movieViewer dcmFile:(NSArray *)selectedLines viewer:(ViewerController*) viewer
 {
-	return [self viewerDICOMInt:  movieViewer dcmFile: selectedLines viewer: viewer tileWindows: YES];
+	return [self viewerDICOMInt:  movieViewer dcmFile: selectedLines viewer: viewer tileWindows: YES protocol: nil];
 }
 
 - (void) viewerDICOMInt:(BOOL) movieViewer dcmFile:(NSArray *)selectedLines viewer:(ViewerController*) viewer tileWindows: (BOOL) tileWindows
+{
+	return [self viewerDICOMInt:  movieViewer dcmFile: selectedLines viewer: viewer tileWindows: tileWindows protocol: nil];
+}
+
+- (void) viewerDICOMInt:(BOOL) movieViewer dcmFile:(NSArray *)selectedLines viewer:(ViewerController*) viewer tileWindows: (BOOL) tileWindows protocol: (NSDictionary*) protocol
 {
 	if( [selectedLines count] == 0) return;
 	
@@ -12806,7 +12827,7 @@ static BOOL needToRezoom;
 			
 			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
 			{
-				[[AppController sharedAppController] tileWindows: nil];
+				[[AppController sharedAppController] tileWindows: protocol];
 				
 				if( [viewers count] > 1)
 				{

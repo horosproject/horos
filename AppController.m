@@ -5291,6 +5291,22 @@ static BOOL initialized = NO;
 			columns = [[sender objectForKey: @"columns"] intValue];
 			rows = floor( (float) viewerCount / (float) columns);
 		}
+        
+        if( [[sender objectForKey: @"Rows"] intValue] && [[sender objectForKey: @"Columns"] intValue])
+        {
+            rows = [[sender objectForKey: @"Rows"] intValue];
+            columns = [[sender objectForKey: @"Columns"] intValue];
+        }
+		else if( [[sender objectForKey: @"Rows"] intValue])
+		{
+			rows = [[sender objectForKey: @"Rows"] intValue];
+			columns = floor( (float) viewerCount / (float) rows);
+		}
+		else if( [[sender objectForKey: @"Columns"] intValue])
+		{
+			columns = [[sender objectForKey: @"Columns"] intValue];
+			rows = floor( (float) viewerCount / (float) columns);
+		}
 	}
 	else if( ![[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol] || viewerCount < rows * columns)
 	{

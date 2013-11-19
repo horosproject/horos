@@ -1101,6 +1101,12 @@ static NSHost *currentHost = nil;
     {
 		NSMutableDictionary *protocol = [NSMutableDictionary dictionaryWithObjects:[NSArray arrayWithObjects: NSLocalizedString( @"Default", nil), [NSNumber numberWithInt:0], [NSNumber numberWithInt:0], nil] forKeys:[NSArray arrayWithObjects:@"Study Description", @"WindowsTiling", @"ImageTiling", nil]];
         
+        if( [modality isEqualToString: @"MG"])
+        {
+            [protocol setObject: @5 forKey: @"WindowsTiling"]; // 2 x 2
+            [protocol setObject: @"R CC,L CC,R MLO,L MLO" forKey: @"SeriesOrder"];
+            [protocol setObject: [NSNumber numberWithInt: 4] forKey: @"NumberOfSeriesPerComparative"];
+        }
 		[defaultHangingProtocols setObject: [NSMutableArray arrayWithObject:protocol] forKey:modality];
 	}
 	[defaultValues setObject: defaultHangingProtocols forKey: @"HANGINGPROTOCOLS"];
@@ -1123,7 +1129,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject: @"1" forKey: @"splitMultiEchoMR"];
 	[defaultValues setObject: @"0" forKey: @"useSeriesDescription"];
 	[defaultValues setObject: @"1" forKey: @"combineProjectionSeries"];
-	[defaultValues setObject: @"0" forKey: @"combineProjectionSeriesMode"];
+	[defaultValues setObject: @"1" forKey: @"combineProjectionSeriesMode"];
 	[defaultValues setObject: @"0" forKey: @"ListenerCompressionSettings"];
 	[defaultValues setObject: @"localizer,scout,survey,locator,tracker" forKey: @"NOLOCALIZER_Strings"];
 	
