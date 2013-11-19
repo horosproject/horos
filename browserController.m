@@ -1021,6 +1021,11 @@ static NSConditionLock *threadLock = nil;
     
     DicomImage *im = objects.lastObject;
     
+    if( im == nil)
+    {
+        [self filesForDatabaseOutlineSelection: objects onlyImages: NO];
+        im = objects.lastObject;
+    }
     return im.series.study;
 }
 

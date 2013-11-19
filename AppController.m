@@ -1916,7 +1916,7 @@ static NSDate *lastWarningDate = nil;
    
     NSMutableArray *studies = [NSMutableArray array];
     
-    if( [BrowserController.currentBrowser.window isKeyWindow])
+    if( [BrowserController.currentBrowser.window isKeyWindow] && BrowserController.currentBrowser.selectedStudy)
         [studies addObject: BrowserController.currentBrowser.selectedStudy];
     
     if( studies.count == 0)
