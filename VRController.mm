@@ -868,86 +868,92 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 -(void) load3DState
 {
-	NSString		*path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:STATEDATABASE];
-	BOOL			isDir = YES;
-	long			i;
-	
-	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
-	{
-		[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
-	}
-	
-	NSString *str;
-	
-	if( [style isEqualToString:@"noNib"])
-		str = nil;
-	else
-		str = [path stringByAppendingPathComponent: [NSString stringWithFormat:@"VRMIP-%d-%@", (int) [view mode], [[fileList objectAtIndex:0] valueForKey:@"uniqueFilename"]]];
-	
-	NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile: str];
-	
-	if( [viewer2D postprocessed]) dict = nil;
-		
-	[view set3DStateDictionary:dict];
-    
-	BOOL has16bitCLUT = NO;
-	
-	if( [dict objectForKey:@"CLUTName"])
-	{
-		if([dict objectForKey:@"isAdvancedCLUT"])
-		{
-			if([[dict objectForKey:@"isAdvancedCLUT"] boolValue])
-			{
-				[[[clutPopup menu] itemAtIndex:0] setTitle:[dict objectForKey:@"CLUTName"]];
-				[self setCurCLUTMenu:[dict objectForKey:@"CLUTName"]];
-				if([[dict objectForKey:@"CLUTName"] isEqualToString:NSLocalizedString(@"16-bit CLUT", nil)]  || [[dict objectForKey:@"CLUTName"] isEqualToString: @"16-bit CLUT"])
-				{
-					NSMutableArray *curves = [CLUTOpacityView convertCurvesFromPlist:[dict objectForKey:@"16bitClutCurves"]];
-					NSMutableArray *colors = [CLUTOpacityView convertPointColorsFromPlist:[dict objectForKey:@"16bitClutColors"]];
-					
-					NSMutableDictionary *clut = [NSMutableDictionary dictionaryWithCapacity:2];
-					[clut setObject:curves forKey:@"curves"];
-					[clut setObject:colors forKey:@"colors"];
+    @try {
+        NSString *path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:STATEDATABASE];
+        BOOL isDir = YES;
+        long i;
+        
+        if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
+        {
+            [[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
+        }
+        
+        NSString *str;
+        
+        if( [style isEqualToString:@"noNib"])
+            str = nil;
+        else
+            str = [path stringByAppendingPathComponent: [NSString stringWithFormat:@"VRMIP-%d-%@", (int) [view mode], [[fileList objectAtIndex:0] valueForKey:@"uniqueFilename"]]];
+        
+        NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile: str];
+        
+        if( [viewer2D postprocessed]) dict = nil;
+            
+        [view set3DStateDictionary:dict];
+        
+        BOOL has16bitCLUT = NO;
+        
+        if( [dict objectForKey:@"CLUTName"])
+        {
+            if([dict objectForKey:@"isAdvancedCLUT"])
+            {
+                if([[dict objectForKey:@"isAdvancedCLUT"] boolValue])
+                {
+                    [[[clutPopup menu] itemAtIndex:0] setTitle:[dict objectForKey:@"CLUTName"]];
+                    [self setCurCLUTMenu:[dict objectForKey:@"CLUTName"]];
+                    if([[dict objectForKey:@"CLUTName"] isEqualToString:NSLocalizedString(@"16-bit CLUT", nil)]  || [[dict objectForKey:@"CLUTName"] isEqualToString: @"16-bit CLUT"])
+                    {
+                        NSMutableArray *curves = [CLUTOpacityView convertCurvesFromPlist:[dict objectForKey:@"16bitClutCurves"]];
+                        NSMutableArray *colors = [CLUTOpacityView convertPointColorsFromPlist:[dict objectForKey:@"16bitClutColors"]];
+                        
+                        NSMutableDictionary *clut = [NSMutableDictionary dictionaryWithCapacity:2];
+                        [clut setObject:curves forKey:@"curves"];
+                        [clut setObject:colors forKey:@"colors"];
 
-					[clutOpacityView setCurves:curves];
-					[clutOpacityView setPointColors:colors];
-					
-					[view setAdvancedCLUT:clut lowResolution:NO];
-				}
-				else
-				{
-					[self loadAdvancedCLUTOpacity:clutPopup];
-				}
-				has16bitCLUT = YES;
-			}
-			else
-				[self ApplyCLUTString:[dict objectForKey:@"CLUTName"]];
-		}
-		else
-			[self ApplyCLUTString:[dict objectForKey:@"CLUTName"]];
-	}
-	else if([view mode] == 0 && [[pixList[ 0] objectAtIndex:0] isRGB] == NO) [self ApplyCLUTString:@"VR Muscles-Bones"];	//For VR mode only
-	
-	if(!has16bitCLUT)
-	{
-		if( [dict objectForKey:@"OpacityName"]) [self ApplyOpacityString:[dict objectForKey:@"OpacityName"]];
-		else if([view mode] == 0 && [[pixList[ 0] objectAtIndex:0] isRGB] == NO) [self ApplyOpacityString:NSLocalizedString(@"Logarithmic Inverse Table", nil)];		//For VR mode only
-	}
-	
-	if( [view shading]) [shadingCheck setState: NSOnState];
-	else [shadingCheck setState: NSOffState];
-	
-	float ambient, diffuse, specular, specularpower;
-	
-	[view getShadingValues: &ambient :&diffuse :&specular :&specularpower];
-	[shadingValues setStringValue: [NSString stringWithFormat: NSLocalizedString( @"Ambient: %2.1f\nDiffuse: %2.1f\nSpecular :%2.1f-%2.1f", nil), ambient, diffuse, specular, specularpower]];
-	
-//	if(!dict && [_renderingMode isEqualToString:@"VR"])
-//	{
-//		firstTimeDisplayed = YES;
-//		[self centerPresetsPanel];
-//		[self showPresetsPanel];
-//	}
+                        [clutOpacityView setCurves:curves];
+                        [clutOpacityView setPointColors:colors];
+                        
+                        [view setAdvancedCLUT:clut lowResolution:NO];
+                    }
+                    else
+                    {
+                        [self loadAdvancedCLUTOpacity:clutPopup];
+                    }
+                    has16bitCLUT = YES;
+                }
+                else
+                    [self ApplyCLUTString:[dict objectForKey:@"CLUTName"]];
+            }
+            else
+                [self ApplyCLUTString:[dict objectForKey:@"CLUTName"]];
+        }
+        else if([view mode] == 0 && [[pixList[ 0] objectAtIndex:0] isRGB] == NO) [self ApplyCLUTString:@"VR Muscles-Bones"];	//For VR mode only
+        
+        if(!has16bitCLUT)
+        {
+            if( [dict objectForKey:@"OpacityName"]) [self ApplyOpacityString:[dict objectForKey:@"OpacityName"]];
+            else if([view mode] == 0 && [[pixList[ 0] objectAtIndex:0] isRGB] == NO) [self ApplyOpacityString:NSLocalizedString(@"Logarithmic Inverse Table", nil)];		//For VR mode only
+        }
+        
+        if( [view shading]) [shadingCheck setState: NSOnState];
+        else [shadingCheck setState: NSOffState];
+        
+        float ambient, diffuse, specular, specularpower;
+        
+        [view getShadingValues: &ambient :&diffuse :&specular :&specularpower];
+        [shadingValues setStringValue: [NSString stringWithFormat: NSLocalizedString( @"Ambient: %2.1f\nDiffuse: %2.1f\nSpecular :%2.1f-%2.1f", nil), ambient, diffuse, specular, specularpower]];
+        
+    //	if(!dict && [_renderingMode isEqualToString:@"VR"])
+    //	{
+    //		firstTimeDisplayed = YES;
+    //		[self centerPresetsPanel];
+    //		[self showPresetsPanel];
+    //	}
+            
+    }
+    @catch (NSException *exception) {
+        N2LogException( exception);
+    }
 }
 
 - (void) applyScissor : (NSArray*) object
