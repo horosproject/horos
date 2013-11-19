@@ -6813,7 +6813,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 							else
 							{
 								[cachedGroupsForThisFile setValue: [NSValue valueWithPointer: 0L]  forKey: groupKey];
-								NSLog( @"Error while reading a group (Papyrus)");
+								NSLog( @"Error while reading a group (Papyrus) : %@ - %04x", groupKey, groupKey.intValue);
 							}
 						}
 						else
