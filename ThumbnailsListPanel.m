@@ -57,9 +57,6 @@ extern  BOOL USETOOLBARPANEL;
 	if ([[NSScreen screens] count] <= screen)
 		return;
     
-    if( viewer == nil)
-        return;
-	
 	NSRect screenRect = [[[NSScreen screens] objectAtIndex:screen] visibleFrame];
 	
 	NSRect dstframe;
@@ -77,7 +74,8 @@ extern  BOOL USETOOLBARPANEL;
         dstframe.size.height -= NavigatorWindowController.navigatorWindowController.window.frame.size.height;
     }
     
-	[[self window] setFrame:dstframe display:YES];
+    if( NSEqualRects(self.window.frame, dstframe) == NO)
+        [[self window] setFrame:dstframe display:YES];
 }
 
 - (id)initForScreen: (long) s
