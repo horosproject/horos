@@ -300,7 +300,9 @@ static void DrawGLImageTile (unsigned long drawType, float imageWidth, float ima
 	}
 	
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-	
+    if( cgl_ctx == nil)
+        return;
+    
 	glBegin (drawType); // draw either tri strips of line strips (so this will drw either two tris or 3 lines)
 		glTexCoord2f (startXTexCoord, startYTexCoord); // draw upper left in world coordinates
 		glVertex3d (startXDraw, startYDraw, 0.0);
