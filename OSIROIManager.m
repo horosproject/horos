@@ -294,8 +294,10 @@ NSString* const OSIROIAddedROIKey = @"OSIROIAddedROIKey";
     CGLContextObj cgl_ctx;
         
     cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-	
-	if ([self.delegate isKindOfClass:[OSIVolumeWindow class]] == NO) { // only draw ROIs for the ROIs in an ROI manager that is owned by the VolumeWindow 
+    if( cgl_ctx == nil)
+        return;
+    
+	if ([self.delegate isKindOfClass:[OSIVolumeWindow class]] == NO) { // only draw ROIs for the ROIs in an ROI manager that is owned by the VolumeWindow
 		return;
 	}
     
@@ -540,7 +542,9 @@ NSString* const OSIROIAddedROIKey = @"OSIROIAddedROIKey";
     CGLContextObj cgl_ctx;
     
     cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-	
+    if( cgl_ctx == nil)
+        return;
+    
 	if ([self.delegate isKindOfClass:[OSIVolumeWindow class]] == NO) { // only draw ROIs for the ROIs in an ROI manager that is owned by the VolumeWindow
 		return;
 	}

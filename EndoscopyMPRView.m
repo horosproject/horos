@@ -67,7 +67,9 @@
 	
 	//normalizationFactor = 1.0;
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-	
+    if( cgl_ctx == nil)
+        return;
+    
 	glPushMatrix();
 	
 	glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)

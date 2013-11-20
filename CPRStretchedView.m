@@ -446,9 +446,10 @@ extern int splitPosition[ 3];
     N3Vector cursorVector;
     CGFloat relativePosition;
 
-    CGLContextObj cgl_ctx;
+    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    if( cgl_ctx == nil)
+        return;
     
-    cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];    
 	glEnable(GL_BLEND);
 	glEnable(GL_POLYGON_SMOOTH);
 	glEnable(GL_POINT_SMOOTH);
@@ -1614,6 +1615,8 @@ extern int splitPosition[ 3];
 	CGLContextObj cgl_ctx;
     
     cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];    	
+    if( cgl_ctx == nil)
+        return;
     
     N3AffineTransformGetOpenGLMatrixd([self pixToSubDrawRectTransform], pixToSubdrawRectOpenGLTransform);
     glMatrixMode(GL_MODELVIEW);
@@ -1641,6 +1644,8 @@ extern int splitPosition[ 3];
 	CGLContextObj cgl_ctx;
     
     cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];    	
+    if( cgl_ctx == nil)
+        return;
     
     N3AffineTransformGetOpenGLMatrixd([self pixToSubDrawRectTransform], pixToSubdrawRectOpenGLTransform);
     glMatrixMode(GL_MODELVIEW);
@@ -1671,7 +1676,9 @@ extern int splitPosition[ 3];
     CGFloat pheight_2;
     
     cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-  	
+  	if( cgl_ctx == nil)
+        return;
+    
     if ([curDCM pixelSpacingX] == 0) {
         return;
     }

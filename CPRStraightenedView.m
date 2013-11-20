@@ -440,9 +440,10 @@ extern int splitPosition[ 3];
 	NSNumber *indexNumber;
 	NSString *planeName;
 	_CPRStraightenedViewPlaneRun *planeRun;
-    CGLContextObj cgl_ctx;
+    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    if( cgl_ctx == nil)
+        return;
     
-    cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];    
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glEnable(GL_BLEND);
 	glEnable(GL_POINT_SMOOTH);
@@ -1450,9 +1451,9 @@ extern int splitPosition[ 3];
 	N3Vector lineStart;
 	N3Vector lineEnd;
     double pixToSubdrawRectOpenGLTransform[16];
-	CGLContextObj cgl_ctx;
-    
-    cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];    	
+	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    if( cgl_ctx == nil)
+        return;
     
     N3AffineTransformGetOpenGLMatrixd([self pixToSubDrawRectTransform], pixToSubdrawRectOpenGLTransform);
     glMatrixMode(GL_MODELVIEW);
@@ -1476,10 +1477,12 @@ extern int splitPosition[ 3];
 	N3Vector planePointVector;
 	_CPRStraightenedViewPlaneRun *planeRun;
     double pixToSubdrawRectOpenGLTransform[16];
-	CGLContextObj cgl_ctx;
     CGFloat pheight_2;
     
-    cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];    	
+    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+	if( cgl_ctx == nil)
+        return;
+    
 	pixelsPerMm = (CGFloat)curDCM.pwidth/[_curvedPath.bezierPath length];
     pheight_2 = (CGFloat)curDCM.pheight/2.0;
     

@@ -424,7 +424,9 @@
 - (void) subDrawRect:(NSRect)aRect
 {	
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-	
+    if( cgl_ctx == nil)
+        return;
+    
 	if (displayResliceAxes)
 	{
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );

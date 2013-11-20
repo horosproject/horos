@@ -1026,6 +1026,8 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
         {
             GLuint t = [[textArray objectAtIndex: index] intValue];
             CGLContextObj cgl_ctx = [c CGLContextObj];
+            if( cgl_ctx == nil)
+                return;
             
             if( t)
                 (*cgl_ctx->disp.delete_textures)(cgl_ctx->rend, 1, &t);
@@ -1509,6 +1511,8 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
     StringTexture *sT= [self stringTextureForString: str];
     
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    if( cgl_ctx == nil)
+        return;
     
     glEnable (GL_TEXTURE_RECTANGLE_EXT);
 //    glEnable(GL_BLEND);
@@ -3672,6 +3676,8 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, float rad, float factor)
 {
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    if( cgl_ctx == nil)
+        return;
     
 //	glLineWidth( 0.1 * factor);
 //	glBegin(GL_POLYGON);
@@ -3881,6 +3887,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
             anchor = [curView ConvertFromGL2View: NSMakePoint( textureDownRightCornerX - textureWidth/2, textureDownRightCornerY - textureHeight/2)];
         
 		CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+        if( cgl_ctx == nil)
+            return;
+        
 		glLoadIdentity();
 //		glScalef( 2.0f /([curView frame].size.width), -2.0f / ([curView frame].size.height), 1.0f);	// JORIS ! Here is the problem for iChat : if ICHAT [curView frame] should be 640 *480....
 		glScalef( 2.0f /([curView drawingFrameRect].size.width), -2.0f / ([curView drawingFrameRect].size.height), 1.0f);
@@ -3926,6 +3935,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		{
 			
 			CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+            if( cgl_ctx == nil)
+                return;
             
             glLoadIdentity();
             
@@ -4086,7 +4097,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		
 		NSOpenGLContext *currentContext = [NSOpenGLContext currentContext];
 		CGLContextObj cgl_ctx = [currentContext CGLContextObj];
-		
+        if( cgl_ctx == nil)
+            return;
+        
 		glColor3f ( 1.0f, 1.0f, 1.0f);
 		
 		glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);

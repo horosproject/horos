@@ -146,11 +146,13 @@ static float deg2rad = M_PI/180.0;
 		
 		[[self openGLContext] makeCurrentContext];
 		CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+        if( cgl_ctx)
+        {
+            GLint swap = 1;  // LIMIT SPEED TO VBL if swap == 1
+            [[self openGLContext] setValues:&swap forParameter:NSOpenGLCPSwapInterval];
 		
-		GLint swap = 1;  // LIMIT SPEED TO VBL if swap == 1
-		[[self openGLContext] setValues:&swap forParameter:NSOpenGLCPSwapInterval];
-		
-		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+            glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+        }
     }
     return self;
 }
@@ -205,7 +207,9 @@ static float deg2rad = M_PI/180.0;
 	{
 		[[self openGLContext] makeCurrentContext];
 		CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-
+        if( cgl_ctx == nil)
+            return;
+        
 		for (NSNumber *n in thumbnailsTextureArray)
 		{
 			GLuint textureName = [n intValue];
@@ -327,6 +331,9 @@ static float deg2rad = M_PI/180.0;
     float scaledThumbnailHeight = thumbnailHeight * self.window.backingScaleFactor;
     
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    if( cgl_ctx == nil)
+        return;
+    
 	glViewport(0, 0, viewSize.width, viewSize.height); // set the viewport to cover entire view
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);

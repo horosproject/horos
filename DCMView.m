@@ -1069,6 +1069,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         if( display2DPointIndex == curImage)
         {
             CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+            if( cgl_ctx == nil)
+                return;
             
             glColor3f (0.0f, 0.5f, 1.0f);
             glLineWidth(2.0 * self.window.backingScaleFactor);
@@ -1101,7 +1103,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (void)drawRepulsorToolArea;
 {
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-	
+	if( cgl_ctx == nil)
+        return;
+    
 	glEnable(GL_BLEND);
 	glDisable(GL_POLYGON_SMOOTH);
 	glDisable(GL_POINT_SMOOTH);
@@ -1146,7 +1150,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (void)drawROISelectorRegion;
 {
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-	
+	if( cgl_ctx == nil)
+        return;
+    
 	glEnable(GL_BLEND);
 	glDisable(GL_POLYGON_SMOOTH);
 	glDisable(GL_POINT_SMOOTH);
@@ -1770,30 +1776,32 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		else x -= 5 * self.window.backingScaleFactor;
 		
 		CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-		
-		glEnable (GL_TEXTURE_RECTANGLE_EXT);
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-		
-		long xc, yc;
-		xc = x+2;
-		yc = y+1-[stringTex texSize].height;
-        
-        if( whiteBackground)
-            glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
-        else
-            glColor4f (0.0f, 0.0f, 0.0f, 1.0f);
-        
-		[stringTex drawWithBounds: NSMakeRect( xc+1, yc+1, [stringTex texSize].width, [stringTex texSize].height)];
-		
-        if( whiteBackground)
-            glColor4f (0.0f, 0.0f, 0.0f, 1.0f);
-        else
-            glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
-		[stringTex drawWithBounds: NSMakeRect( xc, yc, [stringTex texSize].width, [stringTex texSize].height)];
-		
-		glDisable(GL_BLEND);
-		glDisable (GL_TEXTURE_RECTANGLE_EXT);
+		if( cgl_ctx)
+        {
+            glEnable (GL_TEXTURE_RECTANGLE_EXT);
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+            
+            long xc, yc;
+            xc = x+2;
+            yc = y+1-[stringTex texSize].height;
+            
+            if( whiteBackground)
+                glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
+            else
+                glColor4f (0.0f, 0.0f, 0.0f, 1.0f);
+            
+            [stringTex drawWithBounds: NSMakeRect( xc+1, yc+1, [stringTex texSize].width, [stringTex texSize].height)];
+            
+            if( whiteBackground)
+                glColor4f (0.0f, 0.0f, 0.0f, 1.0f);
+            else
+                glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
+            [stringTex drawWithBounds: NSMakeRect( xc, yc, [stringTex texSize].width, [stringTex texSize].height)];
+            
+            glDisable(GL_BLEND);
+            glDisable (GL_TEXTURE_RECTANGLE_EXT);
+        }
 	}
 	else
 	{
@@ -1814,39 +1822,41 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		unsigned char	*lstr = (unsigned char*) cstrOut;
 		
 		CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-		
-		if (fontColor)
-			glColor4f([fontColor redComponent], [fontColor greenComponent], [fontColor blueComponent], [fontColor alphaComponent]);
-		else
+		if( cgl_ctx)
         {
-            if( whiteBackground)
-                glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
+            if (fontColor)
+                glColor4f([fontColor redComponent], [fontColor greenComponent], [fontColor blueComponent], [fontColor alphaComponent]);
             else
+            {
+                if( whiteBackground)
+                    glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
+                else
+                    glColor4f (0.0, 0.0, 0.0, 1.0);
+            }
+            
+            glRasterPos3d (x+1, y+1, 0);
+            
+            GLint i = 0;
+            while (lstr [i])
+            {
+                long val = lstr[i++] - ' ';
+                if( val < 150 && val >= 0) glCallList (fontL+val);
+            }
+            
+            if( whiteBackground)
                 glColor4f (0.0, 0.0, 0.0, 1.0);
+            else
+                glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
+            
+            glRasterPos3d (x, y, 0);
+            
+            i = 0;
+            while (lstr [i])
+            {
+                long val = lstr[i++] - ' ';
+                if( val < 150 && val >= 0) glCallList (fontL+val);
+            }
         }
-        
-		glRasterPos3d (x+1, y+1, 0);
-		
-		GLint i = 0;
-		while (lstr [i])
-		{
-			long val = lstr[i++] - ' ';
-			if( val < 150 && val >= 0) glCallList (fontL+val);
-		}
-		
-        if( whiteBackground)
-            glColor4f (0.0, 0.0, 0.0, 1.0);
-        else
-            glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
-        
-		glRasterPos3d (x, y, 0);
-		
-		i = 0;
-		while (lstr [i])
-		{
-			long val = lstr[i++] - ' ';
-			if( val < 150 && val >= 0) glCallList (fontL+val);
-		}
 	}
 }
 
@@ -2248,30 +2258,32 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         [[self openGLContext] makeCurrentContext];
         
         CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-        
-        if( fontListGL) glDeleteLists (fontListGL, 150);
-        fontListGL = 0;
-        
-        if( labelFontListGL) glDeleteLists(labelFontListGL, 150);
-        labelFontListGL = 0;
-        
-        if( loupeTextureID) glDeleteTextures( 1, &loupeTextureID);
-        loupeTextureID = 0;
-        
-        if( loupeMaskTextureID) glDeleteTextures( 1, &loupeMaskTextureID);
-        loupeMaskTextureID = 0;
-        
-        if( pTextureName)
+        if( cgl_ctx)
         {
-            glDeleteTextures (textureX * textureY, pTextureName);
-            free( (Ptr) pTextureName);
-            pTextureName = nil;
-        }
-        if( blendingTextureName)
-        {
-            glDeleteTextures ( blendingTextureX * blendingTextureY, blendingTextureName);
-            free( (Ptr) blendingTextureName);
-            blendingTextureName = nil;
+            if( fontListGL) glDeleteLists (fontListGL, 150);
+            fontListGL = 0;
+            
+            if( labelFontListGL) glDeleteLists(labelFontListGL, 150);
+            labelFontListGL = 0;
+            
+            if( loupeTextureID) glDeleteTextures( 1, &loupeTextureID);
+            loupeTextureID = 0;
+            
+            if( loupeMaskTextureID) glDeleteTextures( 1, &loupeMaskTextureID);
+            loupeMaskTextureID = 0;
+            
+            if( pTextureName)
+            {
+                glDeleteTextures (textureX * textureY, pTextureName);
+                free( (Ptr) pTextureName);
+                pTextureName = nil;
+            }
+            if( blendingTextureName)
+            {
+                glDeleteTextures ( blendingTextureX * blendingTextureY, blendingTextureName);
+                free( (Ptr) blendingTextureName);
+                blendingTextureName = nil;
+            }
         }
         
         if( colorBuf) free( colorBuf);
@@ -3587,15 +3599,18 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	memcpy(buffer, [bitmap bitmapData], [bitmap bytesPerRow] * imageSize.height);
 	
 	CGLContextObj cgl_ctx = [[self openGLContext] CGLContextObj];
-	glGenTextures(1, texName);
-	glActiveTexture(textureUnit);
-	glBindTexture(GL_TEXTURE_RECTANGLE_EXT, *texName);
-	glPixelStorei(GL_UNPACK_ROW_LENGTH, [bitmap bytesPerRow]/[bitmap samplesPerPixel]);
-	glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
-	glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
-	
-	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, ([bitmap samplesPerPixel]==4)?GL_RGBA:GL_RGB, imageSize.width, imageSize.height, 0, ([bitmap samplesPerPixel]==4)?GL_RGBA:GL_RGB, GL_UNSIGNED_BYTE, buffer);
-	
+    if( cgl_ctx)
+    {
+        glGenTextures(1, texName);
+        glActiveTexture(textureUnit);
+        glBindTexture(GL_TEXTURE_RECTANGLE_EXT, *texName);
+        glPixelStorei(GL_UNPACK_ROW_LENGTH, [bitmap bytesPerRow]/[bitmap samplesPerPixel]);
+        glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
+        glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
+        
+        glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, ([bitmap samplesPerPixel]==4)?GL_RGBA:GL_RGB, imageSize.width, imageSize.height, 0, ([bitmap samplesPerPixel]==4)?GL_RGBA:GL_RGB, GL_UNSIGNED_BYTE, buffer);
+	}
+    
 	[bitmap release];
 }
 
@@ -6439,15 +6454,17 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 //	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 	
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-	
-    // This hint is for antialiasing
-	glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+	if( cgl_ctx)
+    {
+        // This hint is for antialiasing
+        glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
 
-    // Setup some basic OpenGL stuff
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	fontColor = nil;
-	
+        // Setup some basic OpenGL stuff
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        fontColor = nil;
+	}
+    
 //	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixLabelGLFontChangeNotification object: self];
 //	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixGLFontChangeNotification object: self];
 	
@@ -7144,77 +7161,79 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     maxNOPTDTextureSize = 0x7FFFFFFF;
     
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-	
-    // get strings
-    enum { kShortVersionLength = 32 };
-    const GLubyte * strVersion = glGetString (GL_VERSION); // get version string
-    const GLubyte * strExtension = glGetString (GL_EXTENSIONS);	// get extension string
-    
-    // get just the non-vendor specific part of version string
-    GLubyte strShortVersion [kShortVersionLength];
-    short i = 0;
-    while ((((strVersion[i] <= '9') && (strVersion[i] >= '0')) || (strVersion[i] == '.')) && (i < kShortVersionLength)) // get only basic version info (until first space)
+	if( cgl_ctx)
     {
-        strShortVersion [i] = strVersion[i];
-        i++;
+        // get strings
+        enum { kShortVersionLength = 32 };
+        const GLubyte * strVersion = glGetString (GL_VERSION); // get version string
+        const GLubyte * strExtension = glGetString (GL_EXTENSIONS);	// get extension string
+        
+        // get just the non-vendor specific part of version string
+        GLubyte strShortVersion [kShortVersionLength];
+        short i = 0;
+        while ((((strVersion[i] <= '9') && (strVersion[i] >= '0')) || (strVersion[i] == '.')) && (i < kShortVersionLength)) // get only basic version info (until first space)
+        {
+            strShortVersion [i] = strVersion[i];
+            i++;
+        }
+        strShortVersion [i] = 0; //truncate string
+        
+        // compare capabilities based on extension string and GL version
+        f_ext_texture_rectangle = 
+                f_ext_texture_rectangle && strstr ((const char *) strExtension, "GL_EXT_texture_rectangle");
+        f_arb_texture_rectangle = 
+                f_arb_texture_rectangle && strstr ((const char *) strExtension, "GL_ARB_texture_rectangle");
+        f_ext_client_storage = 
+                f_ext_client_storage && strstr ((const char *) strExtension, "GL_APPLE_client_storage");
+        f_ext_packed_pixel = 
+                f_ext_packed_pixel && strstr ((const char *) strExtension, "GL_APPLE_packed_pixel");
+        f_ext_texture_edge_clamp = 
+                f_ext_texture_edge_clamp && strstr ((const char *) strExtension, "GL_SGIS_texture_edge_clamp");
+        f_gl_texture_edge_clamp = 
+                f_gl_texture_edge_clamp && (!strstr ((const char *) strShortVersion, "1.0") && !strstr ((const char *) strShortVersion, "1.1")); // if not 1.0 and not 1.1 must be 1.2 or greater
+        
+        // get device max texture size
+        glGetIntegerv (GL_MAX_TEXTURE_SIZE, &deviceMaxTextureSize);
+        if (deviceMaxTextureSize < maxTextureSize)
+                maxTextureSize = deviceMaxTextureSize;
+        // get max size of non-power of two texture on devices which support
+        if (NULL != strstr ((const char *) strExtension, "GL_EXT_texture_rectangle"))
+        {
+        #ifdef GL_MAX_RECTANGLE_TEXTURE_SIZE_EXT
+                glGetIntegerv (GL_MAX_RECTANGLE_TEXTURE_SIZE_EXT, &NPOTDMaxTextureSize);
+                if (NPOTDMaxTextureSize < maxNOPTDTextureSize)
+                        maxNOPTDTextureSize = NPOTDMaxTextureSize;
+        #endif
+        }
+        
+    //			maxTextureSize = 500;
+        
+        // set clamp param based on retrieved capabilities
+        if (f_gl_texture_edge_clamp) // if OpenGL 1.2 or later and texture edge clamp is supported natively
+                                edgeClampParam = GL_CLAMP_TO_EDGE;  // use 1.2+ constant to clamp texture coords so as to not sample the border color
+        else if (f_ext_texture_edge_clamp) // if GL_SGIS_texture_edge_clamp extension supported
+                edgeClampParam = GL_CLAMP_TO_EDGE_SGIS; // use extension to clamp texture coords so as to not sample the border color
+        else
+                edgeClampParam = GL_CLAMP; // clamp texture coords to [0, 1]
+                
+        if( f_arb_texture_rectangle && f_ext_texture_rectangle)
+        {
+    //		NSLog(@"ARB Rectangular Texturing!");
+            TEXTRECTMODE = GL_TEXTURE_RECTANGLE_ARB;
+            maxTextureSize = maxNOPTDTextureSize;
+        }
+        else
+        if( f_ext_texture_rectangle)
+        {
+    //		NSLog(@"Rectangular Texturing!");
+            TEXTRECTMODE = GL_TEXTURE_RECTANGLE_EXT;
+            maxTextureSize = maxNOPTDTextureSize;
+        }
+        else
+        {
+            TEXTRECTMODE = GL_TEXTURE_2D;
+        }
     }
-    strShortVersion [i] = 0; //truncate string
-    
-    // compare capabilities based on extension string and GL version
-    f_ext_texture_rectangle = 
-            f_ext_texture_rectangle && strstr ((const char *) strExtension, "GL_EXT_texture_rectangle");
-    f_arb_texture_rectangle = 
-            f_arb_texture_rectangle && strstr ((const char *) strExtension, "GL_ARB_texture_rectangle");
-    f_ext_client_storage = 
-            f_ext_client_storage && strstr ((const char *) strExtension, "GL_APPLE_client_storage");
-    f_ext_packed_pixel = 
-            f_ext_packed_pixel && strstr ((const char *) strExtension, "GL_APPLE_packed_pixel");
-    f_ext_texture_edge_clamp = 
-            f_ext_texture_edge_clamp && strstr ((const char *) strExtension, "GL_SGIS_texture_edge_clamp");
-    f_gl_texture_edge_clamp = 
-            f_gl_texture_edge_clamp && (!strstr ((const char *) strShortVersion, "1.0") && !strstr ((const char *) strShortVersion, "1.1")); // if not 1.0 and not 1.1 must be 1.2 or greater
-    
-    // get device max texture size
-    glGetIntegerv (GL_MAX_TEXTURE_SIZE, &deviceMaxTextureSize);
-    if (deviceMaxTextureSize < maxTextureSize)
-            maxTextureSize = deviceMaxTextureSize;
-    // get max size of non-power of two texture on devices which support
-    if (NULL != strstr ((const char *) strExtension, "GL_EXT_texture_rectangle"))
-    {
-    #ifdef GL_MAX_RECTANGLE_TEXTURE_SIZE_EXT
-            glGetIntegerv (GL_MAX_RECTANGLE_TEXTURE_SIZE_EXT, &NPOTDMaxTextureSize);
-            if (NPOTDMaxTextureSize < maxNOPTDTextureSize)
-                    maxNOPTDTextureSize = NPOTDMaxTextureSize;
-	#endif
-    }
-	
-//			maxTextureSize = 500;
-	
-    // set clamp param based on retrieved capabilities
-    if (f_gl_texture_edge_clamp) // if OpenGL 1.2 or later and texture edge clamp is supported natively
-                            edgeClampParam = GL_CLAMP_TO_EDGE;  // use 1.2+ constant to clamp texture coords so as to not sample the border color
-    else if (f_ext_texture_edge_clamp) // if GL_SGIS_texture_edge_clamp extension supported
-            edgeClampParam = GL_CLAMP_TO_EDGE_SGIS; // use extension to clamp texture coords so as to not sample the border color
-    else
-            edgeClampParam = GL_CLAMP; // clamp texture coords to [0, 1]
-			
-	if( f_arb_texture_rectangle && f_ext_texture_rectangle)
-	{
-//		NSLog(@"ARB Rectangular Texturing!");
-		TEXTRECTMODE = GL_TEXTURE_RECTANGLE_ARB;
-		maxTextureSize = maxNOPTDTextureSize;
-	}
-	else
-	if( f_ext_texture_rectangle)
-	{
-//		NSLog(@"Rectangular Texturing!");
-		TEXTRECTMODE = GL_TEXTURE_RECTANGLE_EXT;
-		maxTextureSize = maxNOPTDTextureSize;
-	}
-	else
-	{
-		TEXTRECTMODE = GL_TEXTURE_2D;
-	}
 }
 
 //- (NSPoint) convertFromNSView2iChat: (NSPoint) a
@@ -7388,7 +7407,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	long x, y, k = 0, offsetY, offsetX = 0, currTextureWidth, currTextureHeight;
 	
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-		
+    if( cgl_ctx == nil)
+        return;
+    
     glMatrixMode (GL_MODELVIEW);
     glLoadIdentity ();
 	
@@ -7780,7 +7801,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     float sf = [self.window backingScaleFactor]; //retina
     
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-	
+	if( cgl_ctx == nil)
+        return;
+    
 	//** TEXT INFORMATION
 	glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
 	glScalef (2.0f / size.size.width, -2.0f /  size.size.height, 1.0f); // scale to port per pixel scale
@@ -8379,6 +8402,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (void) applyImageTransformation
 {
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    if( cgl_ctx == nil)
+        return;
+    
 	glLoadIdentity ();
 	glViewport(0, 0, drawingFrameRect.size.width, drawingFrameRect.size.height);
 
@@ -8567,7 +8593,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void)drawWaveform {
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-
+    if( cgl_ctx == nil)
+        return;
+    
     glMatrixMode (GL_MODELVIEW);
     glLoadIdentity ();
     NSSize size = drawingFrameRect.size;
@@ -8679,7 +8707,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	
 	[ctx makeCurrentContext];
-	
+	if( ctx == nil)
+        return;
+    
 	@try 
 	{
 		if( needToLoadTexture)// || iChatRunning)
@@ -8705,7 +8735,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		drawingFrameRect = aRect;
 		
 		CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-		
+		if( cgl_ctx == nil)
+            return;
+           
 		glViewport (0, 0, drawingFrameRect.size.width, drawingFrameRect.size.height); // set the viewport to cover entire window
 		
         if( whiteBackground)
@@ -10306,123 +10338,126 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			{
 				NSOpenGLContext *c = [self openGLContext];
 				
-				[c makeCurrentContext];
-				CGLContextObj cgl_ctx = [c CGLContextObj];
-				
-				if( removeGraphical)
-				{
-					NSString	*str = [[self stringID] retain];
-					[self setStringID: @"export"];
-					
-					[self display];
-					[self setNeedsDisplay: YES];	// for refresh, later
-					
-					[self setStringID: str];
-					[str release];
-					
-					glReadBuffer(GL_FRONT);
-					
-					#if __BIG_ENDIAN__
-                    glReadPixels(smartCroppedRect.origin.x, drawingFrameRect.size.height-smartCroppedRect.origin.y-smartCroppedRect.size.height, smartCroppedRect.size.width, smartCroppedRect.size.height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, buf);		//GL_ABGR_EXT
-						
-						register int ii = *width * *height;
-						register unsigned char	*t_argb = buf;
-						register unsigned char	*t_rgb = buf;
-						while( ii-->0)
-						{
-							*((int*) t_rgb) = *((int*) t_argb);
-							t_argb+=4;
-							t_rgb+=3;
-						}
-					#else
- 						glReadPixels( smartCroppedRect.origin.x, drawingFrameRect.size.height-smartCroppedRect.origin.y-smartCroppedRect.size.height, smartCroppedRect.size.width, smartCroppedRect.size.height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);		//GL_ABGR_EXT
-						
-						register int ii = *width * *height;
-						register unsigned char	*t_argb = buf;
-						register unsigned char	*t_rgb = buf;
-						while( ii-->0 )
-						{
-							*((int*) t_rgb) = *((int*) t_argb);
-							t_argb+=4;
-							t_rgb+=3;
-						}
-					#endif
-				}
-				else
-				{
-					NSPoint oo = [self origin];
-					NSRect cc = [self frame]; // copy, to restore later
-					
-                    NSPoint boo = [self.blendingView origin];
-					NSRect bcc = [self.blendingView frame]; // copy, to restore later
+                if( c)
+                {
+                    [c makeCurrentContext];
+                    CGLContextObj cgl_ctx = [c CGLContextObj];
                     
-					if( smartCropped)
-					{
-						dontEnterReshape = YES;
-                        blendingView.dontEnterReshape = YES;
-						[self setFrame: [self convertRectFromBacking: smartCroppedRect]];
-						[self setOrigin: shiftOrigin];
-						
-						if( blendingView && [self is2DViewer])
-                        {
-                            [self.blendingView setFrame: [self.blendingView convertRectFromBacking: smartCroppedRect]];
-                            [self.blendingView setOrigin: blendedShiftOrigin];
-							[[self windowController] propagateSettings];
-                        }
-					}
-					
-					[self display];
-                    [self.blendingView display];
-					
-					if( smartCropped)
+                    if( removeGraphical)
                     {
-						[[self superview] display];	// to avoid the 'white' screen behind
-                        [[self.blendingView superview] display];
-                    }
-					glReadBuffer(GL_FRONT);
-					
-					#if __BIG_ENDIAN__
-						glReadPixels( 0,  0, smartCroppedRect.size.width, smartCroppedRect.size.height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, buf);		//GL_ABGR_EXT
-						
-						register int ii = *width * *height;
-						register unsigned char	*t_argb = buf;
-						register unsigned char	*t_rgb = buf;
-						while( ii-->0)
-						{
-							*((int*) t_rgb) = *((int*) t_argb);
-							t_argb+=4;
-							t_rgb+=3;
-						}
-					#else
-						glReadPixels(  0,  0, smartCroppedRect.size.width, smartCroppedRect.size.height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);		//GL_ABGR_EXT
-						
-						register int ii = *width * *height;
-						register unsigned char	*t_argb = buf;
-						register unsigned char	*t_rgb = buf;
-						while( ii-->0 ) {
-							*((int*) t_rgb) = *((int*) t_argb);
-							t_argb+=4;
-							t_rgb+=3;
-						}
-					#endif
-					
-					if( smartCropped)
-					{
-						[self setFrame: cc];
-						[self setOrigin: oo];
-						
-						if( blendingView && [self is2DViewer])
-                        {
-                            [self.blendingView setFrame: bcc];
-                            [self.blendingView setOrigin: boo];
+                        NSString	*str = [[self stringID] retain];
+                        [self setStringID: @"export"];
+                        
+                        [self display];
+                        [self setNeedsDisplay: YES];	// for refresh, later
+                        
+                        [self setStringID: str];
+                        [str release];
+                        
+                        glReadBuffer(GL_FRONT);
+                        
+                        #if __BIG_ENDIAN__
+                        glReadPixels(smartCroppedRect.origin.x, drawingFrameRect.size.height-smartCroppedRect.origin.y-smartCroppedRect.size.height, smartCroppedRect.size.width, smartCroppedRect.size.height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, buf);		//GL_ABGR_EXT
                             
-							[[self windowController] propagateSettings];
+                            register int ii = *width * *height;
+                            register unsigned char	*t_argb = buf;
+                            register unsigned char	*t_rgb = buf;
+                            while( ii-->0)
+                            {
+                                *((int*) t_rgb) = *((int*) t_argb);
+                                t_argb+=4;
+                                t_rgb+=3;
+                            }
+                        #else
+                            glReadPixels( smartCroppedRect.origin.x, drawingFrameRect.size.height-smartCroppedRect.origin.y-smartCroppedRect.size.height, smartCroppedRect.size.width, smartCroppedRect.size.height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);		//GL_ABGR_EXT
+                            
+                            register int ii = *width * *height;
+                            register unsigned char	*t_argb = buf;
+                            register unsigned char	*t_rgb = buf;
+                            while( ii-->0 )
+                            {
+                                *((int*) t_rgb) = *((int*) t_argb);
+                                t_argb+=4;
+                                t_rgb+=3;
+                            }
+                        #endif
+                    }
+                    else
+                    {
+                        NSPoint oo = [self origin];
+                        NSRect cc = [self frame]; // copy, to restore later
+                        
+                        NSPoint boo = [self.blendingView origin];
+                        NSRect bcc = [self.blendingView frame]; // copy, to restore later
+                        
+                        if( smartCropped)
+                        {
+                            dontEnterReshape = YES;
+                            blendingView.dontEnterReshape = YES;
+                            [self setFrame: [self convertRectFromBacking: smartCroppedRect]];
+                            [self setOrigin: shiftOrigin];
+                            
+                            if( blendingView && [self is2DViewer])
+                            {
+                                [self.blendingView setFrame: [self.blendingView convertRectFromBacking: smartCroppedRect]];
+                                [self.blendingView setOrigin: blendedShiftOrigin];
+                                [[self windowController] propagateSettings];
+                            }
                         }
-					}
-					
-                    blendingView.dontEnterReshape = NO;
-					dontEnterReshape = NO;
-				}
+                        
+                        [self display];
+                        [self.blendingView display];
+                        
+                        if( smartCropped)
+                        {
+                            [[self superview] display];	// to avoid the 'white' screen behind
+                            [[self.blendingView superview] display];
+                        }
+                        glReadBuffer(GL_FRONT);
+                        
+                        #if __BIG_ENDIAN__
+                            glReadPixels( 0,  0, smartCroppedRect.size.width, smartCroppedRect.size.height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, buf);		//GL_ABGR_EXT
+                            
+                            register int ii = *width * *height;
+                            register unsigned char	*t_argb = buf;
+                            register unsigned char	*t_rgb = buf;
+                            while( ii-->0)
+                            {
+                                *((int*) t_rgb) = *((int*) t_argb);
+                                t_argb+=4;
+                                t_rgb+=3;
+                            }
+                        #else
+                            glReadPixels(  0,  0, smartCroppedRect.size.width, smartCroppedRect.size.height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);		//GL_ABGR_EXT
+                            
+                            register int ii = *width * *height;
+                            register unsigned char	*t_argb = buf;
+                            register unsigned char	*t_rgb = buf;
+                            while( ii-->0 ) {
+                                *((int*) t_rgb) = *((int*) t_argb);
+                                t_argb+=4;
+                                t_rgb+=3;
+                            }
+                        #endif
+                        
+                        if( smartCropped)
+                        {
+                            [self setFrame: cc];
+                            [self setOrigin: oo];
+                            
+                            if( blendingView && [self is2DViewer])
+                            {
+                                [self.blendingView setFrame: bcc];
+                                [self.blendingView setOrigin: boo];
+                                
+                                [[self windowController] propagateSettings];
+                            }
+                        }
+                        
+                        blendingView.dontEnterReshape = NO;
+                        dontEnterReshape = NO;
+                    }
+                }
 				
 				long rowBytes = *width**spp**bpp/8;
 				
@@ -11622,6 +11657,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (GLuint *) loadTextureIn:(GLuint *) texture blending:(BOOL) blending colorBuf: (unsigned char**) colorBufPtr textureX:(long*) tX textureY:(long*) tY redTable:(unsigned char*) rT greenTable:(unsigned char*) gT blueTable:(unsigned char*) bT textureWidth: (long*) tW textureHeight:(long*) tH resampledBaseAddr:(char**) rAddr resampledBaseAddrSize:(int*) rBAddrSize
 {
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    if( cgl_ctx == nil)
+        return nil;
+    
 	unsigned char* currentAlphaTable = alphaTable;
 	
 	BOOL modifiedSourceImage = curDCM.needToCompute8bitRepresentation;
@@ -12192,6 +12230,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         [[self openGLContext] makeCurrentContext];
         
         CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+        if( cgl_ctx == nil)
+            return;
         
         if( labelFontListGL)
             glDeleteLists (labelFontListGL, 150);
@@ -12217,6 +12257,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         [[self openGLContext] makeCurrentContext];
         
         CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+        if( cgl_ctx == nil)
+            return;
         
         if( fontListGL)
             glDeleteLists (fontListGL, 150);

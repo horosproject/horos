@@ -99,7 +99,8 @@ static int MacOSVersion109orHigher = -1;
 	dstframe.origin.x = screenRect.origin.x;
 	dstframe.origin.y = screenRect.origin.y + screenRect.size.height - dstframe.size.height + [self hiddenHeight];
 	
-	[[self window] setFrame:dstframe display:YES];
+    if( NSEqualRects( dstframe, self.window.frame) == NO)
+        [[self window] setFrame:dstframe display:YES];
 }
 
 - (id)initForScreen: (long) s

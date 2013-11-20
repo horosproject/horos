@@ -27,9 +27,12 @@
 		GLuint t = [[textArray objectAtIndex: index] intValue];
 		CGLContextObj cgl_ctx = [c CGLContextObj];
 		
-		if( t)
-			(*cgl_ctx->disp.delete_textures)(cgl_ctx->rend, 1, &t);
-		
+        if( cgl_ctx)
+        {
+            if( t)
+                (*cgl_ctx->disp.delete_textures)(cgl_ctx->rend, 1, &t);
+		}
+        
 		[ctxArray removeObjectAtIndex: index];
 		[textArray removeObjectAtIndex: index];
 	}
@@ -44,9 +47,12 @@
 		GLuint t = [[textArray objectAtIndex: index] intValue];
 		CGLContextObj cgl_ctx = [c CGLContextObj];
 		
-		if( t)
-			(*cgl_ctx->disp.delete_textures)(cgl_ctx->rend, 1, &t);
-		
+        if( cgl_ctx)
+        {
+            if( t)
+                (*cgl_ctx->disp.delete_textures)(cgl_ctx->rend, 1, &t);
+		}
+        
 		[ctxArray removeObjectAtIndex: index];
 		[textArray removeObjectAtIndex: index];
 	}
@@ -275,7 +281,9 @@
 	if (texName)
 	{
 		CGLContextObj cgl_ctx = [currentContext CGLContextObj];
-		
+		if( cgl_ctx == nil)
+            return;
+        
 		glBindTexture (GL_TEXTURE_RECTANGLE_EXT, texName);
 		
 		glBegin (GL_QUADS);

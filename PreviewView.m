@@ -24,7 +24,9 @@
 		[[self openGLContext] makeCurrentContext];
 		
 		CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-		
+        if( cgl_ctx == nil)
+            return;
+        
 		if( fontListGL)
 			glDeleteLists (fontListGL, 150);
 		fontListGL = glGenLists (150);

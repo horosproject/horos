@@ -468,6 +468,8 @@ extern int splitPosition[ 3];
     N3AffineTransform pixToSubDrawRectTransform;
     CGFloat pixelsPerMm;
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    if( cgl_ctx == nil)
+        return;
     
     pixelsPerMm = self.pixelsPerMm;
     pixToSubDrawRectTransform = [self pixToSubDrawRectTransform];

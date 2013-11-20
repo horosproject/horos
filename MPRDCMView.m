@@ -611,7 +611,9 @@ extern unsigned int minimumStep;
 - (void) colorForView:(int) v
 {
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-	
+    if( cgl_ctx == nil)
+        return;
+    
 	switch( v)
 	{
 		case 1:
@@ -634,7 +636,9 @@ extern unsigned int minimumStep;
 - (void) drawLine: (float[2][3]) sft thickness: (float) thickness
 {
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-	
+    if( cgl_ctx == nil)
+        return;
+    
 	if( thickness > 2)
 	{
 		glLineWidth(2.0 * self.window.backingScaleFactor);
@@ -654,7 +658,9 @@ extern unsigned int minimumStep;
 - (void) drawExportLines: (float[2][3]) sft
 {
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-	
+    if( cgl_ctx == nil)
+        return;
+    
 	glLineWidth(1.0 * self.window.backingScaleFactor);
 						
 	if( fromIntervalExport > 0)
@@ -679,7 +685,9 @@ extern unsigned int minimumStep;
 - (void) drawRotationLines: (float[2][3]) sft
 {
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-	
+    if( cgl_ctx == nil)
+        return;
+    
 	for( int i = 1; i < windowController.dcmNumberOfFrames; i++)
 	{
 		glRotatef( (float) (i * windowController.dcmRotation) / (float) windowController.dcmNumberOfFrames, 0, 0, 1);
@@ -704,7 +712,9 @@ extern unsigned int minimumStep;
 	rotation = 0;
 	
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-	
+    if( cgl_ctx == nil)
+        return;
+    
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glEnable(GL_BLEND);
 	glEnable(GL_POINT_SMOOTH);
@@ -1889,6 +1899,8 @@ extern unsigned int minimumStep;
     OSIROI *roi;
     
     cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    if( cgl_ctx == nil)
+        return;
     
     if ([self ROIManager] == nil) {
         return;

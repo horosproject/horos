@@ -622,7 +622,9 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 - (void) colorForView:(int) v
 {
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-	
+	if( cgl_ctx == nil)
+        return;
+    
 	switch( v)
 	{
 		case 1:
@@ -645,7 +647,9 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 - (void) drawLine: (float[2][3]) sft thickness: (float) thickness
 {
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-	
+	if( cgl_ctx == nil)
+        return;
+    
 	if( thickness > 2)
 	{
 		glLineWidth(2.0 * self.window.backingScaleFactor);
@@ -718,7 +722,9 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	rotation = 0;
 	
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-	
+	if( cgl_ctx == nil)
+        return;
+    
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glEnable(GL_BLEND);
 	glEnable(GL_POINT_SMOOTH);
@@ -2332,9 +2338,10 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     CGFloat sampleSpacing;
     NSInteger i;
     N3AffineTransform transform;
-    CGLContextObj cgl_ctx;
-    cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-
+    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    if( cgl_ctx == nil)
+        return;
+    
     if ([curvedPath.bezierPath elementCount] < 3) {
         return;
     }
@@ -2389,8 +2396,9 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     CGFloat spacing;
     CGFloat x;
     NSInteger i;
-    CGLContextObj cgl_ctx;
-    cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    if( cgl_ctx == nil)
+        return;
     
 	if( isnan( curDCM.pixelSpacingX) || isnan( curDCM.pixelSpacingY) || curDCM.pixelSpacingX <= 0 || curDCM.pixelSpacingY <= 0 || curDCM.pixelSpacingX > 1000 || curDCM.pixelSpacingY > 1000)
 	{
@@ -2590,6 +2598,8 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     OSIROI *roi;
     
     cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    if( cgl_ctx == nil)
+        return;
     
     if ([self ROIManager] == nil) {
         return;
@@ -2631,9 +2641,9 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 
 - (void)drawCircleAtPoint:(NSPoint)point pointSize:(CGFloat)pointSize
 {
-    CGLContextObj cgl_ctx;
-    
-    cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    if( cgl_ctx == nil)
+        return;
     
     glEnable(GL_POINT_SMOOTH);
     glPointSize( pointSize * self.window.backingScaleFactor);
