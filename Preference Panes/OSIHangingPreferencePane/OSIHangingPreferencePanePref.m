@@ -237,6 +237,10 @@
             [imageTilingPopup addItem: [i.copy autorelease]];
         }
         
+        [windowsTilingPopup addItem: [NSMenuItem separatorItem]];
+        [windowsTilingPopup addItemWithTitle: NSLocalizedString( @"All series", nil) action:nil keyEquivalent:@""];
+        [[[windowsTilingPopup itemArray] lastObject] setTag: 1000];
+        
         for( NSMenuItem *i in windowsTilingPopup.itemArray)
             [i setAction: nil];
         

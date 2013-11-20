@@ -55,6 +55,9 @@ static WindowLayoutManager *sharedLayoutManager = nil;
     {
         int tag = [[protocol objectForKey: @"WindowsTiling"] intValue];
         
+        if( tag == 1000)
+            return 1000; // All windows
+        
         if (tag < 16)
             return (tag / 4) + 1; // See SetImageTiling ViewerController.m
     }
@@ -70,6 +73,9 @@ static WindowLayoutManager *sharedLayoutManager = nil;
     if( [protocol objectForKey: @"WindowsTiling"])
     {
         int tag = [[protocol objectForKey: @"WindowsTiling"] intValue];
+        
+        if( tag == 1000)
+            return 1000;  // All windows
         
         if (tag < 16)
             return (tag %  4) + 1; // See SetImageTiling ViewerController.m
