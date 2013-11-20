@@ -56,6 +56,9 @@ extern  BOOL USETOOLBARPANEL;
 {
 	if ([[NSScreen screens] count] <= screen)
 		return;
+    
+    if( viewer == nil)
+        return;
 	
 	NSRect screenRect = [[[NSScreen screens] objectAtIndex:screen] visibleFrame];
 	
@@ -315,7 +318,7 @@ extern  BOOL USETOOLBARPANEL;
                 [self.window orderOut: self];
         }
         
-        if( thumbnailsView)
+        if( thumbnailsView && viewer)
         {
             [self applicationDidChangeScreenParameters:nil];
             

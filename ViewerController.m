@@ -473,7 +473,7 @@ static int hotKeyToolCrossTable[] =
 
 + (NSMutableArray*) getDisplayed2DViewers
 {
-	NSMutableArray *viewersList = [NSMutableArray arrayWithCapacity: numberOf2DViewer];
+	NSMutableArray *viewersList = [NSMutableArray array];
     
     for( ViewerController *w in [ViewerController get2DViewers])
     {
