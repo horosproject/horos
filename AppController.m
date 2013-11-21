@@ -1358,6 +1358,16 @@ static NSDate *lastWarningDate = nil;
 	
 	@try {
 	
+    if( [[previousDefaults valueForKey: @"SeriesListVisible"] intValue] != [defaults integerForKey: @"SeriesListVisible"])
+    {
+        for( NSScreen *s in [NSScreen screens])
+        {
+            ViewerController *v = [ViewerController frontMostDisplayed2DViewerForScreen: s];
+            [v.window makeKeyAndOrderFront: self];
+        }
+        [[AppController sharedAppController] tileWindows: nil];
+    }
+        
 	if( [[previousDefaults valueForKey: @"DisplayDICOMOverlays"] intValue] != [defaults integerForKey: @"DisplayDICOMOverlays"])
 		revertViewer = YES;
 	if( [[previousDefaults valueForKey: @"ROITEXTNAMEONLY"] intValue] != [defaults integerForKey: @"ROITEXTNAMEONLY"])
@@ -1602,7 +1612,7 @@ static NSDate *lastWarningDate = nil;
 	if( updateTimer)
 		return;
 	
-	updateTimer = [[NSTimer scheduledTimerWithTimeInterval: 1 target: self selector:@selector(runPreferencesUpdateCheck:) userInfo:nil repeats: NO] retain];
+	updateTimer = [[NSTimer scheduledTimerWithTimeInterval: 0.5 target: self selector:@selector(runPreferencesUpdateCheck:) userInfo:nil repeats: NO] retain];
 }
 
 - (void) testMenus
@@ -3579,6 +3589,10 @@ static BOOL initialized = NO;
 		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"checkForUpdatesPlugins"];
 	
     [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"USEALWAYSTOOLBARPANEL2"];
+    [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"syncPreviewList"];
+    [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"UseFloatingThumbnailsList"];
+    [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"SeriesListVisible"];
+    
     
 	#ifndef MACAPPSTORE
 	#ifndef OSIRIX_LIGHT
@@ -5020,7 +5034,7 @@ static BOOL initialized = NO;
         if( [AppController USETOOLBARPANEL] || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
             screenFrame.size.height -= [[AppController toolbarForScreen: screen] exposedHeight];
         
-        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"SeriesListVisible"])
         {
             screenFrame.origin.x += [ThumbnailsListPanel fixedWidth];
             screenFrame.size.width -= [ThumbnailsListPanel fixedWidth];

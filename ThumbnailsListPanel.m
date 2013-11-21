@@ -178,16 +178,13 @@ static int MacOSVersion109orHigher = -1;
 	
 	//[self checkPosition];
 	
-	if( [[[aNotification object] windowController] isKindOfClass:[ViewerController class]])
+    NSWindow *window = [aNotification object];
+	if( [[window windowController] isKindOfClass:[ViewerController class]] && window.isVisible)
 	{
 		if( [[NSScreen screens] count] > screen)
 		{
-			if( [[aNotification object] screen] == [[NSScreen screens] objectAtIndex: screen])
+			if( [window screen] == [[NSScreen screens] objectAtIndex: screen])
 			{
-				[[viewer window] orderFront: self];
-				
-				[[self window] orderBack:self];
-                
                 if( viewer && viewer.window.windowNumber > 0)
                     [[self window] orderWindow: NSWindowBelow relativeTo: viewer.window.windowNumber];
 			}
@@ -242,24 +239,24 @@ static int MacOSVersion109orHigher = -1;
 	
     NSDisableScreenUpdates();
     
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SeriesListVisible"] == NO)
+        tb = nil;
+    
     @try
     {
-        if( tb == nil && viewer)
-            tb = [[[NSView alloc] initWithFrame: NSMakeRect(0, 0, 10, 10)] autorelease];
-        
         if( tb == thumbnailsView)
         {
-            if( viewer != nil && viewer.window.windowNumber > 0)
+            if( tb && viewer != nil && viewer.window.windowNumber > 0)
                 [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
         
-            if( thumbnailsView)
+            if( tb)
             {
-                if( [associatedScreen objectForKey: [NSValue valueWithPointer: thumbnailsView]] != [[self window] screen])
+                if( [associatedScreen objectForKey: [NSValue valueWithPointer: tb]] != [[self window] screen])
                 {
                     if( [[self window] screen])
-                        [associatedScreen setObject: [[self window] screen] forKey: [NSValue valueWithPointer: thumbnailsView]];
+                        [associatedScreen setObject: [[self window] screen] forKey: [NSValue valueWithPointer: tb]];
                     else
-                        [associatedScreen removeObjectForKey: [NSValue valueWithPointer: thumbnailsView]];
+                        [associatedScreen removeObjectForKey: [NSValue valueWithPointer: tb]];
                 }
             }
             else

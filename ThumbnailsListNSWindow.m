@@ -32,6 +32,12 @@
 
 - (void) orderOut:(id)sender
 {
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SeriesListVisible"] == NO)
+    {
+        [super orderOut:sender];
+        return;
+    }
+    
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
     {
         NSDisableScreenUpdates();
@@ -39,7 +45,7 @@
         ViewerController *v = [ViewerController frontMostDisplayed2DViewerForScreen: self.screen];
         if( v)
         {
-            [self.windowController setThumbnailsView: v.leftSplitView viewer: v];
+            [self.windowController setThumbnailsView: v.previewMatrixScrollView viewer: v];
             
             if( v.window.windowNumber > 0)
                 [self orderWindow: NSWindowBelow relativeTo: v.window.windowNumber];

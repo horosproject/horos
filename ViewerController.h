@@ -70,8 +70,6 @@ enum
 	IBOutlet StudyView		*studyView;
 			SeriesView		*seriesView;
 
-	IBOutlet NSSplitView	*splitView;
-    IBOutlet NSSplitView*   leftSplitView;
 	IBOutlet NSMatrix		*previewMatrix;
 	IBOutlet NSScrollView	*previewMatrixScrollView;
 	BOOL					matrixPreviewBuilt;
@@ -173,17 +171,7 @@ enum
 	IBOutlet NSTextField    *maxValueText, *minValueText, *newValueText;
 	IBOutlet NSMatrix		*InOutROI, *AllROIsRadio, *newValueMatrix;
 	IBOutlet NSButton		*checkMaxValue, *checkMinValue, *setROI4DSeries;
-
-//	IBOutlet NSWindow       *curvedMPRWindow;
-//	IBOutlet NSTextField	*curvedMPRtext;
-//	IBOutlet NSSlider		*curvedMPRslid;
-//	IBOutlet NSButton		*curvedMPRper;
-//	IBOutlet NSSlider		*curvedMPRsize;
-//	IBOutlet NSTextField	*curvedMPRsizeText;
-//	IBOutlet NSSlider		*curvedMPRinterval;
-//	IBOutlet NSTextField	*curvedMPRintervalText;
-//	IBOutlet NSMatrix		*curvedMPRaxis;
-	
+    
 	IBOutlet NSWindow       *blendingTypeWindow;
 	IBOutlet NSButton		*blendingTypeMultiply, *blendingTypeSubtract;
 	IBOutlet NSSegmentedControl		*blendingTypeRGB;
@@ -349,7 +337,7 @@ enum
 @property(readonly) NSButton *keyImageCheck;
 @property(readonly) NSSlider *speedSlider;
 @property(readonly) NSTextField *speedText;
-@property(readonly) NSSplitView *leftSplitView;
+//@property(readonly) NSSplitView *leftSplitView;
 @property(retain) NSString *windowsStateName;
 /** Accessors for plugins using blending window */
 @property(readonly) NSWindow *blendingTypeWindow;
