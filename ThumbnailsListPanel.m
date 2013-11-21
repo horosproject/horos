@@ -24,7 +24,6 @@
 static 	NSMutableDictionary *associatedScreen = nil;
 static int increment = 0;
 static int MacOSVersion109orHigher = -1;
-extern  BOOL USETOOLBARPANEL;
 
 @implementation ThumbnailsListPanel
 
@@ -64,9 +63,7 @@ extern  BOOL USETOOLBARPANEL;
 	dstframe.size.width = [ThumbnailsListPanel fixedWidth];
 	dstframe.origin.x = screenRect.origin.x;
 	dstframe.origin.y = screenRect.origin.y;
-	
-    if( USETOOLBARPANEL)
-        dstframe.size.height -= [[AppController toolbarForScreen:[[self window] screen]] exposedHeight];
+    dstframe.size.height -= [[AppController toolbarForScreen:[[self window] screen]] exposedHeight];
     
     if( NavigatorWindowController.navigatorWindowController.window.screen == self.window.screen)
     {

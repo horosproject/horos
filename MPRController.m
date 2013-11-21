@@ -924,6 +924,7 @@ static float deg2rad = M_PI/180.0;
 		case tROISelector:	filename = @"ROISelector";		break;
 		case tAxis:			filename = @"Axis";				break;
 		case tDynAngle:		filename = @"DynamicAngle";		break;
+        case tTAGT:         filename = @"PerpendicularLines";             break;
 	}
 	
 	if( filename == nil)

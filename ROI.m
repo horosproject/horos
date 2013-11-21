@@ -437,6 +437,28 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
     return sqrtf((mesureA.x-mesureB.x)*(mesureA.x-mesureB.x)+(mesureA.y-mesureB.y)*(mesureA.y-mesureB.y));
 }
 
++ (NSPoint) segmentDistToPoint: (NSPoint) segA :(NSPoint) segB :(NSPoint) p
+{
+    NSPoint p2 = NSMakePoint(segB.x - segA.x, segB.y - segA.y);
+    float f = p2.x*p2.x + p2.y*p2.y;
+    float u = ((p.x - segA.x) * p2.x + (p.y - segA.y) * p2.y) / f;
+    
+//    if (u > 1)
+//        u = 1;
+//    else if (u < 0)
+//        u = 0;
+    
+    float x = segA.x + u * p2.x;
+    float y = segA.y + u * p2.y;
+    
+    float dx = x - p.x;
+    float dy = y - p.y;
+    
+    float length = sqrtf(dx*dx + dy*dy);
+    
+    return NSMakePoint( x, y);
+}
+
 +(NSPoint) positionAtDistance: (float) distance inPolygon:(NSArray*) points
 {
 	int i = 0;
@@ -788,13 +810,11 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 		ctxArray = [[NSMutableArray arrayWithCapacity: 10] retain];
 		textArray = [[NSMutableArray arrayWithCapacity: 10] retain];
 		
-		{
-			// init fonts for use with strings
-			NSFont * font =[NSFont fontWithName:@"Helvetica" size: 12.0 + thickness*2];
-			stanStringAttrib = [[NSMutableDictionary dictionary] retain];
-			[stanStringAttrib setObject:font forKey:NSFontAttributeName];
-			[stanStringAttrib setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
-		}
+        // init fonts for use with strings
+        NSFont * font =[NSFont fontWithName:@"Helvetica" size: 12.0 + thickness*2];
+        stanStringAttrib = [[NSMutableDictionary dictionary] retain];
+        [stanStringAttrib setObject:font forKey:NSFontAttributeName];
+        [stanStringAttrib setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
 		
 		[self reduceTextureIfPossible];
     }
@@ -1066,6 +1086,9 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	[comments release];
 	[stringTex release];
 	[stanStringAttrib release];
+    [stringTexA release];
+    [stringTexB release];
+    [stringTexC release];
 	[roiLock release];
 	roiLock = 0;
 	
@@ -1745,6 +1768,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 		case tCPolygon:
 		case tOPolygon:
 		case tPencil:
+        case tTAGT:
 		
 			xmin = xmax = [[points objectAtIndex:0] x];
 			ymin = ymax = [[points objectAtIndex:0] y];
@@ -2123,6 +2147,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 			case tAxis:
 			case tCPolygon:
 			case tPencil:
+            case tTAGT:
 			{
 				float distance;
 				NSMutableArray *splinePoints = [self splinePoints: scale];
@@ -2238,13 +2263,12 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 			case tAngle:
 			case tArrow:
 			case tMesure:
-			//JJCP
 			case tDynAngle:
-			//JJCP
 			case tAxis:
 			case tCPolygon:
 			case tOPolygon:
 			case tPencil:
+            case tTAGT:
 			{
                 if( mode != ROI_selectedModify)
                     selectedModifyPoint = -1;
@@ -2315,13 +2339,12 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 		case tAngle:
 		case tArrow:
 		case tMesure:
-		//JJCP
 		case tDynAngle:
-		//JJCP
 		case tAxis:
 		case tCPolygon:
 		case tOPolygon:
 		case tPencil:
+        case tTAGT:
 		{
 			for( int i = 0 ; i < [points count]; i++ )
 			{
@@ -2443,6 +2466,42 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 		[mypt release];
 		
 		mode = ROI_drawing;
+		
+		return NO;
+	}
+    else if(type == tTAGT)
+	{
+        NSPoint o = pt;
+        
+        pt = o;
+        pt.x += 20 / scale;
+        mypt = [MyPoint point: pt];
+		[points addObject: mypt];
+        
+        pt.y += 40 / scale;
+        mypt = [MyPoint point: pt];
+		[points addObject: mypt];
+        
+        pt = o;
+        pt.x += 40 / scale;
+        mypt = [MyPoint point: pt];
+		[points addObject: mypt];
+        
+        pt.y += 40 / scale;
+        mypt = [MyPoint point: pt];
+		[points addObject: mypt];
+        
+        pt = o;
+        mypt = [MyPoint point: pt];
+		[points addObject: mypt];
+        
+        pt.x += 100 / scale;
+		mypt = [MyPoint point: pt];
+		[points addObject: mypt];
+        
+        [self valid];
+		
+		mode = ROI_selected;
 		
 		return NO;
 	}
@@ -2729,14 +2788,23 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 			if( ABS([[points objectAtIndex:0] x] - [[points objectAtIndex:1] x]) < 0.2 && ABS([[points objectAtIndex:0] y] - [[points objectAtIndex:1] y]) < 0.2) return NO;
 		break;
 		
-		//JJCP
 		case tDynAngle:
 			if( [points count] < 4) return NO;
 		break;
-		//JJCP
 		case tAxis:
 			if( [points count] < 4) return NO;
 		break;
+        case tTAGT:
+            if( [points count] < 6) return NO;
+            
+            // 0-1, 2-3
+            
+            //Points 2 and must be on the A line
+            
+            [points replaceObjectAtIndex: 0 withObject: [MyPoint point: [ROI segmentDistToPoint: [[points objectAtIndex: 4] point] :[[points objectAtIndex: 5] point] :[[points objectAtIndex: 1] point]]]];
+        
+            [points replaceObjectAtIndex: 2 withObject: [MyPoint point: [ROI segmentDistToPoint: [[points objectAtIndex: 4] point] :[[points objectAtIndex: 5] point] :[[points objectAtIndex: 3] point]]]];
+        break;
 	}
 	
 	return YES;
@@ -2772,6 +2840,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 			case tAngle:
 			case tPencil:
 			case tLayerROI:
+            case tTAGT:
 				for( int i = 0; i < [points count]; i++) [[points objectAtIndex: i] move: offset.x : offset.y];
 			break;
 			
@@ -3575,7 +3644,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 		if( g)
 			ROIArrowThickness = thickness;
 	}
-	else if( type == tText)
+	else if( type == tText || type == tTAGT)
 	{
 		if( g)
 			ROITextThickness = thickness;	//[[NSUserDefaults standardUserDefaults] setFloat:thickness forKey:@"ROITextThickness"];
@@ -3588,6 +3657,10 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 		[stanStringAttrib setObject:font forKey:NSFontAttributeName];
 		[stanStringAttrib setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
 		
+        [stringTexA release];   stringTexA = nil;
+        [stringTexB release];   stringTexB = nil;
+        [stringTexC release];   stringTexC = nil;
+        
 		self.name = name;
 	}
 	else
@@ -3632,15 +3705,16 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 			
 			if( selectedModifyPoint >= [points count]) selectedModifyPoint = (long)[points count]-1;
 		break;
-		//JJCP
 		case tDynAngle:
-		//JJCP
 		case tAxis:
+        case tTAGT:
 			if(selectedModifyPoint>3 && selectedModifyPoint >= 0)
 			{
 				if( mode == ROI_selectedModify)
 					[points removeObjectAtIndex: selectedModifyPoint];
-				else [points removeLastObject];			
+				else
+                    [points removeLastObject];
+                
 				if( selectedModifyPoint >= [points count]) selectedModifyPoint = (long)[points count]-1;
 			}
 		break;
@@ -3652,9 +3726,9 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 }
 
 // in cm or in pixels if no pixelspacing values
--(float) MesureLength:(float*) pixels
+-(float) MesureLength:(float*) pixels pointA: (NSPoint) a pointB: (NSPoint) b
 {
-	float val = [self Length:[[points objectAtIndex:0] point] :[[points objectAtIndex:1] point]];
+	float val = [self Length:a :b];
 	
 	if( pixels)
 	{
@@ -3671,6 +3745,21 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	}
 	
 	return val;
+}
+
+-(float) MesureLength:(float*) pixels
+{
+	return [self MesureLength: pixels pointA:[[points objectAtIndex:0] point] pointB:[[points objectAtIndex:1] point]];
+}
+
++ (NSString*) formattedLength: (float) lCm
+{
+    if ( lCm < .01)
+        return [NSString stringWithFormat: NSLocalizedString( @"%0.1f %cm", nil), lCm * 10000.0, 0xb5];
+    else if ( lCm < 1)
+        return [NSString stringWithFormat: NSLocalizedString( @"%0.2f mm", nil), lCm * 10.];
+    else
+        return [NSString stringWithFormat: NSLocalizedString( @"%0.2f cm", nil), lCm];
 }
 
 void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, float rad, float factor)
@@ -3874,7 +3963,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	
 	drawRect = [self findAnEmptySpaceForMyRect: drawRect : &moved];
 	
-	if(type == tDynAngle || type == tAxis ||type == tCPolygon || type == tOPolygon || type == tPencil) moved = YES;
+	if(type == tDynAngle || type == tTAGT || type == tAxis ||type == tCPolygon || type == tOPolygon || type == tPencil) moved = YES;
 
 //	if( type == tCPolygon || type == tOPolygon || type == tPencil) moved = YES;
 //	if( fabs( offsetTextBox_x) > 0 || fabs( offsetTextBox_y) > 0) moved = NO;
@@ -4010,7 +4099,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	drawRect.size.height = line * fontHeight*curView.window.backingScaleFactor + 2;
 	drawRect.size.width = maxWidth + 8;
 	
-	if( type == tDynAngle || type == tAxis || type == tCPolygon || type == tOPolygon || type == tPencil)
+	if( type == tDynAngle || type == tAxis || type == tTAGT || type == tCPolygon || type == tOPolygon || type == tPencil)
 	{
 		if( [points count] > 0)
 		{
@@ -5073,12 +5162,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 							
 							if( displayCMOrPixels)   // CPR
 							{
-                                if ( lCm < .01)
-                                    self.textualBoxLine2 = [NSString stringWithFormat: NSLocalizedString( @"%0.1f %cm", nil), lCm * 10000.0, 0xb5];
-								else if ( lCm < 1)
-									self.textualBoxLine2 = [NSString stringWithFormat: NSLocalizedString( @"%0.2f mm", nil), lCm * 10.];
-								else
-									self.textualBoxLine2 = [NSString stringWithFormat: NSLocalizedString( @"%0.2f cm", nil), lCm];
+                                self.textualBoxLine2 = [ROI formattedLength: lCm];
 							}
 							else
 							{
@@ -5733,6 +5817,148 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				glColor3f (1.0f, 1.0f, 1.0f);			
 			}
 			break;
+#pragma mark tTAGT
+            case tTAGT:
+            if( [points count] == 6)
+            {
+                [self valid];
+                
+				glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
+				
+                glLineWidth(thick * backingScaleFactor);
+                
+                // B
+				glBegin(GL_LINE_STRIP);
+                glVertex2f( ([[points objectAtIndex: 0] x]- offsetx) * scaleValue , ([[points objectAtIndex: 0] y]- offsety) * scaleValue);
+				glVertex2f( ([[points objectAtIndex: 1] x]- offsetx) * scaleValue , ([[points objectAtIndex: 1] y]- offsety) * scaleValue);
+				glEnd();
+                
+                // C
+                glBegin(GL_LINE_STRIP);
+                glVertex2f( ([[points objectAtIndex: 2] x]- offsetx) * scaleValue , ([[points objectAtIndex: 2] y]- offsety) * scaleValue);
+				glVertex2f( ([[points objectAtIndex: 3] x]- offsetx) * scaleValue , ([[points objectAtIndex: 3] y]- offsety) * scaleValue);
+				glEnd();
+                
+                // A : main line
+                glBegin(GL_LINE_STRIP);
+                glVertex2f( ([[points objectAtIndex: 4] x]- offsetx) * scaleValue , ([[points objectAtIndex: 4] y]- offsety) * scaleValue);
+				glVertex2f( ([[points objectAtIndex: 5] x]- offsetx) * scaleValue , ([[points objectAtIndex: 5] y]- offsety) * scaleValue);
+				glEnd();
+                
+				//TEXT
+				if( self.isTextualDataDisplayed && prepareTextualData)
+				{
+                    NSPoint tPt = self.lowerRightPoint;
+                    
+                    if( [name isEqualToString:@"Unnamed"] == NO && [name isEqualToString: NSLocalizedString( @"Unnamed", nil)] == NO) self.textualBoxLine1 = name;
+                    else self.textualBoxLine1 = nil;
+                    
+                    float lCm = [self MesureLength: nil pointA: [[points objectAtIndex: 4] point] pointB: [[points objectAtIndex: 5] point]];
+                    self.textualBoxLine2 = [NSString stringWithFormat: NSLocalizedString( @"A: %@", nil), [ROI formattedLength: lCm]];
+                    
+                    lCm = [self MesureLength: nil pointA: [[points objectAtIndex: 0] point] pointB: [[points objectAtIndex: 1] point]];
+                    self.textualBoxLine3 = [NSString stringWithFormat: NSLocalizedString( @"B: %@", nil), [ROI formattedLength: lCm]];
+                    
+                    lCm = [self MesureLength: nil pointA: [[points objectAtIndex: 2] point] pointB: [[points objectAtIndex: 3] point]];
+                    self.textualBoxLine4 = [NSString stringWithFormat: NSLocalizedString( @"C: %@", nil), [ROI formattedLength: lCm]];
+                    
+                    lCm = [self MesureLength: nil pointA: [[points objectAtIndex: 0] point] pointB: [[points objectAtIndex: 2] point]];
+                    self.textualBoxLine5 = [NSString stringWithFormat: NSLocalizedString( @"B-C: %@", nil), [ROI formattedLength: lCm]];
+                    
+                    [self prepareTextualData:tPt];
+				}
+				//ROI MODE
+				if((mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing) && highlightIfSelected)
+				{
+					NSPoint tempPt = [curView convertPoint: [[curView window] mouseLocationOutsideOfEventStream] fromView: nil];
+					tempPt = [curView ConvertFromNSView2GL:tempPt];
+					
+					glColor3f (0.5f, 0.5f, 1.0f);
+					glPointSize( thick*2 * backingScaleFactor);
+					glBegin( GL_POINTS);
+					for( long i = 0; i < [points count]; i++)
+                    {
+                        if( i == 0 || i == 2)
+                            continue;
+                        
+						if( mode >= ROI_selected && (i == selectedModifyPoint || i == PointUnderMouse)) glColor3f (1.0f, 0.2f, 0.2f);
+						else if( mode == ROI_drawing && [[points objectAtIndex: i] isNearToPoint: tempPt : scaleValue/(thick*backingScaleFactor) :[[curView curDCM] pixelRatio]] == YES) glColor3f (1.0f, 0.0f, 1.0f);
+						else
+                            glColor3f (0.5f, 0.5f, 1.0f);
+                        
+						glVertex2f( ([[points objectAtIndex: i] x]- offsetx) * scaleValue , ([[points objectAtIndex: i] y]- offsety) * scaleValue);
+					}
+					glEnd();
+				}
+				
+				glLineWidth(1.0 * backingScaleFactor);
+				glColor3f (1.0f, 1.0f, 1.0f);
+                
+                // --- Text
+                if( stanStringAttrib == nil)
+                {
+                    stanStringAttrib = [[NSMutableDictionary dictionary] retain];
+                    [stanStringAttrib setObject:[NSFont fontWithName:@"Helvetica" size: 14.0] forKey:NSFontAttributeName];
+                    [stanStringAttrib setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
+                }
+                
+                if( stringTexA == nil)
+                {
+                    stringTexA = [[StringTexture alloc] initWithString: @"A"
+                                                        withAttributes:stanStringAttrib
+                                                         withTextColor:[NSColor colorWithDeviceRed: 1 green: 1 blue: 0 alpha:1.0f]
+                                                          withBoxColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]
+                                                       withBorderColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]];
+                    [stringTexA setAntiAliasing: YES];
+                    [stringTexA genTextureWithBackingScaleFactor: curView.window.backingScaleFactor];
+                }
+                if( stringTexB == nil)
+                {
+                    stringTexB = [[StringTexture alloc] initWithString: @"B"
+                                                        withAttributes:stanStringAttrib
+                                                         withTextColor:[NSColor colorWithDeviceRed: 1 green: 1 blue: 0 alpha:1.0f]
+                                                          withBoxColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]
+                                                       withBorderColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]];
+                    [stringTexB setAntiAliasing: YES];
+                    [stringTexB genTextureWithBackingScaleFactor: curView.window.backingScaleFactor];
+                }
+                if( stringTexC == nil)
+                {
+                    stringTexC = [[StringTexture alloc] initWithString: @"C"
+                                                        withAttributes:stanStringAttrib
+                                                         withTextColor:[NSColor colorWithDeviceRed: 1 green: 1 blue: 0 alpha:1.0f]
+                                                          withBoxColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]
+                                                       withBorderColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]];
+                    [stringTexC setAntiAliasing: YES];
+                    [stringTexC genTextureWithBackingScaleFactor: curView.window.backingScaleFactor];
+                }
+                
+                glEnable (GL_TEXTURE_RECTANGLE_EXT);
+                glEnable(GL_BLEND);
+                glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+                
+                for( int i = 0; i < [points count]; i+=2)
+                {
+                    [stringTexA setFlippedX: [curView xFlipped] Y:[curView yFlipped]];
+                    [stringTexB setFlippedX: [curView xFlipped] Y:[curView yFlipped]];
+                    [stringTexC setFlippedX: [curView xFlipped] Y:[curView yFlipped]];
+                    
+                    StringTexture *tex = nil;
+                    if( i == 0) tex = stringTexB;
+                    if( i == 2) tex = stringTexC;
+                    if( i == 4) tex = stringTexA;
+                    
+                    NSPoint tPt = [[points objectAtIndex: i+1] point];
+                    
+                    glColor4f (0, 0, 0, 1);	[tex drawAtPoint:NSMakePoint((tPt.x+1 - offsetx) * scaleValue, (tPt.y+1- offsety) * scaleValue) ratio: 1];
+                    glColor4f (1, 1, 0, 1);	[tex drawAtPoint:NSMakePoint((tPt.x- offsetx) * scaleValue, (tPt.y- offsety) * scaleValue) ratio: 1];
+                }
+                
+                glDisable (GL_TEXTURE_RECTANGLE_EXT);
+                
+			}
+            break;
+                
 #pragma mark tDynAngle
 			case tDynAngle:
 			{
@@ -6357,6 +6583,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		case tOval:
 		case tROI:
 		case tDynAngle:
+        case tTAGT:
 		case tAxis:
 		case tCPolygon:
 		case tOPolygon:
@@ -6442,9 +6669,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 
 	switch( type)
 	{
-		//JJCP
 		case tDynAngle:
-		//JJCP
 		case tAxis:
 		case tOPolygon:
 		case tCPolygon:

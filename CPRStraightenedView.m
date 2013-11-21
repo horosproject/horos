@@ -392,34 +392,6 @@ extern int splitPosition[ 3];
     }
 }
 
-- (NSPoint) positionWithoutRotation: (NSPoint) tPt
-{
-    NSRect unrotatedRect = NSMakeRect( tPt.x/scaleValue, tPt.y/scaleValue, 1, 1);
-    NSRect centeredRect = unrotatedRect;
-    
-    float ratio = 1;
-    
-    if( self.pixelSpacingX != 0 && self.pixelSpacingY != 0)
-        ratio = self.pixelSpacingX / self.pixelSpacingY;
-    
-    centeredRect.origin.y -= [self origin].y*ratio/scaleValue;
-    centeredRect.origin.x -= - [self origin].x/scaleValue;
-    
-    unrotatedRect.origin.x = centeredRect.origin.x*cos( -self.rotation*deg2rad) + centeredRect.origin.y*sin( -self.rotation*deg2rad)/ratio;
-    unrotatedRect.origin.y = -centeredRect.origin.x*sin( -self.rotation*deg2rad) + centeredRect.origin.y*cos( -self.rotation*deg2rad)/ratio;
-    
-    unrotatedRect.origin.y *= ratio;
-    
-    unrotatedRect.origin.y += [self origin].y*ratio/scaleValue;
-    unrotatedRect.origin.x += - [self origin].x/scaleValue;
-    
-    tPt = NSMakePoint( unrotatedRect.origin.x, unrotatedRect.origin.y);
-    tPt.x = (tPt.x)*scaleValue - unrotatedRect.size.width/2;
-    tPt.y = (tPt.y)/ratio*scaleValue - unrotatedRect.size.height/2/ratio;
-    
-    return tPt;
-}
-
 - (void)subDrawRect:(NSRect)rect
 {
     N3Vector lineStart;

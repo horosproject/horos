@@ -64,7 +64,8 @@ enum
 	tROISelector,				//	25
 	tAxis,						//	26 
 	tDynAngle,					//	27
-	tCurvedROI					//	28
+	tCurvedROI,					//	28
+    tTAGT                       //  29
 };
 
 
@@ -510,6 +511,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (void) roiLoadFromFilesArray: (NSArray*) filenames;
 - (id)windowController;
 - (BOOL)is2DViewer;
+- (NSPoint) positionWithoutRotation: (NSPoint) tPt;
 - (IBAction)realSize:(id)sender;
 - (IBAction)scaleToFit:(id)sender;
 - (IBAction)actualSize:(id)sender;

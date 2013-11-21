@@ -3384,6 +3384,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		case tPencil:
 		case tPlain:
 		case t2DPoint:
+        case tTAGT:
 			return YES;
 		break;
 	}
@@ -4260,7 +4261,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					if( [roiArray count]>0)
 					{
 						ROI *r = [roiArray objectAtIndex:0];
-						if( r.type != tPlain && r.type != tArrow && r.type != tAngle && r.type != tAxis && r.type != tDynAngle)
+						if( r.type != tPlain && r.type != tArrow && r.type != tAngle && r.type != tAxis && r.type != tDynAngle && r.type != tTAGT)
 						{
 							NSPoint pt = [[[[roiArray objectAtIndex:0] points] objectAtIndex:0] point];
 							float dx = (pt.x-tempPt.x);
@@ -4275,7 +4276,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					for( int i = 0; i < [roiArray count]; i++ )
 					{
 						ROI *r = [roiArray objectAtIndex: i];
-						if( r.type != tPlain && r.type != tArrow && r.type != tAngle && r.type != tAxis && r.type != tDynAngle)
+						if( r.type != tPlain && r.type != tArrow && r.type != tAngle && r.type != tAxis && r.type != tDynAngle && r.type != tTAGT)
 						{
 							points = [r points];
 																																					  
@@ -4534,6 +4535,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 											case tDynAngle:
 												roiName = [NSString stringWithString: NSLocalizedString( @"Dynamic Angle ", @"keep the space at the end of the string")];
 											break;
+                                                
+                                            case tTAGT:
+												roiName = [NSString stringWithString: NSLocalizedString( @"Perpendicular Distance ", @"keep the space at the end of the string")];
+                                            break;
 											
 											case tAxis:
 												roiName = [NSString stringWithString: NSLocalizedString( @"Bone Axis ", @"keep the space at the end of the string")];
@@ -5651,7 +5656,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		ROI *r = [roiArray objectAtIndex:i];
 		
-		if([r type] != tAxis && [r type] != tAngle && [r type] != tArrow && [r type] != tDynAngle && [r type] != tPlain && r.locked == NO)
+		if([r type] != tAxis && [r type] != tAngle && [r type] != tArrow && [r type] != tDynAngle && [r type] != tTAGT && [r type] != tPlain && r.locked == NO)
 		{		
 			points = [r points];
 			int n = 0;
@@ -7450,6 +7455,34 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	
     glDisable (TEXTRECTMODE); // done with texturing
+}
+
+- (NSPoint) positionWithoutRotation: (NSPoint) tPt
+{
+    NSRect unrotatedRect = NSMakeRect( tPt.x/scaleValue, tPt.y/scaleValue, 1, 1);
+    NSRect centeredRect = unrotatedRect;
+    
+    float ratio = 1;
+    
+    if( self.pixelSpacingX != 0 && self.pixelSpacingY != 0)
+        ratio = self.pixelSpacingX / self.pixelSpacingY;
+    
+    centeredRect.origin.y -= [self origin].y*ratio/scaleValue;
+    centeredRect.origin.x -= - [self origin].x/scaleValue;
+    
+    unrotatedRect.origin.x = centeredRect.origin.x*cos( -self.rotation*deg2rad) + centeredRect.origin.y*sin( -self.rotation*deg2rad)/ratio;
+    unrotatedRect.origin.y = -centeredRect.origin.x*sin( -self.rotation*deg2rad) + centeredRect.origin.y*cos( -self.rotation*deg2rad)/ratio;
+    
+    unrotatedRect.origin.y *= ratio;
+    
+    unrotatedRect.origin.y += [self origin].y*ratio/scaleValue;
+    unrotatedRect.origin.x += - [self origin].x/scaleValue;
+    
+    tPt = NSMakePoint( unrotatedRect.origin.x, unrotatedRect.origin.y);
+    tPt.x = (tPt.x)*scaleValue - unrotatedRect.size.width/2;
+    tPt.y = (tPt.y)/ratio*scaleValue - unrotatedRect.size.height/2/ratio;
+    
+    return tPt;
 }
 
 - (double)pixelSpacing { return curDCM.pixelSpacingX; }

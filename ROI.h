@@ -58,6 +58,7 @@ enum
 *	tLayerROI = Layer Overlay\n
 *	tAxis = Axis\n					
 *	tDynAngle = Dynamic Angle\n
+*   tTAGT = 2 paralles lines and 1 perpendicular line
 */
 
 @interface ROI : NSObject <NSCoding, NSCopying>
@@ -149,6 +150,8 @@ enum
 	int				originalIndexForAlias;
     
     BOOL            hidden;
+    
+	StringTexture *stringTexA, *stringTexB, *stringTexC;
 }
 
 @property NSPoint imageOrigin;

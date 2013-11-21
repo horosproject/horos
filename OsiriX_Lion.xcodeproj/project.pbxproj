@@ -4810,6 +4810,8 @@
 		CE97630108FABDA600E6F8B0 /* ROIManagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9762FD08FABDA600E6F8B0 /* ROIManagerController.h */; };
 		CE97630208FABDA600E6F8B0 /* PaletteController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9762FE08FABDA600E6F8B0 /* PaletteController.h */; };
 		CE97630308FABDA600E6F8B0 /* PaletteController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9762FF08FABDA600E6F8B0 /* PaletteController.m */; };
+		CE995076183E05D60087E409 /* PerpendicularLines.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CE995075183E05D60087E409 /* PerpendicularLines.pdf */; };
+		CE995077183E05D60087E409 /* PerpendicularLines.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CE995075183E05D60087E409 /* PerpendicularLines.pdf */; };
 		CE99E890073AB4C500725ABC /* iPhoto.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE99E88E073AB4C500725ABC /* iPhoto.icns */; };
 		CE9A04440C7DBC060007809F /* libxerces-c.27.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = CE6693C60AF551210073D923 /* libxerces-c.27.dylib */; };
 		CE9A04450C7DBC060007809F /* libdcmprintscu.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = CE586CC30C74B75D00DB7D5A /* libdcmprintscu.dylib */; };
@@ -11719,6 +11721,7 @@
 		CE9762FD08FABDA600E6F8B0 /* ROIManagerController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ROIManagerController.h; sourceTree = "<group>"; };
 		CE9762FE08FABDA600E6F8B0 /* PaletteController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PaletteController.h; sourceTree = "<group>"; };
 		CE9762FF08FABDA600E6F8B0 /* PaletteController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PaletteController.m; sourceTree = "<group>"; };
+		CE995075183E05D60087E409 /* PerpendicularLines.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = PerpendicularLines.pdf; sourceTree = "<group>"; };
 		CE99E88E073AB4C500725ABC /* iPhoto.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = iPhoto.icns; sourceTree = "<group>"; };
 		CE9C73490B34946B0062FCCC /* echoscu */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = echoscu; path = Binaries/DCMTK/echoscu; sourceTree = SOURCE_ROOT; };
 		CE9DD280086B35050058DD2A /* DicomStudy.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DicomStudy.m; sourceTree = "<group>"; };
@@ -17416,6 +17419,7 @@
 				A97569571237D132003F00D3 /* PathAssistant.png */,
 				CE72D7C21263702500874EF6 /* Pause.pdf */,
 				B7CDAD010AB30E7600068D70 /* pdf.tif */,
+				CE995075183E05D60087E409 /* PerpendicularLines.pdf */,
 				AB746742065938DB005838D5 /* Pencil.tif */,
 				AB9139B706839830006F3936 /* PIC.icns */,
 				ABBB6497063587B200D9531F /* Play.pdf */,
@@ -28250,6 +28254,7 @@
 				CE4B5CFC10E5F9DE00C11948 /* Safari.tif in Resources */,
 				CE06475210F12DA500551AD9 /* PlayTemplate.png in Resources */,
 				A917F37D10F4F20C00344C5D /* CertSmallRoot.tif in Resources */,
+				CE995076183E05D60087E409 /* PerpendicularLines.pdf in Resources */,
 				A917F37E10F4F20C00344C5D /* CertSmallStd.tif in Resources */,
 				AB10FA231129302A009EB238 /* PopUpArrows.png in Resources */,
 				59BDF106117EE61E007F1F2C /* PreferencesWindow.xib in Resources */,
@@ -28717,6 +28722,7 @@
 				A9701A7B15C958020019EE55 /* burn_iris15.tif in Resources */,
 				A9701A7D15C958020019EE55 /* burn_iris16.tif in Resources */,
 				A9701A7F15C958020019EE55 /* burn_iris17.tif in Resources */,
+				CE995077183E05D60087E409 /* PerpendicularLines.pdf in Resources */,
 				A9701A8D15C9587C0019EE55 /* burn_anim00.tif in Resources */,
 				A9701A8F15C9587C0019EE55 /* burn_anim01.tif in Resources */,
 				A9701A9115C9587C0019EE55 /* burn_anim02.tif in Resources */,

@@ -391,6 +391,8 @@ static int hotKeyToolCrossTable[] =
 	SelectorHotKeyAction,		//tROISelector		25
 	-1,							//tAxis				26
 	-1,							//tDynAngle			27
+    -1,                         //tCurvedROI        28
+    -1,                         //tTAGT             29
 };
 
 + (int) getToolEquivalentToHotKey :(int) h
@@ -6494,6 +6496,7 @@ return YES;
 		case tROISelector:
 		case tDynAngle:
 		case tAxis:
+        case tTAGT:
 			[self setROIToolTag: tag];
 		break;
 		
@@ -12454,6 +12457,7 @@ float				matrix[25];
 		case tROISelector:	filename = @"ROISelector";		break;
 		case tAxis:			filename = @"Axis";				break;
 		case tDynAngle:		filename = @"DynamicAngle";		break;
+        case tTAGT:         filename = @"PerpendicularLines";             break;
 	}
 	
 	return [NSImage imageNamed: filename];
