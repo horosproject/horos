@@ -246,8 +246,8 @@ static int MacOSVersion109orHigher = -1;
     {
         if( tb == thumbnailsView)
         {
-            if( tb && viewer != nil && viewer.window.windowNumber > 0)
-                [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
+            if( tb && v && v.window.windowNumber > 0)
+                [[self window] orderWindow: NSWindowBelow relativeTo: [[v window] windowNumber]];
         
             if( tb)
             {

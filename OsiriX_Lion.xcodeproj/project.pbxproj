@@ -9502,15 +9502,6 @@
 			name = "Copy Files";
 			runOnlyForDeploymentPostprocessing = 1;
 		};
-		CEC70A0D10A5C844008935EA /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		CECA66E306CD8C1500D8750E /* Copy Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -27476,7 +27467,6 @@
 				CEC7056110A5C844008935EA /* Resources */,
 				CEC706ED10A5C844008935EA /* Sources */,
 				CEC709BA10A5C844008935EA /* Frameworks */,
-				CEC70A0D10A5C844008935EA /* CopyFiles */,
 				CEC70A1810A5C844008935EA /* Clean frameworks */,
 			);
 			buildRules = (
