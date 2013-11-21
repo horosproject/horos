@@ -5280,7 +5280,10 @@ static ViewerController *draggedController = nil;
             [items addObject:[BrowserController.currentBrowser.database objectWithID:[NSManagedObject UidForXid:xid]]];
         
         if( [[items lastObject] isKindOfClass: [DicomSeries class]])
+        {
+            [self.window makeKeyAndOrderFront: self];
             [self loadSelectedSeries: [items lastObject] rightClick: NO];
+        }
     }
 	else
 	{

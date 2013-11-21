@@ -141,6 +141,8 @@ static NSString *dragType = @"Osirix Series Viewer Drag";
                 [NSApp sendAction: @selector(tileWindows:) to:nil from: self];
             else
                 [[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];
+            
+            [newViewer.window makeKeyAndOrderFront: self];
         }
     }
 }
