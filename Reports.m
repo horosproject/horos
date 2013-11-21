@@ -784,7 +784,7 @@ static int Pages5orHigher = -1;
         
         if( [[NSFileManager defaultManager] fileExistsAtPath:indexFilePath] == NO)
         {
-            NSRunCriticalAlertPanel( NSLocalizedString( @"Pages", nil),  NSLocalizedString(@"OsiriX requires templates files in Pages '09 format. Open you template in Pages, select File menu and Export to Pages '09 format.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+            NSRunCriticalAlertPanel( NSLocalizedString( @"Pages", nil),  NSLocalizedString(@"OsiriX requires templates files in Pages '09 format. Open your template in Pages, select File menu and Export to Pages '09 format.", nil), NSLocalizedString(@"OK", nil), nil, nil);
             return NO;
         }
     }
