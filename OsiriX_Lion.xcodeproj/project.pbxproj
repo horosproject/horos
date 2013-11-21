@@ -27352,8 +27352,6 @@
 				59BDEDC8117CAB86007F1F2C /* Zip OsiriX Lite into Resources */,
 				59BDEC2A117C92B2007F1F2C /* Sources */,
 				59BDEC2B117C92B2007F1F2C /* Frameworks */,
-				59BDEC81117C9951007F1F2C /* Version */,
-				715E61E316B01E5D00872B90 /* MD5 */,
 			);
 			buildRules = (
 			);
@@ -27411,9 +27409,7 @@
 				AB0F3A291046BD2B004129DD /* Sources */,
 				AB0F3A2A1046BD2B004129DD /* Frameworks */,
 				AB0F3A3F1046BE51004129DD /* Copy Headers and Create OsiriX.h */,
-				595717A0131E342900367A22 /* SVN Revision Number */,
 				CED7488F158F07B500120143 /* Code Signing */,
-				715E61E216B013DF00872B90 /* MD5 */,
 			);
 			buildRules = (
 			);
@@ -27477,9 +27473,7 @@
 				CEC706ED10A5C844008935EA /* Sources */,
 				CEC709BA10A5C844008935EA /* Frameworks */,
 				CEC70A0D10A5C844008935EA /* CopyFiles */,
-				CEC70A1710A5C844008935EA /* SVN Revision number */,
 				CEC70A1810A5C844008935EA /* Clean frameworks */,
-				715E61E116B00D0300872B90 /* MD5 */,
 			);
 			buildRules = (
 			);
@@ -28787,34 +28781,6 @@
 			shellPath = /bin/sh;
 			shellScript = "cd \"$SRCROOT/Binaries\"\nunzip -uo DCMTK.zip\nunzip -uo LibTiff.zip\nunzip -uo VTKLibs.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo PAGES.zip\nunzip -uo OsiriXReport.template.zip\nunzip -uo ILCrashReporter.framework.zip\nunzip -uo Growl.framework.zip\nunzip -uo 3DconnexionClient.framework.zip\nunzip -uo openjpeg.zip\nunzip -uo dciodvfy.zip\nunzip -uo libPapyrusToolkit.a.zip\nunzip -uo Ming.zip\nunzip -uo weasis-portable.zip\nchmod -R 755 weasis\ncd \"$SRCROOT/Binaries/weasis\"\nif [ -d \"weasis-portable\" ]; then\n    cd \"weasis-portable\"\n    for f in *; do\n        rm -Rf \"../$f\"\n        mv \"$f\" ..\n    done\n    cd ..\n    rm -Rf weasis-portable\nfi\nfind . -name __MACOSX | xargs rm -Rf\n\ncd \"$SRCROOT/Binaries/ReportsToPDF/odt2pdf/build\"\nunzip -uo odt2pdf.zip\n\ncd \"$SRCROOT/Binaries/PAGES\"\nrm ._*\n\ncd \"$SRCROOT/AYDicomPrint\"\nunzip -uo libdcmprintscu.dylib.zip\nunzip -uo libxerces-c.27.dylib.zip\nunzip -uo xercesc.zip\n\n#cd \"$SRCROOT/Binaries/Jasper\"\n#unzip -uo libjasper.a.zip\n\ncd \"$SRCROOT/Binaries/KDU SDK\"\nunzip -uo libkdu_v73R.a.zip\n\ncd \"$SRCROOT\"\nunzip -uo VTKHeaders.zip\nunzip -uo ITK180.zip\n\n#cd \"$SRCROOT\"\n#cd VolumePRO\n#unzip -uo vli3.framework.zip\n\nexit 0\n";
 		};
-		595717A0131E342900367A22 /* SVN Revision Number */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "SVN Revision Number";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = "/usr/bin/perl -w";
-			shellScript = "# Xcode auto-versioning script for Subversion\n# by Axel Andersson, modified by Daniel Jalkut to add\n# \"--revision HEAD\" to the svn info line, which allows\n# the latest revision to always be used.\n\nuse strict;\n\ndie \"$0: Must be run from Xcode\" unless $ENV{\"BUILT_PRODUCTS_DIR\"};\n\n# Get the current subversion revision number and use it to set the CFBundleVersion value\nmy $REV = `/usr/bin/svnversion -n ./`;\nmy $INFO = \"$ENV{BUILT_PRODUCTS_DIR}/$ENV{WRAPPER_NAME}/Versions/A/Resources/Info.plist\";\n\nif(! $REV)\n{\n\t$REV = `/opt/local/bin/svnversion -n ./`;\n}\n\nif($REV)\n{\n\tmy $version = $REV;\n\n\t# (Match the last group of digits and optional letter M/S):\n\n\t# ugly yet functional (barely) regex by Daniel Jalkut:\n\t#$version =~ s/([\\d]*:)(\\d+[M|S]*).*/$2/;\n\n\t# better yet still functional regex via Kevin \"Regex Nerd\" Ballard\n\t($version =~ m/\\d+[MS]*$/) && ($version = $&);\n\n\tdie \"$0: No Subversion revision found\" unless $version;\n\n\topen(FH, \"$INFO\") or die \"$0: $INFO: $!\";\n\tmy $info = join(\"\", <FH>);\n\tclose(FH);\n\n\t$info =~ s/([\\t ]+<key>CFBundleVersion<\\/key>\\n[\\t ]+<string>).*?(<\\/string>)/$1$version$2/;\n\n\topen(FH, \">$INFO\") or die \"$0: $INFO: $!\";\n\tprint FH $info;\n\tclose(FH);\n}";
-		};
-		59BDEC81117C9951007F1F2C /* Version */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = Version;
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cd \"${PROJECT_DIR}\"\nSVNVERSION=`/usr/bin/svnversion -n | /usr/bin/sed -e 's/^[^:]*://;s/[A-Za-z]/+/'`\nif [ -n \"${DEBUG:+x}\" ]; then\n\tSVNVERSION=\"${SVNVERSION}d\"\nfi\n\nPLISTPATH=\"${PROJECT_DIR}/OsiriX Launcher/Info.plist\"\nINFOVERSION=`/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' \"$PLISTPATH\"`\n\nVERSION=\"$INFOVERSION build $SVNVERSION\"\n\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $VERSION\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\n\nINFOVERSIONSTR=`/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' \"$PLISTPATH\"`\n/usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString ${INFOVERSIONSTR/__VERSION__/$VERSION}\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\n\nexit 0";
-		};
 		59BDEDC8117CAB86007F1F2C /* Zip OsiriX Lite into Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -28856,48 +28822,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "#set -x\n\nheaderspath=\"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/OsiriXAPI.framework/Versions/A/Headers\"\nrm -Rf \"$headerspath\"\nmkdir -p \"$headerspath\"\nrm -Rf \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/OsiriXAPI.framework/Versions/A/Frameworks/Nitrogen.framework\"\n\nif [ \"$DEBUGGING_SYMBOLS\" == \"YES\" ] ; then\n\trm -Rf \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/Nitrogen.framework/Versions/A/Nitrogen.framework.dSYM\"\nfi\n\nrm -Rf \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/OsiriX Headers.framework\"\n\ncd \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH\"\nln -sf \"OsiriXAPI.framework\" \"OsiriX Headers.framework\"\n\ncd \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/OsiriXAPI.framework\"\nln -sf \"OsiriXAPI\" \"OsiriX Headers\"\n\ncd \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/OsiriXAPI.framework/Versions/A\"\nln -sf \"OsiriXAPI\" \"OsiriX Headers\"\n";
-		};
-		715E61E116B00D0300872B90 /* MD5 */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = MD5;
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cd \"${BUILT_PRODUCTS_DIR}\"\nfind \"${WRAPPER_NAME}\" -type f -print0 | xargs -0 md5 | md5 > \".OsiriXLite.md5\"";
-		};
-		715E61E216B013DF00872B90 /* MD5 */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = MD5;
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cd \"${BUILT_PRODUCTS_DIR}\"\nfind \"${WRAPPER_NAME}\" -type f -print0 | xargs -0 md5 | md5 > \".${WRAPPER_NAME}.md5\"";
-		};
-		715E61E316B01E5D00872B90 /* MD5 */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = MD5;
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cd \"${BUILT_PRODUCTS_DIR}\"\nfind \"${WRAPPER_NAME}\" -type f -print0 | xargs -0 md5 | md5 > \".OsiriXLauncher.md5\"";
 		};
 		7183153F161065BE0098576F /* Replace Weasis ext-config.properties */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -28995,20 +28919,6 @@
 			shellPath = /usr/bin/perl;
 			shellScript = "use strict;\nuse warnings;\n\ndie \"$0: Must be run from Xcode\" unless $ENV{\"BUILT_PRODUCTS_DIR\"};\n\nmy $FH;\nmy $output;\n\n# SHA hash :\n\nopen $FH, \"xcrun git rev-parse HEAD|\" or die;\n$output = <$FH>;\nclose($FH);\n\nchomp( $output );\nmy $GitHash = $output;\n\n# clean state :\n\n$output = `xcrun git status`;\n\nmy $GitState;\nif ( index( $output, \"nothing to commit (working directory clean)\" ) != -1 ) {\n    $GitState = \"clean\";\n} else {\n    $GitState = \"dirty\";\n}\n\nprint \"GitHash : $GitHash\\n\";\nprint \"GitState : $GitState\";\n\n# Update Info.plist in build product. Use defaults command\n\n#my $INFO = \"$ENV{BUILT_PRODUCTS_DIR}/$ENV{WRAPPER_NAME}/Info\"; #iOS\nmy $INFO = \"$ENV{BUILT_PRODUCTS_DIR}/$ENV{WRAPPER_NAME}/Contents/Info\"; #OSX\n\nmy @defaults = ( 'defaults', 'write', $INFO, 'GitHash', \"$GitHash\" );\nsystem( @defaults );\n\n@defaults = ( 'defaults', 'write', $INFO, 'GitState', \"$GitState\" );\nsystem( @defaults );";
 		};
-		CEC70A1710A5C844008935EA /* SVN Revision number */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "SVN Revision number";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = "/usr/bin/perl -w";
-			shellScript = "# Xcode auto-versioning script for Subversion\n# by Axel Andersson, modified by Daniel Jalkut to add\n# \"--revision HEAD\" to the svn info line, which allows\n# the latest revision to always be used.\n\nuse strict;\n\ndie \"$0: Must be run from Xcode\" unless $ENV{\"BUILT_PRODUCTS_DIR\"};\n\n# Get the current subversion revision number and use it to set the CFBundleVersion value\nmy $REV = `/usr/bin/svnversion -n ./`;\nmy $INFO = \"$ENV{BUILT_PRODUCTS_DIR}/$ENV{WRAPPER_NAME}/Contents/Info.plist\";\n\nif(! $REV)\n{\n\t$REV = `/opt/local/bin/svnversion -n ./`;\n}\n\nif($REV)\n{\n\tmy $version = $REV;\n\n\t# (Match the last group of digits and optional letter M/S):\n\n\t# ugly yet functional (barely) regex by Daniel Jalkut:\n\t#$version =~ s/([\\d]*:)(\\d+[M|S]*).*/$2/;\n\n\t# better yet still functional regex via Kevin \"Regex Nerd\" Ballard\n\t($version =~ m/\\d+[MS]*$/) && ($version = $&);\n\n\tdie \"$0: No Subversion revision found\" unless $version;\n\n\topen(FH, \"$INFO\") or die \"$0: $INFO: $!\";\n\tmy $info = join(\"\", <FH>);\n\tclose(FH);\n\n\t$info =~ s/([\\t ]+<key>CFBundleVersion<\\/key>\\n[\\t ]+<string>).*?(<\\/string>)/$1$version$2/;\n\n\topen(FH, \">$INFO\") or die \"$0: $INFO: $!\";\n\tprint FH $info;\n\tclose(FH);\n}";
-		};
 		CEC70A1810A5C844008935EA /* Clean frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 12;
@@ -29049,7 +28959,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#test with codesign -vvv\n\nchmod -R 777 \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/\"\n\nif [[ ${CONFIGURATION} == \"Deployment 32-bit\" ]]\nthen\n# -f means force to re-sign even if already signed\ncodesign --resource-rules Rules.plist -f -s \"Developer ID Application\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/\"\necho \"code signed\"\nfi\n\nif [[ ${CONFIGURATION} == \"Deployment 64-bit\" ]]\nthen\n# -f means force to re-sign even if already signed\ncodesign --resource-rules Rules.plist -f -s \"Developer ID Application\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/\"\necho \"code signed\"\nfi";
+			shellScript = "#test with codesign -vvv\n\nchmod -R 777 \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/\"\n\nif [[ ${CONFIGURATION} == \"Deployment 32-bit\" ]]\nthen\n# -f means force to re-sign even if already signed\ncodesign -f -s \"Developer ID Application\" \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/OsiriXAPI.framework\"\ncodesign --resource-rules Rules.plist -f -s \"Developer ID Application\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/\"\necho \"code signed\"\nfi\n\nif [[ ${CONFIGURATION} == \"Deployment 64-bit\" ]]\nthen\n# -f means force to re-sign even if already signed\ncodesign -f -s \"Developer ID Application\" \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/OsiriXAPI.framework\"\ncodesign --resource-rules Rules.plist -f -s \"Developer ID Application\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/\"\necho \"code signed\"\nfi";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -32991,7 +32901,7 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CLANG_X86_VECTOR_INSTRUCTIONS = ssse3;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "Developer ID Application: Antoine Rosset";
 				CODE_SIGN_RESOURCE_RULES_PATH = Rules.plist;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
