@@ -10311,41 +10311,41 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					smartCropped = YES;
 				}
                 
-                if( self.blendingView)
-                {
-                    blendedViewRect = [self.blendingView smartCrop: &blendedShiftOrigin];
-                    NSRect unionRect = NSUnionRect( blendedViewRect, smartCroppedRect);;
-                    
-                    #define NSRectCenterX(r) (r.origin.x+r.size.width/2.)
-                    #define NSRectCenterY(r) (r.origin.y+r.size.height/2.)
-                    
-                    NSPoint oo = NSMakePoint( NSRectCenterX(smartCroppedRect) - NSRectCenterX(unionRect), NSRectCenterY(smartCroppedRect) - NSRectCenterY(unionRect));
-                    
-                    if( xFlipped) {oo.x = -oo.x; shiftOrigin.x *=-1;}
-                    if( yFlipped) {oo.y = -oo.y; shiftOrigin.y *=-1;}
-                    
-                    shiftOrigin.x = oo.x*cos((rotation)*deg2rad) + oo.y*sin((rotation)*deg2rad) + shiftOrigin.x;
-                    shiftOrigin.y = oo.x*sin((rotation)*deg2rad) - oo.y*cos((rotation)*deg2rad) + shiftOrigin.y;
-                    
-                    oo = NSMakePoint( NSRectCenterX(blendedViewRect) - NSRectCenterX(unionRect), NSRectCenterY(blendedViewRect) - NSRectCenterY(unionRect));
-                    
-                    if( blendingView.xFlipped) {oo.x = -oo.x; blendedShiftOrigin.x *= -1.;}
-                    if( blendingView.yFlipped) {oo.y = -oo.y; blendedShiftOrigin.y *= -1.;}
-                    
-                    blendedShiftOrigin.x = oo.x*cos((blendingView.rotation)*deg2rad) + oo.y*sin((blendingView.rotation)*deg2rad) + blendedShiftOrigin.x;
-                    blendedShiftOrigin.y = oo.x*sin((blendingView.rotation)*deg2rad) - oo.y*cos((blendingView.rotation)*deg2rad) + blendedShiftOrigin.y;
-                    
-                    smartCroppedRect = unionRect;
-                    
-                    if( smartCroppedRect.size.width == drawingFrameRect.size.width && smartCroppedRect.size.height == drawingFrameRect.size.height)
-                        smartCropped = NO;
-                    else
-                    {
-                        *width = smartCroppedRect.size.width;
-                        *height = smartCroppedRect.size.height;
-                        smartCropped = YES;
-                    }
-                }
+//                if( self.blendingView)
+//                {
+//                    blendedViewRect = [self.blendingView smartCrop: &blendedShiftOrigin];
+//                    NSRect unionRect = NSUnionRect( blendedViewRect, smartCroppedRect);;
+//                    
+//                    #define NSRectCenterX(r) (r.origin.x+r.size.width/2.)
+//                    #define NSRectCenterY(r) (r.origin.y+r.size.height/2.)
+//                    
+//                    NSPoint oo = NSMakePoint( NSRectCenterX(smartCroppedRect) - NSRectCenterX(unionRect), NSRectCenterY(smartCroppedRect) - NSRectCenterY(unionRect));
+//                    
+//                    if( xFlipped) {oo.x = -oo.x; shiftOrigin.x *=-1;}
+//                    if( yFlipped) {oo.y = -oo.y; shiftOrigin.y *=-1;}
+//                    
+//                    shiftOrigin.x = oo.x*cos((rotation)*deg2rad) + oo.y*sin((rotation)*deg2rad) + shiftOrigin.x;
+//                    shiftOrigin.y = oo.x*sin((rotation)*deg2rad) - oo.y*cos((rotation)*deg2rad) + shiftOrigin.y;
+//                    
+//                    oo = NSMakePoint( NSRectCenterX(blendedViewRect) - NSRectCenterX(unionRect), NSRectCenterY(blendedViewRect) - NSRectCenterY(unionRect));
+//                    
+//                    if( blendingView.xFlipped) {oo.x = -oo.x; blendedShiftOrigin.x *= -1.;}
+//                    if( blendingView.yFlipped) {oo.y = -oo.y; blendedShiftOrigin.y *= -1.;}
+//                    
+//                    blendedShiftOrigin.x = oo.x*cos((blendingView.rotation)*deg2rad) + oo.y*sin((blendingView.rotation)*deg2rad) + blendedShiftOrigin.x;
+//                    blendedShiftOrigin.y = oo.x*sin((blendingView.rotation)*deg2rad) - oo.y*cos((blendingView.rotation)*deg2rad) + blendedShiftOrigin.y;
+//                    
+//                    smartCroppedRect = unionRect;
+//                    
+//                    if( smartCroppedRect.size.width == drawingFrameRect.size.width && smartCroppedRect.size.height == drawingFrameRect.size.height)
+//                        smartCropped = NO;
+//                    else
+//                    {
+//                        *width = smartCroppedRect.size.width;
+//                        *height = smartCroppedRect.size.height;
+//                        smartCropped = YES;
+//                    }
+//                }
 			}
 			else smartCroppedRect = NSMakeRect( 0, 0, drawingFrameRect.size.width, drawingFrameRect.size.height);
 			
