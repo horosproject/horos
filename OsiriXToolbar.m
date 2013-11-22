@@ -17,9 +17,6 @@
 #import "ToolbarPanel.h"
 #import "NSWindow+N2.h"
 
-extern  ToolbarPanelController *toolbarPanel[ 10];
-extern  BOOL USETOOLBARPANEL;
-
 @implementation OsiriXToolbar
 
 - (void)runCustomizationPalette:(id)sender

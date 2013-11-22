@@ -26,27 +26,44 @@ static 	NSMutableDictionary *associatedScreen = nil;
 static int increment = 0;
 static int MacOSVersion109orHigher = -1;
 
+static int fixedHeight = -1;
+static int savedDisplayMode = 1;
+
 @implementation ToolbarPanelController
 
 @synthesize viewer;
 
-- (long) fixedHeight {
-	//return 90;
-    NSRect windowFrame = [NSWindow contentRectForFrameRect:[self.window frame] styleMask:[self.window styleMask]];
-    NSRect contentFrame = [[self.window contentView] frame];
-    
-    if( MacOSVersion109orHigher == -1)
-    {
-        if( [AppController hasMacOSXMaverick])
-            MacOSVersion109orHigher = 1;
-        else
-            MacOSVersion109orHigher = 0;
+- (long) fixedHeight
+{
+    if( toolbar != emptyToolbar) {
+        if( savedDisplayMode != toolbar.displayMode) {
+            fixedHeight = -1;
+            savedDisplayMode = toolbar.displayMode;
+        }
     }
     
-    if( MacOSVersion109orHigher)
-        return NSHeight(windowFrame) - NSHeight(contentFrame) + 16;
-    else
-        return NSHeight(windowFrame) - NSHeight(contentFrame) + 13;
+    if( fixedHeight == -1 && toolbar != emptyToolbar) {
+        NSRect windowFrame = [NSWindow contentRectForFrameRect:[self.window frame] styleMask:[self.window styleMask]];
+        NSRect contentFrame = [[self.window contentView] frame];
+        
+        if( MacOSVersion109orHigher == -1)
+        {
+            if( [AppController hasMacOSXMaverick])
+                MacOSVersion109orHigher = 1;
+            else
+                MacOSVersion109orHigher = 0;
+        }
+        
+            float v;
+        if( MacOSVersion109orHigher)
+            v = NSHeight(windowFrame) - NSHeight(contentFrame) + 16;
+        else
+            v = NSHeight(windowFrame) - NSHeight(contentFrame) + 13;
+        
+        fixedHeight = v;
+    }
+    
+    return fixedHeight;
 }
 
 - (long) hiddenHeight {
@@ -115,7 +132,6 @@ static int MacOSVersion109orHigher = -1;
         [emptyToolbar setDelegate: self];
         
         [[self window] setAnimationBehavior: NSWindowAnimationBehaviorNone];
-        
         [[self window] setToolbar: emptyToolbar];
         [[self window] setLevel: NSNormalWindowLevel];
         
