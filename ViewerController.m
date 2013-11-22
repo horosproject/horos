@@ -3067,50 +3067,13 @@ static volatile int numberOfThreadsForRelisce = 0;
 	if( [OSIWindowController dontWindowDidChangeScreen])
 		return;
 	
-	if( [AppController USETOOLBARPANEL] || [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
-	{
-		for( int i = 0; i < [[NSScreen screens] count]; i++)
-		{
-			if( [toolbarPanel[ i] toolbar] == toolbar && [[self window] screen] != [[NSScreen screens] objectAtIndex: i])
-				[toolbarPanel[ i] setToolbar: nil viewer: nil];
-            
-            if( [thumbnailsListPanel[ i] thumbnailsView] == previewMatrixScrollView && [[self window] screen] != [[NSScreen screens] objectAtIndex: i])
-				[thumbnailsListPanel[ i] setThumbnailsView: nil viewer:nil];
-		}
-		
-		BOOL found = NO;
-		for( int i = 0; i < [[NSScreen screens] count]; i++)
-		{
-			if( [[self window] screen] == [[NSScreen screens] objectAtIndex: i])
-			{
-				[toolbarPanel[ i] setToolbar: toolbar viewer: self];
-                [thumbnailsListPanel[ i] setThumbnailsView: previewMatrixScrollView viewer: self];
-				found = YES;
-			}
-			else
-            {
-                [[toolbarPanel[ i] window] orderOut:self];
-                [[thumbnailsListPanel[ i] window] orderOut:self];
-            }
-		}
-		if( found == NO) NSLog( @"ViewerController windowDidChangeScreen: Toolbar NOT found");
-	}
-	
-    if( [AppController USETOOLBARPANEL] == NO)
-	{
-		for( int i = 0; i < [[NSScreen screens] count]; i++)
-			[[toolbarPanel[ i] window] orderOut:self];
-	}
-    
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"] == NO)
-	{
-		for( int i = 0; i < [[NSScreen screens] count]; i++)
-			[[thumbnailsListPanel[ i] window] orderOut:self];
-	}
+	[self redrawToolbar];
 }
 
 - (void) redrawToolbar
 {
+    NSDisableScreenUpdates();
+    
 	if( [AppController USETOOLBARPANEL] || [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
 	{
 		for( int i = 0; i < [[NSScreen screens] count]; i++)
@@ -3133,14 +3096,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 			}
 			else
             {
-                if( [[toolbarPanel[ i] window] isVisible])
-                    [[toolbarPanel[ i] window] orderOut:self];
-                
-                if( [[thumbnailsListPanel[ i] window] isVisible])
-                    [[thumbnailsListPanel[ i] window] orderOut:self];
+                [[toolbarPanel[ i] window] orderOut:self];
+                [[thumbnailsListPanel[ i] window] orderOut:self];
             }
 		}
-		if( found == NO) NSLog( @"Toolbar NOT found");
+		if( found == NO)
+            N2LogStackTrace( @"Toolbar NOT found");
 	}
 	
     if( [AppController USETOOLBARPANEL] == NO)
@@ -3149,11 +3110,13 @@ static volatile int numberOfThreadsForRelisce = 0;
 			[[toolbarPanel[ i] window] orderOut:self];
 	}
     
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"] == NO)
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"] == NO || [[NSUserDefaults standardUserDefaults] boolForKey: @"SeriesListVisible"] == NO)
 	{
 		for( int i = 0; i < [[NSScreen screens] count]; i++)
 			[[thumbnailsListPanel[ i] window] orderOut:self];
 	}
+    
+    NSEnableScreenUpdates();
 }
 
 - (void) refreshToolbar
