@@ -5696,8 +5696,13 @@ static BOOL initialized = NO;
 	[[NSUserDefaults standardUserDefaults] setBool: origCopySettings forKey: @"COPYSETTINGS"];
 	[AppController checkForPreferencesUpdate: YES];
 	
+    NSDisableScreenUpdates();
+    
     for( int i = 0; i < [[NSScreen screens] count]; i++)
+    {
         [toolbarPanel[ i] setToolbar: nil viewer: nil];
+        [thumbnailsListPanel[ i] setThumbnailsView: nil viewer: nil];
+    }
     
     if( keyWindow == nil)
         keyWindow = [ViewerController frontMostDisplayed2DViewerForScreen: nil];
@@ -5706,10 +5711,8 @@ static BOOL initialized = NO;
 	{
         [DCMView setDontListenToSyncMessage: YES];
         
-		[[keyWindow window] makeKeyAndOrderFront:self];
+        [[keyWindow window] makeKeyAndOrderFront:self];
 		[keyWindow propagateSettings];
-		
-		NSDisableScreenUpdates();
         
 		for( id v in [[viewersList reverseObjectEnumerator] allObjects])
 		{
@@ -5721,34 +5724,21 @@ static BOOL initialized = NO;
                     [v redrawToolbar]; // To avoid the drag & remove item bug - multiple windows
                 }
 			}
-            
-            if( [keyWindow isKindOfClass:[ViewerController class]])
-            {
-                [keyWindow buildMatrixPreview: YES];
-                [keyWindow redrawToolbar];
-            }
 		}
-		
-		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOHIDEMATRIX"])
-		{
-			for( id v in viewersList)
-				[v autoHideMatrix];
-		}
-		
-        ViewerController *v = keyWindow;
-        if( [v isKindOfClass: [ViewerController class]])
+        
+        if( [keyWindow isKindOfClass:[ViewerController class]])
         {
-            [[v imageView] becomeMainWindow];
-            [v refreshToolbar];
+            [[keyWindow imageView] becomeMainWindow];
+            [keyWindow buildMatrixPreview: YES];
+            [keyWindow redrawToolbar];
 		}
         
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"syncPreviewList"])
 			[keyWindow syncThumbnails];
         
-		NSEnableScreenUpdates();
-        
         [DCMView setDontListenToSyncMessage: NO];
 	}
+    NSEnableScreenUpdates();
 }
 
 
