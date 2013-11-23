@@ -28789,7 +28789,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"${BUILT_PRODUCTS_DIR}\"\n\nproduct=\"OsiriX Lite.app\"\ndest=\"${UNLOCALIZED_RESOURCES_FOLDER_PATH}/OsiriX Lite.zip\"\nproduct_md5_file=\".OsiriXLite.md5\"\n\nlatest_zipped_product_md5_file=\".OsiriXLite.in.OsiriXLauncher.md5\"\n\nif [ ! \\( -a \"$dest\" \\) ] || ! cmp -s \"$product_md5_file\" \"$latest_zipped_product_md5_file\" ; then # if dest file does not exist, or if its latest md5 is different from current md5\n    rm -f \"$dest\"\n    zip -qr \"$dest\" \"$product\"\n    cp \"$product_md5_file\" \"$latest_zipped_product_md5_file\"\nfi\n";
+			shellScript = "cd \"${BUILT_PRODUCTS_DIR}\"\n\nproduct=\"OsiriX Lite.app\"\ndest=\"${UNLOCALIZED_RESOURCES_FOLDER_PATH}/OsiriX Lite.zip\"\n\nrm -f \"$dest\"\nzip -qr \"$dest\" \"$product\"\n\n";
 		};
 		59BDEE70117CB3A6007F1F2C /* Zip OsiriX Launcher into Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -28803,7 +28803,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"${BUILT_PRODUCTS_DIR}\"\n\nproduct=\"OsiriX Launcher.app\"\ndest=\"${UNLOCALIZED_RESOURCES_FOLDER_PATH}/OsiriX Launcher.zip\"\nproduct_md5_file=\".OsiriXLauncher.md5\"\n\nlatest_zipped_product_md5_file=\".OsiriXLauncher.in.OsiriX.md5\"\n\nif [ ! \\( -a \"$dest\" \\) ] || ! cmp -s \"$product_md5_file\" \"$latest_zipped_product_md5_file\" ; then # if dest file does not exist, or if its latest md5 is different from current md5\n    rm -f \"$dest\"\n    zip -qr \"$dest\" \"$product\"\n    cp \"$product_md5_file\" \"$latest_zipped_product_md5_file\"\nfi\n\n\n\n";
+			shellScript = "cd \"${BUILT_PRODUCTS_DIR}\"\n\nproduct=\"OsiriX Launcher.app\"\ndest=\"${UNLOCALIZED_RESOURCES_FOLDER_PATH}/OsiriX Launcher.zip\"\nrm -f \"$dest\"\nzip -qr \"$dest\" \"$product\"\n";
 		};
 		59F69A4E1056328D008585F5 /* Clean Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;

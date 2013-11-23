@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13A603" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13B35" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
@@ -78,7 +78,7 @@
                                 <textField verticalHuggingPriority="750" id="377">
                                     <rect key="frame" x="244" y="13" width="48" height="17"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" title="000" id="378">
+                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" title=".00" id="378">
                                         <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.00" negativeFormat="#.00" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" minimumFractionDigits="2" maximumFractionDigits="2" id="383">
                                             <real key="roundingIncrement" value="0.0"/>
                                             <nil key="nilSymbol"/>
@@ -175,7 +175,7 @@
                                     </textFieldCell>
                                 </textField>
                                 <textField verticalHuggingPriority="750" id="n5W-sI-jKT">
-                                    <rect key="frame" x="15" y="34" width="227" height="17"/>
+                                    <rect key="frame" x="15" y="29" width="227" height="17"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Default Shading value:" id="Cyi-vJ-Hc1">
                                         <font key="font" metaFont="system"/>
@@ -184,10 +184,10 @@
                                     </textFieldCell>
                                 </textField>
                                 <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="394">
-                                    <rect key="frame" x="247" y="54" width="356" height="38"/>
+                                    <rect key="frame" x="247" y="54" width="421" height="38"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                    <size key="cellSize" width="356" height="18"/>
+                                    <size key="cellSize" width="421" height="18"/>
                                     <size key="intercellSpacing" width="4" height="2"/>
                                     <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="401">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -195,11 +195,11 @@
                                     </buttonCell>
                                     <cells>
                                         <column>
-                                            <buttonCell type="radio" title="CPU - Raycasting" imagePosition="left" alignment="left" inset="2" id="399">
+                                            <buttonCell type="radio" title="CPU - Raycasting on the main processor" imagePosition="left" alignment="left" inset="2" id="399">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
-                                            <buttonCell type="radio" title="GPU - Graphic Board rendering" imagePosition="left" alignment="left" state="on" tag="1" inset="2" id="397">
+                                            <buttonCell type="radio" title="GPU - Rendering on the graphic processor" imagePosition="left" alignment="left" state="on" tag="1" inset="2" id="397">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
@@ -210,7 +210,7 @@
                                     </connections>
                                 </matrix>
                                 <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="dPY-Bc-dAL">
-                                    <rect key="frame" x="247" y="13" width="356" height="38"/>
+                                    <rect key="frame" x="247" y="8" width="356" height="38"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     <size key="cellSize" width="356" height="18"/>
@@ -248,7 +248,7 @@
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <button id="341">
-                                    <rect key="frame" x="14" y="90" width="652" height="18"/>
+                                    <rect key="frame" x="14" y="90" width="656" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="If there are multiple screens, open the 3D window on a different screen of the 2D Viewer." bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="368">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -259,7 +259,7 @@
                                     </connections>
                                 </button>
                                 <button id="347">
-                                    <rect key="frame" x="14" y="70" width="644" height="18"/>
+                                    <rect key="frame" x="14" y="70" width="656" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Auto-Rotate objects after 3 min. in Volume Rendering/MIP viewers." bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="369">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -281,19 +281,19 @@
                                     </connections>
                                 </button>
                                 <textField verticalHuggingPriority="750" id="385">
-                                    <rect key="frame" x="14" y="27" width="291" height="17"/>
+                                    <rect key="frame" x="14" y="27" width="332" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="For representing 3D ROIs, use this algorithm:" id="386">
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="For representing 3D ROIs, use this algorithm:" id="386">
                                         <font key="font" metaFont="system"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
                                 <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" id="387">
-                                    <rect key="frame" x="327" y="6" width="214" height="38"/>
+                                    <rect key="frame" x="352" y="6" width="316" height="38"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                    <size key="cellSize" width="214" height="18"/>
+                                    <size key="cellSize" width="316" height="18"/>
                                     <size key="intercellSpacing" width="4" height="2"/>
                                     <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="390">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
