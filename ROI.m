@@ -4890,6 +4890,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			case tMesure:
 			case tArrow:
 			{
+                if( points.count > 2)
+                    type = tOPolygon;
+                
 				glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
 				glLineWidth( thick * backingScaleFactor);
 				

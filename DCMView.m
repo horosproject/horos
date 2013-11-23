@@ -4245,7 +4245,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				else
 				{
 					[self deleteMouseDownTimer];
-					repulsorColorTimer = [[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(setAlphaRepulsor:) userInfo:event repeats:YES] retain];
+					repulsorColorTimer = [[NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(setAlphaRepulsor:) userInfo:event repeats:YES] retain];
 					repulsorAlpha = 0.1;
 					repulsorAlphaSign = 1.0;
 					repulsorRadius = 0;
@@ -5720,6 +5720,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 							}
 						}
 						
+                        if( r.type == tMesure)
+                            r.type = tOPolygon;
+                        
 						[r recompute];
 						
 						if( [[r comments] isEqualToString: @"morphing generated"])
