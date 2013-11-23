@@ -2078,21 +2078,45 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
                     }
 				}
 				break;
-			case tOval:
-				arect = NSMakeRect( rect.origin.x -rect.size.width -(neighborhoodRad/2)/scale, rect.origin.y -rect.size.height -(neighborhoodRad/2)/scale, 2*rect.size.width + neighborhoodRad/scale, 2*rect.size.height + neighborhoodRad/scale);
+//			case tOval:
+//				arect = NSMakeRect( rect.origin.x -rect.size.width -(neighborhoodRad/2)/scale, rect.origin.y -rect.size.height -(neighborhoodRad/2)/scale, 2*rect.size.width + neighborhoodRad/scale, 2*rect.size.height + neighborhoodRad/scale);
+//				
+//				if( NSPointInRect( pt, arect))
+//                    imode = ROI_selected;
+//			break;
+			
+			
+//			case tROI:
+//				arect = NSMakeRect( rect.origin.x -(neighborhoodRad/2), rect.origin.y-(neighborhoodRad/2), rect.size.width+neighborhoodRad, rect.size.height+neighborhoodRad);
+//				
+//				if( NSPointInRect( pt, arect))
+//                    imode = ROI_selected;
+//			break;
+			
+            case tROI:
+            {
+				float distance;
+				NSArray *pts = [self points];
 				
-				if( NSPointInRect( pt, arect))
-                    imode = ROI_selected;
-			break;
-			
-			
-			case tROI:
-				arect = NSMakeRect( rect.origin.x -(neighborhoodRad/2), rect.origin.y-(neighborhoodRad/2), rect.size.width+neighborhoodRad, rect.size.height+neighborhoodRad);
-				
-				if( NSPointInRect( pt, arect))
-                    imode = ROI_selected;
-			break;
-			
+				if( pts.count > 0)
+				{
+					for( int i = 0; i < [pts count]; i++ )
+					{
+                        if( i == pts.count-1) // last point
+                            [self DistancePointLine:pt :[[pts objectAtIndex:i] point] : [[pts objectAtIndex: 0] point] :&distance];
+						else
+                            [self DistancePointLine:pt :[[pts objectAtIndex:i] point] : [[pts objectAtIndex:(i+1)] point] :&distance];
+						
+						if( distance*scale < neighborhoodRad/2)
+						{
+							imode = ROI_selected;
+							break;
+						}
+					}
+				}
+			}
+            break;
+                
 			case t2DPoint:
 				arect = NSMakeRect( rect.origin.x - neighborhoodRad/scale, rect.origin.y - neighborhoodRad/scale, neighborhoodRad*2/scale, neighborhoodRad*2/scale);
 				
@@ -2121,6 +2145,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 			break;
 			
 			
+            case tOval:
 			case tOPolygon:
 			case tAngle:
 			{
@@ -5505,6 +5530,10 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				  
 				  glVertex2f( (rrect.origin.x + rrect.size.width*cos(angle) - offsetx)*scaleValue, (rrect.origin.y + rrect.size.height*sin(angle)- offsety)*scaleValue);
 				}
+                
+                if( [[NSUserDefaults standardUserDefaults] boolForKey: @"drawROICircleCenter"])
+                    glVertex2f( (rrect.origin.x - offsetx) * scaleValue, (rrect.origin.y - offsety) * scaleValue);
+                
 				glEnd();
 				
 				if((mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing) && highlightIfSelected)
