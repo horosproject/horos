@@ -1611,25 +1611,25 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 
 -(float) Angle:(NSPoint) p2 :(NSPoint) p1 :(NSPoint) p3
 {
-  float 		ax,ay,bx,by;
-  float			val, angle;
-  float			px = 1, py = 1;
-  
-  if( pixelSpacingX != 0 && pixelSpacingY != 0)
-  {
-	px = pixelSpacingX;
-	py = pixelSpacingY;
-  }
-  
-  ax = p2.x*px - p1.x*px;
-  ay = p2.y*py - p1.y*py;
-  bx = p3.x*px - p1.x*px;
-  by = p3.y*py - p1.y*py;
-  
-  if (ax == 0 && ay == 0) return 0;
-  val = ((ax * bx) + (ay * by)) / (sqrt(ax*ax + ay*ay) * sqrt(bx*bx + by*by));
-  angle = acos (val) / deg2rad;
-  return angle;
+    float ax,ay,bx,by, val, angle, px = 1, py = 1;
+    
+    if( pixelSpacingX != 0 && pixelSpacingY != 0) {
+        px = pixelSpacingX;
+        py = pixelSpacingY;
+    }
+    
+    ax = p2.x*px - p1.x*px;
+    ay = p2.y*py - p1.y*py;
+    bx = p3.x*px - p1.x*px;
+    by = p3.y*py - p1.y*py;
+    
+    if (ax == 0 && ay == 0)
+        return 0;
+    
+    val = ((ax * bx) + (ay * by)) / (sqrt(ax*ax + ay*ay) * sqrt(bx*bx + by*by));
+    angle = acos (val) / deg2rad;
+    
+    return angle;
 }
 
 -(float) Magnitude:( NSPoint) Point1 :(NSPoint) Point2 
