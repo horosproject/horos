@@ -303,6 +303,9 @@
     
     NSString* accessionNumber = [paramDict valueForKey:@"AccessionNumber"];
     if (accessionNumber.length) [subpredicates addObject:[NSPredicate predicateWithFormat:@"accessionNumber == %@", accessionNumber]];
+    
+    NSString* studyID = [paramDict valueForKey:@"StudyID"];
+    if (studyID.length) [subpredicates addObject:[NSPredicate predicateWithFormat:@"id == %@", studyID]];
 
     if (!subpredicates.count)
         ReturnWithCode(400); // Bad Request
@@ -326,9 +329,10 @@
                 [keys setObject:studyInstanceUID forKey:@"StudyInstanceUID"];
             if (accessionNumber.length)
                 [keys setObject:accessionNumber forKey:@"AccessionNumber"];
+            if (studyID.length)
+                [keys setObject:studyID forKey:@"StudyID"];
             
-            if (keys.count)
-            {
+            if (keys.count) {
                 NSMutableArray* dicomNodes = [NSMutableArray array];
                 NSArray* allDicomNodes = [DCMNetServiceDelegate DICOMServersList];
                 for (NSDictionary* si in [NSUserDefaults.standardUserDefaults arrayForKey:@"comparativeSearchDICOMNodes"])
