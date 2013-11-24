@@ -527,9 +527,7 @@
                     do
                     {
                         [db importFilesFromIncomingDir];
-                        //[NSThread sleepForTimeInterval: 0.3];
-                        //[[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
-                        //[NSThread sleepForTimeInterval: 0.3];
+                        [NSThread sleepForTimeInterval: 0.3];
                         
                         // And find the study locally
                         iobjects = [db objectsForEntity:@"Study" predicate:predicate error:error];
