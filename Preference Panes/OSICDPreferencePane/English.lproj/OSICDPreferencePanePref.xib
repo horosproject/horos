@@ -16,22 +16,22 @@
         <window title="&lt;&lt; do not localize >>" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" deferred="NO" oneShot="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="12" userLabel="PrefPane">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="57" y="247" width="760" height="330"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="contentRect" x="57" y="247" width="709" height="330"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
             <value key="minSize" type="size" width="224.66300000000001" height="10"/>
             <view key="contentView" id="6">
-                <rect key="frame" x="0.0" y="0.0" width="760" height="330"/>
+                <rect key="frame" x="0.0" y="0.0" width="709" height="330"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <box title="Reading CD/DVDs" translatesAutoresizingMaskIntoConstraints="NO" id="98">
-                        <rect key="frame" x="17" y="102" width="726" height="208"/>
+                        <rect key="frame" x="17" y="102" width="675" height="208"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
-                            <rect key="frame" x="2" y="2" width="722" height="188"/>
+                            <rect key="frame" x="2" y="2" width="671" height="188"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <button toolTip="Once an inserted disk is successfully indexed, it is automatically selected" translatesAutoresizingMaskIntoConstraints="NO" id="196">
-                                    <rect key="frame" x="326" y="139" width="381" height="18"/>
+                                    <rect key="frame" x="326" y="139" width="330" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Eject the disk when done copying" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="197">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -42,7 +42,7 @@
                                     </connections>
                                 </button>
                                 <button toolTip="Once an inserted disk is successfully indexed, it is automatically selected" translatesAutoresizingMaskIntoConstraints="NO" id="210">
-                                    <rect key="frame" x="326" y="119" width="381" height="18"/>
+                                    <rect key="frame" x="326" y="119" width="330" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Automatically select the source when ready" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="211">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -53,10 +53,10 @@
                                     </connections>
                                 </button>
                                 <matrix horizontalHuggingPriority="396" verticalHuggingPriority="750" horizontalCompressionResistancePriority="490" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="102">
-                                    <rect key="frame" x="16" y="13" width="689" height="38"/>
+                                    <rect key="frame" x="16" y="13" width="638" height="38"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                    <size key="cellSize" width="508" height="18"/>
+                                    <size key="cellSize" width="638" height="18"/>
                                     <size key="intercellSpacing" width="4" height="2"/>
                                     <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="167">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -79,7 +79,7 @@
                                     </connections>
                                 </matrix>
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="199">
-                                    <rect key="frame" x="326" y="33" width="381" height="18"/>
+                                    <rect key="frame" x="326" y="33" width="330" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="If no DICOM files are found, switch to Scan Mode" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="200">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -127,7 +127,7 @@
                                     </connections>
                                 </matrix>
                                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="220">
-                                    <rect key="frame" x="14" y="160" width="693" height="17"/>
+                                    <rect key="frame" x="14" y="160" width="642" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="When a disc is inserted:" id="221">
                                         <font key="font" metaFont="system"/>
@@ -136,7 +136,7 @@
                                     </textFieldCell>
                                 </textField>
                                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="225">
-                                    <rect key="frame" x="14" y="54" width="693" height="17"/>
+                                    <rect key="frame" x="14" y="54" width="642" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Determine disc content by considering:" id="226">
                                         <font key="font" metaFont="system"/>
@@ -177,10 +177,10 @@
                         <font key="titleFont" metaFont="system"/>
                     </box>
                     <box verticalHuggingPriority="249" title="Writing CD/DVDs" translatesAutoresizingMaskIntoConstraints="NO" id="132">
-                        <rect key="frame" x="17" y="16" width="726" height="82"/>
+                        <rect key="frame" x="17" y="16" width="675" height="82"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
-                            <rect key="frame" x="2" y="2" width="722" height="62"/>
+                            <rect key="frame" x="2" y="2" width="671" height="62"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="135">
@@ -195,7 +195,7 @@
                                     </connections>
                                 </button>
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="183">
-                                    <rect key="frame" x="15" y="36" width="692" height="18"/>
+                                    <rect key="frame" x="15" y="36" width="641" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Prefer standard JPEG instead of JPEG2000 / JPEG LS compression for DICOM files" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="184">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
