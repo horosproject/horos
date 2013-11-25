@@ -1,1179 +1,254 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
-	<data>
-		<int key="IBDocument.SystemTarget">1070</int>
-		<string key="IBDocument.SystemVersion">12E55</string>
-		<string key="IBDocument.InterfaceBuilderVersion">3084</string>
-		<string key="IBDocument.AppKitVersion">1187.39</string>
-		<string key="IBDocument.HIToolboxVersion">626.00</string>
-		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
-			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">3084</string>
-		</object>
-		<array key="IBDocument.IntegratedClassDependencies">
-			<string>NSBox</string>
-			<string>NSButton</string>
-			<string>NSButtonCell</string>
-			<string>NSCustomObject</string>
-			<string>NSMatrix</string>
-			<string>NSPathCell</string>
-			<string>NSPathControl</string>
-			<string>NSTextField</string>
-			<string>NSTextFieldCell</string>
-			<string>NSUserDefaultsController</string>
-			<string>NSView</string>
-			<string>NSWindowTemplate</string>
-		</array>
-		<array key="IBDocument.PluginDependencies">
-			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-		</array>
-		<object class="NSMutableDictionary" key="IBDocument.Metadata">
-			<string key="NS.key.0">PluginDependencyRecalculationVersion</string>
-			<integer value="1" key="NS.object.0"/>
-		</object>
-		<array class="NSMutableArray" key="IBDocument.RootObjects" id="366798735">
-			<object class="NSCustomObject" id="896837093">
-				<string key="NSClassName">OSICDPreferencePanePref</string>
-			</object>
-			<object class="NSCustomObject" id="503823672">
-				<string key="NSClassName">FirstResponder</string>
-			</object>
-			<object class="NSCustomObject" id="581009624">
-				<string key="NSClassName">NSApplication</string>
-			</object>
-			<object class="NSWindowTemplate" id="118841857">
-				<int key="NSWindowStyleMask">7</int>
-				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{57, 247}, {726, 328}}</string>
-				<int key="NSWTFlags">1081606144</int>
-				<string key="NSWindowTitle">&lt;&lt; do not localize &gt;&gt;</string>
-				<string key="NSWindowClass">NSWindow</string>
-				<object class="NSMutableString" key="NSViewClass">
-					<characters key="NS.bytes">View</characters>
-				</object>
-				<nil key="NSUserInterfaceItemIdentifier"/>
-				<string key="NSWindowContentMinSize">{224.66300000000001, 10}</string>
-				<object class="NSView" key="NSWindowView" id="365080541">
-					<reference key="NSNextResponder"/>
-					<int key="NSvFlags">256</int>
-					<array class="NSMutableArray" key="NSSubviews">
-						<object class="NSBox" id="158522742">
-							<reference key="NSNextResponder" ref="365080541"/>
-							<int key="NSvFlags">256</int>
-							<array class="NSMutableArray" key="NSSubviews">
-								<object class="NSView" id="284310877">
-									<reference key="NSNextResponder" ref="158522742"/>
-									<int key="NSvFlags">274</int>
-									<array class="NSMutableArray" key="NSSubviews">
-										<object class="NSButton" id="102423531">
-											<reference key="NSNextResponder" ref="284310877"/>
-											<int key="NSvFlags">256</int>
-											<string key="NSFrame">{{326, 139}, {657, 18}}</string>
-											<reference key="NSSuperview" ref="284310877"/>
-											<reference key="NSNextKeyView" ref="550653012"/>
-											<bool key="NSEnabled">YES</bool>
-											<object class="NSButtonCell" key="NSCell" id="12722064">
-												<int key="NSCellFlags">67108864</int>
-												<int key="NSCellFlags2">0</int>
-												<string key="NSContents">Eject the disk when done copying</string>
-												<object class="NSFont" key="NSSupport" id="255335428">
-													<string key="NSName">LucidaGrande</string>
-													<double key="NSSize">13</double>
-													<int key="NSfFlags">1044</int>
-												</object>
-												<reference key="NSControlView" ref="102423531"/>
-												<int key="NSButtonFlags">1211912448</int>
-												<int key="NSButtonFlags2">2</int>
-												<object class="NSButtonImageSource" key="NSAlternateImage" id="879291054">
-													<string key="NSImageName">NSSwitch</string>
-												</object>
-												<string key="NSAlternateContents"/>
-												<string key="NSKeyEquivalent"/>
-												<int key="NSPeriodicDelay">200</int>
-												<int key="NSPeriodicInterval">25</int>
-											</object>
-											<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
-										</object>
-										<object class="NSButton" id="550653012">
-											<reference key="NSNextResponder" ref="284310877"/>
-											<int key="NSvFlags">256</int>
-											<string key="NSFrame">{{326, 119}, {295, 18}}</string>
-											<reference key="NSSuperview" ref="284310877"/>
-											<reference key="NSNextKeyView" ref="61924080"/>
-											<bool key="NSEnabled">YES</bool>
-											<object class="NSButtonCell" key="NSCell" id="568305960">
-												<int key="NSCellFlags">67108864</int>
-												<int key="NSCellFlags2">0</int>
-												<string key="NSContents">Automatically select the source when ready</string>
-												<reference key="NSSupport" ref="255335428"/>
-												<reference key="NSControlView" ref="550653012"/>
-												<int key="NSButtonFlags">1211912448</int>
-												<int key="NSButtonFlags2">2</int>
-												<reference key="NSAlternateImage" ref="879291054"/>
-												<string key="NSAlternateContents"/>
-												<string key="NSKeyEquivalent"/>
-												<int key="NSPeriodicDelay">200</int>
-												<int key="NSPeriodicInterval">25</int>
-											</object>
-											<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
-										</object>
-										<object class="NSMatrix" id="468243953">
-											<reference key="NSNextResponder" ref="284310877"/>
-											<int key="NSvFlags">256</int>
-											<string key="NSFrame">{{16, 13}, {655, 38}}</string>
-											<reference key="NSSuperview" ref="284310877"/>
-											<reference key="NSNextKeyView" ref="947728721"/>
-											<bool key="NSEnabled">YES</bool>
-											<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
-											<int key="NSNumRows">2</int>
-											<int key="NSNumCols">1</int>
-											<array class="NSMutableArray" key="NSCells">
-												<object class="NSButtonCell" id="1023620656">
-													<int key="NSCellFlags">-2080374784</int>
-													<int key="NSCellFlags2">0</int>
-													<string key="NSContents">Files indexed in the DICOMDIR file</string>
-													<reference key="NSSupport" ref="255335428"/>
-													<reference key="NSControlView" ref="468243953"/>
-													<int key="NSTag">1</int>
-													<int key="NSButtonFlags">1211912448</int>
-													<int key="NSButtonFlags2">0</int>
-													<object class="NSButtonImageSource" key="NSAlternateImage" id="896218685">
-														<string key="NSImageName">NSRadioButton</string>
-													</object>
-													<string key="NSAlternateContents"/>
-													<object class="NSMutableString" key="NSKeyEquivalent" id="750068380">
-														<characters key="NS.bytes"/>
-													</object>
-													<int key="NSPeriodicDelay">200</int>
-													<int key="NSPeriodicInterval">25</int>
-												</object>
-												<object class="NSButtonCell" id="257334181">
-													<int key="NSCellFlags">67108864</int>
-													<int key="NSCellFlags2">0</int>
-													<string key="NSContents">All DICOM files available on the disk, ignoring the DICOMDIR file (Scan Mode)</string>
-													<reference key="NSSupport" ref="255335428"/>
-													<reference key="NSControlView" ref="468243953"/>
-													<int key="NSButtonFlags">1211912448</int>
-													<int key="NSButtonFlags2">0</int>
-													<reference key="NSAlternateImage" ref="896218685"/>
-													<string key="NSAlternateContents"/>
-													<reference key="NSKeyEquivalent" ref="750068380"/>
-													<int key="NSPeriodicDelay">200</int>
-													<int key="NSPeriodicInterval">25</int>
-												</object>
-											</array>
-											<string key="NSCellSize">{655, 18}</string>
-											<string key="NSIntercellSpacing">{4, 2}</string>
-											<int key="NSMatrixFlags">1143480320</int>
-											<string key="NSCellClass">NSActionCell</string>
-											<object class="NSButtonCell" key="NSProtoCell" id="816998943">
-												<int key="NSCellFlags">67108864</int>
-												<int key="NSCellFlags2">0</int>
-												<string key="NSContents">Radio</string>
-												<reference key="NSSupport" ref="255335428"/>
-												<int key="NSButtonFlags">1211912448</int>
-												<int key="NSButtonFlags2">0</int>
-												<object class="NSImage" key="NSNormalImage">
-													<int key="NSImageFlags">549453824</int>
-													<string key="NSSize">{18, 18}</string>
-													<array class="NSMutableArray" key="NSReps">
-														<array>
-															<integer value="0"/>
-															<object class="NSBitmapImageRep">
-																<object class="NSData" key="NSTIFFRepresentation">
-																	<bytes key="NS.bytes">TU0AKgAABRgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAMAAAADAAAAAwAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAADwRERGLJycnySsrK/A1NTXw
-IyMjyRwcHIsJCQk8AAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFFRUVdVBQUOCoqKj/
-29vb//n5+f/6+vr/2tra/6qqqv9UVFTgHx8fdQAAAAUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUZGRl5
-dXV198PDw//8/Pz////////////////////////////U1NT/fHx89yUlJXkAAAAFAAAAAAAAAAAAAAAA
-AAAAAxEREUZqamrmtbW1/+3t7f/+/v7//v7+//7+/v/9/f3//f39//39/f/39/f/xMTE/3d3d+YZGRlG
-AAAAAwAAAAAAAAAAAAAACkJCQqGtra3/xsbG/+vr6//y8vL/9fX1//X19f/z8/P/9fX1//Ly8v/u7u7/
-0tLS/6+vr/9KSkqhAAAACgAAAAAAAAAAAAAAF3h4eN2/v7//z8/P/93d3f/q6ur/7+/v/+/v7//w8PD/
-7e3t/+3t7f/i4uL/zs7O/8XFxf98fHzdAAAAFwAAAAAAAAADAAAAJKSkpPjOzs7/2dnZ/+Dg4P/i4uL/
-5eXl/+bm5v/n5+f/5eXl/+Li4v/e3t7/2tra/9DQ0P+srKz4AAAAJAAAAAMAAAADAAAALrCwsPrW1tb/
-3t7e/+Tk5P/p6en/6+vr/+zs7P/p6en/6+vr/+fn5//k5OT/4ODg/9nZ2f+zs7P6AAAALgAAAAMAAAAD
-AAAALp2dnezg4OD/5eXl/+rq6v/u7u7/8PDw//Dw8P/x8fH/8PDw/+7u7v/q6ur/5ubm/+Hh4f+ZmZns
-AAAALgAAAAMAAAADAAAAJG5ubs/l5eX/6enp/+/v7//y8vL/9vb2//r6+v/5+fn/9/f3//b29v/x8fH/
-6+vr/+Tk5P9ra2vPAAAAJAAAAAMAAAAAAAAAFy4uLpPCwsL67Ozs//Pz8//5+fn//v7+//7+/v/+/v7/
-/v7+//v7+//19fX/8PDw/8LCwvosLCyTAAAAFwAAAAAAAAAAAAAACgAAAENfX1/S5OTk/vn5+f/+/v7/
-///////////////////////////8/Pz/5ubm/l9fX9IAAABDAAAACgAAAAAAAAAAAAAAAwAAABcAAABl
-YmJi3NLS0v3////////////////////////////////V1dX9ZGRk3AAAAGUAAAAXAAAAAwAAAAAAAAAA
-AAAAAAAAAAUAAAAfAAAAZTMzM8KAgIDwv7+//O3t7f/t7e3/v7+//ICAgPAzMzPCAAAAZQAAAB8AAAAF
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFAAAAFwAAAEMAAAB3AAAAnwAAALMAAACzAAAAnwAAAHcAAABD
-AAAAFwAAAAUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAoAAAAXAAAAJAAAAC4AAAAu
-AAAAJAAAABcAAAAKAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAwAAAAMAAAADAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADQEAAAMAAAABABIAAAEB
-AAMAAAABABIAAAECAAMAAAAEAAAFugEDAAMAAAABAAEAAAEGAAMAAAABAAIAAAERAAQAAAABAAAACAES
-AAMAAAABAAEAAAEVAAMAAAABAAQAAAEWAAMAAAABABIAAAEXAAQAAAABAAAFEAEcAAMAAAABAAEAAAFS
-AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
-																</object>
-															</object>
-														</array>
-													</array>
-													<object class="NSColor" key="NSColor" id="17201655">
-														<int key="NSColorSpace">3</int>
-														<bytes key="NSWhite">MCAwAA</bytes>
-													</object>
-												</object>
-												<reference key="NSAlternateImage" ref="896218685"/>
-												<int key="NSPeriodicDelay">400</int>
-												<int key="NSPeriodicInterval">75</int>
-											</object>
-											<reference key="NSSelectedCell" ref="1023620656"/>
-											<object class="NSColor" key="NSBackgroundColor" id="163367439">
-												<int key="NSColorSpace">6</int>
-												<string key="NSCatalogName">System</string>
-												<string key="NSColorName">controlColor</string>
-												<object class="NSColor" key="NSColor">
-													<int key="NSColorSpace">3</int>
-													<bytes key="NSWhite">MC42NjY2NjY2NjY3AA</bytes>
-												</object>
-											</object>
-											<object class="NSColor" key="NSCellBackgroundColor" id="954293903">
-												<int key="NSColorSpace">3</int>
-												<bytes key="NSWhite">MQA</bytes>
-											</object>
-											<object class="NSFont" key="NSFont" id="500324374">
-												<string key="NSName">LucidaGrande</string>
-												<double key="NSSize">11</double>
-												<int key="NSfFlags">16</int>
-											</object>
-										</object>
-										<object class="NSButton" id="947728721">
-											<reference key="NSNextResponder" ref="284310877"/>
-											<int key="NSvFlags">256</int>
-											<string key="NSFrame">{{326, 33}, {347, 18}}</string>
-											<reference key="NSSuperview" ref="284310877"/>
-											<reference key="NSNextKeyView" ref="341937739"/>
-											<bool key="NSEnabled">YES</bool>
-											<object class="NSButtonCell" key="NSCell" id="734149438">
-												<int key="NSCellFlags">67108864</int>
-												<int key="NSCellFlags2">0</int>
-												<string key="NSContents">If no DICOM files are found, switch to Scan Mode</string>
-												<reference key="NSSupport" ref="255335428"/>
-												<reference key="NSControlView" ref="947728721"/>
-												<int key="NSButtonFlags">1211912448</int>
-												<int key="NSButtonFlags2">2</int>
-												<reference key="NSAlternateImage" ref="879291054"/>
-												<string key="NSAlternateContents"/>
-												<string key="NSKeyEquivalent"/>
-												<int key="NSPeriodicDelay">200</int>
-												<int key="NSPeriodicInterval">25</int>
-											</object>
-											<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
-										</object>
-										<object class="NSMatrix" id="1015614671">
-											<reference key="NSNextResponder" ref="284310877"/>
-											<int key="NSvFlags">268</int>
-											<string key="NSFrame">{{16, 79}, {311, 78}}</string>
-											<reference key="NSSuperview" ref="284310877"/>
-											<reference key="NSNextKeyView" ref="102423531"/>
-											<string key="NSReuseIdentifierKey">_NS:9</string>
-											<bool key="NSEnabled">YES</bool>
-											<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
-											<int key="NSNumRows">4</int>
-											<int key="NSNumCols">1</int>
-											<array class="NSMutableArray" key="NSCells">
-												<object class="NSButtonCell" id="140574459">
-													<int key="NSCellFlags">-2080374784</int>
-													<int key="NSCellFlags2">0</int>
-													<string key="NSContents">Copy all its contents into the database</string>
-													<reference key="NSSupport" ref="255335428"/>
-													<reference key="NSControlView" ref="1015614671"/>
-													<int key="NSTag">1</int>
-													<int key="NSButtonFlags">1211912448</int>
-													<int key="NSButtonFlags2">0</int>
-													<reference key="NSAlternateImage" ref="896218685"/>
-													<string key="NSAlternateContents"/>
-													<string key="NSKeyEquivalent"/>
-													<int key="NSPeriodicDelay">200</int>
-													<int key="NSPeriodicInterval">25</int>
-												</object>
-												<object class="NSButtonCell" id="264276504">
-													<int key="NSCellFlags">67108864</int>
-													<int key="NSCellFlags2">0</int>
-													<string key="NSContents">Show disc content as a separate source</string>
-													<reference key="NSSupport" ref="255335428"/>
-													<reference key="NSControlView" ref="1015614671"/>
-													<int key="NSButtonFlags">1211912448</int>
-													<int key="NSButtonFlags2">0</int>
-													<object class="NSImage" key="NSNormalImage">
-														<int key="NSImageFlags">549453824</int>
-														<string key="NSSize">{18, 18}</string>
-														<array class="NSMutableArray" key="NSReps">
-															<array>
-																<integer value="0"/>
-																<object class="NSBitmapImageRep">
-																	<object class="NSData" key="NSTIFFRepresentation">
-																		<bytes key="NS.bytes">TU0AKgAABRgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAMAAAADAAAAAwAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAADwRERGLJycnySsrK/A1NTXw
-IyMjyRwcHIsJCQk8AAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFFRUVdVBQUOCoqKj/
-29vb//n5+f/6+vr/2tra/6qqqv9UVFTgHx8fdQAAAAUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUZGRl5
-dXV198PDw//8/Pz////////////////////////////U1NT/fHx89yUlJXkAAAAFAAAAAAAAAAAAAAAA
-AAAAAxEREUZqamrmtbW1/+3t7f/+/v7//v7+//7+/v/9/f3//f39//39/f/39/f/xMTE/3d3d+YZGRlG
-AAAAAwAAAAAAAAAAAAAACkJCQqGtra3/xsbG/+vr6//y8vL/9fX1//X19f/z8/P/9fX1//Ly8v/u7u7/
-0tLS/6+vr/9KSkqhAAAACgAAAAAAAAAAAAAAF3h4eN2/v7//z8/P/93d3f/q6ur/7+/v/+/v7//w8PD/
-7e3t/+3t7f/i4uL/zs7O/8XFxf98fHzdAAAAFwAAAAAAAAADAAAAJKSkpPjOzs7/2dnZ/+Dg4P/i4uL/
-5eXl/+bm5v/n5+f/5eXl/+Li4v/e3t7/2tra/9DQ0P+srKz4AAAAJAAAAAMAAAADAAAALrCwsPrW1tb/
-3t7e/+Tk5P/p6en/6+vr/+zs7P/p6en/6+vr/+fn5//k5OT/4ODg/9nZ2f+zs7P6AAAALgAAAAMAAAAD
-AAAALp2dnezg4OD/5eXl/+rq6v/u7u7/8PDw//Dw8P/x8fH/8PDw/+7u7v/q6ur/5ubm/+Hh4f+ZmZns
-AAAALgAAAAMAAAADAAAAJG5ubs/l5eX/6enp/+/v7//y8vL/9vb2//r6+v/5+fn/9/f3//b29v/x8fH/
-6+vr/+Tk5P9ra2vPAAAAJAAAAAMAAAAAAAAAFy4uLpPCwsL67Ozs//Pz8//5+fn//v7+//7+/v/+/v7/
-/v7+//v7+//19fX/8PDw/8LCwvosLCyTAAAAFwAAAAAAAAAAAAAACgAAAENfX1/S5OTk/vn5+f/+/v7/
-///////////////////////////8/Pz/5ubm/l9fX9IAAABDAAAACgAAAAAAAAAAAAAAAwAAABcAAABl
-YmJi3NLS0v3////////////////////////////////V1dX9ZGRk3AAAAGUAAAAXAAAAAwAAAAAAAAAA
-AAAAAAAAAAUAAAAfAAAAZTMzM8KAgIDwv7+//O3t7f/t7e3/v7+//ICAgPAzMzPCAAAAZQAAAB8AAAAF
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFAAAAFwAAAEMAAAB3AAAAnwAAALMAAACzAAAAnwAAAHcAAABD
-AAAAFwAAAAUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAoAAAAXAAAAJAAAAC4AAAAu
-AAAAJAAAABcAAAAKAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAwAAAAMAAAADAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADQEAAAMAAAABABIAAAEB
-AAMAAAABABIAAAECAAMAAAAEAAAFugEDAAMAAAABAAEAAAEGAAMAAAABAAIAAAERAAQAAAABAAAACAES
-AAMAAAABAAEAAAEVAAMAAAABAAQAAAEWAAMAAAABABIAAAEXAAQAAAABAAAFEAEcAAMAAAABAAEAAAFS
-AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
-																	</object>
-																</object>
-															</array>
-														</array>
-														<reference key="NSColor" ref="17201655"/>
-													</object>
-													<reference key="NSAlternateImage" ref="896218685"/>
-													<int key="NSPeriodicDelay">400</int>
-													<int key="NSPeriodicInterval">75</int>
-												</object>
-												<object class="NSButtonCell" id="316609513">
-													<int key="NSCellFlags">67108864</int>
-													<int key="NSCellFlags2">0</int>
-													<string key="NSContents">Ask the user</string>
-													<reference key="NSSupport" ref="255335428"/>
-													<reference key="NSControlView" ref="1015614671"/>
-													<int key="NSTag">-1</int>
-													<int key="NSButtonFlags">1211912448</int>
-													<int key="NSButtonFlags2">0</int>
-													<reference key="NSAlternateImage" ref="896218685"/>
-													<int key="NSPeriodicDelay">400</int>
-													<int key="NSPeriodicInterval">75</int>
-												</object>
-												<object class="NSButtonCell" id="583206870">
-													<int key="NSCellFlags">67108864</int>
-													<int key="NSCellFlags2">0</int>
-													<string key="NSContents">Ignore it</string>
-													<reference key="NSSupport" ref="255335428"/>
-													<reference key="NSControlView" ref="1015614671"/>
-													<int key="NSTag">2</int>
-													<int key="NSButtonFlags">1211912448</int>
-													<int key="NSButtonFlags2">0</int>
-													<reference key="NSAlternateImage" ref="896218685"/>
-													<int key="NSPeriodicDelay">400</int>
-													<int key="NSPeriodicInterval">75</int>
-												</object>
-											</array>
-											<string key="NSCellSize">{311, 18}</string>
-											<string key="NSIntercellSpacing">{4, 2}</string>
-											<int key="NSMatrixFlags">1151868928</int>
-											<string key="NSCellClass">NSActionCell</string>
-											<object class="NSButtonCell" key="NSProtoCell" id="882915887">
-												<int key="NSCellFlags">67108864</int>
-												<int key="NSCellFlags2">0</int>
-												<string key="NSContents">Radio</string>
-												<reference key="NSSupport" ref="255335428"/>
-												<int key="NSButtonFlags">1211912448</int>
-												<int key="NSButtonFlags2">0</int>
-												<object class="NSImage" key="NSNormalImage">
-													<int key="NSImageFlags">549453824</int>
-													<string key="NSSize">{18, 18}</string>
-													<array class="NSMutableArray" key="NSReps">
-														<array>
-															<integer value="0"/>
-															<object class="NSBitmapImageRep">
-																<object class="NSData" key="NSTIFFRepresentation">
-																	<bytes key="NS.bytes">TU0AKgAABRgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAMAAAADAAAAAwAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAADwRERGLJycnySsrK/A1NTXw
-IyMjyRwcHIsJCQk8AAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFFRUVdVBQUOCoqKj/
-29vb//n5+f/6+vr/2tra/6qqqv9UVFTgHx8fdQAAAAUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUZGRl5
-dXV198PDw//8/Pz////////////////////////////U1NT/fHx89yUlJXkAAAAFAAAAAAAAAAAAAAAA
-AAAAAxEREUZqamrmtbW1/+3t7f/+/v7//v7+//7+/v/9/f3//f39//39/f/39/f/xMTE/3d3d+YZGRlG
-AAAAAwAAAAAAAAAAAAAACkJCQqGtra3/xsbG/+vr6//y8vL/9fX1//X19f/z8/P/9fX1//Ly8v/u7u7/
-0tLS/6+vr/9KSkqhAAAACgAAAAAAAAAAAAAAF3h4eN2/v7//z8/P/93d3f/q6ur/7+/v/+/v7//w8PD/
-7e3t/+3t7f/i4uL/zs7O/8XFxf98fHzdAAAAFwAAAAAAAAADAAAAJKSkpPjOzs7/2dnZ/+Dg4P/i4uL/
-5eXl/+bm5v/n5+f/5eXl/+Li4v/e3t7/2tra/9DQ0P+srKz4AAAAJAAAAAMAAAADAAAALrCwsPrW1tb/
-3t7e/+Tk5P/p6en/6+vr/+zs7P/p6en/6+vr/+fn5//k5OT/4ODg/9nZ2f+zs7P6AAAALgAAAAMAAAAD
-AAAALp2dnezg4OD/5eXl/+rq6v/u7u7/8PDw//Dw8P/x8fH/8PDw/+7u7v/q6ur/5ubm/+Hh4f+ZmZns
-AAAALgAAAAMAAAADAAAAJG5ubs/l5eX/6enp/+/v7//y8vL/9vb2//r6+v/5+fn/9/f3//b29v/x8fH/
-6+vr/+Tk5P9ra2vPAAAAJAAAAAMAAAAAAAAAFy4uLpPCwsL67Ozs//Pz8//5+fn//v7+//7+/v/+/v7/
-/v7+//v7+//19fX/8PDw/8LCwvosLCyTAAAAFwAAAAAAAAAAAAAACgAAAENfX1/S5OTk/vn5+f/+/v7/
-///////////////////////////8/Pz/5ubm/l9fX9IAAABDAAAACgAAAAAAAAAAAAAAAwAAABcAAABl
-YmJi3NLS0v3////////////////////////////////V1dX9ZGRk3AAAAGUAAAAXAAAAAwAAAAAAAAAA
-AAAAAAAAAAUAAAAfAAAAZTMzM8KAgIDwv7+//O3t7f/t7e3/v7+//ICAgPAzMzPCAAAAZQAAAB8AAAAF
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFAAAAFwAAAEMAAAB3AAAAnwAAALMAAACzAAAAnwAAAHcAAABD
-AAAAFwAAAAUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAoAAAAXAAAAJAAAAC4AAAAu
-AAAAJAAAABcAAAAKAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAwAAAAMAAAADAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADQEAAAMAAAABABIAAAEB
-AAMAAAABABIAAAECAAMAAAAEAAAFugEDAAMAAAABAAEAAAEGAAMAAAABAAIAAAERAAQAAAABAAAACAES
-AAMAAAABAAEAAAEVAAMAAAABAAQAAAEWAAMAAAABABIAAAEXAAQAAAABAAAFEAEcAAMAAAABAAEAAAFS
-AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
-																</object>
-															</object>
-														</array>
-													</array>
-													<reference key="NSColor" ref="17201655"/>
-												</object>
-												<reference key="NSAlternateImage" ref="896218685"/>
-												<int key="NSPeriodicDelay">400</int>
-												<int key="NSPeriodicInterval">75</int>
-											</object>
-											<reference key="NSSelectedCell" ref="140574459"/>
-											<reference key="NSBackgroundColor" ref="163367439"/>
-											<reference key="NSCellBackgroundColor" ref="954293903"/>
-											<reference key="NSFont" ref="255335428"/>
-										</object>
-										<object class="NSTextField" id="281725141">
-											<reference key="NSNextResponder" ref="284310877"/>
-											<int key="NSvFlags">268</int>
-											<string key="NSFrame">{{14, 160}, {154, 17}}</string>
-											<reference key="NSSuperview" ref="284310877"/>
-											<reference key="NSNextKeyView" ref="1015614671"/>
-											<string key="NSReuseIdentifierKey">_NS:1505</string>
-											<bool key="NSEnabled">YES</bool>
-											<object class="NSTextFieldCell" key="NSCell" id="97366120">
-												<int key="NSCellFlags">68157504</int>
-												<int key="NSCellFlags2">272630784</int>
-												<string key="NSContents">When a disc is inserted:</string>
-												<reference key="NSSupport" ref="255335428"/>
-												<string key="NSCellIdentifier">_NS:1505</string>
-												<reference key="NSControlView" ref="281725141"/>
-												<reference key="NSBackgroundColor" ref="163367439"/>
-												<object class="NSColor" key="NSTextColor" id="66030050">
-													<int key="NSColorSpace">6</int>
-													<string key="NSCatalogName">System</string>
-													<string key="NSColorName">controlTextColor</string>
-													<object class="NSColor" key="NSColor">
-														<int key="NSColorSpace">3</int>
-														<bytes key="NSWhite">MAA</bytes>
-													</object>
-												</object>
-											</object>
-											<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
-										</object>
-										<object class="NSTextField" id="61924080">
-											<reference key="NSNextResponder" ref="284310877"/>
-											<int key="NSvFlags">268</int>
-											<string key="NSFrame">{{14, 54}, {252, 17}}</string>
-											<reference key="NSSuperview" ref="284310877"/>
-											<reference key="NSNextKeyView" ref="468243953"/>
-											<string key="NSReuseIdentifierKey">_NS:1505</string>
-											<bool key="NSEnabled">YES</bool>
-											<object class="NSTextFieldCell" key="NSCell" id="172638683">
-												<int key="NSCellFlags">68157504</int>
-												<int key="NSCellFlags2">272630784</int>
-												<string key="NSContents">Determine disc content by considering:</string>
-												<reference key="NSSupport" ref="255335428"/>
-												<string key="NSCellIdentifier">_NS:1505</string>
-												<reference key="NSControlView" ref="61924080"/>
-												<reference key="NSBackgroundColor" ref="163367439"/>
-												<reference key="NSTextColor" ref="66030050"/>
-											</object>
-											<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
-										</object>
-									</array>
-									<string key="NSFrame">{{2, 2}, {688, 188}}</string>
-									<reference key="NSSuperview" ref="158522742"/>
-									<reference key="NSNextKeyView" ref="281725141"/>
-								</object>
-							</array>
-							<string key="NSFrame">{{17, 100}, {692, 208}}</string>
-							<reference key="NSSuperview" ref="365080541"/>
-							<reference key="NSNextKeyView" ref="284310877"/>
-							<string key="NSOffsets">{0, 0}</string>
-							<object class="NSTextFieldCell" key="NSTitleCell">
-								<int key="NSCellFlags">67108864</int>
-								<int key="NSCellFlags2">0</int>
-								<string key="NSContents">Reading CD/DVDs</string>
-								<object class="NSFont" key="NSSupport" id="725338926">
-									<string key="NSName">LucidaGrande</string>
-									<double key="NSSize">13</double>
-									<int key="NSfFlags">16</int>
-								</object>
-								<object class="NSColor" key="NSBackgroundColor" id="248395835">
-									<int key="NSColorSpace">6</int>
-									<string key="NSCatalogName">System</string>
-									<string key="NSColorName">textBackgroundColor</string>
-									<reference key="NSColor" ref="954293903"/>
-								</object>
-								<object class="NSColor" key="NSTextColor">
-									<int key="NSColorSpace">3</int>
-									<bytes key="NSWhite">MCAwLjgwMDAwMDAxAA</bytes>
-								</object>
-							</object>
-							<reference key="NSContentView" ref="284310877"/>
-							<int key="NSBorderType">3</int>
-							<int key="NSBoxType">0</int>
-							<int key="NSTitlePosition">2</int>
-							<bool key="NSTransparent">NO</bool>
-						</object>
-						<object class="NSBox" id="341937739">
-							<reference key="NSNextResponder" ref="365080541"/>
-							<int key="NSvFlags">256</int>
-							<array class="NSMutableArray" key="NSSubviews">
-								<object class="NSView" id="185696618">
-									<reference key="NSNextResponder" ref="341937739"/>
-									<int key="NSvFlags">274</int>
-									<array class="NSMutableArray" key="NSSubviews">
-										<object class="NSButton" id="500457483">
-											<reference key="NSNextResponder" ref="185696618"/>
-											<int key="NSvFlags">256</int>
-											<string key="NSFrame">{{15, 14}, {216, 18}}</string>
-											<reference key="NSSuperview" ref="185696618"/>
-											<reference key="NSNextKeyView" ref="742342778"/>
-											<bool key="NSEnabled">YES</bool>
-											<object class="NSButtonCell" key="NSCell" id="246424518">
-												<int key="NSCellFlags">67108864</int>
-												<int key="NSCellFlags2">0</int>
-												<string key="NSContents">Include contents of this folder:</string>
-												<reference key="NSSupport" ref="255335428"/>
-												<reference key="NSControlView" ref="500457483"/>
-												<int key="NSButtonFlags">1211912448</int>
-												<int key="NSButtonFlags2">2</int>
-												<reference key="NSAlternateImage" ref="879291054"/>
-												<string key="NSAlternateContents"/>
-												<string key="NSKeyEquivalent"/>
-												<int key="NSPeriodicDelay">200</int>
-												<int key="NSPeriodicInterval">25</int>
-											</object>
-											<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
-										</object>
-										<object class="NSButton" id="184313264">
-											<reference key="NSNextResponder" ref="185696618"/>
-											<int key="NSvFlags">256</int>
-											<string key="NSFrame">{{15, 34}, {658, 18}}</string>
-											<reference key="NSSuperview" ref="185696618"/>
-											<reference key="NSNextKeyView" ref="500457483"/>
-											<bool key="NSEnabled">YES</bool>
-											<object class="NSButtonCell" key="NSCell" id="579790439">
-												<int key="NSCellFlags">67108864</int>
-												<int key="NSCellFlags2">0</int>
-												<string key="NSContents">Prefer standard JPEG instead of JPEG2000 / JPEG LS compression for DICOM files</string>
-												<reference key="NSSupport" ref="255335428"/>
-												<reference key="NSControlView" ref="184313264"/>
-												<int key="NSButtonFlags">1211912448</int>
-												<int key="NSButtonFlags2">2</int>
-												<reference key="NSAlternateImage" ref="879291054"/>
-												<string key="NSAlternateContents"/>
-												<string key="NSKeyEquivalent"/>
-												<int key="NSPeriodicDelay">200</int>
-												<int key="NSPeriodicInterval">25</int>
-											</object>
-											<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
-										</object>
-										<object class="NSPathControl" id="742342778">
-											<reference key="NSNextResponder" ref="185696618"/>
-											<int key="NSvFlags">266</int>
-											<set class="NSMutableSet" key="NSDragTypes">
-												<string>Apple URL pasteboard type</string>
-												<string>NSFilenamesPboardType</string>
-											</set>
-											<string key="NSFrame">{{236, 12}, {437, 20}}</string>
-											<reference key="NSSuperview" ref="185696618"/>
-											<reference key="NSNextKeyView"/>
-											<bool key="NSEnabled">YES</bool>
-											<object class="NSPathCell" key="NSCell" id="84108953">
-												<int key="NSCellFlags">337641473</int>
-												<int key="NSCellFlags2">131072</int>
-												<object class="NSURL" key="NSContents">
-													<object class="NSURL" key="NS.base">
-														<nil key="NS.base"/>
-														<string key="NS.relative">file://localhost/</string>
-													</object>
-													<string key="NS.relative">~Documents/FolderToBurn</string>
-												</object>
-												<reference key="NSSupport" ref="500324374"/>
-												<reference key="NSControlView" ref="742342778"/>
-												<array class="NSMutableArray" key="NSPathComponentCells">
-													<object class="NSPathComponentCell">
-														<int key="NSCellFlags">67108928</int>
-														<int key="NSCellFlags2">1024</int>
-														<string key="NSContents">Macintosh HD</string>
-														<reference key="NSSupport" ref="500324374"/>
-														<reference key="NSControlView" ref="742342778"/>
-														<reference key="NSBackgroundColor" ref="248395835"/>
-														<reference key="NSTextColor" ref="66030050"/>
-														<object class="NSURL" key="NSURL">
-															<nil key="NS.base"/>
-															<string key="NS.relative">file://localhost/</string>
-														</object>
-													</object>
-													<object class="NSPathComponentCell">
-														<int key="NSCellFlags">67108928</int>
-														<int key="NSCellFlags2">1024</int>
-														<string key="NSContents">~Documents</string>
-														<reference key="NSSupport" ref="500324374"/>
-														<reference key="NSControlView" ref="742342778"/>
-														<reference key="NSBackgroundColor" ref="248395835"/>
-														<reference key="NSTextColor" ref="66030050"/>
-														<object class="NSURL" key="NSURL">
-															<nil key="NS.base"/>
-															<string key="NS.relative">file://localhost/~Documents</string>
-														</object>
-													</object>
-													<object class="NSPathComponentCell">
-														<int key="NSCellFlags">67108928</int>
-														<int key="NSCellFlags2">1024</int>
-														<string key="NSContents">FolderToBurn</string>
-														<reference key="NSSupport" ref="500324374"/>
-														<reference key="NSControlView" ref="742342778"/>
-														<reference key="NSBackgroundColor" ref="248395835"/>
-														<reference key="NSTextColor" ref="66030050"/>
-														<object class="NSURL" key="NSURL">
-															<nil key="NS.base"/>
-															<string key="NS.relative">file://localhost/~Documents/FolderToBurn</string>
-														</object>
-													</object>
-												</array>
-												<int key="NSPathStyle">1</int>
-												<reference key="NSDelegate" ref="742342778"/>
-											</object>
-											<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
-										</object>
-									</array>
-									<string key="NSFrame">{{2, 2}, {688, 60}}</string>
-									<reference key="NSSuperview" ref="341937739"/>
-									<reference key="NSNextKeyView" ref="184313264"/>
-								</object>
-							</array>
-							<string key="NSFrame">{{17, 16}, {692, 80}}</string>
-							<reference key="NSSuperview" ref="365080541"/>
-							<reference key="NSNextKeyView" ref="185696618"/>
-							<string key="NSOffsets">{0, 0}</string>
-							<object class="NSTextFieldCell" key="NSTitleCell">
-								<int key="NSCellFlags">67108864</int>
-								<int key="NSCellFlags2">0</int>
-								<string key="NSContents">Writing CD/DVDs</string>
-								<reference key="NSSupport" ref="725338926"/>
-								<reference key="NSBackgroundColor" ref="248395835"/>
-								<object class="NSColor" key="NSTextColor">
-									<int key="NSColorSpace">3</int>
-									<bytes key="NSWhite">MCAwLjgwMDAwMDAxAA</bytes>
-								</object>
-							</object>
-							<reference key="NSContentView" ref="185696618"/>
-							<int key="NSBorderType">3</int>
-							<int key="NSBoxType">0</int>
-							<int key="NSTitlePosition">2</int>
-							<bool key="NSTransparent">NO</bool>
-						</object>
-					</array>
-					<string key="NSFrameSize">{726, 328}</string>
-					<reference key="NSSuperview"/>
-					<reference key="NSNextKeyView" ref="158522742"/>
-				</object>
-				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
-				<string key="NSMinSize">{224.66300000000001, 32}</string>
-				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
-				<bool key="NSWindowIsRestorable">YES</bool>
-			</object>
-			<object class="NSUserDefaultsController" id="154481161">
-				<bool key="NSSharedInstance">YES</bool>
-			</object>
-		</array>
-		<object class="IBObjectContainer" key="IBDocument.Objects">
-			<array class="NSMutableArray" key="connectionRecords">
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">_window</string>
-						<reference key="source" ref="896837093"/>
-						<reference key="destination" ref="118841857"/>
-					</object>
-					<int key="connectionID">26</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">mainWindow</string>
-						<reference key="source" ref="896837093"/>
-						<reference key="destination" ref="118841857"/>
-					</object>
-					<int key="connectionID">195</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">chooseSupplementaryBurnPath:</string>
-						<reference key="source" ref="896837093"/>
-						<reference key="destination" ref="742342778"/>
-					</object>
-					<int key="connectionID">206</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">selectedTag: values.UseDICOMDIRFileCD</string>
-						<reference key="source" ref="468243953"/>
-						<reference key="destination" ref="154481161"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="468243953"/>
-							<reference key="NSDestination" ref="154481161"/>
-							<string key="NSLabel">selectedTag: values.UseDICOMDIRFileCD</string>
-							<string key="NSBinding">selectedTag</string>
-							<string key="NSKeyPath">values.UseDICOMDIRFileCD</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">188</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.BurnSupplementaryFolder</string>
-						<reference key="source" ref="500457483"/>
-						<reference key="destination" ref="154481161"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="500457483"/>
-							<reference key="NSDestination" ref="154481161"/>
-							<string key="NSLabel">value: values.BurnSupplementaryFolder</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.BurnSupplementaryFolder</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">174</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.JPEGinsteadJPEG2000</string>
-						<reference key="source" ref="184313264"/>
-						<reference key="destination" ref="154481161"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="184313264"/>
-							<reference key="NSDestination" ref="154481161"/>
-							<string key="NSLabel">value: values.JPEGinsteadJPEG2000</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.JPEGinsteadJPEG2000</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">187</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.JPEGinsteadJPEG2000</string>
-						<reference key="source" ref="579790439"/>
-						<reference key="destination" ref="154481161"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="579790439"/>
-							<reference key="NSDestination" ref="154481161"/>
-							<string key="NSLabel">value: values.JPEGinsteadJPEG2000</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.JPEGinsteadJPEG2000</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">186</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.CDDVDEjectAfterAutoCopy</string>
-						<reference key="source" ref="102423531"/>
-						<reference key="destination" ref="154481161"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="102423531"/>
-							<reference key="NSDestination" ref="154481161"/>
-							<string key="NSLabel">value: values.CDDVDEjectAfterAutoCopy</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.CDDVDEjectAfterAutoCopy</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">215</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.ScanDiskIfDICOMDIRZero</string>
-						<reference key="source" ref="947728721"/>
-						<reference key="destination" ref="154481161"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="947728721"/>
-							<reference key="NSDestination" ref="154481161"/>
-							<string key="NSLabel">value: values.ScanDiskIfDICOMDIRZero</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.ScanDiskIfDICOMDIRZero</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">209</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.SupplementaryBurnPath</string>
-						<reference key="source" ref="742342778"/>
-						<reference key="destination" ref="154481161"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="742342778"/>
-							<reference key="NSDestination" ref="154481161"/>
-							<string key="NSLabel">value: values.SupplementaryBurnPath</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.SupplementaryBurnPath</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">205</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.autoSelectSourceCDDVD</string>
-						<reference key="source" ref="550653012"/>
-						<reference key="destination" ref="154481161"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="550653012"/>
-							<reference key="NSDestination" ref="154481161"/>
-							<string key="NSLabel">value: values.autoSelectSourceCDDVD</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.autoSelectSourceCDDVD</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">212</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">selectedTag: values.MOUNT</string>
-						<reference key="source" ref="1015614671"/>
-						<reference key="destination" ref="154481161"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="1015614671"/>
-							<reference key="NSDestination" ref="154481161"/>
-							<string key="NSLabel">selectedTag: values.MOUNT</string>
-							<string key="NSBinding">selectedTag</string>
-							<string key="NSKeyPath">values.MOUNT</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">224</int>
-				</object>
-			</array>
-			<object class="IBMutableOrderedSet" key="objectRecords">
-				<array key="orderedObjects">
-					<object class="IBObjectRecord">
-						<int key="objectID">0</int>
-						<array key="object" id="0"/>
-						<reference key="children" ref="366798735"/>
-						<nil key="parent"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">-2</int>
-						<reference key="object" ref="896837093"/>
-						<reference key="parent" ref="0"/>
-						<string key="objectName">File's Owner</string>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">-1</int>
-						<reference key="object" ref="503823672"/>
-						<reference key="parent" ref="0"/>
-						<string key="objectName">First Responder</string>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">12</int>
-						<reference key="object" ref="118841857"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="365080541"/>
-						</array>
-						<reference key="parent" ref="0"/>
-						<string key="objectName">PrefPane</string>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">6</int>
-						<reference key="object" ref="365080541"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="158522742"/>
-							<reference ref="341937739"/>
-						</array>
-						<reference key="parent" ref="118841857"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">98</int>
-						<reference key="object" ref="158522742"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="281725141"/>
-							<reference ref="1015614671"/>
-							<reference ref="61924080"/>
-							<reference ref="468243953"/>
-							<reference ref="947728721"/>
-							<reference ref="550653012"/>
-							<reference ref="102423531"/>
-						</array>
-						<reference key="parent" ref="365080541"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">132</int>
-						<reference key="object" ref="341937739"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="500457483"/>
-							<reference ref="184313264"/>
-							<reference ref="742342778"/>
-						</array>
-						<reference key="parent" ref="365080541"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">-3</int>
-						<reference key="object" ref="581009624"/>
-						<reference key="parent" ref="0"/>
-						<string key="objectName">Application</string>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">135</int>
-						<reference key="object" ref="500457483"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="246424518"/>
-						</array>
-						<reference key="parent" ref="341937739"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">163</int>
-						<reference key="object" ref="246424518"/>
-						<reference key="parent" ref="500457483"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">173</int>
-						<reference key="object" ref="154481161"/>
-						<reference key="parent" ref="0"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">183</int>
-						<reference key="object" ref="184313264"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="579790439"/>
-						</array>
-						<reference key="parent" ref="341937739"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">184</int>
-						<reference key="object" ref="579790439"/>
-						<reference key="parent" ref="184313264"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">102</int>
-						<reference key="object" ref="468243953"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="816998943"/>
-							<reference ref="257334181"/>
-							<reference ref="1023620656"/>
-						</array>
-						<reference key="parent" ref="158522742"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">167</int>
-						<reference key="object" ref="816998943"/>
-						<reference key="parent" ref="468243953"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">110</int>
-						<reference key="object" ref="257334181"/>
-						<reference key="parent" ref="468243953"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">99</int>
-						<reference key="object" ref="1023620656"/>
-						<reference key="parent" ref="468243953"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">199</int>
-						<reference key="object" ref="947728721"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="734149438"/>
-						</array>
-						<reference key="parent" ref="158522742"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">200</int>
-						<reference key="object" ref="734149438"/>
-						<reference key="parent" ref="947728721"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">202</int>
-						<reference key="object" ref="742342778"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="84108953"/>
-						</array>
-						<reference key="parent" ref="341937739"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">203</int>
-						<reference key="object" ref="84108953"/>
-						<reference key="parent" ref="742342778"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">210</int>
-						<reference key="object" ref="550653012"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="568305960"/>
-						</array>
-						<reference key="parent" ref="158522742"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">211</int>
-						<reference key="object" ref="568305960"/>
-						<reference key="parent" ref="550653012"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">216</int>
-						<reference key="object" ref="1015614671"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="882915887"/>
-							<reference ref="140574459"/>
-							<reference ref="264276504"/>
-							<reference ref="316609513"/>
-							<reference ref="583206870"/>
-						</array>
-						<reference key="parent" ref="158522742"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">217</int>
-						<reference key="object" ref="882915887"/>
-						<reference key="parent" ref="1015614671"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">218</int>
-						<reference key="object" ref="140574459"/>
-						<reference key="parent" ref="1015614671"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">219</int>
-						<reference key="object" ref="264276504"/>
-						<reference key="parent" ref="1015614671"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">220</int>
-						<reference key="object" ref="281725141"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="97366120"/>
-						</array>
-						<reference key="parent" ref="158522742"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">221</int>
-						<reference key="object" ref="97366120"/>
-						<reference key="parent" ref="281725141"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">222</int>
-						<reference key="object" ref="316609513"/>
-						<reference key="parent" ref="1015614671"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">225</int>
-						<reference key="object" ref="61924080"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="172638683"/>
-						</array>
-						<reference key="parent" ref="158522742"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">226</int>
-						<reference key="object" ref="172638683"/>
-						<reference key="parent" ref="61924080"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">196</int>
-						<reference key="object" ref="102423531"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="12722064"/>
-						</array>
-						<reference key="parent" ref="158522742"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">197</int>
-						<reference key="object" ref="12722064"/>
-						<reference key="parent" ref="102423531"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">229</int>
-						<reference key="object" ref="583206870"/>
-						<reference key="parent" ref="1015614671"/>
-					</object>
-				</array>
-			</object>
-			<dictionary class="NSMutableDictionary" key="flattenedProperties">
-				<string key="-1.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="-2.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="-3.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="102.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<object class="NSMutableDictionary" key="110.IBAttributePlaceholdersKey">
-					<string key="NS.key.0">ToolTip</string>
-					<object class="IBToolTipAttribute" key="NS.object.0">
-						<string key="name">ToolTip</string>
-						<reference key="object" ref="257334181"/>
-						<string key="toolTip">Scan the media to find all DICOM images.</string>
-					</object>
-				</object>
-				<string key="110.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="12.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="12.IBWindowTemplateEditedContentRect">{{-980, 531}, {726, 384}}</string>
-				<string key="132.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="135.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="163.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="167.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="173.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="183.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="184.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<object class="NSMutableDictionary" key="196.IBAttributePlaceholdersKey">
-					<string key="NS.key.0">ToolTip</string>
-					<object class="IBToolTipAttribute" key="NS.object.0">
-						<string key="name">ToolTip</string>
-						<reference key="object" ref="102423531"/>
-						<string key="toolTip">Once an inserted disk is successfully indexed, it is automatically selected</string>
-					</object>
-				</object>
-				<string key="196.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="197.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<dictionary class="NSMutableDictionary" key="199.IBAttributePlaceholdersKey"/>
-				<string key="199.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="200.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="202.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="203.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<object class="NSMutableDictionary" key="210.IBAttributePlaceholdersKey">
-					<string key="NS.key.0">ToolTip</string>
-					<object class="IBToolTipAttribute" key="NS.object.0">
-						<string key="name">ToolTip</string>
-						<reference key="object" ref="550653012"/>
-						<string key="toolTip">Once an inserted disk is successfully indexed, it is automatically selected</string>
-					</object>
-				</object>
-				<string key="210.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="211.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="216.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="217.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="218.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="219.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="220.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="221.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="222.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="225.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="226.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="229.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="6.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="98.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<object class="NSMutableDictionary" key="99.IBAttributePlaceholdersKey">
-					<string key="NS.key.0">ToolTip</string>
-					<object class="IBToolTipAttribute" key="NS.object.0">
-						<string key="name">ToolTip</string>
-						<reference key="object" ref="1023620656"/>
-						<string key="toolTip">Use DICOMDIR on the media to load the images.</string>
-					</object>
-				</object>
-				<string key="99.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			</dictionary>
-			<dictionary class="NSMutableDictionary" key="unlocalizedProperties"/>
-			<nil key="activeLocalization"/>
-			<dictionary class="NSMutableDictionary" key="localizations"/>
-			<nil key="sourceID"/>
-			<int key="maxID">229</int>
-		</object>
-		<object class="IBClassDescriber" key="IBDocument.Classes"/>
-		<int key="IBDocument.localizationMode">0</int>
-		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaFramework</string>
-		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencyDefaults">
-			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
-			<real value="1070" key="NS.object.0"/>
-		</object>
-		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDevelopmentDependencies">
-			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.InterfaceBuilder3</string>
-			<real value="4300" key="NS.object.0"/>
-		</object>
-		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
-		<int key="IBDocument.defaultPropertyAccessControl">3</int>
-	</data>
-</archive>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13B35" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment defaultVersion="1070" identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="OSICDPreferencePanePref">
+            <connections>
+                <outlet property="_window" destination="12" id="26"/>
+                <outlet property="mainWindow" destination="12" id="195"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application"/>
+        <window title="&lt;&lt; do not localize >>" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" deferred="NO" oneShot="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="12" userLabel="PrefPane">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="57" y="247" width="760" height="330"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <value key="minSize" type="size" width="224.66300000000001" height="10"/>
+            <view key="contentView" id="6">
+                <rect key="frame" x="0.0" y="0.0" width="760" height="330"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <box title="Reading CD/DVDs" translatesAutoresizingMaskIntoConstraints="NO" id="98">
+                        <rect key="frame" x="17" y="102" width="726" height="208"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <view key="contentView">
+                            <rect key="frame" x="2" y="2" width="722" height="188"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <subviews>
+                                <button toolTip="Once an inserted disk is successfully indexed, it is automatically selected" translatesAutoresizingMaskIntoConstraints="NO" id="196">
+                                    <rect key="frame" x="326" y="139" width="381" height="18"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <buttonCell key="cell" type="check" title="Eject the disk when done copying" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="197">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="173" name="value" keyPath="values.CDDVDEjectAfterAutoCopy" id="215"/>
+                                    </connections>
+                                </button>
+                                <button toolTip="Once an inserted disk is successfully indexed, it is automatically selected" translatesAutoresizingMaskIntoConstraints="NO" id="210">
+                                    <rect key="frame" x="326" y="119" width="381" height="18"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <buttonCell key="cell" type="check" title="Automatically select the source when ready" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="211">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="173" name="value" keyPath="values.autoSelectSourceCDDVD" id="212"/>
+                                    </connections>
+                                </button>
+                                <matrix horizontalHuggingPriority="396" verticalHuggingPriority="750" horizontalCompressionResistancePriority="490" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="102">
+                                    <rect key="frame" x="16" y="13" width="689" height="38"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                    <size key="cellSize" width="689" height="18"/>
+                                    <size key="intercellSpacing" width="4" height="2"/>
+                                    <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="167">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <cells>
+                                        <column>
+                                            <buttonCell type="radio" title="Files indexed in the DICOMDIR file" imagePosition="left" alignment="left" state="on" toolTip="Use DICOMDIR on the media to load the images." tag="1" inset="2" id="99">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <buttonCell type="radio" title="All DICOM files available on the disk, ignoring the DICOMDIR file (Scan Mode)" imagePosition="left" alignment="left" toolTip="Scan the media to find all DICOM images." inset="2" id="110">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                        </column>
+                                    </cells>
+                                    <connections>
+                                        <binding destination="173" name="selectedTag" keyPath="values.UseDICOMDIRFileCD" id="188"/>
+                                    </connections>
+                                </matrix>
+                                <button translatesAutoresizingMaskIntoConstraints="NO" id="199">
+                                    <rect key="frame" x="326" y="33" width="381" height="18"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <buttonCell key="cell" type="check" title="If no DICOM files are found, switch to Scan Mode" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="200">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="173" name="value" keyPath="values.ScanDiskIfDICOMDIRZero" id="209"/>
+                                    </connections>
+                                </button>
+                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="216">
+                                    <rect key="frame" x="16" y="79" width="301" height="78"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="301" id="Yqa-39-TQU"/>
+                                    </constraints>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                    <size key="cellSize" width="267" height="18"/>
+                                    <size key="intercellSpacing" width="4" height="2"/>
+                                    <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="217">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <cells>
+                                        <column>
+                                            <buttonCell type="radio" title="Copy all its contents into the database" imagePosition="left" alignment="left" state="on" tag="1" inset="2" id="218">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <buttonCell type="radio" title="Show disc content as a separate source" imagePosition="left" alignment="left" inset="2" id="219">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <buttonCell type="radio" title="Ask the user" imagePosition="left" alignment="left" tag="-1" inset="2" id="222">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <buttonCell type="radio" title="Ignore it" imagePosition="left" alignment="left" tag="2" inset="2" id="229">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                        </column>
+                                    </cells>
+                                    <connections>
+                                        <binding destination="173" name="selectedTag" keyPath="values.MOUNT" id="224"/>
+                                    </connections>
+                                </matrix>
+                                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="220">
+                                    <rect key="frame" x="14" y="160" width="693" height="17"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="When a disc is inserted:" id="221">
+                                        <font key="font" metaFont="system"/>
+                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
+                                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="225">
+                                    <rect key="frame" x="14" y="54" width="693" height="17"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Determine disc content by considering:" id="226">
+                                        <font key="font" metaFont="system"/>
+                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
+                            </subviews>
+                        </view>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="102" secondAttribute="bottom" constant="11" id="0Zf-sx-khs"/>
+                            <constraint firstItem="220" firstAttribute="top" secondItem="98" secondAttribute="top" constant="29" id="3ez-NY-fnv"/>
+                            <constraint firstItem="196" firstAttribute="top" secondItem="220" secondAttribute="bottom" constant="5" id="5Nt-iH-sPG"/>
+                            <constraint firstItem="102" firstAttribute="top" secondItem="225" secondAttribute="bottom" constant="3" id="5eG-hK-Pnx"/>
+                            <constraint firstItem="210" firstAttribute="top" secondItem="196" secondAttribute="bottom" constant="6" id="5ho-7k-zoM"/>
+                            <constraint firstAttribute="trailing" secondItem="199" secondAttribute="trailing" constant="16" id="7HN-er-jC2"/>
+                            <constraint firstItem="210" firstAttribute="leading" secondItem="216" secondAttribute="trailing" constant="11" id="FdW-RW-cME"/>
+                            <constraint firstItem="196" firstAttribute="leading" secondItem="216" secondAttribute="trailing" constant="11" id="Jdv-Nv-dUN"/>
+                            <constraint firstAttribute="trailing" secondItem="196" secondAttribute="trailing" constant="16" id="LvA-ws-yCL"/>
+                            <constraint firstItem="220" firstAttribute="leading" secondItem="98" secondAttribute="leading" constant="15" id="OZp-UM-rJX"/>
+                            <constraint firstAttribute="trailing" secondItem="102" secondAttribute="trailing" constant="16" id="PX5-qn-H3b"/>
+                            <constraint firstItem="210" firstAttribute="leading" secondItem="216" secondAttribute="trailing" constant="11" id="QnY-aZ-2VZ"/>
+                            <constraint firstItem="196" firstAttribute="leading" secondItem="216" secondAttribute="trailing" constant="11" id="ROA-As-7ZP"/>
+                            <constraint firstItem="216" firstAttribute="leading" secondItem="220" secondAttribute="leading" id="RaF-ne-umZ"/>
+                            <constraint firstAttribute="trailing" secondItem="210" secondAttribute="trailing" constant="16" id="SaG-kq-FAd"/>
+                            <constraint firstItem="225" firstAttribute="leading" secondItem="98" secondAttribute="leading" constant="15" id="dUA-8O-5Mz"/>
+                            <constraint firstItem="199" firstAttribute="leading" secondItem="210" secondAttribute="leading" id="exo-XZ-hOV"/>
+                            <constraint firstItem="225" firstAttribute="trailing" secondItem="199" secondAttribute="trailing" id="kjK-c5-ljX"/>
+                            <constraint firstItem="102" firstAttribute="leading" secondItem="98" secondAttribute="leading" constant="15" id="lsu-cv-WMy"/>
+                            <constraint firstItem="225" firstAttribute="top" secondItem="216" secondAttribute="bottom" constant="8" id="nMM-qQ-y6S"/>
+                            <constraint firstItem="225" firstAttribute="trailing" secondItem="220" secondAttribute="trailing" id="pqB-Le-OYo"/>
+                            <constraint firstItem="199" firstAttribute="top" secondItem="225" secondAttribute="bottom" constant="5" id="r6w-hx-f2i"/>
+                            <constraint firstItem="210" firstAttribute="leading" secondItem="216" secondAttribute="trailing" constant="11" id="rft-Ek-97l"/>
+                            <constraint firstItem="216" firstAttribute="top" secondItem="220" secondAttribute="bottom" constant="3" id="zEa-Ur-ZJ2"/>
+                        </constraints>
+                        <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                        <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        <font key="titleFont" metaFont="system"/>
+                    </box>
+                    <box verticalHuggingPriority="249" title="Writing CD/DVDs" translatesAutoresizingMaskIntoConstraints="NO" id="132">
+                        <rect key="frame" x="17" y="16" width="726" height="82"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <view key="contentView">
+                            <rect key="frame" x="2" y="2" width="722" height="62"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <subviews>
+                                <button translatesAutoresizingMaskIntoConstraints="NO" id="135">
+                                    <rect key="frame" x="15" y="16" width="215" height="18"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <buttonCell key="cell" type="check" title="Include contents of this folder:" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="163">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="173" name="value" keyPath="values.BurnSupplementaryFolder" id="174"/>
+                                    </connections>
+                                </button>
+                                <button translatesAutoresizingMaskIntoConstraints="NO" id="183">
+                                    <rect key="frame" x="15" y="36" width="692" height="18"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <buttonCell key="cell" type="check" title="Prefer standard JPEG instead of JPEG2000 / JPEG LS compression for DICOM files" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="184">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                        <connections>
+                                            <binding destination="173" name="value" keyPath="values.JPEGinsteadJPEG2000" id="186"/>
+                                        </connections>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="173" name="value" keyPath="values.JPEGinsteadJPEG2000" id="187"/>
+                                    </connections>
+                                </button>
+                                <pathControl verticalHuggingPriority="750" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="202">
+                                    <rect key="frame" x="235" y="14" width="318" height="20"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                    <pathCell key="cell" controlSize="small" selectable="YES" editable="YES" alignment="left" pathStyle="navigationBar" id="203">
+                                        <font key="font" metaFont="smallSystem"/>
+                                        <url key="url" string="~Documents/FolderToBurn">
+                                            <url key="baseURL" string="file://localhost/"/>
+                                        </url>
+                                    </pathCell>
+                                    <connections>
+                                        <action selector="chooseSupplementaryBurnPath:" target="-2" id="206"/>
+                                        <binding destination="173" name="value" keyPath="values.SupplementaryBurnPath" id="205"/>
+                                    </connections>
+                                </pathControl>
+                            </subviews>
+                        </view>
+                        <constraints>
+                            <constraint firstItem="135" firstAttribute="top" secondItem="183" secondAttribute="bottom" constant="6" id="BY9-lh-5mR"/>
+                            <constraint firstItem="183" firstAttribute="top" secondItem="132" secondAttribute="top" constant="28" id="CaY-F4-Jqj"/>
+                            <constraint firstItem="183" firstAttribute="leading" secondItem="132" secondAttribute="leading" constant="16" id="GQw-ca-EOg"/>
+                            <constraint firstAttribute="trailing" secondItem="183" secondAttribute="trailing" constant="16" id="N3O-sW-LqF"/>
+                            <constraint firstItem="202" firstAttribute="leading" secondItem="135" secondAttribute="trailing" constant="8" id="lob-Vs-e0y"/>
+                            <constraint firstItem="135" firstAttribute="leading" secondItem="132" secondAttribute="leading" constant="16" id="r2f-1h-kvV"/>
+                            <constraint firstItem="202" firstAttribute="top" secondItem="183" secondAttribute="bottom" constant="5" id="yVy-RJ-Kbd"/>
+                        </constraints>
+                        <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                        <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        <font key="titleFont" metaFont="system"/>
+                    </box>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="trailing" secondItem="98" secondAttribute="trailing" constant="20" id="CBw-93-tUF"/>
+                    <constraint firstAttribute="bottom" secondItem="132" secondAttribute="bottom" constant="20" id="F5D-6l-owK"/>
+                    <constraint firstItem="98" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="20" id="JoI-ur-pOK"/>
+                    <constraint firstItem="132" firstAttribute="top" secondItem="98" secondAttribute="bottom" constant="8" id="Q5q-CB-ye5"/>
+                    <constraint firstItem="98" firstAttribute="top" secondItem="6" secondAttribute="top" constant="20" id="hYL-XF-qQ5"/>
+                    <constraint firstItem="132" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="20" id="u31-9Q-Zu3"/>
+                    <constraint firstAttribute="trailing" secondItem="132" secondAttribute="trailing" constant="20" id="x9j-tR-BxO"/>
+                </constraints>
+            </view>
+        </window>
+        <userDefaultsController representsSharedInstance="YES" id="173"/>
+    </objects>
+</document>

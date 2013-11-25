@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13B35" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13B35" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
@@ -15,49 +15,58 @@
         <customObject id="-3" userLabel="Application"/>
         <window title="&lt;&lt; do not localize >>" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" deferred="NO" oneShot="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="12" userLabel="PrefPane">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
-            <rect key="contentRect" x="0.0" y="0.0" width="724" height="468"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1600" height="978"/>
+            <rect key="contentRect" x="0.0" y="0.0" width="724" height="472"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <value key="minSize" type="size" width="224.66300000000001" height="10"/>
             <view key="contentView" id="6">
-                <rect key="frame" x="0.0" y="0.0" width="724" height="468"/>
+                <rect key="frame" x="0.0" y="0.0" width="724" height="472"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <box title="Best Rendering Button" id="298">
-                        <rect key="frame" x="18" y="376" width="689" height="81"/>
+                    <box title="Best Rendering Button" translatesAutoresizingMaskIntoConstraints="NO" id="298">
+                        <rect key="frame" x="18" y="376" width="689" height="85"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
-                            <rect key="frame" x="2" y="2" width="685" height="64"/>
+                            <rect key="frame" x="2" y="2" width="685" height="68"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <textField verticalHuggingPriority="750" id="207">
-                                    <rect key="frame" x="294" y="39" width="32" height="11"/>
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="207">
+                                    <rect key="frame" x="294" y="40" width="32" height="11"/>
                                     <autoresizingMask key="autoresizingMask"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="28" id="0q5-5x-VTf"/>
+                                    </constraints>
                                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Good" id="363">
                                         <font key="font" metaFont="miniSystem"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField verticalHuggingPriority="750" id="208">
-                                    <rect key="frame" x="460" y="39" width="42" height="11"/>
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="208">
+                                    <rect key="frame" x="460" y="40" width="42" height="11"/>
                                     <autoresizingMask key="autoresizingMask"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="38" id="C8u-vn-zCO"/>
+                                    </constraints>
                                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" title="Better" id="364">
                                         <font key="font" metaFont="miniSystem"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField verticalHuggingPriority="750" id="209">
-                                    <rect key="frame" x="640" y="39" width="32" height="11"/>
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="209">
+                                    <rect key="frame" x="640" y="40" width="32" height="11"/>
                                     <autoresizingMask key="autoresizingMask"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="28" id="z55-U8-1G5"/>
+                                    </constraints>
                                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Best" id="365">
                                         <font key="font" metaFont="miniSystem"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <slider verticalHuggingPriority="750" id="375">
-                                    <rect key="frame" x="297" y="13" width="368" height="18"/>
+                                <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="375">
+                                    <rect key="frame" x="297" y="14" width="368" height="20"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="1.1000000000000001" maxValue="4" doubleValue="1.1000000000000001" tickMarkPosition="above" numberOfTickMarks="10" sliderType="linear" id="380">
                                         <font key="font" size="12" name="Helvetica"/>
@@ -66,18 +75,24 @@
                                         <binding destination="331" name="value" keyPath="values.superSampling" id="381"/>
                                     </connections>
                                 </slider>
-                                <textField verticalHuggingPriority="750" id="376">
-                                    <rect key="frame" x="11" y="13" width="231" height="17"/>
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="376">
+                                    <rect key="frame" x="11" y="14" width="231" height="17"/>
                                     <autoresizingMask key="autoresizingMask"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="227" id="6V9-ZW-oLD"/>
+                                    </constraints>
                                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Ray cast : Super Sampling:" id="379">
                                         <font key="font" metaFont="system"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField verticalHuggingPriority="750" id="377">
-                                    <rect key="frame" x="244" y="13" width="48" height="17"/>
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="377">
+                                    <rect key="frame" x="244" y="14" width="48" height="17"/>
                                     <autoresizingMask key="autoresizingMask"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="44" id="bOX-lr-7Ej"/>
+                                    </constraints>
                                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" title=".00" id="378">
                                         <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.00" negativeFormat="#.00" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" minimumFractionDigits="2" maximumFractionDigits="2" id="383">
                                             <real key="roundingIncrement" value="0.0"/>
@@ -98,17 +113,33 @@
                                 </textField>
                             </subviews>
                         </view>
+                        <constraints>
+                            <constraint firstItem="376" firstAttribute="leading" secondItem="298" secondAttribute="leading" constant="12" id="0vt-ER-ALy"/>
+                            <constraint firstItem="209" firstAttribute="baseline" secondItem="208" secondAttribute="baseline" id="2dr-vp-GUP"/>
+                            <constraint firstItem="209" firstAttribute="baseline" secondItem="207" secondAttribute="baseline" id="AHa-VL-Kmw"/>
+                            <constraint firstItem="209" firstAttribute="top" secondItem="298" secondAttribute="top" constant="32" id="GOO-vo-2Jn"/>
+                            <constraint firstItem="375" firstAttribute="leading" secondItem="377" secondAttribute="trailing" constant="7" id="GSj-1m-xxX"/>
+                            <constraint firstItem="208" firstAttribute="centerX" secondItem="375" secondAttribute="centerX" id="Rl7-Hy-Jgn"/>
+                            <constraint firstItem="375" firstAttribute="trailing" secondItem="209" secondAttribute="trailing" constant="-5" id="ZDb-cY-eUb"/>
+                            <constraint firstItem="375" firstAttribute="top" secondItem="207" secondAttribute="bottom" constant="6" id="Zz7-hi-qag"/>
+                            <constraint firstAttribute="trailing" secondItem="209" secondAttribute="trailing" constant="14" id="dNR-rK-pAL"/>
+                            <constraint firstItem="376" firstAttribute="centerY" secondItem="377" secondAttribute="centerY" id="f3Z-Jr-lyr"/>
+                            <constraint firstItem="377" firstAttribute="leading" secondItem="376" secondAttribute="trailing" constant="6" id="nlP-IZ-Xjm"/>
+                            <constraint firstItem="375" firstAttribute="top" secondItem="209" secondAttribute="bottom" constant="6" id="tyd-k3-5gC"/>
+                            <constraint firstItem="377" firstAttribute="centerY" secondItem="375" secondAttribute="centerY" constant="2" id="yLj-mH-Sil"/>
+                            <constraint firstItem="375" firstAttribute="leading" secondItem="207" secondAttribute="leading" constant="1" id="zRG-kR-woW"/>
+                        </constraints>
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </box>
-                    <box title="Default View Size" id="300">
+                    <box title="Default View Size" translatesAutoresizingMaskIntoConstraints="NO" id="300">
                         <rect key="frame" x="18" y="295" width="689" height="77"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
                             <rect key="frame" x="2" y="2" width="685" height="60"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <textField verticalHuggingPriority="750" id="308">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="308">
                                     <rect key="frame" x="13" y="33" width="159" height="17"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="View Size:" id="367">
@@ -117,7 +148,7 @@
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="309">
+                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="309">
                                     <rect key="frame" x="177" y="12" width="384" height="38"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -155,18 +186,25 @@
                                 </matrix>
                             </subviews>
                         </view>
+                        <constraints>
+                            <constraint firstItem="309" firstAttribute="top" secondItem="308" secondAttribute="top" id="Ive-zr-fLM"/>
+                            <constraint firstItem="309" firstAttribute="leading" secondItem="300" secondAttribute="leading" constant="176" id="VQ7-2F-wot"/>
+                            <constraint firstItem="308" firstAttribute="leading" secondItem="300" secondAttribute="leading" constant="14" id="gCi-mI-1l0"/>
+                            <constraint firstItem="308" firstAttribute="top" secondItem="300" secondAttribute="top" constant="25" id="sx0-db-ifq"/>
+                            <constraint firstItem="309" firstAttribute="leading" secondItem="308" secondAttribute="trailing" constant="7" id="wHX-Qs-qTe"/>
+                        </constraints>
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </box>
-                    <box title="Renderer" id="393">
-                        <rect key="frame" x="17" y="172" width="689" height="119"/>
+                    <box title="Renderer" translatesAutoresizingMaskIntoConstraints="NO" id="393">
+                        <rect key="frame" x="17" y="173" width="689" height="118"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
-                            <rect key="frame" x="2" y="2" width="685" height="102"/>
+                            <rect key="frame" x="2" y="2" width="685" height="101"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <textField verticalHuggingPriority="750" id="395">
-                                    <rect key="frame" x="27" y="75" width="215" height="17"/>
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="395">
+                                    <rect key="frame" x="27" y="74" width="215" height="17"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Engine:" id="396">
                                         <font key="font" metaFont="system"/>
@@ -174,17 +212,20 @@
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField verticalHuggingPriority="750" id="n5W-sI-jKT">
-                                    <rect key="frame" x="15" y="29" width="227" height="17"/>
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="n5W-sI-jKT">
+                                    <rect key="frame" x="15" y="28" width="227" height="17"/>
                                     <autoresizingMask key="autoresizingMask"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="223" id="IHz-ms-JCn"/>
+                                    </constraints>
                                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Default Shading value:" id="Cyi-vJ-Hc1">
                                         <font key="font" metaFont="system"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="394">
-                                    <rect key="frame" x="247" y="54" width="421" height="38"/>
+                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="394">
+                                    <rect key="frame" x="247" y="53" width="421" height="38"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     <size key="cellSize" width="421" height="18"/>
@@ -209,11 +250,11 @@
                                         <binding destination="331" name="selectedTag" keyPath="values.MAPPERMODEVR" id="405"/>
                                     </connections>
                                 </matrix>
-                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="dPY-Bc-dAL">
-                                    <rect key="frame" x="247" y="8" width="356" height="38"/>
+                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dPY-Bc-dAL">
+                                    <rect key="frame" x="247" y="7" width="421" height="38"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                    <size key="cellSize" width="356" height="18"/>
+                                    <size key="cellSize" width="421" height="18"/>
                                     <size key="intercellSpacing" width="4" height="2"/>
                                     <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="yrE-Hy-VDO">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -237,18 +278,30 @@
                                 </matrix>
                             </subviews>
                         </view>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="394" secondAttribute="trailing" constant="16" id="DBl-T7-oqJ"/>
+                            <constraint firstItem="dPY-Bc-dAL" firstAttribute="leading" secondItem="n5W-sI-jKT" secondAttribute="trailing" constant="7" id="EeH-ou-CqA"/>
+                            <constraint firstItem="394" firstAttribute="top" secondItem="393" secondAttribute="top" constant="25" id="KR9-kF-IT4"/>
+                            <constraint firstItem="394" firstAttribute="leading" secondItem="395" secondAttribute="trailing" constant="7" id="LyT-hk-dz1"/>
+                            <constraint firstItem="395" firstAttribute="leading" secondItem="393" secondAttribute="leading" constant="28" id="QOA-yQ-dGT"/>
+                            <constraint firstItem="n5W-sI-jKT" firstAttribute="leading" secondItem="393" secondAttribute="leading" constant="16" id="VbV-m1-KFD"/>
+                            <constraint firstItem="395" firstAttribute="top" secondItem="393" secondAttribute="top" constant="25" id="ak9-AO-V3c"/>
+                            <constraint firstItem="n5W-sI-jKT" firstAttribute="top" secondItem="395" secondAttribute="bottom" constant="29" id="mH5-SI-zeh"/>
+                            <constraint firstItem="n5W-sI-jKT" firstAttribute="top" secondItem="dPY-Bc-dAL" secondAttribute="top" id="qPq-FN-VkA"/>
+                            <constraint firstItem="n5W-sI-jKT" firstAttribute="trailing" secondItem="395" secondAttribute="trailing" id="rER-qY-Pt4"/>
+                        </constraints>
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </box>
-                    <box title="Misc" id="333">
-                        <rect key="frame" x="18" y="22" width="689" height="134"/>
+                    <box title="Misc" translatesAutoresizingMaskIntoConstraints="NO" id="333">
+                        <rect key="frame" x="18" y="16" width="689" height="153"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
-                            <rect key="frame" x="2" y="2" width="685" height="117"/>
+                            <rect key="frame" x="2" y="2" width="685" height="136"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <button id="341">
-                                    <rect key="frame" x="14" y="90" width="656" height="18"/>
+                                <button translatesAutoresizingMaskIntoConstraints="NO" id="341">
+                                    <rect key="frame" x="14" y="109" width="656" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="If there are multiple screens, open the 3D window on a different screen of the 2D Viewer." bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="368">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -258,8 +311,8 @@
                                         <binding destination="331" name="value" keyPath="values.ThreeDViewerOnAnotherScreen" id="348"/>
                                     </connections>
                                 </button>
-                                <button id="347">
-                                    <rect key="frame" x="14" y="70" width="656" height="18"/>
+                                <button translatesAutoresizingMaskIntoConstraints="NO" id="347">
+                                    <rect key="frame" x="14" y="89" width="656" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Auto-Rotate objects after 3 min. in Volume Rendering/MIP viewers." bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="369">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -269,8 +322,8 @@
                                         <binding destination="331" name="value" keyPath="values.autorotate3D" id="371"/>
                                     </connections>
                                 </button>
-                                <button id="372">
-                                    <rect key="frame" x="14" y="50" width="644" height="18"/>
+                                <button translatesAutoresizingMaskIntoConstraints="NO" id="372">
+                                    <rect key="frame" x="14" y="69" width="644" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Use Spline for Scissors ROI" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="373">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -280,17 +333,20 @@
                                         <binding destination="331" name="value" keyPath="values.SplineForScissors" id="374"/>
                                     </connections>
                                 </button>
-                                <textField verticalHuggingPriority="750" id="385">
-                                    <rect key="frame" x="14" y="27" width="332" height="17"/>
+                                <textField horizontalHuggingPriority="249" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="385">
+                                    <rect key="frame" x="14" y="46" width="332" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="328" id="fNS-IM-Yul"/>
+                                    </constraints>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="For representing 3D ROIs, use this algorithm:" id="386">
                                         <font key="font" metaFont="system"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" id="387">
-                                    <rect key="frame" x="352" y="6" width="316" height="38"/>
+                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="387">
+                                    <rect key="frame" x="352" y="25" width="316" height="38"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     <size key="cellSize" width="316" height="18"/>
@@ -317,10 +373,43 @@
                                 </matrix>
                             </subviews>
                         </view>
+                        <constraints>
+                            <constraint firstItem="341" firstAttribute="top" secondItem="333" secondAttribute="top" constant="26" id="3Pq-ad-np9"/>
+                            <constraint firstItem="341" firstAttribute="leading" secondItem="333" secondAttribute="leading" constant="15" id="5dR-7E-6fO"/>
+                            <constraint firstAttribute="trailing" secondItem="347" secondAttribute="trailing" constant="16" id="7GA-cn-Gme"/>
+                            <constraint firstItem="347" firstAttribute="leading" secondItem="333" secondAttribute="leading" constant="15" id="8AN-JX-wj0"/>
+                            <constraint firstItem="372" firstAttribute="top" secondItem="347" secondAttribute="bottom" constant="6" id="QFD-v2-rg2"/>
+                            <constraint firstItem="387" firstAttribute="top" secondItem="372" secondAttribute="bottom" constant="8" id="Rwn-MP-Unb"/>
+                            <constraint firstItem="385" firstAttribute="top" secondItem="372" secondAttribute="bottom" constant="8" symbolic="YES" id="TAP-hx-HzB"/>
+                            <constraint firstItem="387" firstAttribute="leading" secondItem="385" secondAttribute="trailing" constant="8" symbolic="YES" id="Ugb-b8-hAp"/>
+                            <constraint firstItem="385" firstAttribute="leading" secondItem="372" secondAttribute="leading" id="VCn-OE-Zrx"/>
+                            <constraint firstAttribute="trailing" secondItem="341" secondAttribute="trailing" constant="16" id="VNI-uh-4Uh"/>
+                            <constraint firstItem="347" firstAttribute="top" secondItem="341" secondAttribute="bottom" constant="6" id="ie2-xG-Pgu"/>
+                            <constraint firstAttribute="trailing" secondItem="372" secondAttribute="trailing" constant="28" id="jHY-eO-ubS"/>
+                            <constraint firstItem="372" firstAttribute="leading" secondItem="333" secondAttribute="leading" constant="15" id="zKq-Of-uVc"/>
+                        </constraints>
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </box>
                 </subviews>
+                <constraints>
+                    <constraint firstItem="300" firstAttribute="top" secondItem="298" secondAttribute="bottom" constant="8" symbolic="YES" id="EVc-Qu-MWh"/>
+                    <constraint firstItem="300" firstAttribute="trailing" secondItem="298" secondAttribute="trailing" id="HHi-ze-gzW"/>
+                    <constraint firstAttribute="trailing" secondItem="393" secondAttribute="trailing" constant="21" id="Lx0-ic-P6N"/>
+                    <constraint firstItem="333" firstAttribute="top" secondItem="6" secondAttribute="top" constant="303" id="M9k-YR-pLU"/>
+                    <constraint firstItem="333" firstAttribute="trailing" secondItem="300" secondAttribute="trailing" id="QCe-RD-fx0"/>
+                    <constraint firstItem="298" firstAttribute="top" secondItem="6" secondAttribute="top" constant="11" id="b9e-D3-G6W"/>
+                    <constraint firstItem="298" firstAttribute="centerX" secondItem="6" secondAttribute="centerX" id="dtl-nz-Fi1"/>
+                    <constraint firstItem="333" firstAttribute="top" secondItem="393" secondAttribute="bottom" constant="8" id="evp-hS-RFz"/>
+                    <constraint firstAttribute="bottom" secondItem="300" secondAttribute="bottom" constant="299" id="f4L-FK-hEp"/>
+                    <constraint firstItem="333" firstAttribute="leading" secondItem="300" secondAttribute="leading" id="fiz-w2-zE3"/>
+                    <constraint firstAttribute="bottom" secondItem="298" secondAttribute="bottom" constant="380" id="oYq-pO-d3Y"/>
+                    <constraint firstItem="393" firstAttribute="top" secondItem="300" secondAttribute="bottom" constant="8" symbolic="YES" id="pfS-Xg-TQq"/>
+                    <constraint firstAttribute="bottom" secondItem="333" secondAttribute="bottom" constant="20" symbolic="YES" id="qNK-UA-hSu"/>
+                    <constraint firstItem="300" firstAttribute="leading" secondItem="298" secondAttribute="leading" id="tk4-XO-HyH"/>
+                    <constraint firstAttribute="trailing" secondItem="298" secondAttribute="trailing" constant="20" symbolic="YES" id="whH-Ea-fdq"/>
+                    <constraint firstItem="393" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="20" id="zOr-LP-pxW"/>
+                </constraints>
             </view>
         </window>
         <userDefaultsController representsSharedInstance="YES" id="331" userLabel="Shared Defaults"/>

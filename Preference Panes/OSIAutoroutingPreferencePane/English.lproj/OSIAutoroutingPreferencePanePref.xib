@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13A603" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13B35" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
@@ -28,13 +28,13 @@
         <window title="&lt;&lt; do not localize >>" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" deferred="NO" oneShot="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="12" userLabel="PrefPane">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="696" height="364"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1600" height="978"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <view key="contentView" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="696" height="364"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button id="119">
-                        <rect key="frame" x="18" y="328" width="470" height="18"/>
+                    <button verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="119">
+                        <rect key="frame" x="18" y="328" width="660" height="18"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="check" title="Activate AutoRouting" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="291">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -44,7 +44,7 @@
                             <binding destination="318" name="value" keyPath="values.AUTOROUTINGACTIVATED" id="379"/>
                         </connections>
                     </button>
-                    <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="0.0" verticalLineScroll="19" verticalPageScroll="0.0" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="123">
+                    <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="0.0" verticalLineScroll="19" verticalPageScroll="0.0" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="123">
                         <rect key="frame" x="20" y="52" width="657" height="225"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <clipView key="contentView" id="Grv-ny-dQR">
@@ -52,7 +52,7 @@
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="reverseSequential" alternatingRowBackgroundColors="YES" columnSelection="YES" multipleSelection="NO" emptySelection="NO" autosaveName="RoutingTableView" headerView="315" id="124" customClass="RoutesTableView">
-                                    <rect key="frame" x="0.0" y="0.0" width="655" height="207"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="835" height="207"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <size key="intercellSpacing" width="3" height="2"/>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -70,7 +70,7 @@
                                             </buttonCell>
                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                         </tableColumn>
-                                        <tableColumn identifier="name" editable="NO" width="110" minWidth="110" maxWidth="500" id="125">
+                                        <tableColumn identifier="name" editable="NO" width="290" minWidth="110" maxWidth="500" id="125">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Routes">
                                                 <font key="font" metaFont="smallSystem"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -123,17 +123,21 @@
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="313">
-                            <rect key="frame" x="-30" y="17" width="15" height="207"/>
+                            <rect key="frame" x="282" y="17" width="16" height="5"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <tableHeaderView key="headerView" id="315">
-                            <rect key="frame" x="0.0" y="0.0" width="655" height="17"/>
+                            <rect key="frame" x="0.0" y="0.0" width="835" height="17"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </tableHeaderView>
                     </scrollView>
-                    <button verticalHuggingPriority="750" id="133">
+                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="133">
                         <rect key="frame" x="462" y="12" width="220" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="208" id="dJo-8X-R0l"/>
+                            <constraint firstAttribute="height" constant="21" id="kwX-Jd-qfP"/>
+                        </constraints>
                         <buttonCell key="cell" type="push" title="Add new route" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="292">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -142,9 +146,12 @@
                             <action selector="newRoute:" target="-2" id="279"/>
                         </connections>
                     </button>
-                    <textField verticalHuggingPriority="750" id="233">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="233">
                         <rect key="frame" x="21" y="13" width="484" height="35"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="480" id="JYs-ed-S94"/>
+                        </constraints>
                         <textFieldCell key="cell" controlSize="mini" sendsActionOnEndEditing="YES" id="293">
                             <font key="font" metaFont="miniSystem"/>
                             <string key="title">Double-Click on a route to edit filter parameters
@@ -153,8 +160,8 @@ Press Delete key to delete a route</string>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="235">
-                        <rect key="frame" x="21" y="277" width="663" height="17"/>
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="235">
+                        <rect key="frame" x="21" y="277" width="657" height="14"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="OsiriX will automatically send data added in the database according to the following routes:" id="294">
                             <font key="font" metaFont="smallSystem"/>
@@ -162,8 +169,8 @@ Press Delete key to delete a route</string>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <button id="316">
-                        <rect key="frame" x="19" y="308" width="634" height="18"/>
+                    <button translatesAutoresizingMaskIntoConstraints="NO" id="316">
+                        <rect key="frame" x="19" y="305" width="660" height="21"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="check" title="Display an error if an autorouting rule failed" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="317">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -174,17 +181,38 @@ Press Delete key to delete a route</string>
                         </connections>
                     </button>
                 </subviews>
+                <constraints>
+                    <constraint firstAttribute="bottom" secondItem="133" secondAttribute="bottom" constant="19" id="2UN-w7-OHZ"/>
+                    <constraint firstAttribute="trailing" secondItem="235" secondAttribute="trailing" constant="20" id="3BU-Sg-0Yf"/>
+                    <constraint firstItem="123" firstAttribute="top" secondItem="6" secondAttribute="top" constant="87" id="3lK-oQ-qri"/>
+                    <constraint firstAttribute="trailing" secondItem="316" secondAttribute="trailing" constant="19" id="CwR-7S-nDQ"/>
+                    <constraint firstItem="123" firstAttribute="top" secondItem="235" secondAttribute="bottom" id="Lv0-iD-Htj"/>
+                    <constraint firstAttribute="trailing" secondItem="123" secondAttribute="trailing" constant="19" id="O0F-YL-qgq"/>
+                    <constraint firstItem="233" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="23" id="RwT-Ng-aCw"/>
+                    <constraint firstItem="235" firstAttribute="top" secondItem="316" secondAttribute="bottom" constant="16" id="SDO-0Z-EYH"/>
+                    <constraint firstItem="123" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="20" id="aAX-FK-Hmr"/>
+                    <constraint firstItem="233" firstAttribute="top" secondItem="123" secondAttribute="bottom" constant="4" id="bLf-Ef-GBo"/>
+                    <constraint firstItem="119" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="20" id="bT4-B8-Fj3"/>
+                    <constraint firstItem="119" firstAttribute="top" secondItem="6" secondAttribute="top" constant="20" id="bww-cy-ccu"/>
+                    <constraint firstItem="316" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="21" id="i7H-9I-JXc"/>
+                    <constraint firstItem="316" firstAttribute="top" secondItem="119" secondAttribute="bottom" constant="6" id="keC-fw-m0t"/>
+                    <constraint firstItem="235" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="23" id="n7Q-PJ-VuU"/>
+                    <constraint firstAttribute="trailing" secondItem="119" secondAttribute="trailing" constant="20" id="nwW-TX-Mrd"/>
+                    <constraint firstItem="133" firstAttribute="top" secondItem="123" secondAttribute="bottom" constant="12" id="obL-Zf-Xku"/>
+                    <constraint firstAttribute="bottom" secondItem="233" secondAttribute="bottom" constant="13" id="vVB-8S-Ttj"/>
+                    <constraint firstAttribute="trailing" secondItem="133" secondAttribute="trailing" constant="20" id="wjg-ad-XZy"/>
+                </constraints>
             </view>
         </window>
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="238" userLabel="newRoute">
             <windowStyleMask key="styleMask" titled="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="607" height="472"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1600" height="978"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <view key="contentView" id="239">
                 <rect key="frame" x="0.0" y="0.0" width="607" height="472"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" id="357">
+                    <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="357">
                         <rect key="frame" x="32" y="272" width="566" height="70"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -214,7 +242,7 @@ Press Delete key to delete a route</string>
                             <binding destination="-2" name="selectedTag" keyPath="filterType" id="361"/>
                         </connections>
                     </matrix>
-                    <textField verticalHuggingPriority="750" id="240">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="240">
                         <rect key="frame" x="17" y="435" width="132" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Name:" id="295">
@@ -223,7 +251,7 @@ Press Delete key to delete a route</string>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="241">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="241">
                         <rect key="frame" x="-3" y="406" width="152" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Destination Server:" id="296">
@@ -232,7 +260,7 @@ Press Delete key to delete a route</string>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="242">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="242">
                         <rect key="frame" x="17" y="352" width="132" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Comments:" id="297">
@@ -241,7 +269,7 @@ Press Delete key to delete a route</string>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="320">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="320">
                         <rect key="frame" x="17" y="166" width="132" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Previous Studies:" id="321">
@@ -250,7 +278,7 @@ Press Delete key to delete a route</string>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="339">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="339">
                         <rect key="frame" x="5" y="90" width="144" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Failure:" id="340">
@@ -259,7 +287,7 @@ Press Delete key to delete a route</string>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="352">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="352">
                         <rect key="frame" x="-2" y="41" width="151" height="34"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Check if it exists:" id="353">
@@ -268,12 +296,12 @@ Press Delete key to delete a route</string>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <popUpButton verticalHuggingPriority="750" id="243">
+                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="243">
                         <rect key="frame" x="158" y="401" width="432" height="26"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <popUpButtonCell key="cell" type="push" title="Item3" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="247" id="298">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="menu"/>
                             <menu key="menu" title="OtherViews" id="244">
                                 <items>
                                     <menuItem title="Item3" state="on" id="247"/>
@@ -284,7 +312,7 @@ Press Delete key to delete a route</string>
                             <action selector="selectServer:" target="-2" id="282"/>
                         </connections>
                     </popUpButton>
-                    <textField verticalHuggingPriority="750" id="248">
+                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="248">
                         <rect key="frame" x="161" y="433" width="426" height="22"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="299">
@@ -293,7 +321,7 @@ Press Delete key to delete a route</string>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="249">
+                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="249">
                         <rect key="frame" x="161" y="350" width="426" height="22"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="300">
@@ -302,7 +330,7 @@ Press Delete key to delete a route</string>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="251">
+                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="251">
                         <rect key="frame" x="161" y="224" width="426" height="67"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="302">
@@ -318,7 +346,7 @@ Press Delete key to delete a route</string>
                             </binding>
                         </connections>
                     </textField>
-                    <button verticalHuggingPriority="750" tag="1" id="252">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="252">
                         <rect key="frame" x="496" y="13" width="97" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="OK" bezelStyle="rounded" alignment="center" borderStyle="border" tag="1" inset="2" id="303">
@@ -332,7 +360,7 @@ DQ
                             <action selector="endNewRoute:" target="-2" id="275"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" id="253">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="253">
                         <rect key="frame" x="391" y="13" width="97" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="304">
@@ -346,7 +374,7 @@ Gw
                             <action selector="endNewRoute:" target="-2" id="274"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" id="254">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="254">
                         <rect key="frame" x="160" y="202" width="89" height="16"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="OsiriX Tables" bezelStyle="rounded" alignment="center" controlSize="mini" borderStyle="border" inset="2" id="305">
@@ -362,7 +390,7 @@ Gw
                             </binding>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" tag="1" id="255">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="255">
                         <rect key="frame" x="255" y="202" width="89" height="16"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="SQL Syntax" bezelStyle="rounded" alignment="center" controlSize="mini" borderStyle="border" tag="1" inset="2" id="306">
@@ -378,7 +406,7 @@ Gw
                             </binding>
                         </connections>
                     </button>
-                    <textField verticalHuggingPriority="750" id="256">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="256">
                         <rect key="frame" x="165" y="380" width="425" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="System Font Text" id="307">
@@ -387,7 +415,7 @@ Gw
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="286">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="286">
                         <rect key="frame" x="-3" y="254" width="146" height="11"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="(Image Table Level)" id="308">
@@ -396,7 +424,7 @@ Gw
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="287">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="287">
                         <rect key="frame" x="-15" y="204" width="158" height="42"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" id="309">
@@ -408,7 +436,7 @@ RW1wdHkgZmlsdGVyIHdpbGwgcm91dGUD4oCoQUxMIGltYWdlcwo
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <button id="322">
+                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="322">
                         <rect key="frame" x="178" y="140" width="387" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="check" title="of same modality" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="335">
@@ -423,7 +451,7 @@ RW1wdHkgZmlsdGVyIHdpbGwgcm91dGUD4oCoQUxMIGltYWdlcwo
                             </binding>
                         </connections>
                     </button>
-                    <textField verticalHuggingPriority="750" id="323">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="323">
                         <rect key="frame" x="22" y="122" width="127" height="42"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" controlSize="mini" sendsActionOnEndEditing="YES" alignment="right" title="For each study, also send, if available in the Database :" id="334">
@@ -432,7 +460,7 @@ RW1wdHkgZmlsdGVyIHdpbGwgcm91dGUD4oCoQUxMIGltYWdlcwo
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <button id="324">
+                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="324">
                         <rect key="frame" x="178" y="120" width="387" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="check" title="with same Study Description" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="333">
@@ -447,12 +475,12 @@ RW1wdHkgZmlsdGVyIHdpbGwgcm91dGUD4oCoQUxMIGltYWdlcwo
                             </binding>
                         </connections>
                     </button>
-                    <popUpButton verticalHuggingPriority="750" id="325">
+                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="325">
                         <rect key="frame" x="158" y="160" width="432" height="26"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <popUpButtonCell key="cell" type="push" title="Don't send previous study" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="329" id="326">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="menu"/>
                             <menu key="menu" title="OtherViews" id="327">
                                 <items>
                                     <menuItem title="Don't send previous study" state="on" id="329"/>
@@ -472,12 +500,12 @@ RW1wdHkgZmlsdGVyIHdpbGwgcm91dGUD4oCoQUxMIGltYWdlcwo
                             </binding>
                         </connections>
                     </popUpButton>
-                    <popUpButton verticalHuggingPriority="750" id="341">
+                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="341">
                         <rect key="frame" x="158" y="84" width="432" height="26"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <popUpButtonCell key="cell" type="push" title="Try 5 times each 30 secs" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="5" imageScaling="proportionallyDown" inset="2" selectedItem="344" id="342">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="menu"/>
                             <menu key="menu" title="OtherViews" id="343">
                                 <items>
                                     <menuItem title="Don't try to re-send" id="347"/>
@@ -497,7 +525,7 @@ RW1wdHkgZmlsdGVyIHdpbGwgcm91dGUD4oCoQUxMIGltYWdlcwo
                             </binding>
                         </connections>
                     </popUpButton>
-                    <button id="354">
+                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="354">
                         <rect key="frame" x="159" y="52" width="441" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="check" title="Send C-FIND to check if the study exists on the destination" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="355">
