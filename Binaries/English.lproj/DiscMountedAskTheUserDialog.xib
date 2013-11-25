@@ -22,7 +22,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="480" height="114"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="7">
                         <rect key="frame" x="17" y="60" width="446" height="34"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="mini" sendsActionOnEndEditing="YES" title="&lt;&lt;A disc named %@ and containing %d DICOM files was mounted. THIS STRING IS JUST A PLACEHOLDER, no need to localize it.>>" id="8">
