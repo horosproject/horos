@@ -7559,7 +7559,7 @@ static NSConditionLock *threadLock = nil;
                                     
                                     if( widthRatio > 1 || heightRatio > 1)
                                         scaleRatio = widthRatio > heightRatio ? widthRatio : heightRatio;
-                                        
+                                    
                                     // Test if the window is completely contained in the screen, otherwise, we will TileWindows.
                                     if( NSEqualRects(NSIntersectionRect( curScreenVisibleRect, r), r) == NO)
                                     {
@@ -7570,6 +7570,8 @@ static NSConditionLock *threadLock = nil;
                                 else
                                     validWindowsPosition = NO;
                             }
+                            else
+                                validWindowsPosition = NO;
                             
                             int index = [[dict valueForKey:@"index"] intValue];
                             int rows = [[dict valueForKey:@"rows"] intValue];
