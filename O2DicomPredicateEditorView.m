@@ -278,6 +278,37 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
                 
                 [menuItemsCache addObject:mi];
             }
+            
+            [menuItemsCache sortUsingComparator:^NSComparisonResult(NSMenuItem* mi1, NSMenuItem* mi2) {
+                if (mi1.isEnabled != mi2.isEnabled) {
+                    if (!mi1.isEnabled)
+                        return NSOrderedDescending;
+                    else return NSOrderedAscending;
+                }
+                
+                DCMAttributeTag* obj1 = mi1.representedObject;
+                DCMAttributeTag* obj2 = mi2.representedObject;
+                
+                if (!obj1)
+                    if (!obj2)
+                        return NSOrderedSame;
+                    else return NSOrderedAscending;
+                    else if (!obj2)
+                        return NSOrderedDescending;
+                
+                // by tag
+                if (_tagsSortKey == O2DicomPredicateEditorSortTagsByTag) {
+                    long t1 = [[self class] tagForTag:obj1];
+                    long t2 = [[self class] tagForTag:obj2];
+                    if (t1 < t2)
+                        return NSOrderedAscending;
+                    if (t1 > t2)
+                        return NSOrderedDescending;
+                }
+                
+                // by name
+                return [[[self class] _transformTagName:obj1.name] caseInsensitiveCompare:[[self class] _transformTagName:obj2.name]];
+            }];
         }
         
         _menuItems = [[NSMutableArray alloc] initWithArray:menuItemsCache copyItems:YES];
@@ -651,55 +682,56 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
     _tagsSortKey = sender.tag;
 }
 
-- (void)sortTagsMenu {
-    NSMenu* menu = _tagsPopUp.menu;
-    
-    NSArray* mis = [menu.itemArray sortedArrayUsingComparator:^NSComparisonResult(NSMenuItem* mi1, NSMenuItem* mi2) {
-        if (mi1.isEnabled != mi2.isEnabled) {
-            if (!mi1.isEnabled)
-                return NSOrderedDescending;
-            else return NSOrderedAscending;
-        }
-        
-        DCMAttributeTag* obj1 = mi1.representedObject;
-        DCMAttributeTag* obj2 = mi2.representedObject;
-        
-        if (!obj1)
-            if (!obj2)
-                return NSOrderedSame;
-            else return NSOrderedAscending;
-            else if (!obj2)
-                return NSOrderedDescending;
-        
-        // by tag
-        if (_tagsSortKey == O2DicomPredicateEditorSortTagsByTag) {
-            long t1 = [[self class] tagForTag:obj1];
-            long t2 = [[self class] tagForTag:obj2];
-            if (t1 < t2)
-                return NSOrderedAscending;
-            if (t1 > t2)
-                return NSOrderedDescending;
-        }
-        
-        // by name
-        return [[[self class] _transformTagName:obj1.name] caseInsensitiveCompare:[[self class] _transformTagName:obj2.name]];
-    }];
-    
-    NSInteger stag = [_tagsPopUp selectedTag];
-    NSDictionary* binding = [_tagsPopUp infoForBinding:@"selectedTag"];
-    [_tagsPopUp unbind:@"selectedTag"];
-    
-    [menu removeAllItems];
-    for (NSMenuItem *mi in mis)
-        [menu addItem: mi];
-    
-    if (binding)
-        [_tagsPopUp bind:@"selectedTag" toObject:[binding valueForKey:NSObservedObjectKey] withKeyPath:[binding valueForKey:NSObservedKeyPathKey] options:[binding objectForKey:NSOptionsKey]];
-    else if (stag != -1)
-        [_tagsPopUp selectItemWithTag:stag];
-}
+//- (void)sortTagsMenu {
+//    NSMenu* menu = _tagsPopUp.menu;
+//    
+//    NSArray* mis = [menu.itemArray sortedArrayUsingComparator:^NSComparisonResult(NSMenuItem* mi1, NSMenuItem* mi2) {
+//        if (mi1.isEnabled != mi2.isEnabled) {
+//            if (!mi1.isEnabled)
+//                return NSOrderedDescending;
+//            else return NSOrderedAscending;
+//        }
+//        
+//        DCMAttributeTag* obj1 = mi1.representedObject;
+//        DCMAttributeTag* obj2 = mi2.representedObject;
+//        
+//        if (!obj1)
+//            if (!obj2)
+//                return NSOrderedSame;
+//            else return NSOrderedAscending;
+//            else if (!obj2)
+//                return NSOrderedDescending;
+//        
+//        // by tag
+//        if (_tagsSortKey == O2DicomPredicateEditorSortTagsByTag) {
+//            long t1 = [[self class] tagForTag:obj1];
+//            long t2 = [[self class] tagForTag:obj2];
+//            if (t1 < t2)
+//                return NSOrderedAscending;
+//            if (t1 > t2)
+//                return NSOrderedDescending;
+//        }
+//        
+//        // by name
+//        return [[[self class] _transformTagName:obj1.name] caseInsensitiveCompare:[[self class] _transformTagName:obj2.name]];
+//    }];
+//    
+//    NSInteger stag = [_tagsPopUp selectedTag];
+//    NSDictionary* binding = [_tagsPopUp infoForBinding:@"selectedTag"];
+//    [_tagsPopUp unbind:@"selectedTag"];
+//    
+//    [menu removeAllItems];
+//    for (NSMenuItem *mi in mis)
+//        [menu addItem: mi];
+//    
+//    if (binding)
+//        [_tagsPopUp bind:@"selectedTag" toObject:[binding valueForKey:NSObservedObjectKey] withKeyPath:[binding valueForKey:NSObservedKeyPathKey] options:[binding objectForKey:NSOptionsKey]];
+//    else if (stag != -1)
+//        [_tagsPopUp selectItemWithTag:stag];
+//}
 
 - (void)_observePopUpButtonWillPopUpNotification:(NSNotification*)notification {
+    
     NSInteger stag = [_tagsPopUp selectedTag];
     NSDictionary* binding = [_tagsPopUp infoForBinding:@"selectedTag"];
     [_tagsPopUp unbind:@"selectedTag"];
@@ -710,19 +742,13 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
             [_tagsPopUp.menu addItem:mi];
     }
     
-//    NSLog(@"menuuu: %@", _tagsPopUp.menu.itemArray);
-    
     if (binding)
         [_tagsPopUp bind:@"selectedTag" toObject:[binding valueForKey:NSObservedObjectKey] withKeyPath:[binding valueForKey:NSObservedKeyPathKey] options:[binding objectForKey:NSOptionsKey]];
     else if (stag != -1)
         [_tagsPopUp selectItemWithTag:stag];
-
-//    NSLog(@"menuuu: %@", _tagsPopUp.menu.itemArray);
+    
     if ([self.editor dbMode])
         _tagsSortKey = O2DicomPredicateEditorSortTagsByTag;
-    [self sortTagsMenu];
-
-//    NSLog(@"menuuuuuuu: %@", _tagsPopUp.menu.itemArray);
 }
 
 - (void)menuWillOpen:(NSMenu*)menu {
