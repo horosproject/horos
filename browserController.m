@@ -3796,35 +3796,39 @@ static NSConditionLock *threadLock = nil;
             {
                 if( [[curObj valueForKey:@"type"] isEqualToString:@"Series"])
                 {
-                    NSArray	*imagesArray = [self imagesArray: curObj onlyImages: onlyImages];
-                    
-                    [correspondingManagedObjects addObjectsFromArray: imagesArray];
+                    @autoreleasepool {
+                        NSArray	*imagesArray = [self imagesArray: curObj onlyImages: onlyImages];
+                        
+                        [correspondingManagedObjects addObjectsFromArray: imagesArray];
+                    }
                 }
                 
                 if( [[curObj valueForKey:@"type"] isEqualToString:@"Study"])
                 {
-                    NSArray	*seriesArray = [self childrenArray: curObj onlyImages: onlyImages];
-                    
-                    int totImage = 0;
-                    DicomSeries* dontDelete = nil;
-                    
-                    for (DicomSeries* obj in seriesArray)
-                    {
-                        NSArray	*imagesArray = [self imagesArray: obj onlyImages: onlyImages];
+                    @autoreleasepool {
+                        NSArray	*seriesArray = [self childrenArray: curObj onlyImages: onlyImages];
                         
-                        totImage += [imagesArray count];
+                        int totImage = 0;
+                        DicomSeries* dontDelete = nil;
                         
-                        [correspondingManagedObjects addObjectsFromArray: imagesArray];
+                        for (DicomSeries* obj in seriesArray)
+                        {
+                            NSArray	*imagesArray = [self imagesArray: obj onlyImages: onlyImages];
+                            
+                            totImage += [imagesArray count];
+                            
+                            [correspondingManagedObjects addObjectsFromArray: imagesArray];
+                            
+                            if ([obj.name isEqualToString:@"OsiriX No Autodeletion"] && obj.id.intValue == 5005)
+                                dontDelete = obj;
+                        }
                         
-                        if ([obj.name isEqualToString:@"OsiriX No Autodeletion"] && obj.id.intValue == 5005)
-                            dontDelete = obj;
+                        if (totImage && dontDelete) // there are images, remove the "OsiriX No Autodeletion" series
+                            [context deleteObject:dontDelete];
+                        
+                        if (onlyImages == NO && totImage == 0 && dontDelete == nil) // We don't want empty studies, unless the "OsiriX No Autodeletion" series is there...
+                            [context deleteObject: curObj];
                     }
-                    
-                    if (totImage && dontDelete) // there are images, remove the "OsiriX No Autodeletion" series
-                        [context deleteObject:dontDelete];
-                    
-                    if (onlyImages == NO && totImage == 0 && dontDelete == nil)							// We don't want empty studies, unless the "OsiriX No Autodeletion" series is there...
-                        [context deleteObject: curObj];
                 }
                 
                 if (![curObj isDeleted])

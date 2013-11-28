@@ -77,30 +77,34 @@ NSInteger sortByAddress(id roi1, id roi2, void *context)
 
 - (void) removeDuplicatedObjects
 {
-	NSArray *a = [self sortedArrayUsingFunction: sortByAddress context: 0];
-	
-	id lastObject = nil;
-	
-	for( id s in a)
-	{
-		if( s == lastObject)
-			[self removeObjectAtIndex: [self indexOfObject: s]];
-		else lastObject = s;
-	}
+    @autoreleasepool {
+        NSArray *a = [self sortedArrayUsingFunction: sortByAddress context: 0];
+        
+        id lastObject = nil;
+        
+        for( id s in a)
+        {
+            if( s == lastObject)
+                [self removeObjectAtIndex: [self indexOfObject: s]];
+            else lastObject = s;
+        }
+    }
 }
 
 - (void) removeDuplicatedStrings
 {
-	NSArray *a = [self sortedArrayUsingSelector: @selector(compare:)];
-	
-	NSString *lastString = nil;
-	
-	for( NSString *s in a)
-	{
-		if( [s isKindOfClass:[NSString class]] && [s isEqualToString: lastString])
-			[self removeObjectAtIndex: [self indexOfObject: s]];
-		else lastString = s;
-	}
+    @autoreleasepool {
+        NSArray *a = [self sortedArrayUsingSelector: @selector(compare:)];
+        
+        NSString *lastString = nil;
+        
+        for( NSString *s in a)
+        {
+            if( [s isKindOfClass:[NSString class]] && [s isEqualToString: lastString])
+                [self removeObjectAtIndex: [self indexOfObject: s]];
+            else lastString = s;
+        }
+    }
 }
 
 - (void) removeDuplicatedStringsInSyncWithThisArray: (NSMutableArray*) otherArray
