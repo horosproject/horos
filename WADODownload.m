@@ -256,8 +256,9 @@
         if( [urlToDownload count])
         {
             NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+#ifndef NDEBUG
             NSLog( @"------ WADO downloading : %d files", (int) [urlToDownload count]);
-            
+#endif
             firstWadoErrorDisplayed = NO;
             
             if( showErrorMessage == NO)
@@ -273,8 +274,9 @@
             float timeout = [[NSUserDefaults standardUserDefaults] floatForKey: @"WADOTimeout"];
             if( timeout < 240) timeout = 240;
             
+#ifndef NDEBUG
             NSLog( @"------ WADO parameters: timeout:%2.2f [secs] / WADOMaximumConcurrentDownloads:%d [URLRequests]", timeout, WADOMaximumConcurrentDownloads);
-            
+#endif
             self.countOfSuccesses = 0;
             WADOTotal = WADOThreads = [urlToDownload count];
             
@@ -362,10 +364,12 @@
             
             [pool release];
             
+#ifndef NDEBUG
             if( aborted)
                 NSLog( @"------ WADO downloading ABORTED");
             else
                 NSLog( @"------ WADO downloading : %d files - finished (errors: %d / total: %d)", (int) [urlToDownload count], (int) (urlToDownload.count - countOfSuccesses), (int) urlToDownload.count);
+#endif
         }
     }
     @catch (NSException *exception) {

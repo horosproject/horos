@@ -900,9 +900,9 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 - (void) WADOCFindThread: (id) sender
 {
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
-    
+#ifndef NDEBUG
     NSLog( @"--- WADO CFIND Start");
-    
+#endif
     [NSThread currentThread].name = @"WADO C-FIND Thread";
     
     DcmDataset dataset;
@@ -914,9 +914,9 @@ subOpCallback(void * /*subOpCallbackData*/ ,
     dataset.putAndInsertString(DCM_QueryRetrieveLevel, "IMAGE", OFTrue);
     
     [self queryWithValues: nil dataset: &dataset];
-    
+#ifndef NDEBUG
     NSLog( @"--- WADO CFIND Done");
-    
+#endif
     [pool release];
 }
 
@@ -933,11 +933,13 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 
 - (void) WADORetrieve: (DCMTKStudyQueryNode*) study // requestService: WFIND?
 {
+#ifndef NDEBUG
 	if( [self isKindOfClass:[DCMTKSeriesQueryNode class]])
 		NSLog( @"------ WADO download : starting... %@ %@", study.theDescription, study.patientID);
 	else
 		NSLog( @"------ WADO download : starting... %@ %@", self.theDescription, self.patientID);
-	
+#endif
+    
 	NSString *protocol = [[_extraParameters valueForKey: @"WADOhttps"] intValue] ? @"https" : @"http";
 	
 	NSString *wadoSubUrl = [_extraParameters valueForKey: @"WADOUrl"];
