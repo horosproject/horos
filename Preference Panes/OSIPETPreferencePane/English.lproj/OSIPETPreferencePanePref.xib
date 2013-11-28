@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13B35" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13A603" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
@@ -22,7 +22,7 @@
         <window title="&lt;&lt; do not localize >>" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" deferred="NO" oneShot="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="12" userLabel="PrefPane">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="743" height="655"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
             <value key="minSize" type="size" width="224.66300000000001" height="10"/>
             <view key="contentView" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="743" height="655"/>
@@ -69,7 +69,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <popUpButtonCell key="cell" type="push" title="Item1" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="301" id="425">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="system"/>
+                                        <font key="font" metaFont="menu"/>
                                         <menu key="menu" title="OtherViews" id="299">
                                             <items>
                                                 <menuItem title="Item1" state="on" id="301"/>
@@ -80,11 +80,11 @@
                                     </popUpButtonCell>
                                 </popUpButton>
                                 <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="303">
-                                    <rect key="frame" x="328" y="26" width="71" height="26"/>
+                                    <rect key="frame" x="368" y="26" width="71" height="26"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <popUpButtonCell key="cell" type="push" title="Item1" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="307" id="426">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="system"/>
+                                        <font key="font" metaFont="menu"/>
                                         <menu key="menu" title="OtherViews" id="304">
                                             <items>
                                                 <menuItem title="Item1" state="on" id="307"/>
@@ -109,9 +109,9 @@
                         </view>
                         <constraints>
                             <constraint firstItem="399" firstAttribute="top" secondItem="295" secondAttribute="bottom" constant="4" id="8Yj-FQ-CaP"/>
-                            <constraint firstItem="303" firstAttribute="top" secondItem="298" secondAttribute="bottom" id="DV4-rX-FNs"/>
-                            <constraint firstItem="303" firstAttribute="leading" secondItem="314" secondAttribute="leading" constant="329" id="MHp-Tr-QkT"/>
+                            <constraint firstItem="303" firstAttribute="top" secondItem="298" secondAttribute="bottom" id="LBO-wQ-5n7"/>
                             <constraint firstItem="298" firstAttribute="top" secondItem="295" secondAttribute="top" id="UUR-Q9-9ED"/>
+                            <constraint firstItem="303" firstAttribute="leading" secondItem="295" secondAttribute="trailing" constant="7" id="VFk-BC-9H0"/>
                             <constraint firstAttribute="bottom" secondItem="399" secondAttribute="bottom" constant="11" id="X06-qx-67i"/>
                             <constraint firstItem="399" firstAttribute="leading" secondItem="314" secondAttribute="leading" constant="15" id="a3i-c8-qw6"/>
                             <constraint firstItem="298" firstAttribute="leading" secondItem="295" secondAttribute="trailing" constant="7" id="cdA-ae-efW"/>
@@ -193,6 +193,7 @@
                             <constraint firstAttribute="bottom" secondItem="397" secondAttribute="bottom" constant="9" id="dyM-8x-2RY"/>
                             <constraint firstItem="324" firstAttribute="top" secondItem="322" secondAttribute="top" constant="42" id="kNf-IK-tMC"/>
                             <constraint firstItem="316" firstAttribute="top" secondItem="322" secondAttribute="top" constant="25" id="sj2-Go-8H5"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="324" secondAttribute="trailing" constant="20" id="wUD-9F-4du"/>
                         </constraints>
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -342,6 +343,7 @@
                             <constraint firstItem="346" firstAttribute="leading" secondItem="347" secondAttribute="trailing" constant="9" id="eHL-mT-SS1"/>
                             <constraint firstItem="342" firstAttribute="baseline" secondItem="345" secondAttribute="baseline" id="nM5-ws-oHs"/>
                             <constraint firstItem="338" firstAttribute="top" secondItem="336" secondAttribute="top" constant="21" id="pew-bE-jwi"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="346" secondAttribute="trailing" constant="20" id="r2P-t7-vpw"/>
                             <constraint firstItem="345" firstAttribute="leading" secondItem="338" secondAttribute="trailing" constant="27" id="reO-Qc-0ve"/>
                             <constraint firstItem="391" firstAttribute="baseline" secondItem="390" secondAttribute="baseline" id="twf-HI-9Ok"/>
                             <constraint firstItem="392" firstAttribute="trailing" secondItem="346" secondAttribute="trailing" id="uaD-m1-Z4N"/>
@@ -373,7 +375,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <popUpButtonCell key="cell" type="push" title="Flat" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="5" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="383" id="439">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="system"/>
+                                        <font key="font" metaFont="menu"/>
                                         <menu key="menu" title="OtherViews" id="365">
                                             <items>
                                                 <menuItem title="Linear" id="378"/>
@@ -433,12 +435,12 @@
                                 <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="461">
                                     <rect key="frame" x="317" y="37" width="218" height="26"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <popUpButtonCell key="cell" type="push" title="SeriesTime (0008,0031)" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" id="462">
+                                    <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" id="462">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="system"/>
+                                        <font key="font" metaFont="menu"/>
                                         <menu key="menu" title="OtherViews" id="463">
                                             <items>
-                                                <menuItem title="SeriesTime (0008,0031)" state="on" id="469"/>
+                                                <menuItem title="SeriesTime (0008,0031)" id="469"/>
                                                 <menuItem title="AcquisitionTime (0008,0032)" tag="1" id="468"/>
                                                 <menuItem title="ContentTime (0008,0033)" tag="2" id="467"/>
                                                 <menuItem title="StudyTime (0008,0030)" tag="3" id="466"/>
@@ -476,9 +478,12 @@ Corrected dose = Dose * exp ( ln(2) / Half-life). Check with the PET modality ma
                         <constraints>
                             <constraint firstItem="450" firstAttribute="leading" secondItem="448" secondAttribute="leading" constant="79" id="3qF-Y9-U8F"/>
                             <constraint firstItem="461" firstAttribute="top" secondItem="477" secondAttribute="bottom" constant="17" id="6TA-YX-VmH"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="474" secondAttribute="trailing" constant="50" id="Cal-hj-091"/>
+                            <constraint firstItem="474" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="448" secondAttribute="leading" constant="50" id="EfK-kk-PsD"/>
                             <constraint firstItem="450" firstAttribute="baseline" secondItem="461" secondAttribute="baseline" id="J0l-NK-q7Y"/>
                             <constraint firstItem="461" firstAttribute="leading" secondItem="450" secondAttribute="trailing" constant="12" id="PKT-UE-wbB"/>
                             <constraint firstItem="474" firstAttribute="top" secondItem="461" secondAttribute="bottom" constant="13" id="RK7-dm-tmg"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="461" secondAttribute="trailing" constant="20" id="Rsm-SG-IEA"/>
                             <constraint firstItem="477" firstAttribute="top" secondItem="448" secondAttribute="top" constant="25" id="d2S-qH-whm"/>
                             <constraint firstItem="477" firstAttribute="leading" secondItem="448" secondAttribute="leading" constant="16" id="l4F-7b-JSn"/>
                             <constraint firstAttribute="bottom" secondItem="474" secondAttribute="bottom" constant="3" id="mk0-fQ-5VK"/>
@@ -499,7 +504,7 @@ Corrected dose = Dose * exp ( ln(2) / Half-life). Check with the PET modality ma
                                     <autoresizingMask key="autoresizingMask"/>
                                     <popUpButtonCell key="cell" type="push" title="Item1" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="416" id="441">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="system"/>
+                                        <font key="font" metaFont="menu"/>
                                         <menu key="menu" title="OtherViews" id="414">
                                             <items>
                                                 <menuItem title="Item1" state="on" id="416"/>
@@ -538,6 +543,7 @@ Corrected dose = Dose * exp ( ln(2) / Half-life). Check with the PET modality ma
                             <constraint firstItem="418" firstAttribute="top" secondItem="419" secondAttribute="bottom" constant="12" id="J2t-BZ-75v"/>
                             <constraint firstAttribute="bottom" secondItem="418" secondAttribute="bottom" constant="9" id="ME4-uc-X46"/>
                             <constraint firstItem="413" firstAttribute="leading" secondItem="419" secondAttribute="trailing" constant="6" id="MRF-qX-33h"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="413" secondAttribute="trailing" constant="20" id="Qny-CG-y1q"/>
                             <constraint firstItem="419" firstAttribute="baseline" secondItem="413" secondAttribute="baseline" id="SC2-th-Mxi"/>
                             <constraint firstItem="418" firstAttribute="leading" secondItem="419" secondAttribute="leading" id="V2p-M3-9ik"/>
                             <constraint firstItem="413" firstAttribute="top" secondItem="403" secondAttribute="top" constant="24" id="yhv-sJ-MvY"/>
