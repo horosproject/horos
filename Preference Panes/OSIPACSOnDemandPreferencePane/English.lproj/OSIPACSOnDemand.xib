@@ -148,7 +148,7 @@
                             <rect key="frame" x="3" y="3" width="343" height="167.99999948200727"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <matrix horizontalHuggingPriority="475" verticalHuggingPriority="750" horizontalCompressionResistancePriority="942" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="586">
+                                <matrix horizontalHuggingPriority="475" verticalHuggingPriority="750" horizontalCompressionResistancePriority="942" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="586">
                                     <rect key="frame" x="5" y="6.9999994820072686" width="350" height="158"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
