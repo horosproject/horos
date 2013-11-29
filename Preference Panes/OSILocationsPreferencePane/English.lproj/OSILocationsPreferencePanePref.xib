@@ -883,7 +883,7 @@
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </box>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1127">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="1127">
                         <rect key="frame" x="604" y="183" width="171" height="11"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" controlSize="mini" sendsActionOnEndEditing="YES" alignment="right" title="Press Delete key to remove a database" id="1128">
@@ -892,7 +892,7 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1129">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="1129">
                         <rect key="frame" x="604" y="414" width="171" height="11"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" controlSize="mini" sendsActionOnEndEditing="YES" alignment="right" title="Press Delete key to remove a database" id="1130">
@@ -901,7 +901,7 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1131">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="1131">
                         <rect key="frame" x="621" y="788" width="154" height="11"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" controlSize="mini" sendsActionOnEndEditing="YES" alignment="right" title="Press Delete key to remove a node" id="1132">
@@ -1016,7 +1016,7 @@
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="583">
-                        <rect key="frame" x="46" y="194" width="80" height="17"/>
+                        <rect key="frame" x="46" y="193" width="80" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="WADO Path:" id="584">
                             <font key="font" metaFont="system"/>
@@ -1046,8 +1046,11 @@
                         </connections>
                     </textField>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="585">
-                        <rect key="frame" x="131" y="192" width="256" height="22"/>
+                        <rect key="frame" x="131" y="191" width="256" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="256" id="hED-o5-7J2"/>
+                        </constraints>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" title="wado" drawsBackground="YES" id="586">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -1125,8 +1128,8 @@ Gw
                             <action selector="cancel:" target="-2" id="579"/>
                         </connections>
                     </button>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="573">
-                        <rect key="frame" x="219" y="167" width="120" height="17"/>
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="573">
+                        <rect key="frame" x="219" y="166" width="120" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="From 1 to 131072" id="574">
                             <font key="font" metaFont="system"/>
@@ -1596,7 +1599,7 @@ Gw
                                         <binding destination="-2" name="enabled" keyPath="TLSEnabled" id="914"/>
                                     </connections>
                                 </popUpButton>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1069">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="1069">
                                     <rect key="frame" x="108" y="14" width="254" height="22"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <constraints>

@@ -20,21 +20,21 @@
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="582" userLabel="SmartAlbum Editing">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="163" y="199" width="512" height="337"/>
+            <rect key="contentRect" x="163" y="199" width="533" height="336"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
             <view key="contentView" id="583">
-                <rect key="frame" x="0.0" y="0.0" width="512" height="337"/>
+                <rect key="frame" x="0.0" y="0.0" width="533" height="336"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <box title="Title" boxType="secondary" borderType="bezel" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="584">
-                        <rect key="frame" x="369" y="145" width="131" height="173.99999948200727"/>
+                        <rect key="frame" x="390" y="145.00000179964189" width="131" height="172.99999797193308"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES" heightSizable="YES"/>
                         <view key="contentView">
-                            <rect key="frame" x="3" y="3" width="125" height="167.99999948200727"/>
+                            <rect key="frame" x="3" y="3" width="125" height="166.99999797193308"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <matrix verticalHuggingPriority="750" fixedFrame="YES" mode="highlight" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="616">
-                                    <rect key="frame" x="5" y="13.999999482007269" width="112" height="149"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="112" height="149"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     <size key="cellSize" width="54" height="14"/>
@@ -142,14 +142,14 @@
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </box>
                     <box horizontalHuggingPriority="1" horizontalCompressionResistancePriority="1000" boxType="secondary" borderType="bezel" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="585">
-                        <rect key="frame" x="17" y="144.99999948200727" width="349" height="174"/>
+                        <rect key="frame" x="17" y="145" width="370" height="172.99999977157498"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES" heightSizable="YES"/>
                         <view key="contentView">
-                            <rect key="frame" x="3" y="3" width="343" height="168"/>
+                            <rect key="frame" x="3" y="3" width="364" height="166.99999977157498"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <matrix horizontalHuggingPriority="475" verticalHuggingPriority="750" horizontalCompressionResistancePriority="942" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="586">
-                                    <rect key="frame" x="5" y="7" width="350" height="158"/>
+                                    <rect key="frame" x="10" y="5.9999997715749771" width="350" height="158"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     <size key="cellSize" width="114" height="18"/>
@@ -269,16 +269,16 @@
                             </subviews>
                         </view>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="586" secondAttribute="trailing" constant="-12" id="Hgi-ld-5qZ"/>
-                            <constraint firstItem="586" firstAttribute="leading" secondItem="585" secondAttribute="leading" constant="5" id="Uld-jf-dta"/>
-                            <constraint firstAttribute="bottom" secondItem="586" secondAttribute="bottom" constant="6" id="W8q-mI-1XF"/>
+                            <constraint firstAttribute="trailing" secondItem="586" secondAttribute="trailing" constant="4" id="Hgi-ld-5qZ"/>
+                            <constraint firstItem="586" firstAttribute="leading" secondItem="585" secondAttribute="leading" constant="10" id="Uld-jf-dta"/>
+                            <constraint firstAttribute="bottom" secondItem="586" secondAttribute="bottom" constant="4.9999994820072686" id="W8q-mI-1XF"/>
                             <constraint firstItem="586" firstAttribute="top" secondItem="585" secondAttribute="top" constant="4" id="y5L-jy-faf"/>
                         </constraints>
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </box>
                     <button verticalHuggingPriority="750" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="636">
-                        <rect key="frame" x="411" y="101" width="92" height="32"/>
+                        <rect key="frame" x="432" y="101" width="92" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="80" id="Fnr-GU-4hp"/>
@@ -295,7 +295,7 @@ DQ
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="638">
-                        <rect key="frame" x="329" y="101" width="82" height="32"/>
+                        <rect key="frame" x="350" y="101" width="82" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="639">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>

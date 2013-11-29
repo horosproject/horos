@@ -12667,6 +12667,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	[self flagsChanged: theEvent];
     [cursor set];
+    cursorSet = YES;
 }
 
 - (void) checkCursor

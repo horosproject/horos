@@ -84,7 +84,7 @@
                                         <binding destination="548" name="selectedTag" keyPath="values.COPYDATABASEMODE" id="902"/>
                                     </connections>
                                 </matrix>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="103">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="103">
                                     <rect key="frame" x="48" y="126" width="95" height="28"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="right" title="Default Database Location:" id="754">
@@ -152,7 +152,7 @@
                                         <binding destination="548" name="value" keyPath="values.validateFilesBeforeImporting" id="832"/>
                                     </connections>
                                 </button>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="642">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="642">
                                     <rect key="frame" x="328" y="141" width="177" height="14"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="(Current user Documents folder)" id="759">
@@ -207,7 +207,7 @@
                             <rect key="frame" x="2" y="2" width="469" height="169"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="613">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="613">
                                     <rect key="frame" x="113" y="146" width="114" height="14"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="right" title="Date &amp; Time Format:" id="761">
@@ -242,7 +242,7 @@
                                         <action selector="resetDate:" target="-2" id="620"/>
                                     </connections>
                                 </button>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="621">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="621">
                                     <rect key="frame" x="126" y="120" width="101" height="14"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <constraints>
@@ -458,7 +458,7 @@
                                         <binding destination="-2" name="value" keyPath="self.newUsePatientNameForUID" id="992"/>
                                     </connections>
                                 </button>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="981">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="981">
                                     <rect key="frame" x="14" y="145" width="238" height="14"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="left" title="Use following fields to generate Patient UID:" id="982">
@@ -467,7 +467,7 @@
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="983">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="983">
                                     <rect key="frame" x="14" y="53" width="350" height="28"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="left" id="984">
@@ -627,7 +627,7 @@ It can require several minutes on large database.</string>
                                         <binding destination="548" name="selectedTag" keyPath="values.AUTOCLEANINGSPACESIZE" id="918"/>
                                     </connections>
                                 </popUpButton>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="301">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="301">
                                     <rect key="frame" x="399" y="113" width="41" height="14"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="right" title="delete:" id="773">
@@ -721,7 +721,7 @@ It can require several minutes on large database.</string>
                                         <binding destination="548" name="value" keyPath="values.eraseEntireDBAtStartup" id="1035"/>
                                     </connections>
                                 </button>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="509">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="509">
                                     <rect key="frame" x="5" y="169" width="215" height="22"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" id="776">
@@ -951,7 +951,7 @@ If a study is in an album, it will NOT be deleted.</string>
                                         <binding destination="548" name="value" keyPath="values.COMMENTSAUTOFILLSeriesLevel" id="1031"/>
                                     </connections>
                                 </button>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="356">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="356">
                                     <rect key="frame" x="24" y="53" width="41" height="14"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="Group:" id="778">
@@ -960,7 +960,7 @@ If a study is in an album, it will NOT be deleted.</string>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1028">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="1028">
                                     <rect key="frame" x="19" y="9" width="60" height="14"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="Level:" id="1029">
@@ -969,7 +969,7 @@ If a study is in an album, it will NOT be deleted.</string>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="357">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="357">
                                     <rect key="frame" x="147" y="54" width="51" height="14"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="Element:" id="779">
@@ -1406,7 +1406,7 @@ If a study is in an album, it will NOT be deleted.</string>
                                         <action selector="setReportMode:" target="-2" id="544"/>
                                     </connections>
                                 </popUpButton>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="545">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="545">
                                     <rect key="frame" x="110" y="35" width="116" height="14"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="right" title="Create reports using:" id="787">
