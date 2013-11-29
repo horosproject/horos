@@ -181,8 +181,8 @@
                                         <action selector="addFieldToken:" target="-2" id="486"/>
                                     </connections>
                                 </popUpButton>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="367">
-                                    <rect key="frame" x="71" y="137" width="96" height="17"/>
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="367">
+                                    <rect key="frame" x="71" y="134" width="96" height="17"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="92" id="W1q-la-vpD"/>

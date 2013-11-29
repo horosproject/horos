@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13B35" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13A603" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
@@ -16,22 +16,22 @@
         <window title="&lt;&lt; do not localize >>" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" deferred="NO" oneShot="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="12" userLabel="PrefPane">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="57" y="247" width="709" height="330"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
+            <rect key="contentRect" x="57" y="247" width="709" height="368"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
             <value key="minSize" type="size" width="224.66300000000001" height="10"/>
             <view key="contentView" id="6">
-                <rect key="frame" x="0.0" y="0.0" width="709" height="330"/>
+                <rect key="frame" x="0.0" y="0.0" width="709" height="368"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <box title="Reading CD/DVDs" translatesAutoresizingMaskIntoConstraints="NO" id="98">
-                        <rect key="frame" x="17" y="102" width="675" height="208"/>
+                        <rect key="frame" x="16" y="118" width="676" height="229"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
-                            <rect key="frame" x="2" y="2" width="671" height="188"/>
+                            <rect key="frame" x="2" y="2" width="672" height="209"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <button toolTip="Once an inserted disk is successfully indexed, it is automatically selected" translatesAutoresizingMaskIntoConstraints="NO" id="196">
-                                    <rect key="frame" x="326" y="139" width="330" height="18"/>
+                                    <rect key="frame" x="327" y="161" width="233" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Eject the disk when done copying" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="197">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -42,7 +42,7 @@
                                     </connections>
                                 </button>
                                 <button toolTip="Once an inserted disk is successfully indexed, it is automatically selected" translatesAutoresizingMaskIntoConstraints="NO" id="210">
-                                    <rect key="frame" x="326" y="119" width="330" height="18"/>
+                                    <rect key="frame" x="327" y="141" width="294" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Automatically select the source when ready" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="211">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -53,22 +53,22 @@
                                     </connections>
                                 </button>
                                 <matrix horizontalHuggingPriority="396" verticalHuggingPriority="750" horizontalCompressionResistancePriority="490" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="102">
-                                    <rect key="frame" x="16" y="13" width="638" height="38"/>
+                                    <rect key="frame" x="17" y="35" width="508" height="38"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                    <size key="cellSize" width="638" height="18"/>
+                                    <size key="cellSize" width="508" height="18"/>
                                     <size key="intercellSpacing" width="4" height="2"/>
-                                    <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="167">
+                                    <buttonCell key="prototype" type="radio" title="Files indexed in the DICOMDIR file" imagePosition="left" alignment="left" state="on" toolTip="Use DICOMDIR on the media to load the images." tag="1" inset="2" id="gZ3-mY-LlL">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
                                     <cells>
                                         <column>
-                                            <buttonCell type="radio" title="Files indexed in the DICOMDIR file" imagePosition="left" alignment="left" state="on" toolTip="Use DICOMDIR on the media to load the images." tag="1" inset="2" id="99">
+                                            <buttonCell type="radio" title="All DICOM files available on the disk, ignoring the DICOMDIR file (Scan Mode)" imagePosition="left" alignment="left" state="on" toolTip="Use DICOMDIR on the media to load the images." inset="2" id="99">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
-                                            <buttonCell type="radio" title="All DICOM files available on the disk, ignoring the DICOMDIR file (Scan Mode)" imagePosition="left" alignment="left" toolTip="Scan the media to find all DICOM images." inset="2" id="110">
+                                            <buttonCell type="radio" title="Files indexed in the DICOMDIR file" imagePosition="left" alignment="left" toolTip="Scan the media to find all DICOM images." tag="1" inset="2" id="110">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
@@ -79,22 +79,20 @@
                                     </connections>
                                 </matrix>
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="199">
-                                    <rect key="frame" x="326" y="33" width="330" height="18"/>
+                                    <rect key="frame" x="27" y="11" width="330" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="If no DICOM files are found, switch to Scan Mode" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="200">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
                                     <connections>
+                                        <binding destination="173" name="enabled" keyPath="values.UseDICOMDIRFileCD" id="849-Eu-Tav"/>
                                         <binding destination="173" name="value" keyPath="values.ScanDiskIfDICOMDIRZero" id="209"/>
                                     </connections>
                                 </button>
                                 <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="216">
-                                    <rect key="frame" x="16" y="79" width="301" height="78"/>
+                                    <rect key="frame" x="17" y="101" width="267" height="78"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <constraints>
-                                        <constraint firstAttribute="width" constant="301" id="Yqa-39-TQU"/>
-                                    </constraints>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     <size key="cellSize" width="267" height="18"/>
                                     <size key="intercellSpacing" width="4" height="2"/>
@@ -127,7 +125,7 @@
                                     </connections>
                                 </matrix>
                                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="220">
-                                    <rect key="frame" x="14" y="160" width="642" height="17"/>
+                                    <rect key="frame" x="15" y="182" width="152" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="When a disc is inserted:" id="221">
                                         <font key="font" metaFont="system"/>
@@ -136,7 +134,7 @@
                                     </textFieldCell>
                                 </textField>
                                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="225">
-                                    <rect key="frame" x="14" y="54" width="642" height="17"/>
+                                    <rect key="frame" x="15" y="76" width="251" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Determine disc content by considering:" id="226">
                                         <font key="font" metaFont="system"/>
@@ -147,44 +145,37 @@
                             </subviews>
                         </view>
                         <constraints>
-                            <constraint firstAttribute="bottom" secondItem="102" secondAttribute="bottom" constant="11" id="0Zf-sx-khs"/>
-                            <constraint firstItem="220" firstAttribute="top" secondItem="98" secondAttribute="top" constant="29" id="3ez-NY-fnv"/>
-                            <constraint firstItem="196" firstAttribute="top" secondItem="220" secondAttribute="bottom" constant="5" id="5Nt-iH-sPG"/>
-                            <constraint firstItem="102" firstAttribute="top" secondItem="225" secondAttribute="bottom" constant="3" id="5eG-hK-Pnx"/>
-                            <constraint firstItem="210" firstAttribute="top" secondItem="196" secondAttribute="bottom" constant="6" id="5ho-7k-zoM"/>
-                            <constraint firstAttribute="trailing" secondItem="199" secondAttribute="trailing" constant="16" id="7HN-er-jC2"/>
-                            <constraint firstItem="210" firstAttribute="leading" secondItem="216" secondAttribute="trailing" constant="11" id="FdW-RW-cME"/>
-                            <constraint firstItem="196" firstAttribute="leading" secondItem="216" secondAttribute="trailing" constant="11" id="Jdv-Nv-dUN"/>
-                            <constraint firstAttribute="trailing" secondItem="196" secondAttribute="trailing" constant="16" id="LvA-ws-yCL"/>
-                            <constraint firstItem="220" firstAttribute="leading" secondItem="98" secondAttribute="leading" constant="15" id="OZp-UM-rJX"/>
-                            <constraint firstAttribute="trailing" secondItem="102" secondAttribute="trailing" constant="16" id="PX5-qn-H3b"/>
-                            <constraint firstItem="210" firstAttribute="leading" secondItem="216" secondAttribute="trailing" constant="11" id="QnY-aZ-2VZ"/>
-                            <constraint firstItem="196" firstAttribute="leading" secondItem="216" secondAttribute="trailing" constant="11" id="ROA-As-7ZP"/>
-                            <constraint firstItem="216" firstAttribute="leading" secondItem="220" secondAttribute="leading" id="RaF-ne-umZ"/>
-                            <constraint firstAttribute="trailing" secondItem="210" secondAttribute="trailing" constant="16" id="SaG-kq-FAd"/>
-                            <constraint firstItem="225" firstAttribute="leading" secondItem="98" secondAttribute="leading" constant="15" id="dUA-8O-5Mz"/>
-                            <constraint firstItem="199" firstAttribute="leading" secondItem="210" secondAttribute="leading" id="exo-XZ-hOV"/>
-                            <constraint firstItem="225" firstAttribute="trailing" secondItem="199" secondAttribute="trailing" id="kjK-c5-ljX"/>
-                            <constraint firstItem="102" firstAttribute="leading" secondItem="98" secondAttribute="leading" constant="15" id="lsu-cv-WMy"/>
-                            <constraint firstItem="225" firstAttribute="top" secondItem="216" secondAttribute="bottom" constant="8" id="nMM-qQ-y6S"/>
-                            <constraint firstItem="225" firstAttribute="trailing" secondItem="220" secondAttribute="trailing" id="pqB-Le-OYo"/>
-                            <constraint firstItem="199" firstAttribute="top" secondItem="225" secondAttribute="bottom" constant="5" id="r6w-hx-f2i"/>
-                            <constraint firstItem="210" firstAttribute="leading" secondItem="216" secondAttribute="trailing" constant="11" id="rft-Ek-97l"/>
-                            <constraint firstItem="216" firstAttribute="top" secondItem="220" secondAttribute="bottom" constant="3" id="zEa-Ur-ZJ2"/>
+                            <constraint firstItem="102" firstAttribute="top" secondItem="225" secondAttribute="bottom" constant="3" id="0gj-M6-4lW"/>
+                            <constraint firstItem="102" firstAttribute="leading" secondItem="225" secondAttribute="leading" id="1hi-hU-C3k"/>
+                            <constraint firstItem="216" firstAttribute="top" secondItem="220" secondAttribute="bottom" constant="3" id="5Zr-Na-bxh"/>
+                            <constraint firstItem="199" firstAttribute="leading" secondItem="98" secondAttribute="leading" constant="28" id="7vK-Zn-jeE"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="210" secondAttribute="trailing" constant="16" id="Aiw-8e-nDr"/>
+                            <constraint firstItem="210" firstAttribute="top" secondItem="196" secondAttribute="bottom" constant="6" symbolic="YES" id="Fln-cU-N6w"/>
+                            <constraint firstAttribute="bottom" secondItem="199" secondAttribute="bottom" constant="11" id="GP0-en-I5A"/>
+                            <constraint firstItem="220" firstAttribute="leading" secondItem="216" secondAttribute="leading" id="S44-Xl-cRi"/>
+                            <constraint firstItem="216" firstAttribute="leading" secondItem="225" secondAttribute="leading" id="aEd-Jz-FdV"/>
+                            <constraint firstItem="196" firstAttribute="leading" secondItem="210" secondAttribute="leading" id="bKX-54-j1Q"/>
+                            <constraint firstItem="199" firstAttribute="top" secondItem="102" secondAttribute="bottom" constant="8" symbolic="YES" id="czV-4B-YAV"/>
+                            <constraint firstItem="196" firstAttribute="leading" secondItem="216" secondAttribute="trailing" constant="45" id="jdT-Mh-b0T"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="102" secondAttribute="trailing" constant="16" id="jdi-QV-zle"/>
+                            <constraint firstItem="102" firstAttribute="top" secondItem="210" secondAttribute="bottom" constant="70" id="qFn-ZI-9Kf"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="196" secondAttribute="trailing" constant="16" id="wyy-2k-Hpp"/>
+                            <constraint firstItem="225" firstAttribute="top" secondItem="216" secondAttribute="bottom" constant="8" symbolic="YES" id="xG6-0w-zfR"/>
+                            <constraint firstItem="220" firstAttribute="leading" secondItem="98" secondAttribute="leading" constant="16" id="zvM-bB-gIe"/>
                         </constraints>
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <font key="titleFont" metaFont="system"/>
                     </box>
                     <box verticalHuggingPriority="249" title="Writing CD/DVDs" translatesAutoresizingMaskIntoConstraints="NO" id="132">
-                        <rect key="frame" x="17" y="16" width="675" height="82"/>
+                        <rect key="frame" x="16" y="34" width="675" height="80"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
-                            <rect key="frame" x="2" y="2" width="671" height="62"/>
+                            <rect key="frame" x="2" y="2" width="671" height="60"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="135">
-                                    <rect key="frame" x="15" y="16" width="215" height="18"/>
+                                    <rect key="frame" x="15" y="14" width="215" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Include contents of this folder:" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="163">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -195,7 +186,7 @@
                                     </connections>
                                 </button>
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="183">
-                                    <rect key="frame" x="15" y="36" width="641" height="18"/>
+                                    <rect key="frame" x="15" y="34" width="525" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Prefer standard JPEG instead of JPEG2000 / JPEG LS compression for DICOM files" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="184">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -209,7 +200,7 @@
                                     </connections>
                                 </button>
                                 <pathControl verticalHuggingPriority="750" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="202">
-                                    <rect key="frame" x="235" y="14" width="318" height="20"/>
+                                    <rect key="frame" x="235" y="12" width="296" height="20"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                     <pathCell key="cell" controlSize="small" selectable="YES" editable="YES" alignment="left" pathStyle="navigationBar" id="203">
                                         <font key="font" metaFont="smallSystem"/>
@@ -225,13 +216,15 @@
                             </subviews>
                         </view>
                         <constraints>
-                            <constraint firstItem="135" firstAttribute="top" secondItem="183" secondAttribute="bottom" constant="6" id="BY9-lh-5mR"/>
-                            <constraint firstItem="183" firstAttribute="top" secondItem="132" secondAttribute="top" constant="28" id="CaY-F4-Jqj"/>
-                            <constraint firstItem="183" firstAttribute="leading" secondItem="132" secondAttribute="leading" constant="16" id="GQw-ca-EOg"/>
-                            <constraint firstAttribute="trailing" secondItem="183" secondAttribute="trailing" constant="16" id="N3O-sW-LqF"/>
-                            <constraint firstItem="202" firstAttribute="leading" secondItem="135" secondAttribute="trailing" constant="8" id="lob-Vs-e0y"/>
-                            <constraint firstItem="135" firstAttribute="leading" secondItem="132" secondAttribute="leading" constant="16" id="r2f-1h-kvV"/>
-                            <constraint firstItem="202" firstAttribute="top" secondItem="183" secondAttribute="bottom" constant="5" id="yVy-RJ-Kbd"/>
+                            <constraint firstItem="135" firstAttribute="top" secondItem="183" secondAttribute="bottom" constant="6" symbolic="YES" id="0mi-Vn-ddk"/>
+                            <constraint firstItem="183" firstAttribute="leading" secondItem="132" secondAttribute="leading" constant="16" id="Ccn-cy-DlG"/>
+                            <constraint firstAttribute="bottom" secondItem="202" secondAttribute="bottom" constant="11" id="DFg-ZM-GNF"/>
+                            <constraint firstItem="202" firstAttribute="leading" secondItem="135" secondAttribute="trailing" constant="8" symbolic="YES" id="Gxs-Cc-e9s"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="183" secondAttribute="trailing" constant="16" id="VaP-Eb-IoP"/>
+                            <constraint firstItem="183" firstAttribute="leading" secondItem="135" secondAttribute="leading" id="YIJ-f7-aR7"/>
+                            <constraint firstItem="183" firstAttribute="top" secondItem="132" secondAttribute="top" constant="28" id="iQf-eo-RMa"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="202" secondAttribute="trailing" constant="16" id="peF-Bl-X4U"/>
+                            <constraint firstItem="202" firstAttribute="top" secondItem="183" secondAttribute="bottom" constant="5" id="q3O-fA-0az"/>
                         </constraints>
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -239,13 +232,13 @@
                     </box>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="trailing" secondItem="98" secondAttribute="trailing" constant="20" id="CBw-93-tUF"/>
-                    <constraint firstAttribute="bottom" secondItem="132" secondAttribute="bottom" constant="20" id="F5D-6l-owK"/>
-                    <constraint firstItem="98" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="20" id="JoI-ur-pOK"/>
-                    <constraint firstItem="132" firstAttribute="top" secondItem="98" secondAttribute="bottom" constant="8" id="Q5q-CB-ye5"/>
-                    <constraint firstItem="98" firstAttribute="top" secondItem="6" secondAttribute="top" constant="20" id="hYL-XF-qQ5"/>
-                    <constraint firstItem="132" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="20" id="u31-9Q-Zu3"/>
-                    <constraint firstAttribute="trailing" secondItem="132" secondAttribute="trailing" constant="20" id="x9j-tR-BxO"/>
+                    <constraint firstAttribute="bottom" secondItem="132" secondAttribute="bottom" constant="38" id="KZb-9a-Bc0"/>
+                    <constraint firstAttribute="trailing" secondItem="132" secondAttribute="trailing" constant="21" id="MGs-ni-RCX"/>
+                    <constraint firstItem="132" firstAttribute="top" secondItem="98" secondAttribute="bottom" constant="8" symbolic="YES" id="T7r-lS-omh"/>
+                    <constraint firstAttribute="trailing" secondItem="98" secondAttribute="trailing" constant="20" symbolic="YES" id="Z1u-aV-yAi"/>
+                    <constraint firstItem="98" firstAttribute="top" secondItem="6" secondAttribute="top" constant="21" id="a7m-qN-u5H"/>
+                    <constraint firstItem="98" firstAttribute="leading" secondItem="132" secondAttribute="leading" id="tEy-9i-r5c"/>
+                    <constraint firstItem="98" firstAttribute="centerX" secondItem="6" secondAttribute="centerX" id="yX0-xZ-UmL"/>
                 </constraints>
             </view>
         </window>
