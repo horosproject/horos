@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13A603" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13B35" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
@@ -27,7 +27,7 @@
         <window title="&lt;&lt; do not localize >>" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" deferred="NO" oneShot="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="12" userLabel="PrefPane">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="623" height="726"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <value key="minSize" type="size" width="224.66300000000001" height="10"/>
             <view key="contentView" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="623" height="726"/>
@@ -185,7 +185,7 @@
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="114">
                                     <rect key="frame" x="394" y="189" width="135" height="14"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="(between 1 and 131072)" id="311">
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="(between 1 and 131072)" id="311">
                                         <font key="font" metaFont="smallSystem"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -234,9 +234,6 @@
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="904">
                                     <rect key="frame" x="534" y="164" width="31" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                                    <constraints>
-                                        <constraint firstAttribute="width" constant="31" id="orj-uQ-vJu"/>
-                                    </constraints>
                                     <buttonCell key="cell" type="roundRect" title="Edit" bezelStyle="roundedRect" alignment="center" controlSize="mini" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="905">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                         <font key="font" metaFont="miniSystem"/>
@@ -259,7 +256,7 @@
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="299">
                                     <rect key="frame" x="32" y="39" width="208" height="14"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="right" title="Time-out for DICOM communications:" id="326">
+                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Time-out for DICOM communications:" id="326">
                                         <font key="font" metaFont="smallSystem"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -292,7 +289,7 @@
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="301">
                                     <rect key="frame" x="291" y="39" width="47" height="14"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="seconds" id="328">
+                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="seconds" id="328">
                                         <font key="font" metaFont="smallSystem"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -322,7 +319,7 @@
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="1042">
                                     <rect key="frame" x="291" y="16" width="47" height="14"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="seconds" id="1043">
+                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="seconds" id="1043">
                                         <font key="font" metaFont="smallSystem"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -342,7 +339,7 @@
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="1050">
                                     <rect key="frame" x="120" y="16" width="120" height="14"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="right" title="Connection time-out:" id="1051">
+                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Connection time-out:" id="1051">
                                         <font key="font" metaFont="smallSystem"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -446,7 +443,7 @@
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="106">
                                     <rect key="frame" x="20" y="47" width="350" height="14"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="left" title="If OsiriX is not able to open a file received by the DICOM listener:" id="310">
+                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="If OsiriX is not able to open a file received by the DICOM listener:" id="310">
                                         <font key="font" metaFont="smallSystem"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -481,7 +478,7 @@
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="281">
                                     <rect key="frame" x="20" y="134" width="141" height="14"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="left" title="Check for new files every:" id="320">
+                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Check for new files every:" id="320">
                                         <font key="font" metaFont="smallSystem"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -514,7 +511,7 @@
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="283">
                                     <rect key="frame" x="210" y="134" width="47" height="14"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="seconds" id="322">
+                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="seconds" id="322">
                                         <font key="font" metaFont="smallSystem"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -523,7 +520,7 @@
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="957">
                                     <rect key="frame" x="78" y="108" width="82" height="14"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="right" title="Incoming files:" id="958">
+                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Incoming files:" id="958">
                                         <font key="font" metaFont="smallSystem"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -700,10 +697,10 @@
                                     </connections>
                                 </textField>
                                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="971">
-                                    <rect key="frame" x="201" y="168" width="96" height="19"/>
+                                    <rect key="frame" x="201" y="168" width="100" height="19"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <constraints>
-                                        <constraint firstAttribute="width" constant="96" id="Elq-Jd-Wix"/>
+                                        <constraint firstAttribute="width" constant="100" id="Elq-Jd-Wix"/>
                                     </constraints>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="972">
                                         <font key="font" metaFont="smallSystem"/>
@@ -725,10 +722,10 @@
                                     </connections>
                                 </textField>
                                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="974">
-                                    <rect key="frame" x="386" y="187" width="62" height="19"/>
+                                    <rect key="frame" x="386" y="187" width="100" height="19"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <constraints>
-                                        <constraint firstAttribute="width" constant="62" id="cnY-Qh-e6z"/>
+                                        <constraint firstAttribute="width" constant="100" id="cnY-Qh-e6z"/>
                                     </constraints>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="Hostname" drawsBackground="YES" id="975">
                                         <font key="font" metaFont="smallSystem"/>
@@ -875,7 +872,7 @@
                         <rect key="frame" x="223" y="429" width="90" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <constraints>
-                            <constraint firstAttribute="width" constant="90" id="l84-i8-Hew"/>
+                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="90" id="l84-i8-Hew"/>
                         </constraints>
                         <buttonCell key="cell" type="roundRect" title="TLS Settings" bezelStyle="roundedRect" alignment="center" controlSize="mini" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="725">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -963,6 +960,7 @@
                     <constraint firstItem="816" firstAttribute="baseline" secondItem="812" secondAttribute="baseline" id="81d-8e-d41"/>
                     <constraint firstItem="810" firstAttribute="leading" secondItem="724" secondAttribute="trailing" constant="25" id="88O-kd-4B7"/>
                     <constraint firstItem="908" firstAttribute="leading" secondItem="956" secondAttribute="leading" id="8wI-Nt-i9h"/>
+                    <constraint firstItem="814" firstAttribute="leading" secondItem="810" secondAttribute="trailing" constant="6" id="A9S-D7-Vpd"/>
                     <constraint firstItem="810" firstAttribute="baseline" secondItem="814" secondAttribute="baseline" id="AaS-Cj-W78"/>
                     <constraint firstItem="810" firstAttribute="top" secondItem="867" secondAttribute="bottom" constant="8" symbolic="YES" id="DO1-5l-rI8"/>
                     <constraint firstItem="908" firstAttribute="top" secondItem="724" secondAttribute="bottom" constant="8" symbolic="YES" id="IlS-sK-rzj"/>
@@ -977,6 +975,7 @@
                     <constraint firstItem="101" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="27" id="ZJu-Yb-PRL"/>
                     <constraint firstItem="867" firstAttribute="top" secondItem="6" secondAttribute="top" constant="22" id="ZSg-Lv-6qt"/>
                     <constraint firstAttribute="bottom" secondItem="956" secondAttribute="bottom" constant="20" symbolic="YES" id="a1s-8A-Y5d"/>
+                    <constraint firstItem="816" firstAttribute="leading" secondItem="812" secondAttribute="trailing" constant="6" id="h1f-eM-YUm"/>
                     <constraint firstItem="810" firstAttribute="trailing" secondItem="812" secondAttribute="trailing" id="nVH-W9-Onc"/>
                     <constraint firstItem="956" firstAttribute="top" secondItem="908" secondAttribute="bottom" constant="8" symbolic="YES" id="sbN-SZ-BDF"/>
                     <constraint firstItem="814" firstAttribute="leading" secondItem="810" secondAttribute="trailing" constant="6" id="vIo-qw-2fK"/>
@@ -990,7 +989,7 @@
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="178" y="371" width="413" height="520"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <view key="contentView" id="727">
                 <rect key="frame" x="0.0" y="0.0" width="413" height="520"/>
                 <autoresizingMask key="autoresizingMask"/>

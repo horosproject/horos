@@ -558,7 +558,6 @@ RW1wdHkgZmlsdGVyIHdpbGwgcm91dGUD4oCoQUxMIGltYWdlcwo
                 <constraints>
                     <constraint firstItem="248" firstAttribute="trailing" secondItem="243" secondAttribute="trailing" id="03o-zZ-OGi"/>
                     <constraint firstItem="248" firstAttribute="baseline" secondItem="240" secondAttribute="baseline" id="08N-RC-CQ2"/>
-                    <constraint firstItem="322" firstAttribute="baseline" secondItem="323" secondAttribute="baseline" id="0PV-ls-H12"/>
                     <constraint firstItem="325" firstAttribute="leading" secondItem="243" secondAttribute="leading" id="20G-6H-Rlj"/>
                     <constraint firstItem="249" firstAttribute="leading" secondItem="248" secondAttribute="leading" id="2lX-Ex-rH5"/>
                     <constraint firstItem="287" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="239" secondAttribute="leading" constant="16" id="3TA-2o-7fv"/>

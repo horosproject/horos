@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13A603" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13B35" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
@@ -18,7 +18,7 @@
         <window title="&lt;&lt; do not localize >>" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" deferred="NO" oneShot="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="12" userLabel="PrefPane">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="724" height="667"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <view key="contentView" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="724" height="667"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -171,7 +171,7 @@
                                     <rect key="frame" x="11" y="102" width="203" height="32"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <constraints>
-                                        <constraint firstAttribute="width" constant="191" id="f7B-dG-Lbd"/>
+                                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="191" id="f7B-dG-Lbd"/>
                                     </constraints>
                                     <buttonCell key="cell" type="push" title="Reset Preferences" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="342">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -185,7 +185,7 @@
                                     <rect key="frame" x="241" y="102" width="203" height="32"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <constraints>
-                                        <constraint firstAttribute="width" constant="191" id="Akp-uJ-bPi"/>
+                                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="191" id="Akp-uJ-bPi"/>
                                     </constraints>
                                     <buttonCell key="cell" type="push" title="Save Preferences..." bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="540">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -198,6 +198,9 @@
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="542">
                                     <rect key="frame" x="472" y="102" width="203" height="32"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="191" id="cb7-Zh-GiX"/>
+                                    </constraints>
                                     <buttonCell key="cell" type="push" title="Load Preferences..." bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="543">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                         <font key="font" metaFont="system"/>
@@ -317,7 +320,7 @@
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="16" headerView="520" id="518">
-                                                <rect key="frame" x="0.0" y="0.0" width="366" height="76"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="366" height="91"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -363,6 +366,7 @@
                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     </clipView>
                                     <constraints>
+                                        <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="94" id="2ed-P8-IRl"/>
                                         <constraint firstAttribute="width" constant="368" id="55b-S3-VrE"/>
                                     </constraints>
                                     <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="519">
@@ -393,7 +397,7 @@ If multiple languages are enabled, the used language will be chosen according to
                         </view>
                         <constraints>
                             <constraint firstItem="517" firstAttribute="leading" secondItem="397" secondAttribute="leading" constant="16" id="8LG-B0-KFs"/>
-                            <constraint firstAttribute="bottom" secondItem="533" secondAttribute="bottom" constant="43" id="9t3-n6-fqO"/>
+                            <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="533" secondAttribute="bottom" constant="16" id="9t3-n6-fqO"/>
                             <constraint firstItem="533" firstAttribute="top" secondItem="397" secondAttribute="top" constant="25" id="Efm-pq-ZPc"/>
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="533" secondAttribute="trailing" constant="16" id="KI5-JR-o1p"/>
                             <constraint firstItem="533" firstAttribute="leading" secondItem="517" secondAttribute="trailing" constant="13" id="NcH-sk-ysD"/>
@@ -403,7 +407,7 @@ If multiple languages are enabled, the used language will be chosen according to
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </box>
-                    <box title="JPEG Compression" translatesAutoresizingMaskIntoConstraints="NO" id="357">
+                    <box verticalHuggingPriority="249" title="JPEG Compression" translatesAutoresizingMaskIntoConstraints="NO" id="357">
                         <rect key="frame" x="17" y="284" width="690" height="85"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
@@ -426,7 +430,7 @@ If multiple languages are enabled, the used language will be chosen according to
                                     <rect key="frame" x="168" y="30" width="141" height="32"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <constraints>
-                                        <constraint firstAttribute="width" constant="129" id="8TN-G8-XXC"/>
+                                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="129" id="8TN-G8-XXC"/>
                                     </constraints>
                                     <buttonCell key="cell" type="push" title="Configure" bezelStyle="rounded" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="372">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -491,7 +495,7 @@ If multiple languages are enabled, the used language will be chosen according to
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" visibleAtLaunch="NO" animationBehavior="default" id="209" userLabel="settings Window">
             <windowStyleMask key="styleMask" titled="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="822" height="428"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <view key="contentView" id="210">
                 <rect key="frame" x="0.0" y="0.0" width="822" height="428"/>
                 <autoresizingMask key="autoresizingMask"/>
