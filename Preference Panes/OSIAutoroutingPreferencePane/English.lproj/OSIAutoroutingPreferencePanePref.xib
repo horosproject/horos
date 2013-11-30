@@ -145,7 +145,7 @@
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="233">
                         <rect key="frame" x="21" y="26" width="216" height="22"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <textFieldCell key="cell" controlSize="mini" sendsActionOnEndEditing="YES" id="293">
+                        <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" id="293">
                             <font key="font" metaFont="miniSystem"/>
                             <string key="title">Double-Click on a route to edit filter parameters
 Press Delete key to delete a route</string>
@@ -195,10 +195,10 @@ Press Delete key to delete a route</string>
         </window>
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="238" userLabel="newRoute">
             <windowStyleMask key="styleMask" titled="YES"/>
-            <rect key="contentRect" x="0.0" y="0.0" width="571" height="472"/>
+            <rect key="contentRect" x="0.0" y="0.0" width="586" height="472"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <view key="contentView" id="239">
-                <rect key="frame" x="0.0" y="0.0" width="571" height="472"/>
+                <rect key="frame" x="0.0" y="0.0" width="586" height="472"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="357">
@@ -232,7 +232,7 @@ Press Delete key to delete a route</string>
                         </connections>
                     </matrix>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="240">
-                        <rect key="frame" x="109" y="435" width="45" height="17"/>
+                        <rect key="frame" x="124" y="435" width="45" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Name:" id="295">
                             <font key="font" metaFont="system"/>
@@ -241,7 +241,7 @@ Press Delete key to delete a route</string>
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="241">
-                        <rect key="frame" x="31" y="406" width="123" height="17"/>
+                        <rect key="frame" x="46" y="406" width="123" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Destination Server:" id="296">
                             <font key="font" metaFont="system"/>
@@ -250,7 +250,7 @@ Press Delete key to delete a route</string>
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="242">
-                        <rect key="frame" x="78" y="353" width="76" height="17"/>
+                        <rect key="frame" x="93" y="353" width="76" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Comments:" id="297">
                             <font key="font" metaFont="system"/>
@@ -259,7 +259,7 @@ Press Delete key to delete a route</string>
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="320">
-                        <rect key="frame" x="44" y="166" width="110" height="17"/>
+                        <rect key="frame" x="59" y="166" width="110" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Previous Studies:" id="321">
                             <font key="font" metaFont="system"/>
@@ -268,7 +268,7 @@ Press Delete key to delete a route</string>
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="339">
-                        <rect key="frame" x="103" y="89" width="51" height="17"/>
+                        <rect key="frame" x="118" y="89" width="51" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Failure:" id="340">
                             <font key="font" metaFont="system"/>
@@ -277,7 +277,7 @@ Press Delete key to delete a route</string>
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="352">
-                        <rect key="frame" x="103" y="60" width="51" height="17"/>
+                        <rect key="frame" x="118" y="60" width="51" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Check :" id="353">
                             <font key="font" metaFont="system"/>
@@ -286,7 +286,7 @@ Press Delete key to delete a route</string>
                         </textFieldCell>
                     </textField>
                     <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="243">
-                        <rect key="frame" x="163" y="401" width="391" height="26"/>
+                        <rect key="frame" x="178" y="401" width="391" height="26"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <constraints>
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="386" id="944-N8-2ZQ"/>
@@ -305,7 +305,7 @@ Press Delete key to delete a route</string>
                         </connections>
                     </popUpButton>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="248">
-                        <rect key="frame" x="166" y="433" width="385" height="22"/>
+                        <rect key="frame" x="181" y="433" width="385" height="22"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <constraints>
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="385" id="Lry-fY-vKN"/>
@@ -317,7 +317,7 @@ Press Delete key to delete a route</string>
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="249">
-                        <rect key="frame" x="166" y="350" width="385" height="22"/>
+                        <rect key="frame" x="181" y="350" width="385" height="22"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <constraints>
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="385" id="FJE-wT-gVS"/>
@@ -329,7 +329,7 @@ Press Delete key to delete a route</string>
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="251">
-                        <rect key="frame" x="166" y="224" width="385" height="52"/>
+                        <rect key="frame" x="181" y="224" width="385" height="52"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="52" id="Z5s-hj-yU4"/>
@@ -349,7 +349,7 @@ Press Delete key to delete a route</string>
                         </connections>
                     </textField>
                     <button verticalHuggingPriority="750" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="252">
-                        <rect key="frame" x="460" y="13" width="97" height="32"/>
+                        <rect key="frame" x="475" y="13" width="97" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <constraints>
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="85" id="Uze-6I-n6m"/>
@@ -366,7 +366,7 @@ DQ
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="253">
-                        <rect key="frame" x="355" y="13" width="97" height="32"/>
+                        <rect key="frame" x="370" y="13" width="97" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <constraints>
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="85" id="p60-JX-M20"/>
@@ -383,7 +383,7 @@ Gw
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="254">
-                        <rect key="frame" x="165" y="202" width="89" height="16"/>
+                        <rect key="frame" x="180" y="202" width="89" height="16"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="87" id="xrI-EP-oEF"/>
@@ -402,7 +402,7 @@ Gw
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="255">
-                        <rect key="frame" x="260" y="202" width="73" height="16"/>
+                        <rect key="frame" x="275" y="202" width="73" height="16"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="SQL Syntax" bezelStyle="rounded" alignment="center" controlSize="mini" borderStyle="border" tag="1" inset="2" id="306">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -418,7 +418,7 @@ Gw
                         </connections>
                     </button>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="256">
-                        <rect key="frame" x="163" y="380" width="111" height="17"/>
+                        <rect key="frame" x="178" y="380" width="111" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="System Font Text" id="307">
                             <font key="font" metaFont="system"/>
@@ -427,7 +427,7 @@ Gw
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="286">
-                        <rect key="frame" x="66" y="255" width="88" height="11"/>
+                        <rect key="frame" x="81" y="255" width="88" height="11"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="(Image Table Level)" id="308">
                             <font key="font" metaFont="miniSystem"/>
@@ -436,7 +436,7 @@ Gw
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="287">
-                        <rect key="frame" x="56" y="214" width="98" height="33"/>
+                        <rect key="frame" x="71" y="214" width="98" height="33"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" id="309">
                             <font key="font" metaFont="miniSystem"/>
@@ -448,7 +448,7 @@ RW1wdHkgZmlsdGVyIHdpbGwgcm91dGUD4oCoQUxMIGltYWdlcwo
                         </textFieldCell>
                     </textField>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="322">
-                        <rect key="frame" x="183" y="140" width="131" height="18"/>
+                        <rect key="frame" x="198" y="140" width="131" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="check" title="of same modality" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="335">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -463,7 +463,7 @@ RW1wdHkgZmlsdGVyIHdpbGwgcm91dGUD4oCoQUxMIGltYWdlcwo
                         </connections>
                     </button>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="323">
-                        <rect key="frame" x="28" y="142" width="126" height="22"/>
+                        <rect key="frame" x="43" y="142" width="126" height="22"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" controlSize="mini" sendsActionOnEndEditing="YES" alignment="right" title="For each study, also send, if available in the Database :" id="334">
                             <font key="font" metaFont="miniSystem"/>
@@ -472,7 +472,7 @@ RW1wdHkgZmlsdGVyIHdpbGwgcm91dGUD4oCoQUxMIGltYWdlcwo
                         </textFieldCell>
                     </textField>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="324">
-                        <rect key="frame" x="183" y="120" width="200" height="18"/>
+                        <rect key="frame" x="198" y="120" width="200" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="check" title="with same Study Description" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="333">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -487,7 +487,7 @@ RW1wdHkgZmlsdGVyIHdpbGwgcm91dGUD4oCoQUxMIGltYWdlcwo
                         </connections>
                     </button>
                     <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="325">
-                        <rect key="frame" x="163" y="160" width="201" height="26"/>
+                        <rect key="frame" x="178" y="160" width="201" height="26"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="21" id="4Pr-9v-Hki"/>
@@ -515,7 +515,7 @@ RW1wdHkgZmlsdGVyIHdpbGwgcm91dGUD4oCoQUxMIGltYWdlcwo
                         </connections>
                     </popUpButton>
                     <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="341">
-                        <rect key="frame" x="163" y="84" width="213" height="26"/>
+                        <rect key="frame" x="178" y="84" width="213" height="26"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <popUpButtonCell key="cell" type="push" title="Try 5 times each 30 secs" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="5" imageScaling="proportionallyDown" inset="2" selectedItem="344" id="342">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -540,7 +540,7 @@ RW1wdHkgZmlsdGVyIHdpbGwgcm91dGUD4oCoQUxMIGltYWdlcwo
                         </connections>
                     </popUpButton>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="354">
-                        <rect key="frame" x="163" y="59" width="394" height="18"/>
+                        <rect key="frame" x="178" y="59" width="394" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="check" title="Send C-FIND to check if the study exists on the destination" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="355">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -604,7 +604,7 @@ RW1wdHkgZmlsdGVyIHdpbGwgcm91dGUD4oCoQUxMIGltYWdlcwo
                     <constraint firstItem="320" firstAttribute="trailing" secondItem="287" secondAttribute="trailing" id="oZl-Zx-oGU"/>
                     <constraint firstItem="252" firstAttribute="trailing" secondItem="251" secondAttribute="trailing" id="pO8-OS-d8a"/>
                     <constraint firstItem="286" firstAttribute="trailing" secondItem="242" secondAttribute="trailing" id="qYk-hS-8ic"/>
-                    <constraint firstItem="357" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="239" secondAttribute="leading" constant="16" id="qvX-c8-YBK"/>
+                    <constraint firstItem="357" firstAttribute="leading" secondItem="239" secondAttribute="leading" constant="16" id="qvX-c8-YBK"/>
                     <constraint firstItem="323" firstAttribute="top" secondItem="320" secondAttribute="bottom" constant="2" id="rko-Th-50s"/>
                     <constraint firstItem="256" firstAttribute="leading" secondItem="243" secondAttribute="leading" id="sBM-cG-VG9"/>
                     <constraint firstItem="341" firstAttribute="leading" secondItem="325" secondAttribute="leading" id="sNa-SR-mR4"/>

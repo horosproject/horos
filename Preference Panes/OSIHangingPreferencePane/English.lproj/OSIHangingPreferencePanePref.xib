@@ -22,15 +22,15 @@
         <window title="&lt;&lt; do not localize >>" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" deferred="NO" oneShot="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="12" userLabel="PrefPane">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="81" y="393" width="833" height="577"/>
+            <rect key="contentRect" x="81" y="393" width="833" height="581"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <value key="minSize" type="size" width="224.66300000000001" height="10"/>
             <view key="contentView" id="6">
-                <rect key="frame" x="0.0" y="0.0" width="833" height="577"/>
+                <rect key="frame" x="0.0" y="0.0" width="833" height="581"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="99">
-                        <rect key="frame" x="102" y="531" width="55" height="26"/>
+                        <rect key="frame" x="102" y="535" width="55" height="26"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <popUpButtonCell key="cell" type="push" title="CR" bezelStyle="rounded" alignment="left" lineBreakMode="clipping" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="274" id="248">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -58,7 +58,7 @@
                         </connections>
                     </popUpButton>
                     <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="107">
-                        <rect key="frame" x="20" y="239" width="793" height="284"/>
+                        <rect key="frame" x="20" y="243" width="793" height="284"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <clipView key="contentView" id="dm9-H1-37F">
                             <rect key="frame" x="1" y="17" width="791" height="266"/>
@@ -224,12 +224,16 @@
                             </subviews>
                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </clipView>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="793" id="jr7-VZ-Zhz"/>
+                            <constraint firstAttribute="height" constant="284" id="pBS-Sn-25F"/>
+                        </constraints>
                         <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="261">
                             <rect key="frame" x="1" y="295" width="790" height="15"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="260">
-                            <rect key="frame" x="85" y="17" width="15" height="68"/>
+                            <rect key="frame" x="776" y="17" width="16" height="0.0"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <tableHeaderView key="headerView" id="262">
@@ -238,7 +242,7 @@
                         </tableHeaderView>
                     </scrollView>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="108">
-                        <rect key="frame" x="752" y="526" width="67" height="32"/>
+                        <rect key="frame" x="752" y="530" width="67" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="New" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="249">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -249,7 +253,7 @@
                         </connections>
                     </button>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="135">
-                        <rect key="frame" x="38" y="537" width="62" height="17"/>
+                        <rect key="frame" x="38" y="541" width="62" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Modality:" id="250">
                             <font key="font" metaFont="system"/>
@@ -258,7 +262,7 @@
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="294">
-                        <rect key="frame" x="36" y="187" width="100" height="17"/>
+                        <rect key="frame" x="51" y="191" width="100" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Previous Study:" id="295">
                             <font key="font" metaFont="system"/>
@@ -267,7 +271,7 @@
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="5qP-63-Wyl">
-                        <rect key="frame" x="72" y="208" width="64" height="17"/>
+                        <rect key="frame" x="87" y="212" width="64" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Windows:" id="T9W-wp-PJS">
                             <font key="font" metaFont="system"/>
@@ -276,7 +280,7 @@
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="T6w-wp-eIt">
-                        <rect key="frame" x="51" y="71" width="85" height="17"/>
+                        <rect key="frame" x="66" y="75" width="85" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Series Order:" id="k9Q-Hb-NOa">
                             <font key="font" metaFont="system"/>
@@ -285,7 +289,7 @@
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="Gv0-hx-c3e">
-                        <rect key="frame" x="6" y="25" width="130" height="44"/>
+                        <rect key="frame" x="21" y="29" width="130" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" controlSize="mini" sendsActionOnEndEditing="YES" alignment="right" id="Ije-5a-hxH">
                             <font key="font" metaFont="miniSystem"/>
@@ -296,7 +300,7 @@ Use commas to separate terms.</string>
                         </textFieldCell>
                     </textField>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="296">
-                        <rect key="frame" x="150" y="186" width="114" height="18"/>
+                        <rect key="frame" x="165" y="190" width="114" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="check" title="Same Modality" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="297">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -308,7 +312,7 @@ Use commas to separate terms.</string>
                         </connections>
                     </button>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="cLy-b3-d59">
-                        <rect key="frame" x="150" y="206" width="386" height="18"/>
+                        <rect key="frame" x="165" y="210" width="386" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="check" title="If not enough series for number of windows, repeat series" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="F3i-NS-cfp">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -319,7 +323,7 @@ Use commas to separate terms.</string>
                         </connections>
                     </button>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="298">
-                        <rect key="frame" x="150" y="166" width="132" height="18"/>
+                        <rect key="frame" x="165" y="170" width="132" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="check" title="Same Description" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="299">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -331,7 +335,7 @@ Use commas to separate terms.</string>
                         </connections>
                     </button>
                     <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="380">
-                        <rect key="frame" x="150" y="136" width="263" height="26"/>
+                        <rect key="frame" x="165" y="140" width="263" height="26"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <popUpButtonCell key="cell" type="push" title="Display last study, if possible" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="1" imageScaling="proportionallyDown" inset="2" selectedItem="383" id="381">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -350,7 +354,7 @@ Use commas to separate terms.</string>
                         </connections>
                     </popUpButton>
                     <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="BMb-oH-JR6">
-                        <rect key="frame" x="150" y="105" width="252" height="26"/>
+                        <rect key="frame" x="165" y="109" width="252" height="26"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <popUpButtonCell key="cell" type="push" title="Display 1 series per previous study" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="1" imageScaling="proportionallyDown" inset="2" selectedItem="ew2-hP-L3n" id="Skm-0N-d3N">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -370,10 +374,11 @@ Use commas to separate terms.</string>
                         </connections>
                     </popUpButton>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="i8E-fc-XW9">
-                        <rect key="frame" x="152" y="15" width="661" height="73"/>
+                        <rect key="frame" x="167" y="19" width="646" height="73"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <constraints>
-                            <constraint firstAttribute="height" constant="73" id="v7Z-tE-CHl"/>
+                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="73" id="v7Z-tE-CHl"/>
+                            <constraint firstAttribute="width" constant="646" id="zJD-ID-zhA"/>
                         </constraints>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="Scb-aD-fhE">
                             <font key="font" metaFont="system"/>
@@ -392,14 +397,16 @@ Use commas to separate terms.</string>
                 <constraints>
                     <constraint firstItem="107" firstAttribute="top" secondItem="108" secondAttribute="bottom" constant="10" id="1No-ga-AFD"/>
                     <constraint firstItem="T6w-wp-eIt" firstAttribute="top" secondItem="i8E-fc-XW9" secondAttribute="top" id="3Ea-aA-eWp"/>
-                    <constraint firstItem="Gv0-hx-c3e" firstAttribute="top" secondItem="T6w-wp-eIt" secondAttribute="bottom" constant="2" id="4zU-WO-VfU"/>
+                    <constraint firstItem="Gv0-hx-c3e" firstAttribute="top" secondItem="T6w-wp-eIt" secondAttribute="bottom" constant="2" id="3kG-8v-bgS"/>
                     <constraint firstItem="i8E-fc-XW9" firstAttribute="top" secondItem="BMb-oH-JR6" secondAttribute="bottom" constant="20" id="6IW-Vf-ZPH"/>
+                    <constraint firstItem="294" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="6" secondAttribute="leading" constant="16" id="6TI-gU-P1u"/>
                     <constraint firstItem="380" firstAttribute="leading" secondItem="298" secondAttribute="leading" id="90M-xy-bQU"/>
                     <constraint firstItem="380" firstAttribute="top" secondItem="298" secondAttribute="bottom" constant="8" id="9Go-Kg-iJZ"/>
                     <constraint firstItem="108" firstAttribute="top" secondItem="135" secondAttribute="top" id="9Z0-rx-IJc"/>
                     <constraint firstAttribute="trailing" secondItem="108" secondAttribute="trailing" constant="20" symbolic="YES" id="EKh-1Q-gF9"/>
                     <constraint firstItem="294" firstAttribute="trailing" secondItem="T6w-wp-eIt" secondAttribute="trailing" id="FHV-tH-6SH"/>
                     <constraint firstItem="135" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="40" id="Iml-zJ-x7k"/>
+                    <constraint firstItem="5qP-63-Wyl" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="6" secondAttribute="leading" constant="16" id="MCA-nw-lUG"/>
                     <constraint firstItem="cLy-b3-d59" firstAttribute="leading" secondItem="296" secondAttribute="leading" id="MQU-c8-uRh"/>
                     <constraint firstItem="BMb-oH-JR6" firstAttribute="top" secondItem="380" secondAttribute="bottom" constant="10" symbolic="YES" id="PYe-bE-uVm"/>
                     <constraint firstItem="108" firstAttribute="trailing" secondItem="107" secondAttribute="trailing" id="Q3M-bU-Psy"/>
@@ -407,13 +414,13 @@ Use commas to separate terms.</string>
                     <constraint firstItem="99" firstAttribute="leading" secondItem="135" secondAttribute="trailing" constant="6" id="SDF-sh-JlA"/>
                     <constraint firstItem="5qP-63-Wyl" firstAttribute="top" secondItem="107" secondAttribute="bottom" constant="14" id="XXc-w7-u43"/>
                     <constraint firstItem="107" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="20" symbolic="YES" id="Zc7-dm-0lE"/>
+                    <constraint firstItem="T6w-wp-eIt" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="6" secondAttribute="leading" constant="16" id="c8m-NH-Lc7"/>
                     <constraint firstItem="cLy-b3-d59" firstAttribute="bottom" secondItem="5qP-63-Wyl" secondAttribute="bottom" id="cpP-9a-XVa"/>
-                    <constraint firstAttribute="bottom" secondItem="Gv0-hx-c3e" secondAttribute="bottom" constant="25" id="dlX-Nt-lap"/>
+                    <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="Gv0-hx-c3e" secondAttribute="bottom" constant="18" id="dlX-Nt-lap"/>
                     <constraint firstItem="107" firstAttribute="trailing" secondItem="i8E-fc-XW9" secondAttribute="trailing" id="fwk-yX-ERj"/>
                     <constraint firstItem="294" firstAttribute="baseline" secondItem="296" secondAttribute="baseline" id="hI6-zP-xMR"/>
                     <constraint firstItem="99" firstAttribute="baseline" secondItem="135" secondAttribute="baseline" id="lZd-nD-mkf"/>
                     <constraint firstItem="BMb-oH-JR6" firstAttribute="leading" secondItem="i8E-fc-XW9" secondAttribute="leading" id="msf-NE-Wv8"/>
-                    <constraint firstItem="Gv0-hx-c3e" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="8" id="mti-yo-Kcx"/>
                     <constraint firstItem="T6w-wp-eIt" firstAttribute="trailing" secondItem="Gv0-hx-c3e" secondAttribute="trailing" id="nfI-pP-YAg"/>
                     <constraint firstItem="380" firstAttribute="leading" secondItem="BMb-oH-JR6" secondAttribute="leading" id="qF2-by-tbY"/>
                     <constraint firstItem="294" firstAttribute="trailing" secondItem="5qP-63-Wyl" secondAttribute="trailing" id="qf7-sd-aPb"/>
@@ -421,6 +428,7 @@ Use commas to separate terms.</string>
                     <constraint firstItem="296" firstAttribute="top" secondItem="cLy-b3-d59" secondAttribute="bottom" constant="6" symbolic="YES" id="vbF-pJ-T6N"/>
                     <constraint firstItem="cLy-b3-d59" firstAttribute="leading" secondItem="5qP-63-Wyl" secondAttribute="trailing" constant="18" id="vym-lV-SfX"/>
                     <constraint firstItem="298" firstAttribute="top" secondItem="296" secondAttribute="bottom" constant="6" symbolic="YES" id="ych-pL-Xac"/>
+                    <constraint firstItem="Gv0-hx-c3e" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="6" secondAttribute="leading" constant="16" id="ymJ-n7-bI2"/>
                 </constraints>
             </view>
         </window>

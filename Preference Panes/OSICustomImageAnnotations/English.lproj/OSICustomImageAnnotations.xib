@@ -56,8 +56,8 @@
                         <rect key="frame" x="18" y="291" width="651" height="345"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <constraints>
-                            <constraint firstAttribute="height" constant="345" id="0T1-ua-ZjA"/>
-                            <constraint firstAttribute="width" constant="651" id="968-Zh-RNP"/>
+                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="345" id="0T1-ua-ZjA"/>
+                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="651" id="968-Zh-RNP"/>
                         </constraints>
                     </customView>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="237">

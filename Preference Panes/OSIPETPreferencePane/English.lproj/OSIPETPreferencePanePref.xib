@@ -364,7 +364,7 @@
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="362">
                                     <rect key="frame" x="95" y="13" width="128" height="17"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Default fusion type:" id="438">
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Default fusion type:" id="438">
                                         <font key="font" metaFont="system"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -452,7 +452,7 @@
                                     </connections>
                                 </popUpButton>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="474">
-                                    <rect key="frame" x="92" y="5" width="528" height="22"/>
+                                    <rect key="frame" x="91" y="5" width="528" height="22"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" id="475">
                                         <font key="font" metaFont="miniSystem"/>
@@ -478,8 +478,8 @@ Corrected dose = Dose * exp ( ln(2) / Half-life). Check with the PET modality ma
                         <constraints>
                             <constraint firstItem="450" firstAttribute="leading" secondItem="448" secondAttribute="leading" constant="79" id="3qF-Y9-U8F"/>
                             <constraint firstItem="461" firstAttribute="top" secondItem="477" secondAttribute="bottom" constant="17" id="6TA-YX-VmH"/>
-                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="474" secondAttribute="trailing" constant="50" id="Cal-hj-091"/>
-                            <constraint firstItem="474" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="448" secondAttribute="leading" constant="50" id="EfK-kk-PsD"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="474" secondAttribute="trailing" constant="16" id="Cal-hj-091"/>
+                            <constraint firstItem="474" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="448" secondAttribute="leading" constant="16" id="EfK-kk-PsD"/>
                             <constraint firstItem="450" firstAttribute="baseline" secondItem="461" secondAttribute="baseline" id="J0l-NK-q7Y"/>
                             <constraint firstItem="461" firstAttribute="leading" secondItem="450" secondAttribute="trailing" constant="12" id="PKT-UE-wbB"/>
                             <constraint firstItem="474" firstAttribute="top" secondItem="461" secondAttribute="bottom" constant="13" id="RK7-dm-tmg"/>
