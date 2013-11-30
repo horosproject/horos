@@ -3318,6 +3318,7 @@ typedef struct _xyzArray
 
 -(void)cursorUpdate:(NSEvent *)theEvent
 {
+    cursorSet = YES;
     [cursor set];
 }
 

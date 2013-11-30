@@ -8521,6 +8521,7 @@ public:
 {
     if ([self eventToPlugins:theEvent]) return;
     
+    cursorSet = YES;
     [cursor set];
 }
 
