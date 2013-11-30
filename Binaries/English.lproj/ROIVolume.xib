@@ -40,7 +40,7 @@
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="630" id="ttP-Nf-wYN"/>
                         </constraints>
                     </customView>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="720">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="720">
                         <rect key="frame" x="307" y="41" width="317" height="70"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                         <constraints>
@@ -71,7 +71,7 @@ D</string>
                             <action selector="changeParameters:" target="-2" id="749"/>
                         </connections>
                     </slider>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="737">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="737">
                         <rect key="frame" x="6" y="12" width="48" height="14"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Opacity:" id="767">

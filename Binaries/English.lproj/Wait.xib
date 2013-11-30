@@ -31,7 +31,7 @@
                         <rect key="frame" x="19" y="41" width="246" height="20"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                     </progressIndicator>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="15">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="15">
                         <rect key="frame" x="97" y="64" width="89" height="17"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" title="Please wait..." id="29">
@@ -40,7 +40,7 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="22">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="22">
                         <rect key="frame" x="124" y="29" width="141" height="13"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Estimating remaining time..." id="30">
