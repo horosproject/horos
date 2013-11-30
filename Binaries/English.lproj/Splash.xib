@@ -37,6 +37,10 @@
                     <imageView translatesAutoresizingMaskIntoConstraints="NO" id="22">
                         <rect key="frame" x="11" y="70" width="513" height="681"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="513" id="FAS-sD-KZx"/>
+                            <constraint firstAttribute="height" constant="681" id="zyX-DF-koA"/>
+                        </constraints>
                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="axesIndependently" image="Logo" id="31"/>
                     </imageView>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="26">
