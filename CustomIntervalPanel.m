@@ -71,12 +71,12 @@
 
 - (void) sizeWindowAccordingToSettings
 {
-    NSRect frame = self.window.frame;
+    NSRect frame = [self.window frame];
     
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"betweenDatesMode"])
-        frame = NSMakeRect( frame.origin.x, frame.origin.y - (498 - frame.size.height), frame.size.width, 498);
+        frame = NSMakeRect( frame.origin.x, frame.origin.y - (518 - frame.size.height), frame.size.width, 518);
     else
-        frame = NSMakeRect( frame.origin.x, frame.origin.y - (287 - frame.size.height), frame.size.width, 287);
+        frame = NSMakeRect( frame.origin.x, frame.origin.y - (297 - frame.size.height), frame.size.width, 297);
     
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"betweenDatesMode"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"customIntervalWithHoursAndMinutes"])
         frame = NSMakeRect( frame.origin.x, frame.origin.y, 288, frame.size.height);

@@ -1,1123 +1,257 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
-	<data>
-		<int key="IBDocument.SystemTarget">1070</int>
-		<string key="IBDocument.SystemVersion">12A269</string>
-		<string key="IBDocument.InterfaceBuilderVersion">2549</string>
-		<string key="IBDocument.AppKitVersion">1187</string>
-		<string key="IBDocument.HIToolboxVersion">624.00</string>
-		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
-			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">2549</string>
-		</object>
-		<array key="IBDocument.IntegratedClassDependencies">
-			<string>NSButton</string>
-			<string>NSButtonCell</string>
-			<string>NSCustomObject</string>
-			<string>NSImageCell</string>
-			<string>NSImageView</string>
-			<string>NSMatrix</string>
-			<string>NSView</string>
-			<string>NSWindowTemplate</string>
-		</array>
-		<array key="IBDocument.PluginDependencies">
-			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-		</array>
-		<object class="NSMutableDictionary" key="IBDocument.Metadata">
-			<string key="NS.key.0">PluginDependencyRecalculationVersion</string>
-			<integer value="1" key="NS.object.0"/>
-		</object>
-		<array class="NSMutableArray" key="IBDocument.RootObjects" id="1000">
-			<object class="NSCustomObject" id="1001">
-				<string key="NSClassName">ThreeDPositionController</string>
-			</object>
-			<object class="NSCustomObject" id="1003">
-				<string key="NSClassName">FirstResponder</string>
-			</object>
-			<object class="NSCustomObject" id="1004">
-				<string key="NSClassName">NSApplication</string>
-			</object>
-			<object class="NSWindowTemplate" id="1005">
-				<int key="NSWindowStyleMask">403</int>
-				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{196, 397}, {311, 113}}</string>
-				<int key="NSWTFlags">536871936</int>
-				<string key="NSWindowTitle">3D Position</string>
-				<string key="NSWindowClass">NSPanel</string>
-				<nil key="NSViewClass"/>
-				<nil key="NSUserInterfaceItemIdentifier"/>
-				<object class="NSView" key="NSWindowView" id="1006">
-					<reference key="NSNextResponder"/>
-					<int key="NSvFlags">274</int>
-					<array class="NSMutableArray" key="NSSubviews">
-						<object class="NSImageView" id="201411474">
-							<reference key="NSNextResponder" ref="1006"/>
-							<int key="NSvFlags">268</int>
-							<set class="NSMutableSet" key="NSDragTypes">
-								<string>Apple PDF pasteboard type</string>
-								<string>Apple PICT pasteboard type</string>
-								<string>Apple PNG pasteboard type</string>
-								<string>NSFilenamesPboardType</string>
-								<string>NeXT Encapsulated PostScript v1.2 pasteboard type</string>
-								<string>NeXT TIFF v4.0 pasteboard type</string>
-							</set>
-							<string key="NSFrame">{{109, 34}, {48, 48}}</string>
-							<reference key="NSSuperview" ref="1006"/>
-							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="75594032"/>
-							<bool key="NSEnabled">YES</bool>
-							<object class="NSImageCell" key="NSCell" id="167387232">
-								<int key="NSCellFlags">671088640</int>
-								<int key="NSCellFlags2">33554432</int>
-								<object class="NSCustomResource" key="NSContents">
-									<string key="NSClassName">NSImage</string>
-									<string key="NSResourceName">AxialSmall</string>
-								</object>
-								<int key="NSAlign">0</int>
-								<int key="NSScale">0</int>
-								<int key="NSStyle">2</int>
-								<bool key="NSAnimates">YES</bool>
-							</object>
-							<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
-							<bool key="NSEditable">YES</bool>
-						</object>
-						<object class="NSButton" id="1041642540">
-							<reference key="NSNextResponder" ref="1006"/>
-							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{77, 43}, {29, 28}}</string>
-							<reference key="NSSuperview" ref="1006"/>
-							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="201411474"/>
-							<int key="NSTag">1</int>
-							<bool key="NSEnabled">YES</bool>
-							<object class="NSButtonCell" key="NSCell" id="291104629">
-								<int key="NSCellFlags">67633152</int>
-								<int key="NSCellFlags2">134217728</int>
-								<string key="NSContents"/>
-								<object class="NSFont" key="NSSupport" id="1056034714">
-									<string key="NSName">LucidaGrande</string>
-									<double key="NSSize">13</double>
-									<int key="NSfFlags">1044</int>
-								</object>
-								<reference key="NSControlView" ref="1041642540"/>
-								<int key="NSButtonFlags">-2033958912</int>
-								<int key="NSButtonFlags2">130</int>
-								<object class="NSCustomResource" key="NSNormalImage" id="1067451164">
-									<string key="NSClassName">NSImage</string>
-									<string key="NSResourceName">NSRemoveTemplate</string>
-								</object>
-								<string key="NSAlternateContents"/>
-								<string key="NSKeyEquivalent"/>
-								<int key="NSPeriodicDelay">400</int>
-								<int key="NSPeriodicInterval">75</int>
-							</object>
-							<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
-						</object>
-						<object class="NSButton" id="22204746">
-							<reference key="NSNextResponder" ref="1006"/>
-							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{119, 83}, {29, 28}}</string>
-							<reference key="NSSuperview" ref="1006"/>
-							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="599788510"/>
-							<int key="NSTag">2</int>
-							<bool key="NSEnabled">YES</bool>
-							<object class="NSButtonCell" key="NSCell" id="598282110">
-								<int key="NSCellFlags">67633152</int>
-								<int key="NSCellFlags2">134217728</int>
-								<string key="NSContents"/>
-								<object class="NSFont" key="NSSupport" id="24">
-									<string key="NSName">LucidaGrande</string>
-									<double key="NSSize">10</double>
-									<int key="NSfFlags">16</int>
-								</object>
-								<reference key="NSControlView" ref="22204746"/>
-								<int key="NSButtonFlags">-2033958912</int>
-								<int key="NSButtonFlags2">130</int>
-								<object class="NSCustomResource" key="NSNormalImage" id="864286427">
-									<string key="NSClassName">NSImage</string>
-									<string key="NSResourceName">NSAddTemplate</string>
-								</object>
-								<string key="NSAlternateContents"/>
-								<string key="NSKeyEquivalent"/>
-								<int key="NSPeriodicDelay">400</int>
-								<int key="NSPeriodicInterval">75</int>
-							</object>
-							<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
-						</object>
-						<object class="NSButton" id="581996194">
-							<reference key="NSNextResponder" ref="1006"/>
-							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{119, 4}, {29, 28}}</string>
-							<reference key="NSSuperview" ref="1006"/>
-							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="489103783"/>
-							<int key="NSTag">3</int>
-							<bool key="NSEnabled">YES</bool>
-							<object class="NSButtonCell" key="NSCell" id="894639004">
-								<int key="NSCellFlags">67633152</int>
-								<int key="NSCellFlags2">134217728</int>
-								<string key="NSContents"/>
-								<reference key="NSSupport" ref="24"/>
-								<reference key="NSControlView" ref="581996194"/>
-								<int key="NSButtonFlags">-2033958912</int>
-								<int key="NSButtonFlags2">130</int>
-								<reference key="NSNormalImage" ref="1067451164"/>
-								<string key="NSAlternateContents"/>
-								<string key="NSKeyEquivalent"/>
-								<int key="NSPeriodicDelay">400</int>
-								<int key="NSPeriodicInterval">75</int>
-							</object>
-							<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
-						</object>
-						<object class="NSImageView" id="926880769">
-							<reference key="NSNextResponder" ref="1006"/>
-							<int key="NSvFlags">268</int>
-							<set class="NSMutableSet" key="NSDragTypes">
-								<string>Apple PDF pasteboard type</string>
-								<string>Apple PICT pasteboard type</string>
-								<string>Apple PNG pasteboard type</string>
-								<string>NSFilenamesPboardType</string>
-								<string>NeXT Encapsulated PostScript v1.2 pasteboard type</string>
-								<string>NeXT TIFF v4.0 pasteboard type</string>
-							</set>
-							<string key="NSFrame">{{228, 34}, {48, 48}}</string>
-							<reference key="NSSuperview" ref="1006"/>
-							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="1028499908"/>
-							<int key="NSTag">1</int>
-							<bool key="NSEnabled">YES</bool>
-							<object class="NSImageCell" key="NSCell" id="721544281">
-								<int key="NSCellFlags">671088640</int>
-								<int key="NSCellFlags2">33554432</int>
-								<object class="NSCustomResource" key="NSContents">
-									<string key="NSClassName">NSImage</string>
-									<string key="NSResourceName">CorSmall</string>
-								</object>
-								<int key="NSAlign">0</int>
-								<int key="NSScale">0</int>
-								<int key="NSStyle">2</int>
-								<bool key="NSAnimates">YES</bool>
-							</object>
-							<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
-							<bool key="NSEditable">YES</bool>
-						</object>
-						<object class="NSButton" id="429653169">
-							<reference key="NSNextResponder" ref="1006"/>
-							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{237, 83}, {29, 28}}</string>
-							<reference key="NSSuperview" ref="1006"/>
-							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="1041642540"/>
-							<int key="NSTag">4</int>
-							<bool key="NSEnabled">YES</bool>
-							<object class="NSButtonCell" key="NSCell" id="369577619">
-								<int key="NSCellFlags">67633152</int>
-								<int key="NSCellFlags2">134217728</int>
-								<string key="NSContents"/>
-								<reference key="NSSupport" ref="24"/>
-								<reference key="NSControlView" ref="429653169"/>
-								<int key="NSButtonFlags">-2033958912</int>
-								<int key="NSButtonFlags2">130</int>
-								<reference key="NSNormalImage" ref="864286427"/>
-								<string key="NSAlternateContents"/>
-								<string key="NSKeyEquivalent"/>
-								<int key="NSPeriodicDelay">400</int>
-								<int key="NSPeriodicInterval">75</int>
-							</object>
-							<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
-						</object>
-						<object class="NSButton" id="489103783">
-							<reference key="NSNextResponder" ref="1006"/>
-							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{237, 3}, {29, 28}}</string>
-							<reference key="NSSuperview" ref="1006"/>
-							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView"/>
-							<int key="NSTag">5</int>
-							<bool key="NSEnabled">YES</bool>
-							<object class="NSButtonCell" key="NSCell" id="664481628">
-								<int key="NSCellFlags">67633152</int>
-								<int key="NSCellFlags2">134217728</int>
-								<string key="NSContents"/>
-								<reference key="NSSupport" ref="24"/>
-								<reference key="NSControlView" ref="489103783"/>
-								<int key="NSButtonFlags">-2033958912</int>
-								<int key="NSButtonFlags2">130</int>
-								<reference key="NSNormalImage" ref="1067451164"/>
-								<string key="NSAlternateContents"/>
-								<string key="NSKeyEquivalent"/>
-								<int key="NSPeriodicDelay">400</int>
-								<int key="NSPeriodicInterval">75</int>
-							</object>
-							<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
-						</object>
-						<object class="NSMatrix" id="382473678">
-							<reference key="NSNextResponder" ref="1006"/>
-							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{4, 29}, {71, 58}}</string>
-							<reference key="NSSuperview" ref="1006"/>
-							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="429653169"/>
-							<bool key="NSEnabled">YES</bool>
-							<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
-							<int key="NSNumRows">3</int>
-							<int key="NSNumCols">1</int>
-							<array class="NSMutableArray" key="NSCells">
-								<object class="NSButtonCell" id="934058856">
-									<int key="NSCellFlags">-2080374784</int>
-									<int key="NSCellFlags2">131072</int>
-									<string key="NSContents">Axial</string>
-									<object class="NSFont" key="NSSupport" id="26">
-										<string key="NSName">LucidaGrande</string>
-										<double key="NSSize">11</double>
-										<int key="NSfFlags">3100</int>
-									</object>
-									<reference key="NSControlView" ref="382473678"/>
-									<int key="NSButtonFlags">1211912448</int>
-									<int key="NSButtonFlags2">0</int>
-									<object class="NSButtonImageSource" key="NSAlternateImage" id="688406472">
-										<string key="NSImageName">NSRadioButton</string>
-									</object>
-									<string key="NSAlternateContents"/>
-									<string key="NSKeyEquivalent"/>
-									<int key="NSPeriodicDelay">200</int>
-									<int key="NSPeriodicInterval">25</int>
-								</object>
-								<object class="NSButtonCell" id="210378224">
-									<int key="NSCellFlags">67108864</int>
-									<int key="NSCellFlags2">131072</int>
-									<string key="NSContents">Coronal</string>
-									<reference key="NSSupport" ref="26"/>
-									<reference key="NSControlView" ref="382473678"/>
-									<int key="NSTag">1</int>
-									<int key="NSButtonFlags">1211912448</int>
-									<int key="NSButtonFlags2">0</int>
-									<object class="NSImage" key="NSNormalImage">
-										<int key="NSImageFlags">549453824</int>
-										<string key="NSSize">{18, 18}</string>
-										<array class="NSMutableArray" key="NSReps">
-											<array>
-												<integer value="0"/>
-												<object class="NSBitmapImageRep">
-													<object class="NSData" key="NSTIFFRepresentation">
-														<bytes key="NS.bytes">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
-AAAAAF1KAAA0kQAACCVYWVogAAAAAAAAdCAAALRgAAAjPVhZWiAAAAAAAAAlbAAAFyoAAKfDWFlaIAAA
-AAAAAPNSAAEAAAABFs9zZjMyAAAAAAABDEIAAAXe///zJgAAB5IAAP2R///7ov///aMAAAPcAADAbGN1
-cnYAAAAAAAAAAQHNAABjdXJ2AAAAAAAAAAEBzQAAY3VydgAAAAAAAAABAc0AAHZjZ3QAAAAAAAAAAAAD
-AQAAAQACBAUGBwkKCw0ODxASExQWFxgaGxweHyAiIyQmJygpKywtLzAxMjM1Njc4OTs8PT5AQUJDREZH
-SElKS0xOT1BRUlNUVVZXWFlaW1xdXl9hYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5/gIGCg4SF
-hoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnZ6foKGio6SlpqanqKmqq6ytra6vsLGysrO0tba3uLi5uru8
-vL2+v8DBwcLDxMXGxsfIycrKy8zNzs7P0NHS0tPU1dbW19jZ2drb3Nzd3t/g4eLi4+Tl5ufo6enq6+zt
-7u/w8fHy8/T19vf4+fr7/P3+/v8AAgMEBQYHCAkKCwwNDg8QERITFBUWFxgZGhscHR8gISIjJCUnKCkq
-Ky0uLzAxMzQ1Njc4OTo7PD0/QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaWltcXV5fYGFiY2RlZmdo
-aWprbG1ub3BxcnN0dXZ3d3h5ent8fH1+f4CBgoKDhIWGh4iIiYqLjI2Oj5CRkpOUlJWWl5iZmpucnZ2e
-n6ChoqOkpaamp6ipqqusra6vsLCxsrO0tba3uLm5uru8vb6/wMHCw8TFx8jJysvMzc7P0NDR0tPU1dbX
-2Nna29ze3+Dh4uPk5ebn6err7O3u7/Hy8/T19vf5+vv8/f7/AAIDAwQFBgcICQoKCwwNDg8QERITFBUW
-FxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODg5Ojs8PT4+P0BBQkNDREVGR0hJSUpLTE1O
-Tk9QUVJSU1RVVVZXWFhZWltbXF1eXl9gYWFiY2RkZWZnZ2hpaWprbGxtbm5vcHFxcnNzdHV1dnd4eHl6
-ent8fH1+fn+AgYGCg4SEhYaHiImJiouMjY6Oj5CRkpOTlJWWl5iZmZqbnJ2en6ChoqOkpaanqKmqq6yt
-rq+xsrO0tba3uLq7vL2+wMHDxMbHycrMzs/R0tTW19nb3d7g4uTm6Ors7vDy9Pb4+vz+/wAAbmRpbgAA
-AAAAAAY2AACXGgAAVjoAAFPKAACJ3gAAJ8IAABaoAABQDQAAVDkAAiuFAAIZmQABeFEAAwEAAAIAAAAA
-AAEABgANABcAIwAxAEAAUgBlAHsAkwCrAMUA4gD/AR8BPwFhAYUBqgHQAfgCIAJLAncCpQLSAwIDMwNl
-A5gDzgQFBD0EdQSvBOsFKQVnBacF6AYqBm4GtQb8B0UHkgfkCDkIkAjnCT4JmAn0ClAKrQsLC2sLygwq
-DIwM8Q1XDcAOKA6SDv4PbA/bEE0QxBE7EbQSMRKwEzITuRREFNAVYBXxFocXHhfAGGIZBBmsGlQa+RuU
-HC4czh1yHhQeux9jIA0gvCFoIhkizyOJJEEk+SW6JnknOygFKMspkypiKzIsASzXLawuhy9gMD4xGzH8
-MtszvzSgNYY2cjdcOEw5OTorOxs8CD0EPfU+6z/nQOFB2ELUQ9VE00XcRttH5EjxSgBLCUwdTTFOUE9v
-UI9Rt1LdVAVVNlZsV6VY4FohW21ct135X09goGH0Y0tkqGYFZ19oxGova5ptCG54b/BxbnLsdG119Xd/
-eQh6knwqfcV/W4D4gpSEO4Xih4CJKorYjIqOOY/jkZuTWJUOlsyYiZpSnB6d4Z+soX+jWqUvpxOo+6rj
-rMuuwLC4sra0rra0uL+60LzfvwDBHcLdxLXGhchYyi7MCs3lz7rRmtOA1WPXR9kq2xPc/97s4M/iveSn
-5o3obupT7ELuLPAM8fLz0PW396H5f/tZ/T3//wAAAAEAAwALABYAJQA3AE0AZQCBAJ8AwQDlAQsBNQFh
-AZABwQH1AisCZAKfAtwDHANfA6MD6gQ0BH8EzQT1BR0FcAXEBhsGdAbPBy0HXAeMB+4IUgi4CSAJVAmK
-CfYKZArVC0cLgQu8DDIMqw0mDaIOIQ6hDyQPqRAvELgQ/RFDEc8SXRLuE4AUFRSrFUMV3RZ5FxcXthhY
-GPwZoRpIGvEbnBxJHPgdqB5bHw8fxSB9ITch8iKwJDAk8yW3Jn4nRigQKNwpqSp5K0osHCzxLccuoC95
-MFUxMzISMvMz1TS5NaA2hzdxOFw5STo4Oyg8Gj4DPvs/9EDuQepD6ETpRexG8Uf3SP9LFEwhTTBOQE9S
-UGZSklOrVMVV4Vb/WB5ZP1phW4Vcq13SXvthUmJ/Y69k4GYSZ0dofGm0au1tZG6ib+FxInJlc6l073Y2
-d396FXtjfLJ+A39VgKmB/4NWhK+GCYjCiiGLgYzjjkePrJESknuT5Ja8mCuZm5sMnH+d9J9qoOGiWqPV
-pVGmz6eOqE6pzqtRrNSuWq/gsWmy8rR+tgu5Kbq6vE294b93wQ7Cp8RBxd3He8kZyrrLisxbzf/Po9FK
-0vHUm9ZF1/HZn9tO3Cbc/96x4GTiGePQ5YjnQegf6Pzquex27jbv9/G583z0X/VC9wj40Pqa/GX+Mf//
-AAAAAQADAAsAJQA3AE0AZQCBAJ8AwQELATUBYQGQAcEB9QIrAmQCnwLcAxwDXwOjA+oENAR/BM0FHQVw
-BcQGGwZ0Bs8HLQeMB+4IUgi4CSAJign2CmQK1QtHC7wMMgyrDSYNog4hDqEPJA+pEC8QuBFDEl0S7hOA
-FBUUqxVDFnkXFxe2GFgY/BpIGvEbnBxJHPgdqB8PH8UgfSE3IfIjbyQwJPMltydGKBAo3Cp5K0osHC3H
-LqAveTEzMhIy8zS5NaA2hzhcOUk6ODwaPQ4+Az/0QO5C6EPoROlG8Uf3SglLFEwhTkBPUlF7UpJUxVXh
-Vv9ZP1phXKtd0mAlYVJjr2TgZhJofGm0au1tZG6ib+FxInJldO92Nnd/eMl6FXyyfgN/VYCpgf+Er4YJ
-h2WIwoohi4GOR4+skRKSe5PklVCWvJgrmZubDJx/nfSfaqDholqj1aVRps+oTqnOq1Gs1K2Xrlqv4LFp
-svK0frYLt5m5Kbnxurq8Tb3hv3fBDsHawqfEQcUPxd3He8hKyRnKusuKzFvN/87Rz6PQdtFK0vHTxtSb
-1kXXG9fx2MjZn9tO3Cbc/93Y3rHfiuBk4hni9ePQ5KzliOZk50HoH+j86drqueuX7HbtVu427xbv9/DX
-8bnymvN89F/1QvYl9wj37PjQ+bX6mvt//GX9S/4x//8AAGRlc2MAAAAAAAAACkNvbG9yIExDRAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAABIAAAAcAEMAbwBsAG8AcgAgAEwAQwBE
-AABtbW9kAAAAAAAABhAAAJxOAAAAAL5zkQAAAAAAAAAAAAAAAAAAAAAAdGV4dAAAAABDb3B5cmlnaHQg
-QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
-													</object>
-												</object>
-											</array>
-										</array>
-										<object class="NSColor" key="NSColor" id="901494796">
-											<int key="NSColorSpace">3</int>
-											<bytes key="NSWhite">MCAwAA</bytes>
-										</object>
-									</object>
-									<reference key="NSAlternateImage" ref="688406472"/>
-									<int key="NSPeriodicDelay">400</int>
-									<int key="NSPeriodicInterval">75</int>
-								</object>
-								<object class="NSButtonCell" id="253725050">
-									<int key="NSCellFlags">67108864</int>
-									<int key="NSCellFlags2">131072</int>
-									<string key="NSContents">Sagittal</string>
-									<reference key="NSSupport" ref="26"/>
-									<reference key="NSControlView" ref="382473678"/>
-									<int key="NSTag">2</int>
-									<int key="NSButtonFlags">1211912448</int>
-									<int key="NSButtonFlags2">0</int>
-									<object class="NSImage" key="NSNormalImage">
-										<int key="NSImageFlags">549453824</int>
-										<string key="NSSize">{18, 18}</string>
-										<array class="NSMutableArray" key="NSReps">
-											<array>
-												<integer value="0"/>
-												<object class="NSBitmapImageRep">
-													<object class="NSData" key="NSTIFFRepresentation">
-														<bytes key="NS.bytes">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
-OAA</bytes>
-													</object>
-												</object>
-											</array>
-										</array>
-										<reference key="NSColor" ref="901494796"/>
-									</object>
-									<reference key="NSAlternateImage" ref="688406472"/>
-									<int key="NSPeriodicDelay">400</int>
-									<int key="NSPeriodicInterval">75</int>
-								</object>
-							</array>
-							<string key="NSCellSize">{71, 18}</string>
-							<string key="NSIntercellSpacing">{4, 2}</string>
-							<int key="NSMatrixFlags">1151868928</int>
-							<string key="NSCellClass">NSActionCell</string>
-							<object class="NSButtonCell" key="NSProtoCell" id="592867952">
-								<int key="NSCellFlags">67108864</int>
-								<int key="NSCellFlags2">131072</int>
-								<string key="NSContents">Radio</string>
-								<reference key="NSSupport" ref="26"/>
-								<int key="NSButtonFlags">1211912448</int>
-								<int key="NSButtonFlags2">0</int>
-								<object class="NSImage" key="NSNormalImage">
-									<int key="NSImageFlags">549453824</int>
-									<string key="NSSize">{18, 18}</string>
-									<array class="NSMutableArray" key="NSReps">
-										<array>
-											<integer value="0"/>
-											<object class="NSBitmapImageRep">
-												<object class="NSData" key="NSTIFFRepresentation">
-													<bytes key="NS.bytes">TU0AKgAABRgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAMAAAADAAAAAwAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAADwRERGLJycnySsrK/A1NTXw
-IyMjyRwcHIsJCQk8AAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFFRUVdVBQUOCoqKj/
-29vb//n5+f/6+vr/2tra/6qqqv9UVFTgHx8fdQAAAAUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUZGRl5
-dXV198PDw//8/Pz////////////////////////////U1NT/fHx89yUlJXkAAAAFAAAAAAAAAAAAAAAA
-AAAAAxEREUZqamrmtbW1/+3t7f/+/v7//v7+//7+/v/9/f3//f39//39/f/39/f/xMTE/3d3d+YZGRlG
-AAAAAwAAAAAAAAAAAAAACkJCQqGtra3/xsbG/+vr6//y8vL/9fX1//X19f/z8/P/9fX1//Ly8v/u7u7/
-0tLS/6+vr/9KSkqhAAAACgAAAAAAAAAAAAAAF3h4eN2/v7//z8/P/93d3f/q6ur/7+/v/+/v7//w8PD/
-7e3t/+3t7f/i4uL/zs7O/8XFxf98fHzdAAAAFwAAAAAAAAADAAAAJKSkpPjOzs7/2dnZ/+Dg4P/i4uL/
-5eXl/+bm5v/n5+f/5eXl/+Li4v/e3t7/2tra/9DQ0P+srKz4AAAAJAAAAAMAAAADAAAALrCwsPrW1tb/
-3t7e/+Tk5P/p6en/6+vr/+zs7P/p6en/6+vr/+fn5//k5OT/4ODg/9nZ2f+zs7P6AAAALgAAAAMAAAAD
-AAAALp2dnezg4OD/5eXl/+rq6v/u7u7/8PDw//Dw8P/x8fH/8PDw/+7u7v/q6ur/5ubm/+Hh4f+ZmZns
-AAAALgAAAAMAAAADAAAAJG5ubs/l5eX/6enp/+/v7//y8vL/9vb2//r6+v/5+fn/9/f3//b29v/x8fH/
-6+vr/+Tk5P9ra2vPAAAAJAAAAAMAAAAAAAAAFy4uLpPCwsL67Ozs//Pz8//5+fn//v7+//7+/v/+/v7/
-/v7+//v7+//19fX/8PDw/8LCwvosLCyTAAAAFwAAAAAAAAAAAAAACgAAAENfX1/S5OTk/vn5+f/+/v7/
-///////////////////////////8/Pz/5ubm/l9fX9IAAABDAAAACgAAAAAAAAAAAAAAAwAAABcAAABl
-YmJi3NLS0v3////////////////////////////////V1dX9ZGRk3AAAAGUAAAAXAAAAAwAAAAAAAAAA
-AAAAAAAAAAUAAAAfAAAAZTMzM8KAgIDwv7+//O3t7f/t7e3/v7+//ICAgPAzMzPCAAAAZQAAAB8AAAAF
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFAAAAFwAAAEMAAAB3AAAAnwAAALMAAACzAAAAnwAAAHcAAABD
-AAAAFwAAAAUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAoAAAAXAAAAJAAAAC4AAAAu
-AAAAJAAAABcAAAAKAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAwAAAAMAAAADAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADQEAAAMAAAABABIAAAEB
-AAMAAAABABIAAAECAAMAAAAEAAAFugEDAAMAAAABAAEAAAEGAAMAAAABAAIAAAERAAQAAAABAAAACAES
-AAMAAAABAAEAAAEVAAMAAAABAAQAAAEWAAMAAAABABIAAAEXAAQAAAABAAAFEAEcAAMAAAABAAEAAAFS
-AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
-												</object>
-											</object>
-										</array>
-									</array>
-									<reference key="NSColor" ref="901494796"/>
-								</object>
-								<reference key="NSAlternateImage" ref="688406472"/>
-								<int key="NSPeriodicDelay">400</int>
-								<int key="NSPeriodicInterval">75</int>
-							</object>
-							<reference key="NSSelectedCell" ref="934058856"/>
-							<object class="NSColor" key="NSBackgroundColor">
-								<int key="NSColorSpace">6</int>
-								<string key="NSCatalogName">System</string>
-								<string key="NSColorName">controlColor</string>
-								<object class="NSColor" key="NSColor">
-									<int key="NSColorSpace">3</int>
-									<bytes key="NSWhite">MC42NjY2NjY2NjY3AA</bytes>
-								</object>
-							</object>
-							<object class="NSColor" key="NSCellBackgroundColor">
-								<int key="NSColorSpace">3</int>
-								<bytes key="NSWhite">MQA</bytes>
-							</object>
-							<reference key="NSFont" ref="1056034714"/>
-						</object>
-						<object class="NSButton" id="75594032">
-							<reference key="NSNextResponder" ref="1006"/>
-							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{160, 43}, {29, 28}}</string>
-							<reference key="NSSuperview" ref="1006"/>
-							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="680776736"/>
-							<bool key="NSEnabled">YES</bool>
-							<object class="NSButtonCell" key="NSCell" id="941237424">
-								<int key="NSCellFlags">67633152</int>
-								<int key="NSCellFlags2">134217728</int>
-								<string key="NSContents"/>
-								<reference key="NSSupport" ref="24"/>
-								<reference key="NSControlView" ref="75594032"/>
-								<int key="NSButtonFlags">-2033958912</int>
-								<int key="NSButtonFlags2">130</int>
-								<reference key="NSNormalImage" ref="864286427"/>
-								<string key="NSAlternateContents"/>
-								<string key="NSKeyEquivalent"/>
-								<int key="NSPeriodicDelay">400</int>
-								<int key="NSPeriodicInterval">75</int>
-							</object>
-							<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
-						</object>
-						<object class="NSButton" id="680776736">
-							<reference key="NSNextResponder" ref="1006"/>
-							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{196, 43}, {29, 28}}</string>
-							<reference key="NSSuperview" ref="1006"/>
-							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="926880769"/>
-							<int key="NSTag">7</int>
-							<bool key="NSEnabled">YES</bool>
-							<object class="NSButtonCell" key="NSCell" id="520326264">
-								<int key="NSCellFlags">67633152</int>
-								<int key="NSCellFlags2">134217728</int>
-								<string key="NSContents"/>
-								<reference key="NSSupport" ref="24"/>
-								<reference key="NSControlView" ref="680776736"/>
-								<int key="NSButtonFlags">-2033958912</int>
-								<int key="NSButtonFlags2">130</int>
-								<reference key="NSNormalImage" ref="1067451164"/>
-								<string key="NSAlternateContents"/>
-								<string key="NSKeyEquivalent"/>
-								<int key="NSPeriodicDelay">400</int>
-								<int key="NSPeriodicInterval">75</int>
-							</object>
-							<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
-						</object>
-						<object class="NSButton" id="1028499908">
-							<reference key="NSNextResponder" ref="1006"/>
-							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{279, 43}, {29, 28}}</string>
-							<reference key="NSSuperview" ref="1006"/>
-							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="581996194"/>
-							<int key="NSTag">6</int>
-							<bool key="NSEnabled">YES</bool>
-							<object class="NSButtonCell" key="NSCell" id="575033534">
-								<int key="NSCellFlags">67633152</int>
-								<int key="NSCellFlags2">134217728</int>
-								<string key="NSContents"/>
-								<reference key="NSSupport" ref="24"/>
-								<reference key="NSControlView" ref="1028499908"/>
-								<int key="NSButtonFlags">-2033958912</int>
-								<int key="NSButtonFlags2">130</int>
-								<reference key="NSNormalImage" ref="864286427"/>
-								<string key="NSAlternateContents"/>
-								<string key="NSKeyEquivalent"/>
-								<int key="NSPeriodicDelay">400</int>
-								<int key="NSPeriodicInterval">75</int>
-							</object>
-							<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
-						</object>
-						<object class="NSButton" id="599788510">
-							<reference key="NSNextResponder" ref="1006"/>
-							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{164, 89}, {60, 16}}</string>
-							<reference key="NSSuperview" ref="1006"/>
-							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="382473678"/>
-							<bool key="NSEnabled">YES</bool>
-							<object class="NSButtonCell" key="NSCell" id="1005549072">
-								<int key="NSCellFlags">67108864</int>
-								<int key="NSCellFlags2">134479872</int>
-								<string key="NSContents">Reset</string>
-								<object class="NSFont" key="NSSupport">
-									<string key="NSName">LucidaGrande</string>
-									<double key="NSSize">9</double>
-									<int key="NSfFlags">3614</int>
-								</object>
-								<reference key="NSControlView" ref="599788510"/>
-								<int key="NSButtonFlags">-2038284288</int>
-								<int key="NSButtonFlags2">129</int>
-								<string key="NSAlternateContents"/>
-								<string key="NSKeyEquivalent"/>
-								<int key="NSPeriodicDelay">200</int>
-								<int key="NSPeriodicInterval">25</int>
-							</object>
-							<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
-						</object>
-					</array>
-					<string key="NSFrameSize">{311, 113}</string>
-					<reference key="NSSuperview"/>
-					<reference key="NSWindow"/>
-					<reference key="NSNextKeyView" ref="22204746"/>
-				</object>
-				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
-				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
-				<string key="NSFrameAutosaveName"/>
-				<bool key="NSAutorecalculatesContentBorderThicknessMinY">NO</bool>
-				<bool key="NSAutorecalculatesContentBorderThicknessMaxY">NO</bool>
-				<bool key="NSWindowIsRestorable">YES</bool>
-			</object>
-		</array>
-		<object class="IBObjectContainer" key="IBDocument.Objects">
-			<array class="NSMutableArray" key="connectionRecords">
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">window</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="1005"/>
-					</object>
-					<int key="connectionID">21</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">changePosition:</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="22204746"/>
-					</object>
-					<int key="connectionID">45</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">changePosition:</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="1041642540"/>
-					</object>
-					<int key="connectionID">46</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">changePosition:</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="75594032"/>
-					</object>
-					<int key="connectionID">47</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">changePosition:</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="581996194"/>
-					</object>
-					<int key="connectionID">48</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">changePosition:</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="429653169"/>
-					</object>
-					<int key="connectionID">49</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">changePosition:</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="489103783"/>
-					</object>
-					<int key="connectionID">50</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">axialPan</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="201411474"/>
-					</object>
-					<int key="connectionID">72</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">verticalPan</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="926880769"/>
-					</object>
-					<int key="connectionID">73</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">matrixMode</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="382473678"/>
-					</object>
-					<int key="connectionID">76</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">changeMatrixMode:</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="382473678"/>
-					</object>
-					<int key="connectionID">77</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">reset:</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="599788510"/>
-					</object>
-					<int key="connectionID">82</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">changePosition:</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="680776736"/>
-					</object>
-					<int key="connectionID">83</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">changePosition:</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="1028499908"/>
-					</object>
-					<int key="connectionID">84</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">delegate</string>
-						<reference key="source" ref="1005"/>
-						<reference key="destination" ref="1001"/>
-					</object>
-					<int key="connectionID">22</int>
-				</object>
-			</array>
-			<object class="IBMutableOrderedSet" key="objectRecords">
-				<array key="orderedObjects">
-					<object class="IBObjectRecord">
-						<int key="objectID">0</int>
-						<array key="object" id="0"/>
-						<reference key="children" ref="1000"/>
-						<nil key="parent"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">-2</int>
-						<reference key="object" ref="1001"/>
-						<reference key="parent" ref="0"/>
-						<string key="objectName">File's Owner</string>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">-1</int>
-						<reference key="object" ref="1003"/>
-						<reference key="parent" ref="0"/>
-						<string key="objectName">First Responder</string>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">-3</int>
-						<reference key="object" ref="1004"/>
-						<reference key="parent" ref="0"/>
-						<string key="objectName">Application</string>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">1</int>
-						<reference key="object" ref="1005"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="1006"/>
-						</array>
-						<reference key="parent" ref="0"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">2</int>
-						<reference key="object" ref="1006"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="201411474"/>
-							<reference ref="1041642540"/>
-							<reference ref="22204746"/>
-							<reference ref="581996194"/>
-							<reference ref="926880769"/>
-							<reference ref="429653169"/>
-							<reference ref="489103783"/>
-							<reference ref="382473678"/>
-							<reference ref="75594032"/>
-							<reference ref="680776736"/>
-							<reference ref="1028499908"/>
-							<reference ref="599788510"/>
-						</array>
-						<reference key="parent" ref="1005"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">29</int>
-						<reference key="object" ref="22204746"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="598282110"/>
-						</array>
-						<reference key="parent" ref="1006"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">30</int>
-						<reference key="object" ref="598282110"/>
-						<reference key="parent" ref="22204746"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">31</int>
-						<reference key="object" ref="581996194"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="894639004"/>
-						</array>
-						<reference key="parent" ref="1006"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">32</int>
-						<reference key="object" ref="894639004"/>
-						<reference key="parent" ref="581996194"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">33</int>
-						<reference key="object" ref="75594032"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="941237424"/>
-						</array>
-						<reference key="parent" ref="1006"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">34</int>
-						<reference key="object" ref="941237424"/>
-						<reference key="parent" ref="75594032"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">35</int>
-						<reference key="object" ref="1041642540"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="291104629"/>
-						</array>
-						<reference key="parent" ref="1006"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">36</int>
-						<reference key="object" ref="291104629"/>
-						<reference key="parent" ref="1041642540"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">37</int>
-						<reference key="object" ref="429653169"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="369577619"/>
-						</array>
-						<reference key="parent" ref="1006"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">38</int>
-						<reference key="object" ref="489103783"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="664481628"/>
-						</array>
-						<reference key="parent" ref="1006"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">39</int>
-						<reference key="object" ref="664481628"/>
-						<reference key="parent" ref="489103783"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">40</int>
-						<reference key="object" ref="369577619"/>
-						<reference key="parent" ref="429653169"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">51</int>
-						<reference key="object" ref="382473678"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="934058856"/>
-							<reference ref="210378224"/>
-							<reference ref="592867952"/>
-							<reference ref="253725050"/>
-						</array>
-						<reference key="parent" ref="1006"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">52</int>
-						<reference key="object" ref="934058856"/>
-						<reference key="parent" ref="382473678"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">53</int>
-						<reference key="object" ref="210378224"/>
-						<reference key="parent" ref="382473678"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">54</int>
-						<reference key="object" ref="592867952"/>
-						<reference key="parent" ref="382473678"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">55</int>
-						<reference key="object" ref="253725050"/>
-						<reference key="parent" ref="382473678"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">64</int>
-						<reference key="object" ref="926880769"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="721544281"/>
-						</array>
-						<reference key="parent" ref="1006"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">65</int>
-						<reference key="object" ref="721544281"/>
-						<reference key="parent" ref="926880769"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">66</int>
-						<reference key="object" ref="201411474"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="167387232"/>
-						</array>
-						<reference key="parent" ref="1006"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">67</int>
-						<reference key="object" ref="167387232"/>
-						<reference key="parent" ref="201411474"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">74</int>
-						<reference key="object" ref="599788510"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="1005549072"/>
-						</array>
-						<reference key="parent" ref="1006"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">75</int>
-						<reference key="object" ref="1005549072"/>
-						<reference key="parent" ref="599788510"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">78</int>
-						<reference key="object" ref="1028499908"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="575033534"/>
-						</array>
-						<reference key="parent" ref="1006"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">79</int>
-						<reference key="object" ref="680776736"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="520326264"/>
-						</array>
-						<reference key="parent" ref="1006"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">80</int>
-						<reference key="object" ref="520326264"/>
-						<reference key="parent" ref="680776736"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">81</int>
-						<reference key="object" ref="575033534"/>
-						<reference key="parent" ref="1028499908"/>
-					</object>
-				</array>
-			</object>
-			<dictionary class="NSMutableDictionary" key="flattenedProperties">
-				<string key="-1.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="-2.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="-3.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="1.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="1.IBWindowTemplateEditedContentRect">{{1051, 978}, {311, 113}}</string>
-				<integer value="0" key="1.NSWindowTemplate.visibleAtLaunch"/>
-				<string key="2.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="29.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="30.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="31.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="32.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="33.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="34.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="35.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="36.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="37.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="38.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="39.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="40.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="51.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="52.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="53.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="54.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="55.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="64.CustomClassName">ThreeDPanView</string>
-				<string key="64.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="65.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="66.CustomClassName">ThreeDPanView</string>
-				<string key="66.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="67.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="74.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="75.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="78.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="79.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="80.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="81.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			</dictionary>
-			<dictionary class="NSMutableDictionary" key="unlocalizedProperties"/>
-			<nil key="activeLocalization"/>
-			<dictionary class="NSMutableDictionary" key="localizations"/>
-			<nil key="sourceID"/>
-			<int key="maxID">84</int>
-		</object>
-		<object class="IBClassDescriber" key="IBDocument.Classes">
-			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
-				<object class="IBPartialClassDescription">
-					<string key="className">ThreeDPanView</string>
-					<string key="superclassName">NSImageView</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/ThreeDPanView.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">ThreeDPositionController</string>
-					<string key="superclassName">NSWindowController</string>
-					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="changeMatrixMode:">id</string>
-						<string key="changePosition:">id</string>
-						<string key="reset:">id</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="changeMatrixMode:">
-							<string key="name">changeMatrixMode:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="changePosition:">
-							<string key="name">changePosition:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="reset:">
-							<string key="name">reset:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="outlets">
-						<string key="axialPan">ThreeDPanView</string>
-						<string key="matrixMode">NSMatrix</string>
-						<string key="verticalPan">ThreeDPanView</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<object class="IBToOneOutletInfo" key="axialPan">
-							<string key="name">axialPan</string>
-							<string key="candidateClassName">ThreeDPanView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="matrixMode">
-							<string key="name">matrixMode</string>
-							<string key="candidateClassName">NSMatrix</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="verticalPan">
-							<string key="name">verticalPan</string>
-							<string key="candidateClassName">ThreeDPanView</string>
-						</object>
-					</dictionary>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/ThreeDPositionController.h</string>
-					</object>
-				</object>
-			</array>
-		</object>
-		<int key="IBDocument.localizationMode">0</int>
-		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaFramework</string>
-		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencyDefaults">
-			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
-			<real value="1070" key="NS.object.0"/>
-		</object>
-		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDevelopmentDependencies">
-			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.InterfaceBuilder3</string>
-			<real value="4300" key="NS.object.0"/>
-		</object>
-		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
-		<int key="IBDocument.defaultPropertyAccessControl">3</int>
-		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
-			<string key="AxialSmall">{60, 60}</string>
-			<string key="CorSmall">{60, 60}</string>
-			<string key="NSAddTemplate">{8, 8}</string>
-			<string key="NSRemoveTemplate">{8, 8}</string>
-		</dictionary>
-	</data>
-</archive>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13B35" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment defaultVersion="1070" identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="ThreeDPositionController">
+            <connections>
+                <outlet property="axialPan" destination="66" id="72"/>
+                <outlet property="matrixMode" destination="51" id="76"/>
+                <outlet property="verticalPan" destination="64" id="73"/>
+                <outlet property="window" destination="1" id="21"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application"/>
+        <window title="3D Position" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" showsToolbarButton="NO" wantsToBeColor="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="1" customClass="NSPanel">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" utility="YES" nonactivatingPanel="YES" texturedBackground="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="196" y="397" width="311" height="113"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <view key="contentView" horizontalCompressionResistancePriority="1000" id="2">
+                <rect key="frame" x="0.0" y="0.0" width="311" height="113"/>
+                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                <subviews>
+                    <imageView translatesAutoresizingMaskIntoConstraints="NO" id="66" customClass="ThreeDPanView">
+                        <rect key="frame" x="107" y="34" width="48" height="48"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="42" id="nIf-4J-1Tj"/>
+                            <constraint firstAttribute="width" constant="42" id="usR-5G-XHc"/>
+                        </constraints>
+                        <imageCell key="cell" enabled="NO" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyDown" imageFrameStyle="grayBezel" image="AxialSmall" id="67"/>
+                    </imageView>
+                    <button tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="35">
+                        <rect key="frame" x="75" y="43" width="29" height="28"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="25" id="8Gi-fE-NXf"/>
+                        </constraints>
+                        <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="NSRemoveTemplate" imagePosition="only" alignment="center" continuous="YES" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="36">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="changePosition:" target="-2" id="46"/>
+                        </connections>
+                    </button>
+                    <button tag="2" translatesAutoresizingMaskIntoConstraints="NO" id="29">
+                        <rect key="frame" x="117" y="83" width="29" height="28"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="25" id="Hkq-Vv-8Wt"/>
+                        </constraints>
+                        <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="NSAddTemplate" imagePosition="only" alignment="center" continuous="YES" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="30">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system" size="10"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="changePosition:" target="-2" id="45"/>
+                        </connections>
+                    </button>
+                    <button tag="3" translatesAutoresizingMaskIntoConstraints="NO" id="31">
+                        <rect key="frame" x="117" y="4" width="29" height="28"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="25" id="7Od-74-Ppg"/>
+                        </constraints>
+                        <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="NSRemoveTemplate" imagePosition="only" alignment="center" continuous="YES" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="32">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system" size="10"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="changePosition:" target="-2" id="48"/>
+                        </connections>
+                    </button>
+                    <imageView tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="64" customClass="ThreeDPanView">
+                        <rect key="frame" x="228" y="34" width="48" height="48"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="42" id="KwV-kw-1el"/>
+                            <constraint firstAttribute="width" constant="42" id="gsG-Ve-00V"/>
+                        </constraints>
+                        <imageCell key="cell" enabled="NO" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyDown" imageFrameStyle="grayBezel" image="CorSmall" id="65"/>
+                    </imageView>
+                    <button tag="4" translatesAutoresizingMaskIntoConstraints="NO" id="37">
+                        <rect key="frame" x="237" y="83" width="29" height="28"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="25" id="1p2-mq-Wmb"/>
+                        </constraints>
+                        <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="NSAddTemplate" imagePosition="only" alignment="center" continuous="YES" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="40">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system" size="10"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="changePosition:" target="-2" id="49"/>
+                        </connections>
+                    </button>
+                    <button tag="5" translatesAutoresizingMaskIntoConstraints="NO" id="38">
+                        <rect key="frame" x="237" y="3" width="29" height="28"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="25" id="PUg-5U-ssa"/>
+                        </constraints>
+                        <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="NSRemoveTemplate" imagePosition="only" alignment="center" continuous="YES" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="39">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system" size="10"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="changePosition:" target="-2" id="50"/>
+                        </connections>
+                    </button>
+                    <matrix horizontalHuggingPriority="249" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="51">
+                        <rect key="frame" x="4" y="29" width="69" height="58"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        <size key="cellSize" width="69" height="18"/>
+                        <size key="intercellSpacing" width="4" height="2"/>
+                        <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" controlSize="small" inset="2" id="54">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="smallSystem"/>
+                        </buttonCell>
+                        <cells>
+                            <column>
+                                <buttonCell type="radio" title="Axial" imagePosition="left" alignment="left" controlSize="small" state="on" inset="2" id="52">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="smallSystem"/>
+                                </buttonCell>
+                                <buttonCell type="radio" title="Coronal" imagePosition="left" alignment="left" controlSize="small" tag="1" inset="2" id="53">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="smallSystem"/>
+                                </buttonCell>
+                                <buttonCell type="radio" title="Sagittal" imagePosition="left" alignment="left" controlSize="small" tag="2" inset="2" id="55">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="smallSystem"/>
+                                </buttonCell>
+                            </column>
+                        </cells>
+                        <connections>
+                            <action selector="changeMatrixMode:" target="-2" id="77"/>
+                        </connections>
+                    </matrix>
+                    <button translatesAutoresizingMaskIntoConstraints="NO" id="33">
+                        <rect key="frame" x="158" y="43" width="29" height="28"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="25" id="8p9-17-u0e"/>
+                        </constraints>
+                        <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="NSAddTemplate" imagePosition="only" alignment="center" continuous="YES" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="34">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system" size="10"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="changePosition:" target="-2" id="47"/>
+                        </connections>
+                    </button>
+                    <button tag="7" translatesAutoresizingMaskIntoConstraints="NO" id="79">
+                        <rect key="frame" x="196" y="43" width="29" height="28"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="25" id="CKW-EV-5c8"/>
+                        </constraints>
+                        <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="NSRemoveTemplate" imagePosition="only" alignment="center" continuous="YES" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="80">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system" size="10"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="changePosition:" target="-2" id="83"/>
+                        </connections>
+                    </button>
+                    <button tag="6" translatesAutoresizingMaskIntoConstraints="NO" id="78">
+                        <rect key="frame" x="279" y="43" width="29" height="28"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="25" id="jiq-gj-hPR"/>
+                        </constraints>
+                        <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="NSAddTemplate" imagePosition="only" alignment="center" continuous="YES" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="81">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system" size="10"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="changePosition:" target="-2" id="84"/>
+                        </connections>
+                    </button>
+                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="74">
+                        <rect key="frame" x="162" y="89" width="62" height="16"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <constraints>
+                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="60" id="SAB-RW-sJQ"/>
+                        </constraints>
+                        <buttonCell key="cell" type="push" title="Reset" bezelStyle="rounded" alignment="center" controlSize="mini" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="75">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="miniSystem"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="reset:" target="-2" id="82"/>
+                        </connections>
+                    </button>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="37" firstAttribute="top" secondItem="29" secondAttribute="top" id="6bI-2c-SLU"/>
+                    <constraint firstItem="51" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="2" secondAttribute="leading" constant="4" id="6rt-Lj-2eN"/>
+                    <constraint firstItem="35" firstAttribute="leading" secondItem="51" secondAttribute="trailing" constant="4" id="8uZ-wI-PCC"/>
+                    <constraint firstItem="37" firstAttribute="leading" secondItem="74" secondAttribute="trailing" constant="16" id="97C-Yg-Zjx"/>
+                    <constraint firstItem="51" firstAttribute="top" secondItem="2" secondAttribute="top" constant="26" id="9Eg-lQ-hhH"/>
+                    <constraint firstItem="74" firstAttribute="top" secondItem="2" secondAttribute="top" constant="8" id="AjS-DU-Sgd"/>
+                    <constraint firstItem="33" firstAttribute="top" secondItem="35" secondAttribute="top" id="BZU-yF-mxw"/>
+                    <constraint firstAttribute="bottom" secondItem="38" secondAttribute="bottom" constant="6" id="CI9-Aw-eme"/>
+                    <constraint firstItem="79" firstAttribute="trailing" secondItem="74" secondAttribute="trailing" id="CdB-sA-ebF"/>
+                    <constraint firstItem="51" firstAttribute="centerY" secondItem="66" secondAttribute="centerY" id="Ej6-2S-jLg"/>
+                    <constraint firstItem="38" firstAttribute="leading" secondItem="37" secondAttribute="leading" id="JZZ-Jw-klO"/>
+                    <constraint firstItem="78" firstAttribute="leading" secondItem="64" secondAttribute="trailing" constant="8" symbolic="YES" id="JtE-Rw-z24"/>
+                    <constraint firstItem="31" firstAttribute="top" secondItem="66" secondAttribute="bottom" constant="7" id="LtF-j9-uiC"/>
+                    <constraint firstItem="38" firstAttribute="top" secondItem="64" secondAttribute="bottom" constant="8" symbolic="YES" id="Mu7-vc-l9Q"/>
+                    <constraint firstItem="35" firstAttribute="leading" secondItem="51" secondAttribute="trailing" constant="4" id="N4V-E8-hjg"/>
+                    <constraint firstItem="78" firstAttribute="top" secondItem="79" secondAttribute="top" id="NBh-0p-YcR"/>
+                    <constraint firstItem="29" firstAttribute="top" secondItem="2" secondAttribute="top" constant="4" id="NCa-8u-Awp"/>
+                    <constraint firstItem="29" firstAttribute="bottom" secondItem="37" secondAttribute="bottom" id="O1J-6W-Fb1"/>
+                    <constraint firstItem="66" firstAttribute="bottom" secondItem="64" secondAttribute="bottom" id="PAq-Ri-vIe"/>
+                    <constraint firstAttribute="trailing" secondItem="78" secondAttribute="trailing" constant="5" id="Seg-fD-sQS"/>
+                    <constraint firstAttribute="bottom" secondItem="31" secondAttribute="bottom" constant="7" id="XMh-WI-aXk"/>
+                    <constraint firstAttribute="bottom" secondItem="35" secondAttribute="bottom" constant="46" id="Zg1-oU-ZQm"/>
+                    <constraint firstItem="31" firstAttribute="trailing" secondItem="29" secondAttribute="trailing" id="av1-WS-une"/>
+                    <constraint firstItem="29" firstAttribute="leading" secondItem="31" secondAttribute="leading" id="bYs-7J-asw"/>
+                    <constraint firstItem="79" firstAttribute="bottom" secondItem="78" secondAttribute="bottom" id="dnC-QY-Bs9"/>
+                    <constraint firstItem="64" firstAttribute="top" secondItem="66" secondAttribute="top" id="eRh-y6-RlJ"/>
+                    <constraint firstAttribute="trailing" secondItem="37" secondAttribute="trailing" constant="47" id="fvc-K1-duT"/>
+                    <constraint firstItem="51" firstAttribute="leading" secondItem="2" secondAttribute="leading" constant="4" id="hHx-yz-4Wo"/>
+                    <constraint firstItem="29" firstAttribute="centerX" secondItem="66" secondAttribute="centerX" id="hKo-3j-xeI"/>
+                    <constraint firstItem="35" firstAttribute="bottom" secondItem="33" secondAttribute="bottom" id="lzY-wR-05t"/>
+                    <constraint firstItem="33" firstAttribute="bottom" secondItem="79" secondAttribute="bottom" id="mhI-21-8Qe"/>
+                    <constraint firstItem="64" firstAttribute="leading" secondItem="79" secondAttribute="trailing" constant="8" symbolic="YES" id="my3-fA-7cj"/>
+                    <constraint firstItem="74" firstAttribute="centerY" secondItem="37" secondAttribute="centerY" id="ovW-dc-Fv0"/>
+                    <constraint firstItem="74" firstAttribute="leading" secondItem="29" secondAttribute="trailing" constant="19" id="rNF-ZA-BGC"/>
+                    <constraint firstItem="38" firstAttribute="trailing" secondItem="37" secondAttribute="trailing" id="u7s-oK-mN8"/>
+                    <constraint firstItem="66" firstAttribute="leading" secondItem="35" secondAttribute="trailing" constant="8" symbolic="YES" id="x8J-QL-kAW"/>
+                    <constraint firstItem="79" firstAttribute="top" secondItem="33" secondAttribute="top" id="yiD-T4-DWl"/>
+                    <constraint firstItem="66" firstAttribute="top" secondItem="29" secondAttribute="bottom" constant="7" id="ylH-Ff-fnd"/>
+                    <constraint firstItem="33" firstAttribute="leading" secondItem="66" secondAttribute="trailing" constant="8" symbolic="YES" id="yxS-m8-2Fz"/>
+                    <constraint firstItem="33" firstAttribute="top" secondItem="74" secondAttribute="bottom" constant="21" id="zuZ-YB-LCE"/>
+                </constraints>
+            </view>
+            <contentBorderThickness minY="0.0" maxY="0.0"/>
+            <connections>
+                <outlet property="delegate" destination="-2" id="22"/>
+            </connections>
+        </window>
+    </objects>
+    <resources>
+        <image name="AxialSmall" width="60" height="60"/>
+        <image name="CorSmall" width="60" height="60"/>
+        <image name="NSAddTemplate" width="8" height="8"/>
+        <image name="NSRemoveTemplate" width="8" height="8"/>
+    </resources>
+</document>

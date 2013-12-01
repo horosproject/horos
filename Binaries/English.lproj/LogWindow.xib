@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4510" systemVersion="12F45" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13B35" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4510"/>
+        <deployment defaultVersion="1070" identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="LogWindowController">
@@ -31,14 +32,14 @@
                             <tabViewItem label="Receive" identifier="1" id="334">
                                 <view key="view" id="337">
                                     <rect key="frame" x="10" y="25" width="1117" height="461"/>
-                                    <autoresizingMask key="autoresizingMask"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <scrollView autohidesScrollers="YES" horizontalLineScroll="16" horizontalPageScroll="0.0" verticalLineScroll="16" verticalPageScroll="0.0" usesPredominantAxisScrolling="NO" id="68">
                                             <rect key="frame" x="5" y="5" width="1107" height="422"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <clipView key="contentView" id="VUm-pd-9dx">
                                                 <rect key="frame" x="1" y="17" width="1105" height="404"/>
-                                                <autoresizingMask key="autoresizingMask"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="none" alternatingRowBackgroundColors="YES" autosaveName="LogTable2" rowHeight="14" headerView="221" id="69" customClass="LogTableView">
                                                         <rect key="frame" x="0.0" y="0.0" width="1105" height="404"/>
@@ -219,11 +220,11 @@
                                                 </subviews>
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </clipView>
-                                            <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" id="220">
+                                            <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="220">
                                                 <rect key="frame" x="1" y="394" width="1066" height="15"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
-                                            <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" id="219">
+                                            <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="219">
                                                 <rect key="frame" x="1067" y="17" width="15" height="377"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
@@ -241,12 +242,12 @@
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                             <connections>
-                                                <binding destination="44" name="displayPatternValue1" keyPath="selection.@count" id="360">
+                                                <binding destination="44" name="displayPatternValue2" keyPath="arrangedObjects.@count" previousBinding="360" id="362">
                                                     <dictionary key="options">
                                                         <string key="NSDisplayPattern">%{value1}@ out of %{value2}@</string>
                                                     </dictionary>
                                                 </binding>
-                                                <binding destination="44" name="displayPatternValue2" keyPath="arrangedObjects.@count" previousBinding="360" id="362">
+                                                <binding destination="44" name="displayPatternValue1" keyPath="selection.@count" id="360">
                                                     <dictionary key="options">
                                                         <string key="NSDisplayPattern">%{value1}@ out of %{value2}@</string>
                                                     </dictionary>
@@ -262,6 +263,12 @@
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </searchFieldCell>
                                             <connections>
+                                                <binding destination="44" name="predicate" keyPath="filterPredicate" id="1790">
+                                                    <dictionary key="options">
+                                                        <string key="NSDisplayName">All</string>
+                                                        <string key="NSPredicateFormat">(originName contains[c] $value) or (studyName contains[c] $value) or (patientName contains[c] $value) or (message contains[c] $value)</string>
+                                                    </dictionary>
+                                                </binding>
                                                 <binding destination="44" name="predicate2" keyPath="filterPredicate" previousBinding="1790" id="1791">
                                                     <dictionary key="options">
                                                         <string key="NSDisplayName">From</string>
@@ -286,12 +293,6 @@
                                                         <string key="NSPredicateFormat">patientName contains[c] $value</string>
                                                     </dictionary>
                                                 </binding>
-                                                <binding destination="44" name="predicate" keyPath="filterPredicate" id="1790">
-                                                    <dictionary key="options">
-                                                        <string key="NSDisplayName">All</string>
-                                                        <string key="NSPredicateFormat">(originName contains[c] $value) or (studyName contains[c] $value) or (patientName contains[c] $value) or (message contains[c] $value)</string>
-                                                    </dictionary>
-                                                </binding>
                                             </connections>
                                         </searchField>
                                         <button verticalHuggingPriority="750" tag="1" id="1201">
@@ -311,14 +312,14 @@
                             <tabViewItem label="Send" identifier="2" id="335">
                                 <view key="view" id="336">
                                     <rect key="frame" x="10" y="25" width="1117" height="461"/>
-                                    <autoresizingMask key="autoresizingMask"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <scrollView autohidesScrollers="YES" horizontalLineScroll="16" horizontalPageScroll="0.0" verticalLineScroll="16" verticalPageScroll="0.0" usesPredominantAxisScrolling="NO" id="7">
                                             <rect key="frame" x="5" y="5" width="1107" height="422"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <clipView key="contentView" id="kGi-AO-zlq">
                                                 <rect key="frame" x="1" y="17" width="1105" height="404"/>
-                                                <autoresizingMask key="autoresizingMask"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="none" alternatingRowBackgroundColors="YES" autosaveName="LogTable1" rowHeight="14" headerView="218" id="8" customClass="LogTableView">
                                                         <rect key="frame" x="0.0" y="0.0" width="1105" height="404"/>
@@ -507,11 +508,11 @@
                                                 </subviews>
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </clipView>
-                                            <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" id="217">
+                                            <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="217">
                                                 <rect key="frame" x="1" y="394" width="1066" height="15"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
-                                            <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" id="216">
+                                            <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="216">
                                                 <rect key="frame" x="1067" y="17" width="15" height="377"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
@@ -529,12 +530,12 @@
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                             <connections>
-                                                <binding destination="45" name="displayPatternValue1" keyPath="selection.@count" id="363">
+                                                <binding destination="45" name="displayPatternValue2" keyPath="arrangedObjects.@count" previousBinding="363" id="365">
                                                     <dictionary key="options">
                                                         <string key="NSDisplayPattern">%{value1}@ out of %{value2}@</string>
                                                     </dictionary>
                                                 </binding>
-                                                <binding destination="45" name="displayPatternValue2" keyPath="arrangedObjects.@count" previousBinding="363" id="365">
+                                                <binding destination="45" name="displayPatternValue1" keyPath="selection.@count" id="363">
                                                     <dictionary key="options">
                                                         <string key="NSDisplayPattern">%{value1}@ out of %{value2}@</string>
                                                     </dictionary>
@@ -550,6 +551,12 @@
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </searchFieldCell>
                                             <connections>
+                                                <binding destination="45" name="predicate" keyPath="filterPredicate" id="1823">
+                                                    <dictionary key="options">
+                                                        <string key="NSDisplayName">All</string>
+                                                        <string key="NSPredicateFormat">(destinationName contains[c] $value) or (studyName contains[c] $value) or (patientName contains[c] $value)</string>
+                                                    </dictionary>
+                                                </binding>
                                                 <binding destination="45" name="predicate2" keyPath="filterPredicate" previousBinding="1823" id="1824">
                                                     <dictionary key="options">
                                                         <string key="NSDisplayName">To</string>
@@ -572,12 +579,6 @@
                                                     <dictionary key="options">
                                                         <string key="NSDisplayName">Patient Name</string>
                                                         <string key="NSPredicateFormat">patientName contains[c] $value</string>
-                                                    </dictionary>
-                                                </binding>
-                                                <binding destination="45" name="predicate" keyPath="filterPredicate" id="1823">
-                                                    <dictionary key="options">
-                                                        <string key="NSDisplayName">All</string>
-                                                        <string key="NSPredicateFormat">(destinationName contains[c] $value) or (studyName contains[c] $value) or (patientName contains[c] $value)</string>
                                                     </dictionary>
                                                 </binding>
                                             </connections>
@@ -791,11 +792,11 @@
                                                 </subviews>
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </clipView>
-                                            <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" id="223">
+                                            <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="223">
                                                 <rect key="frame" x="1" y="394" width="1066" height="15"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
-                                            <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" id="222">
+                                            <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="222">
                                                 <rect key="frame" x="1067" y="17" width="15" height="377"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
@@ -813,12 +814,12 @@
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                             <connections>
-                                                <binding destination="46" name="displayPatternValue1" keyPath="selection.@count" id="366">
+                                                <binding destination="46" name="displayPatternValue2" keyPath="arrangedObjects.@count" previousBinding="366" id="368">
                                                     <dictionary key="options">
                                                         <string key="NSDisplayPattern">%{value1}@ out of %{value2}@</string>
                                                     </dictionary>
                                                 </binding>
-                                                <binding destination="46" name="displayPatternValue2" keyPath="arrangedObjects.@count" previousBinding="366" id="368">
+                                                <binding destination="46" name="displayPatternValue1" keyPath="selection.@count" id="366">
                                                     <dictionary key="options">
                                                         <string key="NSDisplayPattern">%{value1}@ out of %{value2}@</string>
                                                     </dictionary>
@@ -834,6 +835,12 @@
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </searchFieldCell>
                                             <connections>
+                                                <binding destination="46" name="predicate" keyPath="filterPredicate" id="1859">
+                                                    <dictionary key="options">
+                                                        <string key="NSDisplayName">All</string>
+                                                        <string key="NSPredicateFormat">(originName contains[c] $value) or (studyName contains[c] $value) or (patientName contains[c] $value) or (message contains[c] $value)</string>
+                                                    </dictionary>
+                                                </binding>
                                                 <binding destination="46" name="predicate2" keyPath="filterPredicate" previousBinding="1859" id="1860">
                                                     <dictionary key="options">
                                                         <string key="NSDisplayName">To</string>
@@ -858,12 +865,6 @@
                                                         <string key="NSPredicateFormat">patientName contains[c] $value</string>
                                                     </dictionary>
                                                 </binding>
-                                                <binding destination="46" name="predicate" keyPath="filterPredicate" id="1859">
-                                                    <dictionary key="options">
-                                                        <string key="NSDisplayName">All</string>
-                                                        <string key="NSPredicateFormat">(originName contains[c] $value) or (studyName contains[c] $value) or (patientName contains[c] $value) or (message contains[c] $value)</string>
-                                                    </dictionary>
-                                                </binding>
                                             </connections>
                                         </searchField>
                                         <button verticalHuggingPriority="750" tag="3" id="1205">
@@ -883,14 +884,14 @@
                             <tabViewItem label="Web Server" identifier="Item 3" id="340">
                                 <view key="view" id="341">
                                     <rect key="frame" x="10" y="25" width="1117" height="461"/>
-                                    <autoresizingMask key="autoresizingMask"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <scrollView autohidesScrollers="YES" horizontalLineScroll="16" horizontalPageScroll="0.0" verticalLineScroll="16" verticalPageScroll="0.0" usesPredominantAxisScrolling="NO" id="275">
                                             <rect key="frame" x="5" y="5" width="1107" height="422"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <clipView key="contentView" id="LUd-ds-shq">
                                                 <rect key="frame" x="1" y="17" width="1105" height="404"/>
-                                                <autoresizingMask key="autoresizingMask"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="none" alternatingRowBackgroundColors="YES" autosaveName="LogTable4" rowHeight="14" headerView="279" id="276" customClass="LogTableView">
                                                         <rect key="frame" x="0.0" y="0.0" width="1105" height="404"/>
@@ -1031,11 +1032,11 @@
                                                 </subviews>
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </clipView>
-                                            <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" id="278">
+                                            <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="278">
                                                 <rect key="frame" x="1" y="394" width="1066" height="15"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
-                                            <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" id="277">
+                                            <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="277">
                                                 <rect key="frame" x="1067" y="17" width="15" height="377"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
@@ -1053,12 +1054,12 @@
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                             <connections>
-                                                <binding destination="311" name="displayPatternValue1" keyPath="selection.@count" id="329">
+                                                <binding destination="311" name="displayPatternValue2" keyPath="arrangedObjects.@count" previousBinding="329" id="330">
                                                     <dictionary key="options">
                                                         <string key="NSDisplayPattern">%{value1}@ out of %{value2}@</string>
                                                     </dictionary>
                                                 </binding>
-                                                <binding destination="311" name="displayPatternValue2" keyPath="arrangedObjects.@count" previousBinding="329" id="330">
+                                                <binding destination="311" name="displayPatternValue1" keyPath="selection.@count" id="329">
                                                     <dictionary key="options">
                                                         <string key="NSDisplayPattern">%{value1}@ out of %{value2}@</string>
                                                     </dictionary>
@@ -1074,6 +1075,12 @@
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </searchFieldCell>
                                             <connections>
+                                                <binding destination="311" name="predicate" keyPath="filterPredicate" id="1854">
+                                                    <dictionary key="options">
+                                                        <string key="NSDisplayName">All</string>
+                                                        <string key="NSPredicateFormat">(originName contains[c] $value) or (studyName contains[c] $value) or (patientName contains[c] $value) or (message contains[c] $value)</string>
+                                                    </dictionary>
+                                                </binding>
                                                 <binding destination="311" name="predicate2" keyPath="filterPredicate" previousBinding="1854" id="1855">
                                                     <dictionary key="options">
                                                         <string key="NSDisplayName">Hostname</string>
@@ -1096,12 +1103,6 @@
                                                     <dictionary key="options">
                                                         <string key="NSDisplayName">What</string>
                                                         <string key="NSPredicateFormat">message contains[c] $value</string>
-                                                    </dictionary>
-                                                </binding>
-                                                <binding destination="311" name="predicate" keyPath="filterPredicate" id="1854">
-                                                    <dictionary key="options">
-                                                        <string key="NSDisplayName">All</string>
-                                                        <string key="NSPredicateFormat">(originName contains[c] $value) or (studyName contains[c] $value) or (patientName contains[c] $value) or (message contains[c] $value)</string>
                                                     </dictionary>
                                                 </binding>
                                             </connections>
