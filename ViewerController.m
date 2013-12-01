@@ -7521,6 +7521,19 @@ static int avoidReentryRefreshDatabase = 0;
 	[seriesView selectFirstTilingView];
 }
 
+- (BOOL) parallelToViewer: (ViewerController*) v
+{
+    float orientA[9], orientB[9];
+    
+    [imageView.curDCM orientation:orientA];
+    [v.imageView.curDCM orientation:orientB];
+    
+    if( [DCMView angleBetweenVector: orientA+6 andVector:orientB+6] < PARALLELPLANETOLERANCE)
+        return YES;
+    else
+        return NO;
+}
+
 -(void) changeImageData:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v :(BOOL) newViewerWindow
 {
 	if( windowWillClose) return;
@@ -7901,6 +7914,56 @@ static int avoidReentryRefreshDatabase = 0;
                                             [imageView setIndex: index];
                                             [self adjustSlider];
                                             keepFusion = YES;
+                                        }
+                                    }
+                                }
+                            }
+                            else if( nonZeroVector) // Try to find another viewer, of the same study, with same orientation
+                            {
+                                for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+                                {
+                                    if( v != self && v.isDataVolumic && [v.studyInstanceUID isEqualToString: self.studyInstanceUID] && [self parallelToViewer: v] && v.imageView.curImage != 0)
+                                    {
+                                        previousLocation = [v.currentImage.sliceLocation floatValue];
+                                        
+                                        float start = [[[fileList[ 0] objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue];
+                                        float end = [[[fileList[ 0] lastObject] valueForKey:@"sliceLocation"] floatValue];
+                                        if( start > end)
+                                        {
+                                            float temp = end;
+                                            
+                                            end = start;
+                                            start = temp;
+                                        }
+                                        
+                                        if( previousLocation >= start && previousLocation <= end)
+                                        {
+                                            long	index = 0;
+                                            float   smallestdiff = -1, fdiff;
+                                            
+                                            for( int i = 0; i < [fileList[ 0] count]; i++)
+                                            {
+                                                float slicePosition = [[[fileList[ 0] objectAtIndex: i] valueForKey:@"sliceLocation"] floatValue];
+                                                
+                                                fdiff = fabs( slicePosition - previousLocation);
+                                                
+                                                if( fdiff < smallestdiff || smallestdiff == -1)
+                                                {
+                                                    smallestdiff = fdiff;
+                                                    index = i;
+                                                }
+                                            }
+                                            
+                                            if( index != 0)
+                                            {
+                                                if( wasFlipped)
+                                                    index = (long)[fileList[ 0] count] -1 -index;
+                                                [imageView setIndex: index];
+                                                [self adjustSlider];
+                                                keepFusion = YES;
+                                                
+                                                break;
+                                            }
                                         }
                                     }
                                 }

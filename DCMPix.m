@@ -11563,6 +11563,14 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	}
 }
 
+- (void) getSliceCenter3DCoords: (float*) center
+{
+    if( center == nil)
+        return;
+    
+    [self convertPixX: self.pwidth/2 pixY: self.pheight/2 toDICOMCoords: center];
+}
+
 - (void) convertDICOMCoords: (float*) dc toSliceCoords: (float*) sc
 {
 	[self convertDICOMCoords: dc toSliceCoords:  sc pixelCenter: YES];

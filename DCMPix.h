@@ -448,6 +448,8 @@ Note setter is different to not break existing usage. :-( */
 - (void) convertPixX: (float) x pixY: (float) y toDICOMCoords: (float*) d;
 - (void) convertPixX: (float) x pixY: (float) y toDICOMCoords: (float*) d pixelCenter: (BOOL) pixelCenter;
 
+- (void) getSliceCenter3DCoords: (float*) center;
+
 /** Utility methods to convert user supplied pixel coords to DICOM patient coords double d[3] (in mm)
 * using current slice location and orientation
 */

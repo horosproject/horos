@@ -305,6 +305,8 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
     GLString *studyDateBox;
     
     int annotationType;
+    
+    NSArray *cleanedOutDcmPixArray;
 }
 
 @property NSRect drawingFrameRect;

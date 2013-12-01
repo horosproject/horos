@@ -201,7 +201,7 @@ Press Delete key to delete a route</string>
                 <rect key="frame" x="0.0" y="0.0" width="586" height="472"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="357">
+                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="357">
                         <rect key="frame" x="16" y="284" width="535" height="58"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -427,7 +427,7 @@ Gw
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="286">
-                        <rect key="frame" x="81" y="255" width="88" height="11"/>
+                        <rect key="frame" x="81" y="265" width="88" height="11"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="(Image Table Level)" id="308">
                             <font key="font" metaFont="miniSystem"/>
@@ -436,7 +436,7 @@ Gw
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="287">
-                        <rect key="frame" x="71" y="214" width="98" height="33"/>
+                        <rect key="frame" x="71" y="224" width="98" height="33"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" id="309">
                             <font key="font" metaFont="miniSystem"/>
@@ -571,7 +571,6 @@ RW1wdHkgZmlsdGVyIHdpbGwgcm91dGUD4oCoQUxMIGltYWdlcwo
                     <constraint firstItem="240" firstAttribute="top" secondItem="239" secondAttribute="top" constant="20" symbolic="YES" id="8nw-CT-IQF"/>
                     <constraint firstItem="249" firstAttribute="trailing" secondItem="251" secondAttribute="trailing" id="8tb-J9-8Ef"/>
                     <constraint firstItem="339" firstAttribute="centerY" secondItem="341" secondAttribute="centerY" id="Ab5-7h-Sv5"/>
-                    <constraint firstItem="286" firstAttribute="top" secondItem="357" secondAttribute="bottom" constant="18" id="CFm-ZM-sWI"/>
                     <constraint firstItem="287" firstAttribute="top" secondItem="286" secondAttribute="bottom" constant="8" symbolic="YES" id="CLS-XS-j7G"/>
                     <constraint firstItem="252" firstAttribute="baseline" secondItem="253" secondAttribute="baseline" id="Dky-DD-U9X"/>
                     <constraint firstItem="243" firstAttribute="centerY" secondItem="241" secondAttribute="centerY" id="Dsr-cI-T4b"/>
@@ -582,7 +581,7 @@ RW1wdHkgZmlsdGVyIHdpbGwgcm91dGUD4oCoQUxMIGltYWdlcwo
                     <constraint firstItem="323" firstAttribute="trailing" secondItem="339" secondAttribute="trailing" id="JIL-lo-ugy"/>
                     <constraint firstItem="240" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="239" secondAttribute="leading" constant="16" id="KcB-uG-ap5"/>
                     <constraint firstItem="255" firstAttribute="top" secondItem="254" secondAttribute="top" id="PBB-gs-hxj"/>
-                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="357" secondAttribute="trailing" priority="696" constant="20" id="SDi-I1-yFh"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="357" secondAttribute="trailing" constant="20" id="SDi-I1-yFh"/>
                     <constraint firstItem="243" firstAttribute="leading" secondItem="241" secondAttribute="trailing" constant="13" id="T1V-x4-hAi"/>
                     <constraint firstItem="249" firstAttribute="top" secondItem="256" secondAttribute="bottom" constant="8" symbolic="YES" id="VNF-h8-ezS"/>
                     <constraint firstItem="252" firstAttribute="leading" secondItem="253" secondAttribute="trailing" constant="20" id="Vqx-pD-H0r"/>
@@ -596,6 +595,7 @@ RW1wdHkgZmlsdGVyIHdpbGwgcm91dGUD4oCoQUxMIGltYWdlcwo
                     <constraint firstItem="241" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="239" secondAttribute="leading" constant="16" id="epZ-kg-pKw"/>
                     <constraint firstAttribute="trailing" secondItem="248" secondAttribute="trailing" constant="20" symbolic="YES" id="fTR-pT-rA6"/>
                     <constraint firstItem="352" firstAttribute="baseline" secondItem="354" secondAttribute="baseline" id="jZI-2B-slf"/>
+                    <constraint firstItem="251" firstAttribute="top" secondItem="286" secondAttribute="top" id="k2W-5a-U4I"/>
                     <constraint firstAttribute="bottom" secondItem="253" secondAttribute="bottom" constant="20" symbolic="YES" id="l27-hc-ods"/>
                     <constraint firstItem="251" firstAttribute="top" secondItem="357" secondAttribute="bottom" constant="8" symbolic="YES" id="m0A-fh-00L"/>
                     <constraint firstItem="325" firstAttribute="baseline" secondItem="320" secondAttribute="baseline" id="npe-gq-J6G"/>

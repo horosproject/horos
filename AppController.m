@@ -4269,20 +4269,13 @@ static BOOL initialized = NO;
 		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"EncryptCD"];
 		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"encryptForExport"];
 		
-		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideNoMountainLionWarning4"] == NO)
-		{
-			NSAlert* alert = [[NSAlert new] autorelease];
-			[alert setMessageText: NSLocalizedString( @"Mac OS Version", nil)];
-			[alert setInformativeText: NSLocalizedString( @"You should upgrade to MacOS 10.8 or higher, for better performances, more features and more stability.", nil)];
-			[alert setShowsSuppressionButton:YES ];
-			[alert addButtonWithTitle: NSLocalizedString( @"Continue", nil)];
-            [alert addButtonWithTitle: NSLocalizedString( @"Upgrade", nil)];
-			if( [alert runModal] == NSAlertSecondButtonReturn)
-                [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.apple.com/osx/"]];
-            
-			if ([[alert suppressionButton] state] == NSOnState)
-				[[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"hideNoMountainLionWarning4"];
-		}
+        NSAlert* alert = [[NSAlert new] autorelease];
+        [alert setMessageText: NSLocalizedString( @"Mac OS Version", nil)];
+        [alert setInformativeText: NSLocalizedString( @"You should upgrade to MacOS 10.8 or higher, for better performances, more features and more stability.", nil)];
+        [alert addButtonWithTitle: NSLocalizedString( @"Continue", nil)];
+        [alert addButtonWithTitle: NSLocalizedString( @"Upgrade", nil)];
+        if( [alert runModal] == NSAlertSecondButtonReturn)
+            [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.apple.com/osx/"]];
 	}
 	
 	[self initTilingWindows];

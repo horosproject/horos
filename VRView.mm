@@ -2085,16 +2085,20 @@ public:
 			[self setWLWW: [[dict objectForKey:@"WL"] floatValue] :[[dict objectForKey:@"WW"] floatValue]];
 		
 		tempArray = [dict objectForKey:@"CameraPosition"];
-		aCamera->SetPosition( [[tempArray objectAtIndex:0] floatValue]*ratio, [[tempArray objectAtIndex:1] floatValue]*ratio, [[tempArray objectAtIndex:2] floatValue]*ratio);
+		if( aCamera)
+            aCamera->SetPosition( [[tempArray objectAtIndex:0] floatValue]*ratio, [[tempArray objectAtIndex:1] floatValue]*ratio, [[tempArray objectAtIndex:2] floatValue]*ratio);
 
 		tempArray = [dict objectForKey:@"CameraViewUp"];
-		aCamera->SetViewUp( [[tempArray objectAtIndex:0] floatValue]*ratio, [[tempArray objectAtIndex:1] floatValue]*ratio, [[tempArray objectAtIndex:2] floatValue]*ratio);
+		if( aCamera)
+            aCamera->SetViewUp( [[tempArray objectAtIndex:0] floatValue]*ratio, [[tempArray objectAtIndex:1] floatValue]*ratio, [[tempArray objectAtIndex:2] floatValue]*ratio);
 
 		tempArray = [dict objectForKey:@"CameraFocalPoint"];
-		aCamera->SetFocalPoint( [[tempArray objectAtIndex:0] floatValue]*ratio, [[tempArray objectAtIndex:1] floatValue]*ratio, [[tempArray objectAtIndex:2] floatValue]*ratio);
+		if( aCamera)
+            aCamera->SetFocalPoint( [[tempArray objectAtIndex:0] floatValue]*ratio, [[tempArray objectAtIndex:1] floatValue]*ratio, [[tempArray objectAtIndex:2] floatValue]*ratio);
 		
 		tempArray = [dict objectForKey:@"CameraClipping"];
-		aCamera->SetClippingRange( [[tempArray objectAtIndex:0] floatValue], [[tempArray objectAtIndex:1] floatValue]);
+		if( aCamera)
+            aCamera->SetClippingRange( [[tempArray objectAtIndex:0] floatValue], [[tempArray objectAtIndex:1] floatValue]);
 		
 		if( [dict objectForKey:@"Projection"])
 			[self setProjectionMode: [[dict objectForKey:@"Projection"] intValue]];
@@ -2110,11 +2114,11 @@ public:
 	}
 	else
 	{
-		if( renderingMode == 0)				// volume rendering
+		if( renderingMode == 0 && volumeProperty)				// volume rendering
 			volumeProperty->SetShade( [[NSUserDefaults standardUserDefaults] boolForKey: @"defaultShading"]);
 	}
     
-    if( volume->GetMapper() == nil)
+    if( volume && volume->GetMapper() == nil)
         self.engine = [[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"];
 }
 

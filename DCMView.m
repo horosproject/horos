@@ -2345,6 +2345,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         
         [studyDateBox release];
         studyDateBox = nil;
+        
+        [cleanedOutDcmPixArray release];
+        cleanedOutDcmPixArray = nil;
     }
     @catch (NSException * e)
 	{
@@ -7669,23 +7672,31 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
     BOOL vParallel = NO;
     
-    NSArray* pixes = [[self class] cleanedOutDcmPixArray:dcmPixList];
+    if( cleanedOutDcmPixArray == nil)
+        cleanedOutDcmPixArray = [[DCMView cleanedOutDcmPixArray:dcmPixList] retain];
     
-	for( int i = 0; i < [pixes count]; i++)
-	{
-		DCMPix* pix = [pixes objectAtIndex:i];
-        
-        [pix orientation: vectors];
-        
-        BOOL currParallel = NO;
-        
+    BOOL currParallel = NO;
+    if( volumicData == 1) // All planes have the same orientation : we can compute currParallel only once !
+    {
+        [[cleanedOutDcmPixArray lastObject] orientation: vectors];
         if (parto && [DCMView angleBetweenVector: parto+6 andVector:vectors+6] < PARALLELPLANETOLERANCE) // are parallel!
             currParallel = YES;
-		
-		orig[ 0] = [pix originX];
-		orig[ 1] = [pix originY];
-		orig[ 2] = [pix originZ];
-		
+    }
+    
+    int i = 0;
+	for( DCMPix* pix in cleanedOutDcmPixArray)
+    {
+        if( volumicData != 1)
+        {
+            [pix orientation: vectors];
+            
+            if (parto && [DCMView angleBetweenVector: parto+6 andVector:vectors+6] < PARALLELPLANETOLERANCE) // are parallel!
+                currParallel = YES;
+            else
+                currParallel = NO;
+		}
+        
+        [pix origin: orig];
 		tempDistance = [DCMView pbase_Plane: pt :orig :&(vectors[ 6]) :locationTemp];
 		
 		if ((!vParallel && currParallel) || (currParallel == vParallel && tempDistance < distance))
@@ -7702,6 +7713,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			distance = tempDistance;
 			ii = i;
 		}
+        
+        i++;
 	}
 	
 	if( ii != -1 )
@@ -8119,7 +8132,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 								if( volumicData == -1)
 									volumicData = [[self windowController] isDataVolumicIn4D: YES checkEverythingLoaded: YES tryToCorrect: NO];
 								
-								if( volumicSeries == YES && [dcmPixList count] > 2 && volumicData == YES)
+								if( volumicSeries == YES && [dcmPixList count] > 2 && volumicData == 1)
 								{
 									double interval3d;
 									double xd = [[dcmPixList objectAtIndex: 2] originX] - [[dcmPixList objectAtIndex: 1] originX]; // To avoid the problem with 1st scout image
