@@ -1668,6 +1668,8 @@ static NSConditionLock *threadLock = nil;
 			[cachedFilesForDatabaseOutlineSelectionTreeObjects release]; cachedFilesForDatabaseOutlineSelectionTreeObjects = nil;
 			[cachedFilesForDatabaseOutlineSelectionIndex release]; cachedFilesForDatabaseOutlineSelectionIndex = nil;
 			
+            self.comparativeStudies = nil;
+            
             @synchronized (self)
             {
                 _cachedAlbumsContext = nil;
@@ -1712,7 +1714,8 @@ static NSConditionLock *threadLock = nil;
 			@try
             {
 				[self setDBWindowTitle];
-				
+				[self refreshPACSOnDemandResults: self];
+                
 				[databaseOutline reloadData];
 				[albumTable reloadData];
 				
@@ -10856,13 +10859,13 @@ static BOOL needToRezoom;
 //NSTableView delegate and datasource
 - (NSInteger)numberOfRowsInTableView: (NSTableView *)aTableView
 {	
-	if ([aTableView isEqual:albumTable])
+	if ([aTableView isEqual:albumTable] && _database)
 	{
 		//if( displayEmptyDatabase) return 0;
 		return [self.albumArray count];
 	}
     
-    if ([aTableView isEqual: comparativeTable])
+    if ([aTableView isEqual: comparativeTable] && _database)
 	{
 		//if( displayEmptyDatabase) return 0;
 		return [comparativeStudies count];
@@ -10921,7 +10924,7 @@ static BOOL needToRezoom;
             [cell setRightText:noOfStudies];
         }
         
-        if ([aTableView isEqual: comparativeTable])
+        if ([aTableView isEqual: comparativeTable] && _database)
         {
             ComparativeCell *cell = (ComparativeCell*) aCell;
             
@@ -10931,7 +10934,7 @@ static BOOL needToRezoom;
                 BOOL local = NO;
                 
                 id study = [comparativeStudies objectAtIndex: rowIndex];
-            
+                
                 if( [study isKindOfClass: [DicomStudy class]])
                     local = YES;
             

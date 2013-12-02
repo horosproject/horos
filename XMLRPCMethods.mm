@@ -37,6 +37,7 @@
 #import "NSManagedObject+N2.h"
 #import "Notifications.h"
 #import "dcdeftag.h"
+#import "WaitRendering.h"
 
 @interface XMLRPCInterfaceConnection : N2XMLRPCConnection
 
@@ -293,99 +294,122 @@
  Response: {error: "0", elements: array of elements corresponding to the request}
  */
 - (NSDictionary*)DisplayStudy:(NSDictionary*)paramDict error:(NSError**)error {
-    NSMutableArray* subpredicates = [NSMutableArray array];
     
-    NSString* patientID = [paramDict valueForKey:@"PatientID"];
-    if (patientID.length) [subpredicates addObject:[NSPredicate predicateWithFormat:@"patientID == %@", patientID]];
+    WaitRendering *wait = nil;
     
-    NSString* studyInstanceUID = [paramDict valueForKey:@"StudyInstanceUID"];
-    if (studyInstanceUID.length) [subpredicates addObject:[NSPredicate predicateWithFormat:@"studyInstanceUID == %@", studyInstanceUID]];
+    if( [NSThread isMainThread])
+        wait = [[[WaitRendering alloc] init: NSLocalizedString( @"Looking for DICOM files...", nil)] autorelease];
     
-    NSString* accessionNumber = [paramDict valueForKey:@"AccessionNumber"];
-    if (accessionNumber.length) [subpredicates addObject:[NSPredicate predicateWithFormat:@"accessionNumber == %@", accessionNumber]];
+    [wait showWindow:self];
     
-    NSString* studyID = [paramDict valueForKey:@"StudyID"];
-    if (studyID.length) [subpredicates addObject:[NSPredicate predicateWithFormat:@"id == %@", studyID]];
-
-    if (!subpredicates.count)
-        ReturnWithCode(400); // Bad Request
-    
-    NSError* lerror = nil;
-    if (!error)
-        error = &lerror;
-    
-    NSPredicate* predicate = [NSCompoundPredicate andPredicateWithSubpredicates:subpredicates];
-    
-    NSArray* iobjects = [[self.database independentDatabase] objectsForEntity:@"Study" predicate:predicate error:error];
-    BOOL downloading = NO;
-    if (!iobjects.count)
+    @try
     {
-        if ([NSUserDefaults.standardUserDefaults boolForKey:@"XMLRPCWithPOD"] && [NSUserDefaults.standardUserDefaults boolForKey:@"searchForComparativeStudiesOnDICOMNodes"]) {
-            NSMutableDictionary* keys = [NSMutableDictionary dictionary];
-            
-            if (patientID.length)
-                [keys setObject:patientID forKey:@"PatientID"];
-            if (studyInstanceUID.length)
-                [keys setObject:studyInstanceUID forKey:@"StudyInstanceUID"];
-            if (accessionNumber.length)
-                [keys setObject:accessionNumber forKey:@"AccessionNumber"];
-            if (studyID.length)
-                [keys setObject:studyID forKey:@"StudyID"];
-            
-            if (keys.count) {
-                NSMutableArray* dicomNodes = [NSMutableArray array];
-                NSArray* allDicomNodes = [DCMNetServiceDelegate DICOMServersList];
-                for (NSDictionary* si in [NSUserDefaults.standardUserDefaults arrayForKey:@"comparativeSearchDICOMNodes"])
-                    for (NSDictionary* di in allDicomNodes)
-                        if ([[si objectForKey:@"AETitle"] isEqualToString:[di objectForKey:@"AETitle"]] &&
-                            [[si objectForKey:@"name"] isEqualToString:[di objectForKey:@"Description"]] &&
-                            [[si objectForKey:@"AddressAndPort"] isEqualToString:[NSString stringWithFormat:@"%@:%@", [di valueForKey:@"Address"], [di valueForKey:@"Port"]]])
-                        {
-                            [dicomNodes addObject:di];
-                        }
+        NSMutableArray* subpredicates = [NSMutableArray array];
+        
+        NSString* patientID = [paramDict valueForKey:@"PatientID"];
+        if( patientID == nil) patientID = [paramDict valueForKey:@"patientID"];
+        if (patientID.length) [subpredicates addObject:[NSPredicate predicateWithFormat:@"patientID == %@", patientID]];
+        
+        NSString* studyInstanceUID = [paramDict valueForKey:@"StudyInstanceUID"];
+        if( studyInstanceUID == nil) studyInstanceUID = [paramDict valueForKey:@"studyInstanceUID"];
+        if (studyInstanceUID.length) [subpredicates addObject:[NSPredicate predicateWithFormat:@"studyInstanceUID == %@", studyInstanceUID]];
+        
+        NSString* accessionNumber = [paramDict valueForKey:@"AccessionNumber"];
+        if( accessionNumber == nil) accessionNumber = [paramDict valueForKey:@"accessionNumber"];
+        if( accessionNumber.length) [subpredicates addObject:[NSPredicate predicateWithFormat:@"accessionNumber == %@", accessionNumber]];
+        
+        NSString* studyID = [paramDict valueForKey:@"StudyID"];
+        if( studyID == nil) studyID = [paramDict valueForKey:@"studyID"];
+        if (studyID.length) [subpredicates addObject:[NSPredicate predicateWithFormat:@"id == %@", studyID]];
+
+        if (!subpredicates.count)
+            ReturnWithCode(400); // Bad Request
+        
+        NSError* lerror = nil;
+        if (!error)
+            error = &lerror;
+        
+        NSPredicate* predicate = [NSCompoundPredicate andPredicateWithSubpredicates:subpredicates];
+        
+        DicomDatabase *idb = [NSThread isMainThread] ? self.database : [self.database independentDatabase];
+        
+        NSArray* iobjects = [idb objectsForEntity:@"Study" predicate:predicate error:error];
+        BOOL downloading = NO;
+        if (!iobjects.count)
+        {
+            if ([NSUserDefaults.standardUserDefaults boolForKey:@"XMLRPCWithPOD"] && [NSUserDefaults.standardUserDefaults boolForKey:@"searchForComparativeStudiesOnDICOMNodes"]) {
+                NSMutableDictionary* keys = [NSMutableDictionary dictionary];
                 
-                NSArray *studies = [QueryController queryStudiesForFilters: keys servers: dicomNodes showErrors: NO];
+                if (patientID.length)
+                    [keys setObject:patientID forKey:@"PatientID"];
+                if (studyInstanceUID.length)
+                    [keys setObject:studyInstanceUID forKey:@"StudyInstanceUID"];
+                if (accessionNumber.length)
+                    [keys setObject:accessionNumber forKey:@"AccessionNumber"];
+                if (studyID.length)
+                    [keys setObject:studyID forKey:@"StudyID"];
                 
-                if( studies.count)
-                {
-                    [NSThread detachNewThreadSelector: @selector( _PACSOnDemandRetrieve:) toTarget: self withObject: studies];
+                if (keys.count) {
+                    NSMutableArray* dicomNodes = [NSMutableArray array];
+                    NSArray* allDicomNodes = [DCMNetServiceDelegate DICOMServersList];
+                    for (NSDictionary* si in [NSUserDefaults.standardUserDefaults arrayForKey:@"comparativeSearchDICOMNodes"])
+                        for (NSDictionary* di in allDicomNodes)
+                            if ([[si objectForKey:@"AETitle"] isEqualToString:[di objectForKey:@"AETitle"]] &&
+                                [[si objectForKey:@"name"] isEqualToString:[di objectForKey:@"Description"]] &&
+                                [[si objectForKey:@"AddressAndPort"] isEqualToString:[NSString stringWithFormat:@"%@:%@", [di valueForKey:@"Address"], [di valueForKey:@"Port"]]])
+                            {
+                                [dicomNodes addObject:di];
+                            }
                     
-                    NSTimeInterval dateStart = [NSDate timeIntervalSinceReferenceDate];
-                    DicomDatabase *db = [self.database independentDatabase];
-                    do
+                    NSArray *studies = [QueryController queryStudiesForFilters: keys servers: dicomNodes showErrors: NO];
+                    
+                    if( studies.count)
                     {
-                        [db importFilesFromIncomingDir];
-                        [NSThread sleepForTimeInterval: 0.3];
+                        [NSThread detachNewThreadSelector: @selector( _PACSOnDemandRetrieve:) toTarget: self withObject: studies];
                         
-                        // And find the study locally
-                        iobjects = [db objectsForEntity:@"Study" predicate:predicate error:error];
+                        NSTimeInterval dateStart = [NSDate timeIntervalSinceReferenceDate];
+                        DicomDatabase *db = [NSThread isMainThread] ? self.database : [self.database independentDatabase];;
+                        do
+                        {
+                            [db importFilesFromIncomingDir];
+                            [NSThread sleepForTimeInterval: 0.3];
+                            
+                            // And find the study locally
+                            iobjects = [db objectsForEntity:@"Study" predicate:predicate error:error];
+                            
+                            DicomStudy *s = [iobjects lastObject];
+                            if( s.imageSeries.count == 0)
+                                iobjects = nil;
+                        }
+                        while( [iobjects count] == 0 && [NSDate timeIntervalSinceReferenceDate] - dateStart < 20);
                         
-                        DicomStudy *s = [iobjects lastObject];
-                        if( s.imageSeries.count == 0)
-                            iobjects = nil;
+                        downloading = YES;
                     }
-                    while( [iobjects count] == 0 && [NSDate timeIntervalSinceReferenceDate] - dateStart < 20);
-                    
-                    downloading = YES;
                 }
             }
         }
-    }
-    
-    if (error && *error)
-        ReturnWithErrorValue((*error).code);
-    if (iobjects.count == 0)
-        ReturnWithErrorValue(-1);
+        
+        if (error && *error)
+            ReturnWithErrorValue((*error).code);
+        if (iobjects.count == 0)
+            ReturnWithErrorValue(-1);
 
-    if( downloading)
-        [NSThread detachNewThreadSelector: @selector(_onMainThreadOpenWithDelayObjectsWithIDs:) toTarget:self withObject: [iobjects valueForKey:@"objectID"]];
-    else
-        [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjectsWithIDs:) withObject:[iobjects valueForKey:@"objectID"] waitUntilDone:NO];
-    
-    NSMutableArray* elements = [NSMutableArray array];
-    for (NSManagedObject* iobj in iobjects)
-        [elements addObject:[[self class] dictionaryForObject:iobj]];
-    ReturnWithErrorValueAndObjectForKey(0, elements, @"elements");
+        if( downloading)
+            [NSThread detachNewThreadSelector: @selector(_onMainThreadOpenWithDelayObjectsWithIDs:) toTarget:self withObject: [iobjects valueForKey:@"objectID"]];
+        else
+            [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjectsWithIDs:) withObject:[iobjects valueForKey:@"objectID"] waitUntilDone:NO];
+        
+        NSMutableArray* elements = [NSMutableArray array];
+        for (NSManagedObject* iobj in iobjects)
+            [elements addObject:[[self class] dictionaryForObject:iobj]];
+        ReturnWithErrorValueAndObjectForKey(0, elements, @"elements");
+    }
+    @catch (NSException *e) {
+        N2LogException( e);
+    }
+    @finally {
+        [wait close];
+    }
 }
 
 /**
@@ -463,116 +487,133 @@
 
  Response: {error: "0", elements: array of elements corresponding to the request}
  */
--(NSDictionary*)FindObject:(NSDictionary*)paramDict error:(NSError**)error {
-    NSString* request = [paramDict valueForKey:@"request"];
-    NSString* entityName = [paramDict valueForKey:@"table"];
-    NSString* command = [paramDict valueForKey:@"execute"];
+-(NSDictionary*)FindObject:(NSDictionary*)paramDict error:(NSError**)error
+{
+    WaitRendering *wait = nil;
     
-    if (!request.length || !entityName.length)
-        ReturnWithCode(400); // Bad Request
+    if( [NSThread isMainThread])
+        wait = [[[WaitRendering alloc] init: NSLocalizedString( @"Looking for DICOM files...", nil)] autorelease];
     
-    NSError* lerror = nil;
-    if (!error)
-        error = &lerror;
+    [wait showWindow:self];
     
-    DicomDatabase* idatabase = [self.database independentDatabase];
-    
-    NSPredicate* predicate = [NSPredicate predicateWithFormat:request];
-    
-    NSArray* iobjects = [idatabase objectsForEntity:entityName predicate:predicate error:error];
-    BOOL downloading = NO;
-//  NSLog(@"FindObject %@ ||| %@ ||| %@ ||| %d", entityName, request, command, (int)iobjects.count);
-    
-    if (!iobjects.count && [entityName isEqualToString: @"Study"])
+    @try
     {
-        if ([command isEqualToString:@"Open"] && [NSUserDefaults.standardUserDefaults boolForKey:@"XMLRPCWithPOD"] && [NSUserDefaults.standardUserDefaults boolForKey:@"searchForComparativeStudiesOnDICOMNodes"]) {
-            NSMutableArray* predicates = [NSMutableArray array];
-            if ([predicate isKindOfClass:[NSComparisonPredicate class]])
-                [predicates addObject:predicate];
-            if ([predicate isKindOfClass:[NSCompoundPredicate class]] && [(id)predicate compoundPredicateType] == NSAndPredicateType)
-                for (id subpredicate in [(id)predicate subpredicates])
-                    if ([subpredicate isKindOfClass:[NSComparisonPredicate class]])
-                        [predicates addObject:subpredicate];
+        NSString* request = [paramDict valueForKey:@"request"];
+        NSString* entityName = [paramDict valueForKey:@"table"];
+        NSString* command = [paramDict valueForKey:@"execute"];
+        
+        if (!request.length || !entityName.length)
+            ReturnWithCode(400); // Bad Request
+        
+        NSError* lerror = nil;
+        if (!error)
+            error = &lerror;
+        
+        DicomDatabase* idatabase = [NSThread isMainThread] ? self.database : [self.database independentDatabase];
+        
+        NSPredicate* predicate = [NSPredicate predicateWithFormat:request];
+        
+        NSArray* iobjects = [idatabase objectsForEntity:entityName predicate:predicate error:error];
+        BOOL downloading = NO;
+    //  NSLog(@"FindObject %@ ||| %@ ||| %@ ||| %d", entityName, request, command, (int)iobjects.count);
+        
+        if (!iobjects.count && [entityName isEqualToString: @"Study"])
+        {
+            if ([command isEqualToString:@"Open"] && [NSUserDefaults.standardUserDefaults boolForKey:@"XMLRPCWithPOD"] && [NSUserDefaults.standardUserDefaults boolForKey:@"searchForComparativeStudiesOnDICOMNodes"]) {
+                NSMutableArray* predicates = [NSMutableArray array];
+                if ([predicate isKindOfClass:[NSComparisonPredicate class]])
+                    [predicates addObject:predicate];
+                if ([predicate isKindOfClass:[NSCompoundPredicate class]] && [(id)predicate compoundPredicateType] == NSAndPredicateType)
+                    for (id subpredicate in [(id)predicate subpredicates])
+                        if ([subpredicate isKindOfClass:[NSComparisonPredicate class]])
+                            [predicates addObject:subpredicate];
 
-            NSMutableDictionary* keys = [NSMutableDictionary dictionary];
-            for (NSComparisonPredicate* p in predicates)
-                if (p.comparisonPredicateModifier == NSDirectPredicateModifier && p.predicateOperatorType == NSEqualToPredicateOperatorType) {
-                    if (p.leftExpression.expressionType == NSKeyPathExpressionType && p.rightExpression.expressionType == NSConstantValueExpressionType)
-                        [keys setObject:p.rightExpression.constantValue forKey:p.leftExpression.keyPath];
-                    else if (p.rightExpression.expressionType == NSKeyPathExpressionType && p.leftExpression.expressionType == NSConstantValueExpressionType)
-                        [keys setObject:p.leftExpression.constantValue forKey:p.rightExpression.keyPath];
-                }
-            
-            if (keys.count)
-            {
-                NSMutableArray* dicomNodes = [NSMutableArray array];
-                NSArray* allDicomNodes = [DCMNetServiceDelegate DICOMServersList];
-                for (NSDictionary* si in [NSUserDefaults.standardUserDefaults arrayForKey:@"comparativeSearchDICOMNodes"])
-                    for (NSDictionary* di in allDicomNodes)
-                        if ([[si objectForKey:@"AETitle"] isEqualToString:[di objectForKey:@"AETitle"]] &&
-                            [[si objectForKey:@"name"] isEqualToString:[di objectForKey:@"Description"]] &&
-                            [[si objectForKey:@"AddressAndPort"] isEqualToString:[NSString stringWithFormat:@"%@:%@", [di valueForKey:@"Address"], [di valueForKey:@"Port"]]])
-                        {
-                            [dicomNodes addObject:di];
-                        }
-                
-                NSArray *studies = [QueryController queryStudiesForFilters: keys servers: dicomNodes showErrors: NO];
-                
-                if( studies.count)
-                {
-                    [NSThread detachNewThreadSelector: @selector( _PACSOnDemandRetrieve:) toTarget: self withObject: studies];
-                    
-                    NSTimeInterval dateStart = [NSDate timeIntervalSinceReferenceDate];
-                    DicomDatabase *db = [self.database independentDatabase];
-                    do
-                    {
-                        [db importFilesFromIncomingDir];
-                        [NSThread sleepForTimeInterval: 0.3];
-                        
-                        // And find the study locally
-                        iobjects = [db objectsForEntity:@"Study" predicate:predicate error:error];
-                        
-                        DicomStudy *s = [iobjects lastObject];
-                        if( s.imageSeries.count == 0)
-                            iobjects = nil;
+                NSMutableDictionary* keys = [NSMutableDictionary dictionary];
+                for (NSComparisonPredicate* p in predicates)
+                    if (p.comparisonPredicateModifier == NSDirectPredicateModifier && p.predicateOperatorType == NSEqualToPredicateOperatorType) {
+                        if (p.leftExpression.expressionType == NSKeyPathExpressionType && p.rightExpression.expressionType == NSConstantValueExpressionType)
+                            [keys setObject:p.rightExpression.constantValue forKey:p.leftExpression.keyPath];
+                        else if (p.rightExpression.expressionType == NSKeyPathExpressionType && p.leftExpression.expressionType == NSConstantValueExpressionType)
+                            [keys setObject:p.leftExpression.constantValue forKey:p.rightExpression.keyPath];
                     }
-                    while( [iobjects count] == 0 && [NSDate timeIntervalSinceReferenceDate] - dateStart < 20);
-                    downloading = YES;
+                
+                if (keys.count)
+                {
+                    NSMutableArray* dicomNodes = [NSMutableArray array];
+                    NSArray* allDicomNodes = [DCMNetServiceDelegate DICOMServersList];
+                    for (NSDictionary* si in [NSUserDefaults.standardUserDefaults arrayForKey:@"comparativeSearchDICOMNodes"])
+                        for (NSDictionary* di in allDicomNodes)
+                            if ([[si objectForKey:@"AETitle"] isEqualToString:[di objectForKey:@"AETitle"]] &&
+                                [[si objectForKey:@"name"] isEqualToString:[di objectForKey:@"Description"]] &&
+                                [[si objectForKey:@"AddressAndPort"] isEqualToString:[NSString stringWithFormat:@"%@:%@", [di valueForKey:@"Address"], [di valueForKey:@"Port"]]])
+                            {
+                                [dicomNodes addObject:di];
+                            }
+                    
+                    NSArray *studies = [QueryController queryStudiesForFilters: keys servers: dicomNodes showErrors: NO];
+                    
+                    if( studies.count)
+                    {
+                        [NSThread detachNewThreadSelector: @selector( _PACSOnDemandRetrieve:) toTarget: self withObject: studies];
+                        
+                        NSTimeInterval dateStart = [NSDate timeIntervalSinceReferenceDate];
+                        DicomDatabase *db = [NSThread isMainThread] ? self.database : [self.database independentDatabase];
+                        do
+                        {
+                            [db importFilesFromIncomingDir];
+                            [NSThread sleepForTimeInterval: 0.3];
+                            
+                            // And find the study locally
+                            iobjects = [db objectsForEntity:@"Study" predicate:predicate error:error];
+                            
+                            DicomStudy *s = [iobjects lastObject];
+                            if( s.imageSeries.count == 0)
+                                iobjects = nil;
+                        }
+                        while( [iobjects count] == 0 && [NSDate timeIntervalSinceReferenceDate] - dateStart < 20);
+                        downloading = YES;
+                    }
                 }
             }
         }
-    }
-    
-    if (error && *error)
-        ReturnWithErrorValue((*error).code);
-    if (iobjects.count == 0)
-        ReturnWithErrorValue(-1);
-    
-    if ([command isEqualToString:@"Open"])
-    {
-        if( downloading)
-            [NSThread detachNewThreadSelector: @selector(_onMainThreadOpenWithDelayObjectsWithIDs:) toTarget:self withObject: [iobjects valueForKey:@"objectID"]];
-        else
-            [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjectsWithIDs:) withObject:[iobjects valueForKey:@"objectID"] waitUntilDone:NO];
-    }
-    if ([command isEqualToString:@"Select"])
-        [self performSelectorOnMainThread:@selector(_onMainThreadSelectObjectsWithIDs:) withObject:[iobjects valueForKey:@"objectID"] waitUntilDone:NO];
-    
-    NSMutableArray* elements = [NSMutableArray array];
-    for (NSManagedObject* iobj in iobjects)
-        [elements addObject:[[self class] dictionaryForObject:iobj]];
+        
+        if (error && *error)
+            ReturnWithErrorValue((*error).code);
+        if (iobjects.count == 0)
+            ReturnWithErrorValue(-1);
+        
+        if ([command isEqualToString:@"Open"])
+        {
+            if( downloading)
+                [NSThread detachNewThreadSelector: @selector(_onMainThreadOpenWithDelayObjectsWithIDs:) toTarget:self withObject: [iobjects valueForKey:@"objectID"]];
+            else
+                [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjectsWithIDs:) withObject:[iobjects valueForKey:@"objectID"] waitUntilDone:NO];
+        }
+        if ([command isEqualToString:@"Select"])
+            [self performSelectorOnMainThread:@selector(_onMainThreadSelectObjectsWithIDs:) withObject:[iobjects valueForKey:@"objectID"] waitUntilDone:NO];
+        
+        NSMutableArray* elements = [NSMutableArray array];
+        for (NSManagedObject* iobj in iobjects)
+            [elements addObject:[[self class] dictionaryForObject:iobj]];
 
-    if ([command isEqualToString:@"Delete"]) {
-        for (NSManagedObject* iobj in iobjects) {
-            DicomStudy* istudy = [self studyForObject:iobj];
-            if (istudy)
-                [idatabase.managedObjectContext deleteObject:istudy]; // TODO: but this is BAD... will the included Series and Images be removed and deleted from the DB ?
+        if ([command isEqualToString:@"Delete"]) {
+            for (NSManagedObject* iobj in iobjects) {
+                DicomStudy* istudy = [self studyForObject:iobj];
+                if (istudy)
+                    [idatabase.managedObjectContext deleteObject:istudy]; // TODO: but this is BAD... will the included Series and Images be removed and deleted from the DB ?
+            }
+            
+            [idatabase save];
         }
         
-        [idatabase save];
+        ReturnWithErrorValueAndObjectForKey(0, elements, @"elements");
     }
-    
-    ReturnWithErrorValueAndObjectForKey(0, elements, @"elements");
+    @catch (NSException *e) {
+        N2LogException( e);
+    }
+    @finally {
+        [wait close];
+    }
 }
 
 -(void)_onMainThreadOpenWithDelayObjectsWithIDs:(NSArray*)objectIDs {
