@@ -281,28 +281,29 @@
 		
 		[FTAdapter setCurrentViewToCamera:[[flyThru pathCameras] objectAtIndex:curMovieIndex]];
 		
-		// resize the window to the original size (with the 3 box)
+
 		self.hideComputeBox = NO;
 		self.hideExportBox = NO;
-		
-		NSPoint upperLeftCorner = [[self window] frame].origin;
-		upperLeftCorner.y += [[self window] frame].size.height;
-
-		NSPoint newUpperLeftCorner = windowFrame.origin;
-		newUpperLeftCorner.y += windowFrame.size.height;
-
-		NSPoint translation; // if the user moved the window when it was reduced, we will keep this translation
-		translation.x = upperLeftCorner.x - newUpperLeftCorner.x;
-		translation.y = upperLeftCorner.y - newUpperLeftCorner.y;
-		
-		windowFrame.origin.x += translation.x;
-		windowFrame.origin.y += translation.y;
-		
-		[[self window] setFrame:windowFrame display:YES animate:NO];
-		[boxPlay setFrameOrigin: boxPlayOrigin];
-		
-		[[self window] display]; // to refresh the window
-		[[self window] becomeKeyWindow];
+//		// resize the window to the original size (with the 3 box)
+//
+//		NSPoint upperLeftCorner = [[self window] frame].origin;
+//		upperLeftCorner.y += [[self window] frame].size.height;
+//
+//		NSPoint newUpperLeftCorner = windowFrame.origin;
+//		newUpperLeftCorner.y += windowFrame.size.height;
+//
+//		NSPoint translation; // if the user moved the window when it was reduced, we will keep this translation
+//		translation.x = upperLeftCorner.x - newUpperLeftCorner.x;
+//		translation.y = upperLeftCorner.y - newUpperLeftCorner.y;
+//		
+//		windowFrame.origin.x += translation.x;
+//		windowFrame.origin.y += translation.y;
+//		
+//		[[self window] setFrame:windowFrame display:YES animate:NO];
+//		[boxPlay setFrameOrigin: boxPlayOrigin];
+//		
+//		[[self window] display]; // to refresh the window
+//		[[self window] becomeKeyWindow];
 	}
     else
     {
@@ -314,24 +315,26 @@
         
         [playButton setTitle: NSLocalizedString(@"Stop", nil)];
 		
-
-		// resize the window
-		NSPoint newOrigin = [boxExport frame].origin;
 		self.hideComputeBox = YES;
-		boxPlayOrigin = [boxPlay frame].origin;
-		
-		windowFrame = [[self window] frame];
-		
-		[[self window] setFrame:NSMakeRect(	windowFrame.origin.x,
-											windowFrame.origin.y+[boxCompute frame].size.height+[boxExport frame].size.height,
-											windowFrame.size.width,
-											windowFrame.size.height-[boxCompute frame].size.height-[boxExport frame].size.height)
-						display:YES animate:NO];
-										
-		[boxPlay setFrameOrigin: newOrigin];
-		
-		[[self window] display]; // to refresh the window
-		[[self window] resignKeyWindow];
+        self.hideExportBox = YES;
+        
+//		// resize the window
+//		NSPoint newOrigin = [boxExport frame].origin;
+
+//		boxPlayOrigin = [boxPlay frame].origin;
+//		
+//		windowFrame = [[self window] frame];
+//		
+//		[[self window] setFrame:NSMakeRect(	windowFrame.origin.x,
+//											windowFrame.origin.y+[boxCompute frame].size.height+[boxExport frame].size.height,
+//											windowFrame.size.width,
+//											windowFrame.size.height-[boxCompute frame].size.height-[boxExport frame].size.height)
+//						display:YES animate:NO];
+//										
+//		[boxPlay setFrameOrigin: newOrigin];
+//		
+//		[[self window] display]; // to refresh the window
+//		[[self window] resignKeyWindow];
     }
 }
 
