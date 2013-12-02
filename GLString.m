@@ -51,6 +51,7 @@
 //
 
 #import "GLString.h"
+#import "N2Debug.h"
 
 // The following is a NSBezierPath category to allow
 // for rounded corners of the border
@@ -113,6 +114,11 @@
 
 - (void) dealloc
 {
+#ifndef NDEBUG
+    if( [NSThread isMainThread] == NO)
+        N2LogStackTrace( @"[NSThread isMainThread] == NO");
+#endif
+    
 	[self deleteTexture];
 	[textColor release];
 	[boxColor release];
