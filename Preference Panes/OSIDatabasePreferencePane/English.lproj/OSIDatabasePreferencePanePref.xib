@@ -53,7 +53,7 @@
                                         <binding destination="548" name="value" keyPath="values.COPYDATABASE" id="905"/>
                                     </connections>
                                 </button>
-                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="105">
+                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="105">
                                     <rect key="frame" x="255" y="13" width="188" height="54"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -210,7 +210,7 @@
                             <rect key="frame" x="2" y="2" width="469" height="169"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="613">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="613">
                                     <rect key="frame" x="15" y="146" width="114" height="14"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Date &amp; Time Format:" id="761">
@@ -245,7 +245,7 @@
                                         <action selector="resetDate:" target="-2" id="620"/>
                                     </connections>
                                 </button>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="621">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="621">
                                     <rect key="frame" x="28" y="120" width="101" height="14"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <constraints>
@@ -316,7 +316,7 @@
                                         <binding destination="548" name="value" keyPath="values.clearSearchAndTimeIntervalWhenSelectingAlbum" id="954"/>
                                     </connections>
                                 </button>
-                                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1011">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="1011">
                                     <rect key="frame" x="54" y="72" width="75" height="14"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Patient's age:" id="1012">
@@ -343,7 +343,7 @@
                                         <binding destination="548" name="selectedTag" keyPath="values.yearOldDatabaseDisplay" id="1019"/>
                                     </connections>
                                 </popUpButton>
-                                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1036">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="1036">
                                     <rect key="frame" x="73" y="96" width="56" height="14"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Font Size:" id="1043">
@@ -514,7 +514,7 @@ It can require several minutes on large database.</string>
                                         <action selector="databaseCleaning:" target="-2" id="314"/>
                                     </connections>
                                 </button>
-                                <matrix verticalHuggingPriority="750" mode="highlight" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="269">
+                                <matrix horizontalHuggingPriority="980" verticalHuggingPriority="750" mode="highlight" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="269">
                                     <rect key="frame" x="227" y="151" width="185" height="62"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -634,7 +634,7 @@ It can require several minutes on large database.</string>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="498">
+                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="498">
                                     <rect key="frame" x="445" y="134" width="107" height="36"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -730,7 +730,7 @@ If a study is in an album, it will NOT be deleted.</string>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="906">
+                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="906">
                                     <rect key="frame" x="445" y="77" width="138" height="54"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -931,9 +931,6 @@ If a study is in an album, it will NOT be deleted.</string>
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="1020">
                                     <rect key="frame" x="59" y="7" width="52" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <constraints>
-                                        <constraint firstAttribute="width" constant="47" id="Q7W-a2-Cgr"/>
-                                    </constraints>
                                     <buttonCell key="cell" type="check" title="Study" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" inset="2" id="1021">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
@@ -943,11 +940,8 @@ If a study is in an album, it will NOT be deleted.</string>
                                     </connections>
                                 </button>
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="1024">
-                                    <rect key="frame" x="152" y="7" width="53" height="18"/>
+                                    <rect key="frame" x="136" y="7" width="53" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <constraints>
-                                        <constraint firstAttribute="width" constant="48" id="vDp-nF-Dfu"/>
-                                    </constraints>
                                     <buttonCell key="cell" type="check" title="Series" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" inset="2" id="1025">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
@@ -1153,7 +1147,7 @@ If a study is in an album, it will NOT be deleted.</string>
                             <constraint firstItem="355" firstAttribute="leading" secondItem="875" secondAttribute="leading" id="oth-WH-D1j"/>
                             <constraint firstItem="800" firstAttribute="top" secondItem="358" secondAttribute="bottom" constant="3" id="pTl-51-TQd"/>
                             <constraint firstItem="816" firstAttribute="top" secondItem="357" secondAttribute="bottom" constant="8" symbolic="YES" id="pxr-HW-r3I"/>
-                            <constraint firstItem="1024" firstAttribute="leading" secondItem="1020" secondAttribute="trailing" constant="46" id="uZ9-uc-Mrw"/>
+                            <constraint firstItem="1024" firstAttribute="leading" secondItem="1020" secondAttribute="trailing" constant="30" id="uZ9-uc-Mrw"/>
                             <constraint firstItem="358" firstAttribute="leading" secondItem="356" secondAttribute="trailing" constant="7" id="vMj-UM-njp"/>
                             <constraint firstItem="875" firstAttribute="top" secondItem="855" secondAttribute="bottom" constant="8" id="vVF-OV-nm3"/>
                             <constraint firstItem="357" firstAttribute="leading" secondItem="358" secondAttribute="trailing" constant="25" id="vWC-D9-dqs"/>
@@ -1214,7 +1208,7 @@ If a study is in an album, it will NOT be deleted.</string>
                                         <binding destination="548" name="value" keyPath="values.SEPARATECARDIAC4D" id="550"/>
                                     </connections>
                                 </button>
-                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="605">
+                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="605">
                                     <rect key="frame" x="194" y="107" width="142" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
