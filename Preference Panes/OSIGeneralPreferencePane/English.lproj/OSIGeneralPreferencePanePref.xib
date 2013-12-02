@@ -320,7 +320,7 @@
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="16" headerView="520" id="518">
-                                                <rect key="frame" x="0.0" y="0.0" width="366" height="91"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="366" height="76"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -415,19 +415,16 @@ If multiple languages are enabled, the used language will be chosen according to
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="364">
-                                    <rect key="frame" x="20" y="35" width="155" height="22"/>
+                                    <rect key="frame" x="20" y="35" width="132" height="22"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <constraints>
-                                        <constraint firstAttribute="width" constant="151" id="Q3x-E4-KeI"/>
-                                    </constraints>
-                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Compression Levels:" id="374">
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Compression Levels:" id="374">
                                         <font key="font" metaFont="system"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="366">
-                                    <rect key="frame" x="168" y="30" width="141" height="32"/>
+                                    <rect key="frame" x="145" y="30" width="141" height="32"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <constraints>
                                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="129" id="8TN-G8-XXC"/>

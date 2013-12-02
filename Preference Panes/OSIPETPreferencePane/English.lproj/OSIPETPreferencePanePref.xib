@@ -35,7 +35,7 @@
                             <rect key="frame" x="2" y="2" width="711" height="86"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="295">
+                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="295">
                                     <rect key="frame" x="14" y="31" width="349" height="40"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -127,7 +127,7 @@
                             <rect key="frame" x="2" y="2" width="711" height="99"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="316">
+                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="316">
                                     <rect key="frame" x="14" y="31" width="404" height="58"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -205,11 +205,14 @@
                             <rect key="frame" x="2" y="2" width="711" height="87"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="338">
-                                    <rect key="frame" x="14" y="5" width="229" height="76"/>
+                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="338">
+                                    <rect key="frame" x="14" y="5" width="223" height="76"/>
                                     <autoresizingMask key="autoresizingMask"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="76" id="Lo4-52-CrP"/>
+                                    </constraints>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                    <size key="cellSize" width="229" height="24"/>
+                                    <size key="cellSize" width="223" height="24"/>
                                     <size key="intercellSpacing" width="4" height="2"/>
                                     <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="446">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -236,7 +239,7 @@
                                     </connections>
                                 </matrix>
                                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="342">
-                                    <rect key="frame" x="316" y="33" width="70" height="22"/>
+                                    <rect key="frame" x="310" y="33" width="70" height="22"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="70" id="zuI-ib-UnS"/>
@@ -250,17 +253,17 @@
                                         <binding destination="348" name="value" keyPath="values.PETWLWWFROM" id="352"/>
                                     </connections>
                                 </textField>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="345">
-                                    <rect key="frame" x="268" y="35" width="39" height="17"/>
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="989" translatesAutoresizingMaskIntoConstraints="NO" id="345">
+                                    <rect key="frame" x="262" y="35" width="39" height="17"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="from:" id="431">
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="from:" id="431">
                                         <font key="font" metaFont="system"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
                                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="346">
-                                    <rect key="frame" x="454" y="33" width="70" height="22"/>
+                                    <rect key="frame" x="448" y="33" width="70" height="22"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="70" id="hcg-hp-DAF"/>
@@ -274,17 +277,17 @@
                                         <binding destination="348" name="value" keyPath="values.PETWLWWTO" id="354"/>
                                     </connections>
                                 </textField>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="347">
-                                    <rect key="frame" x="426" y="35" width="21" height="17"/>
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="989" translatesAutoresizingMaskIntoConstraints="NO" id="347">
+                                    <rect key="frame" x="420" y="35" width="21" height="17"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="to:" id="433">
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="to:" id="433">
                                         <font key="font" metaFont="system"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
                                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="390">
-                                    <rect key="frame" x="316" y="6" width="70" height="22"/>
+                                    <rect key="frame" x="310" y="6" width="70" height="22"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="0" drawsBackground="YES" id="434">
                                         <font key="font" metaFont="system"/>
@@ -295,17 +298,17 @@
                                         <binding destination="348" name="value" keyPath="values.PETWLWWFROMSUV" id="394"/>
                                     </connections>
                                 </textField>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="391">
-                                    <rect key="frame" x="268" y="8" width="39" height="17"/>
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="989" translatesAutoresizingMaskIntoConstraints="NO" id="391">
+                                    <rect key="frame" x="262" y="8" width="39" height="17"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="from:" id="435">
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="from:" id="435">
                                         <font key="font" metaFont="system"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
                                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="392">
-                                    <rect key="frame" x="454" y="6" width="70" height="22"/>
+                                    <rect key="frame" x="448" y="6" width="70" height="22"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="0" drawsBackground="YES" id="436">
                                         <font key="font" metaFont="system"/>
@@ -316,10 +319,10 @@
                                         <binding destination="348" name="value" keyPath="values.PETWLWWTOSUV" id="396"/>
                                     </connections>
                                 </textField>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="393">
-                                    <rect key="frame" x="426" y="8" width="21" height="17"/>
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="989" translatesAutoresizingMaskIntoConstraints="NO" id="393">
+                                    <rect key="frame" x="420" y="8" width="21" height="17"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="to:" id="437">
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="to:" id="437">
                                         <font key="font" metaFont="system"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -454,7 +457,7 @@
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="474">
                                     <rect key="frame" x="91" y="5" width="528" height="22"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" id="475">
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" id="475">
                                         <font key="font" metaFont="miniSystem"/>
                                         <string key="title">Dose is corrected by the half-life, in relation to the Acquisition Time and the Injection Time.
 Corrected dose = Dose * exp ( ln(2) / Half-life). Check with the PET modality manufacturer, which field should be used.</string>

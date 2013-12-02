@@ -235,8 +235,8 @@
                                         <binding destination="296" name="enabled" keyPath="values.wadoServer" id="1106"/>
                                     </connections>
                                 </button>
-                                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1060">
-                                    <rect key="frame" x="459" y="95" width="99" height="17"/>
+                                <button verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="1060">
+                                    <rect key="frame" x="447" y="95" width="99" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <buttonCell key="cell" type="roundRect" title="Create missing files" bezelStyle="roundedRect" alignment="center" controlSize="mini" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="1095">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -520,7 +520,7 @@
                             <constraint firstItem="1072" firstAttribute="leading" secondItem="1064" secondAttribute="leading" id="JxZ-NG-5YG"/>
                             <constraint firstItem="1186" firstAttribute="trailing" secondItem="9ei-pa-V2i" secondAttribute="trailing" id="LRu-MK-P4Z"/>
                             <constraint firstAttribute="height" constant="304" id="M07-I5-cX3"/>
-                            <constraint firstItem="1060" firstAttribute="leading" secondItem="1061" secondAttribute="trailing" constant="28" id="O33-mP-rpS"/>
+                            <constraint firstItem="1060" firstAttribute="leading" secondItem="1061" secondAttribute="trailing" constant="16" id="O33-mP-rpS"/>
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="583" id="OcJ-5f-YVY"/>
                             <constraint firstItem="1219" firstAttribute="baseline" secondItem="1072" secondAttribute="baseline" id="Ozn-nk-yQJ"/>
                             <constraint firstItem="Ljh-JF-qO5" firstAttribute="leading" secondItem="XHr-7Y-bbX" secondAttribute="trailing" constant="8" symbolic="YES" id="Pue-ic-lat"/>
@@ -658,7 +658,7 @@
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1213">
+                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1213">
                                     <rect key="frame" x="130" y="61" width="192" height="18"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>

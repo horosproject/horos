@@ -78,7 +78,7 @@
                                         <binding destination="308" name="value" keyPath="values.ALBUMNAME" id="535"/>
                                     </connections>
                                 </textField>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="276">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="276">
                                     <rect key="frame" x="416" y="15" width="94" height="17"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="iPhoto Album:" id="347">
@@ -912,7 +912,6 @@
                             <constraint firstItem="515" firstAttribute="trailing" secondItem="503" secondAttribute="trailing" id="XdI-e2-Fmt"/>
                             <constraint firstItem="390" firstAttribute="leading" secondItem="336" secondAttribute="leading" id="Xh2-as-FH5"/>
                             <constraint firstItem="528" firstAttribute="leading" secondItem="335" secondAttribute="leading" id="Xrl-Aa-Mst"/>
-                            <constraint firstItem="548" firstAttribute="leading" secondItem="149" secondAttribute="leading" constant="147" id="ah8-kc-I7v"/>
                             <constraint firstItem="503" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="149" secondAttribute="leading" constant="20" id="c66-DN-FKF"/>
                             <constraint firstAttribute="bottom" secondItem="548" secondAttribute="bottom" constant="107" id="fzm-a1-bbv"/>
                             <constraint firstItem="319" firstAttribute="top" secondItem="522" secondAttribute="bottom" constant="6" symbolic="YES" id="gUU-0V-qud"/>
@@ -927,6 +926,7 @@
                             <constraint firstItem="515" firstAttribute="trailing" secondItem="505" secondAttribute="trailing" id="pZc-I5-79a"/>
                             <constraint firstItem="517" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="149" secondAttribute="leading" constant="20" id="pur-8I-zRQ"/>
                             <constraint firstItem="505" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="149" secondAttribute="leading" constant="20" id="twf-xT-CWM"/>
+                            <constraint firstItem="528" firstAttribute="leading" secondItem="548" secondAttribute="leading" constant="-16" id="udk-wn-PO8"/>
                             <constraint firstAttribute="trailing" secondItem="521" secondAttribute="trailing" constant="49" id="vts-et-M3X"/>
                             <constraint firstItem="522" firstAttribute="top" secondItem="497" secondAttribute="bottom" constant="6" symbolic="YES" id="wyO-4M-ZW1"/>
                             <constraint firstItem="298" firstAttribute="baseline" secondItem="509" secondAttribute="baseline" constant="1" id="ywq-yg-rnp"/>

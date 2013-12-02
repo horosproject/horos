@@ -52,7 +52,7 @@
                                         <binding destination="173" name="value" keyPath="values.autoSelectSourceCDDVD" id="212"/>
                                     </connections>
                                 </button>
-                                <matrix horizontalHuggingPriority="396" verticalHuggingPriority="750" horizontalCompressionResistancePriority="490" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="102">
+                                <matrix horizontalHuggingPriority="396" verticalHuggingPriority="750" horizontalCompressionResistancePriority="490" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="102">
                                     <rect key="frame" x="17" y="35" width="508" height="38"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -90,7 +90,7 @@
                                         <binding destination="173" name="enabled" keyPath="values.UseDICOMDIRFileCD" id="849-Eu-Tav"/>
                                     </connections>
                                 </button>
-                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="216">
+                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="216">
                                     <rect key="frame" x="17" y="101" width="267" height="78"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
