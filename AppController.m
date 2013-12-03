@@ -2542,11 +2542,7 @@ static NSDate *lastWarningDate = nil;
 			urlComponents = [urlComponents arrayByAddingObject: [s stringByReplacingOccurrencesOfString:@"__question__" withString:@"?"]];
 		}
 		
-        if( [url.pathExtension isEqualToString: @"xml"])
-        {
-            [[BrowserController currentBrowser] asyncWADOXMLDownloadURL: url];
-		}
-		else if([urlComponents count] == 2)
+        if([urlComponents count] == 2)
 		{
             NSString *parameterString = @"";
 			parameterString = [[urlComponents lastObject] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
@@ -2697,6 +2693,10 @@ static NSDate *lastWarningDate = nil;
 					}
 				}
 			}
+		}
+        else if( [url.pathExtension isEqualToString: @"xml"])
+        {
+            [BrowserController asyncWADOXMLDownloadURL: url];
 		}
 	}
 }

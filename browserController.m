@@ -767,7 +767,7 @@ static NSConditionLock *threadLock = nil;
 #pragma mark-
 
 
-- (void) asyncWADOXMLDownloadURL:(NSURL*) url
++ (void) asyncWADOXMLDownloadURL:(NSURL*) url
 {
     WADOXML *w = [[[WADOXML alloc] init] autorelease];
     
@@ -912,7 +912,7 @@ static NSConditionLock *threadLock = nil;
 					{
                         if( [[filename pathExtension] isEqualToString: @"xml"]) // Is it a WADO xml file? (like used for Weasis)
 						{
-                            [self asyncWADOXMLDownloadURL: [NSURL fileURLWithPath: filename]];
+                            [BrowserController asyncWADOXMLDownloadURL: [NSURL fileURLWithPath: filename]];
 						}
 						else if( [[filename pathExtension] isEqualToString: @"dcmURLs"])
 						{
@@ -14915,6 +14915,12 @@ static NSArray*	openSubSeriesArray = nil;
             t.supportsCancel = YES;
             [[ThreadsManager defaultManager] addThreadAndStart: t];
         }
+    }
+    
+    if( self.database.managedObjectContext.deletedObjects.count)
+    {
+        NSLog( @"---- self.database.managedObjectContext.deletedObjects.count > 0 -> save db");
+        [self.database save];
     }
 }
 

@@ -242,6 +242,12 @@
 
 - (void) WADODownload: (NSArray*) urlToDownload
 {
+    if( urlToDownload.count == 0)
+    {
+        NSLog( @"**** urlToDownload.count == 0 in WADODownload");
+        return;
+    }
+    
     NSMutableArray *connectionsArray = [NSMutableArray array];
     
     NSAutoreleasePool *pool = [NSAutoreleasePool new];

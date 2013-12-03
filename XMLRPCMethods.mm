@@ -182,15 +182,23 @@
     {
         if ([[paramDict valueForKey:@"URL"] length])
         {
-            //Look for an XML file? like weasis.xml (weasis.jnlp)
+            NSURL *url = [NSURL URLWithString: [paramDict valueForKey:@"URL"]];
             
-            // TODO
-            
-            NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector(_threadRetrieveWado:) object:paramDict] autorelease];
-            t.name = NSLocalizedString(@"WADO Retrieve...", nil);
-            t.supportsCancel = YES;
-            t.status = [[[NSURL URLWithString:@"/" relativeToURL: [NSURL URLWithString: [paramDict valueForKey:@"URL"]]] absoluteURL] description];
-            [[ThreadsManager defaultManager] addThreadAndStart:t];
+            if( url == nil)
+                N2LogStackTrace( @"URL is not valid: %@", [paramDict valueForKey:@"URL"]);
+            else
+            {
+                if( [url.pathExtension isEqualToString: @"xml"]) // Is it a WADO xml file? (like used for Weasis)
+                    [BrowserController asyncWADOXMLDownloadURL: url];
+                else
+                {
+                    NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector(_threadRetrieveWado:) object:paramDict] autorelease];
+                    t.name = NSLocalizedString(@"WADO Retrieve...", nil);
+                    t.supportsCancel = YES;
+                    t.status = [[[NSURL URLWithString:@"/" relativeToURL: url] absoluteURL] description];
+                    [[ThreadsManager defaultManager] addThreadAndStart:t];
+                }
+            }
         }
         else 
             ReturnWithCode(400); // Bad Request
