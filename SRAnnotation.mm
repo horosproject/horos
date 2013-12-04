@@ -369,6 +369,12 @@
 
 - (id) initWithContentsOfFile:(NSString *)path
 {
+    if( path == nil)
+    {
+        N2LogStackTrace( @"SRAnnotation initWithContentsOfFile, path == nil", path);
+        return nil;
+    }
+    
 	if (self = [super init])
 	{
 		document = new DSRDocument();

@@ -562,6 +562,8 @@ static BOOL _cleanForFreeSpaceLimitSoonReachedDisplayed = NO;
                 break;
         }
         
+        [self save: nil];
+        
 		NSLog(@"Info: done cleaning for space, %lld MB are free", free);
     } @catch (NSException* e) {
         N2LogExceptionWithStackTrace(e);

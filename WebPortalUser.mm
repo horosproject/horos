@@ -424,6 +424,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
                     // It means this study doesnt exist in the entire DB -> remove it from this user list
                     NSLog( @"This study is not longer available in the DB -> delete it : %@", [study valueForKey: @"patientUID"]);
                     [self.managedObjectContext deleteObject:study];
+                    [self.managedObjectContext save: nil];
                 }
             }
             

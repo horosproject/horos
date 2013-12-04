@@ -3883,6 +3883,7 @@ static NSConditionLock *threadLock = nil;
         N2LogExceptionWithStackTrace(e);
 	}
 	
+    [context save: nil];
 	[context release];
 	[context unlock];
 	
