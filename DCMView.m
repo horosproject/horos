@@ -2131,6 +2131,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		volumicData = -1;
 		
+        [cleanedOutDcmPixArray release];
+        cleanedOutDcmPixArray = nil;
+        
 		if( dcmPixList != pixels)
 		{
 			[dcmPixList release];
