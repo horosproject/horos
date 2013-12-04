@@ -543,10 +543,13 @@ static BOOL _cleanForFreeSpaceLimitSoonReachedDisplayed = NO;
                             [self.managedObjectContext deleteObject:image];
                         } @catch (...) { }
                 } @catch (...) { }
+                
                 @try {
                     [self.managedObjectContext deleteObject:series];
                 } @catch (...) { }
-            } @try {
+            }
+            
+            @try {
                 [self.managedObjectContext deleteObject:study];
             } @catch (...) { }
             
