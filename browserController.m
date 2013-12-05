@@ -2977,13 +2977,10 @@ static NSConditionLock *threadLock = nil;
                 
                 if( self.filterPredicate)
                 {
-                    NSFetchRequest *fetch = [NSFetchRequest fetchRequestWithEntityName: @"Study"];
-                    [fetch setPredicate: self.filterPredicate];
-                    
                     // Entire DB Result
                     
                     distantEntireDBResultCount = 0;
-                    localEntireDBResultCount = [_database.managedObjectContext countForFetchRequest: fetch error: nil];
+                    localEntireDBResultCount = [[[_database objectsForEntity:_database.studyEntity predicate:nil error:&error] filteredArrayUsingPredicate: self.filterPredicate] count];
                     
                     [self refreshEntireDBResult];
                 }
