@@ -7,12 +7,14 @@
 
 - (NSMenu *)menuForEvent:(NSEvent *)anEvent inRect:(NSRect)cellFrame ofView:(NSView *)aView
 {
+    [self retain];
+    
 	rightClick = YES;
-	
 	[self performClick: self];
-	
 	rightClick = NO;
 	
+    [self autorelease];
+    
 	return nil;
 }
 
