@@ -4221,7 +4221,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	{
         BOOL same = NO;
         
-        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SyncSeriesListForAllComparativeStudies"])
             same = [v.currentStudy.patientUID isEqualToString: self.currentStudy.patientUID];
         else
             same = [[v studyInstanceUID] isEqualToString: [self studyInstanceUID]];
