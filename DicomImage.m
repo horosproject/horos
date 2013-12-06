@@ -965,63 +965,60 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 
 -(NSString*) completePathWithDownload:(BOOL) download supportNonLocalDatabase: (BOOL) supportNonLocalDatabase
 {
-    @autoreleasepool
+    @try
     {
-        @try
-        {
-            if( completePathCache && download == NO)
+        if( completePathCache && download == NO)
+            return completePathCache;
+        
+        DicomDatabase* db = [DicomDatabase databaseForContext: self.managedObjectContext];
+        
+        BOOL isLocal = YES;
+        if (supportNonLocalDatabase)
+            isLocal = [db isLocal];
+        
+        if (completePathCache) {
+            if (download == NO)
                 return completePathCache;
+            else if (isLocal)
+                return completePathCache;
+        }
+        
+        #ifdef OSIRIX_VIEWER
+        if( [self.inDatabaseFolder boolValue] == YES)
+        {
+            NSString *path = self.path;
             
-            DicomDatabase* db = [DicomDatabase databaseForContext: self.managedObjectContext];
-            
-            BOOL isLocal = YES;
-            if (supportNonLocalDatabase)
-                isLocal = [db isLocal];
-            
-            if (completePathCache) {
-                if (download == NO)
-                    return completePathCache;
-                else if (isLocal)
-                    return completePathCache;
-            }
-            
-            #ifdef OSIRIX_VIEWER
-            if( [self.inDatabaseFolder boolValue] == YES)
+            if( !isLocal)
             {
-                NSString *path = self.path;
+                NSString* temp = [DicomImage completePathForLocalPath:path directory:db.dataBaseDirPath];
+                if ([[NSFileManager defaultManager] fileExistsAtPath:temp])
+                    return temp;
                 
-                if( !isLocal)
+                [completePathCache release];
+                
+                if (download)
+                    completePathCache = [[(RemoteDicomDatabase*)db cacheDataForImage:self maxFiles:1] retain];
+                else
+                    completePathCache = [[(RemoteDicomDatabase*)db localPathForImage:self] retain];
+                
+                return completePathCache;
+            }
+            else
+            {
+                if( [path characterAtIndex: 0] != '/')
                 {
-                    NSString* temp = [DicomImage completePathForLocalPath:path directory:db.dataBaseDirPath];
-                    if ([[NSFileManager defaultManager] fileExistsAtPath:temp])
-                        return temp;
-                    
                     [completePathCache release];
-                    
-                    if (download)
-                        completePathCache = [[(RemoteDicomDatabase*)db cacheDataForImage:self maxFiles:1] retain];
-                    else
-                        completePathCache = [[(RemoteDicomDatabase*)db localPathForImage:self] retain];
-                    
+                    completePathCache = [[DicomImage completePathForLocalPath: path directory: db.dataBaseDirPath] retain];
                     return completePathCache;
                 }
-                else
-                {
-                    if( [path characterAtIndex: 0] != '/')
-                    {
-                        [completePathCache release];
-                        completePathCache = [[DicomImage completePathForLocalPath: path directory: db.dataBaseDirPath] retain];
-                        return completePathCache;
-                    }
-                }
             }
-            #endif
-            
-            return self.path;
         }
-        @catch (NSException *e) {
-            N2LogExceptionWithStackTrace(e);
-        }
+        #endif
+        
+        return self.path;
+    }
+    @catch (NSException *e) {
+        N2LogExceptionWithStackTrace(e);
     }
     
     return nil; // to resolve a compiler warning: this line never executes

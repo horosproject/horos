@@ -356,7 +356,10 @@ static NSString* _dcmElementKey(DcmElement* element) {
         @try {
             for (NSString* ipath in allpaths)
                 if ([[ipath stringByDeletingPathExtension] compare:cutpath options:NSCaseInsensitiveSearch] == NSOrderedSame)
+                {
                     returnString = [ipath copy];
+                    break;
+                }
         }
         @catch (NSException *exception) {
             N2LogException( exception);
