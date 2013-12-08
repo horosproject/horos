@@ -20,6 +20,7 @@
 #import "DCMPix.h"
 #import "altivecFunctions.h"
 #import "DICOMToNSString.h"
+#import "DicomDatabase+DCMTK.h"
 
 static float deg2rad = M_PI / 180.0f; 
 
@@ -915,7 +916,8 @@ static float deg2rad = M_PI / 180.0f;
 					delete dataset->remove( DCM_SmallestImagePixelValue);
 					delete dataset->remove( DCM_LargestImagePixelValue);
 					delete dataset->remove( DCM_MediaStorageSOPInstanceUID);
-                    delete dataset->remove(DCM_PerFrameFunctionalGroupsSequence);
+                    delete dataset->remove( DCM_PerFrameFunctionalGroupsSequence);
+                    delete dataset->remove( DCM_IconImageSequence); // GE bug
                     
 					char buf[ 128];
 					dcmGenerateUniqueIdentifier( buf);
@@ -935,9 +937,38 @@ static float deg2rad = M_PI / 180.0f;
                         if( fileWriteSucceeded == NO)
                             NSLog( @"******* dcmtkFileFormat->saveFile failed");
 					}
-                    else
-                        NSLog( @"******* dcmtkFileFormat->canWriteXfer( EXS_LittleEndianExplicit) failed");
-					
+                    else if( triedToDecompress == NO)
+                    {
+                        NSLog( @"------ dcmtkFileFormat->canWriteXfer( EXS_LittleEndianExplicit) failed: try to decompress the file");
+                        
+                        // Try to decompress the file
+                        
+                        NSString *tmpFile = [@"/tmp" stringByAppendingPathComponent: dcmSourcePath.lastPathComponent];
+                        [[NSFileManager defaultManager] removeItemAtPath: tmpFile error: nil];
+                        [[NSFileManager defaultManager] copyItemAtPath: dcmSourcePath toPath: tmpFile error: nil];
+                        [DicomDatabase decompressDicomFilesAtPaths: @[tmpFile]];
+                        
+                        if( [[NSFileManager defaultManager] fileExistsAtPath: tmpFile])
+                        {
+                            if( squaredata)
+                                free( squaredata);
+                            squaredata = nil;
+                            
+                            triedToDecompress = YES;
+                            
+                            [dcmSourcePath release];
+                            dcmSourcePath = [tmpFile retain];
+                            
+                            NSString *f = [self writeDCMFile: dstPath];
+                            
+                            [[NSFileManager defaultManager] removeItemAtPath: tmpFile error: nil];
+                            
+                            triedToDecompress = YES;
+                            
+                            return f;
+                        }
+					}
+                    
 					if( squaredata)
 						free( squaredata);
 					squaredata = nil;

@@ -393,6 +393,13 @@ OFBool DcmItem::canWriteXfer(const E_TransferSyntax newXfer,
         do {
             dO = elementList->get();
             canWrite = dO->canWriteXfer(newXfer, oldXfer);
+            
+#ifndef NDEBUG
+            if( canWrite == OFFalse) {
+                printf( "--- cannot write");
+            }
+#endif
+            
         } while (elementList->seek(ELP_next) && canWrite);
     }
     return canWrite;

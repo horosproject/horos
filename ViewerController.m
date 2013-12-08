@@ -18250,7 +18250,7 @@ int i,j,l;
 		{
 			NSDictionary* s = [self exportDICOMFileInt:[[dcmFormat selectedCell] tag] withName:[dcmSeriesName stringValue] allViewers: [dcmAllViewers state]];
 			
-			if( s) [producedFiles addObject: s];
+			if( [s valueForKey: @"file"]) [producedFiles addObject: s];
 		}
 		else if( [[dcmSelection selectedCell] tag] == 3) // 4th Dimension
 		{
@@ -18259,7 +18259,7 @@ int i,j,l;
 				[self setMovieIndex: i];
 			
 				NSDictionary* s = [self exportDICOMFileInt:[[dcmFormat selectedCell] tag] withName:[dcmSeriesName stringValue] allViewers: [dcmAllViewers state]];
-				if( s) [producedFiles addObject: s];
+				if( [s valueForKey: @"file"]) [producedFiles addObject: s];
 			}
 		}
 		else
@@ -18321,7 +18321,7 @@ int i,j,l;
 					[self adjustSlider];
 					
 					NSDictionary* s = [self exportDICOMFileInt:[[dcmFormat selectedCell] tag] withName:[dcmSeriesName stringValue] allViewers: [dcmAllViewers state]];
-					if( s) [producedFiles addObject: s];
+					if( [s valueForKey: @"file"]) [producedFiles addObject: s];
 				}
 				
 				[splash incrementBy: 1];

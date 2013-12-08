@@ -52,7 +52,7 @@ typedef char* DcmFileFormat;
 		// Raw data support
 		unsigned char		*data, *localData;
 		long				width, height, spp, bps;
-		BOOL				isSigned, modalityAsSource, rotateRawDataBy90degrees;
+		BOOL				isSigned, modalityAsSource, rotateRawDataBy90degrees, triedToDecompress;
 		int					offset;
 		
 		// NSImage support
