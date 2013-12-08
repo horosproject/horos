@@ -4617,11 +4617,9 @@ static BOOL initialized = NO;
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
-- (id) FindViewer:(NSString*) nib :(NSMutableArray*) pixList
+- (id) FindViewer:(NSString*) nib :(NSArray*) pixList
 {
-	NSArray				*winList = [NSApp windows];
-	
-	for( id loopItem in winList)
+	for( id loopItem in [NSApp windows])
 	{
 		if( [[[loopItem windowController] windowNibName] isEqualToString: nib])
 		{
@@ -4633,12 +4631,11 @@ static BOOL initialized = NO;
 	return nil;
 }
 
-- (NSArray*) FindRelatedViewers:(NSMutableArray*) pixList
+- (NSArray*) FindRelatedViewers:(NSArray*) pixList
 {
-	NSArray				*winList = [NSApp windows];
-	NSMutableArray		*viewersList = [NSMutableArray array];
+	NSMutableArray *viewersList = [NSMutableArray array];
 	
-	for( id loopItem in winList)
+	for( id loopItem in [NSApp windows])
 	{
 		if( [[loopItem windowController] respondsToSelector:@selector(pixList)])
 		{

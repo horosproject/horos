@@ -610,7 +610,6 @@
 		843F847B12439E00004FBBF6 /* AYDicomPrintPref.h in Headers */ = {isa = PBXBuildFile; fileRef = 843F847A12439E00004FBBF6 /* AYDicomPrintPref.h */; };
 		843F847C12439E00004FBBF6 /* AYDicomPrintPref.h in Headers */ = {isa = PBXBuildFile; fileRef = 843F847A12439E00004FBBF6 /* AYDicomPrintPref.h */; };
 		8440039A0E8CF99500A00EBD /* dciodvfy in Resources */ = {isa = PBXBuildFile; fileRef = 844003990E8CF99500A00EBD /* dciodvfy */; };
-		8459A7270F5D63EF00146B28 /* VREmpty.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8459A7250F5D63EF00146B28 /* VREmpty.xib */; };
 		8476BC2F1599D4B200451331 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8476BC2E1599D4B200451331 /* AVFoundation.framework */; };
 		8476BC301599D4B200451331 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8476BC2E1599D4B200451331 /* AVFoundation.framework */; };
 		8476BC321599D51300451331 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8476BC2E1599D4B200451331 /* AVFoundation.framework */; };
@@ -2328,8 +2327,6 @@
 		A9FBD35216DBE34E003A0E04 /* ToolbarPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98F00C84724B00CB38F1 /* ToolbarPanel.xib */; };
 		A9FBD35316DBE34E003A0E04 /* Viewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99360C84724B00CB38F1 /* Viewer.xib */; };
 		A9FBD35416DBE34E003A0E04 /* VR.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99300C84724B00CB38F1 /* VR.xib */; };
-		A9FBD35516DBE34E003A0E04 /* VREmpty.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8459A7250F5D63EF00146B28 /* VREmpty.xib */; };
-		A9FBD35616DBE34E003A0E04 /* VRPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99200C84724B00CB38F1 /* VRPanel.xib */; };
 		A9FBD35716DBE34E003A0E04 /* Wait.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F993A0C84724B00CB38F1 /* Wait.xib */; };
 		A9FBD35816DBE34E003A0E04 /* WaitRendering.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F991A0C84724B00CB38F1 /* WaitRendering.xib */; };
 		A9FBD35916DBE34E003A0E04 /* XMLViewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F993E0C84724B00CB38F1 /* XMLViewer.xib */; };
@@ -4429,7 +4426,6 @@
 		CE3F995F0C84724B00CB38F1 /* WaitRendering.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F991A0C84724B00CB38F1 /* WaitRendering.xib */; };
 		CE3F99600C84724B00CB38F1 /* Plot.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F991C0C84724B00CB38F1 /* Plot.xib */; };
 		CE3F99610C84724B00CB38F1 /* ROIVolume.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F991E0C84724B00CB38F1 /* ROIVolume.xib */; };
-		CE3F99620C84724B00CB38F1 /* VRPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99200C84724B00CB38F1 /* VRPanel.xib */; };
 		CE3F99650C84724B00CB38F1 /* PaletteBrush.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99260C84724B00CB38F1 /* PaletteBrush.xib */; };
 		CE3F99670C84724B00CB38F1 /* LLScoutView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F992A0C84724B00CB38F1 /* LLScoutView.xib */; };
 		CE3F99680C84724B00CB38F1 /* BurnViewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F992C0C84724B00CB38F1 /* BurnViewer.xib */; };
@@ -9947,7 +9943,6 @@
 		843F847A12439E00004FBBF6 /* AYDicomPrintPref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AYDicomPrintPref.h; path = "Preference Panes/AYDicomPrintPreferencePane/AYDicomPrintPref.h"; sourceTree = SOURCE_ROOT; };
 		844003990E8CF99500A00EBD /* dciodvfy */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = dciodvfy; path = Binaries/dciodvfy; sourceTree = "<group>"; };
 		844719AF0FD8EF50003BFDF8 /* OsiriX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OsiriX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		8459A7260F5D63EF00146B28 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/VREmpty.xib; sourceTree = "<group>"; };
 		84704DBF181ACF440061B1BF /* Rules.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Rules.plist; sourceTree = "<group>"; };
 		8476BC2E1599D4B200451331 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = ../../../../System/Library/Frameworks/AVFoundation.framework; sourceTree = "<group>"; };
 		8476BC331599D7E900451331 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = ../../../../System/Library/Frameworks/CoreMedia.framework; sourceTree = "<group>"; };
@@ -11578,7 +11573,6 @@
 		CE3F991B0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/WaitRendering.xib; sourceTree = "<group>"; };
 		CE3F991D0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Plot.xib; sourceTree = "<group>"; };
 		CE3F991F0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ROIVolume.xib; sourceTree = "<group>"; };
-		CE3F99210C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/VRPanel.xib; sourceTree = "<group>"; };
 		CE3F99270C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/PaletteBrush.xib; sourceTree = "<group>"; };
 		CE3F992B0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/LLScoutView.xib; sourceTree = "<group>"; };
 		CE3F992D0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/BurnViewer.xib; sourceTree = "<group>"; };
@@ -15972,8 +15966,6 @@
 				CE3F98F00C84724B00CB38F1 /* ToolbarPanel.xib */,
 				CE3F99360C84724B00CB38F1 /* Viewer.xib */,
 				CE3F99300C84724B00CB38F1 /* VR.xib */,
-				8459A7250F5D63EF00146B28 /* VREmpty.xib */,
-				CE3F99200C84724B00CB38F1 /* VRPanel.xib */,
 				CE3F993A0C84724B00CB38F1 /* Wait.xib */,
 				CE3F991A0C84724B00CB38F1 /* WaitRendering.xib */,
 				CE3F993E0C84724B00CB38F1 /* XMLViewer.xib */,
@@ -27904,8 +27896,6 @@
 				A9FBD35216DBE34E003A0E04 /* ToolbarPanel.xib in Resources */,
 				A9FBD35316DBE34E003A0E04 /* Viewer.xib in Resources */,
 				A9FBD35416DBE34E003A0E04 /* VR.xib in Resources */,
-				A9FBD35516DBE34E003A0E04 /* VREmpty.xib in Resources */,
-				A9FBD35616DBE34E003A0E04 /* VRPanel.xib in Resources */,
 				A9FBD35716DBE34E003A0E04 /* Wait.xib in Resources */,
 				A9FBD35816DBE34E003A0E04 /* WaitRendering.xib in Resources */,
 				A9FBD35916DBE34E003A0E04 /* XMLViewer.xib in Resources */,
@@ -28183,7 +28173,6 @@
 				CE3F995F0C84724B00CB38F1 /* WaitRendering.xib in Resources */,
 				CE3F99600C84724B00CB38F1 /* Plot.xib in Resources */,
 				CE3F99610C84724B00CB38F1 /* ROIVolume.xib in Resources */,
-				CE3F99620C84724B00CB38F1 /* VRPanel.xib in Resources */,
 				CE3F99650C84724B00CB38F1 /* PaletteBrush.xib in Resources */,
 				CE3F99670C84724B00CB38F1 /* LLScoutView.xib in Resources */,
 				CE3F99680C84724B00CB38F1 /* BurnViewer.xib in Resources */,
@@ -28227,7 +28216,6 @@
 				84A220E80F25E41800C6C3EB /* ROIs.tif in Resources */,
 				84A220E90F25E41800C6C3EB /* Keys.tif in Resources */,
 				A9333D3A0F56E9670097DAB7 /* MPR.xib in Resources */,
-				8459A7270F5D63EF00146B28 /* VREmpty.xib in Resources */,
 				A9D18CE60F65120000476DBD /* RotateAxisCursor.png in Resources */,
 				A93F03CD0F6FBCB900C45CCD /* MPRAxisHide.png in Resources */,
 				A93F03CE0F6FBCB900C45CCD /* MPRAxisShow.png in Resources */,
@@ -32170,14 +32158,6 @@
 			name = DiscMountedAskTheUserDialog.xib;
 			sourceTree = "<group>";
 		};
-		8459A7250F5D63EF00146B28 /* VREmpty.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				8459A7260F5D63EF00146B28 /* English */,
-			);
-			name = VREmpty.xib;
-			sourceTree = "<group>";
-		};
 		848327A915ED08F3003BAEEB /* CustomIntervalPanel.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -32392,14 +32372,6 @@
 				CE3F991F0C84724B00CB38F1 /* English */,
 			);
 			name = ROIVolume.xib;
-			sourceTree = "<group>";
-		};
-		CE3F99200C84724B00CB38F1 /* VRPanel.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CE3F99210C84724B00CB38F1 /* English */,
-			);
-			name = VRPanel.xib;
 			sourceTree = "<group>";
 		};
 		CE3F99260C84724B00CB38F1 /* PaletteBrush.xib */ = {

@@ -224,8 +224,8 @@ extern AppController* OsiriX;
  * Each 3D Viewer has its own distinctly named nib as does the ViewerController.
  * The pixList is the Array of DCMPix that the viewer uses.  It should uniquely identify related viewers
 */
-- (id) FindViewer:(NSString*) nib :(NSMutableArray*) pixList; 
-- (NSArray*) FindRelatedViewers:(NSMutableArray*) pixList; /**< Return an array of all WindowControllers using the pixList */
+- (id) FindViewer:(NSString*) nib :(NSArray*) pixList;
+- (NSArray*) FindRelatedViewers:(NSArray*) pixList; /**< Return an array of all WindowControllers using the pixList */
 - (IBAction) cancelModal: (id) sender;
 - (IBAction) okModal: (id) sender;
 - (NSString*) privateIP;

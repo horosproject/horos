@@ -579,20 +579,18 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
         // Find Minimum Value
         if( [firstObject isRGB] == NO) [self computeMinMax];
         else minimumValue = self.deleteValue = 0;
-
-        if( [style isEqualToString:@"standard"])
-            self = [super initWithWindowNibName:@"VR"];
-        else if( [style isEqualToString:@"noNib"])
-        {
-            self = [super initWithWindowNibName:@"VREmpty"];
-        }
-        else
-        {
-            self = [super initWithWindowNibName:@"VRPanel"];
-        }
+        
+        self = [super initWithWindowNibName:@"VR"];
+        
+//        if( [style isEqualToString:@"standard"] || [style isEqualToString: @"panel"])
+//            self = [super initWithWindowNibName:@"VR"];
+//        else if( [style isEqualToString:@"noNib"])
+//            self = [super initWithWindowNibName:@"VREmpty"];
+        
         [[self window] setDelegate:self];
         
-        
+        if( [style isEqualToString: @"panel"])
+            [self.window setLevel: NSFloatingWindowLevel];
         
         err = [view setPixSource:pixList[0] :(float*) [volumeData[0] bytes]];
         if( err != 0)
