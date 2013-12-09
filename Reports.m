@@ -459,7 +459,16 @@ static id aedesc_to_id(AEDesc *desc)
 }
 
 +(NSString*)databaseWordTemplatesDirPath {
-    return [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"WORD TEMPLATES"];
+    NSString *folder = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"WORD TEMPLATES"];
+    
+    BOOL isDirectory;
+    if( [[NSFileManager defaultManager] fileExistsAtPath: folder isDirectory: &isDirectory] && isDirectory)
+        return folder;
+    
+    [[NSFileManager defaultManager] removeItemAtPath: folder error: nil];
+    [[NSFileManager defaultManager] createDirectoryAtPath: folder withIntermediateDirectories: NO attributes: nil error: nil];
+    
+    return folder;
 }
 
 +(NSString*)databasePagesTemplatesDirPath {

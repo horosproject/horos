@@ -5793,7 +5793,7 @@ static BOOL initialized = NO;
     NSString* oldReportFilePath = [documentsDirectory() stringByAppendingPathComponent:@"ReportTemplate.doc"];
     
     // today, we use a dir in the database folder, which contains the templates
-    NSString* templatesDirPath = [documentsDirectory() stringByAppendingPathComponent:@"WORD TEMPLATES"];
+    NSString* templatesDirPath = [Reports databaseWordTemplatesDirPath];
     
     // by default, the templates are stored in the Office Application Support folder
     NSString* wordTemplatesOsirixDirPath = [Reports wordTemplatesOsirixDirPath];
