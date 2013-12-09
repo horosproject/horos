@@ -346,6 +346,7 @@ enum
 @property(readonly) NSSegmentedControl *blendingTypeRGB;
 @property(readonly) NSPopUpButton *blendingPlugins;
 @property(readonly) NSButton *blendingResample;
+@property(readonly) BOOL titledGantry;
 
 /** Return the 'dragged' window, the destination window is contained in the 'viewerController' object of the 'PluginFilter' object */
 @property(nonatomic, retain) ViewerController *blendedWindow;

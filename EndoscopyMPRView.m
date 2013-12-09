@@ -595,7 +595,9 @@
 	}
 	else
 	{
-		[(EndoscopyViewer*)[[self window] windowController] exportDICOMFile:sender];
+        EndoscopyViewer *v = (EndoscopyViewer*)[[self window] windowController];
+        
+		[v.vrController.view exportDICOMFile:sender];
 	}
 }
 

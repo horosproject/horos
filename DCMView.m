@@ -183,7 +183,7 @@ short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2, float
     float    az = (u[2] >= 0 ? u[2] : -u[2]);
 	
     
-    if( [DCMView angleBetweenVector: Pn1 andVector:Pn2] < PARALLELPLANETOLERANCE)
+    if( [DCMView angleBetweenVector: Pn1 andVector:Pn2] < [[NSUserDefaults standardUserDefaults] floatForKey: @"PARALLELPLANETOLERANCE"])
 		return -1;
 	
     // Pn1 and Pn2 intersect in a line
@@ -6869,7 +6869,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                         [[self curDCM] orientation:orientA];
                         [[otherView curDCM] orientation:orientB];
                         
-						if( [DCMView angleBetweenVector: orientA+6 andVector:orientB+6] < PARALLELPLANETOLERANCE)
+						if( [DCMView angleBetweenVector: orientA+6 andVector:orientB+6] < [[NSUserDefaults standardUserDefaults] floatForKey: @"PARALLELPLANETOLERANCE"])
 						{
                             // we need to avoid the situations where a localizer blocks two series from synchronizing
                             // if( (sliceVector[0] == 0 && sliceVector[1] == 0 && sliceVector[2] == 0) || syncSeriesIndex != -1)  // Planes are parallel !
@@ -7682,7 +7682,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     if( volumicData == 1) // All planes have the same orientation : we can compute currParallel only once !
     {
         [[cleanedOutDcmPixArray lastObject] orientation: vectors];
-        if (parto && [DCMView angleBetweenVector: parto+6 andVector:vectors+6] < PARALLELPLANETOLERANCE) // are parallel!
+        if (parto && [DCMView angleBetweenVector: parto+6 andVector:vectors+6] < [[NSUserDefaults standardUserDefaults] floatForKey: @"PARALLELPLANETOLERANCE"]) // are parallel!
             currParallel = YES;
     }
     
@@ -7693,7 +7693,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         {
             [pix orientation: vectors];
             
-            if (parto && [DCMView angleBetweenVector: parto+6 andVector:vectors+6] < PARALLELPLANETOLERANCE) // are parallel!
+            if (parto && [DCMView angleBetweenVector: parto+6 andVector:vectors+6] < [[NSUserDefaults standardUserDefaults] floatForKey: @"PARALLELPLANETOLERANCE"]) // are parallel!
                 currParallel = YES;
             else
                 currParallel = NO;

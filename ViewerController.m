@@ -358,7 +358,7 @@ enum
 @synthesize currentOrientationTool, speedSlider, speedText;
 @synthesize timer, keyImageCheck, injectionDateTime, blendedWindow;
 @synthesize blendingTypeWindow, blendingTypeMultiply, blendingTypeSubtract, blendingTypeRGB, blendingPlugins, blendingResample;
-@synthesize flagListPODComparatives, windowsStateName;
+@synthesize flagListPODComparatives, windowsStateName, titledGantry;
 
 // WARNING: If you add or modify this list, check ViewerController.m, DCMView.h and HotKey Pref Pane
 static int hotKeyToolCrossTable[] =
@@ -7528,7 +7528,7 @@ static int avoidReentryRefreshDatabase = 0;
     [imageView.curDCM orientation:orientA];
     [v.imageView.curDCM orientation:orientB];
     
-    if( [DCMView angleBetweenVector: orientA+6 andVector:orientB+6] < PARALLELPLANETOLERANCE)
+    if( [DCMView angleBetweenVector: orientA+6 andVector:orientB+6] < [[NSUserDefaults standardUserDefaults] floatForKey: @"PARALLELPLANETOLERANCE"])
         return YES;
     else
         return NO;
@@ -9836,6 +9836,38 @@ static int avoidReentryRefreshDatabase = 0;
 	return interval;
 }
 
+- (BOOL) isGantryTitled
+{
+    BOOL v = NO;
+    
+    if( pixList[ 0].count>= 3)
+    {
+        double xd = [[pixList[ 0] objectAtIndex: 2] originX] - [[pixList[ 0] objectAtIndex: 1] originX];
+        double yd = [[pixList[ 0] objectAtIndex: 2] originY] - [[pixList[ 0] objectAtIndex: 1] originY];
+        double zd = [[pixList[ 0] objectAtIndex: 2] originZ] - [[pixList[ 0] objectAtIndex: 1] originZ];
+        
+        double interval3d = sqrt(xd*xd + yd*yd + zd*zd);
+        
+        xd /= interval3d;		yd /= interval3d;		zd /= interval3d;
+        
+        // Check if the slices represent a 3D volume?
+        
+        double vectors[ 9];
+        [[pixList[ 0] objectAtIndex:1] orientationDouble: vectors];
+        
+        xd = fabs( xd - vectors[ 6]);
+        yd = fabs( yd - vectors[ 7]);
+        zd = fabs( zd - vectors[ 8]);
+        
+        if( xd + yd + zd > 0.01) {
+            NSLog( @"---- titledGantry - Not a real 3D data set: %f", xd + yd + zd);
+            v = YES;
+        }
+    }
+    
+    return v;
+}
+
 - (float) computeIntervalFlipNow: (NSNumber*) flipNowNumber
 {
 	[self selectFirstTilingView];
@@ -10082,27 +10114,7 @@ static int avoidReentryRefreshDatabase = 0;
 				}
 				
 				if( flipNow == YES)
-				{
-					xd = [[pixList[ z] objectAtIndex: 2] originX] - [[pixList[ z] objectAtIndex: 1] originX];
-					yd = [[pixList[ z] objectAtIndex: 2] originY] - [[pixList[ z] objectAtIndex: 1] originY];
-					zd = [[pixList[ z] objectAtIndex: 2] originZ] - [[pixList[ z] objectAtIndex: 1] originZ];
-					
-					interval3d = sqrt(xd*xd + yd*yd + zd*zd);
-					
-					xd /= interval3d;		yd /= interval3d;		zd /= interval3d;
-					
-					// Check if the slices represent a 3D volume?
-					
-					xd = fabs( xd - vectors[ 6]);
-					yd = fabs( yd - vectors[ 7]);
-					zd = fabs( zd - vectors[ 8]);
-					
-					if( xd + yd + zd > 0.1)
-					{
-						NSLog( @"titledGantry - Not a real 3D data set.");
-						titledGantry = YES;
-					}
-				}
+                    titledGantry = [self isGantryTitled];
 			}
 		}
 	}
@@ -11701,12 +11713,15 @@ float				matrix[25];
 							[[[a imageView] curDCM] orientation:orientA];
 							[[[b imageView] curDCM] orientation:orientB];
 							
-							if( [DCMView angleBetweenVector: orientA+6 andVector:orientB+6] < PARALLELPLANETOLERANCE)
+							if( [DCMView angleBetweenVector: orientA+6 andVector:orientB+6] < [[NSUserDefaults standardUserDefaults] floatForKey: @"PARALLELPLANETOLERANCE"])
 							{
-								[[a imageView] sendSyncMessage: 0];
-								[a ActivateBlending: b];
-								
-								fused = YES;
+                                if( [a isGantryTitled] == NO && [b isGantryTitled] == NO)
+                                {
+                                    [[a imageView] sendSyncMessage: 0];
+                                    [a ActivateBlending: b];
+                                    
+                                    fused = YES;
+                                }
 							}
 						}
 					}
@@ -11760,7 +11775,7 @@ float				matrix[25];
 		if( orientB[ 6] == 0 && orientB[ 7] == 0 && orientB[ 8] == 0) proceed = YES;
 		if( orientA[ 6] == 0 && orientA[ 7] == 0 && orientA[ 8] == 0) proceed = YES;
 		
-		if( [DCMView angleBetweenVector: orientA+6 andVector:orientB+6] > PARALLELPLANETOLERANCE)  // Planes are not paralel!
+		if( [DCMView angleBetweenVector: orientA+6 andVector:orientB+6] > [[NSUserDefaults standardUserDefaults] floatForKey: @"PARALLELPLANETOLERANCE"])  // Planes are not paralel!
 		{
 			// FROM SAME STUDY
 			
@@ -11795,7 +11810,13 @@ float				matrix[25];
 				else proceed = YES;
 			}
 		}
-		else proceed = YES;
+		else
+        {
+            [self displayWarningIfGantryTitled];
+            [blendingController displayWarningIfGantryTitled];
+            
+            proceed = YES;
+        }
 		
 		if( proceed)
 		{		
@@ -15934,7 +15955,7 @@ int i,j,l;
 		
 //		if(  curvedController == nil && [vC curvedController] == nil)
 		{
-			if( [DCMView angleBetweenVector: vectorsA+6 andVector: vectorsB+6] < PARALLELPLANETOLERANCE || [[NSUserDefaults standardUserDefaults] boolForKey:@"AlwaysPropagateScaleLevel"])
+			if( [DCMView angleBetweenVector: vectorsA+6 andVector: vectorsB+6] < [[NSUserDefaults standardUserDefaults] floatForKey: @"PARALLELPLANETOLERANCE"] || [[NSUserDefaults standardUserDefaults] boolForKey:@"AlwaysPropagateScaleLevel"])
 //				&&
 //				curvedController == nil)
 			{
@@ -15965,7 +15986,7 @@ int i,j,l;
 			}
 		}
 		
-		if( [DCMView angleBetweenVector: vectorsA+6 andVector: vectorsB+6] < PARALLELPLANETOLERANCE)
+		if( [DCMView angleBetweenVector: vectorsA+6 andVector: vectorsB+6] < [[NSUserDefaults standardUserDefaults] floatForKey: @"PARALLELPLANETOLERANCE"])
 //			&& curvedController == nil)
 		{
 			//if( [self isEverythingLoaded])
@@ -20424,7 +20445,7 @@ int i,j,l;
         [[[self imageView] curDCM] orientation:orientA];
 		[[[blendingController imageView] curDCM] orientation:orientB];
 		
-		if( [DCMView angleBetweenVector: orientA+6 andVector:orientB+6] > PARALLELPLANETOLERANCE)  // Planes are not paralel!
+		if( [DCMView angleBetweenVector: orientA+6 andVector:orientB+6] > [[NSUserDefaults standardUserDefaults] floatForKey: @"PARALLELPLANETOLERANCE"])  // Planes are not paralel!
 		{
             NSRunCriticalAlertPanel(NSLocalizedString(@"2D Planes",nil),NSLocalizedString(@"These 2D planes are not parallel, you cannot use the 2D Orthogonal MPR viewer. Instead, try the 3D MPR viewer.",nil), NSLocalizedString(@"OK",nil), nil, nil);
         }

@@ -1068,6 +1068,8 @@ static NSHost *currentHost = nil;
     [defaultValues setObject:@"1" forKey:@"scrollThroughSeriesForDX"];
     [defaultValues setObject:@"1" forKey:@"scrollThroughSeriesForOT"];
     
+    [defaultValues setObject:@"0.05" forKey:@"PARALLELPLANETOLERANCE"];
+    
     [defaultValues setObject:@"1" forKey:@"bringOsiriXToFrontAfterReceivingMessage"];
     
 	#ifdef MACAPPSTORE

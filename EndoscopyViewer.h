@@ -123,7 +123,6 @@
 #pragma mark export
 - (IBAction) setExportAllViews: (id) sender;
 - (BOOL) exportAllViews;
-- (void) exportDICOMFile:(id) sender;
 - (IBAction) endDCMExportSettings:(id) sender;
 - (unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp;
 #pragma mark-

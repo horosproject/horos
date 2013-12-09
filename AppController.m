@@ -4673,6 +4673,9 @@ static BOOL initialized = NO;
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"ReserveScreenForDB"] && [screens containsObject:[dbWindow screen]] && [screens count] > 1)
         [screens removeObjectIdenticalTo:[dbWindow screen]];
     
+    if (!screens.count)
+        screens = [[[NSScreen screens] mutableCopy] autorelease];
+    
 	// arrange them left to right
     [screens sortUsingComparator:^NSComparisonResult(id o1, id o2) {
         NSRect f1 = ((NSScreen*)o1).frame, f2 = ((NSScreen*)o2).frame;
@@ -5131,13 +5134,16 @@ static BOOL initialized = NO;
     NSArray *windows = [cWindows valueForKey: @"window"];
     
 	NSMutableArray* screens = [[[self viewerScreens] mutableCopy] autorelease];
-
+    
     if (viewersList.count < screens.count && [[NSUserDefaults standardUserDefaults] boolForKey: @"UseDBScreenAtLast"])
     {
         NSScreen* dbscreen = [dbWindow screen];
         [screens removeObjectIdenticalTo:dbscreen];
     }
-
+    
+    if( screens.count <= 0)
+        screens = [[[self viewerScreens] mutableCopy] autorelease];
+    
     int numberOfMonitors = [screens count];
 
 	NSMutableArray *cResult = [NSMutableArray array];
