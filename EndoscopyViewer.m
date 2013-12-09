@@ -487,6 +487,8 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 	// camera representation
 	[self setCameraRepresentation];
 	[super showWindow:sender];
+    
+    [self.window makeFirstResponder: [mprController originalView]];
 }
 
 - (NSMutableArray*) pixList
@@ -991,7 +993,7 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 		[toolbarItem setToolTip: NSLocalizedString(@"Export this image in a DICOM file",nil)];
 		[toolbarItem setImage: [NSImage imageNamed: ExportToolbarItemIdentifier]];
 		// target is not set, it will be the first responder
-		[toolbarItem setTarget: self];
+		[toolbarItem setTarget: vrController.view];
 		[toolbarItem setAction: @selector(exportDICOMFile:)];
     }
 	else if ([itemIdent isEqualToString: ShadingToolbarItemIdentifier])

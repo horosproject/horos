@@ -9173,7 +9173,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					glEnd();
 					glLineWidth(1.0 * sf);
 					
-                    // KEY VIEW
+                    // KEY VIEW - RED BOX
                     
 					if( isKeyView && (frontMost || [ViewerController frontMostDisplayed2DViewerForScreen: self.window.screen] == self.windowController))
 					{
