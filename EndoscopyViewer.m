@@ -1157,18 +1157,12 @@ return YES;
 	return exportAllViews;
 }
 
-- (void) exportDICOMFile:(id) sender
-{
-	[[self window] makeFirstResponder: (NSView*) [vrController view]];
-	[NSApp beginSheet: exportDCMWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
-}
-
 -(IBAction) endDCMExportSettings:(id) sender
 {
 	[exportDCMWindow makeFirstResponder: nil];	// To force nstextfield validation.
-	[exportDCMWindow orderOut:sender];
+    [exportDCMWindow orderOut: self];
 	[NSApp endSheet:exportDCMWindow returnCode:[sender tag]];
-	
+    
 	NSMutableArray *producedFiles = [NSMutableArray array];
 	
     DICOMExport *exportDCM = [[[DICOMExport alloc] init] autorelease];

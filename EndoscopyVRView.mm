@@ -17,6 +17,11 @@
 
 @implementation EndoscopyVRView
 
+- (void) exportDICOMFile:(id) sender
+{
+	[NSApp beginSheet: exportDCMWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
+}
+
 -(void) mouseMoved: (NSEvent*) theEvent
 {
 	if( ![[self window] isVisible])
