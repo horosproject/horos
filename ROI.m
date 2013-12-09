@@ -2149,13 +2149,13 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 			case tOPolygon:
 			case tAngle:
 			{
-				float distance;
 				NSMutableArray *splinePoints = [self splinePoints: scale];
 				
 				if( [splinePoints count] > 0)
 				{
 					for( int i = 0; i < ([splinePoints count] - 1); i++ )
 					{
+                        float distance;
 						[self DistancePointLine:pt :[[splinePoints objectAtIndex:i] point] : [[splinePoints objectAtIndex:(i+1)] point] :&distance];
 						
 						if( distance*scale < neighborhoodRad/2)
@@ -2164,6 +2164,17 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 							break;
 						}
 					}
+                    
+                    // Test ROI center
+                    if( imode != ROI_selected)
+                    {
+                        float distance = [self Magnitude: pt :rect.origin];
+                        if( distance*scale < neighborhoodRad/2)
+						{
+							imode = ROI_selected;
+							break;
+						}
+                    }
 				}
 			}
 			break;
