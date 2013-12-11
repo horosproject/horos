@@ -8263,6 +8263,12 @@ static int avoidReentryRefreshDatabase = 0;
 			[self didChangeValueForKey: @"KeyImageCounter"];
 			
 			[imageView computeColor];
+            
+            if( exportDCM)
+            {
+                [exportDCM release]; //We want new UNIQUE seriesInstanceUID & studyInstanceUID
+                exportDCM = nil;
+            }
 		}
 		@catch( NSException * e) 
 		{

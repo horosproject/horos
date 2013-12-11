@@ -67,6 +67,9 @@
 /** Returns to implementationClassUID for files created used by OsiriX */
 + (NSString *)implementationVersionName;
 
++ (NSString*) newStudyInstanceUID;
++ (NSString*) newSeriesInstanceUID;
+
 /** Create an empty DICOM object */
 + (id)dcmObject;
 

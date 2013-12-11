@@ -23,7 +23,8 @@ static NSString *rootUID = @"1.3.6.1.4.1.19291.2.1";
 static NSString *uidQualifier = @"99";
 static NSString *implementationName = @"OSIRIX";
 static NSString *softwareVersion = @"001";
-static unsigned int globallyUnique = 100000;
+static unsigned int globallyUnique = 1;
+static NSString *macAddress = nil;
 
 void exitOsiriX(void)
 {
@@ -212,6 +213,46 @@ static NSString* getMacAddress( void)
 		else
 		{
 			result = [NSString stringWithFormat: @"%02x:%02x:%02x:%02x:%02x:%02x", MACAddress[0], MACAddress[1], MACAddress[2], MACAddress[3], MACAddress[4], MACAddress[5]];
+		}
+    }
+    
+    (void) IOObjectRelease(intfIterator);	// Release the iterator.
+    
+    return result;
+}
+
+static NSString* getMacAddressNumber( void)
+{
+    kern_return_t	kernResult = KERN_SUCCESS; // on PowerPC this is an int (4 bytes)
+    /*
+     *	error number layout as follows (see mach/error.h and IOKit/IOReturn.h):
+     *
+     *	hi		 		       lo
+     *	| system(6) | subsystem(12) | code(14) |
+     */
+    
+    io_iterator_t	intfIterator;
+    UInt8			MACAddress[kIOEthernetAddressSize];
+	NSString		*result = nil;
+	
+    kernResult = FindEthernetInterfaces(&intfIterator);
+    
+    if (KERN_SUCCESS != kernResult)
+	{
+        printf("FindEthernetInterfaces returned 0x%08x\n", kernResult);
+    }
+    else
+	{
+        kernResult = GetMACAddress(intfIterator, MACAddress, sizeof(MACAddress));
+        
+        if (KERN_SUCCESS != kernResult)
+		{
+            printf("GetMACAddress returned 0x%08x\n", kernResult);
+            result = @"0";
+        }
+		else
+		{
+			result = [NSString stringWithFormat: @"%d%d%d%d%d%d", MACAddress[0], MACAddress[1], MACAddress[2], MACAddress[3], MACAddress[4], MACAddress[5]];
 		}
     }
     
@@ -585,9 +626,17 @@ PixelRepresentation
 
 + (NSString*) globallyUniqueString
 {
-	globallyUnique++;
-	NSNumber *vd = [NSNumber numberWithUnsignedLongLong: 10000. * [NSDate timeIntervalSinceReferenceDate]];
-	NSString *s = [NSString stringWithFormat: @"%@%d", vd, globallyUnique];
+    NSString *s = nil;
+    @synchronized( rootUID)
+    {
+        globallyUnique++;
+        if( macAddress == nil) {
+            macAddress = [getMacAddressNumber() retain];
+        }
+        
+        NSNumber *vd = [NSNumber numberWithUnsignedLongLong: 100. * [NSDate timeIntervalSinceReferenceDate]];
+        s = [NSString stringWithFormat: @"%@%@%d", macAddress, vd, globallyUnique];
+    }
 	return s;
 }
 
@@ -1582,13 +1631,24 @@ PixelRepresentation
 	return [[[NSString alloc] initWithData:data encoding:[specificCharacterSet encoding]] autorelease];
 }
 
-- (void)newStudyInstanceUID
++ (NSString*) newStudyInstanceUID
 {
 	NSString *uidSuffix = [DCMObject globallyUniqueString];
-		
+    
 	NSArray *uidValues = [NSArray arrayWithObjects:rootUID, @"1", uidSuffix, nil];
 	NSString *uid = [uidValues componentsJoinedByString:@"."];
-	if( [uid length] > 64) uid = [uid substringToIndex:64];
+	if( [uid length] > 64)
+    {
+        NSLog( @"------ warning newSeriesInstanceUID.length > 64 : %@", uid);
+		uid = [uid substringToIndex:64];
+    }
+	
+    return uid;
+}
+
+- (void)newStudyInstanceUID
+{
+	NSString *uid = [DCMObject newStudyInstanceUID];
 	
 	DCMAttributeTag *tag = [DCMAttributeTag tagWithName:@"StudyInstanceUID"];
 	NSMutableArray *attrValues = [NSMutableArray arrayWithObject:uid];
@@ -1596,13 +1656,24 @@ PixelRepresentation
 	[attributes setObject:attr forKey: tag.stringValue];
 }
 
-- (void)newSeriesInstanceUID
++ (NSString*) newSeriesInstanceUID
 {
 	NSString *uidSuffix = [DCMObject globallyUniqueString];
 	NSArray *uidValues = [NSArray arrayWithObjects:rootUID, @"2", uidSuffix, nil];
 	NSString *uid = [uidValues componentsJoinedByString:@"."];
 	if( [uid length] > 64)
+    {
+        NSLog( @"------ warning newSeriesInstanceUID.length > 64 : %@", uid);
 		uid = [uid substringToIndex:64];
+    }
+    
+    return uid;
+}
+
+- (void)newSeriesInstanceUID
+{
+	NSString *uid = [DCMObject newSeriesInstanceUID];
+    
 	DCMAttributeTag *tag = [DCMAttributeTag tagWithName:@"SeriesInstanceUID"];
 	NSMutableArray *attrValues = [NSMutableArray arrayWithObject:uid];
 	DCMAttribute *attr = [DCMAttribute attributeWithAttributeTag:tag vr: tag.vr values:attrValues];

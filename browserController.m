@@ -4645,6 +4645,9 @@ static NSConditionLock *threadLock = nil;
 
 - (void) refreshComparativeStudies: (NSArray*) newStudies
 {
+    if( [NSThread isMainThread] == NO)
+        N2LogStackTrace( @"***** We must be on MAIN thread");
+    
     NSManagedObject *item = [databaseOutline itemAtRow: [[databaseOutline selectedRowIndexes] firstIndex]];
     DicomStudy *studySelected = [[item valueForKey: @"type"] isEqualToString: @"Study"] ? item : [item valueForKey: @"study"];
     
@@ -4808,6 +4811,9 @@ static NSConditionLock *threadLock = nil;
 
 - (void)_newStudiesRefreshComparativeStudies: (NSNotification *)aNotification
 {
+    if( [NSThread isMainThread] == NO)
+        N2LogStackTrace( @"***** We must be on MAIN thread");
+    
     NSArray *newStudies = [aNotification.userInfo objectForKey: OsirixAddToDBNotificationImagesArray];
     
     for( DicomStudy *newStudy in newStudies)
@@ -4860,7 +4866,8 @@ static NSConditionLock *threadLock = nil;
 
 - (void)outlineViewSelectionDidChange: (NSNotification *)aNotification
 {
-//	NSLog(@"outlineViewSelectionDidChange");
+    if( [NSThread isMainThread] == NO)
+        N2LogStackTrace( @"***** We must be on MAIN thread");
 	
 	@synchronized (self)
     {

@@ -49,9 +49,7 @@ static float deg2rad = M_PI / 180.0f;
 		exportSeriesNumber = no;
 		
 		[exportSeriesUID release];
-		DCMObject *dcmObject = [[[DCMObject alloc] init] autorelease];
-		[dcmObject newSeriesInstanceUID];
-		exportSeriesUID = [[dcmObject attributeValueWithName:@"SeriesInstanceUID"] retain];
+		exportSeriesUID = [[DCMObject newSeriesInstanceUID] retain];
 	}
 }
 
@@ -77,11 +75,8 @@ static float deg2rad = M_PI / 180.0f;
 		exportSeriesNumber = 5000;
 		
 		#ifndef OSIRIX_LIGHT
-		DCMObject *dcmObject = [[[DCMObject alloc] init] autorelease];
-		[dcmObject newSeriesInstanceUID];
-		exportSeriesUID = [[dcmObject attributeValueWithName:@"SeriesInstanceUID"] retain];
-		exportSeriesDescription = @"OsiriX SC";
-		[exportSeriesDescription retain];
+		exportSeriesUID = [[DCMObject newSeriesInstanceUID] retain];
+		exportSeriesDescription = [@"OsiriX SC" retain];
 		#endif
 		
 		spacingX = 0;
@@ -411,6 +406,10 @@ static float deg2rad = M_PI / 180.0f;
 
 - (NSString*) writeDCMFile: (NSString*) dstPath withExportDCM:(DCMExportPlugin*) dcmExport
 {
+    #ifdef OSIRIX_LIGHT
+    NSLog( @"---- OSIRIX LIGHT CANNOT write DICOM files");
+    #endif
+    
 	if( spp != 1 && spp != 3)
 	{
 		NSLog( @"**** DICOM Export: sample per pixel not supported: %ld", spp);
