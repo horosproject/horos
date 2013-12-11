@@ -18,6 +18,7 @@
 #import "NSImage+N2.h"
 #import "NSHost+N2.h"
 #import <stdlib.h>
+#import "N2Debug.h"
 
 @implementation DataNodeIdentifier
 
@@ -192,6 +193,11 @@
 {
     NSString* localAddress = nil;
     if( !address) address = &localAddress;
+    
+    if( location == nil) {
+        N2LogStackTrace( @"---- warning: location == nil");
+        location = @"0.0.0.0";
+    }
     
     if( address)
         *address = [NSString stringWithString: location];
