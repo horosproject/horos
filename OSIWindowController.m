@@ -271,10 +271,11 @@ static BOOL protectedReentryWindowDidResize = NO;
 				[[self window] setFrame: dstFrame display:YES];
 		}
 		
-		if( [self isKindOfClass: [ViewerController class]])
-		{
-			[(ViewerController*)self showCurrentThumbnail: self];
-		}
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"] == NO)
+        {
+            if( [self isKindOfClass: [ViewerController class]])
+                [(ViewerController*)self showCurrentThumbnail: self];
+        }
 	}
 	
 	protectedReentryWindowDidResize = NO;

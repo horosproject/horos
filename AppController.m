@@ -5737,7 +5737,10 @@ static BOOL initialized = NO;
         if( [keyWindow isKindOfClass:[ViewerController class]])
         {
             [[keyWindow imageView] becomeMainWindow];
-            [keyWindow buildMatrixPreview: YES];
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
+                [keyWindow buildMatrixPreview: NO];
+            else
+                [keyWindow buildMatrixPreview: YES];
             [keyWindow redrawToolbar];
 		}
         

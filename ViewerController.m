@@ -4131,7 +4131,8 @@ static volatile int numberOfThreadsForRelisce = 0;
             ViewerController *newViewer = [[BrowserController currentBrowser] loadSeries :series :nil :YES keyImagesOnly: displayOnlyKeyImages];
             [newViewer setHighLighted: 1.0];
             
-            [self matrixPreviewSelectCurrentSeries];
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"] == NO)
+                [self matrixPreviewSelectCurrentSeries];
             
             if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
                 [NSApp sendAction: @selector(tileWindows:) to:nil from: self];
