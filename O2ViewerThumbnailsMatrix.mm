@@ -19,6 +19,7 @@
 #import "ViewerController.h"
 #import "AppController.h"
 #import "ThumbnailsListPanel.h"
+#import "N2Debug.h"
 
 static NSString *dragType = @"Osirix Series Viewer Drag";
 
@@ -205,12 +206,21 @@ static NSString *dragType = @"Osirix Series Viewer Drag";
     }
     while (lastMouse.type != NSLeftMouseUp && [start timeIntervalSinceNow] >= DRAGTIMEOUT);
     
-    [self.selectedCell setHighlighted: NO];
+    id cell = [self.selectedCell retain];
     
-    if( [start timeIntervalSinceNow] < DRAGTIMEOUT && [[[[self selectedCell] representedObject] object] isKindOfClass: [DicomSeries class]])
-        [self startDrag: event];
-    else
-        [[[self selectedCell] target] performSelector: [[self selectedCell] action] withObject: self];
+    @try {
+        [cell setHighlighted: NO];
+        
+        if( [start timeIntervalSinceNow] < DRAGTIMEOUT && [[[cell representedObject] object] isKindOfClass: [DicomSeries class]])
+            [self startDrag: event];
+        else
+            [[cell target] performSelector: [cell action] withObject: self];
+    }
+    @catch (NSException *exception) {
+        N2LogException( exception);
+    }
+    
+    [cell autorelease];
 }
 
 - (NSRect)cellFrameAtRow:(NSInteger)row column:(NSInteger)col
