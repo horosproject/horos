@@ -59,7 +59,7 @@
 //#define new_loupe
 
 			short						syncro = syncroLOC;
-static		float						deg2rad = M_PI / 180.0; 
+static		double						deg2rad = M_PI / 180.0;
 static		unsigned char				*PETredTable = nil, *PETgreenTable = nil, *PETblueTable = nil;
 static		BOOL						NOINTERPOLATION = NO, SOFTWAREINTERPOLATION = NO, IndependentCRWLWW, pluginOverridesMouse = NO;  // Allows plugins to override mouse click actions.
             BOOL						FULL32BITPIPELINE = NO, gDontListenToSyncMessage = NO;
@@ -7613,6 +7613,22 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     float cosTheta = dot( v1, v2) / (norm( v1)*norm( v2));
     
     return acosf( cosTheta);
+}
+
++ (double) angleBetweenVectorD: (double*) v1 andVectorD: (double*) v2
+{
+    if( v1[ 0] == 0 && v1[ 1] == 0 && v1[ 2] == 0 && v2[ 0] == 0 && v2[ 1] == 0 && v2[ 2] == 0)
+        return 0;
+    
+    if( v1[ 0] == 0 && v1[ 1] == 0 && v1[ 2] == 0)
+        return deg2rad* 180;
+    
+    if( v2[ 0] == 0 && v2[ 1] == 0 && v2[ 2] == 0)
+        return deg2rad* 180;
+    
+    double cosTheta = dot( v1, v2) / (norm( v1)*norm( v2));
+    
+    return acos( cosTheta);
 }
 
 //===================================================================

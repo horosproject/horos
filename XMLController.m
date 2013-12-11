@@ -502,6 +502,9 @@ extern int delayedTileWindows;
 {
 	if( image == imObj) return;
 	
+    int selectedRow = [table selectedRow];
+	NSPoint origin = [[table superview] bounds].origin;
+    
 	[table deselectAll: self];
 	
 	[imObj release];
@@ -573,6 +576,12 @@ extern int delayedTileWindows;
 	[table reloadData];
 	[table expandItem:[table itemAtRow:0] expandChildren:NO];
 	
+    [table selectRowIndexes: [NSIndexSet indexSetWithIndex: selectedRow] byExtendingSelection: NO];
+	[[tableScrollView contentView] scrollToPoint: origin];
+	[tableScrollView reflectScrolledClipView: [tableScrollView contentView]];
+	[table setNeedsDisplay];
+	[[self window] makeFirstResponder: table];
+    
 	if( [validatorWindow isVisible])
 	{
 		[self verify: self];

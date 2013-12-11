@@ -1266,19 +1266,19 @@ return YES;
         imageSize = [curPix pwidth] * [curPix pheight];
         size = sizeof(float) * [pixList count]/2 * imageSize;
         
-        float orientation[ 9];
-        float origin[ 3];
+        double orientation[ 9];
+        double origin[ 3];
         double matrix[ 12];
         
-        [curPix orientation: orientation];
+        [curPix orientationDouble: orientation];
         origin[ 0] = [curPix originX]; origin[ 1] = [curPix originY]; origin[ 2] = [curPix originZ];
         
         for( DCMPix *p in pixList)
         {
-            float o[ 9];
-            float xyz[ 3];
+            double o[ 9];
+            double xyz[ 3];
             
-            [p orientation: o];
+            [p orientationDouble: o];
             xyz[ 0] = [p originX]; xyz[ 1] = [p originY]; xyz[ 2] = [p originZ];
             
             BOOL equal = YES;
@@ -1300,16 +1300,16 @@ return YES;
         {
             for( DCMPix *p in pixList)
             {
-                float o[ 9];
-                float xyz[ 3];
+                double o[ 9];
+                double xyz[ 3];
                 
-                [p orientation: o];
+                [p orientationDouble: o];
                 xyz[ 0] = [p originX]; xyz[ 1] = [p originY]; xyz[ 2] = [p originZ];
                 
-                float vectorModel[ 9], vectorSensor[ 9];
+                double vectorModel[ 9], vectorSensor[ 9];
                 
-                [p orientation: vectorSensor];
-                [curPix orientation: vectorModel];
+                [p orientationDouble: vectorSensor];
+                [curPix orientationDouble: vectorModel];
                 
                 double length;
                 
@@ -1369,7 +1369,7 @@ return YES;
                 
                 xyz[ 0] = origin[ 0];
                 xyz[ 1] = origin[ 1];
-                [p setOrigin: xyz];
+                [p setOriginDouble: xyz];
             }
             
             for( DCMPix *p in pixList)
@@ -9995,25 +9995,17 @@ static int avoidReentryRefreshDatabase = 0;
     
     if( pixList[ 0].count>= 3)
     {
-        double xd = [[pixList[ 0] objectAtIndex: 2] originX] - [[pixList[ 0] objectAtIndex: 1] originX];
-        double yd = [[pixList[ 0] objectAtIndex: 2] originY] - [[pixList[ 0] objectAtIndex: 1] originY];
-        double zd = [[pixList[ 0] objectAtIndex: 2] originZ] - [[pixList[ 0] objectAtIndex: 1] originZ];
-        
-        double interval3d = sqrt(xd*xd + yd*yd + zd*zd);
-        
-        xd /= interval3d;		yd /= interval3d;		zd /= interval3d;
-        
-        // Check if the slices represent a 3D volume?
+        double Pn1[ 3];
+        Pn1[ 0] = [[pixList[ 0] objectAtIndex: 2] originX] - [[pixList[ 0] objectAtIndex: 1] originX];
+        Pn1[ 1] = [[pixList[ 0] objectAtIndex: 2] originY] - [[pixList[ 0] objectAtIndex: 1] originY];
+        Pn1[ 2] = [[pixList[ 0] objectAtIndex: 2] originZ] - [[pixList[ 0] objectAtIndex: 1] originZ];
         
         double vectors[ 9];
         [[pixList[ 0] objectAtIndex:1] orientationDouble: vectors];
         
-        xd = fabs( xd - vectors[ 6]);
-        yd = fabs( yd - vectors[ 7]);
-        zd = fabs( zd - vectors[ 8]);
-        
-        if( xd + yd + zd > 0.01) {
-            NSLog( @"---- titledGantry - Not a real 3D data set: %f", xd + yd + zd);
+        double angle = [DCMView angleBetweenVectorD: Pn1 andVectorD: vectors+6];
+        if( angle/deg2rad > 1) {
+            NSLog( @"---- titledGantry - Not a real 3D data set: %f degrees", angle/deg2rad);
             v = YES;
         }
     }
