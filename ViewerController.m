@@ -1367,9 +1367,9 @@ return YES;
                     break;
                 }
                 
-                xyz[ 0] = origin[ 0];
-                xyz[ 1] = origin[ 1];
-                [p setOriginDouble: xyz];
+//                xyz[ 0] = origin[ 0];
+//                xyz[ 1] = origin[ 1];
+//                [p setOriginDouble: xyz];
             }
             
             for( DCMPix *p in pixList)
@@ -9915,10 +9915,13 @@ static int avoidReentryRefreshDatabase = 0;
 {
 	if( titledGantry)
     {
+        NSString *message = nil;
 #ifdef OSIRIX_LIGHT
-        NSRunInformationalAlertPanel( NSLocalizedString(@"Warning!", nil), NSLocalizedString(@"These images were acquired with a gantry tilt. This gantry tilt will produce a distortion in 3D post-processing. You can use the plugin 'Gantry Tilt Correction' to convert these images.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+        message = [NSString stringWithFormat: NSLocalizedString(@"These images were acquired with a gantry tilt: %0.2f\u00B0. This gantry tilt will produce a distortion in 3D post-processing. You can use the plugin 'Gantry Tilt Correction' to convert these images.", nil), titledGantryDegrees];
+        NSRunInformationalAlertPanel( NSLocalizedString(@"Warning!", nil), message, NSLocalizedString(@"OK", nil), nil, nil);
 #else
-		NSInteger r = NSRunInformationalAlertPanel( NSLocalizedString(@"Warning!", nil), NSLocalizedString(@"These images were acquired with a gantry tilt. This gantry tilt will produce a distortion in 3D post-processing. Should I convert these images to a real 3D dataset.", nil), NSLocalizedString(@"Yes", nil), NSLocalizedString(@"No", nil), nil);
+        message = [NSString stringWithFormat: NSLocalizedString(@"These images were acquired with a gantry tilt: %0.2f\u00B0. This gantry tilt will produce a distortion in 3D post-processing. Should I convert these images to a real 3D dataset.", nil), titledGantryDegrees];
+		NSInteger r = NSRunInformationalAlertPanel( NSLocalizedString(@"Warning!", nil), message, NSLocalizedString(@"Yes", nil), NSLocalizedString(@"No", nil), nil);
         
         if( r == NSAlertDefaultReturn)
             [ViewerController correctGangtryTilt: self];
@@ -10003,11 +10006,17 @@ static int avoidReentryRefreshDatabase = 0;
         double vectors[ 9];
         [[pixList[ 0] objectAtIndex:1] orientationDouble: vectors];
         
-        double angle = [DCMView angleBetweenVectorD: Pn1 andVectorD: vectors+6];
-        if( angle/deg2rad > 1) {
+        double angle = fabs( [DCMView angleBetweenVectorD: Pn1 andVectorD: vectors+6]);
+        if( angle/deg2rad > [[NSUserDefaults standardUserDefaults] floatForKey: @"MinimumTitledGantryTolerance"]) {
             NSLog( @"---- titledGantry - Not a real 3D data set: %f degrees", angle/deg2rad);
             v = YES;
         }
+        else if( angle/deg2rad != 0)
+        {
+            NSLog( @"---- titledGantry (tolerated) - Not a real 3D data set: %f degrees", angle/deg2rad);
+        }
+        
+        titledGantryDegrees = angle/deg2rad;
     }
     
     return v;
@@ -10318,6 +10327,34 @@ static int avoidReentryRefreshDatabase = 0;
 		if( nonContinuous)
 		{
 			NSRunInformationalAlertPanel( NSLocalizedString(@"Warning!", nil), [NSString stringWithFormat: NSLocalizedString(@"These slices have a non regular slice interval, varying from %.3f mm to %.3f mm. This will produce distortion in 3D representations, and in measurements.", nil), minInterval, maxInterval], NSLocalizedString(@"OK", nil), nil, nil);
+            
+//            // Resample origins, according to first and last image
+//            
+//            double fullLength;
+//            
+//            double xd = [[pixList[ 0] lastObject] originX] - [[pixList[ 0] objectAtIndex: 0] originX];
+//            double yd = [[pixList[ 0] lastObject] originY] - [[pixList[ 0] objectAtIndex: 0] originY];
+//            double zd = [[pixList[ 0] lastObject] originZ] - [[pixList[ 0] objectAtIndex: 0] originZ];
+//            
+//            double interval3d = sqrt(xd*xd + yd*yd + zd*zd);
+//            NSLog( @"full length = %f, new mean interval: %f", interval3d, interval3d / pixList[ 0].count);
+//            
+//            interval3d /= pixList[ 0].count;
+//            
+//            double vectors[ 9];
+//            
+//            [[pixList[0] objectAtIndex: 0] orientationDouble: vectors];
+//            
+//            for( int i = 0 ; i < (long)[pixList[ 0] count]; i++)
+//            {
+//                double newOrigin[ 3];
+//                newOrigin[ 0] = [[pixList[ 0] objectAtIndex: 0] originX] + interval3d*i*vectors[6];
+//                newOrigin[ 1] = [[pixList[ 0] objectAtIndex: 0] originY] + interval3d*i*vectors[7];
+//                newOrigin[ 2] = [[pixList[ 0] objectAtIndex: 0] originZ] + interval3d*i*vectors[8];
+//                
+//                [[pixList[ 0] objectAtIndex: i] setOriginDouble: newOrigin];
+//                [[pixList[ 0] objectAtIndex: i] setSliceInterval: 0];
+//            }
 		}
 		else if( [self isDataVolumicIn4D: YES] == NO)
 		{

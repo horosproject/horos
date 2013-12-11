@@ -306,6 +306,7 @@ enum
 	NSMutableArray			*undoQueue, *redoQueue;
 	
 	BOOL					titledGantry, updateTilingViews;
+    float                   titledGantryDegrees;
 	
 	volatile BOOL			checkEverythingLoaded;
 	
