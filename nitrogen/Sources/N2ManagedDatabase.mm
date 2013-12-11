@@ -309,31 +309,42 @@ static int gTotalN2ManagedObjectContext = 0;
                     do { // try 2 times
                         ++i;
                         
-                        NSError* err = NULL;
-                        NSDictionary* options = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:[self migratePersistentStoresAutomatically]], NSMigratePersistentStoresAutomaticallyOption, [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, NULL];
+                        NSError* err = nil;
+                        NSDictionary* options = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:[self migratePersistentStoresAutomatically]], NSMigratePersistentStoresAutomaticallyOption, [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, nil];
                         NSURL* url = [NSURL fileURLWithPath:sqlFilePath];
                         @try {
-                            pStore = [persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:NULL URL:url options:options error:&err];
+                            pStore = [persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:url options:options error:&err];
                         } @catch (...) {
                         }
                         
                         if (!pStore && i == 1)
                         {
                             NSLog(@"Error: [N2ManagedDatabase contextAtPath:] %@", [err description]);
-                            if ([NSThread isMainThread]) NSRunCriticalAlertPanel( [NSString stringWithFormat:NSLocalizedString(@"%@ Storage Error", nil), [self className]], [NSString stringWithFormat: @"%@\r\r%@", err.localizedDescription, sqlFilePath], NSLocalizedString(@"OK", NULL), NULL, NULL);
+                            if ([NSThread isMainThread]) {
+                                NSInteger result = NSRunCriticalAlertPanel( [NSString stringWithFormat:NSLocalizedString(@"%@ Storage Error", nil), [self className]], [NSString stringWithFormat: @"%@\r\r%@\r\r%@", err.localizedDescription, sqlFilePath, NSLocalizedString(@"I could delete the SQL index file to reset it.", nil)], NSLocalizedString(@"Continue", nil), NSLocalizedString(@"Delete the SQL index", nil), nil);
+                                
+                                if( result == NSAlertAlternateReturn) {
+                                    NSInteger result = NSRunCriticalAlertPanel( [NSString stringWithFormat:NSLocalizedString(@"%@ Storage Error", nil), [self className]], [NSString stringWithFormat: @"%@\r\r%@", NSLocalizedString( @"Do you confirm to delete this index file? This operation cannot be undone.", nil), sqlFilePath], NSLocalizedString(@"Cancel", nil), NSLocalizedString(@"Delete", nil), nil);
+                                    
+                                    if( result == NSAlertAlternateReturn) {
+                                        [NSFileManager.defaultManager removeItemAtPath:sqlFilePath error: nil];
+                                        i = 0;
+                                    }
+                                }
+                            }
                             
-                            // error = [NSError osirixErrorWithCode:0 underlyingError:error localizedDescriptionFormat:NSLocalizedString(@"Store Configuration Failure: %@", NULL), error.localizedDescription? error.localizedDescription : NSLocalizedString(@"Unknown Error", NULL)];
+                            // error = [NSError osirixErrorWithCode:0 underlyingError:error localizedDescriptionFormat:NSLocalizedString(@"Store Configuration Failure: %@", nil), error.localizedDescription? error.localizedDescription : NSLocalizedString(@"Unknown Error", nil)];
                             
                             // delete the old file... for the Database.sql model ONLY(Dont do this for the WebUser db)
                             if( self.deleteSQLFileIfOpeningFailed)
-                                [NSFileManager.defaultManager removeItemAtPath:sqlFilePath error:NULL];
+                                [NSFileManager.defaultManager removeItemAtPath:sqlFilePath error:nil];
                         }
                     } while (!pStore && i < 2);
                     
                     // Save the models for forward compatibility with old OsiriX versions that don't know the current model
                     NSString *modelsPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: [[self class] modelName]];
                     [[NSFileManager defaultManager] removeItemAtPath: localModelsPath error: nil];
-                    [[NSFileManager defaultManager] copyItemAtPath:modelsPath toPath:localModelsPath error:NULL];
+                    [[NSFileManager defaultManager] copyItemAtPath:modelsPath toPath:localModelsPath error:nil];
 
                 }
                 
