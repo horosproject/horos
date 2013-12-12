@@ -1637,6 +1637,9 @@ static NSConditionLock *threadLock = nil;
                 matrixLoadIconsThread = nil;
             }
             
+            self.comparativePatientUID = nil;
+            self.comparativeStudies = nil;
+            
             @synchronized( smartAlbumDistantArraySync)
             {
                 [smartAlbumDistantArray release];
@@ -1657,6 +1660,12 @@ static NSConditionLock *threadLock = nil;
 			[_database save:nil];
 			[_database autorelease]; _database = nil;
 			
+            [databaseOutline reloadData];
+            [albumTable reloadData];
+            [comparativeTable reloadData];
+            
+            [self.window display];
+            
 			[DCMPix purgeCachedDictionaries];
 			[DCMView purgeStringTextureCache];
 			
@@ -1713,12 +1722,14 @@ static NSConditionLock *threadLock = nil;
 			[[_database managedObjectContext] lock];
 			@try
             {
+                [databaseOutline reloadData];
+				[albumTable reloadData];
+                [comparativeTable reloadData];
+                
+                [self.window display];
 				[self setDBWindowTitle];
 				[self refreshPACSOnDemandResults: self];
                 
-				[databaseOutline reloadData];
-				[albumTable reloadData];
-				
 				[self setNetworkLogs];
 				[self outlineViewRefresh];
 				[self refreshMatrix: self];
@@ -4648,6 +4659,9 @@ static NSConditionLock *threadLock = nil;
     if( [NSThread isMainThread] == NO)
         N2LogStackTrace( @"***** We must be on MAIN thread");
     
+    if( _database == nil)
+        return;
+    
     NSManagedObject *item = [databaseOutline itemAtRow: [[databaseOutline selectedRowIndexes] firstIndex]];
     DicomStudy *studySelected = [[item valueForKey: @"type"] isEqualToString: @"Study"] ? item : [item valueForKey: @"study"];
     
@@ -4813,6 +4827,9 @@ static NSConditionLock *threadLock = nil;
 {
     if( [NSThread isMainThread] == NO)
         N2LogStackTrace( @"***** We must be on MAIN thread");
+    
+    if( _database == nil)
+        return;
     
     NSArray *newStudies = [aNotification.userInfo objectForKey: OsirixAddToDBNotificationImagesArray];
     
@@ -10866,13 +10883,11 @@ static BOOL needToRezoom;
 {	
 	if ([aTableView isEqual:albumTable] && _database)
 	{
-		//if( displayEmptyDatabase) return 0;
-		return [self.albumArray count];
+        return [self.albumArray count];
 	}
     
     if ([aTableView isEqual: comparativeTable] && _database)
 	{
-		//if( displayEmptyDatabase) return 0;
 		return [comparativeStudies count];
 	}
     
@@ -10929,11 +10944,11 @@ static BOOL needToRezoom;
             [cell setRightText:noOfStudies];
         }
         
-        if ([aTableView isEqual: comparativeTable] && _database)
+        if ([aTableView isEqual: comparativeTable])
         {
             ComparativeCell *cell = (ComparativeCell*) aCell;
             
-            if (rowIndex >= 0 && rowIndex < comparativeStudies.count)
+            if (rowIndex >= 0 && rowIndex < comparativeStudies.count && _database)
             {
                 NSFont *txtFont;
                 BOOL local = NO;
@@ -10942,10 +10957,10 @@ static BOOL needToRezoom;
                 
                 if( [study isKindOfClass: [DicomStudy class]])
                     local = YES;
-            
+                
                 if( local) txtFont = [NSFont boldSystemFontOfSize: [self fontSize: @"dbComparativeFont"]];
                 else txtFont = [NSFont fontWithName: DISTANTSTUDYFONT size: [self fontSize: @"dbComparativeFont"]];
-            
+                
                 [cell setFont:txtFont];
                 cell.title = @"DUMMY"; // avoid NIL values here
                 cell.leftTextFirstLine = [study studyName];

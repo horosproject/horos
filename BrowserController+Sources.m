@@ -41,6 +41,7 @@
 #import "NSHost+N2.h"
 #import "DefaultsOsiriX.h"
 #import "NSString+N2.h"
+#import "WaitRendering.h"
 
 /*
 #include <IOKit/IOKitLib.h>
@@ -306,16 +307,13 @@ enum {
 
 - (void) setDatabaseWithModalWindow: (DicomDatabase*) db
 {
-    NSThread* thread = [NSThread currentThread];
-	thread.name = NSLocalizedString(@"Opening database...", nil);
-    thread.status = NSLocalizedString(@"Opening database...", nil);
-    thread.supportsCancel = YES;
-    
-	ThreadModalForWindowController* tmc = [thread startModalForWindow:self.window];
+    WaitRendering *w  = [[[WaitRendering alloc] init: NSLocalizedString(@"Loading OsiriX database...", nil)] autorelease];
+    [w showWindow:self];
     
     [self setDatabase: db];
     
-    [tmc invalidate];
+    [w close];
+    
 }
 
 -(void)setDatabaseFromSourceIdentifier:(DataNodeIdentifier*)dni
