@@ -184,8 +184,8 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
     contentRect.origin.y += contentRect.size.height-p;
     contentRect.size.height = p;
     frame = [self.window frameRectForContentRect:contentRect];
-    if (!NSEqualRects(frame, oframe)) 
-        [self.window setFrame:frame display:YES animate:YES];
+    if (!NSEqualRects(frame, oframe))
+        [self.window setFrame:frame display:YES];
 }
 
 -(void)_observeValueForKeyPathOfObjectChangeContext:(NSArray*)args {

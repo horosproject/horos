@@ -307,13 +307,16 @@ enum {
 
 - (void) setDatabaseWithModalWindow: (DicomDatabase*) db
 {
-    WaitRendering *w  = [[[WaitRendering alloc] init: NSLocalizedString(@"Loading OsiriX database...", nil)] autorelease];
-    [w showWindow:self];
+    NSThread* thread = [NSThread currentThread];
+	thread.name = NSLocalizedString(@"Opening database...", nil);
+    thread.status = NSLocalizedString(@"Opening database...", nil);
+    thread.supportsCancel = YES;
+    
+	ThreadModalForWindowController* tmc = [thread startModalForWindow:self.window];
     
     [self setDatabase: db];
     
-    [w close];
-    
+    [tmc invalidate];
 }
 
 -(void)setDatabaseFromSourceIdentifier:(DataNodeIdentifier*)dni
@@ -1236,6 +1239,8 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	NSAutoreleasePool* pool = [NSAutoreleasePool new];
 	@try
     {
+        NSLog( @"--- volumeScanThread: start");
+        
 		NSThread* thread = [NSThread currentThread];
         @synchronized (self)
         {
@@ -1281,7 +1286,8 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
     @catch (NSException* e)
     {
 		N2LogExceptionWithStackTrace(e);
-	} @finally
+	}
+    @finally
     {
         @synchronized (self)
         {
@@ -1289,6 +1295,8 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
         }
 
 		[pool release];
+        
+        NSLog( @"--- volumeScanThread: end");
 	}
 }
 

@@ -5288,11 +5288,11 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                                         self.textualBoxLine2 = [NSString stringWithFormat: NSLocalizedString( @"Length: %0.3f pix", nil), lPix];
                                 } else   // <--- US Regions (Length)
                                     if (lCm < .01)
-                                        self.textualBoxLine2 = [NSString stringWithFormat: NSLocalizedString( @"Length: %0.1f %cm (%0.3f pix)", nil), lCm * 10000.0, 0xb5, lPix];
+                                        self.textualBoxLine2 = [NSString stringWithFormat: NSLocalizedString( @"Length: %0.1f %cm", nil), lCm * 10000.0, 0xb5];
                                     else if (lCm < 1)
-                                        self.textualBoxLine2 = [NSString stringWithFormat: NSLocalizedString( @"Length: %0.3f mm (%0.3f pix)", nil), lCm * 10., lPix];
+                                        self.textualBoxLine2 = [NSString stringWithFormat: NSLocalizedString( @"Length: %0.3f mm", nil), lCm * 10.];
                                     else
-                                        self.textualBoxLine2 = [NSString stringWithFormat: NSLocalizedString( @"Length: %0.3f cm (%0.3f pix)", nil), lCm, lPix];
+                                        self.textualBoxLine2 = [NSString stringWithFormat: NSLocalizedString( @"Length: %0.3f cm", nil), lCm];
 							}
 						}
 						else
@@ -5353,9 +5353,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                                                 rName = nil;
                                             
                                             if( rName)
-                                                self.textualBoxLine3 = [NSString stringWithFormat: NSLocalizedString( @"Cobb's Angle: %0.3f%@ with: %@", nil), angle, @"\u00B0", rName];
+                                                self.textualBoxLine3 = [NSString stringWithFormat: NSLocalizedString( @"Angle: %0.2f%@ with: %@", nil), angle, @"\u00B0", rName];
                                             else
-                                                self.textualBoxLine3 = [NSString stringWithFormat: NSLocalizedString( @"Cobb's Angle: %0.3f%@", nil), angle, @"\u00B0"];
+                                                self.textualBoxLine3 = [NSString stringWithFormat: NSLocalizedString( @"Angle: %0.2f%@", nil), angle, @"\u00B0"];
                                             
                                             break;
 										}

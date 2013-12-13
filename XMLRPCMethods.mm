@@ -762,7 +762,7 @@
     
     [self performSelectorOnMainThread: @selector( closeAllWindowsMainThread:) withObject: nil waitUntilDone:NO];
     
-    [NSThread sleepForTimeInterval: 1];
+    [NSThread sleepForTimeInterval: 0.1];
     
     ReturnWithErrorValue(0);
 }

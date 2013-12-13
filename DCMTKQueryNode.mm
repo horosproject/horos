@@ -1013,7 +1013,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		NSThread *WADOCFind = [[[NSThread alloc] initWithTarget: self selector: @selector( WADOCFindThread:) object: nil] autorelease];
 		
         [WADOCFind start];
-        [NSThread sleepForTimeInterval: 0.3];
+        [NSThread sleepForTimeInterval: 0.1];
         
         WADODownload *downloader = [[WADODownload alloc] init];
         
@@ -1068,7 +1068,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                 self.countOfSuccessfulSuboperations += downloader.countOfSuccesses;
             }
             
-            [NSThread sleepForTimeInterval: 0.3];
+            [NSThread sleepForTimeInterval: 0.1];
         }
         
         [downloader release];
@@ -1238,7 +1238,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                     NSThread *WADOCFind = [[[NSThread alloc] initWithTarget: self selector: @selector( CFINDThread:) object: studyInstanceUID] autorelease];
                     
                     [WADOCFind start];
-                    [NSThread sleepForTimeInterval: 0.3];
+                    [NSThread sleepForTimeInterval: 0.1];
                     
                     while( (WADOCFind.isExecuting || self.childrenCount) && [[NSThread currentThread] isCancelled] == NO)
                     {
@@ -1394,7 +1394,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                                             for( NSThread *t in threads)
                                                 [t cancel];
                                         
-                                        [NSThread sleepForTimeInterval: 0.1];
+                                        [NSThread sleepForTimeInterval: 0.05];
                                     }
                                     while( executing);
                                     
@@ -1479,7 +1479,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                                             for( NSThread *t in threads)
                                                 [t cancel];
                                         
-                                        [NSThread sleepForTimeInterval: 0.1];
+                                        [NSThread sleepForTimeInterval: 0.05];
                                     }
                                     while( executing);
                                     
@@ -1498,7 +1498,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                             }
                         }
                         
-                        [NSThread sleepForTimeInterval: 0.3];
+                        [NSThread sleepForTimeInterval: 0.1];
                     }
                     [self purgeChildren];
                     
@@ -1945,7 +1945,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
             }
         }
         
-        [NSThread sleepForTimeInterval: 2];
+        [NSThread sleepForTimeInterval: 1];
         
         [pool2 release];
     }
@@ -2245,12 +2245,12 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 				globalCondition = EC_Normal;
                 
                 [NSThread detachNewThreadSelector: @selector(requestAssociationThread:) toTarget: self withObject: dict];
-				[NSThread sleepForTimeInterval: 0.1];
+				[NSThread sleepForTimeInterval: 0.05];
 				
 				while( [wait aborted] == NO && _abortAssociation == NO && [NSThread currentThread].isCancelled == NO && [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"] == NO)
 				{
 					[wait run];
-					[NSThread sleepForTimeInterval: 0.1];
+					[NSThread sleepForTimeInterval: 0.05];
                     
                     if( [lock tryLock])
                     {
@@ -2343,12 +2343,12 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 						
 						globalCondition = EC_Normal;
 						[NSThread detachNewThreadSelector: @selector(cFindThread:) toTarget: self withObject: dict];
-						[NSThread sleepForTimeInterval: 0.1];
+						[NSThread sleepForTimeInterval: 0.05];
 						
 						while( [wait aborted] == NO && _abortAssociation == NO && [NSThread currentThread].isCancelled == NO && [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"] == NO)
 						{
 							[wait run];
-							[NSThread sleepForTimeInterval: 0.1];
+							[NSThread sleepForTimeInterval: 0.05];
                             
                             if( [lock tryLock])
                             {
@@ -2493,7 +2493,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
             
 			succeed = NO;
             
-            [NSThread sleepForTimeInterval: 0.1];
+            [NSThread sleepForTimeInterval: 0.05];
 		}
         @finally {
             [wait end];
