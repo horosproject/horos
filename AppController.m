@@ -1356,250 +1356,257 @@ static NSDate *lastWarningDate = nil;
 	
 	if( [dictionaryRepresentation isEqualToDictionary: previousDefaults]) return;
 	
-	@try {
-	
-    if( [[previousDefaults valueForKey: @"SeriesListVisible"] intValue] != [defaults integerForKey: @"SeriesListVisible"])
-    {
-        for( NSScreen *s in [NSScreen screens])
+    @try {
+        if( [[previousDefaults valueForKey: @"SeriesListVisible"] intValue] != [defaults integerForKey: @"SeriesListVisible"])
         {
-            ViewerController *v = [ViewerController frontMostDisplayed2DViewerForScreen: s];
-            [v.window makeKeyAndOrderFront: self];
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
+            {
+                for( NSScreen *s in [NSScreen screens])
+                {
+                    ViewerController *v = [ViewerController frontMostDisplayed2DViewerForScreen: s];
+                    [v.window makeKeyAndOrderFront: self];
+                }
+                [[AppController sharedAppController] tileWindows: nil];
+            }
+            else
+            {
+                for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+                    [v setMatrixVisible: [defaults integerForKey: @"SeriesListVisible"]];
+            }
         }
-        [[AppController sharedAppController] tileWindows: nil];
-    }
-        
-	if( [[previousDefaults valueForKey: @"DisplayDICOMOverlays"] intValue] != [defaults integerForKey: @"DisplayDICOMOverlays"])
-		revertViewer = YES;
-	if( [[previousDefaults valueForKey: @"ROITEXTNAMEONLY"] intValue] != [defaults integerForKey: @"ROITEXTNAMEONLY"])
-		refreshViewer = YES;
-	if( [[previousDefaults valueForKey: @"ROITEXTIFSELECTED"] intValue] != [defaults integerForKey: @"ROITEXTIFSELECTED"])
-		refreshViewer = YES;
-	if( [[previousDefaults valueForKey: @"PET Blending CLUT"] isKindOfClass: [NSString class]])
-	{
-		if ([[previousDefaults valueForKey: @"PET Blending CLUT"] isEqualToString: [defaults stringForKey: @"PET Blending CLUT"]] == NO) 
-			recomputePETBlending = YES;
-	}
-	else NSLog( @"*** isKindOfClass NSString");
-	if( [[previousDefaults valueForKey: @"COPYSETTINGS"] intValue] != [defaults integerForKey: @"COPYSETTINGS"])
-		refreshViewer = YES;
-	if( [[previousDefaults valueForKey: @"DBDateFormat2"] isKindOfClass:[NSString class]])
-	{
-		if( [[previousDefaults valueForKey: @"DBDateFormat2"] isEqualToString: [defaults stringForKey: @"DBDateFormat2"]] == NO)
-			refreshDatabase = YES;
-	}
-	else NSLog( @"*** isKindOfClass NSString");
-	if( [[previousDefaults valueForKey: @"DBDateOfBirthFormat2"] isKindOfClass:[NSString class]])
-	{
-		if( [[previousDefaults valueForKey: @"DBDateOfBirthFormat2"] isEqualToString: [defaults stringForKey: @"DBDateOfBirthFormat2"]] == NO)
-			refreshDatabase = YES;
-	}
-	else NSLog( @"*** isKindOfClass NSString");
-	if ([[previousDefaults valueForKey: @"DICOMTimeout"] intValue] != [defaults integerForKey: @"DICOMTimeout"])
-		restartListener = YES;
-    if ([[previousDefaults valueForKey: @"DICOMConnectionTimeout"] intValue] != [defaults integerForKey: @"DICOMConnectionTimeout"])
-		restartListener = YES;
-	if ([[previousDefaults valueForKey: @"UseHostNameForAETitle"] intValue] != [defaults integerForKey: @"UseHostNameForAETitle"])
-		restartListener = YES;
-	if ([[previousDefaults valueForKey: @"preferredSyntaxForIncoming"] intValue] != [defaults integerForKey: @"preferredSyntaxForIncoming"])
-		restartListener = YES;
-	if ([[previousDefaults valueForKey: @"httpXMLRPCServer"] intValue] != [defaults integerForKey: @"httpXMLRPCServer"])
-		restartListener = YES;
-	if ([[previousDefaults valueForKey: @"httpXMLRPCServerPort"] intValue] != [defaults integerForKey: @"httpXMLRPCServerPort"])
-		restartListener = YES;
-	if ([[previousDefaults valueForKey: @"httpWebServer"] intValue] != [defaults integerForKey: @"httpWebServer"])
-		restartListener = YES;
-	if ([[previousDefaults valueForKey: @"httpWebServerPort"] intValue] != [defaults integerForKey: @"httpWebServerPort"])
-		restartListener = YES;
-	if ([[previousDefaults valueForKey: @"encryptedWebServer"] intValue] != [defaults integerForKey: @"encryptedWebServer"])
-		restartListener = YES;
-	if ([[previousDefaults valueForKey: @"LISTENERCHECKINTERVAL"] intValue] != [defaults integerForKey: @"LISTENERCHECKINTERVAL"])
-		restartListener = YES;
-	if ([[previousDefaults valueForKey: @"SingleProcessMultiThreadedListener"] intValue] != [defaults integerForKey: @"SingleProcessMultiThreadedListener"])
-		restartListener = YES;
-	if ([[previousDefaults valueForKey: @"activateCGETSCP"] intValue] != [defaults integerForKey: @"activateCGETSCP"])
-		restartListener = YES;
-    if ([[previousDefaults valueForKey: @"activateCFINDSCP"] intValue] != [defaults integerForKey: @"activateCFINDSCP"])
+            
+        if( [[previousDefaults valueForKey: @"DisplayDICOMOverlays"] intValue] != [defaults integerForKey: @"DisplayDICOMOverlays"])
+            revertViewer = YES;
+        if( [[previousDefaults valueForKey: @"ROITEXTNAMEONLY"] intValue] != [defaults integerForKey: @"ROITEXTNAMEONLY"])
+            refreshViewer = YES;
+        if( [[previousDefaults valueForKey: @"ROITEXTIFSELECTED"] intValue] != [defaults integerForKey: @"ROITEXTIFSELECTED"])
+            refreshViewer = YES;
+        if( [[previousDefaults valueForKey: @"PET Blending CLUT"] isKindOfClass: [NSString class]])
+        {
+            if ([[previousDefaults valueForKey: @"PET Blending CLUT"] isEqualToString: [defaults stringForKey: @"PET Blending CLUT"]] == NO) 
+                recomputePETBlending = YES;
+        }
+        else NSLog( @"*** isKindOfClass NSString");
+        if( [[previousDefaults valueForKey: @"COPYSETTINGS"] intValue] != [defaults integerForKey: @"COPYSETTINGS"])
+            refreshViewer = YES;
+        if( [[previousDefaults valueForKey: @"DBDateFormat2"] isKindOfClass:[NSString class]])
+        {
+            if( [[previousDefaults valueForKey: @"DBDateFormat2"] isEqualToString: [defaults stringForKey: @"DBDateFormat2"]] == NO)
+                refreshDatabase = YES;
+        }
+        else NSLog( @"*** isKindOfClass NSString");
+        if( [[previousDefaults valueForKey: @"DBDateOfBirthFormat2"] isKindOfClass:[NSString class]])
+        {
+            if( [[previousDefaults valueForKey: @"DBDateOfBirthFormat2"] isEqualToString: [defaults stringForKey: @"DBDateOfBirthFormat2"]] == NO)
+                refreshDatabase = YES;
+        }
+        else NSLog( @"*** isKindOfClass NSString");
+        if ([[previousDefaults valueForKey: @"DICOMTimeout"] intValue] != [defaults integerForKey: @"DICOMTimeout"])
             restartListener = YES;
-	
-	if( [[previousDefaults valueForKey: @"AETITLE"] isKindOfClass:[NSString class]])
-	{
-		if ([[previousDefaults valueForKey: @"AETITLE"] isEqualToString: [defaults stringForKey: @"AETITLE"]] == NO)
-			restartListener = YES;
-	}
-	else NSLog( @"*** isKindOfClass NSString");
-	if( [[previousDefaults valueForKey: @"STORESCPEXTRA"] isKindOfClass:[NSString class]])
-	{
-		if ([[previousDefaults valueForKey: @"STORESCPEXTRA"] isEqualToString: [defaults stringForKey: @"STORESCPEXTRA"]] == NO)
-			restartListener = YES;
-	}
-	else NSLog( @"*** isKindOfClass NSString");
-	if ([[previousDefaults valueForKey: @"AEPORT"] intValue] != [defaults integerForKey: @"AEPORT"])
-		restartListener = YES;
-	if( [[previousDefaults valueForKey: @"AETransferSyntax"] isKindOfClass:[NSString class]])
-	{
-		if ([[previousDefaults valueForKey: @"AETransferSyntax"] isEqualToString: [defaults stringForKey: @"AETransferSyntax"]] == NO)
-			restartListener = YES;
-	}
-	else NSLog( @"*** isKindOfClass NSString");
-	if ([[previousDefaults valueForKey: OsirixCanActivateDefaultDatabaseOnlyDefaultsKey] intValue] !=	[defaults integerForKey: OsirixCanActivateDefaultDatabaseOnlyDefaultsKey])
-		restartListener = YES;
-	if ([[previousDefaults valueForKey: @"STORESCP"] intValue] != [defaults integerForKey: @"STORESCP"])
-		restartListener = YES;
-	if ([[previousDefaults valueForKey: @"USESTORESCP"] intValue] != [defaults integerForKey: @"USESTORESCP"])
-		restartListener = YES;
-	if ([[previousDefaults valueForKey: @"HIDEPATIENTNAME"] intValue] != [defaults integerForKey: @"HIDEPATIENTNAME"])
-		refreshDatabase = YES;
-	if ([[previousDefaults valueForKey: @"COLUMNSDATABASE"] isEqualToDictionary:[defaults objectForKey: @"COLUMNSDATABASE"]] == NO)
-		refreshColumns = YES;	
-	if ([[previousDefaults valueForKey: @"SERIESORDER"] intValue] != [defaults integerForKey: @"SERIESORDER"])
-		refreshDatabase = YES;
-	if ([[previousDefaults valueForKey: @"KeepStudiesOfSamePatientTogether"] intValue] != [defaults integerForKey: @"KeepStudiesOfSamePatientTogether"])
-		refreshDatabase = YES;
-	if ([[previousDefaults valueForKey: @"NOINTERPOLATION"] intValue] != [defaults integerForKey: @"NOINTERPOLATION"])
-		refreshViewer = YES;
-	if ([[previousDefaults valueForKey: @"SOFTWAREINTERPOLATION"] intValue] != [defaults integerForKey: @"SOFTWAREINTERPOLATION"])
-		refreshViewer = YES;
-	if ([[previousDefaults valueForKey: @"publishDICOMBonjour"] intValue] != [defaults integerForKey: @"publishDICOMBonjour"])
-		restartListener = YES;
-	if ([[previousDefaults valueForKey: @"STORESCPTLS"] intValue] != [defaults integerForKey: @"STORESCPTLS"])
-		restartListener = YES;
-	
-	if( [defaults integerForKey: @"httpWebServer"] == 1 && [defaults integerForKey: @"httpWebServer"] != [[previousDefaults valueForKey: @"httpWebServer"] intValue])
-	{
-		if( [AppController hasMacOSXSnowLeopard] == NO)
-			NSRunCriticalAlertPanel( NSLocalizedString( @"Unsupported", nil), NSLocalizedString( @"It is highly recommend to upgrade to MacOS 10.6 or higher to use the OsiriX Web Server.", nil), NSLocalizedString( @"OK", nil) , nil, nil);
-	}
-	
-	[previousDefaults release];
-	previousDefaults = [dictionaryRepresentation retain];
-	
-	if (refreshDatabase)
-	{
-		[[BrowserController currentBrowser] setDBDate];
-		[[BrowserController currentBrowser] outlineViewRefresh];
-	}
-	
-//	if( [(NSString*) [defaults valueForKey:OsirixWebPortalAddressDefaultsKey] length] == 0)
-//		[defaults setValue: [[AppController sharedAppController] privateIP] forKey:OsirixWebPortalAddressDefaultsKey];
-	
-	if (restartListener)
-	{
-		NSString *c = [[NSUserDefaults standardUserDefaults] stringForKey:@"AETITLE"];
-		if( [c length] > 16)
-		{
-			c = [c substringToIndex: 16];
-			[[NSUserDefaults standardUserDefaults] setObject: c forKey:@"AETITLE"];
-		}
-		
-		if( showRestartNeeded == YES)
-		{
-			showRestartNeeded = NO;
-			NSRunAlertPanel( NSLocalizedString( @"DICOM Listener", nil), NSLocalizedString( @"Restart OsiriX to apply these changes.", nil), NSLocalizedString( @"OK", nil), nil, nil);
-		}
-	}
-	
-	if (refreshColumns)	
-		[[BrowserController currentBrowser] refreshColumns];
-	
-	if( recomputePETBlending)
-		[DCMView computePETBlendingCLUT];
-	
-	[DCMPix checkUserDefaults: YES];
-	
-	if( refreshViewer || revertViewer)
-	{
-		NSArray *windows = [ViewerController getDisplayed2DViewers];
-		
-		for(ViewerController *v in windows)
-		{
-			[v needsDisplayUpdate];
-			if( revertViewer)
-				[v displayDICOMOverlays: self];
-		}
-		
-		for(ViewerController *v in windows)
-		{
-			if([[v window] isMainWindow])
-				[v copySettingsToOthers: self];
-		}
-	}
-	
-	@try
-	{
-		{
-			NSDictionary *defaultSettings = [[defaults arrayForKey: @"CompressionSettings"] objectAtIndex: 0];
-			
-			if( [[defaultSettings valueForKey: @"compression"] intValue] == 0 || [[defaultSettings valueForKey: @"modality"] isEqualToString: NSLocalizedString( @"default", nil)] == NO)
-			{
-				NSMutableDictionary *d = [[defaultSettings mutableCopy] autorelease];
-				
-				if( [[defaultSettings valueForKey: @"compression"] intValue] == 0) // same as default
-					[d setObject: @"1" forKey: @"compression"];
-				
-				if( [[defaultSettings valueForKey: @"modality"] isEqualToString: NSLocalizedString( @"default", nil)] == NO) // item 0 IS default
-					[d setObject: NSLocalizedString( @"default", nil) forKey: @"modality"];
-				
-				NSMutableArray *a = [[[[NSUserDefaults standardUserDefaults] arrayForKey: @"CompressionSettings"] mutableCopy] autorelease];
-				
-				[a replaceObjectAtIndex: 0 withObject: d];
-				
-				[[NSUserDefaults standardUserDefaults] setObject: a forKey: @"CompressionSettings"];
-			}
-		}
-		
-		{
-			NSDictionary *defaultSettings = [[defaults arrayForKey: @"CompressionSettingsLowRes"] objectAtIndex: 0];
-			
-			if( [[defaultSettings valueForKey: @"compression"] intValue] == 0 || [[defaultSettings valueForKey: @"modality"] isEqualToString: NSLocalizedString( @"default", nil)] == NO)
-			{
-				NSMutableDictionary *d = [[defaultSettings mutableCopy] autorelease];
-				
-				if( [[defaultSettings valueForKey: @"compression"] intValue] == 0) // same as default
-					[d setObject: @"1" forKey: @"compression"];
-				
-				if( [[defaultSettings valueForKey: @"modality"] isEqualToString: NSLocalizedString( @"default", nil)] == NO) // item 0 IS default
-					[d setObject: NSLocalizedString( @"default", nil) forKey: @"modality"];
-				
-				NSMutableArray *a = [[[[NSUserDefaults standardUserDefaults] arrayForKey: @"CompressionSettingsLowRes"] mutableCopy] autorelease];
-				
-				[a replaceObjectAtIndex: 0 withObject: d];
-				
-				[[NSUserDefaults standardUserDefaults] setObject: a forKey: @"CompressionSettingsLowRes"];
-			}
-		}
-		
-		if( [[[NSUserDefaults standardUserDefaults] stringForKey: @"SupplementaryBurnPath"] length] == 0)
-		{
-			[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"BurnSupplementaryFolder"];
-			[[NSUserDefaults standardUserDefaults] setObject: nil forKey: @"SupplementaryBurnPath"];
-		}
-	}
-	@catch (NSException *e) 
-	{
-		NSLog( @"%@", e);
-	}
-	
-	Use_kdu_IfAvailable = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseKDUForJPEG2000"];
-	
-	#ifndef OSIRIX_LIGHT
-	[DCMPixelDataAttribute setUse_kdu_IfAvailable: Use_kdu_IfAvailable];
-	#endif
-	
-	[[BrowserController currentBrowser] setNetworkLogs];
-	[DicomFile resetDefaults];
-	
-	[DCMView setDefaults];
-	[ROI loadDefaultSettings];
-	
-	if( restartListener)
-	{
-		if( [defaults boolForKey: @"UseHostNameForAETitle"])
-		{
-			[self setAETitleToHostname];
-		}
-	}
-	
-	} @catch( NSException *localException) {
+        if ([[previousDefaults valueForKey: @"DICOMConnectionTimeout"] intValue] != [defaults integerForKey: @"DICOMConnectionTimeout"])
+            restartListener = YES;
+        if ([[previousDefaults valueForKey: @"UseHostNameForAETitle"] intValue] != [defaults integerForKey: @"UseHostNameForAETitle"])
+            restartListener = YES;
+        if ([[previousDefaults valueForKey: @"preferredSyntaxForIncoming"] intValue] != [defaults integerForKey: @"preferredSyntaxForIncoming"])
+            restartListener = YES;
+        if ([[previousDefaults valueForKey: @"httpXMLRPCServer"] intValue] != [defaults integerForKey: @"httpXMLRPCServer"])
+            restartListener = YES;
+        if ([[previousDefaults valueForKey: @"httpXMLRPCServerPort"] intValue] != [defaults integerForKey: @"httpXMLRPCServerPort"])
+            restartListener = YES;
+        if ([[previousDefaults valueForKey: @"httpWebServer"] intValue] != [defaults integerForKey: @"httpWebServer"])
+            restartListener = YES;
+        if ([[previousDefaults valueForKey: @"httpWebServerPort"] intValue] != [defaults integerForKey: @"httpWebServerPort"])
+            restartListener = YES;
+        if ([[previousDefaults valueForKey: @"encryptedWebServer"] intValue] != [defaults integerForKey: @"encryptedWebServer"])
+            restartListener = YES;
+        if ([[previousDefaults valueForKey: @"LISTENERCHECKINTERVAL"] intValue] != [defaults integerForKey: @"LISTENERCHECKINTERVAL"])
+            restartListener = YES;
+        if ([[previousDefaults valueForKey: @"SingleProcessMultiThreadedListener"] intValue] != [defaults integerForKey: @"SingleProcessMultiThreadedListener"])
+            restartListener = YES;
+        if ([[previousDefaults valueForKey: @"activateCGETSCP"] intValue] != [defaults integerForKey: @"activateCGETSCP"])
+            restartListener = YES;
+        if ([[previousDefaults valueForKey: @"activateCFINDSCP"] intValue] != [defaults integerForKey: @"activateCFINDSCP"])
+                restartListener = YES;
+        
+        if( [[previousDefaults valueForKey: @"AETITLE"] isKindOfClass:[NSString class]])
+        {
+            if ([[previousDefaults valueForKey: @"AETITLE"] isEqualToString: [defaults stringForKey: @"AETITLE"]] == NO)
+                restartListener = YES;
+        }
+        else NSLog( @"*** isKindOfClass NSString");
+        if( [[previousDefaults valueForKey: @"STORESCPEXTRA"] isKindOfClass:[NSString class]])
+        {
+            if ([[previousDefaults valueForKey: @"STORESCPEXTRA"] isEqualToString: [defaults stringForKey: @"STORESCPEXTRA"]] == NO)
+                restartListener = YES;
+        }
+        else NSLog( @"*** isKindOfClass NSString");
+        if ([[previousDefaults valueForKey: @"AEPORT"] intValue] != [defaults integerForKey: @"AEPORT"])
+            restartListener = YES;
+        if( [[previousDefaults valueForKey: @"AETransferSyntax"] isKindOfClass:[NSString class]])
+        {
+            if ([[previousDefaults valueForKey: @"AETransferSyntax"] isEqualToString: [defaults stringForKey: @"AETransferSyntax"]] == NO)
+                restartListener = YES;
+        }
+        else NSLog( @"*** isKindOfClass NSString");
+        if ([[previousDefaults valueForKey: OsirixCanActivateDefaultDatabaseOnlyDefaultsKey] intValue] !=	[defaults integerForKey: OsirixCanActivateDefaultDatabaseOnlyDefaultsKey])
+            restartListener = YES;
+        if ([[previousDefaults valueForKey: @"STORESCP"] intValue] != [defaults integerForKey: @"STORESCP"])
+            restartListener = YES;
+        if ([[previousDefaults valueForKey: @"USESTORESCP"] intValue] != [defaults integerForKey: @"USESTORESCP"])
+            restartListener = YES;
+        if ([[previousDefaults valueForKey: @"HIDEPATIENTNAME"] intValue] != [defaults integerForKey: @"HIDEPATIENTNAME"])
+            refreshDatabase = YES;
+        if ([[previousDefaults valueForKey: @"COLUMNSDATABASE"] isEqualToDictionary:[defaults objectForKey: @"COLUMNSDATABASE"]] == NO)
+            refreshColumns = YES;	
+        if ([[previousDefaults valueForKey: @"SERIESORDER"] intValue] != [defaults integerForKey: @"SERIESORDER"])
+            refreshDatabase = YES;
+        if ([[previousDefaults valueForKey: @"KeepStudiesOfSamePatientTogether"] intValue] != [defaults integerForKey: @"KeepStudiesOfSamePatientTogether"])
+            refreshDatabase = YES;
+        if ([[previousDefaults valueForKey: @"NOINTERPOLATION"] intValue] != [defaults integerForKey: @"NOINTERPOLATION"])
+            refreshViewer = YES;
+        if ([[previousDefaults valueForKey: @"SOFTWAREINTERPOLATION"] intValue] != [defaults integerForKey: @"SOFTWAREINTERPOLATION"])
+            refreshViewer = YES;
+        if ([[previousDefaults valueForKey: @"publishDICOMBonjour"] intValue] != [defaults integerForKey: @"publishDICOMBonjour"])
+            restartListener = YES;
+        if ([[previousDefaults valueForKey: @"STORESCPTLS"] intValue] != [defaults integerForKey: @"STORESCPTLS"])
+            restartListener = YES;
+        
+        if( [defaults integerForKey: @"httpWebServer"] == 1 && [defaults integerForKey: @"httpWebServer"] != [[previousDefaults valueForKey: @"httpWebServer"] intValue])
+        {
+            if( [AppController hasMacOSXSnowLeopard] == NO)
+                NSRunCriticalAlertPanel( NSLocalizedString( @"Unsupported", nil), NSLocalizedString( @"It is highly recommend to upgrade to MacOS 10.6 or higher to use the OsiriX Web Server.", nil), NSLocalizedString( @"OK", nil) , nil, nil);
+        }
+        
+        [previousDefaults release];
+        previousDefaults = [dictionaryRepresentation retain];
+        
+        if (refreshDatabase)
+        {
+            [[BrowserController currentBrowser] setDBDate];
+            [[BrowserController currentBrowser] outlineViewRefresh];
+        }
+        
+    //	if( [(NSString*) [defaults valueForKey:OsirixWebPortalAddressDefaultsKey] length] == 0)
+    //		[defaults setValue: [[AppController sharedAppController] privateIP] forKey:OsirixWebPortalAddressDefaultsKey];
+        
+        if (restartListener)
+        {
+            NSString *c = [[NSUserDefaults standardUserDefaults] stringForKey:@"AETITLE"];
+            if( [c length] > 16)
+            {
+                c = [c substringToIndex: 16];
+                [[NSUserDefaults standardUserDefaults] setObject: c forKey:@"AETITLE"];
+            }
+            
+            if( showRestartNeeded == YES)
+            {
+                showRestartNeeded = NO;
+                NSRunAlertPanel( NSLocalizedString( @"DICOM Listener", nil), NSLocalizedString( @"Restart OsiriX to apply these changes.", nil), NSLocalizedString( @"OK", nil), nil, nil);
+            }
+        }
+        
+        if (refreshColumns)	
+            [[BrowserController currentBrowser] refreshColumns];
+        
+        if( recomputePETBlending)
+            [DCMView computePETBlendingCLUT];
+        
+        [DCMPix checkUserDefaults: YES];
+        
+        if( refreshViewer || revertViewer)
+        {
+            NSArray *windows = [ViewerController getDisplayed2DViewers];
+            
+            for(ViewerController *v in windows)
+            {
+                [v needsDisplayUpdate];
+                if( revertViewer)
+                    [v displayDICOMOverlays: self];
+            }
+            
+            for(ViewerController *v in windows)
+            {
+                if([[v window] isMainWindow])
+                    [v copySettingsToOthers: self];
+            }
+        }
+        
+        @try
+        {
+            {
+                NSDictionary *defaultSettings = [[defaults arrayForKey: @"CompressionSettings"] objectAtIndex: 0];
+                
+                if( [[defaultSettings valueForKey: @"compression"] intValue] == 0 || [[defaultSettings valueForKey: @"modality"] isEqualToString: NSLocalizedString( @"default", nil)] == NO)
+                {
+                    NSMutableDictionary *d = [[defaultSettings mutableCopy] autorelease];
+                    
+                    if( [[defaultSettings valueForKey: @"compression"] intValue] == 0) // same as default
+                        [d setObject: @"1" forKey: @"compression"];
+                    
+                    if( [[defaultSettings valueForKey: @"modality"] isEqualToString: NSLocalizedString( @"default", nil)] == NO) // item 0 IS default
+                        [d setObject: NSLocalizedString( @"default", nil) forKey: @"modality"];
+                    
+                    NSMutableArray *a = [[[[NSUserDefaults standardUserDefaults] arrayForKey: @"CompressionSettings"] mutableCopy] autorelease];
+                    
+                    [a replaceObjectAtIndex: 0 withObject: d];
+                    
+                    [[NSUserDefaults standardUserDefaults] setObject: a forKey: @"CompressionSettings"];
+                }
+            }
+            
+            {
+                NSDictionary *defaultSettings = [[defaults arrayForKey: @"CompressionSettingsLowRes"] objectAtIndex: 0];
+                
+                if( [[defaultSettings valueForKey: @"compression"] intValue] == 0 || [[defaultSettings valueForKey: @"modality"] isEqualToString: NSLocalizedString( @"default", nil)] == NO)
+                {
+                    NSMutableDictionary *d = [[defaultSettings mutableCopy] autorelease];
+                    
+                    if( [[defaultSettings valueForKey: @"compression"] intValue] == 0) // same as default
+                        [d setObject: @"1" forKey: @"compression"];
+                    
+                    if( [[defaultSettings valueForKey: @"modality"] isEqualToString: NSLocalizedString( @"default", nil)] == NO) // item 0 IS default
+                        [d setObject: NSLocalizedString( @"default", nil) forKey: @"modality"];
+                    
+                    NSMutableArray *a = [[[[NSUserDefaults standardUserDefaults] arrayForKey: @"CompressionSettingsLowRes"] mutableCopy] autorelease];
+                    
+                    [a replaceObjectAtIndex: 0 withObject: d];
+                    
+                    [[NSUserDefaults standardUserDefaults] setObject: a forKey: @"CompressionSettingsLowRes"];
+                }
+            }
+            
+            if( [[[NSUserDefaults standardUserDefaults] stringForKey: @"SupplementaryBurnPath"] length] == 0)
+            {
+                [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"BurnSupplementaryFolder"];
+                [[NSUserDefaults standardUserDefaults] setObject: nil forKey: @"SupplementaryBurnPath"];
+            }
+        }
+        @catch (NSException *e) 
+        {
+            NSLog( @"%@", e);
+        }
+        
+        Use_kdu_IfAvailable = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseKDUForJPEG2000"];
+        
+        #ifndef OSIRIX_LIGHT
+        [DCMPixelDataAttribute setUse_kdu_IfAvailable: Use_kdu_IfAvailable];
+        #endif
+        
+        [[BrowserController currentBrowser] setNetworkLogs];
+        [DicomFile resetDefaults];
+        
+        [DCMView setDefaults];
+        [ROI loadDefaultSettings];
+        
+        if( restartListener)
+        {
+            if( [defaults boolForKey: @"UseHostNameForAETitle"])
+            {
+                [self setAETitleToHostname];
+            }
+        }
+    }
+    @catch( NSException *localException) {
 		NSLog(@"Exception updating prefs: %@", [localException description]);
 	}
 }
@@ -3590,8 +3597,8 @@ static BOOL initialized = NO;
 	
     [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"USEALWAYSTOOLBARPANEL2"];
     [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"syncPreviewList"];
-    [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"UseFloatingThumbnailsList"];
     [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"SeriesListVisible"];
+    [[NSUserDefaults standardUserDefaults] setBool: NO  forKey: @"AUTOHIDEMATRIX"];
     
     
 	#ifndef MACAPPSTORE

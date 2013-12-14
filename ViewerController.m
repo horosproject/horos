@@ -607,11 +607,6 @@ return YES;
         if( imageView.curDCM.VOILUT_table)
             valid = YES;
     }
-	else if( [item action] == @selector(showHideMatrix:))
-	{
-		[item setState: [self matrixIsVisible]? NSOnState : NSOffState ];
-		valid = YES;
-	}
 	else if( [item action] == @selector(resetWindowsState:))
 	{
 		NSArray				*studiesArray = [ViewerController getDisplayedStudies];
@@ -3010,7 +3005,7 @@ static volatile int numberOfThreadsForRelisce = 0;
     [self.window makeFirstResponder: nil];
     
     [previewMatrixScrollView setPostsBoundsChangedNotifications: NO];
-//    [[[splitView subviews] objectAtIndex: 0] setPostsFrameChangedNotifications: NO];
+    [[[splitView subviews] objectAtIndex: 0] setPostsFrameChangedNotifications: NO];
     
     @synchronized( loadingThread) {
         [loadingThread cancel];
@@ -4251,106 +4246,100 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) setMatrixVisible: (BOOL) visible
 {
-//    if( windowWillClose)
-//        return;
-//    
-//    BOOL currentlyVisible = [self matrixIsVisible];
-//    
-//    if (currentlyVisible != visible)
-//    {
-//        NSView* v = [[splitView subviews] objectAtIndex:0];
-//        [v setHidden:!visible];
-//        if (visible) {
-//            NSRect f = v.frame; f.size.width = previewMatrix.cellSize.width;
-//            [v setFrame:f];
-//        }
-//        [splitView resizeSubviewsWithOldSize:splitView.bounds.size];
-//        
-//        if( visible && needsToBuildSeriesMatrix)
-//            [self buildMatrixPreview: NO];
-//    }
-}
-
-- (IBAction) showHideMatrix: (id) sender
-{
-//	[[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"AUTOHIDEMATRIX"];
-//    [self setMatrixVisible:![self matrixIsVisible]];
-//    
-//    [[NSUserDefaults standardUserDefaults] setBool: [self matrixIsVisible] forKey: @"SeriesListVisible"];
+    if( windowWillClose)
+        return;
+    
+    BOOL currentlyVisible = [self matrixIsVisible];
+    
+    if (currentlyVisible != visible)
+    {
+        NSView* v = [[splitView subviews] objectAtIndex:0];
+        [v setHidden:!visible];
+        if (visible) {
+            NSRect f = v.frame; f.size.width = previewMatrix.cellSize.width;
+            [v setFrame:f];
+        }
+        [splitView resizeSubviewsWithOldSize:splitView.bounds.size];
+        
+        if( visible && needsToBuildSeriesMatrix)
+            [self buildMatrixPreview: NO];
+    }
+    
+    [[NSUserDefaults standardUserDefaults] setBool: visible forKey: @"SeriesListVisible"];
 }
 
 - (void) autoHideMatrix
 {
-//	BOOL hide = NO;
-//	NSWindow *window = nil;
-//	
-//    if( windowWillClose)
-//        return;
-//    
-//	if( [self FullScreenON] == NO)
-//	{
-//		window = self.window;
-//		if( [window isKeyWindow] == NO) hide = YES;
-//		if( [window isMainWindow] == NO) hide = YES;
-//	}
-//	else
-//		window = FullScreenWindow;
-//	
-//	NSPoint	mouse = [window mouseLocationOutsideOfEventStream];
-//	
-//    BOOL isCurrentlyVisible = [self matrixIsVisible];
-//    
-//	if( hide == NO)
-//	{
-//        if( isCurrentlyVisible == NO)
-//        {
-//            if( mouse.x >= 0 && mouse.x <= [previewMatrix cellSize].width+13 && mouse.y >= 0 && mouse.y <= [splitView frame].size.height-20)
-//            {
-//                
-//            }
-//            else hide = YES;
-//        }
-//        else
-//        {
-//            if( mouse.x >= 0 && mouse.x <= [previewMatrix cellSize].width+13 && mouse.y >= 0 && mouse.y <= [splitView frame].size.height)
-//            {
-//                
-//            }
-//            else hide = YES;
-//        }
-//	}
-//    
-//	if( isCurrentlyVisible == hide)
-//	{
-//		NSMutableArray *scaleValues = [NSMutableArray array];
-//		NSMutableArray *originValues = [NSMutableArray array];
-//		
-//		for( DCMView * v in [seriesView imageViews])
-//		{
-//			[scaleValues addObject: [NSNumber numberWithFloat: v.scaleValue]];
-//			[originValues addObject: NSStringFromPoint( v.origin)];
-//		}
-//		
-//		[self setMatrixVisible: !hide];
-//		
-//		NSDisableScreenUpdates();
-//		
-//		int i = 0;
-//		for( DCMView * v in [seriesView imageViews])
-//		{
-//			[v displayIfNeeded];
-//			v.scaleValue = [[scaleValues objectAtIndex: i] floatValue];
-//			v.origin = NSPointFromString( [originValues objectAtIndex: i]);
-//			i++;
-//		}
-//		
-//		[self propagateSettings];
-//		
-//		for( DCMView * v in [seriesView imageViews])
-//			[v displayIfNeeded];
-//		
-//		NSEnableScreenUpdates();
-//	}
+	BOOL hide = NO;
+	NSWindow *window = nil;
+	
+    if( windowWillClose)
+        return;
+    
+	if( [self FullScreenON] == NO)
+	{
+		window = self.window;
+		if( [window isKeyWindow] == NO) hide = YES;
+		if( [window isMainWindow] == NO) hide = YES;
+	}
+	else
+		window = FullScreenWindow;
+	
+	NSPoint	mouse = [window mouseLocationOutsideOfEventStream];
+	
+    BOOL isCurrentlyVisible = [self matrixIsVisible];
+    
+	if( hide == NO)
+	{
+        if( isCurrentlyVisible == NO)
+        {
+            if( mouse.x >= 0 && mouse.x <= [previewMatrix cellSize].width+13 && mouse.y >= 0 && mouse.y <= [splitView frame].size.height-20)
+            {
+                
+            }
+            else hide = YES;
+        }
+        else
+        {
+            if( mouse.x >= 0 && mouse.x <= [previewMatrix cellSize].width+13 && mouse.y >= 0 && mouse.y <= [splitView frame].size.height)
+            {
+                
+            }
+            else hide = YES;
+        }
+	}
+    
+	if( isCurrentlyVisible == hide)
+	{
+		NSMutableArray *scaleValues = [NSMutableArray array];
+		NSMutableArray *originValues = [NSMutableArray array];
+		
+		for( DCMView * v in [seriesView imageViews])
+		{
+			[scaleValues addObject: [NSNumber numberWithFloat: v.scaleValue]];
+			[originValues addObject: NSStringFromPoint( v.origin)];
+		}
+		
+		[self setMatrixVisible: !hide];
+		
+		NSDisableScreenUpdates();
+		
+		int i = 0;
+		for( DCMView * v in [seriesView imageViews])
+		{
+			[v displayIfNeeded];
+			v.scaleValue = [[scaleValues objectAtIndex: i] floatValue];
+			v.origin = NSPointFromString( [originValues objectAtIndex: i]);
+			i++;
+		}
+		
+		[self propagateSettings];
+		
+		for( DCMView * v in [seriesView imageViews])
+			[v displayIfNeeded];
+		
+		NSEnableScreenUpdates();
+	}
 }
 
 - (NSScrollView*) previewMatrixScrollView
@@ -4410,14 +4399,14 @@ static volatile int numberOfThreadsForRelisce = 0;
     if( windowWillClose)
         return;
     
-//	if( [[splitView subviews] count] > 1)
-//	{
-//		if ([note object] == [[splitView subviews] objectAtIndex: 1])
-//		{
-//			if( [self matrixIsVisible] && matrixPreviewBuilt == NO)
-//				[self buildMatrixPreview];
-//		}
-//	}
+	if( [[splitView subviews] count] > 1)
+	{
+		if ([note object] == [[splitView subviews] objectAtIndex: 1])
+		{
+			if( [self matrixIsVisible] && matrixPreviewBuilt == NO)
+				[self buildMatrixPreview];
+		}
+	}
 }
 
 - (void)splitViewDidResizeSubviews:(NSNotification *) notification
@@ -4425,39 +4414,39 @@ static volatile int numberOfThreadsForRelisce = 0;
     if( windowWillClose)
         return;
     
-//    if (notification.object == splitView)
-//    {    
-//        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOHIDEMATRIX"] == NO && FullScreenOn == NO)
-//        {
-//            // Apply show / hide matrix to all viewers
-//            if( ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask) == NO)
-//            {
-//                static BOOL noreentry = NO;
-//                
-//                if( noreentry == NO)
-//                {
-//                    noreentry = YES;
-//                    
-//                    BOOL showMatrix = [self matrixIsVisible];
-//                    
-//                    for( ViewerController *v in [ViewerController get2DViewers])
-//                    {
-//                        if( v != self)
-//                        {
-//                            if (showMatrix != [v matrixIsVisible])
-//                                [v setMatrixVisible: showMatrix];
-//                        }
-//                        else
-//                        {
-//                            if( [v matrixIsVisible] && needsToBuildSeriesMatrix)
-//                                [self buildMatrixPreview: NO];
-//                        }
-//                    }
-//                }
-//                noreentry = NO;
-//            }
-//        }
-//    }
+    if (notification.object == splitView)
+    {    
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOHIDEMATRIX"] == NO && FullScreenOn == NO)
+        {
+            // Apply show / hide matrix to all viewers
+            if( ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask) == NO)
+            {
+                static BOOL noreentry = NO;
+                
+                if( noreentry == NO)
+                {
+                    noreentry = YES;
+                    
+                    BOOL showMatrix = [self matrixIsVisible];
+                    
+                    for( ViewerController *v in [ViewerController get2DViewers])
+                    {
+                        if( v != self)
+                        {
+                            if (showMatrix != [v matrixIsVisible])
+                                [v setMatrixVisible: showMatrix];
+                        }
+                        else
+                        {
+                            if( [v matrixIsVisible] && needsToBuildSeriesMatrix)
+                                [self buildMatrixPreview: NO];
+                        }
+                    }
+                }
+                noreentry = NO;
+            }
+        }
+    }
 }
 
 -(void)splitViewWillResizeSubviews:(NSNotification *)notification
@@ -4465,22 +4454,22 @@ static volatile int numberOfThreadsForRelisce = 0;
     if( windowWillClose)
         return;
 
-//    if (notification.object == splitView)
-//    {
-//        OSIWindow* window = (OSIWindow*)self.window;
-//        if( [window respondsToSelector:@selector(disableUpdatesUntilFlush)])
-//            [window disableUpdatesUntilFlush];
-//    }
+    if (notification.object == splitView)
+    {
+        OSIWindow* window = (OSIWindow*)self.window;
+        if( [window respondsToSelector:@selector(disableUpdatesUntilFlush)])
+            [window disableUpdatesUntilFlush];
+    }
 }
 
 - (BOOL)splitView: (NSSplitView *)sender canCollapseSubview: (NSView *)subview
 {
-//    if( sender == splitView)
-//    {
-//        if( subview == [[sender subviews] objectAtIndex:1]) // Main view
-//            return NO;
-//    }
-//    
+    if( sender == splitView)
+    {
+        if( subview == [[sender subviews] objectAtIndex:1]) // Main view
+            return NO;
+    }
+    
 //    if (sender == leftSplitView)
 //    {
 //        if (subview == [[sender subviews] objectAtIndex:1])
@@ -4495,35 +4484,35 @@ static volatile int numberOfThreadsForRelisce = 0;
     if( windowWillClose)
         return proposedPosition;
     
-//    if (sender == splitView)
-//    {
-//        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
-//            return 0;
-//        
-//		CGFloat rcs = previewMatrix.cellSize.width;
-//        
-//        NSScrollView* scrollView = previewMatrixScrollView;
-//        CGFloat scrollbarWidth = 0;
-//        if ([scrollView isKindOfClass:[NSScrollView class]])
-//        {
-//            NSScroller* scroller = [scrollView verticalScroller];
-//            if ([BrowserController _scrollerStyle:scroller] != 1)
-//                if ([scrollView hasVerticalScroller] && ![scroller isHidden])
-//                    scrollbarWidth = [scroller frame].size.width;
-//        }
-//        
-//        proposedPosition -= scrollbarWidth;
-//        
-//        NSUInteger f = roundf(proposedPosition/rcs);
-//        if (f > 1) f = 1;
-//        proposedPosition = rcs*f;
-//		
-//        if (proposedPosition)
-//            proposedPosition += (scrollbarWidth?scrollbarWidth+2:1);
-//        
-//        return proposedPosition;
-//    }
-//    
+    if (sender == splitView)
+    {
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
+            return 0;
+        
+		CGFloat rcs = previewMatrix.cellSize.width;
+        
+        NSScrollView* scrollView = previewMatrixScrollView;
+        CGFloat scrollbarWidth = 0;
+        if ([scrollView isKindOfClass:[NSScrollView class]])
+        {
+            NSScroller* scroller = [scrollView verticalScroller];
+            if ([BrowserController _scrollerStyle:scroller] != 1)
+                if ([scrollView hasVerticalScroller] && ![scroller isHidden])
+                    scrollbarWidth = [scroller frame].size.width;
+        }
+        
+        proposedPosition -= scrollbarWidth;
+        
+        NSUInteger f = roundf(proposedPosition/rcs);
+        if (f > 1) f = 1;
+        proposedPosition = rcs*f;
+		
+        if (proposedPosition)
+            proposedPosition += (scrollbarWidth?scrollbarWidth+2:1);
+        
+        return proposedPosition;
+    }
+//
 //    if (sender == leftSplitView)
 //    {
 //        if (offset == 0)
@@ -4543,10 +4532,13 @@ static volatile int numberOfThreadsForRelisce = 0;
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
         return YES;
     
-//    NSView* v = [[splitView subviews] objectAtIndex:0];
-//    return ![v isHidden] && [v frame].size.width > 0;
+    NSView* v = [[splitView subviews] objectAtIndex:0];
     
-    return NO;
+    BOOL r = ![v isHidden] && [v frame].size.width > 0;
+    
+    [[NSUserDefaults standardUserDefaults] setBool: r forKey: @"SeriesListVisible"];
+    
+    return r;
 }
 
 -(void) splitView:(NSSplitView*)sender resizeSubviewsWithOldSize:(NSSize)oldSize
@@ -4554,23 +4546,23 @@ static volatile int numberOfThreadsForRelisce = 0;
     if( windowWillClose)
         return;
     
-//    if( sender == splitView)
-//    {
-//        CGFloat dividerPosition = [self matrixIsVisible]? previewMatrix.cellSize.width : 0;
-//        dividerPosition = [self splitView:sender constrainSplitPosition:dividerPosition ofSubviewAt:0];
-//        
-//        NSRect splitFrame = [sender frame];
-//        
-//        if( isnan(splitFrame.size.height) || splitFrame.size.height < 0 || isnan(splitFrame.size.width) || splitFrame.size.width < 0)
-//        {
-//            NSLog( @"******* splitView:(NSSplitView*)sender resizeSubviewsWithOldSize:(NSSize)oldSize - %f", splitFrame.size.height);
-//            return;
-//        }
-//        
-//        [[[sender subviews] objectAtIndex:0] setFrame:NSMakeRect(0, 0, dividerPosition, splitFrame.size.height)];
-//        [[[sender subviews] objectAtIndex:1] setFrame:NSMakeRect(dividerPosition+sender.dividerThickness, 0, splitFrame.size.width-dividerPosition-sender.dividerThickness, splitFrame.size.height)];
-//    }
-//    
+    if( sender == splitView)
+    {
+        CGFloat dividerPosition = [self matrixIsVisible]? previewMatrix.cellSize.width : 0;
+        dividerPosition = [self splitView:sender constrainSplitPosition:dividerPosition ofSubviewAt:0];
+        
+        NSRect splitFrame = [sender frame];
+        
+        if( isnan(splitFrame.size.height) || splitFrame.size.height < 0 || isnan(splitFrame.size.width) || splitFrame.size.width < 0)
+        {
+            NSLog( @"******* splitView:(NSSplitView*)sender resizeSubviewsWithOldSize:(NSSize)oldSize - %f", splitFrame.size.height);
+            return;
+        }
+        
+        [[[sender subviews] objectAtIndex:0] setFrame:NSMakeRect(0, 0, dividerPosition, splitFrame.size.height)];
+        [[[sender subviews] objectAtIndex:1] setFrame:NSMakeRect(dividerPosition+sender.dividerThickness, 0, splitFrame.size.width-dividerPosition-sender.dividerThickness, splitFrame.size.height)];
+    }
+    
 //    if (sender == leftSplitView)
 //    {
 //        {
@@ -4584,7 +4576,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 -(void) observeScrollerStyleDidChangeNotification:(NSNotification*)n
 {
-//    [splitView resizeSubviewsWithOldSize:[splitView bounds].size];
+    [splitView resizeSubviewsWithOldSize:[splitView bounds].size];
 }
 
 - (void) matrixPreviewSwitchHidden:(id) sender
@@ -5580,7 +5572,7 @@ static ViewerController *draggedController = nil;
     if( [[event characters] length] == 0) return;
     
     unichar c = [[event characters] characterAtIndex:0];
-	
+    
     if( c == 3 || c == 13 || c == ' ')
     {
 		[self PlayStop:[self findPlayStopButton]];
@@ -7394,6 +7386,24 @@ return YES;
 
 -(void)awakeFromNib
 {
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"] == NO)
+    {
+        splitView = [[NSSplitView alloc] initWithFrame: [self.window.contentView bounds]];
+        [splitView addSubview: previewMatrixScrollView];
+        [splitView addSubview: [[self.window.contentView subviews] lastObject]]; // First custom view -- see viewer.xib
+        [splitView setVertical: YES];
+        [splitView setDelegate: self];
+        [splitView adjustSubviews];
+        [splitView setAutoresizingMask: NSViewWidthSizable+NSViewHeightSizable];
+        
+        [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"UseFloatingThumbnailsList"];
+        
+        [self.window.contentView addSubview: splitView];
+        
+        [self setMatrixVisible: NO];
+        [self setMatrixVisible: YES];
+    }
+    
     [previewMatrix setIntercellSpacing:NSMakeSize(-1, -1)];
     switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"dbFontSize"])
     {
@@ -7564,8 +7574,10 @@ static int avoidReentryRefreshDatabase = 0;
     [[self window] setDelegate: nil];
 	
     [previewMatrixScrollView setPostsBoundsChangedNotifications: NO];
-//    [[[splitView subviews] objectAtIndex: 0] setPostsFrameChangedNotifications: NO];
-//    [splitView setDelegate: nil];
+    [[[splitView subviews] objectAtIndex: 0] setPostsFrameChangedNotifications: NO];
+    [splitView setDelegate: nil];
+    [splitView release];
+    splitView = nil;
     
     NSArray *windows = [NSApp windows];
     
@@ -20076,17 +20088,17 @@ int i,j,l;
 		}
 	}
     
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
-    {
-        for( NSWindow *win in [NSApp windows])
-        {
-            if( [[win windowController] isKindOfClass:[ViewerController class]])
-            {
+//    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
+//    {
+//        for( NSWindow *win in [NSApp windows])
+//        {
+//            if( [[win windowController] isKindOfClass:[ViewerController class]])
+//            {
 //                if( [win toolbar])
 //                    [win setToolbar: nil];
-            }
-        }
-    }
+//            }
+//        }
+//    }
 	
 	roiLock = [[NSRecursiveLock alloc] init];
 	
