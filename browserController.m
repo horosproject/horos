@@ -3861,11 +3861,14 @@ static NSConditionLock *threadLock = nil;
 			{
 				if( [splash aborted] == NO)
 				{
-					NSString *p = [self getLocalDCMPath: obj :BONJOURPACKETS];
-					
-					[selectedFiles addObject: p];
-					
-					[splash incrementBy: 1];
+                    @autoreleasepool
+                    {
+                        NSString *p = [self getLocalDCMPath: obj :BONJOURPACKETS];
+                        
+                        [selectedFiles addObject: p];
+                        
+                        [splash incrementBy: 1];
+                    }
 				}
 			}
 						
@@ -10321,22 +10324,19 @@ static BOOL withReset = NO;
 		{
 			for( NSCell *cell in cells)
 			{
-				if( [cell isEnabled] == YES)
-				{
-					NSManagedObject	*curObj = [matrixViewArray objectAtIndex: [cell tag]];
-					
-					if( [[curObj valueForKey:@"type"] isEqualToString:@"Image"])
-					{
-						[correspondingManagedObjects addObject: curObj];
-					}
-					
-					if( [[curObj valueForKey:@"type"] isEqualToString:@"Series"])
-					{
-						NSArray *imagesArray = [self imagesArray: curObj onlyImages: onlyImages];
-						
-						[correspondingManagedObjects addObjectsFromArray: imagesArray];
-					}
-				}
+                @autoreleasepool
+                {
+                    if( [cell isEnabled] == YES)
+                    {
+                        NSManagedObject	*curObj = [matrixViewArray objectAtIndex: [cell tag]];
+                        
+                        if( [[curObj valueForKey:@"type"] isEqualToString:@"Image"])
+                            [correspondingManagedObjects addObject: curObj];
+                        
+                        if( [[curObj valueForKey:@"type"] isEqualToString:@"Series"])
+                            [correspondingManagedObjects addObjectsFromArray: [self imagesArray: curObj onlyImages: onlyImages]];
+                    }
+                }
 			}
 		}
 		
@@ -10352,12 +10352,15 @@ static BOOL withReset = NO;
 			
 			for( NSManagedObject *img in correspondingManagedObjects)
 			{
-				if( [splash aborted] == NO)
-				{
-					[selectedFiles addObject: [self getLocalDCMPath: img :50]];
-					
-					[splash incrementBy: 1];
-				}
+                @autoreleasepool
+                {
+                    if( [splash aborted] == NO)
+                    {
+                        [selectedFiles addObject: [self getLocalDCMPath: img :50]];
+                        
+                        [splash incrementBy: 1];
+                    }
+                }
 			}
 			
 			if( [splash aborted])
