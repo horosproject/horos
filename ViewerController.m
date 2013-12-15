@@ -1249,10 +1249,12 @@ return YES;
     DCMPix *curPix;
     BOOL OK = YES;
     
-    curPix = [[viewerController pixList] objectAtIndex: 0];
+    NSArray *pixList = [viewerController pixList];
+    
+    curPix = [pixList objectAtIndex: 0];   //pixList.count/2];
     
     long imageSize, size;
-    NSArray *pixList = [viewerController pixList];
+    
     
     id w = [viewerController startWaitWindow: @"Gantry Tilt Correction"];
     
@@ -1293,85 +1295,93 @@ return YES;
         
         if( OK)
         {
-            for( DCMPix *p in pixList)
-            {
-                double o[ 9];
-                double xyz[ 3];
-                
-                [p orientationDouble: o];
-                xyz[ 0] = [p originX]; xyz[ 1] = [p originY]; xyz[ 2] = [p originZ];
-                
-                double vectorModel[ 9], vectorSensor[ 9];
-                
-                [p orientationDouble: vectorSensor];
-                [curPix orientationDouble: vectorModel];
-                
-                double length;
-                
-                // --
-                matrix[ 9] = xyz[ 0] - origin[ 0];
-                matrix[ 10] = xyz[ 1] - origin[ 1];
-                matrix[ 11] = xyz[ 2] - origin[ 2];
-                // --
-                
-                matrix[ 0] = vectorSensor[ 0] * vectorModel[ 0] + vectorSensor[ 1] * vectorModel[ 1] + vectorSensor[ 2] * vectorModel[ 2];
-                matrix[ 1] = vectorSensor[ 0] * vectorModel[ 3] + vectorSensor[ 1] * vectorModel[ 4] + vectorSensor[ 2] * vectorModel[ 5];
-                matrix[ 2] = vectorSensor[ 0] * vectorModel[ 6] + vectorSensor[ 1] * vectorModel[ 7] + vectorSensor[ 2] * vectorModel[ 8];
-                
-                length = sqrt(matrix[0]*matrix[0] + matrix[1]*matrix[1] + matrix[2]*matrix[2]);
-                
-                matrix[0] = matrix[ 0] / length;
-                matrix[1] = matrix[ 1] / length;
-                matrix[2] = matrix[ 2] / length;
-                
-                // --
-                
-                matrix[ 3] = vectorSensor[ 3] * vectorModel[ 0] + vectorSensor[ 4] * vectorModel[ 1] + vectorSensor[ 5] * vectorModel[ 2];
-                matrix[ 4] = vectorSensor[ 3] * vectorModel[ 3] + vectorSensor[ 4] * vectorModel[ 4] + vectorSensor[ 5] * vectorModel[ 5];
-                matrix[ 5] = vectorSensor[ 3] * vectorModel[ 6] + vectorSensor[ 4] * vectorModel[ 7] + vectorSensor[ 5] * vectorModel[ 8];
-                
-                length = sqrt(matrix[3]*matrix[3] + matrix[4]*matrix[4] + matrix[5]*matrix[5]);
-                
-                matrix[3] = matrix[ 3] / length;
-                matrix[4] = matrix[ 4] / length;
-                matrix[5] = matrix[ 5] / length;
-                
-                // --
-                
-                matrix[6] = matrix[1]*matrix[5] - matrix[2]*matrix[4];
-                matrix[7] = matrix[2]*matrix[3] - matrix[0]*matrix[5];
-                matrix[8] = matrix[0]*matrix[4] - matrix[1]*matrix[3];
-                
-                length = sqrt(matrix[6]*matrix[6] + matrix[7]*matrix[7] + matrix[8]*matrix[8]);
-                
-                matrix[6] = matrix[ 6] / length;
-                matrix[7] = matrix[ 7] / length;
-                matrix[8] = matrix[ 8] / length;
-                
-                long size;
-                
-                float *resultBuff = [ITKTransform reorient2Dimage: matrix firstObject: curPix firstObjectOriginal: p length: &size];
-                if( resultBuff)
-                {
-                    memcpy( [p fImage] , resultBuff, size);
-                    free( resultBuff);
-                }
-                else
-                {
-                    NSRunInformationalAlertPanel( NSLocalizedString( @"Error!", nil), NSLocalizedString( @"Not Enough Memory", nil), NSLocalizedString(@"OK", nil), 0L, 0L);
-                    break;
-                }
-                
-//                xyz[ 0] = origin[ 0];
-//                xyz[ 1] = origin[ 1];
-//                [p setOriginDouble: xyz];
-            }
+            double i = 0;
             
             for( DCMPix *p in pixList)
             {
-                [p setOrientationDouble: matrix];
-                [p setSliceInterval: 0];
+                if( p != curPix)
+                {
+                    double o[ 9];
+                    double xyz[ 3];
+                    
+                    [p orientationDouble: o];
+                    xyz[ 0] = [p originX]; xyz[ 1] = [p originY]; xyz[ 2] = [p originZ];
+                    
+                    double vectorModel[ 9], vectorSensor[ 9];
+                    
+                    [p orientationDouble: vectorSensor];
+                    [curPix orientationDouble: vectorModel];
+                    
+                    double length;
+                    
+                    // --
+                    matrix[ 9] = xyz[ 0] - origin[ 0];
+                    matrix[ 10] = xyz[ 1] - origin[ 1];
+                    matrix[ 11] = xyz[ 2] - origin[ 2];
+                    // --
+                    
+                    matrix[ 0] = vectorSensor[ 0] * vectorModel[ 0] + vectorSensor[ 1] * vectorModel[ 1] + vectorSensor[ 2] * vectorModel[ 2];
+                    matrix[ 1] = vectorSensor[ 0] * vectorModel[ 3] + vectorSensor[ 1] * vectorModel[ 4] + vectorSensor[ 2] * vectorModel[ 5];
+                    matrix[ 2] = vectorSensor[ 0] * vectorModel[ 6] + vectorSensor[ 1] * vectorModel[ 7] + vectorSensor[ 2] * vectorModel[ 8];
+                    
+                    length = sqrt(matrix[0]*matrix[0] + matrix[1]*matrix[1] + matrix[2]*matrix[2]);
+                    
+                    matrix[0] = matrix[ 0] / length;
+                    matrix[1] = matrix[ 1] / length;
+                    matrix[2] = matrix[ 2] / length;
+                    
+                    // --
+                    
+                    matrix[ 3] = vectorSensor[ 3] * vectorModel[ 0] + vectorSensor[ 4] * vectorModel[ 1] + vectorSensor[ 5] * vectorModel[ 2];
+                    matrix[ 4] = vectorSensor[ 3] * vectorModel[ 3] + vectorSensor[ 4] * vectorModel[ 4] + vectorSensor[ 5] * vectorModel[ 5];
+                    matrix[ 5] = vectorSensor[ 3] * vectorModel[ 6] + vectorSensor[ 4] * vectorModel[ 7] + vectorSensor[ 5] * vectorModel[ 8];
+                    
+                    length = sqrt(matrix[3]*matrix[3] + matrix[4]*matrix[4] + matrix[5]*matrix[5]);
+                    
+                    matrix[3] = matrix[ 3] / length;
+                    matrix[4] = matrix[ 4] / length;
+                    matrix[5] = matrix[ 5] / length;
+                    
+                    // --
+                    
+                    matrix[6] = matrix[1]*matrix[5] - matrix[2]*matrix[4];
+                    matrix[7] = matrix[2]*matrix[3] - matrix[0]*matrix[5];
+                    matrix[8] = matrix[0]*matrix[4] - matrix[1]*matrix[3];
+                    
+                    length = sqrt(matrix[6]*matrix[6] + matrix[7]*matrix[7] + matrix[8]*matrix[8]);
+                    
+                    matrix[6] = matrix[ 6] / length;
+                    matrix[7] = matrix[ 7] / length;
+                    matrix[8] = matrix[ 8] / length;
+                    
+                    long size;
+                    
+                    float *resultBuff = [ITKTransform reorient2Dimage: matrix firstObject: curPix firstObjectOriginal: p length: &size];
+                    if( resultBuff)
+                    {
+                        memcpy( [p fImage] , resultBuff, size);
+                        free( resultBuff);
+                    }
+                    else
+                    {
+                        NSRunInformationalAlertPanel( NSLocalizedString( @"Error!", nil), NSLocalizedString( @"Not Enough Memory", nil), NSLocalizedString(@"OK", nil), 0L, 0L);
+                        break;
+                    }
+                    
+                    // Project the 3D point on the plane : dot product of normal plane vector (vectorModel) and distance between point and plane origin (matrix9,10,11)
+                    double distance = matrix[ 9] * vectorModel[ 6] + matrix[ 10] * vectorModel[ 7] + matrix[ 11] * vectorModel[ 8];
+                    double outputOrigin[ 3], outputOriginConverted[ 3];
+                    
+                    outputOrigin[0] = origin[ 0] + distance*vectorModel[ 6];
+                    outputOrigin[1] = origin[ 1] + distance*vectorModel[ 7];
+                    outputOrigin[2] = origin[ 2] + distance*vectorModel[ 8];
+                    
+                    [p setOriginDouble: outputOrigin];
+                }
             }
+            
+            for( DCMPix *p in pixList)
+                [p setSliceInterval: 0];
         }
     }
     @catch (NSException *exception) {
@@ -4364,6 +4374,14 @@ static volatile int numberOfThreadsForRelisce = 0;
 		{
 			[[v.previewMatrixScrollView contentView] scrollToPoint: [[v.previewMatrixScrollView contentView] constrainScrollPoint: [[previewMatrix superview] bounds].origin]];
 			[v.previewMatrixScrollView reflectScrolledClipView: [v.previewMatrixScrollView contentView]];
+            
+            
+//            [NSAnimationContext beginGrouping];
+//            [[NSAnimationContext currentContext] setDuration:0.2];
+//            NSClipView* clipView = [v.previewMatrixScrollView contentView];
+//            [[clipView animator] setBoundsOrigin: [[v.previewMatrixScrollView contentView] constrainScrollPoint: [[previewMatrix superview] bounds].origin]];
+//            [v.previewMatrixScrollView reflectScrolledClipView: [v.previewMatrixScrollView contentView]]; // may not bee necessary
+//            [NSAnimationContext endGrouping];
 		}
 	}
     
@@ -10026,16 +10044,18 @@ static int avoidReentryRefreshDatabase = 0;
         [[pixList[ 0] objectAtIndex:1] orientationDouble: vectors];
         
         double angle = fabs( [DCMView angleBetweenVectorD: Pn1 andVectorD: vectors+6]);
-        if( angle/deg2rad > [[NSUserDefaults standardUserDefaults] floatForKey: @"MinimumTitledGantryTolerance"]) {
-            NSLog( @"---- titledGantry - Not a real 3D data set: %f degrees", angle/deg2rad);
-            v = YES;
-        }
-        else if( angle/deg2rad != 0)
+        angle /= deg2rad;
+        if( angle < 90)
         {
-            NSLog( @"---- titledGantry (tolerated) - Not a real 3D data set: %f degrees", angle/deg2rad);
+            if( angle > [[NSUserDefaults standardUserDefaults] floatForKey: @"MinimumTitledGantryTolerance"]) {
+                NSLog( @"---- titledGantry - Not a real 3D data set: %f degrees", angle);
+                v = YES;
+            }
+            else if( angle > 0.001)
+                NSLog( @"---- titledGantry (tolerated) - Not a real 3D data set: %f degrees", angle);
+            
+            titledGantryDegrees = angle;
         }
-        
-        titledGantryDegrees = angle/deg2rad;
     }
     
     return v;
@@ -10346,7 +10366,7 @@ static int avoidReentryRefreshDatabase = 0;
 		if( nonContinuous)
 		{
 			NSRunInformationalAlertPanel( NSLocalizedString(@"Warning!", nil), [NSString stringWithFormat: NSLocalizedString(@"These slices have a non regular slice interval, varying from %.3f mm to %.3f mm. This will produce distortion in 3D representations, and in measurements.", nil), minInterval, maxInterval], NSLocalizedString(@"OK", nil), nil, nil);
-            
+//            
 //            // Resample origins, according to first and last image
 //            
 //            double fullLength;
@@ -10356,24 +10376,32 @@ static int avoidReentryRefreshDatabase = 0;
 //            double zd = [[pixList[ 0] lastObject] originZ] - [[pixList[ 0] objectAtIndex: 0] originZ];
 //            
 //            double interval3d = sqrt(xd*xd + yd*yd + zd*zd);
-//            NSLog( @"full length = %f, new mean interval: %f", interval3d, interval3d / pixList[ 0].count);
+//            NSLog( @"full length = %f, new mean interval: %f", interval3d, interval3d / (pixList[ 0].count-1));
 //            
-//            interval3d /= pixList[ 0].count;
+//            interval3d /= (pixList[ 0].count-1);
 //            
 //            double vectors[ 9];
 //            
 //            [[pixList[0] objectAtIndex: 0] orientationDouble: vectors];
 //            
-//            for( int i = 0 ; i < (long)[pixList[ 0] count]; i++)
+//            for( int i = 1 ; i < [pixList[ 0] count]; i++)
 //            {
 //                double newOrigin[ 3];
-//                newOrigin[ 0] = [[pixList[ 0] objectAtIndex: 0] originX] + interval3d*i*vectors[6];
-//                newOrigin[ 1] = [[pixList[ 0] objectAtIndex: 0] originY] + interval3d*i*vectors[7];
-//                newOrigin[ 2] = [[pixList[ 0] objectAtIndex: 0] originZ] + interval3d*i*vectors[8];
+//                newOrigin[ 0] = [[pixList[ 0] objectAtIndex: 0] originX] + interval3d*(float)i*vectors[6];
+//                newOrigin[ 1] = [[pixList[ 0] objectAtIndex: 0] originY] + interval3d*(float)i*vectors[7];
+//                newOrigin[ 2] = [[pixList[ 0] objectAtIndex: 0] originZ] + interval3d*(float)i*vectors[8];
 //                
 //                [[pixList[ 0] objectAtIndex: i] setOriginDouble: newOrigin];
 //                [[pixList[ 0] objectAtIndex: i] setSliceInterval: 0];
 //            }
+//            
+//            xd = [[pixList[ 0] lastObject] originX] - [[pixList[ 0] objectAtIndex: 0] originX];
+//            yd = [[pixList[ 0] lastObject] originY] - [[pixList[ 0] objectAtIndex: 0] originY];
+//            zd = [[pixList[ 0] lastObject] originZ] - [[pixList[ 0] objectAtIndex: 0] originZ];
+//            
+//            interval3d = sqrt(xd*xd + yd*yd + zd*zd);
+//            NSLog( @"new full length = %f", interval3d);
+
 		}
 		else if( [self isDataVolumicIn4D: YES] == NO)
 		{

@@ -1370,8 +1370,10 @@ static NSDate *lastWarningDate = nil;
             }
             else
             {
+                NSDisableScreenUpdates();
                 for( ViewerController *v in [ViewerController getDisplayed2DViewers])
                     [v setMatrixVisible: [defaults integerForKey: @"SeriesListVisible"]];
+                NSEnableScreenUpdates();
             }
         }
             
