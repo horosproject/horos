@@ -26,7 +26,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="216">
-                        <rect key="frame" x="23" y="11" width="43" height="17"/>
+                        <rect key="frame" x="27" y="11" width="43" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Size:" id="228">
                             <font key="font" metaFont="system"/>
@@ -35,7 +35,7 @@
                         </textFieldCell>
                     </textField>
                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="217">
-                        <rect key="frame" x="91" y="11" width="112" height="17"/>
+                        <rect key="frame" x="95" y="11" width="108" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="1" maxValue="20" doubleValue="5.7989689999999996" tickMarkPosition="below" numberOfTickMarks="5" sliderType="linear" id="229">
                             <font key="font" size="12" name="Helvetica"/>
@@ -44,8 +44,8 @@
                             <action selector="changeBrushSize:" target="-2" id="226"/>
                         </connections>
                     </slider>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="218">
-                        <rect key="frame" x="64" y="11" width="26" height="17"/>
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="218">
+                        <rect key="frame" x="68" y="11" width="26" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="22" id="eUq-wW-5Rh"/>
@@ -60,9 +60,9 @@
                         </connections>
                     </textField>
                     <segmentedControl verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="219">
-                        <rect key="frame" x="74" y="35" width="129" height="25"/>
+                        <rect key="frame" x="78" y="35" width="125" height="25"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <segmentedCell key="cell" alignment="left" style="texturedRounded" trackingMode="selectOne" id="231">
+                        <segmentedCell key="cell" alignment="left" style="texturedSquare" trackingMode="selectOne" id="231">
                             <font key="font" metaFont="system"/>
                             <segments>
                                 <segment label="Draw" imageScaling="none" width="61" selected="YES"/>
@@ -74,7 +74,7 @@
                         </connections>
                     </segmentedControl>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="221">
-                        <rect key="frame" x="23" y="40" width="43" height="17"/>
+                        <rect key="frame" x="27" y="40" width="43" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Mode:" id="232">
                             <font key="font" metaFont="system"/>

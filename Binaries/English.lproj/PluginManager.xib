@@ -205,7 +205,7 @@
                                                 <action selector="changeWebView:" target="-2" id="67"/>
                                             </connections>
                                         </popUpButton>
-                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="950" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="68">
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="950" translatesAutoresizingMaskIntoConstraints="NO" id="68">
                                             <rect key="frame" x="18" y="383" width="115" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Available plugins:" id="111">
