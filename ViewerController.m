@@ -9111,23 +9111,16 @@ static int avoidReentryRefreshDatabase = 0;
 			[firstObject orientation: vectors];
 			[secondObject orientation: vectorsB];
 			
-//			if( [firstObject fImage] != [*aData bytes])
-//			{
-//				NSLog(@"flipped Data in resampleDataFromPixArray");
-//				
-//				if( [lastObject fImage] != [*aData bytes]) NSLog( @"uh?");
-//				
-//				origin[ 0] = [lastObject originX]; 
-//				origin[ 1] = [lastObject originY]; 
-//				origin[ 2] = [lastObject originZ]; 
-//			}
-//			else
-			{
-				origin[ 0] = [firstObject originX]; 
-				origin[ 1] = [firstObject originY]; 
-				origin[ 2] = [firstObject originZ]; 
-			}
+            origin[ 0] = [firstObject originX];
+            origin[ 1] = [firstObject originY];
+            origin[ 2] = [firstObject originZ];
 			
+            // DICOM Origin is the CENTER of the first pixel !
+            
+            origin[ 0] -= firstObject.pixelSpacingX/2.;
+            origin[ 1] -= firstObject.pixelSpacingY/2.;
+            origin[ 2] -= firstObject.sliceThickness/2.;
+            
 			for( i = 0; i < 9; i++)
 			{
 				if( vectors[ i] != vectorsB[ i]) equalVector = NO;
@@ -9200,6 +9193,10 @@ static int avoidReentryRefreshDatabase = 0;
                     newOrigin[ 2] = origin[ 2] + (float) z * interval;
                 break;
             }
+            
+            newOrigin[ 0] += copyPix.pixelSpacingX/2.;
+            newOrigin[ 1] += copyPix.pixelSpacingY/2.;
+            newOrigin[ 2] += copyPix.sliceThickness/2.;
             
             [copyPix setOrigin: newOrigin];
             

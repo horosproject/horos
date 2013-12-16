@@ -1465,12 +1465,22 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 + (NSPoint) originDeltaBetween:(DCMPix*) pix1 And:(DCMPix*) pix2
 {
+    // DICOM Origin is the CENTER of the first pixel !
+    
 	double destPixelSpacingX = [pix1 pixelSpacingX];
 	double destPixelSpacingY = [pix1 pixelSpacingY];
 	double senderPixelSpacingX = [pix2 pixelSpacingX];
 	double senderPixelSpacingY = [pix2 pixelSpacingY];
 	
+    double pix1Origin[ 3] = {[pix1  originX], [pix1  originY], [pix1  originZ]};
+    double pix2Origin[ 3] = {[pix2  originX], [pix2  originY], [pix2  originZ]};
 	
+    pix1Origin[ 0] -= destPixelSpacingX/2.;
+    pix1Origin[ 1] -= destPixelSpacingY/2.;
+    
+    pix2Origin[ 0] -= senderPixelSpacingX/2.;
+    pix2Origin[ 1] -= senderPixelSpacingY/2.;
+    
 	if( destPixelSpacingX == 0 || destPixelSpacingY == 0 || senderPixelSpacingX == 0 || senderPixelSpacingY == 0)
 	{
 		return NSMakePoint( 0, 0);
@@ -1482,18 +1492,18 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	double destOrigin[ 3];
 	
 	[pix1 orientationDouble: vectorP1];
-	destOrigin[ 0] = [pix1  originX] * vectorP1[ 0] + [pix1  originY] * vectorP1[ 1] + [pix1  originZ] * vectorP1[ 2];
-	destOrigin[ 1] = [pix1  originX] * vectorP1[ 3] + [pix1  originY] * vectorP1[ 4] + [pix1  originZ] * vectorP1[ 5];
-	destOrigin[ 2] = [pix1  originX] * vectorP1[ 6] + [pix1  originY] * vectorP1[ 7] + [pix1  originZ] * vectorP1[ 8];
-	
+	destOrigin[ 0] = pix1Origin[ 0] * vectorP1[ 0] + pix1Origin[ 1] * vectorP1[ 1] + pix1Origin[ 2] * vectorP1[ 2];
+	destOrigin[ 1] = pix1Origin[ 0] * vectorP1[ 3] + pix1Origin[ 1] * vectorP1[ 4] + pix1Origin[ 2] * vectorP1[ 5];
+	destOrigin[ 2] = pix1Origin[ 0] * vectorP1[ 6] + pix1Origin[ 1] * vectorP1[ 7] + pix1Origin[ 2] * vectorP1[ 8];
+    
 	double vectorP2[ 9];
 	double senderOrigin[ 3];
 	
 	[pix2 orientationDouble: vectorP2];
-	senderOrigin[ 0] = [pix2  originX] * vectorP2[ 0] + [pix2  originY] * vectorP2[ 1] + [pix2  originZ] * vectorP2[ 2];
-	senderOrigin[ 1] = [pix2  originX] * vectorP2[ 3] + [pix2  originY] * vectorP2[ 4] + [pix2  originZ] * vectorP2[ 5];
-	senderOrigin[ 2] = [pix2  originX] * vectorP2[ 6] + [pix2  originY] * vectorP2[ 7] + [pix2  originZ] * vectorP2[ 8];
-	
+	senderOrigin[ 0] = pix2Origin[ 0] * vectorP2[ 0] + pix2Origin[ 1] * vectorP2[ 1] + pix2Origin[ 2] * vectorP2[ 2];
+	senderOrigin[ 1] = pix2Origin[ 0] * vectorP2[ 3] + pix2Origin[ 1] * vectorP2[ 4] + pix2Origin[ 2] * vectorP2[ 5];
+	senderOrigin[ 2] = pix2Origin[ 0] * vectorP2[ 6] + pix2Origin[ 1] * vectorP2[ 7] + pix2Origin[ 2] * vectorP2[ 8];
+    
 	NSPoint offset;
 
 	offset.x = destOrigin[ 0] + destPixelSpacingX * destWidth/2 - (senderOrigin[ 0] + senderPixelSpacingX * [pix2 pwidth]/2);

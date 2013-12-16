@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13B35" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="12F2029" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
@@ -20,7 +20,7 @@
             <windowStyleMask key="styleMask" miniaturizable="YES" resizable="YES" utility="YES" nonactivatingPanel="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="740" y="818" width="284" height="95"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1058"/>
             <value key="minSize" type="size" width="284" height="95"/>
             <value key="maxSize" type="size" width="284" height="95"/>
             <view key="contentView" id="8">
@@ -31,7 +31,7 @@
                         <rect key="frame" x="19" y="41" width="246" height="20"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                     </progressIndicator>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="15">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="15">
                         <rect key="frame" x="97" y="64" width="89" height="17"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Please wait..." id="29">
@@ -40,11 +40,11 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="22">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="22">
                         <rect key="frame" x="124" y="29" width="141" height="13"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Estimating remaining time..." id="30">
-                            <font key="font" metaFont="system" size="10"/>
+                            <font key="font" size="10" name="LucidaGrande"/>
                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -69,9 +69,7 @@
                     <constraint firstItem="15" firstAttribute="top" secondItem="8" secondAttribute="top" constant="14" id="UAb-4l-PoI"/>
                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="15" secondAttribute="trailing" constant="16" id="V8z-kU-34r"/>
                     <constraint firstItem="15" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="8" secondAttribute="leading" constant="16" id="Ve1-SC-aEr"/>
-                    <constraint firstAttribute="centerX" secondItem="5" secondAttribute="centerX" id="Zrp-St-hbg"/>
                     <constraint firstAttribute="centerX" secondItem="23" secondAttribute="centerX" constant="1" id="dFh-cD-FZY"/>
-                    <constraint firstItem="5" firstAttribute="centerX" secondItem="8" secondAttribute="centerX" id="ipx-fT-Lhq"/>
                     <constraint firstAttribute="trailing" secondItem="5" secondAttribute="trailing" constant="19" id="q0N-9C-UWM"/>
                     <constraint firstItem="5" firstAttribute="top" secondItem="15" secondAttribute="bottom" constant="4" id="sWA-eg-h0Y"/>
                     <constraint firstItem="22" firstAttribute="top" secondItem="5" secondAttribute="bottom" id="x1U-N3-yjx"/>

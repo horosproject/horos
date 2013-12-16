@@ -3672,14 +3672,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             
             NSPoint imageLocation = [self ConvertFromNSView2GL: eventLocationInView];
             
+            mouseXPos = imageLocation.x;
+            mouseYPos = imageLocation.y;
+            
             if( imageLocation.x >= 0 && imageLocation.x < curDCM.pwidth)	//&& NSPointInRect( eventLocation, size)) <- this doesn't work in MPR Ortho
             {
                 if( imageLocation.y >= 0 && imageLocation.y < curDCM.pheight)
                 {
                     mouseOnImage = YES;
-                    
-                    mouseXPos = imageLocation.x;
-                    mouseYPos = imageLocation.y;
                     
                     if( (modifierFlags & NSShiftKeyMask) && (modifierFlags & NSControlKeyMask) && mouseDragging == NO)
                     {
@@ -8095,7 +8095,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 							
                             if( stringID.length == 0 || [stringID isEqualToString: @"previewDatabase"])
                             {
-                                if(mouseXPos!=0 || mouseYPos!=0)
+//                                if(mouseXPos!=0 || mouseYPos!=0)
                                 {
                                     NSString *pixelUnit = @"";
                                     
@@ -8218,7 +8218,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 							
 							if( stringID == nil)
 							{
-								if( mouseXPos != 0 || mouseYPos != 0)
+//								if( mouseXPos != 0 || mouseYPos != 0)
 								{
 									float location[ 3 ];
 									
