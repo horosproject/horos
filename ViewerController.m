@@ -12012,7 +12012,7 @@ float				matrix[25];
 			
 			if( [[[[self fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"] isEqualToString: [[[blendingController fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"]])
 			{
-				int result = NSRunCriticalAlertPanel(NSLocalizedString(@"2D Planes",nil),NSLocalizedString(@"These 2D planes are not parallel. If you continue the result will be distorted. You can instead 'Resample' the series to have the same origin/orientation.",nil), NSLocalizedString(@"Resample & Fusion",nil), NSLocalizedString(@"Cancel",nil), NSLocalizedString(@"Fusion",nil));
+				int result = NSRunCriticalAlertPanel(NSLocalizedString(@"2D Planes",nil),NSLocalizedString(@"These 2D planes are not parallel. If you continue the result will be distorted. You can instead 'Reorient' the series to have the same origin/orientation.",nil), NSLocalizedString(@"Reorient & Fusion",nil), NSLocalizedString(@"Cancel",nil), NSLocalizedString(@"Fusion",nil));
 				
 				switch( result)
 				{
@@ -12022,7 +12022,7 @@ float				matrix[25];
 					
 					#ifndef OSIRIX_LIGHT
 					case NSAlertDefaultReturn:		// Resample
-						blendingController = [self resampleSeries: blendingController];
+						blendingController = [self resampleSeries: blendingController rescale: NO];
 						if( blendingController) proceed = YES;
 					break;
 					#endif
@@ -16419,6 +16419,9 @@ int i,j,l;
 
 - (ViewerController*) resampleSeries:(ViewerController*) movingViewer rescale: (BOOL) rescale
 {
+    [movingViewer displayWarningIfGantryTitled];
+    [self displayWarningIfGantryTitled];
+    
 	ViewerController *newViewer = nil;
 	
     BOOL volumicSelf = YES;

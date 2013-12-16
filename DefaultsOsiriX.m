@@ -1069,7 +1069,7 @@ static NSHost *currentHost = nil;
     [defaultValues setObject:@"1" forKey:@"scrollThroughSeriesForDX"];
     [defaultValues setObject:@"1" forKey:@"scrollThroughSeriesForOT"];
     
-    [defaultValues setObject:@"0.05" forKey:@"PARALLELPLANETOLERANCE"];
+    [defaultValues setObject:@"0.01" forKey:@"PARALLELPLANETOLERANCE"]; //It's radians: 0.01 = about 0.5 degree
     
     [defaultValues setObject:@"1" forKey:@"bringOsiriXToFrontAfterReceivingMessage"];
     
