@@ -1251,12 +1251,12 @@ return YES;
     
     NSArray *pixList = [viewerController pixList];
     
-    curPix = [pixList objectAtIndex: 0];   //pixList.count/2];
+    curPix = [pixList objectAtIndex: pixList.count/2];   //pixList.count/2];
     
     long imageSize, size;
     
     
-    id w = [viewerController startWaitWindow: @"Gantry Tilt Correction"];
+    id w = [viewerController startWaitProgressWindow: NSLocalizedString( @"Gantry Tilt Correction", nil) :pixList.count];
     
     @try
     {
@@ -1378,6 +1378,8 @@ return YES;
                     
                     [p setOriginDouble: outputOrigin];
                 }
+                
+                [viewerController waitIncrementBy:w :1];
             }
             
             for( DCMPix *p in pixList)
@@ -1645,10 +1647,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	i *= 2;
 	i--;
 	lastPix = [pixList[ curMovieIndex] objectAtIndex: i];
-	
-	// Display a waiting window
-	id waitWindow = [self startWaitWindow:@"Reslicing..."];
-	
+		
 	sign = 1.0;
 	
 	imageSize = sizeof(float) * newX * newY;
@@ -1694,6 +1693,10 @@ static volatile int numberOfThreadsForRelisce = 0;
                 vImageRotate90_PlanarF( &src, &dst, kRotate270DegreesClockwise, 0, 0);
             }
 #endif
+            
+            // Display a waiting window
+            id waitWindow = [self startWaitProgressWindow: NSLocalizedString( @"Reslicing...", nil) :newTotal];
+            
 			for( i = 0 ; i < newTotal; i ++)
 			{
 				[newPixList addObject: [[[pixList[ j] objectAtIndex: 0] copy] autorelease]];
@@ -1837,6 +1840,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 					[curPix setSliceThickness: [firstPix pixelSpacingX]];
 					[curPix setSliceInterval: 0];
 				}
+                
+                [self waitIncrementBy:waitWindow :1];
 			}
 			
 			BOOL finished = NO;
@@ -1859,6 +1864,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 			[xPix addObject: newPixList];
 			
 			postprocessed = YES;
+            
+            // Close the waiting window
+            [self endWaitWindow: waitWindow];
 		}
 		else succeed = NO;
 	}
@@ -1905,9 +1913,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	[previousCLUT release];
 	[previousOpacity release];
-	
-	// Close the waiting window
-	[self endWaitWindow: waitWindow];
 	
 	return succeed;
 }
@@ -8935,7 +8940,7 @@ static int avoidReentryRefreshDatabase = 0;
 
 - (IBAction)resampleDataBy2:(id)sender;
 {
-	id waitWindow = [self startWaitWindow:@"Resampling data..."];
+	id waitWindow = [self startWaitWindow: NSLocalizedString( @"Resampling data...", nil)];
 	BOOL isResampled = [self resampleDataBy2];
 	[self endWaitWindow: waitWindow];
 	if(!isResampled)
