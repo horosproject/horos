@@ -86,9 +86,10 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
             
             double origin[ 3] = {0, 0, 0}, originConverted[ 3];
             
-            origin[0] =  [firstObjectOriginal originX];
-            origin[1] =  [firstObjectOriginal originY];
-            origin[2] =  [firstObjectOriginal originZ];
+            // DICOM Origin is voxel center
+            origin[0] =  [firstObjectOriginal originX] - firstObjectOriginal.pixelSpacingX/2.;
+            origin[1] =  [firstObjectOriginal originY] - firstObjectOriginal.pixelSpacingY/2.;
+            origin[2] =  [firstObjectOriginal originZ] - firstObjectOriginal.sliceThickness/2.;
             
             originConverted[ 0] = origin[ 0] * vectorOriginal[ 0] + origin[ 1] * vectorOriginal[ 1] + origin[ 2] * vectorOriginal[ 2];
             originConverted[ 1] = origin[ 0] * vectorOriginal[ 3] + origin[ 1] * vectorOriginal[ 4] + origin[ 2] * vectorOriginal[ 5];
@@ -124,9 +125,9 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
             
             double outputOrigin[3] = {0, 0, 0}, outputOriginConverted[3] = {0, 0, 0};
             
-            outputOrigin[0] =  [firstObject originX];
-            outputOrigin[1] =  [firstObject originY];
-            outputOrigin[2] =  [firstObject originZ];
+            outputOrigin[0] =  [firstObject originX] - firstObject.pixelSpacingX/2.;
+            outputOrigin[1] =  [firstObject originY] - firstObject.pixelSpacingY/2.;
+            outputOrigin[2] =  [firstObject originZ] - firstObject.sliceThickness/2.;
             
             outputOriginConverted[ 0] = outputOrigin[ 0] * vectorReference[ 0] + outputOrigin[ 1] * vectorReference[ 1] + outputOrigin[ 2] * vectorReference[ 2];
             outputOriginConverted[ 1] = outputOrigin[ 0] * vectorReference[ 3] + outputOrigin[ 1] * vectorReference[ 4] + outputOrigin[ 2] * vectorReference[ 5];
@@ -215,12 +216,16 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 
 - (ViewerController*) computeAffineTransformWithParameters: (double*)theParameters resampleOnViewer:(ViewerController*)referenceViewer
 {
+    return [self computeAffineTransformWithParameters: theParameters resampleOnViewer: referenceViewer rescale: [[NSUserDefaults standardUserDefaults] boolForKey: @"RescaleDuring3DResampling"]];
+}
+
+- (ViewerController*) computeAffineTransformWithParameters: (double*)theParameters resampleOnViewer:(ViewerController*)referenceViewer rescale: (BOOL) rescale
+{
 	DCMPix *firstObject = [[referenceViewer pixList] objectAtIndex: 0];
 	DCMPix *firstObjectOriginal = [[originalViewer pixList] objectAtIndex: 0];
 	int noOfImages = [[referenceViewer pixList] count];
 	long length;
-	BOOL rescale = [[NSUserDefaults standardUserDefaults] boolForKey: @"RescaleDuring3DResampling"];
-    
+	
 	float *resultBuff = [ITKTransform resampleWithParameters: theParameters firstObject: firstObject firstObjectOriginal: firstObjectOriginal noOfImages: noOfImages length: &length itkImage: (ITK*) itkImage rescale: rescale];
 	
 	ViewerController *v = [self createNewViewerWithBuffer:resultBuff length: length resampleOnViewer:referenceViewer rescale: rescale];

@@ -2584,15 +2584,15 @@ Gw
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="828" userLabel="FusionType">
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="437" y="541" width="412" height="235"/>
+            <rect key="contentRect" x="437" y="541" width="466" height="235"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <value key="minSize" type="size" width="382" height="234"/>
             <view key="contentView" id="829">
-                <rect key="frame" x="0.0" y="0.0" width="412" height="235"/>
+                <rect key="frame" x="0.0" y="0.0" width="466" height="235"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <button verticalHuggingPriority="750" id="831">
-                        <rect key="frame" x="308" y="5" width="97" height="32"/>
+                        <rect key="frame" x="355" y="5" width="97" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="2233">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -2620,7 +2620,7 @@ DQ
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" tag="2" id="833">
-                        <rect key="frame" x="146" y="192" width="130" height="32"/>
+                        <rect key="frame" x="168" y="192" width="130" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Subtraction" bezelStyle="rounded" alignment="center" borderStyle="border" tag="2" inset="2" id="2235">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -2631,7 +2631,7 @@ DQ
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" tag="3" id="834">
-                        <rect key="frame" x="281" y="192" width="130" height="32"/>
+                        <rect key="frame" x="333" y="192" width="130" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Multiplication" bezelStyle="rounded" alignment="center" borderStyle="border" tag="3" inset="2" id="2236">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -2665,30 +2665,30 @@ DQ
                         </popUpButtonCell>
                     </popUpButton>
                     <box verticalHuggingPriority="750" title="Box" boxType="separator" titlePosition="noTitle" id="981">
-                        <rect key="frame" x="-15" y="138" width="427" height="5"/>
+                        <rect key="frame" x="-15" y="138" width="481" height="5"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <font key="titleFont" metaFont="system"/>
                     </box>
                     <box verticalHuggingPriority="750" title="Box" boxType="separator" titlePosition="noTitle" id="984">
-                        <rect key="frame" x="-15" y="182" width="427" height="5"/>
+                        <rect key="frame" x="-15" y="182" width="481" height="5"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <font key="titleFont" metaFont="system"/>
                     </box>
                     <box verticalHuggingPriority="750" title="Box" boxType="separator" titlePosition="noTitle" id="985">
-                        <rect key="frame" x="-15" y="40" width="427" height="5"/>
+                        <rect key="frame" x="-15" y="40" width="481" height="5"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <font key="titleFont" metaFont="system"/>
                     </box>
                     <button toolTip="Perform a 3D registration from the dragged series to the destination series, according to the 3D points." verticalHuggingPriority="750" tag="7" id="987">
-                        <rect key="frame" x="182" y="144" width="197" height="32"/>
+                        <rect key="frame" x="333" y="144" width="130" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <buttonCell key="cell" type="push" title="Point-Based Registration" bezelStyle="rounded" alignment="center" borderStyle="border" tag="7" inset="2" id="2239">
+                        <buttonCell key="cell" type="push" title="Registration" bezelStyle="rounded" alignment="center" borderStyle="border" tag="7" inset="2" id="2239">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
@@ -2697,14 +2697,14 @@ DQ
                         </connections>
                     </button>
                     <box verticalHuggingPriority="750" title="Box" boxType="separator" titlePosition="noTitle" id="2015">
-                        <rect key="frame" x="-15" y="86" width="427" height="5"/>
+                        <rect key="frame" x="-15" y="86" width="481" height="5"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <font key="titleFont" metaFont="system"/>
                     </box>
                     <button verticalHuggingPriority="750" tag="10" id="2017">
-                        <rect key="frame" x="129" y="48" width="130" height="32"/>
+                        <rect key="frame" x="168" y="46" width="130" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Copy ROIs" bezelStyle="rounded" alignment="center" borderStyle="border" tag="10" inset="2" id="2241">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -2725,15 +2725,26 @@ DQ
                             <action selector="endBlendingType:" target="-2" id="2102"/>
                         </connections>
                     </button>
+                    <button toolTip="Reorient (origin and orientation) the dragged series, according to the destination series." verticalHuggingPriority="750" tag="12" id="G8w-oS-Z7f">
+                        <rect key="frame" x="168" y="144" width="130" height="32"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <buttonCell key="cell" type="push" title="Reorient" bezelStyle="rounded" alignment="center" borderStyle="border" tag="11" inset="2" id="qqC-vq-Xbs">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="endBlendingType:" target="-2" id="IUd-KV-i3f"/>
+                        </connections>
+                    </button>
                     <segmentedControl verticalHuggingPriority="750" tag="4" id="2103">
-                        <rect key="frame" x="9" y="101" width="398" height="25"/>
+                        <rect key="frame" x="9" y="101" width="448" height="25"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <segmentedCell key="cell" alignment="left" style="automatic" trackingMode="momentary" id="2243">
                             <font key="font" metaFont="system"/>
                             <segments>
-                                <segment label="Add as Red" imageScaling="none" width="130.33330000000001" tag="4"/>
-                                <segment label="Add as Green" imageScaling="none" width="130.33330000000001" tag="5"/>
-                                <segment label="Add as Blue" imageScaling="none" width="129.33330000000001" tag="6"/>
+                                <segment label="Add as Red" imageScaling="none" width="147.33330000000001" tag="4"/>
+                                <segment label="Add as Green" imageScaling="none" width="147.33330000000001" tag="5"/>
+                                <segment label="Add as Blue" imageScaling="none" width="145.33330000000001" tag="6"/>
                             </segments>
                         </segmentedCell>
                         <connections>

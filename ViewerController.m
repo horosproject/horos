@@ -12308,8 +12308,12 @@ float				matrix[25];
 		break;
 		
 		case 11:
-			[self resampleSeries: bc];
+			[self resampleSeries: bc rescale: YES];
 		break;
+            
+        case 12:
+            [self resampleSeries: bc rescale: NO];
+        break;
 		#endif
 		
 		case 8:		// 3D Registration
@@ -16410,6 +16414,11 @@ int i,j,l;
 
 - (ViewerController*) resampleSeries:(ViewerController*) movingViewer
 {
+    return [self resampleSeries: movingViewer rescale: YES];
+}
+
+- (ViewerController*) resampleSeries:(ViewerController*) movingViewer rescale: (BOOL) rescale
+{
 	ViewerController *newViewer = nil;
 	
     BOOL volumicSelf = YES;
@@ -16516,7 +16525,7 @@ int i,j,l;
 		
 		ITKTransform * transform = [[ITKTransform alloc] initWithViewer:movingViewer];
 		
-		newViewer = [transform computeAffineTransformWithParameters: matrix resampleOnViewer: self];
+		newViewer = [transform computeAffineTransformWithParameters: matrix resampleOnViewer: self rescale: rescale];
 		
 		[imageView sendSyncMessage: 0];
 		[self adjustSlider];
