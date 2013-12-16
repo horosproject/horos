@@ -583,7 +583,7 @@ DQ
                     <autoresizingMask key="autoresizingMask"/>
                     <popUpButtonCell key="cell" type="bevel" bezelStyle="regularSquare" alignment="left" lineBreakMode="clipping" borderStyle="borderAndBezel" tag="99" imageScaling="proportionallyDown" inset="2" pullsDown="YES" preferredEdge="maxY" id="2316">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="system"/>
+                        <font key="font" metaFont="menu"/>
                         <menu key="menu" title="OtherViews" id="2317">
                             <items>
                                 <menuItem image="Stereo" tag="99" hidden="YES" id="2324"/>
@@ -1457,7 +1457,7 @@ Gw
                         <autoresizingMask key="autoresizingMask"/>
                         <popUpButtonCell key="cell" type="push" title="768x768" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="768" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="932" id="2064">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="menu"/>
                             <menu key="menu" title="OtherViews" id="931">
                                 <items>
                                     <menuItem title="Current" id="933"/>
@@ -1731,7 +1731,7 @@ Gw
                         <autoresizingMask key="autoresizingMask"/>
                         <popUpButtonCell key="cell" type="push" title="768x768" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="768" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="940" id="2076">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="menu"/>
                             <menu key="menu" title="OtherViews" id="939">
                                 <items>
                                     <menuItem title="Current" id="941"/>
@@ -2229,7 +2229,7 @@ Gw
                         </constraints>
                         <popUpButtonCell key="cell" type="push" title="768x768" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="768" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="948" id="2093">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="menu"/>
                             <menu key="menu" title="OtherViews" id="947">
                                 <items>
                                     <menuItem title="Current" id="949"/>
@@ -2811,7 +2811,7 @@ DQ
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="1008">
-                        <rect key="frame" x="13" y="48" width="32" height="14"/>
+                        <rect key="frame" x="13" y="48" width="39" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Name:" id="2113">
                             <font key="font" metaFont="smallSystem"/>
@@ -2820,7 +2820,7 @@ DQ
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1009">
-                        <rect key="frame" x="51" y="46" width="180" height="19"/>
+                        <rect key="frame" x="58" y="46" width="173" height="19"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <constraints>
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="163" id="Kg2-AG-rkE"/>
@@ -3226,7 +3226,7 @@ Gw
                         <constraints>
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="56" id="JQa-wo-QQ4"/>
                         </constraints>
-                        <buttonCell key="cell" type="bevel" title="edit" bezelStyle="regularSquare" image="DE2331C4-3A25-4BED-8C6D-B17CF5177FA1" imagePosition="overlaps" alignment="center" controlSize="small" borderStyle="border" id="2135">
+                        <buttonCell key="cell" type="bevel" title="edit" bezelStyle="regularSquare" image="E39B1992-6226-4996-825B-BFBF1841389F" imagePosition="overlaps" alignment="center" controlSize="small" borderStyle="border" id="2135">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
                         </buttonCell>
@@ -3446,7 +3446,7 @@ Gw
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <popUpButtonCell key="cell" type="push" title="Item1" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="1359" id="2144">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="menu"/>
                             <menu key="menu" title="OtherViews" id="1358">
                                 <items>
                                     <menuItem title="Item1" state="on" id="1359"/>
@@ -3583,7 +3583,7 @@ Gw
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <customView hidden="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1468" customClass="SelectionView">
-                        <rect key="frame" x="12" y="14" width="22" height="22"/>
+                        <rect key="frame" x="364" y="514" width="22" height="22"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </customView>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="985" translatesAutoresizingMaskIntoConstraints="NO" id="1410">
@@ -3596,11 +3596,14 @@ Gw
                         </textFieldCell>
                     </textField>
                     <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1411" customClass="NFHUDPopUpButton">
-                        <rect key="frame" x="61" y="507" width="71" height="26"/>
+                        <rect key="frame" x="61" y="507" width="168" height="26"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="163" id="qM6-LW-609"/>
+                        </constraints>
                         <popUpButtonCell key="cell" type="push" title="Item1" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="1413" id="2153">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="menu"/>
                             <menu key="menu" title="OtherViews" id="1412">
                                 <items>
                                     <menuItem title="Item1" state="on" id="1413"/>
@@ -3630,6 +3633,10 @@ Gw
                     <customView translatesAutoresizingMaskIntoConstraints="NO" id="1434" customClass="VRPresetPreview">
                         <rect key="frame" x="10" y="362" width="120" height="120"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="120" id="aUU-Ru-PSE"/>
+                            <constraint firstAttribute="width" constant="120" id="kEj-NE-Wb6"/>
+                        </constraints>
                         <connections>
                             <outlet property="clutOpacityView" destination="1029" id="1437"/>
                             <outlet property="controller" destination="-2" id="1436"/>
@@ -3641,6 +3648,10 @@ Gw
                     <customView translatesAutoresizingMaskIntoConstraints="NO" id="1440" customClass="VRPresetPreview">
                         <rect key="frame" x="138" y="362" width="120" height="120"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="120" id="NEi-M6-ITF"/>
+                            <constraint firstAttribute="height" constant="120" id="SbR-gN-hEI"/>
+                        </constraints>
                         <connections>
                             <outlet property="presetController" destination="-2" id="1498"/>
                             <outlet property="selectionView" destination="1468" id="1471"/>
@@ -3649,6 +3660,10 @@ Gw
                     <customView translatesAutoresizingMaskIntoConstraints="NO" id="1450" customClass="VRPresetPreview">
                         <rect key="frame" x="266" y="362" width="120" height="120"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="120" id="XqS-2H-qDp"/>
+                            <constraint firstAttribute="width" constant="120" id="uPX-gX-BuI"/>
+                        </constraints>
                         <connections>
                             <outlet property="presetController" destination="-2" id="1499"/>
                             <outlet property="selectionView" destination="1468" id="1472"/>
@@ -3657,6 +3672,10 @@ Gw
                     <customView translatesAutoresizingMaskIntoConstraints="NO" id="1451" customClass="VRPresetPreview">
                         <rect key="frame" x="10" y="213" width="120" height="120"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="120" id="CGP-zj-fHE"/>
+                            <constraint firstAttribute="width" constant="120" id="EaM-ZG-oTh"/>
+                        </constraints>
                         <connections>
                             <outlet property="nextKeyView" destination="1452" id="1454"/>
                             <outlet property="presetController" destination="-2" id="1500"/>
@@ -3666,6 +3685,10 @@ Gw
                     <customView translatesAutoresizingMaskIntoConstraints="NO" id="1452" customClass="VRPresetPreview">
                         <rect key="frame" x="138" y="213" width="120" height="120"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="120" id="Sbw-XX-KNj"/>
+                            <constraint firstAttribute="height" constant="120" id="yhz-Vh-sju"/>
+                        </constraints>
                         <connections>
                             <outlet property="presetController" destination="-2" id="1501"/>
                             <outlet property="selectionView" destination="1468" id="1474"/>
@@ -3674,6 +3697,10 @@ Gw
                     <customView translatesAutoresizingMaskIntoConstraints="NO" id="1453" customClass="VRPresetPreview">
                         <rect key="frame" x="266" y="213" width="120" height="120"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="120" id="HI3-zu-GKh"/>
+                            <constraint firstAttribute="height" constant="120" id="z0c-Ft-LS0"/>
+                        </constraints>
                         <connections>
                             <outlet property="presetController" destination="-2" id="1502"/>
                             <outlet property="selectionView" destination="1468" id="1475"/>
@@ -3682,6 +3709,10 @@ Gw
                     <customView translatesAutoresizingMaskIntoConstraints="NO" id="1455" customClass="VRPresetPreview">
                         <rect key="frame" x="10" y="64" width="120" height="120"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="120" id="ZQo-VB-uPK"/>
+                            <constraint firstAttribute="width" constant="120" id="yCU-hM-cad"/>
+                        </constraints>
                         <connections>
                             <outlet property="nextKeyView" destination="1456" id="1458"/>
                             <outlet property="presetController" destination="-2" id="1503"/>
@@ -3691,6 +3722,10 @@ Gw
                     <customView translatesAutoresizingMaskIntoConstraints="NO" id="1456" customClass="VRPresetPreview">
                         <rect key="frame" x="138" y="64" width="120" height="120"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="120" id="OdS-3x-M6j"/>
+                            <constraint firstAttribute="height" constant="120" id="h2J-xX-mdu"/>
+                        </constraints>
                         <connections>
                             <outlet property="presetController" destination="-2" id="1504"/>
                             <outlet property="selectionView" destination="1468" id="1477"/>
@@ -3699,6 +3734,10 @@ Gw
                     <customView translatesAutoresizingMaskIntoConstraints="NO" id="1457" customClass="VRPresetPreview">
                         <rect key="frame" x="266" y="64" width="120" height="120"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="120" id="8nV-6t-bz6"/>
+                            <constraint firstAttribute="width" constant="120" id="YPB-kh-GiW"/>
+                        </constraints>
                         <connections>
                             <outlet property="presetController" destination="-2" id="1505"/>
                             <outlet property="selectionView" destination="1468" id="1478"/>
@@ -3879,9 +3918,8 @@ Gw
                     <constraint firstItem="1451" firstAttribute="top" secondItem="1479" secondAttribute="bottom" constant="8" symbolic="YES" id="11u-G0-Pho"/>
                     <constraint firstItem="1479" firstAttribute="top" secondItem="1434" secondAttribute="bottom" constant="8" symbolic="YES" id="1SL-9C-7Qo"/>
                     <constraint firstItem="1455" firstAttribute="top" secondItem="1409" secondAttribute="top" constant="361" id="29S-q1-MQQ"/>
-                    <constraint firstAttribute="trailing" secondItem="1468" secondAttribute="trailing" constant="362" id="5y3-Km-tgj"/>
-                    <constraint firstItem="1468" firstAttribute="top" secondItem="1485" secondAttribute="bottom" constant="7" id="6e1-Xl-dbN"/>
-                    <constraint firstItem="1440" firstAttribute="centerX" secondItem="1553" secondAttribute="centerX" id="6hF-KQ-YyN"/>
+                    <constraint firstItem="1468" firstAttribute="top" secondItem="1409" secondAttribute="top" constant="9" id="2lD-RI-xYb"/>
+                    <constraint firstItem="1521" firstAttribute="top" secondItem="1468" secondAttribute="bottom" constant="8" symbolic="YES" id="3Dy-vc-xJO"/>
                     <constraint firstItem="1479" firstAttribute="trailing" secondItem="1482" secondAttribute="trailing" id="78h-i5-REy"/>
                     <constraint firstItem="1440" firstAttribute="top" secondItem="1553" secondAttribute="bottom" constant="8" symbolic="YES" id="7AW-CS-jHB"/>
                     <constraint firstItem="1482" firstAttribute="baseline" secondItem="1483" secondAttribute="baseline" id="7XQ-yO-c6S"/>
@@ -3904,9 +3942,10 @@ Gw
                     <constraint firstItem="1453" firstAttribute="leading" secondItem="1457" secondAttribute="leading" id="KDW-cK-1zd"/>
                     <constraint firstItem="1486" firstAttribute="top" secondItem="1456" secondAttribute="bottom" constant="8" symbolic="YES" id="Kxw-Kc-oyK"/>
                     <constraint firstItem="1541" firstAttribute="leading" secondItem="1555" secondAttribute="trailing" constant="7" id="L22-gV-gBF"/>
-                    <constraint firstItem="1468" firstAttribute="leading" secondItem="1409" secondAttribute="leading" constant="12" id="Muq-y2-k4C"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="1468" secondAttribute="trailing" constant="10" id="Oel-tv-SUr"/>
                     <constraint firstItem="1453" firstAttribute="leading" secondItem="1452" secondAttribute="trailing" constant="8" symbolic="YES" id="Orm-V2-W5T"/>
                     <constraint firstAttribute="trailing" secondItem="1450" secondAttribute="trailing" constant="10" id="Q6L-cI-qK6"/>
+                    <constraint firstItem="1468" firstAttribute="leading" secondItem="1409" secondAttribute="leading" constant="364" id="QEn-z6-85P"/>
                     <constraint firstItem="1452" firstAttribute="top" secondItem="1480" secondAttribute="bottom" constant="8" symbolic="YES" id="QVK-xP-CiF"/>
                     <constraint firstItem="1485" firstAttribute="baseline" secondItem="1486" secondAttribute="baseline" id="QWQ-uh-ybH"/>
                     <constraint firstItem="1479" firstAttribute="centerX" secondItem="1434" secondAttribute="centerX" id="RLa-xk-dVC"/>
@@ -3927,7 +3966,6 @@ Gw
                     <constraint firstItem="1456" firstAttribute="leading" secondItem="1455" secondAttribute="trailing" constant="8" symbolic="YES" id="YqM-AO-GEl"/>
                     <constraint firstItem="1479" firstAttribute="leading" secondItem="1409" secondAttribute="leading" constant="12" id="ZW9-EU-keo"/>
                     <constraint firstItem="1480" firstAttribute="baseline" secondItem="1481" secondAttribute="baseline" id="Zn8-Fh-bx8"/>
-                    <constraint firstItem="1541" firstAttribute="centerY" secondItem="1468" secondAttribute="centerY" id="b3J-1i-Shv"/>
                     <constraint firstItem="1520" firstAttribute="top" secondItem="1410" secondAttribute="bottom" constant="8" symbolic="YES" id="b46-h7-0DZ"/>
                     <constraint firstItem="1457" firstAttribute="top" secondItem="1484" secondAttribute="bottom" constant="8" symbolic="YES" id="bxa-MY-rgi"/>
                     <constraint firstItem="1450" firstAttribute="top" secondItem="1553" secondAttribute="bottom" constant="8" symbolic="YES" id="cS7-z3-2CH"/>
@@ -3936,14 +3974,13 @@ Gw
                     <constraint firstItem="1440" firstAttribute="leading" secondItem="1452" secondAttribute="leading" id="chf-qh-6LS"/>
                     <constraint firstItem="1521" firstAttribute="leading" secondItem="1553" secondAttribute="trailing" constant="8" symbolic="YES" id="f8z-Ni-IZ2"/>
                     <constraint firstItem="1484" firstAttribute="trailing" secondItem="1481" secondAttribute="trailing" id="fEq-Yd-a0m"/>
-                    <constraint firstItem="1555" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="1468" secondAttribute="trailing" constant="20" id="fVo-jC-pOz"/>
                     <constraint firstItem="1455" firstAttribute="top" secondItem="1482" secondAttribute="bottom" constant="8" symbolic="YES" id="fid-ng-Ihp"/>
                     <constraint firstItem="1487" firstAttribute="leading" secondItem="1484" secondAttribute="leading" id="kb0-Vd-fHr"/>
                     <constraint firstItem="1480" firstAttribute="leading" secondItem="1483" secondAttribute="leading" id="khA-SC-OUG"/>
                     <constraint firstItem="1456" firstAttribute="top" secondItem="1483" secondAttribute="bottom" constant="8" symbolic="YES" id="kkx-mt-ksT"/>
+                    <constraint firstItem="1468" firstAttribute="trailing" secondItem="1450" secondAttribute="trailing" id="l4F-X4-5r1"/>
                     <constraint firstItem="1480" firstAttribute="centerX" secondItem="1440" secondAttribute="centerX" id="pPo-Er-9UP"/>
                     <constraint firstItem="1422" firstAttribute="trailing" secondItem="1457" secondAttribute="trailing" id="qUt-F7-PSr"/>
-                    <constraint firstAttribute="bottom" secondItem="1468" secondAttribute="bottom" constant="14" id="qW0-lG-Kdm"/>
                     <constraint firstItem="1434" firstAttribute="leading" secondItem="1409" secondAttribute="leading" constant="10" id="qrC-kP-3du"/>
                     <constraint firstItem="1541" firstAttribute="top" secondItem="1486" secondAttribute="bottom" constant="8" symbolic="YES" id="qyp-sE-s6K"/>
                     <constraint firstItem="1487" firstAttribute="top" secondItem="1457" secondAttribute="bottom" constant="8" symbolic="YES" id="rdD-cQ-sEW"/>
@@ -4230,8 +4267,8 @@ DQ
                             <font key="font" metaFont="smallSystem"/>
                         </sliderCell>
                         <connections>
-                            <binding destination="935" name="maxValue" keyPath="values.VRGrowingRegionMax" id="2252"/>
                             <binding destination="935" name="value" keyPath="values.VRGrowingRegionInterval" previousBinding="2252" id="2255"/>
+                            <binding destination="935" name="maxValue" keyPath="values.VRGrowingRegionMax" id="2252"/>
                         </connections>
                     </slider>
                 </subviews>
@@ -4362,7 +4399,7 @@ DQ
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2309">
                     <rect key="frame" x="4" y="4" width="64" height="17"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <buttonCell key="cell" type="roundRect" title="16-bit" bezelStyle="roundedRect" image="53F07300-A3F4-4F27-9A7B-29BC39C68B96" imagePosition="overlaps" alignment="center" controlSize="small" state="on" borderStyle="border" inset="2" id="2310">
+                    <buttonCell key="cell" type="roundRect" title="16-bit" bezelStyle="roundedRect" image="82C1556A-5A3F-4603-BD9E-84C0753BC3B8" imagePosition="overlaps" alignment="center" controlSize="small" state="on" borderStyle="border" inset="2" id="2310">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="smallSystem"/>
                     </buttonCell>
@@ -4487,7 +4524,7 @@ Gw
         <image name="3DCut" width="71" height="71"/>
         <image name="3DRotate" width="165" height="165"/>
         <image name="3DRotateCamera" width="98" height="101"/>
-        <image name="53F07300-A3F4-4F27-9A7B-29BC39C68B96" width="1" height="1">
+        <image name="82C1556A-5A3F-4603-BD9E-84C0753BC3B8" width="1" height="1">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGPj9YJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoK4HCBMU
 GR4fIyQsLzI4O1UkbnVsbNUJCgsMDQ4PEBESVk5TU2l6ZVYkY2xhc3NcTlNJbWFnZUZsYWdzVk5TUmVw
@@ -4507,7 +4544,7 @@ Amo
         </image>
         <image name="AxialSmall" width="60" height="60"/>
         <image name="CorSmall" width="60" height="60"/>
-        <image name="DE2331C4-3A25-4BED-8C6D-B17CF5177FA1" width="1" height="1">
+        <image name="E39B1992-6226-4996-825B-BFBF1841389F" width="1" height="1">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGPj9YJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoK4HCBMU
 GR4fIyQsLzI4O1UkbnVsbNUJCgsMDQ4PEBESVk5TU2l6ZVYkY2xhc3NcTlNJbWFnZUZsYWdzVk5TUmVw
