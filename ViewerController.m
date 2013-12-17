@@ -7714,6 +7714,64 @@ static int avoidReentryRefreshDatabase = 0;
         return NO;
 }
 
+- (ViewerController*) copyViewerWindow
+{
+	ViewerController *new2DViewer = nil;
+	unsigned char *fVolumePtr = nil;
+	
+	// We will read our current series, and duplicate it by creating a new series!
+	
+    for( int v = 0; v < self.maxMovieIndex; v++)
+    {
+        // First calculate the amount of memory needed for the new serie
+        NSArray		*pL = [self pixList: v];
+        DCMPix		*curPix;
+        long		mem = 0;
+        
+        for( int i = 0; i < [pL count]; i++)
+        {
+            curPix = [pL objectAtIndex: i];
+            mem += [curPix pheight] * [curPix pwidth] * 4;		// each pixel contains either a 32-bit float or a 32-bit ARGB value
+        }
+        
+        fVolumePtr = malloc( mem);	// ALWAYS use malloc for allocating memory !
+        if( fVolumePtr)
+        {
+            // Copy the source series in the new one !
+            memcpy( fVolumePtr, [self volumePtr: v], mem);
+            
+            // Create a NSData object to control the new pointer
+            NSData *vD = [[[NSData alloc] initWithBytesNoCopy:fVolumePtr length:mem freeWhenDone:YES] autorelease];
+            
+            // Now copy the DCMPix with the new fVolumePtr
+            NSMutableArray *newPixList = [NSMutableArray array];
+            for( int i = 0; i < [pL count]; i++)
+            {
+                curPix = [[[pL objectAtIndex: i] copy] autorelease];
+                [curPix setfImage: (float*) (fVolumePtr + [curPix pheight] * [curPix pwidth] * 4 * i)];
+                [newPixList addObject: curPix];
+            }
+            
+            // We don't need to duplicate the DicomFile array, because it is identical!
+            
+            // A 2D Viewer window needs 3 things:
+            // A mutable array composed of DCMPix objects
+            // A mutable array composed of DicomFile objects
+            // Number of DCMPix and DicomFile has to be EQUAL !
+            // NSData volumeData contains the images, represented in the DCMPix objects
+            if( new2DViewer == nil)
+            {
+                new2DViewer = [self newWindow:newPixList :[self fileList: v] :vD];
+                [new2DViewer roiDeleteAll: self];
+            }
+            else
+                [new2DViewer addMovieSerie:newPixList :[self fileList: v] :vD];
+        }
+    }
+	
+	return new2DViewer;
+}
+
 -(void) changeImageData:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v :(BOOL) newViewerWindow
 {
 	if( windowWillClose) return;

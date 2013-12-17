@@ -66,56 +66,7 @@
 
 - (ViewerController*) duplicateCurrent2DViewerWindow
 {
-	long							i;
-	ViewerController				*new2DViewer;
-	unsigned char					*fVolumePtr;
-	
-	// We will read our current series, and duplicate it by creating a new series!
-	
-	// First calculate the amount of memory needed for the new serie
-	NSArray		*pixList = [viewerController pixList];		
-	DCMPix		*curPix;
-	long		mem = 0;
-	
-	for( i = 0; i < [pixList count]; i++)
-	{
-		curPix = [pixList objectAtIndex: i];
-		mem += [curPix pheight] * [curPix pwidth] * 4;		// each pixel contains either a 32-bit float or a 32-bit ARGB value
-	}
-	
-	fVolumePtr = malloc( mem);	// ALWAYS use malloc for allocating memory !
-	if( fVolumePtr)
-	{
-		// Copy the source series in the new one !
-		memcpy( fVolumePtr, [viewerController volumePtr], mem);
-		
-		// Create a NSData object to control the new pointer
-		NSData		*volumeData = [[[NSData alloc] initWithBytesNoCopy:fVolumePtr length:mem freeWhenDone:YES] autorelease];
-		
-		// Now copy the DCMPix with the new fVolumePtr
-		NSMutableArray *newPixList = [NSMutableArray array];
-		for( i = 0; i < [pixList count]; i++)
-		{
-			curPix = [[[pixList objectAtIndex: i] copy] autorelease];
-			[curPix setfImage: (float*) (fVolumePtr + [curPix pheight] * [curPix pwidth] * 4 * i)];
-			[newPixList addObject: curPix];
-		}
-		
-		// We don't need to duplicate the DicomFile array, because it is identical!
-		
-		// A 2D Viewer window needs 3 things:
-		// A mutable array composed of DCMPix objects
-		// A mutable array composed of DicomFile objects
-		// Number of DCMPix and DicomFile has to be EQUAL !
-		// NSData volumeData contains the images, represented in the DCMPix objects
-		new2DViewer = [viewerController newWindow:newPixList :[viewerController fileList] :volumeData];
-		
-		[new2DViewer roiDeleteAll:self];
-		
-		return new2DViewer;
-	}
-	
-	return nil;
+	return [viewerController copyViewerWindow];
 }
 
 - (NSArray*) viewerControllersList

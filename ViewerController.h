@@ -608,6 +608,7 @@ enum
 - (void) setROITool:(id) sender;
 - (void) setROIToolTag:(int) roitype;
 - (void) changeImageData:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v :(BOOL) applyTransition;
+- (ViewerController*) copyViewerWindow;
 - (IBAction) loadSerie:(id) sender;
 - (IBAction) loadPatient:(id) sender;
 - (void) loadSeries:(NSNumber*) t;
