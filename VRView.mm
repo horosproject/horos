@@ -2834,19 +2834,24 @@ public:
         phi -= 180;
     
     sprintf( string, "S-I: %2.1f\nL-R: %2.1f\nRoll: %2.1f", theta - 90., psi, phi);
-    oText[ 4]->SetInput( string);
+    if( oText[ 4])
+        oText[ 4]->SetInput( string);
 	
 	[self getOrientationText:string vector:vectors inversion:YES];
-	oText[ 0]->SetInput( string);
+	if( oText[ 0])
+        oText[ 0]->SetInput( string);
 	
 	[self getOrientationText:string vector:vectors inversion:NO];
-	oText[ 1]->SetInput( string);
+	if( oText[ 1])
+        oText[ 1]->SetInput( string);
 	
 	[self getOrientationText:string vector:vectors+3 inversion:NO];
-	oText[ 2]->SetInput( string);
+	if( oText[ 2])
+        oText[ 2]->SetInput( string);
 	
 	[self getOrientationText:string vector:vectors+3 inversion:YES];
-	oText[ 3]->SetInput( string);
+	if( oText[ 3])
+        oText[ 3]->SetInput( string);
 }
 
 - (void) scrollInStack: (float) delta
@@ -7747,7 +7752,7 @@ public:
 
 - (void)changeColorWith:(NSColor*) color
 {
-	if( color)
+	if( color && aRenderer)
 	{
 		//change background color
 		aRenderer->SetBackground([color redComponent],[color greenComponent],[ color blueComponent]);
