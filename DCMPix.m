@@ -5319,49 +5319,49 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					[self clearCachedPapyGroups];
 			}
 		}
-		#ifndef OSIRIX_LIGHT
-		else
-		{
-			[self clearCachedDCMFrameworkFiles];
-			
-			DCMObject *dcmObject = 0L;
-			
-			if( [cachedDCMFrameworkFiles objectForKey: srcFile])
-			{
-				NSMutableDictionary *dic = [cachedDCMFrameworkFiles objectForKey: srcFile];
-				
-				dcmObject = [dic objectForKey: @"dcmObject"];
-				
-				if( retainedCacheGroup != nil)
-                    NSLog( @"******** DCMPix : retainedCacheGroup 1 != nil ! %@", srcFile);
-                
-                [dic setValue: [NSNumber numberWithInt: [[dic objectForKey: @"count"] intValue]+1] forKey: @"count"];
-                retainedCacheGroup = dic;
-			}
-			else
-			{
-				dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
-				
-				if( dcmObject)
-				{
-					NSMutableDictionary *dic = [NSMutableDictionary dictionary];
-				
-					[dic setValue: dcmObject forKey: @"dcmObject"];
-					[dic setValue: [NSNumber numberWithInt: 1] forKey: @"count"];
-					
-					if( retainedCacheGroup != nil)
-						NSLog( @"******** DCMPix : retainedCacheGroup 2 != nil ! %@", srcFile);
-					
-					retainedCacheGroup = dic;
-					
-					[cachedDCMFrameworkFiles setObject: dic forKey: srcFile];
-				}
-			}
-			
-			if( dcmObject)
-				[self loadCustomImageAnnotationsPapyLink:-1 DCMLink:dcmObject];
-		}
-		#endif
+//		#ifndef OSIRIX_LIGHT
+//		else
+//		{
+//			[self clearCachedDCMFrameworkFiles];
+//			
+//			DCMObject *dcmObject = 0L;
+//			
+//			if( [cachedDCMFrameworkFiles objectForKey: srcFile])
+//			{
+//				NSMutableDictionary *dic = [cachedDCMFrameworkFiles objectForKey: srcFile];
+//				
+//				dcmObject = [dic objectForKey: @"dcmObject"];
+//				
+//				if( retainedCacheGroup != nil)
+//                    NSLog( @"******** DCMPix : retainedCacheGroup 1 != nil ! %@", srcFile);
+//                
+//                [dic setValue: [NSNumber numberWithInt: [[dic objectForKey: @"count"] intValue]+1] forKey: @"count"];
+//                retainedCacheGroup = dic;
+//			}
+//			else
+//			{
+//				dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
+//				
+//				if( dcmObject)
+//				{
+//					NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+//				
+//					[dic setValue: dcmObject forKey: @"dcmObject"];
+//					[dic setValue: [NSNumber numberWithInt: 1] forKey: @"count"];
+//					
+//					if( retainedCacheGroup != nil)
+//						NSLog( @"******** DCMPix : retainedCacheGroup 2 != nil ! %@", srcFile);
+//					
+//					retainedCacheGroup = dic;
+//					
+//					[cachedDCMFrameworkFiles setObject: dic forKey: srcFile];
+//				}
+//			}
+//			
+//			if( dcmObject)
+//				[self loadCustomImageAnnotationsPapyLink:-1 DCMLink:dcmObject];
+//		}
+//		#endif
 	}
 	@catch (NSException * e)
 	{
@@ -13331,10 +13331,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 								[field appendString:[NSString stringWithFormat:@"%d", (int) theValueP->ss]];
 							else if(inGrOrModP->vr==SQ)
 							{
-								NSLog(@"group : %d, element : %d", group, element);
-								//field = @"";
-								//NSLog(@"inGrOrModP->vr==SQ . field = %@", field);
-								
 								NSMutableString *temp = [NSMutableString string];
 								
 								// Loop over sequence
@@ -13347,20 +13343,23 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 										
 										//if(gr->value)
 										[temp appendString:[self getDICOMFieldValueForGroup:gr->group element:gr->element papyLink:fileNb]];
-										if(gr->value!=NULL) NSLog(@"++**++   ::    %@", [NSString stringWithCString:gr->value->a encoding:NSASCIIStringEncoding]);
-										else NSLog(@"++**++   ::    %@", [NSString stringWithCString:gr->vm encoding:NSASCIIStringEncoding]);
+//										if(gr->value!=NULL)
+//                                            NSLog(@"++**++   ::    %@", [NSString stringWithCString:gr->value->a encoding:NSASCIIStringEncoding]);
+//										else
+//                                            NSLog(@"++**++   ::    %@", [NSString stringWithCString:gr->vm encoding:NSASCIIStringEncoding]);
+                                        
 										dcmList = dcmList->next;
 									}
 								}
 								[field appendString:[NSString stringWithString:temp]];
-								NSLog(@"SQ field : %@", field);
+//								NSLog(@"SQ field : %@", field);
 							}
 							else if( theValueP->a)
 								[field appendString:[NSString stringWithCString:theValueP->a encoding:NSASCIIStringEncoding]];
 							
 
-							if(inGrOrModP->vr==OB)	
-								NSLog(@"inGrOrModP->vr==OB . field = %@", field);
+//							if(inGrOrModP->vr==OB)	
+//								NSLog(@"inGrOrModP->vr==OB . field = %@", field);
 							
 							
 							if(inGrOrModP->vr==DA)
@@ -13394,34 +13393,34 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			}
 		}
 		
-		if( elementDefinitionFound == NO)	// Papyrus doesn't have the definition of all dicom tags.... 2004?
-		{
-			#ifndef OSIRIX_LIGHT
-            NSString *s = nil;
-            // It failed with Papyrus : potential crash with DCMFramework with a corrupted file
-            
-            NSString *recoveryPath = [[[DicomDatabase activeLocalDatabase] dataBaseDirPath] stringByAppendingPathComponent:@"/ThumbnailPath"];
-            
-            [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error: nil];
-            
-            @try 
-            {
-                [URIRepresentationAbsoluteString writeToFile: recoveryPath atomically: YES encoding: NSASCIIStringEncoding  error: nil];
-                
-                DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
-                
-                s = [self getDICOMFieldValueForGroup: group element: element DCMLink: dcmObject];
-                
-                [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error: nil];
-            }
-            @catch (NSException * e) 
-            {
-                NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-            }
-            
-            return s;
-			#endif
-		}
+//		if( elementDefinitionFound == NO)	// Papyrus doesn't have the definition of all dicom tags.... 2004?
+//		{
+//			#ifndef OSIRIX_LIGHT
+//            NSString *s = nil;
+//            // It failed with Papyrus : potential crash with DCMFramework with a corrupted file
+//            
+//            NSString *recoveryPath = [[[DicomDatabase activeLocalDatabase] dataBaseDirPath] stringByAppendingPathComponent:@"/ThumbnailPath"];
+//            
+//            [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error: nil];
+//            
+//            @try 
+//            {
+//                [URIRepresentationAbsoluteString writeToFile: recoveryPath atomically: YES encoding: NSASCIIStringEncoding  error: nil];
+//                
+//                DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
+//                
+//                s = [self getDICOMFieldValueForGroup: group element: element DCMLink: dcmObject];
+//                
+//                [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error: nil];
+//            }
+//            @catch (NSException * e) 
+//            {
+//                NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+//            }
+//            
+//            return s;
+//			#endif
+//		}
 	}
 	return field;
 }
