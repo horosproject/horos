@@ -64,7 +64,10 @@ static NSString* UserDefaultsObservingContext = @"UserDefaultsObservingContext";
     }
     
     if( [keyPath isEqualToString: @"values.UseFloatingThumbnailsList"])
+    {
         [ViewerController closeAllWindows];
+        [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"SeriesListVisible"];
+    }
 }
 
 - (void) willSelect

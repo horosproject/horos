@@ -3201,14 +3201,14 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	[imageView sendSyncMessage: 0];
 	
-	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOHIDEMATRIX"]) [self autoHideMatrix];
+	[self autoHideMatrix];
 }
 
 -(void) windowDidResignKey:(NSNotification *)aNotification
 {
 	[imageView stopROIEditingForce: YES];
 	
-	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOHIDEMATRIX"]) [self autoHideMatrix];
+    [self autoHideMatrix];
     
 	if( FullScreenOn == YES) [self fullScreenMenu: self];
 }
@@ -3275,7 +3275,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) refreshToolbar
 {
-	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOHIDEMATRIX"]) [self autoHideMatrix];
+    [self autoHideMatrix];
 	
 	[self redrawToolbar];
 	
@@ -4283,8 +4283,35 @@ static volatile int numberOfThreadsForRelisce = 0;
     [[NSUserDefaults standardUserDefaults] setBool: visible forKey: @"SeriesListVisible"];
 }
 
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
+        return;
+    
+    if( [keyPath isEqualToString:@"SeriesListVisible"])
+    {
+        static int noReentry = 0;
+        
+        if( noReentry == 0)
+        {
+            noReentry = 1;
+            NSDisableScreenUpdates();
+            for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+                [v setMatrixVisible: [[change objectForKey:NSKeyValueChangeNewKey] intValue]];
+            NSEnableScreenUpdates();
+            noReentry = 0;
+        }
+    }
+}
+
 - (void) autoHideMatrix
 {
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
+        return;
+    
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOHIDEMATRIX"] == NO)
+        return;
+    
 	BOOL hide = NO;
 	NSWindow *window = nil;
 	
@@ -4441,6 +4468,8 @@ static volatile int numberOfThreadsForRelisce = 0;
     {    
         if ([[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOHIDEMATRIX"] == NO && FullScreenOn == NO)
         {
+            NSDisableScreenUpdates();
+            
             // Apply show / hide matrix to all viewers
             if( ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask) == NO)
             {
@@ -4468,6 +4497,8 @@ static volatile int numberOfThreadsForRelisce = 0;
                 }
                 noreentry = NO;
             }
+            
+            NSEnableScreenUpdates();
         }
     }
 }
@@ -4559,7 +4590,8 @@ static volatile int numberOfThreadsForRelisce = 0;
     
     BOOL r = ![v isHidden] && [v frame].size.width > 0;
     
-    [[NSUserDefaults standardUserDefaults] setBool: r forKey: @"SeriesListVisible"];
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SeriesListVisible"] != r)
+        [[NSUserDefaults standardUserDefaults] setBool: r forKey: @"SeriesListVisible"];
     
     return r;
 }
@@ -5711,8 +5743,7 @@ static ViewerController *draggedController = nil;
 	
 	if( windowWillClose) return;
 	
-	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOHIDEMATRIX"])
-		[self autoHideMatrix];
+    [self autoHideMatrix];
 }
 
 //- (void) Display3DPoint:(NSNotification*) note
@@ -7593,6 +7624,14 @@ static int avoidReentryRefreshDatabase = 0;
 {
     if( [NSThread isMainThread] == NO)
         N2LogStackTrace( @"dealloc NOT on main thread");
+    
+    @try
+    {
+        [[NSUserDefaults standardUserDefaults] removeObserver:self forKeyPath:@"SeriesListVisible"];
+    }
+    @catch (NSException *exception) {
+        N2LogException( exception);
+    }
     
     [[self window] setDelegate: nil];
 	
@@ -20334,6 +20373,8 @@ int i,j,l;
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOHIDEMATRIX"] == NO)
         [self setMatrixVisible: [[NSUserDefaults standardUserDefaults] boolForKey: @"SeriesListVisible"]];
 	
+    [[NSUserDefaults standardUserDefaults] addObserver: self forKeyPath: @"SeriesListVisible" options:NSKeyValueObservingOptionNew context:nil];
+    
 	if( matrixPreviewBuilt == NO)
 		[self buildMatrixPreview];
 	

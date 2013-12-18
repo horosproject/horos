@@ -1619,8 +1619,13 @@ static NSDate *lastWarningDate = nil;
 	if( checkForPreferencesUpdate == NO) return;
 	
 	if( updateTimer)
-		return;
+    {
+		[updateTimer invalidate];
+        [updateTimer release];
+        updateTimer = nil;
 	
+    }
+    
 	updateTimer = [[NSTimer scheduledTimerWithTimeInterval: 0.5 target: self selector:@selector(runPreferencesUpdateCheck:) userInfo:nil repeats: NO] retain];
 }
 
@@ -3600,7 +3605,7 @@ static BOOL initialized = NO;
     [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"USEALWAYSTOOLBARPANEL2"];
     [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"syncPreviewList"];
     [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"SeriesListVisible"];
-    [[NSUserDefaults standardUserDefaults] setBool: NO  forKey: @"AUTOHIDEMATRIX"];
+//    [[NSUserDefaults standardUserDefaults] setBool: NO  forKey: @"AUTOHIDEMATRIX"];
     
     
 	#ifndef MACAPPSTORE
