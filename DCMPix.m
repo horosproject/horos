@@ -13258,36 +13258,36 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	if( group)
 		inGrOrModP = [self getPapyGroup: group];
 	
-	#ifndef OSIRIX_LIGHT
-	if( inGrOrModP == nil) // Papyrus failed... unknown group? Try DCM Framework
-	{
-        NSString *s = nil;
-        // It failed with Papyrus : potential crash with DCMFramework with a corrupted file
-        
-        NSString *recoveryPath = [[[DicomDatabase activeLocalDatabase] dataBaseDirPath] stringByAppendingPathComponent:@"/ThumbnailPath"];
-        
-        [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error: nil];
-        
-        
-        @try 
-        {
-            [URIRepresentationAbsoluteString writeToFile: recoveryPath atomically: YES encoding: NSASCIIStringEncoding  error: nil];
-            
-            DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
-		
-            s = [self getDICOMFieldValueForGroup: group element: element DCMLink: dcmObject];
-        
-            [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error: nil];
-        }
-        @catch (NSException * e) 
-        {
-            NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-        }
-            
-        return s;
-	}
-	else 
-	#endif
+//	#ifndef OSIRIX_LIGHT
+//	if( inGrOrModP == nil) // Papyrus failed... unknown group? Try DCM Framework
+//	{
+//        NSString *s = nil;
+//        // It failed with Papyrus : potential crash with DCMFramework with a corrupted file
+//        
+//        NSString *recoveryPath = [[[DicomDatabase activeLocalDatabase] dataBaseDirPath] stringByAppendingPathComponent:@"/ThumbnailPath"];
+//        
+//        [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error: nil];
+//        
+//        
+//        @try 
+//        {
+//            [URIRepresentationAbsoluteString writeToFile: recoveryPath atomically: YES encoding: NSASCIIStringEncoding  error: nil];
+//            
+//            DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
+//		
+//            s = [self getDICOMFieldValueForGroup: group element: element DCMLink: dcmObject];
+//        
+//            [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error: nil];
+//        }
+//        @catch (NSException * e) 
+//        {
+//            NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+//        }
+//            
+//        return s;
+//	}
+//	else 
+//	#endif
 	if( inGrOrModP)
 	{
 		int theEnumGrNb = Papy3ToEnumGroup(group);
