@@ -10883,24 +10883,46 @@ static float oldsetww, oldsetwl;
                 
                 vImage_Buffer dstf, srcf;
                 
-                dstf.height = [pixList[ x] count];
-                dstf.width = [pix pwidth];
-                dstf.rowBytes = [pix pwidth]*[pix pheight]*sizeof(float);
-                srcf = dstf;
+                srcf.height = [pixList[ x] count];
+                srcf.width = pix.pwidth;
+                srcf.rowBytes = pix.pwidth*pix.pheight*sizeof(float);
                 
-                int from = [[dict objectForKey: @"from"] intValue];
-                int to = [[dict objectForKey: @"to"] intValue];
-                float *fkernel = [[dict objectForKey: @"kernel"] pointerValue];
-                
-                for( int y = from; y < to; y++)
+                float *t = malloc( srcf.height * srcf.width * sizeof( float));
+                if( t)
                 {
-                    srcf.data = dstf.data = (void*) [volumeData[ x] bytes] + y*[pix pwidth]*sizeof(float);
-                
-                    if( srcf.data)
+                    dstf.height = [pixList[ x] count];
+                    dstf.width = pix.pwidth;
+                    dstf.rowBytes = pix.pwidth*sizeof(float);
+                    dstf.data = t;
+                    
+                    int from = [[dict objectForKey: @"from"] intValue];
+                    int to = [[dict objectForKey: @"to"] intValue];
+                    float *fkernel = [[dict objectForKey: @"kernel"] pointerValue];
+                    
+                    for( int y = from; y < to; y++)
                     {
-                        if( vImageConvolve_PlanarF( &dstf, &srcf, 0, 0, 0, fkernel, [pix kernelsize], [pix kernelsize], 0, kvImageDoNotTile + kvImageEdgeExtend))
-                            NSLog( @"Error applyConvolutionOnImage");
+                        srcf.data = (void*) [volumeData[ x] bytes] + y*pix.pwidth*sizeof(float);
+                        
+                        if( srcf.data)
+                        {
+                            if( vImageConvolve_PlanarF( &srcf, &dstf, 0, 0, 0, fkernel, [pix kernelsize], [pix kernelsize], 0, kvImageDoNotTile + kvImageEdgeExtend))
+                                NSLog( @"Error applyConvolutionOnImage");
+                            else
+                            {
+                                void *s = srcf.data, *d = dstf.data;
+                                
+                                for( int y = 0; y < dstf.height; y++)
+                                {
+                                    memcpy( s, d, dstf.rowBytes);
+                                    
+                                    s += srcf.rowBytes;
+                                    d += dstf.rowBytes;
+                                }
+                            }
+                        }
                     }
+                    
+                    free( t);
                 }
             }
         }
@@ -16643,7 +16665,57 @@ int i,j,l;
 }
 
 - (void) computeRegistrationWithMovingViewer:(ViewerController*) movingViewer
-{	
+{
+    BOOL volumicSelf = YES;
+    BOOL volumicMoving = YES;
+    
+    if( self.pixList.count > 1)
+    {
+        if( [self isDataVolumicIn4D: YES] == NO)
+            volumicSelf = NO;
+        
+        if( [self computeInterval] == 0)
+            volumicSelf = NO;
+    }
+    else
+    {
+        DCMPix *p = self.pixList.lastObject;
+        
+        double orientation[ 9];
+        [p orientationDouble: orientation];
+        
+        if( orientation[ 6] == 0 && orientation[ 7] == 0 && orientation[ 8] == 0)
+            volumicSelf = NO;
+    }
+    
+    if( movingViewer.pixList.count > 1)
+    {
+        if( [movingViewer isDataVolumicIn4D: YES] == NO)
+            volumicMoving = NO;
+        
+        if( [movingViewer computeInterval] == 0)
+            volumicMoving = NO;
+    }
+    else
+    {
+        DCMPix *p = movingViewer.pixList.lastObject;
+        
+        double orientation[ 9];
+        [p orientationDouble: orientation];
+        
+        if( orientation[ 6] == 0 && orientation[ 7] == 0 && orientation[ 8] == 0)
+            volumicMoving = NO;
+    }
+    
+    if( volumicSelf == NO || volumicMoving == NO)
+    {
+        NSRunCriticalAlertPanel(NSLocalizedString(@"Registration Error", nil),
+								NSLocalizedString(@"3D Resampling requires volumic data.", nil),
+								NSLocalizedString(@"OK", nil), nil, nil);
+        return;
+    }
+
+    
 //	NSLog(@" ***** Points 2D ***** ");
 	// find all the Point ROIs on this viewer (fixed)
 	NSMutableArray * modelPointROIs = [self point2DList];
