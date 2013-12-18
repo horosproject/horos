@@ -756,9 +756,9 @@
                                     </connections>
                                 </button>
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="Aob-dY-jNd">
-                                    <rect key="frame" x="130" y="63" width="249" height="18"/>
+                                    <rect key="frame" x="130" y="63" width="196" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Single floating Series List per screen" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="Uq0-8g-c6d">
+                                    <buttonCell key="cell" type="check" title="Single Series List per screen" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="Uq0-8g-c6d">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -896,7 +896,7 @@
                                     </constraints>
                                 </customView>
                                 <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="GQO-4f-FAV">
-                                    <rect key="frame" x="391" y="63" width="225" height="18"/>
+                                    <rect key="frame" x="338" y="63" width="225" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Automatically show/hide the list" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="G7b-Qw-REH">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
