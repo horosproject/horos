@@ -1,10 +1,16 @@
-//
-//  NSScreen+N2.h
-//  OsiriX_Lion
-//
-//  Created by Alessandro Volz on 03.04.12.
-//  Copyright (c) 2012 OsiriX Team. All rights reserved.
-//
+/*=========================================================================
+ Program:   OsiriX
+ 
+ Copyright (c) OsiriX Team
+ All rights reserved.
+ Distributed under GNU - LGPL
+ 
+ See http://www.osirix-viewer.com/copyright.html for details.
+ 
+ This software is distributed WITHOUT ANY WARRANTY; without even
+ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ PURPOSE.
+ =========================================================================*/
 
 #import <Cocoa/Cocoa.h>
 

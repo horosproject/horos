@@ -1,10 +1,16 @@
-//
-//  O2DicomPredicateEditorDatePicker.m
-//  Predicator
-//
-//  Created by Alessandro Volz on 20.12.12.
-//  Copyright (c) 2012 Alessandro Volz. All rights reserved.
-//
+/*=========================================================================
+ Program:   OsiriX
+ 
+ Copyright (c) OsiriX Team
+ All rights reserved.
+ Distributed under GNU - LGPL
+ 
+ See http://www.osirix-viewer.com/copyright.html for details.
+ 
+ This software is distributed WITHOUT ANY WARRANTY; without even
+ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ PURPOSE.
+ =========================================================================*/
 
 #import "O2DicomPredicateEditorDatePicker.h"
 #import "N2Operators.h"

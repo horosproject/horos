@@ -1,10 +1,16 @@
-//
-//  O2DicomPredicateEditorPopUpButtonCell.h
-//  Predicator
-//
-//  Created by Alessandro Volz on 13.12.12.
-//  Copyright (c) 2012 Alessandro Volz. All rights reserved.
-//
+/*=========================================================================
+ Program:   OsiriX
+ 
+ Copyright (c) OsiriX Team
+ All rights reserved.
+ Distributed under GNU - LGPL
+ 
+ See http://www.osirix-viewer.com/copyright.html for details.
+ 
+ This software is distributed WITHOUT ANY WARRANTY; without even
+ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ PURPOSE.
+ =========================================================================*/
 
 #import <Cocoa/Cocoa.h>
 

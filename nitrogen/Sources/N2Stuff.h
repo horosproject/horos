@@ -1,10 +1,16 @@
-//
-//  N2Stuff.h
-//  OsiriX_Lion
-//
-//  Created by Alessandro Volz on 16.02.12.
-//  Copyright (c) 2012 OsiriX Team. All rights reserved.
-//
+/*=========================================================================
+ Program:   OsiriX
+ 
+ Copyright (c) OsiriX Team
+ All rights reserved.
+ Distributed under GNU - LGPL
+ 
+ See http://www.osirix-viewer.com/copyright.html for details.
+ 
+ This software is distributed WITHOUT ANY WARRANTY; without even
+ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ PURPOSE.
+ =========================================================================*/
 
 #ifndef OsiriX_Lion_N2Localization_h
 #define OsiriX_Lion_N2Localization_h
