@@ -31,6 +31,7 @@
 #import "DicomDatabase.h"
 #import "DicomFileDCMTKCategory.h"
 #include <signal.h>
+#import "DCMPix+DCMPix_DCMTK.h"
 
 #ifdef OSIRIX_VIEWER
 #import "NSThread+N2.h"
@@ -1307,7 +1308,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 @synthesize minValueOfSeries, maxValueOfSeries, factorPET2SUV, slope, offset;
 @synthesize isRGB, pwidth = width, pheight = height, checking;
 @synthesize pixelRatio, transferFunction, subPixOffset, isOriginDefined;
-@synthesize imageType, waveform, VOILUTApplied, VOILUT_table;
+@synthesize imageType, waveform, VOILUTApplied, VOILUT_table, dcmtkDcmFileFormat;
 
 @synthesize DCMPixShutterRectWidth = shutterRect_w;
 @synthesize DCMPixShutterRectHeight = shutterRect_h;
@@ -6790,8 +6791,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 							}
 							else
 							{
-								[cachedGroupsForThisFile setValue: [NSValue valueWithPointer: 0L]  forKey: groupKey];
-								NSLog( @"Error while reading a group (Papyrus) : %@ - 0x%04x", groupKey, groupKey.intValue);
+//								NSLog( @"Error while reading a group (Papyrus) : %@ - 0x%04x", groupKey, groupKey.intValue);
                                 
                                 if( error)
                                     *error = theErr;
@@ -13071,6 +13071,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     self.waveform = nil;
     self.referencedSOPInstanceUID = nil;
 	
+    [self deallocDCMTKIfNeeded];
+    
 	if( fExternalOwnedImage == nil)
 	{
 		if( fImage != nil)
@@ -13328,9 +13330,13 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		}
     }
     
-    if( error != 0)	// Papyrus doesn't have the definition of all dicom tags.... 2004?
-        return [DicomFile getDicomFieldForGroup: group element: element forFile: srcFile];
-	
+    if( error != 0)	// Papyrus doesn't have the definition of all dicom tags.... Papyrus can only read what is in his dictionary
+    {
+        [self allocatedDcmtkDcmFileFormatIfNeeded];
+        
+        return [DicomFile getDicomFieldForGroup: group element: element forDcmFileFormat: dcmtkDcmFileFormat];
+	}
+    
 	return field;
 }
 

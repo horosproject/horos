@@ -88,18 +88,12 @@ extern NSRecursiveLock *PapyrusLock;
 	return success;
 }
 
-+ (NSString*) getDicomFieldForGroup:(int) gr element: (int) el forFile: (NSString*) path
++ (NSString*) getDicomFieldForGroup:(int) gr element: (int) el forDcmFileFormat: (void*) ff
 {
-    DcmFileFormat fileformat;
     NSString *returnedValue = nil;
+    DcmFileFormat *fileformat = (DcmFileFormat*) ff;
     
-    [PapyrusLock lock];
-    
-    OFCondition status = fileformat.loadFile( [path UTF8String],  EXS_Unknown, EGL_noChange, DCM_MaxReadLength, ERM_autoDetect);
-    
-    [PapyrusLock unlock];
-    
-    if (status.good())
+    if( fileformat)
     {
         @try
         {
@@ -109,7 +103,7 @@ extern NSRecursiveLock *PapyrusLock;
             for( int i = 0; i < 10; i++) encoding[ i] = 0;
             encoding[ 0] = NSISOLatin1StringEncoding;
             
-            DcmDataset *dataset = fileformat.getDataset();
+            DcmDataset *dataset = fileformat->getDataset();
             
             DcmTagKey dcmkey( gr, el);
             
@@ -140,7 +134,16 @@ extern NSRecursiveLock *PapyrusLock;
 	
 	if( dcmkey.getGroup() != 0xffff && dcmkey.getElement() != 0xffff)
 	{
-		return [DicomFile getDicomFieldForGroup: dcmkey.getGroup()  element:dcmkey.getElement() forFile:path];
+        [PapyrusLock lock];
+        
+        DcmFileFormat fileformat;
+        
+        OFCondition status = fileformat.loadFile( [path UTF8String],  EXS_Unknown, EGL_noChange, DCM_MaxReadLength, ERM_autoDetect);
+        
+        [PapyrusLock unlock];
+        
+        if (status.good())
+            return [DicomFile getDicomFieldForGroup: dcmkey.getGroup()  element:dcmkey.getElement() forDcmFileFormat: &fileformat];
 	}
 	
 	return nil;

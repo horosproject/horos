@@ -79,7 +79,5 @@
 - (void) medianFilter:(vImage_Buffer *) buffer;
 - (void) mmOpening : (vImage_Buffer *) buffer :(vImagePixelCount) x : (vImagePixelCount) y;
 - (void) mmClosing : (vImage_Buffer *) buffer :(vImagePixelCount) x : (vImagePixelCount) y;
-- (void) mmErosion : (vImage_Buffer *) buffer :(vImagePixelCount) x : (vImagePixelCount) y;
-- (void) mmDilation: (vImage_Buffer *) buffer :(vImagePixelCount) x : (vImagePixelCount) y;
 
 @end

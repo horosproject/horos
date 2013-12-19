@@ -220,12 +220,15 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
     
     NSString            *referencedSOPInstanceUID;
     float               referenceCoordinates[ 4];
+    
+    void                *dcmtkDcmFileFormat;
 }
 
 @property long frameNo;
 @property(setter=setID:) long ID;
 @property (readonly) NSRecursiveLock *checking;
 @property (nonatomic) float minValueOfSeries, maxValueOfSeries, factorPET2SUV;
+@property void *dcmtkDcmFileFormat;
 
 @property(retain) NSString* imageType, *modalityString, *referencedSOPInstanceUID, *yearOld, *yearOldAcquisition;
 
