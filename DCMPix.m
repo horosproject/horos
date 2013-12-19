@@ -29,6 +29,7 @@
 #import "N2Debug.h"
 #import "NSUserDefaults+OsiriX.h"
 #import "DicomDatabase.h"
+#import "DicomFileDCMTKCategory.h"
 #include <signal.h>
 
 #ifdef OSIRIX_VIEWER
@@ -5298,70 +5299,24 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	
 	@try
 	{
-		if( gUSEPAPYRUSDCMPIX)
-		{
-			[self clearCachedPapyGroups];
-			
-			PapyShort fileNb = -1;
-			
-			[self getPapyGroup: 0];
-			
-			if( [[cachedPapyGroups valueForKey: srcFile] valueForKey: @"fileNb"])
-				fileNb = [[[cachedPapyGroups valueForKey: srcFile] valueForKey: @"fileNb"] intValue];
-			
-			if (fileNb >= 0)
-			{
-				if (gIsPapyFile [fileNb] == DICOM10) Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
-				
-				[self loadCustomImageAnnotationsPapyLink:fileNb DCMLink:nil];
-				
-				if( numberOfFrames <= 1)
-					[self clearCachedPapyGroups];
-			}
-		}
-//		#ifndef OSIRIX_LIGHT
-//		else
-//		{
-//			[self clearCachedDCMFrameworkFiles];
-//			
-//			DCMObject *dcmObject = 0L;
-//			
-//			if( [cachedDCMFrameworkFiles objectForKey: srcFile])
-//			{
-//				NSMutableDictionary *dic = [cachedDCMFrameworkFiles objectForKey: srcFile];
-//				
-//				dcmObject = [dic objectForKey: @"dcmObject"];
-//				
-//				if( retainedCacheGroup != nil)
-//                    NSLog( @"******** DCMPix : retainedCacheGroup 1 != nil ! %@", srcFile);
-//                
-//                [dic setValue: [NSNumber numberWithInt: [[dic objectForKey: @"count"] intValue]+1] forKey: @"count"];
-//                retainedCacheGroup = dic;
-//			}
-//			else
-//			{
-//				dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
-//				
-//				if( dcmObject)
-//				{
-//					NSMutableDictionary *dic = [NSMutableDictionary dictionary];
-//				
-//					[dic setValue: dcmObject forKey: @"dcmObject"];
-//					[dic setValue: [NSNumber numberWithInt: 1] forKey: @"count"];
-//					
-//					if( retainedCacheGroup != nil)
-//						NSLog( @"******** DCMPix : retainedCacheGroup 2 != nil ! %@", srcFile);
-//					
-//					retainedCacheGroup = dic;
-//					
-//					[cachedDCMFrameworkFiles setObject: dic forKey: srcFile];
-//				}
-//			}
-//			
-//			if( dcmObject)
-//				[self loadCustomImageAnnotationsPapyLink:-1 DCMLink:dcmObject];
-//		}
-//		#endif
+        [self clearCachedPapyGroups];
+        
+        PapyShort fileNb = -1;
+        
+        [self getPapyGroup: 0];
+        
+        if( [[cachedPapyGroups valueForKey: srcFile] valueForKey: @"fileNb"])
+            fileNb = [[[cachedPapyGroups valueForKey: srcFile] valueForKey: @"fileNb"] intValue];
+        
+        if (fileNb >= 0)
+        {
+            if (gIsPapyFile [fileNb] == DICOM10) Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
+            
+            [self loadCustomImageAnnotationsPapyLink:fileNb DCMLink:nil];
+            
+            if( numberOfFrames <= 1)
+                [self clearCachedPapyGroups];
+        }
 	}
 	@catch (NSException * e)
 	{
@@ -6739,12 +6694,20 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 - (void*) getPapyGroup: (int) group
 {
+    return [self getPapyGroup: group error: nil];
+}
+
+- (void*) getPapyGroup: (int) group error: (int*) error
+{
 	NSString *groupKey = [NSString stringWithFormat:@"%d", group];
 	
 	SElement *theGroupP = nil;
 	
 	[PapyrusLock lock];
 	
+    if( error)
+        *error = 0;
+    
 	@try 
 	{
 		NSMutableDictionary *cachedGroupsForThisFile = [cachedPapyGroups valueForKey: srcFile];
@@ -6774,7 +6737,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					NSLog( @"******* WARNING: gPapyFile[ fileNb] == nil");
 			}
 			else
+            {
+                if( error)
+                    *error = fileNb;
 				NSLog( @"Papy3FileOpen failed : %d", fileNb);
+            }
 		}
 		else
 		{
@@ -6816,14 +6783,18 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 						
 						if( theErr >= 0)
 						{
-							if( Papy3GroupRead(fileNb, &theGroupP) > 0)
+                            theErr = Papy3GroupRead(fileNb, &theGroupP);
+							if( theErr > 0)
 							{
 								[cachedGroupsForThisFile setValue: [NSValue valueWithPointer: theGroupP] forKey: groupKey];
 							}
 							else
 							{
 								[cachedGroupsForThisFile setValue: [NSValue valueWithPointer: 0L]  forKey: groupKey];
-								NSLog( @"Error while reading a group (Papyrus) : %@ - %04x", groupKey, groupKey.intValue);
+								NSLog( @"Error while reading a group (Papyrus) : %@ - 0x%04x", groupKey, groupKey.intValue);
+                                
+                                if( error)
+                                    *error = theErr;
 							}
 						}
 						else
@@ -13254,40 +13225,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	NSMutableString *field = [NSMutableString string];
 	
 	SElement *inGrOrModP = 0L;
-	
+	int error = 0;
+    
 	if( group)
-		inGrOrModP = [self getPapyGroup: group];
+		inGrOrModP = [self getPapyGroup: group error: &error];
 	
-//	#ifndef OSIRIX_LIGHT
-//	if( inGrOrModP == nil) // Papyrus failed... unknown group? Try DCM Framework
-//	{
-//        NSString *s = nil;
-//        // It failed with Papyrus : potential crash with DCMFramework with a corrupted file
-//        
-//        NSString *recoveryPath = [[[DicomDatabase activeLocalDatabase] dataBaseDirPath] stringByAppendingPathComponent:@"/ThumbnailPath"];
-//        
-//        [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error: nil];
-//        
-//        
-//        @try 
-//        {
-//            [URIRepresentationAbsoluteString writeToFile: recoveryPath atomically: YES encoding: NSASCIIStringEncoding  error: nil];
-//            
-//            DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
-//		
-//            s = [self getDICOMFieldValueForGroup: group element: element DCMLink: dcmObject];
-//        
-//            [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error: nil];
-//        }
-//        @catch (NSException * e) 
-//        {
-//            NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-//        }
-//            
-//        return s;
-//	}
-//	else 
-//	#endif
 	if( inGrOrModP)
 	{
 		int theEnumGrNb = Papy3ToEnumGroup(group);
@@ -13308,120 +13250,87 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					UValue_T *theValueP = inGrOrModP->value;
 					for ( int k = 0; k < inGrOrModP->nb_val; k++, theValueP++)
 					{
-						{
-							if(inGrOrModP->vr==DS)	// floating point string
-							{
-								if( theValueP->a) [field appendString:[NSString stringWithFormat:@"%.6g", atof( theValueP->a)]];
-							}
-							else if(inGrOrModP->vr==FL)	// floating point string
-							{
-								[field appendString:[NSString stringWithFormat:@"%.6g", theValueP->fl]];
-							}
-							else if( inGrOrModP->vr==FD)
-							{
-								[field appendString:[NSString stringWithFormat:@"%.6g", (float) theValueP->fd]];
-							}
-							else if(inGrOrModP->vr==UL)
-								[field appendString:[NSString stringWithFormat:@"%d", (int) theValueP->ul]];
-							else if(inGrOrModP->vr==USS)
-								[field appendString:[NSString stringWithFormat:@"%d", (int) theValueP->us]];
-							else if(inGrOrModP->vr==SL)
-								[field appendString:[NSString stringWithFormat:@"%d", (int) theValueP->sl]];
-							else if(inGrOrModP->vr==SS)
-								[field appendString:[NSString stringWithFormat:@"%d", (int) theValueP->ss]];
-							else if(inGrOrModP->vr==SQ)
-							{
-								NSMutableString *temp = [NSMutableString string];
-								
-								// Loop over sequence
-								if(theValueP->sq!=NULL)
-								{
-									Papy_List *dcmList = theValueP->sq->object->item;
-									while(dcmList!=NULL)
-									{
-										SElement *gr = (SElement *)dcmList->object->group;
-										
-										//if(gr->value)
-										[temp appendString:[self getDICOMFieldValueForGroup:gr->group element:gr->element papyLink:fileNb]];
+                        if(inGrOrModP->vr==DS)	// floating point string
+                        {
+                            if( theValueP->a) [field appendString:[NSString stringWithFormat:@"%.6g", atof( theValueP->a)]];
+                        }
+                        else if(inGrOrModP->vr==FL)	// floating point string
+                        {
+                            [field appendString:[NSString stringWithFormat:@"%.6g", theValueP->fl]];
+                        }
+                        else if( inGrOrModP->vr==FD)
+                        {
+                            [field appendString:[NSString stringWithFormat:@"%.6g", (float) theValueP->fd]];
+                        }
+                        else if(inGrOrModP->vr==UL)
+                            [field appendString:[NSString stringWithFormat:@"%d", (int) theValueP->ul]];
+                        else if(inGrOrModP->vr==USS)
+                            [field appendString:[NSString stringWithFormat:@"%d", (int) theValueP->us]];
+                        else if(inGrOrModP->vr==SL)
+                            [field appendString:[NSString stringWithFormat:@"%d", (int) theValueP->sl]];
+                        else if(inGrOrModP->vr==SS)
+                            [field appendString:[NSString stringWithFormat:@"%d", (int) theValueP->ss]];
+                        else if(inGrOrModP->vr==SQ)
+                        {
+                            NSMutableString *temp = [NSMutableString string];
+                            
+                            // Loop over sequence
+                            if(theValueP->sq!=NULL)
+                            {
+                                Papy_List *dcmList = theValueP->sq->object->item;
+                                while(dcmList!=NULL)
+                                {
+                                    SElement *gr = (SElement *)dcmList->object->group;
+                                    
+                                    //if(gr->value)
+                                    [temp appendString:[self getDICOMFieldValueForGroup:gr->group element:gr->element papyLink:fileNb]];
 //										if(gr->value!=NULL)
 //                                            NSLog(@"++**++   ::    %@", [NSString stringWithCString:gr->value->a encoding:NSASCIIStringEncoding]);
 //										else
 //                                            NSLog(@"++**++   ::    %@", [NSString stringWithCString:gr->vm encoding:NSASCIIStringEncoding]);
-                                        
-										dcmList = dcmList->next;
-									}
-								}
-								[field appendString:[NSString stringWithString:temp]];
+                                    
+                                    dcmList = dcmList->next;
+                                }
+                            }
+                            [field appendString:[NSString stringWithString:temp]];
 //								NSLog(@"SQ field : %@", field);
-							}
-							else if( theValueP->a)
-								[field appendString:[NSString stringWithCString:theValueP->a encoding:NSASCIIStringEncoding]];
-							
-
-//							if(inGrOrModP->vr==OB)	
-//								NSLog(@"inGrOrModP->vr==OB . field = %@", field);
-							
-							
-							if(inGrOrModP->vr==DA)
-							{
-								calendarDate = [DCMCalendarDate dicomDate:field];
-								[field setString:[[NSUserDefaults dateFormatter] stringFromDate:calendarDate]];
-							}
-							else if(inGrOrModP->vr==DT)
-							{
-								calendarDate = [DCMCalendarDate dicomDateTime:field];
-								[field setString:[BrowserController DateTimeWithSecondsFormat: calendarDate]];
-							}
-							else if(inGrOrModP->vr==TM)
-							{
-								calendarDate = [DCMCalendarDate dicomTime:field];
-								[field setString:[BrowserController TimeWithSecondsFormat: calendarDate]];
-							}
-							else if(inGrOrModP->vr==AS)
-							{
-								//Age String Format mmmM,dddD,nnnY ie 018Y
-								int number = [[field substringWithRange:NSMakeRange(0, 3)] intValue];
-								NSString *letter = [field substringWithRange:NSMakeRange(3, 1)];
-								[field setString:[NSString stringWithFormat:@"%d %@", number, [letter lowercaseString]]];
-							}
-							//break;
-						}
+                        }
+                        else if(inGrOrModP->vr==DA)
+                        {
+                            calendarDate = [DCMCalendarDate dicomDate:field];
+                            [field appendString:[[NSUserDefaults dateFormatter] stringFromDate:calendarDate]];
+                        }
+                        else if(inGrOrModP->vr==DT)
+                        {
+                            calendarDate = [DCMCalendarDate dicomDateTime:field];
+                            [field appendString:[BrowserController DateTimeWithSecondsFormat: calendarDate]];
+                        }
+                        else if(inGrOrModP->vr==TM)
+                        {
+                            calendarDate = [DCMCalendarDate dicomTime:field];
+                            [field appendString:[BrowserController TimeWithSecondsFormat: calendarDate]];
+                        }
+                        else if(inGrOrModP->vr==AS)
+                        {
+                            //Age String Format mmmM,dddD,nnnY ie 018Y
+                            int number = [[field substringWithRange:NSMakeRange(0, 3)] intValue];
+                            NSString *letter = [field substringWithRange:NSMakeRange(3, 1)];
+                            [field appendString:[NSString stringWithFormat:@"%d %@", number, [letter lowercaseString]]];
+                        }
+                        else if( theValueP->a)
+                            [field appendString:[NSString stringWithCString:theValueP->a encoding:NSASCIIStringEncoding]];
+                        
 						if(inGrOrModP->nb_val>1 && k<inGrOrModP->nb_val-1)
                             [field appendString:@" / "];
 					}
 				}
 			}
 		}
-		
-//		if( elementDefinitionFound == NO)	// Papyrus doesn't have the definition of all dicom tags.... 2004?
-//		{
-//			#ifndef OSIRIX_LIGHT
-//            NSString *s = nil;
-//            // It failed with Papyrus : potential crash with DCMFramework with a corrupted file
-//            
-//            NSString *recoveryPath = [[[DicomDatabase activeLocalDatabase] dataBaseDirPath] stringByAppendingPathComponent:@"/ThumbnailPath"];
-//            
-//            [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error: nil];
-//            
-//            @try 
-//            {
-//                [URIRepresentationAbsoluteString writeToFile: recoveryPath atomically: YES encoding: NSASCIIStringEncoding  error: nil];
-//                
-//                DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
-//                
-//                s = [self getDICOMFieldValueForGroup: group element: element DCMLink: dcmObject];
-//                
-//                [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error: nil];
-//            }
-//            @catch (NSException * e) 
-//            {
-//                NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-//            }
-//            
-//            return s;
-//			#endif
-//		}
-	}
+    }
+    
+    if( error != 0)	// Papyrus doesn't have the definition of all dicom tags.... 2004?
+        return [DicomFile getDicomFieldForGroup: group element: element forFile: srcFile];
+	
 	return field;
 }
 
