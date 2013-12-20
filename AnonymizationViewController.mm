@@ -124,9 +124,6 @@
 	NSSize idealAnnotationsBoxSize = [self.tagsView idealSize];
 	
 	[annotationsBox adaptContainersToIdealSize:NSMakeSize(((NSView*)annotationsBox.contentView).frame.size.width, idealAnnotationsBoxSize.height+annotationsBoxPadding.height)];	
-	
-	[self.view.window setMaxSize:NSMakeSize(CGFLOAT_MAX, self.view.window.frame.size.height)];
-	[self.view.window setMinSize:NSMakeSize(600, self.view.window.frame.size.height)];
 }
 
 -(void)addTag:(DCMAttributeTag*)tag {
@@ -258,6 +255,8 @@ NSInteger CompareArraysByNameOfDCMAttributeTagAtIndexZero(id arg1, id arg2, void
 	
 	NSMutableArray* zeroTags = [self.tags mutableCopy];
 	
+    NSDisableScreenUpdates();
+    
 	// this removes all previous tags
 	if (tagsValues.count)
 		while (self.tags.count)
@@ -288,7 +287,9 @@ NSInteger CompareArraysByNameOfDCMAttributeTagAtIndexZero(id arg1, id arg2, void
 	}
 	
 	[self observeValueForKeyPath:NULL ofObject:NULL change:NULL context:self.tagsView];
-
+    
+    NSEnableScreenUpdates();
+    
 	[zeroTags release];
 }
 
