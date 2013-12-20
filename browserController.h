@@ -525,7 +525,7 @@ extern NSString* O2AlbumDragType;
 - (void)setFilterPredicate:(NSPredicate *)predicate description:(NSString*) desc;
 - (NSPredicate *)createFilterPredicate;
 - (NSString *)createFilterDescription;
-
+- (void) willChangeContext;
 
 - (IBAction) deleteReport: (id) sender;
 - (IBAction) convertReportToPDF: (id)sender;

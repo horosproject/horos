@@ -1615,6 +1615,44 @@ static NSConditionLock *threadLock = nil;
 	return [super automaticallyNotifiesObserversForKey:key];
 }
 
+-(void) willChangeContext
+{
+    [self waitForRunningProcesses];
+    
+    @synchronized( previewPixThumbnails)
+    {
+        [matrixLoadIconsThread cancel];
+        [matrixLoadIconsThread release];
+        matrixLoadIconsThread = nil;
+    }
+    
+    self.comparativePatientUID = nil;
+    self.comparativeStudies = nil;
+    
+    @synchronized( smartAlbumDistantArraySync)
+    {
+        [smartAlbumDistantArray release];
+        smartAlbumDistantArray = nil;
+    }
+    
+    [outlineViewArray release];
+    outlineViewArray = nil;
+    
+    [cachedFilesForDatabaseOutlineSelectionSelectedFiles release]; cachedFilesForDatabaseOutlineSelectionSelectedFiles = nil;
+    [cachedFilesForDatabaseOutlineSelectionCorrespondingObjects release]; cachedFilesForDatabaseOutlineSelectionCorrespondingObjects = nil;
+    [cachedFilesForDatabaseOutlineSelectionTreeObjects release]; cachedFilesForDatabaseOutlineSelectionTreeObjects = nil;
+    [cachedFilesForDatabaseOutlineSelectionIndex release]; cachedFilesForDatabaseOutlineSelectionIndex = nil;
+    
+    @synchronized (self)
+    {
+        _cachedAlbumsContext = nil;
+    }
+    
+    [databaseOutline reloadData];
+    [albumTable reloadData];
+    [comparativeTable reloadData];
+}
+
 -(void)setDatabase:(DicomDatabase*)db
 {
 	[[db retain] autorelease]; // avoid multithreaded release
@@ -1630,59 +1668,24 @@ static NSConditionLock *threadLock = nil;
             
 			[self willChangeValueForKey:@"database"];
 			
-            @synchronized( previewPixThumbnails)
-            {
-                [matrixLoadIconsThread cancel];
-                [matrixLoadIconsThread release];
-                matrixLoadIconsThread = nil;
-            }
+            [self waitForRunningProcesses];
             
-            self.comparativePatientUID = nil;
-            self.comparativeStudies = nil;
+            [_database save:nil];
+			[_database autorelease]; _database = nil;
             
-            @synchronized( smartAlbumDistantArraySync)
-            {
-                [smartAlbumDistantArray release];
-                smartAlbumDistantArray = nil;
-            }
+            [self willChangeContext];
             
             [self saveLoadAlbumsSortDescriptors];
             
-			[self waitForRunningProcesses];
 			[reportFilesToCheck removeAllObjects];
 
-			if (_database) {
+			if (_database)
 				[[NSNotificationCenter defaultCenter] removeObserver:self name:nil object:_database];
-				[[NSNotificationCenter defaultCenter] removeObserver:self name:nil object:_database.managedObjectContext];
-			}
-            
-			
-			[_database save:nil];
-			[_database autorelease]; _database = nil;
-			
-            [databaseOutline reloadData];
-            [albumTable reloadData];
-            [comparativeTable reloadData];
             
             [self.window display];
             
 			[DCMPix purgeCachedDictionaries];
 			[DCMView purgeStringTextureCache];
-			
-			[outlineViewArray release];
-			outlineViewArray = nil;
-			
-			[cachedFilesForDatabaseOutlineSelectionSelectedFiles release]; cachedFilesForDatabaseOutlineSelectionSelectedFiles = nil;
-			[cachedFilesForDatabaseOutlineSelectionCorrespondingObjects release]; cachedFilesForDatabaseOutlineSelectionCorrespondingObjects = nil;
-			[cachedFilesForDatabaseOutlineSelectionTreeObjects release]; cachedFilesForDatabaseOutlineSelectionTreeObjects = nil;
-			[cachedFilesForDatabaseOutlineSelectionIndex release]; cachedFilesForDatabaseOutlineSelectionIndex = nil;
-			
-            self.comparativeStudies = nil;
-            
-            @synchronized (self)
-            {
-                _cachedAlbumsContext = nil;
-            }
             
 			[self resetLogWindowController];
 			
@@ -9788,9 +9791,11 @@ static BOOL withReset = NO;
                 if (dcmPix == nil)
                     dcmPix = [[[DCMPix alloc] initWithPath:image.completePath :0 :1 :nil :frame :0 isBonjour:![idatabase isLocal] imageObj: image] autorelease];
                 
-                if (!imageLevel) {
+                if (!imageLevel)
+                {
                     NSData* dbThmb = image.series.thumbnail;
-                    if (dbThmb) {
+                    if (dbThmb)
+                    {
                         NSImageRep* rep = [[[NSBitmapImageRep alloc] initWithData:dbThmb] autorelease];
                         NSImage* dbIma = [[[NSImage alloc] initWithSize:[rep size]] autorelease];
                         [dbIma addRepresentation:rep];
@@ -9803,10 +9808,19 @@ static BOOL withReset = NO;
                     }
                 }
 
-                if (dcmPix) {
+                if (dcmPix)
+                {
                     if ([DCMAbstractSyntaxUID isStructuredReport:image.series.seriesSOPClassUID] || [DCMAbstractSyntaxUID isPDF:image.series.seriesSOPClassUID])
                     {
-                        [tempPreviewPixThumbnails replaceObjectAtIndex: i withObject: [[NSWorkspace sharedWorkspace] iconForFileType: @"txt"]];
+                        NSImage *icon = [[NSWorkspace sharedWorkspace] iconForFileType: @"txt"];
+                        
+                        NSImage *thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize( THUMBNAILSIZE, THUMBNAILSIZE)] autorelease];
+                        
+                        [thumbnail lockFocus];
+                        [icon drawInRect: NSMakeRect( 0, 0, THUMBNAILSIZE, THUMBNAILSIZE) fromRect: [icon alignmentRect] operation: NSCompositeCopy fraction: 1.0];
+                        [thumbnail unlockFocus];
+                        
+                        [tempPreviewPixThumbnails replaceObjectAtIndex: i withObject: thumbnail];
                         [tempPreviewPix addObject: dcmPix];
                     }
                     else

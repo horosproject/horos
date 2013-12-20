@@ -61,6 +61,8 @@
 				return db;
 			}
 	
+    NSLog( @"-- Remote database created");
+    
 	RemoteDicomDatabase* db = [[[self alloc] initWithHost:host port:port update:flagUpdate] autorelease];
 	if (name) db.name = name;
 	
@@ -412,11 +414,17 @@
 -(void)updateOnMainThread: (NSString*) path
 {
     [_updateLock lock];
+
+    NSManagedObjectContext* context = [self contextAtPath:path];
+    
+    NSPersistentStoreCoordinator *cc = context.persistentStoreCoordinator;
+    NSPersistentStoreCoordinator *c = self.managedObjectContext.persistentStoreCoordinator;
+    
+    [c lock];
+    [cc lock];
     
     @try
     {
-        NSManagedObjectContext* context = [self contextAtPath:path];
-        
         for (ViewerController* vc in [ViewerController getDisplayed2DViewers])
             [vc.window orderOut:self];
         
@@ -427,7 +435,9 @@
         
         NSManagedObjectContext *previousContext = self.managedObjectContext;
         [[previousContext retain] autorelease];
-            
+        
+        [[BrowserController currentBrowser] willChangeContext];
+        
         self.managedObjectContext = context;
         
         [[NSNotificationCenter defaultCenter] postNotificationName:OsirixAddToDBNotification object:self];
@@ -442,9 +452,12 @@
             [[NSRunLoop mainRunLoop] addTimer:_updateTimer forMode:NSModalPanelRunLoopMode];
             [[NSRunLoop mainRunLoop] addTimer:_updateTimer forMode:NSDefaultRunLoopMode];
         }
+        
     } @catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	} @finally {
+        [cc unlock];
+        [c unlock];
         [_updateLock unlock];
     }
 }
@@ -452,6 +465,8 @@
 -(void)update {
 	NSThread* thread = [NSThread currentThread];
 	
+    NSLog( @"-- Remote database update");
+    
 	[thread enterOperation];
 	[_updateLock lock];
 	@try {
