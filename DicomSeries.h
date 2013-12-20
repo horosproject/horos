@@ -15,6 +15,8 @@
 
 #import <Cocoa/Cocoa.h>
 
+#define THUMBNAILSIZE 70
+
 @class DicomStudy, DicomImage;
 
 /** \brief  Core Data Entity for a Series */

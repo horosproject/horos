@@ -279,6 +279,26 @@
     return nil;
 }
 
+//- (void) setThumbnail:(NSData *)thumbnail
+//{
+//    
+//    //                [img setScalesWhenResized: YES];
+//    //                [img setSize:NSMakeSize(fillWidth, [fillImage size].height)];
+//    
+//#ifndef NDEBUG
+//    NSImageRep* rep = [[[NSBitmapImageRep alloc] initWithData: thumbnail] autorelease];
+//    NSImage* img = [[[NSImage alloc] initWithSize:[rep size]] autorelease];
+//    [img addRepresentation:rep];
+//    
+//    if( img.size.width > THUMBNAILSIZE || img.size.height > THUMBNAILSIZE)
+//        NSLog( @"img: %f %f", img.size.width, img.size.height);
+//#endif
+//    
+//    [self willChangeValueForKey: @"thumbnail"];
+//    [self setPrimitiveValue:thumbnail forKey:@"thumbnail"];
+//    [self didChangeValueForKey: @"thumbnail"];
+//}
+
 -(NSData*)thumbnail
 {
     NSData* thumbnailData = nil;
@@ -301,10 +321,10 @@
                     
                     NSImage* thumbAv = [image thumbnailIfAlreadyAvailable];
                     if (thumbAv) {
-                        NSImage* thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize(70, 70)] autorelease];
+                        NSImage* thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize(THUMBNAILSIZE, THUMBNAILSIZE)] autorelease];
                         
                         [thumbnail lockFocus];
-                        [thumbAv drawInRect:NSMakeRect(0,0,70,70) fromRect:[thumbAv alignmentRect] operation:NSCompositeCopy fraction:1.0];
+                        [thumbAv drawInRect:NSMakeRect(0,0,THUMBNAILSIZE,THUMBNAILSIZE) fromRect:[thumbAv alignmentRect] operation:NSCompositeCopy fraction:1.0];
                         [thumbnail unlockFocus];
                         
                         thumbnailData = [[thumbnail TIFFRepresentation] retain]; // autoreleased when returning
@@ -341,10 +361,10 @@
                         {
                             NSImage *icon = [[NSWorkspace sharedWorkspace] iconForFileType: @"txt"];
                             
-                            thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize( 70, 70)] autorelease];
+                            thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize( THUMBNAILSIZE, THUMBNAILSIZE)] autorelease];
                             
                             [thumbnail lockFocus];
-                            [icon drawInRect: NSMakeRect( 0, 0, 70, 70) fromRect: [icon alignmentRect] operation: NSCompositeCopy fraction: 1.0];
+                            [icon drawInRect: NSMakeRect( 0, 0, THUMBNAILSIZE, THUMBNAILSIZE) fromRect: [icon alignmentRect] operation: NSCompositeCopy fraction: 1.0];
                             [thumbnail unlockFocus];
                             
                             thumbnailData = [[thumbnail TIFFRepresentation] retain]; // autoreleased when returning
