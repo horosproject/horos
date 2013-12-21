@@ -3749,7 +3749,7 @@ static BOOL initialized = NO;
     SecRequirementRef requirement = 0;
     SecStaticCodeRef code = 0;
     
-    OSStatus status = SecRequirementCreateWithString( (CFStringRef) @"anchor trusted and certificate leaf [subject.CN] = \"Developer ID Application: Antoine Rosset\"", kSecCSDefaultFlags, &requirement);
+    OSStatus status = SecRequirementCreateWithString( (CFStringRef) @"anchor trusted and certificate leaf [subject.CN] = \"Developer ID Application: Antoine Rosset (66HE7FMBC4)\"", kSecCSDefaultFlags, &requirement);
     
     status = SecStaticCodeCreateWithPath( (CFURLRef) [[NSBundle mainBundle] bundleURL], kSecCSDefaultFlags, &code);
     
