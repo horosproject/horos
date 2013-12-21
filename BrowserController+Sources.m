@@ -1231,6 +1231,9 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
     _database.hasPotentiallySlowDataAccess = YES;
 	for (NSManagedObject* obj in _database.albums)
 		[_database.managedObjectContext deleteObject:obj];
+    
+    [_database.managedObjectContext save: nil];
+    
 	[self performSelectorInBackground:@selector(volumeScanThread) withObject:nil];
 }
 
