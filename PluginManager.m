@@ -558,11 +558,14 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
         {
             NSLog( @"***** Multiple plugins: %@", [name lastPathComponent]);
             
-            NSString *message = NSLocalizedString(@"Warning! Multiple instances of the same plugin have been found. Only one instance will be loaded. Check the Plugin Manager (Plugins menu) for multiple identical plugins.", nil);
-            
-            message = [message stringByAppendingFormat:@"\r\r%@", [name lastPathComponent]];
-            
-            NSRunAlertPanel( NSLocalizedString(@"Plugins", nil), message , nil, nil, nil);
+            if( [name.lastPathComponent isEqualToString: @"UserManual.osirixplugin"] == NO)
+            {
+                NSString *message = NSLocalizedString(@"Warning! Multiple instances of the same plugin have been found. Only one instance will be loaded. Check the Plugin Manager (Plugins menu) for multiple identical plugins.", nil);
+                
+                message = [message stringByAppendingFormat:@"\r\r%@", [name lastPathComponent]];
+                
+                NSRunAlertPanel( NSLocalizedString(@"Plugins", nil), message , nil, nil, nil);
+            }
         }
         else
         {
