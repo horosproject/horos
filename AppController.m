@@ -77,6 +77,7 @@
 #import "DICOMTLS.h"
 #import "DicomStudy.h"
 #import "SRAnnotation.h"
+#import "Reports.h"
 #include <OpenGL/OpenGL.h>
 
 #include <kdu_OsiriXSupport.h>
@@ -665,13 +666,6 @@ void exceptionHandler(NSException *exception)
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 static NSDate *lastWarningDate = nil;
-
-
-@interface AppController ()
-
-+(void)checkForWordTemplates;
-
-@end
 
 
 @implementation AppController
@@ -3176,7 +3170,7 @@ static BOOL initialized = NO;
                 
                 NSString* dataBasePath = nil;
                 @try {
-                    dataBasePath = documentsDirectoryFor([[NSUserDefaults standardUserDefaults] integerForKey:@"DATABASELOCATION"], [[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"]);
+                    dataBasePath = [DicomDatabase baseDirPathForMode: [[NSUserDefaults standardUserDefaults] integerForKey:@"DATABASELOCATION"] path:[[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"]];
                 }
                 @catch (NSException *e) {
                     N2LogException( e);
@@ -3211,7 +3205,7 @@ static BOOL initialized = NO;
                         [dialog orderOut:self];
                         
                         @try {
-                            dataBasePath = documentsDirectoryFor([[NSUserDefaults standardUserDefaults] integerForKey:@"DATABASELOCATION"], [[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"]);
+                            dataBasePath = [DicomDatabase baseDirPathForMode: [[NSUserDefaults standardUserDefaults] integerForKey:@"DATABASELOCATION"] path:[[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"]];
                         }
                         @catch (NSException *e) {
                             [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DATABASELOCATION"];
@@ -3389,18 +3383,17 @@ static BOOL initialized = NO;
                 
                 [path writeToFile:path atomically:NO encoding: NSUTF8StringEncoding error: nil];
 				
-                [self checkForWordTemplates];
-				[AppController checkForPagesTemplate];
-				
 				Use_kdu_IfAvailable = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseKDUForJPEG2000"];
 				
 				#ifndef OSIRIX_LIGHT
+                [Reports checkForWordTemplates];
+				[Reports checkForPagesTemplate];
 				[DCMPixelDataAttribute setUse_kdu_IfAvailable: Use_kdu_IfAvailable];
 				#endif
 				
 				// CHECK FOR THE HTML TEMPLATES DIRECTORY
 //				
-//				NSString *htmlTemplatesDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/HTML_TEMPLATES/"];
+//				NSString *htmlTemplatesDirectory = [[DicomDatabase defaultBaseDirPath] stringByAppendingPathComponent:@"/HTML_TEMPLATES/"];
 //				if ([[NSFileManager defaultManager] fileExistsAtPath:htmlTemplatesDirectory] == NO)
 //					[[NSFileManager defaultManager] createDirectoryAtPath:htmlTemplatesDirectory attributes:nil];
 //				
@@ -5790,65 +5783,6 @@ static BOOL initialized = NO;
 #pragma mark HTML Templates
 + (void)checkForHTMLTemplates { // __deprecated
 	[[[BrowserController currentBrowser] database] checkForHtmlTemplates];
-}
-
-#pragma mark-
-#pragma mark Pages Template
-
-+ (void)checkForPagesTemplate;
-{
-#ifndef MACAPPSTORE
-#ifndef OSIRIX_LIGHT
-	NSString* templatesDirPath = [documentsDirectory() stringByAppendingPathComponent:@"PAGES TEMPLATES"];
-	
-    if ([[NSFileManager defaultManager] fileExistsAtPath:templatesDirPath] == NO)
-        [[NSFileManager defaultManager] createDirectoryAtPath:templatesDirPath withIntermediateDirectories:NO attributes:nil error:nil];
-        
-	// Pages template
-    NSString *defaultReport = [templatesDirPath stringByAppendingPathComponent:@"/OsiriX Basic Report.pages"];
-	if ([[NSFileManager defaultManager] fileExistsAtPath: defaultReport] == NO)
-		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/OsiriX Report.pages"] toPath:defaultReport handler:nil];
-	
-#endif
-#endif
-}
-
-+(void)checkForWordTemplates
-{
-#ifndef MACAPPSTORE
-#ifndef OSIRIX_LIGHT
-    // previously, we had a single word template in the OsiriX Data folder
-    NSString* oldReportFilePath = [documentsDirectory() stringByAppendingPathComponent:@"ReportTemplate.doc"];
-    
-    // today, we use a dir in the database folder, which contains the templates
-    NSString* templatesDirPath = [Reports databaseWordTemplatesDirPath];
-    
-    // by default, the templates are stored in the Office Application Support folder
-    NSString* wordTemplatesOsirixDirPath = [Reports wordTemplatesOsirixDirPath];
-    [[NSFileManager defaultManager] confirmDirectoryAtPath:wordTemplatesOsirixDirPath];
-    
-    // TODO: aliases for other Office languages
-    
-    NSUInteger templatesCount = 0;
-    for (NSString* filename in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:wordTemplatesOsirixDirPath error:NULL]) 
-        if ([filename hasPrefix:@"OsiriX "])
-            ++templatesCount;
-    
-    if (!templatesCount && [[NSFileManager defaultManager] fileExistsAtPath:templatesDirPath])
-        for (NSString* filename in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:templatesDirPath error:NULL])
-            if ([filename hasPrefix:@"OsiriX "]) {
-                [[NSFileManager defaultManager] copyItemAtPath:[templatesDirPath stringByAppendingPathComponent:filename] toPath:[wordTemplatesOsirixDirPath stringByAppendingPathComponent:filename] error:NULL];
-                ++templatesCount;
-            }
-    if (!templatesCount)
-    {
-        if ([[NSFileManager defaultManager] fileExistsAtPath:oldReportFilePath])
-            [[NSFileManager defaultManager] createSymbolicLinkAtPath:[wordTemplatesOsirixDirPath stringByAppendingPathComponent:@"OsiriX Basic Report Template.doc"] pathContent:oldReportFilePath];
-        else
-            [[NSFileManager defaultManager] copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"ReportTemplate.doc"] toPath:[templatesDirPath stringByAppendingPathComponent:@"OsiriX Basic Report Template.doc"] error:NULL];
-    }
-#endif
-#endif
 }
 
 #pragma mark-

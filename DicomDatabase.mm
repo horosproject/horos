@@ -438,8 +438,8 @@ static DicomDatabase* activeLocalDatabase = nil;
                 }
             }
             
-            [AppController checkForPagesTemplate];
-            [AppController checkForWordTemplates];
+            [Reports checkForPagesTemplate];
+            [Reports checkForWordTemplates];
             
     #endif
     #endif
@@ -3938,7 +3938,7 @@ static BOOL protectionAgainstReentry = NO;
 #ifndef OSIRIX_LIGHT
 	@try { // is there a report?
 		NSArray* filenames = [NSArray arrayWithObjects: [Reports getUniqueFilename:study], [Reports getOldUniqueFilename:study], NULL];
-		NSArray* extensions = [NSArray arrayWithObjects: @"pages", @"odt", @"doc", @"rtf", NULL];
+		NSArray* extensions = [NSArray arrayWithObjects: @"pages", @"odt", @"doc", @"docx", @"rtf", NULL];
 		for (NSString* filename in filenames)
 			for (NSString* extension in extensions) {
 				NSString* reportPath = [self.reportsDirPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.%@", filename, extension]];

@@ -589,6 +589,9 @@ static NSString* _dcmElementKey(DcmElement* element) {
                     if ([extension isEqualToString: @"doc"])
                         continue;
                     
+                    if ([extension isEqualToString: @"docx"])
+                        continue;
+                    
                     if ([extension isEqualToString: @"txt"])
                         continue;
                     

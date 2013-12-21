@@ -19,6 +19,7 @@
 #import "NSString+N2.h"
 #import "NSFileManager+N2.h"
 #import "NSAppleScript+N2.h"
+#import "DicomDatabase.h"
 
 // if you want check point log info, define CHECK to the next line, uncommented:
 #define CHECK NSLog(@"Applescript result code = %d", ok);
@@ -138,7 +139,7 @@ static id aedesc_to_id(AEDesc *desc)
 			NSString *destinationFile = [NSString stringWithFormat:@"%@%@.%@", path, uniqueFilename, @"rtf"];
 			[[NSFileManager defaultManager] removeItemAtPath: destinationFile error: nil];
 			
-			[[NSFileManager defaultManager] copyPath:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/ReportTemplate.rtf"] toPath:destinationFile handler: nil];
+			[[NSFileManager defaultManager] copyPath:[BrowserController.currentBrowser.database.baseDirPath stringByAppendingFormat:@"/ReportTemplate.rtf"] toPath:destinationFile handler: nil];
 			
 			NSDictionary                *attr;
 			NSMutableAttributedString	*rtf = [[NSMutableAttributedString alloc] initWithRTF: [NSData dataWithContentsOfFile:destinationFile] documentAttributes:&attr];
@@ -259,7 +260,7 @@ static id aedesc_to_id(AEDesc *desc)
 			NSString *destinationFile = [NSString stringWithFormat:@"%@%@.%@", path, uniqueFilename, @"odt"];
 			[[NSFileManager defaultManager] removeItemAtPath: destinationFile error: nil];
 			
-			[[NSFileManager defaultManager] copyPath:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/ReportTemplate.odt"] toPath:destinationFile handler: nil];
+			[[NSFileManager defaultManager] copyPath:[BrowserController.currentBrowser.database.baseDirPath stringByAppendingFormat:@"/ReportTemplate.odt"] toPath:destinationFile handler: nil];
 			[self createNewOpenDocumentReportForStudy:study toDestinationPath:destinationFile];
 			
 		}
@@ -282,7 +283,7 @@ static id aedesc_to_id(AEDesc *desc)
 	self = [super init];
 	if (self)
 	{
-		templateName = [[NSMutableString stringWithString:@"OsiriX Basic Report"] retain];
+		templateName = [[NSMutableString stringWithString:@""] retain];
 	}
 	return self;
 }
@@ -427,39 +428,60 @@ static id aedesc_to_id(AEDesc *desc)
 	while( moreFields);
 }
 
+
+
 #pragma mark -
 #pragma mark Word
 
-+(NSString*)msofficeApplicationSupportDirPath {
-    return [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Application Support/Microsoft/Office"];
-}
-
-+(NSArray*)msofficeApplicationSupportTemplateSubpaths {
-    return [NSArray arrayWithObjects:
-            @"User Templates/My Templates/OsiriX", // English
-            // @"//OsiriX" // Chinese (Simplified)
-            // @"//OsiriX" // Chinese (Traditional)
-            // @"//OsiriX" // Danish
-            // @"//OsiriX" // Dutch
-            // @"//OsiriX" // Finnish
-            @"Modèles utilisateur/Mes modèles/OsiriX", // French
-            @"Benutzervorlagen/Meine Vorlagen/OsiriX", // German
-            // @"Modelli utente//OsiriX", // Italian
-            // @"//OsiriX" // Japanese
-            // @"/Mine maler/OsiriX" // Norwegian (Bokmål)
-            // @"//OsiriX" // Polish
-            // @"//OsiriX" // Russian
-            // @"//OsiriX" // Spanish
-            // @"//OsiriX" // Swedish 
-            nil];
-}
-
-+(NSString*)wordTemplatesOsirixDirPath {
-    return [[self msofficeApplicationSupportDirPath] stringByAppendingPathComponent:[[self msofficeApplicationSupportTemplateSubpaths] objectAtIndex:0]];
++(void)checkForWordTemplates
+{
+#ifndef MACAPPSTORE
+#ifndef OSIRIX_LIGHT
+    
+    NSString *path = BrowserController.currentBrowser.database.baseDirPath;
+    
+    if( path == nil)
+        path = DicomDatabase.defaultBaseDirPath;
+    
+    // previously, we had a single word template in the OsiriX Data folder
+    NSString* oldReportFilePath = [path stringByAppendingPathComponent:@"ReportTemplate.doc"];
+    
+    // today, we use a dir in the database folder, which contains the templates
+    NSString* templatesDirPath = [Reports databaseWordTemplatesDirPath];
+    
+    if( templatesDirPath == nil)
+        return;
+    
+    NSUInteger templatesCount = 0;
+    
+    if( [[NSFileManager defaultManager] fileExistsAtPath:templatesDirPath])
+    {
+        for (NSString* filename in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:templatesDirPath error:NULL])
+        {
+            if( [filename.pathExtension isEqualToString: @"doc"])
+                ++templatesCount;
+        }
+    }
+    
+    if (!templatesCount)
+    {
+        if ([[NSFileManager defaultManager] fileExistsAtPath: oldReportFilePath])
+            [[NSFileManager defaultManager] moveItemAtPath: oldReportFilePath toPath:[templatesDirPath stringByAppendingPathComponent: [oldReportFilePath lastPathComponent]] error: nil];
+        else
+            [[NSFileManager defaultManager] copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"ReportTemplate.doc"] toPath:[templatesDirPath stringByAppendingPathComponent:@"Basic Report Template.doc"] error:NULL];
+    }
+#endif
+#endif
 }
 
 +(NSString*)databaseWordTemplatesDirPath {
-    NSString *folder = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"WORD TEMPLATES"];
+    
+    NSString *path = BrowserController.currentBrowser.database.baseDirPath;
+    
+    if( path == nil)
+        path = DicomDatabase.defaultBaseDirPath;
+    
+    NSString *folder = [path stringByAppendingPathComponent:@"WORD TEMPLATES"];
     
     BOOL isDirectory;
     if( [[NSFileManager defaultManager] fileExistsAtPath: folder isDirectory: &isDirectory] && isDirectory)
@@ -469,10 +491,6 @@ static id aedesc_to_id(AEDesc *desc)
     [[NSFileManager defaultManager] createDirectoryAtPath: folder withIntermediateDirectories: NO attributes: nil error: nil];
     
     return folder;
-}
-
-+(NSString*)databasePagesTemplatesDirPath {
-    return [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"PAGES TEMPLATES"];
 }
 
 +(NSString*)resolvedDatabaseWordTemplatesDirPath {
@@ -488,8 +506,9 @@ static id aedesc_to_id(AEDesc *desc)
 	while ((filename = [directoryEnumerator nextObject]))
 	{
 		[directoryEnumerator skipDescendents];
-		if ([filename hasPrefix:@"OsiriX "]) // this is a template for us (we should maybe verify that it is a valid Word template... but what ever...)
-			[templatesArray addObject:[filename substringFromIndex:7]];
+        
+        if( [filename.pathExtension hasPrefix: @"doc"]) //hasPrefix: compatible with .doc and .docx
+            [templatesArray addObject: filename];
 	}
 	
 	return templatesArray;
@@ -536,7 +555,7 @@ static id aedesc_to_id(AEDesc *desc)
 		[file appendFormat: @"%c", NSTabCharacter];
 	}
 	
-	NSString	*path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/Report.rtf"];
+	NSString *path = [BrowserController.currentBrowser.database.baseDirPath stringByAppendingFormat:@"/TEMP.noindex/Report.rtf"];
 	
 	[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
 	
@@ -557,25 +576,24 @@ static id aedesc_to_id(AEDesc *desc)
     [[NSFileManager defaultManager] removeItemAtPath:destinationFile error: nil];
     
     NSString* inTemplateName = templateName;
+    
+    if( inTemplateName.length == 0 && [[Reports wordTemplatesList] count])
+        inTemplateName = [[Reports wordTemplatesList] objectAtIndex: 0];
+    
     NSString* sourceData = [self generateWordReportMergeDataForStudy:study];
     NSString* templatePath = nil;
     
     NSString* templatesDirPath = [[self class] resolvedDatabaseWordTemplatesDirPath];
     if ([[NSFileManager defaultManager] fileExistsAtPath:templatesDirPath])
     {
-        NSMutableArray* templatesDirPathContents = [[[[NSFileManager defaultManager] contentsOfDirectoryAtPath:templatesDirPath error:NULL] mutableCopy] autorelease];
-        for (NSInteger i = (long)templatesDirPathContents.count-1; i >= 0; --i)
-            if (![[templatesDirPathContents objectAtIndex:i] hasPrefix: @"OsiriX "])
-                [templatesDirPathContents removeObjectAtIndex:i];
-        if ([templatesDirPathContents count] == 1)
-            inTemplateName = [templatesDirPathContents objectAtIndex:0];
-        
-        templatePath = [templatesDirPath stringByAppendingPathComponent: [@"OsiriX " stringByAppendingString: inTemplateName]];
+        for( NSString *filename in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:templatesDirPath error:NULL])
+        {
+            if( [filename.pathExtension hasPrefix: @"doc"] && [filename.stringByDeletingPathExtension isEqualToString: inTemplateName.stringByDeletingPathExtension])
+                templatePath = [templatesDirPath stringByAppendingPathComponent: filename];
+        }
     }
-    else
-        templatePath = [[templatesDirPath stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"ReportTemplate.doc"];
     
-    if (![[NSFileManager defaultManager] fileExistsAtPath:templatePath])
+    if( templatePath == nil || ![[NSFileManager defaultManager] fileExistsAtPath:templatePath])
     {
         NSRunCriticalAlertPanel( NSLocalizedString( @"Microsoft Word", nil),  NSLocalizedString(@"I cannot find the OsiriX Word Template doc file.", nil), NSLocalizedString(@"OK", nil), nil, nil);
         return NO;
@@ -694,6 +712,36 @@ static id aedesc_to_id(AEDesc *desc)
 #pragma mark Pages.app
 
 static int Pages5orHigher = -1;
+
++(NSString*)databasePagesTemplatesDirPath {
+    
+    NSString *path = BrowserController.currentBrowser.database.baseDirPath;
+    
+    if( path == nil)
+        path = DicomDatabase.defaultBaseDirPath;
+    
+    return [path stringByAppendingPathComponent:@"PAGES TEMPLATES"];
+}
+
++ (void)checkForPagesTemplate;
+{
+#ifndef MACAPPSTORE
+#ifndef OSIRIX_LIGHT
+    
+	NSString* templatesDirPath = [Reports databasePagesTemplatesDirPath];
+	
+    if ([[NSFileManager defaultManager] fileExistsAtPath:templatesDirPath] == NO)
+        [[NSFileManager defaultManager] createDirectoryAtPath:templatesDirPath withIntermediateDirectories:NO attributes:nil error:nil];
+    
+	// Pages template
+    NSString *defaultReport = [templatesDirPath stringByAppendingPathComponent:@"/OsiriX Basic Report.pages"];
+	if ([[NSFileManager defaultManager] fileExistsAtPath: defaultReport] == NO)
+		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/OsiriX Report.pages"] toPath:defaultReport handler:nil];
+	
+#endif
+#endif
+}
+
 
 + (int) Pages5orHigher
 {
@@ -819,6 +867,9 @@ static int Pages5orHigher = -1;
 
 + (NSString*) pathForPagesTemplate: (NSString*) templateName
 {
+    if( templateName.length == 0 && [[Reports pagesTemplatesList] count])
+        templateName = [[Reports pagesTemplatesList] objectAtIndex: 0];
+    
     if( [Reports Pages5orHigher])
     {
         NSString *templateDirectory = [self databasePagesTemplatesDirPath];
@@ -936,6 +987,8 @@ static int Pages5orHigher = -1;
 {
 	[templateName setString:aName];
 	[templateName replaceOccurrencesOfString:@".pages" withString:@"" options:NSLiteralSearch range:templateName.range];
+    [templateName replaceOccurrencesOfString:@".docx" withString:@"" options:NSLiteralSearch range:templateName.range];
+    [templateName replaceOccurrencesOfString:@".doc" withString:@"" options:NSLiteralSearch range:templateName.range];
 }
 
 @end

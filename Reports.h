@@ -26,7 +26,6 @@
 
 - (BOOL)createNewReport:(NSManagedObject*)study destination:(NSString*)path type:(int)type;
 
-+(NSString*)wordTemplatesOsirixDirPath;
 +(NSString*)databaseWordTemplatesDirPath;
 +(NSString*)resolvedDatabaseWordTemplatesDirPath;
 
@@ -38,5 +37,7 @@
 - (NSMutableString *)templateName;
 - (void)setTemplateName:(NSString *)aName;
 + (int) Pages5orHigher;
++ (void)checkForPagesTemplate;
++ (void)checkForWordTemplates;
 
 @end
