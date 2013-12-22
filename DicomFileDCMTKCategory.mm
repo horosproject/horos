@@ -97,18 +97,13 @@ extern NSRecursiveLock *PapyrusLock;
     {
         @try
         {
-            NSStringEncoding encoding[ 10];
             const char *string = NULL;
-            
-            for( int i = 0; i < 10; i++) encoding[ i] = 0;
-            encoding[ 0] = NSISOLatin1StringEncoding;
-            
             DcmDataset *dataset = fileformat->getDataset();
             
             DcmTagKey dcmkey( gr, el);
             
-            if (dataset->findAndGetString( dcmkey, string, OFFalse).good() && string != NULL)
-                returnedValue = [NSString stringWithCString:string encoding: encoding[ 0]];
+            if( dataset && dataset->findAndGetString( dcmkey, string, OFFalse).good() && string != nil)
+                returnedValue = [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding];
         }
         @catch (NSException *exception) {
             N2LogException( exception);

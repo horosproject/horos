@@ -14,9 +14,12 @@
 
 #import <DCMPix.h>
 
-@interface DCMPix (DCMPix_DCMTK)
+@interface DCMTKFileFormat : NSObject
+{
+    void *dcmtkDcmFileFormat;
+}
+@property void *dcmtkDcmFileFormat;
 
-- (void) allocatedDcmtkDcmFileFormatIfNeeded;
-- (void) deallocDCMTKIfNeeded;
+- (id) initWithFile: (NSString*) file;
 
 @end

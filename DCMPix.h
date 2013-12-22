@@ -39,6 +39,7 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 @class DicomSeries;
 @class DicomStudy;
 @class DCMWaveform;
+@class DCMTKFileFormat;
 
 /** \brief Represents an image for display */
 
@@ -221,14 +222,13 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
     NSString            *referencedSOPInstanceUID;
     float               referenceCoordinates[ 4];
     
-    void                *dcmtkDcmFileFormat;
+    DCMTKFileFormat     *dcmtkDcmFileFormat;
 }
 
 @property long frameNo;
 @property(setter=setID:) long ID;
 @property (readonly) NSRecursiveLock *checking;
 @property (nonatomic) float minValueOfSeries, maxValueOfSeries, factorPET2SUV;
-@property void *dcmtkDcmFileFormat;
 
 @property(retain) NSString* imageType, *modalityString, *referencedSOPInstanceUID, *yearOld, *yearOldAcquisition;
 
@@ -331,7 +331,7 @@ Note setter is different to not break existing usage. :-( */
 @property float decayFactor;
 @property(retain) NSString *units, *decayCorrection;
 @property BOOL displaySUVValue;
-
+@property(retain) DCMTKFileFormat *dcmtkDcmFileFormat;
 @property BOOL isLUT12Bit;
 
 // Waveform

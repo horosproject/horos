@@ -31,7 +31,7 @@
 #import "DicomDatabase.h"
 #import "DicomFileDCMTKCategory.h"
 #include <signal.h>
-#import "DCMPix+DCMPix_DCMTK.h"
+#import "DCMTKFileFormat.h"
 
 #ifdef OSIRIX_VIEWER
 #import "NSThread+N2.h"
@@ -85,6 +85,7 @@ BOOL	quicktimeRunning = NO;
 NSLock	*quicktimeThreadLock = nil;
 
 static NSMutableDictionary *cachedPapyGroups = nil;
+static NSMutableDictionary *cachedDCMTKFileFormat = nil;
 static NSMutableDictionary *cachedDCMFrameworkFiles = nil;
 static NSMutableArray *nonLinearWLWWThreads = nil;
 static NSMutableArray *minmaxThreads = nil;
@@ -3325,12 +3326,18 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 -(id) myinitEmpty
 {
-	if( cachedPapyGroups == nil)
-		cachedPapyGroups = [[NSMutableDictionary dictionary] retain];
-		
-	if( cachedDCMFrameworkFiles == nil)
-		cachedDCMFrameworkFiles = [[NSMutableDictionary dictionary] retain];
-	
+    @synchronized( [DCMPix class])
+    {
+        if( cachedPapyGroups == nil)
+            cachedPapyGroups = [NSMutableDictionary new];
+        
+        if( cachedDCMFrameworkFiles == nil)
+            cachedDCMFrameworkFiles = [NSMutableDictionary new];
+        
+        if( cachedDCMTKFileFormat == nil)
+            cachedDCMTKFileFormat = [NSMutableDictionary new];
+    }
+    
 	checking = [[NSRecursiveLock alloc] init];
 	decayFactor = 1.0;
 	
@@ -3367,12 +3374,18 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 {
 	[DCMPix checkUserDefaults: NO];
 	
-	if( cachedPapyGroups == nil)
-		cachedPapyGroups = [[NSMutableDictionary dictionary] retain];
-	
-	if( cachedDCMFrameworkFiles == nil)
-		cachedDCMFrameworkFiles = [[NSMutableDictionary dictionary] retain];
-	
+    @synchronized( [DCMPix class])
+    {
+        if( cachedPapyGroups == nil)
+            cachedPapyGroups = [NSMutableDictionary new];
+        
+        if( cachedDCMFrameworkFiles == nil)
+            cachedDCMFrameworkFiles = [NSMutableDictionary new];
+        
+        if( cachedDCMTKFileFormat == nil)
+            cachedDCMTKFileFormat = [NSMutableDictionary new];
+    }
+    
 	needToCompute8bitRepresentation = YES;
 	
 	//---------------------------------various
@@ -13044,6 +13057,19 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 {
 	[checking lock];
 	
+    self.dcmtkDcmFileFormat = nil;
+    
+    @synchronized( cachedDCMTKFileFormat)
+    {
+        if( srcFile && cachedDCMTKFileFormat)
+        {
+            int retainCount = [[cachedDCMTKFileFormat objectForKey: srcFile] retainCount];
+            
+            if( retainCount == 1)
+                [cachedDCMTKFileFormat removeObjectForKey: srcFile];
+        }
+    }
+    
 	if( shutterPolygonal)
         free( shutterPolygonal);
 	
@@ -13070,8 +13096,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     
     self.waveform = nil;
     self.referencedSOPInstanceUID = nil;
-	
-    [self deallocDCMTKIfNeeded];
     
 	if( fExternalOwnedImage == nil)
 	{
@@ -13332,9 +13356,25 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     
     if( error != 0)	// Papyrus doesn't have the definition of all dicom tags.... Papyrus can only read what is in his dictionary
     {
-        [self allocatedDcmtkDcmFileFormatIfNeeded];
+        if( cachedDCMTKFileFormat == nil)
+            cachedDCMTKFileFormat = [NSMutableDictionary new];
         
-        return [DicomFile getDicomFieldForGroup: group element: element forDcmFileFormat: dcmtkDcmFileFormat];
+        @synchronized( cachedDCMTKFileFormat)
+        {
+            if( self.dcmtkDcmFileFormat == nil)
+            {
+                if( [cachedDCMTKFileFormat objectForKey: srcFile])
+                    self.dcmtkDcmFileFormat = [cachedDCMTKFileFormat objectForKey: srcFile];
+                else
+                {
+                    
+                    self.dcmtkDcmFileFormat = [[[DCMTKFileFormat alloc] initWithFile: srcFile] autorelease];
+                    [cachedDCMTKFileFormat setObject: self.dcmtkDcmFileFormat forKey: srcFile];
+                }
+            }
+            
+            return [DicomFile getDicomFieldForGroup: group element: element forDcmFileFormat: dcmtkDcmFileFormat.dcmtkDcmFileFormat];
+        }
 	}
     
 	return field;

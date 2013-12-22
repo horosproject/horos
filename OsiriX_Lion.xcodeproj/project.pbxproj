@@ -4166,10 +4166,10 @@
 		CE0DB32A182D604900C90B43 /* ThumbnailsListNSWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = CE0DB326182D604900C90B43 /* ThumbnailsListNSWindow.h */; };
 		CE0E08E806A106D700F2C01C /* ThickSlabController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE0E08E606A106D700F2C01C /* ThickSlabController.h */; };
 		CE0E08E906A106D700F2C01C /* ThickSlabController.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE0E08E706A106D700F2C01C /* ThickSlabController.mm */; };
-		CE0E0DB11863970400417C4C /* DCMPix+DCMPix_DCMTK.h in Headers */ = {isa = PBXBuildFile; fileRef = CE0E0DAF1863970400417C4C /* DCMPix+DCMPix_DCMTK.h */; };
-		CE0E0DB21863970400417C4C /* DCMPix+DCMPix_DCMTK.h in Headers */ = {isa = PBXBuildFile; fileRef = CE0E0DAF1863970400417C4C /* DCMPix+DCMPix_DCMTK.h */; };
-		CE0E0DB31863970400417C4C /* DCMPix+DCMPix_DCMTK.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE0E0DB01863970400417C4C /* DCMPix+DCMPix_DCMTK.mm */; };
-		CE0E0DB41863970400417C4C /* DCMPix+DCMPix_DCMTK.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE0E0DB01863970400417C4C /* DCMPix+DCMPix_DCMTK.mm */; };
+		CE0E0DB11863970400417C4C /* DCMTKFileFormat.h in Headers */ = {isa = PBXBuildFile; fileRef = CE0E0DAF1863970400417C4C /* DCMTKFileFormat.h */; };
+		CE0E0DB21863970400417C4C /* DCMTKFileFormat.h in Headers */ = {isa = PBXBuildFile; fileRef = CE0E0DAF1863970400417C4C /* DCMTKFileFormat.h */; };
+		CE0E0DB31863970400417C4C /* DCMTKFileFormat.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE0E0DB01863970400417C4C /* DCMTKFileFormat.mm */; };
+		CE0E0DB41863970400417C4C /* DCMTKFileFormat.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE0E0DB01863970400417C4C /* DCMTKFileFormat.mm */; };
 		CE0E3A550D87C56D008135A8 /* ThreeDPanView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE0E3A530D87C56D008135A8 /* ThreeDPanView.h */; };
 		CE0E3A560D87C56D008135A8 /* ThreeDPanView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0E3A540D87C56D008135A8 /* ThreeDPanView.m */; };
 		CE0E4F24117059E6007D7657 /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C1409B6828200545F5E /* jaricom.c */; };
@@ -11523,8 +11523,8 @@
 		CE0DB326182D604900C90B43 /* ThumbnailsListNSWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThumbnailsListNSWindow.h; sourceTree = "<group>"; };
 		CE0E08E606A106D700F2C01C /* ThickSlabController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThickSlabController.h; sourceTree = "<group>"; };
 		CE0E08E706A106D700F2C01C /* ThickSlabController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ThickSlabController.mm; sourceTree = "<group>"; };
-		CE0E0DAF1863970400417C4C /* DCMPix+DCMPix_DCMTK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DCMPix+DCMPix_DCMTK.h"; sourceTree = "<group>"; };
-		CE0E0DB01863970400417C4C /* DCMPix+DCMPix_DCMTK.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "DCMPix+DCMPix_DCMTK.mm"; sourceTree = "<group>"; };
+		CE0E0DAF1863970400417C4C /* DCMTKFileFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMTKFileFormat.h; sourceTree = "<group>"; };
+		CE0E0DB01863970400417C4C /* DCMTKFileFormat.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DCMTKFileFormat.mm; sourceTree = "<group>"; };
 		CE0E3A530D87C56D008135A8 /* ThreeDPanView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreeDPanView.h; sourceTree = "<group>"; };
 		CE0E3A540D87C56D008135A8 /* ThreeDPanView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThreeDPanView.m; sourceTree = "<group>"; };
 		CE114AC317F9568600CB4ED7 /* RTStructIcon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = RTStructIcon.jpg; sourceTree = "<group>"; };
@@ -18833,8 +18833,8 @@
 				AB695A1D063D8261002BDF78 /* Analyze.h */,
 				CE0CB170084A623C00C6385F /* DCMPix.h */,
 				CE0CB16F084A623C00C6385F /* DCMPix.m */,
-				CE0E0DAF1863970400417C4C /* DCMPix+DCMPix_DCMTK.h */,
-				CE0E0DB01863970400417C4C /* DCMPix+DCMPix_DCMTK.mm */,
+				CE0E0DAF1863970400417C4C /* DCMTKFileFormat.h */,
+				CE0E0DB01863970400417C4C /* DCMTKFileFormat.mm */,
 				71A28B751637F0D200489F2A /* DCMWaveform.h */,
 				71A28B761637F0D200489F2A /* DCMWaveform.m */,
 				A085E103141E53210072BF0D /* DCMUSRegion.h */,
@@ -25216,7 +25216,7 @@
 				CEBD8DAE14F1ADDA000DA1FE /* vtkImageReader2Factory.h in Headers */,
 				CEBD8DAF14F1ADDA000DA1FE /* vtkImageRectilinearWipe.h in Headers */,
 				CEBD8DB014F1ADDA000DA1FE /* vtkImageRenderManager.h in Headers */,
-				CE0E0DB11863970400417C4C /* DCMPix+DCMPix_DCMTK.h in Headers */,
+				CE0E0DB11863970400417C4C /* DCMTKFileFormat.h in Headers */,
 				CEBD8DB114F1ADDA000DA1FE /* vtkImageResample.h in Headers */,
 				CEBD8DB214F1ADDA000DA1FE /* vtkImageResize.h in Headers */,
 				CEBD8DB314F1ADDA000DA1FE /* vtkImageReslice.h in Headers */,
@@ -27177,7 +27177,7 @@
 				CEFA94BA10A7444D00F9512D /* extneg.h in Headers */,
 				CEFA94BC10A7444D00F9512D /* lst.h in Headers */,
 				CEFA963110A75DA100F9512D /* DCMTransferSyntax.h in Headers */,
-				CE0E0DB21863970400417C4C /* DCMPix+DCMPix_DCMTK.h in Headers */,
+				CE0E0DB21863970400417C4C /* DCMTKFileFormat.h in Headers */,
 				CEFA963B10A75DBF00F9512D /* DCMAbstractSyntaxUID.h in Headers */,
 				CEFA965010A75E5A00F9512D /* DCMNetServiceDelegate.h in Headers */,
 				CEFA967710A760E800F9512D /* DCMCalendarDate.h in Headers */,
@@ -30814,7 +30814,7 @@
 				ABE46FC20A76410F00327466 /* jdpostct.c in Sources */,
 				ABE46FC30A76410F00327466 /* jdpred.c in Sources */,
 				ABE46FC40A76410F00327466 /* jdsample.c in Sources */,
-				CE0E0DB31863970400417C4C /* DCMPix+DCMPix_DCMTK.mm in Sources */,
+				CE0E0DB31863970400417C4C /* DCMTKFileFormat.mm in Sources */,
 				ABE46FC50A76410F00327466 /* jdscale.c in Sources */,
 				ABE46FC60A76410F00327466 /* jdshuff.c in Sources */,
 				ABE46FC70A76410F00327466 /* jdtrans.c in Sources */,
@@ -31503,7 +31503,7 @@
 				CEC7078D10A5C844008935EA /* dcostrmb.cc in Sources */,
 				CEC7078E10A5C844008935EA /* dcostrmf.cc in Sources */,
 				CEC7078F10A5C844008935EA /* dcostrmz.cc in Sources */,
-				CE0E0DB41863970400417C4C /* DCMPix+DCMPix_DCMTK.mm in Sources */,
+				CE0E0DB41863970400417C4C /* DCMTKFileFormat.mm in Sources */,
 				CEC7079010A5C844008935EA /* dcpcache.cc in Sources */,
 				CEC7079110A5C844008935EA /* dcpixel.cc in Sources */,
 				CEC7079210A5C844008935EA /* dcpixseq.cc in Sources */,

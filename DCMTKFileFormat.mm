@@ -12,7 +12,7 @@
  PURPOSE.
  =========================================================================*/
 
-#import "DCMPix+DCMPix_DCMTK.h"
+#import "DCMTKFileFormat.h"
 
 #include "osconfig.h"
 #include "dcfilefo.h"
@@ -27,27 +27,30 @@
 #include "djdecode.h"    /* for dcmjpeg decoders */
 #include "dipijpeg.h"    /* for dcmimage JPEG plugin */
 
+@implementation DCMTKFileFormat
 
-@implementation DCMPix (DCMPix_DCMTK)
+@synthesize dcmtkDcmFileFormat;
 
-- (void) allocatedDcmtkDcmFileFormatIfNeeded
+- (id) initWithFile: (NSString*) file
 {
-    if( self.dcmtkDcmFileFormat == nil)
-    {
-        DcmFileFormat *fileformat = new DcmFileFormat();
-        
-        fileformat->loadFile( srcFile.UTF8String, EXS_Unknown, EGL_noChange, DCM_MaxReadLength, ERM_autoDetect);
-        self.dcmtkDcmFileFormat = fileformat;
-    }
+    self = [super init];
+    
+    DcmFileFormat *fileformat = new DcmFileFormat();
+    
+    fileformat->loadFile( file.UTF8String, EXS_Unknown, EGL_noChange, DCM_MaxReadLength, ERM_autoDetect);
+    self.dcmtkDcmFileFormat = fileformat;
+    
+    return self;
 }
 
-- (void) deallocDCMTKIfNeeded
+- (void) dealloc
 {
     if( self.dcmtkDcmFileFormat)
     {
         delete (DcmFileFormat*) self.dcmtkDcmFileFormat;
         self.dcmtkDcmFileFormat = nil;
     }
+    
+    [super dealloc];
 }
-
 @end
