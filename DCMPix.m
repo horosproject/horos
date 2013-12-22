@@ -13057,16 +13057,18 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 {
 	[checking lock];
 	
-    self.dcmtkDcmFileFormat = nil;
-    
     @synchronized( cachedDCMTKFileFormat)
     {
-        if( srcFile && cachedDCMTKFileFormat)
+        if( self.dcmtkDcmFileFormat)
         {
-            int retainCount = [[cachedDCMTKFileFormat objectForKey: srcFile] retainCount];
+            NSMutableDictionary *dic = [cachedDCMTKFileFormat objectForKey: srcFile];
             
-            if( retainCount == 1)
+            [dic setValue: [NSNumber numberWithInt: [[dic objectForKey: @"count"] intValue]-1] forKey: @"count"];
+            
+            if( [[dic objectForKey: @"count"] intValue] == 0)
                 [cachedDCMTKFileFormat removeObjectForKey: srcFile];
+            
+            self.dcmtkDcmFileFormat = nil;
         }
     }
     
@@ -13356,20 +13358,27 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     
     if( error != 0)	// Papyrus doesn't have the definition of all dicom tags.... Papyrus can only read what is in his dictionary
     {
-        if( cachedDCMTKFileFormat == nil)
-            cachedDCMTKFileFormat = [NSMutableDictionary new];
-        
         @synchronized( cachedDCMTKFileFormat)
         {
             if( self.dcmtkDcmFileFormat == nil)
             {
                 if( [cachedDCMTKFileFormat objectForKey: srcFile])
-                    self.dcmtkDcmFileFormat = [cachedDCMTKFileFormat objectForKey: srcFile];
+                {
+                    NSMutableDictionary *dic = [cachedDCMTKFileFormat objectForKey: srcFile];
+                    
+                    self.dcmtkDcmFileFormat = [dic objectForKey: @"dcmtkObject"];
+                    [dic setValue: @([[dic objectForKey: @"count"] intValue]+1) forKey: @"count"];
+                }
                 else
                 {
-                    
                     self.dcmtkDcmFileFormat = [[[DCMTKFileFormat alloc] initWithFile: srcFile] autorelease];
-                    [cachedDCMTKFileFormat setObject: self.dcmtkDcmFileFormat forKey: srcFile];
+                    
+                    NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+                    
+                    [dic setValue: @1 forKey: @"count"];
+                    [dic setValue: self.dcmtkDcmFileFormat forKey: @"dcmtkObject"];
+                    
+                    [cachedDCMTKFileFormat setObject: dic forKey: srcFile];
                 }
             }
             
