@@ -12228,7 +12228,7 @@ static BOOL needToRezoom;
 			NSRunCriticalAlertPanel( NSLocalizedString(@"4D Player",@"4D Player"), NSLocalizedString(@"To see an animated series, you have to select multiple series of the same area at different times: e.g. a cardiac CT", nil), NSLocalizedString(@"OK",nil), nil, nil);
 			movieError = YES;
 		}
-		else if( [toOpenArray count] >= MAX4D)
+		else if( [toOpenArray count] > MAX4D)
 		{
 			NSRunCriticalAlertPanel( NSLocalizedString(@"4D Player",@"4D Player"), [NSString stringWithFormat: NSLocalizedString(@"4D Player is limited to a maximum number of %d series.", nil), MAX4D], NSLocalizedString(@"OK",nil), nil, nil);
 			movieError = YES;
