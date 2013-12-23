@@ -5582,8 +5582,12 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	if(  savedWW < 0) savedWW =-savedWW;
 	
     if( [[dcmObject attributeValueWithName:@"RescaleType"] isEqualToString: @"US"] == NO)
+    {
         self.rescaleType = [dcmObject attributeValueWithName:@"RescaleType"];
-    
+        
+        if( [self.rescaleType.lowercaseString isEqualToString: @"houndsfield unit"])
+            self.rescaleType = @"HU";
+    }
 	//planar configuration
 	if( [dcmObject attributeValueWithName:@"PlanarConfiguration"])
 		fPlanarConf = [[dcmObject attributeValueWithName:@"PlanarConfiguration"] intValue]; 
@@ -6158,7 +6162,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 		[units release];
 		units = [[dcmObject attributeValueWithName:@"Units"] retain];
-		
+        
 		[decayCorrection release];
 		decayCorrection = [[dcmObject attributeValueWithName:@"DecayCorrection"] retain];
 		
@@ -7431,6 +7435,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         
         if( [self.rescaleType isEqualToString: @"US"]) // US = unspecified
             self.rescaleType = @"";
+        
+        else if( [self.rescaleType.lowercaseString isEqualToString: @"houndsfield unit"])
+            self.rescaleType = @"HU";
     }
 	// PLANAR CONFIGURATION
 	val = Papy3GetElement (theGroupP, papPlanarConfigurationGr, &nbVal, &elemType);
@@ -8111,7 +8118,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					val = Papy3GetElement (theGroupP, papUnitsGr, &pos, &elemType);
 					if( val && val->a && validAPointer( elemType)) units = [[NSString stringWithCString:val->a encoding: NSISOLatin1StringEncoding] retain];
 					else units = nil;
-					
+                    
 					val = Papy3GetElement (theGroupP, papDecayCorrectionGr, &pos, &elemType);
 					if( val && val->a && validAPointer( elemType)) decayCorrection = [[NSString stringWithCString:val->a encoding: NSISOLatin1StringEncoding] retain];
 					else decayCorrection = nil;

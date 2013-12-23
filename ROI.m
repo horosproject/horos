@@ -1522,8 +1522,12 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 
 - (void) glStr: (NSString*) str :(float) x :(float) y :(float) line
 {
+#define MAXLENGTH 300
+    
 	if( str.length == 0) return;
-
+    if( str.length > MAXLENGTH)
+        str = [str substringToIndex: MAXLENGTH];
+    
 	float xx, yy;
 	
 	line *= fontHeight*curView.window.backingScaleFactor;
