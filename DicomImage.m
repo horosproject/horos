@@ -1178,7 +1178,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
     #ifdef OSIRIX_VIEWER
     @try
     {
-        DCMPix* pix = [[DCMPix alloc] initWithPath: self.completePath :0 :0 :nil :0 :self.series.id.intValue isBonjour:NO imageObj: self];
+        DCMPix* pix = [[DCMPix alloc] initWithPath: self.completePath :0 :0 :nil :self.frameID.intValue :self.series.id.intValue isBonjour:NO imageObj: self];
         
         [pix CheckLoad];
         
