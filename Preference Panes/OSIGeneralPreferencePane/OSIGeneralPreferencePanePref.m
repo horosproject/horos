@@ -47,13 +47,27 @@ static NSArray *languagesToMoveWhenQuitting = nil;
         for( NSString *file in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: [[NSBundle mainBundle] resourcePath] error: nil])
         {
             if( [[file pathExtension] isEqualToString: @"lproj"])
-                [languages addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys: [file stringByDeletingPathExtension], @"language", [NSNumber numberWithBool: YES], @"active", nil]];
+            {
+                NSString *name = [[NSLocale currentLocale] displayNameForKey:NSLocaleIdentifier value: [file stringByDeletingPathExtension]];
+                
+                if( name.length == 0)
+                    name = [file stringByDeletingPathExtension];
+                
+                [languages addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys: [file stringByDeletingPathExtension], @"foldername", name, @"language", [NSNumber numberWithBool: YES], @"active", nil]];
+            }
         }
         
         for( NSString *file in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: [[[[NSBundle mainBundle] resourcePath] stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"Resources Disabled"] error: nil])
         {
             if( [[file pathExtension] isEqualToString: @"lproj"])
-                [languages addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys: [file stringByDeletingPathExtension], @"language", [NSNumber numberWithBool: NO], @"active", nil]];
+            {
+                NSString *name = [[NSLocale currentLocale] displayNameForKey:NSLocaleIdentifier value: [file stringByDeletingPathExtension]];
+                
+                if( name.length == 0)
+                    name = [file stringByDeletingPathExtension];
+                
+                [languages addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys: [file stringByDeletingPathExtension], @"foldername", name, @"language", [NSNumber numberWithBool: NO], @"active", nil]];
+            }
         }
         
 		NSNib *nib = [[[NSNib alloc] initWithNibNamed: @"OSIGeneralPreferencePanePref" bundle: nil] autorelease];
@@ -297,7 +311,7 @@ static NSArray *languagesToMoveWhenQuitting = nil;
     
     for( NSDictionary *d in languagesToMoveWhenQuitting)
     {
-        NSString *language = [[d valueForKey: @"language"] stringByAppendingPathExtension: @"lproj"];
+        NSString *language = [[d valueForKey: @"foldername"] stringByAppendingPathExtension: @"lproj"];
         
         if( [[d valueForKey: @"active"] boolValue])
         {
