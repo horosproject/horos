@@ -6882,7 +6882,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                         [[self curDCM] orientation:orientA];
                         [[otherView curDCM] orientation:orientB];
                         
-						if( [DCMView angleBetweenVector: orientA+6 andVector:orientB+6] < [[NSUserDefaults standardUserDefaults] floatForKey: @"PARALLELPLANETOLERANCE"])
+                        float planeTolerance = [[NSUserDefaults standardUserDefaults] floatForKey: @"PARALLELPLANETOLERANCE"];
+                        
+                        if( syncSeriesIndex != -1) // Manual Sync !
+                            planeTolerance = 0.78; // 0.78 is about 45 degrees
+                        
+						if( [DCMView angleBetweenVector: orientA+6 andVector:orientB+6] < planeTolerance)
 						{
                             // we need to avoid the situations where a localizer blocks two series from synchronizing
                             // if( (sliceVector[0] == 0 && sliceVector[1] == 0 && sliceVector[2] == 0) || syncSeriesIndex != -1)  // Planes are parallel !
