@@ -3399,13 +3399,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
     if( FullScreenOn == YES) // we need to go back to non-full screen
     {
-        [[NSUserDefaults standardUserDefaults] setBool:previousPropagate forKey: @"COPYSETTINGS"];
-        
         [StartingWindow setContentView: contentView];
 		
         [FullScreenWindow setDelegate:nil];
         [FullScreenWindow close];
 		[FullScreenWindow release];
+        FullScreenWindow = nil;
         
         FullScreenOn = NO;
 		
@@ -3417,6 +3416,11 @@ static volatile int numberOfThreadsForRelisce = 0;
 			[self setImageRows: previousFullscreenRows columns: previousFullscreenColumns];
 			[[self window] makeFirstResponder: [[seriesView imageViews] objectAtIndex: previousFullscreenViewIndex]];
 		}
+        
+        if( previousScaledFit)
+            [imageView scaleToFit];
+        
+        [[NSUserDefaults standardUserDefaults] setBool:previousPropagate forKey: @"COPYSETTINGS"];
         
 //        if( SavedUseFloatingThumbnailsList)
 //        {
@@ -3470,6 +3474,7 @@ static volatile int numberOfThreadsForRelisce = 0;
         windowStyle = NSBorderlessWindowMask; 
         contentRect = [[NSScreen mainScreen] frame];
         
+        previousScaledFit = imageView.isScaledFit;
         previousFrameRect = StartingWindow.frame;
         [StartingWindow setFrame: contentRect display: NO];
         
@@ -3495,6 +3500,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 			[FullScreenWindow makeFirstResponder: imageView];
 			[FullScreenWindow setAcceptsMouseMovedEvents: YES];
 			
+            if( previousScaledFit)
+                [imageView scaleToFit];
+            
             FullScreenOn = YES;
         }
     }

@@ -1990,6 +1990,19 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	gClickCountSet = NO;
 }
 
+- (BOOL) isScaledFit
+{
+    float s = [self scaleToFitForDCMPix: curDCM];
+    
+    if( origin.x == 0 && origin.y == 0)
+        return YES;
+    
+    if( fabs( s - self.scaleValue) < 0.1)
+        return YES;
+    else
+        return NO;
+}
+
 - (float) scaleToFitForDCMPix: (DCMPix*) d
 {
 	NSRect  sizeView = [self convertRectToBacking: [self bounds]]; // Retina

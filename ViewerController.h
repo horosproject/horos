@@ -331,7 +331,7 @@ enum
 	IBOutlet NSWindow		*injectionTimeWindow;
 	
 	int						isDataVolumicIn4DLevel;
-	int						previousFullscreenColumns, previousFullscreenRows, previousFullscreenCurImage, previousFullscreenViewIndex, previousPropagate;
+	int						previousFullscreenColumns, previousFullscreenRows, previousFullscreenCurImage, previousFullscreenViewIndex, previousPropagate, previousScaledFit;
     NSRect                  previousFrameRect;
     NSString                *windowsStateName;
 }

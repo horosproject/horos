@@ -429,6 +429,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (void) setOriginX:(float) x Y:(float) y;
 - (void) scaleToFit;
 - (float) scaleToFitForDCMPix: (DCMPix*) d;
+- (BOOL) isScaledFit;
 - (void) setBlendingFactor:(float) f;
 - (void) sliderAction:(id) sender;
 - (void) roiSet;
