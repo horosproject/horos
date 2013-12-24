@@ -33,6 +33,28 @@
 //#include <netinet/in.h>
 //#include <arpa/inet.h>
 
+@interface SecondsToMinutesTransformer: NSValueTransformer {}
+@end
+@implementation SecondsToMinutesTransformer
+
++ (BOOL)allowsReverseTransformation {
+    return YES;
+}
+
++ (Class)transformedValueClass {
+    return [NSNumber class];
+}
+
+- (id)transformedValue:(NSNumber*) number {
+    return [NSNumber numberWithInt: (number.integerValue / 60)];
+}
+
+- (id)reverseTransformedValue:(NSNumber*) number
+{
+    return [NSNumber numberWithInt: (number.integerValue * 60)];
+}
+@end
+
 @implementation OSIWebSharingPreferencePanePref
 
 @synthesize TLSAuthenticationCertificate;

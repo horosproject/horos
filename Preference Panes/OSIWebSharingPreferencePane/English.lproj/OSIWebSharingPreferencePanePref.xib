@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13B35" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13B42" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
@@ -24,7 +24,7 @@
         <window title="&lt;&lt; do not localize >>" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" deferred="NO" oneShot="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="12" userLabel="PrefPane">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="671" height="538"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
             <view key="contentView" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="671" height="538"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -493,6 +493,53 @@
                                         <binding destination="296" name="enabled" keyPath="values.passwordWebServer" id="1155"/>
                                     </connections>
                                 </button>
+                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Rev-kz-kgW">
+                                    <rect key="frame" x="262" y="77" width="52" height="14"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Timeout:" id="Bjh-1p-cdf">
+                                        <font key="font" metaFont="smallSystem"/>
+                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
+                                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="J37-l8-4As">
+                                    <rect key="frame" x="320" y="75" width="60" height="19"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="60" id="wbE-xI-bP3"/>
+                                    </constraints>
+                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" title="1'000" drawsBackground="YES" id="H9A-IL-kU0">
+                                        <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="3" groupingSeparator="'" id="j2w-4G-KMe">
+                                            <real key="roundingIncrement" value="0.0"/>
+                                            <real key="minimum" value="1"/>
+                                            <real key="maximum" value="1200"/>
+                                            <metadata>
+                                                <bool key="localizesFormat" value="YES"/>
+                                                <real key="inspectorSampleValue" value="1000"/>
+                                            </metadata>
+                                        </numberFormatter>
+                                        <font key="font" metaFont="smallSystem"/>
+                                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                    <connections>
+                                        <binding destination="296" name="enabled" keyPath="values.passwordWebServer" id="bfc-eM-2vY"/>
+                                        <binding destination="296" name="value" keyPath="values.WebServerTimeOut" id="fAU-qt-QzI">
+                                            <dictionary key="options">
+                                                <string key="NSValueTransformerName">SecondsToMinutesTransformer</string>
+                                            </dictionary>
+                                        </binding>
+                                    </connections>
+                                </textField>
+                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="UH7-Ad-5Te">
+                                    <rect key="frame" x="386" y="77" width="47" height="14"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="minutes" id="f4W-NN-Urd">
+                                        <font key="font" metaFont="smallSystem"/>
+                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
                             </subviews>
                         </view>
                         <constraints>
@@ -506,6 +553,7 @@
                             <constraint firstItem="Xin-1e-mVD" firstAttribute="trailing" secondItem="vjf-X5-5pd" secondAttribute="trailing" id="39I-AH-GTO"/>
                             <constraint firstItem="gYt-nH-lCz" firstAttribute="leading" secondItem="5kN-Ud-Rbi" secondAttribute="trailing" constant="8" symbolic="YES" id="4A6-Bm-fYG"/>
                             <constraint firstItem="5kN-Ud-Rbi" firstAttribute="leading" secondItem="fZ5-s4-Zot" secondAttribute="leading" id="6hR-O0-iXN"/>
+                            <constraint firstItem="UH7-Ad-5Te" firstAttribute="leading" secondItem="J37-l8-4As" secondAttribute="trailing" constant="8" id="86H-Ee-Gsc"/>
                             <constraint firstItem="1059" firstAttribute="leading" secondItem="1061" secondAttribute="leading" id="94X-an-1uS"/>
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="1060" secondAttribute="trailing" constant="20" id="ADI-Hh-BpY"/>
                             <constraint firstItem="1072" firstAttribute="top" secondItem="1057" secondAttribute="top" constant="26" id="CTf-T3-K1a"/>
@@ -525,9 +573,11 @@
                             <constraint firstItem="1219" firstAttribute="baseline" secondItem="1072" secondAttribute="baseline" id="Ozn-nk-yQJ"/>
                             <constraint firstItem="Ljh-JF-qO5" firstAttribute="leading" secondItem="XHr-7Y-bbX" secondAttribute="trailing" constant="8" symbolic="YES" id="Pue-ic-lat"/>
                             <constraint firstItem="1132" firstAttribute="top" secondItem="1060" secondAttribute="bottom" constant="6" id="PxR-GW-uah"/>
+                            <constraint firstItem="J37-l8-4As" firstAttribute="leading" secondItem="Rev-kz-kgW" secondAttribute="trailing" constant="8" id="PxT-lY-74o"/>
                             <constraint firstItem="1188" firstAttribute="leading" secondItem="Ljh-JF-qO5" secondAttribute="leading" id="QRf-zh-WSn"/>
                             <constraint firstItem="1132" firstAttribute="leading" secondItem="975" secondAttribute="trailing" constant="11" id="RKd-Oj-uT8"/>
                             <constraint firstItem="730" firstAttribute="top" secondItem="1063" secondAttribute="bottom" constant="7" id="Rsp-Ax-DeS"/>
+                            <constraint firstItem="Rev-kz-kgW" firstAttribute="baseline" secondItem="J37-l8-4As" secondAttribute="baseline" id="UAN-9r-Ecd"/>
                             <constraint firstItem="XHr-7Y-bbX" firstAttribute="baseline" secondItem="9ei-pa-V2i" secondAttribute="baseline" id="VFr-iI-K34"/>
                             <constraint firstItem="fZ5-s4-Zot" firstAttribute="baseline" secondItem="Kib-Wp-e3D" secondAttribute="baseline" id="Vk9-id-ktf"/>
                             <constraint firstItem="1186" firstAttribute="baseline" secondItem="1182" secondAttribute="baseline" id="X4q-7J-n9W"/>
@@ -549,12 +599,15 @@
                             <constraint firstItem="728" firstAttribute="baseline" secondItem="730" secondAttribute="baseline" id="qRy-2H-cDc"/>
                             <constraint firstItem="1225" firstAttribute="top" secondItem="975" secondAttribute="bottom" constant="6" symbolic="YES" id="qxa-2Z-uzC"/>
                             <constraint firstItem="1063" firstAttribute="leading" secondItem="1225" secondAttribute="leading" id="s23-S6-JUu"/>
+                            <constraint firstItem="Rev-kz-kgW" firstAttribute="baseline" secondItem="UH7-Ad-5Te" secondAttribute="baseline" id="s8P-G6-HLA"/>
                             <constraint firstItem="Kib-Wp-e3D" firstAttribute="leading" secondItem="gYt-nH-lCz" secondAttribute="leading" id="uFT-Gb-59k"/>
+                            <constraint firstItem="Rev-kz-kgW" firstAttribute="baseline" secondItem="975" secondAttribute="baseline" id="unP-OQ-ayN"/>
                             <constraint firstItem="Xin-1e-mVD" firstAttribute="top" secondItem="9ei-pa-V2i" secondAttribute="bottom" constant="8" symbolic="YES" id="xIY-ME-U5v"/>
                             <constraint firstAttribute="bottom" secondItem="730" secondAttribute="bottom" constant="11" id="yIh-dV-06e"/>
                             <constraint firstItem="XHr-7Y-bbX" firstAttribute="leading" secondItem="5kN-Ud-Rbi" secondAttribute="leading" id="ykO-ih-U0c"/>
                             <constraint firstItem="vjf-X5-5pd" firstAttribute="top" secondItem="Xin-1e-mVD" secondAttribute="bottom" constant="8" symbolic="YES" id="ysn-th-8Xs"/>
                             <constraint firstItem="1064" firstAttribute="top" secondItem="1072" secondAttribute="bottom" constant="8" id="yum-l8-xdm"/>
+                            <constraint firstItem="Rev-kz-kgW" firstAttribute="leading" secondItem="1132" secondAttribute="trailing" constant="15" id="ze8-j8-CHp"/>
                         </constraints>
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -771,7 +824,7 @@
         <window title="Users" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="1135" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="740" height="675"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
             <value key="minSize" type="size" width="740" height="300"/>
             <view key="contentView" id="1136">
                 <rect key="frame" x="0.0" y="0.0" width="740" height="675"/>
