@@ -3399,6 +3399,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
     if( FullScreenOn == YES) // we need to go back to non-full screen
     {
+        [[NSUserDefaults standardUserDefaults] setBool:previousPropagate forKey: @"COPYSETTINGS"];
+        
         [StartingWindow setContentView: contentView];
 		
         [FullScreenWindow setDelegate:nil];
@@ -3407,12 +3409,7 @@ static volatile int numberOfThreadsForRelisce = 0;
         
         FullScreenOn = NO;
 		
-		NSRect rr = [StartingWindow frame];
-		
-		rr.size.width--;
-		[StartingWindow setFrame: rr display: NO];
-		rr.size.width++;
-		[StartingWindow setFrame: rr display: YES];
+		[StartingWindow setFrame: previousFrameRect display: YES];
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"NoImageTilingInFullscreen"] && (previousFullscreenColumns != 1 || previousFullscreenRows != 1))
 		{
@@ -3439,6 +3436,9 @@ static volatile int numberOfThreadsForRelisce = 0;
     {
         unsigned int windowStyle;
         NSRect contentRect;
+        
+        previousPropagate = [[NSUserDefaults standardUserDefaults] boolForKey: @"COPYSETTINGS"];
+        [[NSUserDefaults standardUserDefaults] setBool:NO forKey: @"COPYSETTINGS"];
         
 		previousFullscreenColumns = [imageView columns];
 		previousFullscreenRows = [imageView rows];
@@ -3469,6 +3469,10 @@ static volatile int numberOfThreadsForRelisce = 0;
         StartingWindow = [self window];
         windowStyle = NSBorderlessWindowMask; 
         contentRect = [[NSScreen mainScreen] frame];
+        
+        previousFrameRect = StartingWindow.frame;
+        [StartingWindow setFrame: contentRect display: NO];
+        
         FullScreenWindow = [[NSFullScreenWindow alloc] initWithContentRect:contentRect styleMask: windowStyle backing:NSBackingStoreBuffered defer: NO];
         if(FullScreenWindow != nil)
         {
@@ -3502,7 +3506,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AlwaysScaleToFit"])
 		[imageView scaleToFit];
-		
+    
+    [imageView display];
+    
 	NSEnableScreenUpdates();
 }
 

@@ -331,7 +331,8 @@ enum
 	IBOutlet NSWindow		*injectionTimeWindow;
 	
 	int						isDataVolumicIn4DLevel;
-	int						previousFullscreenColumns, previousFullscreenRows, previousFullscreenCurImage, previousFullscreenViewIndex;
+	int						previousFullscreenColumns, previousFullscreenRows, previousFullscreenCurImage, previousFullscreenViewIndex, previousPropagate;
+    NSRect                  previousFrameRect;
     NSString                *windowsStateName;
 }
 @property(retain) NSCalendarDate *injectionDateTime;
