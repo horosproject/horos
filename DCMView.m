@@ -3189,6 +3189,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		if( showDescriptionInLarge != cLarge)
 		{
 			[self switchShowDescriptionInLarge];
+            [[self windowController] showCurrentThumbnail: self];
 		}
 		
 //		if( (modifiers & NSControlKeyMask) && (modifiers & NSAlternateKeyMask) && (modifiers & NSCommandKeyMask))
@@ -4200,13 +4201,25 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				if( [self is2DViewer] == YES)
 					[[self windowController] setKeyImage: self];
 			}
+            else if( clickCount > 1 && ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSAlternateKeyMask))
+			{
+				if( stringID == nil)
+                {
+                    if( [self is2DViewer] == YES)
+                        [[self windowController] showCurrentThumbnail: self];
+                    
+					if( roiHit == NO && [self roiTool: currentTool] == NO)
+                        [self sync3DPosition];
+                }
+			}
 			else if( clickCount > 1 && stringID == nil)
 			{
 				if( [self is2DViewer] == YES)
+                {
 					[[self windowController] showCurrentThumbnail: self];
 					
-				if( roiHit == NO && [self roiTool: currentTool] == NO)
-					[self sync3DPosition];
+                    [[self windowController] fullScreenMenu: self];
+                }
 			}
 			
 			crossMove = -1;
@@ -6882,7 +6895,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                         [[self curDCM] orientation:orientA];
                         [[otherView curDCM] orientation:orientB];
                         
-                        float planeTolerance = [[NSUserDefaults standardUserDefaults] floatForKey: @"PARALLELPLANETOLERANCE"];
+                        float planeTolerance = [[NSUserDefaults standardUserDefaults] floatForKey: @"PARALLELPLANETOLERANCE-Sync"]; //We don't need to be very strict :
                         
                         if( syncSeriesIndex != -1) // Manual Sync !
                             planeTolerance = 0.78; // 0.78 is about 45 degrees
