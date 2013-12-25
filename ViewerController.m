@@ -6718,11 +6718,18 @@ return YES;
 -(void) setDefaultTool:(id) sender
 {
 	[imageView gClickCountSetReset];
-
+    
+    int ctag = 0;
+    
+    if ([sender isKindOfClass:[NSMatrix class]])
+        ctag = [[sender selectedCell] tag];
+    else
+        ctag = [sender tag];
+    
 	if( [[buttonToolMatrix selectedCell] tag] == 0)
-		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixDefaultToolModifiedNotification object:sender userInfo: nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixDefaultToolModifiedNotification object:sender userInfo: [NSDictionary dictionaryWithObjectsAndKeys: @(ctag), @"toolIndex", nil]];
 	else
-		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixDefaultRightToolModifiedNotification object:sender userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixDefaultRightToolModifiedNotification object:sender userInfo: [NSDictionary dictionaryWithObjectsAndKeys: @(ctag), @"toolIndex", nil]];
 }
 
 - (void) setShutterOnOffButton:(NSNumber*) b

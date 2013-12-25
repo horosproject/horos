@@ -1254,6 +1254,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						[curRoiList removeObject: curROI];
 					}
 					@catch (NSException * e) {}
+                    
+                    [[NSNotificationCenter defaultCenter] postNotificationName:OsirixROIRemovedFromArrayNotification object:NULL userInfo:NULL];
 				}
 				
 				[curROI release];
@@ -3014,7 +3016,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[drawLock lock];
 	
 	@try 
-	{		
+	{
 		for( int i=0; i<[curRoiList count]; i++ )
 		{
 			if([[curRoiList objectAtIndex:i] groupID] == groupID)
@@ -3022,6 +3024,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				[[NSNotificationCenter defaultCenter] postNotificationName:OsirixRemoveROINotification object:[curRoiList objectAtIndex:i] userInfo:nil];
 				[curRoiList removeObjectAtIndex:i];
 				i--;
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:OsirixROIRemovedFromArrayNotification object:NULL userInfo:NULL];
 			}
 		}
 	}
@@ -3312,15 +3316,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					}
 				}
 				
-				for( long i = 0; i < [curRoiList count]; i++)
-				{
-					if( [[curRoiList objectAtIndex: i] valid] == NO)
-					{
-						[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object: [curRoiList objectAtIndex:i] userInfo: nil];
-						[curRoiList removeObjectAtIndex: i];
-						i--;
-					}
-				}
+				[self deleteInvalidROIs];
 				
 				[self setNeedsDisplay:YES];
 			}
@@ -4093,6 +4089,31 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 }
 
+- (void) deleteInvalidROIs
+{
+    for( int x = 0; x < [dcmRoiList count]; x++ )
+    {
+        for( int i = 0; i < [[dcmRoiList objectAtIndex: x] count]; i++)
+        {
+            if( [[[dcmRoiList objectAtIndex: x] objectAtIndex: i] valid] == NO)
+            {
+                if( curROI == [curRoiList objectAtIndex: i])
+                {
+                    [curROI release];
+                    curROI = nil;
+                    drawingROI = NO;
+                }
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object: [[dcmRoiList objectAtIndex: x] objectAtIndex: i] userInfo: nil];
+                [[dcmRoiList objectAtIndex: x] removeObjectAtIndex: i];
+                i--;
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:OsirixROIRemovedFromArrayNotification object:NULL userInfo:NULL];
+            }
+        }
+    }
+}
+
 - (void) mouseDown:(NSEvent *)event
 {
     if( CGCursorIsVisible() == NO && lensTexture == nil) return; //For Synergy compatibility
@@ -4218,7 +4239,16 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                 {
 					[[self windowController] showCurrentThumbnail: self];
 					
-                    [[self windowController] fullScreenMenu: self];
+                    [self deleteInvalidROIs];
+                    
+                    if( roiHit == NO && drawingROI == NO)
+                    {
+                        if( drawingROI == NO)
+                        {
+                            [[self windowController] fullScreenMenu: self];
+                            return;
+                        }
+                    }
                 }
 			}
 			
@@ -4690,19 +4720,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						}
 					}
 					
-					for( int x = 0; x < [dcmRoiList count]; x++ )
-					{
-						for( int i = 0; i < [[dcmRoiList objectAtIndex: x] count]; i++)
-						{
-							if( [[[dcmRoiList objectAtIndex: x] objectAtIndex: i] valid] == NO)
-							{
-								[[NSNotificationCenter defaultCenter] postNotificationName:OsirixRemoveROINotification object:[[dcmRoiList objectAtIndex:x] objectAtIndex:i] userInfo:NULL];
-								[[NSNotificationCenter defaultCenter] postNotificationName:OsirixROIRemovedFromArrayNotification object:NULL userInfo:NULL];
-								[[dcmRoiList objectAtIndex: x] removeObjectAtIndex: i];
-								i--;
-							}
-						}
-					}
+					[self deleteInvalidROIs];
 				}
 				@catch (NSException * e)
 				{

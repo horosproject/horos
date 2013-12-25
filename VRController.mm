@@ -2341,7 +2341,7 @@ return YES;
 			float sz = [[z2DPointsArray objectAtIndex:cur2DPointIndex] floatValue];
 			
 			NSLog( @"%f %f %f", sx, sy, sz);
-						
+            
 			if(	(x < sx + [firstDCMPix pixelSpacingX] && x > sx - [firstDCMPix pixelSpacingX]) &&
 				(y < sy + [firstDCMPix pixelSpacingY] && y > sy - [firstDCMPix pixelSpacingY]) &&
 				(z < sz + [firstDCMPix sliceInterval] && z > sz - [firstDCMPix sliceInterval]))
