@@ -40,9 +40,13 @@ static NSString *dragType = @"Osirix Series Viewer Drag";
     for (NSInteger i = 0; i <= maxIndex; ++i) {
         NSCell* cell = [cells objectAtIndex:i];
         O2ViewerThumbnailsMatrixRepresentedObject* oro = [cell representedObject];
-        if ([oro.object isKindOfClass:[NSManagedObject class]] || oro.children.count) {
+        
+        if( cell.action == @selector( matrixPreviewLoadAllSeries:))
+             rect.size.height = podCellHeight/2;
+        else if ([oro.object isKindOfClass:[NSManagedObject class]] || oro.children.count)
             rect.size.height = cellSize.height;
-        } else rect.size.height = podCellHeight;
+        else
+             rect.size.height = podCellHeight;
         
         rects[i] = rect;
         
@@ -206,21 +210,26 @@ static NSString *dragType = @"Osirix Series Viewer Drag";
     }
     while (lastMouse.type != NSLeftMouseUp && [start timeIntervalSinceNow] >= DRAGTIMEOUT);
     
-    id cell = [self.selectedCell retain];
+    id cell = self.selectedCell;
     
     @try {
-        [cell setHighlighted: NO];
         
         if( [start timeIntervalSinceNow] < DRAGTIMEOUT && [[[cell representedObject] object] isKindOfClass: [DicomSeries class]])
+        {
+            [cell setHighlighted: NO];
             [self startDrag: event];
+        }
         else
-            [[cell target] performSelector: [cell action] withObject: self];
+        {
+            if( [cell action] && [cell target])
+                [[cell target] performSelector: [cell action] withObject: self afterDelay: 0.001];
+            else
+                [cell setHighlighted: NO];
+        }
     }
     @catch (NSException *exception) {
         N2LogException( exception);
     }
-    
-    [cell autorelease];
 }
 
 - (NSRect)cellFrameAtRow:(NSInteger)row column:(NSInteger)col

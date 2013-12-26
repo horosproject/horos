@@ -5997,7 +5997,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                     
                     NSPoint tPt = [[points objectAtIndex: i+1] point];
                     
-                    glColor4f (0, 0, 0, 1);	[tex drawAtPoint:NSMakePoint((tPt.x+1 - offsetx) * scaleValue, (tPt.y+1- offsety) * scaleValue) ratio: 1];
+                    glColor4f (0, 0, 0, 1);	[tex drawAtPoint:NSMakePoint((tPt.x+1./scaleValue - offsetx) * scaleValue, (tPt.y+1./scaleValue- offsety) * scaleValue) ratio: 1];
                     glColor4f (1, 1, 0, 1);	[tex drawAtPoint:NSMakePoint((tPt.x- offsetx) * scaleValue, (tPt.y- offsety) * scaleValue) ratio: 1];
                 }
                 
