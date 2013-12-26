@@ -1343,7 +1343,7 @@ Gw
                 <constraint firstItem="1999" firstAttribute="baseline" secondItem="379" secondAttribute="baseline" id="FbE-6e-QEC"/>
                 <constraint firstItem="373" firstAttribute="top" secondItem="398" secondAttribute="top" id="O9s-M4-QEt"/>
                 <constraint firstItem="2619" firstAttribute="baseline" secondItem="398" secondAttribute="baseline" id="RQq-98-Fqp"/>
-                <constraint firstAttribute="trailing" secondItem="379" secondAttribute="trailing" constant="7" id="kg5-Rk-csV"/>
+                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="379" secondAttribute="trailing" constant="7" id="kg5-Rk-csV"/>
                 <constraint firstItem="398" firstAttribute="leading" secondItem="372" secondAttribute="leading" constant="-4" id="nfi-EH-DlC"/>
                 <constraint firstItem="373" firstAttribute="top" secondItem="379" secondAttribute="bottom" constant="2" id="p34-Ck-iGK"/>
                 <constraint firstAttribute="trailing" secondItem="2619" secondAttribute="trailing" constant="1" id="slo-7h-tj6"/>
