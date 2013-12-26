@@ -4818,7 +4818,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                     if( [s isHidden] == NO)
                         i += [[seriesArray lastObject] count];
                     
-                    i++; // show / hide button
+//                    i++; // display all button
                 }
                 #ifndef OSIRIX_LIGHT
                 else if( [s isKindOfClass: [DCMTKStudyQueryNode class]]) //Distant Study DCMTKQueryStudyNode
@@ -4994,23 +4994,23 @@ static volatile int numberOfThreadsForRelisce = 0;
                         [finalString setAlignment:NSCenterTextAlignment range: NSMakeRange( 0, finalString.length)];
                         [cell setAttributedTitle: finalString];
                         
-                        index++;
-                        
-                        {
-                            cell = [previewMatrix cellAtRow: index column:0];
-                            
-                            [cell setRepresentedObject:[O2ViewerThumbnailsMatrixRepresentedObject object:curStudy children: nil]];
-                            [cell setAction: @selector(matrixPreviewLoadAllSeries:)];
-                            xxxxxx
-                            NSMutableAttributedString *finalString = [[[NSMutableAttributedString alloc] initWithString: NSLocalizedString(@"All series", nil)] autorelease];
-                            
-                            NSMutableDictionary *attribs = [NSMutableDictionary dictionary];
-                            [attribs setObject: [NSFont boldSystemFontOfSize: [[BrowserController currentBrowser] fontSize: @"dbSmallMatrixFont"]] forKey: NSFontAttributeName];
-                            [finalString setAttributes: attribs range: NSMakeRange( 0, finalString.length)];
-                            
-                            [finalString setAlignment:NSCenterTextAlignment range: NSMakeRange( 0, finalString.length)];
-                            [cell setAttributedTitle: finalString];
-                        }
+//                        index++;
+//                        
+//                        {
+//                            cell = [previewMatrix cellAtRow: index column:0];
+//                            
+//                            [cell setRepresentedObject:[O2ViewerThumbnailsMatrixRepresentedObject object:curStudy children: nil]];
+//                            [cell setAction: @selector(matrixPreviewLoadAllSeries:)];
+//                            xxxxxx
+//                            NSMutableAttributedString *finalString = [[[NSMutableAttributedString alloc] initWithString: NSLocalizedString(@"All series", nil)] autorelease];
+//                            
+//                            NSMutableDictionary *attribs = [NSMutableDictionary dictionary];
+//                            [attribs setObject: [NSFont boldSystemFontOfSize: [[BrowserController currentBrowser] fontSize: @"dbSmallMatrixFont"]] forKey: NSFontAttributeName];
+//                            [finalString setAttributes: attribs range: NSMakeRange( 0, finalString.length)];
+//                            
+//                            [finalString setAlignment:NSCenterTextAlignment range: NSMakeRange( 0, finalString.length)];
+//                            [cell setAttributedTitle: finalString];
+//                        }
                     }
                     @catch (NSException *exception) {
                         N2LogException( exception);
