@@ -323,7 +323,7 @@
             <rect key="frame" x="0.0" y="0.0" width="132" height="43"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
-                <button translatesAutoresizingMaskIntoConstraints="NO" id="1227">
+                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="1227">
                     <rect key="frame" x="-3" y="23" width="49" height="18"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
                     <buttonCell key="cell" type="check" title="Loop" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="2112">
@@ -2013,9 +2013,12 @@ Gw
             <rect key="frame" x="0.0" y="0.0" width="60" height="33"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
-                <button toolTip="Next Series (Apple + right arrow)" fixedFrame="YES" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="539">
+                <button toolTip="Next Series (Apple + right arrow)" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="539">
                     <rect key="frame" x="29" y="-1" width="32" height="34"/>
                     <autoresizingMask key="autoresizingMask"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="28" id="gNt-Bl-fyh"/>
+                    </constraints>
                     <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="Next" imagePosition="only" alignment="center" borderStyle="border" tag="1" imageScaling="proportionallyUpOrDown" inset="2" id="2180">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" size="10" name="LucidaGrande"/>
@@ -2025,9 +2028,13 @@ Gw
                         <action selector="loadSerie:" target="-2" id="541"/>
                     </connections>
                 </button>
-                <button toolTip="Previous Series (Apple + left arrow)" fixedFrame="YES" tag="-1" translatesAutoresizingMaskIntoConstraints="NO" id="538">
+                <button toolTip="Previous Series (Apple + left arrow)" tag="-1" translatesAutoresizingMaskIntoConstraints="NO" id="538">
                     <rect key="frame" x="0.0" y="-1" width="32" height="34"/>
                     <autoresizingMask key="autoresizingMask"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="29" id="BYt-tA-bNb"/>
+                        <constraint firstAttribute="width" constant="28" id="CkC-Io-O9R"/>
+                    </constraints>
                     <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="Prev" imagePosition="only" alignment="center" borderStyle="border" tag="-1" imageScaling="proportionallyUpOrDown" inset="2" id="2179">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" size="10" name="LucidaGrande"/>
@@ -2038,6 +2045,13 @@ Gw
                     </connections>
                 </button>
             </subviews>
+            <constraints>
+                <constraint firstItem="539" firstAttribute="centerY" secondItem="537" secondAttribute="centerY" id="1kA-8v-ohC"/>
+                <constraint firstItem="539" firstAttribute="bottom" secondItem="538" secondAttribute="bottom" id="6Xc-XS-L4c"/>
+                <constraint firstItem="538" firstAttribute="leading" secondItem="537" secondAttribute="leading" constant="2" id="VK8-KN-7uG"/>
+                <constraint firstItem="539" firstAttribute="leading" secondItem="538" secondAttribute="trailing" constant="1" id="b4y-qI-rRI"/>
+                <constraint firstItem="538" firstAttribute="top" secondItem="539" secondAttribute="top" id="bME-nI-9Qg"/>
+            </constraints>
         </customView>
         <window title="Modify pixels value" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="665" userLabel="RoiSetPixelValue">
             <windowStyleMask key="styleMask" titled="YES"/>
@@ -2528,9 +2542,13 @@ DQ
             <rect key="frame" x="0.0" y="0.0" width="50" height="36"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
-                <popUpButton fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="738">
+                <popUpButton translatesAutoresizingMaskIntoConstraints="NO" id="738">
                     <rect key="frame" x="0.0" y="1" width="48" height="35"/>
                     <autoresizingMask key="autoresizingMask"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="44" id="ocs-JR-Cns"/>
+                        <constraint firstAttribute="height" constant="30" id="p9W-9h-iKz"/>
+                    </constraints>
                     <popUpButtonCell key="cell" type="bevel" bezelStyle="regularSquare" imagePosition="right" alignment="center" controlSize="small" lineBreakMode="clipping" borderStyle="borderAndBezel" imageScaling="proportionallyUpOrDown" inset="2" pullsDown="YES" preferredEdge="maxY" selectedItem="741" id="2197">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="menu"/>
@@ -2580,6 +2598,10 @@ DQ
                     </popUpButtonCell>
                 </popUpButton>
             </subviews>
+            <constraints>
+                <constraint firstItem="738" firstAttribute="leading" secondItem="737" secondAttribute="leading" constant="2" id="WzK-N6-E04"/>
+                <constraint firstItem="738" firstAttribute="top" secondItem="737" secondAttribute="top" constant="2" id="uuu-xD-LZj"/>
+            </constraints>
         </customView>
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="761" userLabel="Thickness/Interval">
             <windowStyleMask key="styleMask" titled="YES"/>
@@ -3872,9 +3894,12 @@ Gw
             <rect key="frame" x="0.0" y="0.0" width="60" height="33"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
-                <button fixedFrame="YES" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="1033">
+                <button tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="1033">
                     <rect key="frame" x="29" y="-1" width="32" height="34"/>
                     <autoresizingMask key="autoresizingMask"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="28" id="8PN-Qu-0yC"/>
+                    </constraints>
                     <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="Next" imagePosition="only" alignment="center" borderStyle="border" tag="1" imageScaling="proportionallyUpOrDown" inset="2" id="2273">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" size="10" name="LucidaGrande"/>
@@ -3884,9 +3909,13 @@ Gw
                         <action selector="loadPatient:" target="-2" id="1038"/>
                     </connections>
                 </button>
-                <button fixedFrame="YES" tag="-1" translatesAutoresizingMaskIntoConstraints="NO" id="1032">
+                <button tag="-1" translatesAutoresizingMaskIntoConstraints="NO" id="1032">
                     <rect key="frame" x="0.0" y="-1" width="32" height="34"/>
                     <autoresizingMask key="autoresizingMask"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="29" id="45V-jK-39g"/>
+                        <constraint firstAttribute="width" constant="28" id="d1s-OO-jMS"/>
+                    </constraints>
                     <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="Prev" imagePosition="only" alignment="center" borderStyle="border" tag="-1" imageScaling="proportionallyUpOrDown" inset="2" id="2272">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" size="10" name="LucidaGrande"/>
@@ -3897,12 +3926,19 @@ Gw
                     </connections>
                 </button>
             </subviews>
+            <constraints>
+                <constraint firstItem="1032" firstAttribute="centerY" secondItem="1031" secondAttribute="centerY" id="7nH-f3-RLI"/>
+                <constraint firstItem="1032" firstAttribute="leading" secondItem="1031" secondAttribute="leading" constant="2" id="HkM-hR-ysL"/>
+                <constraint firstItem="1033" firstAttribute="leading" secondItem="1032" secondAttribute="trailing" constant="1" id="RMW-os-Xa2"/>
+                <constraint firstItem="1032" firstAttribute="top" secondItem="1033" secondAttribute="top" id="Rib-tL-wVJ"/>
+                <constraint firstItem="1033" firstAttribute="bottom" secondItem="1032" secondAttribute="bottom" id="dZR-To-ubN"/>
+            </constraints>
         </customView>
         <customView id="1052" userLabel="Status&amp;Comments">
             <rect key="frame" x="0.0" y="0.0" width="125" height="36"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
-                <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1083">
+                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1083">
                     <rect key="frame" x="2" y="1" width="122" height="18"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" alignment="center" controlSize="mini" lineBreakMode="clipping" borderStyle="border" inset="2" id="2275">
@@ -3913,7 +3949,7 @@ Gw
                         <action selector="setComments:" target="-2" id="1085"/>
                     </connections>
                 </button>
-                <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1053">
+                <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1053">
                     <rect key="frame" x="1" y="20" width="124" height="15"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" controlSize="mini" lineBreakMode="clipping" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" id="2274">
@@ -3934,6 +3970,15 @@ Gw
                     </connections>
                 </popUpButton>
             </subviews>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="1083" secondAttribute="trailing" constant="1" id="3yC-3M-cTe"/>
+                <constraint firstItem="1053" firstAttribute="leading" secondItem="1083" secondAttribute="leading" id="6JV-6c-LVF"/>
+                <constraint firstItem="1053" firstAttribute="centerX" secondItem="1052" secondAttribute="centerX" id="G5Q-iu-AZs"/>
+                <constraint firstAttribute="bottom" secondItem="1083" secondAttribute="bottom" constant="2" id="PoF-YY-icb"/>
+                <constraint firstItem="1083" firstAttribute="top" secondItem="1053" secondAttribute="bottom" constant="2" id="bkv-fe-Q7h"/>
+                <constraint firstItem="1053" firstAttribute="leading" secondItem="1052" secondAttribute="leading" constant="2" id="uWj-ln-anl"/>
+                <constraint firstAttribute="bottom" secondItem="1053" secondAttribute="bottom" constant="20" symbolic="YES" id="vL1-Dh-SbK"/>
+            </constraints>
         </customView>
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="1071" userLabel="SetComments">
             <windowStyleMask key="styleMask" titled="YES"/>
@@ -5140,9 +5185,13 @@ Gw
             <rect key="frame" x="0.0" y="0.0" width="58" height="43"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
-                <popUpButton fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1710">
+                <popUpButton translatesAutoresizingMaskIntoConstraints="NO" id="1710">
                     <rect key="frame" x="-3" y="5" width="58" height="35"/>
                     <autoresizingMask key="autoresizingMask"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="58" id="keM-Xl-p5E"/>
+                        <constraint firstAttribute="height" constant="35" id="sT2-XS-PUY"/>
+                    </constraints>
                     <popUpButtonCell key="cell" type="square" bezelStyle="shadowlessSquare" imagePosition="only" alignment="left" borderStyle="bezel" inset="2" pullsDown="YES" preferredEdge="maxY" selectedItem="1712" id="2338">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="menu"/>
@@ -5202,14 +5251,22 @@ Gw
                     </connections>
                 </popUpButton>
             </subviews>
+            <constraints>
+                <constraint firstItem="1710" firstAttribute="leading" secondItem="1684" secondAttribute="leading" constant="-3" id="Oyo-aY-cKU"/>
+                <constraint firstItem="1710" firstAttribute="top" secondItem="1684" secondAttribute="top" constant="3" id="ZeA-H3-tXy"/>
+            </constraints>
         </customView>
         <customView id="1739" userLabel="shutter">
             <rect key="frame" x="0.0" y="0.0" width="35" height="35"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
-                <button toolTip="Shutter blacking out the outside of a selected ROI rectangle" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1740">
+                <button toolTip="Shutter blacking out the outside of a selected ROI rectangle" translatesAutoresizingMaskIntoConstraints="NO" id="1740">
                     <rect key="frame" x="1" y="1" width="31" height="32"/>
                     <autoresizingMask key="autoresizingMask"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="27" id="L6a-SI-jea"/>
+                        <constraint firstAttribute="height" constant="27" id="gtm-Ij-6Gv"/>
+                    </constraints>
                     <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="Shutter" imagePosition="only" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="2339">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
                         <font key="font" size="10" name="LucidaGrande"/>
@@ -5219,17 +5276,25 @@ Gw
                     </connections>
                 </button>
             </subviews>
+            <constraints>
+                <constraint firstItem="1740" firstAttribute="leading" secondItem="1739" secondAttribute="leading" constant="3" id="OcB-IN-d8t"/>
+                <constraint firstItem="1740" firstAttribute="centerY" secondItem="1739" secondAttribute="centerY" id="TL5-i8-OC3"/>
+            </constraints>
         </customView>
         <customView id="1750" userLabel="PagesReportTemplates">
             <rect key="frame" x="0.0" y="0.0" width="40" height="32"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
-                <imageView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1755">
+                <imageView translatesAutoresizingMaskIntoConstraints="NO" id="1755">
                     <rect key="frame" x="0.0" y="0.0" width="32" height="32"/>
                     <autoresizingMask key="autoresizingMask"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="32" id="OIe-5u-UFa"/>
+                        <constraint firstAttribute="height" constant="32" id="z3Y-mn-oFL"/>
+                    </constraints>
                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="axesIndependently" image="ReportPages" id="2341"/>
                 </imageView>
-                <popUpButton fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1752">
+                <popUpButton translatesAutoresizingMaskIntoConstraints="NO" id="1752">
                     <rect key="frame" x="-10" y="0.0" width="53" height="32"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <popUpButtonCell key="cell" type="square" bezelStyle="shadowlessSquare" imagePosition="only" alignment="left" borderStyle="bezel" inset="2" pullsDown="YES" preferredEdge="maxY" selectedItem="1754" id="2340">
@@ -5243,14 +5308,25 @@ Gw
                     </popUpButtonCell>
                 </popUpButton>
             </subviews>
+            <constraints>
+                <constraint firstItem="1752" firstAttribute="leading" secondItem="1750" secondAttribute="leading" constant="-10" id="6pC-Sa-RQm"/>
+                <constraint firstItem="1752" firstAttribute="top" secondItem="1755" secondAttribute="top" id="70r-cY-s4E"/>
+                <constraint firstItem="1755" firstAttribute="leading" secondItem="1750" secondAttribute="leading" id="7jW-gs-QMW"/>
+                <constraint firstItem="1752" firstAttribute="centerX" secondItem="1755" secondAttribute="centerX" id="9jf-Vd-fSR"/>
+                <constraint firstItem="1755" firstAttribute="top" secondItem="1750" secondAttribute="top" id="Qgr-JT-DVr"/>
+                <constraint firstItem="1755" firstAttribute="bottom" secondItem="1752" secondAttribute="bottom" id="TLR-hU-ue7"/>
+            </constraints>
         </customView>
         <customView id="1769" userLabel="Orientation">
             <rect key="frame" x="0.0" y="0.0" width="113" height="53"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
-                <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1961">
+                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1961">
                     <rect key="frame" x="3" y="3" width="107" height="47"/>
                     <autoresizingMask key="autoresizingMask"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="47" id="Chz-6r-s7s"/>
+                    </constraints>
                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     <size key="cellSize" width="36" height="45"/>
                     <size key="intercellSpacing" width="-1" height="-1"/>
@@ -5283,14 +5359,23 @@ Gw
                     </connections>
                 </matrix>
             </subviews>
+            <constraints>
+                <constraint firstItem="1961" firstAttribute="centerX" secondItem="1769" secondAttribute="centerX" id="RP1-ZP-3ve"/>
+                <constraint firstItem="1961" firstAttribute="leading" secondItem="1769" secondAttribute="leading" constant="3" id="gTC-bz-hYc"/>
+                <constraint firstItem="1961" firstAttribute="centerY" secondItem="1769" secondAttribute="centerY" id="ha7-Hs-8rD"/>
+            </constraints>
         </customView>
         <customView id="2536" userLabel="WindowsTiling">
             <rect key="frame" x="0.0" y="0.0" width="74" height="49"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
-                <popUpButton fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2552">
+                <popUpButton translatesAutoresizingMaskIntoConstraints="NO" id="2552">
                     <rect key="frame" x="4" y="2" width="62" height="44"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="58" id="10x-cJ-cAd"/>
+                        <constraint firstAttribute="height" constant="39" id="3Ef-0r-65D"/>
+                    </constraints>
                     <popUpButtonCell key="cell" type="bevel" bezelStyle="regularSquare" imagePosition="only" alignment="left" lineBreakMode="truncatingTail" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="2553">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                         <font key="font" metaFont="menu"/>
@@ -5323,12 +5408,16 @@ Gw
                     </popUpButtonCell>
                 </popUpButton>
             </subviews>
+            <constraints>
+                <constraint firstItem="2552" firstAttribute="leading" secondItem="2536" secondAttribute="leading" constant="6" id="PaP-1u-cQK"/>
+                <constraint firstItem="2552" firstAttribute="centerY" secondItem="2536" secondAttribute="centerY" id="gyS-uB-ste"/>
+            </constraints>
         </customView>
         <customView id="2622" userLabel="SeriesSelection">
             <rect key="frame" x="0.0" y="0.0" width="74" height="49"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
-                <popUpButton fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2623">
+                <popUpButton translatesAutoresizingMaskIntoConstraints="NO" id="2623">
                     <rect key="frame" x="4" y="2" width="62" height="44"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <popUpButtonCell key="cell" type="bevel" bezelStyle="regularSquare" imagePosition="only" alignment="left" lineBreakMode="truncatingTail" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="2624">
@@ -5357,6 +5446,12 @@ Gw
                     </popUpButtonCell>
                 </popUpButton>
             </subviews>
+            <constraints>
+                <constraint firstItem="2623" firstAttribute="centerY" secondItem="2622" secondAttribute="centerY" id="1Fi-Sa-ZQz"/>
+                <constraint firstItem="2623" firstAttribute="top" secondItem="2622" secondAttribute="top" constant="5" id="Xfx-mM-K2s"/>
+                <constraint firstAttribute="trailing" secondItem="2623" secondAttribute="trailing" constant="10" id="dJW-Z0-aXq"/>
+                <constraint firstItem="2623" firstAttribute="leading" secondItem="2622" secondAttribute="leading" constant="6" id="tI0-Er-One"/>
+            </constraints>
         </customView>
         <customView id="2577" userLabel="Annotations">
             <rect key="frame" x="0.0" y="0.0" width="64" height="48"/>
@@ -5903,9 +5998,12 @@ Gw
             <rect key="frame" x="0.0" y="0.0" width="34" height="33"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
-                <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1981">
+                <button translatesAutoresizingMaskIntoConstraints="NO" id="1981">
                     <rect key="frame" x="2" y="2" width="30" height="32"/>
                     <autoresizingMask key="autoresizingMask"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="30" id="nBW-i3-HXH"/>
+                    </constraints>
                     <buttonCell key="cell" type="squareTextured" bezelStyle="texturedSquare" image="Propagate" imagePosition="only" alignment="center" alternateImage="PropagateOn" inset="2" id="2362">
                         <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
                         <font key="font" size="10" name="LucidaGrande"/>
@@ -5915,6 +6013,10 @@ Gw
                     </connections>
                 </button>
             </subviews>
+            <constraints>
+                <constraint firstItem="1981" firstAttribute="top" secondItem="1975" secondAttribute="top" constant="-1" id="GiL-uy-qve"/>
+                <constraint firstItem="1981" firstAttribute="centerX" secondItem="1975" secondAttribute="centerX" id="OcL-ec-7Yf"/>
+            </constraints>
         </customView>
         <userDefaultsController representsSharedInstance="YES" id="1977" userLabel="Shared Defaults"/>
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="2019" userLabel="roiApply">
@@ -6047,8 +6149,8 @@ Gw
                 </matrix>
             </subviews>
             <constraints>
-                <constraint firstItem="2442" firstAttribute="top" secondItem="2424" secondAttribute="top" id="Qtz-Go-4Ax"/>
-                <constraint firstItem="2442" firstAttribute="leading" secondItem="2424" secondAttribute="leading" id="rpl-bd-6LO"/>
+                <constraint firstItem="2442" firstAttribute="leading" secondItem="2424" secondAttribute="leading" id="B9V-sP-r52"/>
+                <constraint firstItem="2442" firstAttribute="top" secondItem="2424" secondAttribute="top" id="Zr2-FR-26b"/>
             </constraints>
         </customView>
         <window title="Injection Date and Time" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="2499" userLabel="SetDate">

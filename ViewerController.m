@@ -6429,6 +6429,11 @@ static ViewerController *draggedController = nil;
         }
     }
     
+//    [toolbarItem setMinSize: NSMakeSize( toolbarItem.minSize.width, 53)];
+//    [toolbarItem setMaxSize: NSMakeSize( toolbarItem.maxSize.width, 53)];
+//    
+//    [toolbarItem.view setFrameSize: NSMakeSize( toolbarItem.view.frame.size.width, 53)];
+    
     return toolbarItem;
 }
 
