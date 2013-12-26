@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13B35" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13B42" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
@@ -22,7 +22,7 @@
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="329" y="257" width="538" height="292"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
             <value key="minSize" type="size" width="213" height="107"/>
             <view key="contentView" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="538" height="292"/>
@@ -40,15 +40,15 @@
                         </buttonCell>
                         <cells>
                             <column>
-                                <buttonCell type="radio" title="All images" imagePosition="left" alignment="left" state="on" inset="2" id="32">
+                                <buttonCell type="radio" title="All images" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="32">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="Only key images" imagePosition="left" alignment="left" tag="1" inset="2" id="34">
+                                <buttonCell type="radio" title="Only key images" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" tag="1" inset="2" id="34">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="Only Secondary Captures (SC)" imagePosition="left" alignment="left" tag="2" inset="2" id="33">
+                                <buttonCell type="radio" title="Only Secondary Captures (SC)" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" tag="2" inset="2" id="33">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
@@ -59,8 +59,11 @@
                         </connections>
                     </matrix>
                     <button verticalHuggingPriority="750" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="38">
-                        <rect key="frame" x="453" y="13" width="71" height="32"/>
+                        <rect key="frame" x="427" y="13" width="97" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <constraints>
+                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="85" id="TOP-wv-0Oj"/>
+                        </constraints>
                         <buttonCell key="cell" type="push" title="Send" bezelStyle="rounded" alignment="center" borderStyle="border" tag="1" inset="2" id="102">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -73,8 +76,11 @@ DQ
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="7">
-                        <rect key="frame" x="360" y="13" width="82" height="32"/>
+                        <rect key="frame" x="319" y="13" width="97" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <constraints>
+                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="85" id="ats-fd-dzc"/>
+                        </constraints>
                         <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="95">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -182,7 +188,7 @@ Gw
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="90">
                         <rect key="frame" x="185" y="59" width="253" height="18"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <buttonCell key="cell" type="check" title="Include ROIs, Comments, Reports, ..." bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="105">
+                        <buttonCell key="cell" type="check" title="Include ROIs, Comments, Reports, ..." bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="105">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
@@ -255,7 +261,6 @@ Gw
                     <constraint firstItem="30" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="6" secondAttribute="leading" constant="16" id="7sV-Iz-KaV"/>
                     <constraint firstItem="7" firstAttribute="top" secondItem="90" secondAttribute="bottom" constant="20" symbolic="YES" id="7us-n3-12B"/>
                     <constraint firstItem="38" firstAttribute="leading" secondItem="7" secondAttribute="trailing" constant="23" id="COI-JL-sVh"/>
-                    <constraint firstItem="7" firstAttribute="trailing" secondItem="90" secondAttribute="trailing" id="FDF-1R-OLJ"/>
                     <constraint firstItem="37" firstAttribute="trailing" secondItem="91" secondAttribute="trailing" id="FjO-ZQ-Bsa"/>
                     <constraint firstItem="11" firstAttribute="leading" secondItem="108" secondAttribute="leading" id="Gdu-PM-4OO"/>
                     <constraint firstItem="108" firstAttribute="top" secondItem="36" secondAttribute="bottom" constant="12" id="Gg6-Pu-iR5"/>
