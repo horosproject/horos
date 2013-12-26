@@ -267,19 +267,19 @@
                 <rect key="frame" x="0.0" y="0.0" width="335" height="238"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1223">
+                    <customView translatesAutoresizingMaskIntoConstraints="NO" id="1223">
                         <rect key="frame" x="0.0" y="0.0" width="335" height="238"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="941" customClass="StudyView">
+                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="941" customClass="StudyView">
                                 <rect key="frame" x="0.0" y="0.0" width="334" height="222"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             </customView>
-                            <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2604">
+                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="2604">
                                 <rect key="frame" x="0.0" y="223" width="334" height="15"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <subviews>
-                                    <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="11">
+                                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="11">
                                         <rect key="frame" x="0.0" y="-1" width="332" height="16"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                         <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" maxValue="100" doubleValue="45.45454545454546" tickMarkPosition="below" numberOfTickMarks="100" allowsTickMarkValuesOnly="YES" sliderType="linear" id="2109"/>
@@ -288,10 +288,32 @@
                                         </connections>
                                     </slider>
                                 </subviews>
+                                <constraints>
+                                    <constraint firstItem="11" firstAttribute="leading" secondItem="2604" secondAttribute="leading" id="6V0-t0-3jb"/>
+                                    <constraint firstAttribute="trailing" secondItem="11" secondAttribute="trailing" constant="2" id="Tjg-5P-1rP"/>
+                                    <constraint firstItem="11" firstAttribute="centerY" secondItem="2604" secondAttribute="centerY" id="Ygu-va-EvK"/>
+                                    <constraint firstItem="11" firstAttribute="top" secondItem="2604" secondAttribute="top" id="z2K-bj-zTQ"/>
+                                </constraints>
                             </customView>
                         </subviews>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="941" secondAttribute="bottom" id="Ecr-xW-3gE"/>
+                            <constraint firstItem="941" firstAttribute="top" secondItem="2604" secondAttribute="bottom" constant="1" id="Qz4-xK-xsQ"/>
+                            <constraint firstItem="941" firstAttribute="top" secondItem="1223" secondAttribute="top" constant="16" id="ZG3-wn-eQ3"/>
+                            <constraint firstItem="2604" firstAttribute="top" secondItem="1223" secondAttribute="top" id="cgz-K8-kw6"/>
+                            <constraint firstItem="2604" firstAttribute="trailing" secondItem="941" secondAttribute="trailing" id="gv3-2S-Ezg"/>
+                            <constraint firstItem="2604" firstAttribute="leading" secondItem="1223" secondAttribute="leading" id="icO-VS-y3f"/>
+                            <constraint firstItem="941" firstAttribute="centerX" secondItem="1223" secondAttribute="centerX" id="oCz-BX-kbL"/>
+                            <constraint firstItem="941" firstAttribute="leading" secondItem="2604" secondAttribute="leading" id="q4Z-6Y-VGY"/>
+                        </constraints>
                     </customView>
                 </subviews>
+                <constraints>
+                    <constraint firstAttribute="trailing" secondItem="1223" secondAttribute="trailing" id="7jf-nV-rlo"/>
+                    <constraint firstItem="1223" firstAttribute="leading" secondItem="6" secondAttribute="leading" id="Yvf-MW-sgP"/>
+                    <constraint firstAttribute="bottom" secondItem="1223" secondAttribute="bottom" id="ozg-Tp-NmA"/>
+                    <constraint firstItem="1223" firstAttribute="top" secondItem="6" secondAttribute="top" id="tK3-0n-2xh"/>
+                </constraints>
             </view>
             <connections>
                 <outlet property="delegate" destination="-2" id="1987"/>
@@ -1271,11 +1293,11 @@ Gw
                         <binding destination="-2" name="value" keyPath="self.thicknessInMm" id="2621"/>
                     </connections>
                 </textField>
-                <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="379">
+                <popUpButton verticalHuggingPriority="750" horizontalCompressionResistancePriority="749" translatesAutoresizingMaskIntoConstraints="NO" id="379">
                     <rect key="frame" x="51" y="23" width="152" height="15"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                     <constraints>
-                        <constraint firstAttribute="width" constant="149" id="Gqo-Bh-pab"/>
+                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="149" id="Gqo-Bh-pab"/>
                     </constraints>
                     <popUpButtonCell key="cell" type="push" title="MIP - Max Intensity Projection" bezelStyle="rounded" alignment="left" controlSize="mini" lineBreakMode="clipping" state="on" borderStyle="borderAndBezel" tag="2" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="377" id="2141">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
