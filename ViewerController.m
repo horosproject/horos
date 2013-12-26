@@ -4659,6 +4659,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
     if( [curStudy isKindOfClass: [DicomStudy class]]) //Local study
     {
+        if([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSCommandKeyMask)
+        {
+            [[BrowserController currentBrowser] databaseOpenStudy: curStudy];
+        }
+        else
+        {
         [curStudy setHidden: ![curStudy isHidden]];
         
         for( ViewerController *v in [ViewerController getDisplayed2DViewers])
@@ -4667,6 +4673,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                 [v buildMatrixPreview: NO];
             else
                 [v buildMatrixPreview: YES];
+        }
         }
     }
     #ifndef OSIRIX_LIGHT

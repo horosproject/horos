@@ -4229,7 +4229,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                     if( [self is2DViewer] == YES)
                         [[self windowController] showCurrentThumbnail: self];
                     
-					if( roiHit == NO && [self roiTool: currentTool] == NO)
+                    [self deleteInvalidROIs];
+                    
+					if( roiHit == NO && drawingROI == NO)
                         [self sync3DPosition];
                 }
 			}
