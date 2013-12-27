@@ -400,7 +400,7 @@ static int savedDisplayMode = 1;
                     else
                         [associatedScreen removeObjectForKey: [NSValue valueWithPointer: toolbar]];
                 }
-                
+                [[[self window] toolbar] setVisible: NO];
                 [[self window] setToolbar: toolbar];
                 
                 [[self window] setShowsToolbarButton:NO];

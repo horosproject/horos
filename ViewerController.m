@@ -3140,6 +3140,14 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[[AppController sharedAppController] performSelector: @selector(tileWindows:) withObject:nil afterDelay: 0.3];
 	}
 	
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
+    {
+        [previewMatrix renewRows:0 columns:0];
+        
+        for( int i = 0 ; i < [[NSScreen screens] count]; i++)
+			[thumbnailsListPanel[ i] thumbnailsListWillClose: previewMatrixScrollView];
+    }
+    
 	[[NSCursor arrowCursor] set];
 }
 
@@ -7690,8 +7698,6 @@ static int avoidReentryRefreshDatabase = 0;
     
     [[self window] setDelegate: nil];
 	
-    [previewMatrixScrollView setPostsBoundsChangedNotifications: NO];
-    [[[splitView subviews] objectAtIndex: 0] setPostsFrameChangedNotifications: NO];
     [splitView setDelegate: nil];
     [splitView release];
     splitView = nil;

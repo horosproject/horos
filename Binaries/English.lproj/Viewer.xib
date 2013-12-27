@@ -216,8 +216,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="100" height="261"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <matrix verticalHuggingPriority="750" fixedFrame="YES" selectionByRect="NO" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BFG-iu-aJ0" customClass="O2ViewerThumbnailsMatrix">
-                                <rect key="frame" x="0.0" y="0.0" width="100" height="120"/>
+                            <matrix verticalHuggingPriority="750" fixedFrame="YES" selectionByRect="NO" allowsEmptySelection="NO" autosizesCells="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BFG-iu-aJ0" customClass="O2ViewerThumbnailsMatrix">
+                                <rect key="frame" x="0.0" y="0.0" width="100" height="240"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="1" green="0.97530866000000005" blue="0.97530866000000005" alpha="1" colorSpace="calibratedRGB"/>
                                 <size key="cellSize" width="100" height="120"/>
@@ -311,8 +311,10 @@
                 <constraints>
                     <constraint firstAttribute="trailing" secondItem="1223" secondAttribute="trailing" id="7jf-nV-rlo"/>
                     <constraint firstItem="1223" firstAttribute="leading" secondItem="6" secondAttribute="leading" id="Yvf-MW-sgP"/>
+                    <constraint firstAttribute="centerX" secondItem="1223" secondAttribute="centerX" id="ibD-L7-UOr"/>
                     <constraint firstAttribute="bottom" secondItem="1223" secondAttribute="bottom" id="ozg-Tp-NmA"/>
                     <constraint firstItem="1223" firstAttribute="top" secondItem="6" secondAttribute="top" id="tK3-0n-2xh"/>
+                    <constraint firstAttribute="centerY" secondItem="1223" secondAttribute="centerY" id="wg3-ok-RPy"/>
                 </constraints>
             </view>
             <connections>
