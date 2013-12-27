@@ -22,4 +22,6 @@
 
 @property(readonly) BOOL rightClick;
 
++ (float) thumbnailCellWidth;
+
 @end

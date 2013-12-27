@@ -3430,6 +3430,8 @@ static volatile int numberOfThreadsForRelisce = 0;
         
         [[NSUserDefaults standardUserDefaults] setBool:previousPropagate forKey: @"COPYSETTINGS"];
         
+        [previewMatrix sizeToCells];
+        
 //        if( SavedUseFloatingThumbnailsList)
 //        {
 //            [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"UseFloatingThumbnailsList"];
@@ -3513,6 +3515,8 @@ static volatile int numberOfThreadsForRelisce = 0;
             
             FullScreenOn = YES;
         }
+        
+        [previewMatrix sizeToCells];
     }
 	
 	[self setUpdateTilingViewsValue : NO];
@@ -4298,12 +4302,10 @@ static volatile int numberOfThreadsForRelisce = 0;
         NSView* v = [[splitView subviews] objectAtIndex:0];
         [v setHidden:!visible];
         if (visible) {
-            NSRect f = v.frame; f.size.width = previewMatrix.cellSize.width;
+            NSRect f = v.frame; f.size.width = [ThumbnailCell thumbnailCellWidth];
             [v setFrame:f];
         }
         [splitView resizeSubviewsWithOldSize:splitView.bounds.size];
-        
-//        [previewMatrix setFrameSize: NSMakeSize( 100, previewMatrixScrollView.frame.size.height)];
         
         if( visible && needsToBuildSeriesMatrix)
             [self buildMatrixPreview: NO];
@@ -4495,6 +4497,8 @@ static volatile int numberOfThreadsForRelisce = 0;
     
     if (notification.object == splitView)
     {
+        [previewMatrix sizeToCells];
+        
         if ([[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOHIDEMATRIX"] == NO && FullScreenOn == NO)
         {
             NSDisableScreenUpdates();
@@ -4572,7 +4576,7 @@ static volatile int numberOfThreadsForRelisce = 0;
         if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
             return 0;
         
-		CGFloat rcs = previewMatrix.cellSize.width;
+		CGFloat rcs = [ThumbnailCell thumbnailCellWidth];
         
         NSScrollView* scrollView = previewMatrixScrollView;
         CGFloat scrollbarWidth = 0;
@@ -4632,7 +4636,7 @@ static volatile int numberOfThreadsForRelisce = 0;
     
     if( sender == splitView)
     {
-        CGFloat dividerPosition = [self matrixIsVisible]? previewMatrix.cellSize.width : 0;
+        CGFloat dividerPosition = [self matrixIsVisible]? [ThumbnailCell thumbnailCellWidth] : 0;
         dividerPosition = [self splitView:sender constrainSplitPosition:dividerPosition ofSubviewAt:0];
         
         NSRect splitFrame = [sender frame];
@@ -4873,9 +4877,12 @@ static volatile int numberOfThreadsForRelisce = 0;
             seriesArray = tseriesArray;
 #endif
 
-			
+			[previewMatrix setCellClass: [ThumbnailCell class]];
+            
 			if( [previewMatrix numberOfRows] != i+[studiesArray count])
 				[previewMatrix renewRows: i+[studiesArray count] columns: 1];
+            
+            [previewMatrix sizeToCells];
             
             for (NSButtonCell* cell in previewMatrix.cells) {
                 [cell setTransparent: NO];
@@ -7507,6 +7514,7 @@ return YES;
 {
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"] == NO)
     {
+        
         if( splitView == nil) { // For compatibility with old localized (without auto-layout) xibs....
             splitViewAllocated = YES;
         
@@ -7518,8 +7526,10 @@ return YES;
         }
         else
         {
-            previewMatrixScrollView = previewMatrixScrollViewInWindow;
-            previewMatrix = previewMatrixInWindow;
+            previewMatrix.translatesAutoresizingMaskIntoConstraints = NO;
+            splitView.translatesAutoresizingMaskIntoConstraints = NO;
+            
+            [splitView replaceSubview: [[splitView subviews] objectAtIndex: 0] with: previewMatrixScrollView];
         }
         [splitView setDelegate: self];
         [splitView adjustSubviews];
@@ -7528,16 +7538,14 @@ return YES;
             [self.window.contentView addSubview: splitView];
         
         [self setMatrixVisible: NO];
+        
+        [previewMatrix setCellClass: [ThumbnailCell class]];
+        [previewMatrix renewRows: 100 columns: 1];
+
         [self setMatrixVisible: YES];
     }
     
     [previewMatrix setIntercellSpacing:NSMakeSize(-1, -1)];
-    switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"dbFontSize"])
-    {
-        case -1:    [previewMatrix setCellSize: NSMakeSize( 100 * 0.8, 120 * 0.8)]; break;
-        case 0:    [previewMatrix setCellSize: NSMakeSize( 100, 120)]; break;
-        case 1:    [previewMatrix setCellSize: NSMakeSize( 100 * 1.3, 120 * 1.3)]; break;
-    }
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(observeScrollerStyleDidChangeNotification:) name:@"NSPreferredScrollerStyleDidChangeNotification" object:nil];
     [self observeScrollerStyleDidChangeNotification:nil];
