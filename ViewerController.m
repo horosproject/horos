@@ -4303,6 +4303,8 @@ static volatile int numberOfThreadsForRelisce = 0;
         }
         [splitView resizeSubviewsWithOldSize:splitView.bounds.size];
         
+//        [previewMatrix setFrameSize: NSMakeSize( 100, previewMatrixScrollView.frame.size.height)];
+        
         if( visible && needsToBuildSeriesMatrix)
             [self buildMatrixPreview: NO];
     }
@@ -4492,7 +4494,7 @@ static volatile int numberOfThreadsForRelisce = 0;
         return;
     
     if (notification.object == splitView)
-    {    
+    {
         if ([[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOHIDEMATRIX"] == NO && FullScreenOn == NO)
         {
             NSDisableScreenUpdates();
@@ -7505,17 +7507,25 @@ return YES;
 {
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"] == NO)
     {
-        splitView = [[NSSplitView alloc] initWithFrame: [self.window.contentView bounds]];
-        [splitView addSubview: previewMatrixScrollView];
-        [splitView addSubview: [[self.window.contentView subviews] lastObject]]; // First custom view -- see viewer.xib
-        [splitView setVertical: YES];
+        if( splitView == nil) { // For compatibility with old localized (without auto-layout) xibs....
+            splitViewAllocated = YES;
+        
+            splitView = [[NSSplitView alloc] initWithFrame: [self.window.contentView bounds]];
+            [splitView addSubview: previewMatrixScrollView];
+            [splitView addSubview: [[self.window.contentView subviews] lastObject]]; // First custom view -- see viewer.xib
+            [splitView setVertical: YES];
+            [splitView setAutoresizingMask: NSViewWidthSizable+NSViewHeightSizable];
+        }
+        else
+        {
+            previewMatrixScrollView = previewMatrixScrollViewInWindow;
+            previewMatrix = previewMatrixInWindow;
+        }
         [splitView setDelegate: self];
         [splitView adjustSubviews];
-        [splitView setAutoresizingMask: NSViewWidthSizable+NSViewHeightSizable];
         
-        [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"UseFloatingThumbnailsList"];
-        
-        [self.window.contentView addSubview: splitView];
+        if( splitViewAllocated)
+            [self.window.contentView addSubview: splitView];
         
         [self setMatrixVisible: NO];
         [self setMatrixVisible: YES];
@@ -7699,8 +7709,11 @@ static int avoidReentryRefreshDatabase = 0;
     [[self window] setDelegate: nil];
 	
     [splitView setDelegate: nil];
-    [splitView release];
-    splitView = nil;
+    if( splitViewAllocated)
+    {
+        [splitView release];
+        splitView = nil;
+    }
     
     NSArray *windows = [NSApp windows];
     

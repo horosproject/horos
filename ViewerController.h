@@ -72,11 +72,16 @@ enum
 
 	IBOutlet NSMatrix		*previewMatrix;
 	IBOutlet NSScrollView	*previewMatrixScrollView;
+    
+	IBOutlet NSMatrix		*previewMatrixInWindow;
+	IBOutlet NSScrollView	*previewMatrixScrollViewInWindow;
+    
 	BOOL					matrixPreviewBuilt;
 	float					highLighted;
 	NSTimer					*highLightedTimer;
     
-    NSSplitView             *splitView;
+    IBOutlet NSSplitView    *splitView;
+    BOOL                    splitViewAllocated;
 	
     IBOutlet NSWindow       *quicktimeWindow;
 	IBOutlet NSMatrix		*quicktimeMode;

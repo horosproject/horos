@@ -21,17 +21,16 @@
 #import "ThumbnailsListPanel.h"
 #import "N2Debug.h"
 
+#define FULLSIZEHEIGHT 120
+#define HALFSIZEHEIGHT 60
+#define SIZEWIDTH 100
+
 static NSString *dragType = @"Osirix Series Viewer Drag";
 
 @implementation O2ViewerThumbnailsMatrix // we overload NSMatrix, but this class isn't as capable as NSMatrix: we only support 1-column-wide matrixes! so, actually, this isn't a matrix, it's a list, but we still use NSMAtrix so we don't have to modify ViewerController
 
-- (CGFloat)podCellHeight {
-    return self.cellSize.height/2; // this probably will self.numberOfRowsbe changed
-}
-
 - (NSRect*)computeCellRectsForCells:(NSArray*)cells maxIndex:(NSInteger)maxIndex {
     NSSize cellSize = self.cellSize;
-    CGFloat podCellHeight = self.podCellHeight;
     
     NSMutableData* rectsmd = [NSMutableData dataWithLength:sizeof(NSRect)*(maxIndex+1)];
     NSRect* rects = (NSRect*)rectsmd.mutableBytes;
@@ -42,11 +41,13 @@ static NSString *dragType = @"Osirix Series Viewer Drag";
         O2ViewerThumbnailsMatrixRepresentedObject* oro = [cell representedObject];
         
         if( cell.action == @selector( matrixPreviewLoadAllSeries:))
-             rect.size.height = podCellHeight/2;
+             rect.size.height = HALFSIZEHEIGHT;
         else if ([oro.object isKindOfClass:[NSManagedObject class]] || oro.children.count)
-            rect.size.height = cellSize.height;
+            rect.size.height = FULLSIZEHEIGHT;
         else
-             rect.size.height = podCellHeight;
+             rect.size.height = HALFSIZEHEIGHT;
+        
+        rect.size.width = SIZEWIDTH;
         
         rects[i] = rect;
         

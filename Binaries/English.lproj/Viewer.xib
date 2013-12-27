@@ -102,7 +102,9 @@
                 <outlet property="popFusion" destination="379" id="403"/>
                 <outlet property="popupRoi" destination="580" id="588"/>
                 <outlet property="previewMatrix" destination="BFG-iu-aJ0" id="j4G-fi-HiK"/>
+                <outlet property="previewMatrixInWindow" destination="pJq-vL-uRh" id="rSA-NW-UYB"/>
                 <outlet property="previewMatrixScrollView" destination="cWT-gL-rls" id="3d1-S3-52W"/>
+                <outlet property="previewMatrixScrollViewInWindow" destination="bPx-bf-9GC" id="d3w-MT-ZHq"/>
                 <outlet property="printBox" destination="1868" id="1899"/>
                 <outlet property="printFormat" destination="1910" id="1918"/>
                 <outlet property="printFrom" destination="1877" id="1898"/>
@@ -166,6 +168,7 @@
                 <outlet property="speedSlider" destination="15" id="16"/>
                 <outlet property="speedText" destination="19" id="20"/>
                 <outlet property="speedView" destination="14" id="17"/>
+                <outlet property="splitView" destination="9c0-i7-FmJ" id="kMm-CF-cgH"/>
                 <outlet property="stacksFusion" destination="398" id="401"/>
                 <outlet property="structuringElementRadiusSlider" destination="1498" id="1503"/>
                 <outlet property="structuringElementRadiusTextField" destination="1495" id="1502"/>
@@ -216,7 +219,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="100" height="261"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <matrix verticalHuggingPriority="750" fixedFrame="YES" selectionByRect="NO" allowsEmptySelection="NO" autosizesCells="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BFG-iu-aJ0" customClass="O2ViewerThumbnailsMatrix">
+                            <matrix verticalHuggingPriority="750" fixedFrame="YES" selectionByRect="NO" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BFG-iu-aJ0" customClass="O2ViewerThumbnailsMatrix">
                                 <rect key="frame" x="0.0" y="0.0" width="100" height="240"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="1" green="0.97530866000000005" blue="0.97530866000000005" alpha="1" colorSpace="calibratedRGB"/>
@@ -260,61 +263,137 @@
         <window title="Viewer" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="5" userLabel="Window" customClass="OSIWindow">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="312" y="231" width="335" height="238"/>
+            <rect key="contentRect" x="312" y="231" width="725" height="442"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
             <value key="minSize" type="size" width="200" height="200"/>
             <view key="contentView" id="6">
-                <rect key="frame" x="0.0" y="0.0" width="335" height="238"/>
+                <rect key="frame" x="0.0" y="0.0" width="725" height="442"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <customView translatesAutoresizingMaskIntoConstraints="NO" id="1223">
-                        <rect key="frame" x="0.0" y="0.0" width="335" height="238"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                    <splitView vertical="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9c0-i7-FmJ">
+                        <rect key="frame" x="0.0" y="0.0" width="725" height="442"/>
+                        <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="941" customClass="StudyView">
-                                <rect key="frame" x="0.0" y="0.0" width="334" height="222"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                            </customView>
-                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="2604">
-                                <rect key="frame" x="0.0" y="223" width="334" height="15"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                            <customView id="xNd-4a-acI" userLabel="Thumbnails View">
+                                <rect key="frame" x="0.0" y="0.0" width="153" height="442"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <subviews>
-                                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="11">
-                                        <rect key="frame" x="0.0" y="-1" width="332" height="16"/>
+                                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="bG3-lf-7Ru">
+                                        <rect key="frame" x="0.0" y="423" width="153" height="17"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                        <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" maxValue="100" doubleValue="45.45454545454546" tickMarkPosition="below" numberOfTickMarks="100" allowsTickMarkValuesOnly="YES" sliderType="linear" id="2109"/>
+                                        <buttonCell key="cell" type="inline" title="Comparatives" bezelStyle="inline" imagePosition="left" alignment="center" controlSize="mini" state="on" borderStyle="border" inset="2" id="8Fw-Va-qBn">
+                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                            <font key="font" metaFont="smallSystemBold"/>
+                                        </buttonCell>
                                         <connections>
-                                            <action selector="sliderAction:" target="-1" id="931"/>
+                                            <action selector="toggleComparativesVisibility:" target="-2" id="B0c-dt-rql"/>
                                         </connections>
-                                    </slider>
+                                    </button>
+                                    <scrollView borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bPx-bf-9GC">
+                                        <rect key="frame" x="-1" y="0.0" width="154" height="422"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="pxh-Lm-jxN">
+                                            <rect key="frame" x="0.0" y="0.0" width="139" height="422"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                            <subviews>
+                                                <matrix verticalHuggingPriority="750" selectionByRect="NO" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pJq-vL-uRh" customClass="O2ViewerThumbnailsMatrix">
+                                                    <rect key="frame" x="0.0" y="0.0" width="139" height="120"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <color key="backgroundColor" red="1" green="0.97530866000000005" blue="0.97530866000000005" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <size key="cellSize" width="100" height="120"/>
+                                                    <buttonCell key="prototype" type="smallSquare" title="Button" bezelStyle="smallSquare" imagePosition="above" alignment="center" borderStyle="border" tag="-1" inset="2" id="En9-ou-Y75" customClass="ThumbnailCell">
+                                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                        <font key="font" metaFont="system"/>
+                                                    </buttonCell>
+                                                    <cells>
+                                                        <column>
+                                                            <buttonCell type="squareTextured" title="Button" bezelStyle="texturedSquare" alignment="center" state="on" borderStyle="border" transparent="YES" inset="3" id="DI2-CF-tmL" customClass="ThumbnailCell">
+                                                                <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
+                                                                <font key="font" metaFont="system"/>
+                                                            </buttonCell>
+                                                        </column>
+                                                    </cells>
+                                                </matrix>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="trailing" secondItem="pJq-vL-uRh" secondAttribute="trailing" id="sjt-fe-pqk"/>
+                                                <constraint firstItem="pJq-vL-uRh" firstAttribute="leading" secondItem="pxh-Lm-jxN" secondAttribute="leading" id="uTE-Ma-QdP"/>
+                                                <constraint firstItem="pJq-vL-uRh" firstAttribute="top" secondItem="pxh-Lm-jxN" secondAttribute="top" id="zRq-0I-2qG"/>
+                                            </constraints>
+                                            <color key="backgroundColor" name="controlShadowColor" catalog="System" colorSpace="catalog"/>
+                                        </clipView>
+                                        <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="MaB-B7-lmm">
+                                            <rect key="frame" x="-100" y="-100" width="113" height="16"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </scroller>
+                                        <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="mS6-Sg-37h">
+                                            <rect key="frame" x="139" y="0.0" width="15" height="422"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </scroller>
+                                    </scrollView>
                                 </subviews>
                                 <constraints>
-                                    <constraint firstItem="11" firstAttribute="leading" secondItem="2604" secondAttribute="leading" id="6V0-t0-3jb"/>
-                                    <constraint firstAttribute="trailing" secondItem="11" secondAttribute="trailing" constant="2" id="Tjg-5P-1rP"/>
-                                    <constraint firstItem="11" firstAttribute="centerY" secondItem="2604" secondAttribute="centerY" id="Ygu-va-EvK"/>
-                                    <constraint firstItem="11" firstAttribute="top" secondItem="2604" secondAttribute="top" id="z2K-bj-zTQ"/>
+                                    <constraint firstItem="bG3-lf-7Ru" firstAttribute="trailing" secondItem="bPx-bf-9GC" secondAttribute="trailing" id="8pb-yh-bIG"/>
+                                    <constraint firstItem="bPx-bf-9GC" firstAttribute="top" secondItem="bG3-lf-7Ru" secondAttribute="bottom" constant="2" id="JGU-O2-R9a"/>
+                                    <constraint firstItem="bG3-lf-7Ru" firstAttribute="leading" secondItem="xNd-4a-acI" secondAttribute="leading" id="KFM-VI-fFx"/>
+                                    <constraint firstAttribute="bottom" secondItem="bPx-bf-9GC" secondAttribute="bottom" id="bDF-vs-BQw"/>
+                                    <constraint firstItem="bPx-bf-9GC" firstAttribute="top" secondItem="xNd-4a-acI" secondAttribute="top" constant="20" symbolic="YES" id="pel-N8-Sae"/>
+                                    <constraint firstItem="bPx-bf-9GC" firstAttribute="leading" secondItem="xNd-4a-acI" secondAttribute="leading" constant="-1" id="uxg-Mr-yn9"/>
+                                    <constraint firstAttribute="trailing" secondItem="bG3-lf-7Ru" secondAttribute="trailing" id="wXV-7Y-UoG"/>
+                                </constraints>
+                            </customView>
+                            <customView id="1223">
+                                <rect key="frame" x="162" y="0.0" width="563" height="442"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <subviews>
+                                    <customView translatesAutoresizingMaskIntoConstraints="NO" id="941" customClass="StudyView">
+                                        <rect key="frame" x="0.0" y="0.0" width="562" height="427"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    </customView>
+                                    <customView translatesAutoresizingMaskIntoConstraints="NO" id="2604">
+                                        <rect key="frame" x="0.0" y="427" width="562" height="15"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                        <subviews>
+                                            <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="11">
+                                                <rect key="frame" x="0.0" y="0.0" width="560" height="16"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                                <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" maxValue="100" doubleValue="45.45454545454546" tickMarkPosition="below" numberOfTickMarks="100" allowsTickMarkValuesOnly="YES" sliderType="linear" id="2109"/>
+                                                <connections>
+                                                    <action selector="sliderAction:" target="-1" id="931"/>
+                                                </connections>
+                                            </slider>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstItem="11" firstAttribute="leading" secondItem="2604" secondAttribute="leading" id="Cli-Bn-0Ae"/>
+                                            <constraint firstItem="11" firstAttribute="top" secondItem="2604" secondAttribute="top" constant="-1" id="FJl-3c-anA"/>
+                                            <constraint firstAttribute="bottom" secondItem="11" secondAttribute="bottom" id="Fus-w4-er2"/>
+                                            <constraint firstAttribute="trailing" secondItem="11" secondAttribute="trailing" constant="2" id="aUT-A8-3Rr"/>
+                                        </constraints>
+                                    </customView>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="941" firstAttribute="top" secondItem="1223" secondAttribute="top" constant="15" id="1cj-ux-cXT"/>
+                                    <constraint firstItem="2604" firstAttribute="leading" secondItem="1223" secondAttribute="leading" id="2l7-0m-soB"/>
+                                    <constraint firstItem="2604" firstAttribute="leading" secondItem="941" secondAttribute="leading" id="5be-N2-P9K"/>
+                                    <constraint firstAttribute="bottom" secondItem="941" secondAttribute="bottom" id="Iq2-Vq-jbA"/>
+                                    <constraint firstItem="941" firstAttribute="trailing" secondItem="2604" secondAttribute="trailing" id="NxG-6u-3vM"/>
+                                    <constraint firstItem="2604" firstAttribute="top" secondItem="1223" secondAttribute="top" id="Pmp-oF-LG6"/>
+                                    <constraint firstAttribute="trailing" secondItem="2604" secondAttribute="trailing" constant="1" id="bfF-i4-pgF"/>
+                                    <constraint firstItem="941" firstAttribute="top" secondItem="2604" secondAttribute="bottom" id="vNU-8a-C6W"/>
                                 </constraints>
                             </customView>
                         </subviews>
-                        <constraints>
-                            <constraint firstAttribute="bottom" secondItem="941" secondAttribute="bottom" id="Ecr-xW-3gE"/>
-                            <constraint firstItem="941" firstAttribute="top" secondItem="2604" secondAttribute="bottom" constant="1" id="Qz4-xK-xsQ"/>
-                            <constraint firstItem="941" firstAttribute="top" secondItem="1223" secondAttribute="top" constant="16" id="ZG3-wn-eQ3"/>
-                            <constraint firstItem="2604" firstAttribute="top" secondItem="1223" secondAttribute="top" id="cgz-K8-kw6"/>
-                            <constraint firstItem="2604" firstAttribute="trailing" secondItem="941" secondAttribute="trailing" id="gv3-2S-Ezg"/>
-                            <constraint firstItem="2604" firstAttribute="leading" secondItem="1223" secondAttribute="leading" id="icO-VS-y3f"/>
-                            <constraint firstItem="941" firstAttribute="centerX" secondItem="1223" secondAttribute="centerX" id="oCz-BX-kbL"/>
-                            <constraint firstItem="941" firstAttribute="leading" secondItem="2604" secondAttribute="leading" id="q4Z-6Y-VGY"/>
-                        </constraints>
-                    </customView>
+                        <holdingPriorities>
+                            <real value="250"/>
+                            <real value="250"/>
+                        </holdingPriorities>
+                    </splitView>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="trailing" secondItem="1223" secondAttribute="trailing" id="7jf-nV-rlo"/>
-                    <constraint firstItem="1223" firstAttribute="leading" secondItem="6" secondAttribute="leading" id="Yvf-MW-sgP"/>
-                    <constraint firstAttribute="centerX" secondItem="1223" secondAttribute="centerX" id="ibD-L7-UOr"/>
-                    <constraint firstAttribute="bottom" secondItem="1223" secondAttribute="bottom" id="ozg-Tp-NmA"/>
-                    <constraint firstItem="1223" firstAttribute="top" secondItem="6" secondAttribute="top" id="tK3-0n-2xh"/>
-                    <constraint firstAttribute="centerY" secondItem="1223" secondAttribute="centerY" id="wg3-ok-RPy"/>
+                    <constraint firstItem="9c0-i7-FmJ" firstAttribute="top" secondItem="6" secondAttribute="top" id="1Bx-nN-hlB"/>
+                    <constraint firstAttribute="trailing" secondItem="9c0-i7-FmJ" secondAttribute="trailing" id="8SR-af-dDY"/>
+                    <constraint firstAttribute="bottom" secondItem="9c0-i7-FmJ" secondAttribute="bottom" id="Eyf-5g-Bg4"/>
+                    <constraint firstItem="9c0-i7-FmJ" firstAttribute="leading" secondItem="6" secondAttribute="leading" id="Jtb-1X-hcK"/>
                 </constraints>
             </view>
             <connections>
