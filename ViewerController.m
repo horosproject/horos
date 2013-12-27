@@ -4554,9 +4554,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 
     if (notification.object == splitView)
     {
-        OSIWindow* window = (OSIWindow*)self.window;
-        if( [window respondsToSelector:@selector(disableUpdatesUntilFlush)])
-            [window disableUpdatesUntilFlush];
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"] == NO)
+        {
+            OSIWindow* window = (OSIWindow*)self.window;
+            if( [window respondsToSelector:@selector(disableUpdatesUntilFlush)])
+                [window disableUpdatesUntilFlush];
+        }
     }
 }
 
