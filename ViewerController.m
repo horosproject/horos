@@ -4490,6 +4490,17 @@ static volatile int numberOfThreadsForRelisce = 0;
 	}
 }
 
+- (NSRect)splitView:(NSSplitView *)s effectiveRect:(NSRect)proposedEffectiveRect forDrawnRect:(NSRect)drawnRect ofDividerAtIndex:(NSInteger)dividerIndex
+{
+    if( s == splitView)
+    {
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
+            return NSZeroRect;
+    }
+    
+    return proposedEffectiveRect;
+}
+
 - (void)splitViewDidResizeSubviews:(NSNotification *) notification
 {
     if( windowWillClose)
@@ -7514,7 +7525,6 @@ return YES;
 {
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"] == NO)
     {
-        
         if( splitView == nil) { // For compatibility with old localized (without auto-layout) xibs....
             splitViewAllocated = YES;
         
@@ -7531,8 +7541,6 @@ return YES;
             
             [splitView replaceSubview: [[splitView subviews] objectAtIndex: 0] with: previewMatrixScrollView];
         }
-        [splitView setDelegate: self];
-        [splitView adjustSubviews];
         
         if( splitViewAllocated)
             [self.window.contentView addSubview: splitView];
@@ -7544,6 +7552,11 @@ return YES;
 
         [self setMatrixVisible: YES];
     }
+    else
+        [splitView setDividerStyle: NSSplitViewDividerStyleThin];
+    
+    [splitView setDelegate: self];
+    [splitView adjustSubviews];
     
     [previewMatrix setIntercellSpacing:NSMakeSize(-1, -1)];
     
