@@ -206,6 +206,7 @@ static int savedDisplayMode = 1;
 
 - (void)windowDidBecomeMain:(NSNotification *)aNotification
 {
+    @try {
 	if( [aNotification object] == [self window])
 	{
 		[[viewer window] makeKeyAndOrderFront: self];
@@ -256,6 +257,13 @@ static int savedDisplayMode = 1;
 	}
 	
 	[[self window] setFrame:[[self window] frame] display:YES];
+        
+        
+    }
+    @catch (NSException *exception) {
+        N2LogException( exception);
+        [[AppController sharedAppController] closeAllViewers: self];
+    }
 }
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar

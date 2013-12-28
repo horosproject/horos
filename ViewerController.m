@@ -4130,15 +4130,6 @@ static volatile int numberOfThreadsForRelisce = 0;
         [v computeColor];
 }
 
-- (void) matrixPreviewSelectCurrentSeries
-{
-	NSManagedObject		*series = [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"];
-	NSInteger			index = [[[previewMatrix cells] valueForKeyPath:@"representedObject.object"] indexOfObject: series];
-	
-	if( index != NSNotFound)
-        [previewMatrix scrollCellToVisibleAtRow: index column:0];
-}
-
 - (void) loadSelectedSeries: (id) series rightClick: (BOOL) rightClick
 {
     if( [series isKindOfClass: [DicomStudy class]])
@@ -4164,11 +4155,15 @@ static volatile int numberOfThreadsForRelisce = 0;
 	{
         if( ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSShiftKeyMask) || [[BrowserController currentBrowser] isUsingExternalViewer: series] == NO)
         {
+            BOOL c = [[NSUserDefaults standardUserDefaults] boolForKey:@"syncPreviewList"];
+            
+            [[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"syncPreviewList"];
+            
             ViewerController *newViewer = [[BrowserController currentBrowser] loadSeries :series :nil :YES keyImagesOnly: displayOnlyKeyImages];
             [newViewer setHighLighted: 1.0];
             
             if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"] == NO)
-                [self matrixPreviewSelectCurrentSeries];
+                [self showCurrentThumbnail: self];
             
             if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
                 [NSApp sendAction: @selector(tileWindows:) to:nil from: self];
@@ -4183,6 +4178,9 @@ static volatile int numberOfThreadsForRelisce = 0;
             [self updateNavigator];
             
             [newViewer showCurrentThumbnail: self];
+            
+            [[NSUserDefaults standardUserDefaults] setBool: c forKey:@"syncPreviewList"];
+            [self syncThumbnails];
         }
 	}
 	else
@@ -4221,7 +4219,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                 {
                     ViewerController *newViewer = [[BrowserController currentBrowser] loadSeries :series :self :YES keyImagesOnly: displayOnlyKeyImages];
                     
-                    [self matrixPreviewSelectCurrentSeries];
+                    [self showCurrentThumbnail:self];
                     [self updateNavigator];
 				}
                 
@@ -4485,7 +4483,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 		if ([note object] == [[splitView subviews] objectAtIndex: 1])
 		{
 			if( [self matrixIsVisible] && matrixPreviewBuilt == NO)
-				[self buildMatrixPreview];
+            {
+                [self buildMatrixPreview];
+            }
 		}
 	}
 }
@@ -4741,8 +4741,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) buildMatrixPreview: (BOOL) showSelected
 {
-	if( [[self window] isVisible] == NO) return;	//we will do it in checkBuiltMatrixPreview : faster opening !
-	if( windowWillClose) return;
+    if( [[self window] isVisible] == NO) return;	//we will do it in checkBuiltMatrixPreview : faster opening !
+    if( windowWillClose) return;
     
     // series popup menu button : will build all the items, when needed, later
     
@@ -5342,6 +5342,11 @@ static volatile int numberOfThreadsForRelisce = 0;
         [v computeColor];
     
     needsToBuildSeriesMatrix = NO;
+}
+
+- (void) matrixPreviewSelectCurrentSeries
+{
+	[self showCurrentThumbnail: self];
 }
 
 - (void) showCurrentThumbnail:(id) sender;
@@ -8193,11 +8198,11 @@ static int avoidReentryRefreshDatabase = 0;
 					if( [previousPatientUID compare: [[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.patientUID"] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] != NSOrderedSame)
 					{
 						[self buildMatrixPreview];
-						[self matrixPreviewSelectCurrentSeries];
+						[self showCurrentThumbnail:self];
 					}
 					else
 					{
-						[self matrixPreviewSelectCurrentSeries];
+						[self showCurrentThumbnail:self];
 					}
 					
 					
@@ -17190,7 +17195,7 @@ int i,j,l;
 	
 	[self adjustSlider];
     
-    [self matrixPreviewSelectCurrentSeries];
+    [self showCurrentThumbnail:self];
 }
 
 - (void) moviePosSliderAction:(id) sender
@@ -20545,11 +20550,6 @@ int i,j,l;
 	
     [[NSUserDefaults standardUserDefaults] addObserver: self forKeyPath: @"SeriesListVisible" options:NSKeyValueObservingOptionNew context:nil];
     
-	if( matrixPreviewBuilt == NO)
-		[self buildMatrixPreview];
-	
-	[self matrixPreviewSelectCurrentSeries];
-	
 	originalOrientation = -1;
 	[orientationMatrix setEnabled: NO];
 }
@@ -21620,7 +21620,7 @@ int i,j,l;
 					//Load this series
 					[[BrowserController currentBrowser] loadSeries :[seriesArray objectAtIndex: i] :self :YES keyImagesOnly: displayOnlyKeyImages];
 					
-					[self matrixPreviewSelectCurrentSeries];
+					[self showCurrentThumbnail:self];
 					[self updateNavigator];
 					
 					if( [imageView flippedData])
@@ -21676,7 +21676,7 @@ int i,j,l;
 					//Load this series
 					[[BrowserController currentBrowser] loadSeries :[seriesArray objectAtIndex: i] :self :YES keyImagesOnly: displayOnlyKeyImages];
 					
-					[self matrixPreviewSelectCurrentSeries];
+					[self showCurrentThumbnail:self];
 					[self updateNavigator];
 					
 					if( [imageView flippedData] == NO)

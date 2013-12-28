@@ -9961,60 +9961,67 @@ static BOOL withReset = NO;
 {
 	NSLog(@"windowDidChangeScreen");
 	
-	// Did the user change the window resolution?
-	
-	BOOL screenChanged = NO, dbScreenChanged = NO;
-	
-	float ratioX = 1, ratioY = 1;
-	
-	for( int i = 0 ; i < [[NSScreen screens] count] ; i++)
-	{
-		NSScreen *s = [[NSScreen screens] objectAtIndex: i];
-		
-		if( NSEqualRects( [s visibleFrame], visibleScreenRect[ i]) == NO)
-		{
-			screenChanged = YES;
-			
-			if( [[self window] screen] == s)
-			{
-				NSLog( @"[[self window] frame]: %@", NSStringFromRect( [[self window] frame]));
-				NSLog( @"visibleScreenRect[ i]: %@", NSStringFromRect( visibleScreenRect[ i]));
-				
-				dbScreenChanged = YES;
-			}
-			
-			ratioX = visibleScreenRect[ i].size.width / [s visibleFrame].size.width;
-			ratioY = visibleScreenRect[ i].size.height / [s visibleFrame].size.height;
-			
-			visibleScreenRect[ i] = [s visibleFrame];
-		}
-	}
-	
-	if( dbScreenChanged)
-	{
-		[[self window] zoom: self];
-	}
-	
-	if( screenChanged)
-	{
-		for( ViewerController *v in [ViewerController getDisplayed2DViewers])
-		{
-			NSRect r = [[v window] frame];
-			
-			r.origin.x /= ratioX;
-			r.origin.y /= ratioY;
-			
-			r.size.width /= ratioX;
-			r.size.height /= ratioY;
-			
-			[[v window] setFrame: r display: NO];
-		}
-		
-		if( delayedTileWindows)
-			[NSObject cancelPreviousPerformRequestsWithTarget:[AppController sharedAppController] selector:@selector(tileWindows:) object:nil];
-		delayedTileWindows = YES;
-		[[AppController sharedAppController] performSelector: @selector(tileWindows:) withObject:nil afterDelay: 0.1];
-	}
+    @try {
+        // Did the user change the window resolution?
+        
+        BOOL screenChanged = NO, dbScreenChanged = NO;
+        
+        float ratioX = 1, ratioY = 1;
+        
+        for( int i = 0 ; i < [[NSScreen screens] count] ; i++)
+        {
+            NSScreen *s = [[NSScreen screens] objectAtIndex: i];
+            
+            if( NSEqualRects( [s visibleFrame], visibleScreenRect[ i]) == NO)
+            {
+                screenChanged = YES;
+                
+                if( [[self window] screen] == s)
+                {
+                    NSLog( @"[[self window] frame]: %@", NSStringFromRect( [[self window] frame]));
+                    NSLog( @"visibleScreenRect[ i]: %@", NSStringFromRect( visibleScreenRect[ i]));
+                    
+                    dbScreenChanged = YES;
+                }
+                
+                ratioX = visibleScreenRect[ i].size.width / [s visibleFrame].size.width;
+                ratioY = visibleScreenRect[ i].size.height / [s visibleFrame].size.height;
+                
+                visibleScreenRect[ i] = [s visibleFrame];
+            }
+        }
+        
+        if( dbScreenChanged)
+        {
+            [[self window] zoom: self];
+        }
+        
+        if( screenChanged)
+        {
+            for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+            {
+                NSRect r = [[v window] frame];
+                
+                r.origin.x /= ratioX;
+                r.origin.y /= ratioY;
+                
+                r.size.width /= ratioX;
+                r.size.height /= ratioY;
+                
+                [[v window] setFrame: r display: NO];
+            }
+            
+            if( delayedTileWindows)
+                [NSObject cancelPreviousPerformRequestsWithTarget:[AppController sharedAppController] selector:@selector(tileWindows:) object:nil];
+            delayedTileWindows = YES;
+            [[AppController sharedAppController] performSelector: @selector(tileWindows:) withObject:nil afterDelay: 0.1];
+        }
+            
+    }
+    @catch (NSException *exception) {
+        N2LogException( exception);
+        [[AppController sharedAppController] closeAllViewers: self];
+    }
 }
 
 -(void)previewMatrixScrollViewFrameDidChange:(NSNotification*)note

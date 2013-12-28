@@ -221,7 +221,8 @@ static BOOL protectedReentryWindowDidResize = NO;
 			{
 				if( [aNotification object] == [self window])
 				{
-					[(ViewerController*) self matrixPreviewSelectCurrentSeries];
+                    ViewerController *vv = (ViewerController*) self;
+					[vv showCurrentThumbnail: self];
 				}
 			}
 			
