@@ -6387,6 +6387,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	thickSlabStacks = 0;
 	COPYSETTINGSINSERIES = YES;
 	suppress_labels = NO;
+    previousViewSize = frameRect.size;
     
     annotationType = [[NSUserDefaults standardUserDefaults] integerForKey:@"ANNOTATIONS"];
     [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"ANNOTATIONS" options:NSKeyValueObservingOptionNew context:nil];
@@ -10020,7 +10021,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						[[self windowController] propagateSettings];
 				}
 			}
-			else previousViewSize = rect.size;
+			else
+                previousViewSize = rect.size;
 		}
     }
 	
@@ -12586,6 +12588,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	int newX = newWidth * (int)(_tag % _imageColumns);
 	NSRect newFrame = NSMakeRect(newX, newY, newWidth, newHeight);
 	
+    if( previousViewSize.width == 0 || previousViewSize.height == 0)
+        previousViewSize = oldBoundsSiz;
+    
 	[self setFrame:newFrame];
 	
 	[self setNeedsDisplay:YES];
