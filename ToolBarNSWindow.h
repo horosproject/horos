@@ -20,4 +20,5 @@
 //	BOOL willClose;
 }
 
+- (void) superOrderOut:(id)sender;
 @end

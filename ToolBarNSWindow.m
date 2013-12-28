@@ -30,6 +30,11 @@
 	return YES;
 }
 
+- (void) superOrderOut:(id)sender
+{
+    [super orderOut:sender];
+}
+
 - (void) orderOut:(id)sender
 {
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideToolbarIfNotActive"] == NO && [AppController USETOOLBARPANEL] == YES)

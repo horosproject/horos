@@ -150,6 +150,7 @@ static int savedDisplayMode = 1;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidResignKey:) name:NSWindowDidResignKeyNotification object:0];
         
         [self.window safelySetMovable:NO];
+        [self.window setShowsToolbarButton:NO];
 	}
 	
 	return self;
@@ -390,25 +391,28 @@ static int savedDisplayMode = 1;
         {
             @try
             {
-                if( [associatedScreen objectForKey: [NSValue valueWithPointer: toolbar]] != [[self window] screen])
+                ToolBarNSWindow *w = (ToolBarNSWindow*) self.window;
+                
+                [w superOrderOut: self];
+                w.toolbar.visible = NO;
+                
+                if( [associatedScreen objectForKey: [NSValue valueWithPointer: toolbar]] != w.screen)
                 {
-                    if( [[NSScreen screens] count] > 1)
-                        [[self window] setToolbar: emptyToolbar];	//To avoid the stupid add an item in customize toolbar.....
-                        
-                    if( [[self window] screen])
-                        [associatedScreen setObject: [[self window] screen] forKey: [NSValue valueWithPointer: toolbar]];
+//                    if( [[NSScreen screens] count] > 1)
+//                        [w setToolbar: emptyToolbar];	//To avoid the stupid add an item in customize toolbar.....
+                    
+                    if( [w screen])
+                        [associatedScreen setObject: [w screen] forKey: [NSValue valueWithPointer: toolbar]];
                     else
                         [associatedScreen removeObjectForKey: [NSValue valueWithPointer: toolbar]];
                 }
-                [[[self window] toolbar] setVisible: NO];
-                [[self window] setToolbar: toolbar];
                 
-                [[self window] setShowsToolbarButton:NO];
-                [[[self window] toolbar] setVisible: YES];
+                [w setToolbar: toolbar];
                 
+                w.toolbar.visible = YES;
                 
-                if( [[viewer window] isKeyWindow])
-                    [[self window] orderBack: self];
+                if( [viewer.window isKeyWindow])
+                    [w orderBack: self];
             }
             @catch (NSException *exception) {
                 N2LogException( exception);

@@ -4711,7 +4711,7 @@ static BOOL initialized = NO;
 				last = loopItem;
 				[loopItem orderFront: self];
 				[[loopItem windowController] checkBuiltMatrixPreview];
-				[[loopItem windowController] redrawToolbar];	// To avoid the drag & remove item bug - multiple windows
+//				[[loopItem windowController] redrawToolbar];	// To avoid the drag & remove item bug - multiple windows
 			}
 		}
 	}
