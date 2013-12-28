@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13B42" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C32" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
@@ -723,9 +723,9 @@
                                     </connections>
                                 </button>
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="335">
-                                    <rect key="frame" x="130" y="107" width="500" height="18"/>
+                                    <rect key="frame" x="130" y="107" width="401" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Automatically save Workspace State when closing all viewers (database icon)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="362">
+                                    <buttonCell key="cell" type="check" title="Automatically save Workspace State when closing all viewers" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="362">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -903,12 +903,12 @@
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
                                     <connections>
+                                        <binding destination="308" name="value" keyPath="values.AUTOHIDEMATRIX" id="7bu-pc-zQ9"/>
                                         <binding destination="308" name="enabled" keyPath="values.UseFloatingThumbnailsList" id="LRK-Sn-vNt">
                                             <dictionary key="options">
                                                 <string key="NSValueTransformerName">NSNegateBoolean</string>
                                             </dictionary>
                                         </binding>
-                                        <binding destination="308" name="value" keyPath="values.AUTOHIDEMATRIX" id="7bu-pc-zQ9"/>
                                     </connections>
                                 </button>
                             </subviews>
