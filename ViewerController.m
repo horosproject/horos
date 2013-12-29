@@ -3426,25 +3426,11 @@ static volatile int numberOfThreadsForRelisce = 0;
 		}
         
         if( previousScaledFit)
-            [imageView scaleToFit];
+            [imageView performSelector: @selector( scaleToFit) withObject: nil afterDelay: 0.01];
         
         [[NSUserDefaults standardUserDefaults] setBool:previousPropagate forKey: @"COPYSETTINGS"];
         
         [previewMatrix sizeToCells];
-        
-//        if( SavedUseFloatingThumbnailsList)
-//        {
-//            [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"UseFloatingThumbnailsList"];
-//            
-//            for( ViewerController *v in [ViewerController getDisplayed2DViewers])
-//            {
-//                NSRect frame = [[[v.splitView subviews] objectAtIndex: 0] frame];
-//                frame.size.width = 0;
-//                [[[v.splitView subviews] objectAtIndex: 0] setFrameSize: frame.size];
-//            }
-//            
-//            [self redrawToolbar];
-//        }
 	}
     else // FullScreenOn == false
     {
@@ -3462,23 +3448,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"NoImageTilingInFullscreen"] && (previousFullscreenColumns != 1 || previousFullscreenRows != 1))
 			[self setImageRows: 1 columns: 1];
 		
-//        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
-//        {
-//            SavedUseFloatingThumbnailsList = YES;
-//            [[AppController thumbnailsListPanelForScreen: self.window.screen] setThumbnailsView: nil  viewer: self];
-//            [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"UseFloatingThumbnailsList"];
-//        }
-//        else
-//            SavedUseFloatingThumbnailsList = NO;
-        
 		previousFullscreenCurImage = [imageView curImage];
 		
 		[imageView setIndex: selectedIndex];
-		
-//		NSRect frame = [[[splitView subviews] objectAtIndex: 0] frame];
-//		int previous = frame.size.width;
-//		frame.size.width = 0;
-//		[[[splitView subviews] objectAtIndex: 0] setFrameSize: frame.size];
 		
         StartingWindow = [self window];
         windowStyle = NSBorderlessWindowMask; 
