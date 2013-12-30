@@ -554,16 +554,16 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
                 case DCM_PN:
                 case DCM_UI:
                 case DCM_IS:
-                case DCM_CS:
+//                case DCM_CS:
                 case DCM_DS: {
                     if (![self.stringValue isKindOfClass:[NSString class]])
                         self.stringValue = [NSString string];
                 } break;
                     
-//                case DCM_CS: {
-//                    self.codeStringTag = 1;
-//                    self.stringValue = [NSString string];
-//                } break;
+                case DCM_CS: {
+                    self.codeStringTag = 1;
+                    self.stringValue = [NSString string];
+                } break;
                     
                 case DCM_SS:
                 case DCM_SL:
@@ -1000,9 +1000,9 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
         } break;
             
         case DCM_CS: {
-//            [views addObject:_isLabel];
-            [views addObject:_operatorsPopUp];
-            [self setAvailableOperators: N(NSContainsPredicateOperatorType), N(NSBeginsWithPredicateOperatorType), N(NSEndsWithPredicateOperatorType), N(NSEqualToPredicateOperatorType), N(NSNotEqualToPredicateOperatorType), nil];
+            [views addObject:_isLabel];
+//            [views addObject:_operatorsPopUp];
+//            [self setAvailableOperators: N(NSContainsPredicateOperatorType), N(NSBeginsWithPredicateOperatorType), N(NSEndsWithPredicateOperatorType), N(NSEqualToPredicateOperatorType), N(NSNotEqualToPredicateOperatorType), nil];
             // .. popup
             [_codeStringPopUp.menu removeAllItems];
             NSDictionary* dic = [O2DicomPredicateEditorCodeStrings codeStringsForTag:self.tag];
@@ -1102,6 +1102,12 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
                 return 0; // we cannot handle tags of unknown type
             
             switch (vr) {
+                case DCM_CS: {
+                    if ((otype == NSEqualToPredicateOperatorType || otype == NSContainsPredicateOperatorType) &&
+                        [predicate constantValue])
+                        return 1; // is
+                } break;
+                    
                 case DCM_SH:
                 case DCM_LO:
                 case DCM_ST:
@@ -1109,7 +1115,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
                 case DCM_UT:
                 case DCM_AE:
                 case DCM_PN:
-                case DCM_CS:
+//                case DCM_CS:
                 case DCM_UI: /* TODO: should be more restrictive for AE */ {
                     switch (otype) {
                         case NSContainsPredicateOperatorType:
@@ -1250,7 +1256,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
             case DCM_AE:
             case DCM_PN:
             case DCM_UI:
-            case DCM_CS:
+//            case DCM_CS:
             case DCM_AS: {
                 [self setOperator:[predicate predicateOperatorType]];
                 [self setStringValue:[predicate constantValue]];
@@ -1307,15 +1313,15 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
                 [self setDateValue:[predicate constantValue]];
             } break;
                 
-//            case DCM_CS: {
-//                [self setCodeStringTag:[self tagForCodeString:[predicate constantValue]]];
-//                if ([[predicate constantValue] isKindOfClass:[NSString class]]) {
-//                    id v = [predicate constantValue];
-//                    if (![v isKindOfClass:[NSString class]])
-//                        v = [v stringValue];
-//                    [self setStringValue:nil];
-//                }
-//            } break;
+            case DCM_CS: {
+                [self setCodeStringTag:[self tagForCodeString:[predicate constantValue]]];
+                if ([[predicate constantValue] isKindOfClass:[NSString class]]) {
+                    id v = [predicate constantValue];
+                    if (![v isKindOfClass:[NSString class]])
+                        v = [v stringValue];
+                    [self setStringValue:nil];
+                }
+            } break;
         }
     }
     
@@ -1371,7 +1377,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
         case DCM_UT:
         case DCM_AE:
         case DCM_PN:
-        case DCM_CS:
+//        case DCM_CS:
         case DCM_UI:
         case DCM_AS: {
             if (self.stringValue.length)
@@ -1481,13 +1487,13 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
             }
         } break;
             
-//        case DCM_CS: {
-//            return [NSComparisonPredicate predicateWithLeftExpression:tagNameExpression
-//                                                      rightExpression:[NSExpression expressionForConstantValue:[self codeStringForTag:self.codeStringTag]]
-//                                                             modifier:NSDirectPredicateModifier
-//                                                                 type:NSEqualToPredicateOperatorType
-//                                                              options:0];
-//        } break;
+        case DCM_CS: {
+            return [NSComparisonPredicate predicateWithLeftExpression:tagNameExpression
+                                                      rightExpression:[NSExpression expressionForConstantValue:[self codeStringForTag:self.codeStringTag]]
+                                                             modifier:NSDirectPredicateModifier
+                                                                 type:NSContainsPredicateOperatorType //NSEqualToPredicateOperatorType
+                                                              options:0];
+        } break;
     }
     
     return [NSPredicate predicateWithValue:YES];
