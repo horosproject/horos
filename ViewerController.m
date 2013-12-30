@@ -4783,8 +4783,8 @@ static volatile int numberOfThreadsForRelisce = 0;
             studiesArray = [BrowserController currentBrowser].comparativeStudies;
         else
         {
-            if( [[BrowserController currentBrowser] selectThisStudy: study] == NO)
-                NSLog( @"---- buildMatrixPreview - history not found");
+//            if( [[BrowserController currentBrowser] selectThisStudy: study] == NO)
+//                NSLog( @"---- buildMatrixPreview - history not found");
             
             studiesArray = [db objectsForEntity:db.studyEntity predicate:predicate];
             studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: @"date" ascending: NO]]];
