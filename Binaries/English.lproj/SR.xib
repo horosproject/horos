@@ -276,6 +276,12 @@
                                         <constraint firstAttribute="width" constant="91" id="j2W-5O-FGz"/>
                                     </constraints>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" title="300" drawsBackground="YES" id="914">
+                                        <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#" negativeFormat="#" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" minimumFractionDigits="0" maximumFractionDigits="0" id="n1k-NS-uxD">
+                                            <real key="roundingIncrement" value="0.0"/>
+                                            <metadata>
+                                                <bool key="localizesFormat" value="YES"/>
+                                            </metadata>
+                                        </numberFormatter>
                                         <font key="font" metaFont="cellTitle"/>
                                         <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -502,6 +508,12 @@
                                         <constraint firstAttribute="width" constant="91" id="mL0-l0-C1T"/>
                                     </constraints>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" title="-500" drawsBackground="YES" id="924">
+                                        <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#" negativeFormat="#" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" minimumFractionDigits="0" maximumFractionDigits="0" id="n7O-5M-ha7">
+                                            <real key="roundingIncrement" value="0.0"/>
+                                            <metadata>
+                                                <bool key="localizesFormat" value="YES"/>
+                                            </metadata>
+                                        </numberFormatter>
                                         <font key="font" metaFont="cellTitle"/>
                                         <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -672,10 +684,10 @@ Gw
                                     </cells>
                                 </matrix>
                                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="701">
-                                    <rect key="frame" x="185" y="4" width="36" height="22"/>
+                                    <rect key="frame" x="185" y="4" width="50" height="22"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <constraints>
-                                        <constraint firstAttribute="width" constant="36" id="BHy-Dt-Dkq"/>
+                                        <constraint firstAttribute="width" constant="50" id="BHy-Dt-Dkq"/>
                                     </constraints>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="20" drawsBackground="YES" id="933">
                                         <numberFormatter key="formatter" formatterBehavior="10_0" positiveFormat="0" negativeFormat="-0" hasThousandSeparators="NO" thousandSeparator="'" id="708">
@@ -695,10 +707,10 @@ Gw
                                     </connections>
                                 </textField>
                                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="702">
-                                    <rect key="frame" x="185" y="29" width="36" height="22"/>
+                                    <rect key="frame" x="185" y="29" width="50" height="22"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <constraints>
-                                        <constraint firstAttribute="width" constant="36" id="aNI-dY-ChX"/>
+                                        <constraint firstAttribute="width" constant="50" id="aNI-dY-ChX"/>
                                     </constraints>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="0.50" drawsBackground="YES" id="934">
                                         <numberFormatter key="formatter" formatterBehavior="10_0" positiveFormat="0.00" negativeFormat="-0.00" localizesFormat="NO" hasThousandSeparators="NO" thousandSeparator="," id="707">
@@ -718,7 +730,7 @@ Gw
                                     </connections>
                                 </textField>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="705">
-                                    <rect key="frame" x="226" y="31" width="64" height="14"/>
+                                    <rect key="frame" x="240" y="31" width="64" height="14"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="(0.1 ... 1.0)" id="935">
                                         <font key="font" metaFont="smallSystem"/>
@@ -727,7 +739,7 @@ Gw
                                     </textFieldCell>
                                 </textField>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="706">
-                                    <rect key="frame" x="226" y="6" width="57" height="14"/>
+                                    <rect key="frame" x="240" y="6" width="57" height="14"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="(1 ... 100)" id="936">
                                         <font key="font" metaFont="smallSystem"/>

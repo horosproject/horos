@@ -49,6 +49,11 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 
 @implementation SRController
 
+@synthesize firstSurface = _firstSurface, secondSurface = _secondSurface, resolution = _resolution, firstTransparency = _firstTransparency, secondTransparency = _secondTransparency, decimate = _decimate;
+@synthesize smooth = _smooth;
+@synthesize firstColor = _firstColor, secondColor = _secondColor;
+@synthesize shouldDecimate = _shouldDecimate, shouldSmooth = _shouldSmooth, useFirstSurface = _useFirstSurface, useSecondSurface = _useSecondSurface, shouldRenderFusion = _shouldRenderFusion;
+
 - (ViewerController*) viewer
 {
 	return viewer2D;
@@ -83,37 +88,21 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 
 - (void) windowDidLoad
 {
-	[self setResolution:0.5];
-	[self setShouldDecimate:YES];
-	[self setShouldSmooth:YES];
-	[self setFirstSurface:300.0];
-	[self setSecondSurface: -500.0];
-	[self setFirstTransparency: 1.0];
-	[self setSecondTransparency: 1.0];
-	[self setDecimate: 0.5];
-	[self setSmooth: 20];
-	[self setFirstColor: [NSColor colorWithCalibratedRed:1.0 green:1.0 blue:1.0 alpha:1.0]];
-	[self setSecondColor: [NSColor colorWithCalibratedRed:1.0 green:0.592 blue:0.608 alpha:1.0]];
-	[self setUseFirstSurface:YES];
-	[self setUseSecondSurface:NO];
+	self.resolution = 0.5;
+	self.shouldDecimate = YES;
+	self.shouldSmooth = YES;
+	self.firstSurface = 300.0;
+	self.secondSurface =  -500.0;
+	self.firstTransparency =  1.0;
+	self.secondTransparency =  1.0;
+	self.decimate =  0.5;
+	self.smooth =  20;
+	self.firstColor = [NSColor colorWithCalibratedRed:1.0 green:1.0 blue:1.0 alpha:1.0];
+	self.secondColor = [NSColor colorWithCalibratedRed:1.0 green:0.592 blue:0.608 alpha:1.0];
+	self.useFirstSurface = YES;
+	self.useSecondSurface = NO;
 	
-	[self setShouldRenderFusion:NO];
-	[self setFusionResolution:0.5];
-	[self setFusionShouldDecimate:YES];
-	[self setFusionShouldSmooth:YES];
-	[self setFusionFirstSurface:300.0];
-	[self setFusionSecondSurface: -500.0];
-	[self setFusionFirstTransparency: 1.0];
-	[self setFusionSecondTransparency: 1.0];
-	[self setFusionDecimate: 0.5];
-	[self setFusionSmooth: 20];
-	[self setFusionFirstColor: [NSColor colorWithCalibratedRed:1.0 green:0.285 blue:0.0 alpha:1.0]];
-	[self setFusionSecondColor: [NSColor colorWithCalibratedRed:1.0 green:1.0 blue:0.0 alpha:1.0]];
-	[self setFusionUseFirstSurface:YES];
-	[self setFusionUseSecondSurface:NO];
-	
-
-	//[self createContextualMenu];
+	self.shouldRenderFusion = NO;
 }
 
 -(ViewerController*) blendingController
@@ -326,7 +315,10 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	[z2DPointsArray release];
 	[viewer2D release];
 	[roiVolumes release];
-		
+    
+    [_firstColor release];
+    [_secondColor release];
+    
 	[super dealloc];
 }
 
@@ -365,57 +357,16 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 
 -(IBAction) SettingsPopup:(id) sender
 {
-    if( fusionSettingsWindow)
+    switch( [sender tag])
     {
-        switch( [sender tag])
-        {
-            case 1:
-                [self setFusionFirstSurface: -500.0];
-                break;
-            case 11:
-                [self setFusionSecondSurface: -500.];
-                break;
-                
-            case 2:
-                [self setFusionFirstSurface: 500.0];
-                break;
-            case 12:
-                [self setFusionSecondSurface: 500.0];
-                break;
-                
-            case 3:
-                [self setFusionFirstSurface: 2000.0];
-                break;
-            case 13:
-                [self setFusionSecondSurface: 2000.0];
-                break;
-        }
-    }
-    else
-    {
-        switch( [sender tag])
-        {
-            case 1:
-                [self setFirstSurface: -500.0];
-                break;
-            case 11:
-                [self setSecondSurface: -500.];
-                break;
+        case 1: self.firstSurface = -500.0; break;
+        case 11: self.secondSurface = -500.; break;
             
-            case 2:
-                [self setFirstSurface: 500.0];
-                break;
-            case 12:
-                [self setSecondSurface: 500.0];
-                break;
-            
-            case 3:
-                [self setFirstSurface: 2000.0];
-                break;
-            case 13:
-                [self setSecondSurface: 2000.0];
-                break;
-        }
+        case 2: self.firstSurface = 500.0;  break;
+        case 12: self.secondSurface = 500.0; break;
+        
+        case 3: self.firstSurface = 2000.0; break;
+        case 13: self.secondSurface = 2000.0;break;
     }
 }
 
@@ -492,37 +443,38 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
     [NSApp beginSheet: SRSettingsWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 }
 
-- (void)renderFusionSurfaces{
-	if( _fusionUseFirstSurface)
+- (void)renderFusionSurfaces
+{
+	if( _useFirstSurface)
 		
 		[view BchangeActor   :(long) 0
-								: _fusionResolution
-								: _fusionFirstTransparency
-								:[_fusionFirstColor redComponent]
-								:[_fusionFirstColor greenComponent]
-								:[_fusionFirstColor blueComponent]
-								: _fusionFirstSurface
-								: _fusionShouldDecimate
-								: _fusionDecimate
-								: _fusionShouldSmooth
-								: _fusionSmooth];
+								: _resolution
+								: _firstTransparency
+								:[_firstColor redComponent]
+								:[_firstColor greenComponent]
+								:[_firstColor blueComponent]
+								: _firstSurface
+								: _shouldDecimate
+								: _decimate
+								: _shouldSmooth
+								: _smooth];
 	else
 			[view BdeleteActor: (long) 0];
 		
 		// SECOND SURFACE
-	if(_fusionUseSecondSurface)
+	if(_useSecondSurface)
 	
 		[view BchangeActor  :(long) 1
-								: _fusionResolution
-								: _fusionSecondTransparency
-								:[_fusionSecondColor redComponent]
-								:[_fusionSecondColor greenComponent]
-								:[_fusionSecondColor blueComponent]
-								: _fusionSecondSurface
-								: _fusionShouldDecimate
-								: _fusionDecimate
-								: _fusionShouldSmooth
-								: _fusionSmooth];
+								: _resolution
+								: _secondTransparency
+								:[_secondColor redComponent]
+								:[_secondColor greenComponent]
+								:[_secondColor blueComponent]
+								: _secondSurface
+								: _shouldDecimate
+								: _decimate
+								: _shouldSmooth
+								: _smooth];
 	else
 		[view BdeleteActor: (long) 1];
 
@@ -1448,255 +1400,5 @@ return YES;
 {
 	return [viewer2D currentImage];
 }
-
-//Surface values
-
-- (float) firstSurface
-{
-	return _firstSurface;
-}
-- (float) secondSurface
-{
-	return _secondSurface;
-}
-- (float) resolution
-{
-	return _resolution;
-}
-- (float) firstTransparency
-{
-	return _firstTransparency;
-}
-- (float) secondTransparency
-{
-	return _secondTransparency;
-}
-
-- (float) decimate
-{
-	return _decimate;
-}
-
-- (int)smooth
-{
-	return _smooth;
-}
-
-- (NSColor *) firstColor
-{
-	return _firstColor;
-}
-
-- (NSColor *) secondColor
-{
-	return _secondColor;
-}
-
-- (BOOL)shouldDecimate
-{
-	
-	return _shouldDecimate;
-}
-- (BOOL	)shouldSmooth
-{
-	return _shouldSmooth;
-}
-
-- (BOOL) useFirstSurface
-{
-	return _useFirstSurface;
-}
-- (BOOL) useSecondSurface
-{
-	return _useSecondSurface;
-}
-
-- (void) setFirstSurface:(float)pixelValue
-{
-	_firstSurface = pixelValue;
-}
-- (void) setSecondSurface:(float)pixelValue
-{
-	_secondSurface = pixelValue;
-}
-
-- (void) setResolution:(float)resolution
-{
-	_resolution = resolution;
-}
-- (void) setFirstTransparency:(float)transparency
-{
-	_firstTransparency = transparency;
-}
-- (void) setSecondTransparency:(float)transparency
-{
-	_secondTransparency = transparency;
-}
-- (void) setDecimate:(float)decimateItr
-{
-	_decimate = decimateItr;
-}
-- (void) setSmooth:(int)iteration
-{
-	_smooth = iteration;
-}
-- (void) setFirstColor:(NSColor *)color
-{
-	_firstColor  = color;
-}
-
-- (void) setSecondColor: (NSColor *)color
-{
-	_secondColor  = color;
-}
-
-- (void) setShouldDecimate: (BOOL)shouldDecimate
-{
-	_shouldDecimate = shouldDecimate;
-}
-- (void) setShouldSmooth: (BOOL)shouldSmooth
-{
-	_shouldSmooth = shouldSmooth;
-}
-
-- (void) setUseFirstSurface:(BOOL)useSurface
-{
-	_useFirstSurface = useSurface;
-}
-- (void) setUseSecondSurface:(BOOL)useSurface
-{
-	_useSecondSurface = useSurface;
-}
-
-// Fusionm Surface values
-
-- (float) fusionFirstSurface
-{
-	return _fusionFirstSurface;
-}
-- (float) fusionSecondSurface
-{
-	return _fusionSecondSurface;
-}
-- (float) fusionResolution
-{
-	return _fusionResolution;
-}
-- (float) fusionFirstTransparency
-{
-	return _fusionFirstTransparency;
-}
-- (float) fusionSecondTransparency
-{
-	return _fusionSecondTransparency;
-}
-
-- (float) fusionDecimate
-{
-	return _fusionDecimate;
-}
-
-- (int)fusionSmooth
-{
-	return _fusionSmooth;
-}
-
-- (NSColor *) fusionFirstColor
-{
-	return _fusionFirstColor;
-}
-
-- (NSColor *) fusionSecondColor
-{
-	return _fusionSecondColor;
-}
-
-- (BOOL) fusionShouldDecimate
-{
-	
-	return _fusionShouldDecimate;
-}
-- (BOOL	)fusionShouldSmooth
-{
-	return _fusionShouldSmooth;
-}
-
-- (BOOL) fusionUseFirstSurface
-{
-	return _fusionUseFirstSurface;
-}
-- (BOOL) fusionUseSecondSurface
-{
-	return _fusionUseSecondSurface;
-}
-
-- (BOOL) shouldRenderFusion
-{
-	return _shouldRenderFusion;
-}
-
-
-- (void) setFusionFirstSurface:(float)pixelValue
-{
-	_fusionFirstSurface = pixelValue;
-}
-- (void) setFusionSecondSurface:(float)pixelValue
-{
-	_fusionSecondSurface = pixelValue;
-}
-
-- (void) setFusionResolution:(float)resolution
-{
-	_fusionResolution = resolution;
-}
-- (void) setFusionFirstTransparency:(float)transparency
-{
-	_fusionFirstTransparency = transparency;
-}
-- (void) setFusionSecondTransparency:(float)transparency
-{
-	_fusionSecondTransparency = transparency;
-}
-- (void) setFusionDecimate:(float)decimateItr
-{
-	_fusionDecimate = decimateItr;
-}
-- (void) setFusionSmooth:(int)iteration
-{
-	_fusionSmooth = iteration;
-}
-- (void) setFusionFirstColor:(NSColor *)color
-{
-	_fusionFirstColor  = color;
-}
-
-- (void) setFusionSecondColor: (NSColor *)color
-{
-	_fusionSecondColor  = color;
-}
-
-- (void) setFusionShouldDecimate: (BOOL)shouldDecimate
-{
-	_fusionShouldDecimate = shouldDecimate;
-}
-- (void) setFusionShouldSmooth: (BOOL)shouldSmooth
-{
-	_fusionShouldSmooth = shouldSmooth;
-}
-
-- (void) setFusionUseFirstSurface:(BOOL)useSurface
-{
-	_fusionUseFirstSurface = useSurface;
-}
-- (void) setFusionUseSecondSurface:(BOOL)useSurface
-{
-	_fusionUseSecondSurface = useSurface;
-}
-
-- (void) setShouldRenderFusion:(BOOL)shouldRenderFusion
-{
-	_shouldRenderFusion = shouldRenderFusion;
-}
-
 
 @end

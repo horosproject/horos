@@ -33,30 +33,16 @@
 /** \brief Window Controller for Surface Rendering */
 @interface SRController : Window3DController <NSWindowDelegate, NSToolbarDelegate>
 {
-    IBOutlet NSSlider       *LODSlider;
-    IBOutlet NSView         *toolsView, *LODView, *BlendingView, *export3DView, *perspectiveView;
-	IBOutlet SRView			*view;	
-
-	IBOutlet NSView			*OrientationsView;
-	
-	IBOutlet NSView			*BackgroundColorView;
-	
-    BOOL                    fusionSettingsWindow;
+    IBOutlet NSView         *toolsView, *LODView, *BlendingView, *export3DView, *perspectiveView, *OrientationsView, *BackgroundColorView;
+	IBOutlet SRView			*view;
 	IBOutlet NSWindow       *SRSettingsWindow;
-	IBOutlet NSButton		*checkFirst, *checkSecond;
-	IBOutlet NSTextField    *firstValue, *secondValue;
-	IBOutlet NSSlider		*resolSlide, *firstTrans, *secondTrans;
-	IBOutlet NSPopUpButton  *firstPopup, *secondPopup;
-	
-	IBOutlet NSMatrix		*preprocessMatrix;
-	IBOutlet NSTextField	*decimate, *smooth;
-		
+    
+    BOOL                    fusionSettingsWindow;
+    
     NSToolbar				*toolbar;
     NSMutableArray			*pixList;
 	NSArray					*fileList;
 	
-	IBOutlet NSTextField    *blendingPercentage;
-	IBOutlet NSSlider       *blendingSlider;
 	BOOL					blending;
 	NSData					*blendingVolumeData;
     NSMutableArray			*blendingPixList;
@@ -77,20 +63,7 @@
 	float					_firstSurface,  _secondSurface, _resolution, _firstTransparency, _secondTransparency, _decimate;
 	int						_smooth;
 	NSColor					*_firstColor, *_secondColor;
-	BOOL					_shouldDecimate;
-	BOOL					_shouldSmooth;
-	BOOL					_useFirstSurface;
-	BOOL					_useSecondSurface;
-	
-	BOOL					_shouldRenderFusion;
-	
-	float					_fusionFirstSurface,  _fusionSecondSurface, _fusionResolution, _fusionFirstTransparency, _fusionSecondTransparency, _fusionDecimate;
-	int						_fusionSmooth;
-	NSColor					*_fusionFirstColor, *_fusionSecondColor;
-	BOOL					_fusionShouldDecimate;
-	BOOL					_fusionShouldSmooth;
-	BOOL					_fusionUseFirstSurface;
-	BOOL					_fusionUseSecondSurface;
+	BOOL					_shouldDecimate, _shouldSmooth, _useFirstSurface, _useSecondSurface, _shouldRenderFusion;
 	
 	NSTimeInterval			flyThruRecordingTimeFrame;
 	
@@ -111,6 +84,11 @@
 #endif
 
 }
+
+@property float firstSurface, secondSurface, resolution, firstTransparency, secondTransparency, decimate;
+@property int smooth;
+@property (retain) NSColor *firstColor, *secondColor;
+@property BOOL shouldDecimate, shouldSmooth, useFirstSurface, useSecondSurface, shouldRenderFusion;
 
 - (IBAction) setOrientation:(id) sender;
 - (ViewerController*) blendingController;
@@ -140,79 +118,15 @@
 - (void)renderFusionSurfaces;
 
 #ifdef roi3Dvolume
-// ROIs Volumes
 - (void) computeROIVolumes;
 - (NSMutableArray*) roiVolumes;
-//- (void) displayROIVolumeAtIndex: (int) index;
 - (void) displayROIVolume: (ROIVolume*) v;
-//- (void) hideROIVolumeAtIndex: (int) index;
 - (void) hideROIVolume: (ROIVolume*) v;
 - (void) displayROIVolumes;
 - (IBAction) roiGetManager:(id) sender;
 #endif
 
-//Surface values
-
-- (float) firstSurface;
-- (float) secondSurface;
-- (float) resolution;
-- (float) firstTransparency;
-- (float) secondTransparency;
-- (float) decimate;
-- (int)smooth;
-- (NSColor *) firstColor;
-- (NSColor *) secondColor;
-- (BOOL) shouldDecimate;
-- (BOOL) shouldSmooth;
-- (BOOL) useFirstSurface;
-- (BOOL) useSecondSurface;
-
-- (void) setFirstSurface:(float)pixelValue;
-- (void) setSecondSurface:(float)pixelValue;
-- (void) setResolution:(float)resolution;
-- (void) setFirstTransparency:(float)transparency;
-- (void) setSecondTransparency:(float)transparency;
-- (void) setDecimate:(float)decimateItr;
-- (void) setSmooth:(int)iteration;
-- (void) setFirstColor:(NSColor *)color;
-- (void) setSecondColor: (NSColor *)color;
-- (void) setShouldDecimate: (BOOL)shouldDecimate;
-- (void) setShouldSmooth: (BOOL)shouldSmooth;
-- (void) setUseFirstSurface:(BOOL)useSurface;
-- (void) setUseSecondSurface:(BOOL)useSurface;
-
-//fusion Surface values
-
-- (float) fusionFirstSurface;
-- (float) fusionSecondSurface;
-- (float) fusionResolution;
-- (float) fusionFirstTransparency;
-- (float) fusionSecondTransparency;
-- (float) fusionDecimate;
-- (int) fusionSmooth;
-- (NSColor *) fusionFirstColor;
-- (NSColor *) fusionSecondColor;
-- (BOOL) fusionShouldDecimate;
-- (BOOL) fusionShouldSmooth;
-- (BOOL) fusionUseFirstSurface;
-- (BOOL) fusionUseSecondSurface;
-
 - (BOOL) shouldRenderFusion;
-
-- (void) setFusionFirstSurface:(float)pixelValue;
-- (void) setFusionSecondSurface:(float)pixelValue;
-- (void) setFusionResolution:(float)resolution;
-- (void) setFusionFirstTransparency:(float)transparency;
-- (void) setFusionSecondTransparency:(float)transparency;
-- (void) setFusionDecimate:(float)decimateItr;
-- (void) setFusionSmooth:(int)iteration;
-- (void) setFusionFirstColor:(NSColor *)color;
-- (void) setFusionSecondColor: (NSColor *)color;
-- (void) setFusionShouldDecimate: (BOOL)shouldDecimate;
-- (void) setFusionShouldSmooth: (BOOL)shouldSmooth;
-- (void) setFusionUseFirstSurface:(BOOL)useSurface;
-- (void) setFusionUseSecondSurface:(BOOL)useSurface;
-- (void) setShouldRenderFusion:(BOOL)shouldRenderFusion;
 
 @end
 
