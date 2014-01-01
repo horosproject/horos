@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13B35" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C32" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
@@ -21,34 +21,46 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES" unifiedTitleAndToolbar="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="114" y="455" width="783" height="401"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
             <value key="minSize" type="size" width="395" height="281"/>
             <view key="contentView" id="21">
                 <rect key="frame" x="0.0" y="0.0" width="783" height="401"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <customView hidden="YES" id="754" customClass="SFAuthorizationView">
+                    <customView hidden="YES" translatesAutoresizingMaskIntoConstraints="NO" id="754" customClass="SFAuthorizationView">
                         <rect key="frame" x="583" y="341" width="200" height="60"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                     </customView>
-                    <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="715">
+                    <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="715">
                         <rect key="frame" x="0.0" y="0.0" width="783" height="401"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <clipView key="contentView" id="0tL-TD-8IP">
                             <rect key="frame" x="0.0" y="0.0" width="783" height="401"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <customView id="718">
+                                <customView translatesAutoresizingMaskIntoConstraints="NO" id="718">
                                     <rect key="frame" x="0.0" y="0.0" width="783" height="401"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <subviews>
-                                        <customView id="757" customClass="PreferencesView">
+                                        <customView translatesAutoresizingMaskIntoConstraints="NO" id="757" customClass="PreferencesView">
                                             <rect key="frame" x="0.0" y="0.0" width="783" height="401"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         </customView>
                                     </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="bottom" secondItem="757" secondAttribute="bottom" id="JaK-hO-nph"/>
+                                        <constraint firstAttribute="trailing" secondItem="757" secondAttribute="trailing" id="OnI-RH-Wrc"/>
+                                        <constraint firstItem="757" firstAttribute="leading" secondItem="718" secondAttribute="leading" id="boL-ee-o2Y"/>
+                                        <constraint firstItem="757" firstAttribute="top" secondItem="718" secondAttribute="top" id="uRE-uJ-I5u"/>
+                                    </constraints>
                                 </customView>
                             </subviews>
+                            <constraints>
+                                <constraint firstAttribute="trailing" secondItem="718" secondAttribute="trailing" id="2RS-RE-s1F"/>
+                                <constraint firstAttribute="bottom" secondItem="718" secondAttribute="bottom" id="Uvb-6F-ksY"/>
+                                <constraint firstItem="718" firstAttribute="leading" secondItem="0tL-TD-8IP" secondAttribute="leading" id="dMx-9q-hcT"/>
+                                <constraint firstItem="718" firstAttribute="top" secondItem="0tL-TD-8IP" secondAttribute="top" id="jpc-oJ-EBe"/>
+                            </constraints>
                         </clipView>
                         <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="717">
                             <rect key="frame" x="0.0" y="386" width="765" height="15"/>
@@ -60,6 +72,16 @@
                         </scroller>
                     </scrollView>
                 </subviews>
+                <constraints>
+                    <constraint firstItem="754" firstAttribute="leading" secondItem="21" secondAttribute="leading" constant="583" id="83k-aO-wMI"/>
+                    <constraint firstAttribute="trailing" secondItem="754" secondAttribute="trailing" id="8fZ-Jo-fPJ"/>
+                    <constraint firstAttribute="bottom" secondItem="754" secondAttribute="bottom" constant="341" id="Jwk-gA-eqU"/>
+                    <constraint firstItem="715" firstAttribute="top" secondItem="754" secondAttribute="top" id="Rit-pU-WuC"/>
+                    <constraint firstItem="754" firstAttribute="trailing" secondItem="715" secondAttribute="trailing" id="XTf-oR-2N5"/>
+                    <constraint firstItem="715" firstAttribute="top" secondItem="21" secondAttribute="top" id="jfE-EX-guz"/>
+                    <constraint firstAttribute="bottom" secondItem="715" secondAttribute="bottom" id="k4z-dT-SqT"/>
+                    <constraint firstItem="715" firstAttribute="leading" secondItem="21" secondAttribute="leading" id="oCL-4c-8n8"/>
+                </constraints>
             </view>
             <toolbar key="toolbar" implicitIdentifier="95223799-629E-4BA8-B285-ED3A011B2554" autosavesConfiguration="NO" allowsUserCustomization="NO" displayMode="iconOnly" sizeMode="regular" id="600">
                 <allowedToolbarItems>

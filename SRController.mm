@@ -357,40 +357,66 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 
 -(void) setDefaultTool:(id) sender
 {
-    id          theCell = [sender selectedCell];
+    id theCell = [sender selectedCell];
     
     if( [theCell tag] >= 0)
-    {
         [view setCurrentTool: [theCell tag]];
-    }
 }
 
 -(IBAction) SettingsPopup:(id) sender
 {
-	
-	switch((long) [sender tag])
-	{
-		case 1:
-			[self setFirstSurface: -500.0];
-			break;
-		case 11:
-			[self setSecondSurface: -500.];
-			break;
-		
-		case 2:
-			[self setFirstSurface: 500.0];
-			break;
-		case 12:
-			[self setSecondSurface: 500.0];
-			break;
-		
-		case 3:
-			[self setFirstSurface: 2000.0];
-			break;
-		case 13:
-			[self setSecondSurface: 2000.0];
-			break;
-	}
+    if( fusionSettingsWindow)
+    {
+        switch( [sender tag])
+        {
+            case 1:
+                [self setFusionFirstSurface: -500.0];
+                break;
+            case 11:
+                [self setFusionSecondSurface: -500.];
+                break;
+                
+            case 2:
+                [self setFusionFirstSurface: 500.0];
+                break;
+            case 12:
+                [self setFusionSecondSurface: 500.0];
+                break;
+                
+            case 3:
+                [self setFusionFirstSurface: 2000.0];
+                break;
+            case 13:
+                [self setFusionSecondSurface: 2000.0];
+                break;
+        }
+    }
+    else
+    {
+        switch( [sender tag])
+        {
+            case 1:
+                [self setFirstSurface: -500.0];
+                break;
+            case 11:
+                [self setSecondSurface: -500.];
+                break;
+            
+            case 2:
+                [self setFirstSurface: 500.0];
+                break;
+            case 12:
+                [self setSecondSurface: 500.0];
+                break;
+            
+            case 3:
+                [self setFirstSurface: 2000.0];
+                break;
+            case 13:
+                [self setSecondSurface: 2000.0];
+                break;
+        }
+    }
 }
 
 -(IBAction) ApplySettings:(id) sender
@@ -398,15 +424,23 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
     [SRSettingsWindow orderOut:sender];
     
     [NSApp endSheet:SRSettingsWindow returnCode:[sender tag]];
-    	
-    if( [sender tag])   //User clicks OK Button
+    
+    if( [sender tag])
     {
-		[self renderSurfaces];
+        if( fusionSettingsWindow)
+        {
+            [self setShouldRenderFusion:YES];
+            [self renderFusionSurfaces];
+        }
+        else
+        {
+            [self renderSurfaces];
+        }
     }
-	
 }
 
-- (void)renderSurfaces{
+- (void)renderSurfaces
+{
 	WaitRendering *www = [[WaitRendering alloc] init: NSLocalizedString( @"Preparing 3D Iso Surface...", nil)];
 	[www start];
     
@@ -454,36 +488,8 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 
 - (void) ChangeSettings:(id) sender
 {
+    fusionSettingsWindow = NO;
     [NSApp beginSheet: SRSettingsWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
-}
-
--(IBAction) BSettingsPopup:(id) sender
-{
-
-	
-	switch((long) [sender tag])
-	{
-		case 1:
-			[self setFusionFirstSurface: -500.0];
-			break;
-		case 11:
-			[self setFusionSecondSurface: -500.];
-			break;
-		
-		case 2:
-			[self setFusionFirstSurface: 500.0];
-			break;
-		case 12:
-			[self setFusionSecondSurface: 500.0];
-			break;
-		
-		case 3:
-			[self setFusionFirstSurface: 2000.0];
-			break;
-		case 13:
-			[self setFusionSecondSurface: 2000.0];
-			break;
-	}
 }
 
 - (void)renderFusionSurfaces{
@@ -522,22 +528,10 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 
 }
 
--(IBAction) BApplySettings:(id) sender
-{
-    [BSRSettingsWindow orderOut:sender];
-    
-    [NSApp endSheet:BSRSettingsWindow returnCode:[sender tag]];
-    
-    if( [sender tag])   //User clicks OK Button
-    {
-		[self setShouldRenderFusion:YES];
-		[self renderFusionSurfaces];
-	}
-}
-
 - (void) BChangeSettings:(id) sender
 {
-    [NSApp beginSheet: BSRSettingsWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
+    fusionSettingsWindow = YES;
+    [NSApp beginSheet: SRSettingsWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo: nil];
 }
 
 // ============================================================

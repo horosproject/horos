@@ -41,25 +41,15 @@
 	
 	IBOutlet NSView			*BackgroundColorView;
 	
+    BOOL                    fusionSettingsWindow;
 	IBOutlet NSWindow       *SRSettingsWindow;
 	IBOutlet NSButton		*checkFirst, *checkSecond;
 	IBOutlet NSTextField    *firstValue, *secondValue;
 	IBOutlet NSSlider		*resolSlide, *firstTrans, *secondTrans;
 	IBOutlet NSPopUpButton  *firstPopup, *secondPopup;
 	
-
-	IBOutlet NSWindow       *BSRSettingsWindow;
-	IBOutlet NSButton		*BcheckFirst, *BcheckSecond;
-	IBOutlet NSTextField    *BfirstValue, *BsecondValue;
-	IBOutlet NSSlider		*BresolSlide, *BfirstTrans, *BsecondTrans;
-	IBOutlet NSPopUpButton  *BfirstPopup, *BsecondPopup;
-	IBOutlet NSColorWell	*BfirstColor, *BsecondColor;
-	
 	IBOutlet NSMatrix		*preprocessMatrix;
 	IBOutlet NSTextField	*decimate, *smooth;
-	
-	IBOutlet NSMatrix		*BpreprocessMatrix;
-	IBOutlet NSTextField	*Bdecimate, *Bsmooth;
 		
     NSToolbar				*toolbar;
     NSMutableArray			*pixList;
@@ -130,9 +120,6 @@
 - (IBAction) ApplySettings:(id) sender;
 - (void) ChangeSettings:(id) sender;
 - (IBAction) SettingsPopup:(id) sender;
-- (IBAction) BApplySettings:(id) sender;
-- (void) BChangeSettings:(id) sender;
-- (IBAction) BSettingsPopup:(id) sender;
 - (NSArray*) fileList;
 
 - (IBAction)flyThruButtonMenu:(id)sender;

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13B42" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C32" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
@@ -67,11 +67,11 @@
                         <tabViewItems>
                             <tabViewItem label="Name" identifier="1" id="660">
                                 <view key="view" id="661">
-                                    <rect key="frame" x="10" y="28" width="929" height="21"/>
+                                    <rect key="frame" x="10" y="19" width="929" height="30"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <searchField verticalHuggingPriority="750" id="667">
-                                            <rect key="frame" x="47" y="-6" width="806" height="22"/>
+                                            <rect key="frame" x="47" y="3" width="806" height="22"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" alignment="left" placeholderString="Patient Name" bezelStyle="round" sendsWholeSearchString="YES" maximumRecents="20" recentsAutosaveName="LastQueryPatientName" id="749">
                                                 <font key="font" metaFont="cellTitle"/>
@@ -414,14 +414,14 @@ AQAAAA4QAAVDRVNUAENFVAAAAAEBAAABAQ
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
                                     <box title="Title" boxType="secondary" borderType="bezel" titlePosition="noTitle" id="549">
-                                        <rect key="frame" x="844" y="-2" width="114" height="167.00000004960884"/>
+                                        <rect key="frame" x="844" y="-2" width="114" height="167.00000009921015"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES" heightSizable="YES"/>
                                         <view key="contentView">
-                                            <rect key="frame" x="3" y="3" width="108" height="161.00000004960884"/>
+                                            <rect key="frame" x="3" y="3" width="108" height="161.00000009921015"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
                                                 <matrix verticalHuggingPriority="750" mode="highlight" allowsEmptySelection="NO" autosizesCells="NO" id="528">
-                                                    <rect key="frame" x="5" y="8.0000000496088504" width="112" height="149"/>
+                                                    <rect key="frame" x="5" y="8.0000000992101423" width="112" height="149"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                     <size key="cellSize" width="54" height="14"/>
@@ -527,14 +527,14 @@ AQAAAA4QAAVDRVNUAENFVAAAAAEBAAABAQ
                                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     </box>
                                     <box title="Title" boxType="secondary" borderType="bezel" titlePosition="noTitle" id="717">
-                                        <rect key="frame" x="17" y="-2" width="473" height="167.00000004960884"/>
+                                        <rect key="frame" x="17" y="-2" width="473" height="167.00000009921013"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" heightSizable="YES"/>
                                         <view key="contentView">
-                                            <rect key="frame" x="3" y="3" width="467" height="161.00000004960884"/>
+                                            <rect key="frame" x="3" y="3" width="467" height="161.00000009921013"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
                                                 <textField verticalHuggingPriority="750" id="641">
-                                                    <rect key="frame" x="6" y="139.00000004960884" width="135" height="18"/>
+                                                    <rect key="frame" x="6" y="139.00000009921013" width="135" height="18"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                                                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="DICOM Nodes:" id="753">
                                                         <font key="font" metaFont="miniSystem"/>
@@ -543,14 +543,14 @@ AQAAAA4QAAVDRVNUAENFVAAAAAEBAAABAQ
                                                     </textFieldCell>
                                                 </textField>
                                                 <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="0.0" verticalLineScroll="19" verticalPageScroll="0.0" usesPredominantAxisScrolling="NO" id="690">
-                                                    <rect key="frame" x="6" y="6" width="455" height="139.00000004960884"/>
+                                                    <rect key="frame" x="6" y="6" width="455" height="139.00000009921013"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <clipView key="contentView" id="Gmi-iM-SZh">
-                                                        <rect key="frame" x="1" y="1.0000000496088433" width="453" height="126"/>
+                                                        <rect key="frame" x="1" y="1.0000000992101832" width="453" height="137"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
                                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" multipleSelection="NO" emptySelection="NO" autosaveName="srcsTable" id="691" customClass="sourcesTableView">
-                                                                <rect key="frame" x="0.0" y="0.0" width="458" height="126"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="458" height="137"/>
                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -636,7 +636,7 @@ AQAAAA4QAAVDRVNUAENFVAAAAAEBAAABAQ
                                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </clipView>
                                                     <scroller key="horizontalScroller" verticalHuggingPriority="750" controlSize="small" horizontal="YES" id="782">
-                                                        <rect key="frame" x="1" y="127.00000004960884" width="453" height="11"/>
+                                                        <rect key="frame" x="1" y="124.00000009921013" width="453" height="14"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                     </scroller>
                                                     <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" controlSize="small" horizontal="NO" id="781">
@@ -645,7 +645,7 @@ AQAAAA4QAAVDRVNUAENFVAAAAAEBAAABAQ
                                                     </scroller>
                                                 </scrollView>
                                                 <textField verticalHuggingPriority="750" id="727">
-                                                    <rect key="frame" x="133" y="140.00000004960884" width="329" height="17"/>
+                                                    <rect key="frame" x="133" y="140.00000009921013" width="329" height="17"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Drag sources into the priority order for retrieving" id="754">
                                                         <font key="font" metaFont="miniSystem"/>
@@ -910,11 +910,11 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                         <rect key="frame" x="21" y="40" width="934" height="372"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <clipView key="contentView" id="YTi-kc-ru4">
-                                            <rect key="frame" x="1" y="17" width="932" height="343"/>
+                                            <rect key="frame" x="1" y="17" width="932" height="354"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
                                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="none" alternatingRowBackgroundColors="YES" emptySelection="NO" headerView="780" id="319" customClass="QueryOutlineView">
-                                                    <rect key="frame" x="0.0" y="0.0" width="1584" height="343"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="1584" height="354"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <size key="intercellSpacing" width="3" height="2"/>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -1189,7 +1189,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                         </clipView>
                                         <scroller key="horizontalScroller" verticalHuggingPriority="750" controlSize="small" horizontal="YES" id="779">
-                                            <rect key="frame" x="1" y="360" width="932" height="11"/>
+                                            <rect key="frame" x="1" y="357" width="932" height="14"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
                                         <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" controlSize="small" horizontal="NO" id="778">
@@ -1276,10 +1276,10 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                                     <binding destination="832" name="value" keyPath="values.autoRetrieving" id="843"/>
                                                     <binding destination="832" name="enabled2" keyPath="values.dontAuthorizeAutoRetrieve" previousBinding="925" id="926">
                                                         <dictionary key="options">
-                                                            <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                                            <integer key="NSNullPlaceholder" value="-1"/>
                                                             <integer key="NSNotApplicablePlaceholder" value="-1"/>
                                                             <integer key="NSNoSelectionPlaceholder" value="-1"/>
-                                                            <integer key="NSNullPlaceholder" value="-1"/>
+                                                            <integer key="NSMultipleValuesPlaceholder" value="-1"/>
                                                             <string key="NSValueTransformerName">NSNegateBoolean</string>
                                                         </dictionary>
                                                     </binding>
@@ -1302,10 +1302,10 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                                     <binding destination="-2" name="enabled" keyPath="autoRefreshQueryResults" id="943"/>
                                                     <binding destination="832" name="enabled2" keyPath="values.dontAuthorizeAutoRetrieve" previousBinding="943" id="947">
                                                         <dictionary key="options">
-                                                            <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                                            <integer key="NSNullPlaceholder" value="-1"/>
                                                             <integer key="NSNotApplicablePlaceholder" value="-1"/>
                                                             <integer key="NSNoSelectionPlaceholder" value="-1"/>
-                                                            <integer key="NSNullPlaceholder" value="-1"/>
+                                                            <integer key="NSMultipleValuesPlaceholder" value="-1"/>
                                                             <string key="NSValueTransformerName">NSNegateBoolean</string>
                                                         </dictionary>
                                                     </binding>
