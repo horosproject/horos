@@ -65,6 +65,8 @@
 	NSColor					*_firstColor, *_secondColor;
 	BOOL					_shouldDecimate, _shouldSmooth, _useFirstSurface, _useSecondSurface, _shouldRenderFusion;
 	
+    NSMutableDictionary     *settings, *blendingSettings;
+    
 	NSTimeInterval			flyThruRecordingTimeFrame;
 	
 #ifdef _STEREO_VISION_

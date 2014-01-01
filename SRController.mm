@@ -88,20 +88,25 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 
 - (void) windowDidLoad
 {
-	self.resolution = 0.5;
-	self.shouldDecimate = YES;
-	self.shouldSmooth = YES;
-	self.firstSurface = 300.0;
-	self.secondSurface =  -500.0;
-	self.firstTransparency =  1.0;
-	self.secondTransparency =  1.0;
-	self.decimate =  0.5;
-	self.smooth =  20;
-	self.firstColor = [NSColor colorWithCalibratedRed:1.0 green:1.0 blue:1.0 alpha:1.0];
-	self.secondColor = [NSColor colorWithCalibratedRed:1.0 green:0.592 blue:0.608 alpha:1.0];
-	self.useFirstSurface = YES;
-	self.useSecondSurface = NO;
-	
+    settings = [NSMutableDictionary new];
+    blendingSettings = [NSMutableDictionary new];
+    
+    [settings setObject: @0.5 forKey: @"resolution"];
+    [settings setObject: @YES forKey: @"shouldDecimate"];
+    [settings setObject: @YES forKey: @"shouldSmooth"];
+    [settings setObject: @300 forKey: @"firstSurface"];
+    [settings setObject: @-500 forKey: @"secondSurface"];
+    [settings setObject: @1.0 forKey: @"firstTransparency"];
+    [settings setObject: @1.0 forKey: @"secondTransparency"];
+    [settings setObject: @0.5 forKey: @"decimate"];
+    [settings setObject: @20 forKey: @"smooth"];
+    [settings setObject: [NSColor colorWithCalibratedRed:1.0 green:1.0 blue:1.0 alpha:1.0] forKey: @"firstColor"];
+    [settings setObject: [NSColor colorWithCalibratedRed:1.0 green:0.592 blue:0.608 alpha:1.0] forKey: @"secondColor"];
+    [settings setObject: @YES forKey: @"useFirstSurface"];
+    [settings setObject: @NO forKey: @"useSecondSurface"];
+    
+    [blendingSettings addEntriesFromDictionary: settings];
+    
 	self.shouldRenderFusion = NO;
 }
 
@@ -319,6 +324,9 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
     [_firstColor release];
     [_secondColor release];
     
+    [settings release];
+    [blendingSettings release];
+    
 	[super dealloc];
 }
 
@@ -378,15 +386,34 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
     
     if( [sender tag])
     {
+        NSMutableDictionary * d = nil;
+        
         if( fusionSettingsWindow)
         {
+            d = blendingSettings;
+            
             [self setShouldRenderFusion:YES];
             [self renderFusionSurfaces];
         }
         else
         {
+            d = settings;
             [self renderSurfaces];
         }
+        
+        [d setObject: @0.5 forKey: @"resolution"];
+        [d setObject: @YES forKey: @"shouldDecimate"];
+        [d setObject: @YES forKey: @"shouldSmooth"];
+        [d setObject: @300 forKey: @"firstSurface"];
+        [d setObject: @-500 forKey: @"secondSurface"];
+        [d setObject: @1.0 forKey: @"firstTransparency"];
+        [d setObject: @1.0 forKey: @"secondTransparency"];
+        [d setObject: @0.5 forKey: @"decimate"];
+        [d setObject: @20 forKey: @"smooth"];
+        [d setObject: [NSColor colorWithCalibratedRed:1.0 green:1.0 blue:1.0 alpha:1.0] forKey: @"firstColor"];
+        [d setObject: [NSColor colorWithCalibratedRed:1.0 green:0.592 blue:0.608 alpha:1.0] forKey: @"secondColor"];
+        [d setObject: @YES forKey: @"useFirstSurface"];
+        [d setObject: @NO forKey: @"useSecondSurface"];
     }
 }
 
@@ -440,6 +467,21 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 - (void) ChangeSettings:(id) sender
 {
     fusionSettingsWindow = NO;
+    
+    self.resolution = [[settings objectForKey: @"resolution"] floatValue];
+    self.shouldDecimate = [[settings objectForKey: @"shouldDecimate"] boolValue];
+    self.shouldSmooth = [[settings objectForKey: @"shouldSmooth"] boolValue];
+    self.firstSurface = [[settings objectForKey: @"firstSurface"] floatValue];
+    self.secondSurface = [[settings objectForKey: @"secondSurface"] floatValue];
+    self.firstTransparency = [[settings objectForKey: @"firstTransparency"] floatValue];
+    self.secondTransparency = [[settings objectForKey: @"secondTransparency"] floatValue];
+    self.decimate = [[settings objectForKey: @"decimate"] floatValue];
+    self.smooth = [[settings objectForKey: @"smooth"] floatValue];
+    self.firstColor = [settings objectForKey: @"firstColor"];
+    self.secondColor = [settings objectForKey: @"secondColor"];
+    self.useFirstSurface = [[settings objectForKey: @"useFirstSurface"] boolValue];
+    self.useSecondSurface = [[settings objectForKey: @"useSecondSurface"] boolValue];
+
     [NSApp beginSheet: SRSettingsWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 }
 
@@ -483,6 +525,21 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 - (void) BChangeSettings:(id) sender
 {
     fusionSettingsWindow = YES;
+    
+    self.resolution = [[blendingSettings objectForKey: @"resolution"] floatValue];
+    self.shouldDecimate = [[blendingSettings objectForKey: @"shouldDecimate"] boolValue];
+    self.shouldSmooth = [[blendingSettings objectForKey: @"shouldSmooth"] boolValue];
+    self.firstSurface = [[blendingSettings objectForKey: @"firstSurface"] floatValue];
+    self.secondSurface = [[blendingSettings objectForKey: @"secondSurface"] floatValue];
+    self.firstTransparency = [[blendingSettings objectForKey: @"firstTransparency"] floatValue];
+    self.secondTransparency = [[blendingSettings objectForKey: @"secondTransparency"] floatValue];
+    self.decimate = [[blendingSettings objectForKey: @"decimate"] floatValue];
+    self.smooth = [[blendingSettings objectForKey: @"smooth"] floatValue];
+    self.firstColor = [blendingSettings objectForKey: @"firstColor"];
+    self.secondColor = [blendingSettings objectForKey: @"secondColor"];
+    self.useFirstSurface = [[blendingSettings objectForKey: @"useFirstSurface"] boolValue];
+    self.useSecondSurface = [[blendingSettings objectForKey: @"useSecondSurface"] boolValue];
+    
     [NSApp beginSheet: SRSettingsWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo: nil];
 }
 
