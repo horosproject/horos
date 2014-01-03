@@ -560,37 +560,37 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 	float deltaY = frameBefore.size.height - frameAfter.size.height;
 	frameAfter.origin.y = frameBefore.origin.y + deltaY;
 	[params setFrame:frameAfter];
-	
-	//adjust the size of the parameters box
-	NSRect parametersBoxFrameBefore = [parametersBox frame];
-	[parametersBox setContentViewMargins:NSMakeSize(4, 12)];
-	[parametersBox sizeToFit];
-	[parametersBox setFrame: NSMakeRect( parametersBoxFrameBefore.origin.x, [parametersBox frame].origin.y, parametersBoxFrameBefore.size.width, [parametersBox frame].size.height) ];
-	
-	// frames
-	NSRect parametersBoxFrame = [parametersBox frame];
-	NSRect resultsBoxFrame = [resultsBox frame];
-	NSRect computeButtonFrame = [computeButton frame];
-	
-	//adjust the size & position of the window
-	NSRect windowFrame = [[self window] frame];
-	float newWindowHeight = parametersBoxFrame.size.height+resultsBoxFrame.size.height+computeButtonFrame.size.height+20+15;
-	float deltaHeight = newWindowHeight-windowFrame.size.height;
-	windowFrame.origin.y -= deltaHeight;
-	windowFrame.size.height = newWindowHeight;
-	[[self window] setFrame:windowFrame display:NO];
-	
-	//adjust the position of the parameters box
-	parametersBoxFrame.origin.y = windowFrame.size.height - parametersBoxFrame.size.height - 20;
-	[parametersBox setFrame:parametersBoxFrame];
-
-	//adjust the position of the results box and the compute button
-	resultsBoxFrame.origin.y = parametersBoxFrame.origin.y - resultsBoxFrame.size.height - 5;
-	[resultsBox setFrame:resultsBoxFrame];
-	computeButtonFrame.origin.y = resultsBoxFrame.origin.y - computeButtonFrame.size.height - 5;
-	[computeButton setFrame:computeButtonFrame];
-	
-	[[self window] display];
+//
+//	//adjust the size of the parameters box
+//	NSRect parametersBoxFrameBefore = [parametersBox frame];
+//	[parametersBox setContentViewMargins:NSMakeSize(4, 12)];
+//	[parametersBox sizeToFit];
+//	[parametersBox setFrame: NSMakeRect( parametersBoxFrameBefore.origin.x, [parametersBox frame].origin.y, parametersBoxFrameBefore.size.width, [parametersBox frame].size.height) ];
+//	
+//	// frames
+//	NSRect parametersBoxFrame = [parametersBox frame];
+//	NSRect resultsBoxFrame = [resultsBox frame];
+//	NSRect computeButtonFrame = [computeButton frame];
+//	
+//	//adjust the size & position of the window
+//	NSRect windowFrame = [[self window] frame];
+//	float newWindowHeight = parametersBoxFrame.size.height+resultsBoxFrame.size.height+computeButtonFrame.size.height+20+15;
+//	float deltaHeight = newWindowHeight-windowFrame.size.height;
+//	windowFrame.origin.y -= deltaHeight;
+//	windowFrame.size.height = newWindowHeight;
+//	[[self window] setFrame:windowFrame display:NO];
+//	
+//	//adjust the position of the parameters box
+//	parametersBoxFrame.origin.y = windowFrame.size.height - parametersBoxFrame.size.height - 20;
+//	[parametersBox setFrame:parametersBoxFrame];
+//
+//	//adjust the position of the results box and the compute button
+//	resultsBoxFrame.origin.y = parametersBoxFrame.origin.y - resultsBoxFrame.size.height - 5;
+//	[resultsBox setFrame:resultsBoxFrame];
+//	computeButtonFrame.origin.y = resultsBoxFrame.origin.y - computeButtonFrame.size.height - 5;
+//	[computeButton setFrame:computeButtonFrame];
+//	
+//	[[self window] display];
 }
 
 - (IBAction) algorithmGetHelp:(id) sender
