@@ -50,7 +50,7 @@
         <window title="DICOM Query/Retrieve" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" wantsToBeColor="NO" visibleAtLaunch="NO" frameAutosaveName="QR" animationBehavior="default" id="144" userLabel="Window">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="949" height="672"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <value key="minSize" type="size" width="900" height="370"/>
             <view key="contentView" id="145">
                 <rect key="frame" x="0.0" y="0.0" width="949" height="672"/>
@@ -90,7 +90,6 @@
                                     <constraints>
                                         <constraint firstItem="667" firstAttribute="leading" secondItem="661" secondAttribute="leading" constant="47" id="QlW-dI-WYu"/>
                                         <constraint firstAttribute="trailing" secondItem="667" secondAttribute="trailing" constant="76" id="SwM-WV-1DN"/>
-                                        <constraint firstAttribute="bottom" secondItem="667" secondAttribute="bottom" constant="3" id="h5Q-jo-YlO"/>
                                         <constraint firstItem="667" firstAttribute="top" secondItem="661" secondAttribute="top" constant="5" id="xTL-gR-bOO"/>
                                     </constraints>
                                 </view>
@@ -636,7 +635,7 @@ AQAAAA4QAAVDRVNUAENFVAAAAAEBAAABAQ
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
                                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" multipleSelection="NO" emptySelection="NO" autosaveName="srcsTable" id="691" customClass="sourcesTableView">
-                                                                <rect key="frame" x="0.0" y="0.0" width="458" height="137"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="453" height="137"/>
                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -659,7 +658,7 @@ AQAAAA4QAAVDRVNUAENFVAAAAAEBAAABAQ
                                                                             <binding destination="696" name="value" keyPath="arrangedObjects.activated" id="698"/>
                                                                         </connections>
                                                                     </tableColumn>
-                                                                    <tableColumn identifier="name" editable="NO" width="126" minWidth="60" maxWidth="200" id="692">
+                                                                    <tableColumn identifier="name" editable="NO" width="121" minWidth="60" maxWidth="200" id="692">
                                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Name">
                                                                             <font key="font" metaFont="smallSystem"/>
                                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -721,7 +720,7 @@ AQAAAA4QAAVDRVNUAENFVAAAAAEBAAABAQ
                                                         </subviews>
                                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </clipView>
-                                                    <scroller key="horizontalScroller" verticalHuggingPriority="750" controlSize="small" horizontal="YES" id="782">
+                                                    <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" controlSize="small" horizontal="YES" id="782">
                                                         <rect key="frame" x="1" y="124" width="453" height="14"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                     </scroller>
@@ -987,7 +986,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
                                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="836">
-                                        <rect key="frame" x="885" y="432" width="48" height="14"/>
+                                        <rect key="frame" x="881" y="432" width="48" height="14"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="44" id="3Jk-NX-1Rs"/>
@@ -1330,7 +1329,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
                                         <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" controlSize="small" horizontal="NO" id="778">
-                                            <rect key="frame" x="681" y="17" width="11" height="0.0"/>
+                                            <rect key="frame" x="755" y="17" width="11" height="0.0"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
                                         <tableHeaderView key="headerView" id="780">
@@ -1339,18 +1338,21 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                         </tableHeaderView>
                                     </scrollView>
                                     <box title="Title" boxType="oldStyle" borderType="none" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="728">
-                                        <rect key="frame" x="364" y="427" width="358" height="27"/>
+                                        <rect key="frame" x="364" y="427" width="357" height="27"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                         <view key="contentView">
-                                            <rect key="frame" x="0.0" y="0.0" width="358" height="27"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="357" height="27"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
-                                                <progressIndicator horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" displayedWhenStopped="NO" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="339">
-                                                    <rect key="frame" x="343" y="2" width="16" height="16"/>
+                                                <progressIndicator horizontalHuggingPriority="750" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" maxValue="100" displayedWhenStopped="NO" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="339">
+                                                    <rect key="frame" x="342" y="2" width="16" height="16"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="16" id="kCi-5g-wZv"/>
+                                                    </constraints>
                                                 </progressIndicator>
                                                 <segmentedControl horizontalHuggingPriority="249" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="725">
-                                                    <rect key="frame" x="2" y="-2" width="335" height="25"/>
+                                                    <rect key="frame" x="2" y="-2" width="334" height="25"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <segmentedCell key="cell" state="on" alignment="left" style="texturedRounded" trackingMode="momentary" id="760">
                                                         <font key="font" metaFont="system"/>
@@ -1401,8 +1403,8 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                             <binding destination="-2" name="enabled" keyPath="autoRefreshQueryResults" id="921"/>
                                         </connections>
                                     </button>
-                                    <customView translatesAutoresizingMaskIntoConstraints="NO" id="1174">
-                                        <rect key="frame" x="742" y="413" width="147" height="35"/>
+                                    <customView horizontalHuggingPriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="1174">
+                                        <rect key="frame" x="738" y="413" width="140" height="35"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                         <subviews>
                                             <button translatesAutoresizingMaskIntoConstraints="NO" id="839">
@@ -1423,17 +1425,17 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                                     <binding destination="832" name="value" keyPath="values.autoRetrieving" id="843"/>
                                                     <binding destination="832" name="enabled2" keyPath="values.dontAuthorizeAutoRetrieve" previousBinding="925" id="926">
                                                         <dictionary key="options">
-                                                            <integer key="NSNullPlaceholder" value="-1"/>
+                                                            <integer key="NSMultipleValuesPlaceholder" value="-1"/>
                                                             <integer key="NSNotApplicablePlaceholder" value="-1"/>
                                                             <integer key="NSNoSelectionPlaceholder" value="-1"/>
-                                                            <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                                            <integer key="NSNullPlaceholder" value="-1"/>
                                                             <string key="NSValueTransformerName">NSNegateBoolean</string>
                                                         </dictionary>
                                                     </binding>
                                                 </connections>
                                             </button>
-                                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="938">
-                                                <rect key="frame" x="81" y="-1" width="66" height="17"/>
+                                            <button horizontalHuggingPriority="249" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="938">
+                                                <rect key="frame" x="81" y="-1" width="59" height="17"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                 <buttonCell key="cell" type="squareTextured" title="Settings" bezelStyle="texturedSquare" imagePosition="overlaps" alignment="center" controlSize="mini" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="939">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -1449,17 +1451,17 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                                     <binding destination="-2" name="enabled" keyPath="autoRefreshQueryResults" id="943"/>
                                                     <binding destination="832" name="enabled2" keyPath="values.dontAuthorizeAutoRetrieve" previousBinding="943" id="947">
                                                         <dictionary key="options">
-                                                            <integer key="NSNullPlaceholder" value="-1"/>
+                                                            <integer key="NSMultipleValuesPlaceholder" value="-1"/>
                                                             <integer key="NSNotApplicablePlaceholder" value="-1"/>
                                                             <integer key="NSNoSelectionPlaceholder" value="-1"/>
-                                                            <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                                            <integer key="NSNullPlaceholder" value="-1"/>
                                                             <string key="NSValueTransformerName">NSNegateBoolean</string>
                                                         </dictionary>
                                                     </binding>
                                                 </connections>
                                             </button>
                                             <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="822">
-                                                <rect key="frame" x="-3" y="14" width="153" height="22"/>
+                                                <rect key="frame" x="-3" y="14" width="146" height="22"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                 <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="823">
                                                     <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -1490,7 +1492,6 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                             <constraint firstItem="938" firstAttribute="leading" secondItem="839" secondAttribute="trailing" constant="3" id="Vy2-Na-wYL"/>
                                             <constraint firstAttribute="trailing" secondItem="938" secondAttribute="trailing" id="gtR-vY-vsu"/>
                                             <constraint firstAttribute="bottom" secondItem="938" secondAttribute="bottom" id="iGW-Ga-r8w"/>
-                                            <constraint firstItem="938" firstAttribute="leading" secondItem="1174" secondAttribute="leading" constant="81" id="pEM-PA-qpg"/>
                                             <constraint firstItem="822" firstAttribute="top" secondItem="1174" secondAttribute="top" id="tCc-ge-W1l"/>
                                             <constraint firstItem="822" firstAttribute="leading" secondItem="1174" secondAttribute="leading" id="u3Z-7O-dea"/>
                                             <constraint firstItem="839" firstAttribute="leading" secondItem="1174" secondAttribute="leading" constant="1" id="xmz-PH-qUV"/>
@@ -1512,14 +1513,12 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="1185" firstAttribute="top" secondItem="321" secondAttribute="bottom" constant="7" id="3By-Wu-ggR"/>
-                                    <constraint firstAttribute="trailing" secondItem="836" secondAttribute="trailing" constant="44" id="8iX-OC-zuq"/>
                                     <constraint firstItem="728" firstAttribute="top" secondItem="1151" secondAttribute="top" constant="-1" id="BEO-PF-Gyw"/>
                                     <constraint firstItem="321" firstAttribute="top" secondItem="728" secondAttribute="bottom" constant="15" id="Cvc-3o-0LB"/>
                                     <constraint firstItem="735" firstAttribute="centerY" secondItem="736" secondAttribute="centerY" id="Ej0-4a-kXb"/>
                                     <constraint firstItem="735" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="1151" secondAttribute="leading" constant="35" id="HIO-cU-hTw"/>
                                     <constraint firstItem="736" firstAttribute="leading" secondItem="735" secondAttribute="trailing" constant="7" id="INq-lT-6nG"/>
                                     <constraint firstItem="1174" firstAttribute="top" secondItem="736" secondAttribute="top" id="IUm-AN-gme"/>
-                                    <constraint firstItem="1174" firstAttribute="leading" secondItem="1151" secondAttribute="leading" constant="742" id="JFU-65-ngQ"/>
                                     <constraint firstItem="321" firstAttribute="leading" secondItem="1151" secondAttribute="leading" constant="21" id="MNH-a2-7sp"/>
                                     <constraint firstAttribute="trailing" secondItem="719" secondAttribute="trailing" constant="22" id="NEr-qt-qYU"/>
                                     <constraint firstAttribute="bottom" secondItem="683" secondAttribute="bottom" constant="20" symbolic="YES" id="Nb1-hF-8aL"/>
@@ -1531,11 +1530,12 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                     <constraint firstItem="735" firstAttribute="leading" secondItem="1151" secondAttribute="leading" constant="35" id="WpP-Wk-hFN"/>
                                     <constraint firstItem="1185" firstAttribute="leading" secondItem="1151" secondAttribute="leading" constant="22" id="XB6-6K-52D"/>
                                     <constraint firstItem="836" firstAttribute="baseline" secondItem="735" secondAttribute="baseline" id="XLJ-4o-rbA"/>
-                                    <constraint firstItem="908" firstAttribute="leading" secondItem="1174" secondAttribute="trailing" constant="41" id="eYM-mg-7wt"/>
+                                    <constraint firstItem="836" firstAttribute="leading" secondItem="1174" secondAttribute="trailing" constant="5" id="e0Q-wf-NtV"/>
                                     <constraint firstItem="836" firstAttribute="centerY" secondItem="908" secondAttribute="centerY" id="fOF-Xw-Yia"/>
                                     <constraint firstItem="728" firstAttribute="leading" secondItem="736" secondAttribute="trailing" constant="20" symbolic="YES" id="gag-OP-i2J"/>
                                     <constraint firstItem="321" firstAttribute="top" secondItem="908" secondAttribute="bottom" constant="16" id="is3-ak-a8h"/>
-                                    <constraint firstItem="1174" firstAttribute="leading" secondItem="728" secondAttribute="trailing" constant="20" symbolic="YES" id="j2Q-Kf-9xy"/>
+                                    <constraint firstItem="1174" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="728" secondAttribute="trailing" constant="5" id="j2Q-Kf-9xy"/>
+                                    <constraint firstItem="908" firstAttribute="leading" secondItem="836" secondAttribute="trailing" constant="3" id="n1W-yl-nQr"/>
                                     <constraint firstItem="719" firstAttribute="top" secondItem="683" secondAttribute="bottom" constant="1" id="sty-rV-yuM"/>
                                 </constraints>
                             </customView>
@@ -1717,7 +1717,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" visibleAtLaunch="NO" animationBehavior="default" id="795" userLabel="addPreset">
             <windowStyleMask key="styleMask" titled="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="317" height="162"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <view key="contentView" id="796">
                 <rect key="frame" x="0.0" y="0.0" width="317" height="162"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -1794,7 +1794,7 @@ DQ
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" visibleAtLaunch="NO" animationBehavior="default" id="1127" userLabel="addAutoQRInstance">
             <windowStyleMask key="styleMask" titled="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="421" height="111"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <view key="contentView" id="1128">
                 <rect key="frame" x="0.0" y="0.0" width="421" height="111"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -1852,7 +1852,7 @@ DQ
         <window title="Auto-Retrieving" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" visibleAtLaunch="NO" animationBehavior="default" id="844" userLabel="autoRetrieving">
             <windowStyleMask key="styleMask" titled="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="474" height="297"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <view key="contentView" id="845">
                 <rect key="frame" x="0.0" y="0.0" width="474" height="297"/>
                 <autoresizingMask key="autoresizingMask"/>
