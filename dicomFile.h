@@ -77,7 +77,7 @@
 - (id) init:(NSString*) f; /**< Init with file at location NSString* f */
 - (id) init:(NSString*) f DICOMOnly:(BOOL) DICOMOnly; /**< init with file at location NSString* f DICOM files only if DICOMOnly = YES */
 - (id) initRandom; /**< Inits and returns an empty dicomFile */
-- (id) initWithXMLDescriptor: (NSString*)pathToXMLDescriptor path:(NSString*) f; /**< Init with XMLDescriptor for information and f for image data */
+//- (id) initWithXMLDescriptor: (NSString*)pathToXMLDescriptor path:(NSString*) f; /**< Init with XMLDescriptor for information and f for image data */
 - (NSString*) patientUID; /**< Returns the patientUID */
 + (NSString*) patientUID: (id) src; /**< Returns the patientUID */
 

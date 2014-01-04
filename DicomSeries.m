@@ -509,52 +509,59 @@
 
 - (NSNumber *) noFiles
 {
-	int n = [[self primitiveValueForKey:@"numberOfImages"] intValue];
-	
-	if( n == 0)
-	{
-		NSNumber* no = nil;
-		
-        [self.managedObjectContext lock];
-		@try {
-			NSString *sopClassUID = self.seriesSOPClassUID;
-		
-			if( [DCMAbstractSyntaxUID isStructuredReport: sopClassUID] == NO && [DCMAbstractSyntaxUID isPresentationState: sopClassUID] == NO && [DCMAbstractSyntaxUID isSupportedPrivateClasses: sopClassUID] == NO)
-			{
-				int v = [[[self.images anyObject] valueForKey:@"numberOfFrames"] intValue];
-				
-				int count = [self.images count];
-				
-				if( v > 1) // There are frames !
-					no = [NSNumber numberWithInt: -count];
-				else
-					no = [NSNumber numberWithInt: count];
-				
-				[self willChangeValueForKey: @"numberOfImages"];
-				[self setPrimitiveValue:no forKey:@"numberOfImages"];
-				[self didChangeValueForKey: @"numberOfImages"];
-				
-				if( v > 1)
-					no = [NSNumber numberWithInt: count]; // For the return
-			}
-			else no = [NSNumber numberWithInt: 0];
-		}
-		@catch (NSException* e) {
-            N2LogExceptionWithStackTrace(e);
-		}
-        @finally {
-            [self.managedObjectContext unlock];
+    @try {
+        int n = [[self primitiveValueForKey:@"numberOfImages"] intValue];
+        
+        if( n == 0)
+        {
+            NSNumber* no = nil;
+            
+            [self.managedObjectContext lock];
+            @try {
+                NSString *sopClassUID = self.seriesSOPClassUID;
+            
+                if( [DCMAbstractSyntaxUID isStructuredReport: sopClassUID] == NO && [DCMAbstractSyntaxUID isPresentationState: sopClassUID] == NO && [DCMAbstractSyntaxUID isSupportedPrivateClasses: sopClassUID] == NO)
+                {
+                    int v = [[[self.images anyObject] valueForKey:@"numberOfFrames"] intValue];
+                    
+                    int count = [self.images count];
+                    
+                    if( v > 1) // There are frames !
+                        no = [NSNumber numberWithInt: -count];
+                    else
+                        no = [NSNumber numberWithInt: count];
+                    
+                    [self willChangeValueForKey: @"numberOfImages"];
+                    [self setPrimitiveValue:no forKey:@"numberOfImages"];
+                    [self didChangeValueForKey: @"numberOfImages"];
+                    
+                    if( v > 1)
+                        no = [NSNumber numberWithInt: count]; // For the return
+                }
+                else no = [NSNumber numberWithInt: 0];
+            }
+            @catch (NSException* e) {
+                N2LogExceptionWithStackTrace(e);
+            }
+            @finally {
+                [self.managedObjectContext unlock];
+            }
+            
+            return no;
         }
-		
-		return no;
-	}
-	else
-	{
-		if( n < 0) // There are frames !
-			return [NSNumber numberWithInt: -n];
-		else
-			return [self primitiveValueForKey:@"numberOfImages"];
-	}
+        else
+        {
+            if( n < 0) // There are frames !
+                return [NSNumber numberWithInt: -n];
+            else
+                return [self primitiveValueForKey:@"numberOfImages"];
+        }
+    }
+    @catch (NSException *exception) {
+        N2LogException( exception);
+    }
+    
+    return [NSNumber numberWithInt: 0];
 }
 
 - (NSNumber *) noFilesExcludingMultiFrames

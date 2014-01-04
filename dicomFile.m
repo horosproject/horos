@@ -4306,127 +4306,127 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 
 }
 
-// fake DICOM for other files with XML descriptor
-
-- (id) initWithXMLDescriptor: (NSString*)pathToXMLDescriptor path:(NSString*) f
-{
-	if( self = [super init])
-	{	
-		// XML Data
-		NSLog(@"pathToXMLDescriptor : %@", pathToXMLDescriptor);
-		NSLog(@"f : %@", f);	
-		CFURLRef sourceURL;
-//		sourceURL = CFURLCreateWithString (	NULL, // allocator 
-//											(CFStringRef) urlToXMLDescriptor, // url string 
-//											NULL); // base url
-											
-		sourceURL = CFURLCreateFromFileSystemRepresentation (	NULL, // allocator 
-																(unsigned char*) [pathToXMLDescriptor UTF8String], // string buffer
-																[pathToXMLDescriptor length],	// buffer length
-																FALSE); // is directory
-		NSLog(@"sourceURL : %@", sourceURL);
-
-		BOOL result;
-		SInt32 errorCode;
-		CFDataRef xmlData;
-		//NSLog(@"xmlData");
-		result = CFURLCreateDataAndPropertiesFromResource (	NULL, // allocator 
-															sourceURL, &xmlData,
-															NULL, NULL, // properties 
-															&errorCode);
-		
-		CFRelease( sourceURL);
-		
-		if (errorCode==0)
-		{
-			//NSLog(@"cfXMLTree");
-			CFTreeRef cfXMLTree;
-			cfXMLTree = CFXMLTreeCreateFromData (	kCFAllocatorDefault,
-													xmlData,
-													NULL, // datasource 
-													kCFXMLParserSkipWhitespace,
-													kCFXMLNodeCurrentVersion);
-			
-			//NSLog(@"cfXMLTree : %@", cfXMLTree);
-			//NSLog(@"[curFile dicomElements]");
-			dicomElements = [[NSMutableDictionary dictionary] retain];
-
-			//NSLog(@"dicomElements : %@", dicomElements);
-			
-			// 
-			CFTreeRef attributesTree;
-			attributesTree = CFTreeGetChildAtIndex(cfXMLTree, 0);
-			
-			CFRelease( cfXMLTree);
-			
-			//NSLog(@"attributesTree: %@", attributesTree);
-			// NSMutableDictionary* xmlData = [[NSMutableDictionary alloc] initWithCapacity:14];
-			NSMutableDictionary* xmlData = [NSMutableDictionary dictionaryWithContentsOfFile:pathToXMLDescriptor];
-			
-//			for(i=0; i<14; i++)
-//			{
-//				CFTreeRef childProjectName = CFTreeGetChildAtIndex(attributesTree, i);
-//				node = CFXMLTreeGetNode(childProjectName);
-//				nodeName = CFXMLNodeGetString(node);
-//				child = CFTreeGetChildAtIndex(childProjectName, 0);
-//				node = CFXMLTreeGetNode(child);
-//				nodeValue = CFXMLNodeGetString(node);
-//				[xmlData setObject:nodeValue forKey:nodeName];
-//				//NSLog(@"nodeName : %@", nodeName);
-//				//NSLog(@"nodeValue : %@", nodeValue);
-//			}
-		
-			width = 4;
-			height = 4;
-			name = [[xmlData objectForKey:@"patientName"] retain];
-			study = [[xmlData objectForKey:@"studyDescription"] retain];
-			serie = [[NSString alloc] initWithString:[f lastPathComponent]];
-			date = [[NSDate dateWithString:[xmlData objectForKey:@"studyDate"]] retain];
-			Modality = [[xmlData objectForKey:@"modality"] retain];
-			filePath = [f retain];
-			fileType = [@"XMLDESCRIPTOR" retain];
-			NoOfSeries = 1;
-			NoOfFrames = [[xmlData objectForKey:@"numberOfImages"] intValue];
-			
-			studyID = [[xmlData objectForKey:@"studyID"] retain];
-			self.serieID = [filePath lastPathComponent];
-			imageID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
-			SOPUID = [imageID retain];
-			patientID = [[xmlData objectForKey:@"patientID"] retain];
-			studyIDs = [studyID retain];
-			seriesNo = [[NSString alloc] initWithString:@"0"];
-			imageType = nil;
-			
-			[dicomElements setObject:[xmlData objectForKey:@"album"] forKey:@"album"];
-			[dicomElements setObject:name forKey:@"patientName"];
-			[dicomElements setObject:patientID forKey:@"patientID"];
-			[dicomElements setObject:[xmlData objectForKey:@"accessionNumber"] forKey:@"accessionNumber"];
-			[dicomElements setObject:study forKey:@"studyDescription"];
-			[dicomElements setObject:Modality forKey:@"modality"];
-			[dicomElements setObject:studyID forKey:@"studyID"];
-			[dicomElements setObject:date forKey:@"studyDate"];
-			[dicomElements setObject:[xmlData objectForKey:@"numberOfImages"] forKey:@"numberOfImages"];
-			//[dicomElements setObject:[xmlData objectForKey:@"DATE_ADDED"] forKey:@""];
-			[dicomElements setObject:[xmlData objectForKey:@"referringPhysiciansName"] forKey:@"referringPhysiciansName"];
-			[dicomElements setObject:[xmlData objectForKey:@"performingPhysiciansName"] forKey:@"performingPhysiciansName"];
-			[dicomElements setObject:[xmlData objectForKey:@"institutionName"] forKey:@"institutionName"];
-			[dicomElements setObject:[NSDate dateWithString:[xmlData objectForKey:@"patientBirthDate"]] forKey:@"patientBirthDate"];
-			
-			[dicomElements setObject:[self patientUID] forKey:@"patientUID"];
-			[dicomElements setObject:self.serieID forKey:@"seriesID"];
-			[dicomElements setObject:[[[NSString alloc] initWithString:[filePath lastPathComponent]] autorelease] forKey:@"seriesDescription"];
-			[dicomElements setObject:[NSNumber numberWithInt: 0] forKey:@"seriesNumber"];
-			[dicomElements setObject:imageID forKey:@"SOPUID"];
-			[dicomElements setObject:[NSNumber numberWithInt:[imageID intValue]] forKey:@"imageID"];
-			[dicomElements setObject:fileType forKey:@"fileType"];
-			[dicomElements setObject:f forKey:@"filePath"];
-			
-			NSLog(@"dicomElements : %@", dicomElements);
-		}
-	}
-	
-	return self;
-}
+//// fake DICOM for other files with XML descriptor
+//
+//- (id) initWithXMLDescriptor: (NSString*)pathToXMLDescriptor path:(NSString*) f
+//{
+//	if( self = [super init])
+//	{	
+//		// XML Data
+//		NSLog(@"pathToXMLDescriptor : %@", pathToXMLDescriptor);
+//		NSLog(@"f : %@", f);	
+//		CFURLRef sourceURL;
+////		sourceURL = CFURLCreateWithString (	NULL, // allocator 
+////											(CFStringRef) urlToXMLDescriptor, // url string 
+////											NULL); // base url
+//											
+//		sourceURL = CFURLCreateFromFileSystemRepresentation (	NULL, // allocator 
+//																(unsigned char*) [pathToXMLDescriptor UTF8String], // string buffer
+//																[pathToXMLDescriptor length],	// buffer length
+//																FALSE); // is directory
+//		NSLog(@"sourceURL : %@", sourceURL);
+//
+//		BOOL result;
+//		SInt32 errorCode;
+//		CFDataRef xmlData;
+//		//NSLog(@"xmlData");
+//		result = CFURLCreateDataAndPropertiesFromResource (	NULL, // allocator 
+//															sourceURL, &xmlData,
+//															NULL, NULL, // properties 
+//															&errorCode);
+//		
+//		CFRelease( sourceURL);
+//		
+//		if (errorCode==0)
+//		{
+//			//NSLog(@"cfXMLTree");
+//			CFTreeRef cfXMLTree;
+//			cfXMLTree = CFXMLTreeCreateFromData (	kCFAllocatorDefault,
+//													xmlData,
+//													NULL, // datasource 
+//													kCFXMLParserSkipWhitespace,
+//													kCFXMLNodeCurrentVersion);
+//			
+//			//NSLog(@"cfXMLTree : %@", cfXMLTree);
+//			//NSLog(@"[curFile dicomElements]");
+//			dicomElements = [[NSMutableDictionary dictionary] retain];
+//
+//			//NSLog(@"dicomElements : %@", dicomElements);
+//			
+//			// 
+//			CFTreeRef attributesTree;
+//			attributesTree = CFTreeGetChildAtIndex(cfXMLTree, 0);
+//			
+//			CFRelease( cfXMLTree);
+//			
+//			//NSLog(@"attributesTree: %@", attributesTree);
+//			// NSMutableDictionary* xmlData = [[NSMutableDictionary alloc] initWithCapacity:14];
+//			NSMutableDictionary* xmlData = [NSMutableDictionary dictionaryWithContentsOfFile:pathToXMLDescriptor];
+//			
+////			for(i=0; i<14; i++)
+////			{
+////				CFTreeRef childProjectName = CFTreeGetChildAtIndex(attributesTree, i);
+////				node = CFXMLTreeGetNode(childProjectName);
+////				nodeName = CFXMLNodeGetString(node);
+////				child = CFTreeGetChildAtIndex(childProjectName, 0);
+////				node = CFXMLTreeGetNode(child);
+////				nodeValue = CFXMLNodeGetString(node);
+////				[xmlData setObject:nodeValue forKey:nodeName];
+////				//NSLog(@"nodeName : %@", nodeName);
+////				//NSLog(@"nodeValue : %@", nodeValue);
+////			}
+//		
+//			width = 4;
+//			height = 4;
+//			name = [[xmlData objectForKey:@"patientName"] retain];
+//			study = [[xmlData objectForKey:@"studyDescription"] retain];
+//			serie = [[NSString alloc] initWithString:[f lastPathComponent]];
+//			date = [[NSDate dateWithString:[xmlData objectForKey:@"studyDate"]] retain];
+//			Modality = [[xmlData objectForKey:@"modality"] retain];
+//			filePath = [f retain];
+//			fileType = [@"XMLDESCRIPTOR" retain];
+//			NoOfSeries = 1;
+//			NoOfFrames = [[xmlData objectForKey:@"numberOfImages"] intValue];
+//			
+//			studyID = [[xmlData objectForKey:@"studyID"] retain];
+//			self.serieID = [filePath lastPathComponent];
+//			imageID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
+//			SOPUID = [imageID retain];
+//			patientID = [[xmlData objectForKey:@"patientID"] retain];
+//			studyIDs = [studyID retain];
+//			seriesNo = [[NSString alloc] initWithString:@"0"];
+//			imageType = nil;
+//			
+//			[dicomElements setObject:[xmlData objectForKey:@"album"] forKey:@"album"];
+//			[dicomElements setObject:name forKey:@"patientName"];
+//			[dicomElements setObject:patientID forKey:@"patientID"];
+//			[dicomElements setObject:[xmlData objectForKey:@"accessionNumber"] forKey:@"accessionNumber"];
+//			[dicomElements setObject:study forKey:@"studyDescription"];
+//			[dicomElements setObject:Modality forKey:@"modality"];
+//			[dicomElements setObject:studyID forKey:@"studyID"];
+//			[dicomElements setObject:date forKey:@"studyDate"];
+//			[dicomElements setObject:[xmlData objectForKey:@"numberOfImages"] forKey:@"numberOfImages"];
+//			//[dicomElements setObject:[xmlData objectForKey:@"DATE_ADDED"] forKey:@""];
+//			[dicomElements setObject:[xmlData objectForKey:@"referringPhysiciansName"] forKey:@"referringPhysiciansName"];
+//			[dicomElements setObject:[xmlData objectForKey:@"performingPhysiciansName"] forKey:@"performingPhysiciansName"];
+//			[dicomElements setObject:[xmlData objectForKey:@"institutionName"] forKey:@"institutionName"];
+//			[dicomElements setObject:[NSDate dateWithString:[xmlData objectForKey:@"patientBirthDate"]] forKey:@"patientBirthDate"];
+//			
+//			[dicomElements setObject:[self patientUID] forKey:@"patientUID"];
+//			[dicomElements setObject:self.serieID forKey:@"seriesID"];
+//			[dicomElements setObject:[[[NSString alloc] initWithString:[filePath lastPathComponent]] autorelease] forKey:@"seriesDescription"];
+//			[dicomElements setObject:[NSNumber numberWithInt: 0] forKey:@"seriesNumber"];
+//			[dicomElements setObject:imageID forKey:@"SOPUID"];
+//			[dicomElements setObject:[NSNumber numberWithInt:[imageID intValue]] forKey:@"imageID"];
+//			[dicomElements setObject:fileType forKey:@"fileType"];
+//			[dicomElements setObject:f forKey:@"filePath"];
+//			
+//			NSLog(@"dicomElements : %@", dicomElements);
+//		}
+//	}
+//	
+//	return self;
+//}
 
 - (BOOL) commentsFromDICOMFiles
 {
