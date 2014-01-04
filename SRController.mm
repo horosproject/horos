@@ -401,19 +401,19 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
             [self renderSurfaces];
         }
         
-        [d setObject: @0.5 forKey: @"resolution"];
-        [d setObject: @YES forKey: @"shouldDecimate"];
-        [d setObject: @YES forKey: @"shouldSmooth"];
-        [d setObject: @300 forKey: @"firstSurface"];
-        [d setObject: @-500 forKey: @"secondSurface"];
-        [d setObject: @1.0 forKey: @"firstTransparency"];
-        [d setObject: @1.0 forKey: @"secondTransparency"];
-        [d setObject: @0.5 forKey: @"decimate"];
-        [d setObject: @20 forKey: @"smooth"];
-        [d setObject: [NSColor colorWithCalibratedRed:1.0 green:1.0 blue:1.0 alpha:1.0] forKey: @"firstColor"];
-        [d setObject: [NSColor colorWithCalibratedRed:1.0 green:0.592 blue:0.608 alpha:1.0] forKey: @"secondColor"];
-        [d setObject: @YES forKey: @"useFirstSurface"];
-        [d setObject: @NO forKey: @"useSecondSurface"];
+        [d setObject: @(self.resolution) forKey: @"resolution"];
+        [d setObject: @(self.shouldDecimate) forKey: @"shouldDecimate"];
+        [d setObject: @(self.shouldSmooth) forKey: @"shouldSmooth"];
+        [d setObject: @(self.firstSurface) forKey: @"firstSurface"];
+        [d setObject: @(self.secondSurface) forKey: @"secondSurface"];
+        [d setObject: @(self.firstTransparency) forKey: @"firstTransparency"];
+        [d setObject: @(self.secondTransparency) forKey: @"secondTransparency"];
+        [d setObject: @(self.decimate) forKey: @"decimate"];
+        [d setObject: @(self.smooth) forKey: @"smooth"];
+        [d setObject: self.firstColor forKey: @"firstColor"];
+        [d setObject: self.secondColor forKey: @"secondColor"];
+        [d setObject: @(self.useFirstSurface) forKey: @"useFirstSurface"];
+        [d setObject: @(self.useSecondSurface) forKey: @"useSecondSurface"];
     }
 }
 

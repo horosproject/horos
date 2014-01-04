@@ -2911,6 +2911,9 @@ static NSDate *lastWarningDate = nil;
     }
 
     [[NSFileManager defaultManager] confirmDirectoryAtPath: incomingDirectoryPath];
+    
+    
+    [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"NSConstraintBasedLayoutVisualizeMutuallyExclusiveConstraints"];
 }
 
 - (void) terminate :(id) sender
