@@ -54,6 +54,10 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 @synthesize firstColor = _firstColor, secondColor = _secondColor;
 @synthesize shouldDecimate = _shouldDecimate, shouldSmooth = _shouldSmooth, useFirstSurface = _useFirstSurface, useSecondSurface = _useSecondSurface, shouldRenderFusion = _shouldRenderFusion;
 
+
+@synthesize fusionFirstSurface,  fusionSecondSurface, fusionResolution, fusionFirstTransparency, fusionSecondTransparency, fusionDecimate, fusionSmooth, fusionFirstColor, fusionSecondColor, fusionShouldDecimate, fusionShouldSmooth, fusionUseFirstSurface, fusionUseSecondSurface;
+
+
 - (ViewerController*) viewer
 {
 	return viewer2D;

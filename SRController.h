@@ -69,6 +69,15 @@
     
 	NSTimeInterval			flyThruRecordingTimeFrame;
 	
+    
+    
+    
+    // Backward compatibility for older xibs, to be delete in next release : not used !
+    float                   fusionFirstSurface,  fusionSecondSurface, fusionResolution, fusionFirstTransparency, fusionSecondTransparency, fusionDecimate;
+    int                     fusionSmooth;
+    NSColor                 *fusionFirstColor, *fusionSecondColor;
+    BOOL                    fusionShouldDecimate, fusionShouldSmooth, fusionUseFirstSurface, fusionUseSecondSurface;
+    
 #ifdef _STEREO_VISION_
 	//Added SilvanWidmer 26-08-09
 	
@@ -91,6 +100,13 @@
 @property int smooth;
 @property (retain) NSColor *firstColor, *secondColor;
 @property BOOL shouldDecimate, shouldSmooth, useFirstSurface, useSecondSurface, shouldRenderFusion;
+
+// Backward compatibility for older xibs, to be delete in next release : not used !
+@property float                   fusionFirstSurface,  fusionSecondSurface, fusionResolution, fusionFirstTransparency, fusionSecondTransparency, fusionDecimate;
+@property int                     fusionSmooth;
+@property (retain) NSColor        *fusionFirstColor, *fusionSecondColor;
+@property BOOL                    fusionShouldDecimate, fusionShouldSmooth, fusionUseFirstSurface, fusionUseSecondSurface;
+
 
 - (IBAction) setOrientation:(id) sender;
 - (ViewerController*) blendingController;
