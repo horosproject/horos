@@ -2639,7 +2639,7 @@ CA
                                                             <autoresizingMask key="autoresizingMask"/>
                                                         </scroller>
                                                         <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="13467">
-                                                            <rect key="frame" x="415" y="17" width="16" height="234"/>
+                                                            <rect key="frame" x="416" y="17" width="15" height="234"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                         </scroller>
                                                         <tableHeaderView key="headerView" id="13469">
@@ -3020,7 +3020,7 @@ Gw
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" id="11242">
-                        <rect key="frame" x="-3" y="68" width="58" height="17"/>
+                        <rect key="frame" x="22" y="68" width="33" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="URL:" id="13360">
                             <font key="font" metaFont="system"/>
@@ -3029,7 +3029,7 @@ Gw
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" id="11243">
-                        <rect key="frame" x="57" y="25" width="370" height="14"/>
+                        <rect key="frame" x="57" y="25" width="291" height="14"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="left" title="Example: http://www.osirix-viewer.com/internet.dcm" id="13361">
                             <font key="font" metaFont="smallSystem"/>
@@ -3071,10 +3071,10 @@ Gw
                     </cells>
                 </form>
                 <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="11395">
-                    <rect key="frame" x="77" y="20" width="396" height="124"/>
+                    <rect key="frame" x="77" y="26" width="262" height="118"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                    <size key="cellSize" width="396" height="19"/>
+                    <size key="cellSize" width="262" height="18"/>
                     <size key="intercellSpacing" width="4" height="2"/>
                     <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="13437">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -3256,7 +3256,7 @@ Gw
                     </connections>
                 </searchField>
                 <button id="13824">
-                    <rect key="frame" x="6" y="4" width="99" height="18"/>
+                    <rect key="frame" x="6" y="4" width="60" height="18"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <buttonCell key="cell" type="check" title="Soundex" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="mini" state="on" inset="2" id="13825">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -3462,7 +3462,7 @@ Gw
                         </connections>
                     </button>
                     <textField verticalHuggingPriority="750" id="11680">
-                        <rect key="frame" x="17" y="61" width="183" height="17"/>
+                        <rect key="frame" x="17" y="61" width="178" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Give a name for this album:" id="13377">
                             <font key="font" metaFont="system"/>
@@ -3520,7 +3520,7 @@ Gw
                         </connections>
                     </button>
                     <textField verticalHuggingPriority="750" id="11806">
-                        <rect key="frame" x="5" y="90" width="363" height="17"/>
+                        <rect key="frame" x="5" y="90" width="266" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="This database is protected by a password." id="13386">
                             <font key="font" metaFont="system"/>
@@ -3529,7 +3529,7 @@ Gw
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" id="11810">
-                        <rect key="frame" x="17" y="62" width="84" height="17"/>
+                        <rect key="frame" x="17" y="62" width="66" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Password:" id="13390">
                             <font key="font" metaFont="system"/>
@@ -3546,7 +3546,7 @@ Gw
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
                 <button id="13833">
-                    <rect key="frame" x="131" y="39" width="298" height="18"/>
+                    <rect key="frame" x="131" y="39" width="277" height="18"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <buttonCell key="cell" type="check" title="Save as ZIP file with password (optional):" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="13834">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -3557,10 +3557,10 @@ Gw
                     </connections>
                 </button>
                 <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="12669">
-                    <rect key="frame" x="131" y="130" width="276" height="38"/>
+                    <rect key="frame" x="131" y="130" width="97" height="38"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                    <size key="cellSize" width="276" height="18"/>
+                    <size key="cellSize" width="97" height="18"/>
                     <size key="intercellSpacing" width="4" height="2"/>
                     <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="13440">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -3580,7 +3580,7 @@ Gw
                     </cells>
                 </matrix>
                 <textField verticalHuggingPriority="750" id="12668">
-                    <rect key="frame" x="7" y="151" width="114" height="17"/>
+                    <rect key="frame" x="44" y="151" width="77" height="17"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Folder tree:" id="13394">
                         <font key="font" metaFont="system"/>
@@ -3589,7 +3589,7 @@ Gw
                     </textFieldCell>
                 </textField>
                 <textField verticalHuggingPriority="750" id="12657">
-                    <rect key="frame" x="7" y="104" width="114" height="17"/>
+                    <rect key="frame" x="31" y="104" width="90" height="17"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Compression:" id="13393">
                         <font key="font" metaFont="system"/>
@@ -3598,7 +3598,7 @@ Gw
                     </textFieldCell>
                 </textField>
                 <textField verticalHuggingPriority="750" id="13831">
-                    <rect key="frame" x="7" y="40" width="114" height="17"/>
+                    <rect key="frame" x="38" y="40" width="83" height="17"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="ZIP Package:" id="13832">
                         <font key="font" metaFont="system"/>
@@ -3607,7 +3607,7 @@ Gw
                     </textFieldCell>
                 </textField>
                 <textField verticalHuggingPriority="750" id="12656">
-                    <rect key="frame" x="7" y="200" width="114" height="17"/>
+                    <rect key="frame" x="47" y="200" width="74" height="17"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="DICOMDIR:" id="13392">
                         <font key="font" metaFont="system"/>
@@ -3616,10 +3616,10 @@ Gw
                     </textFieldCell>
                 </textField>
                 <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="12653">
-                    <rect key="frame" x="131" y="63" width="288" height="58"/>
+                    <rect key="frame" x="131" y="63" width="228" height="58"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                    <size key="cellSize" width="288" height="18"/>
+                    <size key="cellSize" width="228" height="18"/>
                     <size key="intercellSpacing" width="4" height="2"/>
                     <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="13439">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -3643,7 +3643,7 @@ Gw
                     </cells>
                 </matrix>
                 <button id="12310">
-                    <rect key="frame" x="131" y="199" width="241" height="18"/>
+                    <rect key="frame" x="131" y="199" width="117" height="18"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <buttonCell key="cell" type="check" title="Add DICOMDIR" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="13391">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -3654,7 +3654,7 @@ Gw
                     </connections>
                 </button>
                 <textField verticalHuggingPriority="750" id="14088">
-                    <rect key="frame" x="7" y="176" width="114" height="17"/>
+                    <rect key="frame" x="84" y="176" width="37" height="17"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="ROIs:" id="14091">
                         <font key="font" metaFont="system"/>
@@ -3663,7 +3663,7 @@ Gw
                     </textFieldCell>
                 </textField>
                 <button id="14089">
-                    <rect key="frame" x="131" y="175" width="304" height="18"/>
+                    <rect key="frame" x="131" y="175" width="253" height="18"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <buttonCell key="cell" type="check" title="Include ROIs, Comments, Reports, ..." bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="14090">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -3750,7 +3750,7 @@ Gw
                                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="axesIndependently" image="error" id="14506"/>
                                 </imageView>
                                 <textField verticalHuggingPriority="750" id="14503">
-                                    <rect key="frame" x="-2" y="49" width="460" height="34"/>
+                                    <rect key="frame" x="61" y="49" width="334" height="34"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" id="14508">
                                         <font key="font" metaFont="systemBold"/>
@@ -3764,7 +3764,7 @@ update to OsiriX 64-bit:</string>
                                     </connections>
                                 </textField>
                                 <button verticalHuggingPriority="750" id="14502">
-                                    <rect key="frame" x="64" y="13" width="328" height="25"/>
+                                    <rect key="frame" x="127" y="13" width="202" height="25"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <buttonCell key="cell" type="roundTextured" title="Update Now to OsiriX 64-bit !" bezelStyle="texturedRounded" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="14509">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -3776,7 +3776,7 @@ update to OsiriX 64-bit:</string>
                                     </connections>
                                 </button>
                                 <textField verticalHuggingPriority="750" id="14501">
-                                    <rect key="frame" x="92" y="86" width="272" height="17"/>
+                                    <rect key="frame" x="211" y="86" width="35" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" title="OK !" id="14510">
                                         <font key="font" metaFont="system"/>
@@ -3803,7 +3803,7 @@ update to OsiriX 64-bit:</string>
                         </connections>
                     </slider>
                     <textField verticalHuggingPriority="750" id="14474">
-                        <rect key="frame" x="12" y="239" width="61" height="14"/>
+                        <rect key="frame" x="25" y="239" width="48" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="right" title="Interval:" id="14499">
                             <font key="font" metaFont="smallSystem"/>
@@ -3823,7 +3823,7 @@ update to OsiriX 64-bit:</string>
                         </connections>
                     </slider>
                     <textField verticalHuggingPriority="750" id="14476">
-                        <rect key="frame" x="12" y="215" width="61" height="14"/>
+                        <rect key="frame" x="38" y="215" width="35" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="right" title="From:" id="14497">
                             <font key="font" metaFont="smallSystem"/>
@@ -3832,7 +3832,7 @@ update to OsiriX 64-bit:</string>
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" id="14477">
-                        <rect key="frame" x="12" y="168" width="61" height="14"/>
+                        <rect key="frame" x="28" y="168" width="45" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="right" title="Sort By:" id="14496">
                             <font key="font" metaFont="smallSystem"/>
@@ -3876,7 +3876,7 @@ update to OsiriX 64-bit:</string>
                         </connections>
                     </textField>
                     <textField verticalHuggingPriority="750" id="14481">
-                        <rect key="frame" x="12" y="193" width="61" height="14"/>
+                        <rect key="frame" x="52" y="193" width="21" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="right" title="To:" id="14492">
                             <font key="font" metaFont="smallSystem"/>
@@ -3897,10 +3897,10 @@ update to OsiriX 64-bit:</string>
                         </connections>
                     </textField>
                     <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="14483">
-                        <rect key="frame" x="78" y="123" width="430" height="58"/>
+                        <rect key="frame" x="78" y="123" width="324" height="58"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        <size key="cellSize" width="213" height="18"/>
+                        <size key="cellSize" width="160" height="18"/>
                         <size key="intercellSpacing" width="4" height="2"/>
                         <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" controlSize="small" inset="2" id="14489">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -3948,7 +3948,7 @@ update to OsiriX 64-bit:</string>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
                 <button id="12676">
-                    <rect key="frame" x="102" y="10" width="208" height="18"/>
+                    <rect key="frame" x="102" y="10" width="144" height="18"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <buttonCell key="cell" type="check" title="Create HTML pages" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="13424">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -4006,7 +4006,7 @@ update to OsiriX 64-bit:</string>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                         <clipView key="contentView" id="x65-cS-UGw">
                             <rect key="frame" x="1" y="1" width="557" height="128"/>
-                            <autoresizingMask key="autoresizingMask"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <matrix verticalHuggingPriority="750" selectionByRect="NO" autosizesCells="NO" id="12805">
                                     <rect key="frame" x="0.0" y="0.0" width="111" height="113"/>
@@ -4030,7 +4030,7 @@ update to OsiriX 64-bit:</string>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </clipView>
                         <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="13479">
-                            <rect key="frame" x="1" y="114" width="557" height="15"/>
+                            <rect key="frame" x="1" y="113" width="557" height="16"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="13478">
@@ -4074,7 +4074,7 @@ Gw
                         </connections>
                     </matrix>
                     <textField verticalHuggingPriority="750" id="12836">
-                        <rect key="frame" x="12" y="326" width="442" height="17"/>
+                        <rect key="frame" x="12" y="326" width="433" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Multiple 3D series are contained in this series. Which series to open?" id="13427">
                             <font key="font" metaFont="system"/>
@@ -4087,7 +4087,7 @@ Gw
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                         <clipView key="contentView" id="q7Q-H8-RIB">
                             <rect key="frame" x="1" y="1" width="557" height="128"/>
-                            <autoresizingMask key="autoresizingMask"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <matrix verticalHuggingPriority="750" selectionByRect="NO" autosizesCells="NO" id="12937">
                                     <rect key="frame" x="0.0" y="0.0" width="111" height="113"/>
@@ -4111,7 +4111,7 @@ Gw
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </clipView>
                         <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="13481">
-                            <rect key="frame" x="1" y="114" width="557" height="15"/>
+                            <rect key="frame" x="1" y="113" width="557" height="16"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="13480">
@@ -4201,7 +4201,7 @@ Gw
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <textField verticalHuggingPriority="750" id="13807">
-                        <rect key="frame" x="27" y="112" width="464" height="17"/>
+                        <rect key="frame" x="27" y="112" width="425" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="This file is password protected. Enter password to read the images." id="13808">
                             <font key="font" metaFont="system"/>
@@ -4222,7 +4222,7 @@ Gw
                         </connections>
                     </textField>
                     <textField verticalHuggingPriority="750" id="13809">
-                        <rect key="frame" x="-3" y="56" width="104" height="17"/>
+                        <rect key="frame" x="35" y="56" width="66" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Password:" id="13810">
                             <font key="font" metaFont="system"/>
@@ -4285,7 +4285,7 @@ Gw
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <textField verticalHuggingPriority="750" id="13846">
-                        <rect key="frame" x="9" y="90" width="537" height="17"/>
+                        <rect key="frame" x="31" y="90" width="494" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Enter a password to encrypt the files for email sending (at least 8 characters):" id="13855">
                             <font key="font" metaFont="system"/>
@@ -4306,7 +4306,7 @@ Gw
                         </connections>
                     </textField>
                     <textField verticalHuggingPriority="750" id="13850">
-                        <rect key="frame" x="-3" y="58" width="104" height="17"/>
+                        <rect key="frame" x="35" y="58" width="66" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Password:" id="13851">
                             <font key="font" metaFont="system"/>
@@ -4400,7 +4400,7 @@ Gw
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <clipView key="contentView" id="M3f-Ie-25N">
                                         <rect key="frame" x="1" y="17" width="742" height="143"/>
-                                        <autoresizingMask key="autoresizingMask"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" autosaveColumns="NO" autosaveName="emailNotificationTable" rowHeight="14" headerView="13882" id="13881">
                                                 <rect key="frame" x="0.0" y="0.0" width="742" height="143"/>
@@ -4539,7 +4539,7 @@ Gw
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </box>
                     <textField verticalHuggingPriority="750" id="13902">
-                        <rect key="frame" x="17" y="425" width="779" height="17"/>
+                        <rect key="frame" x="17" y="425" width="618" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Select the user(s) to which you want to send a notification email about the selected study/studies:" id="13903">
                             <font key="font" metaFont="system"/>
@@ -4548,7 +4548,7 @@ Gw
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" id="13904">
-                        <rect key="frame" x="17" y="170" width="325" height="17"/>
+                        <rect key="frame" x="58" y="170" width="284" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="And/Or to a temporary user, with this email:" id="13905">
                             <font key="font" metaFont="system"/>
@@ -4557,7 +4557,7 @@ Gw
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" id="13989">
-                        <rect key="frame" x="24" y="125" width="488" height="17"/>
+                        <rect key="frame" x="24" y="125" width="339" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Add this text in the email, about these study/studies:" id="13990">
                             <font key="font" metaFont="system"/>
@@ -4606,7 +4606,7 @@ Gw
                         </connections>
                     </button>
                     <textField verticalHuggingPriority="750" id="13916">
-                        <rect key="frame" x="369" y="152" width="427" height="14"/>
+                        <rect key="frame" x="421" y="152" width="375" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="This user account will be automatically deleted after: %{value1}@ days" id="13917">
                             <font key="font" metaFont="smallSystem"/>
@@ -4662,14 +4662,14 @@ Gw
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <box title="Users" id="13938">
-                        <rect key="frame" x="17" y="56" width="779" height="271"/>
+                        <rect key="frame" x="14" y="56" width="782" height="271"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <view key="contentView">
-                            <rect key="frame" x="2" y="2" width="775" height="254"/>
+                            <rect key="frame" x="2" y="2" width="778" height="254"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <textField verticalHuggingPriority="750" id="13939">
-                                    <rect key="frame" x="14" y="225" width="140" height="11"/>
+                                    <rect key="frame" x="17" y="225" width="140" height="11"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" controlSize="mini" alignment="left" title="# out of #" id="13955">
                                         <font key="font" metaFont="miniSystem"/>
@@ -4690,11 +4690,11 @@ Gw
                                     </connections>
                                 </textField>
                                 <scrollView autohidesScrollers="YES" horizontalLineScroll="16" horizontalPageScroll="10" verticalLineScroll="16" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="13941">
-                                    <rect key="frame" x="14" y="13" width="744" height="204"/>
+                                    <rect key="frame" x="17" y="13" width="744" height="204"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <clipView key="contentView" id="nhs-LN-IpG">
                                         <rect key="frame" x="1" y="17" width="742" height="186"/>
-                                        <autoresizingMask key="autoresizingMask"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" autosaveColumns="NO" autosaveName="emailNotificationTable" rowHeight="14" headerView="13942" id="13943">
                                                 <rect key="frame" x="0.0" y="0.0" width="742" height="186"/>
@@ -4787,7 +4787,7 @@ Gw
                                     </tableHeaderView>
                                 </scrollView>
                                 <searchField verticalHuggingPriority="750" id="13940">
-                                    <rect key="frame" x="576" y="225" width="182" height="19"/>
+                                    <rect key="frame" x="579" y="225" width="182" height="19"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                     <searchFieldCell key="cell" controlSize="small" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" alignment="left" placeholderString="All" bezelStyle="round" id="13954">
                                         <font key="font" metaFont="smallSystem"/>
@@ -4833,7 +4833,7 @@ Gw
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </box>
                     <textField verticalHuggingPriority="750" id="13931">
-                        <rect key="frame" x="17" y="335" width="779" height="17"/>
+                        <rect key="frame" x="17" y="335" width="495" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Select the user(s) to which you want to authorize to view the selected study(s):" id="13962">
                             <font key="font" metaFont="system"/>
@@ -4912,7 +4912,7 @@ Gw
                         </connections>
                     </button>
                     <textField verticalHuggingPriority="750" id="14375">
-                        <rect key="frame" x="57" y="271" width="414" height="42"/>
+                        <rect key="frame" x="57" y="271" width="393" height="42"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" id="14378">
                             <font key="font" metaFont="smallSystem"/>
@@ -4922,7 +4922,7 @@ Gw
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" id="14369">
-                        <rect key="frame" x="17" y="95" width="281" height="14"/>
+                        <rect key="frame" x="77" y="95" width="221" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="right" title="Estimated time to rebuild your database:" id="14391">
                             <font key="font" metaFont="smallSystem"/>
@@ -4940,7 +4940,7 @@ Gw
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" id="14373">
-                        <rect key="frame" x="17" y="108" width="281" height="14"/>
+                        <rect key="frame" x="81" y="108" width="217" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="right" title="Number of files in your database folder:" id="14387">
                             <font key="font" metaFont="smallSystem"/>
@@ -5025,7 +5025,7 @@ Gw
                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyDown" image="StartupDisk" id="14377"/>
                     </imageView>
                     <textField hidden="YES" verticalHuggingPriority="750" id="14372">
-                        <rect key="frame" x="17" y="48" width="454" height="39"/>
+                        <rect key="frame" x="17" y="48" width="450" height="39"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" id="14388">
                             <font key="font" size="10" name="LucidaGrande"/>
