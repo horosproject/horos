@@ -99,6 +99,11 @@
     rightViewWidth = MIN(rightViewHeight, NSWidth(self.bounds));
     rightViewX = NSWidth(self.bounds) - rightViewWidth;
     
+    _bottomView.translatesAutoresizingMaskIntoConstraints = YES;
+    _middleView.translatesAutoresizingMaskIntoConstraints = YES;
+    _topView.translatesAutoresizingMaskIntoConstraints = YES;
+    _mainView.translatesAutoresizingMaskIntoConstraints = YES;
+    
     [_bottomView setFrame:NSMakeRect(rightViewX, 0, rightViewWidth, rightViewHeight)];
     [_middleView setFrame:NSMakeRect(rightViewX, rightViewHeight, rightViewWidth, rightViewHeight)];
     [_topView setFrame:NSMakeRect(rightViewX, rightViewHeight*2.0, rightViewWidth, NSHeight(self.bounds) - 2.0*rightViewHeight)];

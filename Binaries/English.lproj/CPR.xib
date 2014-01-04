@@ -50,13 +50,13 @@
         <window title="MPR" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="1" customClass="OSIWindow">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES"/>
             <rect key="contentRect" x="196" y="67" width="730" height="443"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <view key="contentView" id="2">
                 <rect key="frame" x="0.0" y="0.0" width="730" height="443"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <splitView vertical="YES" translatesAutoresizingMaskIntoConstraints="NO" id="357">
-                        <rect key="frame" x="0.0" y="0.0" width="731" height="443"/>
+                        <rect key="frame" x="0.0" y="0.0" width="730" height="443"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <splitView fixedFrame="YES" id="355">
@@ -78,52 +78,34 @@
                                 </holdingPriorities>
                             </splitView>
                             <splitView fixedFrame="YES" id="1152">
-                                <rect key="frame" x="365" y="0.0" width="366" height="443"/>
+                                <rect key="frame" x="365" y="0.0" width="365" height="443"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <subviews>
                                     <customView fixedFrame="YES" id="356" customClass="CPRMPRDCMView">
-                                        <rect key="frame" x="0.0" y="0.0" width="366" height="217"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="365" height="217"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     </customView>
-                                    <customView id="1154" customClass="CPRClusterView">
-                                        <rect key="frame" x="0.0" y="226" width="366" height="217"/>
+                                    <customView fixedFrame="YES" id="1154" customClass="CPRClusterView">
+                                        <rect key="frame" x="0.0" y="226" width="365" height="217"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
-                                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="1174" customClass="CPRView">
+                                            <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1174" customClass="CPRView">
                                                 <rect key="frame" x="0.0" y="0.0" width="295" height="217"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             </customView>
-                                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="1176" customClass="CPRTransverseView">
+                                            <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1176" customClass="CPRTransverseView">
                                                 <rect key="frame" x="294" y="144" width="72" height="72"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             </customView>
-                                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="1177" customClass="CPRTransverseView">
+                                            <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1177" customClass="CPRTransverseView">
                                                 <rect key="frame" x="294" y="74" width="72" height="72"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             </customView>
-                                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="1178" customClass="CPRTransverseView">
+                                            <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1178" customClass="CPRTransverseView">
                                                 <rect key="frame" x="294" y="0.0" width="72" height="75"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             </customView>
                                         </subviews>
-                                        <constraints>
-                                            <constraint firstAttribute="bottom" secondItem="1177" secondAttribute="bottom" constant="74" id="6mh-RP-9db"/>
-                                            <constraint firstItem="1174" firstAttribute="leading" secondItem="1154" secondAttribute="leading" id="Bf7-Xb-TR4"/>
-                                            <constraint firstItem="1176" firstAttribute="leading" secondItem="1154" secondAttribute="leading" constant="294" id="C2k-M4-SgN"/>
-                                            <constraint firstItem="1177" firstAttribute="leading" secondItem="1176" secondAttribute="leading" id="ETP-fM-BQj"/>
-                                            <constraint firstItem="1178" firstAttribute="top" secondItem="1154" secondAttribute="top" constant="142" id="QLD-ch-NmN"/>
-                                            <constraint firstAttribute="bottom" secondItem="1178" secondAttribute="bottom" id="Qk0-Ds-CPA"/>
-                                            <constraint firstItem="1177" firstAttribute="top" secondItem="1154" secondAttribute="top" constant="71" id="aVo-3R-Rub"/>
-                                            <constraint firstAttribute="trailing" secondItem="1177" secondAttribute="trailing" id="dbc-xn-6Rn"/>
-                                            <constraint firstItem="1174" firstAttribute="top" secondItem="1154" secondAttribute="top" id="gfo-78-4Pt"/>
-                                            <constraint firstItem="1178" firstAttribute="top" secondItem="1176" secondAttribute="bottom" constant="69" id="k0i-VZ-v4J"/>
-                                            <constraint firstItem="1176" firstAttribute="top" secondItem="1154" secondAttribute="top" constant="1" id="l7s-HN-Ogw"/>
-                                            <constraint firstAttribute="trailing" secondItem="1174" secondAttribute="trailing" constant="71" id="l88-IK-r2t"/>
-                                            <constraint firstItem="1178" firstAttribute="trailing" secondItem="1177" secondAttribute="trailing" id="oaT-Kx-U5G"/>
-                                            <constraint firstItem="1177" firstAttribute="leading" secondItem="1178" secondAttribute="leading" id="tWB-QI-sBI"/>
-                                            <constraint firstItem="1176" firstAttribute="trailing" secondItem="1177" secondAttribute="trailing" id="yE0-Ql-OvY"/>
-                                            <constraint firstItem="1178" firstAttribute="bottom" secondItem="1174" secondAttribute="bottom" id="zhY-37-G1q"/>
-                                        </constraints>
                                         <connections>
                                             <outlet property="bottomView" destination="1178" id="1179"/>
                                             <outlet property="mainView" destination="1174" id="1180"/>
@@ -145,10 +127,10 @@
                     </splitView>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="bottom" secondItem="357" secondAttribute="bottom" id="UBS-iY-oDy"/>
-                    <constraint firstItem="357" firstAttribute="top" secondItem="2" secondAttribute="top" id="a4D-rk-9yE"/>
-                    <constraint firstItem="357" firstAttribute="centerX" secondItem="2" secondAttribute="centerX" id="fac-fm-FZF"/>
-                    <constraint firstItem="357" firstAttribute="leading" secondItem="2" secondAttribute="leading" id="zyR-RA-zcs"/>
+                    <constraint firstAttribute="trailing" secondItem="357" secondAttribute="trailing" id="Bpf-ct-gdT"/>
+                    <constraint firstAttribute="bottom" secondItem="357" secondAttribute="bottom" id="PN5-X7-YvQ"/>
+                    <constraint firstItem="357" firstAttribute="leading" secondItem="2" secondAttribute="leading" id="r45-Jb-OvU"/>
+                    <constraint firstItem="357" firstAttribute="top" secondItem="2" secondAttribute="top" id="vVy-pH-5nD"/>
                 </constraints>
             </view>
             <connections>
@@ -197,7 +179,7 @@
         <window title="DICOM Export" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="413" userLabel="exportDCM">
             <windowStyleMask key="styleMask" titled="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="499" height="530"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <view key="contentView" id="414">
                 <rect key="frame" x="0.0" y="0.0" width="499" height="530"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -301,7 +283,7 @@ Gw
                                     </connections>
                                 </matrix>
                                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="441">
-                                    <rect key="frame" x="160" y="247" width="200" height="19"/>
+                                    <rect key="frame" x="160" y="246" width="200" height="20"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="200" id="gLH-sN-hxC"/>
@@ -310,6 +292,7 @@ Gw
                                         <font key="font" size="12" name="Helvetica"/>
                                     </sliderCell>
                                     <connections>
+                                        <binding destination="342" name="value" keyPath="selection.exportNumberOfRotationFrames" id="1394"/>
                                         <binding destination="342" name="enabled2" keyPath="selection.exportSequenceType" previousBinding="1270" id="1271">
                                             <dictionary key="options">
                                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
@@ -323,24 +306,15 @@ Gw
                                                 <string key="NSValueTransformerName">NSNegateBoolean</string>
                                             </dictionary>
                                         </binding>
-                                        <binding destination="342" name="value" keyPath="selection.exportNumberOfRotationFrames" id="1394"/>
                                     </connections>
                                 </slider>
                                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="489">
-                                    <rect key="frame" x="160" y="56" width="159" height="19"/>
+                                    <rect key="frame" x="160" y="54" width="159" height="20"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                                     <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="1" maxValue="200" doubleValue="40" tickMarkPosition="below" numberOfTickMarks="20" sliderType="linear" id="490">
                                         <font key="font" size="12" name="Helvetica-Bold"/>
                                     </sliderCell>
                                     <connections>
-                                        <binding destination="342" name="enabled2" keyPath="selection.exportSeriesType" previousBinding="1335" id="1336">
-                                            <dictionary key="options">
-                                                <integer key="NSNotApplicablePlaceholder" value="-1"/>
-                                                <integer key="NSNoSelectionPlaceholder" value="-1"/>
-                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
-                                                <integer key="NSNullPlaceholder" value="-1"/>
-                                            </dictionary>
-                                        </binding>
                                         <binding destination="342" name="enabled3" keyPath="selection.exportSequenceType" previousBinding="1336" id="1337">
                                             <dictionary key="options">
                                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
@@ -349,16 +323,24 @@ Gw
                                                 <integer key="NSNullPlaceholder" value="-1"/>
                                             </dictionary>
                                         </binding>
+                                        <binding destination="342" name="enabled2" keyPath="selection.exportSeriesType" previousBinding="1335" id="1336">
+                                            <dictionary key="options">
+                                                <integer key="NSNotApplicablePlaceholder" value="-1"/>
+                                                <integer key="NSNoSelectionPlaceholder" value="-1"/>
+                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                                <integer key="NSNullPlaceholder" value="-1"/>
+                                            </dictionary>
+                                        </binding>
+                                        <binding destination="342" name="value" keyPath="selection.exportSliceInterval" id="1233"/>
                                         <binding destination="342" name="enabled" keyPath="selection.exportSliceIntervalSameAsVolumeSliceInterval" id="1335">
                                             <dictionary key="options">
                                                 <string key="NSValueTransformerName">NSNegateBoolean</string>
                                             </dictionary>
                                         </binding>
-                                        <binding destination="342" name="value" keyPath="selection.exportSliceInterval" id="1233"/>
                                     </connections>
                                 </slider>
                                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1199">
-                                    <rect key="frame" x="160" y="108" width="159" height="19"/>
+                                    <rect key="frame" x="160" y="107" width="159" height="20"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="159" id="Pk1-Yg-SET"/>
@@ -395,20 +377,20 @@ Gw
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                     <connections>
+                                        <binding destination="342" name="enabled" keyPath="selection.exportSequenceType" id="1295"/>
                                         <binding destination="342" name="enabled2" keyPath="selection.exportSeriesType" previousBinding="1295" id="1298">
                                             <dictionary key="options">
-                                                <integer key="NSNullPlaceholder" value="-1"/>
+                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
                                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
                                                 <integer key="NSNoSelectionPlaceholder" value="-1"/>
-                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                                <integer key="NSNullPlaceholder" value="-1"/>
                                                 <string key="NSValueTransformerName">NSNegateBoolean</string>
                                             </dictionary>
                                         </binding>
-                                        <binding destination="342" name="enabled" keyPath="selection.exportSequenceType" id="1295"/>
                                     </connections>
                                 </textField>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="487">
-                                    <rect key="frame" x="69" y="84" width="88" height="17"/>
+                                    <rect key="frame" x="69" y="83" width="88" height="17"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Slice Interval:" id="488">
                                         <font key="font" metaFont="system"/>
@@ -416,6 +398,7 @@ Gw
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                     <connections>
+                                        <binding destination="342" name="enabled" keyPath="selection.exportSequenceType" id="1310"/>
                                         <binding destination="342" name="enabled2" keyPath="selection.exportSeriesType" previousBinding="1310" id="1311">
                                             <dictionary key="options">
                                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
@@ -424,13 +407,12 @@ Gw
                                                 <integer key="NSNullPlaceholder" value="-1"/>
                                             </dictionary>
                                         </binding>
-                                        <binding destination="342" name="enabled" keyPath="selection.exportSequenceType" id="1310"/>
                                     </connections>
                                 </textField>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="497">
-                                    <rect key="frame" x="324" y="60" width="21" height="17"/>
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="497">
+                                    <rect key="frame" x="324" y="59" width="21" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES"/>
-                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="40" id="498">
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="40 mm" id="498">
                                         <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="# mm" negativeFormat="# mm" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="2" positiveSuffix=" mm" negativeSuffix=" mm" id="1145">
                                             <real key="roundingIncrement" value="0.0"/>
                                             <nil key="nilSymbol"/>
@@ -445,6 +427,7 @@ Gw
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                     <connections>
+                                        <binding destination="342" name="enabled" keyPath="selection.exportSequenceType" id="1315"/>
                                         <binding destination="342" name="enabled2" keyPath="selection.exportSeriesType" previousBinding="1315" id="1316">
                                             <dictionary key="options">
                                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
@@ -453,12 +436,11 @@ Gw
                                                 <integer key="NSNullPlaceholder" value="-1"/>
                                             </dictionary>
                                         </binding>
-                                        <binding destination="342" name="enabled" keyPath="selection.exportSequenceType" id="1315"/>
                                         <binding destination="342" name="value" keyPath="selection.exportSliceInterval" id="1353"/>
                                     </connections>
                                 </textField>
                                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1361">
-                                    <rect key="frame" x="160" y="21" width="159" height="19"/>
+                                    <rect key="frame" x="160" y="18" width="159" height="20"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                                     <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="1" maxValue="50" doubleValue="40" tickMarkPosition="below" numberOfTickMarks="20" sliderType="linear" id="1367">
                                         <font key="font" size="12" name="Helvetica-Bold"/>
@@ -484,7 +466,7 @@ Gw
                                     </connections>
                                 </slider>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1362">
-                                    <rect key="frame" x="69" y="23" width="88" height="17"/>
+                                    <rect key="frame" x="69" y="21" width="88" height="17"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Slice Interval:" id="1366">
                                         <font key="font" metaFont="system"/>
@@ -492,6 +474,7 @@ Gw
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                     <connections>
+                                        <binding destination="342" name="enabled" keyPath="selection.exportSequenceType" id="1370"/>
                                         <binding destination="342" name="enabled2" keyPath="selection.exportSeriesType" previousBinding="1370" id="1371">
                                             <dictionary key="options">
                                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
@@ -500,13 +483,12 @@ Gw
                                                 <integer key="NSNullPlaceholder" value="-1"/>
                                             </dictionary>
                                         </binding>
-                                        <binding destination="342" name="enabled" keyPath="selection.exportSequenceType" id="1370"/>
                                     </connections>
                                 </textField>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1363">
-                                    <rect key="frame" x="324" y="23" width="21" height="17"/>
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1363">
+                                    <rect key="frame" x="324" y="21" width="21" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES"/>
-                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="40" id="1364">
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="40 mm" id="1364">
                                         <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="# mm" negativeFormat="# mm" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="2" positiveSuffix=" mm" negativeSuffix=" mm" id="1365">
                                             <real key="roundingIncrement" value="0.0"/>
                                             <nil key="nilSymbol"/>
@@ -521,6 +503,7 @@ Gw
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                     <connections>
+                                        <binding destination="342" name="enabled" keyPath="selection.exportSequenceType" id="1375"/>
                                         <binding destination="342" name="enabled2" keyPath="selection.exportSeriesType" previousBinding="1375" id="1376">
                                             <dictionary key="options">
                                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
@@ -529,14 +512,13 @@ Gw
                                                 <integer key="NSNullPlaceholder" value="-1"/>
                                             </dictionary>
                                         </binding>
-                                        <binding destination="342" name="enabled" keyPath="selection.exportSequenceType" id="1375"/>
                                         <binding destination="342" name="value" keyPath="selection.exportTransverseSliceInterval" id="1380"/>
                                     </connections>
                                 </textField>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1205">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1205">
                                     <rect key="frame" x="324" y="111" width="21" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES"/>
-                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="40" id="1206">
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="40 mm" id="1206">
                                         <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="# mm" negativeFormat="# mm" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="2" positiveSuffix=" mm" negativeSuffix=" mm" id="1207">
                                             <real key="roundingIncrement" value="0.0"/>
                                             <nil key="nilSymbol"/>
@@ -567,6 +549,8 @@ Gw
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                     <connections>
+                                        <binding destination="342" name="value" keyPath="selection.exportSequenceNumberOfFrames" id="1231"/>
+                                        <binding destination="342" name="enabled" keyPath="selection.exportSequenceType" id="1317"/>
                                         <binding destination="342" name="enabled2" keyPath="selection.exportSeriesType" previousBinding="1317" id="1318">
                                             <dictionary key="options">
                                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
@@ -575,8 +559,6 @@ Gw
                                                 <integer key="NSNullPlaceholder" value="-1"/>
                                             </dictionary>
                                         </binding>
-                                        <binding destination="342" name="enabled" keyPath="selection.exportSequenceType" id="1317"/>
-                                        <binding destination="342" name="value" keyPath="selection.exportSequenceNumberOfFrames" id="1231"/>
                                     </connections>
                                 </textField>
                                 <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="438">
@@ -602,6 +584,7 @@ Gw
                                         </column>
                                     </cells>
                                     <connections>
+                                        <binding destination="342" name="selectedTag" keyPath="selection.exportRotationSpan" id="1225"/>
                                         <binding destination="342" name="enabled2" keyPath="selection.exportSequenceType" previousBinding="1272" id="1274">
                                             <dictionary key="options">
                                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
@@ -615,7 +598,6 @@ Gw
                                                 <string key="NSValueTransformerName">NSNegateBoolean</string>
                                             </dictionary>
                                         </binding>
-                                        <binding destination="342" name="selectedTag" keyPath="selection.exportRotationSpan" id="1225"/>
                                     </connections>
                                 </matrix>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="437">
@@ -627,16 +609,16 @@ Gw
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                     <connections>
+                                        <binding destination="342" name="enabled" keyPath="selection.exportSequenceType" id="1300"/>
                                         <binding destination="342" name="enabled2" keyPath="selection.exportSeriesType" previousBinding="1300" id="1302">
                                             <dictionary key="options">
-                                                <integer key="NSNullPlaceholder" value="-1"/>
+                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
                                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
                                                 <integer key="NSNoSelectionPlaceholder" value="-1"/>
-                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                                <integer key="NSNullPlaceholder" value="-1"/>
                                                 <string key="NSValueTransformerName">NSNegateBoolean</string>
                                             </dictionary>
                                         </binding>
-                                        <binding destination="342" name="enabled" keyPath="selection.exportSequenceType" id="1300"/>
                                     </connections>
                                 </textField>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1192">
@@ -648,6 +630,7 @@ Gw
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                     <connections>
+                                        <binding destination="342" name="enabled" keyPath="selection.exportSequenceType" id="1308"/>
                                         <binding destination="342" name="enabled2" keyPath="selection.exportSeriesType" previousBinding="1308" id="1309">
                                             <dictionary key="options">
                                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
@@ -656,7 +639,6 @@ Gw
                                                 <integer key="NSNullPlaceholder" value="-1"/>
                                             </dictionary>
                                         </binding>
-                                        <binding destination="342" name="enabled" keyPath="selection.exportSequenceType" id="1308"/>
                                     </connections>
                                 </textField>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1218">
@@ -668,6 +650,7 @@ Gw
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                     <connections>
+                                        <binding destination="342" name="enabled" keyPath="selection.exportSequenceType" id="1303"/>
                                         <binding destination="342" name="enabled2" keyPath="selection.exportSeriesType" previousBinding="1303" id="1304">
                                             <dictionary key="options">
                                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
@@ -676,11 +659,10 @@ Gw
                                                 <integer key="NSNullPlaceholder" value="-1"/>
                                             </dictionary>
                                         </binding>
-                                        <binding destination="342" name="enabled" keyPath="selection.exportSequenceType" id="1303"/>
                                     </connections>
                                 </textField>
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="493">
-                                    <rect key="frame" x="158" y="83" width="206" height="18"/>
+                                    <rect key="frame" x="158" y="82" width="206" height="18"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <buttonCell key="cell" type="check" title="Same as volume slice interval" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="494">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -708,6 +690,7 @@ Gw
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                     <connections>
+                                        <binding destination="342" name="enabled" keyPath="selection.exportSequenceType" id="1356"/>
                                         <binding destination="342" name="enabled2" keyPath="selection.exportSeriesType" previousBinding="1356" id="1357">
                                             <dictionary key="options">
                                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
@@ -716,7 +699,6 @@ Gw
                                                 <integer key="NSNullPlaceholder" value="-1"/>
                                             </dictionary>
                                         </binding>
-                                        <binding destination="342" name="enabled" keyPath="selection.exportSequenceType" id="1356"/>
                                     </connections>
                                 </textField>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1085">
@@ -727,6 +709,7 @@ Gw
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
                                     <connections>
+                                        <binding destination="342" name="value" keyPath="selection.exportReverseSliceOrder" id="1226"/>
                                         <binding destination="342" name="enabled2" keyPath="selection.exportSequenceType" previousBinding="1275" id="1277">
                                             <dictionary key="options">
                                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
@@ -736,7 +719,6 @@ Gw
                                             </dictionary>
                                         </binding>
                                         <binding destination="342" name="enabled" keyPath="selection.exportSeriesType" id="1275"/>
-                                        <binding destination="342" name="value" keyPath="selection.exportReverseSliceOrder" id="1226"/>
                                     </connections>
                                 </button>
                             </subviews>
@@ -849,7 +831,7 @@ Gw
                         <autoresizingMask key="autoresizingMask"/>
                         <popUpButtonCell key="cell" type="push" title="Current" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="463" id="460">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="menu"/>
                             <menu key="menu" title="OtherViews" id="461">
                                 <items>
                                     <menuItem title="Current" state="on" id="463"/>
@@ -993,7 +975,7 @@ Gw
                         </textFieldCell>
                     </textField>
                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="653">
-                        <rect key="frame" x="1" y="-1" width="116" height="16"/>
+                        <rect key="frame" x="1" y="-2" width="116" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" minValue="1" maxValue="6" doubleValue="2" tickMarkPosition="below" numberOfTickMarks="6" sliderType="linear" id="658">
                             <font key="font" size="12" name="Helvetica"/>
@@ -1033,7 +1015,7 @@ Gw
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="663">
-                        <rect key="frame" x="61" y="3" width="152" height="16"/>
+                        <rect key="frame" x="61" y="2" width="152" height="17"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                         <sliderCell key="cell" controlSize="mini" continuous="YES" enabled="NO" alignment="left" maxValue="200" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="20" sliderType="linear" id="664">
                             <font key="font" size="12" name="Helvetica"/>
@@ -1090,9 +1072,9 @@ Gw
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                         <connections>
+                            <binding destination="342" name="value" keyPath="selection.clippingRangeThicknessInMm" previousBinding="1644" id="1645"/>
                             <binding destination="342" name="maxValue" keyPath="selection.dcmIntervalMax" id="1643"/>
                             <binding destination="342" name="minValue" keyPath="selection.dcmIntervalMin" previousBinding="1643" id="1644"/>
-                            <binding destination="342" name="value" keyPath="selection.clippingRangeThicknessInMm" previousBinding="1644" id="1645"/>
                         </connections>
                     </textField>
                 </subviews>
@@ -1303,7 +1285,7 @@ Gw
                         </constraints>
                         <popUpButtonCell key="cell" type="bevel" bezelStyle="regularSquare" alignment="left" borderStyle="bezel" inset="2" pullsDown="YES" preferredEdge="maxY" selectedItem="1615" id="1607">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="menu"/>
                             <menu key="menu" title="OtherViews" id="1608">
                                 <items>
                                     <menuItem hidden="YES" id="1615"/>
@@ -1436,11 +1418,11 @@ Gw
             </constraints>
         </customView>
         <customView id="843" userLabel="tbMovie">
-            <rect key="frame" x="0.0" y="0.0" width="173" height="35"/>
+            <rect key="frame" x="0.0" y="0.0" width="173" height="36"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="844">
-                    <rect key="frame" x="133" y="22" width="39" height="11"/>
+                    <rect key="frame" x="133" y="23" width="39" height="11"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="10 im/s" id="855">
                         <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="# im/s" negativeFormat="# im/s" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="0" positiveSuffix=" im/s" negativeSuffix=" im/s" id="885">
@@ -1461,7 +1443,7 @@ Gw
                     </connections>
                 </textField>
                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="845">
-                    <rect key="frame" x="16" y="8" width="22" height="11"/>
+                    <rect key="frame" x="16" y="9" width="22" height="11"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Pos:" id="854">
                         <font key="font" metaFont="miniSystem"/>
@@ -1470,7 +1452,7 @@ Gw
                     </textFieldCell>
                 </textField>
                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="846">
-                    <rect key="frame" x="38" y="21" width="95" height="12"/>
+                    <rect key="frame" x="38" y="22" width="95" height="12"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="95" id="WrX-2Z-Gdq"/>
@@ -1484,7 +1466,7 @@ Gw
                     </connections>
                 </slider>
                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="847">
-                    <rect key="frame" x="38" y="6" width="95" height="16"/>
+                    <rect key="frame" x="38" y="6" width="95" height="17"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="95" id="gYq-B5-vYK"/>
@@ -1493,13 +1475,13 @@ Gw
                         <font key="font" size="12" name="Helvetica"/>
                     </sliderCell>
                     <connections>
-                        <binding destination="342" name="enabled" keyPath="selection.movieDataAvailable" id="883"/>
-                        <binding destination="342" name="maxValue" keyPath="selection.maxMovieIndex" id="874"/>
                         <binding destination="342" name="value" keyPath="selection.curMovieIndex" previousBinding="874" id="875"/>
+                        <binding destination="342" name="maxValue" keyPath="selection.maxMovieIndex" id="874"/>
+                        <binding destination="342" name="enabled" keyPath="selection.movieDataAvailable" id="883"/>
                     </connections>
                 </slider>
                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="848">
-                    <rect key="frame" x="12" y="23" width="26" height="11"/>
+                    <rect key="frame" x="12" y="24" width="26" height="11"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Rate:" id="851">
                         <font key="font" metaFont="miniSystem"/>
@@ -1508,7 +1490,7 @@ Gw
                     </textFieldCell>
                 </textField>
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="849">
-                    <rect key="frame" x="139" y="2" width="30" height="18"/>
+                    <rect key="frame" x="139" y="2" width="30" height="19"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <constraints>
                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="30" id="CFd-gJ-MvM"/>
@@ -1570,8 +1552,8 @@ Gw
                         </menu>
                     </popUpButtonCell>
                     <connections>
-                        <binding destination="342" name="enabled" keyPath="selection.blendingModeAvailable" id="908"/>
                         <binding destination="342" name="selectedTag" keyPath="selection.blendingMode" id="892"/>
+                        <binding destination="342" name="enabled" keyPath="selection.blendingModeAvailable" id="908"/>
                     </connections>
                 </popUpButton>
                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="858">
@@ -1684,7 +1666,7 @@ Gw
                         </textFieldCell>
                     </textField>
                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1166">
-                        <rect key="frame" x="1" y="2" width="117" height="16"/>
+                        <rect key="frame" x="1" y="1" width="117" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" maxValue="360" tickMarkPosition="below" numberOfTickMarks="9" sliderType="linear" id="1167">
                             <font key="font" size="12" name="Helvetica"/>
