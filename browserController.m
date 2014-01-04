@@ -2401,25 +2401,9 @@ static NSConditionLock *threadLock = nil;
 	
 	[noOfFilesToRebuild setIntValue: totalFiles];
 	
-	long durationFor1000;
+	long durationFor1000 = 9;
 	
 	NSRect frame = [rebuildWindow frame];
-//	BOOL warningWasHidden = [warning isHidden];
-	if ([[NSUserDefaults standardUserDefaults] integerForKey: @"TOOLKITPARSER3"] == 0)
-    {
-		durationFor1000 = 18;
-		[warning setHidden:NO];
-		frame.size.height = 333;
-		[rebuildWindow setContentSize:frame.size];
-	}
-    else
-    {
-		durationFor1000 = 9;
-		[warning setHidden:YES];
-		frame.size.height = 333-[warning bounds].size.height-8;
-		[rebuildWindow setContentSize:frame.size];
-	}
-	
 	long totalSeconds = totalFiles * durationFor1000 / 1000;
 	[estimatedTime setStringValue:[NSString timeString:totalSeconds maxUnits:2]];
 	
