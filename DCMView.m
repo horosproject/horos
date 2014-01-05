@@ -903,8 +903,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			[[NSNotificationCenter defaultCenter]  postNotificationName: OsirixDCMUpdateCurrentImageNotification object: self userInfo: userInfo];
 			
 			[[self windowController] setUpdateTilingViewsValue : NO];
-			
-			previousViewSize.height = previousViewSize.width = 0;
 		}
 	}
 }
@@ -6376,7 +6374,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	mprVector[ 0] = 0;
 	mprVector[ 1] = 0;
 	crossMove = -1;
-	previousViewSize.height = previousViewSize.width = 0;
+    
 	cursor = [[NSCursor contrastCursor] retain];
 	syncRelativeDiff = 0;
 	volumicSeries = YES;
@@ -9910,6 +9908,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 }
 
+- (void) setFrame:(NSRect)frameRect
+{
+    [super setFrame: frameRect];
+    
+    previousViewSize = frameRect.size;
+}
+
 - (void) reshape	// scrolled, moved or resized
 {
 	if( dcmPixList && [[self window] isVisible] && dontEnterReshape == NO)
@@ -9963,8 +9968,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					if( [[self window] isMainWindow])
 						[[self windowController] propagateSettings];
 				}
-				
-				previousViewSize = rect.size;
 			}
 		}
 		else
@@ -9974,8 +9977,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				float	yChanged;
 				
 				yChanged = sqrt( (rect.size.height / previousViewSize.height) * (rect.size.width / previousViewSize.width));
-				
-				previousViewSize = rect.size;
 				
 				if( yChanged > 0.01 && yChanged < 1000) yChanged = yChanged;
 				else yChanged = 0.01;
@@ -10021,8 +10022,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						[[self windowController] propagateSettings];
 				}
 			}
-			else
-                previousViewSize = rect.size;
 		}
     }
 	
@@ -12588,9 +12587,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	int newX = newWidth * (int)(_tag % _imageColumns);
 	NSRect newFrame = NSMakeRect(newX, newY, newWidth, newHeight);
 	
-    if( previousViewSize.width == 0 || previousViewSize.height == 0)
-        previousViewSize = oldBoundsSiz;
-    
 	[self setFrame:newFrame];
 	
 	[self setNeedsDisplay:YES];
