@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13B35" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C32" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
@@ -30,7 +30,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="99">
-                        <rect key="frame" x="102" y="535" width="55" height="26"/>
+                        <rect key="frame" x="82" y="535" width="55" height="26"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <popUpButtonCell key="cell" type="push" title="CR" bezelStyle="rounded" alignment="left" lineBreakMode="clipping" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="274" id="248">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -252,16 +252,16 @@
                             <action selector="newHangingProtocol:" target="-2" id="115"/>
                         </connections>
                     </button>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="135">
-                        <rect key="frame" x="38" y="541" width="62" height="17"/>
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="135">
+                        <rect key="frame" x="18" y="541" width="62" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Modality:" id="250">
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="systemBold"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="294">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="294">
                         <rect key="frame" x="51" y="191" width="100" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Previous Study:" id="295">
@@ -270,7 +270,7 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="5qP-63-Wyl">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="5qP-63-Wyl">
                         <rect key="frame" x="87" y="212" width="64" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Windows:" id="T9W-wp-PJS">
@@ -279,7 +279,7 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="T6w-wp-eIt">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="T6w-wp-eIt">
                         <rect key="frame" x="66" y="75" width="85" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Series Order:" id="k9Q-Hb-NOa">
@@ -288,7 +288,7 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="Gv0-hx-c3e">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="Gv0-hx-c3e">
                         <rect key="frame" x="21" y="29" width="130" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" controlSize="mini" sendsActionOnEndEditing="YES" alignment="right" id="Ije-5a-hxH">
@@ -302,7 +302,7 @@ Use commas to separate terms.</string>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="296">
                         <rect key="frame" x="165" y="190" width="114" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Same Modality" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="297">
+                        <buttonCell key="cell" type="check" title="Same Modality" bezelStyle="regularSquare" imagePosition="left" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="297">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
@@ -314,7 +314,7 @@ Use commas to separate terms.</string>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="cLy-b3-d59">
                         <rect key="frame" x="165" y="210" width="386" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="If not enough series for number of windows, repeat series" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="F3i-NS-cfp">
+                        <buttonCell key="cell" type="check" title="If not enough series for number of windows, repeat series" bezelStyle="regularSquare" imagePosition="left" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="F3i-NS-cfp">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
@@ -325,7 +325,7 @@ Use commas to separate terms.</string>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="298">
                         <rect key="frame" x="165" y="170" width="132" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Same Description" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="299">
+                        <buttonCell key="cell" type="check" title="Same Description" bezelStyle="regularSquare" imagePosition="left" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="299">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
@@ -405,7 +405,6 @@ Use commas to separate terms.</string>
                     <constraint firstItem="108" firstAttribute="top" secondItem="135" secondAttribute="top" id="9Z0-rx-IJc"/>
                     <constraint firstAttribute="trailing" secondItem="108" secondAttribute="trailing" constant="20" symbolic="YES" id="EKh-1Q-gF9"/>
                     <constraint firstItem="294" firstAttribute="trailing" secondItem="T6w-wp-eIt" secondAttribute="trailing" id="FHV-tH-6SH"/>
-                    <constraint firstItem="135" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="40" id="Iml-zJ-x7k"/>
                     <constraint firstItem="5qP-63-Wyl" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="6" secondAttribute="leading" constant="16" id="MCA-nw-lUG"/>
                     <constraint firstItem="cLy-b3-d59" firstAttribute="leading" secondItem="296" secondAttribute="leading" id="MQU-c8-uRh"/>
                     <constraint firstItem="BMb-oH-JR6" firstAttribute="top" secondItem="380" secondAttribute="bottom" constant="10" symbolic="YES" id="PYe-bE-uVm"/>
@@ -422,6 +421,7 @@ Use commas to separate terms.</string>
                     <constraint firstItem="99" firstAttribute="baseline" secondItem="135" secondAttribute="baseline" id="lZd-nD-mkf"/>
                     <constraint firstItem="BMb-oH-JR6" firstAttribute="leading" secondItem="i8E-fc-XW9" secondAttribute="leading" id="msf-NE-Wv8"/>
                     <constraint firstItem="T6w-wp-eIt" firstAttribute="trailing" secondItem="Gv0-hx-c3e" secondAttribute="trailing" id="nfI-pP-YAg"/>
+                    <constraint firstItem="135" firstAttribute="leading" secondItem="107" secondAttribute="leading" id="oEN-56-CgS"/>
                     <constraint firstItem="380" firstAttribute="leading" secondItem="BMb-oH-JR6" secondAttribute="leading" id="qF2-by-tbY"/>
                     <constraint firstItem="294" firstAttribute="trailing" secondItem="5qP-63-Wyl" secondAttribute="trailing" id="qf7-sd-aPb"/>
                     <constraint firstItem="99" firstAttribute="top" secondItem="6" secondAttribute="top" constant="22" id="s46-p3-vo5"/>

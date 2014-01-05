@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13B35" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C32" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
@@ -27,14 +27,14 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <box title="Title" boxType="secondary" borderType="bezel" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="584">
-                        <rect key="frame" x="390" y="144.99999977157498" width="131" height="173"/>
+                        <rect key="frame" x="390" y="145" width="131" height="172.99999977157498"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES" heightSizable="YES"/>
                         <view key="contentView">
-                            <rect key="frame" x="3" y="3" width="125" height="167"/>
+                            <rect key="frame" x="3" y="3" width="125" height="166.99999977157498"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <matrix verticalHuggingPriority="750" mode="highlight" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="616">
-                                    <rect key="frame" x="6" y="10" width="112" height="149"/>
+                                    <rect key="frame" x="6" y="9.9999997715749771" width="112" height="149"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     <size key="cellSize" width="54" height="14"/>
@@ -375,7 +375,7 @@ Gw
                     <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="674">
                         <rect key="frame" x="18" y="366" width="514" height="18"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
-                        <buttonCell key="cell" type="check" title="If a distant study has more images than a local study, display the distant study" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="675">
+                        <buttonCell key="cell" type="check" title="If a distant study has more images than a local study, display the distant study" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="675">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
@@ -386,7 +386,7 @@ Gw
                     <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="730">
                         <rect key="frame" x="18" y="346" width="440" height="18"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
-                        <buttonCell key="cell" type="check" title="Automatically retrieve studies that have already some local images" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="731">
+                        <buttonCell key="cell" type="check" title="Automatically retrieve studies that have already some local images" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="731">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
@@ -397,7 +397,7 @@ Gw
                     <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="734">
                         <rect key="frame" x="18" y="326" width="395" height="18"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
-                        <buttonCell key="cell" type="check" title="Use PACS On Demand, when using the toolbar search fields" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="735">
+                        <buttonCell key="cell" type="check" title="Use PACS On Demand, when using the toolbar search fields" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="735">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
@@ -408,7 +408,7 @@ Gw
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="399">
                         <rect key="frame" x="8" y="541" width="188" height="18"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <buttonCell key="cell" type="check" title="Activate PACS On Demand" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="427">
+                        <buttonCell key="cell" type="check" title="Activate PACS On Demand" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="427">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
@@ -526,7 +526,7 @@ Gw
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="481">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="481">
                         <rect key="frame" x="488" y="390" width="219" height="11"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Drag sources into the priority order for retrieving" id="482">
@@ -535,7 +535,7 @@ Gw
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="495">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="495">
                         <rect key="frame" x="18" y="390" width="254" height="11"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="See Locations Preferences for editing these DICOM Nodes" id="496">
@@ -556,7 +556,7 @@ Gw
                     <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="476">
                         <rect key="frame" x="18" y="304" width="508" height="18"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <buttonCell key="cell" type="check" title="Activate search for following Smart Albums, with Q&amp;R Date &amp; Modality filters:" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="477">
+                        <buttonCell key="cell" type="check" title="Activate search for following Smart Albums, with Q&amp;R Date &amp; Modality filters:" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="477">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
@@ -699,7 +699,7 @@ Gw
                             <autoresizingMask key="autoresizingMask"/>
                         </tableHeaderView>
                     </scrollView>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="646">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="646">
                         <rect key="frame" x="18" y="150" width="252" height="11"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Double-Click on a line to edit the Date &amp; Modality Filters" id="647">
@@ -747,9 +747,9 @@ Gw
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="714">
-                                    <rect key="frame" x="17" y="52" width="641" height="18"/>
+                                    <rect key="frame" x="17" y="52" width="263" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Comparative Studies, displayed at Study level" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" inset="2" id="715">
+                                    <buttonCell key="cell" type="check" title="Comparative Studies, displayed at Study level" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="715">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
@@ -758,9 +758,9 @@ Gw
                                     </connections>
                                 </button>
                                 <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="718">
-                                    <rect key="frame" x="17" y="32" width="641" height="18"/>
+                                    <rect key="frame" x="17" y="32" width="471" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Search function (requires access to entire database: empty Study Filter for Web User)" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" inset="2" id="719">
+                                    <buttonCell key="cell" type="check" title="Search function (requires access to entire database: empty Study Filter for Web User)" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="719">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
@@ -769,9 +769,9 @@ Gw
                                     </connections>
                                 </button>
                                 <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="721">
-                                    <rect key="frame" x="17" y="12" width="641" height="18"/>
+                                    <rect key="frame" x="17" y="12" width="428" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Albums (requires access to entire database: empty Study Filter for Web User)" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" inset="2" id="722">
+                                    <buttonCell key="cell" type="check" title="Albums (requires access to entire database: empty Study Filter for Web User)" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="722">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
@@ -782,16 +782,16 @@ Gw
                             </subviews>
                         </view>
                         <constraints>
-                            <constraint firstItem="721" firstAttribute="trailing" secondItem="718" secondAttribute="trailing" id="01F-td-1sF"/>
                             <constraint firstItem="714" firstAttribute="leading" secondItem="718" secondAttribute="leading" id="0MF-Dp-2pK"/>
-                            <constraint firstItem="714" firstAttribute="trailing" secondItem="718" secondAttribute="trailing" id="61Y-XA-4iH"/>
+                            <constraint firstItem="714" firstAttribute="top" secondItem="724" secondAttribute="top" constant="26" id="7mN-iW-7ke"/>
                             <constraint firstAttribute="bottom" secondItem="721" secondAttribute="bottom" constant="12" id="8ME-Xw-fPC"/>
                             <constraint firstItem="718" firstAttribute="top" secondItem="714" secondAttribute="bottom" constant="8" id="UQw-89-5t5"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="721" secondAttribute="trailing" constant="10" id="W1E-XY-dac"/>
                             <constraint firstItem="714" firstAttribute="leading" secondItem="724" secondAttribute="leading" constant="18" id="Xou-N5-rnD"/>
-                            <constraint firstAttribute="trailing" secondItem="714" secondAttribute="trailing" constant="31" id="amD-uH-9BU"/>
-                            <constraint firstItem="714" firstAttribute="top" secondItem="724" secondAttribute="top" constant="26" id="cdp-Z8-kvm"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="714" secondAttribute="trailing" constant="10" id="gek-hP-CI3"/>
                             <constraint firstItem="721" firstAttribute="top" secondItem="718" secondAttribute="bottom" constant="8" id="ilb-zy-jlU"/>
                             <constraint firstItem="721" firstAttribute="leading" secondItem="718" secondAttribute="leading" id="n6Y-MS-Bpe"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="718" secondAttribute="trailing" constant="10" id="pzR-ea-wXG"/>
                         </constraints>
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>

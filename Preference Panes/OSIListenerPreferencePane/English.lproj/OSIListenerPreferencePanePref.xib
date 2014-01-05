@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13B42" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C32" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
@@ -27,7 +27,7 @@
         <window title="&lt;&lt; do not localize >>" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" deferred="NO" oneShot="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="12" userLabel="PrefPane">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="623" height="726"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <value key="minSize" type="size" width="224.66300000000001" height="10"/>
             <view key="contentView" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="623" height="726"/>
@@ -174,7 +174,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="418">
                                     <rect key="frame" x="394" y="210" width="162" height="18"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                                    <buttonCell key="cell" type="check" title="Use Host Name for AETitle" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" inset="2" id="419">
+                                    <buttonCell key="cell" type="check" title="Use Host Name for AETitle" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="419">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
@@ -182,7 +182,7 @@
                                         <binding destination="296" name="value" keyPath="values.UseHostNameForAETitle" id="420"/>
                                     </connections>
                                 </button>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="114">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="114">
                                     <rect key="frame" x="394" y="189" width="135" height="14"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="(between 1 and 131072)" id="311">
@@ -222,7 +222,7 @@
                                         <binding destination="296" name="selectedTag" keyPath="values.preferredSyntaxForIncoming" id="389"/>
                                     </connections>
                                 </popUpButton>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="385">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="973" translatesAutoresizingMaskIntoConstraints="NO" id="385">
                                     <rect key="frame" x="297" y="119" width="148" height="14"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="(used during Q&amp;R Retrieve)" id="386">
@@ -253,7 +253,7 @@
                                         <action selector="editHostname:" target="-2" id="996"/>
                                     </connections>
                                 </button>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="299">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="995" translatesAutoresizingMaskIntoConstraints="NO" id="299">
                                     <rect key="frame" x="32" y="39" width="208" height="14"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Time-out for DICOM communications:" id="326">
@@ -286,7 +286,7 @@
                                         <outlet property="nextKeyView" destination="1041" id="1052"/>
                                     </connections>
                                 </textField>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="301">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="976" translatesAutoresizingMaskIntoConstraints="NO" id="301">
                                     <rect key="frame" x="291" y="39" width="47" height="14"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="seconds" id="328">
@@ -316,7 +316,7 @@
                                         <outlet property="nextKeyView" destination="282" id="1053"/>
                                     </connections>
                                 </textField>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="1042">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="976" translatesAutoresizingMaskIntoConstraints="NO" id="1042">
                                     <rect key="frame" x="291" y="16" width="47" height="14"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="seconds" id="1043">
@@ -328,7 +328,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="305">
                                     <rect key="frame" x="15" y="58" width="431" height="18"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <buttonCell key="cell" type="check" title="Activate the DICOM Listener only if this user session is active (user switching)" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" inset="2" id="329">
+                                    <buttonCell key="cell" type="check" title="Activate the DICOM Listener only if this user session is active (user switching)" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="329">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
@@ -336,7 +336,7 @@
                                         <binding destination="296" name="value" keyPath="values.RunListenerOnlyIfActive" id="342"/>
                                     </connections>
                                 </button>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="1050">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="995" translatesAutoresizingMaskIntoConstraints="NO" id="1050">
                                     <rect key="frame" x="120" y="16" width="120" height="14"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Connection time-out:" id="1051">
@@ -348,7 +348,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="1060">
                                     <rect key="frame" x="15" y="76" width="365" height="18"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <buttonCell key="cell" type="check" title="Store Source AETitle in SourceApplicationEntityTitle (0002,0016)" bezelStyle="regularSquare" imagePosition="left" controlSize="small" state="on" inset="2" id="1061">
+                                    <buttonCell key="cell" type="check" title="Store Source AETitle in SourceApplicationEntityTitle (0002,0016)" bezelStyle="regularSquare" imagePosition="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="1061">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
@@ -359,7 +359,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="1063">
                                     <rect key="frame" x="15" y="94" width="398" height="18"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <buttonCell key="cell" type="check" title="Store Destination AETitle in PrivateInformationCreatorUID (0002,0100)" bezelStyle="regularSquare" imagePosition="left" controlSize="small" state="on" inset="2" id="1064">
+                                    <buttonCell key="cell" type="check" title="Store Destination AETitle in PrivateInformationCreatorUID (0002,0100)" bezelStyle="regularSquare" imagePosition="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="1064">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
@@ -441,7 +441,7 @@
                             <rect key="frame" x="1" y="1" width="587" height="158"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="106">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="964" translatesAutoresizingMaskIntoConstraints="NO" id="106">
                                     <rect key="frame" x="20" y="47" width="350" height="14"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="If OsiriX is not able to open a file received by the DICOM listener:" id="310">
@@ -476,7 +476,7 @@
                                         <binding destination="296" name="selectedTag" keyPath="values.DELETEFILELISTENER" id="1005"/>
                                     </connections>
                                 </matrix>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="281">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="964" translatesAutoresizingMaskIntoConstraints="NO" id="281">
                                     <rect key="frame" x="20" y="134" width="141" height="14"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Check for new files every:" id="320">
@@ -509,7 +509,7 @@
                                         <outlet property="nextKeyView" destination="974" id="1054"/>
                                     </connections>
                                 </textField>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="283">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="283">
                                     <rect key="frame" x="210" y="134" width="47" height="14"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="seconds" id="322">
@@ -518,7 +518,7 @@
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="957">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="964" translatesAutoresizingMaskIntoConstraints="NO" id="957">
                                     <rect key="frame" x="78" y="108" width="82" height="14"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Incoming files:" id="958">
@@ -636,7 +636,7 @@
                                         <binding destination="296" name="selectedTag" keyPath="values.LOGCLEANINGDAYS" id="1009"/>
                                     </connections>
                                 </popUpButton>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="425">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="425">
                                     <rect key="frame" x="296" y="113" width="78" height="14"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Keep logs for:" id="426">
@@ -992,7 +992,7 @@
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="178" y="371" width="413" height="520"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <view key="contentView" id="727">
                 <rect key="frame" x="0.0" y="0.0" width="413" height="520"/>
                 <autoresizingMask key="autoresizingMask"/>

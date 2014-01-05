@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13B42" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C32" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
@@ -24,7 +24,7 @@
         <window title="&lt;&lt; do not localize >>" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" deferred="NO" oneShot="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="12" userLabel="PrefPane">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="671" height="538"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <view key="contentView" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="671" height="538"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -105,7 +105,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="458">
                                     <rect key="frame" x="15" y="12" width="254" height="18"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <buttonCell key="cell" type="check" title="Secure (HTTPS) connections with certificate:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" inset="2" id="459">
+                                    <buttonCell key="cell" type="check" title="Secure (HTTPS) connections with certificate:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="459">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
@@ -170,7 +170,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="1072">
                                     <rect key="frame" x="15" y="266" width="190" height="18"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <buttonCell key="cell" type="check" title="Activate WADO Server at /wado" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" inset="2" id="1073">
+                                    <buttonCell key="cell" type="check" title="Activate WADO Server at /wado" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="1073">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
@@ -181,7 +181,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="1219">
                                     <rect key="frame" x="272" y="266" width="274" height="18"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <buttonCell key="cell" type="check" title="Only accept WADO request from identified user" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" inset="2" id="1220">
+                                    <buttonCell key="cell" type="check" title="Only accept WADO request from identified user" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="1220">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
@@ -193,7 +193,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="1061">
                                     <rect key="frame" x="15" y="95" width="418" height="18"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <buttonCell key="cell" type="check" title="Use templates at ~/Library/Application Support/OsiriX/WebServicesHTML/" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" inset="2" id="1094">
+                                    <buttonCell key="cell" type="check" title="Use templates at ~/Library/Application Support/OsiriX/WebServicesHTML/" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="1094">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
@@ -204,7 +204,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="1059">
                                     <rect key="frame" x="15" y="115" width="239" height="18"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <buttonCell key="cell" type="check" title="Generate Log Events (see network menu)" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" inset="2" id="1096">
+                                    <buttonCell key="cell" type="check" title="Generate Log Events (see network menu)" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="1096">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
@@ -215,7 +215,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="1062">
                                     <rect key="frame" x="15" y="226" width="308" height="18"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <buttonCell key="cell" type="check" title="Prefer Flash over QuickTime movies for series viewing" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" inset="2" id="1093">
+                                    <buttonCell key="cell" type="check" title="Prefer Flash over QuickTime movies for series viewing" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="1093">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
@@ -226,7 +226,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="1064">
                                     <rect key="frame" x="15" y="246" width="236" height="18"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <buttonCell key="cell" type="check" title="Authorize Weasis &amp; OsiriX as web viewer" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" inset="2" id="1091">
+                                    <buttonCell key="cell" type="check" title="Authorize Weasis &amp; OsiriX as web viewer" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="1091">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
@@ -296,7 +296,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="975">
                                     <rect key="frame" x="15" y="75" width="169" height="18"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <buttonCell key="cell" type="check" title="Require user authentication" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" inset="2" id="976">
+                                    <buttonCell key="cell" type="check" title="Require user authentication" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="976">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
@@ -307,7 +307,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="1225">
                                     <rect key="frame" x="15" y="57" width="236" height="18"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <buttonCell key="cell" type="check" title="Admin users can delete studies or series" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" inset="2" id="1226">
+                                    <buttonCell key="cell" type="check" title="Admin users can delete studies or series" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="1226">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
@@ -318,7 +318,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="1063">
                                     <rect key="frame" x="15" y="37" width="325" height="18"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <buttonCell key="cell" type="check" title="Authorize users to restore password by email (see below)" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" inset="2" id="1092">
+                                    <buttonCell key="cell" type="check" title="Authorize users to restore password by email (see below)" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="1092">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
@@ -523,12 +523,12 @@
                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                     <connections>
-                                        <binding destination="296" name="enabled" keyPath="values.passwordWebServer" id="bfc-eM-2vY"/>
                                         <binding destination="296" name="value" keyPath="values.WebServerTimeOut" id="fAU-qt-QzI">
                                             <dictionary key="options">
                                                 <string key="NSValueTransformerName">SecondsToMinutesTransformer</string>
                                             </dictionary>
                                         </binding>
+                                        <binding destination="296" name="enabled" keyPath="values.passwordWebServer" id="bfc-eM-2vY"/>
                                     </connections>
                                 </textField>
                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="UH7-Ad-5Te">
@@ -622,7 +622,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="1084">
                                     <rect key="frame" x="15" y="15" width="385" height="18"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <buttonCell key="cell" type="check" title="Issue automatic notifications when adding studies, send them every:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" inset="2" id="1085">
+                                    <buttonCell key="cell" type="check" title="Issue automatic notifications when adding studies, send them every:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="1085">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
@@ -723,13 +723,13 @@
                                     </buttonCell>
                                     <cells>
                                         <column>
-                                            <buttonCell type="radio" title="Mail.app" imagePosition="left" alignment="left" controlSize="small" state="on" tag="1" inset="2" id="1215">
+                                            <buttonCell type="radio" title="Mail.app" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" tag="1" inset="2" id="1215">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="smallSystem"/>
                                             </buttonCell>
                                         </column>
                                         <column>
-                                            <buttonCell type="radio" title="Built-in SMTP" imagePosition="left" alignment="left" controlSize="small" inset="2" id="1214">
+                                            <buttonCell type="radio" title="Built-in SMTP" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="1214">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="smallSystem"/>
                                             </buttonCell>
@@ -824,7 +824,7 @@
         <window title="Users" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="1135" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="740" height="675"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <value key="minSize" type="size" width="740" height="300"/>
             <view key="contentView" id="1136">
                 <rect key="frame" x="0.0" y="0.0" width="740" height="675"/>
@@ -1010,7 +1010,7 @@ DQ
                             </binding>
                         </connections>
                     </searchField>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="485">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="983" translatesAutoresizingMaskIntoConstraints="NO" id="485">
                         <rect key="frame" x="185" y="520" width="50" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" alignment="right" title="Address:" id="486">
@@ -1039,7 +1039,7 @@ DQ
                             <outlet property="nextKeyView" destination="510" id="865"/>
                         </connections>
                     </textField>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="490">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="983" translatesAutoresizingMaskIntoConstraints="NO" id="490">
                         <rect key="frame" x="178" y="592" width="57" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" alignment="right" title="Password:" id="491">
@@ -1068,7 +1068,7 @@ DQ
                             <outlet property="nextKeyView" destination="497" id="862"/>
                         </connections>
                     </textField>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="495">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="983" translatesAutoresizingMaskIntoConstraints="NO" id="495">
                         <rect key="frame" x="194" y="544" width="41" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" alignment="right" title="Phone:" id="496">
@@ -1100,7 +1100,7 @@ DQ
                     <button tag="-1" translatesAutoresizingMaskIntoConstraints="NO" id="500">
                         <rect key="frame" x="190" y="210" width="215" height="18"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Encrypt ZIP files, with user password" imagePosition="left" alignment="left" controlSize="small" inset="2" id="501">
+                        <buttonCell key="cell" type="check" title="Encrypt ZIP files, with user password" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="501">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="smallSystem"/>
                         </buttonCell>
@@ -1123,7 +1123,7 @@ DQ
                     <button tag="-1" translatesAutoresizingMaskIntoConstraints="NO" id="652">
                         <rect key="frame" x="174" y="229" width="236" height="18"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Authorized to download DICOM ZIP files" imagePosition="left" alignment="left" controlSize="small" inset="2" id="653">
+                        <buttonCell key="cell" type="check" title="Authorized to download DICOM ZIP files" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="653">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="smallSystem"/>
                         </buttonCell>
@@ -1138,7 +1138,7 @@ DQ
                     <button tag="-1" translatesAutoresizingMaskIntoConstraints="NO" id="1178">
                         <rect key="frame" x="174" y="191" width="203" height="18"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Authorized to view reports as PDF" imagePosition="left" alignment="left" controlSize="small" inset="2" id="1179">
+                        <buttonCell key="cell" type="check" title="Authorized to view reports as PDF" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="1179">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="smallSystem"/>
                         </buttonCell>
@@ -1153,7 +1153,7 @@ DQ
                     <button tag="-1" translatesAutoresizingMaskIntoConstraints="NO" id="836">
                         <rect key="frame" x="174" y="268" width="267" height="18"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Authorized to share a study with another user" imagePosition="left" alignment="left" controlSize="small" inset="2" id="837">
+                        <buttonCell key="cell" type="check" title="Authorized to share a study with another user" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="837">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="smallSystem"/>
                         </buttonCell>
@@ -1164,7 +1164,7 @@ DQ
                     <button tag="-1" translatesAutoresizingMaskIntoConstraints="NO" id="609">
                         <rect key="frame" x="174" y="95" width="185" height="18"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Automatic Notifications Emails" imagePosition="left" alignment="left" controlSize="small" inset="2" id="610">
+                        <buttonCell key="cell" type="check" title="Automatic Notifications Emails" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="610">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="smallSystem"/>
                         </buttonCell>
@@ -1183,7 +1183,7 @@ DQ
                     <button tag="-1" translatesAutoresizingMaskIntoConstraints="NO" id="1229">
                         <rect key="frame" x="174" y="77" width="235" height="18"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Display a list of recently viewed patients" imagePosition="left" alignment="left" controlSize="small" inset="2" id="1230">
+                        <buttonCell key="cell" type="check" title="Display a list of recently viewed patients" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="1230">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="smallSystem"/>
                         </buttonCell>
@@ -1194,7 +1194,7 @@ DQ
                     <button tag="-1" translatesAutoresizingMaskIntoConstraints="NO" id="612">
                         <rect key="frame" x="174" y="171" width="202" height="18"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Authorized to upload DICOM files" imagePosition="left" alignment="left" controlSize="small" inset="2" id="613">
+                        <buttonCell key="cell" type="check" title="Authorized to upload DICOM files" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="613">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="smallSystem"/>
                         </buttonCell>
@@ -1205,7 +1205,7 @@ DQ
                     <button tag="-1" translatesAutoresizingMaskIntoConstraints="NO" id="924">
                         <rect key="frame" x="190" y="152" width="254" height="18"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Add uploaded files to list of specific studies" imagePosition="left" alignment="left" controlSize="small" inset="2" id="925">
+                        <buttonCell key="cell" type="check" title="Add uploaded files to list of specific studies" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="925">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="smallSystem"/>
                         </buttonCell>
@@ -1224,7 +1224,7 @@ DQ
                     <button tag="-1" translatesAutoresizingMaskIntoConstraints="NO" id="658">
                         <rect key="frame" x="174" y="133" width="263" height="18"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Authorized to transfer DICOM files to himself" imagePosition="left" alignment="left" controlSize="small" inset="2" id="659">
+                        <buttonCell key="cell" type="check" title="Authorized to transfer DICOM files to himself" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="659">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="smallSystem"/>
                         </buttonCell>
@@ -1235,7 +1235,7 @@ DQ
                     <button tag="-1" translatesAutoresizingMaskIntoConstraints="NO" id="662">
                         <rect key="frame" x="190" y="114" width="262" height="18"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Authorized to transfer DICOM files to anyone" imagePosition="left" alignment="left" controlSize="small" inset="2" id="663">
+                        <buttonCell key="cell" type="check" title="Authorized to transfer DICOM files to anyone" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="663">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="smallSystem"/>
                         </buttonCell>
@@ -1254,7 +1254,7 @@ DQ
                     <button tag="-1" translatesAutoresizingMaskIntoConstraints="NO" id="969">
                         <rect key="frame" x="174" y="306" width="395" height="18"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Authorized to access all studies of already partially accessible patients" imagePosition="left" alignment="left" controlSize="small" inset="2" id="970">
+                        <buttonCell key="cell" type="check" title="Authorized to access all studies of already partially accessible patients" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="970">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="smallSystem"/>
                         </buttonCell>
@@ -1265,7 +1265,7 @@ DQ
                     <button tag="-1" translatesAutoresizingMaskIntoConstraints="NO" id="1156">
                         <rect key="frame" x="174" y="287" width="186" height="18"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Authorized to navigate albums" imagePosition="left" alignment="left" controlSize="small" inset="2" id="1157">
+                        <buttonCell key="cell" type="check" title="Authorized to navigate albums" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="1157">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="smallSystem"/>
                         </buttonCell>
@@ -1273,7 +1273,7 @@ DQ
                             <binding destination="483" name="value" keyPath="selection.canSeeAlbums" id="1160"/>
                         </connections>
                     </button>
-                    <textField horizontalHuggingPriority="249" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="503">
+                    <textField horizontalHuggingPriority="249" verticalHuggingPriority="750" horizontalCompressionResistancePriority="983" translatesAutoresizingMaskIntoConstraints="NO" id="503">
                         <rect key="frame" x="198" y="568" width="37" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" alignment="right" title="Email:" id="504">
@@ -1302,7 +1302,7 @@ DQ
                             <outlet property="nextKeyView" destination="487" id="864"/>
                         </connections>
                     </textField>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="508">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="983" translatesAutoresizingMaskIntoConstraints="NO" id="508">
                         <rect key="frame" x="279" y="496" width="137" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" alignment="right" title="Filter (Study Table Level):" id="509">
@@ -1311,7 +1311,7 @@ DQ
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="741">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="983" translatesAutoresizingMaskIntoConstraints="NO" id="741">
                         <rect key="frame" x="291" y="388" width="124" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" alignment="right" title="List of specific studies:" id="742">
@@ -1320,10 +1320,10 @@ DQ
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="643">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="983" translatesAutoresizingMaskIntoConstraints="NO" id="643">
                         <rect key="frame" x="187" y="460" width="228" height="33"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <textFieldCell key="cell" controlSize="mini" alignment="right" id="644">
+                        <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" alignment="right" id="644">
                             <font key="font" metaFont="miniSystem"/>
                             <string key="title">The syntax is similar to smart albums. For example:
 (referringPhysician CONTAINS[cd] 'Prof. ROSSET')
@@ -1332,7 +1332,7 @@ DQ
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="764">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="983" translatesAutoresizingMaskIntoConstraints="NO" id="764">
                         <rect key="frame" x="261" y="369" width="154" height="11"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" alignment="right" title="Study Instance UIDs &amp; Patient UIDs" id="765">
@@ -1362,7 +1362,7 @@ DQ
                             <outlet property="nextKeyView" destination="515" id="866"/>
                         </connections>
                     </textField>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="513">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="983" translatesAutoresizingMaskIntoConstraints="NO" id="513">
                         <rect key="frame" x="178" y="616" width="57" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" alignment="right" title="Name:" id="514">
@@ -1481,7 +1481,7 @@ DQ
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="692">
                         <rect key="frame" x="174" y="57" width="137" height="18"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Delete this user after:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" inset="2" id="693">
+                        <buttonCell key="cell" type="check" title="Delete this user after:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="693">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="smallSystem"/>
                         </buttonCell>
@@ -1572,7 +1572,7 @@ DQ
                     <button tag="-1" translatesAutoresizingMaskIntoConstraints="NO" id="1204">
                         <rect key="frame" x="190" y="249" width="366" height="18"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Authorized to share a study by creating a temporary user (email)" imagePosition="left" alignment="left" controlSize="small" inset="2" id="1205">
+                        <buttonCell key="cell" type="check" title="Authorized to share a study by creating a temporary user (email)" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="1205">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="smallSystem"/>
                         </buttonCell>
@@ -1632,6 +1632,7 @@ DQ
                     <constraint firstItem="492" firstAttribute="baseline" secondItem="490" secondAttribute="baseline" id="Pcq-u1-ed6"/>
                     <constraint firstItem="513" firstAttribute="trailing" secondItem="503" secondAttribute="trailing" id="Ru5-w7-X33"/>
                     <constraint firstItem="508" firstAttribute="trailing" secondItem="738" secondAttribute="trailing" id="Sme-dZ-aDZ"/>
+                    <constraint firstItem="764" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="539" secondAttribute="trailing" constant="10" id="TIA-WX-bE8"/>
                     <constraint firstItem="646" firstAttribute="baseline" secondItem="645" secondAttribute="baseline" id="Th1-cW-cmy"/>
                     <constraint firstItem="569" firstAttribute="trailing" secondItem="539" secondAttribute="trailing" id="UPl-6t-pXv"/>
                     <constraint firstItem="497" firstAttribute="baseline" secondItem="495" secondAttribute="baseline" id="V3w-qt-11K"/>
@@ -1660,6 +1661,7 @@ DQ
                     <constraint firstItem="769" firstAttribute="top" secondItem="510" secondAttribute="bottom" constant="8" symbolic="YES" id="gBU-iA-MvL"/>
                     <constraint firstItem="513" firstAttribute="trailing" secondItem="495" secondAttribute="trailing" id="gJA-ab-df6"/>
                     <constraint firstItem="485" firstAttribute="baseline" secondItem="487" secondAttribute="baseline" id="gTw-p3-gdi"/>
+                    <constraint firstItem="741" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="539" secondAttribute="trailing" constant="10" id="gVc-GT-FN2"/>
                     <constraint firstItem="612" firstAttribute="leading" secondItem="658" secondAttribute="leading" id="gXd-O9-Qmu"/>
                     <constraint firstItem="513" firstAttribute="trailing" secondItem="490" secondAttribute="trailing" id="hfP-vP-xRt"/>
                     <constraint firstItem="778" firstAttribute="top" secondItem="764" secondAttribute="bottom" constant="25" id="hq1-OB-MCT"/>

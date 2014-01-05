@@ -24,7 +24,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <box title="Check version" translatesAutoresizingMaskIntoConstraints="NO" id="129">
-                        <rect key="frame" x="17" y="206" width="622" height="74"/>
+                        <rect key="frame" x="17" y="233" width="622" height="74"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
                             <rect key="frame" x="2" y="2" width="618" height="57"/>
@@ -33,7 +33,7 @@
                                 <button toolTip="Connect to OsiriX and check for latest version." translatesAutoresizingMaskIntoConstraints="NO" id="101">
                                     <rect key="frame" x="15" y="11" width="436" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Automatically check for OsiriX application updates at startup time" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="178">
+                                    <buttonCell key="cell" type="check" title="Automatically check for OsiriX application updates at startup time" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="178">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -45,7 +45,7 @@
                                 <button toolTip="Connect to OsiriX and check for latest version." translatesAutoresizingMaskIntoConstraints="NO" id="191">
                                     <rect key="frame" x="15" y="31" width="428" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Automatically check for installed Plugins updates at startup time" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="192">
+                                    <buttonCell key="cell" type="check" title="Automatically check for installed Plugins updates at startup time" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="192">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -68,10 +68,10 @@
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </box>
                     <box title="DICOM Toolkits" translatesAutoresizingMaskIntoConstraints="NO" id="133">
-                        <rect key="frame" x="17" y="373" width="622" height="124"/>
+                        <rect key="frame" x="17" y="400" width="622" height="97"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
-                            <rect key="frame" x="2" y="2" width="618" height="107"/>
+                            <rect key="frame" x="2" y="2" width="618" height="80"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="141">
@@ -86,11 +86,11 @@
                                     </buttonCell>
                                     <cells>
                                         <column>
-                                            <buttonCell type="radio" title="Papyrus" imagePosition="left" alignment="left" state="on" tag="1" inset="2" id="163">
+                                            <buttonCell type="radio" title="Papyrus" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" state="on" tag="1" inset="2" id="163">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
-                                            <buttonCell type="radio" title="DCMTK (Recommended)" imagePosition="left" alignment="left" tag="2" inset="2" id="164">
+                                            <buttonCell type="radio" title="DCMTK (Recommended)" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" tag="2" inset="2" id="164">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
@@ -100,19 +100,10 @@
                                         <binding destination="167" name="selectedTag" keyPath="values.TOOLKITPARSER4" id="394"/>
                                     </connections>
                                 </matrix>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="144">
-                                    <rect key="frame" x="13" y="80" width="577" height="17"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="DICOM Parser:" id="179">
-                                        <font key="font" metaFont="system"/>
-                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                    </textFieldCell>
-                                </textField>
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="174">
                                     <rect key="frame" x="26" y="11" width="416" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="For CD/DVD Media, always use Papyrus Toolkit (faster reading)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="182">
+                                    <buttonCell key="cell" type="check" title="For CD/DVD Media, always use Papyrus Toolkit (faster reading)" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="182">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -124,13 +115,10 @@
                         </view>
                         <constraints>
                             <constraint firstItem="141" firstAttribute="leading" secondItem="133" secondAttribute="leading" constant="25" id="03o-eH-ZlG"/>
-                            <constraint firstItem="144" firstAttribute="leading" secondItem="133" secondAttribute="leading" constant="14" id="9th-hK-GsW"/>
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="174" secondAttribute="trailing" constant="16" id="G4K-p5-Ja3"/>
-                            <constraint firstAttribute="trailing" secondItem="144" secondAttribute="trailing" constant="29" id="Jpg-Tx-lEX"/>
+                            <constraint firstItem="141" firstAttribute="top" secondItem="133" secondAttribute="top" constant="22" id="Gjc-lL-tN1"/>
                             <constraint firstItem="174" firstAttribute="leading" secondItem="133" secondAttribute="leading" constant="27" id="QdE-E4-et5"/>
-                            <constraint firstItem="141" firstAttribute="top" secondItem="144" secondAttribute="bottom" constant="7" id="SA6-n5-9mE"/>
                             <constraint firstItem="174" firstAttribute="top" secondItem="141" secondAttribute="bottom" constant="8" symbolic="YES" id="ffe-nG-rHA"/>
-                            <constraint firstItem="144" firstAttribute="top" secondItem="133" secondAttribute="top" constant="25" id="qTg-la-Vbr"/>
                             <constraint firstAttribute="bottom" secondItem="174" secondAttribute="bottom" constant="11" id="xU6-l7-z8C"/>
                         </constraints>
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
@@ -146,7 +134,7 @@
                                 <button toolTip="Connect to OsiriX and check for latest version." translatesAutoresizingMaskIntoConstraints="NO" id="159">
                                     <rect key="frame" x="15" y="83" width="476" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Require an 'Administrator' authentication to modify preferences settings" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="183">
+                                    <buttonCell key="cell" type="check" title="Require an 'Administrator' authentication to modify preferences settings" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="183">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -158,7 +146,7 @@
                                 <button toolTip="Connect to OsiriX and check for latest version." translatesAutoresizingMaskIntoConstraints="NO" id="BXs-xj-ZZ5">
                                     <rect key="frame" x="15" y="11" width="416" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Display Notifications (MacOS 10.8 or higher or Growl required)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="eOV-F7-aFg">
+                                    <buttonCell key="cell" type="check" title="Display Notifications (MacOS 10.8 or higher or Growl required)" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="eOV-F7-aFg">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -206,7 +194,7 @@
                                 <button toolTip="Connect to OsiriX and check for latest version." translatesAutoresizingMaskIntoConstraints="NO" id="535">
                                     <rect key="frame" x="15" y="63" width="328" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Synchronize preferences at startup with this url :" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="536">
+                                    <buttonCell key="cell" type="check" title="Synchronize preferences at startup with this url :" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="536">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -274,7 +262,7 @@
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </box>
                     <box title="DICOM Editing" translatesAutoresizingMaskIntoConstraints="NO" id="169">
-                        <rect key="frame" x="17" y="148" width="622" height="54"/>
+                        <rect key="frame" x="17" y="175" width="622" height="54"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
                             <rect key="frame" x="2" y="2" width="618" height="37"/>
@@ -283,7 +271,7 @@
                                 <button toolTip="Connect to OsiriX and check for latest version." translatesAutoresizingMaskIntoConstraints="NO" id="171">
                                     <rect key="frame" x="15" y="11" width="311" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Allow DICOM Editing. See Meta-Data Window." bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="184">
+                                    <buttonCell key="cell" type="check" title="Allow DICOM Editing. See Meta-Data Window." bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="184">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -302,21 +290,21 @@
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </box>
                     <box title="Languages" translatesAutoresizingMaskIntoConstraints="NO" id="397">
-                        <rect key="frame" x="17" y="16" width="622" height="128"/>
+                        <rect key="frame" x="17" y="16" width="622" height="155"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
-                            <rect key="frame" x="2" y="2" width="618" height="111"/>
+                            <rect key="frame" x="2" y="2" width="618" height="138"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <scrollView autohidesScrollers="YES" horizontalLineScroll="18" horizontalPageScroll="10" verticalLineScroll="18" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="517">
-                                    <rect key="frame" x="17" y="10" width="368" height="94"/>
+                                    <rect key="frame" x="17" y="10" width="368" height="121"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <clipView key="contentView" id="x1m-RD-rMc">
-                                        <rect key="frame" x="1" y="17" width="366" height="76"/>
+                                        <rect key="frame" x="1" y="17" width="366" height="103"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="16" headerView="520" id="518">
-                                                <rect key="frame" x="0.0" y="0.0" width="366" height="76"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="366" height="103"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -379,7 +367,7 @@
                                     </tableHeaderView>
                                 </scrollView>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="533">
-                                    <rect key="frame" x="396" y="45" width="207" height="56"/>
+                                    <rect key="frame" x="396" y="72" width="207" height="56"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" id="534">
                                         <font key="font" metaFont="smallSystem"/>
@@ -404,7 +392,7 @@ If multiple languages are enabled, the used language will be chosen according to
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </box>
                     <box verticalHuggingPriority="249" title="JPEG Compression" translatesAutoresizingMaskIntoConstraints="NO" id="357">
-                        <rect key="frame" x="17" y="284" width="622" height="85"/>
+                        <rect key="frame" x="17" y="311" width="622" height="85"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
                             <rect key="frame" x="2" y="2" width="618" height="68"/>
@@ -420,7 +408,7 @@ If multiple languages are enabled, the used language will be chosen according to
                                     </textFieldCell>
                                 </textField>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="366">
-                                    <rect key="frame" x="145" y="30" width="141" height="32"/>
+                                    <rect key="frame" x="160" y="30" width="141" height="32"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <constraints>
                                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="129" id="8TN-G8-XXC"/>
@@ -436,7 +424,7 @@ If multiple languages are enabled, the used language will be chosen according to
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="166">
                                     <rect key="frame" x="21" y="11" width="582" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="For Color JPEG DICOMs, use JPEG photometric value, instead of DICOM photometric value" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="181">
+                                    <buttonCell key="cell" type="check" title="For Color JPEG DICOMs, use JPEG photometric value, instead of DICOM photometric value" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="181">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -447,7 +435,7 @@ If multiple languages are enabled, the used language will be chosen according to
                             </subviews>
                         </view>
                         <constraints>
-                            <constraint firstItem="366" firstAttribute="leading" secondItem="364" secondAttribute="trailing" constant="1" id="5Ni-YM-col"/>
+                            <constraint firstItem="366" firstAttribute="leading" secondItem="364" secondAttribute="trailing" constant="16" id="5Ni-YM-col"/>
                             <constraint firstItem="364" firstAttribute="leading" secondItem="357" secondAttribute="leading" constant="21" id="Phy-HO-7mw"/>
                             <constraint firstItem="364" firstAttribute="top" secondItem="357" secondAttribute="top" constant="26" id="URF-TP-GYH"/>
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="166" secondAttribute="trailing" constant="16" id="V5d-Gx-bcE"/>

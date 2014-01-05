@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13B35" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C32" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
@@ -378,7 +378,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="242">
                                     <rect key="frame" x="14" y="52" width="324" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Search for other DICOM Nodes through Bonjour protocol" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" inset="2" id="333">
+                                    <buttonCell key="cell" type="check" title="Search for other DICOM Nodes through Bonjour protocol" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="333">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
@@ -389,7 +389,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="1121">
                                     <rect key="frame" x="14" y="88" width="534" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="For C-GET and C-MOVE, try to retrieve images, at IMAGE level (instead of STUDY or SERIES level)" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" inset="2" id="1122">
+                                    <buttonCell key="cell" type="check" title="For C-GET and C-MOVE, try to retrieve images, at IMAGE level (instead of STUDY or SERIES level)" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="1122">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
@@ -400,7 +400,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="462">
                                     <rect key="frame" x="14" y="70" width="322" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Restart DICOM Auto Query &amp; Retrieve settings, at launch" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" inset="2" id="463">
+                                    <buttonCell key="cell" type="check" title="Restart DICOM Auto Query &amp; Retrieve settings, at launch" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="463">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
@@ -411,7 +411,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="1190">
                                     <rect key="frame" x="14" y="34" width="564" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="For C-FIND, support status (0x4008,0x0212) and comments (0x0032,0x4000; 0x0020,0x4000) fields" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" inset="2" id="1191">
+                                    <buttonCell key="cell" type="check" title="For C-FIND, support status (0x4008,0x0212) and comments (0x0032,0x4000; 0x0020,0x4000) fields" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="1191">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
@@ -495,7 +495,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="363">
                                     <rect key="frame" x="14" y="106" width="326" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Automatically sync the DICOM Nodes list from this URL:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" inset="2" id="364">
+                                    <buttonCell key="cell" type="check" title="Automatically sync the DICOM Nodes list from this URL:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="364">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
@@ -727,7 +727,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="393">
                                     <rect key="frame" x="15" y="33" width="243" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Automatically sync this list from this URL:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" inset="2" id="394">
+                                    <buttonCell key="cell" type="check" title="Automatically sync this list from this URL:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="394">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
@@ -769,7 +769,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="360">
                                     <rect key="frame" x="15" y="11" width="457" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Turn Off Bonjour searching protocol - Do not search for Bonjour OsiriX Databases" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" inset="2" id="361">
+                                    <buttonCell key="cell" type="check" title="Turn Off Bonjour searching protocol - Do not search for Bonjour OsiriX Databases" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="361">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
@@ -1578,11 +1578,8 @@ Gw
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="903">
-                                    <rect key="frame" x="15" y="44" width="91" height="14"/>
+                                    <rect key="frame" x="15" y="44" width="89" height="14"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <constraints>
-                                        <constraint firstAttribute="width" constant="87" id="sMU-85-T8K"/>
-                                    </constraints>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Peer Certificate:" id="904">
                                         <font key="font" metaFont="smallSystem"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -1601,7 +1598,7 @@ Gw
                                     </connections>
                                 </textField>
                                 <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="907">
-                                    <rect key="frame" x="110" y="44" width="62" height="15"/>
+                                    <rect key="frame" x="108" y="44" width="62" height="15"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <popUpButtonCell key="cell" type="push" title="Ignore" bezelStyle="rounded" alignment="left" controlSize="mini" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="2" imageScaling="proportionallyDown" inset="2" selectedItem="912" id="908">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -1618,7 +1615,7 @@ Gw
                                         <binding destination="-2" name="enabled" keyPath="TLSEnabled" id="914"/>
                                     </connections>
                                 </popUpButton>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="1069">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="999" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="1069">
                                     <rect key="frame" x="111" y="14" width="251" height="22"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" controlSize="mini" sendsActionOnEndEditing="YES" title="When choosing &quot;Verify&quot; or &quot;Require&quot;, the peer certificate is tested against all trusted certificates of the Keychain." id="1070">

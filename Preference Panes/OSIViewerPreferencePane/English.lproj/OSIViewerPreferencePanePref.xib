@@ -32,7 +32,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="104">
                                     <rect key="frame" x="10" y="277" width="196" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Save left button mouse tool" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="342">
+                                    <buttonCell key="cell" type="check" title="Save left button mouse tool" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="342">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -43,7 +43,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="197">
                                     <rect key="frame" x="10" y="257" width="208" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Reverse scroll wheel direction" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="343">
+                                    <buttonCell key="cell" type="check" title="Reverse scroll wheel direction" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="343">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -51,10 +51,10 @@
                                         <binding destination="308" name="value" keyPath="values.Scroll Wheel Reversed" id="537"/>
                                     </connections>
                                 </button>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="229">
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="229">
                                     <rect key="frame" x="416" y="217" width="187" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="No interpolation for zoom" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="345">
+                                    <buttonCell key="cell" type="check" title="No interpolation for zoom" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="345">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -90,7 +90,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="301">
                                     <rect key="frame" x="10" y="217" width="232" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Zoom with horizontal scrollwheel" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="348">
+                                    <buttonCell key="cell" type="check" title="Zoom with horizontal scrollwheel" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="348">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -101,7 +101,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="425">
                                     <rect key="frame" x="10" y="237" width="288" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Loop in the series with mouse scroll wheel" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="426">
+                                    <buttonCell key="cell" type="check" title="Loop in the series with mouse scroll wheel" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="426">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -112,7 +112,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="313">
                                     <rect key="frame" x="10" y="197" width="248" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="No 'Propagate settings in series' for:" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="349">
+                                    <buttonCell key="cell" type="check" title="No 'Propagate settings in series' for:" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="349">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -123,7 +123,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="323">
                                     <rect key="frame" x="10" y="177" width="375" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Apply Next/Previous Series button to all opened viewers" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="350">
+                                    <buttonCell key="cell" type="check" title="Apply Next/Previous Series button to all opened viewers" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="350">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -131,10 +131,10 @@
                                         <binding destination="308" name="value" keyPath="values.nextSeriesToAllViewers" id="324"/>
                                     </connections>
                                 </button>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="327">
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="327">
                                     <rect key="frame" x="416" y="197" width="216" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="High Quality Zoom (Lanczos 5)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="351">
+                                    <buttonCell key="cell" type="check" title="High Quality Zoom (Lanczos 5)" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="351">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -147,10 +147,10 @@
                                         <binding destination="308" name="value" keyPath="values.SOFTWAREINTERPOLATION" id="328"/>
                                     </connections>
                                 </button>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="415">
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="415">
                                     <rect key="frame" x="416" y="177" width="256" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Show Magnifying Lens with 'shift' key" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="416">
+                                    <buttonCell key="cell" type="check" title="Show Magnifying Lens with 'shift' key" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="416">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -158,10 +158,10 @@
                                         <binding destination="308" name="value" keyPath="values.magnifyingLens" id="417"/>
                                     </connections>
                                 </button>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="421">
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="421">
                                     <rect key="frame" x="416" y="157" width="209" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Mark ROI image as Key image" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="422">
+                                    <buttonCell key="cell" type="check" title="Mark ROI image as Key image" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="422">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -169,10 +169,10 @@
                                         <binding destination="308" name="value" keyPath="values.markROIImageAsKeyImage" id="424"/>
                                     </connections>
                                 </button>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="434">
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="434">
                                     <rect key="frame" x="416" y="117" width="198" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Full 32-bit OpenGL pipeline" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="435">
+                                    <buttonCell key="cell" type="check" title="Full 32-bit OpenGL pipeline" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="435">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -181,10 +181,10 @@
                                         <binding destination="308" name="enabled" keyPath="values.hasFULL32BITPIPELINE" id="453"/>
                                     </connections>
                                 </button>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="458">
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="458">
                                     <rect key="frame" x="416" y="97" width="265" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Select window when using scroll wheel" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="459">
+                                    <buttonCell key="cell" type="check" title="Select window when using scroll wheel" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="459">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -192,10 +192,10 @@
                                         <binding destination="308" name="value" keyPath="values.SelectWindowScrollWheel" id="462"/>
                                     </connections>
                                 </button>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="480">
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="480">
                                     <rect key="frame" x="416" y="77" width="270" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Switch to 1x1 Tiling in Fullscreen mode" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="481">
+                                    <buttonCell key="cell" type="check" title="Switch to 1x1 Tiling in Fullscreen mode" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="481">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -206,7 +206,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="372">
                                     <rect key="frame" x="10" y="137" width="319" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Spline Rendering for polygons and pencils ROIs" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="373">
+                                    <buttonCell key="cell" type="check" title="Spline Rendering for polygons and pencils ROIs" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="373">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -217,7 +217,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="418">
                                     <rect key="frame" x="10" y="117" width="168" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="New ROIs are unnamed" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="419">
+                                    <buttonCell key="cell" type="check" title="New ROIs are unnamed" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="419">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -228,7 +228,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="431">
                                     <rect key="frame" x="10" y="97" width="248" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Scroll through image and series for:" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="432">
+                                    <buttonCell key="cell" type="check" title="Scroll through image and series for:" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="432">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -239,7 +239,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="454">
                                     <rect key="frame" x="10" y="77" width="329" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Keep CLUT Bars when exporting Screen Captures" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="455">
+                                    <buttonCell key="cell" type="check" title="Keep CLUT Bars when exporting Screen Captures" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="455">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -250,7 +250,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="463">
                                     <rect key="frame" x="10" y="17" width="267" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Zoom centered around mouse position" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="464">
+                                    <buttonCell key="cell" type="check" title="Zoom centered around mouse position" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="464">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -258,10 +258,10 @@
                                         <binding destination="308" name="value" keyPath="values.MouseClickZoomCentered" id="466"/>
                                     </connections>
                                 </button>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="mzt-vU-47c">
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="mzt-vU-47c">
                                     <rect key="frame" x="416" y="277" width="261" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Convert RTSTRUCT ROIs to Brush ROIs" bezelStyle="regularSquare" imagePosition="left" alignment="left" lineBreakMode="truncatingMiddle" inset="2" id="zMF-Em-hzR">
+                                    <buttonCell key="cell" type="check" title="Convert RTSTRUCT ROIs to Brush ROIs" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="zMF-Em-hzR">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -272,7 +272,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="472">
                                     <rect key="frame" x="10" y="37" width="339" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Use FrameofReferenceUID for cross reference lines" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="473">
+                                    <buttonCell key="cell" type="check" title="Use FrameofReferenceUID for cross reference lines" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="473">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -283,7 +283,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="540">
                                     <rect key="frame" x="10" y="57" width="274" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Compute Skewness and Kurtosis for ROI" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="541">
+                                    <buttonCell key="cell" type="check" title="Compute Skewness and Kurtosis for ROI" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="541">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -291,10 +291,10 @@
                                         <binding destination="308" name="value" keyPath="values.ROIComputeSkewnessAndKurtosis" id="543"/>
                                     </connections>
                                 </button>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="544">
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="544">
                                     <rect key="frame" x="416" y="57" width="164" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Display Overflow Lines" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="545">
+                                    <buttonCell key="cell" type="check" title="Display Overflow Lines" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="545">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -302,10 +302,10 @@
                                         <binding destination="308" name="value" keyPath="values.OVERFLOWLINES" id="547"/>
                                     </connections>
                                 </button>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="JNW-Zo-Pk3">
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="JNW-Zo-Pk3">
                                     <rect key="frame" x="416" y="37" width="227" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Display the Center of Circle ROIs" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="cnn-XX-QeR">
+                                    <buttonCell key="cell" type="check" title="Display the Center of Circle ROIs" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="cnn-XX-QeR">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -313,10 +313,10 @@
                                         <binding destination="308" name="value" keyPath="values.drawROICircleCenter" id="YHd-Bw-WPz"/>
                                     </connections>
                                 </button>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="437">
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="437">
                                     <rect key="frame" x="416" y="137" width="274" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Only display images of the same patient" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="438">
+                                    <buttonCell key="cell" type="check" title="Only display images of the same patient" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="438">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -327,7 +327,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="375">
                                     <rect key="frame" x="10" y="157" width="170" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Use VOI LUT if available" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="376">
+                                    <buttonCell key="cell" type="check" title="Use VOI LUT if available" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="376">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -335,10 +335,10 @@
                                         <binding destination="308" name="value" keyPath="values.UseVOILUT" id="377"/>
                                     </connections>
                                 </button>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="555">
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="555">
                                     <rect key="frame" x="416" y="257" width="265" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Don't switch series if already displayed" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="556">
+                                    <buttonCell key="cell" type="check" title="Don't switch series if already displayed" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="556">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -346,10 +346,10 @@
                                         <binding destination="308" name="value" keyPath="values.showWindowInsteadOfSwitching" id="558"/>
                                     </connections>
                                 </button>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="412">
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="412">
                                     <rect key="frame" x="416" y="237" width="240" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Open PDF with Preview application" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="413">
+                                    <buttonCell key="cell" type="check" title="Open PDF with Preview application" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="413">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -567,7 +567,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="133">
                                     <rect key="frame" x="18" y="6" width="585" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Automatically open the exported images after exporting with Preview or Quicktime Player" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="352">
+                                    <buttonCell key="cell" type="check" title="Automatically open the exported images after exporting with Preview or Quicktime Player" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="352">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -578,7 +578,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="339">
                                     <rect key="frame" x="18" y="24" width="470" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="If there are tiled views, export all tiled views, not only the selected view" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="353">
+                                    <buttonCell key="cell" type="check" title="If there are tiled views, export all tiled views, not only the selected view" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="353">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -589,7 +589,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="405">
                                     <rect key="frame" x="18" y="42" width="312" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Automatically crop the view to the image area" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="406">
+                                    <buttonCell key="cell" type="check" title="Automatically crop the view to the image area" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="406">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -621,7 +621,7 @@
                             <rect key="frame" x="2" y="2" width="766" height="403"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="250">
+                                <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="250">
                                     <rect key="frame" x="135" y="237" width="320" height="38"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -633,21 +633,21 @@
                                     </buttonCell>
                                     <cells>
                                         <column>
-                                            <buttonCell type="radio" title="Fullscreen" imagePosition="left" alignment="left" state="on" inset="2" id="253">
+                                            <buttonCell type="radio" title="Fullscreen" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="253">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
-                                            <buttonCell type="radio" title="At 100% of resolution" imagePosition="left" alignment="left" tag="1" inset="2" id="255">
+                                            <buttonCell type="radio" title="At 100% of resolution" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" tag="1" inset="2" id="255">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
                                         </column>
                                         <column>
-                                            <buttonCell type="radio" title="At 150% of resolution" imagePosition="left" alignment="left" tag="2" inset="2" id="254">
+                                            <buttonCell type="radio" title="At 150% of resolution" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" tag="2" inset="2" id="254">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
-                                            <buttonCell type="radio" title="At 200% of resolution" imagePosition="left" alignment="left" tag="3" inset="2" id="256">
+                                            <buttonCell type="radio" title="At 200% of resolution" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" tag="3" inset="2" id="256">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
@@ -662,10 +662,10 @@
                                         <binding destination="308" name="selectedTag" keyPath="values.WINDOWSIZEVIEWER" id="533"/>
                                     </connections>
                                 </matrix>
-                                <button verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="298">
+                                <button verticalHuggingPriority="751" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="298">
                                     <rect key="frame" x="130" y="211" width="434" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Automatically Tile Windows when closing or opening a new series" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="358">
+                                    <buttonCell key="cell" type="check" title="Automatically Tile Windows when closing or opening a new series" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="358">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -673,10 +673,10 @@
                                         <binding destination="308" name="value" keyPath="values.AUTOTILING" id="539"/>
                                     </connections>
                                 </button>
-                                <button verticalHuggingPriority="752" translatesAutoresizingMaskIntoConstraints="NO" id="319">
+                                <button verticalHuggingPriority="752" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="319">
                                     <rect key="frame" x="130" y="281" width="294" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Group series of same study on same screen" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="359">
+                                    <buttonCell key="cell" type="check" title="Group series of same study on same screen" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="359">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -684,10 +684,10 @@
                                         <binding destination="308" name="value" keyPath="values.KeepStudiesTogetherOnSameScreen" id="322"/>
                                     </connections>
                                 </button>
-                                <button verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="497">
+                                <button verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="497">
                                     <rect key="frame" x="130" y="321" width="306" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Reserve the database screen for the database" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="498">
+                                    <buttonCell key="cell" type="check" title="Reserve the database screen for the database" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="498">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -695,10 +695,10 @@
                                         <binding destination="308" name="value" keyPath="values.ReserveScreenForDB" id="501"/>
                                     </connections>
                                 </button>
-                                <button verticalHuggingPriority="755" translatesAutoresizingMaskIntoConstraints="NO" id="522">
+                                <button verticalHuggingPriority="755" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="522">
                                     <rect key="frame" x="130" y="301" width="216" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Use database screen in the last" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="523">
+                                    <buttonCell key="cell" type="check" title="Use database screen in the last" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="523">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -711,10 +711,10 @@
                                         <binding destination="308" name="value" keyPath="values.UseDBScreenAtLast" id="525"/>
                                     </connections>
                                 </button>
-                                <button verticalHuggingPriority="753" translatesAutoresizingMaskIntoConstraints="NO" id="325">
+                                <button verticalHuggingPriority="753" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="325">
                                     <rect key="frame" x="130" y="191" width="253" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Magnetic Windows for move &amp; resize" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="360">
+                                    <buttonCell key="cell" type="check" title="Magnetic Windows for move &amp; resize" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="360">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -722,10 +722,10 @@
                                         <binding destination="308" name="value" keyPath="values.MagneticWindows" id="326"/>
                                     </connections>
                                 </button>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="335">
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="335">
                                     <rect key="frame" x="130" y="107" width="401" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Automatically save Workspace State when closing all viewers" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="362">
+                                    <buttonCell key="cell" type="check" title="Automatically save Workspace State when closing all viewers" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="362">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -733,10 +733,10 @@
                                         <binding destination="308" name="value" keyPath="values.automaticWorkspaceSave" id="337"/>
                                     </connections>
                                 </button>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="336">
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="336">
                                     <rect key="frame" x="130" y="87" width="388" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Automatically load Workspace State when opening a study" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="363">
+                                    <buttonCell key="cell" type="check" title="Automatically load Workspace State when opening a study" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="363">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -744,10 +744,10 @@
                                         <binding destination="308" name="value" keyPath="values.automaticWorkspaceLoad" id="338"/>
                                     </connections>
                                 </button>
-                                <button verticalHuggingPriority="754" translatesAutoresizingMaskIntoConstraints="NO" id="368">
+                                <button verticalHuggingPriority="754" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="368">
                                     <rect key="frame" x="130" y="171" width="297" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Stretch last windows to fill the entire screen" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="369">
+                                    <buttonCell key="cell" type="check" title="Stretch last windows to fill the entire screen" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="369">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -755,10 +755,10 @@
                                         <binding destination="308" name="value" keyPath="values.StrechWindows" id="371"/>
                                     </connections>
                                 </button>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="Aob-dY-jNd">
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="Aob-dY-jNd">
                                     <rect key="frame" x="130" y="63" width="196" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Single Series List per screen" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="Uq0-8g-c6d">
+                                    <buttonCell key="cell" type="check" title="Single Series List per screen" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="Uq0-8g-c6d">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -766,10 +766,10 @@
                                         <binding destination="308" name="value" keyPath="values.UseFloatingThumbnailsList" id="F0g-Gj-5MF"/>
                                     </connections>
                                 </button>
-                                <button verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="528">
+                                <button verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="528">
                                     <rect key="frame" x="130" y="151" width="337" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Order windows from most recent to oldest studies" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="529">
+                                    <buttonCell key="cell" type="check" title="Order windows from most recent to oldest studies" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="529">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -778,10 +778,10 @@
                                         <binding destination="308" name="value" keyPath="values.tileWindowsOrderByStudyDate" id="531"/>
                                     </connections>
                                 </button>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="548">
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="548">
                                     <rect key="frame" x="146" y="131" width="117" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Reversed order" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="549">
+                                    <buttonCell key="cell" type="check" title="Reversed order" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="549">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -798,10 +798,10 @@
                                         </binding>
                                     </connections>
                                 </button>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="390">
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="390">
                                     <rect key="frame" x="130" y="39" width="542" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Automatically enable 12 Bit Totoku Display support for CR, MG, DX, DR, XA and RF" bezelStyle="regularSquare" imagePosition="left" alignment="left" lineBreakMode="truncatingMiddle" inset="2" id="391">
+                                    <buttonCell key="cell" type="check" title="Automatically enable 12 Bit Totoku Display support for CR, MG, DX, DR, XA and RF" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="391">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                         <connections>
@@ -813,10 +813,10 @@
                                         <binding destination="308" name="enabled" keyPath="values.is12bitPluginAvailable" id="443"/>
                                     </connections>
                                 </button>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="401">
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="401">
                                     <rect key="frame" x="130" y="15" width="375" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Always 'scale to fit' when displaying or resizing windows" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="402">
+                                    <buttonCell key="cell" type="check" title="Always 'scale to fit' when displaying or resizing windows" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="402">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -824,7 +824,7 @@
                                         <binding destination="308" name="value" keyPath="values.AlwaysScaleToFit" id="404"/>
                                     </connections>
                                 </button>
-                                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="503">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="503">
                                     <rect key="frame" x="74" y="376" width="56" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Screens:" id="504">
@@ -833,7 +833,7 @@
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="505">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="505">
                                     <rect key="frame" x="43" y="258" width="87" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Window Size:" id="506">
@@ -842,7 +842,7 @@
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="509">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="509">
                                     <rect key="frame" x="86" y="213" width="44" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Tiling:" id="510">
@@ -851,7 +851,7 @@
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="511">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="511">
                                     <rect key="frame" x="19" y="108" width="111" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Workspace State:" id="512">
@@ -860,7 +860,7 @@
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Y64-NI-ERD">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="Y64-NI-ERD">
                                     <rect key="frame" x="59" y="64" width="71" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Series List:" id="uep-14-VL5">
@@ -869,7 +869,7 @@
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="515">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="515">
                                     <rect key="frame" x="39" y="40" width="91" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="12bit Display:" id="516">
@@ -878,7 +878,7 @@
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="517">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="517">
                                     <rect key="frame" x="90" y="17" width="40" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Scale:" id="518">
