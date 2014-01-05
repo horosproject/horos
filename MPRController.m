@@ -359,6 +359,8 @@ static float deg2rad = M_PI/180.0;
 	[mprView3 restoreCamera];
 	[mprView3 updateViewMPR];
 	
+    [self applyViewsPosition];
+    
 	[super showWindow: sender];
 	
 	[self setTool: toolsMatrix];
@@ -387,6 +389,14 @@ static float deg2rad = M_PI/180.0;
     NSScreen *s = [viewer2D get3DViewerScreen: viewer2D];
 	
     NSDisableScreenUpdates();
+    
+    [verticalSplit setTranslatesAutoresizingMaskIntoConstraints: YES];
+    [horizontalSplit setTranslatesAutoresizingMaskIntoConstraints: YES];
+    
+    [horizontalSplit setVertical: NO];
+    [verticalSplit setVertical: NO];
+    [verticalSplit adjustSubviews];
+    [horizontalSplit adjustSubviews];
     
     switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"MPR2DViewsPosition"])
     {
