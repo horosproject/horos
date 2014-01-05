@@ -166,8 +166,8 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
 	[m_ProgressIndicator setUsesThreadedAnimation: YES];
 	[m_ProgressIndicator startAnimation: self];
 	[m_VersionNumberTextField setStringValue: VERSIONNUMBERSTRING];
-
-	[NSThread detachNewThreadSelector: @selector(_verifyConnections:) toTarget: self withObject: self];
+    
+	[NSThread detachNewThreadSelector: @selector(_verifyConnections:) toTarget: self withObject: [m_PrinterController arrangedObjects]];
 	
 	[entireSeriesFrom setMaxValue: [[m_CurrentViewer pixList] count]];
 	[entireSeriesTo setMaxValue: [[m_CurrentViewer pixList] count]];
@@ -219,7 +219,7 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
 
 - (IBAction) verifyConnection: (id) sender
 {
-	[NSThread detachNewThreadSelector: @selector(_verifyConnections:) toTarget: self withObject: nil];
+	[NSThread detachNewThreadSelector: @selector(_verifyConnections:) toTarget: self withObject: [m_PrinterController selectedObjects]];
 }
 
 - (IBAction) closeSheet: (id) sender
@@ -616,40 +616,48 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
 	[m_ProgressMessage setNeedsDisplay: YES];
 }
 
-- (void) _verifyConnections: (id) object
+-(void) setVerifyButton: (NSNumber*) enabled
 {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    [m_VerifyConnectionButton setEnabled: enabled.boolValue];
+}
 
-    @try
+-(void) setPrinterStateOn: (NSMutableDictionary*) printer
+{
+    [printer setValue: m_PrinterOnImage forKey: @"state"];
+}
+
+-(void) setPrinterStateOff: (NSMutableDictionary*) printer
+{
+    [printer setValue: m_PrinterOffImage forKey: @"state"];
+}
+
+- (void) _verifyConnections: (NSArray *) printers
+{
+	@autoreleasepool
     {
-        [m_VerifyConnectionButton setEnabled: NO];
-
-        // if object == nil, only verify currently selected printer
-        // (used by (IBAction) verifyConnection:)
-        NSArray *printers;
-        if (!object)
-            printers = [m_PrinterController selectedObjects];
-        else
-            printers = [m_PrinterController arrangedObjects];
-
-        NSMutableDictionary *printer;
-        int i;
-        for (i = 0; i < [printers count]; i++)
+        [self retain];
+        
+        @try
         {
-            printer = [printers objectAtIndex: i];
-            if ([self _verifyConnection: printer])
-                [printer setValue: m_PrinterOnImage forKey: @"state"];
-            else
-                [printer setValue: m_PrinterOffImage forKey: @"state"];
+            [self performSelectorOnMainThread: @selector( setVerifyButton:) withObject: @NO waitUntilDone: YES];
+            
+            for( NSMutableDictionary *printer in printers)
+            {
+                if( [self _verifyConnection: printer])
+                    [self performSelectorOnMainThread: @selector( setPrinterStateOn:) withObject: printer waitUntilDone: NO];
+                else
+                    [self performSelectorOnMainThread: @selector( setPrinterStateOff:) withObject: printer waitUntilDone: NO];
+            }
         }
-    }
-    @catch (NSException *exception) {
-        N2LogException( exception);
-    }
-	[m_VerifyConnectionButton setEnabled: YES];
-	[m_VerifyConnectionButton setNeedsDisplay: YES];
-
-	[pool release];
+        @catch (NSException *exception) {
+            N2LogException( exception);
+        }
+        [self performSelectorOnMainThread: @selector( setVerifyButton:) withObject: @YES waitUntilDone: YES];
+        
+        [NSThread sleepForTimeInterval: 5];
+        
+        [self autorelease];
+	}
 }
 
 - (BOOL) _verifyConnection: (NSDictionary *) dict
