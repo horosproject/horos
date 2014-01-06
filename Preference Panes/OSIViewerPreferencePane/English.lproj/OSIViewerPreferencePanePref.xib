@@ -67,7 +67,6 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <constraints>
                                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="228" id="iQa-gc-zsL"/>
-                                        <constraint firstAttribute="width" constant="228" id="vph-Cp-BCM"/>
                                     </constraints>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="346">
                                         <font key="font" metaFont="system"/>
@@ -888,11 +887,10 @@
                                     </textFieldCell>
                                 </textField>
                                 <customView translatesAutoresizingMaskIntoConstraints="NO" id="521" customClass="O2ScreensPrefsView">
-                                    <rect key="frame" x="132" y="345" width="584" height="48"/>
+                                    <rect key="frame" x="132" y="345" width="623" height="48"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="48" id="nve-ln-Hvy"/>
-                                        <constraint firstAttribute="width" constant="584" id="yJV-96-NT9"/>
                                     </constraints>
                                 </customView>
                                 <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="GQO-4f-FAV">
@@ -965,13 +963,14 @@
                             <constraint firstAttribute="height" constant="419" id="nRX-qq-kZq"/>
                             <constraint firstItem="335" firstAttribute="top" secondItem="548" secondAttribute="bottom" constant="10" id="nr7-pf-qDz"/>
                             <constraint firstItem="528" firstAttribute="top" secondItem="368" secondAttribute="bottom" constant="6" symbolic="YES" id="p5L-TP-krN"/>
+                            <constraint firstItem="511" firstAttribute="leading" secondItem="149" secondAttribute="leading" constant="20" id="pOV-0R-obt"/>
                             <constraint firstItem="515" firstAttribute="trailing" secondItem="505" secondAttribute="trailing" id="pZc-I5-79a"/>
                             <constraint firstItem="517" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="149" secondAttribute="leading" constant="20" id="pur-8I-zRQ"/>
                             <constraint firstItem="Y64-NI-ERD" firstAttribute="trailing" secondItem="511" secondAttribute="trailing" id="pxb-Ja-gkl"/>
                             <constraint firstItem="390" firstAttribute="baseline" secondItem="515" secondAttribute="baseline" id="tDF-m6-4lb"/>
                             <constraint firstItem="505" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="149" secondAttribute="leading" constant="20" id="twf-xT-CWM"/>
                             <constraint firstItem="528" firstAttribute="leading" secondItem="548" secondAttribute="leading" constant="-16" id="udk-wn-PO8"/>
-                            <constraint firstAttribute="trailing" secondItem="521" secondAttribute="trailing" constant="49" id="vts-et-M3X"/>
+                            <constraint firstAttribute="trailing" secondItem="521" secondAttribute="trailing" constant="10" id="vts-et-M3X"/>
                             <constraint firstItem="522" firstAttribute="top" secondItem="497" secondAttribute="bottom" constant="6" symbolic="YES" id="wyO-4M-ZW1"/>
                             <constraint firstItem="298" firstAttribute="baseline" secondItem="509" secondAttribute="baseline" constant="1" id="ywq-yg-rnp"/>
                             <constraint firstAttribute="width" constant="764" id="zvP-p1-dti"/>

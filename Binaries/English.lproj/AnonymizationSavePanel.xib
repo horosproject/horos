@@ -102,6 +102,7 @@ Gw
                     <constraint firstAttribute="bottom" secondItem="6" secondAttribute="bottom" constant="19" id="DZg-U7-py3"/>
                     <constraint firstItem="9" firstAttribute="baseline" secondItem="7" secondAttribute="baseline" id="WWa-BD-cb4"/>
                     <constraint firstAttribute="trailing" secondItem="9" secondAttribute="trailing" constant="20" symbolic="YES" id="avs-K4-Em6"/>
+                    <constraint firstItem="6" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="4" secondAttribute="leading" constant="10" id="cfe-pg-CDi"/>
                     <constraint firstItem="5" firstAttribute="top" secondItem="4" secondAttribute="top" id="dAP-e2-2aY"/>
                     <constraint firstItem="8" firstAttribute="leading" secondItem="6" secondAttribute="trailing" constant="12" symbolic="YES" id="fbk-AO-Al9"/>
                     <constraint firstItem="7" firstAttribute="leading" secondItem="8" secondAttribute="trailing" constant="12" symbolic="YES" id="kr3-Zl-KCm"/>

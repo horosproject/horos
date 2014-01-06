@@ -70,11 +70,11 @@
                         <tabViewItems>
                             <tabViewItem label="Name" identifier="1" id="660">
                                 <view key="view" id="661">
-                                    <rect key="frame" x="10" y="28" width="929" height="21"/>
+                                    <rect key="frame" x="10" y="19" width="929" height="30"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <searchField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="667">
-                                            <rect key="frame" x="47" y="-6" width="806" height="22"/>
+                                            <rect key="frame" x="47" y="3" width="806" height="22"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" alignment="left" placeholderString="Patient Name" bezelStyle="round" sendsWholeSearchString="YES" maximumRecents="20" recentsAutosaveName="LastQueryPatientName" id="749">
                                                 <font key="font" metaFont="cellTitle"/>
@@ -886,7 +886,7 @@ AQAAAA4QAAVDRVNUAENFVAAAAAEBAAABAQ
                                                     </connections>
                                                 </matrix>
                                                 <datePicker verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="969">
-                                                    <rect key="frame" x="130" y="56" width="104" height="27"/>
+                                                    <rect key="frame" x="126" y="56" width="104" height="27"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="101" id="VLO-b4-EXk"/>
@@ -922,7 +922,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                                     </datePickerCell>
                                                 </datePicker>
                                                 <datePicker verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="971">
-                                                    <rect key="frame" x="130" y="26" width="104" height="27"/>
+                                                    <rect key="frame" x="126" y="26" width="104" height="27"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <datePickerCell key="cell" borderStyle="bezel" alignment="left" id="972">
                                                         <font key="font" metaFont="system"/>
@@ -965,7 +965,8 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                             <constraint firstAttribute="trailing" secondItem="515" secondAttribute="trailing" constant="-3" id="VSW-vk-779"/>
                                             <constraint firstItem="515" firstAttribute="top" secondItem="551" secondAttribute="top" constant="3" id="g5O-JI-Y7Y"/>
                                             <constraint firstItem="969" firstAttribute="leading" secondItem="971" secondAttribute="leading" id="oYG-6H-OH3"/>
-                                            <constraint firstItem="969" firstAttribute="leading" secondItem="551" secondAttribute="leading" constant="130" id="xjn-hK-yJP"/>
+                                            <constraint firstAttribute="centerX" secondItem="971" secondAttribute="centerX" id="v0G-lp-wmi"/>
+                                            <constraint firstAttribute="centerX" secondItem="969" secondAttribute="centerX" id="wkr-2e-Jgt"/>
                                         </constraints>
                                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -1428,10 +1429,10 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                                     <binding destination="832" name="value" keyPath="values.autoRetrieving" id="843"/>
                                                     <binding destination="832" name="enabled2" keyPath="values.dontAuthorizeAutoRetrieve" previousBinding="925" id="926">
                                                         <dictionary key="options">
-                                                            <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                                            <integer key="NSNullPlaceholder" value="-1"/>
                                                             <integer key="NSNotApplicablePlaceholder" value="-1"/>
                                                             <integer key="NSNoSelectionPlaceholder" value="-1"/>
-                                                            <integer key="NSNullPlaceholder" value="-1"/>
+                                                            <integer key="NSMultipleValuesPlaceholder" value="-1"/>
                                                             <string key="NSValueTransformerName">NSNegateBoolean</string>
                                                         </dictionary>
                                                     </binding>
@@ -1454,10 +1455,10 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                                     <binding destination="-2" name="enabled" keyPath="autoRefreshQueryResults" id="943"/>
                                                     <binding destination="832" name="enabled2" keyPath="values.dontAuthorizeAutoRetrieve" previousBinding="943" id="947">
                                                         <dictionary key="options">
-                                                            <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                                            <integer key="NSNullPlaceholder" value="-1"/>
                                                             <integer key="NSNotApplicablePlaceholder" value="-1"/>
                                                             <integer key="NSNoSelectionPlaceholder" value="-1"/>
-                                                            <integer key="NSNullPlaceholder" value="-1"/>
+                                                            <integer key="NSMultipleValuesPlaceholder" value="-1"/>
                                                             <string key="NSValueTransformerName">NSNegateBoolean</string>
                                                         </dictionary>
                                                     </binding>

@@ -30,7 +30,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="99">
-                        <rect key="frame" x="82" y="535" width="55" height="26"/>
+                        <rect key="frame" x="86" y="535" width="55" height="26"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <popUpButtonCell key="cell" type="push" title="CR" bezelStyle="rounded" alignment="left" lineBreakMode="clipping" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="274" id="248">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -253,7 +253,7 @@
                         </connections>
                     </button>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="135">
-                        <rect key="frame" x="18" y="541" width="62" height="17"/>
+                        <rect key="frame" x="18" y="541" width="66" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Modality:" id="250">
                             <font key="font" metaFont="systemBold"/>
@@ -378,7 +378,6 @@ Use commas to separate terms.</string>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <constraints>
                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="73" id="v7Z-tE-CHl"/>
-                            <constraint firstAttribute="width" constant="646" id="zJD-ID-zhA"/>
                         </constraints>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="Scb-aD-fhE">
                             <font key="font" metaFont="system"/>
@@ -404,9 +403,11 @@ Use commas to separate terms.</string>
                     <constraint firstItem="380" firstAttribute="top" secondItem="298" secondAttribute="bottom" constant="8" id="9Go-Kg-iJZ"/>
                     <constraint firstItem="108" firstAttribute="top" secondItem="135" secondAttribute="top" id="9Z0-rx-IJc"/>
                     <constraint firstAttribute="trailing" secondItem="108" secondAttribute="trailing" constant="20" symbolic="YES" id="EKh-1Q-gF9"/>
+                    <constraint firstAttribute="trailing" secondItem="i8E-fc-XW9" secondAttribute="trailing" constant="20" id="Ewu-7g-o6r"/>
                     <constraint firstItem="294" firstAttribute="trailing" secondItem="T6w-wp-eIt" secondAttribute="trailing" id="FHV-tH-6SH"/>
                     <constraint firstItem="5qP-63-Wyl" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="6" secondAttribute="leading" constant="16" id="MCA-nw-lUG"/>
                     <constraint firstItem="cLy-b3-d59" firstAttribute="leading" secondItem="296" secondAttribute="leading" id="MQU-c8-uRh"/>
+                    <constraint firstItem="Gv0-hx-c3e" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="23" id="MSP-am-15u"/>
                     <constraint firstItem="BMb-oH-JR6" firstAttribute="top" secondItem="380" secondAttribute="bottom" constant="10" symbolic="YES" id="PYe-bE-uVm"/>
                     <constraint firstItem="108" firstAttribute="trailing" secondItem="107" secondAttribute="trailing" id="Q3M-bU-Psy"/>
                     <constraint firstItem="298" firstAttribute="leading" secondItem="296" secondAttribute="leading" id="Rod-iH-Uha"/>

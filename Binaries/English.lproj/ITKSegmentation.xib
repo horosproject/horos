@@ -28,25 +28,25 @@
         <customObject id="-3" userLabel="Application"/>
         <window title="Segmentation Parameters" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="6" userLabel="Panel" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" utility="YES"/>
-            <rect key="contentRect" x="0.0" y="0.0" width="348" height="585"/>
+            <rect key="contentRect" x="0.0" y="0.0" width="360" height="585"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <value key="minSize" type="size" width="213" height="113"/>
             <view key="contentView" id="5">
-                <rect key="frame" x="0.0" y="0.0" width="348" height="585"/>
+                <rect key="frame" x="0.0" y="0.0" width="360" height="585"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <box title="Results" translatesAutoresizingMaskIntoConstraints="NO" id="9">
-                        <rect key="frame" x="4" y="31" width="339" height="285"/>
+                        <rect key="frame" x="4" y="31" width="351" height="285"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
-                            <rect key="frame" x="2" y="2" width="335" height="268"/>
+                            <rect key="frame" x="2" y="2" width="347" height="268"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="13">
-                                    <rect key="frame" x="14" y="31" width="304" height="184"/>
+                                    <rect key="frame" x="14" y="31" width="316" height="184"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                    <size key="cellSize" width="304" height="91"/>
+                                    <size key="cellSize" width="316" height="91"/>
                                     <size key="intercellSpacing" width="4" height="2"/>
                                     <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="189">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -65,12 +65,12 @@
                                         </column>
                                     </cells>
                                 </matrix>
-                                <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="751" mode="highlight" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="15">
-                                    <rect key="frame" x="32" y="15" width="137" height="52"/>
+                                <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="751" mode="highlight" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="15">
+                                    <rect key="frame" x="32" y="15" width="134" height="46"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                    <size key="cellSize" width="137" height="24"/>
-                                    <size key="intercellSpacing" width="4" height="4"/>
+                                    <size key="cellSize" width="134" height="18"/>
+                                    <size key="intercellSpacing" width="4" height="10"/>
                                     <buttonCell key="prototype" type="check" title="Switch" bezelStyle="regularSquare" imagePosition="left" alignment="left" tag="-1" inset="2" id="190">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
@@ -89,7 +89,7 @@
                                     </cells>
                                 </matrix>
                                 <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" mode="track" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="20">
-                                    <rect key="frame" x="176" y="19" width="67" height="46"/>
+                                    <rect key="frame" x="173" y="13" width="67" height="46"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     <size key="cellSize" width="67" height="19"/>
@@ -115,10 +115,10 @@
                                     </cells>
                                 </matrix>
                                 <slider verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="66">
-                                    <rect key="frame" x="164" y="117" width="93" height="17"/>
+                                    <rect key="frame" x="164" y="111" width="154" height="17"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <constraints>
-                                        <constraint firstAttribute="width" constant="93" id="FoS-pL-H5T"/>
+                                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="93" id="FoS-pL-H5T"/>
                                     </constraints>
                                     <sliderCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" continuous="YES" enabled="NO" alignment="left" minValue="1" maxValue="25" doubleValue="20" tickMarkPosition="below" numberOfTickMarks="10" sliderType="linear" id="173">
                                         <font key="font" size="12" name="Helvetica"/>
@@ -130,7 +130,7 @@
                                     </connections>
                                 </slider>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="67">
-                                    <rect key="frame" x="73" y="120" width="66" height="14"/>
+                                    <rect key="frame" x="73" y="114" width="66" height="14"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="# of points:" id="174">
                                         <font key="font" metaFont="smallSystem"/>
@@ -139,7 +139,7 @@
                                     </textFieldCell>
                                 </textField>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="68">
-                                    <rect key="frame" x="257" y="120" width="25" height="11"/>
+                                    <rect key="frame" x="318" y="114" width="25" height="11"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="High" id="175">
                                         <font key="font" metaFont="miniSystem"/>
@@ -148,7 +148,7 @@
                                     </textFieldCell>
                                 </textField>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="69">
-                                    <rect key="frame" x="140" y="120" width="22" height="11"/>
+                                    <rect key="frame" x="140" y="114" width="22" height="11"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Low" id="176">
                                         <font key="font" metaFont="miniSystem"/>
@@ -157,7 +157,7 @@
                                     </textFieldCell>
                                 </textField>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="71">
-                                    <rect key="frame" x="80" y="92" width="59" height="14"/>
+                                    <rect key="frame" x="80" y="86" width="59" height="14"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="ROI name:" id="177">
                                         <font key="font" metaFont="smallSystem"/>
@@ -166,10 +166,10 @@
                                     </textFieldCell>
                                 </textField>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="72">
-                                    <rect key="frame" x="145" y="90" width="152" height="19"/>
+                                    <rect key="frame" x="145" y="84" width="196" height="19"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <constraints>
-                                        <constraint firstAttribute="width" constant="152" id="hjv-2t-eFp"/>
+                                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="10" id="hjv-2t-eFp"/>
                                     </constraints>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" title="GrowingRegion" drawsBackground="YES" id="178">
                                         <font key="font" metaFont="smallSystem"/>
@@ -180,12 +180,12 @@
                                         <binding destination="159" name="value" keyPath="values.growingRegionROIName" id="171"/>
                                     </connections>
                                 </textField>
-                                <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="76">
-                                    <rect key="frame" x="33" y="139" width="264" height="17"/>
+                                <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="76">
+                                    <rect key="frame" x="33" y="133" width="188" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                    <size key="cellSize" width="130" height="18"/>
-                                    <size key="intercellSpacing" width="4" height="2"/>
+                                    <size key="cellSize" width="74" height="18"/>
+                                    <size key="intercellSpacing" width="40" height="2"/>
                                     <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" controlSize="small" inset="2" id="192">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
@@ -208,8 +208,8 @@
                                         <binding destination="159" name="selectedIndex" keyPath="values.growingRegionROIType" id="168">
                                             <dictionary key="options">
                                                 <integer key="NSConditionallySetsEnabled" value="1"/>
-                                                <integer key="NSAlwaysPresentsApplicationModalAlerts" value="0"/>
                                                 <null key="NSMultipleValuesPlaceholder"/>
+                                                <integer key="NSAlwaysPresentsApplicationModalAlerts" value="0"/>
                                                 <integer key="NSAllowsEditingMultipleValuesSelection" value="1"/>
                                                 <null key="NSNullPlaceholder"/>
                                                 <integer key="NSConditionallySetsHidden" value="0"/>
@@ -252,18 +252,18 @@
                                         </binding>
                                         <binding destination="159" name="enabled2" keyPath="values.growingRegionType" previousBinding="233" id="237">
                                             <dictionary key="options">
-                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                                <integer key="NSNullPlaceholder" value="-1"/>
                                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
                                                 <integer key="NSNoSelectionPlaceholder" value="-1"/>
-                                                <integer key="NSNullPlaceholder" value="-1"/>
+                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
                                                 <string key="NSValueTransformerName">NSNegateBoolean</string>
                                             </dictionary>
                                         </binding>
                                         <binding destination="159" name="value" keyPath="values.segmentationDirectlyGenerate" id="220"/>
                                     </connections>
                                 </button>
-                                <button horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="197">
-                                    <rect key="frame" x="14" y="202" width="187" height="18"/>
+                                <button verticalHuggingPriority="249" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="197">
+                                    <rect key="frame" x="14" y="197" width="187" height="23"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
                                     <buttonCell key="cell" type="check" title="Merge with existing Brush ROIs" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="198">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -279,7 +279,7 @@
                                     </connections>
                                 </button>
                                 <button horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="228">
-                                    <rect key="frame" x="14" y="182" width="141" height="18"/>
+                                    <rect key="frame" x="14" y="177" width="141" height="18"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
                                     <buttonCell key="cell" type="check" title="Propagate result in 4D" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="229">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -294,7 +294,7 @@
                         <constraints>
                             <constraint firstItem="15" firstAttribute="top" secondItem="72" secondAttribute="bottom" constant="23" id="2X2-Zy-qY3"/>
                             <constraint firstItem="68" firstAttribute="leading" secondItem="66" secondAttribute="trailing" constant="2" id="D2t-oS-Smc"/>
-                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="68" secondAttribute="trailing" constant="5" id="Dzc-8b-PRJ"/>
+                            <constraint firstAttribute="trailing" secondItem="68" secondAttribute="trailing" constant="5" id="Dzc-8b-PRJ"/>
                             <constraint firstItem="195" firstAttribute="leading" secondItem="197" secondAttribute="leading" id="Eo8-ji-0gl"/>
                             <constraint firstItem="67" firstAttribute="trailing" secondItem="71" secondAttribute="trailing" id="H82-vH-z3j"/>
                             <constraint firstItem="67" firstAttribute="leading" secondItem="9" secondAttribute="leading" constant="74" id="Jsk-AR-a8j"/>
@@ -304,7 +304,7 @@
                             <constraint firstItem="197" firstAttribute="top" secondItem="195" secondAttribute="bottom" constant="8" id="Tvo-OE-K2v"/>
                             <constraint firstItem="72" firstAttribute="top" secondItem="66" secondAttribute="bottom" constant="8" symbolic="YES" id="Wbj-WF-yPm"/>
                             <constraint firstAttribute="bottom" secondItem="15" secondAttribute="bottom" constant="13" id="XD4-hg-djU"/>
-                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="72" secondAttribute="trailing" constant="5" id="XUj-YB-VZ9"/>
+                            <constraint firstAttribute="trailing" secondItem="72" secondAttribute="trailing" constant="5" id="XUj-YB-VZ9"/>
                             <constraint firstItem="68" firstAttribute="baseline" secondItem="69" secondAttribute="baseline" id="YGX-uO-Hpe"/>
                             <constraint firstItem="72" firstAttribute="baseline" secondItem="71" secondAttribute="baseline" id="YIx-0z-bbW"/>
                             <constraint firstAttribute="height" constant="281" id="Yt8-S0-CQd"/>
@@ -331,13 +331,13 @@
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </box>
                     <box horizontalHuggingPriority="1000" verticalHuggingPriority="249" title="Parameters" translatesAutoresizingMaskIntoConstraints="NO" id="122">
-                        <rect key="frame" x="4" y="320" width="339" height="255"/>
+                        <rect key="frame" x="4" y="320" width="351" height="255"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
-                            <rect key="frame" x="2" y="2" width="335" height="238"/>
+                            <rect key="frame" x="2" y="2" width="347" height="238"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="113">
+                                <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="113">
                                     <rect key="frame" x="8" y="192" width="237" height="38"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -517,7 +517,7 @@
                                     </connections>
                                 </button>
                                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="238">
-                                    <rect key="frame" x="211" y="68" width="113" height="17"/>
+                                    <rect key="frame" x="211" y="68" width="125" height="17"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <sliderCell key="cell" controlSize="mini" continuous="YES" state="on" alignment="left" maxValue="1000" doubleValue="100" tickMarkPosition="above" numberOfTickMarks="10" sliderType="linear" id="239">
                                         <font key="font" metaFont="miniSystem"/>
@@ -566,7 +566,7 @@
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </box>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="17">
-                        <rect key="frame" x="249" y="3" width="96" height="28"/>
+                        <rect key="frame" x="261" y="3" width="96" height="28"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <constraints>
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="86" id="jdr-OM-6cl"/>

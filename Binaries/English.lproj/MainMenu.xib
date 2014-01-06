@@ -2687,7 +2687,7 @@ CA
                                                             <autoresizingMask key="autoresizingMask"/>
                                                         </scroller>
                                                         <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="13467">
-                                                            <rect key="frame" x="416" y="17" width="15" height="234"/>
+                                                            <rect key="frame" x="415" y="17" width="16" height="234"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                         </scroller>
                                                         <tableHeaderView key="headerView" id="13469">
@@ -5498,6 +5498,7 @@ Gw
                     <constraint firstItem="14375" firstAttribute="leading" secondItem="14380" secondAttribute="leading" id="6Fz-1A-GOk"/>
                     <constraint firstItem="14369" firstAttribute="baseline" secondItem="14367" secondAttribute="baseline" id="6RM-6O-r5c"/>
                     <constraint firstItem="14373" firstAttribute="baseline" secondItem="14368" secondAttribute="baseline" id="AnT-Fq-iQr"/>
+                    <constraint firstItem="14369" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="14366" secondAttribute="leading" constant="10" id="CQr-Cb-lDp"/>
                     <constraint firstItem="14371" firstAttribute="top" secondItem="14369" secondAttribute="bottom" constant="20" symbolic="YES" id="CRn-7P-as0"/>
                     <constraint firstItem="14380" firstAttribute="top" secondItem="14375" secondAttribute="bottom" constant="8" symbolic="YES" id="HuD-aa-hQ6"/>
                     <constraint firstItem="14373" firstAttribute="trailing" secondItem="14369" secondAttribute="trailing" id="I5l-1p-MNd"/>
@@ -5513,6 +5514,7 @@ Gw
                     <constraint firstItem="14368" firstAttribute="leading" secondItem="14373" secondAttribute="trailing" constant="6" id="gNK-2t-m3L"/>
                     <constraint firstItem="14370" firstAttribute="leading" secondItem="14371" secondAttribute="trailing" constant="12" symbolic="YES" id="hDO-ql-Xem"/>
                     <constraint firstItem="14370" firstAttribute="trailing" secondItem="14367" secondAttribute="trailing" id="ptu-R0-KG3"/>
+                    <constraint firstItem="14373" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="14366" secondAttribute="leading" constant="10" id="x10-7l-n42"/>
                     <constraint firstAttribute="bottom" secondItem="14371" secondAttribute="bottom" constant="20" symbolic="YES" id="y08-aa-drU"/>
                     <constraint firstItem="14375" firstAttribute="leading" secondItem="14376" secondAttribute="trailing" constant="7" id="yve-zg-WRi"/>
                 </constraints>
