@@ -14,7 +14,7 @@
 
 
 
-
+#import "N2Debug.h"
 #import "ShadingArrayController.h"
 
 
@@ -76,6 +76,10 @@
 - (BOOL)setSelectionIndex:(NSUInteger)index
 {	
 	BOOL v = [super setSelectionIndex:(unsigned int)index];
+    
+    if( winController == nil)
+        N2LogStackTrace( @"winController == nil in shadingArrayController");
+    
 	[winController applyShading: self];
 	return v;
 }

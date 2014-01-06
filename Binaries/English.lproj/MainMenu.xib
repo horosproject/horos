@@ -2687,7 +2687,7 @@ CA
                                                             <autoresizingMask key="autoresizingMask"/>
                                                         </scroller>
                                                         <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="13467">
-                                                            <rect key="frame" x="415" y="17" width="16" height="234"/>
+                                                            <rect key="frame" x="416" y="17" width="15" height="234"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                         </scroller>
                                                         <tableHeaderView key="headerView" id="13469">
@@ -3513,6 +3513,7 @@ Gw
                 </popUpButton>
             </subviews>
             <constraints>
+                <constraint firstAttribute="trailing" secondItem="14782" secondAttribute="trailing" constant="5" id="FRz-Ye-Uex"/>
                 <constraint firstItem="14782" firstAttribute="top" secondItem="14781" secondAttribute="top" constant="3" id="MFR-FF-VkN"/>
                 <constraint firstItem="14782" firstAttribute="leading" secondItem="14781" secondAttribute="leading" constant="3" id="XTv-dl-n0E"/>
             </constraints>

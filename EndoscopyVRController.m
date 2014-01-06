@@ -202,6 +202,8 @@
 	[moviePosSlider setEnabled: NO];
 	[moviePlayStop setEnabled: NO];
 	
+	[shadingsPresetsController setWindowController: self];
+    
     return self;
 }
 

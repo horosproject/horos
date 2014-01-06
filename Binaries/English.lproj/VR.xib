@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13B40" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C32" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
@@ -1771,14 +1771,14 @@ Gw
             </view>
         </window>
         <customView id="514" userLabel="Shading">
-            <rect key="frame" x="0.0" y="0.0" width="169" height="50"/>
+            <rect key="frame" x="0.0" y="0.0" width="182" height="50"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
                 <box title="Title" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="792">
-                    <rect key="frame" x="0.0" y="0.0" width="168" height="48"/>
+                    <rect key="frame" x="0.0" y="0.0" width="181" height="48"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <view key="contentView">
-                        <rect key="frame" x="2" y="2" width="164" height="44"/>
+                        <rect key="frame" x="2" y="2" width="177" height="44"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="516">
@@ -1796,7 +1796,7 @@ Gw
                                 </connections>
                             </button>
                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="523">
-                                <rect key="frame" x="78" y="7" width="81" height="33"/>
+                                <rect key="frame" x="91" y="7" width="81" height="33"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="33" id="QQx-CJ-Bnw"/>
@@ -1810,7 +1810,7 @@ Specular: 0.6, 2.0</string>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <button translatesAutoresizingMaskIntoConstraints="NO" id="521">
+                            <button horizontalHuggingPriority="249" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="521">
                                 <rect key="frame" x="4" y="25" width="65" height="18"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <buttonCell key="cell" type="check" title="Shading" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" inset="2" id="2078">
@@ -1827,7 +1827,7 @@ Specular: 0.6, 2.0</string>
                         <constraint firstItem="521" firstAttribute="top" secondItem="523" secondAttribute="top" id="KVY-fV-vyz"/>
                         <constraint firstItem="521" firstAttribute="leading" secondItem="792" secondAttribute="leading" constant="6" id="Kbc-if-3UF"/>
                         <constraint firstItem="516" firstAttribute="top" secondItem="521" secondAttribute="bottom" constant="4" id="Pd3-YL-Uo9"/>
-                        <constraint firstItem="523" firstAttribute="leading" secondItem="521" secondAttribute="trailing" constant="13" id="dqQ-dz-Bv6"/>
+                        <constraint firstItem="523" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="521" secondAttribute="trailing" constant="5" id="dqQ-dz-Bv6"/>
                         <constraint firstItem="521" firstAttribute="leading" secondItem="516" secondAttribute="leading" id="fUX-wX-dMS"/>
                         <constraint firstItem="521" firstAttribute="top" secondItem="792" secondAttribute="top" constant="4" id="gSe-3L-ot9"/>
                         <constraint firstAttribute="trailing" secondItem="523" secondAttribute="trailing" constant="6" id="xhs-50-Khl"/>
@@ -3226,7 +3226,7 @@ Gw
                         <constraints>
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="56" id="JQa-wo-QQ4"/>
                         </constraints>
-                        <buttonCell key="cell" type="bevel" title="edit" bezelStyle="regularSquare" image="E39B1992-6226-4996-825B-BFBF1841389F" imagePosition="overlaps" alignment="center" controlSize="small" borderStyle="border" id="2135">
+                        <buttonCell key="cell" type="bevel" title="edit" bezelStyle="regularSquare" image="F115DE29-ACC3-4171-B190-EF18481FDE5A" imagePosition="overlaps" alignment="center" controlSize="small" borderStyle="border" id="2135">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
                         </buttonCell>
@@ -4399,7 +4399,7 @@ DQ
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2309">
                     <rect key="frame" x="4" y="4" width="64" height="17"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <buttonCell key="cell" type="roundRect" title="16-bit" bezelStyle="roundedRect" image="82C1556A-5A3F-4603-BD9E-84C0753BC3B8" imagePosition="overlaps" alignment="center" controlSize="small" state="on" borderStyle="border" inset="2" id="2310">
+                    <buttonCell key="cell" type="roundRect" title="16-bit" bezelStyle="roundedRect" image="004C4FE3-69C3-4D52-B7E2-FCE8ECF90C31" imagePosition="overlaps" alignment="center" controlSize="small" state="on" borderStyle="border" inset="2" id="2310">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="smallSystem"/>
                     </buttonCell>
@@ -4521,10 +4521,7 @@ Gw
         </window>
     </objects>
     <resources>
-        <image name="3DCut" width="71" height="71"/>
-        <image name="3DRotate" width="165" height="165"/>
-        <image name="3DRotateCamera" width="98" height="101"/>
-        <image name="82C1556A-5A3F-4603-BD9E-84C0753BC3B8" width="1" height="1">
+        <image name="004C4FE3-69C3-4D52-B7E2-FCE8ECF90C31" width="1" height="1">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGPj9YJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoK4HCBMU
 GR4fIyQsLzI4O1UkbnVsbNUJCgsMDQ4PEBESVk5TU2l6ZVYkY2xhc3NcTlNJbWFnZUZsYWdzVk5TUmVw
@@ -4542,9 +4539,12 @@ AhACGAIlAioCLAIuAjMCOwI+AkMCSwJOAmACYwJoAAAAAAAAAgEAAAAAAAAAQgAAAAAAAAAAAAAAAAAA
 Amo
 </mutableData>
         </image>
+        <image name="3DCut" width="71" height="71"/>
+        <image name="3DRotate" width="165" height="165"/>
+        <image name="3DRotateCamera" width="98" height="101"/>
         <image name="AxialSmall" width="60" height="60"/>
         <image name="CorSmall" width="60" height="60"/>
-        <image name="E39B1992-6226-4996-825B-BFBF1841389F" width="1" height="1">
+        <image name="F115DE29-ACC3-4171-B190-EF18481FDE5A" width="1" height="1">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGPj9YJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoK4HCBMU
 GR4fIyQsLzI4O1UkbnVsbNUJCgsMDQ4PEBESVk5TU2l6ZVYkY2xhc3NcTlNJbWFnZUZsYWdzVk5TUmVw

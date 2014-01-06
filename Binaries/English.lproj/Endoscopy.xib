@@ -47,7 +47,7 @@
         <window title="Endoscopy" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="5" userLabel="mainWindow">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="619" height="615"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <value key="minSize" type="size" width="213" height="107"/>
             <view key="contentView" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="619" height="615"/>
@@ -509,7 +509,7 @@
         <window title="Point Info" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="199" userLabel="Point Info" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" utility="YES" nonactivatingPanel="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="263" height="135"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <value key="minSize" type="size" width="263" height="93"/>
             <view key="contentView" id="200">
                 <rect key="frame" x="0.0" y="0.0" width="263" height="135"/>
@@ -605,7 +605,7 @@
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="213" userLabel="exportDCM">
             <windowStyleMask key="styleMask" titled="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="358" height="170"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <value key="minSize" type="size" width="131.131" height="5"/>
             <view key="contentView" id="214">
                 <rect key="frame" x="0.0" y="0.0" width="358" height="170"/>
@@ -714,13 +714,13 @@ Gw
             </view>
         </window>
         <customView id="280" userLabel="Shading">
-            <rect key="frame" x="0.0" y="0.0" width="165" height="42"/>
+            <rect key="frame" x="0.0" y="0.0" width="178" height="42"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
-                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="991" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="283">
-                    <rect key="frame" x="81" y="4" width="81" height="33"/>
+                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="991" translatesAutoresizingMaskIntoConstraints="NO" id="283">
+                    <rect key="frame" x="94" y="4" width="81" height="33"/>
                     <autoresizingMask key="autoresizingMask"/>
-                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" id="544">
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" id="544">
                         <font key="font" metaFont="miniSystem"/>
                         <string key="title">Ambiant: 0.5
 Diffuse: 0.6
@@ -758,11 +758,12 @@ Specular: 0.6, 2.0</string>
             </subviews>
             <constraints>
                 <constraint firstItem="282" firstAttribute="top" secondItem="280" secondAttribute="top" constant="6" id="CdP-mP-O27"/>
-                <constraint firstItem="283" firstAttribute="leading" secondItem="282" secondAttribute="trailing" constant="17" id="I0i-Em-nfP"/>
+                <constraint firstItem="283" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="282" secondAttribute="trailing" constant="5" id="I0i-Em-nfP"/>
                 <constraint firstItem="283" firstAttribute="top" secondItem="280" secondAttribute="top" constant="5" id="LWy-zP-3w4"/>
                 <constraint firstItem="281" firstAttribute="top" secondItem="282" secondAttribute="bottom" constant="4" id="SEa-6u-oc0"/>
                 <constraint firstItem="281" firstAttribute="leading" secondItem="280" secondAttribute="leading" constant="5" id="a0W-mv-zs0"/>
                 <constraint firstItem="282" firstAttribute="leading" secondItem="280" secondAttribute="leading" constant="6" id="cRO-aJ-oiU"/>
+                <constraint firstAttribute="trailing" secondItem="283" secondAttribute="trailing" constant="5" id="opF-eJ-L2Y"/>
                 <constraint firstItem="283" firstAttribute="centerY" secondItem="280" secondAttribute="centerY" id="vQR-Ki-6tS"/>
             </constraints>
         </customView>
@@ -784,7 +785,7 @@ Specular: 0.6, 2.0</string>
                             </textFieldCell>
                         </textField>
                         <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="314">
-                            <rect key="frame" x="0.0" y="4" width="117" height="16"/>
+                            <rect key="frame" x="0.0" y="3" width="117" height="17"/>
                             <autoresizingMask key="autoresizingMask"/>
                             <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" minValue="1" maxValue="6" doubleValue="3" tickMarkPosition="below" numberOfTickMarks="6" allowsTickMarkValuesOnly="YES" sliderType="linear" id="547">
                                 <font key="font" size="12" name="Helvetica"/>
@@ -838,14 +839,14 @@ Specular: 0.6, 2.0</string>
         <window title="Shading" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="399" userLabel="shading Panel" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" utility="YES" nonactivatingPanel="YES" HUD="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="344" height="201"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <value key="minSize" type="size" width="213" height="113"/>
             <view key="contentView" id="400">
                 <rect key="frame" x="0.0" y="0.0" width="344" height="201"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="422">
-                        <rect key="frame" x="212" y="115" width="124" height="16"/>
+                        <rect key="frame" x="212" y="115" width="124" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="124" id="EDG-hT-hvj"/>
@@ -1240,7 +1241,7 @@ Specular: 0.6, 2.0</string>
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="498" userLabel="chooseNameAndSaveWindow">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="218" height="63"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <value key="minSize" type="size" width="213" height="56"/>
             <view key="contentView" id="499">
                 <rect key="frame" x="0.0" y="0.0" width="218" height="63"/>
@@ -1315,7 +1316,7 @@ Gw
         <window title="Path Assistant" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" oneShot="NO" visibleAtLaunch="NO" frameAutosaveName="PathAssistantPanel" animationBehavior="default" id="765" userLabel="PathAssistantPanel" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" utility="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="543" height="96"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <view key="contentView" id="766">
                 <rect key="frame" x="0.0" y="0.0" width="543" height="96"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -1532,7 +1533,7 @@ Gw
         <window title="Path Assistant Parameters" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="672" userLabel="PathAssistantSettings" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" utility="YES" nonactivatingPanel="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="371" height="139"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <value key="minSize" type="size" width="213" height="113"/>
             <view key="contentView" id="673">
                 <rect key="frame" x="0.0" y="0.0" width="371" height="139"/>

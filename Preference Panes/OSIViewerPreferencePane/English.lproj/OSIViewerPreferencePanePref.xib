@@ -29,7 +29,7 @@
                             <rect key="frame" x="2" y="2" width="766" height="298"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="104">
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="104">
                                     <rect key="frame" x="10" y="277" width="196" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Save left button mouse tool" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="342">
@@ -40,7 +40,7 @@
                                         <binding destination="308" name="value" keyPath="values.RestoreLeftMouseTool" id="441"/>
                                     </connections>
                                 </button>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="197">
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="197">
                                     <rect key="frame" x="10" y="257" width="208" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Reverse scroll wheel direction" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="343">
@@ -87,7 +87,7 @@
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="301">
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="301">
                                     <rect key="frame" x="10" y="217" width="232" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Zoom with horizontal scrollwheel" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="348">
@@ -98,7 +98,7 @@
                                         <binding destination="308" name="value" keyPath="values.ZoomWithHorizonScroll" id="309"/>
                                     </connections>
                                 </button>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="425">
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="425">
                                     <rect key="frame" x="10" y="237" width="288" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Loop in the series with mouse scroll wheel" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="426">
@@ -109,7 +109,7 @@
                                         <binding destination="308" name="value" keyPath="values.loopScrollWheel" id="427"/>
                                     </connections>
                                 </button>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="313">
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="313">
                                     <rect key="frame" x="10" y="197" width="248" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="No 'Propagate settings in series' for:" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="349">
@@ -120,7 +120,7 @@
                                         <binding destination="308" name="value" keyPath="values.IndependentCRWLWW" id="315"/>
                                     </connections>
                                 </button>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="323">
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="323">
                                     <rect key="frame" x="10" y="177" width="375" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Apply Next/Previous Series button to all opened viewers" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="350">
@@ -203,7 +203,7 @@
                                         <binding destination="308" name="value" keyPath="values.NoImageTilingInFullscreen" id="484"/>
                                     </connections>
                                 </button>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="372">
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="372">
                                     <rect key="frame" x="10" y="137" width="319" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Spline Rendering for polygons and pencils ROIs" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="373">
@@ -214,7 +214,7 @@
                                         <binding destination="308" name="value" keyPath="values.splineForROI" id="374"/>
                                     </connections>
                                 </button>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="418">
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="418">
                                     <rect key="frame" x="10" y="117" width="168" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="New ROIs are unnamed" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="419">
@@ -225,7 +225,7 @@
                                         <binding destination="308" name="value" keyPath="values.EmptyNameForNewROIs" id="420"/>
                                     </connections>
                                 </button>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="431">
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="431">
                                     <rect key="frame" x="10" y="97" width="248" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Scroll through image and series for:" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="432">
@@ -236,7 +236,7 @@
                                         <binding destination="308" name="value" keyPath="values.scrollThroughSeries" id="433"/>
                                     </connections>
                                 </button>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="454">
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="454">
                                     <rect key="frame" x="10" y="77" width="329" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Keep CLUT Bars when exporting Screen Captures" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="455">
@@ -247,7 +247,7 @@
                                         <binding destination="308" name="value" keyPath="values.keepCLUTBarsForSecondaryCapture" id="457"/>
                                     </connections>
                                 </button>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="463">
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="463">
                                     <rect key="frame" x="10" y="17" width="267" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Zoom centered around mouse position" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="464">
@@ -269,7 +269,7 @@
                                         <binding destination="308" name="value" keyPath="values.RSTRUCTConvertToBrush" id="dYU-iE-hXn"/>
                                     </connections>
                                 </button>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="472">
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="472">
                                     <rect key="frame" x="10" y="37" width="339" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Use FrameofReferenceUID for cross reference lines" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="473">
@@ -280,7 +280,7 @@
                                         <binding destination="308" name="value" keyPath="values.UseFrameofReferenceUID" id="479"/>
                                     </connections>
                                 </button>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="540">
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="540">
                                     <rect key="frame" x="10" y="57" width="274" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Compute Skewness and Kurtosis for ROI" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="541">
@@ -324,7 +324,7 @@
                                         <binding destination="308" name="value" keyPath="values.onlyDisplayImagesOfSamePatient" id="439"/>
                                     </connections>
                                 </button>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="375">
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="375">
                                     <rect key="frame" x="10" y="157" width="170" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Use VOI LUT if available" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="376">

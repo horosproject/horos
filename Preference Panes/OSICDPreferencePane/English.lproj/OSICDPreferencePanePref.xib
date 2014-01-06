@@ -30,7 +30,7 @@
                             <rect key="frame" x="2" y="2" width="672" height="209"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <button toolTip="Once an inserted disk is successfully indexed, it is automatically selected" translatesAutoresizingMaskIntoConstraints="NO" id="196">
+                                <button toolTip="Once an inserted disk is successfully indexed, it is automatically selected" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="196">
                                     <rect key="frame" x="327" y="161" width="233" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Eject the disk when done copying" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="197">
@@ -41,7 +41,7 @@
                                         <binding destination="173" name="value" keyPath="values.CDDVDEjectAfterAutoCopy" id="215"/>
                                     </connections>
                                 </button>
-                                <button toolTip="Once an inserted disk is successfully indexed, it is automatically selected" translatesAutoresizingMaskIntoConstraints="NO" id="210">
+                                <button toolTip="Once an inserted disk is successfully indexed, it is automatically selected" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="210">
                                     <rect key="frame" x="327" y="141" width="294" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Automatically select the source when ready" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="211">
