@@ -317,6 +317,8 @@ static float deg2rad = M_PI/180.0;
 
 - (void) showWindow:(id) sender
 {
+    [self applyViewsPosition];
+    
 	mprView1.dontUseAutoLOD = YES;
 	mprView2.dontUseAutoLOD = YES;
 	mprView3.dontUseAutoLOD = YES;
@@ -359,8 +361,6 @@ static float deg2rad = M_PI/180.0;
 	[mprView3 restoreCamera];
 	[mprView3 updateViewMPR];
 	
-    [self applyViewsPosition];
-    
 	[super showWindow: sender];
 	
 	[self setTool: toolsMatrix];
@@ -404,8 +404,6 @@ static float deg2rad = M_PI/180.0;
     [verticalSplit adjustSubviews];
     [horizontalSplit adjustSubviews];
     
-    portrait = YES;
-    
     switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"MPR2DViewsPosition"])
     {
         case 0:
@@ -425,20 +423,21 @@ static float deg2rad = M_PI/180.0;
                 [verticalSplit setVertical: YES];
             }
             
-            r = [[[verticalSplit subviews] objectAtIndex: 0] frame];
-            r.size.width = [[self window] frame].size.width/2;
-            [[[verticalSplit subviews] objectAtIndex: 0] setFrame: r];
-            
-            r = [[[verticalSplit subviews] objectAtIndex: 1] frame];
-            r.size.width = [[self window] frame].size.width/2;
-            [[[verticalSplit subviews] objectAtIndex: 1] setFrame: r];
-            
-            [verticalSplit adjustSubviews];
             
             //
             
             if( portrait)
             {
+                r = [[[verticalSplit subviews] objectAtIndex: 0] frame];
+                r.size.height = [[self window] frame].size.height/2;
+                [[[verticalSplit subviews] objectAtIndex: 0] setFrame: r];
+                
+                r = [[[verticalSplit subviews] objectAtIndex: 1] frame];
+                r.size.height = [[self window] frame].size.height/2;
+                [[[verticalSplit subviews] objectAtIndex: 1] setFrame: r];
+                
+                [verticalSplit adjustSubviews];
+                
                 r = [[[horizontalSplit subviews] objectAtIndex: 0] frame];
                 r.size.width = [[self window] frame].size.width/2;
                 [[[horizontalSplit subviews] objectAtIndex: 0] setFrame: r];
@@ -446,9 +445,21 @@ static float deg2rad = M_PI/180.0;
                 r = [[[horizontalSplit subviews] objectAtIndex: 1] frame];
                 r.size.width = [[self window] frame].size.width/2;
                 [[[horizontalSplit subviews] objectAtIndex: 1] setFrame: r];
+                
+                [horizontalSplit adjustSubviews];
             }
             else
             {
+                r = [[[verticalSplit subviews] objectAtIndex: 0] frame];
+                r.size.width = [[self window] frame].size.width/2;
+                [[[verticalSplit subviews] objectAtIndex: 0] setFrame: r];
+                
+                r = [[[verticalSplit subviews] objectAtIndex: 1] frame];
+                r.size.width = [[self window] frame].size.width/2;
+                [[[verticalSplit subviews] objectAtIndex: 1] setFrame: r];
+                
+                [verticalSplit adjustSubviews];
+            
                 r = [[[horizontalSplit subviews] objectAtIndex: 0] frame];
                 r.size.height = [[self window] frame].size.height/2;
                 [[[horizontalSplit subviews] objectAtIndex: 0] setFrame: r];
@@ -456,8 +467,10 @@ static float deg2rad = M_PI/180.0;
                 r = [[[horizontalSplit subviews] objectAtIndex: 1] frame];
                 r.size.height = [[self window] frame].size.height/2;
                 [[[horizontalSplit subviews] objectAtIndex: 1] setFrame: r];
+                
+                [horizontalSplit adjustSubviews];
             }
-            [horizontalSplit adjustSubviews];
+            
         break;
             
         case 2:
