@@ -388,6 +388,12 @@ static float deg2rad = M_PI/180.0;
     NSRect r;
     NSScreen *s = [viewer2D get3DViewerScreen: viewer2D];
 	
+    BOOL portrait;
+    if( [s frame].size.height > [s frame].size.width)
+        portrait = YES;
+    else
+        portrait = NO;
+    
     NSDisableScreenUpdates();
     
     [verticalSplit setTranslatesAutoresizingMaskIntoConstraints: YES];
@@ -398,11 +404,18 @@ static float deg2rad = M_PI/180.0;
     [verticalSplit adjustSubviews];
     [horizontalSplit adjustSubviews];
     
+    portrait = YES;
+    
     switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"MPR2DViewsPosition"])
     {
         case 0:
-            if( [s frame].size.height > [s frame].size.width)
+            if( portrait)
             {
+                [horizontalSplit setVertical: YES];
+                [verticalSplit setVertical: YES];
+                [verticalSplit adjustSubviews];
+                [horizontalSplit adjustSubviews];
+                
                 [horizontalSplit setVertical: YES];
                 [verticalSplit setVertical: NO];
             }
@@ -421,6 +434,29 @@ static float deg2rad = M_PI/180.0;
             [[[verticalSplit subviews] objectAtIndex: 1] setFrame: r];
             
             [verticalSplit adjustSubviews];
+            
+            //
+            
+            if( portrait)
+            {
+                r = [[[horizontalSplit subviews] objectAtIndex: 0] frame];
+                r.size.width = [[self window] frame].size.width/2;
+                [[[horizontalSplit subviews] objectAtIndex: 0] setFrame: r];
+                
+                r = [[[horizontalSplit subviews] objectAtIndex: 1] frame];
+                r.size.width = [[self window] frame].size.width/2;
+                [[[horizontalSplit subviews] objectAtIndex: 1] setFrame: r];
+            }
+            else
+            {
+                r = [[[horizontalSplit subviews] objectAtIndex: 0] frame];
+                r.size.height = [[self window] frame].size.height/2;
+                [[[horizontalSplit subviews] objectAtIndex: 0] setFrame: r];
+                
+                r = [[[horizontalSplit subviews] objectAtIndex: 1] frame];
+                r.size.height = [[self window] frame].size.height/2;
+                [[[horizontalSplit subviews] objectAtIndex: 1] setFrame: r];
+            }
             [horizontalSplit adjustSubviews];
         break;
             

@@ -826,6 +826,9 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 	[[PETCTController originalView] setYFlipped: [[CTController originalView] yFlipped]];
     
     [OrthogonalMPRViewer synchronizeViewer:self];
+    
+    [self adjustHeightSplitView];
+    [self adjustWidthSplitView];
 }
 
 - (void) windowWillClose:(NSNotification *)notification

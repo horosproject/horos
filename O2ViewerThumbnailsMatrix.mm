@@ -210,11 +210,11 @@ static NSString *dragType = @"Osirix Series Viewer Drag";
         }
         else
         {
-            [super mouseDown: event];
-//            if( [cell action] && [cell target])
-//                [[cell target] performSelector: [cell action] withObject: self afterDelay: 0.001];
-//            else
-//                [cell setHighlighted: NO];
+//            [super mouseDown: event];
+            if( [cell action] && [cell target])
+                [[cell target] performSelector: [cell action] withObject: self afterDelay: 0.001];
+            else
+                [cell setHighlighted: NO];
         }
     }
     @catch (NSException *exception) {
