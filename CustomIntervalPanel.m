@@ -78,10 +78,14 @@
     else
         frame = NSMakeRect( frame.origin.x, frame.origin.y - (297 - frame.size.height), frame.size.width, 297);
     
+    float minWidth = 154;
+    if( matrix)
+        minWidth = matrix.frame.origin.x + matrix.frame.size.width + 10;
+    
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"betweenDatesMode"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"customIntervalWithHoursAndMinutes"])
-        frame = NSMakeRect( frame.origin.x, frame.origin.y, 288, frame.size.height);
+        frame = NSMakeRect( frame.origin.x, frame.origin.y, MAX( minWidth, 288), frame.size.height);
     else
-        frame = NSMakeRect( frame.origin.x, frame.origin.y, 154, frame.size.height);
+        frame = NSMakeRect( frame.origin.x, frame.origin.y, MAX( minWidth, 154), frame.size.height);
     
     [self.window setFrame: frame display: YES animate: YES];
 }
@@ -116,6 +120,8 @@
         
         self.fromDate = fromPicker.dateValue;
         self.toDate = toPicker.dateValue;
+        
+        [self.window display];
     }
 }
 

@@ -309,6 +309,9 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 	for (NSArray* pluginPane in pluginPanes)
 		[self addPaneWithResourceNamed:[pluginPane objectAtIndex:0] inBundle:[pluginPane objectAtIndex:1] withTitle:[pluginPane objectAtIndex:2] image:[pluginPane objectAtIndex:3] toGroupWithName:NSLocalizedString(@"Plugins", @"Title of Plugins section in preferences window")];
 	
+    flippedDocumentView.translatesAutoresizingMaskIntoConstraints = YES;
+    panesListView.translatesAutoresizingMaskIntoConstraints = YES;
+    
 	[flippedDocumentView setFrameSize:panesListView.frame.size];
 	[panesListView setFrameSize:flippedDocumentView.frame.size];
 	

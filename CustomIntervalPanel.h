@@ -19,6 +19,7 @@
     NSDate *fromDate;
     NSDate *toDate;
     
+    IBOutlet NSMatrix *matrix;
     IBOutlet NSDatePicker *fromPicker;
     IBOutlet NSDatePicker *toPicker;
     IBOutlet NSDatePicker *textualFromPicker;

@@ -380,10 +380,10 @@ Gw
                                         <binding destination="342" name="enabled" keyPath="selection.exportSequenceType" id="1295"/>
                                         <binding destination="342" name="enabled2" keyPath="selection.exportSeriesType" previousBinding="1295" id="1298">
                                             <dictionary key="options">
-                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                                <integer key="NSNullPlaceholder" value="-1"/>
                                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
                                                 <integer key="NSNoSelectionPlaceholder" value="-1"/>
-                                                <integer key="NSNullPlaceholder" value="-1"/>
+                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
                                                 <string key="NSValueTransformerName">NSNegateBoolean</string>
                                             </dictionary>
                                         </binding>
@@ -410,8 +410,11 @@ Gw
                                     </connections>
                                 </textField>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="497">
-                                    <rect key="frame" x="324" y="59" width="21" height="17"/>
+                                    <rect key="frame" x="324" y="59" width="84" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="80" id="3nZ-lz-CBi"/>
+                                    </constraints>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="40 mm" id="498">
                                         <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="# mm" negativeFormat="# mm" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="2" positiveSuffix=" mm" negativeSuffix=" mm" id="1145">
                                             <real key="roundingIncrement" value="0.0"/>
@@ -486,8 +489,11 @@ Gw
                                     </connections>
                                 </textField>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1363">
-                                    <rect key="frame" x="324" y="21" width="21" height="17"/>
+                                    <rect key="frame" x="324" y="21" width="84" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="80" id="xjB-p8-HeX"/>
+                                    </constraints>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="40 mm" id="1364">
                                         <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="# mm" negativeFormat="# mm" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="2" positiveSuffix=" mm" negativeSuffix=" mm" id="1365">
                                             <real key="roundingIncrement" value="0.0"/>
@@ -516,8 +522,11 @@ Gw
                                     </connections>
                                 </textField>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1205">
-                                    <rect key="frame" x="324" y="111" width="21" height="17"/>
+                                    <rect key="frame" x="324" y="111" width="84" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="80" id="AD9-yt-Oh9"/>
+                                    </constraints>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="40 mm" id="1206">
                                         <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="# mm" negativeFormat="# mm" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="2" positiveSuffix=" mm" negativeSuffix=" mm" id="1207">
                                             <real key="roundingIncrement" value="0.0"/>
@@ -612,10 +621,10 @@ Gw
                                         <binding destination="342" name="enabled" keyPath="selection.exportSequenceType" id="1300"/>
                                         <binding destination="342" name="enabled2" keyPath="selection.exportSeriesType" previousBinding="1300" id="1302">
                                             <dictionary key="options">
-                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                                <integer key="NSNullPlaceholder" value="-1"/>
                                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
                                                 <integer key="NSNoSelectionPlaceholder" value="-1"/>
-                                                <integer key="NSNullPlaceholder" value="-1"/>
+                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
                                                 <string key="NSValueTransformerName">NSNegateBoolean</string>
                                             </dictionary>
                                         </binding>
@@ -912,6 +921,7 @@ Gw
                 </subviews>
                 <constraints>
                     <constraint firstItem="423" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="414" secondAttribute="leading" constant="13" id="05s-Lx-x89"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="417" secondAttribute="trailing" constant="120" id="0A0-Zf-nGL"/>
                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="421" secondAttribute="trailing" constant="5" id="0H3-Uw-6a7"/>
                     <constraint firstItem="423" firstAttribute="top" secondItem="428" secondAttribute="top" id="1qq-c7-N6m"/>
                     <constraint firstAttribute="trailing" secondItem="426" secondAttribute="trailing" constant="20" symbolic="YES" id="2F1-s9-ffk"/>
@@ -922,9 +932,11 @@ Gw
                     <constraint firstItem="424" firstAttribute="leading" secondItem="414" secondAttribute="leading" constant="13" id="92L-ku-eSq"/>
                     <constraint firstItem="425" firstAttribute="leading" secondItem="424" secondAttribute="trailing" constant="7" id="AmJ-Ca-Cu8"/>
                     <constraint firstItem="418" firstAttribute="top" secondItem="417" secondAttribute="bottom" constant="6" symbolic="YES" id="Bf8-Y9-9sz"/>
+                    <constraint firstItem="419" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="418" secondAttribute="trailing" constant="10" id="FQR-rJ-ct0"/>
                     <constraint firstItem="422" firstAttribute="baseline" secondItem="421" secondAttribute="baseline" id="Gej-SS-boi"/>
                     <constraint firstItem="428" firstAttribute="top" secondItem="896" secondAttribute="bottom" constant="5" id="Jua-e6-yuo"/>
                     <constraint firstItem="421" firstAttribute="leading" secondItem="422" secondAttribute="trailing" constant="6" id="Kad-RG-RSa"/>
+                    <constraint firstItem="419" firstAttribute="width" secondItem="420" secondAttribute="width" id="MGI-UV-0Po"/>
                     <constraint firstItem="423" firstAttribute="trailing" secondItem="894" secondAttribute="trailing" id="MGh-4G-Z2a"/>
                     <constraint firstItem="896" firstAttribute="top" secondItem="425" secondAttribute="bottom" constant="8" symbolic="YES" id="MU9-Tw-yfv"/>
                     <constraint firstItem="425" firstAttribute="top" secondItem="414" secondAttribute="top" constant="13" id="V41-Sk-92w"/>
@@ -932,6 +944,7 @@ Gw
                     <constraint firstItem="417" firstAttribute="leading" secondItem="1339" secondAttribute="leading" id="YgJ-dL-YfP"/>
                     <constraint firstItem="1339" firstAttribute="top" secondItem="426" secondAttribute="bottom" constant="11" id="cVZ-tP-a0z"/>
                     <constraint firstItem="420" firstAttribute="top" secondItem="426" secondAttribute="bottom" constant="13" id="cde-7D-eWP"/>
+                    <constraint firstItem="420" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="1339" secondAttribute="trailing" constant="10" id="dKh-gf-KaU"/>
                     <constraint firstItem="419" firstAttribute="top" secondItem="420" secondAttribute="bottom" constant="11" id="dZQ-es-uKs"/>
                     <constraint firstItem="418" firstAttribute="leading" secondItem="417" secondAttribute="leading" id="duD-Hy-cKK"/>
                     <constraint firstItem="419" firstAttribute="trailing" secondItem="420" secondAttribute="trailing" id="eT6-iT-Evf"/>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13B42" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C32" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
@@ -12,7 +12,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" utility="YES" texturedBackground="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="19" y="780" width="354" height="65"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <value key="minSize" type="size" width="213" height="50"/>
             <view key="contentView" id="5">
                 <rect key="frame" x="0.0" y="0.0" width="354" height="65"/>
@@ -49,7 +49,7 @@
                         </textFieldCell>
                     </textField>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="10">
-                        <rect key="frame" x="307" y="6" width="43" height="28"/>
+                        <rect key="frame" x="294" y="6" width="56" height="28"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Set" bezelStyle="rounded" alignment="center" controlSize="small" state="on" borderStyle="border" inset="2" id="27">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -63,7 +63,7 @@ DQ
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="11">
-                        <rect key="frame" x="253" y="6" width="56" height="28"/>
+                        <rect key="frame" x="240" y="6" width="56" height="28"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Unset" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="28">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -78,6 +78,7 @@ DQ
                     <constraint firstItem="9" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="5" secondAttribute="leading" constant="33" id="Aev-8r-Mbm"/>
                     <constraint firstItem="11" firstAttribute="top" secondItem="7" secondAttribute="bottom" constant="8" symbolic="YES" id="JIe-lY-QFL"/>
                     <constraint firstItem="7" firstAttribute="leading" secondItem="9" secondAttribute="trailing" constant="7" id="JS9-rj-AnG"/>
+                    <constraint firstItem="10" firstAttribute="width" secondItem="11" secondAttribute="width" id="JoN-7i-Yxv"/>
                     <constraint firstItem="10" firstAttribute="leading" secondItem="11" secondAttribute="trailing" constant="8" symbolic="YES" id="NC3-Yq-0r6"/>
                     <constraint firstAttribute="trailing" secondItem="7" secondAttribute="trailing" constant="9" id="Sam-YG-uSd"/>
                     <constraint firstItem="10" firstAttribute="trailing" secondItem="7" secondAttribute="trailing" id="ddt-rt-sJF"/>

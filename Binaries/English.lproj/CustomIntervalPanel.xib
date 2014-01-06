@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13B35" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C32" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
@@ -8,6 +8,7 @@
         <customObject id="-2" userLabel="File's Owner" customClass="CustomIntervalPanel">
             <connections>
                 <outlet property="fromPicker" destination="230" id="1150"/>
+                <outlet property="matrix" destination="873" id="PfP-Nd-T2F"/>
                 <outlet property="textualFromPicker" destination="239" id="1152"/>
                 <outlet property="textualToPicker" destination="240" id="1153"/>
                 <outlet property="toPicker" destination="231" id="1151"/>
@@ -85,6 +86,11 @@ U1QAQ0VUAAAAAQEAAAEBA
                             <datePickerElements key="datePickerElements" year="YES" month="YES" day="YES" hour="YES" minute="YES"/>
                         </datePickerCell>
                         <connections>
+                            <binding destination="944" name="hidden" keyPath="values.betweenDatesMode" previousBinding="1250" id="o9z-2c-OaU">
+                                <dictionary key="options">
+                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                </dictionary>
+                            </binding>
                             <binding destination="-2" name="value" keyPath="self.toDate" id="943"/>
                             <binding destination="944" name="enabled" keyPath="values.betweenDatesMode" id="1250"/>
                         </connections>
@@ -97,6 +103,13 @@ U1QAQ0VUAAAAAQEAAAEBA
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
+                        <connections>
+                            <binding destination="944" name="hidden" keyPath="values.betweenDatesMode" id="cmI-jb-6Ec">
+                                <dictionary key="options">
+                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                </dictionary>
+                            </binding>
+                        </connections>
                     </textField>
                     <button verticalHuggingPriority="750" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="237">
                         <rect key="frame" x="29" y="191" width="50" height="28"/>
@@ -107,6 +120,11 @@ U1QAQ0VUAAAAAQEAAAEBA
                         </buttonCell>
                         <connections>
                             <action selector="nowTo:" target="-2" id="1155"/>
+                            <binding destination="944" name="hidden" keyPath="values.betweenDatesMode" previousBinding="1252" id="XRC-Ua-aPp">
+                                <dictionary key="options">
+                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                </dictionary>
+                            </binding>
                             <binding destination="944" name="enabled" keyPath="values.betweenDatesMode" id="1252"/>
                         </connections>
                     </button>
@@ -182,11 +200,16 @@ U1QAQ0VUAAAAAQEAAAEBA
                             <datePickerElements key="datePickerElements" year="YES" month="YES" day="YES" hour="YES" minute="YES"/>
                         </datePickerCell>
                         <connections>
+                            <binding destination="944" name="hidden" keyPath="values.betweenDatesMode" previousBinding="1247" id="qw7-59-gp2">
+                                <dictionary key="options">
+                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                </dictionary>
+                            </binding>
                             <binding destination="-2" name="value" keyPath="self.toDate" id="947"/>
                             <binding destination="944" name="enabled" keyPath="values.betweenDatesMode" id="1247"/>
                         </connections>
                     </datePicker>
-                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="873">
+                    <matrix horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="998" verticalCompressionResistancePriority="1000" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="873">
                         <rect key="frame" x="6" y="455" width="121" height="38"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -226,7 +249,6 @@ U1QAQ0VUAAAAAQEAAAEBA
                     </button>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="873" secondAttribute="trailing" constant="16" id="3sj-UK-2wM"/>
                     <constraint firstItem="237" firstAttribute="leading" secondItem="233" secondAttribute="trailing" constant="8" symbolic="YES" id="5uc-w2-tcc"/>
                     <constraint firstItem="238" firstAttribute="leading" secondItem="230" secondAttribute="leading" id="BnS-pj-Thc"/>
                     <constraint firstItem="233" firstAttribute="top" secondItem="239" secondAttribute="bottom" constant="7" id="Fzn-vR-6J2"/>
