@@ -97,7 +97,10 @@
 - (void)resizeWithOldSuperviewSize:(NSSize)oldBoundsSize{
 	
 	NSRect superFrame = [[self superview] bounds];
-
+    
+    if( superFrame.size.width == 0 || superFrame.size.height == 0)
+        return;
+    
 	float newWidth = superFrame.size.width / seriesColumns;
 	float newHeight = superFrame.size.height / seriesRows;
 	float newX = newWidth * (tag / seriesColumns);

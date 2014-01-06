@@ -551,6 +551,8 @@ static SyncSeriesScope globalSyncSeriesScope;
 	[controller scaleToFit];
     
     [OrthogonalMPRViewer synchronizeViewer:self];
+    
+    [self adjustSplitView];
 }
 
 - (void) windowWillClose:(NSNotification *)notification
@@ -612,6 +614,10 @@ static SyncSeriesScope globalSyncSeriesScope;
 	}
 	NSSize newSubViewSize = NSMakeSize(w,h);
 	
+    [controller originalView].translatesAutoresizingMaskIntoConstraints = YES;
+    [controller xReslicedView].translatesAutoresizingMaskIntoConstraints = YES;
+    [controller yReslicedView].translatesAutoresizingMaskIntoConstraints = YES;
+    
 	[[controller originalView] setFrameSize: newSubViewSize];
 	[[controller xReslicedView] setFrameSize: newSubViewSize];
 	[[controller yReslicedView] setFrameSize: newSubViewSize];

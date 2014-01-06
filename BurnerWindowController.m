@@ -1141,7 +1141,7 @@
         thread.name = NSLocalizedString( @"Burning...", nil);
         thread.status = [NSString stringWithFormat: NSLocalizedString( @"Writing %3.2fMB...", nil), (float) ([[self getSizeOfDirectory: burnFolder] longLongValue] / 1024)];
         
-        [finalSizeField performSelectorOnMainThread:@selector(setStringValue:) withObject:[NSString stringWithFormat:@"Final files size to burn: %3.2fMB", (float) ([[self getSizeOfDirectory: burnFolder] longLongValue] / 1024)] waitUntilDone:YES];
+        [finalSizeField performSelectorOnMainThread:@selector(setStringValue:) withObject:[NSString stringWithFormat: NSLocalizedString (@"Final files size to burn: %3.2fMB", nil), (float) ([[self getSizeOfDirectory: burnFolder] longLongValue] / 1024)] waitUntilDone:YES];
     }
     @catch( NSException * e)
     {

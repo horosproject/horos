@@ -11417,7 +11417,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 }
 
--(void) setScaleValue:(float) x
+	
+- (void) setScaleValue:(float) x
 {
 	if( x < 0.01 ) return;
 	if( x > 100) return;

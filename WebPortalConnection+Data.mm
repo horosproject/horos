@@ -1364,7 +1364,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                                           self.dicomCStorePortString, @"port",
                                           @"This Computer", @"aeTitle",
                                           @"1", @"syntax", // 1 == JPEG2000 Lossless
-                                          self.requestIsIOS? @"This Device" : [NSString stringWithFormat:@"This Computer [%@:%@]", [asyncSocket connectedHost], self.dicomCStorePortString], @"description",
+                                          self.requestIsIOS? NSLocalizedString( @"This Device", nil) : [NSString stringWithFormat: NSLocalizedString( @"This Computer [%@:%@]", nil), [asyncSocket connectedHost], self.dicomCStorePortString], @"description",
                                           NULL]];
 			if (!user || user.sendDICOMtoAnyNodes.boolValue)
 				for (NSDictionary* node in [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO])

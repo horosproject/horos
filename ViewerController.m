@@ -5361,18 +5361,18 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[[[XMLController windowForViewer: self] window] makeKeyAndOrderFront: self];
     else
 	{
-		XMLController * xmlController = [[XMLController alloc] initWithImage: im windowName:[NSString stringWithFormat:@"Meta-Data: %@", [[self window] title]] viewer: self];
-		
+		XMLController * xmlController = [[XMLController alloc] initWithImage: im windowName:[NSString stringWithFormat: NSLocalizedString( @"Meta-Data: %@", nil), [[self window] title]] viewer: self];
+		[[xmlController window] setAlphaValue: 0.01];
+        
 		[[AppController sharedAppController] tileWindows: nil];
 		
 		for( int i = 0; i < 15 ; i++)
 		{
 			[[xmlController window] setAlphaValue: (i+1.0) / 15.];
-			if( i == 0)
-				[[xmlController window] makeKeyAndOrderFront: self];
-			
-			[NSThread sleepForTimeInterval: 0.02];
+			[NSThread sleepForTimeInterval: 0.03];
 		}
+        
+        [[self window] makeKeyAndOrderFront: self];
 	}
 }
 #endif
@@ -12163,143 +12163,158 @@ float				matrix[25];
 
 -(void) ActivateBlending:(ViewerController*) bC
 {
-	if( bC == self) return;
-	if( blendingController == bC) return;
-	
-	if( blendingController && bC)
-		[self ActivateBlending: nil];
-	
-	[imageView sendSyncMessage:0];
-	
-	blendingController = bC;
-	
-	if( blendingController)
-	{
-		NSLog( @"Blending Activated!");
-		
-		if( [blendingController blendingController] == self)	// NO cross blending !
-		{
-			[blendingController ActivateBlending: nil];
-		}
-	
-		if( [[[[self fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"] isEqualToString: [[[blendingController fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"]])
-		{
-			// By default, re-activate 'propagate settings'
-			
-			[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"COPYSETTINGS"];
-		}
-		
-		float orientA[9], orientB[9];
-		float result[3];
-	
-		BOOL proceed = NO;
-		
-		[[[self imageView] curDCM] orientation:orientA];
-		[[[blendingController imageView] curDCM] orientation:orientB];
-		
-		if( orientB[ 6] == 0 && orientB[ 7] == 0 && orientB[ 8] == 0) proceed = YES;
-		if( orientA[ 6] == 0 && orientA[ 7] == 0 && orientA[ 8] == 0) proceed = YES;
-		
-		if( [DCMView angleBetweenVector: orientA+6 andVector:orientB+6] > [[NSUserDefaults standardUserDefaults] floatForKey: @"PARALLELPLANETOLERANCE"])  // Planes are not paralel!
-		{
-			// FROM SAME STUDY
-			
-			if( [[[[self fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"] isEqualToString: [[[blendingController fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"]])
-			{
-				int result = NSRunCriticalAlertPanel(NSLocalizedString(@"2D Planes",nil),NSLocalizedString(@"These 2D planes are not parallel. If you continue the result will be distorted. You can instead 'Reorient' the series to have the same origin/orientation.",nil), NSLocalizedString(@"Reorient & Fusion",nil), NSLocalizedString(@"Cancel",nil), NSLocalizedString(@"Fusion",nil));
-				
-				switch( result)
-				{
-					case NSAlertAlternateReturn:
-						proceed = NO;
-					break;
-					
-					#ifndef OSIRIX_LIGHT
-					case NSAlertDefaultReturn:		// Resample
-						blendingController = [self resampleSeries: blendingController rescale: NO];
-						if( blendingController) proceed = YES;
-					break;
-					#endif
-					
-					case NSAlertOtherReturn:
-						proceed = YES;
-					break;
-				}
-			}
-			else	// FROM DIFFERENT STUDY
-			{
-				if( NSRunCriticalAlertPanel(NSLocalizedString(@"2D Planes",nil),NSLocalizedString(@"These 2D planes are not parallel. If you continue the result will be distorted. You can instead perform a 'Point-based registration' to have correct alignment/orientation.",nil), NSLocalizedString(@"Continue",nil), NSLocalizedString(@"Cancel",nil), nil) != NSAlertDefaultReturn)
-				{
-					proceed = NO;
-				}
-				else proceed = YES;
-			}
-		}
-		else
+    static int noActivateBlendingReentry = 0;
+    
+    if( noActivateBlendingReentry > 0)
+        return;
+    
+    noActivateBlendingReentry++;
+    
+    @try {
+        if( bC == self) return;
+        if( blendingController == bC) return;
+        
+        if( blendingController && bC)
+            [self ActivateBlending: nil];
+        
+        [imageView sendSyncMessage:0];
+        
+        blendingController = bC;
+        
+        if( blendingController)
         {
-            [self displayWarningIfGantryTitled];
-            [blendingController displayWarningIfGantryTitled];
+            NSLog( @"Blending Activated!");
             
-            proceed = YES;
+            if( [blendingController blendingController] == self)	// NO cross blending !
+            {
+                [blendingController ActivateBlending: nil];
+            }
+        
+            if( [[[[self fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"] isEqualToString: [[[blendingController fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"]])
+            {
+                // By default, re-activate 'propagate settings'
+                
+                [[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"COPYSETTINGS"];
+            }
+            
+            float orientA[9], orientB[9];
+            float result[3];
+        
+            BOOL proceed = NO;
+            
+            [[[self imageView] curDCM] orientation:orientA];
+            [[[blendingController imageView] curDCM] orientation:orientB];
+            
+            if( orientB[ 6] == 0 && orientB[ 7] == 0 && orientB[ 8] == 0) proceed = YES;
+            if( orientA[ 6] == 0 && orientA[ 7] == 0 && orientA[ 8] == 0) proceed = YES;
+            
+            if( [DCMView angleBetweenVector: orientA+6 andVector:orientB+6] > [[NSUserDefaults standardUserDefaults] floatForKey: @"PARALLELPLANETOLERANCE"])  // Planes are not paralel!
+            {
+                // FROM SAME STUDY
+                
+                if( [[[[self fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"] isEqualToString: [[[blendingController fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"]])
+                {
+                    int result = NSRunCriticalAlertPanel(NSLocalizedString(@"2D Planes",nil),NSLocalizedString(@"These 2D planes are not parallel. If you continue the result will be distorted. You can instead 'Reorient' the series to have the same origin/orientation.",nil), NSLocalizedString(@"Reorient & Fusion",nil), NSLocalizedString(@"Cancel",nil), NSLocalizedString(@"Fusion",nil));
+                    
+                    switch( result)
+                    {
+                        case NSAlertAlternateReturn:
+                            proceed = NO;
+                        break;
+                        
+                        #ifndef OSIRIX_LIGHT
+                        case NSAlertDefaultReturn:		// Resample
+                            blendingController = [self resampleSeries: blendingController rescale: NO];
+                            if( blendingController) proceed = YES;
+                        break;
+                        #endif
+                        
+                        case NSAlertOtherReturn:
+                            proceed = YES;
+                        break;
+                    }
+                }
+                else	// FROM DIFFERENT STUDY
+                {
+                    if( NSRunCriticalAlertPanel(NSLocalizedString(@"2D Planes",nil),NSLocalizedString(@"These 2D planes are not parallel. If you continue the result will be distorted. You can instead perform a 'Point-based registration' to have correct alignment/orientation.",nil), NSLocalizedString(@"Continue",nil), NSLocalizedString(@"Cancel",nil), nil) != NSAlertDefaultReturn)
+                    {
+                        proceed = NO;
+                    }
+                    else proceed = YES;
+                }
+            }
+            else
+            {
+                [self displayWarningIfGantryTitled];
+                [blendingController displayWarningIfGantryTitled];
+                
+                proceed = YES;
+            }
+            
+            if( proceed)
+            {		
+                [imageView setBlending: [blendingController imageView]];
+                [blendingSlider setEnabled:YES];
+                [blendingPercentage setStringValue:[NSString stringWithFormat:@"%0.0f%%", (float) ([blendingSlider floatValue] + 256.) / 5.12]];
+                
+                if( [[blendingController curCLUTMenu] isEqualToString:NSLocalizedString(@"No CLUT", nil)] && [[[blendingController pixList] objectAtIndex: 0] isRGB] == NO)
+                {
+                    if( [[self modality] isEqualToString:@"PT"] == YES || ([[NSUserDefaults standardUserDefaults] boolForKey:@"clutNM"] == YES && [[self modality] isEqualToString:@"NM"] == YES))
+                    {
+                        if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
+                            [self ApplyCLUTString: @"B/W Inverse"];
+                        else
+                            [self ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
+                    }
+                }
+                
+                [imageView setBlendingFactor: [blendingSlider floatValue]];
+                
+                [blendingPopupMenu selectItemWithTag: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTPETFUSION"]];
+                [imageView setBlendingMode: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTPETFUSION"]];
+                [seriesView setBlendingMode: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTPETFUSION"]];
+                
+                [seriesView ActivateBlending:blendingController blendingFactor:[blendingSlider floatValue]];
+            }
+            
+            [backCurCLUTMenu release];
+            backCurCLUTMenu = 0L;
+            
+            if( blendingController && [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
+            {
+                backCurCLUTMenu = [curCLUTMenu copy];
+                [curCLUTMenu release];
+                curCLUTMenu = [[[NSUserDefaults standardUserDefaults] stringForKey: @"PET Blending CLUT"] copy];
+            }
         }
-		
-		if( proceed)
-		{		
-			[imageView setBlending: [blendingController imageView]];
-			[blendingSlider setEnabled:YES];
-			[blendingPercentage setStringValue:[NSString stringWithFormat:@"%0.0f%%", (float) ([blendingSlider floatValue] + 256.) / 5.12]];
-			
-			if( [[blendingController curCLUTMenu] isEqualToString:NSLocalizedString(@"No CLUT", nil)] && [[[blendingController pixList] objectAtIndex: 0] isRGB] == NO)
-			{
-				if( [[self modality] isEqualToString:@"PT"] == YES || ([[NSUserDefaults standardUserDefaults] boolForKey:@"clutNM"] == YES && [[self modality] isEqualToString:@"NM"] == YES))
-				{
-					if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
-						[self ApplyCLUTString: @"B/W Inverse"];
-					else
-						[self ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
-				}
-			}
-			
-			[imageView setBlendingFactor: [blendingSlider floatValue]];
-			
-			[blendingPopupMenu selectItemWithTag: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTPETFUSION"]];
-			[imageView setBlendingMode: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTPETFUSION"]];
-			[seriesView setBlendingMode: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTPETFUSION"]];
-			
-			[seriesView ActivateBlending:blendingController blendingFactor:[blendingSlider floatValue]];
-		}
-		
-		[backCurCLUTMenu release];
-		backCurCLUTMenu = 0L;
-		
-		if( blendingController && [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
-		{
-			backCurCLUTMenu = [curCLUTMenu copy];
-			[curCLUTMenu release];
-			curCLUTMenu = [[[NSUserDefaults standardUserDefaults] stringForKey: @"PET Blending CLUT"] copy];
-		}
-	}
-	else
-	{
-		[backCurCLUTMenu release];
-		backCurCLUTMenu = 0L;
-		
-		[curCLUTMenu release];
-		curCLUTMenu = [NSLocalizedString(@"No CLUT", nil) retain];
-		
-		[imageView setBlending: nil];
-		[blendingSlider setEnabled:NO];
-		[blendingPercentage setStringValue:@"-"];
-		[seriesView ActivateBlending: nil blendingFactor:[blendingSlider floatValue]];
-		[imageView display];
-	}
-	
-	[self buildMatrixPreview: NO];
-	
-	[imageView sendSyncMessage: 0];
-	
-	[self ApplyCLUTString:curCLUTMenu];
-	[self refreshMenus];
+        else
+        {
+            [backCurCLUTMenu release];
+            backCurCLUTMenu = 0L;
+            
+            [curCLUTMenu release];
+            curCLUTMenu = [NSLocalizedString(@"No CLUT", nil) retain];
+            
+            [imageView setBlending: nil];
+            [blendingSlider setEnabled:NO];
+            [blendingPercentage setStringValue:@"-"];
+            [seriesView ActivateBlending: nil blendingFactor:[blendingSlider floatValue]];
+            [imageView display];
+        }
+        
+        [self buildMatrixPreview: NO];
+        
+        [imageView sendSyncMessage: 0];
+        
+        [self ApplyCLUTString:curCLUTMenu];
+        [self refreshMenus];
+        }
+    @catch ( NSException *e) {
+        N2LogException( e);
+    }
+    @finally {
+        noActivateBlendingReentry--;
+    }
 }
 
 -(ViewerController*) blendedWindow
