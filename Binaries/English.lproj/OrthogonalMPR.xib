@@ -189,7 +189,7 @@
             </connections>
         </customObject>
         <customView id="142" userLabel="Fusion">
-            <rect key="frame" x="0.0" y="0.0" width="170" height="40"/>
+            <rect key="frame" x="0.0" y="0.0" width="232" height="40"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
                 <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="293">
@@ -216,11 +216,8 @@
                     </textFieldCell>
                 </textField>
                 <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="147">
-                    <rect key="frame" x="58" y="21" width="110" height="15"/>
+                    <rect key="frame" x="58" y="21" width="170" height="15"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
-                    <constraints>
-                        <constraint firstAttribute="width" constant="107" id="QTX-4c-2xF"/>
-                    </constraints>
                     <popUpButtonCell key="cell" type="push" title="MIP - Max Intensity Projection" bezelStyle="rounded" alignment="left" controlSize="mini" lineBreakMode="clipping" state="on" borderStyle="borderAndBezel" tag="2" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="149" id="300">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="miniSystem"/>
@@ -236,8 +233,8 @@
                         <action selector="setThickSlabMode:" target="-2" id="159"/>
                     </connections>
                 </popUpButton>
-                <slider verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="145">
-                    <rect key="frame" x="33" y="2" width="132" height="17"/>
+                <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="145">
+                    <rect key="frame" x="33" y="1" width="194" height="17"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                     <sliderCell key="cell" controlSize="mini" continuous="YES" enabled="NO" alignment="left" minValue="2" maxValue="128" doubleValue="2" tickMarkPosition="below" numberOfTickMarks="45" sliderType="linear" id="299">
                         <font key="font" size="12" name="Helvetica"/>
@@ -248,6 +245,7 @@
                 </slider>
             </subviews>
             <constraints>
+                <constraint firstAttribute="trailing" secondItem="147" secondAttribute="trailing" constant="6" id="Ar5-tU-5B3"/>
                 <constraint firstItem="145" firstAttribute="leading" secondItem="144" secondAttribute="trailing" constant="4" id="FKT-8M-3Fr"/>
                 <constraint firstItem="147" firstAttribute="leading" secondItem="293" secondAttribute="trailing" constant="5" id="GQG-kp-nqV"/>
                 <constraint firstAttribute="trailing" secondItem="145" secondAttribute="trailing" constant="5" id="HhT-2Z-jA9"/>
@@ -311,7 +309,7 @@ Gw
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="170">
+                    <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="170">
                         <rect key="frame" x="13" y="222" width="239" height="58"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -350,7 +348,7 @@ Gw
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="166">
+                    <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="166">
                         <rect key="frame" x="279" y="242" width="229" height="38"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -793,7 +791,7 @@ Gw
                     <rect key="frame" x="137" y="0.0" width="37" height="18"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <constraints>
-                        <constraint firstAttribute="width" constant="37" id="i0G-sE-pNx"/>
+                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="37" id="i0G-sE-pNx"/>
                     </constraints>
                     <buttonCell key="cell" type="squareTextured" title="Play" bezelStyle="texturedSquare" alignment="center" controlSize="small" borderStyle="border" inset="2" id="328">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>

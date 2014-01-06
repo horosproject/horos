@@ -672,7 +672,7 @@ Gw
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="324">
+                    <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="324">
                         <rect key="frame" x="40" y="96" width="143" height="38"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -1723,6 +1723,7 @@ Gw
                 </matrix>
             </subviews>
             <constraints>
+                <constraint firstItem="825" firstAttribute="leading" secondItem="824" secondAttribute="leading" constant="2" id="4oc-8d-3dX"/>
                 <constraint firstAttribute="trailing" secondItem="825" secondAttribute="trailing" id="hT4-GM-iGF"/>
                 <constraint firstItem="825" firstAttribute="centerY" secondItem="824" secondAttribute="centerY" id="llF-NG-urs"/>
             </constraints>

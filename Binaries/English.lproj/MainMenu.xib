@@ -3996,8 +3996,8 @@ update to OsiriX 64-bit:</string>
                                         <binding destination="12279" name="hidden" keyPath="values.LP64bit" id="14545"/>
                                     </connections>
                                 </button>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="14501">
-                                    <rect key="frame" x="211" y="86" width="35" height="17"/>
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="14501">
+                                    <rect key="frame" x="61" y="86" width="334" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" title="OK !" id="14510">
                                         <font key="font" metaFont="system"/>
@@ -4010,6 +4010,8 @@ update to OsiriX 64-bit:</string>
                         <constraints>
                             <constraint firstItem="14503" firstAttribute="centerX" secondItem="14472" secondAttribute="centerX" id="0dx-Hg-exi"/>
                             <constraint firstItem="14505" firstAttribute="top" secondItem="14501" secondAttribute="top" id="1Of-fe-naL"/>
+                            <constraint firstItem="14501" firstAttribute="trailing" secondItem="14503" secondAttribute="trailing" id="5gT-ip-ueL"/>
+                            <constraint firstItem="14501" firstAttribute="leading" secondItem="14503" secondAttribute="leading" id="D4z-ct-ma0"/>
                             <constraint firstItem="14503" firstAttribute="centerX" secondItem="14501" secondAttribute="centerX" id="DzU-Mf-3WZ"/>
                             <constraint firstItem="14505" firstAttribute="leading" secondItem="14503" secondAttribute="trailing" constant="21" id="GP7-Zb-RoJ"/>
                             <constraint firstItem="14503" firstAttribute="leading" secondItem="14504" secondAttribute="trailing" constant="19" id="M5o-oz-qAK"/>

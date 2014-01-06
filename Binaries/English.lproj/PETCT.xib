@@ -50,7 +50,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="227" y="228" width="624" height="628"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <value key="minSize" type="size" width="200" height="200"/>
             <view key="contentView" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="624" height="628"/>
@@ -284,12 +284,12 @@
                             <constraints>
                                 <constraint firstAttribute="width" constant="77" id="TVo-5v-TIb"/>
                             </constraints>
-                            <popUpButtonCell key="cell" type="push" title="Linear" bezelStyle="rounded" alignment="left" controlSize="mini" lineBreakMode="clipping" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" id="237">
+                            <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" controlSize="mini" lineBreakMode="clipping" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" id="237">
                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                 <font key="font" metaFont="miniSystem"/>
                                 <menu key="menu" title="OtherViews" id="72">
                                     <items>
-                                        <menuItem title="Linear" state="on" id="74">
+                                        <menuItem title="Linear" id="74">
                                             <connections>
                                                 <action selector="blendingMode:" target="-1" id="300"/>
                                             </connections>
@@ -356,6 +356,7 @@
                         </textField>
                     </subviews>
                     <constraints>
+                        <constraint firstAttribute="trailing" secondItem="71" secondAttribute="trailing" constant="5" id="1Hh-c1-pLZ"/>
                         <constraint firstItem="71" firstAttribute="baseline" secondItem="78" secondAttribute="baseline" id="2Fo-Vq-eAc"/>
                         <constraint firstItem="79" firstAttribute="top" secondItem="71" secondAttribute="bottom" constant="2" id="4u0-jP-vPk"/>
                         <constraint firstAttribute="trailing" secondItem="79" secondAttribute="trailing" constant="6" id="5Ro-Ic-zK0"/>
@@ -381,7 +382,7 @@
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="426" y="366" width="573" height="324"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <view key="contentView" id="125">
                 <rect key="frame" x="0.0" y="0.0" width="573" height="324"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -464,7 +465,7 @@ Gw
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="129">
+                    <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="129">
                         <rect key="frame" x="290" y="257" width="251" height="38"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -519,12 +520,12 @@ Gw
                             </connections>
                         </buttonCell>
                         <connections>
+                            <binding destination="284" name="value" keyPath="values.export3modalities" id="291"/>
                             <binding destination="284" name="enabled" keyPath="values.exportDCMIncludeAllViews" id="295">
                                 <dictionary key="options">
                                     <string key="NSValueTransformerName">NSNegateBoolean</string>
                                 </dictionary>
                             </binding>
-                            <binding destination="284" name="value" keyPath="values.export3modalities" id="291"/>
                         </connections>
                     </button>
                     <box title="Box" boxType="secondary" borderType="bezel" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="183">
@@ -535,7 +536,7 @@ Gw
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="190">
-                                    <rect key="frame" x="158" y="80" width="295" height="16"/>
+                                    <rect key="frame" x="158" y="79" width="295" height="17"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" minValue="1" maxValue="50" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="50" allowsTickMarkValuesOnly="YES" sliderType="linear" id="252">
                                         <font key="font" size="12" name="Helvetica"/>
@@ -547,14 +548,14 @@ Gw
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="185">
                                     <rect key="frame" x="66" y="82" width="48" height="14"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="right" title="Interval:" id="247">
+                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Interval:" id="247">
                                         <font key="font" metaFont="smallSystem"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
                                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="195">
-                                    <rect key="frame" x="158" y="50" width="295" height="16"/>
+                                    <rect key="frame" x="158" y="48" width="295" height="17"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" minValue="1" maxValue="90" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="30" allowsTickMarkValuesOnly="YES" sliderType="linear" id="257">
                                         <font key="font" size="12" name="Helvetica"/>
@@ -566,14 +567,14 @@ Gw
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="191">
                                     <rect key="frame" x="79" y="58" width="35" height="14"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="right" title="From:" id="253">
+                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="From:" id="253">
                                         <font key="font" metaFont="smallSystem"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
                                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="194">
-                                    <rect key="frame" x="158" y="38" width="295" height="16"/>
+                                    <rect key="frame" x="158" y="38" width="295" height="17"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" minValue="1" maxValue="90" doubleValue="1" tickMarkPosition="above" numberOfTickMarks="30" allowsTickMarkValuesOnly="YES" sliderType="linear" id="256">
                                         <font key="font" size="12" name="Helvetica"/>
@@ -585,7 +586,7 @@ Gw
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="192">
                                     <rect key="frame" x="93" y="34" width="21" height="14"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="right" title="To:" id="254">
+                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="To:" id="254">
                                         <font key="font" metaFont="smallSystem"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -655,7 +656,7 @@ Gw
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="273">
                                     <rect key="frame" x="68" y="12" width="46" height="14"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="right" title="Images:" id="276">
+                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Images:" id="276">
                                         <font key="font" metaFont="smallSystem"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -678,7 +679,7 @@ Gw
                         <constraints>
                             <constraint firstItem="193" firstAttribute="baseline" secondItem="192" secondAttribute="baseline" id="BOL-5s-9Q4"/>
                             <constraint firstItem="189" firstAttribute="leading" secondItem="183" secondAttribute="leading" constant="16" id="H9J-yB-q49"/>
-                            <constraint firstItem="192" firstAttribute="leading" secondItem="187" secondAttribute="trailing" constant="23" id="IWj-m0-UAf"/>
+                            <constraint firstItem="192" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="187" secondAttribute="trailing" constant="23" id="IWj-m0-UAf"/>
                             <constraint firstItem="274" firstAttribute="baseline" secondItem="273" secondAttribute="baseline" id="Jd9-MM-9j5"/>
                             <constraint firstItem="190" firstAttribute="leading" secondItem="188" secondAttribute="trailing" constant="8" symbolic="YES" id="Jse-Ob-JyG"/>
                             <constraint firstItem="192" firstAttribute="trailing" secondItem="191" secondAttribute="trailing" id="KvR-23-Asj"/>
@@ -697,9 +698,11 @@ Gw
                             <constraint firstItem="188" firstAttribute="baseline" secondItem="185" secondAttribute="baseline" id="ng9-yq-dxu"/>
                             <constraint firstItem="195" firstAttribute="leading" secondItem="190" secondAttribute="leading" id="o9J-Pq-TQq"/>
                             <constraint firstItem="273" firstAttribute="top" secondItem="192" secondAttribute="bottom" constant="8" symbolic="YES" id="oYw-6i-qqm"/>
+                            <constraint firstItem="185" firstAttribute="leading" secondItem="183" secondAttribute="leading" constant="68" id="qE2-Hq-wqk"/>
                             <constraint firstItem="194" firstAttribute="leading" secondItem="193" secondAttribute="trailing" constant="8" symbolic="YES" id="qvD-sQ-BIb"/>
                             <constraint firstItem="194" firstAttribute="leading" secondItem="195" secondAttribute="leading" id="rGw-AS-vCH"/>
                             <constraint firstItem="274" firstAttribute="leading" secondItem="273" secondAttribute="trailing" constant="6" id="se1-iw-ajc"/>
+                            <constraint firstItem="191" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="189" secondAttribute="trailing" constant="9" id="sj8-V8-k4g"/>
                             <constraint firstItem="195" firstAttribute="top" secondItem="190" secondAttribute="bottom" constant="14" id="tid-5n-w4i"/>
                             <constraint firstItem="191" firstAttribute="trailing" secondItem="185" secondAttribute="trailing" id="ulN-VV-cOV"/>
                             <constraint firstItem="186" firstAttribute="leading" secondItem="188" secondAttribute="leading" id="vfX-nl-gn4"/>
@@ -756,6 +759,7 @@ Gw
                     <constraint firstItem="129" firstAttribute="leading" secondItem="126" secondAttribute="trailing" constant="33" id="1vH-Oe-Xwd"/>
                     <constraint firstAttribute="trailing" secondItem="183" secondAttribute="trailing" constant="54" id="20Z-I1-iHW"/>
                     <constraint firstItem="175" firstAttribute="baseline" secondItem="174" secondAttribute="baseline" id="76C-LD-mZU"/>
+                    <constraint firstItem="132" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="174" secondAttribute="trailing" constant="10" id="7ln-vc-mAC"/>
                     <constraint firstItem="281" firstAttribute="leading" secondItem="280" secondAttribute="leading" id="B05-GL-WB0"/>
                     <constraint firstItem="281" firstAttribute="top" secondItem="287" secondAttribute="bottom" constant="8" id="BQu-Ce-9qU"/>
                     <constraint firstItem="183" firstAttribute="leading" secondItem="125" secondAttribute="leading" constant="50" id="CBV-Eg-lOv"/>
@@ -771,6 +775,7 @@ Gw
                     <constraint firstItem="287" firstAttribute="top" secondItem="177" secondAttribute="bottom" constant="8" id="YbZ-10-jxT"/>
                     <constraint firstItem="177" firstAttribute="leading" secondItem="125" secondAttribute="leading" constant="20" symbolic="YES" id="Z8n-od-teS"/>
                     <constraint firstItem="174" firstAttribute="leading" secondItem="175" secondAttribute="trailing" constant="7" id="ZNb-UQ-dZI"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="129" secondAttribute="trailing" constant="10" id="lFJ-sA-fGC"/>
                     <constraint firstItem="287" firstAttribute="leading" secondItem="177" secondAttribute="leading" id="nMu-WO-Uef"/>
                     <constraint firstItem="175" firstAttribute="leading" secondItem="125" secondAttribute="leading" constant="42" id="nZ7-n8-nN4"/>
                     <constraint firstItem="134" firstAttribute="leading" secondItem="132" secondAttribute="trailing" constant="12" symbolic="YES" id="sup-NY-Ww5"/>
@@ -927,7 +932,7 @@ Gw
                     <rect key="frame" x="139" y="0.0" width="30" height="18"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <constraints>
-                        <constraint firstAttribute="width" constant="30" id="uJ7-gX-Iv6"/>
+                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="30" id="uJ7-gX-Iv6"/>
                     </constraints>
                     <buttonCell key="cell" type="squareTextured" title="Play" bezelStyle="texturedSquare" alignment="center" controlSize="small" borderStyle="border" inset="2" id="267">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -935,7 +940,7 @@ Gw
                     </buttonCell>
                 </button>
                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="222">
-                    <rect key="frame" x="38" y="4" width="95" height="16"/>
+                    <rect key="frame" x="38" y="4" width="95" height="17"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" tickMarkPosition="above" numberOfTickMarks="1" allowsTickMarkValuesOnly="YES" sliderType="linear" id="266">
                         <font key="font" size="12" name="Helvetica"/>

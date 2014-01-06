@@ -285,8 +285,8 @@
                 <rect key="frame" x="0.0" y="0.0" width="263" height="107"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="736">
-                        <rect key="frame" x="126" y="60" width="117" height="22"/>
+                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="736">
+                        <rect key="frame" x="117" y="60" width="126" height="22"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="793">
                             <font key="font" metaFont="system"/>
@@ -294,16 +294,16 @@
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="737">
-                        <rect key="frame" x="13" y="62" width="114" height="17"/>
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="737">
+                        <rect key="frame" x="13" y="62" width="101" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Distance in cm:" id="794">
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Distance in cm:" id="794">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="738">
+                    <button verticalHuggingPriority="750" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="738">
                         <rect key="frame" x="152" y="12" width="97" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="OK" bezelStyle="rounded" alignment="center" borderStyle="border" tag="1" inset="2" id="795">
@@ -317,18 +317,37 @@ DQ
                             <action selector="acceptSheet:" target="-2" id="742"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="739">
+                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="739">
                         <rect key="frame" x="55" y="12" width="97" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <constraints>
+                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="85" id="Syc-1G-0kI"/>
+                        </constraints>
                         <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="796">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
                         </buttonCell>
                         <connections>
                             <action selector="acceptSheet:" target="-2" id="741"/>
                         </connections>
                     </button>
                 </subviews>
+                <constraints>
+                    <constraint firstItem="737" firstAttribute="leading" secondItem="734" secondAttribute="leading" constant="15" id="0gH-uM-WBK"/>
+                    <constraint firstItem="736" firstAttribute="top" secondItem="734" secondAttribute="top" constant="25" id="3Zx-w9-SDq"/>
+                    <constraint firstAttribute="trailing" secondItem="736" secondAttribute="trailing" constant="20" symbolic="YES" id="AoE-PC-Dp3"/>
+                    <constraint firstItem="736" firstAttribute="leading" secondItem="737" secondAttribute="trailing" constant="5" id="FuW-ru-Q1n"/>
+                    <constraint firstItem="736" firstAttribute="baseline" secondItem="737" secondAttribute="baseline" id="J0h-VI-0QY"/>
+                    <constraint firstItem="739" firstAttribute="leading" secondItem="734" secondAttribute="leading" constant="61" id="KPQ-cx-gzm"/>
+                    <constraint firstItem="739" firstAttribute="width" secondItem="738" secondAttribute="width" id="Pa1-Oc-a1O"/>
+                    <constraint firstItem="739" firstAttribute="top" secondItem="736" secondAttribute="bottom" constant="20" id="eae-32-8Bd"/>
+                    <constraint firstItem="738" firstAttribute="leading" secondItem="739" secondAttribute="trailing" constant="12" symbolic="YES" id="yDo-x3-yoG"/>
+                    <constraint firstItem="738" firstAttribute="trailing" secondItem="736" secondAttribute="trailing" id="zFq-gL-88x"/>
+                    <constraint firstItem="738" firstAttribute="baseline" secondItem="739" secondAttribute="baseline" id="zRk-SC-Pg6"/>
+                </constraints>
             </view>
         </window>
     </objects>

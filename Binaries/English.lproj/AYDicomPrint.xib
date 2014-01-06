@@ -573,7 +573,7 @@
                                     </connections>
                                 </textField>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="269">
-                                    <rect key="frame" x="538" y="34" width="45" height="13"/>
+                                    <rect key="frame" x="538" y="34" width="44" height="13"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="AE Title:" id="561">
                                         <font key="font" metaFont="label"/>
@@ -630,7 +630,7 @@
                             <constraint firstItem="131" firstAttribute="baseline" secondItem="133" secondAttribute="baseline" id="Cv0-dy-U1i"/>
                             <constraint firstItem="369" firstAttribute="leading" secondItem="377" secondAttribute="leading" id="FLY-Ap-gKM"/>
                             <constraint firstItem="270" firstAttribute="leading" secondItem="131" secondAttribute="trailing" constant="26" id="FsJ-J1-6ck"/>
-                            <constraint firstAttribute="trailing" secondItem="269" secondAttribute="trailing" constant="178" id="HBE-CJ-EsE"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="269" secondAttribute="trailing" constant="10" id="HBE-CJ-EsE"/>
                             <constraint firstItem="133" firstAttribute="baseline" secondItem="377" secondAttribute="baseline" id="M4h-e5-9Gu"/>
                             <constraint firstItem="131" firstAttribute="leading" secondItem="133" secondAttribute="trailing" constant="12" id="Ski-UG-fnu"/>
                             <constraint firstItem="369" firstAttribute="leading" secondItem="129" secondAttribute="leading" constant="16" id="ZIB-zR-r0s"/>
@@ -654,7 +654,7 @@
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="144">
-                                    <rect key="frame" x="92" y="36" width="147" height="60"/>
+                                    <rect key="frame" x="92" y="36" width="147" height="58"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     <size key="cellSize" width="147" height="18"/>
@@ -689,18 +689,16 @@
                                     </connections>
                                 </matrix>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="382">
-                                    <rect key="frame" x="35" y="79" width="51" height="17"/>
+                                    <rect key="frame" x="35" y="79" width="51" height="15"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" id="565">
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Selection:" id="565">
                                         <font key="font" metaFont="label"/>
-                                        <string key="title">Selection:
-</string>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="384">
-                                    <rect key="frame" x="91" y="105" width="77" height="18"/>
+                                    <rect key="frame" x="91" y="103" width="77" height="20"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Colorprint" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="566">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -898,7 +896,7 @@
                                     <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </box>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="502">
-                                    <rect key="frame" x="52" y="107" width="34" height="13"/>
+                                    <rect key="frame" x="52" y="105" width="34" height="13"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Mode:" id="578">
                                         <font key="font" metaFont="label"/>

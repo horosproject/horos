@@ -29,7 +29,7 @@
         <window title="Segmentation Parameters" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="6" userLabel="Panel" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" utility="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="348" height="585"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <value key="minSize" type="size" width="213" height="113"/>
             <view key="contentView" id="5">
                 <rect key="frame" x="0.0" y="0.0" width="348" height="585"/>
@@ -65,7 +65,7 @@
                                         </column>
                                     </cells>
                                 </matrix>
-                                <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="751" mode="highlight" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="15">
+                                <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="751" mode="highlight" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="15">
                                     <rect key="frame" x="32" y="15" width="137" height="52"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -115,7 +115,7 @@
                                     </cells>
                                 </matrix>
                                 <slider verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="66">
-                                    <rect key="frame" x="164" y="117" width="93" height="16"/>
+                                    <rect key="frame" x="164" y="117" width="93" height="17"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="93" id="FoS-pL-H5T"/>
@@ -208,8 +208,8 @@
                                         <binding destination="159" name="selectedIndex" keyPath="values.growingRegionROIType" id="168">
                                             <dictionary key="options">
                                                 <integer key="NSConditionallySetsEnabled" value="1"/>
-                                                <null key="NSMultipleValuesPlaceholder"/>
                                                 <integer key="NSAlwaysPresentsApplicationModalAlerts" value="0"/>
+                                                <null key="NSMultipleValuesPlaceholder"/>
                                                 <integer key="NSAllowsEditingMultipleValuesSelection" value="1"/>
                                                 <null key="NSNullPlaceholder"/>
                                                 <integer key="NSConditionallySetsHidden" value="0"/>
@@ -252,10 +252,10 @@
                                         </binding>
                                         <binding destination="159" name="enabled2" keyPath="values.growingRegionType" previousBinding="233" id="237">
                                             <dictionary key="options">
-                                                <integer key="NSNullPlaceholder" value="-1"/>
+                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
                                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
                                                 <integer key="NSNoSelectionPlaceholder" value="-1"/>
-                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                                <integer key="NSNullPlaceholder" value="-1"/>
                                                 <string key="NSValueTransformerName">NSNegateBoolean</string>
                                             </dictionary>
                                         </binding>
@@ -294,6 +294,7 @@
                         <constraints>
                             <constraint firstItem="15" firstAttribute="top" secondItem="72" secondAttribute="bottom" constant="23" id="2X2-Zy-qY3"/>
                             <constraint firstItem="68" firstAttribute="leading" secondItem="66" secondAttribute="trailing" constant="2" id="D2t-oS-Smc"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="68" secondAttribute="trailing" constant="5" id="Dzc-8b-PRJ"/>
                             <constraint firstItem="195" firstAttribute="leading" secondItem="197" secondAttribute="leading" id="Eo8-ji-0gl"/>
                             <constraint firstItem="67" firstAttribute="trailing" secondItem="71" secondAttribute="trailing" id="H82-vH-z3j"/>
                             <constraint firstItem="67" firstAttribute="leading" secondItem="9" secondAttribute="leading" constant="74" id="Jsk-AR-a8j"/>
@@ -303,6 +304,7 @@
                             <constraint firstItem="197" firstAttribute="top" secondItem="195" secondAttribute="bottom" constant="8" id="Tvo-OE-K2v"/>
                             <constraint firstItem="72" firstAttribute="top" secondItem="66" secondAttribute="bottom" constant="8" symbolic="YES" id="Wbj-WF-yPm"/>
                             <constraint firstAttribute="bottom" secondItem="15" secondAttribute="bottom" constant="13" id="XD4-hg-djU"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="72" secondAttribute="trailing" constant="5" id="XUj-YB-VZ9"/>
                             <constraint firstItem="68" firstAttribute="baseline" secondItem="69" secondAttribute="baseline" id="YGX-uO-Hpe"/>
                             <constraint firstItem="72" firstAttribute="baseline" secondItem="71" secondAttribute="baseline" id="YIx-0z-bbW"/>
                             <constraint firstAttribute="height" constant="281" id="Yt8-S0-CQd"/>
@@ -335,7 +337,7 @@
                             <rect key="frame" x="2" y="2" width="335" height="238"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="113">
+                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="113">
                                     <rect key="frame" x="8" y="192" width="237" height="38"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -368,7 +370,7 @@
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="112">
                                     <rect key="frame" x="168" y="147" width="89" height="11"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <textFieldCell key="cell" controlSize="mini" sendsActionOnEndEditing="YES" alignment="left" title="(Click in the image)" id="181">
+                                    <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="(Click in the image)" id="181">
                                         <font key="font" metaFont="miniSystem"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -377,7 +379,7 @@
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="118">
                                     <rect key="frame" x="12" y="146" width="80" height="14"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Starting Point:" id="182">
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Starting Point:" id="182">
                                         <font key="font" metaFont="smallSystem"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -424,7 +426,7 @@
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="129">
                                     <rect key="frame" x="12" y="167" width="61" height="14"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
-                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Algorithm:" id="187">
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Algorithm:" id="187">
                                         <font key="font" metaFont="smallSystem"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -515,7 +517,7 @@
                                     </connections>
                                 </button>
                                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="238">
-                                    <rect key="frame" x="211" y="69" width="113" height="16"/>
+                                    <rect key="frame" x="211" y="68" width="113" height="17"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <sliderCell key="cell" controlSize="mini" continuous="YES" state="on" alignment="left" maxValue="1000" doubleValue="100" tickMarkPosition="above" numberOfTickMarks="10" sliderType="linear" id="239">
                                         <font key="font" metaFont="miniSystem"/>
@@ -567,7 +569,7 @@
                         <rect key="frame" x="249" y="3" width="96" height="28"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <constraints>
-                            <constraint firstAttribute="width" constant="86" id="jdr-OM-6cl"/>
+                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="86" id="jdr-OM-6cl"/>
                         </constraints>
                         <buttonCell key="cell" type="push" title="Compute" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="180">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>

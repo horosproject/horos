@@ -679,9 +679,6 @@ DQ
                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="362">
                     <rect key="frame" x="10" y="21" width="30" height="11"/>
                     <autoresizingMask key="autoresizingMask"/>
-                    <constraints>
-                        <constraint firstAttribute="width" constant="26" id="Knh-08-HJP"/>
-                    </constraints>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="CLUT:" id="2029">
                         <font key="font" metaFont="miniSystem"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -1628,23 +1625,23 @@ Gw
                         </buttonCell>
                         <cells>
                             <column>
-                                <buttonCell type="radio" title="X only Axis Rotation - 18 frames" imagePosition="left" alignment="left" state="on" tag="18" inset="2" id="724">
+                                <buttonCell type="radio" title="X only Axis Rotation - 18 frames" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" state="on" tag="18" inset="2" id="724">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="X only Axis Rotation - 36 frames" imagePosition="left" alignment="left" tag="36" inset="2" id="725">
+                                <buttonCell type="radio" title="X only Axis Rotation - 36 frames" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" tag="36" inset="2" id="725">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="3D Rotation - 100 frames" imagePosition="left" alignment="left" tag="10" inset="2" id="726">
+                                <buttonCell type="radio" title="3D Rotation - 100 frames" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" tag="10" inset="2" id="726">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="3D Rotation - 400 frames" imagePosition="left" alignment="left" tag="20" inset="2" id="727">
+                                <buttonCell type="radio" title="3D Rotation - 400 frames" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" tag="20" inset="2" id="727">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="3D Rotation - 1,600 frames" imagePosition="left" alignment="left" tag="40" inset="2" id="728">
+                                <buttonCell type="radio" title="3D Rotation - 1,600 frames" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" tag="40" inset="2" id="728">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
@@ -1759,7 +1756,7 @@ Gw
                     <constraint firstItem="938" firstAttribute="baseline" secondItem="937" secondAttribute="baseline" id="V4x-FL-buU"/>
                     <constraint firstItem="494" firstAttribute="leading" secondItem="508" secondAttribute="leading" id="VSh-Ee-Xqz"/>
                     <constraint firstItem="938" firstAttribute="top" secondItem="508" secondAttribute="bottom" constant="11" id="b9d-6W-9QS"/>
-                    <constraint firstAttribute="trailing" secondItem="494" secondAttribute="trailing" constant="60" id="eFe-ZW-tse"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="494" secondAttribute="trailing" constant="60" id="eFe-ZW-tse"/>
                     <constraint firstItem="510" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="490" secondAttribute="leading" constant="20" id="eG3-gH-fZ4"/>
                     <constraint firstAttribute="bottom" secondItem="481" secondAttribute="bottom" constant="20" symbolic="YES" id="fK8-hY-J33"/>
                     <constraint firstItem="508" firstAttribute="leading" secondItem="510" secondAttribute="trailing" constant="8" symbolic="YES" id="gjQ-ox-VbE"/>
@@ -1847,11 +1844,11 @@ Specular: 0.6, 2.0</string>
             <rect key="frame" x="0.0" y="0.0" width="59" height="46"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
-                <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2478">
-                    <rect key="frame" x="2" y="7" width="57" height="34"/>
+                <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2478">
+                    <rect key="frame" x="2" y="5" width="57" height="38"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                    <size key="cellSize" width="57" height="16"/>
+                    <size key="cellSize" width="44" height="18"/>
                     <size key="intercellSpacing" width="4" height="2"/>
                     <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="2479">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1859,11 +1856,11 @@ Specular: 0.6, 2.0</string>
                     </buttonCell>
                     <cells>
                         <column>
-                            <buttonCell type="radio" title="CPU" imagePosition="left" alignment="left" controlSize="small" state="on" inset="2" id="2481">
+                            <buttonCell type="radio" title="CPU" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="2481">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="smallSystem"/>
                             </buttonCell>
-                            <buttonCell type="radio" title="GPU" imagePosition="left" alignment="left" controlSize="small" tag="1" inset="2" id="2480">
+                            <buttonCell type="radio" title="GPU" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" tag="1" inset="2" id="2480">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="smallSystem"/>
                             </buttonCell>
@@ -1896,15 +1893,15 @@ Specular: 0.6, 2.0</string>
                     </buttonCell>
                     <cells>
                         <column>
-                            <buttonCell type="radio" title="Parallel" imagePosition="left" alignment="left" controlSize="mini" state="on" tag="1" inset="2" id="698">
+                            <buttonCell type="radio" title="Parallel" imagePosition="left" alignment="left" controlSize="mini" scrollable="YES" lineBreakMode="clipping" state="on" tag="1" inset="2" id="698">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="miniSystem"/>
                             </buttonCell>
-                            <buttonCell type="radio" title="Perspective" imagePosition="left" alignment="left" controlSize="mini" inset="2" id="699">
+                            <buttonCell type="radio" title="Perspective" imagePosition="left" alignment="left" controlSize="mini" scrollable="YES" lineBreakMode="clipping" inset="2" id="699">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="miniSystem"/>
                             </buttonCell>
-                            <buttonCell type="radio" title="Endoscopy" imagePosition="left" alignment="left" controlSize="mini" tag="2" inset="2" id="700">
+                            <buttonCell type="radio" title="Endoscopy" imagePosition="left" alignment="left" controlSize="mini" scrollable="YES" lineBreakMode="clipping" tag="2" inset="2" id="700">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="miniSystem"/>
                             </buttonCell>
@@ -1922,6 +1919,7 @@ Specular: 0.6, 2.0</string>
             </subviews>
             <constraints>
                 <constraint firstItem="577" firstAttribute="centerY" secondItem="575" secondAttribute="centerY" id="A0m-w9-mGJ"/>
+                <constraint firstAttribute="trailing" secondItem="577" secondAttribute="trailing" constant="6" id="C6o-LO-Fag"/>
                 <constraint firstItem="577" firstAttribute="leading" secondItem="575" secondAttribute="leading" constant="3" id="HxM-mO-YZ3"/>
             </constraints>
         </customView>
@@ -2265,10 +2263,10 @@ Gw
                         </connections>
                     </button>
                     <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2264">
-                        <rect key="frame" x="362" y="257" width="222" height="38"/>
+                        <rect key="frame" x="362" y="257" width="190" height="38"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        <size key="cellSize" width="222" height="18"/>
+                        <size key="cellSize" width="190" height="18"/>
                         <size key="intercellSpacing" width="4" height="2"/>
                         <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="2267">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -2314,12 +2312,13 @@ Gw
                     <constraint firstItem="615" firstAttribute="leading" secondItem="618" secondAttribute="leading" constant="10" id="TEx-h7-a0m"/>
                     <constraint firstItem="610" firstAttribute="top" secondItem="783" secondAttribute="bottom" constant="13" id="XoO-pr-HNA"/>
                     <constraint firstItem="946" firstAttribute="baseline" secondItem="2262" secondAttribute="baseline" id="bPX-0v-1HY"/>
-                    <constraint firstAttribute="trailing" secondItem="2264" secondAttribute="trailing" id="fQW-nb-jCH"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="2264" secondAttribute="trailing" constant="5" id="fQW-nb-jCH"/>
                     <constraint firstItem="946" firstAttribute="leading" secondItem="945" secondAttribute="trailing" constant="6" id="fU4-Q0-Ecm"/>
                     <constraint firstItem="614" firstAttribute="leading" secondItem="943" secondAttribute="trailing" constant="5" id="hBC-5U-TMM"/>
                     <constraint firstItem="783" firstAttribute="leading" secondItem="618" secondAttribute="leading" constant="39" id="jL0-y8-e0r"/>
                     <constraint firstItem="2257" firstAttribute="baseline" secondItem="610" secondAttribute="baseline" id="kES-CN-T28"/>
                     <constraint firstItem="2264" firstAttribute="leading" secondItem="2262" secondAttribute="trailing" constant="7" id="oXL-TJ-UbR"/>
+                    <constraint firstItem="798" firstAttribute="leading" secondItem="618" secondAttribute="leading" constant="35" id="qUb-6F-pkR"/>
                     <constraint firstItem="2264" firstAttribute="top" secondItem="2262" secondAttribute="top" id="qd2-Gk-xqd"/>
                     <constraint firstItem="2257" firstAttribute="leading" secondItem="2256" secondAttribute="leading" id="rMs-ku-U7t"/>
                     <constraint firstItem="798" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="618" secondAttribute="leading" constant="10" id="umS-xk-h9r"/>
@@ -2539,14 +2538,14 @@ DQ
             </view>
         </window>
         <customView id="658" userLabel="Mode">
-            <rect key="frame" x="0.0" y="0.0" width="52" height="36"/>
+            <rect key="frame" x="0.0" y="0.0" width="52" height="42"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
-                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="659">
-                    <rect key="frame" x="0.0" y="1" width="52" height="34"/>
+                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="659">
+                    <rect key="frame" x="0.0" y="2" width="52" height="38"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                    <size key="cellSize" width="52" height="16"/>
+                    <size key="cellSize" width="41" height="18"/>
                     <size key="intercellSpacing" width="4" height="2"/>
                     <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="2189">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -2554,11 +2553,11 @@ DQ
                     </buttonCell>
                     <cells>
                         <column>
-                            <buttonCell type="radio" title="VR" imagePosition="left" alignment="left" controlSize="small" state="on" inset="2" id="662">
+                            <buttonCell type="radio" title="VR" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="662">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="smallSystem"/>
                             </buttonCell>
-                            <buttonCell type="radio" title="MIP" imagePosition="left" alignment="left" controlSize="small" tag="1" inset="2" id="663">
+                            <buttonCell type="radio" title="MIP" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" tag="1" inset="2" id="663">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="smallSystem"/>
                             </buttonCell>
@@ -3226,7 +3225,7 @@ Gw
                         <constraints>
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="56" id="JQa-wo-QQ4"/>
                         </constraints>
-                        <buttonCell key="cell" type="bevel" title="edit" bezelStyle="regularSquare" image="F115DE29-ACC3-4171-B190-EF18481FDE5A" imagePosition="overlaps" alignment="center" controlSize="small" borderStyle="border" id="2135">
+                        <buttonCell key="cell" type="bevel" title="edit" bezelStyle="regularSquare" image="4CFF226C-4E8B-40A9-A42F-8E22842D657B" imagePosition="overlaps" alignment="center" controlSize="small" borderStyle="border" id="2135">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
                         </buttonCell>
@@ -4399,7 +4398,7 @@ DQ
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2309">
                     <rect key="frame" x="4" y="4" width="64" height="17"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <buttonCell key="cell" type="roundRect" title="16-bit" bezelStyle="roundedRect" image="004C4FE3-69C3-4D52-B7E2-FCE8ECF90C31" imagePosition="overlaps" alignment="center" controlSize="small" state="on" borderStyle="border" inset="2" id="2310">
+                    <buttonCell key="cell" type="roundRect" title="16-bit" bezelStyle="roundedRect" image="365B689B-EA26-4B27-90F6-474655E70376" imagePosition="overlaps" alignment="center" controlSize="small" state="on" borderStyle="border" inset="2" id="2310">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="smallSystem"/>
                     </buttonCell>
@@ -4521,7 +4520,7 @@ Gw
         </window>
     </objects>
     <resources>
-        <image name="004C4FE3-69C3-4D52-B7E2-FCE8ECF90C31" width="1" height="1">
+        <image name="365B689B-EA26-4B27-90F6-474655E70376" width="1" height="1">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGPj9YJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoK4HCBMU
 GR4fIyQsLzI4O1UkbnVsbNUJCgsMDQ4PEBESVk5TU2l6ZVYkY2xhc3NcTlNJbWFnZUZsYWdzVk5TUmVw
@@ -4542,9 +4541,7 @@ Amo
         <image name="3DCut" width="71" height="71"/>
         <image name="3DRotate" width="165" height="165"/>
         <image name="3DRotateCamera" width="98" height="101"/>
-        <image name="AxialSmall" width="60" height="60"/>
-        <image name="CorSmall" width="60" height="60"/>
-        <image name="F115DE29-ACC3-4171-B190-EF18481FDE5A" width="1" height="1">
+        <image name="4CFF226C-4E8B-40A9-A42F-8E22842D657B" width="1" height="1">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGPj9YJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoK4HCBMU
 GR4fIyQsLzI4O1UkbnVsbNUJCgsMDQ4PEBESVk5TU2l6ZVYkY2xhc3NcTlNJbWFnZUZsYWdzVk5TUmVw
@@ -4562,6 +4559,8 @@ AhACGAIlAioCLAIuAjMCOwI+AkMCSwJOAmACYwJoAAAAAAAAAgEAAAAAAAAAQgAAAAAAAAAAAAAAAAAA
 Amo
 </mutableData>
         </image>
+        <image name="AxialSmall" width="60" height="60"/>
+        <image name="CorSmall" width="60" height="60"/>
         <image name="HUDLeftArrowButtonNeutral" width="20" height="20"/>
         <image name="HUDLeftArrowButtonPressed" width="20" height="20"/>
         <image name="HUDRightArrowButtonNeutral" width="20" height="20"/>

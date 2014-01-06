@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13B35" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C32" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
@@ -74,7 +74,7 @@
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             </textFieldCell>
                                         </tableColumn>
-                                        <tableColumn identifier="stringValue" width="546.37792999999999" minWidth="46.377929999999999" maxWidth="800" id="11">
+                                        <tableColumn identifier="stringValue" width="545.87792999999999" minWidth="46.377929999999999" maxWidth="800" id="11">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Content">
                                                 <font key="font" metaFont="smallSystem"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -172,10 +172,10 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="82">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="82">
                         <rect key="frame" x="187" y="145" width="59" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Element:" id="115">
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Element:" id="115">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -316,6 +316,7 @@ Gw
                     <constraint firstItem="86" firstAttribute="trailing" secondItem="95" secondAttribute="trailing" id="NIk-qi-Kjq"/>
                     <constraint firstItem="96" firstAttribute="top" secondItem="111" secondAttribute="bottom" constant="15" id="Ni6-vo-uyK"/>
                     <constraint firstItem="83" firstAttribute="baseline" secondItem="81" secondAttribute="baseline" id="Q8v-eI-Y25"/>
+                    <constraint firstItem="95" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="40" secondAttribute="leading" constant="5" id="R85-Iw-hMd"/>
                     <constraint firstItem="95" firstAttribute="baseline" secondItem="96" secondAttribute="baseline" id="Sam-Ts-bu0"/>
                     <constraint firstItem="111" firstAttribute="top" secondItem="88" secondAttribute="bottom" constant="5" id="Sc5-dS-tAb"/>
                     <constraint firstAttribute="trailing" secondItem="88" secondAttribute="trailing" constant="20" symbolic="YES" id="VSs-Y2-LmB"/>
@@ -328,9 +329,10 @@ Gw
                     <constraint firstItem="88" firstAttribute="leading" secondItem="96" secondAttribute="leading" id="iBe-ke-ApO"/>
                     <constraint firstItem="88" firstAttribute="baseline" secondItem="86" secondAttribute="baseline" id="igq-sR-DxI"/>
                     <constraint firstItem="85" firstAttribute="leading" secondItem="40" secondAttribute="leading" constant="19" id="pAN-VJ-Ke7"/>
-                    <constraint firstItem="81" firstAttribute="leading" secondItem="40" secondAttribute="leading" constant="43" id="pCT-tk-sjE"/>
+                    <constraint firstItem="81" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="40" secondAttribute="leading" constant="10" id="pCT-tk-sjE"/>
                     <constraint firstItem="90" firstAttribute="top" secondItem="96" secondAttribute="bottom" constant="20" id="tEO-2j-jOq"/>
                     <constraint firstItem="84" firstAttribute="leading" secondItem="82" secondAttribute="trailing" constant="7" id="uMh-qF-cPS"/>
+                    <constraint firstItem="86" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="40" secondAttribute="leading" constant="5" id="wgq-qf-OhV"/>
                     <constraint firstAttribute="trailing" secondItem="89" secondAttribute="trailing" constant="35" id="yXi-4d-qI0"/>
                     <constraint firstItem="82" firstAttribute="centerY" secondItem="83" secondAttribute="centerY" id="zHb-5j-RY2"/>
                     <constraint firstItem="82" firstAttribute="leading" secondItem="83" secondAttribute="trailing" constant="38" id="zfg-Kq-f78"/>
@@ -561,7 +563,7 @@ Gw
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="140">
-                            <rect key="frame" x="800" y="1" width="15" height="270"/>
+                            <rect key="frame" x="799" y="1" width="16" height="270"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>

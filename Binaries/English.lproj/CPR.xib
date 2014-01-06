@@ -218,7 +218,7 @@ Gw
                             <action selector="endDCMExportSettings:" target="-2" id="750"/>
                         </connections>
                     </button>
-                    <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="428">
+                    <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="428">
                         <rect key="frame" x="100" y="406" width="226" height="38"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -380,10 +380,10 @@ Gw
                                         <binding destination="342" name="enabled" keyPath="selection.exportSequenceType" id="1295"/>
                                         <binding destination="342" name="enabled2" keyPath="selection.exportSeriesType" previousBinding="1295" id="1298">
                                             <dictionary key="options">
-                                                <integer key="NSNullPlaceholder" value="-1"/>
+                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
                                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
                                                 <integer key="NSNoSelectionPlaceholder" value="-1"/>
-                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                                <integer key="NSNullPlaceholder" value="-1"/>
                                                 <string key="NSValueTransformerName">NSNegateBoolean</string>
                                             </dictionary>
                                         </binding>
@@ -570,7 +570,7 @@ Gw
                                         </binding>
                                     </connections>
                                 </textField>
-                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="438">
+                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="438">
                                     <rect key="frame" x="160" y="203" width="101" height="38"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -621,10 +621,10 @@ Gw
                                         <binding destination="342" name="enabled" keyPath="selection.exportSequenceType" id="1300"/>
                                         <binding destination="342" name="enabled2" keyPath="selection.exportSeriesType" previousBinding="1300" id="1302">
                                             <dictionary key="options">
-                                                <integer key="NSNullPlaceholder" value="-1"/>
+                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
                                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
                                                 <integer key="NSNoSelectionPlaceholder" value="-1"/>
-                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                                <integer key="NSNullPlaceholder" value="-1"/>
                                                 <string key="NSValueTransformerName">NSNegateBoolean</string>
                                             </dictionary>
                                         </binding>
@@ -892,7 +892,7 @@ Gw
                             <binding destination="753" name="value" keyPath="values.exportDCMIncludeAllCPRViews" id="1342"/>
                         </connections>
                     </button>
-                    <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="896">
+                    <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="896">
                         <rect key="frame" x="100" y="449" width="200" height="38"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -1750,6 +1750,8 @@ Gw
                 </subviews>
             </view>
             <constraints>
+                <constraint firstItem="1425" firstAttribute="leading" secondItem="1403" secondAttribute="leading" constant="2" id="2VW-h3-MJE"/>
+                <constraint firstAttribute="trailing" secondItem="1425" secondAttribute="trailing" constant="2" id="aeP-cc-LS2"/>
                 <constraint firstItem="1425" firstAttribute="top" secondItem="1403" secondAttribute="top" id="buT-1T-qSx"/>
                 <constraint firstItem="1425" firstAttribute="centerX" secondItem="1403" secondAttribute="centerX" id="iim-eV-gKK"/>
             </constraints>
@@ -1792,6 +1794,8 @@ Gw
                 </subviews>
             </view>
             <constraints>
+                <constraint firstItem="1450" firstAttribute="leading" secondItem="1449" secondAttribute="leading" constant="2" id="7Jz-LS-bCu"/>
+                <constraint firstAttribute="trailing" secondItem="1450" secondAttribute="trailing" constant="3" id="ACR-Yq-w2Z"/>
                 <constraint firstItem="1450" firstAttribute="centerX" secondItem="1449" secondAttribute="centerX" id="JhP-HG-sIh"/>
                 <constraint firstItem="1450" firstAttribute="top" secondItem="1449" secondAttribute="top" id="dlI-je-Pei"/>
             </constraints>
@@ -1834,6 +1838,8 @@ Gw
                 </subviews>
             </view>
             <constraints>
+                <constraint firstAttribute="trailing" secondItem="1441" secondAttribute="trailing" constant="8" id="7Pz-Wo-LUc"/>
+                <constraint firstItem="1441" firstAttribute="leading" secondItem="1440" secondAttribute="leading" constant="7" id="8Ow-nf-6oX"/>
                 <constraint firstItem="1441" firstAttribute="centerX" secondItem="1440" secondAttribute="centerX" id="JS7-Xd-Osq"/>
                 <constraint firstItem="1441" firstAttribute="top" secondItem="1440" secondAttribute="top" id="tKf-7o-aXh"/>
             </constraints>

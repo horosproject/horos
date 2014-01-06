@@ -824,7 +824,7 @@ Gw
                             <action selector="takeIntValueFrom:" target="582" id="593"/>
                         </connections>
                     </slider>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="988" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="590">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="590">
                         <rect key="frame" x="35" y="117" width="123" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Number of frames:" id="966">
@@ -848,7 +848,7 @@ Gw
                             <action selector="takeFloatValueFrom:" target="586" id="592"/>
                         </connections>
                     </textField>
-                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="591">
+                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="591">
                         <rect key="frame" x="161" y="57" width="101" height="38"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -871,7 +871,7 @@ Gw
                             </column>
                         </cells>
                     </matrix>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="988" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="584">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="584">
                         <rect key="frame" x="96" y="78" width="62" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Rotation:" id="964">
@@ -914,7 +914,7 @@ Gw
                             <action selector="endQuicktimeSettings:" target="146" id="597"/>
                         </connections>
                     </button>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="988" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="821">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="821">
                         <rect key="frame" x="124" y="27" width="34" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Size:" id="967">
@@ -1385,15 +1385,15 @@ z</string>
                     </buttonCell>
                     <cells>
                         <column>
-                            <buttonCell type="radio" title="Parallel" imagePosition="left" alignment="left" controlSize="mini" tag="1" inset="2" id="qHL-xY-yID">
+                            <buttonCell type="radio" title="Parallel" imagePosition="left" alignment="left" controlSize="mini" scrollable="YES" lineBreakMode="clipping" tag="1" inset="2" id="qHL-xY-yID">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="miniSystem"/>
                             </buttonCell>
-                            <buttonCell type="radio" title="Perspective" imagePosition="left" alignment="left" controlSize="mini" state="on" inset="2" id="678">
+                            <buttonCell type="radio" title="Perspective" imagePosition="left" alignment="left" controlSize="mini" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="678">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="miniSystem"/>
                             </buttonCell>
-                            <buttonCell type="radio" title="Endoscopy" imagePosition="left" alignment="left" controlSize="mini" tag="2" inset="2" id="679">
+                            <buttonCell type="radio" title="Endoscopy" imagePosition="left" alignment="left" controlSize="mini" scrollable="YES" lineBreakMode="clipping" tag="2" inset="2" id="679">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="miniSystem"/>
                             </buttonCell>
@@ -1405,6 +1405,7 @@ z</string>
                 </matrix>
             </subviews>
             <constraints>
+                <constraint firstAttribute="trailing" secondItem="674" secondAttribute="trailing" constant="3" id="AFt-UN-axe"/>
                 <constraint firstItem="674" firstAttribute="leading" secondItem="673" secondAttribute="leading" constant="-1" id="Yqf-Zt-fJX"/>
                 <constraint firstItem="674" firstAttribute="top" secondItem="673" secondAttribute="top" constant="3" id="Z2P-Tx-3yO"/>
             </constraints>
@@ -1475,7 +1476,7 @@ Gw
                             <binding destination="818" name="value" keyPath="values.afterExportMarkThemAsKeyImages" id="1011"/>
                         </connections>
                     </button>
-                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="784">
+                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="784">
                         <rect key="frame" x="93" y="160" width="296" height="38"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -1694,6 +1695,7 @@ Gw
                     <constraint firstAttribute="trailing" secondItem="768" secondAttribute="trailing" constant="20" symbolic="YES" id="5Bh-9c-kzs"/>
                     <constraint firstItem="811" firstAttribute="trailing" secondItem="812" secondAttribute="trailing" id="6JQ-d1-56F"/>
                     <constraint firstItem="1007" firstAttribute="top" secondItem="1008" secondAttribute="bottom" constant="10" id="6wd-x1-3og"/>
+                    <constraint firstItem="788" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="1007" secondAttribute="trailing" constant="10" id="Afb-Ue-ZrK"/>
                     <constraint firstItem="784" firstAttribute="leading" secondItem="811" secondAttribute="trailing" constant="3" id="ELx-Er-MuP"/>
                     <constraint firstItem="767" firstAttribute="top" secondItem="763" secondAttribute="top" constant="9" id="ERq-9t-Qz7"/>
                     <constraint firstItem="765" firstAttribute="leading" secondItem="766" secondAttribute="trailing" constant="5" id="FQh-3g-37l"/>
