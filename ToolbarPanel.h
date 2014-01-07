@@ -19,8 +19,6 @@
 @interface ToolbarPanelController : NSWindowController <NSToolbarDelegate>
 {	
 	NSToolbar               *toolbar;
-	long					screen;
-	NSToolbar				*emptyToolbar;
 	ViewerController		*viewer;
 	BOOL					dontReenter;
 }
@@ -28,12 +26,12 @@
 @property (readonly) ViewerController *viewer;
 
 - (long) fixedHeight;
-- (long) hiddenHeight;
++ (long) hiddenHeight;
 - (long) exposedHeight;
-- (void) setToolbar :(NSToolbar*) tb viewer:(ViewerController*) v;
-//- (void) fixSize;
-- (void) toolbarWillClose :(NSToolbar*) tb;
-- (id)initForScreen: (long) s;
++ (long) exposedHeight;
+- (id)initForViewer: (ViewerController*) v withToolbar: (NSToolbar*) t;
 - (NSToolbar*) toolbar;
++ (void) checkForValidToolbar;
+- (void)applicationDidChangeScreenParameters:(NSNotification*)aNotification;
 
 @end

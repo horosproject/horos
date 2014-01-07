@@ -63,7 +63,7 @@ static int MacOSVersion109orHigher = -1;
 	dstframe.size.width = [ThumbnailsListPanel fixedWidth];
 	dstframe.origin.x = screenRect.origin.x;
 	dstframe.origin.y = screenRect.origin.y;
-    dstframe.size.height -= [[AppController toolbarForScreen:[[self window] screen]] exposedHeight];
+    dstframe.size.height -= [ToolbarPanelController exposedHeight];
     
     if( NavigatorWindowController.navigatorWindowController.window.screen == self.window.screen)
     {

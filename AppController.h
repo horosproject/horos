@@ -153,8 +153,6 @@ extern AppController* OsiriX;
 + (AppController*) sharedAppController; /**< Return the shared AppController instance */
 + (void) resizeWindowWithAnimation:(NSWindow*) window newSize: (NSRect) newWindowFrame;
 + (void) pause __deprecated;
-+ (void) resetToolbars;
-+ (ToolbarPanelController*)toolbarForScreen:(NSScreen*)screen;
 + (ThumbnailsListPanel*)thumbnailsListPanelForScreen:(NSScreen*)screen;
 + (NSString*)printStackTrace:(NSException*)e __deprecated; // use -[NSException printStackTrace] form NSException+N2
 + (BOOL) isKDUEngineAvailable;

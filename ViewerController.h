@@ -38,6 +38,7 @@
 @class MPRController;
 @class CPRController;
 @class ViewerController;
+@class ToolbarPanelController;
 
 #define ToolsMenuIconSize NSMakeSize(28.0, 28.0)
 
@@ -67,6 +68,8 @@ enum
 	NSConditionLock *flipDataThread, *convThread;
 	NSThread *loadingThread;
 	
+    ToolbarPanelController *toolbarPanel;
+    
 	IBOutlet StudyView		*studyView;
 			SeriesView		*seriesView;
 
@@ -353,6 +356,7 @@ enum
 @property(readonly) NSPopUpButton *blendingPlugins;
 @property(readonly) NSButton *blendingResample;
 @property(readonly) BOOL titledGantry;
+@property(readonly) ToolbarPanelController *toolbarPanel;
 
 /** Return the 'dragged' window, the destination window is contained in the 'viewerController' object of the 'PluginFilter' object */
 @property(nonatomic, retain) ViewerController *blendedWindow;

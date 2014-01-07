@@ -90,7 +90,7 @@
 
 #define MAXSCREENS 10
 
-ToolbarPanelController *toolbarPanel[ MAXSCREENS] = {nil, nil, nil, nil, nil, nil, nil, nil, nil, nil};
+//ToolbarPanelController *toolbarPanel[ MAXSCREENS] = {nil, nil, nil, nil, nil, nil, nil, nil, nil, nil};
 ThumbnailsListPanel *thumbnailsListPanel[ MAXSCREENS] = {nil, nil, nil, nil, nil, nil, nil, nil, nil, nil};
 
 static NSMenu *mainMenuCLUTMenu = nil, *mainMenuWLWWMenu = nil, *mainMenuConvMenu = nil, *mainOpacityMenu = nil;
@@ -796,27 +796,10 @@ static NSDate *lastWarningDate = nil;
 
 -(void)applicationDidChangeScreenParameters:(NSNotification*)aNotification
 {
-    NSLog( @"--- applicationDidChangeScreenParameters : resetToolbars");
+    NSLog( @"--- applicationDidChangeScreenParameters");
     [[AppController sharedAppController] closeAllViewers: self];
     
-    [AppController resetToolbars];
     [AppController resetThumbnailsList];
-}
-
-+ (void) resetToolbars
-{
-	int numberOfScreens = [[NSScreen screens] count] + 1; //Just in case, we connect a second monitor when using OsiriX.
-	
-	for( int i = 0; i < MAXSCREENS; i++)
-    {
-		if( toolbarPanel[ i])
-            [toolbarPanel[ i] release];
-        
-        toolbarPanel[ i] = nil;
-	}
-    
-	for( int i = 0; i < numberOfScreens; i++)
-		toolbarPanel[ i] = [[ToolbarPanelController alloc] initForScreen: i];
 }
 
 + (void) resetThumbnailsList
@@ -875,19 +858,19 @@ static NSDate *lastWarningDate = nil;
 	}
 }
 
-+(ToolbarPanelController*)toolbarForScreen:(NSScreen*)screen
-{
-    NSArray* screens = [NSScreen screens];
-    NSUInteger i = [screens indexOfObject:screen];
-    
-    if( i == NSNotFound)
-        return nil;
-    
-    if( i>= MAXSCREENS)
-        return nil;
-    
-    return toolbarPanel[i];
-}
+//+(ToolbarPanelController*)toolbarForScreen:(NSScreen*)screen
+//{
+//    NSArray* screens = [NSScreen screens];
+//    NSUInteger i = [screens indexOfObject:screen];
+//    
+//    if( i == NSNotFound)
+//        return nil;
+//    
+//    if( i>= MAXSCREENS)
+//        return nil;
+//    
+//    return toolbarPanel[i];
+//}
 
 + (ThumbnailsListPanel*)thumbnailsListPanelForScreen:(NSScreen*)screen
 {
@@ -4189,7 +4172,7 @@ static BOOL initialized = NO;
 	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateConvolutionMenuNotification object:NSLocalizedString( @"No Filter", nil) userInfo: nil];
 	
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidChangeScreenParameters:) name:NSApplicationDidChangeScreenParametersNotification object:NSApp];
-	[AppController resetToolbars];
+    
     [AppController resetThumbnailsList];
 	
 //	if( USETOOLBARPANEL) [[toolbarPanel window] makeKeyAndOrderFront:self];
@@ -4738,6 +4721,12 @@ static BOOL initialized = NO;
 	BOOL strechWindows = [[NSUserDefaults standardUserDefaults] boolForKey: @"StrechWindows"];
 	BOOL lastScreen = NO;
 	
+    if( columnsPerScreen < 0)
+        columnsPerScreen = 1;
+    
+    if( rowsPerScreen < 0)
+        rowsPerScreen = 1;
+    
 	int OcolumnsPerScreen = columnsPerScreen;
 	int OrowsPerScreen = rowsPerScreen;
 	
@@ -4746,10 +4735,13 @@ static BOOL initialized = NO;
 		if( monitorIndex == numberOfMonitors-1 && strechWindows == YES && lastScreen == NO)
 		{
 			int remaining = [viewers count] - i;
-		
+            
+            if( remaining < 0)
+                remaining = 0;
+            
 			lastScreen = YES;
 		
-			while( rowsPerScreen*columnsPerScreen > remaining)
+			while( rowsPerScreen*columnsPerScreen > remaining && rowsPerScreen >= 0 && columnsPerScreen >= 0)
 			{
 				rowsPerScreen--;
 				
@@ -5047,7 +5039,7 @@ static BOOL initialized = NO;
     if( showFloatingWindows)
     {
         if( [AppController USETOOLBARPANEL] || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
-            screenFrame.size.height -= [[AppController toolbarForScreen: screen] exposedHeight];
+            screenFrame.size.height -= 78;  //[[AppController toolbarForScreen: screen] exposedHeight];
         
         if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"SeriesListVisible"])
         {
@@ -5717,10 +5709,7 @@ static BOOL initialized = NO;
     NSDisableScreenUpdates();
     
     for( int i = 0; i < [[NSScreen screens] count]; i++)
-    {
-        [toolbarPanel[ i] setToolbar: nil viewer: nil];
         [thumbnailsListPanel[ i] setThumbnailsView: nil viewer: nil];
-    }
     
     if( keyWindow == nil)
         keyWindow = [ViewerController frontMostDisplayed2DViewerForScreen: nil];
@@ -5743,6 +5732,8 @@ static BOOL initialized = NO;
                 }
 			}
 		}
+        
+        [ToolbarPanelController checkForValidToolbar];
         
         if( [keyWindow isKindOfClass:[ViewerController class]])
         {

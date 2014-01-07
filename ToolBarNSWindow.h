@@ -17,8 +17,5 @@
 /** \brief Window with only a toolbar */
 @interface ToolBarNSWindow : NSPanel
 {
-//	BOOL willClose;
 }
-
-- (void) superOrderOut:(id)sender;
 @end

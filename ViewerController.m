@@ -105,7 +105,6 @@
 int delayedTileWindows = NO;
 
 #define MAXSCREENS 10
-extern ToolbarPanelController *toolbarPanel[ MAXSCREENS];
 extern ThumbnailsListPanel *thumbnailsListPanel[ MAXSCREENS];
 
 extern BOOL FULL32BITPIPELINE;
@@ -355,7 +354,7 @@ enum
 
 @implementation ViewerController
 
-@synthesize currentOrientationTool, speedSlider, speedText;
+@synthesize currentOrientationTool, speedSlider, speedText, toolbarPanel;
 @synthesize timer, keyImageCheck, injectionDateTime, blendedWindow;
 @synthesize blendingTypeWindow, blendingTypeMultiply, blendingTypeSubtract, blendingTypeRGB, blendingPlugins, blendingResample;
 @synthesize flagListPODComparatives, windowsStateName, titledGantry;
@@ -2884,7 +2883,6 @@ static volatile int numberOfThreadsForRelisce = 0;
             [newViewer showCurrentThumbnail: self];
         }
         
-        for( int i = 0; i < [[NSScreen screens] count]; i++) [toolbarPanel[ i] setToolbar: nil viewer: nil];
         for( int i = 0; i < [[NSScreen screens] count]; i++) [thumbnailsListPanel[ i] setThumbnailsView: nil viewer:nil];
         [[self window] makeKeyAndOrderFront: self];
         [self refreshToolbar];
@@ -3111,6 +3109,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 		}
 	}
 	
+    [toolbarPanel close];
+    [toolbarPanel release];
+    toolbarPanel = nil;
+    
     [self autorelease];
 	
 	numberOf2DViewer--;
@@ -3122,9 +3124,6 @@ static volatile int numberOfThreadsForRelisce = 0;
     if( numberOf2DViewer == 0)
 	{
 		[AppController setUSETOOLBARPANEL: NO];
-        
-		for( int i = 0; i < [[NSScreen screens] count]; i++)
-			[[toolbarPanel[ i] window] orderOut:self];
         
         for( int i = 0; i < [[NSScreen screens] count]; i++)
 			[[thumbnailsListPanel[ i] window] orderOut:self];
@@ -3159,20 +3158,14 @@ static volatile int numberOfThreadsForRelisce = 0;
 	}
 	
 	if( [AppController USETOOLBARPANEL])
-	{
-		for( int i = 0; i < [[NSScreen screens] count]; i++)
-		{
-			if( [toolbarPanel[ i] toolbar] == toolbar)
-				[[toolbarPanel[ i] window] orderOut: self];
-		}
-	}
+		[[toolbarPanel window] orderOut: self];
     
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
 	{
 		for( int i = 0; i < [[NSScreen screens] count]; i++)
 		{
 			if( [thumbnailsListPanel[ i] thumbnailsView] == previewMatrixScrollView)
-				[[toolbarPanel[ i] window] orderOut: self];
+				[[thumbnailsListPanel[ i] window] orderOut:self];
 		}
 	}
 }
@@ -3185,20 +3178,14 @@ static volatile int numberOfThreadsForRelisce = 0;
 	}
 	
 	if( [AppController USETOOLBARPANEL])
-	{
-		for( int i = 0; i < [[NSScreen screens] count]; i++)
-		{
-			if( [toolbarPanel[ i] toolbar] == toolbar)
-				[[toolbarPanel[ i] window] orderFront: self];
-		}
-	}
-    
+        [[toolbarPanel window] orderFront: self];
+
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
     {
         for( int i = 0; i < [[NSScreen screens] count]; i++)
 		{
 			if( [thumbnailsListPanel[ i] thumbnailsView] == previewMatrixScrollView)
-				[[toolbarPanel[ i] window] orderOut: self];
+				[[thumbnailsListPanel[ i] window] orderOut:self];
 		}
     }
 }
@@ -3210,6 +3197,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[imageView sendSyncMessage: 0];
 	
 	[self autoHideMatrix];
+    
+    if( [AppController USETOOLBARPANEL])
+        [toolbarPanel.window orderOut: self];
 }
 
 -(void) windowDidResignKey:(NSNotification *)aNotification
@@ -3219,6 +3209,9 @@ static volatile int numberOfThreadsForRelisce = 0;
     [self autoHideMatrix];
     
 	if( FullScreenOn == YES) [self fullScreenMenu: self];
+    
+    if( [AppController USETOOLBARPANEL])
+        [toolbarPanel.window orderOut: self];
 }
 
 - (void)windowDidChangeScreen:(NSNotification *)aNotification
@@ -3229,6 +3222,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 	if( [OSIWindowController dontWindowDidChangeScreen])
 		return;
 	
+    [ToolbarPanelController checkForValidToolbar];
+    
 	[self redrawToolbar];
 }
 
@@ -3236,13 +3231,21 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
     NSDisableScreenUpdates();
     
-	if( [AppController USETOOLBARPANEL] || [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
+    if( [AppController USETOOLBARPANEL])
+    {
+        if( [ViewerController isFrontMost2DViewer: self.window])
+        {
+            if( [toolbarPanel.window.toolbar customizationPaletteIsRunning] == NO)
+                [toolbarPanel.window orderBack: self];
+        }
+        else
+            [toolbarPanel.window orderOut: self];
+    }
+    
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
 	{
 		for( int i = 0; i < [[NSScreen screens] count]; i++)
 		{
-			if( [toolbarPanel[ i] toolbar] == toolbar && [[self window] screen] != [[NSScreen screens] objectAtIndex: i])
-				[toolbarPanel[ i] setToolbar: nil viewer: nil];
-			
             if( [thumbnailsListPanel[ i] thumbnailsView] == previewMatrixScrollView && [[self window] screen] != [[NSScreen screens] objectAtIndex: i])
 				[thumbnailsListPanel[ i] setThumbnailsView: nil viewer:nil];
 		}
@@ -3252,25 +3255,18 @@ static volatile int numberOfThreadsForRelisce = 0;
 		{
 			if( [[self window] screen] == [[NSScreen screens] objectAtIndex: i])
 			{
-				[toolbarPanel[ i] setToolbar: toolbar viewer: self];
                 [thumbnailsListPanel[ i] setThumbnailsView: previewMatrixScrollView viewer: self];
 				found = YES;
 			}
 			else
-            {
-                [[toolbarPanel[ i] window] orderOut:self];
                 [[thumbnailsListPanel[ i] window] orderOut:self];
-            }
 		}
 		if( found == NO)
             N2LogStackTrace( @"Toolbar NOT found");
 	}
 	
     if( [AppController USETOOLBARPANEL] == NO)
-	{
-		for( int i = 0; i < [[NSScreen screens] count]; i++)
-			[[toolbarPanel[ i] window] orderOut:self];
-	}
+        [[toolbarPanel window] orderOut:self];
     
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"] == NO || [[NSUserDefaults standardUserDefaults] boolForKey: @"SeriesListVisible"] == NO)
 	{
@@ -4142,7 +4138,6 @@ static volatile int numberOfThreadsForRelisce = 0;
             else
                 [[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];
             
-            for( int i = 0; i < [[NSScreen screens] count]; i++) [toolbarPanel[ i] setToolbar: nil viewer: nil];
             for( int i = 0; i < [[NSScreen screens] count]; i++) [thumbnailsListPanel[ i] setThumbnailsView: nil viewer: nil];
             
             [[self window] makeKeyAndOrderFront: self];
@@ -6581,21 +6576,10 @@ static ViewerController *draggedController = nil;
 	// To avoid a bug related to the 'separated toolbar window' :  we need to retain each toolbar item. We release them in the dealloc function
 	NSToolbarItem *item = [[notif userInfo] objectForKey: @"item"];
 	if( [retainedToolbarItems containsObject: item] == NO) [retainedToolbarItems addObject: item];
-	
-/*	if( [AppController USETOOLBARPANEL] || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
-	{		
-		for( int i = 0; i < [[NSScreen screens] count]; i++)
-			[toolbarPanel[ i] fixSize];
-	}*/
 }  
 
 - (void) toolbarDidRemoveItem: (NSNotification *) notif
 {
-/*	if( [AppController USETOOLBARPANEL] || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
-	{
-		for( int i = 0; i < [[NSScreen screens] count]; i++)
-			[toolbarPanel[ i] fixSize];
-	}*/
 }
 
 - (BOOL) validateToolbarItem: (NSToolbarItem *) toolbarItem
@@ -6993,11 +6977,14 @@ return YES;
 	[toolbar setDelegate: self];
 	
 	if( [AppController USETOOLBARPANEL] == NO && [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == NO)
+    {
 		[[self window] setToolbar: toolbar];
-	
-	[[self window] setShowsToolbarButton:NO];
-	[[[self window] toolbar] setVisible: YES];
-	
+        [[self window] setShowsToolbarButton:NO];
+        [[[self window] toolbar] setVisible: YES];
+	}
+    
+    toolbarPanel = [[ToolbarPanelController alloc] initForViewer: self withToolbar: toolbar];
+    
 	#ifdef EXPORTTOOLBARITEM
 	NSLog(@"************** WARNING EXPORTTOOLBARITEM ACTIVATED");
 	for( id s in [self toolbarAllowedItemIdentifiers: toolbar])
@@ -7422,8 +7409,6 @@ return YES;
 	
 	retainedToolbarItems = [[NSMutableArray alloc] initWithCapacity: 0];
 	
-	
-	
 	[self setupToolbar];
 	
 	[ROI loadDefaultSettings];
@@ -7758,12 +7743,6 @@ static int avoidReentryRefreshDatabase = 0;
 	[blendedWindow release];
 	blendedWindow = nil;
     
-	if( [AppController USETOOLBARPANEL])
-	{
-		for( int i = 0 ; i < [[NSScreen screens] count]; i++)
-			[toolbarPanel[ i] toolbarWillClose : toolbar];
-	}
-	
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
     {
         for( int i = 0 ; i < [[NSScreen screens] count]; i++)
@@ -7804,6 +7783,9 @@ static int avoidReentryRefreshDatabase = 0;
 		if( v != self) [v buildMatrixPreview: NO];
 	}
 	
+    [toolbarPanel release];
+    toolbarPanel = nil;
+    
     [NSObject cancelPreviousPerformRequestsWithTarget: self];
 	[super dealloc];
 	
@@ -20389,18 +20371,6 @@ int i,j,l;
 		}
 	}
     
-//    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"])
-//    {
-//        for( NSWindow *win in [NSApp windows])
-//        {
-//            if( [[win windowController] isKindOfClass:[ViewerController class]])
-//            {
-//                if( [win toolbar])
-//                    [win setToolbar: nil];
-//            }
-//        }
-//    }
-	
 	roiLock = [[NSRecursiveLock alloc] init];
 	
 	factorPET2SUV = 1.0;

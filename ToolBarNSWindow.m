@@ -30,9 +30,15 @@
 	return YES;
 }
 
-- (void) superOrderOut:(id)sender
+- (void) orderBack:(id)sender
 {
-    [super orderOut:sender];
+    [super orderBack: self];
+    
+    ViewerController *v = (ViewerController*) self.toolbar.delegate;
+    
+    [v.toolbarPanel applicationDidChangeScreenParameters: nil];
+    [self orderWindow: NSWindowAbove relativeTo: v.window.windowNumber];
+//    [self orderWindow: NSWindowBelow relativeTo: v.window.windowNumber];
 }
 
 - (void) orderOut:(id)sender
@@ -42,19 +48,18 @@
         NSDisableScreenUpdates();
         
         ViewerController *v = [ViewerController frontMostDisplayed2DViewerForScreen: self.screen];
-        if( v)
+        
+        if( v.toolbarPanel.window != self)
         {
-            [self.windowController setToolbar: v.toolbar viewer: v];
-            
             if( [self.toolbar customizationPaletteIsRunning] == NO)
-                [self orderWindow: NSWindowBelow relativeTo: v.window.windowNumber];
-        }
-        else
-        {
-            [self.windowController setToolbar: nil viewer: nil];
-            [super orderOut:sender];
+                [super orderOut:sender];
         }
         
+        if( v)
+        {
+            if( [v.toolbarPanel.window.toolbar customizationPaletteIsRunning] == NO)
+                [v.toolbarPanel.window orderBack: self];
+        }
         NSEnableScreenUpdates();
     }
     else
