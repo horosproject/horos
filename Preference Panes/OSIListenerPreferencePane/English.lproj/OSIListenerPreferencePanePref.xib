@@ -859,11 +859,8 @@
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </box>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="782">
-                        <rect key="frame" x="24" y="429" width="173" height="18"/>
+                        <rect key="frame" x="24" y="429" width="172" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="168" id="J98-xA-EcQ"/>
-                        </constraints>
                         <buttonCell key="cell" type="check" title="Activate DICOM TLS Listener" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" inset="2" id="783">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="smallSystem"/>
@@ -873,7 +870,7 @@
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="724">
-                        <rect key="frame" x="223" y="429" width="90" height="17"/>
+                        <rect key="frame" x="222" y="429" width="90" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <constraints>
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="90" id="l84-i8-Hew"/>
@@ -887,11 +884,8 @@
                         </connections>
                     </button>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="810">
-                        <rect key="frame" x="336" y="437" width="38" height="11"/>
+                        <rect key="frame" x="335" y="437" width="37" height="11"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="34" id="Khw-89-h64"/>
-                        </constraints>
                         <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="AETitle:" id="811">
                             <font key="font" metaFont="miniSystem"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -906,7 +900,7 @@
                         </connections>
                     </textField>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="812">
-                        <rect key="frame" x="336" y="427" width="38" height="11"/>
+                        <rect key="frame" x="347" y="427" width="25" height="11"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Port:" id="813">
                             <font key="font" metaFont="miniSystem"/>
@@ -922,7 +916,7 @@
                         </connections>
                     </textField>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="814">
-                        <rect key="frame" x="376" y="437" width="58" height="11"/>
+                        <rect key="frame" x="374" y="437" width="58" height="11"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="AETitleValue" id="815">
                             <font key="font" metaFont="miniSystem"/>
@@ -939,7 +933,7 @@
                         </connections>
                     </textField>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="816">
-                        <rect key="frame" x="376" y="427" width="46" height="11"/>
+                        <rect key="frame" x="374" y="427" width="46" height="11"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="PortValue" id="817">
                             <font key="font" metaFont="miniSystem"/>
@@ -957,7 +951,6 @@
                     </textField>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="810" firstAttribute="leading" secondItem="812" secondAttribute="leading" id="3vy-Rj-DfZ"/>
                     <constraint firstItem="867" firstAttribute="trailing" secondItem="908" secondAttribute="trailing" id="5oD-s2-Buh"/>
                     <constraint firstAttribute="trailing" secondItem="867" secondAttribute="trailing" constant="20" symbolic="YES" id="62Y-W0-F9O"/>
                     <constraint firstItem="782" firstAttribute="baseline" secondItem="724" secondAttribute="baseline" id="7qY-rL-dGL"/>
