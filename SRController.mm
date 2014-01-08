@@ -1358,7 +1358,7 @@ return YES;
 	for(i=0; i<[roiNames count]; i++)
 	{
 		NSArray *roisWithCurrentName = [viewer2D roisWithName:[roiNames objectAtIndex:i]];
-		ROIVolume *volume = [[[ROIVolume alloc] init] autorelease];
+		ROIVolume *volume = [[[ROIVolume alloc] initWithViewer: viewer2D] autorelease];
 		[volume setROIList:roisWithCurrentName];
 		if ([volume isVolume])
 			[roiVolumes addObject:volume];

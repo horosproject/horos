@@ -26,6 +26,7 @@
 #import "AppController.h"
 #import "N2Debug.h"
 #import "DicomDatabase.h"
+#import "ROI.h"
 
 #define D2R 0.01745329251994329576923690768    // degrees to radians
 #define R2D 57.2957795130823208767981548141    // radians to degrees
@@ -302,10 +303,11 @@
 	if( orientationWidget)
 		orientationWidget->Delete();
 	[_points3D release];
+    [roi release];
     [super dealloc];
 }
 
-- (short) setPixSource:(NSMutableArray*)pts
+- (short) setPixSource:(NSMutableArray*)pts roi: (ROI*) r
 {
 	GLint swap = 1;  // LIMIT SPEED TO VBL if swap == 1
 	[self getVTKRenderWindow]->MakeCurrent();
@@ -313,278 +315,228 @@
 
 	[_points3D release];
 	_points3D = [pts copy];
+    
+    [roi release];
+    roi = [r retain];
+    
 	return [self renderVolume];
 }
 
 - (short) renderVolume
 {
-	WaitRendering *splash = [[WaitRendering alloc] init: NSLocalizedString( @"Rendering 3D Object...", nil)];
+	WaitRendering *splash = [[[WaitRendering alloc] init: NSLocalizedString( @"Rendering 3D Object...", nil)] autorelease];
 	[splash showWindow:self]; 
 	
-	short   error = 0;
-	
+	short error = 0;
 	
     @try
     {
         try
         {
-			long	i;
 			aRenderer = [self renderer];
 			
-			vtkPoints *points = vtkPoints::New();
-			NSArray *pts = _points3D;
-			for( i = 0; i < [pts count]; i++)
-			{
-				NSArray	*pt3D = [pts objectAtIndex: i];
-				points->InsertPoint( i, [[pt3D objectAtIndex: 0] floatValue], [[pt3D objectAtIndex: 1] floatValue], [[pt3D objectAtIndex: 2] floatValue]);
-			}
-			
-			vtkPolyData *profile = vtkPolyData::New();
-			profile->SetPoints( points);
-			points->Delete();
-
+            vtkPolyData *profile = nil;
+            if( [[NSUserDefaults standardUserDefaults] boolForKey:@"UseDelaunayFor3DRoi"] != 0)
+            {
+                vtkPoints *points = vtkPoints::New();
+                long i = 0;
+                for( NSArray *pt3D in _points3D)
+                {
+                    points->InsertPoint( i++, [[pt3D objectAtIndex: 0] floatValue], [[pt3D objectAtIndex: 1] floatValue], [[pt3D objectAtIndex: 2] floatValue]);
+                }
+                
+                profile = vtkPolyData::New();
+                profile->SetPoints( points);
+                points->Delete();
+            }
 			vtkDelaunay3D *delaunayTriangulator = nil;
 			vtkPolyDataNormals *polyDataNormals = nil;
-			vtkDecimatePro *isoDeci = nil;
 			vtkSmoothPolyDataFilter * pSmooth = nil;
 			vtkDataSet*	output = nil;
             vtkCleanPolyData *cleaner = nil;
-			
-			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"UseDelaunayFor3DRoi"])
+			vtkMapper *mapper = nil;
+            
+			switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"3DRoiTechnique"])
 			{
-//                cleaner = vtkCleanPolyData::New();
-//                cleaner->SetInput( profile);
+                // IsoContour
+                case 0:
+                {
+                    ROIVolumeController *co = self.window.windowController;
+                    
+                    NSData *vD = nil;
+                    NSMutableArray *copyPixList = nil;
+                    [co.viewer copyVolumeData: &vD andDCMPix: &copyPixList forMovieIndex: co.viewer.curMovieIndex];
+                    
+                    for( DCMPix *p in copyPixList)
+                        memset( p.fImage, 0, p.pheight*p.pwidth*sizeof( float));
+                    
+                    for( int z = 0; z < [copyPixList count]; z++)
+                    {
+                        for( int i = 0; i < [[co.viewer.roiList objectAtIndex: z] count]; i++)
+                        {
+                            ROI	*curROI = [[co.viewer.roiList objectAtIndex: z] objectAtIndex: i];
+                            
+                            if( [[curROI name] isEqualToString: [roi name]])
+                            {
+                                DCMPix *p = [copyPixList objectAtIndex: z];
+                                
+                                [p fillROI: curROI newVal:1000 minValue:-FLT_MAX maxValue:FLT_MAX outside:NO orientationStack:2 stackNo:0 restore:NO addition:NO spline:[curROI isSpline] clipMin:NSMakePoint(0, 0) clipMax:NSMakePoint(0, 0)];
+                            }
+                        }
+                    }
+                    
+                    
+                    vtkImageImport *reader = vtkImageImport::New();
+                    reader->SetWholeExtent(0, [copyPixList.lastObject pwidth]-1, 0, [copyPixList.lastObject pheight]-1, 0, copyPixList.count-1);
+                    reader->SetDataExtentToWholeExtent();
+                    reader->SetDataScalarTypeToFloat();
+                    reader->SetImportVoidPointer( (void*) [vD bytes]);
+                    reader->SetDataSpacing( [copyPixList.lastObject pixelSpacingX], [copyPixList.lastObject pixelSpacingY], [copyPixList.lastObject sliceInterval]);
+                    
+//                    vtkImageResample *isoResample = vtkImageResample::New();
+//                    isoResample->SetInput( reader->GetOutput());
+//                    isoResample->SetAxisMagnificationFactor( 0, 1.0); // 1.0 = resolution
+//                    isoResample->SetAxisMagnificationFactor( 1, 1.0); // 1.0 = resolution
+//                    isoResample->Delete();
+                    
+                    vtkContourFilter *isoExtractor = vtkContourFilter::New();
+                    isoExtractor->SetInput( reader->GetOutput());
+                    isoExtractor->SetValue(0, 500);
+                    
+                    reader->Delete();
+                    
+                    vtkPolyData* previousOutput = isoExtractor->GetOutput();
+                    
+                    BOOL useDecimate = YES;
+                    BOOL useSmooth = YES;
+                    
+                    if( useDecimate)
+                    {
+                        float decimateVal = 0.5;
+                        
+                        vtkDecimatePro *isoDeci = vtkDecimatePro::New();
+                        isoDeci->SetInput( previousOutput);
+                        isoDeci->SetTargetReduction( decimateVal);
+                        isoDeci->SetPreserveTopology( TRUE);
+                        
+                        //		isoDeci->SetFeatureAngle(60);
+                        //		isoDeci->SplittingOff();
+                        //		isoDeci->AccumulateErrorOn();
+                        //		isoDeci->SetMaximumError(0.3);
+                        
+                        isoDeci->Update();
+                        
+                        previousOutput = isoDeci->GetOutput();
+                    }
+                    
+                    if( useSmooth)
+                    {
+                        float smoothVal = 20;
+                        
+                        vtkSmoothPolyDataFilter *isoSmoother = vtkSmoothPolyDataFilter::New();
+                        isoSmoother->SetInput( previousOutput);
+                        isoSmoother->SetNumberOfIterations( smoothVal);
+                        //		isoSmoother->SetRelaxationFactor(0.05);
+                        
+                        isoSmoother->Update();
+                        
+                        previousOutput = isoSmoother->GetOutput();
+                    }
+                    
+                    
+                    vtkPolyDataNormals *isoNormals = vtkPolyDataNormals::New();
+                    isoNormals->SetInput( previousOutput);
+                    isoNormals->SetFeatureAngle( 120);
+                    
+                    vtkPolyDataMapper *isoMapper = vtkPolyDataMapper::New();
+                    isoMapper->SetInput( isoNormals->GetOutput());
+                    isoMapper->ScalarVisibilityOff();
+                    
+                    mapper = isoMapper;
+                }
+                    break;
+                    
+                // Delaunay
+                case 1:
+                {
+                    delaunayTriangulator = vtkDelaunay3D::New();
+                    delaunayTriangulator->SetInput( profile);
+                    
+                    delaunayTriangulator->SetTolerance( 0.001);
+                    delaunayTriangulator->SetAlpha( 20);
+                    delaunayTriangulator->BoundingTriangulationOff();
+                    
+                    output = (vtkDataSet*) delaunayTriangulator -> GetOutput();
+                    
+                    vtkTextureMapToSphere *tmapper = vtkTextureMapToSphere::New();
+                    tmapper -> SetInput( output);
+                    tmapper -> PreventSeamOn();
+                    
+                    vtkDataSetMapper *map = vtkDataSetMapper::New();
+                    map->SetInput( tmapper->GetOutput());
+                    map->ScalarVisibilityOff();
+                    
+                    map->Update();
+                    
+                    mapper = map;
+                    
+                }
+                    break;
                 
-				delaunayTriangulator = vtkDelaunay3D::New();
-				delaunayTriangulator->SetInput( profile);
-				
-				delaunayTriangulator->SetTolerance( 0.001);
-				delaunayTriangulator->SetAlpha( 20);
-				delaunayTriangulator->BoundingTriangulationOff();
-				
-				output = (vtkDataSet*) delaunayTriangulator -> GetOutput();
-			}
-			else
-			{
-				vtkPowerCrustSurfaceReconstruction *power = vtkPowerCrustSurfaceReconstruction::New();
-				power->SetInput( profile);
-				polyDataNormals = vtkPolyDataNormals::New();
-				polyDataNormals->ConsistencyOn();
-				polyDataNormals->AutoOrientNormalsOn();
-				//if (computeMedialSurface) 
-		//		if (NO)
-		//		{
-		//			vtkPolyData *medialSurface;
-		//			power->Update();
-		//			medialSurface = power->GetMedialSurface();
-		//			//polyDataNormals->SetInput(power->GetOutput());
-		//			isoDeci = vtkDecimatePro::New();
-		//			isoDeci->SetInput(medialSurface);
-		//			isoDeci->SetTargetReduction(0.9);
-		//			isoDeci->SetPreserveTopology( TRUE);
-		//			polyDataNormals->SetInput(isoDeci->GetOutput());
-		//		
-		//
-		//			NSLog(@"Build Links");
-		//			isoDeci->Update();
-		//			vtkPolyData *data = isoDeci->GetOutput();
-		//			//vtkPolyData *data = power->GetOutput();
-		//			data->BuildLinks();
-		//
-		//			vtkPoints *medialPoints = data->GetPoints();
-		//			int nPoints = data->GetNumberOfPoints();
-		//			vtkIdType i;
-		//			int neighbors;			
-		//			double x , y, z;
-		//			// get all cells around a point
-		//			data->BuildCells();
-		//			for (int a = 0; a < 5 ;  a++)
-		//			{
-		//				for (i = 0; i < nPoints; i++)
-		//				{
-		//					//int j = 0;
-		//					// count self
-		//					neighbors = 1;
-		//					double *position = medialPoints->GetPoint(i);
-		//					// Get position
-		//					x = position[0];
-		//					y = position[1];
-		//					z = position[2];
-		//					NSSet *ptSet = [self connectedPointsForPoint:i fromPolyData:data];
-		//					for (NSNumber *number in ptSet) {
-		//						vtkIdType pt = [number doubleValue];
-		//						position = medialPoints->GetPoint(pt);
-		//						x += position[0];
-		//						y += position[1];
-		//						z += position[2];
-		//						neighbors++;
-		//						
-		//					}
-		//					
-		//					// get average
-		//					x /= neighbors;
-		//					y /= neighbors;
-		//					z /= neighbors;
-		//					/// Set Point
-		//					medialPoints->SetPoint(i, x ,y ,z);	
-		//					
-		//				}
-		//			}
-		//			
-		//			// input for display
-		//			polyDataNormals->SetInput(data);
-		//			
-		//			// Find most inferior Point. Rrpresent Rectum
-		//			// Could be a seed point to generalize.  
-		//			vtkIdType startingPoint;
-		//			double zPoint = 100000; 
-		//			NSLog(@"get starting Point");
-		//			for (i = 0; i < nPoints; i++) {	
-		//				double *position = medialPoints->GetPoint(i);
-		//				if (position[2] < zPoint) {
-		//					zPoint = position[2];
-		//					startingPoint = i;
-		//				}
-		//			}
-		//
-		//			double *sp = medialPoints->GetPoint(startingPoint);
-		//			NSLog(@"starting Point %d : %f %f %f",startingPoint, sp[0], sp[1], sp[2]);
-		//			
-		//			//get connected Points
-		//			NSMutableSet *visitedPoints = [NSMutableSet set];
-		//			NSMutableArray *connectedPoints = [NSMutableArray array];
-		//			NSMutableArray *stack = [NSMutableArray array];
-		//
-		//			NSNumber *start = [NSNumber numberWithDouble:startingPoint];
-		//			[visitedPoints addObject:start];
-		//			[connectedPoints addObject:start];
-		//			[stack  addObject:start];
-		//			
-		//			vtkIdType currentPoint;
-		//			currentPoint = startingPoint;
-		//			while ([stack count] > 0) {
-		//				neighbors = 0;
-		//				[stack removeObjectAtIndex:0];
-		//				double *position;
-		//				//double *position = medialPoints->GetPoint(startingPoint);
-		//				// Get position
-		//				//x = position[0];
-		//				//y = position[1];
-		//				//z = position[2];
-		//				// All cells for Point and number of cells
-		//
-		//				double avgX = 0; 
-		//				double avgY = 0;
-		//				double avgZ = 0;
-		//				//Loop through neighbors to get avg neighbor position Go three connections out
-		//				NSSet *ptSet = [self connectedPointsForPoint:currentPoint fromPolyData:data];
-		//				NSMutableSet *closeNeighbors = [NSMutableSet set];
-		//				NSMutableSet *distantNeighbors = [NSMutableSet set];
-		//				for (NSNumber *number in ptSet) {
-		//					NSSet *neighborSet = [self connectedPointsForPoint:[number doubleValue]  fromPolyData:data];
-		//					[closeNeighbors unionSet:neighborSet];
-		//				}
-		//				for (NSNumber *number in closeNeighbors) {
-		//					NSSet *neighborSet = [self connectedPointsForPoint:[number doubleValue]  fromPolyData:data];
-		//					[distantNeighbors unionSet:neighborSet];
-		//				}
-		//				
-		//				for (NSNumber *number in distantNeighbors) {
-		//					vtkIdType pt = [number doubleValue];
-		//					if (![visitedPoints containsObject:number]) {
-		//						position = medialPoints->GetPoint(pt);
-		//						avgX += position[0];
-		//						avgY += position[1];
-		//						avgZ += position[2];
-		//						neighbors++;
-		//						//NSLog(@"pt %f %f %f", position[0], position[1], position[2]);
-		//					}
-		//				}
-		//
-		//				// get average
-		//				avgX /= neighbors;
-		//				avgY /= neighbors;
-		//				avgZ /= neighbors;
-		//				//NSLog(@"avg: %f %f %f count: %d", avgX, avgY, avgZ, neighbors);
-		//				//go through neighbors again and find closet neighbor to avgPt.
-		//				//add closest neighbor to connected points
-		//
-		//				double closestDistance = 100000;
-		//				BOOL foundNeighbor = NO;
-		//				vtkIdType closestNeighbor;
-		//				for (NSNumber *number in distantNeighbors) {
-		//					vtkIdType pt = [number doubleValue];
-		//					position = medialPoints->GetPoint(pt);
-		//					double distance = sqrt( pow(avgX - position[0],2) + pow(avgY - position[1],2) + pow(avgZ - position[2],2));
-		//
-		//					if ((distance < closestDistance) && ![visitedPoints containsObject:number]) {
-		//						// closet neighbor cannot be a visited Point
-		//						closestNeighbor = pt;
-		//						closestDistance = distance;
-		//						foundNeighbor = YES;
-		//						
-		//					}
-		//				}
-		//				// add closest neighbor to connected points
-		//				if (foundNeighbor) 
-		//				{
-		//					currentPoint = closestNeighbor;
-		//					NSNumber *closest = [NSNumber numberWithDouble:closestNeighbor];
-		//					[connectedPoints addObject:closest];
-		//					[stack addObject:closest];
-		//					position = medialPoints->GetPoint(currentPoint);
-		//					//NSLog(@"%d next Point: %f % f %f",[connectedPoints count], position[0], position[1], position[2]);
-		//				}
-		//				
-		//				[visitedPoints unionSet:distantNeighbors];
-		//
-		//			}			
-		//			
-		//			//NSLog(@"Visited Points: %d total Points: %d", [visitedPoints count], nPoints);
-		//			//NSLog(@"Medial Surface number of Polygons: %d", medialSurface->GetNumberOfPolys());
-		//			//NSLog(@"Medial Surface number of Points: %d", medialSurface->GetNumberOfPoints());
-		//
-		//		}
-		//		else 
-				{
-					polyDataNormals->SetInput(power->GetOutput());
-				}
-				power->Delete();
-				
-				output = (vtkDataSet*) polyDataNormals -> GetOutput();
+                // PowerCrust
+                case 2:
+                {
+                    vtkPowerCrustSurfaceReconstruction *power = vtkPowerCrustSurfaceReconstruction::New();
+                    power->SetInput( profile);
+                    polyDataNormals = vtkPolyDataNormals::New();
+                    polyDataNormals->ConsistencyOn();
+                    polyDataNormals->AutoOrientNormalsOn();
+                    polyDataNormals->SetInput(power->GetOutput());
+                    power->Delete();
+                    
+                    output = (vtkDataSet*) polyDataNormals -> GetOutput();
+                    
+                    vtkTextureMapToSphere *tmapper = vtkTextureMapToSphere::New();
+                    tmapper -> SetInput( output);
+                    tmapper -> PreventSeamOn();
+                    
+                    vtkDataSetMapper *map = vtkDataSetMapper::New();
+                    map->SetInput( tmapper->GetOutput());
+                    map->ScalarVisibilityOff();
+                    
+                    map->Update();
+                    
+                    mapper = map;
+                    
+                }
+                    break;
 			}
 			
-			// ****************** Mapper
-			vtkTextureMapToSphere *tmapper = vtkTextureMapToSphere::New();
-				tmapper -> SetInput( output);
-				tmapper -> PreventSeamOn();
-			
-			if( polyDataNormals) polyDataNormals->Delete();
-			if( delaunayTriangulator) delaunayTriangulator->Delete();
-			if( isoDeci) isoDeci->Delete();
-			if( pSmooth) pSmooth->Delete();
+            if( polyDataNormals) polyDataNormals->Delete();
+            if( delaunayTriangulator) delaunayTriangulator->Delete();
+            if( pSmooth) pSmooth->Delete();
             if( cleaner) cleaner->Delete();
+            
 
-			vtkTransformTextureCoords *xform = vtkTransformTextureCoords::New();
-				xform->SetInput(tmapper->GetOutput());
-				xform->SetScale(4,4,4);
-			tmapper->Delete();
-				
-			vtkDataSetMapper *map = vtkDataSetMapper::New();
-			map->SetInput( tmapper->GetOutput());
-			map->ScalarVisibilityOff();
-			
-			map->Update();
-			if (!roiVolumeActor) {
-				roiVolumeActor = vtkActor::New();
-				roiVolumeActor->GetProperty()->FrontfaceCullingOn();
-				roiVolumeActor->GetProperty()->BackfaceCullingOn();
-			}
-			roiVolumeActor->SetMapper(map);
-
-
-			map->Delete();
-			
+            if (!roiVolumeActor) {
+                roiVolumeActor = vtkActor::New();
+                roiVolumeActor->GetProperty()->FrontfaceCullingOn();
+                roiVolumeActor->GetProperty()->BackfaceCullingOn();
+            }
+            roiVolumeActor->SetMapper( mapper);
+            
+            if( [[NSUserDefaults standardUserDefaults] integerForKey: @"3DRoiTechnique"] == 0)
+            {
+                ROIVolumeController *wo = self.window.windowController;
+                DCMPix *o = [wo.viewer.pixList objectAtIndex: 0];
+                
+                roiVolumeActor->SetOrigin( o.originX, o.originY, o.originZ);
+                roiVolumeActor->SetPosition( o.originX, o.originY, o.originZ);
+            }
+            
+            if( mapper)
+                mapper->Delete();
+            
 			// *****************Texture
 			NSString *location = [[NSUserDefaults standardUserDefaults] stringForKey:@"textureLocation"];
 			
@@ -606,130 +558,6 @@
 
 			roiVolumeActor->SetTexture( texture);
 
-
-		//	vtkDecimatePro *isoDeci = vtkDecimatePro::New();
-		//	isoDeci->SetInput( profile);
-		////	isoDeci->SetTargetReduction( decimateVal);
-		//	isoDeci->SetPreserveTopology( TRUE);
-			
-		//		isoDeci->SetFeatureAngle(60);
-		//		isoDeci->SplittingOff();
-		//		isoDeci->AccumulateErrorOn();
-		//		isoDeci->SetMaximumError(0.3);
-			
-		//	vtkSmoothPolyDataFilter *isoSmoother = vtkSmoothPolyDataFilter::New();
-		//	isoSmoother->SetInput( profile);
-		//	isoSmoother->SetNumberOfIterations( smoothVal);
-		//		isoSmoother->SetRelaxationFactor(0.05);
-			
-			//vtkGaussian
-			//vtkSurfaceReconstructionFilter
-			//vtkContourFilter
-			
-		//	vtkPolyDataNormals *polyDataNormals = vtkPolyDataNormals::New();
-		//		polyDataNormals->SetInput( del->GetOutput());
-		//		polyDataNormals->ConsistencyOn();
-		//		polyDataNormals->AutoOrientNormalsOn();
-				
-		//	vtkDelaunay3D *del = vtkDelaunay3D::New();
-		//		del->SetInput( profile);
-		//		del->SetTolerance( 0.001);
-		//		del->SetAlpha( 20);
-		////		del->SetOffset( 50);
-		//		del->BoundingTriangulationOff();
-		////	profile->Delete();
-			
-		//	vtkPowerCrustSurfaceReconstruction *power = vtkPowerCrustSurfaceReconstruction::New();
-		//		power->SetInput( profile);
-		//
-		//	vtkPolyDataNormals *polyDataNormals = vtkPolyDataNormals::New();
-		//		polyDataNormals->SetInput( power->GetOutput());
-		//		polyDataNormals->ConsistencyOn();
-		//		polyDataNormals->AutoOrientNormalsOn();
-		//	power->Delete();
-			
-			//do a bit of decimation
-		//	vtkDecimatePro *pDeci = vtkDecimatePro::New();
-		//	pDeci->SetInput(power->GetOutput());
-		//	pDeci->SetTargetReduction(0.0);
-
-			//ok, now lets try some filtering
-		//	vtkSmoothPolyDataFilter * pSmooth = vtkSmoothPolyDataFilter::New();
-		//	pSmooth->SetInput(polyDataNormals->GetOutput());
-		//	pSmooth->SetNumberOfIterations( 100);
-		////	pSmooth->SetRelaxationFactor(fRelax);
-		//	pSmooth->SetFeatureEdgeSmoothing(TRUE);
-		//	pSmooth->SetFeatureAngle( 90);
-		//	pSmooth->SetEdgeAngle( 90);
-		//	pSmooth->SetBoundarySmoothing(TRUE);
-		//	pSmooth->Update();
-			
-		//	polyDataNormals->Update();
-		//	if( polyDataNormals->GetOutput()->GetNumberOfPoints() < 1)
-		//	{
-		//		NSLog( @"%d", polyDataNormals->GetOutput()->GetNumberOfPoints());
-		//		NSLog( @"vtkPowerCrustSurfaceReconstruction failed...");
-		//		
-		//		vtkDelaunay3D *del = vtkDelaunay3D::New();
-		//			del->SetInput( profile);
-		//			del->SetTolerance( 0.001);
-		//			del->SetAlpha( 20);
-		////			del->SetOffset( 50);
-		//			del->BoundingTriangulationOff();
-		////			profile->Delete();
-		//		
-		//		polyDataNormals->Delete();
-		//		
-		//		polyDataNormals = vtkPolyDataNormals::New();
-		//			polyDataNormals->SetInput( power->GetOutput());
-		//			polyDataNormals->ConsistencyOn();
-		//			polyDataNormals->AutoOrientNormalsOn();
-		//			del->Delete();
-		//	}
-			
-
-		//	vtkTextureMapToSphere *tmapper = vtkTextureMapToSphere::New();
-		//		tmapper -> SetInput (polyDataNormals->GetOutput());
-		//		tmapper -> PreventSeamOn();
-		//	polyDataNormals->Delete();
-		//
-		//	vtkTransformTextureCoords *xform = vtkTransformTextureCoords::New();
-		//		xform->SetInput(tmapper->GetOutput());
-		//		xform->SetScale(4,4,4);
-		//	tmapper->Delete();
-		//
-		//	vtkDataSetMapper *map = vtkDataSetMapper::New();
-		//		map->SetInput( xform->GetOutput());
-		//		map->ScalarVisibilityOff();
-		//	xform->Delete();
-		//	
-		//	roiVolumeActor = vtkActor::New();
-		//		roiVolumeActor->SetMapper( map);
-		//		roiVolumeActor->GetProperty()->SetColor(1, 0, 0);
-		//		roiVolumeActor->GetProperty()->SetSpecular( 0.3);
-		//		roiVolumeActor->GetProperty()->SetSpecularPower( 20);
-		//		roiVolumeActor->GetProperty()->SetAmbient( 0.2);
-		//		roiVolumeActor->GetProperty()->SetDiffuse( 0.8);
-		//		roiVolumeActor->GetProperty()->SetOpacity(0.5);
-		//	map->Delete();
-			
-			// Texture
-		//
-		//	NSString	*location = [[NSUserDefaults standardUserDefaults] stringForKey:@"textureLocation"];
-		//
-		//	if( location == nil || [location isEqualToString:@""])
-		//		location = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"texture.tif"];
-		//	
-		//	vtkTIFFReader *bmpread = vtkTIFFReader::New();
-		//       bmpread->SetFileName( [location UTF8String]);
-		//
-		//		texture = vtkTexture::New();
-		//		texture->SetInput( bmpread->GetOutput());
-		//		texture->InterpolateOn();
-		//	bmpread->Delete();
-		//	
-		//	roiVolumeActor->SetTexture(texture);
-			
 			// The balls
 			
 			vtkSphereSource *ball = vtkSphereSource::New();
@@ -756,10 +584,11 @@
 			}
 			ballActor->SetMapper( mapBalls);
 
-			mapBalls->Delete();
+            if( mapBalls)
+                mapBalls->Delete();
 			
-			profile->Delete();
-			xform->Delete();
+            if( profile)
+                profile->Delete();
 			
 			aRenderer->AddActor( ballActor);
 			
@@ -852,7 +681,6 @@
     }
     
 	[splash close];
-	[splash autorelease];
 
 	return error;
 }

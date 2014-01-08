@@ -101,6 +101,8 @@
 
 /** \brief  creates volume from stack of Brush ROIs */
 
+@class ViewerController;
+
 @interface ROIVolume : NSObject {
 	NSMutableArray		*roiList;
 	vtkActor			*roiVolumeActor;
@@ -109,6 +111,7 @@
 	NSColor				*color;
 	BOOL				visible, textured;
 	NSString			*name;
+    ViewerController    *viewer;
 	
 	NSMutableDictionary		*properties;
 }
@@ -149,5 +152,5 @@
 
 - (NSMutableDictionary*)displayProperties;
 - (void)setDisplayProperties:(NSDictionary*)newProperties;
-
+- (id) initWithViewer: (ViewerController*) v;
 @end

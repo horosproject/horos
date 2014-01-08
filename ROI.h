@@ -360,6 +360,8 @@ enum
 /** Draw text box for ROI */
 - (void) drawTextualData;
 
+/** is Spline rendered ? */
+- (BOOL)isSpline;
 
 /** Test to see if point is in text box or ROI and returns the mode. 
 * Can be ROI_Selected or ROI_selectedModify if hit test is YES 

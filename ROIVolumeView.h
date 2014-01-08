@@ -127,15 +127,14 @@ class vtkMyCallback;
     vtkOutlineFilter			*outlineData;
 	vtkOrientationMarkerWidget	*orientationWidget;
 	
-	vtkImageImport				*reader;
-	
+    ROI                         *roi;
 	NSArray						*_points3D;
 	BOOL						computeMedialSurface;
 
 }
 
 
-- (short) setPixSource:(NSMutableArray*)pts;
+- (short) setPixSource:(NSMutableArray*)pts roi: (ROI*) r;
 - (void) setROIActorVolume:(NSValue*)roiActorPointer;
 - (void) setOpacity: (float) opacity showPoints: (BOOL) sp showSurface: (BOOL) sS showWireframe:(BOOL) w texture:(BOOL) tex useColor:(BOOL) usecol color:(NSColor*) col;
 - (IBAction) exportDICOMFile:(id) sender;

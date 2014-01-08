@@ -616,6 +616,7 @@ enum
 - (void) setROIToolTag:(int) roitype;
 - (void) changeImageData:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v :(BOOL) applyTransition;
 - (ViewerController*) copyViewerWindow;
+- (void) copyVolumeData: (NSData**) vD andDCMPix: (NSMutableArray **) newPixList forMovieIndex: (int) v;
 - (IBAction) loadSerie:(id) sender;
 - (IBAction) loadPatient:(id) sender;
 - (void) loadSeries:(NSNumber*) t;

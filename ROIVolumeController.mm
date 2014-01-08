@@ -64,7 +64,7 @@
     
     [[self window] setDelegate:self];
     
-	[view setPixSource:pts];
+	[view setPixSource:pts roi: roi];
 	
 	if( volume < 0.01)
 		[volumeField setStringValue: [NSString stringWithFormat:NSLocalizedString(@"Volume : %2.4f mm3.", nil), volume*1000.]];
