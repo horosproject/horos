@@ -6983,8 +6983,6 @@ return YES;
         [[[self window] toolbar] setVisible: YES];
 	}
     
-    toolbarPanel = [[ToolbarPanelController alloc] initForViewer: self withToolbar: toolbar];
-    
 	#ifdef EXPORTTOOLBARITEM
 	NSLog(@"************** WARNING EXPORTTOOLBARITEM ACTIVATED");
 	for( id s in [self toolbarAllowedItemIdentifiers: toolbar])
@@ -7483,6 +7481,8 @@ return YES;
 	[[OSIEnvironment sharedEnvironment] addViewerController:self];
 #endif
 	
+    toolbarPanel = [[ToolbarPanelController alloc] initForViewer: self withToolbar: toolbar];
+    
 	return self;
 }
 

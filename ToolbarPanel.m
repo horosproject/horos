@@ -82,8 +82,6 @@ static int fixedHeight = 92;
 		toolbar = [t retain];
         viewer = [v retain];
 		
-        [self applicationDidChangeScreenParameters: nil];
-        
         [[self window] setAnimationBehavior: NSWindowAnimationBehaviorNone];
         [[self window] setToolbar: toolbar];
         [[self window] setLevel: NSNormalWindowLevel];
@@ -101,9 +99,7 @@ static int fixedHeight = 92;
 			[[self window] setCollectionBehavior: 1 << 6]; //NSWindowCollectionBehaviorIgnoresCycle
 		
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidBecomeMain:) name:NSWindowDidBecomeMainNotification object:0];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidResignMain:) name:NSWindowDidResignMainNotification object:0];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidBecomeKey:) name:NSWindowDidBecomeKeyNotification object:0];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidResignKey:) name:NSWindowDidResignKeyNotification object:0];
         
         [self.window safelySetMovable:NO];
         [self.window setShowsToolbarButton:NO];
@@ -128,11 +124,6 @@ static int fixedHeight = 92;
     [viewer release];
     [toolbar release];
 	[super dealloc];
-}
-
-- (void)windowDidResignKey:(NSNotification *)aNotification
-{
-    return;
 }
 
 - (void)windowDidBecomeKey:(NSNotification *)aNotification
@@ -167,11 +158,6 @@ static int fixedHeight = 92;
         else
             [self.window orderOut: self];
 	}
-}
-
-- (void)windowDidResignMain:(NSNotification *)aNotification
-{
-    return;
 }
 
 - (NSToolbar*) toolbar

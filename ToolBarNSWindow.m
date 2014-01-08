@@ -32,13 +32,16 @@
 
 - (void) orderBack:(id)sender
 {
-    [super orderBack: self];
-    
     ViewerController *v = (ViewerController*) self.toolbar.delegate;
     
-    [v.toolbarPanel applicationDidChangeScreenParameters: nil];
-    [self orderWindow: NSWindowAbove relativeTo: v.window.windowNumber];
-//    [self orderWindow: NSWindowBelow relativeTo: v.window.windowNumber];
+    if( v.window.isVisible)
+    {
+        NSDisableScreenUpdates();
+        [super orderBack: self];
+        [v.toolbarPanel applicationDidChangeScreenParameters: nil];
+        [self orderWindow: NSWindowAbove relativeTo: v.window.windowNumber];
+        NSEnableScreenUpdates();
+    }
 }
 
 - (void) orderOut:(id)sender

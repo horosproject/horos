@@ -1000,8 +1000,9 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 	#endif
 }
 
-- (IBAction) customizeViewerToolBar:(id)sender {
-	[self updateToolbarItems];
+- (IBAction)customizeViewerToolBar:(id)sender
+{
+    [self updateToolbarItems];
     [toolbar runCustomizationPalette:sender];
 }
 
@@ -2102,7 +2103,7 @@ return YES;
     else if( [item action] == @selector(syncSeriesStateAction:))   {
         [item setState: (syncSeriesState == [item tag] ? NSOnState : NSOffState)];
     }
-    else valid = NO;
+    else valid = [super validateMenuItem: item];
 	
     return valid;
 }
