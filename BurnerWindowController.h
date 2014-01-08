@@ -73,7 +73,6 @@ enum burnerDestination
 - (void)setFilesToBurn:(NSArray *)theFiles;
 - (void)burnCD:(id)object;
 - (NSArray *)extractFileNames:(NSArray *)filenames;
-- (BOOL)dicomCheck:(NSString *)filename;
 - (void)importFiles:(NSArray *)fileNames;
 - (void)setup:(id)sender;
 - (void) prepareCDContent: (NSMutableArray*) dbObjects :(NSMutableArray*) originalDbObjects;

@@ -380,12 +380,14 @@
                             <constraint firstItem="62" firstAttribute="top" secondItem="33" secondAttribute="bottom" constant="7" id="W0A-La-zhi"/>
                             <constraint firstItem="95" firstAttribute="leading" secondItem="61" secondAttribute="trailing" constant="51" id="XhL-OY-eVh"/>
                             <constraint firstItem="83" firstAttribute="leading" secondItem="33" secondAttribute="leading" id="YwQ-0p-BQP"/>
+                            <constraint firstItem="47" firstAttribute="leading" secondItem="95" secondAttribute="leading" constant="-3" id="ZhJ-oq-BhS"/>
                             <constraint firstItem="61" firstAttribute="leading" secondItem="87" secondAttribute="leading" id="a7e-ce-NVY"/>
                             <constraint firstItem="62" firstAttribute="leading" secondItem="88" secondAttribute="leading" id="aP8-D9-Lei"/>
                             <constraint firstItem="63" firstAttribute="leading" secondItem="33" secondAttribute="leading" id="abu-CZ-xZm"/>
                             <constraint firstItem="46" firstAttribute="leading" secondItem="31" secondAttribute="leading" constant="17" id="cCe-Vg-glB"/>
                             <constraint firstItem="82" firstAttribute="leading" secondItem="95" secondAttribute="leading" id="gtK-YL-JE7"/>
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="47" secondAttribute="trailing" constant="33" id="hN3-cH-see"/>
+                            <constraint firstItem="89" firstAttribute="leading" secondItem="82" secondAttribute="leading" constant="-3" id="hZd-T4-XJe"/>
                             <constraint firstItem="89" firstAttribute="leading" secondItem="47" secondAttribute="leading" id="j8d-Np-Ozl"/>
                             <constraint firstItem="87" firstAttribute="top" secondItem="63" secondAttribute="bottom" constant="7" id="qwU-ll-Rr9"/>
                             <constraint firstItem="63" firstAttribute="top" secondItem="61" secondAttribute="bottom" constant="2" id="rnX-Fs-8RL"/>

@@ -1197,6 +1197,7 @@ Gw
                         </view>
                         <constraints>
                             <constraint firstItem="369" firstAttribute="top" secondItem="351" secondAttribute="top" constant="21" id="1JZ-6A-KJf"/>
+                            <constraint firstAttribute="bottom" secondItem="369" secondAttribute="bottom" constant="13" id="2WV-HZ-qZ5"/>
                             <constraint firstItem="369" firstAttribute="centerY" secondItem="357" secondAttribute="centerY" id="4VW-tU-DhK"/>
                             <constraint firstItem="356" firstAttribute="leading" secondItem="357" secondAttribute="trailing" constant="7" id="9gQ-b1-K5h"/>
                             <constraint firstItem="355" firstAttribute="top" secondItem="351" secondAttribute="top" constant="280" id="ACJ-u1-jfu"/>
@@ -3261,7 +3262,7 @@ Gw
                             <action selector="endBlendingType:" target="-2" id="839"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="832">
+                    <button verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="832">
                         <rect key="frame" x="11" y="192" width="126" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Image Fusion" bezelStyle="rounded" alignment="center" scrollable="YES" lineBreakMode="clipping" borderStyle="border" tag="1" inset="2" id="2234">
@@ -3275,7 +3276,7 @@ DQ
                             <action selector="endBlendingType:" target="-2" id="836"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" tag="2" translatesAutoresizingMaskIntoConstraints="NO" id="833">
+                    <button verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" tag="2" translatesAutoresizingMaskIntoConstraints="NO" id="833">
                         <rect key="frame" x="170" y="192" width="126" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Subtraction" bezelStyle="rounded" alignment="center" scrollable="YES" lineBreakMode="clipping" borderStyle="border" tag="2" inset="2" id="2235">
@@ -3286,7 +3287,7 @@ DQ
                             <action selector="endBlendingType:" target="-2" id="837"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" tag="3" translatesAutoresizingMaskIntoConstraints="NO" id="834">
+                    <button verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" tag="3" translatesAutoresizingMaskIntoConstraints="NO" id="834">
                         <rect key="frame" x="329" y="192" width="126" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Multiplication" bezelStyle="rounded" alignment="center" scrollable="YES" lineBreakMode="clipping" borderStyle="border" tag="3" inset="2" id="2236">
@@ -3344,7 +3345,7 @@ DQ
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <font key="titleFont" metaFont="system"/>
                     </box>
-                    <button toolTip="Perform a 3D registration from the dragged series to the destination series, according to the 3D points." verticalHuggingPriority="750" tag="7" translatesAutoresizingMaskIntoConstraints="NO" id="987">
+                    <button toolTip="Perform a 3D registration from the dragged series to the destination series, according to the 3D points." verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" tag="7" translatesAutoresizingMaskIntoConstraints="NO" id="987">
                         <rect key="frame" x="329" y="144" width="126" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Registration" bezelStyle="rounded" alignment="center" scrollable="YES" lineBreakMode="clipping" borderStyle="border" tag="7" inset="2" id="2239">
@@ -3373,7 +3374,7 @@ DQ
                             <action selector="endBlendingType:" target="-2" id="2018"/>
                         </connections>
                     </button>
-                    <button toolTip="Resample (resolution, origin and orientation) the dragged series, according to the destination series." verticalHuggingPriority="750" tag="11" translatesAutoresizingMaskIntoConstraints="NO" id="2099">
+                    <button toolTip="Resample (resolution, origin and orientation) the dragged series, according to the destination series." verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" tag="11" translatesAutoresizingMaskIntoConstraints="NO" id="2099">
                         <rect key="frame" x="11" y="144" width="126" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Resample" bezelStyle="rounded" alignment="center" scrollable="YES" lineBreakMode="clipping" borderStyle="border" tag="11" inset="2" id="2242">
@@ -3384,7 +3385,7 @@ DQ
                             <action selector="endBlendingType:" target="-2" id="2102"/>
                         </connections>
                     </button>
-                    <button toolTip="Reorient (origin and orientation) the dragged series, according to the destination series." verticalHuggingPriority="750" tag="12" translatesAutoresizingMaskIntoConstraints="NO" id="G8w-oS-Z7f">
+                    <button toolTip="Reorient (origin and orientation) the dragged series, according to the destination series." verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" tag="12" translatesAutoresizingMaskIntoConstraints="NO" id="G8w-oS-Z7f">
                         <rect key="frame" x="170" y="144" width="126" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Reorient" bezelStyle="rounded" alignment="center" scrollable="YES" lineBreakMode="clipping" borderStyle="border" tag="11" inset="2" id="qqC-vq-Xbs">
@@ -3395,7 +3396,7 @@ DQ
                             <action selector="endBlendingType:" target="-2" id="IUd-KV-i3f"/>
                         </connections>
                     </button>
-                    <segmentedControl verticalHuggingPriority="750" tag="4" translatesAutoresizingMaskIntoConstraints="NO" id="2103">
+                    <segmentedControl verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" tag="4" translatesAutoresizingMaskIntoConstraints="NO" id="2103">
                         <rect key="frame" x="9" y="102" width="448" height="24"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <segmentedCell key="cell" scrollable="YES" lineBreakMode="clipping" alignment="left" style="rounded" trackingMode="momentary" id="2243">
@@ -3418,9 +3419,11 @@ DQ
                     <constraint firstItem="833" firstAttribute="baseline" secondItem="834" secondAttribute="baseline" id="4l6-vi-8tp"/>
                     <constraint firstItem="987" firstAttribute="leading" secondItem="G8w-oS-Z7f" secondAttribute="trailing" constant="45" id="5cJ-LK-QIZ"/>
                     <constraint firstItem="875" firstAttribute="top" secondItem="871" secondAttribute="top" id="9qP-Q2-zCc"/>
+                    <constraint firstItem="2103" firstAttribute="leading" secondItem="829" secondAttribute="leading" constant="11" id="BRo-7a-shy"/>
                     <constraint firstItem="2015" firstAttribute="leading" secondItem="985" secondAttribute="leading" id="COx-QG-iit"/>
                     <constraint firstItem="2103" firstAttribute="top" secondItem="981" secondAttribute="bottom" constant="15" id="CZY-6D-JDX"/>
                     <constraint firstItem="833" firstAttribute="width" secondItem="832" secondAttribute="width" id="Db8-aK-Nlc"/>
+                    <constraint firstAttribute="trailing" secondItem="834" secondAttribute="trailing" constant="17" id="I7W-Gm-mq7"/>
                     <constraint firstItem="834" firstAttribute="leading" secondItem="833" secondAttribute="trailing" constant="45" id="JrX-zp-gN0"/>
                     <constraint firstItem="834" firstAttribute="width" secondItem="833" secondAttribute="width" id="K3z-JA-5oN"/>
                     <constraint firstItem="871" firstAttribute="leading" secondItem="829" secondAttribute="leading" constant="10" id="Ksd-5g-ikS"/>
@@ -3429,9 +3432,11 @@ DQ
                     <constraint firstItem="833" firstAttribute="leading" secondItem="832" secondAttribute="trailing" constant="45" id="M2N-2S-zC6"/>
                     <constraint firstItem="985" firstAttribute="trailing" secondItem="2015" secondAttribute="trailing" id="NOm-co-VGS"/>
                     <constraint firstItem="987" firstAttribute="trailing" secondItem="834" secondAttribute="trailing" id="Nkx-vk-bZz"/>
+                    <constraint firstItem="832" firstAttribute="leading" secondItem="829" secondAttribute="leading" constant="17" id="Ool-fu-nTR"/>
                     <constraint firstItem="981" firstAttribute="leading" secondItem="984" secondAttribute="leading" id="Ox1-4F-oVv"/>
                     <constraint firstItem="2103" firstAttribute="centerX" secondItem="G8w-oS-Z7f" secondAttribute="centerX" id="Q5Y-P6-fnx"/>
                     <constraint firstItem="2017" firstAttribute="trailing" secondItem="G8w-oS-Z7f" secondAttribute="trailing" id="Qvl-d8-gfs"/>
+                    <constraint firstAttribute="trailing" secondItem="2103" secondAttribute="trailing" constant="11" id="SRX-ZC-439"/>
                     <constraint firstItem="2099" firstAttribute="trailing" secondItem="832" secondAttribute="trailing" id="UPi-eN-zig"/>
                     <constraint firstItem="981" firstAttribute="top" secondItem="2099" secondAttribute="bottom" constant="10" id="WLc-eU-k1O"/>
                     <constraint firstItem="832" firstAttribute="top" secondItem="829" secondAttribute="top" constant="15" id="c43-aa-Stz"/>
@@ -4143,7 +4148,7 @@ Gw
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1153">
+                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1153">
                         <rect key="frame" x="32" y="238" width="239" height="78"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -4186,7 +4191,7 @@ Gw
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1157">
+                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1157">
                         <rect key="frame" x="291" y="258" width="245" height="58"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>

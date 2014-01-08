@@ -104,6 +104,16 @@ extern NSRecursiveLock *PapyrusLock;
             
             if( dataset && dataset->findAndGetString( dcmkey, string, OFFalse).good() && string != nil)
                 returnedValue = [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding];
+            
+            if( returnedValue == nil)
+            {
+                //Maybe in the metadata?
+                DcmMetaInfo *metaset = fileformat->getMetaInfo();
+                
+                if( metaset && metaset->findAndGetString( dcmkey, string, OFFalse).good() && string != nil)
+                    returnedValue = [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding];
+            }
+            
         }
         @catch (NSException *exception) {
             N2LogException( exception);

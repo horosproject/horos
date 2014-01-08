@@ -4817,7 +4817,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			{
 				if( [theEvent modifierFlags]  & NSCommandKeyMask)
 				{
-					if( [self is2DViewer] )
+					if( [self is2DViewer] && blendingView)
 					{
 						float change = [theEvent deltaY] / -0.2f;
 						
@@ -4827,7 +4827,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				}
 				else if( [theEvent modifierFlags]  & NSAlternateKeyMask)
 				{
-					if( [self is2DViewer] )
+					if( [self is2DViewer] && [[self windowController] maxMovieIndex] > 1)
 					{
 						// 4D Direction scroll - Cardiac CT eg	
 						float change = [theEvent deltaY] / -2.5f;

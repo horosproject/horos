@@ -15,7 +15,6 @@
 #import "AppController.h"
 #import "WaitRendering.h"
 #import "BurnerWindowController.h"
-#import <OsiriX/DCM.h>
 #import "MutableArrayCategory.h"
 #import <DiscRecordingUI/DRSetupPanel.h>
 #import <DiscRecordingUI/DRBurnSetupPanel.h>
@@ -35,6 +34,10 @@
 #import "DicomDir.h"
 #import "DicomDatabase.h"
 #import <DiskArbitration/DiskArbitration.h>
+#import "DicomFile.h"
+#import "DicomFileDCMTKCategory.h"
+#import "DCMUIDs.h"
+#import "DicomDatabase+DCMTK.h"
 
 @implementation BurnerWindowController
 
@@ -202,16 +205,13 @@
                 pathName = [fname stringByAppendingPathComponent:pname]; //make pathanme
                 if( [manager fileExistsAtPath:pathName isDirectory:&isDir] && !isDir)
 				{ //check for directory
-					if( [DCMObject objectWithContentsOfFile:pathName decodingPixelData:NO])
-					{
+					if( [DicomFile isDICOMFile: pathName])
                         [fileNames addObject:pathName];
-					}
                 }
             } //while pname
                 
         } //if
-        //else if( [dicomDecoder dicomCheckForFile:fname] > 0) {
-		else if( [DCMObject objectWithContentsOfFile:fname decodingPixelData:NO]) {	//Pathname
+		else if( [DicomFile isDICOMFile: fname]) {	//Pathname
 				[fileNames addObject:fname];
         }
 		[pool release];
@@ -723,12 +723,6 @@
 //------------------------------------------------------------------------------------------------------------------------------------
 #pragma mark•
 
-- (BOOL)dicomCheck:(NSString *)filename{
-	//DicomDecoder *dicomDecoder = [[[DicomDecoder alloc] init] autorelease];
-	DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:filename decodingPixelData:NO];
-	return (dcmObject) ? YES : NO;
-}
-
 - (void)importFiles:(NSArray *)filenames{
 }
 
@@ -739,10 +733,11 @@
 	if( [files count] > 0)
 	{
 		NSString *file = [files objectAtIndex:0];
-		DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:file decodingPixelData:NO];
-		title = [dcmObject attributeValueWithName:@"PatientsName"];
+        title = [DicomFile getDicomField: @"PatientsName" forFile: file];
 	}
-	else title = @"UNTITLED";
+	
+    if( title == nil)
+        title = @"UNTITLED";
 	
 	return [[title uppercaseString] filenameString];
 }
@@ -925,38 +920,41 @@
             
         NSMutableArray *newFiles = [NSMutableArray array];
         NSMutableArray *compressedArray = [NSMutableArray array];
+        NSMutableArray *bigEndianFilesToConvert = [NSMutableArray array];
         
         while((file = [enumerator nextObject]) && cancelled == NO)
         {
-            NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-            NSString *newPath = [NSString stringWithFormat:@"%@/%05d", subFolder, i++];
-            DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:file decodingPixelData:NO];
-            //Don't want Big Endian, May not be readable
-            if( [[dcmObject transferSyntax] isEqualToTransferSyntax:[DCMTransferSyntax ExplicitVRBigEndianTransferSyntax]])
-                [dcmObject writeToFile:newPath withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality: DCMLosslessQuality atomically:YES];
-            else
-                [manager copyPath:file toPath:newPath handler:nil];
+            @autoreleasepool {
+                NSString *newPath = [NSString stringWithFormat:@"%@/%05d", subFolder, i++];
                 
-            if( dcmObject)	// <- it's a DICOM file
-            {
-                switch( [compressionMode selectedTag])
+                [manager copyPath: file toPath: newPath handler:nil];
+                
+                if( [DicomFile isDICOMFile: newPath])
                 {
-                    case 0:
-                    break;
+                    if( [[DicomFile getDicomField: @"TransferSyntaxUID" forFile: newPath] isEqualToString: DCM_ExplicitVRBigEndian])
+                       [bigEndianFilesToConvert addObject: newPath];
                     
-                    case 1:
-                        [compressedArray addObject: newPath];
-                    break;
-                    
-                    case 2:
-                        [compressedArray addObject: newPath];
-                    break;
+                    switch( [compressionMode selectedTag])
+                    {
+                        case 0:
+                        break;
+                        
+                        case 1:
+                            [compressedArray addObject: newPath];
+                        break;
+                        
+                        case 2:
+                            [compressedArray addObject: newPath];
+                        break;
+                    }
                 }
+                
+                [newFiles addObject:newPath];
             }
-            
-            [newFiles addObject:newPath];
-            [pool release];
         }
+        
+        if( bigEndianFilesToConvert.count)
+            [DicomDatabase decompressDicomFilesAtPaths: bigEndianFilesToConvert];
         
         if( [newFiles count] > 0 && cancelled == NO)
         {

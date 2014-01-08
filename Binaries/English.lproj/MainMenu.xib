@@ -2687,7 +2687,7 @@ CA
                                                             <autoresizingMask key="autoresizingMask"/>
                                                         </scroller>
                                                         <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="13467">
-                                                            <rect key="frame" x="416" y="17" width="15" height="234"/>
+                                                            <rect key="frame" x="415" y="17" width="16" height="234"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                         </scroller>
                                                         <tableHeaderView key="headerView" id="13469">
@@ -3734,7 +3734,7 @@ Gw
                         <binding destination="12279" name="value" keyPath="values.encryptForExport" id="13836"/>
                     </connections>
                 </button>
-                <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="12669">
+                <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="12669">
                     <rect key="frame" x="131" y="130" width="97" height="38"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -3793,7 +3793,7 @@ Gw
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="12653">
+                <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="12653">
                     <rect key="frame" x="131" y="63" width="228" height="58"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -3834,7 +3834,7 @@ Gw
                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="14088">
                     <rect key="frame" x="84" y="176" width="37" height="17"/>
                     <autoresizingMask key="autoresizingMask"/>
-                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="ROIs:" id="14091">
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="ROIs:" id="14091">
                         <font key="font" metaFont="system"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -4021,6 +4021,7 @@ update to OsiriX 64-bit:</string>
                             <constraint firstItem="14503" firstAttribute="top" secondItem="14501" secondAttribute="bottom" constant="3" id="YFR-ma-WeX"/>
                             <constraint firstItem="14504" firstAttribute="leading" secondItem="14472" secondAttribute="leading" constant="11" id="ZBa-PQ-umv"/>
                             <constraint firstItem="14501" firstAttribute="top" secondItem="14504" secondAttribute="top" id="m5e-ug-C19"/>
+                            <constraint firstAttribute="bottom" secondItem="14502" secondAttribute="bottom" constant="13" id="xUn-El-gcu"/>
                         </constraints>
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -4307,10 +4308,10 @@ update to OsiriX 64-bit:</string>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <scrollView horizontalLineScroll="0.0" horizontalPageScroll="0.0" verticalLineScroll="0.0" verticalPageScroll="0.0" hasVerticalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="12804">
-                        <rect key="frame" x="35" y="188" width="559" height="130"/>
+                        <rect key="frame" x="35" y="188" width="584" height="130"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                         <clipView key="contentView" id="x65-cS-UGw">
-                            <rect key="frame" x="1" y="1" width="557" height="128"/>
+                            <rect key="frame" x="1" y="1" width="582" height="128"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <matrix verticalHuggingPriority="750" selectionByRect="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="12805">
@@ -4339,7 +4340,7 @@ update to OsiriX 64-bit:</string>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </clipView>
                         <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="13479">
-                            <rect key="frame" x="1" y="113" width="557" height="16"/>
+                            <rect key="frame" x="1" y="113" width="582" height="16"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="13478">
@@ -4347,11 +4348,11 @@ update to OsiriX 64-bit:</string>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>
-                    <matrix verticalHuggingPriority="750" mode="highlight" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="12840">
-                        <rect key="frame" x="605" y="135" width="119" height="96"/>
+                    <matrix verticalHuggingPriority="750" mode="highlight" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="12840">
+                        <rect key="frame" x="630" y="135" width="94" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        <size key="cellSize" width="119" height="32"/>
+                        <size key="cellSize" width="94" height="32"/>
                         <buttonCell key="prototype" type="push" title="Entire" bezelStyle="rounded" alignment="center" borderStyle="border" tag="-1" inset="2" id="13443">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -4392,10 +4393,10 @@ Gw
                         </textFieldCell>
                     </textField>
                     <scrollView horizontalLineScroll="0.0" horizontalPageScroll="0.0" verticalLineScroll="0.0" verticalPageScroll="0.0" hasVerticalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="12936">
-                        <rect key="frame" x="35" y="30" width="559" height="130"/>
+                        <rect key="frame" x="35" y="30" width="584" height="130"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                         <clipView key="contentView" id="q7Q-H8-RIB">
-                            <rect key="frame" x="1" y="1" width="557" height="128"/>
+                            <rect key="frame" x="1" y="1" width="582" height="128"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <matrix verticalHuggingPriority="750" selectionByRect="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="12937">
@@ -4424,7 +4425,7 @@ Gw
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </clipView>
                         <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="13481">
-                            <rect key="frame" x="1" y="113" width="557" height="16"/>
+                            <rect key="frame" x="1" y="113" width="582" height="16"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="13480">
@@ -4454,7 +4455,7 @@ Gw
                         </textFieldCell>
                     </textField>
                     <button verticalHuggingPriority="750" tag="5" translatesAutoresizingMaskIntoConstraints="NO" id="12950">
-                        <rect key="frame" x="30" y="3" width="154" height="28"/>
+                        <rect key="frame" x="30" y="3" width="139" height="28"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Open all 4D Series" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" tag="5" inset="2" id="13430">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -4465,11 +4466,8 @@ Gw
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" tag="4" translatesAutoresizingMaskIntoConstraints="NO" id="12951">
-                        <rect key="frame" x="30" y="161" width="154" height="28"/>
+                        <rect key="frame" x="30" y="161" width="139" height="28"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="144" id="krW-PJ-Yye"/>
-                        </constraints>
                         <buttonCell key="cell" type="push" title="Open all 3D Series" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" tag="4" inset="2" id="13431">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
@@ -4479,11 +4477,8 @@ Gw
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" tag="4" translatesAutoresizingMaskIntoConstraints="NO" id="14080">
-                        <rect key="frame" x="182" y="161" width="154" height="28"/>
+                        <rect key="frame" x="167" y="161" width="139" height="28"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="144" id="DDC-1A-iAJ"/>
-                        </constraints>
                         <buttonCell key="cell" type="push" title="Re-Index in 3D in DB" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" tag="4" inset="2" id="14081">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
@@ -4493,7 +4488,7 @@ Gw
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" tag="4" translatesAutoresizingMaskIntoConstraints="NO" id="14083">
-                        <rect key="frame" x="182" y="3" width="154" height="28"/>
+                        <rect key="frame" x="167" y="3" width="139" height="28"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="Re-Index in 4D in DB" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" tag="4" inset="2" id="14084">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -4506,8 +4501,10 @@ Gw
                 </subviews>
                 <constraints>
                     <constraint firstItem="12840" firstAttribute="top" secondItem="12800" secondAttribute="top" constant="122" id="5VE-rP-83n"/>
+                    <constraint firstItem="14083" firstAttribute="width" secondItem="12950" secondAttribute="width" id="64q-9S-G00"/>
                     <constraint firstItem="12939" firstAttribute="top" secondItem="12836" secondAttribute="bottom" constant="55" id="66O-aE-Tkn"/>
                     <constraint firstItem="14083" firstAttribute="baseline" secondItem="12950" secondAttribute="baseline" id="6FX-hJ-hZn"/>
+                    <constraint firstItem="14080" firstAttribute="width" secondItem="12951" secondAttribute="width" id="72b-FN-uAn"/>
                     <constraint firstItem="12840" firstAttribute="leading" secondItem="12936" secondAttribute="trailing" constant="11" id="AlJ-5f-Lln"/>
                     <constraint firstItem="12936" firstAttribute="leading" secondItem="12950" secondAttribute="leading" id="BrS-mE-6GE"/>
                     <constraint firstItem="12939" firstAttribute="leading" secondItem="12940" secondAttribute="leading" id="Buy-9f-bii"/>
@@ -4516,9 +4513,9 @@ Gw
                     <constraint firstItem="12951" firstAttribute="baseline" secondItem="14080" secondAttribute="baseline" id="G31-0M-HdU"/>
                     <constraint firstItem="12936" firstAttribute="top" secondItem="12951" secondAttribute="bottom" constant="7" id="J0Q-2u-mka"/>
                     <constraint firstItem="12804" firstAttribute="leading" secondItem="12800" secondAttribute="leading" constant="35" id="PR4-rf-0vA"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="12836" secondAttribute="trailing" constant="10" id="Rqv-UY-KRo"/>
                     <constraint firstItem="12939" firstAttribute="leading" secondItem="12800" secondAttribute="leading" constant="2" id="T3K-ps-W56"/>
                     <constraint firstItem="12939" firstAttribute="trailing" secondItem="12940" secondAttribute="trailing" id="UIx-Km-d2h"/>
-                    <constraint firstItem="14083" firstAttribute="trailing" secondItem="14080" secondAttribute="trailing" id="Ygn-5z-1D6"/>
                     <constraint firstItem="12951" firstAttribute="top" secondItem="12804" secondAttribute="bottom" constant="3" id="ZQ9-vZ-W6q"/>
                     <constraint firstItem="12950" firstAttribute="top" secondItem="12940" secondAttribute="bottom" constant="67" id="a1o-Y7-Pqo"/>
                     <constraint firstItem="12804" firstAttribute="top" secondItem="12836" secondAttribute="bottom" constant="8" symbolic="YES" id="bgD-Sp-LBj"/>
@@ -4526,7 +4523,6 @@ Gw
                     <constraint firstItem="12940" firstAttribute="top" secondItem="12951" secondAttribute="bottom" constant="54" id="fpa-m9-m2V"/>
                     <constraint firstItem="12936" firstAttribute="leading" secondItem="12951" secondAttribute="leading" id="iNy-EP-zm4"/>
                     <constraint firstItem="12951" firstAttribute="top" secondItem="12939" secondAttribute="bottom" constant="67" id="lqt-Uo-Pae"/>
-                    <constraint firstItem="14080" firstAttribute="leading" secondItem="14083" secondAttribute="leading" id="q5B-9V-kby"/>
                     <constraint firstItem="12951" firstAttribute="centerY" secondItem="12800" secondAttribute="centerY" id="qou-kJ-Hss"/>
                     <constraint firstAttribute="trailing" secondItem="12840" secondAttribute="trailing" constant="3" id="tOv-xJ-6ME"/>
                     <constraint firstItem="14080" firstAttribute="leading" secondItem="12951" secondAttribute="trailing" constant="8" symbolic="YES" id="wug-L0-M8a"/>
@@ -4640,11 +4636,13 @@ Gw
                     <constraint firstItem="13814" firstAttribute="top" secondItem="13811" secondAttribute="bottom" constant="16" id="Gei-Pv-6w1"/>
                     <constraint firstItem="13807" firstAttribute="top" secondItem="13806" secondAttribute="top" constant="20" symbolic="YES" id="Jwe-p7-8vO"/>
                     <constraint firstItem="13811" firstAttribute="top" secondItem="13828" secondAttribute="bottom" constant="8" symbolic="YES" id="Pr8-nU-GIU"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="13807" secondAttribute="trailing" constant="10" id="SeW-vF-MLT"/>
                     <constraint firstItem="13807" firstAttribute="leading" secondItem="13828" secondAttribute="leading" id="dgU-zW-mQB"/>
                     <constraint firstItem="13807" firstAttribute="leading" secondItem="13806" secondAttribute="leading" constant="29" id="eRy-z8-rZV"/>
                     <constraint firstItem="13809" firstAttribute="leading" secondItem="13806" secondAttribute="leading" constant="37" id="jKg-hR-Gcv"/>
                     <constraint firstItem="13813" firstAttribute="trailing" secondItem="13811" secondAttribute="trailing" id="kkl-UO-tUa"/>
                     <constraint firstItem="13813" firstAttribute="leading" secondItem="13814" secondAttribute="trailing" constant="12" symbolic="YES" id="l8a-g9-2LH"/>
+                    <constraint firstAttribute="bottom" secondItem="13813" secondAttribute="bottom" constant="17" id="vvY-SF-Vhr"/>
                     <constraint firstAttribute="trailing" secondItem="13811" secondAttribute="trailing" constant="20" symbolic="YES" id="z9o-ah-ygk"/>
                 </constraints>
             </view>
@@ -4667,7 +4665,7 @@ Gw
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="13845">
-                        <rect key="frame" x="27" y="62" width="464" height="14"/>
+                        <rect key="frame" x="27" y="62" width="8" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" id="13856">
                             <font key="font" metaFont="smallSystem"/>
@@ -4736,10 +4734,12 @@ Gw
                 </subviews>
                 <constraints>
                     <constraint firstItem="13845" firstAttribute="top" secondItem="13846" secondAttribute="bottom" constant="14" id="01r-7A-Ooh"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="13846" secondAttribute="trailing" constant="10" id="9yz-PB-NxM"/>
                     <constraint firstItem="13846" firstAttribute="top" secondItem="13844" secondAttribute="top" constant="20" symbolic="YES" id="Io0-8y-Hct"/>
                     <constraint firstItem="13848" firstAttribute="baseline" secondItem="13847" secondAttribute="baseline" id="LKx-6t-PFv"/>
                     <constraint firstItem="13848" firstAttribute="trailing" secondItem="13865" secondAttribute="trailing" id="LfM-4E-pIe"/>
                     <constraint firstItem="13846" firstAttribute="leading" secondItem="13844" secondAttribute="leading" constant="33" id="Lhm-eI-5Zo"/>
+                    <constraint firstAttribute="bottom" secondItem="13848" secondAttribute="bottom" constant="19" id="Mg6-1x-AwE"/>
                     <constraint firstItem="13845" firstAttribute="leading" secondItem="13844" secondAttribute="leading" constant="29" id="NHB-kp-8lh"/>
                     <constraint firstItem="13865" firstAttribute="top" secondItem="13846" secondAttribute="bottom" constant="12" id="Ohv-JO-SaR"/>
                     <constraint firstItem="13865" firstAttribute="leading" secondItem="13850" secondAttribute="trailing" constant="7" id="RFT-7J-tKR"/>
@@ -4747,7 +4747,6 @@ Gw
                     <constraint firstItem="13850" firstAttribute="baseline" secondItem="13865" secondAttribute="baseline" id="bKu-Vc-hNS"/>
                     <constraint firstItem="13850" firstAttribute="leading" secondItem="13844" secondAttribute="leading" constant="37" id="bQi-b9-Q8H"/>
                     <constraint firstItem="13847" firstAttribute="top" secondItem="13865" secondAttribute="bottom" constant="16" id="hue-s2-4OL"/>
-                    <constraint firstAttribute="trailing" secondItem="13845" secondAttribute="trailing" constant="65" id="kV7-p5-DvJ"/>
                     <constraint firstAttribute="trailing" secondItem="13865" secondAttribute="trailing" constant="20" symbolic="YES" id="ojo-rb-BUl"/>
                 </constraints>
             </view>

@@ -381,10 +381,10 @@
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="124" userLabel="exportDCM">
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="426" y="366" width="573" height="324"/>
+            <rect key="contentRect" x="426" y="366" width="573" height="332"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <view key="contentView" id="125">
-                <rect key="frame" x="0.0" y="0.0" width="573" height="324"/>
+                <rect key="frame" x="0.0" y="0.0" width="573" height="332"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <button verticalHuggingPriority="750" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="134">
@@ -422,7 +422,7 @@ Gw
                         </connections>
                     </button>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="135">
-                        <rect key="frame" x="17" y="302" width="144" height="17"/>
+                        <rect key="frame" x="17" y="310" width="144" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Export to DICOM files:" id="243">
                             <font key="font" metaFont="system"/>
@@ -430,8 +430,8 @@ Gw
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="126">
-                        <rect key="frame" x="18" y="257" width="239" height="38"/>
+                    <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="126">
+                        <rect key="frame" x="18" y="265" width="239" height="38"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         <size key="cellSize" width="239" height="18"/>
@@ -457,7 +457,7 @@ Gw
                         </connections>
                     </matrix>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="133">
-                        <rect key="frame" x="289" y="302" width="93" height="17"/>
+                        <rect key="frame" x="289" y="310" width="93" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Image format:" id="241">
                             <font key="font" metaFont="system"/>
@@ -465,8 +465,8 @@ Gw
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="129">
-                        <rect key="frame" x="290" y="257" width="251" height="38"/>
+                    <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="129">
+                        <rect key="frame" x="290" y="265" width="251" height="38"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         <size key="cellSize" width="251" height="18"/>
@@ -529,7 +529,7 @@ Gw
                         </connections>
                     </button>
                     <box title="Box" boxType="secondary" borderType="bezel" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="183">
-                        <rect key="frame" x="47" y="132" width="475" height="112"/>
+                        <rect key="frame" x="47" y="140" width="475" height="112"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
                             <rect key="frame" x="3" y="3" width="469" height="106"/>
@@ -756,6 +756,7 @@ Gw
                     </button>
                 </subviews>
                 <constraints>
+                    <constraint firstItem="133" firstAttribute="leading" secondItem="129" secondAttribute="leading" constant="1" id="1DZ-Vt-ZUx"/>
                     <constraint firstItem="129" firstAttribute="leading" secondItem="126" secondAttribute="trailing" constant="33" id="1vH-Oe-Xwd"/>
                     <constraint firstAttribute="trailing" secondItem="183" secondAttribute="trailing" constant="54" id="20Z-I1-iHW"/>
                     <constraint firstItem="175" firstAttribute="baseline" secondItem="174" secondAttribute="baseline" id="76C-LD-mZU"/>
@@ -763,7 +764,7 @@ Gw
                     <constraint firstItem="281" firstAttribute="leading" secondItem="280" secondAttribute="leading" id="B05-GL-WB0"/>
                     <constraint firstItem="281" firstAttribute="top" secondItem="287" secondAttribute="bottom" constant="8" id="BQu-Ce-9qU"/>
                     <constraint firstItem="183" firstAttribute="leading" secondItem="125" secondAttribute="leading" constant="50" id="CBV-Eg-lOv"/>
-                    <constraint firstItem="177" firstAttribute="top" secondItem="183" secondAttribute="bottom" constant="2" id="Fgd-2U-IRl"/>
+                    <constraint firstItem="177" firstAttribute="top" secondItem="183" secondAttribute="bottom" constant="10" id="Fgd-2U-IRl"/>
                     <constraint firstItem="126" firstAttribute="leading" secondItem="125" secondAttribute="leading" constant="18" id="GpE-NT-QPZ"/>
                     <constraint firstItem="287" firstAttribute="leading" secondItem="281" secondAttribute="leading" id="HaG-fS-CIJ"/>
                     <constraint firstItem="135" firstAttribute="leading" secondItem="125" secondAttribute="leading" constant="19" id="HjY-Hp-Paf"/>
@@ -781,7 +782,6 @@ Gw
                     <constraint firstItem="134" firstAttribute="leading" secondItem="132" secondAttribute="trailing" constant="12" symbolic="YES" id="sup-NY-Ww5"/>
                     <constraint firstItem="126" firstAttribute="top" secondItem="129" secondAttribute="top" id="tHd-nD-xTV"/>
                     <constraint firstItem="280" firstAttribute="top" secondItem="281" secondAttribute="bottom" constant="8" id="v8H-JX-CVJ"/>
-                    <constraint firstAttribute="trailing" secondItem="133" secondAttribute="trailing" constant="193" id="wUq-3b-DKX"/>
                     <constraint firstItem="134" firstAttribute="baseline" secondItem="132" secondAttribute="baseline" id="xcg-PR-CXE"/>
                     <constraint firstItem="174" firstAttribute="top" secondItem="280" secondAttribute="bottom" constant="12" id="xdD-g3-Mxo"/>
                     <constraint firstItem="133" firstAttribute="baseline" secondItem="135" secondAttribute="baseline" id="xzS-un-uRE"/>
