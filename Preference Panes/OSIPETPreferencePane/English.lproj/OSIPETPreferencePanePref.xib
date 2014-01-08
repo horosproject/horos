@@ -24,7 +24,7 @@
             <rect key="contentRect" x="0.0" y="0.0" width="743" height="655"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <value key="minSize" type="size" width="224.66300000000001" height="10"/>
-            <view key="contentView" id="6">
+            <view key="contentView" horizontalCompressionResistancePriority="1000" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="743" height="655"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
@@ -212,7 +212,7 @@
                                         <constraint firstAttribute="height" constant="76" id="Lo4-52-CrP"/>
                                     </constraints>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                    <size key="cellSize" width="223" height="24"/>
+                                    <size key="cellSize" width="223" height="18"/>
                                     <size key="intercellSpacing" width="4" height="2"/>
                                     <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="446">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>

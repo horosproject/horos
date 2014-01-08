@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13A603" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C32" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
@@ -18,9 +18,9 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="121" y="86" width="523" height="444"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <value key="minSize" type="size" width="224.66399999999999" height="10"/>
-            <view key="contentView" id="6">
+            <view key="contentView" horizontalCompressionResistancePriority="1000" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="523" height="444"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
@@ -28,11 +28,11 @@
                         <rect key="frame" x="20" y="20" width="483" height="404"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <clipView key="contentView" id="Gsa-DI-VFg">
-                            <rect key="frame" x="1" y="17" width="466" height="371"/>
+                            <rect key="frame" x="1" y="17" width="481" height="386"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="121" id="99" customClass="HotKeyTableView">
-                                    <rect key="frame" x="0.0" y="0.0" width="466" height="371"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="481" height="386"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <size key="intercellSpacing" width="3" height="2"/>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -87,16 +87,16 @@
                             </subviews>
                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </clipView>
-                        <scroller key="horizontalScroller" verticalHuggingPriority="750" doubleValue="0.0021459227467811159" horizontal="YES" id="120">
-                            <rect key="frame" x="1" y="388" width="466" height="15"/>
+                        <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="120">
+                            <rect key="frame" x="1" y="387" width="481" height="16"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="119">
-                            <rect key="frame" x="467" y="17" width="15" height="371"/>
+                            <rect key="frame" x="466" y="17" width="16" height="386"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <tableHeaderView key="headerView" id="121">
-                            <rect key="frame" x="0.0" y="0.0" width="466" height="17"/>
+                            <rect key="frame" x="0.0" y="0.0" width="481" height="17"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </tableHeaderView>
                     </scrollView>

@@ -29,7 +29,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="682" height="364"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
-            <view key="contentView" id="6">
+            <view key="contentView" horizontalCompressionResistancePriority="1000" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="682" height="364"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
@@ -197,7 +197,7 @@ Press Delete key to delete a route</string>
             <windowStyleMask key="styleMask" titled="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="586" height="472"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
-            <view key="contentView" id="239">
+            <view key="contentView" horizontalCompressionResistancePriority="1000" id="239">
                 <rect key="frame" x="0.0" y="0.0" width="586" height="472"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>

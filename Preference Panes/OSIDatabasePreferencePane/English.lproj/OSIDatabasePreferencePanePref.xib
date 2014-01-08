@@ -31,11 +31,11 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="889" height="915"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
-            <view key="contentView" id="6">
+            <view key="contentView" horizontalCompressionResistancePriority="1000" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="889" height="915"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <box title="File Management" translatesAutoresizingMaskIntoConstraints="NO" id="107">
+                    <box horizontalCompressionResistancePriority="1000" title="File Management" translatesAutoresizingMaskIntoConstraints="NO" id="107">
                         <rect key="frame" x="14" y="726" width="858" height="179"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                         <view key="contentView">
@@ -203,7 +203,7 @@
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <font key="titleFont" metaFont="system"/>
                     </box>
-                    <box horizontalHuggingPriority="249" title="Database Display" translatesAutoresizingMaskIntoConstraints="NO" id="145">
+                    <box horizontalHuggingPriority="249" horizontalCompressionResistancePriority="1000" title="Database Display" translatesAutoresizingMaskIntoConstraints="NO" id="145">
                         <rect key="frame" x="14" y="533" width="473" height="189"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                         <view key="contentView">
@@ -412,7 +412,7 @@
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <font key="titleFont" metaFont="system"/>
                     </box>
-                    <box title="Patient Unique Identifier" translatesAutoresizingMaskIntoConstraints="NO" id="955">
+                    <box horizontalCompressionResistancePriority="1000" title="Patient Unique Identifier" translatesAutoresizingMaskIntoConstraints="NO" id="955">
                         <rect key="frame" x="489" y="533" width="383" height="189"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                         <view key="contentView">
@@ -493,7 +493,7 @@ It can require several minutes on large database.</string>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <font key="titleFont" metaFont="system"/>
                     </box>
-                    <box title="Database Auto-Cleaning" translatesAutoresizingMaskIntoConstraints="NO" id="262">
+                    <box horizontalCompressionResistancePriority="1000" title="Database Auto-Cleaning" translatesAutoresizingMaskIntoConstraints="NO" id="262">
                         <rect key="frame" x="14" y="99" width="858" height="237"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                         <view key="contentView">
@@ -806,14 +806,14 @@ If a study is in an album, it will NOT be deleted.</string>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <font key="titleFont" metaFont="system"/>
                     </box>
-                    <box verticalHuggingPriority="249" title="Sort Series by" translatesAutoresizingMaskIntoConstraints="NO" id="321">
+                    <box verticalHuggingPriority="249" horizontalCompressionResistancePriority="1000" title="Sort Series by" translatesAutoresizingMaskIntoConstraints="NO" id="321">
                         <rect key="frame" x="709" y="462" width="163" height="67"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                         <view key="contentView">
                             <rect key="frame" x="2" y="2" width="159" height="47"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="323">
+                                <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="323">
                                     <rect key="frame" x="11" y="5" width="123" height="40"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -851,14 +851,14 @@ If a study is in an album, it will NOT be deleted.</string>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <font key="titleFont" metaFont="system"/>
                     </box>
-                    <box title="Sort Images by" translatesAutoresizingMaskIntoConstraints="NO" id="847">
+                    <box horizontalCompressionResistancePriority="1000" title="Sort Images by" translatesAutoresizingMaskIntoConstraints="NO" id="847">
                         <rect key="frame" x="709" y="340" width="163" height="118"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                         <view key="contentView">
                             <rect key="frame" x="2" y="2" width="159" height="98"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="848">
+                                <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="848">
                                     <rect key="frame" x="7" y="1" width="135" height="98"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -908,7 +908,7 @@ If a study is in an album, it will NOT be deleted.</string>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <font key="titleFont" metaFont="system"/>
                     </box>
-                    <box title="Comments &amp; Status fields" translatesAutoresizingMaskIntoConstraints="NO" id="350">
+                    <box horizontalCompressionResistancePriority="1000" title="Comments &amp; Status fields" translatesAutoresizingMaskIntoConstraints="NO" id="350">
                         <rect key="frame" x="14" y="340" width="270" height="189"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
@@ -1036,7 +1036,7 @@ If a study is in an album, it will NOT be deleted.</string>
                                         <binding destination="548" name="enabled" keyPath="values.COMMENTSAUTOFILL" id="818"/>
                                     </connections>
                                 </button>
-                                <button verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="855">
+                                <button verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="855">
                                     <rect key="frame" x="8" y="144" width="192" height="18"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <buttonCell key="cell" type="check" title="Store them in DICOM files fields" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" inset="2" id="856">
@@ -1047,7 +1047,7 @@ If a study is in an album, it will NOT be deleted.</string>
                                         <binding destination="548" name="value" keyPath="values.savedCommentsAndStatusInDICOMFiles" id="857"/>
                                     </connections>
                                 </button>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="875">
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="875">
                                     <rect key="frame" x="8" y="122" width="205" height="20"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <buttonCell key="cell" type="check" title="Load them from DICOM files fields" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" inset="2" id="876">
@@ -1156,14 +1156,14 @@ If a study is in an album, it will NOT be deleted.</string>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <font key="titleFont" metaFont="system"/>
                     </box>
-                    <box title="Series Parsing" translatesAutoresizingMaskIntoConstraints="NO" id="369">
+                    <box horizontalCompressionResistancePriority="1000" title="Series Parsing" translatesAutoresizingMaskIntoConstraints="NO" id="369">
                         <rect key="frame" x="288" y="340" width="417" height="189"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                         <view key="contentView">
                             <rect key="frame" x="2" y="2" width="413" height="169"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="371">
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="371">
                                     <rect key="frame" x="9" y="144" width="128" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Split Multi-echo MR" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="782">
@@ -1174,7 +1174,7 @@ If a study is in an album, it will NOT be deleted.</string>
                                         <binding destination="-2" name="value" keyPath="splitMultiEchoMR" id="373"/>
                                     </connections>
                                 </button>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="372">
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="372">
                                     <rect key="frame" x="9" y="107" width="169" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="For CR, DR, DX, MG and RF:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="783">
@@ -1185,7 +1185,7 @@ If a study is in an album, it will NOT be deleted.</string>
                                         <binding destination="548" name="value" keyPath="values.combineProjectionSeries" id="612"/>
                                     </connections>
                                 </button>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="525">
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="525">
                                     <rect key="frame" x="171" y="145" width="140" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Use Series Description" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="784">
@@ -1196,7 +1196,7 @@ If a study is in an album, it will NOT be deleted.</string>
                                         <binding destination="-2" name="value" keyPath="useSeriesDescription" id="528"/>
                                     </connections>
                                 </button>
-                                <button toolTip="Using the 0018,0022 (ScanOptions) field" translatesAutoresizingMaskIntoConstraints="NO" id="547">
+                                <button toolTip="Using the 0018,0022 (ScanOptions) field" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="547">
                                     <rect key="frame" x="9" y="127" width="126" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Split 4D Cardiac CT" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="785">
@@ -1236,7 +1236,7 @@ If a study is in an album, it will NOT be deleted.</string>
                                         <binding destination="548" name="selectedTag" keyPath="values.combineProjectionSeriesMode" id="611"/>
                                     </connections>
                                 </matrix>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="796">
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="796">
                                     <rect key="frame" x="171" y="128" width="161" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="For US : one series per file" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="797">
@@ -1247,7 +1247,7 @@ If a study is in an album, it will NOT be deleted.</string>
                                         <binding destination="548" name="value" keyPath="values.oneFileOnSeriesForUS" id="799"/>
                                     </connections>
                                 </button>
-                                <button translatesAutoresizingMaskIntoConstraints="NO" id="813">
+                                <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="813">
                                     <rect key="frame" x="9" y="87" width="276" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <constraints>
@@ -1367,9 +1367,11 @@ If a study is in an album, it will NOT be deleted.</string>
                             <constraint firstItem="605" firstAttribute="leading" secondItem="372" secondAttribute="trailing" constant="18" id="fsq-zY-Ju7"/>
                             <constraint firstItem="371" firstAttribute="top" secondItem="369" secondAttribute="top" constant="28" id="gFT-dd-EGX"/>
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="924" secondAttribute="trailing" priority="800" constant="10" id="kAW-o1-Qhw"/>
-                            <constraint firstItem="525" firstAttribute="leading" secondItem="371" secondAttribute="trailing" constant="39" id="luC-rc-0aD"/>
+                            <constraint firstItem="525" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="371" secondAttribute="trailing" constant="39" id="luC-rc-0aD"/>
                             <constraint firstItem="796" firstAttribute="leading" secondItem="525" secondAttribute="leading" id="mtx-Fw-gcK"/>
+                            <constraint firstItem="525" firstAttribute="leading" secondItem="371" secondAttribute="trailing" constant="39" id="rLj-wV-5Pt"/>
                             <constraint firstItem="868" firstAttribute="leading" relation="lessThanOrEqual" secondItem="858" secondAttribute="trailing" constant="20" id="tao-EW-A2j"/>
+                            <constraint firstItem="796" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="547" secondAttribute="trailing" constant="41" id="txx-Fv-MOn"/>
                             <constraint firstItem="868" firstAttribute="top" secondItem="880" secondAttribute="bottom" constant="8" symbolic="YES" id="wi8-FD-7db"/>
                             <constraint firstItem="813" firstAttribute="top" secondItem="605" secondAttribute="bottom" constant="5" id="yht-8A-aqg"/>
                         </constraints>
@@ -1377,7 +1379,7 @@ If a study is in an album, it will NOT be deleted.</string>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <font key="titleFont" metaFont="system"/>
                     </box>
-                    <box title="Reports" translatesAutoresizingMaskIntoConstraints="NO" id="381">
+                    <box horizontalCompressionResistancePriority="1000" title="Reports" translatesAutoresizingMaskIntoConstraints="NO" id="381">
                         <rect key="frame" x="14" y="16" width="858" height="79"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                         <view key="contentView">

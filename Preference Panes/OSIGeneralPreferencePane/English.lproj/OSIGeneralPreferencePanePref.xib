@@ -19,11 +19,11 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="722" height="667"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
-            <view key="contentView" id="6">
+            <view key="contentView" horizontalCompressionResistancePriority="1000" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="722" height="667"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <box title="Check version" translatesAutoresizingMaskIntoConstraints="NO" id="129">
+                    <box horizontalCompressionResistancePriority="1000" title="Check version" translatesAutoresizingMaskIntoConstraints="NO" id="129">
                         <rect key="frame" x="17" y="233" width="688" height="74"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
@@ -67,7 +67,7 @@
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </box>
-                    <box title="DICOM Toolkits" translatesAutoresizingMaskIntoConstraints="NO" id="133">
+                    <box horizontalCompressionResistancePriority="1000" title="DICOM Toolkits" translatesAutoresizingMaskIntoConstraints="NO" id="133">
                         <rect key="frame" x="17" y="400" width="688" height="97"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
@@ -124,7 +124,7 @@
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </box>
-                    <box title="Global" translatesAutoresizingMaskIntoConstraints="NO" id="157">
+                    <box horizontalCompressionResistancePriority="1000" title="Global" translatesAutoresizingMaskIntoConstraints="NO" id="157">
                         <rect key="frame" x="17" y="501" width="688" height="157"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
@@ -261,7 +261,7 @@
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </box>
-                    <box title="DICOM Editing" translatesAutoresizingMaskIntoConstraints="NO" id="169">
+                    <box horizontalCompressionResistancePriority="1000" title="DICOM Editing" translatesAutoresizingMaskIntoConstraints="NO" id="169">
                         <rect key="frame" x="17" y="175" width="688" height="54"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
@@ -289,7 +289,7 @@
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </box>
-                    <box title="Languages" translatesAutoresizingMaskIntoConstraints="NO" id="397">
+                    <box horizontalCompressionResistancePriority="1000" title="Languages" translatesAutoresizingMaskIntoConstraints="NO" id="397">
                         <rect key="frame" x="17" y="16" width="688" height="155"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
@@ -366,8 +366,8 @@
                                         <autoresizingMask key="autoresizingMask"/>
                                     </tableHeaderView>
                                 </scrollView>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="533">
-                                    <rect key="frame" x="396" y="72" width="207" height="56"/>
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="533">
+                                    <rect key="frame" x="396" y="72" width="273" height="56"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" id="534">
                                         <font key="font" metaFont="smallSystem"/>
@@ -383,7 +383,7 @@ If multiple languages are enabled, the used language will be chosen according to
                             <constraint firstItem="517" firstAttribute="leading" secondItem="397" secondAttribute="leading" constant="16" id="8LG-B0-KFs"/>
                             <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="533" secondAttribute="bottom" constant="16" id="9t3-n6-fqO"/>
                             <constraint firstItem="533" firstAttribute="top" secondItem="397" secondAttribute="top" constant="25" id="Efm-pq-ZPc"/>
-                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="533" secondAttribute="trailing" constant="16" id="KI5-JR-o1p"/>
+                            <constraint firstAttribute="trailing" secondItem="533" secondAttribute="trailing" constant="16" id="KI5-JR-o1p"/>
                             <constraint firstItem="533" firstAttribute="leading" secondItem="517" secondAttribute="trailing" constant="13" id="NcH-sk-ysD"/>
                             <constraint firstAttribute="bottom" secondItem="517" secondAttribute="bottom" constant="8" id="nYP-UD-tNc"/>
                             <constraint firstItem="517" firstAttribute="top" secondItem="397" secondAttribute="top" constant="22" id="yzq-5H-atS"/>
@@ -391,7 +391,7 @@ If multiple languages are enabled, the used language will be chosen according to
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </box>
-                    <box verticalHuggingPriority="249" title="JPEG Compression" translatesAutoresizingMaskIntoConstraints="NO" id="357">
+                    <box verticalHuggingPriority="249" horizontalCompressionResistancePriority="1000" title="JPEG Compression" translatesAutoresizingMaskIntoConstraints="NO" id="357">
                         <rect key="frame" x="17" y="311" width="688" height="85"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">

@@ -17,12 +17,11 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="788" height="855"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
-            <value key="minSize" type="size" width="224.66300000000001" height="10"/>
-            <view key="contentView" id="6">
+            <view key="contentView" horizontalCompressionResistancePriority="1000" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="788" height="855"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <box title="Miscellaneous" translatesAutoresizingMaskIntoConstraints="NO" id="100">
+                    <box horizontalCompressionResistancePriority="1000" title="Miscellaneous" translatesAutoresizingMaskIntoConstraints="NO" id="100">
                         <rect key="frame" x="8" y="10" width="770" height="318"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
@@ -62,7 +61,7 @@
                                         <binding destination="308" name="value" keyPath="values.NOINTERPOLATION" id="329"/>
                                     </connections>
                                 </button>
-                                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="275">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="275">
                                     <rect key="frame" x="517" y="13" width="228" height="22"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <constraints>
@@ -356,7 +355,7 @@
                                         <binding destination="308" name="value" keyPath="values.openPDFwithPreview" id="440"/>
                                     </connections>
                                 </button>
-                                <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1Xf-Mw-WhA">
+                                <popUpButton verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="1Xf-Mw-WhA">
                                     <rect key="frame" x="269" y="193" width="100" height="26"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <popUpButtonCell key="cell" type="push" title="Modalities" bezelStyle="rounded" alignment="center" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" pullsDown="YES" id="fhV-XV-SCY">
@@ -404,9 +403,12 @@
                                         <binding destination="308" name="enabled" keyPath="values.IndependentCRWLWW" id="l3E-9x-q7V"/>
                                     </connections>
                                 </popUpButton>
-                                <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Pyh-nV-fiK">
+                                <popUpButton verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="Pyh-nV-fiK">
                                     <rect key="frame" x="269" y="93" width="100" height="26"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="94" id="PUL-bh-j71"/>
+                                    </constraints>
                                     <popUpButtonCell key="cell" type="push" title="Modalities" bezelStyle="rounded" alignment="center" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" pullsDown="YES" id="XCc-0E-TE4">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                         <font key="font" metaFont="menu"/>
@@ -516,6 +518,7 @@
                             <constraint firstItem="327" firstAttribute="baseline" secondItem="313" secondAttribute="baseline" id="ZUI-bX-7yn"/>
                             <constraint firstAttribute="bottom" secondItem="275" secondAttribute="bottom" constant="11" id="cqx-vh-KW3"/>
                             <constraint firstItem="375" firstAttribute="top" secondItem="323" secondAttribute="bottom" constant="6" symbolic="YES" id="dEZ-sg-uyw"/>
+                            <constraint firstItem="1Xf-Mw-WhA" firstAttribute="width" secondItem="Pyh-nV-fiK" secondAttribute="width" id="eKX-NX-ukG"/>
                             <constraint firstItem="540" firstAttribute="top" secondItem="454" secondAttribute="bottom" constant="6" symbolic="YES" id="el5-9e-dSb"/>
                             <constraint firstItem="544" firstAttribute="leading" secondItem="480" secondAttribute="leading" id="fcX-36-MJQ"/>
                             <constraint firstItem="JNW-Zo-Pk3" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="472" secondAttribute="trailing" constant="20" id="fdC-Zp-eUA"/>
@@ -556,7 +559,7 @@
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <font key="titleFont" metaFont="system"/>
                     </box>
-                    <box title="TIFF, JPEG, Quicktime, DICOM Export" translatesAutoresizingMaskIntoConstraints="NO" id="110">
+                    <box horizontalCompressionResistancePriority="1000" title="TIFF, JPEG, Quicktime, DICOM Export" translatesAutoresizingMaskIntoConstraints="NO" id="110">
                         <rect key="frame" x="8" y="755" width="770" height="92"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
@@ -613,7 +616,7 @@
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <font key="titleFont" metaFont="system"/>
                     </box>
-                    <box title="Screens &amp; Window size" translatesAutoresizingMaskIntoConstraints="NO" id="149">
+                    <box horizontalCompressionResistancePriority="1000" title="Screens &amp; Window size" translatesAutoresizingMaskIntoConstraints="NO" id="149">
                         <rect key="frame" x="8" y="332" width="770" height="423"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
@@ -973,7 +976,6 @@
                             <constraint firstAttribute="trailing" secondItem="521" secondAttribute="trailing" constant="10" id="vts-et-M3X"/>
                             <constraint firstItem="522" firstAttribute="top" secondItem="497" secondAttribute="bottom" constant="6" symbolic="YES" id="wyO-4M-ZW1"/>
                             <constraint firstItem="298" firstAttribute="baseline" secondItem="509" secondAttribute="baseline" constant="1" id="ywq-yg-rnp"/>
-                            <constraint firstAttribute="width" constant="764" id="zvP-p1-dti"/>
                             <constraint firstItem="515" firstAttribute="trailing" secondItem="509" secondAttribute="trailing" id="zwh-1E-U8b"/>
                         </constraints>
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>

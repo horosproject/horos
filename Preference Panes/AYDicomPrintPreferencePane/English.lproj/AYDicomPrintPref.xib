@@ -23,7 +23,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="653" height="450"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <box title="Layout:" translatesAutoresizingMaskIntoConstraints="NO" id="98">
+                    <box horizontalCompressionResistancePriority="1000" title="Layout:" translatesAutoresizingMaskIntoConstraints="NO" id="98">
                         <rect key="frame" x="344" y="12" width="148" height="207"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
@@ -139,20 +139,27 @@
                             </subviews>
                         </view>
                         <constraints>
+                            <constraint firstItem="100" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="98" secondAttribute="leading" constant="16" id="3WS-AB-Uub"/>
                             <constraint firstItem="100" firstAttribute="leading" secondItem="98" secondAttribute="leading" constant="16" id="CoX-Sg-WO3"/>
                             <constraint firstItem="339" firstAttribute="leading" secondItem="100" secondAttribute="leading" id="EUQ-K6-jfK"/>
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="338" secondAttribute="trailing" constant="10" id="Eja-cS-kDa"/>
                             <constraint firstItem="337" firstAttribute="top" secondItem="408" secondAttribute="bottom" constant="9" id="IkB-gV-yR0"/>
+                            <constraint firstItem="116" firstAttribute="leading" secondItem="98" secondAttribute="leading" constant="19" id="Kir-W8-uAg"/>
                             <constraint firstItem="408" firstAttribute="leading" secondItem="98" secondAttribute="leading" constant="20" id="LoJ-S4-umM"/>
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="408" secondAttribute="trailing" constant="10" id="Npx-XP-Z4t"/>
                             <constraint firstItem="339" firstAttribute="top" secondItem="337" secondAttribute="bottom" constant="2" id="SjO-Ic-69l"/>
                             <constraint firstAttribute="bottom" secondItem="343" secondAttribute="bottom" constant="30" id="TDK-cB-rhb"/>
                             <constraint firstItem="116" firstAttribute="top" secondItem="98" secondAttribute="top" constant="25" id="UQZ-zt-PWO"/>
                             <constraint firstItem="338" firstAttribute="leading" secondItem="337" secondAttribute="leading" id="V9P-oo-Mhu"/>
+                            <constraint firstItem="339" firstAttribute="leading" secondItem="98" secondAttribute="leading" constant="16" id="W5n-vR-si2"/>
                             <constraint firstItem="338" firstAttribute="top" secondItem="339" secondAttribute="bottom" constant="7" id="ZD7-JH-EsH"/>
                             <constraint firstItem="343" firstAttribute="top" secondItem="338" secondAttribute="bottom" constant="2" id="ZwF-Qe-NNd"/>
                             <constraint firstItem="343" firstAttribute="leading" secondItem="339" secondAttribute="leading" id="brp-Dk-Gvf"/>
+                            <constraint firstItem="337" firstAttribute="leading" secondItem="98" secondAttribute="leading" constant="19" id="fh8-zj-Ag0"/>
+                            <constraint firstItem="338" firstAttribute="leading" secondItem="98" secondAttribute="leading" constant="19" id="jXf-5e-bCN"/>
+                            <constraint firstItem="343" firstAttribute="leading" secondItem="98" secondAttribute="leading" constant="16" id="kAs-oH-df6"/>
                             <constraint firstItem="408" firstAttribute="top" secondItem="100" secondAttribute="bottom" constant="12" id="nvH-io-Tap"/>
+                            <constraint firstItem="408" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="98" secondAttribute="leading" constant="20" id="oQW-Hj-g5i"/>
                             <constraint firstItem="339" firstAttribute="centerX" secondItem="337" secondAttribute="centerX" id="oWr-Ao-JiA"/>
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="100" secondAttribute="trailing" constant="16" id="quO-LD-qti"/>
                             <constraint firstItem="337" firstAttribute="leading" secondItem="116" secondAttribute="leading" id="rn5-Qu-xOA"/>
@@ -161,7 +168,7 @@
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </box>
-                    <box horizontalHuggingPriority="249" title="Settings:" translatesAutoresizingMaskIntoConstraints="NO" id="117">
+                    <box horizontalHuggingPriority="249" horizontalCompressionResistancePriority="1000" title="Settings:" translatesAutoresizingMaskIntoConstraints="NO" id="117">
                         <rect key="frame" x="15" y="12" width="325" height="207"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
@@ -372,7 +379,7 @@
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </box>
-                    <box title="Job:" translatesAutoresizingMaskIntoConstraints="NO" id="193">
+                    <box horizontalCompressionResistancePriority="1000" title="Job:" translatesAutoresizingMaskIntoConstraints="NO" id="193">
                         <rect key="frame" x="494" y="12" width="146" height="207"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
@@ -496,7 +503,7 @@
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </box>
-                    <box title="DICOM Printers" translatesAutoresizingMaskIntoConstraints="NO" id="261">
+                    <box horizontalCompressionResistancePriority="1000" title="DICOM Printers" translatesAutoresizingMaskIntoConstraints="NO" id="261">
                         <rect key="frame" x="16" y="224" width="621" height="178"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">

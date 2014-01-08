@@ -33,7 +33,7 @@
             <rect key="contentRect" x="119" y="83" width="793" height="807"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <value key="minSize" type="size" width="224.66300000000001" height="10"/>
-            <view key="contentView" id="6">
+            <view key="contentView" horizontalCompressionResistancePriority="1000" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="793" height="807"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
@@ -1264,7 +1264,7 @@ Gw
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="487" y="418" width="413" height="508"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
-            <view key="contentView" id="590">
+            <view key="contentView" horizontalCompressionResistancePriority="1000" id="590">
                 <rect key="frame" x="0.0" y="0.0" width="413" height="508"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>

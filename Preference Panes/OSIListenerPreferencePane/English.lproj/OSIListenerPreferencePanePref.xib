@@ -29,7 +29,7 @@
             <rect key="contentRect" x="0.0" y="0.0" width="623" height="726"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <value key="minSize" type="size" width="224.66300000000001" height="10"/>
-            <view key="contentView" id="6">
+            <view key="contentView" horizontalCompressionResistancePriority="1000" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="623" height="726"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
@@ -44,7 +44,7 @@
                             <binding destination="296" name="value" keyPath="values.STORESCP" id="1007"/>
                         </connections>
                     </button>
-                    <box autoresizesSubviews="NO" borderType="line" translatesAutoresizingMaskIntoConstraints="NO" id="867">
+                    <box autoresizesSubviews="NO" horizontalCompressionResistancePriority="1000" borderType="line" translatesAutoresizingMaskIntoConstraints="NO" id="867">
                         <rect key="frame" x="17" y="452" width="589" height="252"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <view key="contentView">
@@ -231,7 +231,7 @@
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="904">
+                                <button verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="904">
                                     <rect key="frame" x="534" y="164" width="31" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                     <buttonCell key="cell" type="roundRect" title="Edit" bezelStyle="roundedRect" alignment="center" controlSize="mini" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="905">
@@ -242,7 +242,7 @@
                                         <action selector="editAddresses:" target="-2" id="995"/>
                                     </connections>
                                 </button>
-                                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="906">
+                                <button verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="906">
                                     <rect key="frame" x="534" y="141" width="31" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                     <buttonCell key="cell" type="roundRect" title="Edit" bezelStyle="roundedRect" alignment="center" controlSize="mini" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="907">
@@ -382,7 +382,7 @@
                             <constraint firstItem="877" firstAttribute="baseline" secondItem="904" secondAttribute="baseline" id="87X-JA-VEH"/>
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="385" secondAttribute="trailing" constant="16" id="88z-nl-GpY"/>
                             <constraint firstItem="893" firstAttribute="leading" secondItem="867" secondAttribute="leading" constant="16" id="8dp-8X-agN"/>
-                            <constraint firstAttribute="trailing" secondItem="904" secondAttribute="trailing" constant="20" id="Bqa-Yf-f7k"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="904" secondAttribute="trailing" constant="20" id="Bqa-Yf-f7k"/>
                             <constraint firstItem="299" firstAttribute="top" secondItem="305" secondAttribute="bottom" constant="8" symbolic="YES" id="CBX-sM-z6U"/>
                             <constraint firstItem="868" firstAttribute="top" secondItem="867" secondAttribute="top" constant="25" id="CVT-Nm-2nP"/>
                             <constraint firstItem="870" firstAttribute="leading" secondItem="868" secondAttribute="trailing" constant="7" id="E4q-zV-KTH"/>
@@ -417,6 +417,7 @@
                             <constraint firstItem="385" firstAttribute="top" secondItem="881" secondAttribute="bottom" constant="8" symbolic="YES" id="hDP-tc-8EG"/>
                             <constraint firstItem="1063" firstAttribute="top" secondItem="379" secondAttribute="bottom" constant="8" symbolic="YES" id="iEL-jH-7WJ"/>
                             <constraint firstItem="1041" firstAttribute="top" secondItem="300" secondAttribute="bottom" constant="4" id="iMN-m7-5Wy"/>
+                            <constraint firstItem="904" firstAttribute="width" secondItem="906" secondAttribute="width" id="iR3-pS-5yo"/>
                             <constraint firstItem="301" firstAttribute="leading" secondItem="300" secondAttribute="trailing" constant="7" id="kgM-e5-MgZ"/>
                             <constraint firstItem="873" firstAttribute="top" secondItem="870" secondAttribute="bottom" constant="4" id="l6X-tb-cAf"/>
                             <constraint firstItem="870" firstAttribute="baseline" secondItem="418" secondAttribute="baseline" id="lOT-9u-uKk"/>
@@ -434,7 +435,7 @@
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </box>
-                    <box autoresizesSubviews="NO" title="Incoming files" borderType="line" translatesAutoresizingMaskIntoConstraints="NO" id="908">
+                    <box autoresizesSubviews="NO" horizontalCompressionResistancePriority="1000" title="Incoming files" borderType="line" translatesAutoresizingMaskIntoConstraints="NO" id="908">
                         <rect key="frame" x="17" y="249" width="589" height="174"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <view key="contentView">
@@ -581,7 +582,7 @@
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </box>
-                    <box autoresizesSubviews="NO" title="Other options" borderType="line" translatesAutoresizingMaskIntoConstraints="NO" id="956">
+                    <box autoresizesSubviews="NO" horizontalCompressionResistancePriority="1000" title="Other options" borderType="line" translatesAutoresizingMaskIntoConstraints="NO" id="956">
                         <rect key="frame" x="17" y="16" width="589" height="229"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <view key="contentView">
