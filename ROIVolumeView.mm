@@ -322,10 +322,194 @@
 	return [self renderVolume];
 }
 
++ (vtkMapper*) generateMapperForPoints: (NSArray*) points3D roi:(ROI*) roi viewerController: (ViewerController*) vc
+{
+    vtkMapper *mapper = nil;
+    
+    vtkPolyData *profile = nil;
+    if( [[NSUserDefaults standardUserDefaults] boolForKey:@"3DRoiTechnique"] != 0)
+    {
+        vtkPoints *points = vtkPoints::New();
+        long i = 0;
+        for( NSArray *pt3D in points3D)
+            points->InsertPoint( i++, [[pt3D objectAtIndex: 0] floatValue], [[pt3D objectAtIndex: 1] floatValue], [[pt3D objectAtIndex: 2] floatValue]);
+        
+        profile = vtkPolyData::New();
+        profile->SetPoints( points);
+        points->Delete();
+    }
+    
+    switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"3DRoiTechnique"])
+    {
+            // IsoContour
+        case 0:
+        {
+            NSData *vD = nil;
+            NSMutableArray *copyPixList = nil;
+            [vc copyVolumeData: &vD andDCMPix: &copyPixList forMovieIndex: vc.curMovieIndex];
+            
+            for( DCMPix *p in copyPixList)
+                memset( p.fImage, 0, p.pheight*p.pwidth*sizeof( float));
+            
+            for( int z = 0; z < [copyPixList count]; z++)
+            {
+                for( int i = 0; i < [[vc.roiList objectAtIndex: z] count]; i++)
+                {
+                    ROI	*curROI = [[vc.roiList objectAtIndex: z] objectAtIndex: i];
+                    
+                    if( [[curROI name] isEqualToString: [roi name]])
+                    {
+                        DCMPix *p = [copyPixList objectAtIndex: z];
+                        
+                        [p fillROI: curROI newVal:1000 minValue:-FLT_MAX maxValue:FLT_MAX outside:NO orientationStack:2 stackNo:0 restore:NO addition:NO spline:[curROI isSpline] clipMin:NSMakePoint(0, 0) clipMax:NSMakePoint(0, 0)];
+                    }
+                }
+            }
+            
+            
+            vtkImageImport *reader = vtkImageImport::New();
+            reader->SetWholeExtent(0, [copyPixList.lastObject pwidth]-1, 0, [copyPixList.lastObject pheight]-1, 0, copyPixList.count-1);
+            reader->SetDataExtentToWholeExtent();
+            reader->SetDataScalarTypeToFloat();
+            reader->SetImportVoidPointer( (void*) [vD bytes]);
+            reader->SetDataSpacing( [copyPixList.lastObject pixelSpacingX], [copyPixList.lastObject pixelSpacingY], [copyPixList.lastObject sliceInterval]);
+            
+            vtkContourFilter *isoExtractor = vtkContourFilter::New();
+            isoExtractor->SetInput( reader->GetOutput());
+            isoExtractor->SetValue(0, 500);
+            
+            reader->Delete();
+            
+            vtkPolyData* previousOutput = isoExtractor->GetOutput();
+            
+            BOOL useDecimate = NO;
+            BOOL useSmooth = NO;
+            
+            vtkDecimatePro *isoDeci = nil;
+            if( useDecimate)
+            {
+                float decimateVal = 0.5;
+                
+                isoDeci = vtkDecimatePro::New();
+                isoDeci->SetInput( previousOutput);
+                isoDeci->SetTargetReduction( decimateVal);
+                isoDeci->SetPreserveTopology( TRUE);
+                
+                //		isoDeci->SetFeatureAngle(60);
+                //		isoDeci->SplittingOff();
+                //		isoDeci->AccumulateErrorOn();
+                //		isoDeci->SetMaximumError(0.3);
+                
+                isoDeci->Update();
+                previousOutput = isoDeci->GetOutput();
+            }
+            
+            vtkSmoothPolyDataFilter *isoSmoother = nil;
+            if( useSmooth)
+            {
+                float smoothVal = 20;
+                
+                isoSmoother = vtkSmoothPolyDataFilter::New();
+                isoSmoother->SetInput( previousOutput);
+                isoSmoother->SetNumberOfIterations( smoothVal);
+                //		isoSmoother->SetRelaxationFactor(0.05);
+                
+                isoSmoother->Update();
+                previousOutput = isoSmoother->GetOutput();
+            }
+            
+            
+            vtkPolyDataNormals *isoNormals = vtkPolyDataNormals::New();
+            isoNormals->SetInput( previousOutput);
+            isoNormals->SetFeatureAngle( 120);
+            
+            vtkPolyDataMapper *isoMapper = vtkPolyDataMapper::New();
+            isoMapper->SetInput( isoNormals->GetOutput());
+            isoMapper->ScalarVisibilityOff();
+            
+            isoMapper->Update();
+            
+            mapper = isoMapper;
+            
+            isoNormals->Delete();
+            isoExtractor->Delete();
+            
+            if( isoDeci)
+                isoDeci->Delete();
+            
+            if( isoSmoother)
+                isoSmoother->Delete();
+        }
+            break;
+            
+            // Delaunay
+        case 1:
+        {
+            vtkDelaunay3D *delaunayTriangulator = vtkDelaunay3D::New();
+            delaunayTriangulator->SetInput( profile);
+            
+            delaunayTriangulator->SetTolerance( 0.001);
+            delaunayTriangulator->SetAlpha( 20);
+            delaunayTriangulator->BoundingTriangulationOff();
+            
+            vtkTextureMapToSphere *tmapper = vtkTextureMapToSphere::New();
+            tmapper->SetInput( (vtkDataSet*) delaunayTriangulator->GetOutput());
+            tmapper->PreventSeamOn();
+            
+            vtkDataSetMapper *map = vtkDataSetMapper::New();
+            map->SetInput( tmapper->GetOutput());
+            map->ScalarVisibilityOff();
+            
+            map->Update();
+            
+            mapper = map;
+            
+            tmapper->Delete();
+            delaunayTriangulator->Delete();
+            
+        }
+            break;
+            
+            // PowerCrust
+        case 2:
+        {
+            vtkPowerCrustSurfaceReconstruction *power = vtkPowerCrustSurfaceReconstruction::New();
+            power->SetInput( profile);
+            
+            vtkPolyDataNormals *polyDataNormals = vtkPolyDataNormals::New();
+            polyDataNormals->ConsistencyOn();
+            polyDataNormals->AutoOrientNormalsOn();
+            polyDataNormals->SetInput(power->GetOutput());
+            power->Delete();
+            
+            vtkTextureMapToSphere *tmapper = vtkTextureMapToSphere::New();
+            tmapper->SetInput( polyDataNormals->GetOutput());
+            tmapper->PreventSeamOn();
+            
+            vtkDataSetMapper *map = vtkDataSetMapper::New();
+            map->SetInput( tmapper->GetOutput());
+            map->ScalarVisibilityOff();
+            
+            map->Update();
+            
+            mapper = map;
+            
+            tmapper->Delete();
+            polyDataNormals->Delete();
+        }
+            break;
+    }
+    
+    if( profile)
+        profile->Delete();
+    
+    return mapper;
+}
+
 - (short) renderVolume
 {
 	WaitRendering *splash = [[[WaitRendering alloc] init: NSLocalizedString( @"Rendering 3D Object...", nil)] autorelease];
-	[splash showWindow:self]; 
+	[splash showWindow:self];
 	
 	short error = 0;
 	
@@ -333,197 +517,27 @@
     {
         try
         {
-			aRenderer = [self renderer];
-			
-            vtkPolyData *profile = nil;
-            if( [[NSUserDefaults standardUserDefaults] boolForKey:@"UseDelaunayFor3DRoi"] != 0)
-            {
-                vtkPoints *points = vtkPoints::New();
-                long i = 0;
-                for( NSArray *pt3D in _points3D)
-                {
-                    points->InsertPoint( i++, [[pt3D objectAtIndex: 0] floatValue], [[pt3D objectAtIndex: 1] floatValue], [[pt3D objectAtIndex: 2] floatValue]);
-                }
-                
-                profile = vtkPolyData::New();
-                profile->SetPoints( points);
-                points->Delete();
+            ROIVolumeController *vc = self.window.windowController;
+            
+			vtkMapper *mapper = [ROIVolumeView generateMapperForPoints: _points3D roi: roi viewerController: vc.viewer];
+            
+            aRenderer = [self renderer];
+            
+            if( roiVolumeActor) {
+                aRenderer->RemoveActor( roiVolumeActor);
+                roiVolumeActor->Delete();
+                roiVolumeActor = nil;
             }
-			vtkDelaunay3D *delaunayTriangulator = nil;
-			vtkPolyDataNormals *polyDataNormals = nil;
-			vtkSmoothPolyDataFilter * pSmooth = nil;
-			vtkDataSet*	output = nil;
-            vtkCleanPolyData *cleaner = nil;
-			vtkMapper *mapper = nil;
             
-			switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"3DRoiTechnique"])
-			{
-                // IsoContour
-                case 0:
-                {
-                    ROIVolumeController *co = self.window.windowController;
-                    
-                    NSData *vD = nil;
-                    NSMutableArray *copyPixList = nil;
-                    [co.viewer copyVolumeData: &vD andDCMPix: &copyPixList forMovieIndex: co.viewer.curMovieIndex];
-                    
-                    for( DCMPix *p in copyPixList)
-                        memset( p.fImage, 0, p.pheight*p.pwidth*sizeof( float));
-                    
-                    for( int z = 0; z < [copyPixList count]; z++)
-                    {
-                        for( int i = 0; i < [[co.viewer.roiList objectAtIndex: z] count]; i++)
-                        {
-                            ROI	*curROI = [[co.viewer.roiList objectAtIndex: z] objectAtIndex: i];
-                            
-                            if( [[curROI name] isEqualToString: [roi name]])
-                            {
-                                DCMPix *p = [copyPixList objectAtIndex: z];
-                                
-                                [p fillROI: curROI newVal:1000 minValue:-FLT_MAX maxValue:FLT_MAX outside:NO orientationStack:2 stackNo:0 restore:NO addition:NO spline:[curROI isSpline] clipMin:NSMakePoint(0, 0) clipMax:NSMakePoint(0, 0)];
-                            }
-                        }
-                    }
-                    
-                    
-                    vtkImageImport *reader = vtkImageImport::New();
-                    reader->SetWholeExtent(0, [copyPixList.lastObject pwidth]-1, 0, [copyPixList.lastObject pheight]-1, 0, copyPixList.count-1);
-                    reader->SetDataExtentToWholeExtent();
-                    reader->SetDataScalarTypeToFloat();
-                    reader->SetImportVoidPointer( (void*) [vD bytes]);
-                    reader->SetDataSpacing( [copyPixList.lastObject pixelSpacingX], [copyPixList.lastObject pixelSpacingY], [copyPixList.lastObject sliceInterval]);
-                    
-//                    vtkImageResample *isoResample = vtkImageResample::New();
-//                    isoResample->SetInput( reader->GetOutput());
-//                    isoResample->SetAxisMagnificationFactor( 0, 1.0); // 1.0 = resolution
-//                    isoResample->SetAxisMagnificationFactor( 1, 1.0); // 1.0 = resolution
-//                    isoResample->Delete();
-                    
-                    vtkContourFilter *isoExtractor = vtkContourFilter::New();
-                    isoExtractor->SetInput( reader->GetOutput());
-                    isoExtractor->SetValue(0, 500);
-                    
-                    reader->Delete();
-                    
-                    vtkPolyData* previousOutput = isoExtractor->GetOutput();
-                    
-                    BOOL useDecimate = YES;
-                    BOOL useSmooth = YES;
-                    
-                    if( useDecimate)
-                    {
-                        float decimateVal = 0.5;
-                        
-                        vtkDecimatePro *isoDeci = vtkDecimatePro::New();
-                        isoDeci->SetInput( previousOutput);
-                        isoDeci->SetTargetReduction( decimateVal);
-                        isoDeci->SetPreserveTopology( TRUE);
-                        
-                        //		isoDeci->SetFeatureAngle(60);
-                        //		isoDeci->SplittingOff();
-                        //		isoDeci->AccumulateErrorOn();
-                        //		isoDeci->SetMaximumError(0.3);
-                        
-                        isoDeci->Update();
-                        
-                        previousOutput = isoDeci->GetOutput();
-                    }
-                    
-                    if( useSmooth)
-                    {
-                        float smoothVal = 20;
-                        
-                        vtkSmoothPolyDataFilter *isoSmoother = vtkSmoothPolyDataFilter::New();
-                        isoSmoother->SetInput( previousOutput);
-                        isoSmoother->SetNumberOfIterations( smoothVal);
-                        //		isoSmoother->SetRelaxationFactor(0.05);
-                        
-                        isoSmoother->Update();
-                        
-                        previousOutput = isoSmoother->GetOutput();
-                    }
-                    
-                    
-                    vtkPolyDataNormals *isoNormals = vtkPolyDataNormals::New();
-                    isoNormals->SetInput( previousOutput);
-                    isoNormals->SetFeatureAngle( 120);
-                    
-                    vtkPolyDataMapper *isoMapper = vtkPolyDataMapper::New();
-                    isoMapper->SetInput( isoNormals->GetOutput());
-                    isoMapper->ScalarVisibilityOff();
-                    
-                    mapper = isoMapper;
-                }
-                    break;
-                    
-                // Delaunay
-                case 1:
-                {
-                    delaunayTriangulator = vtkDelaunay3D::New();
-                    delaunayTriangulator->SetInput( profile);
-                    
-                    delaunayTriangulator->SetTolerance( 0.001);
-                    delaunayTriangulator->SetAlpha( 20);
-                    delaunayTriangulator->BoundingTriangulationOff();
-                    
-                    output = (vtkDataSet*) delaunayTriangulator -> GetOutput();
-                    
-                    vtkTextureMapToSphere *tmapper = vtkTextureMapToSphere::New();
-                    tmapper -> SetInput( output);
-                    tmapper -> PreventSeamOn();
-                    
-                    vtkDataSetMapper *map = vtkDataSetMapper::New();
-                    map->SetInput( tmapper->GetOutput());
-                    map->ScalarVisibilityOff();
-                    
-                    map->Update();
-                    
-                    mapper = map;
-                    
-                }
-                    break;
-                
-                // PowerCrust
-                case 2:
-                {
-                    vtkPowerCrustSurfaceReconstruction *power = vtkPowerCrustSurfaceReconstruction::New();
-                    power->SetInput( profile);
-                    polyDataNormals = vtkPolyDataNormals::New();
-                    polyDataNormals->ConsistencyOn();
-                    polyDataNormals->AutoOrientNormalsOn();
-                    polyDataNormals->SetInput(power->GetOutput());
-                    power->Delete();
-                    
-                    output = (vtkDataSet*) polyDataNormals -> GetOutput();
-                    
-                    vtkTextureMapToSphere *tmapper = vtkTextureMapToSphere::New();
-                    tmapper -> SetInput( output);
-                    tmapper -> PreventSeamOn();
-                    
-                    vtkDataSetMapper *map = vtkDataSetMapper::New();
-                    map->SetInput( tmapper->GetOutput());
-                    map->ScalarVisibilityOff();
-                    
-                    map->Update();
-                    
-                    mapper = map;
-                    
-                }
-                    break;
-			}
-			
-            if( polyDataNormals) polyDataNormals->Delete();
-            if( delaunayTriangulator) delaunayTriangulator->Delete();
-            if( pSmooth) pSmooth->Delete();
-            if( cleaner) cleaner->Delete();
-            
-
             if (!roiVolumeActor) {
                 roiVolumeActor = vtkActor::New();
                 roiVolumeActor->GetProperty()->FrontfaceCullingOn();
                 roiVolumeActor->GetProperty()->BackfaceCullingOn();
             }
             roiVolumeActor->SetMapper( mapper);
+            
+            if( mapper)
+                mapper->Delete();
             
             if( [[NSUserDefaults standardUserDefaults] integerForKey: @"3DRoiTechnique"] == 0)
             {
@@ -533,9 +547,6 @@
                 roiVolumeActor->SetOrigin( o.originX, o.originY, o.originZ);
                 roiVolumeActor->SetPosition( o.originX, o.originY, o.originZ);
             }
-            
-            if( mapper)
-                mapper->Delete();
             
 			// *****************Texture
 			NSString *location = [[NSUserDefaults standardUserDefaults] stringForKey:@"textureLocation"];
@@ -547,10 +558,11 @@
 			
 			bmpread->SetFileName( [location UTF8String]);
 
-			if ( !texture)
+			if( !texture)
 			{
 				texture = vtkTexture::New();
 				texture->InterpolateOn();
+                texture->SetRepeat( 1);
 			}
 			texture->SetInput( bmpread->GetOutput());
 			   
@@ -560,38 +572,58 @@
 
 			// The balls
 			
-			vtkSphereSource *ball = vtkSphereSource::New();
-				ball->SetRadius(0.3);
-				ball->SetThetaResolution( 12);
-				ball->SetPhiResolution( 12);
-			
-			vtkGlyph3D *balls = vtkGlyph3D::New();
-				balls->SetInput( profile);
-				balls->SetSource( ball->GetOutput());
-			ball->Delete();
-			
-			vtkPolyDataMapper *mapBalls = vtkPolyDataMapper::New();
-				mapBalls->SetInput( balls->GetOutput());
-			balls->Delete();
-			
-			if(!ballActor) {
-				ballActor = vtkActor::New();
-				ballActor->GetProperty()->SetSpecular( 0.5);
-				ballActor->GetProperty()->SetSpecularPower( 20);
-				ballActor->GetProperty()->SetAmbient( 0.2);
-				ballActor->GetProperty()->SetDiffuse( 0.8);
-				ballActor->GetProperty()->SetOpacity( 0.8);
-			}
-			ballActor->SetMapper( mapBalls);
+            if( ballActor) {
+                aRenderer->RemoveActor( ballActor);
+                ballActor->Delete();
+                ballActor = nil;
+            }
+            
+            if( [[NSUserDefaults standardUserDefaults] integerForKey: @"3DRoiTechnique"] != 0)
+            {
+                vtkPolyData *profile = nil;
+                
+                vtkPoints *points = vtkPoints::New();
+                long i = 0;
+                for( NSArray *pt3D in _points3D)
+                    points->InsertPoint( i++, [[pt3D objectAtIndex: 0] floatValue], [[pt3D objectAtIndex: 1] floatValue], [[pt3D objectAtIndex: 2] floatValue]);
+                
+                profile = vtkPolyData::New();
+                profile->SetPoints( points);
+                points->Delete();
+                
+                vtkSphereSource *ball = vtkSphereSource::New();
+                    ball->SetRadius(0.3);
+                    ball->SetThetaResolution( 12);
+                    ball->SetPhiResolution( 12);
+                
+                vtkGlyph3D *balls = vtkGlyph3D::New();
+                    balls->SetInput( profile);
+                    balls->SetSource( ball->GetOutput());
+                ball->Delete();
+                
+                vtkPolyDataMapper *mapBalls = vtkPolyDataMapper::New();
+                    mapBalls->SetInput( balls->GetOutput());
+                balls->Delete();
+                
+                if(!ballActor) {
+                    ballActor = vtkActor::New();
+                    ballActor->GetProperty()->SetSpecular( 0.5);
+                    ballActor->GetProperty()->SetSpecularPower( 20);
+                    ballActor->GetProperty()->SetAmbient( 0.2);
+                    ballActor->GetProperty()->SetDiffuse( 0.8);
+                    ballActor->GetProperty()->SetOpacity( 0.8);
+                }
+                ballActor->SetMapper( mapBalls);
 
-            if( mapBalls)
-                mapBalls->Delete();
-			
-            if( profile)
-                profile->Delete();
-			
-			aRenderer->AddActor( ballActor);
-			
+                if( mapBalls)
+                    mapBalls->Delete();
+                
+                if( profile)
+                    profile->Delete();
+                
+                aRenderer->AddActor( ballActor);
+			}
+            
 			roiVolumeActor->GetProperty()->FrontfaceCullingOn();
 			roiVolumeActor->GetProperty()->BackfaceCullingOn();
 			
@@ -660,11 +692,10 @@
         {
             printf( "***** C++ exception in %s\r", __PRETTY_FUNCTION__);
             
-            if( [[NSUserDefaults standardUserDefaults] boolForKey:@"UseDelaunayFor3DRoi"] == NO)
+            if( [[NSUserDefaults standardUserDefaults] integerForKey:@"3DRoiTechnique"] != 0) // Iso Contour
             {
-                [[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"UseDelaunayFor3DRoi"];
+                [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey:@"3DRoiTechnique"];
                 [self renderVolume];
-                [[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"UseDelaunayFor3DRoi"];
             }
         }
     }
@@ -672,11 +703,10 @@
     {
         N2LogExceptionWithStackTrace(e);
         
-        if( [[NSUserDefaults standardUserDefaults] boolForKey:@"UseDelaunayFor3DRoi"] == NO)
+        if( [[NSUserDefaults standardUserDefaults] integerForKey:@"3DRoiTechnique"] != 0) // Iso Contour
         {
-            [[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"UseDelaunayFor3DRoi"];
+            [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey:@"3DRoiTechnique"];
             [self renderVolume];
-            [[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"UseDelaunayFor3DRoi"];
         }
     }
     

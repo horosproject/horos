@@ -139,6 +139,7 @@ class vtkMyCallback;
 - (void) setOpacity: (float) opacity showPoints: (BOOL) sp showSurface: (BOOL) sS showWireframe:(BOOL) w texture:(BOOL) tex useColor:(BOOL) usecol color:(NSColor*) col;
 - (IBAction) exportDICOMFile:(id) sender;
 - (short) renderVolume;
++ (vtkMapper*) generateMapperForPoints: (NSArray*) points3D roi:(ROI*) roi viewerController: (ViewerController*) vc;
 - (NSSet *)connectedPointsForPoint:(vtkIdType)pt fromPolyData:(vtkPolyData *)data;
 
 @end

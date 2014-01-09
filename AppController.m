@@ -3550,8 +3550,6 @@ static BOOL initialized = NO;
 //	if ([[NSUserDefaultsController sharedUserDefaultsController] boolForKey: @"ActivityWindowVisibleFlag"])
 //		[[[ActivityWindowController defaultController] window] makeKeyAndOrderFront:self];	
 	
-//	[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"UseDelaunayFor3DRoi"];	// By default, we always start with VTKDelaunay, PowerCrush has memory leaks and can crash with some 3D objects....
-
 //	#if !__LP64__
 //	[[[NSApplication sharedApplication] dockTile] setBadgeLabel: @"32-bit"];
 //	[[[NSApplication sharedApplication] dockTile] display];
