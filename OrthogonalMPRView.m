@@ -63,9 +63,6 @@
 		if( [[self windowController] windowWillClose]) return;
 	}
 	
-	if( isKeyView == NO)
-		[[self window] makeFirstResponder: self];
-	
 	BOOL SelectWindowScrollWheel = [[NSUserDefaults standardUserDefaults] boolForKey: @"SelectWindowScrollWheel"];
 	
 	if( [theEvent modifierFlags] & NSAlphaShiftKeyMask) // Caps Lock

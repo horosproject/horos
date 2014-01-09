@@ -4777,10 +4777,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		if( [[self windowController] windowWillClose]) return;
 	}
-
-	if( isKeyView == NO)
-		[[self window] makeFirstResponder: self];
-	
+    
 	BOOL SelectWindowScrollWheel = [[NSUserDefaults standardUserDefaults] boolForKey: @"SelectWindowScrollWheel"];
 	
 	if( [theEvent modifierFlags] & NSAlphaShiftKeyMask) // Caps Lock
@@ -4789,7 +4786,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	if( SelectWindowScrollWheel)
 	{
 		if( [[self window] isMainWindow] == NO)
+        {
 			[[self window] makeKeyAndOrderFront: self];
+            
+            if( [self is2DViewer])
+                [self.windowController windowDidBecomeMain: nil];
+        }
 	}
 	
 	float deltaX = [theEvent deltaX];
@@ -4944,7 +4946,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			if( [self is2DViewer] == YES)
 				[[self windowController] propagateSettings];
-			
+            
 			[self setNeedsDisplay:YES];
 		}
     }
