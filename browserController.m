@@ -7677,6 +7677,8 @@ static NSConditionLock *threadLock = nil;
                     
                     if( [syncButtonBehaviorIsBetweenStudies boolValue] && [SYNCSERIES boolValue])
                         [ViewerController activateSYNCSERIESBetweenStudies];
+                    
+                    [ToolbarPanelController checkForValidToolbar];
                 }
             }
 		}

@@ -4602,7 +4602,7 @@ static volatile int numberOfThreadsForRelisce = 0;
     
     NSView* v = [[splitView subviews] objectAtIndex:0];
     
-    BOOL r = ![v isHidden] && [v frame].size.width > 0;
+    BOOL r = ![v isHidden] && [v frame].size.width >= [ThumbnailCell thumbnailCellWidth];
     
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SeriesListVisible"] != r)
         [[NSUserDefaults standardUserDefaults] setBool: r forKey: @"SeriesListVisible"];
@@ -20355,6 +20355,8 @@ int i,j,l;
 
 - (void) viewerControllerInit
 {
+    BOOL matrixVisible = [[NSUserDefaults standardUserDefaults] boolForKey: @"SeriesListVisible"];
+    
 	[[self window] zoom: self];
 	
 	numberOf2DViewer++;
@@ -20515,8 +20517,8 @@ int i,j,l;
 	
 	[previewMatrixScrollView setPostsFrameChangedNotifications:YES];
     
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOHIDEMATRIX"] == NO)
-        [self setMatrixVisible: [[NSUserDefaults standardUserDefaults] boolForKey: @"SeriesListVisible"]];
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"] == NO && [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOHIDEMATRIX"] == NO)
+        [self setMatrixVisible: matrixVisible];
 	
     [[NSUserDefaults standardUserDefaults] addObserver: self forKeyPath: @"SeriesListVisible" options:NSKeyValueObservingOptionNew context:nil];
     

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C32" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13B42" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
@@ -1971,7 +1971,7 @@ CA
         <window title="Local DICOM Database" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" frameAutosaveName="DICOMDatabase" animationBehavior="default" id="885" userLabel="Database Window" customClass="N2OpenGLViewWithSplitsWindow">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="1043" height="674"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
             <value key="minSize" type="size" width="600" height="600"/>
             <value key="maxSize" type="size" width="9000" height="9000"/>
             <view key="contentView" id="896">
@@ -2075,17 +2075,17 @@ CA
                                 <rect key="frame" x="0.0" y="0.0" width="184" height="654"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
-                                    <box misplaced="YES" title="Albums" borderType="none" titlePosition="noTitle" id="11696">
+                                    <box title="Albums" borderType="none" titlePosition="noTitle" id="11696">
                                         <rect key="frame" x="-3" y="-2" width="190" height="193"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <view key="contentView">
                                             <rect key="frame" x="0.0" y="0.0" width="190" height="193"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
-                                                <scrollView focusRingType="none" misplaced="YES" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1466">
+                                                <scrollView focusRingType="none" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1466">
                                                     <rect key="frame" x="-1" y="-1" width="192" height="194"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                    <clipView key="contentView" misplaced="YES" id="SVE-qJ-JP0">
+                                                    <clipView key="contentView" id="SVE-qJ-JP0">
                                                         <rect key="frame" x="1" y="17" width="190" height="176"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
@@ -2144,17 +2144,17 @@ CA
                                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <font key="titleFont" size="12" name="LucidaGrande"/>
                                     </box>
-                                    <box misplaced="YES" title="Sources" borderType="none" titlePosition="noTitle" id="11698">
+                                    <box title="Sources" borderType="none" titlePosition="noTitle" id="11698">
                                         <rect key="frame" x="-3" y="186" width="190" height="372"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <view key="contentView">
                                             <rect key="frame" x="0.0" y="0.0" width="190" height="372"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
-                                                <scrollView focusRingType="none" misplaced="YES" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="11692">
+                                                <scrollView focusRingType="none" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="11692">
                                                     <rect key="frame" x="-1" y="-1" width="192" height="374"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                    <clipView key="contentView" misplaced="YES" id="Gln-GV-aBY">
+                                                    <clipView key="contentView" id="Gln-GV-aBY">
                                                         <rect key="frame" x="1" y="17" width="190" height="356"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
@@ -2221,17 +2221,17 @@ CA
                                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <font key="titleFont" size="12" name="LucidaGrande"/>
                                     </box>
-                                    <box misplaced="YES" title="Threads" borderType="none" titlePosition="noTitle" id="14167">
+                                    <box title="Threads" borderType="none" titlePosition="noTitle" id="14167">
                                         <rect key="frame" x="-3" y="553" width="190" height="105"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <view key="contentView">
                                             <rect key="frame" x="0.0" y="0.0" width="190" height="105"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
-                                                <scrollView focusRingType="none" misplaced="YES" autohidesScrollers="YES" horizontalLineScroll="40" horizontalPageScroll="5" verticalLineScroll="40" verticalPageScroll="3" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="14144">
+                                                <scrollView focusRingType="none" autohidesScrollers="YES" horizontalLineScroll="40" horizontalPageScroll="5" verticalLineScroll="40" verticalPageScroll="3" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="14144">
                                                     <rect key="frame" x="-1" y="-1" width="192" height="107"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                    <clipView key="contentView" misplaced="YES" drawsBackground="NO" copiesOnScroll="NO" id="ydr-H4-NAn">
+                                                    <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="ydr-H4-NAn">
                                                         <rect key="frame" x="1" y="17" width="190" height="89"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
@@ -2314,11 +2314,11 @@ CA
                                                         <rect key="frame" x="0.0" y="0.0" width="431" height="251"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <clipView key="contentView" misplaced="YES" id="cHT-ZM-bts">
-                                                            <rect key="frame" x="0.0" y="17" width="431" height="234"/>
+                                                            <rect key="frame" x="0.0" y="17" width="416" height="219"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <outlineView focusRingType="exterior" verticalHuggingPriority="750" allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" emptySelection="NO" autosaveColumns="NO" headerView="13469" indentationPerLevel="16" autoresizesOutlineColumn="YES" outlineTableColumn="958" id="966" customClass="MyOutlineView">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="2587" height="234"/>
+                                                                    <rect key="frame" x="0.0" y="0.0" width="2587" height="219"/>
                                                                     <autoresizingMask key="autoresizingMask"/>
                                                                     <size key="intercellSpacing" width="3" height="2"/>
                                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -2683,11 +2683,11 @@ CA
                                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                         </clipView>
                                                         <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="13468">
-                                                            <rect key="frame" x="0.0" y="235" width="431" height="16"/>
+                                                            <rect key="frame" x="0.0" y="236" width="416" height="15"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                         </scroller>
                                                         <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="13467">
-                                                            <rect key="frame" x="415" y="17" width="16" height="234"/>
+                                                            <rect key="frame" x="416" y="17" width="15" height="219"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                         </scroller>
                                                         <tableHeaderView key="headerView" id="13469">
@@ -2785,11 +2785,11 @@ CA
                                                                                 <rect key="frame" x="2" y="0.0" width="384" height="371"/>
                                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                 <clipView key="contentView" misplaced="YES" id="mpo-d1-Wrk">
-                                                                                    <rect key="frame" x="0.0" y="0.0" width="384" height="371"/>
+                                                                                    <rect key="frame" x="0.0" y="0.0" width="369" height="371"/>
                                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                     <subviews>
-                                                                                        <matrix verticalHuggingPriority="750" mode="list" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="12411" customClass="BrowserMatrix">
-                                                                                            <rect key="frame" x="0.0" y="0.0" width="424" height="432"/>
+                                                                                        <matrix verticalHuggingPriority="750" misplaced="YES" mode="list" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="12411" customClass="BrowserMatrix">
+                                                                                            <rect key="frame" x="0.0" y="0.0" width="409" height="432"/>
                                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                                                                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                                                             <size key="cellSize" width="106" height="108"/>
@@ -2886,7 +2886,7 @@ CA
                                                                                     <autoresizingMask key="autoresizingMask"/>
                                                                                 </scroller>
                                                                                 <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="13470">
-                                                                                    <rect key="frame" x="368" y="0.0" width="16" height="371"/>
+                                                                                    <rect key="frame" x="369" y="0.0" width="15" height="371"/>
                                                                                     <autoresizingMask key="autoresizingMask"/>
                                                                                 </scroller>
                                                                             </scrollView>
@@ -3063,7 +3063,7 @@ CA
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="11237" userLabel="URL">
             <windowStyleMask key="styleMask" titled="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="640" height="99"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
             <value key="minSize" type="size" width="213" height="20"/>
             <view key="contentView" id="11238">
                 <rect key="frame" x="0.0" y="0.0" width="640" height="99"/>
@@ -3560,7 +3560,7 @@ Gw
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="11675" userLabel="newAlbum">
             <windowStyleMask key="styleMask" titled="YES" miniaturizable="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="418" height="107"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
             <value key="minSize" type="size" width="213" height="107"/>
             <view key="contentView" id="11676">
                 <rect key="frame" x="0.0" y="0.0" width="418" height="107"/>
@@ -3635,7 +3635,7 @@ Gw
         <window title="Password" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="11804" userLabel="passwordAlbum">
             <windowStyleMask key="styleMask" titled="YES" miniaturizable="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="348" height="124"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
             <value key="minSize" type="size" width="213" height="107"/>
             <view key="contentView" id="11805">
                 <rect key="frame" x="0.0" y="0.0" width="348" height="124"/>
@@ -3914,7 +3914,7 @@ Gw
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="12366" userLabel="subSampling">
             <windowStyleMask key="styleMask" titled="YES" miniaturizable="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="537" height="273"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
             <view key="contentView" autoresizesSubviews="NO" id="12367">
                 <rect key="frame" x="0.0" y="0.0" width="537" height="273"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -4301,7 +4301,7 @@ update to OsiriX 64-bit:</string>
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="12799" userLabel="subOpen">
             <windowStyleMask key="styleMask" titled="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="727" height="353"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
             <value key="minSize" type="size" width="213" height="107"/>
             <view key="contentView" id="12800">
                 <rect key="frame" x="0.0" y="0.0" width="727" height="353"/>
@@ -4311,7 +4311,7 @@ update to OsiriX 64-bit:</string>
                         <rect key="frame" x="35" y="188" width="584" height="130"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                         <clipView key="contentView" id="x65-cS-UGw">
-                            <rect key="frame" x="1" y="1" width="582" height="128"/>
+                            <rect key="frame" x="1" y="1" width="582" height="113"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <matrix verticalHuggingPriority="750" selectionByRect="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="12805">
@@ -4340,7 +4340,7 @@ update to OsiriX 64-bit:</string>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </clipView>
                         <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="13479">
-                            <rect key="frame" x="1" y="113" width="582" height="16"/>
+                            <rect key="frame" x="1" y="114" width="582" height="15"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="13478">
@@ -4396,7 +4396,7 @@ Gw
                         <rect key="frame" x="35" y="30" width="584" height="130"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                         <clipView key="contentView" id="q7Q-H8-RIB">
-                            <rect key="frame" x="1" y="1" width="582" height="128"/>
+                            <rect key="frame" x="1" y="1" width="582" height="113"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <matrix verticalHuggingPriority="750" selectionByRect="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="12937">
@@ -4425,7 +4425,7 @@ Gw
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </clipView>
                         <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="13481">
-                            <rect key="frame" x="1" y="113" width="582" height="16"/>
+                            <rect key="frame" x="1" y="114" width="582" height="15"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="13480">
@@ -4542,7 +4542,7 @@ Gw
         <window title="CD/DVD Password" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" visibleAtLaunch="NO" animationBehavior="default" id="13805" userLabel="Password">
             <windowStyleMask key="styleMask" titled="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="508" height="149"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
             <view key="contentView" id="13806">
                 <rect key="frame" x="0.0" y="0.0" width="508" height="149"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -4650,7 +4650,7 @@ Gw
         <window title="CD/DVD Password" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" visibleAtLaunch="NO" animationBehavior="default" id="13843" userLabel="ZIPPassword">
             <windowStyleMask key="styleMask" titled="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="554" height="127"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
             <view key="contentView" id="13844">
                 <rect key="frame" x="0.0" y="0.0" width="554" height="127"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -4754,7 +4754,7 @@ Gw
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" visibleAtLaunch="NO" animationBehavior="default" id="13869" userLabel="Notification">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="813" height="462"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
             <value key="minSize" type="size" width="813" height="372"/>
             <value key="maxSize" type="size" width="813" height="1000"/>
             <view key="contentView" id="13870">
@@ -5097,7 +5097,7 @@ Gw
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" visibleAtLaunch="NO" animationBehavior="default" id="13928" userLabel="AddStudiesToUser">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="813" height="372"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
             <value key="minSize" type="size" width="813" height="372"/>
             <value key="maxSize" type="size" width="813" height="1000"/>
             <view key="contentView" id="13929">
@@ -5354,7 +5354,7 @@ Gw
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="14365" userLabel="rebuild">
             <windowStyleMask key="styleMask" titled="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="493" height="216"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
             <value key="minSize" type="size" width="213" height="107"/>
             <view key="contentView" id="14366">
                 <rect key="frame" x="0.0" y="0.0" width="493" height="216"/>
