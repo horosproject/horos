@@ -11509,6 +11509,14 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	[self setOrientationDouble: d];
 }
 
+- (BOOL) is3DPlane
+{
+    if( orientation[6] != 0 || orientation[7] != 0 || orientation[8] != 0)
+        return  YES;
+    else
+        return NO;
+}
+
 -(void) convertPixX: (float) x pixY: (float) y toDICOMCoords: (float*) d pixelCenter: (BOOL) pixelCenter
 {
 	if( pixelCenter)
@@ -11517,9 +11525,18 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		y -= 0.5;
 	}
 	
-	d[0] = originX + y*orientation[3]*pixelSpacingY + x*orientation[0]*pixelSpacingX;
-	d[1] = originY + y*orientation[4]*pixelSpacingY + x*orientation[1]*pixelSpacingX;
-	d[2] = originZ + y*orientation[5]*pixelSpacingY + x*orientation[2]*pixelSpacingX;
+    if( orientation[6] != 0 || orientation[7] != 0 || orientation[8] != 0)
+    {
+        d[0] = originX + y*orientation[3]*pixelSpacingY + x*orientation[0]*pixelSpacingX;
+        d[1] = originY + y*orientation[4]*pixelSpacingY + x*orientation[1]*pixelSpacingX;
+        d[2] = originZ + y*orientation[5]*pixelSpacingY + x*orientation[2]*pixelSpacingX;
+    }
+    else
+    {
+        d[0] = originX + x*pixelSpacingX;
+        d[1] = originY + y*pixelSpacingY;
+        d[2] = originZ;
+    }
 }
 
 -(void) convertPixX: (float) x pixY: (float) y toDICOMCoords: (float*) d
@@ -11535,9 +11552,18 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		y -= 0.5;
 	}
 	
-	d[0] = originX + y*orientation[3]*pixelSpacingY + x*orientation[0]*pixelSpacingX;
-	d[1] = originY + y*orientation[4]*pixelSpacingY + x*orientation[1]*pixelSpacingX;
-	d[2] = originZ + y*orientation[5]*pixelSpacingY + x*orientation[2]*pixelSpacingX;
+    if( orientation[6] != 0 || orientation[7] != 0 || orientation[8] != 0)
+    {
+        d[0] = originX + y*orientation[3]*pixelSpacingY + x*orientation[0]*pixelSpacingX;
+        d[1] = originY + y*orientation[4]*pixelSpacingY + x*orientation[1]*pixelSpacingX;
+        d[2] = originZ + y*orientation[5]*pixelSpacingY + x*orientation[2]*pixelSpacingX;
+    }
+    else
+    {
+        d[0] = originX + x*pixelSpacingX;
+        d[1] = originY + y*pixelSpacingY;
+        d[2] = originZ;
+    }
 }
 
 -(void) convertPixDoubleX: (double) x pixY: (double) y toDICOMCoords: (double*) d

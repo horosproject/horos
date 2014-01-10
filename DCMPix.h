@@ -533,6 +533,7 @@ Note setter is different to not break existing usage. :-( */
 - (id) myinitEmpty;  /**< Returns an Empty object */
 - (float*) kernel;
 - (void) applyShutter;
+- (BOOL) is3DPlane;
 + (NSPoint) rotatePoint:(NSPoint)pt aroundPoint:(NSPoint)c angle:(float)a;
 - (float) normalization;
 - (short) kernelsize;
