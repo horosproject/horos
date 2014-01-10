@@ -17,6 +17,7 @@
 @interface O2ViewerThumbnailsMatrix : NSMatrix {
     BOOL avoidRecursive;
     NSPoint draggingStartingPoint;
+    NSTimeInterval doubleClick;
 }
 
 @end

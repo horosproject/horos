@@ -3427,6 +3427,8 @@ static volatile int numberOfThreadsForRelisce = 0;
         [[NSUserDefaults standardUserDefaults] setBool:previousPropagate forKey: @"COPYSETTINGS"];
         
         [previewMatrix sizeToCells];
+        
+        [self redrawToolbar];
 	}
     else // FullScreenOn == false
     {

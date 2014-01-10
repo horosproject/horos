@@ -151,6 +151,22 @@ static NSString *dragType = @"Osirix Series Viewer Drag";
 	return NSDragOperationEvery;
 }
 
+- (void) actionAndFullscreen: (id) cell
+{
+    @try
+    {
+        [[cell target] performSelector: [cell action] withObject: self];
+        
+        ViewerController *v = [cell target];
+        
+        [v fullScreenMenu: self];
+    }
+    @catch (NSException *exception) {
+        N2LogException( exception);
+    }
+    
+}
+
 - (void)mouseDown:(NSEvent*)event
 {
     NSEvent *lastMouse = event;
@@ -210,9 +226,15 @@ static NSString *dragType = @"Osirix Series Viewer Drag";
         }
         else
         {
-//            [super mouseDown: event];
             if( [cell action] && [cell target])
-                [[cell target] performSelector: [cell action] withObject: self afterDelay: 0.001];
+            {
+                if( [NSDate timeIntervalSinceReferenceDate] - doubleClick < [NSEvent doubleClickInterval])
+                    [self performSelector: @selector( actionAndFullscreen:) withObject: cell afterDelay: 0.001];
+                else
+                    [[cell target] performSelector: [cell action] withObject: self afterDelay: 0.001];
+                
+                doubleClick = [NSDate timeIntervalSinceReferenceDate];
+            }
             else
                 [cell setHighlighted: NO];
         }
