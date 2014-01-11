@@ -364,7 +364,7 @@
             for( DCMPix *p in copyPixList)
                 memset( p.fImage, 0, p.pheight*p.pwidth*sizeof( float));
             
-            for( int z = 0; z < [copyPixList count]; z++)
+            for( int z = 1; z < [copyPixList count]-1; z++) // Black 3D Frame
             {
                 for( int i = 0; i < [[vc.roiList objectAtIndex: z] count]; i++)
                 {
@@ -374,7 +374,7 @@
                     {
                         DCMPix *p = [copyPixList objectAtIndex: z];
                         
-                        [p fillROI: curROI newVal:1000 minValue:-FLT_MAX maxValue:FLT_MAX outside:NO orientationStack:2 stackNo:0 restore:NO addition:NO spline:[curROI isSpline] clipMin:NSMakePoint(0, 0) clipMax:NSMakePoint(0, 0)];
+                        [p fillROI: curROI newVal:1000 minValue:-FLT_MAX maxValue:FLT_MAX outside:NO orientationStack:2 stackNo:0 restore:NO addition:NO spline:[curROI isSpline] clipMin:NSMakePoint(1, 1) clipMax:NSMakePoint(p.pwidth-1, p.pheight-1)];  // Black 3D Frame
                     }
                 }
             }

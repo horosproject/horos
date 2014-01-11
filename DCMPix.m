@@ -2465,10 +2465,29 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         }
     }
     
+    if( clipMin.x < 0)
+        clipMin.x = 0;
+    if( clipMin.y < 0)
+        clipMin.y = 0;
+    
+    
+    switch( orientationStack)
+    {
+        case 0:	if( clipMax.x > height) clipMax.x = height; if( clipMax.y > pixArray.count) clipMax.y = pixArray.count; break;
+        case 1:	if( clipMax.x > width) clipMax.x = width; if( clipMax.y > pixArray.count) clipMax.y = pixArray.count; break;
+        case 2:	if( clipMax.x > width) clipMax.x = width; if( clipMax.y > height) clipMax.y = height; break;
+    }
+    
 	if( roi)
 	{
 		if( roi.type == tPlain)
 		{
+            if( orientationStack != 2)
+            {
+                N2LogStackTrace( @"Unsupported orientation");
+                return;
+            }
+            
 			long			textWidth = roi.textureWidth;
 			long			textHeight = roi.textureHeight;
 			long			textureUpLeftCornerX = roi.textureUpLeftCornerX;
@@ -2492,7 +2511,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 						{
 							if( *buf++)
 							{
-								if( x >= 0 && x < width && y >= 0 && y < height)
+								if( x >= clipMin.x && x < clipMax.x && y >= clipMin.y && y < clipMax.y)
 								{
 									if( restore)
 									{
@@ -2527,7 +2546,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 						{
 							if( *buf++)
 							{
-								if( x >= 0 && x < width && y >= 0 && y < height)
+								if( x >= clipMin.x && x < clipMax.x && y >= clipMin.y && y < clipMax.y)
 								{
 									if( restore) *fTempImage = *fTempRestore;
 									else if( addition)
@@ -2551,9 +2570,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			
 			else
 			{
-				for( long y = 0; y < height; y++) 
+				for( long y = clipMin.y; y < clipMax.y; y++)
 				{
-					for( long x = 0; x < width; x++)
+					for( long x = clipMin.x; x < clipMax.x; x++)
 					{
 						BOOL doit = NO;
 						
