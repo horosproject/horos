@@ -7573,7 +7573,7 @@ static int avoidReentryRefreshDatabase = 0;
         {
             if( [[dicomImage.series objectID] isEqualTo: [firstObject.series objectID]])
                 reload = YES;
-            else if( !firstObject || [dicomImage.series.study.patientID isEqualToString:firstObject.series.study.patientID])
+            else if( !firstObject || [dicomImage.series.study.patientUID isEqualToString:firstObject.series.study.patientUID])
                 rebuild = YES;
             
             if( reload == YES && rebuild == YES)
