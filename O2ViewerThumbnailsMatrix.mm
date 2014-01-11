@@ -228,12 +228,13 @@ static NSString *dragType = @"Osirix Series Viewer Drag";
         {
             if( [cell action] && [cell target])
             {
-                if( [NSDate timeIntervalSinceReferenceDate] - doubleClick < [NSEvent doubleClickInterval])
+                if( [NSDate timeIntervalSinceReferenceDate] - doubleClick < [NSEvent doubleClickInterval] && doubleClickCell == cell)
                     [self performSelector: @selector( actionAndFullscreen:) withObject: cell afterDelay: 0.001];
                 else
                     [[cell target] performSelector: [cell action] withObject: self afterDelay: 0.001];
                 
                 doubleClick = [NSDate timeIntervalSinceReferenceDate];
+                doubleClickCell = cell;
             }
             else
                 [cell setHighlighted: NO];

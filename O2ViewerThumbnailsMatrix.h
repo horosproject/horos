@@ -18,6 +18,7 @@
     BOOL avoidRecursive;
     NSPoint draggingStartingPoint;
     NSTimeInterval doubleClick;
+    NSCell *doubleClickCell;
 }
 
 @end
