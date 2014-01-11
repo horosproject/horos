@@ -15,15 +15,15 @@
         <customObject id="-3" userLabel="Application"/>
         <window title="&lt;&lt; do not localize >>" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" deferred="NO" oneShot="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="12" userLabel="PrefPane">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
-            <rect key="contentRect" x="0.0" y="0.0" width="724" height="472"/>
+            <rect key="contentRect" x="0.0" y="0.0" width="724" height="483"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <value key="minSize" type="size" width="224.66300000000001" height="10"/>
             <view key="contentView" horizontalCompressionResistancePriority="1000" id="6">
-                <rect key="frame" x="0.0" y="0.0" width="724" height="472"/>
+                <rect key="frame" x="0.0" y="0.0" width="724" height="483"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <box title="Best Rendering Button" translatesAutoresizingMaskIntoConstraints="NO" id="298">
-                        <rect key="frame" x="18" y="376" width="689" height="85"/>
+                        <rect key="frame" x="18" y="387" width="689" height="85"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
                             <rect key="frame" x="2" y="2" width="685" height="68"/>
@@ -121,7 +121,7 @@
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </box>
                     <box title="Default View Size" translatesAutoresizingMaskIntoConstraints="NO" id="300">
-                        <rect key="frame" x="18" y="295" width="689" height="77"/>
+                        <rect key="frame" x="18" y="306" width="689" height="77"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
                             <rect key="frame" x="2" y="2" width="685" height="60"/>
@@ -185,7 +185,7 @@
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </box>
                     <box title="Renderer" translatesAutoresizingMaskIntoConstraints="NO" id="393">
-                        <rect key="frame" x="17" y="173" width="689" height="118"/>
+                        <rect key="frame" x="17" y="184" width="689" height="118"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
                             <rect key="frame" x="2" y="2" width="685" height="101"/>
@@ -279,14 +279,14 @@
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </box>
                     <box title="Misc" translatesAutoresizingMaskIntoConstraints="NO" id="333">
-                        <rect key="frame" x="18" y="16" width="689" height="153"/>
+                        <rect key="frame" x="18" y="16" width="689" height="164"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
-                            <rect key="frame" x="2" y="2" width="685" height="136"/>
+                            <rect key="frame" x="2" y="2" width="685" height="147"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="341">
-                                    <rect key="frame" x="14" y="109" width="584" height="18"/>
+                                    <rect key="frame" x="14" y="120" width="584" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="If there are multiple screens, open the 3D window on a different screen of the 2D Viewer." bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="368">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -297,7 +297,7 @@
                                     </connections>
                                 </button>
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="347">
-                                    <rect key="frame" x="14" y="89" width="447" height="18"/>
+                                    <rect key="frame" x="14" y="100" width="447" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Auto-Rotate objects after 3 min. in Volume Rendering/MIP viewers." bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="369">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -308,7 +308,7 @@
                                     </connections>
                                 </button>
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="372">
-                                    <rect key="frame" x="14" y="69" width="188" height="18"/>
+                                    <rect key="frame" x="14" y="80" width="188" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Use Spline for Scissors ROI" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="373">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -319,7 +319,7 @@
                                     </connections>
                                 </button>
                                 <textField horizontalHuggingPriority="249" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="385">
-                                    <rect key="frame" x="58" y="46" width="288" height="17"/>
+                                    <rect key="frame" x="58" y="57" width="288" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="For representing 3D ROIs, use this algorithm:" id="386">
                                         <font key="font" metaFont="system"/>
@@ -328,10 +328,10 @@
                                     </textFieldCell>
                                 </textField>
                                 <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="387">
-                                    <rect key="frame" x="352" y="25" width="93" height="38"/>
+                                    <rect key="frame" x="352" y="16" width="96" height="58"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                    <size key="cellSize" width="93" height="18"/>
+                                    <size key="cellSize" width="96" height="18"/>
                                     <size key="intercellSpacing" width="4" height="2"/>
                                     <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="390">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -347,6 +347,10 @@
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
+                                            <buttonCell type="radio" title="Iso Contour" imagePosition="left" alignment="left" inset="2" id="QyF-zJ-w3F">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
                                         </column>
                                     </cells>
                                     <connections>
@@ -358,6 +362,7 @@
                         <constraints>
                             <constraint firstItem="347" firstAttribute="leading" secondItem="372" secondAttribute="leading" id="15F-Bm-LYi"/>
                             <constraint firstItem="385" firstAttribute="leading" secondItem="333" secondAttribute="leading" constant="59" id="7Nb-UZ-8df"/>
+                            <constraint firstAttribute="bottom" secondItem="387" secondAttribute="bottom" constant="14" id="Bmr-LD-wUR"/>
                             <constraint firstItem="372" firstAttribute="top" secondItem="347" secondAttribute="bottom" constant="6" symbolic="YES" id="JGP-Ge-Eb3"/>
                             <constraint firstItem="385" firstAttribute="top" secondItem="372" secondAttribute="bottom" constant="8" symbolic="YES" id="OSq-iN-OlY"/>
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="347" secondAttribute="trailing" constant="16" id="SH6-D5-NFQ"/>

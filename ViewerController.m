@@ -5498,8 +5498,8 @@ static ViewerController *draggedController = nil;
 
 		if (nil == carriedData)
 		{
-			//the operation failed for some reason
-			NSRunAlertPanel(NSLocalizedString(@"Paste Error", nil), NSLocalizedString(@"Sorry, but the past operation failed", nil), nil, nil, nil);
+//			//the operation failed for some reason
+//			NSRunAlertPanel(NSLocalizedString(@"Paste Error", nil), NSLocalizedString(@"Sorry, but the past operation failed", nil), nil, nil, nil);
 			return NO;
 		}
 		else
@@ -13832,10 +13832,9 @@ int i,j,l;
 
 - (IBAction) roiVolume:(id) sender
 {
-	long				i, x;
-	float				volume = 0, preLocation, interval;
-	ROI					*selectedRoi = nil;
-	NSMutableArray		*pts;
+	long i, x;
+	float preLocation, interval;
+	ROI *selectedRoi = nil;
 	
 	[self computeInterval];
 	
@@ -13886,68 +13885,22 @@ int i,j,l;
         }
 	}
     
-	NSString	*error;
-	int			numberOfGeneratedROI = [[self roisWithComment: @"morphing generated"] count];
+	int	numberOfGeneratedROI = [[self roisWithComment: @"morphing generated"] count];
 		
 	[self addToUndoQueue: @"roi"];
 	
 	WaitRendering *splash = [[WaitRendering alloc] init:NSLocalizedString(@"Preparing data...", nil)];
 	[splash showWindow:self];
 	
-	// First generate the missing ROIs
-	NSMutableArray *generatedROIs = [NSMutableArray array];
-	NSMutableDictionary	*data = nil;
-	
-	if( [sender tag] == 0) data = [NSMutableDictionary dictionary];
-	
-	volume = [self computeVolume: selectedRoi points:&pts generateMissingROIs: YES generatedROIs: generatedROIs computeData:data error: &error];
-    
 	// Show Volume Window
-	if( [sender tag] == 0 && error == nil && volume > 0 && pts.count > 0)
+	if( [sender tag] == 0)
 	{
-		ROIVolumeController	*viewer = [[ROIVolumeController alloc] initWithPoints:pts :volume :self roi: selectedRoi];
+		ROIVolumeController	*viewer = [[ROIVolumeController alloc] initWithRoi:selectedRoi viewer:self];
 		
 		[viewer showWindow: self];
-		
-		NSMutableString	*s = [NSMutableString string];
-		
-		if( [selectedRoi name] && [[selectedRoi name] isEqualToString:@""] == NO)
-			[s appendString: [NSString stringWithFormat:NSLocalizedString(@"%@\r", nil), [selectedRoi name]]];
-		
-		NSString *volumeString;
-		
-		if( volume < 0.01)
-			volumeString = [NSString stringWithFormat:NSLocalizedString(@"Volume : %2.4f mm\u00B3", @"mm\u00B3 == mm3"), volume*1000.];
-		else
-			volumeString = [NSString stringWithFormat:NSLocalizedString(@"Volume : %2.4f cm\u00B3", @"cm\u00B3 == mm3"), volume];
-		
-		[s appendString: volumeString];
-		
-		[s appendString: [NSString stringWithFormat:NSLocalizedString(@"\rMean: %2.4f SDev: %2.4f Total: %2.4f", nil), [[data valueForKey:@"mean"] floatValue], [[data valueForKey:@"dev"] floatValue], [[data valueForKey:@"total"] floatValue]]];
-		[s appendString: [NSString stringWithFormat:NSLocalizedString(@"\rMin: %2.4f Max: %2.4f ", nil), [[data valueForKey:@"min"] floatValue], [[data valueForKey:@"max"] floatValue]]];
-        [s appendString: [NSString stringWithFormat:NSLocalizedString(@"\rSkewness: %2.4f Kurtosis: %2.4f ", nil), [[data valueForKey:@"skewness"] floatValue], [[data valueForKey:@"kurtosis"] floatValue]]];
-		
-		[viewer setDataString: s volume: volumeString];
-		
 		[[viewer window] center];
-		
-		//Delete the generated ROIs - There was no generated ROIs previously
-		if( numberOfGeneratedROI == 0)
-		{
-			for( ROI *c in generatedROIs)
-			{
-				
-				NSInteger index = [self imageIndexOfROI: c];
-				
-				if( index >= 0)
-				{
-					[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object: c userInfo: nil];
-					[[roiList[curMovieIndex] objectAtIndex: index] removeObject: c];
-				}
-			}
-		}
 	}
-	else if([sender tag] == 1 && !error)
+	else if([sender tag] == 1)
 	{
 		int	numberOfGeneratedROIafter = [[self roisWithComment:@"morphing generated"] count];
 		if(!numberOfGeneratedROIafter)
@@ -13956,12 +13909,6 @@ int i,j,l;
 
 	[splash close];
 	[splash autorelease];
-	
-	if( error)
-	{
-		NSRunCriticalAlertPanel(NSLocalizedString(@"ROIs Volume Error", nil), error , NSLocalizedString(@"OK", nil), nil, nil);
-		return;
-	}
 }
 #endif
 
@@ -20098,6 +20045,13 @@ int i,j,l;
 		}
 	}
 	
+    if( volume == 0)
+    {
+        if( error)
+            *error = NSLocalizedString(@"Not possible to compute a volume!", nil);
+        return 0L;
+    }
+    
 	NSLog( @"********");
 	
 	if( pts)
@@ -20172,6 +20126,13 @@ int i,j,l;
 			pt3D = [NSArray arrayWithObjects: [NSNumber numberWithFloat: location[0]], [NSNumber numberWithFloat:location[1]], [NSNumber numberWithFloat:location[2]], nil];
 			[*pts addObject: pt3D];
 		}
+        
+        if( [*pts count] == 0)
+        {
+            if( error)
+                *error = NSLocalizedString(@"Not possible to compute a volume!", nil);
+            return 0L;
+        }
 	}
 	
 	NSLog( @"volume computation done");
@@ -20312,6 +20273,7 @@ int i,j,l;
 			[data setObject: [NSNumber numberWithDouble: gdev] forKey:@"dev"];
             [data setObject: [NSNumber numberWithDouble: gskewness] forKey:@"skewness"];
             [data setObject: [NSNumber numberWithDouble: gkurtosis] forKey:@"kurtosis"];
+            [data setObject: [NSNumber numberWithDouble: fabs( volume)] forKey:@"volume"];
 			[data setObject: rois forKey:@"rois"];
 		}
 	}

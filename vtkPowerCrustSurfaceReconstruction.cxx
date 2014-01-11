@@ -181,7 +181,7 @@ extern int  pdim;  /* point dimension */
 typedef point site;
 typedef Coord* normalp;
 point  site_blocks[MAXBLOCKS];
-int  num_blocks;
+int  num_blocks = 0;
 
 #endif
 
@@ -1132,7 +1132,10 @@ void read_bounding_box(long j)
             fprintf(DFILE, " BOUND %f %f %f\n",
                 bound[i][0]/mult_up, bound[i][1]/mult_up, bound[i][2]/mult_up);
     }
-
+    
+    if( p == 0L)
+        return;
+    
     for (k=0;k<3;k++) {
         p[k] = bound[0][k];
     }
@@ -5233,9 +5236,9 @@ void update(int hi, double pr)
 //#include "hull.h"  TJH: this file is now above
 
 
-site p;
+site p = 0L;
 
-long pnum;
+long pnum = 0L;
 
 int rdim,   /* region dimension: (max) number of sites specifying region */
     cdim,   /* number of sites currently specifying region */

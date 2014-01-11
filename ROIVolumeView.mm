@@ -298,40 +298,53 @@
     [[NSNotificationCenter defaultCenter] removeObserver: self];
 	
 	roiVolumeActor->Delete();
-	ballActor->Delete();
 	texture->Delete();
 	if( orientationWidget)
 		orientationWidget->Delete();
-	[_points3D release];
     [roi release];
     [super dealloc];
 }
 
-- (short) setPixSource:(NSMutableArray*)pts roi: (ROI*) r
+- (NSDictionary*) setPixSource:(ROI*) r
 {
 	GLint swap = 1;  // LIMIT SPEED TO VBL if swap == 1
 	[self getVTKRenderWindow]->MakeCurrent();
 	[[NSOpenGLContext currentContext] setValues:&swap forParameter:NSOpenGLCPSwapInterval];
 
-	[_points3D release];
-	_points3D = [pts copy];
-    
     [roi release];
     roi = [r retain];
     
 	return [self renderVolume];
 }
 
-+ (vtkMapper*) generateMapperForPoints: (NSArray*) points3D roi:(ROI*) roi viewerController: (ViewerController*) vc
++ (vtkMapper*) generateMapperForRoi:(ROI*) roi viewerController: (ViewerController*) vc factor: (float) factor statistics: (NSMutableDictionary*) statistics
 {
     vtkMapper *mapper = nil;
     
+    NSMutableArray *generatedROIs = [NSMutableArray array];
+    NSMutableArray *ptsArray = [NSMutableArray array];
+    
+//    display an error !
+    
+    NSString *error = 0L;
+    
+    float volume = [vc computeVolume: roi points: &ptsArray generateMissingROIs: YES generatedROIs: generatedROIs computeData: statistics error: &error];
+    
+    if( error || volume == 0) {
+        
+        if( error == nil)
+            error = NSLocalizedString( @"Not possible to compute a volume!", nil);
+        
+        NSRunCriticalAlertPanel( NSLocalizedString( @"ROIs", nil), error, NSLocalizedString( @"OK", nil), nil, nil);
+        return nil;
+    }
+    
     vtkPolyData *profile = nil;
-    if( [[NSUserDefaults standardUserDefaults] boolForKey:@"3DRoiTechnique"] != 0)
+    if( [[NSUserDefaults standardUserDefaults] boolForKey:@"UseDelaunayFor3DRoi"] != 2)
     {
         vtkPoints *points = vtkPoints::New();
         long i = 0;
-        for( NSArray *pt3D in points3D)
+        for( NSArray *pt3D in ptsArray)
             points->InsertPoint( i++, [[pt3D objectAtIndex: 0] floatValue], [[pt3D objectAtIndex: 1] floatValue], [[pt3D objectAtIndex: 2] floatValue]);
         
         profile = vtkPolyData::New();
@@ -339,10 +352,10 @@
         points->Delete();
     }
     
-    switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"3DRoiTechnique"])
+    switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"UseDelaunayFor3DRoi"])
     {
-            // IsoContour
-        case 0:
+        // IsoContour
+        case 2:
         {
             NSData *vD = nil;
             NSMutableArray *copyPixList = nil;
@@ -366,13 +379,12 @@
                 }
             }
             
-            
             vtkImageImport *reader = vtkImageImport::New();
             reader->SetWholeExtent(0, [copyPixList.lastObject pwidth]-1, 0, [copyPixList.lastObject pheight]-1, 0, copyPixList.count-1);
             reader->SetDataExtentToWholeExtent();
             reader->SetDataScalarTypeToFloat();
             reader->SetImportVoidPointer( (void*) [vD bytes]);
-            reader->SetDataSpacing( [copyPixList.lastObject pixelSpacingX], [copyPixList.lastObject pixelSpacingY], [copyPixList.lastObject sliceInterval]);
+            reader->SetDataSpacing( factor*[copyPixList.lastObject pixelSpacingX], factor*[copyPixList.lastObject pixelSpacingY], factor * [copyPixList.lastObject sliceInterval]);
             
             vtkContourFilter *isoExtractor = vtkContourFilter::New();
             isoExtractor->SetInput( reader->GetOutput());
@@ -471,7 +483,7 @@
             break;
             
             // PowerCrust
-        case 2:
+        case 0:
         {
             vtkPowerCrustSurfaceReconstruction *power = vtkPowerCrustSurfaceReconstruction::New();
             power->SetInput( profile);
@@ -503,15 +515,27 @@
     if( profile)
         profile->Delete();
     
+    //Delete the generated ROIs - There was no generated ROIs previously
+    for( ROI *c in generatedROIs)
+    {
+        NSInteger index = [vc imageIndexOfROI: c];
+        
+        if( index >= 0)
+        {
+            [[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object: c userInfo: nil];
+            [[vc.roiList objectAtIndex: index] removeObject: c];
+        }
+    }
+    
     return mapper;
 }
 
-- (short) renderVolume
+- (NSDictionary*) renderVolume
 {
 	WaitRendering *splash = [[[WaitRendering alloc] init: NSLocalizedString( @"Rendering 3D Object...", nil)] autorelease];
 	[splash showWindow:self];
 	
-	short error = 0;
+	NSMutableDictionary *statistics = [NSMutableDictionary dictionary];
 	
     @try
     {
@@ -519,7 +543,9 @@
         {
             ROIVolumeController *vc = self.window.windowController;
             
-			vtkMapper *mapper = [ROIVolumeView generateMapperForPoints: _points3D roi: roi viewerController: vc.viewer];
+			vtkMapper *mapper = [ROIVolumeView generateMapperForRoi: roi viewerController: vc.viewer factor: 1.0 statistics: statistics];
+            if( mapper == nil)
+                return nil;
             
             aRenderer = [self renderer];
             
@@ -539,7 +565,7 @@
             if( mapper)
                 mapper->Delete();
             
-            if( [[NSUserDefaults standardUserDefaults] integerForKey: @"3DRoiTechnique"] == 0)
+            if( [[NSUserDefaults standardUserDefaults] integerForKey: @"UseDelaunayFor3DRoi"] == 2)
             {
                 ROIVolumeController *wo = self.window.windowController;
                 DCMPix *o = [wo.viewer.pixList objectAtIndex: 0];
@@ -571,58 +597,58 @@
 			roiVolumeActor->SetTexture( texture);
 
 			// The balls
-			
-            if( ballActor) {
-                aRenderer->RemoveActor( ballActor);
-                ballActor->Delete();
-                ballActor = nil;
-            }
-            
-            if( [[NSUserDefaults standardUserDefaults] integerForKey: @"3DRoiTechnique"] != 0)
-            {
-                vtkPolyData *profile = nil;
-                
-                vtkPoints *points = vtkPoints::New();
-                long i = 0;
-                for( NSArray *pt3D in _points3D)
-                    points->InsertPoint( i++, [[pt3D objectAtIndex: 0] floatValue], [[pt3D objectAtIndex: 1] floatValue], [[pt3D objectAtIndex: 2] floatValue]);
-                
-                profile = vtkPolyData::New();
-                profile->SetPoints( points);
-                points->Delete();
-                
-                vtkSphereSource *ball = vtkSphereSource::New();
-                    ball->SetRadius(0.3);
-                    ball->SetThetaResolution( 12);
-                    ball->SetPhiResolution( 12);
-                
-                vtkGlyph3D *balls = vtkGlyph3D::New();
-                    balls->SetInput( profile);
-                    balls->SetSource( ball->GetOutput());
-                ball->Delete();
-                
-                vtkPolyDataMapper *mapBalls = vtkPolyDataMapper::New();
-                    mapBalls->SetInput( balls->GetOutput());
-                balls->Delete();
-                
-                if(!ballActor) {
-                    ballActor = vtkActor::New();
-                    ballActor->GetProperty()->SetSpecular( 0.5);
-                    ballActor->GetProperty()->SetSpecularPower( 20);
-                    ballActor->GetProperty()->SetAmbient( 0.2);
-                    ballActor->GetProperty()->SetDiffuse( 0.8);
-                    ballActor->GetProperty()->SetOpacity( 0.8);
-                }
-                ballActor->SetMapper( mapBalls);
-
-                if( mapBalls)
-                    mapBalls->Delete();
-                
-                if( profile)
-                    profile->Delete();
-                
-                aRenderer->AddActor( ballActor);
-			}
+//			
+//            if( ballActor) {
+//                aRenderer->RemoveActor( ballActor);
+//                ballActor->Delete();
+//                ballActor = nil;
+//            }
+//            
+//            if( [[NSUserDefaults standardUserDefaults] integerForKey: @"UseDelaunayFor3DRoi"] != 2)
+//            {
+//                vtkPolyData *profile = nil;
+//                
+//                vtkPoints *points = vtkPoints::New();
+//                long i = 0;
+//                for( NSArray *pt3D in _points3D)
+//                    points->InsertPoint( i++, [[pt3D objectAtIndex: 0] floatValue], [[pt3D objectAtIndex: 1] floatValue], [[pt3D objectAtIndex: 2] floatValue]);
+//                
+//                profile = vtkPolyData::New();
+//                profile->SetPoints( points);
+//                points->Delete();
+//                
+//                vtkSphereSource *ball = vtkSphereSource::New();
+//                    ball->SetRadius(0.3);
+//                    ball->SetThetaResolution( 12);
+//                    ball->SetPhiResolution( 12);
+//                
+//                vtkGlyph3D *balls = vtkGlyph3D::New();
+//                    balls->SetInput( profile);
+//                    balls->SetSource( ball->GetOutput());
+//                ball->Delete();
+//                
+//                vtkPolyDataMapper *mapBalls = vtkPolyDataMapper::New();
+//                    mapBalls->SetInput( balls->GetOutput());
+//                balls->Delete();
+//                
+//                if(!ballActor) {
+//                    ballActor = vtkActor::New();
+//                    ballActor->GetProperty()->SetSpecular( 0.5);
+//                    ballActor->GetProperty()->SetSpecularPower( 20);
+//                    ballActor->GetProperty()->SetAmbient( 0.2);
+//                    ballActor->GetProperty()->SetDiffuse( 0.8);
+//                    ballActor->GetProperty()->SetOpacity( 0.8);
+//                }
+//                ballActor->SetMapper( mapBalls);
+//
+//                if( mapBalls)
+//                    mapBalls->Delete();
+//                
+//                if( profile)
+//                    profile->Delete();
+//                
+//                aRenderer->AddActor( ballActor);
+//			}
             
 			roiVolumeActor->GetProperty()->FrontfaceCullingOn();
 			roiVolumeActor->GetProperty()->BackfaceCullingOn();
@@ -692,9 +718,9 @@
         {
             printf( "***** C++ exception in %s\r", __PRETTY_FUNCTION__);
             
-            if( [[NSUserDefaults standardUserDefaults] integerForKey:@"3DRoiTechnique"] != 0) // Iso Contour
+            if( [[NSUserDefaults standardUserDefaults] integerForKey:@"UseDelaunayFor3DRoi"] != 2) // Iso Contour
             {
-                [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey:@"3DRoiTechnique"];
+                [[NSUserDefaults standardUserDefaults] setInteger: 2 forKey:@"UseDelaunayFor3DRoi"];
                 [self renderVolume];
             }
         }
@@ -703,16 +729,16 @@
     {
         N2LogExceptionWithStackTrace(e);
         
-        if( [[NSUserDefaults standardUserDefaults] integerForKey:@"3DRoiTechnique"] != 0) // Iso Contour
+        if( [[NSUserDefaults standardUserDefaults] integerForKey:@"UseDelaunayFor3DRoi"] != 0) // Iso Contour
         {
-            [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey:@"3DRoiTechnique"];
+            [[NSUserDefaults standardUserDefaults] setInteger: 2 forKey:@"UseDelaunayFor3DRoi"];
             [self renderVolume];
         }
     }
     
 	[splash close];
 
-	return error;
+	return statistics;
 }
 
 - (void) setROIActorVolume:(NSValue*)roiActorPointer
@@ -740,8 +766,8 @@
 {
 	if( roiVolumeActor)
 	{
-		if( sp == NO) aRenderer->RemoveActor( ballActor);
-		else aRenderer->AddActor( ballActor);
+//		if( sp == NO) aRenderer->RemoveActor( ballActor);
+//		else aRenderer->AddActor( ballActor);
 		
 		if( sS == NO) aRenderer->RemoveActor( roiVolumeActor);
 		else aRenderer->AddActor( roiVolumeActor);

@@ -230,8 +230,8 @@
 	
 		if (nil == carriedData)
 		{
-			NSRunAlertPanel(NSLocalizedString(@"Drag Error",nil), NSLocalizedString(@"Sorry, but the past operation failed",nil), 
-            nil, nil, nil);
+//			NSRunAlertPanel(NSLocalizedString(@"Drag Error",nil), NSLocalizedString(@"Sorry, but the past operation failed",nil), 
+//            nil, nil, nil);
 			return NO;
 		}
 		else
@@ -303,9 +303,9 @@
 	
     if (nil == carriedData)
     {
-        //the operation failed for some reason
-        NSRunAlertPanel(NSLocalizedString(@"Drag Error",nil), NSLocalizedString(@"Sorry, but the past operation failed",nil), 
-            nil, nil, nil);
+//        //the operation failed for some reason
+//        NSRunAlertPanel(NSLocalizedString(@"Drag Error",nil), NSLocalizedString(@"Sorry, but the past operation failed",nil), 
+//            nil, nil, nil);
         return;
     }
     else

@@ -39,9 +39,8 @@
 
 @property (readonly) NSTextField *volumeField, *seriesName;
 
-- (id) initWithPoints:(NSMutableArray*) pts :(float) volume :(ViewerController*) iviewer roi:(ROI*) iroi;
+- (id) initWithRoi:(ROI*) iroi  viewer:(ViewerController*) iviewer;
 - (IBAction) changeParameters:(id) sender;
-- (void) setDataString:(NSString*) s volume:(NSString*) v;
 - (ViewerController*) viewer;
 - (ROI*) roi;
 - (IBAction) reload:(id)sender;

@@ -116,6 +116,8 @@
 	NSMutableDictionary		*properties;
 }
 
+@property float factor;
+
 - (void) setTexture: (BOOL) o;
 - (BOOL) texture;
 

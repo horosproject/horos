@@ -14,7 +14,7 @@
 #import "ROIVolumeController.h"
 #import "ROIVolumeView.h"
 #import "Notifications.h"
-
+#import "ROI.h"
 #import "DCMView.h"
 
 @implementation ROIVolumeController
@@ -49,11 +49,9 @@
 
 - (void) setDataString:(NSString*) s volume:(NSString*) v
 {
-	[volumeField setStringValue: s];
-	[seriesName setStringValue: v];
 }
 
--(id) initWithPoints:(NSMutableArray*) pts :(float) volume :(ViewerController*) iviewer roi:(ROI*) iroi
+- (id) initWithRoi:(ROI*) iroi  viewer:(ViewerController*) iviewer
 {
     unsigned long   i;
 	
@@ -64,12 +62,33 @@
     
     [[self window] setDelegate:self];
     
-	[view setPixSource:pts roi: roi];
-	
-	if( volume < 0.01)
-		[volumeField setStringValue: [NSString stringWithFormat:NSLocalizedString(@"Volume : %2.4f mm3.", nil), volume*1000.]];
-	else
-		[volumeField setStringValue: [NSString stringWithFormat:NSLocalizedString(@"Volume : %2.4f cm3.", nil), volume]];
+	NSDictionary *data = [view setPixSource: roi];
+    if( data == nil)
+    {
+        [self autorelease];
+        return nil;
+    }
+    
+    NSMutableString	*s = [NSMutableString string];
+    
+    if( roi.name && roi.name.length > 0)
+        [s appendString: [NSString stringWithFormat:NSLocalizedString(@"%@\r", nil), roi.name]];
+    
+    NSString *volumeString;
+    
+    if( [[data objectForKey: @"volume"] floatValue] < 0.01)
+        volumeString = [NSString stringWithFormat:NSLocalizedString(@"Volume : %2.4f mm\u00B3", @"mm\u00B3 == mm3"), [[data objectForKey: @"volume"] floatValue]*1000.];
+    else
+        volumeString = [NSString stringWithFormat:NSLocalizedString(@"Volume : %2.4f cm\u00B3", @"cm\u00B3 == mm3"), [[data objectForKey: @"volume"] floatValue]];
+    
+    [s appendString: volumeString];
+    
+    [s appendString: [NSString stringWithFormat:NSLocalizedString(@"\rMean: %2.4f SDev: %2.4f Total: %2.4f", nil), [[data valueForKey:@"mean"] floatValue], [[data valueForKey:@"dev"] floatValue], [[data valueForKey:@"total"] floatValue]]];
+    [s appendString: [NSString stringWithFormat:NSLocalizedString(@"\rMin: %2.4f Max: %2.4f ", nil), [[data valueForKey:@"min"] floatValue], [[data valueForKey:@"max"] floatValue]]];
+    [s appendString: [NSString stringWithFormat:NSLocalizedString(@"\rSkewness: %2.4f Kurtosis: %2.4f ", nil), [[data valueForKey:@"skewness"] floatValue], [[data valueForKey:@"kurtosis"] floatValue]]];
+    
+	[volumeField setStringValue: s];
+	[seriesName setStringValue: volumeString];
 	
 	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver: self

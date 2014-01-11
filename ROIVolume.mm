@@ -17,10 +17,12 @@
 #import "Notifications.h"
 #import "ViewerController.h"
 #import "ITKSegmentation3D.h"
-
+#import "ROIVolumeView.h"
 #import "WaitRendering.h"
 
 @implementation ROIVolume
+
+@synthesize factor;
 
 - (id) initWithViewer: (ViewerController*) v
 {
@@ -115,219 +117,49 @@
     
 	roiVolumeActor = vtkActor::New();
 	
-	int i, j;
+    vtkMapper *map = [ROIVolumeView generateMapperForRoi: roiList.lastObject viewerController: viewer factor: factor statistics: nil];
     
-	NSMutableArray *pts = [NSMutableArray array];
-	
-    if( [[NSUserDefaults standardUserDefaults] integerForKey: @"3DRoiTechnique"] != 0)
+    roiVolumeActor->SetMapper(map);
+    roiVolumeActor->GetProperty()->FrontfaceCullingOn();
+    roiVolumeActor->GetProperty()->BackfaceCullingOn();
+
+    map->Delete();
+    
+    if( [[NSUserDefaults standardUserDefaults] integerForKey: @"UseDelaunayFor3DRoi"] == 2)
     {
-        for(i = 0; i < [roiList count]; i++)
-        {
-            ROI *curROI = [roiList objectAtIndex:i];
-            
-            DCMPix *curDCM = [curROI pix];
-            // points
-            NSMutableArray	*points = nil;
-                        
-            if( [curROI type] == tPlain)
-            {
-                points = [ITKSegmentation3D extractContour:[curROI textureBuffer] width:[curROI textureWidth] height:[curROI textureHeight] numPoints: 100 largestRegion: NO];
-                
-                float mx = [curROI textureUpLeftCornerX], my = [curROI textureUpLeftCornerY];
-                
-                for( j = 0; j < [points count]; j++)
-                {
-                    MyPoint	*pt = [points objectAtIndex: j];
-                    [pt move: mx :my];
-                }
-            }
-            else points = [curROI splinePoints];
-            
-            for( j = 0; j < [points count]; j++)
-            {
-                float location[3];
-                
-                [curDCM convertPixX: [[points objectAtIndex: j] x] pixY: [[points objectAtIndex: j] y] toDICOMCoords: location pixelCenter: YES];
-                //NSLog(@"location : %f, %f, %f", location[0], location[1], location[2]);
-                
-                location[0] *= factor;
-                location[1] *= factor;
-                location[2] *= factor;
-                
-                NSArray	*pt3D = [NSArray arrayWithObjects: [NSNumber numberWithFloat: location[0]], [NSNumber numberWithFloat:location[1]], [NSNumber numberWithFloat:location[2]], nil];
-                [pts addObject: pt3D];
-            }		
-        }
+        DCMPix *o = [viewer.pixList objectAtIndex: 0];
         
-        #define MAXPOINTS 3000
+        float cosines[ 9];
         
-        NSMutableArray *newpts = [NSMutableArray arrayWithCapacity: MAXPOINTS*2];
+        [o orientation: cosines];
         
-        if( [pts count] > MAXPOINTS*2)
-        {
-            int i, add = [pts count] / MAXPOINTS;
-            
-            if( add > 1)
-            {
-                for( i = 0; i < [pts count]; i += add)
-                {
-                    [newpts addObject: [pts objectAtIndex: i]];
-                }
-                
-                NSLog( @"too much points, reducing from: %d, to: %d", (int) [pts count], (int) [newpts count]);
-                
-                pts = newpts;
-            }
-        }
-    }
-	
-    vtkPolyData *pointsDataSet = nil;
-	if( [pts count] > 0)
-	{
-		vtkPoints *points = vtkPoints::New();
-		for(i = 0; i < [pts count]; i++)
-		{
-			NSArray	*pt3D = [pts objectAtIndex: i];
-			points->InsertPoint(i, [[pt3D objectAtIndex: 0] floatValue], [[pt3D objectAtIndex: 1] floatValue], [[pt3D objectAtIndex: 2] floatValue]);
-		}
+        vtkMatrix4x4 *matrice = vtkMatrix4x4::New();
+		matrice->Element[0][0] = cosines[0]; matrice->Element[1][0] = cosines[1]; matrice->Element[2][0] = cosines[2]; matrice->Element[3][0] = 0;
+		matrice->Element[0][1] = cosines[3]; matrice->Element[1][1] = cosines[4]; matrice->Element[2][1] = cosines[5]; matrice->Element[3][1] = 0;
+		matrice->Element[0][2] = cosines[6]; matrice->Element[1][2] = cosines[7]; matrice->Element[2][2] = cosines[8]; matrice->Element[3][2] = 0;
+		matrice->Element[0][3] = 0; matrice->Element[1][3] = 0; matrice->Element[2][3] = 0; matrice->Element[3][3] = 1;
 		
-		vtkPolyData *pointsDataSet = vtkPolyData::New();
-		pointsDataSet->SetPoints(points);
-		points->Delete();
-    }
-		//if ([roiList count]==1)
-//		if (NO) // deactivated
-//		// SURFACE
-//		{		
-//			NSLog(@"vtkPolygon");
-//			vtkPolygon *polygon = vtkPolygon::New();
-//			polygon->GetPoints()->SetData(points->GetData());
-//
-//			NSLog(@"polygon->GetPoints()->GetNumberOfPoints() : %d", polygon->GetPoints()->GetNumberOfPoints());
-//
-//			NSLog(@"vtkCellArray");
-//			vtkCellArray *polygons = vtkCellArray::New();
-//			polygons->InsertNextCell(polygon);
-//			
-//			NSLog(@"vtkPolyData");
-//			vtkPolyData *surface = vtkPolyData::New();
-//			surface->SetPoints(points);
-//			surface->SetPolys(polygons);
-//
-//			NSLog(@"surface->GetNumberOfPolys() : %d", surface->GetNumberOfPolys());		
-//			
-//			NSLog(@"vtkDataSetMapper");
-//			vtkPolyDataMapper *mapper = vtkPolyDataMapper::New();
-//			mapper->SetInput(surface);
-//			mapper->ScalarVisibilityOff();
-//			
-//			NSLog(@"roiVolumeActor->SetMapper(mapper);");
-//			roiVolumeActor->SetMapper(mapper);
-//			polygon->Delete();
-//			polygons->Delete();
-//			surface->Delete();
-//			mapper->Delete();
-//		}
-//		else
-    
-    
-    if( pointsDataSet || [[NSUserDefaults standardUserDefaults] integerForKey: @"3DRoiTechnique"] == 0)
-    {
-        vtkDelaunay3D *delaunayTriangulator = nil;
-        vtkPolyDataNormals *polyDataNormals = nil;
-        vtkDecimatePro *isoDeci = nil;
-        vtkDataSet*	output = nil;
-        vtkContourFilter *isoExtractor = nil;
+		roiVolumeActor->SetPosition( factor*[o originX] * matrice->Element[0][0] + factor*[o originY] * matrice->Element[1][0] + factor*[o originZ]*matrice->Element[2][0], factor*[o originX] * matrice->Element[0][1] + factor*[o originY] * matrice->Element[1][1] + factor*[o originZ]*matrice->Element[2][1], factor*[o originX] * matrice->Element[0][2] + factor*[o originY] * matrice->Element[1][2] + factor*[o originZ]*matrice->Element[2][2]);
         
-        switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"3DRoiTechnique"])
-        {
-            // Iso Contour
-            case 0:
-            {
-                ViewerController *v = [viewer copyViewerWindow];
-                
-                
-                
-//                    isoExtractor = vtkContourFilter::New();
-//                    isoExtractor->SetInput( isoResample->GetOutput());
-//                    isoExtractor->SetValue(0, isocontour);
-            }
-            break;
-            
-            // Delaunay
-            case 1:
-                delaunayTriangulator = vtkDelaunay3D::New();
-                delaunayTriangulator->SetInput(pointsDataSet);
-                
-                delaunayTriangulator->SetTolerance( 0.001 * [[NSUserDefaults standardUserDefaults] floatForKey: @"superSampling"]);
-                delaunayTriangulator->SetAlpha( 20 * [[NSUserDefaults standardUserDefaults] floatForKey: @"superSampling"]);
-                delaunayTriangulator->BoundingTriangulationOff();
-                
-                output = (vtkDataSet*) delaunayTriangulator -> GetOutput();
-            break;
-            
-            // PowerCrust
-            case 2:
-            {
-                vtkPowerCrustSurfaceReconstruction *power = vtkPowerCrustSurfaceReconstruction::New();
-                power->SetInput(pointsDataSet);
-                
-                polyDataNormals = vtkPolyDataNormals::New();
-                polyDataNormals->ConsistencyOn();
-                polyDataNormals->AutoOrientNormalsOn();
-                polyDataNormals->SetInput(power->GetOutput());
-                power->Delete();		
-                output = (vtkDataSet*) polyDataNormals -> GetOutput();
-            }
-            break;
-        }
-        
-        vtkTextureMapToSphere *tmapper = vtkTextureMapToSphere::New();
-            tmapper -> SetInput( output);
-            tmapper -> PreventSeamOn();
-        
-        if( polyDataNormals) polyDataNormals->Delete();
-        if( delaunayTriangulator) delaunayTriangulator->Delete();
-        if (isoDeci) isoDeci->Delete();
-
-        vtkTransformTextureCoords *xform = vtkTransformTextureCoords::New();
-            xform->SetInput(tmapper->GetOutput());
-            xform->SetScale(4,4,4);
-        tmapper->Delete();
-            
-        vtkDataSetMapper *map = vtkDataSetMapper::New();
-        map->SetInput( tmapper->GetOutput());
-        map->ScalarVisibilityOff();
-        
-        map->Update();
-        
-        roiVolumeActor->SetMapper(map);
-        roiVolumeActor->GetProperty()->FrontfaceCullingOn();
-        roiVolumeActor->GetProperty()->BackfaceCullingOn();
-
-        map->Delete();
-        
-        //Texture
-        NSString	*location = [[NSUserDefaults standardUserDefaults] stringForKey:@"textureLocation"];
-        
-        if( location == nil || [location isEqualToString:@""])
-            location = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"texture.tif"];
-        
-        vtkTIFFReader *bmpread = vtkTIFFReader::New();
-           bmpread->SetFileName( [location UTF8String]);
-
-        textureImage = vtkTexture::New();
-           textureImage->SetInput( bmpread->GetOutput());
-           textureImage->InterpolateOn();
-        bmpread->Delete();
-
-        roiVolumeActor->SetTexture( textureImage);
+		roiVolumeActor->SetUserMatrix( matrice);
+		matrice->Delete();
     }
     
-    if( pointsDataSet)
-		pointsDataSet->Delete();
-		
-//		roiVolumeActor->GetProperty()->SetRepresentationToWireframe();
+    // *****************Texture
+    NSString *location = [[NSUserDefaults standardUserDefaults] stringForKey:@"textureLocation"];
+    
+    if( location == nil || [location isEqualToString:@""])
+        location = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"texture.tif"];
+    
+    vtkTIFFReader *bmpread = vtkTIFFReader::New();
+       bmpread->SetFileName( [location UTF8String]);
+
+    textureImage = vtkTexture::New();
+       textureImage->SetInput( bmpread->GetOutput());
+       textureImage->InterpolateOn();
+    bmpread->Delete();
+
+    roiVolumeActor->SetTexture( textureImage);
     
     if( roiVolumeActor)
     {
@@ -457,16 +289,6 @@
 	}
 	[properties setValue:[NSNumber numberWithBool: textured] forKey:@"texture"];
 	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixROIVolumePropertiesChangedNotification object:self userInfo:[NSDictionary dictionaryWithObject:@"texture" forKey:@"key"]];
-}
-
-- (float) factor
-{
-	return factor;
-}
-
-- (void) setFactor: (float) f
-{
-	factor = f;
 }
 
 - (BOOL) visible

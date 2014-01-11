@@ -118,7 +118,7 @@ class vtkMyCallback;
     vtkRenderer					*aRenderer;
     vtkCamera					*aCamera;
 	
-	vtkActor					*ballActor;
+//	vtkActor					*ballActor;
 	vtkActor					*roiVolumeActor;
 	vtkTexture					*texture;
 	
@@ -128,18 +128,17 @@ class vtkMyCallback;
 	vtkOrientationMarkerWidget	*orientationWidget;
 	
     ROI                         *roi;
-	NSArray						*_points3D;
 	BOOL						computeMedialSurface;
 
 }
 
 
-- (short) setPixSource:(NSMutableArray*)pts roi: (ROI*) r;
+- (NSDictionary*) setPixSource: (ROI*) r;
 - (void) setROIActorVolume:(NSValue*)roiActorPointer;
 - (void) setOpacity: (float) opacity showPoints: (BOOL) sp showSurface: (BOOL) sS showWireframe:(BOOL) w texture:(BOOL) tex useColor:(BOOL) usecol color:(NSColor*) col;
 - (IBAction) exportDICOMFile:(id) sender;
-- (short) renderVolume;
-+ (vtkMapper*) generateMapperForPoints: (NSArray*) points3D roi:(ROI*) roi viewerController: (ViewerController*) vc;
+- (NSDictionary*) renderVolume;
++ (vtkMapper*) generateMapperForRoi:(ROI*) roi viewerController: (ViewerController*) vc factor: (float) factor statistics: (NSMutableDictionary*) statistics;
 - (NSSet *)connectedPointsForPoint:(vtkIdType)pt fromPolyData:(vtkPolyData *)data;
 
 @end
