@@ -47,10 +47,6 @@
 	}
 }
 
-- (void) setDataString:(NSString*) s volume:(NSString*) v
-{
-}
-
 - (id) initWithRoi:(ROI*) iroi  viewer:(ViewerController*) iviewer
 {
     unsigned long   i;

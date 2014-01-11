@@ -769,6 +769,8 @@
 //		if( sp == NO) aRenderer->RemoveActor( ballActor);
 //		else aRenderer->AddActor( ballActor);
 		
+        sS = YES;
+        
 		if( sS == NO) aRenderer->RemoveActor( roiVolumeActor);
 		else aRenderer->AddActor( roiVolumeActor);
 		
