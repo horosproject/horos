@@ -19876,11 +19876,11 @@ int i,j,l;
 
 - (float) computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts generateMissingROIs:(BOOL) generateMissingROIs generatedROIs:(NSMutableArray*) generatedROIs computeData:(NSMutableDictionary*) data error:(NSString**) error
 {
-	long				i, x, y, globalCount, imageCount, lastImageIndex;
-	double				volume, prevArea, preLocation, location, sliceInterval;
-	ROI					*lastROI;
-	BOOL				missingSlice = NO;
-	NSMutableArray		*theSlices = [NSMutableArray array];
+	long globalCount, imageCount, lastImageIndex;
+	double volume, prevArea, preLocation, location, sliceInterval;
+	ROI	*lastROI;
+	BOOL missingSlice = NO;
+	NSMutableArray *theSlices = [NSMutableArray array];
 		
 	if( pts) *pts = [NSMutableArray array];
 	
@@ -19894,11 +19894,11 @@ int i,j,l;
 	{
 		[self roiDeleteGeneratedROIsForName: [selectedRoi name]];
 		
-		for( x = 0; x < [pixList[curMovieIndex] count]; x++)
+		for( int x = 0; x < [pixList[curMovieIndex] count]; x++)
 		{
 			imageCount = 0;
 			
-			for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: x] count]; i++)
+			for( int i = 0; i < [[roiList[curMovieIndex] objectAtIndex: x] count]; i++)
 			{
 				ROI	*curROI = [[roiList[curMovieIndex] objectAtIndex: x] objectAtIndex: i];
                 
@@ -19910,7 +19910,7 @@ int i,j,l;
 					{
 						if( lastROI && (lastImageIndex+1) < x)
 						{
-							for( y = lastImageIndex+1; y < x; y++)
+							for( int y = lastImageIndex+1; y < x; y++)
 							{
 								ROI	*c = [self roiMorphingBetween: lastROI  and: curROI ratio: (float) (y - lastImageIndex) / (float) (x - lastImageIndex)];
 								
@@ -19951,14 +19951,14 @@ int i,j,l;
 	int	fROIIndex, lROIIndex;
 	ROI	*curROI = nil;
 	
-	for( x = 0; x < [pixList[curMovieIndex] count]; x++)
+	for( int x = 0; x < [pixList[curMovieIndex] count]; x++)
 	{
 		DCMPix	*curDCM = [pixList[curMovieIndex] objectAtIndex: x];
 		imageCount = 0;
 		
 		location = x * sliceInterval;
 		
-		for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: x] count]; i++)
+		for( int i = 0; i < [[roiList[curMovieIndex] objectAtIndex: x] count]; i++)
 		{
 			curROI = [[roiList[curMovieIndex] objectAtIndex: x] objectAtIndex: i];
 			if( [[curROI name] isEqualToString: [selectedRoi name]] == YES  && [curROI isValidForVolume])		//&& [[curROI comments] isEqualToString:@"morphing generated"] == NO)
@@ -20001,15 +20001,15 @@ int i,j,l;
 						
 						float mx = [curROI textureUpLeftCornerX], my = [curROI textureUpLeftCornerY];
 						
-						for( i = 0; i < [points count]; i++)
+						for( int zz = 0; zz < [points count]; zz++)
 						{
-							MyPoint	*pt = [points objectAtIndex: i];
+							MyPoint	*pt = [points objectAtIndex: zz];
 							[pt move: mx :my];
 						}
 					}
 					else points = [curROI splinePoints];
 					
-					for( y = 0; y < [points count]; y++)
+					for( int y = 0; y < [points count]; y++)
 					{
 						float location[ 3];
 						
@@ -20147,11 +20147,11 @@ int i,j,l;
 		{
 			NSMutableArray *newpts = [NSMutableArray arrayWithCapacity: MAXPOINTS*2];
 			
-			int i, add = [*pts count] / MAXPOINTS;
+			int add = [*pts count] / MAXPOINTS;
 			
 			if( add > 1)
 			{
-				for( i = 0; i < [*pts count]; i += add)
+				for( int i = 0; i < [*pts count]; i += add)
 				{
 					[newpts addObject: [*pts objectAtIndex: i]];
 				}
@@ -20202,7 +20202,7 @@ int i,j,l;
 			float				*totalPtr = nil;
 			NSMutableArray		*rois = [NSMutableArray array];
 	
-			for( i = 0 ; i < [theSlices count]; i++)
+			for( int i = 0 ; i < [theSlices count]; i++)
 			{
 				DCMPix	*curPix = [[theSlices objectAtIndex: i] objectForKey:@"dcmPix"];
 				ROI		*curROI = [[theSlices objectAtIndex: i] objectForKey:@"roi"];
@@ -20235,7 +20235,7 @@ int i,j,l;
             if( memSize > 0 && totalPtr != nil)
             {
                 gtotal = 0;
-                for( i = 0; i < memSize; i++)
+                for( int i = 0; i < memSize; i++)
                 {
                     gtotal += totalPtr[ i];
                 }
@@ -20245,7 +20245,7 @@ int i,j,l;
                 gdev = 0;
                 gmin = totalPtr[ 0];
                 gmax = totalPtr[ 0];
-                for( i = 0; i < memSize; i++)
+                for( int i = 0; i < memSize; i++)
                 {
                     float val = totalPtr[ i];
                     
