@@ -218,6 +218,10 @@ extern NSString* O2AlbumDragType;
     NSMutableSet                    *cachedFilesForDatabaseOutlineSelectionTreeObjects;
 	NSIndexSet						*cachedFilesForDatabaseOutlineSelectionIndex;
 	
+    id                              lastROIsAndKeyImagesSelectedFiles, lastROIsImagesSelectedFiles, lastKeyImagesSelectedFiles;
+    NSArray                         *ROIsAndKeyImagesCache, *ROIsImagesCache, *KeyImagesCache;
+    BOOL                            ROIsAndKeyImagesCacheSameSeries, ROIsImagesCacheSameSeries;
+    
     BOOL                            _computingNumberOfStudiesForAlbums;
 	
 	IBOutlet NSTableView* _activityTableView;

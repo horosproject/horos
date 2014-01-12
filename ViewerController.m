@@ -3436,7 +3436,9 @@ static volatile int numberOfThreadsForRelisce = 0;
         NSRect contentRect;
         
         previousPropagate = [[NSUserDefaults standardUserDefaults] boolForKey: @"COPYSETTINGS"];
-        [[NSUserDefaults standardUserDefaults] setBool:NO forKey: @"COPYSETTINGS"];
+        
+        if( self.blendingController == nil)
+            [[NSUserDefaults standardUserDefaults] setBool:NO forKey: @"COPYSETTINGS"];
         
 		previousFullscreenColumns = [imageView columns];
 		previousFullscreenRows = [imageView rows];

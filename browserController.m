@@ -1643,6 +1643,14 @@ static NSConditionLock *threadLock = nil;
     [cachedFilesForDatabaseOutlineSelectionTreeObjects release]; cachedFilesForDatabaseOutlineSelectionTreeObjects = nil;
     [cachedFilesForDatabaseOutlineSelectionIndex release]; cachedFilesForDatabaseOutlineSelectionIndex = nil;
     
+    [ROIsAndKeyImagesCache release]; ROIsAndKeyImagesCache = nil;
+    [ROIsImagesCache release]; ROIsImagesCache = nil;
+    [KeyImagesCache release]; KeyImagesCache = nil;
+    
+    [lastROIsAndKeyImagesSelectedFiles release]; lastROIsAndKeyImagesSelectedFiles = nil;
+    [lastROIsImagesSelectedFiles release]; lastROIsImagesSelectedFiles = nil;
+    [lastKeyImagesSelectedFiles release]; lastKeyImagesSelectedFiles = nil;
+    
     @synchronized (self)
     {
         _cachedAlbumsContext = nil;
@@ -18861,9 +18869,19 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	NSMutableArray *selectedItems = [NSMutableArray array];
 	
-	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) [self filesForDatabaseMatrixSelection: selectedItems];
-	else [self filesForDatabaseOutlineSelection: selectedItems];
-	
+	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
+        [self filesForDatabaseMatrixSelection: selectedItems];
+	else
+        [self filesForDatabaseOutlineSelection: selectedItems];
+    
+    if( [selectedItems isEqual: lastROIsAndKeyImagesSelectedFiles] && ROIsAndKeyImagesCache)
+    {
+        if( sameSeries)
+            *sameSeries = ROIsAndKeyImagesCacheSameSeries;
+            
+        return ROIsAndKeyImagesCache;
+    }
+    
 	NSMutableArray *roisImagesArray = [NSMutableArray array];
 	
 	if( [selectedItems count] > 0)
@@ -18893,23 +18911,31 @@ static volatile int numberOfThreadsForJPEG = 0;
                 N2LogExceptionWithStackTrace(e);
 			}
 		}
-		
-		if( sameSeries)
-		{
-			NSManagedObject *series = [[roisImagesArray lastObject] valueForKey: @"series"];
-			
-			*sameSeries = YES;
-			for( DicomImage *image in roisImagesArray)
-			{
-				if( [image valueForKey: @"series"] != series)
-				{
-					*sameSeries = NO;
-					break;
-				}
-			}
-		}
+				
+        NSManagedObject *series = [[roisImagesArray lastObject] valueForKey: @"series"];
+        
+        ROIsAndKeyImagesCacheSameSeries = YES;
+        if( sameSeries)
+            *sameSeries = ROIsAndKeyImagesCacheSameSeries;
+        
+        for( DicomImage *image in roisImagesArray)
+        {
+            if( [image valueForKey: @"series"] != series)
+            {
+                ROIsAndKeyImagesCacheSameSeries = NO;
+                if( sameSeries)
+                    *sameSeries = ROIsAndKeyImagesCacheSameSeries;
+                break;
+            }
+        }
 	}
 	
+    [ROIsAndKeyImagesCache release];
+    ROIsAndKeyImagesCache = [roisImagesArray retain];
+    
+    [lastROIsAndKeyImagesSelectedFiles release];
+    lastROIsAndKeyImagesSelectedFiles = [selectedItems retain];
+    
 	return roisImagesArray;
 }
 
@@ -19042,9 +19068,19 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	NSMutableArray *selectedItems = [NSMutableArray array];
 	
-	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) [self filesForDatabaseMatrixSelection: selectedItems];
-	else [self filesForDatabaseOutlineSelection: selectedItems];
+	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
+        [self filesForDatabaseMatrixSelection: selectedItems];
+	else
+        [self filesForDatabaseOutlineSelection: selectedItems];
 	
+    if( [selectedItems isEqual: lastROIsImagesSelectedFiles] && ROIsImagesCache)
+    {
+        if( sameSeries)
+            *sameSeries = ROIsImagesCacheSameSeries;
+        
+        return ROIsImagesCache;
+    }
+    
 	NSMutableArray *roisImagesArray = [NSMutableArray array];
 
 	if( [selectedItems count] > 0)
@@ -19062,22 +19098,29 @@ static volatile int numberOfThreadsForJPEG = 0;
             }
 		}
 		
-		if( sameSeries)
-		{
-			NSManagedObject *series = [[roisImagesArray lastObject] valueForKey: @"series"];
-			
-			*sameSeries = YES;
-			for( DicomImage *image in roisImagesArray)
-			{
-				if( [image valueForKey: @"series"] != series)
-				{
-					*sameSeries = NO;
-					break;
-				}
-			}
-		}
+        NSManagedObject *series = [[roisImagesArray lastObject] valueForKey: @"series"];
+        
+        ROIsImagesCacheSameSeries = YES;
+        if( sameSeries)
+            *sameSeries = ROIsImagesCacheSameSeries;
+        for( DicomImage *image in roisImagesArray)
+        {
+            if( [image valueForKey: @"series"] != series)
+            {
+                ROIsImagesCacheSameSeries = NO;
+                if( sameSeries)
+                    *sameSeries = ROIsImagesCacheSameSeries;
+                break;
+            }
+        }
 	}
 	
+    [ROIsImagesCache release];
+    ROIsImagesCache = [roisImagesArray retain];
+    
+    [lastROIsImagesSelectedFiles release];
+    lastROIsImagesSelectedFiles = [selectedItems retain];
+    
 	return roisImagesArray;
 }
 
@@ -19090,17 +19133,28 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	NSMutableArray *selectedItems = [NSMutableArray array];
 	
-	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) [self filesForDatabaseMatrixSelection: selectedItems];
-	else [self filesForDatabaseOutlineSelection: selectedItems];
+	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
+        [self filesForDatabaseMatrixSelection: selectedItems];
+	else
+        [self filesForDatabaseOutlineSelection: selectedItems];
 	
+    if( [selectedItems isEqual: lastKeyImagesSelectedFiles] && KeyImagesCache)
+        return KeyImagesCache;
+    
 	NSMutableArray *keyImagesArray = [NSMutableArray array];
 	
 	for( NSManagedObject *image in selectedItems)
-	{					
+	{
 		if( [[image valueForKey:@"isKeyImage"] boolValue] == YES)
 			[keyImagesArray addObject: image];
 	}
 	
+    [KeyImagesCache release];
+    KeyImagesCache = [keyImagesArray retain];
+    
+    [lastKeyImagesSelectedFiles release];
+    lastKeyImagesSelectedFiles = [selectedItems retain];
+    
 	return keyImagesArray;
 }
 
