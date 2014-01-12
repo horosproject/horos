@@ -157,9 +157,11 @@ static NSString *dragType = @"Osirix Series Viewer Drag";
     {
         [[cell target] performSelector: [cell action] withObject: self];
         
-        ViewerController *v = [cell target];
-        
-        [v fullScreenMenu: self];
+        if( [cell action] == @selector( matrixPreviewPressed:))
+        {
+            ViewerController *v = [cell target];
+            [v fullScreenMenu: self];
+        }
     }
     @catch (NSException *exception) {
         N2LogException( exception);
