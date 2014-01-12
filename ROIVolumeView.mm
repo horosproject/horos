@@ -322,13 +322,17 @@
     vtkMapper *mapper = nil;
     
     NSMutableArray *generatedROIs = [NSMutableArray array];
-    NSMutableArray *ptsArray = [NSMutableArray array];
+    NSMutableArray *ptsArray = nil;
     
 //    display an error !
     
     NSString *error = 0L;
     
-    float volume = [vc computeVolume: roi points: &ptsArray generateMissingROIs: YES generatedROIs: generatedROIs computeData: statistics error: &error];
+    NSMutableArray **ptsPtr = nil;
+    if( [[NSUserDefaults standardUserDefaults] integerForKey:@"UseDelaunayFor3DRoi"] != 2)
+        ptsPtr = &ptsArray;
+    
+    float volume = [vc computeVolume: roi points: ptsPtr generateMissingROIs: YES generatedROIs: generatedROIs computeData: statistics error: &error];
     
     if( error || volume == 0) {
         
@@ -340,7 +344,7 @@
     }
     
     vtkPolyData *profile = nil;
-    if( [[NSUserDefaults standardUserDefaults] boolForKey:@"UseDelaunayFor3DRoi"] != 2)
+    if( [[NSUserDefaults standardUserDefaults] integerForKey:@"UseDelaunayFor3DRoi"] != 2)
     {
         vtkPoints *points = vtkPoints::New();
         long i = 0;
@@ -729,7 +733,7 @@
     {
         N2LogExceptionWithStackTrace(e);
         
-        if( [[NSUserDefaults standardUserDefaults] integerForKey:@"UseDelaunayFor3DRoi"] != 0) // Iso Contour
+        if( [[NSUserDefaults standardUserDefaults] integerForKey:@"UseDelaunayFor3DRoi"] != 2) // Iso Contour
         {
             [[NSUserDefaults standardUserDefaults] setInteger: 2 forKey:@"UseDelaunayFor3DRoi"];
             [self renderVolume];

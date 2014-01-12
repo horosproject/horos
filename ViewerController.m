@@ -19958,6 +19958,8 @@ int i,j,l;
 		
 		location = x * sliceInterval;
 		
+        // TODO : convert to NSOperation: ITKSegmentation3D extractContour is slow
+        
 		for( int i = 0; i < [[roiList[curMovieIndex] objectAtIndex: x] count]; i++)
 		{
 			curROI = [[roiList[curMovieIndex] objectAtIndex: x] objectAtIndex: i];
@@ -20259,9 +20261,11 @@ int i,j,l;
                 gdev = gdev / (double) (memSize-1);
                 gdev = sqrt( gdev);
                 
-                gskewness = [DCMPix skewness: totalPtr length: memSize mean: gmean];
-                gkurtosis = [DCMPix kurtosis: totalPtr length: memSize mean: gmean];
-                
+                if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ROIComputeSkewnessAndKurtosis"])
+                {
+                    gskewness = [DCMPix skewness: totalPtr length: memSize mean: gmean];
+                    gkurtosis = [DCMPix kurtosis: totalPtr length: memSize mean: gmean];
+                }
 			}
             
 			free( totalPtr);
@@ -20271,8 +20275,11 @@ int i,j,l;
 			[data setObject: [NSNumber numberWithDouble: gmean] forKey:@"mean"];
 			[data setObject: [NSNumber numberWithDouble: gtotal] forKey:@"total"];
 			[data setObject: [NSNumber numberWithDouble: gdev] forKey:@"dev"];
-            [data setObject: [NSNumber numberWithDouble: gskewness] forKey:@"skewness"];
-            [data setObject: [NSNumber numberWithDouble: gkurtosis] forKey:@"kurtosis"];
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ROIComputeSkewnessAndKurtosis"])
+            {
+                [data setObject: [NSNumber numberWithDouble: gskewness] forKey:@"skewness"];
+                [data setObject: [NSNumber numberWithDouble: gkurtosis] forKey:@"kurtosis"];
+            }
             [data setObject: [NSNumber numberWithDouble: fabs( volume)] forKey:@"volume"];
 			[data setObject: rois forKey:@"rois"];
 		}
