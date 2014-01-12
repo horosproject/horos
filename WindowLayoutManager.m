@@ -134,7 +134,7 @@ static WindowLayoutManager *sharedLayoutManager = nil;
 
 + (NSArray*) hangingProtocolsForModality: (NSString*) modality
 {
-    NSArray *hangingProtocolArray = [NSArray array];
+    NSArray *hangingProtocolArray = nil;
     for( NSString *hangingModality in [[[NSUserDefaults standardUserDefaults] objectForKey: @"HANGINGPROTOCOLS"] allKeys])
     {
         if( [modality rangeOfString: hangingModality].location != NSNotFound)

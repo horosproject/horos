@@ -454,7 +454,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
     float dx = x - p.x;
     float dy = y - p.y;
     
-    float length = sqrtf(dx*dx + dy*dy);
+//    float length = sqrtf(dx*dx + dy*dy);
     
     return NSMakePoint( x, y);
 }
@@ -462,7 +462,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 +(NSPoint) positionAtDistance: (float) distance inPolygon:(NSArray*) points
 {
 	int i = 0;
-	float previousPosition, position = 0, ratio;
+	float position = 0, ratio;
 	NSPoint p;
 	
 	if( [points count] == 0)
@@ -478,7 +478,6 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	
 	if( position < distance)
 	{
-		previousPosition = position;
 		position += [ROI lengthBetween:[[points objectAtIndex:i] point] and:[[points objectAtIndex:0] point]];
 		i++;
 	}
@@ -868,8 +867,10 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 		
 		c->textureBuffer = (unsigned char*) malloc( textureWidth*textureHeight*sizeof(unsigned char));
         if( c->textureBuffer == nil)
+        {
+            [c autorelease];
             return nil;
-        
+        }
 		if( c->textureBuffer && textureBuffer)
 			memcpy( c->textureBuffer, textureBuffer, textureWidth*textureHeight*sizeof(unsigned char));
 	}
@@ -2623,10 +2624,10 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 			points = [pts copy];
 		}
 		
-		float ratio = [[self pix] pixelRatio];
-		
-		if( ratio == 0)
-			ratio = 1.0;
+//		float ratio = [[self pix] pixelRatio];
+//		
+//		if( ratio == 0)
+//			ratio = 1.0;
 		
         NSPoint centroid = self.centroid;
         

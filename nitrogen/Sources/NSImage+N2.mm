@@ -319,13 +319,14 @@ end_size_y:
 				NSLog( @"***** imageByScalingProportionallyToSize : targetWidth == 0 || targetHeight == 0");
 			
 			float scaleFactor  = 0.0;
-			float scaledWidth  = targetWidth;
-			float scaledHeight = targetHeight;
+
 			
 			NSPoint thumbnailPoint = NSZeroPoint;
 			
 			if( NSEqualSizes( imageSize, targetSize) == NO)
 			{
+                float scaledWidth  = targetWidth;
+                float scaledHeight = targetHeight;
 				float widthFactor  = targetWidth / width;
 				float heightFactor = targetHeight / height;
 				

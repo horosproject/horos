@@ -733,7 +733,7 @@ static NSMutableArray *recentNonces;
 		}
 	}
 	
-	CFHTTPMessageRef response;
+	CFHTTPMessageRef response = nil;
 	
 	if(!isRangeRequest)
 	{
@@ -863,7 +863,8 @@ static NSMutableArray *recentNonces;
 		}
 	}
 	
-	CFRelease(response);
+    if( response)
+        CFRelease(response);
 }
 
 /**

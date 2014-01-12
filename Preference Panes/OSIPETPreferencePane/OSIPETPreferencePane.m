@@ -98,9 +98,6 @@
 
 - (void) mainViewDidLoad
 {
-	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-
-
 	[minimumValueText setIntValue: [[NSUserDefaults standardUserDefaults] integerForKey:@"PETMinimumValue"]];
 	[WindowingModeMatrix selectCellWithTag: [[NSUserDefaults standardUserDefaults] integerForKey:@"PETWindowingMode"]];
 	

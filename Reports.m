@@ -892,7 +892,7 @@ static int Pages5orHigher = -1;
         NSString *templateDirectory = [NSString pathWithComponents:templateDirectoryPathArray];
         NSDirectoryEnumerator *directoryEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:templateDirectory];
         
-        NSMutableArray *templatesArray = [NSMutableArray arrayWithCapacity:1];
+//        NSMutableArray *templatesArray = [NSMutableArray arrayWithCapacity:1];
         id file;
         while ((file = [directoryEnumerator nextObject]))
         {
@@ -912,7 +912,7 @@ static int Pages5orHigher = -1;
     NSString *templateDirectory = [NSString pathWithComponents:templateDirectoryPathArray];
     NSDirectoryEnumerator *directoryEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:templateDirectory];
     
-    NSMutableArray *templatesArray = [NSMutableArray arrayWithCapacity:1];
+//    NSMutableArray *templatesArray = [NSMutableArray arrayWithCapacity:1];
     id file;
     while ((file = [directoryEnumerator nextObject]))
     {

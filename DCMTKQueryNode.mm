@@ -1426,7 +1426,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                                                                  NSArray *subArray = [imagesUIDsWithoutSeriesInstanceUID subarrayWithRange: range];
                                                                  
                                                                  dataset.putAndInsertString(DCM_QueryRetrieveLevel, "IMAGE");
-                                                                 dataset.putAndInsertOFStringArray(DCM_SOPInstanceUID, [[imagesUIDsWithoutSeriesInstanceUID componentsJoinedByString:@"\\"] UTF8String]);
+                                                                 dataset.putAndInsertOFStringArray(DCM_SOPInstanceUID, [[subArray componentsJoinedByString:@"\\"] UTF8String]);
                                                                  dataset.putAndInsertOFStringArray(DCM_StudyInstanceUID, [studyInstanceUID UTF8String]);
                                                                  
                                                                  if( [[dict valueForKey: @"retrieveMode"] intValue] == CGETRetrieveMode && retrieveMode == CGETRetrieveMode)

@@ -691,8 +691,10 @@ PixelRepresentation
 		*byteOffset = [self readDataSet:dicomData lengthToRead:lengthToRead byteOffset:byteOffset];
 		
 		if (*byteOffset == 0xFFFFFFFF)
+        {
+            [self autorelease];
 			self = nil;
-		
+		}
 		if (DCMDEBUG)
 			NSLog(@"end readDataSet byteOffset: %d", *byteOffset);
 		[dicomData release];
@@ -1469,6 +1471,9 @@ PixelRepresentation
 			{
 				if (DCMDEBUG)
 					NSLog(@"Anonymize Values: %@ to value: %@", attr.description, [newValue description]);
+                
+                if( newValue == nil)
+                    newValue = [NSNull null];
 				[values replaceObjectAtIndex:index withObject:newValue];
 			}
 		}	

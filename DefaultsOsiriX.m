@@ -189,6 +189,9 @@ static NSHost *currentHost = nil;
 	// First we're going to grab the online displays
 	CGGetOnlineDisplayList(MAXDISPLAYS, displays, &displayCount);
 	
+    if( displayCount <= 0)
+        return 0;
+    
 	// Now we iterate through them
 	for(i = 0; i < displayCount; i++)
 		dspPorts[i] = CGDisplayIOServicePort(displays[i]);

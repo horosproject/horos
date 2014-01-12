@@ -29,7 +29,7 @@
     while( [[NSFileManager defaultManager] fileExistsAtPath: trashPath])
         trashPath = [originalTrashPath stringByAppendingFormat: @" %d", i++];
         
-	BOOL success = [[NSFileManager defaultManager] moveItemAtPath:path toPath:trashPath error:&error];
+    [[NSFileManager defaultManager] moveItemAtPath:path toPath:trashPath error:&error];
 }
 
 -(NSString*)findSystemFolderOfType:(int)folderType forDomain:(int)domain {

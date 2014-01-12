@@ -67,8 +67,10 @@
 		*byteOffset = [self readDataSet:dicomData toGroup:(unsigned short)lastGroup byteOffset:byteOffset];
 		
 		if (*byteOffset == 0xFFFFFFFF)
-			self = nil;
-		
+        {
+			[self autorelease];
+            self = nil;
+		}
 		if (DCMDEBUG)
 			NSLog(@"end readDataSet byteOffset: %d", *byteOffset);
 		[dicomData release];
