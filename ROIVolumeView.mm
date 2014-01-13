@@ -276,19 +276,31 @@
 
 -(id)initWithFrame:(NSRect)frame
 {
-    if ( self = [super initWithFrame:frame] )
+    if ( self = [super initWithFrame:frame])
     {
 		NSLog(@"init ROIVolumeView");
-		NSNotificationCenter *nc;
-		nc = [NSNotificationCenter defaultCenter];
-		[nc addObserver: self
+        
+		[[NSNotificationCenter defaultCenter] addObserver: self
 			   selector: @selector(CloseViewerNotification:)
 				   name: OsirixCloseViewerNotification
 				 object: nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name: NSWindowWillCloseNotification object: [self window]];
+        
 		computeMedialSurface = NO;
     }
     
     return self;
+}
+
+- (void)windowWillClose:(NSNotification *)notification
+{
+	if( [self window] && [self window] == [notification object])
+	{
+		[[NSNotificationCenter defaultCenter] removeObserver: self];
+        
+        [self prepareForRelease]; //Very important: VTK memory leak !
+	}
 }
 
 -(void)dealloc
@@ -297,10 +309,18 @@
 		
     [[NSNotificationCenter defaultCenter] removeObserver: self];
 	
-	roiVolumeActor->Delete();
-	texture->Delete();
-	if( orientationWidget)
+    if( roiVolumeActor)
+    {
+        aRenderer->RemoveActor( roiVolumeActor);
+        roiVolumeActor->Delete();
+    }
+	
+    if( texture)
+        texture->Delete();
+	
+    if( orientationWidget)
 		orientationWidget->Delete();
+    
     [roi release];
     [super dealloc];
 }
