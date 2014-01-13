@@ -2159,7 +2159,7 @@ CA
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
                                                             <tableView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" selectionHighlightStyle="sourceList" columnReordering="NO" columnResizing="NO" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" headerView="13477" id="11693">
-                                                                <rect key="frame" x="0.0" y="0.0" width="190" height="360"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="190" height="356"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                                 <color key="backgroundColor" name="_sourceListBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -4115,7 +4115,7 @@ update to OsiriX 64-bit:</string>
                             <binding destination="12768" name="value" keyPath="selection.subFrom" id="14518"/>
                         </connections>
                     </textField>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="14481">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="14481">
                         <rect key="frame" x="52" y="193" width="21" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="right" title="To:" id="14492">
@@ -4136,7 +4136,7 @@ update to OsiriX 64-bit:</string>
                             <binding destination="12768" name="value" keyPath="selection.subTo" id="14519"/>
                         </connections>
                     </textField>
-                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="14483">
+                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="14483">
                         <rect key="frame" x="78" y="123" width="324" height="58"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>

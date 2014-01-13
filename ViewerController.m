@@ -19952,7 +19952,8 @@ int i,j,l;
 	ROI *fROI = nil, *lROI = nil;
 	int	fROIIndex, lROIIndex;
 	ROI	*curROI = nil;
-	
+	NSOperationQueue* queue = [[[NSOperationQueue alloc] init] autorelease];
+    
 	for( int x = 0; x < [pixList[curMovieIndex] count]; x++)
 	{
 		DCMPix	*curDCM = [pixList[curMovieIndex] objectAtIndex: x];
@@ -19997,32 +19998,37 @@ int i,j,l;
 				
 				if( pts)
 				{
-					NSMutableArray	*points = nil;
-					
-					if( [curROI type] == tPlain)
-					{
-						points = [ITKSegmentation3D extractContour:[curROI textureBuffer] width:[curROI textureWidth] height:[curROI textureHeight] numPoints: 100 largestRegion: NO];
-						
-						float mx = [curROI textureUpLeftCornerX], my = [curROI textureUpLeftCornerY];
-						
-						for( int zz = 0; zz < [points count]; zz++)
-						{
-							MyPoint	*pt = [points objectAtIndex: zz];
-							[pt move: mx :my];
-						}
-					}
-					else points = [curROI splinePoints];
-					
-					for( int y = 0; y < [points count]; y++)
-					{
-						float location[ 3];
-						
-						[curDCM convertPixX: [[points objectAtIndex: y] x] pixY: [[points objectAtIndex: y] y] toDICOMCoords: location pixelCenter: YES];
-						
-						NSArray	*pt3D = [NSArray arrayWithObjects: [NSNumber numberWithFloat: location[0]], [NSNumber numberWithFloat:location[1]], [NSNumber numberWithFloat:location[2]], nil];
-						
-						[*pts addObject: pt3D];
-					}
+                    [queue addOperationWithBlock:^{
+                        NSMutableArray	*points = nil;
+                        
+                        if( [curROI type] == tPlain)
+                        {
+                            points = [ITKSegmentation3D extractContour:[curROI textureBuffer] width:[curROI textureWidth] height:[curROI textureHeight] numPoints: 100 largestRegion: NO];
+                            
+                            float mx = [curROI textureUpLeftCornerX], my = [curROI textureUpLeftCornerY];
+                            
+                            for( int zz = 0; zz < [points count]; zz++)
+                            {
+                                MyPoint	*pt = [points objectAtIndex: zz];
+                                [pt move: mx :my];
+                            }
+                        }
+                        else points = [curROI splinePoints];
+                        
+                        for( int y = 0; y < [points count]; y++)
+                        {
+                            float location[ 3];
+                            
+                            [curDCM convertPixX: [[points objectAtIndex: y] x] pixY: [[points objectAtIndex: y] y] toDICOMCoords: location pixelCenter: YES];
+                            
+                            NSArray	*pt3D = [NSArray arrayWithObjects: [NSNumber numberWithFloat: location[0]], [NSNumber numberWithFloat:location[1]], [NSNumber numberWithFloat:location[2]], nil];
+                            
+                            @synchronized( self)
+                            {
+                                [*pts addObject: pt3D];
+                            }
+                        }
+                    }];
 				}
 				
 				if( lastROI && (lastImageIndex+1) < x)
@@ -20048,6 +20054,11 @@ int i,j,l;
 			return 0;
 		}
 	}
+    
+    while (queue.operationCount)
+    {
+        [NSThread sleepForTimeInterval:0.05];
+    }
 	
     if( volume == 0)
     {
