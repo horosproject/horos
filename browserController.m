@@ -7687,6 +7687,8 @@ static NSConditionLock *threadLock = nil;
                         [ViewerController activateSYNCSERIESBetweenStudies];
                     
                     [ToolbarPanelController checkForValidToolbar];
+                    
+                    [[displayedViewers lastObject] redrawToolbar];
                 }
             }
 		}

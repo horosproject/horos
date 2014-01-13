@@ -4211,11 +4211,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             if( clickCount > 1 && _mouseDownTimer)
                 [self deleteMouseDownTimer];
             
-			if( clickCount > 1 && [self window] == [[BrowserController currentBrowser] window])
+			if( clickCount == 2 && [self window] == [[BrowserController currentBrowser] window])
 			{
 				[[BrowserController currentBrowser] matrixDoublePressed:nil];
 			}
-			else if( clickCount > 1 && ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSCommandKeyMask))
+			else if( clickCount == 2 && ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSCommandKeyMask))
 			{
 				if( [self is2DViewer] == YES)
 					[[self windowController] setKeyImage: self];
@@ -4233,7 +4233,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                         [self sync3DPosition];
                 }
 			}
-			else if( clickCount > 1 && stringID == nil)
+			else if( clickCount == 2 && stringID == nil)
 			{
 				if( [self is2DViewer] == YES)
                 {

@@ -3454,7 +3454,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
         StartingWindow = [self window];
         windowStyle = NSBorderlessWindowMask; 
-        contentRect = [[NSScreen mainScreen] frame];
+        contentRect = [self.window.screen frame];
         
         previousScaledFit = imageView.isScaledFit;
         previousFrameRect = StartingWindow.frame;
