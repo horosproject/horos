@@ -1571,6 +1571,14 @@ static NSConditionLock *threadLock = nil;
 		[self performSelectorOnMainThread:@selector(_observeDatabaseAddNotification:) withObject:notification waitUntilDone:NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
 	else
     {
+        [ROIsAndKeyImagesCache release]; ROIsAndKeyImagesCache = nil;
+        [ROIsImagesCache release]; ROIsImagesCache = nil;
+        [KeyImagesCache release]; KeyImagesCache = nil;
+        
+        [lastROIsAndKeyImagesSelectedFiles release]; lastROIsAndKeyImagesSelectedFiles = nil;
+        [lastROIsImagesSelectedFiles release]; lastROIsImagesSelectedFiles = nil;
+        [lastKeyImagesSelectedFiles release]; lastKeyImagesSelectedFiles = nil;
+        
         [self outlineViewRefresh];
         [self refreshAlbums];
         
