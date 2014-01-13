@@ -123,7 +123,7 @@ static int MacOSVersion109orHigher = -1;
 	if( [aNotification object] == [self window])
 	{
 		if( [[self window] isVisible] && viewer)
-            [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
+            [[self window] orderWindow: NSWindowAbove relativeTo: [[viewer window] windowNumber]];
 	}
 }
 
@@ -137,7 +137,7 @@ static int MacOSVersion109orHigher = -1;
 				[[viewer window] makeKeyAndOrderFront: self];
             
             if( viewer && viewer.window.windowNumber > 0)
-                [[self window] orderWindow: NSWindowBelow relativeTo: viewer.window.windowNumber];
+                [[self window] orderWindow: NSWindowAbove relativeTo: viewer.window.windowNumber];
             else
             {
                 [self.window orderOut: self];
@@ -151,7 +151,7 @@ static int MacOSVersion109orHigher = -1;
 	if( [aNotification object] == [self window])
 	{
 		if( [[self window] isVisible] && viewer)
-            [[self window] orderWindow: NSWindowBelow relativeTo: viewer.window.windowNumber];
+            [[self window] orderWindow: NSWindowAbove relativeTo: viewer.window.windowNumber];
 	}
 }
 
@@ -162,7 +162,7 @@ static int MacOSVersion109orHigher = -1;
 		[[viewer window] makeKeyAndOrderFront: self];
         
 		if( [[self window] isVisible] && viewer)
-            [[self window] orderWindow: NSWindowBelow relativeTo: viewer.window.windowNumber];
+            [[self window] orderWindow: NSWindowAbove relativeTo: viewer.window.windowNumber];
         
 		return;
 	}
@@ -186,7 +186,7 @@ static int MacOSVersion109orHigher = -1;
 			if( [window screen] == [[NSScreen screens] objectAtIndex: screen])
 			{
                 if( viewer && viewer.window.windowNumber > 0)
-                    [[self window] orderWindow: NSWindowBelow relativeTo: viewer.window.windowNumber];
+                    [[self window] orderWindow: NSWindowAbove relativeTo: viewer.window.windowNumber];
 			}
 			else
 				[self.window orderOut:self];
@@ -247,7 +247,7 @@ static int MacOSVersion109orHigher = -1;
         if( tb == thumbnailsView)
         {
             if( tb && v && v.window.windowNumber > 0)
-                [[self window] orderWindow: NSWindowBelow relativeTo: [[v window] windowNumber]];
+                [[self window] orderWindow: NSWindowAbove relativeTo: [[v window] windowNumber]];
         
             if( tb)
             {
@@ -315,7 +315,7 @@ static int MacOSVersion109orHigher = -1;
             [self applicationDidChangeScreenParameters:nil];
             
             if( [[viewer window] isKeyWindow])
-                [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
+                [[self window] orderWindow: NSWindowAbove relativeTo: [[viewer window] windowNumber]];
         }
             
     }
