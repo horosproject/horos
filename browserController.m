@@ -287,7 +287,10 @@ static volatile BOOL waitForRunningProcess = NO;
         [albumTable setRowHeight: 13];
         [_sourcesTableView setRowHeight: 13];
         [databaseOutline setRowHeight: 13];
-        [comparativeTable setRowHeight: 24];
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"horizontalHistory"])
+            [comparativeTable setRowHeight: 12];
+        else
+            [comparativeTable setRowHeight: 24];
         [_activityTableView setRowHeight: 34];
         [oMatrix setCellSize: NSMakeSize( 105 * 0.8, 113 * 0.8)];
     }
@@ -297,7 +300,10 @@ static volatile BOOL waitForRunningProcess = NO;
         [albumTable setRowHeight: 17];
         [_sourcesTableView setRowHeight: 17];
         [databaseOutline setRowHeight: 17];
-        [comparativeTable setRowHeight: 29];
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"horizontalHistory"])
+            [comparativeTable setRowHeight: 14];
+        else
+            [comparativeTable setRowHeight: 29];
         [_activityTableView setRowHeight: 38];
         [oMatrix setCellSize: NSMakeSize( 105, 113)];
     }
@@ -307,7 +313,10 @@ static volatile BOOL waitForRunningProcess = NO;
         [albumTable setRowHeight: 25];
         [_sourcesTableView setRowHeight: 25];
         [databaseOutline setRowHeight: 22];
-        [comparativeTable setRowHeight: 43];
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"horizontalHistory"])
+            [comparativeTable setRowHeight: 21];
+        else
+            [comparativeTable setRowHeight: 43];
         [_activityTableView setRowHeight: 48];
         [oMatrix setCellSize: NSMakeSize( 105 * 1.3, 113 * 1.3)];
     }
@@ -10105,40 +10114,74 @@ static BOOL withReset = NO;
     
     if (sender == splitComparative)
     {
-        NSView* left = [[sender subviews] objectAtIndex:0];
-        NSView* right = [[sender subviews] objectAtIndex:1];
-        
-        NSRect splitFrame = [sender frame];
-        CGFloat dividerThickness = [sender dividerThickness];
-        CGFloat availableWidth = splitFrame.size.width - dividerThickness;
-        
-        NSRect leftFrame = [left frame];
-        NSRect rightFrame = [right frame];
-        
-        leftFrame.size.width -= oldSize.width - splitFrame.size.width;
-        rightFrame.size.width += oldSize.width - splitFrame.size.width;
-        
-#define MINIMUMSIZEFORCOMPARATIVEDRAWER 180
-        
-        if ([splitComparative isSubviewCollapsed: [[splitComparative subviews] objectAtIndex:1]] || [right isHidden])
-            leftFrame.size.width = availableWidth;
-        else if( rightFrame.size.width < MINIMUMSIZEFORCOMPARATIVEDRAWER || availableWidth - leftFrame.size.width < MINIMUMSIZEFORCOMPARATIVEDRAWER)
-            leftFrame.size.width = availableWidth - MINIMUMSIZEFORCOMPARATIVEDRAWER;
-        
-        if( leftFrame.size.width > availableWidth)
-            leftFrame.size.width = availableWidth;
-        
-        rightFrame.size.height = splitFrame.size.height;
-        rightFrame.origin.x = leftFrame.origin.x + leftFrame.size.width + dividerThickness;
-        rightFrame.size.width = availableWidth - leftFrame.size.width;
-        if( rightFrame.size.width >= 300)
-            rightFrame.size.width = 300;
-        [right setFrame:rightFrame];
-        
-        leftFrame.size.height = splitFrame.size.height;
-        leftFrame.size.width = availableWidth - rightFrame.size.width;
-        [left setFrame:leftFrame];
-        
+        #define MINIMUMSIZEFORCOMPARATIVEDRAWER_HORZ 50
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"horizontalHistory"])
+        {
+            NSView* top = [[sender subviews] objectAtIndex:0];
+            NSView* bottom = [[sender subviews] objectAtIndex:1];
+            
+            NSRect splitFrame = [sender frame];
+            CGFloat dividerThickness = [sender dividerThickness];
+            CGFloat availableHeight = splitFrame.size.height - dividerThickness;
+            
+            NSRect topFrame = [top frame];
+            NSRect bottomFrame = [bottom frame];
+            
+            topFrame.size.height -= oldSize.height - splitFrame.size.height;
+            bottomFrame.size.height += oldSize.height - splitFrame.size.height;
+            
+            if ([splitComparative isSubviewCollapsed: [[splitComparative subviews] objectAtIndex:0]] || [top isHidden])
+                bottomFrame.size.height = availableHeight;
+            else if( topFrame.size.height < MINIMUMSIZEFORCOMPARATIVEDRAWER_HORZ || availableHeight - bottomFrame.size.height < MINIMUMSIZEFORCOMPARATIVEDRAWER_HORZ)
+                bottomFrame.size.height = availableHeight - MINIMUMSIZEFORCOMPARATIVEDRAWER_HORZ;
+            
+            if( bottomFrame.size.height > availableHeight)
+                bottomFrame.size.height = availableHeight;
+            
+            bottomFrame.size.width = splitFrame.size.width;
+            bottomFrame.origin.y = topFrame.origin.y + topFrame.size.height + dividerThickness;
+            bottomFrame.size.height = availableHeight - topFrame.size.height;
+            [bottom setFrame:bottomFrame];
+            
+            topFrame.size.width = splitFrame.size.width;
+            topFrame.size.height = availableHeight - bottomFrame.size.height;
+            [top setFrame:topFrame];
+        }
+        else
+        {
+            #define MINIMUMSIZEFORCOMPARATIVEDRAWER 180
+            NSView* left = [[sender subviews] objectAtIndex:0];
+            NSView* right = [[sender subviews] objectAtIndex:1];
+            
+            NSRect splitFrame = [sender frame];
+            CGFloat dividerThickness = [sender dividerThickness];
+            CGFloat availableWidth = splitFrame.size.width - dividerThickness;
+            
+            NSRect leftFrame = [left frame];
+            NSRect rightFrame = [right frame];
+            
+            leftFrame.size.width -= oldSize.width - splitFrame.size.width;
+            rightFrame.size.width += oldSize.width - splitFrame.size.width;
+            
+            if ([splitComparative isSubviewCollapsed: [[splitComparative subviews] objectAtIndex:1]] || [right isHidden])
+                leftFrame.size.width = availableWidth;
+            else if( rightFrame.size.width < MINIMUMSIZEFORCOMPARATIVEDRAWER || availableWidth - leftFrame.size.width < MINIMUMSIZEFORCOMPARATIVEDRAWER)
+                leftFrame.size.width = availableWidth - MINIMUMSIZEFORCOMPARATIVEDRAWER;
+            
+            if( leftFrame.size.width > availableWidth)
+                leftFrame.size.width = availableWidth;
+            
+            rightFrame.size.height = splitFrame.size.height;
+            rightFrame.origin.x = leftFrame.origin.x + leftFrame.size.width + dividerThickness;
+            rightFrame.size.width = availableWidth - leftFrame.size.width;
+            if( rightFrame.size.width >= 300)
+                rightFrame.size.width = 300;
+            [right setFrame:rightFrame];
+            
+            leftFrame.size.height = splitFrame.size.height;
+            leftFrame.size.width = availableWidth - rightFrame.size.width;
+            [left setFrame:leftFrame];
+        }
         return;
     }
     
@@ -10218,9 +10261,19 @@ static BOOL withReset = NO;
     if (sender == splitDrawer && subview == [[splitDrawer subviews] objectAtIndex:1])
         return NO;
     
-    if (sender == splitComparative && subview == [[splitComparative subviews] objectAtIndex:0])
-        return NO;
-	
+    if (sender == splitComparative)
+    {
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"horizontalHistory"])
+        {
+            if( subview == [[splitComparative subviews] objectAtIndex: 1])
+                return NO;
+        }
+        else
+        {
+            if( subview == [[splitComparative subviews] objectAtIndex: 0])
+                return NO;
+        }
+	}
     if (sender == _bottomSplit)
         return NO;
     
@@ -10266,7 +10319,12 @@ static BOOL withReset = NO;
 	}
     
     if( sender == splitComparative)
-        return [sender bounds].size.width-300;
+    {
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"horizontalHistory"])
+            return MINIMUMSIZEFORCOMPARATIVEDRAWER_HORZ;
+        else
+            return [sender bounds].size.width-300;
+    }
     
     if ([sender isEqual: bannerSplit])
         return [sender frame].size.height - (banner.image.size.height+3);
@@ -10286,7 +10344,14 @@ static BOOL withReset = NO;
 		return 300;
     
     if (sender == splitComparative)
-		return [sender bounds].size.width-MINIMUMSIZEFORCOMPARATIVEDRAWER;
+    {
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"horizontalHistory"])
+        {
+            return [sender bounds].size.height-150;
+        }
+        else
+            return [sender bounds].size.width-MINIMUMSIZEFORCOMPARATIVEDRAWER;
+    }
     
     if (sender == bannerSplit)
         return [sender frame].size.height - (banner.image.size.height+3);
@@ -10991,6 +11056,7 @@ static BOOL needToRezoom;
                 
                 [cell setFont:txtFont];
                 cell.title = @"DUMMY"; // avoid NIL values here
+                
                 cell.leftTextFirstLine = [study studyName];
                 cell.rightTextFirstLine = [study modality];
                 cell.leftTextSecondLine = [[NSUserDefaults dateFormatter] stringFromDate: [study date]];
@@ -13739,8 +13805,23 @@ static NSArray*	openSubSeriesArray = nil;
         
     //	waitCompressionWindow  = [[Wait alloc] initWithString: NSLocalizedString( @"File Conversion", nil) :NO];
     //	[waitCompressionWindow setCancel:YES];
-            
         
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"horizontalHistory"])
+        {
+//            [splitComparative setVertical: NO];
+            
+            NSSplitView * s = [[NSSplitView alloc] initWithFrame: splitViewVert.bounds];
+            
+            [s setDelegate: self];
+            [s addSubview: comparativeScrollView];
+            [s addSubview: matrixView];
+            
+            
+            [splitViewVert addSubview: s];
+            [splitViewVert addSubview: imageView];
+            
+            splitComparative = s;
+        }
         [oMatrix setIntercellSpacing:NSMakeSize(-1, -1)];
         
         [wait showWindow:self];

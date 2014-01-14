@@ -92,24 +92,7 @@
     if (self.textColor) [mutableTitle addAttributes:[NSDictionary dictionaryWithObjectsAndKeys:self.textColor, NSForegroundColorAttributeName, nil] range:mutableTitle.range];
     title = mutableTitle;
     
-    // First Line
-    
-    if (self.rightTextFirstLine)
-    {
-        NSMutableDictionary* attributes = [[[self.attributedTitle attributesAtIndex:0 effectiveRange:NULL] mutableCopy] autorelease];
-        NSMutableParagraphStyle* rightAlignmentParagraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
-        [rightAlignmentParagraphStyle setAlignment:NSRightTextAlignment];
-        [attributes setObject:rightAlignmentParagraphStyle forKey:NSParagraphStyleAttributeName];
-
-        frame.origin.y += 1;
-        [self.rightTextFirstLine drawInRect:frame withAttributes:attributes];
-        frame.origin.y -= 1;
-        
-        CGFloat w = [self.rightTextFirstLine sizeWithAttributes:attributes].width;
-        frame.size.width -= w + spacer;
-    }
-    
-    if (true)
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"horizontalHistory"])
     {
         NSMutableDictionary* attributes = [[[self.attributedTitle attributesAtIndex:0 effectiveRange:NULL] mutableCopy] autorelease];
         
@@ -120,6 +103,21 @@
             [attributes setObject:[color blendedColorWithFraction:0.4 ofColor:[NSColor colorWithCalibratedWhite:0.5 alpha:1]] forKey:NSForegroundColorAttributeName];
         }
         
+        if (self.leftTextSecondLine.length)
+        {
+            NSMutableDictionary* attributes = [[[self.attributedTitle attributesAtIndex:0 effectiveRange:NULL] mutableCopy] autorelease];
+            NSMutableParagraphStyle* leftAlignmentParagraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
+            [leftAlignmentParagraphStyle setAlignment:NSLeftTextAlignment];
+            [leftAlignmentParagraphStyle setLineBreakMode: NSLineBreakByTruncatingTail];
+            [attributes setObject:leftAlignmentParagraphStyle forKey:NSParagraphStyleAttributeName];
+            
+            frame.origin.y += 1;
+            [self.leftTextSecondLine drawInRect:frame withAttributes:attributes];
+            frame.origin.y -= 1;
+        }
+        
+        frame.origin.x += 150;
+        
         NSMutableParagraphStyle* leftAlignmentParagraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
         [leftAlignmentParagraphStyle setAlignment:NSLeftTextAlignment];
         [leftAlignmentParagraphStyle setLineBreakMode: NSLineBreakByTruncatingTail];
@@ -128,37 +126,108 @@
         frame.origin.y += 1;
         [text drawInRect:frame withAttributes:attributes];
         frame.origin.y -= 1;
+        
+        frame.origin.x += 300;
+        
+        if (self.rightTextSecondLine.length)
+        {
+            NSMutableDictionary* attributes = [[[self.attributedTitle attributesAtIndex:0 effectiveRange:NULL] mutableCopy] autorelease];
+            NSMutableParagraphStyle* rightAlignmentParagraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
+            [rightAlignmentParagraphStyle setAlignment:NSLeftTextAlignment];
+            [attributes setObject:rightAlignmentParagraphStyle forKey:NSParagraphStyleAttributeName];
+            
+            frame.origin.y += 1;
+            [self.rightTextSecondLine drawInRect:frame withAttributes:attributes];
+            frame.origin.y -= 1;
+            
+            CGFloat w = [self.rightTextSecondLine sizeWithAttributes:attributes].width;
+        }
+        
+        frame.origin.x += 150;
+        
+        if (self.rightTextFirstLine)
+        {
+            NSMutableDictionary* attributes = [[[self.attributedTitle attributesAtIndex:0 effectiveRange:NULL] mutableCopy] autorelease];
+            NSMutableParagraphStyle* rightAlignmentParagraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
+            [rightAlignmentParagraphStyle setAlignment:NSLeftTextAlignment];
+            [attributes setObject:rightAlignmentParagraphStyle forKey:NSParagraphStyleAttributeName];
+            
+            frame.origin.y += 1;
+            [self.rightTextFirstLine drawInRect:frame withAttributes:attributes];
+            frame.origin.y -= 1;
+            
+            CGFloat w = [self.rightTextFirstLine sizeWithAttributes:attributes].width;
+        }
     }
-    
-    // Second Line
-    frame = initialFrame;
-    
-    if (self.rightTextSecondLine)
+    else
     {
-        NSMutableDictionary* attributes = [[[self.attributedTitle attributesAtIndex:0 effectiveRange:NULL] mutableCopy] autorelease];
-        NSMutableParagraphStyle* rightAlignmentParagraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
-        [rightAlignmentParagraphStyle setAlignment:NSRightTextAlignment];
-        [attributes setObject:rightAlignmentParagraphStyle forKey:NSParagraphStyleAttributeName];
+        // First Line
+        if (self.rightTextFirstLine)
+        {
+            NSMutableDictionary* attributes = [[[self.attributedTitle attributesAtIndex:0 effectiveRange:NULL] mutableCopy] autorelease];
+            NSMutableParagraphStyle* rightAlignmentParagraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
+            [rightAlignmentParagraphStyle setAlignment:NSRightTextAlignment];
+            [attributes setObject:rightAlignmentParagraphStyle forKey:NSParagraphStyleAttributeName];
+
+            frame.origin.y += 1;
+            [self.rightTextFirstLine drawInRect:frame withAttributes:attributes];
+            frame.origin.y -= 1;
+            
+            CGFloat w = [self.rightTextFirstLine sizeWithAttributes:attributes].width;
+            frame.size.width -= w + spacer;
+        }
         
-        initialFrame.origin.y += [[BrowserController currentBrowser] fontSize: @"comparativeLineSpace"];
-        [self.rightTextSecondLine drawInRect:initialFrame withAttributes:attributes];
-        initialFrame.origin.y -= [[BrowserController currentBrowser] fontSize: @"comparativeLineSpace"];
+        if (true)
+        {
+            NSMutableDictionary* attributes = [[[self.attributedTitle attributesAtIndex:0 effectiveRange:NULL] mutableCopy] autorelease];
+            
+            NSString* text = self.leftTextFirstLine;
+            if (!text.length) {
+                NSColor* color = [attributes valueForKey:NSForegroundColorAttributeName];
+                text = @"Unnamed";
+                [attributes setObject:[color blendedColorWithFraction:0.4 ofColor:[NSColor colorWithCalibratedWhite:0.5 alpha:1]] forKey:NSForegroundColorAttributeName];
+            }
+            
+            NSMutableParagraphStyle* leftAlignmentParagraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
+            [leftAlignmentParagraphStyle setAlignment:NSLeftTextAlignment];
+            [leftAlignmentParagraphStyle setLineBreakMode: NSLineBreakByTruncatingTail];
+            [attributes setObject:leftAlignmentParagraphStyle forKey:NSParagraphStyleAttributeName];
+            
+            frame.origin.y += 1;
+            [text drawInRect:frame withAttributes:attributes];
+            frame.origin.y -= 1;
+        }
         
-        CGFloat w = [self.rightTextSecondLine sizeWithAttributes:attributes].width;
-        frame.size.width -= w + spacer;
-    }
-    
-    if (self.leftTextSecondLine)
-    {
-        NSMutableDictionary* attributes = [[[self.attributedTitle attributesAtIndex:0 effectiveRange:NULL] mutableCopy] autorelease];
-        NSMutableParagraphStyle* leftAlignmentParagraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
-        [leftAlignmentParagraphStyle setAlignment:NSLeftTextAlignment];
-        [leftAlignmentParagraphStyle setLineBreakMode: NSLineBreakByTruncatingTail];
-        [attributes setObject:leftAlignmentParagraphStyle forKey:NSParagraphStyleAttributeName];
+        // Second Line
+        frame = initialFrame;
         
-        frame.origin.y += [[BrowserController currentBrowser] fontSize: @"comparativeLineSpace"];
-        [self.leftTextSecondLine drawInRect:frame withAttributes:attributes];
-        frame.origin.y -= [[BrowserController currentBrowser] fontSize: @"comparativeLineSpace"];
+        if (self.rightTextSecondLine.length)
+        {
+            NSMutableDictionary* attributes = [[[self.attributedTitle attributesAtIndex:0 effectiveRange:NULL] mutableCopy] autorelease];
+            NSMutableParagraphStyle* rightAlignmentParagraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
+            [rightAlignmentParagraphStyle setAlignment:NSRightTextAlignment];
+            [attributes setObject:rightAlignmentParagraphStyle forKey:NSParagraphStyleAttributeName];
+            
+            initialFrame.origin.y += [[BrowserController currentBrowser] fontSize: @"comparativeLineSpace"];
+            [self.rightTextSecondLine drawInRect:initialFrame withAttributes:attributes];
+            initialFrame.origin.y -= [[BrowserController currentBrowser] fontSize: @"comparativeLineSpace"];
+            
+            CGFloat w = [self.rightTextSecondLine sizeWithAttributes:attributes].width;
+            frame.size.width -= w + spacer;
+        }
+        
+        if (self.leftTextSecondLine.length)
+        {
+            NSMutableDictionary* attributes = [[[self.attributedTitle attributesAtIndex:0 effectiveRange:NULL] mutableCopy] autorelease];
+            NSMutableParagraphStyle* leftAlignmentParagraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
+            [leftAlignmentParagraphStyle setAlignment:NSLeftTextAlignment];
+            [leftAlignmentParagraphStyle setLineBreakMode: NSLineBreakByTruncatingTail];
+            [attributes setObject:leftAlignmentParagraphStyle forKey:NSParagraphStyleAttributeName];
+            
+            frame.origin.y += [[BrowserController currentBrowser] fontSize: @"comparativeLineSpace"];
+            [self.leftTextSecondLine drawInRect:frame withAttributes:attributes];
+            frame.origin.y -= [[BrowserController currentBrowser] fontSize: @"comparativeLineSpace"];
+        }
     }
     
     return initialFrame;

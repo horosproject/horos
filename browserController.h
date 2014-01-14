@@ -48,7 +48,7 @@ extern NSString* O2AlbumDragType;
 
 @interface BrowserController : NSWindowController
 #if (MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5)
-<NSTableViewDelegate, NSDrawerDelegate, NSMatrixDelegate, NSToolbarDelegate, NSMenuDelegate>   //NSObject
+<NSTableViewDelegate, NSDrawerDelegate, NSMatrixDelegate, NSToolbarDelegate, NSMenuDelegate,NSSplitViewDelegate>   //NSObject
 #endif
 {
 	DicomDatabase*					_database;
@@ -118,6 +118,8 @@ extern NSString* O2AlbumDragType;
     IBOutlet NSSplitView*           _bottomSplit;
     
     IBOutlet PreviewView			*imageView;
+    IBOutlet NSView                 *matrixView;
+    IBOutlet NSView                 *comparativeScrollView;
 	
 	int								subFrom, subTo, subInterval, subMax;
 	
