@@ -10138,14 +10138,14 @@ static BOOL withReset = NO;
             if( bottomFrame.size.height > availableHeight)
                 bottomFrame.size.height = availableHeight;
             
-            bottomFrame.size.width = splitFrame.size.width;
-            bottomFrame.origin.y = topFrame.origin.y + topFrame.size.height + dividerThickness;
-            bottomFrame.size.height = availableHeight - topFrame.size.height;
-            [bottom setFrame:bottomFrame];
-            
             topFrame.size.width = splitFrame.size.width;
-            topFrame.size.height = availableHeight - bottomFrame.size.height;
+            topFrame.size.height = availableHeight - (bottomFrame.size.height + dividerThickness);
             [top setFrame:topFrame];
+            
+            bottomFrame.size.width = splitFrame.size.width;
+            bottomFrame.size.height = availableHeight - topFrame.size.height;
+            bottomFrame.origin.y = topFrame.origin.y + topFrame.size.height + dividerThickness;
+            [bottom setFrame:bottomFrame];
         }
         else
         {
