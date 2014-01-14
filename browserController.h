@@ -302,6 +302,7 @@ extern NSString* O2AlbumDragType;
 + (NSMutableString*) replaceNotAdmitted: (NSString*)name;
 + (NSArray*) statesArray;
 + (void) updateActivity;
++ (BOOL) horizontalHistory;
 + (BOOL) isHardDiskFull __deprecated;
 + (NSData*) produceJPEGThumbnail:(NSImage*) image;
 + (int) DefaultFolderSizeForDB;

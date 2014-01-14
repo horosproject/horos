@@ -263,6 +263,7 @@ static NSString*	AddStudiesToUserItemIdentifier	= @"NSUserAccounts";
 
 static NSTimeInterval gLastActivity = 0;
 static BOOL dontShowOpenSubSeries = NO;
+static BOOL gHorizontalHistory = NO;
 
 static NSArray*	statesArray = nil;
 
@@ -287,8 +288,8 @@ static volatile BOOL waitForRunningProcess = NO;
         [albumTable setRowHeight: 13];
         [_sourcesTableView setRowHeight: 13];
         [databaseOutline setRowHeight: 13];
-        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"horizontalHistory"])
-            [comparativeTable setRowHeight: 12];
+        if( gHorizontalHistory)
+            [comparativeTable setRowHeight: 13];
         else
             [comparativeTable setRowHeight: 24];
         [_activityTableView setRowHeight: 34];
@@ -300,8 +301,8 @@ static volatile BOOL waitForRunningProcess = NO;
         [albumTable setRowHeight: 17];
         [_sourcesTableView setRowHeight: 17];
         [databaseOutline setRowHeight: 17];
-        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"horizontalHistory"])
-            [comparativeTable setRowHeight: 14];
+        if( gHorizontalHistory)
+            [comparativeTable setRowHeight: 16];
         else
             [comparativeTable setRowHeight: 29];
         [_activityTableView setRowHeight: 38];
@@ -313,7 +314,7 @@ static volatile BOOL waitForRunningProcess = NO;
         [albumTable setRowHeight: 25];
         [_sourcesTableView setRowHeight: 25];
         [databaseOutline setRowHeight: 22];
-        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"horizontalHistory"])
+        if( gHorizontalHistory)
             [comparativeTable setRowHeight: 21];
         else
             [comparativeTable setRowHeight: 43];
@@ -486,6 +487,7 @@ static volatile BOOL waitForRunningProcess = NO;
 	return NO;
 }
 
++ (BOOL) horizontalHistory { return gHorizontalHistory;}
 + (BrowserController*) currentBrowser { return browserWindow; }
 + (NSArray*) statesArray { return statesArray; }
 + (void) updateActivity
@@ -10115,7 +10117,7 @@ static BOOL withReset = NO;
     if (sender == splitComparative)
     {
         #define MINIMUMSIZEFORCOMPARATIVEDRAWER_HORZ 50
-        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"horizontalHistory"])
+        if( gHorizontalHistory)
         {
             NSView* top = [[sender subviews] objectAtIndex:0];
             NSView* bottom = [[sender subviews] objectAtIndex:1];
@@ -10263,7 +10265,7 @@ static BOOL withReset = NO;
     
     if (sender == splitComparative)
     {
-        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"horizontalHistory"])
+        if( gHorizontalHistory)
         {
             if( subview == [[splitComparative subviews] objectAtIndex: 1])
                 return NO;
@@ -10282,7 +10284,7 @@ static BOOL withReset = NO;
 
 - (IBAction)comparativeToggle:(id)sender
 {
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"horizontalHistory"])
+    if( gHorizontalHistory)
     {
         NSView* top = [[splitComparative subviews] objectAtIndex:0];
         BOOL shouldExpand = [top isHidden] || [splitComparative isSubviewCollapsed:[[splitComparative subviews] objectAtIndex:0]];
@@ -10330,7 +10332,7 @@ static BOOL withReset = NO;
     
     if( sender == splitComparative)
     {
-        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"horizontalHistory"])
+        if( gHorizontalHistory)
             return MINIMUMSIZEFORCOMPARATIVEDRAWER_HORZ;
         else
             return [sender bounds].size.width-300;
@@ -10355,7 +10357,7 @@ static BOOL withReset = NO;
     
     if (sender == splitComparative)
     {
-        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"horizontalHistory"])
+        if( gHorizontalHistory)
         {
             return [sender bounds].size.height-150;
         }
@@ -13802,6 +13804,21 @@ static NSArray*	openSubSeriesArray = nil;
         
     //    NSLog( @"%@", [[NSFontManager sharedFontManager] availableFonts]);
         
+        gHorizontalHistory = [[NSUserDefaults standardUserDefaults] boolForKey: @"horizontalHistory"];
+        if( gHorizontalHistory)
+        {
+            NSSplitView * s = [[NSSplitView alloc] initWithFrame: splitViewVert.bounds];
+            
+            [s setDelegate: self];
+            [s addSubview: comparativeScrollView];
+            [s addSubview: matrixView];
+            
+            [splitViewVert addSubview: s];
+            [splitViewVert addSubview: imageView];
+            
+            splitComparative = s;
+        }
+        
         [self setTableViewRowHeight];
         
         [self saveLoadAlbumsSortDescriptors];
@@ -13816,22 +13833,7 @@ static NSArray*	openSubSeriesArray = nil;
     //	waitCompressionWindow  = [[Wait alloc] initWithString: NSLocalizedString( @"File Conversion", nil) :NO];
     //	[waitCompressionWindow setCancel:YES];
         
-        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"horizontalHistory"])
-        {
-//            [splitComparative setVertical: NO];
-            
-            NSSplitView * s = [[NSSplitView alloc] initWithFrame: splitViewVert.bounds];
-            
-            [s setDelegate: self];
-            [s addSubview: comparativeScrollView];
-            [s addSubview: matrixView];
-            
-            
-            [splitViewVert addSubview: s];
-            [splitViewVert addSubview: imageView];
-            
-            splitComparative = s;
-        }
+        
         [oMatrix setIntercellSpacing:NSMakeSize(-1, -1)];
         
         [wait showWindow:self];

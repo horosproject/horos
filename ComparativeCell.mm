@@ -92,7 +92,7 @@
     if (self.textColor) [mutableTitle addAttributes:[NSDictionary dictionaryWithObjectsAndKeys:self.textColor, NSForegroundColorAttributeName, nil] range:mutableTitle.range];
     title = mutableTitle;
     
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"horizontalHistory"])
+    if( [BrowserController horizontalHistory])
     {
         NSMutableDictionary* attributes = [[[self.attributedTitle attributesAtIndex:0 effectiveRange:NULL] mutableCopy] autorelease];
         

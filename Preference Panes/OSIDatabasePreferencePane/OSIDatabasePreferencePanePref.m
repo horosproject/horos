@@ -39,6 +39,7 @@
         
         [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath: @"values.eraseEntireDBAtStartup" options: NSKeyValueObservingOptionNew context:nil];
         [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath: @"values.dbFontSize" options: NSKeyValueObservingOptionNew context:nil];
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath: @"values.horizontalHistory" options: NSKeyValueObservingOptionNew context:nil];
 	}
 	
 	return self;
@@ -54,6 +55,11 @@
             {
                 NSRunCriticalAlertPanel( NSLocalizedString( @"Erase Entire Database", nil), NSLocalizedString( @"Warning! With this option, each time OsiriX is restarted, the entire database will be erased. All studies will be deleted. This cannot be undone.", nil), NSLocalizedString( @"OK", nil), nil, nil);
             }
+        }
+        
+        if ([keyPath isEqualToString:@"values.horizontalHistory" ])
+        {
+            NSRunCriticalAlertPanel( NSLocalizedString( @"Restart", nil), NSLocalizedString( @"Restart OsiriX to apply this change.", nil), NSLocalizedString( @"OK", nil), nil, nil);
         }
         
         if ([keyPath isEqualToString:@"values.dbFontSize"])
