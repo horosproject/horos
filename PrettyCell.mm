@@ -109,7 +109,7 @@
     if (self.textColor) [mutableTitle addAttributes:[NSDictionary dictionaryWithObjectsAndKeys:self.textColor, NSForegroundColorAttributeName, nil] range:mutableTitle.range];
     title = mutableTitle;
     
-    if (self.rightText) {
+    if (self.rightText.length && self.rightText.length < 100) {
         NSMutableDictionary* attributes = [[[self.attributedTitle attributesAtIndex:0 effectiveRange:NULL] mutableCopy] autorelease];
         NSMutableParagraphStyle* rightAlignmentParagraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
         [rightAlignmentParagraphStyle setAlignment:NSRightTextAlignment];

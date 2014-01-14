@@ -4664,15 +4664,15 @@ static volatile int numberOfThreadsForRelisce = 0;
         }
         else
         {
-        [curStudy setHidden: ![curStudy isHidden]];
-        
-        for( ViewerController *v in [ViewerController getDisplayed2DViewers])
-        {
-            if( [v.studyInstanceUID isEqualToString: self.studyInstanceUID])
-                [v buildMatrixPreview: NO];
-            else
-                [v buildMatrixPreview: YES];
-        }
+            [curStudy setHidden: ![curStudy isHidden]];
+            
+            for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+            {
+                if( [v.studyInstanceUID isEqualToString: self.studyInstanceUID])
+                    [v buildMatrixPreview: NO];
+                else
+                    [v buildMatrixPreview: YES];
+            }
         }
     }
     #ifndef OSIRIX_LIGHT
