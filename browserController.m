@@ -10127,8 +10127,8 @@ static BOOL withReset = NO;
             NSRect topFrame = [top frame];
             NSRect bottomFrame = [bottom frame];
             
-            topFrame.size.height -= oldSize.height - splitFrame.size.height;
-            bottomFrame.size.height += oldSize.height - splitFrame.size.height;
+            topFrame.size.height += oldSize.height - splitFrame.size.height;
+            bottomFrame.size.height -= oldSize.height - splitFrame.size.height;
             
             if ([splitComparative isSubviewCollapsed: [[splitComparative subviews] objectAtIndex:0]] || [top isHidden])
                 bottomFrame.size.height = availableHeight;
@@ -10143,7 +10143,7 @@ static BOOL withReset = NO;
             [top setFrame:topFrame];
             
             bottomFrame.size.width = splitFrame.size.width;
-            bottomFrame.size.height = availableHeight - topFrame.size.height;
+            bottomFrame.size.height = availableHeight - (topFrame.size.height + dividerThickness);
             bottomFrame.origin.y = topFrame.origin.y + topFrame.size.height + dividerThickness;
             [bottom setFrame:bottomFrame];
         }
@@ -10282,10 +10282,20 @@ static BOOL withReset = NO;
 
 - (IBAction)comparativeToggle:(id)sender
 {
-    NSView* right = [[splitComparative subviews] objectAtIndex:1];
-    BOOL shouldExpand = [right isHidden] || [splitComparative isSubviewCollapsed:[[splitComparative subviews] objectAtIndex:1]];
-    
-    [right setHidden:!shouldExpand];
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"horizontalHistory"])
+    {
+        NSView* top = [[splitComparative subviews] objectAtIndex:0];
+        BOOL shouldExpand = [top isHidden] || [splitComparative isSubviewCollapsed:[[splitComparative subviews] objectAtIndex:0]];
+        
+        [top setHidden:!shouldExpand];
+    }
+    else
+    {
+        NSView* right = [[splitComparative subviews] objectAtIndex:1];
+        BOOL shouldExpand = [right isHidden] || [splitComparative isSubviewCollapsed:[[splitComparative subviews] objectAtIndex:1]];
+        
+        [right setHidden:!shouldExpand];
+    }
     
     [splitComparative resizeSubviewsWithOldSize:splitComparative.bounds.size];
 }
