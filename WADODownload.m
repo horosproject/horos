@@ -109,12 +109,14 @@
                 [WADODownload performSelectorOnMainThread :@selector(errorMessage:) withObject: [NSArray arrayWithObjects: NSLocalizedString(@"WADO Retrieve Failed", nil), [NSString stringWithFormat: @"%@", [error localizedDescription]], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
 		}
 		
-		OSAtomicDecrement32Barrier( &WADOThreads);
+		WADOThreads--;
         
         int error = [[logEntry valueForKey: @"logNumberError"] intValue];
         error++;
         [logEntry setValue:[NSNumber numberWithInt: error] forKey:@"logNumberError"];
 	}
+    else
+        N2LogStackTrace( @"connection == nil");
 }
 
 - (NSCachedURLResponse *)connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse
@@ -234,10 +236,12 @@
 		[d setLength: 0]; // Free the memory immediately
 		[WADODownloadDictionary removeObjectForKey: key];
 		
-		OSAtomicDecrement32Barrier( &WADOThreads);
+		WADOThreads--;
 		
 		[pool release];
 	}
+    else
+        N2LogStackTrace( @"connection == nil");
 }
 
 - (void) WADODownload: (NSArray*) urlToDownload
@@ -323,7 +327,7 @@
                 }
                 
                 if( downloadConnection == nil)
-                    OSAtomicDecrement32Barrier( &WADOThreads);
+                    WADOThreads--;
                 
                 if( _abortAssociation || [NSThread currentThread].isCancelled || [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"] || [NSDate timeIntervalSinceReferenceDate] - retrieveStartingDate > timeout)
                 {
