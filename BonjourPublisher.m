@@ -290,40 +290,38 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
             char command[6];
             [self readData:6 toBuffer:command];
             
-    #define el else
             if (strcmp(command, "DATAB") == 0)
                 _mode = DATAB;
-            el if (strcmp(command, "DBSIZ") == 0)
+            else if (strcmp(command, "DBSIZ") == 0)
                 _mode = DBSIZ;
-            el if (strcmp(command, "GETDI") == 0)
+            else if (strcmp(command, "GETDI") == 0)
                 _mode = GETDI;
-            el if (strcmp(command, "VERSI") == 0)
+            else if (strcmp(command, "VERSI") == 0)
                 _mode = VERSI;
-            el if (strcmp(command, "DBVER") == 0)
+            else if (strcmp(command, "DBVER") == 0)
                 _mode = DBVER;
-            el if (strcmp(command, "ISPWD") == 0)
+            else if (strcmp(command, "ISPWD") == 0)
                 _mode = ISPWD;
-            el if (strcmp(command, "PASWD") == 0)
+            else if (strcmp(command, "PASWD") == 0)
                 _mode = PASWD;
-            el if (strcmp(command, "SENDD") == 0)
+            else if (strcmp(command, "SENDD") == 0)
                 _mode = SENDD;
-            el if (strcmp(command, "SENDG") == 0)
+            else if (strcmp(command, "SENDG") == 0)
                 _mode = SENDG;
-            el if (strcmp(command, "NEWMS") == 0)
+            else if (strcmp(command, "NEWMS") == 0)
                 _mode = NEWMS;
-            el if (strcmp(command, "ADDAL") == 0)
+            else if (strcmp(command, "ADDAL") == 0)
                 _mode = ADDAL;
-            el if (strcmp(command, "REMAL") == 0)
+            else if (strcmp(command, "REMAL") == 0)
                 _mode = REMAL;
-            el if (strcmp(command, "SETVA") == 0)
+            else if (strcmp(command, "SETVA") == 0)
                 _mode = SETVA;
-            el if (strcmp(command, "MFILE") == 0)
+            else if (strcmp(command, "MFILE") == 0)
                 _mode = MFILE;
-            el if (strcmp(command, "DCMSE") == 0)
+            else if (strcmp(command, "DCMSE") == 0)
                 _mode = DCMSE;
-            el if (strcmp(command, "DICOM") == 0)
+            else if (strcmp(command, "DICOM") == 0)
                 _mode = DICOM;
-    #undef el
 
             if (_mode == NONE)
                 [self close];
@@ -414,8 +412,10 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
 
 - (int)_stackReadInt {
     if (_stack.count > _hdi)
+    {
+//        N2LogStackTrace( @"_stack.count > _hdi");
         return [[self _stackedObject] intValue];
-    
+    }
     int value = [self _readInt];
     
     [self _stackObject:[NSNumber numberWithInt:value]];
@@ -441,8 +441,10 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
 
 - (NSString*)_stackReadString {
     if (_stack.count > _hdi)
+    {
+//        N2LogStackTrace( @"_stack.count > _hdi");
         return [self _stackedObject];
-    
+    }
     NSString* value = [self _readString];
     
     [self _stackObject:value];
@@ -452,8 +454,10 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
 
 - (DicomDatabase*)_stackIndependentDatabase {
     if (_stack.count > _hdi)
+    {
+//        N2LogStackTrace( @"_stack.count > _hdi");
         return [self _stackedObject];
-    
+    }
     DicomDatabase* database = [[DicomDatabase defaultDatabase] independentDatabase];
     
     [self _stackObject:database];
@@ -878,103 +882,109 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
     _mode = DONE;
 }
 
-- (void)DICOM {
-    int noOfFiles = [self _stackReadInt];
-    
-    NSMutableArray* localPaths = [self _stackedObject];
-    if (!localPaths) [self _stackObject:(localPaths = [NSMutableArray array])];
-    NSMutableArray* dstPaths = [self _stackedObject];
-    if (!dstPaths) [self _stackObject:(dstPaths = [NSMutableArray array])];
-    
-    while (localPaths.count < noOfFiles)
+- (void)DICOM
+{
+    @synchronized( self)
     {
-        NSString* path = [self _stackReadString];
+        int noOfFiles = [self _stackReadInt];
         
-        if( [path UTF8String] [ 0] != '/')
+        NSMutableArray* localPaths = [self _stackedObject];
+        if (!localPaths) [self _stackObject:(localPaths = [NSMutableArray array])];
+        NSMutableArray* dstPaths = [self _stackedObject];
+        if (!dstPaths) [self _stackObject:(dstPaths = [NSMutableArray array])];
+        
+        while (localPaths.count < noOfFiles)
         {
-            if( [[[path pathComponents] objectAtIndex: 0] isEqualToString:@"ROIs"])
+            NSString* path = [self _stackReadString];
+            
+            if( [path UTF8String] [ 0] != '/')
             {
-                //It's a ROI !
-                NSString	*local = [[[DicomDatabase defaultDatabase] sqlFilePath] stringByDeletingLastPathComponent];
-                
-                path = [[local stringByAppendingPathComponent:@"/ROIs/"] stringByAppendingPathComponent: [path lastPathComponent]];
+                if( [[[path pathComponents] objectAtIndex: 0] isEqualToString:@"ROIs"])
+                {
+                    //It's a ROI !
+                    NSString	*local = [[[DicomDatabase defaultDatabase] sqlFilePath] stringByDeletingLastPathComponent];
+                    
+                    path = [[local stringByAppendingPathComponent:@"/ROIs/"] stringByAppendingPathComponent: [path lastPathComponent]];
+                }
+                else
+                {
+                    
+                    int val = [[path stringByDeletingPathExtension] intValue];
+                    
+                    val /= [BrowserController DefaultFolderSizeForDB];
+                    val++;
+                    val *= [BrowserController DefaultFolderSizeForDB];
+                    
+                    NSString	*local = [[[DicomDatabase defaultDatabase] sqlFilePath] stringByDeletingLastPathComponent];
+                    
+                    path = [[[local stringByAppendingPathComponent:@"/DATABASE.noindex/"] stringByAppendingPathComponent: [NSString stringWithFormat:@"%d", val]] stringByAppendingPathComponent: path];
+                }
             }
-            else
-            {
-                
-                int val = [[path stringByDeletingPathExtension] intValue];
-                
-                val /= [BrowserController DefaultFolderSizeForDB];
-                val++;
-                val *= [BrowserController DefaultFolderSizeForDB];
-                
-                NSString	*local = [[[DicomDatabase defaultDatabase] sqlFilePath] stringByDeletingLastPathComponent];
-                
-                path = [[[local stringByAppendingPathComponent:@"/DATABASE.noindex/"] stringByAppendingPathComponent: [NSString stringWithFormat:@"%d", val]] stringByAppendingPathComponent: path];
-            }
+            
+            [localPaths addObject: path];
+            
+            //				if([[path pathExtension] isEqualToString:@"zip"])
+            //				{
+            //					// it is a ZIP
+            //					NSLog(@"BONJOUR ZIP");
+            //					NSString *xmlPath = [[path stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"];
+            //					NSLog(@"xmlPath : %@", xmlPath);
+            //					if([[NSFileManager defaultManager] fileExistsAtPath:xmlPath])
+            //					{
+            //						// it has an XML descriptor with it
+            //						NSLog(@"BONJOUR XML");
+            //						[localPaths addObject:xmlPath];
+            //					}
+            //				}
+
+            [self _unstack]; // the string
         }
         
-        [localPaths addObject: path];
+        while (dstPaths.count < noOfFiles)
+        {
+            NSString* path = [self _stackReadString];
+            
+            [dstPaths addObject: path];
+            
+            //				if([[path pathExtension] isEqualToString:@"zip"])
+            //				{
+            //					// it is a ZIP
+            //					NSLog(@"BONJOUR ZIP");
+            //					NSString *xmlPath = [[path stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"];
+            //					NSLog(@"xmlPath : %@", xmlPath);
+            //					if([[NSFileManager defaultManager] fileExistsAtPath:xmlPath])
+            //					{
+            //						// it has an XML descriptor with it
+            //						NSLog(@"BONJOUR XML");
+            //						[dstPaths addObject:xmlPath];
+            //					}
+            //				}
+            
+            [self _unstack]; // the string
+        }
         
-        //				if([[path pathExtension] isEqualToString:@"zip"])
-        //				{
-        //					// it is a ZIP
-        //					NSLog(@"BONJOUR ZIP");
-        //					NSString *xmlPath = [[path stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"];
-        //					NSLog(@"xmlPath : %@", xmlPath);
-        //					if([[NSFileManager defaultManager] fileExistsAtPath:xmlPath])
-        //					{
-        //						// it has an XML descriptor with it
-        //						NSLog(@"BONJOUR XML");
-        //						[localPaths addObject:xmlPath];
-        //					}
-        //				}
-
-        [self _unstack]; // the string
+        int temp = NSSwapHostIntToBig(noOfFiles);
+        [self writeData:[NSData dataWithBytesNoCopy:&temp length:4 freeWhenDone:NO]];
+        for (int i = 0; i < noOfFiles; i++)
+        {
+            NSString* path = [localPaths objectAtIndex: i];
+            
+            //						if ([[NSFileManager defaultManager] fileExistsAtPath: path] == NO)
+            //							NSLog( @"Bonjour Publisher - File doesn't exist at path: %@", path);
+            
+            NSData* content = [NSData dataWithContentsOfMappedFile:path];
+            int size = NSSwapHostIntToBig([content length]);
+            [self writeData:[NSData dataWithBytesNoCopy:&size length:4 freeWhenDone:NO]];
+            [self writeData:content];
+            
+            const char* string = [[dstPaths objectAtIndex:i] UTF8String];
+            int stringSize = NSSwapHostIntToBig( strlen( string)+1);	// +1 to include the last 0 !
+            [self writeData:[NSData dataWithBytesNoCopy:&stringSize length:4 freeWhenDone:NO]];
+            [self writeData:[NSData dataWithBytesNoCopy:(void*)string length:strlen(string)+1 freeWhenDone:NO]];
+        }
+        
+        _mode = DONE;
     }
-    
-    while (dstPaths.count < noOfFiles)
-    {
-        NSString* path = [self _stackReadString];
-        
-        [dstPaths addObject: path];
-        
-        //				if([[path pathExtension] isEqualToString:@"zip"])
-        //				{
-        //					// it is a ZIP
-        //					NSLog(@"BONJOUR ZIP");
-        //					NSString *xmlPath = [[path stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"];
-        //					NSLog(@"xmlPath : %@", xmlPath);
-        //					if([[NSFileManager defaultManager] fileExistsAtPath:xmlPath])
-        //					{
-        //						// it has an XML descriptor with it
-        //						NSLog(@"BONJOUR XML");
-        //						[dstPaths addObject:xmlPath];
-        //					}
-        //				}
-    }
-    
-    int temp = NSSwapHostIntToBig(noOfFiles);
-    [self writeData:[NSData dataWithBytesNoCopy:&temp length:4 freeWhenDone:NO]];
-    for (int i = 0; i < noOfFiles; i++)
-    {
-        NSString* path = [localPaths objectAtIndex: i];
-        
-        //						if ([[NSFileManager defaultManager] fileExistsAtPath: path] == NO)
-        //							NSLog( @"Bonjour Publisher - File doesn't exist at path: %@", path);
-        
-        NSData* content = [NSData dataWithContentsOfMappedFile:path];
-        int size = NSSwapHostIntToBig([content length]);
-        [self writeData:[NSData dataWithBytesNoCopy:&size length:4 freeWhenDone:NO]];
-        [self writeData:content];
-        
-        const char* string = [[dstPaths objectAtIndex:i] UTF8String];
-        int stringSize = NSSwapHostIntToBig( strlen( string)+1);	// +1 to include the last 0 !
-        [self writeData:[NSData dataWithBytesNoCopy:&stringSize length:4 freeWhenDone:NO]];
-        [self writeData:[NSData dataWithBytesNoCopy:(void*)string length:strlen(string)+1 freeWhenDone:NO]];
-    }
-    
-    _mode = DONE;
 }
 
 

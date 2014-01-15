@@ -663,7 +663,7 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 
 }
 
--(NSString*)cacheDataForImage:(DicomImage*)image maxFiles:(NSInteger)_unused_maxFiles
+-(NSString*)cacheDataForImage:(DicomImage*)image maxFiles:(NSInteger) maxFiles
 {
     if( image == nil)
     {
@@ -679,18 +679,43 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 	NSMutableArray* localPaths = [NSMutableArray array];
 	NSMutableArray* remotePaths = [NSMutableArray array];
 	
-    DicomImage* iImage = image;
-    NSString* iLocalPath = [self localPathForImage:iImage];
+    NSArray* images = [image.series.images.allObjects sortedArrayUsingDescriptors: image.series.sortDescriptorsForImages];
     
-    if( [iLocalPath isEqualToString: localPath] == NO)
-        NSLog( @"( [iLocalPath isEqualToString: localPath] == NO)");
-    
-    if ([NSFileManager.defaultManager fileExistsAtPath:iLocalPath])
-        return localPath;
-
-    [localPaths addObject:iLocalPath];
-    [remotePaths addObject:iImage.path];
+    NSInteger size = 0, i = [images indexOfObject:image];
 	
+    if( 1) // Multiple files download
+    {
+        while (i < images.count)
+        {
+            DicomImage* iImage = [images objectAtIndex:i++];
+            NSString* iLocalPath = [self localPathForImage:iImage];
+            
+            if ([NSFileManager.defaultManager fileExistsAtPath:iLocalPath])
+                continue;
+            
+            [localPaths addObject:iLocalPath];
+            [remotePaths addObject:iImage.path];
+            
+            size += iImage.width.intValue*iImage.height.intValue*2*iImage.numberOfFrames.intValue;
+            
+            if (maxFiles == 1 || size >= maxFiles*512*512*2)
+                break;
+        }
+    }
+    else
+    {
+        DicomImage* iImage = image;
+        NSString* iLocalPath = [self localPathForImage:iImage];
+        
+        if( [iLocalPath isEqualToString: localPath] == NO)
+            NSLog( @"( [iLocalPath isEqualToString: localPath] == NO)");
+        
+        if ([NSFileManager.defaultManager fileExistsAtPath:iLocalPath])
+            return localPath;
+
+        [localPaths addObject:iLocalPath];
+        [remotePaths addObject:iImage.path];
+	}
 	if (!localPaths.count)
 		return nil;
 	
