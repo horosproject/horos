@@ -3214,7 +3214,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
     [self autoHideMatrix];
     
-	if( FullScreenOn == YES) [self fullScreenMenu: self];
+//	if( FullScreenOn == YES)
+//        [self fullScreenMenu: self];
     
     if( [AppController USETOOLBARPANEL])
         [toolbarPanel.window orderOut: self];
