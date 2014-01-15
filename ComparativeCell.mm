@@ -116,7 +116,7 @@
             frame.origin.y -= 1;
         }
         
-        frame.origin.x += 150;
+        frame.origin.x += 80;
         
         NSMutableParagraphStyle* leftAlignmentParagraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
         [leftAlignmentParagraphStyle setAlignment:NSLeftTextAlignment];
@@ -127,7 +127,7 @@
         [text drawInRect:frame withAttributes:attributes];
         frame.origin.y -= 1;
         
-        frame.origin.x += 300;
+        frame.origin.x += 350;
         
         if (self.rightTextSecondLine.length)
         {
@@ -143,7 +143,7 @@
             CGFloat w = [self.rightTextSecondLine sizeWithAttributes:attributes].width;
         }
         
-        frame.origin.x += 150;
+        frame.origin.x += 110;
         
         if (self.rightTextFirstLine)
         {

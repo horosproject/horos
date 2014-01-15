@@ -13804,12 +13804,6 @@ static NSArray*	openSubSeriesArray = nil;
         
     //    NSLog( @"%@", [[NSFontManager sharedFontManager] availableFonts]);
         
-        if( [[NSUserDefaults standardUserDefaults] objectForKey: @"horizontalHistory"] == nil)
-        {
-            if( [self.window.screen frame].size.width < [self.window.screen frame].size.height)
-                [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"horizontalHistory"];
-        }
-        
         gHorizontalHistory = [[NSUserDefaults standardUserDefaults] boolForKey: @"horizontalHistory"];
         
         if( gHorizontalHistory)
