@@ -1591,7 +1591,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 			
 			newY = ([pixList[ curMovieIndex] count] * fabs( [firstPix sliceInterval])) / [firstPix pixelSpacingX];
             
-            if( newY < [pixList[ curMovieIndex] count])
+            int even = newY / 2;
+            even *= 2;
+            
+            if( even <= [pixList[ curMovieIndex] count])
             {
                 NSLog( @"---- newY < [pixList[ curMovieIndex] count]");
                 square = NO;
@@ -1618,7 +1621,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 			
 			newY = ([pixList[ curMovieIndex] count]  * fabs( [firstPix sliceInterval])) / [firstPix pixelSpacingY];
             
-            if( newY < [pixList[ curMovieIndex] count])
+            int even = newY / 2;
+            even *= 2;
+            
+            if( even <= [pixList[ curMovieIndex] count])
             {
                 NSLog( @"---- newY < [pixList[ curMovieIndex] count]");
                 square = NO;
@@ -7055,7 +7061,11 @@ return YES;
 	{
         @synchronized( loadingThread)
         {
-            if( loadingThread.isExecuting) return NO;
+            if( loadingThread)
+            {
+                if( loadingThread.isFinished == NO)
+                    return NO;
+            }
         }
     }
 	
@@ -8698,14 +8708,6 @@ static int avoidReentryRefreshDatabase = 0;
             
             if( isCancelled == NO)
             {
-                if( !isLocal)
-                {
-                    if( db == nil)
-                        db = [[[BrowserController currentBrowser] database] independentContext];
-                    
-                    NSManagedObject *image = [db objectRegisteredForID: [[f objectAtIndex: i] objectID]];
-                    [[BrowserController currentBrowser] getLocalDCMPath: image : 5];
-                }
                 [[p objectAtIndex: i] CheckLoad];
             }
             
@@ -21371,10 +21373,8 @@ int i,j,l;
     {
         @synchronized( loadingThread)
         {
-            if( loadingThread.isExecuting == YES)
-                return NO;
-            else if( loadingThread.isExecuting == NO)
-                return YES;
+            if( loadingThread)
+                return loadingThread.isFinished;
         }
     }
     
@@ -21390,7 +21390,10 @@ int i,j,l;
     
     @synchronized( loadingThread)
     {
-        isExecuting = loadingThread.isExecuting;
+        if( loadingThread)
+            isExecuting = !(loadingThread.isFinished);
+        else
+            isExecuting = NO;
 	}
     
     if( isExecuting)

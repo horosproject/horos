@@ -663,7 +663,14 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 
 }
 
--(NSString*)cacheDataForImage:(DicomImage*)image maxFiles:(NSInteger)maxFiles { // maxFiles is veeery indicative
+-(NSString*)cacheDataForImage:(DicomImage*)image maxFiles:(NSInteger)_unused_maxFiles
+{
+    if( image == nil)
+    {
+        N2LogStackTrace( @"image == nil");
+        return nil;
+    }
+    
 	NSString* localPath = [self localPathForImage:image];
 	
 	if ([NSFileManager.defaultManager fileExistsAtPath:localPath])
@@ -672,28 +679,17 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 	NSMutableArray* localPaths = [NSMutableArray array];
 	NSMutableArray* remotePaths = [NSMutableArray array];
 	
-	NSArray* images = [image.series.images.allObjects sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES] autorelease]]]; // TODO: sort after preferences
+    DicomImage* iImage = image;
+    NSString* iLocalPath = [self localPathForImage:iImage];
     
-    NSInteger size = 0, i = [images indexOfObject:image];
-	
-//	NSMutableArray* currentFetchXIDs = [NSMutableArray array];
-	
-	while (i < images.count)
-    {
-		DicomImage* iImage = [images objectAtIndex:i++];
-		NSString* iLocalPath = [self localPathForImage:iImage];
-		
-		if ([NSFileManager.defaultManager fileExistsAtPath:iLocalPath])
-			continue;
-		
-		[localPaths addObject:iLocalPath];
-		[remotePaths addObject:iImage.path];
-		
-		size += iImage.width.intValue*iImage.height.intValue*2*iImage.numberOfFrames.intValue;
-		
-		if (maxFiles == 1 || size >= maxFiles*512*512*2)
-			break;
-	}
+    if( [iLocalPath isEqualToString: localPath] == NO)
+        NSLog( @"( [iLocalPath isEqualToString: localPath] == NO)");
+    
+    if ([NSFileManager.defaultManager fileExistsAtPath:iLocalPath])
+        return localPath;
+
+    [localPaths addObject:iLocalPath];
+    [remotePaths addObject:iImage.path];
 	
 	if (!localPaths.count)
 		return nil;
@@ -710,7 +706,7 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 	
 	NSMutableArray* context = [NSMutableArray arrayWithObjects: [N2MutableUInteger mutableUIntegerWithUInteger:0], nil];
 
-    [self synchronousRequest:request urgent:(maxFiles<=1) dataHandlerTarget:self selector:@selector(_connection:handleData_fetchDataForImage:context:) context:context];
+    [self synchronousRequest:request urgent:YES dataHandlerTarget:self selector:@selector(_connection:handleData_fetchDataForImage:context:) context:context];
     
     return localPath;
 }

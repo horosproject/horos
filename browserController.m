@@ -3885,7 +3885,7 @@ static NSConditionLock *threadLock = nil;
                     }
 				}
 			}
-						
+			
 			if( [splash aborted])
 			{
 				[selectedFiles removeAllObjects];
@@ -10458,7 +10458,7 @@ static BOOL withReset = NO;
                 {
                     if( [splash aborted] == NO)
                     {
-                        [selectedFiles addObject: [self getLocalDCMPath: img :50]];
+                        [selectedFiles addObject: [self getLocalDCMPath: img :BONJOURPACKETS]];
                         
                         [splash incrementBy: 1];
                     }
@@ -13804,7 +13804,14 @@ static NSArray*	openSubSeriesArray = nil;
         
     //    NSLog( @"%@", [[NSFontManager sharedFontManager] availableFonts]);
         
+        if( [[NSUserDefaults standardUserDefaults] objectForKey: @"horizontalHistory"] == nil)
+        {
+            if( [self.window.screen frame].size.width < [self.window.screen frame].size.height)
+                [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"horizontalHistory"];
+        }
+        
         gHorizontalHistory = [[NSUserDefaults standardUserDefaults] boolForKey: @"horizontalHistory"];
+        
         if( gHorizontalHistory)
         {
             NSSplitView * s = [[NSSplitView alloc] initWithFrame: splitViewVert.bounds];
