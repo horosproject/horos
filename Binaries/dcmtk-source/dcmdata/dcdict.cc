@@ -140,7 +140,7 @@ DcmDataDictionary::DcmDataDictionary(OFBool loadBuiltin, OFBool loadExternal)
 
 DcmDataDictionary::~DcmDataDictionary()
 {
-    clear();
+//    clear(); We will keep it in memory idenfinitevely.... if another thread uses it
 }
 
 
