@@ -127,7 +127,7 @@
         [text drawInRect:frame withAttributes:attributes];
         frame.origin.y -= 1;
         
-        frame.origin.x += 350;
+        frame.origin.x += 330;
         
         if (self.rightTextSecondLine.length)
         {
