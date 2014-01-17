@@ -548,6 +548,8 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 
 - (void) setNumberOfParameters: (int) n
 {
+    params.translatesAutoresizingMaskIntoConstraints = YES;
+    
 	NSRect frameBefore = [params frame];
 	// change the number of field in the matrix
 	while (!([params numberOfRows]==0))
