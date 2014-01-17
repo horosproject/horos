@@ -404,6 +404,13 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 - (void) computeMinMax
 {
+    static int computeMinMaxDepth = 0;
+    
+    if( computeMinMaxDepth > 2)
+        return;
+    
+    computeMinMaxDepth++;
+    
 	maximumValue = minimumValue = [[pixList[ 0] objectAtIndex: 0] maxValueOfSeries];
 	
 	blendingMinimumValue = [[blendingPixList objectAtIndex: 0] minValueOfSeries];
@@ -451,6 +458,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		NSLog( @"-- new maxValueOfSeries = %f", maximumValue);
 		NSLog( @"-- new minValueOfSeries = %f", minimumValue);
 	}
+    
+    computeMinMaxDepth--;
 }
 
 -(id) initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC style:(NSString*) m mode:(NSString*) renderingMode
