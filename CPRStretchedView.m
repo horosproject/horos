@@ -1349,7 +1349,12 @@ extern int splitPosition[ 3];
 	// Scroll/Move transverse lines
 	else if( [theEvent modifierFlags] & NSCommandKeyMask)
 	{
-		CGFloat transverseSectionSpacing = MIN(MAX(_curvedPath.transverseSectionSpacing + [theEvent deltaY] * .4, 0.0), 300); 
+        float factor = 0.4;
+        
+        if( curDCM.pixelSpacingX)
+            factor = curDCM.pixelSpacingX;
+        
+		CGFloat transverseSectionSpacing = MIN(MAX(_curvedPath.transverseSectionSpacing + [theEvent deltaY] * factor, 0.0), 300);
 		
 		[self _sendWillEditCurvedPath];
 		_curvedPath.transverseSectionSpacing = transverseSectionSpacing;
