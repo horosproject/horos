@@ -2871,6 +2871,9 @@ public:
 	}
 	else
 	{
+        if( firstObject.pixelSpacingX > 0)
+            delta *= firstObject.pixelSpacingX * 2.;
+        
 		double position[ 3], focal[ 3];
 		float cos[ 9];
 		double distance = aCamera->GetDistance();
