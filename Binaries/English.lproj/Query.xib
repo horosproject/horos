@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C32" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C39" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <deployment defaultVersion="1070" identifier="macosx"/>
+        <deployment defaultVersion="1080" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
     </dependencies>
     <objects>
@@ -70,11 +70,11 @@
                         <tabViewItems>
                             <tabViewItem label="Name" identifier="1" id="660">
                                 <view key="view" id="661">
-                                    <rect key="frame" x="10" y="28" width="929" height="21"/>
+                                    <rect key="frame" x="10" y="28" width="1107" height="21"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <searchField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="667">
-                                            <rect key="frame" x="47" y="-6" width="806" height="22"/>
+                                            <rect key="frame" x="47" y="-6" width="984" height="22"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" alignment="left" placeholderString="Patient Name" bezelStyle="round" sendsWholeSearchString="YES" maximumRecents="20" recentsAutosaveName="LastQueryPatientName" id="749">
                                                 <font key="font" metaFont="cellTitle"/>
@@ -1387,10 +1387,10 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                                     <binding destination="832" name="value" keyPath="values.autoRetrieving" id="843"/>
                                                     <binding destination="832" name="enabled2" keyPath="values.dontAuthorizeAutoRetrieve" previousBinding="925" id="926">
                                                         <dictionary key="options">
-                                                            <integer key="NSNullPlaceholder" value="-1"/>
+                                                            <integer key="NSMultipleValuesPlaceholder" value="-1"/>
                                                             <integer key="NSNotApplicablePlaceholder" value="-1"/>
                                                             <integer key="NSNoSelectionPlaceholder" value="-1"/>
-                                                            <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                                            <integer key="NSNullPlaceholder" value="-1"/>
                                                             <string key="NSValueTransformerName">NSNegateBoolean</string>
                                                         </dictionary>
                                                     </binding>
@@ -1413,10 +1413,10 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                                     <binding destination="-2" name="enabled" keyPath="autoRefreshQueryResults" id="943"/>
                                                     <binding destination="832" name="enabled2" keyPath="values.dontAuthorizeAutoRetrieve" previousBinding="943" id="947">
                                                         <dictionary key="options">
-                                                            <integer key="NSNullPlaceholder" value="-1"/>
+                                                            <integer key="NSMultipleValuesPlaceholder" value="-1"/>
                                                             <integer key="NSNotApplicablePlaceholder" value="-1"/>
                                                             <integer key="NSNoSelectionPlaceholder" value="-1"/>
-                                                            <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                                            <integer key="NSNullPlaceholder" value="-1"/>
                                                             <string key="NSValueTransformerName">NSNegateBoolean</string>
                                                         </dictionary>
                                                     </binding>
@@ -1473,16 +1473,16 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                         </connections>
                                     </button>
                                     <progressIndicator horizontalHuggingPriority="750" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" maxValue="100" displayedWhenStopped="NO" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="339">
-                                        <rect key="frame" x="671" y="429" width="16" height="16"/>
+                                        <rect key="frame" x="667" y="429" width="16" height="16"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="16" id="kCi-5g-wZv"/>
                                         </constraints>
                                     </progressIndicator>
-                                    <segmentedControl horizontalHuggingPriority="249" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="725">
-                                        <rect key="frame" x="366" y="425" width="299" height="25"/>
+                                    <segmentedControl horizontalHuggingPriority="249" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="725">
+                                        <rect key="frame" x="366" y="425" width="295" height="25"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                        <segmentedCell key="cell" state="on" alignment="left" style="texturedRounded" trackingMode="momentary" id="760">
+                                        <segmentedCell key="cell" lineBreakMode="charWrapping" state="on" alignment="left" style="texturedSquare" trackingMode="momentary" id="760">
                                             <font key="font" metaFont="system"/>
                                             <segments>
                                                 <segment label="Query" imageScaling="none"/>
