@@ -2731,6 +2731,8 @@ static NSDate *lastWarningDate = nil;
 	if (!_appDidFinishLoading)
         return;
     
+    [[NSRunningApplication currentApplication] activateWithOptions: NSApplicationActivateAllWindows];
+    
     [[BrowserController currentBrowser] syncReportsIfNecessary];
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO) // Server mode
@@ -2738,7 +2740,7 @@ static NSDate *lastWarningDate = nil;
 		if( [[[BrowserController currentBrowser] window] isMiniaturized] == YES || [[[BrowserController currentBrowser] window] isVisible] == NO)
 		{
 			NSArray *winList = [NSApp windows];
-			
+            
 			for( id loopItem in winList)
 			{
 				if( [[loopItem windowController] isKindOfClass:[ViewerController class]]) return;
@@ -3770,6 +3772,8 @@ static BOOL initialized = NO;
 #else
     [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"NSConstraintBasedLayoutVisualizeMutuallyExclusiveConstraints"];
 #endif
+    
+    [[NSRunningApplication currentApplication] activateWithOptions: NSApplicationActivateAllWindows];
 }
 
 - (void) checkForOsirixMimeType
