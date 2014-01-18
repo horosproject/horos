@@ -95,7 +95,7 @@ ThumbnailsListPanel *thumbnailsListPanel[ MAXSCREENS] = {nil, nil, nil, nil, nil
 
 static NSMenu *mainMenuCLUTMenu = nil, *mainMenuWLWWMenu = nil, *mainMenuConvMenu = nil, *mainOpacityMenu = nil;
 static NSDictionary *previousWLWWKeys = nil, *previousCLUTKeys = nil, *previousConvKeys = nil, *previousOpacityKeys = nil;
-static BOOL checkForPreferencesUpdate = YES, _appDidFinishLoading = NO;
+static BOOL checkForPreferencesUpdate = YES;
 static PluginManager *pluginManager = nil;
 static unsigned char *LUT12toRGB = nil;
 static BOOL canDisplay12Bit = NO;
@@ -2728,8 +2728,13 @@ static NSDate *lastWarningDate = nil;
 
 - (void)applicationDidBecomeActive:(NSNotification *)aNotification
 {
-	if (!_appDidFinishLoading)
+    static BOOL firstCall = YES;
+    
+    if( firstCall)
+    {
+        firstCall = NO;
         return;
+    }
     
     [[NSRunningApplication currentApplication] activateWithOptions: NSApplicationActivateAllWindows];
     
@@ -3717,7 +3722,7 @@ static BOOL initialized = NO;
     if( [[NSBundle bundleForClass:[self class]] pathForAuxiliaryExecutable:@"odt2pdf"] == nil)
         N2LogStackTrace( @"\r****** path2odt2pdf == nil\r*****************************");
     
-    _appDidFinishLoading = YES;
+    
     
     [ROI loadDefaultSettings];
     
@@ -3772,8 +3777,6 @@ static BOOL initialized = NO;
 #else
     [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"NSConstraintBasedLayoutVisualizeMutuallyExclusiveConstraints"];
 #endif
-    
-    [[NSRunningApplication currentApplication] activateWithOptions: NSApplicationActivateAllWindows];
 }
 
 - (void) checkForOsirixMimeType
