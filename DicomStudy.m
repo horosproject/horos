@@ -910,12 +910,15 @@ static NSRecursiveLock *dbModifyLock = nil;
     return nil;
 }
 
+- (void) didTurnIntoFault
+{
+    [dicomTime release]; dicomTime = nil;
+    [cachedModalites release]; cachedModalites = nil;
+}
+
 - (void) dealloc
 {
-	[dicomTime release];
-//	[cachedRawNoFiles release];
-	[cachedModalites release];
-	
+	[self didTurnIntoFault];
 	[super dealloc];
 }
 

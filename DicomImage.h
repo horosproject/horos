@@ -36,7 +36,6 @@ void* sopInstanceUIDEncode( NSString *sopuid);
 	NSNumber	*height, *width;
 	NSNumber	*numberOfFrames;
 	NSNumber	*numberOfSeries;
-//	NSNumber	*mountedVolume;
 	NSNumber	*isKeyImage, *dicomTime;
 	NSString	*extension;
 	NSString	*modality;
@@ -86,7 +85,6 @@ void* sopInstanceUIDEncode( NSString *sopuid);
 - (NSSet*) paths;
 - (NSString*) completePath;
 - (NSString*) completePathResolved;
-- (void) clearCompletePathCache;
 #ifndef OSIRIX_LIGHT
 - (DCMSequenceAttribute*) graphicAnnotationSequence;
 #endif

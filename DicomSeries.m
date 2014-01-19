@@ -255,12 +255,18 @@
 		[self.study archiveAnnotationsAsDICOMSR];
 }
 
+- (void) didTurnIntoFault
+{
+    [dicomTime release];
+    dicomTime = nil;
+}
+
 - (void) setDate:(NSDate*) date
 {
     @synchronized (self)
     {
         [dicomTime release];
-        dicomTime = NULL;
+        dicomTime = nil;
         
         [self willChangeValueForKey: @"date"];
         [self setPrimitiveValue:date forKey:@"date"];

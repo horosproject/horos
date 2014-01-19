@@ -189,15 +189,9 @@
             NSString* tpath = [self localPathForImage:image];
             [[NSFileManager defaultManager] removeItemAtPath:tpath error:NULL];
             [[NSFileManager defaultManager] moveItemAtPath:path toPath:tpath error:NULL];
-            //[image clearInDatabaseFolderCache];
-//            [image setInDatabaseFolder:[NSNumber numberWithBool:YES]];
-            path = /*image.pathString =*/ tpath;
-           // image.pathNumber = nil;
-            // [image clearCompletePathCache]; useless
+            path = tpath;
         } 
-
-        [image clearCompletePathCache];
-
+        
         [filesToSend addObject:path];
         [filesToSendObjectIDs addObject:image.objectID];
     }

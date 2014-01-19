@@ -859,37 +859,13 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 
 - (void) dealloc
 {
-	[dicomTime release];
-	[sopInstanceUID release];
-	[inDatabaseFolder release];
-	[height release];
-	[width release];
-	[numberOfFrames release];
-	[numberOfSeries release];
-//	[mountedVolume release];
-	[isKeyImage release];
-	[extension release];
-	[modality release];
-	[fileType release];
-	
-	[completePathCache release];
-    
-    [_thumbnail release];
-	
+    [self didTurnIntoFault];
 	[super dealloc];
 }
 
 -(NSString*) uniqueFilename	// Return a 'unique' filename that identify this image...
 {
 	return [NSString stringWithFormat:@"%@ %@",self.sopInstanceUID, self.instanceNumber];
-}
-
-- (void) clearCompletePathCache
-{
-	@synchronized (self) {
-        [completePathCache release];
-        completePathCache = nil;
-    }
 }
 
 + (NSString*) completePathForLocalPath:(NSString*) path directory:(NSString*) directory
@@ -919,6 +895,8 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 
 - (void) setPath:(NSString*) p
 {
+    [self didTurnIntoFault];
+    
 	if( [p characterAtIndex: 0] != '/')
 	{
 		if( [[p pathExtension] isEqualToString:@"dcm"])
@@ -943,25 +921,22 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	[self didChangeValueForKey: @"pathString"];
 }
 
-/* // TODO: delete this method unless... unless there's a reason to keep it
- + (NSString*) dbPathForManagedContext: (NSManagedObjectContext *) c
+- (void)didTurnIntoFault
 {
-	NSPersistentStoreCoordinator *sc = [c persistentStoreCoordinator];
-	NSArray *stores = [sc persistentStores];
-	
-    if( stores == nil)
-        N2LogStackTrace( @"*** warning stores == nil");
-    
-	else if( [stores count] != 1)
-	{
-		N2LogStackTrace( @"*** warning [stores count] != 1 : %@", stores);
-		
-		for( id s in stores)
-			NSLog( @"%@", [[[sc URLForPersistentStore: s] path] stringByDeletingLastPathComponent]);
-	}	
-	return [[[sc URLForPersistentStore: [stores lastObject]] path] stringByDeletingLastPathComponent];
+	[dicomTime release]; dicomTime = nil;
+	[sopInstanceUID release];  sopInstanceUID = nil;
+	[inDatabaseFolder release];  inDatabaseFolder = nil;
+	[height release];  height = nil;
+	[width release];  width = nil;
+	[numberOfFrames release];  numberOfFrames = nil;
+	[numberOfSeries release];  numberOfSeries = nil;
+	[isKeyImage release];  isKeyImage = nil;
+	[extension release];  extension = nil;
+	[modality release];  modality = nil;
+	[fileType release];  fileType = nil;
+	[completePathCache release]; completePathCache = nil;
+    [_thumbnail release]; _thumbnail = nil;
 }
- */
 
 -(NSString*) completePathWithDownload:(BOOL) download supportNonLocalDatabase: (BOOL) supportNonLocalDatabase
 {

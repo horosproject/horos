@@ -2098,7 +2098,6 @@ static BOOL protectionAgainstReentry = NO;
                                     else
                                     {
                                         newObject = YES;
-                                        [image clearCompletePathCache];
                                         
                                         NSString *imPath = [DicomImage completePathForLocalPath: [image valueForKey:@"path"] directory:self.dataBaseDirPath];
                                         
