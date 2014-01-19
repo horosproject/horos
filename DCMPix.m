@@ -138,24 +138,24 @@ void SwitchFloat (float *theFloat)
 //	*myLongPtr = EndianU64_LtoN(*myLongPtr);
 //}
 
-uint64_t	MyGetTime( void)
-{
-	AbsoluteTime theTime = UpTime();
-	
-	return ((uint64_t*) &theTime)[0];
-}
-
-double MySubtractTime( uint64_t endTime, uint64_t startTime)
-{
-	union
-	{
-		Nanoseconds	ns;
-		u_int64_t	i;
-	}time;
-	
-	time.ns = AbsoluteToNanoseconds( SubAbsoluteFromAbsolute( ((AbsoluteTime*) &endTime)[0], ((AbsoluteTime*) &startTime)[0]));
-	return time.i * 1e-9;
-}
+//uint64_t	MyGetTime( void)
+//{
+//	AbsoluteTime theTime = UpTime();
+//	
+//	return ((uint64_t*) &theTime)[0];
+//}
+//
+//double MySubtractTime( uint64_t endTime, uint64_t startTime)
+//{
+//	union
+//	{
+//		Nanoseconds	ns;
+//		u_int64_t	i;
+//	}time;
+//	
+//	time.ns = AbsoluteToNanoseconds( SubAbsoluteFromAbsolute( ((AbsoluteTime*) &endTime)[0], ((AbsoluteTime*) &startTime)[0]));
+//	return time.i * 1e-9;
+//}
 
 unsigned char* CreateIconFrom16 (float* image,  unsigned char*icon,  int height, int width, int iconWidth, long wl, long ww, BOOL isRGB)
 // create an icon from an 12 or 16 bit image
