@@ -1543,7 +1543,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		clickCount = 1;
 	}
 	
-	if( clickCount == 2)
+	if( clickCount == 2 && drawingROI == NO)
 	{
 		long tool = [self getTool: theEvent];
 		

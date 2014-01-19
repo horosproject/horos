@@ -1485,7 +1485,7 @@ extern unsigned int minimumStep;
 		clickCount = 1;
 	}
 	
-	if( clickCount == 2)
+	if( clickCount == 2 && drawingROI == NO)
 	{
 		mouseDownTool = [self getTool: theEvent];
 		

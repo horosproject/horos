@@ -4087,28 +4087,36 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 }
 
+- (void) deleteInvalidROIsForArray: (NSMutableArray*) r
+{
+    for( int i = 0; i < [r count]; i++)
+    {
+        if( [[r objectAtIndex: i] valid] == NO)
+        {
+            if( curROI == [r objectAtIndex: i])
+            {
+                [curROI release];
+                curROI = nil;
+                drawingROI = NO;
+            }
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object: [r objectAtIndex: i] userInfo: nil];
+            [r removeObjectAtIndex: i];
+            i--;
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:OsirixROIRemovedFromArrayNotification object:NULL userInfo:NULL];
+        }
+    }
+}
+
 - (void) deleteInvalidROIs
 {
-    for( int x = 0; x < [dcmRoiList count]; x++ )
+    if( dcmRoiList == nil) // For sub-classes, such as MPR, Curved-MPR, ... they don't have the dcmRoiList array
+        [self deleteInvalidROIsForArray: curRoiList];
+    else
     {
-        for( int i = 0; i < [[dcmRoiList objectAtIndex: x] count]; i++)
-        {
-            if( [[[dcmRoiList objectAtIndex: x] objectAtIndex: i] valid] == NO)
-            {
-                if( curROI == [curRoiList objectAtIndex: i])
-                {
-                    [curROI release];
-                    curROI = nil;
-                    drawingROI = NO;
-                }
-                
-                [[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object: [[dcmRoiList objectAtIndex: x] objectAtIndex: i] userInfo: nil];
-                [[dcmRoiList objectAtIndex: x] removeObjectAtIndex: i];
-                i--;
-                
-                [[NSNotificationCenter defaultCenter] postNotificationName:OsirixROIRemovedFromArrayNotification object:NULL userInfo:NULL];
-            }
-        }
+        for( NSMutableArray *r in dcmRoiList)
+            [self deleteInvalidROIsForArray: r];
     }
 }
 

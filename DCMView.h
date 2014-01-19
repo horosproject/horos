@@ -480,6 +480,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (void) rotateWithEvent:(NSEvent *)anEvent;
 - (void) setStartWLWW;
 - (void) stopROIEditing;
+- (void) deleteInvalidROIs;
 - (void) computeMagnifyLens:(NSPoint) p;
 - (void) makeTextureFromImage:(NSImage*)image forTexture:(GLuint*)texName buffer:(GLubyte*)buffer textureUnit:(GLuint)textureUnit;
 - (void) stopROIEditingForce:(BOOL) force;
