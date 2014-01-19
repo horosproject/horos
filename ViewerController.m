@@ -13837,7 +13837,6 @@ int i,j,l;
 
 - (IBAction) roiVolume:(id) sender
 {
-	long i, x;
 	float preLocation, interval;
 	ROI *selectedRoi = nil;
 	
@@ -13845,7 +13844,7 @@ int i,j,l;
 	
 	[self displayAWarningIfNonTrueVolumicData];
 	
-	for( i = 0; i < maxMovieIndex; i++)
+	for( int i = 0; i < maxMovieIndex; i++)
 		[self saveROI: i];
 	
 	selectedRoi = [self selectedROI];
@@ -13860,10 +13859,8 @@ int i,j,l;
 	preLocation = 0;
 	interval = 0;
 	
-	for( x = 0; x < [pixList[curMovieIndex] count]; x++)
+	for( DCMPix *curPix in pixList[ curMovieIndex])
 	{
-		DCMPix *curPix = [pixList[ curMovieIndex] objectAtIndex: x];
-		
 		if( preLocation != 0)
 		{
 			if( interval)
@@ -13890,11 +13887,9 @@ int i,j,l;
         }
 	}
     
-	int	numberOfGeneratedROI = [[self roisWithComment: @"morphing generated"] count];
-		
 	[self addToUndoQueue: @"roi"];
 	
-	WaitRendering *splash = [[WaitRendering alloc] init:NSLocalizedString(@"Preparing data...", nil)];
+	WaitRendering *splash = [[[WaitRendering alloc] init:NSLocalizedString(@"Preparing data...", nil)] autorelease];
 	[splash showWindow:self];
 	
 	// Show Volume Window
@@ -13907,13 +13902,14 @@ int i,j,l;
 	}
 	else if([sender tag] == 1)
 	{
-		int	numberOfGeneratedROIafter = [[self roisWithComment:@"morphing generated"] count];
+        [self computeVolume: selectedRoi points: nil generateMissingROIs: YES generatedROIs: nil computeData: nil error: nil];
+        
+		int	numberOfGeneratedROIafter = [[self roisWithComment: @"morphing generated"] count];
 		if(!numberOfGeneratedROIafter)
 			NSRunCriticalAlertPanel(NSLocalizedString(@"ROIs Volume Error", nil), NSLocalizedString(@"The missing ROIs were not created : this feature does not work with ROIs that don't contain an area.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 	}
 
 	[splash close];
-	[splash autorelease];
 }
 #endif
 
