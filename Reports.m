@@ -20,6 +20,7 @@
 #import "NSFileManager+N2.h"
 #import "NSAppleScript+N2.h"
 #import "DicomDatabase.h"
+#import "N2Debug.h"
 
 // if you want check point log info, define CHECK to the next line, uncommented:
 #define CHECK NSLog(@"Applescript result code = %d", ok);
@@ -437,38 +438,42 @@ static id aedesc_to_id(AEDesc *desc)
 {
 #ifndef MACAPPSTORE
 #ifndef OSIRIX_LIGHT
-    
-    NSString *path = BrowserController.currentBrowser.database.baseDirPath;
-    
-    if( path == nil)
-        path = DicomDatabase.defaultBaseDirPath;
-    
-    // previously, we had a single word template in the OsiriX Data folder
-    NSString* oldReportFilePath = [path stringByAppendingPathComponent:@"ReportTemplate.doc"];
-    
-    // today, we use a dir in the database folder, which contains the templates
-    NSString* templatesDirPath = [Reports databaseWordTemplatesDirPath];
-    
-    if( templatesDirPath == nil)
-        return;
-    
-    NSUInteger templatesCount = 0;
-    
-    if( [[NSFileManager defaultManager] fileExistsAtPath:templatesDirPath])
-    {
-        for (NSString* filename in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:templatesDirPath error:NULL])
+    @try {
+        NSString *path = BrowserController.currentBrowser.database.baseDirPath;
+        
+        if( path == nil)
+            path = DicomDatabase.defaultBaseDirPath;
+        
+        // previously, we had a single word template in the OsiriX Data folder
+        NSString* oldReportFilePath = [path stringByAppendingPathComponent:@"ReportTemplate.doc"];
+        
+        // today, we use a dir in the database folder, which contains the templates
+        NSString* templatesDirPath = [Reports databaseWordTemplatesDirPath];
+        
+        if( templatesDirPath == nil)
+            return;
+        
+        NSUInteger templatesCount = 0;
+        
+        if( [[NSFileManager defaultManager] fileExistsAtPath:templatesDirPath])
         {
-            if( [filename.pathExtension isEqualToString: @"doc"])
-                ++templatesCount;
+            for (NSString* filename in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:templatesDirPath error:NULL])
+            {
+                if( [filename.pathExtension isEqualToString: @"doc"])
+                    ++templatesCount;
+            }
+        }
+        
+        if (!templatesCount)
+        {
+            if ([[NSFileManager defaultManager] fileExistsAtPath: oldReportFilePath])
+                [[NSFileManager defaultManager] moveItemAtPath: oldReportFilePath toPath:[templatesDirPath stringByAppendingPathComponent: [oldReportFilePath lastPathComponent]] error: nil];
+            else
+                [[NSFileManager defaultManager] copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"ReportTemplate.doc"] toPath:[templatesDirPath stringByAppendingPathComponent:@"Basic Report Template.doc"] error:NULL];
         }
     }
-    
-    if (!templatesCount)
-    {
-        if ([[NSFileManager defaultManager] fileExistsAtPath: oldReportFilePath])
-            [[NSFileManager defaultManager] moveItemAtPath: oldReportFilePath toPath:[templatesDirPath stringByAppendingPathComponent: [oldReportFilePath lastPathComponent]] error: nil];
-        else
-            [[NSFileManager defaultManager] copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"ReportTemplate.doc"] toPath:[templatesDirPath stringByAppendingPathComponent:@"Basic Report Template.doc"] error:NULL];
+    @catch (NSException *exception) {
+        N2LogException( exception);
     }
 #endif
 #endif
