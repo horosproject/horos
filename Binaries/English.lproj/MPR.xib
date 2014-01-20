@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C32" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C39" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <deployment defaultVersion="1070" identifier="macosx"/>
+        <deployment defaultVersion="1080" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
     </dependencies>
     <objects>
@@ -173,14 +173,14 @@
         </objectController>
         <window title="DICOM Export" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="413" userLabel="exportDCM">
             <windowStyleMask key="styleMask" titled="YES"/>
-            <rect key="contentRect" x="0.0" y="0.0" width="584" height="435"/>
+            <rect key="contentRect" x="0.0" y="0.0" width="608" height="435"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <view key="contentView" id="414">
-                <rect key="frame" x="0.0" y="0.0" width="584" height="435"/>
+                <rect key="frame" x="0.0" y="0.0" width="608" height="435"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <button verticalHuggingPriority="750" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="420">
-                        <rect key="frame" x="481" y="7" width="97" height="32"/>
+                        <rect key="frame" x="505" y="7" width="97" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES"/>
                         <constraints>
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="85" id="Rdy-q4-WBt"/>
@@ -197,7 +197,7 @@ DQ
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="419">
-                        <rect key="frame" x="384" y="7" width="97" height="32"/>
+                        <rect key="frame" x="408" y="7" width="97" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES"/>
                         <constraints>
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="85" id="n49-dI-oaw"/>
@@ -247,17 +247,17 @@ Gw
                         </connections>
                     </matrix>
                     <box title="Title" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="426">
-                        <rect key="frame" x="38" y="60" width="537" height="225"/>
+                        <rect key="frame" x="38" y="60" width="561" height="225"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
-                            <rect key="frame" x="2" y="2" width="533" height="221"/>
+                            <rect key="frame" x="2" y="2" width="557" height="221"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="476">
-                                    <rect key="frame" x="17" y="63" width="157" height="186"/>
+                                    <rect key="frame" x="17" y="78" width="157" height="170"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                    <size key="cellSize" width="157" height="92"/>
+                                    <size key="cellSize" width="157" height="84"/>
                                     <size key="intercellSpacing" width="4" height="2"/>
                                     <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="479">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -285,7 +285,7 @@ Gw
                                     </connections>
                                 </matrix>
                                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="441">
-                                    <rect key="frame" x="189" y="168" width="295" height="17"/>
+                                    <rect key="frame" x="189" y="168" width="319" height="17"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                                     <sliderCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" continuous="YES" alignment="left" minValue="1" maxValue="360" doubleValue="40" tickMarkPosition="below" numberOfTickMarks="60" sliderType="linear" id="442">
                                         <font key="font" size="12" name="Helvetica"/>
@@ -293,10 +293,10 @@ Gw
                                     <connections>
                                         <binding destination="342" name="enabled2" keyPath="selection.dcmMode" previousBinding="763" id="781">
                                             <dictionary key="options">
-                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                                <integer key="NSNullPlaceholder" value="-1"/>
                                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
                                                 <integer key="NSNoSelectionPlaceholder" value="-1"/>
-                                                <integer key="NSNullPlaceholder" value="-1"/>
+                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
                                                 <string key="NSValueTransformerName">NSNegateBoolean</string>
                                             </dictionary>
                                         </binding>
@@ -305,7 +305,7 @@ Gw
                                     </connections>
                                 </slider>
                                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="485">
-                                    <rect key="frame" x="162" y="88" width="354" height="17"/>
+                                    <rect key="frame" x="162" y="88" width="378" height="17"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                                     <sliderCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" continuous="YES" alignment="left" maxValue="256" doubleValue="10" tickMarkPosition="below" numberOfTickMarks="32" sliderType="linear" id="486">
                                         <font key="font" size="12" name="Helvetica"/>
@@ -314,10 +314,10 @@ Gw
                                         <binding destination="342" name="value" keyPath="selection.dcmFrom" id="635"/>
                                         <binding destination="342" name="enabled2" keyPath="selection.dcmMode" previousBinding="767" id="787">
                                             <dictionary key="options">
-                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                                <integer key="NSNullPlaceholder" value="-1"/>
                                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
                                                 <integer key="NSNoSelectionPlaceholder" value="-1"/>
-                                                <integer key="NSNullPlaceholder" value="-1"/>
+                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
                                                 <string key="NSValueTransformerName">NSNegateBoolean</string>
                                             </dictionary>
                                         </binding>
@@ -329,7 +329,7 @@ Gw
                                     </connections>
                                 </slider>
                                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="489">
-                                    <rect key="frame" x="301" y="37" width="165" height="17"/>
+                                    <rect key="frame" x="301" y="37" width="189" height="17"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                                     <sliderCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" continuous="YES" alignment="left" minValue="1" maxValue="200" doubleValue="40" tickMarkPosition="below" numberOfTickMarks="20" sliderType="linear" id="490">
                                         <font key="font" size="12" name="Helvetica-Bold"/>
@@ -340,10 +340,10 @@ Gw
                                         <binding destination="342" name="minValue" keyPath="selection.dcmIntervalMin" previousBinding="1178" id="1179"/>
                                         <binding destination="342" name="enabled3" keyPath="selection.dcmMode" previousBinding="773" id="791">
                                             <dictionary key="options">
-                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                                <integer key="NSNullPlaceholder" value="-1"/>
                                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
                                                 <integer key="NSNoSelectionPlaceholder" value="-1"/>
-                                                <integer key="NSNullPlaceholder" value="-1"/>
+                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
                                                 <string key="NSValueTransformerName">NSNegateBoolean</string>
                                             </dictionary>
                                         </binding>
@@ -354,10 +354,10 @@ Gw
                                         </binding>
                                         <binding destination="342" name="enabled2" keyPath="selection.dcmSeriesMode" previousBinding="760" id="773">
                                             <dictionary key="options">
-                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                                <integer key="NSNullPlaceholder" value="-1"/>
                                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
                                                 <integer key="NSNoSelectionPlaceholder" value="-1"/>
-                                                <integer key="NSNullPlaceholder" value="-1"/>
+                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
                                                 <string key="NSValueTransformerName">NSNegateBoolean</string>
                                             </dictionary>
                                         </binding>
@@ -394,7 +394,7 @@ Gw
                                     </textFieldCell>
                                 </textField>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="439">
-                                    <rect key="frame" x="486" y="168" width="40" height="17"/>
+                                    <rect key="frame" x="510" y="168" width="40" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="36" id="WHw-QN-7e5"/>
@@ -409,7 +409,7 @@ Gw
                                     </connections>
                                 </textField>
                                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="499">
-                                    <rect key="frame" x="162" y="63" width="354" height="17"/>
+                                    <rect key="frame" x="162" y="63" width="378" height="17"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                                     <sliderCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" continuous="YES" alignment="left" maxValue="256" doubleValue="40" tickMarkPosition="below" numberOfTickMarks="32" sliderType="linear" id="504">
                                         <font key="font" size="12" name="Helvetica"/>
@@ -417,10 +417,10 @@ Gw
                                     <connections>
                                         <binding destination="342" name="enabled2" keyPath="selection.dcmMode" previousBinding="769" id="789">
                                             <dictionary key="options">
-                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                                <integer key="NSNullPlaceholder" value="-1"/>
                                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
                                                 <integer key="NSNoSelectionPlaceholder" value="-1"/>
-                                                <integer key="NSNullPlaceholder" value="-1"/>
+                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
                                                 <string key="NSValueTransformerName">NSNegateBoolean</string>
                                             </dictionary>
                                         </binding>
@@ -445,7 +445,7 @@ Gw
                                     </connections>
                                 </textField>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="497">
-                                    <rect key="frame" x="474" y="35" width="49" height="19"/>
+                                    <rect key="frame" x="498" y="35" width="49" height="19"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="49" id="8v6-ln-yiq"/>
@@ -469,10 +469,10 @@ Gw
                                         <binding destination="342" name="minValue" keyPath="selection.dcmIntervalMin" previousBinding="1170" id="1173"/>
                                         <binding destination="342" name="enabled3" keyPath="selection.dcmMode" previousBinding="1167" id="1169">
                                             <dictionary key="options">
-                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                                <integer key="NSNullPlaceholder" value="-1"/>
                                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
                                                 <integer key="NSNoSelectionPlaceholder" value="-1"/>
-                                                <integer key="NSNullPlaceholder" value="-1"/>
+                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
                                                 <string key="NSValueTransformerName">NSNegateBoolean</string>
                                             </dictionary>
                                         </binding>
@@ -483,10 +483,10 @@ Gw
                                         </binding>
                                         <binding destination="342" name="enabled2" keyPath="selection.dcmSeriesMode" previousBinding="1165" id="1167">
                                             <dictionary key="options">
-                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                                <integer key="NSNullPlaceholder" value="-1"/>
                                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
                                                 <integer key="NSNoSelectionPlaceholder" value="-1"/>
-                                                <integer key="NSNullPlaceholder" value="-1"/>
+                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
                                                 <string key="NSValueTransformerName">NSNegateBoolean</string>
                                             </dictionary>
                                         </binding>
@@ -533,10 +533,10 @@ Gw
                                     <connections>
                                         <binding destination="342" name="enabled2" keyPath="selection.dcmMode" previousBinding="764" id="783">
                                             <dictionary key="options">
-                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                                <integer key="NSNullPlaceholder" value="-1"/>
                                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
                                                 <integer key="NSNoSelectionPlaceholder" value="-1"/>
-                                                <integer key="NSNullPlaceholder" value="-1"/>
+                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
                                                 <string key="NSValueTransformerName">NSNegateBoolean</string>
                                             </dictionary>
                                         </binding>
@@ -578,10 +578,10 @@ Gw
                                     <connections>
                                         <binding destination="342" name="enabled2" keyPath="selection.dcmMode" previousBinding="774" id="785">
                                             <dictionary key="options">
-                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                                <integer key="NSNullPlaceholder" value="-1"/>
                                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
                                                 <integer key="NSNoSelectionPlaceholder" value="-1"/>
-                                                <integer key="NSNullPlaceholder" value="-1"/>
+                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
                                                 <string key="NSValueTransformerName">NSNegateBoolean</string>
                                             </dictionary>
                                         </binding>
@@ -608,10 +608,10 @@ Gw
                                     <connections>
                                         <binding destination="342" name="enabled2" keyPath="selection.dcmMode" previousBinding="772" id="793">
                                             <dictionary key="options">
-                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                                <integer key="NSNullPlaceholder" value="-1"/>
                                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
                                                 <integer key="NSNoSelectionPlaceholder" value="-1"/>
-                                                <integer key="NSNullPlaceholder" value="-1"/>
+                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
                                                 <string key="NSValueTransformerName">NSNegateBoolean</string>
                                             </dictionary>
                                         </binding>
@@ -643,10 +643,10 @@ Gw
                                         <binding destination="342" name="value" keyPath="selection.dcmBatchReverse" id="1087"/>
                                         <binding destination="342" name="enabled2" keyPath="selection.dcmMode" previousBinding="1089" id="1091">
                                             <dictionary key="options">
-                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                                <integer key="NSNullPlaceholder" value="-1"/>
                                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
                                                 <integer key="NSNoSelectionPlaceholder" value="-1"/>
-                                                <integer key="NSNullPlaceholder" value="-1"/>
+                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
                                                 <string key="NSValueTransformerName">NSNegateBoolean</string>
                                             </dictionary>
                                         </binding>
@@ -685,7 +685,7 @@ Gw
                             <constraint firstItem="485" firstAttribute="trailing" secondItem="499" secondAttribute="trailing" id="Zcq-lZ-mSL"/>
                             <constraint firstItem="441" firstAttribute="leading" secondItem="438" secondAttribute="leading" id="ZiT-dG-0qY"/>
                             <constraint firstItem="438" firstAttribute="leading" secondItem="476" secondAttribute="trailing" constant="15" id="aip-kX-aQM"/>
-                            <constraint firstItem="487" firstAttribute="top" secondItem="476" secondAttribute="bottom" constant="8" symbolic="YES" id="aq6-n3-Rmg"/>
+                            <constraint firstItem="487" firstAttribute="top" secondItem="476" secondAttribute="bottom" constant="23" id="aq6-n3-Rmg"/>
                             <constraint firstItem="485" firstAttribute="leading" secondItem="483" secondAttribute="trailing" constant="7" id="bGK-8R-NKp"/>
                             <constraint firstItem="487" firstAttribute="trailing" secondItem="500" secondAttribute="trailing" id="bkJ-vv-Vhw"/>
                             <constraint firstItem="489" firstAttribute="top" secondItem="499" secondAttribute="bottom" constant="9" id="cDD-Xz-q44"/>
@@ -899,6 +899,7 @@ Gw
                     <constraint firstItem="423" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="414" secondAttribute="leading" constant="5" id="BCI-6D-Ixm"/>
                     <constraint firstItem="422" firstAttribute="leading" secondItem="425" secondAttribute="trailing" constant="21" id="Cqj-DG-xcM"/>
                     <constraint firstItem="894" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="435" secondAttribute="trailing" constant="10" id="DS3-eF-flk"/>
+                    <constraint firstItem="419" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="418" secondAttribute="trailing" constant="10" id="DiJ-Te-qyW"/>
                     <constraint firstAttribute="bottom" secondItem="418" secondAttribute="bottom" constant="11" id="Evb-xK-A9T"/>
                     <constraint firstItem="436" firstAttribute="trailing" secondItem="424" secondAttribute="trailing" id="FNb-hN-E93"/>
                     <constraint firstItem="421" firstAttribute="bottom" secondItem="425" secondAttribute="bottom" id="FyF-b4-Vgw"/>
@@ -1187,7 +1188,7 @@ Gw
                         <constraints>
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="56" id="wPI-kJ-cd4"/>
                         </constraints>
-                        <buttonCell key="cell" type="bevel" title="edit" bezelStyle="regularSquare" image="68E2A1B0-E69B-4D74-8D04-C1A755C634E8" imagePosition="overlaps" alignment="center" controlSize="small" borderStyle="border" id="574">
+                        <buttonCell key="cell" type="bevel" title="edit" bezelStyle="regularSquare" image="510A004A-BAF7-45DF-9E5B-4785B7D0A16A" imagePosition="overlaps" alignment="center" controlSize="small" borderStyle="border" id="574">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
                         </buttonCell>
@@ -2125,10 +2126,10 @@ Gw
                                     <connections>
                                         <binding destination="342" name="enabled2" keyPath="selection.dcmMode" previousBinding="1002" id="1025">
                                             <dictionary key="options">
-                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                                <integer key="NSNullPlaceholder" value="-1"/>
                                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
                                                 <integer key="NSNoSelectionPlaceholder" value="-1"/>
-                                                <integer key="NSNullPlaceholder" value="-1"/>
+                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
                                                 <string key="NSValueTransformerName">NSNegateBoolean</string>
                                             </dictionary>
                                         </binding>
@@ -2146,10 +2147,10 @@ Gw
                                         <binding destination="342" name="value" keyPath="selection.dcmFrom" id="1026"/>
                                         <binding destination="342" name="enabled2" keyPath="selection.dcmMode" previousBinding="1006" id="1029">
                                             <dictionary key="options">
-                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                                <integer key="NSNullPlaceholder" value="-1"/>
                                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
                                                 <integer key="NSNoSelectionPlaceholder" value="-1"/>
-                                                <integer key="NSNullPlaceholder" value="-1"/>
+                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
                                                 <string key="NSValueTransformerName">NSNegateBoolean</string>
                                             </dictionary>
                                         </binding>
@@ -2170,19 +2171,19 @@ Gw
                                         <binding destination="342" name="value" keyPath="selection.dcmInterval" id="1037"/>
                                         <binding destination="342" name="enabled2" keyPath="selection.dcmMode" previousBinding="1010" id="1033">
                                             <dictionary key="options">
-                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                                <integer key="NSNullPlaceholder" value="-1"/>
                                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
                                                 <integer key="NSNoSelectionPlaceholder" value="-1"/>
-                                                <integer key="NSNullPlaceholder" value="-1"/>
+                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
                                                 <string key="NSValueTransformerName">NSNegateBoolean</string>
                                             </dictionary>
                                         </binding>
                                         <binding destination="342" name="enabled3" keyPath="selection.dcmSameIntervalAndThickness" previousBinding="1033" id="1041">
                                             <dictionary key="options">
-                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                                <integer key="NSNullPlaceholder" value="-1"/>
                                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
                                                 <integer key="NSNoSelectionPlaceholder" value="-1"/>
-                                                <integer key="NSNullPlaceholder" value="-1"/>
+                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
                                                 <string key="NSValueTransformerName">NSNegateBoolean</string>
                                             </dictionary>
                                         </binding>
@@ -2247,10 +2248,10 @@ Gw
                                     <connections>
                                         <binding destination="342" name="enabled2" keyPath="selection.dcmMode" previousBinding="1008" id="1031">
                                             <dictionary key="options">
-                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                                <integer key="NSNullPlaceholder" value="-1"/>
                                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
                                                 <integer key="NSNoSelectionPlaceholder" value="-1"/>
-                                                <integer key="NSNullPlaceholder" value="-1"/>
+                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
                                                 <string key="NSValueTransformerName">NSNegateBoolean</string>
                                             </dictionary>
                                         </binding>
@@ -2338,10 +2339,10 @@ Gw
                                     <connections>
                                         <binding destination="342" name="enabled2" keyPath="selection.dcmMode" previousBinding="1018" id="1020">
                                             <dictionary key="options">
-                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                                <integer key="NSNullPlaceholder" value="-1"/>
                                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
                                                 <integer key="NSNoSelectionPlaceholder" value="-1"/>
-                                                <integer key="NSNullPlaceholder" value="-1"/>
+                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
                                                 <string key="NSValueTransformerName">NSNegateBoolean</string>
                                             </dictionary>
                                         </binding>
@@ -2416,10 +2417,10 @@ Gw
                                     <connections>
                                         <binding destination="342" name="enabled2" keyPath="selection.dcmMode" previousBinding="1012" id="1035">
                                             <dictionary key="options">
-                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                                <integer key="NSNullPlaceholder" value="-1"/>
                                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
                                                 <integer key="NSNoSelectionPlaceholder" value="-1"/>
-                                                <integer key="NSNullPlaceholder" value="-1"/>
+                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
                                                 <string key="NSValueTransformerName">NSNegateBoolean</string>
                                             </dictionary>
                                         </binding>
@@ -2451,10 +2452,10 @@ Gw
                                         <binding destination="342" name="value" keyPath="selection.dcmBatchReverse" id="1096"/>
                                         <binding destination="342" name="enabled2" keyPath="selection.dcmMode" previousBinding="1098" id="1100">
                                             <dictionary key="options">
-                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                                <integer key="NSNullPlaceholder" value="-1"/>
                                                 <integer key="NSNotApplicablePlaceholder" value="-1"/>
                                                 <integer key="NSNoSelectionPlaceholder" value="-1"/>
-                                                <integer key="NSNullPlaceholder" value="-1"/>
+                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
                                                 <string key="NSValueTransformerName">NSNegateBoolean</string>
                                             </dictionary>
                                         </binding>
@@ -2661,7 +2662,7 @@ Gw
         <image name="2DMPRnormalPosition" width="20" height="20"/>
         <image name="2DMPRverticalPosition" width="20" height="20"/>
         <image name="3DRotateCamera" width="98" height="101"/>
-        <image name="68E2A1B0-E69B-4D74-8D04-C1A755C634E8" width="1" height="1">
+        <image name="510A004A-BAF7-45DF-9E5B-4785B7D0A16A" width="1" height="1">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGPj9YJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoK4HCBMU
 GR4fIyQsLzI4O1UkbnVsbNUJCgsMDQ4PEBESVk5TU2l6ZVYkY2xhc3NcTlNJbWFnZUZsYWdzVk5TUmVw

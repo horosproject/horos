@@ -2851,7 +2851,7 @@ static NSConditionLock *threadLock = nil;
 {
     if( distantEntireDBResultCount > outlineViewArray.count || localEntireDBResultCount > outlineViewArray.count)
     {
-        [searchInEntireDBResult setTitle: N2LocalizedSingularPluralCount( ((distantEntireDBResultCount > localEntireDBResultCount) ? distantEntireDBResultCount : localEntireDBResultCount), NSLocalizedString(@"result in entire DB", nil), NSLocalizedString(@"results in entire DB", nil))];
+        [searchInEntireDBResult setTitle: N2LocalizedSingularPluralCount( ((distantEntireDBResultCount > localEntireDBResultCount) ? distantEntireDBResultCount : localEntireDBResultCount), NSLocalizedString(@"result in entire DB", @"Try to keep this string **short**"), NSLocalizedString(@"results in entire DB", @"Try to keep this string **short**"))];
         
         [searchInEntireDBResult setHidden: NO];
     }
@@ -18768,8 +18768,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		// Use a custom view, a text field, for the search item 
 		[toolbarItem setView: searchView];
-		[toolbarItem setMinSize:NSMakeSize(NSWidth([searchView frame])-150, NSHeight([searchView frame]))];
-		[toolbarItem setMaxSize:NSMakeSize(NSWidth([searchView frame]), NSHeight([searchView frame]))];
+		[toolbarItem setMinSize:NSMakeSize(NSWidth([searchView frame]), NSHeight([searchView frame]))];
+		[toolbarItem setMaxSize:NSMakeSize(NSWidth([searchView frame])+100, NSHeight([searchView frame]))];
     }
 	else if ([itemIdent isEqualToString: TimeIntervalToolbarItemIdentifier])
 	{

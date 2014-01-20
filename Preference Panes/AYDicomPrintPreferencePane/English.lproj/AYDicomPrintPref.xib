@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C32" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C39" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <deployment defaultVersion="1070" identifier="macosx"/>
+        <deployment defaultVersion="1080" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
     </dependencies>
     <objects>
@@ -283,7 +283,7 @@
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="131">
                                     <rect key="frame" x="18" y="81" width="30" height="13"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Trim:" id="380">
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Trim:" id="380">
                                         <font key="font" metaFont="label"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -362,6 +362,7 @@
                             <constraint firstItem="137" firstAttribute="baseline" secondItem="143" secondAttribute="baseline" id="YqO-ia-Jfc"/>
                             <constraint firstItem="159" firstAttribute="leading" secondItem="143" secondAttribute="leading" id="adM-uj-5Sf"/>
                             <constraint firstItem="119" firstAttribute="top" secondItem="149" secondAttribute="bottom" constant="2" id="bCR-FD-jLY"/>
+                            <constraint firstItem="143" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="137" secondAttribute="trailing" constant="43" id="bGA-Ik-4cW"/>
                             <constraint firstItem="143" firstAttribute="leading" secondItem="159" secondAttribute="leading" id="cUB-wW-ODD"/>
                             <constraint firstItem="119" firstAttribute="leading" secondItem="137" secondAttribute="leading" id="eMI-an-a1D"/>
                             <constraint firstItem="143" firstAttribute="leading" secondItem="132" secondAttribute="leading" id="gwh-mj-5KO"/>
@@ -369,6 +370,7 @@
                             <constraint firstItem="124" firstAttribute="leading" secondItem="117" secondAttribute="leading" constant="22" id="jFX-S4-gzJ"/>
                             <constraint firstItem="132" firstAttribute="leading" secondItem="125" secondAttribute="leading" id="jdV-Bj-lgG"/>
                             <constraint firstItem="131" firstAttribute="top" secondItem="137" secondAttribute="bottom" constant="7" id="kQU-tb-rLd"/>
+                            <constraint firstItem="132" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="123" secondAttribute="trailing" constant="48" id="kwB-ly-GW9"/>
                             <constraint firstItem="137" firstAttribute="leading" secondItem="133" secondAttribute="leading" id="njX-2P-2C6"/>
                             <constraint firstItem="149" firstAttribute="leading" secondItem="117" secondAttribute="leading" constant="19" id="sBB-Qn-sWv"/>
                             <constraint firstItem="123" firstAttribute="top" secondItem="119" secondAttribute="bottom" constant="7" id="sg0-0j-6hq"/>

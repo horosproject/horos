@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C32" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C39" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <deployment defaultVersion="1070" identifier="macosx"/>
+        <deployment defaultVersion="1080" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
     </dependencies>
     <objects>
@@ -75,7 +75,7 @@
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="256">
-                        <rect key="frame" x="336" y="642" width="13" height="20"/>
+                        <rect key="frame" x="329" y="642" width="20" height="20"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="smallSquare" title="-" bezelStyle="smallSquare" alignment="center" controlSize="small" borderStyle="border" inset="2" id="558">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -264,9 +264,9 @@
                                     </connections>
                                 </textField>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="410">
-                                    <rect key="frame" x="51" y="102" width="15" height="15"/>
+                                    <rect key="frame" x="51" y="102" width="15" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="smallSquare" title="+" bezelStyle="smallSquare" imagePosition="below" alignment="center" controlSize="small" borderStyle="border" inset="2" id="575">
+                                    <buttonCell key="cell" type="smallSquare" title="+" bezelStyle="smallSquare" alignment="center" controlSize="small" scrollable="YES" lineBreakMode="clipping" borderStyle="border" inset="2" id="575">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
@@ -275,9 +275,9 @@
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="413">
-                                    <rect key="frame" x="51" y="134" width="15" height="15"/>
+                                    <rect key="frame" x="51" y="134" width="15" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="smallSquare" title="+" bezelStyle="smallSquare" imagePosition="below" alignment="center" controlSize="small" borderStyle="border" inset="2" id="576">
+                                    <buttonCell key="cell" type="smallSquare" title="+" bezelStyle="smallSquare" image="226E6E37-DB91-4E3A-9956-A457E644F8D3" alignment="center" controlSize="small" scrollable="YES" lineBreakMode="clipping" borderStyle="border" inset="2" id="576">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
@@ -286,9 +286,9 @@
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="414">
-                                    <rect key="frame" x="51" y="42" width="15" height="15"/>
+                                    <rect key="frame" x="51" y="42" width="15" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="smallSquare" title="+" bezelStyle="smallSquare" imagePosition="below" alignment="center" controlSize="small" borderStyle="border" inset="2" id="577">
+                                    <buttonCell key="cell" type="smallSquare" title="+" bezelStyle="smallSquare" alignment="center" controlSize="small" scrollable="YES" lineBreakMode="clipping" borderStyle="border" inset="2" id="577">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
@@ -299,7 +299,7 @@
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="415">
                                     <rect key="frame" x="51" y="9" width="15" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="smallSquare" title="+" bezelStyle="smallSquare" imagePosition="below" alignment="center" controlSize="small" borderStyle="border" inset="2" id="578">
+                                    <buttonCell key="cell" type="smallSquare" title="+" bezelStyle="smallSquare" alignment="center" controlSize="small" scrollable="YES" lineBreakMode="clipping" borderStyle="border" inset="2" id="578">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
@@ -330,7 +330,7 @@
                         <constraints>
                             <constraint firstItem="369" firstAttribute="bottom" secondItem="271" secondAttribute="bottom" id="0NP-vN-6sS"/>
                             <constraint firstItem="401" firstAttribute="top" secondItem="261" secondAttribute="bottom" constant="10" id="1FT-Cj-2aS"/>
-                            <constraint firstItem="410" firstAttribute="top" secondItem="413" secondAttribute="bottom" constant="19" id="3XR-Q3-llE"/>
+                            <constraint firstItem="410" firstAttribute="top" secondItem="413" secondAttribute="bottom" constant="18" id="3XR-Q3-llE"/>
                             <constraint firstItem="594" firstAttribute="leading" secondItem="373" secondAttribute="trailing" constant="9" id="5UY-qr-lH1"/>
                             <constraint firstItem="402" firstAttribute="top" secondItem="401" secondAttribute="top" id="6Hf-HJ-h4O"/>
                             <constraint firstItem="401" firstAttribute="baseline" secondItem="372" secondAttribute="baseline" id="6MY-Ar-qWZ"/>
@@ -338,7 +338,7 @@
                             <constraint firstItem="594" firstAttribute="baseline" secondItem="373" secondAttribute="baseline" id="8Nj-Gv-IEs"/>
                             <constraint firstItem="261" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="367" secondAttribute="trailing" constant="16" id="8s0-T0-Ahq"/>
                             <constraint firstItem="413" firstAttribute="leading" secondItem="410" secondAttribute="leading" id="B53-wB-1FI"/>
-                            <constraint firstItem="413" firstAttribute="top" secondItem="379" secondAttribute="top" constant="10" id="B8g-fT-2mB"/>
+                            <constraint firstItem="413" firstAttribute="top" secondItem="379" secondAttribute="top" constant="9" id="B8g-fT-2mB"/>
                             <constraint firstItem="367" firstAttribute="leading" secondItem="413" secondAttribute="trailing" constant="7" id="Ckm-k2-Qop"/>
                             <constraint firstItem="271" firstAttribute="trailing" secondItem="266" secondAttribute="trailing" id="DpT-D0-X6S"/>
                             <constraint firstItem="368" firstAttribute="top" secondItem="409" secondAttribute="bottom" constant="42" id="EoE-Rm-T4p"/>
@@ -375,7 +375,7 @@
                             <constraint firstItem="415" firstAttribute="top" secondItem="414" secondAttribute="bottom" constant="19" id="nPn-IC-v6b"/>
                             <constraint firstItem="373" firstAttribute="leading" secondItem="371" secondAttribute="leading" id="r0k-iz-hIS"/>
                             <constraint firstItem="414" firstAttribute="centerY" secondItem="266" secondAttribute="centerY" id="tmW-ZT-Ieo"/>
-                            <constraint firstItem="414" firstAttribute="top" secondItem="410" secondAttribute="bottom" constant="47" id="txw-XS-eAq"/>
+                            <constraint firstItem="414" firstAttribute="top" secondItem="410" secondAttribute="bottom" constant="46" id="txw-XS-eAq"/>
                             <constraint firstItem="371" firstAttribute="leading" secondItem="409" secondAttribute="trailing" constant="16" id="uXy-LK-sby"/>
                             <constraint firstItem="409" firstAttribute="leading" secondItem="367" secondAttribute="leading" id="yH2-h1-Eqs"/>
                             <constraint firstItem="266" firstAttribute="baseline" secondItem="368" secondAttribute="baseline" id="zIt-rF-qjV"/>
@@ -487,6 +487,7 @@
                 </subviews>
                 <constraints>
                     <constraint firstItem="428" firstAttribute="leading" secondItem="237" secondAttribute="trailing" constant="26" id="2fc-84-jB3"/>
+                    <constraint firstItem="256" firstAttribute="width" secondItem="237" secondAttribute="width" id="7mt-oh-E9j"/>
                     <constraint firstItem="379" firstAttribute="top" secondItem="260" secondAttribute="bottom" constant="47" id="9wS-qn-B7Z"/>
                     <constraint firstItem="229" firstAttribute="leading" secondItem="228" secondAttribute="leading" constant="18" id="Anf-Sg-Ez3"/>
                     <constraint firstItem="428" firstAttribute="top" secondItem="586" secondAttribute="top" id="BuR-0l-oUK"/>
@@ -559,4 +560,57 @@
             </connections>
         </arrayController>
     </objects>
+    <resources>
+        <image name="226E6E37-DB91-4E3A-9956-A457E644F8D3" width="1" height="1">
+            <mutableData key="keyedArchiveRepresentation">
+YnBsaXN0MDDUAQIDBAUGPj9YJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoK4HCBMU
+GR4fIyQsLzI4O1UkbnVsbNUJCgsMDQ4PEBESVk5TU2l6ZVYkY2xhc3NcTlNJbWFnZUZsYWdzVk5TUmVw
+c1dOU0NvbG9ygAKADRIgwwAAgAOAC1Z7MSwgMX3SFQoWGFpOUy5vYmplY3RzoReABIAK0hUKGh2iGxyA
+BYAGgAkQANIgCiEiXxAUTlNUSUZGUmVwcmVzZW50YXRpb26AB4AITxEIdE1NACoAAAAKAAAADgEAAAMA
+AAABAAEAAAEBAAMAAAABAAEAAAECAAMAAAACAAgACAEDAAMAAAABAAEAAAEGAAMAAAABAAEAAAERAAQA
+AAABAAAACAESAAMAAAABAAEAAAEVAAMAAAABAAIAAAEWAAMAAAABAAEAAAEXAAQAAAABAAAAAgEcAAMA
+AAABAAEAAAFSAAMAAAABAAEAAAFTAAMAAAACAAEAAYdzAAcAAAe8AAAAuAAAAAAAAAe8YXBwbAIgAABt
+bnRyR1JBWVhZWiAH0AACAA4ADAAAAABhY3NwQVBQTAAAAABub25lAAAAAAAAAAAAAAAAAAAAAAAA9tYA
+AQAAAADTLWFwcGwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVk
+ZXNjAAAAwAAAAG9kc2NtAAABMAAABi5jcHJ0AAAHYAAAADh3dHB0AAAHmAAAABRrVFJDAAAHrAAAAA5k
+ZXNjAAAAAAAAABVHZW5lcmljIEdyYXkgUHJvZmlsZQAAAAAAAAAAAAAAFUdlbmVyaWMgR3JheSBQcm9m
+aWxlAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAbWx1YwAAAAAA
+AAAeAAAADHNrU0sAAAAqAAABeGRhREsAAAA0AAABomNhRVMAAAAsAAAB1nB0QlIAAAAqAAACAnVrVUEA
+AAAsAAACLGZyRlUAAAAqAAACWGh1SFUAAAAuAAACgnpoVFcAAAAQAAACsG5iTk8AAAAsAAACwGNzQ1oA
+AAAkAAAC7GhlSUwAAAAgAAADEGl0SVQAAAAuAAADMHJvUk8AAAAkAAADXmRlREUAAAA6AAADgmtvS1IA
+AAAYAAADvHN2U0UAAAAuAAAD1HpoQ04AAAAQAAAEAmphSlAAAAAWAAAEEmVsR1IAAAAkAAAEKHB0UE8A
+AAA4AAAETG5sTkwAAAAqAAAEhGVzRVMAAAAoAAAErnRoVEgAAAAkAAAE1nRyVFIAAAAiAAAE+mZpRkkA
+AAAsAAAFHGhySFIAAAA6AAAFSHBsUEwAAAA2AAAFgnJ1UlUAAAAmAAAFuGFyRUcAAAAoAAAF3mVuVVMA
+AAAoAAAGBgBWAWEAZQBvAGIAZQBjAG4A/QAgAHMAaQB2AP0AIABwAHIAbwBmAGkAbABHAGUAbgBlAHIA
+ZQBsACAAZwByAOUAdABvAG4AZQBiAGUAcwBrAHIAaQB2AGUAbABzAGUAUABlAHIAZgBpAGwAIABkAGUA
+IABnAHIAaQBzACAAZwBlAG4A6AByAGkAYwBQAGUAcgBmAGkAbAAgAEMAaQBuAHoAYQAgAEcAZQBuAOkA
+cgBpAGMAbwQXBDAEMwQwBDsETAQ9BDgEOQAgBD8EQAQ+BEQEMAQ5BDsAIABHAHIAYQB5AFAAcgBvAGYA
+aQBsACAAZwDpAG4A6QByAGkAcQB1AGUAIABnAHIAaQBzAMEAbAB0AGEAbADhAG4AbwBzACAAcwB6APwA
+cgBrAGUAIABwAHIAbwBmAGkAbJAadShwcJaOgnJfaWPPj/AARwBlAG4AZQByAGkAcwBrACAAZwByAOUA
+dABvAG4AZQBwAHIAbwBmAGkAbABPAGIAZQBjAG4A/QAgAWEAZQBkAP0AIABwAHIAbwBmAGkAbAXkBegF
+1QXkBdkF3AAgAEcAcgBhAHkAIAXbBdwF3AXZAFAAcgBvAGYAaQBsAG8AIABnAHIAaQBnAGkAbwAgAGcA
+ZQBuAGUAcgBpAGMAbwBQAHIAbwBmAGkAbAAgAGcAcgBpACAAZwBlAG4AZQByAGkAYwBBAGwAbABnAGUA
+bQBlAGkAbgBlAHMAIABHAHIAYQB1AHMAdAB1AGYAZQBuAC0AUAByAG8AZgBpAGzHfLwYACAARwByAGEA
+eQAg1QS4XNMMx3wARwBlAG4AZQByAGkAcwBrACAAZwByAOUAcwBrAGEAbABlAHAAcgBvAGYAaQBsZm6Q
+GnBwXqZjz4/wZYdO9k4AgiwwsDDsMKQw1zDtMNUwoTCkMOsDkwO1A70DuQO6A8wAIAPAA8EDvwPGA68D
+uwAgA7MDugPBA7kAUABlAHIAZgBpAGwAIABnAGUAbgDpAHIAaQBjAG8AIABkAGUAIABjAGkAbgB6AGUA
+bgB0AG8AcwBBAGwAZwBlAG0AZQBlAG4AIABnAHIAaQBqAHMAcAByAG8AZgBpAGUAbABQAGUAcgBmAGkA
+bAAgAGcAcgBpAHMAIABnAGUAbgDpAHIAaQBjAG8OQg4bDiMORA4fDiUOTA4qDjUOQA4XDjIOFw4xDkgO
+Jw5EDhsARwBlAG4AZQBsACAARwByAGkAIABQAHIAbwBmAGkAbABpAFkAbABlAGkAbgBlAG4AIABoAGEA
+cgBtAGEAYQBwAHIAbwBmAGkAaQBsAGkARwBlAG4AZQByAGkBDQBrAGkAIABwAHIAbwBmAGkAbAAgAHMA
+aQB2AGkAaAAgAHQAbwBuAG8AdgBhAFUAbgBpAHcAZQByAHMAYQBsAG4AeQAgAHAAcgBvAGYAaQBsACAA
+cwB6AGEAcgBvAVsAYwBpBB4EMQRJBDgEOQAgBEEENQRABEsEOQAgBD8EQAQ+BEQEOAQ7BEwGRQZEBkEA
+IAYqBjkGMQZKBkEAIABHAHIAYQB5ACAGJwZEBjkGJwZFAEcAZQBuAGUAcgBpAGMAIABHAHIAYQB5ACAA
+UAByAG8AZgBpAGwAZQAAdGV4dAAAAABDb3B5cmlnaHQgMjAwNyBBcHBsZSBJbmMuLCBhbGwgcmlnaHRz
+IHJlc2VydmVkLgBYWVogAAAAAAAA81EAAQAAAAEWzGN1cnYAAAAAAAAAAQHNAADSJSYnKFokY2xhc3Nu
+YW1lWCRjbGFzc2VzXxAQTlNCaXRtYXBJbWFnZVJlcKMpKitfEBBOU0JpdG1hcEltYWdlUmVwWk5TSW1h
+Z2VSZXBYTlNPYmplY3TSJSYtLldOU0FycmF5oi0r0iUmMDFeTlNNdXRhYmxlQXJyYXmjMC0r0zM0CjU2
+N1dOU1doaXRlXE5TQ29sb3JTcGFjZUQwIDAAEAOADNIlJjk6V05TQ29sb3KiOSvSJSY8PVdOU0ltYWdl
+ojwrXxAPTlNLZXllZEFyY2hpdmVy0UBBVHJvb3SAAQAIABEAGgAjAC0AMgA3AEYATABXAF4AZQByAHkA
+gQCDAIUAigCMAI4AlQCaAKUApwCpAKsAsACzALUAtwC5ALsAwADXANkA2wlTCVgJYwlsCX8JgwmWCaEJ
+qgmvCbcJugm/Cc4J0gnZCeEJ7gnzCfUJ9wn8CgQKBwoMChQKFwopCiwKMQAAAAAAAAIBAAAAAAAAAEIA
+AAAAAAAAAAAAAAAAAAozA
+</mutableData>
+        </image>
+    </resources>
 </document>

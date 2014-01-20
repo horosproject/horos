@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C32" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C39" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <deployment defaultVersion="1070" identifier="macosx"/>
+        <deployment defaultVersion="1080" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
     </dependencies>
     <objects>
@@ -30,22 +30,22 @@
         <window title="&lt;&lt; do not localize >>" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" deferred="NO" oneShot="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="12" userLabel="PrefPane">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="119" y="83" width="793" height="807"/>
+            <rect key="contentRect" x="119" y="83" width="847" height="807"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <value key="minSize" type="size" width="224.66300000000001" height="10"/>
             <view key="contentView" horizontalCompressionResistancePriority="1000" id="6">
-                <rect key="frame" x="0.0" y="0.0" width="793" height="807"/>
+                <rect key="frame" x="0.0" y="0.0" width="847" height="807"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <box title="DICOM Nodes for DICOM Query/Retrieve and DICOM Send" translatesAutoresizingMaskIntoConstraints="NO" id="112">
-                        <rect key="frame" x="17" y="429" width="759" height="370"/>
+                        <rect key="frame" x="17" y="429" width="813" height="370"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                         <view key="contentView">
-                            <rect key="frame" x="2" y="2" width="755" height="353"/>
+                            <rect key="frame" x="2" y="2" width="809" height="353"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="101">
-                                    <rect key="frame" x="650" y="126" width="103" height="28"/>
+                                    <rect key="frame" x="704" y="126" width="103" height="28"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="push" title="Add new node" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="327">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -91,14 +91,14 @@
                                     </connections>
                                 </popUpButton>
                                 <scrollView autohidesScrollers="YES" horizontalLineScroll="16" horizontalPageScroll="10" verticalLineScroll="16" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="107">
-                                    <rect key="frame" x="8" y="156" width="740" height="194"/>
+                                    <rect key="frame" x="8" y="156" width="794" height="194"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                                     <clipView key="contentView" id="CPs-nZ-3wi">
-                                        <rect key="frame" x="1" y="17" width="738" height="176"/>
+                                        <rect key="frame" x="1" y="17" width="792" height="176"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="sequential" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" autosaveName="LocationsTablePrefs" rowHeight="14" headerView="350" id="104" customClass="ServerTableView">
-                                                <rect key="frame" x="0.0" y="0.0" width="738" height="176"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="792" height="176"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -223,7 +223,7 @@
                                                             <binding destination="283" name="selectedTag" keyPath="arrangedObjects.retrieveMode" id="536"/>
                                                         </connections>
                                                     </tableColumn>
-                                                    <tableColumn identifier="Send" width="35" minWidth="35" maxWidth="35" id="322">
+                                                    <tableColumn identifier="Send" width="40" minWidth="40" maxWidth="40" id="322">
                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="center" title="Send">
                                                             <font key="font" metaFont="smallSystem"/>
                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -238,7 +238,7 @@
                                                             <binding destination="283" name="value" keyPath="arrangedObjects.Send" id="325"/>
                                                         </connections>
                                                     </tableColumn>
-                                                    <tableColumn identifier="TLS" width="35" minWidth="35" maxWidth="35" id="632">
+                                                    <tableColumn identifier="TLS" width="40" minWidth="40" maxWidth="40" id="632">
                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="center" title="TLS">
                                                             <font key="font" metaFont="smallSystem"/>
                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -294,7 +294,7 @@
                                                             <binding destination="283" name="value" keyPath="arrangedObjects.Description" id="306"/>
                                                         </connections>
                                                     </tableColumn>
-                                                    <tableColumn identifier="Transfer Syntax" width="155.953125" minWidth="87.552726745605469" maxWidth="300" id="209">
+                                                    <tableColumn identifier="Transfer Syntax" width="199.953125" minWidth="87.552726745605469" maxWidth="300" id="209">
                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Send Transfer Syntax">
                                                             <font key="font" metaFont="smallSystem"/>
                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -344,7 +344,7 @@
                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     </clipView>
                                     <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="349">
-                                        <rect key="frame" x="1" y="177" width="738" height="16"/>
+                                        <rect key="frame" x="1" y="177" width="789" height="16"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                     </scroller>
                                     <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="348">
@@ -352,12 +352,12 @@
                                         <autoresizingMask key="autoresizingMask"/>
                                     </scroller>
                                     <tableHeaderView key="headerView" id="350">
-                                        <rect key="frame" x="0.0" y="0.0" width="738" height="17"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="792" height="17"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                     </tableHeaderView>
                                 </scrollView>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="235">
-                                    <rect key="frame" x="396" y="126" width="90" height="28"/>
+                                    <rect key="frame" x="450" y="126" width="90" height="28"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <constraints>
                                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="80" id="iqb-D6-v5v"/>
@@ -420,7 +420,7 @@
                                     </connections>
                                 </button>
                                 <progressIndicator horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" displayedWhenStopped="NO" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="246">
-                                    <rect key="frame" x="489" y="132" width="16" height="16"/>
+                                    <rect key="frame" x="543" y="132" width="16" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <connections>
                                         <binding destination="-2" name="animate" keyPath="self.testingNodes" id="1196"/>
@@ -432,7 +432,7 @@
                                     </connections>
                                 </progressIndicator>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="248">
-                                    <rect key="frame" x="220" y="126" width="90" height="28"/>
+                                    <rect key="frame" x="274" y="126" width="90" height="28"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <constraints>
                                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="80" id="E9Z-aT-Mjr"/>
@@ -445,8 +445,8 @@
                                         <action selector="saveAs:" target="-2" id="250"/>
                                     </connections>
                                 </button>
-                                <button verticalHuggingPriority="750" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="1177">
-                                    <rect key="frame" x="7" y="138" width="60" height="16"/>
+                                <button horizontalHuggingPriority="249" verticalHuggingPriority="750" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="1177">
+                                    <rect key="frame" x="7" y="138" width="87" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <constraints>
                                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="58" id="sMe-kg-PkN"/>
@@ -460,7 +460,7 @@
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1180">
-                                    <rect key="frame" x="73" y="138" width="60" height="16"/>
+                                    <rect key="frame" x="100" y="138" width="87" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <constraints>
                                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="58" id="fW5-rt-jPO"/>
@@ -474,7 +474,7 @@
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="249">
-                                    <rect key="frame" x="308" y="126" width="90" height="28"/>
+                                    <rect key="frame" x="362" y="126" width="90" height="28"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <constraints>
                                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="80" id="m9L-5h-hLe"/>
@@ -493,7 +493,7 @@
                                     </connections>
                                 </button>
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="363">
-                                    <rect key="frame" x="14" y="106" width="326" height="18"/>
+                                    <rect key="frame" x="14" y="106" width="380" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Automatically sync the DICOM Nodes list from this URL:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="364">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -505,7 +505,7 @@
                                     </connections>
                                 </button>
                                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="365">
-                                    <rect key="frame" x="346" y="106" width="302" height="19"/>
+                                    <rect key="frame" x="400" y="106" width="302" height="19"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="302" id="Abf-6Z-GNo"/>
@@ -522,7 +522,7 @@
                                     </connections>
                                 </textField>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="377">
-                                    <rect key="frame" x="654" y="103" width="20" height="25"/>
+                                    <rect key="frame" x="708" y="103" width="20" height="25"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="20" id="PE7-iJ-61W"/>
@@ -582,6 +582,7 @@
                             <constraint firstItem="106" firstAttribute="leading" secondItem="1188" secondAttribute="trailing" constant="8" symbolic="YES" id="nX1-Zz-oQh"/>
                             <constraint firstItem="462" firstAttribute="top" secondItem="1121" secondAttribute="bottom" constant="6" symbolic="YES" id="pOb-A4-eKD"/>
                             <constraint firstItem="1177" firstAttribute="baseline" secondItem="1180" secondAttribute="baseline" id="q2D-mS-ofV"/>
+                            <constraint firstItem="1180" firstAttribute="width" secondItem="1177" secondAttribute="width" id="rRE-p8-9V3"/>
                             <constraint firstItem="246" firstAttribute="centerX" secondItem="365" secondAttribute="centerX" id="uMo-Wg-HKC"/>
                             <constraint firstItem="1190" firstAttribute="top" secondItem="242" secondAttribute="bottom" constant="6" symbolic="YES" id="uay-YH-qFg"/>
                             <constraint firstItem="235" firstAttribute="baseline" secondItem="249" secondAttribute="baseline" id="vlm-CW-Gxc"/>
@@ -594,14 +595,14 @@
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </box>
                     <box verticalHuggingPriority="249" title="Network - OsiriX Databases with Fixed Addresses (tcp/ip port 8780):" translatesAutoresizingMaskIntoConstraints="NO" id="175">
-                        <rect key="frame" x="17" y="197" width="759" height="228"/>
+                        <rect key="frame" x="17" y="197" width="813" height="228"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                         <view key="contentView">
-                            <rect key="frame" x="2" y="2" width="755" height="211"/>
+                            <rect key="frame" x="2" y="2" width="809" height="211"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="177">
-                                    <rect key="frame" x="645" y="56" width="108" height="28"/>
+                                    <rect key="frame" x="699" y="56" width="108" height="28"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="push" title="Add new server" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="336">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -617,14 +618,14 @@
                                     </connections>
                                 </button>
                                 <scrollView autohidesScrollers="YES" horizontalLineScroll="16" horizontalPageScroll="10" verticalLineScroll="16" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="196">
-                                    <rect key="frame" x="7" y="85" width="741" height="120"/>
+                                    <rect key="frame" x="7" y="85" width="795" height="120"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                                     <clipView key="contentView" id="Baf-dq-jzh">
-                                        <rect key="frame" x="1" y="17" width="739" height="102"/>
+                                        <rect key="frame" x="1" y="17" width="793" height="102"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <tableView verticalHuggingPriority="750" tag="1" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="353" id="197" customClass="ServerTableView">
-                                                <rect key="frame" x="0.0" y="0.0" width="739" height="102"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="793" height="102"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -647,7 +648,7 @@
                                                             <binding destination="282" name="value" keyPath="arrangedObjects.Address" id="300"/>
                                                         </connections>
                                                     </tableColumn>
-                                                    <tableColumn identifier="Description" width="500" minWidth="4" maxWidth="1000" id="198">
+                                                    <tableColumn identifier="Description" width="554" minWidth="4" maxWidth="1000" id="198">
                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Description">
                                                             <font key="font" metaFont="smallSystem"/>
                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -691,7 +692,7 @@
                                         <autoresizingMask key="autoresizingMask"/>
                                     </scroller>
                                     <tableHeaderView key="headerView" id="353">
-                                        <rect key="frame" x="0.0" y="0.0" width="739" height="17"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="793" height="17"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                     </tableHeaderView>
                                 </scrollView>
@@ -805,14 +806,14 @@
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </box>
                     <box title="Local - OsiriX Databases files / folder:" translatesAutoresizingMaskIntoConstraints="NO" id="252">
-                        <rect key="frame" x="17" y="16" width="759" height="177"/>
+                        <rect key="frame" x="17" y="16" width="813" height="177"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                         <view key="contentView">
-                            <rect key="frame" x="2" y="2" width="755" height="160"/>
+                            <rect key="frame" x="2" y="2" width="809" height="160"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="259">
-                                    <rect key="frame" x="640" y="5" width="113" height="28"/>
+                                    <rect key="frame" x="694" y="5" width="113" height="28"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="push" title="Add a local path" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="338">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -823,14 +824,14 @@
                                     </connections>
                                 </button>
                                 <scrollView autohidesScrollers="YES" horizontalLineScroll="16" horizontalPageScroll="10" verticalLineScroll="16" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="255">
-                                    <rect key="frame" x="6" y="34" width="742" height="120"/>
+                                    <rect key="frame" x="6" y="34" width="796" height="120"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                                     <clipView key="contentView" id="qKe-sT-rxv">
-                                        <rect key="frame" x="1" y="17" width="740" height="102"/>
+                                        <rect key="frame" x="1" y="17" width="794" height="102"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <tableView verticalHuggingPriority="750" tag="2" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="356" id="256" customClass="ServerTableView">
-                                                <rect key="frame" x="0.0" y="0.0" width="740" height="102"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="794" height="102"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -853,7 +854,7 @@
                                                             <binding destination="262" name="value" keyPath="arrangedObjects.Path" id="269"/>
                                                         </connections>
                                                     </tableColumn>
-                                                    <tableColumn identifier="Description" width="214.0908203125" minWidth="65.0908203125" maxWidth="1000" id="257">
+                                                    <tableColumn identifier="Description" width="268.0908203125" minWidth="65.0908203125" maxWidth="1000" id="257">
                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Description">
                                                             <font key="font" metaFont="smallSystem"/>
                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -892,7 +893,7 @@
                                         <autoresizingMask key="autoresizingMask"/>
                                     </scroller>
                                     <tableHeaderView key="headerView" id="356">
-                                        <rect key="frame" x="0.0" y="0.0" width="740" height="17"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="794" height="17"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                     </tableHeaderView>
                                 </scrollView>
@@ -909,7 +910,7 @@
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </box>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="1127">
-                        <rect key="frame" x="604" y="183" width="171" height="11"/>
+                        <rect key="frame" x="658" y="183" width="171" height="11"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Press Delete key to remove a database" id="1128">
                             <font key="font" metaFont="miniSystem"/>
@@ -918,7 +919,7 @@
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="1129">
-                        <rect key="frame" x="604" y="414" width="171" height="11"/>
+                        <rect key="frame" x="658" y="414" width="171" height="11"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Press Delete key to remove a database" id="1130">
                             <font key="font" metaFont="miniSystem"/>
@@ -927,7 +928,7 @@
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="1131">
-                        <rect key="frame" x="621" y="788" width="154" height="11"/>
+                        <rect key="frame" x="675" y="788" width="154" height="11"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Press Delete key to remove a node" id="1132">
                             <font key="font" metaFont="miniSystem"/>

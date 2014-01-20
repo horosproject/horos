@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C32" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C39" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <deployment defaultVersion="1070" identifier="macosx"/>
+        <deployment defaultVersion="1080" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
     </dependencies>
     <objects>
@@ -383,11 +383,8 @@ Gw
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="254">
-                        <rect key="frame" x="180" y="202" width="89" height="16"/>
+                        <rect key="frame" x="180" y="202" width="80" height="16"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="87" id="xrI-EP-oEF"/>
-                        </constraints>
                         <buttonCell key="cell" type="push" title="OsiriX Tables" bezelStyle="rounded" alignment="center" controlSize="mini" borderStyle="border" inset="2" id="305">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="miniSystem"/>
@@ -402,7 +399,7 @@ Gw
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="255">
-                        <rect key="frame" x="275" y="202" width="73" height="16"/>
+                        <rect key="frame" x="266" y="202" width="80" height="16"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="SQL Syntax" bezelStyle="rounded" alignment="center" controlSize="mini" borderStyle="border" tag="1" inset="2" id="306">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -591,6 +588,7 @@ RW1wdHkgZmlsdGVyIHdpbGwgcm91dGUD4oCoQUxMIGltYWdlcwo
                     <constraint firstItem="242" firstAttribute="trailing" secondItem="241" secondAttribute="trailing" id="WFn-Gy-znZ"/>
                     <constraint firstItem="286" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="239" secondAttribute="leading" constant="16" id="Xcx-NN-gl4"/>
                     <constraint firstItem="322" firstAttribute="leading" secondItem="324" secondAttribute="leading" id="Xuc-xe-Jqa"/>
+                    <constraint firstItem="255" firstAttribute="width" secondItem="254" secondAttribute="width" id="YeG-sG-9lE"/>
                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="354" secondAttribute="trailing" constant="16" id="Zkq-ec-xw8"/>
                     <constraint firstItem="243" firstAttribute="top" secondItem="248" secondAttribute="bottom" constant="8" id="cNS-8c-tJR"/>
                     <constraint firstItem="240" firstAttribute="trailing" secondItem="241" secondAttribute="trailing" id="csA-10-JAg"/>

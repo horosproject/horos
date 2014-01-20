@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C32" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C39" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <deployment defaultVersion="1070" identifier="macosx"/>
+        <deployment defaultVersion="1080" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
     </dependencies>
     <objects>
@@ -340,11 +340,11 @@ Gw
             </view>
         </window>
         <customView id="53" userLabel="editTool">
-            <rect key="frame" x="0.0" y="0.0" width="195" height="56"/>
+            <rect key="frame" x="0.0" y="0.0" width="215" height="56"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="70">
-                    <rect key="frame" x="7" y="14" width="35" height="11"/>
+                    <rect key="frame" x="12" y="14" width="25" height="11"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Edit" id="129">
                         <font key="font" metaFont="miniSystem"/>
@@ -352,8 +352,8 @@ Gw
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="68">
-                    <rect key="frame" x="44" y="14" width="35" height="11"/>
+                <textField horizontalHuggingPriority="249" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="68">
+                    <rect key="frame" x="49" y="14" width="26" height="11"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Add" id="128">
                         <font key="font" metaFont="miniSystem"/>
@@ -391,31 +391,30 @@ Gw
                         <binding destination="-2" name="enabled" keyPath="editingActivated" id="75"/>
                     </connections>
                 </button>
-                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="55">
-                    <rect key="frame" x="121" y="6" width="54" height="46"/>
+                <matrix verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="55">
+                    <rect key="frame" x="121" y="2" width="87" height="52"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                    <size key="cellSize" width="54" height="10"/>
-                    <size key="intercellSpacing" width="4" height="2"/>
+                    <size key="cellSize" width="87" height="13"/>
                     <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" controlSize="mini" inset="2" id="130">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                         <font key="font" metaFont="miniSystem"/>
                     </buttonCell>
                     <cells>
                         <column>
-                            <buttonCell type="radio" title="Image" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="mini" inset="2" id="58">
+                            <buttonCell type="radio" title="Image" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="mini" scrollable="YES" lineBreakMode="clipping" inset="2" id="58">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="miniSystem"/>
                             </buttonCell>
-                            <buttonCell type="radio" title="Series" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="mini" state="on" tag="1" inset="2" id="59">
+                            <buttonCell type="radio" title="Series" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="mini" scrollable="YES" lineBreakMode="clipping" state="on" tag="1" inset="2" id="59">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="miniSystem"/>
                             </buttonCell>
-                            <buttonCell type="radio" title="Study" imagePosition="left" alignment="left" controlSize="mini" tag="2" inset="2" id="60">
+                            <buttonCell type="radio" title="Study" imagePosition="left" alignment="left" controlSize="mini" scrollable="YES" lineBreakMode="clipping" tag="2" inset="2" id="60">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="miniSystem"/>
                             </buttonCell>
-                            <buttonCell type="radio" title="Patient" imagePosition="left" alignment="left" controlSize="mini" tag="3" inset="2" id="153">
+                            <buttonCell type="radio" title="Patient" imagePosition="left" alignment="left" controlSize="mini" scrollable="YES" lineBreakMode="clipping" tag="3" inset="2" id="153">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="miniSystem"/>
                             </buttonCell>
@@ -464,24 +463,24 @@ Gw
                 <constraint firstItem="68" firstAttribute="top" secondItem="168" secondAttribute="top" id="1qR-0k-kOT"/>
                 <constraint firstItem="55" firstAttribute="leading" secondItem="168" secondAttribute="trailing" constant="7" id="7hq-Wf-WuU"/>
                 <constraint firstItem="162" firstAttribute="bottom" secondItem="61" secondAttribute="bottom" id="BLa-NY-tcb"/>
-                <constraint firstItem="168" firstAttribute="leading" secondItem="68" secondAttribute="trailing" constant="6" id="DAN-hF-nxc"/>
-                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="55" secondAttribute="trailing" constant="7" id="H9g-9c-7GI"/>
-                <constraint firstItem="55" firstAttribute="leading" secondItem="162" secondAttribute="trailing" constant="8" symbolic="YES" id="P3i-cg-vc5"/>
+                <constraint firstItem="168" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="68" secondAttribute="trailing" constant="6" id="DAN-hF-nxc"/>
+                <constraint firstAttribute="trailing" secondItem="55" secondAttribute="trailing" constant="7" id="H9g-9c-7GI"/>
+                <constraint firstItem="55" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="162" secondAttribute="trailing" constant="8" symbolic="YES" id="P3i-cg-vc5"/>
                 <constraint firstItem="70" firstAttribute="top" secondItem="68" secondAttribute="top" id="Rqv-Sg-DY9"/>
                 <constraint firstItem="61" firstAttribute="centerX" secondItem="68" secondAttribute="centerX" id="X9I-OS-oIX"/>
                 <constraint firstItem="54" firstAttribute="leading" secondItem="53" secondAttribute="leading" constant="10" id="ZN6-oL-Pli"/>
                 <constraint firstItem="168" firstAttribute="centerX" secondItem="162" secondAttribute="centerX" id="aLa-Ao-t3X"/>
-                <constraint firstItem="61" firstAttribute="leading" secondItem="54" secondAttribute="trailing" constant="8" symbolic="YES" id="b86-ec-Fmy"/>
+                <constraint firstItem="61" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="54" secondAttribute="trailing" constant="8" symbolic="YES" id="b86-ec-Fmy"/>
                 <constraint firstAttribute="bottom" secondItem="168" secondAttribute="bottom" constant="14" id="dk3-BW-LSh"/>
-                <constraint firstItem="55" firstAttribute="top" secondItem="162" secondAttribute="top" id="eoM-xU-5LF"/>
-                <constraint firstItem="68" firstAttribute="leading" secondItem="70" secondAttribute="trailing" constant="6" id="h0z-g3-YtH"/>
+                <constraint firstItem="55" firstAttribute="top" secondItem="162" secondAttribute="top" constant="-2" id="eoM-xU-5LF"/>
+                <constraint firstItem="68" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="70" secondAttribute="trailing" constant="6" id="h0z-g3-YtH"/>
                 <constraint firstItem="61" firstAttribute="top" secondItem="162" secondAttribute="top" id="pfZ-GD-FcG"/>
                 <constraint firstItem="61" firstAttribute="top" secondItem="54" secondAttribute="top" id="q2e-WR-OZq"/>
                 <constraint firstItem="54" firstAttribute="centerX" secondItem="70" secondAttribute="centerX" id="q2k-7u-7We"/>
-                <constraint firstItem="55" firstAttribute="top" secondItem="53" secondAttribute="top" constant="4" id="tfh-6d-7vt"/>
+                <constraint firstItem="55" firstAttribute="top" secondItem="53" secondAttribute="top" constant="2" id="tfh-6d-7vt"/>
                 <constraint firstItem="61" firstAttribute="bottom" secondItem="54" secondAttribute="bottom" id="uno-Pp-wRY"/>
                 <constraint firstItem="70" firstAttribute="top" secondItem="54" secondAttribute="bottom" constant="2" id="vd6-yC-i4c"/>
-                <constraint firstItem="162" firstAttribute="leading" secondItem="61" secondAttribute="trailing" constant="8" symbolic="YES" id="y3e-oA-qeA"/>
+                <constraint firstItem="162" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="61" secondAttribute="trailing" constant="8" symbolic="YES" id="y3e-oA-qeA"/>
             </constraints>
         </customView>
         <window title="DICOM Validator" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="DICOMValidator" animationBehavior="default" id="137" userLabel="verify" customClass="NSPanel">
@@ -505,7 +504,7 @@ Gw
                                     <rect key="frame" x="0.0" y="0.0" width="814" height="270"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                    <size key="minSize" width="814" height="270"/>
+                                    <size key="minSize" width="799" height="254"/>
                                     <size key="maxSize" width="1615" height="10000000"/>
                                     <attributedString key="textStorage">
                                         <fragment>
@@ -552,7 +551,7 @@ Gw
                                         </fragment>
                                     </attributedString>
                                     <color key="insertionPointColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                    <size key="minSize" width="814" height="270"/>
+                                    <size key="minSize" width="799" height="254"/>
                                     <size key="maxSize" width="1615" height="10000000"/>
                                 </textView>
                             </subviews>
@@ -563,7 +562,7 @@ Gw
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="140">
-                            <rect key="frame" x="800" y="1" width="15" height="270"/>
+                            <rect key="frame" x="799" y="1" width="16" height="270"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>
