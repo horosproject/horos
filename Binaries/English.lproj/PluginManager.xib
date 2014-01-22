@@ -262,10 +262,10 @@
                             <outlet property="delegate" destination="-2" id="88"/>
                         </connections>
                     </tabView>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="81">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="81">
                         <rect key="frame" x="20" y="7" width="609" height="28"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                        <textFieldCell key="cell" controlSize="small" lineBreakMode="clipping" sendsActionOnEndEditing="YES" id="116">
+                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" id="116">
                             <font key="font" metaFont="smallSystem"/>
                             <string key="title">Close this window to apply the changes.
 Select  a plugin and press the Delete key to delete a plugin.</string>

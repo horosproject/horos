@@ -223,7 +223,7 @@
                                                             <binding destination="283" name="selectedTag" keyPath="arrangedObjects.retrieveMode" id="536"/>
                                                         </connections>
                                                     </tableColumn>
-                                                    <tableColumn identifier="Send" width="40" minWidth="40" maxWidth="40" id="322">
+                                                    <tableColumn identifier="Send" width="40" minWidth="40" maxWidth="50" id="322">
                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="center" title="Send">
                                                             <font key="font" metaFont="smallSystem"/>
                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>

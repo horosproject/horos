@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C32" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C39" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <deployment defaultVersion="1070" identifier="macosx"/>
+        <deployment defaultVersion="1080" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
     </dependencies>
     <objects>
@@ -20,21 +20,21 @@
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="582" userLabel="SmartAlbum Editing">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="163" y="199" width="533" height="336"/>
+            <rect key="contentRect" x="163" y="199" width="596" height="336"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <view key="contentView" id="583">
-                <rect key="frame" x="0.0" y="0.0" width="533" height="336"/>
+                <rect key="frame" x="0.0" y="0.0" width="596" height="336"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <box title="Title" boxType="secondary" borderType="bezel" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="584">
-                        <rect key="frame" x="390" y="145" width="131" height="173"/>
+                        <rect key="frame" x="453" y="145" width="131" height="172.99999977157498"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES" heightSizable="YES"/>
                         <view key="contentView">
-                            <rect key="frame" x="3" y="3" width="125" height="167"/>
+                            <rect key="frame" x="3" y="3" width="125" height="166.99999977157498"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <matrix verticalHuggingPriority="750" mode="highlight" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="616">
-                                    <rect key="frame" x="6" y="10" width="112" height="149"/>
+                                    <rect key="frame" x="6" y="9.9999997715749771" width="112" height="149"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     <size key="cellSize" width="54" height="14"/>
@@ -148,17 +148,17 @@
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </box>
                     <box horizontalHuggingPriority="1" horizontalCompressionResistancePriority="1000" boxType="secondary" borderType="bezel" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="585">
-                        <rect key="frame" x="17" y="145" width="370" height="173"/>
+                        <rect key="frame" x="17" y="145" width="433" height="172.99999977157498"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES" heightSizable="YES"/>
                         <view key="contentView">
-                            <rect key="frame" x="3" y="3" width="364" height="167"/>
+                            <rect key="frame" x="3" y="3" width="427" height="166.99999977157498"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <matrix horizontalHuggingPriority="475" verticalHuggingPriority="750" horizontalCompressionResistancePriority="942" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="586">
-                                    <rect key="frame" x="10" y="6" width="350" height="158"/>
+                                    <rect key="frame" x="10" y="5.9999997715749771" width="413" height="158"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                    <size key="cellSize" width="114" height="18"/>
+                                    <size key="cellSize" width="135" height="18"/>
                                     <size key="intercellSpacing" width="4" height="2"/>
                                     <buttonCell key="prototype" type="radio" title="Last 3 hours" imagePosition="left" alignment="left" controlSize="small" tag="103" inset="2" id="615">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -188,7 +188,7 @@
                                             </buttonCell>
                                             <buttonCell type="radio" title="Day Before Yesterday" imagePosition="left" alignment="left" controlSize="small" lineBreakMode="truncatingMiddle" tag="9" inset="2" id="597">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="miniSystem"/>
+                                                <font key="font" metaFont="smallSystem"/>
                                             </buttonCell>
                                             <buttonCell type="radio" title="Last 2 days" imagePosition="left" alignment="left" controlSize="small" tag="7" inset="2" id="611">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -284,7 +284,7 @@
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </box>
                     <button verticalHuggingPriority="750" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="636">
-                        <rect key="frame" x="432" y="101" width="92" height="32"/>
+                        <rect key="frame" x="495" y="101" width="92" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <constraints>
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="80" id="Fnr-GU-4hp"/>
@@ -301,7 +301,7 @@ DQ
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="638">
-                        <rect key="frame" x="333" y="101" width="99" height="32"/>
+                        <rect key="frame" x="396" y="101" width="99" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <constraints>
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="87" id="9Ph-jY-6qi"/>
@@ -616,7 +616,7 @@ Gw
                                                 </binding>
                                             </connections>
                                         </tableColumn>
-                                        <tableColumn identifier="autoretrieve" width="90" minWidth="90" maxWidth="90" id="686">
+                                        <tableColumn identifier="autoretrieve" width="120" minWidth="120" maxWidth="120" id="686">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="center" title="Auto-retrieve">
                                                 <font key="font" metaFont="smallSystem"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>

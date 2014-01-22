@@ -338,6 +338,8 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 
 -(void)windowWillClose:(NSNotification *)notification
 {
+    [currentContext.pane willUnselect];
+    
 	[[self window] setAcceptsMouseMovedEvents: NO];
 	
 	[[NSNotificationCenter defaultCenter] removeObserver:self];

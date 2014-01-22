@@ -148,7 +148,7 @@
                                                                     <binding destination="44" name="value" keyPath="arrangedObjects.endTime" id="101"/>
                                                                 </connections>
                                                             </tableColumn>
-                                                            <tableColumn identifier="numberSent" editable="NO" width="70" minWidth="70" maxWidth="70" id="76">
+                                                            <tableColumn identifier="numberSent" editable="NO" width="80" minWidth="80" maxWidth="80" id="76">
                                                                 <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Sent">
                                                                     <font key="font" metaFont="smallSystem"/>
                                                                     <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -164,7 +164,7 @@
                                                                     <binding destination="44" name="value" keyPath="arrangedObjects.numberSent" id="102"/>
                                                                 </connections>
                                                             </tableColumn>
-                                                            <tableColumn identifier="numberError" editable="NO" width="70" minWidth="70" maxWidth="70" id="77">
+                                                            <tableColumn identifier="numberError" editable="NO" width="80" minWidth="80" maxWidth="80" id="77">
                                                                 <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Error">
                                                                     <font key="font" metaFont="smallSystem"/>
                                                                     <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -180,7 +180,7 @@
                                                                     <binding destination="44" name="value" keyPath="arrangedObjects.numberError" id="103"/>
                                                                 </connections>
                                                             </tableColumn>
-                                                            <tableColumn identifier="numberImages" editable="NO" width="70" minWidth="70" maxWidth="70" id="75">
+                                                            <tableColumn identifier="numberImages" editable="NO" width="80" minWidth="80" maxWidth="80" id="75">
                                                                 <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Total">
                                                                     <font key="font" metaFont="smallSystem"/>
                                                                     <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -196,7 +196,7 @@
                                                                     <binding destination="44" name="value" keyPath="arrangedObjects.numberImages" id="105"/>
                                                                 </connections>
                                                             </tableColumn>
-                                                            <tableColumn identifier="message" editable="NO" width="100" minWidth="100" maxWidth="100" id="70">
+                                                            <tableColumn identifier="message" editable="NO" width="110" minWidth="110" maxWidth="110" id="70">
                                                                 <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Status">
                                                                     <font key="font" metaFont="smallSystem"/>
                                                                     <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>

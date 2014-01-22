@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C32" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C39" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <deployment defaultVersion="1070" identifier="macosx"/>
+        <deployment defaultVersion="1080" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
     </dependencies>
     <objects>
@@ -351,9 +351,9 @@
                         <string key="title">Calcium Score: Risk of Coronary Disease
 0: No identifiable plaque. Very low risk, generally less than 5%
 1-10: Minimal identifiable plaque. Low risk.
-11-100: Definite plaque.  Mild risk least minimal or mild risk.
-101-400: Definite plaque. Moderate risk.
-401+: Extensive atherosclerotic High likelihood of at least one stenosis.</string>
+11-100: Definite plaque.  Moderate risk.
+101-400: Definite plaque. Moderately High risk.
+401+: Extensive atherosclerotic. High likelihood of at least one stenosis.</string>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
