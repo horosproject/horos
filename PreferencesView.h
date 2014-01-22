@@ -20,7 +20,7 @@
 	SEL buttonActionSelector;
 }
 
-@property(assign) id buttonActionTarget;
+@property(retain) id buttonActionTarget;
 @property(assign) SEL buttonActionSelector;
 
 -(void)addItemWithTitle:(NSString*)title image:(NSImage*)image toGroupWithName:(NSString*)groupName context:(id)context;
