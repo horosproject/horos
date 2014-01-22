@@ -1256,14 +1256,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                     [[NSNotificationCenter defaultCenter] postNotificationName:OsirixROIRemovedFromArrayNotification object:NULL userInfo:NULL];
 				}
 				
-				[curROI release];
+				[curROI autorelease];
 				curROI = nil;
 			}
 		}
 		else
 		{
 			curROI.ROImode = ROI_selected;
-			[curROI release];
+			[curROI autorelease];
 			curROI = nil;
 		}
 	}
@@ -2050,7 +2050,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		[[self window] setAcceptsMouseMovedEvents: YES];
 		
-		[curROI release];
+		[curROI autorelease];
 		curROI = nil;
 		
 		curImage = index; 
@@ -2060,7 +2060,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		[curDCM release];
 		curDCM = [[dcmPixList objectAtIndex: curImage] retain];
 		
-		[curRoiList release];
+		[curRoiList autorelease];
 		
 		if( dcmRoiList) curRoiList = [[dcmRoiList objectAtIndex: curImage] retain];
 		else 			curRoiList = [[NSMutableArray alloc] initWithCapacity:0];
@@ -2116,10 +2116,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		[curDCM release];
 		curDCM = nil;
 		curImage = -1;
-		[curRoiList release];
+		[curRoiList autorelease];
 		curRoiList = nil;
 		
-		[curROI release];
+		[curROI autorelease];
 		curROI = nil;
 		[self loadTextures];
 	}
@@ -2186,7 +2186,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		if( dcmRoiList != rois)
 		{
-			[dcmRoiList release];
+			[dcmRoiList autorelease];
 			dcmRoiList = [rois retain];
 		}
 		
@@ -2244,7 +2244,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[drawLock lock];
 	[drawLock unlock];
 	
-	[curRoiList release];
+	[curRoiList autorelease];
 	curRoiList = nil;
 	
 	[dcmRoiList release];
@@ -2510,7 +2510,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			[pix2beReleased release]; // This will allow us to keep the cached group for a multi frame image
 			
-			[curRoiList release];
+			[curRoiList autorelease];
 			
 			if( dcmRoiList) curRoiList = [[dcmRoiList objectAtIndex: curImage] retain];
 			else
@@ -2526,7 +2526,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			if( keepIt == NO)
 			{
-				[curROI release];
+				[curROI autorelease];
 				curROI = nil;
 			}
 			
@@ -2576,10 +2576,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			[curDCM release];
 			curDCM = nil;
 			curImage = -1;
-			[curRoiList release];
+			[curRoiList autorelease];
 			curRoiList = nil;
 			
-			[curROI release];
+			[curROI autorelease];
 			curROI = nil;
 			[self loadTextures];
 		}
@@ -4089,23 +4089,34 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void) deleteInvalidROIsForArray: (NSMutableArray*) r
 {
-    for( int i = 0; i < [r count]; i++)
+    if( ![r isKindOfClass: [NSMutableArray class]])
     {
-        if( [[r objectAtIndex: i] valid] == NO)
+        N2LogStackTrace( @"deleteInvalidROIsForArray Array is NOT mutableArray");
+        return;
+    }
+    
+    @try {
+        for( int i = 0; i < [r count]; i++)
         {
-            if( curROI == [r objectAtIndex: i])
+            if( [[r objectAtIndex: i] valid] == NO)
             {
-                [curROI release];
-                curROI = nil;
-                drawingROI = NO;
+                if( curROI == [r objectAtIndex: i])
+                {
+                    [curROI autorelease];
+                    curROI = nil;
+                    drawingROI = NO;
+                }
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object: [r objectAtIndex: i] userInfo: nil];
+                [r removeObjectAtIndex: i];
+                i--;
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:OsirixROIRemovedFromArrayNotification object:NULL userInfo:NULL];
             }
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object: [r objectAtIndex: i] userInfo: nil];
-            [r removeObjectAtIndex: i];
-            i--;
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName:OsirixROIRemovedFromArrayNotification object:NULL userInfo:NULL];
         }
+    }
+    @catch (NSException *exception) {
+        N2LogException( exception);
     }
 }
 
@@ -4509,7 +4520,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					{
 						if( selected >= 0 && drawingROI == NO)
 						{
-							[curROI release];
+							[curROI autorelease];
 							curROI = nil;
 							
 							// Bring the selected ROI to the first position in array
@@ -4565,7 +4576,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 								
 								if( drawingROI == NO)
 								{
-									[curROI release];
+									[curROI autorelease];
 									curROI = nil;
 								}
 								
@@ -4584,7 +4595,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 								
 								drawingROI = NO;
 								
-								[curROI release];
+								[curROI autorelease];
 								curROI = aNewROI = [[[ROI alloc] initWithType: tool : curDCM.pixelSpacingX :curDCM.pixelSpacingY : [DCMPix originCorrectedAccordingToOrientation: curDCM]] autorelease];	//NSMakePoint( curDCM.originX, curDCM.originY)];
 								[curROI retain];
 								
@@ -4699,7 +4710,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 								
 								if( drawingROI == NO)
 								{
-									[curROI release];
+									[curROI autorelease];
 									curROI = nil;
 								}
 								
@@ -7821,26 +7832,26 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	// Left
 	[self getOrientationText:string :vectors :YES];
-	[self DrawCStringGL: string : fontListGL :6 :2+size.size.height/2 rightAlignment: NO useStringTexture: YES];
+	[self DrawCStringGL: string : fontListGL :size.origin.x + 6 :size.origin.y + 2+size.size.height/2 rightAlignment: NO useStringTexture: YES];
 	
 	// Right
 	[self getOrientationText:string :vectors :NO];
-	[self DrawCStringGL: string : fontListGL :size.size.width - (2 + stringSize.width * strlen(string)) :2+size.size.height/2 rightAlignment: NO useStringTexture: YES];
+	[self DrawCStringGL: string : fontListGL :size.origin.x + size.size.width - (2 + stringSize.width * strlen(string)) :size.origin.y +2+size.size.height/2 rightAlignment: NO useStringTexture: YES];
 	
 	//Top
-    float yPosition = stringSize.height + 3;
+    float yPosition = size.origin.y + stringSize.height + 3;
 	[self getOrientationText:string :vectors+3 :YES];
 
     if( strlen(string))
     {
-        [self DrawCStringGL: string : fontListGL :size.size.width/2 - (stringSize.width * strlen(string)/2) :yPosition rightAlignment: NO useStringTexture: YES];
+        [self DrawCStringGL: string : fontListGL :size.origin.x + size.size.width/2 - (stringSize.width * strlen(string)/2) :yPosition rightAlignment: NO useStringTexture: YES];
         yPosition += stringSize.height + 3;
     }
 
 	if( curDCM.laterality)
     {
-        [self DrawNSStringGL: curDCM.laterality : fontListGL :size.size.width/2 :yPosition align:DCMViewTextAlignCenter useStringTexture: YES];
-                yPosition += stringSize.height + 3;
+        [self DrawNSStringGL: curDCM.laterality : fontListGL :size.origin.x + size.size.width/2 :yPosition align:DCMViewTextAlignCenter useStringTexture: YES];
+        yPosition += stringSize.height + 3;
     }
 
     if( [self is2DViewer] && (xFlipped || yFlipped))
@@ -7858,20 +7869,20 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         
         if( flippedString)
         {
-            [self DrawNSStringGL: flippedString : fontListGL :size.size.width/2 :yPosition align:DCMViewTextAlignCenter useStringTexture: YES];
+            [self DrawNSStringGL: flippedString : fontListGL :size.origin.x + size.size.width/2 :yPosition align:DCMViewTextAlignCenter useStringTexture: YES];
             yPosition += stringSize.height + 3;
         }
     }
     
     if( [self is2DViewer] && curDCM.VOILUTApplied)
     {
-        [self DrawNSStringGL: @"VOI LUT Applied" : fontListGL :size.size.width/2 :yPosition align:DCMViewTextAlignCenter useStringTexture: YES];
+        [self DrawNSStringGL: @"VOI LUT Applied" : fontListGL :size.origin.x + size.size.width/2 :yPosition align:DCMViewTextAlignCenter useStringTexture: YES];
         yPosition += stringSize.height + 3;
     }
 	
 	//Bottom
 	[self getOrientationText:string :vectors+3 :NO];
-	[self DrawCStringGL: string : fontListGL :size.size.width/2 :2+size.size.height - 6 rightAlignment: NO useStringTexture: YES];
+	[self DrawCStringGL: string : fontListGL :size.origin.x + size.size.width/2 :size.origin.y + 2+size.size.height - 6 rightAlignment: NO useStringTexture: YES];
 }
 
 -(void) getThickSlabThickness:(float*) thickness location:(float*) location
@@ -7981,6 +7992,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	if (annotations == 4) [[NSNotificationCenter defaultCenter] postNotificationName: OsirixDrawTextInfoNotification object: self];
 	else if( annotations > annotGraphics)
 	{
+        if( NSIsEmptyRect( screenCaptureRect) == NO)
+            size = screenCaptureRect;
+        
 		NSMutableString *tempString, *tempString2, *tempString3, *tempString4;
 		long yRaster = 1, xRaster;
 		
@@ -8012,7 +8026,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             if( studyDateBox)
             {
                 glColor4f( 1.0, 1.0, 1.0, 1.0);
-                [studyDateBox drawAtPoint: NSMakePoint( 5*sf, 4*sf) view: self];
+                [studyDateBox drawAtPoint: NSMakePoint( size.origin.x + 5*sf, size.origin.y + 4*sf) view: self];
             }
 		}
 		else colorBoxSize = 0;
@@ -8020,14 +8034,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		NSDictionary *annotationsDictionary = curDCM.annotationsDictionary;
 		
 		NSMutableDictionary *xRasterInit = [NSMutableDictionary dictionary];
-		[xRasterInit setObject:[NSNumber numberWithInt:6*sf] forKey:@"TopLeft"];
-		[xRasterInit setObject:[NSNumber numberWithInt:6*sf] forKey:@"MiddleLeft"];
-		[xRasterInit setObject:[NSNumber numberWithInt:6*sf] forKey:@"LowerLeft"];
-		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width-2*sf] forKey:@"TopRight"];
-		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width-2*sf] forKey:@"MiddleRight"];
-		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width-2*sf] forKey:@"LowerRight"];
-		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width/2] forKey:@"TopMiddle"];
-		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width/2] forKey:@"LowerMiddle"];
+		[xRasterInit setObject:[NSNumber numberWithInt:size.origin.x + 6*sf] forKey:@"TopLeft"];
+		[xRasterInit setObject:[NSNumber numberWithInt:size.origin.x + 6*sf] forKey:@"MiddleLeft"];
+		[xRasterInit setObject:[NSNumber numberWithInt:size.origin.x + 6*sf] forKey:@"LowerLeft"];
+		[xRasterInit setObject:[NSNumber numberWithInt:size.origin.x + size.size.width-2*sf] forKey:@"TopRight"];
+		[xRasterInit setObject:[NSNumber numberWithInt:size.origin.x + size.size.width-2*sf] forKey:@"MiddleRight"];
+		[xRasterInit setObject:[NSNumber numberWithInt:size.origin.x + size.size.width-2*sf] forKey:@"LowerRight"];
+		[xRasterInit setObject:[NSNumber numberWithInt:size.origin.x + size.size.width/2] forKey:@"TopMiddle"];
+		[xRasterInit setObject:[NSNumber numberWithInt:size.origin.x + size.size.width/2] forKey:@"LowerMiddle"];
 
 		NSMutableDictionary *align = [NSMutableDictionary dictionary];
 		[align setObject:[NSNumber numberWithInt:DCMViewTextAlignLeft] forKey:@"TopLeft"];
@@ -8040,14 +8054,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		[align setObject:[NSNumber numberWithInt:DCMViewTextAlignCenter] forKey:@"LowerMiddle"];
 
 		NSMutableDictionary *yRasterInit = [NSMutableDictionary dictionary];
-		[yRasterInit setObject:[NSNumber numberWithInt:_stringSize.height+2*sf] forKey:@"TopLeft"];
-		[yRasterInit setObject:[NSNumber numberWithInt:_stringSize.height] forKey:@"TopMiddle"];
-		[yRasterInit setObject:[NSNumber numberWithInt:_stringSize.height+2*sf] forKey:@"TopRight"];
-		[yRasterInit setObject:[NSNumber numberWithInt:size.size.height/2] forKey:@"MiddleLeft"];
-		[yRasterInit setObject:[NSNumber numberWithInt:size.size.height/2] forKey:@"MiddleRight"];
-		[yRasterInit setObject:[NSNumber numberWithInt:size.size.height-2*sf] forKey:@"LowerLeft"];
-		[yRasterInit setObject:[NSNumber numberWithInt:size.size.height-2*sf-_stringSize.height] forKey:@"LowerRight"];
-		[yRasterInit setObject:[NSNumber numberWithInt:size.size.height-2*sf] forKey:@"LowerMiddle"];
+		[yRasterInit setObject:[NSNumber numberWithInt:size.origin.y + _stringSize.height+2*sf] forKey:@"TopLeft"];
+		[yRasterInit setObject:[NSNumber numberWithInt:size.origin.y + _stringSize.height] forKey:@"TopMiddle"];
+		[yRasterInit setObject:[NSNumber numberWithInt:size.origin.y + _stringSize.height+2*sf] forKey:@"TopRight"];
+		[yRasterInit setObject:[NSNumber numberWithInt:size.origin.y + size.size.height/2] forKey:@"MiddleLeft"];
+		[yRasterInit setObject:[NSNumber numberWithInt:size.origin.y + size.size.height/2] forKey:@"MiddleRight"];
+		[yRasterInit setObject:[NSNumber numberWithInt:size.origin.y + size.size.height-2*sf] forKey:@"LowerLeft"];
+		[yRasterInit setObject:[NSNumber numberWithInt:size.origin.y + size.size.height-2*sf-_stringSize.height] forKey:@"LowerRight"];
+		[yRasterInit setObject:[NSNumber numberWithInt:size.origin.y + size.size.height-2*sf] forKey:@"LowerMiddle"];
 		
 		NSMutableDictionary *yRasterIncrement = [NSMutableDictionary dictionary];
 		[yRasterIncrement setObject:[NSNumber numberWithInt:_stringSize.height] forKey:@"TopLeft"];
@@ -8476,8 +8490,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			}// while
 		} // for k
 		
-		yRaster = size.size.height-2;
-		xRaster = size.size.width-2;
+		yRaster = size.origin.y + size.size.height-2;
+		xRaster = size.origin.x + size.size.width-2;
 		if( fullText)
 			[self DrawNSStringGL: @"Made In OsiriX" :fontList :xRaster :yRaster rightAlignment:YES useStringTexture:YES];
      }
@@ -8512,7 +8526,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         {
             glColor4f( 1.0, 1.0, 1.0, 1.0);
             
-            NSRect r = NSMakeRect( drawingFrameRect.size.width/2 - [self convertSizeToBacking: [warningNotice frameSize]].width/2, drawingFrameRect.size.height - 35*sf - [self convertSizeToBacking: [warningNotice frameSize]].height, [self convertSizeToBacking: [warningNotice frameSize]].width, [self convertSizeToBacking: [warningNotice frameSize]].height);
+            NSRect r = NSMakeRect( size.origin.x + size.size.width/2 - [self convertSizeToBacking: [warningNotice frameSize]].width/2, size.origin.y + size.size.height - 35*sf - [self convertSizeToBacking: [warningNotice frameSize]].height, [self convertSizeToBacking: [warningNotice frameSize]].width, [self convertSizeToBacking: [warningNotice frameSize]].height);
             
             [warningNotice drawWithBounds: r];
         }
@@ -9502,19 +9516,33 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				
 				 if( annotations >= annotBase)
 				 {
-					//** PIXELSPACING LINES
+					//** PIXELSPACING LINES - RULER
 					float yOffset = 24*sf;
 					float xOffset = 32*sf;
 					glLineWidth( 1.0 * sf);
 					glBegin(GL_LINES);
 					
+                     NSRect rr = drawingFrameRect;
+                     
+                     if( NSIsEmptyRect( screenCaptureRect) == NO)
+                     {
+                         rr = screenCaptureRect;
+                         
+                         // We didn't used glTranslate, after glScalef...
+                         rr.origin.x -= drawingFrameRect.size.width/2.;
+                         rr.origin.y -= drawingFrameRect.size.height/2.;
+                         
+                         rr.origin.x += rr.size.width/2.;
+                         rr.origin.y += rr.size.height/2.;
+                     }
+                     
 					if( curDCM.pixelSpacingX != 0 && curDCM.pixelSpacingX * 1000.0 < 1)
 					{
-						glVertex2f(scaleValue  * (-0.02/curDCM.pixelSpacingX), drawingFrameRect.size.height/2 - yOffset); 
-						glVertex2f(scaleValue  * (0.02/curDCM.pixelSpacingX), drawingFrameRect.size.height/2 - yOffset);
+						glVertex2f( rr.origin.x + scaleValue  * (-0.02/curDCM.pixelSpacingX), rr.origin.y + rr.size.height/2 - yOffset);
+						glVertex2f( rr.origin.x + scaleValue  * (0.02/curDCM.pixelSpacingX), rr.origin.y + rr.size.height/2 - yOffset);
 
-						glVertex2f(-drawingFrameRect.size.width/2 + xOffset , scaleValue  * (-0.02/curDCM.pixelSpacingY*curDCM.pixelRatio)); 
-						glVertex2f(-drawingFrameRect.size.width/2 + xOffset , scaleValue  * (0.02/curDCM.pixelSpacingY*curDCM.pixelRatio));
+						glVertex2f( rr.origin.x + -rr.size.width/2 + xOffset , rr.origin.y + scaleValue  * (-0.02/curDCM.pixelSpacingY*curDCM.pixelRatio));
+						glVertex2f( rr.origin.x + -rr.size.width/2 + xOffset , rr.origin.y + scaleValue  * (0.02/curDCM.pixelSpacingY*curDCM.pixelRatio));
 						
 						for ( short i = -20; i<=20; i++ )
 						{
@@ -9522,20 +9550,20 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 							
                             length *= sf;
                             
-							glVertex2f(i*scaleValue *0.001/curDCM.pixelSpacingX, drawingFrameRect.size.height/2 - yOffset);
-							glVertex2f(i*scaleValue *0.001/curDCM.pixelSpacingX, drawingFrameRect.size.height/2 - yOffset - length);
+							glVertex2f( rr.origin.x + i*scaleValue *0.001/curDCM.pixelSpacingX, rr.origin.y + rr.size.height/2 - yOffset);
+							glVertex2f( rr.origin.x + i*scaleValue *0.001/curDCM.pixelSpacingX, rr.origin.y + rr.size.height/2 - yOffset - length);
 							
-							glVertex2f(-drawingFrameRect.size.width/2 + xOffset +  length,  i* scaleValue *0.001/curDCM.pixelSpacingY*curDCM.pixelRatio);
-							glVertex2f(-drawingFrameRect.size.width/2 + xOffset,  i* scaleValue * 0.001/curDCM.pixelSpacingY*curDCM.pixelRatio);
+							glVertex2f( rr.origin.x + -rr.size.width/2 + xOffset + length, rr.origin.y + i* scaleValue *0.001/curDCM.pixelSpacingY*curDCM.pixelRatio);
+							glVertex2f( rr.origin.x + -rr.size.width/2 + xOffset, rr.origin.y + i* scaleValue * 0.001/curDCM.pixelSpacingY*curDCM.pixelRatio);
 						}
 					}
 					else if( curDCM.pixelSpacingX != 0 && curDCM.pixelSpacingY != 0)
 					{
-						glVertex2f(scaleValue  * (-50/curDCM.pixelSpacingX), drawingFrameRect.size.height/2 - yOffset); 
-						glVertex2f(scaleValue  * (50/curDCM.pixelSpacingX), drawingFrameRect.size.height/2 - yOffset);
+						glVertex2f( rr.origin.x + scaleValue  * (-50/curDCM.pixelSpacingX), rr.origin.y + rr.size.height/2 - yOffset);
+						glVertex2f( rr.origin.x + scaleValue  * (50/curDCM.pixelSpacingX), rr.origin.y + rr.size.height/2 - yOffset);
 						
-						glVertex2f(-drawingFrameRect.size.width/2 + xOffset , scaleValue  * (-50/curDCM.pixelSpacingY*curDCM.pixelRatio)); 
-						glVertex2f(-drawingFrameRect.size.width/2 + xOffset , scaleValue  * (50/curDCM.pixelSpacingY*curDCM.pixelRatio));
+						glVertex2f( rr.origin.x + -rr.size.width/2 + xOffset , rr.origin.y + scaleValue  * (-50/curDCM.pixelSpacingY*curDCM.pixelRatio));
+						glVertex2f( rr.origin.x + -rr.size.width/2 + xOffset , rr.origin.y + scaleValue  * (50/curDCM.pixelSpacingY*curDCM.pixelRatio));
 
 						for ( short i = -5; i<=5; i++ )
 						{
@@ -9543,11 +9571,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						
                             length *= sf;
                             
-							glVertex2f(i*scaleValue *10/curDCM.pixelSpacingX, drawingFrameRect.size.height/2 - yOffset);
-							glVertex2f(i*scaleValue *10/curDCM.pixelSpacingX, drawingFrameRect.size.height/2 - yOffset - length);
+							glVertex2f( rr.origin.x + i*scaleValue *10/curDCM.pixelSpacingX, rr.origin.y + rr.size.height/2 - yOffset);
+							glVertex2f( rr.origin.x + i*scaleValue *10/curDCM.pixelSpacingX, rr.origin.y + rr.size.height/2 - yOffset - length);
 							
-							glVertex2f(-drawingFrameRect.size.width/2 + xOffset +  length,  i* scaleValue *10/curDCM.pixelSpacingY*curDCM.pixelRatio);
-							glVertex2f(-drawingFrameRect.size.width/2 + xOffset,  i* scaleValue * 10/curDCM.pixelSpacingY*curDCM.pixelRatio);
+							glVertex2f( rr.origin.x + -rr.size.width/2 + xOffset + length,  rr.origin.y + i* scaleValue *10/curDCM.pixelSpacingY*curDCM.pixelRatio);
+							glVertex2f( rr.origin.x + -rr.size.width/2 + xOffset,  rr.origin.y + i* scaleValue * 10/curDCM.pixelSpacingY*curDCM.pixelRatio);
 						}
 					}
 					glEnd();
@@ -10483,120 +10511,56 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                     [c makeCurrentContext];
                     CGLContextObj cgl_ctx = [c CGLContextObj];
                     
+                    NSString *str = nil;
+                    
                     if( removeGraphical)
                     {
-                        NSString	*str = [[self stringID] retain];
+                        str = [[self stringID] retain];
                         [self setStringID: @"export"];
+                    }
+                    
+                    if( smartCropped)
+                        screenCaptureRect = smartCroppedRect;
+                    
+                    [self display];
+                    [self.blendingView display];
+                    
+                    glReadBuffer(GL_FRONT);
+                    
+                    #if __BIG_ENDIAN__
+                        glReadPixels( smartCroppedRect.origin.x, drawingFrameRect.size.height-smartCroppedRect.origin.y-smartCroppedRect.size.height, smartCroppedRect.size.width, smartCroppedRect.size.height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, buf);		//GL_ABGR_EXT
                         
-                        [self display];
-                        [self setNeedsDisplay: YES];	// for refresh, later
+                        register int ii = *width * *height;
+                        register unsigned char	*t_argb = buf;
+                        register unsigned char	*t_rgb = buf;
+                        while( ii-->0)
+                        {
+                            *((int*) t_rgb) = *((int*) t_argb);
+                            t_argb+=4;
+                            t_rgb+=3;
+                        }
+                    #else
+                        glReadPixels(  smartCroppedRect.origin.x, drawingFrameRect.size.height-smartCroppedRect.origin.y-smartCroppedRect.size.height, smartCroppedRect.size.width, smartCroppedRect.size.height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);		//GL_ABGR_EXT
                         
+                        register int ii = *width * *height;
+                        register unsigned char	*t_argb = buf;
+                        register unsigned char	*t_rgb = buf;
+                        while( ii-->0 ) {
+                            *((int*) t_rgb) = *((int*) t_argb);
+                            t_argb+=4;
+                            t_rgb+=3;
+                        }
+                    #endif
+                    
+                    screenCaptureRect = NSMakeRect(0, 0, 0, 0);
+                
+                    if( str)
+                    {
                         [self setStringID: str];
                         [str release];
-                        
-                        glReadBuffer(GL_FRONT);
-                        
-                        #if __BIG_ENDIAN__
-                        glReadPixels(smartCroppedRect.origin.x, drawingFrameRect.size.height-smartCroppedRect.origin.y-smartCroppedRect.size.height, smartCroppedRect.size.width, smartCroppedRect.size.height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, buf);		//GL_ABGR_EXT
-                            
-                            register int ii = *width * *height;
-                            register unsigned char	*t_argb = buf;
-                            register unsigned char	*t_rgb = buf;
-                            while( ii-->0)
-                            {
-                                *((int*) t_rgb) = *((int*) t_argb);
-                                t_argb+=4;
-                                t_rgb+=3;
-                            }
-                        #else
-                            glReadPixels( smartCroppedRect.origin.x, drawingFrameRect.size.height-smartCroppedRect.origin.y-smartCroppedRect.size.height, smartCroppedRect.size.width, smartCroppedRect.size.height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);		//GL_ABGR_EXT
-                            
-                            register int ii = *width * *height;
-                            register unsigned char	*t_argb = buf;
-                            register unsigned char	*t_rgb = buf;
-                            while( ii-->0 )
-                            {
-                                *((int*) t_rgb) = *((int*) t_argb);
-                                t_argb+=4;
-                                t_rgb+=3;
-                            }
-                        #endif
                     }
-                    else
-                    {
-                        NSPoint oo = [self origin];
-                        NSRect cc = [self frame]; // copy, to restore later
-                        
-                        NSPoint boo = [self.blendingView origin];
-                        NSRect bcc = [self.blendingView frame]; // copy, to restore later
-                        
-                        if( smartCropped)
-                        {
-                            dontEnterReshape = YES;
-                            blendingView.dontEnterReshape = YES;
-                            [self setFrame: [self convertRectFromBacking: smartCroppedRect]];
-                            [self setOrigin: shiftOrigin];
-                            
-                            if( blendingView && [self is2DViewer])
-                            {
-                                [self.blendingView setFrame: [self.blendingView convertRectFromBacking: smartCroppedRect]];
-                                [self.blendingView setOrigin: blendedShiftOrigin];
-                                [[self windowController] propagateSettings];
-                            }
-                        }
-                        
-                        [self display];
-                        [self.blendingView display];
-                        
-                        if( smartCropped)
-                        {
-                            [[self superview] display];	// to avoid the 'white' screen behind
-                            [[self.blendingView superview] display];
-                        }
-                        glReadBuffer(GL_FRONT);
-                        
-                        #if __BIG_ENDIAN__
-                            glReadPixels( 0,  0, smartCroppedRect.size.width, smartCroppedRect.size.height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, buf);		//GL_ABGR_EXT
-                            
-                            register int ii = *width * *height;
-                            register unsigned char	*t_argb = buf;
-                            register unsigned char	*t_rgb = buf;
-                            while( ii-->0)
-                            {
-                                *((int*) t_rgb) = *((int*) t_argb);
-                                t_argb+=4;
-                                t_rgb+=3;
-                            }
-                        #else
-                            glReadPixels(  0,  0, smartCroppedRect.size.width, smartCroppedRect.size.height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);		//GL_ABGR_EXT
-                            
-                            register int ii = *width * *height;
-                            register unsigned char	*t_argb = buf;
-                            register unsigned char	*t_rgb = buf;
-                            while( ii-->0 ) {
-                                *((int*) t_rgb) = *((int*) t_argb);
-                                t_argb+=4;
-                                t_rgb+=3;
-                            }
-                        #endif
-                        
-                        if( smartCropped)
-                        {
-                            [self setFrame: cc];
-                            [self setOrigin: oo];
-                            
-                            if( blendingView && [self is2DViewer])
-                            {
-                                [self.blendingView setFrame: bcc];
-                                [self.blendingView setOrigin: boo];
-                                
-                                [[self windowController] propagateSettings];
-                            }
-                        }
-                        
-                        blendingView.dontEnterReshape = NO;
-                        dontEnterReshape = NO;
-                    }
+                
+                    [self setNeedsDisplay: YES];	// for refresh, later
                 }
 				
 				long rowBytes = *width**spp**bpp/8;
