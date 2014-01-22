@@ -1214,8 +1214,8 @@ extern int splitPosition[ 3];
 			{
 				if( [self roiTool: currentTool])
 				{
-					if( currentTool != tText && currentTool != tArrow)
-						currentTool = tMesure;
+//					if( currentTool != tText && currentTool != tArrow)
+//						currentTool = tMesure;
 				}
 				
 				[super mouseDown:event];
