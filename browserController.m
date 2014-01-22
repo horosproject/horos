@@ -3335,13 +3335,6 @@ static NSConditionLock *threadLock = nil;
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
     @try
     {
-        static NSNumberFormatter* decimalNumberFormatter = NULL;
-        if (!decimalNumberFormatter)
-        {
-            decimalNumberFormatter = [[NSNumberFormatter alloc] init];
-            [decimalNumberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
-        }
-        
         if (_computingNumberOfStudiesForAlbums)
         {
             [self performSelectorOnMainThread:@selector(delayedRefreshAlbums) withObject:nil waitUntilDone:NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
@@ -13561,6 +13554,7 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	[[[databaseOutline tableColumnWithIdentifier: @"dateOfBirth"] dataCell] setFormatter:[NSUserDefaults dateFormatter]];
 	[[[databaseOutline tableColumnWithIdentifier: @"reportURL"] dataCell] setFormatter:[NSUserDefaults dateFormatter]];
+    [[[databaseOutline tableColumnWithIdentifier: @"noFiles"] dataCell] setFormatter: decimalNumberFormatter];
 }
 
 + (NSString*) DateTimeWithSecondsFormat:(NSDate*) t
