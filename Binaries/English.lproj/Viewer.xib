@@ -215,11 +215,11 @@
                     <rect key="frame" x="-1" y="0.0" width="115" height="261"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="eJk-1X-Cq8">
-                        <rect key="frame" x="0.0" y="0.0" width="100" height="261"/>
+                        <rect key="frame" x="0.0" y="0.0" width="115" height="261"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <matrix identifier="O2ViewerThumbnailsMatrix" verticalHuggingPriority="750" fixedFrame="YES" selectionByRect="NO" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BFG-iu-aJ0" customClass="O2ViewerThumbnailsMatrix">
-                                <rect key="frame" x="0.0" y="0.0" width="85" height="0.0"/>
+                                <rect key="frame" x="0.0" y="0.0" width="98" height="0.0"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="1" green="0.97530866000000005" blue="0.97530866000000005" alpha="1" colorSpace="calibratedRGB"/>
                                 <buttonCell key="prototype" type="smallSquare" title="Button" bezelStyle="smallSquare" imagePosition="above" alignment="center" borderStyle="border" identifier="ThumbnailCell" tag="-1" inset="2" id="d8Q-li-8PJ" customClass="ThumbnailCell">
@@ -236,7 +236,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
                     <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="Yvw-Sx-ORQ">
-                        <rect key="frame" x="100" y="0.0" width="15" height="261"/>
+                        <rect key="frame" x="99" y="0.0" width="16" height="261"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
                 </scrollView>
@@ -5487,7 +5487,7 @@ Gw
                         <constraint firstAttribute="height" constant="44" id="cst-Ia-4mz"/>
                     </constraints>
                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                    <size key="cellSize" width="56" height="18"/>
+                    <size key="cellSize" width="70" height="11"/>
                     <size key="intercellSpacing" width="4" height="0.0"/>
                     <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" controlSize="mini" inset="2" id="2595">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
