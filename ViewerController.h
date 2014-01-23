@@ -75,6 +75,7 @@ enum
 
 	IBOutlet NSMatrix		*previewMatrix;
 	IBOutlet NSScrollView	*previewMatrixScrollView;
+    IBOutlet NSView         *previewRootView;
     
 	BOOL					matrixPreviewBuilt;
 	float					highLighted;
@@ -866,6 +867,7 @@ enum
 - (void) refreshToolbar;
 - (void) redrawToolbar;
 - (NSScrollView*) previewMatrixScrollView;
+- (NSView*) previewRootView;
 
 #pragma mark-
 #pragma mark Brush ROI Filters

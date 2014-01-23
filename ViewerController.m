@@ -4396,6 +4396,11 @@ static volatile int numberOfThreadsForRelisce = 0;
 	return previewMatrixScrollView;
 }
 
+- (NSView*) previewRootView
+{
+	return previewRootView;
+}
+
 - (void) syncThumbnails
 {
     ViewBoundsDidChangeProtect = YES;

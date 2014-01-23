@@ -51,6 +51,7 @@
 #import "OSIEnvironment+Private.h"
 #import "DCMWaveform.h"
 #import "DicomDatabase.h"
+#import "NSFileManager+N2.h"
 
 // kvImageHighQualityResampling
 #define QUALITY kvImageNoFlags
@@ -13254,107 +13255,80 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (void) startDrag:(NSTimer*)theTimer
 {
 	@try {
-	_dragInProgress = YES;
-	NSEvent *event = (NSEvent *)[theTimer userInfo];
-	NSLog( @"%@", [event description]);
-	
-	NSSize dragOffset = NSMakeSize(0.0, 0.0);
-    NSPasteboard *pboard = [NSPasteboard pasteboardWithName: NSDragPboard]; 
-	NSMutableArray *pbTypes = [NSMutableArray array];
-	// The image we will drag 
-	NSImage *image;
-	if ([event modifierFlags] & NSShiftKeyMask)
-		image = [self nsimage: YES];
-	else
-		image = [self nsimage: NO];
-		
-	// Thumbnail image and position
-	NSPoint event_location = [event locationInWindow];
-	NSPoint local_point = [self convertPoint:event_location fromView:nil];
-	local_point.x -= 35;
-	local_point.y -= 35;
+        _dragInProgress = YES;
+        NSEvent *event = (NSEvent *)[theTimer userInfo];
+        
+        NSSize dragOffset = NSMakeSize(0.0, 0.0);
+        NSPasteboard *pboard = [NSPasteboard pasteboardWithName: NSDragPboard]; 
+        NSMutableArray *pbTypes = [NSMutableArray array];
+        
+        NSImage *image;
+        if ([event modifierFlags] & NSShiftKeyMask)
+            image = [self nsimage: YES];
+        else
+            image = [self nsimage: NO];
+            
+        // Thumbnail image and position
+        NSPoint event_location = [event locationInWindow];
+        NSPoint local_point = [self convertPoint:event_location fromView:nil];
+        local_point.x -= 35;
+        local_point.y -= 35;
 
-	NSSize originalSize = [image size];
-	
-	float ratio = originalSize.width / originalSize.height;
-	
-	NSImage *thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize(100, 100/ratio)] autorelease];
-	if( [thumbnail size].width > 0 && [thumbnail size].height > 0)
-	{
-		[thumbnail lockFocus];
-		[image drawInRect: NSMakeRect(0, 0, 100, 100/ratio) fromRect: NSMakeRect(0, 0, originalSize.width, originalSize.height) operation: NSCompositeSourceOver fraction: 1.0];
-		[thumbnail unlockFocus];
-	}
-	
-	if ([event modifierFlags] & NSAlternateKeyMask)
-	{	
-		[pbTypes addObject: NSFilesPromisePboardType];
-	}
-	else
-	{
-		[pbTypes addObject: NSTIFFPboardType];	
-	}
-	
-	if ([self dicomImage])
-	{
-		[pbTypes addObject: pasteBoardOsiriX];
-		[pboard declareTypes:pbTypes owner:self];
-		[pboard setData:nil forType:pasteBoardOsiriX];
-	}
-	else
-		[pboard declareTypes:pbTypes  owner:self];
+        NSSize originalSize = [image size];
+        
+        float ratio = originalSize.width / originalSize.height;
+        
+        NSImage *thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize(100, 100/ratio)] autorelease];
+        if( [thumbnail size].width > 0 && [thumbnail size].height > 0)
+        {
+            [thumbnail lockFocus];
+            [image drawInRect: NSMakeRect(0, 0, 100, 100/ratio) fromRect: NSMakeRect(0, 0, originalSize.width, originalSize.height) operation: NSCompositeSourceOver fraction: 1.0];
+            [thumbnail unlockFocus];
+        }
+        
+        [pbTypes addObject: NSFilenamesPboardType];
+        [pbTypes addObject: NSTIFFPboardType];
+        
+        if( [self dicomImage])
+        {
+            [pbTypes addObject: pasteBoardOsiriX];
+            [pboard declareTypes:pbTypes owner:self];
+            [pboard setData:nil forType:pasteBoardOsiriX];
+        }
+        else
+            [pboard declareTypes:pbTypes  owner:self];
 
-    NSData *pDataDCMView = [NSData dataWithBytes:&self length:sizeof(DCMView*)];
-    [pboard setData:pDataDCMView forType:pasteBoardOsiriX];
-		
-	if ([event modifierFlags] & NSAlternateKeyMask)
-    {
-		NSRect imageLocation;
-		local_point = [self convertPoint:event_location fromView:nil];
-		imageLocation.origin =  local_point;
-		imageLocation.size = NSMakeSize(32,32);
-		[pboard setData:nil forType:NSFilesPromisePboardType]; 
-		
-        [destinationImage release];
-		destinationImage = [image copy];
-		
-		[self dragPromisedFilesOfTypes:[NSArray arrayWithObject:@"jpg"] fromRect:imageLocation source:self slideBack:YES event:event];
-	} 
-	else
-	{
-		[pboard setData: [image TIFFRepresentation] forType: NSTIFFPboardType];
-//		[pboard setData: [[[NSBitmapImageRep imageRepWithData: [image TIFFRepresentation]] representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]] imageRepWithData: [image TIFFRepresentation]] forType:NSTIFFPboardType];
-		
-		[self dragImage: thumbnail
-			at:local_point
-			offset:dragOffset
-			event:event 
-			pasteboard:pboard 
-			source:self 
-			slideBack:YES];
-	}
-
-	} @catch( NSException *localException) {
+        NSData *pDataDCMView = [NSData dataWithBytes:&self length:sizeof(DCMView*)];
+        [pboard setData:pDataDCMView forType:pasteBoardOsiriX];
+        
+        [pboard setData: [image TIFFRepresentation] forType: NSTIFFPboardType];
+        
+        NSString *description = [[self dicomImage] valueForKeyPath:@"series.name"];
+        
+        if( description.length == 0)
+            description = [[self dicomImage] valueForKeyPath:@"series.seriesDescription"];
+        
+        NSString *path = [[NSFileManager defaultManager] tmpDirPath];
+        
+        if( description.length)
+            path = [path stringByAppendingPathComponent: [NSString stringWithFormat: @"%@ - %@", [[self dicomImage] valueForKeyPath:@"series.study.name"], description]];
+        else
+            path = [path stringByAppendingPathComponent: [[self dicomImage] valueForKeyPath:@"series.study.name"]];
+        
+        path = [path stringByAppendingPathExtension: @"jpg"];
+        [[NSFileManager defaultManager] removeItemAtPath: path error: nil];
+        
+        NSData *data = [[NSBitmapImageRep imageRepWithData: [image TIFFRepresentation]] representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+        [data writeToFile: path atomically:YES];
+        [pboard setPropertyList:[NSArray arrayWithObject: path] forType:NSFilenamesPboardType];
+        
+        [self dragImage: thumbnail at:local_point offset:dragOffset event:event pasteboard:pboard source:self slideBack:YES];
+    }
+    @catch( NSException *localException) {
 		NSLog(@"Exception while dragging: %@", [localException description]);
 	}
 	
 	_dragInProgress = NO;
-}
-
-- (NSArray *)namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination
-{
-	NSString *name = [[self dicomImage] valueForKeyPath:@"series.study.name"];
-	name = @"OsiriX";
-	name = [name stringByAppendingPathExtension:@"jpg"];
-	NSArray *array = [NSArray arrayWithObject:name];
-	
-	NSData *data = [[NSBitmapImageRep imageRepWithData: [destinationImage TIFFRepresentation]] representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
-	
-	NSURL *url = [NSURL  URLWithString:name  relativeToURL:dropDestination];
-	[data writeToURL:url  atomically:YES];
-	[destinationImage release];
-	destinationImage = nil;
-	return array;
 }
 
 - (void)deleteMouseDownTimer
