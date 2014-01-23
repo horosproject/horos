@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C32" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C39" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
@@ -33,7 +33,7 @@
                                 <button toolTip="Once an inserted disk is successfully indexed, it is automatically selected" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="196">
                                     <rect key="frame" x="327" y="161" width="233" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Eject the disk when done copying" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="197">
+                                    <buttonCell key="cell" type="check" title="Eject the disk when done copying" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="197">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -44,7 +44,7 @@
                                 <button toolTip="Once an inserted disk is successfully indexed, it is automatically selected" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="210">
                                     <rect key="frame" x="327" y="141" width="294" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Automatically select the source when ready" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="211">
+                                    <buttonCell key="cell" type="check" title="Automatically select the source when ready" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="211">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -64,11 +64,11 @@
                                     </buttonCell>
                                     <cells>
                                         <column>
-                                            <buttonCell type="radio" title="All DICOM files available on the disk (Scan Mode), ignoring the DICOMDIR file (Slower)" imagePosition="left" alignment="left" state="on" toolTip="Use DICOMDIR on the media to load the images." inset="2" id="99">
+                                            <buttonCell type="radio" title="All DICOM files available on the disk (Scan Mode), ignoring the DICOMDIR file (Slower)" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" state="on" toolTip="Use DICOMDIR on the media to load the images." inset="2" id="99">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
-                                            <buttonCell type="radio" title="Files indexed in the DICOMDIR file (Faster)" imagePosition="left" alignment="left" toolTip="Scan the media to find all DICOM images." tag="1" inset="2" id="110">
+                                            <buttonCell type="radio" title="Files indexed in the DICOMDIR file (Faster)" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" toolTip="Scan the media to find all DICOM images." tag="1" inset="2" id="110">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
@@ -81,7 +81,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="199">
                                     <rect key="frame" x="27" y="11" width="330" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="If no DICOM files are found, switch to Scan Mode" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="200">
+                                    <buttonCell key="cell" type="check" title="If no DICOM files are found, switch to Scan Mode" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="200">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -102,19 +102,19 @@
                                     </buttonCell>
                                     <cells>
                                         <column>
-                                            <buttonCell type="radio" title="Copy all its contents into the database" imagePosition="left" alignment="left" state="on" tag="1" inset="2" id="218">
+                                            <buttonCell type="radio" title="Copy all its contents into the database" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" state="on" tag="1" inset="2" id="218">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
-                                            <buttonCell type="radio" title="Show disc content as a separate source" imagePosition="left" alignment="left" inset="2" id="219">
+                                            <buttonCell type="radio" title="Show disc content as a separate source" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="219">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
-                                            <buttonCell type="radio" title="Ask the user" imagePosition="left" alignment="left" tag="-1" inset="2" id="222">
+                                            <buttonCell type="radio" title="Ask the user" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" tag="-1" inset="2" id="222">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
-                                            <buttonCell type="radio" title="Ignore it" imagePosition="left" alignment="left" tag="2" inset="2" id="229">
+                                            <buttonCell type="radio" title="Ignore it" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" tag="2" inset="2" id="229">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
@@ -177,7 +177,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="135">
                                     <rect key="frame" x="15" y="14" width="215" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Include contents of this folder:" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="163">
+                                    <buttonCell key="cell" type="check" title="Include contents of this folder:" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="163">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -188,7 +188,7 @@
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="183">
                                     <rect key="frame" x="15" y="34" width="525" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <buttonCell key="cell" type="check" title="Prefer standard JPEG instead of JPEG2000 / JPEG LS compression for DICOM files" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="184">
+                                    <buttonCell key="cell" type="check" title="Prefer standard JPEG instead of JPEG2000 / JPEG LS compression for DICOM files" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="184">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                         <connections>
@@ -202,7 +202,7 @@
                                 <pathControl verticalHuggingPriority="750" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="202">
                                     <rect key="frame" x="235" y="12" width="318" height="20"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                    <pathCell key="cell" controlSize="small" selectable="YES" editable="YES" alignment="left" pathStyle="navigationBar" id="203">
+                                    <pathCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" alignment="left" pathStyle="navigationBar" id="203">
                                         <font key="font" metaFont="smallSystem"/>
                                         <url key="url" string="~Documents/FolderToBurn">
                                             <url key="baseURL" string="file://localhost/"/>
