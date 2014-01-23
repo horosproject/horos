@@ -1878,35 +1878,37 @@ Specular: 0.6, 2.0</string>
             </constraints>
         </customView>
         <customView id="575" userLabel="Projection">
-            <rect key="frame" x="0.0" y="0.0" width="93" height="46"/>
+            <rect key="frame" x="0.0" y="0.0" width="173" height="44"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
                 <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="577">
-                    <rect key="frame" x="3" y="5" width="84" height="37"/>
+                    <rect key="frame" x="3" y="4" width="164" height="36"/>
                     <autoresizingMask key="autoresizingMask"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="37" id="T4R-jT-M2G"/>
-                    </constraints>
                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                    <size key="cellSize" width="71" height="18"/>
-                    <size key="intercellSpacing" width="4" height="2"/>
-                    <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" controlSize="mini" inset="2" id="2184">
+                    <size key="cellSize" width="82" height="18"/>
+                    <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" controlSize="small" inset="2" id="2184">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                        <font key="font" metaFont="miniSystem"/>
+                        <font key="font" metaFont="smallSystem"/>
                     </buttonCell>
                     <cells>
                         <column>
-                            <buttonCell type="radio" title="Parallel" imagePosition="left" alignment="left" controlSize="mini" scrollable="YES" lineBreakMode="clipping" state="on" tag="1" inset="2" id="698">
+                            <buttonCell type="radio" title="Parallel" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" tag="1" inset="2" id="698">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                <font key="font" metaFont="miniSystem"/>
+                                <font key="font" metaFont="smallSystem"/>
                             </buttonCell>
-                            <buttonCell type="radio" title="Perspective" imagePosition="left" alignment="left" controlSize="mini" scrollable="YES" lineBreakMode="clipping" inset="2" id="699">
+                            <buttonCell type="radio" title="Perspective" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="699">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                <font key="font" metaFont="miniSystem"/>
+                                <font key="font" metaFont="smallSystem"/>
                             </buttonCell>
-                            <buttonCell type="radio" title="Endoscopy" imagePosition="left" alignment="left" controlSize="mini" scrollable="YES" lineBreakMode="clipping" tag="2" inset="2" id="700">
+                        </column>
+                        <column>
+                            <buttonCell type="radio" title="Endoscopy" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" tag="2" inset="2" id="Amx-n9-82A">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                <font key="font" metaFont="miniSystem"/>
+                                <font key="font" metaFont="smallSystem"/>
+                            </buttonCell>
+                            <buttonCell type="radio" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" transparent="YES" inset="2" id="n0a-lW-g5c">
+                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                <font key="font" metaFont="smallSystem"/>
                             </buttonCell>
                         </column>
                     </cells>
@@ -3228,7 +3230,7 @@ Gw
                         <constraints>
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="56" id="JQa-wo-QQ4"/>
                         </constraints>
-                        <buttonCell key="cell" type="bevel" title="edit" bezelStyle="regularSquare" image="AEB46FC8-B734-407C-91E2-CF4D052FF542" imagePosition="overlaps" alignment="center" controlSize="small" borderStyle="border" id="2135">
+                        <buttonCell key="cell" type="bevel" title="edit" bezelStyle="regularSquare" image="507753BB-BEE9-4F8A-9221-A64B9E9F5F94" imagePosition="overlaps" alignment="center" controlSize="small" borderStyle="border" id="2135">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
                         </buttonCell>
@@ -4394,7 +4396,7 @@ DQ
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2309">
                     <rect key="frame" x="4" y="4" width="64" height="17"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <buttonCell key="cell" type="roundRect" title="16-bit" bezelStyle="roundedRect" image="5D19E797-59E7-4949-BB25-FD144BDF5D29" imagePosition="overlaps" alignment="center" controlSize="small" state="on" borderStyle="border" inset="2" id="2310">
+                    <buttonCell key="cell" type="roundRect" title="16-bit" bezelStyle="roundedRect" image="2B1EC04F-B6CC-4768-9D31-C6C09880E5BE" imagePosition="overlaps" alignment="center" controlSize="small" state="on" borderStyle="border" inset="2" id="2310">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="smallSystem"/>
                     </buttonCell>
@@ -4516,10 +4518,7 @@ Gw
         </window>
     </objects>
     <resources>
-        <image name="3DCut" width="71" height="71"/>
-        <image name="3DRotate" width="165" height="165"/>
-        <image name="3DRotateCamera" width="98" height="101"/>
-        <image name="5D19E797-59E7-4949-BB25-FD144BDF5D29" width="1" height="1">
+        <image name="2B1EC04F-B6CC-4768-9D31-C6C09880E5BE" width="1" height="1">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGPj9YJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoK4HCBMU
 GR4fIyQsLzI4O1UkbnVsbNUJCgsMDQ4PEBESVk5TU2l6ZVYkY2xhc3NcTlNJbWFnZUZsYWdzVk5TUmVw
@@ -4537,7 +4536,10 @@ AhACGAIlAioCLAIuAjMCOwI+AkMCSwJOAmACYwJoAAAAAAAAAgEAAAAAAAAAQgAAAAAAAAAAAAAAAAAA
 Amo
 </mutableData>
         </image>
-        <image name="AEB46FC8-B734-407C-91E2-CF4D052FF542" width="1" height="1">
+        <image name="3DCut" width="71" height="71"/>
+        <image name="3DRotate" width="165" height="165"/>
+        <image name="3DRotateCamera" width="98" height="101"/>
+        <image name="507753BB-BEE9-4F8A-9221-A64B9E9F5F94" width="1" height="1">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGPj9YJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoK4HCBMU
 GR4fIyQsLzI4O1UkbnVsbNUJCgsMDQ4PEBESVk5TU2l6ZVYkY2xhc3NcTlNJbWFnZUZsYWdzVk5TUmVw

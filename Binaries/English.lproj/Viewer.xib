@@ -5477,39 +5477,37 @@ Gw
             </constraints>
         </customView>
         <customView id="2577" userLabel="Annotations">
-            <rect key="frame" x="0.0" y="0.0" width="78" height="48"/>
+            <rect key="frame" x="0.0" y="0.0" width="136" height="44"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
                 <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2594">
-                    <rect key="frame" x="0.0" y="2" width="70" height="44"/>
+                    <rect key="frame" x="0.0" y="4" width="128" height="36"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="44" id="cst-Ia-4mz"/>
-                    </constraints>
                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                    <size key="cellSize" width="70" height="11"/>
-                    <size key="intercellSpacing" width="4" height="0.0"/>
-                    <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" controlSize="mini" inset="2" id="2595">
+                    <size key="cellSize" width="64" height="18"/>
+                    <buttonCell key="prototype" type="radio" title="Basic" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" tag="2" inset="2" id="dWN-WZ-oyP">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                        <font key="font" metaFont="miniSystem"/>
+                        <font key="font" metaFont="smallSystem"/>
                     </buttonCell>
                     <cells>
                         <column>
-                            <buttonCell type="radio" title="None" imagePosition="left" alignment="left" controlSize="mini" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="2596">
+                            <buttonCell type="radio" title="None" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="2596">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                <font key="font" metaFont="miniSystem"/>
+                                <font key="font" metaFont="smallSystem"/>
                             </buttonCell>
-                            <buttonCell type="radio" title="Graphic" imagePosition="left" alignment="left" controlSize="mini" scrollable="YES" lineBreakMode="clipping" tag="1" inset="2" id="2597">
+                            <buttonCell type="radio" title="Graphic" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" tag="1" inset="2" id="2597">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                <font key="font" metaFont="miniSystem"/>
+                                <font key="font" metaFont="smallSystem"/>
                             </buttonCell>
-                            <buttonCell type="radio" title="Basic" imagePosition="left" alignment="left" controlSize="mini" scrollable="YES" lineBreakMode="clipping" tag="2" inset="2" id="2598">
+                        </column>
+                        <column>
+                            <buttonCell type="radio" title="Basic" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" tag="2" inset="2" id="Qa3-cE-a5m">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                <font key="font" metaFont="miniSystem"/>
+                                <font key="font" metaFont="smallSystem"/>
                             </buttonCell>
-                            <buttonCell type="radio" title="Full" imagePosition="left" alignment="left" controlSize="mini" scrollable="YES" lineBreakMode="clipping" tag="3" inset="2" id="2599">
+                            <buttonCell type="radio" title="Full" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" tag="3" inset="2" id="cWS-F4-Ju1">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                <font key="font" metaFont="miniSystem"/>
+                                <font key="font" metaFont="smallSystem"/>
                             </buttonCell>
                         </column>
                     </cells>
