@@ -7995,6 +7995,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
         if( NSIsEmptyRect( screenCaptureRect) == NO)
             size = screenCaptureRect;
+        else
+            size.origin = NSMakePoint( 0, 0);
         
 		NSMutableString *tempString, *tempString2, *tempString3, *tempString4;
 		long yRaster = 1, xRaster;
