@@ -6798,7 +6798,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     if( gDontListenToSyncMessage)
         return;
     
-	if (![[[note object] superview] isEqual:[self superview]] && [self is2DViewer])
+	if( ![[[note object] superview] isEqual:[self superview]] && [self is2DViewer])
 	{
 		int prevImage = curImage;
 		
@@ -9538,6 +9538,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                          rr.origin.x += rr.size.width/2.;
                          rr.origin.y += rr.size.height/2.;
                      }
+                     else
+                         rr.origin = NSMakePoint( 0, 0);
                      
 					if( curDCM.pixelSpacingX != 0 && curDCM.pixelSpacingX * 1000.0 < 1)
 					{
