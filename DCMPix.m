@@ -13377,25 +13377,41 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                         }
                         else if(inGrOrModP->vr==DA)
                         {
-                            calendarDate = [DCMCalendarDate dicomDate:field];
-                            [field appendString:[[NSUserDefaults dateFormatter] stringFromDate:calendarDate]];
+                            if( theValueP->a)
+                            {
+                                calendarDate = [DCMCalendarDate dicomDate: [NSString stringWithCString:theValueP->a encoding:NSASCIIStringEncoding]];
+                                [field appendString:[[NSUserDefaults dateFormatter] stringFromDate:calendarDate]];
+                            }
                         }
                         else if(inGrOrModP->vr==DT)
                         {
-                            calendarDate = [DCMCalendarDate dicomDateTime:field];
-                            [field appendString:[BrowserController DateTimeWithSecondsFormat: calendarDate]];
+                            if( theValueP->a)
+                            {
+                                calendarDate = [DCMCalendarDate dicomDateTime: [NSString stringWithCString:theValueP->a encoding:NSASCIIStringEncoding]];
+                                [field appendString:[BrowserController DateTimeWithSecondsFormat: calendarDate]];
+                            }
                         }
                         else if(inGrOrModP->vr==TM)
                         {
-                            calendarDate = [DCMCalendarDate dicomTime:field];
-                            [field appendString:[BrowserController TimeWithSecondsFormat: calendarDate]];
+                            if( theValueP->a)
+                            {
+                                calendarDate = [DCMCalendarDate dicomTime: [NSString stringWithCString:theValueP->a encoding:NSASCIIStringEncoding]];
+                                [field appendString:[BrowserController TimeWithSecondsFormat: calendarDate]];
+                            }
                         }
                         else if(inGrOrModP->vr==AS)
                         {
-                            //Age String Format mmmM,dddD,nnnY ie 018Y
-                            int number = [[field substringWithRange:NSMakeRange(0, 3)] intValue];
-                            NSString *letter = [field substringWithRange:NSMakeRange(3, 1)];
-                            [field appendString:[NSString stringWithFormat:@"%d %@", number, [letter lowercaseString]]];
+                            if( theValueP->a)
+                            {
+                                NSString *v = [NSString stringWithCString:theValueP->a encoding:NSASCIIStringEncoding];
+                                //Age String Format mmmM,dddD,nnnY ie 018Y
+                                if( v.length >= 4)
+                                {
+                                    int number = [[v substringWithRange:NSMakeRange(0, 3)] intValue];
+                                    NSString *letter = [v substringWithRange:NSMakeRange(3, 1)];
+                                    [field appendString:[NSString stringWithFormat:@"%d %@", number, [letter lowercaseString]]];
+                                }
+                            }
                         }
                         else if( theValueP->a)
                             [field appendString:[NSString stringWithCString:theValueP->a encoding:NSASCIIStringEncoding]];
