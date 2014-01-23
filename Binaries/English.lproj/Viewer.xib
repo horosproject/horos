@@ -103,6 +103,7 @@
                 <outlet property="popupRoi" destination="580" id="588"/>
                 <outlet property="previewMatrix" destination="BFG-iu-aJ0" id="j4G-fi-HiK"/>
                 <outlet property="previewMatrixScrollView" destination="cWT-gL-rls" id="3d1-S3-52W"/>
+                <outlet property="previewRootView" destination="VM3-GW-qRl" id="5Zu-Iz-axB"/>
                 <outlet property="printBox" destination="1868" id="1899"/>
                 <outlet property="printFormat" destination="1910" id="1918"/>
                 <outlet property="printFrom" destination="1877" id="1898"/>
