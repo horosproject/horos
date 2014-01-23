@@ -15055,7 +15055,7 @@ static NSArray*	openSubSeriesArray = nil;
     
     if( self.database.managedObjectContext.deletedObjects.count)
     {
-        NSLog( @"---- self.database.managedObjectContext.deletedObjects.count > 0 -> save db");
+        NSLog( @"---- self.database.managedObjectContext.deletedObjects.count (%d) > 0 -> save db", (int) self.database.managedObjectContext.deletedObjects.count);
         [self.database save];
     }
 }
