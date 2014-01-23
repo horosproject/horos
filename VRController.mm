@@ -140,8 +140,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"OPACITY"] allKeys];
     sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 	
-    i = [[OpacityPopup menu] numberOfItems];
-    while(i-- > 0) [[OpacityPopup menu] removeItemAtIndex:0];
+    [[OpacityPopup menu] removeAllItems];
 	
     [[OpacityPopup menu] addItemWithTitle:NSLocalizedString(@"Linear Table", nil) action:@selector (ApplyOpacity:) keyEquivalent:@""];
 	[[OpacityPopup menu] addItemWithTitle:NSLocalizedString(@"Linear Table", nil) action:@selector (ApplyOpacity:) keyEquivalent:@""];
@@ -168,8 +167,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"WLWW3"] allKeys];
     sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 
-    i = [[wlwwPopup menu] numberOfItems];
-    while(i-- > 0) [[wlwwPopup menu] removeItemAtIndex:0];
+    [[wlwwPopup menu] removeAllItems];
     
 /*    item = [[NSMenuItem alloc] initWithTitle:@"" action:NULL keyEquivalent:@""];
     [item setImage:[NSImage imageNamed:@"Presets"]];
@@ -240,8 +238,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	
     // Popup Menu
 
-    i = [[convolutionMenu menu] numberOfItems];
-    while(i-- > 0) [[convolutionMenu menu] removeItemAtIndex:0];
+    [[convolutionMenu menu] removeAllItems];
 	
 	[[convolutionMenu menu] addItemWithTitle: NSLocalizedString( @"Apply a filter", nil) action:nil keyEquivalent:@""];
 	

@@ -1524,17 +1524,13 @@ static float deg2rad = M_PI / 180.0;
 
 - (void)UpdateWLWWMenu:(NSNotification*)note;
 {
-    NSUInteger i;	
-    i = [[wlwwPopup menu] numberOfItems];
-    while(i-- > 0) [[wlwwPopup menu] removeItemAtIndex:0];
+    [[wlwwPopup menu] removeAllItems];
 	
 	[self createWLWWMenuItems];
 	
-    for( i = 0; i < [self.wlwwMenuItems count]; i++)
-    {
-        [[wlwwPopup menu] addItem:[self.wlwwMenuItems objectAtIndex:i]];
-    }
-	
+    for( NSMenuItem *item in self.wlwwMenuItems)
+        [[wlwwPopup menu] addItem: item];
+    
 	if( [note object])
 	{
 		[curWLWWMenu release];
@@ -1637,8 +1633,7 @@ static float deg2rad = M_PI / 180.0;
 	keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] allKeys];
     sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 	
-    i = [[clutPopup menu] numberOfItems];
-    while(i-- > 0) [[clutPopup menu] removeItemAtIndex:0];
+    [[clutPopup menu] removeAllItems];
 	
 	[[clutPopup menu] addItemWithTitle:NSLocalizedString(@"No CLUT", nil) action:nil keyEquivalent:@""];
     [[clutPopup menu] addItemWithTitle:NSLocalizedString(@"No CLUT", nil) action:@selector (ApplyCLUT:) keyEquivalent:@""];
@@ -1892,8 +1887,7 @@ static float deg2rad = M_PI / 180.0;
 	keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"OPACITY"] allKeys];
     sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 	
-    i = [[OpacityPopup menu] numberOfItems];
-    while(i-- > 0) [[OpacityPopup menu] removeItemAtIndex:0];
+    [[OpacityPopup menu] removeAllItems];
 	
     [[OpacityPopup menu] addItemWithTitle:NSLocalizedString(@"Linear Table", nil) action:@selector (ApplyOpacity:) keyEquivalent:@""];
 	[[OpacityPopup menu] addItemWithTitle:NSLocalizedString(@"Linear Table", nil) action:@selector (ApplyOpacity:) keyEquivalent:@""];

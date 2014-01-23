@@ -592,8 +592,7 @@ static float oldsetww, oldsetwl;
 	keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] allKeys];
     sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 	
-    i = [[clutPopup menu] numberOfItems];
-    while(i-- > 0) [[clutPopup menu] removeItemAtIndex:0];
+    [[clutPopup menu] removeAllItems];
 	
 	[[clutPopup menu] addItemWithTitle:NSLocalizedString(@"No CLUT", nil) action:nil keyEquivalent:@""];
     [[clutPopup menu] addItemWithTitle:NSLocalizedString(@"No CLUT", nil) action:@selector (ApplyCLUT:) keyEquivalent:@""];

@@ -292,8 +292,7 @@ static SyncSeriesScope globalSyncSeriesScope;
 	keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] allKeys];
     sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 	
-    i = [[clutPopup menu] numberOfItems];
-    while(i-- > 0) [[clutPopup menu] removeItemAtIndex:0];
+    [[clutPopup menu] removeAllItems];
 	
 	[[clutPopup menu] addItemWithTitle: NSLocalizedString(@"No CLUT", nil) action:nil keyEquivalent:@""];
     [[clutPopup menu] addItemWithTitle: NSLocalizedString(@"No CLUT", nil) action:@selector(ApplyCLUT:) keyEquivalent:@""];
@@ -333,8 +332,7 @@ static SyncSeriesScope globalSyncSeriesScope;
 	keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"WLWW3"] allKeys];
     sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 
-    i = [[wlwwPopup menu] numberOfItems];
-    while(i-- > 0) [[wlwwPopup menu] removeItemAtIndex:0];
+    [[wlwwPopup menu] removeAllItems];
 
     [[wlwwPopup menu] addItemWithTitle: NSLocalizedString(@"Default WL & WW", nil) action:nil keyEquivalent:@""];
 	[[wlwwPopup menu] addItemWithTitle: NSLocalizedString(@"Other", nil) action:@selector (ApplyWLWW:) keyEquivalent:@""];
@@ -429,8 +427,7 @@ static SyncSeriesScope globalSyncSeriesScope;
 	keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"OPACITY"] allKeys];
     sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 	
-    i = [[OpacityPopup menu] numberOfItems];
-    while(i-- > 0) [[OpacityPopup menu] removeItemAtIndex:0];
+    [[OpacityPopup menu] removeAllItems];
 	
     [[OpacityPopup menu] addItemWithTitle:NSLocalizedString(@"Linear Table", nil) action:@selector (ApplyOpacity:) keyEquivalent:@""];
 	[[OpacityPopup menu] addItemWithTitle:NSLocalizedString(@"Linear Table", nil) action:@selector (ApplyOpacity:) keyEquivalent:@""];

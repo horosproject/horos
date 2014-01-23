@@ -67,8 +67,7 @@
 	keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] allKeys];
     sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 	
-    i = [[clutPopup menu] numberOfItems];
-    while(i-- > 0) [[clutPopup menu] removeItemAtIndex:0];
+    [[clutPopup menu] removeAllItems];
 		
     for( i = 0; i < [sortedKeys count]; i++)
     {
@@ -85,8 +84,7 @@
 	keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"OPACITY"] allKeys];
     sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 	
-    i = [[oPopup menu] numberOfItems];
-    while(i-- > 0) [[oPopup menu] removeItemAtIndex:0];
+    [[oPopup menu] removeAllItems];
 	
 	[[oPopup menu] addItemWithTitle: NSLocalizedString( @"Linear Table", 0L) action:0L keyEquivalent:@""];
 	

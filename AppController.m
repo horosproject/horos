@@ -2017,8 +2017,7 @@ static NSDate *lastWarningDate = nil;
 		
 		sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 		
-		i = [mainOpacityMenu numberOfItems];
-		while(i-- > 0) [mainOpacityMenu removeItemAtIndex:0];   
+        [mainOpacityMenu removeAllItems];
 		
 		[mainOpacityMenu addItemWithTitle:NSLocalizedString(@"Linear Table", nil) action:@selector (ApplyOpacity:) keyEquivalent:@""];
 		for( i = 0; i < [sortedKeys count]; i++)
@@ -2049,8 +2048,7 @@ static NSDate *lastWarningDate = nil;
 		
 		sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 		
-		i = [mainMenuWLWWMenu numberOfItems];
-		while(i-- > 0) [mainMenuWLWWMenu removeItemAtIndex:0];   
+        [mainMenuWLWWMenu removeAllItems];
 		
 		[mainMenuWLWWMenu addItemWithTitle:NSLocalizedString(@"Default WL & WW", nil) action:@selector (ApplyWLWW:) keyEquivalent:@"l"];
 		[mainMenuWLWWMenu addItemWithTitle:NSLocalizedString(@"Other", nil) action:@selector (ApplyWLWW:) keyEquivalent:@""];
@@ -2087,8 +2085,7 @@ static NSDate *lastWarningDate = nil;
 		
 		sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 		
-		i = [mainMenuConvMenu numberOfItems];
-		while(i-- > 0) [mainMenuConvMenu removeItemAtIndex:0];    
+        [mainMenuConvMenu removeAllItems];
 		
 		[mainMenuConvMenu addItemWithTitle:NSLocalizedString(@"No Filter", nil) action:@selector (ApplyConv:) keyEquivalent:@""];
 		
@@ -2122,8 +2119,7 @@ static NSDate *lastWarningDate = nil;
 		
 		sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 		
-		i = [mainMenuCLUTMenu numberOfItems];
-		while(i-- > 0) [mainMenuCLUTMenu removeItemAtIndex:0];   
+        [mainMenuCLUTMenu removeAllItems];
 		
 		[mainMenuCLUTMenu addItemWithTitle:NSLocalizedString(@"No CLUT", nil) action:@selector (ApplyCLUT:) keyEquivalent:@""];
 		

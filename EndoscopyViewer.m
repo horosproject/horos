@@ -650,8 +650,7 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 	keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] allKeys];
     sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 	
-    i = [[clut2DPopup menu] numberOfItems];
-    while(i-- > 0) [[clut2DPopup menu] removeItemAtIndex:0];
+    [[clut2DPopup menu] removeAllItems];
 	
 	[[clut2DPopup menu] addItemWithTitle: NSLocalizedString(@"No CLUT", nil) action:nil keyEquivalent:@""];
     [[clut2DPopup menu] addItemWithTitle: NSLocalizedString(@"No CLUT", nil) action:@selector(ApplyCLUT:) keyEquivalent:@""];
@@ -687,8 +686,7 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 	keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] allKeys];
     sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 
-    i = [[wlww2DPopup menu] numberOfItems];
-    while(i-- > 0) [[wlww2DPopup menu] removeItemAtIndex:0];
+    [[wlww2DPopup menu] removeAllItems];
     [[wlww2DPopup menu] addItemWithTitle: NSLocalizedString(@"Default WL & WW", nil) action:nil keyEquivalent:@""];
 	[[wlww2DPopup menu] addItemWithTitle: NSLocalizedString(@"Other", nil) action:@selector (Apply2DWLWW:) keyEquivalent:@""];
 	[[wlww2DPopup menu] addItemWithTitle: NSLocalizedString(@"Default WL & WW", nil) action:@selector (Apply2DWLWW:) keyEquivalent:@""];

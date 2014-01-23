@@ -192,10 +192,10 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 
 + (void) setMenus:(NSMenu*) filtersMenu :(NSMenu*) roisMenu :(NSMenu*) othersMenu :(NSMenu*) dbMenu
 {
-	while([filtersMenu numberOfItems])[filtersMenu removeItemAtIndex:0];
-	while([roisMenu numberOfItems])[roisMenu removeItemAtIndex:0];
-	while([othersMenu numberOfItems])[othersMenu removeItemAtIndex:0];
-	while([dbMenu numberOfItems])[dbMenu removeItemAtIndex:0];
+    [filtersMenu removeAllItems];
+    [roisMenu removeAllItems];
+    [othersMenu removeAllItems];
+    [dbMenu removeAllItems];
 	
 	NSEnumerator *enumerator = [pluginsDict objectEnumerator];
 	NSBundle *plugin;

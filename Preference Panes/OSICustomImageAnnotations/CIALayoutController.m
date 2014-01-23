@@ -122,8 +122,7 @@
 	NSMenu *databaseFieldsMenu = [[prefPane databaseFieldsPopUpButton] menu];
 	[databaseFieldsMenu setAutoenablesItems:NO];
 
-	for (i=0; i<[[databaseFieldsMenu itemArray] count]; i++)
-		[databaseFieldsMenu removeItemAtIndex:i];
+    [databaseFieldsMenu removeAllItems];
 	
 	item = [[[NSMenuItem alloc] init] autorelease];
 	[item setTitle:NSLocalizedString( @"Study level", nil)];
@@ -166,8 +165,7 @@
 	// Specials popup button
 	NSMenu *specialFieldsMenu = [[prefPane specialFieldsPopUpButton] menu];
 
-	for (i=0; i<[[specialFieldsMenu itemArray] count]; i++)
-		[specialFieldsMenu removeItemAtIndex:i];
+    [specialFieldsMenu removeAllItems];
 
 	NSMutableArray *fields = [self specialFieldsTitles];
 	NSMutableArray *localizedFields = [self specialFieldsLocalizedTitles];
