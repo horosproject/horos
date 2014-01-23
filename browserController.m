@@ -8495,21 +8495,27 @@ static NSConditionLock *threadLock = nil;
 		if( x == 0) r = rowIndex.firstIndex;
 		else r = [rowIndex indexGreaterThanIndex: r];
 		
-		NSManagedObject   *aFile = [databaseOutline itemAtRow: r];
+		NSManagedObject *aFile = [databaseOutline itemAtRow: r];
 		
 		if( aFile && [[aFile valueForKey: @"type"] isEqualToString:@"Study"])
 		{
 			if( [string length])
 				[string appendString: @"\r"];
-			else
+			else // Header
 			{
 				int i = 0;
 				for( NSCell *s in descriptions)
 				{
-					[string appendString: [s stringValue]];
-					i++;
-					if( i !=  [columns count])
-						[string appendFormat: @"%c", NSTabCharacter];
+                    @try
+                    {
+                        [string appendString: [s stringValue]];
+                        i++;
+                        if( i !=  [columns count])
+                            [string appendFormat: @"%c", NSTabCharacter];
+                    }
+                    @catch ( NSException *e) {
+                        N2LogException( e);
+                    }
 				}
 				[string appendString: @"\r"];
 			}
@@ -8517,13 +8523,27 @@ static NSConditionLock *threadLock = nil;
 			int i = 0;
 			for( NSString *identifier in columns)
 			{
-				if( [[aFile valueForKey: identifier] description])
-					[string appendString: [[aFile valueForKey: identifier] description]];
-				i++;
-				if( i !=  [columns count])
-					[string appendFormat: @"%c", NSTabCharacter];
+                @try
+                {
+                    if( [[aFile valueForKey: identifier] description])
+                    {
+                        NSCell *c = [[databaseOutline.tableColumns objectAtIndex: i] dataCell];
+                        
+                        if( c.formatter)
+                            [string appendString: [c.formatter stringForObjectValue: [aFile valueForKey: identifier]]];
+                        else
+                            [string appendString: [[aFile valueForKey: identifier] description]];
+                    }
+                    i++;
+                    
+                    if( i !=  [columns count])
+                        [string appendFormat: @"%c", NSTabCharacter];
+                }
+                @catch ( NSException *e) {
+                    N2LogException( e);
+                }
 			}
-		}	
+		}
 	}
 	
 	return string;
