@@ -7069,11 +7069,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				
 				if( same3DReferenceWorld || registeredViewer)
 				{
-					if( [ViewerController isFrontMost2DViewer: [otherView window]])
+					if( otherView.window.isKeyWindow || [otherView.windowController FullScreenON])   //[ViewerController isFrontMost2DViewer: [otherView window]])
 					{
 						if( same3DReferenceWorld || registeredViewer)
-							[self computeSlice: oPix :oPix2];
-						else
+                            [self computeSlice: oPix :oPix2];
+                        else
 						{
 							sliceFromTo[ 0][ 0] = HUGE_VALF;
 							sliceFromTo2[ 0][ 0] = HUGE_VALF;
@@ -8842,7 +8842,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 //	#endif
 	
 	if( is2DViewer)
-		frontMost = [ViewerController isFrontMost2DViewer: [self window]];
+		frontMost = self.window.isKeyWindow;    //[ViewerController isFrontMost2DViewer: [self window]];
 	
 	if( firstTimeDisplay == NO && is2DViewer)
 	{
