@@ -199,7 +199,6 @@
 	long locationValue = [defaults integerForKey:@"DEFAULT_DATABASELOCATION"];
 	
 	[locationMatrix selectCellWithTag:locationValue];
-	[locationURLField setStringValue:[defaults stringForKey:@"DEFAULT_DATABASELOCATIONURL"]];
 	[locationPathField setURL: [NSURL fileURLWithPath: [defaults stringForKey:@"DEFAULT_DATABASELOCATIONURL"]]];
 	
 //	[copyDatabaseModeMatrix setEnabled:[defaults boolForKey:@"COPYDATABASE"]];
@@ -509,7 +508,6 @@
 			location = [[location stringByDeletingLastPathComponent] stringByDeletingLastPathComponent];
 		}
 		
-		[locationURLField setStringValue: location];
 		[locationPathField setURL: [NSURL fileURLWithPath: location]];
 		[[NSUserDefaults standardUserDefaults] setObject:location forKey:@"DEFAULT_DATABASELOCATIONURL"];
 		[[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"DEFAULT_DATABASELOCATION"];
@@ -517,7 +515,6 @@
 	}	
 	else 
 	{
-		[locationURLField setStringValue: 0L];
 		[locationPathField setURL: 0L];
 		[[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"DEFAULT_DATABASELOCATIONURL"];
 		[[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"DEFAULT_DATABASELOCATION"];

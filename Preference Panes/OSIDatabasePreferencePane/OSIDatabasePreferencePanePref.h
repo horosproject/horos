@@ -17,7 +17,6 @@
 @interface OSIDatabasePreferencePanePref : NSPreferencePane 
 {
 	IBOutlet NSMatrix		*locationMatrix;
-	IBOutlet NSTextField	*locationURLField;
 	IBOutlet NSPathControl	*locationPathField;
 	IBOutlet NSMatrix		*seriesOrderMatrix;
 	IBOutlet NSPopUpButton	*reportsMode;
