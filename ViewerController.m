@@ -8008,11 +8008,14 @@ static int avoidReentryRefreshDatabase = 0;
 				[self setFusionMode: 0];
 				
 				[imageView setIndex: 0];
-
-				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixCloseViewerNotification object: self userInfo: nil];
+                
+                DicomStudy *newStudy = nil;
+                
+                if( d.count)
+                    newStudy = [[d objectAtIndex: 0] valueForKeyPath: @"series.study"];
+				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixCloseViewerNotification object: self userInfo: [NSDictionary dictionaryWithObjectsAndKeys: newStudy.objectID, @"newStudyID", nil]];
 				
 				windowWillClose = YES;
-				
 
 				[self setUpdateTilingViewsValue: YES];
 
@@ -8469,11 +8472,6 @@ static int avoidReentryRefreshDatabase = 0;
 				}
 				
 				[[[BrowserController currentBrowser] database] unlock];
-				
-				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixViewerDidChangeNotification object: self userInfo: nil];
-				
-				[self willChangeValueForKey: @"KeyImageCounter"];
-				[self didChangeValueForKey: @"KeyImageCounter"];
 				
 				[imageView computeColor];
                 
