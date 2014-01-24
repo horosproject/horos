@@ -18,6 +18,7 @@ PURPOSE.
 #import "ThreadsManager.h"
 #import "NSThread+N2.h"
 #import "N2Stuff.h"
+#import "N2Debug.h"
 
 static NSString *albumDragType = @"Osirix Album drag";
 
@@ -166,8 +167,8 @@ static NSString *albumDragType = @"Osirix Album drag";
 				slideBack:YES];
 	}
 	
-	} @catch( NSException *localException) {
-		NSLog(@"Exception while dragging: %@", [localException description]);
+	} @catch( NSException *e) {
+		N2LogException( e);
 	}
 }
 
@@ -214,6 +215,7 @@ static NSString *albumDragType = @"Osirix Album drag";
 		}
 		@catch ( NSException * e)
 		{
+            N2LogException( e);
 		}
 		avoidRecursive = NO;
 	}
@@ -277,8 +279,8 @@ static NSString *albumDragType = @"Osirix Album drag";
 				 source:self
 			  slideBack:YES];
 		
-		} @catch( NSException *localException) {
-		NSLog(@"Exception while dragging frame: %@", [localException description]);
+		} @catch( NSException *e) {
+            N2LogException( e);
 		}
 	}
 }
@@ -304,11 +306,13 @@ static NSString *albumDragType = @"Osirix Album drag";
 		}
 		@catch (NSException *e)
 		{
-			NSLog( @"[NSEvent startPeriodicEventsAfterDelay: 0 withPeriod:0.001] : %@", e);
+			N2LogException( e);
 		}
 		NSDate	*start = [NSDate date];
 		NSEvent *ev = nil;
 		
+        @try
+		{
 		do
 		{
 			ev = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSPeriodicMask];
@@ -335,6 +339,10 @@ static NSString *albumDragType = @"Osirix Album drag";
 		}
 		
 		[NSEvent stopPeriodicEvents];
+        }
+        @catch ( NSException *e) {
+            N2LogException( e);
+        }
 	}
 	
 	[self.window makeFirstResponder: self];
