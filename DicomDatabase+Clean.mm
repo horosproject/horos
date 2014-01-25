@@ -400,7 +400,7 @@ static BOOL _cleanForFreeSpaceLimitSoonReachedDisplayed = NO;
             [alert setInformativeText: NSLocalizedString( @"Free space limit will be soon reached for your hard disk storing the database. Some studies will be deleted according to the rules specified in Preferences Database window (Database Auto-Cleaning).", nil)];
             [alert setShowsSuppressionButton:YES ];
             [alert addButtonWithTitle: NSLocalizedString( @"OK", nil)];
-            [alert addButtonWithTitle: NSLocalizedString( @"Preferences", nil)];
+            [alert addButtonWithTitle: NSLocalizedString( @"See Preferences", nil)];
             
             if( [alert runModal] == NSAlertSecondButtonReturn)
             {
@@ -410,6 +410,20 @@ static BOOL _cleanForFreeSpaceLimitSoonReachedDisplayed = NO;
             
             if ([[alert suppressionButton] state] == NSOnState)
                 [[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"hideCleanForFreeSpaceLimitSoonReachedWarning"];
+        }
+    }
+}
+
+- (void) _cleanDisplayWarningAboutTryingToDeleteRecentlyAddedStudy
+{
+    if([[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO)
+    {
+        NSInteger r = NSRunCriticalAlertPanel( NSLocalizedString( @"Warning - Free Space", nil), NSLocalizedString( @"The current auto-cleaning rules cannot find studies to delete. Check the parameters in Preferences Database window (Database Auto-Cleaning), or delete other files from your hard disk.", nil), NSLocalizedString( @"OK", nil), NSLocalizedString( @"See Preferences", nil), nil);
+        
+        if( r == NSAlertAlternateReturn)
+        {
+            [[PreferencesWindowController sharedPreferencesWindowController] showWindow: self];
+            [[PreferencesWindowController sharedPreferencesWindowController] setCurrentContextWithResourceName: @"OSIDatabasePreferencePanePref"];
         }
     }
 }
@@ -511,12 +525,21 @@ static BOOL _cleanForFreeSpaceLimitSoonReachedDisplayed = NO;
         
         BOOL flagDeleteLinkedImages = [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOCLEANINGDELETEORIGINAL"];
         
+        BOOL displayError = NO;
         int deletedStudies = 0;
         
         for (NSArray* sd in studiesDates) {
             { CGFloat a = initialDelta, b = freeMemoryRequested, f = free; [NSThread currentThread].progress = (a-(b-f))/a; }
             
             DicomStudy* study = [sd objectAtIndex:0];
+            
+            if( [study.dateAdded timeIntervalSinceNow] < -60*60*6) // The study was added less than 6 hours.... we cannot remove it !
+            {
+                NSLog( @"---- WARNING: trying to remove a study added recently: %@", study.dateAdded);
+                displayError = YES;
+                continue;
+            }
+            
             NSLog(@"Info: study [%@ - %@ - %@] is being deleted for space (added %@, last opened %@)", study.studyName, study.patientID, study.date, study.dateAdded, study.dateOpened);
             
             // list images to be deleted
@@ -568,6 +591,10 @@ static BOOL _cleanForFreeSpaceLimitSoonReachedDisplayed = NO;
         [self save: nil];
         
 		NSLog(@"Info: done cleaning for space, %lld MB are free", free);
+        
+        if( displayError)
+            [self performSelectorOnMainThread:@selector( _cleanDisplayWarningAboutTryingToDeleteRecentlyAddedStudy) withObject:nil waitUntilDone:NO];
+        
     } @catch (NSException* e) {
         N2LogExceptionWithStackTrace(e);
     } @finally {
