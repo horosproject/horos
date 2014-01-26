@@ -387,14 +387,20 @@ static BOOL _showingCleanForFreeSpaceWarning = NO;
 	}
 }
 
+static BOOL _errorCurrentlyDisplayed = NO;
 static BOOL _cleanForFreeSpaceLimitSoonReachedDisplayed = NO;
 
 - (void) _cleanForFreeSpaceLimitSoonReachedWarning
 {
+    if( _errorCurrentlyDisplayed)
+        return;
+    
     if([[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO)
     {
         if ([[NSUserDefaults standardUserDefaults] boolForKey: @"hideCleanForFreeSpaceLimitSoonReachedWarning"] == NO)
         {
+            _errorCurrentlyDisplayed = YES;
+            
             NSAlert* alert = [[NSAlert new] autorelease];
             [alert setMessageText: NSLocalizedString(@"Warning - Free Space", nil)];
             [alert setInformativeText: NSLocalizedString( @"Free space limit will be soon reached for your hard disk storing the database. Some studies will be deleted according to the rules specified in Preferences Database window (Database Auto-Cleaning).", nil)];
@@ -410,14 +416,21 @@ static BOOL _cleanForFreeSpaceLimitSoonReachedDisplayed = NO;
             
             if ([[alert suppressionButton] state] == NSOnState)
                 [[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"hideCleanForFreeSpaceLimitSoonReachedWarning"];
+            
+            _errorCurrentlyDisplayed = NO;
         }
     }
 }
 
 - (void) _cleanDisplayWarningAboutTryingToDeleteRecentlyAddedStudy
 {
+    if( _errorCurrentlyDisplayed)
+        return;
+    
     if([[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO)
     {
+        _errorCurrentlyDisplayed = YES;
+        
         NSInteger r = NSRunCriticalAlertPanel( NSLocalizedString( @"Warning - Free Space", nil), NSLocalizedString( @"The current auto-cleaning rules cannot find studies to delete. Check the parameters in Preferences Database window (Database Auto-Cleaning), or delete other files from your hard disk.", nil), NSLocalizedString( @"OK", nil), NSLocalizedString( @"See Preferences", nil), nil);
         
         if( r == NSAlertAlternateReturn)
@@ -425,6 +438,8 @@ static BOOL _cleanForFreeSpaceLimitSoonReachedDisplayed = NO;
             [[PreferencesWindowController sharedPreferencesWindowController] showWindow: self];
             [[PreferencesWindowController sharedPreferencesWindowController] setCurrentContextWithResourceName: @"OSIDatabasePreferencePanePref"];
         }
+        
+        _errorCurrentlyDisplayed = NO;
     }
 }
 
