@@ -2089,7 +2089,7 @@ static NSConditionLock *threadLock = nil;
 	[[splash progress] setMaxValue:[objects count]];
 	[splash setCancel: YES];
 		
-	[_database lock];
+//	[_database lock];
 	
 	[files removeDuplicatedStringsInSyncWithThisArray: objects];
 	
@@ -2138,7 +2138,7 @@ static NSConditionLock *threadLock = nil;
 	}
     @finally
     {
-		[_database unlock];
+//		[_database unlock];
 	}
 	[splash close];
 	[splash autorelease];
@@ -2986,7 +2986,7 @@ static NSConditionLock *threadLock = nil;
     if( predicate == nil)
         predicate = [NSPredicate predicateWithValue: YES];
 	
-	[_database lock];
+//	[_database lock];
 	error = nil;
 	[outlineViewArray release];
 	
@@ -3232,7 +3232,7 @@ static NSConditionLock *threadLock = nil;
 	
 	outlineViewArray = [outlineViewArray retain];
 	
-	[_database unlock];
+//	[_database unlock];
 	
 	[databaseOutline reloadData];
 	[comparativeTable reloadData];
@@ -3597,18 +3597,18 @@ static NSConditionLock *threadLock = nil;
 	
 	if ([[item valueForKey:@"type"] isEqualToString:@"Series"])
 	{
-		[_database lock];
+//		[_database lock];
 		
 		NSArray *sortedArray = [item sortedImages];
 
-		[_database unlock];
+//		[_database unlock];
 
 		return sortedArray;
 	}
 	
 	if ([[item valueForKey:@"type"] isEqualToString:@"Study"])
 	{
-		[_database lock];
+//		[_database lock];
 		
 		NSArray *sortedArray = nil;
 		@try
@@ -3639,7 +3639,7 @@ static NSConditionLock *threadLock = nil;
             N2LogExceptionWithStackTrace(e);
 		}
 		
-		[_database unlock];
+//		[_database unlock];
 		
 		return sortedArray;
 	}
@@ -3660,7 +3660,7 @@ static NSConditionLock *threadLock = nil;
     if( childrenArray == nil)
         return nil;
     
-	[_database lock];
+//	[_database lock];
 	
 	@try
 	{
@@ -3735,7 +3735,7 @@ static NSConditionLock *threadLock = nil;
         N2LogExceptionWithStackTrace(e);
 	}
 	
-	[_database unlock];
+//	[_database unlock];
 	
 	return imagesPathArray;
 }
@@ -3764,7 +3764,7 @@ static NSConditionLock *threadLock = nil;
 {
 	NSManagedObject *aFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
 	
-	[_database lock];
+//	[_database lock];
 	
 	if( [[aFile valueForKey:@"type"] isEqualToString:@"Study"])
 		aFile = [[aFile valueForKey:@"series"] anyObject];
@@ -3772,7 +3772,7 @@ static NSConditionLock *threadLock = nil;
 	if( [[aFile valueForKey:@"type"] isEqualToString:@"Series"])
 		aFile = [[aFile valueForKey:@"images"] anyObject];
 	
-	[_database unlock];
+//	[_database unlock];
 	
 	return aFile;
 }
@@ -6139,7 +6139,7 @@ static NSConditionLock *threadLock = nil;
 	NSEnumerator	*enumerator			= [columnsDatabase keyEnumerator];
 	NSString		*key;
 	
-	[_database lock];
+//	[_database lock];
 	@try
     {
 		while( key = [enumerator nextObject])
@@ -6173,7 +6173,7 @@ static NSConditionLock *threadLock = nil;
 	}
     @finally
     {
-		[_database unlock];
+//		[_database unlock];
 	}
 }
 
@@ -6460,7 +6460,7 @@ static NSConditionLock *threadLock = nil;
 	if (_database == nil)
         return nil;
 	[item retain];
-	[_database lock];
+//	[_database lock];
 	@try {
 		return [self intOutlineView:outlineView objectValueForTableColumn:tableColumn byItem:item];
 	}
@@ -6469,7 +6469,7 @@ static NSConditionLock *threadLock = nil;
 		N2LogExceptionWithStackTrace(e);
 	}
     @finally {
-        [_database unlock];
+//        [_database unlock];
         [item release];
     }
 
@@ -6483,7 +6483,7 @@ static NSConditionLock *threadLock = nil;
     
     DatabaseIsEdited = NO;
 	
-	[_database lock];
+//	[_database lock];
 	@try {
         if (![_database isLocal])
             [(RemoteDicomDatabase*)_database object:item setValue:object forKey:key];
@@ -6520,7 +6520,7 @@ static NSConditionLock *threadLock = nil;
     }
     @finally
     {
-        [_database unlock];
+//        [_database unlock];
     }
 	
 	[_database save:NULL];
@@ -6806,7 +6806,7 @@ static NSConditionLock *threadLock = nil;
 
 - (void)outlineViewItemWillCollapse:(NSNotification *)notification
 {
-	[_database lock];
+//	[_database lock];
 	
 	id object = [[notification userInfo] objectForKey:@"NSObject"];
 	
@@ -6821,19 +6821,19 @@ static NSConditionLock *threadLock = nil;
 		if( [[image valueForKey:@"type"] isEqualToString:@"Image"]) [self findAndSelectFile: nil image: image shouldExpand :NO];
 	}
 	
-	[_database unlock];
+//	[_database unlock];
 }
 
 - (void)outlineViewItemWillExpand:(NSNotification *)notification
 {
-	[_database lock];
+//	[_database lock];
 	
 	id object = [[notification userInfo] objectForKey:@"NSObject"];
     
     if( [object isDistant] == NO)
         [object setValue:[NSNumber numberWithBool:YES] forKey:@"expanded"];
 	
-	[_database unlock];
+//	[_database unlock];
 }
 
 - (BOOL)isUsingExternalViewer: (NSManagedObject*) item
@@ -9211,7 +9211,7 @@ static BOOL withReset = NO;
             if( img == nil) NSLog( @"Error: [previewPixThumbnails objectAtIndex: i] == nil");
         }
         
-        [_database lock];
+//        [_database lock];
         @try
         {
             NSString *modality, *seriesSOPClassUID, *fileType;
@@ -9383,7 +9383,7 @@ static BOOL withReset = NO;
         }
         @finally
         {
-            [_database unlock];
+//            [_database unlock];
         }
         
         [img release];
@@ -9414,7 +9414,7 @@ static BOOL withReset = NO;
 	NSManagedObject		*curObj = [matrixViewArray objectAtIndex: [[sender selectedCell] tag]];
 	NSLog( @"%@", [curObj valueForKey: @"type"]);
 	
-	[_database lock];
+//	[_database lock];
 	
 	@try 
 	{
@@ -9426,7 +9426,7 @@ static BOOL withReset = NO;
 		N2LogExceptionWithStackTrace(e);
 	}
 	
-	[_database unlock];
+//	[_database unlock];
 	
 	NSLog( @"%@", [curObj valueForKey: @"completePath"]);	
 	
@@ -9708,7 +9708,7 @@ static BOOL withReset = NO;
 
 -(IBAction)rebuildThumbnails:(id)sender
 {
-	[_database lock];
+//	[_database lock];
 	@try
     {
 		NSIndexSet* selectedRows = [databaseOutline selectedRowIndexes];
@@ -9736,7 +9736,7 @@ static BOOL withReset = NO;
 	}
     @finally
     {
-		[_database unlock];
+//		[_database unlock];
 	}
 	
 	[self refreshMatrix: self];
