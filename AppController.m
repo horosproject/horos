@@ -2722,23 +2722,18 @@ static NSDate *lastWarningDate = nil;
 	[[BrowserController currentBrowser] subSelectFilesAndFoldersToAdd: passedFilenames];
 }
 
+static BOOL firstCall = YES;
+
 - (void)applicationWillBecomeActive:(NSNotification *)aNotification
 {
-    static BOOL firstCall = YES;
-    
     if( firstCall)
-    {
-        firstCall = NO;
         return;
-    }
     
     [[NSRunningApplication currentApplication] activateWithOptions: NSApplicationActivateAllWindows];
 }
 
 - (void)applicationDidBecomeActive:(NSNotification *)aNotification
 {
-    static BOOL firstCall = YES;
-    
     if( firstCall)
     {
         firstCall = NO;
