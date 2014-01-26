@@ -3544,7 +3544,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 		memset( orientation, 0, sizeof orientation);
 		#ifdef OSIRIX_VIEWER
-		[self loadCustomImageAnnotationsPapyLink:-1 DCMLink:nil];
+		[self loadCustomImageAnnotationsPapyLink:-1];
 		#endif
     }
     return self;
@@ -5345,7 +5345,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         {
             if (gIsPapyFile [fileNb] == DICOM10) Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
             
-            [self loadCustomImageAnnotationsPapyLink:fileNb DCMLink:nil];
+            [self loadCustomImageAnnotationsPapyLink:fileNb];
             
             if( numberOfFrames <= 1)
                 [self clearCachedPapyGroups];
@@ -5360,6 +5360,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	#endif
 }
 
+/*
 - (void) dcmFrameworkLoad0x0018: (DCMObject*) dcmObject
 {
 	if( [dcmObject attributeValueWithName:@"PatientsWeight"]) patientsWeight = [[dcmObject attributeValueWithName:@"PatientsWeight"] floatValue];
@@ -5651,7 +5652,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         
 		for ( DCMObject *sequenceItem in seq.sequence)
 		{
-/* US Regions --->
+//US Regions --->
 			if( spacingFound == NO)
 			{
 				int physicalUnitsX = 0;
@@ -5679,7 +5680,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					}
 				}
 			}
-<--- US Regions */
+//<--- US Regions
 // US Regions --->
 #ifdef OSIRIX_VIEWER
 
@@ -6169,7 +6170,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			}
 			@catch (NSException *e)
 			{
-                N2LogExceptionWithStackTrace(e/*, @"overlays dcmframework"*/);
+                N2LogExceptionWithStackTrace(e);
 			}
 		}
 		
@@ -6397,11 +6398,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				else
 					inverseVal = YES; savedWL = -savedWL;
 			}
-			/*else if ( [colorspace hasPrefix:@"MONOCHROME2"])	{inverseVal = NO; savedWL = savedWL;} */
+			//else if ( [colorspace hasPrefix:@"MONOCHROME2"])	{inverseVal = NO; savedWL = savedWL;}
 			if ( [colorspace hasPrefix:@"YBR"]) isRGB = YES;		
 			if ( [colorspace hasPrefix:@"PALETTE"])	{ bitsAllocated = 8; isRGB = YES; NSLog(@"Palette depth conveted to 8 bit");}
 			if ([colorspace rangeOfString:@"RGB"].location != NSNotFound) isRGB = YES;			
-			/******** dcm Object will do this *******convertYbrToRgb -> planar is converted***/		
+			// ******** dcm Object will do this *******convertYbrToRgb -> planar is converted***
 			if ([colorspace rangeOfString:@"YBR"].location != NSNotFound)
 			{
 				fPlanarConf = 0;
@@ -6513,7 +6514,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             }
             
 			
-			//***********
+			// ***********
 			
 			if( isRGB)
 			{
@@ -6728,6 +6729,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	return returnValue;
 }
 #endif
+*/
 
 - (void*) getPapyGroup: (int) group
 {
@@ -9662,7 +9664,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					[PapyrusLock unlock];
 				
 				#ifdef OSIRIX_VIEWER
-				[self loadCustomImageAnnotationsPapyLink: fileNb DCMLink:nil];
+				[self loadCustomImageAnnotationsPapyLink: fileNb];
 				#endif
 				
 				if( pixelSpacingY != 0)
@@ -9937,51 +9939,51 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			
 			@try
 			{
-				if( gUSEPAPYRUSDCMPIX)
-				{
+//				if( gUSEPAPYRUSDCMPIX)
+//				{
 					success = [self loadDICOMPapyrus];
 					
-                    #ifdef OSIRIX_VIEWER
-					#ifndef OSIRIX_LIGHT
-                    if( success == NO)
-                    {
-                        // It failed with Papyrus : potential crash with DCMFramework with a corrupted file
-                        // Only do it, if it failed: writing a file takes time... and slow down reading performances
-                        
-                        NSString *recoveryPath = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"/ThumbnailPath"];
-                        
-                        [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error: nil];
-                        
-                        @try 
-                        {
-                            [URIRepresentationAbsoluteString writeToFile: recoveryPath atomically: YES encoding: NSASCIIStringEncoding  error: nil];
-                            
-                            //only try again if is strict DICOM
-                            if (success == NO && [DCMObject isDICOM:[NSData dataWithContentsOfFile: srcFile]])
-                            {
-                                NSLog( @"DCMPix: Papyrus failed. Try DCMFramework : %@", srcFile);
-                                success = [self loadDICOMDCMFramework];
-                            }
-                            
-                            [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error: nil];
-                        }
-                        @catch (NSException * e) 
-                        {
-                            NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-                        }
-                    }
-					#endif
-                    #endif
-				}
-				#ifndef OSIRIX_LIGHT
-				else
-				{
-					success = [self loadDICOMDCMFramework];
-					
-					if (success == NO && [DCMObject isDICOM:[NSData dataWithContentsOfFile:srcFile]])
-						success = [self loadDICOMPapyrus];
-				}
-				#endif
+//                    #ifdef OSIRIX_VIEWER
+//					#ifndef OSIRIX_LIGHT
+//                    if( success == NO)
+//                    {
+//                        // It failed with Papyrus : potential crash with DCMFramework with a corrupted file
+//                        // Only do it, if it failed: writing a file takes time... and slow down reading performances
+//                        
+//                        NSString *recoveryPath = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"/ThumbnailPath"];
+//                        
+//                        [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error: nil];
+//                        
+//                        @try 
+//                        {
+//                            [URIRepresentationAbsoluteString writeToFile: recoveryPath atomically: YES encoding: NSASCIIStringEncoding  error: nil];
+//                            
+//                            //only try again if is strict DICOM
+//                            if (success == NO && [DCMObject isDICOM:[NSData dataWithContentsOfFile: srcFile]])
+//                            {
+//                                NSLog( @"DCMPix: Papyrus failed. Try DCMFramework : %@", srcFile);
+//                                success = [self loadDICOMDCMFramework];
+//                            }
+//                            
+//                            [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error: nil];
+//                        }
+//                        @catch (NSException * e) 
+//                        {
+//                            NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+//                        }
+//                    }
+//					#endif
+//                    #endif
+//				}
+//				#ifndef OSIRIX_LIGHT
+//				else
+//				{
+//					success = [self loadDICOMDCMFramework];
+//					
+//					if (success == NO && [DCMObject isDICOM:[NSData dataWithContentsOfFile:srcFile]])
+//						success = [self loadDICOMPapyrus];
+//				}
+//				#endif
 				
 				if( numberOfFrames <= 1)
 					[self clearCachedPapyGroups];
@@ -10850,7 +10852,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             }
             
 #ifdef OSIRIX_VIEWER
-			[self loadCustomImageAnnotationsPapyLink:-1 DCMLink:nil];
+			[self loadCustomImageAnnotationsPapyLink:-1];
 #endif
 		}
 		
@@ -13618,7 +13620,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 #endif
 }
 
-- (void)loadCustomImageAnnotationsPapyLink:(int)fileNb DCMLink:(DCMObject*)dcmObject
+- (void)loadCustomImageAnnotationsPapyLink:(int)fileNb
 {
 	@try
 	{
@@ -13671,10 +13673,10 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                                     }
                                     else if(fileNb>=0)
                                         value = [self getDICOMFieldValueForGroup:[[field objectForKey:@"group"] intValue] element:[[field objectForKey:@"element"] intValue] papyLink:fileNb];
-                                    #ifndef OSIRIX_LIGHT
-                                    else if(dcmObject)
-                                        value = [self getDICOMFieldValueForGroup:[[field objectForKey:@"group"] intValue] element:[[field objectForKey:@"element"] intValue] DCMLink:dcmObject];
-                                    #endif
+//                                    #ifndef OSIRIX_LIGHT
+//                                    else if(dcmObject)
+//                                        value = [self getDICOMFieldValueForGroup:[[field objectForKey:@"group"] intValue] element:[[field objectForKey:@"element"] intValue] DCMLink:dcmObject];
+//                                    #endif
                                     else
                                         value = nil;
                                     
