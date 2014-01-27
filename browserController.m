@@ -10142,6 +10142,9 @@ static BOOL withReset = NO;
             NSRect topFrame = [top frame];
             NSRect bottomFrame = [bottom frame];
             
+            topFrame.origin.x = 0;
+            bottomFrame.origin.x = 0;
+            
             topFrame.size.height += oldSize.height - splitFrame.size.height;
             bottomFrame.size.height -= oldSize.height - splitFrame.size.height;
             
@@ -10154,12 +10157,15 @@ static BOOL withReset = NO;
                 bottomFrame.size.height = availableHeight;
             
             topFrame.size.width = splitFrame.size.width;
-            topFrame.size.height = availableHeight - (bottomFrame.size.height + dividerThickness);
-            [top setFrame:topFrame];
+            topFrame.size.height = availableHeight - bottomFrame.size.height;
             
             bottomFrame.size.width = splitFrame.size.width;
-            bottomFrame.size.height = availableHeight - (topFrame.size.height + dividerThickness);
+            bottomFrame.size.height = availableHeight - topFrame.size.height;
             bottomFrame.origin.y = topFrame.origin.y + topFrame.size.height + dividerThickness;
+            
+            topFrame.size.height = availableHeight - bottomFrame.size.height;
+            
+            [top setFrame:topFrame];
             [bottom setFrame:bottomFrame];
         }
         else
@@ -10191,10 +10197,14 @@ static BOOL withReset = NO;
             rightFrame.size.width = availableWidth - leftFrame.size.width;
             if( rightFrame.size.width >= 300)
                 rightFrame.size.width = 300;
-            [right setFrame:rightFrame];
             
             leftFrame.size.height = splitFrame.size.height;
             leftFrame.size.width = availableWidth - rightFrame.size.width;
+            
+            rightFrame.origin.x = leftFrame.origin.x + leftFrame.size.width + dividerThickness;
+            rightFrame.size.width = availableWidth - leftFrame.size.width;
+            
+            [right setFrame:rightFrame];
             [left setFrame:leftFrame];
         }
         return;
