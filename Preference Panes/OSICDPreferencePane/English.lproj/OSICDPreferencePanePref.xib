@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C39" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C44" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
@@ -16,18 +16,18 @@
         <window title="&lt;&lt; do not localize >>" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" deferred="NO" oneShot="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="12" userLabel="PrefPane">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="57" y="247" width="709" height="368"/>
+            <rect key="contentRect" x="57" y="247" width="674" height="341"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <value key="minSize" type="size" width="224.66300000000001" height="10"/>
             <view key="contentView" horizontalCompressionResistancePriority="1000" id="6">
-                <rect key="frame" x="0.0" y="0.0" width="709" height="368"/>
+                <rect key="frame" x="0.0" y="0.0" width="674" height="341"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <box horizontalCompressionResistancePriority="1000" title="Reading CD/DVDs" translatesAutoresizingMaskIntoConstraints="NO" id="98">
-                        <rect key="frame" x="16" y="118" width="676" height="229"/>
+                        <rect key="frame" x="17" y="100" width="640" height="221"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
-                            <rect key="frame" x="2" y="2" width="672" height="209"/>
+                            <rect key="frame" x="2" y="2" width="636" height="201"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <button toolTip="Once an inserted disk is successfully indexed, it is automatically selected" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="196">
@@ -159,6 +159,7 @@
                             <constraint firstItem="196" firstAttribute="leading" secondItem="216" secondAttribute="trailing" constant="45" id="jdT-Mh-b0T"/>
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="102" secondAttribute="trailing" constant="16" id="jdi-QV-zle"/>
                             <constraint firstItem="102" firstAttribute="top" secondItem="210" secondAttribute="bottom" constant="70" id="qFn-ZI-9Kf"/>
+                            <constraint firstAttribute="height" constant="217" id="tm1-VB-mef"/>
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="196" secondAttribute="trailing" constant="16" id="wyy-2k-Hpp"/>
                             <constraint firstItem="225" firstAttribute="top" secondItem="216" secondAttribute="bottom" constant="6" id="xG6-0w-zfR"/>
                             <constraint firstItem="220" firstAttribute="leading" secondItem="98" secondAttribute="leading" constant="16" id="zvM-bB-gIe"/>
@@ -168,10 +169,10 @@
                         <font key="titleFont" metaFont="system"/>
                     </box>
                     <box verticalHuggingPriority="249" horizontalCompressionResistancePriority="1000" title="Writing CD/DVDs" translatesAutoresizingMaskIntoConstraints="NO" id="132">
-                        <rect key="frame" x="16" y="34" width="675" height="80"/>
+                        <rect key="frame" x="17" y="16" width="640" height="80"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
-                            <rect key="frame" x="2" y="2" width="671" height="60"/>
+                            <rect key="frame" x="2" y="2" width="636" height="60"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="135">
@@ -186,7 +187,7 @@
                                     </connections>
                                 </button>
                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="183">
-                                    <rect key="frame" x="15" y="34" width="525" height="18"/>
+                                    <rect key="frame" x="15" y="37" width="525" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <buttonCell key="cell" type="check" title="Prefer standard JPEG instead of JPEG2000 / JPEG LS compression for DICOM files" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="184">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -216,15 +217,16 @@
                             </subviews>
                         </view>
                         <constraints>
-                            <constraint firstItem="135" firstAttribute="top" secondItem="183" secondAttribute="bottom" constant="6" symbolic="YES" id="0mi-Vn-ddk"/>
+                            <constraint firstItem="135" firstAttribute="top" secondItem="183" secondAttribute="bottom" constant="9" id="0mi-Vn-ddk"/>
                             <constraint firstItem="183" firstAttribute="leading" secondItem="132" secondAttribute="leading" constant="16" id="Ccn-cy-DlG"/>
                             <constraint firstAttribute="bottom" secondItem="202" secondAttribute="bottom" constant="11" id="DFg-ZM-GNF"/>
                             <constraint firstItem="202" firstAttribute="leading" secondItem="135" secondAttribute="trailing" constant="8" symbolic="YES" id="Gxs-Cc-e9s"/>
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="183" secondAttribute="trailing" constant="16" id="VaP-Eb-IoP"/>
                             <constraint firstItem="183" firstAttribute="leading" secondItem="135" secondAttribute="leading" id="YIJ-f7-aR7"/>
-                            <constraint firstItem="183" firstAttribute="top" secondItem="132" secondAttribute="top" constant="28" id="iQf-eo-RMa"/>
+                            <constraint firstAttribute="height" constant="76" id="dPe-cf-vRY"/>
+                            <constraint firstItem="183" firstAttribute="top" secondItem="132" secondAttribute="top" constant="25" id="iQf-eo-RMa"/>
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="202" secondAttribute="trailing" constant="16" id="peF-Bl-X4U"/>
-                            <constraint firstItem="202" firstAttribute="top" secondItem="183" secondAttribute="bottom" constant="5" id="q3O-fA-0az"/>
+                            <constraint firstItem="202" firstAttribute="top" secondItem="183" secondAttribute="bottom" constant="8" id="q3O-fA-0az"/>
                         </constraints>
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -232,13 +234,13 @@
                     </box>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="bottom" secondItem="132" secondAttribute="bottom" constant="38" id="KZb-9a-Bc0"/>
-                    <constraint firstAttribute="trailing" secondItem="132" secondAttribute="trailing" constant="21" id="MGs-ni-RCX"/>
+                    <constraint firstAttribute="bottom" secondItem="132" secondAttribute="bottom" constant="20" symbolic="YES" id="KZb-9a-Bc0"/>
+                    <constraint firstAttribute="trailing" secondItem="132" secondAttribute="trailing" constant="20" symbolic="YES" id="MGs-ni-RCX"/>
                     <constraint firstItem="132" firstAttribute="top" secondItem="98" secondAttribute="bottom" constant="8" symbolic="YES" id="T7r-lS-omh"/>
                     <constraint firstAttribute="trailing" secondItem="98" secondAttribute="trailing" constant="20" symbolic="YES" id="Z1u-aV-yAi"/>
-                    <constraint firstItem="98" firstAttribute="top" secondItem="6" secondAttribute="top" constant="21" id="a7m-qN-u5H"/>
+                    <constraint firstItem="98" firstAttribute="top" secondItem="6" secondAttribute="top" constant="20" symbolic="YES" id="a7m-qN-u5H"/>
+                    <constraint firstItem="98" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="20" symbolic="YES" id="hyX-Yg-qVz"/>
                     <constraint firstItem="98" firstAttribute="leading" secondItem="132" secondAttribute="leading" id="tEy-9i-r5c"/>
-                    <constraint firstItem="98" firstAttribute="centerX" secondItem="6" secondAttribute="centerX" id="yX0-xZ-UmL"/>
                 </constraints>
             </view>
         </window>
