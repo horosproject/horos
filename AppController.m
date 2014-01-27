@@ -3737,11 +3737,18 @@ static BOOL initialized = NO;
     
     OSStatus status = SecRequirementCreateWithString( (CFStringRef) @"anchor trusted and certificate leaf [subject.OU] = \"66HE7FMBC4\"", kSecCSDefaultFlags, &requirement);
     
-    status = SecStaticCodeCreateWithPath( (CFURLRef) [[NSBundle mainBundle] bundleURL], kSecCSDefaultFlags, &code);
+    if( status == noErr)
+        status = SecStaticCodeCreateWithPath( (CFURLRef) [[NSBundle mainBundle] bundleURL], kSecCSDefaultFlags, &code);
     
     NSError *errors = nil;
     
-    status = SecStaticCodeCheckValidityWithErrors(code, kSecCSDefaultFlags, requirement, (CFErrorRef*) &errors);
+    if( status == noErr)
+    {
+        if( code && requirement)
+            status = SecStaticCodeCheckValidityWithErrors(code, kSecCSDefaultFlags, requirement, (CFErrorRef*) &errors);
+        else
+            status = -1;
+    }
     
     if(status != noErr)
     {
