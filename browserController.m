@@ -14010,15 +14010,23 @@ static NSArray*	openSubSeriesArray = nil;
             [splitComparative restoreDefault: @"SplitComparative"];
             [splitViewVert restoreDefault: @"SplitVert2"];
             
+            if( gHorizontalHistory)
             {
-            NSView* right = [[splitComparative subviews] objectAtIndex:1];
-            BOOL hidden = [right isHidden] || [splitComparative isSubviewCollapsed:[[splitComparative subviews] objectAtIndex:1]];
-            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SplitComparativeHidden"] != hidden)
-                [self comparativeToggle: self];
+                NSView* top = [[splitComparative subviews] objectAtIndex:0];
+                BOOL hidden = [top isHidden] || [splitComparative isSubviewCollapsed: top];
+                if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SplitComparativeHidden"] != hidden)
+                    [self comparativeToggle: self];
+            }
+            else
+            {
+                NSView* right = [[splitComparative subviews] objectAtIndex:1];
+                BOOL hidden = [right isHidden] || [splitComparative isSubviewCollapsed: right];
+                if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SplitComparativeHidden"] != hidden)
+                    [self comparativeToggle: self];
             }
             {
             NSView* left = [[splitDrawer subviews] objectAtIndex:0];
-            BOOL hidden = [left isHidden] || [splitDrawer isSubviewCollapsed:[[splitDrawer subviews] objectAtIndex:0]];
+            BOOL hidden = [left isHidden] || [splitDrawer isSubviewCollapsed:left];
             if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SplitDrawerHidden"] != hidden)
                 [self drawerToggle: self];
             }
@@ -14295,6 +14303,14 @@ static NSArray*	openSubSeriesArray = nil;
         [[NSUserDefaults standardUserDefaults] setBool: hidden forKey: @"SplitDrawerHidden"];
     }
     
+    if( gHorizontalHistory)
+    {
+        NSView* top = [[splitComparative subviews] objectAtIndex:0];
+        BOOL hidden = [top isHidden] || [splitComparative isSubviewCollapsed:[[splitComparative subviews] objectAtIndex:0]];
+        
+        [[NSUserDefaults standardUserDefaults] setBool: hidden forKey: @"SplitComparativeHidden"];
+    }
+    else
     {
         NSView* right = [[splitComparative subviews] objectAtIndex:1];
         BOOL hidden = [right isHidden] || [splitComparative isSubviewCollapsed:[[splitComparative subviews] objectAtIndex:1]];
