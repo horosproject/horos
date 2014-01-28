@@ -7387,7 +7387,7 @@ public:
 
 - (void) updateScissorStateButtons
 {
-	NSString		*str = [VRController getUniqueFilenameScissorStateFor: [firstObject imageObj]];
+	NSString *str = [VRController getUniqueFilenameScissorStateFor: [firstObject imageObj]];
 	
 	if( [[NSFileManager defaultManager] fileExistsAtPath: str] == NO)
 	{
@@ -7399,6 +7399,33 @@ public:
 		[[scissorStateMatrix cellWithTag: 1] setEnabled: YES];
 		[[scissorStateMatrix cellWithTag: 2] setEnabled: YES];
 	}
+}
+
+- (BOOL)validateMenuItem:(NSMenuItem *)menuItem
+{
+    if( [menuItem action] == @selector( scissorStateButtons:))
+    {
+        if( menuItem.tag == 2) // Delete
+        {
+            NSString *str = [VRController getUniqueFilenameScissorStateFor: [firstObject imageObj]];
+            
+            if( [[NSFileManager defaultManager] fileExistsAtPath: str] == NO)
+                return NO;
+            else
+                return YES;
+        }
+        else if( menuItem.tag == 1) // Load
+        {
+            NSString *str = [VRController getUniqueFilenameScissorStateFor: [firstObject imageObj]];
+            
+            if( [[NSFileManager defaultManager] fileExistsAtPath: str] == NO)
+                return NO;
+            else
+                return YES;
+        }
+    }
+
+    return YES;
 }
 
 -(IBAction) scissorStateButtons:(id) sender
@@ -7418,7 +7445,8 @@ public:
 	switch( tag)
 	{
 		case 2:
-			[[NSFileManager defaultManager] removeFileAtPath: str handler: nil];
+            if( NSRunAlertPanel(NSLocalizedString(@"3D Scissor State", nil), NSLocalizedString(@"Are you sure you want to delete this 3D state? You cannot undo this operation.", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
+                [[NSFileManager defaultManager] removeFileAtPath: str handler: nil];
 		break;
 		
 		case 1:	// Load
@@ -7449,10 +7477,14 @@ public:
 		break;
 		
 		case 0:	// Save
-			waiting = [[WaitRendering alloc] init:NSLocalizedString(@"Saving 3D object...", nil)];
-			[waiting showWindow:self];
-			volumeData = [NSData dataWithBytesNoCopy:data length:volumeSize freeWhenDone:NO];
-			[volumeData writeToFile:str atomically:NO];
+            
+            if( ([[NSFileManager defaultManager] fileExistsAtPath: str] && NSRunAlertPanel(NSLocalizedString(@"3D Scissor State", nil), NSLocalizedString(@"A 3D Scissor State already exists. Do you want to replace it with curent state?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn) || [[NSFileManager defaultManager] fileExistsAtPath: str] == NO)
+            {
+                waiting = [[WaitRendering alloc] init:NSLocalizedString(@"Saving 3D object...", nil)];
+                [waiting showWindow:self];
+                volumeData = [NSData dataWithBytesNoCopy:data length:volumeSize freeWhenDone:NO];
+                [volumeData writeToFile:str atomically:NO];
+            }
 		break;
 	}
 	

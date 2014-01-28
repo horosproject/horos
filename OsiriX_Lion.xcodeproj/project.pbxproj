@@ -602,6 +602,10 @@
 		841721FC10D8D8A0001A833F /* HTTPServer.h in Headers */ = {isa = PBXBuildFile; fileRef = 841721B410D8D745001A833F /* HTTPServer.h */; };
 		841722B010D90595001A833F /* DDKeychain.h in Headers */ = {isa = PBXBuildFile; fileRef = 841722AE10D90595001A833F /* DDKeychain.h */; };
 		841722B110D90595001A833F /* DDKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 841722AF10D90595001A833F /* DDKeychain.m */; };
+		841B0B3A18980EFF0007E5C5 /* 3DCutRead.png in Resources */ = {isa = PBXBuildFile; fileRef = 841B0B3818980EFF0007E5C5 /* 3DCutRead.png */; };
+		841B0B3B18980EFF0007E5C5 /* 3DCutRead.png in Resources */ = {isa = PBXBuildFile; fileRef = 841B0B3818980EFF0007E5C5 /* 3DCutRead.png */; };
+		841B0B3C18980EFF0007E5C5 /* 3DCutWrite.png in Resources */ = {isa = PBXBuildFile; fileRef = 841B0B3918980EFF0007E5C5 /* 3DCutWrite.png */; };
+		841B0B3D18980EFF0007E5C5 /* 3DCutWrite.png in Resources */ = {isa = PBXBuildFile; fileRef = 841B0B3918980EFF0007E5C5 /* 3DCutWrite.png */; };
 		84281FFE13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 84281FFC13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.m */; };
 		84281FFF13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 84281FFD13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.h */; };
 		8428200013BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 84281FFC13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.m */; };
@@ -9939,6 +9943,8 @@
 		841721B710D8D745001A833F /* SSCrypto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SSCrypto.m; path = cocoahttpserver/SSCrypto.m; sourceTree = "<group>"; };
 		841722AE10D90595001A833F /* DDKeychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DDKeychain.h; path = cocoahttpserver/DDKeychain.h; sourceTree = "<group>"; };
 		841722AF10D90595001A833F /* DDKeychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DDKeychain.m; path = cocoahttpserver/DDKeychain.m; sourceTree = "<group>"; };
+		841B0B3818980EFF0007E5C5 /* 3DCutRead.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 3DCutRead.png; sourceTree = "<group>"; };
+		841B0B3918980EFF0007E5C5 /* 3DCutWrite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 3DCutWrite.png; sourceTree = "<group>"; };
 		84281FFC13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = N2OpenGLViewWithSplitsWindow.m; path = nitrogen/Sources/N2OpenGLViewWithSplitsWindow.m; sourceTree = "<group>"; };
 		84281FFD13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2OpenGLViewWithSplitsWindow.h; path = nitrogen/Sources/N2OpenGLViewWithSplitsWindow.h; sourceTree = "<group>"; };
 		84321F22147E9BDA00C86CC1 /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = ../../../../System/Library/Frameworks/Quartz.framework; sourceTree = "<group>"; };
@@ -17282,6 +17288,8 @@
 				ABB7ADC6148CDDF2007D3C3F /* 2DMPRverticalPosition.tif */,
 				ABBB647C063587B200D9531F /* 3D.tif */,
 				A9B23D4B15D00B81000E47C3 /* 3DCut.pdf */,
+				841B0B3818980EFF0007E5C5 /* 3DCutRead.png */,
+				841B0B3918980EFF0007E5C5 /* 3DCutWrite.png */,
 				CE27BA0E0C113BBA00BDC9B3 /* 3DPresetsPanel.tif */,
 				A9B23D4815D00710000E47C3 /* 3DRotate.pdf */,
 				A9B23D4515D004CD000E47C3 /* 3DRotateCamera.pdf */,
@@ -28157,6 +28165,7 @@
 				AB9723980C684B4E00DC727C /* OsiriXDB_Previous_DataModel2.1.mom in Resources */,
 				AB9723990C684B4E00DC727C /* OsiriXDB_Previous_DataModel2.2.mom in Resources */,
 				AB97239A0C684B4E00DC727C /* OsiriXDB_Previous_DataModel2.3.mom in Resources */,
+				841B0B3C18980EFF0007E5C5 /* 3DCutWrite.png in Resources */,
 				CEC4B5C10C7DF2D600AF5A76 /* 3DPRESETS in Resources */,
 				CE3F99440C84724B00CB38F1 /* SmartAlbum.xib in Resources */,
 				CE3F99450C84724B00CB38F1 /* ROIVolumeManager.xib in Resources */,
@@ -28198,6 +28207,7 @@
 				ABE0D6940CDB1A4400F0494B /* iChatHelper.xib in Resources */,
 				ABE0D6A20CDB1B9E00F0494B /* browse2OsiriX_small.png in Resources */,
 				ABE0D6A30CDB1B9E00F0494B /* iChatIcon.png in Resources */,
+				841B0B3A18980EFF0007E5C5 /* 3DCutRead.png in Resources */,
 				ABE0D6A40CDB1B9E00F0494B /* iChatTheatre-English.html in Resources */,
 				ABE0D6A60CDB1B9E00F0494B /* shareFromMenu_small.png in Resources */,
 				ABE0D6A70CDB1B9E00F0494B /* shareFromVideoChatWindow_small.png in Resources */,
@@ -28669,6 +28679,7 @@
 				CEF09318182D23B20020C70A /* ThumbnailsList.xib in Resources */,
 				CEBD3E1114B9EDE300FBDF08 /* Perfusion.plist in Resources */,
 				848A6BEC14C5BBA700C936C3 /* Tiling1x1.pdf in Resources */,
+				841B0B3B18980EFF0007E5C5 /* 3DCutRead.png in Resources */,
 				848A6BEE14C5BBA700C936C3 /* Tiling1x2.pdf in Resources */,
 				848A6BF014C5BBA700C936C3 /* Tiling2x1.pdf in Resources */,
 				848A6BF214C5BBA700C936C3 /* Tiling2x2.pdf in Resources */,
@@ -28709,6 +28720,7 @@
 				A9701A8F15C9587C0019EE55 /* burn_anim01.tif in Resources */,
 				A9701A9115C9587C0019EE55 /* burn_anim02.tif in Resources */,
 				A9701A9315C9587C0019EE55 /* burn_anim03.tif in Resources */,
+				841B0B3D18980EFF0007E5C5 /* 3DCutWrite.png in Resources */,
 				A9701A9515C9587C0019EE55 /* burn_anim04.tif in Resources */,
 				A9701A9715C9587C0019EE55 /* burn_anim05.tif in Resources */,
 				A9701A9915C9587C0019EE55 /* burn_anim06.tif in Resources */,
