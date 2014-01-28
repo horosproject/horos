@@ -16,6 +16,8 @@
 #import <Cocoa/Cocoa.h>
 #import <Accelerate/Accelerate.h>
 
+#define ORIENTATION_SENSIBILITY 0.001
+
 typedef struct {
    double x,y,z;
 } XYZ;

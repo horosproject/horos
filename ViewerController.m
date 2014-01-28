@@ -105,6 +105,7 @@
 int delayedTileWindows = NO;
 
 #define MAXSCREENS 10
+
 extern ThumbnailsListPanel *thumbnailsListPanel[ MAXSCREENS];
 
 extern BOOL FULL32BITPIPELINE;
@@ -7172,8 +7173,7 @@ return YES;
 							[[pixList[ x] objectAtIndex: j] orientation: o];
 							for( int k = 0 ; k < 9; k++)
 							{
-                                #define SENSIBILITY 0.05
-								if( fabs( o[ k] - orientation[ k]) > SENSIBILITY)
+								if( fabs( o[ k] - orientation[ k]) > ORIENTATION_SENSIBILITY)
 								{
 									volumicData = NO;
 									
@@ -10163,7 +10163,7 @@ static int avoidReentryRefreshDatabase = 0;
 	for( int i = 0; i < 9; i++)
 	{
 		const double epsilon = fabs(vectors[ i] - vectorsB[ i]);
-		if (epsilon > 1e-6)
+		if (epsilon > ORIENTATION_SENSIBILITY)
 		{
 			equalVector = NO;
 			break;
@@ -10272,7 +10272,7 @@ static int avoidReentryRefreshDatabase = 0;
 			for( i = 0; i < 9; i++)
 			{
 				const double epsilon = fabs(vectors[ i] - vectorsB[ i]);
-				if (epsilon > 1e-6)
+				if (epsilon > ORIENTATION_SENSIBILITY)
 				{
 					equalVector = NO;
 					break;
