@@ -499,8 +499,22 @@ static float deg2rad = M_PI/180.0;
         break;
             
         case 1:
-            [horizontalSplit setVertical: NO];
-            [verticalSplit setVertical: NO];
+            
+            if( portrait)
+            {
+                [horizontalSplit setVertical: YES];
+                [verticalSplit setVertical: YES];
+                [verticalSplit adjustSubviews];
+                [horizontalSplit adjustSubviews];
+                
+                [horizontalSplit setVertical: NO];
+                [verticalSplit setVertical: NO];
+            }
+            else
+            {
+                [horizontalSplit setVertical: NO];
+                [verticalSplit setVertical: NO];
+            }
             
             r = [[[verticalSplit subviews] objectAtIndex: 0] frame];
             r.size.height = 2*[[self window] frame].size.height/3;
