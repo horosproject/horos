@@ -380,9 +380,9 @@ static NSRecursiveLock *dbModifyLock = nil;
 		return;
 	}
 	
-	if( [self.studyInstanceUID isEqualToString: [rootDict valueForKey: @"studyInstanceUID"]] == NO || [self.patientUID compare: [rootDict valueForKey: @"patientUID"] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] != NSOrderedSame)
+	if( [self.studyInstanceUID isEqualToString: [rootDict valueForKey: @"studyInstanceUID"]] == NO) // || [self.patientUID compare: [rootDict valueForKey: @"patientUID"] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] != NSOrderedSame)
 	{
-		NSLog( @"******** WARNING applyAnnotationsFromDictionary will not be applied - studyInstanceUID / name / patientID are NOT corresponding: %@ / %@", [rootDict valueForKey: @"patientsName"], self.name);
+		NSLog( @"******** WARNING applyAnnotationsFromDictionary will not be applied - studyInstanceUID are NOT corresponding: %@ / %@", [rootDict valueForKey: @"studyInstanceUID"], self.studyInstanceUID);
 	}
 	else
 	{
@@ -547,7 +547,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	
 	NSMutableArray *seriesArray = [NSMutableArray array];
 	
-	for( DicomSeries *series in [[self.series allObjects] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending: YES] autorelease]]])
+	for( DicomSeries *series in [[self.series allObjects] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: YES]]])
 	{
 		NSMutableDictionary *seriesDict = [NSMutableDictionary dictionary];
 		
@@ -566,7 +566,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 			// Images Level
 			
 			NSMutableArray *imagesArray = [NSMutableArray array];
-			for( DicomSeries *image in [[[series valueForKey: @"images"] allObjects] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending: YES] autorelease]]])
+			for( DicomSeries *image in [[[series valueForKey: @"images"] allObjects] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: YES]]])
 			{
 				NSMutableDictionary *imageDict = [NSMutableDictionary dictionary];
 				
@@ -629,6 +629,9 @@ static NSRecursiveLock *dbModifyLock = nil;
 			SRAnnotation *w = [[[SRAnnotation alloc] initWithContentsOfFile: dstPath] autorelease];
 			if( [[w annotations] isEqualToDictionary: annotationsDict] == NO)
 			{
+                if( w)
+                    dstPath = isMainDB? [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"] : [[NSFileManager defaultManager] tmpFilePathInTmp];
+                
 				// Save or Re-Save it as DICOM SR
 				SRAnnotation *r = [[[SRAnnotation alloc] initWithDictionary: annotationsDict path: dstPath forImage: [[[self.series anyObject] valueForKey:@"images"] anyObject]] autorelease];
 				[r writeToFileAtPath: dstPath];
@@ -1743,7 +1746,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 - (NSManagedObject *) annotationsSRImage // Comments, Status, Key Images, ...
 {
 	NSSet* array = self.series;
-	if (array.count < 1) return nil;
+	if( array.count < 1) return nil;
 	
 	[self.managedObjectContext lock];
 	@try {
@@ -1795,12 +1798,11 @@ static NSRecursiveLock *dbModifyLock = nil;
 			NSArray *images = [[[newArray lastObject] valueForKey: @"images"] allObjects];
 			
 			// Take the most recent image
-			NSSortDescriptor *sort = [[[NSSortDescriptor alloc] initWithKey: @"date" ascending: YES] autorelease];
-			images = [images sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]];
-			
+			images = [images sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending:YES]]];
 			image = [images lastObject];
 		}
-		else image = [[[newArray lastObject] valueForKey: @"images"] anyObject];
+		else
+            image = [[[newArray lastObject] valueForKey: @"images"] anyObject];
 
         return image;
 	}
@@ -1825,8 +1827,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 		if( [images count] > 1)
 		{
 			// Take the most recent image
-			NSSortDescriptor *sort = [[[NSSortDescriptor alloc] initWithKey: @"date" ascending: YES] autorelease];
-			images = [images sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]];
+			images = [images sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: YES]]];
 		}
 	}
 	@catch (NSException * e) 
@@ -1908,8 +1909,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 		if( [images count] > 1)
 		{
 			// Take the most recent image
-			NSSortDescriptor *sort = [[[NSSortDescriptor alloc] initWithKey: @"date" ascending: YES] autorelease];
-			images = [images sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]];
+			images = [images sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: YES]]];
 		}
 	}
 	@catch (NSException * e)
@@ -2059,8 +2059,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 		// Take the most recent roi
 		if( [found count] > 1)
 		{
-			NSSortDescriptor *sort = [[[NSSortDescriptor alloc] initWithKey: @"date" ascending: YES] autorelease];
-			found = [[[found sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]] mutableCopy] autorelease];
+			found = [[[found sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: YES]]] mutableCopy] autorelease];
 			NSLog( @"--- multiple rois array for same sopInstanceUID (roiForImage) : %d", (int) [found count]);
 			
 			// Merge the other ROIs with this ROI, and empty the old ones
