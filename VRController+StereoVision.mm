@@ -382,7 +382,6 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		// Set up the standard properties 
 		[toolbarItem setLabel: NSLocalizedString(@"3D Scissor State", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"3D Scissor State", nil)];
-		[toolbarItem setToolTip: NSLocalizedString(@"3D Scissor State", nil)];
 		
 		// Use a custom view, a text field, for the search item 
 		[toolbarItem setView: scissorStateView];

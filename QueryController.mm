@@ -1930,99 +1930,96 @@ extern "C"
 
 - (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
 {
-    [item retain];
-    
-	@try
-	{
-		if( [[tableColumn identifier] isEqualToString: @"stateText"])
-		{
-			if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
-			{
-				NSArray *studyArray = [self localStudy: item context: nil];
-				
-				if( [studyArray count] > 0)
-				{
-					if( [[[studyArray objectAtIndex: 0] valueForKey:@"stateText"] intValue] == 0)
-						return nil;
-					else
-						return [[studyArray objectAtIndex: 0] valueForKey: @"stateText"];
-				}
-			}
-			else if( [item isMemberOfClass:[DCMTKSeriesQueryNode class]])
-			{
-				NSArray *seriesArray = [self localSeries: item context: nil];
-				if( [seriesArray count])
-				{
-					if( [[[seriesArray objectAtIndex: 0] valueForKey:@"stateText"] intValue] == 0)
-						return nil;
-					else
-						return [[seriesArray objectAtIndex: 0] valueForKey: @"stateText"];
-				}
-			}
-            else NSLog( @"***** unknown class in QueryController outlineView: %@", [item class]);
-		}
-        else if( [[tableColumn identifier] isEqualToString: @"serverStateText"])
-		{
-			if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
-			{
-                if( [[item stateText] intValue] == 0)
-                    return nil;
-                else
-                    return [item stateText];
-            }
-            
-			else if( [item isMemberOfClass:[DCMTKSeriesQueryNode class]])
-				return nil;
-            
-            else NSLog( @"***** unknown class in QueryController outlineView: %@", [item class]);
-		}
-		else if( [[tableColumn identifier] isEqualToString: @"comment"])
-		{
-			if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
-			{
-				NSArray *studyArray = [self localStudy: item context: nil];
-				
-				if( [studyArray count] > 0)
-					return [[studyArray objectAtIndex: 0] valueForKey: @"comment"];
-			}
-			else if( [item isMemberOfClass:[DCMTKSeriesQueryNode class]])
-			{
-				NSArray *seriesArray = [self localSeries: item context: nil];
-				if( [seriesArray count] > 0)
-					return [[seriesArray objectAtIndex: 0] valueForKey: @"comment"];
-			}
-            else NSLog( @"***** unknown class in QueryController outlineView: %@", [item class]);
-		}
-        else if( [[tableColumn identifier] isEqualToString: @"serverComment"])
-		{
-			if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
-                return [item valueForKey: @"comments"];
-            
-			else if( [item isMemberOfClass:[DCMTKSeriesQueryNode class]])
-                return [item valueForKey: @"comments"];
-            
-            else NSLog( @"***** unknown class in QueryController outlineView: %@", [item class]);
-		}
-		else if ( [[tableColumn identifier] isEqualToString: @"Button"] == NO && [tableColumn identifier] != nil)
-		{
-            if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] || [item isMemberOfClass:[DCMTKSeriesQueryNode class]])
-            {
-                if( [[tableColumn identifier] isEqualToString: @"numberImages"])
-                {
-                    return [NSNumber numberWithInt: [[item valueForKey: [tableColumn identifier]] intValue]];
-                }
-                else return [item valueForKey: [tableColumn identifier]];
-            }
-            else NSLog( @"***** unknown class in QueryController outlineView: %@", [item class]);
-		}	
-	}
-	@catch (NSException * e)
-	{
-		N2LogExceptionWithStackTrace(e);
-	}
-    @finally
+    @synchronized( self)
     {
-        [item release];
+        @try
+        {
+            if( [[tableColumn identifier] isEqualToString: @"stateText"])
+            {
+                if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
+                {
+                    NSArray *studyArray = [self localStudy: item context: nil];
+                    
+                    if( [studyArray count] > 0)
+                    {
+                        if( [[[studyArray objectAtIndex: 0] valueForKey:@"stateText"] intValue] == 0)
+                            return nil;
+                        else
+                            return [[studyArray objectAtIndex: 0] valueForKey: @"stateText"];
+                    }
+                }
+                else if( [item isMemberOfClass:[DCMTKSeriesQueryNode class]])
+                {
+                    NSArray *seriesArray = [self localSeries: item context: nil];
+                    if( [seriesArray count])
+                    {
+                        if( [[[seriesArray objectAtIndex: 0] valueForKey:@"stateText"] intValue] == 0)
+                            return nil;
+                        else
+                            return [[seriesArray objectAtIndex: 0] valueForKey: @"stateText"];
+                    }
+                }
+                else NSLog( @"***** unknown class in QueryController outlineView: %@", [item class]);
+            }
+            else if( [[tableColumn identifier] isEqualToString: @"serverStateText"])
+            {
+                if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
+                {
+                    if( [[item stateText] intValue] == 0)
+                        return nil;
+                    else
+                        return [item stateText];
+                }
+                
+                else if( [item isMemberOfClass:[DCMTKSeriesQueryNode class]])
+                    return nil;
+                
+                else NSLog( @"***** unknown class in QueryController outlineView: %@", [item class]);
+            }
+            else if( [[tableColumn identifier] isEqualToString: @"comment"])
+            {
+                if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
+                {
+                    NSArray *studyArray = [self localStudy: item context: nil];
+                    
+                    if( [studyArray count] > 0)
+                        return [[studyArray objectAtIndex: 0] valueForKey: @"comment"];
+                }
+                else if( [item isMemberOfClass:[DCMTKSeriesQueryNode class]])
+                {
+                    NSArray *seriesArray = [self localSeries: item context: nil];
+                    if( [seriesArray count] > 0)
+                        return [[seriesArray objectAtIndex: 0] valueForKey: @"comment"];
+                }
+                else NSLog( @"***** unknown class in QueryController outlineView: %@", [item class]);
+            }
+            else if( [[tableColumn identifier] isEqualToString: @"serverComment"])
+            {
+                if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
+                    return [item valueForKey: @"comments"];
+                
+                else if( [item isMemberOfClass:[DCMTKSeriesQueryNode class]])
+                    return [item valueForKey: @"comments"];
+                
+                else NSLog( @"***** unknown class in QueryController outlineView: %@", [item class]);
+            }
+            else if ( [[tableColumn identifier] isEqualToString: @"Button"] == NO && [tableColumn identifier] != nil)
+            {
+                if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] || [item isMemberOfClass:[DCMTKSeriesQueryNode class]])
+                {
+                    if( [[tableColumn identifier] isEqualToString: @"numberImages"])
+                    {
+                        return [NSNumber numberWithInt: [[item valueForKey: [tableColumn identifier]] intValue]];
+                    }
+                    else return [item valueForKey: [tableColumn identifier]];
+                }
+                else NSLog( @"***** unknown class in QueryController outlineView: %@", [item class]);
+            }	
+        }
+        @catch (NSException * e)
+        {
+            N2LogExceptionWithStackTrace(e);
+        }
     }
 	
 	return nil;

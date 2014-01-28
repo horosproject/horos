@@ -13828,6 +13828,15 @@ static NSArray*	openSubSeriesArray = nil;
         
     //    NSLog( @"%@", [[NSFontManager sharedFontManager] availableFonts]);
         
+        NSRect r = NSMakeRect(0, 0, 0, 0);
+        
+        r = NSRectFromString( [[NSUserDefaults standardUserDefaults] stringForKey: @"DBWindowFrame"]);
+        
+        if( NSIsEmptyRect( r)) // No position for the window -> fullscreen
+            [[self window] zoom: self];
+        else
+            [self.window setFrame: r display: YES];
+        
         gHorizontalHistory = [[NSUserDefaults standardUserDefaults] boolForKey: @"horizontalHistory"];
         
         if( gHorizontalHistory)
@@ -13884,11 +13893,6 @@ static NSArray*	openSubSeriesArray = nil;
             // thumbnails : no background color
             [thumbnailsScrollView setDrawsBackground:NO];
             [[thumbnailsScrollView contentView] setDrawsBackground:NO];
-            
-            if( [[NSUserDefaults standardUserDefaults] objectForKey: @"NSWindow Frame DBWindow"] == nil) // No position for the window -> fullscreen
-                [[self window] zoom: self];
-            
-            [self.window setFrameAutosaveName:@"DBWindow"];
             
             [self awakeSources];
             [oMatrix setDelegate:self];
@@ -14269,6 +14273,8 @@ static NSArray*	openSubSeriesArray = nil;
 {
 //	[IncomingTimer invalidate];
 	
+    [[NSUserDefaults standardUserDefaults] setObject: NSStringFromRect( self.window.frame) forKey: @"DBWindowFrame"];
+    
 	NSLog( @"browserPrepareForClose");
 	
     [self saveLoadAlbumsSortDescriptors];
