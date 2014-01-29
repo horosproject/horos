@@ -17,6 +17,7 @@
 #import "DicomSeries.h"
 #import "DicomStudy.h"
 #import "Papyrus3/Papyrus3.h"
+#import "Papyrus3/PapyGlobalVar3.h"
 #import <AVFoundation/AVFoundation.h>
 #import <OsiriX/DCM.h>
 #import <OsiriX/DCMAbstractSyntaxUID.h>
@@ -13439,10 +13440,21 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			}
 		}
         
-        // Is there a way to identify that it wasn't here, even if it is not defined?
-        
         if( elementDefinitionFound == NO)
-            error = -1;
+        {
+            // Does it exist in the undefined elents / groups ?
+            
+            SElement *ulements = (SElement*) unknownElements[ fileNb];
+            
+            for( int i = 0 ; i < unKnownElementsNumber[ fileNb]; i++)
+            {
+                if( ulements[ i].group == group && ulements[ i].element == element)
+                {
+                    error = -1;
+                    break;
+                }
+            }
+        }
     }
     
     if( error != 0)	// Papyrus doesn't have the definition of all dicom tags.... Papyrus can only read what is in his dictionary
