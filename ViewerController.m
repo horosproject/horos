@@ -20655,14 +20655,27 @@ int i,j,l;
 	[self clear8bitRepresentations];	
 	[self MovieStop: self];
 	
-	VRController *viewer = [[AppController sharedAppController] FindViewer :@"VR" :pixList[0]];
+	NSArray *viewers = [[AppController sharedAppController] FindRelatedViewers:pixList[0]];
+    
+    VRController *viewer = nil;
+    
+    for( NSWindowController *v in viewers)
+    {
+        if( [v.windowNibName isEqualToString: @"VR"])
+        {
+            VRController *vv = (VRController*) v;
+            
+            if( [vv.style isEqualToString: @"standard"] && ([vv.renderingMode isEqualToString:@"VR"] || [vv.renderingMode isEqualToString:@"MIP"]))
+                viewer = vv;
+        }
+    }
 	
 	if( viewer)
 	{
 		return viewer;
 	}
 	else
-	{		
+	{
 		viewer = [[VRController alloc] initWithPix:pixList[0] :fileList[0] :volumeData[ 0] :blendingController :self style:@"standard" mode: mode];
 		for( i = 1; i < maxMovieIndex; i++)
 		{
@@ -20758,8 +20771,21 @@ int i,j,l;
 		
 		[self MovieStop: self];
 		
-		VRController *viewer = [[AppController sharedAppController] FindViewer :@"VR" :pixList[0]];
-		
+        NSArray *viewers = [[AppController sharedAppController] FindRelatedViewers:pixList[0]];
+        
+        VRController *viewer = nil;
+        
+        for( NSWindowController *v in viewers)
+        {
+            if( [v.windowNibName isEqualToString: @"VR"])
+            {
+                VRController *vv = (VRController*) v;
+                
+                if( [vv.style isEqualToString: @"standard"])
+                    viewer = vv;
+            }
+        }
+        
 		if( viewer)
 		{
 			[[viewer window] makeKeyAndOrderFront:self];
