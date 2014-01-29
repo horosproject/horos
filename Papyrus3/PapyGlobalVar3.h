@@ -65,6 +65,10 @@ WHERE3 PapyUChar	**gArrIcons		[kMax_file_open];
 /* pointers to the group 41 of each file in read mode */
 WHERE3 SElement		*gArrGroup41		[kMax_file_open];
 
+/* pointers to the group 41 of each file in read mode */
+WHERE3 SElement		*unknownElements            [kMax_file_open];
+WHERE3 long         unKnownElementsNumber   [kMax_file_open];
+
 /* the syntax used in each open file */
 WHERE3 enum ETransf_Syntax gArrTransfSyntax 	[kMax_file_open];
 WHERE3 char		*gSOPClassUID	[kMax_file_open];

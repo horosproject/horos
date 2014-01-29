@@ -34,7 +34,7 @@ extern void  efree3	();
 #else
 extern void *emalloc3  (PapyULong);
 extern void *ecalloc3  (PapyULong, PapyULong);
-extern void *erealloc3 (void *, PapyULong, PapyULong);
+extern void *erealloc3 (void *, PapyULong);
 extern void  efree3    (void **);
 #endif
 
