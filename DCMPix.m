@@ -13459,6 +13459,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     
     if( error != 0)	// Papyrus doesn't have the definition of all dicom tags.... Papyrus can only read what is in his dictionary
     {
+#ifndef NDEBUG
+        NSLog( @"--- warning: annotation definition not found for : %X %X. Will use DCMTK to load the file", group, element);
+#endif
         @synchronized( cachedDCMTKFileFormat)
         {
             if( self.dcmtkDcmFileFormat == nil)
@@ -13480,10 +13483,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                     [dic setValue: self.dcmtkDcmFileFormat forKey: @"dcmtkObject"];
                     
                     [cachedDCMTKFileFormat setObject: dic forKey: srcFile];
-                    
-#ifndef NDEBUG
-                    NSLog( @"--- warning: annotation definition not found for : %X %X. Will use DCMTK to load the file", group, element);
-#endif
                 }
             }
             
