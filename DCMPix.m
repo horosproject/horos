@@ -13438,6 +13438,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				}
 			}
 		}
+        
+        // Is there a way to identify that it wasn't here, even if it is not defined?
+        
+        if( elementDefinitionFound == NO)
+            error = -1;
     }
     
     if( error != 0)	// Papyrus doesn't have the definition of all dicom tags.... Papyrus can only read what is in his dictionary
@@ -13463,6 +13468,10 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                     [dic setValue: self.dcmtkDcmFileFormat forKey: @"dcmtkObject"];
                     
                     [cachedDCMTKFileFormat setObject: dic forKey: srcFile];
+                    
+#ifndef NDEBUG
+                    NSLog( @"--- warning: annotation definition not found for : %X %X. Will use DCMTK to load the file", group, element);
+#endif
                 }
             }
             

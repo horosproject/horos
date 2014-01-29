@@ -97,21 +97,21 @@ extern NSRecursiveLock *PapyrusLock;
     {
         @try
         {
-            const char *string = NULL;
+            OFString string;
             DcmDataset *dataset = fileformat->getDataset();
             
             DcmTagKey dcmkey( gr, el);
             
-            if( dataset && dataset->findAndGetString( dcmkey, string, OFFalse).good() && string != nil)
-                returnedValue = [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding];
+            if( dataset && dataset->findAndGetOFString( dcmkey, string, OFFalse).good() && string.length() > 0)
+                returnedValue = [NSString stringWithCString:string.c_str() encoding: NSISOLatin1StringEncoding];
             
             if( returnedValue == nil)
             {
                 //Maybe in the metadata?
                 DcmMetaInfo *metaset = fileformat->getMetaInfo();
                 
-                if( metaset && metaset->findAndGetString( dcmkey, string, OFFalse).good() && string != nil)
-                    returnedValue = [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding];
+                if( metaset && metaset->findAndGetOFString( dcmkey, string, OFFalse).good() && string.length() > 0)
+                    returnedValue = [NSString stringWithCString:string.c_str() encoding: NSISOLatin1StringEncoding];
             }
             
         }
