@@ -1657,64 +1657,75 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	
 	[self compute8bitRepresentation];
 	
-	if( [self isRGB] == YES)
-	{
-		i = width * height * 3;
-		buf = malloc( i);
-		if( buf)
-		{
-			unsigned char *dst = buf, *src = (unsigned char*) [self baseAddr];
-			i = width * height;
-			
-			// CONVERT ARGB TO RGB
-			while( i-- > 0)
-			{
-				src++;
-				*dst++ = *src++;
-				*dst++ = *src++;
-				*dst++ = *src++;
-			}
-            
+    @try {
+        if( [self isRGB] == YES)
+        {
+            i = width * height * 3;
+            buf = malloc( i);
+            if( buf)
+            {
+                unsigned char *dst = buf, *src = (unsigned char*) [self baseAddr];
+                i = width * height;
+                
+                // CONVERT ARGB TO RGB
+                while( i-- > 0)
+                {
+                    src++;
+                    *dst++ = *src++;
+                    *dst++ = *src++;
+                    *dst++ = *src++;
+                }
+                
+                rep = [[[NSBitmapImageRep alloc]
+                        initWithBitmapDataPlanes:nil
+                        pixelsWide:width
+                        pixelsHigh:height
+                        bitsPerSample:8
+                        samplesPerPixel:3
+                        hasAlpha:NO
+                        isPlanar:NO
+                        colorSpaceName:NSCalibratedRGBColorSpace
+                        bytesPerRow:width*3
+                        bitsPerPixel:24] autorelease];
+                
+                if( rep)
+                {
+                    memcpy( [rep bitmapData], buf, height*width*3);
+                    
+                    imageRep = [[[NSImage alloc] init] autorelease];
+                    [imageRep addRepresentation:rep];
+                }
+                
+                free( buf);
+            }
+        }
+        else
+        {
             rep = [[[NSBitmapImageRep alloc]
                     initWithBitmapDataPlanes:nil
                     pixelsWide:width
                     pixelsHigh:height
                     bitsPerSample:8
-                    samplesPerPixel:3
+                    samplesPerPixel:1
                     hasAlpha:NO
                     isPlanar:NO
-                    colorSpaceName:NSCalibratedRGBColorSpace
-                    bytesPerRow:width*3
-                    bitsPerPixel:24] autorelease];
+                    colorSpaceName:NSCalibratedWhiteColorSpace
+                    bytesPerRow:width
+                    bitsPerPixel:8] autorelease];
             
-            memcpy( [rep bitmapData], buf, height*width*3);
+            if( rep)
+            {
+                memcpy( [rep bitmapData], [self baseAddr], height*width);
             
-            imageRep = [[[NSImage alloc] init] autorelease];
-            [imageRep addRepresentation:rep];
-            
-            free( buf);
+                imageRep = [[[NSImage alloc] init] autorelease];
+                [imageRep addRepresentation:rep];
+            }
         }
-	}
-	else
-	{
-		rep = [[[NSBitmapImageRep alloc]
-				initWithBitmapDataPlanes:nil
-				pixelsWide:width
-				pixelsHigh:height
-				bitsPerSample:8
-				samplesPerPixel:1
-				hasAlpha:NO
-				isPlanar:NO
-				colorSpaceName:NSCalibratedWhiteColorSpace
-				bytesPerRow:width
-				bitsPerPixel:8] autorelease];
-		
-		memcpy( [rep bitmapData], [self baseAddr], height*width);
-		
-		imageRep = [[[NSImage alloc] init] autorelease];
-		[imageRep addRepresentation:rep];
-	}
-	
+    }
+    @catch (NSException *exception) {
+        N2LogException( exception);
+    }
+    
 	return imageRep;
 }
 

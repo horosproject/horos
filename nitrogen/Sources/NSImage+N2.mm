@@ -18,6 +18,7 @@
 #import <Accelerate/Accelerate.h>
 #import "N2Operators.h"
 #import "NSColor+N2.h"
+#import "N2Debug.h"
 #import <QuartzCore/QuartzCore.h>
 
 @implementation N2Image
@@ -237,61 +238,65 @@ end_size_y:
 
 - (NSImage*)imageByScalingProportionallyToSizeUsingNSImage:(NSSize)targetSize
 {
-    NSImage *newImage = [[[NSImage alloc] initWithSize: targetSize] autorelease];
+    @try {
+        NSImage *newImage = [[[NSImage alloc] initWithSize: targetSize] autorelease];
 
-    if( [newImage size].width > 0 && [newImage size].height > 0)
-    {
-        [newImage lockFocus];
-
-        [[NSGraphicsContext currentContext] setImageInterpolation: NSImageInterpolationHigh];
-        
-        NSPoint thumbnailPoint = NSZeroPoint;
-        
-        NSSize imageSize = [self size];
-        float width  = imageSize.width;
-        float height = imageSize.height;
-        float targetWidth  = targetSize.width;
-        float targetHeight = targetSize.height;
-        float scaledWidth  = targetWidth;
-        float scaledHeight = targetHeight;
-        
-        if( NSEqualSizes( imageSize, targetSize) == NO)
+        if( [newImage size].width > 0 && [newImage size].height > 0)
         {
-            float widthFactor  = targetWidth / width;
-            float heightFactor = targetHeight / height;
-            float scaleFactor  = 0.0;
-			
+            [newImage lockFocus];
+
+            [[NSGraphicsContext currentContext] setImageInterpolation: NSImageInterpolationHigh];
             
-            if ( widthFactor < heightFactor )
-                scaleFactor = widthFactor;
-            else
-                scaleFactor = heightFactor;
+            NSPoint thumbnailPoint = NSZeroPoint;
             
-            scaledWidth  = width  * scaleFactor;
-            scaledHeight = height * scaleFactor;
+            NSSize imageSize = [self size];
+            float width  = imageSize.width;
+            float height = imageSize.height;
+            float targetWidth  = targetSize.width;
+            float targetHeight = targetSize.height;
+            float scaledWidth  = targetWidth;
+            float scaledHeight = targetHeight;
             
-            if ( widthFactor < heightFactor )
-                thumbnailPoint.y = (targetHeight - scaledHeight) * 0.5;
+            if( NSEqualSizes( imageSize, targetSize) == NO)
+            {
+                float widthFactor  = targetWidth / width;
+                float heightFactor = targetHeight / height;
+                float scaleFactor  = 0.0;
+                
+                
+                if ( widthFactor < heightFactor )
+                    scaleFactor = widthFactor;
+                else
+                    scaleFactor = heightFactor;
+                
+                scaledWidth  = width  * scaleFactor;
+                scaledHeight = height * scaleFactor;
+                
+                if ( widthFactor < heightFactor )
+                    thumbnailPoint.y = (targetHeight - scaledHeight) * 0.5;
+                
+                else if ( widthFactor > heightFactor )
+                    thumbnailPoint.x = (targetWidth - scaledWidth) * 0.5;
+            }
             
-            else if ( widthFactor > heightFactor )
-                thumbnailPoint.x = (targetWidth - scaledWidth) * 0.5;
+            NSRect thumbnailRect;
+            thumbnailRect.origin = thumbnailPoint;
+            thumbnailRect.size.width = scaledWidth;
+            thumbnailRect.size.height = scaledHeight;
+
+            [self drawInRect: thumbnailRect
+                           fromRect: NSZeroRect
+                          operation: NSCompositeCopy
+                           fraction: 1.0];
+
+            [newImage unlockFocus];
+            
+            return newImage;
         }
-        
-        NSRect thumbnailRect;
-        thumbnailRect.origin = thumbnailPoint;
-        thumbnailRect.size.width = scaledWidth;
-        thumbnailRect.size.height = scaledHeight;
-
-        [self drawInRect: thumbnailRect
-                       fromRect: NSZeroRect
-                      operation: NSCompositeCopy
-                       fraction: 1.0];
-
-        [newImage unlockFocus];
-        
-        return newImage;
     }
-    
+    @catch (NSException *exception) {
+        N2LogException( exception);
+    }
     return self;
 }
 
