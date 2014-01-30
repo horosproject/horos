@@ -13317,6 +13317,105 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 #ifdef OSIRIX_VIEWER
 
+- (void) appendSElement: (SElement*) inGrOrModP toString: (NSMutableString*) field papyLink:(PapyShort)fileNb
+{
+    if( inGrOrModP->nb_val > 0)
+    {
+        UValue_T *theValueP = inGrOrModP->value;
+        for ( int k = 0; k < inGrOrModP->nb_val; k++, theValueP++)
+        {
+            if(inGrOrModP->vr==DS)	// floating point string
+            {
+                if( theValueP->a) [field appendString:[NSString stringWithFormat:@"%.6g", atof( theValueP->a)]];
+            }
+            else if(inGrOrModP->vr==FL)	// floating point string
+            {
+                [field appendString:[NSString stringWithFormat:@"%.6g", theValueP->fl]];
+            }
+            else if( inGrOrModP->vr==FD)
+            {
+                [field appendString:[NSString stringWithFormat:@"%.6g", (float) theValueP->fd]];
+            }
+            else if(inGrOrModP->vr==UL)
+                [field appendString:[NSString stringWithFormat:@"%d", (int) theValueP->ul]];
+            else if(inGrOrModP->vr==USS)
+                [field appendString:[NSString stringWithFormat:@"%d", (int) theValueP->us]];
+            else if(inGrOrModP->vr==SL)
+                [field appendString:[NSString stringWithFormat:@"%d", (int) theValueP->sl]];
+            else if(inGrOrModP->vr==SS)
+                [field appendString:[NSString stringWithFormat:@"%d", (int) theValueP->ss]];
+            else if(inGrOrModP->vr==SQ)
+            {
+                NSMutableString *temp = [NSMutableString string];
+                
+                // Loop over sequence
+                if(theValueP->sq!=NULL)
+                {
+                    Papy_List *dcmList = theValueP->sq->object->item;
+                    while(dcmList!=NULL)
+                    {
+                        SElement *gr = (SElement *)dcmList->object->group;
+                        
+                        //if(gr->value)
+                        [temp appendString:[self getDICOMFieldValueForGroup:gr->group element:gr->element papyLink:fileNb]];
+                        //										if(gr->value!=NULL)
+                        //                                            NSLog(@"++**++   ::    %@", [NSString stringWithCString:gr->value->a encoding:NSASCIIStringEncoding]);
+                        //										else
+                        //                                            NSLog(@"++**++   ::    %@", [NSString stringWithCString:gr->vm encoding:NSASCIIStringEncoding]);
+                        
+                        dcmList = dcmList->next;
+                    }
+                }
+                [field appendString:[NSString stringWithString:temp]];
+                //								NSLog(@"SQ field : %@", field);
+            }
+            else if(inGrOrModP->vr==DA)
+            {
+                if( theValueP->a)
+                {
+                    NSCalendarDate *calendarDate = [DCMCalendarDate dicomDate: [NSString stringWithCString:theValueP->a encoding:NSASCIIStringEncoding]];
+                    [field appendString:[[NSUserDefaults dateFormatter] stringFromDate:calendarDate]];
+                }
+            }
+            else if(inGrOrModP->vr==DT)
+            {
+                if( theValueP->a)
+                {
+                    NSCalendarDate *calendarDate = [DCMCalendarDate dicomDateTime: [NSString stringWithCString:theValueP->a encoding:NSASCIIStringEncoding]];
+                    [field appendString:[BrowserController DateTimeWithSecondsFormat: calendarDate]];
+                }
+            }
+            else if(inGrOrModP->vr==TM)
+            {
+                if( theValueP->a)
+                {
+                    NSCalendarDate *calendarDate = [DCMCalendarDate dicomTime: [NSString stringWithCString:theValueP->a encoding:NSASCIIStringEncoding]];
+                    [field appendString:[BrowserController TimeWithSecondsFormat: calendarDate]];
+                }
+            }
+            else if(inGrOrModP->vr==AS)
+            {
+                if( theValueP->a)
+                {
+                    NSString *v = [NSString stringWithCString:theValueP->a encoding:NSASCIIStringEncoding];
+                    //Age String Format mmmM,dddD,nnnY ie 018Y
+                    if( v.length >= 4)
+                    {
+                        int number = [[v substringWithRange:NSMakeRange(0, 3)] intValue];
+                        NSString *letter = [v substringWithRange:NSMakeRange(3, 1)];
+                        [field appendString:[NSString stringWithFormat:@"%d %@", number, [letter lowercaseString]]];
+                    }
+                }
+            }
+            else if( theValueP->a)
+                [field appendString:[NSString stringWithCString:theValueP->a encoding:NSASCIIStringEncoding]];
+            
+            if(inGrOrModP->nb_val>1 && k<inGrOrModP->nb_val-1)
+                [field appendString:@" / "];
+        }
+    }
+}
+
 - (NSString*)getDICOMFieldValueForGroup:(int)group element:(int)element papyLink:(PapyShort)fileNb;
 {
 	NSMutableString *field = [NSMutableString string];
@@ -13332,117 +13431,21 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		int theEnumGrNb = Papy3ToEnumGroup(group);
 		int theMaxElem = gArrGroup [theEnumGrNb].size;
 		
-		NSCalendarDate *calendarDate;
-		
 		BOOL elementDefinitionFound = NO;
 		
-		for ( int j = 0; j < theMaxElem; j++, inGrOrModP++)
+		for( int j = 0; j < theMaxElem; j++, inGrOrModP++)
 		{
-			if( inGrOrModP->element == element)
-			{
+			if( inGrOrModP->element == element) {
+                
 				elementDefinitionFound = YES;
 				
-				if( inGrOrModP->nb_val > 0)
-				{
-					UValue_T *theValueP = inGrOrModP->value;
-					for ( int k = 0; k < inGrOrModP->nb_val; k++, theValueP++)
-					{
-                        if(inGrOrModP->vr==DS)	// floating point string
-                        {
-                            if( theValueP->a) [field appendString:[NSString stringWithFormat:@"%.6g", atof( theValueP->a)]];
-                        }
-                        else if(inGrOrModP->vr==FL)	// floating point string
-                        {
-                            [field appendString:[NSString stringWithFormat:@"%.6g", theValueP->fl]];
-                        }
-                        else if( inGrOrModP->vr==FD)
-                        {
-                            [field appendString:[NSString stringWithFormat:@"%.6g", (float) theValueP->fd]];
-                        }
-                        else if(inGrOrModP->vr==UL)
-                            [field appendString:[NSString stringWithFormat:@"%d", (int) theValueP->ul]];
-                        else if(inGrOrModP->vr==USS)
-                            [field appendString:[NSString stringWithFormat:@"%d", (int) theValueP->us]];
-                        else if(inGrOrModP->vr==SL)
-                            [field appendString:[NSString stringWithFormat:@"%d", (int) theValueP->sl]];
-                        else if(inGrOrModP->vr==SS)
-                            [field appendString:[NSString stringWithFormat:@"%d", (int) theValueP->ss]];
-                        else if(inGrOrModP->vr==SQ)
-                        {
-                            NSMutableString *temp = [NSMutableString string];
-                            
-                            // Loop over sequence
-                            if(theValueP->sq!=NULL)
-                            {
-                                Papy_List *dcmList = theValueP->sq->object->item;
-                                while(dcmList!=NULL)
-                                {
-                                    SElement *gr = (SElement *)dcmList->object->group;
-                                    
-                                    //if(gr->value)
-                                    [temp appendString:[self getDICOMFieldValueForGroup:gr->group element:gr->element papyLink:fileNb]];
-//										if(gr->value!=NULL)
-//                                            NSLog(@"++**++   ::    %@", [NSString stringWithCString:gr->value->a encoding:NSASCIIStringEncoding]);
-//										else
-//                                            NSLog(@"++**++   ::    %@", [NSString stringWithCString:gr->vm encoding:NSASCIIStringEncoding]);
-                                    
-                                    dcmList = dcmList->next;
-                                }
-                            }
-                            [field appendString:[NSString stringWithString:temp]];
-//								NSLog(@"SQ field : %@", field);
-                        }
-                        else if(inGrOrModP->vr==DA)
-                        {
-                            if( theValueP->a)
-                            {
-                                calendarDate = [DCMCalendarDate dicomDate: [NSString stringWithCString:theValueP->a encoding:NSASCIIStringEncoding]];
-                                [field appendString:[[NSUserDefaults dateFormatter] stringFromDate:calendarDate]];
-                            }
-                        }
-                        else if(inGrOrModP->vr==DT)
-                        {
-                            if( theValueP->a)
-                            {
-                                calendarDate = [DCMCalendarDate dicomDateTime: [NSString stringWithCString:theValueP->a encoding:NSASCIIStringEncoding]];
-                                [field appendString:[BrowserController DateTimeWithSecondsFormat: calendarDate]];
-                            }
-                        }
-                        else if(inGrOrModP->vr==TM)
-                        {
-                            if( theValueP->a)
-                            {
-                                calendarDate = [DCMCalendarDate dicomTime: [NSString stringWithCString:theValueP->a encoding:NSASCIIStringEncoding]];
-                                [field appendString:[BrowserController TimeWithSecondsFormat: calendarDate]];
-                            }
-                        }
-                        else if(inGrOrModP->vr==AS)
-                        {
-                            if( theValueP->a)
-                            {
-                                NSString *v = [NSString stringWithCString:theValueP->a encoding:NSASCIIStringEncoding];
-                                //Age String Format mmmM,dddD,nnnY ie 018Y
-                                if( v.length >= 4)
-                                {
-                                    int number = [[v substringWithRange:NSMakeRange(0, 3)] intValue];
-                                    NSString *letter = [v substringWithRange:NSMakeRange(3, 1)];
-                                    [field appendString:[NSString stringWithFormat:@"%d %@", number, [letter lowercaseString]]];
-                                }
-                            }
-                        }
-                        else if( theValueP->a)
-                            [field appendString:[NSString stringWithCString:theValueP->a encoding:NSASCIIStringEncoding]];
-                        
-						if(inGrOrModP->nb_val>1 && k<inGrOrModP->nb_val-1)
-                            [field appendString:@" / "];
-					}
-				}
+                [self appendSElement: inGrOrModP toString: field papyLink: fileNb];
 			}
 		}
         
         if( elementDefinitionFound == NO)
         {
-            // Does it exist in the undefined elents / groups ?
+            // Does it exist in the undefined elements / groups ?
             
             SElement *ulements = (SElement*) unknownElements[ fileNb];
             
@@ -13450,45 +13453,46 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             {
                 if( ulements[ i].group == group && ulements[ i].element == element)
                 {
-                    error = -1;
+                    [self appendSElement: &ulements[ i] toString: field papyLink: fileNb];
+                    
                     break;
                 }
             }
         }
     }
     
-    if( error != 0)	// Papyrus doesn't have the definition of all dicom tags.... Papyrus can only read what is in his dictionary
-    {
-#ifndef NDEBUG
-        NSLog( @"--- warning: annotation definition not found for : %X %X. Will use DCMTK to load the file", group, element);
-#endif
-        @synchronized( cachedDCMTKFileFormat)
-        {
-            if( self.dcmtkDcmFileFormat == nil)
-            {
-                if( [cachedDCMTKFileFormat objectForKey: srcFile])
-                {
-                    NSMutableDictionary *dic = [cachedDCMTKFileFormat objectForKey: srcFile];
-                    
-                    self.dcmtkDcmFileFormat = [dic objectForKey: @"dcmtkObject"];
-                    [dic setValue: @([[dic objectForKey: @"count"] intValue]+1) forKey: @"count"];
-                }
-                else
-                {
-                    self.dcmtkDcmFileFormat = [[[DCMTKFileFormat alloc] initWithFile: srcFile] autorelease];
-                    
-                    NSMutableDictionary *dic = [NSMutableDictionary dictionary];
-                    
-                    [dic setValue: @1 forKey: @"count"];
-                    [dic setValue: self.dcmtkDcmFileFormat forKey: @"dcmtkObject"];
-                    
-                    [cachedDCMTKFileFormat setObject: dic forKey: srcFile];
-                }
-            }
-            
-            return [DicomFile getDicomFieldForGroup: group element: element forDcmFileFormat: dcmtkDcmFileFormat.dcmtkDcmFileFormat];
-        }
-	}
+//    if( error != 0)	// Papyrus doesn't have the definition of all dicom tags.... Papyrus can only read what is in his dictionary
+//    {
+//#ifndef NDEBUG
+//        NSLog( @"--- warning: annotation definition not found for : %X %X. Will use DCMTK to load the file", group, element);
+//#endif
+//        @synchronized( cachedDCMTKFileFormat)
+//        {
+//            if( self.dcmtkDcmFileFormat == nil)
+//            {
+//                if( [cachedDCMTKFileFormat objectForKey: srcFile])
+//                {
+//                    NSMutableDictionary *dic = [cachedDCMTKFileFormat objectForKey: srcFile];
+//                    
+//                    self.dcmtkDcmFileFormat = [dic objectForKey: @"dcmtkObject"];
+//                    [dic setValue: @([[dic objectForKey: @"count"] intValue]+1) forKey: @"count"];
+//                }
+//                else
+//                {
+//                    self.dcmtkDcmFileFormat = [[[DCMTKFileFormat alloc] initWithFile: srcFile] autorelease];
+//                    
+//                    NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+//                    
+//                    [dic setValue: @1 forKey: @"count"];
+//                    [dic setValue: self.dcmtkDcmFileFormat forKey: @"dcmtkObject"];
+//                    
+//                    [cachedDCMTKFileFormat setObject: dic forKey: srcFile];
+//                }
+//            }
+//            
+//            return [DicomFile getDicomFieldForGroup: group element: element forDcmFileFormat: dcmtkDcmFileFormat.dcmtkDcmFileFormat];
+//        }
+//	}
     
 	return field;
 }
