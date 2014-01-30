@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C44" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13B42" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
@@ -28,7 +28,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" unifiedTitleAndToolbar="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="77" y="95" width="933" height="670"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
             <value key="minSize" type="size" width="213" height="107"/>
             <view key="contentView" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="933" height="670"/>
@@ -157,7 +157,7 @@
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="429" y="547" width="507" height="215"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
             <value key="minSize" type="size" width="213" height="107"/>
             <view key="contentView" id="40">
                 <rect key="frame" x="0.0" y="0.0" width="507" height="215"/>
@@ -340,11 +340,11 @@ Gw
             </view>
         </window>
         <customView id="53" userLabel="editTool">
-            <rect key="frame" x="0.0" y="0.0" width="246" height="56"/>
+            <rect key="frame" x="0.0" y="0.0" width="246" height="55"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="70">
-                    <rect key="frame" x="12" y="14" width="25" height="11"/>
+                    <rect key="frame" x="12" y="13" width="25" height="11"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Edit" id="129">
                         <font key="font" metaFont="miniSystem"/>
@@ -353,7 +353,7 @@ Gw
                     </textFieldCell>
                 </textField>
                 <textField horizontalHuggingPriority="249" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="68">
-                    <rect key="frame" x="49" y="14" width="26" height="11"/>
+                    <rect key="frame" x="49" y="13" width="26" height="11"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Add" id="128">
                         <font key="font" metaFont="miniSystem"/>
@@ -362,7 +362,7 @@ Gw
                     </textFieldCell>
                 </textField>
                 <button toolTip="Activate the edition" translatesAutoresizingMaskIntoConstraints="NO" id="54">
-                    <rect key="frame" x="8" y="24" width="33" height="30"/>
+                    <rect key="frame" x="8" y="23" width="33" height="30"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="29" id="2fT-k1-83W"/>
@@ -377,7 +377,7 @@ Gw
                     </connections>
                 </button>
                 <button toolTip="Add a new group/element" translatesAutoresizingMaskIntoConstraints="NO" id="61">
-                    <rect key="frame" x="45" y="24" width="33" height="30"/>
+                    <rect key="frame" x="45" y="23" width="33" height="30"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="29" id="Bt9-NF-ogY"/>
@@ -392,7 +392,7 @@ Gw
                     </connections>
                 </button>
                 <matrix verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="55">
-                    <rect key="frame" x="121" y="10" width="118" height="37"/>
+                    <rect key="frame" x="121" y="10" width="118" height="36"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     <size key="cellSize" width="59" height="18"/>
@@ -406,7 +406,7 @@ Gw
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="smallSystem"/>
                             </buttonCell>
-                            <buttonCell type="radio" title="Series" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" tag="1" inset="2" id="59">
+                            <buttonCell type="radio" title="Series" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" tag="1" inset="2" id="59">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="smallSystem"/>
                             </buttonCell>
@@ -428,7 +428,7 @@ Gw
                     </connections>
                 </matrix>
                 <button toolTip="Save the modifications to the file" translatesAutoresizingMaskIntoConstraints="NO" id="162">
-                    <rect key="frame" x="82" y="24" width="33" height="30"/>
+                    <rect key="frame" x="82" y="23" width="33" height="30"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="29" id="Rfk-Fj-m9n"/>
@@ -451,7 +451,7 @@ Gw
                     </connections>
                 </button>
                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="168">
-                    <rect key="frame" x="81" y="14" width="35" height="11"/>
+                    <rect key="frame" x="81" y="13" width="35" height="11"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Apply" id="169">
                         <font key="font" metaFont="miniSystem"/>
@@ -491,7 +491,7 @@ Gw
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" utility="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="59" y="144" width="814" height="291"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
             <value key="minSize" type="size" width="814" height="291"/>
             <view key="contentView" id="138">
                 <rect key="frame" x="0.0" y="0.0" width="814" height="291"/>
@@ -566,7 +566,7 @@ Gw
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="140">
-                            <rect key="frame" x="800" y="1" width="15" height="270"/>
+                            <rect key="frame" x="799" y="1" width="16" height="270"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>
