@@ -32,7 +32,11 @@
         {
             if( t)
                 (*cgl_ctx->disp.delete_textures)(cgl_ctx->rend, 1, &t);
+            else
+                N2LogStackTrace( @"deleteTexture");
 		}
+        else
+            N2LogStackTrace( @"deleteTexture");
         
 		[ctxArray removeObjectAtIndex: index];
 		[textArray removeObjectAtIndex: index];
@@ -52,7 +56,11 @@
         {
             if( t)
                 (*cgl_ctx->disp.delete_textures)(cgl_ctx->rend, 1, &t);
+            else
+                N2LogStackTrace( @"deleteTexture");
 		}
+        else
+            N2LogStackTrace( @"deleteTexture");
         
 		[ctxArray removeObjectAtIndex: index];
 		[textArray removeObjectAtIndex: index];
