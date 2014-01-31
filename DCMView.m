@@ -1625,16 +1625,20 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	[drawLock lock];
 	
+    NSMutableArray *rArray = curRoiList;
+    
+    [rArray retain];
+    
 	@try 
 	{
-		for( i = 0; i < [curRoiList count]; i++)
+		for( i = 0; i < [rArray count]; i++)
 		{
-			ROI *r = [curRoiList objectAtIndex:i];
+			ROI *r = [rArray objectAtIndex:i];
 			if( [r ROImode] == ROI_selected && r.locked == NO)
 			{
 				groupID = [r groupID];
 				[[NSNotificationCenter defaultCenter] postNotificationName:OsirixRemoveROINotification object:r userInfo: nil];
-				[curRoiList removeObjectAtIndex:i];
+				[rArray removeObjectAtIndex:i];
 				i--;
 				if(groupID!=0.0)
 					[self deleteROIGroupID:groupID];
@@ -1647,6 +1651,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		N2LogExceptionWithStackTrace(e);
 	}
+    
+    [rArray autorelease];
 	
 	[drawLock unlock];
 	
@@ -2712,11 +2718,16 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			[drawLock lock];
 			
-			@try 
+            
+            NSMutableArray *rArray = curRoiList;
+            
+            [rArray retain];
+            
+			@try
 			{
-				for( i = 0; i < [curRoiList count]; i++)
+				for( i = 0; i < [rArray count]; i++)
 				{
-					ROI *r = [curRoiList objectAtIndex:i];
+					ROI *r = [rArray objectAtIndex:i];
 					
 					if( [r ROImode] == ROI_selectedModify || [r ROImode] == ROI_drawing)
 					{
@@ -2724,7 +2735,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						{
 							groupID = [r groupID];
 							[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:r userInfo: nil];
-							[curRoiList removeObjectAtIndex:i];
+							[rArray removeObjectAtIndex:i];
 							i--;
 							if( groupID != 0.0)
 								[self deleteROIGroupID:groupID];
@@ -2732,15 +2743,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					}
 				}
 				
-				for( i = 0; i < [curRoiList count]; i++)
+				for( i = 0; i < [rArray count]; i++)
 				{
-					ROI *r = [curRoiList objectAtIndex:i];
+					ROI *r = [rArray objectAtIndex:i];
 					
 					if( [r ROImode] == ROI_selected  && r.locked == NO && r.hidden == NO)
 					{
 						groupID = [r groupID];
 						[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:r userInfo: nil];
-						[curRoiList removeObjectAtIndex:i];
+						[rArray removeObjectAtIndex:i];
 						i--;
 						if( groupID != 0.0)
 							[self deleteROIGroupID:groupID];
@@ -2748,12 +2759,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				}
 				
 				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIRemovedFromArrayNotification object: nil userInfo: nil];
-				
 			}
 			@catch (NSException * e) 
 			{
                 N2LogExceptionWithStackTrace(e);
 			}
+            
+            [rArray autorelease];
 			
 			[drawLock unlock];
 			
@@ -3014,14 +3026,18 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	[drawLock lock];
 	
+    NSMutableArray *rArray = curRoiList;
+    
+    [rArray retain];
+    
 	@try 
 	{
-		for( int i=0; i<[curRoiList count]; i++ )
+		for( int i=0; i<[rArray count]; i++ )
 		{
-			if([[curRoiList objectAtIndex:i] groupID] == groupID)
+			if([[rArray objectAtIndex:i] groupID] == groupID)
 			{
-				[[NSNotificationCenter defaultCenter] postNotificationName:OsirixRemoveROINotification object:[curRoiList objectAtIndex:i] userInfo:nil];
-				[curRoiList removeObjectAtIndex:i];
+				[[NSNotificationCenter defaultCenter] postNotificationName:OsirixRemoveROINotification object:[rArray objectAtIndex:i] userInfo:nil];
+				[rArray removeObjectAtIndex:i];
 				i--;
                 
                 [[NSNotificationCenter defaultCenter] postNotificationName:OsirixROIRemovedFromArrayNotification object:NULL userInfo:NULL];
@@ -3032,6 +3048,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		N2LogExceptionWithStackTrace(e);
 	}
+    
+    [rArray autorelease];
 	
 	[drawLock unlock];
 }
@@ -4096,6 +4114,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         return;
     }
     
+    [r retain]; //OsirixRemoveROINotification or OsirixROIRemovedFromArrayNotification can change/delete the NSArray !
+    
     @try {
         for( int i = 0; i < [r count]; i++)
         {
@@ -4119,6 +4139,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     @catch (NSException *exception) {
         N2LogException( exception);
     }
+    
+    [r autorelease];
 }
 
 - (void) deleteInvalidROIs

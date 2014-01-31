@@ -7669,12 +7669,18 @@ static int avoidReentryRefreshDatabase = 0;
 			NSLog( @"***** saveROI exception : %@", e);
 		}
 		
+        
+        
 		for( NSArray *a in roiList[ i])
 		{
+            NSArray *rArray = a;
+            
+            [a retain];
+            
 			for( ROI *r in a)
-			{
 				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object: r userInfo: nil];
-			}
+            
+            [a release];
 		}
 	}
 	
@@ -13492,18 +13498,22 @@ int i,j,l;
 {
 	[imageView stopROIEditingForce: YES];
 	
-	for( int x = 0; x < [pixList[curMovieIndex] count]; x++)
+	for( NSMutableArray *x in roiList[curMovieIndex])
 	{
-		for( int i = 0; i < [[roiList[curMovieIndex] objectAtIndex: x] count]; i++)
+        [x retain];
+        
+		for( int i = 0; i < [x count]; i++)
 		{
-			ROI	*curROI = [[roiList[curMovieIndex] objectAtIndex: x] objectAtIndex: i];
+			ROI	*curROI = [x objectAtIndex: i];
 			if( curROI == roi)
 			{
 				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:curROI userInfo: nil];
-				[[roiList[curMovieIndex] objectAtIndex: x] removeObject:curROI];
+				[x removeObject:curROI];
 				i--;
 			}
 		}
+        
+        [x autorelease];
 	}
 }
 
@@ -13515,18 +13525,22 @@ int i,j,l;
 	
 	[imageView stopROIEditingForce: YES];
 	
-	for( x = 0; x < [pixList[curMovieIndex] count]; x++)
+	for( NSMutableArray *x in roiList[curMovieIndex])
 	{
-		for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: x] count]; i++)
+        [x retain];
+        
+		for( i = 0; i < [x count]; i++)
 		{
-			ROI	*curROI = [[roiList[curMovieIndex] objectAtIndex: x] objectAtIndex: i];
+			ROI	*curROI = [x objectAtIndex: i];
 			if( [[curROI name] isEqualToString: name])
 			{
 				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:curROI userInfo: nil];
-				[[roiList[curMovieIndex] objectAtIndex: x] removeObject:curROI];
+				[x removeObject:curROI];
 				i--;
 			}
 		}
+        
+        [x autorelease];
 	}
 	
 	[name release];
@@ -13752,18 +13766,22 @@ int i,j,l;
 	
 	[self addToUndoQueue: @"roi"];
 	
-	for( x = 0; x < [pixList[curMovieIndex] count]; x++)
+	for( NSMutableArray *x in roiList[curMovieIndex])
 	{
-		for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: x] count]; i++)
+        [x retain];
+        
+		for( i = 0; i < [x count]; i++)
 		{
-			ROI	*curROI = [[roiList[curMovieIndex] objectAtIndex: x] objectAtIndex: i];
+			ROI	*curROI = [x objectAtIndex: i];
 			if( [[curROI name] isEqualToString: name] && curROI.locked == NO)
 			{
 				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:curROI userInfo: nil];
-				[[roiList[ curMovieIndex] objectAtIndex: x] removeObject: curROI];
+				[x removeObject: curROI];
 				i--;
 			}
 		}
+        
+        [x autorelease];
 	}
 	
 	[name release];
@@ -13799,24 +13817,27 @@ int i,j,l;
 	
 	[imageView stopROIEditingForce: YES];
 	
-	for( x = 0; x < [pixList[curMovieIndex] count]; x++)
+	for( NSMutableArray *x in roiList[curMovieIndex])
 	{
-		
-		for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: x] count]; i++)
+        [x retain];
+        
+		for( i = 0; i < [x count]; i++)
 		{
-			ROI	*curROI = [[roiList[curMovieIndex] objectAtIndex: x] objectAtIndex: i];
+			ROI	*curROI = [x objectAtIndex: i];
 			if( [[curROI comments] isEqualToString: @"morphing generated"])
 			{
 				if( [[curROI name] isEqualToString: name] || name == nil)
 				{
 					[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:curROI userInfo: nil];
-					[[roiList[ curMovieIndex] objectAtIndex: x] removeObject: curROI];
+					[x removeObject: curROI];
 					i--;
 					
 					no++;
 				}
 			}
 		}
+        
+        [x autorelease];
 	}
 	
 	[imageView setIndex: [imageView curImage]];
@@ -14403,18 +14424,22 @@ int i,j,l;
 	
 	for( y = 0; y < maxMovieIndex; y++)
 	{
-		for( x = 0; x < [pixList[y] count]; x++)
+		for( NSMutableArray *x in roiList[y])
 		{
-			for( i = (long)[[roiList[y] objectAtIndex: x] count]-1; i >= 0 ; i--)
+            [x retain];
+            
+			for( i = ((long)[x count])-1; i >= 0 ; i--)
 			{
-				ROI *curROI = [[roiList[y] objectAtIndex: x] objectAtIndex:i];
+				ROI *curROI = [x objectAtIndex:i];
 				
 				if( curROI.locked == NO)
 				{
 					[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:curROI userInfo: nil];
-					[[roiList[y] objectAtIndex: x] removeObject: curROI];
+					[x removeObject: curROI];
 				}
 			}
+            
+            [x autorelease];
 		}
 	}
 	
