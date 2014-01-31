@@ -13,6 +13,7 @@
 =========================================================================*/
 
 #import "StringTexture.h"
+#import "N2Debug.h"
 
 @implementation StringTexture
 
@@ -97,8 +98,33 @@
 	return [self initWithAttributedString:[[[NSAttributedString alloc] initWithString:aString attributes:attribs] autorelease] withTextColor:[NSColor colorWithDeviceRed:1.0f green:1.0f blue:1.0f alpha:1.0f] withBoxColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f] withBorderColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]];
 }
 
+- (oneway void)release
+{
+    if (![NSThread isMainThread])
+        [self performSelectorOnMainThread:@selector(release) withObject:nil waitUntilDone:NO];
+    else
+        [super release];
+}
+
+- (void) mainThreadAutorelease
+{
+    [self retain];
+    [self autorelease];
+}
+
+- (id) autorelease
+{
+    if (![NSThread isMainThread])
+        [self performSelectorOnMainThread:@selector(mainThreadAutorelease) withObject:nil waitUntilDone:NO];
+
+    return [super autorelease];
+}
+
 - (void) dealloc
 {
+    if( [NSThread isMainThread] == NO)
+        N2LogStackTrace( @"StringTexture dealloc NOT on main thread !");
+    
 	while( [ctxArray count]) [self deleteTexture: [ctxArray lastObject]];
 	[ctxArray release]; ctxArray = nil;
 	if( [textArray count]) NSLog( @"** not all texture were deleted...");
