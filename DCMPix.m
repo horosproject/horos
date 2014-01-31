@@ -6831,10 +6831,10 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					if( theErr == 0)
 					{
 						theErr = Papy3GotoGroupNb (fileNb, group);
-						
+                        
 						if( theErr >= 0)
 						{
-                            theErr = Papy3GroupRead(fileNb, &theGroupP);
+                            theErr = Papy3GroupReadNb(fileNb, &theGroupP, group);
 							if( theErr > 0)
 							{
 								[cachedGroupsForThisFile setValue: [NSValue valueWithPointer: theGroupP] forKey: groupKey];

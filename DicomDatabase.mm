@@ -1843,16 +1843,16 @@ static BOOL protectionAgainstReentry = NO;
                             
                             if( supportedSOPClass == NO)
                             {
-                                NSLog( @"unsupported DICOM SOP CLASS (%@)-> Reject the file : %@", SOPClassUID, newFile);
-                                curDict = nil;
+                                NSLog( @"unsupported DICOM SOP CLASS (%@)-> for the file : %@", SOPClassUID, newFile);
+//                                curDict = nil;
                             }
                         }
                     }
                     
                     if ([curDict objectForKey:@"SOPClassUID"] == nil && [[curDict objectForKey: @"fileType"] hasPrefix:@"DICOM"] == YES)
                     {
-                        NSLog(@"no DICOM SOP CLASS -> Reject the file: %@", newFile);
-                        curDict = nil;
+                        NSLog(@"no DICOM SOP CLASS -> for the file: %@", newFile);
+//                        curDict = nil;
                     }
                     
                     if (curDict != nil)

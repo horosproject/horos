@@ -2059,7 +2059,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                         if( COMMENTSGROUP && COMMENTSELEMENT)
                         {
                             theErr = Papy3GotoGroupNb (fileNb, COMMENTSGROUP);
-                            if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+                            if( theErr >= 0 && Papy3GroupReadNb (fileNb, &theGroupP, COMMENTSGROUP) > 0)
                             {
                                 SElement *inGrOrModP = theGroupP;
                                 
@@ -2093,7 +2093,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                             
                             
                             theErr = Papy3GotoGroupNb (fileNb, COMMENTSGROUP2);
-                            if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+                            if( theErr >= 0 && Papy3GroupReadNb (fileNb, &theGroupP, COMMENTSGROUP2) > 0)
                             {
                                 SElement *inGrOrModP = theGroupP;
                                 
@@ -2129,7 +2129,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                                 theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
                             
                             theErr = Papy3GotoGroupNb (fileNb, COMMENTSGROUP3);
-                            if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+                            if( theErr >= 0 && Papy3GroupReadNb (fileNb, &theGroupP, COMMENTSGROUP3) > 0)
                             {
                                 SElement *inGrOrModP = theGroupP;
                                 
@@ -2165,7 +2165,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                                 theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
                             
                             theErr = Papy3GotoGroupNb (fileNb, COMMENTSGROUP4);
-                            if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+                            if( theErr >= 0 && Papy3GroupReadNb (fileNb, &theGroupP, COMMENTSGROUP4) > 0)
                             {
                                 SElement *inGrOrModP = theGroupP;
                                 
@@ -2204,7 +2204,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                     //					NSString	*album = nil;
                     //					
                     //					theErr = Papy3GotoGroupNb (fileNb, 0x0020);
-                    //					if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+                    //					if( theErr >= 0 && Papy3GroupReadNb (fileNb, &theGroupP, 0x0020) > 0)
                     //					{
                     //						SElement *inGrOrModP = theGroupP;
                     //						
@@ -2241,7 +2241,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                     //					}
                     //					
                     //					theErr = Papy3GotoGroupNb (fileNb, 0x0040);
-                    //					if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+                    //					if( theErr >= 0 && Papy3GroupReadNb (fileNb, &theGroupP, 0x0040) > 0)
                     //					{
                     //						SElement *inGrOrModP = theGroupP;
                     //						
@@ -2303,7 +2303,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                 if (gIsPapyFile [fileNb] == DICOM10) theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
 
                 theErr = Papy3GotoGroupNb(fileNb, (PapyShort)0x0002);
-                if (theErr >= 0 && Papy3GroupRead(fileNb, &theGroupP) > 0)
+                if (theErr >= 0 && Papy3GroupReadNb(fileNb, &theGroupP, 0x0002) > 0)
                 {
                     val = Papy3GetElement(theGroupP, papPrivateInformationCreatorUIDGr, &nbVal, &itemType);
                     if (val != NULL && val->a && validAPointer( itemType))
@@ -2317,7 +2317,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                 }
                 
                 theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x0008);
-                if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+                if( theErr >= 0 && Papy3GroupReadNb (fileNb, &theGroupP, 0x0008) > 0)
                 {
                     val = Papy3GetElement (theGroupP, papSOPClassUIDGr, &nbVal, &itemType);
                     if (val != NULL && val->a && validAPointer( itemType))
@@ -2534,7 +2534,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                 //if (gIsPapyFile [fileNb] == DICOM10) theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
                 // get the Patient group
                 theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x0010);
-                if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+                if( theErr >= 0 && Papy3GroupReadNb (fileNb, &theGroupP, 0x0010) > 0)
                 {
                     //Patient Name
                     val = Papy3GetElement (theGroupP, papPatientsNameGr, &nbVal, &itemType);
@@ -2592,7 +2592,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                 // if (gIsPapyFile [fileNb] == DICOM10) theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
                 
                 theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x0018);
-                if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+                if( theErr >= 0 && Papy3GroupReadNb (fileNb, &theGroupP, 0x0018) > 0)
                 {
                     val = Papy3GetElement (theGroupP, papScanOptionsGr, &nbVal, &itemType);
                     if (val != NULL && val->a && validAPointer( itemType))
@@ -2642,7 +2642,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                 
                 // get the General Image module
                 theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x0020);
-                if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+                if( theErr >= 0 && Papy3GroupReadNb (fileNb, &theGroupP, 0x0020) > 0)
                 {
                     val = Papy3GetElement (theGroupP, papImageNumberGr, &nbVal, &itemType);
                     if (val != NULL && val->a && validAPointer( itemType))
@@ -2780,7 +2780,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                 }
                 
                 theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x0028);
-                if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+                if( theErr >= 0 && Papy3GroupReadNb (fileNb, &theGroupP, 0x0028) > 0)
                 {
                     long realwidth;
                     
@@ -2811,7 +2811,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                 if( COMMENTSFROMDICOMFILES)
                 {
                     theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x0032);
-                    if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+                    if( theErr >= 0 && Papy3GroupReadNb (fileNb, &theGroupP, 0x0032) > 0)
                     {
                         val = Papy3GetElement (theGroupP, papStudyCommentsGr, &nbVal, &itemType);
                         if (val != NULL && val->a && validAPointer( itemType) && strlen( val->a) > 0 && [dicomElements objectForKey: @"commentsAutoFill"] == nil)
@@ -2824,7 +2824,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                 if( serie == nil)
                 {
                     theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x0040);
-                    if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+                    if( theErr >= 0 && Papy3GroupReadNb (fileNb, &theGroupP, 0x0040) > 0)
                     {
                         val = Papy3GetElement (theGroupP, papPerformedProcedureStepDescriptionGr, &nbVal, &itemType);
                         if (val != NULL && val->a && validAPointer( itemType) && strlen( val->a) > 0)
@@ -2842,7 +2842,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                 
                 // Is it a multi frame DICOM files? We need to parse these sequences for the correct sliceLocation value !
                 theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x5200);
-                if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+                if( theErr >= 0 && Papy3GroupReadNb (fileNb, &theGroupP, 0x5200) > 0)
                 {
                     float originMultiFrame[ 3], orientationMultiFrame[ 9];
                     
@@ -3149,7 +3149,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
             if ([sopClassUID isEqualToString: [DCMAbstractSyntaxUID pdfStorageClassUID]])
             {
                 theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x0042);
-                if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+                if( theErr >= 0 && Papy3GroupReadNb (fileNb, &theGroupP, 0x0042) > 0)
                 {
                     SElement *element = theGroupP + papEncapsulatedDocumentGr;
                     
@@ -3236,7 +3236,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
             if( COMMENTSFROMDICOMFILES)
             {
                 theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x4008);
-                if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+                if( theErr >= 0 && Papy3GroupReadNb (fileNb, &theGroupP, 0x4008) > 0)
                 {
                     val = Papy3GetElement (theGroupP, papInterpretationStatusIDGr, &nbVal, &itemType);
                     if (val != NULL && val->a && validAPointer( itemType) && strlen( val->a) > 0)

@@ -185,7 +185,8 @@ Papy3GetPixelData (PapyShort , int , SElement *, int , long *);
 extern EXPORT32 PapyShort EXPORT 
 Papy3GroupRead 		(PapyShort, SElement **);
 
-
+extern EXPORT32 PapyShort EXPORT
+Papy3GroupReadNb    (PapyShort, SElement **, int);
 
 /* --- PapyUtils3 --- */
 
