@@ -4108,12 +4108,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void) deleteInvalidROIsForArray: (NSMutableArray*) r
 {
-    if( ![r isKindOfClass: [NSMutableArray class]])
-    {
-        N2LogStackTrace( @"deleteInvalidROIsForArray Array is NOT mutableArray");
-        return;
-    }
-    
     [r retain]; //OsirixRemoveROINotification or OsirixROIRemovedFromArrayNotification can change/delete the NSArray !
     
     @try {
