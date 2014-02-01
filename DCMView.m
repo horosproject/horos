@@ -6650,14 +6650,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	if( dcmPixList == nil) return;
 	
-	if( [ViewerController numberOf2DViewer] > 1 && isKeyView)
+	if( [ViewerController numberOf2DViewer] > 1 && isKeyView && [self is2DViewer])
     {
 		NSDictionary *instructions = [self syncMessage: inc];
         
 		if( instructions)
 		{
-			if( stringID == nil)
-				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixSyncNotification object: self userInfo: instructions];
+            [[NSNotificationCenter defaultCenter] postNotificationName: OsirixSyncNotification object: self userInfo: instructions];
 				
 			// most subclasses just need this. NO sync notification for subclasses.
 			if( blendingView) // We have to reload the blending image..
@@ -6818,16 +6817,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		int prevImage = curImage;
 		
-		if( [self is2DViewer] == YES)
-		{
-			if( [[self windowController] windowWillClose])
-				return;
-		}
+        if( [[self windowController] windowWillClose])
+            return;
 		
 		if( avoidRecursiveSync > 2) return;
 		avoidRecursiveSync++;
 		
-		if( [note object] != self && isKeyView == YES && matrix == 0 && stringID == nil && [[note object] stringID] == nil && curImage > -1 )    // Dont change the browser preview....
+		if( [note object] != self && isKeyView == YES && matrix == 0 && curImage > -1)
 		{
 			NSDictionary *instructions = [note userInfo];
 			
@@ -7108,8 +7104,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					}
 				}
 				
-				if( [self is2DViewer] == YES)
-					[[self windowController] adjustSlider];
+                [[self windowController] adjustSlider];
 				
 				[self setNeedsDisplay:YES];
 			}
