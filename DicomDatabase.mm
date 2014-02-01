@@ -1954,7 +1954,7 @@ static BOOL protectionAgainstReentry = NO;
                                 
                                 if (([DCMAbstractSyntaxUID isStructuredReport: SOPClassUID] || [DCMAbstractSyntaxUID isPDF: SOPClassUID]) && inParseExistingObject)
                                 {
-                                    if ([[curDict objectForKey: @"studyDescription"] length])
+                                    if( [[curDict objectForKey: @"studyDescription"] length] && [[curDict objectForKey: @"studyDescription"] isEqualToString: @"unnamed"] == NO)
                                         study.studyName = [curDict objectForKey: @"studyDescription"];
                                     if ([[curDict objectForKey: @"referringPhysiciansName"] length])
                                         study.referringPhysician = [curDict objectForKey: @"referringPhysiciansName"];
@@ -1971,6 +1971,9 @@ static BOOL protectionAgainstReentry = NO;
                                     study.institutionName = [curDict objectForKey: @"institutionName"];
                                 }
                                 
+                                if( study.studyName.length == 0 || [study.studyName isEqualToString: @"unnamed"])
+                                    study.studyName = [curDict objectForKey: @"seriesDescription"];
+                                
                                 //need to know if is DICOM so only DICOM is queried for Q/R
                                 if ([curDict objectForKey: @"hasDICOM"])
                                     study.hasDICOM = [curDict objectForKey: @"hasDICOM"];
@@ -1984,7 +1987,10 @@ static BOOL protectionAgainstReentry = NO;
                                     study.modality = [curDict objectForKey: @"modality"];
                                 
                                 if ([study valueForKey: @"studyName"] == nil || [[study valueForKey: @"studyName"] isEqualToString: @"unnamed"] || [[study valueForKey: @"studyName"] isEqualToString: @""])
+                                    
                                     study.studyName = [curDict objectForKey: @"studyDescription"];
+                                    if( study.studyName.length == 0 || [study.studyName isEqualToString: @"unnamed"])
+                                        study.studyName = [curDict objectForKey: @"seriesDescription"];
                             }
                             
                             if ([curDict objectForKey: @"studyDate"] && [[curDict objectForKey: @"studyDate"] isEqualToDate: defaultDate] == NO)

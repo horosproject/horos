@@ -3305,13 +3305,6 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
             
             [dicomElements setObject:serie forKey:@"seriesDescription"];
             
-            if( [[dicomElements objectForKey: @"studyDescription"] isEqualToString: @"unnamed"])
-            {
-                [study release];
-                study = [[NSString alloc] initWithString: serie];
-                [dicomElements setObject:study forKey: @"studyDescription"];
-            }
-            
             if( name != nil && studyID != nil && self.serieID != nil && imageID != nil && width != 0 && height != 0)
             {
                 returnValue = 0;   // success
