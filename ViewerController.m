@@ -7684,6 +7684,8 @@ static int avoidReentryRefreshDatabase = 0;
 		}
 	}
 	
+    [self applyStatusValue];
+    
 	for( i = 0; i < maxMovieIndex; i++)
 	{
 		[copyRoiList[ i] release]; copyRoiList[ i] = nil;
@@ -7941,6 +7943,8 @@ static int avoidReentryRefreshDatabase = 0;
 	@synchronized( self)
 	{
         NSDisableScreenUpdates();
+        
+        statusValueToApply = -1;
         
 		@try 
 		{
@@ -22032,19 +22036,27 @@ int i,j,l;
 	[NSApp beginSheet: CommentsWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 }
 
+- (void) applyStatusValue
+{
+    if( statusValueToApply != -1)
+    {
+        [[fileList[ curMovieIndex] objectAtIndex:[imageView curImage]] setValue:[NSNumber numberWithInt: statusValueToApply] forKeyPath:@"series.study.stateText"];
+        
+        if([[BrowserController currentBrowser] isCurrentDatabaseBonjour])
+        {
+            [[BrowserController currentBrowser] setBonjourDatabaseValue:[fileList[curMovieIndex] objectAtIndex:[imageView curImage]] value:[NSNumber numberWithInt: statusValueToApply] forKey:@"series.study.stateText"];
+        }
+        
+        [StatusPopup selectItemWithTag: statusValueToApply];
+        
+        [[[BrowserController currentBrowser] databaseOutline] reloadData];
+        [self buildMatrixPreview: NO];
+    }
+}
+
 - (void) setStatusValue:(int) v
 {
-	[[fileList[ curMovieIndex] objectAtIndex:[imageView curImage]] setValue:[NSNumber numberWithInt: v] forKeyPath:@"series.study.stateText"];
-	
-	if([[BrowserController currentBrowser] isCurrentDatabaseBonjour])
-	{
-		[[BrowserController currentBrowser] setBonjourDatabaseValue:[fileList[curMovieIndex] objectAtIndex:[imageView curImage]] value:[NSNumber numberWithInt: v] forKey:@"series.study.stateText"];
-	}
-	
-	[StatusPopup selectItemWithTag: v];
-	
-	[[[BrowserController currentBrowser] databaseOutline] reloadData];
-	[self buildMatrixPreview: NO];	
+    statusValueToApply = v;
 }
 
 - (IBAction) setStatus:(id) sender

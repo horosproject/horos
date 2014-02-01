@@ -151,6 +151,7 @@ enum
 			 
 			 long			speedometer;
 		 
+    int statusValueToApply;
 	IBOutlet NSView			*StatusView;
 	IBOutlet NSButton		*CommentsField;
 	IBOutlet NSPopUpButton	*StatusPopup;

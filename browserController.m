@@ -2989,7 +2989,7 @@ static NSConditionLock *threadLock = nil;
 //	[_database lock];
 	error = nil;
 	[outlineViewArray release];
-	
+	outlineViewArray = nil;
 	@try
 	{
         @try
