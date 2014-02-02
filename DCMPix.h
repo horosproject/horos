@@ -687,7 +687,6 @@ Note setter is different to not break existing usage. :-( */
 
 /** Clears the papyrus group cache */
 - (void) clearCachedPapyGroups;
-- (void) clearCachedDCMFrameworkFiles;
 + (void) purgeCachedDictionaries;
 
 /** Returns a pointer the the papyrus group
