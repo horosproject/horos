@@ -12051,106 +12051,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         }
     }
     
-//    if( error != 0)	// Papyrus doesn't have the definition of all dicom tags.... Papyrus can only read what is in his dictionary
-//    {
-//#ifndef NDEBUG
-//        NSLog( @"--- warning: annotation definition not found for : %X %X. Will use DCMTK to load the file", group, element);
-//#endif
-//        @synchronized( cachedDCMTKFileFormat)
-//        {
-//            if( self.dcmtkDcmFileFormat == nil)
-//            {
-//                if( [cachedDCMTKFileFormat objectForKey: srcFile])
-//                {
-//                    NSMutableDictionary *dic = [cachedDCMTKFileFormat objectForKey: srcFile];
-//                    
-//                    self.dcmtkDcmFileFormat = [dic objectForKey: @"dcmtkObject"];
-//                    [dic setValue: @([[dic objectForKey: @"count"] intValue]+1) forKey: @"count"];
-//                }
-//                else
-//                {
-//                    self.dcmtkDcmFileFormat = [[[DCMTKFileFormat alloc] initWithFile: srcFile] autorelease];
-//                    
-//                    NSMutableDictionary *dic = [NSMutableDictionary dictionary];
-//                    
-//                    [dic setValue: @1 forKey: @"count"];
-//                    [dic setValue: self.dcmtkDcmFileFormat forKey: @"dcmtkObject"];
-//                    
-//                    [cachedDCMTKFileFormat setObject: dic forKey: srcFile];
-//                }
-//            }
-//            
-//            return [DicomFile getDicomFieldForGroup: group element: element forDcmFileFormat: dcmtkDcmFileFormat.dcmtkDcmFileFormat];
-//        }
-//	}
-    
 	return field;
 }
-
-#ifndef OSIRIX_LIGHT
-- (NSString*)getDICOMFieldValueForGroup:(int)group element:(int)element DCMLink:(DCMObject*)dcmObject
-{
-	DCMAttribute *attr = [dcmObject attributeForTag: [DCMAttributeTag tagWithGroup: group element: element]];
-	
-	if( attr)
-	{
-		NSMutableString *result = nil;
-		
-		for( id field in [attr values])
-		{	
-			if([field isKindOfClass:[NSString class]])
-			{
-				NSString *vr = [attr vr];
-				
-				if([vr isEqualToString:@"DS"]) field = [NSString stringWithFormat:@"%.6g", [field floatValue]];
-				
-				if( result == nil) result = [NSMutableString stringWithString: field];
-				else [result appendFormat: @" / %@", field];
-			}
-			else if([field isKindOfClass:[NSNumber class]])
-			{
-				NSString *vr = [attr vr];
-				
-				if([vr isEqualToString:@"FD"]) field = [NSString stringWithFormat:@"%.6g", [field floatValue]];
-				if([vr isEqualToString:@"FL"]) field = [NSString stringWithFormat:@"%.6g", [field floatValue]];
-				
-				if([field isKindOfClass:[NSString class]])
-				{
-					if( result == nil) result = [NSMutableString stringWithString: field];
-					else [result appendFormat: @" / %@", field];
-				}
-				else
-				{
-					if( result == nil) result = [NSMutableString stringWithString: [field stringValue]];
-					else [result appendFormat: @" / %@", [field stringValue]];
-				}
-			}
-			else if([field isKindOfClass:[NSCalendarDate class]])
-			{
-				NSString *vr = [attr vr];
-				if([vr isEqualToString:@"DA"])
-				{
-					if( result == nil) result = [NSMutableString stringWithString: [[NSUserDefaults dateFormatter] stringFromDate:field]];
-					else [result appendFormat: @" / %@", [[NSUserDefaults dateFormatter] stringFromDate:field]];
-				}
-				else if([vr isEqualToString:@"TM"])
-				{
-					if( result == nil) result = [NSMutableString stringWithString: [BrowserController TimeWithSecondsFormat: field]];
-					else [result appendFormat: @" / %@", [BrowserController TimeWithSecondsFormat: field]];
-				}
-				else
-				{
-					if( result == nil) result = [NSMutableString stringWithString: [BrowserController DateTimeWithSecondsFormat: field]];
-					else [result appendFormat: @" / %@", [BrowserController DateTimeWithSecondsFormat: field]];
-				}
-			}
-		}
-		
-		return result;
-	}
-	return nil;
-}
-#endif
 
 - (void)loadCustomImageAnnotationsDBFields: (DicomImage*) imageObj
 {
@@ -12301,10 +12203,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                                     }
                                     else if(fileNb>=0)
                                         value = [self getDICOMFieldValueForGroup:[[field objectForKey:@"group"] intValue] element:[[field objectForKey:@"element"] intValue] papyLink:fileNb];
-//                                    #ifndef OSIRIX_LIGHT
-//                                    else if(dcmObject)
-//                                        value = [self getDICOMFieldValueForGroup:[[field objectForKey:@"group"] intValue] element:[[field objectForKey:@"element"] intValue] DCMLink:dcmObject];
-//                                    #endif
                                     else
                                         value = nil;
                                     
