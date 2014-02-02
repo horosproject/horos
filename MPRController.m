@@ -66,7 +66,7 @@ static float deg2rad = M_PI/180.0;
 	free( imagePtr);
 	
 	[emptyPix setImageObjectID: [oP imageObjectID]];
-	[emptyPix setSrcFile: [oP srcFile]];
+	emptyPix.sourceFile = oP.sourceFile;
 	[emptyPix setAnnotationsDictionary: [oP annotationsDictionary]];
 	
 	return [emptyPix autorelease];

@@ -2721,10 +2721,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			
             if( [[[curImage valueForKeyPath:@"series.id"] stringValue] length])
                 windowTitle = [windowTitle stringByAppendingFormat: @" (%@)", [[curImage valueForKeyPath:@"series.id"] stringValue]];
-                               
-			if( [[pixList[ curMovieIndex] objectAtIndex:0] generated] && [[pixList[ curMovieIndex] objectAtIndex:0] generatedName])
-				windowTitle = [windowTitle stringByAppendingString: [NSString stringWithFormat: @" - %@", [[pixList[ curMovieIndex] objectAtIndex:0] generatedName]]];
-			
+            
             if( [[imageView curDCM] SUVConverted])
                 windowTitle = [windowTitle stringByAppendingString: NSLocalizedString( @" (SUV Converted)", nil)];
             
@@ -6834,11 +6831,8 @@ return YES;
 		}
 		
 		//shutterRect inside frame?
-		//NSLog(@"x:%f, y:%f, w:%f, h:%f",shutterRect.origin.x,shutterRect.origin.y,shutterRect.size.width,shutterRect.size.height);
 		float DCMPixWidth = [curPix pwidth];
 		float DCMPixHeight = [curPix pheight];
-		//NSLog(@"DCMPix w:%f",DCMPixWidth);
-		//NSLog(@"DCMPix h:%f",DCMPixHeight);		
 		if (shutterRect.origin.x < 0) shutterRect.origin.x = 0;
 		if (shutterRect.origin.y < 0) shutterRect.origin.y = 0;
 		if (shutterRect.origin.x + shutterRect.size.width > DCMPixWidth) shutterRect.size.width = DCMPixWidth - shutterRect.origin.x;
@@ -6847,16 +6841,16 @@ return YES;
 		//using valid shutterRect
 		if (shutterRect.size.width != 0)
 		{
-			for( i = 0; i < [[imageView dcmPixList] count]; i++)
+			for( DCMPix *p in [imageView dcmPixList])
 			{
-				[[[imageView dcmPixList] objectAtIndex: i] DCMPixShutterRect:(long)shutterRect.origin.x :(long)shutterRect.origin.y :(long)shutterRect.size.width :(long)shutterRect.size.height];
-				[[[imageView dcmPixList] objectAtIndex: i] DCMPixShutterOnOff: NSOnState];
+				p.shutterRect = shutterRect;
+				p.shutterEnabled = NSOnState;
 			}
 		}
 		else
 		{
 			//using stored shutterRect?
-			if ( ([curPix DCMPixShutterRectWidth] == 0 || ([curPix DCMPixShutterRectWidth] == [curPix pwidth] && [curPix DCMPixShutterRectHeight] == [curPix pheight])) && curPix.shutterPolygonal == nil)
+			if ( (curPix.shutterRect.size.width == 0 || (curPix.shutterRect.size.width == [curPix pwidth] && curPix.shutterRect.size.height == [curPix pheight])) && curPix.shutterPolygonal == nil)
 			{
 				[shutterOnOff setState:NSOffState];
 				
@@ -6864,14 +6858,13 @@ return YES;
 			}
 			else //reuse preconfigured shutterRect
 			{
-				for( i = 0; i < [[imageView dcmPixList] count]; i++) [[[imageView dcmPixList] objectAtIndex: i] DCMPixShutterOnOff: NSOnState];
+				for( DCMPix *p in [imageView dcmPixList]) p.shutterEnabled = NSOnState;
 			}
 		}
 	}
 	else
 	{
-		for( i = 0; i < [[imageView dcmPixList] count]; i++)
-			[[[imageView dcmPixList] objectAtIndex: i] DCMPixShutterOnOff: NSOffState];
+		for( DCMPix *p in [imageView dcmPixList]) p.shutterEnabled = NSOffState;
 	}
 	[imageView setIndex: [imageView curImage]]; //refresh viewer only
 }
@@ -8839,7 +8832,7 @@ static int avoidReentryRefreshDatabase = 0;
         }
     }
     
-    if( [firstPix DCMPixShutterOnOff])
+    if( firstPix.shutterEnabled)
         [self setShutterOnOffButton: [NSNumber numberWithBool: YES]];
 	
     [self setWindowTitle:self];
@@ -16346,8 +16339,8 @@ int i,j,l;
 			
 			if( [[vC modality] isEqualToString:@"MR"] == YES && [[self modality] isEqualToString:@"MR"] == YES)
 			{
-				if(	[[[imageView curDCM] repetitiontime] isEqualToString: [[[vC imageView] curDCM] repetitiontime]] == NO || 
-					[[[imageView curDCM] echotime] isEqualToString: [[[vC imageView] curDCM] echotime]] == NO)
+                if( imageView.curDCM.repetitionTime != vC.imageView.curDCM.repetitionTime ||
+                    imageView.curDCM.echoTime != vC.imageView.curDCM.echoTime)
 					{
 						propagate = NO;
 					}
@@ -17541,7 +17534,7 @@ int i,j,l;
 		
 		for( int x = 0; x < [pixList[ i] count]; x++)
 		{
-			DCMObject *dcmObject = [DCMObject objectWithContentsOfFile: [[pixList[ i] objectAtIndex: x] srcFile]  decodingPixelData:NO];
+			DCMObject *dcmObject = [DCMObject objectWithContentsOfFile: [[pixList[ i] objectAtIndex: x] sourceFile]  decodingPixelData:NO];
 			
 			DCMAttribute *attr = [dcmObject attributeForTag: [DCMAttributeTag tagWithGroup: gr element: el]];
 			

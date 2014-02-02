@@ -47,14 +47,10 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 
 @interface DCMPix: NSObject <NSCopying>
 {
-//SOURCES
-	NSString            *srcFile;  /**< source File */
-    NSString            *URIRepresentationAbsoluteString;
-	BOOL				isBonjour;  /**< Flag to indicate if file is accessed over Bonjour */
-    BOOL                fileTypeHasPrefixDICOM;
+	NSString            *sourceFile, *URIRepresentationAbsoluteString, *imageType;
+	BOOL				isBonjour, fileTypeHasPrefixDICOM, isSigned;
     int                 numberOfFrames;
     
-//BUFFERS	
 	NSArray				*pixArray;
     NSManagedObjectID	*imageObjectID;	/**< Core data object ID for image */
 	float				*fImage /**< float buffer of image Data */, *fExternalOwnedImage;  /**< float buffer of image Data - provided by another source, not owned by this object, not release by this object */
@@ -62,57 +58,42 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 //DICOM TAGS
 
 //	orientation
-//	Point3D				*origin;
 	BOOL				isOriginDefined;
 	double				originX /**< x position of image origin */ , originY /**< y Position of image origin */ , originZ /**< Z position of image origin*/;
 	double				orientation[ 9];  /**< pointer to orientation vectors  */
 
 //	pixel representation
-	BOOL				fIsSigned;
 	short				bitsAllocated, bitsStored;
-    float               slope, offset;
-
-//	image size
     long                height, width;
-
+    float               slope, offset;
+    
 //	window level & width
 	float				savedWL, savedWW;
 
 //	planar configuration
-	long				fPlanarConf;
-    double				pixelSpacingX, pixelSpacingY, pixelRatio;
-    double              estimatedRadiographicMagnificationFactor;
+	long				planarConf;
+    double				pixelSpacingX, pixelSpacingY, pixelRatio, estimatedRadiographicMagnificationFactor;
 	BOOL				pixelSpacingFromUltrasoundRegions;
 
 //	photointerpretation
-	BOOL				isRGB;
-	BOOL				inverseVal;
+	BOOL				isRGB, inverseVal;
 
 //  US Regions
     NSMutableArray      *usRegions;
     
 //  Waveform data
-    DCMWaveform*    waveform;
-    
-//  image type
-    NSString*           imageType;
+    DCMWaveform         *waveform;
     
 //--------------------------------------
 
 // DICOM params needed for SUV calculations
-	float				patientsWeight;
-	NSString			*repetitiontime, *echotime, *flipAngle, *laterality;
-	NSString			*viewPosition, *patientPosition, *acquisitionDate, *SOPClassUID, *frameofReferenceUID, *rescaleType;
-	BOOL				hasSUV, SUVConverted;
+	float				patientsWeight, repetitionTime, echoTime, flipAngle;
+	NSString			*laterality, *viewPosition, *patientPosition, *acquisitionDate, *SOPClassUID, *frameofReferenceUID, *rescaleType;
+	BOOL				hasSUV, SUVConverted, displaySUVValue;
 	NSString			*units, *decayCorrection;
-	float				decayFactor, factorPET2SUV;
-	float				radionuclideTotalDose;
-	float				radionuclideTotalDoseCorrected;
-	NSCalendarDate		*acquisitionTime;
-	NSCalendarDate		*radiopharmaceuticalStartTime;
-	float				halflife, frameReferenceTime;
-    float				philipsFactor;
-	BOOL				displaySUVValue;
+	float				decayFactor, factorPET2SUV, radionuclideTotalDose, radionuclideTotalDoseCorrected;
+	NSCalendarDate		*acquisitionTime, *radiopharmaceuticalStartTime;
+	float				halflife, frameReferenceTime, philipsFactor;
 
 // DICOM params for Overlays - 0x6000 group	
 	int					oRows, oColumns, oType, oOrigin[ 2], oBits, oBitPosition;
@@ -120,57 +101,36 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	
 //	DSA-subtraction	
 	float				*subtractedfImage;
-	NSPoint				subPixOffset;
-	NSPoint				subMinMax;
-	float				subtractedfPercent;
-	float				subtractedfZ;
-	float				subtractedfZero;
-	float				subtractedfGamma;
+	NSPoint				subPixOffset, subMinMax;
+	float				subtractedfPercent, subtractedfZ, subtractedfZero, subtractedfGamma;
 	GammaFunction		subGammaFunction;
 	
 	long				maskID;
-	float				maskTime;
-	float				fImageTime;
-	//float				rot;
-	//float				ang;
-	NSNumber			*positionerPrimaryAngle;
-	NSNumber			*positionerSecondaryAngle;
+	float				maskTime, fImageTime;
 	
-	long				shutterRect_x;
-	long				shutterRect_y;
-	long				shutterRect_w;
-	long				shutterRect_h;
-	
-	long				shutterCircular_x;
-	long				shutterCircular_y;
+    BOOL                shutterEnabled;
+    NSRect              shutterRect;
+	NSPoint             shutterCircular;
 	long				shutterCircular_radius;
 	
 	NSPoint	 			*shutterPolygonal;
 	long				shutterPolygonalSize;
-	
-	BOOL				DCMPixShutterOnOff;
 
 //-------------------------------------------------------	
-	long				frameNo;
-	long				serieNo;
-	long				imID, imTot;    
+	long				frameNo, serieNo, imID, imTot;
     char                *baseAddr;
 
 //convolution	
 	BOOL				convolution, updateToBeApplied;
 	short				kernelsize;
-	float				normalization;
-	float				kernel[25];
-
+	float				normalization, kernel[25];
 	float				cineRate;
 
 //slice
-    double				sliceInterval, sliceLocation, sliceThickness;
-	double				spacingBetweenSlices;								//SpacingBetweenSlices (0018,0088)
+    double				sliceInterval, sliceLocation, sliceThickness, spacingBetweenSlices;
 	
 //stack
-	short				stack;
-	short				stackMode, pixPos, stackDirection;
+	short				stack, stackMode, pixPos, stackDirection;
 //thickslab
     BOOL				thickSlabVRActivated;
 	ThickSlabController *thickSlab;
@@ -182,7 +142,6 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
     float               maxValueOfSeries, minValueOfSeries;
 	
 	BOOL				generated;
-	NSString			*generatedName;
 	NSRecursiveLock		*checking;
 	
 	BOOL				notAbleToLoadImage, VOILUTApplied;
@@ -197,15 +156,14 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	float				*transferFunctionPtr;
 	
 /** custom annotations */
-	NSMutableDictionary *annotationsDictionary;
-    NSMutableDictionary *annotationsDBFields;
+	NSMutableDictionary *annotationsDictionary, *annotationsDBFields;
     NSString            *yearOld, *yearOldAcquisition;
 	
 /** 12 bit monitors */
 	BOOL				isLUT12Bit;
 	unsigned char		*LUT12baseAddr;
 	
-	BOOL				full32bitPipeline, needToCompute8bitRepresentation;
+	BOOL				needToCompute8bitRepresentation;
 
 /** Papyrus Loading variables */	
 	
@@ -223,8 +181,6 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
     
     NSString            *referencedSOPInstanceUID;
     float               referenceCoordinates[ 4];
-    
-    DCMTKFileFormat     *dcmtkDcmFileFormat;
 }
 
 @property long frameNo;
@@ -273,27 +229,18 @@ Note setter is different to not break existing usage. :-( */
 - (void)originDouble: (double*)o;
 
 /**  Axial Location */
-@property double sliceLocation;
-/**  Slice Thickness */
-@property double sliceThickness;
-/**  Slice Interval */
-@property double sliceInterval;
-/**  Gap between slices */
-@property(readonly) double spacingBetweenSlices;
+@property(nonatomic) double sliceLocation, sliceThickness, sliceInterval, spacingBetweenSlices;
 
 /**  8-bit TransferFunction */
 @property(nonatomic, retain) NSData *transferFunction; 
 
 @property(nonatomic) NSPoint subPixOffset;
 
-@property long DCMPixShutterRectWidth, DCMPixShutterRectHeight;
-@property long DCMPixShutterRectOriginX, DCMPixShutterRectOriginY;
+@property(nonatomic) BOOL shutterEnabled;
+@property(nonatomic) NSRect shutterRect;
 
-@property(retain) NSString *repetitiontime, *echotime;
-@property(readonly) NSString *flipAngle, *laterality;
-
-@property(readonly) NSString *viewPosition;
-@property(readonly) NSString *patientPosition;
+@property float repetitionTime, echoTime, flipAngle;
+@property(readonly) NSString *laterality, *viewPosition, *patientPosition;
 
 @property char* baseAddr;
 @property unsigned char* LUT12baseAddr;
@@ -309,31 +256,26 @@ Note setter is different to not break existing usage. :-( */
 
 @property(readonly) short stack, stackMode;
 @property(readonly) BOOL generated;
-@property(retain) NSString *generatedName;
 @property(retain) NSString *sourceFile;
 
 @property(readonly) unsigned int* VOILUT_table;
 
 /** Database links */
 @property(retain) NSManagedObjectID *imageObjectID;
-@property(retain) NSString *srcFile, *SOPClassUID;
+@property(retain) NSString *SOPClassUID;
 @property(retain) NSMutableDictionary *annotationsDictionary, *annotationsDBFields;
 
 // Properties (aka accessors) needed for SUV calculations
 @property(readonly) float philipsFactor;
-@property float patientsWeight;
-@property float halflife;
-@property float radionuclideTotalDose;
-@property float radionuclideTotalDoseCorrected;
+@property float patientsWeight, halflife, radionuclideTotalDose, radionuclideTotalDoseCorrected;
 @property(retain) NSCalendarDate *acquisitionTime;
 @property(retain) NSString *acquisitionDate, *rescaleType;
 @property(retain) NSCalendarDate *radiopharmaceuticalStartTime;
-@property BOOL SUVConverted, full32bitPipeline, needToCompute8bitRepresentation;
+@property BOOL SUVConverted, needToCompute8bitRepresentation;
 @property(readonly) BOOL hasSUV;
 @property float decayFactor;
 @property(retain) NSString *units, *decayCorrection;
 @property BOOL displaySUVValue;
-@property(retain) DCMTKFileFormat *dcmtkDcmFileFormat;
 @property BOOL isLUT12Bit;
 
 // Waveform
@@ -514,19 +456,11 @@ Note setter is different to not break existing usage. :-( */
 - (void) maskTime:(float)newMaskTime;
 - (float) maskTime;
 - (void) getDataFromNSImage:(NSImage*) otherImage;
-- (void) positionerPrimaryAngle:(NSNumber *)newPositionerPrimaryAngle;
-- (NSNumber*) positionerPrimaryAngle;
-- (void) positionerSecondaryAngle:(NSNumber*)newPositionerSecondaryAngle;
-- (NSNumber*) positionerSecondaryAngle;
 + (NSPoint) originDeltaBetween:(DCMPix*) pix1 And:(DCMPix*) pix2;
 + (NSPoint) originCorrectedAccordingToOrientation: (DCMPix*) pix1;
 - (void) setBlackIndex:(int) i;
 + (NSImage*) resizeIfNecessary:(NSImage*) currentImage dcmPix: (DCMPix*) dcmPix;
-- (void) DCMPixShutterRect:(long)x :(long)y :(long)w :(long)h;
-- (BOOL) DCMPixShutterOnOff;
-- (void) DCMPixShutterOnOff:(BOOL)newDCMPixShutterOnOff;
 - (void) computeTotalDoseCorrected;
-//- (void) copyFromOther:(DCMPix *) fromDcm;
 - (void) setRGB : (BOOL) val;
 - (void) setConvolutionKernel:(float*)val :(short) size :(float) norm;
 - (void) applyConvolutionOnSourceImage;
