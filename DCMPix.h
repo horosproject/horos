@@ -708,11 +708,6 @@ Note setter is different to not break existing usage. :-( */
 - (void)loadCustomImageAnnotationsDBFields: (DicomImage*) imageObj;
 - (void)loadCustomImageAnnotationsPapyLink:(int)fileNb;
 - (NSString*) getDICOMFieldValueForGroup:(int)group element:(int)element papyLink:(short)fileNb;
-
-#ifndef OSIRIX_LIGHT
-- (NSString*) getDICOMFieldValueForGroup:(int)group element:(int)element DCMLink:(DCMObject*)dcmObject;
-#endif
-
 #endif
 
 @end
