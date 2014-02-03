@@ -488,6 +488,10 @@ static DicomDatabase* activeLocalDatabase = nil;
         }
     @catch (NSException *e) {
         N2LogExceptionWithStackTrace( e);
+        
+        if( [NSThread isMainThread])
+            NSRunAlertPanel( NSLocalizedString( @"Database", nil), e.reason, NSLocalizedString( @"OK", nil), nil, nil);
+        
         [self autorelease];
         return nil;
     }

@@ -2321,6 +2321,9 @@ static NSDate *lastWarningDate = nil;
 	
 	} @catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
+        
+        if( [NSThread isMainThread])
+            NSRunAlertPanel( NSLocalizedString( @"Database", nil), e.reason, NSLocalizedString( @"OK", nil), nil, nil);
 	}
 	
 	[BonjourDICOMService stop];
