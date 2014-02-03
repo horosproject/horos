@@ -393,6 +393,9 @@ OFCondition DJCompressJP2K::encode(
 {
 	int bitsstored = bitsAllocated;
 	
+    if( samplesPerPixel > 1)
+        bitsstored = bitsAllocated = 8;
+    
 	OFBool isSigned = 0;
 	
 	if( bitsAllocated >= 16)
