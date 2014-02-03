@@ -115,62 +115,64 @@
 	WaitRendering *splash = [[WaitRendering alloc] init: NSLocalizedString( @"Preparing 3D Object...", nil)];
 	[splash showWindow:self]; 
     
-	roiVolumeActor = vtkActor::New();
-	
     vtkMapper *map = [ROIVolumeView generateMapperForRoi: roiList.lastObject viewerController: viewer factor: factor statistics: nil];
     
-    roiVolumeActor->SetMapper(map);
-    roiVolumeActor->GetProperty()->FrontfaceCullingOn();
-    roiVolumeActor->GetProperty()->BackfaceCullingOn();
-
-    map->Delete();
-    
-    if( [[NSUserDefaults standardUserDefaults] integerForKey: @"UseDelaunayFor3DRoi"] == 2)
+    if( map)
     {
-        DCMPix *o = [viewer.pixList objectAtIndex: 0];
-        
-        float cosines[ 9];
-        
-        [o orientation: cosines];
-        
-        vtkMatrix4x4 *matrice = vtkMatrix4x4::New();
-		matrice->Element[0][0] = cosines[0]; matrice->Element[1][0] = cosines[1]; matrice->Element[2][0] = cosines[2]; matrice->Element[3][0] = 0;
-		matrice->Element[0][1] = cosines[3]; matrice->Element[1][1] = cosines[4]; matrice->Element[2][1] = cosines[5]; matrice->Element[3][1] = 0;
-		matrice->Element[0][2] = cosines[6]; matrice->Element[1][2] = cosines[7]; matrice->Element[2][2] = cosines[8]; matrice->Element[3][2] = 0;
-		matrice->Element[0][3] = 0; matrice->Element[1][3] = 0; matrice->Element[2][3] = 0; matrice->Element[3][3] = 1;
-		
-		roiVolumeActor->SetPosition( factor*[o originX] * matrice->Element[0][0] + factor*[o originY] * matrice->Element[1][0] + factor*[o originZ]*matrice->Element[2][0], factor*[o originX] * matrice->Element[0][1] + factor*[o originY] * matrice->Element[1][1] + factor*[o originZ]*matrice->Element[2][1], factor*[o originX] * matrice->Element[0][2] + factor*[o originY] * matrice->Element[1][2] + factor*[o originZ]*matrice->Element[2][2]);
-        
-		roiVolumeActor->SetUserMatrix( matrice);
-		matrice->Delete();
-    }
-    
-    // *****************Texture
-    NSString *location = [[NSUserDefaults standardUserDefaults] stringForKey:@"textureLocation"];
-    
-    if( location == nil || [location isEqualToString:@""])
-        location = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"texture.tif"];
-    
-    vtkTIFFReader *bmpread = vtkTIFFReader::New();
-       bmpread->SetFileName( [location UTF8String]);
+        roiVolumeActor = vtkActor::New();
+        roiVolumeActor->SetMapper(map);
+        roiVolumeActor->GetProperty()->FrontfaceCullingOn();
+        roiVolumeActor->GetProperty()->BackfaceCullingOn();
 
-    textureImage = vtkTexture::New();
-       textureImage->SetInput( bmpread->GetOutput());
-       textureImage->InterpolateOn();
-    bmpread->Delete();
+        map->Delete();
+        
+        if( [[NSUserDefaults standardUserDefaults] integerForKey: @"UseDelaunayFor3DRoi"] == 2)
+        {
+            DCMPix *o = [viewer.pixList objectAtIndex: 0];
+            
+            float cosines[ 9];
+            
+            [o orientation: cosines];
+            
+            vtkMatrix4x4 *matrice = vtkMatrix4x4::New();
+            matrice->Element[0][0] = cosines[0]; matrice->Element[1][0] = cosines[1]; matrice->Element[2][0] = cosines[2]; matrice->Element[3][0] = 0;
+            matrice->Element[0][1] = cosines[3]; matrice->Element[1][1] = cosines[4]; matrice->Element[2][1] = cosines[5]; matrice->Element[3][1] = 0;
+            matrice->Element[0][2] = cosines[6]; matrice->Element[1][2] = cosines[7]; matrice->Element[2][2] = cosines[8]; matrice->Element[3][2] = 0;
+            matrice->Element[0][3] = 0; matrice->Element[1][3] = 0; matrice->Element[2][3] = 0; matrice->Element[3][3] = 1;
+            
+            roiVolumeActor->SetPosition( factor*[o originX] * matrice->Element[0][0] + factor*[o originY] * matrice->Element[1][0] + factor*[o originZ]*matrice->Element[2][0], factor*[o originX] * matrice->Element[0][1] + factor*[o originY] * matrice->Element[1][1] + factor*[o originZ]*matrice->Element[2][1], factor*[o originX] * matrice->Element[0][2] + factor*[o originY] * matrice->Element[1][2] + factor*[o originZ]*matrice->Element[2][2]);
+            
+            roiVolumeActor->SetUserMatrix( matrice);
+            matrice->Delete();
+        }
+        
+        // *****************Texture
+        NSString *location = [[NSUserDefaults standardUserDefaults] stringForKey:@"textureLocation"];
+        
+        if( location == nil || [location isEqualToString:@""])
+            location = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"texture.tif"];
+        
+        vtkTIFFReader *bmpread = vtkTIFFReader::New();
+           bmpread->SetFileName( [location UTF8String]);
 
-    roiVolumeActor->SetTexture( textureImage);
-    
-    if( roiVolumeActor)
-    {
-		roiVolumeActor->GetProperty()->SetColor(red, green, blue);
-		roiVolumeActor->GetProperty()->SetSpecular(0.3);
-		roiVolumeActor->GetProperty()->SetSpecularPower(20);
-		roiVolumeActor->GetProperty()->SetAmbient(0.2);
-		roiVolumeActor->GetProperty()->SetDiffuse(0.8);
-		roiVolumeActor->GetProperty()->SetOpacity(opacity);
+        textureImage = vtkTexture::New();
+           textureImage->SetInput( bmpread->GetOutput());
+           textureImage->InterpolateOn();
+        bmpread->Delete();
+
+        roiVolumeActor->SetTexture( textureImage);
+        
+        if( roiVolumeActor)
+        {
+            roiVolumeActor->GetProperty()->SetColor(red, green, blue);
+            roiVolumeActor->GetProperty()->SetSpecular(0.3);
+            roiVolumeActor->GetProperty()->SetSpecularPower(20);
+            roiVolumeActor->GetProperty()->SetAmbient(0.2);
+            roiVolumeActor->GetProperty()->SetDiffuse(0.8);
+            roiVolumeActor->GetProperty()->SetOpacity(opacity);
+        }
 	}
-	
+    
 	[splash close];
 	[splash autorelease];
 }
