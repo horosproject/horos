@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13B42" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C48" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment defaultVersion="1070" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
@@ -1971,7 +1971,7 @@ CA
         <window title="Local DICOM Database" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" oneShot="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="885" userLabel="Database Window" customClass="N2OpenGLViewWithSplitsWindow">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="1043" height="674"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <value key="minSize" type="size" width="600" height="600"/>
             <value key="maxSize" type="size" width="9000" height="9000"/>
             <view key="contentView" id="896">
@@ -3055,7 +3055,7 @@ CA
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="11237" userLabel="URL">
             <windowStyleMask key="styleMask" titled="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="640" height="99"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <value key="minSize" type="size" width="213" height="20"/>
             <view key="contentView" id="11238">
                 <rect key="frame" x="0.0" y="0.0" width="640" height="99"/>
@@ -3142,14 +3142,14 @@ Gw
             </view>
         </window>
         <customView id="11361" userLabel="rawDataImport">
-            <rect key="frame" x="0.0" y="0.0" width="561" height="259"/>
+            <rect key="frame" x="0.0" y="0.0" width="712" height="259"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
                 <form verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" mode="track" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="11410">
-                    <rect key="frame" x="440" y="139" width="101" height="19"/>
+                    <rect key="frame" x="531" y="139" width="161" height="19"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                    <size key="cellSize" width="101" height="19"/>
+                    <size key="cellSize" width="161" height="19"/>
                     <size key="intercellSpacing" width="1" height="8"/>
                     <formCell key="prototype" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" alignment="justified" title="Field:" id="13438">
                         <font key="font" metaFont="smallSystem"/>
@@ -3171,8 +3171,8 @@ Gw
                         </column>
                     </cells>
                 </form>
-                <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="11395">
-                    <rect key="frame" x="77" y="26" width="262" height="118"/>
+                <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="11395">
+                    <rect key="frame" x="20" y="26" width="262" height="118"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     <size key="cellSize" width="262" height="18"/>
@@ -3211,10 +3211,10 @@ Gw
                     </cells>
                 </matrix>
                 <form verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" mode="track" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="11390">
-                    <rect key="frame" x="391" y="166" width="150" height="73"/>
+                    <rect key="frame" x="483" y="166" width="209" height="73"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                    <size key="cellSize" width="150" height="19"/>
+                    <size key="cellSize" width="209" height="19"/>
                     <size key="intercellSpacing" width="1" height="8"/>
                     <formCell key="prototype" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" alignment="justified" title="Field:" id="13436">
                         <font key="font" metaFont="smallSystem"/>
@@ -3259,10 +3259,10 @@ Gw
                     </cells>
                 </form>
                 <form verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" mode="track" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="11384">
-                    <rect key="frame" x="251" y="166" width="132" height="73"/>
+                    <rect key="frame" x="267" y="166" width="197" height="73"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                    <size key="cellSize" width="132" height="19"/>
+                    <size key="cellSize" width="197" height="19"/>
                     <size key="intercellSpacing" width="1" height="8"/>
                     <formCell key="prototype" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" alignment="justified" title="Field:" id="13435">
                         <font key="font" metaFont="smallSystem"/>
@@ -3307,7 +3307,7 @@ Gw
                     </cells>
                 </form>
                 <form verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" mode="track" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="11362">
-                    <rect key="frame" x="15" y="163" width="228" height="76"/>
+                    <rect key="frame" x="20" y="163" width="228" height="76"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     <size key="cellSize" width="228" height="20"/>
@@ -3337,13 +3337,13 @@ Gw
             <constraints>
                 <constraint firstItem="11384" firstAttribute="top" secondItem="11362" secondAttribute="top" id="0kn-yC-J15"/>
                 <constraint firstItem="11390" firstAttribute="trailing" secondItem="11410" secondAttribute="trailing" id="6E5-5w-1tG"/>
-                <constraint firstItem="11390" firstAttribute="leading" secondItem="11384" secondAttribute="trailing" constant="8" symbolic="YES" id="DSQ-Jh-aYc"/>
-                <constraint firstItem="11384" firstAttribute="leading" secondItem="11362" secondAttribute="trailing" constant="8" symbolic="YES" id="Urj-vN-GeL"/>
+                <constraint firstItem="11390" firstAttribute="leading" secondItem="11384" secondAttribute="trailing" constant="19" id="DSQ-Jh-aYc"/>
+                <constraint firstItem="11384" firstAttribute="leading" secondItem="11362" secondAttribute="trailing" constant="19" id="Urj-vN-GeL"/>
                 <constraint firstItem="11362" firstAttribute="top" secondItem="11361" secondAttribute="top" constant="20" symbolic="YES" id="ZEf-dt-44o"/>
                 <constraint firstItem="11384" firstAttribute="top" secondItem="11390" secondAttribute="top" id="cL0-pQ-70H"/>
                 <constraint firstItem="11410" firstAttribute="top" secondItem="11390" secondAttribute="bottom" constant="8" symbolic="YES" id="doh-4e-DgJ"/>
                 <constraint firstAttribute="trailing" secondItem="11390" secondAttribute="trailing" constant="20" symbolic="YES" id="gbr-rt-Dg5"/>
-                <constraint firstItem="11395" firstAttribute="leading" secondItem="11361" secondAttribute="leading" constant="77" id="z6k-Uk-nT7"/>
+                <constraint firstItem="11395" firstAttribute="leading" secondItem="11361" secondAttribute="leading" constant="20" symbolic="YES" id="z6k-Uk-nT7"/>
                 <constraint firstItem="11395" firstAttribute="top" secondItem="11362" secondAttribute="bottom" constant="19" id="zbb-uR-D4o"/>
             </constraints>
         </customView>
@@ -3552,7 +3552,7 @@ Gw
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="11675" userLabel="newAlbum">
             <windowStyleMask key="styleMask" titled="YES" miniaturizable="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="418" height="107"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <value key="minSize" type="size" width="213" height="107"/>
             <view key="contentView" id="11676">
                 <rect key="frame" x="0.0" y="0.0" width="418" height="107"/>
@@ -3627,7 +3627,7 @@ Gw
         <window title="Password" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="11804" userLabel="passwordAlbum">
             <windowStyleMask key="styleMask" titled="YES" miniaturizable="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="348" height="124"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <value key="minSize" type="size" width="213" height="107"/>
             <view key="contentView" id="11805">
                 <rect key="frame" x="0.0" y="0.0" width="348" height="124"/>
@@ -3906,7 +3906,7 @@ Gw
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="12366" userLabel="subSampling">
             <windowStyleMask key="styleMask" titled="YES" miniaturizable="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="537" height="273"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <view key="contentView" autoresizesSubviews="NO" id="12367">
                 <rect key="frame" x="0.0" y="0.0" width="537" height="273"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -4293,7 +4293,7 @@ update to OsiriX 64-bit:</string>
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="12799" userLabel="subOpen">
             <windowStyleMask key="styleMask" titled="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="727" height="353"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <value key="minSize" type="size" width="213" height="107"/>
             <view key="contentView" id="12800">
                 <rect key="frame" x="0.0" y="0.0" width="727" height="353"/>
@@ -4534,7 +4534,7 @@ Gw
         <window title="CD/DVD Password" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" visibleAtLaunch="NO" animationBehavior="default" id="13805" userLabel="Password">
             <windowStyleMask key="styleMask" titled="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="508" height="149"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <view key="contentView" id="13806">
                 <rect key="frame" x="0.0" y="0.0" width="508" height="149"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -4642,7 +4642,7 @@ Gw
         <window title="CD/DVD Password" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" visibleAtLaunch="NO" animationBehavior="default" id="13843" userLabel="ZIPPassword">
             <windowStyleMask key="styleMask" titled="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="554" height="127"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <view key="contentView" id="13844">
                 <rect key="frame" x="0.0" y="0.0" width="554" height="127"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -4746,7 +4746,7 @@ Gw
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" visibleAtLaunch="NO" animationBehavior="default" id="13869" userLabel="Notification">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="813" height="462"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <value key="minSize" type="size" width="813" height="372"/>
             <value key="maxSize" type="size" width="813" height="1000"/>
             <view key="contentView" id="13870">
@@ -5089,7 +5089,7 @@ Gw
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" visibleAtLaunch="NO" animationBehavior="default" id="13928" userLabel="AddStudiesToUser">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="813" height="372"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <value key="minSize" type="size" width="813" height="372"/>
             <value key="maxSize" type="size" width="813" height="1000"/>
             <view key="contentView" id="13929">
@@ -5346,7 +5346,7 @@ Gw
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="14365" userLabel="rebuild">
             <windowStyleMask key="styleMask" titled="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="493" height="216"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <value key="minSize" type="size" width="213" height="107"/>
             <view key="contentView" id="14366">
                 <rect key="frame" x="0.0" y="0.0" width="493" height="216"/>
