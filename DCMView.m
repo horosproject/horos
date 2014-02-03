@@ -7836,6 +7836,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void) drawOrientation:(NSRect) size
 {
+    if( NSIsEmptyRect( screenCaptureRect) == NO)
+        size = screenCaptureRect;
+    else
+        size.origin = NSMakePoint( 0, 0);
+    
 	// Determine Anterior, Posterior, Left, Right, Head, Foot
 	char	string[ 10];
 	float   vectors[ 9];
@@ -12886,7 +12891,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 //Database links
 - (DicomImage *)imageObj
 {
-	if( stringID == nil || [stringID isEqualToString:@"previewDatabase"])
+//	if( stringID == nil || [stringID isEqualToString: @"previewDatabase"])  <- this will break the DICOM export function: no sourceFilePath in DICOMExport
 	{
 #ifdef NDEBUG
 #else
@@ -12908,7 +12913,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (DicomSeries *)seriesObj
 {
-	if( stringID == nil || [stringID isEqualToString:@"previewDatabase"])
+//	if( stringID == nil || [stringID isEqualToString:@"previewDatabase"]) <- this will break the DICOM export function: no sourceFilePath in DICOMExport
 	{
 #ifdef NDEBUG
 #else
@@ -12927,7 +12932,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (DicomStudy *)studyObj
 {
-	if( stringID == nil || [stringID isEqualToString:@"previewDatabase"])
+//	if( stringID == nil || [stringID isEqualToString:@"previewDatabase"]) <- this will break the DICOM export function: no sourceFilePath in DICOMExport
 	{
 #ifdef NDEBUG
 #else
