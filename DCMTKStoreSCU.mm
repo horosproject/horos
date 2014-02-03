@@ -1112,16 +1112,13 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	opt_peer = [_hostname UTF8String];
 	opt_port = _port;
 	
-	//verbose option set to true for now
-	opt_verbose = OFFalse;
-	opt_showPresentationContexts = OFFalse;
-	
-	//debug code off for now
-	opt_debug = OFFalse;
-	
-	DUL_Debug(OFFalse);
-	DIMSE_debug(OFFalse);
-	SetDebugLevel(0);
+    
+	opt_verbose = [[NSUserDefaults standardUserDefaults] boolForKey: @"verbose_dcmtkStoreScu"];
+	opt_showPresentationContexts = [[NSUserDefaults standardUserDefaults] boolForKey: @"verbose_dcmtkStoreScu"];
+	opt_debug = [[NSUserDefaults standardUserDefaults] boolForKey: @"verbose_dcmtkStoreScu"];
+	DUL_Debug( [[NSUserDefaults standardUserDefaults] boolForKey: @"verbose_dcmtkStoreScu"]);
+	DIMSE_debug( [[NSUserDefaults standardUserDefaults] boolForKey: @"verbose_dcmtkStoreScu"]);
+	SetDebugLevel( [[NSUserDefaults standardUserDefaults] boolForKey: @"verbose_dcmtkStoreScu"]);
 	
 	switch (_transferSyntax)
 	{
