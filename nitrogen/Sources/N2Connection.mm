@@ -265,8 +265,8 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 	if (status == _status)
 		return;
 	
-	NSString* N2ConnectionStatusName[] = {@"N2ConnectionStatusClosed", @"N2ConnectionStatusConnecting", @"N2ConnectionStatusOpening", @"N2ConnectionStatusOk"};
-	DLog(@"%@ setting status: %@", self, N2ConnectionStatusName[status]);
+//	NSString* N2ConnectionStatusName[] = {@"N2ConnectionStatusClosed", @"N2ConnectionStatusConnecting", @"N2ConnectionStatusOpening", @"N2ConnectionStatusOk"};
+//	DLog(@"%@ setting status: %@", self, N2ConnectionStatusName[status]);
 	
 	_status = status;
 	
@@ -287,6 +287,8 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 	[_inputStream release]; _inputStream = nil;
 	
 	_handleOpenCompleted = 0;
+    
+    [[self class] cancelPreviousPerformRequestsWithTarget: self];
 }
 
 #pragma deprecated (invalidate)
