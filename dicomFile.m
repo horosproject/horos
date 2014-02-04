@@ -2458,6 +2458,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                         }
                     }
                     
+                    studyTime = [studyTime stringByReplacingOccurrencesOfString:@":" withString:@""];
+                    
                     if( studyDate && studyTime)
                     {
                         NSString *completeDate = [studyDate stringByAppendingString:studyTime];

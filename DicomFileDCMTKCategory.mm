@@ -549,6 +549,8 @@ extern NSRecursiveLock *PapyrusLock;
         else if (dataset->findAndGetString(DCM_StudyTime, string, OFFalse).good() && string != NULL && strlen( string) > 0 && atof( string) > 0)
             studyTime = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
         
+        studyTime = [studyTime stringByReplacingOccurrencesOfString:@":" withString:@""];
+        
         if( studyDate && studyTime)
         {
             NSString *completeDate = [studyDate stringByAppendingString:studyTime];
