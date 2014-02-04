@@ -314,7 +314,13 @@ OFCondition DJCodecEncoder::encodeColorImage(
   {
     if (compressedBits == 0)
     {
-      result = ((DcmItem *)dataset)->findAndGetUint16(DCM_BitsStored, compressedBits);
+        result = ((DcmItem *)dataset)->findAndGetUint16(DCM_BitsStored, compressedBits);
+        
+        if( strcmp( photometricInterpretation, "RGB") == 0)
+            compressedBits = 8;
+        
+        if( samplesPerPixel != 1)
+            compressedBits = 8;
     }
   }
 

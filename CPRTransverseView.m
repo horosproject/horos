@@ -440,9 +440,13 @@ extern int splitPosition[ 3];
 	if( annotationType > annotGraphics)
 		annotationType = annotGraphics;
 	
-	for( int i = 0; i < curRoiList.count; i++ )
+    NSMutableArray *rArray = curRoiList;
+    
+    [rArray retain];
+    
+	for( int i = 0; i < rArray.count; i++ )
 	{
-		ROI *r = [curRoiList objectAtIndex:i];
+		ROI *r = [rArray objectAtIndex:i];
 		
 		r.displayCMOrPixels = YES; // We don't want the value in pixels
 		r.imageOrigin = NSMakePoint( curDCM.originX, curDCM.originY);
@@ -450,9 +454,12 @@ extern int splitPosition[ 3];
 		if( r.type == t3Dpoint || r.type == t2DPoint)
 		{
 			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:r userInfo: nil];
-			[curRoiList removeObjectAtIndex: i];
+			[rArray removeObjectAtIndex: i];
+            i--;
 		}
 	}
+    
+    [rArray autorelease];
 	
 	[super drawRect: aRect withContext: ctx];
 	

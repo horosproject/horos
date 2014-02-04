@@ -1625,16 +1625,20 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	[drawLock lock];
 	
+    NSMutableArray *rArray = curRoiList;
+    
+    [rArray retain];
+    
 	@try 
 	{
-		for( i = 0; i < [curRoiList count]; i++)
+		for( i = 0; i < [rArray count]; i++)
 		{
-			ROI *r = [curRoiList objectAtIndex:i];
+			ROI *r = [rArray objectAtIndex:i];
 			if( [r ROImode] == ROI_selected && r.locked == NO)
 			{
 				groupID = [r groupID];
 				[[NSNotificationCenter defaultCenter] postNotificationName:OsirixRemoveROINotification object:r userInfo: nil];
-				[curRoiList removeObjectAtIndex:i];
+				[rArray removeObjectAtIndex:i];
 				i--;
 				if(groupID!=0.0)
 					[self deleteROIGroupID:groupID];
@@ -1647,6 +1651,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		N2LogExceptionWithStackTrace(e);
 	}
+    
+    [rArray autorelease];
 	
 	[drawLock unlock];
 	
@@ -2011,10 +2017,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	int w = d.pwidth;
 	int h = d.pheight;
 	
-	if( d.DCMPixShutterOnOff)
+	if( d.shutterEnabled)
 	{
-		w = d.DCMPixShutterRectWidth;
-		h = d.DCMPixShutterRectHeight;
+		w = d.shutterRect.size.width;
+		h = d.shutterRect.size.height;
 	}
 	
 	if( sizeView.size.width / w < sizeView.size.height / h / d.pixelRatio )
@@ -2030,10 +2036,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	self.scaleValue = [self scaleToFitForDCMPix: curDCM];
 	
-	if( curDCM.DCMPixShutterOnOff && curDCM.shutterPolygonal)
+	if( curDCM.shutterEnabled && curDCM.shutterPolygonal)
 	{
-		origin.x = ((curDCM.pwidth  * 0.5f ) - ( curDCM.DCMPixShutterRectOriginX + ( curDCM.DCMPixShutterRectWidth  * 0.5f ))) * scaleValue;
-		origin.y = -((curDCM.pheight * 0.5f ) - ( curDCM.DCMPixShutterRectOriginY + ( curDCM.DCMPixShutterRectHeight * 0.5f ))) * scaleValue;
+		origin.x = ((curDCM.pwidth  * 0.5f ) - ( curDCM.shutterRect.origin.x + ( curDCM.shutterRect.size.width  * 0.5f ))) * scaleValue;
+		origin.y = -((curDCM.pheight * 0.5f ) - ( curDCM.shutterRect.origin.y + ( curDCM.shutterRect.size.height * 0.5f ))) * scaleValue;
 	}
 	else
 		origin.x = origin.y = 0;
@@ -2712,11 +2718,16 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			[drawLock lock];
 			
-			@try 
+            
+            NSMutableArray *rArray = curRoiList;
+            
+            [rArray retain];
+            
+			@try
 			{
-				for( i = 0; i < [curRoiList count]; i++)
+				for( i = 0; i < [rArray count]; i++)
 				{
-					ROI *r = [curRoiList objectAtIndex:i];
+					ROI *r = [rArray objectAtIndex:i];
 					
 					if( [r ROImode] == ROI_selectedModify || [r ROImode] == ROI_drawing)
 					{
@@ -2724,7 +2735,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						{
 							groupID = [r groupID];
 							[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:r userInfo: nil];
-							[curRoiList removeObjectAtIndex:i];
+							[rArray removeObjectAtIndex:i];
 							i--;
 							if( groupID != 0.0)
 								[self deleteROIGroupID:groupID];
@@ -2732,15 +2743,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					}
 				}
 				
-				for( i = 0; i < [curRoiList count]; i++)
+				for( i = 0; i < [rArray count]; i++)
 				{
-					ROI *r = [curRoiList objectAtIndex:i];
+					ROI *r = [rArray objectAtIndex:i];
 					
 					if( [r ROImode] == ROI_selected  && r.locked == NO && r.hidden == NO)
 					{
 						groupID = [r groupID];
 						[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:r userInfo: nil];
-						[curRoiList removeObjectAtIndex:i];
+						[rArray removeObjectAtIndex:i];
 						i--;
 						if( groupID != 0.0)
 							[self deleteROIGroupID:groupID];
@@ -2748,12 +2759,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				}
 				
 				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIRemovedFromArrayNotification object: nil userInfo: nil];
-				
 			}
 			@catch (NSException * e) 
 			{
                 N2LogExceptionWithStackTrace(e);
 			}
+            
+            [rArray autorelease];
 			
 			[drawLock unlock];
 			
@@ -3014,14 +3026,18 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	[drawLock lock];
 	
+    NSMutableArray *rArray = curRoiList;
+    
+    [rArray retain];
+    
 	@try 
 	{
-		for( int i=0; i<[curRoiList count]; i++ )
+		for( int i=0; i<[rArray count]; i++ )
 		{
-			if([[curRoiList objectAtIndex:i] groupID] == groupID)
+			if([[rArray objectAtIndex:i] groupID] == groupID)
 			{
-				[[NSNotificationCenter defaultCenter] postNotificationName:OsirixRemoveROINotification object:[curRoiList objectAtIndex:i] userInfo:nil];
-				[curRoiList removeObjectAtIndex:i];
+				[[NSNotificationCenter defaultCenter] postNotificationName:OsirixRemoveROINotification object:[rArray objectAtIndex:i] userInfo:nil];
+				[rArray removeObjectAtIndex:i];
 				i--;
                 
                 [[NSNotificationCenter defaultCenter] postNotificationName:OsirixROIRemovedFromArrayNotification object:NULL userInfo:NULL];
@@ -3032,6 +3048,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		N2LogExceptionWithStackTrace(e);
 	}
+    
+    [rArray autorelease];
 	
 	[drawLock unlock];
 }
@@ -4090,11 +4108,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void) deleteInvalidROIsForArray: (NSMutableArray*) r
 {
-    if( ![r isKindOfClass: [NSMutableArray class]])
-    {
-        N2LogStackTrace( @"deleteInvalidROIsForArray Array is NOT mutableArray");
-        return;
-    }
+    [r retain]; //OsirixRemoveROINotification or OsirixROIRemovedFromArrayNotification can change/delete the NSArray !
     
     @try {
         for( int i = 0; i < [r count]; i++)
@@ -4119,6 +4133,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     @catch (NSException *exception) {
         N2LogException( exception);
     }
+    
+    [r autorelease];
 }
 
 - (void) deleteInvalidROIs
@@ -6634,14 +6650,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	if( dcmPixList == nil) return;
 	
-	if( [ViewerController numberOf2DViewer] > 1 && isKeyView)
+	if( [ViewerController numberOf2DViewer] > 1 && isKeyView && [self is2DViewer])
     {
 		NSDictionary *instructions = [self syncMessage: inc];
         
 		if( instructions)
 		{
-			if( stringID == nil)
-				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixSyncNotification object: self userInfo: instructions];
+            [[NSNotificationCenter defaultCenter] postNotificationName: OsirixSyncNotification object: self userInfo: instructions];
 				
 			// most subclasses just need this. NO sync notification for subclasses.
 			if( blendingView) // We have to reload the blending image..
@@ -6802,16 +6817,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		int prevImage = curImage;
 		
-		if( [self is2DViewer] == YES)
-		{
-			if( [[self windowController] windowWillClose])
-				return;
-		}
+        if( [[self windowController] windowWillClose])
+            return;
 		
 		if( avoidRecursiveSync > 2) return;
 		avoidRecursiveSync++;
 		
-		if( [note object] != self && isKeyView == YES && matrix == 0 && stringID == nil && [[note object] stringID] == nil && curImage > -1 )    // Dont change the browser preview....
+		if( [note object] != self && isKeyView == YES && matrix == 0 && curImage > -1)
 		{
 			NSDictionary *instructions = [note userInfo];
 			
@@ -7092,8 +7104,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					}
 				}
 				
-				if( [self is2DViewer] == YES)
-					[[self windowController] adjustSlider];
+                [[self windowController] adjustSlider];
 				
 				[self setNeedsDisplay:YES];
 			}
@@ -7825,6 +7836,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void) drawOrientation:(NSRect) size
 {
+    if( NSIsEmptyRect( screenCaptureRect) == NO)
+        size = screenCaptureRect;
+    else
+        size.origin = NSMakePoint( 0, 0);
+    
 	// Determine Anterior, Posterior, Left, Right, Head, Foot
 	char	string[ 10];
 	float   vectors[ 9];
@@ -10003,10 +10019,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 									
 									NSPoint o = NSMakePoint( 0, 0);
 									
-									if( pix.DCMPixShutterOnOff)
+									if( pix.shutterEnabled)
 									{
-										o.x = ((curDCM.pwidth  * 0.5f ) - ( curDCM.DCMPixShutterRectOriginX + ( curDCM.DCMPixShutterRectWidth  * 0.5f ))) * scaleValue;
-										o.y = -((curDCM.pheight * 0.5f ) - ( curDCM.DCMPixShutterRectOriginY + ( curDCM.DCMPixShutterRectHeight * 0.5f ))) * scaleValue;
+										o.x = ((curDCM.pwidth  * 0.5f ) - ( curDCM.shutterRect.origin.x + ( curDCM.shutterRect.size.width  * 0.5f ))) * scaleValue;
+										o.y = -((curDCM.pheight * 0.5f ) - ( curDCM.shutterRect.origin.y + ( curDCM.shutterRect.size.height * 0.5f ))) * scaleValue;
 									}
 									
 									[pix.imageObj setValue: [NSNumber numberWithFloat: o.x] forKey:@"xOffset"];
@@ -11788,7 +11804,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	if( curDCM.subtractedfImage) 
 		intFULL32BITPIPELINE = NO;
 	
-	if( curDCM.DCMPixShutterOnOff) 
+	if( curDCM.shutterEnabled) 
 		intFULL32BITPIPELINE = NO;
 	
 	if( curDCM.pwidth >= maxTextureSize) 
@@ -12112,12 +12128,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	
 	if( intFULL32BITPIPELINE == NO)
-	{
 		TextureComputed32bitPipeline = NO;
-		curDCM.full32bitPipeline = NO;
-	}
-	else
-		curDCM.full32bitPipeline = YES;
 	
 	glPixelStorei (GL_UNPACK_ROW_LENGTH, *tW);
 	
@@ -12880,7 +12891,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 //Database links
 - (DicomImage *)imageObj
 {
-	if( stringID == nil || [stringID isEqualToString:@"previewDatabase"])
+//	if( stringID == nil || [stringID isEqualToString: @"previewDatabase"])  <- this will break the DICOM export function: no sourceFilePath in DICOMExport
 	{
 #ifdef NDEBUG
 #else
@@ -12902,7 +12913,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (DicomSeries *)seriesObj
 {
-	if( stringID == nil || [stringID isEqualToString:@"previewDatabase"])
+//	if( stringID == nil || [stringID isEqualToString:@"previewDatabase"]) <- this will break the DICOM export function: no sourceFilePath in DICOMExport
 	{
 #ifdef NDEBUG
 #else
@@ -12921,7 +12932,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (DicomStudy *)studyObj
 {
-	if( stringID == nil || [stringID isEqualToString:@"previewDatabase"])
+//	if( stringID == nil || [stringID isEqualToString:@"previewDatabase"]) <- this will break the DICOM export function: no sourceFilePath in DICOMExport
 	{
 #ifdef NDEBUG
 #else

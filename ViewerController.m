@@ -2721,10 +2721,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			
             if( [[[curImage valueForKeyPath:@"series.id"] stringValue] length])
                 windowTitle = [windowTitle stringByAppendingFormat: @" (%@)", [[curImage valueForKeyPath:@"series.id"] stringValue]];
-                               
-			if( [[pixList[ curMovieIndex] objectAtIndex:0] generated] && [[pixList[ curMovieIndex] objectAtIndex:0] generatedName])
-				windowTitle = [windowTitle stringByAppendingString: [NSString stringWithFormat: @" - %@", [[pixList[ curMovieIndex] objectAtIndex:0] generatedName]]];
-			
+            
             if( [[imageView curDCM] SUVConverted])
                 windowTitle = [windowTitle stringByAppendingString: NSLocalizedString( @" (SUV Converted)", nil)];
             
@@ -6834,11 +6831,8 @@ return YES;
 		}
 		
 		//shutterRect inside frame?
-		//NSLog(@"x:%f, y:%f, w:%f, h:%f",shutterRect.origin.x,shutterRect.origin.y,shutterRect.size.width,shutterRect.size.height);
 		float DCMPixWidth = [curPix pwidth];
 		float DCMPixHeight = [curPix pheight];
-		//NSLog(@"DCMPix w:%f",DCMPixWidth);
-		//NSLog(@"DCMPix h:%f",DCMPixHeight);		
 		if (shutterRect.origin.x < 0) shutterRect.origin.x = 0;
 		if (shutterRect.origin.y < 0) shutterRect.origin.y = 0;
 		if (shutterRect.origin.x + shutterRect.size.width > DCMPixWidth) shutterRect.size.width = DCMPixWidth - shutterRect.origin.x;
@@ -6847,16 +6841,16 @@ return YES;
 		//using valid shutterRect
 		if (shutterRect.size.width != 0)
 		{
-			for( i = 0; i < [[imageView dcmPixList] count]; i++)
+			for( DCMPix *p in [imageView dcmPixList])
 			{
-				[[[imageView dcmPixList] objectAtIndex: i] DCMPixShutterRect:(long)shutterRect.origin.x :(long)shutterRect.origin.y :(long)shutterRect.size.width :(long)shutterRect.size.height];
-				[[[imageView dcmPixList] objectAtIndex: i] DCMPixShutterOnOff: NSOnState];
+				p.shutterRect = shutterRect;
+				p.shutterEnabled = NSOnState;
 			}
 		}
 		else
 		{
 			//using stored shutterRect?
-			if ( ([curPix DCMPixShutterRectWidth] == 0 || ([curPix DCMPixShutterRectWidth] == [curPix pwidth] && [curPix DCMPixShutterRectHeight] == [curPix pheight])) && curPix.shutterPolygonal == nil)
+			if ( (curPix.shutterRect.size.width == 0 || (curPix.shutterRect.size.width == [curPix pwidth] && curPix.shutterRect.size.height == [curPix pheight])) && curPix.shutterPolygonal == nil)
 			{
 				[shutterOnOff setState:NSOffState];
 				
@@ -6864,14 +6858,13 @@ return YES;
 			}
 			else //reuse preconfigured shutterRect
 			{
-				for( i = 0; i < [[imageView dcmPixList] count]; i++) [[[imageView dcmPixList] objectAtIndex: i] DCMPixShutterOnOff: NSOnState];
+				for( DCMPix *p in [imageView dcmPixList]) p.shutterEnabled = NSOnState;
 			}
 		}
 	}
 	else
 	{
-		for( i = 0; i < [[imageView dcmPixList] count]; i++)
-			[[[imageView dcmPixList] objectAtIndex: i] DCMPixShutterOnOff: NSOffState];
+		for( DCMPix *p in [imageView dcmPixList]) p.shutterEnabled = NSOffState;
 	}
 	[imageView setIndex: [imageView curImage]]; //refresh viewer only
 }
@@ -7669,15 +7662,23 @@ static int avoidReentryRefreshDatabase = 0;
 			NSLog( @"***** saveROI exception : %@", e);
 		}
 		
+        
+        
 		for( NSArray *a in roiList[ i])
 		{
+            NSArray *rArray = a;
+            
+            [a retain];
+            
 			for( ROI *r in a)
-			{
 				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object: r userInfo: nil];
-			}
+            
+            [a release];
 		}
 	}
 	
+    [self applyStatusValue];
+    
 	for( i = 0; i < maxMovieIndex; i++)
 	{
 		[copyRoiList[ i] release]; copyRoiList[ i] = nil;
@@ -7935,6 +7936,8 @@ static int avoidReentryRefreshDatabase = 0;
 	@synchronized( self)
 	{
         NSDisableScreenUpdates();
+        
+        statusValueToApply = -1;
         
 		@try 
 		{
@@ -8829,7 +8832,7 @@ static int avoidReentryRefreshDatabase = 0;
         }
     }
     
-    if( [firstPix DCMPixShutterOnOff])
+    if( firstPix.shutterEnabled)
         [self setShutterOnOffButton: [NSNumber numberWithBool: YES]];
 	
     [self setWindowTitle:self];
@@ -13492,18 +13495,22 @@ int i,j,l;
 {
 	[imageView stopROIEditingForce: YES];
 	
-	for( int x = 0; x < [pixList[curMovieIndex] count]; x++)
+	for( NSMutableArray *x in roiList[curMovieIndex])
 	{
-		for( int i = 0; i < [[roiList[curMovieIndex] objectAtIndex: x] count]; i++)
+        [x retain];
+        
+		for( int i = 0; i < [x count]; i++)
 		{
-			ROI	*curROI = [[roiList[curMovieIndex] objectAtIndex: x] objectAtIndex: i];
+			ROI	*curROI = [x objectAtIndex: i];
 			if( curROI == roi)
 			{
 				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:curROI userInfo: nil];
-				[[roiList[curMovieIndex] objectAtIndex: x] removeObject:curROI];
+				[x removeObject:curROI];
 				i--;
 			}
 		}
+        
+        [x autorelease];
 	}
 }
 
@@ -13515,18 +13522,22 @@ int i,j,l;
 	
 	[imageView stopROIEditingForce: YES];
 	
-	for( x = 0; x < [pixList[curMovieIndex] count]; x++)
+	for( NSMutableArray *x in roiList[curMovieIndex])
 	{
-		for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: x] count]; i++)
+        [x retain];
+        
+		for( i = 0; i < [x count]; i++)
 		{
-			ROI	*curROI = [[roiList[curMovieIndex] objectAtIndex: x] objectAtIndex: i];
+			ROI	*curROI = [x objectAtIndex: i];
 			if( [[curROI name] isEqualToString: name])
 			{
 				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:curROI userInfo: nil];
-				[[roiList[curMovieIndex] objectAtIndex: x] removeObject:curROI];
+				[x removeObject:curROI];
 				i--;
 			}
 		}
+        
+        [x autorelease];
 	}
 	
 	[name release];
@@ -13752,18 +13763,22 @@ int i,j,l;
 	
 	[self addToUndoQueue: @"roi"];
 	
-	for( x = 0; x < [pixList[curMovieIndex] count]; x++)
+	for( NSMutableArray *x in roiList[curMovieIndex])
 	{
-		for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: x] count]; i++)
+        [x retain];
+        
+		for( i = 0; i < [x count]; i++)
 		{
-			ROI	*curROI = [[roiList[curMovieIndex] objectAtIndex: x] objectAtIndex: i];
+			ROI	*curROI = [x objectAtIndex: i];
 			if( [[curROI name] isEqualToString: name] && curROI.locked == NO)
 			{
 				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:curROI userInfo: nil];
-				[[roiList[ curMovieIndex] objectAtIndex: x] removeObject: curROI];
+				[x removeObject: curROI];
 				i--;
 			}
 		}
+        
+        [x autorelease];
 	}
 	
 	[name release];
@@ -13799,24 +13814,27 @@ int i,j,l;
 	
 	[imageView stopROIEditingForce: YES];
 	
-	for( x = 0; x < [pixList[curMovieIndex] count]; x++)
+	for( NSMutableArray *x in roiList[curMovieIndex])
 	{
-		
-		for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: x] count]; i++)
+        [x retain];
+        
+		for( i = 0; i < [x count]; i++)
 		{
-			ROI	*curROI = [[roiList[curMovieIndex] objectAtIndex: x] objectAtIndex: i];
+			ROI	*curROI = [x objectAtIndex: i];
 			if( [[curROI comments] isEqualToString: @"morphing generated"])
 			{
 				if( [[curROI name] isEqualToString: name] || name == nil)
 				{
 					[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:curROI userInfo: nil];
-					[[roiList[ curMovieIndex] objectAtIndex: x] removeObject: curROI];
+					[x removeObject: curROI];
 					i--;
 					
 					no++;
 				}
 			}
 		}
+        
+        [x autorelease];
 	}
 	
 	[imageView setIndex: [imageView curImage]];
@@ -14403,18 +14421,22 @@ int i,j,l;
 	
 	for( y = 0; y < maxMovieIndex; y++)
 	{
-		for( x = 0; x < [pixList[y] count]; x++)
+		for( NSMutableArray *x in roiList[y])
 		{
-			for( i = (long)[[roiList[y] objectAtIndex: x] count]-1; i >= 0 ; i--)
+            [x retain];
+            
+			for( i = ((long)[x count])-1; i >= 0 ; i--)
 			{
-				ROI *curROI = [[roiList[y] objectAtIndex: x] objectAtIndex:i];
+				ROI *curROI = [x objectAtIndex:i];
 				
 				if( curROI.locked == NO)
 				{
 					[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:curROI userInfo: nil];
-					[[roiList[y] objectAtIndex: x] removeObject: curROI];
+					[x removeObject: curROI];
 				}
 			}
+            
+            [x autorelease];
 		}
 	}
 	
@@ -16317,8 +16339,8 @@ int i,j,l;
 			
 			if( [[vC modality] isEqualToString:@"MR"] == YES && [[self modality] isEqualToString:@"MR"] == YES)
 			{
-				if(	[[[imageView curDCM] repetitiontime] isEqualToString: [[[vC imageView] curDCM] repetitiontime]] == NO || 
-					[[[imageView curDCM] echotime] isEqualToString: [[[vC imageView] curDCM] echotime]] == NO)
+                if( imageView.curDCM.repetitionTime != vC.imageView.curDCM.repetitionTime ||
+                    imageView.curDCM.echoTime != vC.imageView.curDCM.echoTime)
 					{
 						propagate = NO;
 					}
@@ -17512,7 +17534,7 @@ int i,j,l;
 		
 		for( int x = 0; x < [pixList[ i] count]; x++)
 		{
-			DCMObject *dcmObject = [DCMObject objectWithContentsOfFile: [[pixList[ i] objectAtIndex: x] srcFile]  decodingPixelData:NO];
+			DCMObject *dcmObject = [DCMObject objectWithContentsOfFile: [[pixList[ i] objectAtIndex: x] sourceFile]  decodingPixelData:NO];
 			
 			DCMAttribute *attr = [dcmObject attributeForTag: [DCMAttributeTag tagWithGroup: gr element: el]];
 			
@@ -22007,19 +22029,27 @@ int i,j,l;
 	[NSApp beginSheet: CommentsWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 }
 
+- (void) applyStatusValue
+{
+    if( statusValueToApply != -1)
+    {
+        [[fileList[ curMovieIndex] objectAtIndex:[imageView curImage]] setValue:[NSNumber numberWithInt: statusValueToApply] forKeyPath:@"series.study.stateText"];
+        
+        if([[BrowserController currentBrowser] isCurrentDatabaseBonjour])
+        {
+            [[BrowserController currentBrowser] setBonjourDatabaseValue:[fileList[curMovieIndex] objectAtIndex:[imageView curImage]] value:[NSNumber numberWithInt: statusValueToApply] forKey:@"series.study.stateText"];
+        }
+        
+        [StatusPopup selectItemWithTag: statusValueToApply];
+        
+        [[[BrowserController currentBrowser] databaseOutline] reloadData];
+        [self buildMatrixPreview: NO];
+    }
+}
+
 - (void) setStatusValue:(int) v
 {
-	[[fileList[ curMovieIndex] objectAtIndex:[imageView curImage]] setValue:[NSNumber numberWithInt: v] forKeyPath:@"series.study.stateText"];
-	
-	if([[BrowserController currentBrowser] isCurrentDatabaseBonjour])
-	{
-		[[BrowserController currentBrowser] setBonjourDatabaseValue:[fileList[curMovieIndex] objectAtIndex:[imageView curImage]] value:[NSNumber numberWithInt: v] forKey:@"series.study.stateText"];
-	}
-	
-	[StatusPopup selectItemWithTag: v];
-	
-	[[[BrowserController currentBrowser] databaseOutline] reloadData];
-	[self buildMatrixPreview: NO];	
+    statusValueToApply = v;
 }
 
 - (IBAction) setStatus:(id) sender

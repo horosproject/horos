@@ -232,7 +232,7 @@
 		ROIVolumeController *co = [[self window] windowController];
 		NSArray	*pixList = [[co viewer] pixList];
 		
-		[exportDCM setSourceFile: [[pixList objectAtIndex: 0] srcFile]];
+		[exportDCM setSourceFile: [[pixList objectAtIndex: 0] sourceFile]];
 		[exportDCM setSeriesDescription: [co.seriesName stringValue]];
 		[exportDCM setSeriesNumber: 8856];
 		[exportDCM setPixelData: dataPtr samplePerPixel:spp bitsPerPixel:bpp width: width height: height];

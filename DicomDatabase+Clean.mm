@@ -548,7 +548,7 @@ static BOOL _cleanForFreeSpaceLimitSoonReachedDisplayed = NO;
             
             DicomStudy* study = [sd objectAtIndex:0];
             
-            if( [study.dateAdded timeIntervalSinceNow] > -60*60*6) // The study was added less than 6 hours.... we cannot remove it !
+            if( [study.dateAdded timeIntervalSinceNow] > -60*60*2) // The study was added less than 2 hours.... we cannot remove it !
             {
                 NSLog( @"---- WARNING: trying to remove a study added recently: %@", study.dateAdded);
                 displayError = YES;
