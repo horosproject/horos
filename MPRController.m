@@ -3178,11 +3178,12 @@ static float deg2rad = M_PI/180.0;
 
 -(void) addMoviePixList:(NSMutableArray*) pix :(NSData*) vData
 {
+	self.maxMovieIndex++;
+    
 	pixList[ maxMovieIndex] = pix;
 	volumeData[ maxMovieIndex] = vData;
 	
 	self.movieRate = 20;
-	self.maxMovieIndex++;
 	[moviePosSlider setNumberOfTickMarks: maxMovieIndex+1];
 	
 	[hiddenVRController addMoviePixList: pix :vData];	
@@ -3200,6 +3201,13 @@ static float deg2rad = M_PI/180.0;
 {
 	curMovieIndex = m;
 	
+    mprView1.pix.annotationsDictionary = [[pixList[ curMovieIndex] objectAtIndex: 0] annotationsDictionary];
+    mprView2.pix.annotationsDictionary = [[pixList[ curMovieIndex] objectAtIndex: 0] annotationsDictionary];
+    mprView3.pix.annotationsDictionary = [[pixList[ curMovieIndex] objectAtIndex: 0] annotationsDictionary];
+    mprView1.pix.annotationsDBFields = [[pixList[ curMovieIndex] objectAtIndex: 0] annotationsDBFields];
+    mprView2.pix.annotationsDBFields = [[pixList[ curMovieIndex] objectAtIndex: 0] annotationsDBFields];
+    mprView3.pix.annotationsDBFields = [[pixList[ curMovieIndex] objectAtIndex: 0] annotationsDBFields];
+    
 	mprView1.camera.movieIndexIn4D = m;
 	mprView2.camera.movieIndexIn4D = m;
 	mprView3.camera.movieIndexIn4D = m;
