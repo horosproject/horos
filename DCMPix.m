@@ -1328,6 +1328,16 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 @synthesize referencedSOPInstanceUID;
 
+// Backward compatibility
+- (NSString*) srcFile {
+    return self.sourceFile;
+}
+
+// Backward compatibility
+- (void) setSrcFile: (NSString*) s {
+    self.sourceFile = s;
+}
+
 - (DicomImage*) imageObj
 {
 #ifdef OSIRIX_VIEWER
