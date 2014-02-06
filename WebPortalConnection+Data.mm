@@ -1409,10 +1409,23 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
         return;
     }
     
-    NSArray *logsArray = [self.independentDicomDatabase objectsForEntity: @"LogEntry" predicate: [NSPredicate predicateWithFormat: @"type == %@", @"Web"] error:nil fetchLimit: 2000 sortDescriptors:[NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: @"startTime" ascending: NO]]];
+    NSArray *logsArray = nil;
     
+    if( [parameters objectForKey:@"externalIPs"])
+    {
+        [response.tokens setObject: NSLocalizedString( @"Logs - External IPs", nil) forKey:@"PageTitle"];
+        
+        logsArray = [self.independentDicomDatabase objectsForEntity: @"LogEntry" predicate: [NSPredicate predicateWithFormat: @"type == %@ AND NOT originName BEGINSWITH '172.' AND NOT originName BEGINSWITH '10.' AND NOT originName BEGINSWITH '192.168.' AND NOT originName BEGINSWITH '127.' AND NOT originName LIKE '::1'", @"Web"] error:nil fetchLimit: 2000 sortDescriptors:[NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: @"startTime" ascending: NO]]];
+    }
+    else
+    {
+        [response.tokens setObject: NSLocalizedString( @"Logs", nil) forKey:@"PageTitle"];
+    
+        logsArray = [self.independentDicomDatabase objectsForEntity: @"LogEntry" predicate: [NSPredicate predicateWithFormat: @"type == %@", @"Web"] error:nil fetchLimit: 2000 sortDescriptors:[NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: @"startTime" ascending: NO]]];
+    }
+        
 	[response.tokens setObject: logsArray forKey:@"Logs"];
-    [response.tokens setObject: NSLocalizedString( @"Logs", nil) forKey:@"PageTitle"];
+    
 	response.templateString = [self.portal stringForPath:@"admin/logs.html"];
 	response.mimeType = @"text/html";
 }
