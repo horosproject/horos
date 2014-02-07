@@ -63,7 +63,7 @@
 static		double						deg2rad = M_PI / 180.0;
 static		unsigned char				*PETredTable = nil, *PETgreenTable = nil, *PETblueTable = nil;
 static		BOOL						NOINTERPOLATION = NO, SOFTWAREINTERPOLATION = NO, IndependentCRWLWW, pluginOverridesMouse = NO;  // Allows plugins to override mouse click actions.
-            BOOL						FULL32BITPIPELINE = NO, gDontListenToSyncMessage = NO;
+            BOOL						FULL32BITPIPELINE = NO, gDontListenToSyncMessage = NO, gInvertView;
             BOOL                        OVERFLOWLINES = NO;
 			int							CLUTBARS, MAXNUMBEROF32BITVIEWERS = 4, SOFTWAREINTERPOLATION_MAX, DISPLAYCROSSREFERENCELINES = YES;
 static		BOOL						gClickCountSet = NO, avoidSetWLWWRentry = NO;
@@ -650,6 +650,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	IndependentCRWLWW = [[NSUserDefaults standardUserDefaults] boolForKey:@"IndependentCRWLWW"];
 	CLUTBARS = [[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
+    gInvertView = [[NSUserDefaults standardUserDefaults] boolForKey: @"InvertViewsColors"];
 	
 //	int previousANNOTATIONS = ANNOTATIONS;
 //	ANNOTATIONS = [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
@@ -7547,6 +7548,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	
     glDisable (TEXTRECTMODE); // done with texturing
+    
 }
 
 - (NSPoint) positionWithoutRotation: (NSPoint) tPt
@@ -9914,6 +9916,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             
             glPopAttrib();
 			
+            
 	//		glColor4f ( 0, 0, 0 , 0.8);
 	//		glLineWidth( 3 * sf);
 	//		
@@ -9955,8 +9958,19 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		#endif
         
         [self drawRectAnyway:aRect];
+        
+        if( gInvertView)
+        {
+            glMatrixMode (GL_MODELVIEW);
+            glLoadIdentity ();
+            glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
+            glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+            glEnable(GL_BLEND);
+            glRectf( -1.0f, -1.0f, 1.0f, 1.0f );
+            glDisable(GL_BLEND);
+        }
 	}
-	@catch (NSException * e) 
+	@catch (NSException * e)
 	{
 		N2LogExceptionWithStackTrace(e);
 	}
