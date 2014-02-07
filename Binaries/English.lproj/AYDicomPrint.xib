@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C39" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13B42" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <deployment defaultVersion="1080" identifier="macosx"/>
+        <deployment defaultVersion="1070" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
     </dependencies>
     <objects>
@@ -44,7 +44,7 @@
         <window title="DICOM Print" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="6" userLabel="PrintWindow" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" utility="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="799" height="507"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
             <value key="minSize" type="size" width="213" height="113"/>
             <view key="contentView" id="7">
                 <rect key="frame" x="0.0" y="0.0" width="799" height="507"/>
@@ -1004,6 +1004,9 @@ Gw
                     <constraint firstItem="358" firstAttribute="width" secondItem="210" secondAttribute="width" id="yuG-bp-Tge"/>
                 </constraints>
             </view>
+            <connections>
+                <outlet property="delegate" destination="-2" id="ZMq-YF-Ayu"/>
+            </connections>
         </window>
         <customView id="8" userLabel="PrintersList">
             <rect key="frame" x="0.0" y="0.0" width="194" height="299"/>
@@ -1142,7 +1145,7 @@ Gw
             <windowStyleMask key="styleMask" titled="YES" closable="YES" utility="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="1032" y="393" width="242" height="90"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1178"/>
             <value key="minSize" type="size" width="144.006" height="5"/>
             <view key="contentView" id="468">
                 <rect key="frame" x="0.0" y="0.0" width="242" height="90"/>
@@ -1164,9 +1167,10 @@ Gw
                         <tabViewItems>
                             <tabViewItem label="Progress Bar" identifier="1" id="470">
                                 <view key="view" id="471">
+                                    <rect key="frame" x="0.0" y="0.0" width="242" height="42"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <progressIndicator verticalHuggingPriority="750" maxValue="100" bezeled="NO" indeterminate="YES" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="472">
+                                        <progressIndicator verticalHuggingPriority="750" misplaced="YES" maxValue="100" bezeled="NO" indeterminate="YES" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="472">
                                             <rect key="frame" x="18" y="13" width="206" height="20"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </progressIndicator>

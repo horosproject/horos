@@ -35,6 +35,8 @@ static BOOL dontConstrainWindow = NO;
 {
     NSLog( @"OSIWindow dealloc");
     
+    [NSObject cancelPreviousPerformRequestsWithTarget: self];
+    
     [super dealloc];
 }
 

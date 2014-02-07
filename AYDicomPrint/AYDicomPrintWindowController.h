@@ -18,7 +18,7 @@
 @class ViewerController;
 
 /** \brief Window Controller for DICOM printing */
-@interface AYDicomPrintWindowController : NSWindowController
+@interface AYDicomPrintWindowController : NSWindowController <NSWindowDelegate>
 {
 	NSImage *m_PrinterOnImage;
 	NSImage *m_PrinterOffImage;
@@ -46,6 +46,7 @@
 	IBOutlet NSTextField	*m_VersionNumberTextField;
 	
 	NSLock					*printing;
+    NSRect                  windowFrameToRestore;
 }
 + (void) updateAllPreferencesFormat;
 
@@ -56,5 +57,6 @@
 - (IBAction) setExportMode:(id) sender;
 - (IBAction) exportDICOMSlider:(id) sender;
 - (IBAction) setPages:(id) sender;
+- (id) initWithOldWindowFrameToRestore:(NSRect) w;
 
 @end

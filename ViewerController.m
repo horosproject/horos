@@ -18064,6 +18064,11 @@ int i,j,l;
 	}
 	
 	[[NSUserDefaults standardUserDefaults] setInteger: AlwaysScaleToFit forKey: @"AlwaysScaleToFit"];
+    
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SquareWindowForPrinting"] && NSIsEmptyRect( previousWindowFrame) == NO)
+    {
+        [AppController resizeWindowWithAnimation: [self window] newSize: previousWindowFrame];
+    }
 }
 
 - (IBAction) printSlider:(id) sender
@@ -18096,11 +18101,11 @@ int i,j,l;
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SquareWindowForPrinting"])
 	{
-		NSRect newFrame = [[self window] frame];
+		NSRect newFrame = previousWindowFrame = [[self window] frame];
 		
 		if( newFrame.size.width < newFrame.size.height) newFrame.size.height = newFrame.size.width;
 		else newFrame.size.width = newFrame.size.height;
-		
+        
 		[AppController resizeWindowWithAnimation: [self window] newSize: newFrame];
 	}
 	
@@ -18180,7 +18185,7 @@ int i,j,l;
 
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SquareWindowForPrinting"])
 	{
-		NSRect newFrame = [[self window] frame];
+		NSRect newFrame = previousWindowFrame = [[self window] frame];
 		
 		if( newFrame.size.width < newFrame.size.height) newFrame.size.height = newFrame.size.width;
 		else newFrame.size.width = newFrame.size.height;
@@ -18188,7 +18193,7 @@ int i,j,l;
 		[AppController resizeWindowWithAnimation: [self window] newSize: newFrame];
 	}
 	
-	[[[AYDicomPrintWindowController alloc] init] autorelease];
+	[[[AYDicomPrintWindowController alloc] initWithOldWindowFrameToRestore: previousWindowFrame] autorelease];
 	
 	[[NSUserDefaults standardUserDefaults] setInteger: AlwaysScaleToFit forKey: @"AlwaysScaleToFit"];
 }

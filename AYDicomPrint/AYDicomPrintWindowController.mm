@@ -22,6 +22,7 @@
 #import "ThreadsManager.h"
 #import "NSUserDefaults+OsiriX.h"
 #import "N2Debug.h"
+#import "AppController.h"
 
 #define VERSIONNUMBERSTRING	@"v1.00.000"
 #define ECHOTIMEOUT 5
@@ -106,23 +107,36 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
 
 - (id) init
 {
+    return [self initWithOldWindowFrameToRestore: NSMakeRect(0, 0, 0, 0)];
+}
+
+- (id) initWithOldWindowFrameToRestore:(NSRect) w
+{
 	if (self = [super init])
 	{
 		[AYDicomPrintWindowController updateAllPreferencesFormat];
 		
 		// fetch current viewer
 		m_CurrentViewer = [self _currentViewer];
-
+        
 		// initialize printer state images
 		m_PrinterOnImage = [[NSImage imageNamed: @"available"] retain];
 		m_PrinterOffImage = [[NSImage imageNamed: @"away"] retain];
 		
+        windowFrameToRestore = w;
+        
 		printing = [[NSLock alloc] init];
-		
+        
 		[[self window] center];
 	}
 
 	return self;
+}
+
+- (void) windowWillClose: (NSNotification*) n
+{
+    if( NSIsEmptyRect( windowFrameToRestore) == NO)
+        [AppController resizeWindowWithAnimation: m_CurrentViewer.window newSize: windowFrameToRestore];
 }
 
 - (void) dealloc
