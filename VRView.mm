@@ -2014,7 +2014,7 @@ public:
         
         
 //        [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"InvertViewsColors"];
-//        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"InvertViewsColors"])
+//        if( [[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.CoreGraphics"] objectForKey: @"DisplayUseInvertedPolarity"] boolValue])
 //        {
 //            NSView *v = (NSView*) _cocoaRenderWindow->GetWindowId();
 //            
@@ -5547,7 +5547,7 @@ public:
     
     unsigned char rr[ 256], rg[ 256], rb[ 256];
     
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"InvertViewsColors"])
+    if( [[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.CoreGraphics"] objectForKey: @"DisplayUseInvertedPolarity"] boolValue])
     {
         if( r)
         {
@@ -5602,7 +5602,7 @@ public:
 		}
 		else
 		{
-            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"InvertViewsColors"])
+            if( [[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.CoreGraphics"] objectForKey: @"DisplayUseInvertedPolarity"] boolValue])
             {
                 for( i = 0; i < 256; i++)
                 {
@@ -6568,7 +6568,7 @@ public:
 		
 		colorTransferFunction = vtkColorTransferFunction::New();
 		
-        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"InvertViewsColors"])
+        if( [[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.CoreGraphics"] objectForKey: @"DisplayUseInvertedPolarity"] boolValue])
         {
             red = vtkColorTransferFunction::New();
             red->AddRGBPoint( 255, 1, 0, 0 );
@@ -6849,7 +6849,7 @@ public:
 			[self initAnnotatedCubeActor];
         
         
-        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"InvertViewsColors"])
+        if( [[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.CoreGraphics"] objectForKey: @"DisplayUseInvertedPolarity"] boolValue])
             [self changeColorWith: [NSColor colorWithCalibratedRed: 1 green: 1 blue: 1  alpha:1]];
 	}
 	

@@ -3939,6 +3939,10 @@ static volatile int numberOfThreadsForRelisce = 0;
                         NSAttributedString *s = [[[NSAttributedString alloc] initWithString: [NSString stringWithFormat: @"%d", (int) curStudyIndexAll+1] attributes: d] autorelease];
                         
                         [number lockFocus];
+                        
+                        if( [[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.CoreGraphics"] objectForKey: @"DisplayUseInvertedPolarity"] boolValue])
+                            bkgColor = [NSColor colorWithCalibratedRed: 1.0-bkgColor.redComponent green: 1.0-bkgColor.greenComponent blue:1.0-bkgColor.blueComponent alpha: bkgColor.alphaComponent];
+                        
                         [bkgColor set];
                         [[NSBezierPath bezierPathWithRoundedRect: NSMakeRect( 0, 0, SERIESPOPUPSIZE, SERIESPOPUPSIZE) xRadius: 5 yRadius: 5] fill];
                         [s drawAtPoint: NSMakePoint( (SERIESPOPUPSIZE - s.size.width) / 2, (SERIESPOPUPSIZE - s.size.height) /2)];
@@ -4082,7 +4086,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                                 }
                             }
                             
-                            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"InvertViewsColors"])
+                            if( [[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.CoreGraphics"] objectForKey: @"DisplayUseInvertedPolarity"] boolValue])
                                 img = [img imageInverted];
                             
                             [cell setImage: [img imageByScalingProportionallyToSizeUsingNSImage: NSMakeSize( SERIESPOPUPSIZE, SERIESPOPUPSIZE)]];
@@ -4737,7 +4741,7 @@ static volatile int numberOfThreadsForRelisce = 0;
     NSMenuItem *menuItem = [[[NSMenuItem alloc] initWithTitle: @"" action: @selector( seriesPopupSelect:) keyEquivalent: @""] autorelease];
     NSImage	*img = [[[NSImage alloc] initWithData: [self.currentSeries primitiveValueForKey:@"thumbnail"]] autorelease];
 
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"InvertViewsColors"])
+    if( [[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.CoreGraphics"] objectForKey: @"DisplayUseInvertedPolarity"] boolValue])
         img = [img imageInverted];
 
     [menuItem setImage: [img imageByScalingProportionallyToSizeUsingNSImage: NSMakeSize( SERIESPOPUPSIZE, SERIESPOPUPSIZE)]];
@@ -5010,6 +5014,9 @@ static volatile int numberOfThreadsForRelisce = 0;
                         else
                             bkgColor = [colors objectAtIndex: curStudyIndexAll];
                         
+                        if( [[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.CoreGraphics"] objectForKey: @"DisplayUseInvertedPolarity"] boolValue])
+                            bkgColor = [NSColor colorWithCalibratedRed: 1.0-bkgColor.redComponent green: 1.0-bkgColor.greenComponent blue:1.0-bkgColor.blueComponent alpha: bkgColor.alphaComponent];
+                        
                         [attribs setObject: bkgColor forKey: NSBackgroundColorAttributeName];
                         [finalString setAttributes: attribs range: NSMakeRange( 0, [[components objectAtIndex: 0] length])];
                         
@@ -5211,7 +5218,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                                 }
                             }
                             
-                            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"InvertViewsColors"])
+                            if( [[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.CoreGraphics"] objectForKey: @"DisplayUseInvertedPolarity"] boolValue])
                                 img = [img imageInverted];
                             
                             switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"dbFontSize"])

@@ -9335,7 +9335,7 @@ static BOOL withReset = NO;
                 
                 [cell setButtonType:NSPushOnPushOffButton];
                 
-                if( [[NSUserDefaults standardUserDefaults] boolForKey: @"InvertViewsColors"])
+                if( [[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.CoreGraphics"] objectForKey: @"DisplayUseInvertedPolarity"] boolValue])
                 {
                     NSImage *ii = [img imageInverted];
                     

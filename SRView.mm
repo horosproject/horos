@@ -2395,7 +2395,7 @@ typedef struct _xyzArray
 
 		[self setNeedsDisplay:YES];
         
-        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"InvertViewsColors"])
+        if( [[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.CoreGraphics"] objectForKey: @"DisplayUseInvertedPolarity"] boolValue])
             aRenderer->SetBackground( 1, 1, 1);
 		
 	}

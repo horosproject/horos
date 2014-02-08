@@ -67,7 +67,7 @@ static		BOOL						NOINTERPOLATION = NO, SOFTWAREINTERPOLATION = NO, IndependentC
             BOOL						FULL32BITPIPELINE = NO, gDontListenToSyncMessage = NO;
             BOOL                        OVERFLOWLINES = NO;
 			int							CLUTBARS, MAXNUMBEROF32BITVIEWERS = 4, SOFTWAREINTERPOLATION_MAX, DISPLAYCROSSREFERENCELINES = YES;
-static		BOOL						gClickCountSet = NO, avoidSetWLWWRentry = NO;
+static		BOOL						gClickCountSet = NO, avoidSetWLWWRentry = NO, gInvertColors = NO;
 static		NSDictionary				*_hotKeyDictionary = nil, *_hotKeyModifiersDictionary = nil;
 static		NSRecursiveLock				*drawLock = nil;
 static		NSMutableArray				*globalStringTextureCache = nil;
@@ -4157,6 +4157,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     if( CGCursorIsVisible() == NO && lensTexture == nil) return; //For Synergy compatibility
 	if ([self eventToPlugins:event]) return;
 	
+    gInvertColors = [[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.CoreGraphics"] objectForKey: @"DisplayUseInvertedPolarity"] boolValue];
+    
 	currentMouseEventTool = -1;
 	
 	if( !drawing) return;
@@ -6577,13 +6579,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 	repulsorRadius = 0;
 	
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"InvertViewsColors"])
-    {
-        [self setWantsLayer: YES];
-        CIFilter *CIColorInvert = [CIFilter filterWithName:@"CIColorInvert"];
-        [CIColorInvert setDefaults];
-        self.contentFilters = [NSArray arrayWithObject:CIColorInvert];
-    }
+//    if( [[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.CoreGraphics"] objectForKey: @"DisplayUseInvertedPolarity"] boolValue])
+//    {
+//        [self setWantsLayer: YES];
+//        CIFilter *CIColorInvert = [CIFilter filterWithName:@"CIColorInvert"];
+//        [CIColorInvert setDefaults];
+//        self.contentFilters = [NSArray arrayWithObject:CIColorInvert];
+//    }
+    
+    gInvertColors = [[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.CoreGraphics"] objectForKey: @"DisplayUseInvertedPolarity"] boolValue];
     
     return self;
 }
@@ -9970,16 +9974,16 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         
         [self drawRectAnyway:aRect];
         
-//        if( gInvertView)
-//        {
-//            glMatrixMode (GL_MODELVIEW);
-//            glLoadIdentity ();
-//            glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
-//            glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
-//            glEnable(GL_BLEND);
-//            glRectf( -1.0f, -1.0f, 1.0f, 1.0f );
-//            glDisable(GL_BLEND);
-//        }
+        if( gInvertColors && [stringID isEqualToString: @"export"] == NO)
+        {
+            glMatrixMode (GL_MODELVIEW);
+            glLoadIdentity ();
+            glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
+            glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+            glEnable(GL_BLEND);
+            glRectf( -1.0f, -1.0f, 1.0f, 1.0f );
+            glDisable(GL_BLEND);
+        }
 	}
 	@catch (NSException * e)
 	{
