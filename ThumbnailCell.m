@@ -37,8 +37,17 @@
 - (void)drawBezelWithFrame:(NSRect)frame inView:(NSView *)controlView {
     [super drawBezelWithFrame:frame inView:controlView];
     if (self.backgroundColor) {
+        
+        if( !invertedSet)
+            invertedColors = [[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.CoreGraphics"] objectForKey: @"DisplayUseInvertedPolarity"] boolValue];
+        
+        NSColor *backc = [[self.backgroundColor copy] autorelease];
+        
+        if( invertedColors)
+            backc = [NSColor colorWithCalibratedRed: 1.0-backc.redComponent green: 1.0-backc.greenComponent blue: 1.0-backc.blueComponent alpha: backc.alphaComponent];
+        
         [NSGraphicsContext saveGraphicsState];
-        [[self.backgroundColor colorWithAlphaComponent:0.75] setFill];
+        [[backc colorWithAlphaComponent:0.75] setFill];
         [NSBezierPath fillRect:NSInsetRect(frame, 1, 1)];
         [NSGraphicsContext restoreGraphicsState];
     }

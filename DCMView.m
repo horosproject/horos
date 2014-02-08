@@ -8984,7 +8984,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 					glEnable(GL_BLEND);
 					
-					glColor4f (249./255., 240./255., 140./255., [[self windowController] highLighted]);
+                    if( gInvertColors)
+                        glColor4f ( 0, 0, 0, [[self windowController] highLighted]);
+                    else
+                        glColor4f (249./255., 240./255., 140./255., [[self windowController] highLighted]);
 					glLineWidth(1.0 * sf);
 					glBegin(GL_QUADS);
 						glVertex2f(0.0, 0.0);
