@@ -222,7 +222,16 @@ end_size_y:
 }
 
 -(NSImage*)imageInverted {
-	NSImageRep *rep = [NSCIImageRep imageRepWithCIImage: [[CIFilter filterWithName:@"CIColorInvert" keysAndValues: @"inputImage", [CIImage imageWithData:[self TIFFRepresentation]], nil] valueForKey:@"outputImage"]];
+    CIFilter *invert = [CIFilter filterWithName: @"CIColorMatrix"];
+    
+    [invert setDefaults];
+    [invert setValue: [CIImage imageWithData:[self TIFFRepresentation]] forKey: kCIInputImageKey];
+    [invert setValue: [CIVector vectorWithX: -1 Y:0 Z:0] forKey: @"inputRVector"];
+    [invert setValue: [CIVector vectorWithX: 0 Y:-1 Z:0] forKey: @"inputGVector"];
+    [invert setValue: [CIVector vectorWithX: 0 Y:0 Z:-1] forKey: @"inputBVector"];
+    [invert setValue: [CIVector vectorWithX: 0.9 Y:0.9 Z:0.9] forKey:@"inputBiasVector"];
+    
+	NSImageRep *rep = [NSCIImageRep imageRepWithCIImage: [invert valueForKey:@"outputImage"]];
 	NSImage *image = [[NSImage alloc] initWithSize:[rep size]];
 	[image addRepresentation:rep];
 	return [image autorelease];
