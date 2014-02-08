@@ -369,7 +369,7 @@
         vtkPoints *points = vtkPoints::New();
         long i = 0;
         for( NSArray *pt3D in ptsArray)
-            points->InsertPoint( i++, [[pt3D objectAtIndex: 0] floatValue], [[pt3D objectAtIndex: 1] floatValue], [[pt3D objectAtIndex: 2] floatValue]);
+            points->InsertPoint( i++, [[pt3D objectAtIndex: 0] floatValue]*factor, [[pt3D objectAtIndex: 1] floatValue]*factor, [[pt3D objectAtIndex: 2] floatValue]*factor);
         
         profile = vtkPolyData::New();
         profile->SetPoints( points);
