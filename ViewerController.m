@@ -4082,6 +4082,9 @@ static volatile int numberOfThreadsForRelisce = 0;
                                 }
                             }
                             
+                            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"InvertViewsColors"])
+                                img = [img imageInverted];
+                            
                             [cell setImage: [img imageByScalingProportionallyToSizeUsingNSImage: NSMakeSize( SERIESPOPUPSIZE, SERIESPOPUPSIZE)]];
                         }
                         
@@ -4733,6 +4736,10 @@ static volatile int numberOfThreadsForRelisce = 0;
     [seriesPopupMenu.menu removeAllItems];
     NSMenuItem *menuItem = [[[NSMenuItem alloc] initWithTitle: @"" action: @selector( seriesPopupSelect:) keyEquivalent: @""] autorelease];
     NSImage	*img = [[[NSImage alloc] initWithData: [self.currentSeries primitiveValueForKey:@"thumbnail"]] autorelease];
+
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"InvertViewsColors"])
+        img = [img imageInverted];
+
     [menuItem setImage: [img imageByScalingProportionallyToSizeUsingNSImage: NSMakeSize( SERIESPOPUPSIZE, SERIESPOPUPSIZE)]];
     [seriesPopupMenu.menu addItem: menuItem];
     [seriesPopupContextualMenu setTitle: (self.currentSeries.name ? self.currentSeries.name : NSLocalizedString( @"Unnamed", nil))];
@@ -5203,6 +5210,9 @@ static volatile int numberOfThreadsForRelisce = 0;
                                     img = [NSImage imageNamed:@"FileNotFound.tif"];
                                 }
                             }
+                            
+                            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"InvertViewsColors"])
+                                img = [img imageInverted];
                             
                             switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"dbFontSize"])
                             {

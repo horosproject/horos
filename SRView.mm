@@ -2394,6 +2394,9 @@ typedef struct _xyzArray
 		[[NSOpenGLContext currentContext] setValues:&swap forParameter:NSOpenGLCPSwapInterval];
 
 		[self setNeedsDisplay:YES];
+        
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"InvertViewsColors"])
+            aRenderer->SetBackground( 1, 1, 1);
 		
 	}
 	catch (...)

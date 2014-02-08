@@ -198,6 +198,7 @@ enum
 - (NSString*) defaultName;
 - (BOOL) isValidForVolume;
 - (void) updateLabelFont;
+- (void) prepareForRelease;
 
 + (BOOL) splineForROI;
 

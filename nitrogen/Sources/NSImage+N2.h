@@ -23,6 +23,7 @@
 
 -(NSImage*)shadowImage;
 -(NSImage*)imageWithHue:(CGFloat)hue;
+-(NSImage*)imageInverted;
 
 -(NSSize)sizeByScalingProportionallyToSize:(NSSize)targetSize;
 -(NSSize)sizeByScalingDownProportionallyToSize:(NSSize)targetSize;

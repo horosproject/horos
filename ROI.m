@@ -1059,6 +1059,21 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
     } while( index != NSNotFound);
 }
 
+
+- (void) prepareForRelease // We need to unlink the links related to OpenGLContext
+{
+    [stringTextureCache release];
+    stringTextureCache = nil;
+    
+	while( [ctxArray count]) [self deleteTexture: [ctxArray lastObject]];
+	[ctxArray release];
+    ctxArray = nil;
+	
+	if( [textArray count]) NSLog( @"** not all texture were deleted...");
+	[textArray release];
+    textArray = nil;
+}
+
 - (void) dealloc
 {
 	self.parentROI = nil;
@@ -1071,11 +1086,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 		[pool release];
 	}
 	
-	while( [ctxArray count]) [self deleteTexture: [ctxArray lastObject]];
-	[ctxArray release];
-	
-	if( [textArray count]) NSLog( @"** not all texture were deleted...");
-	[textArray release];
+    [self prepareForRelease];
 	
 	if (textureBuffer) free(textureBuffer);
 	[self textureBufferHasChanged];
@@ -1108,7 +1119,6 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	
 	[parentROI release];
 	[pix release];
-    [stringTextureCache release];
     
 	[super dealloc];
 }

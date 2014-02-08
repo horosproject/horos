@@ -9335,6 +9335,14 @@ static BOOL withReset = NO;
                 
                 [cell setButtonType:NSPushOnPushOffButton];
                 
+                if( [[NSUserDefaults standardUserDefaults] boolForKey: @"InvertViewsColors"])
+                {
+                    NSImage *ii = [img imageInverted];
+                    
+                    [img release];
+                    img = [ii retain];
+                }
+                
                 switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"dbFontSize"])
                 {
                     case -1: [cell setImage: [img imageByScalingProportionallyUsingNSImage: 0.6]]; break;

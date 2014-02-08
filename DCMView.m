@@ -52,6 +52,7 @@
 #import "DCMWaveform.h"
 #import "DicomDatabase.h"
 #import "NSFileManager+N2.h"
+#import <QuartzCore/QuartzCore.h>
 
 // kvImageHighQualityResampling
 #define QUALITY kvImageNoFlags
@@ -63,7 +64,7 @@
 static		double						deg2rad = M_PI / 180.0;
 static		unsigned char				*PETredTable = nil, *PETgreenTable = nil, *PETblueTable = nil;
 static		BOOL						NOINTERPOLATION = NO, SOFTWAREINTERPOLATION = NO, IndependentCRWLWW, pluginOverridesMouse = NO;  // Allows plugins to override mouse click actions.
-            BOOL						FULL32BITPIPELINE = NO, gDontListenToSyncMessage = NO, gInvertView;
+            BOOL						FULL32BITPIPELINE = NO, gDontListenToSyncMessage = NO;
             BOOL                        OVERFLOWLINES = NO;
 			int							CLUTBARS, MAXNUMBEROF32BITVIEWERS = 4, SOFTWAREINTERPOLATION_MAX, DISPLAYCROSSREFERENCELINES = YES;
 static		BOOL						gClickCountSet = NO, avoidSetWLWWRentry = NO;
@@ -650,7 +651,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	IndependentCRWLWW = [[NSUserDefaults standardUserDefaults] boolForKey:@"IndependentCRWLWW"];
 	CLUTBARS = [[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
-    gInvertView = [[NSUserDefaults standardUserDefaults] boolForKey: @"InvertViewsColors"];
 	
 //	int previousANNOTATIONS = ANNOTATIONS;
 //	ANNOTATIONS = [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
@@ -2252,6 +2252,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[drawLock lock];
 	[drawLock unlock];
 	
+    for( ROI*r in curRoiList)
+        [r prepareForRelease]; // We need to unlink the links related to OpenGLContext
+    
 	[curRoiList autorelease];
 	curRoiList = nil;
 	
@@ -6574,6 +6577,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 	repulsorRadius = 0;
 	
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"InvertViewsColors"])
+    {
+        [self setWantsLayer: YES];
+        CIFilter *CIColorInvert = [CIFilter filterWithName:@"CIColorInvert"];
+        [CIColorInvert setDefaults];
+        self.contentFilters = [NSArray arrayWithObject:CIColorInvert];
+    }
+    
     return self;
 }
 
@@ -9959,16 +9970,16 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         
         [self drawRectAnyway:aRect];
         
-        if( gInvertView)
-        {
-            glMatrixMode (GL_MODELVIEW);
-            glLoadIdentity ();
-            glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
-            glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
-            glEnable(GL_BLEND);
-            glRectf( -1.0f, -1.0f, 1.0f, 1.0f );
-            glDisable(GL_BLEND);
-        }
+//        if( gInvertView)
+//        {
+//            glMatrixMode (GL_MODELVIEW);
+//            glLoadIdentity ();
+//            glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
+//            glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+//            glEnable(GL_BLEND);
+//            glRectf( -1.0f, -1.0f, 1.0f, 1.0f );
+//            glDisable(GL_BLEND);
+//        }
 	}
 	@catch (NSException * e)
 	{

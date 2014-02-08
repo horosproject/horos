@@ -221,6 +221,13 @@ end_size_y:
 	return [image autorelease];
 }
 
+-(NSImage*)imageInverted {
+	NSImageRep *rep = [NSCIImageRep imageRepWithCIImage: [[CIFilter filterWithName:@"CIColorInvert" keysAndValues: @"inputImage", [CIImage imageWithData:[self TIFFRepresentation]], nil] valueForKey:@"outputImage"]];
+	NSImage *image = [[NSImage alloc] initWithSize:[rep size]];
+	[image addRepresentation:rep];
+	return [image autorelease];
+}
+
 -(NSSize)sizeByScalingProportionallyToSize:(NSSize)targetSize {
     return N2ProportionallyScaleSize(self.size, targetSize);
 }

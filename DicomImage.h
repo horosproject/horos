@@ -80,6 +80,7 @@ void* sopInstanceUIDEncode( NSString *sopuid);
 @property(nonatomic, retain) NSNumber* zoom;
 @property(nonatomic, retain) DicomSeries* series;
 
++ (NSImage*) invertColors: (NSImage*) image;
 + (NSData*) sopInstanceUIDEncodeString:(NSString*) s;
 - (NSString*) uniqueFilename;
 - (NSSet*) paths;

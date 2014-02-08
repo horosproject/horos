@@ -1905,8 +1905,6 @@ public:
 {
     if ( self = [super initWithFrame:frame])
     {
-//      [self setWantsLayer: YES]; LayerBackedOpenGLView Example
-        
 		NSTrackingArea *cursorTracking = [[[NSTrackingArea alloc] initWithRect: [self visibleRect] options: (NSTrackingCursorUpdate | NSTrackingInVisibleRect | NSTrackingMouseEnteredAndExited | NSTrackingActiveInKeyWindow) owner: self userInfo: nil] autorelease];
 		
 		[self addTrackingArea: cursorTracking];
@@ -2013,6 +2011,20 @@ public:
 		
 		advancedCLUT = NO;
 		
+        
+        
+//        [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"InvertViewsColors"];
+//        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"InvertViewsColors"])
+//        {
+//            NSView *v = (NSView*) _cocoaRenderWindow->GetWindowId();
+//            
+//            [v setWantsLayer: YES];
+//            CIFilter *CIColorInvert = [CIFilter filterWithName:@"CIColorInvert"];
+//            [CIColorInvert setDefaults];
+//            v.contentFilters = [NSArray arrayWithObject:CIColorInvert];
+//        }
+        
+        
 //        [[IMService notificationCenter] addObserver:self selector:@selector(_iChatStateChanged:) name:IMAVManagerStateChangedNotification object:nil];
 	}
     
@@ -5532,7 +5544,25 @@ public:
 	}
 	
 	int i;
-
+    
+    unsigned char rr[ 256], rg[ 256], rb[ 256];
+    
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"InvertViewsColors"])
+    {
+        if( r)
+        {
+            for( i = 0; i < 256; i++)
+            {
+                rr[ i] = 255-r[ i];
+                rg[ i] = 255-g[ i];
+                rb[ i] = 255-b[ i];
+            }
+            r = rr;
+            g = rg;
+            b = rb;
+        }
+    }
+    
 	if( isRGB)
 	{
 		if( r)
@@ -5572,13 +5602,25 @@ public:
 		}
 		else
 		{
-			for( i = 0; i < 256; i++)
-			{
-				table[i][0] = i / 255.;
-				table[i][1] = i / 255.;
-				table[i][2] = i / 255.;
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"InvertViewsColors"])
+            {
+                for( i = 0; i < 256; i++)
+                {
+                    table[255-i][0] = i / 255.;
+                    table[255-i][1] = i / 255.;
+                    table[255-i][2] = i / 255.;
+                }
+            }
+            else
+            {
+                for( i = 0; i < 256; i++)
+                {
+                    table[i][0] = i / 255.;
+                    table[i][1] = i / 255.;
+                    table[i][2] = i / 255.;
+                }
 			}
-			
+            
 			colorTransferFunction->BuildFunctionFromTable( valueFactor*(OFFSET16 + wl-ww/2), valueFactor*(OFFSET16 + wl+ww/2), 255, (double*) &table);
 		}
 	}
@@ -6526,18 +6568,35 @@ public:
 		
 		colorTransferFunction = vtkColorTransferFunction::New();
 		
-		red = vtkColorTransferFunction::New();
-		red->AddRGBPoint(   0, 0, 0, 0 );
-		red->AddRGBPoint( 255, 1, 0, 0 );
-		
-		green = vtkColorTransferFunction::New();
-		green->AddRGBPoint(   0, 0, 0, 0 );
-		green->AddRGBPoint( 255, 0, 1, 0 );
-		
-		blue = vtkColorTransferFunction::New();
-		blue->AddRGBPoint(   0, 0, 0, 0 );
-		blue->AddRGBPoint( 255, 0, 0, 1 );
-		
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"InvertViewsColors"])
+        {
+            red = vtkColorTransferFunction::New();
+            red->AddRGBPoint( 255, 1, 0, 0 );
+            red->AddRGBPoint(   0, 0, 0, 0 );
+            
+            green = vtkColorTransferFunction::New();
+            green->AddRGBPoint( 255, 0, 1, 0 );
+            green->AddRGBPoint(   0, 0, 0, 0 );
+            
+            blue = vtkColorTransferFunction::New();
+            blue->AddRGBPoint( 255, 0, 0, 1 );
+            blue->AddRGBPoint(   0, 0, 0, 0 );
+        }
+        else
+        {
+            red = vtkColorTransferFunction::New();
+            red->AddRGBPoint(   0, 0, 0, 0 );
+            red->AddRGBPoint( 255, 1, 0, 0 );
+            
+            green = vtkColorTransferFunction::New();
+            green->AddRGBPoint(   0, 0, 0, 0 );
+            green->AddRGBPoint( 255, 0, 1, 0 );
+            
+            blue = vtkColorTransferFunction::New();
+            blue->AddRGBPoint(   0, 0, 0, 0 );
+            blue->AddRGBPoint( 255, 0, 0, 1 );
+		}
+        
 		volumeProperty = vtkVolumeProperty::New();
 		if( isRGB)
 		{
@@ -6788,6 +6847,10 @@ public:
 		
 //		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontShow3DCubeOrientation"] == NO)
 			[self initAnnotatedCubeActor];
+        
+        
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"InvertViewsColors"])
+            [self changeColorWith: [NSColor colorWithCalibratedRed: 1 green: 1 blue: 1  alpha:1]];
 	}
 	
 	catch (...)
