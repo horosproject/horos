@@ -9804,11 +9804,16 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		src.width = [self pwidth];
 		src.rowBytes = [self pwidth]*4;
 		src.data = [self computefImage];
-
+        
 		if( self.shutterEnabled && shutterRect.size.width > 0 && shutterRect.size.height > 0)
 		{
-			if( shutterRect.origin.x < 0) shutterRect.origin.x = 0;
-			if( shutterRect.origin.y < 0) shutterRect.origin.y = 0;
+            shutterRect.origin.y = roundf( shutterRect.origin.y);
+            shutterRect.origin.x = roundf( shutterRect.origin.x);
+            shutterRect.size.width = roundf( shutterRect.size.width);
+            shutterRect.size.height = roundf( shutterRect.size.height);
+
+			if( shutterRect.origin.x < 0) { shutterRect.size.width += shutterRect.origin.x; shutterRect.origin.x = 0;}
+			if( shutterRect.origin.y < 0) { shutterRect.size.height += shutterRect.origin.y; shutterRect.origin.y = 0;}
 			
 			if( shutterRect.origin.x + shutterRect.size.width > [self pwidth]) shutterRect.size.width = [self pwidth] - shutterRect.origin.x;
 			if( shutterRect.origin.y + shutterRect.size.height > [self pheight]) shutterRect.size.height = [self pheight] - shutterRect.origin.y;
@@ -10762,12 +10767,17 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 {
 	if (shutterEnabled == NSOnState)
 	{
-		if( shutterRect.origin.y < 0) shutterRect.origin.y = 0;
-		if( shutterRect.origin.x < 0) shutterRect.origin.x = 0;
+        if( shutterRect.origin.x < 0) { shutterRect.size.width += shutterRect.origin.x; shutterRect.origin.x = 0;}
+        if( shutterRect.origin.y < 0) { shutterRect.size.height += shutterRect.origin.y; shutterRect.origin.y = 0;}
 		
 		if( shutterRect.size.width + shutterRect.origin.x > width) shutterRect.size.width = width - shutterRect.origin.x;
 		if( shutterRect.size.height + shutterRect.origin.y > height) shutterRect.size.height = height - shutterRect.origin.y;
 		
+        shutterRect.origin.y = roundf( shutterRect.origin.y);
+        shutterRect.origin.x = roundf( shutterRect.origin.x);
+        shutterRect.size.width = roundf( shutterRect.size.width);
+        shutterRect.size.height = roundf( shutterRect.size.height);
+        
 		if( isRGB == YES || thickSlabVRActivated == YES)
 		{
 			char*	tempMem = calloc( 1, height * width * 4 * sizeof(char));

@@ -6823,43 +6823,35 @@ return YES;
 	
 	DCMPix *curPix = [[imageView dcmPixList] objectAtIndex:[imageView curImage]];
 	
-	NSRect shutterRect;
-	shutterRect.origin.x = 0;
-	shutterRect.origin.y = 0;
-	shutterRect.size.width = 0;
-	shutterRect.size.height = 0;
+	NSRect shutterRect = NSMakeRect( 0, 0, 0, 0);
 
 	if ([shutterOnOff state] == NSOnState)
 	{
 		// Find the first ROI selected for the current frame and copy the rectangle in shutterRect
-		
-		long ii = [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] count];
-		for( i = 0; i < ii; i++)
+        ROI *selectedROI = nil;
+		for( ROI *r in [roiList[curMovieIndex] objectAtIndex: [imageView curImage]])
 		{
-			long mode = [[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i] ROImode];				
-			if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
+			if( r.ROImode == ROI_selected || r.ROImode == ROI_selectedModify || r.ROImode == ROI_drawing)
 			{
-				ROI *selectedROI = [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i];
-				//check if selectedROI bounds remain within image bounds
-				shutterRect = [selectedROI rect];
-				[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] removeObject:selectedROI];
-				i = ii;
+				shutterRect = [r rect];
+                selectedROI = r;
+				break;
 			}
 		}
-		
-		//shutterRect inside frame?
-		float DCMPixWidth = [curPix pwidth];
-		float DCMPixHeight = [curPix pheight];
-		if (shutterRect.origin.x < 0) shutterRect.origin.x = 0;
-		if (shutterRect.origin.y < 0) shutterRect.origin.y = 0;
-		if (shutterRect.origin.x + shutterRect.size.width > DCMPixWidth) shutterRect.size.width = DCMPixWidth - shutterRect.origin.x;
-		if (shutterRect.origin.y + shutterRect.size.height > DCMPixHeight) shutterRect.size.height = DCMPixHeight - shutterRect.origin.y;
-		
+        
 		//using valid shutterRect
-		if (shutterRect.size.width != 0)
+		if( selectedROI != 0 && shutterRect.size.width > 0)
 		{
+            [self deleteROI: selectedROI];
+            
 			for( DCMPix *p in [imageView dcmPixList])
 			{
+                //shutterRect inside frame?
+                if (shutterRect.origin.x < 0) { shutterRect.size.width += shutterRect.origin.x; shutterRect.origin.x = 0;}
+                if (shutterRect.origin.y < 0) { shutterRect.size.height += shutterRect.origin.y; shutterRect.origin.x = 0;}
+                if (shutterRect.origin.x + shutterRect.size.width > p.pwidth) shutterRect.size.width = p.pwidth - shutterRect.origin.x;
+                if (shutterRect.origin.y + shutterRect.size.height > p.pheight) shutterRect.size.height = p.pheight - shutterRect.origin.y;
+                
 				p.shutterRect = shutterRect;
 				p.shutterEnabled = NSOnState;
 			}
@@ -6867,7 +6859,7 @@ return YES;
 		else
 		{
 			//using stored shutterRect?
-			if ( (curPix.shutterRect.size.width == 0 || (curPix.shutterRect.size.width == [curPix pwidth] && curPix.shutterRect.size.height == [curPix pheight])) && curPix.shutterPolygonal == nil)
+			if( (curPix.shutterRect.size.width == 0 || (curPix.shutterRect.size.width == [curPix pwidth] && curPix.shutterRect.size.height == [curPix pheight])) && curPix.shutterPolygonal == nil)
 			{
 				[shutterOnOff setState:NSOffState];
 				
@@ -8024,7 +8016,8 @@ static int avoidReentryRefreshDatabase = 0;
 				
 				[self ActivateBlending: nil];
 				[self clear8bitRepresentations];
-				
+				[shutterOnOff setState:NSOffState];
+                
 				[self setFusionMode: 0];
 				
 				[imageView setIndex: 0];
