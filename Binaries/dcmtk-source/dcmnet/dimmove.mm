@@ -76,6 +76,7 @@
 #define INCLUDE_CSTRING
 #define INCLUDE_CSTDARG
 #include "ofstdinc.h"
+#include "oftimer.h"
 
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>
@@ -132,164 +133,150 @@ selectReadable(T_ASC_Association *assoc,
 
 OFCondition
 DIMSE_moveUser(
-        /* in */
-        T_ASC_Association *assoc, 
-        T_ASC_PresentationContextID presID,
-        T_DIMSE_C_MoveRQ *request,
-        DcmDataset *requestIdentifiers,
-        DIMSE_MoveUserCallback callback, void *callbackData,
-        /* blocking info for response */
-        T_DIMSE_BlockingMode blockMode, int timeout,
-        /* sub-operation provider callback */
-        T_ASC_Network *net,
-        DIMSE_SubOpProviderCallback subOpCallback, void *subOpCallbackData,
-        /* out */
-        T_DIMSE_C_MoveRSP *response, DcmDataset **statusDetail,
-        DcmDataset **rspIds,
-        OFBool ignorePendingDatasets)
+               /* in */
+               T_ASC_Association *assoc,
+               T_ASC_PresentationContextID presID,
+               T_DIMSE_C_MoveRQ *request,
+               DcmDataset *requestIdentifiers,
+               DIMSE_MoveUserCallback callback, void *callbackData,
+               /* blocking info for response */
+               T_DIMSE_BlockingMode blockMode, int timeout,
+               /* sub-operation provider callback */
+               T_ASC_Network *net,
+               DIMSE_SubOpProviderCallback subOpCallback, void *subOpCallbackData,
+               /* out */
+               T_DIMSE_C_MoveRSP *response, DcmDataset **statusDetail,
+               DcmDataset **rspIds,
+               OFBool ignorePendingDatasets)
 {
     T_DIMSE_Message req, rsp;
     DIC_US msgId;
     int responseCount = 0;
     T_ASC_Association *subAssoc = NULL;
     DIC_US status = STATUS_Pending;
-
+    OFBool firstLoop = OFTrue;
+    
     if (requestIdentifiers == NULL) return DIMSE_NULLKEY;
-
+    
     bzero((char*)&req, sizeof(req));
     bzero((char*)&rsp, sizeof(rsp));
     
     req.CommandField = DIMSE_C_MOVE_RQ;
     request->DataSetType = DIMSE_DATASET_PRESENT;
     req.msg.CMoveRQ = *request;
-
+    
     msgId = request->MessageID;
-
-    OFCondition cond = DIMSE_sendMessageUsingMemoryData(assoc, presID, &req,
-                                          NULL, requestIdentifiers, 
-                                          NULL, NULL);
+    
+    OFCondition cond = DIMSE_sendMessageUsingMemoryData(assoc, presID, &req, NULL, requestIdentifiers, NULL, NULL);
     if (cond != EC_Normal) {
         return cond;
     }
-
+    
     /* receive responses */
-	
-	NSTimeInterval startTime = [NSDate timeIntervalSinceReferenceDate];
-	
-    while (cond == EC_Normal && status == STATUS_Pending)
-	{
-		if( [NSThread currentThread].isCancelled)
-			return EC_Normal;
-			
-        /* if user wants, multiplex between net/subAssoc 
+    
+    OFTimer timer;
+    while (cond == EC_Normal && status == STATUS_Pending) {
+        
+        /* if user wants, multiplex between net/subAssoc
          * and move responses over main assoc.
          */
-        switch (selectReadable(assoc, net, subAssoc, blockMode, timeout))
-		{
-        case 0:
-            /* none are readble, timeout */
-            if (blockMode == DIMSE_BLOCKING)
-			{
-				if( [NSDate timeIntervalSinceReferenceDate] - startTime > timeout)
-					return DIMSE_NODATAAVAILABLE;
-				else
-					continue;       /* continue with while loop */
-            }
-			else
-			{
-                return DIMSE_NODATAAVAILABLE;
-            }
-            /* break; */ // never reached after continue or return.
-        case 1:
-			startTime = [NSDate timeIntervalSinceReferenceDate];
-            /* main association readable */
-            break;
-        case 2:
-			startTime = [NSDate timeIntervalSinceReferenceDate];
-            /* net/subAssoc readable */
-            if (subOpCallback) {
-                subOpCallback(subOpCallbackData, net, &subAssoc);
-            }
-            continue;   /* continue with main loop */
-            /* break; */ // never reached after continue statement
+        switch (selectReadable(assoc, net, subAssoc, blockMode, timeout)) {
+            case 0:
+                /* none are readable, timeout */
+                if ((blockMode == DIMSE_BLOCKING) || firstLoop) {
+                    firstLoop = OFFalse;
+                } else if ((blockMode == DIMSE_NONBLOCKING) && (timer.getDiff() > timeout)) {
+                    ofConsole.lockCerr() << "timeout of " << timeout << " seconds elapsed while waiting for C-MOVE Responses" << endl;
+                    ofConsole.unlockCerr();
+                    return DIMSE_NODATAAVAILABLE;
+                }
+                continue;    /* continue with main loop */
+            case 1:
+                /* main association readable */
+                firstLoop = OFFalse;
+                break;
+            case 2:
+                /* net/subAssoc readable */
+                if (subOpCallback) {
+                    subOpCallback(subOpCallbackData, net, &subAssoc);
+                }
+                firstLoop = OFFalse;
+                continue;    /* continue with main loop */
         }
-
+        
         bzero((char*)&rsp, sizeof(rsp));
-
-        cond = DIMSE_receiveCommand(assoc, blockMode, timeout, &presID, 
-                &rsp, statusDetail);
+        
+        cond = DIMSE_receiveCommand(assoc, blockMode, timeout, &presID, &rsp, statusDetail);
         if (cond != EC_Normal) {
             return cond;
         }
-        if (rsp.CommandField != DIMSE_C_MOVE_RSP)
-        {
-          char buf1[256];
-          sprintf(buf1, "DIMSE: Unexpected Response Command Field: 0x%x", (unsigned)rsp.CommandField);
-          return makeDcmnetCondition(DIMSEC_UNEXPECTEDRESPONSE, OF_error, buf1);
+        if (rsp.CommandField != DIMSE_C_MOVE_RSP) {
+            char buf1[256];
+            sprintf(buf1, "DIMSE: Unexpected Response Command Field: 0x%x", (unsigned)rsp.CommandField);
+            return makeDcmnetCondition(DIMSEC_UNEXPECTEDRESPONSE, OF_error, buf1);
         }
-    
+        
         *response = rsp.msg.CMoveRSP;
         
-        if (response->MessageIDBeingRespondedTo != msgId)
-        {
-          char buf2[256];
-          sprintf(buf2, "DIMSE: Unexpected Response MsgId: %d (expected: %d)", response->MessageIDBeingRespondedTo, msgId);
-          return makeDcmnetCondition(DIMSEC_UNEXPECTEDRESPONSE, OF_error, buf2);
+        if (response->MessageIDBeingRespondedTo != msgId) {
+            char buf2[256];
+            sprintf(buf2, "DIMSE: Unexpected Response MsgId: %d (expected: %d)", response->MessageIDBeingRespondedTo, msgId);
+            return makeDcmnetCondition(DIMSEC_UNEXPECTEDRESPONSE, OF_error, buf2);
         }
-
+        
         status = response->DimseStatus;
         responseCount++;
-
+        
         switch (status) {
-        case STATUS_Pending:
-            if (*statusDetail != NULL) {
-                DIMSE_warning(assoc, 
-                    "moveUser: Pending with statusDetail, ignoring detail");
-                delete *statusDetail;
-                *statusDetail = NULL;
-            }
-            if (response->DataSetType != DIMSE_DATASET_NULL) 
-            {
-                DIMSE_warning(assoc, "moveUser: Status Pending, but DataSetType!=NULL");
-                if (! ignorePendingDatasets)
-                {
-                    // Some systems send an (illegal) dataset following C-MOVE-RSP messages
-                    // with pending status, which is a protocol violation, but we need to
-                    // handle this nevertheless. The MV300 has been reported to exhibit
-                    // this behavior.
-                    DIMSE_warning(assoc, "  Reading but ignoring response identifier set");
-                    DcmDataset *tempset = NULL;
-                    cond = DIMSE_receiveDataSetInMemory(assoc, blockMode, timeout, &presID, &tempset, NULL, NULL);
-                    delete tempset;                
+            case STATUS_Pending:
+                if (*statusDetail != NULL) {
+                    ofConsole.lockCerr() << "moveUser: Pending with statusDetail, ignoring detail" << endl;
+                    ofConsole.unlockCerr();
+                    delete *statusDetail;
+                    *statusDetail = NULL;
+                }
+                if (response->DataSetType != DIMSE_DATASET_NULL) {
+                    ofConsole.lockCerr() << "moveUser: Status Pending, but DataSetType!=NULL" << endl;
+                    ofConsole.unlockCerr();
+                    if (! ignorePendingDatasets) {
+                        // Some systems send an (illegal) dataset following C-MOVE-RSP messages
+                        // with pending status, which is a protocol violation, but we need to
+                        // handle this nevertheless. The MV300 has been reported to exhibit
+                        // this behavior.
+                        ofConsole.lockCerr() << "Reading but ignoring response identifier set" << endl;
+                        ofConsole.unlockCerr();
+                        DcmDataset *tempset = NULL;
+                        cond = DIMSE_receiveDataSetInMemory(assoc, blockMode, timeout, &presID, &tempset, NULL, NULL);
+                        delete tempset;
+                        if (cond != EC_Normal) {
+                            return cond;
+                        }
+                    } else {
+                        // The alternative is to assume that the command set is wrong
+                        // and not to read a dataset from the network association.
+                        ofConsole.lockCerr() << "Assuming NO response identifiers are present" << endl;
+                        ofConsole.unlockCerr();
+                    }
+                }
+                
+                /* execute callback */
+                if (callback) {
+                    callback(callbackData, request, responseCount, response);
+                }
+                break;
+            default:
+                if (response->DataSetType != DIMSE_DATASET_NULL) {
+                    cond = DIMSE_receiveDataSetInMemory(assoc, blockMode, timeout, &presID, rspIds, NULL, NULL);
                     if (cond != EC_Normal) {
                         return cond;
                     }
                 }
-                else
-                {
-                    // The alternative is to assume that the command set is wrong
-                    // and not to read a dataset from the network association.
-                    DIMSE_warning(assoc, "  Assuming NO response identifiers are present");
-                }
-            }
-
-            /* execute callback */
-            if (callback) {
-                callback(callbackData, request, responseCount, response);
-            }
-            break;
-        default:
-            if (response->DataSetType != DIMSE_DATASET_NULL) {
-                cond = DIMSE_receiveDataSetInMemory(assoc, blockMode, timeout,
-                    &presID, rspIds, NULL, NULL);
-                if (cond != EC_Normal) {
-                    return cond;
-                }
-            }
-            break;
+                break;
         }
+        /* reset the timeout timer */
+        timer.reset();
     }
-
+    
     /* do remaining sub-association work, we may receive a non-pending
      * status before the sub-association has cleaned up.
      */
@@ -298,7 +285,7 @@ DIMSE_moveUser(
             subOpCallback(subOpCallbackData, net, &subAssoc);
         }
     }
-
+    
     return cond;
 }
 
