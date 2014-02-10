@@ -1587,7 +1587,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					[compositingImage unlockFocus];
 				}
 				
-				NSLog( @"New Size: %f %f", [compositingImage size].width, [compositingImage size].height);
+//				NSLog( @"New Size: %f %f", [compositingImage size].width, [compositingImage size].height);
 				
 				return [compositingImage autorelease];
 			}

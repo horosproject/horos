@@ -17769,9 +17769,6 @@ int i,j,l;
 
 -(IBAction) endPrint:(id) sender
 {
-	int AlwaysScaleToFit = [[NSUserDefaults standardUserDefaults] integerForKey: @"AlwaysScaleToFit"];
-	[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"AlwaysScaleToFit"];
-	
 	[self checkEverythingLoaded];
 	
     [printWindow orderOut:sender];
@@ -17779,6 +17776,23 @@ int i,j,l;
     
     if( [sender tag])   //User clicks OK Button
     {
+        NSRect windowFrameToRestore = NSMakeRect(0, 0, 0, 0);
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SquareWindowForPrinting"])
+        {
+            int AlwaysScaleToFit = [[NSUserDefaults standardUserDefaults] integerForKey: @"AlwaysScaleToFit"];
+            [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"AlwaysScaleToFit"];
+            
+            windowFrameToRestore = [[self window] frame];
+            NSRect newFrame = [AppController usefullRectForScreen: self.window.screen];
+            
+            if( newFrame.size.width < newFrame.size.height) newFrame.size.height = newFrame.size.width;
+            else newFrame.size.width = newFrame.size.height;
+            
+            [AppController resizeWindowWithAnimation: [self window] newSize: newFrame];
+            
+            [[NSUserDefaults standardUserDefaults] setInteger: AlwaysScaleToFit forKey: @"AlwaysScaleToFit"];
+        }
+        
 		NSMutableDictionary	*settings = [NSMutableDictionary dictionary];
 		
 		//--------------------------Layout---------------------------------
@@ -18051,6 +18065,15 @@ int i,j,l;
 		[splash close];
 		[splash autorelease];
 		
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SquareWindowForPrinting"] && NSIsEmptyRect( windowFrameToRestore) == NO)
+        {
+            int AlwaysScaleToFit = [[NSUserDefaults standardUserDefaults] integerForKey: @"AlwaysScaleToFit"];
+            [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"AlwaysScaleToFit"];
+            
+            [AppController resizeWindowWithAnimation: [self window] newSize: windowFrameToRestore];
+            
+            [[NSUserDefaults standardUserDefaults] setInteger: AlwaysScaleToFit forKey: @"AlwaysScaleToFit"];
+        }
 		// Start the actuall print operation if there is something to print at all.
 		if( [files count])
 		{
@@ -18069,23 +18092,10 @@ int i,j,l;
                 contextInfo:nil];
 		}
     }
-	else
-	{
-	}
-	
-	[[NSUserDefaults standardUserDefaults] setInteger: AlwaysScaleToFit forKey: @"AlwaysScaleToFit"];
-    
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SquareWindowForPrinting"] && NSIsEmptyRect( previousWindowFrame) == NO)
-    {
-        [AppController resizeWindowWithAnimation: [self window] newSize: previousWindowFrame];
-    }
 }
 
 - (IBAction) printSlider:(id) sender
 {
-	int AlwaysScaleToFit = [[NSUserDefaults standardUserDefaults] integerForKey: @"AlwaysScaleToFit"];
-	[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"AlwaysScaleToFit"];
-	
 	if( [[printSelection selectedCell] tag] == 2)
 	{
 		[printFromText takeIntValueFrom: printFrom];
@@ -18100,26 +18110,11 @@ int i,j,l;
 	}
 	
 	[self setPagesToPrint: self];
-	
-	[[NSUserDefaults standardUserDefaults] setInteger: AlwaysScaleToFit forKey: @"AlwaysScaleToFit"];
 }
 
 - (void) print:(id) sender
 {
-	int AlwaysScaleToFit = [[NSUserDefaults standardUserDefaults] integerForKey: @"AlwaysScaleToFit"];
-	[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"AlwaysScaleToFit"];
-	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SquareWindowForPrinting"])
-	{
-		NSRect newFrame = previousWindowFrame = [[self window] frame];
-		
-		if( newFrame.size.width < newFrame.size.height) newFrame.size.height = newFrame.size.width;
-		else newFrame.size.width = newFrame.size.height;
-        
-		[AppController resizeWindowWithAnimation: [self window] newSize: newFrame];
-	}
-	
-	NSDictionary *p = [[NSUserDefaults standardUserDefaults] objectForKey: @"previousPrintSettings"];
+    NSDictionary *p = [[NSUserDefaults standardUserDefaults] objectForKey: @"previousPrintSettings"];
 	
 	if( p)
 	{
@@ -18179,33 +18174,16 @@ int i,j,l;
 		[printTo setEnabled: YES];
 		[printInterval setEnabled: YES];
 	}
-	
-	[[NSUserDefaults standardUserDefaults] setInteger: AlwaysScaleToFit forKey: @"AlwaysScaleToFit"];
-	
+    
 	[NSApp beginSheet: printWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 }
 
 #ifndef OSIRIX_LIGHT
 - (void) printDICOM:(id) sender
 {
-	int AlwaysScaleToFit = [[NSUserDefaults standardUserDefaults] integerForKey: @"AlwaysScaleToFit"];
-	[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"AlwaysScaleToFit"];
-	
 	[self checkEverythingLoaded];
 
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SquareWindowForPrinting"])
-	{
-		NSRect newFrame = previousWindowFrame = [[self window] frame];
-		
-		if( newFrame.size.width < newFrame.size.height) newFrame.size.height = newFrame.size.width;
-		else newFrame.size.width = newFrame.size.height;
-		
-		[AppController resizeWindowWithAnimation: [self window] newSize: newFrame];
-	}
-	
-	[[[AYDicomPrintWindowController alloc] initWithOldWindowFrameToRestore: previousWindowFrame] autorelease];
-	
-	[[NSUserDefaults standardUserDefaults] setInteger: AlwaysScaleToFit forKey: @"AlwaysScaleToFit"];
+	[[[AYDicomPrintWindowController alloc] init] autorelease];
 }
 #endif
 

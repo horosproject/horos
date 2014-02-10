@@ -311,7 +311,6 @@ enum
 	IBOutlet NSMatrix		*printSettings;
 	IBOutlet NSPopUpButton	*printLayout;
 	IBOutlet NSTextField	*printText, *printPagesToPrint;
-    NSRect                  previousWindowFrame;
 	
 	NSMutableArray			*undoQueue, *redoQueue;
 	

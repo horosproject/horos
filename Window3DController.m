@@ -124,6 +124,11 @@
     return valid;
 }
 
+- (int) syncSeriesState
+{
+    return 0;
+}
+
 - (NSArray*) pixList
 {
 	return nil;

@@ -46,7 +46,6 @@
 	IBOutlet NSTextField	*m_VersionNumberTextField;
 	
 	NSLock					*printing;
-    NSRect                  windowFrameToRestore;
 }
 + (void) updateAllPreferencesFormat;
 
@@ -57,6 +56,5 @@
 - (IBAction) setExportMode:(id) sender;
 - (IBAction) exportDICOMSlider:(id) sender;
 - (IBAction) setPages:(id) sender;
-- (id) initWithOldWindowFrameToRestore:(NSRect) w;
 
 @end
