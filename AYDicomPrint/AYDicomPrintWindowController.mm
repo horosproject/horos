@@ -386,6 +386,8 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
 - (void) _createPrintjob: (id) object
 {
     NSRect windowFrameToRestore = NSMakeRect(0, 0, 0, 0);
+    BOOL scaleFitToRestore = m_CurrentViewer.imageView.isScaledFit;
+    
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SquareWindowForPrinting"])
 	{
         int AlwaysScaleToFit = [[NSUserDefaults standardUserDefaults] integerForKey: @"AlwaysScaleToFit"];
@@ -398,6 +400,7 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
 		else newFrame.size.width = newFrame.size.height;
 		
 		[AppController resizeWindowWithAnimation: m_CurrentViewer.window newSize: newFrame];
+        if( scaleFitToRestore) [m_CurrentViewer.imageView scaleToFit];
         
         [[NSUserDefaults standardUserDefaults] setInteger: AlwaysScaleToFit forKey: @"AlwaysScaleToFit"];
 	}
@@ -534,6 +537,8 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
                         [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"AlwaysScaleToFit"];
                         
                         [AppController resizeWindowWithAnimation: m_CurrentViewer.window newSize: windowFrameToRestore];
+                        
+                        if( scaleFitToRestore) [m_CurrentViewer.imageView scaleToFit];
                         
                         [[NSUserDefaults standardUserDefaults] setInteger: AlwaysScaleToFit forKey: @"AlwaysScaleToFit"];
                     }

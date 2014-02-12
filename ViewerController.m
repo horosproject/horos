@@ -17777,6 +17777,8 @@ int i,j,l;
     if( [sender tag])   //User clicks OK Button
     {
         NSRect windowFrameToRestore = NSMakeRect(0, 0, 0, 0);
+        BOOL scaleFitToRestore = imageView.isScaledFit;
+        
         if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SquareWindowForPrinting"])
         {
             int AlwaysScaleToFit = [[NSUserDefaults standardUserDefaults] integerForKey: @"AlwaysScaleToFit"];
@@ -17789,6 +17791,7 @@ int i,j,l;
             else newFrame.size.width = newFrame.size.height;
             
             [AppController resizeWindowWithAnimation: [self window] newSize: newFrame];
+            if( scaleFitToRestore) [imageView scaleToFit];
             
             [[NSUserDefaults standardUserDefaults] setInteger: AlwaysScaleToFit forKey: @"AlwaysScaleToFit"];
         }
@@ -18071,6 +18074,8 @@ int i,j,l;
             [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"AlwaysScaleToFit"];
             
             [AppController resizeWindowWithAnimation: [self window] newSize: windowFrameToRestore];
+            
+            if( scaleFitToRestore) [imageView scaleToFit];
             
             [[NSUserDefaults standardUserDefaults] setInteger: AlwaysScaleToFit forKey: @"AlwaysScaleToFit"];
         }
