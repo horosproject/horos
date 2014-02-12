@@ -13369,6 +13369,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         [data writeToFile: path atomically:YES];
         [pboard setPropertyList:[NSArray arrayWithObject: path] forType:NSFilenamesPboardType];
         
+        if( [[NSFileManager defaultManager] fileExistsAtPath: path] == NO)
+            N2LogStackTrace( @"file doesnt exist: %@", path);
+        
         [self dragImage: thumbnail at:local_point offset:dragOffset event:event pasteboard:pboard source:self slideBack:YES];
     }
     @catch( NSException *localException) {
