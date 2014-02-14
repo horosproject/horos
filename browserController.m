@@ -1695,14 +1695,14 @@ static NSConditionLock *threadLock = nil;
             
 			[self willChangeValueForKey:@"database"];
 			
+            [self saveLoadAlbumsSortDescriptors];
+            
             [self waitForRunningProcesses];
             
             [_database save:nil];
 			[_database autorelease]; _database = nil;
             
             [self willChangeContext];
-            
-            [self saveLoadAlbumsSortDescriptors];
             
 			[reportFilesToCheck removeAllObjects];
 
