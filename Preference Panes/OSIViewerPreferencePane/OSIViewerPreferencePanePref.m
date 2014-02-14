@@ -32,7 +32,7 @@ static NSString* UserDefaultsObservingContext = @"UserDefaultsObservingContext";
         
         [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.ReserveScreenForDB" options:0 context:UserDefaultsObservingContext];
         [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.AUTOTILING" options:0 context:UserDefaultsObservingContext];
-        
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.UseFloatingThumbnailsList" options:0 context:UserDefaultsObservingContext];
 	}
 	
 	return self;
@@ -43,6 +43,7 @@ static NSString* UserDefaultsObservingContext = @"UserDefaultsObservingContext";
 	NSLog(@"dealloc OSIViewerPreferencePanePref");
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.ReserveScreenForDB"];
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.AUTOTILING"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.UseFloatingThumbnailsList"];
     [super dealloc];
 }
 
@@ -72,13 +73,11 @@ static NSString* UserDefaultsObservingContext = @"UserDefaultsObservingContext";
 
 - (void) willSelect
 {
-    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.UseFloatingThumbnailsList" options:0 context:UserDefaultsObservingContext];
 }
 
 - (void) willUnselect
 {
 	[[[self mainView] window] makeFirstResponder: nil];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.UseFloatingThumbnailsList"];
 }
 
 - (void) mainViewDidLoad
