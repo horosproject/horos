@@ -110,9 +110,6 @@ static OFCmdUnsignedInt opt_maxReceivePDULength = ASC_DEFAULTMAXPDU;
 static OFCmdUnsignedInt opt_maxSendPDULength = 0;
 static E_TransferSyntax opt_networkTransferSyntax = EXS_LittleEndianExplicit;
 
-//static OFBool opt_haltOnUnsuccessfulStore = OFTrue;
-static OFBool opt_haltOnUnsuccessfulStore = OFFalse;
-static OFBool unsuccessfulStoreEncountered = OFFalse;
 static int lastStatusCode = STATUS_Success;
 
 static OFBool opt_proposeOnlyRequiredPresentationContexts = OFFalse;
@@ -122,12 +119,12 @@ static OFCmdUnsignedInt opt_repeatCount = 1;
 static OFCmdUnsignedInt opt_inventPatientCount = 25;
 static OFCmdUnsignedInt opt_inventStudyCount = 50;
 static OFCmdUnsignedInt opt_inventSeriesCount = 100;
-static OFBool opt_inventSOPInstanceInformation = OFFalse;
 static OFBool opt_correctUIDPadding = OFFalse;
-static OFString patientNamePrefix("OSIRIX^PN_");   // PatientName is PN (maximum 16 chars)
-static OFString patientIDPrefix("PID_"); // PatientID is LO (maximum 64 chars)
-static OFString studyIDPrefix("SID_");   // StudyID is SH (maximum 16 chars)
-static OFString accessionNumberPrefix;  // AccessionNumber is SH (maximum 16 chars)
+//static OFBool opt_inventSOPInstanceInformation = OFFalse;
+//static OFString patientNamePrefix("OSIRIX^PN_");   // PatientName is PN (maximum 16 chars)
+//static OFString patientIDPrefix("PID_"); // PatientID is LO (maximum 64 chars)
+//static OFString studyIDPrefix("SID_");   // StudyID is SH (maximum 16 chars)
+//static OFString accessionNumberPrefix;  // AccessionNumber is SH (maximum 16 chars)
 T_DIMSE_BlockingMode opt_blockMode = DIMSE_NONBLOCKING;
 int opt_dimse_timeout = 0;
 int opt_acse_timeout = 30;
@@ -145,11 +142,12 @@ static OFString    opt_ciphersuites(TLS1_TXT_RSA_WITH_AES_128_SHA ":" SSL3_TXT_R
 #else
 static OFString    opt_ciphersuites(SSL3_TXT_RSA_DES_192_CBC3_SHA);
 #endif
-static const char *opt_readSeedFile = NULL;
-static const char *opt_writeSeedFile = NULL;
-static DcmCertificateVerification opt_certVerification = DCV_requireCertificate;
-static const char *opt_dhparam = NULL;
-static NSString *openssl = @"openssl";
+//static const char *opt_readSeedFile = NULL;
+//static const char *opt_writeSeedFile = NULL;
+//static DcmCertificateVerification opt_certVerification = DCV_requireCertificate;
+//static const char *opt_dhparam = NULL;
+
+static NSString *opensslSync = @"openssl";
 #endif
 
 static int inc = 0;
@@ -409,78 +407,78 @@ updateStringAttributeValue(DcmItem* dataset, const DcmTagKey& key, OFString& val
     return OFTrue;
 }
 
-static void
-replaceSOPInstanceInformation(DcmDataset* dataset)
-{
-    static OFCmdUnsignedInt patientCounter = 0;
-    static OFCmdUnsignedInt studyCounter = 0;
-    static OFCmdUnsignedInt seriesCounter = 0;
-    static OFCmdUnsignedInt imageCounter = 0;
-    static OFString seriesInstanceUID;
-    static OFString seriesNumber;
-    static OFString studyInstanceUID;
-    static OFString studyID;
-    static OFString accessionNumber;
-    static OFString patientID;
-    static OFString patientName;
-
-    if (seriesInstanceUID.length() == 0) seriesInstanceUID=makeUID(SITE_SERIES_UID_ROOT, (int)seriesCounter);
-    if (seriesNumber.length() == 0) seriesNumber = intToString((int)seriesCounter);
-    if (studyInstanceUID.length() == 0) studyInstanceUID = makeUID(SITE_STUDY_UID_ROOT, (int)studyCounter);
-    if (studyID.length() == 0) studyID = studyIDPrefix + intToString((int)secondsSince1970()) + intToString((int)studyCounter);
-    if (accessionNumber.length() == 0) accessionNumber = accessionNumberPrefix + intToString(secondsSince1970()) + intToString((int)studyCounter);
-    if (patientID.length() == 0) patientID = patientIDPrefix + intToString(secondsSince1970()) + intToString((int)patientCounter);
-    if (patientName.length() == 0) patientName = patientNamePrefix + intToString(secondsSince1970()) + intToString((int)patientCounter);
-
-    if (imageCounter >= opt_inventSeriesCount) {
-        imageCounter = 0;
-        seriesCounter++;
-        seriesInstanceUID = makeUID(SITE_SERIES_UID_ROOT, (int)seriesCounter);
-        seriesNumber = intToString((int)seriesCounter);
-    }
-    if (seriesCounter >= opt_inventStudyCount) {
-        seriesCounter = 0;
-        studyCounter++;
-        studyInstanceUID = makeUID(SITE_STUDY_UID_ROOT, (int)studyCounter);
-        studyID = studyIDPrefix + intToString(secondsSince1970()) + intToString((int)studyCounter);
-        accessionNumber = accessionNumberPrefix + intToString(secondsSince1970()) + intToString((int)studyCounter);
-    }
-    if (studyCounter >= opt_inventPatientCount) {
-        // we create as many patients as necessary */
-        studyCounter = 0;
-        patientCounter++;
-        patientID = patientIDPrefix + intToString(secondsSince1970()) + intToString((int)patientCounter);
-        patientName = patientNamePrefix + intToString(secondsSince1970()) + intToString((int)patientCounter);
-    }
-
-    OFString sopInstanceUID = makeUID(SITE_INSTANCE_UID_ROOT, (int)imageCounter);
-    OFString imageNumber = intToString((int)imageCounter);
-
-    if (opt_verbose) {
-        COUT << "Inventing Identifying Information (" <<
-            "pa" << patientCounter << ", st" << studyCounter <<
-            ", se" << seriesCounter << ", im" << imageCounter << "): " << endl;
-        COUT << "  PatientName=" << patientName << endl;
-        COUT << "  PatientID=" << patientID << endl;
-        COUT << "  StudyInstanceUID=" << studyInstanceUID << endl;
-        COUT << "  StudyID=" << studyID << endl;
-        COUT << "  SeriesInstanceUID=" << seriesInstanceUID << endl;
-        COUT << "  SeriesNumber=" << seriesNumber << endl;
-        COUT << "  SOPInstanceUID=" << sopInstanceUID << endl;
-        COUT << "  ImageNumber=" << imageNumber << endl;
-    }
-
-    updateStringAttributeValue(dataset, DCM_PatientsName, patientName);
-    updateStringAttributeValue(dataset, DCM_PatientID, patientID);
-    updateStringAttributeValue(dataset, DCM_StudyInstanceUID, studyInstanceUID);
-    updateStringAttributeValue(dataset, DCM_StudyID, studyID);
-    updateStringAttributeValue(dataset, DCM_SeriesInstanceUID, seriesInstanceUID);
-    updateStringAttributeValue(dataset, DCM_SeriesNumber, seriesNumber);
-    updateStringAttributeValue(dataset, DCM_SOPInstanceUID, sopInstanceUID);
-    updateStringAttributeValue(dataset, DCM_InstanceNumber, imageNumber);
-
-    imageCounter++;
-}
+//static void
+//replaceSOPInstanceInformation(DcmDataset* dataset)
+//{
+//    static OFCmdUnsignedInt patientCounter = 0;
+//    static OFCmdUnsignedInt studyCounter = 0;
+//    static OFCmdUnsignedInt seriesCounter = 0;
+//    static OFCmdUnsignedInt imageCounter = 0;
+//    static OFString seriesInstanceUID;
+//    static OFString seriesNumber;
+//    static OFString studyInstanceUID;
+//    static OFString studyID;
+//    static OFString accessionNumber;
+//    static OFString patientID;
+//    static OFString patientName;
+//
+//    if (seriesInstanceUID.length() == 0) seriesInstanceUID=makeUID(SITE_SERIES_UID_ROOT, (int)seriesCounter);
+//    if (seriesNumber.length() == 0) seriesNumber = intToString((int)seriesCounter);
+//    if (studyInstanceUID.length() == 0) studyInstanceUID = makeUID(SITE_STUDY_UID_ROOT, (int)studyCounter);
+//    if (studyID.length() == 0) studyID = studyIDPrefix + intToString((int)secondsSince1970()) + intToString((int)studyCounter);
+//    if (accessionNumber.length() == 0) accessionNumber = accessionNumberPrefix + intToString(secondsSince1970()) + intToString((int)studyCounter);
+//    if (patientID.length() == 0) patientID = patientIDPrefix + intToString(secondsSince1970()) + intToString((int)patientCounter);
+//    if (patientName.length() == 0) patientName = patientNamePrefix + intToString(secondsSince1970()) + intToString((int)patientCounter);
+//
+//    if (imageCounter >= opt_inventSeriesCount) {
+//        imageCounter = 0;
+//        seriesCounter++;
+//        seriesInstanceUID = makeUID(SITE_SERIES_UID_ROOT, (int)seriesCounter);
+//        seriesNumber = intToString((int)seriesCounter);
+//    }
+//    if (seriesCounter >= opt_inventStudyCount) {
+//        seriesCounter = 0;
+//        studyCounter++;
+//        studyInstanceUID = makeUID(SITE_STUDY_UID_ROOT, (int)studyCounter);
+//        studyID = studyIDPrefix + intToString(secondsSince1970()) + intToString((int)studyCounter);
+//        accessionNumber = accessionNumberPrefix + intToString(secondsSince1970()) + intToString((int)studyCounter);
+//    }
+//    if (studyCounter >= opt_inventPatientCount) {
+//        // we create as many patients as necessary */
+//        studyCounter = 0;
+//        patientCounter++;
+//        patientID = patientIDPrefix + intToString(secondsSince1970()) + intToString((int)patientCounter);
+//        patientName = patientNamePrefix + intToString(secondsSince1970()) + intToString((int)patientCounter);
+//    }
+//
+//    OFString sopInstanceUID = makeUID(SITE_INSTANCE_UID_ROOT, (int)imageCounter);
+//    OFString imageNumber = intToString((int)imageCounter);
+//
+//    if (opt_verbose) {
+//        COUT << "Inventing Identifying Information (" <<
+//            "pa" << patientCounter << ", st" << studyCounter <<
+//            ", se" << seriesCounter << ", im" << imageCounter << "): " << endl;
+//        COUT << "  PatientName=" << patientName << endl;
+//        COUT << "  PatientID=" << patientID << endl;
+//        COUT << "  StudyInstanceUID=" << studyInstanceUID << endl;
+//        COUT << "  StudyID=" << studyID << endl;
+//        COUT << "  SeriesInstanceUID=" << seriesInstanceUID << endl;
+//        COUT << "  SeriesNumber=" << seriesNumber << endl;
+//        COUT << "  SOPInstanceUID=" << sopInstanceUID << endl;
+//        COUT << "  ImageNumber=" << imageNumber << endl;
+//    }
+//
+//    updateStringAttributeValue(dataset, DCM_PatientsName, patientName);
+//    updateStringAttributeValue(dataset, DCM_PatientID, patientID);
+//    updateStringAttributeValue(dataset, DCM_StudyInstanceUID, studyInstanceUID);
+//    updateStringAttributeValue(dataset, DCM_StudyID, studyID);
+//    updateStringAttributeValue(dataset, DCM_SeriesInstanceUID, seriesInstanceUID);
+//    updateStringAttributeValue(dataset, DCM_SeriesNumber, seriesNumber);
+//    updateStringAttributeValue(dataset, DCM_SOPInstanceUID, sopInstanceUID);
+//    updateStringAttributeValue(dataset, DCM_InstanceNumber, imageNumber);
+//
+//    imageCounter++;
+//}
 
 static void
 progressCallback(void * /*callbackData*/,
@@ -698,7 +696,7 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
 	
 	sprintf( outfname, "%s/%ld.dcm", [[BrowserController currentBrowser] cfixedTempNoIndexDirectory], seed++);
 
-    unsuccessfulStoreEncountered = OFTrue; // assumption
+    OFBool unsuccessfulStoreEncountered = OFTrue; // assumption
 	
     if (opt_verbose) {
         printf("--------------------------\n");
@@ -718,10 +716,10 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
         return cond;
     }
 
-    /* if required, invent new SOP instance information for the current data set (user option) */
-    if (opt_inventSOPInstanceInformation) {
-        replaceSOPInstanceInformation(dcmff.getDataset());
-    }
+//    /* if required, invent new SOP instance information for the current data set (user option) */
+//    if (opt_inventSOPInstanceInformation) {
+//        replaceSOPInstanceInformation(dcmff.getDataset());
+//    }
 
     /* figure out which SOP class and SOP instance is encapsulated in the file */
     if (!DU_findSOPClassAndInstanceInDataSet(dcmff.getDataset(),
@@ -855,6 +853,11 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
     if (cond == EC_Normal && (rsp.DimseStatus == STATUS_Success || DICOM_WARNING_STATUS(rsp.DimseStatus))) {
         unsuccessfulStoreEncountered = OFFalse;
     }
+    else
+    {
+        if (cond == EC_Normal)
+            DIMSE_printCStoreRSP(stdout, &rsp);
+    }
 
     /* remember the response's status for later transmissions of data */
     lastStatusCode = rsp.DimseStatus;
@@ -879,20 +882,20 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
         delete statusDetail;
     }
 	
-	if( status)
-	{
+	if( status) {
 		// We created a temporary file. Delete it now.
-		
 		unlink( outfname);
 	}
 	
+    if( unsuccessfulStoreEncountered)
+        cond = DIMSE_BADMESSAGE;
+    
     /* return */
     return cond;
 }
 
 
-static OFCondition
-cstore(T_ASC_Association * assoc, const OFString& fname)
+static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
     /*
      * This function will process the given file as often as is specified by opt_repeatCount.
      * "Process" in this case means "read file, send C-STORE-RQ, receive C-STORE-RSP".
@@ -908,18 +911,12 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
     int n = (int)opt_repeatCount;
 
     /* as long as no error occured and the counter does not equal 0 */
-    while ((cond.good()) && n-- && !(opt_haltOnUnsuccessfulStore && unsuccessfulStoreEncountered))
+    while ((cond.good()) && n--)
     {
         /* process file (read file, send C-STORE-RQ, receive C-STORE-RSP) */
         cond = storeSCU(assoc, fname.c_str());
     }
-
-    // we don't want to return an error code if --no-halt was specified.
-    if (! opt_haltOnUnsuccessfulStore)
-    {
-        cond = EC_Normal;
-    }
-
+    
     /* return result value */
     return cond;
 }
@@ -1095,23 +1092,23 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 		
 	if (_calledAET)
 		opt_peerTitle = [_calledAET UTF8String];
-		
-
+    
     OFList<OFString> fileNameList;       // list of files to transfer to SCP
     OFList<OFString> sopClassUIDList;    // the list of sop classes
     OFList<OFString> sopInstanceUIDList; // the list of sop instances
-
+    
     T_ASC_Network *net = NULL;
     T_ASC_Parameters *params;
     DIC_NODENAME localHost;
     DIC_NODENAME peerHost;
     T_ASC_Association *assoc = NULL;
     DcmAssociationConfiguration asccfg; // handler for association configuration profiles
-
+    
 	//NSLog(@"set hostname: %@", _hostname);
 	opt_peer = [_hostname UTF8String];
 	opt_port = _port;
 	
+    [[NSUserDefaults standardUserDefaults] setBool: 0 forKey: @"verbose_dcmtkStoreScu"];
     
 	opt_verbose = [[NSUserDefaults standardUserDefaults] boolForKey: @"verbose_dcmtkStoreScu"];
 	opt_showPresentationContexts = [[NSUserDefaults standardUserDefaults] boolForKey: @"verbose_dcmtkStoreScu"];
@@ -1249,7 +1246,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	#ifdef WITH_OPENSSL
 		if(_cipherSuites)
 		{
-            @synchronized( openssl)
+            @synchronized( opensslSync)
             {
                 @try
                 {
@@ -1272,7 +1269,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
                                 NSLog(@"%s", DcmTLSTransportLayer::getTLSCipherSuiteName(cs));
                             }
                             
-                            localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat:@"Ciphersuite '%s' is unknown.", current] userInfo:nil] retain];
+                            localException = [[NSException exceptionWithName:@"DICOM Network Failure (STORE-SCU TLS)" reason:[NSString stringWithFormat:@"Ciphersuite '%s' is unknown.", current] userInfo:nil] retain];
                             [localException raise];
                         }
                         else
@@ -1315,9 +1312,9 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 			{
 			  errormsg = "cannot access file: ";
 			  errormsg += currentFilename;
-			  if (opt_haltOnUnsuccessfulStore)
-				 errmsg(errormsg.c_str());
-				 else CERR << "warning: " << errormsg << ", ignoring file" << endl;
+//			  if (opt_haltOnUnsuccessfulStore)
+//				 errmsg(errormsg.c_str());
+//				 else CERR << "warning: " << errormsg << ", ignoring file" << endl;
 			}
 			else
 			{
@@ -1328,9 +1325,9 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 					ignoreName = OFTrue;
 					errormsg = "missing SOP class (or instance) in file: ";
 					errormsg += currentFilename;
-					if (opt_haltOnUnsuccessfulStore)
-					   errmsg(errormsg.c_str());
-					   else CERR << "warning: " << errormsg << ", ignoring file" << endl;
+//					if (opt_haltOnUnsuccessfulStore)
+//					   errmsg(errormsg.c_str());
+//					   else CERR << "warning: " << errormsg << ", ignoring file" << endl;
 				  }
 				  else if (!dcmIsaStorageSOPClassUID(sopClassUID))
 				  {
@@ -1339,9 +1336,9 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 					errormsg += currentFilename;
 					errormsg += ": ";
 					errormsg += sopClassUID;
-					if (opt_haltOnUnsuccessfulStore)
-					   errmsg(errormsg.c_str());
-					   else CERR << "warning: " << errormsg << ", ignoring file" << endl;
+//					if (opt_haltOnUnsuccessfulStore)
+//					   errmsg(errormsg.c_str());
+//					   else CERR << "warning: " << errormsg << ", ignoring file" << endl;
 				  }
 				  else
 				  {
@@ -1378,7 +1375,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 		if (cond.bad())
 		{
 			DimseCondition::dump(cond);
-			localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"ASC_initializeNetwork %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
+			localException = [[NSException exceptionWithName:@"DICOM Network Failure (STORE-SCU)" reason:[NSString stringWithFormat: @"ASC_initializeNetwork %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
 			[localException raise];
 			//return;
 		}
@@ -1388,13 +1385,13 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 		
 		if( _secureConnection)
         {
-            @synchronized( openssl)
+            @synchronized( opensslSync)
             {
                 tLayer = new DcmTLSTransportLayer(DICOM_APPLICATION_REQUESTOR, _readSeedFile);
                 if (tLayer == NULL)
                 {
                     NSLog(@"unable to create TLS transport layer");
-                    localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:@"unable to create TLS transport layer" userInfo:nil] retain];
+                    localException = [[NSException exceptionWithName:@"DICOM Network Failure (STORE-SCU TLS)" reason:@"unable to create TLS transport layer" userInfo:nil] retain];
                     [localException raise];
                 }
                 
@@ -1408,7 +1405,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
                     {
                         if (TCS_ok != tLayer->addTrustedCertificateFile([[trustedCertificatesDir stringByAppendingPathComponent:cert] cStringUsingEncoding:NSUTF8StringEncoding], _keyFileFormat))
                         {
-                            localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat:@"Unable to load certificate file %@", [trustedCertificatesDir stringByAppendingPathComponent:cert]] userInfo:nil] retain];
+                            localException = [[NSException exceptionWithName:@"DICOM Network Failure (STORE-SCU TLS)" reason:[NSString stringWithFormat:@"Unable to load certificate file %@", [trustedCertificatesDir stringByAppendingPathComponent:cert]] userInfo:nil] retain];
                             [localException raise];
                         }
                     }
@@ -1432,7 +1429,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
                 
                 if (_dhparam && ! (tLayer->setTempDHParameters(_dhparam)))
                 {
-                    localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat:@"Unable to load temporary DH parameter file %s", _dhparam] userInfo:nil] retain];
+                    localException = [[NSException exceptionWithName:@"DICOM Network Failure (STORE-SCU TLS)" reason:[NSString stringWithFormat:@"Unable to load temporary DH parameter file %s", _dhparam] userInfo:nil] retain];
                     [localException raise];
                 }
                 
@@ -1447,26 +1444,26 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
                     
                     if (TCS_ok != tLayer->setPrivateKeyFile([_privateKeyFile cStringUsingEncoding:NSUTF8StringEncoding], SSL_FILETYPE_PEM))
                     {
-                        localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat:@"Unable to load private TLS key from %@", _privateKeyFile] userInfo:nil] retain];
+                        localException = [[NSException exceptionWithName:@"DICOM Network Failure (STORE-SCU TLS)" reason:[NSString stringWithFormat:@"Unable to load private TLS key from %@", _privateKeyFile] userInfo:nil] retain];
                         [localException raise];
                     }
                     
                     if (TCS_ok != tLayer->setCertificateFile([_certificateFile cStringUsingEncoding:NSUTF8StringEncoding], SSL_FILETYPE_PEM))
                     {
-                        localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat:@"Unable to load certificate from %@", _certificateFile] userInfo:nil] retain];
+                        localException = [[NSException exceptionWithName:@"DICOM Network Failure (STORE-SCU TLS)" reason:[NSString stringWithFormat:@"Unable to load certificate from %@", _certificateFile] userInfo:nil] retain];
                         [localException raise];
                     }
                     
                     if (!tLayer->checkPrivateKeyMatchesCertificate())
                     {
-                        localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat:@"private key '%@' and certificate '%@' do not match", _privateKeyFile, _certificateFile] userInfo:nil] retain];
+                        localException = [[NSException exceptionWithName:@"DICOM Network Failure (STORE-SCU TLS)" reason:[NSString stringWithFormat:@"private key '%@' and certificate '%@' do not match", _privateKeyFile, _certificateFile] userInfo:nil] retain];
                         [localException raise];
                     }
                 }
                 
                 if (TCS_ok != tLayer->setCipherSuites(opt_ciphersuites.c_str()))
                 {
-                    localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:@"Unable to set selected cipher suites" userInfo:nil] retain];
+                    localException = [[NSException exceptionWithName:@"DICOM Network Failure (STORE-SCU TLS)" reason:@"Unable to set selected cipher suites" userInfo:nil] retain];
                     [localException raise];
                 }
                 
@@ -1485,7 +1482,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
                 if (cond.bad())
                 {
                     DimseCondition::dump(cond);
-                    localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu TLS)" reason:[NSString stringWithFormat: @"ASC_setTransportLayer - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
+                    localException = [[NSException exceptionWithName:@"DICOM Network Failure (STORE-SCU TLS)" reason:[NSString stringWithFormat: @"ASC_setTransportLayer - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
                     [localException raise];
                 }
             }
@@ -1498,7 +1495,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
         if (cond.bad())
         {
             DimseCondition::dump(cond);
-            localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"ASC_createAssociationParameters %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
+            localException = [[NSException exceptionWithName:@"DICOM Network Failure (STORE-SCU)" reason:[NSString stringWithFormat: @"ASC_createAssociationParameters %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
             [localException raise];
             //return;
         }
@@ -1514,7 +1511,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
         if (cond.bad())
         {
             DimseCondition::dump(cond);
-            localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"ASC_setTransportLayerType %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
+            localException = [[NSException exceptionWithName:@"DICOM Network Failure (STORE-SCU)" reason:[NSString stringWithFormat: @"ASC_setTransportLayerType %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
             [localException raise];
             //return;
         }
@@ -1533,7 +1530,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
         if (cond.bad())
         {
             DimseCondition::dump(cond);
-            localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"addStoragePresentationContexts %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
+            localException = [[NSException exceptionWithName:@"DICOM Network Failure (STORE-SCU)" reason:[NSString stringWithFormat: @"addStoragePresentationContexts %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
             [localException raise];
             //return;
         }
@@ -1560,13 +1557,13 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
                 ASC_getRejectParameters(params, &rej);
                 errmsg("Association Rejected:");
                 ASC_printRejectParameters(stderr, &rej);
-                localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"Association Rejected %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
+                localException = [[NSException exceptionWithName:@"DICOM Network Failure (STORE-SCU)" reason:[NSString stringWithFormat: @"Association Rejected %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
                 [localException raise];
 
             } else {
                 errmsg("Association Request Failed:");
                 DimseCondition::dump(cond);
-                localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"Association Request Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
+                localException = [[NSException exceptionWithName:@"DICOM Network Failure (STORE-SCU)" reason:[NSString stringWithFormat: @"Association Request Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
                 [localException raise];
             }
         }
@@ -1592,7 +1589,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
         if (ASC_countAcceptedPresentationContexts(params) == 0)
         {
             errmsg("No Acceptable Presentation Contexts");
-            localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"No acceptable presentation contexts" userInfo:nil] retain];
+            localException = [[NSException exceptionWithName:@"DICOM Network Failure (STORE-SCU)" reason:@"No acceptable presentation contexts" userInfo:nil] retain];
             [localException raise];
             //return;
         }
@@ -1612,7 +1609,9 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
         while ((iter != enditer) && (cond == EC_Normal)) // compare with EC_Normal since DUL_PEERREQUESTEDRELEASE is also good()
         {
             cond = cstore(assoc, *iter);
+            
             ++iter;
+            
             if (cond == EC_Normal)
                 _numberSent++;
             else
@@ -1656,7 +1655,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
                 {
                     errmsg("Association Abort Failed:");
                     DimseCondition::dump(cond);
-                    localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"Association Abort Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
+                    localException = [[NSException exceptionWithName:@"DICOM Network Failure (STORE-SCU)" reason:[NSString stringWithFormat: @"Association Abort Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
                     [localException raise];
                 }
             } else
@@ -1669,7 +1668,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
                 {
                     errmsg("Association Release Failed:");
                     DimseCondition::dump(cond);
-                    localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"Association Release Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
+                    localException = [[NSException exceptionWithName:@"DICOM Network Failure (STORE-SCU)" reason:[NSString stringWithFormat: @"Association Release Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
                     [localException raise];
                 }
             }
@@ -1679,7 +1678,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
             errmsg("Protocol Error: peer requested release (Aborting)");
             if (opt_verbose)
                 printf("Aborting Association\n");
-            localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"Protocol Error: peer requested release (Aborting) %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
+            localException = [[NSException exceptionWithName:@"DICOM Network Failure (STORE-SCU)" reason:[NSString stringWithFormat: @"Protocol Error: peer requested release (Aborting) %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
             cond = ASC_abortAssociation(assoc);
             if (cond.bad())
             {
@@ -1699,7 +1698,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
             if (opt_verbose)
                 printf("Aborting Association\n");
             
-            localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"SCU Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
+            localException = [[NSException exceptionWithName:@"DICOM Network Failure (STORE-SCU)" reason:[NSString stringWithFormat: @"SCU Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
             cond = ASC_abortAssociation(assoc);
             if (cond.bad())
             {
@@ -1727,7 +1726,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 		if (cond.bad())
 		{
 			DimseCondition::dump(cond);
-			localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"ASC_destroyAssociation %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
+			localException = [[NSException exceptionWithName:@"DICOM Network Failure (STORE-SCU)" reason:[NSString stringWithFormat: @"ASC_destroyAssociation %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
 		}
 	}
 	
@@ -1740,7 +1739,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 		if (cond.bad())
 		{
 			DimseCondition::dump(cond);
-			localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:[NSString stringWithFormat: @"ASC_dropNetwork %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
+			localException = [[NSException exceptionWithName:@"DICOM Network Failure (STORE-SCU)" reason:[NSString stringWithFormat: @"ASC_dropNetwork %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] retain];
 		}
 	}
 	
@@ -1765,7 +1764,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
     }
     delete tLayer;
 */
-    @synchronized( openssl)
+    @synchronized( opensslSync)
     {
         if( tLayer)
             delete tLayer;
@@ -1782,19 +1781,19 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 #endif
 #endif
 
-    if (opt_haltOnUnsuccessfulStore && unsuccessfulStoreEncountered)
-	{
-        if (lastStatusCode == STATUS_Success)
-		{
-           
-        }
-		else
-		{
-           
-        }
-		
-		localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Unsuccessful Store Encountered" userInfo:nil] retain];
-    }
+//    if (opt_haltOnUnsuccessfulStore && unsuccessfulStoreEncountered)
+//	{
+//        if (lastStatusCode == STATUS_Success)
+//		{
+//           
+//        }
+//		else
+//		{
+//           
+//        }
+//		
+//		localException = [[NSException exceptionWithName:@"DICOM Network Failure (STORE-SCU)" reason:@"Unsuccessful Store Encountered" userInfo:nil] retain];
+//    }
 
 #ifdef ON_THE_FLY_COMPRESSION
     // deregister JPEG codecs
@@ -1829,6 +1828,9 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 			[userInfo setObject:[NSNumber numberWithInt:_numberErrors] forKey:@"ErrorCount"];
 			
 			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"DICOM Send", nil) description: [NSString stringWithFormat: NSLocalizedString(@"Errors ! %@ of %@ generated errors.", nil), N2LocalizedDecimal( _numberErrors) , N2LocalizedSingularPluralCount( _numberOfFiles, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil))]  name:@"send"];
+            
+            if( localException == nil)
+                localException = [[NSException exceptionWithName:@"DICOM Network Failure (STORE-SCU)" reason:@"Unsuccessful Store Encountered, see Applications/Utilities/Console.app for more detailed informations." userInfo:nil] retain];
 		}
 		else
 			[userInfo setObject:@"Complete" forKey:@"Message"];
