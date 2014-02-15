@@ -953,6 +953,9 @@ subOpCallback(void * /*subOpCallbackData*/ ,
     
 	NSString *baseURL = [NSString stringWithFormat: @"%@://%@%@:%d/%@?requestType=WADO", protocol, lpbit, _hostname, [[_extraParameters valueForKey: @"WADOPort"] intValue], wadoSubUrl];
 	
+    if( baseURL == nil)
+        N2LogStackTrace( @"No baseURL !");
+    
 	@try
 	{
 		if( [protocol isEqualToString: @"https"])
@@ -1045,7 +1048,10 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                             {
                                 NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom%@", [self uid], [image seriesInstanceUID], [image uid], ts]];
                                 
-                                [urlToDownload addObject: url];
+                                if( url)
+                                    [urlToDownload addObject: url];
+                                else
+                                    NSLog( @"****** no url : %@", [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom%@", [self uid], [image seriesInstanceUID], [image uid], ts]);
                             }
                             else
                                 downloader.WADOBaseTotal++;
@@ -1101,7 +1107,10 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                     if( [localObjectUIDs containsString: [image uid]] == NO)
                     {
                         NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom%@", [study uid], [self uid], [image uid], ts]];
-                        [urlToDownload addObject: url];
+                        if( url)
+                            [urlToDownload addObject: url];
+                        else
+                            NSLog( @"****** no url : %@", [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom%@", [study uid], [self uid], [image uid], ts]);
                     }
                 }
                 else NSLog( @"****** no image uid !");
