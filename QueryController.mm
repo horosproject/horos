@@ -4191,7 +4191,7 @@ extern "C"
     else
         [PatientModeMatrix selectTabViewItemAtIndex: [[NSUserDefaults standardUserDefaults] integerForKey: @"QRPatientModeMatrixIndex"]];
     
-	[[self window] setFrameAutosaveName:@"QueryRetrieveWindow"];
+//	[[self window] setFrameAutosaveName:@"QueryRetrieveWindow"];
 	
 	NSTableColumn *tableColumn = [outlineView tableColumnWithIdentifier: @"stateText"];
 	NSPopUpButtonCell *buttonCell = [[[NSPopUpButtonCell alloc] initTextCell: @"" pullsDown:NO] autorelease];

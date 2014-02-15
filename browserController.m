@@ -2000,59 +2000,64 @@ static NSConditionLock *threadLock = nil;
     if( study == nil)
         return NO;
     
-    NSManagedObject *item = [databaseOutline itemAtRow: [[databaseOutline selectedRowIndexes] firstIndex]];
-    DicomStudy *studySelected = [[item valueForKey: @"type"] isEqualToString: @"Study"] ? item : [item valueForKey: @"study"];
-    
-    if( [[study valueForKey: @"studyInstanceUID"] isEqualToString: [studySelected valueForKey: @"studyInstanceUID"]])
-        return YES;
-    
-    if( [study isKindOfClass: [DicomStudy class]])
-    {
-        NSPersistentStoreCoordinator *sps = study.managedObjectContext.persistentStoreCoordinator;
-        NSPersistentStoreCoordinator *dps = self.database.managedObjectContext.persistentStoreCoordinator;
+    @try {
+        NSManagedObject *item = [databaseOutline itemAtRow: [[databaseOutline selectedRowIndexes] firstIndex]];
+        DicomStudy *studySelected = [[item valueForKey: @"type"] isEqualToString: @"Study"] ? item : [item valueForKey: @"study"];
         
-        if( sps != nil)
+        if( [[study valueForKey: @"studyInstanceUID"] isEqualToString: [studySelected valueForKey: @"studyInstanceUID"]])
+            return YES;
+        
+        if( [study isKindOfClass: [DicomStudy class]])
         {
-            if( sps != dps) // another database is selected, select the destination DB
+            NSPersistentStoreCoordinator *sps = study.managedObjectContext.persistentStoreCoordinator;
+            NSPersistentStoreCoordinator *dps = self.database.managedObjectContext.persistentStoreCoordinator;
+            
+            if( sps != nil)
             {
-                DicomDatabase *db = [DicomDatabase databaseForContext: [study managedObjectContext]];
+                if( sps != dps) // another database is selected, select the destination DB
+                {
+                    DicomDatabase *db = [DicomDatabase databaseForContext: [study managedObjectContext]];
+                    
+                    if( db)
+                        [self setDatabase: db];
+                    else
+                        return NO;
+                }
+            }
+            else return NO;
+        }
+        
+        [self outlineViewRefresh];
+        
+        NSUInteger studyIndex = [[outlineViewArray valueForKey: @"studyInstanceUID"] indexOfObject: [study valueForKey: @"studyInstanceUID"]]; // We can have DicomStudy OR DCMTKQueryStudyNode... : search with studyInstanceUID
+        NSInteger rowIndex = -1;
+        
+        if( studyIndex != NSNotFound)
+            rowIndex = [databaseOutline rowForItem: [outlineViewArray objectAtIndex: studyIndex]];
+        
+        if( studyIndex == NSNotFound && (albumTable.selectedRow > 0 || self.searchString.length > 0 || self.timeIntervalType != 0))
+        {
+            if( [study isKindOfClass: [DicomStudy class]]) // It's a local study: we HAVE to find it ! Select the entire DB
+            {
+                [self showEntireDatabase];
+                [self outlineViewRefresh];
                 
-                if( db)
-                    [self setDatabase: db];
-                else
-                    return NO;
+                NSUInteger studyIndex = [[outlineViewArray valueForKey: @"studyInstanceUID"] indexOfObject: [study valueForKey: @"studyInstanceUID"]]; // We can have DicomStudy OR DCMTKQueryStudyNode... : search with studyInstanceUID
+                if( studyIndex != NSNotFound)
+                    rowIndex = [databaseOutline rowForItem: [outlineViewArray objectAtIndex: studyIndex]];
             }
         }
-        else return NO;
-    }
-    
-    [self outlineViewRefresh];
-	
-    NSUInteger studyIndex = [[outlineViewArray valueForKey: @"studyInstanceUID"] indexOfObject: [study valueForKey: @"studyInstanceUID"]]; // We can have DicomStudy OR DCMTKQueryStudyNode... : search with studyInstanceUID
-    NSInteger rowIndex = -1;
-    
-    if( studyIndex != NSNotFound)
-        rowIndex = [databaseOutline rowForItem: [outlineViewArray objectAtIndex: studyIndex]];
-    
-    if( studyIndex == NSNotFound && (albumTable.selectedRow > 0 || self.searchString.length > 0 || self.timeIntervalType != 0))
-    {
-        if( [study isKindOfClass: [DicomStudy class]]) // It's a local study: we HAVE to find it ! Select the entire DB
+        
+        if (rowIndex != -1)
         {
-            [self showEntireDatabase];
-            [self outlineViewRefresh];
+            [databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: rowIndex] byExtendingSelection: NO];
+            [databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
             
-            NSUInteger studyIndex = [[outlineViewArray valueForKey: @"studyInstanceUID"] indexOfObject: [study valueForKey: @"studyInstanceUID"]]; // We can have DicomStudy OR DCMTKQueryStudyNode... : search with studyInstanceUID
-            if( studyIndex != NSNotFound)
-                rowIndex = [databaseOutline rowForItem: [outlineViewArray objectAtIndex: studyIndex]];
+            return YES;
         }
     }
-    
-    if (rowIndex != -1)
-    {
-        [databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: rowIndex] byExtendingSelection: NO];
-        [databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
-        
-        return YES;
+    @catch ( NSException *e) {
+        N2LogException( e);
     }
     
     return NO;
