@@ -639,7 +639,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	[_hotKeyDictionary release];
 	_hotKeyDictionary = [[[NSUserDefaults standardUserDefaults] objectForKey:@"HOTKEYS"] retain];
-
+    
 	NOINTERPOLATION = [[NSUserDefaults standardUserDefaults] boolForKey:@"NOINTERPOLATION"];
 	FULL32BITPIPELINE = [[NSUserDefaults standardUserDefaults] boolForKey:@"FULL32BITPIPELINE"];
     MAXNUMBEROF32BITVIEWERS = [[NSUserDefaults standardUserDefaults] integerForKey: @"MAXNUMBEROF32BITVIEWERS"];
@@ -4257,41 +4257,17 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			{
 				[[BrowserController currentBrowser] matrixDoublePressed:nil];
 			}
-			else if( clickCount == 2 && ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSCommandKeyMask))
+			else if( clickCount == 2 && roiHit == NO && ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSCommandKeyMask) && [self actionForHotKey: @"dbl-click + cmd"])
 			{
-				if( [self is2DViewer] == YES)
-					[[self windowController] setKeyImage: self];
+                return;
 			}
-            else if( clickCount > 1 && ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSAlternateKeyMask))
+            else if( clickCount == 2 && roiHit == NO && ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSAlternateKeyMask) && [self actionForHotKey: @"dbl-click + alt"])
 			{
-				if( stringID == nil)
-                {
-                    if( [self is2DViewer] == YES)
-                        [[self windowController] showCurrentThumbnail: self];
-                    
-                    [self deleteInvalidROIs];
-                    
-					if( roiHit == NO && drawingROI == NO)
-                        [self sync3DPosition];
-                }
+                return;
 			}
-			else if( clickCount == 2 && stringID == nil)
+			else if( clickCount == 2 && roiHit == NO && stringID == nil && [self actionForHotKey: @"dbl-click"])
 			{
-				if( [self is2DViewer] == YES)
-                {
-					[[self windowController] showCurrentThumbnail: self];
-					
-                    [self deleteInvalidROIs];
-                    
-                    if( roiHit == NO && drawingROI == NO)
-                    {
-                        if( drawingROI == NO)
-                        {
-                            [[self windowController] fullScreenMenu: self];
-                            return;
-                        }
-                    }
-                }
+                return;
 			}
 			
 			crossMove = -1;
@@ -13523,10 +13499,38 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				case DictatedHotKeyAction:
                 case ValidatedHotKeyAction:
 					if( [self is2DViewer] == YES)
-					{
 						[[self windowController] setStatusValue: key - EmptyHotKeyAction];
-					}
 				break;
+                case FullScreenAction:
+                    if( [self is2DViewer] == YES) {
+                        [[self windowController] showCurrentThumbnail: self];
+                        
+                        [self deleteInvalidROIs];
+                        
+                        if( drawingROI == NO)
+                        {
+                            if( drawingROI == NO)
+                            {
+                                [[self windowController] fullScreenMenu: self];
+                            }
+                        }
+                    }
+                    break;
+                case Sync3DAction:
+                    if( stringID == nil) {
+                        if( [self is2DViewer] == YES)
+                            [[self windowController] showCurrentThumbnail: self];
+                        
+                        [self deleteInvalidROIs];
+                        
+                        if( drawingROI == NO)
+                            [self sync3DPosition];
+                    }
+                    break;
+                case SetKeyImageAction:
+                    if( [self is2DViewer] == YES)
+                        [[self windowController] setKeyImage: self];
+                    break;
 				default:
 					returnedVal = NO;
 				break;

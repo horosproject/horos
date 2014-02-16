@@ -25,7 +25,17 @@
 }
 
 - (NSString *)stringForObjectValue:(id)anObject{
-	 return [anObject  uppercaseString];
+    
+    if( [anObject isEqualToString: @"dbl-click"])
+        return NSLocalizedString( @"dbl-click", @"keep it short !");
+    
+    if( [anObject isEqualToString: @"dbl-click + alt"])
+        return NSLocalizedString( @"dbl-click + alt", @"keep it short ! dbl-click + alt = double-click + alternate key");
+    
+    if( [anObject isEqualToString: @"dbl-click + cmd"])
+        return NSLocalizedString( @"dbl-click + cmd", @"keep it short ! double-click + command key");
+    
+	 return [anObject uppercaseString];
 }
 
 - (NSString *)editingStringForObjectValue:(id)anObject{

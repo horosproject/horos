@@ -4262,6 +4262,30 @@ static BOOL initialized = NO;
     [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"UseOpenJpegForJPEG2000"];
     [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"useDCMTKForJP2K"];
     
+    if( [[[NSUserDefaults standardUserDefaults] objectForKey:@"HOTKEYS"] count] < SetKeyImageAction) {
+        NSMutableDictionary *d = [[[[NSUserDefaults standardUserDefaults] objectForKey:@"HOTKEYS"] mutableCopy] autorelease];
+        
+        BOOL f = NO;
+        for( NSString *key in d) {
+            if( [[d objectForKey: key] integerValue] == FullScreenAction)
+                f = YES;
+            
+            if( [[d objectForKey: key] integerValue] == Sync3DAction)
+                f = YES;
+            
+            if( [[d objectForKey: key] integerValue] == SetKeyImageAction)
+                f = YES;
+        }
+        
+        if( f == NO) {
+            [d setObject: @(FullScreenAction) forKey: @"dbl-click"];
+            [d setObject: @(Sync3DAction) forKey: @"dbl-click + alt"];
+            [d setObject: @(SetKeyImageAction) forKey: @"dbl-click + cmd"];
+            
+            [[NSUserDefaults standardUserDefaults] setObject: d forKey: @"HOTKEYS"];
+        }
+    }
+    
     if( [AppController hasMacOSXSyrah])
     {
         if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideSyrahWarning"] == NO)

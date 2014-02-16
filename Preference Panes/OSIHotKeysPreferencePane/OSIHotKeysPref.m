@@ -37,12 +37,12 @@ static OSIHotKeysPref *currentKeysPref = 0L;
 	return currentKeysPref;
 }
 
-- (void) keyDown:(NSEvent *)theEvent
+- (void) setKey:(NSString*) key
 {
-	NSMutableDictionary *dict = [[arrayController selectedObjects] lastObject];
-	[dict setObject: [NSString stringWithFormat: @"%c", [[[theEvent charactersIgnoringModifiers] lowercaseString] characterAtIndex: 0]] forKey:@"key"];
-//	[dict setObject: [NSNumber numberWithInt: [theEvent modifierFlags]] forKey:@"modifiers"];
-
+    NSMutableDictionary *dict = [[arrayController selectedObjects] lastObject];
+	[dict setObject: key forKey:@"key"];
+    //	[dict setObject: [NSNumber numberWithInt: [theEvent modifierFlags]] forKey:@"modifiers"];
+    
 	NSArray *a = [arrayController content];
 	
 	for( NSMutableDictionary *d in a)
@@ -63,6 +63,38 @@ static OSIHotKeysPref *currentKeysPref = 0L;
 			}
 		}
 	}
+}
+
+- (IBAction) specialKeyButton:(id)sender
+{
+//    NSLog( @"special key button tag: %d", [sender tag]);
+    
+    NSString *key = nil;
+    
+    switch ( [sender tag]) {
+        case 0: //dbl click
+            key = @"dbl-click";
+            break;
+        
+        case 1: //dbl click + alt
+            key = @"dbl-click + alt";
+            break;
+    
+        case 2:
+            key = @"dbl-click + cmd";
+            break;
+    
+        default:
+            break;
+    }
+    
+    if( key)
+        [self setKey: key];
+}
+
+- (void) keyDown:(NSEvent *)theEvent
+{
+    [self setKey: [NSString stringWithFormat: @"%c", [[[theEvent charactersIgnoringModifiers] lowercaseString] characterAtIndex: 0]]];
 }
 
 - (void)dealloc{	
@@ -131,6 +163,9 @@ static OSIHotKeysPref *currentKeysPref = 0L;
                                             [NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"7th Opacity preset", nil), @"action", nil],
                                             [NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"8th Opacity preset", nil), @"action", nil],
                                             [NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"9th Opacity preset", nil), @"action", nil],
+                                            [NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Full screen", nil), @"action", nil],
+                                            [NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"3D Position", nil), @"action", nil],
+                                            [NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Set Key Image", nil), @"action", nil],
 											nil];
 	
 	NSDictionary *keys = [[NSUserDefaults standardUserDefaults] objectForKey:@"HOTKEYS"];

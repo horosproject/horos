@@ -1197,6 +1197,9 @@ static NSHost *currentHost = nil;
                       @"",	//Preset7OpacityLHotKeyAction
                       @"",	//Preset8OpacityLHotKeyAction
                       @"",	//Preset9OpacityLHotKeyAction
+                      @"dbl-click",	//FullScreenAction
+                      @"dbl-click + alt",	//Sync3DAction
+                      @"dbl-click + cmd",	//SetKeyImageAction
 						nil];						
 	
 	for( int x = 0; x < [array count]; x++)
