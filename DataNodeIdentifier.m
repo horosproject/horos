@@ -244,7 +244,7 @@
     NSHost* dniHost = nil; NSInteger dniPort;
     [[self class] location:dni.location port:self.port toHost:&dniHost port:&dniPort];
     
-    if (selfPort == dniPort && [[selfHost address] isEqualToString: [dniHost address]])
+    if ( selfHost && dniHost && selfPort == dniPort && [[selfHost address] isEqualToString: [dniHost address]])
         return YES;
     
     return NO;
