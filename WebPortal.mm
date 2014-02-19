@@ -462,11 +462,9 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 		[NSRunLoop.currentRunLoop addTimer:[NSTimer scheduledTimerWithTimeInterval:DBL_MAX target:self selector:@selector(ignore:) userInfo:NULL repeats:NO] forMode: NSDefaultRunLoopMode];
 		while (!NSThread.currentThread.isCancelled)
 		{
-			NSAutoreleasePool *runloopPool = [[NSAutoreleasePool alloc] init];
-            
-			[NSRunLoop.currentRunLoop runMode: NSDefaultRunLoopMode beforeDate:NSDate.distantFuture];
-			
-			[runloopPool release];
+			@autoreleasepool {
+                [NSRunLoop.currentRunLoop runMode: NSDefaultRunLoopMode beforeDate:NSDate.distantFuture];
+			}
 		}
 		NSLog(@"[WebPortal connectionsThread:] finishing");
 	} @catch (NSException* e) {

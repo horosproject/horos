@@ -628,99 +628,94 @@ ss
 
 - (void) movieDCMPixLoad: (NSDictionary*) dict
 {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-    DicomDatabase *idd = self.portal.dicomDatabase.independentDatabase;
-    NSArray *dicomImageArray = [idd objectsWithIDs: [dict valueForKey: @"DicomImageArray"]];
-    
-	int location = [[dict valueForKey: @"location"] unsignedIntValue];
-	int length = [[dict valueForKey: @"length"] unsignedIntValue];
-	int width = [[dict valueForKey: @"width"] floatValue];
-	int height = [[dict valueForKey: @"height"] floatValue];
-	NSString *outFile = [dict valueForKey: @"outFile"];
-	NSString *fileName = [dict valueForKey: @"fileName"];
-    NSInteger* fpsP = (NSInteger*)[[dict valueForKey:@"fpsP"] pointerValue];
-	
-    NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat: 0.7] forKey:NSImageCompressionFactor];
-    
-    DicomSeries *series = [(DicomImage*)[dicomImageArray lastObject] series];
-    NSArray *allImages = [series sortedImages];
-    int totalImages = series.images.count;
-    
-	for( int x = location ; x < location+length; x++)
-	{
-		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-		
-		DicomImage *im = [dicomImageArray objectAtIndex: x];
-		
-		@try
-		{
-			DCMPix* dcmPix = [[DCMPix alloc] initWithPath:im.completePathResolved :0 :1 :nil :im.frameID.intValue :im.series.id.intValue isBonjour:NO imageObj:im];
-			
-			if (dcmPix)
-			{
-				float curWW = 0;
-				float curWL = 0;
-				
-				if (im.series.windowWidth)
-				{
-					curWW = im.series.windowWidth.floatValue;
-					curWL = im.series.windowLevel.floatValue;
-				}
-				
-				if (curWW != 0)
-					[dcmPix checkImageAvailble:curWW :curWL];
-				else
-					[dcmPix checkImageAvailble:[dcmPix savedWW] :[dcmPix savedWL]];
-				
-				if (x == 0 && [dcmPix cineRate])
-					*fpsP = [dcmPix cineRate];
-			}
-			else
-			{
-				NSLog( @"****** dcmPix creation failed for file : %@", [im valueForKey:@"completePathResolved"]);
-				
-				float *imPtr = (float*)malloc( width * height * sizeof(float));
-				for ( int i = 0 ;  i < width * height; i++)
-					imPtr[ i] = i;
-				
-				dcmPix = [[DCMPix alloc] initWithData: imPtr :32 :width :height :0 :0 :0 :0 :0];
-			}
-			
-			NSImage *newImage;
-			
-			if( ([dcmPix pwidth] != width || [dcmPix pheight] != height) && [dcmPix pheight] > 0 && [dcmPix pwidth] > 0 && width > 0 && height > 0)
-				newImage = [[dcmPix image] imageByScalingProportionallyToSize: NSMakeSize( width, height)];
-			else
-				newImage = [dcmPix image];
-			
-#define TEXTHEIGHT 15
-            [newImage lockFocus];
-            [self drawText: [NSString stringWithFormat: @"%d / %d", (int) ([allImages indexOfObject: im]+1), totalImages]  atLocation: NSMakePoint( 1, newImage.size.height - TEXTHEIGHT)];
-            [newImage unlockFocus];
-            
-			if ([outFile hasSuffix:@"swf"])
-				[[[NSBitmapImageRep imageRepWithData:[newImage TIFFRepresentation]] representationUsingType:NSJPEGFileType properties:imageProps] writeToFile:[[fileName stringByAppendingString:@" dir"] stringByAppendingPathComponent:[NSString stringWithFormat:@"%6.6d.jpg", x]] atomically:YES];
-			else
-				[[newImage TIFFRepresentationUsingCompression: NSTIFFCompressionLZW factor: 1.0] writeToFile: [[fileName stringByAppendingString: @" dir"] stringByAppendingPathComponent: [NSString stringWithFormat: @"%6.6d.tiff", x]] atomically: YES];
-			
-			[dcmPix release];
-		}
-		@catch (NSException * e)
-		{
-            N2LogExceptionWithStackTrace(e);
-		}
-		@finally {
-            [pool release];
+    @autoreleasepool {
+        DicomDatabase *idd = self.portal.dicomDatabase.independentDatabase;
+        NSArray *dicomImageArray = [idd objectsWithIDs: [dict valueForKey: @"DicomImageArray"]];
+        
+        int location = [[dict valueForKey: @"location"] unsignedIntValue];
+        int length = [[dict valueForKey: @"length"] unsignedIntValue];
+        int width = [[dict valueForKey: @"width"] floatValue];
+        int height = [[dict valueForKey: @"height"] floatValue];
+        NSString *outFile = [dict valueForKey: @"outFile"];
+        NSString *fileName = [dict valueForKey: @"fileName"];
+        NSInteger* fpsP = (NSInteger*)[[dict valueForKey:@"fpsP"] pointerValue];
+        
+        NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat: 0.7] forKey:NSImageCompressionFactor];
+        
+        DicomSeries *series = [(DicomImage*)[dicomImageArray lastObject] series];
+        NSArray *allImages = [series sortedImages];
+        int totalImages = series.images.count;
+        
+        for( int x = location ; x < location+length; x++)
+        {
+            @autoreleasepool {
+                DicomImage *im = [dicomImageArray objectAtIndex: x];
+                
+                @try
+                {
+                    DCMPix* dcmPix = [[DCMPix alloc] initWithPath:im.completePathResolved :0 :1 :nil :im.frameID.intValue :im.series.id.intValue isBonjour:NO imageObj:im];
+                    
+                    if (dcmPix)
+                    {
+                        float curWW = 0;
+                        float curWL = 0;
+                        
+                        if (im.series.windowWidth)
+                        {
+                            curWW = im.series.windowWidth.floatValue;
+                            curWL = im.series.windowLevel.floatValue;
+                        }
+                        
+                        if (curWW != 0)
+                            [dcmPix checkImageAvailble:curWW :curWL];
+                        else
+                            [dcmPix checkImageAvailble:[dcmPix savedWW] :[dcmPix savedWL]];
+                        
+                        if (x == 0 && [dcmPix cineRate])
+                            *fpsP = [dcmPix cineRate];
+                    }
+                    else
+                    {
+                        NSLog( @"****** dcmPix creation failed for file : %@", [im valueForKey:@"completePathResolved"]);
+                        
+                        float *imPtr = (float*)malloc( width * height * sizeof(float));
+                        for ( int i = 0 ;  i < width * height; i++)
+                            imPtr[ i] = i;
+                        
+                        dcmPix = [[DCMPix alloc] initWithData: imPtr :32 :width :height :0 :0 :0 :0 :0];
+                    }
+                    
+                    NSImage *newImage;
+                    
+                    if( ([dcmPix pwidth] != width || [dcmPix pheight] != height) && [dcmPix pheight] > 0 && [dcmPix pwidth] > 0 && width > 0 && height > 0)
+                        newImage = [[dcmPix image] imageByScalingProportionallyToSize: NSMakeSize( width, height)];
+                    else
+                        newImage = [dcmPix image];
+                    
+        #define TEXTHEIGHT 15
+                    [newImage lockFocus];
+                    [self drawText: [NSString stringWithFormat: @"%d / %d", (int) ([allImages indexOfObject: im]+1), totalImages]  atLocation: NSMakePoint( 1, newImage.size.height - TEXTHEIGHT)];
+                    [newImage unlockFocus];
+                    
+                    if ([outFile hasSuffix:@"swf"])
+                        [[[NSBitmapImageRep imageRepWithData:[newImage TIFFRepresentation]] representationUsingType:NSJPEGFileType properties:imageProps] writeToFile:[[fileName stringByAppendingString:@" dir"] stringByAppendingPathComponent:[NSString stringWithFormat:@"%6.6d.jpg", x]] atomically:YES];
+                    else
+                        [[newImage TIFFRepresentationUsingCompression: NSTIFFCompressionLZW factor: 1.0] writeToFile: [[fileName stringByAppendingString: @" dir"] stringByAppendingPathComponent: [NSString stringWithFormat: @"%6.6d.tiff", x]] atomically: YES];
+                    
+                    [dcmPix release];
+                }
+                @catch (NSException * e)
+                {
+                    N2LogExceptionWithStackTrace(e);
+                }
+            }
         }
-	}
-	
-	[pool release];
-	
-	@synchronized( self)
-	{
-		DCMPixLoadingThreads--;
-	}
+        
+        @synchronized( self)
+        {
+            DCMPixLoadingThreads--;
+        }
+    }
 }
 
 
@@ -947,8 +942,6 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                                     buffer = nil;
                                     
                                     nextPresentationTimeStamp = CMTimeAdd(nextPresentationTimeStamp, frameDuration);
-                                    
-                                    CVPixelBufferRelease(buffer);
                                 }
                             }
                             [writerInput markAsFinished];
@@ -959,6 +952,8 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                         [writer finishWriting];
                     }
                     [[NSFileManager defaultManager] removeItemAtPath: root error: nil];
+                    
+                    [writer release];
                 }
                 @catch (NSException *e)
                 {

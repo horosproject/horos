@@ -3459,6 +3459,7 @@ Failed:
 **/
 - (void)maybeDequeueRead
 {
+    @autoreleasepool {
 	// Unset the flag indicating a call to this method is scheduled
 	theFlags &= ~kDequeueReadScheduled;
 	
@@ -3511,6 +3512,7 @@ Failed:
 			}
 		}
 	}
+    }
 }
 
 /**
