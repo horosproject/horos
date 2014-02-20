@@ -64,28 +64,28 @@
 + (NSString*) yearOldFromDateOfBirth: (NSDate*) dateOfBirth;
 + (NSString*) yearOldAcquisition:(NSDate*) acquisitionDate FromDateOfBirth: (NSDate*) dateOfBirth;
 + (BOOL) displaySeriesWithSOPClassUID: (NSString*) uid andSeriesDescription: (NSString*) description;
-- (NSNumber *) noFiles;
-- (NSSet *) paths;
-- (NSSet *) keyImages;
-- (NSSet *) images;
-- (NSNumber *) rawNoFiles;
+- (NSNumber*) noFiles;
+- (NSSet*) paths;
+- (NSSet*) keyImages;
+- (NSSet*) images;
+- (NSNumber*) rawNoFiles;
 - (NSString*) modalities;
 + (NSString*) displayedModalitiesForSeries: (NSArray*) seriesModalities;
-- (NSArray *) imageSeries;
+- (NSArray*) imageSeries;
 - (NSArray*) imageSeriesContainingPixels:(BOOL) pixels;
-- (NSArray *) keyObjectSeries;
-- (NSArray *) keyObjects;
-- (NSArray *) presentationStateSeries;
-- (NSArray *) waveFormSeries;
+- (NSArray*) keyObjectSeries;
+- (NSArray*) keyObjects;
+- (NSArray*) presentationStateSeries;
+- (NSArray*) waveFormSeries;
 - (NSString*) roiPathForImage: (DicomImage*) image inArray: (NSArray*) roisArray;
 - (NSString*) roiPathForImage: (DicomImage*) image;
 - (DicomImage*) roiForImage: (DicomImage*) image inArray: (NSArray*) roisArray;
-- (DicomSeries *) roiSRSeries;
-- (DicomSeries *) reportSRSeries;
+- (DicomSeries*) roiSRSeries;
+- (DicomSeries*) reportSRSeries;
 - (DicomImage*) windowsStateImage;
-- (DicomSeries *) windowsStateSRSeries;
+- (DicomSeries*) windowsStateSRSeries;
 - (DicomImage*) reportImage;
-- (DicomImage *) annotationsSRImage;
+- (DicomImage*) annotationsSRImage;
 - (void) archiveReportAsDICOMSR;
 - (void) archiveAnnotationsAsDICOMSR;
 - (void) archiveWindowsStateAsDICOMSR;
@@ -93,25 +93,26 @@
 - (BOOL) isHidden;
 - (BOOL) isDistant;
 - (void) setHidden: (BOOL) h;
-- (NSNumber *) noFilesExcludingMultiFrames;
+- (NSNumber*) noFilesExcludingMultiFrames;
 - (NSDictionary*) annotationsAsDictionary;
 - (void) applyAnnotationsFromDictionary: (NSDictionary*) rootDict;
 - (void) reapplyAnnotationsFromDICOMSR;
 - (NSComparisonResult) compareName:(DicomStudy*)study;
--(NSArray*) roiImages;
+- (NSArray*) roiImages;
+- (NSArray*) generateDICOMSCImagesForKeyImages: (BOOL) keyImages andROIImages: (BOOL) ROIImages;
 @end
 
 @interface DicomStudy (CoreDataGeneratedAccessors)
 
-- (void)addAlbumsObject:(NSManagedObject *)value;
-- (void)removeAlbumsObject:(NSManagedObject *)value;
-- (void)addAlbums:(NSSet *)value;
-- (void)removeAlbums:(NSSet *)value;
+- (void) addAlbumsObject:(NSManagedObject*) value;
+- (void) removeAlbumsObject:(NSManagedObject*) value;
+- (void) addAlbums:(NSSet*) value;
+- (void) removeAlbums:(NSSet*) value;
 
-- (void)addSeriesObject:(DicomSeries *)value;
-- (void)removeSeriesObject:(DicomSeries *)value;
-- (void)addSeries:(NSSet *)value;
-- (void)removeSeries:(NSSet *)value;
+- (void) addSeriesObject:(DicomSeries*) value;
+- (void) removeSeriesObject:(DicomSeries*) value;
+- (void) addSeries:(NSSet*) value;
+- (void) removeSeries:(NSSet*) value;
 
 - (NSArray*) imagesForKeyImages:(BOOL) keyImages andForROIs:(BOOL)alsoImagesWithROIs;
 

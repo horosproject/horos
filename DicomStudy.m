@@ -42,6 +42,7 @@
 #import "WebPortalUser.h"
 #import "WebPortal.h"
 #import "WebPortalDatabase.h"
+#import "DICOMExport.h"
 #endif
 
 #define WBUFSIZE 512
@@ -2237,6 +2238,46 @@ static NSRecursiveLock *dbModifyLock = nil;
     [images sortUsingDescriptors: [NSArray arrayWithObjects: sortid, [NSSortDescriptor sortDescriptorWithKey:@"date" ascending:NO], [NSSortDescriptor sortDescriptorWithKey:@"instanceNumber" ascending:YES], nil]];
     
     return images;
+}
+
+- (NSArray*) generateDICOMSCImagesForKeyImages: (BOOL) keyImages andROIImages: (BOOL) ROIImages
+{
+#ifdef OSIRIX_VIEWER
+#ifndef OSIRIX_LIGHT
+    NSArray *images = nil;
+    
+    if( keyImages && ROIImages)
+        images = [self roiAndKeyImages];
+    else if( keyImages)
+        images = self.keyImages.allObjects;
+    else if( ROIImages)
+        images = self.roiImages;
+    
+    NSMutableArray *producedFiles = [NSMutableArray array];
+    DICOMExport *exporter = [[[DICOMExport alloc] init] autorelease];
+    
+    for( DicomImage *image in images)
+    {
+        NSDictionary *d = [image imageAsDICOMScreenCapture: exporter];
+        
+        [producedFiles addObject: d];
+    }
+    
+    if( [producedFiles count])
+    {
+        NSArray *objects = [BrowserController.currentBrowser.database addFilesAtPaths: [producedFiles valueForKey: @"file"]
+                                                                    postNotifications: YES
+                                                                            dicomOnly: YES
+                                                                  rereadExistingItems: YES
+                                                                    generatedByOsiriX: YES];
+        
+        objects = [BrowserController.currentBrowser.database objectsWithIDs: objects];
+        
+        return  objects;
+    }
+#endif
+#endif
+    return nil;
 }
 
 - (NSArray*) studiesForThisPatient

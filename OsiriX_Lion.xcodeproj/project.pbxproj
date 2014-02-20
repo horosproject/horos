@@ -4800,6 +4800,8 @@
 		CE90551412F5B64300263AB6 /* CPRVolumeData.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9054EE12F5B64300263AB6 /* CPRVolumeData.m */; };
 		CE90551812F5B68100263AB6 /* CPR.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE90551612F5B68100263AB6 /* CPR.xib */; };
 		CE90D8C4095F5B48004FC7E2 /* FlipData.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE90D8C3095F5B48004FC7E2 /* FlipData.tif */; };
+		CE91370618B51E9C00BDF7F8 /* ExportROIAndKeyImages.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE91370518B51E9C00BDF7F8 /* ExportROIAndKeyImages.tif */; };
+		CE91370718B51E9C00BDF7F8 /* ExportROIAndKeyImages.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE91370518B51E9C00BDF7F8 /* ExportROIAndKeyImages.tif */; };
 		CE94FC021053FFD3006D92E4 /* CurveFitter.h in Headers */ = {isa = PBXBuildFile; fileRef = CE94FC001053FFD3006D92E4 /* CurveFitter.h */; };
 		CE94FC031053FFD3006D92E4 /* CurveFitter.m in Sources */ = {isa = PBXBuildFile; fileRef = CE94FC011053FFD3006D92E4 /* CurveFitter.m */; };
 		CE96D0E30BEE6F9800C4E397 /* XMLControllerDCMTKCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = CE96D0DB0BEE6F9800C4E397 /* XMLControllerDCMTKCategory.h */; };
@@ -11703,6 +11705,7 @@
 		CE9054EE12F5B64300263AB6 /* CPRVolumeData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRVolumeData.m; sourceTree = "<group>"; };
 		CE90551712F5B68100263AB6 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/CPR.xib; sourceTree = "<group>"; };
 		CE90D8C3095F5B48004FC7E2 /* FlipData.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FlipData.tif; sourceTree = "<group>"; };
+		CE91370518B51E9C00BDF7F8 /* ExportROIAndKeyImages.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ExportROIAndKeyImages.tif; sourceTree = "<group>"; };
 		CE94FC001053FFD3006D92E4 /* CurveFitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CurveFitter.h; sourceTree = "<group>"; };
 		CE94FC011053FFD3006D92E4 /* CurveFitter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CurveFitter.m; sourceTree = "<group>"; };
 		CE96D0DB0BEE6F9800C4E397 /* XMLControllerDCMTKCategory.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = XMLControllerDCMTKCategory.h; sourceTree = "<group>"; };
@@ -17350,6 +17353,7 @@
 				CE2028F8094EFFC300C00310 /* Endoscopy.tif */,
 				AB7CB7AF0A6E3886008DFCC9 /* error.png */,
 				A9EFC40915C6CBD6000D1179 /* Export.pdf */,
+				CE91370518B51E9C00BDF7F8 /* ExportROIAndKeyImages.tif */,
 				AB85C65B0BFADA9500C4B52E /* FileIcon.tif */,
 				AB95C0380A2B08ED00380C65 /* FileNotFound.tif */,
 				CE90D8C3095F5B48004FC7E2 /* FlipData.tif */,
@@ -28217,6 +28221,7 @@
 				CEDEF7D80D020E9100CADB15 /* JPEGSmall.tif in Resources */,
 				AB7824680D3BACC700460DCE /* WebServicesHTML in Resources */,
 				A9897D9B0D4A142200BAC447 /* displayRGB.tif in Resources */,
+				CE91370618B51E9C00BDF7F8 /* ExportROIAndKeyImages.tif in Resources */,
 				A9897D9C0D4A142200BAC447 /* displayTotoku.tif in Resources */,
 				A987B3E20D5A069200BF89C0 /* Navigator.xib in Resources */,
 				CE40ED590D86D634007C6D49 /* 3DPosition.xib in Resources */,
@@ -28515,6 +28520,7 @@
 				CEC7061310A5C844008935EA /* Hue2.plist in Resources */,
 				CEC7061410A5C844008935EA /* Hue1.plist in Resources */,
 				CEC7061510A5C844008935EA /* HotMetal.plist in Resources */,
+				CE91370718B51E9C00BDF7F8 /* ExportROIAndKeyImages.tif in Resources */,
 				CEC7061610A5C844008935EA /* HotGreen.plist in Resources */,
 				CEC7061710A5C844008935EA /* windows.tif in Resources */,
 				CEC7061810A5C844008935EA /* Endoscopy.tif in Resources */,

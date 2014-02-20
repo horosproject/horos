@@ -1183,6 +1183,65 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
     return renderedImage;
 }
 
+-(NSDictionary*) imageAsDICOMScreenCapture:(DICOMExport*) exporter
+{
+    if( [NSThread isMainThread] == NO)
+    {
+        N2LogStackTrace( @"****** this function works only on MAIN thread");
+        return nil;
+    }
+    
+    NSDictionary *dicomImage = nil;
+    
+#ifdef OSIRIX_VIEWER
+    @try
+    {
+        DCMPix* pix = [[DCMPix alloc] initWithPath: self.completePath :0 :0 :nil :self.frameID.intValue :self.series.id.intValue isBonjour:NO imageObj: self];
+        
+        [pix CheckLoad];
+        
+        if( pix.pwidth && pix.pheight)
+        {
+            NSRect frame = NSMakeRect( 0, 0, pix.pwidth, pix.pheight);
+            
+            if( frame.size.width < [[NSUserDefaults standardUserDefaults] integerForKey: @"DicomImageScreenCaptureWidth"])
+                frame.size.width = [[NSUserDefaults standardUserDefaults] integerForKey: @"DicomImageScreenCaptureWidth"];
+            
+            if( frame.size.height < [[NSUserDefaults standardUserDefaults] integerForKey: @"DicomImageScreenCaptureHeight"])
+                frame.size.height = [[NSUserDefaults standardUserDefaults] integerForKey: @"DicomImageScreenCaptureHeight"];
+            
+            NSWindow* win = [[NSWindow alloc] initWithContentRect:frame styleMask:NSTitledWindowMask backing:NSBackingStoreBuffered defer:NO];
+            
+            DicomImage* roisImage = [self.series.study roiForImage:self inArray:nil];
+            NSArray* rois = roisImage? [NSUnarchiver unarchiveObjectWithData:[SRAnnotation roiFromDICOM:[roisImage completePath]]] : nil;
+            
+            DCMView* view = [[DCMView alloc] initWithFrame:frame imageRows:self.height.intValue imageColumns:self.width.intValue];
+            view.annotationType = annotGraphics;
+            [view setPixels:[NSMutableArray arrayWithObject:pix] files:[NSMutableArray arrayWithObject:self] rois:(rois? [NSMutableArray arrayWithObject:rois] : nil) firstImage:0 level:'i' reset:YES];
+            [win.contentView addSubview:view];
+            
+            [view drawRect:frame];
+            
+            int size = frame.size.width > frame.size.height ? frame.size.width : frame.size.height;
+            
+            dicomImage = [view exportDCMCurrentImage: exporter size: size];
+            
+            [view removeFromSuperview];
+            [view release];
+            [win release];
+        }
+        
+        [pix release];
+    }
+    @catch (NSException* e)
+    {
+        N2LogExceptionWithStackTrace(e);
+    }
+#endif
+    
+    return dicomImage;
+}
+
 -(NSImage*)thumbnailIfAlreadyAvailable {
 #ifdef OSIRIX_VIEWER
     return _thumbnail;

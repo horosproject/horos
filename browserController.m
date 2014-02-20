@@ -239,6 +239,7 @@ static NSString* 	DatabaseToolbarIdentifier			= @"DicomDatabase Toolbar Identifi
 static NSString*	ImportToolbarItemIdentifier			= @"Import.pdf";
 static NSString*	QTSaveToolbarItemIdentifier			= @"QTExport.pdf";
 static NSString*	ExportToolbarItemIdentifier			= @"Export.pdf";
+static NSString*	ExportROIAndKeyImagesToolbarItemIdentifier	= @"ExportROIAndKeyImages.tif";
 static NSString*	AnonymizerToolbarItemIdentifier		= @"Anonymizer.pdf";
 static NSString*	QueryToolbarItemIdentifier			= @"QueryRetrieve.pdf";
 static NSString*	SendToolbarItemIdentifier			= @"Send.pdf";
@@ -10589,6 +10590,7 @@ static BOOL withReset = NO;
 	[contextual addItemWithTitle: NSLocalizedString(@"Export to JPEG", nil) action:@selector(exportJPEG:) keyEquivalent:@""];
 	[contextual addItemWithTitle: NSLocalizedString(@"Export to TIFF", nil) action:@selector(exportTIFF:) keyEquivalent:@""];
 	[contextual addItemWithTitle: NSLocalizedString(@"Export to DICOM File(s)", nil) action:@selector(exportDICOMFile:) keyEquivalent:@""];
+    [contextual addItemWithTitle: NSLocalizedString(@"Export ROI and Key Images as a DICOM Series", nil) action:@selector(exportROIAndKeyImagesAsDICOMSeries:) keyEquivalent:@""];
 	[contextual addItem: [NSMenuItem separatorItem]];
 	
 	[contextual addItemWithTitle: NSLocalizedString(@"Compress DICOM files", nil) action:@selector(compressSelectedFiles:) keyEquivalent:@""];
@@ -13170,9 +13172,10 @@ static BOOL needToRezoom;
 {
 	NSMutableArray	*selectedItems = [NSMutableArray array];
 	
-	
-	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) [self filesForDatabaseMatrixSelection: selectedItems];
-	else [self filesForDatabaseOutlineSelection: selectedItems];
+	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
+        [self filesForDatabaseMatrixSelection: selectedItems];
+	else
+        [self filesForDatabaseOutlineSelection: selectedItems];
 	
 	dontShowOpenSubSeries = YES;
 	[self openViewerFromImages :[NSArray arrayWithObject:selectedItems] movie: 0 viewer :nil keyImagesOnly:YES];
@@ -13738,7 +13741,8 @@ static NSArray*	openSubSeriesArray = nil;
 	[menu addItemWithTitle: NSLocalizedString(@"Export to TIFF", nil) action: @selector(exportTIFF:) keyEquivalent:@""];
 	[menu addItemWithTitle: NSLocalizedString(@"Export to DICOM File(s)", nil) action: @selector(exportDICOMFile:) keyEquivalent:@""];
 	[menu addItemWithTitle: NSLocalizedString(@"Export to Email", nil)  action:@selector(sendMail:) keyEquivalent:@""];
-	
+    [menu addItemWithTitle: NSLocalizedString(@"Export ROI and Key Images as a DICOM Series", nil) action:@selector(exportROIAndKeyImagesAsDICOMSeries:) keyEquivalent:@""];
+    
     if (isWritable) {
         [menu addItem: [NSMenuItem separatorItem]];
         [menu addItemWithTitle: NSLocalizedString(@"Add selected study(s) to user(s)", nil)  action:@selector(addStudiesToUser:) keyEquivalent:@""];
@@ -14542,7 +14546,6 @@ static NSArray*	openSubSeriesArray = nil;
 			[menuItem action] == @selector(exportQuicktime:) || 
 			[menuItem action] == @selector(exportJPEG:) || 
 			[menuItem action] == @selector(exportTIFF:) ||
-            [menuItem action] == @selector(exportROIsAndKeysAsImages:) ||
 			[menuItem action] == @selector(exportDICOMFile:) || 
 			[menuItem action] == @selector(sendMail:) || 
 			[menuItem action] == @selector(addStudiesToUser:) || 
@@ -14642,24 +14645,6 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		return YES;
 	}
-    else if( [menuItem action] == @selector(exportROIsAndKeysAsImages:))
-    {
-        if([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSAlternateKeyMask)
-        {
-            [menuItem setTitle: NSLocalizedString( @"Export Key Images to JPEG", nil)];
-        }
-        else if([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSShiftKeyMask)
-        {
-            [menuItem setTitle: NSLocalizedString( @"Export ROI Images to JPEG", nil)];
-        }
-        else
-        {
-            [menuItem setTitle: NSLocalizedString( @"Export Key Images and ROI Images to JPEG", nil)];
-        }
-        
-        if( ROIsAndKeyImagesButtonAvailable) return YES;
-        else return NO;
-    }
     else if( [menuItem action] == @selector(regenerateAutoComments:))
     {
         if( [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILL"]) return YES;
@@ -14677,6 +14662,17 @@ static NSArray*	openSubSeriesArray = nil;
 		else return YES;
 	}
 	else if( [menuItem action] == @selector(viewerKeyImagesAndROIsImages:))
+	{
+        if( containsDistantStudy)
+            return NO;
+        
+		if ([_database isLocal])
+		{
+			if( [[databaseOutline selectedRowIndexes] count] < 10 && [[self ROIsAndKeyImages: menuItem] count] == 0) return NO;
+		}
+		else return YES;
+	}
+    else if( [menuItem action] == @selector(exportROIAndKeyImagesAsDICOMSeries:))
 	{
         if( containsDistantStudy)
             return NO;
@@ -15297,7 +15293,7 @@ static NSArray*	openSubSeriesArray = nil;
 			if( [[mediaPath commonPrefixWithString: path options: NSCaseInsensitiveSearch] isEqualToString: mediaPath])
 			{
 				BOOL		isWritable, isUnmountable, isRemovable, hasDICOMDIR = NO;
-				NSString	*description, *type;
+				NSString	*description = nil, *type = nil;
 				
 				[[NSWorkspace sharedWorkspace] getFileSystemInfoForPath: mediaPath isRemovable:&isRemovable isWritable:&isWritable isUnmountable:&isUnmountable description:&description type:&type];
 				
@@ -17384,6 +17380,58 @@ static volatile int numberOfThreadsForJPEG = 0;
     }
 }
 
+#ifdef OSIRIX_VIEWER
+#ifndef OSIRIX_LIGHT
+- (void) exportROIAndKeyImagesAsDICOMSeries: (id) sender
+{
+    NSMutableArray *dicomFiles2Export = [NSMutableArray array];
+    NSMutableArray *filesToExport;
+    
+    WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Generating the DICOM files...", nil)];
+    [wait showWindow: self];
+    
+    DICOMExport *exporter = [[[DICOMExport alloc] init] autorelease];
+    NSMutableArray *producedFiles = [NSMutableArray array];
+    
+    [exporter setSeriesDescription: NSLocalizedString( @"ROIs and Key Images", nil)];
+    [exporter setSeriesNumber: 89898];
+    
+    NSEvent *event = [[NSApplication sharedApplication] currentEvent];
+    NSArray *images = nil;
+    if([event modifierFlags] & NSAlternateKeyMask)
+        images = [self KeyImages: self];
+    else if([event modifierFlags] & NSShiftKeyMask)
+        images = [self ROIImages: self];
+    else
+        images = [self ROIsAndKeyImages: self];
+    
+    for( DicomImage *image in images)
+    {
+        NSDictionary *d = [image imageAsDICOMScreenCapture: exporter];
+        
+        [producedFiles addObject: d];
+    }
+    
+    if( [producedFiles count])
+    {
+        NSArray *objects = [BrowserController.currentBrowser.database addFilesAtPaths: [producedFiles valueForKey: @"file"]
+                                                                    postNotifications: YES
+                                                                            dicomOnly: YES
+                                                                  rereadExistingItems: YES
+                                                                    generatedByOsiriX: YES];
+        
+        objects = [BrowserController.currentBrowser.database objectsWithIDs: objects];
+        
+        if( objects.count)
+            [self findAndSelectFile: nil image: objects.lastObject shouldExpand: NO];
+    }
+    
+    [wait close];
+    [wait autorelease];
+}
+#endif
+#endif
+
 - (void) exportDICOMFile: (id)sender
 {
 	NSOpenPanel *sPanel = [NSOpenPanel openPanel];
@@ -18566,6 +18614,37 @@ static volatile int numberOfThreadsForJPEG = 0;
 				[toolbarItem setToolTip: NSLocalizedString(@"View all Key Images and ROIs", nil)];
 			}
 		}
+        
+        if( [[toolbarItem itemIdentifier] isEqualToString: ExportROIAndKeyImagesToolbarItemIdentifier])
+		{
+			if([event modifierFlags] & NSAlternateKeyMask)
+			{
+				[toolbarItem setImage: [NSImage imageNamed: ExportROIAndKeyImagesToolbarItemIdentifier]];
+				[toolbarItem setAction: @selector(exportROIAndKeyImagesAsDICOMSeries:)];
+				
+				[toolbarItem setLabel: NSLocalizedString(@"Export Keys", nil)];
+				[toolbarItem setPaletteLabel: NSLocalizedString(@"Export Keys", nil)];
+				[toolbarItem setToolTip: NSLocalizedString(@"Export Key images of selected study/series as a DICOM Series", nil)];
+			}
+			else if([event modifierFlags] & NSShiftKeyMask)
+			{
+				[toolbarItem setImage: [NSImage imageNamed: ExportROIAndKeyImagesToolbarItemIdentifier]];
+				[toolbarItem setAction: @selector(exportROIAndKeyImagesAsDICOMSeries:)];
+				
+				[toolbarItem setLabel: NSLocalizedString(@"Export ROIs", nil)];
+				[toolbarItem setPaletteLabel: NSLocalizedString(@"Export ROIs", nil)];
+				[toolbarItem setToolTip: NSLocalizedString(@"Export ROI images of selected study/series as a DICOM Series", nil)];
+			}
+			else
+			{
+				[toolbarItem setImage: [NSImage imageNamed: ExportROIAndKeyImagesToolbarItemIdentifier]];
+				[toolbarItem setAction: @selector(exportROIAndKeyImagesAsDICOMSeries:)];
+				
+				[toolbarItem setLabel: NSLocalizedString(@"Export ROIs & Keys", nil)];
+				[toolbarItem setPaletteLabel: NSLocalizedString(@"Export ROIs & Keys", nil)];
+				[toolbarItem setToolTip: NSLocalizedString(@"Export ROI and Key images of selected study/series as a DICOM Series", nil)];
+			}
+		}
 	}
 	
 	[self outlineViewSelectionDidChange: nil];
@@ -18688,11 +18767,20 @@ static volatile int numberOfThreadsForJPEG = 0;
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Export",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Export",nil)];
-		[toolbarItem setToolTip: NSLocalizedString(@"Export selected study/series to a DICOM folder",@"Export selected study/series to a DICOM folder")];
+		[toolbarItem setToolTip: NSLocalizedString(@"Export selected study/series to a DICOM folder", nil)];
 		[toolbarItem setImage: [NSImage imageNamed: ExportToolbarItemIdentifier]];
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(exportDICOMFile:)];
-    } 
+    }
+    else if ([itemIdent isEqualToString: ExportROIAndKeyImagesToolbarItemIdentifier])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"Export ROIs & Keys",nil)];
+		[toolbarItem setPaletteLabel: NSLocalizedString(@"Export ROIs & Keys",nil)];
+		[toolbarItem setToolTip: NSLocalizedString(@"Export ROI and Key images of selected study/series as a DICOM Series", nil)];
+		[toolbarItem setImage: [NSImage imageNamed: ExportROIAndKeyImagesToolbarItemIdentifier]];
+		[toolbarItem setTarget: self];
+		[toolbarItem setAction: @selector(exportROIAndKeyImagesAsDICOMSeries:)];
+    }
 	else if ([itemIdent isEqualToString: ViewersToolbarItemIdentifier])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Viewers",nil)];
@@ -18706,7 +18794,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Anonymize",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Anonymize",nil)];
-		[toolbarItem setToolTip: NSLocalizedString(@"Anonymize selected study/series to a DICOM folder",@"Anonymize selected study/series to a DICOM folder")];
+		[toolbarItem setToolTip: NSLocalizedString(@"Anonymize selected study/series to a DICOM folder", nil)];
 		[toolbarItem setImage: [NSImage imageNamed: AnonymizerToolbarItemIdentifier]];
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(anonymizeDICOM:)];
@@ -18941,6 +19029,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			 QTSaveToolbarItemIdentifier,
 			 QueryToolbarItemIdentifier,
 			 ExportToolbarItemIdentifier,
+             ExportROIAndKeyImagesToolbarItemIdentifier,
 			 AnonymizerToolbarItemIdentifier,
 			 SendToolbarItemIdentifier,
 			 ViewerToolbarItemIdentifier,
@@ -19403,7 +19492,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 			[toolbarItem action] == @selector(exportQuicktime:) || 
 			[toolbarItem action] == @selector(exportJPEG:) || 
 			[toolbarItem action] == @selector(exportTIFF:) || 
-			[toolbarItem action] == @selector(exportDICOMFile:) || 
+			[toolbarItem action] == @selector(exportDICOMFile:) ||
+            [toolbarItem action] == @selector(exportROIAndKeyImagesAsDICOMSeries:) ||
 			[toolbarItem action] == @selector(sendMail:) || 
 			[toolbarItem action] == @selector(addStudiesToUser:) || 
 			[toolbarItem action] == @selector(sendEmailNotification:) || 
@@ -19433,6 +19523,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 	
 	if ([[toolbarItem itemIdentifier] isEqualToString: OpenKeyImagesAndROIsToolbarItemIdentifier])
+	{
+        if( containsDistantStudy)
+            return NO;
+        
+		return ROIsAndKeyImagesButtonAvailable;
+	}
+    
+    if ([[toolbarItem itemIdentifier] isEqualToString: ExportROIAndKeyImagesToolbarItemIdentifier])
 	{
         if( containsDistantStudy)
             return NO;

@@ -766,7 +766,7 @@ extern NSRecursiveLock *PapyrusLock;
 						
 		//Series ID
 		
-		if( cardiacTime != -1 && [self separateCardiac4D] == YES)  // For new Cardiac-CT Siemens series
+		if( cardiacTime != -1 && [self separateCardiac4D] == YES && [Modality isEqualToString: @"SC"] == NO)  // For new Cardiac-CT Siemens series
 			self.serieID = [NSString stringWithFormat:@"%@ %2.2d", self.serieID , (int) cardiacTime];
 		
 		if( seriesNo)

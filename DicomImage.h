@@ -19,7 +19,7 @@ void* sopInstanceUIDEncode( NSString *sopuid);
 
 #define OsirixDicomImageSizeUnknown INT_MAX
 
-@class DCMSequenceAttribute, DicomSeries;
+@class DCMSequenceAttribute, DicomSeries, DICOMExport;
 
 @interface NSData (OsiriX)
 - (BOOL) isEqualToSopInstanceUID:(NSData*) sopInstanceUID;
@@ -88,17 +88,18 @@ void* sopInstanceUIDEncode( NSString *sopuid);
 #ifndef OSIRIX_LIGHT
 - (DCMSequenceAttribute*) graphicAnnotationSequence;
 #endif
-- (NSImage *)image;
-- (NSImage *)thumbnail;
+- (NSImage*) image;
+- (NSImage*) thumbnail;
 - (NSImage*) imageAsScreenCapture:(NSRect)frame;
-- (NSImage *)thumbnailIfAlreadyAvailable;
-- (void)setThumbnail:(NSImage*)image;
+- (NSDictionary*) imageAsDICOMScreenCapture:(DICOMExport*) exporter;
+- (NSImage*) thumbnailIfAlreadyAvailable;
+- (void) setThumbnail:(NSImage*)image;
 - (NSString*) completePathWithDownload:(BOOL) download supportNonLocalDatabase: (BOOL) supportNonLocalDatabase;
 + (NSString*) completePathForLocalPath:(NSString*) path directory:(NSString*) directory;
 - (NSString*) SRFilenameForFrame: (int) frameNo;
 - (NSString*) SRPathForFrame: (int) frameNo;
 - (NSString*) SRPath;
-- (NSString	*)sopInstanceUID;
+- (NSString*) sopInstanceUID;
 @property(nonatomic, retain) NSString* modality;
 
 - (NSString*) path;
@@ -109,7 +110,7 @@ void* sopInstanceUIDEncode( NSString *sopuid);
 - (NSNumber*) isKeyImage;
 - (void) setIsKeyImage:(NSNumber*) f;
 
-+(NSMutableArray*)dicomImagesInObjects:(NSArray*)objects;
++ (NSMutableArray*) dicomImagesInObjects:(NSArray*)objects;
 
 @end
 

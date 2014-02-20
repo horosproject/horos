@@ -498,7 +498,7 @@
     for( NSString *mediaPath in removeableMedia)
     {
         BOOL		isWritable, isUnmountable, isRemovable, hasDICOMDIR = NO;
-        NSString	*description, *type;
+        NSString	*description = nil, *type = nil;
         
         [[NSWorkspace sharedWorkspace] getFileSystemInfoForPath: mediaPath isRemovable:&isRemovable isWritable:&isWritable isUnmountable:&isUnmountable description:&description type:&type];
         
