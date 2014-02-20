@@ -742,6 +742,7 @@ extern NSRecursiveLock *PapyrusLock;
 		if( imageID == nil || [imageID intValue] >= 99999)
 		{
 			int val = 10000 + location*10.;
+            [imageID release];
 			imageID = [[NSString alloc] initWithFormat:@"%5d", val];
 		}
 		[dicomElements setObject:[NSNumber numberWithLong: [imageID intValue]] forKey:@"imageID"];

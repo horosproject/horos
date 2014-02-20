@@ -37,6 +37,7 @@
 #import "BonjourBrowser.h"
 #import "ThreadsManager.h"
 #import "DCMView.h"
+#import "AppController.h"
 #endif
 
 #define ROIDATABASE @"/ROIs/"
@@ -1204,11 +1205,14 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
         {
             NSRect frame = NSMakeRect( 0, 0, pix.pwidth, pix.pheight);
             
-            if( frame.size.width < [[NSUserDefaults standardUserDefaults] integerForKey: @"DicomImageScreenCaptureWidth"])
-                frame.size.width = [[NSUserDefaults standardUserDefaults] integerForKey: @"DicomImageScreenCaptureWidth"];
+            // Not smaller than @"DicomImageScreenCapture" prefs
+            frame.size.height = MAX( frame.size.height, [[NSUserDefaults standardUserDefaults] integerForKey: @"DicomImageScreenCaptureHeight"]);
+            frame.size.width = MAX( frame.size.width, [[NSUserDefaults standardUserDefaults] integerForKey: @"DicomImageScreenCaptureWidth"]);
             
-            if( frame.size.height < [[NSUserDefaults standardUserDefaults] integerForKey: @"DicomImageScreenCaptureHeight"])
-                frame.size.height = [[NSUserDefaults standardUserDefaults] integerForKey: @"DicomImageScreenCaptureHeight"];
+            // Not larger than a screen
+            NSRect viewerRect = [[[[AppController sharedAppController] viewerScreens] lastObject] frame];
+            frame.size.height = MIN( frame.size.height, viewerRect.size.height);
+            frame.size.width = MIN( frame.size.width, viewerRect.size.width);
             
             NSWindow* win = [[NSWindow alloc] initWithContentRect:frame styleMask:NSTitledWindowMask backing:NSBackingStoreBuffered defer:NO];
             

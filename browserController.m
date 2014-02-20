@@ -2620,7 +2620,7 @@ static NSConditionLock *threadLock = nil;
         }
     }
     
-    [[NSUserDefaults standardUserDefaults] setInteger: [sender tag] forKey:@"SearchType"];
+    [[NSUserDefaults standardUserDefaults] setInteger: [sender tag] forKey:@"searchType"];
 }
 
 - (void) computeTimeInterval
