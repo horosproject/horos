@@ -469,6 +469,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (DicomStudy *)studyObj;
 - (void) updatePresentationStateFromSeries;
 - (void) updatePresentationStateFromSeriesOnlyImageLevel: (BOOL) onlyImage;
+- (void) updatePresentationStateFromSeriesOnlyImageLevel: (BOOL) onlyImage scale: (BOOL) scale offset: (BOOL) offset;
 - (void) setCursorForView: (long) tool;
 - (long) getTool: (NSEvent*) event;
 - (void)resizeWindowToScale:(float)resizeScale;

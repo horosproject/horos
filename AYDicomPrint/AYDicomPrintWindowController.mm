@@ -318,11 +318,12 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
 		int i;
 		
 		NSArray *fileList = [m_CurrentViewer fileList];
+        NSArray *roiList = [m_CurrentViewer roiList];
 		
 		no_of_images = 0;
 		for (i = 0; i < [fileList count]; i++)
 		{
-			if ([[[fileList objectAtIndex: i] valueForKey: @"isKeyImage"] boolValue]) no_of_images++;
+			if ([[[fileList objectAtIndex: i] valueForKey: @"isKeyImage"] boolValue] || [[roiList objectAtIndex: i] count]) no_of_images++;
 		}
 	}
 	

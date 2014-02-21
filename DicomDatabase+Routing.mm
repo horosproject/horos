@@ -344,35 +344,41 @@
 		autoroutingRules = [[NSUserDefaults standardUserDefaults] arrayForKey:@"AUTOROUTINGDICTIONARY"];
 	
 	for (NSDictionary* routingRule in autoroutingRules)
-		if (![routingRule valueForKey:@"activated"] || [[routingRule valueForKey:@"activated"] boolValue]) {
-            
-			//			[self.managedObjectContext lock];
-			
-			NSPredicate	*predicate = nil;
+		if (![routingRule valueForKey:@"activated"] || [[routingRule valueForKey:@"activated"] boolValue])
+        {
+            NSPredicate	*predicate = nil;
 			NSArray	*result = nil;
 			
 			@try {
-                switch( [[routingRule objectForKey:@"filterType"] intValue])
+                
+                NSString *filter = [routingRule objectForKey: @"filter"];
+                
+                if( [[routingRule valueForKey: @"version"] intValue] < 1 && [[routingRule valueForKey: @"filterType"] intValue] != 0)
+                    filter = @"";
+                
+                predicate = [DicomDatabase predicateForSmartAlbumFilter: filter];
+                
+                switch( [[routingRule objectForKey: @"filterType"] intValue])
                 {
                     case 0:
-                        predicate = [DicomDatabase predicateForSmartAlbumFilter:[routingRule objectForKey:@"filter"]];
-                    break;
+                        // all images !
+                        break;
                         
                     case 1:
-                        predicate = [NSPredicate predicateWithFormat:@"generatedByOsiriX == YES"];
+                        predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: [NSPredicate predicateWithFormat:@"generatedByOsiriX == YES"], predicate, nil]];
                         break;
                         
                     case 2:
-                        predicate = [NSPredicate predicateWithFormat:@"importedFile == YES"];
+                        predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: [NSPredicate predicateWithFormat:@"importedFile == YES"], predicate, nil]];
                         break;
                 }
 				
-				if (predicate)
+				if( predicate)
 					result = [newImages filteredArrayUsingPredicate:predicate];
 				
 				if (result.count)
                 {
-					if ([[routingRule valueForKey:@"previousStudies"] intValue] > 0 && [[routingRule objectForKey: @"filterType"] intValue] == 0)
+					if ([[routingRule valueForKey:@"previousStudies"] intValue] > 0)
 					{
 						NSMutableDictionary *patients = [NSMutableDictionary dictionary];
 						
@@ -450,7 +456,7 @@
 						}
 					}
 					
-					if( [[routingRule valueForKey:@"cfindTest"] boolValue] && [[routingRule objectForKey: @"filterType"] intValue] == 0)
+					if( [[routingRule valueForKey:@"cfindTest"] boolValue])
 					{
 						NSMutableDictionary *studies = [NSMutableDictionary dictionary];
 						

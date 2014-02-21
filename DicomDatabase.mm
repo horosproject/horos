@@ -1142,7 +1142,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		[pred replaceOccurrencesOfString:key withString: [sub valueForKey: key]	options: NSCaseInsensitiveSearch range:pred.range];
 	}
 	
-	return [[NSPredicate predicateWithFormat:pred] predicateWithSubstitutionVariables: [NSDictionary dictionaryWithObjectsAndKeys:
+	NSPredicate *predicate = [[NSPredicate predicateWithFormat:pred] predicateWithSubstitutionVariables: [NSDictionary dictionaryWithObjectsAndKeys:
                                                                                         [now dateByAddingTimeInterval: -60*60*1],			@"NSDATE_LASTHOUR",
                                                                                         [now dateByAddingTimeInterval: -60*60*6],			@"NSDATE_LAST6HOURS",
                                                                                         [now dateByAddingTimeInterval: -60*60*12],			@"NSDATE_LAST12HOURS",
@@ -1155,6 +1155,10 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
                                                                                         [start dateByAddingTimeInterval: -60*60*24*31*3],	@"NSDATE_3MONTHS",
                                                                                         [start dateByAddingTimeInterval: -60*60*24*365],    @"NSDATE_YEAR",
                                                                                         nil]];
+    if( predicate == nil)
+        predicate = [NSPredicate predicateWithValue:YES];
+    
+    return predicate;
 }
 
 -(void)addDefaultAlbums {

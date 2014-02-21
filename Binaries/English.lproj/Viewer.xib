@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C48" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C62" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <deployment defaultVersion="1070" identifier="macosx"/>
+        <deployment defaultVersion="1080" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
     </dependencies>
     <objects>
@@ -255,7 +255,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="312" y="231" width="725" height="442"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
             <value key="minSize" type="size" width="200" height="200"/>
             <view key="contentView" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="725" height="442"/>
@@ -685,7 +685,7 @@
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="235" y="330" width="333" height="209"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
             <value key="minSize" type="size" width="333" height="227"/>
             <view key="contentView" id="104">
                 <rect key="frame" x="0.0" y="0.0" width="333" height="209"/>
@@ -850,7 +850,7 @@ Gw
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="156" y="208" width="388" height="464"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
             <value key="minSize" type="size" width="383" height="518"/>
             <view key="contentView" id="150">
                 <rect key="frame" x="0.0" y="0.0" width="388" height="464"/>
@@ -1388,7 +1388,7 @@ Gw
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="249" y="182" width="552" height="306"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
             <value key="minSize" type="size" width="552" height="306"/>
             <view key="contentView" id="428">
                 <rect key="frame" x="0.0" y="0.0" width="552" height="306"/>
@@ -1690,8 +1690,8 @@ To edit a Color Look Up Table from the menu: select it while holding down the al
                         <action selector="MoviePlayStop:" target="-2" id="520"/>
                     </connections>
                 </button>
-                <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="508">
-                    <rect key="frame" x="30" y="4" width="95" height="17"/>
+                <slider verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="508">
+                    <rect key="frame" x="30" y="4" width="95" height="16"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <constraints>
                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="95" id="Uz8-dg-jIj"/>
@@ -1753,7 +1753,7 @@ To edit a Color Look Up Table from the menu: select it while holding down the al
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="616" y="412" width="475" height="261"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
             <value key="minSize" type="size" width="475" height="238"/>
             <view key="contentView" id="525">
                 <rect key="frame" x="0.0" y="0.0" width="475" height="261"/>
@@ -1840,8 +1840,8 @@ Gw
                             <rect key="frame" x="3" y="3" width="416" height="105"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <slider verticalHuggingPriority="750" tag="3" translatesAutoresizingMaskIntoConstraints="NO" id="1386">
-                                    <rect key="frame" x="104" y="78" width="296" height="17"/>
+                                <slider verticalHuggingPriority="750" misplaced="YES" tag="3" translatesAutoresizingMaskIntoConstraints="NO" id="1386">
+                                    <rect key="frame" x="104" y="78" width="296" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" minValue="1" maxValue="50" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="50" allowsTickMarkValuesOnly="YES" sliderType="linear" id="2170">
                                         <font key="font" size="12" name="Helvetica"/>
@@ -1850,7 +1850,7 @@ Gw
                                         <action selector="exportQuicktimeSlider:" target="-2" id="2081"/>
                                     </connections>
                                 </slider>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1388">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1388">
                                     <rect key="frame" x="12" y="80" width="48" height="14"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Interval:" id="2172">
@@ -1859,8 +1859,8 @@ Gw
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1384">
-                                    <rect key="frame" x="104" y="48" width="296" height="17"/>
+                                <slider verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1384">
+                                    <rect key="frame" x="104" y="48" width="296" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" minValue="1" maxValue="90" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="30" allowsTickMarkValuesOnly="YES" sliderType="linear" id="2168">
                                         <font key="font" size="12" name="Helvetica"/>
@@ -1869,7 +1869,7 @@ Gw
                                         <action selector="exportQuicktimeSlider:" target="-2" id="1515"/>
                                     </connections>
                                 </slider>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1385">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1385">
                                     <rect key="frame" x="25" y="56" width="35" height="14"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="From:" id="2169">
@@ -1878,8 +1878,8 @@ Gw
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <slider verticalHuggingPriority="750" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="1387">
-                                    <rect key="frame" x="104" y="36" width="296" height="17"/>
+                                <slider verticalHuggingPriority="750" misplaced="YES" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="1387">
+                                    <rect key="frame" x="104" y="36" width="296" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" tag="1" minValue="1" maxValue="90" doubleValue="1" tickMarkPosition="above" numberOfTickMarks="30" allowsTickMarkValuesOnly="YES" sliderType="linear" id="2171">
                                         <font key="font" size="12" name="Helvetica"/>
@@ -1888,7 +1888,7 @@ Gw
                                         <action selector="exportQuicktimeSlider:" target="-2" id="1516"/>
                                     </connections>
                                 </slider>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1389">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1389">
                                     <rect key="frame" x="39" y="32" width="21" height="14"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="To:" id="2173">
@@ -1897,7 +1897,7 @@ Gw
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField verticalHuggingPriority="750" tag="3" translatesAutoresizingMaskIntoConstraints="NO" id="1391">
+                                <textField verticalHuggingPriority="750" misplaced="YES" tag="3" translatesAutoresizingMaskIntoConstraints="NO" id="1391">
                                     <rect key="frame" x="65" y="79" width="31" height="15"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <constraints>
@@ -1912,7 +1912,7 @@ Gw
                                         <action selector="exportQuicktimeSlider:" target="-2" id="2093"/>
                                     </connections>
                                 </textField>
-                                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1390">
+                                <textField verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1390">
                                     <rect key="frame" x="65" y="55" width="31" height="15"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="0" drawsBackground="YES" id="2174">
@@ -1924,7 +1924,7 @@ Gw
                                         <action selector="exportQuicktimeSlider:" target="-2" id="2094"/>
                                     </connections>
                                 </textField>
-                                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1383">
+                                <textField verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1383">
                                     <rect key="frame" x="65" y="31" width="31" height="15"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="1234" drawsBackground="YES" id="2167">
@@ -1936,7 +1936,7 @@ Gw
                                         <action selector="exportQuicktimeSlider:" target="-2" id="2095"/>
                                     </connections>
                                 </textField>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2076">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2076">
                                     <rect key="frame" x="14" y="10" width="46" height="14"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Images:" id="2176">
@@ -1945,7 +1945,7 @@ Gw
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2077">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2077">
                                     <rect key="frame" x="62" y="10" width="77" height="14"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <constraints>
@@ -2069,7 +2069,7 @@ Gw
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="449" y="507" width="386" height="351"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
             <value key="minSize" type="size" width="386" height="351"/>
             <view key="contentView" id="668">
                 <rect key="frame" x="0.0" y="0.0" width="386" height="351"/>
@@ -2383,7 +2383,7 @@ Gw
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="177" y="459" width="367" height="271"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
             <value key="minSize" type="size" width="334" height="271"/>
             <view key="contentView" id="718">
                 <rect key="frame" x="0.0" y="0.0" width="367" height="271"/>
@@ -2624,7 +2624,7 @@ Gw
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="645" y="546" width="402" height="296"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
             <value key="minSize" type="size" width="402" height="312"/>
             <view key="contentView" id="760">
                 <rect key="frame" x="0.0" y="0.0" width="402" height="296"/>
@@ -2976,7 +2976,7 @@ Gw
             <rect key="frame" x="0.0" y="0.0" width="187" height="38"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
-                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1974">
+                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1974">
                     <rect key="frame" x="174" y="1" width="12" height="17"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="+" id="2232">
@@ -2996,8 +2996,8 @@ Gw
                         <action selector="subSharpen:" target="-2" id="1666"/>
                     </connections>
                 </button>
-                <slider toolTip="sum up next frames [alt 1] [alt 2] [alt 3]" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" tag="20" translatesAutoresizingMaskIntoConstraints="NO" id="1656">
-                    <rect key="frame" x="98" y="1" width="73" height="17"/>
+                <slider toolTip="sum up next frames [alt 1] [alt 2] [alt 3]" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" misplaced="YES" tag="20" translatesAutoresizingMaskIntoConstraints="NO" id="1656">
+                    <rect key="frame" x="98" y="1" width="73" height="16"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" tag="20" minValue="1" maxValue="10" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="10" allowsTickMarkValuesOnly="YES" sliderType="linear" id="2230">
                         <font key="font" size="12" name="Helvetica"/>
@@ -3146,7 +3146,7 @@ Gw
                         <action selector="subCtrlOffset:" target="-1" id="1600"/>
                     </connections>
                 </button>
-                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" tag="12" translatesAutoresizingMaskIntoConstraints="NO" id="1538">
+                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" tag="12" translatesAutoresizingMaskIntoConstraints="NO" id="1538">
                     <rect key="frame" x="-1" y="1" width="26" height="17"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <constraints>
@@ -3158,8 +3158,8 @@ Gw
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <button toolTip="[]+[*]    choose the current image as mask" verticalHuggingPriority="750" tag="11" translatesAutoresizingMaskIntoConstraints="NO" id="790">
-                    <rect key="frame" x="20" y="-2" width="31" height="22"/>
+                <button toolTip="[]+[*]    choose the current image as mask" verticalHuggingPriority="750" misplaced="YES" tag="11" translatesAutoresizingMaskIntoConstraints="NO" id="790">
+                    <rect key="frame" x="20" y="-2" width="31" height="21"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <buttonCell key="cell" type="squareTextured" title="Mask" bezelStyle="texturedSquare" alignment="center" controlSize="small" borderStyle="border" tag="11" inset="2" id="2216">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -3238,7 +3238,7 @@ Gw
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="437" y="541" width="466" height="235"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
             <value key="minSize" type="size" width="382" height="234"/>
             <view key="contentView" id="829">
                 <rect key="frame" x="0.0" y="0.0" width="466" height="235"/>
@@ -3554,7 +3554,7 @@ DQ
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="47" y="123" width="552" height="254"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
             <value key="minSize" type="size" width="552" height="234"/>
             <view key="contentView" id="896">
                 <rect key="frame" x="0.0" y="0.0" width="552" height="254"/>
@@ -3704,7 +3704,7 @@ To modify an Opacity Table from the menu: select it while holding down the alt/o
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="269" y="485" width="333" height="191"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
             <value key="minSize" type="size" width="333" height="191"/>
             <view key="contentView" id="952">
                 <rect key="frame" x="0.0" y="0.0" width="333" height="191"/>
@@ -4008,7 +4008,7 @@ Gw
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="83" y="307" width="337" height="107"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
             <value key="minSize" type="size" width="337" height="107"/>
             <view key="contentView" id="1072">
                 <rect key="frame" x="0.0" y="0.0" width="337" height="107"/>
@@ -4102,7 +4102,7 @@ DQ
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="606" y="531" width="633" height="349"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
             <value key="minSize" type="size" width="564" height="285"/>
             <view key="contentView" id="1140">
                 <rect key="frame" x="0.0" y="0.0" width="633" height="349"/>
@@ -4168,7 +4168,7 @@ Gw
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="Key images only" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" tag="2" inset="2" id="1260">
+                                <buttonCell type="radio" title="ROIs &amp; Key images only" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" tag="2" inset="2" id="1260">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
@@ -4232,8 +4232,8 @@ Gw
                             <rect key="frame" x="3" y="3" width="588" height="106"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <slider verticalHuggingPriority="750" tag="3" translatesAutoresizingMaskIntoConstraints="NO" id="1351">
-                                    <rect key="frame" x="100" y="79" width="472" height="17"/>
+                                <slider verticalHuggingPriority="750" misplaced="YES" tag="3" translatesAutoresizingMaskIntoConstraints="NO" id="1351">
+                                    <rect key="frame" x="100" y="79" width="472" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" minValue="1" maxValue="50" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="50" allowsTickMarkValuesOnly="YES" sliderType="linear" id="2298">
                                         <font key="font" size="12" name="Helvetica"/>
@@ -4242,7 +4242,7 @@ Gw
                                         <action selector="exportDICOMSlider:" target="-2" id="2080"/>
                                     </connections>
                                 </slider>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1352">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1352">
                                     <rect key="frame" x="8" y="81" width="48" height="14"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Interval:" id="2299">
@@ -4251,8 +4251,8 @@ Gw
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1353">
-                                    <rect key="frame" x="100" y="49" width="472" height="17"/>
+                                <slider verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1353">
+                                    <rect key="frame" x="100" y="49" width="472" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" minValue="1" maxValue="90" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="30" allowsTickMarkValuesOnly="YES" sliderType="linear" id="2300">
                                         <font key="font" size="12" name="Helvetica"/>
@@ -4261,7 +4261,7 @@ Gw
                                         <action selector="exportDICOMSlider:" target="-2" id="1517"/>
                                     </connections>
                                 </slider>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1354">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1354">
                                     <rect key="frame" x="21" y="57" width="35" height="14"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="From:" id="2301">
@@ -4270,8 +4270,8 @@ Gw
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1355">
-                                    <rect key="frame" x="100" y="37" width="472" height="17"/>
+                                <slider verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1355">
+                                    <rect key="frame" x="100" y="37" width="472" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" minValue="1" maxValue="90" doubleValue="1" tickMarkPosition="above" numberOfTickMarks="30" allowsTickMarkValuesOnly="YES" sliderType="linear" id="2302">
                                         <font key="font" size="12" name="Helvetica"/>
@@ -4280,7 +4280,7 @@ Gw
                                         <action selector="exportDICOMSlider:" target="-2" id="1518"/>
                                     </connections>
                                 </slider>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1356">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1356">
                                     <rect key="frame" x="35" y="33" width="21" height="14"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="To:" id="2303">
@@ -4289,7 +4289,7 @@ Gw
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField verticalHuggingPriority="750" tag="3" translatesAutoresizingMaskIntoConstraints="NO" id="1357">
+                                <textField verticalHuggingPriority="750" misplaced="YES" tag="3" translatesAutoresizingMaskIntoConstraints="NO" id="1357">
                                     <rect key="frame" x="61" y="80" width="31" height="15"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <constraints>
@@ -4305,7 +4305,7 @@ Gw
                                         <action selector="exportDICOMSlider:" target="-2" id="2096"/>
                                     </connections>
                                 </textField>
-                                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1358">
+                                <textField verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1358">
                                     <rect key="frame" x="61" y="56" width="31" height="15"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <constraints>
@@ -4320,7 +4320,7 @@ Gw
                                         <action selector="exportDICOMSlider:" target="-2" id="2097"/>
                                     </connections>
                                 </textField>
-                                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1359">
+                                <textField verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1359">
                                     <rect key="frame" x="61" y="32" width="31" height="15"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <constraints>
@@ -4335,7 +4335,7 @@ Gw
                                         <action selector="exportDICOMSlider:" target="-2" id="2098"/>
                                     </connections>
                                 </textField>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2074">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2074">
                                     <rect key="frame" x="10" y="11" width="46" height="14"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Images:" id="2307">
@@ -4344,7 +4344,7 @@ Gw
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2075">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2075">
                                     <rect key="frame" x="58" y="11" width="77" height="14"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <constraints>
@@ -4551,7 +4551,7 @@ Gw
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="289" y="718" width="502" height="140"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
             <value key="minSize" type="size" width="531" height="140"/>
             <view key="contentView" id="1262">
                 <rect key="frame" x="0.0" y="0.0" width="502" height="140"/>
@@ -4712,7 +4712,7 @@ Gw
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="246" y="338" width="502" height="532"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
             <value key="minSize" type="size" width="502" height="520"/>
             <view key="contentView" id="1409">
                 <rect key="frame" x="0.0" y="0.0" width="502" height="532"/>
@@ -4956,7 +4956,7 @@ DO NOT USE THESE VALUES FOR CLINICAL DECISIONS !</string>
             <windowStyleMask key="styleMask" titled="YES" miniaturizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="451" y="656" width="306" height="142"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
             <value key="minSize" type="size" width="306" height="142"/>
             <view key="contentView" id="1451">
                 <rect key="frame" x="0.0" y="0.0" width="306" height="142"/>
@@ -5078,7 +5078,7 @@ Gw
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="374" y="109" width="339" height="173"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
             <value key="minSize" type="size" width="298" height="173"/>
             <view key="contentView" id="1494">
                 <rect key="frame" x="0.0" y="0.0" width="339" height="173"/>
@@ -5093,8 +5093,8 @@ Gw
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1498">
-                        <rect key="frame" x="36" y="111" width="262" height="27"/>
+                    <slider verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1498">
+                        <rect key="frame" x="36" y="111" width="262" height="25"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <sliderCell key="cell" continuous="YES" alignment="left" minValue="1" maxValue="20" doubleValue="10" tickMarkPosition="below" numberOfTickMarks="20" allowsTickMarkValuesOnly="YES" sliderType="linear" id="2333">
                             <font key="font" size="12" name="Helvetica"/>
@@ -5103,7 +5103,7 @@ Gw
                             <action selector="setStructuringElementRadius:" target="-2" id="1505"/>
                         </connections>
                     </slider>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1497">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1497">
                         <rect key="frame" x="36" y="89" width="34" height="14"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <constraints>
@@ -5115,7 +5115,7 @@ Gw
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1499">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1499">
                         <rect key="frame" x="264" y="89" width="34" height="14"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <constraints>
@@ -5127,7 +5127,7 @@ Gw
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <button verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="1500">
+                    <button verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="1500">
                         <rect key="frame" x="228" y="12" width="97" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <constraints>
@@ -5156,7 +5156,7 @@ DQ
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <button verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="1506">
+                    <button verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1506">
                         <rect key="frame" x="131" y="12" width="97" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <constraints>
@@ -5173,7 +5173,7 @@ Gw
                             <action selector="morphoSelectedBrushROIWithRadius:" target="-2" id="1996"/>
                         </connections>
                     </button>
-                    <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="1508">
+                    <button horizontalCompressionResistancePriority="1000" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1508">
                         <rect key="frame" x="18" y="58" width="257" height="18"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="check" title="Apply to all ROIs with the same name" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="2337">
@@ -5526,7 +5526,7 @@ Gw
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="443" y="361" width="685" height="277"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
             <value key="minSize" type="size" width="675" height="274"/>
             <view key="contentView" id="1846">
                 <rect key="frame" x="0.0" y="0.0" width="685" height="277"/>
@@ -5676,10 +5676,10 @@ Gw
                         </textFieldCell>
                     </textField>
                     <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1863">
-                        <rect key="frame" x="77" y="69" width="169" height="58"/>
+                        <rect key="frame" x="77" y="69" width="171" height="58"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        <size key="cellSize" width="169" height="18"/>
+                        <size key="cellSize" width="171" height="18"/>
                         <size key="intercellSpacing" width="4" height="2"/>
                         <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="2391">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -5691,7 +5691,7 @@ Gw
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="Only key images" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" tag="1" inset="2" id="1864">
+                                <buttonCell type="radio" title="Only ROIs &amp; Key images" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" tag="1" inset="2" id="1864">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
@@ -5715,14 +5715,14 @@ Gw
                         </textFieldCell>
                     </textField>
                     <box title="Box" boxType="secondary" borderType="bezel" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="1868">
-                        <rect key="frame" x="263" y="60" width="405" height="106"/>
+                        <rect key="frame" x="265" y="60" width="405" height="106"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <view key="contentView">
                             <rect key="frame" x="3" y="3" width="399" height="100"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1878">
-                                    <rect key="frame" x="103" y="73" width="279" height="17"/>
+                                    <rect key="frame" x="103" y="74" width="279" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" minValue="1" maxValue="50" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="50" allowsTickMarkValuesOnly="YES" sliderType="linear" id="2355">
                                         <font key="font" size="12" name="Helvetica"/>
@@ -5732,7 +5732,7 @@ Gw
                                     </connections>
                                 </slider>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1870">
-                                    <rect key="frame" x="11" y="75" width="48" height="14"/>
+                                    <rect key="frame" x="11" y="76" width="48" height="14"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Interval:" id="2347">
                                         <font key="font" metaFont="smallSystem"/>
@@ -5741,7 +5741,7 @@ Gw
                                     </textFieldCell>
                                 </textField>
                                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1877">
-                                    <rect key="frame" x="103" y="43" width="279" height="17"/>
+                                    <rect key="frame" x="103" y="45" width="279" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" minValue="1" maxValue="90" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="30" allowsTickMarkValuesOnly="YES" sliderType="linear" id="2354">
                                         <font key="font" size="12" name="Helvetica"/>
@@ -5751,7 +5751,7 @@ Gw
                                     </connections>
                                 </slider>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1871">
-                                    <rect key="frame" x="24" y="51" width="35" height="14"/>
+                                    <rect key="frame" x="24" y="52" width="35" height="14"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="From:" id="2348">
                                         <font key="font" metaFont="smallSystem"/>
@@ -5760,7 +5760,7 @@ Gw
                                     </textFieldCell>
                                 </textField>
                                 <slider verticalHuggingPriority="750" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="1872">
-                                    <rect key="frame" x="103" y="31" width="279" height="17"/>
+                                    <rect key="frame" x="103" y="32" width="279" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" tag="1" minValue="1" maxValue="90" doubleValue="1" tickMarkPosition="above" numberOfTickMarks="30" allowsTickMarkValuesOnly="YES" sliderType="linear" id="2349">
                                         <font key="font" size="12" name="Helvetica"/>
@@ -5770,7 +5770,7 @@ Gw
                                     </connections>
                                 </slider>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1873">
-                                    <rect key="frame" x="38" y="27" width="21" height="14"/>
+                                    <rect key="frame" x="38" y="28" width="21" height="14"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="To:" id="2350">
                                         <font key="font" metaFont="smallSystem"/>
@@ -5779,7 +5779,7 @@ Gw
                                     </textFieldCell>
                                 </textField>
                                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1874">
-                                    <rect key="frame" x="64" y="74" width="31" height="15"/>
+                                    <rect key="frame" x="64" y="75" width="31" height="15"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="31" id="GD5-oB-Xyn"/>
@@ -5794,7 +5794,7 @@ Gw
                                     </connections>
                                 </textField>
                                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1875">
-                                    <rect key="frame" x="64" y="50" width="31" height="15"/>
+                                    <rect key="frame" x="64" y="51" width="31" height="15"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="0" drawsBackground="YES" id="2352">
                                         <font key="font" metaFont="miniSystem"/>
@@ -5806,7 +5806,7 @@ Gw
                                     </connections>
                                 </textField>
                                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1876">
-                                    <rect key="frame" x="64" y="26" width="31" height="15"/>
+                                    <rect key="frame" x="64" y="27" width="31" height="15"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="1234" drawsBackground="YES" id="2353">
                                         <font key="font" metaFont="miniSystem"/>
@@ -5818,7 +5818,7 @@ Gw
                                     </connections>
                                 </textField>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1971">
-                                    <rect key="frame" x="21" y="6" width="38" height="14"/>
+                                    <rect key="frame" x="21" y="7" width="38" height="14"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Pages:" id="2356">
                                         <font key="font" metaFont="smallSystem"/>
@@ -5827,7 +5827,7 @@ Gw
                                     </textFieldCell>
                                 </textField>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1972">
-                                    <rect key="frame" x="61" y="6" width="77" height="14"/>
+                                    <rect key="frame" x="61" y="7" width="77" height="14"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="73" id="3Iq-6z-1Ob"/>
@@ -6048,7 +6048,7 @@ Gw
             <windowStyleMask key="styleMask" titled="YES" miniaturizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="867" y="664" width="346" height="163"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
             <value key="minSize" type="size" width="314" height="163"/>
             <view key="contentView" id="2020">
                 <rect key="frame" x="0.0" y="0.0" width="346" height="163"/>
@@ -6182,7 +6182,7 @@ Gw
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="131" y="145" width="319" height="336"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
             <view key="contentView" id="2500">
                 <rect key="frame" x="0.0" y="0.0" width="319" height="336"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -6342,7 +6342,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="83" y="307" width="305" height="107"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
             <value key="minSize" type="size" width="337" height="107"/>
             <view key="contentView" id="fDG-SH-xgD">
                 <rect key="frame" x="0.0" y="0.0" width="305" height="107"/>

@@ -167,11 +167,14 @@ extern BOOL FULL32BITPIPELINE;
 		for (i = 0; i < [fileList count]; i++)
 		{
 			NSManagedObject *image;
+            NSUInteger index = 0;
 			
-			if( [[currentViewer imageView] flippedData]) image = [fileList objectAtIndex: (long)[fileList count] -1 -i];
-			else image = [fileList objectAtIndex: i];
+			if( [[currentViewer imageView] flippedData]) index = [fileList count] -1 -i;
+			else index = i;
+            
+            image = [fileList objectAtIndex: index];
 			
-			if (![[image valueForKey: @"isKeyImage"] boolValue])
+			if (![[image valueForKey: @"isKeyImage"] boolValue] && [[[currentViewer roiList] objectAtIndex:index] count] == 0)
 				continue;
 			
 			[images addObject: [NSNumber numberWithInt: i]];

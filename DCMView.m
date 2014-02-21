@@ -12959,6 +12959,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void) updatePresentationStateFromSeriesOnlyImageLevel: (BOOL) onlyImage
 {
+    return [self updatePresentationStateFromSeriesOnlyImageLevel: onlyImage scale: firstTimeDisplay offset: [self is2DViewer]];
+}
+
+- (void) updatePresentationStateFromSeriesOnlyImageLevel: (BOOL) onlyImage scale: (BOOL) scale offset: (BOOL) offset
+{
 	NSManagedObject *series = [self seriesObj];
 	NSManagedObject *image = [self imageObj];
 	
@@ -12978,7 +12983,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		else
 			self.yFlipped = NO;
 		
-		if( [self is2DViewer] && ((firstTimeDisplay && [[NSUserDefaults standardUserDefaults] boolForKey:@"AlwaysScaleToFit"] == NO) || COPYSETTINGSINSERIES == NO))
+		if((scale && [[NSUserDefaults standardUserDefaults] boolForKey:@"AlwaysScaleToFit"] == NO) || COPYSETTINGSINSERIES == NO)
 		{
 			if( [image valueForKey:@"scale"])
 				[self setScaleValue: [[image valueForKey:@"scale"] floatValue]];
@@ -13014,7 +13019,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		else
 			[self setRotation: 0];
 		
-		if( ([self is2DViewer] == YES && [[NSUserDefaults standardUserDefaults] boolForKey:@"AlwaysScaleToFit"] == NO) && COPYSETTINGSINSERIES == NO)
+		if( (offset && [[NSUserDefaults standardUserDefaults] boolForKey:@"AlwaysScaleToFit"] == NO) || COPYSETTINGSINSERIES == NO)
 		{
 			NSPoint o = NSMakePoint( HUGE_VALF, HUGE_VALF);
 			

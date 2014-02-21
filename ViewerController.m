@@ -17697,7 +17697,8 @@ int i,j,l;
 		
 		if( [[printSelection selectedCell] tag] == 1)
 		{
-			if (![[[fileList[ curMovieIndex] objectAtIndex: i] valueForKey: @"isKeyImage"] boolValue]) saveImage = NO;
+			if( ![[[fileList[ curMovieIndex] objectAtIndex: i] valueForKey: @"isKeyImage"] boolValue] && [[roiList[ curMovieIndex] objectAtIndex: i] count] == 0)
+                saveImage = NO;
 		}
 		
 		if( saveImage)
@@ -17957,11 +17958,14 @@ int i,j,l;
 			if( [[printSelection selectedCell] tag] == 1) //key image
 			{
 				NSManagedObject	*image;
+				NSUInteger index = 0;
+                
+                if( [imageView flippedData]) index = [[self fileList] count] -1 -i;
+				else index = i;
+                
+                image = [[self fileList] objectAtIndex: index];
 				
-				if( [imageView flippedData]) image = [[self fileList] objectAtIndex: (long)[[self fileList] count] -1 -i];
-				else image = [[self fileList] objectAtIndex: i];
-				
-				if (![[image valueForKey: @"isKeyImage"] boolValue]) saveImage = NO;
+				if( ![[image valueForKey: @"isKeyImage"] boolValue] && [[self.roiList objectAtIndex: index] count] == 0) saveImage = NO;
 			}
 			
 			if( saveImage)
@@ -18793,14 +18797,23 @@ int i,j,l;
 				
 				BOOL	export = YES;
 				
-				if( [[dcmSelection selectedCell] tag] == 2)	// Only key images
+				if( [[dcmSelection selectedCell] tag] == 2)	// Only ROIs & key images
 				{
 					NSManagedObject	*image;
-					
-					if( [imageView flippedData]) image = [[self fileList] objectAtIndex: (long)[[self fileList] count] -1 -i];
-					else image = [[self fileList] objectAtIndex: i];
+					NSUInteger index = 0;
+                    
+                    if( [imageView flippedData]) index = [[self fileList] count] -1 -i;
+                    else index = i;
+                    
+                    image = [[self fileList] objectAtIndex: index];
 					
 					export = [[image valueForKey:@"isKeyImage"] boolValue];
+                    
+                    if( export == NO)
+                    {
+                        if( [[self.roiList objectAtIndex: index] count] > 0)
+                            export = YES;
+                    }
 				}
 				
 				if( export)
