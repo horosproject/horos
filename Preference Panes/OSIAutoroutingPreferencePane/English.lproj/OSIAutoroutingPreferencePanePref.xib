@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C39" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C62" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment defaultVersion="1080" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
@@ -28,7 +28,7 @@
         <window title="&lt;&lt; do not localize >>" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" deferred="NO" oneShot="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="12" userLabel="PrefPane">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="682" height="364"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
             <view key="contentView" horizontalCompressionResistancePriority="1000" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="682" height="364"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -195,14 +195,14 @@ Press Delete key to delete a route</string>
         </window>
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="238" userLabel="newRoute">
             <windowStyleMask key="styleMask" titled="YES"/>
-            <rect key="contentRect" x="0.0" y="0.0" width="586" height="472"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="contentRect" x="0.0" y="0.0" width="586" height="509"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
             <view key="contentView" horizontalCompressionResistancePriority="1000" id="239">
-                <rect key="frame" x="0.0" y="0.0" width="586" height="472"/>
+                <rect key="frame" x="0.0" y="0.0" width="586" height="509"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="357">
-                        <rect key="frame" x="16" y="284" width="535" height="58"/>
+                        <rect key="frame" x="20" y="277" width="535" height="58"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         <size key="cellSize" width="535" height="18"/>
@@ -213,15 +213,15 @@ Press Delete key to delete a route</string>
                         </buttonCell>
                         <cells>
                             <column>
-                                <buttonCell type="radio" title="Imported studies from files, including CD/DVD" imagePosition="left" alignment="left" tag="2" inset="2" id="rf1-c6-pB5">
+                                <buttonCell type="radio" title="All new received files" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" baseWritingDirection="leftToRight" inset="2" id="rf1-c6-pB5">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="Data Generated (Status, Comments, Reports, Key Images, Secondary Captures, ...)" imagePosition="left" alignment="left" state="on" baseWritingDirection="leftToRight" tag="1" inset="2" id="358">
+                                <buttonCell type="radio" title="Data Generated (Status, Comments, Reports, Key Images, Secondary Captures, ...)" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" state="on" baseWritingDirection="leftToRight" tag="1" inset="2" id="358">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <buttonCell type="radio" title="Database Filter:" imagePosition="left" alignment="left" baseWritingDirection="leftToRight" inset="2" id="359">
+                                <buttonCell type="radio" title="Imported studies from files, including CD/DVD" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" baseWritingDirection="leftToRight" tag="2" inset="2" id="359">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
@@ -232,7 +232,7 @@ Press Delete key to delete a route</string>
                         </connections>
                     </matrix>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="240">
-                        <rect key="frame" x="124" y="435" width="45" height="17"/>
+                        <rect key="frame" x="124" y="472" width="45" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Name:" id="295">
                             <font key="font" metaFont="system"/>
@@ -241,7 +241,7 @@ Press Delete key to delete a route</string>
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="241">
-                        <rect key="frame" x="46" y="406" width="123" height="17"/>
+                        <rect key="frame" x="46" y="443" width="123" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Destination Server:" id="296">
                             <font key="font" metaFont="system"/>
@@ -250,7 +250,7 @@ Press Delete key to delete a route</string>
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="242">
-                        <rect key="frame" x="93" y="353" width="76" height="17"/>
+                        <rect key="frame" x="93" y="390" width="76" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Comments:" id="297">
                             <font key="font" metaFont="system"/>
@@ -258,8 +258,17 @@ Press Delete key to delete a route</string>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="DfH-s5-HUO">
+                        <rect key="frame" x="18" y="343" width="61" height="17"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Apply to:" id="ZRV-u9-2jb">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="320">
-                        <rect key="frame" x="59" y="166" width="110" height="17"/>
+                        <rect key="frame" x="59" y="170" width="110" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Previous Studies:" id="321">
                             <font key="font" metaFont="system"/>
@@ -267,8 +276,17 @@ Press Delete key to delete a route</string>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="r1J-pa-vP9">
+                        <rect key="frame" x="67" y="252" width="102" height="17"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Database Filter:" id="Dof-zb-xan">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="339">
-                        <rect key="frame" x="118" y="89" width="51" height="17"/>
+                        <rect key="frame" x="118" y="85" width="51" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Failure:" id="340">
                             <font key="font" metaFont="system"/>
@@ -277,7 +295,7 @@ Press Delete key to delete a route</string>
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="352">
-                        <rect key="frame" x="118" y="60" width="51" height="17"/>
+                        <rect key="frame" x="118" y="56" width="51" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Check :" id="353">
                             <font key="font" metaFont="system"/>
@@ -286,7 +304,7 @@ Press Delete key to delete a route</string>
                         </textFieldCell>
                     </textField>
                     <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="243">
-                        <rect key="frame" x="178" y="401" width="391" height="26"/>
+                        <rect key="frame" x="178" y="438" width="391" height="26"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <constraints>
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="386" id="944-N8-2ZQ"/>
@@ -305,7 +323,7 @@ Press Delete key to delete a route</string>
                         </connections>
                     </popUpButton>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="248">
-                        <rect key="frame" x="181" y="433" width="385" height="22"/>
+                        <rect key="frame" x="181" y="470" width="385" height="22"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <constraints>
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="385" id="Lry-fY-vKN"/>
@@ -317,7 +335,7 @@ Press Delete key to delete a route</string>
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="249">
-                        <rect key="frame" x="181" y="350" width="385" height="22"/>
+                        <rect key="frame" x="181" y="387" width="385" height="22"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <constraints>
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="385" id="FJE-wT-gVS"/>
@@ -329,7 +347,7 @@ Press Delete key to delete a route</string>
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="251">
-                        <rect key="frame" x="181" y="224" width="385" height="52"/>
+                        <rect key="frame" x="181" y="217" width="385" height="52"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="52" id="Z5s-hj-yU4"/>
@@ -340,16 +358,9 @@ Press Delete key to delete a route</string>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
-                        <connections>
-                            <binding destination="-2" name="enabled" keyPath="filterType" id="363">
-                                <dictionary key="options">
-                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
-                                </dictionary>
-                            </binding>
-                        </connections>
                     </textField>
                     <button verticalHuggingPriority="750" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="252">
-                        <rect key="frame" x="475" y="13" width="97" height="32"/>
+                        <rect key="frame" x="475" y="9" width="97" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <constraints>
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="85" id="Uze-6I-n6m"/>
@@ -366,7 +377,7 @@ DQ
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="253">
-                        <rect key="frame" x="370" y="13" width="97" height="32"/>
+                        <rect key="frame" x="370" y="9" width="97" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <constraints>
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="85" id="p60-JX-M20"/>
@@ -383,7 +394,7 @@ Gw
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="254">
-                        <rect key="frame" x="180" y="202" width="80" height="16"/>
+                        <rect key="frame" x="180" y="195" width="80" height="16"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="OsiriX Tables" bezelStyle="rounded" alignment="center" controlSize="mini" borderStyle="border" inset="2" id="305">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -391,15 +402,10 @@ Gw
                         </buttonCell>
                         <connections>
                             <action selector="syntaxHelpButtons:" target="-2" id="277"/>
-                            <binding destination="-2" name="enabled" keyPath="filterType" id="365">
-                                <dictionary key="options">
-                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
-                                </dictionary>
-                            </binding>
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="255">
-                        <rect key="frame" x="266" y="202" width="80" height="16"/>
+                        <rect key="frame" x="266" y="195" width="80" height="16"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="push" title="SQL Syntax" bezelStyle="rounded" alignment="center" controlSize="mini" borderStyle="border" tag="1" inset="2" id="306">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -407,15 +413,10 @@ Gw
                         </buttonCell>
                         <connections>
                             <action selector="syntaxHelpButtons:" target="-2" id="278"/>
-                            <binding destination="-2" name="enabled" keyPath="filterType" id="367">
-                                <dictionary key="options">
-                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
-                                </dictionary>
-                            </binding>
                         </connections>
                     </button>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="256">
-                        <rect key="frame" x="178" y="380" width="390" height="17"/>
+                        <rect key="frame" x="178" y="417" width="390" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="386" id="tV2-KI-5ff"/>
@@ -427,7 +428,7 @@ Gw
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="286">
-                        <rect key="frame" x="81" y="265" width="88" height="11"/>
+                        <rect key="frame" x="81" y="233" width="88" height="11"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="(Image Table Level)" id="308">
                             <font key="font" metaFont="miniSystem"/>
@@ -436,7 +437,7 @@ Gw
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="287">
-                        <rect key="frame" x="71" y="224" width="98" height="33"/>
+                        <rect key="frame" x="71" y="192" width="98" height="33"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" id="309">
                             <font key="font" metaFont="miniSystem"/>
@@ -448,22 +449,15 @@ RW1wdHkgZmlsdGVyIHdpbGwgcm91dGUD4oCoQUxMIGltYWdlcwo
                         </textFieldCell>
                     </textField>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="322">
-                        <rect key="frame" x="198" y="140" width="131" height="18"/>
+                        <rect key="frame" x="198" y="142" width="131" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="check" title="of same modality" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="335">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
-                        <connections>
-                            <binding destination="-2" name="enabled" keyPath="filterType" id="371">
-                                <dictionary key="options">
-                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
-                                </dictionary>
-                            </binding>
-                        </connections>
                     </button>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="323">
-                        <rect key="frame" x="43" y="142" width="126" height="22"/>
+                        <rect key="frame" x="43" y="146" width="126" height="22"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" controlSize="mini" sendsActionOnEndEditing="YES" alignment="right" title="For each study, also send, if available in the Database :" id="334">
                             <font key="font" metaFont="miniSystem"/>
@@ -472,22 +466,15 @@ RW1wdHkgZmlsdGVyIHdpbGwgcm91dGUD4oCoQUxMIGltYWdlcwo
                         </textFieldCell>
                     </textField>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="324">
-                        <rect key="frame" x="198" y="120" width="200" height="18"/>
+                        <rect key="frame" x="198" y="122" width="200" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="check" title="with same Study Description" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="333">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
-                        <connections>
-                            <binding destination="-2" name="enabled" keyPath="filterType" id="373">
-                                <dictionary key="options">
-                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
-                                </dictionary>
-                            </binding>
-                        </connections>
                     </button>
                     <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="325">
-                        <rect key="frame" x="178" y="160" width="201" height="26"/>
+                        <rect key="frame" x="178" y="164" width="201" height="26"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="21" id="4Pr-9v-Hki"/>
@@ -507,15 +494,10 @@ RW1wdHkgZmlsdGVyIHdpbGwgcm91dGUD4oCoQUxMIGltYWdlcwo
                         </popUpButtonCell>
                         <connections>
                             <action selector="selectPrevious:" target="-2" id="351"/>
-                            <binding destination="-2" name="enabled" keyPath="filterType" id="369">
-                                <dictionary key="options">
-                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
-                                </dictionary>
-                            </binding>
                         </connections>
                     </popUpButton>
                     <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="341">
-                        <rect key="frame" x="178" y="84" width="213" height="26"/>
+                        <rect key="frame" x="178" y="80" width="213" height="26"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <popUpButtonCell key="cell" type="push" title="Try 5 times each 30 secs" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="5" imageScaling="proportionallyDown" inset="2" selectedItem="344" id="342">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -531,38 +513,33 @@ RW1wdHkgZmlsdGVyIHdpbGwgcm91dGUD4oCoQUxMIGltYWdlcwo
                                 </items>
                             </menu>
                         </popUpButtonCell>
-                        <connections>
-                            <binding destination="-2" name="enabled" keyPath="filterType" id="375">
-                                <dictionary key="options">
-                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
-                                </dictionary>
-                            </binding>
-                        </connections>
                     </popUpButton>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="354">
-                        <rect key="frame" x="178" y="59" width="394" height="18"/>
+                        <rect key="frame" x="178" y="55" width="394" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="check" title="Send C-FIND to check if the study exists on the destination" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="355">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
-                        <connections>
-                            <binding destination="-2" name="enabled" keyPath="filterType" id="377">
-                                <dictionary key="options">
-                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
-                                </dictionary>
-                            </binding>
-                        </connections>
                     </button>
+                    <box autoresizesSubviews="NO" verticalHuggingPriority="750" title="Box" boxType="separator" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="dhV-eB-dCU">
+                        <rect key="frame" x="0.0" y="368" width="586" height="5"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                        <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        <font key="titleFont" metaFont="system"/>
+                    </box>
                 </subviews>
                 <constraints>
                     <constraint firstItem="248" firstAttribute="trailing" secondItem="243" secondAttribute="trailing" id="03o-zZ-OGi"/>
                     <constraint firstItem="248" firstAttribute="baseline" secondItem="240" secondAttribute="baseline" id="08N-RC-CQ2"/>
+                    <constraint firstItem="r1J-pa-vP9" firstAttribute="top" secondItem="357" secondAttribute="bottom" constant="8" symbolic="YES" id="0Bz-gF-gRk"/>
                     <constraint firstItem="325" firstAttribute="leading" secondItem="243" secondAttribute="leading" id="20G-6H-Rlj"/>
                     <constraint firstItem="249" firstAttribute="leading" secondItem="248" secondAttribute="leading" id="2lX-Ex-rH5"/>
                     <constraint firstItem="287" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="239" secondAttribute="leading" constant="16" id="3TA-2o-7fv"/>
                     <constraint firstItem="249" firstAttribute="leading" secondItem="251" secondAttribute="leading" id="41O-SV-4hW"/>
                     <constraint firstItem="251" firstAttribute="leading" secondItem="254" secondAttribute="leading" id="5l6-U4-TZ6"/>
+                    <constraint firstItem="r1J-pa-vP9" firstAttribute="trailing" secondItem="286" secondAttribute="trailing" id="6fF-6M-zPO"/>
                     <constraint firstItem="352" firstAttribute="top" secondItem="339" secondAttribute="bottom" constant="12" id="7BH-vh-rzb"/>
                     <constraint firstItem="324" firstAttribute="top" secondItem="322" secondAttribute="bottom" constant="6" symbolic="YES" id="7J4-Jh-2Bg"/>
                     <constraint firstItem="320" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="239" secondAttribute="leading" constant="16" id="7LT-N5-mgk"/>
@@ -572,14 +549,18 @@ RW1wdHkgZmlsdGVyIHdpbGwgcm91dGUD4oCoQUxMIGltYWdlcwo
                     <constraint firstItem="249" firstAttribute="trailing" secondItem="251" secondAttribute="trailing" id="8tb-J9-8Ef"/>
                     <constraint firstItem="339" firstAttribute="centerY" secondItem="341" secondAttribute="centerY" id="Ab5-7h-Sv5"/>
                     <constraint firstItem="287" firstAttribute="top" secondItem="286" secondAttribute="bottom" constant="8" symbolic="YES" id="CLS-XS-j7G"/>
+                    <constraint firstItem="DfH-s5-HUO" firstAttribute="top" secondItem="dhV-eB-dCU" secondAttribute="bottom" constant="10" id="Czn-Nj-0ee"/>
                     <constraint firstItem="252" firstAttribute="baseline" secondItem="253" secondAttribute="baseline" id="Dky-DD-U9X"/>
                     <constraint firstItem="243" firstAttribute="centerY" secondItem="241" secondAttribute="centerY" id="Dsr-cI-T4b"/>
                     <constraint firstItem="320" firstAttribute="trailing" secondItem="323" secondAttribute="trailing" id="FVU-GJ-b2J"/>
                     <constraint firstItem="339" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="239" secondAttribute="leading" constant="16" id="FjH-pl-EvT"/>
-                    <constraint firstItem="325" firstAttribute="top" secondItem="254" secondAttribute="bottom" constant="19" id="Gxc-Ob-h9Z"/>
+                    <constraint firstItem="DfH-s5-HUO" firstAttribute="leading" secondItem="357" secondAttribute="leading" id="GqD-NX-tgN"/>
+                    <constraint firstItem="325" firstAttribute="top" secondItem="254" secondAttribute="bottom" constant="8" id="Gxc-Ob-h9Z"/>
+                    <constraint firstItem="dhV-eB-dCU" firstAttribute="leading" secondItem="239" secondAttribute="leading" id="HOZ-D8-k8u"/>
                     <constraint firstItem="323" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="239" secondAttribute="leading" constant="16" id="IEW-pL-k5A"/>
                     <constraint firstItem="323" firstAttribute="trailing" secondItem="339" secondAttribute="trailing" id="JIL-lo-ugy"/>
                     <constraint firstItem="240" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="239" secondAttribute="leading" constant="16" id="KcB-uG-ap5"/>
+                    <constraint firstAttribute="trailing" secondItem="dhV-eB-dCU" secondAttribute="trailing" id="Opt-PM-XWI"/>
                     <constraint firstItem="255" firstAttribute="top" secondItem="254" secondAttribute="top" id="PBB-gs-hxj"/>
                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="357" secondAttribute="trailing" constant="20" id="SDi-I1-yFh"/>
                     <constraint firstItem="243" firstAttribute="leading" secondItem="241" secondAttribute="trailing" constant="13" id="T1V-x4-hAi"/>
@@ -595,9 +576,11 @@ RW1wdHkgZmlsdGVyIHdpbGwgcm91dGUD4oCoQUxMIGltYWdlcwo
                     <constraint firstItem="354" firstAttribute="leading" secondItem="341" secondAttribute="leading" id="dBx-gV-PnG"/>
                     <constraint firstItem="241" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="239" secondAttribute="leading" constant="16" id="epZ-kg-pKw"/>
                     <constraint firstAttribute="trailing" secondItem="248" secondAttribute="trailing" constant="20" symbolic="YES" id="fTR-pT-rA6"/>
+                    <constraint firstItem="357" firstAttribute="top" secondItem="DfH-s5-HUO" secondAttribute="bottom" constant="8" symbolic="YES" id="gWq-cQ-Dg6"/>
+                    <constraint firstItem="322" firstAttribute="top" secondItem="325" secondAttribute="bottom" constant="9" id="hZK-cy-A2S"/>
                     <constraint firstItem="352" firstAttribute="baseline" secondItem="354" secondAttribute="baseline" id="jZI-2B-slf"/>
-                    <constraint firstItem="251" firstAttribute="top" secondItem="286" secondAttribute="top" id="k2W-5a-U4I"/>
-                    <constraint firstAttribute="bottom" secondItem="253" secondAttribute="bottom" constant="20" symbolic="YES" id="l27-hc-ods"/>
+                    <constraint firstItem="251" firstAttribute="top" secondItem="286" secondAttribute="top" constant="-25" id="k2W-5a-U4I"/>
+                    <constraint firstAttribute="bottom" secondItem="253" secondAttribute="bottom" constant="16" id="l27-hc-ods"/>
                     <constraint firstItem="251" firstAttribute="top" secondItem="357" secondAttribute="bottom" constant="8" symbolic="YES" id="m0A-fh-00L"/>
                     <constraint firstItem="325" firstAttribute="baseline" secondItem="320" secondAttribute="baseline" id="npe-gq-J6G"/>
                     <constraint firstItem="287" firstAttribute="trailing" secondItem="286" secondAttribute="trailing" id="oCf-AM-Hot"/>
@@ -605,7 +588,7 @@ RW1wdHkgZmlsdGVyIHdpbGwgcm91dGUD4oCoQUxMIGltYWdlcwo
                     <constraint firstItem="320" firstAttribute="trailing" secondItem="287" secondAttribute="trailing" id="oZl-Zx-oGU"/>
                     <constraint firstItem="252" firstAttribute="trailing" secondItem="251" secondAttribute="trailing" id="pO8-OS-d8a"/>
                     <constraint firstItem="286" firstAttribute="trailing" secondItem="242" secondAttribute="trailing" id="qYk-hS-8ic"/>
-                    <constraint firstItem="357" firstAttribute="leading" secondItem="239" secondAttribute="leading" constant="16" id="qvX-c8-YBK"/>
+                    <constraint firstItem="357" firstAttribute="leading" secondItem="239" secondAttribute="leading" constant="20" id="qvX-c8-YBK"/>
                     <constraint firstItem="323" firstAttribute="top" secondItem="320" secondAttribute="bottom" constant="2" id="rko-Th-50s"/>
                     <constraint firstItem="256" firstAttribute="leading" secondItem="243" secondAttribute="leading" id="sBM-cG-VG9"/>
                     <constraint firstItem="341" firstAttribute="leading" secondItem="325" secondAttribute="leading" id="sNa-SR-mR4"/>
@@ -615,11 +598,10 @@ RW1wdHkgZmlsdGVyIHdpbGwgcm91dGUD4oCoQUxMIGltYWdlcwo
                     <constraint firstItem="242" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="239" secondAttribute="leading" constant="16" id="uPO-nA-fir"/>
                     <constraint firstItem="256" firstAttribute="top" secondItem="243" secondAttribute="bottom" constant="7" id="vMM-XZ-XAh"/>
                     <constraint firstItem="255" firstAttribute="leading" secondItem="254" secondAttribute="trailing" constant="8" symbolic="YES" id="xAu-Ev-Q3W"/>
-                    <constraint firstItem="341" firstAttribute="top" secondItem="324" secondAttribute="bottom" constant="14" id="xtA-a6-OU5"/>
                     <constraint firstItem="352" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="239" secondAttribute="leading" constant="16" id="xuC-Rt-NjR"/>
                     <constraint firstItem="248" firstAttribute="centerX" secondItem="243" secondAttribute="centerX" id="yrI-B6-Tek"/>
                     <constraint firstItem="255" firstAttribute="baseline" secondItem="254" secondAttribute="baseline" id="zMF-Ip-T5I"/>
-                    <constraint firstItem="357" firstAttribute="top" secondItem="249" secondAttribute="bottom" constant="8" symbolic="YES" id="zQQ-An-aIo"/>
+                    <constraint firstItem="357" firstAttribute="top" secondItem="249" secondAttribute="bottom" constant="52" id="zQQ-An-aIo"/>
                 </constraints>
             </view>
         </window>

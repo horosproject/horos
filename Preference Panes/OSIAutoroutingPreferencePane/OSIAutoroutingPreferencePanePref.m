@@ -17,6 +17,8 @@
 #import <OsiriXAPI/NSPreferencePane+OsiriX.h>
 #import <OsiriXAPI/AppController.h>
 
+#define CURRENTVERSION 1
+
 @implementation OSIAutoroutingPreferencePanePref
 
 @synthesize filterType;
@@ -45,12 +47,19 @@
 	for( int i = 0 ; i < [routesArray count] ; i++)
 	{
 		NSMutableDictionary	*newDict = [NSMutableDictionary dictionaryWithDictionary: [routesArray objectAtIndex: i]];
-		[routesArray replaceObjectAtIndex: i withObject:newDict];
 		
 		if( [newDict valueForKey:@"activated"] == 0)
-		{
 			[newDict setValue: [NSNumber numberWithBool: YES] forKey:@"activated"];
-		}
+        
+        if( [[newDict valueForKey: @"version"] intValue] < 1)
+        {
+            if( [[newDict valueForKey: @"filterType"] intValue] != 0)
+                [newDict setValue: @"" forKey: @"filter"];
+            
+            [newDict setValue: @CURRENTVERSION forKey: @"version"];
+        }
+        
+        [routesArray replaceObjectAtIndex: i withObject:newDict];
 	}
 	
 	[routesTable reloadData];
@@ -118,7 +127,7 @@ static BOOL newRouteMode = NO;
 {
 	if( [sender tag] == 1)
 	{
-		[routesArray replaceObjectAtIndex: [routesTable selectedRow] withObject: [NSMutableDictionary dictionaryWithObjectsAndKeys: [newName stringValue], @"name", [NSNumber numberWithBool:YES], @"activated", [newDescription stringValue], @"description", [newFilter stringValue], @"filter", [[serversArray objectAtIndex: [serverPopup indexOfSelectedItem]] objectForKey:@"Description"], @"server", [NSNumber numberWithInt: [previousPopup selectedTag]], @"previousStudies", [NSNumber numberWithBool: [previousModality state]], @"previousModality", [NSNumber numberWithBool: [previousDescription state]], @"previousDescription", [NSNumber numberWithInt: [failurePopup selectedTag]], @"failureRetry",  [NSNumber numberWithBool: [cfindTest state]], @"cfindTest", [NSNumber numberWithInt: filterType], @"filterType", nil]];
+		[routesArray replaceObjectAtIndex: [routesTable selectedRow] withObject: [NSMutableDictionary dictionaryWithObjectsAndKeys: [newName stringValue], @"name", [NSNumber numberWithBool:YES], @"activated", [newDescription stringValue], @"description", [newFilter stringValue], @"filter", [[serversArray objectAtIndex: [serverPopup indexOfSelectedItem]] objectForKey:@"Description"], @"server", [NSNumber numberWithInt: [previousPopup selectedTag]], @"previousStudies", [NSNumber numberWithBool: [previousModality state]], @"previousModality", [NSNumber numberWithBool: [previousDescription state]], @"previousDescription", [NSNumber numberWithInt: [failurePopup selectedTag]], @"failureRetry",  [NSNumber numberWithBool: [cfindTest state]], @"cfindTest", [NSNumber numberWithInt: filterType], @"filterType", @CURRENTVERSION, @"version", nil]];
 	}
 	else
 	{

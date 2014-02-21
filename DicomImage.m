@@ -1224,6 +1224,8 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
             [view setPixels:[NSMutableArray arrayWithObject:pix] files:[NSMutableArray arrayWithObject:self] rois:(rois? [NSMutableArray arrayWithObject:rois] : nil) firstImage:0 level:'i' reset:YES];
             [win.contentView addSubview:view];
             
+            [view setCOPYSETTINGSINSERIESdirectly: NO];
+            [view updatePresentationStateFromSeriesOnlyImageLevel: NO scale: YES offset: YES];
             [view drawRect:frame];
             
             int size = frame.size.width > frame.size.height ? frame.size.width : frame.size.height;
