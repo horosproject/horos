@@ -4288,7 +4288,7 @@ static BOOL initialized = NO;
     
     if( [AppController hasMacOSXSyrah])
     {
-        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideSyrahWarning"] == NO)
+//        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideSyrahWarning"] == NO)
 		{
 			NSAlert* alert = [[NSAlert new] autorelease];
 			[alert setMessageText: NSLocalizedString( @"Mac OS Version", nil)];

@@ -7998,8 +7998,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		fontList = fontListGL;
 		_stringSize = stringSize;
 //	}
-	
-	if (annotations == 4) [[NSNotificationCenter defaultCenter] postNotificationName: OsirixDrawTextInfoNotification object: self];
+    
+	if (annotations == 4)
+        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixDrawTextInfoNotification object: self];
 	else if( annotations > annotGraphics)
 	{
         if( NSIsEmptyRect( screenCaptureRect) == NO)
@@ -11433,12 +11434,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 - (void) setScaleValue:(float) x
 {
-	if( x < 0.01 ) return;
-	if( x > 100) return;
 	if( isnan( x)) return;
 	if( curImage < 0) return;
 	if( curDCM == nil) return;
-	
+    if( x < 0.01) x = 0.01;
+	if( x > 100) x = 100;
+    
 	if( scaleValue != x )
 	{
 		scaleValue = x;

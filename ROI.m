@@ -5056,16 +5056,16 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					glVertex2f( aa3.x, aa3.y);
 					
 					glEnd();
-					
-					glBegin(GL_LINE_LOOP);
-					glBlendFunc(GL_ONE_MINUS_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-					glColor4f(color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
-					
-					glVertex2f( aa1.x, aa1.y);
-					glVertex2f( aa2.x, aa2.y);
-					glVertex2f( aa3.x, aa3.y);
-					
-					glEnd();
+//
+//					glBegin(GL_LINE_LOOP);
+//					glBlendFunc(GL_ONE_MINUS_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//					glColor4f(color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
+//					
+//					glVertex2f( aa1.x, aa1.y);
+//					glVertex2f( aa2.x, aa2.y);
+//					glVertex2f( aa3.x, aa3.y);
+//					
+//					glEnd();
 				}
 				else
 				{
