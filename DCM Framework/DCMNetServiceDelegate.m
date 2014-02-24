@@ -478,10 +478,10 @@ static NSMutableArray *cachedServersArray = nil;
 		}
 		else service.sin_addr.s_addr = inet_addr( host_name);
 		
-		char buffer[256];
+		char buffer[256] = "";
 		NSString *result = nil;
 		
-		if (inet_ntop(AF_INET, &service.sin_addr, buffer, sizeof(buffer)))
+		if( inet_ntop(AF_INET, &service.sin_addr, buffer, sizeof(buffer)))
 			result = [NSString stringWithCString:buffer encoding: NSISOLatin1StringEncoding];
 		
 		return result;
