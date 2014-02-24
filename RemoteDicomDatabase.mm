@@ -842,7 +842,7 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 -(NSData*)sendMessage:(NSDictionary*)message { // ------------------------------------ this seems to be unused
 	NSMutableData* request = [NSMutableData dataWithBytes:"NEWMS" length:6];
 
-	NSData* data = [NSPropertyListSerialization dataFromPropertyList:message format:kCFPropertyListBinaryFormat_v1_0 errorDescription:nil];
+	NSData* data = [NSPropertyListSerialization dataFromPropertyList:message format:NSPropertyListBinaryFormat_v1_0 errorDescription:nil];
 	[RemoteDicomDatabase _data:request appendInt:data.length];
 	[request appendData:data];
 	

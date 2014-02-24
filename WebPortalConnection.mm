@@ -661,7 +661,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	{
 		if (x >= 0)
 		{
-			NSRange searchRange = {x, l};
+			NSRange searchRange = {static_cast<NSUInteger>(x), static_cast<NSUInteger>(l)};
 			
 			// If MacOS 10.6 : we should use - (NSRange)rangeOfData:(NSData *)dataToFind options:(NSDataSearchOptions)mask range:(NSRange)searchRange
 			
@@ -872,13 +872,13 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 		
 		for (int i = 0; i < [postDataChunk length] - l; i++)
 		{
-			NSRange searchRange = {i, l};
+			NSRange searchRange = {static_cast<NSUInteger>(i), static_cast<NSUInteger>(l)};
 			
 			// If MacOS 10.6 : we should use - (NSRange)rangeOfData:(NSData *)dataToFind options:(NSDataSearchOptions)mask range:(NSRange)searchRange
 			
 			if ([[postDataChunk subdataWithRange:searchRange] isEqualToData:separatorData])
 			{
-				NSRange newDataRange = {dataStartIndex, i - dataStartIndex};
+				NSRange newDataRange = {static_cast<NSUInteger>(dataStartIndex), static_cast<NSUInteger>(i - dataStartIndex)};
 				if( i >= dataStartIndex)
 				{
 					dataStartIndex = i + l;
@@ -924,7 +924,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 								
 								[POSTfilename retain];
 								
-								NSRange fileDataRange = {dataStartIndex, [postDataChunk length] - dataStartIndex};
+								NSRange fileDataRange = {static_cast<NSUInteger>(dataStartIndex), [postDataChunk length] - dataStartIndex};
 								
 								BOOL eof = [self checkEOF: postDataChunk range: &fileDataRange];
 								

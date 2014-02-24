@@ -1102,7 +1102,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
                 return [[a name] caseInsensitiveCompare:[b name]];
             } @catch (...) {
             }
-            return nil;
+            return (NSComparisonResult) NSOrderedSame;
         }];
     } @catch (NSException* e) {
         N2LogException(e);

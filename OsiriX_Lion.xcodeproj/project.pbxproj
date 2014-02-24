@@ -32778,6 +32778,7 @@
 		7E76BEC7085757B70073649A /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_WARN_EMPTY_BODY = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
@@ -32824,6 +32825,7 @@
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-Wno-deprecated",
+					"-no-pedantic",
 				);
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -32839,6 +32841,7 @@
 				);
 				PRODUCT_NAME = OsiriX;
 				USER_HEADER_SEARCH_PATHS = "ITK180/Modules/Core/Common/include ITK180/Modules/ThirdParty/VNL/src/vxl/core ITK180/Modules/ThirdParty/VNL/src/vxl/vcl ITK180/Modules/Core/Common ITK180/Modules/Core/Mesh/include ITK180/Modules/Segmentation/RegionGrowing/include ITK180/Modules/Filtering/CurvatureFlow/include ITK180/Modules/Core/ImageFunction/include ITK180/Modules/Core/FiniteDifference/include ITK180/Modules/Filtering/ImageFilterBase/include ITK180/Modules/Segmentation/LevelSets/include ITK180/Modules/Filtering/FastMarching/include ITK180/Modules/Filtering/ImageIntensity/include ITK180/Modules/Bridge/VTK/include ITK180/Modules/Filtering/MathematicalMorphology/include ITK180/Modules/Core/Transform/include ITK180/Modules/Filtering/ImageGrid/include ITK180/Modules/Filtering/BinaryMathematicalMorphology/include ITK180/Modules/ThirdParty/NrrdIO/src/NrrdIO";
+				WARNING_CFLAGS = "-no-pedantic";
 			};
 			name = Development;
 		};
@@ -33324,6 +33327,7 @@
 		CE5314AB0C717C3000A2B75F /* Deployment 32-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_WARN_EMPTY_BODY = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
@@ -33374,6 +33378,7 @@
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-Wno-deprecated",
+					"-no-pedantic",
 				);
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -33388,6 +33393,7 @@
 				STRIP_INSTALLED_PRODUCT = YES;
 				STRIP_STYLE = debugging;
 				USER_HEADER_SEARCH_PATHS = "ITK180/Modules/Core/Common/include ITK180/Modules/ThirdParty/VNL/src/vxl/core ITK180/Modules/ThirdParty/VNL/src/vxl/vcl ITK180/Modules/Core/Common ITK180/Modules/Core/Mesh/include ITK180/Modules/Segmentation/RegionGrowing/include ITK180/Modules/Filtering/CurvatureFlow/include ITK180/Modules/Core/ImageFunction/include ITK180/Modules/Core/FiniteDifference/include ITK180/Modules/Filtering/ImageFilterBase/include ITK180/Modules/Segmentation/LevelSets/include ITK180/Modules/Filtering/FastMarching/include ITK180/Modules/Filtering/ImageIntensity/include ITK180/Modules/Bridge/VTK/include ITK180/Modules/Filtering/MathematicalMorphology/include ITK180/Modules/Core/Transform/include ITK180/Modules/Filtering/ImageGrid/include ITK180/Modules/Filtering/BinaryMathematicalMorphology/include ITK180/Modules/ThirdParty/NrrdIO/src/NrrdIO";
+				WARNING_CFLAGS = "-no-pedantic";
 			};
 			name = "Deployment 32-bit";
 		};
@@ -33613,6 +33619,7 @@
 		CE5314B60C717C3000A2B75F /* Deployment 64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_WARN_EMPTY_BODY = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
@@ -33665,6 +33672,7 @@
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-Wno-deprecated",
+					"-no-pedantic",
 				);
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -33683,6 +33691,7 @@
 				STRIP_INSTALLED_PRODUCT = YES;
 				STRIP_STYLE = debugging;
 				USER_HEADER_SEARCH_PATHS = "ITK180/Modules/Core/Common/include ITK180/Modules/ThirdParty/VNL/src/vxl/core ITK180/Modules/ThirdParty/VNL/src/vxl/vcl ITK180/Modules/Core/Common ITK180/Modules/Core/Mesh/include ITK180/Modules/Segmentation/RegionGrowing/include ITK180/Modules/Filtering/CurvatureFlow/include ITK180/Modules/Core/ImageFunction/include ITK180/Modules/Core/FiniteDifference/include ITK180/Modules/Filtering/ImageFilterBase/include ITK180/Modules/Segmentation/LevelSets/include ITK180/Modules/Filtering/FastMarching/include ITK180/Modules/Filtering/ImageIntensity/include ITK180/Modules/Bridge/VTK/include ITK180/Modules/Filtering/MathematicalMorphology/include ITK180/Modules/Core/Transform/include ITK180/Modules/Filtering/ImageGrid/include ITK180/Modules/Filtering/BinaryMathematicalMorphology/include ITK180/Modules/ThirdParty/NrrdIO/src/NrrdIO";
+				WARNING_CFLAGS = "-no-pedantic";
 			};
 			name = "Deployment 64-bit";
 		};
