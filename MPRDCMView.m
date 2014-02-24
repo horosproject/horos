@@ -1382,6 +1382,8 @@ extern unsigned int minimumStep;
 	[self updateViewMPR: NO];
 	[self updateMousePosition: theEvent];
 	
+    [self displayIfNeeded];
+    
 	[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector(delayedFullLODRendering:) object: self];	
 	[windowController performSelector: @selector(delayedFullLODRendering:) withObject: self afterDelay: 0.2];
 }
