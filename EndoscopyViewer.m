@@ -329,10 +329,10 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 	
 	[pix orientationDouble: orientation];
 	
-	long orientationVector = [mprController orientationVector];
+//	long orientationVector = [mprController orientationVector];
 
 	float xSign = 1.0;
-	float ySign = 1.0;
+//	float ySign = 1.0;
 	
 //	switch( orientationVector)	// See applyOrientation in OrthogonalMPRController.mm
 //	{
@@ -1175,8 +1175,6 @@ return YES;
 				
 		// let's write the file on the disk
 		
-		float	o[9];
-
 		if(dataPtr)
 		{
 			[exportDCM setSourceFile: [[[mprController originalView] curDCM] sourceFile]];

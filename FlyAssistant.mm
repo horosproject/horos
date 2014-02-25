@@ -1132,7 +1132,6 @@ typedef GreaterPathNodeOnF NodeCompare;
 }
 - (void) trackCenterline:(NSMutableArray*)line From:(int)currentindex WithLabel:(unsigned char*)labelmap
 {
-	int neighborindex;
 	int currentdirection;
 	int x,y,z;
 	int dx,dy,dz;

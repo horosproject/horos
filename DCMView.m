@@ -756,8 +756,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	@try
 	{
-		id curSeries = [self seriesObj];
-		
 		NSArray *viewers = [[ViewerController getDisplayed2DViewers] sortedArrayUsingFunction: studyCompare context: nil];
 		
 		NSMutableArray *studiesArray = [NSMutableArray array];
@@ -3082,7 +3080,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		NSMutableArray *studiesArray = [NSMutableArray array];
 		NSMutableArray *seriesArray = [NSMutableArray array];
-		NSMutableDictionary *colorsStudy = [NSMutableDictionary dictionary];
 		
 		for( ViewerController *v in viewers)
 		{
@@ -3590,7 +3587,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			{
 				int		x,y;
 				int		xsqr;
-				int		inw = LENSSIZE-1;
 				int		rad = LENSSIZE/2;
 				
 				x = rad;
@@ -4519,8 +4515,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 							
 							// Bring the selected ROI to the first position in array
 							ROI *roi = [curRoiList objectAtIndex: selected];
-							
-							int previousMode = roi.ROImode;
 							
 							[[self windowController] bringToFrontROI: roi];
 							

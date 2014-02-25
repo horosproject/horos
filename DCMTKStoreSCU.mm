@@ -95,8 +95,8 @@ END_EXTERN_C
 
 #define OFFIS_CONSOLE_APPLICATION "storescu"
 
-static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
-  OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
+//static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
+//  OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 /* default application titles */
 #define APPLICATIONTITLE        "STORESCU"
@@ -107,7 +107,7 @@ static OFBool opt_showPresentationContexts = OFFalse;
 static OFBool opt_debug = OFFalse;
 static OFBool opt_abortAssociation = OFFalse;
 static OFCmdUnsignedInt opt_maxReceivePDULength = ASC_DEFAULTMAXPDU;
-static OFCmdUnsignedInt opt_maxSendPDULength = 0;
+//static OFCmdUnsignedInt opt_maxSendPDULength = 0;
 static E_TransferSyntax opt_networkTransferSyntax = EXS_LittleEndianExplicit;
 
 static int lastStatusCode = STATUS_Success;
@@ -116,9 +116,9 @@ static OFBool opt_proposeOnlyRequiredPresentationContexts = OFFalse;
 static OFBool opt_combineProposedTransferSyntaxes = OFFalse;
 
 static OFCmdUnsignedInt opt_repeatCount = 1;
-static OFCmdUnsignedInt opt_inventPatientCount = 25;
-static OFCmdUnsignedInt opt_inventStudyCount = 50;
-static OFCmdUnsignedInt opt_inventSeriesCount = 100;
+//static OFCmdUnsignedInt opt_inventPatientCount = 25;
+//static OFCmdUnsignedInt opt_inventStudyCount = 50;
+//static OFCmdUnsignedInt opt_inventSeriesCount = 100;
 static OFBool opt_correctUIDPadding = OFFalse;
 //static OFBool opt_inventSOPInstanceInformation = OFFalse;
 //static OFString patientNamePrefix("OSIRIX^PN_");   // PatientName is PN (maximum 16 chars)
@@ -130,13 +130,13 @@ int opt_dimse_timeout = 0;
 int opt_acse_timeout = 30;
 int opt_Quality = 90;
 
-#ifdef WITH_ZLIB
-static OFCmdUnsignedInt opt_compressionLevel = 0;
-#endif
+//#ifdef WITH_ZLIB
+//static OFCmdUnsignedInt opt_compressionLevel = 0;
+//#endif
 
 #ifdef WITH_OPENSSL
-static int         opt_keyFileFormat = SSL_FILETYPE_PEM;
-static OFBool      opt_doAuthenticate = OFFalse;
+//static int         opt_keyFileFormat = SSL_FILETYPE_PEM;
+//static OFBool      opt_doAuthenticate = OFFalse;
 #if OPENSSL_VERSION_NUMBER >= 0x0090700fL
 static OFString    opt_ciphersuites(TLS1_TXT_RSA_WITH_AES_128_SHA ":" SSL3_TXT_RSA_DES_192_CBC3_SHA);
 #else
@@ -347,12 +347,12 @@ addStoragePresentationContexts(T_ASC_Parameters *params, OFList<OFString>& sopCl
     return cond;
 }
 
-static int
-secondsSince1970()
-{
-    time_t t = time(NULL);
-    return (int)t;
-}
+//static int
+//secondsSince1970()
+//{
+//    time_t t = time(NULL);
+//    return (int)t;
+//}
 
 static OFString
 intToString(int i)
@@ -362,50 +362,50 @@ intToString(int i)
     return numbuf;
 }
 
-static OFString
-makeUID(OFString basePrefix, int counter)
-{
-    OFString prefix = basePrefix + "." + intToString(counter);
-    char uidbuf[65];
-    OFString uid = dcmGenerateUniqueIdentifier(uidbuf, prefix.c_str());
-    return uid;
-}
-
-static OFBool
-updateStringAttributeValue(DcmItem* dataset, const DcmTagKey& key, OFString& value)
-{
-    DcmStack stack;
-    DcmTag tag(key);
-
-    OFCondition cond = EC_Normal;
-    cond = dataset->search(key, stack, ESM_fromHere, OFFalse);
-    if (cond != EC_Normal) {
-        CERR << "error: updateStringAttributeValue: cannot find: " << tag.getTagName()
-             << " " << key << ": "
-             << cond.text() << endl;
-        return OFFalse;
-    }
-
-    DcmElement* elem = (DcmElement*) stack.top();
-
-    DcmVR vr(elem->ident());
-    if (elem->getLength() > vr.getMaxValueLength()) {
-        CERR << "error: updateStringAttributeValue: INTERNAL ERROR: " << tag.getTagName()
-             << " " << key << ": value too large (max "
-            << vr.getMaxValueLength() << ") for " << vr.getVRName() << " value: " << value << endl;
-        return OFFalse;
-    }
-
-    cond = elem->putOFStringArray(value);
-    if (cond != EC_Normal) {
-        CERR << "error: updateStringAttributeValue: cannot put string in attribute: " << tag.getTagName()
-             << " " << key << ": "
-             << cond.text() << endl;
-        return OFFalse;
-    }
-
-    return OFTrue;
-}
+//static OFString
+//makeUID(OFString basePrefix, int counter)
+//{
+//    OFString prefix = basePrefix + "." + intToString(counter);
+//    char uidbuf[65];
+//    OFString uid = dcmGenerateUniqueIdentifier(uidbuf, prefix.c_str());
+//    return uid;
+//}
+//
+//static OFBool
+//updateStringAttributeValue(DcmItem* dataset, const DcmTagKey& key, OFString& value)
+//{
+//    DcmStack stack;
+//    DcmTag tag(key);
+//
+//    OFCondition cond = EC_Normal;
+//    cond = dataset->search(key, stack, ESM_fromHere, OFFalse);
+//    if (cond != EC_Normal) {
+//        CERR << "error: updateStringAttributeValue: cannot find: " << tag.getTagName()
+//             << " " << key << ": "
+//             << cond.text() << endl;
+//        return OFFalse;
+//    }
+//
+//    DcmElement* elem = (DcmElement*) stack.top();
+//
+//    DcmVR vr(elem->ident());
+//    if (elem->getLength() > vr.getMaxValueLength()) {
+//        CERR << "error: updateStringAttributeValue: INTERNAL ERROR: " << tag.getTagName()
+//             << " " << key << ": value too large (max "
+//            << vr.getMaxValueLength() << ") for " << vr.getVRName() << " value: " << value << endl;
+//        return OFFalse;
+//    }
+//
+//    cond = elem->putOFStringArray(value);
+//    if (cond != EC_Normal) {
+//        CERR << "error: updateStringAttributeValue: cannot put string in attribute: " << tag.getTagName()
+//             << " " << key << ": "
+//             << cond.text() << endl;
+//        return OFFalse;
+//    }
+//
+//    return OFTrue;
+//}
 
 //static void
 //replaceSOPInstanceInformation(DcmDataset* dataset)
@@ -611,7 +611,7 @@ static OFBool compressFile(DcmFileFormat fileformat, const char *fname, char *ou
                 #ifndef OSIRIX_LIGHT
                 NSLog(@"SEND - Compress DCMTK JPEG: %s", fname);
                 
-                DcmItem *metaInfo = fileformat.getMetaInfo();
+//                DcmItem *metaInfo = fileformat.getMetaInfo();
                 
                 DcmRepresentationParameter *params = nil;
                 DJ_RPLossy lossyParams( 90);

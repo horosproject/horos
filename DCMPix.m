@@ -11993,16 +11993,13 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         if(![key isEqualToString:@"sameAsDefault"])
         {
             NSArray *annotations = [annotationsForModality objectForKey: key];
-            NSMutableArray *annotationsOUT = [NSMutableArray array];
             
             @try
             {
                 for ( NSDictionary *annot in annotations)
                 {
                     NSArray *content = [annot objectForKey:@"fullContent"];
-                    NSMutableArray *contentOUT = [NSMutableArray array];
                     
-                    BOOL contentForLine = NO;
                     for ( int f=0; f<[content count]; f++)
                     {
                         @try

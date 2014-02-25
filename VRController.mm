@@ -880,7 +880,6 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
     @try {
         NSString *path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:STATEDATABASE];
         BOOL isDir = YES;
-        long i;
         
         if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
         {
@@ -967,7 +966,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 - (void) applyScissor : (NSArray*) object
 {
-	int			x, i				= [[object objectAtIndex: 0] intValue];
+	int			i                   = [[object objectAtIndex: 0] intValue];
 	int			stackOrientation	= [[object objectAtIndex: 1] intValue];
 	int			c					= [[object objectAtIndex: 2] intValue];
 	ROI*		roi					= [object objectAtIndex: 3];
@@ -1092,15 +1091,12 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 -(void) dealloc
 {
-	long i;
-	BOOL styleNoNib = NO;
-	
     NSLog(@"Dealloc VRController");
 	
 	[style release];
 	
 	// Release Undo system
-	for( i = 0; i < maxMovieIndex; i++)
+	for( int i = 0; i < maxMovieIndex; i++)
 	{
 		
 		if( undodata[ i])
@@ -1114,7 +1110,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     [nc removeObserver: self];
     
-	for( i = 0; i < maxMovieIndex; i++)
+	for( int i = 0; i < maxMovieIndex; i++)
 	{
 		[pixList[ i] release];
 		[volumeData[ i] release];

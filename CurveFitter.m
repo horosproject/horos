@@ -17,9 +17,9 @@
 	enum { STRAIGHT_LINE=0,POLY2=1,POLY3=2,POLY4=3, EXPONENTIAL=4,POWER=5,LOG=6,RODBARD=7,GAMMA_VARIATE=8,T1_SAT_RELAX = 9,T2_DEPHASE = 10,DIFFUSION = 11};
     static int IterFactor = 500;
 
-    static char* fitList[] = {"Straight Line","2nd Degree Polynomial", "3rd Degree Polynomial", "4th Degree Polynomial","Exponential","Power",  "log","Rodbard", "Gamma Variate"};
+//    static char* fitList[] = {"Straight Line","2nd Degree Polynomial", "3rd Degree Polynomial", "4th Degree Polynomial","Exponential","Power",  "log","Rodbard", "Gamma Variate"};
 
-    static char* fList[] = {"y = a+bx","y = a+bx+cx^2", "y = a+bx+cx^2+dx^3", "y = a+bx+cx^2+dx^3+ex^4","y = a*exp(bx)","y = ax^b", "y = a*ln(bx)","y = c*((a-x)/(x-d))^(1/b)", "y = a*(x-b)^c*exp(-(x-b)/d)", "y=a*(1-exp(-x/b))"};
+//    static char* fList[] = {"y = a+bx","y = a+bx+cx^2", "y = a+bx+cx^2+dx^3", "y = a+bx+cx^2+dx^3+ex^4","y = a*exp(bx)","y = ax^b", "y = a*ln(bx)","y = c*((a-x)/(x-d))^(1/b)", "y = a*(x-b)^c*exp(-(x-b)/d)", "y=a*(1-exp(-x/b))"};
 
     static double alpha = -1.0;     // reflection coefficient
     static double beta = 0.5;   // contraction coefficient
@@ -152,7 +152,7 @@
 	double lastx = xData[numPoints-1];
 	double lasty = yData[numPoints-1];
 	double xmean = (firstx+lastx)/2.0;
-	double ymean = (firsty+lasty)/2.0;
+//	double ymean = (firsty+lasty)/2.0;
 	double slope;
 	if ((lastx - firstx) != 0.0)
 		slope = (lasty - firsty)/(lastx - firstx);

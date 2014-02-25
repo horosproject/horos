@@ -292,7 +292,7 @@ extern unsigned int minimumStep;
         NSLog( @"screen pixel ratio: %f", fabs( (f.width/r.size.width) - (f.height/r.size.height)));
         if( fabs( (f.width/r.size.width) - (f.height/r.size.height)) < 0.01)
         {
-            DCMPix *o = [windowController originalPix];
+//            DCMPix *o = [windowController originalPix];
             
             camera.forceUpdate = YES;
             camera.parallelScale *= (f.width/r.size.width) / previousResolution;
@@ -1147,7 +1147,6 @@ extern unsigned int minimumStep;
 					
 					// Is this point in our plane?
 					
-					int		ii = -1;
 					float	vectors[ 9], orig[ 3], locationTemp[ 3];
 					float	distance = 999999;
 					
@@ -1494,8 +1493,6 @@ extern unsigned int minimumStep;
 		NSPoint tempPt = [self convertPoint: [theEvent locationInWindow] fromView: nil];
 		tempPt = [self ConvertFromNSView2GL:tempPt];
 		
-		long tool = [self getTool: theEvent];
-		
 		if( [self roiTool: mouseDownTool] && [self clickInROI: tempPt])
 		{
 			[[self windowController] roiGetInfo: self];
@@ -1683,8 +1680,6 @@ extern unsigned int minimumStep;
 			
 			for( ROI *r in curRoiList)
 			{
-				int mode;
-				
 				if( [r type] == t2DPoint && r.parentROI == nil)
 				{
 					float location[ 3];

@@ -199,7 +199,7 @@ OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, char *out
 	{
 		#ifndef OSIRIX_LIGHT
 		DcmDataset *dataset = fileformat.getDataset();
-		DcmItem *metaInfo = fileformat.getMetaInfo();
+//		DcmItem *metaInfo = fileformat.getMetaInfo();
 		
 		DcmRepresentationParameter *params = nil;
 		DJ_RPLossy lossyParams( 90);

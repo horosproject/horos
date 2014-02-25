@@ -50,11 +50,9 @@
 NSString* soundex4( NSString *inString)
 {
 	char *p, *p1;
-	char *outstr;
 	int i;
 	char workbuf[WBUFSIZE + 1];
 	char priorletter;
-	int N;
 	
 	if( inString == nil) return nil;
 	

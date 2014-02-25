@@ -812,7 +812,7 @@ static float deg2rad = M_PI / 180.0;
 		float x, y, z;
 		Camera *cam = sender.camera;
 		Point3D *position = cam.position;
-		Point3D *viewUp = cam.viewUp;
+//		Point3D *viewUp = cam.viewUp;
 		float halfthickness = sender.vrView.clippingRangeThickness / 2.;
 		float cos[ 9];
 		[sender.pix orientation: cos];
@@ -956,7 +956,7 @@ static float deg2rad = M_PI / 180.0;
 		
 		if( sender == mprView2)
 		{
-			float o[ 9], orientation[ 9], sc[ 2];
+			float o[ 9], orientation[ 9];
 			[sender.pix orientation: o];
 			
 			[mprView1.pix orientation: orientation];
@@ -968,7 +968,7 @@ static float deg2rad = M_PI / 180.0;
 		
 		if( sender == mprView3)
 		{
-			float o[ 9], orientation[ 9], sc[ 2];
+			float o[ 9], orientation[ 9];
 			[sender.pix orientation: o];
 			
 			[mprView1.pix orientation: orientation];
@@ -2379,8 +2379,6 @@ static float deg2rad = M_PI / 180.0;
 
 - (void)setExportTransverseSliceInterval:(CGFloat)newExportSliceInterval
 {
-    BOOL isSame;
-    
     if (exportTransverseSliceInterval != newExportSliceInterval)
 	{
 		[self willChangeValueForKey:@"exportSequenceNumberOfFrames"];
@@ -2513,7 +2511,6 @@ static float deg2rad = M_PI / 180.0;
     CPRUnsignedInt16ImageRep *imageRep;
     unsigned char *dataPtr;
     DICOMExport *dicomExport;
-    NSMutableArray *producedFiles;
     CGFloat angle;
     
 	[dcmWindow makeFirstResponder: nil];	// To force nstextfield validation.
@@ -4609,7 +4606,7 @@ static float deg2rad = M_PI / 180.0;
     float cost;
     assert(index >= 0);
     assert(index < [[curvedPath nodes] count]);
-    NSUInteger n = [[curvedPath nodes] count];
+//    NSUInteger n = [[curvedPath nodes] count];
     if (index == 0 || index == [[curvedPath nodes] count] - 1)
     {
         cost = MAXFLOAT;

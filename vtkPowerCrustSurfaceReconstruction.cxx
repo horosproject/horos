@@ -1399,9 +1399,9 @@ void adapted_main()
     short    bad = 0 /* for -B */ ;
     int /* TJH option, */num_poles=0;
     double  pole_angle;
-    char    ofile[50] = "",
-        ifile[50] = "",
-        ofilepre[50] = "";
+//    char    ofile[50] = "",
+//        ifile[50] = "",
+//        ofilepre[50] = "";
 
     /* TJH: we've bypassed all the file handling so we don't need this bit
     FILE *INPOLE, *OUTPOLE,*HEAD,*POLEINFO;*/
@@ -11598,13 +11598,13 @@ srand48(long seed)
 void vtkPowerCrustSurfaceReconstruction::Execute()
 {
   vtkDataSet *input= this->GetInput();
-  vtkIdType numPts=input->GetNumberOfPoints();
+//  vtkIdType numPts=input->GetNumberOfPoints();
 
   vtkPolyData *output = this->GetOutput();
 
   // ghost cell stuff
-  unsigned char  updateLevel = (unsigned char)(output->GetUpdateGhostLevel());
-  unsigned char  *cellGhostLevels = NULL;
+//  unsigned char  updateLevel = (unsigned char)(output->GetUpdateGhostLevel());
+//  unsigned char  *cellGhostLevels = NULL;
 
 
   // make sure output is initialized

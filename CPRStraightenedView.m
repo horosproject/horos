@@ -30,8 +30,6 @@
 #import "NSColor+N2.h"
 #import <objc/runtime.h>
 
-static float deg2rad = M_PI / 180.0f; 
-
 extern BOOL frameZoomed;
 extern int splitPosition[ 3];
 
@@ -247,8 +245,6 @@ extern int splitPosition[ 3];
 - (id)valueForKey:(NSString *)key
 {
     NSString *planeFullName; // full plane name may include Top or Bottom before the plane name
-    NSArray *planeRuns;
-    NSArray *vertialLines;
     
     if ([key hasSuffix:@"VerticalLines"]) {
         planeFullName = [key substringToIndex:[key length] - 13];
@@ -397,7 +393,6 @@ extern int splitPosition[ 3];
     N3Vector lineStart;
     N3Vector lineEnd;
     N3Vector cursorVector;
-	N3Vector planePointVector;
     N3AffineTransform pixToSubDrawRectTransform;
     CGFloat relativePosition;
     CGFloat draggedPosition;
@@ -407,11 +402,7 @@ extern int splitPosition[ 3];
     CGFloat pixelsPerMm;
 	NSColor *planeColor;
     NSInteger i;
-	NSArray *planeRuns;
-	NSArray *verticalLines;
-	NSNumber *indexNumber;
 	NSString *planeName;
-	_CPRStraightenedViewPlaneRun *planeRun;
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     if( cgl_ctx == nil)
         return;
@@ -763,7 +754,6 @@ extern int splitPosition[ 3];
 	if( view == self)
 	{
 		NSPoint viewPoint;
-		NSPoint planePoint;
 		N3Vector pixVector;
 		N3Line line;
 		NSInteger i;
@@ -772,9 +762,6 @@ extern int splitPosition[ 3];
 		CGFloat relativePosition;
         CGFloat distance;
         CGFloat minDistance;
-		BOOL didChangeHover;
-		NSString *planeName;
-		N3Vector vector;
 		
 		viewPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 		
@@ -1635,7 +1622,6 @@ extern int splitPosition[ 3];
 	N3Vector pixVector;
 	N3Vector lineStart;
 	N3Vector lineEnd;
-	CGFloat height;
 	CGFloat relativePosition;
 	CGFloat distance;
 	CGFloat minDistance;

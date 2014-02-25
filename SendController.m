@@ -461,7 +461,6 @@ static volatile int sendControllerObjects = 0;
             for( DicomImage *image in objectsToSend)
             {
                 NSString *patientUID = [image valueForKeyPath:@"series.study.patientUID"];
-                BOOL newPatient = NO;
                 
                 if( [previousPatientUID compare: patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
                     [samePatientArray addObject: image];

@@ -917,17 +917,11 @@ extern int splitPosition[ 3];
 	if( view == self)
 	{
 		NSPoint viewPoint;
-		NSPoint planePoint;
 		N3Vector pixVector;
-		N3Line line;
 		NSInteger i;
 		BOOL overNode;
 		NSInteger hoverNodeIndex;
 		CGFloat relativePosition;
-        CGFloat distance;
-        CGFloat minDistance;
-		BOOL didChangeHover;
-		NSString *planeName;
 		N3Vector vector;
         CGFloat distanceFromCenterline;
 		
@@ -1542,7 +1536,6 @@ extern int splitPosition[ 3];
     N3BezierCoreRef projectedBezierCore;
     CGFloat projectedBezierLength;
     CGFloat sampleSpacing;
-    CGFloat pixelsPerMm;
     N3VectorArray vectors;
     CGFloat *relativePositions;
     N3MutableBezierPath *centerlinePath;
@@ -2404,7 +2397,6 @@ extern int splitPosition[ 3];
 
 - (CGFloat)_relativePositionForPixPoint:(NSPoint)pixPoint
 {
-    CGFloat pixelsPerMm;
     N3Line pixLine;
     N3Vector closestVector;
     
@@ -2456,7 +2448,6 @@ extern int splitPosition[ 3];
     N3Vector tangent;
     N3Vector normal;
     N3Vector newNode;
-    CPRCurvedPathControlToken controlToken;
     
     [self _sendWillEditCurvedPath];
     for (i = 0; i < [[_curvedPath nodes] count]; i++) {

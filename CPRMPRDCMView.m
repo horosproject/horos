@@ -1170,7 +1170,6 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 					
 					// Is this point in our plane?
 					
-					int		ii = -1;
 					float	vectors[ 9], orig[ 3], locationTemp[ 3];
 					float	distance = 999999;
 					
@@ -1867,8 +1866,6 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 			
 			for( ROI *r in curRoiList)
 			{
-				int mode;
-				
 				if( [r type] == t2DPoint && r.parentROI == nil)
 				{
 					float location[ 3];
@@ -2388,13 +2385,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     N3BezierPath *flattenedNotTransformedBezierPath;
     N3MutableBezierPath *outlinePath;
     N3Vector vector;
-    N3Vector control1;
-    N3Vector control2;
-    N3Vector prevVector;
-    N3Vector middleVector;
     N3Vector cursorVector;
-    CGFloat spacing;
-    CGFloat x;
     NSInteger i;
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     if( cgl_ctx == nil)

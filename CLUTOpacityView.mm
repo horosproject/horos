@@ -1262,7 +1262,7 @@ NSRect rect = drawingRect;
 			if( (int) controlPoint.x == (int) selectedPoint.x && (float) controlPoint.y == (float) selectedPoint.y)
 			{			
 				NSPoint newPointInView = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-				NSPoint newPoint = [transformView2Coordinate transformPoint:newPointInView];
+//				NSPoint newPoint = [transformView2Coordinate transformPoint:newPointInView];
 								
 				float shiftX = [theEvent deltaX];
 				float shiftY = [theEvent deltaY];

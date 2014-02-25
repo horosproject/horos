@@ -304,8 +304,7 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
 			from = [entireSeriesTo intValue]-1;
 		}
 		
-		int i, count = 0;
-		for( i = from; i < to; i += [entireSeriesInterval intValue])
+		for( int i = from; i < to; i += [entireSeriesInterval intValue])
 		{
 			no_of_images++;
 		}

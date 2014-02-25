@@ -140,7 +140,7 @@
             [self.rightTextSecondLine drawInRect:frame withAttributes:attributes];
             frame.origin.y -= 1;
             
-            CGFloat w = [self.rightTextSecondLine sizeWithAttributes:attributes].width;
+//            CGFloat w = [self.rightTextSecondLine sizeWithAttributes:attributes].width;
         }
         
         frame.origin.x += 110;
@@ -156,7 +156,7 @@
             [self.rightTextFirstLine drawInRect:frame withAttributes:attributes];
             frame.origin.y -= 1;
             
-            CGFloat w = [self.rightTextFirstLine sizeWithAttributes:attributes].width;
+//            CGFloat w = [self.rightTextFirstLine sizeWithAttributes:attributes].width;
         }
     }
     else

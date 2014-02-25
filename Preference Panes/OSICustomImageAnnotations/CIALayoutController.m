@@ -1071,14 +1071,12 @@
 
 - (BOOL)checkAnnotationsContent;
 {
-	int i, a;
-	
 	BOOL check = YES;
 	
 	CIAAnnotation *unfinishedAnnotation;
 	
 	NSArray *content;
-	for (a=0; a<[annotationsArray count]; a++)
+	for (int a=0; a<[annotationsArray count]; a++)
 	{
 		CIAAnnotation *annotation = [annotationsArray objectAtIndex:a];
 		content = [annotation content];

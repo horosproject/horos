@@ -111,7 +111,6 @@
 - (OSIROIMask *)ROIMaskForFloatVolumeData:(OSIFloatVolumeData *)floatVolume// BS Implementation, need to make this work everywhere!
 {
 	N3MutableBezierPath *volumeBezierPath;
-	N3BezierPathElement segmentType;
 	N3Vector endpoint;
 	NSArray	*intersections;
 	NSMutableArray *intersectionNumbers;
@@ -124,7 +123,6 @@
 	CGFloat maxZ;
 	BOOL zSet;
 	NSValue *vectorValue;
-	NSNumber *number;
 	NSInteger i;
 	NSInteger j;
 	NSInteger runStart;
@@ -227,7 +225,6 @@
 {
 	double dicomToPixGLTransform[16];
 	NSInteger i;
-    NSValue *endpointValue;
 	N3Vector endpoint;
     N3BezierPath *flattenedPath;
     NSColor *deviceStrokeColor = [self.strokeColor colorUsingColorSpaceName:NSDeviceRGBColorSpace];

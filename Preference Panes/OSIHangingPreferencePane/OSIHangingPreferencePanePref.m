@@ -226,7 +226,6 @@
         
         // Windows/Image/WLWW menus
         NSMenu *tilingMenu = [[AppController sharedAppController] imageTilingMenu];
-        NSMenu *wlwwMenu = [[AppController sharedAppController] wlwwMenu];
         
         [windowsTilingPopup removeAllItems];
         [imageTilingPopup removeAllItems];

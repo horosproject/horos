@@ -145,9 +145,6 @@ static NSMenu *contextual = nil;
 static NSMenu *contextualRT = nil;  // Alternate menus for RT objects (which often don't have images)
 static int DicomDirScanDepth = 0;
 static int DefaultFolderSizeForDB = 0;
-static NSTimeInterval lastHardDiskCheck = 0;
-static unsigned long long lastFreeSpace = 0;
-static NSTimeInterval lastFreeSpaceLogTime = 0;
 static NSString *smartAlbumDistantArraySync = @"smartAlbumDistantArraySync";
 
 extern int delayedTileWindows;
@@ -4787,7 +4784,6 @@ static NSConditionLock *threadLock = nil;
                 
                 if( [seriesArray count])
                 {
-                    NSManagedObject	*series = [seriesArray objectAtIndex: 0];
                     BOOL success = NO;
                     
                     if( comparativeStudyWaitedToSelect)
@@ -5265,8 +5261,6 @@ static NSConditionLock *threadLock = nil;
 	
 	if( result == NSAlertDefaultReturn || result == NSAlertAlternateReturn)
 	{
-		NSManagedObjectContext	*context = self.database.managedObjectContext;
-		
 		NSIndexSet *selectedRows = [databaseOutline selectedRowIndexes];
 		
         if( result == NSAlertDefaultReturn)
@@ -5318,7 +5312,7 @@ static NSConditionLock *threadLock = nil;
                             
                             if( originalPatientName)
                             {
-                                NSString *logLine = [NSString stringWithFormat: @"---- Patient Unify: %@ %@ -> %@ %@", study.name, study.patientID, destStudy.name, destStudy.patientID, nil];
+//                                NSString *logLine = [NSString stringWithFormat: @"---- Patient Unify: %@ %@ -> %@ %@", study.name, study.patientID, destStudy.name, destStudy.patientID, nil];
                                 
                                 [params addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", @"(0010,0020)", destStudy.patientID], @"-i", [NSString stringWithFormat: @"%@=%@", @"(0010,0010)", originalPatientName], @"-i", [NSString stringWithFormat: @"%@=%@", @"(0010,0030)", originalBirthDate], nil]];
                                 [params addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", @"(0010,1000)", existingOtherPatientIDs], @"-i", [NSString stringWithFormat: @"%@=%@", @"(0010,1001)", existingOtherPatientNames], nil]];
@@ -5489,7 +5483,7 @@ static NSConditionLock *threadLock = nil;
                             
                             if( originalPatientName)
                             {
-                                NSString *logLine = [NSString stringWithFormat: @"---- Study Unify: %@ %@ -> %@ %@", study.name, study.patientID, destStudy.name, destStudy.patientID, nil];
+//                                NSString *logLine = [NSString stringWithFormat: @"---- Study Unify: %@ %@ -> %@ %@", study.name, study.patientID, destStudy.name, destStudy.patientID, nil];
                                 
                                 if( [destStudy.patientID isEqualToString: study.patientID] == NO || [destStudy.name isEqualToString: study.name] == NO)
                                 {
@@ -7652,8 +7646,6 @@ static NSConditionLock *threadLock = nil;
                     {
                         for( int i = 0 ; i < [viewersToLoad count]; i++)
                         {
-                            NSDictionary *dict = [viewersToLoad objectAtIndex: i];
-                            
                             if( i < [displayedViewers count])
                             {
                                 ViewerController *v = [displayedViewers objectAtIndex: i];
@@ -8465,7 +8457,6 @@ static NSConditionLock *threadLock = nil;
     if( [[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSControlKeyMask)
         movie4D = YES;
     
-    BOOL reparsed = NO;
     if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
     {
         openReparsedSeriesFlag = YES;
@@ -8486,7 +8477,6 @@ static NSConditionLock *threadLock = nil;
 	else rowIndex = [NSIndexSet indexSetWithIndexesInRange: NSMakeRange( 0, [databaseOutline numberOfRows])];
 	
 	NSMutableString	*string = [NSMutableString string];
-	NSNumber *row;
 	NSArray	*columns = [[databaseOutline tableColumns] valueForKey:@"identifier"];
 	NSArray	*descriptions = [[databaseOutline tableColumns] valueForKey:@"headerCell"];
 	int r;
@@ -9768,8 +9758,6 @@ static BOOL withReset = NO;
         if( [NSThread isMainThread] == NO)
             idatabase = [idatabase independentDatabase]; // INDEPENDANT CONTEXT !
         
-        NSArray* objs = [idatabase objectsWithIDs:objectIDs];
-        
         NSMutableArray *tempPreviewPixThumbnails = nil;
         NSMutableArray *tempPreviewPix = nil;
         
@@ -10902,8 +10890,6 @@ static BOOL withReset = NO;
     }
 }
 
-static BOOL needToRezoom;
-
 - (IBAction) albumTableDoublePressed: (id)sender
 {
 	if( albumTable.selectedRow > 0 && [_database isLocal])
@@ -11409,7 +11395,6 @@ static BOOL needToRezoom;
 - (void) comparativeRetrieve:(DCMTKStudyQueryNode*) study
 {
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
-    BOOL retrieve = NO;
     
     if( comparativeRetrieveQueue == nil)
         comparativeRetrieveQueue = [[NSMutableArray alloc] init];
@@ -15678,7 +15663,6 @@ static volatile int numberOfThreadsForJPEG = 0;
                 [writer addInput:writerInput];
                 [writer startWriting];
                 
-                BOOL aborted = NO;
                 CMTime nextPresentationTimeStamp;
                 
                 nextPresentationTimeStamp = kCMTimeZero;
@@ -17379,9 +17363,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 #ifndef OSIRIX_LIGHT
 - (void) exportROIAndKeyImagesAsDICOMSeries: (id) sender
 {
-    NSMutableArray *dicomFiles2Export = [NSMutableArray array];
-    NSMutableArray *filesToExport;
-    
     WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Generating the DICOM files...", nil)];
     [wait showWindow: self];
     

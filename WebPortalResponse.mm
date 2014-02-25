@@ -566,7 +566,7 @@ static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
 		return [NSNumber numberWithBool: wpc.portal.weasisEnabled]; 
 	if ([key isEqualToString:@"WADOBaseURL"])
 	{
-		NSString *protocol = [[NSUserDefaults standardUserDefaults] boolForKey:@"encryptedWebServer"] ? @"https" : @"http";
+//		NSString *protocol = [[NSUserDefaults standardUserDefaults] boolForKey:@"encryptedWebServer"] ? @"https" : @"http";
 		NSString *wadoSubUrl = @"wado"; // See Web Server Preferences
 		
 		if( [wadoSubUrl hasPrefix: @"/"])

@@ -67,9 +67,9 @@
 
 static NSMutableArray *pluginWithHTTPResponses = nil;
 
-static NSString* NotNil(NSString *s) {
-	return s? s : @"";
-}
+//static NSString* NotNil(NSString *s) {
+//	return s? s : @"";
+//}
 
 @interface HTTPConnection (Private) // make compiler aware of these hidden methods' existance
 

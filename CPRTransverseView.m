@@ -469,8 +469,6 @@ extern int splitPosition[ 3];
 
 - (void)subDrawRect:(NSRect)rect
 {
-    N3Vector lineStart;
-    N3Vector lineEnd;
     N3Vector cursorVector;
     N3AffineTransform pixToSubDrawRectTransform;
     CGFloat pixelsPerMm;

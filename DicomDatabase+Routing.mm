@@ -415,7 +415,7 @@
 								
 								for( id s in studiesArray)
 								{
-									NSString *key = [NSString stringWithFormat:@"%@ -> %@", [s valueForKey: @"studyInstanceUID"], [routingRule objectForKey:@"server"]];
+									//NSString *key = [NSString stringWithFormat:@"%@ -> %@", [s valueForKey: @"studyInstanceUID"], [routingRule objectForKey:@"server"]];
 									//									NSDate *when = [autoroutingPreviousStudies objectForKey: key];
 									
 									BOOL found = YES;

@@ -161,7 +161,7 @@
 
 - (BOOL) mouseOnFocal:(NSEvent *)theEvent
 {
-	NSPoint		mouseLocStart, mouseLoc;
+	NSPoint		mouseLocStart;
 	
 	mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: self];
 	mouseLocStart = [[[theEvent window] contentView] convertPoint:mouseLocStart toView:self];

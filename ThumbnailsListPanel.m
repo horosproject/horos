@@ -22,8 +22,6 @@
 #import "NavigatorWindowController.h"
 
 static 	NSMutableDictionary *associatedScreen = nil;
-static int increment = 0;
-static int MacOSVersion109orHigher = -1;
 
 @implementation ThumbnailsListPanel
 

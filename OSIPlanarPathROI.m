@@ -292,7 +292,6 @@
 {
 	double dicomToPixGLTransform[16];
 	NSInteger i;
-    NSValue *endpointValue;
 	N3Vector endpoint;
     N3BezierPath *flattenedPath;
 	

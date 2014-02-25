@@ -177,8 +177,6 @@ public:
 	
 	virtual void Execute(vtkObject *caller, unsigned long, void*)
     {
-		double a[ 6];
-		
 		vtkBoxWidget *widget = reinterpret_cast<vtkBoxWidget*>(caller);
 		
 		vtkVolume *volume = (vtkVolume*) widget->GetProp3D();
@@ -196,7 +194,7 @@ public:
         }
         
         planes->Delete();
-        
+//      double a[ 6];
 //		[VRView getCroppingBox: a :volume :widget];
 //		[VRView setCroppingBox: a :volume];
 //		
@@ -455,8 +453,7 @@ public:
 		Transform->Push();
 		Transform->Inverse();
 		
-		double min[3], max[3];
-		double pointA[3], pointB[3];
+		double min[3], max[3], pointA[3];
         
         for( int i = 0 ; i < 8; i++)
         {
@@ -1272,7 +1269,6 @@ public:
 	NSString *f = nil;
 	int offset = 0;
 	BOOL isSigned = NO;
-	BOOL full = fullDepth;
 	
 	if( exportDCM == nil)
 	{
@@ -1285,8 +1281,6 @@ public:
 	unsigned char *dataPtr = [self getRawPixels:&width :&height :&spp :&bpp :YES : !fullDepth offset: &offset isSigned: &isSigned];
 	
 	[self endRenderImageWithBestQuality];
-	
-	NSMutableArray *producedFiles = [NSMutableArray array];
 	
 	if( dataPtr)
 	{
@@ -1398,9 +1392,6 @@ public:
 		// 4th dimension
 		else if( [[dcmExportMode selectedCell] tag] == 2)
 		{
-			float			o[ 9];
-			long			i;
-			
 			Wait *progress = [[Wait alloc] initWithString:NSLocalizedString(@"Creating a DICOM series", nil)];
 			[progress showWindow:self];
 			[[progress progress] setMaxValue: [[[self window] windowController] movieFrames]];
@@ -1409,7 +1400,7 @@ public:
 			exportDCM = [[DICOMExport alloc] init];
 			[exportDCM setSeriesNumber:5250 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];
 			
-			for( i = 0; i < [[[self window] windowController] movieFrames]; i++)
+			for( int i = 0; i < [[[self window] windowController] movieFrames]; i++)
 			{
 				[[[self window] windowController] setMovieFrame: i];
 				
@@ -1430,9 +1421,6 @@ public:
 		}
 		else // A 3D sequence
 		{
-			long			i;
-			float			o[ 9];
-			
 			if( [[[self window] windowController] movieFrames] > 1)
 			{
 				numberOfFrames /= [[[self window] windowController] movieFrames];
@@ -1456,7 +1444,7 @@ public:
 			if( textX)
 				aRenderer->RemoveActor(textX);
 			
-			for( i = 0; i < numberOfFrames; i++)
+			for( int i = 0; i < numberOfFrames; i++)
 			{
 				if( [[[self window] windowController] movieFrames] > 1)
 				{	
@@ -1679,7 +1667,6 @@ public:
 	
 	if( aCamera == nil) return;
 	
-	BOOL wasClipRangeActivated = clipRangeActivated;
 	int wasMode = mode;
 	
 	switch( mode)
@@ -2508,7 +2495,6 @@ public:
         y1 = static_cast<int> ( viewport[1] * static_cast<double>(renWinSize[1]) + static_cast<double>(imageOrigin[1]) * sampleDistance);
 
         int zbufferSize[2];
-        int zbufferOrigin[2];
 
         // compute z buffer size
         zbufferSize[0] = static_cast<int>( static_cast<double>(imageInUseSize[0]) * sampleDistance);
@@ -2713,7 +2699,7 @@ public:
                 
                 [self renderImageWithBestQuality: NO waitDialog: NO display: YES];
                 
-                long width, height, spp, bpp;
+                long width, height;
                 BOOL rgb;
                 
                 float *pixels = [self imageInFullDepthWidth: &width height: &height isRGB: &rgb];
@@ -3183,7 +3169,6 @@ public:
                 dontRenderVolumeRenderingOsiriX = 1;
                 
 				double	*pp;
-				long	i;
 				
                 // Click point 3D to 2D
                 
@@ -4620,7 +4605,7 @@ public:
     
     if( [VRView getCroppingBox: a :volume :croppingBox])
     {
-        int width = [firstObject pwidth], height = [firstObject pheight], depth = [pixList count], slice = width * height;
+        int width = [firstObject pwidth], height = [firstObject pheight], depth = [pixList count];
         
 		for( int x = 0 ; x < 6; x++)
 			a[ x] /= superSampling;
@@ -7133,7 +7118,6 @@ public:
                 if( destFixedPtr)
                 {
                     unsigned short *iptr = im + 3 + 4*(*h-1)*fullSize[0];
-                    vImage_Buffer src, dst;
                     
                     int j = *h, rowBytes = 4*fullSize[0];
                     while( j-- > 0)

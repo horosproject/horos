@@ -108,8 +108,6 @@ END_EXTERN_C
 DcmQueryRetrieveSCP *scp = nil;
 DcmQueryRetrieveSCP *scptls = nil;
 
-static int inc = 0;
-
 OFCondition mainStoreSCP(T_ASC_Association * assoc, T_DIMSE_C_StoreRQ * request, T_ASC_PresentationContextID presId, DcmQueryRetrieveDatabaseHandle *dbHandle)
 {
 	OFBool isTLS = assoc->params->DULparams.useSecureLayer;

@@ -2136,8 +2136,6 @@ return YES;
     if([viewer syncSeriesState] != SyncSeriesStateEnable)
         return;
 
-    NSNotification *posChangeNotification =nil;
-    
     DicomStudy *currentStudy = [viewer currentStudy];
     
     NSDictionary *userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:

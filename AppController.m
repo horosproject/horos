@@ -2097,8 +2097,6 @@ static NSDate *lastWarningDate = nil;
 -(void) UpdateCLUTMenu: (NSNotification*) note
 {
     //*** Build the menu
-    NSMenu      *mainMenu;
-    NSMenu      *viewerMenu;
     short       i;
     NSArray     *keys;
     NSArray     *sortedKeys;
@@ -4999,8 +4997,6 @@ static BOOL initialized = NO;
     {
         DicomDatabase *db = [[BrowserController currentBrowser] database];
         
-        NSMenu *menu = [[item parentItem] submenu];
-        
         for( NSMenuItem *item in recentStudiesMenu.itemArray)
         {
             DicomStudy *study = [db objectWithID: item.representedObject];
@@ -5161,9 +5157,6 @@ static BOOL initialized = NO;
 		if( [[[cWindows objectAtIndex: i] window] isVisible] == NO) [cWindows removeObjectAtIndex: i];
 	}
 	
-    //Retain windows
-    NSArray *windows = [cWindows valueForKey: @"window"];
-    
 	NSMutableArray* screens = [[[self viewerScreens] mutableCopy] autorelease];
     
     if (viewersList.count < screens.count && [[NSUserDefaults standardUserDefaults] boolForKey: @"UseDBScreenAtLast"])
@@ -5520,8 +5513,6 @@ static BOOL initialized = NO;
                         
                         if( landscape) ratioValue = landscapeRatio;
                         else ratioValue = portraitRatio;
-                        
-                        float viewerCountPerScreen = (float) viewersForThisScreen.count;
                         
                         BOOL fixedRows = NO, fixedColumns = NO;
                         

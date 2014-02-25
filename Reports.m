@@ -27,35 +27,35 @@
 
 // This converts an AEDesc into a corresponding NSValue.
 
-static id aedesc_to_id(AEDesc *desc)
-{
-	OSErr ok;
-
-	if (desc->descriptorType == typeChar)
-	{
-		NSMutableData *outBytes;
-		NSString *txt;
-
-		outBytes = [[NSMutableData alloc] initWithLength:AEGetDescDataSize(desc)];
-		ok = AEGetDescData(desc, [outBytes mutableBytes], [outBytes length]);
-		CHECK;
-
-		txt = [[NSString alloc] initWithData:outBytes encoding: NSUTF8StringEncoding];
-		[outBytes release];
-		[txt autorelease];
-
-		return txt;
-	}
-
-	if (desc->descriptorType == typeSInt16)
-	{
-		SInt16 buf;
-		AEGetDescData(desc, &buf, sizeof(buf));
-		return [NSNumber numberWithShort:buf];
-	}
-
-	return [NSString stringWithFormat:@"[unconverted AEDesc, type=\"%c%c%c%c\"]", ((char *)&(desc->descriptorType))[0], ((char *)&(desc->descriptorType))[1], ((char *)&(desc->descriptorType))[2], ((char *)&(desc->descriptorType))[3]];
-}
+//static id aedesc_to_id(AEDesc *desc)
+//{
+//	OSErr ok;
+//
+//	if (desc->descriptorType == typeChar)
+//	{
+//		NSMutableData *outBytes;
+//		NSString *txt;
+//
+//		outBytes = [[NSMutableData alloc] initWithLength:AEGetDescDataSize(desc)];
+//		ok = AEGetDescData(desc, [outBytes mutableBytes], [outBytes length]);
+//		CHECK;
+//
+//		txt = [[NSString alloc] initWithData:outBytes encoding: NSUTF8StringEncoding];
+//		[outBytes release];
+//		[txt autorelease];
+//
+//		return txt;
+//	}
+//
+//	if (desc->descriptorType == typeSInt16)
+//	{
+//		SInt16 buf;
+//		AEGetDescData(desc, &buf, sizeof(buf));
+//		return [NSNumber numberWithShort:buf];
+//	}
+//
+//	return [NSString stringWithFormat:@"[unconverted AEDesc, type=\"%c%c%c%c\"]", ((char *)&(desc->descriptorType))[0], ((char *)&(desc->descriptorType))[1], ((char *)&(desc->descriptorType))[2], ((char *)&(desc->descriptorType))[3]];
+//}
 
 @interface Reports ()
 
@@ -304,7 +304,6 @@ static id aedesc_to_id(AEDesc *desc)
 
 +(id)_runAppleScript:(NSString*)source withArguments:(NSArray*)args
 {
-    NSError* err = nil;
     NSDictionary* errs = nil;
     
     if (!source) [NSException raise:NSGenericException format:@"Couldn't read script source"];
@@ -760,7 +759,6 @@ static int Pages5orHigher = -1;
     {
         NSString *version = [[[NSBundle bundleWithPath: appPath] infoDictionary] objectForKey:@"DTXcode"];
         
-        NSString *path = nil;
         int number =  version.integerValue;
         if( number >= 500)
             Pages5orHigher = YES;

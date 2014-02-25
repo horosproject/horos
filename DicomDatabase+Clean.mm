@@ -135,8 +135,6 @@
         {
 			if ([self tryLock])
 				@try {
-					NSError				*error = nil;
-					NSFetchRequest		*request = [[[NSFetchRequest alloc] init] autorelease];
 					NSArray				*studiesArray;
 					NSDate				*now = [NSDate date];
 					NSDate				*producedDate = [now addTimeInterval: -[[defaults stringForKey:@"AUTOCLEANINGDATEPRODUCEDDAYS"] intValue]*60*60*24];
@@ -485,10 +483,9 @@ static BOOL _cleanForFreeSpaceLimitSoonReachedDisplayed = NO;
 		
         unsigned long long initialDelta = freeMemoryRequested - free;
         
-        NSMutableArray* studies = [NSMutableArray array];
         NSMutableArray* studiesDates = [NSMutableArray array];
         
-        BOOL dontDeleteStudiesIfInAlbum = [[NSUserDefaults standardUserDefaults] boolForKey:@"dontDeleteStudiesIfInAlbum"];
+//        BOOL dontDeleteStudiesIfInAlbum = [[NSUserDefaults standardUserDefaults] boolForKey:@"dontDeleteStudiesIfInAlbum"];
         BOOL flagDoNotDeleteIfComments = [[NSUserDefaults standardUserDefaults] boolForKey:@"dontDeleteStudiesWithComments"];
         NSInteger autocleanSpaceMode = [[[NSUserDefaults standardUserDefaults] objectForKey:@"AutocleanSpaceMode"] intValue];
         

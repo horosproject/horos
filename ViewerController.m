@@ -1295,8 +1295,6 @@ return YES;
         
         if( OK)
         {
-            double i = 0;
-            
             for( DCMPix *p in pixList)
             {
                 if( p != curPix)
@@ -4196,7 +4194,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 				
                 if( ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSShiftKeyMask) || [[BrowserController currentBrowser] isUsingExternalViewer: series] == NO)
                 {
-                    ViewerController *newViewer = [[BrowserController currentBrowser] loadSeries :series :self :YES keyImagesOnly: displayOnlyKeyImages];
+                    [[BrowserController currentBrowser] loadSeries :series :self :YES keyImagesOnly: displayOnlyKeyImages];
                     
                     [self showCurrentThumbnail:self];
                     [self updateNavigator];
@@ -4755,8 +4753,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 	{
         DicomDatabase *db = [[BrowserController currentBrowser] database];
         NSPredicate				*predicate;
-        NSFetchRequest			*dbRequest;
-        NSError					*error = nil;
         long					i, index = 0;
         NSManagedObject			*curImage = [fileList[0] objectAtIndex:0];
         NSPoint					origin = [[previewMatrix superview] bounds].origin;
@@ -6815,7 +6811,6 @@ return YES;
 //	}
 	
 	if ([[sender title] isEqualToString:@"Shutter"] == YES) [shutterOnOff setState: (![shutterOnOff state])]; //from menu
-	long i;
 	
 	DCMPix *curPix = [[imageView dcmPixList] objectAtIndex:[imageView curImage]];
 	
@@ -7921,7 +7916,6 @@ static int avoidReentryRefreshDatabase = 0;
 	if( curMovieIndex != 0)
 		[self setMovieIndex: 0];
 	
-    BOOL        reactivateManualSyncing = NO;
 	BOOL		sameSeries = NO;
 	long		i, previousColumns = [imageView columns], previousRows = [imageView rows];
 	int			previousFusion = [popFusion selectedTag], previousFusionActivated = [activatedFusion state];
@@ -8696,15 +8690,14 @@ static int avoidReentryRefreshDatabase = 0;
         
         NSThread *mainLoadingThread = [dict objectForKey: @"loadingThread"];
         NSArray *p = [dict objectForKey: @"pixList"];
-        NSArray *f = [dict objectForKey: @"fileList"];
+//        NSArray *f = [dict objectForKey: @"fileList"];
         NSConditionLock *subLoadingThread = [dict objectForKey: @"subLoadingThread"];
         int from = [[dict objectForKey: @"from"] intValue];
         int to = [[dict objectForKey: @"to"] intValue];
         int movieIndex = [[dict objectForKey: @"movieIndex"] intValue];
         int maxMovieIndex = [[dict objectForKey: @"maxMovieIndex"] intValue];
         
-        BOOL isLocal = [[[BrowserController currentBrowser] database] isLocal];
-        NSManagedObjectContext* db = nil;
+//        BOOL isLocal = [[[BrowserController currentBrowser] database] isLocal];
         
         for( int i = from; i < to; i++)
         {
@@ -11022,8 +11015,6 @@ static float oldsetww, oldsetwl;
 
 - (IBAction) applyConvolutionOnSource:(id) sender
 {
-	int x, i;
-	
 	if( [curConvMenu isEqualToString:NSLocalizedString(@"No Filter", nil)] == NO)
 	{
 		int mpprocessors = [[NSProcessInfo processInfo] processorCount];
@@ -11056,7 +11047,7 @@ static float oldsetww, oldsetwl;
 		if( [self isDataVolumicIn4D: YES])
 		{
             // Apply the convolution in the Z direction
-			for ( x = 0; x < maxMovieIndex; x++)
+			for ( int x = 0; x < maxMovieIndex; x++)
 			{
                 [convThread lockWhenCondition: 0];
                 [convThread unlockWithCondition: mpprocessors];
@@ -12118,7 +12109,6 @@ float				matrix[25];
 {
 	NSMutableArray *viewersCT = [ViewerController getDisplayed2DViewers];
 	NSMutableArray *viewersPET = [ViewerController getDisplayed2DViewers];
-	int		i, x;
 	BOOL	fused = NO;
 	
 	if( sender && blendingController)
@@ -12208,7 +12198,6 @@ float				matrix[25];
             }
             
             float orientA[9], orientB[9];
-            float result[3];
         
             BOOL proceed = NO;
             
@@ -12651,7 +12640,6 @@ float				matrix[25];
 
 - (void) loadROI:(long) mIndex
 {
-	BOOL isDir = YES;
 	int i, x;
 	DicomStudy *study = [[fileList[0] objectAtIndex:0] valueForKeyPath: @"series.study"];
 	NSArray *roisArray = [[[study roiSRSeries] valueForKey: @"images"] allObjects];
@@ -12769,7 +12757,6 @@ float				matrix[25];
 
 - (void) saveROI:(long) mIndex
 {
-	BOOL isDir = YES, toBeSaved = NO;
 	DicomStudy *study = [[fileList[ mIndex] objectAtIndex:0] valueForKeyPath: @"series.study"];
 	NSArray *roisArray = [[[study roiSRSeries] valueForKey: @"images"] allObjects];
 	
@@ -13518,7 +13505,7 @@ int i,j,l;
 
 - (void) deleteSeriesROIwithName: (NSString*) name
 {
-	long	x, i;
+	long i;
 	
 	[name retain];
 	
@@ -13759,7 +13746,7 @@ int i,j,l;
 
 - (IBAction) roiIntDeleteAllROIsWithSameName :(NSString*) name
 {
-	int x, i;
+	int i;
 	
 	[name retain];
 	
@@ -13805,9 +13792,9 @@ int i,j,l;
 
 - (int) roiIntDeleteGeneratedROIsForName:(NSString*) name
 {
-	int x, i, no = 0;
+	int no = 0;
 
-	for( i = 0; i < maxMovieIndex; i++)
+	for( int i = 0; i < maxMovieIndex; i++)
 		[self saveROI: i];
 		
 	[name retain];
@@ -13820,7 +13807,7 @@ int i,j,l;
 	{
         [x retain];
         
-		for( i = 0; i < [x count]; i++)
+		for( int i = 0; i < [x count]; i++)
 		{
 			ROI	*curROI = [x objectAtIndex: i];
 			if( [[curROI comments] isEqualToString: @"morphing generated"])
@@ -14415,19 +14402,17 @@ int i,j,l;
 
 - (IBAction) roiDeleteAll:(id) sender
 {
-	long i, x, y;
-	
 	[self addToUndoQueue: @"roi"];
 	
 	[imageView stopROIEditingForce: YES];
 	
-	for( y = 0; y < maxMovieIndex; y++)
+	for( int y = 0; y < maxMovieIndex; y++)
 	{
 		for( NSMutableArray *x in roiList[y])
 		{
             [x retain];
             
-			for( i = ((long)[x count])-1; i >= 0 ; i--)
+			for( int i = ((long)[x count])-1; i >= 0 ; i--)
 			{
 				ROI *curROI = [x objectAtIndex:i];
 				
@@ -15679,7 +15664,7 @@ int i,j,l;
 	   didEndSelector: nil
 		  contextInfo: nil];
 	
-	int result = [NSApp runModalForWindow: injectionTimeWindow];
+	[NSApp runModalForWindow: injectionTimeWindow];
 	[NSApp endSheet: injectionTimeWindow];
 	[injectionTimeWindow orderOut: self];
 	
@@ -15740,7 +15725,6 @@ int i,j,l;
 	long	y, x, i;
 	BOOL	updatewlww = NO;
 	double	updatefactor;
-	float	maxValueOfSeries = -100000, minValueOfSeries = 100000;
 	
 	if( [[imageView curDCM] isRGB]) return;
     if( [[[imageView curDCM] units] isEqualToString:@"CNTS"] && [[imageView curDCM] philipsFactor])
@@ -15876,8 +15860,6 @@ int i,j,l;
 			}
 			
 			[[NSUserDefaults standardUserDefaults] setInteger: [[suvConversion selectedCell] tag] forKey:@"SUVCONVERSION"];
-			
-			float maxValueOfSeries = -100000, minValueOfSeries = 100000;
 			
 			switch( [[suvConversion selectedCell] tag])
 			{
@@ -18502,8 +18484,6 @@ int i,j,l;
 	
 	if( allViewers)
 	{
-		unsigned char *tempData = nil;
-		
 		//order windows from left-top to right-bottom
 		NSMutableArray	*cWindows = [NSMutableArray arrayWithArray: viewers];
 		NSMutableArray	*cResult = [NSMutableArray array];
@@ -19383,7 +19363,7 @@ int i,j,l;
 	}
 	
 	int numberOfExportedImages = 0;
-	for( int i = 0, fileIndex = 1; i < [pixList[ curMovieIndex] count]; i++)
+	for( int i = 0; i < [pixList[ curMovieIndex] count]; i++)
 	{
 		BOOL export = YES;
 		int index;
@@ -20343,12 +20323,11 @@ int i,j,l;
 {
 	if( [note object] == pixList[ curMovieIndex])
 	{
-		float   iwl, iww;
-		long x, y;
+		float iwl, iww;
 		
 		[imageView getWLWW:&iwl :&iww];
 		
-		for( y = 0; y < maxMovieIndex; y++)
+		for( int y = 0; y < maxMovieIndex; y++)
 		{
 			for( DCMPix *p in pixList[ y])
 				[p changeWLWW:iwl :iww];	//recompute WLWW
@@ -20961,7 +20940,7 @@ int i,j,l;
 		
 	if (blendingController)
 	{
-        float orientA[9], orientB[9], result[3];
+        float orientA[9], orientB[9];
         
         [[[self imageView] curDCM] orientation:orientA];
 		[[[blendingController imageView] curDCM] orientation:orientB];

@@ -552,7 +552,6 @@ static float deg2rad = M_PI / 180.0f;
                         position[1] = newOrigin[1];
                         position[2] = newOrigin[2];
                         
-                        float newOrientation[ 3];
                         float o[ 9];
                         
                         o[0] = orientation[0];  o[1] = orientation[1];  o[2] = orientation[2];

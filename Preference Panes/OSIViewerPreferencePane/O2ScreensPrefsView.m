@@ -159,10 +159,7 @@
     if (![self isEnabled])
         return;
     
-	BOOL result = NO;
 	NSPoint currentPoint = [theEvent locationInWindow];
-	BOOL mouseIsUp = NO;
-	BOOL done = NO;
 //	BOOL trackContinously = [self startTrackingAt:currentPoint inView:controlView];
 	
     _O2ScreensPrefsViewScreenRecord* record = [self recordAtPoint:[self convertPoint:currentPoint fromView:nil]];

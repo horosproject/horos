@@ -276,7 +276,6 @@
 - (int) getLocalMaximaWith:(const int)step from:(vImagePixelCount)value;
 {
     int maxi = histoSize;
-    int epsilon = maxi >> 4;
     int xprev;
     
     do
@@ -290,8 +289,8 @@
 
 - (void) medianFilter:(vImage_Buffer *) buffer
 {
-    vImage_Buffer * imageFromHisto;
-    CIImage *bitmap/* = [[CIImage alloc] initWithCVImageBuffer:imageFromHisto]*/;
+//    vImage_Buffer * imageFromHisto;
+//    CIImage *bitmap/* = [[CIImage alloc] initWithCVImageBuffer:imageFromHisto]*/;
     CIFilter * medianFilter = [CIFilter filterWithName:@"CIMedianFilter"];
     [medianFilter setDefaults];
 }
@@ -336,7 +335,7 @@
 
 - (void) mmOpening:(vImage_Buffer *) buffer :(vImagePixelCount) x :(vImagePixelCount) y
 {
-    vImage_Buffer tmpResult, result;
+    vImage_Buffer tmpResult;
     tmpResult.width     = buffer->width;
     tmpResult.height    = buffer->height;
     tmpResult.rowBytes  = buffer->rowBytes;

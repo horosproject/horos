@@ -87,8 +87,6 @@
 	
     if( dcmPixList)
 	{
-        short inc;
-        
 		[[self controller] saveCrossPositions];
 		float change;
 		

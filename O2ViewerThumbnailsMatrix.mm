@@ -174,7 +174,6 @@ static NSString *dragType = @"Osirix Series Viewer Drag";
     NSEvent *lastMouse = event;
     NSDate *start = [NSDate date];
     NSCell *previousSelectedCell = nil;
-    BOOL drag = NO;
     
 #define DRAGTIMEOUT -2
     
@@ -188,7 +187,6 @@ static NSString *dragType = @"Osirix Series Viewer Drag";
             NSCell* cell = [self.cells objectAtIndex:row];
             
             NSRect cellFrame = [self cellFrameAtRow:row column:column];
-            int currentState = cell.state;
             int nextState = cell.nextState;
             
             [cell highlight:YES withFrame:cellFrame inView:self];

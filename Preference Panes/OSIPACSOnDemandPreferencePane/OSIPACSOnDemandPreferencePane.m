@@ -315,8 +315,6 @@ static NSMatrix *gDateMatrix = nil;
 
 - (void) mainViewDidLoad
 {
-	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    
     [smartAlbumsTable setDoubleAction: @selector(editSmartAlbumFilter:)];
     [smartAlbumsTable setTarget: self];
     

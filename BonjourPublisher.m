@@ -674,10 +674,10 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
     int size = [self _stackReadInt];
     
     [self _requireDataSize:size];
-    NSData* da = [self readData:size];
+//    NSData* da = [self readData:size];
     
-    NSDictionary* d = [NSPropertyListSerialization propertyListFromData:da mutabilityOption: NSPropertyListImmutable format: nil errorDescription: nil];
-    
+//    NSDictionary* d = [NSPropertyListSerialization propertyListFromData:da mutabilityOption: NSPropertyListImmutable format: nil errorDescription: nil];
+//
 //    if (d)
 //    {
 //        NSString *message = [d objectForKey:@"message"];

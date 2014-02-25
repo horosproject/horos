@@ -1263,7 +1263,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
     // cache a reference to the toolbar item or need to set up some initial state, this is the best place 
     // to do it.  The notification object is the toolbar to which the item is being added.  The item being 
     // added is found by referencing the @"item" key in the userInfo 
-    NSToolbarItem *item = [[notif userInfo] objectForKey: @"item"];
+//    NSToolbarItem *item = [[notif userInfo] objectForKey: @"item"];
 	
 //	if ([[item itemIdentifier] isEqualToString:TurnSplitViewToolbarItemIdentifier])
 //	{

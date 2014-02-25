@@ -563,7 +563,6 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
         
         if (context == DicomBrowserSourcesContext)
         {
-            NSHost* currentHost = [DefaultsOsiriX currentHost];
             NSArray* a = [[NSUserDefaults standardUserDefaults] objectForKey:@"SERVERS"];
             NSMutableDictionary* aa = [NSMutableDictionary dictionary];
             for (NSDictionary* ai in a)
@@ -907,7 +906,6 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 -(void)_analyzeVolumeAtPath:(NSString*)path
 {
-	BOOL used = NO;
 	for (DataNodeIdentifier* ibs in _browser.sources.arrangedObjects)
 		if ([ibs isKindOfClass:[LocalDatabaseNodeIdentifier class]] && [ibs.location hasPrefix:path])
         {
@@ -1133,7 +1131,6 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	for (NSString* xid in xids)
 		[items addObject:[_browser.database objectWithID:[NSManagedObject UidForXid:xid]]];
 	
-	NSString *filePath, *destPath;
 	NSMutableArray* dicomImages = [DicomImage dicomImagesInObjects:items];
 	[[NSMutableArray arrayWithArray:[dicomImages valueForKey:@"path"]] removeDuplicatedStringsInSyncWithThisArray:dicomImages]; // remove duplicated paths
 	

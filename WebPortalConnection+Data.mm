@@ -447,9 +447,9 @@ ss
         {
             if( PODFilter.count >= 1 && [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"ActivatePACSOnDemandForWebPortalSearch"])
             {
-                BOOL usePatientID = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientIDForUID"];
-                BOOL usePatientBirthDate = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientBirthDateForUID"];
-                BOOL usePatientName = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientNameForUID"];
+//                BOOL usePatientID = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientIDForUID"];
+//                BOOL usePatientBirthDate = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientBirthDateForUID"];
+//                BOOL usePatientName = [[NSUserDefaults standardUserDefaults] boolForKey: @"UsePatientNameForUID"];
                 
                 // Servers
                 NSArray *servers = [BrowserController comparativeServers];
@@ -909,7 +909,6 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                             [writer addInput:writerInput];
                             [writer startWriting];
                             
-                            BOOL aborted = NO;
                             CMTime nextPresentationTimeStamp;
                             
                             nextPresentationTimeStamp = kCMTimeZero;
@@ -1215,7 +1214,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		
 		if (selectedImages.count)
 		{
-			NSString *protocol = [[NSUserDefaults standardUserDefaults] boolForKey:@"encryptedWebServer"] ? @"https" : @"http";
+//			NSString *protocol = [[NSUserDefaults standardUserDefaults] boolForKey:@"encryptedWebServer"] ? @"https" : @"http";
 			NSString *wadoSubUrl = @"wado"; // See Web Server Preferences
 			
 			if( [wadoSubUrl hasPrefix: @"/"])
@@ -2386,7 +2385,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 						[self.response setMimeType: contentType];
 					
 					// Alessandro: I'm not sure here, from Joris' code it seems WADO must always return HTTP 200, eventually with length 0..
-					NSData *noData = self.response.data;
+//					NSData *noData = self.response.data;
                     self.response.statusCode = 0;
 				}
 			}
@@ -2612,7 +2611,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	
 	[self.portal updateLogEntryForStudy:study withMessage: @"View Report" forUser:user.name ip:asyncSocket.connectedHost];
 	
-	NSString *reportFilePath = study.reportURL;
+//	NSString *reportFilePath = study.reportURL;
 	
     NSString *tmpFile = [study saveReportAsPdfInTmp];
     

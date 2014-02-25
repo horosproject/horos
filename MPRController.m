@@ -691,7 +691,7 @@ static float deg2rad = M_PI/180.0;
 		float x, y, z;
 		Camera *cam = sender.camera;
 		Point3D *position = cam.position;
-		Point3D *viewUp = cam.viewUp;
+//		Point3D *viewUp = cam.viewUp;
 		float halfthickness = sender.vrView.clippingRangeThickness / 2.;
 		float cos[ 9];
 		[sender.pix orientation: cos];
@@ -835,7 +835,7 @@ static float deg2rad = M_PI/180.0;
 		
 		if( sender == mprView2)
 		{
-			float o[ 9], orientation[ 9], sc[ 2];
+			float o[ 9], orientation[ 9];
 			[sender.pix orientation: o];
 			
 			[mprView1.pix orientation: orientation];
@@ -847,7 +847,7 @@ static float deg2rad = M_PI/180.0;
 		
 		if( sender == mprView3)
 		{
-			float o[ 9], orientation[ 9], sc[ 2];
+			float o[ 9], orientation[ 9];
 			[sender.pix orientation: o];
 			
 			[mprView1.pix orientation: orientation];

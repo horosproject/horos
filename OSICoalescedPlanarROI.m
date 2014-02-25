@@ -142,7 +142,6 @@
 - (void)drawSlab:(OSISlab)slab inCGLContext:(CGLContextObj)cgl_ctx pixelFormat:(CGLPixelFormatObj)pixelFormat dicomToPixTransform:(N3AffineTransform)dicomToPixTransform
 {
     OSIROIMaskRun maskRun;
-    NSValue *maskRunValue;
     NSData *maskRunsData;
     N3Vector minCorner;
     NSInteger i;
@@ -264,7 +263,6 @@
 - (NSData *)_maskRunsDataForSlab:(OSISlab)slab dicomToPixTransform:(N3AffineTransform)dicomToPixTransform minCorner:(N3VectorPointer)minCornerPtr;
 {
     CPRVolumeData *floatVolumeData;
-    float *bytes;
     N3Vector corner;
     N3Vector minCorner;
     N3Vector maxCorner;
