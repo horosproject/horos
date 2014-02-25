@@ -5140,6 +5140,11 @@ static NSConditionLock *threadLock = nil;
     }
 }
 
+- (void) selectDatabaseOutline
+{
+    [[self window] makeFirstResponder: databaseOutline];
+}
+
 - (void) refreshMatrix:(id) sender
 {
 	[previousItem release];

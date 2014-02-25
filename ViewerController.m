@@ -3388,6 +3388,8 @@ static volatile int numberOfThreadsForRelisce = 0;
     
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"DontResetListPODComparativesIn2DViewer"] == NO)
         [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"listPODComparativesIn2DViewer"];
+    
+    [[BrowserController currentBrowser] selectDatabaseOutline];
 }
 
 - (void)applicationDidResignActive:(NSNotification *)aNotification

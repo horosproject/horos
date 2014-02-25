@@ -477,8 +477,9 @@ extern NSString* O2AlbumDragType;
 - (void)selectStudyWithObjectID:(NSManagedObjectID*)oid;
 - (BOOL) selectThisStudy: (id)study;
 
--(void) previewPerformAnimation:(id) sender;
--(void) matrixDisplayIcons:(id) sender;
+- (void) previewPerformAnimation:(id) sender;
+- (void) matrixDisplayIcons:(id) sender;
+- (void) selectDatabaseOutline;
 
 - (NSArray*) KeyImages: (id) sender;
 - (NSArray*) ROIImages: (id) sender;
