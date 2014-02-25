@@ -959,7 +959,6 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				// Try to identify a 2 digit number in the last part of the file.
 				char				strNo[ 5];
 				NSString			*tempString = [[filePath lastPathComponent] stringByDeletingPathExtension];
-				NSBitmapImageRep	*rep;
 				
 				#ifndef STATIC_DICOM_LIB
 				#ifndef OSIRIX_LIGHT
@@ -2657,7 +2656,6 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                     float		orientation[ 9];
                     float		origin[ 3];
                     float		location = 0;
-                    UValue_T    *tmp;
                     
                     origin[0] = origin[1] = origin[2] = 0;
                     

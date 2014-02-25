@@ -182,7 +182,6 @@
 - (OSIROIMask *)ROIMaskForFloatVolumeData:(OSIFloatVolumeData *)floatVolume
 {
 	N3MutableBezierPath *volumeBezierPath;
-	N3BezierPathElement segmentType;
 	N3Vector endpoint;
 	NSArray	*intersections;
 	NSMutableArray *intersectionNumbers;
@@ -193,7 +192,6 @@
 	CGFloat z;
 	BOOL zSet;
 	NSValue *vectorValue;
-	NSNumber *number;
 	NSInteger i;
 	NSInteger j;
 	NSInteger runStart;

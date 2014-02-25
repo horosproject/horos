@@ -281,7 +281,7 @@
                     
                     if( writeVolumePath == nil)
                     {
-                        NSInteger result = NSRunCriticalAlertPanel( NSLocalizedString( @"USB Writing", nil), NSLocalizedString( @"No destination selected.", nil), NSLocalizedString( @"OK", nil), nil, nil);
+                        NSRunCriticalAlertPanel( NSLocalizedString( @"USB Writing", nil), NSLocalizedString( @"No destination selected.", nil), NSLocalizedString( @"OK", nil), nil, nil);
                         
                         self.buttonsDisabled = NO;
                         runBurnAnimation = NO;
@@ -497,7 +497,7 @@
     
     for( NSString *mediaPath in removeableMedia)
     {
-        BOOL		isWritable, isUnmountable, isRemovable, hasDICOMDIR = NO;
+        BOOL		isWritable, isUnmountable, isRemovable;
         NSString	*description = nil, *type = nil;
         
         [[NSWorkspace sharedWorkspace] getFileSystemInfoForPath: mediaPath isRemovable:&isRemovable isWritable:&isWritable isUnmountable:&isUnmountable description:&description type:&type];

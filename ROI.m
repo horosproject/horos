@@ -451,9 +451,9 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
     float x = segA.x + u * p2.x;
     float y = segA.y + u * p2.y;
     
-    float dx = x - p.x;
-    float dy = y - p.y;
-    
+//    float dx = x - p.x;
+//    float dy = y - p.y;
+//
 //    float length = sqrtf(dx*dx + dy*dy);
     
     return NSMakePoint( x, y);
@@ -2617,7 +2617,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 {
 	if( locked) return;
     
-    float new_x, new_y, intYCenter, intXCenter;
+    float new_x, new_y;
 	NSMutableArray	*pts = self.points;
 	
 	if( type == tROI)
@@ -4380,8 +4380,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                             
                             int newWidth = textureWidth + 2*margin;
                             int newHeight = textureHeight + 2*margin;
-                            int newTextureDownRightCornerX = textureDownRightCornerX+margin;
-                            int newTextureDownRightCornerY = textureDownRightCornerY+margin;
+//                            int newTextureDownRightCornerX = textureDownRightCornerX+margin;
+//                            int newTextureDownRightCornerY = textureDownRightCornerY+margin;
                             int newTextureUpLeftCornerX = textureUpLeftCornerX-margin;
                             int newTextureUpLeftCornerY = textureUpLeftCornerY-margin;
                             
@@ -5714,7 +5714,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				if( self.isTextualDataDisplayed && prepareTextualData)
 				{
 					NSPoint tPt = self.lowerRightPoint;
-					float   length;
 					
 					if( [name isEqualToString:@"Unnamed"] == NO && [name isEqualToString: NSLocalizedString( @"Unnamed", nil)] == NO) self.textualBoxLine1 = name;
                     else self.textualBoxLine1 = nil;
@@ -6046,7 +6045,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					for( long i=4; i<[points count]; i++ ) [points removeObjectAtIndex: i];
 				}
 				NSPoint a1,a2,b1,b2;
-				NSPoint a,b,c,d;
 				float angle=0;
 				if([points count]>3)
 				{

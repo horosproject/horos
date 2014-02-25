@@ -2001,8 +2001,6 @@ static NSDate *lastWarningDate = nil;
 -(void) UpdateOpacityMenu: (NSNotification*) note
 {
     //*** Build the menu
-    NSMenu      *mainMenu;
-    NSMenu      *viewerMenu;
     short       i;
     NSArray     *keys;
     NSArray     *sortedKeys;
@@ -2032,8 +2030,6 @@ static NSDate *lastWarningDate = nil;
 -(void) UpdateWLWWMenu: (NSNotification*) note
 {
     //*** Build the menu
-    NSMenu      *mainMenu;
-    NSMenu      *viewerMenu;
     short       i;
     NSArray     *keys;
     NSArray     *sortedKeys;
@@ -2069,8 +2065,6 @@ static NSDate *lastWarningDate = nil;
 -(void) UpdateConvolutionMenu: (NSNotification*) note
 {
 	//*** Build the menu
-	NSMenu      *mainMenu;
-	NSMenu      *viewerMenu;
 	short       i;
 	NSArray     *keys;
 	NSArray     *sortedKeys;
@@ -2593,7 +2587,7 @@ static NSDate *lastWarningDate = nil;
 					{
 						NSString *sopclassuid = [components objectAtIndex: 0];
 						NSString *sopinstanceuid = [components objectAtIndex: 1];
-						int frame = [[urlParameters objectForKey: @"frames"] intValue];
+//						int frame = [[urlParameters objectForKey: @"frames"] intValue];
 						
 						BOOL succeeded = NO;
 						
@@ -2693,9 +2687,6 @@ static NSDate *lastWarningDate = nil;
 
 - (void)application:(NSApplication *)sender openFiles:(NSArray *)filenames
 {
-	long				i;
-	BOOL                isDirectory;
-
 	if([filenames count] == 1) // for iChat Theatre... (drag & drop a DICOM file on the video chat window)
 	{
 		for( ViewerController *v in [ViewerController getDisplayed2DViewers])
@@ -3897,10 +3888,7 @@ static BOOL initialized = NO;
 	float pixData[] = {0,1,1,0};
 	DCMPix* dcmPix = [[DCMPix alloc] initWithData:pixData :32 :2 :2 :1 :1 :0 :0 :0];
 	
-	CGLContextObj cgl_ctx;
-	float iwl, iww;
 	DCMView* dcmView;
-    unsigned char* planes[1];
 	unsigned char gray_2[size2];
     unsigned char gray_1[size2];
     
@@ -3920,7 +3908,7 @@ static BOOL initialized = NO;
 	[dcmView drawRect:NSMakeRect(0,0,size,size)];
     
     {
-        float o[ 9], imOrigin[ 3], imSpacing[ 2];
+        float imOrigin[ 3], imSpacing[ 2];
         long width, height, spp, bpp;
         
         unsigned char *data = [dcmView getRawPixelsViewWidth: &width height: &height spp: &spp bpp: &bpp screenCapture: YES force8bits: YES removeGraphical: YES squarePixels: YES allowSmartCropping: NO origin: imOrigin spacing: imSpacing offset: nil isSigned: nil];
@@ -3959,7 +3947,7 @@ static BOOL initialized = NO;
 	[dcmView drawRect:NSMakeRect(0,0,size,size)];
 	
     {
-        float o[ 9], imOrigin[ 3], imSpacing[ 2];
+        float imOrigin[ 3], imSpacing[ 2];
         long width, height, spp, bpp;
         
         unsigned char *data = [dcmView getRawPixelsViewWidth: &width height: &height spp: &spp bpp: &bpp screenCapture: YES force8bits: YES removeGraphical: YES squarePixels: YES allowSmartCropping: NO origin: imOrigin spacing: imSpacing offset: nil isSigned: nil];

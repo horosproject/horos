@@ -7998,7 +7998,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                                         if( bitsAllocated == 16)
                                         {
                                             short *bufPtr = (short*) oImage, *tmpImage;
-                                            long loop, totSize;
+                                            long loop;
                                             const int shift = bitsAllocated - bitsStored;
                                             
                                             tmpImage = malloc( height * width * 2L);

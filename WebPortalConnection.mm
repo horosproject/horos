@@ -65,10 +65,6 @@
 
 // TODO: NSUserDefaults access for keys @"logWebServer", @"notificationsEmailsSender" and @"lastNotificationsDate" must be replaced with WebPortal properties
 
-
-static NSMutableDictionary *movieLock = nil;
-static NSMutableDictionary *wadoJPEGCache = nil;
-static NSMutableDictionary *thumbnailCache = nil;
 static NSMutableArray *pluginWithHTTPResponses = nil;
 
 static NSString* NotNil(NSString *s) {
@@ -242,7 +238,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	
 	for (NSDictionary *node in [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO])
 	{
-		NSString *dicomNodeAddress = NotNil([node objectForKey:@"Address"]);
+//		NSString *dicomNodeAddress = NotNil([node objectForKey:@"Address"]);
 		int dicomNodePort = [[node objectForKey:@"Port"] intValue];
 		
 		struct sockaddr_in service;
@@ -652,7 +648,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 
 - (BOOL) checkEOF:(NSData*) postDataChunk range: (NSRange*) r
 {
-	BOOL eof = NO;
+//	BOOL eof = NO;
 	int l = [postBoundary length];
 	
 	const NSUInteger CHECKLASTPART = 4096;
@@ -677,9 +673,8 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 
 - (void) closeFileHandleAndClean
 {
-	int inc = 1;
 	NSString *file;
-	NSString *root = [[BrowserController currentBrowser] INCOMINGPATH];
+//	NSString *root = [[BrowserController currentBrowser] INCOMINGPATH];
 	NSMutableArray *filesArray = [NSMutableArray array];
 	
 	if ([[POSTfilename pathExtension] isEqualToString: @"zip"] || [[POSTfilename pathExtension] isEqualToString: @"osirixzip"])
@@ -1040,7 +1035,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 			NSDictionary* params = [WebPortalConnection ExtractParams:urlComponenents.lastObject];
 			NSString* username = [params objectForKey:@"username"];
 			NSString* token = [params objectForKey:@"token"];
-            NSString* sha1 = [params objectForKey:@"sha1"];
+//            NSString* sha1 = [params objectForKey:@"sha1"];
             
 			if (username && token) // has token, user exists
             {

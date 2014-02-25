@@ -39,8 +39,6 @@ static BonjourBrowser *currentBrowser = nil;
 
 -(id)initWithBrowserController:(BrowserController*)bC {
 	if ((self = [super init])) {
-		OSErr err;       
-		SInt32 osVersion;
 		
 		currentBrowser = self;
 		

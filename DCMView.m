@@ -683,8 +683,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	CLUTBARS = c;
     
-	BOOL reload = NO;
-	
 	NSArray *viewers = [ViewerController getDisplayed2DViewers];
 	
 	for( ViewerController *v in viewers)
@@ -759,7 +757,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	@try
 	{
 		id curSeries = [self seriesObj];
-		id curStudy = [curSeries valueForKey:@"study"];
 		
 		NSArray *viewers = [[ViewerController getDisplayed2DViewers] sortedArrayUsingFunction: studyCompare context: nil];
 		
@@ -809,7 +806,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             allStudiesArray = [allStudiesArray valueForKey: @"studyInstanceUID"];
             NSArray *colors = ViewerController.studyColors;
             // Give a different color for each study/patient
-            int noColor = 0;
+            
             for( id study in studiesArray)
             {
                 NSString *studyUID = [study valueForKey:@"studyInstanceUID"];
@@ -1390,7 +1387,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (IBAction) roiSaveSelected: (id) sender
 {
 	NSSavePanel     *panel = [NSSavePanel savePanel];
-    short           i;
 	
 	NSMutableArray  *selectedROIs = [NSMutableArray  array];
 	
@@ -3595,7 +3591,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				int		x,y;
 				int		xsqr;
 				int		inw = LENSSIZE-1;
-				int		radsqr = (inw*inw)/4;
 				int		rad = LENSSIZE/2;
 				
 				x = rad;
@@ -5403,8 +5398,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"MouseClickZoomCentered"])
 	{
-		float xInv = 1, yInv = 1;
-		
 		NSPoint oo = [self convertPointToBacking: start];
 		
 		oo.x = (oo.x - drawingFrameRect.size.width/2.) - (((oo.x - drawingFrameRect.size.width/2.)* scaleValue) / startScaleValue);
@@ -8645,7 +8638,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (void) drawCrossLines:(float[2][3]) sft ctx: (CGLContextObj) cgl_ctx perpendicular:(BOOL) perpendicular withShift:(double) shift half:(BOOL) half showPoint:(BOOL) showPoint
 {
 	float a[ 2] = {0, 0};	// perpendicular vector
-	float slope;
 	float c[2][3];
 	
 	for( int i = 0; i < 2; i++)
@@ -8838,7 +8830,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void) drawRect:(NSRect)aRect withContext:(NSOpenGLContext *)ctx
 {
-	NSRect savedDrawingFrameRect;
 	long clutBars = CLUTBARS, annotations = annotationType;
 	BOOL frontMost = NO, is2DViewer = [self is2DViewer];
 	float sf = self.window.backingScaleFactor;
@@ -10268,7 +10259,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		for( int i = 0; i < [views count]; i++)
 		{
 			long iwidth, iheight, ispp, ibpp;
-			float iimOrigin[ 3], iimSpacing[ 2];
+			float iimSpacing[ 2];
 			BOOL iisSigned;
 			int ioffset;
 			
@@ -10458,10 +10449,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		if( force8bits == YES || curDCM.isRGB == YES || blendingView != nil)		// Screen Capture in RGB - 8 bit
 		{
-			NSPoint shiftOrigin, blendedShiftOrigin;
+			NSPoint shiftOrigin;
 			BOOL smartCropped = NO;
 			NSRect smartCroppedRect;
-            NSRect blendedViewRect;
 			
 			if( allowSmartCropping && [[NSUserDefaults standardUserDefaults] boolForKey: @"ScreenCaptureSmartCropping"])
 			{
@@ -10917,9 +10907,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (NSImage*) exportNSImageCurrentImageWithSize:(int) size
 {
-	NSString *sopuid = nil;
-	NSString *f = nil;
-	float o[ 9], imOrigin[ 3], imSpacing[ 2];
+	float imOrigin[ 3], imSpacing[ 2];
 	long width, height, spp, bpp;
 //	NSRect savedFrame = drawingFrameRect;
 	

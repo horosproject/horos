@@ -976,7 +976,7 @@ return YES;
 	NSArray				*displayedViewers = [ViewerController getDisplayed2DViewers];
 	NSMutableArray		*state = [NSMutableArray array];
 	
-	int i, indexImage;
+	int indexImage;
 	
     if( name.length == 0)
         name = [NSUserDefaults formatDateTime: [NSDate date]];
@@ -1370,7 +1370,7 @@ return YES;
                     
                     // Project the 3D point on the plane : dot product of normal plane vector (vectorModel) and distance between point and plane origin (matrix9,10,11)
                     double distance = matrix[ 9] * vectorModel[ 6] + matrix[ 10] * vectorModel[ 7] + matrix[ 11] * vectorModel[ 8];
-                    double outputOrigin[ 3], outputOriginConverted[ 3];
+                    double outputOrigin[ 3];
                     
                     outputOrigin[0] = origin[ 0] + distance*vectorModel[ 6];
                     outputOrigin[1] = origin[ 1] + distance*vectorModel[ 7];
@@ -3753,11 +3753,8 @@ static volatile int numberOfThreadsForRelisce = 0;
     {
         DicomDatabase *db = [[BrowserController currentBrowser] database];
         NSPredicate				*predicate;
-        NSFetchRequest			*dbRequest;
-        NSError					*error = nil;
         long					i, index = 0;
         NSManagedObject			*curImage = [fileList[0] objectAtIndex:0];
-        NSPoint					origin = [[previewMatrix superview] bounds].origin;
         
         DicomStudy *study = [curImage valueForKeyPath:@"series.study"];
         if( study == nil)
@@ -3875,7 +3872,6 @@ static volatile int numberOfThreadsForRelisce = 0;
                 if( [curStudy isKindOfClass: [DCMTKStudyQueryNode class]] && [[curStudy valueForKey: @"studyInstanceUID"] isEqualToString: study.studyInstanceUID]) // For the current study, always take the local images
                     curStudy = study;
 #endif
-                NSColor *color = nil;
                 NSArray *series = [seriesArray objectAtIndex: curStudyIndex];
                 NSArray *images = nil;
                 
@@ -7648,8 +7644,6 @@ static int avoidReentryRefreshDatabase = 0;
 
 -(void) finalizeSeriesViewing
 {
-	int x,i,z;
-	
     @synchronized( loadingThread)
     {
         [loadingThread cancel];
@@ -7660,7 +7654,7 @@ static int avoidReentryRefreshDatabase = 0;
 	if( resampleRatio != 1)
 		resampleRatio = 1;
 	
-	for( i = 0; i < maxMovieIndex; i++)
+	for( int i = 0; i < maxMovieIndex; i++)
 	{
 		@try
 		{
@@ -7675,8 +7669,6 @@ static int avoidReentryRefreshDatabase = 0;
         
 		for( NSArray *a in roiList[ i])
 		{
-            NSArray *rArray = a;
-            
             [a retain];
             
 			for( ROI *r in a)
@@ -7688,7 +7680,7 @@ static int avoidReentryRefreshDatabase = 0;
 	
     [self applyStatusValue];
     
-	for( i = 0; i < maxMovieIndex; i++)
+	for( int i = 0; i < maxMovieIndex; i++)
 	{
 		[copyRoiList[ i] release]; copyRoiList[ i] = nil;
 		[roiList[ i] release];  roiList[ i] = nil;
@@ -12151,7 +12143,7 @@ float				matrix[25];
 						{
 							ViewerController* b = vPET;
 							
-							float orientA[ 9], orientB[ 9], result[ 9];
+							float orientA[ 9], orientB[ 9];
 							
 							[[[a imageView] curDCM] orientation:orientA];
 							[[[b imageView] curDCM] orientation:orientB];

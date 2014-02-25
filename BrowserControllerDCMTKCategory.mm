@@ -107,7 +107,7 @@ static NSString *uniqueSync = @"uniqueSync";
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useDCMTKForJP2K"])
 		{
-			DcmItem *metaInfo = fileformat.getMetaInfo();
+//			DcmItem *metaInfo = fileformat.getMetaInfo();
 			
 			DcmRepresentationParameter *params = nil;
 			DJ_RPLossy lossyParams( 90);

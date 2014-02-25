@@ -33,7 +33,6 @@
 	NSAnimation* ret = NULL;
 	
 	NSView* view = [self contentView];
-	NSRect contentFrame = view.frame;
 	NSSize contentSize = view.frame.size;
 	NSSize sizeDelta = idealContentSize - contentSize;
 	

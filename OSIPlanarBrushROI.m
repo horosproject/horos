@@ -126,9 +126,6 @@
 - (void)drawSlab:(OSISlab)slab inCGLContext:(CGLContextObj)cgl_ctx pixelFormat:(CGLPixelFormatObj)pixelFormat dicomToPixTransform:(N3AffineTransform)dicomToPixTransform
 {
 	double dicomToPixGLTransform[16];
-	NSInteger i;
-    NSValue *endpointValue;
-	N3Vector endpoint;
 	
 	if (OSISlabContainsPlane(slab, _plane) == NO) {
 		return; // this ROI does not live on this slice

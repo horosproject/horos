@@ -1501,7 +1501,6 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
         
         NSRange chunkRange = [[chunkRanges objectAtIndex:chunkIndex] rangeValue];
         
-		NSMutableArray *completeImagesArray = nil, *modifiedStudiesArray = nil;
 		BOOL DELETEFILELISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"DELETEFILELISTENER"], addFailed = NO;
 		NSMutableArray *dicomFilesArray = [NSMutableArray arrayWithCapacity:chunkRange.length];
 		
@@ -2329,7 +2328,7 @@ static BOOL protectionAgainstReentry = NO;
                                         
                                         if (reportUpToDate == NO)
                                         {
-                                            NSString *reportURL = nil; // <- For an empty DICOM SR File
+//                                            NSString *reportURL = nil; // <- For an empty DICOM SR File
                                             
                                             DicomImage *reportSR = [study reportImage];
                                             
@@ -2569,7 +2568,7 @@ static BOOL protectionAgainstReentry = NO;
         NSOperationQueue* queue = [[[NSOperationQueue alloc] init] autorelease];
         [queue setMaxConcurrentOperationCount:1];
         
-        BOOL first = YES, onlyDICOM = [[dict objectForKey: @"onlyDICOM"] boolValue], copyFiles = [[dict objectForKey: @"copyFiles"] boolValue];
+        BOOL onlyDICOM = [[dict objectForKey: @"onlyDICOM"] boolValue], copyFiles = [[dict objectForKey: @"copyFiles"] boolValue];
         __block BOOL studySelected = NO;
         NSArray *filesInput = [[dict objectForKey: @"filesInput"] sortedArrayUsingSelector:@selector(compare:)]; // sorting the array should make the data access faster on optical media
         
@@ -3880,9 +3879,6 @@ static BOOL protectionAgainstReentry = NO;
 		NSLog(@"End Rebuild");
 		
 		[filesArray release];
-		
-		NSFetchRequest	*dbRequest;
-		NSError			*error = nil;
 		
 		if (!complete) {
 			thread.status = NSLocalizedString(@"Checking for missing files...", nil);

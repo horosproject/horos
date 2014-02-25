@@ -22,7 +22,7 @@
 
 extern BOOL USETOOLBARPANEL;
 
-static int MacOSVersion109orHigher = -1;
+//static int MacOSVersion109orHigher = -1;
 
 static int fixedHeight = 92;
 

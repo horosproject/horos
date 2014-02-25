@@ -427,8 +427,8 @@ NSArray *OSIROIMaskIndexesInRun(OSIROIMaskRun maskRun)
     NSUInteger index1 = 0;
     NSUInteger index2 = 0;
     
-    OSIROIMaskRun run1;
-    OSIROIMaskRun run2;
+//    OSIROIMaskRun run1;
+//    OSIROIMaskRun run2;
     
     OSIROIMaskRun runToAdd = OSIROIMaskRunZero;
     OSIROIMaskRun accumulatedRun = OSIROIMaskRunZero;

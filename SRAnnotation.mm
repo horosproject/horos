@@ -122,7 +122,7 @@
 		{
 			status = document->read(*fileformat.getDataset());
 			// See DicomFile.m
-			int frameNumber = [[NSString stringWithFormat:@"%s", document->getInstanceNumber()] intValue];
+//			int frameNumber = [[NSString stringWithFormat:@"%s", document->getInstanceNumber()] intValue];
 			NSString *accessionNumber = [NSString stringWithFormat:@"%s", document->getAccessionNumber()];
 			NSString *studyInstanceUID = [NSString stringWithFormat:@"%s", document->getStudyInstanceUID()];
 			NSString *patientName = [NSString stringWithFormat:@"%s", document->getPatientsName()];

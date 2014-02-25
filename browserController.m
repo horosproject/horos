@@ -1083,7 +1083,6 @@ static NSConditionLock *threadLock = nil;
 		NSManagedObjectContext *context = self.database.independentContext;
 		
         NSArray *studiesArray = [arrays objectForKey: @"studyArrayIDs"];
-        NSFetchRequest *dbRequest = nil;
         
         NSString *commentField = [[NSUserDefaults standardUserDefaults] stringForKey: @"commentFieldForAutoFill"];
         
@@ -2436,7 +2435,6 @@ static NSConditionLock *threadLock = nil;
 	
 	long durationFor1000 = 9;
 	
-	NSRect frame = [rebuildWindow frame];
 	long totalSeconds = totalFiles * durationFor1000 / 1000;
 	[estimatedTime setStringValue:[NSString timeString:totalSeconds maxUnits:2]];
 	
@@ -5751,7 +5749,6 @@ static NSConditionLock *threadLock = nil;
 - (void) delObjects:(NSMutableArray*) objectsToDelete tree:(NSMutableSet*)treeObjs
 {
 	int result;
-	NSMutableArray *studiesArray = [NSMutableArray array] , *seriesArray = [NSMutableArray array];
 	NSManagedObjectContext	*context = self.database.managedObjectContext;
 
     [context lock];
@@ -6051,8 +6048,6 @@ static NSConditionLock *threadLock = nil;
 			[self filesForDatabaseMatrixSelection: objectsToDelete onlyImages: NO];
 		else
 			[self filesForDatabaseOutlineSelection: objectsToDelete treeObjects:objectsToDeleteTree onlyImages: NO];
-		
-		NSIndexSet *selectedRows = [databaseOutline selectedRowIndexes];
 		
 		if( [databaseOutline selectedRow] >= 0)
 		{
@@ -18068,7 +18063,6 @@ static volatile int numberOfThreadsForJPEG = 0;
             [studies addObject: study];
     }
     
-    int i = 0;
     NSMutableArray *newDICOMPDFReports = [NSMutableArray array];
     for( DicomStudy *study in studies)
     {

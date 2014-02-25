@@ -82,7 +82,7 @@ static OFString    opt_ciphersuites(SSL3_TXT_RSA_DES_192_CBC3_SHA);
 
 static int inc = 0;
 static int debugLevel = 0;
-static int wadoUnique = 0;	//wadoUniqueThreadID = 0;
+//static int wadoUnique = 0;	//wadoUniqueThreadID = 0;
 
 typedef struct {
     T_ASC_Association *assoc;
@@ -1242,8 +1242,6 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                 
                 if( (localObjectUIDs.count || [[NSUserDefaults standardUserDefaults] boolForKey: @"MultipleAssociationsRetrieve"]) && [[NSThread currentThread] isCancelled] == NO) // We have already local images !
                 {
-                    NSArray *childrenArray = nil;
-                    
                     NSThread *WADOCFind = [[[NSThread alloc] initWithTarget: self selector: @selector( CFINDThread:) object: studyInstanceUID] autorelease];
                     
                     [WADOCFind start];

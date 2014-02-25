@@ -49,8 +49,6 @@
 
 - (id) initWithRoi:(ROI*) iroi  viewer:(ViewerController*) iviewer
 {
-    unsigned long   i;
-	
 	viewer = [iviewer retain];
 	roi = [iroi retain];
 	

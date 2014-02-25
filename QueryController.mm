@@ -105,8 +105,6 @@ extern "C"
                     
                     NSCalendarDate *endDate = [date dateByAddingYears: 0 months: 0 days: 0 hours: 0 minutes: 0 seconds: 0];
                     
-                    NSString *timeString = [[DCMCalendarDate dicomDateWithDate: date] dateString];
-                    
                     [qm addFilter: [NSString stringWithFormat: @"%@-%@", [[DCMCalendarDate dicomDateWithDate: date] dateString], [[DCMCalendarDate dicomDateWithDate: endDate] dateString]] forDescription:@"StudyDate"];
                     
                     NSString *studyTime = [NSString stringWithFormat: @"%02d0000.000-%02d0000.000", h, h+3];
@@ -2163,12 +2161,10 @@ extern "C"
 
 - (NSArray*) queryPatientIDwithoutGUI: (NSString*) patientID
 {
-	NSString			*theirAET;
 	NSString			*hostname;
-	NSString			*port;
 	id					aServer;
 	int					selectedServer;
-	BOOL				atLeastOneSource = NO, noChecked = YES, error = NO;
+	BOOL				atLeastOneSource = NO, noChecked = YES;
 	NSArray				*copiedSources = [NSArray arrayWithArray: sourcesArray];
 	
 	noChecked = YES;
@@ -2275,7 +2271,6 @@ extern "C"
 -(BOOL) queryWithDisplayingErrors:(BOOL) showError instance: (NSMutableDictionary*) instance index: (int) index
 {
 	NSString			*theirAET, *hostname, *port;
-	NSNetService		*netService = nil;
 	
 	BOOL				error = NO;
 	NSMutableArray		*tempResultArray = [NSMutableArray array];
@@ -2856,7 +2851,6 @@ extern "C"
 	else rowIndex = [NSIndexSet indexSetWithIndexesInRange: NSMakeRange( 0, [outlineView numberOfRows])];
 	
 	NSMutableString	*string = [NSMutableString string];
-	NSNumber *row;
 	NSArray	*columns = [[outlineView tableColumns] valueForKey:@"identifier"];
 	NSArray	*descriptions = [[outlineView tableColumns] valueForKey:@"headerCell"];
 	int r;
@@ -3706,7 +3700,6 @@ extern "C"
 	}
 	
     // Apply the same order for retrieving, as the sources order
-    NSArray *copiedSourcesArray = [NSArray arrayWithArray: sourcesArray];
     NSMutableArray *reorderedArray = [NSMutableArray array];
     
     @try
@@ -4518,8 +4511,6 @@ extern "C"
     
     NSTableColumn *column = [sender representedObject];
     
-    NSString *identifier = [column identifier];
-
     if( on)
         [outlineView removeTableColumn:column];
     else

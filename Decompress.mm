@@ -262,7 +262,7 @@ int main(int argc, const char *argv[])
 					if( cond.good())
 					{
 						DcmDataset *dataset = fileformat.getDataset();
-						DcmItem *metaInfo = fileformat.getMetaInfo();
+//						DcmItem *metaInfo = fileformat.getMetaInfo();
 						DcmXfer original_xfer(dataset->getOriginalXfer());
 						
 						const char *string = NULL;
