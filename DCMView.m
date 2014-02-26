@@ -4955,6 +4955,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				[[self windowController] propagateSettings];
             
 			[self setNeedsDisplay:YES];
+            
+            [self displayIfNeeded];
 		}
     }
 }
@@ -6799,7 +6801,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         if( [[self windowController] windowWillClose])
             return;
 		
-		if( avoidRecursiveSync > 2) return;
+		if( avoidRecursiveSync > 0) return;
 		avoidRecursiveSync++;
 		
 		if( [note object] != self && isKeyView == YES && matrix == 0 && curImage > -1)

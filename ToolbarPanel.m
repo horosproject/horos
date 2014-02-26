@@ -85,6 +85,7 @@ static int fixedHeight = 92;
         [[self window] setAnimationBehavior: NSWindowAnimationBehaviorNone];
         [[self window] setToolbar: toolbar];
         [[self window] setLevel: NSNormalWindowLevel];
+        [[self window] makeMainWindow];
         
         [toolbar setShowsBaselineSeparator: NO];
         [toolbar setVisible: YES];

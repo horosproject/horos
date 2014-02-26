@@ -8129,6 +8129,7 @@ static int avoidReentryRefreshDatabase = 0;
 					[movieRateSlider setEnabled: NO];
 					[moviePosSlider setEnabled: NO];
 					[moviePlayStop setEnabled:NO];
+                    
 					[speedText setStringValue:[NSString stringWithFormat:NSLocalizedString(@"%0.1f im/s",  @"im/s = images per second"), (float) [self frameRate]*direction]];
 
 					[seriesView setPixels:pixList[0] files:fileList[0] rois:roiList[0] firstImage: 0 level:'i' reset:!sameSeries];
