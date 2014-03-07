@@ -144,6 +144,7 @@ NSString* const OSIVolumeWindowDidChangeDataNotification = @"OSIVolumeWindowDidC
     assert(pixList);
     assert(volumeData);
     
+    [_viewerController computeInterval];
     floatVolumeData = [[[OSIFloatVolumeData alloc] initWithWithPixList:pixList volume:volumeData] autorelease];
     
     [_generatedFloatVolumeDatas setObject:floatVolumeData forKey:dimensionAndIndexKey];
