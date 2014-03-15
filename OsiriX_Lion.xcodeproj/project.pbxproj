@@ -32657,49 +32657,6 @@
 			};
 			name = Development;
 		};
-		59BDEC31117C92B3007F1F2C /* Deployment 32-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COMBINE_HIDPI_IMAGES = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INFOPLIST_FILE = "OsiriX Launcher/Info.plist";
-				INSTALL_PATH = "$(HOME)/Applications";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-				);
-				PRODUCT_NAME = "OsiriX Launcher";
-				SKIP_INSTALL = YES;
-			};
-			name = "Deployment 32-bit";
-		};
-		59BDEC32117C92B3007F1F2C /* Deployment 64-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				COMBINE_HIDPI_IMAGES = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INFOPLIST_FILE = "OsiriX Launcher/Info.plist";
-				INSTALL_PATH = "$(HOME)/Applications";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-				);
-				PRODUCT_NAME = "OsiriX Launcher";
-				SKIP_INSTALL = YES;
-			};
-			name = "Deployment 64-bit";
-		};
 		7E76BEC1085757B60073649A /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -32987,155 +32944,6 @@
 			};
 			name = Development;
 		};
-		A98795D516DB9FD100926023 /* Deployment 32-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
-					.,
-					Binaries,
-					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
-					"$(SRCROOT)",
-					"\"$(SRCROOT)/Binaries\"",
-					"\"$(SRCROOT)/build/Development\"",
-					"\"$(SRCROOT)/../../../../System/Library/Frameworks\"",
-				);
-				GCC_FAST_MATH = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_OPTIMIZATION_LEVEL = 3;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Unit Tests/Unit Tests-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = NDEBUG;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_UNROLL_LOOPS = YES;
-				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
-				GCC_WARN_ABOUT_POINTER_SIGNEDNESS = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = YES;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_SHADOW = NO;
-				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				INFOPLIST_FILE = "Unit Tests/Unit Tests-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					Binaries/LibTiff,
-					Binaries/VTKLibs,
-					ITK180,
-					ITK180/Modules/Core/Common/include,
-					AYDicomPrint,
-					"\"$(SRCROOT)/Binaries/VTKLibs\"",
-					"\"$(SRCROOT)/Binaries\"",
-					"\"$(SRCROOT)/Binaries/KDU SDK\"",
-					"\"$(SRCROOT)/Binaries/LibTiff\"",
-					"\"$(SRCROOT)/Binaries/CharLS\"",
-					"\"$(SRCROOT)/ITK180/lib\"",
-					"\"$(SRCROOT)/Binaries/Ming\"",
-					"\"$(SRCROOT)/AYDicomPrint\"",
-				);
-				OTHER_CPLUSPLUSFLAGS = (
-					"$(OTHER_CFLAGS)",
-					"-Wno-deprecated",
-				);
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-					"-weak_framework",
-					3DconnexionClient,
-				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRIP_INSTALLED_PRODUCT = YES;
-				STRIP_STYLE = debugging;
-				USER_HEADER_SEARCH_PATHS = "ITK180/Modules/Core/Common/include ITK180/Modules/ThirdParty/VNL/src/vxl/core ITK180/Modules/ThirdParty/VNL/src/vxl/vcl ITK180/Modules/Core/Common ITK180/Modules/Core/Mesh/include ITK180/Modules/Segmentation/RegionGrowing/include ITK180/Modules/Filtering/CurvatureFlow/include ITK180/Modules/Core/ImageFunction/include ITK180/Modules/Core/FiniteDifference/include ITK180/Modules/Filtering/ImageFilterBase/include ITK180/Modules/Segmentation/LevelSets/include ITK180/Modules/Filtering/FastMarching/include ITK180/Modules/Filtering/ImageIntensity/include ITK180/Modules/Bridge/VTK/include ITK180/Modules/Filtering/MathematicalMorphology/include ITK180/Modules/Core/Transform/include ITK180/Modules/Filtering/ImageGrid/include ITK180/Modules/Filtering/BinaryMathematicalMorphology/include ITK180/Modules/ThirdParty/NrrdIO/src/NrrdIO";
-				WRAPPER_EXTENSION = octest;
-			};
-			name = "Deployment 32-bit";
-		};
-		A98795D616DB9FD100926023 /* Deployment 64-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
-					.,
-					Binaries,
-					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
-					"$(SRCROOT)",
-					"\"$(SRCROOT)/Binaries\"",
-					"\"$(SRCROOT)/build/Development\"",
-					"\"$(SRCROOT)/../../../../System/Library/Frameworks\"",
-				);
-				GCC_FAST_MATH = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_OPTIMIZATION_LEVEL = 3;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Unit Tests/Unit Tests-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = NDEBUG;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_UNROLL_LOOPS = NO;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
-				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
-				GCC_WARN_ABOUT_POINTER_SIGNEDNESS = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = YES;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_PEDANTIC = NO;
-				GCC_WARN_SHADOW = NO;
-				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				INFOPLIST_FILE = "Unit Tests/Unit Tests-Info.plist";
-				KEEP_PRIVATE_EXTERNS = YES;
-				LIBRARY_SEARCH_PATHS = (
-					Binaries/LibTiff,
-					Binaries/VTKLibs,
-					ITK180,
-					ITK180/Modules/Core/Common/include,
-					AYDicomPrint,
-					"\"$(SRCROOT)/Binaries/VTKLibs\"",
-					"\"$(SRCROOT)/Binaries\"",
-					"\"$(SRCROOT)/Binaries/KDU SDK\"",
-					"\"$(SRCROOT)/Binaries/LibTiff\"",
-					"\"$(SRCROOT)/Binaries/CharLS\"",
-					"\"$(SRCROOT)/ITK180/lib\"",
-					"\"$(SRCROOT)/Binaries/Ming\"",
-					"\"$(SRCROOT)/AYDicomPrint\"",
-				);
-				OTHER_CPLUSPLUSFLAGS = (
-					"$(OTHER_CFLAGS)",
-					"-Wno-deprecated",
-				);
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-					"-weak_framework",
-					3DconnexionClient,
-					"-sectcreate",
-					__TEXT,
-					__info_plist,
-					"Deployment-Info.plist",
-				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRIP_INSTALLED_PRODUCT = YES;
-				STRIP_STYLE = debugging;
-				USER_HEADER_SEARCH_PATHS = "ITK180/Modules/Core/Common/include ITK180/Modules/ThirdParty/VNL/src/vxl/core ITK180/Modules/ThirdParty/VNL/src/vxl/vcl ITK180/Modules/Core/Common ITK180/Modules/Core/Mesh/include ITK180/Modules/Segmentation/RegionGrowing/include ITK180/Modules/Filtering/CurvatureFlow/include ITK180/Modules/Core/ImageFunction/include ITK180/Modules/Core/FiniteDifference/include ITK180/Modules/Filtering/ImageFilterBase/include ITK180/Modules/Segmentation/LevelSets/include ITK180/Modules/Filtering/FastMarching/include ITK180/Modules/Filtering/ImageIntensity/include ITK180/Modules/Bridge/VTK/include ITK180/Modules/Filtering/MathematicalMorphology/include ITK180/Modules/Core/Transform/include ITK180/Modules/Filtering/ImageGrid/include ITK180/Modules/Filtering/BinaryMathematicalMorphology/include ITK180/Modules/ThirdParty/NrrdIO/src/NrrdIO";
-				WRAPPER_EXTENSION = octest;
-			};
-			name = "Deployment 64-bit";
-		};
 		AB0F3A2E1046BD2D004129DD /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -33166,61 +32974,6 @@
 				SKIP_INSTALL = YES;
 			};
 			name = Development;
-		};
-		AB0F3A301046BD2D004129DD /* Deployment 32-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
-				COMBINE_HIDPI_IMAGES = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				FRAMEWORK_VERSION = A;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_MODEL_TUNING = G5;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INFOPLIST_FILE = "OsiriXAPI-Info.plist";
-				INSTALL_PATH = "@executable_path/../Frameworks";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-				);
-				PRODUCT_NAME = OsiriXAPI;
-				SKIP_INSTALL = YES;
-			};
-			name = "Deployment 32-bit";
-		};
-		AB0F3A311046BD2D004129DD /* Deployment 64-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COMBINE_HIDPI_IMAGES = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				FRAMEWORK_VERSION = A;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_MODEL_TUNING = G5;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INFOPLIST_FILE = "OsiriXAPI-Info.plist";
-				INSTALL_PATH = "@executable_path/../Frameworks";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-				);
-				PRODUCT_NAME = OsiriXAPI;
-				SKIP_INSTALL = YES;
-			};
-			name = "Deployment 64-bit";
 		};
 		AB724FF40ADE6ECB00A212A0 /* Development */ = {
 			isa = XCBuildConfiguration;
@@ -33272,600 +33025,6 @@
 				PRODUCT_NAME = Documentation;
 			};
 			name = Development;
-		};
-		BF7486A80CC6AA5D00198387 /* Deployment 32-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				PRODUCT_NAME = Documentation;
-			};
-			name = "Deployment 32-bit";
-		};
-		BF7486A90CC6AA5D00198387 /* Deployment 64-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				PRODUCT_NAME = Documentation;
-			};
-			name = "Deployment 64-bit";
-		};
-		CE5314AA0C717C3000A2B75F /* Deployment 32-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "Developer ID Application: Antoine Rosset";
-				CODE_SIGN_RESOURCE_RULES_PATH = Rules.plist;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_FAST_OBJC_DISPATCH = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_OPTIMIZATION_LEVEL = 3;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
-				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				HEADER_SEARCH_PATHS = (
-					/usr/include/libxml2,
-					AYDicomPrint,
-				);
-				IBC_FLATTEN_NIBS = NO;
-				MACOSX_DEPLOYMENT_TARGET = 10.8;
-				OTHER_CFLAGS = "-fvisibility=default";
-				OTHER_CODE_SIGN_FLAGS = "";
-				PROVISIONING_PROFILE = "";
-				SDKROOT = macosx10.8;
-			};
-			name = "Deployment 32-bit";
-		};
-		CE5314AB0C717C3000A2B75F /* Deployment 32-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_WARN_EMPTY_BODY = YES;
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
-				DEAD_CODE_STRIPPING = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					.,
-					Binaries,
-					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
-					"$(SRCROOT)",
-					"\"$(SRCROOT)/Binaries\"",
-					"\"$(SRCROOT)/build/Development\"",
-				);
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_FAST_MATH = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_OPTIMIZATION_LEVEL = fast;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = OsiriX_Prefix.pch;
-				GCC_PREPROCESSOR_DEFINITIONS = NDEBUG;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_UNROLL_LOOPS = YES;
-				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
-				GCC_WARN_ABOUT_POINTER_SIGNEDNESS = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = YES;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_SHADOW = NO;
-				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				IBC_FLATTEN_NIBS = YES;
-				INFOPLIST_FILE = "Deployment-Info.plist";
-				INSTALL_PATH = "$(USER_APPS_DIR)";
-				LIBRARY_SEARCH_PATHS = (
-					Binaries/LibTiff,
-					Binaries/VTKLibs,
-					ITK180,
-					ITK180/Modules/Core/Common/include,
-					AYDicomPrint,
-					"\"$(SRCROOT)/Binaries/VTKLibs\"",
-					"\"$(SRCROOT)/Binaries\"",
-					"\"$(SRCROOT)/Binaries/KDU SDK\"",
-					"\"$(SRCROOT)/Binaries/LibTiff\"",
-					"\"$(SRCROOT)/Binaries/CharLS\"",
-					"\"$(SRCROOT)/ITK180/lib\"",
-				);
-				OTHER_CPLUSPLUSFLAGS = (
-					"$(OTHER_CFLAGS)",
-					"-Wno-deprecated",
-					"-no-pedantic",
-				);
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-					"-weak_framework",
-					3DconnexionClient,
-				);
-				PRESERVE_DEAD_CODE_INITS_AND_TERMS = NO;
-				PRODUCT_NAME = OsiriX;
-				STRIP_INSTALLED_PRODUCT = YES;
-				STRIP_STYLE = debugging;
-				USER_HEADER_SEARCH_PATHS = "ITK180/Modules/Core/Common/include ITK180/Modules/ThirdParty/VNL/src/vxl/core ITK180/Modules/ThirdParty/VNL/src/vxl/vcl ITK180/Modules/Core/Common ITK180/Modules/Core/Mesh/include ITK180/Modules/Segmentation/RegionGrowing/include ITK180/Modules/Filtering/CurvatureFlow/include ITK180/Modules/Core/ImageFunction/include ITK180/Modules/Core/FiniteDifference/include ITK180/Modules/Filtering/ImageFilterBase/include ITK180/Modules/Segmentation/LevelSets/include ITK180/Modules/Filtering/FastMarching/include ITK180/Modules/Filtering/ImageIntensity/include ITK180/Modules/Bridge/VTK/include ITK180/Modules/Filtering/MathematicalMorphology/include ITK180/Modules/Core/Transform/include ITK180/Modules/Filtering/ImageGrid/include ITK180/Modules/Filtering/BinaryMathematicalMorphology/include ITK180/Modules/ThirdParty/NrrdIO/src/NrrdIO";
-				WARNING_CFLAGS = "-no-pedantic";
-			};
-			name = "Deployment 32-bit";
-		};
-		CE5314AD0C717C3000A2B75F /* Deployment 32-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
-				BUILD_VARIANTS = normal;
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = "";
-				DEAD_CODE_STRIPPING = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SYSTEM_LIBRARY_DIR)/Frameworks",
-					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
-					Binaries,
-					"$(SRCROOT)/Binaries",
-				);
-				FRAMEWORK_VERSION = A;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_OPTIMIZATION_LEVEL = 3;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "DCM Framework/DCM Framework_Prefix.pch";
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				HEADER_SEARCH_PATHS = "";
-				INFOPLIST_FILE = "DCM Framework/DCM-Info.plist";
-				INSTALL_PATH = "@executable_path/../Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					Binaries,
-					"\"$(SRCROOT)/Binaries\"",
-					"\"$(SRCROOT)/Binaries/KDU SDK\"",
-				);
-				OTHER_LDFLAGS = (
-					"-seg1addr",
-					0x20000000,
-				);
-				PRODUCT_NAME = OsiriX;
-				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
-				SECTORDER_FLAGS = "";
-				SKIP_INSTALL = YES;
-				STRIP_STYLE = debugging;
-			};
-			name = "Deployment 32-bit";
-		};
-		CE5314AE0C717C3000A2B75F /* Deployment 32-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
-				GCC_ALTIVEC_EXTENSIONS = YES;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_MODEL_CPU = "";
-				GCC_MODEL_PPC64 = NO;
-				GCC_MODEL_TUNING = "";
-				GCC_OPTIMIZATION_LEVEL = 1;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				GCC_WARN_SHADOW = NO;
-				GCC_WARN_UNINITIALIZED_AUTOS = NO;
-				HEADER_SEARCH_PATHS = Binaries;
-				OTHER_CFLAGS = (
-					"-falign-functions=32",
-					"-falign-labels=32",
-					"-falign-loops=32",
-					"-falign-jumps=32",
-				);
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = "Unzip Binaries";
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-			};
-			name = "Deployment 32-bit";
-		};
-		CE5314AF0C717C3000A2B75F /* Deployment 32-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
-				GCC_ALTIVEC_EXTENSIONS = YES;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_MODEL_CPU = "";
-				GCC_MODEL_PPC64 = NO;
-				GCC_MODEL_TUNING = "";
-				GCC_OPTIMIZATION_LEVEL = 1;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				GCC_WARN_SHADOW = NO;
-				GCC_WARN_UNINITIALIZED_AUTOS = NO;
-				HEADER_SEARCH_PATHS = Binaries;
-				OTHER_CFLAGS = (
-					"-falign-functions=32",
-					"-falign-labels=32",
-					"-falign-loops=32",
-					"-falign-jumps=32",
-				);
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = "Build All Prerequisites";
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-			};
-			name = "Deployment 32-bit";
-		};
-		CE5314B20C717C3000A2B75F /* Deployment 32-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_RESOURCE_RULES_PATH = "";
-				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
-				COPY_PHASE_STRIP = YES;
-				DEPLOYMENT_LOCATION = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(FRAMEWORK_SEARCH_PATHS)",
-					"$(SRCROOT)",
-				);
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_OPTIMIZATION_LEVEL = 3;
-				GCC_PREFIX_HEADER = Decompres_Prefix.pch;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					Binaries/LibTiff,
-					"\"$(SRCROOT)/Binaries\"",
-					"\"$(SRCROOT)/Binaries/Ming\"",
-					"\"$(SRCROOT)/Binaries/KDU SDK\"",
-					"\"$(SRCROOT)/Binaries/CharLS\"",
-					"\"$(SRCROOT)/Binaries/VTKLibs\"",
-					"\"$(SRCROOT)/Binaries/LibTiff\"",
-				);
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-				);
-				PRODUCT_NAME = Decompress;
-				SKIP_INSTALL = YES;
-				STRIP_INSTALLED_PRODUCT = YES;
-				SYMROOT = build;
-			};
-			name = "Deployment 32-bit";
-		};
-		CE5314B40C717C3000A2B75F /* Deployment 32-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_RESOURCE_RULES_PATH = "";
-				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
-				COPY_PHASE_STRIP = NO;
-				DEPLOYMENT_LOCATION = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(FRAMEWORK_SEARCH_PATHS)",
-					"$(SRCROOT)",
-				);
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_OPTIMIZATION_LEVEL = 3;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					Binaries/LibTiff,
-					AYDicomPrint,
-				);
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-				);
-				PRODUCT_NAME = DICOMPrint;
-				SKIP_INSTALL = YES;
-				SYMROOT = build;
-			};
-			name = "Deployment 32-bit";
-		};
-		CE5314B50C717C3000A2B75F /* Deployment 64-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "Developer ID Application: Antoine Rosset";
-				CODE_SIGN_RESOURCE_RULES_PATH = Rules.plist;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_FAST_OBJC_DISPATCH = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_OPTIMIZATION_LEVEL = s;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
-				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				HEADER_SEARCH_PATHS = (
-					/usr/include/libxml2,
-					AYDicomPrint,
-				);
-				IBC_FLATTEN_NIBS = NO;
-				MACOSX_DEPLOYMENT_TARGET = 10.8;
-				OTHER_CFLAGS = "-fvisibility=default";
-				OTHER_CODE_SIGN_FLAGS = "";
-				PROVISIONING_PROFILE = "";
-				SDKROOT = macosx10.8;
-			};
-			name = "Deployment 64-bit";
-		};
-		CE5314B60C717C3000A2B75F /* Deployment 64-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_WARN_EMPTY_BODY = YES;
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
-				DEAD_CODE_STRIPPING = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					.,
-					Binaries,
-					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
-					"$(SRCROOT)",
-					"\"$(SRCROOT)/Binaries\"",
-					"\"$(SRCROOT)/build/Development\"",
-				);
-				GCC_FAST_MATH = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_OPTIMIZATION_LEVEL = fast;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = OsiriX_Prefix.pch;
-				GCC_PREPROCESSOR_DEFINITIONS = NDEBUG;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_UNROLL_LOOPS = NO;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
-				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
-				GCC_WARN_ABOUT_POINTER_SIGNEDNESS = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = YES;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_PEDANTIC = NO;
-				GCC_WARN_SHADOW = NO;
-				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				IBC_FLATTEN_NIBS = YES;
-				INFOPLIST_FILE = "Deployment-Info.plist";
-				INSTALL_PATH = "$(USER_APPS_DIR)";
-				KEEP_PRIVATE_EXTERNS = YES;
-				LIBRARY_SEARCH_PATHS = (
-					Binaries/LibTiff,
-					Binaries/VTKLibs,
-					ITK180,
-					ITK180/Modules/Core/Common/include,
-					AYDicomPrint,
-					"\"$(SRCROOT)/Binaries/VTKLibs\"",
-					"\"$(SRCROOT)/Binaries\"",
-					"\"$(SRCROOT)/Binaries/KDU SDK\"",
-					"\"$(SRCROOT)/Binaries/LibTiff\"",
-					"\"$(SRCROOT)/Binaries/CharLS\"",
-					"\"$(SRCROOT)/ITK180/lib\"",
-				);
-				OTHER_CPLUSPLUSFLAGS = (
-					"$(OTHER_CFLAGS)",
-					"-Wno-deprecated",
-					"-no-pedantic",
-				);
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-					"-weak_framework",
-					3DconnexionClient,
-					"-sectcreate",
-					__TEXT,
-					__info_plist,
-					"Deployment-Info.plist",
-				);
-				PRESERVE_DEAD_CODE_INITS_AND_TERMS = NO;
-				PRODUCT_NAME = OsiriX;
-				STRIP_INSTALLED_PRODUCT = YES;
-				STRIP_STYLE = debugging;
-				USER_HEADER_SEARCH_PATHS = "ITK180/Modules/Core/Common/include ITK180/Modules/ThirdParty/VNL/src/vxl/core ITK180/Modules/ThirdParty/VNL/src/vxl/vcl ITK180/Modules/Core/Common ITK180/Modules/Core/Mesh/include ITK180/Modules/Segmentation/RegionGrowing/include ITK180/Modules/Filtering/CurvatureFlow/include ITK180/Modules/Core/ImageFunction/include ITK180/Modules/Core/FiniteDifference/include ITK180/Modules/Filtering/ImageFilterBase/include ITK180/Modules/Segmentation/LevelSets/include ITK180/Modules/Filtering/FastMarching/include ITK180/Modules/Filtering/ImageIntensity/include ITK180/Modules/Bridge/VTK/include ITK180/Modules/Filtering/MathematicalMorphology/include ITK180/Modules/Core/Transform/include ITK180/Modules/Filtering/ImageGrid/include ITK180/Modules/Filtering/BinaryMathematicalMorphology/include ITK180/Modules/ThirdParty/NrrdIO/src/NrrdIO";
-				WARNING_CFLAGS = "-no-pedantic";
-			};
-			name = "Deployment 64-bit";
-		};
-		CE5314B80C717C3000A2B75F /* Deployment 64-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUILD_VARIANTS = normal;
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = "";
-				DEAD_CODE_STRIPPING = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SYSTEM_LIBRARY_DIR)/Frameworks",
-					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
-					Binaries,
-					"$(SRCROOT)/Binaries",
-				);
-				FRAMEWORK_VERSION = A;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_OPTIMIZATION_LEVEL = 3;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "DCM Framework/DCM Framework_Prefix.pch";
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				HEADER_SEARCH_PATHS = "";
-				INFOPLIST_FILE = "DCM Framework/DCM-Info.plist";
-				INSTALL_PATH = "@executable_path/../Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					Binaries,
-					"\"$(SRCROOT)/Binaries\"",
-					"\"$(SRCROOT)/Binaries/KDU SDK\"",
-				);
-				OTHER_LDFLAGS = (
-					"-seg1addr",
-					0x20000000,
-				);
-				PRODUCT_NAME = OsiriX;
-				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
-				SECTORDER_FLAGS = "";
-				SKIP_INSTALL = YES;
-				STRIP_STYLE = debugging;
-			};
-			name = "Deployment 64-bit";
-		};
-		CE5314B90C717C3000A2B75F /* Deployment 64-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
-				GCC_ALTIVEC_EXTENSIONS = YES;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_MODEL_CPU = "";
-				GCC_MODEL_PPC64 = NO;
-				GCC_MODEL_TUNING = "";
-				GCC_OPTIMIZATION_LEVEL = 1;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				GCC_WARN_SHADOW = NO;
-				GCC_WARN_UNINITIALIZED_AUTOS = NO;
-				HEADER_SEARCH_PATHS = Binaries;
-				OTHER_CFLAGS = (
-					"-falign-functions=32",
-					"-falign-labels=32",
-					"-falign-loops=32",
-					"-falign-jumps=32",
-				);
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = "Unzip Binaries";
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-			};
-			name = "Deployment 64-bit";
-		};
-		CE5314BA0C717C3000A2B75F /* Deployment 64-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				HEADER_SEARCH_PATHS = Binaries;
-				OTHER_LDFLAGS = "";
-				PRODUCT_NAME = "Build All Prerequisites";
-				SECTORDER_FLAGS = "";
-			};
-			name = "Deployment 64-bit";
-		};
-		CE5314BD0C717C3000A2B75F /* Deployment 64-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
-				CODE_SIGN_RESOURCE_RULES_PATH = "";
-				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
-				COPY_PHASE_STRIP = YES;
-				DEPLOYMENT_LOCATION = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(FRAMEWORK_SEARCH_PATHS)",
-					"$(SRCROOT)",
-				);
-				GCC_FAST_MATH = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_OPTIMIZATION_LEVEL = 3;
-				GCC_PREFIX_HEADER = Decompres_Prefix.pch;
-				GCC_UNROLL_LOOPS = YES;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					Binaries/LibTiff,
-					"\"$(SRCROOT)/Binaries\"",
-					"\"$(SRCROOT)/Binaries/Ming\"",
-					"\"$(SRCROOT)/Binaries/KDU SDK\"",
-					"\"$(SRCROOT)/Binaries/CharLS\"",
-					"\"$(SRCROOT)/Binaries/VTKLibs\"",
-					"\"$(SRCROOT)/Binaries/LibTiff\"",
-				);
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-				);
-				PRODUCT_NAME = Decompress;
-				SKIP_INSTALL = YES;
-				STRIP_INSTALLED_PRODUCT = YES;
-				SYMROOT = build;
-			};
-			name = "Deployment 64-bit";
-		};
-		CE5314BF0C717C3000A2B75F /* Deployment 64-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CODE_SIGN_RESOURCE_RULES_PATH = "";
-				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
-				COPY_PHASE_STRIP = NO;
-				DEPLOYMENT_LOCATION = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(FRAMEWORK_SEARCH_PATHS)",
-					"$(SRCROOT)",
-				);
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_OPTIMIZATION_LEVEL = 3;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					Binaries/LibTiff,
-					AYDicomPrint,
-				);
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-				);
-				PRODUCT_NAME = DICOMPrint;
-				SKIP_INSTALL = YES;
-				SYMROOT = build;
-			};
-			name = "Deployment 64-bit";
 		};
 		CEC70A1A10A5C844008935EA /* Development */ = {
 			isa = XCBuildConfiguration;
@@ -33923,136 +33082,6 @@
 			};
 			name = Development;
 		};
-		CEC70A1C10A5C844008935EA /* Deployment 32-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
-				DEAD_CODE_STRIPPING = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					.,
-					Binaries,
-					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
-					"$(SRCROOT)",
-					"\"$(SRCROOT)/Binaries\"",
-				);
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_FAST_MATH = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_OPTIMIZATION_LEVEL = s;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = OsiriXLite_Prefix.pch;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_UNROLL_LOOPS = YES;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
-				GCC_WARN_ABOUT_POINTER_SIGNEDNESS = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = NO;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_SHADOW = NO;
-				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				IBC_FLATTEN_NIBS = YES;
-				INFOPLIST_FILE = "Deployment-Info OsiriXLite.plist";
-				INSTALL_PATH = "$(USER_APPS_DIR)";
-				LIBRARY_SEARCH_PATHS = (
-					AYDicomPrint,
-					"\"$(SRCROOT)/Binaries\"",
-					"\"$(SRCROOT)/Binaries/KDU SDK\"",
-					"\"$(SRCROOT)/Binaries/CharLS\"",
-					"\"$(SRCROOT)/Binaries/VTKLibs\"",
-					"\"$(SRCROOT)/Binaries/LibTiff\"",
-				);
-				OTHER_CPLUSPLUSFLAGS = (
-					"$(OTHER_CFLAGS)",
-					"-Wno-deprecated",
-				);
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-					"-weak_framework",
-					3DconnexionClient,
-				);
-				PRESERVE_DEAD_CODE_INITS_AND_TERMS = NO;
-				PRODUCT_NAME = "OsiriX Lite";
-				SKIP_INSTALL = YES;
-				STRIP_INSTALLED_PRODUCT = YES;
-				STRIP_STYLE = debugging;
-			};
-			name = "Deployment 32-bit";
-		};
-		CEC70A1D10A5C844008935EA /* Deployment 64-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
-				DEAD_CODE_STRIPPING = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					.,
-					Binaries,
-					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
-					"$(SRCROOT)",
-					"\"$(SRCROOT)/Binaries\"",
-				);
-				GCC_FAST_MATH = YES;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_OPTIMIZATION_LEVEL = 3;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = OsiriXLite_Prefix.pch;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_UNROLL_LOOPS = NO;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
-				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
-				GCC_WARN_ABOUT_POINTER_SIGNEDNESS = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = NO;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_PEDANTIC = NO;
-				GCC_WARN_SHADOW = NO;
-				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				IBC_FLATTEN_NIBS = YES;
-				INFOPLIST_FILE = "Deployment-Info OsiriXLite.plist";
-				INSTALL_PATH = "$(USER_APPS_DIR)";
-				KEEP_PRIVATE_EXTERNS = YES;
-				LIBRARY_SEARCH_PATHS = (
-					AYDicomPrint,
-					"\"$(SRCROOT)/Binaries\"",
-					"\"$(SRCROOT)/Binaries/KDU SDK\"",
-					"\"$(SRCROOT)/Binaries/CharLS\"",
-					"\"$(SRCROOT)/Binaries/VTKLibs\"",
-					"\"$(SRCROOT)/Binaries/LibTiff\"",
-				);
-				OTHER_CPLUSPLUSFLAGS = (
-					"$(OTHER_CFLAGS)",
-					"-Wno-deprecated",
-				);
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-					"-weak_framework",
-					3DconnexionClient,
-					"-undefined",
-					dynamic_lookup,
-				);
-				PRESERVE_DEAD_CODE_INITS_AND_TERMS = NO;
-				PRODUCT_NAME = "OsiriX Lite";
-				SKIP_INSTALL = YES;
-				STRIP_INSTALLED_PRODUCT = NO;
-				STRIP_STYLE = debugging;
-			};
-			name = "Deployment 64-bit";
-		};
 		CEDF6DCE0B46FE99008B45B8 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -34092,8 +33121,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				59BDEC30117C92B3007F1F2C /* Development */,
-				59BDEC31117C92B3007F1F2C /* Deployment 32-bit */,
-				59BDEC32117C92B3007F1F2C /* Deployment 64-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;
@@ -34102,8 +33129,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7E76BEC1085757B60073649A /* Development */,
-				CE5314AD0C717C3000A2B75F /* Deployment 32-bit */,
-				CE5314B80C717C3000A2B75F /* Deployment 64-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;
@@ -34112,8 +33137,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7E76BEC4085757B60073649A /* Development */,
-				CE5314AF0C717C3000A2B75F /* Deployment 32-bit */,
-				CE5314BA0C717C3000A2B75F /* Deployment 64-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;
@@ -34122,8 +33145,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7E76BEC7085757B70073649A /* Development */,
-				CE5314AB0C717C3000A2B75F /* Deployment 32-bit */,
-				CE5314B60C717C3000A2B75F /* Deployment 64-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;
@@ -34132,8 +33153,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7E76BED0085757B70073649A /* Development */,
-				CE5314AE0C717C3000A2B75F /* Deployment 32-bit */,
-				CE5314B90C717C3000A2B75F /* Deployment 64-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;
@@ -34142,8 +33161,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7E76BED9085757B70073649A /* Development */,
-				CE5314AA0C717C3000A2B75F /* Deployment 32-bit */,
-				CE5314B50C717C3000A2B75F /* Deployment 64-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;
@@ -34152,8 +33169,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A98795D416DB9FD100926023 /* Development */,
-				A98795D516DB9FD100926023 /* Deployment 32-bit */,
-				A98795D616DB9FD100926023 /* Deployment 64-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;
@@ -34162,8 +33177,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AB0F3A2E1046BD2D004129DD /* Development */,
-				AB0F3A301046BD2D004129DD /* Deployment 32-bit */,
-				AB0F3A311046BD2D004129DD /* Deployment 64-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;
@@ -34172,8 +33185,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AB724FF40ADE6ECB00A212A0 /* Development */,
-				CE5314B20C717C3000A2B75F /* Deployment 32-bit */,
-				CE5314BD0C717C3000A2B75F /* Deployment 64-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;
@@ -34182,8 +33193,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BF7486A60CC6AA5D00198387 /* Development */,
-				BF7486A80CC6AA5D00198387 /* Deployment 32-bit */,
-				BF7486A90CC6AA5D00198387 /* Deployment 64-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;
@@ -34192,8 +33201,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CEC70A1A10A5C844008935EA /* Development */,
-				CEC70A1C10A5C844008935EA /* Deployment 32-bit */,
-				CEC70A1D10A5C844008935EA /* Deployment 64-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;
@@ -34202,8 +33209,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CEDF6DCE0B46FE99008B45B8 /* Development */,
-				CE5314B40C717C3000A2B75F /* Deployment 32-bit */,
-				CE5314BF0C717C3000A2B75F /* Deployment 64-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;

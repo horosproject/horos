@@ -3007,17 +3007,6 @@ static BOOL initialized = NO;
 	{
 		if ( self == [AppController class] && initialized == NO)
 		{
-//			#if __LP64__
-//			if( [[NSDate date] timeIntervalSinceDate: [NSCalendarDate dateWithYear:2012 month:11 day:10 hour:1 minute:1 second:1 timeZone:nil]] > 0 || [[NSUserDefaults standardUserDefaults] boolForKey:@"Outdated2"])
-//			{
-//				NSRunCriticalAlertPanel(NSLocalizedString(@"Outdated Version", nil), NSLocalizedString(@"Please update your application. Available on the web site.", nil), NSLocalizedString(@"OK", nil), nil, nil);
-//				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"Outdated2"];
-//				[[NSUserDefaults standardUserDefaults] synchronize];
-//				exit( 0);
-//			}
-//            NSRunCriticalAlertPanel(NSLocalizedString(@"Training Version", nil), NSLocalizedString(@"Training version for rcs2.pl.", nil), NSLocalizedString(@"OK", nil), nil, nil);
-//			#endif
-						
 			if( [[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundlePackageType"] isEqualToString: @"APPL"])
 			{
 				[NSThread detachNewThreadSelector: @selector(DNSResolve:) toTarget: self withObject: nil];
@@ -4110,22 +4099,6 @@ static BOOL initialized = NO;
 		if(XMLRPCServer == nil) XMLRPCServer = [[XMLRPCInterface alloc] init];
 	}
 	#endif
-	
-	#if __LP64__
-	appStartingDate = [[[NSDate date] description] retain];
-	checkSN64Service = [[NSNetService alloc] initWithDomain:@"" type:@"_snosirix._tcp." name: [self privateIP] port: 8486];
-	checkSN64String = [[NSString stringWithContentsOfFile: [[[NSBundle mainBundle] builtInPlugInsPath] stringByAppendingPathComponent: @".sn64"]] retain];
-	if( checkSN64String == nil)
-		checkSN64String = [[NSString stringWithContentsOfFile: [[[NSBundle mainBundle] builtInPlugInsPath] stringByAppendingPathComponent: @"sn64"]] retain];
-	
-	NSNetServiceBrowser *checkSN64Browser = [[NSNetServiceBrowser alloc] init];
-	[checkSN64Browser setDelegate:self];
-	[checkSN64Browser searchForServicesOfType:@"_snosirix._tcp." inDomain:@""];
-	
-    #ifndef OSIRIX_LIGHT
-	[NSTimer scheduledTimerWithTimeInterval: 5 target: self selector: @selector(checkSN64:) userInfo: nil repeats: NO];
-	#endif
-    #endif
 	
 //	#ifndef OSIRIX_LIGHT
 //	#ifndef MACAPPSTORE

@@ -163,7 +163,7 @@ public:
 
     /// comparison non-equality
     OFBool operator!=(const DcmHashDictIterator& x) const 
-        { return (hindex != hindex) || (iter != x.iter); }
+        { return (hindex != x.hindex) || (iter != x.iter); }
 
     /// dereferencing of iterator
     const DcmDictEntry* operator*() const

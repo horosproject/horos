@@ -549,17 +549,17 @@ static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
 		return [wpc.session newChallenge];
     if ([key isEqualToString:@"proposeReport"])
     {
-        if( wpc.portal.authenticationRequired && !wpc.user) return NO;
+        if( wpc.portal.authenticationRequired && !wpc.user) return @NO;
         return [NSNumber numberWithBool: !wpc.user || wpc.user.downloadReport.boolValue];
     }
 	if ([key isEqualToString:@"proposeDicomUpload"])
     {
-        if( wpc.portal.authenticationRequired && !wpc.user) return NO;
+        if( wpc.portal.authenticationRequired && !wpc.user) return @NO;
 		return [NSNumber numberWithBool: (!wpc.user || wpc.user.uploadDICOM.boolValue) && !wpc.requestIsIOS];
 	}
     if ([key isEqualToString:@"proposeDicomSend"])
     {
-        if( wpc.portal.authenticationRequired && !wpc.user) return NO;
+        if( wpc.portal.authenticationRequired && !wpc.user) return @NO;
 		return [NSNumber numberWithBool: !wpc.user || wpc.user.sendDICOMtoSelfIP.boolValue || (wpc.user.sendDICOMtoAnyNodes.boolValue)];
     }
 	if ([key isEqualToString:@"proposeWADORetrieve"])
@@ -579,7 +579,7 @@ static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
     
 	if ([key isEqualToString:@"proposeZipDownload"])
     {
-        if( wpc.portal.authenticationRequired && !wpc.user) return NO;
+        if( wpc.portal.authenticationRequired && !wpc.user) return @NO;
 		return [NSNumber numberWithBool: (!wpc.user || wpc.user.downloadZIP.boolValue) && !wpc.requestIsIOS];
 	}
     if ([key isEqualToString:@"proposeDelete"])
@@ -587,7 +587,7 @@ static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
     
 	if ([key isEqualToString:@"proposeShare"])
     {
-        if( wpc.portal.authenticationRequired && !wpc.user) return NO;
+        if( wpc.portal.authenticationRequired && !wpc.user) return @NO;
         
 		if (!wpc.user || wpc.user.shareStudyWithUser.boolValue)
         {
