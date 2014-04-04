@@ -99,7 +99,7 @@ NSString* const O2ScreenCapturesSeriesName = NSLocalizedString(@"OsiriX Screen C
 		}
 	
 	// otherwise, consider the path was incomplete and just append the OsirixDataDirName element to tho path
-	if (![[path lastPathComponent] isEqualToString:OsirixDataDirName]) 
+	if (![[path lastPathComponent] isEqualToString:OsirixDataDirName])
 		path = [path stringByAppendingPathComponent:OsirixDataDirName];
 	
 	return path;
@@ -269,8 +269,8 @@ static NSRecursiveLock *databasesDictionaryLock = [[NSRecursiveLock alloc] init]
     
 	[databasesDictionaryLock lock];
     
-		database = (DicomDatabase*) [[databasesDictionary objectForKey:path] pointerValue];
-        [[database retain] autorelease]; // It was a weak link in databasesDictionary : add it to the current autorelease pool
+    database = (DicomDatabase*) [[databasesDictionary objectForKey:path] pointerValue];
+    [[database retain] autorelease]; // It was a weak link in databasesDictionary : add it to the current autorelease pool
     
     [databasesDictionaryLock unlock];
 	
@@ -484,8 +484,8 @@ static DicomDatabase* activeLocalDatabase = nil;
 
         [self initRouting];
         [self initClean];
-            
-        }
+        
+    }
     @catch (NSException *e) {
         N2LogExceptionWithStackTrace( e);
         
@@ -629,7 +629,7 @@ static DicomDatabase* activeLocalDatabase = nil;
         independentContext = NO;
     
     if( independentContext == NO) // avoid doing this for independent contexts: we know it's already ok, and this leads to very bad crashes
-    { 
+    {
         NSString* modelVersion = [NSString stringWithContentsOfFile:self.modelVersionFilePath encoding:NSUTF8StringEncoding error:nil];
         if (!modelVersion) modelVersion = [NSUserDefaults.standardUserDefaults stringForKey:@"DATABASEVERSION"];
         
@@ -818,7 +818,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
                 // delete empty dirs and scan for files with number names
     //			NSLog(@"Scanning %d dirs", fs.count);
                 for (NSString* f in [NSFileManager.defaultManager enumeratorAtPath:path filesOnly:NO recursive:NO]) {
-    //				NSLog(@"Scanning dir %@", f);
+                    //				NSLog(@"Scanning dir %@", f);
                     NSString* fpath = [path stringByAppendingPathComponent:f];
                     //NSDictionary* fattr = [NSFileManager.defaultManager fileAttributesAtPath:fpath traverseLink:YES];
                     //NSLog(@"Has %d attrs", fattr.count);
@@ -895,7 +895,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	if (ext.length > 4 || ext.length < 3) {
 		if (ext.length)
 			NSLog(@"Warning: strange extension \"%@\", it will be replaced with \"dcm\"", ext);
-		ext = @"dcm"; 
+		ext = @"dcm";
 	}
 
     @try
@@ -2415,7 +2415,7 @@ static BOOL protectionAgainstReentry = NO;
                                         // add the file to the album
                                         if ( [[album valueForKey:@"smartAlbum"] boolValue] == NO)
                                         {
-                                            NSMutableSet *studies = [album mutableSetValueForKey: @"studies"];	
+                                            NSMutableSet *studies = [album mutableSetValueForKey: @"studies"];
                                             [studies addObject: [image valueForKeyPath:@"series.study"]];
                                             [[image valueForKeyPath:@"series.study"] archiveAnnotationsAsDICOMSR];
                                         }
@@ -2527,8 +2527,11 @@ static BOOL protectionAgainstReentry = NO;
 					growlStringNewStudy = [NSString stringWithFormat:NSLocalizedString(@"%@\r%@", nil), [[addedImageObjects objectAtIndex:0] valueForKeyPath:@"series.study.name"], [[addedImageObjects objectAtIndex:0] valueForKeyPath:@"series.study.studyName"]];
 				}
 			}
-            if (self.isLocal && returnArray && [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOROUTINGACTIVATED"])
-                [self applyRoutingRules:nil toImages:addedImageObjects];
+            if (self.isLocal && returnArray && [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOROUTINGACTIVATED"]
+                && [self allowAutoroutingWithPostNotifications:postNotifications rereadExistingItems:rereadExistingItems])
+            {
+                [self alertToApplyRoutingRules:nil toImages:addedImageObjects];
+            }
 		}
 		@catch( NSException *ne)
 		{
@@ -2602,7 +2605,7 @@ static BOOL protectionAgainstReentry = NO;
                             NSString *extension = [srcPath pathExtension];
                             
                             if( [extension isEqualToString:@""])
-                                extension = @"dcm"; 
+                                extension = @"dcm";
                             
                             if( [extension length] > 4 || [extension length] < 3)
                                 extension = @"dcm";
@@ -3175,7 +3178,7 @@ static BOOL protectionAgainstReentry = NO;
                 }
             }
         }
-    }    
+    }
 }
 
 //-(void)_threadDecompressToIncoming:(NSArray*)compressedPathArray {
@@ -3327,7 +3330,7 @@ static BOOL protectionAgainstReentry = NO;
      //   [NSThread sleepForTimeInterval:2];
         
         NSString* oldModelFilename = [NSString stringWithFormat:@"OsiriXDB_Previous_DataModel%@.mom", databaseModelVersion];
-        if ([databaseModelVersion isEqualToString:CurrentDatabaseVersion]) oldModelFilename = [NSString stringWithFormat:@"OsiriXDB_DataModel.mom"]; // same version 
+        if ([databaseModelVersion isEqualToString:CurrentDatabaseVersion]) oldModelFilename = [NSString stringWithFormat:@"OsiriXDB_DataModel.mom"]; // same version
         
         if (![NSFileManager.defaultManager fileExistsAtPath:[NSBundle.mainBundle.resourcePath stringByAppendingPathComponent:oldModelFilename]])
         {
@@ -3993,7 +3996,7 @@ static BOOL protectionAgainstReentry = NO;
 			theTask = [[NSTask alloc] init];
 			[theTask setLaunchPath:@"/usr/bin/sqlite3"];
 			[theTask setStandardInput:[NSFileHandle fileHandleForReadingAtPath:repairedDBFile]];
-			[theTask setArguments:[NSArray arrayWithObjects: repairedDBFinalFile, nil]];		
+			[theTask setArguments:[NSArray arrayWithObjects: repairedDBFinalFile, nil]];
 			
 			[theTask launch];
 			while( [theTask isRunning])
@@ -4069,6 +4072,16 @@ static BOOL protectionAgainstReentry = NO;
 	if ([[NSFileManager defaultManager] fileExistsAtPath:cssFile] == NO)
 		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"QTExportStyle.css"] toPath:cssFile handler:nil];
 	
+}
+
+-(BOOL)allowAutoroutingWithPostNotifications:(BOOL)postNotifications rereadExistingItems:(BOOL)rereadExistingItems
+{
+    return YES;
+}
+
+-(void)alertToApplyRoutingRules:(NSArray*)routingRules toImages:(NSArray*)images
+{
+    [self applyRoutingRules:nil toImages:images];
 }
 
 @end
