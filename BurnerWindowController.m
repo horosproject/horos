@@ -651,7 +651,7 @@
 		NSDictionary*	errorStatus = [burnStatus objectForKey:DRErrorStatusKey];
 		NSString*		errorString = [errorStatus objectForKey:DRErrorStatusErrorStringKey];
 		
-		NSRunCriticalAlertPanel( NSLocalizedString( @"Burning failed", nil), errorString, NSLocalizedString( @"OK", nil), nil, nil);
+		NSRunCriticalAlertPanel( NSLocalizedString( @"Burning failed", nil), @"%@", NSLocalizedString( @"OK", nil), nil, nil, errorString);
 	}
 	else
     {

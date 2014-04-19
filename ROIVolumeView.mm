@@ -359,7 +359,7 @@
         if( error == nil)
             error = NSLocalizedString( @"Not possible to compute a volume!", nil);
         
-        NSRunCriticalAlertPanel( NSLocalizedString( @"ROIs", nil), error, NSLocalizedString( @"OK", nil), nil, nil);
+        NSRunCriticalAlertPanel( NSLocalizedString( @"ROIs", nil), @"%@", NSLocalizedString( @"OK", nil), nil, nil, error);
         return nil;
     }
     

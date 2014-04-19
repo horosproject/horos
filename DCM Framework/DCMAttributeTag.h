@@ -81,4 +81,5 @@
 /** Tests to see if group and element are the same */
 - (BOOL)isEquaToTag:(DCMAttributeTag *)tag;
 
+- (NSString *)readableDescription;
 @end

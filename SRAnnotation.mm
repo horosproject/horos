@@ -589,6 +589,11 @@
             if (status.good() && string)
                 document->setReferringPhysiciansName( string);
             
+            string = nil;
+            status = fileformat.getDataset()->findAndGetString( DCM_StudyDescription, string, OFFalse);
+            if (status.good() && string)
+                document->setStudyDescription( string);
+            
             if( _DICOMSRDescription.length)
             {
                 NSMutableData *data = [NSMutableData dataWithData: [_DICOMSRDescription dataUsingEncoding:encoding allowLossyConversion: YES]];
@@ -599,15 +604,15 @@
                     document->setSeriesDescription( (char*) [data bytes]);
             }
             
-            if ([[study valueForKey:@"studyName"] length])
-            {
-                NSMutableData *data = [NSMutableData dataWithData: [[study valueForKey:@"studyName"] dataUsingEncoding:encoding allowLossyConversion: YES]];
-                unsigned char zeroByte = 0;
-                [data appendBytes:&zeroByte length:1];
-                
-                if( [data bytes])
-                    document->setStudyDescription( (char*) [data bytes]);
-            }
+//            if ([[study valueForKey:@"studyName"] length])
+//            {
+//                NSMutableData *data = [NSMutableData dataWithData: [[study valueForKey:@"studyName"] dataUsingEncoding:encoding allowLossyConversion: YES]];
+//                unsigned char zeroByte = 0;
+//                [data appendBytes:&zeroByte length:1];
+//                
+//                if( [data bytes])
+//                    document->setStudyDescription( (char*) [data bytes]);
+//            }
         }
     }
     else

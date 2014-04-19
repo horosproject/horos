@@ -645,6 +645,10 @@ static NSString* _dcmElementKey(DcmElement* element) {
         
         NSInteger mode = [NSUserDefaults.standardUserDefaults integerForKey:@"MOUNT"];
         
+#ifdef OSIRIX_LIGHT
+        mode = 0; //display the source
+#endif
+        
         if (mode == -1 || [[NSApp currentEvent] modifierFlags]&NSCommandKeyMask)
             [self performSelectorOnMainThread:@selector(_askUserDiscDataCopyOrBrowse:) withObject:[NSArray arrayWithObjects: path, [NSNumber numberWithInteger:dicomImages.count], [NSValue valueWithPointer:&mode], nil] waitUntilDone:YES];
         

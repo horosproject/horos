@@ -396,7 +396,7 @@
 			[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:newPort] forKey:@"TLSStoreSCPAEPORT"];
 			
 			NSString *msg = [NSString stringWithFormat:NSLocalizedString( @"The port %d is already use by the standard DICOM Listener. The port %d was automatically chosen instead.", nil), submittedPort, newPort];
-			NSRunAlertPanel(NSLocalizedString(@"Port already in use", nil),  msg, NSLocalizedString(@"OK", nil), nil, nil);
+			NSRunAlertPanel(NSLocalizedString(@"Port already in use", nil),  @"%@", NSLocalizedString(@"OK", nil), nil, nil, msg);
 		}
 	}
 }

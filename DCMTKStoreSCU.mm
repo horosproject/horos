@@ -354,13 +354,13 @@ addStoragePresentationContexts(T_ASC_Parameters *params, OFList<OFString>& sopCl
 //    return (int)t;
 //}
 
-static OFString
-intToString(int i)
-{
-    char numbuf[32];
-    sprintf(numbuf, "%d", i);
-    return numbuf;
-}
+//static OFString
+//intToString(int i)
+//{
+//    char numbuf[32];
+//    sprintf(numbuf, "%d", i);
+//    return numbuf;
+//}
 
 //static OFString
 //makeUID(OFString basePrefix, int counter)
@@ -1003,7 +1003,19 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
 		
 		_filesToSend = [[NSMutableArray arrayWithArray: filesToSend] retain];
 		[_filesToSend removeDuplicatedStrings];
-		_numberOfFiles = [filesToSend count];
+        
+        NSMutableArray *toBeRemoved = [NSMutableArray array];
+        for( NSString *f in _filesToSend)
+        {
+            if( [[NSFileManager defaultManager] fileExistsAtPath: f] == NO)
+            {
+                [toBeRemoved addObject: f];
+                NSLog( @"**** DCMTKStoreSCU: file not available: %@", f);
+            }
+        }
+        [_filesToSend removeObjectsInArray: toBeRemoved];
+        
+		_numberOfFiles = _filesToSend.count;
 		_numberSent = 0;
 		_numberErrors = 0;
 		_logEntry = nil;
@@ -1011,7 +1023,7 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
 		DcmFileFormat fileformat;
 		if ([_filesToSend count])
 		{
-			OFCondition status = fileformat.loadFile([[filesToSend objectAtIndex:0] UTF8String]);
+			OFCondition status = fileformat.loadFile([ [_filesToSend objectAtIndex:0] UTF8String]);
 			if (status.good())
 			{
 				const char *string = NULL;
@@ -1828,6 +1840,8 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
 			[userInfo setObject:[NSNumber numberWithInt:_numberErrors] forKey:@"ErrorCount"];
 			
 			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"DICOM Send", nil) description: [NSString stringWithFormat: NSLocalizedString(@"Errors ! %@ of %@ generated errors.", nil), N2LocalizedDecimal( _numberErrors) , N2LocalizedSingularPluralCount( _numberOfFiles, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil))]  name:@"send"];
+            
+            NSLog( @"DCMTKStoreSCU: _numberSent: %d / _numberOfFiles : %d", _numberSent, _numberOfFiles);
             
             if( localException == nil)
                 localException = [[NSException exceptionWithName:@"DICOM Network Failure (STORE-SCU)" reason:@"Unsuccessful Store Encountered, see Applications/Utilities/Console.app for more detailed informations." userInfo:nil] retain];

@@ -150,6 +150,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
             else
             {
                 NSRunCriticalAlertPanel(NSLocalizedString( @"Slice interval/thickness",nil), NSLocalizedString( @"Problems with slice thickness/interval to do a 3D reconstruction.",nil), NSLocalizedString(@"OK",nil), nil, nil);
+                [self autorelease];
                 return nil;
             }
         }
@@ -164,6 +165,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
         if( err)
         {
             NSRunCriticalAlertPanel( NSLocalizedString(@"Images size",nil),  NSLocalizedString(@"These images don't have the same height and width to allow a 3D reconstruction...",nil), NSLocalizedString(@"OK",nil), nil, nil);
+            [self autorelease];
             return nil;
         }
         
@@ -194,7 +196,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
         err = [view setPixSource:pixList :(float*) [volumeData bytes]];
         if( err != 0)
         {
-           // [self dealloc];
+            [self autorelease];
             return nil;
         }
         
@@ -702,7 +704,6 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	// Set up the standard properties 
 	[toolbarItem setLabel:NSLocalizedString( @"Mouse button function",nil)];
 	[toolbarItem setPaletteLabel:NSLocalizedString( @"Mouse button function",nil)];
-	[toolbarItem setToolTip: NSLocalizedString(@"Change the mouse function",nil)];
 	
 	[toolbarItem setView: toolsView];
 	[toolbarItem setMinSize:NSMakeSize(NSWidth([toolsView frame]), NSHeight([toolsView frame]))];

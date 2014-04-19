@@ -171,8 +171,18 @@
 	return 0xFFFFFFFF;	
 }
 
+- (NSString *)readableDescription{
+	NSString *sequenceDescription =  [super readableDescription];
+    
+	NSEnumerator *enumerator = [sequenceItems objectEnumerator];
+	NSString *string;
+	while ((string = [[(NSDictionary *)[enumerator nextObject] objectForKey:@"item"] readableDescription]))
+		sequenceDescription = [NSString stringWithFormat:@"%@\n\t%@", sequenceDescription, string];
+	return sequenceDescription;
+}
+
 - (NSString *)description{
-	NSString *sequenceDescription =  [super description];;
+	NSString *sequenceDescription =  [super description];
 	//NSString *description = [super description];
 	NSEnumerator *enumerator = [sequenceItems objectEnumerator];
 	NSString *string;

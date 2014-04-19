@@ -45,7 +45,7 @@ static int gTotalN2ManagedObjectContext = 0;
 #ifndef NDEBUG
     gTotalN2ManagedObjectContext++;
     
-    if( gTotalN2ManagedObjectContext > 4)
+    if( gTotalN2ManagedObjectContext > 10)
         NSLog( @"-- gTotalN2ManagedObjectContext = %d", gTotalN2ManagedObjectContext);
 #endif
     
@@ -321,10 +321,10 @@ static int gTotalN2ManagedObjectContext = 0;
                         {
                             NSLog(@"Error: [N2ManagedDatabase contextAtPath:] %@", [err description]);
                             if ([NSThread isMainThread]) {
-                                NSInteger result = NSRunCriticalAlertPanel( [NSString stringWithFormat:NSLocalizedString(@"%@ Storage Error", nil), [self className]], [NSString stringWithFormat: @"%@\r\r%@\r\r%@", err.localizedDescription, sqlFilePath, NSLocalizedString(@"I could delete the SQL index file to reset it.", nil)], NSLocalizedString(@"Continue", nil), NSLocalizedString(@"Delete the SQL index", nil), nil);
+                                NSInteger result = NSRunCriticalAlertPanel( [NSString stringWithFormat:NSLocalizedString(@"%@ Storage Error", nil), [self className]], @"%@\r\r%@\r\r%@", NSLocalizedString(@"Continue", nil), NSLocalizedString(@"Delete the SQL index", nil), nil, err.localizedDescription, sqlFilePath, NSLocalizedString(@"I could delete the SQL index file to reset it.", nil));
                                 
                                 if( result == NSAlertAlternateReturn) {
-                                    NSInteger result = NSRunCriticalAlertPanel( [NSString stringWithFormat:NSLocalizedString(@"%@ Storage Error", nil), [self className]], [NSString stringWithFormat: @"%@\r\r%@", NSLocalizedString( @"Do you confirm to delete this index file? This operation cannot be undone.", nil), sqlFilePath], NSLocalizedString(@"Cancel", nil), NSLocalizedString(@"Delete", nil), nil);
+                                    NSInteger result = NSRunCriticalAlertPanel( [NSString stringWithFormat:NSLocalizedString(@"%@ Storage Error", nil), [self className]], @"%@\r\r%@", NSLocalizedString(@"Cancel", nil), NSLocalizedString(@"Delete", nil), nil, NSLocalizedString( @"Do you confirm to delete this index file? This operation cannot be undone.", nil), sqlFilePath);
                                     
                                     if( result == NSAlertAlternateReturn) {
                                         [NSFileManager.defaultManager removeItemAtPath:sqlFilePath error: nil];

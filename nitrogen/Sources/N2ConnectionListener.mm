@@ -133,8 +133,10 @@ static void accept(CFSocketRef socket, CFSocketCallBackType type, CFDataRef addr
 	ipv4socket = CFSocketCreate(kCFAllocatorDefault, PF_INET, SOCK_STREAM, IPPROTO_TCP, kCFSocketAcceptCallBack, (CFSocketCallBack)&accept, &socketCtxt);
 	ipv6socket = CFSocketCreate(kCFAllocatorDefault, PF_INET6, SOCK_STREAM, IPPROTO_TCP, kCFSocketAcceptCallBack, (CFSocketCallBack)&accept, &socketCtxt);
 	if (!ipv4socket || !ipv6socket)
+    {
+        [self autorelease];
 		[NSException raise:NSGenericException format:@"Could not create listening sockets."];
-	
+	}
 	int yes = 1;
 	setsockopt(CFSocketGetNative(ipv4socket), SOL_SOCKET, SO_REUSEADDR, (void *)&yes, sizeof(yes));
 	setsockopt(CFSocketGetNative(ipv6socket), SOL_SOCKET, SO_REUSEADDR, (void *)&yes, sizeof(yes));
@@ -154,6 +156,7 @@ static void accept(CFSocketRef socket, CFSocketCallBackType type, CFDataRef addr
 		if (ipv6socket) CFRelease(ipv6socket);
 		ipv4socket = NULL;
 		ipv6socket = NULL;
+        [self autorelease];
 		return nil;
 	}
 	
@@ -179,6 +182,7 @@ static void accept(CFSocketRef socket, CFSocketCallBackType type, CFDataRef addr
 		if (ipv6socket) CFRelease(ipv6socket);
 		ipv4socket = NULL;
 		ipv6socket = NULL;
+        [self autorelease];
 		return nil;
 	}
 	
@@ -206,8 +210,11 @@ static void accept(CFSocketRef socket, CFSocketCallBackType type, CFDataRef addr
 	CFSocketContext socketCtxt = {0, self, NULL, NULL, NULL};
 	ipv4socket = CFSocketCreate(kCFAllocatorDefault, PF_LOCAL, SOCK_STREAM, IPPROTO_IP, kCFSocketAcceptCallBack, (CFSocketCallBack)&accept, &socketCtxt);
 	if (!ipv4socket)
+    {
+        [self autorelease];
 		[NSException raise:NSGenericException format:@"Could not create listening socket."];
-	
+	}
+    
 	int yes = 1;
 	setsockopt(CFSocketGetNative(ipv4socket), SOL_SOCKET, SO_REUSEADDR, (void *)&yes, sizeof(yes));
 	
@@ -224,6 +231,7 @@ static void accept(CFSocketRef socket, CFSocketCallBackType type, CFDataRef addr
 		if (ipv6socket) CFRelease(ipv6socket);
 		ipv4socket = NULL;
 		ipv6socket = NULL;
+        [self autorelease];
 		return nil;
 	}
 	

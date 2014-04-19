@@ -197,7 +197,7 @@ static float deg2rad = M_PI / 180.0;
 		if( [originalPix isRGB])
 		{
 			NSRunCriticalAlertPanel( NSLocalizedString(@"RGB",nil), NSLocalizedString( @"RGB images are not supported.",nil), NSLocalizedString(@"OK",nil), nil, nil);
-            [self release];
+            [self autorelease];
             
 			return nil;
 		}

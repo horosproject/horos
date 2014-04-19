@@ -231,7 +231,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	NSTimer			*_rightMouseDownTimer; //Checking For Right hold
 	NSImage			*destinationImage; //image will be dropping
 	
-	BOOL			_hasChanged, needToLoadTexture, dontEnterReshape, showDescriptionInLarge;
+	BOOL			_hasChanged, needToLoadTexture, showDescriptionInLarge;
 	
 	BOOL			scaleToFitNoReentry;
 	
@@ -308,7 +308,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 
 @property NSRect drawingFrameRect;
 @property(readonly) NSMutableArray *rectArray, *curRoiList;
-@property BOOL COPYSETTINGSINSERIES, flippedData, dontEnterReshape, showDescriptionInLarge;
+@property BOOL COPYSETTINGSINSERIES, flippedData, showDescriptionInLarge;
 @property(nonatomic) BOOL whiteBackground;
 @property(readonly) NSMutableArray *dcmPixList,  *dcmRoiList;
 @property(readonly) NSArray *dcmFilesList;

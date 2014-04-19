@@ -99,7 +99,7 @@ NSString* const O2ScreenCapturesSeriesName = NSLocalizedString(@"OsiriX Screen C
 		}
 	
 	// otherwise, consider the path was incomplete and just append the OsirixDataDirName element to tho path
-	if (![[path lastPathComponent] isEqualToString:OsirixDataDirName])
+	if (![[path lastPathComponent] isEqualToString:OsirixDataDirName]) 
 		path = [path stringByAppendingPathComponent:OsirixDataDirName];
 	
 	return path;
@@ -269,8 +269,8 @@ static NSRecursiveLock *databasesDictionaryLock = [[NSRecursiveLock alloc] init]
     
 	[databasesDictionaryLock lock];
     
-    database = (DicomDatabase*) [[databasesDictionary objectForKey:path] pointerValue];
-    [[database retain] autorelease]; // It was a weak link in databasesDictionary : add it to the current autorelease pool
+		database = (DicomDatabase*) [[databasesDictionary objectForKey:path] pointerValue];
+        [[database retain] autorelease]; // It was a weak link in databasesDictionary : add it to the current autorelease pool
     
     [databasesDictionaryLock unlock];
 	
@@ -484,13 +484,13 @@ static DicomDatabase* activeLocalDatabase = nil;
 
         [self initRouting];
         [self initClean];
-        
-    }
+            
+        }
     @catch (NSException *e) {
         N2LogExceptionWithStackTrace( e);
         
         if( [NSThread isMainThread])
-            NSRunAlertPanel( NSLocalizedString( @"Database", nil), e.reason, NSLocalizedString( @"OK", nil), nil, nil);
+            NSRunAlertPanel( NSLocalizedString( @"Database", nil), @"%@", NSLocalizedString( @"OK", nil), nil, nil, e.reason);
         
         [self autorelease];
         return nil;
@@ -629,7 +629,7 @@ static DicomDatabase* activeLocalDatabase = nil;
         independentContext = NO;
     
     if( independentContext == NO) // avoid doing this for independent contexts: we know it's already ok, and this leads to very bad crashes
-    {
+    { 
         NSString* modelVersion = [NSString stringWithContentsOfFile:self.modelVersionFilePath encoding:NSUTF8StringEncoding error:nil];
         if (!modelVersion) modelVersion = [NSUserDefaults.standardUserDefaults stringForKey:@"DATABASEVERSION"];
         
@@ -675,11 +675,6 @@ static DicomDatabase* activeLocalDatabase = nil;
 }
 
 -(BOOL)save:(NSError**)err {
-	// TODO: BrowserController did this... one day I'll explain why...
-//	if ([[AppController sharedAppController] isSessionInactive]) {
-//		NSLog(@"---- Session is not active : db will not be saved");
-//		return;
-//	}
 	
 	BOOL b = NO;
 	
@@ -818,7 +813,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
                 // delete empty dirs and scan for files with number names
     //			NSLog(@"Scanning %d dirs", fs.count);
                 for (NSString* f in [NSFileManager.defaultManager enumeratorAtPath:path filesOnly:NO recursive:NO]) {
-                    //				NSLog(@"Scanning dir %@", f);
+    //				NSLog(@"Scanning dir %@", f);
                     NSString* fpath = [path stringByAppendingPathComponent:f];
                     //NSDictionary* fattr = [NSFileManager.defaultManager fileAttributesAtPath:fpath traverseLink:YES];
                     //NSLog(@"Has %d attrs", fattr.count);
@@ -895,7 +890,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	if (ext.length > 4 || ext.length < 3) {
 		if (ext.length)
 			NSLog(@"Warning: strange extension \"%@\", it will be replaced with \"dcm\"", ext);
-		ext = @"dcm";
+		ext = @"dcm"; 
 	}
 
     @try
@@ -1941,7 +1936,13 @@ static BOOL protectionAgainstReentry = NO;
                                 
                                 [newStudies addObject: study];
                                 [studiesArray addObject: study];
-                                [studiesArrayStudyInstanceUID addObject: [curDict objectForKey: @"studyID"]];
+                                if( [curDict objectForKey: @"studyID"])
+                                    [studiesArrayStudyInstanceUID addObject: [curDict objectForKey: @"studyID"]];
+                                else
+                                {
+                                    N2LogStackTrace( @"no studyID !");
+                                    [studiesArrayStudyInstanceUID addObject: @"noStudyID"];
+                                }
                                 
                                 curSerieID = nil;
                             }
@@ -2415,7 +2416,7 @@ static BOOL protectionAgainstReentry = NO;
                                         // add the file to the album
                                         if ( [[album valueForKey:@"smartAlbum"] boolValue] == NO)
                                         {
-                                            NSMutableSet *studies = [album mutableSetValueForKey: @"studies"];
+                                            NSMutableSet *studies = [album mutableSetValueForKey: @"studies"];	
                                             [studies addObject: [image valueForKeyPath:@"series.study"]];
                                             [[image valueForKeyPath:@"series.study"] archiveAnnotationsAsDICOMSR];
                                         }
@@ -2527,11 +2528,8 @@ static BOOL protectionAgainstReentry = NO;
 					growlStringNewStudy = [NSString stringWithFormat:NSLocalizedString(@"%@\r%@", nil), [[addedImageObjects objectAtIndex:0] valueForKeyPath:@"series.study.name"], [[addedImageObjects objectAtIndex:0] valueForKeyPath:@"series.study.studyName"]];
 				}
 			}
-            if (self.isLocal && returnArray && [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOROUTINGACTIVATED"]
-                && [self allowAutoroutingWithPostNotifications:postNotifications rereadExistingItems:rereadExistingItems])
-            {
+            if (self.isLocal && returnArray && [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOROUTINGACTIVATED"] && [self allowAutoroutingWithPostNotifications:postNotifications rereadExistingItems:rereadExistingItems])
                 [self alertToApplyRoutingRules:nil toImages:addedImageObjects];
-            }
 		}
 		@catch( NSException *ne)
 		{
@@ -2605,7 +2603,7 @@ static BOOL protectionAgainstReentry = NO;
                             NSString *extension = [srcPath pathExtension];
                             
                             if( [extension isEqualToString:@""])
-                                extension = @"dcm";
+                                extension = @"dcm"; 
                             
                             if( [extension length] > 4 || [extension length] < 3)
                                 extension = @"dcm";
@@ -2827,10 +2825,15 @@ static BOOL protectionAgainstReentry = NO;
     return [self importFilesFromIncomingDir: @NO];
 }
 
--(NSInteger)importFilesFromIncomingDir: (NSNumber*) showGUI {
+-(NSInteger)importFilesFromIncomingDir: (NSNumber*) showGUI
+{
+    return [self importFilesFromIncomingDir: showGUI listenerCompressionSettings: [[NSUserDefaults standardUserDefaults] integerForKey: @"ListenerCompressionSettings"]];
+}
+
+-(NSInteger)importFilesFromIncomingDir: (NSNumber*) showGUI listenerCompressionSettings: (BOOL) listenerCompressionSettings
+{
 	NSMutableArray* compressedPathArray = [NSMutableArray array];
 	NSThread* thread = [NSThread currentThread];
-	BOOL listenerCompressionSettings = [[NSUserDefaults standardUserDefaults] integerForKey: @"ListenerCompressionSettings"];
 	NSUInteger addedFilesCount = 0;
 	BOOL activityFeedbackShown = NO;
     
@@ -2944,6 +2947,111 @@ static BOOL protectionAgainstReentry = NO;
 				}
 				else if ([[fattrs objectForKey:NSFileSize] longLongValue] > 0)
 				{
+                    //=======================
+                    //JF wado rest multi-part WADO-RS WADORS
+                    //=======================
+                    
+                    //if file not available for reading, do nothing
+                    NSFileHandle *file = [NSFileHandle fileHandleForReadingAtPath:srcPath];
+                    if (file)
+                    {
+#define WADORSSIZE 0x500
+                        BOOL dicomFileCreated=NO;
+                        NSMutableData *data = [NSMutableData data];
+                        [data appendData:[file readDataOfLength:WADORSSIZE]];
+                        
+                        if( data.length >= WADORSSIZE)
+                        {
+                            NSData *applicationDicom = [@"application/dicom;" dataUsingEncoding:NSASCIIStringEncoding];
+                            NSRange applicationDicomRange  = [data rangeOfData:applicationDicom options:0 range:NSMakeRange(0, WADORSSIZE)];
+                            if (applicationDicomRange.location != NSNotFound)
+                            {
+                                //read the rest of file
+                                [data appendData:[file readDataToEndOfFile]];
+                                NSUInteger dataLength = [data length];
+                                
+                                /*
+                                 find the mime multipart boundary.
+                                 ================================
+                                 
+                                 [preamble CRLF]
+                                 
+                                 --boundary transport-padding CRLF
+                                 
+                                 CRLF --boundary transport-padding CRLF
+                                 1. body-part
+                                 
+                                 CRLF --boundary transport-padding CRLF
+                                 2. body-part
+                                 
+                                 CRLF --boundary transport-padding CRLF
+                                 3. body-part
+                                 
+                                 CRLF --boundary-- transport-padding
+                                 [CRLF epilogue]
+                                 
+                                 ---
+                                 
+                                 We assume that neither the eventual preamble nor the boundary contain "--"
+                                 */
+                                
+                                unsigned short dash = 0x2D2D;
+                                NSData *dashData =[NSData dataWithBytes:&dash length:2];
+                                NSRange boundaryRange = [data rangeOfData:dashData options:0 range:NSMakeRange(0, dataLength)];
+                                NSUInteger lastBoundaryLocation = boundaryRange.location;
+                                if ((lastBoundaryLocation != NSNotFound) && (lastBoundaryLocation < dataLength - 75))
+                                {
+                                    unsigned short CRLF = 0x0A0D;
+                                    NSData *CRLFData =[NSData dataWithBytes:&CRLF length:2];
+                                    NSRange firstBoundaryCRLFRange = [data rangeOfData:CRLFData options:0 range:NSMakeRange(boundaryRange.location, 75)];
+                                    if (firstBoundaryCRLFRange.location != NSNotFound)
+                                    {
+                                        NSData *boundaryData = [data subdataWithRange:NSMakeRange(lastBoundaryLocation, firstBoundaryCRLFRange.location - lastBoundaryLocation)];
+                                        NSUInteger boundaryLength=[boundaryData length];
+                                        NSData *DICMData = [@"DICM" dataUsingEncoding:NSASCIIStringEncoding];
+                                        NSRange DICMRange;
+                                        NSRange dataRange;
+                                        NSUInteger datasetOffset;
+                                        while (lastBoundaryLocation < dataLength)
+                                        {
+                                            dataRange.location = lastBoundaryLocation;
+                                            dataRange.length   = dataLength-lastBoundaryLocation;
+                                            applicationDicomRange = [data rangeOfData:applicationDicom options:0 range:dataRange];
+                                            if (applicationDicomRange.location==NSNotFound) lastBoundaryLocation = dataLength;
+                                            else
+                                            {
+                                                DICMRange = [data rangeOfData:DICMData options:0 range:dataRange];
+                                                if (DICMRange.location==NSNotFound) lastBoundaryLocation = dataLength;
+                                                else
+                                                {
+                                                    
+                                                    boundaryRange = [data rangeOfData:boundaryData options:0 range:NSMakeRange(lastBoundaryLocation+boundaryLength, dataLength - lastBoundaryLocation - boundaryLength)];
+                                                    if (boundaryRange.location != NSNotFound) lastBoundaryLocation = dataLength;
+                                                    if ((DICMRange.location > applicationDicomRange.location) && (boundaryRange.location > DICMRange.location))
+                                                    {
+                                                        //write dicom file
+                                                        datasetOffset=DICMRange.location - 128;
+                                                        dicomFileCreated=[[data subdataWithRange:NSMakeRange(datasetOffset,boundaryRange.location - 2 - datasetOffset)]writeToFile:[self.incomingDirPath stringByAppendingPathComponent:[[NSUUID UUID]UUIDString]] atomically:NO];
+                                                    }
+                                                    lastBoundaryLocation=boundaryRange.location;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                
+                            }
+                        }
+                        [file closeFile];
+                        if (dicomFileCreated)[[NSFileManager defaultManager] removeFileAtPath:srcPath handler:nil];
+                        
+                    }
+                    //===========================
+                    //JF end wado rest multi-part
+                    //===========================
+                    
+                    
+                    
 					if ([[srcPath pathExtension] isEqualToString: @"zip"] || [[srcPath pathExtension] isEqualToString: @"osirixzip"])
 					{
 						NSString *compressedPath = [self.decompressionDirPath stringByAppendingPathComponent: lastPathComponent];
@@ -3121,6 +3229,24 @@ static BOOL protectionAgainstReentry = NO;
 	return addedFilesCount;
 }
 
+-(BOOL)waitForCompressThread
+{
+    DicomDatabase* mdb = self.isMainDatabase? self : self.mainDatabase;
+    
+    if( [mdb.compressDecompressThread isFinished] || [mdb.compressDecompressThread isCancelled])
+        return NO;
+    
+    if( [mdb.compressDecompressThread isExecuting])
+    {
+        while( [mdb.compressDecompressThread isExecuting])
+            [NSThread sleepForTimeInterval:0.1];
+        
+        return YES;
+    }
+    
+    return NO;
+}
+
 - (void)kickstartCompressDecompress {
     @synchronized (_compressQueue) {
         @synchronized (_decompressQueue) {
@@ -3178,7 +3304,7 @@ static BOOL protectionAgainstReentry = NO;
                 }
             }
         }
-    }
+    }    
 }
 
 //-(void)_threadDecompressToIncoming:(NSArray*)compressedPathArray {
@@ -3330,7 +3456,7 @@ static BOOL protectionAgainstReentry = NO;
      //   [NSThread sleepForTimeInterval:2];
         
         NSString* oldModelFilename = [NSString stringWithFormat:@"OsiriXDB_Previous_DataModel%@.mom", databaseModelVersion];
-        if ([databaseModelVersion isEqualToString:CurrentDatabaseVersion]) oldModelFilename = [NSString stringWithFormat:@"OsiriXDB_DataModel.mom"]; // same version
+        if ([databaseModelVersion isEqualToString:CurrentDatabaseVersion]) oldModelFilename = [NSString stringWithFormat:@"OsiriXDB_DataModel.mom"]; // same version 
         
         if (![NSFileManager.defaultManager fileExistsAtPath:[NSBundle.mainBundle.resourcePath stringByAppendingPathComponent:oldModelFilename]])
         {
@@ -3674,7 +3800,7 @@ static BOOL protectionAgainstReentry = NO;
 		[newAlbumsNames release];		newAlbumsNames = nil;
 		
 		if (upgradeProblems.count)
-			NSRunAlertPanel(NSLocalizedString(@"Database Upgrade", nil), [NSString stringWithFormat:NSLocalizedString(@"The upgrade encountered %d errors. These corrupted studies have been removed: %@", nil), upgradeProblems.count, [upgradeProblems componentsJoinedByString:@", "]], nil, nil, nil);
+			NSRunAlertPanel(NSLocalizedString(@"Database Upgrade", nil), NSLocalizedString(@"The upgrade encountered %d errors. These corrupted studies have been removed: %@", nil), nil, nil, nil, upgradeProblems.count, [upgradeProblems componentsJoinedByString:@", "]);
 		
 		return YES;
 	} @catch (NSException* e) {
@@ -3964,6 +4090,16 @@ static BOOL protectionAgainstReentry = NO;
 #endif
 }
 
+-(BOOL)allowAutoroutingWithPostNotifications:(BOOL)postNotifications rereadExistingItems:(BOOL)rereadExistingItems
+{
+    return YES;
+}
+
+-(void)alertToApplyRoutingRules:(NSArray*)routingRules toImages:(NSArray*)images
+{
+    [self applyRoutingRules:nil toImages:images];
+}
+
 -(void)dumpSqlFile {
 	//WaitRendering *splash = [[WaitRendering alloc] init:NSLocalizedString(@"Dumping SQL Index file...", nil)]; // TODO: status
 	//[splash showWindow:self];
@@ -3996,7 +4132,7 @@ static BOOL protectionAgainstReentry = NO;
 			theTask = [[NSTask alloc] init];
 			[theTask setLaunchPath:@"/usr/bin/sqlite3"];
 			[theTask setStandardInput:[NSFileHandle fileHandleForReadingAtPath:repairedDBFile]];
-			[theTask setArguments:[NSArray arrayWithObjects: repairedDBFinalFile, nil]];
+			[theTask setArguments:[NSArray arrayWithObjects: repairedDBFinalFile, nil]];		
 			
 			[theTask launch];
 			while( [theTask isRunning])
@@ -4072,16 +4208,6 @@ static BOOL protectionAgainstReentry = NO;
 	if ([[NSFileManager defaultManager] fileExistsAtPath:cssFile] == NO)
 		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"QTExportStyle.css"] toPath:cssFile handler:nil];
 	
-}
-
--(BOOL)allowAutoroutingWithPostNotifications:(BOOL)postNotifications rereadExistingItems:(BOOL)rereadExistingItems
-{
-    return YES;
-}
-
--(void)alertToApplyRoutingRules:(NSArray*)routingRules toImages:(NSArray*)images
-{
-    [self applyRoutingRules:nil toImages:images];
 }
 
 @end

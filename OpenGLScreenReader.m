@@ -177,7 +177,6 @@
 		if (!glPixelFormat)
 		{
             [self autorelease];
-            
 			return nil;
 		}
 
@@ -189,7 +188,7 @@
     
         if (!mGLContext)
         {
-            [self release];
+            [self autorelease];
             return nil;
         }
         [mGLContext retain];

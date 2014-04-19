@@ -1048,7 +1048,6 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 	// Set up the standard properties 
 	[toolbarItem setLabel: NSLocalizedString(@"Mouse button function",nil)];
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Mouse button function",nil)];
-	[toolbarItem setToolTip:NSLocalizedString( @"Change the mouse function",nil)];
 	
 	// Use a custom view, a text field, for the search item 
 	[toolbarItem setView: toolsView];

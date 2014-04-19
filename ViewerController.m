@@ -175,6 +175,7 @@ static NSImage* retrieveImage = nil;
 
 static int numberOf2DViewer = 0;
 static NSMutableArray *arrayOf2DViewers = nil;
+static BOOL DisplayUseInvertedPolarity = NO;
 
 BOOL SyncButtonBehaviorIsBetweenStudies = NO;
 
@@ -415,8 +416,10 @@ static int hotKeyToolCrossTable[] =
 	return -1;
 }
 
-+ (ViewerController*) frontMostDisplayed2DViewerForScreen: (NSScreen*) screen
++ (NSArray*) displayed2DViewerForScreen: (NSScreen*) screen
 {
+    NSMutableArray *array = [NSMutableArray array];
+    
 	for( NSWindow *w in [NSApp orderedWindows])
 	{
 		if( [[w windowController] isKindOfClass:[ViewerController class]] && w.isVisible)
@@ -426,7 +429,39 @@ static int hotKeyToolCrossTable[] =
                 ViewerController *v = w.windowController;
                 
                 if( v.windowWillClose == NO)
+                    [array addObject: v];
+            }
+		}
+	}
+	
+	return array;
+}
+
+static NSMutableDictionary *cachedFrontMostDisplayed2DViewerForScreen = nil;
+
++ (ViewerController*) frontMostDisplayed2DViewerForScreen: (NSScreen*) screen
+{
+    if( cachedFrontMostDisplayed2DViewerForScreen == nil)
+        cachedFrontMostDisplayed2DViewerForScreen = [NSMutableDictionary new];
+    
+    NSString *adress = [NSString stringWithFormat: @"%ld", (unsigned long) screen];
+    id a = [cachedFrontMostDisplayed2DViewerForScreen objectForKey: adress];
+    if( a)
+        return a;
+    
+	for( NSWindow *w in [NSApp orderedWindows])
+	{
+		if( [[w windowController] isKindOfClass:[ViewerController class]] && w.isVisible)
+		{
+            if( screen == nil || [w.screen isEqual: screen])
+            {
+                ViewerController *v = w.windowController;
+                
+                if( v.windowWillClose == NO)
+                {
+                    [cachedFrontMostDisplayed2DViewerForScreen setObject: v forKey: adress];
                     return v;
+                }
             }
 		}
 	}
@@ -434,13 +469,20 @@ static int hotKeyToolCrossTable[] =
 	return nil;
 }
 
+static ViewerController *cachedFrontMostDisplayed2DViewer = nil;
+
 + (ViewerController*) frontMostDisplayed2DViewer
 {
+    if( cachedFrontMostDisplayed2DViewer)
+        return cachedFrontMostDisplayed2DViewer;
+    
 	for( NSWindow *w in [NSApp orderedWindows])
 	{
 		if( [[w windowController] isKindOfClass:[ViewerController class]] && w.isVisible)
 		{
-			return [w windowController];
+            cachedFrontMostDisplayed2DViewer = w.windowController;
+            
+			return cachedFrontMostDisplayed2DViewer;
 		}
 	}
 	
@@ -449,16 +491,14 @@ static int hotKeyToolCrossTable[] =
 
 + (BOOL) isFrontMost2DViewer: (NSWindow*) ww
 {
-	for( NSWindow *w in [NSApp orderedWindows])
-	{
-		if( [[w windowController] isKindOfClass:[ViewerController class]])
-		{
-			if( w == ww)
-				return YES;
-			else
-				return NO;
-		}
-	}
+    if( cachedFrontMostDisplayed2DViewer)
+    {
+        if( ww == cachedFrontMostDisplayed2DViewer.window)
+            return YES;
+    }
+    
+	if( [[ViewerController frontMostDisplayed2DViewer] window] == ww)
+        return YES;
 	
 	return NO;
 }
@@ -1573,7 +1613,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	NSString			*previousCLUT = [curCLUTMenu retain];
 	NSString			*previousOpacity = [curOpacityMenu retain];
 	
-    if( [pixList[ curMovieIndex] count] < 100)
+    if( [pixList[ curMovieIndex] count] < 100 && firstPix.pheight <= 256 && firstPix.pwidth <= 256)
         square = YES;
     
 	// Get Values
@@ -2477,7 +2517,6 @@ static volatile int numberOfThreadsForRelisce = 0;
     }
 }
 
-
 -(void)roiContextualMenuActionRemove:(NSMenuItem*)source
 {
 	ROI* roi = [source representedObject];
@@ -2490,6 +2529,21 @@ static volatile int numberOfThreadsForRelisce = 0;
 - (void) applyWindowProtocol:(id) sender
 {
     [[AppController sharedAppController] closeAllViewers: self];
+    
+    DicomStudy *s = self.currentStudy;
+    NSArray *imageSeries = s.imageSeries;
+    
+    [imageSeries setValue:nil forKey:@"rotationAngle"];
+    [imageSeries setValue:nil forKey:@"scale"];
+    [imageSeries setValue:nil forKey:@"windowLevel"];
+    [imageSeries setValue:nil forKey:@"windowWidth"];
+    [imageSeries setValue:nil forKey:@"xFlipped"];
+    [imageSeries setValue:nil forKey:@"yFlipped"];
+    [imageSeries setValue:nil forKey:@"xOffset"];
+    [imageSeries setValue:nil forKey:@"yOffset"];
+    [imageSeries setValue:nil forKey:@"displayStyle"];
+    [s setValue:nil forKey:@"windowsState"];
+    
     [[BrowserController currentBrowser] databaseOpenStudy: self.currentStudy withProtocol: [sender representedObject]];
 }
 
@@ -2867,23 +2921,41 @@ static volatile int numberOfThreadsForRelisce = 0;
     
     if( displayedViewersCount < rows*columns)
     {
-        NSArray *seriesArray = [[BrowserController currentBrowser] childrenArray: [[imageView seriesObj] valueForKey:@"study"]];
+        [[BrowserController currentBrowser] displayWaitWindowIfNecessary];
         
+        NSMutableArray *seriesArray = [[[self.currentStudy imageSeriesContainingPixels: YES] mutableCopy] autorelease];
         NSUInteger index = [seriesArray indexOfObject: [imageView seriesObj]];
         
         if( index == NSNotFound)
             index = 0;
         
+        // Remove series already displayed
+        for( ViewerController *v in [ViewerController get2DViewers])
+        {
+            NSUInteger seriesIndex = [[seriesArray valueForKey: @"objectID"] indexOfObject: v.currentSeries.objectID];
+            if( seriesIndex != NSNotFound)
+                [seriesArray removeObjectAtIndex: seriesIndex];
+        }
         for( int i = displayedViewersCount ; i < rows*columns; i++)
         {
-            index++;
-            if( index >= seriesArray.count)
-                index = 0;
-            
-            ViewerController *newViewer = [[BrowserController currentBrowser] loadSeries: [seriesArray objectAtIndex: index] :nil :YES keyImagesOnly: NO];
+            ViewerController *newViewer = nil;
+            if( seriesArray.count > 0)
+            {
+                index++;
+                if( index >= seriesArray.count)
+                    index = 0;
+                
+                newViewer = [[BrowserController currentBrowser] loadSeries: [seriesArray objectAtIndex: index] :nil :YES keyImagesOnly: NO];
+                
+                [seriesArray removeObjectAtIndex: index];
+            }
+            else
+                newViewer = [[BrowserController currentBrowser] loadSeries: [imageView seriesObj] :nil :YES keyImagesOnly: NO]; //Duplicate existing
             
             [newViewer showCurrentThumbnail: self];
         }
+        
+        [[BrowserController currentBrowser] closeWaitWindowIfNecessary];
         
         for( int i = 0; i < [[NSScreen screens] count]; i++) [thumbnailsListPanel[ i] setThumbnailsView: nil viewer:nil];
         [[self window] makeKeyAndOrderFront: self];
@@ -3013,6 +3085,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void)windowWillClose:(NSNotification *)notification
 {
+    cachedFrontMostDisplayed2DViewer = nil;
+    [cachedFrontMostDisplayed2DViewerForScreen removeAllObjects];
+    
 #ifndef OSIRIX_LIGHT
 	[[OSIEnvironment sharedEnvironment] removeViewerController:self];
 #endif
@@ -3194,6 +3269,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) windowDidResignMain:(NSNotification *)aNotification
 {
+    cachedFrontMostDisplayed2DViewer = nil;
+    [cachedFrontMostDisplayed2DViewerForScreen removeAllObjects];
+    
 	[imageView stopROIEditingForce: YES];
 	
 	[imageView sendSyncMessage: 0];
@@ -3206,6 +3284,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 -(void) windowDidResignKey:(NSNotification *)aNotification
 {
+    cachedFrontMostDisplayed2DViewer = nil;
+    [cachedFrontMostDisplayed2DViewerForScreen removeAllObjects];
+    
 	[imageView stopROIEditingForce: YES];
 	
     [self autoHideMatrix];
@@ -3219,6 +3300,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void)windowDidChangeScreen:(NSNotification *)aNotification
 {
+    [cachedFrontMostDisplayed2DViewerForScreen removeAllObjects];
+    
     if( windowWillClose)
         return;
     
@@ -3308,6 +3391,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) windowDidBecomeMain:(NSNotification *)aNotification
 {
+    cachedFrontMostDisplayed2DViewer = nil;
+    [cachedFrontMostDisplayed2DViewerForScreen removeAllObjects];
+    
 	if( recursiveCloseWindowsProtected) return;
 	
     NSDisableScreenUpdates();
@@ -3320,6 +3406,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) windowDidBecomeKey:(NSNotification *)aNotification
 {
+    cachedFrontMostDisplayed2DViewer = nil;
+    [cachedFrontMostDisplayed2DViewerForScreen removeAllObjects];
+    
 	if( recursiveCloseWindowsProtected) return;
 	
     NSDisableScreenUpdates();
@@ -3394,6 +3483,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void)applicationDidResignActive:(NSNotification *)aNotification
 {
+    cachedFrontMostDisplayed2DViewer = nil;
+    [cachedFrontMostDisplayed2DViewerForScreen removeAllObjects];
+    
 	if( FullScreenOn == YES) [self fullScreenMenu: self];
 }
 
@@ -3936,7 +4028,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                         
                         [number lockFocus];
                         
-                        if( [[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.CoreGraphics"] objectForKey: @"DisplayUseInvertedPolarity"] boolValue])
+                        if( DisplayUseInvertedPolarity)
                             bkgColor = [NSColor colorWithCalibratedRed: 1.0-bkgColor.redComponent green: 1.0-bkgColor.greenComponent blue:1.0-bkgColor.blueComponent alpha: bkgColor.alphaComponent];
                         
                         [bkgColor set];
@@ -4082,7 +4174,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                                 }
                             }
                             
-                            if( [[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.CoreGraphics"] objectForKey: @"DisplayUseInvertedPolarity"] boolValue])
+                            if( DisplayUseInvertedPolarity)
                                 img = [img imageInverted];
                             
                             [cell setImage: [img imageByScalingProportionallyToSizeUsingNSImage: NSMakeSize( SERIESPOPUPSIZE, SERIESPOPUPSIZE)]];
@@ -4329,8 +4421,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 	if( [self FullScreenON] == NO)
 	{
 		window = self.window;
-		if( [window isKeyWindow] == NO) hide = YES;
-		if( [window isMainWindow] == NO) hide = YES;
+		if( [window isKeyWindow] == NO)
+            hide = YES;
+//		if( [window isMainWindow] == NO)
+//            hide = YES;
 	}
 	else
 		window = FullScreenWindow;
@@ -4347,7 +4441,8 @@ static volatile int numberOfThreadsForRelisce = 0;
             {
                 
             }
-            else hide = YES;
+            else
+                hide = YES;
         }
         else
         {
@@ -4355,7 +4450,8 @@ static volatile int numberOfThreadsForRelisce = 0;
             {
                 
             }
-            else hide = YES;
+            else
+                hide = YES;
         }
 	}
     
@@ -4737,7 +4833,7 @@ static volatile int numberOfThreadsForRelisce = 0;
     NSMenuItem *menuItem = [[[NSMenuItem alloc] initWithTitle: @"" action: @selector( seriesPopupSelect:) keyEquivalent: @""] autorelease];
     NSImage	*img = [[[NSImage alloc] initWithData: [self.currentSeries primitiveValueForKey:@"thumbnail"]] autorelease];
 
-    if( [[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.CoreGraphics"] objectForKey: @"DisplayUseInvertedPolarity"] boolValue])
+    if( DisplayUseInvertedPolarity)
         img = [img imageInverted];
 
     [menuItem setImage: [img imageByScalingProportionallyToSizeUsingNSImage: NSMakeSize( SERIESPOPUPSIZE, SERIESPOPUPSIZE)]];
@@ -5008,7 +5104,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                         else
                             bkgColor = [colors objectAtIndex: curStudyIndexAll];
                         
-                        if( [[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.CoreGraphics"] objectForKey: @"DisplayUseInvertedPolarity"] boolValue])
+                        if( DisplayUseInvertedPolarity)
                             bkgColor = [NSColor colorWithCalibratedRed: 1.0-bkgColor.redComponent green: 1.0-bkgColor.greenComponent blue:1.0-bkgColor.blueComponent alpha: bkgColor.alphaComponent];
                         
                         [attribs setObject: bkgColor forKey: NSBackgroundColorAttributeName];
@@ -5212,7 +5308,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                                 }
                             }
                             
-                            if( [[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.CoreGraphics"] objectForKey: @"DisplayUseInvertedPolarity"] boolValue])
+                            if( DisplayUseInvertedPolarity)
                                 img = [img imageInverted];
                             
                             switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"dbFontSize"])
@@ -5375,7 +5471,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	NSString	*path = [[BrowserController currentBrowser] getLocalDCMPath:[fileList[curMovieIndex] objectAtIndex:[imageView curImage]] : 0];
 	[[self window] setRepresentedFilename: path];
 	
-	NSManagedObject *im = [fileList[curMovieIndex] objectAtIndex:[imageView curImage]];
+	DicomImage *im = [fileList[curMovieIndex] objectAtIndex:[imageView curImage]];
 	
 	if( [XMLController windowForViewer: self])
 		[[[XMLController windowForViewer: self] window] makeKeyAndOrderFront: self];
@@ -5816,17 +5912,6 @@ static ViewerController *draggedController = nil;
 	
     [self autoHideMatrix];
 }
-
-//- (void) Display3DPoint:(NSNotification*) note
-//{
-//	NSMutableArray	*v = [note object];
-//	
-//	if( v == pixList[ 0])
-//	{
-//		[imageView setIndex: [[[note userInfo] valueForKey:@"z"] intValue]];
-//		[imageView sendSyncMessage: 0];
-//	}
-//}
 
 - (IBAction) setCurrentPosition:(id) sender
 {
@@ -7503,6 +7588,8 @@ return YES;
 
 -(void)awakeFromNib
 {
+    DisplayUseInvertedPolarity = [[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.CoreGraphics"] objectForKey: @"DisplayUseInvertedPolarity"] boolValue];
+    
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"] == NO)
     {
         if( splitView == nil) { // For compatibility with old localized (without auto-layout) xibs....
@@ -7550,6 +7637,9 @@ return YES;
     
     flagListPODComparatives = [[NSNumber alloc] initWithBool:YES];
 	[self bind:@"flagListPODComparatives" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.listPODComparativesIn2DViewer" options:nil];
+    
+    cachedFrontMostDisplayed2DViewer = nil;
+    [cachedFrontMostDisplayed2DViewerForScreen removeAllObjects];
 }
 
 -(void)comparativeRefresh:(NSString*) patientUID
@@ -7579,7 +7669,7 @@ static int avoidReentryRefreshDatabase = 0;
         BOOL rebuild = NO, reload = NO;
         
         if( !newImages)
-            rebuild = reload = YES;
+            rebuild = YES;
         
         DicomImage* firstObject = [fileList[curMovieIndex] count]? [fileList[curMovieIndex] objectAtIndex:0] : nil;
         for( DicomImage* dicomImage in newImages)
@@ -7596,8 +7686,7 @@ static int avoidReentryRefreshDatabase = 0;
         if( rebuild)
             [self buildMatrixPreview: NO];
         
-        if( reload)
-        {
+        if( reload) {
             BrowserController* bc = [BrowserController currentBrowser];
             [bc openViewerFromImages:[NSArray arrayWithObject:[bc childrenArray:firstObject.series]] movie:NO viewer:self keyImagesOnly:NO tryToFlipData:YES];
         }
@@ -7700,6 +7789,9 @@ static int avoidReentryRefreshDatabase = 0;
 
 - (void) dealloc
 {
+    cachedFrontMostDisplayed2DViewer = nil;
+    [cachedFrontMostDisplayed2DViewerForScreen removeAllObjects];
+    
     if( [NSThread isMainThread] == NO)
         N2LogStackTrace( @"dealloc NOT on main thread");
     
@@ -7914,7 +8006,7 @@ static int avoidReentryRefreshDatabase = 0;
 		[NSObject cancelPreviousPerformRequestsWithTarget:[AppController sharedAppController] selector:@selector(tileWindows:) object:nil];
 		[[AppController sharedAppController] tileWindows: nil];
 	}
-	
+	   
 	if( curMovieIndex != 0)
 		[self setMovieIndex: 0];
 	
@@ -7948,6 +8040,8 @@ static int avoidReentryRefreshDatabase = 0;
 				[imageView release];
 				imageView = [[[seriesView imageViews] objectAtIndex:0] retain];
 				[imageView becomeFirstResponder];
+                
+                [self setImageRows: 1 columns: 1];
 			}
 			
 			[imageView mouseUp: [[NSApplication sharedApplication] currentEvent]];
@@ -8037,7 +8131,6 @@ static int avoidReentryRefreshDatabase = 0;
                 
 				// Release previous data
 				[self finalizeSeriesViewing];
-				
 				
 				[[[BrowserController currentBrowser] database] lock];
 				
@@ -8413,10 +8506,28 @@ static int avoidReentryRefreshDatabase = 0;
 						[imageView becomeFirstResponder];
 					}
                     
+					[self setCurWLWWMenu: [DCMView findWLWWPreset: [imageView curWL] :[imageView curWW] :[imageView curDCM]]];
+					
+					nonVolumicDataWarningDisplayed = NO;
+					
+					for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+						[v buildMatrixPreview: NO];
+					
+					NSPoint subtractionOffset = [[imageView curDCM] subPixOffset];
+					[self offsetMatrixSetting:([self threeTestsFivePosibilities: (int)subtractionOffset.y] * 5) + [self threeTestsFivePosibilities: (int)subtractionOffset.x]];
+					
+					[subCtrlSum setFloatValue: 1];
+					[subCtrlPercent setFloatValue: 1];
+					
+					[imageView setDrawing: YES];
+					[imageView setNeedsDisplay: YES];
+                    
+                    // **
+                    
                     // Apply saved images tiling or default protocol
                     
-                    DicomStudy *study = [[images objectAtIndex: 0] valueForKeyPath: @"series.study"];
-                    DicomStudy *series = [[images objectAtIndex: 0] valueForKey: @"series"];
+                    DicomStudy *study = self.currentStudy;
+                    DicomSeries *series = self.currentSeries;
                     
                     int newColumns = previousColumns;
                     int newRows = previousRows;
@@ -8446,26 +8557,16 @@ static int avoidReentryRefreshDatabase = 0;
                         }
                     }
                     
-                    if( newRows != previousRows || newColumns != previousColumns)
-                        [self setImageRows: newRows columns: newColumns];
+                    BOOL a = ![DCMView noPropagateSettingsInSeriesForModality: self.modality];
                     
-                    // **
+                    for( DCMView *view in seriesView.imageViews)
+                    {
+                        if( view.COPYSETTINGSINSERIES != a)
+                            [view setCOPYSETTINGSINSERIES: a];
+                    }
                     
-					[self setCurWLWWMenu: [DCMView findWLWWPreset: [imageView curWL] :[imageView curWW] :[imageView curDCM]]];
-					
-					nonVolumicDataWarningDisplayed = NO;
-					
-					for( ViewerController *v in [ViewerController getDisplayed2DViewers])
-						[v buildMatrixPreview: NO];
-					
-					NSPoint subtractionOffset = [[imageView curDCM] subPixOffset];
-					[self offsetMatrixSetting:([self threeTestsFivePosibilities: (int)subtractionOffset.y] * 5) + [self threeTestsFivePosibilities: (int)subtractionOffset.x]];
-					
-					[subCtrlSum setFloatValue: 1];
-					[subCtrlPercent setFloatValue: 1];
-					
-					[imageView setDrawing: YES];
-					[imageView setNeedsDisplay: YES];
+                    if( newRows != 1 || newColumns != 1)
+                        [self setImageRows: newRows columns: newColumns rescale: YES];
 				}
 				@catch( NSException *e)
 				{
@@ -8757,24 +8858,9 @@ static int avoidReentryRefreshDatabase = 0;
         return;
     
     NSArray *pixListArray = [dict objectForKey: @"pixListArray"];
-//    NSArray *fileListArray = [dict objectForKey: @"fileListArray"];
     DCMPix *firstPix = [[pixListArray objectAtIndex: 0] objectAtIndex: 0];
     
     #pragma mark modality dependant code, once images are already displayed in 2D viewer
-    
-    if( [[pixListArray objectAtIndex: 0] count] > 0)
-    {
-        BOOL identicalChannelRepresentation = YES;
-        BOOL rgb = [[[pixListArray objectAtIndex: 0] lastObject] isRGB];
-        for( DCMPix *p in [pixListArray objectAtIndex: 0])
-        {
-            if( [p isRGB] != rgb)
-                identicalChannelRepresentation = NO;
-        }
-        
-        if( identicalChannelRepresentation == NO)
-            [imageView setCOPYSETTINGSINSERIESdirectly: identicalChannelRepresentation];
-    }
     
     for( NSArray *pList in pixListArray)
     {
@@ -8855,107 +8941,149 @@ static int avoidReentryRefreshDatabase = 0;
         
         [NSThread currentThread].name = @"Load Image Data";
         
-        DCMPix *firstPix = [[pixListArray objectAtIndex: 0] objectAtIndex: 0];
-        
-        @try 
+        static int mpprocessors = 0;
+        if( mpprocessors == 0)
         {
-            [DicomFile isDICOMFile: [firstPix sourceFile] compressed: &compressed];
+            mpprocessors = [[NSProcessInfo processInfo] processorCount];
+            NSLog( @"[[NSProcessInfo processInfo] processorCount]");
+            if( mpprocessors < 1)
+                mpprocessors = 1;
             
-            if( compressed)
-                if( [BrowserController isItCD: [firstPix sourceFile]]) //Always Single thread for CD/DVD
-                    compressed = NO;
-            
-            if( compressed)
-                NSLog( @"start loading multiple thread");
-            else
-                NSLog( @"start loading single thread");
-            
-            NSConditionLock *subLoadingThread = [[[NSConditionLock alloc] init] autorelease];
-            
-            for( x = 0; x < pixListArray.count; x++)
+            if( mpprocessors > 4)
+                mpprocessors --;
+        }
+        
+        static dispatch_semaphore_t sid = 0;
+        if (!sid)
+            sid = dispatch_semaphore_create( mpprocessors);
+        
+        if (dispatch_semaphore_wait(sid, DISPATCH_TIME_FOREVER) == 0)
+        {
+            @try
             {
-                int mpprocessors = [[NSProcessInfo processInfo] processorCount];
-                if( mpprocessors < 1)
-                    mpprocessors = 1;
+                DCMPix *firstPix = [[pixListArray objectAtIndex: 0] objectAtIndex: 0];
                 
-                int numberOfThreadsForCompute = mpprocessors;
+                [DicomFile isDICOMFile: [firstPix sourceFile] compressed: &compressed];
                 
-                if( compressed == NO)
-                    numberOfThreadsForCompute = 1;
+                if( compressed)
+                    if( [BrowserController isItCD: [firstPix sourceFile]]) //Always Single thread for CD/DVD
+                        compressed = NO;
                 
-                NSMutableDictionary *d = [NSMutableDictionary dictionary];
+                if( compressed)
+                    NSLog( @"start loading multiple thread");
+                else
+                    NSLog( @"start loading single thread");
                 
-                [d setObject: [NSThread currentThread] forKey: @"loadingThread"];
-                [d setObject: [pixListArray objectAtIndex: x] forKey: @"pixList"];
-                [d setObject: [fileListArray objectAtIndex: x] forKey: @"fileList"];
-                [d setObject: subLoadingThread forKey: @"subLoadingThread"];
-                [d setObject: [NSNumber numberWithInt: x] forKey: @"movieIndex"];
-                [d setObject: [NSNumber numberWithInt: pixListArray.count] forKey: @"maxMovieIndex"];
-                [d setObject: volumeDataArray forKey: @"volumeDataArray"];
+                NSConditionLock *subLoadingThread = [[[NSConditionLock alloc] init] autorelease];
                 
-                if( numberOfThreadsForCompute > 1)
+                
+                static int globalNumberOfLoadingThread = 0;
+                
+                for( x = 0; x < pixListArray.count; x++)
                 {
-                    [subLoadingThread lock];
-                    [subLoadingThread unlockWithCondition: numberOfThreadsForCompute];
+                    int numberOfThreadsForCompute = mpprocessors;
                     
-                    for( i = 0; i < numberOfThreadsForCompute; i++)
+                    if( compressed == NO)
+                        numberOfThreadsForCompute = 1;
+                    else
                     {
-                        int from = (i * [[pixListArray objectAtIndex: x] count]) / numberOfThreadsForCompute;
-                        int to = ((i+1) * [[pixListArray objectAtIndex: x] count]) / numberOfThreadsForCompute;
-                        
-                        NSMutableDictionary *dd = [NSMutableDictionary dictionaryWithDictionary: d];
-                        
-                        [dd setObject: [NSNumber numberWithInt: from] forKey: @"from"];
-                        [dd setObject: [NSNumber numberWithInt: to] forKey: @"to"];
-                        
-                        static dispatch_semaphore_t sid = 0;
-                        if (!sid)
-                            sid = dispatch_semaphore_create( mpprocessors);
-                        
-                        if (dispatch_semaphore_wait(sid, DISPATCH_TIME_FOREVER) == 0)
+    #define MINIMUMNUMBEROFIMAGESPERTHREAD 40
+                        if( [[fileListArray objectAtIndex: x] count] / numberOfThreadsForCompute < MINIMUMNUMBEROFIMAGESPERTHREAD)
                         {
-                            [NSThread detachNewThreadSelector: @selector(subLoadingThread:) toTarget: self withObject: dd];
-                            dispatch_semaphore_signal(sid);
+                            numberOfThreadsForCompute = [[fileListArray objectAtIndex: x] count] / MINIMUMNUMBEROFIMAGESPERTHREAD;
+                            
+                            if( numberOfThreadsForCompute < 1)
+                                numberOfThreadsForCompute = 1;
+                            
+                            if( numberOfThreadsForCompute > mpprocessors)
+                                numberOfThreadsForCompute = mpprocessors;
                         }
                     }
                     
-                    [subLoadingThread lockWhenCondition: 0];
-                    [subLoadingThread unlock];
+                    @synchronized( [ViewerController class])
+                    {
+                        if( globalNumberOfLoadingThread+numberOfThreadsForCompute > mpprocessors)
+                            numberOfThreadsForCompute = 1;
+                        
+                        globalNumberOfLoadingThread += numberOfThreadsForCompute;
+                    }
+                    
+                    NSMutableDictionary *d = [NSMutableDictionary dictionary];
+                    
+                    [d setObject: [NSThread currentThread] forKey: @"loadingThread"];
+                    [d setObject: [pixListArray objectAtIndex: x] forKey: @"pixList"];
+                    [d setObject: [fileListArray objectAtIndex: x] forKey: @"fileList"];
+                    [d setObject: subLoadingThread forKey: @"subLoadingThread"];
+                    [d setObject: [NSNumber numberWithInt: x] forKey: @"movieIndex"];
+                    [d setObject: [NSNumber numberWithInt: pixListArray.count] forKey: @"maxMovieIndex"];
+                    [d setObject: volumeDataArray forKey: @"volumeDataArray"];
+                    
+                    if( numberOfThreadsForCompute > 1)
+                    {
+                        [subLoadingThread lock];
+                        [subLoadingThread unlockWithCondition: numberOfThreadsForCompute];
+                        
+                        for( i = 0; i < numberOfThreadsForCompute; i++)
+                        {
+                            int from = (i * [[pixListArray objectAtIndex: x] count]) / numberOfThreadsForCompute;
+                            int to = ((i+1) * [[pixListArray objectAtIndex: x] count]) / numberOfThreadsForCompute;
+                            
+                            NSMutableDictionary *dd = [NSMutableDictionary dictionaryWithDictionary: d];
+                            
+                            [dd setObject: [NSNumber numberWithInt: from] forKey: @"from"];
+                            [dd setObject: [NSNumber numberWithInt: to] forKey: @"to"];
+                            
+                           
+                            [NSThread detachNewThreadSelector: @selector(subLoadingThread:) toTarget: self withObject: dd];
+                        }
+                        
+                        [subLoadingThread lockWhenCondition: 0];
+                        [subLoadingThread unlock];
+                    }
+                    else
+                    {
+                        int from = 0;
+                        int to = [[pixListArray objectAtIndex: x] count];
+                        
+                        [d setObject: [NSNumber numberWithInt: from] forKey: @"from"];
+                        [d setObject: [NSNumber numberWithInt: to] forKey: @"to"];
+                        
+                        [ViewerController subLoadingThread: d];
+                    }
+                    
+                    @synchronized( [ViewerController class])
+                    {
+                        globalNumberOfLoadingThread -= numberOfThreadsForCompute;
+                    }
                 }
-                else
+                if( [[NSThread currentThread] isCancelled] == YES)
                 {
-                    int from = 0;
-                    int to = [[pixListArray objectAtIndex: x] count];
-                    
-                    [d setObject: [NSNumber numberWithInt: from] forKey: @"from"];
-                    [d setObject: [NSNumber numberWithInt: to] forKey: @"to"];
-                    
-                    [ViewerController subLoadingThread: d];
+                    [NSThread sleepForTimeInterval: 0.2];
+                    NSLog( @"Load Image Thread cancelled");
                 }
+                
+                NSLog( @"end loading");
+                
+                if( [[NSThread currentThread] isCancelled] == YES)
+                    return;
+                
+                @synchronized( [NSThread currentThread])
+                {
+                    [[NSThread currentThread].threadDictionary setObject: [NSNumber numberWithFloat: 1.0] forKey: @"loadingPercentage"];
+                }
+                
+                if( [[NSThread currentThread] isCancelled] == NO)
+                    [viewer performSelectorOnMainThread: @selector(finishLoadImageData:) withObject: dict waitUntilDone: NO];
             }
-            if( [[NSThread currentThread] isCancelled] == YES)
+            @catch (NSException * e) 
             {
-                [NSThread sleepForTimeInterval: 0.2];
-                NSLog( @"Load Image Thread cancelled");
+                N2LogExceptionWithStackTrace(e);
             }
-            
-            NSLog( @"end loading");
-            
-            if( [[NSThread currentThread] isCancelled] == YES)
-                return;
-            
-            @synchronized( [NSThread currentThread])
+            @finally
             {
-                [[NSThread currentThread].threadDictionary setObject: [NSNumber numberWithFloat: 1.0] forKey: @"loadingPercentage"];
+                dispatch_semaphore_signal(sid);
             }
         }
-        @catch (NSException * e) 
-        {
-            N2LogExceptionWithStackTrace(e);
-        }
-
-        if( [[NSThread currentThread] isCancelled] == NO)
-            [viewer performSelectorOnMainThread: @selector(finishLoadImageData:) withObject: dict waitUntilDone: NO];
     }
 }
 
@@ -10135,10 +10263,10 @@ static int avoidReentryRefreshDatabase = 0;
         NSString *message = nil;
 #ifdef OSIRIX_LIGHT
         message = [NSString stringWithFormat: NSLocalizedString(@"These images were acquired with a gantry tilt: %0.2f\u00B0. This gantry tilt will produce a distortion in 3D post-processing. You can use the plugin 'Gantry Tilt Correction' to convert these images.", nil), titledGantryDegrees];
-        NSRunInformationalAlertPanel( NSLocalizedString(@"Warning!", nil), message, NSLocalizedString(@"OK", nil), nil, nil);
+        NSRunInformationalAlertPanel( NSLocalizedString(@"Warning!", nil), @"%@", NSLocalizedString(@"OK", nil), nil, nil, message);
 #else
         message = [NSString stringWithFormat: NSLocalizedString(@"These images were acquired with a gantry tilt: %0.2f\u00B0. This gantry tilt will produce a distortion in 3D post-processing. Should I convert these images to a real 3D dataset.", nil), titledGantryDegrees];
-		NSInteger r = NSRunInformationalAlertPanel( NSLocalizedString(@"Warning!", nil), message, NSLocalizedString(@"Yes", nil), NSLocalizedString(@"No", nil), nil);
+		NSInteger r = NSRunInformationalAlertPanel( NSLocalizedString(@"Warning!", nil), @"%@", NSLocalizedString(@"Yes", nil), NSLocalizedString(@"No", nil), nil, message);
         
         if( r == NSAlertDefaultReturn)
             [ViewerController correctGangtryTilt: self];
@@ -10545,7 +10673,7 @@ static int avoidReentryRefreshDatabase = 0;
 		
 		if( nonContinuous)
 		{
-			NSRunInformationalAlertPanel( NSLocalizedString(@"Warning!", nil), [NSString stringWithFormat: NSLocalizedString(@"These slices have a non regular slice interval, varying from %.3f mm to %.3f mm. This will produce distortion in 3D representations, and in measurements.", nil), minInterval, maxInterval], NSLocalizedString(@"OK", nil), nil, nil);
+			NSRunInformationalAlertPanel( NSLocalizedString(@"Warning!", nil), NSLocalizedString(@"These slices have a non regular slice interval, varying from %.3f mm to %.3f mm. This will produce distortion in 3D representations, and in measurements.", nil), NSLocalizedString(@"OK", nil), nil, nil, minInterval, maxInterval);
 //            
 //            // Resample origins, according to first and last image
 //            
@@ -10594,8 +10722,14 @@ static int avoidReentryRefreshDatabase = 0;
 
 -(float) computeInterval
 {
-	float s = [self computeIntervalFlipNow: [NSNumber numberWithBool: YES]];
-	
+    float s = 0;
+    
+    if( computeInterval == NO) // avoid re-entry
+    {
+        computeInterval = YES;
+        s = [self computeIntervalFlipNow: [NSNumber numberWithBool: YES]];
+        computeInterval = NO;
+	}
 	return s;
 }
 
@@ -13711,7 +13845,7 @@ int i,j,l;
 	
 	if( error)
 	{
-		NSRunCriticalAlertPanel(NSLocalizedString(@"ROIs Volume Error", nil), error , NSLocalizedString(@"OK", nil), nil, nil);
+		NSRunCriticalAlertPanel(NSLocalizedString(@"ROIs Volume Error", nil), @"%@" , NSLocalizedString(@"OK", nil), nil, nil, error);
 	}
 	else
 	{
@@ -16362,9 +16496,6 @@ int i,j,l;
 			{
                 BOOL propagateScale = YES;
                 
-                if( [vC.modality isEqualToString: @"US"] || [self.modality isEqualToString: @"US"])
-                    propagateScale = NO;
-				
 				if( [DCMView noPropagateSettingsInSeriesForModality: [vC modality]] && [DCMView noPropagateSettingsInSeriesForModality: [self modality]])
                     propagateScale = NO;
                 
@@ -16920,8 +17051,8 @@ int i,j,l;
 	if([errorString length]!=0)
 	{			
 		NSRunCriticalAlertPanel(NSLocalizedString(@"Point-Based Registration Error", nil),
-								errorString,
-								NSLocalizedString(@"OK", nil), nil, nil);
+								@"%@",
+								NSLocalizedString(@"OK", nil), nil, nil, errorString);
 	}
 	
 	[previousNames release];
@@ -17731,6 +17862,26 @@ int i,j,l;
 	else [printPagesToPrint setStringValue: [NSString stringWithFormat: NSLocalizedString( @"%d pages", nil), 1 + (count / ipp)]];
 }
 
+- (void) restoreWindowsAfterPrint
+{
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SquareWindowForPrinting"] && NSIsEmptyRect( windowFrameToRestore) == NO)
+    {
+        int AlwaysScaleToFit = [[NSUserDefaults standardUserDefaults] integerForKey: @"AlwaysScaleToFit"];
+        [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"AlwaysScaleToFit"];
+        
+        [AppController resizeWindowWithAnimation: [self window] newSize: windowFrameToRestore];
+        
+        if( scaleFitToRestore) [imageView scaleToFit];
+        
+        [[NSUserDefaults standardUserDefaults] setInteger: AlwaysScaleToFit forKey: @"AlwaysScaleToFit"];
+    }
+    
+    for( ViewerController *v in [ViewerController get2DViewers])
+        [v.window orderFront: self];
+    
+    [self.window makeKeyAndOrderFront: self];
+}
+
 - (void)printOperationDidRun:(NSPrintOperation *)printOperation
                 success:(BOOL)success
                 contextInfo:(void*)info
@@ -17743,6 +17894,8 @@ int i,j,l;
 	NSString	*tmpFolder = [NSString stringWithFormat:@"/tmp/print"];
 	
 	[[NSFileManager defaultManager] removeFileAtPath: tmpFolder handler:nil];
+    
+    [self restoreWindowsAfterPrint];
 }
 
 -(IBAction) endPrint:(id) sender
@@ -17754,26 +17907,6 @@ int i,j,l;
     
     if( [sender tag])   //User clicks OK Button
     {
-        NSRect windowFrameToRestore = NSMakeRect(0, 0, 0, 0);
-        BOOL scaleFitToRestore = imageView.isScaledFit;
-        
-        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SquareWindowForPrinting"])
-        {
-            int AlwaysScaleToFit = [[NSUserDefaults standardUserDefaults] integerForKey: @"AlwaysScaleToFit"];
-            [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"AlwaysScaleToFit"];
-            
-            windowFrameToRestore = [[self window] frame];
-            NSRect newFrame = [AppController usefullRectForScreen: self.window.screen];
-            
-            if( newFrame.size.width < newFrame.size.height) newFrame.size.height = newFrame.size.width;
-            else newFrame.size.width = newFrame.size.height;
-            
-            [AppController resizeWindowWithAnimation: [self window] newSize: newFrame];
-            if( scaleFitToRestore) [imageView scaleToFit];
-            
-            [[NSUserDefaults standardUserDefaults] setInteger: AlwaysScaleToFit forKey: @"AlwaysScaleToFit"];
-        }
-        
 		NSMutableDictionary	*settings = [NSMutableDictionary dictionary];
 		
 		//--------------------------Layout---------------------------------
@@ -18049,18 +18182,7 @@ int i,j,l;
 		[splash close];
 		[splash autorelease];
 		
-        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SquareWindowForPrinting"] && NSIsEmptyRect( windowFrameToRestore) == NO)
-        {
-            int AlwaysScaleToFit = [[NSUserDefaults standardUserDefaults] integerForKey: @"AlwaysScaleToFit"];
-            [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"AlwaysScaleToFit"];
-            
-            [AppController resizeWindowWithAnimation: [self window] newSize: windowFrameToRestore];
-            
-            if( scaleFitToRestore) [imageView scaleToFit];
-            
-            [[NSUserDefaults standardUserDefaults] setInteger: AlwaysScaleToFit forKey: @"AlwaysScaleToFit"];
-        }
-		// Start the actuall print operation if there is something to print at all.
+		// Start the actual print operation if there is something to print at all.
 		if( [files count])
 		{
 			printView *pV = [[[printView alloc] initWithViewer: self
@@ -18078,6 +18200,8 @@ int i,j,l;
                 contextInfo:nil];
 		}
     }
+    else
+        [self restoreWindowsAfterPrint];
 }
 
 - (IBAction) printSlider:(id) sender
@@ -18161,7 +18285,33 @@ int i,j,l;
 		[printInterval setEnabled: YES];
 	}
     
-	[NSApp beginSheet: printWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
+    windowFrameToRestore = NSMakeRect(0, 0, 0, 0);
+    scaleFitToRestore = imageView.isScaledFit;
+    
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SquareWindowForPrinting"])
+    {
+        int AlwaysScaleToFit = [[NSUserDefaults standardUserDefaults] integerForKey: @"AlwaysScaleToFit"];
+        [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"AlwaysScaleToFit"];
+        
+        windowFrameToRestore = [[self window] frame];
+        NSRect newFrame = [AppController usefullRectForScreen: self.window.screen];
+        
+        if( newFrame.size.width < newFrame.size.height) newFrame.size.height = newFrame.size.width;
+        else newFrame.size.width = newFrame.size.height;
+        
+        [AppController resizeWindowWithAnimation: [self window] newSize: newFrame];
+        if( scaleFitToRestore) [imageView scaleToFit];
+        
+        [[NSUserDefaults standardUserDefaults] setInteger: AlwaysScaleToFit forKey: @"AlwaysScaleToFit"];
+    }
+    
+    for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+    {
+        if( v != self)
+            [v.window orderOut: self];
+    }
+    
+	[NSApp beginSheet: printWindow modalForWindow:nil modalDelegate:self didEndSelector:nil contextInfo:nil];
 }
 
 #ifndef OSIRIX_LIGHT
@@ -19624,7 +19774,7 @@ int i,j,l;
 				}
 				/* Check the handler's return value */
 				else if (scriptResult != noScriptErr) {
-					NSRunAlertPanel(NSLocalizedString(@"Script Failure", @"Title on script failure window."), [NSString stringWithFormat: @"%@ %d", NSLocalizedString(@"The script failed:", @"Message on script failure window."), scriptResult], NSLocalizedString(@"OK", @""), nil, nil);
+					NSRunAlertPanel(NSLocalizedString(@"Script Failure", @"Title on script failure window."), @"%@ %d",NSLocalizedString(@"OK", @""), nil, nil, NSLocalizedString(@"The script failed:", @"Message on script failure window."), scriptResult);
 				}
 
 				[script release];
@@ -20630,11 +20780,11 @@ int i,j,l;
 	
 	[self clear8bitRepresentations];
 	
-	float computeInterval = [self computeInterval];
+	float ci = [self computeInterval];
 	
-	if( [pixList[ curMovieIndex] count] <= 1) computeInterval = 1;
+	if( [pixList[ curMovieIndex] count] <= 1) ci = 1;
 	
-	if( computeInterval == 0 ||
+	if( ci == 0 ||
 		[[pixList[0] objectAtIndex:0] pixelSpacingX] == 0 ||
 		[[pixList[0] objectAtIndex:0] pixelSpacingY] == 0 ||
 		([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask))
@@ -22275,13 +22425,18 @@ int i,j,l;
 
 - (void)setImageRows:(int)rows columns:(int)columns
 {
+    [self setImageRows: rows columns: columns rescale: YES];
+}
+
+- (void)setImageRows:(int)rows columns:(int)columns rescale: (BOOL) rescale
+{
 	if( rows > 8) rows = 8;
 	if( columns > 8) columns = 8;
 
 	if( rows < 1) rows = 1;
 	if( columns < 1) columns = 1;
 	
-	[seriesView setImageViewMatrixForRows:(int)rows  columns:columns];
+	[seriesView setImageViewMatrixForRows: rows columns: columns rescale: rescale];
 	
 	[imageView updateTilingViews];
 }

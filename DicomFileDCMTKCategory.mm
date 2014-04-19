@@ -317,6 +317,20 @@ extern NSRecursiveLock *PapyrusLock;
             [dicomElements setObject:[NSString stringWithCString:string encoding:NSISOLatin1StringEncoding] forKey:@"PrivateInformationCreatorUID"];
         }
         
+        //Character Set
+		if (dataset->findAndGetString(DCM_SpecificCharacterSet, string, OFFalse).good() && string != NULL)
+		{
+			NSArray	*c = [[NSString stringWithCString:string encoding: NSISOLatin1StringEncoding] componentsSeparatedByString:@"\\"];
+			
+			if( [c count] >= 10) NSLog( @"Encoding number >= 10 ???");
+			
+			if( [c count] < 10)
+			{
+				for( i = 0; i < [c count]; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
+				for( i = [c count]; i < 10; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c lastObject]];
+			}
+		}
+        
 		if ([self autoFillComments]  == YES) // ||[self checkForLAVIM] == YES)
 		{
 			if( [self autoFillComments])
@@ -334,9 +348,7 @@ extern NSRecursiveLock *PapyrusLock;
                         dicomItems = dataset;
                         
                     if( dicomItems->findAndGetString(key, string, OFFalse).good() && string != NULL)
-                    {
-                        commentsField = [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding];
-                    }
+                        commentsField = [DicomFile stringWithBytes: (char*) string encodings:encoding];
                 }
                 
                 if( [self commentsGroup2] && [self commentsElement2])
@@ -351,9 +363,9 @@ extern NSRecursiveLock *PapyrusLock;
                     if( dicomItems->findAndGetString(key, string, OFFalse).good() && string != NULL)
                     {
                         if( commentsField)
-                            commentsField = [commentsField stringByAppendingFormat: @" / %@", [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding]];
+                            commentsField = [commentsField stringByAppendingFormat: @" / %@", [DicomFile stringWithBytes: (char*) string encodings:encoding]];
                         else
-                            commentsField = [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding];
+                            commentsField = [DicomFile stringWithBytes: (char*) string encodings:encoding];
                         [dicomElements setObject:commentsField forKey:@"commentsAutoFill"];
                     }
                 }
@@ -370,9 +382,9 @@ extern NSRecursiveLock *PapyrusLock;
                     if( dicomItems->findAndGetString(key, string, OFFalse).good() && string != NULL)
                     {
                         if( commentsField)
-                            commentsField = [commentsField stringByAppendingFormat: @" / %@", [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding]];
+                            commentsField = [commentsField stringByAppendingFormat: @" / %@", [DicomFile stringWithBytes: (char*) string encodings:encoding]];
                         else
-                            commentsField = [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding];
+                            commentsField = [DicomFile stringWithBytes: (char*) string encodings:encoding];
                         [dicomElements setObject:commentsField forKey:@"commentsAutoFill"];
                     }
                 }
@@ -389,9 +401,9 @@ extern NSRecursiveLock *PapyrusLock;
                     if( dicomItems->findAndGetString(key, string, OFFalse).good() && string != NULL)
                     {
                         if( commentsField)
-                            commentsField = [commentsField stringByAppendingFormat: @" / %@", [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding]];
+                            commentsField = [commentsField stringByAppendingFormat: @" / %@", [DicomFile stringWithBytes: (char*) string encodings:encoding]];
                         else
-                            commentsField = [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding];
+                            commentsField = [DicomFile stringWithBytes: (char*) string encodings:encoding];
                         [dicomElements setObject:commentsField forKey:@"commentsAutoFill"];
                     }
                 }
@@ -453,20 +465,6 @@ extern NSRecursiveLock *PapyrusLock;
 		{
 			[dicomElements setObject:[NSString stringWithCString:string encoding: NSASCIIStringEncoding] forKey:@"SOPClassUID"];
 			sopClassUID = [NSString stringWithCString: string encoding: NSASCIIStringEncoding] ;
-		}
-		
-		//Character Set
-		if (dataset->findAndGetString(DCM_SpecificCharacterSet, string, OFFalse).good() && string != NULL)
-		{
-			NSArray	*c = [[NSString stringWithCString:string encoding: NSISOLatin1StringEncoding] componentsSeparatedByString:@"\\"];
-			
-			if( [c count] >= 10) NSLog( @"Encoding number >= 10 ???");
-			
-			if( [c count] < 10)
-			{
-				for( i = 0; i < [c count]; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
-				for( i = [c count]; i < 10; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c lastObject]];
-			}
 		}
 		
 		//Image Type
@@ -1043,7 +1041,7 @@ extern NSRecursiveLock *PapyrusLock;
 		if( NoOfFrames > 1) // SERIES ID MUST BE UNIQUE!!!!!
 			self.serieID = [NSString stringWithFormat:@"%@-%@-%@", self.serieID, imageID, [dicomElements objectForKey:@"SOPUID"]];
 		
-		if( [self noLocalizer] && ([self containsString: @"LOCALIZER" inArray: imageTypeArray] || [self containsString: @"REF" inArray: imageTypeArray] || [self containsLocalizerInString: serie]) && [DCMAbstractSyntaxUID isImageStorage: sopClassUID])
+		if( NoOfFrames <= 1 && [self noLocalizer] && ([self containsString: @"LOCALIZER" inArray: imageTypeArray] || [self containsString: @"REF" inArray: imageTypeArray] || [self containsLocalizerInString: serie]) && [DCMAbstractSyntaxUID isImageStorage: sopClassUID])
 		{
 			self.serieID = @"LOCALIZER";
 			

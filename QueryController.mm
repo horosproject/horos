@@ -339,54 +339,46 @@ extern "C"
             
             NSMutableDictionary *f = [NSMutableDictionary dictionary];
             
-            if( [filters valueForKey: @"AccessionNumber"])
+            if( [filters valueForKey: @"AccessionNumber"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_accession_number"])
                 [f setObject: [filters valueForKey: @"AccessionNumber"] forKey: @"AccessionNumber"];
             
-            if( [filters valueForKey: @"accessionNumber"])
+            if( [filters valueForKey: @"accessionNumber"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_accession_number"])
                 [f setObject: [filters valueForKey: @"accessionNumber"] forKey: @"AccessionNumber"];
             
-            if( [filters valueForKey: @"StudyDescription"])
+            if( [filters valueForKey: @"StudyDescription"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_description"])
                 [f setObject: [filters valueForKey: @"StudyDescription"] forKey: @"StudyDescription"];
             
-            if( [filters valueForKey: @"Comments"])
+            if( [filters valueForKey: @"Comments"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_comments"])
                 [f setObject: [filters valueForKey: @"Comments"] forKey: StudyComments];
             
-            if( [filters valueForKey: @"StudyID"])
+            if( [filters valueForKey: @"StudyID"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_id"])
                 [f setObject: [filters valueForKey: @"StudyID"] forKey: @"StudyID"];
             
-            if( [filters valueForKey: @"studyID"])
+            if( [filters valueForKey: @"studyID"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_id"])
                 [f setObject: [filters valueForKey: @"studyID"] forKey: @"StudyID"];
             
-            if( [filters valueForKey: @"StudyInstanceUID"])
+            if( [filters valueForKey: @"StudyInstanceUID"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_id"])
                 [f setObject: [filters valueForKey: @"StudyInstanceUID"] forKey: @"StudyInstanceUID"];
             
-            if( [filters valueForKey: @"studyInstanceUID"])
+            if( [filters valueForKey: @"studyInstanceUID"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_id"])
                 [f setObject: [filters valueForKey: @"studyInstanceUID"] forKey: @"StudyInstanceUID"];
             
-            if( [filters valueForKey: PatientName])
+            if( [filters valueForKey: PatientName] && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_name"])
                 [f setObject: [filters valueForKey: PatientName] forKey: PatientName];
             
-            if( [filters valueForKey: @"patientName"])
+            if( [filters valueForKey: @"patientName"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_name"])
                 [f setObject: [filters valueForKey: @"patientName"] forKey: PatientName];
             
-            if( [filters valueForKey: PatientID])
+            if( [filters valueForKey: PatientID] && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_id"])
                 [f setObject: [filters valueForKey: PatientID] forKey: PatientID];
             
-            if( [filters valueForKey: @"patientID"])
+            if( [filters valueForKey: @"patientID"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_id"])
                 [f setObject: [filters valueForKey: @"patientID"] forKey: PatientID];
             
-            if( [filters valueForKey: PatientBirthDate])
+            if( [filters valueForKey: PatientBirthDate] && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_birthdate"])
                 [f setObject: [DCMCalendarDate queryDate: [[filters valueForKey: PatientBirthDate] descriptionWithCalendarFormat:@"%Y%m%d" timeZone: nil locale:nil]] forKey: PatientBirthDate];
             
-            if( [[filters valueForKey: @"modality"] count] > 0)
-            {
-                if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SupportQRModalitiesinStudy"])
-                    [f setObject: [[filters valueForKey: @"modality"] componentsJoinedByString: @"\\"] forKey: @"ModalitiesinStudy"];
-                else
-                    [f setObject: [[filters valueForKey: @"modality"] componentsJoinedByString: @"\\"] forKey: @"Modality"];
-            }
-            
-            if( [[filters valueForKey: @"date"] intValue] != 0)
+            if( [[filters valueForKey: @"date"] intValue] != 0 && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_study_date"])
             {
                 QueryFilter *dateQueryFilter = nil, *timeQueryFilter = nil;
                 
@@ -399,11 +391,47 @@ extern "C"
                     [f setObject: [DCMCalendarDate queryDate: timeQueryFilter.filteredValue] forKey: @"StudyTime"];
             }
             
+            if( [[filters valueForKey: @"modality"] count] > 0)
+            {
+                if( f.count > 0 || [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_modality"])
+                {
+                    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SupportQRModalitiesinStudy"])
+                        [f setObject: [[filters valueForKey: @"modality"] componentsJoinedByString: @"\\"] forKey: @"ModalitiesinStudy"];
+                    else
+                        [f setObject: [[filters valueForKey: @"modality"] componentsJoinedByString: @"\\"] forKey: @"Modality"];
+                }
+            }
+            
+            // Remove queries with only **** characters
+            NSMutableArray *keysToBeRemoved = [NSMutableArray array];
+            for( NSString *key in f)
+            {
+                if( [[f objectForKey: key] isKindOfClass: [NSString class]])
+                {
+                    NSString *s = [f objectForKey: key];
+                    
+                    if( [s rangeOfString:@"*"].location != NSNotFound && [s stringByReplacingOccurrencesOfString: @"*" withString:@""].length <= 2)
+                    {
+                        [keysToBeRemoved addObject: key];
+                        NSLog( @"---- too small query (%@) -> removed: %@", key, s);
+                    }
+                    
+                    s = [s stringByReplacingOccurrencesOfString: @"*" withString:@""];
+                    
+                    if( s.length == 0)
+                    {
+                        [keysToBeRemoved addObject: key];
+                        NSLog( @"---- empty key (%@) -> removed", key);
+                    }
+                }
+            }
+            [f removeObjectsForKeys: keysToBeRemoved];
+            
             [[qm filters] addEntriesFromDictionary: f];
             
-            if( [[qm filters] count] == 0)
+            if( [[qm filters] count] == 0 || f.count == 0)
             {
-                NSLog( @"***** no query parameters for queryStudiesForFilters");
+                NSLog( @"***** no query parameters for queryStudiesForFilters: query not performed.");
             }
             else
             {
@@ -781,7 +809,7 @@ extern "C"
 - (IBAction) deleteAutoQRInstance:(id)sender
 {
     // Delete the instance
-    if (NSRunCriticalAlertPanel( NSLocalizedString(@"Delete Auto QR Instance", nil),  [NSString stringWithFormat: NSLocalizedString(@"Are you sure you want to delete the current Auto QR Instance (%@)?", nil), [[autoQRInstances objectAtIndex: currentAutoQR] objectForKey: @"instanceName"]], NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
+    if (NSRunCriticalAlertPanel( NSLocalizedString(@"Delete Auto QR Instance", nil),  NSLocalizedString(@"Are you sure you want to delete the current Auto QR Instance (%@)?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil, [[autoQRInstances objectAtIndex: currentAutoQR] objectForKey: @"instanceName"]) == NSAlertDefaultReturn)
     {
         [self willChangeValueForKey: @"instancesMenuList"];
         
@@ -1245,7 +1273,7 @@ extern "C"
 	if([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
 	{
 		// Delete the Preset
-		if (NSRunCriticalAlertPanel( NSLocalizedString( @"Delete Preset", nil), [NSString stringWithFormat: NSLocalizedString(@"Are you sure you want to delete the selected Preset (%@)?", nil), [sender title]], NSLocalizedString( @"OK", nil), NSLocalizedString( @"Cancel", nil), nil) == NSAlertDefaultReturn)
+		if (NSRunCriticalAlertPanel( NSLocalizedString( @"Delete Preset", nil), NSLocalizedString(@"Are you sure you want to delete the selected Preset (%@)?", nil), NSLocalizedString( @"OK", nil), NSLocalizedString( @"Cancel", nil), nil, [sender title]) == NSAlertDefaultReturn)
 		{
 			NSDictionary *savedPresets = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"QRPresets"];
 			
@@ -1639,6 +1667,8 @@ extern "C"
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
+    [NSObject cancelPreviousPerformRequestsWithTarget: self selector:@selector(applyNewStudyArray:) object: nil];
+    
 	@synchronized (studyArrayInstanceUID)
 	{
 		if( currentQueryController.DatabaseIsEdited == NO)
@@ -1706,11 +1736,16 @@ extern "C"
         
     if( local_studyArrayID && local_studyArrayInstanceUID)
     {
+        [NSObject cancelPreviousPerformRequestsWithTarget: self selector:@selector(applyNewStudyArray:) object: nil];
+        
         @synchronized (studyArrayInstanceUID)
         {
             [studyArrayInstanceUID removeAllObjects];
             [studyArrayInstanceUID addObjectsFromArray: local_studyArrayInstanceUID];
-        
+            
+            if( studyArrayInstanceUID.count == 0) //Add a fake object : to avoid re-compute loop in - (NSArray*) localStudy:(id) item context: (NSManagedObjectContext*) context
+                [studyArrayInstanceUID addObject: @"This is not a studyInstanceUID"];
+            
             [studyArrayID removeAllObjects];
             [studyArrayID addObjectsFromArray: local_studyArrayID];
         }
@@ -2663,13 +2698,17 @@ extern "C"
             
             modalityQueryFilter = [self getModalityQueryFilter: [instance objectForKey: @"modalityStrings"]];
             
-            if ([modalityQueryFilter object] && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_modality"])
+            if( [modalityQueryFilter object])
             {
-                if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SupportQRModalitiesinStudy"])
-                    [queryManager addFilter:[modalityQueryFilter filteredValue] forDescription:@"ModalitiesinStudy"];
-                else
-                    [queryManager addFilter:[modalityQueryFilter filteredValue] forDescription:@"Modality"];
-                queryItem = YES;
+                if( queryItem || [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_modality"])
+                {
+                    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SupportQRModalitiesinStudy"])
+                        [queryManager addFilter:[modalityQueryFilter filteredValue] forDescription:@"ModalitiesinStudy"];
+                    else
+                        [queryManager addFilter:[modalityQueryFilter filteredValue] forDescription:@"Modality"];
+                    
+                    queryItem = YES;
+                }
             }
             
             if (queryItem)
@@ -2690,27 +2729,20 @@ extern "C"
                 {
                     if( showError && [NSThread isMainThread])
                     {
-                        NSString *alertSuppress = @"No parameters query";
-                        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-                        if ([defaults boolForKey:alertSuppress])
-                        {
-                            doit = YES;
-                        }
-                        else
+//                        if ([defaults boolForKey:alertSuppress])
+//                        {
+//                            doit = YES;
+//                        }
+//                        else
                         {
                             NSAlert* alert = [[NSAlert new] autorelease];
                             [alert setMessageText: NSLocalizedString(@"Query", nil)];
                             [alert setInformativeText: NSLocalizedString(@"No query parameters provided. The query may take a long time.", nil)];
-                            [alert setShowsSuppressionButton:YES ];
+//                            [alert setShowsSuppressionButton:YES];
                             [alert addButtonWithTitle: NSLocalizedString(@"Continue", nil)];
                             [alert addButtonWithTitle: NSLocalizedString(@"Cancel", nil)];
                             
-                            if ( [alert runModal] == NSAlertFirstButtonReturn) doit = YES;
-                            
-                            if ([[alert suppressionButton] state] == NSOnState)
-                            {
-                                [defaults setBool:YES forKey:alertSuppress];
-                            }
+                            if( [alert runModal] == NSAlertFirstButtonReturn) doit = YES;
                         }
                     }
                     else doit = YES;
@@ -2720,7 +2752,11 @@ extern "C"
                 {
                     [self performQuery: [NSNumber numberWithBool: showError]];
                 }
-                else break;
+                else
+                {
+                    NSLog( @"The PACS query was not allowed.");
+                    break;
+                }
             }
             
             if( [NSThread isMainThread])
@@ -4629,15 +4665,14 @@ extern "C"
 	
 	DcmDictEntryList list;
     DcmHashDictIterator iter(globalDataDict.normalBegin());
-    DcmHashDictIterator end(globalDataDict.normalEnd());
-//    for (; iter != end; ++iter)
-//    {
-//        if ((*iter)->getPrivateCreator() == NULL) // exclude private tags
-//        {
-//            e = new DcmDictEntry(*(*iter));
-//            list.insertAndReplace(e);
-//        }
-//    }
+    for( int x = 0; x < globalDataDict.numberOfNormalTagEntries(); ++iter, x++)
+    {
+        if ((*iter)->getPrivateCreator() == NULL) // exclude private tags
+        {
+            e = new DcmDictEntry(*(*iter));
+            list.insertAndReplace(e);
+        }
+    }
 	
 	NSMutableArray *array = [NSMutableArray array];
 	

@@ -97,36 +97,46 @@ static WindowLayoutManager *sharedLayoutManager = nil;
     return [WindowLayoutManager windowsColumnsForHangingProtocol: self.currentHangingProtocol];
 }
 
-- (int) imagesRows
++ (int) imagesRowsForHangingProtocol:(NSDictionary*) protocol
 {
-    if( [self.currentHangingProtocol objectForKey: @"ImageTiling"])
+    if( [protocol objectForKey: @"ImageTiling"])
     {
-        int tag = [[self.currentHangingProtocol objectForKey: @"ImageTiling"] intValue];
+        int tag = [[protocol objectForKey: @"ImageTiling"] intValue];
         
         if (tag < 16)
             return (tag / 4) + 1; // See SetImageTiling ViewerController.m
     }
     
-	if( [[self.currentHangingProtocol objectForKey: @"Image Rows"] intValue] > 0)
-        return [[self.currentHangingProtocol objectForKey: @"Image Rows"] intValue];
+	if( [[protocol objectForKey: @"Image Rows"] intValue] > 0)
+        return [[protocol objectForKey: @"Image Rows"] intValue];
     
     return 1;
 }
 
-- (int) imagesColumns
++ (int) imagesColumnsForHangingProtocol:(NSDictionary*) protocol
 {
-    if( [self.currentHangingProtocol objectForKey: @"ImageTiling"])
+    if( [protocol objectForKey: @"ImageTiling"])
     {
-        int tag = [[self.currentHangingProtocol objectForKey: @"ImageTiling"] intValue];
+        int tag = [[protocol objectForKey: @"ImageTiling"] intValue];
         
         if (tag < 16)
             return (tag %  4) + 1; // See SetImageTiling ViewerController.m
     }
     
-	if( [[self.currentHangingProtocol objectForKey: @"Image Columns"] intValue] > 0)
-        return [[self.currentHangingProtocol objectForKey: @"Image Columns"] intValue];
+	if( [[protocol objectForKey: @"Image Columns"] intValue] > 0)
+        return [[protocol objectForKey: @"Image Columns"] intValue];
     
 	return 1;
+}
+
+- (int) imagesRows
+{
+    return [WindowLayoutManager imagesRowsForHangingProtocol: self.currentHangingProtocol];
+}
+
+- (int) imagesColumns
+{
+    return [WindowLayoutManager imagesColumnsForHangingProtocol: self.currentHangingProtocol];
 }
 
 #pragma mark-

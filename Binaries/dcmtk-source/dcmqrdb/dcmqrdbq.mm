@@ -170,22 +170,22 @@ static int DB_TagSupported (DcmTagKey tag)
  *    Get UID tag of a specified level
  */
 
-static OFCondition DB_GetUIDTag (DB_LEVEL level, DcmTagKey *tag)
-{
-    int i;
-
-    for (i = 0; i < NbFindAttr; i++)
-    if ((TbFindAttr[i]. level == level) && (TbFindAttr[i]. keyAttr == UNIQUE_KEY))
-        break;
-
-    if (i < NbFindAttr) {
-    *tag = TbFindAttr[i].tag;
-    return (EC_Normal);
-    }
-    else
-    return (DcmQROsiriXDatabaseError);
-
-}
+//static OFCondition DB_GetUIDTag (DB_LEVEL level, DcmTagKey *tag)
+//{
+//    int i;
+//
+//    for (i = 0; i < NbFindAttr; i++)
+//    if ((TbFindAttr[i]. level == level) && (TbFindAttr[i]. keyAttr == UNIQUE_KEY))
+//        break;
+//
+//    if (i < NbFindAttr) {
+//    *tag = TbFindAttr[i].tag;
+//    return (EC_Normal);
+//    }
+//    else
+//    return (DcmQROsiriXDatabaseError);
+//
+//}
 
 /*******************
  *    Get tag level of a specified tag
@@ -231,46 +231,46 @@ static OFCondition DB_GetTagKeyAttr (DcmTagKey tag, DB_KEY_TYPE *keyAttr)
  *    Get tag key attribute of a specified tag
  */
 
-static OFCondition DB_GetTagKeyClass (DcmTagKey tag, DB_KEY_CLASS *keyAttr)
-{
-    int i;
-
-    for (i = 0; i < NbFindAttr; i++)
-    if (TbFindAttr[i]. tag == tag)
-        break;
-
-    if (i < NbFindAttr) {
-    *keyAttr = TbFindAttr[i]. keyClass;
-    return (EC_Normal);
-    }
-    else
-    return (DcmQROsiriXDatabaseError);
-}
+//static OFCondition DB_GetTagKeyClass (DcmTagKey tag, DB_KEY_CLASS *keyAttr)
+//{
+//    int i;
+//
+//    for (i = 0; i < NbFindAttr; i++)
+//    if (TbFindAttr[i]. tag == tag)
+//        break;
+//
+//    if (i < NbFindAttr) {
+//    *keyAttr = TbFindAttr[i]. keyClass;
+//    return (EC_Normal);
+//    }
+//    else
+//    return (DcmQROsiriXDatabaseError);
+//}
 
 /***********************
  *    Duplicate a dicom element
  *    dst space is supposed provided by the caller
  */
 
-static void DB_DuplicateElement (DB_SmallDcmElmt *src, DB_SmallDcmElmt *dst)
-{
-    bzero( (char*)dst, sizeof (DB_SmallDcmElmt));
-    dst -> XTag = src -> XTag;
-    dst -> ValueLength = src -> ValueLength;
-
-    if (src -> ValueLength == 0)
-    dst -> PValueField = NULL;
-    else {
-    dst -> PValueField = (char *)malloc ((int) src -> ValueLength+1);
-    bzero(dst->PValueField, (size_t)(src->ValueLength+1));
-    if (dst->PValueField != NULL) {
-        memcpy (dst -> PValueField,  src -> PValueField,
-            (size_t) src -> ValueLength);
-    } else {
-        CERR << "DB_DuplicateElement: out of memory" << endl;
-    }
-    }
-}
+//static void DB_DuplicateElement (DB_SmallDcmElmt *src, DB_SmallDcmElmt *dst)
+//{
+//    bzero( (char*)dst, sizeof (DB_SmallDcmElmt));
+//    dst -> XTag = src -> XTag;
+//    dst -> ValueLength = src -> ValueLength;
+//
+//    if (src -> ValueLength == 0)
+//    dst -> PValueField = NULL;
+//    else {
+//    dst -> PValueField = (char *)malloc ((int) src -> ValueLength+1);
+//    bzero(dst->PValueField, (size_t)(src->ValueLength+1));
+//    if (dst->PValueField != NULL) {
+//        memcpy (dst -> PValueField,  src -> PValueField,
+//            (size_t) src -> ValueLength);
+//    } else {
+//        CERR << "DB_DuplicateElement: out of memory" << endl;
+//    }
+//    }
+//}
 
 /*******************
  *    Free an element List

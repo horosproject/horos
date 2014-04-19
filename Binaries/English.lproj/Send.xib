@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C39" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C64" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment defaultVersion="1080" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
@@ -47,10 +47,16 @@
                                 <buttonCell type="radio" title="Only key images" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" tag="1" inset="2" id="34">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
+                                    <connections>
+                                        <binding destination="-2" name="enabled" keyPath="self.hasKeyImages" id="L8T-jp-09m"/>
+                                    </connections>
                                 </buttonCell>
                                 <buttonCell type="radio" title="Only Secondary Captures (SC)" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" tag="2" inset="2" id="33">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
+                                    <connections>
+                                        <binding destination="-2" name="enabled" keyPath="self.hasSecondaryCapturesImages" id="oxx-Hb-QjH"/>
+                                    </connections>
                                 </buttonCell>
                             </column>
                         </cells>

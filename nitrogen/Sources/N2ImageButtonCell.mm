@@ -46,4 +46,18 @@
 -(void)drawBezelWithFrame:(NSRect)frame inView:(NSView*)controlView {
 }
 
+- (void) dealloc
+{
+    self.altImage = nil;
+    [super dealloc];
+}
+
+-(id)copyWithZone:(NSZone *)zone {
+    N2ImageButtonCell* copy = [super copyWithZone:zone];
+    
+    copy->altImage = [self.altImage copyWithZone:zone];
+    
+    return copy;
+}
+
 @end

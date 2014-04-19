@@ -435,7 +435,7 @@
 	[NSData dataWithContentsOfURL: url options: 0 error: &error];
 	
 	if( error)
-		NSRunCriticalAlertPanel( NSLocalizedString( @"URL download Error", nil), [error localizedDescription], NSLocalizedString( @"OK", nil), nil, nil);
+		NSRunCriticalAlertPanel( NSLocalizedString( @"URL download Error", nil), @"%@", NSLocalizedString( @"OK", nil), nil, nil, [error localizedDescription]);
 	else
 		NSRunInformationalAlertPanel( NSLocalizedString( @"URL download Succeeded", nil), NSLocalizedString( @"It works !", nil), NSLocalizedString( @"OK", nil), nil, nil);
 }

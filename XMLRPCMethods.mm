@@ -220,7 +220,7 @@
         
         if( downloader.countOfSuccesses && [[NSThread currentThread] isCancelled] == NO)
         {
-            if ([[paramDict valueForKey:@"Display"] boolValue]) {
+            if ([[paramDict valueForKey:@"Display"] boolValue] && [self.database.incomingDirPath isEqualToString: [[DicomDatabase activeLocalDatabase] incomingDirPath]]) {
                 NSString* studyUID = nil;
                 NSString* seriesUID = nil;
                 
@@ -608,7 +608,7 @@
             for (NSManagedObject* iobj in iobjects) {
                 DicomStudy* istudy = [self studyForObject:iobj];
                 if (istudy)
-                    [idatabase.managedObjectContext deleteObject:istudy]; // TODO: but this is BAD... will the included Series and Images be removed and deleted from the DB ?
+                    [idatabase.managedObjectContext deleteObject:istudy];
             }
             
             [idatabase save];
@@ -635,9 +635,6 @@
 }
 
 -(void)_onMainThreadOpenObjectsWithIDs:(NSArray*)objectIDs { // actually, only the first element is opened...
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"bringOsiriXToFrontAfterReceivingMessage"])
-        [NSApp activateIgnoringOtherApps:YES];
-    
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CloseAllWindowsBeforeXMLRPCOpen"])
         [ViewerController closeAllWindows];
     
@@ -648,12 +645,12 @@
             break;
         }
     }
-}
-
--(void)_onMainThreadSelectObjectsWithIDs:(NSArray*)objectIDs { // actually, only the first element is opened...
     
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"bringOsiriXToFrontAfterReceivingMessage"])
         [NSApp activateIgnoringOtherApps:YES];
+}
+
+-(void)_onMainThreadSelectObjectsWithIDs:(NSArray*)objectIDs { // actually, only the first element is opened...
     
     NSMutableArray *objectIDsMutable = [NSMutableArray arrayWithArray: objectIDs];
     
@@ -674,6 +671,9 @@
             break;
         }
     }
+    
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"bringOsiriXToFrontAfterReceivingMessage"])
+        [NSApp activateIgnoringOtherApps:YES];
 }
 
 /**
@@ -958,6 +958,9 @@
 -(NSDictionary*)CMove:(NSDictionary*)paramDict error:(NSError**)error {
     NSString* accessionNumber = [paramDict objectForKey:@"accessionNumber"];
     NSString* serverName = [paramDict objectForKey:@"server"];
+    
+    if( [accessionNumber isKindOfClass: [NSString class]] == NO)
+        accessionNumber = [NSString stringWithFormat: @"%@", accessionNumber];
     
     if (!accessionNumber.length || !serverName.length)
         ReturnWithCode(400);

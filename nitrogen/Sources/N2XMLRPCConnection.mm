@@ -149,10 +149,14 @@
 	
 	@try {
         if (_doc) [_doc release];
-		_doc = [[NSXMLDocument alloc] initWithData:content options:NSXMLNodeOptionsNone error:NULL];
+        NSError *error = nil;
+		_doc = [[NSXMLDocument alloc] initWithData:content options:NSXMLNodeOptionsNone error: &error];
         if (!_doc)
+        {
+            if( content.length)
+                NSLog( @"--- incomplete/corrupted XML document: %@", error.localizedDescription);
             return; // data is incomplete, try later with more data
-        
+        }
 //        DLog(@"Handling XMLRPC request: %@", [doc XMLString]);
         
 		NSArray* methodCalls = [_doc nodesForXPath:@"methodCall" error:NULL];

@@ -564,7 +564,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
                 
                 message = [message stringByAppendingFormat:@"\r\r%@", [name lastPathComponent]];
                 
-                NSRunAlertPanel( NSLocalizedString(@"Plugins", nil), message , nil, nil, nil);
+                NSRunAlertPanel( NSLocalizedString(@"Plugins", nil), @"%@" , nil, nil, nil, message);
             }
         }
         else
@@ -728,7 +728,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
         {
             NSString *pluginCrashPath = [NSString stringWithContentsOfFile: pluginCrash encoding: NSUTF8StringEncoding error: nil];
             
-            int result = NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX crashed", nil), [NSString stringWithFormat: NSLocalizedString(@"Previous crash is maybe related to a plugin.\r\rShould I remove this plugin (%@)?", nil), [pluginCrashPath lastPathComponent]], NSLocalizedString(@"Delete Plugin",nil), NSLocalizedString(@"Continue",nil), nil);
+            int result = NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX crashed", nil), NSLocalizedString(@"Previous crash is maybe related to a plugin.\r\rShould I remove this plugin (%@)?", nil), NSLocalizedString(@"Delete Plugin",nil), NSLocalizedString(@"Continue",nil), nil, [pluginCrashPath lastPathComponent]);
             
             if( result == NSAlertDefaultReturn) // Delete Plugin
             {
@@ -1441,7 +1441,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 
 	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
 	
-		int button = NSRunAlertPanel( [messageDictionary objectForKey:@"title"], [messageDictionary objectForKey:@"body"], NSLocalizedString(@"Download", @""), NSLocalizedString( @"Cancel", @""), nil);
+		int button = NSRunAlertPanel( [messageDictionary objectForKey:@"title"], @"%@", NSLocalizedString(@"Download", @""), NSLocalizedString( @"Cancel", @""), nil, [messageDictionary objectForKey:@"body"]);
 			
 		if (NSOKButton == button)
 		{

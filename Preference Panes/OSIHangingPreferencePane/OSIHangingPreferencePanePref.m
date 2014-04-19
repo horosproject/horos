@@ -12,7 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
-
+#import "WindowLayoutManager.h"
 #import "OSIHangingPreferencePanePref.h"
 #import "NSArray+N2.h"
 #import <OsiriXAPI/NSPreferencePane+OsiriX.h>
@@ -386,6 +386,7 @@
 	hangingProtocols = [[[NSUserDefaults standardUserDefaults] objectForKey:@"HANGINGPROTOCOLS"] deepMutableCopy];
 	
     for( NSString *modality in hangingProtocols)
+    {
         for( NSMutableDictionary *protocol in [hangingProtocols objectForKey: modality])
         {
             [OSIHangingPreferencePanePref convertWLWWToMenuTag: protocol];
@@ -402,7 +403,7 @@
             if( [[protocol objectForKey: @"NumberOfSeriesPerComparative"] integerValue] < 1)
                 [protocol setObject: @1 forKey: @"NumberOfSeriesPerComparative"];
         }
-    
+    }
 	self.modalityForHangingProtocols = @"CR";
     
     [arrayController addObserver:self forKeyPath: @"arrangedObjects.WLWW" options: 0 context:NULL];
@@ -417,9 +418,18 @@
     [arrayController removeObserver: self forKeyPath: @"arrangedObjects.Study Description"];
     
     for( NSString *modality in hangingProtocols)
+    {
         for( NSMutableDictionary *protocol in [hangingProtocols objectForKey: modality])
+        {
             [OSIHangingPreferencePanePref convertMenuTagToWLWW: protocol];
-    
+            
+            [protocol setObject: @([WindowLayoutManager windowsRowsForHangingProtocol: protocol]) forKey: @"Rows"];
+            [protocol setObject: @([WindowLayoutManager windowsColumnsForHangingProtocol: protocol]) forKey: @"Columns"];
+            
+            [protocol setObject: @([WindowLayoutManager imagesRowsForHangingProtocol: protocol]) forKey: @"Image Rows"];
+            [protocol setObject: @([WindowLayoutManager imagesColumnsForHangingProtocol: protocol]) forKey: @"Image Columns"];
+        }
+    }
     [[NSUserDefaults standardUserDefaults] setObject:hangingProtocols forKey:@"HANGINGPROTOCOLS"];
 }
 @end

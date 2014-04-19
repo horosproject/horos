@@ -17,6 +17,7 @@
 #import "DicomStudy.h"
 #import "DicomFileDCMTKCategory.h"
 #import <OsiriX/DCM.h>
+#import <OsiriX/DCMAbstractSyntaxUID.h>
 #import "DCMObjectPixelDataImport.h"
 #import "DCMView.h"
 #import "MutableArrayCategory.h"
@@ -582,6 +583,11 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
     }
 #endif
 #endif
+}
+
+- (NSNumber*) isImageStorage
+{
+    return [NSNumber numberWithBool: [DCMAbstractSyntaxUID isImageStorage: self.series.seriesSOPClassUID]];
 }
 
 - (NSNumber*) isKeyImage

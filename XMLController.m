@@ -461,7 +461,7 @@ extern int delayedTileWindows;
     [panel setCanSelectHiddenExtension:NO];
     [panel setRequiredFileType:@"xml"];
     
-    if( [panel runModalForDirectory:nil file:[[self window]title]] == NSFileHandlingPanelOKButton)
+    if( [panel runModalForDirectory:nil file: [NSString stringWithFormat: @"%@ - %@", imObj.series.study.name, imObj.series.study.studyName]] == NSFileHandlingPanelOKButton)
     {
 		[[xmlDocument XMLString] writeToFile:[panel filename] atomically:NO encoding : NSUTF8StringEncoding error: nil];
     }
@@ -474,7 +474,7 @@ extern int delayedTileWindows;
     [panel setCanSelectHiddenExtension:NO];
     [panel setRequiredFileType:@"txt"];
     
-    if( [panel runModalForDirectory:nil file:[[self window]title]] == NSFileHandlingPanelOKButton)
+    if( [panel runModalForDirectory:nil file: [NSString stringWithFormat: @"%@ - %@", imObj.series.study.name, imObj.series.study.studyName]] == NSFileHandlingPanelOKButton)
     {
 		[[dcmDocument description] writeToFile: [panel filename] atomically:NO encoding : NSUTF8StringEncoding error: nil];
     }
@@ -498,7 +498,7 @@ extern int delayedTileWindows;
 	return nil;
 }
 
-- (void) changeImageObject:(NSManagedObject*) image
+- (void) changeImageObject:(DicomImage*) image
 {
 	if( image == imObj) return;
 	
@@ -598,7 +598,7 @@ extern int delayedTileWindows;
 		[self changeImageObject: [viewer currentImage]];
 }
 
--(id) initWithImage:(NSManagedObject*) image windowName:(NSString*) name viewer:(ViewerController*) v
+-(id) initWithImage:(DicomImage*) image windowName:(NSString*) name viewer:(ViewerController*) v
 {
     if( image == nil)
         return nil;

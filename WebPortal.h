@@ -56,6 +56,7 @@
 +(void)finalizeWebPortalClass;
 
 +(WebPortal*)defaultWebPortal;
++(WebPortal*)wadoOnlyWebPortal;
 
 @property(readonly, retain) WebPortalDatabase* database;
 @property(readonly, retain) DicomDatabase* dicomDatabase;

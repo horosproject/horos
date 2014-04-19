@@ -108,8 +108,6 @@ BOOL					USETOOLBARPANEL = NO;
 short					Altivec = 1, Use_kdu_IfAvailable = 1;
 AppController			*appController = nil;
 DCMTKQueryRetrieveSCP   *dcmtkQRSCP = nil, *dcmtkQRSCPTLS = nil;
-NSString				*checkSN64String = nil;
-NSNetService			*checkSN64Service = nil;
 NSRecursiveLock			*PapyrusLock = nil, *STORESCP = nil, *STORESCPTLS = nil;			// Papyrus is NOT thread-safe
 NSMutableArray			*accumulateAnimationsArray = nil, *recentStudies = nil;
 NSMutableDictionary     *recentStudiesAlbums = nil;
@@ -888,10 +886,7 @@ static NSDate *lastWarningDate = nil;
 
 + (void) displayImportantNotice:(id) sender
 {
-    if( [AppController isFDACleared])
-        return;
-    
-	if( lastWarningDate == nil || [lastWarningDate timeIntervalSinceNow] < -60*60)
+	if( lastWarningDate == nil || [lastWarningDate timeIntervalSinceNow] < -60*5)
 	{
 		int result = NSRunCriticalAlertPanel( NSLocalizedString( @"Important Notice", nil), NSLocalizedString( @"This version of OsiriX, being a free open-source software (FOSS), is not certified as a commercial medical device for primary diagnostic imaging.\r\rFor a certified version and to get rid of this message, please update to 'OsiriX MD' certified version.", nil), NSLocalizedString( @"OsiriX MD", nil), NSLocalizedString( @"I agree", nil), NSLocalizedString( @"Quit", nil));
 		
@@ -1046,31 +1041,6 @@ static NSDate *lastWarningDate = nil;
 {
 	BOOL returnValue = YES;
 	
-	if( [AppController isFDACleared])
-    {
-        if( filter && [filter respondsToSelector: @selector( isCertifiedForMedicalImaging)])
-        {
-            if( [filter isCertifiedForMedicalImaging])
-                return YES;
-        }
-        
-        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hidePluginCertificationWarning"] == NO)
-        {
-            NSAlert* alert = [[NSAlert new] autorelease];
-            [alert setMessageText: NSLocalizedString( @"Important Notice", nil)];
-            [alert setInformativeText: NSLocalizedString( @"Plugins are not certified for primary diagnosis in medical imaging, unless specifically written by the plugin author(s).", nil)];
-            [alert setShowsSuppressionButton:YES ];
-            [alert addButtonWithTitle: NSLocalizedString( @"OK", nil)];
-            [alert addButtonWithTitle: NSLocalizedString( @"Cancel", nil)];
-            
-            if( [alert runModal] == NSAlertSecondButtonReturn)
-                return NO;
-            
-            if ([[alert suppressionButton] state] == NSOnState)
-                [[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"hidePluginCertificationWarning"];
-        }
-    }
-	
 	return returnValue;
 }
 
@@ -1148,15 +1118,10 @@ static NSDate *lastWarningDate = nil;
 	if( [replacingPlugins length])
 		msg = [NSString stringWithFormat:@"%@\n\n%@", msg, replacingPlugins];
 	
-	NSInteger res = NSRunAlertPanel(NSLocalizedString(@"Plugins Installation", @""), msg, NSLocalizedString(@"OK", @""), NSLocalizedString(@"Cancel", @""), nil);
+	NSInteger res = NSRunAlertPanel(NSLocalizedString(@"Plugins Installation", @""), @"%@", NSLocalizedString(@"OK", @""), NSLocalizedString(@"Cancel", @""), nil, msg);
 	
 	if( res)
 	{
-        if( [AppController isFDACleared])
-        {
-            NSRunCriticalAlertPanel( NSLocalizedString( @"Important Notice", nil), NSLocalizedString( @"Plugins are not certified for primary diagnosis in medical imaging, unless specifically written by the plugin author(s).", nil), NSLocalizedString( @"OK", nil), nil, nil);
-        }
-        
 		for( NSString *path in pluginsArray)
             [PluginManager installPluginFromPath: path];
 		
@@ -2126,43 +2091,6 @@ static NSDate *lastWarningDate = nil;
 	}
 }
 
-#ifndef OSIRIX_LIGHT
-- (void) checkSN64:(NSTimer*) t
-{
-	@try
-	{
-		if( checkSN64String && checkSN64Service)
-		{
-			[checkSN64Service setDelegate: self];
-			NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: checkSN64String, @"sn", getMacAddress(), @"MAC", appStartingDate, @"startingDate", nil];
-			
-			NSLog( @"%@", dict);
-			
-			[checkSN64Service setTXTRecordData: [NSNetService dataFromTXTRecordDictionary: dict]];
-			[checkSN64Service publishWithOptions: NSNetServiceNoAutoRename];
-		}
-	}
-	
-	@catch (NSException *e)
-	{
-		NSLog( @"checkSN64: %@", e);
-	}
-}
-
-- (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didFindService:(NSNetService *)aNetService moreComing:(BOOL)moreComing
-{
-	if( checkSN64Service != aNetService && [[aNetService type] isEqualToString: @"_snosirix._tcp."])
-	{
-		if( [[checkSN64Service name] isEqualToString: [aNetService name]] == NO)
-		{
-			[aNetService retain];
-			[aNetService setDelegate: self];
-			[aNetService resolveWithTimeout: 5];
-		}
-	}
-}
-#endif
-
 - (void) startDICOMBonjour:(NSTimer*) t
 {
 	NSLog( @"startDICOMBonjour");
@@ -2315,7 +2243,7 @@ static NSDate *lastWarningDate = nil;
 		N2LogExceptionWithStackTrace(e);
         
         if( [NSThread isMainThread])
-            NSRunAlertPanel( NSLocalizedString( @"Database", nil), e.reason, NSLocalizedString( @"OK", nil), nil, nil);
+            NSRunAlertPanel( NSLocalizedString( @"Database", nil), @"%@", NSLocalizedString( @"OK", nil), nil, nil, e.reason);
 	}
 	
 	[BonjourDICOMService stop];
@@ -2329,55 +2257,9 @@ static NSDate *lastWarningDate = nil;
 	}
 }
 
-#ifndef OSIRIX_LIGHT
-- (void)netService:(NSNetService *)aNetService didNotResolve:(NSDictionary *)errorDict
-{
-    [aNetService stop];
-    [aNetService release];
-}
-
-- (void)netServiceDidResolveAddress:(NSNetService *) aNetService
-{
-	if( [[aNetService type] isEqualToString: @"_snosirix._tcp."])
-	{
-		NSDictionary *d = [NSNetService dictionaryFromTXTRecordData: [aNetService TXTRecordData]];
-		
-		NSString *otherString = [[[NSString alloc] initWithData: [d valueForKey: @"sn"] encoding: NSUTF8StringEncoding] autorelease];
-		NSString *otherMAC = [[[NSString alloc] initWithData: [d valueForKey: @"MAC"] encoding: NSUTF8StringEncoding] autorelease];
-		NSString *otherStartingDate = [[[NSString alloc] initWithData: [d valueForKey: @"startingDate"] encoding: NSUTF8StringEncoding] autorelease];
-		
-		if( [checkSN64String length] > 4 && [otherString length] > 4)
-		{
-			NSString *myMacAddress = getMacAddress();
-			
-			NSLog( @"Other : %@ : %@ : %@", otherString, otherMAC, otherStartingDate);
-			NSLog( @"Self  : %@ : %@ : %@", checkSN64String, myMacAddress, appStartingDate);
-			
-			if( otherMAC != nil && myMacAddress != nil && otherStartingDate != nil && appStartingDate != nil)
-			{
-				if( [checkSN64String isEqualToString: otherString] == YES && [otherMAC isEqualToString: myMacAddress] == NO && [otherStartingDate isEqualToString: appStartingDate] == NO)
-				{
-					[checkSN64Service release];
-					checkSN64Service = nil;
-					
-					NSString *info = [NSString stringWithFormat: @"Other : %@ : %@\rSelf  : %@ : %@", otherString, otherMAC, checkSN64String, myMacAddress];
-					
-					NSRunCriticalAlertPanel( NSLocalizedString( @"Registration Key", nil), [NSString stringWithFormat: NSLocalizedString( @"There is already another running OsiriX application using this registration key. Buy another license or a site license to run multiple instances of OsiriX at the same time.\r\r%@", nil), info], NSLocalizedString( @"OK", nil), nil, nil);
-					exit(0);
-				}
-			}
-		}
-	}
-    
-    [aNetService stop];
-    [aNetService release];
-}
-
-#endif
-
 -(void) displayError: (NSString*) err
 {
-	NSRunCriticalAlertPanel( NSLocalizedString( @"Error", nil), err, NSLocalizedString( @"OK", nil), nil, nil);
+	NSRunCriticalAlertPanel( NSLocalizedString( @"Error", nil), @"%@", NSLocalizedString( @"OK", nil), nil, nil, err);
 }
 
 -(void) displayListenerError: (NSString*) err // the DiscPublishing plugin swizzles this method, do not rename it
@@ -2903,7 +2785,10 @@ static BOOL firstCall = YES;
 - (void) terminate :(id) sender
 {
 	if( [[BrowserController currentBrowser] shouldTerminate: sender] == NO) return;
-	
+
+#ifndef OSIRIX_LIGHT
+    [[NSUserDefaults standardUserDefaults] setBool: [[[QueryController currentQueryController] window] isVisible] forKey: @"isQueryControllerVisible"];
+#endif
     for( NSWindow *w in [NSApp windows])
 		[w orderOut:sender];
     
@@ -2966,7 +2851,7 @@ static BOOL firstCall = YES;
     }
     @catch (NSException * e)
     {
-        NSRunCriticalAlertPanel(NSLocalizedString(@"Error", nil), e.reason, NSLocalizedString(@"OK", nil), nil, nil);
+        NSRunCriticalAlertPanel(NSLocalizedString(@"Error", nil), @"%@", NSLocalizedString(@"OK", nil), nil, nil, e.reason);
         
         N2LogExceptionWithStackTrace(e);
     }
@@ -3081,6 +2966,23 @@ static BOOL initialized = NO;
 				// ** REGISTER DEFAULTS DICTIONARY
                 
 				[[NSUserDefaults standardUserDefaults] registerDefaults: [DefaultsOsiriX getDefaults]];
+                
+                
+                if( [BrowserController _currentModifierFlags] & NSCommandKeyMask && [BrowserController _currentModifierFlags] & NSAlternateKeyMask)
+                {
+                    NSInteger result = NSRunInformationalAlertPanel( NSLocalizedString(@"Reset Preferences", nil), NSLocalizedString(@"Are you sure you want to reset ALL preferences of OsiriX? All the preferences will be reseted to their default values.", nil), NSLocalizedString(@"Cancel",nil), NSLocalizedString(@"OK",nil),  nil);
+                    
+                    if( result == NSAlertAlternateReturn)
+                    {
+                        for( NSString *k in [[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] allKeys])
+                            [[NSUserDefaults standardUserDefaults] removeObjectForKey: k];
+                        
+                        [[NSUserDefaults standardUserDefaults] synchronize];
+                    }
+                }
+                
+                
+                
 //				[[NSUserDefaults standardUserDefaults] addSuiteNamed: @"com.rossetantoine.osirix"]; // Backward compatibility
                 [[NSUserDefaults standardUserDefaults] setInteger:200 forKey:@"NSInitialToolTipDelay"];
                 [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"DontUseUndoQueueForROIs"];
@@ -3125,19 +3027,19 @@ static BOOL initialized = NO;
 				[[NSUserDefaults standardUserDefaults] setBool:NO forKey: @"LP64bit"];
 				#endif
                 
-                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_name"];
-                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_id"];
-                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_accession_number"];
-                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_birthdate"];
-                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_description"];
-                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_referring_physician"];
-                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_comments"];
-                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_institution"];
-                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_status"];
-                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_study_date"];
-                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_modality"];
-                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_blank_query"];
-                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_custom_dicom_field"];
+//                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_name"];
+//                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_id"];
+//                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_accession_number"];
+//                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_birthdate"];
+//                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_description"];
+//                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_referring_physician"];
+//                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_comments"];
+//                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_institution"];
+//                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_status"];
+//                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_study_date"];
+//                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_modality"];
+//                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_blank_query"];
+//                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_custom_dicom_field"];
 				
                 
                 
@@ -3702,9 +3604,10 @@ static BOOL initialized = NO;
 
 	[self testMenus];
     
+    #ifndef OSIRIX_LIGHT
     if( [[NSBundle bundleForClass:[self class]] pathForAuxiliaryExecutable:@"odt2pdf"] == nil)
         N2LogStackTrace( @"\r****** path2odt2pdf == nil\r*****************************");
-    
+    #endif
     
     
     [ROI loadDefaultSettings];
@@ -3736,15 +3639,7 @@ static BOOL initialized = NO;
         NSLog( @"SecStaticCodeCheckValidity: %d", (int) status);
         NSLog( @"%@", errors);
         
-        if( [AppController isFDACleared])
-        {
-            NSRunCriticalAlertPanel( NSLocalizedString( @"Code signing and Certificate", nil), [NSString stringWithFormat: NSLocalizedString( @"Invalid code signing or certificate. Redownload and re-install OsiriX from the pixmeo web site.\r\r%@\r\r%@", nil), errors.localizedDescription, errors.userInfo], NSLocalizedString( @"Quit", nil) , nil, nil);
-            exit( 0);
-        }
-        else
-        {
-            NSRunCriticalAlertPanel( NSLocalizedString( @"Code signing and Certificate", nil), [NSString stringWithFormat: NSLocalizedString( @"Invalid code signing or certificate. You should re-download OsiriX from the web site", nil)], NSLocalizedString( @"Continue", nil) , nil, nil);
-        }
+        NSRunCriticalAlertPanel( NSLocalizedString( @"Code signing and Certificate", nil), NSLocalizedString( @"Invalid code signing or certificate. You should re-download OsiriX from the web site\r\rAre you using an utility such as CleanMyMac or CCleaner? Turn it off for OsiriX.", nil), NSLocalizedString( @"Continue", nil) , nil, nil);
 
     }
     CFRelease( requirement);
@@ -3766,6 +3661,16 @@ static BOOL initialized = NO;
     [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"NSConstraintBasedLayoutVisualizeMutuallyExclusiveConstraints"];
 #else
     [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"NSConstraintBasedLayoutVisualizeMutuallyExclusiveConstraints"];
+#endif
+
+#ifndef OSIRIX_LIGHT
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"isQueryControllerVisible"])
+    {
+        if([QueryController currentQueryController] == nil)
+            [[QueryController alloc] initAutoQuery: NO];
+        
+        [[QueryController currentQueryController] showWindow: self];
+    }
 #endif
 }
 
@@ -4247,19 +4152,20 @@ static BOOL initialized = NO;
     
     if( [AppController hasMacOSXSyrah])
     {
-//        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideSyrahWarning"] == NO)
-		{
-			NSAlert* alert = [[NSAlert new] autorelease];
-			[alert setMessageText: NSLocalizedString( @"Mac OS Version", nil)];
-			[alert setInformativeText: NSLocalizedString( @"This version of OsiriX has not been validated or certified for this version of MacOS. Bugs, errors and instabilities can occur. Upgrade to latest version of OsiriX to solve this problem.", nil)];
-//			[alert setShowsSuppressionButton:YES ];
-			[alert addButtonWithTitle: NSLocalizedString( @"OK", nil)];
-            
-            [alert runModal];
-            
-//			if ([[alert suppressionButton] state] == NSOnState)
-//				[[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"hideMaverickWarning"];
-		}
+        NSAlert* alert = [[NSAlert new] autorelease];
+        [alert setMessageText: NSLocalizedString( @"Mac OS Version", nil)];
+        
+        [alert setInformativeText: NSLocalizedString( @"This version of OsiriX has not been validated or certified for this version of MacOS. Bugs, errors and instabilities can occur. Upgrade to latest version of OsiriX to solve this problem.", nil)];
+        
+        [alert addButtonWithTitle: NSLocalizedString( @"OK", nil)];
+        [alert addButtonWithTitle: NSLocalizedString( @"Upgrade", nil)];
+        
+        NSInteger button = [alert runModal];
+        
+        if( button == NSAlertSecondButtonReturn)
+        {
+            [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com"]];
+        }
     }
     
 	if( [AppController hasMacOSXMountainLion] == NO)
@@ -4277,19 +4183,6 @@ static BOOL initialized = NO;
 	}
 	
 	[self initTilingWindows];
-
-	#if __LP64__
-	#else
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideAlertRunIn32bit"] == NO)
-	{
-		for( NSNumber *arc in [[NSBundle mainBundle] executableArchitectures])
-		{
-			if( [arc integerValue] == NSBundleExecutableArchitectureX86_64)
-				dumpLSArchitecturesForX86_64();
-		}
-	}
-	#endif
-    
     
     //if ([NSUserDefaults.standardUserDefaults boolForKey:@"DoNotEmptyIncomingDir"]) // move temp & decompress to incoming
     {
@@ -4311,16 +4204,6 @@ static BOOL initialized = NO;
 		NSLog( @"/*\\ /*\\ KDU Engine AVAILABLE /*\\ /*\\");
 	else
 		NSLog( @"KDU Engine NOT available");
-    
-    if( checkSN64String.length)
-    {
-        NSLog( @"-----------------------------------------------------------------");
-        NSLog( @"UID: %@", checkSN64String);
-#ifndef OSIRIX_LIGHT
-        NSLog( @"MAC: %@", getMacAddress());
-#endif
-        NSLog( @"-----------------------------------------------------------------");
-    }
 }
 
 - (IBAction) updateViews:(id) sender
@@ -4456,28 +4339,15 @@ static BOOL initialized = NO;
     {
         NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX crashed", nil), NSLocalizedString(@"OsiriX crashed... You are running an outdated version of OsiriX ! This bug is probably corrected in the last version !", nil), NSLocalizedString(@"OK",nil), nil, nil);
         
-        #if __LP64__
-        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://pixmeo.pixmeo.com/login"]];
-        #else
         [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com/Downloads.html"]];
-        #endif
     }
     
 	if( [msg isEqualToString:@"UPDATE"])
 	{
-		#if __LP64__
-		int button = NSRunAlertPanel( NSLocalizedString( @"New Version Available", nil), NSLocalizedString( @"A new version of OsiriX is available. Would you like to download the new version now?\r\rAs a user of OsiriX 64-bit, this OsiriX update will require the new 64-bit extension to run in 64-bit.", nil), NSLocalizedString( @"Download", nil), NSLocalizedString( @"Continue", nil), nil);
-		
-		if (NSOKButton == button)
-			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://pixmeo.pixmeo.com/login"]];
-		
-		#else
 		int button = NSRunAlertPanel( NSLocalizedString( @"New Version Available", nil), NSLocalizedString( @"A new version of OsiriX is available. Would you like to download the new version now?", nil), NSLocalizedString( @"Download", nil), NSLocalizedString( @"Continue", nil), nil);
 		
 		if (NSOKButton == button)
 			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com"]];
-			
-		#endif
 	}
 	
 	[pool release];
@@ -4566,7 +4436,7 @@ static BOOL initialized = NO;
 - (void) URL: (NSURL*) sender resourceDidFailLoadingWithReason: (NSString*) reason
 {
 	if (verboseUpdateCheck)
-		NSRunAlertPanel( NSLocalizedString( @"No connection available", nil), reason, NSLocalizedString( @"OK", nil), nil, nil);
+		NSRunAlertPanel( NSLocalizedString( @"No connection available", nil), @"%@", NSLocalizedString( @"OK", nil), nil, nil, reason);
 }	
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -4721,10 +4591,10 @@ static BOOL initialized = NO;
 	BOOL strechWindows = [[NSUserDefaults standardUserDefaults] boolForKey: @"StrechWindows"];
 	BOOL lastScreen = NO;
 	
-    if( columnsPerScreen < 0)
+    if( columnsPerScreen <= 0)
         columnsPerScreen = 1;
     
-    if( rowsPerScreen < 0)
+    if( rowsPerScreen <= 0)
         rowsPerScreen = 1;
     
 	int OcolumnsPerScreen = columnsPerScreen;
@@ -4749,10 +4619,14 @@ static BOOL initialized = NO;
 					columnsPerScreen--;
 			}
 		
-			while( rowsPerScreen*columnsPerScreen < remaining)
-				rowsPerScreen++;
+            if( columnsPerScreen > 0)
+                while( rowsPerScreen*columnsPerScreen < remaining)
+                    rowsPerScreen++;
 		}
 		
+        if( columnsPerScreen == 0)
+            columnsPerScreen = 1;
+        
 		int posInScreen = i % (OcolumnsPerScreen*OrowsPerScreen);
 		int row = posInScreen / columnsPerScreen;
 		int column = posInScreen % columnsPerScreen;
@@ -5078,6 +4952,8 @@ static BOOL initialized = NO;
 	}
     
     [self tileWindows: sender windows: viewersList display2DViewerToolbar: USETOOLBARPANEL displayThumbnailsList: [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"]];
+    
+    [[BrowserController currentBrowser] closeWaitWindowIfNecessary];
 }
 
 - (IBAction) tile3DWindows:(id)sender

@@ -36,7 +36,7 @@
     NSString *alertSuppress = @"hideListenerError";
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey: alertSuppress] == NO)
-        NSRunCriticalAlertPanel( [msg objectAtIndex: 0], [msg objectAtIndex: 1], [msg objectAtIndex: 2], nil, nil) ;
+        NSRunCriticalAlertPanel( [msg objectAtIndex: 0], @"%@", [msg objectAtIndex: 2], nil, nil, [msg objectAtIndex: 1]) ;
     else
         NSLog( @"*** listener error (not displayed - hideListenerError): %@ %@ %@", [msg objectAtIndex: 0], [msg objectAtIndex: 1], [msg objectAtIndex: 2]);
 }
@@ -160,7 +160,7 @@
 	{
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
         
-		NSString *path = [[DicomDatabase defaultDatabase] incomingDirPath];
+		NSString *path = [[DicomDatabase activeLocalDatabase] incomingDirPath];
         
 		NSString *key = [NSString stringWithFormat:@"%ld", (long) connection];
         

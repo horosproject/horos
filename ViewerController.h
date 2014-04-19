@@ -341,6 +341,11 @@ enum
 	int						previousFullscreenColumns, previousFullscreenRows, previousFullscreenCurImage, previousFullscreenViewIndex, previousPropagate, previousScaledFit;
     NSRect                  previousFrameRect;
     NSString                *windowsStateName;
+    
+    BOOL                    computeInterval;
+    
+    NSRect                  windowFrameToRestore;
+    BOOL                    scaleFitToRestore;
 }
 @property(retain) NSCalendarDate *injectionDateTime;
 @property(readonly) short currentOrientationTool;
@@ -372,6 +377,7 @@ enum
 + (BOOL) isFrontMost2DViewer: (NSWindow*) ww;
 + (ViewerController*) frontMostDisplayed2DViewer;
 + (ViewerController*) frontMostDisplayed2DViewerForScreen: (NSScreen*) screen;
++ (NSArray*) displayed2DViewerForScreen: (NSScreen*) screen;
 + (void) closeAllWindows;
 + (NSArray*) studyColors;
 

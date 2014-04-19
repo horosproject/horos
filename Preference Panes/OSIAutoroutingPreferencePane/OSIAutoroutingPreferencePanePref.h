@@ -32,11 +32,13 @@
 	NSMutableArray						*routesArray;
 	NSArray								*serversArray;
 	int filterType;
+    BOOL imagesOnly;
 	
 	IBOutlet NSWindow *mainWindow;
 }
 
 @property int filterType;
+@property BOOL imagesOnly;
 
 - (void) mainViewDidLoad;
 - (IBAction) endNewRoute:(id) sender;

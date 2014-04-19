@@ -63,7 +63,7 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	double				orientation[ 9];  /**< pointer to orientation vectors  */
 
 //	pixel representation
-	short				bitsAllocated, bitsStored;
+	short				bitsAllocated, bitsStored, highBit;
     long                height, width;
     float               slope, offset;
     

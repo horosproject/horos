@@ -1010,7 +1010,7 @@ static NSConditionLock *threadLock = nil;
                 
                 @catch( NSException *ne)
                 {
-                    NSRunAlertPanel( NSLocalizedString(@"Routing Filter Error", nil),  [NSString stringWithFormat: NSLocalizedString(@"Syntax error in this routing filter: %@\r\r%@\r\r%@", nil), [routingRule objectForKey:@"name"], [routingRule objectForKey:@"filter"], [ne description]], nil, nil, nil);
+                    NSRunAlertPanel( NSLocalizedString(@"Routing Filter Error", nil), NSLocalizedString(@"Syntax error in this routing filter: %@\r\r%@\r\r%@", nil), nil, nil, nil, [routingRule objectForKey:@"name"], [routingRule objectForKey:@"filter"], [ne description]);
                     
                     [AppController printStackTrace: ne];
                 }
@@ -2504,7 +2504,7 @@ static NSConditionLock *threadLock = nil;
 
 - (void) autoCleanDatabaseFreeSpaceWarning: (NSString*) message
 {
-	NSRunCriticalAlertPanel( NSLocalizedString(@"Warning", nil),  message, NSLocalizedString(@"OK",nil), nil, nil);
+	NSRunCriticalAlertPanel( NSLocalizedString(@"Warning", nil),  @"%@", NSLocalizedString(@"OK",nil), nil, nil, message);
 }
 
 - (void) autoCleanDatabaseFreeSpace: (id)sender // __deprecated
@@ -3998,6 +3998,43 @@ static NSConditionLock *threadLock = nil;
     return servers;
 }
 
++ (NSString*) stringForSearchType:(int) curSearchType
+{
+    switch( curSearchType)
+    {
+        case 7:			// All fields -> Use only the Patient Name for distant nodes
+        case 0:			// Patient Name
+            return NSLocalizedString( @"Patient Name", nil);
+            break;
+            
+        case 1:			// Patient ID
+            return NSLocalizedString( @"Patient ID", nil);
+            break;
+            
+        case 2:			// Study ID
+            return NSLocalizedString( @"Study ID", nil);
+            break;
+            
+        case 3:			// Comments
+            return NSLocalizedString( @"Comments", nil);
+            break;
+            
+        case 4:			// Study Description
+            return NSLocalizedString( @"Study Description", nil);
+            break;
+            
+        case 5:			// Modality
+            return NSLocalizedString( @"Modality", nil);
+            break;
+            
+        case 6:			// Accession Number
+            return NSLocalizedString( @"AccessionNumber", nil);
+            break;
+    }
+    
+    return @"";
+}
+
 - (NSArray*) distantStudiesForSearchString: (NSString*) curSearchString type:(int) curSearchType
 {
     #ifndef OSIRIX_LIGHT
@@ -4112,7 +4149,7 @@ static NSConditionLock *threadLock = nil;
     
     if( curSearchType == searchType && [curSearchString isEqualToString: _searchString]) // There was maybe other locks in the queue...
     {
-        NSLog( @"Search For Search Field: %@ (%d)", curSearchString, curSearchType);
+        NSLog( @"Search For %@: %@", [BrowserController stringForSearchType: curSearchType], curSearchString);
         
         if( [curSearchString length] > 2 || (_searchString.length >= 2 && searchType == 5))
         {
@@ -4141,7 +4178,7 @@ static NSConditionLock *threadLock = nil;
                 
                 if( [NSThread currentThread] == lastObjectInQueue)
                 {
-                    [NSThread currentThread].name = [NSString stringWithFormat: NSLocalizedString( @"Search Field: %@", nil), curSearchString];
+                    [NSThread currentThread].name = [NSString stringWithFormat: NSLocalizedString( @"Search %@: %@", nil), [BrowserController stringForSearchType: curSearchType], curSearchString];
                     [[ThreadsManager defaultManager] addThreadAndStart: [NSThread currentThread]];
                     
                     @try
@@ -5056,19 +5093,24 @@ static NSConditionLock *threadLock = nil;
                         [self matrixLoadIcons: dict];
                         if( item == previousItem || ([previousItem isKindOfClass: [NSManagedObject class]] && [item isKindOfClass: [NSManagedObject class]] && [[previousItem objectID] isEqual: [item objectID]]))
                         {
+                            [oMatrix deselectAllCells];
+                            BOOL first = YES;
                             for( NSCell *cell in [oMatrix cells])
                             {
                                 if( [selectedCellsIDs containsObject: [cell representedObject]])
                                 {
-                                    [cell setHighlighted: YES];
-                                    [cell setState: NSOnState];
-                                }
-                                else
-                                {
-                                    [cell setHighlighted: NO];
-                                    [cell setState: NSOffState];
+                                    if( first) {
+                                        [oMatrix selectCell: cell];
+                                        first = NO;
+                                    }
+                                    else {
+                                        [cell setHighlighted: YES];
+                                        [cell setState: NSOnState];
+                                    }
                                 }
                             }
+                            
+                            [self matrixPressed: oMatrix];
                         }
                     }
                 }
@@ -5283,7 +5325,7 @@ static NSConditionLock *threadLock = nil;
                 {
                     if( [[study valueForKey:@"type"] isEqualToString: @"Study"])
                     {
-                        NSInteger confirm = NSRunInformationalAlertPanel(NSLocalizedString(@"Unify Patient Identity", nil), [NSString stringWithFormat: NSLocalizedString(@"Do you confirm to DEFINITIVELY change this patient identity:\r\r%@ / %@ / %@\r\rto this new identity:\r\r%@ / %@ ?", nil), study.name, study.patientID, study.studyName, destStudy.name, destStudy.patientID], NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
+                        NSInteger confirm = NSRunInformationalAlertPanel(NSLocalizedString(@"Unify Patient Identity", nil), NSLocalizedString(@"Do you confirm to DEFINITIVELY change this patient identity:\r\r%@ / %@ / %@\r\rto this new identity:\r\r%@ / %@ ?", nil), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil, study.name, study.patientID, study.studyName, destStudy.name, destStudy.patientID);
                         
                         if( confirm == NSAlertDefaultReturn)
                         {
@@ -5374,7 +5416,7 @@ static NSConditionLock *threadLock = nil;
                     NSInteger confirm = NSAlertDefaultReturn;
                     
                     if( result == NSAlertAlternateReturn)
-                        confirm = NSRunInformationalAlertPanel(NSLocalizedString(@"Unify Patient Identity", nil), [NSString stringWithFormat: NSLocalizedString(@"Do you confirm to DEFINITIVELY change this patient identity:\r\r%@ / %@ / %@\r\rto this new identity:\r\r%@ / %@ ?", nil), study.name, study.patientID, study.studyName, destStudy.name, destStudy.patientID], NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
+                        confirm = NSRunInformationalAlertPanel(NSLocalizedString(@"Unify Patient Identity", nil), NSLocalizedString(@"Do you confirm to DEFINITIVELY change this patient identity:\r\r%@ / %@ / %@\r\rto this new identity:\r\r%@ / %@ ?", nil), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil, study.name, study.patientID, study.studyName, destStudy.name, destStudy.patientID);
                     
                     if( confirm == NSAlertDefaultReturn)
                     {
@@ -5454,7 +5496,7 @@ static NSConditionLock *threadLock = nil;
                 {
                     if( [[study valueForKey:@"type"] isEqualToString: @"Study"])
                     {
-                        NSInteger confirm = NSRunInformationalAlertPanel(NSLocalizedString(@"Merge Studies", nil), [NSString stringWithFormat: NSLocalizedString(@"Do you confirm to DEFINITIVELY change this study identity to this new identity:\r\r%@ / %@ ?", nil), destStudy.name, destStudy.studyName], NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
+                        NSInteger confirm = NSRunInformationalAlertPanel(NSLocalizedString(@"Merge Studies", nil), NSLocalizedString(@"Do you confirm to DEFINITIVELY change this study identity to this new identity:\r\r%@ / %@ ?", nil), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil, destStudy.name, destStudy.studyName);
                         
                         if( confirm == NSAlertDefaultReturn)
                         {
@@ -5958,15 +6000,15 @@ static NSConditionLock *threadLock = nil;
 		NSManagedObject	*album = [albumArray objectAtIndex: albumTable.selectedRow];
 		
 		if( [[album valueForKey:@"smartAlbum"] boolValue] == NO)
-			result = NSRunInformationalAlertPanel(NSLocalizedString(@"Delete/Remove images", nil), [NSString stringWithFormat: NSLocalizedString(@"Do you want to only remove the selected images from the current album or delete them from the database? (%@)", nil), level], NSLocalizedString(@"Delete",nil), NSLocalizedString(@"Cancel",nil), NSLocalizedString(@"Remove from current album",nil));
+			result = NSRunInformationalAlertPanel(NSLocalizedString(@"Delete/Remove images", nil), NSLocalizedString(@"Do you want to only remove the selected images from the current album or delete them from the database? (%@)", nil), NSLocalizedString(@"Delete",nil), NSLocalizedString(@"Cancel",nil), NSLocalizedString(@"Remove from current album",nil), level);
 		else
 		{
-			result = NSRunInformationalAlertPanel(NSLocalizedString(@"Delete images", nil), [NSString stringWithFormat: NSLocalizedString(@"Are you sure you want to delete the selected images? (%@)", nil), level], NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
+			result = NSRunInformationalAlertPanel(NSLocalizedString(@"Delete images", nil), NSLocalizedString(@"Are you sure you want to delete the selected images? (%@)", nil), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil, level);
 		}
 	}
 	else
 	{
-		result = NSRunInformationalAlertPanel(NSLocalizedString(@"Delete images", nil), [NSString stringWithFormat: NSLocalizedString(@"Are you sure you want to delete the selected images? (%@)", nil), level], NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
+		result = NSRunInformationalAlertPanel(NSLocalizedString(@"Delete images", nil), NSLocalizedString(@"Are you sure you want to delete the selected images? (%@)", nil), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil, level);
 	}
     
     [context retain];
@@ -7143,6 +7185,9 @@ static NSConditionLock *threadLock = nil;
             {
                 distantStudies = NO;
                 
+                int copy = [[NSUserDefaults standardUserDefaults] integerForKey: @"ListenerCompressionSettings"];
+                [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"ListenerCompressionSettings"]; //No time for decompression....
+                
                 for( int i = 0; i < comparatives.count; i++)
                 {
                     if( [[comparatives objectAtIndex: i] isKindOfClass: [DCMTKStudyQueryNode class]])
@@ -7171,6 +7216,8 @@ static NSConditionLock *threadLock = nil;
                             distantStudies = YES;
                     }
                 }
+                
+                [[NSUserDefaults standardUserDefaults] setInteger: copy forKey: @"ListenerCompressionSettings"];
                 
                 if( distantStudies && w == nil)
                 {
@@ -7242,7 +7289,7 @@ static NSConditionLock *threadLock = nil;
         }
         
         // Prepare the series
-        int total = [WindowLayoutManager windowsRowsForHangingProtocol: currentHangingProtocol] * [WindowLayoutManager windowsColumnsForHangingProtocol: currentHangingProtocol];
+        int total = [WindowLayoutManager windowsRowsForHangingProtocol: currentHangingProtocol] * [WindowLayoutManager windowsColumnsForHangingProtocol: currentHangingProtocol] * [[[AppController sharedAppController] viewerScreens] count];
         
         if( seriesArray.count > total)
             [seriesArray removeObjectsInRange: NSMakeRange( total, seriesArray.count-total)];
@@ -7329,6 +7376,19 @@ static NSConditionLock *threadLock = nil;
     }
 }
 
+- (void) displayWaitWindowIfNecessary
+{
+    if( waitOpeningWindow == nil) waitOpeningWindow  = [[WaitRendering alloc] init: NSLocalizedString(@"Opening...", nil)];
+    [waitOpeningWindow showWindow:self];
+}
+
+- (void) closeWaitWindowIfNecessary
+{
+    [waitOpeningWindow close];
+    [waitOpeningWindow autorelease];
+    waitOpeningWindow = nil;
+}
+
 - (void) databaseOpenStudy: (NSManagedObject*) item
 {
 #ifndef  OSIRIX_LIGHT
@@ -7396,6 +7456,8 @@ static NSConditionLock *threadLock = nil;
                 
                 if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"])
                 {
+                    [self displayWaitWindowIfNecessary];
+                    
                     // Check if all studies are available, available on PACS-On-Demand ?
                     for( NSDictionary *dict in viewers)
                     {
@@ -7416,6 +7478,9 @@ static NSConditionLock *threadLock = nil;
                             
                             if( distantStudy)
                             {
+                                int copy = [[NSUserDefaults standardUserDefaults] integerForKey: @"ListenerCompressionSettings"];
+                                [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"ListenerCompressionSettings"]; //No time for decompression....
+                                
                                 [QueryController retrieveStudies: [NSArray arrayWithObject: distantStudy] showErrors: NO checkForPreviousAutoRetrieve: YES];
                                 
                                 int lastNumberOfImages = 0, currentNumberOfImages = 0;
@@ -7442,10 +7507,14 @@ static NSConditionLock *threadLock = nil;
                                     currentNumberOfImages = [[[studiesArray lastObject] images] count];
                                 }
                                 while( ([studiesArray count] == 0 || lastNumberOfImages != currentNumberOfImages) && [NSDate timeIntervalSinceReferenceDate] - dateStart < 20);
+                                
+                                [[NSUserDefaults standardUserDefaults] setInteger: copy forKey: @"ListenerCompressionSettings"];
                             }
 #endif
                         }
                     }
+                    
+                    [self closeWaitWindowIfNecessary];
                 }
                 
                 for( NSDictionary *dict in viewers)
@@ -7535,8 +7604,7 @@ static NSConditionLock *threadLock = nil;
                     if( propagateSettings)
                         [[NSUserDefaults standardUserDefaults] setBool: [propagateSettings boolValue] forKey:@"COPYSETTINGS"];
                     
-                    if( waitOpeningWindow == nil) waitOpeningWindow  = [[WaitRendering alloc] init: NSLocalizedString(@"Opening...", nil)];
-                    [waitOpeningWindow showWindow:self];
+                    [self displayWaitWindowIfNecessary];
                     
                     [AppController sharedAppController].checkAllWindowsAreVisibleIsOff = YES;
                     
@@ -7682,9 +7750,7 @@ static NSConditionLock *threadLock = nil;
                     if( [displayedViewers count] > 0)
                         [[[displayedViewers objectAtIndex: 0] window] makeKeyAndOrderFront: self];
                     
-                    [waitOpeningWindow close];
-                    [waitOpeningWindow autorelease];
-                    waitOpeningWindow = nil;
+                    [self closeWaitWindowIfNecessary];
                     
                     windowsStateApplied = YES;
                     
@@ -9548,7 +9614,7 @@ static BOOL withReset = NO;
             if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"])
                 r = NSAlertDefaultReturn;
             else
-                r = NSRunAlertPanel( NSLocalizedString(@"Corrupted files", nil), [NSString stringWithFormat:NSLocalizedString(@"A corrupted study crashed OsiriX:\r\r%@ / %@\r\rThis file will be deleted.\r\rYou can run OsiriX in Protected Mode (shift + option keys at startup) if you have more crashes.\r\rShould I delete this corrupted study? (Highly recommended)", nil), [studyObject valueForKey:@"name"], [studyObject valueForKey:@"studyName"], nil], NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil);
+                r = NSRunAlertPanel( NSLocalizedString(@"Corrupted files", nil), NSLocalizedString(@"A corrupted study crashed OsiriX:\r\r%@ / %@\r\rThis file will be deleted.\r\rYou can run OsiriX in Protected Mode (shift + option keys at startup) if you have more crashes.\r\rShould I delete this corrupted study? (Highly recommended)", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil, [studyObject valueForKey:@"name"], [studyObject valueForKey:@"studyName"]);
             
             if( r == NSAlertDefaultReturn)
 			{
@@ -10403,7 +10469,7 @@ static BOOL withReset = NO;
 	return proposedMax;
 }
 
-- (NSManagedObject *)firstObjectForDatabaseMatrixSelection
+- (DicomImage *)firstObjectForDatabaseMatrixSelection
 {
 	NSArray				*cells = [oMatrix selectedCells];
 	NSManagedObject		*aFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
@@ -10419,7 +10485,7 @@ static BOOL withReset = NO;
 				
 				if( [[curObj valueForKey:@"type"] isEqualToString:@"Image"])
 				{
-					return curObj;
+					return (DicomImage*) curObj;
 				}
 				
 				if( [[curObj valueForKey:@"type"] isEqualToString:@"Series"])
@@ -10861,10 +10927,11 @@ static BOOL withReset = NO;
 -(void)removeAlbumObject:(DicomAlbum*)album {
     if ((album.smartAlbum.boolValue == NO && album.studies.count == 0) ||
         NSRunInformationalAlertPanel(NSLocalizedString(@"Delete Album", nil),
-                                                     [NSString stringWithFormat:NSLocalizedString(@"Are you sure you want to delete the album named %@?", nil), album.name],
+                                                     NSLocalizedString(@"Are you sure you want to delete the album named %@?", nil),
                                                      NSLocalizedString(@"OK",nil),
                                                      NSLocalizedString(@"Cancel",nil),
-                                                     nil) == NSAlertDefaultReturn)
+                                                     nil,
+                                                        album.name) == NSAlertDefaultReturn)
     {
         [self.database lock];
         @try
@@ -11239,6 +11306,9 @@ static BOOL withReset = NO;
 
 - (NSDragOperation)tableView:(NSTableView *)tableView validateDrop:(id <NSDraggingInfo>)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)operation
 {
+    if( operation != NSTableViewDropOn)
+        return NSDragOperationNone;
+    
 	if ([tableView isEqual:albumTable])
 	{
 		NSArray* array = self.albumArray;
@@ -11418,15 +11488,22 @@ static BOOL withReset = NO;
             [comparativeRetrieveQueue addObject: study];
         }
         
+        int copy = [[NSUserDefaults standardUserDefaults] integerForKey: @"ListenerCompressionSettings"];
+        [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"ListenerCompressionSettings"]; //No time for decompression....
+        
         #ifndef OSIRIX_LIGHT
         [QueryController retrieveStudies: [NSArray arrayWithObject: study] showErrors: NO checkForPreviousAutoRetrieve: NO];
         #endif
         
-//        [NSThread sleepForTimeInterval: 0.2];
-//        [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
-//        [NSThread sleepForTimeInterval: 0.5];
+        DicomDatabase *idb = [[DicomDatabase activeLocalDatabase] independentDatabase];
         
-        [[[DicomDatabase activeLocalDatabase] independentDatabase] importFilesFromIncomingDir];
+        [idb importFilesFromIncomingDir];
+        
+        //Files in the decompress/compress thread?
+        if( [idb waitForCompressThread])
+            [idb importFilesFromIncomingDir];
+        
+        [[NSUserDefaults standardUserDefaults] setInteger: copy forKey: @"ListenerCompressionSettings"];
         
         @synchronized( comparativeRetrieveQueue)
         {
@@ -11700,7 +11777,8 @@ static BOOL withReset = NO;
 	NSMutableArray		*viewerPix[ MAX4D];
 	ViewerController	*movieController = nil;
 	ViewerController	*createdViewer = viewer;
-	
+	DicomStudy          *previousStudy = viewer.currentStudy;
+    
     ThreadModalForWindowController* wait = nil;
     [[NSThread currentThread] enterOperation];
     if ([self.database hasPotentiallySlowDataAccess]) {
@@ -11901,7 +11979,7 @@ static BOOL withReset = NO;
 				}
 			}
 			
-			result = NSRunInformationalAlertPanel( NSLocalizedString(@"32-bit", nil),  [NSString stringWithFormat: NSLocalizedString(@"This 32-bit version cannot load this series, but I can load a subset of the series: 1 on %d images.", nil), subSampling], NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
+			result = NSRunInformationalAlertPanel( NSLocalizedString(@"32-bit", nil), NSLocalizedString(@"This 32-bit version cannot load this series, but I can load a subset of the series: 1 on %d images.", nil), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil, subSampling);
 		}
 		
 		//  (3) Load Images (memory allocation)
@@ -12010,6 +12088,8 @@ static BOOL withReset = NO;
 			if( preFlippedData)
 				toOpenArray = resortedToOpenArray;
 			
+//            NSMutableArray *viewerToStartLoadingThread = [NSMutableArray array];
+            
 			for( unsigned long x = 0; x < [toOpenArray count]; x++)
 			{
 				fVolumePtr = malloc( memBlockSize[ x] * sizeof(float));
@@ -12080,7 +12160,7 @@ static BOOL withReset = NO;
 						if( [viewerPix[0] count] == 0)
 							NSRunCriticalAlertPanel( NSLocalizedString(@"Files not available (readable)", nil), NSLocalizedString(@"No files available (readable) in this series.", nil), NSLocalizedString(@"Continue",nil), nil, nil);
 						else
-							NSRunCriticalAlertPanel( NSLocalizedString(@"Not all files available (readable)", nil),  [NSString stringWithFormat: NSLocalizedString(@"Not all files are available (readable) in this series.\r%@ are missing.", nil), N2LocalizedSingularPluralCount( [loadList count] - [viewerPix[0] count], NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil))], NSLocalizedString(@"Continue",nil), nil, nil);
+							NSRunCriticalAlertPanel( NSLocalizedString(@"Not all files available (readable)", nil), NSLocalizedString(@"Not all files are available (readable) in this series.\r%@ are missing.", nil), NSLocalizedString(@"Continue",nil), nil, nil, N2LocalizedSingularPluralCount( [loadList count] - [viewerPix[0] count], NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil)));
 					}
 					//opening images refered to in viewerPix[0] in the adequate viewer
 					
@@ -12114,8 +12194,9 @@ static BOOL withReset = NO;
 									//creation of new viewer
 									createdViewer = [[ViewerController alloc] initWithPix:viewerPix[0] withFiles:filesAr withVolume:volumeData];
 									[createdViewer showWindowTransition];
-									[createdViewer startLoadImageThread];
-								}		
+                                    [createdViewer startLoadImageThread];
+									//[viewerToStartLoadingThread addObject: createdViewer];
+								}
 								
 								[filesAr release];
 							}
@@ -12136,7 +12217,8 @@ static BOOL withReset = NO;
 									//creation of new viewer
 									createdViewer = [[ViewerController alloc] initWithPix:viewerPix[0] withFiles: [NSMutableArray arrayWithArray: correspondingObjects] withVolume:volumeData];
 									[createdViewer showWindowTransition];
-									[createdViewer startLoadImageThread];
+                                    [createdViewer startLoadImageThread];
+                                    //[viewerToStartLoadingThread addObject: createdViewer];
 									
 									if( [[isFlippedData objectAtIndex: x] boolValue])
 										[createdViewer flipDataSeries: self];
@@ -12177,8 +12259,10 @@ static BOOL withReset = NO;
 					[correspondingObjects release];
 				}
 			} //end for
+            
+//            [self performSelector: @selector( startLoadingThreads:) withObject: viewerToStartLoadingThread afterDelay: 0.01];
 		}
-		
+        
 		//  (5) movieController activation
 		
 		if( movieController)
@@ -12193,7 +12277,7 @@ static BOOL withReset = NO;
 	@catch( NSException *e)
 	{
         N2LogExceptionWithStackTrace(e);
-		NSRunAlertPanel( NSLocalizedString(@"Opening Error", nil), [NSString stringWithFormat: NSLocalizedString(@"Opening Error : %@\r\r%@", nil), e, [AppController printStackTrace: e]] , nil, nil, nil);
+		NSRunAlertPanel( NSLocalizedString(@"Opening Error", nil), NSLocalizedString(@"Opening Error : %@\r\r%@", nil), nil, nil, nil, e, [AppController printStackTrace: e]);
 	}
     @finally {
         [wait invalidate];
@@ -12211,24 +12295,33 @@ static BOOL withReset = NO;
     {
         if( viewer && [[NSUserDefaults standardUserDefaults] boolForKey: @"tileWindowsOrderByStudyDate"])
         {
-            // Keep current row/column
-            NSDictionary *d = nil;
-            
-            NSString *rw = [[NSUserDefaults standardUserDefaults] stringForKey: @"LastWindowsTilingRowsColumns"];
-            if( rw)
+            if( [previousStudy.studyInstanceUID isEqualToString: viewer.currentStudy.studyInstanceUID] == NO)
             {
-                if( rw.length == 2)
+                // Keep current row/column
+                NSDictionary *d = nil;
+                
+                NSString *rw = [[NSUserDefaults standardUserDefaults] stringForKey: @"LastWindowsTilingRowsColumns"];
+                if( rw)
                 {
-                    d = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: [[rw substringWithRange: NSMakeRange( 0, 1)] intValue]], @"rows", [NSNumber numberWithInt: [[rw substringWithRange: NSMakeRange( 1, 1)] intValue]], @"columns", nil];
+                    if( rw.length == 2)
+                    {
+                        d = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: [[rw substringWithRange: NSMakeRange( 0, 1)] intValue]], @"rows", [NSNumber numberWithInt: [[rw substringWithRange: NSMakeRange( 1, 1)] intValue]], @"columns", nil];
+                    }
                 }
+                
+                [[AppController sharedAppController] tileWindows: d];
             }
-            
-            [[AppController sharedAppController] tileWindows: d];
         }
     }
     
 	return createdViewer;
 }
+
+//- (void) startLoadingThreads: (NSArray*) viewerToStartLoadingThread
+//{
+//    for( ViewerController *v in viewerToStartLoadingThread)
+//        [v startLoadImageThread];
+//}
 
 - (IBAction) selectSubSeriesAndOpen:(id) sender
 {
@@ -12262,10 +12355,7 @@ static BOOL withReset = NO;
 	BOOL movieError = NO, tryToFlipData = NO;
 	
 	if( [toOpenArray count] > 2)
-	{
-		if( waitOpeningWindow == nil) waitOpeningWindow = [[WaitRendering alloc] init: NSLocalizedString(@"Opening...", nil)];
-	}
-	[waitOpeningWindow showWindow:self];
+		[self displayWaitWindowIfNecessary];
 
 	numberImages = 0;
 	if( movieViewer == YES) // First check if all series contain same amount of images
@@ -12342,7 +12432,7 @@ static BOOL withReset = NO;
 		}
 		else if( [toOpenArray count] > MAX4D)
 		{
-			NSRunCriticalAlertPanel( NSLocalizedString(@"4D Player",@"4D Player"), [NSString stringWithFormat: NSLocalizedString(@"4D Player is limited to a maximum number of %d series.", nil), MAX4D], NSLocalizedString(@"OK",nil), nil, nil);
+			NSRunCriticalAlertPanel( NSLocalizedString(@"4D Player",@"4D Player"), NSLocalizedString(@"4D Player is limited to a maximum number of %d series.", nil), NSLocalizedString(@"OK",nil), nil, nil, MAX4D);
 			movieError = YES;
 		}
 		else
@@ -12513,9 +12603,7 @@ static BOOL withReset = NO;
 				
 				if( [splittedSeries count] > 1)
 				{
-					[waitOpeningWindow close];
-					[waitOpeningWindow release];
-					waitOpeningWindow = nil;
+					[self closeWaitWindowIfNecessary];
 					
 					[subOpenMatrix3D renewRows: 1 columns: [splittedSeries count]];
 					[subOpenMatrix3D sizeToCells];
@@ -12801,8 +12889,7 @@ static BOOL withReset = NO;
 							
 						case 6:
 							
-							if( waitOpeningWindow == nil) waitOpeningWindow = [[WaitRendering alloc] init: NSLocalizedString(@"Opening...", nil)];
-							[waitOpeningWindow showWindow:self];
+							[self displayWaitWindowIfNecessary];
 							
 							for( NSArray *array in splittedSeries)
 							{
@@ -12820,14 +12907,13 @@ static BOOL withReset = NO;
 								{
 									openAllWindows = NO;
 									
-									if( NSRunInformationalAlertPanel( NSLocalizedString(@"Series Opening", nil), [NSString stringWithFormat: NSLocalizedString(@"Are you sure you want to open %d windows? It's a lot of windows for this screen...", nil), [[splittedSeries objectAtIndex: 0] count]], NSLocalizedString(@"Yes", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
+									if( NSRunInformationalAlertPanel( NSLocalizedString(@"Series Opening", nil), NSLocalizedString(@"Are you sure you want to open %d windows? It's a lot of windows for this screen...", nil), NSLocalizedString(@"Yes", nil), NSLocalizedString(@"Cancel", nil), nil, [[splittedSeries objectAtIndex: 0] count]) == NSAlertDefaultReturn)
 										openAllWindows = YES;
 								}
 								
 								if( openAllWindows)
 								{
-									if( waitOpeningWindow == nil) waitOpeningWindow = [[WaitRendering alloc] init: NSLocalizedString(@"Opening...", nil)];
-									[waitOpeningWindow showWindow:self];
+									[self displayWaitWindowIfNecessary];
 									
 									for( int i = 0; i < [[splittedSeries objectAtIndex: 0] count]; i++)
 									{
@@ -12854,10 +12940,6 @@ static BOOL withReset = NO;
 	
 	if( movieError == NO && toOpenArray != nil)
 		[self openViewerFromImages :toOpenArray movie: movieViewer viewer :viewer keyImagesOnly:NO tryToFlipData: tryToFlipData];
-		
-	[waitOpeningWindow close];
-	[waitOpeningWindow autorelease];
-	waitOpeningWindow = nil;
 }
 
 - (void) viewerDICOMInt:(BOOL) movieViewer dcmFile:(NSArray *)selectedLines viewer:(ViewerController*) viewer
@@ -13014,7 +13096,7 @@ static BOOL withReset = NO;
 	@catch (NSException *e)
 	{
         N2LogExceptionWithStackTrace(e);
-		NSRunAlertPanel( NSLocalizedString(@"Opening Error", nil), [NSString stringWithFormat: NSLocalizedString(@"Opening Error : %@\r\r%@", nil), e, [AppController printStackTrace: e]] , nil, nil, nil);
+		NSRunAlertPanel( NSLocalizedString(@"Opening Error", nil), NSLocalizedString(@"Opening Error : %@\r\r%@", nil) , nil, nil, nil, e, [AppController printStackTrace: e]);
 	}
 	
 	[_database unlock];
@@ -13095,6 +13177,8 @@ static BOOL withReset = NO;
 	[_database unlock];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixDidLoadNewObjectNotification object:item userInfo:nil];
+
+    [self closeWaitWindowIfNecessary];
 }
 
 
@@ -13663,6 +13747,12 @@ static NSArray*	openSubSeriesArray = nil;
             
             if (![_database isReadOnly])
             {
+                item = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Edit Album", nil) action:@selector(albumTableDoublePressed:) keyEquivalent:@""] autorelease];
+                [item setTarget:self];
+                [menu addItem:item];
+                
+                [menu addItem: [NSMenuItem separatorItem]];
+                
                 item = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Add Album", nil) action:@selector(addAlbum:) keyEquivalent:@""] autorelease];
                 [item setTarget:self];
                 [menu addItem:item];
@@ -13861,11 +13951,6 @@ static NSArray*	openSubSeriesArray = nil;
         
         WaitRendering *wait = [[AppController sharedAppController] splashScreen];
         
-    #ifdef __LP64__
-        [banner setImage: [[[NSImage alloc] initWithSize: NSZeroSize] autorelease]];
-        [bannerSplit setPosition: 0 ofDividerAtIndex: 0];
-    #endif
-        
     //	waitCompressionWindow  = [[Wait alloc] initWithString: NSLocalizedString( @"File Conversion", nil) :NO];
     //	[waitCompressionWindow setCancel:YES];
         
@@ -13936,7 +14021,6 @@ static NSArray*	openSubSeriesArray = nil;
             [[albumTable tableColumnWithIdentifier:@"Source"] setDataCell:cell];
             [albumTable setDelegate:self];
             [albumTable registerForDraggedTypes:[NSArray arrayWithObject:O2AlbumDragType]];
-            [albumTable setDoubleAction:@selector(albumTableDoublePressed:)];
             
     //		[customStart setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
     //		[customStart2 setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
@@ -14067,7 +14151,7 @@ static NSArray*	openSubSeriesArray = nil;
             
             NSString *message = [NSString stringWithFormat: NSLocalizedString(@"A problem occured during start-up of OsiriX:\r\r%@\r\r%@",nil), [ne description], [AppController printStackTrace: ne]];
             
-            NSRunCriticalAlertPanel(NSLocalizedString(@"Error",nil), message, NSLocalizedString( @"OK",nil), nil, nil);
+            NSRunCriticalAlertPanel(NSLocalizedString(@"Error",nil), @"%@", NSLocalizedString( @"OK",nil), nil, nil, message);
             
             exit( 0);
         }
@@ -14105,21 +14189,10 @@ static NSArray*	openSubSeriesArray = nil;
             [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"autoRetrieving"];
         #endif
         
-        #ifdef __LP64__
-        #else
         [NSThread detachNewThreadSelector: @selector(checkForBanner:) toTarget: self withObject: nil];
-        #endif
-        
         
         [bannerSplit setPosition: bannerSplit.frame.size.height - (banner.image.size.height+3) ofDividerAtIndex: 0];
 
-        #ifdef __LP64__
-        NSRect f = [subSeriesWindow frame];
-        
-        f.size.height -= [warningBox frame].size.height;
-        [subSeriesWindow setFrame: f display: NO];
-        #endif
-        
         [[self window] setAnimationBehavior: NSWindowAnimationBehaviorNone];
         
         // Responder chain
@@ -15806,7 +15879,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			{
 				if( first)
 				{
-					if( NSRunInformationalAlertPanel( NSLocalizedString(@"Export", nil), [NSString stringWithFormat: NSLocalizedString(@"A folder already exists. Should I replace it? It will delete the entire content of this folder (%@)", nil), [tempPath lastPathComponent]], NSLocalizedString(@"Replace", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
+					if( NSRunInformationalAlertPanel( NSLocalizedString(@"Export", nil), NSLocalizedString(@"A folder already exists. Should I replace it? It will delete the entire content of this folder (%@)", nil), NSLocalizedString(@"Replace", nil), NSLocalizedString(@"Cancel", nil), nil, [tempPath lastPathComponent]) == NSAlertDefaultReturn)
 					{
 						[[NSFileManager defaultManager] removeFileAtPath:tempPath handler:nil];
 						[[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
@@ -16228,7 +16301,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			{
 				if( i == 0)
 				{
-					if( NSRunInformationalAlertPanel( NSLocalizedString(@"Export", nil), [NSString stringWithFormat: NSLocalizedString(@"A folder already exists. Should I replace it? It will delete the entire content of this folder (%@)", nil), [tempPath lastPathComponent]], NSLocalizedString(@"Replace", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
+					if( NSRunInformationalAlertPanel( NSLocalizedString(@"Export", nil), NSLocalizedString(@"A folder already exists. Should I replace it? It will delete the entire content of this folder (%@)", nil), NSLocalizedString(@"Replace", nil), NSLocalizedString(@"Cancel", nil), nil, [tempPath lastPathComponent]) == NSAlertDefaultReturn)
 					{
 						[[NSFileManager defaultManager] removeFileAtPath:tempPath handler:nil];
 						[[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
@@ -16641,7 +16714,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				/* Check the handler's return value */
 				else if (scriptResult != noScriptErr)
 				{
-					NSRunAlertPanel(NSLocalizedString(@"Script Failure", @"Title on script failure window."), [NSString stringWithFormat: @"%@ %d", NSLocalizedString(@"The script failed:", @"Message on script failure window."), scriptResult], NSLocalizedString(@"OK", @""), nil, nil);
+					NSRunAlertPanel(NSLocalizedString(@"Script Failure", @"Title on script failure window."), @"%@ %d", NSLocalizedString(@"OK", @""), nil, nil, NSLocalizedString(@"The script failed:", @"Message on script failure window."), scriptResult);
 				}
 			}
 		}
@@ -16734,7 +16807,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void) runInformationAlertPanel:(NSMutableDictionary*) dict
 {
-	int a = NSRunInformationalAlertPanel( [dict objectForKey: @"title"], [dict objectForKey: @"message"], [dict objectForKey: @"button1"], [dict objectForKey: @"button2"], [dict objectForKey: @"button3"]);
+	int a = NSRunInformationalAlertPanel( [dict objectForKey: @"title"], @"%@", [dict objectForKey: @"button1"], [dict objectForKey: @"button2"], [dict objectForKey: @"button3"], [dict objectForKey: @"message"]);
 	
 	[dict setObject: [NSNumber numberWithInt: a] forKey: @"result"];
 }
@@ -17375,7 +17448,7 @@ static volatile int numberOfThreadsForJPEG = 0;
     NSMutableArray *producedFiles = [NSMutableArray array];
     
     [exporter setSeriesDescription: NSLocalizedString( @"ROIs and Key Images", nil)];
-    [exporter setSeriesNumber: 89898];
+    [exporter setSeriesNumber: 0];
     
     NSEvent *event = [[NSApplication sharedApplication] currentEvent];
     NSArray *images = nil;
@@ -17653,8 +17726,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 		files = [self filesForDatabaseMatrixSelection:objects onlyImages: NO];
 	else
 		files = [self filesForDatabaseOutlineSelection:objects onlyImages: NO];
-	
-	[files removeDuplicatedStringsInSyncWithThisArray: objects];
 	
 	[self selectServer: objects];
 }
@@ -18400,7 +18471,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			reportToolbarItemType = 2;
 		break;
 		case 5:
-		//	OpenOffice.app
+		//	OpenOffice.app / LibreOffice.app
 		//	iconName = @"ReportOO.icns";
 			reportToolbarItemType = 3;
 		break;

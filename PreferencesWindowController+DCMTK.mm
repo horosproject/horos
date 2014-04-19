@@ -37,15 +37,14 @@
 	
 	DcmDictEntryList list;
     DcmHashDictIterator iter(globalDataDict.normalBegin());
-    DcmHashDictIterator end(globalDataDict.normalEnd());
-//    for (; iter != end; ++iter)
-//    {
-//        if ((*iter)->getPrivateCreator() == NULL) // exclude private tags
-//        {
-//          e = new DcmDictEntry(*(*iter));
-//          list.insertAndReplace(e);
-//        }
-//    }
+    for( int x = 0; x < globalDataDict.numberOfNormalTagEntries(); ++iter, x++)
+    {
+        if ((*iter)->getPrivateCreator() == NULL) // exclude private tags
+        {
+          e = new DcmDictEntry(*(*iter));
+          list.insertAndReplace(e);
+        }
+    }
 	
 	NSMutableArray *DICOMFieldsArray = [NSMutableArray array];
 	

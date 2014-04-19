@@ -279,7 +279,7 @@ static NSString *templateDicomFile = nil;
 
 + (void) error: (NSString*) s
 {
-    NSRunCriticalAlertPanel( NSLocalizedString( @"Error", nil), s, NSLocalizedString( @"OK", nil), nil, nil);
+    NSRunCriticalAlertPanel( NSLocalizedString( @"Error", nil), @"%@", NSLocalizedString( @"OK", nil), nil, nil, s);
 }
 
 +(NSDictionary*)anonymizeFiles:(NSArray*)files dicomImages: (NSArray*) dicomImages toPath:(NSString*)dirPath withTags:(NSArray*)intags

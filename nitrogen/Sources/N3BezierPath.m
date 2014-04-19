@@ -122,7 +122,7 @@
 
         
         if (_bezierCore == NULL) {
-            [self release];
+            [self autorelease];
             self = nil;
         }
     }

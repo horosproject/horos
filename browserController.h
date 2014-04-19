@@ -296,7 +296,7 @@ extern NSString* O2AlbumDragType;
 @property int distantSearchType;
 
 +(void)initializeBrowserControllerClass;
-
++ (unsigned int)_currentModifierFlags;
 + (int) compressionForModality: (NSString*) mod quality:(int*) quality resolution: (int) resolution;
 + (BrowserController*) currentBrowser;
 + (NSMutableString*) replaceNotAdmitted: (NSString*)name;
@@ -331,6 +331,8 @@ extern NSString* O2AlbumDragType;
 - (void) setDBDate;
 - (void) emptyDeleteQueueNow: (id) sender;
 - (void) saveDeleteQueue;
+- (void) closeWaitWindowIfNecessary;
+- (void) displayWaitWindowIfNecessary;
 - (void) showEntireDatabase;
 - (void) subSelectFilesAndFoldersToAdd: (NSArray*) filenames;
 - (void)matrixNewIcon:(long) index : (NSManagedObject*)curFile;

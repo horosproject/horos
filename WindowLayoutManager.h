@@ -33,6 +33,8 @@ It is a shared class.
 + (WindowLayoutManager*)sharedWindowLayoutManager;
 + (int) windowsRowsForHangingProtocol:(NSDictionary*) protocol;
 + (int) windowsColumnsForHangingProtocol:(NSDictionary*) protocol;
++ (int) imagesRowsForHangingProtocol:(NSDictionary*) protocol;
++ (int) imagesColumnsForHangingProtocol:(NSDictionary*) protocol;
 - (int) windowsRows;
 - (int) windowsColumns;
 - (int) imagesRows;

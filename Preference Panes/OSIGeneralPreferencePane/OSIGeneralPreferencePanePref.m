@@ -181,7 +181,7 @@ static NSArray *languagesToMoveWhenQuitting = nil;
 
 + (void) errorMessage:(NSURL*) url
 {
-    NSRunAlertPanel( NSLocalizedString( @"Preferences", nil), [NSString stringWithFormat: NSLocalizedString( @"Failed to download and synchronize preferences from this URL: %@", nil), url.absoluteString], NSLocalizedString( @"OK", nil), nil, nil);
+    NSRunAlertPanel( NSLocalizedString( @"Preferences", nil), NSLocalizedString( @"Failed to download and synchronize preferences from this URL: %@", nil), NSLocalizedString( @"OK", nil), nil, nil, url.absoluteString);
 }
 
 + (void) addPreferencesFromURL: (NSURL*) url

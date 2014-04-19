@@ -466,7 +466,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 @implementation DCMView
 
 @synthesize showDescriptionInLarge, curRoiList;
-@synthesize drawingFrameRect, dontEnterReshape;
+@synthesize drawingFrameRect;
 @synthesize rectArray, studyColorR, studyColorG, studyColorB, studyDateIndex;
 @synthesize flippedData, whiteBackground, timeIntervalForDrag;
 @synthesize dcmPixList;
@@ -1658,22 +1658,21 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	yFlipped = v;
 	
-	if( [self is2DViewer] && [[self windowController] isPostprocessed] == NO && [[self.imageObj managedObjectContext] tryLock])
+	if( [self is2DViewer] && [[self windowController] isPostprocessed] == NO)
 	{
         @try {
             // Series Level
-            [[self seriesObj]  setValue:[NSNumber numberWithBool:yFlipped] forKey:@"yFlipped"];
+            [self.seriesObj  setValue:[NSNumber numberWithBool:yFlipped] forKey:@"yFlipped"];
             
             // Image Level
             if( (curImage >= 0 && dcmFilesList.count > curImage) && COPYSETTINGSINSERIES == NO)
-                [[self imageObj] setValue:[NSNumber numberWithBool:yFlipped] forKey:@"yFlipped"];
+                [self.imageObj setValue:[NSNumber numberWithBool:yFlipped] forKey:@"yFlipped"];
             else
-                [[self imageObj] setValue: nil forKey:@"yFlipped"];
+                [self.imageObj setValue: nil forKey:@"yFlipped"];
 		}
         @catch ( NSException *e) {
             N2LogException( e);
         }
-		[[self.imageObj managedObjectContext] unlock];
 	}
 	
 	[self updateTilingViews];
@@ -1685,21 +1684,20 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	xFlipped = v;
 	
-	if( [self is2DViewer] && [[self windowController] isPostprocessed] == NO && [[self.imageObj managedObjectContext] tryLock])
+	if( [self is2DViewer] && [[self windowController] isPostprocessed] == NO)
     {
         @try {
-            [[self seriesObj] setValue:[NSNumber numberWithBool:xFlipped] forKey:@"xFlipped"];
+            [self.seriesObj setValue:[NSNumber numberWithBool:xFlipped] forKey:@"xFlipped"];
             
             // Image Level
             if( (curImage >= 0 && dcmFilesList.count > curImage) && COPYSETTINGSINSERIES == NO)
-                [[self imageObj] setValue:[NSNumber numberWithBool:xFlipped] forKey:@"xFlipped"];
+                [self.imageObj setValue:[NSNumber numberWithBool:xFlipped] forKey:@"xFlipped"];
             else
-                [[self imageObj] setValue: nil forKey:@"xFlipped"];
+                [self.imageObj setValue: nil forKey:@"xFlipped"];
         }
         @catch ( NSException *e) {
             N2LogException( e);
         }
-        [[self.imageObj managedObjectContext] unlock];
     }
 	
 	[self updateTilingViews];
@@ -1736,9 +1734,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void)DrawNSStringGL:(NSString*)str :(GLuint)fontL :(long)x :(long)y align:(DCMViewTextAlign)align useStringTexture:(BOOL)stringTex;
 {
+//    stringTex = YES;
+    
 	if( stringTex)
 	{
-		#define STRCAPACITY 500
+		#define STRCAPACITY 800
 	
 		if( stringTextureCache == nil)
 		{
@@ -1996,8 +1996,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
     float s = [self scaleToFitForDCMPix: curDCM];
     
-    if( origin.x == 0 && origin.y == 0)
-        return YES;
+    if( origin.x != 0 && origin.y != 0)
+        return NO;
     
     if( fabs( s - self.scaleValue) < 0.1)
         return YES;
@@ -2181,8 +2181,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			[dcmFilesList release];
 			dcmFilesList = [files retain];
 		}
-        
-        COPYSETTINGSINSERIES = ![DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: 0] valueForKey:@"modality"]];
 		
 		flippedData = NO;
 		
@@ -2400,7 +2398,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		for( DCMPix *pix in [v pixList: i])
 		{
-			[pix changeWLWW :curWL :curWW];
+            if( pix.isLoaded)
+                [pix changeWLWW :curWL :curWW];
 			
 			if( COPYSETTINGSINSERIES)
 			{
@@ -2421,7 +2420,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                 
 				[im setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
 				[im setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
-				[im setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
+                if( [self isScaledFit] == NO)
+                    [im setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
+                else
+                    [im setValue:nil forKey:@"scale"];
 				[im setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
 				[im setValue:[NSNumber numberWithBool:yFlipped] forKey:@"yFlipped"];
 				[im setValue:[NSNumber numberWithBool:yFlipped] forKey:@"xFlipped"];
@@ -2442,7 +2444,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         
         for( DCMView *imageView in [v imageViews])
         {
-            if( [imageView seriesObj] == [self seriesObj])
+            if( [imageView seriesObj] == self.seriesObj)
             {
                 imageView.COPYSETTINGSINSERIES = COPYSETTINGSINSERIES;
                 
@@ -2467,7 +2469,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                         {
                             [pix.imageObj setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
                             [pix.imageObj setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
-                            [pix.imageObj setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
+                            if( [self isScaledFit] == NO)
+                                [pix.imageObj setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
+                            else
+                                [pix.imageObj setValue:nil forKey:@"scale"];
                             [pix.imageObj setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
                             [pix.imageObj setValue:[NSNumber numberWithBool:yFlipped] forKey:@"yFlipped"];
                             [pix.imageObj setValue:[NSNumber numberWithBool:yFlipped] forKey:@"xFlipped"];
@@ -2643,8 +2648,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         
         if( imIndex < 0)
         {
-            NSArray *seriesArray = [[BrowserController currentBrowser] childrenArray: [[self seriesObj] valueForKey: @"study"]];
-            NSInteger index = [seriesArray indexOfObject: [self seriesObj]];
+            NSArray *seriesArray = [[BrowserController currentBrowser] childrenArray: [self.seriesObj valueForKey: @"study"]];
+            NSInteger index = [seriesArray indexOfObject: self.seriesObj];
             
             if( index != NSNotFound)
             {
@@ -2658,8 +2663,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         }
         else if( imIndex >= [dcmPixList count])
         {
-            NSArray *seriesArray = [[BrowserController currentBrowser] childrenArray: [[self seriesObj] valueForKey: @"study"]];
-            NSInteger index = [seriesArray indexOfObject: [self seriesObj]];
+            NSArray *seriesArray = [[BrowserController currentBrowser] childrenArray: [self.seriesObj valueForKey: @"study"]];
+            NSInteger index = [seriesArray indexOfObject: self.seriesObj];
             
             if( index != NSNotFound)
             {
@@ -3073,7 +3078,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	@try 
 	{
-		id curSeries = [self seriesObj];
+		id curSeries = self.seriesObj;
 		id curStudy = [curSeries valueForKey:@"study"];
 		
 		NSArray *viewers = [[ViewerController getDisplayed2DViewers] sortedArrayUsingFunction: studyCompare context: nil];
@@ -3917,8 +3922,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         if( [view isKindOfClass: [DCMView class]])
             [view mouseMovedInView: eventLocation];
             
-		if ([self is2DViewer] == YES)
-			[[self windowController] mouseMoved: theEvent];
+		if ([self is2DViewer] == YES && [self.window isKeyWindow])
+			[[self windowController] autoHideMatrix];
 	}
 	
 	avoidMouseMovedRecursive = NO;
@@ -4148,8 +4153,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     if( CGCursorIsVisible() == NO && lensTexture == nil) return; //For Synergy compatibility
 	if ([self eventToPlugins:event]) return;
 	
-    gInvertColors = [[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.CoreGraphics"] objectForKey: @"DisplayUseInvertedPolarity"] boolValue];
-    
 	currentMouseEventTool = -1;
 	
 	if( !drawing) return;
@@ -4792,13 +4795,16 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	if( SelectWindowScrollWheel)
 	{
-		if( [[self window] isMainWindow] == NO)
+        if( [self is2DViewer])
         {
-			[[self window] makeKeyAndOrderFront: self];
-            
-            if( [self is2DViewer])
-                [self.windowController windowDidBecomeMain: nil];
+            if( [ViewerController isFrontMost2DViewer: self.window] == NO)
+            {
+                [[self window] makeKeyAndOrderFront: self];
+                [self.windowController windowDidBecomeMain: nil]; //If the application is in background, it will not automatically called.
+            }
         }
+        else if( [[self window] isMainWindow] == NO)
+			[[self window] makeKeyAndOrderFront: self];
 	}
 	
 	float deltaX = [theEvent deltaX];
@@ -5435,17 +5441,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	//set value for Series Object Presentation State
 	if( [self is2DViewer] == YES && [[self windowController] isPostprocessed] == NO)
 	{
-		if( [[self.imageObj managedObjectContext] tryLock])
-		{
-            @try {
-                [[self seriesObj] setValue:[NSNumber numberWithFloat:origin.x] forKey:@"xOffset"];
-                [[self seriesObj] setValue:[NSNumber numberWithFloat:origin.y] forKey:@"yOffset"];
-			}
-            @catch ( NSException *e) {
-                N2LogException( e);
-            }
-			[[self.imageObj managedObjectContext] unlock];
-		}
+        @try {
+            [self.seriesObj setValue:[NSNumber numberWithFloat:origin.x] forKey:@"xOffset"];
+            [self.seriesObj setValue:[NSNumber numberWithFloat:origin.y] forKey:@"yOffset"];
+        }
+        @catch ( NSException *e) {
+            N2LogException( e);
+        }
 	}
 }
 
@@ -5995,7 +5997,20 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	if( curImage < 0 || COPYSETTINGSINSERIES == NO)
 		return;
-	
+    
+    if( otherPix == curDCM)
+        return;
+    
+    if( otherPix.isRGB != curDCM.isRGB)
+    {
+        if( otherPix.fullww > 250 && otherPix.fullww < 256 && curDCM.fullww > 250 && curDCM.fullww < 256)
+        {
+            
+        }
+        else
+            return;
+	}
+    
 	if( avoidChangeWLWWRecursive == NO)
 	{
 		avoidChangeWLWWRecursive = YES;
@@ -6074,55 +6089,51 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	if( [self is2DViewer])
 	{
-		if( [[self.imageObj managedObjectContext] tryLock])
-		{
-            @try
+        @try
+        {
+            //set value for Series Object Presentation State
+            if( curDCM.SUVConverted == NO)
             {
-                //set value for Series Object Presentation State
-                if( curDCM.SUVConverted == NO)
+                [self.seriesObj setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
+                [self.seriesObj setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
+                
+                // Image Level
+                if( curImage >= 0 && COPYSETTINGSINSERIES == NO)
                 {
-                    [[self seriesObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
-                    [[self seriesObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
+                    [self.imageObj setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
+                    [self.imageObj setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
+                }
+                else
+                {
+                    [self.imageObj setValue: nil forKey:@"windowWidth"];
+                    [self.imageObj setValue: nil forKey:@"windowLevel"];
+                }
+            }
+            else
+            {
+                if( [self is2DViewer] == YES)
+                {
+                    [self.seriesObj setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
+                    [self.seriesObj setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
                     
                     // Image Level
                     if( curImage >= 0 && COPYSETTINGSINSERIES == NO)
                     {
-                        [[self imageObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
-                        [[self imageObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
+                        [self.imageObj setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
+                        [self.imageObj setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
                     }
                     else
                     {
-                        [[self imageObj] setValue: nil forKey:@"windowWidth"];
-                        [[self imageObj] setValue: nil forKey:@"windowLevel"];
-                    }
-                }
-                else
-                {
-                    if( [self is2DViewer] == YES)
-                    {
-                        [[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
-                        [[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
-                        
-                        // Image Level
-                        if( curImage >= 0 && COPYSETTINGSINSERIES == NO)
-                        {
-                            [[self imageObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
-                            [[self imageObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
-                        }
-                        else
-                        {
-                            [[self imageObj] setValue: nil forKey:@"windowWidth"];
-                            [[self imageObj] setValue: nil forKey:@"windowLevel"];
-                        }
+                        [self.imageObj setValue: nil forKey:@"windowWidth"];
+                        [self.imageObj setValue: nil forKey:@"windowLevel"];
                     }
                 }
             }
-            @catch (NSException *e)
-            {
-                NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-            }
-			[[self.imageObj managedObjectContext] unlock];
-		}
+        }
+        @catch (NSException *e)
+        {
+            NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+        }
 	}
 }
 
@@ -6142,53 +6153,49 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	if( [self is2DViewer])
 	{
-		if( [[self.imageObj managedObjectContext] tryLock])
-		{
-            @try {
-                //set value for Series Object Presentation State
-                if( curDCM.SUVConverted == NO)
+        @try {
+            //set value for Series Object Presentation State
+            if( curDCM.SUVConverted == NO)
+            {
+                [self.seriesObj setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
+                [self.seriesObj setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
+                
+                // Image Level
+                if( curImage >= 0 && COPYSETTINGSINSERIES == NO)
                 {
-                    [[self seriesObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
-                    [[self seriesObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
+                    [self.imageObj setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
+                    [self.imageObj setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
+                }
+                else
+                {
+                    [self.imageObj setValue: nil forKey:@"windowWidth"];
+                    [self.imageObj setValue: nil forKey:@"windowLevel"];
+                }
+            }
+            else
+            {
+                if( [self is2DViewer] == YES)
+                {
+                    [self.seriesObj setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
+                    [self.seriesObj setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
                     
                     // Image Level
                     if( curImage >= 0 && COPYSETTINGSINSERIES == NO)
                     {
-                        [[self imageObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
-                        [[self imageObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
+                        [self.imageObj setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
+                        [self.imageObj setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
                     }
                     else
                     {
-                        [[self imageObj] setValue: nil forKey:@"windowWidth"];
-                        [[self imageObj] setValue: nil forKey:@"windowLevel"];
-                    }
-                }
-                else
-                {
-                    if( [self is2DViewer] == YES)
-                    {
-                        [[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
-                        [[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
-                        
-                        // Image Level
-                        if( curImage >= 0 && COPYSETTINGSINSERIES == NO)
-                        {
-                            [[self imageObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
-                            [[self imageObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
-                        }
-                        else
-                        {
-                            [[self imageObj] setValue: nil forKey:@"windowWidth"];
-                            [[self imageObj] setValue: nil forKey:@"windowLevel"];
-                        }
+                        [self.imageObj setValue: nil forKey:@"windowWidth"];
+                        [self.imageObj setValue: nil forKey:@"windowLevel"];
                     }
                 }
             }
-            @catch ( NSException *e) {
-                N2LogException( e);
-            }
-			[[self.imageObj managedObjectContext] unlock];
-		}
+        }
+        @catch ( NSException *e) {
+            N2LogException( e);
+        }
 	}
 }
 
@@ -6728,11 +6735,29 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 }
 
-- (void) computeSlice:(DCMPix*) oPix :(DCMPix*) oPix2
+- (BOOL) computeSlice:(DCMPix*) oPix :(DCMPix*) oPix2
 {
 	float vectorA[ 9], vectorA2[ 9], vectorB[ 9];
 	float originA[ 3], originA2[ 3], originB[ 3];
-	
+	BOOL changed = NO;
+    
+    // Copy to test for change
+    float csliceFromTo[ 2][ 3], csliceFromToS[ 2][ 3], csliceFromToE[ 2][ 3], csliceFromTo2[ 2][ 3], csliceFromToThickness;
+	float csliceVector[ 3];
+    
+    csliceFromToThickness = sliceFromToThickness;
+    for( int y = 0; y < 3; y++)
+    {
+        for( int x = 0; x < 2; x++)
+        {
+            csliceFromTo[x][y] = sliceFromTo[x][y];
+            csliceFromToS[x][y] = sliceFromToS[x][y];
+            csliceFromToE[x][y] = sliceFromToE[x][y];
+            csliceFromTo2[x][y] = sliceFromTo2[x][y];
+        }
+        csliceVector[ y] = sliceVector[y];
+    }
+    
 	originA[ 0] = oPix.originX; originA[ 1 ] = oPix.originY; originA[ 2 ] = oPix.originZ;
 	if( oPix2)
 	{
@@ -6775,6 +6800,21 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		sliceFromToS[ 0][ 0] = HUGE_VALF;
 		sliceFromToE[ 0][ 0] = HUGE_VALF;
 	}
+    
+    if( csliceFromToThickness != sliceFromToThickness) changed = YES;
+    for( int y = 0; y < 3; y++)
+    {
+        for( int x = 0; x < 2; x++)
+        {
+            if( csliceFromTo[x][y] != sliceFromTo[x][y]) changed = YES;
+            if( csliceFromToS[x][y] != sliceFromToS[x][y]) changed = YES;
+            if( csliceFromToE[x][y] != sliceFromToE[x][y]) changed = YES;
+            if( csliceFromTo2[x][y] != sliceFromTo2[x][y]) changed = YES;
+        }
+        if( csliceVector[ y] != sliceVector[y]) changed = YES;
+    }
+    
+    return changed;
 }
 
 - (IBAction) alwaysSyncMenu:(id) sender
@@ -6794,17 +6834,20 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     if( gDontListenToSyncMessage)
         return;
     
+//    NSLog( @"%ld %@", (long) note, self.superview);
+    
 	if( ![[[note object] superview] isEqual:[self superview]] && [self is2DViewer])
 	{
 		int prevImage = curImage;
+        int newImage = curImage;
 		
         if( [[self windowController] windowWillClose])
             return;
 		
-		if( avoidRecursiveSync > 0) return;
+		if( avoidRecursiveSync > 1) return; // Keep this number, to have cross reference correctly displayed
 		avoidRecursiveSync++;
 		
-		if( [note object] != self && isKeyView == YES && matrix == 0 && curImage > -1)
+		if( [note object] != self && isKeyView == YES && matrix == 0 && newImage > -1)
 		{
 			NSDictionary *instructions = [note userInfo];
 			
@@ -6828,14 +6871,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			if( [instructions valueForKey: @"offsetsync"] == nil)
 			{
-				NSLog(@"err offsetsync");
+				NSLog(@"***** err offsetsync");
 				avoidRecursiveSync--;
 				return;
 			}
 			
 			if( [instructions valueForKey: @"view"] == nil)
 			{
-				NSLog(@"err view");
+				NSLog(@"****** err view");
 				avoidRecursiveSync--;
 				return;
 			}
@@ -6849,7 +6892,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				point3D = YES;
 			}
 			
-			if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.studyInstanceUID"]])
+			if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex: newImage] valueForKeyPath:@"series.study.studyInstanceUID"]])
 			{
 				if( curDCM.frameofReferenceUID && oFrameofReferenceUID && [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFrameofReferenceUID"])
 				{
@@ -6880,29 +6923,38 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						
 						if( newIndex != -1)
 						{
-							curImage = newIndex;
+							newImage = newIndex;
 							
 							[curDCM convertDICOMCoords: resultPoint toSliceCoords: slicePoint3D];
+                            [self setNeedsDisplay:YES];
 						}
 						else
-						{
-							slicePoint3D[ 0] = HUGE_VALF;
-						}
+                        {
+                            if( slicePoint3D[ 0] != HUGE_VALF)
+                            {
+                                slicePoint3D[ 0] = HUGE_VALF;
+                                [self setNeedsDisplay:YES];
+                            }
+                        }
 					}
 					else
-					{
-						slicePoint3D[ 0] = HUGE_VALF;
-					}
+                    {
+                        if( slicePoint3D[ 0] != HUGE_VALF)
+                        {
+                            slicePoint3D[ 0] = HUGE_VALF;
+                            [self setNeedsDisplay:YES];
+                        }
+                    }
 				}
 				
 				// Absolute Vodka
 				if( syncro == syncroABS && point3D == NO && syncSeriesIndex == -1)
 				{
-					if( flippedData) curImage = (long)[dcmPixList count] -1 -pos;
-					else curImage = pos;
+					if( flippedData) newImage = (long)[dcmPixList count] -1 -pos;
+					else newImage = pos;
 					
-					if( curImage >= [dcmPixList count]) curImage = [dcmPixList count] - 1;
-					if( curImage < 0) curImage = 0;
+					if( newImage >= [dcmPixList count]) newImage = [dcmPixList count] - 1;
+					if( newImage < 0) newImage = 0;
 				}
                 
                 // Absolute Ratio
@@ -6912,11 +6964,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
                     int ratioPos = round( ratio * (float) [dcmPixList count]);
                     
-					if( flippedData) curImage = (long)[dcmPixList count] -1 -ratioPos;
-					else curImage = ratioPos;
+					if( flippedData) newImage = (long)[dcmPixList count] -1 -ratioPos;
+					else newImage = ratioPos;
 					
-					if( curImage >= [dcmPixList count]) curImage = [dcmPixList count] - 1;
-					if( curImage < 0) curImage = 0;
+					if( newImage >= [dcmPixList count]) newImage = [dcmPixList count] - 1;
+					if( newImage < 0) newImage = 0;
 				}
 				
 				// Based on Location
@@ -6994,7 +7046,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 								if( noSlicePosition == NO)
 								{
 									if( index >= 0)
-										curImage = index;
+										newImage = index;
 									
 									if( [dcmPixList count] > 1)
 									{
@@ -7016,8 +7068,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 										}
 									}
 									
-									if( curImage >= [dcmFilesList count]) curImage = (long)[dcmFilesList count]-1;
-									if( curImage < 0) curImage = 0;
+									if( newImage >= [dcmFilesList count]) newImage = (long)[dcmFilesList count]-1;
+									if( newImage < 0) newImage = 0;
 								}
 							}
 						}
@@ -7029,83 +7081,107 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                             float ratio = (float) pos / (float) [[otherView dcmPixList] count];
                             int ratioPos = round( ratio * (float) [dcmPixList count]);
                             
-                            if( flippedData) curImage = (long)[dcmPixList count] -1 -ratioPos;
-                            else curImage = ratioPos;
+                            if( flippedData) newImage = (long)[dcmPixList count] -1 -ratioPos;
+                            else newImage = ratioPos;
                         }
                         else if( [[NSUserDefaults standardUserDefaults] integerForKey: @"DefaultModeForNonVolumicSeries"] == syncroABS)
                         {
-                            if( flippedData) curImage = (long)[dcmPixList count] -1 -pos;
-                            else curImage = pos;
+                            if( flippedData) newImage = (long)[dcmPixList count] -1 -pos;
+                            else newImage = pos;
                         }
                         
-                        if( curImage >= [dcmPixList count]) curImage = [dcmPixList count] - 1;
-                        if( curImage < 0) curImage = 0;
+                        if( newImage >= [dcmPixList count]) newImage = [dcmPixList count] - 1;
+                        if( newImage < 0) newImage = 0;
 					}
 				}
 
 				 // Relative
 				 if( syncro == syncroREL && point3D == NO && syncSeriesIndex == -1)
 				 {
-					if( flippedData) curImage -= diff;
-					else curImage += diff;
+					if( flippedData) newImage -= diff;
+					else newImage += diff;
 					
-					if( curImage < 0) curImage += [dcmPixList count];
-					if( curImage >= [dcmPixList count]) curImage -= [dcmPixList count];
+					if( newImage < 0) newImage += [dcmPixList count];
+					if( newImage >= [dcmPixList count]) newImage -= [dcmPixList count];
 				 }
 				
 				// Relatif
-				if( curImage != prevImage)
+                ViewerController *frontMostViewer = [ViewerController frontMostDisplayed2DViewer];
+                ViewerController *selfViewer = self.window.windowController;
+                ViewerController *otherViewer = otherView.window.windowController;
+				if( newImage != prevImage)
 				{
-					if( listType == 'i') [self setIndex:curImage];
-					else [self setIndexWithReset:curImage :YES];
+                    if( avoidRecursiveSync <= 1)
+                    {
+                        if((selfViewer != frontMostViewer && otherViewer == frontMostViewer) || otherViewer.timer)
+                        {
+                            if( listType == 'i') [self setIndex:newImage];
+                            else [self setIndexWithReset:newImage :YES];
+                            [[self windowController] adjustSlider];
+                        }
+                    }
 				}
 				
 				if( same3DReferenceWorld || registeredViewer)
 				{
-					if( otherView.window.isKeyWindow || [otherView.windowController FullScreenON])   //[ViewerController isFrontMost2DViewer: [otherView window]])
+					if( (selfViewer != frontMostViewer && otherViewer == frontMostViewer) || [otherView.windowController FullScreenON])
 					{
 						if( same3DReferenceWorld || registeredViewer)
-                            [self computeSlice: oPix :oPix2];
+                        {
+                            if( [self computeSlice: oPix :oPix2])
+                                [self setNeedsDisplay:YES];
+                        }
                         else
 						{
-							sliceFromTo[ 0][ 0] = HUGE_VALF;
-							sliceFromTo2[ 0][ 0] = HUGE_VALF;
-							sliceFromToS[ 0][ 0] = HUGE_VALF;
-							sliceFromToE[ 0][ 0] = HUGE_VALF;
-							sliceVector[0] = sliceVector[1] = sliceVector[2] = 0;
+                            if( sliceFromTo[ 0][ 0] != HUGE_VALF && (sliceVector[ 0] != 0 || sliceVector[ 1] != 0  || sliceVector[ 2] != 0))
+                            {
+                                sliceFromTo[ 0][ 0] = HUGE_VALF;
+                                sliceFromTo2[ 0][ 0] = HUGE_VALF;
+                                sliceFromToS[ 0][ 0] = HUGE_VALF;
+                                sliceFromToE[ 0][ 0] = HUGE_VALF;
+                                sliceVector[0] = sliceVector[1] = sliceVector[2] = 0;
+                                [self setNeedsDisplay:YES];
+                            }
 						}
 					}
 					else
 					{
-						sliceFromTo[ 0][ 0] = HUGE_VALF;
-						sliceFromTo2[ 0][ 0] = HUGE_VALF;
-						sliceFromToS[ 0][ 0] = HUGE_VALF;
-						sliceFromToE[ 0][ 0] = HUGE_VALF;
-						sliceVector[0] = sliceVector[1] = sliceVector[2] = 0;	
+						if( sliceFromTo[ 0][ 0] != HUGE_VALF && (sliceVector[ 0] != 0 || sliceVector[ 1] != 0  || sliceVector[ 2] != 0))
+                        {
+                            sliceFromTo[ 0][ 0] = HUGE_VALF;
+                            sliceFromTo2[ 0][ 0] = HUGE_VALF;
+                            sliceFromToS[ 0][ 0] = HUGE_VALF;
+                            sliceFromToE[ 0][ 0] = HUGE_VALF;
+                            sliceVector[0] = sliceVector[1] = sliceVector[2] = 0;
+                            [self setNeedsDisplay:YES];
+                        }
 					}
 				}
-				
-                [[self windowController] adjustSlider];
-				
-				[self setNeedsDisplay:YES];
 			}
 			else
 			{
-				sliceFromTo[ 0][ 0] = HUGE_VALF;
-				sliceFromTo2[ 0][ 0] = HUGE_VALF;
-				sliceFromToS[ 0][ 0] = HUGE_VALF;
-				sliceFromToE[ 0][ 0] = HUGE_VALF;
-				sliceVector[0] = sliceVector[1] = sliceVector[2] = 0; 
+				if( sliceFromTo[ 0][ 0] != HUGE_VALF && (sliceVector[ 0] != 0 || sliceVector[ 1] != 0  || sliceVector[ 2] != 0))
+                {
+                    sliceFromTo[ 0][ 0] = HUGE_VALF;
+                    sliceFromTo2[ 0][ 0] = HUGE_VALF;
+                    sliceFromToS[ 0][ 0] = HUGE_VALF;
+                    sliceFromToE[ 0][ 0] = HUGE_VALF;
+                    sliceVector[0] = sliceVector[1] = sliceVector[2] = 0;
+                    [self setNeedsDisplay:YES];
+                }
 			}
 		}
 		
-		if( [[self window] isMainWindow])
-			[self sendSyncMessage: 0];
+//		if( [[self window] isMainWindow])
+//			[self sendSyncMessage: 0];
 		
 		if( blendingView && [note object] != blendingView)
 			[blendingView sync: [NSNotification notificationWithName: OsirixSyncNotification object: self userInfo: [self syncMessage: 0]]];
 			
 		avoidRecursiveSync --;
+        
+//        if( avoidRecursiveSync == 0)
+//            [self displayIfNeeded];
 	}
 }
 
@@ -8482,7 +8558,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				{
 					if( exceptionDisplayed == NO)
 					{
-						NSRunCriticalAlertPanel(NSLocalizedString(@"Annotations Error",nil), [NSString stringWithFormat:@"%@\r\r%@", e, annot] , NSLocalizedString(@"OK",nil), nil, nil);
+						NSRunCriticalAlertPanel(NSLocalizedString(@"Annotations Error",nil), @"%@\r\r%@", NSLocalizedString(@"OK",nil), nil, nil, e, annot);
 					
 						NSLog( @"draw custom annotation exception: %@\r\r%@", e, annot);
 						
@@ -8498,8 +8574,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			[self DrawNSStringGL: @"Made In OsiriX" :fontList :xRaster :yRaster rightAlignment:YES useStringTexture:YES];
      }
     
-    #if __LP64__
-    #else
     if( size.size.width > 500*sf && [AppController isFDACleared] == NO)
     {
         if( warningNotice == nil && [self class] == [DCMView class] && fullText)
@@ -8533,7 +8607,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             [warningNotice drawWithBounds: r];
         }
     }
-    #endif
 }
 
 - (void) setWhiteBackground:(BOOL)w
@@ -9982,7 +10055,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void) reshape	// scrolled, moved or resized
 {
-	if( dcmPixList && [[self window] isVisible] && dontEnterReshape == NO)
+	if( dcmPixList)
     {
 		BOOL is2DViewer = [self is2DViewer];
 		
@@ -10011,7 +10084,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 							{
 								if( pix != curDCM)
 								{
-									[pix.imageObj setValue: [NSNumber numberWithFloat: [self scaleToFitForDCMPix: pix]] forKey: @"scale"];
+                                    [pix.imageObj setValue: nil forKey: @"scale"];
 									
 									NSPoint o = NSMakePoint( 0, 0);
 									
@@ -10039,9 +10112,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		{
 			if( previousViewSize.width != 0 && previousViewSize.height != 0)
 			{
-				float	yChanged;
-				
-				yChanged = sqrt( (rect.size.height / previousViewSize.height) * (rect.size.width / previousViewSize.width));
+				float yChanged = sqrt( (rect.size.height / previousViewSize.height) * (rect.size.width / previousViewSize.width));
 				
 				if( yChanged > 0.01 && yChanged < 1000) yChanged = yChanged;
 				else yChanged = 0.01;
@@ -10066,6 +10137,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                                         
                                         if( s)
                                             [pix.imageObj setValue: [NSNumber numberWithFloat: s * yChanged] forKey: @"scale"];
+                                        else
+                                            [pix.imageObj setValue: nil forKeyPath: @"scale"];
                                     }
                                 }
                             }
@@ -11154,7 +11227,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			}
 		}
 		
-		[exportDCM setSourceFile: [[self imageObj] valueForKey:@"completePath"]];
+		[exportDCM setSourceFile: [self.imageObj valueForKey:@"completePath"]];
 		
 		float thickness, location;
 		
@@ -11393,20 +11466,18 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		if( [self is2DViewer])
 		{
-			if( [[self.imageObj managedObjectContext] tryLock])
-			{
-				// Series Level
-				[[self seriesObj] setValue:[NSNumber numberWithFloat: scaleValue / sqrt( [self frame].size.height * [self frame].size.width)] forKey:@"scale"];
-				[[self seriesObj] setValue:[NSNumber numberWithInt: 3] forKey: @"displayStyle"];
-				
-				// Image Level
-				if( curImage >= 0 && COPYSETTINGSINSERIES == NO)
-					[[self imageObj] setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
-				else
-					[[self imageObj] setValue: nil forKey:@"scale"];
-				
-				[[self.imageObj managedObjectContext] unlock];
-			}
+            // Series Level
+            if( [self isScaledFit] == NO)
+                [self.seriesObj setValue:[NSNumber numberWithFloat: scaleValue / sqrt( [self frame].size.height * [self frame].size.width)] forKey:@"scale"];
+            else
+                [self.seriesObj setValue: nil forKeyPath: @"scale"];
+            [self.seriesObj setValue:[NSNumber numberWithInt: 3] forKey: @"displayStyle"];
+            
+            // Image Level
+            if( curImage >= 0 && COPYSETTINGSINSERIES == NO && [self isScaledFit] == NO)
+                [self.imageObj setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
+            else
+                [self.imageObj setValue: nil forKey:@"scale"];
 		}
 		
 		[self updateTilingViews];
@@ -11437,24 +11508,24 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		{
 			if( [[self windowController] isPostprocessed] == NO)
 			{
-				if( [[self.imageObj managedObjectContext] tryLock])
-				{
-                    @try {
-                        // Series Level
-                        [[self seriesObj] setValue:[NSNumber numberWithFloat: scaleValue / sqrt( [self frame].size.height * [self frame].size.width)] forKey:@"scale"];
-                        [[self seriesObj] setValue:[NSNumber numberWithInt: 3] forKey: @"displayStyle"];
-                        
-                        // Image Level
-                        if( curImage >= 0 && COPYSETTINGSINSERIES == NO)
-                            [[self imageObj] setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
-                        else
-                            [[self imageObj] setValue: nil forKey:@"scale"];
-					}
-                    @catch ( NSException *e) {
-                        N2LogException( e);
-                    }
-					[[self.imageObj managedObjectContext] unlock];
-				}
+                @try {
+                    // Series Level
+                    if( [self isScaledFit] == NO)
+                        [self.seriesObj setValue:[NSNumber numberWithFloat: scaleValue / sqrt( [self frame].size.height * [self frame].size.width)] forKey:@"scale"];
+                    else
+                        [self.seriesObj setValue: nil forKey:@"scale"];
+                    
+                    [self.seriesObj setValue:[NSNumber numberWithInt: 3] forKey: @"displayStyle"];
+                    
+                    // Image Level
+                    if( curImage >= 0 && COPYSETTINGSINSERIES == NO && [self isScaledFit] == NO)
+                        [self.imageObj setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
+                    else
+                        [self.imageObj setValue: nil forKey:@"scale"];
+                }
+                @catch ( NSException *e) {
+                    N2LogException( e);
+                }
 			}
 		}
 		
@@ -11574,20 +11645,17 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		if( rotation < 0) rotation += 360;
 		if( rotation > 360) rotation -= 360;
 		
-		if( [[self.imageObj managedObjectContext] tryLock])
-		{		
-			[[self seriesObj] setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
-			
-			// Image Level
-			if( curImage >= 0 && COPYSETTINGSINSERIES == NO)
-				[[self imageObj] setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
-			else
-				[[self imageObj] setValue: nil forKey:@"rotationAngle"];
-			
-			[[self.imageObj managedObjectContext] unlock];
-		}
+        [self.seriesObj setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
+        
+        // Image Level
+        if( curImage >= 0 && COPYSETTINGSINSERIES == NO)
+            [self.imageObj setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
+        else
+            [self.imageObj setValue: nil forKey:@"rotationAngle"];
 		
 		[self updateTilingViews];
+        
+        [self setNeedsDisplay: YES];
 	}
 }
 
@@ -11708,36 +11776,33 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	if( y > -100000 && y < 100000) y = y;
 	else y = 0;
 	
-	origin.x = x;
-	origin.y = y;
-
-	if( [self is2DViewer] == YES && [[self windowController] isPostprocessed] == NO)
-	{
-		if( [[self.imageObj managedObjectContext] tryLock])
-		{		
-			// Series Level
-			[[self seriesObj] setValue:[NSNumber numberWithFloat:x] forKey:@"xOffset"];
-			[[self seriesObj] setValue:[NSNumber numberWithFloat:y] forKey:@"yOffset"];
-			
-			// Image Level
-			if( curImage >= 0 && COPYSETTINGSINSERIES == NO)
-			{
-				[[self imageObj] setValue:[NSNumber numberWithFloat:x] forKey:@"xOffset"];
-				[[self imageObj] setValue:[NSNumber numberWithFloat:y] forKey:@"yOffset"];
-			}
-			else
-			{
-				[[self imageObj] setValue: nil forKey:@"xOffset"];
-				[[self imageObj] setValue: nil forKey:@"yOffset"];
-			}
-			
-			[[self.imageObj managedObjectContext] unlock];
-		}
-	}
-	
-	[self updateTilingViews];
-	
-	[self setNeedsDisplay:YES];
+    if( origin.x != x || origin.y != y)
+    {
+        origin.x = x;
+        origin.y = y;
+        [self updateTilingViews];
+        
+        [self setNeedsDisplay:YES];
+        
+        if( [self is2DViewer] == YES && [[self windowController] isPostprocessed] == NO)
+        {
+            // Series Level
+            [self.seriesObj setValue:[NSNumber numberWithFloat:x] forKey:@"xOffset"];
+            [self.seriesObj setValue:[NSNumber numberWithFloat:y] forKey:@"yOffset"];
+            
+            // Image Level
+            if( curImage >= 0 && COPYSETTINGSINSERIES == NO)
+            {
+                [self.imageObj setValue:[NSNumber numberWithFloat:x] forKey:@"xOffset"];
+                [self.imageObj setValue:[NSNumber numberWithFloat:y] forKey:@"yOffset"];
+            }
+            else
+            {
+                [self.imageObj setValue: nil forKey:@"xOffset"];
+                [self.imageObj setValue: nil forKey:@"yOffset"];
+            }
+        }
+    }
 }
 
 - (void) colorTables:(unsigned char **) a :(unsigned char **) r :(unsigned char **)g :(unsigned char **) b
@@ -12452,15 +12517,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	slicePoint3D[ 0] = HUGE_VALF;
 	
 	[self sendSyncMessage: 0];
-	
-	/*if( [self is2DViewer])
-	{
-		[[self windowController] adjustSlider]; HERE HERE
-		[[self windowController] propagateSettings];
-	}*/
-	
 	[self computeColor];
-	
 	[self setNeedsDisplay:YES];
 }
 
@@ -12581,8 +12638,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	int newX = newWidth * (int)(_tag % _imageColumns);
 	NSRect newFrame = NSMakeRect(newX, newY, newWidth, newHeight);
 	
+    BOOL wasScaledToFit = [self isScaledFit];
+    
 	[self setFrame:newFrame];
 	
+    if( wasScaledToFit)
+        [self scaleToFit];
+    
 	[self setNeedsDisplay:YES];
 }
 
@@ -12949,8 +13011,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void) updatePresentationStateFromSeriesOnlyImageLevel: (BOOL) onlyImage scale: (BOOL) scale offset: (BOOL) offset
 {
-	NSManagedObject *series = [self seriesObj];
-	NSManagedObject *image = [self imageObj];
+	NSManagedObject *series = self.seriesObj;
+	NSManagedObject *image = self.imageObj;
 	
 	if( series)
 	{
@@ -12968,33 +13030,43 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		else
 			self.yFlipped = NO;
 		
-		if((scale && [[NSUserDefaults standardUserDefaults] boolForKey:@"AlwaysScaleToFit"] == NO) || COPYSETTINGSINSERIES == NO)
-		{
-			if( [image valueForKey:@"scale"])
-				[self setScaleValue: [[image valueForKey:@"scale"] floatValue]];
-			else if( !onlyImage)
-			{
-				if( [series valueForKey:@"scale"])
-				{
-					if( [[series valueForKey:@"scale"] floatValue] != 0)
-					{
-						if( [[series valueForKey:@"displayStyle"] intValue] == 3)
-							[self setScaleValue: [[series valueForKey:@"scale"] floatValue] * sqrt( [self frame].size.height * [self frame].size.width)];
-						else if( [[series valueForKey:@"displayStyle"] intValue] == 2)
-							[self setScaleValue: [[series valueForKey:@"scale"] floatValue] * [self frame].size.width];
-						else
-							[self setScaleValue: [[series valueForKey:@"scale"] floatValue]];
-					}
-					else
+        if( [stringID isEqualToString:@"previewDatabase"] == NO)
+        {
+            if((scale && [[NSUserDefaults standardUserDefaults] boolForKey:@"AlwaysScaleToFit"] == NO) || COPYSETTINGSINSERIES == NO)
+            {
+                if( [image valueForKey:@"scale"])
+                {
+                    if( [[image valueForKey:@"scale"] floatValue] != 0)
+                        [self setScaleValue: [[image valueForKey:@"scale"] floatValue]];
+                    else
                         [self scaleToFit];
-				}
-				else
+                }
+                else if( !onlyImage)
+                {
+                    if( [series valueForKey:@"scale"])
+                    {
+                        if( [[series valueForKey:@"scale"] floatValue] != 0)
+                        {
+                            if( [[series valueForKey:@"displayStyle"] intValue] == 3)
+                                [self setScaleValue: [[series valueForKey:@"scale"] floatValue] * sqrt( [self frame].size.height * [self frame].size.width)];
+                            else if( [[series valueForKey:@"displayStyle"] intValue] == 2)
+                                [self setScaleValue: [[series valueForKey:@"scale"] floatValue] * [self frame].size.width];
+                            else
+                                [self setScaleValue: [[series valueForKey:@"scale"] floatValue]];
+                        }
+                        else
+                            [self scaleToFit];
+                    }
+                    else
+                        [self scaleToFit];
+                }
+                else 
                     [self scaleToFit];
-			}
-			else 
-				[self scaleToFit];
-		}
-		else
+            }
+            else
+                [self scaleToFit];
+        }
+        else
             [self scaleToFit];
 		
 		if( [image valueForKey:@"rotationAngle"])
@@ -13004,19 +13076,22 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		else
 			[self setRotation: 0];
 		
-		if( (offset && [[NSUserDefaults standardUserDefaults] boolForKey:@"AlwaysScaleToFit"] == NO) || COPYSETTINGSINSERIES == NO)
-		{
-			NSPoint o = NSMakePoint( HUGE_VALF, HUGE_VALF);
-			
-			if( [image valueForKey:@"xOffset"])  o.x = [[image valueForKey:@"xOffset"] floatValue];
-			else if( !onlyImage) o.x = [[series valueForKey:@"xOffset"] floatValue];
-			
-			if( [image valueForKey:@"yOffset"])  o.y = [[image valueForKey:@"yOffset"] floatValue];
-			else if( !onlyImage) o.y = [[series valueForKey:@"yOffset"] floatValue];
-			
-			if( o.x != HUGE_VALF && o.y != HUGE_VALF)
-				[self setOrigin: o];
-		}
+        if( [stringID isEqualToString:@"previewDatabase"] == NO)
+        {
+            if( (offset && [[NSUserDefaults standardUserDefaults] boolForKey:@"AlwaysScaleToFit"] == NO) || COPYSETTINGSINSERIES == NO)
+            {
+                NSPoint o = NSMakePoint( HUGE_VALF, HUGE_VALF);
+                
+                if( [image valueForKey:@"xOffset"])  o.x = [[image valueForKey:@"xOffset"] floatValue];
+                else if( !onlyImage) o.x = [[series valueForKey:@"xOffset"] floatValue];
+                
+                if( [image valueForKey:@"yOffset"])  o.y = [[image valueForKey:@"yOffset"] floatValue];
+                else if( !onlyImage) o.y = [[series valueForKey:@"yOffset"] floatValue];
+                
+                if( o.x != HUGE_VALF && o.y != HUGE_VALF)
+                    [self setOrigin: o];
+            }
+        }
 		
 		float ww = 0, wl = 0;
 		

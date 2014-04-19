@@ -51,7 +51,7 @@ static NSOperationQueue *operationQueue;
 		
 		if(fileHandle == nil)
 		{
-			[self release];
+			[self autorelease];
 			return nil;
 		}
 		

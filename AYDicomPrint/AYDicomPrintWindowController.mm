@@ -120,7 +120,33 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
 		
 		printing = [[NSLock alloc] init];
         
-		[[self window] center];
+        windowFrameToRestore = NSMakeRect(0, 0, 0, 0);
+        scaleFitToRestore = m_CurrentViewer.imageView.isScaledFit;
+        
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SquareWindowForPrinting"])
+        {
+            int AlwaysScaleToFit = [[NSUserDefaults standardUserDefaults] integerForKey: @"AlwaysScaleToFit"];
+            [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"AlwaysScaleToFit"];
+            
+            windowFrameToRestore = m_CurrentViewer.window.frame;
+            NSRect newFrame = [AppController usefullRectForScreen: m_CurrentViewer.window.screen];
+            
+            if( newFrame.size.width < newFrame.size.height) newFrame.size.height = newFrame.size.width;
+            else newFrame.size.width = newFrame.size.height;
+            
+            [AppController resizeWindowWithAnimation: m_CurrentViewer.window newSize: newFrame];
+            if( scaleFitToRestore) [m_CurrentViewer.imageView scaleToFit];
+            
+            [[NSUserDefaults standardUserDefaults] setInteger: AlwaysScaleToFit forKey: @"AlwaysScaleToFit"];
+        }
+        
+        for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+        {
+            if( v != m_CurrentViewer)
+                [v.window orderOut: self];
+        }
+        
+        [[self window] center];
 	}
 
 	return self;
@@ -207,14 +233,33 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
 - (IBAction) cancel: (id) sender
 {
 	[NSApp stopModal];
-	[self close];
+	
+    
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SquareWindowForPrinting"] && NSIsEmptyRect( windowFrameToRestore) == NO)
+    {
+        int AlwaysScaleToFit = [[NSUserDefaults standardUserDefaults] integerForKey: @"AlwaysScaleToFit"];
+        [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"AlwaysScaleToFit"];
+        
+        [AppController resizeWindowWithAnimation: m_CurrentViewer.window newSize: windowFrameToRestore];
+        
+        if( scaleFitToRestore) [m_CurrentViewer.imageView scaleToFit];
+        
+        [[NSUserDefaults standardUserDefaults] setInteger: AlwaysScaleToFit forKey: @"AlwaysScaleToFit"];
+    }
+    
+    for( ViewerController *v in [ViewerController get2DViewers])
+        [v.window orderFront: self];
+    
+    [m_CurrentViewer.window makeKeyAndOrderFront: self];
+    
+    [self close];
 }
 
 - (IBAction) printImages: (id) sender
 {
 	if( [m_pages intValue] > 10 && [[m_ImageSelection selectedCell] tag] == eAllImages)
 	{
-		if( NSRunInformationalAlertPanel( NSLocalizedString(@"DICOM Print", nil), [NSString stringWithFormat: NSLocalizedString(@"Are you really sure you want to print %d pages?", nil), [m_pages intValue]] , NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) != NSAlertDefaultReturn) return;
+		if( NSRunInformationalAlertPanel( NSLocalizedString(@"DICOM Print", nil), NSLocalizedString(@"Are you really sure you want to print %d pages?", nil) , NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil, [m_pages intValue]) != NSAlertDefaultReturn) return;
 	}
 	
 	[sender setEnabled: NO];
@@ -385,27 +430,7 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
 
 - (void) _createPrintjob: (id) object
 {
-    NSRect windowFrameToRestore = NSMakeRect(0, 0, 0, 0);
-    BOOL scaleFitToRestore = m_CurrentViewer.imageView.isScaledFit;
-    
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SquareWindowForPrinting"])
-	{
-        int AlwaysScaleToFit = [[NSUserDefaults standardUserDefaults] integerForKey: @"AlwaysScaleToFit"];
-        [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"AlwaysScaleToFit"];
-        
-        windowFrameToRestore = m_CurrentViewer.window.frame;
-		NSRect newFrame = [AppController usefullRectForScreen: m_CurrentViewer.window.screen];
-        
-		if( newFrame.size.width < newFrame.size.height) newFrame.size.height = newFrame.size.width;
-		else newFrame.size.width = newFrame.size.height;
-		
-		[AppController resizeWindowWithAnimation: m_CurrentViewer.window newSize: newFrame];
-        if( scaleFitToRestore) [m_CurrentViewer.imageView scaleToFit];
-        
-        [[NSUserDefaults standardUserDefaults] setInteger: AlwaysScaleToFit forKey: @"AlwaysScaleToFit"];
-	}
-    
-	// show progress sheet
+    // show progress sheet
 	[self _setProgressMessage: nil];
 	[NSApp beginSheet: m_ProgressSheet modalForWindow: [self window] modalDelegate: self didEndSelector: nil contextInfo: nil];
 
@@ -531,18 +556,6 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
                     [self _setProgressMessage: NSLocalizedString( @"Can't write to temporary directory.", nil)];
                 else
                 {
-                    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SquareWindowForPrinting"] && NSIsEmptyRect( windowFrameToRestore) == NO)
-                    {
-                        int AlwaysScaleToFit = [[NSUserDefaults standardUserDefaults] integerForKey: @"AlwaysScaleToFit"];
-                        [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"AlwaysScaleToFit"];
-                        
-                        [AppController resizeWindowWithAnimation: m_CurrentViewer.window newSize: windowFrameToRestore];
-                        
-                        if( scaleFitToRestore) [m_CurrentViewer.imageView scaleToFit];
-                        
-                        [[NSUserDefaults standardUserDefaults] setInteger: AlwaysScaleToFit forKey: @"AlwaysScaleToFit"];
-                    }
-                    
                     // send printjob
                     
                     NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector(_sendPrintjob:) object: xmlPath] autorelease];
@@ -558,7 +571,7 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
 
 - (void) errorMessage:(NSArray*) msg
 {
-	NSRunCriticalAlertPanel( [msg objectAtIndex: 0], [msg objectAtIndex: 1], [msg objectAtIndex: 2], nil, nil) ;
+	NSRunCriticalAlertPanel( [msg objectAtIndex: 0], @"%@", [msg objectAtIndex: 2], nil, nil, [msg objectAtIndex: 1]) ;
 }
 
 - (void) _sendPrintjob: (NSString *) xmlPath

@@ -498,8 +498,8 @@ static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
 		NSString* xid = ((NSManagedObject*)o).XID;
 		for (NSString* selectedID in [WebPortalConnection MakeArray:[wpc.parameters objectForKey:@"selected"]])
 			if ([selectedID isEqualToString:xid])
-				return [NSNumber numberWithBool:YES];
-		return [NSNumber numberWithBool:NO];
+				return @YES;
+		return @NO;
 	}
 	
 	return NULL;
@@ -536,12 +536,12 @@ static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
 		return wpc.asyncSocket.connectedHost;
     if ([key isEqualToString:@"isLAN"])
 	{
-        if( [wpc.asyncSocket.connectedHost hasPrefix: @"10."]) return [NSNumber numberWithBool: YES];
-        if( [wpc.asyncSocket.connectedHost hasPrefix: @"172."]) return [NSNumber numberWithBool: YES];
-        if( [wpc.asyncSocket.connectedHost hasPrefix: @"192."]) return [NSNumber numberWithBool: YES];
-        if( [wpc.asyncSocket.connectedHost hasPrefix: @"127.0.0.1"]) return [NSNumber numberWithBool: YES];
+        if( [wpc.asyncSocket.connectedHost hasPrefix: @"10."]) return @YES;
+        if( [wpc.asyncSocket.connectedHost hasPrefix: @"172."]) return @NO;
+        if( [wpc.asyncSocket.connectedHost hasPrefix: @"192."]) return @YES;
+        if( [wpc.asyncSocket.connectedHost hasPrefix: @"127.0.0.1"]) return @YES;
         
-        return [NSNumber numberWithBool: NO];
+        return @NO;
     }
 	if ([key isEqualToString:@"dicomCStorePort"])
 		return wpc.dicomCStorePortString;
@@ -597,7 +597,7 @@ static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
 			req.entity = [idatabase entityForName:@"User"];
 			req.predicate = [NSPredicate predicateWithValue:YES];
             
-            NSNumber *result = [NSNumber numberWithBool:NO];
+            NSNumber *result = @NO;
             [idatabase.managedObjectContext lock];
             @try {
                 result = [NSNumber numberWithBool: [idatabase.managedObjectContext countForFetchRequest:req error:NULL] > (wpc.user? 1 : 0) ];
@@ -610,7 +610,7 @@ static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
             }
 			return result;
 		} else
-			return [NSNumber numberWithBool:NO];
+			return @NO;
 	}
 	if ([key hasPrefix:@"getParameters"] || [key hasPrefix:@"allParameters"]) {
 		NSString* rest = [key substringFromIndex:13];
@@ -741,7 +741,7 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 		NSMutableArray* months = [NSMutableArray array];
 		NSCalendarDate* calDate = object? [NSCalendarDate dateWithTimeIntervalSinceReferenceDate:object.timeIntervalSinceReferenceDate] : NULL;
 		if (!object)
-			[months addObject:[NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt:-1], @"value", NSLocalizedString(@"Month", @"Month"), @"name", [NSNumber numberWithBool:YES], @"selected", [NSNumber numberWithBool:YES], @"disabled", NULL]];
+			[months addObject:[NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt:-1], @"value", NSLocalizedString(@"Month", @"Month"), @"name", @YES, @"selected", @YES, @"disabled", NULL]];
 		for (NSUInteger i = 0; i < 12; ++i)
 			[months addObject:[NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt:i], @"value", [monthNames objectAtIndex:i], @"name", [NSNumber numberWithBool: [calDate monthOfYear] == i+1 ], @"selected", NULL]];
 		return months;
@@ -751,7 +751,7 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 		NSMutableArray* days = [NSMutableArray array];
 		NSCalendarDate* calDate = object? [NSCalendarDate dateWithTimeIntervalSinceReferenceDate:object.timeIntervalSinceReferenceDate] : NULL;
 		if (!object)
-			[days addObject:[NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt:0], @"value", NSLocalizedString(@"Day", @"Day"), @"name", [NSNumber numberWithBool:YES], @"selected", [NSNumber numberWithBool:YES], @"disabled", NULL]];
+			[days addObject:[NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt:0], @"value", NSLocalizedString(@"Day", @"Day"), @"name", @YES, @"selected", @YES, @"disabled", NULL]];
 		for (NSUInteger i = 0; i < 31; ++i)
 			[days addObject:[NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt:i+1], @"value", [NSNumber numberWithInt:i+1], @"name", [NSNumber numberWithBool: [calDate dayOfMonth] == i+1 ], @"selected", NULL]];
 		return days;
@@ -763,11 +763,11 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 		NSCalendarDate* calDate = object? [NSCalendarDate dateWithTimeIntervalSinceReferenceDate:object.timeIntervalSinceReferenceDate] : NULL;
 		NSCalendarDate* currDate = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate:[NSDate timeIntervalSinceReferenceDate]];
 		if ([calDate yearOfCommonEra] < [currDate yearOfCommonEra])
-			[years addObject:[NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt:[calDate yearOfCommonEra]], @"value", [NSNumber numberWithInt:[calDate yearOfCommonEra]], @"name", [NSNumber numberWithBool:YES], @"selected", NULL]];
+			[years addObject:[NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt:[calDate yearOfCommonEra]], @"value", [NSNumber numberWithInt:[calDate yearOfCommonEra]], @"name", @YES, @"selected", NULL]];
 		for (NSUInteger i = [currDate yearOfCommonEra]; i < [currDate yearOfCommonEra]+NextYears; ++i)
 			[years addObject:[NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt:i], @"value", [NSNumber numberWithInt:i], @"name", [NSNumber numberWithBool: [calDate yearOfCommonEra] == i ], @"selected", NULL]];
 		if ([calDate yearOfCommonEra] >= [currDate yearOfCommonEra]+NextYears)
-			[years addObject:[NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt:[calDate yearOfCommonEra]], @"value", [NSNumber numberWithInt:[calDate yearOfCommonEra]], @"name", [NSNumber numberWithBool:YES], @"selected", NULL]];
+			[years addObject:[NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt:[calDate yearOfCommonEra]], @"value", [NSNumber numberWithInt:[calDate yearOfCommonEra]], @"name", @YES, @"selected", NULL]];
 		return years;
 	}
 	
@@ -798,12 +798,12 @@ static NSMutableDictionary *otherStudiesForThisPatientCache = nil;
     if ([key isEqualToString:@"hasKeyImagesOrROIImages"])
 	{
         if( [[study keyImages] count])
-            return [NSNumber numberWithBool: YES];
+            return @YES;
         
         if( [[study roiImages] count])
-            return [NSNumber numberWithBool: YES];
+            return @YES;
         
-        return [NSNumber numberWithBool: NO];
+        return @NO;
     }
     
 	if ([key isEqualToString:@"reportIsLink"])

@@ -57,7 +57,7 @@
 			[_bezierPath close];
 			[nodes release];
 		} else {
-			[self release];
+			[self autorelease];
 			self = nil;
 		}
 	}

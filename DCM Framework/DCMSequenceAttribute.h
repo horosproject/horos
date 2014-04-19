@@ -34,5 +34,6 @@
 + (id)sequenceAttributeWithName:(NSString *)name;
 - (void)addItem:(id)item;
 - (void)addItem:(id)item offset:(long)offset;
+- (NSString *)readableDescription;
 
 @end

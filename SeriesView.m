@@ -62,12 +62,12 @@
            selector: @selector(updateImageTiling:)
                name:@"DCMImageTilingHasChanged"
 			object: nil];
-	[[NSNotificationCenter defaultCenter] addObserver: self
+        [[NSNotificationCenter defaultCenter] addObserver: self
            selector: @selector(defaultToolModified:)
                name:OsirixDefaultToolModifiedNotification
 			object: nil];
 			
-	[[NSNotificationCenter defaultCenter] addObserver: self
+        [[NSNotificationCenter defaultCenter] addObserver: self
            selector: @selector(defaultRightToolModified:)
                name:OsirixDefaultRightToolModifiedNotification
 			object: nil];
@@ -156,6 +156,11 @@
 
 - (void)setImageViewMatrixForRows:(int)rows  columns:(int)columns
 {
+    [self setImageViewMatrixForRows: rows columns: columns rescale: YES];
+}
+
+- (void)setImageViewMatrixForRows:(int)rows  columns:(int)columns rescale: (BOOL) rescale
+{
 	NSDisableScreenUpdates();
 
 	int currentSize = imageRows * imageColumns;
@@ -168,30 +173,33 @@
 	if( wasVisible) [[self window] orderOut: self];
 	
 	BOOL imageLevel = NO;
-	for( id imageObj in dcmFilesList)
-	{
-        float factor = (float) imageRows / (float) rows;
-        
-		float scale = [[imageObj valueForKey: @"scale"] floatValue];
-		
-		if( scale)
-		{
-			[imageObj setValue: [NSNumber numberWithFloat: scale * factor] forKey: @"scale"];
-			imageLevel = YES;
-		}
-        
-        float xOffset = [[imageObj valueForKey:@"xOffset"] floatValue];
-        if( xOffset)
+	if( rescale)
+    {
+        for( id imageObj in dcmFilesList)
         {
-            [imageObj setValue: [NSNumber numberWithFloat: xOffset * factor] forKey: @"xOffset"];
+            float factor = (float) imageRows / (float) rows;
+            
+            float scale = [[imageObj valueForKey: @"scale"] floatValue];
+            
+            if( scale)
+            {
+                [imageObj setValue: [NSNumber numberWithFloat: scale * factor] forKey: @"scale"];
+                imageLevel = YES;
+            }
+            
+            float xOffset = [[imageObj valueForKey:@"xOffset"] floatValue];
+            if( xOffset)
+            {
+                [imageObj setValue: [NSNumber numberWithFloat: xOffset * factor] forKey: @"xOffset"];
+            }
+            
+            float yOffset = [[imageObj valueForKey:@"yOffset"] floatValue];
+            if( yOffset)
+            {
+                [imageObj setValue: [NSNumber numberWithFloat: yOffset * factor] forKey: @"yOffset"];
+            }
         }
-        
-        float yOffset = [[imageObj valueForKey:@"yOffset"] floatValue];
-        if( yOffset)
-        {
-            [imageObj setValue: [NSNumber numberWithFloat: yOffset * factor] forKey: @"yOffset"];
-        }
-	}
+    }
 	
 	// remove views
 	if (newSize < currentSize)
@@ -208,20 +216,19 @@
 	//add views
 	else if (newSize > currentSize)
 	{
+        BOOL csis = [[imageViews lastObject] COPYSETTINGSINSERIES];
 		for ( i = [imageViews count]; i < rows * columns; i++)
 		{
 			DCMView *dcmView = [[[DCMView alloc] initWithFrame:[self bounds]  imageRows:rows  imageColumns:columns] autorelease];
+            [dcmView setCOPYSETTINGSINSERIESdirectly: csis];
 			[self addSubview:dcmView];
 			[dcmView setTag:i];	
 			[dcmView setPixels: dcmPixList files:dcmFilesList rois:dcmRoiList firstImage:0 level:listType reset:YES];
 		}	
 	}
 	
-	for( DCMView *view in imageViews) 
-	{
-		[view setCOPYSETTINGSINSERIESdirectly: [[imageViews objectAtIndex: 0] COPYSETTINGSINSERIES]];
+	for( DCMView *view in imageViews)
 		[view setRows:rows columns:columns];
-	}
 		
 	[[self window] makeFirstResponder:[imageViews objectAtIndex:0]];
 	[[[self window] windowController] setUpdateTilingViewsValue: NO];
@@ -229,20 +236,22 @@
 	[self resizeSubviewsWithOldSize:[self bounds].size];
 	[imageViews makeObjectsPerformSelector:@selector(setImageParamatersFromView:) withObject:[imageViews objectAtIndex:0]];
 	
-	
-	if( imageLevel == NO)
-	{
-        float factor = (float) imageRows / (float) rows;
-        
-        NSPoint origin = [[imageViews objectAtIndex: 0] origin];
-        [[imageViews objectAtIndex: 0] setOriginX:origin.x*factor Y: origin.y*factor];
-        [[imageViews objectAtIndex: 0] setScaleValue: [[imageViews objectAtIndex: 0] scaleValue] * factor];
-	}
-	else
-	{
-		for( id view in imageViews)
-			[view updatePresentationStateFromSeriesOnlyImageLevel: NO]; // Apply the scale modifications
-	}
+	if( rescale)
+    {
+        if( imageLevel == NO)
+        {
+            float factor = (float) imageRows / (float) rows;
+            
+            NSPoint origin = [[imageViews objectAtIndex: 0] origin];
+            [[imageViews objectAtIndex: 0] setOriginX:origin.x*factor Y: origin.y*factor];
+            [[imageViews objectAtIndex: 0] setScaleValue: [[imageViews objectAtIndex: 0] scaleValue] * factor];
+        }
+        else
+        {
+            for( id view in imageViews)
+                [view updatePresentationStateFromSeriesOnlyImageLevel: NO]; // Apply the scale modifications
+        }
+    }
 	
 	imageRows = rows;
 	imageColumns = columns;
@@ -263,7 +272,7 @@
 		[self setImageViewMatrixForRows:rows columns:columns];
 	}
  }
- 
+
  -(void) defaultToolModified: (NSNotification*) note{
 	id sender = [note object];
 

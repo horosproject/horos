@@ -6446,7 +6446,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 									self.textualBoxLine5 = [NSString stringWithFormat: NSLocalizedString( @"Length: %0.3f cm", nil), length];
 								
 								// 3D Length
-								if( curView && pixelSpacingX != 0 && pixelSpacingY != 0)
+								if( curView && pixelSpacingX != 0 && pixelSpacingY != 0 && [[NSUserDefaults standardUserDefaults] boolForKey: @"splineForROI"] == NO)
 								{
 									NSArray *zPosArray = [self zPositions];
 						
@@ -6464,7 +6464,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 												
 												// Compute 3D distance between each points
 												double distance3d = 0;
-												for( i = 1; i < (long)[points count]-1; i++)
+												for( i = 1; i < (long)[points count]; i++)
 												{
 													double x[ 3];
 													double y[ 3];

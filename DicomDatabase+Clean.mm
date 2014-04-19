@@ -24,7 +24,7 @@
 #import "NSThread+N2.h"
 #import "PreferencesWindowController.h"
 
-#define MAXSTUDYDELETE 100
+#define MAXSTUDYDELETE 50
 
 @interface DicomDatabase (Private)
 
@@ -264,11 +264,6 @@
 					{
 						NSLog(@"DicomDatabase Clean: will delete: %d studies", (int) [toBeRemoved count]);
 						
-//						Wait *wait = [[Wait alloc] initWithString: NSLocalizedString(@"Database Auto-Cleaning...", nil)];
-//						[wait showWindow:self];
-//						[wait setCancel: YES];
-//						[[wait progress] setMaxValue:[toBeRemoved count]];
-						
 						@try
 						{
 							if ([defaults boolForKey:@"AUTOCLEANINGDELETEORIGINAL"]) {
@@ -294,19 +289,15 @@
 							}
 							
 							[self save:NULL];
-							
-//							[self outlineViewRefresh];
 						} @catch (NSException* e) {
                             N2LogExceptionWithStackTrace(e);
 						}
-//						[wait close];
-//						[wait autorelease];
 						
 						// refresh database
-						[NSNotificationCenter.defaultCenter postNotificationName:_O2AddToDBAnywayNotification object:self userInfo:nil];
-						[NSNotificationCenter.defaultCenter postNotificationName:_O2AddToDBAnywayCompleteNotification object:self userInfo:nil];
-						[NSNotificationCenter.defaultCenter postNotificationName:OsirixAddToDBNotification object:self userInfo:nil];
-						[NSNotificationCenter.defaultCenter postNotificationName:OsirixAddToDBCompleteNotification object:self userInfo:nil];						
+						[NSNotificationCenter.defaultCenter postNotificationName:_O2AddToDBAnywayNotification object:self userInfo: nil];
+						[NSNotificationCenter.defaultCenter postNotificationName:_O2AddToDBAnywayCompleteNotification object:self userInfo: nil];
+						[NSNotificationCenter.defaultCenter postNotificationName:OsirixAddToDBNotification object:self userInfo: nil];
+						[NSNotificationCenter.defaultCenter postNotificationName:OsirixAddToDBCompleteNotification object:self userInfo: nil];
 					}
 					
 				} @catch (NSException* e) {
@@ -540,67 +531,80 @@ static BOOL _cleanForFreeSpaceLimitSoonReachedDisplayed = NO;
         BOOL displayError = NO;
         int deletedStudies = 0;
         
-        for (NSArray* sd in studiesDates) {
-            { CGFloat a = initialDelta, b = freeMemoryRequested, f = free; [NSThread currentThread].progress = (a-(b-f))/a; }
-            
-            DicomStudy* study = [sd objectAtIndex:0];
-            
-            if( [study.dateAdded timeIntervalSinceNow] > -60*60*2) // The study was added less than 2 hours.... we cannot remove it !
+        for (NSArray* sd in studiesDates)
+        {
+            @autoreleasepool
             {
-                NSLog( @"---- WARNING: trying to remove a study added recently: %@", study.dateAdded);
-                displayError = YES;
-                continue;
-            }
-            
-            NSLog(@"Info: study [%@ - %@ - %@] is being deleted for space (added %@, last opened %@)", study.studyName, study.patientID, study.date, study.dateAdded, study.dateOpened);
-            
-            // list images to be deleted
-            NSMutableArray* imagesToDelete = [NSMutableArray array];
-            for (DicomSeries* series in [[study series] allObjects])
-                for (DicomImage* image in series.images.allObjects)
-                    if (flagDeleteLinkedImages || [image.completePath hasPrefix:dataBaseDirPathSlashed])
-                        [imagesToDelete addObject:image];
-            
-            // delete image files
-            for (DicomImage* image in imagesToDelete) {
-                NSString* path = image.completePath;
-                unlink(path.fileSystemRepresentation); // faster than [NSFileManager.defaultManager removeItemAtPath:path error:NULL];
-                if ([path.pathExtension isEqualToString:@"hdr"]) // ANALYZE -> DELETE IMG
-                    [NSFileManager.defaultManager removeItemAtPath:[path.stringByDeletingPathExtension stringByAppendingPathExtension:@"img"] error:NULL];
-            }
-            
-            // delete managed objects: images, series, studies
-            
-            for (DicomSeries* series in [[study series] allObjects]) {
-                @try {
+                { CGFloat a = initialDelta, b = freeMemoryRequested, f = free; [NSThread currentThread].progress = (a-(b-f))/a; }
+                
+                DicomStudy* study = [sd objectAtIndex:0];
+                
+                if( [study.dateAdded timeIntervalSinceNow] > -60*60*2) // The study was added less than 2 hours.... we cannot remove it !
+                {
+                    NSLog( @"---- WARNING: trying to remove a study added recently: %@", study.dateAdded);
+                    displayError = YES;
+                    continue;
+                }
+                
+                NSLog(@"Info: study [%@ - %@ - %@] is being deleted for space (added %@, last opened %@)", study.studyName, study.patientID, study.date, study.dateAdded, study.dateOpened);
+                
+                // list images to be deleted
+                NSMutableArray* imagesToDelete = [NSMutableArray array];
+                for (DicomSeries* series in [[study series] allObjects])
                     for (DicomImage* image in series.images.allObjects)
-                        @try {
-                            [self.managedObjectContext deleteObject:image];
-                        } @catch (...) { }
-                } @catch (...) { }
+                        if (flagDeleteLinkedImages || [image.completePath hasPrefix:dataBaseDirPathSlashed])
+                            [imagesToDelete addObject:image];
+                
+                // delete image files
+                for (DicomImage* image in imagesToDelete) {
+                    NSString* path = image.completePath;
+                    unlink(path.fileSystemRepresentation); // faster than [NSFileManager.defaultManager removeItemAtPath:path error:NULL];
+                    if ([path.pathExtension isEqualToString:@"hdr"]) // ANALYZE -> DELETE IMG
+                        [NSFileManager.defaultManager removeItemAtPath:[path.stringByDeletingPathExtension stringByAppendingPathExtension:@"img"] error:NULL];
+                }
+                
+                // delete managed objects: images, series, studies
+                
+                for (DicomSeries* series in [[study series] allObjects]) {
+                    @try {
+                        for (DicomImage* image in series.images.allObjects)
+                            @try {
+                                [self.managedObjectContext deleteObject:image];
+                            } @catch (...) { }
+                    } @catch (...) { }
+                    
+                    @try {
+                        [self.managedObjectContext deleteObject:series];
+                    } @catch (...) { }
+                }
                 
                 @try {
-                    [self.managedObjectContext deleteObject:series];
+                    [self.managedObjectContext deleteObject:study];
                 } @catch (...) { }
+                
+                // did we free up enough space?
+                
+                NSDictionary* fsattrs = [[NSFileManager defaultManager] fileSystemAttributesAtPath:self.dataBaseDirPath];
+                free = [[fsattrs objectForKey:NSFileSystemFreeSize] unsignedLongLongValue]/1024/1024;
+                if (free >= freeMemoryRequested) // if so, stop deleting studies
+                    break;
+                
+                deletedStudies++;
+                if( deletedStudies > MAXSTUDYDELETE) // To avoid HUGE loop with very large DB
+                    break;
             }
-            
-            @try {
-                [self.managedObjectContext deleteObject:study];
-            } @catch (...) { }
-            
-            // did we free up enough space?
-            
-            NSDictionary* fsattrs = [[NSFileManager defaultManager] fileSystemAttributesAtPath:self.dataBaseDirPath];
-            free = [[fsattrs objectForKey:NSFileSystemFreeSize] unsignedLongLongValue]/1024/1024;
-            if (free >= freeMemoryRequested) // if so, stop deleting studies
-                break;
-            
-            deletedStudies++;
-            if( deletedStudies > MAXSTUDYDELETE) // To avoid HUGE loop with very large DB
-                break;
         }
         
         [self save: nil];
+        
+        if( deletedStudies > 0)
+        {
+            // refresh database
+            [NSNotificationCenter.defaultCenter postNotificationName:_O2AddToDBAnywayNotification object:self userInfo: nil];
+            [NSNotificationCenter.defaultCenter postNotificationName:_O2AddToDBAnywayCompleteNotification object:self userInfo: nil];
+            [NSNotificationCenter.defaultCenter postNotificationName:OsirixAddToDBNotification object:self userInfo: nil];
+            [NSNotificationCenter.defaultCenter postNotificationName:OsirixAddToDBCompleteNotification object:self userInfo: nil];
+        }
         
 		NSLog(@"Info: done cleaning for space, %lld MB are free", free);
         

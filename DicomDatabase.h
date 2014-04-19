@@ -121,8 +121,8 @@ extern NSString* const DicomDatabaseLogEntryEntityName;
 
 #pragma mark Add files
 -(NSArray*)addFilesAtPaths:(NSArray*)paths;
--(NSArray*)addFilesAtPaths:(NSArray*)paths postNotifications:(BOOL)postNotifications;
--(NSArray*)addFilesAtPaths:(NSArray*)paths postNotifications:(BOOL)postNotifications dicomOnly:(BOOL)dicomOnly rereadExistingItems:(BOOL)rereadExistingItems;
+-(NSArray*)addFilesAtPaths:(NSArray*)paths postNotifications:(BOOL)postNotifications;	
+-(NSArray*)addFilesAtPaths:(NSArray*)paths postNotifications:(BOOL)postNotifications dicomOnly:(BOOL)dicomOnly rereadExistingItems:(BOOL)rereadExistingItems;	
 -(NSArray*)addFilesAtPaths:(NSArray*)paths postNotifications:(BOOL)postNotifications dicomOnly:(BOOL)dicomOnly rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX;
 -(NSArray*)addFilesAtPaths:(NSArray*)paths postNotifications:(BOOL)postNotifications dicomOnly:(BOOL)dicomOnly rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX returnArray: (BOOL) returnArray;
 -(NSArray*)addFilesAtPaths:(NSArray*)paths postNotifications:(BOOL)postNotifications dicomOnly:(BOOL)dicomOnly rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX importedFiles: (BOOL) importedFiles returnArray: (BOOL) returnArray;
@@ -134,7 +134,10 @@ extern NSString* const DicomDatabaseLogEntryEntityName;
 #pragma mark Incoming
 -(BOOL)isFileSystemFreeSizeLimitReached;
 -(BOOL) hasFilesToImport;
--(NSInteger)importFilesFromIncomingDir; // this method should be private, but is declared because called from deprecated api
+-(NSInteger)importFilesFromIncomingDir;
+-(NSInteger)importFilesFromIncomingDir: (NSNumber*) showGUI;
+-(NSInteger)importFilesFromIncomingDir: (NSNumber*) showGUI listenerCompressionSettings: (BOOL) listenerCompressionSettings;
+-(BOOL)waitForCompressThread;
 -(void)initiateImportFilesFromIncomingDirUnlessAlreadyImporting;
 -(void)importFilesFromIncomingDirThread;
 +(void)syncImportFilesFromIncomingDirTimerWithUserDefaults; // called from deprecated API
@@ -159,6 +162,7 @@ extern NSString* const DicomDatabaseLogEntryEntityName;
 -(void)checkReportsConsistencyWithDICOMSR;
 -(void)rebuildSqlFile;
 -(void)checkForHtmlTemplates;
+
 // methods to overload when one needs to ask for confirmation about autorouting
 -(BOOL)allowAutoroutingWithPostNotifications:(BOOL)postNotifications rereadExistingItems:(BOOL)rereadExistingItems;
 -(void)alertToApplyRoutingRules:(NSArray*)routingRules toImages:(NSArray*)images;

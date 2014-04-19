@@ -168,7 +168,7 @@ static NSMatrix *gDateMatrix = nil;
         {
             if( [[d objectForKey: @"date"] intValue] == 0 && [[d objectForKey: @"modality"] count] == 0)
             {
-                NSRunInformationalAlertPanel( NSLocalizedString( @"Filter", nil), [NSString stringWithFormat: NSLocalizedString( @"The Smart Album filter (%@) needs to have at least one parameter defined to be activated: date or modality.", nil), [d objectForKey: @"name"]], NSLocalizedString( @"OK", nil), nil, nil);
+                NSRunInformationalAlertPanel( NSLocalizedString( @"Filter", nil), NSLocalizedString( @"The Smart Album filter (%@) needs to have at least one parameter defined to be activated: date or modality.", nil), NSLocalizedString( @"OK", nil), nil, nil, [d objectForKey: @"name"]);
                 
                 [self willChangeValueForKey: @"smartAlbumsArray"];
                 [d setValue: [NSNumber numberWithBool: NO] forKey: @"activated"];

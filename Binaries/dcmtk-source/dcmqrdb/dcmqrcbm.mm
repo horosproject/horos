@@ -927,12 +927,12 @@ OFBool DcmQueryRetrieveMoveContext::mapMoveDestination(
   const char *origPeer, const char *origAE,
   const char *dstAE, char *dstPeer, int *dstPort)
 {
- // use AETitle to get port and hostname
+    // use AETitle to get port and hostname
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSString *moveDestination = [NSString stringWithCString:dstAE encoding:NSISOLatin1StringEncoding];
-	NSArray *serversArray = [DCMNetServiceDelegate DICOMServersListSendOnly:NO QROnly:NO cached: YES];		
+	NSArray *serversArray = [DCMNetServiceDelegate DICOMServersListSendOnly:NO QROnly:NO];
 	
-//	NSLog( @"***** C-MOVE SCP: Map Move Destination: %@", moveDestination);
+    //	NSLog( @"***** C-MOVE SCP: Map Move Destination: %@", moveDestination);
 	
 	NSString *hostname;
 	NSString *port;
@@ -947,7 +947,7 @@ OFBool DcmQueryRetrieveMoveContext::mapMoveDestination(
 		serverSelection = [serversArray filteredArrayUsingPredicate:serverPredicate];
 	}
 	
-			
+    
 	if ([serverSelection count] > 0) {
 		id server = [serverSelection objectAtIndex:0];
 		{
@@ -965,20 +965,20 @@ OFBool DcmQueryRetrieveMoveContext::mapMoveDestination(
 						break;
 					case SendJPEG2000Lossless: preferredTS = EXS_JPEG2000LosslessOnly;
 						break;
-					case SendJPEG2000Lossy10:  
-					case SendJPEG2000Lossy20: 
+					case SendJPEG2000Lossy10:
+					case SendJPEG2000Lossy20:
 					case SendJPEG2000Lossy50: preferredTS = EXS_JPEG2000;
-							break;
+                        break;
                     case SendJPEGLSLossless: preferredTS = EXS_JPEGLSLossless;
 						break;
-					case SendJPEGLSLossy10:  
-					case SendJPEGLSLossy20: 
+					case SendJPEGLSLossy10:
+					case SendJPEGLSLossy20:
 					case SendJPEGLSLossy50: preferredTS = EXS_JPEGLSLossy;
                         break;
 					case SendJPEGLossless: preferredTS = EXS_JPEGProcess14SV1TransferSyntax;
-						break; 
-					case SendJPEGLossy9: 
-					case SendJPEGLossy8: 
+						break;
+					case SendJPEGLossy9:
+					case SendJPEGLossy8:
 					case SendJPEGLossy7: preferredTS = EXS_JPEGProcess2_4TransferSyntax;
 						break;
 					case SendImplicitLittleEndian: preferredTS = EXS_LittleEndianImplicit;
@@ -988,7 +988,7 @@ OFBool DcmQueryRetrieveMoveContext::mapMoveDestination(
 					case SendExplicitBigEndian: preferredTS = EXS_BigEndianExplicit;
 						break;
 					case SendBZip: preferredTS = EXS_DeflatedLittleEndianExplicit;
-						break;		
+						break;
 				}
 			}
 			else

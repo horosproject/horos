@@ -104,6 +104,7 @@
 			pointArray = [roi points];
         
             if ([pointArray count] == 0) {
+                [self autorelease];
                 return nil;
             }
             
@@ -119,7 +120,7 @@
             }
             [_bezierPath applyAffineTransform:pixToDICOMTransfrom];
 		} else {
-			[self release];
+			[self autorelease];
 			self = nil;
 		}
 	}

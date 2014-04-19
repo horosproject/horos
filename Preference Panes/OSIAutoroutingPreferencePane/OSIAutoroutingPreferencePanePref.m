@@ -21,7 +21,7 @@
 
 @implementation OSIAutoroutingPreferencePanePref
 
-@synthesize filterType;
+@synthesize filterType, imagesOnly;
 
 - (id) initWithBundle:(NSBundle *)bundle
 {
@@ -49,7 +49,7 @@
 		NSMutableDictionary	*newDict = [NSMutableDictionary dictionaryWithDictionary: [routesArray objectAtIndex: i]];
 		
 		if( [newDict valueForKey:@"activated"] == 0)
-			[newDict setValue: [NSNumber numberWithBool: YES] forKey:@"activated"];
+			[newDict setValue: @YES forKey:@"activated"];
         
         if( [[newDict valueForKey: @"version"] intValue] < 1)
         {
@@ -58,6 +58,9 @@
             
             [newDict setValue: @CURRENTVERSION forKey: @"version"];
         }
+        
+        if( [newDict valueForKey:@"imagesOnly"] == nil)
+			[newDict setValue: @NO forKey:@"imagesOnly"];
         
         [routesArray replaceObjectAtIndex: i withObject:newDict];
 	}
@@ -85,7 +88,7 @@
 		}
 		
 		if( found == NO)
-			NSRunCriticalAlertPanel(NSLocalizedString(@"Unknown Server", nil), [NSString stringWithFormat:NSLocalizedString( @"This server doesn't exist in the Locations list: %@", nil), [[routesArray objectAtIndex: i] valueForKey:@"server"]],NSLocalizedString( @"OK", nil), nil, nil);
+			NSRunCriticalAlertPanel(NSLocalizedString(@"Unknown Server", nil), NSLocalizedString( @"This server doesn't exist in the Locations list: %@", nil),NSLocalizedString( @"OK", nil), nil, nil, [[routesArray objectAtIndex: i] valueForKey:@"server"]);
 	}
 }
 
@@ -127,7 +130,7 @@ static BOOL newRouteMode = NO;
 {
 	if( [sender tag] == 1)
 	{
-		[routesArray replaceObjectAtIndex: [routesTable selectedRow] withObject: [NSMutableDictionary dictionaryWithObjectsAndKeys: [newName stringValue], @"name", [NSNumber numberWithBool:YES], @"activated", [newDescription stringValue], @"description", [newFilter stringValue], @"filter", [[serversArray objectAtIndex: [serverPopup indexOfSelectedItem]] objectForKey:@"Description"], @"server", [NSNumber numberWithInt: [previousPopup selectedTag]], @"previousStudies", [NSNumber numberWithBool: [previousModality state]], @"previousModality", [NSNumber numberWithBool: [previousDescription state]], @"previousDescription", [NSNumber numberWithInt: [failurePopup selectedTag]], @"failureRetry",  [NSNumber numberWithBool: [cfindTest state]], @"cfindTest", [NSNumber numberWithInt: filterType], @"filterType", @CURRENTVERSION, @"version", nil]];
+		[routesArray replaceObjectAtIndex: [routesTable selectedRow] withObject: [NSMutableDictionary dictionaryWithObjectsAndKeys: [newName stringValue], @"name", @YES, @"activated", [newDescription stringValue], @"description", [newFilter stringValue], @"filter", [[serversArray objectAtIndex: [serverPopup indexOfSelectedItem]] objectForKey:@"Description"], @"server", [NSNumber numberWithInt: [previousPopup selectedTag]], @"previousStudies", [NSNumber numberWithBool: [previousModality state]], @"previousModality", [NSNumber numberWithBool: [previousDescription state]], @"previousDescription", [NSNumber numberWithInt: [failurePopup selectedTag]], @"failureRetry",  [NSNumber numberWithBool: [cfindTest state]], @"cfindTest", [NSNumber numberWithInt: filterType], @"filterType", [NSNumber numberWithInt: imagesOnly], @"imagesOnly", @CURRENTVERSION, @"version", nil]];
 	}
 	else
 	{
@@ -199,6 +202,7 @@ static BOOL newRouteMode = NO;
             [failurePopup selectItemWithTag: [[selectedRoute valueForKey: @"failureRetry"] intValue]];
             
             self.filterType = [[selectedRoute valueForKey: @"filterType"] intValue];
+            self.imagesOnly = [[selectedRoute valueForKey: @"imagesOnly"] boolValue];
             
             int count = 0;
             for( i = 0; i < [serversArray count]; i++)
@@ -212,7 +216,7 @@ static BOOL newRouteMode = NO;
             
             if( count > 1)
             {
-                NSRunCriticalAlertPanel(NSLocalizedString(@"Multiples Servers", nil), [NSString stringWithFormat:NSLocalizedString( @"Warning, multiples destination servers have the same name: %@. Each destination should have a unique name.", nil), [selectedRoute valueForKey: @"server"]],NSLocalizedString( @"OK", nil), nil, nil);
+                NSRunCriticalAlertPanel(NSLocalizedString(@"Multiples Servers", nil), NSLocalizedString( @"Warning, multiples destination servers have the same name: %@. Each destination should have a unique name.", nil),NSLocalizedString( @"OK", nil), nil, nil, [selectedRoute valueForKey: @"server"]);
             }
             
             [self selectServer: serverPopup];
@@ -224,7 +228,7 @@ static BOOL newRouteMode = NO;
 
 - (IBAction) newRoute:(id) sender
 {
-    [routesArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: @"new route", @"name", @"", @"description", @"(series.study.modality contains[c] \"CT\")", @"filter", [[serversArray objectAtIndex: 0] objectForKey:@"Description"], @"server", @"20", @"failureRetry", @"0", @"filterType", nil]];
+    [routesArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: @"new route", @"name", @"", @"description", @"(series.study.modality contains[c] \"CT\")", @"filter", [[serversArray objectAtIndex: 0] objectForKey:@"Description"], @"server", @"20", @"failureRetry", @"0", @"filterType", @NO, @"imagesOnly", nil]];
     
     [routesTable reloadData];
     

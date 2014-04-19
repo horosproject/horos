@@ -2051,6 +2051,28 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                 {
                     if( COMMENTSAUTOFILL)
                     {
+                        theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x0008);
+                        if( theErr >= 0 && Papy3GroupReadNb (fileNb, &theGroupP, 0x0008) > 0)
+                        {
+                            val = Papy3GetElement (theGroupP, papSpecificCharacterSetGr, &nbVal, &itemType);
+                            if (val != NULL && val->a && validAPointer( itemType))
+                            {
+                                for( int z = 0; z < nbVal ; z++)
+                                {
+                                    if( z < 10)
+                                    {
+                                        characterSet = [NSString stringWithCString:val->a encoding: NSISOLatin1StringEncoding];
+                                        encoding[ z] = [NSString encodingForDICOMCharacterSet:characterSet];
+                                    }
+                                    else NSLog( @"Encoding number >= 10 ???");
+                                    val++;
+                                }
+                            }
+                            theErr = Papy3GroupFree (&theGroupP, TRUE);
+                        }
+                        
+                        if (gIsPapyFile [fileNb] == DICOM10) theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
+                        
                         NSString *commentsField = nil;
                         
                         if( COMMENTSGROUP && COMMENTSELEMENT)
@@ -2751,7 +2773,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                     
                     [dicomElements setObject:studyID forKey:@"studyID"];
                     
-                    if( NOLOCALIZER && ([self containsString: @"LOCALIZER" inArray: imageTypeArray] || [self containsString: @"REF" inArray: imageTypeArray] || [self containsLocalizerInString: serie]) && [DCMAbstractSyntaxUID isImageStorage: sopClassUID])
+                    if( NoOfFrames <= 1 && NOLOCALIZER && ([self containsString: @"LOCALIZER" inArray: imageTypeArray] || [self containsString: @"REF" inArray: imageTypeArray] || [self containsLocalizerInString: serie]) && [DCMAbstractSyntaxUID isImageStorage: sopClassUID])
                     {
                         self.serieID = @"LOCALIZER";
                         
@@ -3380,6 +3402,10 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		[dicomElements setObject:[NSNumber numberWithInt: NoOfSeries] forKey:@"numberOfSeries"];
 		[dicomElements setObject:filePath forKey:@"filePath"];
 	}
+    else
+    {
+        [self autorelease];
+    }
 	
 	return returnVal;
 }
@@ -3411,7 +3437,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			}
 			else
 			{
-				[self release];
+				[self autorelease];
 				
 				returnVal = nil;
 			}
@@ -3458,7 +3484,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			}
 			else
 			{
-				[self release];
+				[self autorelease];
 				
 				returnVal = nil;
 			}

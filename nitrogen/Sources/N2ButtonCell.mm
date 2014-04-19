@@ -44,4 +44,9 @@
 	[super drawBezelWithFrame:frame inView:view];
 }
 
+//- (void) )copywithzone NEEDED IF LOCAL VARIABLE
+//{
+//    
+//}
+
 @end

@@ -140,6 +140,9 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
     
 	self = [super initWithWindowNibName:@"PreferencesWindow"];
 	animations = [[NSMutableArray alloc] init];
+    
+    [self.window setDelegate: self];
+    
 	return self;
 }
 
@@ -275,7 +278,6 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 	
 	NSRect mainScreenFrame = [[NSScreen mainScreen] visibleFrame];
 	[[self window] setFrameTopLeftPoint:NSMakePoint(mainScreenFrame.origin.x, mainScreenFrame.origin.y+mainScreenFrame.size.height)];
-	[[self window] setDelegate:self];
 	
 	[panesListView retain];
 	[panesListView setButtonActionTarget:self];
@@ -338,14 +340,10 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 
 -(void)windowWillClose:(NSNotification *)notification
 {
-    [currentContext.pane willUnselect];
+    [self setCurrentContext:NULL];
     
 	[[self window] setAcceptsMouseMovedEvents: NO];
-	
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[[NSUserDefaults standardUserDefaults] synchronize];
-    
-	[self autorelease];
 }
 
 -(BOOL)isUnlocked {

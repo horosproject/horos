@@ -3349,9 +3349,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 - (void) setSavedWL: (float)l { [self CheckLoad]; savedWL = l; }
 - (void) setSavedWW: (float)w { [self CheckLoad]; savedWW = w; }
 
-
 -(float) cineRate {[self CheckLoad]; return cineRate;}
-
 
 -(id) myinitEmpty
 {
@@ -5940,8 +5938,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	if( val)
 		bitsAllocated = (int) val->us;
 	
-//	val = Papy3GetElement (theGroupP, papHighBitGr, &nbVal, &elemType);
-//	highBit = (int) val->us;
+    val = Papy3GetElement (theGroupP, papHighBitGr, &nbVal, &elemType);
+    if( val)
+        highBit = (int) val->us;
 	
 	val = Papy3GetElement (theGroupP, papBitsStoredGr, &nbVal, &elemType);
 	if( val)
@@ -6577,7 +6576,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                     specificCharacterSet = [NSString stringWithCString:val->a DICOMEncoding:specificCharacterSet]; // specificCharacterSet is initially nil*/
                 
                 val = Papy3GetElement (theGroupP, papRecommendedDisplayFrameRateGr, &nbVal, &elemType);
-				if ( val && val->a && validAPointer( elemType)) cineRate = atof( val->a);	//[[NSString stringWithFormat:@"%0.1f", ] floatValue];
+				if ( val && val->a && validAPointer( elemType))
+                    cineRate = atof( val->a);	//[[NSString stringWithFormat:@"%0.1f", ] floatValue];
 				
 				int priority[ 8];
 
@@ -6741,17 +6741,29 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                                     else
                                         radionuclideTotalDose = 0.0;
                                     
-                                    val = Papy3GetElement (gr, papRadiopharmaceuticalStartTimeGr, &pos, &elemType);
-                                    if( val && val->a && validAPointer( elemType) && acquisitionDate)
-                                    {
-                                        NSString *pharmaTime = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
-                                        NSString *completeDate = [acquisitionDate stringByAppendingString: pharmaTime];
-                                        
-                                        if( [pharmaTime length] >= 6)
-                                            radiopharmaceuticalStartTime = [[NSCalendarDate alloc] initWithString: completeDate calendarFormat:@"%Y%m%d%H%M%S"];
-                                        else
-                                            radiopharmaceuticalStartTime = [[NSCalendarDate alloc] initWithString: completeDate calendarFormat:@"%Y%m%d%H%M"];
-                                    }
+//                                    val = Papy3GetElement (gr, papRadiopharmaceuticalStartDatetimeGr, &pos, &elemType);
+//                                    if( val && val->a && validAPointer( elemType))
+//                                    {
+//                                        NSString *pharmaTime = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
+//                                        
+//                                        [radiopharmaceuticalStartTime release];
+//                                        radiopharmaceuticalStartTime = [[DCMCalendarDate dicomDateTime: [NSString stringWithCString: val->a encoding:NSASCIIStringEncoding]] retain];
+//                                    }
+//                                    else
+//                                    {
+                                        val = Papy3GetElement (gr, papRadiopharmaceuticalStartTimeGr, &pos, &elemType);
+                                        if( val && val->a && validAPointer( elemType) && acquisitionDate)
+                                        {
+                                            NSString *pharmaTime = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
+                                            NSString *completeDate = [acquisitionDate stringByAppendingString: pharmaTime];
+                                            
+                                            [radiopharmaceuticalStartTime release];
+                                            if( [pharmaTime length] >= 6)
+                                                radiopharmaceuticalStartTime = [[NSCalendarDate alloc] initWithString: completeDate calendarFormat:@"%Y%m%d%H%M%S"];
+                                            else
+                                                radiopharmaceuticalStartTime = [[NSCalendarDate alloc] initWithString: completeDate calendarFormat:@"%Y%m%d%H%M"];
+                                        }
+//                                    }
                                     
                                     val = Papy3GetElement (gr, papRadionuclideHalfLifeGr, &pos, &elemType);
                                     if( val && val->a && validAPointer( elemType))
@@ -7993,6 +8005,27 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 								}
 								else
                                 {
+//                                    if( bitsAllocated == 16 && bitsAllocated != bitsStored)
+//                                    {
+//                                        uint16_t pmask = 0xffff;
+//                                        pmask = pmask >> (bitsAllocated - bitsStored);
+//                                        
+//                                        uint16_t *bufPtr = (uint16_t*) oImage, *tmpImage;
+//                                        const int shift = bitsAllocated - bitsStored;
+//                                        
+//                                        tmpImage = malloc( height * width * 2L);
+//                                        uint16_t *ptr = tmpImage;
+//                                        
+//                                        long loop = height * width;
+//                                        while( loop-- > 0)
+//                                        {
+//                                            *ptr++ = ((*bufPtr++) >> (bitsStored - highBit - 1)) & pmask;
+//                                        }
+//                                        
+//                                        free(oImage);
+//                                        oImage =  (short*) tmpImage;
+//                                    }
+                                    
                                     if( isSigned && bitsAllocated != bitsStored) //We have to move the signing bit
                                     {
                                         if( bitsAllocated == 16)
@@ -8150,7 +8183,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 										fImage = malloc(width*height*sizeof(float) + 100);
 									
 									dstf.data = fImage;
-									
+
 									if( dstf.data)
 									{
 										if( isSigned)
@@ -8167,6 +8200,23 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 									else N2LogStackTrace( @"*** Not enough memory - malloc failed");
 									
 									free(oImage);
+                                    
+                                    
+//                                    if( fExternalOwnedImage)
+//										fImage = fExternalOwnedImage;
+//									else
+//										fImage = malloc(width*height*sizeof(float) + 100);
+//									
+//                                    
+//                                    float *t = fImage;
+//                                    unsigned short *u = oImage;
+//                                    
+//                                    for( long a = 0; a < width*height; a++)
+//                                    {
+//                                        *t++ = *u++;
+//                                    }
+//                                    
+//                                    free(oImage);
 								}
 								oImage = nil;
 							}
@@ -11857,7 +11907,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                         SElement *gr = (SElement *)dcmList->object->group;
                         
                         //if(gr->value)
-                        [temp appendString:[self getDICOMFieldValueForGroup:gr->group element:gr->element papyLink:fileNb]];
+                        NSString *t = [self getDICOMFieldValueForGroup:gr->group element:gr->element papyLink:fileNb];
+                        if( t.length)
+                            [temp appendString: t];
                         //										if(gr->value!=NULL)
                         //                                            NSLog(@"++**++   ::    %@", [NSString stringWithCString:gr->value->a encoding:NSASCIIStringEncoding]);
                         //										else
@@ -11874,7 +11926,10 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                 if( theValueP->a)
                 {
                     NSCalendarDate *calendarDate = [DCMCalendarDate dicomDate: [NSString stringWithCString:theValueP->a encoding:NSASCIIStringEncoding]];
-                    [field appendString:[[NSUserDefaults dateFormatter] stringFromDate:calendarDate]];
+                    NSString *t = [[NSUserDefaults dateFormatter] stringFromDate:calendarDate];
+                    
+                    if( t.length)
+                        [field appendString: t];
                 }
             }
             else if(inGrOrModP->vr==DT)
@@ -11882,7 +11937,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                 if( theValueP->a)
                 {
                     NSCalendarDate *calendarDate = [DCMCalendarDate dicomDateTime: [NSString stringWithCString:theValueP->a encoding:NSASCIIStringEncoding]];
-                    [field appendString:[BrowserController DateTimeWithSecondsFormat: calendarDate]];
+                    NSString *t = [BrowserController DateTimeWithSecondsFormat: calendarDate];
+                    if( t.length)
+                        [field appendString: t];
                 }
             }
             else if(inGrOrModP->vr==TM)
@@ -11890,7 +11947,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                 if( theValueP->a)
                 {
                     NSCalendarDate *calendarDate = [DCMCalendarDate dicomTime: [NSString stringWithCString:theValueP->a encoding:NSASCIIStringEncoding]];
-                    [field appendString:[BrowserController TimeWithSecondsFormat: calendarDate]];
+                    NSString *t = [BrowserController TimeWithSecondsFormat: calendarDate];
+                    if( t.length)
+                        [field appendString:t];
                 }
             }
             else if(inGrOrModP->vr==AS)

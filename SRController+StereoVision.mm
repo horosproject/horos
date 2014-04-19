@@ -223,7 +223,6 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 		// Set up the standard properties 
 		[toolbarItem setLabel:NSLocalizedString( @"Mouse button function",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString( @"Mouse button function",nil)];
-		[toolbarItem setToolTip: NSLocalizedString(@"Change the mouse function",nil)];
 		
 		[toolbarItem setView: toolsView];
 		[toolbarItem setMinSize:NSMakeSize(NSWidth([toolsView frame]), NSHeight([toolsView frame]))];

@@ -950,15 +950,20 @@ static NSRecursiveLock *dbModifyLock = nil;
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	[[DicomStudy dbModifyLock] lock];
 	@try {
+        NSMutableArray *files = [NSMutableArray arrayWithArray: [dict objectForKey: @"files"]];
 		NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--ignore-errors", nil];
-		
+		NSStringEncoding encoding = [NSString encodingForDICOMCharacterSet: [[DicomFile getEncodingArrayForFile: [files objectAtIndex: 0]] objectAtIndex: 0]];
+        
 		if( [dict objectForKey: @"value"] == nil || [(NSString*)[dict objectForKey: @"value"] length] == 0)
 			[params addObjectsFromArray: [NSArray arrayWithObjects: @"-e", [dict objectForKey: @"field"], nil]];
 		else
-			[params addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", [dict objectForKey: @"field"], [dict objectForKey: @"value"]], nil]];
-		
-		NSMutableArray *files = [NSMutableArray arrayWithArray: [dict objectForKey: @"files"]];
-		
+        {
+            if( [[dict objectForKey: @"value"] canBeConvertedToEncoding: encoding])
+                [params addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", [dict objectForKey: @"field"], [dict objectForKey: @"value"]], nil]];
+            else
+                NSLog( @"---- cannot convert [dict objectForKey: value] to this encoding: %ld", (long) encoding);
+		}
+        
 		if( files)
 		{
 			[files removeDuplicatedStrings];
@@ -967,12 +972,12 @@ static NSRecursiveLock *dbModifyLock = nil;
 			
 			@try
 			{
-				NSStringEncoding encoding = [NSString encodingForDICOMCharacterSet: [[DicomFile getEncodingArrayForFile: [files lastObject]] objectAtIndex: 0]];
-				
 				[XMLController modifyDicom: params encoding: encoding];
 				
 				for( id loopItem in files)
+                {
 					[[NSFileManager defaultManager] removeFileAtPath: [loopItem stringByAppendingString:@".bak"] handler:nil];
+                }
 			}
 			@catch (NSException * e)
 			{

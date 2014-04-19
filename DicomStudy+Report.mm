@@ -15,6 +15,7 @@
 #import "DicomStudy+Report.h"
 #import "N2Shell.h"
 #import "NSString+N2.h"
+#import "N2Debug.h"
 #import "NSAppleScript+N2.h"
 #import "NSFileManager+N2.h"
 #import "DCMObject.h"
@@ -34,57 +35,17 @@
     OSStatus status = LSGetApplicationForInfo(kLSUnknownType, kLSUnknownCreator, CFSTR("odt"), kLSRolesAll, NULL, (CFURLRef*)&applicationUrl);
     if (status) [NSException raise:NSGenericException format:@"can't find custom application for ODT files"];
     NSString* applicationPath = applicationUrl.path;
-    NSString* sofficePath = [applicationPath stringByAppendingPathComponent:@"Contents/MacOS/soffice"];
     
-    // determine if soffice wants --accept or -accept
-    
-    NSString* acceptString = nil;
-    NSString* sofficeHelp = [N2Shell execute:sofficePath arguments:[NSArray arrayWithObject:@"-help"]];
-    if ([sofficeHelp contains:@"--accept"])
-        acceptString = @"--accept=socket,host=localhost,port=2083;urp;StarOffice.ServiceManager";
-    else acceptString = @"-accept=socket,host=localhost,port=2083;urp;StarOffice.ServiceManager";
-    
-    // LibreOffice is moving files around.....
-    
-    NSString* offapiPath = nil;
-    for (NSString* subpath in [NSArray arrayWithObjects:@"Contents/MacOS/types/offapi.rdb", @"Contents/basis-link/program/offapi.rdb", nil]) {
-        offapiPath = [applicationPath stringByAppendingPathComponent:subpath];
-        if ([NSFileManager.defaultManager fileExistsAtPath:offapiPath])
-            break;
-        else offapiPath = nil;
-    }
-    
-    NSString* urelinklibPath = nil;
-    for (NSString* subpath in [NSArray arrayWithObjects:@"Contents/ure-link/lib", @"Contents/basis-link/ure-link/lib", nil]) {
-        urelinklibPath = [applicationPath stringByAppendingPathComponent:subpath];
-        if ([NSFileManager.defaultManager fileExistsAtPath:urelinklibPath])
-            break;
-        else urelinklibPath = nil;
-    }
-    
-    if (!offapiPath || !urelinklibPath)
-        [NSException raise:NSGenericException format:@"can't find necessary items inside %@", [applicationPath lastPathComponent]];
-    
-    // launch soffice to make sure it's accepting sdk interactions
-    
-    NSString* command = [NSString stringWithFormat:@"%@ \"%@\" &", sofficePath, acceptString];
-    system(command.UTF8String);
-    
-    // wait for a few secs until the port is actually open (soffice can take some time to launch...)
-    
-    BOOL succeeded = NO;
-    NSException* lastException = nil;
-    NSString* lastStdOut = nil;
-    
-    NSTimeInterval startTime = [NSDate timeIntervalSinceReferenceDate];
-    while (!succeeded && [NSDate timeIntervalSinceReferenceDate] < startTime+10) {
-        NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+    if( [applicationPath contains: @"LibreOffice"])
+    {
+        // ./soffice --headless --convert-to pdf /Users/antoinerosset/Desktop/-28199--A10075196600.odt
+        
         @try {
             NSTask* task = [[[NSTask alloc] init] autorelease];
             
-            [task setLaunchPath:[[NSBundle mainBundle] pathForAuxiliaryExecutable:@"odt2pdf"]];
-            [task setArguments:[NSArray arrayWithObjects: [NSString stringWithFormat:@"-env:URE_MORE_TYPES=file://%@", offapiPath], odtPath, pdfPath, nil]];
-            [task setEnvironment:[NSDictionary dictionaryWithObject:urelinklibPath forKey:@"DYLD_LIBRARY_PATH"]];
+            [task setLaunchPath: [applicationPath stringByAppendingPathComponent:@"Contents/MacOS/soffice"]];
+            [task setCurrentDirectoryPath: [odtPath stringByDeletingLastPathComponent]];
+            [task setArguments: [NSArray arrayWithObjects: @"--headless", @"--convert-to", @"pdf", odtPath, nil]];
             [task setStandardOutput:[NSPipe pipe]];
             [task launch];
             while( [task isRunning])
@@ -92,29 +53,105 @@
             
             //[aTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
             
+            BOOL succeeded = NO;
+            
             if ([task terminationStatus] == 0)
                 succeeded = YES;
             
-            [lastStdOut release];
-            lastStdOut = [[[[[NSString alloc] initWithData:[[[task standardOutput] fileHandleForReading] readDataToEndOfFile] encoding:NSUTF8StringEncoding] autorelease] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] retain];
+            if( succeeded) {
+                [[NSFileManager defaultManager] moveItemAtPath: [[odtPath stringByDeletingPathExtension] stringByAppendingPathExtension: @"pdf"] toPath: pdfPath error: nil];
+            }
+            else
+                N2LogStackTrace( @"LibreOffice: PDF conversion failed");
             
-            if (!succeeded) [NSThread sleepForTimeInterval:0.25];
         } @catch (NSException* e) {
-            [lastException release];
-            lastException = [e retain];
-        } @finally {
-            [pool release];
+            N2LogException( e);
         }
     }
-    
-    [lastStdOut autorelease];
-    [lastException autorelease];
-    
-    if (!succeeded && lastException)
-        @throw lastException;
-    
-    if (lastStdOut.length)
-        NSLog(@"%@", lastStdOut);
+    else
+    {
+        NSString* sofficePath = [applicationPath stringByAppendingPathComponent:@"Contents/MacOS/soffice"];
+        
+        // determine if soffice wants --accept or -accept
+        
+        NSString* acceptString = nil;
+        NSString* sofficeHelp = [N2Shell execute:sofficePath arguments:[NSArray arrayWithObject:@"-help"]];
+        if ([sofficeHelp contains:@"--accept"])
+            acceptString = @"--accept=socket,host=localhost,port=2083;urp;StarOffice.ServiceManager";
+        else acceptString = @"-accept=socket,host=localhost,port=2083;urp;StarOffice.ServiceManager";
+        
+        // LibreOffice is moving files around.....
+        
+        NSString* offapiPath = nil;
+        for (NSString* subpath in [NSArray arrayWithObjects:@"Contents/MacOS/types/offapi.rdb", @"Contents/basis-link/program/offapi.rdb", @"Contents/MacOS/oovbaapi.rdb", nil]) {
+            offapiPath = [applicationPath stringByAppendingPathComponent:subpath];
+            if ([NSFileManager.defaultManager fileExistsAtPath:offapiPath])
+                break;
+            else offapiPath = nil;
+        }
+        
+        NSString* urelinklibPath = nil;
+        for (NSString* subpath in [NSArray arrayWithObjects:@"Contents/ure-link/lib", @"Contents/basis-link/ure-link/lib", @"Contents/MacOS/urelibs", nil]) {
+            urelinklibPath = [applicationPath stringByAppendingPathComponent:subpath];
+            if ([NSFileManager.defaultManager fileExistsAtPath:urelinklibPath])
+                break;
+            else urelinklibPath = nil;
+        }
+        
+        if (!offapiPath || !urelinklibPath)
+            [NSException raise:NSGenericException format:@"can't find necessary items inside %@", [applicationPath lastPathComponent]];
+        
+        // launch soffice to make sure it's accepting sdk interactions
+        
+        NSString* command = [NSString stringWithFormat:@"%@ \"%@\" &", sofficePath, acceptString];
+        system(command.UTF8String);
+        
+        // wait for a few secs until the port is actually open (soffice can take some time to launch...)
+        
+        BOOL succeeded = NO;
+        NSException* lastException = nil;
+        NSString* lastStdOut = nil;
+        
+        NSTimeInterval startTime = [NSDate timeIntervalSinceReferenceDate];
+        while (!succeeded && [NSDate timeIntervalSinceReferenceDate] < startTime+10) {
+            NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+            @try {
+                NSTask* task = [[[NSTask alloc] init] autorelease];
+                
+                [task setLaunchPath:[[NSBundle mainBundle] pathForAuxiliaryExecutable:@"odt2pdf"]];
+                [task setArguments:[NSArray arrayWithObjects: [NSString stringWithFormat:@"-env:URE_MORE_TYPES=file://%@", offapiPath], odtPath, pdfPath, nil]];
+                [task setEnvironment:[NSDictionary dictionaryWithObject:urelinklibPath forKey:@"DYLD_LIBRARY_PATH"]];
+                [task setStandardOutput:[NSPipe pipe]];
+                [task launch];
+                while( [task isRunning])
+                    [NSThread sleepForTimeInterval: 0.1];
+                
+                //[aTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
+                
+                if ([task terminationStatus] == 0)
+                    succeeded = YES;
+                
+                [lastStdOut release];
+                lastStdOut = [[[[[NSString alloc] initWithData:[[[task standardOutput] fileHandleForReading] readDataToEndOfFile] encoding:NSUTF8StringEncoding] autorelease] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] retain];
+                
+                if (!succeeded) [NSThread sleepForTimeInterval:0.25];
+            } @catch (NSException* e) {
+                [lastException release];
+                lastException = [e retain];
+            } @finally {
+                [pool release];
+            }
+        }
+        
+        [lastStdOut autorelease];
+        [lastException autorelease];
+        
+        if (!succeeded && lastException)
+            @throw lastException;
+        
+        if (lastStdOut.length)
+            NSLog(@"%@", lastStdOut);
+    }
 }
 
 +(id)_runAppleScriptAtPath:(NSString*)path withArguments:(NSArray*)args

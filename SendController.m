@@ -62,7 +62,7 @@ static volatile int sendControllerObjects = 0;
 {
 	NSString *message = [NSString stringWithFormat:@"%@\r\r%@\r%@", NSLocalizedString( @"DICOM StoreSCU operation failed.", nil), [ne name], [ne reason]];
     
-	NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Send Error",nil), message, NSLocalizedString( @"OK",nil), nil, nil);
+	NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Send Error",nil), @"%@", NSLocalizedString( @"OK",nil), nil, nil, message);
 }
 
 - (void) main
@@ -160,6 +160,22 @@ static volatile int sendControllerObjects = 0;
 	}
 }
 
+- (BOOL) hasKeyImages
+{
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isKeyImage == YES"];
+    NSArray *objectsToSend = [_files filteredArrayUsingPredicate:predicate];
+    
+    return objectsToSend.count;
+}
+
+- (BOOL) hasSecondaryCapturesImages
+{
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"modality CONTAINS[c] %@", @"SC"];
+    NSArray *objectsToSend = [_files filteredArrayUsingPredicate:predicate];
+    
+    return objectsToSend.count;
+}
+
 - (id)initWithFiles:(NSArray *)files
 {
 	if (self = [super initWithWindowNibName:@"Send"])
@@ -171,7 +187,7 @@ static volatile int sendControllerObjects = 0;
 		_abort = NO;
 		_files = [files copy];
 		
-		[self setNumberFiles: [NSString stringWithFormat: @"%d", (int) [_files  count]]];
+		[self setNumberFiles: [NSString stringWithFormat: @"%d", (int) [[[NSSet setWithArray: [_files valueForKey: @"completePath"]] allObjects] count]]];
 		
 		_serverIndex = [[NSUserDefaults standardUserDefaults] integerForKey:@"lastSendServer"];	
 		
@@ -180,6 +196,12 @@ static volatile int sendControllerObjects = 0;
 		
 		_keyImageIndex = [[NSUserDefaults standardUserDefaults] integerForKey:@"lastSendWhat"];
 		
+        if( _keyImageIndex == 1 && self.hasKeyImages == NO) //KeyImages
+            _keyImageIndex = 0;
+        
+        if( _keyImageIndex == 1 && self.hasSecondaryCapturesImages == NO) //SC
+            _keyImageIndex = 0;
+        
 		_readyForRelease = NO;
 		_lock = [[NSRecursiveLock alloc] init];
 		
@@ -365,7 +387,10 @@ static volatile int sendControllerObjects = 0;
 			NSPredicate *predicate = [NSPredicate predicateWithFormat:@"modality CONTAINS[c] %@", @"SC"];
 			objectsToSend = [objectsToSend filteredArrayUsingPredicate:predicate];
 		}
-
+        
+        // Remove duplicates
+        objectsToSend = [[NSSet setWithArray: objectsToSend] allObjects];
+        
 		NSMutableArray *files2Send = [objectsToSend valueForKey: @"completePath"];
 		
 		if( files2Send != nil && [files2Send count] > 0)
@@ -514,8 +539,16 @@ static volatile int sendControllerObjects = 0;
     queue.name = [NSString stringWithFormat: @"%@ %@", NSLocalizedString( @"Sending...", nil), patientName];
     
     unsigned int maxThreads = [[NSUserDefaults standardUserDefaults] integerForKey: @"SendControllerConcurrentThreads"];
+    
+    if( maxThreads > [[NSUserDefaults standardUserDefaults] integerForKey: @"MaximumSendControllerConcurrentThreads"])
+        maxThreads = [[NSUserDefaults standardUserDefaults] integerForKey: @"MaximumSendControllerConcurrentThreads"];
+    
     if( maxThreads <= 0)
         maxThreads = 1;
+    
+    if( maxThreads > 1)
+        NSLog( @"DCMTKStoreSCU threads: %d", maxThreads);
+    
     unsigned long loc = 0;
     do
     {
@@ -571,13 +604,19 @@ static volatile int sendControllerObjects = 0;
     [queue waitUntilAllOperationsAreFinished];
 }
 
+static int globalDCMTKSCUCounter = 0;
+
 - (void) sendDICOMFilesOffis:(NSDictionary *) dict 
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
     NSArray *arraysOfFiles = [dict objectForKey: @"arraysOfFiles"];
     NSArray *arrayOfPatientNames = [dict objectForKey: @"arrayOfPatientNames"];
-//    DicomDatabase *database = [dict objectForKey: @"database"];
+    
+    globalDCMTKSCUCounter++;
+    
+    while( globalDCMTKSCUCounter > 1 && globalDCMTKSCUCounter >= [[NSUserDefaults standardUserDefaults] integerForKey: @"MaximumSendGlobalControllerConcurrentThreads"])
+        [NSThread sleepForTimeInterval: 0.1];
     
 	@try
 	{
@@ -590,6 +629,8 @@ static volatile int sendControllerObjects = 0;
 	{
 		NSLog( @"***** sendDICOMFilesOffis exception: %@", e);
 	}
+    
+    globalDCMTKSCUCounter--;
     
 	//need to unlock to allow release of self after send complete
 	[_lock performSelectorOnMainThread:@selector(unlock) withObject:nil waitUntilDone: NO];

@@ -401,10 +401,39 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
         [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(_observeVolumeNotification:) name:NSWorkspaceDidRenameVolumeNotification object:nil];
 		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(_observeVolumeWillUnmountNotification:) name:NSWorkspaceWillUnmountNotification object:nil];
         
-        if( [[NSUserDefaults standardUserDefaults] integerForKey: @"MOUNT"] != 2)
+        // Is there a DICOMDIR at the same level of OsiriX ?
+        NSString *appFolder = [[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent];
+        if( [[NSFileManager defaultManager] fileExistsAtPath: [appFolder stringByAppendingPathComponent: @"DICOMDIR"]])
         {
-            for (NSString* path in [[NSWorkspace sharedWorkspace] mountedRemovableMedia])
-                [self _analyzeVolumeAtPath:path];
+            @try {
+                [_browser.sources addObject:[MountedDatabaseNodeIdentifier mountedDatabaseNodeIdentifierWithPath:appFolder description:appFolder.lastPathComponent dictionary:nil type:MountTypeGeneric]];
+            } @catch (NSException* e) {
+                N2LogExceptionWithStackTrace(e);
+            }
+        }
+        else if ( [[NSFileManager defaultManager] fileExistsAtPath: [appFolder stringByAppendingPathComponent: @"DICOMDIRPATH"]]) // Created by OsiriX Lite App Launcher (see main.mm)
+        {
+            NSString *dicomdir = [NSString stringWithContentsOfFile: [appFolder stringByAppendingPathComponent: @"DICOMDIRPATH"] encoding: NSUTF8StringEncoding error:nil];
+            
+            if( [[NSFileManager defaultManager] fileExistsAtPath: dicomdir])
+            @try {
+                [_browser.sources addObject:[MountedDatabaseNodeIdentifier mountedDatabaseNodeIdentifierWithPath: dicomdir.stringByDeletingLastPathComponent description:dicomdir.stringByDeletingLastPathComponent.lastPathComponent dictionary:nil type:MountTypeGeneric]];
+            } @catch (NSException* e) {
+                N2LogExceptionWithStackTrace(e);
+            }
+        }
+        else
+        {
+            int mode = [[NSUserDefaults standardUserDefaults] integerForKey: @"MOUNT"];
+#ifdef OSIRIX_LIGHT
+            mode = 0; //display the source
+#endif
+            
+            if( mode != 2)
+            {
+                for (NSString* path in [[NSWorkspace sharedWorkspace] mountedRemovableMedia])
+                    [self _analyzeVolumeAtPath:path];
+            }
         }
 	}
 	
@@ -1004,7 +1033,12 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 -(void)_observeVolumeNotification:(NSNotification*)notification
 {
-    if( [[NSUserDefaults standardUserDefaults] integerForKey: @"MOUNT"] == 2)
+    int mode = [[NSUserDefaults standardUserDefaults] integerForKey: @"MOUNT"];
+#ifdef OSIRIX_LIGHT
+    mode = 0; //display the source
+#endif
+    
+    if( mode == 2)
         return;
     
 	NSString* path = [[notification.userInfo objectForKey: NSWorkspaceVolumeURLKey] path];
@@ -1099,6 +1133,9 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 -(NSDragOperation)tableView:(NSTableView*)tableView validateDrop:(id<NSDraggingInfo>)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)operation
 {
+    if( operation != NSTableViewDropOn)
+        return NSDragOperationNone;
+    
 	NSInteger selectedDatabaseIndex = [_browser rowForDatabase:_browser.database];
 	if (row == selectedDatabaseIndex)
 		return NSDragOperationNone;
@@ -1132,7 +1169,6 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 		[items addObject:[_browser.database objectWithID:[NSManagedObject UidForXid:xid]]];
 	
 	NSMutableArray* dicomImages = [DicomImage dicomImagesInObjects:items];
-	[[NSMutableArray arrayWithArray:[dicomImages valueForKey:@"path"]] removeDuplicatedStringsInSyncWithThisArray:dicomImages]; // remove duplicated paths
 	
 	return [_browser initiateCopyImages:dicomImages toSource:[_browser sourceIdentifierAtRow:row]];
 }
@@ -1269,6 +1305,13 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
         BOOL selectSource = NO;
         
         NSInteger mode = [NSUserDefaults.standardUserDefaults integerForKey:@"MOUNT"];
+        BOOL autoSelectSourceCDDVD = [[NSUserDefaults standardUserDefaults] boolForKey:@"autoSelectSourceCDDVD"];
+        
+#ifdef OSIRIX_LIGHT
+        mode = 0; //display the source
+        autoSelectSourceCDDVD = YES;
+#endif
+        
         if (mode == -1 || [[NSApp currentEvent] modifierFlags]&NSCommandKeyMask) //The user clicked on the dialog box
         {
             if( autoselect)

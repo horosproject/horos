@@ -120,8 +120,62 @@
     return (NSString *) hfsPath;
 }
 
+- (NSString*) getDICOMStringValueForField: (NSString*) rawField inDICOMFile: (NSString*) path
+{
+    NSLog( @"Report: DICOM_Field: %@", rawField);
+    
+    @try {
+        NSArray *dicomFields = [rawField componentsSeparatedByString: @":"];
+        
+        DCMObject *dcmObject = [DCMObject objectWithContentsOfFile: path decodingPixelData:NO];
+        if( dcmObject)
+        {
+            id lastObj = nil;
+            for( NSString *dicomField in dicomFields)
+            {
+                dicomField = [dicomField stringByReplacingOccurrencesOfString:@" " withString:@""];
+                
+                if( lastObj == nil)
+                    lastObj = [dcmObject attributeWithName: dicomField];
+                
+                if( lastObj == nil)
+                    lastObj = [dcmObject attributeForTag: [DCMAttributeTag tagWithTagString: dicomField]];
+                
+                if( lastObj == nil)
+                    break;
+                
+                if( [lastObj isKindOfClass: [DCMSequenceAttribute class]] == NO)
+                    break;
+                else
+                {
+                    dcmObject = [[lastObj sequence] objectAtIndex: 0]; // Read only first item...
+                    
+                    if( [dicomFields lastObject] != dicomField)
+                        lastObj = 0;
+                }
+            }
+            
+            if( [lastObj isKindOfClass: [DCMSequenceAttribute class]])
+                lastObj = [lastObj readableDescription];
+            
+            if( [lastObj isKindOfClass: [DCMAttribute class]])
+                lastObj = [lastObj value];
+            
+            if( [lastObj isKindOfClass: [NSString class]])
+                return lastObj;
+        }
+    }
+    @catch ( NSException *e) {
+        N2LogException( e);
+    }
+        
+    NSLog( @"**** Dicom field not found: %@ in %@", rawField, path);
+    
+    return nil;
+}
+
 - (BOOL) createNewReport:(NSManagedObject*) study destination:(NSString*) path type:(int) type
-{	
+{
 	NSString *uniqueFilename = [Reports getUniqueFilename: study];
 	
 	switch( type)
@@ -210,25 +264,14 @@
 						
 						if( secondChar.location != NSNotFound)
 						{
-							NSString	*dicomField = [rtfString substringWithRange: NSMakeRange( firstChar.location+firstChar.length, secondChar.location - (firstChar.location+firstChar.length))];
-							
-							
-							NSLog( @"%@", dicomField);
-							
-							DCMObject *dcmObject = [DCMObject objectWithContentsOfFile: [imagePathsArray objectAtIndex: 0] decodingPixelData:NO];
-							if (dcmObject)
-							{
-								if( [dcmObject attributeValueWithName: dicomField])
-								{
-									[rtf replaceCharactersInRange:NSMakeRange(firstChar.location, secondChar.location-firstChar.location+1)  withString: [dcmObject attributeValueWithName: dicomField]];
-								}
-								else
-								{
-									NSLog( @"**** Dicom field not found: %@ in %@", dicomField, [imagePathsArray objectAtIndex: 0]);
-									[rtf replaceCharactersInRange:NSMakeRange(firstChar.location, secondChar.location-firstChar.location+1)  withString:@""];
-								}
-							}
-							moreFields = YES;
+                            NSString *rawField = [rtfString substringWithRange: NSMakeRange( firstChar.location+firstChar.length, secondChar.location - (firstChar.location+firstChar.length))];
+                            NSString *v = [self getDICOMStringValueForField: rawField inDICOMFile: [imagePathsArray objectAtIndex: 0]];
+                            if( v)
+                                [rtf replaceCharactersInRange:NSMakeRange(firstChar.location, secondChar.location-firstChar.location+1) withString: v];
+                            else
+                                [rtf replaceCharactersInRange:NSMakeRange(firstChar.location, secondChar.location-firstChar.location+1) withString:@""];
+                            
+                            moreFields = YES;
 						}
 						else moreFields = NO;
 					}
@@ -399,26 +442,13 @@
                     while( sChar.location != NSNotFound);
 				}
                 
-				NSLog( @"Report: DICOM_Field: %@", dicomField);
-				
-				DCMObject *dcmObject = [DCMObject objectWithContentsOfFile: [imagePathsArray objectAtIndex: 0] decodingPixelData:NO];
-				if (dcmObject)
-				{
-					if( [dcmObject attributeValueWithName: dicomField])
-					{
-						[aString replaceCharactersInRange:NSMakeRange(firstChar.location, secondChar.location-firstChar.location+secondChar.length)  withString: [dcmObject attributeValueWithName: dicomField]];
-					}
-					else
-					{
-						NSLog( @"**** Dicom field not found: %@ in %@", dicomField, [imagePathsArray objectAtIndex: 0]);
-						[aString replaceCharactersInRange:NSMakeRange(firstChar.location, secondChar.location-firstChar.location+secondChar.length)  withString:@""];
-					}
-				}
-				else
-					{
-						NSLog( @"**** Dicom field not found: %@ in %@", dicomField, [imagePathsArray objectAtIndex: 0]);
-						[aString replaceCharactersInRange:NSMakeRange(firstChar.location, secondChar.location-firstChar.location+secondChar.length)  withString:@""];
-					}
+                NSString *s = [self getDICOMStringValueForField: dicomField inDICOMFile: [imagePathsArray objectAtIndex: 0]];
+                
+				if( s)
+                    [aString replaceCharactersInRange:NSMakeRange(firstChar.location, secondChar.location-firstChar.location+secondChar.length) withString: s];
+                else
+                    [aString replaceCharactersInRange:NSMakeRange(firstChar.location, secondChar.location-firstChar.location+secondChar.length) withString:@""];
+                
 				moreFields = YES;
 			}
 			else moreFields = NO;
@@ -704,9 +734,12 @@
 	[aStudy setValue:aPath forKey:@"reportURL"];
 	
 	// open the modified .odt file
-	if( [[NSWorkspace sharedWorkspace] openFile:aPath withApplication: @"OpenOffice" andDeactivate: YES] == NO)
-		[[NSWorkspace sharedWorkspace] openFile:aPath withApplication: nil andDeactivate: YES];
-	[NSThread sleepForTimeInterval: 1];
+	if( [[NSWorkspace sharedWorkspace] openFile:aPath withApplication: @"LibreOffice" andDeactivate: YES] == NO)
+    {
+        if( [[NSWorkspace sharedWorkspace] openFile:aPath withApplication: @"OpenOffice" andDeactivate: YES] == NO)
+            [[NSWorkspace sharedWorkspace] openFile:aPath withApplication: nil andDeactivate: YES];
+	}
+    [NSThread sleepForTimeInterval: 1];
 	
 	// end
 	return YES;

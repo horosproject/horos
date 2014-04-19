@@ -792,6 +792,21 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			*q = 50;
 			return [NSString stringWithFormat: @"&transferSyntax=%s", UID_JPEG2000TransferSyntax];
 		break;
+        case SendJPEGLSLossless:
+			return [NSString stringWithFormat: @"&transferSyntax=%s", UID_JPEGLSLosslessTransferSyntax];
+            break;
+		case SendJPEGLSLossy10:
+			*q = 90;
+			return [NSString stringWithFormat: @"&transferSyntax=%s", UID_JPEGLSLossyTransferSyntax];
+            break;
+		case SendJPEGLSLossy20:
+			*q = 70;
+			return [NSString stringWithFormat: @"&transferSyntax=%s", UID_JPEGLSLossyTransferSyntax];
+            break;
+		case SendJPEGLSLossy50:
+			*q = 50;
+			return [NSString stringWithFormat: @"&transferSyntax=%s", UID_JPEGLSLossyTransferSyntax];
+            break;
 		case SendJPEGLossless: 
 			return [NSString stringWithFormat: @"&transferSyntax=%s", UID_JPEGProcess14SV1TransferSyntax];
 		break;
@@ -1775,7 +1790,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
         
         avoidErrorMessageReentry = YES;
         if ([[NSUserDefaults standardUserDefaults] boolForKey: alertSuppress] == NO)
-            NSRunCriticalAlertPanel( [msg objectAtIndex: 0], [msg objectAtIndex: 1], [msg objectAtIndex: 2], nil, nil);
+            NSRunCriticalAlertPanel( [msg objectAtIndex: 0], @"%@", [msg objectAtIndex: 2], nil, nil, [msg objectAtIndex: 1]);
         
         avoidErrorMessageReentry = NO;
     }

@@ -34,7 +34,7 @@
             _unsignedInt16Data = malloc(sizeof(uint16_t) * pixelsWide * pixelsHigh);
             _freeWhenDone = YES;
             if (_unsignedInt16Data == NULL) {
-                [self release];
+                [self autorelease];
                 return nil;
             }
         } else {

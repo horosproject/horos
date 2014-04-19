@@ -208,7 +208,7 @@
 				length = [string length];
 			}	
 			else
-			//length is 13 if we use microseconds other wise 10 for milliseconds
+			//length is 13 if we use microseconds
 				length = vm * 13 + (vm - 1);
                 break;
 		case DCM_DT:
@@ -220,7 +220,8 @@
 			}	
 			else
 		//Date Time YYYYMMDDHHMMSS.FFFFFF&ZZZZ FFFFFF= fractional Sec. ZZZZ=offset from Hr and min offset from universal time
-				length = vm * 0xe + (vm - 1);
+                // By default, we don't add the timezone = 21
+				length = vm * 21 + (vm - 1);
                 break;
 				
 		//case DCM_SQ:	//Sequence of items
@@ -396,7 +397,6 @@
 				}
 				if (self.paddedLength != self.valueLength)
 					[container addStringWithoutPadding:@" "];
-
                 break;
 				
             case DCM_SQ:	//Sequence of items
@@ -489,6 +489,11 @@
 	return  [NSString stringWithFormat:@"%@\t vl:%d\t vm:%d", _tag.description, (int) self.valueLength, self.valueMultiplicity];
 }
 	
+- (NSString *)readableDescription{
+	if (self.valueLength < 100)
+		return  [NSString stringWithFormat:@"%@ : %@", _tag.readableDescription, [_values componentsJoinedByString:@","]];
+	return @"";
+}
 
 - (NSArray *)valuesForVR:(NSString *)vrString  length:(int)length data:(DCMDataContainer *)dicomData{
 	NSMutableArray *values;
@@ -638,6 +643,7 @@
 	[aName replaceOccurrencesOfString:@"/" withString:@"_" options:0 range:NSMakeRange(0, [aName length])];
 	NSMutableArray *elements = [NSMutableArray array];
 	int i = 0;
+    
 	for ( id value in self.values ) {
 		NSString *string = nil;
 		if ([value isKindOfClass:[NSString class]])
@@ -648,27 +654,68 @@
 			string = [value description];
 		else if ([value isKindOfClass:[NSData class]])
         {
-            string = nil;
             @try {
-                if( [value length] < 256)
-                    string = [[[NSString alloc] initWithBytes: [value bytes] length: [value length] encoding: NSASCIIStringEncoding] autorelease];
+                
+                BOOL subData = NO;
+                if( [value length] >= 256)
+                {
+                    value = [value subdataWithRange: NSMakeRange( 0, 256)];
+                    subData = YES;
+                }
+                
+                if( [value length] <= 256 && [value length] > 0)
+                {
+                    BOOL containStrangeCharacter = NO;
+                    unsigned char *c = (unsigned char*) [value bytes];
+                    
+                    for( long x = 0; x < [value length]-1; x++)
+                    {
+                        if( c[ x] < 32 || c[ x] > 125)
+                        {
+                            containStrangeCharacter = YES;
+                            break;
+                        }
+                    }
+                    
+                    if( containStrangeCharacter == NO)
+                        string = [[[NSString alloc] initWithBytes: [value bytes] length: [value length] encoding: NSASCIIStringEncoding] autorelease];
+                    else
+                    {
+                        NSUInteger capacity = [value length] * 2;
+                        NSMutableString *stringBuffer = [NSMutableString stringWithCapacity:capacity];
+                        [stringBuffer appendString: @"0x"];
+                        const unsigned char *dataBuffer = [value bytes];
+                        for (long x=0; x<[value length]; x++) {
+                            [stringBuffer appendFormat:@"%02X", (NSUInteger)dataBuffer[x]];
+                        }
+                        string = stringBuffer;
+                    }
+                }
+                
+                if( subData)
+                    string = [string stringByAppendingString: @"..."];
             }
             @catch (NSException *exception) {
-                string = nil;
+                string = @"Unknown";
             }
         }
         else
-			string = nil;
-			
+			string = @"Unknown";
+        
+        if( string.length == 0)
+            string = @"";
+        
 		NSXMLNode *number = [NSXMLNode attributeWithName:@"number" stringValue:[NSString stringWithFormat:@"%d",i++]];		
 		NSXMLNode *element = [NSXMLNode elementWithName:@"value" children:nil attributes:[NSArray arrayWithObject:number]];
-		if (string) {
+		
+        if( string) {
 			[element setStringValue:string];
-			[elements addObject:element];	
+			[elements addObject:element];
 		}
 	}
+    
 	myNode = [NSXMLNode elementWithName:aName children:elements attributes:attrs];
-
+    
 	return myNode;
 }
 

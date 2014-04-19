@@ -46,6 +46,10 @@
 	IBOutlet NSTextField	*m_VersionNumberTextField;
 	
 	NSLock					*printing;
+    
+    NSRect windowFrameToRestore;
+    BOOL scaleFitToRestore;
+
 }
 + (void) updateAllPreferencesFormat;
 

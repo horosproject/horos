@@ -22,6 +22,14 @@ static float backgroundInset = 1.5;
     return self;
 }
 
+-(id)copyWithZone:(NSZone *)zone {
+    KBDelayedPopUpButtonCell* copy = [super copyWithZone:zone];
+    
+    copy->arrowPath = [self.arrowPath copyWithZone:zone];
+    
+    return copy;
+}
+
 -(void)dealloc
 {
     [arrowPath release];

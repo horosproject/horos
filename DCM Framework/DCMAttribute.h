@@ -113,5 +113,5 @@
 - (id)copyWithZone:(NSZone *)zone;
 
 - (NSXMLNode *)xmlNode;
-
+- (NSString*)readableDescription;
 @end

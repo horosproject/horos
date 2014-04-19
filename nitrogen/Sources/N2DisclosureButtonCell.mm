@@ -53,4 +53,12 @@
 	return frame;
 }
 
+-(id)copyWithZone:(NSZone *)zone {
+    N2DisclosureButtonCell* copy = [super copyWithZone:zone];
+    
+    copy->_attributes = [self.attributes copyWithZone:zone];
+    
+    return copy;
+}
+
 @end

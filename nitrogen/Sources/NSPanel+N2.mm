@@ -22,7 +22,7 @@
 }
 
 +(NSPanel*)alertWithTitle:(NSString*)title message:(NSString*)message defaultButton:(NSString*)defaultButton alternateButton:(NSString*)alternateButton icon:(NSImage*)icon sheet:(BOOL)sheet {
-	NSPanel* panel = NSGetAlertPanel(title, message, defaultButton, alternateButton, NULL);
+	NSPanel* panel = NSGetAlertPanel(title, @"%@", defaultButton, alternateButton, NULL, message);
 	
 	if (icon) {
 		for (NSImageView* view in [[panel contentView] subviews])

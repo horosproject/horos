@@ -141,7 +141,7 @@
         NSThread.currentThread.supportsCancel = YES;
 		[storeSCU run: nil];
 	} @catch (NSException *ne) {
-		NSLog( @"Autorouting FAILED : %@", ne);
+		NSLog( @"Autorouting FAILED : %@ - %@", ne, [samePatientArray valueForKey: @"completePath"]);
 		
 		[self performSelectorOnMainThread:@selector(_routingErrorMessage:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: ne, @"exception", server, @"server", nil] waitUntilDone: NO];
 		
@@ -338,7 +338,7 @@
 	}
 }
 
--(void)applyRoutingRules:(NSArray*)autoroutingRules toImages:(NSArray*)newImages {
+-(void)applyRoutingRules:(NSArray*)autoroutingRules toImages:(NSArray*)newImagesOriginal {
 #ifndef OSIRIX_LIGHT
 	if (!autoroutingRules)
 		autoroutingRules = [[NSUserDefaults standardUserDefaults] arrayForKey:@"AUTOROUTINGDICTIONARY"];
@@ -347,11 +347,13 @@
 		if (![routingRule valueForKey:@"activated"] || [[routingRule valueForKey:@"activated"] boolValue])
         {
             NSPredicate	*predicate = nil;
-			NSArray	*result = nil;
-			
+			NSArray *newImages = nil;
+            
 			@try {
                 
                 NSString *filter = [routingRule objectForKey: @"filter"];
+                
+                BOOL imagesOnly = [[routingRule objectForKey: @"imagesOnly"] boolValue];
                 
                 if( [[routingRule valueForKey: @"version"] intValue] < 1 && [[routingRule valueForKey: @"filterType"] intValue] != 0)
                     filter = @"";
@@ -374,16 +376,31 @@
                 }
 				
 				if( predicate)
-					result = [newImages filteredArrayUsingPredicate:predicate];
-				
-				if (result.count)
+					newImages = [newImagesOriginal filteredArrayUsingPredicate:predicate];
+				else
+                    newImages = newImagesOriginal;
+                
+                if( imagesOnly)
+                {
+                    NSMutableArray *imagesOnlyArray = [NSMutableArray array];
+                    
+                    for( DicomImage *i in newImages)
+                    {
+                        if( i.isImageStorage.boolValue)
+                           [imagesOnlyArray addObject: i];
+                    }
+                    
+                    newImages = imagesOnlyArray;
+                }
+                
+				if (newImages.count)
                 {
 					if ([[routingRule valueForKey:@"previousStudies"] intValue] > 0)
 					{
 						NSMutableDictionary *patients = [NSMutableDictionary dictionary];
 						
 						// for each study
-						for( id im in result)
+						for( id im in newImages)
 						{
 							if( [patients objectForKey: [im valueForKeyPath:@"series.study.patientUID"]] == nil)
 								[patients setObject: [im valueForKeyPath:@"series.study"] forKey: [im valueForKeyPath:@"series.study.patientUID"]];
@@ -448,7 +465,7 @@
 											//											[autoroutingPreviousStudies setObject: [NSDate date] forKey: key];
 											
 											//for( NSManagedObject *series in [[s valueForKey:@"series"] allObjects])
-											//	result = [result arrayByAddingObjectsFromArray: [[series valueForKey:@"images"] allObjects]];
+											//	newImages = [newImages arrayByAddingObjectsFromArray: [[series valueForKey:@"images"] allObjects]];
 										}
 									}
 								}
@@ -460,7 +477,7 @@
 					{
 						NSMutableDictionary *studies = [NSMutableDictionary dictionary];
 						
-						for( id im in result)
+						for( id im in newImages)
 						{
 							if( [studies objectForKey: [im valueForKeyPath:@"series.study.studyInstanceUID"]] == nil)
 								[studies setObject: [im valueForKeyPath:@"series.study"] forKey: [im valueForKeyPath:@"series.study.studyInstanceUID"]];
@@ -499,7 +516,7 @@
 										
 										NSLog( @"Already available on the distant node : we will not send it.");
 										
-										NSMutableArray *r = [NSMutableArray arrayWithArray: result];
+										NSMutableArray *r = [NSMutableArray arrayWithArray: newImages];
 										
 										for( int i = 0 ; i < [r count] ; i++)
 										{
@@ -510,7 +527,7 @@
 											}
 										}
 										
-										result = r;
+										newImages = r;
 									}
 								}
 							}
@@ -519,11 +536,11 @@
 				}
 			} @catch (NSException* e) {
 				N2LogExceptionWithStackTrace(e);
-				result = nil;
+				newImages = nil;
 			}
 			
-			if ([result count])
-				[self addImages:result toSendQueueForRoutingRule:routingRule];
+			if ([newImages count])
+				[self addImages:newImages toSendQueueForRoutingRule:routingRule];
 		}
 	
 	// Do some cleaning

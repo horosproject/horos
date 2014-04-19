@@ -143,6 +143,7 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWebPortalUsesWeasisDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
 	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWebPortalPrefersFlashDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
 	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWadoServiceEnabledDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
+    
 	// last because this starts the listener
 	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWebPortalEnabledDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
 
@@ -151,6 +152,21 @@ static NSString* DefaultWebPortalDatabasePath = nil;
     
     if (NSUserDefaults.webPortalEnabled)
         [CSMailMailClient mailClient]; //If authentication is required to read email password: ask it now !
+    
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"wadoOnlyServer"])
+    {
+        WebPortal *w = self.wadoOnlyWebPortal;
+        
+        w.usesSSL = NO;
+        w.portNumber = [[NSUserDefaults standardUserDefaults] integerForKey: @"wadoOnlyServerPort"];
+        w.address = [[NSUserDefaults standardUserDefaults] stringForKey: @"wadoOnlyServerURL"];
+        w.authenticationRequired = NO;
+        w.weasisEnabled = NO;
+        w.flashEnabled = NO;
+        w.wadoEnabled = YES;
+        w.notificationsEnabled = NO;
+        [w startAcceptingConnections];
+    }
 }
 #endif
 
@@ -238,6 +254,18 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 		defaultWebPortal = [[self alloc] initWithDatabaseAtPath:DefaultWebPortalDatabasePath dicomDatabase:[DicomDatabase defaultDatabase]];
 	
 	return defaultWebPortal;
+}
+
++(WebPortal*)wadoOnlyWebPortal {
+	static WebPortal* wadoOnlyWebPortal = NULL;
+    
+    if( DefaultWebPortalDatabasePath == nil)
+        return nil;
+    
+	if (!wadoOnlyWebPortal)
+		wadoOnlyWebPortal = [[self alloc] initWithDatabaseAtPath:DefaultWebPortalDatabasePath dicomDatabase:[DicomDatabase defaultDatabase]];
+	
+	return wadoOnlyWebPortal;
 }
 
 #pragma mark Instance

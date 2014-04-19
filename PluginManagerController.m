@@ -490,7 +490,7 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 	[statusTextField setHidden:NO];
 	[statusTextField setStringValue:NSLocalizedString(@"Download failed", nil)];
      
-    NSRunCriticalAlertPanel( NSLocalizedString(@"Download failed", nil), [error localizedDescription], NSLocalizedString(@"OK", nil), nil, nil);
+    NSRunCriticalAlertPanel( NSLocalizedString(@"Download failed", nil), @"%@", NSLocalizedString(@"OK", nil), nil, nil, [error localizedDescription]);
     
 	[statusProgressIndicator setHidden:YES];
 	[statusProgressIndicator stopAnimation:self];

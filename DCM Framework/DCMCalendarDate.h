@@ -20,7 +20,6 @@
 * Subclass of NSCalendarDate to deal with the  DICOM date and time formats.
 */
 @interface DCMCalendarDate : NSCalendarDate {
-	int microseconds;
 	NSString *queryString;
 	BOOL isQuery;
 }
@@ -63,6 +62,7 @@
 
 /** return the time as a DICOM formatted string */
 - (NSString *)timeString;
+- (NSString *)timeStringWithMilliseconds;
 
 /** return the datetime as a DICOM formatted string */
 - (NSString *)dateTimeString:(BOOL)withTimeZone;
@@ -74,15 +74,8 @@
 /** return the date as an NSNumber YYYYMMDD*/
 - (NSNumber *)dateAsNumber;
 
-
 /** return the time as an NSNumber HHMMSS.ff*/
 - (NSNumber *)timeAsNumber;
-
-/** the additional microseconds */
-- (int)microseconds;
-
-/** add microseonds to time */
-- (void)setMicroseconds:(int)useconds;
 
 /** Test to see if this is a query */
 - (BOOL)isQuery;
@@ -96,8 +89,4 @@
 /** Human readable description of the date */
 - (NSString *)description;
 - (NSString *)descriptionWithLocale:(id)localeDictionary;
-
-/** override timeIntervalSinceReferenceDate so that NSDate's timeIntervalSinceDate: takes into account microseconds */
-- (NSTimeInterval)timeIntervalSinceReferenceDate;
-
 @end

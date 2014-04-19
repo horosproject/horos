@@ -33,4 +33,14 @@
 	return frame;
 }
 
+- (id) copyWithZone:(NSZone *)zone
+{
+    N2CustomTitledPopUpButtonCell* copy = [[N2CustomTitledPopUpButtonCell allocWithZone:zone] init];
+	if (copy == nil) return nil;
+	
+	copy->displayedTitle = [self.displayedTitle copyWithZone: zone];
+    
+    return copy;
+}
+
 @end

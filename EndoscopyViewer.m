@@ -905,7 +905,6 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 		// Set up the standard properties 
 		[toolbarItem setLabel: NSLocalizedString(@"3D Mouse button function",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"3D Mouse button function",nil)];
-		[toolbarItem setToolTip:NSLocalizedString( @"Change the mouse function for the 3D view",nil)];
 		
 		// Use a custom view, a text field, for the search item 
 		[toolbarItem setView: tools3DView];
@@ -917,7 +916,6 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 		// Set up the standard properties 
 		[toolbarItem setLabel: NSLocalizedString(@"MPR Mouse button function",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"MPR Mouse button function",nil)];
-		[toolbarItem setToolTip:NSLocalizedString( @"Change the mouse function for the MPR views",nil)];
 		
 		// Use a custom view, a text field, for the search item 
 		[toolbarItem setView: tools2DView];

@@ -132,6 +132,14 @@
 	return [NSString stringWithFormat:@"%@\t%@\t%@", self.stringValue, _name, _vr];
 }
 
+- (NSString *)readableDescription {
+    
+    if( _name.length > 0)
+        return _name;
+    else
+        return self.stringValue;
+}
+
 - (long)longValue {
 	NSLog(@"long Value for %@:%ld", self.description, (long)(_group<<16) + (long)(_element&0xffff));
 	return (long)(_group<<16) + (long)(_element&0xffff);

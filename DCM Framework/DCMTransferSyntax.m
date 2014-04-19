@@ -105,7 +105,10 @@ static NSMutableDictionary *gTransferSyntaxes = nil;
 - (id)initWithTS:(NSString *)ts
 {
     if( ts.length == 0)
+    {
+        [self autorelease];
         return nil;
+    }
     
 	if (self = [super init])
     {
@@ -220,7 +223,6 @@ static NSMutableDictionary *gTransferSyntaxes = nil;
 	else
     {
         [self autorelease];
-        
 		return nil;
     }
 }

@@ -1127,6 +1127,18 @@ PixelRepresentation
 	return description;
 }
 
+- (NSString *)readableDescription
+{
+	NSString *description = @"";
+	NSArray *keys = [[attributes allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+	for ( NSString *key in keys ) {
+		//NSLog(@"key: %@", key);
+		DCMAttribute *attr = [attributes objectForKey:key];
+		description = [NSString stringWithFormat:@"%@ \n%@", description, attr.readableDescription];
+	}
+	return description;
+}
+
 - (void)removeMetaInformation {
 	NSMutableArray *keysToRemove = [NSMutableArray array];
 	for ( NSString *key in attributes ) {

@@ -1957,7 +1957,11 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 
 #pragma mark WADO
 
-#define WadoCacheSize 2000
+#ifdef __LP64__
+#define WadoCacheSize 1000
+#else
+#define WadoCacheSize 100
+#endif
 
 -(NSMutableDictionary*)wadoCache {
 	const NSString* const WadoCacheKey = @"WADO Cache";
@@ -2204,31 +2208,36 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		{
 			if ([contentType isEqualToString: @"application/dicom"])
 			{
-                DCMTransferSyntax *ts = [[[DCMTransferSyntax alloc] initWithTS: transferSyntax] autorelease];
-                
-				if( [useOrig boolValue] == 1 || ts == nil || [ts.name isEqualToString: @"Unknown Syntax"])
-				{
-					response.data = [NSData dataWithContentsOfFile: cachedPathForSOPInstanceUID];
-				}
-				else
-				{
-					if ([ts isEqualToTransferSyntax: [DCMTransferSyntax JPEG2000LosslessTransferSyntax]] ||
-						[ts isEqualToTransferSyntax: [DCMTransferSyntax JPEG2000LossyTransferSyntax]] ||
-						[ts isEqualToTransferSyntax: [DCMTransferSyntax JPEGBaselineTransferSyntax]] ||
-						[ts isEqualToTransferSyntax: [DCMTransferSyntax JPEGLossless14TransferSyntax]] ||
-						[ts isEqualToTransferSyntax: [DCMTransferSyntax JPEGBaselineTransferSyntax]])
-					{
-						
-					}
-					else // Explicit VR Little Endian
-						ts = [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax];
-					
-#ifdef OSIRIX_LIGHT
-					response.data = [NSData dataWithContentsOfFile: cachedPathForSOPInstanceUID];
-#else
-					response.data = [[BrowserController currentBrowser] getDICOMFile:cachedPathForSOPInstanceUID inSyntax: ts.transferSyntax quality: imageQuality];
-#endif
-				}
+                @autoreleasepool
+                {
+                    DCMTransferSyntax *ts = [[[DCMTransferSyntax alloc] initWithTS: transferSyntax] autorelease];
+                    
+                    if( [useOrig boolValue] == 1 || ts == nil || [ts.name isEqualToString: @"Unknown Syntax"])
+                    {
+                        response.data = [NSData dataWithContentsOfFile: cachedPathForSOPInstanceUID];
+                    }
+                    else
+                    {
+                        if ([ts isEqualToTransferSyntax: [DCMTransferSyntax JPEG2000LosslessTransferSyntax]] ||
+                            [ts isEqualToTransferSyntax: [DCMTransferSyntax JPEG2000LossyTransferSyntax]] ||
+                            [ts isEqualToTransferSyntax: [DCMTransferSyntax JPEGBaselineTransferSyntax]] ||
+                            [ts isEqualToTransferSyntax: [DCMTransferSyntax JPEGLossless14TransferSyntax]] ||
+                            [ts isEqualToTransferSyntax: [DCMTransferSyntax JPEGLSLosslessTransferSyntax]] ||
+                            [ts isEqualToTransferSyntax: [DCMTransferSyntax JPEGLSLossyTransferSyntax]] ||
+                            [ts isEqualToTransferSyntax: [DCMTransferSyntax JPEGBaselineTransferSyntax]])
+                        {
+                            
+                        }
+                        else // Explicit VR Little Endian
+                            ts = [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax];
+                        
+    #ifdef OSIRIX_LIGHT
+                        response.data = [NSData dataWithContentsOfFile: cachedPathForSOPInstanceUID];
+    #else
+                        response.data = [[BrowserController currentBrowser] getDICOMFile:cachedPathForSOPInstanceUID inSyntax: ts.transferSyntax quality: imageQuality];
+    #endif
+                    }
+                }
 				//err = NO;
 			}
 			else if ([contentType isEqualToString: @"video/mpeg"])
@@ -2533,7 +2542,13 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
     }
     
 	// produce XML
-	NSString* baseXML = [NSString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?><wado_query xmlns=\"http://www.weasis.org/xsd\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" wadoURL=\"%@/wado\"></wado_query>", self.portalURL];
+	NSString* baseXML = nil;
+    
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"wadoOnlyServer"])
+        baseXML = [NSString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?><wado_query xmlns=\"http://www.weasis.org/xsd\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" wadoURL=\"%@/wado\"></wado_query>", [[WebPortal wadoOnlyWebPortal] URL]];
+    else
+        baseXML = [NSString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?><wado_query xmlns=\"http://www.weasis.org/xsd\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" wadoURL=\"%@/wado\"></wado_query>", self.portalURL];
+    
 	NSXMLDocument* doc = [[NSXMLDocument alloc] initWithXMLString:baseXML options:NSXMLDocumentIncludeContentTypeDeclaration|NSXMLDocumentTidyXML error:NULL];
 	[doc setCharacterEncoding:@"UTF-8"];
 	

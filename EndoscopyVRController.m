@@ -59,6 +59,7 @@
 		else
 		{
 			NSRunCriticalAlertPanel(NSLocalizedString( @"Slice interval/thickness",nil), NSLocalizedString( @"Problems with slice thickness/interval to do a 3D reconstruction.",nil),NSLocalizedString( @"OK",nil), nil, nil);
+            [self autorelease];
 			return nil;
 		}
     }
@@ -73,6 +74,7 @@
     if( err)
     {
         NSRunCriticalAlertPanel(NSLocalizedString( @"Images size",nil),  NSLocalizedString(@"These images don't have the same height and width to allow a 3D reconstruction...",nil),NSLocalizedString( @"OK",nil), nil, nil);
+        [self autorelease];
         return nil;
     }
 
@@ -89,7 +91,7 @@
     err = [view setPixSource:pixList[0] :(float*) [volumeData[0] bytes]];
     if( err != 0)
     {
-        //[self dealloc];
+        [self autorelease];
         return nil;
     }
 	
