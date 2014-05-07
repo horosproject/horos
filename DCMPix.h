@@ -142,6 +142,7 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
     float               maxValueOfSeries, minValueOfSeries;
 	
 	BOOL				generated;
+    NSString			*generatedName;
 	NSRecursiveLock		*checking;
 	
 	BOOL				notAbleToLoadImage, VOILUTApplied;
@@ -256,6 +257,7 @@ Note setter is different to not break existing usage. :-( */
 
 @property(readonly) short stack, stackMode;
 @property(readonly) BOOL generated;
+@property(retain) NSString *generatedName;
 @property(retain) NSString *sourceFile;
 
 @property(readonly) unsigned int* VOILUT_table;

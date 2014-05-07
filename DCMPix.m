@@ -1310,7 +1310,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 @synthesize pixelRatio, transferFunction, subPixOffset, isOriginDefined, shutterEnabled;
 @synthesize imageType, waveform, VOILUTApplied, VOILUT_table, sourceFile;
 @synthesize repetitionTime, echoTime, flipAngle, laterality, viewPosition, patientPosition;
-@synthesize serieNo, pixArray, pixPos, transferFunctionPtr, stackMode, generated, imageObjectID;
+@synthesize serieNo, pixArray, pixPos, transferFunctionPtr, stackMode, generated, generatedName, imageObjectID;
 @synthesize annotationsDictionary, annotationsDBFields, yearOld, yearOldAcquisition;
 
 // US Regions
@@ -6741,16 +6741,16 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                                     else
                                         radionuclideTotalDose = 0.0;
                                     
-//                                    val = Papy3GetElement (gr, papRadiopharmaceuticalStartDatetimeGr, &pos, &elemType);
-//                                    if( val && val->a && validAPointer( elemType))
-//                                    {
-//                                        NSString *pharmaTime = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
-//                                        
-//                                        [radiopharmaceuticalStartTime release];
-//                                        radiopharmaceuticalStartTime = [[DCMCalendarDate dicomDateTime: [NSString stringWithCString: val->a encoding:NSASCIIStringEncoding]] retain];
-//                                    }
-//                                    else
-//                                    {
+                                    val = Papy3GetElement (gr, papRadiopharmaceuticalStartDatetimeGr, &pos, &elemType);
+                                    if( val && val->a && validAPointer( elemType))
+                                    {
+                                        NSString *pharmaTime = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
+                                        
+                                        [radiopharmaceuticalStartTime release];
+                                        radiopharmaceuticalStartTime = [[DCMCalendarDate dicomDateTime: [NSString stringWithCString: val->a encoding:NSASCIIStringEncoding]] retain];
+                                    }
+                                    else
+                                    {
                                         val = Papy3GetElement (gr, papRadiopharmaceuticalStartTimeGr, &pos, &elemType);
                                         if( val && val->a && validAPointer( elemType) && acquisitionDate)
                                         {
@@ -6763,7 +6763,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                                             else
                                                 radiopharmaceuticalStartTime = [[NSCalendarDate alloc] initWithString: completeDate calendarFormat:@"%Y%m%d%H%M"];
                                         }
-//                                    }
+                                    }
                                     
                                     val = Papy3GetElement (gr, papRadionuclideHalfLifeGr, &pos, &elemType);
                                     if( val && val->a && validAPointer( elemType))
@@ -11712,6 +11712,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	[patientPosition release];
 	[viewPosition release];
 	[decayCorrection release];
+    [generatedName release];
 	[SOPClassUID release];
 	[frameofReferenceUID release];
     [imageType release];

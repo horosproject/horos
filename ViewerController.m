@@ -439,6 +439,17 @@ static int hotKeyToolCrossTable[] =
 
 static NSMutableDictionary *cachedFrontMostDisplayed2DViewerForScreen = nil;
 
++ (void) clearFrontMost2DViewerCache
+{
+    cachedFrontMostDisplayed2DViewer = nil;
+    [cachedFrontMostDisplayed2DViewerForScreen removeAllObjects];
+    
+#ifdef NDEBUG
+#else
+    NSLog( @"clearFrontMost2DViewerCache");
+#endif
+}
+
 + (ViewerController*) frontMostDisplayed2DViewerForScreen: (NSScreen*) screen
 {
     if( cachedFrontMostDisplayed2DViewerForScreen == nil)
@@ -2774,6 +2785,11 @@ static volatile int numberOfThreadsForRelisce = 0;
             if( [[[curImage valueForKeyPath:@"series.id"] stringValue] length])
                 windowTitle = [windowTitle stringByAppendingFormat: @" (%@)", [[curImage valueForKeyPath:@"series.id"] stringValue]];
             
+            DCMPix *p = [pixList[ curMovieIndex] objectAtIndex:0];
+            
+            if( p.generated && p.generatedName.length)
+				windowTitle = [windowTitle stringByAppendingString: [NSString stringWithFormat: @" - %@", p.generatedName]];
+            
             if( [[imageView curDCM] SUVConverted])
                 windowTitle = [windowTitle stringByAppendingString: NSLocalizedString( @" (SUV Converted)", nil)];
             
@@ -3085,8 +3101,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void)windowWillClose:(NSNotification *)notification
 {
-    cachedFrontMostDisplayed2DViewer = nil;
-    [cachedFrontMostDisplayed2DViewerForScreen removeAllObjects];
+    [ViewerController clearFrontMost2DViewerCache];
     
 #ifndef OSIRIX_LIGHT
 	[[OSIEnvironment sharedEnvironment] removeViewerController:self];
@@ -3269,8 +3284,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) windowDidResignMain:(NSNotification *)aNotification
 {
-    cachedFrontMostDisplayed2DViewer = nil;
-    [cachedFrontMostDisplayed2DViewerForScreen removeAllObjects];
+    [ViewerController clearFrontMost2DViewerCache];
     
 	[imageView stopROIEditingForce: YES];
 	
@@ -3280,23 +3294,26 @@ static volatile int numberOfThreadsForRelisce = 0;
     
     if( [AppController USETOOLBARPANEL])
         [toolbarPanel.window orderOut: self];
+    
+    [imageView setNeedsDisplay: YES];
 }
 
--(void) windowDidResignKey:(NSNotification *)aNotification
-{
-    cachedFrontMostDisplayed2DViewer = nil;
-    [cachedFrontMostDisplayed2DViewerForScreen removeAllObjects];
-    
-	[imageView stopROIEditingForce: YES];
-	
-    [self autoHideMatrix];
-    
-//	if( FullScreenOn == YES)
-//        [self fullScreenMenu: self];
-    
-    if( [AppController USETOOLBARPANEL])
-        [toolbarPanel.window orderOut: self];
-}
+//-(void) windowDidResignKey:(NSNotification *)aNotification
+//{
+//    [ViewerController clearFrontMost2DViewerCache];
+//    
+//	[imageView stopROIEditingForce: YES];
+//	
+//    [self autoHideMatrix];
+//    
+////	if( FullScreenOn == YES)
+////        [self fullScreenMenu: self];
+//    
+//    if( [AppController USETOOLBARPANEL])
+//        [toolbarPanel.window orderOut: self];
+//    
+//    [imageView setNeedsDisplay: YES];
+//}
 
 - (void)windowDidChangeScreen:(NSNotification *)aNotification
 {
@@ -3391,8 +3408,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) windowDidBecomeMain:(NSNotification *)aNotification
 {
-    cachedFrontMostDisplayed2DViewer = nil;
-    [cachedFrontMostDisplayed2DViewerForScreen removeAllObjects];
+    [ViewerController clearFrontMost2DViewerCache];
     
 	if( recursiveCloseWindowsProtected) return;
 	
@@ -3400,24 +3416,25 @@ static volatile int numberOfThreadsForRelisce = 0;
     
 	[self refreshToolbar];
 	[self updateNavigator];
+    [imageView setNeedsDisplay: YES];
     
     NSEnableScreenUpdates();
 }
 
-- (void) windowDidBecomeKey:(NSNotification *)aNotification
-{
-    cachedFrontMostDisplayed2DViewer = nil;
-    [cachedFrontMostDisplayed2DViewerForScreen removeAllObjects];
-    
-	if( recursiveCloseWindowsProtected) return;
-	
-    NSDisableScreenUpdates();
-    
-	[self refreshToolbar];
-	[self updateNavigator];
-    
-    NSEnableScreenUpdates();
-}
+//- (void) windowDidBecomeKey:(NSNotification *)aNotification
+//{
+//    [ViewerController clearFrontMost2DViewerCache];
+//    
+//	if( recursiveCloseWindowsProtected) return;
+//	
+//    NSDisableScreenUpdates();
+//    
+//	[self refreshToolbar];
+//	[self updateNavigator];
+//    [imageView setNeedsDisplay: YES];
+//    
+//    NSEnableScreenUpdates();
+//}
 
 - (BOOL) is2DViewer
 {
@@ -3483,8 +3500,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void)applicationDidResignActive:(NSNotification *)aNotification
 {
-    cachedFrontMostDisplayed2DViewer = nil;
-    [cachedFrontMostDisplayed2DViewerForScreen removeAllObjects];
+    [ViewerController clearFrontMost2DViewerCache];
     
 	if( FullScreenOn == YES) [self fullScreenMenu: self];
 }
@@ -7638,8 +7654,7 @@ return YES;
     flagListPODComparatives = [[NSNumber alloc] initWithBool:YES];
 	[self bind:@"flagListPODComparatives" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.listPODComparativesIn2DViewer" options:nil];
     
-    cachedFrontMostDisplayed2DViewer = nil;
-    [cachedFrontMostDisplayed2DViewerForScreen removeAllObjects];
+    [ViewerController clearFrontMost2DViewerCache];
 }
 
 -(void)comparativeRefresh:(NSString*) patientUID
@@ -7789,8 +7804,7 @@ static int avoidReentryRefreshDatabase = 0;
 
 - (void) dealloc
 {
-    cachedFrontMostDisplayed2DViewer = nil;
-    [cachedFrontMostDisplayed2DViewerForScreen removeAllObjects];
+    [ViewerController clearFrontMost2DViewerCache];
     
     if( [NSThread isMainThread] == NO)
         N2LogStackTrace( @"dealloc NOT on main thread");
@@ -8945,7 +8959,7 @@ static int avoidReentryRefreshDatabase = 0;
         if( mpprocessors == 0)
         {
             mpprocessors = [[NSProcessInfo processInfo] processorCount];
-            NSLog( @"[[NSProcessInfo processInfo] processorCount]");
+            NSLog( @"[[NSProcessInfo processInfo] processorCount]: %d", mpprocessors);
             if( mpprocessors < 1)
                 mpprocessors = 1;
             
