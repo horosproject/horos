@@ -6741,15 +6741,15 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                                     else
                                         radionuclideTotalDose = 0.0;
                                     
-                                    val = Papy3GetElement (gr, papRadiopharmaceuticalStartDatetimeGr, &pos, &elemType);
-                                    if( val && val->a && validAPointer( elemType))
-                                    {
-                                        NSString *pharmaTime = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
-                                        
-                                        [radiopharmaceuticalStartTime release];
-                                        radiopharmaceuticalStartTime = [[DCMCalendarDate dicomDateTime: [NSString stringWithCString: val->a encoding:NSASCIIStringEncoding]] retain];
-                                    }
-                                    else
+//                                    val = Papy3GetElement (gr, papRadiopharmaceuticalStartDatetimeGr, &pos, &elemType);
+//                                    if( val && val->a && validAPointer( elemType))
+//                                    {
+//                                        NSString *pharmaTime = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
+//                                        
+//                                        [radiopharmaceuticalStartTime release];
+//                                        radiopharmaceuticalStartTime = [[DCMCalendarDate dicomDateTime: [NSString stringWithCString: val->a encoding:NSASCIIStringEncoding]] retain];
+//                                    }
+//                                    else
                                     {
                                         val = Papy3GetElement (gr, papRadiopharmaceuticalStartTimeGr, &pos, &elemType);
                                         if( val && val->a && validAPointer( elemType) && acquisitionDate)
