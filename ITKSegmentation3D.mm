@@ -484,7 +484,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
     return self;
 }
 
-- (void) regionGrowing3D:(ViewerController*) srcViewer :(ViewerController*) destViewer :(long) slice :(NSPoint) startingPoint :(int) algorithmNumber :(NSArray*) parameters :(BOOL) setIn :(float) inValue :(BOOL) setOut :(float) outValue :(int) roiType :(long) roiResolution :(NSString*) newname :(BOOL) mergeWithExistingROIs;
+- (void) regionGrowing3D:(ViewerController*) srcViewer :(ViewerController*) destViewer :(long) slice :(NSPoint) startingPoint :(int) algorithmNumber :(NSArray*) parameters :(BOOL) setIn :(float) inValue :(BOOL) setOut :(float) outValue :(ToolMode) roiType :(long) roiResolution :(NSString*) newname :(BOOL) mergeWithExistingROIs;
 {
 	NSLog(@"ITK max number of threads: %d", itk::MultiThreader::GetGlobalDefaultNumberOfThreads());
 	

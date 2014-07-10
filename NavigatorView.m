@@ -698,7 +698,7 @@ static float deg2rad = M_PI/180.0;
 	else
 	{
 		if(!scrollLeft && !scrollRight) [self displaySelectedViewInNewWindow:NO];
-		userAction = [[self viewer] imageView].currentTool;
+		userAction = (MouseEventType)[[self viewer] imageView].currentTool;
 	}
 
 	startWW = ww;
@@ -719,7 +719,7 @@ static float deg2rad = M_PI/180.0;
 	NSPoint event_location = [theEvent locationInWindow];
 	mouseDownPosition = [self convertPointFromWindowToOpenGL:event_location];	
 
-	userAction = [[self viewer] imageView].currentToolRight;
+	userAction = (MouseEventType)[[self viewer] imageView].currentToolRight;
 }
 
 - (void)mouseDragged:(NSEvent *)theEvent;

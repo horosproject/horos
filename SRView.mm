@@ -769,9 +769,9 @@ typedef struct _xyzArray
 
 # pragma mark-
 
-- (long) getTool: (NSEvent*) event
+- (ToolMode) getTool: (NSEvent*) event
 {
-	long tool;
+	ToolMode tool;
 	
 	if( [event type] == NSRightMouseDown || [event type] == NSRightMouseDragged || [event type] == NSRightMouseUp) tool = tZoom;
 	else if( [event type] == NSOtherMouseDown || [event type] == NSOtherMouseDragged || [event type] == NSOtherMouseUp) tool = tTranslate;
@@ -791,7 +791,7 @@ typedef struct _xyzArray
 {
 	if( [event modifierFlags])
 	{
-		long tool = [self getTool: event];
+		ToolMode tool = [self getTool: event];
 		[self setCursorForView: tool];
 		if( cursorSet) [cursor set];
 	}
@@ -993,7 +993,7 @@ typedef struct _xyzArray
 
 - (void)otherMouseDown:(NSEvent *)theEvent
 {
-	int tool = [self getTool: theEvent];
+	ToolMode tool = [self getTool: theEvent];
 	[self setCursorForView: tool];
 	
 	[super otherMouseDown: theEvent];
@@ -1120,6 +1120,7 @@ typedef struct _xyzArray
 				[self setNeedsDisplay:YES];
 			}
 			break;
+        default:;
 	}
 
 }
@@ -1165,7 +1166,7 @@ typedef struct _xyzArray
 - (void)mouseDown:(NSEvent *)theEvent
 {
     NSPoint		mouseLoc, mouseLocStart, mouseLocPre;
-	short		tool;
+	ToolMode	tool;
 	
 	noWaitDialog = YES;
 	tool = currentTool;
@@ -1603,7 +1604,7 @@ typedef struct _xyzArray
 	else [super keyDown:event];
 }
 
--(void) setCurrentTool:(short) i
+-(void) setCurrentTool:(ToolMode) i
 {
 	if(currentTool==t3Dpoint && currentTool!=i)
 	{
@@ -3330,7 +3331,7 @@ typedef struct _xyzArray
 	if(cursorSet) [cursor set];
 }
 
--(void) setCursorForView: (long) tool
+-(void) setCursorForView: (ToolMode) tool
 {
 	NSCursor	*c;
 	

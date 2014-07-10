@@ -1410,7 +1410,7 @@ static void  updateRight(vtkObject*, unsigned long eid, void* clientdata, void *
 - (void)mouseDown:(NSEvent *)theEvent
 {
     NSPoint		mouseLoc, mouseLocStart, mouseLocPre;
-	short		tool;
+	ToolMode	tool;
 	
 	//	NSLog(@"--> First Surface: %i ; Second Surface: %i ", aRenderer->GetActors()->IsItemPresent( iso[0]),aRenderer->GetActors()->IsItemPresent( iso[1]));
 	
@@ -1825,7 +1825,7 @@ static void  updateRight(vtkObject*, unsigned long eid, void* clientdata, void *
 	
 }
 
--(void) setCurrentTool:(short) i
+-(void) setCurrentTool:(ToolMode) i
 {
 	if(currentTool==t3Dpoint && currentTool!=i)
 	{

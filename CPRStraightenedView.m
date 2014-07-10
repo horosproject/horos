@@ -937,7 +937,7 @@ extern int splitPosition[ 3];
 				
 				CPRController *windowController = [self windowController];
 				
-				long tool = [self getTool: event];
+				ToolMode tool = [self getTool: event];
 				
 				if( [self roiTool: tool] && [self clickInROI: tempPt])
 				{

@@ -209,7 +209,7 @@ typedef struct renderSurface
     NSMutableArray				*pixList;
     DCMPix						*firstObject;
     float						*data, *dataFRGB;
-    short						currentTool;
+    ToolMode					currentTool;
 	float						cosines[ 9];
 	float						blendingcosines[ 9];
 
@@ -300,7 +300,7 @@ typedef struct renderSurface
 	
 	NSPoint						_mouseLocStart;  // mouseDown start point
 	BOOL						_resizeFrame;
-	short						_tool;
+	ToolMode					_tool;
 	
 	NSRect						savedViewSizeFrame;
 
@@ -330,7 +330,7 @@ typedef struct renderSurface
 
 #ifdef _STEREO_VISION_
 @property(readwrite) BOOL StereoVisionOn; 
-@property(readonly) short currentTool;
+@property(readonly) ToolMode currentTool;
 #endif
 
 -(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits;
@@ -340,7 +340,7 @@ typedef struct renderSurface
 -(void) startRendering;
 -(void) stopRendering;
 -(void) setViewSizeToMatrix3DExport;
--(void) setCurrentTool:(short) i;
+-(void) setCurrentTool:(ToolMode) i;
 -(id) initWithFrame:(NSRect)frame;
 -(short) setPixSource:(NSMutableArray*)pix :(float*) volumeData;
 -(void) dealloc;
@@ -411,7 +411,7 @@ typedef struct renderSurface
 - (IBAction) IBSetSelected3DPointAnnotationColor: (id) sender;
 - (IBAction) IBSetSelected3DPointAnnotationSize: (id) sender;
 
--(void) setCursorForView: (long) tool;
+-(void) setCursorForView: (ToolMode) tool;
 
 //Dragging
 - (void) startDrag:(NSTimer*)theTimer;
@@ -426,7 +426,7 @@ typedef struct renderSurface
 void SRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageType, void *messageArgument);
 #ifdef _STEREO_VISION_
 //Added SilvanWidmer 27-08-09
-- (long) getTool: (NSEvent*) event;
+- (ToolMode) getTool: (NSEvent*) event;
 #endif
 
 @end

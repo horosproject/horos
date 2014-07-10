@@ -878,7 +878,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 }
 
 
-- (void)setCurrentTool:(int)currentTool
+- (void)setCurrentTool:(ToolMode)currentTool
 {
 	if (currentTool >= 0)
 	{

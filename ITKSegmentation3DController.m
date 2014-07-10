@@ -306,7 +306,7 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 										: [[pixelsValue cellWithTag:0] floatValue]
 										: [[pixelsSet cellWithTag:1] state]==NSOnState
 										: [[pixelsValue cellWithTag:1] floatValue]
-										: [[NSUserDefaults standardUserDefaults] integerForKey: @"growingRegionROIType"]
+										: (ToolMode)[[NSUserDefaults standardUserDefaults] integerForKey: @"growingRegionROIType"]
 										: ((long)[roiResolution maxValue] + 1) - [roiResolution intValue]
 										: name
 										: [[NSUserDefaults standardUserDefaults] boolForKey: @"mergeWithExistingROIs"]
@@ -418,7 +418,7 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 										: [[pixelsValue cellWithTag:0] floatValue]
 										: [[pixelsSet cellWithTag:1] state]==NSOnState
 										: [[pixelsValue cellWithTag:1] floatValue]
-										: [[NSUserDefaults standardUserDefaults] integerForKey: @"growingRegionROIType"]
+										: (ToolMode)[[NSUserDefaults standardUserDefaults] integerForKey: @"growingRegionROIType"]
 										: ((long)[roiResolution maxValue] + 1) - [roiResolution intValue]
 										: [newName stringValue]
 										: [[NSUserDefaults standardUserDefaults] boolForKey: @"mergeWithExistingROIs"]

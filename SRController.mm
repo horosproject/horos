@@ -366,7 +366,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
     id theCell = [sender selectedCell];
     
     if( [theCell tag] >= 0)
-        [view setCurrentTool: [theCell tag]];
+        [view setCurrentTool: (ToolMode)[theCell tag]];
 }
 
 -(IBAction) SettingsPopup:(id) sender

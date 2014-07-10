@@ -1281,7 +1281,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	}
 }
 
-- (id) initWithType: (long) itype :(float) ipixelSpacing :(NSPoint) iimageOrigin
+- (id) initWithType: (ToolMode) itype :(float) ipixelSpacing :(NSPoint) iimageOrigin
 {
 	return [self initWithType: itype :ipixelSpacing :ipixelSpacing :iimageOrigin];
 }
@@ -1360,7 +1360,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	return self;
 }
 
-- (id) initWithType: (long) itype :(float) ipixelSpacingx :(float) ipixelSpacingy :(NSPoint) iimageOrigin
+- (id) initWithType: (ToolMode) itype :(float) ipixelSpacingx :(float) ipixelSpacingy :(NSPoint) iimageOrigin
 {
 	self = [super init];
     if (self)
@@ -1819,6 +1819,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 		case tLayerROI:
 			result = [[points objectAtIndex:2] point];
 		break;
+        default:;
 	}
 	
 	return result;
@@ -1956,7 +1957,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 				}
 			}
 		}
-		break;
+		default:;
 	}
 }
 
@@ -2262,6 +2263,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 //				}
 //				break;
 //			}
+            default:;
 		}
 	}
 	
@@ -2334,6 +2336,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 				}
 			}
 			break;
+            default:;
 		}
 		
 		clickPoint = pt;
@@ -2406,6 +2409,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 			}
 		}
 		break;
+        default:;
 	}
 	
 	if( PointUnderMouse != previousPointUnderMouse)
@@ -2856,6 +2860,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
         
             [points replaceObjectAtIndex: 2 withObject: [MyPoint point: [ROI segmentDistToPoint: [[points objectAtIndex: 4] point] :[[points objectAtIndex: 5] point] :[[points objectAtIndex: 3] point]]]];
         break;
+        default:;
 	}
 	
 	return YES;
@@ -2901,6 +2906,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 				textureDownRightCornerX += (int) offset.x;
 				textureDownRightCornerY += (int) offset.y;
 			break;
+            default:;
 		}
 		
 		if( sendNotification)
@@ -3769,6 +3775,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 				if( selectedModifyPoint >= [points count]) selectedModifyPoint = (long)[points count]-1;
 			}
 		break;
+        default:;
 	}
 
 	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:self userInfo: nil];
@@ -6561,6 +6568,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				}
 			}
 			break;
+            default:;
 		}
 		
 		glPointSize( 1.0 * backingScaleFactor);
@@ -6698,6 +6706,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			float length = [self Length: [[points objectAtIndex:0] point] :[[points objectAtIndex:1] point]];
 			[array setObject: [NSNumber numberWithFloat:length] forKey:@"Length"];
 		} break;
+        default:;
 	}
 	
 	return array;
@@ -6751,6 +6760,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			return (area*pixelSpacingX*pixelSpacingY)/100.;
 		}
 		break;
+        default:;
 	}
 	
 	return 0.0f;
@@ -7235,7 +7245,8 @@ NSInteger sortPointArrayAlongX(id point1, id point2, void *context)
 	if([points count]<3) return [self points];
 	
 	
-	int nb, localType = type;
+	int nb;
+    ToolMode localType = type;
 	
 	if( mode == ROI_drawing)
 		localType = tOPolygon;

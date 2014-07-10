@@ -941,7 +941,7 @@
 #pragma mark-
 #pragma mark Tools Selection
 
-- (void) setCurrentTool:(short) newTool
+- (void) setCurrentTool:(ToolMode) newTool
 {
 	[originalView setCurrentTool: newTool];
 	[xReslicedView setCurrentTool: newTool];

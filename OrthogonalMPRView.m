@@ -975,7 +975,7 @@
 				case OrthoMPRCrossHotKeyAction:
 					if( [ViewerController getToolEquivalentToHotKey: key] >= 0)
 					{
-                        int tool = [ViewerController getToolEquivalentToHotKey: key];
+                        ToolMode tool = [ViewerController getToolEquivalentToHotKey: key];
                         
                         if( tool == t2DPoint)
                             tool = t3Dpoint;

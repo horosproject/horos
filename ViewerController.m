@@ -396,7 +396,7 @@ static int hotKeyToolCrossTable[] =
     -1,                         //tTAGT             29
 };
 
-+ (int) getToolEquivalentToHotKey :(int) h
++ (ToolMode) getToolEquivalentToHotKey :(int) h
 {
 	int m = sizeof( hotKeyToolCrossTable) / sizeof( hotKeyToolCrossTable[ 0]);
 	
@@ -406,7 +406,7 @@ static int hotKeyToolCrossTable[] =
 	return -1;
 }
 
-+ (int) getHotKeyEquivalentToTool:(int) h
++ (int) getHotKeyEquivalentToTool:(ToolMode) h
 {
 	if( h <= sizeof( hotKeyToolCrossTable) / sizeof( hotKeyToolCrossTable[ 0]))
 	{
@@ -6783,7 +6783,7 @@ return YES;
 -(void) defaultToolModified: (NSNotification*) note
 {
 	id sender = [note object];
-	int tag;
+	NSInteger tag;
 	
 	if( sender)
 	{
@@ -6799,7 +6799,7 @@ return YES;
 	}
 	else tag = [[[note userInfo] valueForKey:@"toolIndex"] intValue];
 	
-	switch( tag)
+	switch( (ToolMode)tag)
 	{
 		case tMesure:
 		case tAngle:
@@ -6817,17 +6817,17 @@ return YES;
 		case tDynAngle:
 		case tAxis:
         case tTAGT:
-			[self setROIToolTag: tag];
+			[self setROIToolTag: (ToolMode)tag];
 		break;
 		
 		default:
-			[toolsMatrix selectCellWithTag: tag];
+			[toolsMatrix selectCellWithTag: (ToolMode)tag];
 		break;
 	}
 	
 	if( tag >= 0)
 	{
-		[imageView setCurrentTool: tag];
+		[imageView setCurrentTool: (ToolMode)tag];
 	}
 }
 
@@ -13009,7 +13009,7 @@ float				matrix[25];
 	}
 }
 
-- (ROI*) newROI: (long) type
+- (ROI*) newROI: (ToolMode) type
 {
 	DCMPix *curPix = [imageView curDCM];
 	ROI		*theNewROI;
@@ -13071,7 +13071,7 @@ float				matrix[25];
 
 //-------------------------------------------------------------
 
-- (NSImage*) imageForROI: (int) i
+- (NSImage*) imageForROI: (ToolMode) i
 {
 	NSString	*filename = nil;
 	switch( i)
@@ -13097,6 +13097,7 @@ float				matrix[25];
 		case tAxis:			filename = @"Axis";				break;
 		case tDynAngle:		filename = @"DynamicAngle";		break;
         case tTAGT:         filename = @"PerpendicularLines";             break;
+        default:;
 	}
 	
 	return [NSImage imageNamed: filename];
@@ -14934,7 +14935,7 @@ int i,j,l;
 	}
 }
 
--(void) setROIToolTag:(int) roitype
+-(void) setROIToolTag:(ToolMode) roitype
 {
 	NSButtonCell *cell = [toolsMatrix cellAtRow:0 column:5];
 	[cell setTag: roitype];

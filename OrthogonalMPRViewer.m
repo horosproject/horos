@@ -2698,7 +2698,7 @@ return YES;
 	return curOpacityMenu;
 }
 
-- (void)setCurrentTool:(int)currentTool
+- (void)setCurrentTool:(ToolMode)currentTool
 {
 	if (currentTool >= 0)
     {
