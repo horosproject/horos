@@ -5052,7 +5052,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                     continue;
                 }
                 
-                int type = tCPolygon;
+                ToolMode type = tCPolygon;
                 
                 NSArray *dcmPoints = [contourItem attributeArrayWithName: @"ContourData"];
                 

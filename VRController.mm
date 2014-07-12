@@ -1216,7 +1216,7 @@ return YES;
 
 -(void) setDefaultTool:(id) sender
 {
-	int tag;
+	NSInteger tag;
 	if ([sender isKindOfClass:[NSMatrix class]])
 		tag = [[sender selectedCell] tag];
 	else
@@ -1224,11 +1224,11 @@ return YES;
     
     if( tag >= 0)
     {
-        [self setCurrentTool:tag];
+        [self setCurrentTool:(ToolMode)tag];
     }
 }
 
-- (void) setCurrentTool:(short) newTool
+- (void) setCurrentTool:(ToolMode) newTool
 {
 	if( newTool == tBonesRemoval)
 	{

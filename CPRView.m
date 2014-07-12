@@ -116,7 +116,7 @@
     [_stretchedView setIndex:index];
 }
 
--(void)setCurrentTool:(short)i
+-(void)setCurrentTool:(ToolMode)i
 {
     [_straightenedView setCurrentTool:i];
     [_stretchedView setCurrentTool:i];

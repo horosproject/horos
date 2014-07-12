@@ -31,7 +31,7 @@
 
 // WARNING: If you add or modify this list, check ViewerController.m, DCMView.h and HotKey Pref Pane
 
-enum
+typedef NS_ENUM(short, ToolMode)
 {
     tWL							=	0,
     tTranslate,					//	1
@@ -140,7 +140,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
     
     short           curImage, startImage;
     
-    short           currentTool, currentToolRight, currentMouseEventTool;
+    ToolMode        currentTool, currentToolRight, currentMouseEventTool;
     
 	BOOL			mouseDragging;
 	BOOL			suppress_labels; // keep from drawing the labels when command+shift is pressed
@@ -320,8 +320,8 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 @property(readonly) float blendingFactor;
 @property(nonatomic) BOOL xFlipped, yFlipped;
 @property(retain) NSString *stringID;
-@property(nonatomic) short currentTool;
-@property(setter=setRightTool:) short currentToolRight;
+@property(nonatomic) ToolMode currentTool;
+@property(setter=setRightTool:) ToolMode currentToolRight;
 @property(readonly) short curImage;
 @property(retain) NSMatrix *theMatrix;
 @property(readonly) BOOL suppressLabels;
@@ -387,7 +387,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (void)setSyncro:(short) s;
 
 // checks to see if tool is for ROIs.  maybe better name - (BOOL)isToolforROIs:(long)tool
-- (BOOL) roiTool:(long) tool;
+- (BOOL) roiTool:(ToolMode) tool;
 - (void) prepareToRelease;
 - (void) orientationCorrectedToView:(float*) correctedOrientation;
 #ifndef OSIRIX_LIGHT
@@ -470,8 +470,8 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (void) updatePresentationStateFromSeries;
 - (void) updatePresentationStateFromSeriesOnlyImageLevel: (BOOL) onlyImage;
 - (void) updatePresentationStateFromSeriesOnlyImageLevel: (BOOL) onlyImage scale: (BOOL) scale offset: (BOOL) offset;
-- (void) setCursorForView: (long) tool;
-- (long) getTool: (NSEvent*) event;
+- (void) setCursorForView: (ToolMode) tool;
+- (ToolMode) getTool: (NSEvent*) event;
 - (void)resizeWindowToScale:(float)resizeScale;
 - (float) getBlendedSUV;
 - (OrthogonalMPRController*) controller;

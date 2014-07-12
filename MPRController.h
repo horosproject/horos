@@ -120,7 +120,7 @@
 - (MPRDCMView*) selectedView;
 - (void) computeCrossReferenceLines:(MPRDCMView*) sender;
 - (IBAction)setTool:(id)sender;
-- (void) setToolIndex: (int) toolIndex;
+- (void) setToolIndex: (ToolMode) toolIndex;
 - (float) getClippingRangeThicknessInMm;
 - (void) propagateWLWW:(MPRDCMView*) sender;
 - (void)bringToFrontROI:(ROI*) roi;
@@ -140,8 +140,8 @@
 - (BOOL) getMovieDataAvailable;
 - (void)Apply3DOpacityString:(NSString*)str;
 - (void)Apply2DOpacityString:(NSString*)str;
-- (NSImage*) imageForROI: (int) i;
-- (void) setROIToolTag:(int) roitype;
+- (NSImage*) imageForROI: (ToolMode) i;
+- (void) setROIToolTag:(ToolMode) roitype;
 - (IBAction) roiGetInfo:(id) sender;
 - (void) setupToolbar;
 @end

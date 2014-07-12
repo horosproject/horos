@@ -190,7 +190,7 @@ typedef enum {SyncSeriesBehaviorAbsolutePosWithSameStudy, SyncSeriesBehaviorRela
 - (void) moviePosSliderAction:(id) sender;
 
 - (ViewerController *)viewerController;
-- (void)setCurrentTool:(int)currentTool;
+- (void)setCurrentTool:(ToolMode)currentTool;
 
 - (void)bringToFrontROI:(ROI*)roi;
 - (void)setMode:(long)mode toROIGroupWithID:(NSTimeInterval)groupID;

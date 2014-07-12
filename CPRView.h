@@ -47,7 +47,7 @@ typedef NSInteger CPRViewReformationType;
 @property(readonly) DCMPix *curDCM;
 @property(readonly) short curImage;
 - (void)setIndex:(short)index;
-- (void)setCurrentTool:(short)i;
+- (void)setCurrentTool:(ToolMode)i;
 
 // methods 
 

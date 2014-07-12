@@ -17,6 +17,8 @@
 #import <Cocoa/Cocoa.h>
 #import <AppKit/AppKit.h>
 
+#import "DCMView.h" // added for ToolMode enum
+
 @class DCMView;
 @class OpacityTransferView;
 @class ColorTransferView;
@@ -459,7 +461,7 @@ enum
 - (MyPoint*) newPoint: (float) x :(float) y;
 
 /** Create a new ROI object */
-- (ROI*) newROI: (long) type;
+- (ROI*) newROI: (ToolMode) type;
 
 /** Check if the ROI belongs to this viewer */
 - (BOOL) containsROI:(ROI*)roi;
@@ -542,8 +544,8 @@ enum
 /** Action to start printing.  Called when print window is ordered out */
 - (IBAction) endPrint:(id) sender;
 
-+ (int) getToolEquivalentToHotKey:(int) h;
-+ (int) getHotKeyEquivalentToTool:(int) h;
++ (ToolMode) getToolEquivalentToHotKey:(int) h;
++ (int) getHotKeyEquivalentToTool:(ToolMode) h;
 //- (IBAction) startMSRG:(id) sender;
 //- (IBAction) startMSRGWithAutomaticBounding:(id) sender;
 //arg: this function will automatically scan the buffer to create a textured ROI (tPlain) for all slices
@@ -621,7 +623,7 @@ enum
 - (IBAction) roiSelectDeselectAll:(id) sender;
 - (BOOL) FullScreenON;
 - (void) setROITool:(id) sender;
-- (void) setROIToolTag:(int) roitype;
+- (void) setROIToolTag:(ToolMode) roitype;
 - (void) changeImageData:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v :(BOOL) applyTransition;
 - (ViewerController*) copyViewerWindow;
 - (void) copyVolumeData: (NSData**) vD andDCMPix: (NSMutableArray **) newPixList forMovieIndex: (int) v;
@@ -825,7 +827,7 @@ enum
 
 - (void) revertSeries:(id) sender;
 - (void) executeRevert;
-- (NSImage*) imageForROI: (int) i;
+- (NSImage*) imageForROI: (ToolMode) i;
 - (void) ActivateBlending:(ViewerController*) bC;
 - (void) setFusionMode:(long) m;
 - (short) curMovieIndex;

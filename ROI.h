@@ -14,6 +14,7 @@
 
 #import <Foundation/Foundation.h>
 #import "MyPoint.h"
+#import "DCMView.h" // included for ToolMode
 
 #import <OpenGL/CGLMacro.h>
 
@@ -80,7 +81,7 @@ enum
 	NSRect			rect;
 	BOOL			_hasIsSpline, _isSpline;
 	
-	long			type;
+	ToolMode		type;
 	long			mode, previousMode;
 	BOOL			needQuartz;
 	
@@ -164,7 +165,7 @@ enum
 @property BOOL isAliased, displayCMOrPixels, mouseOverROI;
 @property(nonatomic, copy) NSString *name;
 @property(retain) NSString *comments;
-@property long type;
+@property ToolMode type;
 @property(nonatomic, setter=setROIMode:) long ROImode;
 @property(retain) NSMutableArray *points; // Return/set the points state of the ROI
 @property(readonly) NSMutableArray *zPositions;
@@ -213,14 +214,14 @@ enum
 * @param ipixelSpacing  Assumes pixel size is same in both x and y
 * @param iimageOrigin  Origin on image
 */
-- (id) initWithType: (long) itype :(float) ipixelSpacing :(NSPoint) iimageOrigin;
+- (id) initWithType: (ToolMode) itype :(float) ipixelSpacing :(NSPoint) iimageOrigin;
 
 /** Create a new ROI, needs the current pixel resolution  x and y and image origin* @param itype ROI Type
 * @param ipixelSpacingx  Pixel width
 * @param ipixelSpacingy  Pixel height
 * @param iimageOrigin  Origin on image
 */
-- (id) initWithType: (long) itype :(float) ipixelSpacingx :(float) ipixelSpacingy :(NSPoint) iimageOrigin;
+- (id) initWithType: (ToolMode) itype :(float) ipixelSpacingx :(float) ipixelSpacingy :(NSPoint) iimageOrigin;
 
 /** arg: specific methods for tPlain roi 
 * @param tBuff  Pointer to the texture buffer

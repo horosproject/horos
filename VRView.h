@@ -16,6 +16,7 @@
 
 #import <AppKit/AppKit.h>
 #import "DCMPix.h"
+#import "DCMView.h"
 
 #ifdef __cplusplus
 #import "VTKView.h"
@@ -256,7 +257,7 @@ typedef char* VTKStereoVRView;
 	char					*data8;
 	vImage_Buffer			srcf, dst8;
 
-    short					currentTool;
+    ToolMode				currentTool;
 	float					wl, ww;
 	float					LOD, lowResLODFactor, lodDisplayed;
 	float					cosines[ 9];
@@ -349,7 +350,7 @@ typedef char* VTKStereoVRView;
 	
 	NSPoint						_mouseLocStart, _previousLoc;  // mouseDown start point
 	BOOL						_resizeFrame;
-	short						_tool;
+	ToolMode					_tool;
 	
 	float						_startWW, _startWL, _startMin, _startMax;
 	
@@ -405,7 +406,7 @@ typedef char* VTKStereoVRView;
 
 #ifdef _STEREO_VISION_
 @property(readwrite) BOOL StereoVisionOn; 
-//@property(readonly) short currentTool;
+//@property(readonly) ToolMode currentTool;
 #endif
 
 @property (nonatomic) BOOL clipRangeActivated, keep3DRotateCentered, dontResetImage, bestRenderingMode;
@@ -465,9 +466,9 @@ typedef char* VTKStereoVRView;
 //- (void) autoCroppingBox;
 - (float) LOD;
 -(void) setLOD:(float)f;
--(void) setCurrentTool:(short) i;
-- (int) currentTool;
-- (int) _tool;
+-(void) setCurrentTool:(ToolMode) i;
+- (ToolMode) currentTool;
+- (ToolMode) _tool;
 //- (void) resetCroppingBox;
 -(id)initWithFrame:(NSRect)frame;
 -(short)setPixSource:(NSMutableArray*)pix :(float*) volumeData;
@@ -594,7 +595,7 @@ typedef char* VTKStereoVRView;
 - (void) exportTIFF:(id) sender;
 
 // cursors
--(void) setCursorForView: (long) tool;
+-(void) setCursorForView: (ToolMode) tool;
 
 //Dragging
 - (void) startDrag:(NSTimer*)theTimer;
@@ -634,7 +635,7 @@ void VRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageTy
 
 #ifdef _STEREO_VISION_
 //Added SilvanWidmer 27-08-09
-- (long) getTool: (NSEvent*) event;
+- (ToolMode) getTool: (NSEvent*) event;
 - (void) computeLength;
 - (void) generateROI;
 #endif

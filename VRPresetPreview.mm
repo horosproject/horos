@@ -694,7 +694,7 @@
 	[presetController setVtkCameraForAllPresetPreview:[self vtkCamera]];
 }
 
--(void) setCursorForView: (long) tool
+-(void) setCursorForView: (ToolMode) tool
 {
 	if(isEmpty)
 	{

@@ -512,7 +512,7 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
     }
 }
 
-- (void) setCurrentTool:(short) newTool
+- (void) setCurrentTool:(ToolMode) newTool
 {
 	[vrController setCurrentTool: newTool];
 }

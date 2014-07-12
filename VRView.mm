@@ -1832,9 +1832,9 @@ public:
 	[self setOpacity: [[note object] getPoints]];
 }
 
-- (long) getTool: (NSEvent*) event
+- (ToolMode) getTool: (NSEvent*) event
 {
-	long tool;	
+	ToolMode tool;
 	if(([event type] == NSRightMouseDown || [event type] == NSRightMouseDragged || [event type] == NSRightMouseUp) && !_contextualMenuActive) tool = tZoom;
 	else if( [event type] == NSOtherMouseDown || [event type] == NSOtherMouseDragged || [event type] == NSOtherMouseUp) tool = tTranslate;
 	else tool = currentTool;
@@ -2929,7 +2929,7 @@ public:
     if ([self eventToPlugins:theEvent]) return;
     
 	_hasChanged = YES;
-	int tool = [self getTool: theEvent];
+	ToolMode tool = [self getTool: theEvent];
 	[self setCursorForView: tool];
 	
 	[super otherMouseDown: theEvent];
@@ -3731,7 +3731,7 @@ public:
 	snStopped = YES;
 	
     NSPoint		mouseLoc, mouseLocPre;
-	short		tool;
+	ToolMode    tool;
 	
 	[cursor set];
 	
@@ -4213,7 +4213,7 @@ public:
 														:0.0					// inValue
 														:0						// setOut
 														:0.0					// outValue
-														:0						// roiType
+														:(ToolMode)0						// roiType
 														:0						// roiResolution
 														:@"BoneRemovalAlgorithmROIUniqueName" // newname (I tried to make it unique ;o)
 														:NO];					// merge with existing ROIs?
@@ -5234,19 +5234,19 @@ public:
 	[controller undo: sender];
 }
 
-- (int) currentTool
+- (ToolMode) currentTool
 {
 	return currentTool;
 }
 
-- (int) _tool
+- (ToolMode) _tool
 {
 	return _tool;
 }
 
-- (void) setCurrentTool:(short) i
+- (void) setCurrentTool:(ToolMode) i
 {
-	long previousTool = currentTool;
+	ToolMode previousTool = currentTool;
 	
     currentTool = i;
 	
@@ -8621,7 +8621,7 @@ public:
 	if(cursorSet) [cursor set];
 }
 
--(void) setCursorForView: (long) tool
+-(void) setCursorForView: (ToolMode) tool
 {
 	NSCursor	*c;
 	
@@ -8888,7 +8888,7 @@ public:
 				case BoneRemovalHotKeyAction:
 					if( [ViewerController getToolEquivalentToHotKey: key] >= 0)
 					{
-                        int tool = [ViewerController getToolEquivalentToHotKey: key];
+                        ToolMode tool = [ViewerController getToolEquivalentToHotKey: key];
                         
                         if( tool == t2DPoint)
                             tool = t3Dpoint;

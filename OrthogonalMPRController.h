@@ -15,6 +15,7 @@
 #import <Cocoa/Cocoa.h>
 #import "ViewerController.h"
 #import "OrthogonalReslice.h"
+#import "DCMView.h"
 @class OrthogonalMPRView;
 
 /** \brief  Controller for Orthogonal MPR */
@@ -80,7 +81,7 @@
 - (void) moveToAbsolutePosition:(NSArray*) newDicomLocation;
 
 // Tools Selection
-- (void) setCurrentTool:(short) newTool;
+- (void) setCurrentTool:(ToolMode) newTool;
 - (int) currentTool;
 
 - (void) saveViewsFrame;

@@ -77,7 +77,7 @@ extern unsigned int minimumStep;
 	[windowController updateToolbarItems];
 }
 
-- (BOOL)is2DTool:(short)tool;
+- (BOOL)is2DTool:(ToolMode)tool;
 {
 	switch( tool)
 	{
@@ -102,7 +102,7 @@ extern unsigned int minimumStep;
 		case tLayerROI:
 		case tROISelector:
 			return YES;
-		break;
+        default:;
 	}
 	
 	return NO;
@@ -950,7 +950,7 @@ extern unsigned int minimumStep;
 	crossLinesB[ 1][ 2] = b[ 1][ 2];
 }
 
--(void) setCurrentTool:(short) i
+-(void) setCurrentTool:(ToolMode) i
 {
 	if( i != tRepulsor)
 		[super setCurrentTool: i];

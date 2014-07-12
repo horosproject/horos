@@ -606,7 +606,7 @@ static float deg2rad = M_PI/180.0;
 	return pixList[ curMovieIndex];
 }
 
-- (void) setToolIndex: (int) toolIndex
+- (void) setToolIndex: (ToolMode) toolIndex
 {
 	[mprView1 setCurrentTool:toolIndex];
 	[mprView2 setCurrentTool:toolIndex];
@@ -977,7 +977,7 @@ static float deg2rad = M_PI/180.0;
 
 }
 
-- (NSImage*) imageForROI: (int) i
+- (NSImage*) imageForROI: (ToolMode) i
 {
 	NSString	*filename = nil;
 	switch( i)
@@ -998,6 +998,7 @@ static float deg2rad = M_PI/180.0;
 		case tAxis:			filename = @"Axis";				break;
 		case tDynAngle:		filename = @"DynamicAngle";		break;
         case tTAGT:         filename = @"PerpendicularLines";             break;
+        default:;
 	}
 	
 	if( filename == nil)
@@ -1006,7 +1007,7 @@ static float deg2rad = M_PI/180.0;
 	return [NSImage imageNamed: filename];
 }
 
--(void) setROIToolTag:(int) roitype
+-(void) setROIToolTag:(ToolMode) roitype
 {
 	if( roitype != tRepulsor)
 	{

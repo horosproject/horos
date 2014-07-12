@@ -1427,7 +1427,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     
     NSArray *pointsStringArray = [xml objectForKey: @"ROIPoints"];
     
-    int type = tCPolygon;
+    ToolMode type = tCPolygon;
     if( [pointsStringArray count] == 2) type = tMesure;
     if( [pointsStringArray count] == 1) type = t2DPoint;
     
@@ -1885,12 +1885,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[self DrawNSStringGL: (NSString*) cstrOut :(GLuint) fontL :(long) x :(long) y rightAlignment: NO useStringTexture: NO];
 }
 
-- (short) currentToolRight
+- (ToolMode) currentToolRight
 {
 	return currentToolRight;
 }
 
--(void) setRightTool:(short) i
+-(void) setRightTool:(ToolMode) i
 {
 	currentToolRight = i;
 	
@@ -1898,7 +1898,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		[[NSUserDefaults standardUserDefaults] setInteger:currentToolRight forKey: @"DEFAULTRIGHTTOOL"];
 }
 
--(void) setCurrentTool:(short) i
+-(void) setCurrentTool:(ToolMode) i
 {
 	BOOL keepROITool = (i == tROISelector || i == tRepulsor || currentTool == tROISelector || currentTool == tRepulsor);
 
@@ -1980,6 +1980,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				}
 			}
 		break;
+        default:;
 	}
 	
 	[self setCursorForView : currentTool];
@@ -3302,7 +3303,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				[matrix selectCellAtRow :curImage/cols column:curImage%cols];
 			}
 			
-			long tool = currentMouseEventTool;
+			ToolMode tool = currentMouseEventTool;
 			
 			if( crossMove >= 0) tool = tCross;
 			
@@ -3402,7 +3403,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 // checks to see if tool is a valid ID for ROIs
 // A better name might be  - (BOOL)isToolforROIs:(long)tool;
 
--(BOOL) roiTool:(long) tool
+-(BOOL) roiTool:(ToolMode) tool
 {
 	switch( tool)
 	{
@@ -3421,7 +3422,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		case t2DPoint:
         case tTAGT:
 			return YES;
-		break;
+		default:;
 	}
 	
 	return NO;
@@ -3929,9 +3930,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	avoidMouseMovedRecursive = NO;
 }
 
-- (long) getTool: (NSEvent*) event
+- (ToolMode) getTool: (NSEvent*) event
 {
-	int tool;
+	ToolMode tool;
 	
 	if( [event type] == NSRightMouseDown || [event type] == NSRightMouseDragged) tool = currentToolRight;
 	else if( [event type] == NSOtherMouseDown || [event type] == NSOtherMouseDragged) tool = tTranslate;
@@ -4197,7 +4198,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			NSPoint     eventLocation = [event locationInWindow];
 			NSRect      size = [self frame];
-			long		tool;
+			ToolMode	tool;
 			
 			[self mouseMoved: event];	// Update some variables...
 			
@@ -4645,6 +4646,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 											case t2DPoint:
 												roiName = [NSString stringWithString: NSLocalizedString( @"Point ", @"keep the space at the end of the string")];
 											break;
+                                                
+                                            default:;
 										}
 										
 										if( roiName )
@@ -5145,7 +5148,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		{
 			NSPoint     eventLocation = [event locationInWindow];
 			NSPoint     current = [self convertPoint:eventLocation fromView: nil];
-			short       tool = currentMouseEventTool;
+			ToolMode    tool = currentMouseEventTool;
 			
 			[self mouseMoved: event];	// Update some variables...
 			
@@ -5846,7 +5849,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	for( ROI *roi in [NSArray arrayWithArray: curRoiList])
     {
 		BOOL intersected = NO;
-		long roiType = [roi type];
+		ToolMode roiType = [roi type];
 		
 		if( rotation == 0)
         {
@@ -12818,7 +12821,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 }
 
--(void) setCursorForView: (long) tool
+-(void) setCursorForView: (ToolMode) tool
 {
 	NSCursor	*c;
 	

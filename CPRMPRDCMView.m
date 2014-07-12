@@ -99,7 +99,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	[windowController updateToolbarItems];
 }
 
-- (BOOL)is2DTool:(short)tool;
+- (BOOL)is2DTool:(ToolMode)tool;
 {
 	switch( tool)
 	{
@@ -126,6 +126,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		case tCurvedROI:
 			return YES;
             break;
+        default:;
 	}
 	
 	return NO;
@@ -942,7 +943,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	crossLinesB[ 1][ 2] = b[ 1][ 2];
 }
 
--(void) setCurrentTool:(short) i
+-(void) setCurrentTool:(ToolMode) i
 {
 	if( i != tRepulsor)
 		[super setCurrentTool: i];
@@ -988,7 +989,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     
     unichar c = [[theEvent characters] characterAtIndex:0];
     
-	long tool = [self getTool: theEvent];
+	ToolMode tool = [self getTool: theEvent];
 	
 	if(( c == NSCarriageReturnCharacter || c == NSEnterCharacter || c == NSNewlineCharacter) && tool == tCurvedROI)
 	{
@@ -1544,7 +1545,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	
 	if( clickCount == 2 && drawingROI == NO)
 	{
-		long tool = [self getTool: theEvent];
+		ToolMode tool = [self getTool: theEvent];
 		
 		if( tool == tText)
 		{
@@ -1653,7 +1654,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		}
 		else
 		{
-			long tool = [self getTool: theEvent];
+			ToolMode tool = [self getTool: theEvent];
 			
 			vrView.keep3DRotateCentered = YES;
 			if( tool == tCamera3D)
@@ -1854,7 +1855,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	}
 	else
 	{
-		long tool = [self getTool: theEvent];
+		ToolMode tool = [self getTool: theEvent];
 		
 		if([self is2DTool:tool])
 		{
@@ -2014,7 +2015,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	}
 	else
 	{
-		long tool = [self getTool: theEvent];
+		ToolMode tool = [self getTool: theEvent];
 		
 		if([self is2DTool:tool])
 		{
@@ -2104,7 +2105,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		
 		[super mouseMoved: theEvent];
 		
-		long tool = [self getTool: theEvent];
+		ToolMode tool = [self getTool: theEvent];
 		
 		if( tool == tCurvedROI)
 		{

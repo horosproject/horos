@@ -1091,7 +1091,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	for (roi in rois)
 	{
 		//will be either a Graphic Object sequence or a Text Object Sequence
-		int roiType = [[roi valueForKey:@"roiType"] intValue];
+		ToolMode roiType = (ToolMode)[[roi valueForKey:@"roiType"] intValue];
 		NSString *typeString = nil;
 		if (roiType == tText)
 		{// is text 
@@ -1107,6 +1107,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 				case tCPolygon:
 					typeString = @"POLYLINE";
 					break;
+                default:;
 			}
 		}
 		
