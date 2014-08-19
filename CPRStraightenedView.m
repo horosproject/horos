@@ -202,7 +202,7 @@ extern int splitPosition[ 3];
 		_displayCrossLines = NO;
 		_displayTransverseLines = YES;
 
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_osirixUpdateVolumeDataNotification) name:OsirixUpdateVolumeDataNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_osirixUpdateVolumeDataNotification:) name:OsirixUpdateVolumeDataNotification object:nil];
     }
 
     return self;
