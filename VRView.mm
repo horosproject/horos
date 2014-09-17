@@ -12,7 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
-#define USE3DCONNEXION 1
+#define USE3DCONNEXION 0
 
 #import "VRView.h"
 #import "DCMCursor.h"
