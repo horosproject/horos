@@ -20,13 +20,13 @@ NSString* N2ViewBoundsSizeDidChangeNotification = @"N2ViewBoundsSizeDidChangeNot
 NSString* N2ViewBoundsSizeDidChangeNotificationOldBoundsSize = @"oldBoundsSize";
 
 @implementation N2View
-@synthesize controlSize = _controlSize, minSize = _minSize, maxSize = _maxSize, layout = _layout, foreColor = _foreColor, backColor = _backColor;
+@synthesize controlSize = _controlSize, minSize = _minSize, maxSize = _maxSize, n2layout = _n2layout, foreColor = _foreColor, backColor = _backColor;
 
 
 -(void)dealloc {
 	[self setForeColor:NULL];
 	[self setBackColor:NULL];
-	[self setLayout:NULL];
+	[self setN2layout:NULL];
 	[super dealloc];
 }
 
@@ -35,7 +35,7 @@ NSString* N2ViewBoundsSizeDidChangeNotificationOldBoundsSize = @"oldBoundsSize";
 }
 
 -(void)resizeSubviewsWithOldSize:(NSSize)oldBoundsSize {
-	[_layout layOut];
+	[_n2layout layOut];
 	[[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:N2ViewBoundsSizeDidChangeNotification object:self userInfo:[NSDictionary dictionaryWithObject:[NSValue valueWithSize:oldBoundsSize] forKey:N2ViewBoundsSizeDidChangeNotificationOldBoundsSize]]];
 }
 
@@ -53,11 +53,11 @@ NSString* N2ViewBoundsSizeDidChangeNotificationOldBoundsSize = @"oldBoundsSize";
 		view = self;
 	
 	for (NSView* subview in [view subviews])
-		if (![subview isKindOfClass:[N2View class]] || [(N2View*)subview layout] == NULL)
+		if (![subview isKindOfClass:[N2View class]] || [(N2View*)subview n2layout] == NULL)
 			[self formatSubview:subview];
 	if ([view respondsToSelector:@selector(additionalSubviews)])
 		for (NSView* subview in [view performSelector:@selector(additionalSubviews)])
-			if (![subview isKindOfClass:[N2View class]] || [(N2View*)subview layout] == NULL)
+			if (![subview isKindOfClass:[N2View class]] || [(N2View*)subview n2layout] == NULL)
 				[self formatSubview:subview];
 }
 
@@ -84,14 +84,14 @@ NSString* N2ViewBoundsSizeDidChangeNotificationOldBoundsSize = @"oldBoundsSize";
 }*/
 
 -(NSSize)optimalSize {
-	if (_layout)
-		return n2::ceil([_layout optimalSize]);
+	if (_n2layout)
+		return n2::ceil([_n2layout optimalSize]);
 	else return [self frame].size;	
 }
 
 -(NSSize)optimalSizeForWidth:(CGFloat)width {
-	if (_layout)
-		return n2::ceil([_layout optimalSizeForWidth:width]);
+	if (_n2layout)
+		return n2::ceil([_n2layout optimalSizeForWidth:width]);
 	else return [self frame].size;
 }
 

@@ -23,14 +23,14 @@ extern NSString* N2ViewBoundsSizeDidChangeNotificationOldBoundsSize;
 @interface N2View : NSView {
 	NSControlSize _controlSize;
 	NSSize _minSize, _maxSize;
-	N2Layout* _layout;
+	N2Layout* _n2layout;
 	NSColor* _foreColor;
 	NSColor* _backColor;
 }
 
 @property NSControlSize controlSize;
 @property NSSize minSize, maxSize;
-@property(retain) N2Layout* layout;
+@property(retain) N2Layout* n2layout;
 @property(nonatomic, retain) NSColor* foreColor;
 @property(nonatomic, retain) NSColor* backColor;
 
