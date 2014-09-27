@@ -6716,7 +6716,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	//				if( val) decayFactor = atof( val->a);
 	//				else decayFactor = 1.0;
 					decayFactor = 1.0;
-					
+				    
 					val = Papy3GetElement (theGroupP, papFrameReferenceTimeGr, &pos, &elemType);
 					if( val && val->a && validAPointer( elemType)) frameReferenceTime = atof( val->a);
 					else frameReferenceTime = 0.0;

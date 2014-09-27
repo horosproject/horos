@@ -37,7 +37,6 @@ BEGIN_EXTERN_C
 #endif
 
 
-//#include "openjpeg.h"
 /**
 sample error callback expecting a FILE* client object
 */

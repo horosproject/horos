@@ -121,10 +121,11 @@ extern int splitPosition[ 3];
 
 - (void)_pushBezierPath:(CGFloat)distance;
 
+- (void)_osirixUpdateVolumeDataNotification:(NSNotification *)notification;
+
 @end
 
 @implementation CPRStretchedView
-
 
 @synthesize delegate = _delegate;
 @synthesize volumeData = _volumeData;
@@ -210,12 +211,16 @@ extern int splitPosition[ 3];
 		_transversePlaneRuns = [[NSMutableDictionary alloc] init];
         _displayCrossLines = NO;
         _displayTransverseLines = YES;
+
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_osirixUpdateVolumeDataNotification:) name:OsirixUpdateVolumeDataNotification object:nil];
     }
     return self;
 }
 
 - (void)dealloc
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+
     _generator.delegate = nil;
     [_generator release];
     _generator = nil;
@@ -2460,6 +2465,12 @@ extern int splitPosition[ 3];
         [_curvedPath moveNodeAtIndex:i toVector:newNode];
     }
     [self _sendDidEditCurvedPath];
+}
+
+- (void)_osirixUpdateVolumeDataNotification:(NSNotification *)notification
+{
+    self.lastRequest = nil;
+    [self _setNeedsNewRequest];
 }
 
 @end

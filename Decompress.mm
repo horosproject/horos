@@ -52,7 +52,7 @@ NSThread				*mainThread = 0L;
 BOOL					NEEDTOREBUILD = NO;
 NSMutableDictionary		*DATABASECOLUMNS = 0L;
 short					Altivec = 0;
-short					UseOpenJpeg = 1, Use_kdu_IfAvailable = 1;
+short					Use_kdu_IfAvailable = 1;
 
 extern void dcmtkSetJPEGColorSpace( int);
 
@@ -197,7 +197,6 @@ int main(int argc, const char *argv[])
 #pragma mark compress
 		if( [what isEqualToString:@"compress"])
 		{
-			UseOpenJpeg = [[dict objectForKey:@"UseOpenJpegForJPEG2000"] intValue];
 			Use_kdu_IfAvailable = [[dict objectForKey:@"UseKDUForJPEG2000"] intValue];
 			
 			NSArray *compressionSettings = [dict valueForKey: @"CompressionSettings"];
@@ -531,7 +530,6 @@ int main(int argc, const char *argv[])
 			
 			//[DCMPixelDataAttribute setUse_kdu_IfAvailable: [[dict objectForKey:@"UseKDUForJPEG2000"] intValue]];
 			
-			UseOpenJpeg = [[dict objectForKey:@"UseOpenJpegForJPEG2000"] intValue];
 			Use_kdu_IfAvailable = [[dict objectForKey:@"UseKDUForJPEG2000"] intValue];
 			
 			int i;
@@ -564,7 +562,6 @@ int main(int argc, const char *argv[])
 			else
 				destDirec = path;
 			
-			UseOpenJpeg = [[dict objectForKey:@"UseOpenJpegForJPEG2000"] intValue];
 			Use_kdu_IfAvailable = [[dict objectForKey:@"UseKDUForJPEG2000"] intValue];
 			
 			int i;

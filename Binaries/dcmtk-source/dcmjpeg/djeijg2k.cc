@@ -63,7 +63,6 @@ extern short Use_kdu_IfAvailable;
 // use 16K blocks for temporary storage of compressed JPEG data
 #define IJGE12_BLOCKSIZE 16384
 
-//#include "openjpeg.h"
 /**
 sample error callback expecting a FILE* client object
 */
