@@ -43,20 +43,22 @@
 		for (N2Step* step in [_steps content])
 			[self stepsDidAddStep:[NSNotification notificationWithName:N2StepsDidAddStepNotification object:_steps userInfo:[NSDictionary dictionaryWithObject:step forKey:N2StepsNotificationStep]]];
 	
-	[[self layout] layOut];
+	[[self n2layout] layOut];
 }
 
 -(void)setForeColor:(NSColor*)color {
 	if (_foreColor) [_foreColor release];
 	_foreColor = [color retain];
 	for (N2StepView* view in [self subviews])
-		[[[view titleCell] attributes] setValue:[self foreColor] forKey:NSForegroundColorAttributeName];	
+        if ([view isKindOfClass:[N2StepView class]])
+            [[[view titleCell] attributes] setValue:[self foreColor] forKey:NSForegroundColorAttributeName];
 }
 
 -(void)setControlSize:(NSControlSize)controlSize {
 	_controlSize = controlSize;
 	for (N2StepView* view in [self subviews])
-		[[[view titleCell] attributes] setValue:[NSFont labelFontOfSize:[NSFont systemFontSizeForControlSize:controlSize]] forKey:NSFontAttributeName];	
+        if ([view isKindOfClass:[N2StepView class]])
+            [[[view titleCell] attributes] setValue:[NSFont labelFontOfSize:[NSFont systemFontSizeForControlSize:controlSize]] forKey:NSFontAttributeName];
 }
 
 -(void)dealloc {
@@ -109,7 +111,7 @@
 	[view setPostsFrameChangedNotifications:YES];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(stepViewFrameDidChange:) name:NSViewFrameDidChangeNotification object:view];
 	
-	[(N2ColumnLayout*)_layout appendRow:[NSArray arrayWithObject:view]];
+	[(N2ColumnLayout*)_n2layout appendRow:[NSArray arrayWithObject:view]];
 	
 	[self layOut];
 }
@@ -130,23 +132,23 @@
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSViewFrameDidChangeNotification object:view];
 	[view removeFromSuperview];
 	
-	[[self layout] layOut];
+	[[self n2layout] layOut];
 }
 
 -(void)stepViewFrameDidChange:(NSNotification*)notification {
-	[[self layout] layOut];
+	[[self n2layout] layOut];
 }
 
 -(void)layOut {
-	[_layout layOut];
+	[_n2layout layOut];
 }
 
 -(NSSize)optimalSize {
-	return n2::ceil([_layout optimalSize]);
+	return n2::ceil([_n2layout optimalSize]);
 }
 
 -(NSSize)optimalSizeForWidth:(CGFloat)width {
-	return n2::ceil([_layout optimalSizeForWidth:width]);
+	return n2::ceil([_n2layout optimalSizeForWidth:width]);
 }
 
 @end
