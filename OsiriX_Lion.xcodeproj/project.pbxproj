@@ -7487,7 +7487,6 @@
 		CEC709C010A5C844008935EA /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABFF0A95056D97800066794C /* ApplicationServices.framework */; };
 		CEC709C110A5C844008935EA /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6D320C05B3159D0002F793 /* IOKit.framework */; };
 		CEC709C310A5C844008935EA /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB5E1A300595697700C48BEB /* Accelerate.framework */; };
-		CEC709C510A5C844008935EA /* Message.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEF0E4BB06AEC91F001FF9E5 /* Message.framework */; };
 		CEC709C610A5C844008935EA /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEF0E6DA06AEF5CB001FF9E5 /* Carbon.framework */; };
 		CEC709C710A5C844008935EA /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E3E38650715FFDC0049E72E /* PreferencePanes.framework */; };
 		CEC709C810A5C844008935EA /* DiscRecording.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E54303B07A05E7100500ABB /* DiscRecording.framework */; };
@@ -7897,7 +7896,6 @@
 		CEEE567F1775EB11008C6DFA /* libPapyrusToolkit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEEE567C1775EB11008C6DFA /* libPapyrusToolkit.a */; };
 		CEF09317182D23B20020C70A /* ThumbnailsList.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEF09315182D23B20020C70A /* ThumbnailsList.xib */; };
 		CEF09318182D23B20020C70A /* ThumbnailsList.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEF09315182D23B20020C70A /* ThumbnailsList.xib */; };
-		CEF0E4BC06AEC91F001FF9E5 /* Message.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEF0E4BB06AEC91F001FF9E5 /* Message.framework */; };
 		CEF0E60306AEF326001FF9E5 /* Mailer.h in Headers */ = {isa = PBXBuildFile; fileRef = CEF0E5FF06AEF326001FF9E5 /* Mailer.h */; };
 		CEF0E60406AEF326001FF9E5 /* Mailer.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF0E60006AEF326001FF9E5 /* Mailer.m */; };
 		CEF0E6DC06AEF5CB001FF9E5 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEF0E6DA06AEF5CB001FF9E5 /* Carbon.framework */; };
@@ -13877,7 +13875,6 @@
 				AB28B93405B79D5C00A9906C /* ApplicationServices.framework in Frameworks */,
 				AB28B93505B79D5D00A9906C /* IOKit.framework in Frameworks */,
 				AB28B93705B79D5E00A9906C /* Accelerate.framework in Frameworks */,
-				CEF0E4BC06AEC91F001FF9E5 /* Message.framework in Frameworks */,
 				CEF0E6DC06AEF5CB001FF9E5 /* Carbon.framework in Frameworks */,
 				7E3E38660715FFDC0049E72E /* PreferencePanes.framework in Frameworks */,
 				7E54303D07A05E7100500ABB /* DiscRecording.framework in Frameworks */,
@@ -14062,7 +14059,6 @@
 				CEC709C010A5C844008935EA /* ApplicationServices.framework in Frameworks */,
 				CEC709C110A5C844008935EA /* IOKit.framework in Frameworks */,
 				CEC709C310A5C844008935EA /* Accelerate.framework in Frameworks */,
-				CEC709C510A5C844008935EA /* Message.framework in Frameworks */,
 				CEC709C610A5C844008935EA /* Carbon.framework in Frameworks */,
 				CEC709C710A5C844008935EA /* PreferencePanes.framework in Frameworks */,
 				CEC709C810A5C844008935EA /* DiscRecording.framework in Frameworks */,
@@ -15778,7 +15774,6 @@
 				A9B23D1E15CFE917000E47C3 /* Opened Polygon.pdf */,
 				CEE619EE0912C73000C31D78 /* OrientationWidget.tif */,
 				A9FEC13F0907EBA600B218BE /* orthogonalReslice.tif */,
-				ABBB6495063587B200D9531F /* Osirix.icns */,
 				AB10FA670B96C95500D74684 /* OsirixDownload.icns */,
 				A97B73970CB380EF00E5348D /* osirixplugin.icns */,
 				CEAF4ECC089D6E9400DE46AF /* OsiriXTables.pdf */,
@@ -29914,7 +29909,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				OTHER_CFLAGS = "-fvisibility=default";
 				OTHER_CODE_SIGN_FLAGS = "";
-				SDKROOT = macosx10.8;
+				SDKROOT = macosx10.9;
 			};
 			name = Development;
 		};
