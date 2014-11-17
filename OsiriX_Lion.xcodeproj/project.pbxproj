@@ -7,6 +7,17 @@
 	objects = {
 
 /* Begin PBXAggregateTarget section */
+		434B46111A19ECD6008CF8CF /* Cleanup Binaries */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 434B46131A19ECD6008CF8CF /* Build configuration list for PBXAggregateTarget "Cleanup Binaries" */;
+			buildPhases = (
+				434B46121A19ECD6008CF8CF /* Run Script */,
+			);
+			dependencies = (
+			);
+			name = "Cleanup Binaries";
+			productName = "Unzip Binaries";
+		};
 		4A2F58D8078D118700C514A2 /* Build All Prerequisites */ = {
 			isa = PBXAggregateTarget;
 			buildConfigurationList = 7E76BEC3085757B60073649A /* Build configuration list for PBXAggregateTarget "Build All Prerequisites" */;
@@ -27548,10 +27559,11 @@
 				59BDEC2C117C92B2007F1F2C /* OsiriX Launcher */,
 				7E0B3A3E067526CD00908593 /* DCM Framework */,
 				4A2F5931078D148300C514A2 /* Unzip Binaries */,
+				434B46111A19ECD6008CF8CF /* Cleanup Binaries */,
 				4A2F58D8078D118700C514A2 /* Build All Prerequisites */,
+				BF7486A50CC6AA5C00198387 /* Documentation */,
 				AB724F300ADE6ECB00A212A0 /* Decompress */,
 				CEDF6C600B46FE99008B45B8 /* DICOMPrint */,
-				BF7486A50CC6AA5C00198387 /* Documentation */,
 				AB0F3A2B1046BD2B004129DD /* OsiriX API */,
 				A98795C116DB9FD100926023 /* Unit Tests */,
 			);
@@ -28765,6 +28777,20 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		434B46121A19ECD6008CF8CF /* Run Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd \"$SRCROOT/Binaries\"\n#rm -Rf DCMTK\n#unzip -uo LibTiff.zip\nrm -Rf VTKLibs\n#unzip -uo DB_Previous_Models.zip\n#unzip -uo PAGES.zip\n#unzip -uo OsiriXReport.template.zip\n#unzip -uo ILCrashReporter.framework.zip\n#unzip -uo Growl.framework.zip\n#unzip -uo 3DconnexionClient.framework.zip\nrm -Rf openjpeg.zip\n#unzip -uo dciodvfy.zip\n#unzip -uo libPapyrusToolkit.a.zip\n#unzip -uo Ming.zip\n#unzip -uo weasis-portable.zip\n#chmod -R 755 weasis\n#cd \"$SRCROOT/Binaries/weasis\"\n#if [ -d \"weasis-portable\" ]; then\n#    cd \"weasis-portable\"\n#    for f in *; do\n#        rm -Rf \"../$f\"\n#        mv \"$f\" ..\n#    done\n#    cd ..\n#    rm -Rf weasis-portable\n#fi\n#find . -name __MACOSX | xargs rm -Rf\n\n#cd \"$SRCROOT/Binaries/ReportsToPDF/odt2pdf/build\"\n#unzip -uo odt2pdf.zip\n\n#cd \"$SRCROOT/Binaries/PAGES\"\n#rm ._*\n\n#cd \"$SRCROOT/AYDicomPrint\"\n#unzip -uo libdcmprintscu.dylib.zip\n#unzip -uo libxerces-c.27.dylib.zip\n#unzip -uo xercesc.zip\n\n#cd \"$SRCROOT/Binaries/Jasper\"\n#unzip -uo libjasper.a.zip\n\n#cd \"$SRCROOT/Binaries/KDU SDK\"\n#unzip -uo libkdu_v73R.a.zip\n\ncd \"$SRCROOT\"\nrm -Rf VTKHeaders\nrm -Rf ITK180\n\nexit 0\n";
+		};
 		4A2F5930078D148300C514A2 /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -32625,6 +32651,40 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		434B46141A19ECD6008CF8CF /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_ALTIVEC_EXTENSIONS = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_CPU = "";
+				GCC_MODEL_PPC64 = NO;
+				GCC_MODEL_TUNING = "";
+				GCC_OPTIMIZATION_LEVEL = 1;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_SHADOW = NO;
+				GCC_WARN_UNINITIALIZED_AUTOS = NO;
+				HEADER_SEARCH_PATHS = Binaries;
+				OTHER_CFLAGS = (
+					"-falign-functions=32",
+					"-falign-labels=32",
+					"-falign-loops=32",
+					"-falign-jumps=32",
+				);
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = "Cleanup Binaries";
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Development;
+		};
 		59BDEC30117C92B3007F1F2C /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -33111,6 +33171,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		434B46131A19ECD6008CF8CF /* Build configuration list for PBXAggregateTarget "Cleanup Binaries" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				434B46141A19ECD6008CF8CF /* Development */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Development;
+		};
 		59BDEC33117C92B4007F1F2C /* Build configuration list for PBXNativeTarget "OsiriX Launcher" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
