@@ -5610,7 +5610,8 @@ static ViewerController *draggedController = nil;
             if( [[vi window] windowController] != self) [self completeDragOperation: [[vi window] windowController]];
         }
     }
-    else if( [[paste availableTypeFromArray: [NSArray arrayWithObject: pasteBoardOsiriXPlugin]] isEqualToString: pasteBoardOsiriXPlugin])
+	else if( [[paste availableTypeFromArray: [NSArray arrayWithObject: pasteBoardOsiriXPlugin]] isEqualToString: pasteBoardOsiriXPlugin]
+             || [[paste availableTypeFromArray:[NSArray arrayWithObject:OsirixPluginPboardUTI]] isEqualToString:OsirixPluginPboardUTI])
     {
         // in this case, the drag operation was performed from a plugin.
         id source = [sender draggingSource];
@@ -20630,7 +20631,7 @@ static float oldsetww, oldsetwl;
     [nc addObserver:self selector:@selector(reportToolbarItemWillPopUp:) name:NSPopUpButtonWillPopUpNotification object:nil];
     
     
-    [[self window] registerForDraggedTypes: [NSArray arrayWithObjects:NSFilenamesPboardType, pasteBoardOsiriX, pasteBoardOsiriXPlugin, @"BrowserController.database.context.XIDs", nil]];
+    [[self window] registerForDraggedTypes: [NSArray arrayWithObjects:NSFilenamesPboardType, pasteBoardOsiriX, pasteBoardOsiriXPlugin, OsirixPluginPboardUTI, @"BrowserController.database.context.XIDs", nil]];
     
     if( [[pixList[0] objectAtIndex: 0] isRGB] == NO)
     {

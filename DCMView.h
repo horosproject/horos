@@ -91,6 +91,7 @@ typedef NS_ENUM(short, ToolMode)
 
 extern NSString *pasteBoardOsiriX;
 extern NSString *pasteBoardOsiriXPlugin;
+extern NSString *OsirixPluginPboardUTI;
 extern int CLUTBARS, ANNOTATIONS, SOFTWAREINTERPOLATION_MAX, DISPLAYCROSSREFERENCELINES;
 
 enum { annotNone = 0, annotGraphics, annotBase, annotFull };
