@@ -12,6 +12,8 @@
      PURPOSE.
 =========================================================================*/
 
+#import "options.h"
+
 #import "MPRDCMView.h"
 #import "VRController.h"
 #import "VRView.h"
@@ -50,7 +52,7 @@ BOOL arePlanesParallel( float *Pn1, float *Pn2)
 
 static	int splitPosition[ 2];
 static	BOOL frameZoomed = NO;
-extern unsigned int minimumStep;
+unsigned int minimumStep;
 
 @interface MPRDCMView ()
 - (void)drawOSIROIs;

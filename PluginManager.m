@@ -24,6 +24,7 @@
 #import "NSMutableDictionary+N2.h"
 #import "PreferencesWindowController.h"
 #import "N2Debug.h"
+#import "url.h"
 
 static NSMutableDictionary		*plugins = nil, *pluginsDict = nil, *fileFormatPlugins = nil;
 static NSMutableDictionary		*reportPlugins = nil, *pluginsBundleDictionnary = nil;
@@ -826,7 +827,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 
 -(void) noPlugins:(id) sender
 {
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com/Plugins.html"]];
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_OSIRIX_PLUGINS]];
 }
 
 #pragma mark -
@@ -1359,7 +1360,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
     
 	[NSThread sleepForTimeInterval: 10];
 	
-	url = [NSURL URLWithString:@"http://www.osirix-viewer.com/osirix_plugins/plugins.plist"];
+	url = [NSURL URLWithString:URL_OSIRIX_VIEWER@"/osirix_plugins/plugins.plist"];
 	
 	if(url)
 	{

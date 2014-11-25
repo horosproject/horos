@@ -59,16 +59,16 @@
 #ifndef __vtkPowerCrustSurfaceReconstruction_h
 #define __vtkPowerCrustSurfaceReconstruction_h
 
-#include "vtkDataSetToPolyDataFilter.h"
+#include "vtkDataSetToDataObjectFilter.h"
 #include "vtkPolyData.h"
 #include "vtkCellArray.h"
 #include "vtkPointData.h"
 
-class VTK_GRAPHICS_EXPORT vtkPowerCrustSurfaceReconstruction : public vtkDataSetToPolyDataFilter
+class vtkPowerCrustSurfaceReconstruction : public vtkDataSetToDataObjectFilter
 {
 public:
   static vtkPowerCrustSurfaceReconstruction *New();
-  vtkTypeRevisionMacro(vtkPowerCrustSurfaceReconstruction,vtkDataSetToPolyDataFilter);
+  vtkTypeRevisionMacro(vtkPowerCrustSurfaceReconstruction,vtkDataSetToDataObjectFilter);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:

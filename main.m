@@ -17,14 +17,14 @@
 #import "Papyrus3/Papyrus3.h"
 #import "NSFont_OpenGL.h"
 
+#include "options.h"
+
 #ifndef OSIRIX_LIGHT
 #include "FVTiff.h"
 #endif
 
 int main(int argc, const char *argv[])
-{
-    Papy3Init();
-	
+{	
 	#ifndef OSIRIX_LIGHT
     FVTIFFInitialize();
 	#endif

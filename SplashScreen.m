@@ -12,6 +12,7 @@
      PURPOSE.
 *****************************************************************/
 
+#include "options.h"
 #import "SplashScreen.h"
 
 #include <mach/mach.h>
@@ -121,10 +122,6 @@ BOOL useQuartz() {
     {
         case 0:
             currVersionNumber = [NSMutableString stringWithString:[[[NSBundle bundleForClass:[self class]] infoDictionary] objectForKey:@"CFBundleGetInfoString"]];
-            if( sizeof(long) == 8)
-                [currVersionNumber appendString:@" 64-bit"];
-            else
-                [currVersionNumber appendString:@" 32-bit"];
         break;
         
         case 1:

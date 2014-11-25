@@ -36,6 +36,8 @@
 #import <AppKit/AppKit.h>
 #import "XMLRPCMethods.h"
 
+#include "options.h"
+
 //@class ThreadPoolServer;
 //@class ThreadPerConnectionServer;
 
@@ -149,7 +151,9 @@ extern AppController* OsiriX;
 #pragma mark initialization of the main event loop singleton
 
 + (void) createNoIndexDirectoryIfNecessary:(NSString*) path __deprecated;
+#ifdef WITH_IMPORTANT_NOTICE
 + (void) displayImportantNotice:(id) sender;
+#endif
 + (AppController*) sharedAppController; /**< Return the shared AppController instance */
 + (void) resizeWindowWithAnimation:(NSWindow*) window newSize: (NSRect) newWindowFrame;
 + (void) pause __deprecated;

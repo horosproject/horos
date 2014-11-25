@@ -19,7 +19,7 @@
 #import "DCMView.h"
 
 #ifdef __cplusplus
-#import "VTKView.h"
+#import "VTKViewOSIRIX.h"
 
 #define id Id
 #include "vtkCommand.h"

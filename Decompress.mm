@@ -34,11 +34,11 @@
 #include "Binaries/dcmtk-source/dcmjpls/djdecode.h" //JPEG-LS
 #include "Binaries/dcmtk-source/dcmjpls/djencode.h" //JPEG-LS
 
+#include "options.h"
+//#include "../Binaries/openjpeg/openjpeg.h"
+
 extern "C"
 {
-	extern short Papy3Init ();
-
-
     void exitOsiriX(void)
     {
         [NSException raise: @"JPEG error exception raised" format: @"JPEG error exception raised - See Console.app for error message"];
@@ -117,7 +117,7 @@ void createSwfMovie(NSArray* inputFiles, NSString* path, float frameRate);
 int main(int argc, const char *argv[])
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
+    
 	// To avoid:
 	// http://lists.apple.com/archives/quicktime-api/2007/Aug/msg00008.html
 	// _NXCreateWindow: error setting window property (1002)
@@ -526,9 +526,7 @@ int main(int argc, const char *argv[])
         
 # pragma mark testFiles
 		if( [what isEqualToString: @"testFiles"])
-		{
-			Papy3Init();
-			
+		{			
 			//[DCMPixelDataAttribute setUse_kdu_IfAvailable: [[dict objectForKey:@"UseKDUForJPEG2000"] intValue]];
 			
 			UseOpenJpeg = [[dict objectForKey:@"UseOpenJpegForJPEG2000"] intValue];

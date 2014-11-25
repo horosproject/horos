@@ -28,6 +28,8 @@
 #import "DCMPix.h"
 #import "N2Debug.h"
 
+#include "options.h"
+
 typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 
 @implementation ITKTransform
@@ -279,9 +281,7 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
             }
 			
 			// to keep settings propagated for MRI we need the old values for echotime & repetitiontime
-            curPix.echoTime = originalPix.echoTime;
-            curPix.repetitionTime = originalPix.repetitionTime;
-			
+            
 			[curPix setSavedWL: [originalPix savedWL]];
 			[curPix setSavedWW: [originalPix savedWW]];
 			[curPix changeWLWW: wl : ww];
@@ -302,7 +302,7 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 			[curPix setUnits: [originalPix units]];
 			
 			[curPix setImageObjectID: [originalPix imageObjectID]];
-            curPix.sourceFile = originalPix.sourceFile;
+            curPix.srcFile = originalPix.srcFile;
             
             curPix.yearOld = originalPix.yearOld;
             curPix.yearOldAcquisition = originalPix.yearOldAcquisition;

@@ -12,6 +12,8 @@
      PURPOSE.
 =========================================================================*/
 
+#import "options.h"
+
 #import "MPRController.h"
 #import "BrowserController.h"
 #import "Wait.h"
@@ -66,7 +68,7 @@ static float deg2rad = M_PI/180.0;
 	free( imagePtr);
 	
 	[emptyPix setImageObjectID: [oP imageObjectID]];
-	emptyPix.sourceFile = oP.sourceFile;
+	emptyPix.srcFile = oP.srcFile;
 	[emptyPix setAnnotationsDictionary: [oP annotationsDictionary]];
 	
 	return [emptyPix autorelease];
@@ -1779,10 +1781,14 @@ static float deg2rad = M_PI/180.0;
 	[v.pix orientation: cos];
 	
 	float halfthicknessChange = ((previousThickness - clippingRangeThickness) /2.) * [[NSUserDefaults standardUserDefaults] floatForKey: @"superSampling"];
-	
-	v.camera.position = [Point3D pointWithX: position.x + halfthicknessChange*cos[ 6] y:position.y + halfthicknessChange*cos[ 7] z:position.z + halfthicknessChange*cos[ 8]];
-	v.camera.focalPoint = [Point3D pointWithX: v.camera.position.x + cos[ 6] y: v.camera.position.y + cos[ 7] z:v.camera.position.z + cos[ 8]];
-	
+	   
+	v.camera.position = [Point3D pointWithX: position.x + halfthicknessChange*cos[ 6]
+                                          y: position.y + halfthicknessChange*cos[ 7]
+                                          z: position.z + halfthicknessChange*cos[ 8]];
+	v.camera.focalPoint = [Point3D pointWithX: v.camera.position.x + cos[ 6]
+                                            y: v.camera.position.y + cos[ 7]
+                                            z: v.camera.position.z + cos[ 8]];
+    
 	// Update all views
 	[mprView1 restoreCamera];
 	mprView1.vrView.dontResetImage = YES;

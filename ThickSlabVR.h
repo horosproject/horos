@@ -17,7 +17,7 @@
 
 #import <Foundation/Foundation.h>
 
-#import "VTKView.h"
+#import "VTKViewOSIRIX.h"
 #define id Id
 #include "vtkCommand.h"
 #include "vtkProperty.h"

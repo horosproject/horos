@@ -11,6 +11,9 @@ AYDicomPrint/
 AYDicomPrint/xercesc
 AYDicomPrint/libxerces-c.27.dylib
 AYDicomPrint/libdcmprintscu.dylib
+Binaries/ITKHeaders/
+Binaries/VTKHeaders/
+Binaries/ITKLibs/
 Binaries/VTKLibs/
 Binaries/weasis/
 Binaries/DCMTK/
@@ -28,6 +31,8 @@ Binaries/LibTiff/
 Binaries/openjpeg/
 Binaries/._OsiriX Report.template
 Binaries/ReportsToPDF/odt2pdf/build/odt2pdf
+options.h
+url.h
 
 *.xcscheme
 

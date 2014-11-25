@@ -21,14 +21,7 @@
 #import "NSThread+N2.h"
 #import "AppController.h"
 
-// this is the address of the plist containing the list of the available plugins.
-// the alternative link will be used if the first one doesn't reply...
-
-#define PLUGIN_LIST_URL @"http://www.osirix-viewer.com/osirix_plugins/plugins.plist"
-#define PLUGIN_LIST_ALT_URL @"http://www.osirixviewer.com/osirix_plugins/plugins.plist"
-
-#define PLUGIN_SUBMISSION_URL @"http://www.osirix-viewer.com/osirix_plugins/submit_plugin/index.html"
-#define PLUGIN_SUBMISSION_NO_MAIL_APP_URL @"http://www.osirix-viewer.com/osirix_plugins/submit_plugin/index_no_mail_app.html"
+#import "url.h"
 
 static NSArray *CachedPluginsList = nil;
 static NSDate *CachedPluginsListDate = nil;
@@ -207,7 +200,7 @@ static NSDate *CachedPluginsListDate = nil;
     }
     else
     {
-         [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com"]];
+         [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_OSIRIX_VIEWER]];
         return;
     }
 #endif
@@ -623,13 +616,13 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 		[emailMessage appendFormat:@"%@: %@ \n", [param objectAtIndex:0], [[param objectAtIndex:1] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 	}
 	
-//	NSString *emailAddress = @"pixmeo@pixmeo.com";
+//	NSString *emailAddress = URL_EMAIL;
 //	NSString *emailSubject = @"OsiriX: New Plugin Submission"; // don't localize this. This is the subject of the email WE will receive.
 	
 //	#if !__LP64__
 //	[NSMailDelivery deliverMessage:emailMessage subject:emailSubject to:emailAddress];
 //	#else
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"mailto:pixmeo@pixmeo.com"]];
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"mailto:"URL_EMAIL]];
 //	#endif
 }
 

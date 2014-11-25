@@ -12,9 +12,14 @@
      PURPOSE.
 =========================================================================*/
 
+#import "options.h"
+
 #define USE3DCONNEXION 1
 
 #import "VRView.h"
+
+#import "OsiriXFixedPointVolumeRayCastMapper.h"
+
 #import "DCMCursor.h"
 #import "AppController.h"
 #import "DCMPix.h"
@@ -78,6 +83,10 @@
 #include "vtkParallelRenderManager.h"
 #include "vtkRendererCollection.h"
 // ****************************
+#endif
+
+#if __LP64__
+#import "vtkConfigure.h"
 #endif
 
 #define MAXDYNAMICVALUE 32000.
@@ -383,8 +392,13 @@ public:
 		[self didChangeValueForKey:@"clippingRangeThicknessInMm"];
 	}
 	
-	if( clipRangeActivated)
+	if( clipRangeActivated) {
+        // This will also affect the minimum value of the slab thickness edit box
+        // because there is a binding with the variable clippingRangeThicknessInMm
+        if (clippingRangeThickness<1.22)
+            clippingRangeThickness = 1.22;
 		aCamera->SetClippingRange( 0, clippingRangeThickness);
+    }
 	else
 	{
 		aCamera->SetClippingRange( 0, 10000);
@@ -831,11 +845,11 @@ public:
 
 + (void) testGraphicBoard
 {    
-    int vram = [VTKView VRAMSizeForDisplayID: [[[[NSScreen mainScreen] deviceDescription] objectForKey: @"NSScreenNumber"] intValue]] / (1024*1024);
-    
-    if( [[NSUserDefaults standardUserDefaults] integerForKey: @"VRAMAmount"] != vram)
+    int vramMB = [VTKView VRAMSizeForDisplayID: [[[[NSScreen mainScreen] deviceDescription] objectForKey: @"NSScreenNumber"] intValue]];
+        
+    if( [[NSUserDefaults standardUserDefaults] integerForKey: @"VRAMAmount"] != vramMB)
     {
-        if( vram >= 2000 && [AppController hasMacOSXLion])
+        if( vramMB >= 2000 && [AppController hasMacOSXLion])
         {
             [[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"VRDefaultViewSize"];     // full screen
             [[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"MAPPERMODEVR"];          // gpu
@@ -846,9 +860,9 @@ public:
             [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"MAPPERMODEVR"];          // cpu
         }
         
-        [[NSUserDefaults standardUserDefaults] setInteger: vram forKey: @"VRAMAmount"];
+        [[NSUserDefaults standardUserDefaults] setInteger: vramMB forKey: @"VRAMAmount"];
         
-        NSLog( @"--- Changing Volume Rendering settings (vram: %d)", (int) vram);
+        NSLog( @"--- Changing Volume Rendering settings (vram: %d)", (int) vramMB);
     }
 }
 
@@ -857,13 +871,15 @@ public:
     if( textureMapper == nil)
     {
         textureMapper = vtkGPUVolumeRayCastMapper::New();
-        textureMapper->SetInput((vtkDataSet *) reader->GetOutput());
+        textureMapper->SetInputConnection(reader->GetOutputPort());
+        textureMapper->Update();
         
-        long memory = [VTKView VRAMSizeForDisplayID: [[[[[self window] screen] deviceDescription] objectForKey: @"NSScreenNumber"] intValue]];
+        unsigned
+        long memoryMB = [VTKView VRAMSizeForDisplayID: [[[[[self window] screen] deviceDescription] objectForKey: @"NSScreenNumber"] intValue]];
         
-        textureMapper->SetMaxMemoryInBytes( memory);
+        textureMapper->SetMaxMemoryInBytes( memoryMB*1024*1024);
         
-        NSLog( @"Graphic Board memory: %d MB", (int) (memory / (1024*1024)));
+        NSLog( @"Graphic Board memory: %d MiB", (int)memoryMB);
         
         textureMapper->SetMaxMemoryFraction( 0.9);
     }
@@ -876,9 +892,10 @@ public:
     if( volumeMapper == nil)
     {
         volumeMapper = OsiriXFixedPointVolumeRayCastMapper::New();
-        volumeMapper->SetInput((vtkDataSet *) reader->GetOutput());
+        volumeMapper->SetInputConnection(reader->GetOutputPort());
     }
     
+	volumeMapper->Update();
     volume->SetMapper( volumeMapper);
 }
 
@@ -961,13 +978,18 @@ public:
     
     if( newEngine == 1)
     {
-        long vram = [VTKView VRAMSizeForDisplayID: [[[[[self window] screen] deviceDescription] objectForKey: @"NSScreenNumber"] intValue]];
+        unsigned
+        long vramMB = [VTKView VRAMSizeForDisplayID: [[[[[self window] screen] deviceDescription] objectForKey: @"NSScreenNumber"] intValue]];
         
-        vram /= 1024*1024;
+        //vramMB /= 1024*1024;
         
-        if( vram <= 512)
+        if( vramMB <= 512)
         {
-            NSRunCriticalAlertPanel( NSLocalizedString(@"GPU Rendering", nil), NSLocalizedString( @"Your graphic board has only %d MB of VRAM. Performances will be very limited with large dataset.", nil), NSLocalizedString( @"OK", nil), nil, nil, vram);
+            NSRunCriticalAlertPanel(NSLocalizedString(@"GPU Rendering", nil),
+                                    [NSString stringWithFormat: NSLocalizedString( @"Your graphic board has only %d MB of VRAM. Performances will be very limited with large dataset.", nil), vramMB],
+                                    NSLocalizedString( @"OK", nil),
+                                    nil,
+                                    nil);
         }
     }
     
@@ -1018,8 +1040,11 @@ public:
 			if( blendingVolumeMapper == nil)
 			{
 				blendingVolumeMapper = OsiriXFixedPointVolumeRayCastMapper::New();
-				blendingVolumeMapper->SetInput((vtkDataSet *) blendingReader->GetOutput());
+				blendingVolumeMapper->SetInputConnection(blendingReader->GetOutputPort());
+
 			}
+			blendingVolumeMapper->Update();
+
 			blendingVolume->SetMapper( blendingVolumeMapper);
 		break;
 		
@@ -1028,16 +1053,20 @@ public:
             if( blendingTextureMapper == nil)
             {
                 blendingTextureMapper = vtkGPUVolumeRayCastMapper::New();
-                blendingTextureMapper->SetInput((vtkDataSet *) blendingReader->GetOutput());
+                blendingTextureMapper->SetInputConnection(blendingReader->GetOutputPort());
                 
-                long memory = [VTKView VRAMSizeForDisplayID: [[[[[self window] screen] deviceDescription] objectForKey: @"NSScreenNumber"] intValue]];
-                blendingTextureMapper->SetMaxMemoryInBytes( memory);
+                unsigned
+                long memoryMB = [VTKView VRAMSizeForDisplayID: [[[[[self window] screen] deviceDescription] objectForKey: @"NSScreenNumber"] intValue]];
                 
-                NSLog( @"Graphic Board memory: %d MB", (int) (memory / (1024*1024)));
+                blendingTextureMapper->SetMaxMemoryInBytes( memoryMB*1024*1024);
+                
+                NSLog( @"Graphic Board memory: %ld MiB", memoryMB);
                 
                 blendingTextureMapper->SetMaxMemoryFraction( 0.9);
             }
             
+            blendingTextureMapper->Update();
+
             blendingVolume->SetMapper( blendingTextureMapper);
 			break;
 	}
@@ -6109,7 +6138,9 @@ public:
 			blendingReader->SetDataScalarTypeToUnsignedShort();
 			blendingReader->SetImportVoidPointer( blendingData8 );					//AVOID VTK BUG
 		}
-		
+
+        blendingReader->Update();
+
 		blendingNeedToFlip = NO;
 		if( blendingSliceThickness < 0 )
 		{
@@ -6216,12 +6247,14 @@ public:
 		blendingData = [blendingController volumePtr: index];
 		
 		blendingReader->SetImportVoidPointer( blendingData);	//AVOID VTK BUG
+		blendingReader->Update();
 		
 		// Force min/max recomputing
 		if( blendingVolumeMapper) blendingVolumeMapper->Delete();
 		blendingVolumeMapper = OsiriXFixedPointVolumeRayCastMapper::New();
-		blendingVolumeMapper->SetInput((vtkDataSet *) blendingReader->GetOutput());
+		blendingVolumeMapper->SetInputConnection(blendingReader->GetOutputPort());
 		blendingVolumeMapper->SetMinimumImageSampleDistance( LOD);
+		blendingVolumeMapper->Update();
 		blendingVolume->SetMapper( blendingVolumeMapper);
 		
 		[self setNeedsDisplay:YES];
@@ -6239,7 +6272,8 @@ public:
         
         if( engine == 1)
         {
-            if( 0.9 * [VTKView VRAMSizeForDisplayID: [[[[NSScreen mainScreen] deviceDescription] objectForKey: @"NSScreenNumber"] intValue]] < dst8.rowBytes * dst8.height)
+            unsigned long memory = [VTKView VRAMSizeForDisplayID: [[[[NSScreen mainScreen] deviceDescription] objectForKey: @"NSScreenNumber"] intValue]] * 1024 * 1024;
+            if( 0.9 * memory < dst8.rowBytes * dst8.height)
             {
                 [[AppController sharedAppController] growlTitle: NSLocalizedString( @"Warning!", nil) description: NSLocalizedString( @"3D Dataset volume is larger than the amount of graphic board VRAM: GPU Rendering could be slower than CPU Rendering.", nil)  name: @"result"];
                 
@@ -6276,7 +6310,7 @@ public:
 			reader->SetImportVoidPointer( data8);
 			reader->GetOutput()->Modified();
 		}
-			
+		reader->Update();
 		if( volumeMapper)
         {
             volumeMapper->Delete();
@@ -6320,7 +6354,8 @@ public:
 					blendingReader->SetImportVoidPointer( blendingData8);
 					blendingReader->GetOutput()->Modified();
 				}
-					
+
+				blendingReader->Update();
 				if( blendingVolumeMapper) blendingVolumeMapper->Delete();
 				blendingVolumeMapper = nil;
 				if( blendingTextureMapper)
@@ -6523,6 +6558,7 @@ public:
 			
 		}
 		
+		reader->Update();
 		[firstObject orientation:cosines];
 		
 		factor = 1.0;
@@ -6636,10 +6672,12 @@ public:
 		volume->PickableOff();
 		
 		outlineData = vtkOutlineFilter::New();
-		outlineData->SetInput((vtkDataSet *) reader->GetOutput());
+		outlineData->SetInputConnection(reader->GetOutputPort());
+		outlineData->Update();
 		
 		mapOutline = vtkPolyDataMapper::New();
-		mapOutline->SetInput(outlineData->GetOutput());
+		mapOutline->SetInputConnection(outlineData->GetOutputPort());
+		mapOutline->Update();
 		
 		outlineRect = vtkActor::New();
 		outlineRect->SetMapper(mapOutline);
@@ -6750,7 +6788,7 @@ public:
 		rect->Delete();
 		
 		ROI3D = vtkPolyDataMapper2D::New();
-		ROI3D->SetInput( ROI3DData);
+		ROI3D->SetInputData( ROI3DData);
 		
 		ROI3DActor = vtkActor2D::New();
 		ROI3DActor->GetPositionCoordinate()->SetCoordinateSystemToDisplay();
@@ -6770,6 +6808,7 @@ public:
         
         Oval2D = vtkPolyDataMapper2D::New();
         Oval2D->SetInputConnection( Oval2DData->GetOutputPort());
+	Oval2D->Update();
         
         Oval2DActor = vtkActor2D::New();
 		Oval2DActor->GetPositionCoordinate()->SetCoordinateSystemToDisplay();
@@ -6801,7 +6840,7 @@ public:
 		rect->Delete();
 		
 		Line2D = vtkPolyDataMapper2D::New();
-		Line2D->SetInput( Line2DData);
+		Line2D->SetInputData( Line2DData);
 		
 		Line2DActor = vtkActor2D::New();
 		Line2DActor->GetPositionCoordinate()->SetCoordinateSystemToDisplay();
@@ -7964,6 +8003,7 @@ public:
 	//Mapper
 	vtkPolyDataMapper *mapper = vtkPolyDataMapper::New();
 	mapper->SetInputConnection(sphereSource->GetOutputPort());
+	mapper->Update();
 	//Actor
 	vtkActor *sphereActor = vtkActor::New();
 	sphereActor->SetMapper(mapper);
@@ -8503,6 +8543,7 @@ public:
 	//Mapper
 	vtkPolyDataMapper *mapper = vtkPolyDataMapper::New();
 	mapper->SetInputConnection(sphereSource->GetOutputPort());
+	mapper->Update();
 	//Actor
 	actor->SetMapper(mapper);
 	mapper->Delete();
@@ -9001,9 +9042,10 @@ public:
 	if( volumeMapper == nil)
     {
         volumeMapper = OsiriXFixedPointVolumeRayCastMapper::New();
-        volumeMapper->SetInput((vtkDataSet *) reader->GetOutput());
+        volumeMapper->SetInputConnection(reader->GetOutputPort());
     }
     
+    volumeMapper->Update();
     return volumeMapper;
 }
 

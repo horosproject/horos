@@ -12,6 +12,8 @@
      PURPOSE.
 =========================================================================*/
 
+#import "options.h"
+
 #import "CPRStraightenedView.h"
 #import "CPRGenerator.h"
 #import "CPRGeneratorRequest.h"

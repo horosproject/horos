@@ -2012,13 +2012,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	int w = d.pwidth;
 	int h = d.pheight;
-	
-	if( d.shutterEnabled)
-	{
-		w = d.shutterRect.size.width;
-		h = d.shutterRect.size.height;
-	}
-	
+		
 	if( sizeView.size.width / w < sizeView.size.height / h / d.pixelRatio )
 		return sizeView.size.width / w;
 	else
@@ -2032,13 +2026,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	self.scaleValue = [self scaleToFitForDCMPix: curDCM];
 	
-	if( curDCM.shutterEnabled)
-	{
-		origin.x = ((curDCM.pwidth  * 0.5f ) - ( curDCM.shutterRect.origin.x + ( curDCM.shutterRect.size.width  * 0.5f ))) * scaleValue;
-		origin.y = -((curDCM.pheight * 0.5f ) - ( curDCM.shutterRect.origin.y + ( curDCM.shutterRect.size.height * 0.5f ))) * scaleValue;
-	}
-	else
-		origin.x = origin.y = 0;
+    origin.x = origin.y = 0;
 	
 	[self setNeedsDisplay:YES];
 	
@@ -2349,8 +2337,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         [showDescriptionInLargeText release];
         showDescriptionInLargeText = nil;
         
+#ifdef WITH_RED_CAPTION
         [warningNotice release];
         warningNotice = nil;
+#endif
         
         [blendingView release];
         blendingView = nil;
@@ -7330,7 +7320,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         short i = 0;
         while ((((strVersion[i] <= '9') && (strVersion[i] >= '0')) || (strVersion[i] == '.')) && (i < kShortVersionLength)) // get only basic version info (until first space)
         {
-            strShortVersion [i] = strVersion[i];
+            strShortVersion[i] = strVersion[i];
             i++;
         }
         strShortVersion [i] = 0; //truncate string
@@ -7367,11 +7357,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         
         // set clamp param based on retrieved capabilities
         if (f_gl_texture_edge_clamp) // if OpenGL 1.2 or later and texture edge clamp is supported natively
-                                edgeClampParam = GL_CLAMP_TO_EDGE;  // use 1.2+ constant to clamp texture coords so as to not sample the border color
+            edgeClampParam = GL_CLAMP_TO_EDGE;  // use 1.2+ constant to clamp texture coords so as to not sample the border color
         else if (f_ext_texture_edge_clamp) // if GL_SGIS_texture_edge_clamp extension supported
-                edgeClampParam = GL_CLAMP_TO_EDGE_SGIS; // use extension to clamp texture coords so as to not sample the border color
+            edgeClampParam = GL_CLAMP_TO_EDGE_SGIS; // use extension to clamp texture coords so as to not sample the border color
         else
-                edgeClampParam = GL_CLAMP; // clamp texture coords to [0, 1]
+            edgeClampParam = GL_CLAMP; // clamp texture coords to [0, 1]
                 
         if( f_arb_texture_rectangle && f_ext_texture_rectangle)
         {
@@ -7556,9 +7546,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     return a;
 }
 
-- (void) drawRectIn:(NSRect) size :(GLuint *) texture :(NSPoint) offset :(long) tX :(long) tY :(long) tW :(long) tH
+- (void) drawRectIn:(NSRect) size
+                   :(GLuint *) texture
+                   :(NSPoint) offset
+                   :(long) tX :(long) tY :(long) tW :(long) tH
 {
-	if( texture == nil) return;
+    if( texture == nil)
+        return;
 	
 	long effectiveTextureMod = 0; // texture size modification (inset) to account for borders
 	long x, y, k = 0, offsetY, offsetX = 0, currTextureWidth, currTextureHeight;
@@ -7592,6 +7586,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			{
 					// use remaining to determine next texture size
 					currTextureHeight = GetNextTextureSize (tH - offsetY, maxTextureSize, f_ext_texture_rectangle) - effectiveTextureMod; // effective texture height for drawing
+
 					glBindTexture(TEXTRECTMODE, texture[k++]); // work through textures in same order as stored, setting each texture name as current in turn
 					
 					DrawGLImageTile (GL_TRIANGLE_STRIP, curDCM.pwidth, curDCM.pheight, scaleValue,		//
@@ -8579,6 +8574,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     
     if( size.size.width > 500*sf && [AppController isFDACleared] == NO)
     {
+#ifdef WITH_RED_CAPTION
         if( warningNotice == nil && [self class] == [DCMView class] && fullText)
         {
             NSMutableDictionary *stanStringAttrib = [NSMutableDictionary dictionary];
@@ -8609,15 +8605,18 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             
             [warningNotice drawWithBounds: r];
         }
+#endif // WITH_RED_CAPTION
     }
 }
 
 - (void) setWhiteBackground:(BOOL)w
 {
     whiteBackground = w;
-    
+
+#ifdef WITH_RED_CAPTION
     [warningNotice release];
     warningNotice = nil;
+#endif
 }
 
 - (void) drawTextualData:(NSRect) size :(long) annotations
@@ -8662,8 +8661,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             }
             previousScalingFactor = self.window.backingScaleFactor;
             
+#ifdef WITH_RED_CAPTION
             [warningNotice release];
             warningNotice = nil;
+#endif
             [DCMView purgeStringTextureCache];
             
             [[NSNotificationCenter defaultCenter] postNotificationName: OsirixLabelGLFontChangeNotification object: self];
@@ -8987,7 +8988,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				glBlendFunc(GL_ONE, GL_ONE);
 				glDisable( GL_BLEND);
 			}
-			
+            
 //			if (curDCM.waveform) // [DCMAbstractSyntaxUID isWaveform:curDCM.SOPClassUID]
 //                [self drawWaveform];
 //            else
@@ -10087,15 +10088,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 							{
 								if( pix != curDCM)
 								{
-                                    [pix.imageObj setValue: nil forKey: @"scale"];
-									
-									NSPoint o = NSMakePoint( 0, 0);
-									
-									if( pix.shutterEnabled)
-									{
-										o.x = ((curDCM.pwidth  * 0.5f ) - ( curDCM.shutterRect.origin.x + ( curDCM.shutterRect.size.width  * 0.5f ))) * scaleValue;
-										o.y = -((curDCM.pheight * 0.5f ) - ( curDCM.shutterRect.origin.y + ( curDCM.shutterRect.size.height * 0.5f ))) * scaleValue;
-									}
+                                    NSPoint o = NSMakePoint( 0, 0);
+                                    [pix.imageObj setValue: [NSNumber numberWithFloat: [self scaleToFitForDCMPix: pix]] forKey: @"scale"];
 									
 									[pix.imageObj setValue: [NSNumber numberWithFloat: o.x] forKey:@"xOffset"];
 									[pix.imageObj setValue: [NSNumber numberWithFloat: o.y] forKey:@"yOffset"];
@@ -11864,11 +11858,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 	if( curDCM.subtractedfImage) 
 		intFULL32BITPIPELINE = NO;
-	
-	if( curDCM.shutterEnabled) 
-		intFULL32BITPIPELINE = NO;
-	
-	if( curDCM.pwidth >= maxTextureSize) 
+	    
+	if( curDCM.pwidth >= maxTextureSize)
 		intFULL32BITPIPELINE = NO;
 	
 	if( blending == NO) currentAlphaTable = opaqueTable;
@@ -12242,16 +12233,17 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					}
 				}
 				currHeight = GetNextTextureSize (*tH - offsetY, maxTextureSize, f_ext_texture_rectangle); // use remaining to determine next texture size
+                
 				glBindTexture (TEXTRECTMODE, texture[k++]);
 				
-                #ifndef NDEBUG
+//#ifndef NDEBUG
                 {
                 GLenum glLocalError = GL_NO_ERROR;
                 glLocalError = glGetError();
                 if( glLocalError != GL_NO_ERROR)
                     NSLog( @"OpenGL error 0x%04X", glLocalError);
                 }
-                #endif
+//#endif
                 
 				glTexParameterf (TEXTRECTMODE, GL_TEXTURE_PRIORITY, 1.0f);
 				

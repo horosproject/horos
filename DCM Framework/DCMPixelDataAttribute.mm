@@ -12,6 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
+#include "options.h"
 
 #import "DCMPixelDataAttribute.h"
 #import "DCM.h"
@@ -23,8 +24,9 @@
 #import "DCMPixelDataAttributeJPEG16.h"
 #import "Accelerate/Accelerate.h"
 
-//#import "jasper.h"
+#import "OPJSupport.h"
 
+//#import "jasper.h"
 
 static int Use_kdu_IfAvailable = 0;
 
@@ -1254,7 +1256,6 @@ static inline int int_ceildivpow2(int a, int b) {
 	
 //	BOOL succeed = NO;
 	
-	if( Use_kdu_IfAvailable && kdu_available())
 	{
 		long decompressedLength = 0;
 		
@@ -1265,7 +1266,9 @@ static inline int int_ceildivpow2(int a, int b) {
 		
 		int colorModel;
 		
-		void *p = kdu_decompressJPEG2K( (void*) [jpegData bytes], [jpegData length], &decompressedLength, &colorModel, processors);
+        OPJSupport opj ;
+        void *p = opj.decompressJPEG2K( (void*) [jpegData bytes],
+                                       [jpegData length], &decompressedLength, &colorModel);
 		if( p)
 		{
 			pixelData = [NSMutableData dataWithBytesNoCopy: p length:decompressedLength freeWhenDone: YES];

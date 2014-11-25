@@ -12,6 +12,7 @@
  PURPOSE.
  =========================================================================*/
 
+#import "options.h"
 
 #import "ROIVolume.h"
 #import "Notifications.h"
@@ -115,11 +116,12 @@
 	WaitRendering *splash = [[WaitRendering alloc] init: NSLocalizedString( @"Preparing 3D Object...", nil)];
 	[splash showWindow:self]; 
     
+	roiVolumeActor = vtkActor::New();
+    
     vtkMapper *map = [ROIVolumeView generateMapperForRoi: roiList.lastObject viewerController: viewer factor: factor statistics: nil];
     
     if( map)
     {
-        roiVolumeActor = vtkActor::New();
         roiVolumeActor->SetMapper(map);
         roiVolumeActor->GetProperty()->FrontfaceCullingOn();
         roiVolumeActor->GetProperty()->BackfaceCullingOn();
@@ -153,11 +155,13 @@
             location = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"texture.tif"];
         
         vtkTIFFReader *bmpread = vtkTIFFReader::New();
-           bmpread->SetFileName( [location UTF8String]);
-
+        bmpread->SetFileName( [location UTF8String]);
+        bmpread->Update();
+        
         textureImage = vtkTexture::New();
-           textureImage->SetInput( bmpread->GetOutput());
-           textureImage->InterpolateOn();
+        textureImage->SetInputConnection( bmpread->GetOutputPort());
+        textureImage->InterpolateOn();
+        textureImage->Update();
         bmpread->Delete();
 
         roiVolumeActor->SetTexture( textureImage);

@@ -85,6 +85,8 @@
 #include <execinfo.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+#import "url.h"
 	 
 #define BUILTIN_DCMTK YES
 
@@ -690,9 +692,11 @@ static NSDate *lastWarningDate = nil;
 +(BOOL) hasMacOSXSyrah
 {
     SInt32 OSXversionMajor, OSXversionMinor;
-    if(Gestalt(gestaltSystemVersionMajor, &OSXversionMajor) == noErr && Gestalt(gestaltSystemVersionMinor, &OSXversionMinor) == noErr)
+    if(Gestalt(gestaltSystemVersionMajor, &OSXversionMajor) == noErr &&
+       Gestalt(gestaltSystemVersionMinor, &OSXversionMinor) == noErr)
     {
-        if(OSXversionMajor == 10 && OSXversionMinor >= 10)
+        if(OSXversionMajor == 10 &&
+           OSXversionMinor >= 10)
         {
             return YES;
         }
@@ -884,6 +888,7 @@ static NSDate *lastWarningDate = nil;
     return thumbnailsListPanel[i];
 }
 
+#ifdef WITH_IMPORTANT_NOTICE
 + (void) displayImportantNotice:(id) sender
 {
 	if( lastWarningDate == nil || [lastWarningDate timeIntervalSinceNow] < -60*5)
@@ -891,7 +896,7 @@ static NSDate *lastWarningDate = nil;
 		int result = NSRunCriticalAlertPanel( NSLocalizedString( @"Important Notice", nil), NSLocalizedString( @"This version of OsiriX, being a free open-source software (FOSS), is not certified as a commercial medical device for primary diagnostic imaging.\r\rFor a certified version and to get rid of this message, please update to 'OsiriX MD' certified version.", nil), NSLocalizedString( @"OsiriX MD", nil), NSLocalizedString( @"I agree", nil), NSLocalizedString( @"Quit", nil));
 		
 		if( result == NSAlertDefaultReturn)
-			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://pixmeo.pixmeo.com/products.html#OsiriXMD"]];
+			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_VENDOR_NOTICE]];
 			
 		else if( result == NSAlertOtherReturn)
 			[[AppController sharedAppController] terminate: self];
@@ -900,6 +905,7 @@ static NSDate *lastWarningDate = nil;
 	[lastWarningDate release];
 	lastWarningDate = [[NSDate date] retain];
 }
+#endif
 
 + (BOOL) isKDUEngineAvailable
 {
@@ -1174,10 +1180,10 @@ static NSDate *lastWarningDate = nil;
 -(IBAction) osirix64bit:(id)sender
 {
 	if( sender)
-		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com/OsiriX-64bit.html"]];
+		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_OSIRIX_VIEWER@"/OsiriX-64bit.html"]];
 	else
 	{
-		NSArray* urls = [NSArray arrayWithObject: [NSURL URLWithString:@"http://www.osirix-viewer.com/OsiriX-64bit.html"]];
+		NSArray* urls = [NSArray arrayWithObject: [NSURL URLWithString:URL_OSIRIX_VIEWER@"/OsiriX-64bit.html"]];
 
         [[NSWorkspace sharedWorkspace] openURLs:urls withAppBundleIdentifier: nil options: NSWorkspaceLaunchWithoutActivation additionalEventParamDescriptor: nil launchIdentifiers: nil];
 	}
@@ -1185,17 +1191,17 @@ static NSDate *lastWarningDate = nil;
 
 -(IBAction)sendEmail:(id)sender
 {
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"mailto:pixmeo@pixmeo.com"]];
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"mailto:"URL_EMAIL]];
 }
 
 -(IBAction)openOsirixWebPage:(id)sender
 {
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.pixmeo.com"]];
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_OSIRIX_WEB_PAGE]];
 }
 
 -(IBAction)help:(id)sender
 {
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com/Learning.html"]];
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_OSIRIX_LEARNING]];
 }
 
 -(IBAction)openOsirixDiscussion:(id)sender
@@ -1205,7 +1211,7 @@ static NSDate *lastWarningDate = nil;
 
 -(IBAction)userManual:(id)sender
 {
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://pixmeo.pixmeo.com/products.html#OsiriXUserManual"]];
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_VENDOR@"/products.html#OsiriXUserManual"]];
 }
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 #pragma mark-
@@ -2948,7 +2954,7 @@ static BOOL initialized = NO;
 			//	if( [[NSCalendarDate dateWithYear:2006 month:6 day:2 hour:12 minute:0 second:0 timeZone:[NSTimeZone timeZoneWithAbbreviation:@"EST"]] timeIntervalSinceNow] < 0)
 			//	{
 			//		NSRunCriticalAlertPanel(@"Update needed!", @"This version of OsiriX is outdated. Please download the last version from OsiriX web site!", @"OK", nil, nil);
-			//		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com"]];
+			//		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_OSIRIX_VIEWER]];
 			//		exit(0);
 			//	}
 					
@@ -2959,7 +2965,7 @@ static BOOL initialized = NO;
 				//		break;
 				//		
 				//		case -1:
-				//			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com"]];
+				//			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_OSIRIX_VIEWER]];
 				//		break;
 				//	}
 				
@@ -3450,8 +3456,10 @@ static BOOL initialized = NO;
 //	[[[NSApplication sharedApplication] dockTile] display];
 //	#endif
 
+//#ifdef WITH_IMPORTANT_NOTICE
 //	[AppController displayImportantNotice: self];
-
+//#endif
+    
 //	if( [[NSUserDefaults standardUserDefaults] integerForKey: @"TOOLKITPARSER4"] == 0 || [[NSUserDefaults standardUserDefaults] boolForKey:@"USEPAPYRUSDCMPIX4"] == NO)
 //	{
 //		[self growlTitle: NSLocalizedString( @"Warning!", nil) description: NSLocalizedString( @"DCM Framework is selected as the DICOM reader/parser. The performances of this toolkit are slower.", nil)  name:@"result"];
@@ -3518,7 +3526,7 @@ static BOOL initialized = NO;
 		int button = NSRunAlertPanel( NSLocalizedString( @"OsiriX Lite", nil), NSLocalizedString( @"This is the Lite version of OsiriX: many functions are not available. You can download the full version of OsiriX on the Internet.", nil), NSLocalizedString( @"Continue", nil), NSLocalizedString( @"Download", nil), nil);
 	
 		if (NSCancelButton == button)
-			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com"]];
+			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_OSIRIX_VIEWER]];
 	}
 	@catch (NSException * e)
 	{
@@ -4152,6 +4160,7 @@ static BOOL initialized = NO;
     
     if( [AppController hasMacOSXSyrah])
     {
+#ifdef WITH_OS_VALIDATION
         NSAlert* alert = [[NSAlert new] autorelease];
         [alert setMessageText: NSLocalizedString( @"Mac OS Version", nil)];
         
@@ -4164,8 +4173,9 @@ static BOOL initialized = NO;
         
         if( button == NSAlertSecondButtonReturn)
         {
-            [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com"]];
+            [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_OSIRIX_VIEWER]];
         }
+#endif
     }
     
 	if( [AppController hasMacOSXMountainLion] == NO)
@@ -4175,7 +4185,7 @@ static BOOL initialized = NO;
 		
         NSAlert* alert = [[NSAlert new] autorelease];
         [alert setMessageText: NSLocalizedString( @"Mac OS Version", nil)];
-        [alert setInformativeText: NSLocalizedString( @"You should upgrade to MacOS 10.8 or higher, for better performances, more features and more stability.", nil)];
+        [alert setInformativeText: NSLocalizedString( @"You should upgrade to MacOS 10.9 or higher, for better performances, more features and more stability.", nil)];
         [alert addButtonWithTitle: NSLocalizedString( @"Continue", nil)];
         [alert addButtonWithTitle: NSLocalizedString( @"Upgrade", nil)];
         if( [alert runModal] == NSAlertSecondButtonReturn)
@@ -4339,7 +4349,7 @@ static BOOL initialized = NO;
     {
         NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX crashed", nil), NSLocalizedString(@"OsiriX crashed... You are running an outdated version of OsiriX ! This bug is probably corrected in the last version !", nil), NSLocalizedString(@"OK",nil), nil, nil);
         
-        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com/Downloads.html"]];
+        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_OSIRIX_UPDATE_CRASH]];
     }
     
 	if( [msg isEqualToString:@"UPDATE"])
@@ -4347,7 +4357,7 @@ static BOOL initialized = NO;
 		int button = NSRunAlertPanel( NSLocalizedString( @"New Version Available", nil), NSLocalizedString( @"A new version of OsiriX is available. Would you like to download the new version now?", nil), NSLocalizedString( @"Download", nil), NSLocalizedString( @"Continue", nil), nil);
 		
 		if (NSOKButton == button)
-			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com"]];
+			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_OSIRIX_UPDATE]];
 	}
 	
 	[pool release];
@@ -4388,10 +4398,10 @@ static BOOL initialized = NO;
     if( [sender isKindOfClass:[NSString class]] && [sender isEqualToString: @"crash"])
         verboseAfterCrash = YES;
     
-	if( [AppController hasMacOSXLion])
-		url = [NSURL URLWithString:@"http://www.osirix-viewer.com/versionLeopard.xml"];
+	if( [AppController hasMacOSXMountainLion]) // or better
+		url = [NSURL URLWithString:URL_OSIRIX_VERSION];
 	else
-		url = [NSURL URLWithString:@"http://www.osirix-viewer.com/version.xml"];
+		url = [NSURL URLWithString:URL_OSIRIX_VERSION_OLD_OS];  // TODO: remove
 	
 	if( url)
 	{

@@ -427,11 +427,11 @@ typedef struct _xyzArray
 				vtkSTLWriter  *exporter = vtkSTLWriter::New();
 				
 				if (isoMapper[0] != nil)
-					exporter->SetInput(isoMapper[0]->GetInput());
+					exporter->SetInputData(isoMapper[0]->GetInput());
 				else if (isoMapper[1] != nil)
-					exporter->SetInput(isoMapper[1]->GetInput());
+					exporter->SetInputData(isoMapper[1]->GetInput());
 				else
-					exporter->SetInput( nil);
+					exporter->SetInputData( nil);
                 
 				exporter->SetFileName( [[panel filename] UTF8String]);
 				exporter->Write();
@@ -1807,7 +1807,7 @@ typedef struct _xyzArray
 		if( blendingSliceThickness < 0 )
 		{
 			blendingFlip = vtkImageFlip::New();
-			blendingFlip->SetInput( blendingReader->GetOutput());
+			blendingFlip->SetInputConnection( blendingReader->GetOutputPort());
 			blendingFlip->SetFlipAboutOrigin( TRUE);
 			blendingFlip->SetFilteredAxis(2);
 		}
@@ -1937,8 +1937,10 @@ typedef struct _xyzArray
 		else
 		{
 			isoResample = vtkImageResample::New();
-			if( flip) isoResample->SetInput( flip->GetOutput());
-			else isoResample->SetInput( reader->GetOutput());
+			if( flip)
+				isoResample->SetInputConnection( flip->GetOutputPort());
+			else
+				isoResample->SetInputConnection( reader->GetOutputPort());
 			isoResample->SetAxisMagnificationFactor(0, resolution);
 			isoResample->SetAxisMagnificationFactor(1, resolution);
 		}
@@ -1949,14 +1951,16 @@ typedef struct _xyzArray
 	if( isoResample)
 	{
 		isoExtractor[ actor] = vtkContourFilter::New();
-		isoExtractor[ actor]->SetInput( isoResample->GetOutput());
+		isoExtractor[ actor]->SetInputConnection( isoResample->GetOutputPort());
 		isoExtractor[ actor]->SetValue(0, isocontour);
 	}
 	else
 	{
 		isoExtractor[ actor] = vtkContourFilter::New();
-		if( flip) isoExtractor[ actor]->SetInput( flip->GetOutput());
-		else isoExtractor[ actor]->SetInput( reader->GetOutput());
+		if( flip)
+			isoExtractor[ actor]->SetInputConnection( flip->GetOutputPort());
+		else
+			isoExtractor[ actor]->SetInputConnection( reader->GetOutputPort());
 		isoExtractor[ actor]->SetValue(0, isocontour);
 	}
 	
@@ -1965,7 +1969,7 @@ typedef struct _xyzArray
 	if( useDecimate)
 	{
 		isoDeci[ actor] = vtkDecimatePro::New();
-		isoDeci[ actor]->SetInput( previousOutput);
+		isoDeci[ actor]->SetInputData( previousOutput);
 		isoDeci[ actor]->SetTargetReduction(decimateVal);
 		isoDeci[ actor]->SetPreserveTopology( TRUE);
 		
@@ -1984,7 +1988,7 @@ typedef struct _xyzArray
 	if( useSmooth)
 	{
 		isoSmoother[ actor] = vtkSmoothPolyDataFilter::New();
-		isoSmoother[ actor]->SetInput( previousOutput);
+		isoSmoother[ actor]->SetInputData( previousOutput);
 		isoSmoother[ actor]->SetNumberOfIterations( smoothVal);
 //		isoSmoother[ actor]->SetRelaxationFactor(0.05);
 		
@@ -1997,11 +2001,11 @@ typedef struct _xyzArray
 
 
 	isoNormals[ actor] = vtkPolyDataNormals::New();
-    isoNormals[ actor]->SetInput( previousOutput);
+    isoNormals[ actor]->SetInputData( previousOutput);
     isoNormals[ actor]->SetFeatureAngle(120);
 	
 	isoMapper[ actor] = vtkPolyDataMapper::New();
-    isoMapper[ actor]->SetInput( isoNormals[ actor]->GetOutput());
+    isoMapper[ actor]->SetInputConnection( isoNormals[ actor]->GetOutputPort());
     isoMapper[ actor]->ScalarVisibilityOff();
 	
 //	isoMapper[ actor]->GlobalImmediateModeRenderingOff();
@@ -2064,8 +2068,11 @@ typedef struct _xyzArray
 		else
 		{
 			BisoResample = vtkImageResample::New();
-			if( blendingFlip) BisoResample->SetInput( blendingFlip->GetOutput());
-			else BisoResample->SetInput( blendingReader->GetOutput());
+			if( blendingFlip)
+                BisoResample->SetInputConnection( blendingFlip->GetOutputPort());
+			else
+                BisoResample->SetInputConnection( blendingReader->GetOutputPort());
+            
 			BisoResample->SetAxisMagnificationFactor(0, resolution);
 			BisoResample->SetAxisMagnificationFactor(1, resolution);
 		}
@@ -2076,14 +2083,16 @@ typedef struct _xyzArray
 	if( BisoResample)
 	{
 		BisoExtractor[ actor] = vtkContourFilter::New();
-		BisoExtractor[ actor]->SetInput( BisoResample->GetOutput());
+		BisoExtractor[ actor]->SetInputConnection( BisoResample->GetOutputPort());
 		BisoExtractor[ actor]->SetValue(0, isocontour);
 	}
 	else
 	{
 		BisoExtractor[ actor] = vtkContourFilter::New();
-		if( blendingFlip) BisoExtractor[ actor]->SetInput( blendingFlip->GetOutput());
-		else BisoExtractor[ actor]->SetInput( blendingReader->GetOutput());
+		if( blendingFlip)
+            BisoExtractor[ actor]->SetInputConnection( blendingFlip->GetOutputPort());
+		else
+            BisoExtractor[ actor]->SetInputConnection( blendingReader->GetOutputPort());
 		BisoExtractor[ actor]->SetValue(0, isocontour);
 	}
 	
@@ -2092,7 +2101,7 @@ typedef struct _xyzArray
 	if( useDecimate)
 	{
 		BisoDeci[ actor] = vtkDecimatePro::New();
-		BisoDeci[ actor]->SetInput( previousOutput);
+		BisoDeci[ actor]->SetInputData( previousOutput);
 		BisoDeci[ actor]->SetTargetReduction(decimateVal);
 		BisoDeci[ actor]->SetPreserveTopology( TRUE);
 	
@@ -2106,7 +2115,7 @@ typedef struct _xyzArray
 	if( useSmooth)
 	{
 		BisoSmoother[ actor] = vtkSmoothPolyDataFilter::New();
-		BisoSmoother[ actor]->SetInput( BisoDeci[ actor]->GetOutput());
+		BisoSmoother[ actor]->SetInputConnection( BisoDeci[ actor]->GetOutputPort());
 		BisoSmoother[ actor]->SetNumberOfIterations( smoothVal);
 		
 		BisoSmoother[ actor]->Update();
@@ -2117,11 +2126,11 @@ typedef struct _xyzArray
 	}
 	
 	BisoNormals[ actor] = vtkPolyDataNormals::New();
-	BisoNormals[ actor]->SetInput( previousOutput); // set skinSmooth as new Input
+	BisoNormals[ actor]->SetInputData( previousOutput); // set skinSmooth as new Input
 	BisoNormals[ actor]->SetFeatureAngle(120);
 	
 	BisoMapper[ actor] = vtkPolyDataMapper::New();
-    BisoMapper[ actor]->SetInput( BisoNormals[ actor]->GetOutput());
+    BisoMapper[ actor]->SetInputConnection( BisoNormals[ actor]->GetOutputPort());
     BisoMapper[ actor]->ScalarVisibilityOff();
 	
 	Biso[ actor] = vtkActor::New();
@@ -2235,7 +2244,7 @@ typedef struct _xyzArray
 		if( sliceThickness < 0 )
 		{
 			flip = vtkImageFlip::New();
-			flip->SetInput( reader->GetOutput());
+			flip->SetInputConnection( reader->GetOutputPort());
 			flip->SetFlipAboutOrigin( TRUE);
 			flip->SetFilteredAxis(2);
 		}
@@ -2252,11 +2261,13 @@ typedef struct _xyzArray
 		matrice->Element[0][3] = 0;					matrice->Element[1][3] = 0;					matrice->Element[2][3] = 0;					matrice->Element[3][3] = 1;
 		
 		outlineData = vtkOutlineFilter::New();
-		if( flip) outlineData->SetInput((vtkDataSet *) flip->GetOutput());
-		else outlineData->SetInput((vtkDataSet *) reader->GetOutput());
+		if( flip)
+            outlineData->SetInputConnection(flip->GetOutputPort());
+		else
+            outlineData->SetInputConnection(reader->GetOutputPort());
 		
 		mapOutline = vtkPolyDataMapper::New();
-		mapOutline->SetInput(outlineData->GetOutput());
+		mapOutline->SetInputConnection(outlineData->GetOutputPort());
 		
 		outlineRect = vtkActor::New();
 		outlineRect->SetMapper(mapOutline);
@@ -3197,7 +3208,7 @@ typedef struct _xyzArray
 	aText->SetText(annotation);
 	
 	vtkPolyDataMapper *textMapper = vtkPolyDataMapper::New();
-	textMapper->SetInput(aText->GetOutput());
+	textMapper->SetInputData(aText->GetOutput());
 	
 	float radius = [[point3DRadiusArray objectAtIndex:index] floatValue];
 	double position[3];

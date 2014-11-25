@@ -12,6 +12,8 @@
  PURPOSE.
  =========================================================================*/
 
+#include "options.h"
+
 #import "ToolbarPanel.h"
 #import "DicomDatabase.h"
 #import "DicomDatabase+Routing.h"
@@ -108,6 +110,8 @@
 #import "XMLControllerDCMTKCategory.h"
 #import "WADOXML.h"
 #import "DicomDir.h"
+
+#import "url.h"
 
 #ifndef OSIRIX_LIGHT
 #import "Anonymization.h"
@@ -9984,7 +9988,9 @@ static BOOL withReset = NO;
     return 0; // NSScrollerStyleLegacy is 0
 }
 
-- (CGFloat)splitView:(NSSplitView*)sender constrainSplitPosition:(CGFloat)proposedPosition ofSubviewAt:(NSInteger)offset
+- (CGFloat)splitView:(NSSplitView*)sender
+constrainSplitPosition:(CGFloat)proposedPosition
+         ofSubviewAt:(NSInteger)offset
 {
 //    if( starting)
 //        return proposedPosition;
@@ -10164,6 +10170,8 @@ static BOOL withReset = NO;
     }
 }
 
+#pragma mark - NSSplitViewDelegate
+
 -(void)splitView:(NSSplitView*)sender resizeSubviewsWithOldSize:(NSSize)oldSize
 {
 //    if( starting)
@@ -10332,15 +10340,20 @@ static BOOL withReset = NO;
         
         [animationSlider setFrameSize:NSMakeSize(splitFrame.size.width-dividerPosition-_bottomSplit.dividerThickness-animationCheck.frame.size.width-10, animationSlider.frame.size.height)]; // for some weird reason, we need this..
     }
-    else {
+#ifdef WITH_BANNER
+    else
+        if ([notification object] == bannerSplit)
+    {
         static BOOL noReentry = 1;
         if( noReentry)
         {
             noReentry = 0;
-            [bannerSplit setPosition: bannerSplit.frame.size.height - (banner.image.size.height+3) ofDividerAtIndex: 0];
+            CGFloat position = bannerSplit.frame.size.height - (banner.image.size.height + 3);
+            [bannerSplit setPosition: position ofDividerAtIndex: 0];
             noReentry = 1;
         }
     }
+#endif // WITH_BANNER
 }
 
 - (BOOL)splitView: (NSSplitView *)sender canCollapseSubview: (NSView *)subview
@@ -10430,7 +10443,9 @@ static BOOL withReset = NO;
     }
     
     if ([sender isEqual: bannerSplit])
+    {
         return [sender frame].size.height - (banner.image.size.height+3);
+    }
 
     return proposedMin;
 }
@@ -10457,7 +10472,9 @@ static BOOL withReset = NO;
     }
     
     if (sender == bannerSplit)
+    {
         return [sender frame].size.height - (banner.image.size.height+3);
+    }
     
     if (sender == splitAlbums)
     {
@@ -14189,9 +14206,14 @@ static NSArray*	openSubSeriesArray = nil;
             [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"autoRetrieving"];
         #endif
         
+#ifdef WITH_BANNER
         [NSThread detachNewThreadSelector: @selector(checkForBanner:) toTarget: self withObject: nil];
-        
-        [bannerSplit setPosition: bannerSplit.frame.size.height - (banner.image.size.height+3) ofDividerAtIndex: 0];
+
+        CGFloat position = bannerSplit.frame.size.height - (banner.image.size.height+3);
+        [bannerSplit setPosition: position ofDividerAtIndex: 0];
+#else
+        [[[bannerSplit subviews] objectAtIndex:1] setHidden:YES];
+#endif
 
         [[self window] setAnimationBehavior: NSWindowAnimationBehaviorNone];
         
@@ -14229,23 +14251,29 @@ static NSArray*	openSubSeriesArray = nil;
 
 - (IBAction) clickBanner:(id) sender
 {
+#ifdef WITH_BANNER
     if( [[self window] isKeyWindow])
-        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com/Banner.html"]];
+        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_CLICK_BANNER]];
+#endif
 }
 
 - (void) installBanner: (NSImage*) bannerImage
 {
+#ifdef WITH_BANNER
     [banner setImage: bannerImage];
     [bannerSplit setPosition: bannerSplit.frame.size.height - (banner.image.size.height+3) ofDividerAtIndex: 0];
+#endif
 }
 
+// This gets executed in a separate thread
 - (void) checkForBanner: (id) sender
 {
+#ifdef WITH_BANNER
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
     NSError *error = nil;
     NSURLResponse *urlResponse = nil;
     
-    NSURLRequest *request = [[[NSURLRequest alloc] initWithURL: [NSURL URLWithString:@"http://www.osirix-viewer.com/OsiriXBanner.png"] cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval: 30] autorelease];
+    NSURLRequest *request = [[[NSURLRequest alloc] initWithURL: [NSURL URLWithString:URL_OSIRIX_BANNER] cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval: 30] autorelease];
     NSData *imageData = [NSURLConnection sendSynchronousRequest: request returningResponse: &urlResponse error: &error];
     
     if( imageData && error == nil && [urlResponse.MIMEType isEqualToString: @"image/png"])
@@ -14257,6 +14285,7 @@ static NSArray*	openSubSeriesArray = nil;
     }
     
     [pool release];
+#endif
 }
 
 -(void)dealloc

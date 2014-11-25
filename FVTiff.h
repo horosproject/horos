@@ -16,7 +16,12 @@
 #define FVTIFF_H
 
 #import <Foundation/Foundation.h>
-#include "tiffio.h"
+#import "options.h"
+#ifdef VTK_USE_SYSTEM_TIFF
+#include <tiffio.h>
+#else
+#include "vtktiff/tiffio.h"
+#endif
 
 #define TIFFTAG_FV_MMHEADER		34361
 #define TIFFTAG_FV_MMSTAMP		34362

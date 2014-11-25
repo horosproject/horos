@@ -12,10 +12,12 @@
      PURPOSE.
 =========================================================================*/
 
+#import "options.h"
+
 #import "OSI3DPreferencePane.h"
 
 #ifndef OSIRIX_LIGHT
-#import "VTKView.h"
+#import "VTKViewOSIRIX.h"
 #endif
 
 @implementation OSI3DPreferencePanePref
@@ -45,13 +47,13 @@
             if( [[NSUserDefaults standardUserDefaults] boolForKey: @"MAPPERMODEVR"])
             {
     #ifndef OSIRIX_LIGHT
-                long vram = [VTKView VRAMSizeForDisplayID: [[[[mainWindow screen] deviceDescription] objectForKey: @"NSScreenNumber"] intValue]];
+                long vramMB = [VTKView VRAMSizeForDisplayID: [[[[mainWindow screen] deviceDescription] objectForKey: @"NSScreenNumber"] intValue]];
                 
-                vram /= 1024*1024;
+                //vram /= 1024*1024;
                 
-                if( vram <= 512)
+                if( vramMB <= 512)
                 {
-                    NSRunCriticalAlertPanel( NSLocalizedString(@"GPU Rendering", nil), NSLocalizedString( @"Your graphic board has only %d MB of VRAM. Performances will be very limited with large dataset.", nil), NSLocalizedString( @"OK", nil), nil, nil, vram);
+                    NSRunCriticalAlertPanel( NSLocalizedString(@"GPU Rendering", nil), NSLocalizedString( @"Your graphic board has only %d MB of VRAM. Performances will be very limited with large dataset.", nil), NSLocalizedString( @"OK", nil), nil, nil, vramMB);
                 }
     #endif
             }

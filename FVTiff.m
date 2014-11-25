@@ -15,7 +15,6 @@
 
 
 #include "FVTiff.h"
-#include "tiffio.h"
 #include "CoreFoundation/CFByteOrder.h"
 #include "string.h"
 #include <stdio.h>

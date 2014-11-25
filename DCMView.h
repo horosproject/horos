@@ -23,6 +23,8 @@
 #include <OpenGL/CGLContext.h>
 #import "N3Geometry.h"
 
+#include "options.h"
+
 #define STAT_UPDATE					0.6f
 #define IMAGE_COUNT					1
 #define IMAGE_DEPTH					32
@@ -235,7 +237,10 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	
 	BOOL			scaleToFitNoReentry;
 	
-	GLString		*showDescriptionInLargeText, *warningNotice;
+	GLString		*showDescriptionInLargeText;
+#ifdef WITH_RED_CAPTION
+    GLString		*warningNotice;
+#endif
     float           previousScalingFactor;
 	
 	//Context for rendering to iChat

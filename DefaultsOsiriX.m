@@ -24,6 +24,10 @@
 
 #include <IOKit/graphics/IOGraphicsLib.h>
 
+#include <CoreFoundation/CoreFoundation.h>
+#include <IOKit/IOKitLib.h>
+
+#import "url.h"
 
 //static BOOL isHcugeCh = NO, isUnigeCh = NO, testIsHugDone = NO, testIsUniDone = NO;
 //static NSString *hostName = @"";
@@ -176,6 +180,66 @@ static NSHost *currentHost = nil;
 	[convValues setObject:aConvFilter forKey:name];
 }
 
++ (mach_vm_size_t) GPUModelVRAMInfo
+{
+    io_iterator_t Iterator;
+    kern_return_t err = IOServiceGetMatchingServices(kIOMasterPortDefault, IOServiceMatching("IOPCIDevice"), &Iterator);
+    if (err != KERN_SUCCESS)
+    {
+        NSLog(@"IOServiceGetMatchingServices failed: %u\n", err);
+        return -1;
+    }
+    
+    for (io_service_t Device; IOIteratorIsValid(Iterator) && (Device = IOIteratorNext(Iterator)); IOObjectRelease(Device))
+    {
+        CFStringRef Name = IORegistryEntrySearchCFProperty(Device, kIOServicePlane, CFSTR("IOName"), kCFAllocatorDefault, kNilOptions);
+        if (Name)
+        {
+            if (CFStringCompare(Name, CFSTR("display"), 0) == kCFCompareEqualTo)
+            {
+                CFDataRef Model = IORegistryEntrySearchCFProperty(Device, kIOServicePlane, CFSTR("model"), kCFAllocatorDefault, kNilOptions);
+                if (Model)
+                {
+                    _Bool ValueInBytes = TRUE;
+                    CFTypeRef VRAMSize = IORegistryEntrySearchCFProperty(Device, kIOServicePlane, CFSTR("VRAM,totalsize"), kCFAllocatorDefault, kIORegistryIterateRecursively); //As it could be in a child
+                    if (!VRAMSize)
+                    {
+                        ValueInBytes = FALSE;
+                        VRAMSize = IORegistryEntrySearchCFProperty(Device, kIOServicePlane, CFSTR("VRAM,totalMB"), kCFAllocatorDefault, kIORegistryIterateRecursively); //As it could be in a child
+                    }
+                    
+                    if (VRAMSize)
+                    {
+                        mach_vm_size_t Size = 0;
+                        CFTypeID Type = CFGetTypeID(VRAMSize);
+                        if (Type == CFDataGetTypeID())
+                            Size = (CFDataGetLength(VRAMSize) == sizeof(uint32_t) ? (mach_vm_size_t)*(const uint32_t*)CFDataGetBytePtr(VRAMSize)
+                                    : *(const uint64_t*)CFDataGetBytePtr(VRAMSize));
+                        else if (Type == CFNumberGetTypeID())
+                            CFNumberGetValue(VRAMSize, kCFNumberSInt64Type, &Size);
+                        
+                        if (ValueInBytes)
+                            Size >>= 20;
+                        
+                        NSLog(@"Graphics: %s, %lluMB", CFDataGetBytePtr(Model), Size);
+                        
+                        CFRelease(Model);
+                        return Size;
+                    }
+                    else
+                        NSLog(@"%s : Unknown VRAM Size\n", CFDataGetBytePtr(Model));
+                    
+                    
+                    CFRelease(Model);
+                } // if Model
+            }
+            
+            CFRelease(Name);
+        } // if Name
+    } // for
+    
+    return 0;
+}
 
 + (long) vramSize
 {
@@ -968,7 +1032,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject: @"1" forKey: @"DICOMSENDALLOWED"];
 	[defaultValues setObject: @"14.0" forKey: @"FONTSIZE"];
 	[defaultValues setObject: @"2" forKey: @"REPORTSMODE"];
-	[defaultValues setObject: @"http://www.osirix-viewer.com/internet.dcm" forKey: @"LASTURL"];
+	[defaultValues setObject: URL_OSIRIX_VIEWER@"/internet.dcm" forKey: @"LASTURL"];
 	[defaultValues setObject: @"0" forKey: @"MAPPERMODEVR"];
 	[defaultValues setObject: @"1" forKey: @"STARTCOUNT"];
 	[defaultValues setObject: @"1" forKey: @"editingLevel"];

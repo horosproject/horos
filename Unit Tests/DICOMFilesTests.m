@@ -18,13 +18,13 @@
 #import "Papyrus3.h"
 #import "DDData.h"
 
+#include "options.h"
+
 @implementation DICOMFilesTests
 
 - (void)setUp
 {
     [super setUp];
-    
-    Papy3Init();
     
     // Set-up code here.
 }

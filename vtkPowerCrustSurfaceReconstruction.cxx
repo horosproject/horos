@@ -16,10 +16,16 @@
 
 =========================================================================*/
 
+#import "options.h"
+
 #include "vtkPowerCrustSurfaceReconstruction.h"
 #include "vtkObjectFactory.h"
 #include "vtkFloatArray.h"
 #include <exception>
+
+#if __LP64__
+#import "vtkConfigure.h"
+#endif
 
 vtkCxxRevisionMacro(vtkPowerCrustSurfaceReconstruction, "$Revision: 1.4 $");
 vtkStandardNewMacro(vtkPowerCrustSurfaceReconstruction);
@@ -11597,6 +11603,7 @@ srand48(long seed)
 
 void vtkPowerCrustSurfaceReconstruction::Execute()
 {
+#if 0 // TODO: update it to the new VTK
   vtkDataSet *input= this->GetInput();
 //  vtkIdType numPts=input->GetNumberOfPoints();
 
@@ -11653,7 +11660,7 @@ void vtkPowerCrustSurfaceReconstruction::Execute()
     }
     
   this->medial_surface->Modified();
-
+#endif
 }
 
 void vtkPowerCrustSurfaceReconstruction::PrintSelf(ostream& os, vtkIndent indent)
@@ -11664,6 +11671,7 @@ void vtkPowerCrustSurfaceReconstruction::PrintSelf(ostream& os, vtkIndent indent
 
 void vtkPowerCrustSurfaceReconstruction::ComputeInputUpdateExtents(vtkDataObject *output)
 {
+#if 0 // TODO: update it to the new VTK
   int piece, numPieces, ghostLevels;
   
   if (this->GetInput() == NULL)
@@ -11683,6 +11691,7 @@ void vtkPowerCrustSurfaceReconstruction::ComputeInputUpdateExtents(vtkDataObject
   this->GetInput()->SetUpdateExtent(piece, numPieces, ghostLevels);
 
   this->GetInput()->RequestExactExtentOn();
+#endif
 }
 
 void vtkPowerCrustSurfaceReconstruction::ExecuteInformation()

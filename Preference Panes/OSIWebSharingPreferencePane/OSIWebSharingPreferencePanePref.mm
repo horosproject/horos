@@ -27,6 +27,7 @@
 #import <OsiriXAPI/DicomStudy.h>
 
 #import "DDKeychain.h"
+#import "url.h"
 
 //#include <netdb.h>
 //#include <unistd.h>
@@ -145,7 +146,7 @@
 
 		if(clickedButton==NSOKButton)
 		{
-			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com/Documentation/Guides/Security/index.html"]];
+			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_OSIRIX_DOC_SECURITY]];
 		}
 		
 		return;

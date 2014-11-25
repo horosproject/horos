@@ -11,6 +11,9 @@
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.
 =========================================================================*/
+
+#import "options.h"
+
 #import "ROIVolumeController.h"
 #import "ROIVolumeView.h"
 #import "Notifications.h"

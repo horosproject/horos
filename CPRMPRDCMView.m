@@ -12,6 +12,8 @@
  PURPOSE.
  =========================================================================*/
 
+#import "options.h"
+
 #import "CPRController.h"
 #import "CPRMPRDCMView.h"
 #import "VRController.h"
@@ -132,7 +134,12 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	return NO;
 }
 
-- (void) setDCMPixList:(NSMutableArray*)pixList filesList:(NSArray*)files roiList:(NSMutableArray*)rois firstImage:(short)firstImage type:(char)type reset:(BOOL)reset;
+- (void) setDCMPixList:(NSMutableArray*)pixList
+             filesList:(NSArray*)files
+               roiList:(NSMutableArray*)rois
+            firstImage:(short)firstImage
+                  type:(char)type
+                 reset:(BOOL)reset;
 {
 	[super setPixels:pixList files:files rois:rois firstImage:firstImage level:type reset:reset];
     
@@ -343,7 +350,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	
 	if( [self frame].size.height <= 0)
 		return;
-	
+    
 	long h, w;
 	float previousWW, previousWL;
 	BOOL isRGB;

@@ -183,7 +183,7 @@
 	<key>CFBundleName</key>
 	<string>OsiriX</string>
 	<key>CFBundleGetInfoString</key>
-	<string>OsiriX v.5.9</string>
+	<string>Osiri-LXIV v.5.9</string>
 	<key>CFBundleIconFile</key>
 	<string>Osirix.icns</string>
 	<key>CFBundleIdentifier</key>
@@ -212,7 +212,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>20140701</string>
+	<string>20141125</string>
 	<key>LSCanProvideIMVideoDataSource</key>
 	<string>Yes</string>
 	<key>LSRequiresNativeExecution</key>

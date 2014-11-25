@@ -12,6 +12,8 @@
      PURPOSE.
 =========================================================================*/
 
+#import "options.h"
+
 #import "VRPresetPreview.h"
 #import "Notifications.h"
 
@@ -211,7 +213,7 @@
 	//	reader->SetImportVoidPointer(data);
 		reader->SetImportVoidPointer(data8);
 	}
-	
+	reader->Update();
 	[firstObject orientation:cosines];
 	
 //	float invThick;
@@ -381,10 +383,12 @@
 	volume->PickableOff();
 	
 	outlineData = vtkOutlineFilter::New();
-	outlineData->SetInput((vtkDataSet *) reader->GetOutput());
+	outlineData->SetInputConnection(reader->GetOutputPort());
 	
     mapOutline = vtkPolyDataMapper::New();
-    mapOutline->SetInput(outlineData->GetOutput());
+    mapOutline->SetInputConnection(outlineData->GetOutputPort());
+
+    mapOutline->Update();
     
     outlineRect = vtkActor::New();
     outlineRect->SetMapper(mapOutline);
@@ -551,7 +555,7 @@
 	rect->Delete();
 //	
 	Line2D = vtkPolyDataMapper2D::New();
-	Line2D->SetInput( Line2DData);
+	Line2D->SetInputData( Line2DData);
 //	
 	Line2DActor = vtkActor2D::New();
 //	Line2DActor->GetPositionCoordinate()->SetCoordinateSystemToDisplay();

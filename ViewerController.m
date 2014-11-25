@@ -12,6 +12,8 @@
      PURPOSE.
 =========================================================================*/
 
+#include "options.h"
+
 #import "NSImage+N2.h"
 #import "DefaultsOsiriX.h"
 #import "NSAppleScript+HandlerCalls.h"
@@ -6945,30 +6947,10 @@ return YES;
                 if (shutterRect.origin.y < 0) { shutterRect.size.height += shutterRect.origin.y; shutterRect.origin.x = 0;}
                 if (shutterRect.origin.x + shutterRect.size.width > p.pwidth) shutterRect.size.width = p.pwidth - shutterRect.origin.x;
                 if (shutterRect.origin.y + shutterRect.size.height > p.pheight) shutterRect.size.height = p.pheight - shutterRect.origin.y;
-                
-				p.shutterRect = shutterRect;
-				p.shutterEnabled = NSOnState;
-			}
-		}
-		else
-		{
-			//using stored shutterRect?
-			if( (curPix.shutterRect.size.width == 0 || (curPix.shutterRect.size.width == [curPix pwidth] && curPix.shutterRect.size.height == [curPix pheight])) && curPix.shutterPolygonal == nil)
-			{
-				[shutterOnOff setState:NSOffState];
-				
-				NSRunCriticalAlertPanel(NSLocalizedString(@"Shutter", nil), NSLocalizedString(@"Please first define a rectangle with a rectangular ROI.", nil), NSLocalizedString(@"OK", nil), nil, nil);
-			}
-			else //reuse preconfigured shutterRect
-			{
-				for( DCMPix *p in [imageView dcmPixList]) p.shutterEnabled = NSOnState;
 			}
 		}
 	}
-	else
-	{
-		for( DCMPix *p in [imageView dcmPixList]) p.shutterEnabled = NSOffState;
-	}
+
 	[imageView setIndex: [imageView curImage]]; //refresh viewer only
 }
 
@@ -7506,9 +7488,11 @@ return YES;
 
 - (id) initWithPix:(NSMutableArray*)f withFiles:(NSMutableArray*)d withVolume:(NSData*) v
 {
+#ifdef WITH_IMPORTANT_NOTICE
     [AppController displayImportantNotice: self];
+#endif
     
-//	*(long*)0 = 0xDEADBEEF; // ILCrashReporter test -- DO NOT ACTIVATE THIS LINE 
+//	*(long*)0 = 0xDEADBEEF; // ILCrashReporter test -- DO NOT ACTIVATE THIS LINE
 	
 	DicomImage* dicomImage = [d objectAtIndex:0];
 	self.database = [DicomDatabase databaseForContext:dicomImage.managedObjectContext];
@@ -8930,9 +8914,6 @@ static int avoidReentryRefreshDatabase = 0;
         }
     }
     
-    if( firstPix.shutterEnabled)
-        [self setShutterOnOffButton: [NSNumber numberWithBool: YES]];
-	
     [self setWindowTitle:self];
     
     originalOrientation = -1;
@@ -16473,14 +16454,10 @@ int i,j,l;
 				if( [[imageView curDCM] SUVConverted] != [[[vC imageView] curDCM] SUVConverted]) propagate = NO;
 			}
 			
-			if( [[vC modality] isEqualToString:@"MR"] == YES && [[self modality] isEqualToString:@"MR"] == YES)
-			{
-                if( imageView.curDCM.repetitionTime != vC.imageView.curDCM.repetitionTime ||
-                    imageView.curDCM.echoTime != vC.imageView.curDCM.echoTime)
-					{
-						propagate = NO;
-					}
-			}
+//			if( [[vC modality] isEqualToString:@"MR"] == YES && [[self modality] isEqualToString:@"MR"] == YES)
+//			{
+//
+//			}
 			
 			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"DONTCOPYWLWWSETTINGS"] == NO)
 			{

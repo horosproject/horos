@@ -14,6 +14,7 @@
 
 #import "OSILocationsPreferencePanePref.h"
 #import "N2Debug.h"
+#import "url.h"
 
 //#import "DDKeychain.h"
 
@@ -884,7 +885,7 @@
 		
 		if(clickedButton==NSOKButton)
 		{
-			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com/Documentation/Guides/Security/index.html"]];
+			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_OSIRIX_DOC_SECURITY]];
 		}
 		
 		return;

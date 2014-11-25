@@ -12,6 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
+#import "options.h"d
 
 #import "N3Geometry.h"
 #import "CPRTransverseView.h"

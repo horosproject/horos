@@ -13,6 +13,7 @@
  =========================================================================*/
 
 #import <Cocoa/Cocoa.h>
+#import "options.h"
 
 // WARNING: If you add or modify this list, check ViewerController.m, DCMView.h and HotKey Pref Pane
 
@@ -39,5 +40,8 @@ enum HotKeyActions {DefaultWWWLHotKeyAction = 0, FullDynamicWWWLHotKeyAction,
 + (NSMutableDictionary*) getDefaults;
 //+ (NSString*) hostName;
 + (NSHost*) currentHost;
+
++ (mach_vm_size_t) GPUModelVRAMInfo;
++ (long) vramSize;
 
 @end

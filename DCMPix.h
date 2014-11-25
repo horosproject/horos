@@ -16,6 +16,8 @@
 #import <Cocoa/Cocoa.h>
 #import <Accelerate/Accelerate.h>
 
+#include "options.h"
+
 #define ORIENTATION_SENSIBILITY 0.001
 
 typedef struct {
@@ -47,8 +49,10 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 
 @interface DCMPix: NSObject <NSCopying>
 {
-	NSString            *sourceFile, *URIRepresentationAbsoluteString, *imageType;
-	BOOL				isBonjour, fileTypeHasPrefixDICOM, isSigned;
+    NSString            *srcFile;  /**< source File */
+    NSString            *URIRepresentationAbsoluteString;
+    BOOL				isBonjour;
+    BOOL                fileTypeHasPrefixDICOM;
     int                 numberOfFrames;
     
 	NSArray				*pixArray;
@@ -63,7 +67,8 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	double				orientation[ 9];  /**< pointer to orientation vectors  */
 
 //	pixel representation
-	short				bitsAllocated, bitsStored, highBit;
+    BOOL				fIsSigned;
+	short				bitsAllocated, bitsStored;
     long                height, width;
     float               slope, offset;
     
@@ -71,8 +76,9 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	float				savedWL, savedWW;
 
 //	planar configuration
-	long				planarConf;
-    double				pixelSpacingX, pixelSpacingY, pixelRatio, estimatedRadiographicMagnificationFactor;
+    long				fPlanarConf;
+    double				pixelSpacingX, pixelSpacingY, pixelRatio;
+    double              estimatedRadiographicMagnificationFactor;
 	BOOL				pixelSpacingFromUltrasoundRegions;
 
 //	photointerpretation
@@ -84,10 +90,16 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 //  Waveform data
     DCMWaveform         *waveform;
     
+//  image type
+    NSString*           imageType;
+    
 //--------------------------------------
 
 // DICOM params needed for SUV calculations
-	float				patientsWeight, repetitionTime, echoTime, flipAngle;
+    float				patientsWeight;
+
+    NSString            *repetitiontime, *echotime, *flipAngle;
+
 	NSString			*laterality, *viewPosition, *patientPosition, *acquisitionDate, *SOPClassUID, *frameofReferenceUID, *rescaleType;
 	BOOL				hasSUV, SUVConverted, displaySUVValue;
 	NSString			*units, *decayCorrection;
@@ -108,10 +120,19 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	long				maskID;
 	float				maskTime, fImageTime;
 	
-    BOOL                shutterEnabled;
-    NSRect              shutterRect;
-	NSPoint             shutterCircular;
-	long				shutterCircular_radius;
+    NSNumber			*positionerPrimaryAngle;
+    NSNumber			*positionerSecondaryAngle;
+    
+    long				shutterRect_x;
+    long				shutterRect_y;
+    long				shutterRect_w;
+    long				shutterRect_h;
+    
+    long				shutterCircular_x;
+    long				shutterCircular_y;
+    long				shutterCircular_radius;
+    
+    BOOL				DCMPixShutterOnOff;
 	
 	NSPoint	 			*shutterPolygonal;
 	long				shutterPolygonalSize;
@@ -164,6 +185,7 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	BOOL				isLUT12Bit;
 	unsigned char		*LUT12baseAddr;
 	
+    BOOL				full32bitPipeline;
 	BOOL				needToCompute8bitRepresentation;
 
 /** Papyrus Loading variables */	
@@ -182,6 +204,8 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
     
     NSString            *referencedSOPInstanceUID;
     float               referenceCoordinates[ 4];
+
+    DCMTKFileFormat     *dcmtkDcmFileFormat;
 }
 
 @property long frameNo;
@@ -230,17 +254,25 @@ Note setter is different to not break existing usage. :-( */
 - (void)originDouble: (double*)o;
 
 /**  Axial Location */
-@property(nonatomic) double sliceLocation, sliceThickness, sliceInterval, spacingBetweenSlices;
+@property double sliceLocation;
+/**  Slice Thickness */
+@property double sliceThickness;
+/**  Slice Interval */
+@property double sliceInterval;
+/**  Gap between slices */
+@property(readonly) double spacingBetweenSlices;
 
 /**  8-bit TransferFunction */
 @property(nonatomic, retain) NSData *transferFunction; 
 
 @property(nonatomic) NSPoint subPixOffset;
 
-@property(nonatomic) BOOL shutterEnabled;
-@property(nonatomic) NSRect shutterRect;
+@property long DCMPixShutterRectWidth, DCMPixShutterRectHeight;
+@property long DCMPixShutterRectOriginX, DCMPixShutterRectOriginY;
 
-@property float repetitionTime, echoTime, flipAngle;
+@property(retain) NSString *repetitiontime, *echotime;
+@property(readonly) NSString *flipAngle;
+
 @property(readonly) NSString *laterality, *viewPosition, *patientPosition;
 
 @property char* baseAddr;
@@ -258,7 +290,8 @@ Note setter is different to not break existing usage. :-( */
 @property(readonly) short stack, stackMode;
 @property(readonly) BOOL generated;
 @property(retain) NSString *generatedName;
-@property(retain) NSString *sourceFile;
+
+@property(retain) NSString *srcFile;
 
 @property(readonly) unsigned int* VOILUT_table;
 
@@ -274,6 +307,10 @@ Note setter is different to not break existing usage. :-( */
 @property(retain) NSString *acquisitionDate, *rescaleType;
 @property(retain) NSCalendarDate *radiopharmaceuticalStartTime;
 @property BOOL SUVConverted, needToCompute8bitRepresentation;
+
+@property BOOL full32bitPipeline;
+@property(retain) DCMTKFileFormat *dcmtkDcmFileFormat;
+
 @property(readonly) BOOL hasSUV;
 @property float decayFactor;
 @property(retain) NSString *units, *decayCorrection;
@@ -458,10 +495,21 @@ Note setter is different to not break existing usage. :-( */
 - (void) maskTime:(float)newMaskTime;
 - (float) maskTime;
 - (void) getDataFromNSImage:(NSImage*) otherImage;
+
+- (void) positionerPrimaryAngle:(NSNumber *)newPositionerPrimaryAngle;
+- (NSNumber*) positionerPrimaryAngle;
+- (void) positionerSecondaryAngle:(NSNumber*)newPositionerSecondaryAngle;
+- (NSNumber*) positionerSecondaryAngle;
+
 + (NSPoint) originDeltaBetween:(DCMPix*) pix1 And:(DCMPix*) pix2;
 + (NSPoint) originCorrectedAccordingToOrientation: (DCMPix*) pix1;
 - (void) setBlackIndex:(int) i;
 + (NSImage*) resizeIfNecessary:(NSImage*) currentImage dcmPix: (DCMPix*) dcmPix;
+
+- (void) DCMPixShutterRect:(long)x :(long)y :(long)w :(long)h;
+- (BOOL) DCMPixShutterOnOff;
+- (void) DCMPixShutterOnOff:(BOOL)newDCMPixShutterOnOff;
+
 - (void) computeTotalDoseCorrected;
 - (void) setRGB : (BOOL) val;
 - (void) setConvolutionKernel:(float*)val :(short) size :(float) norm;
@@ -563,6 +611,12 @@ Note setter is different to not break existing usage. :-( */
 
 - (void) checkImageAvailble:(float)newWW :(float)newWL;
 
+/** Load the DICOM image using the DCMFramework.
+ * There should be no reason to call this. The class will call it when needed. */
+#ifndef OSIRIX_LIGHT
+- (BOOL)loadDICOMDCMFramework;
+#endif
+
 /** Load the DICOM image using Papyrus.
 * There should be no reason to call this. The class will call it when needed.
 */
@@ -622,13 +676,9 @@ Note setter is different to not break existing usage. :-( */
 + (BOOL) isRunOsiriXInProtectedModeActivated;
 
 /** Clears the papyrus group cache */
-- (void) clearCachedPapyGroups;
-+ (void) purgeCachedDictionaries;
+- (void) clearCachedDCMFrameworkFiles;
 
-/** Returns a pointer the the papyrus group
-* @param group group
-*/
-- (void *) getPapyGroup: (int)group;
++ (void) purgeCachedDictionaries;
 
 + (double) moment: (float *) x length:(long) length mean: (double) mean order: (int) order;
 + (double) skewness: (float*) data length: (long) length mean: (double) mean;
@@ -642,8 +692,10 @@ Note setter is different to not break existing usage. :-( */
 #ifdef OSIRIX_VIEWER
 /** Custom Annotations */
 - (void)loadCustomImageAnnotationsDBFields: (DicomImage*) imageObj;
-- (void)loadCustomImageAnnotationsPapyLink:(int)fileNb;
-- (NSString*) getDICOMFieldValueForGroup:(int)group element:(int)element papyLink:(short)fileNb;
+
+- (void)loadCustomImageAnnotationsPapyLink:(int)fileNb DCMLink:(DCMObject*)dcmObject;
+
+- (NSString*) getDICOMFieldValueForGroup:(int)group element:(int)element DCMLink:(DCMObject*)dcmObject;
 #endif
 
 @end

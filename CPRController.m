@@ -12,6 +12,8 @@
  PURPOSE.
  =========================================================================*/
 
+#import "options.h"
+
 #import "CPRController.h"
 #import "BrowserController.h"
 #import "Wait.h"
@@ -45,7 +47,12 @@
 
 static NSString *MPRPlaneObservationContext = @"MPRPlaneObservationContext";
 
+#ifdef OSIRIX_VIEWER
+void setvtkMeanIPMode( int m){}
+#else
 extern void setvtkMeanIPMode( int m);
+#endif
+
 extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2, float *u, float *iP);
 static float deg2rad = M_PI / 180.0; 
 
@@ -181,7 +188,11 @@ static float deg2rad = M_PI / 180.0;
     self.straightenedCPRAngle = self.straightenedCPRAngle + 0.1; // To force the update...
 }
 
-- (id)initWithDCMPixList:(NSMutableArray*)pix filesList:(NSMutableArray*)files volumeData:(NSData*)volume viewerController:(ViewerController*)viewer fusedViewerController:(ViewerController*)fusedViewer;
+- (id)initWithDCMPixList:(NSMutableArray*)pix
+               filesList:(NSMutableArray*)files
+              volumeData:(NSData*)volume
+        viewerController:(ViewerController*)viewer
+   fusedViewerController:(ViewerController*)fusedViewer;
 {
 	@try
 	{

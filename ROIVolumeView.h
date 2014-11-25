@@ -16,7 +16,7 @@
 =========================================================================*/
 
 #import <AppKit/AppKit.h>
-#include "VTKView.h"
+#import "VTKViewOSIRIX.h"
 #import "DCMPix.h"
 #import "Camera.h"
 

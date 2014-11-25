@@ -12,6 +12,8 @@
      PURPOSE.
 =========================================================================*/
 
+#import "options.h"
+
 #import "ROIVolumeView.h"
 #import "DCMPix.h"
 #import "DCMView.h"
@@ -27,6 +29,10 @@
 #import "N2Debug.h"
 #import "DicomDatabase.h"
 #import "ROI.h"
+
+#if __LP64__
+#import "vtkConfigure.h"
+#endif
 
 #define D2R 0.01745329251994329576923690768    // degrees to radians
 #define R2D 57.2957795130823208767981548141    // radians to degrees
@@ -326,7 +332,7 @@
 }
 
 - (NSDictionary*) setPixSource:(ROI*) r
-{
+{    
 	GLint swap = 1;  // LIMIT SPEED TO VBL if swap == 1
 	[self getVTKRenderWindow]->MakeCurrent();
 	[[NSOpenGLContext currentContext] setValues:&swap forParameter:NSOpenGLCPSwapInterval];
@@ -409,10 +415,12 @@
             reader->SetDataScalarTypeToFloat();
             reader->SetImportVoidPointer( (void*) [vD bytes]);
             reader->SetDataSpacing( factor*[copyPixList.lastObject pixelSpacingX], factor*[copyPixList.lastObject pixelSpacingY], factor * [copyPixList.lastObject sliceInterval]);
-            
+            reader->Update();
+
             vtkContourFilter *isoExtractor = vtkContourFilter::New();
-            isoExtractor->SetInput( reader->GetOutput());
+            isoExtractor->SetInputConnection( reader->GetOutputPort());
             isoExtractor->SetValue(0, 500);
+		isoExtractor->Update();
             
             reader->Delete();
             
@@ -427,7 +435,7 @@
                 float decimateVal = 0.5;
                 
                 isoDeci = vtkDecimatePro::New();
-                isoDeci->SetInput( previousOutput);
+                isoDeci->SetInputData( previousOutput);
                 isoDeci->SetTargetReduction( decimateVal);
                 isoDeci->SetPreserveTopology( TRUE);
                 
@@ -446,7 +454,7 @@
                 float smoothVal = 20;
                 
                 isoSmoother = vtkSmoothPolyDataFilter::New();
-                isoSmoother->SetInput( previousOutput);
+                isoSmoother->SetInputData( previousOutput);
                 isoSmoother->SetNumberOfIterations( smoothVal);
                 //		isoSmoother->SetRelaxationFactor(0.05);
                 
@@ -456,11 +464,12 @@
             
             
             vtkPolyDataNormals *isoNormals = vtkPolyDataNormals::New();
-            isoNormals->SetInput( previousOutput);
+            isoNormals->SetInputData( previousOutput);
             isoNormals->SetFeatureAngle( 120);
+	    isoNormals->Update();
             
             vtkPolyDataMapper *isoMapper = vtkPolyDataMapper::New();
-            isoMapper->SetInput( isoNormals->GetOutput());
+            isoMapper->SetInputConnection( isoNormals->GetOutputPort());
             isoMapper->ScalarVisibilityOff();
             
             isoMapper->Update();
@@ -482,27 +491,25 @@
         case 1:
         {
             vtkDelaunay3D *delaunayTriangulator = vtkDelaunay3D::New();
-            delaunayTriangulator->SetInput( profile);
+            delaunayTriangulator->SetInputData( profile);
             
             delaunayTriangulator->SetTolerance( 0.001);
             delaunayTriangulator->SetAlpha( 20);
             delaunayTriangulator->BoundingTriangulationOff();
+            delaunayTriangulator->Update();
             
             vtkTextureMapToSphere *tmapper = vtkTextureMapToSphere::New();
-            tmapper->SetInput( (vtkDataSet*) delaunayTriangulator->GetOutput());
+            tmapper->SetInputData( (vtkDataSet*) delaunayTriangulator->GetOutput());
             tmapper->PreventSeamOn();
+            tmapper->Update();
             
             vtkDataSetMapper *map = vtkDataSetMapper::New();
-            map->SetInput( tmapper->GetOutput());
+            map->SetInputConnection( tmapper->GetOutputPort());
             map->ScalarVisibilityOff();
-            
             map->Update();
-            
             mapper = map;
-            
             tmapper->Delete();
             delaunayTriangulator->Delete();
-            
         }
             break;
             
@@ -510,20 +517,22 @@
         case 0:
         {
             vtkPowerCrustSurfaceReconstruction *power = vtkPowerCrustSurfaceReconstruction::New();
-            power->SetInput( profile);
+            power->SetInputData( profile);
+            power->Update();
             
             vtkPolyDataNormals *polyDataNormals = vtkPolyDataNormals::New();
             polyDataNormals->ConsistencyOn();
             polyDataNormals->AutoOrientNormalsOn();
-            polyDataNormals->SetInput(power->GetOutput());
+            polyDataNormals->SetInputConnection(power->GetOutputPort());
             power->Delete();
             
             vtkTextureMapToSphere *tmapper = vtkTextureMapToSphere::New();
-            tmapper->SetInput( polyDataNormals->GetOutput());
+            tmapper->SetInputData( polyDataNormals->GetOutput());
             tmapper->PreventSeamOn();
+            tmapper->Update();
             
             vtkDataSetMapper *map = vtkDataSetMapper::New();
-            map->SetInput( tmapper->GetOutput());
+            map->SetInputConnection( tmapper->GetOutputPort());
             map->ScalarVisibilityOff();
             
             map->Update();
@@ -614,7 +623,8 @@
 				texture->InterpolateOn();
                 texture->SetRepeat( 1);
 			}
-			texture->SetInput( bmpread->GetOutput());
+			texture->SetInputData( bmpread->GetOutput());
+			texture->Update();
 			   
 			bmpread->Delete();
 

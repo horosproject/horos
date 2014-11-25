@@ -12,6 +12,8 @@
      PURPOSE.
 =========================================================================*/
 
+#import "options.h"
+
 #import "AppController.h"
 #import "VRController.h"
 #import "DCMView.h"

@@ -27,6 +27,8 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+#import "url.h"
+
 //char *GetPrivateIP()
 //{
 //	struct			hostent *h;
@@ -307,7 +309,7 @@
 		
 		if(clickedButton==NSOKButton)
 		{
-			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com/Documentation/Guides/Security/index.html"]];
+			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_OSIRIX_DOC_SECURITY]];
 		}
 		
 		return;

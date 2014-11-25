@@ -6,6 +6,8 @@
 //  Copyright 2011 OsiriX Team. All rights reserved.
 //
 
+#import "options.h"
+
 #import "CPRStretchedView.h"
 #import "CPRGeneratorRequest.h"
 #import "CPRVolumeData.h"
