@@ -77,7 +77,6 @@
 		183C865C08563F3A000E6A68 /* VRFlyThruAdapter.h in Headers */ = {isa = PBXBuildFile; fileRef = 183C864808563F3A000E6A68 /* VRFlyThruAdapter.h */; };
 		183C865D08563F3A000E6A68 /* VRFlyThruAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 183C864908563F3A000E6A68 /* VRFlyThruAdapter.m */; };
 		32E422150C97301600E193CA /* altivecFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 32E422140C97301600E193CA /* altivecFunctions.h */; };
-		4307C4F61A2039DE0083877C /* libtiff.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4307C4F51A2039DE0083877C /* libtiff.dylib */; };
 		4307C5E01A207A5A0083877C /* libITKBiasCorrection-4.6.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4307C5951A207A590083877C /* libITKBiasCorrection-4.6.a */; };
 		4307C5E11A207A5A0083877C /* libITKBioCell-4.6.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4307C5961A207A590083877C /* libITKBioCell-4.6.a */; };
 		4307C5E21A207A5A0083877C /* libITKCommon-4.6.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4307C5971A207A590083877C /* libITKCommon-4.6.a */; };
@@ -154,6 +153,7 @@
 		4307C6291A207A5A0083877C /* libITKWatersheds-4.6.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4307C5DE1A207A5A0083877C /* libITKWatersheds-4.6.a */; };
 		4307C62A1A207A5A0083877C /* libITKznz-4.6.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4307C5DF1A207A5A0083877C /* libITKznz-4.6.a */; };
 		4307C62C1A2091900083877C /* url.h in Headers */ = {isa = PBXBuildFile; fileRef = 4307C62B1A2091900083877C /* url.h */; };
+		431BCC401A24AC94002B36FB /* libtiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 431BCC3F1A24AC94002B36FB /* libtiff.a */; };
 		433F9A801A1B18A500E52C6C /* VTKView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 433F9A7E1A1B18A500E52C6C /* VTKView.mm */; };
 		433F9A811A1B18A500E52C6C /* VTKViewOSIRIX.h in Headers */ = {isa = PBXBuildFile; fileRef = 433F9A7F1A1B18A500E52C6C /* VTKViewOSIRIX.h */; };
 		433F9A891A1B7C1C00E52C6C /* OsiriXFixedPointVolumeRayCastMapper.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 433F9A871A1B7C1C00E52C6C /* OsiriXFixedPointVolumeRayCastMapper.cxx */; };
@@ -4572,7 +4572,6 @@
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32E422140C97301600E193CA /* altivecFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = altivecFunctions.h; sourceTree = "<group>"; };
-		4307C4F51A2039DE0083877C /* libtiff.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtiff.dylib; path = ../../../../usr/local/lib/libtiff.dylib; sourceTree = "<group>"; };
 		4307C5951A207A590083877C /* libITKBiasCorrection-4.6.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKBiasCorrection-4.6.a"; path = "Binaries/ITKLibs/libITKBiasCorrection-4.6.a"; sourceTree = "<group>"; };
 		4307C5961A207A590083877C /* libITKBioCell-4.6.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKBioCell-4.6.a"; path = "Binaries/ITKLibs/libITKBioCell-4.6.a"; sourceTree = "<group>"; };
 		4307C5971A207A590083877C /* libITKCommon-4.6.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKCommon-4.6.a"; path = "Binaries/ITKLibs/libITKCommon-4.6.a"; sourceTree = "<group>"; };
@@ -4649,6 +4648,7 @@
 		4307C5DE1A207A5A0083877C /* libITKWatersheds-4.6.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKWatersheds-4.6.a"; path = "Binaries/ITKLibs/libITKWatersheds-4.6.a"; sourceTree = "<group>"; };
 		4307C5DF1A207A5A0083877C /* libITKznz-4.6.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKznz-4.6.a"; path = "Binaries/ITKLibs/libITKznz-4.6.a"; sourceTree = "<group>"; };
 		4307C62B1A2091900083877C /* url.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = url.h; sourceTree = "<group>"; };
+		431BCC3F1A24AC94002B36FB /* libtiff.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtiff.a; path = Binaries/LibTiff/libtiff.a; sourceTree = "<group>"; };
 		433F9A7E1A1B18A500E52C6C /* VTKView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = VTKView.mm; sourceTree = "<group>"; };
 		433F9A7F1A1B18A500E52C6C /* VTKViewOSIRIX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VTKViewOSIRIX.h; sourceTree = "<group>"; };
 		433F9A871A1B7C1C00E52C6C /* OsiriXFixedPointVolumeRayCastMapper.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OsiriXFixedPointVolumeRayCastMapper.cxx; sourceTree = "<group>"; };
@@ -7279,6 +7279,7 @@
 				4307C5FD1A207A5A0083877C /* libITKIOLSM-4.6.a in Frameworks */,
 				434B46C41A1A1044008CF8CF /* libvtkImagingStatistics-6.2.a in Frameworks */,
 				4307C5F81A207A5A0083877C /* libITKIOGIPL-4.6.a in Frameworks */,
+				431BCC401A24AC94002B36FB /* libtiff.a in Frameworks */,
 				434B46941A1A1044008CF8CF /* libvtkChartsCore-6.2.a in Frameworks */,
 				4307C6021A207A5A0083877C /* libITKIONRRD-4.6.a in Frameworks */,
 				434B46971A1A1044008CF8CF /* libvtkCommonCore-6.2.a in Frameworks */,
@@ -7309,7 +7310,6 @@
 				434B46E61A1A1045008CF8CF /* libvtkNetCDF-6.2.a in Frameworks */,
 				434B46DB1A1A1044008CF8CF /* libvtkIOPLY-6.2.a in Frameworks */,
 				434B46E21A1A1045008CF8CF /* libvtklibxml2-6.2.a in Frameworks */,
-				4307C4F61A2039DE0083877C /* libtiff.dylib in Frameworks */,
 				4307C5E21A207A5A0083877C /* libITKCommon-4.6.a in Frameworks */,
 				434B46BA1A1A1044008CF8CF /* libvtkhdf5_hl-6.2.a in Frameworks */,
 				434B46A91A1A1044008CF8CF /* libvtkFiltersHybrid-6.2.a in Frameworks */,
@@ -7418,7 +7418,6 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				4307C4F51A2039DE0083877C /* libtiff.dylib */,
 				AB5E1A300595697700C48BEB /* Accelerate.framework */,
 				CEA9237415CE436E00D3385F /* AddressBook.framework */,
 				AB38FC99057A9B050041FEBB /* AGL.framework */,
@@ -7665,6 +7664,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				431BCC3F1A24AC94002B36FB /* libtiff.a */,
 				59FB64331230EE2F00EBA136 /* Ming */,
 				CE11138608EDD5E2005B15E1 /* ITKLibs */,
 				CE11138108EDD5CE005B15E1 /* VTKLibs */,
@@ -16236,13 +16236,14 @@
 				INFOPLIST_FILE = "Deployment-Info.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				LIBRARY_SEARCH_PATHS = (
-					"\"$(SRCROOT)/Binaries/VTKLibs\"",
+					"$(SRCROOT)/Binaries/VTKLibs",
 					"\"$(SRCROOT)/Binaries/ITKLibs\"",
 					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/Binaries/CharLS\"",
 					"$(SRCROOT)/Binaries/openjpeg",
 					AYDicomPrint,
 					/usr/local/lib,
+					"$(PROJECT_DIR)/Binaries/LibTiff",
 				);
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
@@ -16262,7 +16263,7 @@
 					"Deployment-Info.plist",
 				);
 				PRODUCT_NAME = OsiriX;
-				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/Binaries/ITKHeaders $(SRCROOT)/Binaries/VTKHeaders $(SRCROOT)/Binaries/openjpeg/**";
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/Binaries/ITKHeaders $(SRCROOT)/Binaries/VTKHeaders $(SRCROOT)/Binaries/openjpeg/** $(SRCROOT)/Binaries/LibTiff";
 				WARNING_CFLAGS = "-no-pedantic";
 			};
 			name = Development;
@@ -16480,7 +16481,7 @@
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = YES;
 				SYMROOT = build;
-				USER_HEADER_SEARCH_PATHS = "Binaries/VTKHeaders $(SRCROOT)/Binaries/openjpeg/**";
+				USER_HEADER_SEARCH_PATHS = "Binaries/VTKHeaders $(SRCROOT)/Binaries/openjpeg/** $(SRCROOT)/Binaries/LibTiff";
 			};
 			name = Development;
 		};
