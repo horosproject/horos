@@ -21,7 +21,6 @@
 #import "DCMView.h"
 #import "dicomFile.h"
 #import "NSFullScreenWindow.h"
-#import "Papyrus3/Papyrus3.h"
 #import "BrowserController.h"
 #include <Accelerate/Accelerate.h>
 #import "iPhoto.h"

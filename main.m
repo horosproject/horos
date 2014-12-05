@@ -14,7 +14,6 @@
 
 
 #import <Cocoa/Cocoa.h>
-#import "Papyrus3/Papyrus3.h"
 #import "NSFont_OpenGL.h"
 
 #include "options.h"

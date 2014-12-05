@@ -21,7 +21,6 @@
 #import "SRAnnotation.h"
 #import "SRAnnotation.h"
 #import "dicomFile.h"
-#import "Papyrus3/Papyrus3.h"
 #import "ViewerController.h"
 #import "PluginFileFormatDecoder.h"
 #import <OsiriX/DCMCalendarDate.h>

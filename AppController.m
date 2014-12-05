@@ -87,7 +87,7 @@
 #include <stdlib.h>
 
 #import "url.h"
-	 
+#include "opj_config.h"	 
 #define BUILTIN_DCMTK YES
 
 #define MAXSCREENS 10
@@ -689,7 +689,7 @@ static NSDate *lastWarningDate = nil;
 	return YES;
 }
 
-+(BOOL) hasMacOSXSyrah
++(BOOL) hasMacOSXYosemite
 {
     SInt32 OSXversionMajor, OSXversionMinor;
     if(Gestalt(gestaltSystemVersionMajor, &OSXversionMajor) == noErr &&
@@ -736,7 +736,6 @@ static NSDate *lastWarningDate = nil;
 	}
 	return YES;
 }
-
 
 +(BOOL) hasMacOSXLion
 {
@@ -2936,7 +2935,8 @@ static BOOL initialized = NO;
 				NSLog(@"Number of processors: %d / %d", processors, (int) [[NSProcessInfo processInfo] processorCount]);
                 NSLog(@"Number of screens: %d", (int) [[NSScreen screens] count]);
 				NSLog(@"Main screen backingScaleFactor: %f", (float) [[NSScreen mainScreen] backingScaleFactor]);
-                NSLog(@"Version: %@ - %@ - %@", [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey], [[[NSBundle mainBundle] infoDictionary] objectForKey: @"CFBundleShortVersionString"], bits);
+                NSLog(@"OsiriX version: %@ - %@ - %@", [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey], [[[NSBundle mainBundle] infoDictionary] objectForKey: @"CFBundleShortVersionString"], bits);
+                NSLog(@"OpenJPEG %d.%d.%d", OPJ_VERSION_MAJOR, OPJ_VERSION_MINOR, OPJ_VERSION_BUILD);                
                 NSArray *components = [[[NSBundle mainBundle] pathForResource: @"Localizable" ofType: @"strings"] pathComponents];
                 if( components.count > 3)
                     NSLog(@"Localization: %@", [components objectAtIndex: components.count -2]);
@@ -2953,7 +2953,7 @@ static BOOL initialized = NO;
 				
 			//	if( [[NSCalendarDate dateWithYear:2006 month:6 day:2 hour:12 minute:0 second:0 timeZone:[NSTimeZone timeZoneWithAbbreviation:@"EST"]] timeIntervalSinceNow] < 0)
 			//	{
-			//		NSRunCriticalAlertPanel(@"Update needed!", @"This version of OsiriX is outdated. Please download the last version from OsiriX web site!", @"OK", nil, nil);
+			//		NSRunCriticalAlertPanel(@"Update needed!", @"This version of OsiriX is outdated. Please download the latest version from OsiriX web site!", @"OK", nil, nil);
 			//		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_OSIRIX_VIEWER]];
 			//		exit(0);
 			//	}
@@ -3624,6 +3624,7 @@ static BOOL initialized = NO;
 #ifdef NDEBUG
     PFMoveToApplicationsFolderIfNecessary();
     
+#ifdef WITH_CODE_SIGNING
     SecRequirementRef requirement = 0;
     SecStaticCodeRef code = 0;
     
@@ -3652,8 +3653,9 @@ static BOOL initialized = NO;
     }
     CFRelease( requirement);
     CFRelease( code);
-#endif
-#endif
+#endif // WITH_CODE_SIGNING
+#endif // NDEBUG
+#endif // OSIRIX_LIGHT
     
     if( [AppController hasMacOSXLion] == NO)
     {
@@ -4158,7 +4160,7 @@ static BOOL initialized = NO;
         }
     }
     
-    if( [AppController hasMacOSXSyrah])
+    if( [AppController hasMacOSXYosemite])
     {
 #ifdef WITH_OS_VALIDATION
         NSAlert* alert = [[NSAlert new] autorelease];

@@ -140,10 +140,14 @@ extern AppController* OsiriX;
 + (BOOL) isFDACleared;
 + (BOOL) willExecutePlugin;
 + (BOOL) willExecutePlugin:(id) filter;
-+ (BOOL) hasMacOSXLion;
-+ (BOOL) hasMacOSXSnowLeopard;
+
 + (BOOL) hasMacOSXLeopard;
++ (BOOL) hasMacOSXSnowLeopard;
++ (BOOL) hasMacOSXLion;         // >= 10.7.5
++ (BOOL) hasMacOSXMountainLion;
++ (BOOL) hasMacOSX1083;
 + (BOOL) hasMacOSXMaverick;
++ (BOOL) hasMacOSXYosemite;
 
 +(NSString*)UID;
 

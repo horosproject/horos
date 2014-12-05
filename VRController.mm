@@ -19,7 +19,6 @@
 #import "DCMView.h"
 #import "dicomFile.h"
 #import "NSFullScreenWindow.h"
-#import "Papyrus3/Papyrus3.h"
 #import "BrowserController.h"
 #include <Accelerate/Accelerate.h>
 #import "iPhoto.h"
@@ -76,8 +75,6 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier = @"BackgroundColorVie
 static NSString*	PresetsPanelToolbarItemIdentifier = @"3DPresetsPanel.tif";
 static NSString*	ClippingRangeViewToolbarItemIdentifier = @"ClippingRange";
 static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
-
-#include <3DConnexionClient/ConnexionClientAPI.h>
 
 @implementation VRController
 

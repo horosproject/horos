@@ -12,6 +12,9 @@
      PURPOSE.
 =========================================================================*/
 
+#ifndef DCMVIEW_H_INCLUDED
+#define DCMVIEW_H_INCLUDED
+
 #import <Foundation/Foundation.h>
 #import <Cocoa/Cocoa.h>
 
@@ -563,3 +566,4 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 + (NSArray*)cleanedOutDcmPixArray:(NSArray*)input; // filters the input array of DCMPix by returning only the pix with the most common ImageType in the input array
 
 @end
+#endif

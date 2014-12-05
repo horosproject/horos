@@ -42,7 +42,6 @@
 #import "AppController.h"
 #import "ToolbarPanel.h"
 #import "ThumbnailsListPanel.h"
-#import "Papyrus3/Papyrus3.h"
 #import "DCMView.h"
 #import "StudyView.h"
 #import "ColorTransferView.h"

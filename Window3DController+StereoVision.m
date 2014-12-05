@@ -19,7 +19,6 @@
 #import "BrowserController.h"
 #import "Window3DController.h"
 #import "Mailer.h"
-#import "Papyrus3/Papyrus3.h"
 // { Removed by P. Thevenaz on June 11, 2010
 // #import "Accelerate.h"
 // }

@@ -44,7 +44,6 @@
 #import "dicomFile.h"
 #import "DicomFileDCMTKCategory.h"
 #import "NSSplitViewSave.h"
-#import "Papyrus3/Papyrus3.h"
 #import "DicomDirParser.h"
 #import "MutableArrayCategory.h"
 #import "SmartWindowController.h"

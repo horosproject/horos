@@ -15,7 +15,6 @@
 #import "BrowserController.h"
 #import "Window3DController.h"
 #import "Mailer.h"
-#import "Papyrus3/Papyrus3.h"
 #import <Accelerate/Accelerate.h>
 #import "DCMPix.h"
 #import "VRController.h"

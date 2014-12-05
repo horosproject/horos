@@ -15,7 +15,6 @@
 #import "DICOMFilesTests.h"
 #import "DCMPix.h"
 #import "dicomFile.h"
-#import "Papyrus3.h"
 #import "DDData.h"
 
 #include "options.h"

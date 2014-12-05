@@ -11,6 +11,9 @@
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.
 =========================================================================*/
+//2L
+#ifndef DCMPIX_H_INCLUDED
+#define DCMPIX_H_INCLUDED
 
 #import <Foundation/Foundation.h>
 #import <Cocoa/Cocoa.h>
@@ -699,3 +702,5 @@ Note setter is different to not break existing usage. :-( */
 #endif
 
 @end
+
+#endif
