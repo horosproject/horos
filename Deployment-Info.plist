@@ -212,7 +212,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>20141205</string>
+	<string>20141206</string>
 	<key>LSCanProvideIMVideoDataSource</key>
 	<string>Yes</string>
 	<key>LSRequiresNativeExecution</key>
