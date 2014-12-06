@@ -5994,6 +5994,8 @@ static ViewerController *draggedController = nil;
         [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"ROITEXTIFSELECTED"]; // To display the Cobbs value -> show all ROIs information
 }
 
+#pragma mark - NSToolbarDelegate
+
 - (NSToolbarItem *) toolbar: (NSToolbar *)toolbar itemForItemIdentifier: (NSString *) itemIdent willBeInsertedIntoToolbar:(BOOL) willBeInserted
 {
     // Required delegate method:  Given an item identifier, this method returns an item 
@@ -21320,7 +21322,11 @@ int i,j,l;
 	if (viewer)
 		return viewer;
 	
-	viewer = [[MPRController alloc] initWithDCMPixList:pixList[0] filesList:fileList[0] volumeData:volumeData[0] viewerController:self fusedViewerController:blendingController];
+	viewer = [[MPRController alloc] initWithDCMPixList:pixList[0]
+                                             filesList:fileList[0]
+                                            volumeData:volumeData[0]
+                                      viewerController:self
+                                 fusedViewerController:blendingController];
 	for( int i = 1; i < maxMovieIndex; i++)
 	{
 		[viewer addMoviePixList:pixList[ i] :volumeData[ i]];

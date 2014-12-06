@@ -463,7 +463,13 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
     computeMinMaxDepth--;
 }
 
--(id) initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC style:(NSString*) m mode:(NSString*) renderingMode
+-(id) initWithPix:(NSMutableArray*) pix
+                 :(NSArray*) f
+                 :(NSData*) vData
+                 :(ViewerController*) bC
+                 :(ViewerController*) vC
+            style:(NSString*) m
+             mode:(NSString*) renderingMode
 {
     unsigned long   i;
     short           err = 0;
@@ -795,7 +801,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
         }
         [nc addObserver:self selector:@selector(windowWillCloseNotification:) name:NSWindowWillCloseNotification object:nil];
         [nc addObserver:self selector:@selector(windowWillMoveNotification:) name:NSWindowWillMoveNotification object:nil];
-        [nc addObserver:self selector:@selector(windowWillMoveNotification:) name:NSWindowWillMoveNotification object:nil];
+        //[nc addObserver:self selector:@selector(windowWillMoveNotification:) name:NSWindowWillMoveNotification object:nil];
         
         if( [style isEqualToString:@"panel"])
         {
@@ -814,6 +820,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
         [self autorelease];
         return nil;
     }
+
     return self;
 }
 
@@ -1157,6 +1164,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	}
 }
 
+#pragma mark - NSWindowDelegate notifications
+
 - (void)windowDidResize:(NSNotification *)aNotification
 {
 	if( [style isEqualToString:@"panel"] == NO) [view squareView: self];
@@ -1186,6 +1195,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		[self autorelease];
 	}
 }
+
+#pragma mark -
 
 -(NSMatrix*) toolsMatrix
 {
@@ -1689,7 +1700,11 @@ return YES;
     [toolbar runCustomizationPalette:sender];
 }
 
-- (NSToolbarItem *) toolbar: (NSToolbar *)toolbar itemForItemIdentifier: (NSString *) itemIdent willBeInsertedIntoToolbar:(BOOL) willBeInserted
+#pragma mark - NSToolbarDelegate
+
+- (NSToolbarItem *) toolbar:(NSToolbar *)toolbar
+      itemForItemIdentifier:(NSString *) itemIdent
+  willBeInsertedIntoToolbar:(BOOL) willBeInserted
 {
     // Required delegate method:  Given an item identifier, this method returns an item 
     // The toolbar will use this method to obtain toolbar items that can be displayed in the customization sheet, or in the toolbar itself 
@@ -2130,6 +2145,8 @@ return YES;
 - (void) toolbarDidRemoveItem: (NSNotification *) notif
 {
 }
+
+#pragma mark -
 
 - (BOOL) validateToolbarItem: (NSToolbarItem *) toolbarItem
 {

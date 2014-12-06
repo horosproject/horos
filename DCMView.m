@@ -12236,14 +12236,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                 
 				glBindTexture (TEXTRECTMODE, texture[k++]);
 				
-//#ifndef NDEBUG
+#ifndef NDEBUG
                 {
                 GLenum glLocalError = GL_NO_ERROR;
                 glLocalError = glGetError();
                 if( glLocalError != GL_NO_ERROR)
                     NSLog( @"OpenGL error 0x%04X", glLocalError);
                 }
-//#endif
+#endif
                 
 				glTexParameterf (TEXTRECTMODE, GL_TEXTURE_PRIORITY, 1.0f);
 				
@@ -12319,14 +12319,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					}
 				}
 				
+#ifndef NDEBUG
                 {
-                #ifndef NDEBUG
                 GLenum glLocalError = GL_NO_ERROR;
                 glLocalError = glGetError();
                 if( glLocalError != GL_NO_ERROR)
                     NSLog( @"OpenGL error 0x%04X", glLocalError);
-                #endif
                 }
+#endif
 				
 				offsetY += currHeight;
 			}

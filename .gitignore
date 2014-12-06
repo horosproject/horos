@@ -5,32 +5,30 @@ OsiriX_Lion.xcodeproj/project.xcworkspace/xcuserdata/
 __MACOSX/
 Binaries/__MACOSX/
 build/
-VTKHeaders/
-ITK180/
 AYDicomPrint/
 AYDicomPrint/xercesc
 AYDicomPrint/libxerces-c.27.dylib
 AYDicomPrint/libdcmprintscu.dylib
-Binaries/ITKHeaders/
-Binaries/VTKHeaders/
-Binaries/ITKLibs/
-Binaries/VTKLibs/
-Binaries/weasis/
+Binaries/3DconnexionClient.framework/
+Binaries/DB_Previous_Models/
 Binaries/DCMTK/
 Binaries/dciodvfy
-Binaries/libPapyrusToolkit.a
-Binaries/Ming/
-Binaries/PAGES/
-Binaries/DB_Previous_Models/
-Binaries/OsiriX Report.template
-Binaries/3DconnexionClient.framework/
 Binaries/Growl.framework/
 Binaries/ILCrashReporter.framework/
+Binaries/ITKHeaders/
+Binaries/ITKLibs/
 Binaries/KDU SDK/libkdu_v73R.a
+Binaries/libPapyrusToolkit.a
 Binaries/LibTiff/
+Binaries/Ming/
 Binaries/openjpeg/
-Binaries/._OsiriX Report.template
+Binaries/OsiriX Report.template
+Binaries/PAGES/
 Binaries/ReportsToPDF/odt2pdf/build/odt2pdf
+Binaries/VTKHeaders/
+Binaries/VTKLibs/
+Binaries/weasis/
+Binaries/._OsiriX Report.template
 options.h
 url.h
 
