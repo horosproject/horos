@@ -35,7 +35,6 @@
 #include "Binaries/dcmtk-source/dcmjpls/djencode.h" //JPEG-LS
 
 #include "options.h"
-//#include "../Binaries/openjpeg/openjpeg.h"
 
 extern "C"
 {

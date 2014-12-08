@@ -12,6 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
+#import "options.h"
 #if !__LP64__
 #define USE3DCONNEXION 1
 #else
@@ -1120,7 +1121,8 @@ typedef struct _xyzArray
 				[self setNeedsDisplay:YES];
 			}
 			break;
-        default:;
+        default:
+		break;
 	}
 
 }
@@ -1804,12 +1806,17 @@ typedef struct _xyzArray
 		blendingReader->SetImportVoidPointer(blendingData);
 		blendingReader->SetDataSpacing( [blendingFirstObject pixelSpacingX], [blendingFirstObject pixelSpacingY], fabs( blendingSliceThickness));
 		
+		blendingReader->Update();
+        
 		if( blendingSliceThickness < 0 )
 		{
 			blendingFlip = vtkImageFlip::New();
 			blendingFlip->SetInputConnection( blendingReader->GetOutputPort());
 			blendingFlip->SetFlipAboutOrigin( TRUE);
 			blendingFlip->SetFilteredAxis(2);
+
+			blendingFlip->Update();
+
 		}
 		else blendingFlip = nil;
 		
@@ -1943,6 +1950,7 @@ typedef struct _xyzArray
 				isoResample->SetInputConnection( reader->GetOutputPort());
 			isoResample->SetAxisMagnificationFactor(0, resolution);
 			isoResample->SetAxisMagnificationFactor(1, resolution);
+			isoResample->Update();
 		}
 	}
 	
@@ -1963,6 +1971,8 @@ typedef struct _xyzArray
 			isoExtractor[ actor]->SetInputConnection( reader->GetOutputPort());
 		isoExtractor[ actor]->SetValue(0, isocontour);
 	}
+        
+	isoExtractor[ actor]->Update();
 	
 	vtkPolyData* previousOutput = isoExtractor[ actor]->GetOutput();
 	
@@ -2013,6 +2023,8 @@ typedef struct _xyzArray
 //	isoMapper[ actor]->SetResolveCoincidentTopologyToShiftZBuffer();
 //	isoMapper[ actor]->SetResolveCoincidentTopologyToOff();
 	
+	isoMapper[ actor]->Update();
+        
 	iso[ actor] = vtkActor::New();
     iso[ actor]->SetMapper( isoMapper[ actor]);
     iso[ actor]->GetProperty()->SetDiffuseColor( r, g, b);
@@ -2075,6 +2087,7 @@ typedef struct _xyzArray
             
 			BisoResample->SetAxisMagnificationFactor(0, resolution);
 			BisoResample->SetAxisMagnificationFactor(1, resolution);
+			BisoResample->Update();
 		}
 	}
 	
@@ -2095,6 +2108,8 @@ typedef struct _xyzArray
             BisoExtractor[ actor]->SetInputConnection( blendingReader->GetOutputPort());
 		BisoExtractor[ actor]->SetValue(0, isocontour);
 	}
+    
+	BisoExtractor[ actor]->Update();
 	
 	vtkPolyData* previousOutput = BisoExtractor[ actor]->GetOutput();
 	
@@ -2132,6 +2147,8 @@ typedef struct _xyzArray
 	BisoMapper[ actor] = vtkPolyDataMapper::New();
     BisoMapper[ actor]->SetInputConnection( BisoNormals[ actor]->GetOutputPort());
     BisoMapper[ actor]->ScalarVisibilityOff();
+    
+    BisoMapper[ actor]->Update();
 	
 	Biso[ actor] = vtkActor::New();
     Biso[ actor]->SetMapper( BisoMapper[ actor]);
@@ -2158,6 +2175,11 @@ typedef struct _xyzArray
 {
 	short   error = 0;
 	
+#if 0
+	NSLog(@"VTK version %s", vtkVersion::GetVTKSourceVersion());
+	NSLog(@"VTK version %s", VTK_SOURCE_VERSION);
+#endif
+
 	try
 	{
 		
@@ -2247,6 +2269,7 @@ typedef struct _xyzArray
 			flip->SetInputConnection( reader->GetOutputPort());
 			flip->SetFlipAboutOrigin( TRUE);
 			flip->SetFilteredAxis(2);
+			flip->Update();
 		}
 		else flip = nil;
 			
@@ -2265,10 +2288,10 @@ typedef struct _xyzArray
             outlineData->SetInputConnection(flip->GetOutputPort());
 		else
             outlineData->SetInputConnection(reader->GetOutputPort());
-		
+		outlineData->Update();
 		mapOutline = vtkPolyDataMapper::New();
 		mapOutline->SetInputConnection(outlineData->GetOutputPort());
-		
+		mapOutline->Update();
 		outlineRect = vtkActor::New();
 		outlineRect->SetMapper(mapOutline);
 		outlineRect->GetProperty()->SetColor(0,1,0);
@@ -2788,6 +2811,7 @@ typedef struct _xyzArray
 	vtkPolyDataMapper *mapper = vtkPolyDataMapper::New();
 	mapper->SetInputConnection(sphereSource->GetOutputPort());
 	sphereSource->Delete();
+	mapper->Update();
 	//Actor
 	vtkActor *sphereActor = vtkActor::New();
 	sphereActor->SetMapper(mapper);
@@ -3108,6 +3132,8 @@ typedef struct _xyzArray
 	//Mapper
 	vtkPolyDataMapper *mapper = vtkPolyDataMapper::New();
 	mapper->SetInputConnection(sphereSource->GetOutputPort());
+	mapper->Update();
+
 	//Actor
 	actor->SetMapper(mapper);
 	
