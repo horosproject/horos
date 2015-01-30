@@ -890,19 +890,7 @@ static NSDate *lastWarningDate = nil;
 #ifdef WITH_IMPORTANT_NOTICE
 + (void) displayImportantNotice:(id) sender
 {
-	if( lastWarningDate == nil || [lastWarningDate timeIntervalSinceNow] < -60*5)
-	{
-		int result = NSRunCriticalAlertPanel( NSLocalizedString( @"Important Notice", nil), NSLocalizedString( @"This version of OsiriX, being a free open-source software (FOSS), is not certified as a commercial medical device for primary diagnostic imaging.\r\rFor a certified version and to get rid of this message, please update to 'OsiriX MD' certified version.", nil), NSLocalizedString( @"OsiriX MD", nil), NSLocalizedString( @"I agree", nil), NSLocalizedString( @"Quit", nil));
-		
-		if( result == NSAlertDefaultReturn)
-			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_VENDOR_NOTICE]];
-			
-		else if( result == NSAlertOtherReturn)
-			[[AppController sharedAppController] terminate: self];
-	}
 	
-	[lastWarningDate release];
-	lastWarningDate = [[NSDate date] retain];
 }
 #endif
 
@@ -4160,40 +4148,7 @@ static BOOL initialized = NO;
         }
     }
     
-    if( [AppController hasMacOSXYosemite])
-    {
-#ifdef WITH_OS_VALIDATION
-        NSAlert* alert = [[NSAlert new] autorelease];
-        [alert setMessageText: NSLocalizedString( @"Mac OS Version", nil)];
-        
-        [alert setInformativeText: NSLocalizedString( @"This version of OsiriX has not been validated or certified for this version of MacOS. Bugs, errors and instabilities can occur. Upgrade to latest version of OsiriX to solve this problem.", nil)];
-        
-        [alert addButtonWithTitle: NSLocalizedString( @"OK", nil)];
-        [alert addButtonWithTitle: NSLocalizedString( @"Upgrade", nil)];
-        
-        NSInteger button = [alert runModal];
-        
-        if( button == NSAlertSecondButtonReturn)
-        {
-            [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_OSIRIX_VIEWER]];
-        }
-#endif
-    }
-    
-	if( [AppController hasMacOSXMountainLion] == NO)
-	{
-		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"EncryptCD"];
-		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"encryptForExport"];
-		
-        NSAlert* alert = [[NSAlert new] autorelease];
-        [alert setMessageText: NSLocalizedString( @"Mac OS Version", nil)];
-        [alert setInformativeText: NSLocalizedString( @"You should upgrade to MacOS 10.9 or higher, for better performances, more features and more stability.", nil)];
-        [alert addButtonWithTitle: NSLocalizedString( @"Continue", nil)];
-        [alert addButtonWithTitle: NSLocalizedString( @"Upgrade", nil)];
-        if( [alert runModal] == NSAlertSecondButtonReturn)
-            [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.apple.com/osx/"]];
-	}
-	
+    	
 	[self initTilingWindows];
     
     //if ([NSUserDefaults.standardUserDefaults boolForKey:@"DoNotEmptyIncomingDir"]) // move temp & decompress to incoming
