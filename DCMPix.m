@@ -7219,7 +7219,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				{
 					// NIfTI support developed by Zack Mahdavi at the Center for Neurological Imaging, a division of Harvard Medical School
 					// For more information: http://cni.bwh.harvard.edu/
-					// For questions or suggestions regarding NIfTI integration in OsiriX, please contact zmahdavi@bwh.harvard.edu
+					// For questions or suggestions regarding NIfTI integration in Horos, please contact zmahdavi@bwh.harvard.edu
 					long			totSize;
 					struct nifti_1_header  *NIfTI;
 					nifti_image *nifti_imagedata;
@@ -7445,7 +7445,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 						}
 						
 						// Set up origins for nifti file.
-						//   - This portion tells OsiriX which view is active for the image.  This allows OsiriX to determine whether the 
+						//   - This portion tells Horos which view is active for the image.  This allows Horos to determine whether the 
 						//	   image is axial, sagittal, or coronal.  
 						// Grab orientations for i, j, and k axes based on either qform or sform matrices.
 						int icod, jcod, kcod;

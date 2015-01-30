@@ -642,7 +642,7 @@ static void dumpLSArchitecturesForX86_64()
                                 {										
                                     NSAlert* alert = [[NSAlert new] autorelease];
                                     [alert setMessageText: NSLocalizedString(@"64-bit", nil)];
-                                    [alert setInformativeText: NSLocalizedString(@"This version of OsiriX can run in 64-bit, but it is set to run in 32-bit. You can change this setting, by selecting the OsiriX icon in Applications folder, select 'Get Info' in Finder File menu and UNCHECK 'run in 32-bit mode'.", nil)];
+                                    [alert setInformativeText: NSLocalizedString(@"This version of Horos can run in 64-bit, but it is set to run in 32-bit. You can change this setting, by selecting the Horos icon in Applications folder, select 'Get Info' in Finder File menu and UNCHECK 'run in 32-bit mode'.", nil)];
                                     [alert setShowsSuppressionButton:YES ];
                                     [alert addButtonWithTitle: NSLocalizedString(@"Continue", nil)];
                                     [alert runModal];
@@ -805,7 +805,7 @@ static NSDate *lastWarningDate = nil;
 
 + (void) resetThumbnailsList
 {
-	int numberOfScreens = [[NSScreen screens] count] + 1; //Just in case, we connect a second monitor when using OsiriX.
+	int numberOfScreens = [[NSScreen screens] count] + 1; //Just in case, we connect a second monitor when using Horos.
 	
 	for( int i = 0; i < MAXSCREENS; i++)
     {
@@ -1411,7 +1411,7 @@ static NSDate *lastWarningDate = nil;
         if( [defaults integerForKey: @"httpWebServer"] == 1 && [defaults integerForKey: @"httpWebServer"] != [[previousDefaults valueForKey: @"httpWebServer"] intValue])
         {
             if( [AppController hasMacOSXSnowLeopard] == NO)
-                NSRunCriticalAlertPanel( NSLocalizedString( @"Unsupported", nil), NSLocalizedString( @"It is highly recommend to upgrade to MacOS 10.6 or higher to use the OsiriX Web Server.", nil), NSLocalizedString( @"OK", nil) , nil, nil);
+                NSRunCriticalAlertPanel( NSLocalizedString( @"Unsupported", nil), NSLocalizedString( @"It is highly recommend to upgrade to MacOS 10.6 or higher to use the Horos Web Server.", nil), NSLocalizedString( @"OK", nil) , nil, nil);
         }
         
         [previousDefaults release];
@@ -1438,7 +1438,7 @@ static NSDate *lastWarningDate = nil;
             if( showRestartNeeded == YES)
             {
                 showRestartNeeded = NO;
-                NSRunAlertPanel( NSLocalizedString( @"DICOM Listener", nil), NSLocalizedString( @"Restart OsiriX to apply these changes.", nil), NSLocalizedString( @"OK", nil), nil, nil);
+                NSRunAlertPanel( NSLocalizedString( @"DICOM Listener", nil), NSLocalizedString( @"Restart Horos to apply these changes.", nil), NSLocalizedString( @"OK", nil), nil, nil);
             }
         }
         
@@ -2161,14 +2161,14 @@ static NSDate *lastWarningDate = nil;
 	NSLog(@"restartSTORESCP");
 	
 	// Is called restart because previous instances of storescp might exist and need to be killed before starting
-	// This should be performed only if OsiriX is to handle storescp, depending on what is defined in the preferences
+	// This should be performed only if Horos is to handle storescp, depending on what is defined in the preferences
 	// Key:@"STORESCP" is the corresponding switch
 	
 	@try
     {
 		quitting = YES;
 		
-		// The Built-In StoreSCP is now the default and only storescp available in OsiriX.... Antoine 4/9/06
+		// The Built-In StoreSCP is now the default and only storescp available in Horos.... Antoine 4/9/06
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"USESTORESCP"] != YES)
 			[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"USESTORESCP"];
 		
@@ -2210,7 +2210,7 @@ static NSDate *lastWarningDate = nil;
 					
 					[STORESCP unlock];
 				}
-				else NSRunCriticalAlertPanel( NSLocalizedString( @"DICOM Listener Error", nil), NSLocalizedString( @"Cannot start DICOM Listener. Another thread is already running. Restart OsiriX.", nil), NSLocalizedString( @"OK", nil), nil, nil);
+				else NSRunCriticalAlertPanel( NSLocalizedString( @"DICOM Listener Error", nil), NSLocalizedString( @"Cannot start DICOM Listener. Another thread is already running. Restart Horos.", nil), NSLocalizedString( @"OK", nil), nil, nil);
 			}		
 		}
 		
@@ -2229,7 +2229,7 @@ static NSDate *lastWarningDate = nil;
 				
 				[STORESCPTLS unlock];
 			}
-			else NSRunCriticalAlertPanel( NSLocalizedString( @"DICOM TLS Listener Error", nil), NSLocalizedString( @"Cannot start DICOM TLS Listener. Another thread is already running. Restart OsiriX.", nil), NSLocalizedString( @"OK", nil), nil, nil);
+			else NSRunCriticalAlertPanel( NSLocalizedString( @"DICOM TLS Listener Error", nil), NSLocalizedString( @"Cannot start DICOM TLS Listener. Another thread is already running. Restart Horos.", nil), NSLocalizedString( @"OK", nil), nil, nil);
 		}
 	
 	} @catch (NSException* e) {
@@ -2365,7 +2365,7 @@ static NSDate *lastWarningDate = nil;
 	{
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"httpXMLRPCServer"] == NO)
 		{
-			int result = NSRunInformationalAlertPanel(NSLocalizedString(@"URL scheme", nil), NSLocalizedString(@"OsiriX URL scheme (osirix://) is currently not activated!\r\rShould I activate it now? Restart is necessary.", nil), NSLocalizedString(@"No",nil), NSLocalizedString(@"Activate & Restart",nil), nil);
+			int result = NSRunInformationalAlertPanel(NSLocalizedString(@"URL scheme", nil), NSLocalizedString(@"Horos URL scheme (osirix://) is currently not activated!\r\rShould I activate it now? Restart is necessary.", nil), NSLocalizedString(@"No",nil), NSLocalizedString(@"Activate & Restart",nil), nil);
 			
 			if( result == NSAlertAlternateReturn)
 			{
@@ -2923,7 +2923,7 @@ static BOOL initialized = NO;
 				NSLog(@"Number of processors: %d / %d", processors, (int) [[NSProcessInfo processInfo] processorCount]);
                 NSLog(@"Number of screens: %d", (int) [[NSScreen screens] count]);
 				NSLog(@"Main screen backingScaleFactor: %f", (float) [[NSScreen mainScreen] backingScaleFactor]);
-                NSLog(@"OsiriX version: %@ - %@ - %@", [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey], [[[NSBundle mainBundle] infoDictionary] objectForKey: @"CFBundleShortVersionString"], bits);
+                NSLog(@"Horos version: %@ - %@ - %@", [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey], [[[NSBundle mainBundle] infoDictionary] objectForKey: @"CFBundleShortVersionString"], bits);
                 NSLog(@"OpenJPEG %d.%d.%d", OPJ_VERSION_MAJOR, OPJ_VERSION_MINOR, OPJ_VERSION_BUILD);                
                 NSArray *components = [[[NSBundle mainBundle] pathForResource: @"Localizable" ofType: @"strings"] pathComponents];
                 if( components.count > 3)
@@ -2941,15 +2941,15 @@ static BOOL initialized = NO;
 				
 			//	if( [[NSCalendarDate dateWithYear:2006 month:6 day:2 hour:12 minute:0 second:0 timeZone:[NSTimeZone timeZoneWithAbbreviation:@"EST"]] timeIntervalSinceNow] < 0)
 			//	{
-			//		NSRunCriticalAlertPanel(@"Update needed!", @"This version of OsiriX is outdated. Please download the latest version from OsiriX web site!", @"OK", nil, nil);
+			//		NSRunCriticalAlertPanel(@"Update needed!", @"This version of Horos is outdated. Please download the latest version from Horos web site!", @"OK", nil, nil);
 			//		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_OSIRIX_VIEWER]];
 			//		exit(0);
 			//	}
 					
-				//	switch( NSRunInformationalAlertPanel(@"OsiriX", @"Thank you for using OsiriX!\rWe need your help! Send us comments, bugs and ideas!\r\rI need supporting emails to prove utility of OsiriX!\r\rThanks!", @"Continue", @"Send an email", @"Web Site"))
+				//	switch( NSRunInformationalAlertPanel(@"Horos", @"Thank you for using Horos!\rWe need your help! Send us comments, bugs and ideas!\r\rI need supporting emails to prove utility of Horos!\r\rThanks!", @"Continue", @"Send an email", @"Web Site"))
 				//	{
 				//		case 0:
-				//			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"mailto:rossetantoine@bluewin.ch?subject=OsiriX&cc=lpysher@mac.com,luca.spadola@mac.com,Osman.Ratib@sim.hcuge.ch"]];
+				//			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"mailto:email@horosproject.org?subject=Horos"]];
 				//		break;
 				//		
 				//		case -1:
@@ -2964,7 +2964,7 @@ static BOOL initialized = NO;
                 
                 if( [BrowserController _currentModifierFlags] & NSCommandKeyMask && [BrowserController _currentModifierFlags] & NSAlternateKeyMask)
                 {
-                    NSInteger result = NSRunInformationalAlertPanel( NSLocalizedString(@"Reset Preferences", nil), NSLocalizedString(@"Are you sure you want to reset ALL preferences of OsiriX? All the preferences will be reseted to their default values.", nil), NSLocalizedString(@"Cancel",nil), NSLocalizedString(@"OK",nil),  nil);
+                    NSInteger result = NSRunInformationalAlertPanel( NSLocalizedString(@"Reset Preferences", nil), NSLocalizedString(@"Are you sure you want to reset ALL preferences of Horos? All the preferences will be reseted to their default values.", nil), NSLocalizedString(@"Cancel",nil), NSLocalizedString(@"OK",nil),  nil);
                     
                     if( result == NSAlertAlternateReturn)
                     {
@@ -3051,8 +3051,8 @@ static BOOL initialized = NO;
                 if ([dataBasePath hasPrefix:@"/Volumes/"] || dataBasePath == nil) {
                     NSString* volumePath = [[[dataBasePath componentsSeparatedByString:@"/"] subarrayWithRange:NSMakeRange(0,3)] componentsJoinedByString:@"/"];
                     if (![[NSFileManager defaultManager] fileExistsAtPath:volumePath]) {
-                        NSPanel* dialog = [NSPanel alertWithTitle:@"OsiriX Data"
-                                                          message:[NSString stringWithFormat:NSLocalizedString(@"OsiriX is configured to use the database located at %@. This volume is currently not available, most likely because it hasn't yet been mounted by the system, or because it is not plugged in or is turned off, or because you don't have write permissions for this location. OsiriX will wait for a few minutes, then give up and switch to a database in the current user's home directory.", nil), [[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"]]
+                        NSPanel* dialog = [NSPanel alertWithTitle:@"Horos Data"
+                                                          message:[NSString stringWithFormat:NSLocalizedString(@"Horos is configured to use the database located at %@. This volume is currently not available, most likely because it hasn't yet been mounted by the system, or because it is not plugged in or is turned off, or because you don't have write permissions for this location. Horos will wait for a few minutes, then give up and switch to a database in the current user's home directory.", nil), [[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"]]
                                                     defaultButton:@"Quit"
                                                   alternateButton:@"Continue"
                                                              icon:nil];
@@ -3068,7 +3068,7 @@ static BOOL initialized = NO;
                             if ([[NSFileManager defaultManager] fileExistsAtPath:volumePath]) // the volume has become available, we can close the dialog
                                 break;
                             if ([NSDate timeIntervalSinceReferenceDate] > endTime) { // time's out, we close the dialog
-                                NSLog(@"Warning: after waiting for 10 minutes, OsiriX is switching to the default database location because %@ is still not available", volumePath);
+                                NSLog(@"Warning: after waiting for 10 minutes, Horos is switching to the default database location because %@ is still not available", volumePath);
                                 break;
                             }
                         }
@@ -3093,8 +3093,8 @@ static BOOL initialized = NO;
                 if ([dataBaseDataPath hasPrefix:@"/Volumes/"]) {
                     NSString* volumePath = [[[dataBaseDataPath componentsSeparatedByString:@"/"] subarrayWithRange:NSMakeRange(0,3)] componentsJoinedByString:@"/"];
                     if (![[NSFileManager defaultManager] fileExistsAtPath:volumePath]) {
-                        NSPanel* dialog = [NSPanel alertWithTitle:@"OsiriX Data"
-                                                          message:[NSString stringWithFormat:NSLocalizedString(@"OsiriX is configured to use the database with data located at %@. This volume is currently not available, most likely because it hasn't yet been mounted by the system, or because it is not plugged in or is turned off, or because you don't have write permissions for this location. OsiriX will wait for a few minutes, then give up and ignore this highly dangerous situation.", nil), dataBaseDataPath]
+                        NSPanel* dialog = [NSPanel alertWithTitle:@"Horos Data"
+                                                          message:[NSString stringWithFormat:NSLocalizedString(@"Horos is configured to use the database with data located at %@. This volume is currently not available, most likely because it hasn't yet been mounted by the system, or because it is not plugged in or is turned off, or because you don't have write permissions for this location. Horos will wait for a few minutes, then give up and ignore this highly dangerous situation.", nil), dataBaseDataPath]
                                                     defaultButton:@"Quit"
                                                   alternateButton:@"Continue"
                                                              icon:nil];
@@ -3110,7 +3110,7 @@ static BOOL initialized = NO;
                             if ([[NSFileManager defaultManager] fileExistsAtPath:volumePath]) // the volume has become available, we can close the dialog
                                 break;
                             if ([NSDate timeIntervalSinceReferenceDate] > endTime) { // time's out, we close the dialog
-                                NSLog(@"Warning: after waiting for 10 minutes, OsiriX is switching to the default database location because %@ is still not available", volumePath);
+                                NSLog(@"Warning: after waiting for 10 minutes, Horos is switching to the default database location because %@ is still not available", volumePath);
                                 break;
                             }
                         }
@@ -3242,7 +3242,7 @@ static BOOL initialized = NO;
                 {
                     if( [[NSFileManager defaultManager] fileExistsAtPath: path])
                     {
-                        int result = NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX crashed during last startup", nil), NSLocalizedString(@"Previous crash is maybe related to a corrupt database or corrupted images.\r\rShould I run OsiriX in Protected Mode (recommended) (no images displayed)? To allow you to delete the crashing/corrupted images/studies.\r\rOr Should I rebuild the local database? All albums, comments and status will be lost.", nil), NSLocalizedString(@"Continue normally",nil), NSLocalizedString(@"Protected Mode",nil), NSLocalizedString(@"Rebuild Database",nil));
+                        int result = NSRunInformationalAlertPanel(NSLocalizedString(@"Horos crashed during last startup", nil), NSLocalizedString(@"Previous crash is maybe related to a corrupt database or corrupted images.\r\rShould I run Horos in Protected Mode (recommended) (no images displayed)? To allow you to delete the crashing/corrupted images/studies.\r\rOr Should I rebuild the local database? All albums, comments and status will be lost.", nil), NSLocalizedString(@"Continue normally",nil), NSLocalizedString(@"Protected Mode",nil), NSLocalizedString(@"Rebuild Database",nil));
                         
                         if( result == NSAlertOtherReturn)
                         {
@@ -3511,7 +3511,7 @@ static BOOL initialized = NO;
 #ifdef OSIRIX_LIGHT
 	@try
 	{
-		int button = NSRunAlertPanel( NSLocalizedString( @"OsiriX Lite", nil), NSLocalizedString( @"This is the Lite version of OsiriX: many functions are not available. You can download the full version of OsiriX on the Internet.", nil), NSLocalizedString( @"Continue", nil), NSLocalizedString( @"Download", nil), nil);
+		int button = NSRunAlertPanel( NSLocalizedString( @"Horos Lite", nil), NSLocalizedString( @"This is the Lite version of Horos: many functions are not available. You can download the full version of Horos on the Internet.", nil), NSLocalizedString( @"Continue", nil), NSLocalizedString( @"Download", nil), nil);
 	
 		if (NSCancelButton == button)
 			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_OSIRIX_VIEWER]];
@@ -3636,7 +3636,7 @@ static BOOL initialized = NO;
         NSLog( @"SecStaticCodeCheckValidity: %d", (int) status);
         NSLog( @"%@", errors);
         
-        NSRunCriticalAlertPanel( NSLocalizedString( @"Code signing and Certificate", nil), NSLocalizedString( @"Invalid code signing or certificate. You should re-download OsiriX from the web site\r\rAre you using an utility such as CleanMyMac or CCleaner? Turn it off for OsiriX.", nil), NSLocalizedString( @"Continue", nil) , nil, nil);
+        NSRunCriticalAlertPanel( NSLocalizedString( @"Code signing and Certificate", nil), NSLocalizedString( @"Invalid code signing or certificate. You should re-download Horos from the web site\r\rAre you using an utility such as CleanMyMac or CCleaner? Turn it off for Horos.", nil), NSLocalizedString( @"Continue", nil) , nil, nil);
 
     }
     CFRelease( requirement);
@@ -3647,7 +3647,7 @@ static BOOL initialized = NO;
     
     if( [AppController hasMacOSXLion] == NO)
     {
-        NSRunCriticalAlertPanel( NSLocalizedString( @"MacOS Version", nil), NSLocalizedString( @"OsiriX requires MacOS 10.7.5 or higher. Please update your OS: Apple Menu - Software Update...", nil), NSLocalizedString( @"Quit", nil) , nil, nil);
+        NSRunCriticalAlertPanel( NSLocalizedString( @"MacOS Version", nil), NSLocalizedString( @"Horos requires MacOS 10.7.5 or higher. Please update your OS: Apple Menu - Software Update...", nil), NSLocalizedString( @"Quit", nil) , nil, nil);
         exit( 0);
     }
     
@@ -3972,7 +3972,7 @@ static BOOL initialized = NO;
             
             reporter.automaticReport = [d boolForKey: @"crashReporterAutomaticReport"];
             
-            [reporter launchReporterForCompany: @"OsiriX Developers" reportAddr: reportAddr];
+            [reporter launchReporterForCompany: @"Horos Developers" reportAddr: reportAddr];
         }
         @catch (NSException *e)
         {
@@ -4063,7 +4063,7 @@ static BOOL initialized = NO;
 	
 	if (startCount == 0) // Replaces FIRSTTIME.
 	{
-		switch( NSRunInformationalAlertPanel( NSLocalizedString(@"OsiriX Updates", nil), NSLocalizedString( @"Would you like to activate automatic checking for updates?", nil), NSLocalizedString( @"Yes", nil), NSLocalizedString( @"No", nil), nil))
+		switch( NSRunInformationalAlertPanel( NSLocalizedString(@"Horos Updates", nil), NSLocalizedString( @"Would you like to activate automatic checking for updates?", nil), NSLocalizedString( @"Yes", nil), NSLocalizedString( @"No", nil), nil))
 		{
 			case 0:
 				[[NSUserDefaults standardUserDefaults] setObject: @"NO" forKey: @"CheckOsiriXUpdates4"];
@@ -4076,7 +4076,7 @@ static BOOL initialized = NO;
 		{
 //			if ([[NSUserDefaults standardUserDefaults] integerForKey: @"STARTCOUNT2"] > 20)
 //			{
-//				switch( NSRunInformationalAlertPanel(@"OsiriX", @"Thank you for using OsiriX!\rDo you agree to answer a small survey to improve OsiriX?", @"Yes, sure!", @"Maybe next time", nil))
+//				switch( NSRunInformationalAlertPanel(@"Horos", @"Thank you for using Horos!\rDo you agree to answer a small survey to improve Horos?", @"Yes, sure!", @"Maybe next time", nil))
 //				{
 //					case 1:
 //					{
@@ -4105,7 +4105,7 @@ static BOOL initialized = NO;
 	}
 	
 		
-	//Checks for Bonjour enabled dicom servers. Most likely other copies of OsiriX
+	//Checks for Bonjour enabled dicom servers. Most likely other copies of Horos
 	[DCMNetServiceDelegate sharedNetServiceDelegate];
 	
 	previousDefaults = [[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] retain];
@@ -4289,12 +4289,12 @@ static BOOL initialized = NO;
 	
 	if( [msg isEqualToString:@"LISTENER"])
 	{
-		NSRunAlertPanel( NSLocalizedString( @"DICOM Listener Error", nil), NSLocalizedString( @"OsiriX listener cannot start. Is the Port valid? Is there another process using this Port?\r\rSee Listener - Preferences.", nil), NSLocalizedString( @"OK", nil), nil, nil);
+		NSRunAlertPanel( NSLocalizedString( @"DICOM Listener Error", nil), NSLocalizedString( @"Horos listener cannot start. Is the Port valid? Is there another process using this Port?\r\rSee Listener - Preferences.", nil), NSLocalizedString( @"OK", nil), nil, nil);
 	}
 	
 	if( [msg isEqualToString:@"UPTODATE"])
 	{
-		NSRunAlertPanel( NSLocalizedString( @"OsiriX is up-to-date", nil), NSLocalizedString( @"You have the most recent version of OsiriX.", nil), NSLocalizedString( @"OK", nil), nil, nil);
+		NSRunAlertPanel( NSLocalizedString( @"Horos is up-to-date", nil), NSLocalizedString( @"You have the most recent version of Horos.", nil), NSLocalizedString( @"OK", nil), nil, nil);
 	}
 	
 	if( [msg isEqualToString:@"ERROR"])
@@ -4304,14 +4304,14 @@ static BOOL initialized = NO;
 	
     if( [msg isEqualToString: @"UPDATECRASH"])
     {
-        NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX crashed", nil), NSLocalizedString(@"OsiriX crashed... You are running an outdated version of OsiriX ! This bug is probably corrected in the last version !", nil), NSLocalizedString(@"OK",nil), nil, nil);
+        NSRunInformationalAlertPanel(NSLocalizedString(@"Horos crashed", nil), NSLocalizedString(@"Horos crashed... You are running an outdated version of Horos ! This bug is probably corrected in the last version !", nil), NSLocalizedString(@"OK",nil), nil, nil);
         
         [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_OSIRIX_UPDATE_CRASH]];
     }
     
 	if( [msg isEqualToString:@"UPDATE"])
 	{
-		int button = NSRunAlertPanel( NSLocalizedString( @"New Version Available", nil), NSLocalizedString( @"A new version of OsiriX is available. Would you like to download the new version now?", nil), NSLocalizedString( @"Download", nil), NSLocalizedString( @"Continue", nil), nil);
+		int button = NSRunAlertPanel( NSLocalizedString( @"New Version Available", nil), NSLocalizedString( @"A new version of Horos is available. Would you like to download the new version now?", nil), NSLocalizedString( @"Download", nil), NSLocalizedString( @"Continue", nil), nil);
 		
 		if (NSOKButton == button)
 			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_OSIRIX_UPDATE]];
@@ -4327,12 +4327,12 @@ static BOOL initialized = NO;
 	WaitRendering *wait = nil;
 	
 	#ifdef OSIRIX_LIGHT
-	wait = [[[WaitRendering alloc] init: NSLocalizedString(@"Starting OsiriX Lite...", nil)] autorelease];
+	wait = [[[WaitRendering alloc] init: NSLocalizedString(@"Starting Horos Lite...", nil)] autorelease];
 	#else
 	if( sizeof( long) == 8)
-		wait = [[[WaitRendering alloc] init: NSLocalizedString(@"Starting OsiriX 64-bit", nil)] autorelease];
+		wait = [[[WaitRendering alloc] init: NSLocalizedString(@"Starting Horos 64-bit", nil)] autorelease];
 	else
-		wait = [[[WaitRendering alloc] init: NSLocalizedString(@"Starting OsiriX 32-bit", nil)] autorelease];
+		wait = [[[WaitRendering alloc] init: NSLocalizedString(@"Starting Horos 32-bit", nil)] autorelease];
 	#endif
 
 	return wait;

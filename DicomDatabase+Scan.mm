@@ -604,7 +604,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
                     if ([path.lowercaseString rangeOfString:@"/."].location != NSNotFound) //Don't scan hidden files
                         continue;
                     
-                    if ([path.lowercaseString rangeOfString:@".app"].location != NSNotFound) //Don't scan the content of MacOS application: OsiriX Lite
+                    if ([path.lowercaseString rangeOfString:@".app"].location != NSNotFound) //Don't scan the content of MacOS application: Horos Lite
                         continue;
                         
                     if ([DicomFile isDICOMFile:path])

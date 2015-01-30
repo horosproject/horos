@@ -1025,12 +1025,12 @@
             if( [[NSUserDefaults standardUserDefaults] boolForKey: @"BurnOsirixApplication"] && cancelled == NO)
             {
                 thread.name = NSLocalizedString( @"Burning...", nil);
-                thread.status = NSLocalizedString( @"Adding OsiriX Lite...", nil);
+                thread.status = NSLocalizedString( @"Adding Horos Lite...", nil);
                 // unzip the file
                 NSTask *unzipTask = [[NSTask alloc] init];
                 [unzipTask setLaunchPath: @"/usr/bin/unzip"];
                 [unzipTask setCurrentDirectoryPath: burnFolder];
-                [unzipTask setArguments: [NSArray arrayWithObjects: @"-o", [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"OsiriX Launcher.zip"], nil]]; // -o to override existing report w/ same name
+                [unzipTask setArguments: [NSArray arrayWithObjects: @"-o", [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"Horos Launcher.zip"], nil]]; // -o to override existing report w/ same name
                 [unzipTask launch];
                 
                 while( [unzipTask isRunning])

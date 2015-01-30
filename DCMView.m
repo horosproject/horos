@@ -8569,7 +8569,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		yRaster = size.origin.y + size.size.height-2;
 		xRaster = size.origin.x + size.size.width-2;
 		if( fullText)
-			[self DrawNSStringGL: @"Made In OsiriX" :fontList :xRaster :yRaster rightAlignment:YES useStringTexture:YES];
+			[self DrawNSStringGL: @"Made In Horos" :fontList :xRaster :yRaster rightAlignment:YES useStringTexture:YES];
      }
     
     if( size.size.width > 500*sf && [AppController isFDACleared] == NO)
@@ -8804,7 +8804,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	glTranslatef(origin.x , -origin.y, 0.0f);
 	if (curDCM.pixelRatio != 1.0) glScalef( 1.f, curDCM.pixelRatio, 1.f); // this is done for
     glScalef(scaleValue/2*curDCM.pwidth, scaleValue/2*curDCM.pheight, 1.f); // scaleValue/2*curDCM.pheight
-    // the scene is now in sync with the standard OsiriX DICOM viewer: the drawn pix would be in the rectangle at (-1,-1) with size (2,2)... since this is a waveform, we assume the dcmpix is square
+    // the scene is now in sync with the standard Horos DICOM viewer: the drawn pix would be in the rectangle at (-1,-1) with size (2,2)... since this is a waveform, we assume the dcmpix is square
     float m = MIN(size.height, size.width);
     glScalef(size.width/m, size.height/m, 1); // use the whole window, not just the part covered by the undrawn DCMPix... // TODO: check that this can be used if we use regions...
     glTranslatef(-1, -1, 0);
@@ -9671,7 +9671,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 //									
 //				NSPoint eventLocation = [[self window] convertScreenToBase: [NSEvent mouseLocation]];
 //				
-//				// location of the mouse in the OsiriX View
+//				// location of the mouse in the Horos View
 //				eventLocation = [self convertPoint:eventLocation fromView:nil];
 //				eventLocation.y = [self frame].size.height - eventLocation.y;
 //				

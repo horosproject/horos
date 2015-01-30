@@ -266,7 +266,7 @@
 {
 	if (_database.isLocal)
     {
-		if ([destination isKindOfClass:[LocalDatabaseNodeIdentifier class]]) { // local OsiriX to local OsiriX
+		if ([destination isKindOfClass:[LocalDatabaseNodeIdentifier class]]) { // local Horos to local Horos
             
             DicomDatabase *dst = [DicomDatabase databaseAtPath:destination.location]; // Create the mainDatabase on the MAIN thread, if necessary !
             
@@ -275,13 +275,13 @@
             thread.supportsCancel = YES;
             [[ThreadsManager defaultManager] addThreadAndStart:thread];
             return YES;
-        } else if ([destination isKindOfClass:[RemoteDatabaseNodeIdentifier class]]) { // local OsiriX to remote OsiriX
+        } else if ([destination isKindOfClass:[RemoteDatabaseNodeIdentifier class]]) { // local Horos to remote Horos
             NSThread* thread = [[[NSThread alloc] initWithTarget:self selector:@selector(copyImagesToRemoteBrowserSourceThread:) object:[NSArray arrayWithObjects: [dicomImages valueForKey:@"objectID"], destination, _database, NULL]] autorelease];
             thread.supportsCancel = YES;
             thread.name = NSLocalizedString(@"Sending images...", nil);
             [[ThreadsManager defaultManager] addThreadAndStart:thread];
             return YES;
-        } else if ([destination isKindOfClass:[DicomNodeIdentifier class]]) { // local OsiriX to remote DICOM
+        } else if ([destination isKindOfClass:[DicomNodeIdentifier class]]) { // local Horos to remote DICOM
             NSArray* r = [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO];
             for (int i = 0; i < r.count; ++i)
                 if ([destination isEqualToDictionary:[r objectAtIndex:i]])
@@ -294,7 +294,7 @@
     else
     {
 		if ([destination isKindOfClass:[LocalDatabaseNodeIdentifier class]])
-        { // remote OsiriX to local OsiriX
+        { // remote Horos to local Horos
             
             [DicomDatabase databaseAtPath:destination.location]; // Create the mainDatabase on the MAIN thread, if necessary !
             
@@ -303,7 +303,7 @@
             thread.supportsCancel = YES;
             [[ThreadsManager defaultManager] addThreadAndStart:thread];
             return YES;
-		} else if ([destination isKindOfClass:[RemoteDatabaseNodeIdentifier class]] || [destination isKindOfClass:[DicomNodeIdentifier class]]) { // remote OsiriX to remote OsiriX // remote OsiriX to remote DICOM
+		} else if ([destination isKindOfClass:[RemoteDatabaseNodeIdentifier class]] || [destination isKindOfClass:[DicomNodeIdentifier class]]) { // remote Horos to remote Horos // remote Horos to remote DICOM
 				NSThread* thread = [[[NSThread alloc] initWithTarget:self selector:@selector(copyRemoteImagesToRemoteBrowserSourceThread:) object:[NSArray arrayWithObjects: [dicomImages valueForKey:@"objectID"], destination, _database, NULL]] autorelease];
 				thread.name = NSLocalizedString(@"Initiating image transfer...", nil);
                 thread.supportsCancel = YES;

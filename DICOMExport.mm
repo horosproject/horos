@@ -801,7 +801,7 @@ static float deg2rad = M_PI / 180.0f;
                     else
                         delete dataset->remove( DCM_MediaStorageSOPClassUID);
                     
-					dataset->putAndInsertString( DCM_ManufacturersModelName, "OsiriX");
+					dataset->putAndInsertString( DCM_ManufacturersModelName, "Horos");
 					dataset->putAndInsertString( DCM_InstanceNumber, [[NSString stringWithFormat: @"%d", exportInstanceNumber++] UTF8String]);
 					dataset->putAndInsertString( DCM_AcquisitionNumber, "1");
 					

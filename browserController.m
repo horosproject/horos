@@ -2210,8 +2210,8 @@ static NSConditionLock *threadLock = nil;
 				
 			case ask:
 				switch (NSRunInformationalAlertPanel(
-													 NSLocalizedString(@"OsiriX Database", nil),
-													 NSLocalizedString(@"Should I copy these files in OsiriX Database folder, or only copy links to these files?", nil),
+													 NSLocalizedString(@"Horos Database", nil),
+													 NSLocalizedString(@"Should I copy these files in Horos Database folder, or only copy links to these files?", nil),
 													 NSLocalizedString(@"Copy Files", nil),
 													 NSLocalizedString(@"Cancel", nil),
 													 NSLocalizedString(@"Copy Links", nil)))
@@ -3845,10 +3845,10 @@ static NSConditionLock *threadLock = nil;
                                 dontDelete = obj;
                         }
                         
-                        if (totImage && dontDelete) // there are images, remove the "OsiriX No Autodeletion" series
+                        if (totImage && dontDelete) // there are images, remove the "Horos No Autodeletion" series
                             [context deleteObject:dontDelete];
                         
-                        if (onlyImages == NO && totImage == 0 && dontDelete == nil) // We don't want empty studies, unless the "OsiriX No Autodeletion" series is there...
+                        if (onlyImages == NO && totImage == 0 && dontDelete == nil) // We don't want empty studies, unless the "Horos No Autodeletion" series is there...
                             [context deleteObject: curObj];
                     }
                 }
@@ -5937,7 +5937,7 @@ static NSConditionLock *threadLock = nil;
 	
 //	if( DICOMDIRCDMODE)
 //	{
-//		NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX CD/DVD", nil), NSLocalizedString(@"OsiriX is running in read-only mode, from a CD/DVD.", nil), NSLocalizedString(@"OK",nil), nil, nil);
+//		NSRunInformationalAlertPanel(NSLocalizedString(@"Horos CD/DVD", nil), NSLocalizedString(@"Horos is running in read-only mode, from a CD/DVD.", nil), NSLocalizedString(@"OK",nil), nil, nil);
 //		return;
 //	}*/
 	
@@ -8717,7 +8717,7 @@ static NSConditionLock *threadLock = nil;
 		
 	[sPanel setRequiredFileType:@"txt"];
 	
-	if ([sPanel runModalForDirectory: nil file:NSLocalizedString(@"OsiriX Database List", nil)] == NSFileHandlingPanelOKButton)
+	if ([sPanel runModalForDirectory: nil file:NSLocalizedString(@"Horos Database List", nil)] == NSFileHandlingPanelOKButton)
 	{
 		[list writeToFile: [sPanel filename] atomically: YES];
 	}
@@ -9617,7 +9617,7 @@ static BOOL withReset = NO;
             if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"])
                 r = NSAlertDefaultReturn;
             else
-                r = NSRunAlertPanel( NSLocalizedString(@"Corrupted files", nil), NSLocalizedString(@"A corrupted study crashed OsiriX:\r\r%@ / %@\r\rThis file will be deleted.\r\rYou can run OsiriX in Protected Mode (shift + option keys at startup) if you have more crashes.\r\rShould I delete this corrupted study? (Highly recommended)", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil, [studyObject valueForKey:@"name"], [studyObject valueForKey:@"studyName"]);
+                r = NSRunAlertPanel( NSLocalizedString(@"Corrupted files", nil), NSLocalizedString(@"A corrupted study crashed Horos:\r\r%@ / %@\r\rThis file will be deleted.\r\rYou can run Horos in Protected Mode (shift + option keys at startup) if you have more crashes.\r\rShould I delete this corrupted study? (Highly recommended)", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil, [studyObject valueForKey:@"name"], [studyObject valueForKey:@"studyName"]);
             
             if( r == NSAlertDefaultReturn)
 			{
@@ -12047,7 +12047,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
 				
 				if( notEnoughMemory)
 				{
-					if( NSRunCriticalAlertPanel( NSLocalizedString(@"32-bit", nil),  NSLocalizedString(@"Cannot load this series.\r\rUpgrade to OsiriX 64-bit or OsiriX MD to solve this issue.", nil), NSLocalizedString(@"OK",nil), NSLocalizedString(@"OsiriX 64-bit", nil), nil) == NSAlertAlternateReturn)
+					if( NSRunCriticalAlertPanel( NSLocalizedString(@"32-bit", nil),  NSLocalizedString(@"Cannot load this series.\r\rUpgrade to Horos 64-bit or Horos MD to solve this issue.", nil), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Horos 64-bit", nil), nil) == NSAlertAlternateReturn)
 					[[AppController sharedAppController] osirix64bit: self];
 				}
 				
@@ -13578,7 +13578,7 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		if( [DCMPix isRunOsiriXInProtectedModeActivated])
 		{
-			NSRunCriticalAlertPanel(NSLocalizedString(@"Protected Mode", nil), NSLocalizedString(@"OsiriX is now running in Protected Mode (shift + option keys at startup): no images are displayed, allowing you to delete crashing or corrupted images/studies.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+			NSRunCriticalAlertPanel(NSLocalizedString(@"Protected Mode", nil), NSLocalizedString(@"Horos is now running in Protected Mode (shift + option keys at startup): no images are displayed, allowing you to delete crashing or corrupted images/studies.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 		}
 		
         _distantAlbumNoOfStudiesCache = [[NSMutableDictionary alloc] init];
@@ -14165,7 +14165,7 @@ static NSArray*	openSubSeriesArray = nil;
             N2LogExceptionWithStackTrace(ne);
             [@"" writeToFile:_database.loadingFilePath atomically:NO encoding:NSUTF8StringEncoding error:NULL];
             
-            NSString *message = [NSString stringWithFormat: NSLocalizedString(@"A problem occured during start-up of OsiriX:\r\r%@\r\r%@",nil), [ne description], [AppController printStackTrace: ne]];
+            NSString *message = [NSString stringWithFormat: NSLocalizedString(@"A problem occured during start-up of Horos:\r\r%@\r\r%@",nil), [ne description], [AppController printStackTrace: ne]];
             
             NSRunCriticalAlertPanel(NSLocalizedString(@"Error",nil), @"%@", NSLocalizedString( @"OK",nil), nil, nil, message);
             
@@ -14952,11 +14952,11 @@ static NSArray*	openSubSeriesArray = nil;
 	NSMenuItem *helpItem = [mainMenu addItemWithTitle:NSLocalizedString(@"Help", nil) action:nil keyEquivalent:@""];
 	NSMenu *helpMenu = [[NSMenu allocWithZone: [NSMenu menuZone]] initWithTitle: NSLocalizedString(@"Help", nil)];
 	[helpItem setSubmenu:helpMenu];
-	[helpMenu addItemWithTitle: NSLocalizedString(@"Send an email to OsiriX support", nil) action: @selector(sendEmail:) keyEquivalent: @""];
+	[helpMenu addItemWithTitle: NSLocalizedString(@"Send an email to Horos support", nil) action: @selector(sendEmail:) keyEquivalent: @""];
 	[helpMenu addItemWithTitle: NSLocalizedString(@"Pixmeo Web site", nil) action: @selector(openHorosWebPage:) keyEquivalent: @""];	
-	[helpMenu addItemWithTitle: NSLocalizedString(@"OsiriX Discussion Group", nil) action: @selector(openOsirixDiscussion:) keyEquivalent: @""];
+	[helpMenu addItemWithTitle: NSLocalizedString(@"Horos Discussion Group", nil) action: @selector(openOsirixDiscussion:) keyEquivalent: @""];
 	[helpMenu addItem: [NSMenuItem separatorItem]];
-	[helpMenu addItemWithTitle: NSLocalizedString(@"OsiriX Help Web Site ", nil) action: @selector(help:) keyEquivalent: @""];
+	[helpMenu addItemWithTitle: NSLocalizedString(@"Horos Help Web Site ", nil) action: @selector(help:) keyEquivalent: @""];
     [helpMenu addItemWithTitle: NSLocalizedString(@"User Manual", nil) action: @selector(userManual:) keyEquivalent: @""];
     
 	[helpMenu release];
@@ -15306,7 +15306,7 @@ static NSArray*	openSubSeriesArray = nil;
 			{
 				NSAlert* alert = [[NSAlert new] autorelease];
 				[alert setMessageText: NSLocalizedString(@"Delete ZIP file", nil)];
-				[alert setInformativeText: NSLocalizedString(@"The ZIP file was successfully decompressed and the images successfully incorporated in OsiriX database. Should I delete the ZIP file?", nil)];
+				[alert setInformativeText: NSLocalizedString(@"The ZIP file was successfully decompressed and the images successfully incorporated in Horos database. Should I delete the ZIP file?", nil)];
 				[alert setShowsSuppressionButton: YES];
 				[alert addButtonWithTitle: NSLocalizedString( @"OK", nil)];
 				[alert addButtonWithTitle: NSLocalizedString( @"Cancel", nil)];
@@ -17763,7 +17763,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 //	if( DICOMDIRCDMODE)
 //	{
-//		NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX CD/DVD", nil), NSLocalizedString(@"OsiriX is running in read-only mode, from a CD/DVD.", nil), NSLocalizedString(@"OK",nil), nil, nil);
+//		NSRunInformationalAlertPanel(NSLocalizedString(@"Horos CD/DVD", nil), NSLocalizedString(@"Horos is running in read-only mode, from a CD/DVD.", nil), NSLocalizedString(@"OK",nil), nil, nil);
 //		return;
 //	}
 	
@@ -17794,7 +17794,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 //	if( DICOMDIRCDMODE)
 //	{
-//		NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX CD/DVD", nil), NSLocalizedString(@"OsiriX is running in read-only mode, from a CD/DVD.", nil), NSLocalizedString(@"OK",nil), nil, nil);
+//		NSRunInformationalAlertPanel(NSLocalizedString(@"Horos CD/DVD", nil), NSLocalizedString(@"Horos is running in read-only mode, from a CD/DVD.", nil), NSLocalizedString(@"OK",nil), nil, nil);
 //		return;
 //	}
 
@@ -19714,7 +19714,7 @@ static volatile int numberOfThreadsForJPEG = 0;
     @catch (NSException* e)
     {
 		N2LogExceptionWithStackTrace(e);
-		NSRunAlertPanel(NSLocalizedString(@"OsiriX Database", nil), NSLocalizedString( @"OsiriX cannot read/create this file/folder. Permissions error?", nil), nil, nil, nil);
+		NSRunAlertPanel(NSLocalizedString(@"Horos Database", nil), NSLocalizedString( @"Horos cannot read/create this file/folder. Permissions error?", nil), nil, nil, nil);
 		[self resetToLocalDatabase];
 	}
 	
@@ -19737,7 +19737,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	if( filter == nil)
 	{
-		NSRunAlertPanel( NSLocalizedString( @"Plugins Error", nil), NSLocalizedString( @"OsiriX cannot launch the selected plugin.", nil), nil, nil, nil);
+		NSRunAlertPanel( NSLocalizedString( @"Plugins Error", nil), NSLocalizedString( @"Horos cannot launch the selected plugin.", nil), nil, nil, nil);
 		return;
 	}
 	
@@ -19748,7 +19748,7 @@ static volatile int numberOfThreadsForJPEG = 0;
     
 	if( result)
     {
-		NSRunAlertPanel( NSLocalizedString( @"Plugins Error", nil), NSLocalizedString( @"OsiriX cannot launch the selected plugin.", nil), nil, nil, nil);
+		NSRunAlertPanel( NSLocalizedString( @"Plugins Error", nil), NSLocalizedString( @"Horos cannot launch the selected plugin.", nil), nil, nil, nil);
 	}
     
     [PluginManager endProtectForCrash];

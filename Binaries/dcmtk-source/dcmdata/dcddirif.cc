@@ -1110,7 +1110,7 @@ OFCondition DicomDirInterface::appendToDicomDir(const E_ApplicationProfile profi
 }
 
 
-/// added in OsiriX
+/// added in Horos
 void DicomDirInterface::addOneImagePerSeries() {
     DcmDirectoryRecord* rootRecord = &(DicomDir->getRootRecord());
     
@@ -4100,7 +4100,7 @@ OFBool DicomDirInterface::enableIconImageMode(const OFBool newMode)
 
 
 
-// only generate ONE icon per series // added in OsiriX
+// only generate ONE icon per series // added in Horos
 OFBool DicomDirInterface::enableOneIconPerSeriesMode(const OFBool newMode)
 {
     /* save current mode */

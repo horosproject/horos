@@ -204,7 +204,7 @@ OFCondition DcmCodec::updateImageType(DcmItem *dataset)
 {
   if (dataset == NULL) return EC_IllegalCall;
 
-  return EC_Normal; // added in OsiriX, because image compression/decompression resulted in DERIVED ImageType
+  return EC_Normal; // added in Horos, because image compression/decompression resulted in DERIVED ImageType
   
   /*
   DcmStack stack;

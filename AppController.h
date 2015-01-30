@@ -13,14 +13,14 @@
 =========================================================================*/
 
 // This will be added to the main inded page of the Doxygen documentation
-/** \mainpage OsiriX index page
+/** \mainpage Horos index page
 *  <img src= "../../../osirix/Binaries/Icons/SmallLogo.tif">
-* \section Intro OsiriX DICOM workstation
+* \section Intro Horos DICOM workstation
 *  Osirix is a free open source DICOM workstation with full 64 bit support.
 *
 *  We extend out thanks to other in the open source community.
 *
-*  VTK, ITK, and DCMTK open source projects are extensively used in OsiriX.
+*  VTK, ITK, and DCMTK open source projects are extensively used in Horos.
 *
 *  The OsiriX team.
 */
@@ -205,7 +205,7 @@ extern AppController* OsiriX;
 //===============HELP==========================
 - (IBAction) sendEmail: (id) sender;   /**< Send email to lead developer */
 - (IBAction) openHorosWebPage: (id) sender;  /**<  Open Horos web page */
-- (IBAction) openOsirixDiscussion: (id) sender; /**< Open OsiriX discussion web page */
+- (IBAction) openOsirixDiscussion: (id) sender; /**< Open Horos discussion web page */
 - (IBAction) osirix64bit: (id) sender;
 //---------------------------------------------
 - (IBAction) help: (id) sender;  /**< Open help window */

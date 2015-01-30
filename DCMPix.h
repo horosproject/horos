@@ -672,11 +672,11 @@ Note setter is different to not break existing usage. :-( */
 /** Releases the restored DCMPix from the restoreCache */
 - (void) freeRestore;
 
-/** Sets flag for when OsiriX is running in protected mode */
-+ (void) setRunOsiriXInProtectedMode:(BOOL) v;
+/** Sets flag for when Horos is running in protected mode */
++ (void) setRunHorosInProtectedMode:(BOOL) v;
 
 /** Returns flag for protected mode */
-+ (BOOL) isRunOsiriXInProtectedModeActivated;
++ (BOOL) isRunHorosInProtectedModeActivated;
 
 /** Clears the papyrus group cache */
 - (void) clearCachedDCMFrameworkFiles;

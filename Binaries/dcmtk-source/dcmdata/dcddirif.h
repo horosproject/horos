@@ -358,7 +358,7 @@ class DicomDirInterface
     }
     
     /**
-     * Added in OsiriX
+     * Added in Horos
      */
     OFBool oneIconPerSeriesMode() const
     {

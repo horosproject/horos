@@ -282,7 +282,7 @@ enum {
 	NSArray* io = [NSMutableArray arrayWithObjects: @"Local", path, name, nil];
 	
 	NSThread* thread = [[[NSThread alloc] initWithTarget:self selector:@selector(setDatabaseThread:) object:io] autorelease];
-	thread.name = NSLocalizedString(@"Loading OsiriX database...", nil);
+	thread.name = NSLocalizedString(@"Loading Horos database...", nil);
 	thread.supportsCancel = YES;
 	thread.status = NSLocalizedString(@"Reading data...", nil);
 	
@@ -297,7 +297,7 @@ enum {
 	NSArray* io = [NSMutableArray arrayWithObjects: @"Remote", address, [NSNumber numberWithInteger:port], name, nil];
 	
 	NSThread* thread = [[NSThread alloc] initWithTarget:self selector:@selector(setDatabaseThread:) object:io];
-	thread.name = NSLocalizedString(@"Loading remote OsiriX database...", nil);
+	thread.name = NSLocalizedString(@"Loading remote Horos database...", nil);
 	thread.supportsCancel = YES;
     [thread startModalForWindow:self.window];
 	[thread start];
@@ -401,7 +401,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
         [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(_observeVolumeNotification:) name:NSWorkspaceDidRenameVolumeNotification object:nil];
 		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(_observeVolumeWillUnmountNotification:) name:NSWorkspaceWillUnmountNotification object:nil];
         
-        // Is there a DICOMDIR at the same level of OsiriX ?
+        // Is there a DICOMDIR at the same level of Horos ?
         NSString *appFolder = [[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent];
         if( [[NSFileManager defaultManager] fileExistsAtPath: [appFolder stringByAppendingPathComponent: @"DICOMDIR"]])
         {
@@ -411,7 +411,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
                 N2LogExceptionWithStackTrace(e);
             }
         }
-        else if ( [[NSFileManager defaultManager] fileExistsAtPath: [appFolder stringByAppendingPathComponent: @"DICOMDIRPATH"]]) // Created by OsiriX Lite App Launcher (see main.mm)
+        else if ( [[NSFileManager defaultManager] fileExistsAtPath: [appFolder stringByAppendingPathComponent: @"DICOMDIRPATH"]]) // Created by Horos Lite App Launcher (see main.mm)
         {
             NSString *dicomdir = [NSString stringWithContentsOfFile: [appFolder stringByAppendingPathComponent: @"DICOMDIRPATH"] encoding: NSUTF8StringEncoding error:nil];
             
@@ -1355,7 +1355,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	BOOL scan = YES;
 	NSString* path = [[NSFileManager defaultManager] tmpFilePathInTmp];
 	
-	// does it contain an OsiriX Data folder?
+	// does it contain an Horos Data folder?
 	BOOL isDir;
 	if ([[NSFileManager defaultManager] fileExistsAtPath:[devicePath stringByAppendingPathComponent:OsirixDataDirName] isDirectory:&isDir] && isDir) {
 		path = devicePath;
@@ -1388,7 +1388,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
     [_unmountButton autorelease];
     _unmountButton = nil;
     
-//    [[NSFileManager defaultManager] removeItemAtPath:self.location error:NULL]; We cannot do it, because there was maybe threads attached to this sql file. The entire folder will be deleted when quitting or restarting OsiriX
+//    [[NSFileManager defaultManager] removeItemAtPath:self.location error:NULL]; We cannot do it, because there was maybe threads attached to this sql file. The entire folder will be deleted when quitting or restarting Horos
     self.devicePath = nil;
 	[super dealloc];
 }

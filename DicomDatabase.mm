@@ -87,7 +87,7 @@ NSString* const CurrentDatabaseVersion = @"2.5";
 
 static NSString* const SqlFileName = @"Database.sql";
 NSString* const OsirixDataDirName = @"OsiriX Data";
-NSString* const O2ScreenCapturesSeriesName = NSLocalizedString(@"OsiriX Screen Captures", nil);;
+NSString* const O2ScreenCapturesSeriesName = NSLocalizedString(@"Horos Screen Captures", nil);;
 
 +(NSString*)baseDirPathForPath:(NSString*)path {
 	// were we given a path inside a OsirixDataDirName dir?
@@ -448,7 +448,7 @@ static DicomDatabase* activeLocalDatabase = nil;
             
             if (isNewFile && [NSThread isMainThread] && ![p hasPrefix:@"/tmp/"] && !isNewDb) {
                 [NSThread.currentThread enterOperation];
-                NSThread.currentThread.name = NSLocalizedString(@"Rebuilding default OsiriX database...", nil);
+                NSThread.currentThread.name = NSLocalizedString(@"Rebuilding default Horos database...", nil);
                 ThreadModalForWindowController* tmfwc = [[ThreadModalForWindowController alloc] initWithThread:[NSThread currentThread] window:nil];
                 [self rebuild:YES];
                 [tmfwc invalidate];
@@ -3467,7 +3467,7 @@ static BOOL protectionAgainstReentry = NO;
                 r = NSAlertDefaultReturn;
             }
             else
-                r = NSRunAlertPanel(NSLocalizedString(@"OsiriX Database", nil), NSLocalizedString(@"OsiriX cannot understand the model of current saved database... The database index will be deleted and reconstructed (no images are lost).", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Quit", nil), nil);
+                r = NSRunAlertPanel(NSLocalizedString(@"Horos Database", nil), NSLocalizedString(@"Horos cannot understand the model of current saved database... The database index will be deleted and reconstructed (no images are lost).", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Quit", nil), nil);
             
             if (r == NSAlertAlternateReturn)
             {

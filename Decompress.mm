@@ -334,7 +334,7 @@ int main(int argc, const char *argv[])
 //                                        @try
 //                                        {
 //                                            DCMTransferSyntax *tsx = [DCMTransferSyntax JPEG2000LossyTransferSyntax];
-//                                            succeed = [dcmObject writeToFile: curFileDest withTransferSyntax: tsx quality: quality AET:@"OsiriX" atomically:YES];
+//                                            succeed = [dcmObject writeToFile: curFileDest withTransferSyntax: tsx quality: quality AET:@"Horos" atomically:YES];
 //                                        }
 //                                        @catch (NSException *e)
 //                                        {
@@ -628,7 +628,7 @@ int main(int argc, const char *argv[])
 //							DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: curFile decodingPixelData: NO];
 //							@try
 //							{
-//								status = [dcmObject writeToFile: curFileDest withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];	//ImplicitVRLittleEndianTransferSyntax
+//								status = [dcmObject writeToFile: curFileDest withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:1 AET:@"Horos" atomically:YES];	//ImplicitVRLittleEndianTransferSyntax
 //							}
 //							@catch (NSException *e)
 //							{
@@ -685,7 +685,7 @@ int main(int argc, const char *argv[])
 //								DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: curFile decodingPixelData: NO];
 //								@try
 //								{
-//									status = [dcmObject writeToFile: curFileDest withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];	//ImplicitVRLittleEndianTransferSyntax
+//									status = [dcmObject writeToFile: curFileDest withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:1 AET:@"Horos" atomically:YES];	//ImplicitVRLittleEndianTransferSyntax
 //								}
 //								@catch (NSException *e)
 //								{

@@ -2681,7 +2681,7 @@ static inline int int_ceildivpow2(int a, int b) {
 							break;
 							
 							default:
-								NSLog(@"Error, Error, OsiriX will soon crash...");
+								NSLog(@"Error, Error, Horos will soon crash...");
 							break;
 						}
 					}
@@ -2740,7 +2740,7 @@ static inline int int_ceildivpow2(int a, int b) {
 							break;
 							
 							default:
-								NSLog(@"Error, Error, OsiriX will soon crash...");
+								NSLog(@"Error, Error, Horos will soon crash...");
 							break;
 						}
 					}
@@ -2799,7 +2799,7 @@ static inline int int_ceildivpow2(int a, int b) {
 							break;
 							
 							default:
-								NSLog(@"Error, Error, OsiriX will soon crash...");
+								NSLog(@"Error, Error, Horos will soon crash...");
 							break;
 						}
 					}

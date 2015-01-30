@@ -110,7 +110,7 @@ typedef struct { // build one of these on the stack and then use -[CPRVolumeData
 @end
 
 
-@interface CPRVolumeData (DCMPixAndVolume) // make a nice clean interface between the rest of of OsiriX that deals with pixlist and all their complications, and fill out our convenient data structure.
+@interface CPRVolumeData (DCMPixAndVolume) // make a nice clean interface between the rest of of Horos that deals with pixlist and all their complications, and fill out our convenient data structure.
 
 - (id) initWithWithPixList:(NSArray *)pixList volume:(NSData *)volume;
 

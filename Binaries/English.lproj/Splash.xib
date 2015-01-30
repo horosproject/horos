@@ -41,18 +41,8 @@
                         </constraints>
                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="axesIndependently" image="Logo" id="31"/>
                     </imageView>
-                    <textField verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="33">
-                        <rect key="frame" x="87" y="13" width="362" height="28"/>
-                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" id="34">
-                            <font key="font" metaFont="smallSystem"/>
-                            <string key="title">Purview - Maryland, USA
-email@horosproject.org</string>
-                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        </textFieldCell>
-                    </textField>
                     <button misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="26">
-                        <rect key="frame" x="434" y="51" width="90" height="14"/>
+                        <rect key="frame" x="434" y="48" width="90" height="14"/>
                         <buttonCell key="cell" type="square" title="Version Number" bezelStyle="shadowlessSquare" alignment="right" inset="2" id="32">
                             <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
                             <font key="font" metaFont="smallSystem"/>
@@ -61,6 +51,16 @@ email@horosproject.org</string>
                             <action selector="switchVersion:" target="-2" id="27"/>
                         </connections>
                     </button>
+                    <textField verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="33">
+                        <rect key="frame" x="85" y="20" width="362" height="28"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" id="34">
+                            <font key="font" metaFont="smallSystem"/>
+                            <string key="title">Purview - Maryland, USA
+email@horosproject.org</string>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
                 </subviews>
                 <constraints>
                     <constraint firstItem="22" firstAttribute="top" secondItem="8" secondAttribute="top" constant="6" id="Mo9-63-pOR"/>

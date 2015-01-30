@@ -494,17 +494,17 @@ static NSString* getMacAddressNumber( void)
 	[attrs setObject:scDeviceIDAttr forKey:@"SecondaryCaptureDeviceID"];
 	
 	DCMAttributeTag *scManufacturerTag = [DCMAttributeTag tagWithName:@"Manufacturer"];
-	NSMutableArray *scManufacturerValue = [NSMutableArray arrayWithObject:  @"OsiriX"];
+	NSMutableArray *scManufacturerValue = [NSMutableArray arrayWithObject:  @"Horos"];
 	DCMAttribute *scManufacturerAttr = [DCMAttribute attributeWithAttributeTag:scManufacturerTag  vr: scManufacturerTag.vr  values:scManufacturerValue];
 	[attrs setObject:scManufacturerAttr forKey:@"Manufacturer"];
 	
 	DCMAttributeTag *scDeviceManufacturerTag = [DCMAttributeTag tagWithName:@"SecondaryCaptureDeviceManufacturer"];
-	NSMutableArray *scDeviceManufacturerValue = [NSMutableArray arrayWithObject:@"OsiriX"];
+	NSMutableArray *scDeviceManufacturerValue = [NSMutableArray arrayWithObject:@"Horos"];
 	DCMAttribute *scDeviceManufacturerAttr = [DCMAttribute attributeWithAttributeTag:scDeviceManufacturerTag  vr: scDeviceManufacturerTag.vr values:scDeviceManufacturerValue];
 	[attrs setObject:scDeviceManufacturerAttr forKey:@"SecondaryCaptureDeviceManufacturer"];
 	
 	DCMAttributeTag *scDeviceModelTag = [DCMAttributeTag tagWithName:@"SecondaryCaptureDeviceManufacturersModelName"];
-	NSMutableArray *scDeviceModelValue = [NSMutableArray arrayWithObject:@"OsiriX"];
+	NSMutableArray *scDeviceModelValue = [NSMutableArray arrayWithObject:@"Horos"];
 	DCMAttribute *scDeviceModelAttr = [DCMAttribute attributeWithAttributeTag:scDeviceModelTag  vr: scDeviceModelTag.vr values:scDeviceModelValue];
 	[attrs setObject:scDeviceModelAttr forKey:@"SecondaryCaptureDeviceManufacturersModelName"];
 	
@@ -553,10 +553,10 @@ static NSString* getMacAddressNumber( void)
 	//secondary capture tags	
 	[scObject setAttributeValues:[NSMutableArray arrayWithObject:abstractSyntax] forName:@"SOPClassUID"];
 	[scObject setAttributeValues:[NSMutableArray arrayWithObject:abstractSyntax] forName:@"MediaStorageSOPClassUID"];	
-	[scObject setAttributeValues:[NSMutableArray arrayWithObject: @"OsiriX"]  forName:@"Manufacturer"];
+	[scObject setAttributeValues:[NSMutableArray arrayWithObject: @"Horos"]  forName:@"Manufacturer"];
 	[scObject setAttributeValues:[NSMutableArray arrayWithObject: [DCMObject MACAddress]]  forName:@"SecondaryCaptureDeviceID"];
-	[scObject setAttributeValues:[NSMutableArray arrayWithObject: @"OsiriX"]  forName:@"SecondaryCaptureDeviceManufacturer"];
-	[scObject setAttributeValues:[NSMutableArray arrayWithObject: @"OsiriX"]  forName:@"SecondaryCaptureDeviceManufacturersModelName"];
+	[scObject setAttributeValues:[NSMutableArray arrayWithObject: @"Horos"]  forName:@"SecondaryCaptureDeviceManufacturer"];
+	[scObject setAttributeValues:[NSMutableArray arrayWithObject: @"Horos"]  forName:@"SecondaryCaptureDeviceManufacturersModelName"];
 	[scObject setAttributeValues:[NSMutableArray arrayWithObject: @"3.8"]  forName:@"SecondaryCaptureDeviceSoftwareVersions"];
 	[scObject setAttributeValues:[NSMutableArray arrayWithObject: [DCMCalendarDate date]]  forName:@"DateofSecondaryCapture"];
 	[scObject setAttributeValues:[NSMutableArray arrayWithObject: [DCMCalendarDate date]]  forName:@"TimeofSecondaryCapture"];
@@ -602,7 +602,7 @@ PixelRepresentation
 	*/
 	
 
-	[scObject updateMetaInformationWithTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] aet:@"OsiriX"];
+	[scObject updateMetaInformationWithTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] aet:@"Horos"];
 	return scObject;
 
 

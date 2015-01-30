@@ -55,16 +55,16 @@
 /** Quick test to see if data is a DICOM/ACR file.  First looks for the DICM at 128. If that isn't there looks for valid DICOM 3  elements at the start */
 + (BOOL)isDICOM:(NSData *)data;
 
-/** Returns to rootUID for files created used by OsiriX */
+/** Returns to rootUID for files created used by Horos */
 + (NSString *)rootUID;
 
 /** Returns the MACAddress of the computer which generated the image */
 + (NSString*) MACAddress;
 
-/** Returns to implementationClassUID for files created used by OsiriX */
+/** Returns to implementationClassUID for files created used by Horos */
 + (NSString *)implementationClassUID;
 
-/** Returns to implementationClassUID for files created used by OsiriX */
+/** Returns to implementationClassUID for files created used by Horos */
 + (NSString *)implementationVersionName;
 
 + (NSString*) newStudyInstanceUID;
