@@ -617,7 +617,7 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 	}
 	
 //	NSString *emailAddress = URL_EMAIL;
-//	NSString *emailSubject = @"OsiriX: New Plugin Submission"; // don't localize this. This is the subject of the email WE will receive.
+//	NSString *emailSubject = @"Horos: New Plugin Submission"; // don't localize this. This is the subject of the email WE will receive.
 	
 //	#if !__LP64__
 //	[NSMailDelivery deliverMessage:emailMessage subject:emailSubject to:emailAddress];

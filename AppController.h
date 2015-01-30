@@ -204,7 +204,7 @@ extern AppController* OsiriX;
 //- (IBAction)toggleActivityWindow:(id)sender;
 //===============HELP==========================
 - (IBAction) sendEmail: (id) sender;   /**< Send email to lead developer */
-- (IBAction) openOsirixWebPage: (id) sender;  /**<  Open OsiriX web page */
+- (IBAction) openHorosWebPage: (id) sender;  /**<  Open Horos web page */
 - (IBAction) openOsirixDiscussion: (id) sender; /**< Open OsiriX discussion web page */
 - (IBAction) osirix64bit: (id) sender;
 //---------------------------------------------

@@ -14953,7 +14953,7 @@ static NSArray*	openSubSeriesArray = nil;
 	NSMenu *helpMenu = [[NSMenu allocWithZone: [NSMenu menuZone]] initWithTitle: NSLocalizedString(@"Help", nil)];
 	[helpItem setSubmenu:helpMenu];
 	[helpMenu addItemWithTitle: NSLocalizedString(@"Send an email to OsiriX support", nil) action: @selector(sendEmail:) keyEquivalent: @""];
-	[helpMenu addItemWithTitle: NSLocalizedString(@"Pixmeo Web site", nil) action: @selector(openOsirixWebPage:) keyEquivalent: @""];	
+	[helpMenu addItemWithTitle: NSLocalizedString(@"Pixmeo Web site", nil) action: @selector(openHorosWebPage:) keyEquivalent: @""];	
 	[helpMenu addItemWithTitle: NSLocalizedString(@"OsiriX Discussion Group", nil) action: @selector(openOsirixDiscussion:) keyEquivalent: @""];
 	[helpMenu addItem: [NSMenuItem separatorItem]];
 	[helpMenu addItemWithTitle: NSLocalizedString(@"OsiriX Help Web Site ", nil) action: @selector(help:) keyEquivalent: @""];

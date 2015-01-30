@@ -1181,9 +1181,9 @@ static NSDate *lastWarningDate = nil;
 	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"mailto:"URL_EMAIL]];
 }
 
--(IBAction)openOsirixWebPage:(id)sender
+-(IBAction)openHorosWebPage:(id)sender
 {
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_OSIRIX_WEB_PAGE]];
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_HOROS_WEB_PAGE]];
 }
 
 -(IBAction)help:(id)sender
