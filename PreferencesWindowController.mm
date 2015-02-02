@@ -394,7 +394,7 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 		
 		NSView* view = context? context.pane.mainView : panesListView;
 		
-        NSString* title = NSLocalizedString(@"OsiriX Preferences", NULL);
+        NSString* title = NSLocalizedString(@"Horos Preferences", NULL);
         if (context)
             title = [title stringByAppendingFormat:@"%@%@", NSLocalizedString(@": ", @"Semicolon with space prefix and suffix (example: english ': ', french ' : ')"), context.title];
 		[self.window setTitle:title];
