@@ -473,7 +473,7 @@
         if( path == nil)
             path = DicomDatabase.defaultBaseDirPath;
         
-        // previously, we had a single word template in the OsiriX Data folder
+        // previously, we had a single word template in the Horos Data folder
         NSString* oldReportFilePath = [path stringByAppendingPathComponent:@"ReportTemplate.doc"];
         
         // today, we use a dir in the database folder, which contains the templates

@@ -693,7 +693,7 @@
  Method: OpenDB
 
  Parameters:
- path: path of the folder containing the 'OsiriX Data' folder
+ path: path of the folder containing the 'Horos Data' folder
 
  if path is valid, but not DB is found, OsiriX will create a new one
 

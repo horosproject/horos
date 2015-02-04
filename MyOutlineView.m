@@ -261,7 +261,7 @@
 	
 	if( [fileArray count] == 1 && [[NSFileManager defaultManager] fileExistsAtPath: [fileArray objectAtIndex: 0]  isDirectory: &directory])
 	{
-		if( [[[fileArray objectAtIndex: 0] lastPathComponent] isEqualToString: @"OsiriX Data"])	// It's a database folder !
+		if( [[[fileArray objectAtIndex: 0] lastPathComponent] isEqualToString: @"Horos Data"])	// It's a database folder !
 		{
 			if( [[NSFileManager defaultManager] fileExistsAtPath: [[fileArray objectAtIndex: 0] stringByAppendingPathComponent: @"Database.sql"]])
 			{

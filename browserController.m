@@ -1845,10 +1845,10 @@ static NSConditionLock *threadLock = nil;
 	{
 		NSString	*location = [oPanel filename];
 		
-		if( [[location lastPathComponent] isEqualToString:@"OsiriX Data"])
+		if( [[location lastPathComponent] isEqualToString:@"Horos Data"])
 			location = [location stringByDeletingLastPathComponent];
 		
-		if( [[location lastPathComponent] isEqualToString:@"DATABASE.noindex"] && [[[location stringByDeletingLastPathComponent] lastPathComponent] isEqualToString:@"OsiriX Data"])
+		if( [[location lastPathComponent] isEqualToString:@"DATABASE.noindex"] && [[[location stringByDeletingLastPathComponent] lastPathComponent] isEqualToString:@"Horos Data"])
 			location = [[location stringByDeletingLastPathComponent] stringByDeletingLastPathComponent];
 		
 		[self openDatabasePath: location];
@@ -1925,7 +1925,7 @@ static NSConditionLock *threadLock = nil;
 		if( isDirectory)
 		{
 			// Default SQL file
-			NSString	*index = [[path stringByAppendingPathComponent:@"OsiriX Data"] stringByAppendingPathComponent:@"Database.sql"];
+			NSString	*index = [[path stringByAppendingPathComponent:@"Horos Data"] stringByAppendingPathComponent:@"Database.sql"];
 			
 			if( [[NSFileManager defaultManager] fileExistsAtPath: index])
 			{
@@ -9472,7 +9472,7 @@ static BOOL withReset = NO;
 	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 	
 	NSLog(@"open pdf with Preview");
-	//check if the folder PDF exists in OsiriX document folder
+	//check if the folder PDF exists in Horos document folder
 	NSString *pathToPDF = [[self documentsDirectory] stringByAppendingPathComponent:@"/PDF/"];
 	if (!([[NSFileManager defaultManager] fileExistsAtPath:pathToPDF]))
 		[[NSFileManager defaultManager] createDirectoryAtPath:pathToPDF attributes:nil];
@@ -14272,7 +14272,7 @@ static NSArray*	openSubSeriesArray = nil;
     NSError *error = nil;
     NSURLResponse *urlResponse = nil;
     
-    NSURLRequest *request = [[[NSURLRequest alloc] initWithURL: [NSURL URLWithString:URL_OSIRIX_BANNER] cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval: 30] autorelease];
+    NSURLRequest *request = [[[NSURLRequest alloc] initWithURL: [NSURL URLWithString:URL_HOROS_BANNER] cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval: 30] autorelease];
     NSData *imageData = [NSURLConnection sendSynchronousRequest: request returningResponse: &urlResponse error: &error];
     
     if( imageData && error == nil && [urlResponse.MIMEType isEqualToString: @"image/png"])
@@ -14953,11 +14953,11 @@ static NSArray*	openSubSeriesArray = nil;
 	NSMenu *helpMenu = [[NSMenu allocWithZone: [NSMenu menuZone]] initWithTitle: NSLocalizedString(@"Help", nil)];
 	[helpItem setSubmenu:helpMenu];
 	[helpMenu addItemWithTitle: NSLocalizedString(@"Send an email to Horos support", nil) action: @selector(sendEmail:) keyEquivalent: @""];
-	[helpMenu addItemWithTitle: NSLocalizedString(@"Pixmeo Web site", nil) action: @selector(openHorosWebPage:) keyEquivalent: @""];	
-	[helpMenu addItemWithTitle: NSLocalizedString(@"Horos Discussion Group", nil) action: @selector(openOsirixDiscussion:) keyEquivalent: @""];
+	[helpMenu addItemWithTitle: NSLocalizedString(@"Horos Project Web site", nil) action: @selector(openHorosWebPage:) keyEquivalent: @""];
+	[helpMenu addItemWithTitle: NSLocalizedString(@"Horos Discussion Group", nil) action: @selector(openHorosDiscussion:) keyEquivalent: @""];
 	[helpMenu addItem: [NSMenuItem separatorItem]];
 	[helpMenu addItemWithTitle: NSLocalizedString(@"Horos Help Web Site ", nil) action: @selector(help:) keyEquivalent: @""];
-    [helpMenu addItemWithTitle: NSLocalizedString(@"User Manual", nil) action: @selector(userManual:) keyEquivalent: @""];
+    [helpMenu addItemWithTitle: NSLocalizedString(@"Report A Bug", nil) action: @selector(userManual:) keyEquivalent: @""];
     
 	[helpMenu release];
 }

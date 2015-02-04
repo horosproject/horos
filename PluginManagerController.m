@@ -200,7 +200,7 @@ static NSDate *CachedPluginsListDate = nil;
     }
     else
     {
-         [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_OSIRIX_VIEWER]];
+         [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_HOROS_VIEWER]];
         return;
     }
 #endif

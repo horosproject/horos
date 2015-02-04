@@ -727,7 +727,7 @@
                                 </button>
                                 <button misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="360">
                                     <rect key="frame" x="15" y="11" width="457" height="18"/>
-                                    <buttonCell key="cell" type="check" title="Turn Off Bonjour searching protocol - Do not search for Bonjour OsiriX Databases" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="361">
+                                    <buttonCell key="cell" type="check" title="Turn Off Bonjour searching protocol - Do not search for Bonjour Horos Databases" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" inset="2" id="361">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>

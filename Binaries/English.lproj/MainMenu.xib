@@ -5269,7 +5269,7 @@ Gw
                         <rect key="frame" x="57" y="154" width="393" height="42"/>
                         <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" id="14378">
                             <font key="font" metaFont="smallSystem"/>
-                            <string key="title">This function will re-import all DICOM files in the database, removing unavailable items and optimizing the SQL index file located in the OsiriX Data folder.</string>
+                            <string key="title">This function will re-import all DICOM files in the database, removing unavailable items and optimizing the SQL index file located in the Horos Data folder.</string>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -5326,7 +5326,7 @@ Gw
                     <matrix verticalHuggingPriority="749" misplaced="YES" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="14380">
                         <rect key="frame" x="59" y="108" width="198" height="38"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        <size key="cellSize" width="198" height="18"/>
+                        <size key="cellSize" width="197" height="18"/>
                         <size key="intercellSpacing" width="4" height="2"/>
                         <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" controlSize="small" inset="2" id="14383">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>

@@ -2953,7 +2953,7 @@ extern "C"
 		
 	[sPanel setRequiredFileType:@"txt"];
 	
-	if ([sPanel runModalForDirectory: nil file:NSLocalizedString(@"OsiriX Database List", nil)] == NSFileHandlingPanelOKButton)
+	if ([sPanel runModalForDirectory: nil file:NSLocalizedString(@"Horos Database List", nil)] == NSFileHandlingPanelOKButton)
 	{
 		[list writeToFile: [sPanel filename] atomically: YES];
 	}

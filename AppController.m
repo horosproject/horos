@@ -1167,10 +1167,10 @@ static NSDate *lastWarningDate = nil;
 -(IBAction) osirix64bit:(id)sender
 {
 	if( sender)
-		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_OSIRIX_VIEWER@"/OsiriX-64bit.html"]];
+		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_HOROS_VIEWER@"/Horos-64bit.html"]];
 	else
 	{
-		NSArray* urls = [NSArray arrayWithObject: [NSURL URLWithString:URL_OSIRIX_VIEWER@"/OsiriX-64bit.html"]];
+		NSArray* urls = [NSArray arrayWithObject: [NSURL URLWithString:URL_HOROS_VIEWER@"/Horos-64bit.html"]];
 
         [[NSWorkspace sharedWorkspace] openURLs:urls withAppBundleIdentifier: nil options: NSWorkspaceLaunchWithoutActivation additionalEventParamDescriptor: nil launchIdentifiers: nil];
 	}
@@ -1188,17 +1188,17 @@ static NSDate *lastWarningDate = nil;
 
 -(IBAction)help:(id)sender
 {
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_OSIRIX_LEARNING]];
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_HOROS_LEARNING]];
 }
 
--(IBAction)openOsirixDiscussion:(id)sender
+-(IBAction)openHorosDiscussion:(id)sender
 {
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://groups.yahoo.com/group/osirix/"]];
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://groups.google.com/forum/#!forum/horos-project"]];
 }
 
 -(IBAction)userManual:(id)sender
 {
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_VENDOR@"/products.html#OsiriXUserManual"]];
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.horosproject.org/mantisbt/"]];
 }
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 #pragma mark-
@@ -2942,7 +2942,7 @@ static BOOL initialized = NO;
 			//	if( [[NSCalendarDate dateWithYear:2006 month:6 day:2 hour:12 minute:0 second:0 timeZone:[NSTimeZone timeZoneWithAbbreviation:@"EST"]] timeIntervalSinceNow] < 0)
 			//	{
 			//		NSRunCriticalAlertPanel(@"Update needed!", @"This version of Horos is outdated. Please download the latest version from Horos web site!", @"OK", nil, nil);
-			//		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_OSIRIX_VIEWER]];
+			//		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_HOROS_VIEWER]];
 			//		exit(0);
 			//	}
 					
@@ -2953,7 +2953,7 @@ static BOOL initialized = NO;
 				//		break;
 				//		
 				//		case -1:
-				//			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_OSIRIX_VIEWER]];
+				//			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_HOROS_VIEWER]];
 				//		break;
 				//	}
 				
@@ -3087,7 +3087,7 @@ static BOOL initialized = NO;
                 }
                 
                 // now, sometimes databases point to other volumes for data storage through the DBFOLDER_LOCATION file, so if it's the case verify that that volume is mounted, too
-                dataBasePath = [DicomDatabase baseDirPathForPath:dataBasePath]; // we know this is the ".../OsiriX Data" path
+                dataBasePath = [DicomDatabase baseDirPathForPath:dataBasePath]; // we know this is the ".../Horos Data" path
                 // TODO: sometimes people use an alias... and if it's an alias, we should check that it points to an available volume..... should.
                 NSString* dataBaseDataPath = [NSString stringWithContentsOfFile:[dataBasePath stringByAppendingPathComponent:@"DBFOLDER_LOCATION"] encoding:NSUTF8StringEncoding error:NULL];
                 if ([dataBaseDataPath hasPrefix:@"/Volumes/"]) {
@@ -3514,7 +3514,7 @@ static BOOL initialized = NO;
 		int button = NSRunAlertPanel( NSLocalizedString( @"Horos Lite", nil), NSLocalizedString( @"This is the Lite version of Horos: many functions are not available. You can download the full version of Horos on the Internet.", nil), NSLocalizedString( @"Continue", nil), NSLocalizedString( @"Download", nil), nil);
 	
 		if (NSCancelButton == button)
-			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_OSIRIX_VIEWER]];
+			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_HOROS_VIEWER]];
 	}
 	@catch (NSException * e)
 	{
@@ -4306,7 +4306,7 @@ static BOOL initialized = NO;
     {
         NSRunInformationalAlertPanel(NSLocalizedString(@"Horos crashed", nil), NSLocalizedString(@"Horos crashed... You are running an outdated version of Horos ! This bug is probably corrected in the last version !", nil), NSLocalizedString(@"OK",nil), nil, nil);
         
-        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_OSIRIX_UPDATE_CRASH]];
+        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_HOROS_UPDATE_CRASH]];
     }
     
 	if( [msg isEqualToString:@"UPDATE"])
@@ -4314,7 +4314,7 @@ static BOOL initialized = NO;
 		int button = NSRunAlertPanel( NSLocalizedString( @"New Version Available", nil), NSLocalizedString( @"A new version of Horos is available. Would you like to download the new version now?", nil), NSLocalizedString( @"Download", nil), NSLocalizedString( @"Continue", nil), nil);
 		
 		if (NSOKButton == button)
-			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_OSIRIX_UPDATE]];
+			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_HOROS_UPDATE]];
 	}
 	
 	[pool release];
@@ -4356,9 +4356,9 @@ static BOOL initialized = NO;
         verboseAfterCrash = YES;
     
 	if( [AppController hasMacOSXMountainLion]) // or better
-		url = [NSURL URLWithString:URL_OSIRIX_VERSION];
+		url = [NSURL URLWithString:URL_HOROS_VERSION];
 	else
-		url = [NSURL URLWithString:URL_OSIRIX_VERSION_OLD_OS];  // TODO: remove
+		url = [NSURL URLWithString:URL_HOROS_VERSION_OLD_OS];  // TODO: remove
 	
 	if( url)
 	{

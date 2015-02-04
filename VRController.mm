@@ -2771,7 +2771,7 @@ return YES;
 {
 	[super UpdateCLUTMenu:note];
 	
-	// path 1 : /OsiriX Data/CLUTs/
+	// path 1 : /Horos Data/CLUTs/
 	NSMutableString *path = [NSMutableString stringWithString: [[BrowserController currentBrowser] documentsDirectory]];
 	[path appendString: CLUTDATABASE];
 	// path 2 : /resources_bundle_path/CLUTs/

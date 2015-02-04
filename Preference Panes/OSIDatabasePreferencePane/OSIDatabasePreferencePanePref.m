@@ -452,7 +452,7 @@
 			
 			if (![[NSFileManager defaultManager] fileExistsAtPath:[[NSUserDefaults standardUserDefaults] stringForKey:@"DEFAULT_DATABASELOCATIONURL"] isDirectory:&isDir])
 			{
-				NSRunAlertPanel(@"OsiriX Database Location", @"This location is not valid. Select another location.", @"OK", nil, nil);
+				NSRunAlertPanel(@"Horos Database Location", @"This location is not valid. Select another location.", @"OK", nil, nil);
 				
 				[locationMatrix selectCellWithTag:0];
 			}
@@ -496,13 +496,13 @@
 	{
 		NSString	*location = [oPanel directory];
 		
-		if( [[location lastPathComponent] isEqualToString:@"OsiriX Data"])
+		if( [[location lastPathComponent] isEqualToString:@"Horos Data"])
 		{
 			NSLog( @"%@", [location lastPathComponent]);
 			location = [location stringByDeletingLastPathComponent];
 		}
 		
-		if( [[location lastPathComponent] isEqualToString:@"DATABASE"] && [[[location stringByDeletingLastPathComponent] lastPathComponent] isEqualToString:@"OsiriX Data"])
+		if( [[location lastPathComponent] isEqualToString:@"DATABASE"] && [[[location stringByDeletingLastPathComponent] lastPathComponent] isEqualToString:@"Horos Data"])
 		{
 			NSLog( @"%@", [location lastPathComponent]);
 			location = [[location stringByDeletingLastPathComponent] stringByDeletingLastPathComponent];

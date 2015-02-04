@@ -1032,7 +1032,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject: @"1" forKey: @"DICOMSENDALLOWED"];
 	[defaultValues setObject: @"14.0" forKey: @"FONTSIZE"];
 	[defaultValues setObject: @"2" forKey: @"REPORTSMODE"];
-	[defaultValues setObject: URL_OSIRIX_VIEWER@"/internet.dcm" forKey: @"LASTURL"];
+	[defaultValues setObject: URL_HOROS_VIEWER@"/internet.dcm" forKey: @"LASTURL"];
 	[defaultValues setObject: @"0" forKey: @"MAPPERMODEVR"];
 	[defaultValues setObject: @"1" forKey: @"STARTCOUNT"];
 	[defaultValues setObject: @"1" forKey: @"editingLevel"];

@@ -767,12 +767,12 @@
 	{
 		NSString	*location = [oPanel filename];
 		
-		if( [[location lastPathComponent] isEqualToString:@"OsiriX Data"])
+		if( [[location lastPathComponent] isEqualToString:@"Horos Data"])
 		{
 			location = [location stringByDeletingLastPathComponent];
 		}
 
-		if( [[location lastPathComponent] isEqualToString:@"DATABASE"] && [[[location stringByDeletingLastPathComponent] lastPathComponent] isEqualToString:@"OsiriX Data"])
+		if( [[location lastPathComponent] isEqualToString:@"DATABASE"] && [[[location stringByDeletingLastPathComponent] lastPathComponent] isEqualToString:@"Horos Data"])
 		{
 			location = [[location stringByDeletingLastPathComponent] stringByDeletingLastPathComponent];
 		}
@@ -885,7 +885,7 @@
 		
 		if(clickedButton==NSOKButton)
 		{
-			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_OSIRIX_DOC_SECURITY]];
+			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_HOROS_DOC_SECURITY]];
 		}
 		
 		return;

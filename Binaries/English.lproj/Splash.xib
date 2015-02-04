@@ -55,8 +55,8 @@
                         <rect key="frame" x="85" y="20" width="362" height="28"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" id="34">
                             <font key="font" metaFont="smallSystem"/>
-                            <string key="title">Purview - Maryland, USA
-email@horosproject.org</string>
+                            <string key="title">The Horos Project
+horos@horosproject.org</string>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>

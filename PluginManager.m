@@ -827,7 +827,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 
 -(void) noPlugins:(id) sender
 {
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_OSIRIX_PLUGINS]];
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_HOROS_PLUGINS]];
 }
 
 #pragma mark -
@@ -1360,7 +1360,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
     
 	[NSThread sleepForTimeInterval: 10];
 	
-	url = [NSURL URLWithString:URL_OSIRIX_VIEWER@"/osirix_plugins/plugins.plist"];
+	url = [NSURL URLWithString:URL_HOROS_VIEWER@"/osirix_plugins/plugins.plist"];
 	
 	if(url)
 	{
