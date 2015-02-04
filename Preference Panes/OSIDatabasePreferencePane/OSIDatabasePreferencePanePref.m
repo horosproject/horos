@@ -59,7 +59,7 @@
         
         if ([keyPath isEqualToString:@"values.horizontalHistory" ])
         {
-            NSRunCriticalAlertPanel( NSLocalizedString( @"Restart", nil), NSLocalizedString( @"Restart OsiriX to apply this change.", nil), NSLocalizedString( @"OK", nil), nil, nil);
+            NSRunCriticalAlertPanel( NSLocalizedString( @"Restart", nil), NSLocalizedString( @"Restart Horos to apply this change.", nil), NSLocalizedString( @"OK", nil), nil, nil);
         }
         
         if ([keyPath isEqualToString:@"values.dbFontSize"])

@@ -669,8 +669,8 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 {
 	@try
 	{
-		NSString	*appSupport = @"Library/Application Support/OsiriX/";
-        NSString	*appAppStoreSupport = @"Library/Application Support/OsiriX App/";
+		NSString	*appSupport = @"Library/Application Support/Horos/";
+        NSString	*appAppStoreSupport = @"Library/Application Support/Horos App/";
 		NSString	*appPath = [[NSBundle mainBundle] builtInPlugInsPath];
         NSString	*userAppStorePath = [NSHomeDirectory() stringByAppendingPathComponent:appAppStoreSupport];
 		NSString	*userPath = [NSHomeDirectory() stringByAppendingPathComponent:appSupport];
@@ -838,18 +838,18 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 + (NSString*)activePluginsDirectoryPath;
 {
     #ifdef MACAPPSTORE
-	return @"Library/Application Support/OsiriX App/Plugins/";
+	return @"Library/Application Support/Horos App/Plugins/";
     #else
-    return @"Library/Application Support/OsiriX/Plugins/";
+    return @"Library/Application Support/Horos/Plugins/";
     #endif
 }
 
 + (NSString*)inactivePluginsDirectoryPath;
 {
     #ifdef MACAPPSTORE
-	return @"Library/Application Support/OsiriX App/Plugins Disabled/";
+	return @"Library/Application Support/Horos App/Plugins Disabled/";
     #else
-    return @"Library/Application Support/OsiriX/Plugins Disabled/";
+    return @"Library/Application Support/Horos/Plugins Disabled/";
     #endif
 }
 
@@ -974,7 +974,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 	}
     
     if( !gPluginsAlertAlreadyDisplayed)
-        NSRunInformationalAlertPanel(NSLocalizedString(@"Plugins", @""), NSLocalizedString( @"Restart OsiriX to apply the changes to the plugins.", @""), NSLocalizedString(@"OK", @""), nil, nil);
+        NSRunInformationalAlertPanel(NSLocalizedString(@"Plugins", @""), NSLocalizedString( @"Restart Horos to apply the changes to the plugins.", @""), NSLocalizedString(@"OK", @""), nil, nil);
     gPluginsAlertAlreadyDisplayed = YES;
 }
 
@@ -1010,7 +1010,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 	}
     
     if( !gPluginsAlertAlreadyDisplayed)
-        NSRunInformationalAlertPanel(NSLocalizedString(@"Plugins", @""), NSLocalizedString( @"Restart OsiriX to apply the changes to the plugins.", @""), NSLocalizedString(@"OK", @""), nil, nil);
+        NSRunInformationalAlertPanel(NSLocalizedString(@"Plugins", @""), NSLocalizedString( @"Restart Horos to apply the changes to the plugins.", @""), NSLocalizedString(@"OK", @""), nil, nil);
     gPluginsAlertAlreadyDisplayed = YES;
 }
 
@@ -1241,7 +1241,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 	}
 	
     if( !gPluginsAlertAlreadyDisplayed)
-        NSRunInformationalAlertPanel(NSLocalizedString(@"Plugins", @""), NSLocalizedString( @"Restart OsiriX to apply the changes to the plugins.", @""), NSLocalizedString(@"OK", @""), nil, nil);
+        NSRunInformationalAlertPanel(NSLocalizedString(@"Plugins", @""), NSLocalizedString( @"Restart Horos to apply the changes to the plugins.", @""), NSLocalizedString(@"OK", @""), nil, nil);
     gPluginsAlertAlreadyDisplayed = YES;
     
 	return returnPath;
@@ -1483,7 +1483,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 	else
 	{
         if( !gPluginsAlertAlreadyDisplayed)
-            NSRunInformationalAlertPanel(NSLocalizedString(@"Plugin Update Completed", @""), NSLocalizedString(@"All your plugins are now up to date. Restart OsiriX to use the new or updated plugins.", @""), NSLocalizedString(@"OK", @""), nil, nil);
+            NSRunInformationalAlertPanel(NSLocalizedString(@"Plugin Update Completed", @""), NSLocalizedString(@"All your plugins are now up to date. Restart Horos to use the new or updated plugins.", @""), NSLocalizedString(@"OK", @""), nil, nil);
 		gPluginsAlertAlreadyDisplayed = YES;
         
         startedUpdateProcess = NO;

@@ -125,9 +125,9 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 +(void)initialize
 {
     #ifdef MACAPPSTORE
-	DefaultWebPortalDatabasePath = [[NSString alloc] initWithString: [@"~/Library/Application Support/OsiriX App/WebUsers.sql" stringByExpandingTildeInPath]];
+	DefaultWebPortalDatabasePath = [[NSString alloc] initWithString: [@"~/Library/Application Support/Horos App/WebUsers.sql" stringByExpandingTildeInPath]];
     #else
-    DefaultWebPortalDatabasePath = [[NSString alloc] initWithString: [@"~/Library/Application Support/OsiriX/WebUsers.sql" stringByExpandingTildeInPath]];
+    DefaultWebPortalDatabasePath = [[NSString alloc] initWithString: [@"~/Library/Application Support/Horos/WebUsers.sql" stringByExpandingTildeInPath]];
     #endif
 	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWadoServiceEnabledDefaultsKey options:NSKeyValueObservingOptionInitial context:NULL];
 }
@@ -200,9 +200,9 @@ static NSString* DefaultWebPortalDatabasePath = nil;
         {
 			NSMutableArray* dirsToScanForFiles = [NSMutableArray arrayWithCapacity:2];
             #ifdef MACAPPSTORE
-			if (NSUserDefaults.webPortalPrefersCustomWebPages) [dirsToScanForFiles addObject: [@"~/Library/Application Support/OsiriX App/WebServicesHTML" stringByExpandingTildeInPath]];
+			if (NSUserDefaults.webPortalPrefersCustomWebPages) [dirsToScanForFiles addObject: [@"~/Library/Application Support/Horos App/WebServicesHTML" stringByExpandingTildeInPath]];
             #else
-            if (NSUserDefaults.webPortalPrefersCustomWebPages) [dirsToScanForFiles addObject: [@"~/Library/Application Support/OsiriX/WebServicesHTML" stringByExpandingTildeInPath]];
+            if (NSUserDefaults.webPortalPrefersCustomWebPages) [dirsToScanForFiles addObject: [@"~/Library/Application Support/Horos/WebServicesHTML" stringByExpandingTildeInPath]];
             #endif
             [dirsToScanForFiles addObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"WebServicesHTML"]];
 			webPortal.dirsToScanForFiles = dirsToScanForFiles;

@@ -2949,7 +2949,7 @@ static BOOL initialized = NO;
 				//	switch( NSRunInformationalAlertPanel(@"Horos", @"Thank you for using Horos!\rWe need your help! Send us comments, bugs and ideas!\r\rI need supporting emails to prove utility of Horos!\r\rThanks!", @"Continue", @"Send an email", @"Web Site"))
 				//	{
 				//		case 0:
-				//			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"mailto:email@horosproject.org?subject=Horos"]];
+				//			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"mailto:horos@horosproject.org?subject=Horos"]];
 				//		break;
 				//		
 				//		case -1:
@@ -3009,7 +3009,7 @@ static BOOL initialized = NO;
 				#ifdef MACAPPSTORE
 				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"MACAPPSTORE"]; // Also modify in DefaultsOsiriX.m
 				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"AUTHENTICATION"];
-				[[NSUserDefaults standardUserDefaults] setObject: NSLocalizedString( @"(~/Library/Application Support/OsiriX App/)", nil) forKey:@"DefaultDatabasePath"];
+				[[NSUserDefaults standardUserDefaults] setObject: NSLocalizedString( @"(~/Library/Application Support/Horos App/)", nil) forKey:@"DefaultDatabasePath"];
 				#else
 				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"MACAPPSTORE"]; // Also modify in DefaultsOsiriX.m
 				[[NSUserDefaults standardUserDefaults] setObject: NSLocalizedString( @"(Current User Documents folder)", nil) forKey:@"DefaultDatabasePath"];
