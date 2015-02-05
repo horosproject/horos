@@ -5674,7 +5674,7 @@
 		AB97238E0C684B4E00DC727C /* OsiriXDB_Previous_DataModel2.3.mom */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = OsiriXDB_Previous_DataModel2.3.mom; sourceTree = "<group>"; };
 		AB9DCD7A09A9C47800AA19E7 /* ReportTemplate.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = ReportTemplate.rtf; path = Binaries/ReportTemplate.rtf; sourceTree = "<group>"; };
 		AB9E05460B30107A00661F7E /* key.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = key.png; sourceTree = "<group>"; };
-		ABA71D3F06726B1800335A62 /* OsiriX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OsiriX.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		ABA71D3F06726B1800335A62 /* Horos.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Horos.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		ABAA284B058A4F7F00F0601D /* NSFullScreenWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSFullScreenWindow.h; sourceTree = "<group>"; };
 		ABAA284C058A4F7F00F0601D /* NSFullScreenWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSFullScreenWindow.m; sourceTree = "<group>"; };
 		ABB218B705CF1E9300D8B619 /* WaitRendering.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = WaitRendering.h; sourceTree = "<group>"; };
@@ -7506,7 +7506,7 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				ABA71D3F06726B1800335A62 /* OsiriX.app */,
+				ABA71D3F06726B1800335A62 /* Horos.app */,
 				AB724FF60ADE6ECB00A212A0 /* Decompress */,
 				CEDF6DD00B46FE99008B45B8 /* DICOMPrint */,
 				844719AF0FD8EF50003BFDF8 /* OsiriX.framework */,
@@ -11952,7 +11952,7 @@
 			);
 			name = OsiriX;
 			productName = Deployment;
-			productReference = ABA71D3F06726B1800335A62 /* OsiriX.app */;
+			productReference = ABA71D3F06726B1800335A62 /* Horos.app */;
 			productType = "com.apple.product-type.application";
 		};
 		AB724F300ADE6ECB00A212A0 /* Decompress */ = {
@@ -12006,7 +12006,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 7E76BED8085757B70073649A /* Build configuration list for PBXProject "OsiriX_Lion" */;
+			buildConfigurationList = 7E76BED8085757B70073649A /* Build configuration list for PBXProject "Horos" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
@@ -16215,7 +16215,7 @@
 					__info_plist,
 					"Deployment-Info.plist",
 				);
-				PRODUCT_NAME = OsiriX;
+				PRODUCT_NAME = Horos;
 				STRIP_STYLE = debugging;
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/Binaries/ITKHeaders $(SRCROOT)/Binaries/VTKHeaders $(SRCROOT)/Binaries/openjpeg/** $(SRCROOT)/Binaries/LibTiff";
 				WARNING_CFLAGS = "-no-pedantic";
@@ -16754,7 +16754,7 @@
 					__info_plist,
 					"Deployment-Info.plist",
 				);
-				PRODUCT_NAME = OsiriX;
+				PRODUCT_NAME = Horos;
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/Binaries/ITKHeaders $(SRCROOT)/Binaries/VTKHeaders $(SRCROOT)/Binaries/openjpeg/** $(SRCROOT)/Binaries/LibTiff";
 				WARNING_CFLAGS = "-no-pedantic";
 			};
@@ -17083,7 +17083,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;
 		};
-		7E76BED8085757B70073649A /* Build configuration list for PBXProject "OsiriX_Lion" */ = {
+		7E76BED8085757B70073649A /* Build configuration list for PBXProject "Horos" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7E76BED9085757B70073649A /* Development */,

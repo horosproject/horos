@@ -1,7 +1,7 @@
 /*=========================================================================
   Program:   OsiriX
 
-  Copyright (c) OsiriX Team
+  Copyright (c) Horos Team
   All rights reserved.
   Distributed under GNU - LGPL
   
